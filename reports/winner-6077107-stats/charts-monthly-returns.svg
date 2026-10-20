@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1500" height="795" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1500 795" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1500" height="795"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-795)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="1500" height="795" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(96%,97%,98%); fill-rule: evenodd;"/>
+			<text x="65" y="738" style="font-family: Helvetica-Bold; font-size: 32px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,1476) scale(1,-1)">Monthly native equity returns</text>
+			<text x="65" y="700" style="font-family: Helvetica; font-size: 20px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1400) scale(1,-1)">2024-09-01 to 2026-08-31 (source-bar dates)  |  Relative to prior month-end equity</text>
+			<text x="211.686" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Jan</text>
+			<text x="311.6315" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Feb</text>
+			<text x="412.641" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Mar</text>
+			<text x="515.218" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Apr</text>
+			<text x="613.0545" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">May</text>
+			<text x="716.686" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Jun</text>
+			<text x="820.859" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Jul</text>
+			<text x="917.0995" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Aug</text>
+			<text x="1018.0995" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Sep</text>
+			<text x="1121.218" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Oct</text>
+			<text x="1220.109" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Nov</text>
+			<text x="1321.109" y="645" style="font-family: Helvetica; font-size: 19px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1290) scale(1,-1)">Dec</text>
+			<text x="101.072" y="559" style="font-family: Helvetica-Bold; font-size: 22px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,1118) scale(1,-1)">2024</text>
+			<rect x="180" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="223.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="281" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="324.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="382" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="425.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="483" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="526.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="584" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="627.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="685" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="728.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="786" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="829.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="887" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="930.5035" y="559" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,1118) scale(1,-1)">-</text>
+			<rect x="988" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(96%,87%,87%); fill-rule: evenodd;"/>
+			<text x="1010.186" y="564" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,1128) scale(1,-1)">-2.8%</text>
+			<rect x="1089" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(22%,59%,51%); fill-rule: evenodd;"/>
+			<text x="1098.2375" y="564" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,1128) scale(1,-1)">+148.7%</text>
+			<rect x="1190" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(22%,59%,51%); fill-rule: evenodd;"/>
+			<text x="1199.2375" y="564" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,1128) scale(1,-1)">+188.3%</text>
+			<rect x="1291" y="510" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(41%,69%,62%); fill-rule: evenodd;"/>
+			<text x="1305.5195" y="564" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,1128) scale(1,-1)">+70.5%</text>
+			<text x="101.072" y="424" style="font-family: Helvetica-Bold; font-size: 22px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,848) scale(1,-1)">2025</text>
+			<rect x="180" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(22%,59%,51%); fill-rule: evenodd;"/>
+			<text x="189.2375" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+295.1%</text>
+			<rect x="281" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,86%,86%); fill-rule: evenodd;"/>
+			<text x="303.186" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">-4.7%</text>
+			<rect x="382" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(42%,70%,63%); fill-rule: evenodd;"/>
+			<text x="396.5195" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+68.3%</text>
+			<rect x="483" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,70%,70%); fill-rule: evenodd;"/>
+			<text x="499.904" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">-36.7%</text>
+			<rect x="584" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(79%,89%,87%); fill-rule: evenodd;"/>
+			<text x="598.5195" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+10.0%</text>
+			<rect x="685" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(82%,91%,89%); fill-rule: evenodd;"/>
+			<text x="704.8015" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+5.4%</text>
+			<rect x="786" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(69%,84%,80%); fill-rule: evenodd;"/>
+			<text x="800.5195" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+26.3%</text>
+			<rect x="887" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(72%,85%,82%); fill-rule: evenodd;"/>
+			<text x="901.5195" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+21.0%</text>
+			<rect x="988" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(59%,78%,74%); fill-rule: evenodd;"/>
+			<text x="1002.5195" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+42.5%</text>
+			<rect x="1089" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(62%,80%,76%); fill-rule: evenodd;"/>
+			<text x="1103.5195" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+36.6%</text>
+			<rect x="1190" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(94%,81%,81%); fill-rule: evenodd;"/>
+			<text x="1206.904" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">-15.5%</text>
+			<rect x="1291" y="375" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(46%,72%,66%); fill-rule: evenodd;"/>
+			<text x="1305.5195" y="429" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,858) scale(1,-1)">+61.5%</text>
+			<text x="101.072" y="289" style="font-family: Helvetica-Bold; font-size: 22px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,578) scale(1,-1)">2026</text>
+			<rect x="180" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,86%,83%); fill-rule: evenodd;"/>
+			<text x="194.5195" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">+19.1%</text>
+			<rect x="281" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(45%,71%,65%); fill-rule: evenodd;"/>
+			<text x="295.5195" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">+64.0%</text>
+			<rect x="382" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(63%,81%,77%); fill-rule: evenodd;"/>
+			<text x="396.5195" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">+35.0%</text>
+			<rect x="483" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(56%,77%,72%); fill-rule: evenodd;"/>
+			<text x="497.5195" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">+45.8%</text>
+			<rect x="584" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(96%,88%,88%); fill-rule: evenodd;"/>
+			<text x="606.186" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">-2.0%</text>
+			<rect x="685" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(82%,90%,88%); fill-rule: evenodd;"/>
+			<text x="704.8015" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">+6.6%</text>
+			<rect x="786" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,74%,74%); fill-rule: evenodd;"/>
+			<text x="802.904" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">-28.1%</text>
+			<rect x="887" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,86%,86%); fill-rule: evenodd;"/>
+			<text x="909.186" y="294" style="font-family: Helvetica-Bold; font-size: 19px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,588) scale(1,-1)">-5.8%</text>
+			<text x="913.0505" y="265" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,14%,21%); stroke:none;" transform="translate(0,530) scale(1,-1)">FINAL*</text>
+			<rect x="988" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="1031.5035" y="289" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,578) scale(1,-1)">-</text>
+			<rect x="1089" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="1132.5035" y="289" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,578) scale(1,-1)">-</text>
+			<rect x="1190" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="1233.5035" y="289" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,578) scale(1,-1)">-</text>
+			<rect x="1291" y="240" width="95" height="110" rx="9" ry="9" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,92%,95%); fill-rule: evenodd;"/>
+			<text x="1334.5035" y="289" style="font-family: Helvetica; font-size: 21px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,578) scale(1,-1)">-</text>
+			<text x="65" y="159" style="font-family: Helvetica; font-size: 18px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,318) scale(1,-1)">* Final month uses pre-settlement marked equity; terminal settlement is excluded from calendar returns.</text>
+			<text x="65" y="124" style="font-family: Helvetica; font-size: 17px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,248) scale(1,-1)">Signed funding is UNKNOWN. Existing diagnostic run is not certified venue-faithful or eligible for ranking.</text>
+			<text x="65" y="89" style="font-family: Helvetica; font-size: 17px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,178) scale(1,-1)">Green = positive; red = negative. Color saturation caps at |100%|; figures are uncapped.</text>
+			<text x="65" y="54" style="font-family: Helvetica; font-size: 16px;fill: rgb(34%,41%,50%); stroke:none;" transform="translate(0,108) scale(1,-1)">Source: verified existing native run; no new backtest. All dates UTC.</text>
+		</g>
+	</g>
+</svg>

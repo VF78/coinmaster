@@ -1,0 +1,2911 @@
+{
+  "basis": {
+    "all_native_DD": "Seed plus every interval native pre/postBTC/postSOL sample; final prequote at end-exclusive included; two post-boundary settlement rows excluded.",
+    "calendar": "One post_quote_paired_close per source minute, except finalminute uses final prequote left-limit. UTC period assigned by source bar_open_ms. Internal period ends include their boundary callbacks; finalend excludes settlement. Min/max and within-period DD in calendar CSV use this paired-minute sampling, not allphase DD.",
+    "elapsed_time": "Minutes sampled at one paired sample per source minute. Threshold sampled DD uses sampled runningpeak, with separate allnative threshold entry counts.",
+    "rolling": "Exact 1,60,1440,10080,43200-minute changes of paired native equity. 43200 is30days, not variablecalendar month.",
+    "exposure": "Actual native position quantity times same completed-bar close, divided bynativepaired equity; native side2LONG side3SHORT. Gross/share/net-directional not beta-adjusted. No realizedPnL inference.",
+    "OHLC": "67.54771031869252420136632742% is a separate conditional favorable-to-later-adverse bound. No samebar extremaordering or historicalpath assumption.",
+    "unknown": "Signedfunding, realized perasset PnL and detailed venue fidelity remain UNKNOWN; reportstatus NOT_FAITHFUL_DIAGNOSTIC and ranking_eligible false inherited."
+  },
+  "checks": {
+    "trace_sha256": "f9b59944ac969f5441babdf2103637f7cd179c6d18971c7bf95c0e2c46e38a0b",
+    "raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "trace_rows": 3153600,
+    "interval_native_rows": 3153598,
+    "interval_native_with_seed": 3153599,
+    "sampled_minutes": 1051200,
+    "monotone_timestamps": true,
+    "contiguous_bar_opens": true,
+    "reproduced_all_native_DD_percent": "66.31878024969152066570091116",
+    "expected_DD_percent": "66.31878024969152066570091116",
+    "DD_exact_match": true,
+    "months": 24,
+    "days": 730,
+    "daily_monthly_exact_chain": true,
+    "drawdown_csv_rows": 1223,
+    "daily_curve_rows": 730,
+    "export_repair": "Last unrecovered episode has an extra end_observation field; recovered directly from durable JSON top10. No second trace pass."
+  },
+  "phase_counts": {
+    "pre_quote_paired_close": 1051200,
+    "post_btc_quote_paired_close": 1051199,
+    "post_quote_paired_close": 1051199,
+    "post_boundary_post_btc_quote_paired_close": 1,
+    "post_boundary_post_quote_paired_close": 1
+  },
+  "excluded_post_boundary": [
+    {
+      "close_available_ns": "1788220800000000000",
+      "phase": "post_boundary_post_btc_quote_paired_close",
+      "cash": "6077107.23887483",
+      "paired_close_equity": "6077107.23887483"
+    },
+    {
+      "close_available_ns": "1788220800000000000",
+      "phase": "post_boundary_post_quote_paired_close",
+      "cash": "6077107.23887483",
+      "paired_close_equity": "6077107.23887483"
+    }
+  ],
+  "all_native_max_DD_percent": "66.31878024969152066570091116",
+  "initial_capital_minimum": {
+    "ns": "1727970240000000000",
+    "utc": "2024-10-03T15:44:00+00:00",
+    "equity": "4530.57414701",
+    "phase": "pre_quote_paired_close",
+    "cash": "9651.60074701",
+    "native_total_unrealized": "-5121.02660000",
+    "positions": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "3",
+        "quantity": "0.724",
+        "avg_px_open": "60887.25",
+        "mark_ohlc": {
+          "open_time_ms": 1727970180000,
+          "open": "60186.45",
+          "high": "60230",
+          "low": "60155.17",
+          "close": "60209.94"
+        },
+        "low_native_pnl": "530.0042",
+        "high_native_pnl": "475.849"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "2",
+        "quantity": "810.9",
+        "avg_px_open": "140.09",
+        "mark_ohlc": {
+          "open_time_ms": 1727970180000,
+          "open": "133.596",
+          "high": "133.72",
+          "low": "133.161",
+          "close": "133.166"
+        },
+        "low_native_pnl": "-5619.537",
+        "high_native_pnl": "-5165.433"
+      }
+    ]
+  },
+  "maximum_equity": {
+    "ns": "1783345140000000000",
+    "utc": "2026-07-06T13:39:00+00:00",
+    "equity": "9361910.09938506",
+    "phase": "pre_quote_paired_close",
+    "cash": "9007027.20213506",
+    "native_total_unrealized": "354882.89725000",
+    "positions": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "3",
+        "quantity": "275.755",
+        "avg_px_open": "62653.649999999994",
+        "mark_ohlc": {
+          "open_time_ms": 1783345080000,
+          "open": "61427",
+          "high": "61454.9",
+          "low": "61285.5",
+          "close": "61366.7"
+        },
+        "low_native_pnl": "377274.20325",
+        "high_native_pnl": "330561.30625"
+      }
+    ]
+  },
+  "initial_capital_loss_percent": "54.694258529900",
+  "drawdown_episodes_count": 1223,
+  "unrecovered_episodes": 1,
+  "top10_percent": [
+    {
+      "peak": {
+        "ns": "1726063200000000000",
+        "utc": "2024-09-11T14:00:00+00:00",
+        "equity": "13451.3363251",
+        "phase": "pre_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1726063200000000000",
+        "utc": "2024-09-11T14:00:00+00:00",
+        "equity": "13410.3412791",
+        "phase": "post_btc_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1727970240000000000",
+        "utc": "2024-10-03T15:44:00+00:00",
+        "equity": "4530.57414701",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "8920.76217809",
+      "drawdown_percent": "66.31878024969152066570091116",
+      "recovered": true,
+      "recovery": {
+        "ns": "1728615180000000000",
+        "utc": "2024-10-11T02:53:00+00:00",
+        "equity": "13453.62745342",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 37,
+      "peak_to_trough_days": "22.07222222222222222222222222",
+      "trough_to_recovery_or_end_days": "7.464583333333333333333333333",
+      "peak_to_recovery_or_end_days": "29.53680555555555555555555556",
+      "underwater_clock_days": "29.53680555555555555555555556"
+    },
+    {
+      "peak": {
+        "ns": "1744333200000000000",
+        "utc": "2025-04-11T01:00:00+00:00",
+        "equity": "915175.73025689",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1744333260000000000",
+        "utc": "2025-04-11T01:01:00+00:00",
+        "equity": "911531.10825689",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1749223020000000000",
+        "utc": "2025-06-06T15:17:00+00:00",
+        "equity": "367509.64806046",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "547666.08219643",
+      "drawdown_percent": "59.84272354367395947974450388",
+      "recovered": true,
+      "recovery": {
+        "ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00",
+        "equity": "930699.83942448",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 776,
+      "peak_to_trough_days": "56.59513888888888888888888889",
+      "trough_to_recovery_or_end_days": "79.18125",
+      "peak_to_recovery_or_end_days": "135.7763888888888888888888889",
+      "underwater_clock_days": "135.7763888888888888888888889"
+    },
+    {
+      "peak": {
+        "ns": "1761168540000000000",
+        "utc": "2025-10-22T21:29:00+00:00",
+        "equity": "2088471.56378771",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1761168600000000000",
+        "utc": "2025-10-22T21:30:00+00:00",
+        "equity": "2082398.66648771",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1764340080000000000",
+        "utc": "2025-11-28T14:28:00+00:00",
+        "equity": "937712.12544458",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1150759.43834313",
+      "drawdown_percent": "55.10055575073671291811943329",
+      "recovered": true,
+      "recovery": {
+        "ns": "1764562200000000000",
+        "utc": "2025-12-01T04:10:00+00:00",
+        "equity": "2089614.53857348",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 943,
+      "peak_to_trough_days": "36.70763888888888888888888889",
+      "trough_to_recovery_or_end_days": "2.570833333333333333333333333",
+      "peak_to_recovery_or_end_days": "39.27847222222222222222222222",
+      "underwater_clock_days": "39.27847222222222222222222222"
+    },
+    {
+      "peak": {
+        "ns": "1735665000000000000",
+        "utc": "2024-12-31T17:10:00+00:00",
+        "equity": "187955.72982674",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1735665060000000000",
+        "utc": "2024-12-31T17:11:00+00:00",
+        "equity": "186485.72982674",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1735724460000000000",
+        "utc": "2025-01-01T09:41:00+00:00",
+        "equity": "108690.12904281",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "79265.60078393",
+      "drawdown_percent": "42.17248437012164854972645329",
+      "recovered": true,
+      "recovery": {
+        "ns": "1735780080000000000",
+        "utc": "2025-01-02T01:08:00+00:00",
+        "equity": "187980.46522902",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 452,
+      "peak_to_trough_days": "0.6881944444444444444444444444",
+      "trough_to_recovery_or_end_days": "0.64375",
+      "peak_to_recovery_or_end_days": "1.331944444444444444444444444",
+      "underwater_clock_days": "1.331944444444444444444444444"
+    },
+    {
+      "peak": {
+        "ns": "1783345140000000000",
+        "utc": "2026-07-06T13:39:00+00:00",
+        "equity": "9361910.09938506",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1783345200000000000",
+        "utc": "2026-07-06T13:40:00+00:00",
+        "equity": "9326144.67588506",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1787023980000000000",
+        "utc": "2026-08-18T03:33:00+00:00",
+        "equity": "5543599.77088397",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "3818310.32850109",
+      "drawdown_percent": "40.78559063232082212618548499",
+      "recovered": false,
+      "recovery": null,
+      "end_observation": {
+        "ns": "1788220800000000000",
+        "utc": "2026-09-01T00:00:00+00:00",
+        "equity": "6090649.46221444",
+        "phase": "pre_quote_paired_close",
+        "cash": "5990509.00011444",
+        "native_total_unrealized": "100140.46210000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "220.598",
+            "avg_px_open": "78089.15000000001",
+            "mark_ohlc": {
+              "open_time_ms": 1788220740000,
+              "open": "78524.9",
+              "high": "78543.08",
+              "low": "78524.9",
+              "close": "78543.08"
+            },
+            "low_native_pnl": "96125.5785",
+            "high_native_pnl": "100140.4621"
+          }
+        ]
+      },
+      "id": 1223,
+      "peak_to_trough_days": "42.57916666666666666666666667",
+      "trough_to_recovery_or_end_days": "13.85208333333333333333333333",
+      "peak_to_recovery_or_end_days": "56.43125",
+      "underwater_clock_days": "56.43125"
+    },
+    {
+      "peak": {
+        "ns": "1737484680000000000",
+        "utc": "2025-01-21T18:38:00+00:00",
+        "equity": "537132.64568937",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1737484740000000000",
+        "utc": "2025-01-21T18:39:00+00:00",
+        "equity": "536582.77258937",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1738707120000000000",
+        "utc": "2025-02-04T22:12:00+00:00",
+        "equity": "320840.04666373",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "216292.59902564",
+      "drawdown_percent": "40.26800470264555526714864550",
+      "recovered": true,
+      "recovery": {
+        "ns": "1741558140000000000",
+        "utc": "2025-03-09T22:09:00+00:00",
+        "equity": "537345.26441324",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 589,
+      "peak_to_trough_days": "14.14861111111111111111111111",
+      "trough_to_recovery_or_end_days": "32.99791666666666666666666667",
+      "peak_to_recovery_or_end_days": "47.14652777777777777777777778",
+      "underwater_clock_days": "47.14652777777777777777777778"
+    },
+    {
+      "peak": {
+        "ns": "1735481160000000000",
+        "utc": "2024-12-29T14:06:00+00:00",
+        "equity": "163474.01815922",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1735481220000000000",
+        "utc": "2024-12-29T14:07:00+00:00",
+        "equity": "163174.01815922",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1735577400000000000",
+        "utc": "2024-12-30T16:50:00+00:00",
+        "equity": "101395.33900782",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "62078.67915140",
+      "drawdown_percent": "37.97464566567194131798799674",
+      "recovered": true,
+      "recovery": {
+        "ns": "1735588980000000000",
+        "utc": "2024-12-30T20:03:00+00:00",
+        "equity": "163495.33900782",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 435,
+      "peak_to_trough_days": "1.113888888888888888888888889",
+      "trough_to_recovery_or_end_days": "0.1340277777777777777777777778",
+      "peak_to_recovery_or_end_days": "1.247916666666666666666666667",
+      "underwater_clock_days": "1.247916666666666666666666667"
+    },
+    {
+      "peak": {
+        "ns": "1770511380000000000",
+        "utc": "2026-02-08T00:43:00+00:00",
+        "equity": "2784096.13145937",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1770511440000000000",
+        "utc": "2026-02-08T00:44:00+00:00",
+        "equity": "2759581.65165936",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1770592080000000000",
+        "utc": "2026-02-08T23:08:00+00:00",
+        "equity": "1783557.592621",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1000538.53883837",
+      "drawdown_percent": "35.93764337131228345668078382",
+      "recovered": true,
+      "recovery": {
+        "ns": "1770633120000000000",
+        "utc": "2026-02-09T10:32:00+00:00",
+        "equity": "2795349.5519644",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 995,
+      "peak_to_trough_days": "0.9340277777777777777777777778",
+      "trough_to_recovery_or_end_days": "0.475",
+      "peak_to_recovery_or_end_days": "1.409027777777777777777777778",
+      "underwater_clock_days": "1.409027777777777777777777778"
+    },
+    {
+      "peak": {
+        "ns": "1735588980000000000",
+        "utc": "2024-12-30T20:03:00+00:00",
+        "equity": "163495.33900782",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1735589040000000000",
+        "utc": "2024-12-30T20:04:00+00:00",
+        "equity": "161875.33900782",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1735622280000000000",
+        "utc": "2024-12-31T05:18:00+00:00",
+        "equity": "110806.08425262",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "52689.25475520",
+      "drawdown_percent": "32.22676259454703302893938892",
+      "recovered": true,
+      "recovery": {
+        "ns": "1735651680000000000",
+        "utc": "2024-12-31T13:28:00+00:00",
+        "equity": "163868.53412102",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 436,
+      "peak_to_trough_days": "0.3854166666666666666666666667",
+      "trough_to_recovery_or_end_days": "0.3402777777777777777777777778",
+      "peak_to_recovery_or_end_days": "0.7256944444444444444444444444",
+      "underwater_clock_days": "0.7256944444444444444444444444"
+    },
+    {
+      "peak": {
+        "ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00",
+        "equity": "930699.83942448",
+        "phase": "pre_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00",
+        "equity": "893334.18254448",
+        "phase": "post_btc_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1758215580000000000",
+        "utc": "2025-09-18T17:13:00+00:00",
+        "equity": "641758.63567412",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "288941.20375036",
+      "drawdown_percent": "31.04558435607268903001740496",
+      "recovered": true,
+      "recovery": {
+        "ns": "1758520560000000000",
+        "utc": "2025-09-22T05:56:00+00:00",
+        "equity": "931778.68545309",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 777,
+      "peak_to_trough_days": "24.89930555555555555555555556",
+      "trough_to_recovery_or_end_days": "3.529861111111111111111111111",
+      "peak_to_recovery_or_end_days": "28.42916666666666666666666667",
+      "underwater_clock_days": "28.42916666666666666666666667"
+    }
+  ],
+  "top10_amount": [
+    {
+      "peak": {
+        "ns": "1783345140000000000",
+        "utc": "2026-07-06T13:39:00+00:00",
+        "equity": "9361910.09938506",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1783345200000000000",
+        "utc": "2026-07-06T13:40:00+00:00",
+        "equity": "9326144.67588506",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1787023980000000000",
+        "utc": "2026-08-18T03:33:00+00:00",
+        "equity": "5543599.77088397",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "3818310.32850109",
+      "drawdown_percent": "40.78559063232082212618548499",
+      "recovered": false,
+      "recovery": null,
+      "end_observation": {
+        "ns": "1788220800000000000",
+        "utc": "2026-09-01T00:00:00+00:00",
+        "equity": "6090649.46221444",
+        "phase": "pre_quote_paired_close",
+        "cash": "5990509.00011444",
+        "native_total_unrealized": "100140.46210000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "220.598",
+            "avg_px_open": "78089.15000000001",
+            "mark_ohlc": {
+              "open_time_ms": 1788220740000,
+              "open": "78524.9",
+              "high": "78543.08",
+              "low": "78524.9",
+              "close": "78543.08"
+            },
+            "low_native_pnl": "96125.5785",
+            "high_native_pnl": "100140.4621"
+          }
+        ]
+      },
+      "id": 1223,
+      "peak_to_trough_days": "42.57916666666666666666666667",
+      "trough_to_recovery_or_end_days": "13.85208333333333333333333333",
+      "peak_to_recovery_or_end_days": "56.43125",
+      "underwater_clock_days": "56.43125"
+    },
+    {
+      "peak": {
+        "ns": "1778813640000000000",
+        "utc": "2026-05-15T02:54:00+00:00",
+        "equity": "9344768.15337548",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1778813700000000000",
+        "utc": "2026-05-15T02:55:00+00:00",
+        "equity": "9330114.01497548",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1779061320000000000",
+        "utc": "2026-05-17T23:42:00+00:00",
+        "equity": "7654288.53725515",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1690479.61612033",
+      "drawdown_percent": "18.09011832476230749471631635",
+      "recovered": true,
+      "recovery": {
+        "ns": "1783344720000000000",
+        "utc": "2026-07-06T13:32:00+00:00",
+        "equity": "9356753.48088506",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1220,
+      "peak_to_trough_days": "2.866666666666666666666666667",
+      "trough_to_recovery_or_end_days": "49.57638888888888888888888889",
+      "peak_to_recovery_or_end_days": "52.44305555555555555555555556",
+      "underwater_clock_days": "52.44305555555555555555555556"
+    },
+    {
+      "peak": {
+        "ns": "1774339140000000000",
+        "utc": "2026-03-24T07:59:00+00:00",
+        "equity": "6028023.08281067",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1774339200000000000",
+        "utc": "2026-03-24T08:00:00+00:00",
+        "equity": "6012137.73327994",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1774577460000000000",
+        "utc": "2026-03-27T02:11:00+00:00",
+        "equity": "4739508.28920119",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1288514.79360948",
+      "drawdown_percent": "21.37541240151800640176470342",
+      "recovered": true,
+      "recovery": {
+        "ns": "1774621740000000000",
+        "utc": "2026-03-27T14:29:00+00:00",
+        "equity": "6028338.66147641",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1098,
+      "peak_to_trough_days": "2.758333333333333333333333333",
+      "trough_to_recovery_or_end_days": "0.5125",
+      "peak_to_recovery_or_end_days": "3.270833333333333333333333333",
+      "underwater_clock_days": "3.270833333333333333333333333"
+    },
+    {
+      "peak": {
+        "ns": "1761168540000000000",
+        "utc": "2025-10-22T21:29:00+00:00",
+        "equity": "2088471.56378771",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1761168600000000000",
+        "utc": "2025-10-22T21:30:00+00:00",
+        "equity": "2082398.66648771",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1764340080000000000",
+        "utc": "2025-11-28T14:28:00+00:00",
+        "equity": "937712.12544458",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1150759.43834313",
+      "drawdown_percent": "55.10055575073671291811943329",
+      "recovered": true,
+      "recovery": {
+        "ns": "1764562200000000000",
+        "utc": "2025-12-01T04:10:00+00:00",
+        "equity": "2089614.53857348",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 943,
+      "peak_to_trough_days": "36.70763888888888888888888889",
+      "trough_to_recovery_or_end_days": "2.570833333333333333333333333",
+      "peak_to_recovery_or_end_days": "39.27847222222222222222222222",
+      "underwater_clock_days": "39.27847222222222222222222222"
+    },
+    {
+      "peak": {
+        "ns": "1772708160000000000",
+        "utc": "2026-03-05T10:56:00+00:00",
+        "equity": "4627231.20507885",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1772708220000000000",
+        "utc": "2026-03-05T10:57:00+00:00",
+        "equity": "4610891.90807885",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1772763960000000000",
+        "utc": "2026-03-06T02:26:00+00:00",
+        "equity": "3529023.80503336",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1098207.40004549",
+      "drawdown_percent": "23.73357524992693931997790909",
+      "recovered": true,
+      "recovery": {
+        "ns": "1772806200000000000",
+        "utc": "2026-03-06T14:10:00+00:00",
+        "equity": "4657959.16827387",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1052,
+      "peak_to_trough_days": "0.6458333333333333333333333333",
+      "trough_to_recovery_or_end_days": "0.4888888888888888888888888889",
+      "peak_to_recovery_or_end_days": "1.134722222222222222222222222",
+      "underwater_clock_days": "1.134722222222222222222222222"
+    },
+    {
+      "peak": {
+        "ns": "1773230940000000000",
+        "utc": "2026-03-11T12:09:00+00:00",
+        "equity": "5157683.92643232",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1773231000000000000",
+        "utc": "2026-03-11T12:10:00+00:00",
+        "equity": "5135712.06083231",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1773250260000000000",
+        "utc": "2026-03-11T17:31:00+00:00",
+        "equity": "4143906.60251904",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1013777.32391328",
+      "drawdown_percent": "19.65566983889474983218446678",
+      "recovered": true,
+      "recovery": {
+        "ns": "1773636900000000000",
+        "utc": "2026-03-16T04:55:00+00:00",
+        "equity": "5174410.73233499",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1076,
+      "peak_to_trough_days": "0.2236111111111111111111111111",
+      "trough_to_recovery_or_end_days": "4.475",
+      "peak_to_recovery_or_end_days": "4.698611111111111111111111111",
+      "underwater_clock_days": "4.698611111111111111111111111"
+    },
+    {
+      "peak": {
+        "ns": "1770511380000000000",
+        "utc": "2026-02-08T00:43:00+00:00",
+        "equity": "2784096.13145937",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1770511440000000000",
+        "utc": "2026-02-08T00:44:00+00:00",
+        "equity": "2759581.65165936",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1770592080000000000",
+        "utc": "2026-02-08T23:08:00+00:00",
+        "equity": "1783557.592621",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1000538.53883837",
+      "drawdown_percent": "35.93764337131228345668078382",
+      "recovered": true,
+      "recovery": {
+        "ns": "1770633120000000000",
+        "utc": "2026-02-09T10:32:00+00:00",
+        "equity": "2795349.5519644",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 995,
+      "peak_to_trough_days": "0.9340277777777777777777777778",
+      "trough_to_recovery_or_end_days": "0.475",
+      "peak_to_recovery_or_end_days": "1.409027777777777777777777778",
+      "underwater_clock_days": "1.409027777777777777777777778"
+    },
+    {
+      "peak": {
+        "ns": "1775654280000000000",
+        "utc": "2026-04-08T13:18:00+00:00",
+        "equity": "7052434.69064232",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1775654340000000000",
+        "utc": "2026-04-08T13:19:00+00:00",
+        "equity": "7024865.96704232",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1775697840000000000",
+        "utc": "2026-04-09T01:24:00+00:00",
+        "equity": "6104890.86652788",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "947543.82411444",
+      "drawdown_percent": "13.43569796359418430630290368",
+      "recovered": true,
+      "recovery": {
+        "ns": "1775773080000000000",
+        "utc": "2026-04-09T22:18:00+00:00",
+        "equity": "7146786.73222435",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1128,
+      "peak_to_trough_days": "0.5041666666666666666666666667",
+      "trough_to_recovery_or_end_days": "0.8708333333333333333333333333",
+      "peak_to_recovery_or_end_days": "1.375",
+      "underwater_clock_days": "1.375"
+    },
+    {
+      "peak": {
+        "ns": "1770646380000000000",
+        "utc": "2026-02-09T14:13:00+00:00",
+        "equity": "2927648.9571644",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1770646440000000000",
+        "utc": "2026-02-09T14:14:00+00:00",
+        "equity": "2885347.0859644",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1770667740000000000",
+        "utc": "2026-02-09T20:09:00+00:00",
+        "equity": "2107433.27826599",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "820215.67889841",
+      "drawdown_percent": "28.01618947146030337779049721",
+      "recovered": true,
+      "recovery": {
+        "ns": "1770734460000000000",
+        "utc": "2026-02-10T14:41:00+00:00",
+        "equity": "3003318.09032528",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1000,
+      "peak_to_trough_days": "0.2472222222222222222222222222",
+      "trough_to_recovery_or_end_days": "0.7722222222222222222222222222",
+      "peak_to_recovery_or_end_days": "1.019444444444444444444444444",
+      "underwater_clock_days": "1.019444444444444444444444444"
+    },
+    {
+      "peak": {
+        "ns": "1776768900000000000",
+        "utc": "2026-04-21T10:55:00+00:00",
+        "equity": "8137445.59202533",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1776768960000000000",
+        "utc": "2026-04-21T10:56:00+00:00",
+        "equity": "8127787.53522533",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1776800700000000000",
+        "utc": "2026-04-21T19:45:00+00:00",
+        "equity": "7356165.73493027",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "781279.85709506",
+      "drawdown_percent": "9.601045540147287723514412310",
+      "recovered": true,
+      "recovery": {
+        "ns": "1776825060000000000",
+        "utc": "2026-04-22T02:31:00+00:00",
+        "equity": "8141086.9678229",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1168,
+      "peak_to_trough_days": "0.3680555555555555555555555556",
+      "trough_to_recovery_or_end_days": "0.2819444444444444444444444444",
+      "peak_to_recovery_or_end_days": "0.65",
+      "underwater_clock_days": "0.65"
+    }
+  ],
+  "longest10_clock": [
+    {
+      "peak": {
+        "ns": "1744333200000000000",
+        "utc": "2025-04-11T01:00:00+00:00",
+        "equity": "915175.73025689",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1744333260000000000",
+        "utc": "2025-04-11T01:01:00+00:00",
+        "equity": "911531.10825689",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1749223020000000000",
+        "utc": "2025-06-06T15:17:00+00:00",
+        "equity": "367509.64806046",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "547666.08219643",
+      "drawdown_percent": "59.84272354367395947974450388",
+      "recovered": true,
+      "recovery": {
+        "ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00",
+        "equity": "930699.83942448",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 776,
+      "peak_to_trough_days": "56.59513888888888888888888889",
+      "trough_to_recovery_or_end_days": "79.18125",
+      "peak_to_recovery_or_end_days": "135.7763888888888888888888889",
+      "underwater_clock_days": "135.7763888888888888888888889"
+    },
+    {
+      "peak": {
+        "ns": "1783345140000000000",
+        "utc": "2026-07-06T13:39:00+00:00",
+        "equity": "9361910.09938506",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1783345200000000000",
+        "utc": "2026-07-06T13:40:00+00:00",
+        "equity": "9326144.67588506",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1787023980000000000",
+        "utc": "2026-08-18T03:33:00+00:00",
+        "equity": "5543599.77088397",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "3818310.32850109",
+      "drawdown_percent": "40.78559063232082212618548499",
+      "recovered": false,
+      "recovery": null,
+      "end_observation": {
+        "ns": "1788220800000000000",
+        "utc": "2026-09-01T00:00:00+00:00",
+        "equity": "6090649.46221444",
+        "phase": "pre_quote_paired_close",
+        "cash": "5990509.00011444",
+        "native_total_unrealized": "100140.46210000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "220.598",
+            "avg_px_open": "78089.15000000001",
+            "mark_ohlc": {
+              "open_time_ms": 1788220740000,
+              "open": "78524.9",
+              "high": "78543.08",
+              "low": "78524.9",
+              "close": "78543.08"
+            },
+            "low_native_pnl": "96125.5785",
+            "high_native_pnl": "100140.4621"
+          }
+        ]
+      },
+      "id": 1223,
+      "peak_to_trough_days": "42.57916666666666666666666667",
+      "trough_to_recovery_or_end_days": "13.85208333333333333333333333",
+      "peak_to_recovery_or_end_days": "56.43125",
+      "underwater_clock_days": "56.43125"
+    },
+    {
+      "peak": {
+        "ns": "1778813640000000000",
+        "utc": "2026-05-15T02:54:00+00:00",
+        "equity": "9344768.15337548",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1778813700000000000",
+        "utc": "2026-05-15T02:55:00+00:00",
+        "equity": "9330114.01497548",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1779061320000000000",
+        "utc": "2026-05-17T23:42:00+00:00",
+        "equity": "7654288.53725515",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1690479.61612033",
+      "drawdown_percent": "18.09011832476230749471631635",
+      "recovered": true,
+      "recovery": {
+        "ns": "1783344720000000000",
+        "utc": "2026-07-06T13:32:00+00:00",
+        "equity": "9356753.48088506",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 1220,
+      "peak_to_trough_days": "2.866666666666666666666666667",
+      "trough_to_recovery_or_end_days": "49.57638888888888888888888889",
+      "peak_to_recovery_or_end_days": "52.44305555555555555555555556",
+      "underwater_clock_days": "52.44305555555555555555555556"
+    },
+    {
+      "peak": {
+        "ns": "1737484680000000000",
+        "utc": "2025-01-21T18:38:00+00:00",
+        "equity": "537132.64568937",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1737484740000000000",
+        "utc": "2025-01-21T18:39:00+00:00",
+        "equity": "536582.77258937",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1738707120000000000",
+        "utc": "2025-02-04T22:12:00+00:00",
+        "equity": "320840.04666373",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "216292.59902564",
+      "drawdown_percent": "40.26800470264555526714864550",
+      "recovered": true,
+      "recovery": {
+        "ns": "1741558140000000000",
+        "utc": "2025-03-09T22:09:00+00:00",
+        "equity": "537345.26441324",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 589,
+      "peak_to_trough_days": "14.14861111111111111111111111",
+      "trough_to_recovery_or_end_days": "32.99791666666666666666666667",
+      "peak_to_recovery_or_end_days": "47.14652777777777777777777778",
+      "underwater_clock_days": "47.14652777777777777777777778"
+    },
+    {
+      "peak": {
+        "ns": "1761168540000000000",
+        "utc": "2025-10-22T21:29:00+00:00",
+        "equity": "2088471.56378771",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1761168600000000000",
+        "utc": "2025-10-22T21:30:00+00:00",
+        "equity": "2082398.66648771",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1764340080000000000",
+        "utc": "2025-11-28T14:28:00+00:00",
+        "equity": "937712.12544458",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1150759.43834313",
+      "drawdown_percent": "55.10055575073671291811943329",
+      "recovered": true,
+      "recovery": {
+        "ns": "1764562200000000000",
+        "utc": "2025-12-01T04:10:00+00:00",
+        "equity": "2089614.53857348",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 943,
+      "peak_to_trough_days": "36.70763888888888888888888889",
+      "trough_to_recovery_or_end_days": "2.570833333333333333333333333",
+      "peak_to_recovery_or_end_days": "39.27847222222222222222222222",
+      "underwater_clock_days": "39.27847222222222222222222222"
+    },
+    {
+      "peak": {
+        "ns": "1764603900000000000",
+        "utc": "2025-12-01T15:45:00+00:00",
+        "equity": "2408094.24462978",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1764603960000000000",
+        "utc": "2025-12-01T15:46:00+00:00",
+        "equity": "2400811.53862978",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1767425340000000000",
+        "utc": "2026-01-03T07:29:00+00:00",
+        "equity": "2116519.56315495",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "291574.68147483",
+      "drawdown_percent": "12.10810922890838277748820477",
+      "recovered": true,
+      "recovery": {
+        "ns": "1767574200000000000",
+        "utc": "2026-01-05T00:50:00+00:00",
+        "equity": "2409199.22045703",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 957,
+      "peak_to_trough_days": "32.65555555555555555555555556",
+      "trough_to_recovery_or_end_days": "1.722916666666666666666666667",
+      "peak_to_recovery_or_end_days": "34.37847222222222222222222222",
+      "underwater_clock_days": "34.37847222222222222222222222"
+    },
+    {
+      "peak": {
+        "ns": "1726063200000000000",
+        "utc": "2024-09-11T14:00:00+00:00",
+        "equity": "13451.3363251",
+        "phase": "pre_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1726063200000000000",
+        "utc": "2024-09-11T14:00:00+00:00",
+        "equity": "13410.3412791",
+        "phase": "post_btc_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1727970240000000000",
+        "utc": "2024-10-03T15:44:00+00:00",
+        "equity": "4530.57414701",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "8920.76217809",
+      "drawdown_percent": "66.31878024969152066570091116",
+      "recovered": true,
+      "recovery": {
+        "ns": "1728615180000000000",
+        "utc": "2024-10-11T02:53:00+00:00",
+        "equity": "13453.62745342",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 37,
+      "peak_to_trough_days": "22.07222222222222222222222222",
+      "trough_to_recovery_or_end_days": "7.464583333333333333333333333",
+      "peak_to_recovery_or_end_days": "29.53680555555555555555555556",
+      "underwater_clock_days": "29.53680555555555555555555556"
+    },
+    {
+      "peak": {
+        "ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00",
+        "equity": "930699.83942448",
+        "phase": "pre_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00",
+        "equity": "893334.18254448",
+        "phase": "post_btc_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1758215580000000000",
+        "utc": "2025-09-18T17:13:00+00:00",
+        "equity": "641758.63567412",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "288941.20375036",
+      "drawdown_percent": "31.04558435607268903001740496",
+      "recovered": true,
+      "recovery": {
+        "ns": "1758520560000000000",
+        "utc": "2025-09-22T05:56:00+00:00",
+        "equity": "931778.68545309",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 777,
+      "peak_to_trough_days": "24.89930555555555555555555556",
+      "trough_to_recovery_or_end_days": "3.529861111111111111111111111",
+      "peak_to_recovery_or_end_days": "28.42916666666666666666666667",
+      "underwater_clock_days": "28.42916666666666666666666667"
+    },
+    {
+      "peak": {
+        "ns": "1768872420000000000",
+        "utc": "2026-01-20T01:27:00+00:00",
+        "equity": "2726371.854918",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1768872480000000000",
+        "utc": "2026-01-20T01:28:00+00:00",
+        "equity": "2722949.008518",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1769189880000000000",
+        "utc": "2026-01-23T17:38:00+00:00",
+        "equity": "2008309.06307096",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "718062.79184704",
+      "drawdown_percent": "26.33766888958134760709142902",
+      "recovered": true,
+      "recovery": {
+        "ns": "1770510180000000000",
+        "utc": "2026-02-08T00:23:00+00:00",
+        "equity": "2729612.77585937",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 991,
+      "peak_to_trough_days": "3.674305555555555555555555556",
+      "trough_to_recovery_or_end_days": "15.28125",
+      "peak_to_recovery_or_end_days": "18.95555555555555555555555556",
+      "underwater_clock_days": "18.95555555555555555555555556"
+    },
+    {
+      "peak": {
+        "ns": "1732739400000000000",
+        "utc": "2024-11-27T20:30:00+00:00",
+        "equity": "70691.74197097",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1732739460000000000",
+        "utc": "2024-11-27T20:31:00+00:00",
+        "equity": "70635.73777097",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1733882340000000000",
+        "utc": "2024-12-11T01:59:00+00:00",
+        "equity": "67458.88976858",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "3232.85220239",
+      "drawdown_percent": "4.573168113069827453430375090",
+      "recovered": true,
+      "recovery": {
+        "ns": "1733884980000000000",
+        "utc": "2024-12-11T02:43:00+00:00",
+        "equity": "70706.00066858",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 275,
+      "peak_to_trough_days": "13.22847222222222222222222222",
+      "trough_to_recovery_or_end_days": "0.03055555555555555555555555556",
+      "peak_to_recovery_or_end_days": "13.25902777777777777777777778",
+      "underwater_clock_days": "13.25902777777777777777777778"
+    }
+  ],
+  "time_underwater": {
+    "minutes": 940316,
+    "percent": "89.45167427701674277016742770",
+    "longest_minutes": 236255,
+    "longest_days": "164.0659722222222222222222222",
+    "longest_start": "2025-04-11T01:01:00+00:00",
+    "longest_end": "2025-09-22T02:35:00+00:00"
+  },
+  "thresholds": {
+    "10": {
+      "all_native_entries": 1124,
+      "native_inside": true,
+      "sampled_entries": 1189,
+      "minutes": 481857,
+      "max_contiguous_minutes": 195094,
+      "current_minutes": 52887,
+      "longest_start": "2025-04-11T08:03:00+00:00",
+      "longest_end": "2025-08-24T19:36:00+00:00",
+      "start": 1785047640000000000
+    },
+    "20": {
+      "all_native_entries": 543,
+      "native_inside": true,
+      "sampled_entries": 526,
+      "minutes": 336348,
+      "max_contiguous_minutes": 162252,
+      "current_minutes": 46969,
+      "longest_start": "2025-04-12T03:01:00+00:00",
+      "longest_end": "2025-08-02T19:12:00+00:00",
+      "start": 1785402720000000000
+    },
+    "30": {
+      "all_native_entries": 481,
+      "native_inside": true,
+      "sampled_entries": 468,
+      "minutes": 232158,
+      "max_contiguous_minutes": 94477,
+      "current_minutes": 40947,
+      "longest_start": "2025-05-19T14:30:00+00:00",
+      "longest_end": "2025-07-24T05:06:00+00:00",
+      "start": 1785764040000000000
+    },
+    "40": {
+      "all_native_entries": 331,
+      "native_inside": false,
+      "sampled_entries": 336,
+      "minutes": 85400,
+      "max_contiguous_minutes": 31344,
+      "current_minutes": 0,
+      "longest_start": "2025-06-03T16:01:00+00:00",
+      "longest_end": "2025-06-25T10:24:00+00:00",
+      "start": null
+    },
+    "50": {
+      "all_native_entries": 153,
+      "native_inside": false,
+      "sampled_entries": 155,
+      "minutes": 14667,
+      "max_contiguous_minutes": 5224,
+      "current_minutes": 0,
+      "longest_start": "2025-06-06T03:20:00+00:00",
+      "longest_end": "2025-06-09T18:23:00+00:00",
+      "start": null
+    },
+    "60": {
+      "all_native_entries": 3,
+      "native_inside": false,
+      "sampled_entries": 3,
+      "minutes": 26,
+      "max_contiguous_minutes": 21,
+      "current_minutes": 0,
+      "longest_start": "2024-10-03T15:27:00+00:00",
+      "longest_end": "2024-10-03T15:47:00+00:00",
+      "start": null
+    }
+  },
+  "rolling_worst": {
+    "1": {
+      "return": {
+        "value": "-0.0820464028013990437857234066",
+        "start": {
+          "ns": "1770591900000000000",
+          "utc": "2026-02-08T23:05:00+00:00",
+          "equity": "2013217.96642099",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1770591960000000000",
+          "utc": "2026-02-08T23:06:00+00:00",
+          "equity": "1848040.674221",
+          "phase": "post_quote_paired_close"
+        }
+      },
+      "change": {
+        "value": "-228129.76080000",
+        "start": {
+          "ns": "1773237720000000000",
+          "utc": "2026-03-11T14:02:00+00:00",
+          "equity": "4621990.96103231",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1773237780000000000",
+          "utc": "2026-03-11T14:03:00+00:00",
+          "equity": "4393861.20023231",
+          "phase": "post_quote_paired_close"
+        }
+      }
+    },
+    "60": {
+      "return": {
+        "value": "-0.3096835639459753644103245510",
+        "start": {
+          "ns": "1727941020000000000",
+          "utc": "2024-10-03T07:37:00+00:00",
+          "equity": "10570.37087038",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1727944620000000000",
+          "utc": "2024-10-03T08:37:00+00:00",
+          "equity": "7296.90074701",
+          "phase": "post_quote_paired_close"
+        }
+      },
+      "change": {
+        "value": "-719793.16740000",
+        "start": {
+          "ns": "1773232800000000000",
+          "utc": "2026-03-11T12:40:00+00:00",
+          "equity": "5004481.66043231",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1773236400000000000",
+          "utc": "2026-03-11T13:40:00+00:00",
+          "equity": "4284688.49303231",
+          "phase": "post_quote_paired_close"
+        }
+      }
+    },
+    "1440": {
+      "return": {
+        "value": "-0.5011960604797554282959053399",
+        "start": {
+          "ns": "1727883840000000000",
+          "utc": "2024-10-02T15:44:00+00:00",
+          "equity": "9082.87563119",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1727970240000000000",
+          "utc": "2024-10-03T15:44:00+00:00",
+          "equity": "4530.57414701",
+          "phase": "post_quote_paired_close"
+        }
+      },
+      "change": {
+        "value": "-1065592.28716031",
+        "start": {
+          "ns": "1785425220000000000",
+          "utc": "2026-07-30T15:27:00+00:00",
+          "equity": "7369801.21899579",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1785511620000000000",
+          "utc": "2026-07-31T15:27:00+00:00",
+          "equity": "6304208.93183548",
+          "phase": "post_quote_paired_close"
+        }
+      }
+    },
+    "10080": {
+      "return": {
+        "value": "-0.5522937496152350479569597053",
+        "start": {
+          "ns": "1744309320000000000",
+          "utc": "2025-04-10T18:22:00+00:00",
+          "equity": "889082.03793269",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1744914120000000000",
+          "utc": "2025-04-17T18:22:00+00:00",
+          "equity": "398047.58548729",
+          "phase": "post_quote_paired_close"
+        }
+      },
+      "change": {
+        "value": "-2191099.60542683",
+        "start": {
+          "ns": "1784906820000000000",
+          "utc": "2026-07-24T15:27:00+00:00",
+          "equity": "8495308.53726231",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1785511620000000000",
+          "utc": "2026-07-31T15:27:00+00:00",
+          "equity": "6304208.93183548",
+          "phase": "post_quote_paired_close"
+        }
+      }
+    },
+    "43200": {
+      "return": {
+        "value": "-0.5372844466714132608984499523",
+        "start": {
+          "ns": "1725378240000000000",
+          "utc": "2024-09-03T15:44:00+00:00",
+          "equity": "9791.27266075",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1727970240000000000",
+          "utc": "2024-10-03T15:44:00+00:00",
+          "equity": "4530.57414701",
+          "phase": "post_quote_paired_close"
+        }
+      },
+      "change": {
+        "value": "-3262628.90898204",
+        "start": {
+          "ns": "1783499880000000000",
+          "utc": "2026-07-08T08:38:00+00:00",
+          "equity": "9222742.27337809",
+          "phase": "SAMPLED_PAIRED_CLOSE"
+        },
+        "end": {
+          "ns": "1786091880000000000",
+          "utc": "2026-08-07T08:38:00+00:00",
+          "equity": "5960113.36439605",
+          "phase": "post_quote_paired_close"
+        }
+      }
+    }
+  },
+  "calendar_worst": {
+    "day": [
+      {
+        "period": "2024-10-03",
+        "start_equity": "9900.56810993",
+        "end_equity": "7055.35153018",
+        "change": "-2845.21657975",
+        "return_percent": "-28.73791229107676467066649709",
+        "min_equity": "4530.57414701",
+        "min_utc": "2024-10-03T15:44:00+00:00",
+        "max_equity": "11462.58227038",
+        "max_utc": "2024-10-03T04:00:00+00:00",
+        "within_period_DD_percent": "60.47510028593404040112028480",
+        "end_cash": "9663.15813018",
+        "end_native_unrealized": "-2607.80660000",
+        "samples": 1440
+      },
+      {
+        "period": "2025-11-26",
+        "start_equity": "1881182.35005446",
+        "end_equity": "1363533.69626501",
+        "change": "-517648.65378945",
+        "return_percent": "-27.51719703166809610437571641",
+        "min_equity": "1344432.2662004",
+        "min_utc": "2025-11-26T23:12:00+00:00",
+        "max_equity": "2069026.3481032",
+        "max_utc": "2025-11-26T12:22:00+00:00",
+        "within_period_DD_percent": "35.02101761860493764082310780",
+        "end_cash": "1876131.05626501",
+        "end_native_unrealized": "-512597.36000000",
+        "samples": 1440
+      },
+      {
+        "period": "2024-09-17",
+        "start_equity": "10548.06669948",
+        "end_equity": "8122.3583256",
+        "change": "-2425.70837388",
+        "return_percent": "-22.99671061048166196346203084",
+        "min_equity": "6999.90832336",
+        "min_utc": "2024-09-17T15:21:00+00:00",
+        "max_equity": "11152.19194672",
+        "max_utc": "2024-09-17T01:00:00+00:00",
+        "within_period_DD_percent": "37.23289236051248982873550402",
+        "end_cash": "8122.3583256",
+        "end_native_unrealized": "0E-7",
+        "samples": 1440
+      },
+      {
+        "period": "2025-04-11",
+        "start_equity": "889082.03793269",
+        "end_equity": "703721.35123263",
+        "change": "-185360.68670006",
+        "return_percent": "-20.84854701722060399979548215",
+        "min_equity": "661435.2338121",
+        "min_utc": "2025-04-11T21:23:00+00:00",
+        "max_equity": "915175.73025689",
+        "max_utc": "2025-04-11T01:00:00+00:00",
+        "within_period_DD_percent": "27.72587690601945866900629157",
+        "end_cash": "888975.18038263",
+        "end_native_unrealized": "-185253.82915000",
+        "samples": 1440
+      },
+      {
+        "period": "2025-02-04",
+        "start_equity": "447906.73470015",
+        "end_equity": "359327.12466933",
+        "change": "-88579.61003082",
+        "return_percent": "-19.77635145185289295290031741",
+        "min_equity": "320840.04666373",
+        "min_utc": "2025-02-04T22:12:00+00:00",
+        "max_equity": "454773.16300543",
+        "max_utc": "2025-02-04T01:47:00+00:00",
+        "within_period_DD_percent": "29.45053209749336860211914266",
+        "end_cash": "359327.12466933",
+        "end_native_unrealized": "0E-8",
+        "samples": 1440
+      },
+      {
+        "period": "2024-12-29",
+        "start_equity": "153269.45715922",
+        "end_equity": "125148.68911922",
+        "change": "-28120.76804000",
+        "return_percent": "-18.34727450674498672645563828",
+        "min_equity": "118626.48315922",
+        "min_utc": "2024-12-29T23:24:00+00:00",
+        "max_equity": "163474.01815922",
+        "max_utc": "2024-12-29T14:06:00+00:00",
+        "within_period_DD_percent": "27.43404456867238330054371778",
+        "end_cash": "108158.68911922",
+        "end_native_unrealized": "16990.00000000",
+        "samples": 1440
+      },
+      {
+        "period": "2025-06-06",
+        "start_equity": "482348.54407773",
+        "end_equity": "395002.74398907",
+        "change": "-87345.80008866",
+        "return_percent": "-18.10844070353082874468995740",
+        "min_equity": "367509.64806046",
+        "min_utc": "2025-06-06T15:17:00+00:00",
+        "max_equity": "489090.17337915",
+        "max_utc": "2025-06-06T00:23:00+00:00",
+        "within_period_DD_percent": "24.85850911268236883983861981",
+        "end_cash": "395002.74398907",
+        "end_native_unrealized": "0E-8",
+        "samples": 1440
+      },
+      {
+        "period": "2025-10-12",
+        "start_equity": "1765536.0979556",
+        "end_equity": "1494873.15990848",
+        "change": "-270662.93804712",
+        "return_percent": "-15.33035423974246474355834181",
+        "min_equity": "1449168.63318733",
+        "min_utc": "2025-10-12T22:02:00+00:00",
+        "max_equity": "1832147.5494556",
+        "max_utc": "2025-10-12T00:57:00+00:00",
+        "within_period_DD_percent": "20.90327912629457444972418642",
+        "end_cash": "1649809.83917698",
+        "end_native_unrealized": "-154936.67926850",
+        "samples": 1440
+      },
+      {
+        "period": "2026-03-05",
+        "start_equity": "4370676.67047471",
+        "end_equity": "3720029.81486902",
+        "change": "-650646.85560569",
+        "return_percent": "-14.88663895000546073888437685",
+        "min_equity": "3679799.40742649",
+        "min_utc": "2026-03-05T17:51:00+00:00",
+        "max_equity": "4627231.20507885",
+        "max_utc": "2026-03-05T10:56:00+00:00",
+        "within_period_DD_percent": "20.47513417121795531083678889",
+        "end_cash": "3720029.81486902",
+        "end_native_unrealized": "0E-8",
+        "samples": 1440
+      },
+      {
+        "period": "2026-01-20",
+        "start_equity": "2693706.22025872",
+        "end_equity": "2313434.5310961",
+        "change": "-380271.68916262",
+        "return_percent": "-14.11704388187128973807777001",
+        "min_equity": "2270219.69787388",
+        "min_utc": "2026-01-20T23:18:00+00:00",
+        "max_equity": "2726371.854918",
+        "max_utc": "2026-01-20T01:27:00+00:00",
+        "within_period_DD_percent": "16.73110570816978693761857461",
+        "end_cash": "2313434.5310961",
+        "end_native_unrealized": "0E-7",
+        "samples": 1440
+      }
+    ],
+    "hour": [
+      {
+        "period": "2024-10-03T08",
+        "start_equity": "9420.24114701",
+        "end_equity": "6763.15794701",
+        "change": "-2657.08320000",
+        "return_percent": "-28.20610596410647691674839619",
+        "min_equity": "6763.15794701",
+        "min_utc": "2024-10-03T09:00:00+00:00",
+        "max_equity": "9468.24314701",
+        "max_utc": "2024-10-03T08:01:00+00:00",
+        "within_period_DD_percent": "28.57008589660316833232609508",
+        "end_cash": "9651.60074701",
+        "end_native_unrealized": "-2888.44280000",
+        "samples": 60
+      },
+      {
+        "period": "2024-10-03T14",
+        "start_equity": "7456.62254701",
+        "end_equity": "5829.67834701",
+        "change": "-1626.94420000",
+        "return_percent": "-21.81878175733035561179340683",
+        "min_equity": "5787.47034701",
+        "min_utc": "2024-10-03T14:53:00+00:00",
+        "max_equity": "8238.42454701",
+        "max_utc": "2024-10-03T14:12:00+00:00",
+        "within_period_DD_percent": "29.75027793256337232807023562",
+        "end_cash": "9651.60074701",
+        "end_native_unrealized": "-3821.92240000",
+        "samples": 60
+      },
+      {
+        "period": "2024-12-30T21",
+        "start_equity": "154435.33900782",
+        "end_equity": "121555.33900782",
+        "change": "-32880.00000000",
+        "return_percent": "-21.29046383505208333702620168",
+        "min_equity": "120775.33900782",
+        "min_utc": "2024-12-30T21:55:00+00:00",
+        "max_equity": "154555.33900782",
+        "max_utc": "2024-12-30T21:01:00+00:00",
+        "within_period_DD_percent": "21.85624917059050371262802032",
+        "end_cash": "107855.33900782",
+        "end_native_unrealized": "13700.00000000",
+        "samples": 60
+      },
+      {
+        "period": "2025-11-26T17",
+        "start_equity": "1811568.1574004",
+        "end_equity": "1468829.9110004",
+        "change": "-342738.2464000",
+        "return_percent": "-18.91942320800280160119621612",
+        "min_equity": "1447740.6758004",
+        "min_utc": "2025-11-26T17:59:00+00:00",
+        "max_equity": "1827550.5062004",
+        "max_utc": "2025-11-26T17:20:00+00:00",
+        "within_period_DD_percent": "20.78245329534832366466604012",
+        "end_cash": "1875607.8342004",
+        "end_native_unrealized": "-406777.9232000",
+        "samples": 60
+      },
+      {
+        "period": "2024-12-30T13",
+        "start_equity": "145338.89831922",
+        "end_equity": "119838.89831922",
+        "change": "-25500.00000000",
+        "return_percent": "-17.54519973310394400540011659",
+        "min_equity": "119598.89831922",
+        "min_utc": "2024-12-30T13:57:00+00:00",
+        "max_equity": "147558.89831922",
+        "max_utc": "2024-12-30T13:01:00+00:00",
+        "within_period_DD_percent": "18.94836591929076775325335594",
+        "end_cash": "107938.89831922",
+        "end_native_unrealized": "11900.00000000",
+        "samples": 60
+      },
+      {
+        "period": "2024-09-17T14",
+        "start_equity": "9634.90152336",
+        "end_equity": "8188.08872336",
+        "change": "-1446.81280000",
+        "return_percent": "-15.01637350928989931272135497",
+        "min_equity": "8099.85472336",
+        "min_utc": "2024-09-17T14:27:00+00:00",
+        "max_equity": "9647.26552336",
+        "max_utc": "2024-09-17T14:01:00+00:00",
+        "within_period_DD_percent": "16.03989022851171290579350040",
+        "end_cash": "10510.44230794",
+        "end_native_unrealized": "-2322.35358458",
+        "samples": 60
+      },
+      {
+        "period": "2024-11-23T04",
+        "start_equity": "34357.7244831",
+        "end_equity": "29459.9994831",
+        "change": "-4897.7250000",
+        "return_percent": "-14.25509131842858345527053343",
+        "min_equity": "27694.4244831",
+        "min_utc": "2024-11-23T04:42:00+00:00",
+        "max_equity": "34447.4994831",
+        "max_utc": "2024-11-23T04:01:00+00:00",
+        "within_period_DD_percent": "19.60396284587527092047108030",
+        "end_cash": "35155.7244831",
+        "end_native_unrealized": "-5695.7250000",
+        "samples": 60
+      },
+      {
+        "period": "2024-11-22T03",
+        "start_equity": "33434.76721442",
+        "end_equity": "28736.54221442",
+        "change": "-4698.22500000",
+        "return_percent": "-14.05191479237730085627512076",
+        "min_equity": "27090.66721442",
+        "min_utc": "2024-11-22T03:28:00+00:00",
+        "max_equity": "34252.71721442",
+        "max_utc": "2024-11-22T03:06:00+00:00",
+        "within_period_DD_percent": "20.90943604609814523605925038",
+        "end_cash": "34911.06721442",
+        "end_native_unrealized": "-6174.52500000",
+        "samples": 60
+      },
+      {
+        "period": "2025-10-11T02",
+        "start_equity": "1718344.70412139",
+        "end_equity": "1485472.13552139",
+        "change": "-232872.56860000",
+        "return_percent": "-13.55214515699109990645558528",
+        "min_equity": "1481544.48172139",
+        "min_utc": "2025-10-11T02:50:00+00:00",
+        "max_equity": "1711904.66842139",
+        "max_utc": "2025-10-11T02:02:00+00:00",
+        "within_period_DD_percent": "13.78071709547234054371701464",
+        "end_cash": "1562401.34832139",
+        "end_native_unrealized": "-76929.21280000",
+        "samples": 60
+      },
+      {
+        "period": "2025-02-04T21",
+        "start_equity": "380192.66166373",
+        "end_equity": "328892.18166373",
+        "change": "-51300.48000000",
+        "return_percent": "-13.49328516113597952907148912",
+        "min_equity": "328892.18166373",
+        "min_utc": "2025-02-04T22:00:00+00:00",
+        "max_equity": "374989.74366373",
+        "max_utc": "2025-02-04T21:01:00+00:00",
+        "within_period_DD_percent": "13.49328516113597952907148912",
+        "end_cash": "446552.94166373",
+        "end_native_unrealized": "-117660.76000000",
+        "samples": 60
+      }
+    ],
+    "week": [
+      {
+        "period": "2025-04-07",
+        "start_equity": "798166.00341503",
+        "end_equity": "553759.00542644",
+        "change": "-244406.99798859",
+        "return_percent": "-30.62107342869417590928018538",
+        "min_equity": "528288.51709857",
+        "min_utc": "2025-04-13T21:40:00+00:00",
+        "max_equity": "915175.73025689",
+        "max_utc": "2025-04-11T01:00:00+00:00",
+        "within_period_DD_percent": "42.27463648426523355635436721",
+        "end_cash": "553759.00542644",
+        "end_native_unrealized": "0E-8",
+        "samples": 10080
+      },
+      {
+        "period": "2025-11-24",
+        "start_equity": "1881182.35005446",
+        "end_equity": "1384898.14817348",
+        "change": "-496284.20188098",
+        "return_percent": "-26.38150426334866647979024023",
+        "min_equity": "937712.12544458",
+        "min_utc": "2025-11-28T14:28:00+00:00",
+        "max_equity": "2069026.3481032",
+        "max_utc": "2025-11-26T12:22:00+00:00",
+        "within_period_DD_percent": "54.67857979168623451744365152",
+        "end_cash": "1876626.83617348",
+        "end_native_unrealized": "-491728.68800000",
+        "samples": 10080
+      },
+      {
+        "period": "2025-10-20",
+        "start_equity": "1867362.40787138",
+        "end_equity": "1431203.83453777",
+        "change": "-436158.57333361",
+        "return_percent": "-23.35693229632861316117582797",
+        "min_equity": "1360842.93952892",
+        "min_utc": "2025-10-26T22:04:00+00:00",
+        "max_equity": "2088471.56378771",
+        "max_utc": "2025-10-22T21:29:00+00:00",
+        "within_period_DD_percent": "34.84024570289779428391018914",
+        "end_cash": "1431203.83453777",
+        "end_native_unrealized": "0E-8",
+        "samples": 10080
+      },
+      {
+        "period": "2025-04-14",
+        "start_equity": "553759.00542644",
+        "end_equity": "426740.95922018",
+        "change": "-127018.04620626",
+        "return_percent": "-22.93742313200769580187077626",
+        "min_equity": "397355.1894008",
+        "min_utc": "2025-04-16T17:22:00+00:00",
+        "max_equity": "571924.88500512",
+        "max_utc": "2025-04-15T13:49:00+00:00",
+        "within_period_DD_percent": "30.52318585556164650611334104",
+        "end_cash": "421882.01485022",
+        "end_native_unrealized": "4858.94436996",
+        "samples": 10080
+      },
+      {
+        "period": "2026-07-27",
+        "start_equity": "8128779.65978452",
+        "end_equity": "6295850.66271526",
+        "change": "-1832928.99706926",
+        "return_percent": "-22.54863674233049395328761745",
+        "min_equity": "6239419.25905395",
+        "min_utc": "2026-08-02T21:43:00+00:00",
+        "max_equity": "8224932.43698052",
+        "max_utc": "2026-07-27T06:07:00+00:00",
+        "within_period_DD_percent": "24.14017614296024285156871077",
+        "end_cash": "6461742.91461526",
+        "end_native_unrealized": "-165892.25190000",
+        "samples": 10080
+      },
+      {
+        "period": "2025-06-02",
+        "start_equity": "538479.62951799",
+        "end_equity": "424252.41143121",
+        "change": "-114227.21808678",
+        "return_percent": "-21.21291351151544291784177359",
+        "min_equity": "367509.64806046",
+        "min_utc": "2025-06-06T15:17:00+00:00",
+        "max_equity": "551286.56372881",
+        "max_utc": "2025-06-03T15:43:00+00:00",
+        "within_period_DD_percent": "33.33600485840135795065352665",
+        "end_cash": "405640.23072824",
+        "end_native_unrealized": "18612.18070297",
+        "samples": 10080
+      },
+      {
+        "period": "2024-09-16",
+        "start_equity": "11748.59975253",
+        "end_equity": "9715.41746022",
+        "change": "-2033.18229231",
+        "return_percent": "-17.30574140864884551336583075",
+        "min_equity": "6999.90832336",
+        "min_utc": "2024-09-17T15:21:00+00:00",
+        "max_equity": "11831.73555253",
+        "max_utc": "2024-09-16T00:06:00+00:00",
+        "within_period_DD_percent": "40.83785686147119998303865607",
+        "end_cash": "9715.41746022",
+        "end_native_unrealized": "0E-8",
+        "samples": 10080
+      },
+      {
+        "period": "2026-05-11",
+        "start_equity": "9234281.3822322",
+        "end_equity": "7889942.53842805",
+        "change": "-1344338.84380415",
+        "return_percent": "-14.55813168516620818547896470",
+        "min_equity": "7654288.53725515",
+        "min_utc": "2026-05-17T23:42:00+00:00",
+        "max_equity": "9344768.15337548",
+        "max_utc": "2026-05-15T02:54:00+00:00",
+        "within_period_DD_percent": "18.09011832476230749471631635",
+        "end_cash": "7889942.53842805",
+        "end_native_unrealized": "0E-8",
+        "samples": 10080
+      },
+      {
+        "period": "2025-01-27",
+        "start_equity": "466769.09287851",
+        "end_equity": "400523.15983394",
+        "change": "-66245.93304457",
+        "return_percent": "-14.19244205652930791938219787",
+        "min_equity": "380032.03378628",
+        "min_utc": "2025-02-02T22:41:00+00:00",
+        "max_equity": "525515.69926548",
+        "max_utc": "2025-01-30T15:12:00+00:00",
+        "within_period_DD_percent": "27.68398083683215859063764818",
+        "end_cash": "400523.15983394",
+        "end_native_unrealized": "0E-8",
+        "samples": 10080
+      },
+      {
+        "period": "2026-02-02",
+        "start_equity": "2664602.92081457",
+        "end_equity": "2347260.2712159",
+        "change": "-317342.64959867",
+        "return_percent": "-11.90956622916476599699487553",
+        "min_equity": "1783557.592621",
+        "min_utc": "2026-02-08T23:08:00+00:00",
+        "max_equity": "2784096.13145937",
+        "max_utc": "2026-02-08T00:43:00+00:00",
+        "within_period_DD_percent": "35.93764337131228345668078382",
+        "end_cash": "2655888.1782159",
+        "end_native_unrealized": "-308627.9070000",
+        "samples": 10080
+      }
+    ],
+    "month": [
+      {
+        "period": "2025-04",
+        "start_equity": "751876.81347521",
+        "end_equity": "475637.29269793",
+        "change": "-276239.52077728",
+        "return_percent": "-36.73999727435242227007602296",
+        "min_equity": "397355.1894008",
+        "min_utc": "2025-04-16T17:22:00+00:00",
+        "max_equity": "915175.73025689",
+        "max_utc": "2025-04-11T01:00:00+00:00",
+        "within_period_DD_percent": "56.58154207288010976525549755",
+        "end_cash": "475637.29269793",
+        "end_native_unrealized": "0E-8",
+        "samples": 43200,
+        "positive_days": 8,
+        "negative_days": 13,
+        "flat_days": 9
+      },
+      {
+        "period": "2026-07",
+        "start_equity": "8986291.50529802",
+        "end_equity": "6464812.36782378",
+        "change": "-2521479.13747424",
+        "return_percent": "-28.05917364229347966952288370",
+        "min_equity": "6304208.93183548",
+        "min_utc": "2026-07-31T15:27:00+00:00",
+        "max_equity": "9361910.09938506",
+        "max_utc": "2026-07-06T13:39:00+00:00",
+        "within_period_DD_percent": "32.66108235487570063114655025",
+        "end_cash": "6464812.36782378",
+        "end_native_unrealized": "0E-8",
+        "samples": 44640,
+        "positive_days": 10,
+        "negative_days": 18,
+        "flat_days": 3
+      },
+      {
+        "period": "2025-11",
+        "start_equity": "1639528.47170574",
+        "end_equity": "1384898.14817348",
+        "change": "-254630.32353226",
+        "return_percent": "-15.53070458528521676765734623",
+        "min_equity": "937712.12544458",
+        "min_utc": "2025-11-28T14:28:00+00:00",
+        "max_equity": "2069026.3481032",
+        "max_utc": "2025-11-26T12:22:00+00:00",
+        "within_period_DD_percent": "54.67857979168623451744365152",
+        "end_cash": "1876626.83617348",
+        "end_native_unrealized": "-491728.68800000",
+        "samples": 43200,
+        "positive_days": 5,
+        "negative_days": 2,
+        "flat_days": 23
+      },
+      {
+        "period": "2026-08",
+        "start_equity": "6464812.36782378",
+        "end_equity": "6090649.46221444",
+        "change": "-374162.90560934",
+        "return_percent": "-5.787683915957064890281430360",
+        "min_equity": "5543599.77088397",
+        "min_utc": "2026-08-18T03:33:00+00:00",
+        "max_equity": "6643490.86197382",
+        "max_utc": "2026-08-03T08:34:00+00:00",
+        "within_period_DD_percent": "16.55592088468781188921294055",
+        "end_cash": "5990509.00011444",
+        "end_native_unrealized": "100140.46210000",
+        "samples": 44640,
+        "positive_days": 13,
+        "negative_days": 10,
+        "flat_days": 8
+      },
+      {
+        "period": "2025-02",
+        "start_equity": "469130.44551614",
+        "end_equity": "446870.02206984",
+        "change": "-22260.42344630",
+        "return_percent": "-4.745039180266579112121379920",
+        "min_equity": "320840.04666373",
+        "min_utc": "2025-02-04T22:12:00+00:00",
+        "max_equity": "473922.90951614",
+        "max_utc": "2025-02-01T01:45:00+00:00",
+        "within_period_DD_percent": "32.30121603716154256341180886",
+        "end_cash": "446870.02206984",
+        "end_native_unrealized": "0E-8",
+        "samples": 40320,
+        "positive_days": 10,
+        "negative_days": 9,
+        "flat_days": 9
+      },
+      {
+        "period": "2024-09",
+        "start_equity": "10000",
+        "end_equity": "9715.41746022",
+        "change": "-284.58253978",
+        "return_percent": "-2.845825397800",
+        "min_equity": "6999.90832336",
+        "min_utc": "2024-09-17T15:21:00+00:00",
+        "max_equity": "13426.6743211",
+        "max_utc": "2024-09-14T00:19:00+00:00",
+        "within_period_DD_percent": "47.86565789892100222709408040",
+        "end_cash": "9715.41746022",
+        "end_native_unrealized": "0E-8",
+        "samples": 43200,
+        "positive_days": 6,
+        "negative_days": 6,
+        "flat_days": 18
+      },
+      {
+        "period": "2026-05",
+        "start_equity": "8601896.94365386",
+        "end_equity": "8431200.66305718",
+        "change": "-170696.28059668",
+        "return_percent": "-1.984402762725644806596261720",
+        "min_equity": "7654288.53725515",
+        "min_utc": "2026-05-17T23:42:00+00:00",
+        "max_equity": "9344768.15337548",
+        "max_utc": "2026-05-15T02:54:00+00:00",
+        "within_period_DD_percent": "18.09011832476230749471631635",
+        "end_cash": "8452890.66305718",
+        "end_native_unrealized": "-21690.00000000",
+        "samples": 44640,
+        "positive_days": 8,
+        "negative_days": 12,
+        "flat_days": 11
+      },
+      {
+        "period": "2025-06",
+        "start_equity": "523051.50993729",
+        "end_equity": "551390.87300964",
+        "change": "28339.36307235",
+        "return_percent": "5.418082642710978814542387000",
+        "min_equity": "367509.64806046",
+        "min_utc": "2025-06-06T15:17:00+00:00",
+        "max_equity": "577066.68295326",
+        "max_utc": "2025-06-30T00:44:00+00:00",
+        "within_period_DD_percent": "33.33600485840135795065352665",
+        "end_cash": "521540.36763363",
+        "end_native_unrealized": "29850.50537601",
+        "samples": 43200,
+        "positive_days": 16,
+        "negative_days": 11,
+        "flat_days": 3
+      },
+      {
+        "period": "2026-06",
+        "start_equity": "8431200.66305718",
+        "end_equity": "8986291.50529802",
+        "change": "555090.84224084",
+        "return_percent": "6.583769790619148977948171600",
+        "min_equity": "8134578.33050676",
+        "min_utc": "2026-06-09T05:35:00+00:00",
+        "max_equity": "9079421.20045559",
+        "max_utc": "2026-06-09T16:40:00+00:00",
+        "within_period_DD_percent": "4.774100908667985561977848300",
+        "end_cash": "8986291.50529802",
+        "end_native_unrealized": "0E-8",
+        "samples": 43200,
+        "positive_days": 2,
+        "negative_days": 2,
+        "flat_days": 26
+      },
+      {
+        "period": "2025-05",
+        "start_equity": "475637.29269793",
+        "end_equity": "523051.50993729",
+        "change": "47414.21723936",
+        "return_percent": "9.968565957142483187654568300",
+        "min_equity": "444465.07245388",
+        "min_utc": "2025-05-06T13:53:00+00:00",
+        "max_equity": "658890.42864335",
+        "max_utc": "2025-05-19T06:59:00+00:00",
+        "within_period_DD_percent": "29.60585892009508850196382700",
+        "end_cash": "555347.14303729",
+        "end_native_unrealized": "-32295.63310000",
+        "samples": 44640,
+        "positive_days": 16,
+        "negative_days": 14,
+        "flat_days": 1
+      }
+    ]
+  },
+  "exposure_minutes": {
+    "flat": 474550,
+    "BTC_short": 193827,
+    "BTC_only": 375248,
+    "BTC_long": 249600,
+    "SOL_long": 83709,
+    "both": 68179,
+    "both_opposite_direction": 68179,
+    "SOL_only": 133223,
+    "SOL_short": 117693
+  },
+  "exposure_percent": {
+    "flat": "45.14364535768645357686453577",
+    "BTC_short": "18.43864155251141552511415525",
+    "BTC_only": "35.69710806697108066971080670",
+    "BTC_long": "23.74429223744292237442922374",
+    "SOL_long": "7.963184931506849315068493151",
+    "both": "6.485825722983257229832572298",
+    "both_opposite_direction": "6.485825722983257229832572298",
+    "SOL_only": "12.67342085235920852359208524",
+    "SOL_short": "11.19606164383561643835616438"
+  },
+  "exposure_extremes": {
+    "gross_notional": {
+      "value": "30607886.10656",
+      "snapshot": {
+        "ns": "1773994380000000000",
+        "utc": "2026-03-20T08:13:00+00:00",
+        "equity": "4566698.40520576",
+        "phase": "post_quote_paired_close",
+        "cash": "5137404.50760576",
+        "native_total_unrealized": "-570706.10240000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "429.296",
+            "avg_px_open": "69968.50000000001",
+            "mark_ohlc": {
+              "open_time_ms": 1773994320000,
+              "open": "71254.5",
+              "high": "71338",
+              "low": "71232.51",
+              "close": "71297.86"
+            },
+            "low_native_pnl": "-542630.14399999",
+            "high_native_pnl": "-587920.87199999"
+          }
+        ]
+      }
+    },
+    "gross_notional_to_equity": {
+      "value": "33.45631282958571053526654552",
+      "snapshot": {
+        "ns": "1727970240000000000",
+        "utc": "2024-10-03T15:44:00+00:00",
+        "equity": "4530.57414701",
+        "phase": "post_quote_paired_close",
+        "cash": "9651.60074701",
+        "native_total_unrealized": "-5121.02660000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.724",
+            "avg_px_open": "60887.25",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "60186.45",
+              "high": "60230",
+              "low": "60155.17",
+              "close": "60209.94"
+            },
+            "low_native_pnl": "530.0042",
+            "high_native_pnl": "475.849"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "810.9",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "133.596",
+              "high": "133.72",
+              "low": "133.161",
+              "close": "133.166"
+            },
+            "low_native_pnl": "-5619.537",
+            "high_native_pnl": "-5165.433"
+          }
+        ]
+      }
+    },
+    "net_directional_notional_to_equity": {
+      "value": "16.81685578430966993778779062",
+      "snapshot": {
+        "ns": "1764340080000000000",
+        "utc": "2025-11-28T14:28:00+00:00",
+        "equity": "937712.12544458",
+        "phase": "post_quote_paired_close",
+        "cash": "1875928.59584458",
+        "native_total_unrealized": "-938216.47040000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "169.664",
+            "avg_px_open": "87414.85",
+            "mark_ohlc": {
+              "open_time_ms": 1764340020000,
+              "open": "92782.02",
+              "high": "92944.7",
+              "low": "92782.02",
+              "close": "92944.7"
+            },
+            "low_native_pnl": "-910612.1376",
+            "high_native_pnl": "-938216.4704"
+          }
+        ]
+      }
+    },
+    "SOL_notional_to_equity": {
+      "value": "23.83457502207868716065827432",
+      "snapshot": {
+        "ns": "1727970240000000000",
+        "utc": "2024-10-03T15:44:00+00:00",
+        "equity": "4530.57414701",
+        "phase": "post_quote_paired_close",
+        "cash": "9651.60074701",
+        "native_total_unrealized": "-5121.02660000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.724",
+            "avg_px_open": "60887.25",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "60186.45",
+              "high": "60230",
+              "low": "60155.17",
+              "close": "60209.94"
+            },
+            "low_native_pnl": "530.0042",
+            "high_native_pnl": "475.849"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "810.9",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "133.596",
+              "high": "133.72",
+              "low": "133.161",
+              "close": "133.166"
+            },
+            "low_native_pnl": "-5619.537",
+            "high_native_pnl": "-5165.433"
+          }
+        ]
+      }
+    },
+    "BTC_notional_to_equity": {
+      "value": "16.81685578430966993778779062",
+      "snapshot": {
+        "ns": "1764340080000000000",
+        "utc": "2025-11-28T14:28:00+00:00",
+        "equity": "937712.12544458",
+        "phase": "post_quote_paired_close",
+        "cash": "1875928.59584458",
+        "native_total_unrealized": "-938216.47040000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "169.664",
+            "avg_px_open": "87414.85",
+            "mark_ohlc": {
+              "open_time_ms": 1764340020000,
+              "open": "92782.02",
+              "high": "92944.7",
+              "low": "92782.02",
+              "close": "92944.7"
+            },
+            "low_native_pnl": "-910612.1376",
+            "high_native_pnl": "-938216.4704"
+          }
+        ]
+      }
+    },
+    "SOL_share_gross": {
+      "value": "1",
+      "snapshot": {
+        "ns": "1728604860000000000",
+        "utc": "2024-10-11T00:01:00+00:00",
+        "equity": "11795.25145342",
+        "phase": "post_quote_paired_close",
+        "cash": "11795.25145342",
+        "native_total_unrealized": "0E-8",
+        "positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "891.6",
+            "avg_px_open": "138.97",
+            "mark_ohlc": {
+              "open_time_ms": 1728604800000,
+              "open": "138.97",
+              "high": "139.01",
+              "low": "138.95",
+              "close": "138.965"
+            },
+            "low_native_pnl": "-17.832",
+            "high_native_pnl": "35.664"
+          }
+        ]
+      }
+    },
+    "BTC_share_gross": {
+      "value": "1",
+      "snapshot": {
+        "ns": "1725235260000000000",
+        "utc": "2024-09-02T00:01:00+00:00",
+        "equity": "9987.23275075",
+        "phase": "post_quote_paired_close",
+        "cash": "9987.54875075",
+        "native_total_unrealized": "-0.31600000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.395",
+            "avg_px_open": "57313.0",
+            "mark_ohlc": {
+              "open_time_ms": 1725235200000,
+              "open": "57270.3",
+              "high": "57321.86",
+              "low": "57244.1",
+              "close": "57313.78"
+            },
+            "low_native_pnl": "27.2155",
+            "high_native_pnl": "-3.5155"
+          }
+        ]
+      }
+    },
+    "paired_SOL_share_gross": {
+      "value": "0.7227573550289600705673586427",
+      "snapshot": {
+        "ns": "1727925840000000000",
+        "utc": "2024-10-03T03:24:00+00:00",
+        "equity": "11364.76367038",
+        "phase": "post_quote_paired_close",
+        "cash": "9643.22407038",
+        "native_total_unrealized": "1721.53960000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.724",
+            "avg_px_open": "60887.25",
+            "mark_ohlc": {
+              "open_time_ms": 1727925780000,
+              "open": "61206.39",
+              "high": "61239.4",
+              "low": "61199.07",
+              "close": "61231.1"
+            },
+            "low_native_pnl": "-225.7794",
+            "high_native_pnl": "-254.9566"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "810.9",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727925780000,
+              "open": "142.41",
+              "high": "142.56",
+              "low": "142.398",
+              "close": "142.52"
+            },
+            "low_native_pnl": "1873.179",
+            "high_native_pnl": "2002.923"
+          }
+        ]
+      }
+    },
+    "paired_BTC_share_gross": {
+      "value": "0.9956511474197995788061650998",
+      "snapshot": {
+        "ns": "1784505720000000000",
+        "utc": "2026-07-20T00:02:00+00:00",
+        "equity": "8089974.12865135",
+        "phase": "post_quote_paired_close",
+        "cash": "7924027.80865135",
+        "native_total_unrealized": "165946.32000000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "269.880",
+            "avg_px_open": "63935.8",
+            "mark_ohlc": {
+              "open_time_ms": 1784505660000,
+              "open": "64643.07",
+              "high": "64643.07",
+              "low": "64549.83",
+              "close": "64549.83"
+            },
+            "low_native_pnl": "165706.32",
+            "high_native_pnl": "190886.124"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "1000.0",
+            "avg_px_open": "76.33",
+            "mark_ohlc": {
+              "open_time_ms": 1784505660000,
+              "open": "76.25",
+              "high": "76.25",
+              "low": "76.091",
+              "close": "76.091"
+            },
+            "low_native_pnl": "240",
+            "high_native_pnl": "80"
+          }
+        ]
+      }
+    }
+  },
+  "settlement_bridge": {
+    "final_interval_marked": {
+      "ns": "1788220800000000000",
+      "utc": "2026-09-01T00:00:00+00:00",
+      "equity": "6090649.46221444",
+      "phase": "pre_quote_paired_close",
+      "cash": "5990509.00011444",
+      "native_total_unrealized": "100140.46210000",
+      "positions": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "220.598",
+          "avg_px_open": "78089.15000000001",
+          "mark_ohlc": {
+            "open_time_ms": 1788220740000,
+            "open": "78524.9",
+            "high": "78543.08",
+            "low": "78524.9",
+            "close": "78543.08"
+          },
+          "low_native_pnl": "96125.5785",
+          "high_native_pnl": "100140.4621"
+        }
+      ]
+    },
+    "settled_total": "6077107.23887483",
+    "marked_to_settled_delta": "-13542.22333961",
+    "raw_settlement": {
+      "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+      "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+      "fill_count": 1,
+      "interval_cash_total_before_settlement": "5990509.00011444",
+      "settled_cash_total": "6077107.23887483"
+    },
+    "last_month_settled_return_percent": "-5.997159807430906013460571060",
+    "product_monthly_gross": 609.0649462214442,
+    "marked_growth_exact": "609.064946221444",
+    "terminal_fee_from_native_fill": "9527.33973961",
+    "native_cash_increment_before_terminal_fee": "96125.57850000",
+    "native_marked_U_to_cash_increment_residual": "-4014.88360000",
+    "fee_plus_native_U_to_cash_bridge_exact_match": true,
+    "bridge_qualification": "Cash/equity/fee arithmetic only. Residual labels the difference between final native marked U and actual boundary cash increment before terminalfee. Do not infer signedfunding or reconstruct PnL using rawOHLCprices; nativePnL mark normalization can differ from exportedOHLCprecision.",
+    "final_interval_drawdown_from_all_native_peak_percent": "34.94223510419624495806410690",
+    "settled_drawdown_from_all_native_peak_percent": "35.08688745821211534316623679"
+  },
+  "monthly": [
+    {
+      "period": "2024-09",
+      "start_equity": "10000",
+      "end_equity": "9715.41746022",
+      "change": "-284.58253978",
+      "return_percent": "-2.845825397800",
+      "min_equity": "6999.90832336",
+      "min_utc": "2024-09-17T15:21:00+00:00",
+      "max_equity": "13426.6743211",
+      "max_utc": "2024-09-14T00:19:00+00:00",
+      "within_period_DD_percent": "47.86565789892100222709408040",
+      "end_cash": "9715.41746022",
+      "end_native_unrealized": "0E-8",
+      "samples": 43200,
+      "positive_days": 6,
+      "negative_days": 6,
+      "flat_days": 18
+    },
+    {
+      "period": "2024-10",
+      "start_equity": "9715.41746022",
+      "end_equity": "24159.92503525",
+      "change": "14444.50757503",
+      "return_percent": "148.6761390766106358751511291",
+      "min_equity": "4530.57414701",
+      "min_utc": "2024-10-03T15:44:00+00:00",
+      "max_equity": "24159.92503525",
+      "max_utc": "2024-10-29T14:02:00+00:00",
+      "within_period_DD_percent": "60.47510028593404040112028480",
+      "end_cash": "24159.92503525",
+      "end_native_unrealized": "0E-8",
+      "samples": 44640,
+      "positive_days": 12,
+      "negative_days": 6,
+      "flat_days": 13
+    },
+    {
+      "period": "2024-11",
+      "start_equity": "24159.92503525",
+      "end_equity": "69642.5791262",
+      "change": "45482.65409095",
+      "return_percent": "188.2566027195429933717140878",
+      "min_equity": "19885.36335157",
+      "min_utc": "2024-11-04T21:54:00+00:00",
+      "max_equity": "70691.74197097",
+      "max_utc": "2024-11-27T20:30:00+00:00",
+      "within_period_DD_percent": "30.70261214600468867658244303",
+      "end_cash": "69642.5791262",
+      "end_native_unrealized": "0E-7",
+      "samples": 43200,
+      "positive_days": 10,
+      "negative_days": 7,
+      "flat_days": 13
+    },
+    {
+      "period": "2024-12",
+      "start_equity": "69642.5791262",
+      "end_equity": "118744.23171154",
+      "change": "49101.65258534",
+      "return_percent": "70.50521850484947469690914650",
+      "min_equity": "61891.88421207",
+      "min_utc": "2024-12-20T12:17:00+00:00",
+      "max_equity": "187955.72982674",
+      "max_utc": "2024-12-31T17:10:00+00:00",
+      "within_period_DD_percent": "37.97464566567194131798799674",
+      "end_cash": "107534.23171154",
+      "end_native_unrealized": "11210.00000000",
+      "samples": 44640,
+      "positive_days": 8,
+      "negative_days": 5,
+      "flat_days": 18
+    },
+    {
+      "period": "2025-01",
+      "start_equity": "118744.23171154",
+      "end_equity": "469130.44551614",
+      "change": "350386.21380460",
+      "return_percent": "295.0764081372621172140355443",
+      "min_equity": "108690.12904281",
+      "min_utc": "2025-01-01T09:41:00+00:00",
+      "max_equity": "537132.64568937",
+      "max_utc": "2025-01-21T18:38:00+00:00",
+      "within_period_DD_percent": "24.05428374775103875940952609",
+      "end_cash": "467159.63151614",
+      "end_native_unrealized": "1970.81400000",
+      "samples": 44640,
+      "positive_days": 18,
+      "negative_days": 7,
+      "flat_days": 6
+    },
+    {
+      "period": "2025-02",
+      "start_equity": "469130.44551614",
+      "end_equity": "446870.02206984",
+      "change": "-22260.42344630",
+      "return_percent": "-4.745039180266579112121379920",
+      "min_equity": "320840.04666373",
+      "min_utc": "2025-02-04T22:12:00+00:00",
+      "max_equity": "473922.90951614",
+      "max_utc": "2025-02-01T01:45:00+00:00",
+      "within_period_DD_percent": "32.30121603716154256341180886",
+      "end_cash": "446870.02206984",
+      "end_native_unrealized": "0E-8",
+      "samples": 40320,
+      "positive_days": 10,
+      "negative_days": 9,
+      "flat_days": 9
+    },
+    {
+      "period": "2025-03",
+      "start_equity": "446870.02206984",
+      "end_equity": "751876.81347521",
+      "change": "305006.79140537",
+      "return_percent": "68.25402831736638324401884310",
+      "min_equity": "419255.94691234",
+      "min_utc": "2025-03-04T00:21:00+00:00",
+      "max_equity": "782345.71228199",
+      "max_utc": "2025-03-25T20:12:00+00:00",
+      "within_period_DD_percent": "17.88116959733976493292625033",
+      "end_cash": "783516.81347521",
+      "end_native_unrealized": "-31640.00000000",
+      "samples": 44640,
+      "positive_days": 14,
+      "negative_days": 8,
+      "flat_days": 9
+    },
+    {
+      "period": "2025-04",
+      "start_equity": "751876.81347521",
+      "end_equity": "475637.29269793",
+      "change": "-276239.52077728",
+      "return_percent": "-36.73999727435242227007602296",
+      "min_equity": "397355.1894008",
+      "min_utc": "2025-04-16T17:22:00+00:00",
+      "max_equity": "915175.73025689",
+      "max_utc": "2025-04-11T01:00:00+00:00",
+      "within_period_DD_percent": "56.58154207288010976525549755",
+      "end_cash": "475637.29269793",
+      "end_native_unrealized": "0E-8",
+      "samples": 43200,
+      "positive_days": 8,
+      "negative_days": 13,
+      "flat_days": 9
+    },
+    {
+      "period": "2025-05",
+      "start_equity": "475637.29269793",
+      "end_equity": "523051.50993729",
+      "change": "47414.21723936",
+      "return_percent": "9.968565957142483187654568300",
+      "min_equity": "444465.07245388",
+      "min_utc": "2025-05-06T13:53:00+00:00",
+      "max_equity": "658890.42864335",
+      "max_utc": "2025-05-19T06:59:00+00:00",
+      "within_period_DD_percent": "29.60585892009508850196382700",
+      "end_cash": "555347.14303729",
+      "end_native_unrealized": "-32295.63310000",
+      "samples": 44640,
+      "positive_days": 16,
+      "negative_days": 14,
+      "flat_days": 1
+    },
+    {
+      "period": "2025-06",
+      "start_equity": "523051.50993729",
+      "end_equity": "551390.87300964",
+      "change": "28339.36307235",
+      "return_percent": "5.418082642710978814542387000",
+      "min_equity": "367509.64806046",
+      "min_utc": "2025-06-06T15:17:00+00:00",
+      "max_equity": "577066.68295326",
+      "max_utc": "2025-06-30T00:44:00+00:00",
+      "within_period_DD_percent": "33.33600485840135795065352665",
+      "end_cash": "521540.36763363",
+      "end_native_unrealized": "29850.50537601",
+      "samples": 43200,
+      "positive_days": 16,
+      "negative_days": 11,
+      "flat_days": 3
+    },
+    {
+      "period": "2025-07",
+      "start_equity": "551390.87300964",
+      "end_equity": "696176.48442153",
+      "change": "144785.61141189",
+      "return_percent": "26.25825317376240001601355930",
+      "min_equity": "521003.47044275",
+      "min_utc": "2025-07-02T01:18:00+00:00",
+      "max_equity": "698507.62602153",
+      "max_utc": "2025-07-31T23:42:00+00:00",
+      "within_period_DD_percent": "9.620306076142437999477352580",
+      "end_cash": "606856.48442153",
+      "end_native_unrealized": "89320.00000000",
+      "samples": 44640,
+      "positive_days": 13,
+      "negative_days": 6,
+      "flat_days": 12
+    },
+    {
+      "period": "2025-08",
+      "start_equity": "696176.48442153",
+      "end_equity": "842025.80973756",
+      "change": "145849.32531603",
+      "return_percent": "20.95005053743229453432122090",
+      "min_equity": "516422.48110494",
+      "min_utc": "2025-08-14T04:26:00+00:00",
+      "max_equity": "893334.18254448",
+      "max_utc": "2025-08-24T19:38:00+00:00",
+      "within_period_DD_percent": "29.98007500707704445558852183",
+      "end_cash": "842025.80973756",
+      "end_native_unrealized": "0E-8",
+      "samples": 44640,
+      "positive_days": 8,
+      "negative_days": 13,
+      "flat_days": 10
+    },
+    {
+      "period": "2025-09",
+      "start_equity": "842025.80973756",
+      "end_equity": "1200125.80924031",
+      "change": "358099.99950275",
+      "return_percent": "42.52838753414951736985615600",
+      "min_equity": "641758.63567412",
+      "min_utc": "2025-09-18T17:13:00+00:00",
+      "max_equity": "1241636.19575321",
+      "max_utc": "2025-09-30T21:10:00+00:00",
+      "within_period_DD_percent": "26.57994714782789596022023730",
+      "end_cash": "1214047.72264031",
+      "end_native_unrealized": "-13921.91340000",
+      "samples": 43200,
+      "positive_days": 11,
+      "negative_days": 11,
+      "flat_days": 8
+    },
+    {
+      "period": "2025-10",
+      "start_equity": "1200125.80924031",
+      "end_equity": "1639528.47170574",
+      "change": "439402.66246543",
+      "return_percent": "36.61304998878206606187216970",
+      "min_equity": "1195294.38774031",
+      "min_utc": "2025-10-01T00:27:00+00:00",
+      "max_equity": "2088471.56378771",
+      "max_utc": "2025-10-22T21:29:00+00:00",
+      "within_period_DD_percent": "39.74943101775715951800226062",
+      "end_cash": "1639528.47170574",
+      "end_native_unrealized": "0E-8",
+      "samples": 44640,
+      "positive_days": 14,
+      "negative_days": 11,
+      "flat_days": 6
+    },
+    {
+      "period": "2025-11",
+      "start_equity": "1639528.47170574",
+      "end_equity": "1384898.14817348",
+      "change": "-254630.32353226",
+      "return_percent": "-15.53070458528521676765734623",
+      "min_equity": "937712.12544458",
+      "min_utc": "2025-11-28T14:28:00+00:00",
+      "max_equity": "2069026.3481032",
+      "max_utc": "2025-11-26T12:22:00+00:00",
+      "within_period_DD_percent": "54.67857979168623451744365152",
+      "end_cash": "1876626.83617348",
+      "end_native_unrealized": "-491728.68800000",
+      "samples": 43200,
+      "positive_days": 5,
+      "negative_days": 2,
+      "flat_days": 23
+    },
+    {
+      "period": "2025-12",
+      "start_equity": "1384898.14817348",
+      "end_equity": "2236365.45841725",
+      "change": "851467.31024377",
+      "return_percent": "61.48230549421678455653712970",
+      "min_equity": "1376262.25057348",
+      "min_utc": "2025-12-01T00:01:00+00:00",
+      "max_equity": "2408094.24462978",
+      "max_utc": "2025-12-01T15:45:00+00:00",
+      "within_period_DD_percent": "12.85030476079907550453930340",
+      "end_cash": "2236365.45841725",
+      "end_native_unrealized": "0E-8",
+      "samples": 44640,
+      "positive_days": 1,
+      "negative_days": 0,
+      "flat_days": 30
+    },
+    {
+      "period": "2026-01",
+      "start_equity": "2236365.45841725",
+      "end_equity": "2664602.92081457",
+      "change": "428237.46239732",
+      "return_percent": "19.14881401809871691863178040",
+      "min_equity": "2008309.06307096",
+      "min_utc": "2026-01-23T17:38:00+00:00",
+      "max_equity": "2726371.854918",
+      "max_utc": "2026-01-20T01:27:00+00:00",
+      "within_period_DD_percent": "26.33766888958134760709142902",
+      "end_cash": "2664602.92081457",
+      "end_native_unrealized": "0E-8",
+      "samples": 44640,
+      "positive_days": 9,
+      "negative_days": 11,
+      "flat_days": 11
+    },
+    {
+      "period": "2026-02",
+      "start_equity": "2664602.92081457",
+      "end_equity": "4370676.67047471",
+      "change": "1706073.74966014",
+      "return_percent": "64.02731665319171408616846580",
+      "min_equity": "1783557.592621",
+      "min_utc": "2026-02-08T23:08:00+00:00",
+      "max_equity": "4532569.67987108",
+      "max_utc": "2026-02-27T22:35:00+00:00",
+      "within_period_DD_percent": "35.93764337131228345668078382",
+      "end_cash": "4370676.67047471",
+      "end_native_unrealized": "0E-8",
+      "samples": 40320,
+      "positive_days": 6,
+      "negative_days": 1,
+      "flat_days": 21
+    },
+    {
+      "period": "2026-03",
+      "start_equity": "4370676.67047471",
+      "end_equity": "5899180.91000022",
+      "change": "1528504.23952551",
+      "return_percent": "34.97179852838428735122854440",
+      "min_equity": "3529023.80503336",
+      "min_utc": "2026-03-06T02:26:00+00:00",
+      "max_equity": "6056326.4678278",
+      "max_utc": "2026-03-27T18:25:00+00:00",
+      "within_period_DD_percent": "23.73357524992693931997790909",
+      "end_cash": "5899180.91000022",
+      "end_native_unrealized": "0E-8",
+      "samples": 44640,
+      "positive_days": 7,
+      "negative_days": 8,
+      "flat_days": 16
+    },
+    {
+      "period": "2026-04",
+      "start_equity": "5899180.91000022",
+      "end_equity": "8601896.94365386",
+      "change": "2702716.03365364",
+      "return_percent": "45.81510679002958745954210680",
+      "min_equity": "5681410.80750808",
+      "min_utc": "2026-04-02T00:58:00+00:00",
+      "max_equity": "8726177.69365514",
+      "max_utc": "2026-04-30T13:46:00+00:00",
+      "within_period_DD_percent": "13.43569796359418430630290368",
+      "end_cash": "8465953.22535386",
+      "end_native_unrealized": "135943.71830000",
+      "samples": 43200,
+      "positive_days": 9,
+      "negative_days": 2,
+      "flat_days": 19
+    },
+    {
+      "period": "2026-05",
+      "start_equity": "8601896.94365386",
+      "end_equity": "8431200.66305718",
+      "change": "-170696.28059668",
+      "return_percent": "-1.984402762725644806596261720",
+      "min_equity": "7654288.53725515",
+      "min_utc": "2026-05-17T23:42:00+00:00",
+      "max_equity": "9344768.15337548",
+      "max_utc": "2026-05-15T02:54:00+00:00",
+      "within_period_DD_percent": "18.09011832476230749471631635",
+      "end_cash": "8452890.66305718",
+      "end_native_unrealized": "-21690.00000000",
+      "samples": 44640,
+      "positive_days": 8,
+      "negative_days": 12,
+      "flat_days": 11
+    },
+    {
+      "period": "2026-06",
+      "start_equity": "8431200.66305718",
+      "end_equity": "8986291.50529802",
+      "change": "555090.84224084",
+      "return_percent": "6.583769790619148977948171600",
+      "min_equity": "8134578.33050676",
+      "min_utc": "2026-06-09T05:35:00+00:00",
+      "max_equity": "9079421.20045559",
+      "max_utc": "2026-06-09T16:40:00+00:00",
+      "within_period_DD_percent": "4.774100908667985561977848300",
+      "end_cash": "8986291.50529802",
+      "end_native_unrealized": "0E-8",
+      "samples": 43200,
+      "positive_days": 2,
+      "negative_days": 2,
+      "flat_days": 26
+    },
+    {
+      "period": "2026-07",
+      "start_equity": "8986291.50529802",
+      "end_equity": "6464812.36782378",
+      "change": "-2521479.13747424",
+      "return_percent": "-28.05917364229347966952288370",
+      "min_equity": "6304208.93183548",
+      "min_utc": "2026-07-31T15:27:00+00:00",
+      "max_equity": "9361910.09938506",
+      "max_utc": "2026-07-06T13:39:00+00:00",
+      "within_period_DD_percent": "32.66108235487570063114655025",
+      "end_cash": "6464812.36782378",
+      "end_native_unrealized": "0E-8",
+      "samples": 44640,
+      "positive_days": 10,
+      "negative_days": 18,
+      "flat_days": 3
+    },
+    {
+      "period": "2026-08",
+      "start_equity": "6464812.36782378",
+      "end_equity": "6090649.46221444",
+      "change": "-374162.90560934",
+      "return_percent": "-5.787683915957064890281430360",
+      "min_equity": "5543599.77088397",
+      "min_utc": "2026-08-18T03:33:00+00:00",
+      "max_equity": "6643490.86197382",
+      "max_utc": "2026-08-03T08:34:00+00:00",
+      "within_period_DD_percent": "16.55592088468781188921294055",
+      "end_cash": "5990509.00011444",
+      "end_native_unrealized": "100140.46210000",
+      "samples": 44640,
+      "positive_days": 13,
+      "negative_days": 10,
+      "flat_days": 8
+    }
+  ],
+  "all_native_underwater_elapsed": {
+    "basis": "Union of first-underwater native observation to first native recovery intervals; hold-last-observed native HWM state between timestamps. Zero-duration callback excursions contribute zero elapsed time. Distinct from paired post-SOL sampled peak/time.",
+    "minutes": "1047507",
+    "days": "727.4354166666666666666666667",
+    "percent_interval": "99.64868721461187214611872146",
+    "longest_minutes": "195517",
+    "longest_days": "135.7756944444444444444444444",
+    "longest_episode_id": "776",
+    "longest_start": "2025-04-11T01:01:00+00:00",
+    "longest_end": "2025-08-24T19:38:00+00:00"
+  }
+}

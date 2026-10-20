@@ -1,0 +1,54 @@
+{
+  "risk-final-checks.json": {
+    "bytes": 391,
+    "sha256": "bc5fe2ecc2d7d8d3b8de6cc0b0c4e9de5b95d0df33200841b4a2756f73273aee"
+  },
+  "risk-return-distribution.json": {
+    "bytes": 14714,
+    "sha256": "ecbd8db83ccc6bd25acf7e71928ff0281df113abff32461a04a20279dc650dc4"
+  },
+  "risk-weekly.csv": {
+    "bytes": 24339,
+    "sha256": "62f5d975aaf2d6d86bf1458a4d2d413a6cff37b830c3695713dd63ed9276276a"
+  },
+  "risk-statistics.json": {
+    "bytes": 101981,
+    "sha256": "b43f0ac3099844f8e83c18c464e1e5481058412585d8f9108be1b81d2bedb397"
+  },
+  "risk-daily.csv": {
+    "bytes": 151582,
+    "sha256": "5bafcf7ea9f1936a8870c96a6b7765575779c2dfb80524eac566536e34565797"
+  },
+  "risk-analysis.py": {
+    "bytes": 13234,
+    "sha256": "de69f6028fee4bca205ef34922cafb75d043096eb469fae07f7519e283170d24"
+  },
+  "risk-native-dd-excursion-points.csv": {
+    "bytes": 201094,
+    "sha256": "7770495d42929389ca7400656bf5d07d60375bb6155810af637e24c1fd430eed"
+  },
+  "risk-drawdowns.csv": {
+    "bytes": 947367,
+    "sha256": "88af80d6e1cc0a514931c103654ab5768db2df59895a793c4f6a15ed53739153"
+  },
+  "risk-distribution.py": {
+    "bytes": 5531,
+    "sha256": "b2d8142b6feb245bfd496cbdd6610acc16c8eea6edf78a81106d7025f3aa02db"
+  },
+  "risk-daily-curve.csv": {
+    "bytes": 52980,
+    "sha256": "fe32086cef8faa170a42a83b71a234c7d7425aa85860691c6dc740c3c8299bd9"
+  },
+  "risk-monthly.csv": {
+    "bytes": 5972,
+    "sha256": "11338dda897810a88c59a9683d0773f246c4c499a7463d8cdf70fe62d3af67df"
+  },
+  "risk-render-report.py": {
+    "bytes": 9263,
+    "sha256": "3c2ae934b9bef99dad8eead978b92cfe4cc648e84701a7d97d41c92e0c4a70df"
+  },
+  "risk-statistics.md": {
+    "bytes": 27606,
+    "sha256": "f706b632654fc8df7f2332df705e099ff8f5231c9d947a04711c82c6555a8bf3"
+  }
+}

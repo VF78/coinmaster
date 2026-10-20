@@ -1,0 +1,3847 @@
+{
+  "period_label": "2024-09-01 to 2026-08-31 (source-bar dates)",
+  "daily": [
+    {
+      "date": "2024-09-01",
+      "equity_usdt": 10000.0,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-02",
+      "equity_usdt": 8614.18450259,
+      "close_drawdown_pct": 13.858154974100001
+    },
+    {
+      "date": "2024-09-03",
+      "equity_usdt": 9933.72411929,
+      "close_drawdown_pct": 0.6627588070999946
+    },
+    {
+      "date": "2024-09-04",
+      "equity_usdt": 9549.75689136,
+      "close_drawdown_pct": 4.502431086399994
+    },
+    {
+      "date": "2024-09-05",
+      "equity_usdt": 10961.56256429,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-06",
+      "equity_usdt": 12088.44591156,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-07",
+      "equity_usdt": 12088.44591156,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-08",
+      "equity_usdt": 12088.44591156,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-09",
+      "equity_usdt": 12088.44591156,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-10",
+      "equity_usdt": 12088.44591156,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-11",
+      "equity_usdt": 13410.3412791,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-12",
+      "equity_usdt": 13410.3412791,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-13",
+      "equity_usdt": 13410.3412791,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-09-14",
+      "equity_usdt": 12811.73642278,
+      "close_drawdown_pct": 4.463755573863903
+    },
+    {
+      "date": "2024-09-15",
+      "equity_usdt": 11748.59975253,
+      "close_drawdown_pct": 12.391493191599977
+    },
+    {
+      "date": "2024-09-16",
+      "equity_usdt": 10548.06669948,
+      "close_drawdown_pct": 21.34378626203086
+    },
+    {
+      "date": "2024-09-17",
+      "equity_usdt": 8122.3583256,
+      "close_drawdown_pct": 39.432128112513546
+    },
+    {
+      "date": "2024-09-18",
+      "equity_usdt": 9211.97810675,
+      "close_drawdown_pct": 31.306907743601887
+    },
+    {
+      "date": "2024-09-19",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-20",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-21",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-22",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-23",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-24",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-25",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-26",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-27",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-28",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-29",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-09-30",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-10-01",
+      "equity_usdt": 9715.41746022,
+      "close_drawdown_pct": 27.55279483184021
+    },
+    {
+      "date": "2024-10-02",
+      "equity_usdt": 9900.56810993,
+      "close_drawdown_pct": 26.172139068824272
+    },
+    {
+      "date": "2024-10-03",
+      "equity_usdt": 7055.35153018,
+      "close_drawdown_pct": 47.38872498960368
+    },
+    {
+      "date": "2024-10-04",
+      "equity_usdt": 11183.87115246,
+      "close_drawdown_pct": 16.602635833809465
+    },
+    {
+      "date": "2024-10-05",
+      "equity_usdt": 11186.36490106,
+      "close_drawdown_pct": 16.584040120634835
+    },
+    {
+      "date": "2024-10-06",
+      "equity_usdt": 11910.13806376,
+      "close_drawdown_pct": 11.186913025681644
+    },
+    {
+      "date": "2024-10-07",
+      "equity_usdt": 11564.25162488,
+      "close_drawdown_pct": 13.766164602366437
+    },
+    {
+      "date": "2024-10-08",
+      "equity_usdt": 11523.46495805,
+      "close_drawdown_pct": 14.07030799425435
+    },
+    {
+      "date": "2024-10-09",
+      "equity_usdt": 10633.37806593,
+      "close_drawdown_pct": 20.70762522276666
+    },
+    {
+      "date": "2024-10-10",
+      "equity_usdt": 11863.39956202,
+      "close_drawdown_pct": 11.535438844430502
+    },
+    {
+      "date": "2024-10-11",
+      "equity_usdt": 17590.9302669,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-12",
+      "equity_usdt": 18047.7151436,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-13",
+      "equity_usdt": 17734.70419603,
+      "close_drawdown_pct": 1.734352216219437
+    },
+    {
+      "date": "2024-10-14",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-15",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-16",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-17",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-18",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-19",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-20",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-21",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-22",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-23",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-24",
+      "equity_usdt": 20153.57299919,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-25",
+      "equity_usdt": 18276.67501091,
+      "close_drawdown_pct": 9.312978836831743
+    },
+    {
+      "date": "2024-10-26",
+      "equity_usdt": 18753.13496057,
+      "close_drawdown_pct": 6.948832540395122
+    },
+    {
+      "date": "2024-10-27",
+      "equity_usdt": 19920.86112001,
+      "close_drawdown_pct": 1.1546929132087658
+    },
+    {
+      "date": "2024-10-28",
+      "equity_usdt": 22369.47178996,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-29",
+      "equity_usdt": 24159.92503525,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-30",
+      "equity_usdt": 24159.92503525,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-10-31",
+      "equity_usdt": 24159.92503525,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-01",
+      "equity_usdt": 24159.92503525,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-02",
+      "equity_usdt": 23745.9122821,
+      "close_drawdown_pct": 1.7136342622998346
+    },
+    {
+      "date": "2024-11-03",
+      "equity_usdt": 22789.26818654,
+      "close_drawdown_pct": 5.673266149254075
+    },
+    {
+      "date": "2024-11-04",
+      "equity_usdt": 21387.62264034,
+      "close_drawdown_pct": 11.474797172860152
+    },
+    {
+      "date": "2024-11-05",
+      "equity_usdt": 23628.60093879,
+      "close_drawdown_pct": 2.199195964742362
+    },
+    {
+      "date": "2024-11-06",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-07",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-08",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-09",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-10",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-11",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-12",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-13",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-14",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-15",
+      "equity_usdt": 30434.54890384,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-16",
+      "equity_usdt": 29216.51872419,
+      "close_drawdown_pct": 4.002129893557649
+    },
+    {
+      "date": "2024-11-17",
+      "equity_usdt": 28053.2527486,
+      "close_drawdown_pct": 7.824318877746029
+    },
+    {
+      "date": "2024-11-18",
+      "equity_usdt": 28804.71421203,
+      "close_drawdown_pct": 5.355212252232066
+    },
+    {
+      "date": "2024-11-19",
+      "equity_usdt": 31303.73191665,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-20",
+      "equity_usdt": 33354.33408482,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-21",
+      "equity_usdt": 35051.86633442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-22",
+      "equity_usdt": 34637.0244831,
+      "close_drawdown_pct": 1.1835085965526404
+    },
+    {
+      "date": "2024-11-23",
+      "equity_usdt": 36954.87791054,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-24",
+      "equity_usdt": 39316.46443658,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-25",
+      "equity_usdt": 57965.11226277,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-26",
+      "equity_usdt": 57816.57553527,
+      "close_drawdown_pct": 0.25625194483649416
+    },
+    {
+      "date": "2024-11-27",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-28",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-29",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-11-30",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-01",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-02",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-03",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-04",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-05",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-06",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-07",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-08",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-09",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-10",
+      "equity_usdt": 69642.5791262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-11",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-12",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-13",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-14",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-15",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-16",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-17",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-18",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-19",
+      "equity_usdt": 80749.20497043,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-20",
+      "equity_usdt": 81379.9668262,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-21",
+      "equity_usdt": 80056.56570882,
+      "close_drawdown_pct": 1.6262001190125108
+    },
+    {
+      "date": "2024-12-22",
+      "equity_usdt": 74431.34491721,
+      "close_drawdown_pct": 8.5384919409342
+    },
+    {
+      "date": "2024-12-23",
+      "equity_usdt": 90485.67740064,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-24",
+      "equity_usdt": 104203.90630064,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-25",
+      "equity_usdt": 105883.98509686,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-26",
+      "equity_usdt": 93532.47566761,
+      "close_drawdown_pct": 11.665134645197906
+    },
+    {
+      "date": "2024-12-27",
+      "equity_usdt": 108631.55483038,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-28",
+      "equity_usdt": 153269.45715922,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2024-12-29",
+      "equity_usdt": 125148.68911922,
+      "close_drawdown_pct": 18.34727450674499
+    },
+    {
+      "date": "2024-12-30",
+      "equity_usdt": 133161.26075262,
+      "close_drawdown_pct": 13.119506507882473
+    },
+    {
+      "date": "2024-12-31",
+      "equity_usdt": 118744.23171154,
+      "close_drawdown_pct": 22.525835275722528
+    },
+    {
+      "date": "2025-01-01",
+      "equity_usdt": 156696.81722902,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-02",
+      "equity_usdt": 264062.86319451,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-03",
+      "equity_usdt": 274937.48350308,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-04",
+      "equity_usdt": 275045.33642725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-05",
+      "equity_usdt": 276215.46518832,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-06",
+      "equity_usdt": 308479.68615202,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-07",
+      "equity_usdt": 308479.68615202,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-08",
+      "equity_usdt": 308479.68615202,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-09",
+      "equity_usdt": 376967.57147057,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-10",
+      "equity_usdt": 379552.15086291,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-11",
+      "equity_usdt": 380177.02900451,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-12",
+      "equity_usdt": 381242.22207011,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-13",
+      "equity_usdt": 358346.82158967,
+      "close_drawdown_pct": 6.005473464119493
+    },
+    {
+      "date": "2025-01-14",
+      "equity_usdt": 381468.00523272,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-15",
+      "equity_usdt": 427745.71878578,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-16",
+      "equity_usdt": 420923.31207706,
+      "close_drawdown_pct": 1.5949678533513922
+    },
+    {
+      "date": "2025-01-17",
+      "equity_usdt": 443067.41773658,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-18",
+      "equity_usdt": 443067.41773658,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-19",
+      "equity_usdt": 443067.41773658,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-20",
+      "equity_usdt": 443067.41773658,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-21",
+      "equity_usdt": 517165.28203141,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-01-22",
+      "equity_usdt": 482984.9060263,
+      "close_drawdown_pct": 6.609178379269876
+    },
+    {
+      "date": "2025-01-23",
+      "equity_usdt": 485268.74854636,
+      "close_drawdown_pct": 6.1675705220894494
+    },
+    {
+      "date": "2025-01-24",
+      "equity_usdt": 497779.12458605,
+      "close_drawdown_pct": 3.7485419301952705
+    },
+    {
+      "date": "2025-01-25",
+      "equity_usdt": 496193.03987487,
+      "close_drawdown_pct": 4.055230094750694
+    },
+    {
+      "date": "2025-01-26",
+      "equity_usdt": 466769.09287851,
+      "close_drawdown_pct": 9.744696889734216
+    },
+    {
+      "date": "2025-01-27",
+      "equity_usdt": 466769.09287851,
+      "close_drawdown_pct": 9.744696889734216
+    },
+    {
+      "date": "2025-01-28",
+      "equity_usdt": 453812.94043704,
+      "close_drawdown_pct": 12.249921600600079
+    },
+    {
+      "date": "2025-01-29",
+      "equity_usdt": 488555.13224075,
+      "close_drawdown_pct": 5.532109517924367
+    },
+    {
+      "date": "2025-01-30",
+      "equity_usdt": 502478.72439371,
+      "close_drawdown_pct": 2.83981894144395
+    },
+    {
+      "date": "2025-01-31",
+      "equity_usdt": 469130.44551614,
+      "close_drawdown_pct": 9.288101538175686
+    },
+    {
+      "date": "2025-02-01",
+      "equity_usdt": 443456.74310859,
+      "close_drawdown_pct": 14.252414360317278
+    },
+    {
+      "date": "2025-02-02",
+      "equity_usdt": 400523.15983394,
+      "close_drawdown_pct": 22.554128486603588
+    },
+    {
+      "date": "2025-02-03",
+      "equity_usdt": 447906.73470015,
+      "close_drawdown_pct": 13.391956060780895
+    },
+    {
+      "date": "2025-02-04",
+      "equity_usdt": 359327.12466933,
+      "close_drawdown_pct": 30.519867215776042
+    },
+    {
+      "date": "2025-02-05",
+      "equity_usdt": 381810.80653001,
+      "close_drawdown_pct": 26.17238244797323
+    },
+    {
+      "date": "2025-02-06",
+      "equity_usdt": 383216.40872334,
+      "close_drawdown_pct": 25.90059270450692
+    },
+    {
+      "date": "2025-02-07",
+      "equity_usdt": 386724.87867772,
+      "close_drawdown_pct": 25.222188705576677
+    },
+    {
+      "date": "2025-02-08",
+      "equity_usdt": 394776.4439208,
+      "close_drawdown_pct": 23.665323710414256
+    },
+    {
+      "date": "2025-02-09",
+      "equity_usdt": 414900.94343517,
+      "close_drawdown_pct": 19.77401464277507
+    },
+    {
+      "date": "2025-02-10",
+      "equity_usdt": 414935.9810397,
+      "close_drawdown_pct": 19.767239709161522
+    },
+    {
+      "date": "2025-02-11",
+      "equity_usdt": 412498.77040985,
+      "close_drawdown_pct": 20.23850309719807
+    },
+    {
+      "date": "2025-02-12",
+      "equity_usdt": 411840.54564656,
+      "close_drawdown_pct": 20.365778609719808
+    },
+    {
+      "date": "2025-02-13",
+      "equity_usdt": 410603.34721311,
+      "close_drawdown_pct": 20.60500550225024
+    },
+    {
+      "date": "2025-02-14",
+      "equity_usdt": 413158.51521311,
+      "close_drawdown_pct": 20.11093366704054
+    },
+    {
+      "date": "2025-02-15",
+      "equity_usdt": 413103.69946311,
+      "close_drawdown_pct": 20.121532938086872
+    },
+    {
+      "date": "2025-02-16",
+      "equity_usdt": 413103.69946311,
+      "close_drawdown_pct": 20.121532938086872
+    },
+    {
+      "date": "2025-02-17",
+      "equity_usdt": 413103.69946311,
+      "close_drawdown_pct": 20.121532938086872
+    },
+    {
+      "date": "2025-02-18",
+      "equity_usdt": 413103.69946311,
+      "close_drawdown_pct": 20.121532938086872
+    },
+    {
+      "date": "2025-02-19",
+      "equity_usdt": 413103.69946311,
+      "close_drawdown_pct": 20.121532938086872
+    },
+    {
+      "date": "2025-02-20",
+      "equity_usdt": 413103.69946311,
+      "close_drawdown_pct": 20.121532938086872
+    },
+    {
+      "date": "2025-02-21",
+      "equity_usdt": 373586.74515245,
+      "close_drawdown_pct": 27.76260160291266
+    },
+    {
+      "date": "2025-02-22",
+      "equity_usdt": 362805.59741469,
+      "close_drawdown_pct": 29.84726353060664
+    },
+    {
+      "date": "2025-02-23",
+      "equity_usdt": 370575.59013879,
+      "close_drawdown_pct": 28.344843899192153
+    },
+    {
+      "date": "2025-02-24",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-02-25",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-02-26",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-02-27",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-02-28",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-03-01",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-03-02",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-03-03",
+      "equity_usdt": 446870.02206984,
+      "close_drawdown_pct": 13.59241666135289
+    },
+    {
+      "date": "2025-03-04",
+      "equity_usdt": 487345.22915493,
+      "close_drawdown_pct": 5.766058533424312
+    },
+    {
+      "date": "2025-03-05",
+      "equity_usdt": 458819.17303418,
+      "close_drawdown_pct": 11.28190754956485
+    },
+    {
+      "date": "2025-03-06",
+      "equity_usdt": 464716.58053394,
+      "close_drawdown_pct": 10.141574332185076
+    },
+    {
+      "date": "2025-03-07",
+      "equity_usdt": 492176.55149578,
+      "close_drawdown_pct": 4.831865441058813
+    },
+    {
+      "date": "2025-03-08",
+      "equity_usdt": 497229.38129607,
+      "close_drawdown_pct": 3.8548412718333314
+    },
+    {
+      "date": "2025-03-09",
+      "equity_usdt": 544340.01122481,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-10",
+      "equity_usdt": 536074.94240475,
+      "close_drawdown_pct": 1.5183651118099717
+    },
+    {
+      "date": "2025-03-11",
+      "equity_usdt": 550018.97534299,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-12",
+      "equity_usdt": 549881.17834299,
+      "close_drawdown_pct": 0.025053135651198488
+    },
+    {
+      "date": "2025-03-13",
+      "equity_usdt": 636865.27635553,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-14",
+      "equity_usdt": 646964.29293748,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-15",
+      "equity_usdt": 646840.88993748,
+      "close_drawdown_pct": 0.019074159323340112
+    },
+    {
+      "date": "2025-03-16",
+      "equity_usdt": 717802.48268442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-17",
+      "equity_usdt": 717802.48268442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-18",
+      "equity_usdt": 717802.48268442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-19",
+      "equity_usdt": 717802.48268442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-20",
+      "equity_usdt": 717802.48268442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-21",
+      "equity_usdt": 717802.48268442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-22",
+      "equity_usdt": 717802.48268442,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-23",
+      "equity_usdt": 722050.05574422,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-24",
+      "equity_usdt": 730171.67746412,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-25",
+      "equity_usdt": 731355.47245228,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-26",
+      "equity_usdt": 704602.61924365,
+      "close_drawdown_pct": 3.6579822283856034
+    },
+    {
+      "date": "2025-03-27",
+      "equity_usdt": 691578.37853296,
+      "close_drawdown_pct": 5.438818114800592
+    },
+    {
+      "date": "2025-03-28",
+      "equity_usdt": 766786.71127841,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-03-29",
+      "equity_usdt": 752030.51893261,
+      "close_drawdown_pct": 1.9244194153023364
+    },
+    {
+      "date": "2025-03-30",
+      "equity_usdt": 753163.49808061,
+      "close_drawdown_pct": 1.7766626621745996
+    },
+    {
+      "date": "2025-03-31",
+      "equity_usdt": 751876.81347521,
+      "close_drawdown_pct": 1.9444648145169108
+    },
+    {
+      "date": "2025-04-01",
+      "equity_usdt": 764801.65309281,
+      "close_drawdown_pct": 0.25888009747724317
+    },
+    {
+      "date": "2025-04-02",
+      "equity_usdt": 764443.77409281,
+      "close_drawdown_pct": 0.3055526590561075
+    },
+    {
+      "date": "2025-04-03",
+      "equity_usdt": 731492.24412336,
+      "close_drawdown_pct": 4.602905428056525
+    },
+    {
+      "date": "2025-04-04",
+      "equity_usdt": 714163.09730509,
+      "close_drawdown_pct": 6.86287506020864
+    },
+    {
+      "date": "2025-04-05",
+      "equity_usdt": 722677.05239121,
+      "close_drawdown_pct": 5.7525330366848815
+    },
+    {
+      "date": "2025-04-06",
+      "equity_usdt": 798166.00341503,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-04-07",
+      "equity_usdt": 803497.96754038,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-04-08",
+      "equity_usdt": 794040.2804302,
+      "close_drawdown_pct": 1.1770642232153072
+    },
+    {
+      "date": "2025-04-09",
+      "equity_usdt": 889680.2264327,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-04-10",
+      "equity_usdt": 889082.03793269,
+      "close_drawdown_pct": 0.06723634877313645
+    },
+    {
+      "date": "2025-04-11",
+      "equity_usdt": 703721.35123263,
+      "close_drawdown_pct": 20.90176556420712
+    },
+    {
+      "date": "2025-04-12",
+      "equity_usdt": 617420.88083758,
+      "close_drawdown_pct": 30.60193286376418
+    },
+    {
+      "date": "2025-04-13",
+      "equity_usdt": 553759.00542644,
+      "close_drawdown_pct": 37.75752354901537
+    },
+    {
+      "date": "2025-04-14",
+      "equity_usdt": 510448.46122993,
+      "close_drawdown_pct": 42.62562591992788
+    },
+    {
+      "date": "2025-04-15",
+      "equity_usdt": 478353.18152097,
+      "close_drawdown_pct": 46.23313328666464
+    },
+    {
+      "date": "2025-04-16",
+      "equity_usdt": 462543.91040777,
+      "close_drawdown_pct": 48.010094338905795
+    },
+    {
+      "date": "2025-04-17",
+      "equity_usdt": 421182.63047705,
+      "close_drawdown_pct": 52.6590995322171
+    },
+    {
+      "date": "2025-04-18",
+      "equity_usdt": 409046.77010205,
+      "close_drawdown_pct": 54.02316945469481
+    },
+    {
+      "date": "2025-04-19",
+      "equity_usdt": 425066.33061379,
+      "close_drawdown_pct": 52.22257188763717
+    },
+    {
+      "date": "2025-04-20",
+      "equity_usdt": 426740.95922018,
+      "close_drawdown_pct": 52.03434374041795
+    },
+    {
+      "date": "2025-04-21",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-22",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-23",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-24",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-25",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-26",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-27",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-28",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-29",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-04-30",
+      "equity_usdt": 475637.29269793,
+      "close_drawdown_pct": 46.53839901499601
+    },
+    {
+      "date": "2025-05-01",
+      "equity_usdt": 472306.45404053,
+      "close_drawdown_pct": 46.912785064999106
+    },
+    {
+      "date": "2025-05-02",
+      "equity_usdt": 475123.95778588,
+      "close_drawdown_pct": 46.59609782596187
+    },
+    {
+      "date": "2025-05-03",
+      "equity_usdt": 476449.31044689,
+      "close_drawdown_pct": 46.4471282724489
+    },
+    {
+      "date": "2025-05-04",
+      "equity_usdt": 479226.36129439,
+      "close_drawdown_pct": 46.13498793651776
+    },
+    {
+      "date": "2025-05-05",
+      "equity_usdt": 479147.24379439,
+      "close_drawdown_pct": 46.14388073840875
+    },
+    {
+      "date": "2025-05-06",
+      "equity_usdt": 538359.16647888,
+      "close_drawdown_pct": 39.48846445227764
+    },
+    {
+      "date": "2025-05-07",
+      "equity_usdt": 541120.58530298,
+      "close_drawdown_pct": 39.17808115476722
+    },
+    {
+      "date": "2025-05-08",
+      "equity_usdt": 553041.26688194,
+      "close_drawdown_pct": 37.83819731506925
+    },
+    {
+      "date": "2025-05-09",
+      "equity_usdt": 553041.26688194,
+      "close_drawdown_pct": 37.83819731506925
+    },
+    {
+      "date": "2025-05-10",
+      "equity_usdt": 547848.37398194,
+      "close_drawdown_pct": 38.421878141698585
+    },
+    {
+      "date": "2025-05-11",
+      "equity_usdt": 557363.75618194,
+      "close_drawdown_pct": 37.35234979687368
+    },
+    {
+      "date": "2025-05-12",
+      "equity_usdt": 555468.66618194,
+      "close_drawdown_pct": 37.56535779049839
+    },
+    {
+      "date": "2025-05-13",
+      "equity_usdt": 526762.24808194,
+      "close_drawdown_pct": 40.791957331223536
+    },
+    {
+      "date": "2025-05-14",
+      "equity_usdt": 555594.34327994,
+      "close_drawdown_pct": 37.55123169279878
+    },
+    {
+      "date": "2025-05-15",
+      "equity_usdt": 593050.42170684,
+      "close_drawdown_pct": 33.34117089633873
+    },
+    {
+      "date": "2025-05-16",
+      "equity_usdt": 603547.87692244,
+      "close_drawdown_pct": 32.1612576079777
+    },
+    {
+      "date": "2025-05-17",
+      "equity_usdt": 613878.51865835,
+      "close_drawdown_pct": 31.000094143961853
+    },
+    {
+      "date": "2025-05-18",
+      "equity_usdt": 562570.42864335,
+      "close_drawdown_pct": 36.76712014843169
+    },
+    {
+      "date": "2025-05-19",
+      "equity_usdt": 607923.00426807,
+      "close_drawdown_pct": 31.669493576852414
+    },
+    {
+      "date": "2025-05-20",
+      "equity_usdt": 595816.54540119,
+      "close_drawdown_pct": 33.030258771716035
+    },
+    {
+      "date": "2025-05-21",
+      "equity_usdt": 561386.61560119,
+      "close_drawdown_pct": 36.900180657925844
+    },
+    {
+      "date": "2025-05-22",
+      "equity_usdt": 518852.52540119,
+      "close_drawdown_pct": 41.68100964977008
+    },
+    {
+      "date": "2025-05-23",
+      "equity_usdt": 558638.49680119,
+      "close_drawdown_pct": 37.209069033586275
+    },
+    {
+      "date": "2025-05-24",
+      "equity_usdt": 558038.63530122,
+      "close_drawdown_pct": 37.27649342744689
+    },
+    {
+      "date": "2025-05-25",
+      "equity_usdt": 577487.24726874,
+      "close_drawdown_pct": 35.09047069819034
+    },
+    {
+      "date": "2025-05-26",
+      "equity_usdt": 584603.71097687,
+      "close_drawdown_pct": 34.290580636941634
+    },
+    {
+      "date": "2025-05-27",
+      "equity_usdt": 574437.32992679,
+      "close_drawdown_pct": 35.43328121047732
+    },
+    {
+      "date": "2025-05-28",
+      "equity_usdt": 560476.18857782,
+      "close_drawdown_pct": 37.00251259656188
+    },
+    {
+      "date": "2025-05-29",
+      "equity_usdt": 529857.60796626,
+      "close_drawdown_pct": 40.44403908010861
+    },
+    {
+      "date": "2025-05-30",
+      "equity_usdt": 514143.48748792,
+      "close_drawdown_pct": 42.210305207135846
+    },
+    {
+      "date": "2025-05-31",
+      "equity_usdt": 523051.50993729,
+      "close_drawdown_pct": 41.20904405906156
+    },
+    {
+      "date": "2025-06-01",
+      "equity_usdt": 538479.62951799,
+      "close_drawdown_pct": 39.47492441446057
+    },
+    {
+      "date": "2025-06-02",
+      "equity_usdt": 542664.75392288,
+      "close_drawdown_pct": 39.00451670160503
+    },
+    {
+      "date": "2025-06-03",
+      "equity_usdt": 536023.0065821,
+      "close_drawdown_pct": 39.75104867381837
+    },
+    {
+      "date": "2025-06-04",
+      "equity_usdt": 526559.91946297,
+      "close_drawdown_pct": 40.814699054930415
+    },
+    {
+      "date": "2025-06-05",
+      "equity_usdt": 482348.54407773,
+      "close_drawdown_pct": 45.784054793285065
+    },
+    {
+      "date": "2025-06-06",
+      "equity_usdt": 395002.74398907,
+      "close_drawdown_pct": 55.6017170829018
+    },
+    {
+      "date": "2025-06-07",
+      "equity_usdt": 422035.00724245,
+      "close_drawdown_pct": 52.56329243882831
+    },
+    {
+      "date": "2025-06-08",
+      "equity_usdt": 424252.41143121,
+      "close_drawdown_pct": 52.3140563512004
+    },
+    {
+      "date": "2025-06-09",
+      "equity_usdt": 467708.63706668,
+      "close_drawdown_pct": 47.429579395956154
+    },
+    {
+      "date": "2025-06-10",
+      "equity_usdt": 467708.63706668,
+      "close_drawdown_pct": 47.429579395956154
+    },
+    {
+      "date": "2025-06-11",
+      "equity_usdt": 471797.91398496,
+      "close_drawdown_pct": 46.969944934406236
+    },
+    {
+      "date": "2025-06-12",
+      "equity_usdt": 489050.73981952,
+      "close_drawdown_pct": 45.03072842470167
+    },
+    {
+      "date": "2025-06-13",
+      "equity_usdt": 488903.28681952,
+      "close_drawdown_pct": 45.0473021323799
+    },
+    {
+      "date": "2025-06-14",
+      "equity_usdt": 480807.88152689,
+      "close_drawdown_pct": 45.95722516451131
+    },
+    {
+      "date": "2025-06-15",
+      "equity_usdt": 483257.60567648,
+      "close_drawdown_pct": 45.681876328288155
+    },
+    {
+      "date": "2025-06-16",
+      "equity_usdt": 500397.29620186,
+      "close_drawdown_pct": 43.755376220029696
+    },
+    {
+      "date": "2025-06-17",
+      "equity_usdt": 467177.79174768,
+      "close_drawdown_pct": 47.48924637553246
+    },
+    {
+      "date": "2025-06-18",
+      "equity_usdt": 456503.16335586,
+      "close_drawdown_pct": 48.68907391745968
+    },
+    {
+      "date": "2025-06-19",
+      "equity_usdt": 450794.32839024,
+      "close_drawdown_pct": 49.33074659894776
+    },
+    {
+      "date": "2025-06-20",
+      "equity_usdt": 493644.68217392,
+      "close_drawdown_pct": 44.51436960072059
+    },
+    {
+      "date": "2025-06-21",
+      "equity_usdt": 513316.89068682,
+      "close_drawdown_pct": 42.30321463420206
+    },
+    {
+      "date": "2025-06-22",
+      "equity_usdt": 513316.89068682,
+      "close_drawdown_pct": 42.30321463420206
+    },
+    {
+      "date": "2025-06-23",
+      "equity_usdt": 513316.89068682,
+      "close_drawdown_pct": 42.30321463420206
+    },
+    {
+      "date": "2025-06-24",
+      "equity_usdt": 535631.80082148,
+      "close_drawdown_pct": 39.79502017604997
+    },
+    {
+      "date": "2025-06-25",
+      "equity_usdt": 554525.42984387,
+      "close_drawdown_pct": 37.67137749398803
+    },
+    {
+      "date": "2025-06-26",
+      "equity_usdt": 548947.81303436,
+      "close_drawdown_pct": 38.298301263202774
+    },
+    {
+      "date": "2025-06-27",
+      "equity_usdt": 550301.94536876,
+      "close_drawdown_pct": 38.14609687625919
+    },
+    {
+      "date": "2025-06-28",
+      "equity_usdt": 553928.63495395,
+      "close_drawdown_pct": 37.73845720107707
+    },
+    {
+      "date": "2025-06-29",
+      "equity_usdt": 570480.37385326,
+      "close_drawdown_pct": 35.878042817621946
+    },
+    {
+      "date": "2025-06-30",
+      "equity_usdt": 551390.87300964,
+      "close_drawdown_pct": 38.02370147974171
+    },
+    {
+      "date": "2025-07-01",
+      "equity_usdt": 528965.33274275,
+      "close_drawdown_pct": 40.544330757612535
+    },
+    {
+      "date": "2025-07-02",
+      "equity_usdt": 577532.12625266,
+      "close_drawdown_pct": 35.08542630329578
+    },
+    {
+      "date": "2025-07-03",
+      "equity_usdt": 588580.45621732,
+      "close_drawdown_pct": 33.843594728713086
+    },
+    {
+      "date": "2025-07-04",
+      "equity_usdt": 563769.62737579,
+      "close_drawdown_pct": 36.63233028834361
+    },
+    {
+      "date": "2025-07-05",
+      "equity_usdt": 566567.90657719,
+      "close_drawdown_pct": 36.317803886804924
+    },
+    {
+      "date": "2025-07-06",
+      "equity_usdt": 582016.25103335,
+      "close_drawdown_pct": 34.581410967508255
+    },
+    {
+      "date": "2025-07-07",
+      "equity_usdt": 567143.8761,
+      "close_drawdown_pct": 36.25306494963427
+    },
+    {
+      "date": "2025-07-08",
+      "equity_usdt": 577444.71790659,
+      "close_drawdown_pct": 35.09525099574966
+    },
+    {
+      "date": "2025-07-09",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-10",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-11",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-12",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-13",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-14",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-15",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-16",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-17",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-18",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-19",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-20",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-21",
+      "equity_usdt": 605770.81661183,
+      "close_drawdown_pct": 31.91139933043643
+    },
+    {
+      "date": "2025-07-22",
+      "equity_usdt": 595630.77113937,
+      "close_drawdown_pct": 33.05113978674824
+    },
+    {
+      "date": "2025-07-23",
+      "equity_usdt": 628650.21382457,
+      "close_drawdown_pct": 29.33975656115986
+    },
+    {
+      "date": "2025-07-24",
+      "equity_usdt": 648362.70912457,
+      "close_drawdown_pct": 27.12407336237279
+    },
+    {
+      "date": "2025-07-25",
+      "equity_usdt": 636915.44382457,
+      "close_drawdown_pct": 28.41074524288647
+    },
+    {
+      "date": "2025-07-26",
+      "equity_usdt": 644496.32192457,
+      "close_drawdown_pct": 27.55865503398113
+    },
+    {
+      "date": "2025-07-27",
+      "equity_usdt": 629641.25912457,
+      "close_drawdown_pct": 29.22836313343654
+    },
+    {
+      "date": "2025-07-28",
+      "equity_usdt": 652426.24792457,
+      "close_drawdown_pct": 26.66733186365552
+    },
+    {
+      "date": "2025-07-29",
+      "equity_usdt": 658986.54550705,
+      "close_drawdown_pct": 25.9299548390155
+    },
+    {
+      "date": "2025-07-30",
+      "equity_usdt": 673764.25242153,
+      "close_drawdown_pct": 24.268941536097298
+    },
+    {
+      "date": "2025-07-31",
+      "equity_usdt": 696176.48442153,
+      "close_drawdown_pct": 21.749808106565528
+    },
+    {
+      "date": "2025-08-01",
+      "equity_usdt": 695837.77642153,
+      "close_drawdown_pct": 21.787878863893482
+    },
+    {
+      "date": "2025-08-02",
+      "equity_usdt": 720898.91116579,
+      "close_drawdown_pct": 18.9710089369596
+    },
+    {
+      "date": "2025-08-03",
+      "equity_usdt": 676170.54948878,
+      "close_drawdown_pct": 23.99847390112485
+    },
+    {
+      "date": "2025-08-04",
+      "equity_usdt": 650734.81160513,
+      "close_drawdown_pct": 26.857449196736194
+    },
+    {
+      "date": "2025-08-05",
+      "equity_usdt": 634960.77708924,
+      "close_drawdown_pct": 28.630449657715108
+    },
+    {
+      "date": "2025-08-06",
+      "equity_usdt": 603882.6313414,
+      "close_drawdown_pct": 32.123631232903335
+    },
+    {
+      "date": "2025-08-07",
+      "equity_usdt": 646870.67622333,
+      "close_drawdown_pct": 27.29177776412426
+    },
+    {
+      "date": "2025-08-08",
+      "equity_usdt": 632238.5838294,
+      "close_drawdown_pct": 28.93642400433569
+    },
+    {
+      "date": "2025-08-09",
+      "equity_usdt": 622162.94719388,
+      "close_drawdown_pct": 30.068924911534644
+    },
+    {
+      "date": "2025-08-10",
+      "equity_usdt": 661019.28022396,
+      "close_drawdown_pct": 25.70147558809851
+    },
+    {
+      "date": "2025-08-11",
+      "equity_usdt": 718882.26482974,
+      "close_drawdown_pct": 19.197679854906823
+    },
+    {
+      "date": "2025-08-12",
+      "equity_usdt": 633650.11920494,
+      "close_drawdown_pct": 28.77776751927479
+    },
+    {
+      "date": "2025-08-13",
+      "equity_usdt": 575463.33910494,
+      "close_drawdown_pct": 35.31795784510773
+    },
+    {
+      "date": "2025-08-14",
+      "equity_usdt": 639686.9595419,
+      "close_drawdown_pct": 28.099227055229015
+    },
+    {
+      "date": "2025-08-15",
+      "equity_usdt": 638876.0655419,
+      "close_drawdown_pct": 28.190371488465594
+    },
+    {
+      "date": "2025-08-16",
+      "equity_usdt": 635471.45870672,
+      "close_drawdown_pct": 28.57304907688758
+    },
+    {
+      "date": "2025-08-17",
+      "equity_usdt": 632640.93130114,
+      "close_drawdown_pct": 28.89120017449368
+    },
+    {
+      "date": "2025-08-18",
+      "equity_usdt": 634026.60698609,
+      "close_drawdown_pct": 28.73545031698521
+    },
+    {
+      "date": "2025-08-19",
+      "equity_usdt": 769331.58088421,
+      "close_drawdown_pct": 13.5271799881453
+    },
+    {
+      "date": "2025-08-20",
+      "equity_usdt": 769331.58088421,
+      "close_drawdown_pct": 13.5271799881453
+    },
+    {
+      "date": "2025-08-21",
+      "equity_usdt": 769331.58088421,
+      "close_drawdown_pct": 13.5271799881453
+    },
+    {
+      "date": "2025-08-22",
+      "equity_usdt": 769331.58088421,
+      "close_drawdown_pct": 13.5271799881453
+    },
+    {
+      "date": "2025-08-23",
+      "equity_usdt": 726311.58899541,
+      "close_drawdown_pct": 18.362624298433584
+    },
+    {
+      "date": "2025-08-24",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-08-25",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-08-26",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-08-27",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-08-28",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-08-29",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-08-30",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-08-31",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-09-01",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-09-02",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-09-03",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-09-04",
+      "equity_usdt": 842025.80973756,
+      "close_drawdown_pct": 5.356353359253263
+    },
+    {
+      "date": "2025-09-05",
+      "equity_usdt": 850403.78733392,
+      "close_drawdown_pct": 4.41466921842969
+    },
+    {
+      "date": "2025-09-06",
+      "equity_usdt": 867353.7026323,
+      "close_drawdown_pct": 2.5094998334313168
+    },
+    {
+      "date": "2025-09-07",
+      "equity_usdt": 835658.59143631,
+      "close_drawdown_pct": 6.072028285151109
+    },
+    {
+      "date": "2025-09-08",
+      "equity_usdt": 804348.24471668,
+      "close_drawdown_pct": 9.591309234574164
+    },
+    {
+      "date": "2025-09-09",
+      "equity_usdt": 822324.50582134,
+      "close_drawdown_pct": 7.5707786472261285
+    },
+    {
+      "date": "2025-09-10",
+      "equity_usdt": 738281.22723791,
+      "close_drawdown_pct": 17.017237732915103
+    },
+    {
+      "date": "2025-09-11",
+      "equity_usdt": 782047.23113855,
+      "close_drawdown_pct": 12.09794172066967
+    },
+    {
+      "date": "2025-09-12",
+      "equity_usdt": 779014.49361487,
+      "close_drawdown_pct": 12.438821222492491
+    },
+    {
+      "date": "2025-09-13",
+      "equity_usdt": 775615.30697961,
+      "close_drawdown_pct": 12.820889580793493
+    },
+    {
+      "date": "2025-09-14",
+      "equity_usdt": 775438.05301998,
+      "close_drawdown_pct": 12.840812914409739
+    },
+    {
+      "date": "2025-09-15",
+      "equity_usdt": 814101.55305015,
+      "close_drawdown_pct": 8.495038007711308
+    },
+    {
+      "date": "2025-09-16",
+      "equity_usdt": 819935.21024203,
+      "close_drawdown_pct": 7.839335316051987
+    },
+    {
+      "date": "2025-09-17",
+      "equity_usdt": 725845.78219199,
+      "close_drawdown_pct": 18.414980953058567
+    },
+    {
+      "date": "2025-09-18",
+      "equity_usdt": 703395.74994613,
+      "close_drawdown_pct": 20.938363127784033
+    },
+    {
+      "date": "2025-09-19",
+      "equity_usdt": 808199.21911697,
+      "close_drawdown_pct": 9.158459960657972
+    },
+    {
+      "date": "2025-09-20",
+      "equity_usdt": 792496.0980151,
+      "close_drawdown_pct": 10.923489758480255
+    },
+    {
+      "date": "2025-09-21",
+      "equity_usdt": 841959.71445309,
+      "close_drawdown_pct": 5.363782464959588
+    },
+    {
+      "date": "2025-09-22",
+      "equity_usdt": 1086016.4841928,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-09-23",
+      "equity_usdt": 1116642.18798424,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-09-24",
+      "equity_usdt": 1059647.0007509,
+      "close_drawdown_pct": 5.104158507232082
+    },
+    {
+      "date": "2025-09-25",
+      "equity_usdt": 1219032.64313769,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-09-26",
+      "equity_usdt": 1219032.64313769,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-09-27",
+      "equity_usdt": 1219032.64313769,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-09-28",
+      "equity_usdt": 1219032.64313769,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-09-29",
+      "equity_usdt": 1219032.64313769,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-09-30",
+      "equity_usdt": 1200125.80924031,
+      "close_drawdown_pct": 1.5509702716996365
+    },
+    {
+      "date": "2025-10-01",
+      "equity_usdt": 1463960.81419033,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-02",
+      "equity_usdt": 1521309.13157518,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-03",
+      "equity_usdt": 1523109.46298303,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-04",
+      "equity_usdt": 1528140.26808436,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-05",
+      "equity_usdt": 1527439.77608436,
+      "close_drawdown_pct": 0.04583950928001013
+    },
+    {
+      "date": "2025-10-06",
+      "equity_usdt": 1523704.9546426,
+      "close_drawdown_pct": 0.29024256047647246
+    },
+    {
+      "date": "2025-10-07",
+      "equity_usdt": 1536202.3973426,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-08",
+      "equity_usdt": 1527127.52384407,
+      "close_drawdown_pct": 0.5907342362066359
+    },
+    {
+      "date": "2025-10-09",
+      "equity_usdt": 1535224.61966523,
+      "close_drawdown_pct": 0.06364901389696032
+    },
+    {
+      "date": "2025-10-10",
+      "equity_usdt": 1567138.66256183,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-11",
+      "equity_usdt": 1765536.0979556,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-12",
+      "equity_usdt": 1494873.15990848,
+      "close_drawdown_pct": 15.33035423974246
+    },
+    {
+      "date": "2025-10-13",
+      "equity_usdt": 1483593.40846211,
+      "close_drawdown_pct": 15.969239587905626
+    },
+    {
+      "date": "2025-10-14",
+      "equity_usdt": 1618797.06415376,
+      "close_drawdown_pct": 8.311301817717364
+    },
+    {
+      "date": "2025-10-15",
+      "equity_usdt": 1761968.02953607,
+      "close_drawdown_pct": 0.2020954668477959
+    },
+    {
+      "date": "2025-10-16",
+      "equity_usdt": 1867362.40787138,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-17",
+      "equity_usdt": 1867362.40787138,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-18",
+      "equity_usdt": 1867362.40787138,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-19",
+      "equity_usdt": 1867362.40787138,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-20",
+      "equity_usdt": 1867362.40787138,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-21",
+      "equity_usdt": 1867362.40787138,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-22",
+      "equity_usdt": 1971332.22594321,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-10-23",
+      "equity_usdt": 1777742.74323398,
+      "close_drawdown_pct": 9.820236293078644
+    },
+    {
+      "date": "2025-10-24",
+      "equity_usdt": 1705571.58473967,
+      "close_drawdown_pct": 13.481271076790902
+    },
+    {
+      "date": "2025-10-25",
+      "equity_usdt": 1659046.97113471,
+      "close_drawdown_pct": 15.841330583386737
+    },
+    {
+      "date": "2025-10-26",
+      "equity_usdt": 1431203.83453777,
+      "close_drawdown_pct": 27.399155976715626
+    },
+    {
+      "date": "2025-10-27",
+      "equity_usdt": 1405466.54632461,
+      "close_drawdown_pct": 28.70473440101422
+    },
+    {
+      "date": "2025-10-28",
+      "equity_usdt": 1354648.72555868,
+      "close_drawdown_pct": 31.282575928543434
+    },
+    {
+      "date": "2025-10-29",
+      "equity_usdt": 1598774.46484128,
+      "close_drawdown_pct": 18.898781047607283
+    },
+    {
+      "date": "2025-10-30",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-10-31",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-01",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-02",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-03",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-04",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-05",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-06",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-07",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-08",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-09",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-10",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-11",
+      "equity_usdt": 1639528.47170574,
+      "close_drawdown_pct": 16.831447782918175
+    },
+    {
+      "date": "2025-11-12",
+      "equity_usdt": 1754875.56098659,
+      "close_drawdown_pct": 10.98022251693539
+    },
+    {
+      "date": "2025-11-13",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-14",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-15",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-16",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-17",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-18",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-19",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-20",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-21",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-22",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-23",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-24",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-25",
+      "equity_usdt": 1881182.35005446,
+      "close_drawdown_pct": 4.573043280191724
+    },
+    {
+      "date": "2025-11-26",
+      "equity_usdt": 1363533.69626501,
+      "close_drawdown_pct": 30.831866982106014
+    },
+    {
+      "date": "2025-11-27",
+      "equity_usdt": 1219497.47029085,
+      "close_drawdown_pct": 38.138409434900545
+    },
+    {
+      "date": "2025-11-28",
+      "equity_usdt": 1292192.38458665,
+      "close_drawdown_pct": 34.450806029491886
+    },
+    {
+      "date": "2025-11-29",
+      "equity_usdt": 1306713.18659115,
+      "close_drawdown_pct": 33.7142076107473
+    },
+    {
+      "date": "2025-11-30",
+      "equity_usdt": 1384898.14817348,
+      "close_drawdown_pct": 29.748109935611833
+    },
+    {
+      "date": "2025-12-01",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-02",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-03",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-04",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-05",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-06",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-07",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-08",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-09",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-10",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-11",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-12",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-13",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-14",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-15",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-16",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-17",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-18",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-19",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-20",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-21",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-22",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-23",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-24",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-25",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-26",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-27",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-28",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-29",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-30",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2025-12-31",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-01",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-02",
+      "equity_usdt": 2236365.45841725,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-03",
+      "equity_usdt": 2279863.29997728,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-04",
+      "equity_usdt": 2349678.28975703,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-05",
+      "equity_usdt": 2532544.94543972,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-06",
+      "equity_usdt": 2522988.15148877,
+      "close_drawdown_pct": 0.37735930286879604
+    },
+    {
+      "date": "2026-01-07",
+      "equity_usdt": 2334196.07942756,
+      "close_drawdown_pct": 7.83199786322929
+    },
+    {
+      "date": "2026-01-08",
+      "equity_usdt": 2309577.41632255,
+      "close_drawdown_pct": 8.804089716893726
+    },
+    {
+      "date": "2026-01-09",
+      "equity_usdt": 2309577.41632255,
+      "close_drawdown_pct": 8.804089716893726
+    },
+    {
+      "date": "2026-01-10",
+      "equity_usdt": 2293435.38554303,
+      "close_drawdown_pct": 9.4414734998977
+    },
+    {
+      "date": "2026-01-11",
+      "equity_usdt": 2332263.59698359,
+      "close_drawdown_pct": 7.908303811814699
+    },
+    {
+      "date": "2026-01-12",
+      "equity_usdt": 2353790.9751094,
+      "close_drawdown_pct": 7.058274351742377
+    },
+    {
+      "date": "2026-01-13",
+      "equity_usdt": 2693706.22025872,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-14",
+      "equity_usdt": 2693706.22025872,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-15",
+      "equity_usdt": 2693706.22025872,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-16",
+      "equity_usdt": 2693706.22025872,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-17",
+      "equity_usdt": 2693706.22025872,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-18",
+      "equity_usdt": 2693706.22025872,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-19",
+      "equity_usdt": 2693706.22025872,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-01-20",
+      "equity_usdt": 2313434.5310961,
+      "close_drawdown_pct": 14.117043881871306
+    },
+    {
+      "date": "2026-01-21",
+      "equity_usdt": 2214279.94342107,
+      "close_drawdown_pct": 17.798016473808463
+    },
+    {
+      "date": "2026-01-22",
+      "equity_usdt": 2202728.88881327,
+      "close_drawdown_pct": 18.226832894876488
+    },
+    {
+      "date": "2026-01-23",
+      "equity_usdt": 2198297.75604061,
+      "close_drawdown_pct": 18.39133237664381
+    },
+    {
+      "date": "2026-01-24",
+      "equity_usdt": 2242078.25443774,
+      "close_drawdown_pct": 16.7660438404305
+    },
+    {
+      "date": "2026-01-25",
+      "equity_usdt": 2545119.38762615,
+      "close_drawdown_pct": 5.51607415519495
+    },
+    {
+      "date": "2026-01-26",
+      "equity_usdt": 2347153.78818862,
+      "close_drawdown_pct": 12.865264573536727
+    },
+    {
+      "date": "2026-01-27",
+      "equity_usdt": 2240793.64595128,
+      "close_drawdown_pct": 16.81373309758849
+    },
+    {
+      "date": "2026-01-28",
+      "equity_usdt": 2236053.49740988,
+      "close_drawdown_pct": 16.98970434886119
+    },
+    {
+      "date": "2026-01-29",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-01-30",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-01-31",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-01",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-02",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-03",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-04",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-05",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-06",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-07",
+      "equity_usdt": 2664602.92081457,
+      "close_drawdown_pct": 1.080418466767874
+    },
+    {
+      "date": "2026-02-08",
+      "equity_usdt": 2347260.2712159,
+      "close_drawdown_pct": 12.8613115430808
+    },
+    {
+      "date": "2026-02-09",
+      "equity_usdt": 2401599.99327108,
+      "close_drawdown_pct": 10.844026894647207
+    },
+    {
+      "date": "2026-02-10",
+      "equity_usdt": 2790000.31099032,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-11",
+      "equity_usdt": 3105859.72055276,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-12",
+      "equity_usdt": 3105859.72055276,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-13",
+      "equity_usdt": 3105859.72055276,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-14",
+      "equity_usdt": 3105859.72055276,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-15",
+      "equity_usdt": 3317445.75046749,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-16",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-17",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-18",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-19",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-20",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-21",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-22",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-23",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-24",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-25",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-26",
+      "equity_usdt": 3561884.76118475,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-27",
+      "equity_usdt": 4370676.67047471,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-02-28",
+      "equity_usdt": 4370676.67047471,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-01",
+      "equity_usdt": 4370676.67047471,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-02",
+      "equity_usdt": 4370676.67047471,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-03",
+      "equity_usdt": 4370676.67047471,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-04",
+      "equity_usdt": 4370676.67047471,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-05",
+      "equity_usdt": 3720029.81486902,
+      "close_drawdown_pct": 14.886638950005459
+    },
+    {
+      "date": "2026-03-06",
+      "equity_usdt": 4763581.75402053,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-07",
+      "equity_usdt": 4763581.75402053,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-08",
+      "equity_usdt": 4763581.75402053,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-09",
+      "equity_usdt": 4763581.75402053,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-10",
+      "equity_usdt": 4763581.75402053,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-11",
+      "equity_usdt": 4635197.52820425,
+      "close_drawdown_pct": 2.6951196063323857
+    },
+    {
+      "date": "2026-03-12",
+      "equity_usdt": 4486804.09187385,
+      "close_drawdown_pct": 5.8102847067351355
+    },
+    {
+      "date": "2026-03-13",
+      "equity_usdt": 4477889.60139242,
+      "close_drawdown_pct": 5.99742310262612
+    },
+    {
+      "date": "2026-03-14",
+      "equity_usdt": 4538313.78768197,
+      "close_drawdown_pct": 4.728961902426276
+    },
+    {
+      "date": "2026-03-15",
+      "equity_usdt": 4860571.42543499,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-16",
+      "equity_usdt": 5147424.83605247,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-17",
+      "equity_usdt": 5147424.83605247,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-18",
+      "equity_usdt": 5147424.83605247,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-19",
+      "equity_usdt": 5147424.83605247,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-20",
+      "equity_usdt": 4920371.1841005,
+      "close_drawdown_pct": 4.411014423400417
+    },
+    {
+      "date": "2026-03-21",
+      "equity_usdt": 5601740.07018968,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-22",
+      "equity_usdt": 5919118.21387782,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-23",
+      "equity_usdt": 5919118.21387782,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-03-24",
+      "equity_usdt": 5816013.7181228,
+      "close_drawdown_pct": 1.7418894509199756
+    },
+    {
+      "date": "2026-03-25",
+      "equity_usdt": 5485444.36433485,
+      "close_drawdown_pct": 7.3266630919144315
+    },
+    {
+      "date": "2026-03-26",
+      "equity_usdt": 4888056.53800631,
+      "close_drawdown_pct": 17.419176955346284
+    },
+    {
+      "date": "2026-03-27",
+      "equity_usdt": 5899180.91000022,
+      "close_drawdown_pct": 0.3368289525094492
+    },
+    {
+      "date": "2026-03-28",
+      "equity_usdt": 5899180.91000022,
+      "close_drawdown_pct": 0.3368289525094492
+    },
+    {
+      "date": "2026-03-29",
+      "equity_usdt": 5899180.91000022,
+      "close_drawdown_pct": 0.3368289525094492
+    },
+    {
+      "date": "2026-03-30",
+      "equity_usdt": 5899180.91000022,
+      "close_drawdown_pct": 0.3368289525094492
+    },
+    {
+      "date": "2026-03-31",
+      "equity_usdt": 5899180.91000022,
+      "close_drawdown_pct": 0.3368289525094492
+    },
+    {
+      "date": "2026-04-01",
+      "equity_usdt": 5899180.91000022,
+      "close_drawdown_pct": 0.3368289525094492
+    },
+    {
+      "date": "2026-04-02",
+      "equity_usdt": 6694062.52118708,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-03",
+      "equity_usdt": 6694062.52118708,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-04",
+      "equity_usdt": 6694062.52118708,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-05",
+      "equity_usdt": 6694062.52118708,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-06",
+      "equity_usdt": 6694062.52118708,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-07",
+      "equity_usdt": 6694062.52118708,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-08",
+      "equity_usdt": 6340246.85332788,
+      "close_drawdown_pct": 5.285514838550642
+    },
+    {
+      "date": "2026-04-09",
+      "equity_usdt": 6640042.13189074,
+      "close_drawdown_pct": 0.8069896139356714
+    },
+    {
+      "date": "2026-04-10",
+      "equity_usdt": 7113530.4835543,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-11",
+      "equity_usdt": 7136454.60975431,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-12",
+      "equity_usdt": 6584485.06157007,
+      "close_drawdown_pct": 7.7345065353571
+    },
+    {
+      "date": "2026-04-13",
+      "equity_usdt": 7469103.26461083,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-14",
+      "equity_usdt": 7711236.68731656,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-15",
+      "equity_usdt": 7711236.68731656,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-16",
+      "equity_usdt": 7711236.68731656,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-17",
+      "equity_usdt": 7711236.68731656,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-18",
+      "equity_usdt": 7711236.68731656,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-19",
+      "equity_usdt": 7711236.68731656,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-20",
+      "equity_usdt": 7711236.68731656,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-21",
+      "equity_usdt": 7932812.0380229,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-22",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-23",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-24",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-25",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-26",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-27",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-28",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-29",
+      "equity_usdt": 8379938.47810154,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-04-30",
+      "equity_usdt": 8601896.94365386,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-01",
+      "equity_usdt": 9034271.18573518,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-02",
+      "equity_usdt": 9141107.90305738,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-03",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-04",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-05",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-06",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-07",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-08",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-09",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-10",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-11",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-12",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-13",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-14",
+      "equity_usdt": 9234281.3822322,
+      "close_drawdown_pct": 0.0
+    },
+    {
+      "date": "2026-05-15",
+      "equity_usdt": 8522957.41782707,
+      "close_drawdown_pct": 7.70307872330811
+    },
+    {
+      "date": "2026-05-16",
+      "equity_usdt": 8165317.2784596,
+      "close_drawdown_pct": 11.576039970250507
+    },
+    {
+      "date": "2026-05-17",
+      "equity_usdt": 7889942.53842805,
+      "close_drawdown_pct": 14.55813168516622
+    },
+    {
+      "date": "2026-05-18",
+      "equity_usdt": 7981763.98616447,
+      "close_drawdown_pct": 13.563777669561972
+    },
+    {
+      "date": "2026-05-19",
+      "equity_usdt": 8020944.2378182,
+      "close_drawdown_pct": 13.139486378968247
+    },
+    {
+      "date": "2026-05-20",
+      "equity_usdt": 7867421.03666728,
+      "close_drawdown_pct": 14.802021824837542
+    },
+    {
+      "date": "2026-05-21",
+      "equity_usdt": 7857113.4114737,
+      "close_drawdown_pct": 14.913645293594014
+    },
+    {
+      "date": "2026-05-22",
+      "equity_usdt": 8313484.31685567,
+      "close_drawdown_pct": 9.97150755172187
+    },
+    {
+      "date": "2026-05-23",
+      "equity_usdt": 8454463.97183703,
+      "close_drawdown_pct": 8.444808839111474
+    },
+    {
+      "date": "2026-05-24",
+      "equity_usdt": 8451902.92647683,
+      "close_drawdown_pct": 8.47254294482248
+    },
+    {
+      "date": "2026-05-25",
+      "equity_usdt": 8450494.65297163,
+      "close_drawdown_pct": 8.487793438574043
+    },
+    {
+      "date": "2026-05-26",
+      "equity_usdt": 8441112.28702715,
+      "close_drawdown_pct": 8.589397077840799
+    },
+    {
+      "date": "2026-05-27",
+      "equity_usdt": 8430858.31888635,
+      "close_drawdown_pct": 8.7004394829437
+    },
+    {
+      "date": "2026-05-28",
+      "equity_usdt": 8428220.46751305,
+      "close_drawdown_pct": 8.729005337330332
+    },
+    {
+      "date": "2026-05-29",
+      "equity_usdt": 8427087.81792045,
+      "close_drawdown_pct": 8.741271041024179
+    },
+    {
+      "date": "2026-05-30",
+      "equity_usdt": 8434745.91907742,
+      "close_drawdown_pct": 8.65833983241161
+    },
+    {
+      "date": "2026-05-31",
+      "equity_usdt": 8431200.66305718,
+      "close_drawdown_pct": 8.69673216499811
+    },
+    {
+      "date": "2026-06-01",
+      "equity_usdt": 8417103.88743518,
+      "close_drawdown_pct": 8.84938915083704
+    },
+    {
+      "date": "2026-06-02",
+      "equity_usdt": 8332489.91281718,
+      "close_drawdown_pct": 9.765691904842411
+    },
+    {
+      "date": "2026-06-03",
+      "equity_usdt": 8332979.85181722,
+      "close_drawdown_pct": 9.760386251053443
+    },
+    {
+      "date": "2026-06-04",
+      "equity_usdt": 8332979.85181722,
+      "close_drawdown_pct": 9.760386251053443
+    },
+    {
+      "date": "2026-06-05",
+      "equity_usdt": 8332979.85181722,
+      "close_drawdown_pct": 9.760386251053443
+    },
+    {
+      "date": "2026-06-06",
+      "equity_usdt": 8332979.85181722,
+      "close_drawdown_pct": 9.760386251053443
+    },
+    {
+      "date": "2026-06-07",
+      "equity_usdt": 8332979.85181722,
+      "close_drawdown_pct": 9.760386251053443
+    },
+    {
+      "date": "2026-06-08",
+      "equity_usdt": 8332979.85181722,
+      "close_drawdown_pct": 9.760386251053443
+    },
+    {
+      "date": "2026-06-09",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-10",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-11",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-12",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-13",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-14",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-15",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-16",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-17",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-18",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-19",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-20",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-21",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-22",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-23",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-24",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-25",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-26",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-27",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-28",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-29",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-06-30",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-07-01",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-07-02",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-07-03",
+      "equity_usdt": 8986291.50529802,
+      "close_drawdown_pct": 2.6855351994291676
+    },
+    {
+      "date": "2026-07-04",
+      "equity_usdt": 8878331.08500841,
+      "close_drawdown_pct": 3.854661586430297
+    },
+    {
+      "date": "2026-07-05",
+      "equity_usdt": 8741537.48843715,
+      "close_drawdown_pct": 5.336028580882813
+    },
+    {
+      "date": "2026-07-06",
+      "equity_usdt": 8633667.47866631,
+      "close_drawdown_pct": 6.504175893118658
+    },
+    {
+      "date": "2026-07-07",
+      "equity_usdt": 8826366.12997165,
+      "close_drawdown_pct": 4.417401153114375
+    },
+    {
+      "date": "2026-07-08",
+      "equity_usdt": 9125235.71023033,
+      "close_drawdown_pct": 1.1808788089529787
+    },
+    {
+      "date": "2026-07-09",
+      "equity_usdt": 8869741.30333952,
+      "close_drawdown_pct": 3.9476821617553948
+    },
+    {
+      "date": "2026-07-10",
+      "equity_usdt": 8604777.78361479,
+      "close_drawdown_pct": 6.817028554367488
+    },
+    {
+      "date": "2026-07-11",
+      "equity_usdt": 8440350.71615506,
+      "close_drawdown_pct": 8.597644291030083
+    },
+    {
+      "date": "2026-07-12",
+      "equity_usdt": 8504265.47616602,
+      "close_drawdown_pct": 7.905497740959189
+    },
+    {
+      "date": "2026-07-13",
+      "equity_usdt": 8892709.07563556,
+      "close_drawdown_pct": 3.6989592634015245
+    },
+    {
+      "date": "2026-07-14",
+      "equity_usdt": 8162127.48983557,
+      "close_drawdown_pct": 11.610582870688512
+    },
+    {
+      "date": "2026-07-15",
+      "equity_usdt": 8098844.34446818,
+      "close_drawdown_pct": 12.295889531249603
+    },
+    {
+      "date": "2026-07-16",
+      "equity_usdt": 7845265.53816233,
+      "close_drawdown_pct": 15.041948437292518
+    },
+    {
+      "date": "2026-07-17",
+      "equity_usdt": 7779128.81159707,
+      "close_drawdown_pct": 15.758157136461193
+    },
+    {
+      "date": "2026-07-18",
+      "equity_usdt": 8162364.9172788,
+      "close_drawdown_pct": 11.608011718333477
+    },
+    {
+      "date": "2026-07-19",
+      "equity_usdt": 8130339.07415135,
+      "close_drawdown_pct": 11.95482639509946
+    },
+    {
+      "date": "2026-07-20",
+      "equity_usdt": 8269071.05055222,
+      "close_drawdown_pct": 10.452468272595139
+    },
+    {
+      "date": "2026-07-21",
+      "equity_usdt": 8477690.70852662,
+      "close_drawdown_pct": 8.193281560180154
+    },
+    {
+      "date": "2026-07-22",
+      "equity_usdt": 8478119.31627599,
+      "close_drawdown_pct": 8.18864007556832
+    },
+    {
+      "date": "2026-07-23",
+      "equity_usdt": 8486476.48961431,
+      "close_drawdown_pct": 8.098138465400806
+    },
+    {
+      "date": "2026-07-24",
+      "equity_usdt": 8495891.33182806,
+      "close_drawdown_pct": 7.996183133696643
+    },
+    {
+      "date": "2026-07-25",
+      "equity_usdt": 8411022.30684152,
+      "close_drawdown_pct": 8.915247882468936
+    },
+    {
+      "date": "2026-07-26",
+      "equity_usdt": 8128779.65978452,
+      "close_drawdown_pct": 11.971713625434788
+    },
+    {
+      "date": "2026-07-27",
+      "equity_usdt": 7705148.2654757,
+      "close_drawdown_pct": 16.559308228344925
+    },
+    {
+      "date": "2026-07-28",
+      "equity_usdt": 7590254.48601011,
+      "close_drawdown_pct": 17.803517438675666
+    },
+    {
+      "date": "2026-07-29",
+      "equity_usdt": 7579165.57785089,
+      "close_drawdown_pct": 17.92360158708115
+    },
+    {
+      "date": "2026-07-30",
+      "equity_usdt": 7359777.01493045,
+      "close_drawdown_pct": 20.299407064945065
+    },
+    {
+      "date": "2026-07-31",
+      "equity_usdt": 6464812.36782378,
+      "close_drawdown_pct": 29.99116985688991
+    },
+    {
+      "date": "2026-08-01",
+      "equity_usdt": 6500743.6140146,
+      "close_drawdown_pct": 29.60206273849566
+    },
+    {
+      "date": "2026-08-02",
+      "equity_usdt": 6295850.66271526,
+      "close_drawdown_pct": 31.820892150533908
+    },
+    {
+      "date": "2026-08-03",
+      "equity_usdt": 6309140.31202842,
+      "close_drawdown_pct": 31.67697570741218
+    },
+    {
+      "date": "2026-08-04",
+      "equity_usdt": 6155569.2318293,
+      "close_drawdown_pct": 33.34002964569274
+    },
+    {
+      "date": "2026-08-05",
+      "equity_usdt": 5998351.64474921,
+      "close_drawdown_pct": 35.04257238369717
+    },
+    {
+      "date": "2026-08-06",
+      "equity_usdt": 5924808.24302763,
+      "close_drawdown_pct": 35.838989545763354
+    },
+    {
+      "date": "2026-08-07",
+      "equity_usdt": 6082968.85894684,
+      "close_drawdown_pct": 34.12623454759394
+    },
+    {
+      "date": "2026-08-08",
+      "equity_usdt": 6094173.22785525,
+      "close_drawdown_pct": 34.004900050142204
+    },
+    {
+      "date": "2026-08-09",
+      "equity_usdt": 6074199.00493939,
+      "close_drawdown_pct": 34.221205164628884
+    },
+    {
+      "date": "2026-08-10",
+      "equity_usdt": 5816391.47559444,
+      "close_drawdown_pct": 37.01305781318476
+    },
+    {
+      "date": "2026-08-11",
+      "equity_usdt": 6007093.55264001,
+      "close_drawdown_pct": 34.94790440111197
+    },
+    {
+      "date": "2026-08-12",
+      "equity_usdt": 6039238.51519482,
+      "close_drawdown_pct": 34.59979975469454
+    },
+    {
+      "date": "2026-08-13",
+      "equity_usdt": 6040118.43754441,
+      "close_drawdown_pct": 34.59027088814642
+    },
+    {
+      "date": "2026-08-14",
+      "equity_usdt": 6161065.50574315,
+      "close_drawdown_pct": 33.280509324767436
+    },
+    {
+      "date": "2026-08-15",
+      "equity_usdt": 6152126.20524393,
+      "close_drawdown_pct": 33.377314913954045
+    },
+    {
+      "date": "2026-08-16",
+      "equity_usdt": 6203156.36558044,
+      "close_drawdown_pct": 32.82469843819128
+    },
+    {
+      "date": "2026-08-17",
+      "equity_usdt": 5748573.99557237,
+      "close_drawdown_pct": 37.74746774953951
+    },
+    {
+      "date": "2026-08-18",
+      "equity_usdt": 5845816.84316612,
+      "close_drawdown_pct": 36.69440424011627
+    },
+    {
+      "date": "2026-08-19",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-20",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-21",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-22",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-23",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-24",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-25",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-26",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-27",
+      "equity_usdt": 5998086.59252401,
+      "close_drawdown_pct": 35.04544269070027
+    },
+    {
+      "date": "2026-08-28",
+      "equity_usdt": 6003007.5853661,
+      "close_drawdown_pct": 34.99215221103654
+    },
+    {
+      "date": "2026-08-29",
+      "equity_usdt": 6002960.3358661,
+      "close_drawdown_pct": 34.992663885936224
+    },
+    {
+      "date": "2026-08-30",
+      "equity_usdt": 5895626.34320494,
+      "close_drawdown_pct": 36.15500655471914
+    },
+    {
+      "date": "2026-08-31",
+      "equity_usdt": 6090649.46221444,
+      "close_drawdown_pct": 34.043059658832384
+    }
+  ],
+  "monthly": [
+    {
+      "month": "2024-09",
+      "return_pct": -2.8458253978,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2024-10",
+      "return_pct": 148.67613907661064,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2024-11",
+      "return_pct": 188.256602719543,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2024-12",
+      "return_pct": 70.50521850484948,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-01",
+      "return_pct": 295.0764081372621,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-02",
+      "return_pct": -4.745039180266579,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-03",
+      "return_pct": 68.25402831736638,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-04",
+      "return_pct": -36.73999727435242,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-05",
+      "return_pct": 9.968565957142483,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-06",
+      "return_pct": 5.418082642710979,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-07",
+      "return_pct": 26.2582531737624,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-08",
+      "return_pct": 20.950050537432293,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-09",
+      "return_pct": 42.528387534149516,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-10",
+      "return_pct": 36.613049988782066,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-11",
+      "return_pct": -15.530704585285216,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2025-12",
+      "return_pct": 61.48230549421678,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-01",
+      "return_pct": 19.148814018098715,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-02",
+      "return_pct": 64.02731665319172,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-03",
+      "return_pct": 34.97179852838429,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-04",
+      "return_pct": 45.81510679002959,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-05",
+      "return_pct": -1.9844027627256449,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-06",
+      "return_pct": 6.583769790619149,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-07",
+      "return_pct": -28.05917364229348,
+      "terminal_settlement": false
+    },
+    {
+      "month": "2026-08",
+      "return_pct": -5.787683915957065,
+      "terminal_settlement": true
+    }
+  ],
+  "initial_equity_usdt": 10000.0,
+  "final_equity_usdt": 6090649.46221444,
+  "native_max_drawdown_pct": 66.31878024969151,
+  "native_max_drawdown_time": "2024-10-03 15:44 UTC",
+  "equity_note": "Daily-close line is a lower bound; dot marks exact native intraday trough. Settlement final: 6,077,107.24 USDT.",
+  "funding_note": "Signed funding is UNKNOWN. Existing diagnostic run is not certified venue-faithful or eligible for ranking.",
+  "monthly_note": "* Final month uses pre-settlement marked equity; terminal settlement is excluded from calendar returns.",
+  "source_checks": {
+    "trace_sha256": "f9b59944ac969f5441babdf2103637f7cd179c6d18971c7bf95c0e2c46e38a0b",
+    "raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "trace_rows": 3153600,
+    "interval_native_rows": 3153598,
+    "interval_native_with_seed": 3153599,
+    "sampled_minutes": 1051200,
+    "monotone_timestamps": true,
+    "contiguous_bar_opens": true,
+    "reproduced_all_native_DD_percent": "66.31878024969152066570091116",
+    "expected_DD_percent": "66.31878024969152066570091116",
+    "DD_exact_match": true,
+    "months": 24,
+    "days": 730,
+    "daily_monthly_exact_chain": true,
+    "drawdown_csv_rows": 1223,
+    "daily_curve_rows": 730,
+    "export_repair": "Last unrecovered episode has an extra end_observation field; recovered directly from durable JSON top10. No second trace pass."
+  },
+  "settlement_bridge": {
+    "final_interval_marked": {
+      "ns": "1788220800000000000",
+      "utc": "2026-09-01T00:00:00+00:00",
+      "equity": "6090649.46221444",
+      "phase": "pre_quote_paired_close",
+      "cash": "5990509.00011444",
+      "native_total_unrealized": "100140.46210000",
+      "positions": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "220.598",
+          "avg_px_open": "78089.15000000001",
+          "mark_ohlc": {
+            "open_time_ms": 1788220740000,
+            "open": "78524.9",
+            "high": "78543.08",
+            "low": "78524.9",
+            "close": "78543.08"
+          },
+          "low_native_pnl": "96125.5785",
+          "high_native_pnl": "100140.4621"
+        }
+      ]
+    },
+    "settled_total": "6077107.23887483",
+    "marked_to_settled_delta": "-13542.22333961",
+    "raw_settlement": {
+      "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+      "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+      "fill_count": 1,
+      "interval_cash_total_before_settlement": "5990509.00011444",
+      "settled_cash_total": "6077107.23887483"
+    },
+    "last_month_settled_return_percent": "-5.997159807430906013460571060",
+    "product_monthly_gross": 609.0649462214442,
+    "marked_growth_exact": "609.064946221444",
+    "terminal_fee_from_native_fill": "9527.33973961",
+    "native_cash_increment_before_terminal_fee": "96125.57850000",
+    "native_marked_U_to_cash_increment_residual": "-4014.88360000",
+    "fee_plus_native_U_to_cash_bridge_exact_match": true,
+    "bridge_qualification": "Cash/equity/fee arithmetic only. Residual labels the difference between final native marked U and actual boundary cash increment before terminalfee. Do not infer signedfunding or reconstruct PnL using rawOHLCprices; nativePnL mark normalization can differ from exportedOHLCprecision."
+  }
+}

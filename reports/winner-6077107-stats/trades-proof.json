@@ -1,0 +1,27 @@
+{
+  "BTC": {
+    "native_flat_to_flat_trades": 105,
+    "archived_attribution_rows": 105,
+    "source": "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-btc-fill-attribution.csv",
+    "source_sha256": "701eb127374d83869ee9ed3afcd382aa3744b57a92ae5b5b6fcca3022019e2d0",
+    "all_starts_ends_quantity_entrynotional_fees_counts_match": true
+  },
+  "SOL": {
+    "native_flat_to_flat_trades": 26,
+    "archived_attribution_rows": 26,
+    "source": "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-sol-fill-attribution.csv",
+    "source_sha256": "5eeaec9dc6e27ca1085a2df84b56ea6b860d733043becb5b5cc559952debaad7",
+    "all_starts_ends_quantity_entrynotional_fees_counts_match": true
+  },
+  "raw_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+  "raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "native_fills_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv",
+  "native_fills_sha256": "d279d5f7c4cc6c92b021a3dd893620bc157734863fa0b4e9866962b9b3272cf0",
+  "matched_fills": 621,
+  "native_fees_conserved": true,
+  "existing_helper": "scripts/analyze_split_cover_results.py",
+  "existing_helper_sha256": "1947933c2733350a4fb941214766ca0e5773e2fd0d14046053fea7a6cfefb24a",
+  "summary_path": "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc.json",
+  "summary_sha256": "49516098e683356022a9f9a9332fe617faa048adf6a8ed813ee10b5fe89cd092",
+  "terminal_flat": true
+}

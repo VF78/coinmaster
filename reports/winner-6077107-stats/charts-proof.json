@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "library": "ReportLab graphics.charts.lineplots.LinePlot 4.4.9",
+  "rasterization": "existing sharp",
+  "daily_rows": 730,
+  "monthly_rows": 24,
+  "data_basis": "Native equity daily closes; DD daily-close lower bound plus exact full-native trough dot. Monthly pre-settlement marks. Signed funding unknown.",
+  "quality_checks": [
+    "Viewed both PNGs; no clipped labels or overlaps",
+    "Exact native drawdown 66.3187802497% confirmed by risk source checks",
+    "Marked endpoint 6090649.46221444 distinguished from terminal settled 6077107.23887483",
+    "24 monthly values use verified native equity ratios; final month flagged",
+    "No source trace read, engine/backtest/optimizer/dependency install or product edits",
+    "Finalized risk JSON metadata additions compared: all plotted values unchanged",
+    "Final risk SHA b43f0ac3: additive settlement-bridge drawdown metadata only; all plotted values and prior bridge fields unchanged"
+  ],
+  "reproduce": [
+    "python3 charts-prepare.py (requires adjacent risk-statistics.json, risk-daily-curve.csv, risk-monthly.csv)",
+    "python3 charts-render.py (existing reportlab)",
+    "node charts-rasterize.cjs /path/to/existing/sharp"
+  ],
+  "source_sha256": {
+    "risk-statistics.json": "b43f0ac3099844f8e83c18c464e1e5481058412585d8f9108be1b81d2bedb397",
+    "risk-daily-curve.csv": "fe32086cef8faa170a42a83b71a234c7d7425aa85860691c6dc740c3c8299bd9",
+    "risk-monthly.csv": "11338dda897810a88c59a9683d0773f246c4c499a7463d8cdf70fe62d3af67df"
+  },
+  "artifact_sha256": {
+    "charts-monthly-returns.svg": "65017c5937c75b3456607b978176cf720066256455fad9af1b25e9072104851a",
+    "charts-equity-drawdown.svg": "dffad8fc581fc58ab224c2b873590b63207bd6f44f88b8a358ddc6139a60848a",
+    "charts-prepare.py": "16083068d5d8721e4e9de47e1d1c866979539aa824a5f91d5827ab5f7aceacb6",
+    "charts-equity-drawdown.png": "afc69e537842c1013d184a2e08904ee44b9ab82e10024cb7d00b6b9bc34114f0",
+    "charts-monthly-returns.png": "a6545fca1b9a77c417288ed397ae2ede1c1dff988a3402050fb9baf2c439d394",
+    "charts-render.py": "26471b08ddc3c4d5a31e46ff8d48bfd1a92b9f4271c78e0833a53eae76467148",
+    "charts-rasterize.cjs": "eeeac2dca33de39dbfbb17fab09d5c3747459a36bc694e036b41eb1877989381",
+    "charts-input.json": "74a86830a47b213ac1819901d71b1ac06ee268efcccf7135f52cf78fb59e7f07"
+  }
+}

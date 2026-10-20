@@ -1,0 +1,13 @@
+{
+  "daily_rows": 730,
+  "monthly_rows": 24,
+  "full_native_excursion_rows": 1223,
+  "daily_chain_exact": true,
+  "daily_monthly_min_end_max": true,
+  "monthly_day_counts_match": true,
+  "exposure_partition_exact": true,
+  "native_DD_from_full_excursion_csv_exact": true,
+  "terminal_marked_CSV_JSON_match": true,
+  "terminal_cash_U_fee_bridge_exact": true,
+  "no_second_trace_pass": true
+}

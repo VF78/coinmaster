@@ -1,0 +1,75 @@
+{
+  "status": "PREPARE_ONLY_NO_IMPLEMENTATION",
+  "head": "5b45a7c",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "534593d9fe446129e009837b659452e6358dab9a3bdb7a45edb0678d9771b16f",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "4b216a0cb05fe702d7c794fd8766675ac367f60d3fca978a6dcd751d8f03f66e",
+    "runtime/coinmaster/strategy/wave_overlay.py": "647c85a0faef4829d98d2bbec21f1c797d32b9a5571cb6b7714b26227f22052b",
+    "runtime/coinmaster/research/minute_risk.py": "2a31baa92464198971bff5b16d44a03b778d1e2cfafdb458b1a073cd008a8f32",
+    "runtime/coinmaster/research/native_baseline.py": "6be421eb352226808e842ef73f0ab54b9b14aa43a7d90a2ac8cfbe24d74b31fd",
+    "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+    "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "runtime/coinmaster/strategy/alpha_cushion.py": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c"
+  },
+  "control_reference_path": "reports/carry-pair-run-113/control-reference.json",
+  "control_reference_sha256": "2a850d87310209055de7cd901da773019a5af03dc20619a245c8e4d3cefd5072",
+  "control": {
+    "raw_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "terminal_TOTAL": "6077107.23887483",
+    "terminal_ACTIVE": "6077107.23887483",
+    "RESERVE": "0",
+    "roi_fraction": "606.710723887483",
+    "native_minute_DD_percent": "66.31878024969152066570091116",
+    "conditional_OHLC_bound_percent": "67.54771031869252420136632742",
+    "cash_only_DD_NOT_SELECTION_METRIC": "0.3789928254391618089349041484",
+    "liquidations": 0,
+    "fills": 621,
+    "native_fees": "945927.73761825",
+    "fee_attribution": {
+      "audited_total": "945927.73761825",
+      "maker": {
+        "count": 135,
+        "fees": "153876.76812554",
+        "notional": "769383840.6277"
+      },
+      "native_total": "945927.73761825",
+      "reconciled": true,
+      "taker": {
+        "count": 486,
+        "fees": "792050.96949271",
+        "notional": "1440092671.8044"
+      },
+      "unknown": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      }
+    },
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 899,
+        "SOLUSDT-PERP.P1SIM": 421
+      },
+      "count": 1320,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+    "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "source_hashes": {
+      "native_baseline": "2d2983638225214831c8cec20a52cf170175b637a344ec27a95a02ad25573b9c",
+      "split_cover": "ac0cbda7fe529d95c29d0a336fe1cabce3f9c4e355900f080c77119e2cb04525",
+      "wave_domain": "e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2",
+      "wave_strategy": "2b76b98397245c66493befc8332c1f1f8c2739a1f347fed82e232c12cc2e1d39"
+    },
+    "status": "NOT_FAITHFUL_DIAGNOSTIC",
+    "ranking_eligible": false,
+    "terminal_open_positions": 0,
+    "source_rows_per_instrument": 1051200,
+    "note": "Embedded control_terminal_total3386491 isoldercomparison; selectedbaselineisthisfileownterminal_total6077107. No controlrerun."
+  },
+  "parity": "CURRENT_HEAD_SOURCE_HASHES_DIFFER_FROM_WINNER_PINS; conditional OFF parity and narrow historical source-diff proof required; no control rerun authorized"
+}

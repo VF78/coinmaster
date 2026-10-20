@@ -1,0 +1,138 @@
+{
+  "status": "PASS",
+  "scope": "Existing native winner statistics only; no new economic engine",
+  "files": {
+    "README.md": {
+      "bytes": 16525,
+      "sha256": "0e1562c21a45510aec8ff9ef2cecb14446b793d3515bc5153d65ff446f5838f7"
+    },
+    "charts-equity-drawdown.png": {
+      "bytes": 164655,
+      "sha256": "afc69e537842c1013d184a2e08904ee44b9ab82e10024cb7d00b6b9bc34114f0"
+    },
+    "charts-equity-drawdown.svg": {
+      "bytes": 38114,
+      "sha256": "dffad8fc581fc58ab224c2b873590b63207bd6f44f88b8a358ddc6139a60848a"
+    },
+    "charts-input.json": {
+      "bytes": 94237,
+      "sha256": "74a86830a47b213ac1819901d71b1ac06ee268efcccf7135f52cf78fb59e7f07"
+    },
+    "charts-monthly-returns.png": {
+      "bytes": 130158,
+      "sha256": "a6545fca1b9a77c417288ed397ae2ede1c1dff988a3402050fb9baf2c439d394"
+    },
+    "charts-monthly-returns.svg": {
+      "bytes": 17179,
+      "sha256": "65017c5937c75b3456607b978176cf720066256455fad9af1b25e9072104851a"
+    },
+    "charts-prepare.py": {
+      "bytes": 1551,
+      "sha256": "16083068d5d8721e4e9de47e1d1c866979539aa824a5f91d5827ab5f7aceacb6"
+    },
+    "charts-proof.json": {
+      "bytes": 2338,
+      "sha256": "b3c8580553fadf90cd9c0a5a920ba345357e05e2a94d84955c61bcf33c9f9148"
+    },
+    "charts-rasterize.cjs": {
+      "bytes": 407,
+      "sha256": "eeeac2dca33de39dbfbb17fab09d5c3747459a36bc694e036b41eb1877989381"
+    },
+    "charts-render.py": {
+      "bytes": 5136,
+      "sha256": "26471b08ddc3c4d5a31e46ff8d48bfd1a92b9f4271c78e0833a53eae76467148"
+    },
+    "risk-analysis.py": {
+      "bytes": 13234,
+      "sha256": "de69f6028fee4bca205ef34922cafb75d043096eb469fae07f7519e283170d24"
+    },
+    "risk-daily-curve.csv": {
+      "bytes": 52980,
+      "sha256": "fe32086cef8faa170a42a83b71a234c7d7425aa85860691c6dc740c3c8299bd9"
+    },
+    "risk-daily.csv": {
+      "bytes": 151582,
+      "sha256": "5bafcf7ea9f1936a8870c96a6b7765575779c2dfb80524eac566536e34565797"
+    },
+    "risk-distribution.py": {
+      "bytes": 5531,
+      "sha256": "b2d8142b6feb245bfd496cbdd6610acc16c8eea6edf78a81106d7025f3aa02db"
+    },
+    "risk-drawdowns.csv": {
+      "bytes": 947367,
+      "sha256": "88af80d6e1cc0a514931c103654ab5768db2df59895a793c4f6a15ed53739153"
+    },
+    "risk-final-checks.json": {
+      "bytes": 391,
+      "sha256": "bc5fe2ecc2d7d8d3b8de6cc0b0c4e9de5b95d0df33200841b4a2756f73273aee"
+    },
+    "risk-manifest.json": {
+      "bytes": 1748,
+      "sha256": "b80c246596d6e65bac73c11bb5317f315878b4e2178b0113bc6afb37ca64006e"
+    },
+    "risk-monthly.csv": {
+      "bytes": 5972,
+      "sha256": "11338dda897810a88c59a9683d0773f246c4c499a7463d8cdf70fe62d3af67df"
+    },
+    "risk-native-dd-excursion-points.csv": {
+      "bytes": 201094,
+      "sha256": "7770495d42929389ca7400656bf5d07d60375bb6155810af637e24c1fd430eed"
+    },
+    "risk-render-report.py": {
+      "bytes": 9263,
+      "sha256": "3c2ae934b9bef99dad8eead978b92cfe4cc648e84701a7d97d41c92e0c4a70df"
+    },
+    "risk-return-distribution.json": {
+      "bytes": 14714,
+      "sha256": "ecbd8db83ccc6bd25acf7e71928ff0281df113abff32461a04a20279dc650dc4"
+    },
+    "risk-statistics.json": {
+      "bytes": 101981,
+      "sha256": "b43f0ac3099844f8e83c18c464e1e5481058412585d8f9108be1b81d2bedb397"
+    },
+    "risk-statistics.md": {
+      "bytes": 27606,
+      "sha256": "f706b632654fc8df7f2332df705e099ff8f5231c9d947a04711c82c6555a8bf3"
+    },
+    "risk-weekly.csv": {
+      "bytes": 24339,
+      "sha256": "62f5d975aaf2d6d86bf1458a4d2d413a6cff37b830c3695713dd63ed9276276a"
+    },
+    "trades-analysis.py": {
+      "bytes": 21898,
+      "sha256": "fe3b026f53a080c6c23eee43bb7b5621b9ebf5804d4cdb1a9d3d9590f86be5b2"
+    },
+    "trades-archived-sol-rights.csv": {
+      "bytes": 16478,
+      "sha256": "e8512274655dc61b3a5cd29ba505832a663ef0a9b40b2dc21e59b7c8c0a14efc"
+    },
+    "trades-cumulative-attribution.csv": {
+      "bytes": 28007,
+      "sha256": "45a415f34d445fd168e6a2a19a3434e63acc91d2404961faab03a33a6f22b093"
+    },
+    "trades-exit-reasons.csv": {
+      "bytes": 544,
+      "sha256": "3a5ea776ab8f66cfc2fdaab3f30b80b0f251bc6fff7d53bf53f4d24182493a50"
+    },
+    "trades-ledger.csv": {
+      "bytes": 59200,
+      "sha256": "791ec027990e6ad3028ff708afd7a7439b1dbdca8cfd16a666fd17d0bfa29317"
+    },
+    "trades-monthly-closed.csv": {
+      "bytes": 8182,
+      "sha256": "0e3549d5cfa43dedeebf0969e4f87ebebc707782041cf2f6151b6b2db95bb709"
+    },
+    "trades-proof.json": {
+      "bytes": 1772,
+      "sha256": "5d5d0b16872ec6ad4d5530b6cf3be7f36bcc93d1ea29fe64a98e8260611747f6"
+    },
+    "trades-report.md": {
+      "bytes": 25978,
+      "sha256": "7f0a0a946bc9020a7a34b95c56915cbc12e06049902ecf3b9ee876dd9086e12c"
+    },
+    "trades-statistics.json": {
+      "bytes": 305340,
+      "sha256": "1bc90416fecdcf193755f4253c99a43c58415a743768801c50c49247a201d481"
+    }
+  }
+}
