@@ -1,0 +1,13 @@
+{
+  "status": "PROJECT_READBACK_PASS",
+  "issue": "https://github.com/VF78/coinmaster/issues/113",
+  "issue_state": "closed",
+  "state_reason": "completed",
+  "project": "https://github.com/users/VF78/projects/2",
+  "project_status": "Done",
+  "result": "COMPLETE_VALID_NEGATIVE_RESULT",
+  "economic_goal_achieved": false,
+  "published_research_commit": "dd01b3f08f35bc16977f816ab0eb7dee180ac865",
+  "issue_body_sha256": "34995b4421dac028a07b2f553da34e817002d5248e676c2f68e09f8bb1fc0502",
+  "new_task_created": false
+}

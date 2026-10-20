@@ -1,8 +1,8 @@
-Updated: 2026-10-20 19:31UTC; FAST-RND COMPLETE validnegative №2, finalpublish/Projectclose pending.
+Updated: 2026-10-20 19:35UTC; FAST-RND COMPLETE validnegative №2, Projectclosed/Done verified.
 Status: No active research calculations. GoalDD50/NP90% NOT_ACHIEVED; no eligible ML/trading candidate.
-GitHub Project: https://github.com/VF78/coinmaster/issues/113 ; Project#2InProgress until rootfinalpublish+truthfulDone/close readback.
+GitHub Project: https://github.com/VF78/coinmaster/issues/113 ; Issue113CLOSED/completed, Project#2Done; actualREST+GraphQLreadbackPASS/project-final-readback.json.
 Canonical: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no Mac product edits/manual /opt changes.
-Branch/source: codex/nautilus-btc-sol-mvp / c1d0c69303635d2c433d29875c7271110b85017f scientific; lastpublishedmetadata1582bc87dece9629c62bf0c17a1dd843500878c2 beforefinalcommit.
+Branch/source: codex/nautilus-btc-sol-mvp / c1d0c69303635d2c433d29875c7271110b85017f scientific; publishedfinalresearchdd01b3f08f35bc16977f816ab0eb7dee180ac865/readbackPASS; latermetadataonlydoesnotchangeexperiment.
 origin/main absentlocally/divergenceUNAVAILABLE/notinferred. Deploycommitmarker NOT_PRESENT; readactualgitHEADlive.
 Owner-task SHA14f03b6b8a5ada7a238c7058dd52073a1764e7e9b382e2eb5b02e98d7ad54aa0; experiment-lock immutableT/V/U.
 Done: ownerSTOP correctedCORRIDOR311.7083days/535fills prefixpreserved; no fullR2TOTAL. Cleanup7paths/reclaimed1140477952B.
@@ -22,7 +22,7 @@ Top5DD66.256915/59.842724/55.100556/42.172484/40.268005%; endpointBTC/SOLexposur
 Rootverified MiniRocket19/RDST17/CNN13files; finalcomparison17inputs+6outputs/DD3inputs+11outputs SHA PASS. Comparison/attribution processed0Uoutcomedetails; DatasetUlabelsprogrammaticallysavedsealed; priorhistoricalUdatespreflightaccidentdisclosed/notpristineholdout.
 NO OOF/Optuna/policy/newnativecandidate run: failedinfogate validnegative ending, not a technicaloptimizationtodo.
 Current owners allcompleted: numericcomparison/CNN/nativeattribution. Do not restart finishedunits/repeatS0/launchmoremodelsorparametergrids.
-Next exactstep: rootcommit/pushfinalresearchresults+readback→markexisting#113/ProjectDone ascompletednegative(DDgoalnotachieved), readback→publishfinalstatus.
+Next exactstep: finishedtask/no further models, backtests, OOF/Optuna or production changes. A future owner scope may reuse frozen artifacts; do not repeat S0 or rejected recipes automatically.
 Protectedpilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active19:30; FAST-RNDunitsrunning0/disk2822889472Bfree. No production/live/Hermes/sites/VPN changes.
-Intentionaluntracked historicalfunding/CORRIDORfixtures retained; currentownedfinalreports pendingcommit. No secrets/newrealorders/deploy.
+Intentionaluntracked historicalfunding/CORRIDORfixtures retained; ownedfinalreports committed/published dd01b3f; Projectreadback metadata checkpoint only. No secrets/newrealorders/deploy.
 Keyfiles reports/fast-rnd-20261020/{README,completion,recognizer-comparison-results,recognizer-comparison-manifest,s0-drawdown-attribution-result,root-final-verification}.json/md/csv ; scientificfast_dataset/numeric/cnn.py.

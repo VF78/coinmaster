@@ -60,5 +60,9 @@
   "final_verification": "root-final-verification.json",
   "project": "https://github.com/VF78/coinmaster/issues/113",
   "recognizer_comparison_U_outcome_records_processed": 0,
-  "dataset_U_labels": "Generated/programmatically saved by frozen DatasetBuilder; not used for recognizer fitting, selection or model evaluation."
+  "dataset_U_labels": "Generated/programmatically saved by frozen DatasetBuilder; not used for recognizer fitting, selection or model evaluation.",
+  "project_issue_state": "closed",
+  "project_item_status": "Done",
+  "project_readback": "project-final-readback.json",
+  "published_research_commit": "dd01b3f08f35bc16977f816ab0eb7dee180ac865"
 }
