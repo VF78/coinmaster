@@ -1,6 +1,6 @@
 # CoinMaster FAST-RND — 20.10.2026
 
-Current: FAST-02, RDST running. S0, common causal dataset, controls, STUMPY and MiniRocket complete. No recognizer selected; mandatory CNN follows RDST. No trading-policy optimization yet.
+Current: FAST-03, mandatory two-seed CNN training. S0, common causal dataset and the complete numeric branch are finished. No recognizer selected; no trading-policy optimization yet.
 
 [Owner task](owner-task.txt) · [Frozen experiment](experiment-lock.json) · [Project #2](https://github.com/users/VF78/projects/2) · [Issue #113](https://github.com/VF78/coinmaster/issues/113)
 
@@ -28,17 +28,19 @@ Common5,959T/3,432V IDs; lower log loss is better. No U outcomes parsed or model
 |Simple38 logistic|1.298052054|1.427180786|1.362616420|3.731 /0.274|
 |STUMPY analogue|1.119859150|1.127457444|1.123658297|253.620 /66.968|
 |MiniRocket|7.125161290|7.300339389|7.212750340|72.438 /4.584|
-|RDST|Pending|Pending|Pending|Running|
-|CNN7/42|Pending|Pending|Pending|Not trained|
+|RDST|9.180662883|7.822216766|8.501439825|208.741 /16.477|
+|CNN7/42|Pending|Pending|Pending|Training|
 
 STUMPY is2.0963%worse than prior. Catalogue3TFpatterns/68occurrence records/6realprice match-continuationSVGs; anyTF≥3independentreadyage-matchedanalogues3226/3432. Fallback forecasts included on every V row. MiniRocket fixedrecipe is negative on both assets; actual1932features/TF,5816includingcontext. No retuning.
 
 MiniRocket initially OOM under an inherited650MiB cap, then under verified768MiB. A single focused memory correction chunks existing StandardScaler, preserves float32 transform rounding in a C/f64 diskmap and closes the obsolete owned mapping before unchanged C1/lbfgs1000 heads. Ten focused testsPASS3.981s; synthetic standardized values/probabilities exactly unchanged; stats drift at reduction precision; independent scopedGO. Corrected actual run succeeded at768MiB/swap0/CPU76.331s; root verified19artifacthashes. Both failed attempts preserved; exact original allocation siteUNKNOWN.
 
-RDST actual launch18:09:58UTC/PID334745, same c1d0c69source/IDs/data/lock,512/.8/seed7 fit(X)withouty; effective768MiB/system.slice/swap0/thread1 verified. CNN minimal immutable package prepared only; syntheticB128resourceprobe and3TRAINPNGQA require RDST exit, then actualtwo-seedfit.
+RDST completed successfully:512shapelets/TF,1536features/TF,18coefficient/nearest-TRAIN-ID associations; all5959T/3432V IDs match. CPU221.525s/768MiBpeak/swap0, root verified17artifacthashes. All numeric methods are worse than prior; mandatory CNN remains a separate fixed experiment.
+
+CNN launched18:18:20UTC in cm113-fast-cnn-validation-20261020T180922Z-fit-b32.service. Both seeds7/42 use batch32 solely for resources: syntheticB128OOMunderverified768MiB; B64forward/backward+oneAdamstepPASS but736.4MiBpeak leaves only31.6MiB before actual data. Three TRAIN chart previews passed root visual QA. Same c1d0c69 source/data/IDs, architecture/lr, train-only context statistics and inner-T last15% early stopping; freshfullTrefit exactlyeachbestepoch, noVepochchoice/Ureads. No additional model/hyperparameter search, no whole-fit automatic repeats.
 
 ## Reproduce and inspect
-[S0](s0-completion.md) · [Dataset](dataset-completion.md) · [Numeric controls/STUMPY](numeric-validation-summary.md) · [MiniRocket](minirocket-memory-r2-completion.md) · [Memory review](numeric-memory-review.json) · [CNN preparation](cnn-prepare.md)
+[S0](s0-completion.md) · [Dataset](dataset-completion.md) · [Numeric controls/STUMPY](numeric-validation-summary.md) · [MiniRocket](minirocket-memory-r2-completion.md) · [RDST](rdst-completion.md) · [Memory review](numeric-memory-review.json) · [CNN preparation](cnn-prepare.md)
 
 Exact argv, source/input hashes, model/probability locations and systemd receipts are in corresponding JSON/manifest files. Scientific source checkpointc1d0c69; originalS0source75ffc9c.
 

@@ -52,5 +52,30 @@
     "minimum_fresh_MemAvailable_bytes": 1055306368,
     "minimum_disk_available_bytes": 2000000000,
     "no_success_guarantee": "mappedpagesandJITstatecounttowardcgroupcap"
+  },
+  "old_failed_attempts": [
+    {
+      "unit": "cm113-fast-numeric-validation-20261020T173657Z-minirocket",
+      "result": "OOM",
+      "unit_cap_bytes": 805306368,
+      "effective_upper_cap_bytes": 681574400,
+      "manifest": {
+        "manifest": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-failure-manifest.json",
+        "sha256": "24fc0572be459457e2bdcaf35c6a7a69e6d287f59a4c8bc496d34fd1c54351fa"
+      }
+    },
+    {
+      "unit": "cm113-fast-numeric-validation-20261020T173657Z-minirocket-resource-r1-guard1",
+      "result": "OOM",
+      "effective_cap_bytes": 805306368,
+      "manifest": {
+        "manifest": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-resource-r1-failure-manifest.json",
+        "sha256": "ca1fcc6230dd29dbbf7c0095e1f48988c4dae3cd8bf034296aff5b2b335db3fc"
+      }
+    }
+  ],
+  "prepared_no_fit_receipt": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/numeric-memory-r2-prepare.json",
+    "sha256": "4752b972a54b4565e7d161f4a55014862b24d99c09e309599edabafba8eb0f0d"
   }
 }

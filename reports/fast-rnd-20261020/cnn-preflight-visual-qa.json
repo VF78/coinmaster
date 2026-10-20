@@ -1,0 +1,29 @@
+{
+  "status": "ROOT_VISUAL_QA_PASS",
+  "utc_recorded": "2026-10-20T18:17:02.711504+00:00",
+  "reviewer": "root",
+  "images": [
+    {
+      "sample_id": "0",
+      "decision_ns": 1725148800000000000,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/train-preview/preview-0.png",
+      "sha256": "b1b2e745870c164aeeebdb84c79439ce4f58ca85d81a4ecb2d58273b2884a8aa"
+    },
+    {
+      "sample_id": "5219",
+      "decision_ns": 1743937200000000000,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/train-preview/preview-2979.png",
+      "sha256": "d317a3257cf7b25b6e2b27e94c7a1cfa5f0c959064b27754630489f99c10a2e6"
+    },
+    {
+      "sample_id": "10439",
+      "decision_ns": 1762729200000000000,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/train-preview/preview-5958.png",
+      "sha256": "0d94a5b5092797d31f712a26725e49a16b3695a799d951838be6b60f6d75dcc7"
+    }
+  ],
+  "root_observation": "Six white-on-black 20bar panels; OHLC/MA/volume+divider present; no future/labels/text; readable consistent geometry",
+  "source_changes": false,
+  "pilot_after_probes": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "actual_training": false
+}

@@ -1,4 +1,4 @@
-Updated: 2026-10-20 18:11 UTC, FAST-RND RDST active.
+Updated: 2026-10-20 18:19 UTC, FAST-RND CNN active.
 Status: IN_PROGRESS; do not start duplicate fits or another S0/CORRIDOR engine.
 GitHub Project item: https://github.com/VF78/coinmaster/issues/113 ; Project #2 In Progress, current checklist read back.
 Canonical root: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no product development on Mac or manual /opt edits.
@@ -26,11 +26,13 @@ MiniRocket firstattempt OOM: inheritedoldrisk.slice650MiB cappedunit768MiB; no s
 ONEresource-onlyretry actually dispatched17:54:09UTC PID329247, effective768MiB ancestry proven/system.slice max; failedOOM CPU43.757401s. No scores/model; sampledpeak740159488B notcertifiedfinalpeak.
 Current owner: /root/chop_pair_failure_data; ONE memorycorrection DONE/c1d0c69: chunk128 scaler/f32rounding→C-f64 diskmap/closeoldownedmap. Tests10/10PASS+independentGO; standardizedf32/probadrift0synthetic. ExactoriginalOOMallocUNKNOWN.
 MiniRocket COMPLETE correctedattempt18:05:35UTC PID333276/actualexitSUCCESS: VLL BTC7.125161290/SOL7.300339389/mean7.212750340, same5959T/3432Vhashes/actual1932kernelsperTF+20context=5816. Fit72.438s/infer4.584s/CPU76.331s/768MiBpeak/swap0; no tune/repeat. Root19artifacthashesPASS.
-CURRENT RDST ONEactualfit18:09:58UTC PID334745/invocationec1006ac845b4f859d8667966260ca00; cm113-fast-numeric-validation-20261020T173657Z-rdst.service, sourcec1d0c69/sameIDs/data/lock,512/.8/seed7 fitXwithouty; effective768MiB/system.slice/swap0/thread1 proofPASS. Noauto-repeats.
-CNN prepared ONLY: jobcm113-fast-cnn-validation-20261020T180922Z/fivefilemanifest6d248410...ba569. No imports/probe/fit. Owner sol_corridor_review available; afterRDSTexit rootGO syntheticB128memoryprobe(nooptimizer/marketlabels),3TRAINPNGvisualQA, thenfixedCNNseeds7/42. Smallerbatchonlymemoryreason.
-Next exact step: wait RDST result/artefacts, then mandatoryCNN. No selection/policytrialbeforeallfourcompleted.
+RDST COMPLETE: same5959T/3432V/hashPASS; BTC/SOL/meanLL9.180662883/7.822216766/8.501439825;512shapelets/TF/1536featuresTF/18TRAINIDexplanations. Fit208.741s/infer16.477s/CPU221.525s/768MiB/swap0SUCCESS. Root17artifacthashes/pilot/sourcePASS. Allnumericmethodsnegativevsprior, no selectionyet.
+CURRENT CNN ONEactualexperiment18:18:20UTC unitcm113-fast-cnn-validation-20261020T180922Z-fit-b32.service, immutablejob180922Z/c1d0c69; BOTHseeds7/42 batch32, innerTlast15%purged/<=30epochs/patience2→freshallTrefitEXACTbestepoch. VNOTepochchoice/Uunopened.
+CNN exception: B128syntheticOOMunderverified768MiB; B64+oneAdamstepPASSbutpeak772141056B/only31.6MiBheadroombeforeactualdata. Rootchose32forbothseedssolelyresources. ThreeTRAINPNGrootvisualQA PASS. Actualfitcapacitynotyetprovenatlaunch.
+Current owner sol_corridor_review; effective768MiB/system.slice/swap0/thread1/PrivateNetwork/freshRAM+diskguard. Noproductioncredentials/noautomaticwholefitrepeat. Firstepochcostpending.
+Next exact step: wait actualcap+firstepoch/seedresults; completeCNNexports then numericownercommonVcomparison/selectionrequiresallfour. NoOOF/Optunabeforeinfogate.
 Policy gate: only if recognizer adds information over controls; causalOOF then bounded Optuna8-trial batches/24+24+16 ceilings. No trade search yet.
 Protected runtime: pilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active; no deploy/restart/orders. Hermes/sites/VPN untouched.
 Blocks/limits: JKXofficialZIP403 contents/weights unverified; historical execution/slippage assumptions explicit; no claim new unseen holdout.
-Intentional untracked: original funding fixture SQLite/initial diagnostics; historical CORRIDOR raw release-audit/progress/observer artifacts retained. Completed MiniRocket/RDST launch/CNNprepare receipts pending checkpoint.
+Intentional untracked: original funding fixture SQLite/initial diagnostics; historical CORRIDOR raw release-audit/progress/observer artifacts retained. RDSTcompletion/CNNprobe-renderer-actualfit receipts pending checkpoint.
 Key files: reports/fast-rnd-20261020/{README,experiment-lock,s0-completion,dataset-completion,numeric-contract,cnn-implementation}.json/md; runtime/coinmaster/research/fast_{dataset,numeric,cnn}.py.

@@ -1,0 +1,102 @@
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: python invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: CPU: 0 PID: 336328 Comm: python Not tainted 6.8.0-138-generic #138-Ubuntu
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: Hardware name: Hetzner vServer/Standard PC (Q35 + ICH9, 2009), BIOS 20171111 11/11/2017
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: Call Trace:
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  <TASK>
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  dump_stack_lvl+0x76/0xa0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  dump_stack+0x10/0x20
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  dump_header+0x49/0x210
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  oom_kill_process+0x118/0x280
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  out_of_memory+0x103/0x350
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  mem_cgroup_out_of_memory+0x145/0x170
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  try_charge_memcg+0x6d6/0x7d0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  ? __alloc_pages+0x1e9/0x350
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  __mem_cgroup_charge+0x45/0xc0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  __filemap_add_folio+0x1da/0x4a0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  ? __pfx_workingset_update_node+0x10/0x10
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  filemap_add_folio+0x3d/0xb0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  __filemap_get_folio+0x16c/0x2e0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  filemap_fault+0x15c/0x8e0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  __do_fault+0x3a/0x190
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  do_read_fault+0x133/0x200
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  do_fault+0xf0/0x260
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  handle_pte_fault+0x114/0x1d0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  __handle_mm_fault+0x654/0x790
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  handle_mm_fault+0x18a/0x380
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  do_user_addr_fault+0x169/0x670
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  exc_page_fault+0x83/0x1b0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  asm_exc_page_fault+0x27/0x30
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: RIP: 0033:0x73a4d87161df
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: Code: Unable to access opcode bytes at 0x73a4d87161b5.
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: RSP: 002b:00007ffd99e8c810 EFLAGS: 00010206
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: RAX: 0003f2cd7b095e8e RBX: 00000000002c609c RCX: 001fffffffffffff
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: RDX: 000000007b095e8e RSI: 0000000031255174 RDI: 00000000000000d5
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: RBP: 00000000000b1827 R08: 00000000000025e8 R09: 0000000000000001
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: R10: 0000000000000008 R11: 0000000000000000 R12: 00007ffd99e8ca60
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: R13: 00007ffd99e8ca90 R14: 000073a49faa90dc R15: 00007ffd99e8c860
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel:  </TASK>
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: memory: usage 786432kB, limit 786432kB, failcnt 61475
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: swap: usage 0kB, limit 0kB, failcnt 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: Memory cgroup stats for /system.slice/cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service:
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: anon 802275328
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: file 106496
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: kernel 2924544
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: kernel_stack 16384
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pagetables 2162688
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: sec_pagetables 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: percpu 1344
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: sock 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: vmalloc 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: shmem 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: zswap 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: zswapped 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: file_mapped 16384
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: file_dirty 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: file_writeback 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: swapcached 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: anon_thp 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: file_thp 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: shmem_thp 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: inactive_anon 98574336
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: active_anon 703700992
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: inactive_file 49152
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: active_file 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: unevictable 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: slab_reclaimable 504216
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: slab_unreclaimable 222800
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: slab 727016
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: workingset_refault_anon 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: workingset_refault_file 29142
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: workingset_activate_anon 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: workingset_activate_file 1688
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: workingset_restore_anon 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: workingset_restore_file 1688
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: workingset_nodereclaim 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgscan 98751
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgsteal 51993
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgscan_kswapd 345
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgscan_direct 98406
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgscan_khugepaged 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgsteal_kswapd 341
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgsteal_direct 51652
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgsteal_khugepaged 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgfault 245944
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgmajfault 1460
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgrefill 374770
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgactivate 45813
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pgdeactivate 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pglazyfree 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: pglazyfreed 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: zswpin 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: zswpout 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: zswpwb 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: thp_fault_alloc 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: thp_collapse_alloc 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: thp_swpout 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: thp_swpout_fallback 0
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: Tasks state (memory values in pages):
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: [ 336326]   994 336326      701      448        0      448         0    49152        0             0 sh
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: [ 336328]   994 336328   317359   199719   195815     3904         0  2113536        0             0 python
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service,mems_allowed=0,oom_memcg=/system.slice/cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service,task_memcg=/system.slice/cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service,task=python,pid=336328,uid=994
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 kernel: Memory cgroup out of memory: Killed process 336328 (python) total-vm:1269436kB, anon-rss:783260kB, file-rss:15616kB, shmem-rss:0kB, UID:994 pgtables:2064kB oom_score_adj:0

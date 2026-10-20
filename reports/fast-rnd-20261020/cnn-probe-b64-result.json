@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-20T18:16:51.890569+00:00",
+  "unit_status": "MainPID=0\nResult=success\nExecMainStatus=0\nActiveState=inactive\n",
+  "effective_cap_proof": {
+    "status": "EFFECTIVE_CAP_ACCEPTED_BEFORE_IMPORT",
+    "utc": "2026-10-20T18:16:27.495270+00:00",
+    "pid": 336939,
+    "uid": 994,
+    "effective_memory_max": 805306368,
+    "ancestor_caps": [
+      {
+        "path": "/sys/fs/cgroup/system.slice/cm113-fast-cnn-validation-20261020T180922Z-probe-b64.service",
+        "memory_max": "805306368"
+      },
+      {
+        "path": "/sys/fs/cgroup/system.slice",
+        "memory_max": "max"
+      },
+      {
+        "path": "/sys/fs/cgroup",
+        "memory_max": "ROOT_CGROUP_NO_LIMIT_FILE"
+      }
+    ]
+  },
+  "self_result": {
+    "status": "SYNTHETIC_B64_FORWARD_BACKWARD_ADAM_PASS",
+    "batch": 64,
+    "shape": [
+      64,
+      6
+    ],
+    "seconds": 6.535173448733985,
+    "maxrss_bytes": 706875392,
+    "self_cgroup_metrics": {
+      "memory.peak": "772141056",
+      "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+      "memory.current": "714625024",
+      "memory.max": "805306368",
+      "memory.swap.max": "0"
+    },
+    "optimizer": "Adam1e-5_one_step",
+    "market_data_or_labels": false,
+    "batch_reason": "B128 actual effective768MiB memcg OOM; single authorized halving"
+  },
+  "actual_training": false
+}

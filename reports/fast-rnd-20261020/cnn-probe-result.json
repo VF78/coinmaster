@@ -1,0 +1,40 @@
+{
+  "status": "OOM_NO_RETRY",
+  "utc": "2026-10-20T18:15:34.007956+00:00",
+  "unit_status": "MainPID=0\nResult=oom-kill\nNRestarts=0\nExecMainStatus=15\nControlGroup=\nMemoryPeak=[not set]\nActiveState=failed\n",
+  "effective_cap_proof": {
+    "status": "EFFECTIVE_CAP_ACCEPTED_BEFORE_IMPORT",
+    "utc": "2026-10-20T18:14:39.561443+00:00",
+    "pid": 336327,
+    "uid": 994,
+    "effective_memory_max": 805306368,
+    "ancestor_caps": [
+      {
+        "path": "/sys/fs/cgroup/system.slice/cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service",
+        "memory_max": "805306368"
+      },
+      {
+        "path": "/sys/fs/cgroup/system.slice",
+        "memory_max": "max"
+      },
+      {
+        "path": "/sys/fs/cgroup",
+        "memory_max": "ROOT_CGROUP_NO_LIMIT_FILE"
+      }
+    ]
+  },
+  "memory_peak_bytes": null,
+  "memory_events": null,
+  "missing_cgroup_metrics_reason": "systemd released failed unit cgroup before completion collection; unavailable, not zero",
+  "kernel_at_kill_rss_kB": {
+    "anon": 783260,
+    "file": 15616,
+    "shmem": 0
+  },
+  "kernel_evidence": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/cnn-probe-kernel.log",
+  "unit_journal": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/cnn-probe-journal.log",
+  "optimizer": false,
+  "market_data_or_labels": false,
+  "pilot_after": "MainPID=2009732\nResult=success\nNRestarts=0\nExecMainStatus=0\nControlGroup=/system.slice/coinmaster-hl-stageg-testnet.service\nMemoryPeak=221253632\nActiveState=active\n",
+  "actual_training_started": false
+}

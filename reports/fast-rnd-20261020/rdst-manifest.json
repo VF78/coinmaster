@@ -1,0 +1,90 @@
+{
+  "status": "RDST_VALIDATION_COMPLETE_SUCCESS",
+  "files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/rdst-completion.json",
+      "bytes": 10620,
+      "sha256": "c8b8b02950cba9eec0027a14af9c5f49ecedcd73b5a8d7467a489eb0959a220d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/rdst-completion.md",
+      "bytes": 1347,
+      "sha256": "e3e53249d0e9c2c5ec482e4c5ac7912fb53310663e1470280c154a9af3f6a16b"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/rdst-launch.json",
+      "bytes": 4373,
+      "sha256": "e146a5e7638446058361d2184c1530077d126b74a2f1517c9c054a884980842e"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/launch-rdst.sh",
+      "bytes": 3683,
+      "sha256": "ba3032ecf2c5943a74f3fa9321e4b4c55af68aacd4fc60f827101faf273f3c0c"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst-effective-cap.json",
+      "bytes": 517,
+      "sha256": "24b585a44001ffaf8fe8cc9ec3060a2e50640afe22af5d619752f54fd0a9835b"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst-preflight-guard1.log",
+      "bytes": 433,
+      "sha256": "5bb8c64696d299bf8a20d390eb52339a9c56539fabf0e8cc33195ba269663dbd"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst.log",
+      "bytes": 190,
+      "sha256": "416bf2baaf897f23f8ea139ca025a20486f8bfe2df7fb0c9a1cfed51d6e46ee7"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/metrics.json",
+      "bytes": 17928,
+      "sha256": "b75310933d6365c114625a4f9cbf4edab6fc2c69347c9df6e97f22b1491ecd38"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/model.pkl",
+      "bytes": 2169138,
+      "sha256": "4c7eb6b703ab876bc69a00c2dd9a16e878c095b69419fa9444451aa823311d26"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/predictions.csv",
+      "bytes": 520701,
+      "sha256": "97dda8869786589b881ecdd2441234d9010ad9a39f9fb892ee2fce5fd653dcea"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/source-memory-r2/runtime/coinmaster/__init__.py",
+      "bytes": 77,
+      "sha256": "be565ccaf9ead97f5f542cf4cd13f0e492a9c3f88b0b3efccebfbe06531681b1"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/source-memory-r2/runtime/coinmaster/research/__init__.py",
+      "bytes": 68,
+      "sha256": "4b89f0f2fa63b8c1e4c455ac5157d490e98ba3035c3bc4fbe629ecb5983d2530"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/source-memory-r2/runtime/coinmaster/research/fast_numeric.py",
+      "bytes": 37259,
+      "sha256": "c9312d7eab1642f330c20a5d3fc452c1d020653c86e4ad4ad36536a7412d6db7"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/source-memory-r2/runtime/coinmaster/research/fast_cnn.py",
+      "bytes": 17759,
+      "sha256": "6172b5c6f51525ca1c84c7f5643a0aaf22d59a04401f2a44b2bc9e71da1e3f91"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/source-memory-r2/runtime/coinmaster/research/fast_dataset.py",
+      "bytes": 11633,
+      "sha256": "dc49bd88091ab949a9bfed7b5d9b2f4100994b28e9344bc63a35e30598236383"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/source-memory-r2/experiment-lock.json",
+      "bytes": 2368,
+      "sha256": "04710add1e2adcdfd796b8ebce28ae5139356b753a0be75886c9163c37c7ddb1"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/source-memory-r2/source-manifest.json",
+      "bytes": 567,
+      "sha256": "144aa44b6a39a59c85680b6339abc9adc85a4403a7ac97c34c0caf7a996de324"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+2026-10-20T18:14:39+00:00 MyShopAI-prod-1 systemd[1]: Started cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/launch-probe-b128.sh.
+2026-10-20T18:14:48+00:00 MyShopAI-prod-1 systemd[1]: cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service: A process of this unit has been killed by the OOM killer.
+2026-10-20T18:14:49+00:00 MyShopAI-prod-1 systemd[1]: cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service: Failed with result 'oom-kill'.
+2026-10-20T18:14:49+00:00 MyShopAI-prod-1 systemd[1]: cm113-fast-cnn-validation-20261020T180922Z-probe-b128.service: Consumed 8.067s CPU time.

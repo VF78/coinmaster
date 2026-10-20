@@ -1,0 +1,51 @@
+{
+  "status": "PASS_AWAITING_VISUAL_QA",
+  "utc": "2026-10-20T18:15:55.329539+00:00",
+  "unit_status": "MainPID=0\nResult=success\nExecMainStatus=0\nMemoryPeak=[not set]\nActiveState=inactive\n",
+  "effective_cap_proof": {
+    "status": "EFFECTIVE_CAP_ACCEPTED_BEFORE_IMPORT",
+    "utc": "2026-10-20T18:15:34.191526+00:00",
+    "pid": 336634,
+    "uid": 994,
+    "effective_memory_max": 805306368,
+    "ancestor_caps": [
+      {
+        "path": "/sys/fs/cgroup/system.slice/cm113-fast-cnn-validation-20261020T180922Z-render-train-preview.service",
+        "memory_max": "805306368"
+      },
+      {
+        "path": "/sys/fs/cgroup/system.slice",
+        "memory_max": "max"
+      },
+      {
+        "path": "/sys/fs/cgroup",
+        "memory_max": "ROOT_CGROUP_NO_LIMIT_FILE"
+      }
+    ]
+  },
+  "previews": {
+    "status": "AWAITING_VISUAL_QA",
+    "train_n": 5959,
+    "images": [
+      {
+        "sample_id": "0",
+        "decision_ns": 1725148800000000000,
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/train-preview/preview-0.png",
+        "sha256": "b1b2e745870c164aeeebdb84c79439ce4f58ca85d81a4ecb2d58273b2884a8aa"
+      },
+      {
+        "sample_id": "5219",
+        "decision_ns": 1743937200000000000,
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/train-preview/preview-2979.png",
+        "sha256": "d317a3257cf7b25b6e2b27e94c7a1cfa5f0c959064b27754630489f99c10a2e6"
+      },
+      {
+        "sample_id": "10439",
+        "decision_ns": 1762729200000000000,
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/train-preview/preview-5958.png",
+        "sha256": "0d94a5b5092797d31f712a26725e49a16b3695a799d951838be6b60f6d75dcc7"
+      }
+    ]
+  },
+  "no_training": true
+}
