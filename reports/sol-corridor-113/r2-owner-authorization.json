@@ -1,0 +1,22 @@
+{
+  "approved_at_recorded_utc": "2026-10-20T11:09:28Z",
+  "owner_answer": "Разрешаю один прогон R2",
+  "authorized_economic_runs": 1,
+  "candidate": "ALPHA-CORRIDOR-v1",
+  "interval": "[2024-09-01,2026-09-01)",
+  "starting_TOTAL_USDT": "10000",
+  "venue": "BYBIT",
+  "reference_commit": "765cdadb542bd0c5cf1c8ada10d63dd3f6fc2e7d",
+  "excluded": [
+    "grid",
+    "control",
+    "repeat",
+    "pilot changes",
+    "deployment",
+    "real orders",
+    "transfers",
+    "secrets",
+    "service/swap changes"
+  ],
+  "launch_gate": "prepared immutable package/pins+fresh resources verified by coordinator; internal gate only"
+}

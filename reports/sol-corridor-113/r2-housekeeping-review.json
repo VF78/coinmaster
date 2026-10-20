@@ -1,0 +1,16 @@
+{
+  "decision": "GO_HOUSEKEEPING_AMENDMENT_ONLY",
+  "blocking_findings": [],
+  "exact_line": "run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first==\"alpha-corridor-v1\")",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "98024a287b6b168a41a6b34859821b2db5acc9410909f1cb7fa7f03635472abc",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "other_five_R1_files_unchanged": true,
+  "evidence": "3 existing focused cases passed in3.29s; tiny native10fields equality; separate actual2cycle parity",
+  "limit": "Tiny production fixture has zero fills/fees; nonzero fill/account evidence is separate existing parity case. Export OOM risk remains. Root immutable package/resource/launch gate still required."
+}

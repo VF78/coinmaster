@@ -1,0 +1,43 @@
+{
+  "decision": "ROOT_PREPARE_HASH_AND_SCOPE_PASS_PENDING_FRESH_RESOURCE_LAUNCH_GO",
+  "verified_source_files": 71,
+  "six_execution_pins": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "98024a287b6b168a41a6b34859821b2db5acc9410909f1cb7fa7f03635472abc",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "source_manifest_sha256": "c2dc424fb538e0e964b9f9d751c4e37ee9812a9008eb4e4b19e9102bdcb2ce02",
+  "input_manifest_sha256": "37b84cee51dbb436c370f010591d0b39d714ebe99a1245f7f250d8edb0976465",
+  "launch_unit": "cm113-alpha-corridor-v1-native24m-20261020T111659Z",
+  "job_dir": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z",
+  "launch_command": [
+    "systemd-run",
+    "--unit=cm113-alpha-corridor-v1-native24m-20261020T111659Z",
+    "--collect",
+    "--property=User=994",
+    "--property=Group=986",
+    "--property=WorkingDirectory=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z",
+    "--property=Slice=cm113-v3-risk.slice",
+    "--property=MemoryMax=650M",
+    "--property=MemorySwapMax=0",
+    "--property=TasksMax=64",
+    "--property=CPUWeight=10",
+    "--property=Nice=10",
+    "--property=PrivateNetwork=yes",
+    "--property=ProtectHome=yes",
+    "--property=ProtectSystem=strict",
+    "--property=NoNewPrivileges=yes",
+    "--property=UMask=0077",
+    "--property=ReadWritePaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock",
+    "--property=BindReadOnlyPaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z/source /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z/source/runtime/.venv /root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z/source/runtime/var/data",
+    "/bin/sh",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z/launch.sh"
+  ],
+  "no_result_or_log_before_launch": true,
+  "one_engine_only": true,
+  "housekeeping": "Explicit one-line terminal-analyzer OFF for corridor only; not economic policy change",
+  "resources_require": "MemAvailable>=700MiB/disk>=1.5GiB atactualdispatch;RAM650M/swap0"
+}

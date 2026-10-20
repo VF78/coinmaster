@@ -1,0 +1,86 @@
+{
+  "status": "HOUSEKEEPING_THREE_EXISTING_CASES_PASS_EQUAL_TINY_NATIVE_ECONOMICS",
+  "baseline_raw": "/tmp/pytest-of-root/pytest-current/test_real_production_tiny_corrcurrent/production/native-diagnostic-raw-native.json",
+  "baseline_raw_sha256": "5ac58b92ebfcc4156e3d7655d8708d40b5cdf5ba616b08c6828477d8c5dac5bd",
+  "baseline_economics": {
+    "terminal_total": "10000.00000000",
+    "terminal_active": "10000.00000000",
+    "terminal_reserve": "0",
+    "fills": 0,
+    "native_fees": "0",
+    "fill_audit": [],
+    "fee_attribution": {
+      "audited_total": "0",
+      "maker": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      },
+      "native_total": "0",
+      "reconciled": true,
+      "taker": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      },
+      "unknown": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      }
+    },
+    "cash_account_series": [
+      {
+        "active": "10000.00000000",
+        "reserve": "0",
+        "timestamp": "2024-09-01 00:01:00+00:00",
+        "total": "10000.00000000"
+      }
+    ],
+    "terminal_lifecycle": {
+      "close_fills": [],
+      "lockout": false,
+      "reason": "NOT_TRIGGERED",
+      "status": "NOT_TRIGGERED",
+      "trigger_ts": null
+    },
+    "terminal_open_positions": 0
+  },
+  "after_raw": "/tmp/pytest-of-root/pytest-current/test_real_production_tiny_corrcurrent/production/native-diagnostic-raw-native.json",
+  "after_raw_sha256": "e541451a5493d949b5e017afd8030401dcb975da35718aac916e4dc0b2cc4265",
+  "tiny_native_field_equality": {
+    "terminal_total": true,
+    "terminal_active": true,
+    "terminal_reserve": true,
+    "fills": true,
+    "native_fees": true,
+    "fill_audit": true,
+    "fee_attribution": true,
+    "cash_account_series": true,
+    "terminal_lifecycle": true,
+    "terminal_open_positions": true
+  },
+  "tiny_production_limit": "Existing2minuteproductionfixture has0fills/0fees/10000cash bothbeforeandafter; nonzero native fills/order/cash/fees covered separately by existing2cycleOFF_ONparity test, not a new economic run.",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "98024a287b6b168a41a6b34859821b2db5acc9410909f1cb7fa7f03635472abc",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "unchanged_from_R1": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": true,
+    "runtime/coinmaster/strategy/conditional_hedge.py": true,
+    "runtime/coinmaster/strategy/wave_overlay.py": true,
+    "runtime/coinmaster/research/minute_risk.py": true,
+    "runtime/coinmaster/research/native_baseline.py": false,
+    "runtime/tests/test_native_sol_corridor.py": true
+  },
+  "patch_sha256": "a581f308ad31ca023f06bbd1d068a29281cd7ebf6b415c903797bab4f11ab01a",
+  "test_command": "runtime/.venv/bin/python -m pytest -q runtime/tests/test_native_sol_corridor.py -k \"real_production_tiny_corridor or two_episode or outer_wrapper\" --disable-warnings",
+  "test_outcome": "3PASS,20deselected,3.29s",
+  "test_log_sha256": "7be504c78d9e9ca1f552c9869f820fd159af295e6623936d08b4ae4d8fc9f0e4",
+  "run_analysis": false,
+  "residual_export_OOM_risk": "Sequential native exports still scale with actual account/order events; cap650M/swap0 stays, no automatic rerun."
+}

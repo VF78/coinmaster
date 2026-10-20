@@ -1,0 +1,21 @@
+{
+  "status": "PREPARED_LAUNCH_HELD_FOR_ROOT_MEMORY_HOUSEKEEPING_DECISION",
+  "run_analysis": true,
+  "analyzer_path": "runtime/.venv/lib/python3.12/site-packages/nautilus_trader/analysis/analyzer.py:169",
+  "native_end_path": "runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx:2143",
+  "analyzer_growth": "all cachepositions+snapshots/trade records and sorted native account.events; not all minute marketdata; unbounded in unknown candidate turnover",
+  "export_growth": "native account report builds all accountstate dicts/balances/DataFrame; orders/fills likewise; existing runner exports frames sequentially",
+  "raw_durability": "raw snapshots survive packaging validation failures after native exports, not OOM before engine.end/first native exports",
+  "existing_no_analysis_public_runner_option": false,
+  "frozen_runner_expression": "run_analysis=not (research_alpha_cushion or research_chop_pair)",
+  "no_override_applied": true,
+  "memory_fits650MiB": "NOT_PROVEN",
+  "no_launch": true,
+  "pilot": {
+    "unit": "coinmaster-hl-stageg-testnet.service",
+    "MainPID": 2009732,
+    "NRestarts": 0,
+    "ActiveState": "active"
+  },
+  "source_unchanged": true
+}

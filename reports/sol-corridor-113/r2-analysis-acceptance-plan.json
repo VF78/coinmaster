@@ -1,0 +1,334 @@
+{
+  "status": "PREPARED_WAITING_ROOT_COMPLETION_GO_NO_CANDIDATE_READ_OR_SCAN",
+  "candidate": "ALPHA-CORRIDOR-v1",
+  "owner_authorization": "Parent reports owner-authorized one candidate; request file retains earlier READY_FOR_SEPARATE_R2_OWNER_APPROVAL metadata. This plan does not launch or approve another run.",
+  "prepared_product_HEAD": "765cdadb542bd0c5cf1c8ada10d63dd3f6fc2e7d",
+  "economic_run_budget": 1,
+  "candidate_trace_pass_budget_after_completion_GO": 1,
+  "prohibited_automatic_runs": [
+    "control",
+    "repeat",
+    "optimizer",
+    "backtest",
+    "repair-money-replay"
+  ],
+  "pins": {
+    "r2_request_sha256": "401a3a3cc72c4032519fa81859f259fab9f4cad86f6da5aef01395baaaab99f9",
+    "verified_R2_source_sha256": {
+      "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+      "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+      "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+      "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+      "runtime/coinmaster/research/native_baseline.py": "103e93daf3752a015dd9e537220752ac155dbff173bf239453295013529ae045",
+      "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+    },
+    "archived_control_raw": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "archived_control_raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "winner_statistics_sha256": "b43f0ac3099844f8e83c18c464e1e5481058412585d8f9108be1b81d2bedb397",
+    "caveated_R0_statistics_sha256": "54ec95dba9c10e62e81c944e3b9554896202b36e05d9961aa9edfdb997691434"
+  },
+  "archived_control": {
+    "TOTAL": "6077107.23887483",
+    "ACTIVE": "6077107.23887483",
+    "RESERVE": "0",
+    "native_allphase_DD_percent": "66.31878024969152066570091116",
+    "conditional_OHLC_bound_percent": "67.54771031869252420136632742",
+    "native_fees": "945927.73761825",
+    "native_fill_report_rows": 621,
+    "liquidations": 0,
+    "fee_attribution": {
+      "audited_total": "945927.73761825",
+      "maker": {
+        "count": 135,
+        "fees": "153876.76812554",
+        "notional": "769383840.6277"
+      },
+      "native_total": "945927.73761825",
+      "reconciled": true,
+      "taker": {
+        "count": 486,
+        "fees": "792050.96949271",
+        "notional": "1440092671.8044"
+      },
+      "unknown": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      }
+    },
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 899,
+        "SOLUSDT-PERP.P1SIM": 421
+      },
+      "count": 1320,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "status": "NOT_FAITHFUL_DIAGNOSTIC",
+    "ranking_eligible": false,
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457"
+  },
+  "finality_rule": "Control/R0 archival post-SOL quote samples do NOT certify settled account checkpoints. Control DD66.31878/OHLC67.54771/TOTAL6077107 are inherited archival metrics, not recertified. Candidate actual deferred native receipt/event timestamps must prove the claimed budget E/H finality at a later boundary; quote phase completion alone is insufficient. Missing proof stays UNKNOWN; no synthetic money reconstruction.",
+  "after_root_completion_GO": [
+    {
+      "gate": "durable actual exports",
+      "checks": [
+        "Actual result saved before wrapper/metadata validation; source/data/config/policy pins; candidate-only economic delta and declared drift; unique funding journal; run interval/seed/reserve/DPoff",
+        "Actual native fills/orders/terminal positions and lifecycle/status audits; distinguish export failure from missing economic outcome; no automatic rerun to repair audits"
+      ]
+    },
+    {
+      "gate": "receipt and execution chronology",
+      "checks": [
+        "Audit decision, quote, fill/native event and deferred receipt timestamps; identify first divergence vs BTC control chronology",
+        "Separate scenario target/band/status from actual held/pending/native admitted quantities; math infeasible vs lot vs margin insufficient vs unavailable vs DATA_UNKNOWN",
+        "Risk-budget overshoot measured only with an auditable native receipt and fresh causal marks; no claim every post-SOL sample is settled"
+      ]
+    },
+    {
+      "gate": "economic metrics",
+      "checks": [
+        "Actual native settled TOTAL/ACTIVE/RESERVE/ROI and marked-to-settled boundary bridge; no substitution of cash-only NAV",
+        "Global native marked DD and conditional OHLC bound separately; explicit sample phases/finality basis and complete interval coverage",
+        "Actual native fees/turnover by asset and maker/taker, native liquidation audit, funding row/integrity evidence; signed funding remains UNKNOWN when only post-total rows exist"
+      ]
+    },
+    {
+      "gate": "BTC and SOL invariants",
+      "checks": [
+        "Compare original105 BTC episode/signal calendar/side and actual accepted timing; report missing/delayed episodes and liquidation/lockout consequences",
+        "Check BTC q0/q1/P0/PLANREF/Q2/positive-TP rules against accepted/executed quantities; dollar-Q differences due to changed native equity are reported, not presumed violations",
+        "Separate original-alpha/protection targets, owned pending leaves, consumed rights, actual fills, cancellations and native risk/math status; no invented per-asset money attribution"
+      ]
+    },
+    {
+      "gate": "time slices and exposure",
+      "checks": [
+        "24 UTC native marked monthly endpoints/returns with final settled variant separately; compare archived and candidate phase/timing bases explicitly",
+        "BTC-only/BTC+SOL/SOL-only/flat and long/short exposure time; actual adjustment/turnover vs target/status timestamp counts",
+        "All11 fixed original loss-flip windows: account-level native equity start/end/extrema/DD where actual exports support it, never sum per-fill PnL as portfolio result",
+        "Three archived worst-excursion windows and candidate own worst excursions; same-date account context, not retrospective selection logic"
+      ]
+    },
+    {
+      "gate": "decision",
+      "checks": [
+        "Report technical/finality limitations separately from economic outcome",
+        "CriterionDD<=50% with actualTOTAL retained fraction vs6077107.23887483; no arbitrary haircut threshold or ROI preservation promise",
+        "Unfavorable result or missing proof does not authorize another engine/control/repeat"
+      ]
+    }
+  ],
+  "bounded_streaming_plan": "Use exact online audits if complete and sufficient. Otherwise, only after root completion GO, one nice10 bounded-memory pass over candidate native risk trace; retain aggregates/daily/monthly/exposure/landmarks, not millions of rows. No archived control trace rescan. Read compact actual fills/orders/audits separately; no matching/PnL engine.",
+  "required_exports": [
+    "durable raw native result",
+    "native fills/orders CSV",
+    "native minute-risk trace plus online summary or equivalent complete audited metrics",
+    "deferred native receipt and risk target/status audits",
+    "BTC accepted/sizing/TP/Q2 chronology",
+    "funding SQLite/integrity metadata",
+    "source/input/report manifests"
+  ],
+  "fixed_11_cluster_windows": [
+    {
+      "id": 1,
+      "first_BTC_entry_number": 3,
+      "last_BTC_entry_number": 4,
+      "start_ns": 1726272120000000000,
+      "end_ns": 1726617600000000000
+    },
+    {
+      "id": 2,
+      "first_BTC_entry_number": 6,
+      "last_BTC_entry_number": 7,
+      "start_ns": 1727827260000000000,
+      "end_ns": 1728518400000000000
+    },
+    {
+      "id": 3,
+      "first_BTC_entry_number": 35,
+      "last_BTC_entry_number": 39,
+      "start_ns": 1744329660000000000,
+      "end_ns": 1744934400000000000
+    },
+    {
+      "id": 4,
+      "first_BTC_entry_number": 42,
+      "last_BTC_entry_number": 43,
+      "start_ns": 1748131260000000000,
+      "end_ns": 1749254400000000000
+    },
+    {
+      "id": 5,
+      "first_BTC_entry_number": 45,
+      "last_BTC_entry_number": 47,
+      "start_ns": 1749859260000000000,
+      "end_ns": 1750377600000000000
+    },
+    {
+      "id": 6,
+      "first_BTC_entry_number": 50,
+      "last_BTC_entry_number": 52,
+      "start_ns": 1754092860000000000,
+      "end_ns": 1754524800000000000
+    },
+    {
+      "id": 7,
+      "first_BTC_entry_number": 58,
+      "last_BTC_entry_number": 59,
+      "start_ns": 1757030460000000000,
+      "end_ns": 1758585600000000000
+    },
+    {
+      "id": 8,
+      "first_BTC_entry_number": 63,
+      "last_BTC_entry_number": 64,
+      "start_ns": 1761091260000000000,
+      "end_ns": 1761696000000000000
+    },
+    {
+      "id": 9,
+      "first_BTC_entry_number": 80,
+      "last_BTC_entry_number": 82,
+      "start_ns": 1774310520000000000,
+      "end_ns": 1774569600000000000
+    },
+    {
+      "id": 10,
+      "first_BTC_entry_number": 91,
+      "last_BTC_entry_number": 95,
+      "start_ns": 1783123260000000000,
+      "end_ns": 1784332800000000000
+    },
+    {
+      "id": 11,
+      "first_BTC_entry_number": 97,
+      "last_BTC_entry_number": 103,
+      "start_ns": 1784937720000000000,
+      "end_ns": 1787011200000000000
+    }
+  ],
+  "archived_worst3_windows": [
+    {
+      "peak": {
+        "ns": "1726063200000000000",
+        "utc": "2024-09-11T14:00:00+00:00",
+        "equity": "13451.3363251",
+        "phase": "pre_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1726063200000000000",
+        "utc": "2024-09-11T14:00:00+00:00",
+        "equity": "13410.3412791",
+        "phase": "post_btc_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1727970240000000000",
+        "utc": "2024-10-03T15:44:00+00:00",
+        "equity": "4530.57414701",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "8920.76217809",
+      "drawdown_percent": "66.31878024969152066570091116",
+      "recovered": true,
+      "recovery": {
+        "ns": "1728615180000000000",
+        "utc": "2024-10-11T02:53:00+00:00",
+        "equity": "13453.62745342",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 37,
+      "peak_to_trough_days": "22.07222222222222222222222222",
+      "trough_to_recovery_or_end_days": "7.464583333333333333333333333",
+      "peak_to_recovery_or_end_days": "29.53680555555555555555555556",
+      "underwater_clock_days": "29.53680555555555555555555556"
+    },
+    {
+      "peak": {
+        "ns": "1744333200000000000",
+        "utc": "2025-04-11T01:00:00+00:00",
+        "equity": "915175.73025689",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1744333260000000000",
+        "utc": "2025-04-11T01:01:00+00:00",
+        "equity": "911531.10825689",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1749223020000000000",
+        "utc": "2025-06-06T15:17:00+00:00",
+        "equity": "367509.64806046",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "547666.08219643",
+      "drawdown_percent": "59.84272354367395947974450388",
+      "recovered": true,
+      "recovery": {
+        "ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00",
+        "equity": "930699.83942448",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 776,
+      "peak_to_trough_days": "56.59513888888888888888888889",
+      "trough_to_recovery_or_end_days": "79.18125",
+      "peak_to_recovery_or_end_days": "135.7763888888888888888888889",
+      "underwater_clock_days": "135.7763888888888888888888889"
+    },
+    {
+      "peak": {
+        "ns": "1761168540000000000",
+        "utc": "2025-10-22T21:29:00+00:00",
+        "equity": "2088471.56378771",
+        "phase": "post_quote_paired_close"
+      },
+      "first_underwater": {
+        "ns": "1761168600000000000",
+        "utc": "2025-10-22T21:30:00+00:00",
+        "equity": "2082398.66648771",
+        "phase": "pre_quote_paired_close"
+      },
+      "trough": {
+        "ns": "1764340080000000000",
+        "utc": "2025-11-28T14:28:00+00:00",
+        "equity": "937712.12544458",
+        "phase": "pre_quote_paired_close"
+      },
+      "drawdown_amount": "1150759.43834313",
+      "drawdown_percent": "55.10055575073671291811943329",
+      "recovered": true,
+      "recovery": {
+        "ns": "1764562200000000000",
+        "utc": "2025-12-01T04:10:00+00:00",
+        "equity": "2089614.53857348",
+        "phase": "pre_quote_paired_close"
+      },
+      "id": 943,
+      "peak_to_trough_days": "36.70763888888888888888888889",
+      "trough_to_recovery_or_end_days": "2.570833333333333333333333333",
+      "peak_to_recovery_or_end_days": "39.27847222222222222222222222",
+      "underwater_clock_days": "39.27847222222222222222222222"
+    }
+  ],
+  "planned_outputs": [
+    "r2-analysis-summary.md",
+    "r2-analysis-statistics.json",
+    "r2-analysis-comparison.csv",
+    "r2-analysis-monthly.csv",
+    "r2-analysis-11-clusters.csv",
+    "r2-analysis-BTC-timing.csv",
+    "r2-analysis-manifest.json"
+  ],
+  "current_factual_status": "Inputs and acceptance plan only. No candidate exports examined, no trace scan, no economic run launched.",
+  "known_preparation_audit_coverage": {
+    "source": "Engine-owner preparation statement, not candidate-result verification",
+    "detailed_scenario_sample_cap": 8192,
+    "separate_persisted_evidence": "Actual conditional target/fill/retirement events and status counters; raw native receipt timestamps and E/H/C/L fields",
+    "available_margin": "No exhaustive per-decision available-margin promise; broad execution/margin status can include native lot gap and is not necessarily cash shortage",
+    "acceptance_limit": "Do not extrapolate capped scenario samples into full-interval decision or overshoot coverage. Missing diagnostics stay UNKNOWN; the allowed candidate trace pass cannot invent rights/pending/scenario decisions absent from actual exports."
+  }
+}
