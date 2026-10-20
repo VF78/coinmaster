@@ -1,0 +1,81 @@
+Collecting torch@ https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (from -r reports/fast-rnd-20261020/env-lock.txt (line 25))
+  Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (196.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.3/196.3 MB 112.4 MB/s eta 0:00:00
+Collecting aeon==1.6.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 1))
+  Downloading aeon-1.6.0-py3-none-any.whl (6.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.4/6.4 MB 15.5 MB/s eta 0:00:00
+Collecting cloudpickle==3.1.2 (from -r reports/fast-rnd-20261020/env-lock.txt (line 2))
+  Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Collecting Deprecated==3.0.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 3))
+  Downloading deprecated-3.0.0-py3-none-any.whl (21 kB)
+Collecting filelock==4.2.4 (from -r reports/fast-rnd-20261020/env-lock.txt (line 4))
+  Downloading filelock-4.2.4-py3-none-any.whl (162 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 162.5/162.5 kB 99.5 MB/s eta 0:00:00
+Collecting fsspec==2026.9.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 5))
+  Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 221.7/221.7 kB 103.0 MB/s eta 0:00:00
+Collecting Jinja2==3.1.6 (from -r reports/fast-rnd-20261020/env-lock.txt (line 6))
+  Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 127.3 MB/s eta 0:00:00
+Collecting joblib==1.6.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 7))
+  Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 306.1/306.1 kB 142.5 MB/s eta 0:00:00
+Collecting llvmlite==0.46.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 8))
+  Downloading llvmlite-0.46.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (56.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.3/56.3 MB 36.6 MB/s eta 0:00:00
+Collecting MarkupSafe==3.0.4 (from -r reports/fast-rnd-20261020/env-lock.txt (line 9))
+  Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Collecting mpmath==1.3.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 10))
+  Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 84.2 MB/s eta 0:00:00
+Collecting networkx==3.7 (from -r reports/fast-rnd-20261020/env-lock.txt (line 11))
+  Downloading networkx-3.7-py3-none-any.whl (2.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 123.5 MB/s eta 0:00:00
+Collecting numba==0.63.1 (from -r reports/fast-rnd-20261020/env-lock.txt (line 12))
+  Downloading numba-0.63.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 70.8 MB/s eta 0:00:00
+Collecting numpy==2.3.5 (from -r reports/fast-rnd-20261020/env-lock.txt (line 13))
+  Downloading numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.6/16.6 MB 120.0 MB/s eta 0:00:00
+Collecting packaging==26.3 (from -r reports/fast-rnd-20261020/env-lock.txt (line 14))
+  Downloading packaging-26.3-py3-none-any.whl (129 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 130.0/130.0 kB 134.0 MB/s eta 0:00:00
+Collecting pandas==2.3.3 (from -r reports/fast-rnd-20261020/env-lock.txt (line 15))
+  Downloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 91.6 MB/s eta 0:00:00
+Collecting python-dateutil==2.9.0.post0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 16))
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.9/229.9 kB 135.2 MB/s eta 0:00:00
+Collecting pytz==2026.5 (from -r reports/fast-rnd-20261020/env-lock.txt (line 17))
+  Downloading pytz-2026.5-py2.py3-none-any.whl (506 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 506.3/506.3 kB 120.8 MB/s eta 0:00:00
+Collecting scikit-learn==1.7.2 (from -r reports/fast-rnd-20261020/env-lock.txt (line 18))
+  Downloading scikit_learn-1.7.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (9.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.5/9.5 MB 36.7 MB/s eta 0:00:00
+Collecting scipy==1.16.3 (from -r reports/fast-rnd-20261020/env-lock.txt (line 19))
+  Downloading scipy-1.16.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (35.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.7/35.7 MB 35.1 MB/s eta 0:00:00
+Collecting setuptools==84.2.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 20))
+  Downloading setuptools-84.2.0-py3-none-any.whl (875 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 875.8/875.8 kB 93.2 MB/s eta 0:00:00
+Collecting six==1.17.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 21))
+  Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Collecting stumpy==1.14.1 (from -r reports/fast-rnd-20261020/env-lock.txt (line 22))
+  Downloading stumpy-1.14.1-py3-none-any.whl (183 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 184.0/184.0 kB 43.8 MB/s eta 0:00:00
+Collecting sympy==1.14.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 23))
+  Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 110.9 MB/s eta 0:00:00
+Collecting threadpoolctl==3.7.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 24))
+  Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+Collecting typing_extensions==4.16.0 (from -r reports/fast-rnd-20261020/env-lock.txt (line 26))
+  Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 136.8 MB/s eta 0:00:00
+Collecting tzdata==2026.5 (from -r reports/fast-rnd-20261020/env-lock.txt (line 27))
+  Downloading tzdata-2026.5-py2.py3-none-any.whl (347 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 348.0/348.0 kB 60.0 MB/s eta 0:00:00
+Collecting wrapt==2.5.1 (from -r reports/fast-rnd-20261020/env-lock.txt (line 28))
+  Downloading wrapt-2.5.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (250 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 250.4/250.4 kB 120.6 MB/s eta 0:00:00
+Installing collected packages: pytz, mpmath, wrapt, tzdata, typing_extensions, threadpoolctl, sympy, six, setuptools, packaging, numpy, networkx, MarkupSafe, llvmlite, fsspec, filelock, cloudpickle, scipy, python-dateutil, numba, joblib, Jinja2, Deprecated, torch, stumpy, scikit-learn, pandas, aeon
+Successfully installed Deprecated-3.0.0 Jinja2-3.1.6 MarkupSafe-3.0.4 aeon-1.6.0 cloudpickle-3.1.2 filelock-4.2.4 fsspec-2026.9.0 joblib-1.6.0 llvmlite-0.46.0 mpmath-1.3.0 networkx-3.7 numba-0.63.1 numpy-2.3.5 packaging-26.3 pandas-2.3.3 python-dateutil-2.9.0.post0 pytz-2026.5 scikit-learn-1.7.2 scipy-1.16.3 setuptools-84.2.0 six-1.17.0 stumpy-1.14.1 sympy-1.14.0 threadpoolctl-3.7.0 torch-2.14.1+cpu typing_extensions-4.16.0 tzdata-2026.5 wrapt-2.5.1

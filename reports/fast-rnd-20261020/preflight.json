@@ -1,5 +1,5 @@
 {
-  "status": "API_PROTOCOL_HOST_PREFLIGHT_COMPLETE_WITH_AEON_RUNTIME_NUMPY_CONFLICT_AND_JKX_CONTENT_LIMITATION_NO_TRAINING",
+  "status": "ISOLATED_ENV_PIPCHECK_API_AND_SINGLE_CNN_FORWARD_PASS;JKX_ARCHIVE_CONTENTS_UNVERIFIED;NO_TRAINING",
   "checked_date": "2026-10-20",
   "owner_document_sha256": "14f03b6b8a5ada7a238c7058dd52073a1764e7e9b382e2eb5b02e98d7ad54aa0",
   "scope": "Sections3.4,4,5,6,9,10 only; no trading edits, training, install, engine, U data inspection.",
@@ -139,7 +139,7 @@
     "observation": "Read-only transient snapshot, not a reservation or ML capacity guarantee."
   },
   "isolated_dependency_proposal": {
-    "status": "PROPOSAL_ONLY_NOT_INSTALLED_NOT_RESOLVER_TESTED",
+    "status": "IMPLEMENTED_IN_IGNORED_ISOLATED_ENV;HASH_LOCK_PIPCHECK_IMPORTS_SINGLE_FORWARD_PASS",
     "existing_numpy_conflict": "aeon1.6.0 requires numpy>=2,<2.5 and numba<.64; numba.63.1 requires numpy<2.4. Existing runtime numpy2.5.3 cannot satisfy this documented recipe. Leave runtime/.venv and lockfile untouched.",
     "isolation": "Separate Python3.12 research venv without --system-site-packages; communicate with native runner via versioned artifacts. Do not downgrade existing runtime NumPy.",
     "numeric_direct_pins": [
@@ -193,5 +193,83 @@
       "risk": "3.775GB free minus proposed env1.2-2.0GB/temp~.4GB leaves~1.375-2.175GB before ML/native artifacts. Do not assert whole experiment fits without artifact/cap budget."
     },
     "memory_caveat": "~1.03GB currently available and swapalmostfull; cached6000image corpus alone.553GB. Use lazy input/boundedbatch and n_jobs1, measure later authorized forward/epoch; no training admission proven."
+  },
+  "environment_installation": {
+    "status": "PASS",
+    "env_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-envs/fast-rnd-20261020",
+    "git_ignored": true,
+    "isolated": true,
+    "installed_versions": {
+      "numpy": "2.3.5",
+      "numba": "0.63.1",
+      "llvmlite": "0.46.0",
+      "stumpy": "1.14.1",
+      "aeon": "1.6.0",
+      "scikit-learn": "1.7.2",
+      "scipy": "1.16.3",
+      "pandas": "2.3.3",
+      "torch": "2.14.1+cpu"
+    },
+    "runtime_numpy_unchanged": "2.5.3",
+    "pipcheck": "No broken requirements found.",
+    "CNN": {
+      "torch": "2.14.1+cpu",
+      "cuda_build": null,
+      "cuda_available": false,
+      "input_shape": [
+        1,
+        6,
+        64,
+        60
+      ],
+      "feature_shape": [
+        1,
+        256,
+        3,
+        60
+      ],
+      "output_shape": [
+        1,
+        6
+      ],
+      "parameter_count": 898110,
+      "batch": 1,
+      "mode": "eval+inference_mode;oneforward;notraining",
+      "maxrss_bytes": 250245120
+    },
+    "install_receipt": {
+      "phase": "install",
+      "memory_max": "536870912",
+      "cpu_weight": "10",
+      "nice": 15,
+      "disk_before": 4900986880,
+      "hashes_enforced": true,
+      "status": "PASS",
+      "exit_code": 0,
+      "disk_minimum": 3006394368,
+      "disk_after": 3355955200,
+      "memory_peak": 536870912,
+      "seconds": 122.16306853294373
+    },
+    "check_memory_peak": 536870912,
+    "import_process_maxrss_bytes": 425979904,
+    "env_apparent_bytes": 1454124263,
+    "disk_free_after": 3355852800,
+    "post_memory": {
+      "MemTotal": 4005437440,
+      "MemAvailable": 1010761728,
+      "SwapTotal": 2147479552,
+      "SwapFree": 36864
+    },
+    "CPU_count": 2,
+    "active_heavy_processes": "All install/API/CNN subprocesses completed; no training launched.",
+    "sha256": {
+      "env-requirements.txt": "9453027ddd033c7e9b9a025f9f3420644d7e5f1d048f5ada7ffd3cfe2dcbf2ed",
+      "env-lock.txt": "84a973702349d3d6154234404260d4ecd445a58da4b73a06ff3dd5d0dcb67186",
+      "env-freeze.txt": "9b37faa74a21a7b379ee11510aac6baf288918dbd489d237c72eaebe3553bf47",
+      "env-resolver.json": "974e23b017a3cc86628c47fd0bcca959d079dce54d661dd0ccca713d78b26d07",
+      "env-install-report.json": "68fece94307879c1add8400e698992217e5b49d6ed3cc869bdbdb01d20effb7e",
+      "env-check-receipt.json": "df4fb8fe232eec525dce6e084fcfd6d1c7b0f931c5d21ea126cbadd8c90e0d2b"
+    }
   }
 }

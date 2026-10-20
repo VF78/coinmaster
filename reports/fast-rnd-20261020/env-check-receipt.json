@@ -1,0 +1,30 @@
+{
+  "phase": "pipcheck_api_cnn",
+  "steps": {
+    "pipcheck": {
+      "exit_code": 0,
+      "seconds": 2.310980796813965,
+      "stdout": "No broken requirements found.",
+      "stderr": ""
+    },
+    "api": {
+      "exit_code": 0,
+      "seconds": 13.176876306533813,
+      "stdout": "{\"python\": \"3.12.3\", \"versions\": {\"numpy\": \"2.3.5\", \"numba\": \"0.63.1\", \"llvmlite\": \"0.46.0\", \"stumpy\": \"1.14.1\", \"aeon\": \"1.6.0\", \"scikit-learn\": \"1.7.2\", \"scipy\": \"1.16.3\", \"pandas\": \"2.3.3\", \"torch\": \"2.14.1+cpu\"}, \"signatures\": {\"mstump\": \"(T, m, include=None, discords=False, normalize=True, p=2.0, T_subseq_isconstant=None)\", \"mmotifs\": \"(T, P, I, min_neighbors=1, max_distance=None, cutoffs=None, max_matches=10, max_motifs=1, atol=1e-08, k=None, include=None, normalize=True, p=2.0, T_subseq_isconstant=None)\", \"match\": \"(Q, T, M_T=None, \\u03a3_T=None, max_distance=None, max_matches=None, atol=1e-08, query_idx=None, normalize=True, p=2.0, T_subseq_isfinite=None, T_subseq_isconstant=None, Q_subseq_isconstant=None)\", \"MiniRocket\": \"(n_kernels=10000, max_dilations_per_kernel=32, n_jobs=1, random_state=None)\", \"RDST\": \"(max_shapelets: int = 10000, shapelet_lengths: Union[List[int], numpy.ndarray, NoneType] = None, proba_normalization: float = 0.8, threshold_percentiles: Union[List[float], numpy.ndarray, NoneType] = None, alpha_similarity: float = 0.5, use_prime_dilations: bool = False, random_state: int | None = None, n_jobs: int = 1)\", \"RDST.fit\": \"(self, X, y=None)\"}, \"maxrss_bytes\": 425979904}",
+      "stderr": ""
+    },
+    "cnn_forward": {
+      "exit_code": 0,
+      "seconds": 3.4883084297180176,
+      "stdout": "{\"torch\": \"2.14.1+cpu\", \"cuda_build\": null, \"cuda_available\": false, \"input_shape\": [1, 6, 64, 60], \"feature_shape\": [1, 256, 3, 60], \"output_shape\": [1, 6], \"parameter_count\": 898110, \"batch\": 1, \"mode\": \"eval+inference_mode;oneforward;notraining\", \"maxrss_bytes\": 250245120}",
+      "stderr": ""
+    }
+  },
+  "disk_before": 3355901952,
+  "status": "PASS",
+  "memory_peak": 536870912,
+  "memory_max": "536870912",
+  "swap_max": "0",
+  "disk_after": 3355865088,
+  "seconds": 18.976834058761597
+}

@@ -1,0 +1,14 @@
+{
+  "phase": "install",
+  "memory_max": "536870912",
+  "cpu_weight": "10",
+  "nice": 15,
+  "disk_before": 4900986880,
+  "hashes_enforced": true,
+  "status": "PASS",
+  "exit_code": 0,
+  "disk_minimum": 3006394368,
+  "disk_after": 3355955200,
+  "memory_peak": 536870912,
+  "seconds": 122.16306853294373
+}

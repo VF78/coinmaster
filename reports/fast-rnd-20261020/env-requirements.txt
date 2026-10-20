@@ -1,0 +1,9 @@
+numpy==2.3.5
+aeon==1.6.0
+stumpy==1.14.1
+numba==0.63.1
+llvmlite==0.46.0
+scikit-learn==1.7.2
+scipy==1.16.3
+pandas==2.3.3
+torch @ https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl#sha256=5a6363570c753812540a05eb82380e329469cbe668643e88111414c12627711f

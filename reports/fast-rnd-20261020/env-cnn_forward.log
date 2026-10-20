@@ -1,0 +1,1 @@
+{"torch": "2.14.1+cpu", "cuda_build": null, "cuda_available": false, "input_shape": [1, 6, 64, 60], "feature_shape": [1, 256, 3, 60], "output_shape": [1, 6], "parameter_count": 898110, "batch": 1, "mode": "eval+inference_mode;oneforward;notraining", "maxrss_bytes": 250245120}

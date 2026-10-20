@@ -1,5 +1,5 @@
 {
-  "status": "SCHEMA_FIRST_ROW_ONLY_NO_U_ANALYSIS",
+  "status": "CORRECTED_SAVED_PRESTART_HOURLY_AVAILABLE_NO_U_ANALYSIS",
   "source": "Existing Bybit S0 BTC/SOL",
   "datasets": [
     {
@@ -124,9 +124,99 @@
   "real_execution_OHLCV_1m_available": true,
   "mark1m_volume": "ABSENT_DO_NOT_INVENT",
   "Daily40_warmup": "2022-09-02 firstrow supplies sufficient pre-start span;40closedrow continuity not revalidated in this probe",
-  "pre2024_09_01_intraday168h": "NOT_AVAILABLE_IN_KNOWN_S0: both execution1m start2024-09-01; no hourly filename identified in bounded known paths",
-  "safe_existing_data_option": "Use Sep1..Sep7 existing real1m OHLCV as168h warmup, firsttradablehour2024-09-08, preserving owner's fixed globalT/V/U boundaries; no resampling performed here",
-  "earlier_start_option": "Public168h warmup fetch may be separately authorized; nofetch attempted",
+  "pre2024_09_01_intraday168h": "AVAILABLE: saved real Bybit hourly OHLCV2208 bars per asset Jun1 throughAug31 2024; sufficient span for169closed1hcloses, pending builder strict continuity assertion",
+  "safe_existing_data_option": "Use existing saved prestart hourly OHLCV plus canonical execution1m; no need to omit Sep1..Sep7 solely for missing hourly warmup. Earliest Sep1 00:00 decision can use Aug31 23:00 candle closed atSep1 00:00 once builder validates panels. Fixed globalT/V/U unchanged.",
+  "earlier_start_option": "No new fetch required for requested prestart hourly span",
   "U_last20percent_2026": "NOT_READ_OR_REPORTED",
-  "no_engine_or_economic_metrics": true
+  "no_engine_or_economic_metrics": true,
+  "prestart_hourly_warmup": [
+    {
+      "symbol": "BTCUSDT",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover"
+      ],
+      "rows": 2208,
+      "start_open_UTC": "2024-06-01T00:00:00Z",
+      "last_open_UTC": "2024-08-31T23:00:00Z",
+      "end_exclusive_UTC": "2024-09-01T00:00:00Z",
+      "sha256": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+      "sha256_verified_by": "sol_corridor_implementation bounded prestart inspection; reused without duplicate scan",
+      "provenance": "Saved official Bybit V5 market/kline category=linear interval=60 request URLs and archived page SHA256s",
+      "raw_pages": [
+        {
+          "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1725148799999&limit=1000",
+          "path": "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-0.json",
+          "sha256": "99a83454a10147cab3e610aed0f76eb53f4794942060e54738a10ee9928b8880"
+        },
+        {
+          "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1721548799999&limit=1000",
+          "path": "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1.json",
+          "sha256": "06b06d49c9e4f2f376a3732984451d422517b0bab0993ef86a088d17ceaf36b0"
+        },
+        {
+          "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1717948799999&limit=1000",
+          "path": "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-2.json",
+          "sha256": "9e6a4a10034fdbc22c461284d193ab2243273ccd139bd1d959ef1ed6649a2bb5"
+        }
+      ],
+      "full_OHLCV_and_turnover": true,
+      "continuity": "Prior saved screening-recommendation states gapfree2208; this correction does not recertify all rows. FAST builder will assert strict continuity in its necessary feature read."
+    },
+    {
+      "symbol": "SOLUSDT",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover"
+      ],
+      "rows": 2208,
+      "start_open_UTC": "2024-06-01T00:00:00Z",
+      "last_open_UTC": "2024-08-31T23:00:00Z",
+      "end_exclusive_UTC": "2024-09-01T00:00:00Z",
+      "sha256": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+      "sha256_verified_by": "sol_corridor_implementation bounded prestart inspection; reused without duplicate scan",
+      "provenance": "Saved official Bybit V5 market/kline category=linear interval=60 request URLs and archived page SHA256s",
+      "raw_pages": [
+        {
+          "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1725148799999&limit=1000",
+          "path": "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-0.json",
+          "sha256": "582e2969dd50921bdd1bb48944ee94430f865b73f73816ede685c9b691d55a30"
+        },
+        {
+          "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1721548799999&limit=1000",
+          "path": "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1.json",
+          "sha256": "5b0e3dbe9fb707c063a09c21b96d5fa34facd385df6f799106fd9eb3ed69d519"
+        },
+        {
+          "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1717948799999&limit=1000",
+          "path": "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-2.json",
+          "sha256": "a59e7ee65f9786a96f79d132e5d091f3b946f424b6e0ea4deab0f4e84cc5d919"
+        }
+      ],
+      "full_OHLCV_and_turnover": true,
+      "continuity": "Prior saved screening-recommendation states gapfree2208; this correction does not recertify all rows. FAST builder will assert strict continuity in its necessary feature read."
+    }
+  ],
+  "warmup_provenance_manifest": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-split-sol-cover-20261018/data-warmup-manifest.json",
+  "warmup_provenance_manifest_sha256": "da6f63a78ac71e98f1a97467e1fc4fa9d7e6218334026397b52d1a7319cd39b1",
+  "causal_availability_convention": {
+    "hourly": "open_time+1hour; closed values only",
+    "daily": "open_time+1day; closed values only",
+    "note": "Builder contract convention; original schema-only probe alone does not prove every downstream consumer obeys it."
+  },
+  "correction_note": "Initial bounded normalized/raw path inventory omitted reports/btc-split-sol-cover-20261018/data-warmup-*-1h.csv. Its absent-warmup conclusion and Sep8 fallback are superseded by these saved report inputs.",
+  "verification_scope": "Read saved manifest, reused source owner prestart CSV hash/coverage verification, read only CSV headers here. No duplicate full CSV/Parquet scan or raw-page reread. No future U detail, fetch, engine, feature calculation, or source edits.",
+  "updated_utc": "2026-10-20T16:57:20.129542+00:00"
 }
