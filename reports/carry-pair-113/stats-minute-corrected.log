@@ -1,0 +1,19 @@
+{
+  "status": "DESCRIPTIVE_FIXED_Q_PRICE_MARKS_NO_ECONOMIC_ENGINE",
+  "sources": {
+    "runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "runtime/var/data/normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+  },
+  "peak_RSS_KiB": 128120,
+  "elapsed_sec": 3.6378469467163086,
+  "calibration_SOL1D_TP_train_n": 18,
+  "calibration_SOL1D_TP_levels": [
+    0.009235259288717691,
+    0.018699354895746534,
+    0.037025511625387926
+  ],
+  "rows": 558,
+  "TP_snapshot_rows": 2589,
+  "timestamp_semantics": "native_baseline.py:856 close_available=(open_time_ms+60000)*1e6; minute_risk.py:115 same. Firstcompletedclose>=nativeREGIMEtimestamp via searchsortedleft, nooffsetfit. Dailycontextcompletedatsameobservation, nofuturebar. Nativeexecutionspreservedseparately; hypotheticalnewSOLbasisatobservedcloseisnotactualfill.",
+  "scope": "Native48residual snapshots; primaryrawflips2near frozenbeforeminute. AboveexistingSOLceilingexcluded. Noquantityreductions,sequencedtrades,reentry,cash,compounding,margin,TOTAL,ROI,DD. Funding/slippage/impact/actualfilluncertaintyunknown; grossandfeepricearithmeticonly."
+}

@@ -1,0 +1,45 @@
+{
+  "status": "SAVED_NATIVE_INVENTORY_CENSUS_ONLY",
+  "sources": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv": "d279d5f7c4cc6c92b021a3dd893620bc157734863fa0b4e9866962b9b3272cf0"
+  },
+  "counts": {
+    "calibration": {
+      "BTC_REGIME_residual": 25,
+      "SOL_present": 5,
+      "SOL_opposite": 5,
+      "BTC_inherited_negative": 25,
+      "original_SOL_adds_next_1D": 10,
+      "next_BTC_delays_min": {
+        "1.0": 25
+      }
+    },
+    "later": {
+      "BTC_REGIME_residual": 23,
+      "SOL_present": 1,
+      "SOL_opposite": 1,
+      "BTC_inherited_negative": 23,
+      "original_SOL_adds_next_1D": 1,
+      "next_BTC_delays_min": {
+        "1.0": 23
+      }
+    },
+    "all": {
+      "BTC_REGIME_residual": 48,
+      "SOL_present": 6,
+      "SOL_opposite": 6,
+      "BTC_inherited_negative": 48,
+      "original_SOL_adds_next_1D": 11,
+      "next_BTC_delays_min": {
+        "1.0": 48
+      }
+    }
+  },
+  "limitations": [
+    "Original native inventory snapshots only, no synthetic fills/cash/equity/PnL",
+    "No minute or daily market data read by this script",
+    "Actual SOL reference price exists only when native SOL REGIME fill occurred at same timestamp",
+    "CHOP flags at opposed signal not yet computed; native BTC-entry flags are not carried forward as a proxy"
+  ]
+}

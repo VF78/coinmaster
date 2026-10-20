@@ -1,0 +1,41 @@
+{
+  "status": "RISK_SCREENED_PROPOSAL_FOR_OWNER_REVIEW_NOT_ECONOMIC_GO",
+  "hypothesis": "CHOP_PAIR_50_NET_v1",
+  "baseline_HEAD": "91ec919d40ac71ff699885068599687ecfe5d9ba",
+  "owner_allows_skipped_opposite_BTC_entries_in_chop": true,
+  "implementation": false,
+  "native_backtest": false,
+  "pilot_changed": false,
+  "economic_qualification": "NOT_ESTABLISHED",
+  "admission": {
+    "closed_daily_EMA34_flips_in_7_transitions_min": 2,
+    "abs_distance_EMA_in_ATR14_max": 1,
+    "mode_right_per_episode": 1
+  },
+  "hedge": {
+    "BTC_factor_coverage": 0.5,
+    "beta_return_days": 90,
+    "frozen_per_carry": true,
+    "target": "MAX_EXISTING_AND_HALF_FACTOR",
+    "existing_fullfactor_ceiling": true,
+    "economic_admission_grants": 1,
+    "time_price_equity_rearm": false
+  },
+  "exit": {
+    "individual_3TP_or_leg_BE": false,
+    "pair_recovery_buffer_BTC_notional_fraction": 0.001,
+    "pair_exit_role": "TAKER",
+    "fixed_range_completed_BTC_Daily": 7,
+    "same_boundary_consecutive_BTC_1H_closes": 2,
+    "range_end_policy_prechecked": false,
+    "native_risk_exits_dominate": true,
+    "benchmark": "FROZEN_NATIVE_EQUITY_MINUS_CURRENT_UNREALIZED_PLUS_ALLOCATED_EXISTING_ENTRY_FEES_PLUS_BUFFER",
+    "trigger": "CURRENT_NATIVE_EQUITY_MINUS_ESTIMATED_TAKER_CLOSE_FEES_GTE_FROZEN_BENCHMARK",
+    "new_SOL_entry_fees_and_post_admission_native_funding": "ALREADY_IN_NATIVE_EQUITY_NO_DOUBLE_CHARGE",
+    "whole_original_episode_BE_claim": false
+  },
+  "new_TOTAL": null,
+  "new_ROI": null,
+  "new_portfolio_DD": null,
+  "next": "OWNER_REVIEW_EXACT_HYPOTHESIS_BEFORE_IMPLEMENTATION_AND_ONE_NATIVE_RUN"
+}

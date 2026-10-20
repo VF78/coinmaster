@@ -1,0 +1,27 @@
+# Simplification addendum: one native carry-mode SOL target
+
+2026-10-20; analysis only. Supplements contract-native-carry.md; does not replace it. Owner now permits SOL risk-policy redesign and BTC TP changes inside carry. Exact historical alpha exit performance is therefore NOT an acceptance constraint inside this mode. Baseline policy remains outside mode. No trading code, test, engine, git or service action.
+
+## Smallest coherent conditional candidate
+
+One carry interval in the SAME BTC episode; one BTC native net position, one SOL native net position and one SOL target. No A/C sleeve partitions, independent PnL, opposite BTC backlog or synthetic fresh entry. Retain original actual cost bases, original episode equity/loss history and native fees. Log/consume skipped opposing BTC signals; after group flat only a fresh eligible causal decision can open another episode.
+
+At a qualified closed-bar CHOP/opposing-regime event, first cancel old entry/Q2/add/TP orders and await authoritative terminal/late-fill reconciliation. Existing hard native risk exits dominate throughout. Adopt actual remaining signed BTC/SOL quantities from cache only after reconciliation. Until then no new ladder or increase. Unknown receipt reserves ownership, never proves flat. Do not resurrect previously closed quantity.
+
+Replace SOL management inside mode with one bounded target: hypothesis only, half beta-factor coverage initially and full coverage only after ONE newly reached adverse BTC-price milestone. No historical milestone replay at admission. Full coverage is not min-variance coverage; do not mix estimators opportunistically. Both target fractions are unvalidated. Existing same-direction SOL counts toward the target, not added to it. If existing SOL exceeds full beta ceiling, reject carry and retain normal group closure; do not trim profitable existing alpha to force eligibility. Wrong-side SOL or insufficient native margin/known marks also rejects admission. Existing SOL above the half target may be retained without topping up, subject to full ceiling; this avoids a forced admission trim. Native position average basis remains actual.
+
+Each coverage entitlement can be spent once. A TP/reduction consumes the corresponding target quantity; no refill back to half/full from a later quote or mere price recrossing. A new full-stage milestone grants only previously unearned incremental entitlement. Quantity changes, cancellations and partial fills must reduce remaining rights, never regenerate them.
+
+After adoption, new three-TP allocations may use ACTUAL remaining BTC/SOL quantities, fixed management references and native lot rounding. Their aggregate leaves cannot exceed current actual quantity less competing reductions. Prior historical closed quantity and fills stay closed. New stage SOL fills receive only their newly admitted quantity rights. Fixed TP targets need not imply independent per-fill PnL books.
+
+Only confirmed winning-leg TP fills can optionally trigger a losing-leg cut. Partial fills trigger only their executed fraction; deduplicate native trade IDs. A paired cut must satisfy the chosen conservative net-cost condition including both executed/proposed reductions and relevant costs; it is optional, not a mandatory proportion or forced full loser close before TP2. Unknown costs/funding means no claimed cost-complete profitable cut. Do not ignore remaining loser inventory when judging the episode. Native reduce-only, reserved leaves and cancel-terminal reconciliation prevent reversal and double allocation. The legs fill asynchronously; interim exposure remains real.
+
+Whole-pair net marked liquidation value includes inherited original BTC/SOL basis, prior realized losses/fees, current BOTH-leg inventory and conservative closing costs. One-leg fee-aware BE does not imply pair BE. Exact funding-complete BE is UNKNOWN where signed funding is unavailable. Use existing native account/journal; no new money book. Full hedge may freeze an inherited deficit rather than recover it.
+
+One predeclared, causal PRICE/RANGE-BREAK invalidation must close the whole carry group; no indefinite wait for BE. Its definition/reference must be fixed before implementation, not chosen from the later sample. Original-direction regime return can end mode under that same explicit exit contract, but must not silently rearm cover. All existing native hard risk/terminal exits dominate. Exhausted executable loss allowance also closes at a loss, never gets relabeled pair profit. Only native flat plus terminal orders/submissions clears the original episode.
+
+## Decision boundary
+
+This is smaller and feasible in principle than protected-alpha plus cover partitions. It explicitly changes SOL lifecycle and BTC TP management inside carry. It is NOT presently an economically qualified recommendation: the census shows all 48 regime-close BTC inventories underwater and only six existing SOL pairs; most admissions would create new insurance risk, not simply retain an existing winning pair. The 33 eligible causal raw-filter events do not establish conditional payoff.
+
+Root should select this ONE candidate only if the pending actual-data inherited-basis screen supports a defensible bounded recovery mechanism. Otherwise factual NO_QUALIFIED_CANDIDATE is preferable to another tested-negative hedge with renamed TP rules. Required economic constants/invalidation remain unselected; no implementation or native run follows this addendum.

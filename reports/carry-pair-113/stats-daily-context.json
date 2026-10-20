@@ -1,0 +1,83 @@
+{
+  "daily_source": "runtime/var/data/normalized/bybit-BTCUSDT-daily.parquet",
+  "daily_sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+  "rules": "PRIMARY fixed before counts: raw>=2signflips among7completedD inclcurrent AND abs(close-EMA34)<=ATR14, immediate currentbar, no hysteresis; other masks sensitivity only. Exact previous fixed EMA34/ATR14 near_slope with2-dayhysteresis; flips2 fixed sensitivity. Completed daily timestamp including signal close. No thresholds selected here.",
+  "counts": {
+    "calibration": {
+      "CHOP_raw_flips2_near": {
+        "BTC_residual": 19,
+        "original_pair": 2,
+        "original_pair_dates": [
+          "2024-10-05T00:00:00+00:00",
+          "2025-08-24T00:00:00+00:00"
+        ]
+      },
+      "CHOP_near_slope": {
+        "BTC_residual": 25,
+        "original_pair": 5,
+        "original_pair_dates": [
+          "2024-10-05T00:00:00+00:00",
+          "2025-04-13T00:00:00+00:00",
+          "2025-06-06T00:00:00+00:00",
+          "2025-08-19T00:00:00+00:00",
+          "2025-08-24T00:00:00+00:00"
+        ]
+      },
+      "CHOP_flips2": {
+        "BTC_residual": 11,
+        "original_pair": 1,
+        "original_pair_dates": [
+          "2025-08-24T00:00:00+00:00"
+        ]
+      }
+    },
+    "later": {
+      "CHOP_raw_flips2_near": {
+        "BTC_residual": 15,
+        "original_pair": 0,
+        "original_pair_dates": []
+      },
+      "CHOP_near_slope": {
+        "BTC_residual": 23,
+        "original_pair": 1,
+        "original_pair_dates": [
+          "2025-09-23T00:00:00+00:00"
+        ]
+      },
+      "CHOP_flips2": {
+        "BTC_residual": 10,
+        "original_pair": 0,
+        "original_pair_dates": []
+      }
+    },
+    "all": {
+      "CHOP_raw_flips2_near": {
+        "BTC_residual": 34,
+        "original_pair": 2,
+        "original_pair_dates": [
+          "2024-10-05T00:00:00+00:00",
+          "2025-08-24T00:00:00+00:00"
+        ]
+      },
+      "CHOP_near_slope": {
+        "BTC_residual": 48,
+        "original_pair": 6,
+        "original_pair_dates": [
+          "2024-10-05T00:00:00+00:00",
+          "2025-04-13T00:00:00+00:00",
+          "2025-06-06T00:00:00+00:00",
+          "2025-08-19T00:00:00+00:00",
+          "2025-08-24T00:00:00+00:00",
+          "2025-09-23T00:00:00+00:00"
+        ]
+      },
+      "CHOP_flips2": {
+        "BTC_residual": 21,
+        "original_pair": 1,
+        "original_pair_dates": [
+          "2025-08-24T00:00:00+00:00"
+        ]
+      }
+    }
+  }
+}

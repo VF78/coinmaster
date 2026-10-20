@@ -1,0 +1,34 @@
+{
+  "verified_at_utc": "2026-10-20T07:09:54.779587+00:00",
+  "baseline_HEAD": "91ec919d40ac71ff699885068599687ecfe5d9ba",
+  "statistical_member_SHA_checks": 23,
+  "statistical_manifest_SHA": "6d00c7feb5c440b53233a2bc2e514d7b11cae5c74ae8d0e8b312c07c82298f39",
+  "root_CSV_arithmetic_checks": "PASS_N18_N15_BE12_9_AND_SOL_TP_FULL_REMAINING_MARK_POSITIVE_ZERO",
+  "proposed_hypothesis": "CHOP_PAIR_50_NET_v1",
+  "status": "OWNER_REVIEW_NOT_ECONOMIC_GO",
+  "range_exit_verified": false,
+  "native_new_TOTAL_ROI_DD": null,
+  "new_product_implementation": false,
+  "native_backtest": false,
+  "portfolio_PnL_engine": false,
+  "deployment": false,
+  "orders": false,
+  "pilot_changed": false,
+  "pilot_readonly": {
+    "MainPID": "2009732",
+    "NRestarts": "0",
+    "ActiveState": "active"
+  },
+  "price_pass": {
+    "completed": 1,
+    "failed_technical_attempts": 1,
+    "authorized_corrections": 1,
+    "peak_RSS_KiB": 128120,
+    "elapsed_seconds": 3.6378469467163086,
+    "new_swap": false
+  },
+  "native_contract_review": "GO_ANALYSIS_CONTRACT_WITH_UNPROVEN_ECONOMICS",
+  "project_readback": "PASS_OPEN_TODO_OWNER_REVIEW",
+  "model_routing": "TWO_EXECUTORS_GPT6.1_SOL_MEDIUM",
+  "git_whitespace_check": "PASS_CSV_CRLF_RECOGNIZED_STATISTICAL_BYTES_PRESERVED"
+}

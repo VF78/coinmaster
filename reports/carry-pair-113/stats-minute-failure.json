@@ -1,0 +1,10 @@
+{
+  "status": "TECHNICAL_FAILED_SINGLE_MINUTE_PASS_NO_PAYOFF_RESULT",
+  "source_HEAD": "91ec919d40ac71ff699885068599687ecfe5d9ba",
+  "fresh_MemAvailable_kB": 1207328,
+  "priority": "nice19/ioniceidle/singlethread",
+  "error": "overstrict assertion nativeREGIMEexecutionpx equals synchronizedminuteclose within.11; legitimateexecution/observationbasisdifference not admitted",
+  "stage": "bothminuteexecutionarraysread; calibration18MFEcalculatedinmemory; firstnativewindowassertionfailed; noCSVoutput",
+  "next": "Noautorerun; rootnotified; additionalreadrequiresnewexplicitrootauthorization",
+  "script_sha256": "f5b950e724ede1916020641879570cd3938d0dab2a0f12f53af7ac0382369fd5"
+}

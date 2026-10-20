@@ -1,0 +1,12 @@
+{
+  "readback_at_utc": "2026-10-20T07:08:04.306573+00:00",
+  "issue": 113,
+  "state": "open",
+  "project_status": "Todo",
+  "scope": "CARRY_PAIR_ANALYSIS_COMPLETE_OWNER_REVIEW",
+  "proposed_hypothesis": "CHOP_PAIR_50_NET_v1",
+  "economic_GO": false,
+  "implementation_or_native_run_approved": false,
+  "body_readback": "PASS",
+  "url": "https://github.com/VF78/coinmaster/issues/113"
+}

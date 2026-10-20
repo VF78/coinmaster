@@ -1,0 +1,6 @@
+{
+  "source_sha256": "f6dc5026824bb5505877ab3053f67f9919dd6590d56b7dc9e2f972e4de217592",
+  "root_authorized": "One technicalcorrectionread only; no new variants/reselection",
+  "alignment": "open_time_ms+60000 firstcompletedminute>=nativeregimeclosetime",
+  "preserved": "Originalnativebasis andnativeclosepx; explicitobservedmarkgaps; no1barshift"
+}

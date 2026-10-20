@@ -1,0 +1,22 @@
+SOL1DfixedcallevelsTPs half/full:
+{'period': 'calibration', 'coverage': 'half_factor', 'leg': 'SOL', 'TP': 1, 'total_contexts': 18, 'hits': 14, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.015750050433158164, 'trigger_then_BTC_basis_recovery_by1D': 7}
+{'period': 'calibration', 'coverage': 'half_factor', 'leg': 'SOL', 'TP': 2, 'total_contexts': 18, 'hits': 9, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.01945902279381402, 'trigger_then_BTC_basis_recovery_by1D': 2}
+{'period': 'calibration', 'coverage': 'half_factor', 'leg': 'SOL', 'TP': 3, 'total_contexts': 18, 'hits': 4, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.020835471674130624, 'trigger_then_BTC_basis_recovery_by1D': 1}
+{'period': 'calibration', 'coverage': 'factor_neutral', 'leg': 'SOL', 'TP': 1, 'total_contexts': 18, 'hits': 14, 'remaining_pair_mark_positive_at_TP': 2, 'remaining_pair_mark_at_TP_median': -0.013294885808994076, 'trigger_then_BTC_basis_recovery_by1D': 7}
+{'period': 'calibration', 'coverage': 'factor_neutral', 'leg': 'SOL', 'TP': 2, 'total_contexts': 18, 'hits': 9, 'remaining_pair_mark_positive_at_TP': 1, 'remaining_pair_mark_at_TP_median': -0.013667073085811313, 'trigger_then_BTC_basis_recovery_by1D': 2}
+{'period': 'calibration', 'coverage': 'factor_neutral', 'leg': 'SOL', 'TP': 3, 'total_contexts': 18, 'hits': 4, 'remaining_pair_mark_positive_at_TP': 1, 'remaining_pair_mark_at_TP_median': -0.009270275171294598, 'trigger_then_BTC_basis_recovery_by1D': 1}
+{'period': 'later', 'coverage': 'half_factor', 'leg': 'SOL', 'TP': 1, 'total_contexts': 15, 'hits': 10, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.027715467657693116, 'trigger_then_BTC_basis_recovery_by1D': 2}
+{'period': 'later', 'coverage': 'half_factor', 'leg': 'SOL', 'TP': 2, 'total_contexts': 15, 'hits': 6, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.029414301319839194, 'trigger_then_BTC_basis_recovery_by1D': 0}
+{'period': 'later', 'coverage': 'half_factor', 'leg': 'SOL', 'TP': 3, 'total_contexts': 15, 'hits': 2, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.04255839850238008, 'trigger_then_BTC_basis_recovery_by1D': 0}
+{'period': 'later', 'coverage': 'factor_neutral', 'leg': 'SOL', 'TP': 1, 'total_contexts': 15, 'hits': 10, 'remaining_pair_mark_positive_at_TP': 1, 'remaining_pair_mark_at_TP_median': -0.023995248524839523, 'trigger_then_BTC_basis_recovery_by1D': 2}
+{'period': 'later', 'coverage': 'factor_neutral', 'leg': 'SOL', 'TP': 2, 'total_contexts': 15, 'hits': 6, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.022341408312599252, 'trigger_then_BTC_basis_recovery_by1D': 0}
+{'period': 'later', 'coverage': 'factor_neutral', 'leg': 'SOL', 'TP': 3, 'total_contexts': 15, 'hits': 2, 'remaining_pair_mark_positive_at_TP': 0, 'remaining_pair_mark_at_TP_median': -0.02668528860201791, 'trigger_then_BTC_basis_recovery_by1D': 0}
+7Ddelta:
+calibration original_inventory -0.009887048867552279 -0.021542470158923563 7
+calibration half_factor -0.006775278309624633 -0.008759802078124932 5
+calibration factor_neutral -0.00359178020611373 -0.0074450680205525345 8
+calibration minimum_variance -0.007800358964935882 -0.010925664054316823 6
+later original_inventory -0.001387129358465037 0.007149754753201058 8
+later half_factor 0.0028189208075873004 0.0037497901898840176 9
+later factor_neutral 0.007024970973639638 0.00819962729390363 9
+later minimum_variance 0.005277750803350558 0.008323430607744323 10
