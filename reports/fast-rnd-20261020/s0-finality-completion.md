@@ -1,0 +1,3 @@
+Shared observer: 5 focused native tests PASS. A real SOL opening callback still showed 10000/flat while settled native state was 9999/open; closing callback showed 9999/open versus settled 9998/flat.
+
+New settled_native_close_receipts curve reads actual native cash and native position PnL at retained causal paired marks, at a strictly later custom-data entry before new strategy work. It preserves source and actual receipt timestamps. Any fill or native account state newer than source makes that observation explicitly unavailable. No trading rule, account engine, fee, funding or legacy curve changes. This is discrete delayed marked equity, with explicit coverage/gaps, not exact intrabar DD. Full S0 remains unlaunched pending independent review and refreshed pins.

@@ -109,3 +109,44 @@ def test_terminal_settlement_is_excluded_from_interval_native_drawdown(tmp_path,
     assert bound["same_bar_extrema_order_assumed"] is False
     assert int(bound["maximum"]["trough"]["timestamp_ns"]) <= int(summary["end_exclusive_ns"])
     assert bound["maximum"]["peak"]["timestamp_ns"] is not None
+
+def test_off_settled_receipt_matches_after_run_and_rejects_intervening_fill(tmp_path):
+    from types import SimpleNamespace
+    from coinmaster.research.minute_risk import NativeMinuteRiskRecorder, observed_strategy_type
+    from coinmaster.research.native_fixture import BTC_PERP, SOL_PERP
+    from test_native_episode_risk import NativeProbe, tick, run_ticks
+    from test_wave_native_integration import lifecycle_config, native_engine
+    from nautilus_trader.model.enums import OrderSide
+    class Probe(NativeProbe):
+        def on_quote_tick(self, quote):
+            if quote.instrument_id==SOL_PERP.id and quote.ts_event in (60_000_000_000,120_000_000_000):
+                self.submit_order(self.order_factory.market(quote.instrument_id,
+                    OrderSide.BUY if quote.ts_event==60_000_000_000 else OrderSide.SELL,
+                    SOL_PERP.make_qty(D("10"))))
+    r=NativeMinuteRiskRecorder(tmp_path/"risk.csv.gz",D(10000),(BTC_PERP,SOL_PERP),
+        {BTC_PERP.id:D(40),SOL_PERP.id:D(20)},999_000_000_000)
+    s=observed_strategy_type(Probe,r)(lifecycle_config());e=native_engine(s)
+    try:
+        def bundle(t):
+            return SimpleNamespace(open_time_ms=t//1_000_000-60000,
+                btc_mark={k:"100" for k in ("open","high","low","close")},
+                sol_mark={k:"100" for k in ("open","high","low","close")})
+        t=60_000_000_000;r.set_week([bundle(t)])
+        run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t)])
+        actual=r._snapshot(s,t)
+        # Native matching/fees are later than the quote callback.
+        assert r.curves["post_quote_paired_close"].minimum["equity"]=="10000"
+        assert actual[1]==actual[5]==D("9999")
+        r.finalize_receipt(s,t);assert r.receipt_count==0
+        r.finalize_receipt(s,t+1)
+        assert r.receipt_count==1
+        assert D(r.settled_curve.minimum["equity"])==actual[5]
+        assert int(r.settled_curve.minimum["timestamp_ns"])==t+1
+        t=120_000_000_000;r.set_week([bundle(t)])
+        run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t)])
+        assert r._snapshot(s,t)[5]==D("9998") and not e.cache.positions_open()
+        # An intervening later native fill makes the older mark unavailable.
+        r.note_fill(t+1);r.finalize_receipt(s,t+2)
+        assert r.receipt_count==1 and r.receipt_unavailable==1
+        assert r.receipt_pending is None
+    finally:r.file.close();r.receipt_file.close();e.end();e.dispose()

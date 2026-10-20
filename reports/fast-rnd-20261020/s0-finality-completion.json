@@ -1,0 +1,58 @@
+{
+  "status": "FOCUSED_NATIVE_PASS_AND_INDEPENDENT_GO",
+  "source_scope": "shared read-only observer only; no strategy/account/execution/cost changes",
+  "probe": {
+    "post_SOL_callback": {
+      "cash": "10000",
+      "equity": "10000",
+      "positions": 0
+    },
+    "after_native_run": {
+      "cash": "9999",
+      "equity": "9999",
+      "positions": 1
+    },
+    "close_callback": "9999",
+    "after_native_close": "9998"
+  },
+  "verification": {
+    "passed": 5,
+    "seconds": 8.97,
+    "coverage": [
+      "OFF long/short fills/orders/nativecash/fees/funding parity",
+      "same-ts receipt refused",
+      "native afterrun equity receipt equality",
+      "interveningfill unavailable",
+      "terminal boundary legacy exclusions unchanged"
+    ]
+  },
+  "metric": "settled_native_close_receipts.curve",
+  "receipt": "actual later custom-data entry before strategy processing; source mark OHLC retained; native account cash + native position.unrealized_pnl; actual receipt timestamp never backdated",
+  "guards": [
+    "receipt>source",
+    "lastfill<=source",
+    "nativeaccount.last_event.ts_event<=source",
+    "fill epoch stable through read"
+  ],
+  "limitations": [
+    "discrete delayed causal-mark receipts, not continuous intrabar true DD",
+    "source/receipt gap exported explicitly",
+    "intervening native mutation causes explicit unavailable observation",
+    "legacy callback curves and conditional OHLC bounds separately retained",
+    "terminal native account total remains authoritative; no PnL summation reconstruction"
+  ],
+  "full_S0_dispatched": false,
+  "hashes": {
+    "runtime/coinmaster/research/minute_risk.py": "1dd1fc2f1801cac07aa0cd5781ea66165aa3dc61953e90d9e9fd04ceef94436d",
+    "runtime/tests/test_native_minute_risk.py": "7033a50a75547ba3f7c0778f6c330ab6b060c168a527b1b1576c6a8f1861396d",
+    "reports/fast-rnd-20261020/s0-finality-probe.log": "13618bfd52ea9c3c5417f6ba58e59d75b39e8979b9a4627704852b594e308610",
+    "reports/fast-rnd-20261020/s0-finality-verification.log": "8f8d6f1221c92647abe272f6b73800516f0e65b8fd9e339694837e331f132dc6"
+  },
+  "independent_review": {
+    "reviewer": "/root/sol_corridor_review",
+    "decision": "GO",
+    "source_sha256": "1dd1fc2f1801cac07aa0cd5781ea66165aa3dc61953e90d9e9fd04ceef94436d",
+    "scope": "shared observer-only diff and five focused tests; no reviewer economic run",
+    "qualification": "Report unavailable/pending coverage; gapped receipts do not prove complete interval DD."
+  }
+}

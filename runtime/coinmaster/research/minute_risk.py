@@ -109,18 +109,29 @@ class NativeMinuteRiskRecorder:
         self.potential = 0
         self.potential_first = []
         self.last_post_cash = D(seed)
+        self.settled_curve = DrawdownTracker(seed)
+        self.receipt_pending = None
+        self.fill_epoch = 0
+        self.last_fill_ns = None
+        self.receipt_count = 0
+        self.receipt_unavailable = 0
+        self.receipt_gap_first = []
+        self.receipt_file = gzip.open(path.with_name("minute-native-settled-receipts.csv.gz"), "wt", newline="", compresslevel=1)
+        self.receipt_writer = csv.writer(self.receipt_file)
+        self.receipt_writer.writerow(["source_quote_ns","receipt_ns","fill_epoch","cash","paired_close_equity","native_positions_and_mark_ohlc_json"])
 
     def set_week(self, week):
         self.expected_minutes += len(week)
         self.bundles = {(minute.open_time_ms+60000)*1000000: minute for minute in week}
         if self.rows == 0:
+            self.settled_curve.add(week[0].open_time_ms*1000000,self.settled_curve.seed)
             self.upper_to_later_lower.peak["timestamp_ns"] = str(week[0].open_time_ms*1000000)
             for curve in self.curves.values():
                 curve.add(week[0].open_time_ms*1000000,curve.seed)
 
-    def _snapshot(self, strategy, timestamp):
+    def _snapshot(self, strategy, timestamp, bundle=None):
         from coinmaster.strategy.wave_overlay import _native_account_money
-        bundle = self.bundles[timestamp]
+        bundle = self.bundles[timestamp] if bundle is None else bundle
         account = strategy.cache.account_for_venue(strategy.config.btc_id.venue)
         cash = _native_account_money(account)
         free = _native_account_money(account, free=True)
@@ -153,6 +164,40 @@ class NativeMinuteRiskRecorder:
         native_maintenance = sum((v.as_decimal() for v in account.margins_maint().values()), D(0))
         return bundle, cash, free, native_initial, native_maintenance, close_equity, adverse, favorable, mm_upper, details
 
+    def note_fill(self, timestamp):
+        self.fill_epoch += 1
+        self.last_fill_ns = timestamp
+
+    def finalize_receipt(self, strategy, timestamp):
+        # Called only at custom-data entry, before strategy actions. Unlike a
+        # quote callback this boundary cannot itself match an execution quote.
+        pending = self.receipt_pending
+        if pending is None or timestamp is None:
+            return
+        source, bundle = pending
+        if timestamp <= source:
+            return
+        account = strategy.cache.account_for_venue(strategy.config.btc_id.venue)
+        # Native timers are advanced before custom data. Any intervening fill
+        # or account mutation invalidates the old-source receipt, never mixes
+        # newly changed inventory/cash with that source mark.
+        account_ns = account.last_event.ts_event
+        if (self.last_fill_ns is not None and self.last_fill_ns > source) or account_ns > source:
+            self.receipt_unavailable += 1
+            if len(self.receipt_gap_first) < 10:
+                self.receipt_gap_first.append({"source_quote_ns":str(source),"receipt_ns":str(timestamp),"last_fill_ns":str(self.last_fill_ns),"account_ns":str(account_ns)})
+            self.receipt_pending = None
+            return
+        epoch = self.fill_epoch
+        snapshot = self._snapshot(strategy, source, bundle)
+        if epoch != self.fill_epoch:
+            return
+        _, cash, _, _, _, equity, _, _, _, details = snapshot
+        self.settled_curve.add(timestamp, equity)
+        self.receipt_writer.writerow([source,timestamp,epoch,cash,equity,json.dumps(details,separators=(",",":"))])
+        self.receipt_count += 1
+        self.receipt_pending = None
+
     def capture(self, strategy, timestamp, phase):
         if timestamp not in self.bundles:
             return
@@ -171,6 +216,10 @@ class NativeMinuteRiskRecorder:
                 strategy._risk_first_observe_equity(equity,timestamp)
             if getattr(strategy.config,"research_alpha_cushion",False):
                 strategy._alpha_observe_equity(equity,timestamp)
+            if phase == "post_quote_paired_close":
+                if self.receipt_pending is not None:
+                    raise ValueError("RISK_OBSERVER_UNSETTLED_PREVIOUS_QUOTE")
+                self.receipt_pending = (timestamp, bundle)
             self.curves[phase].add(timestamp,equity)
             self.curves["all_native_close_samples"].add(timestamp,equity)
         if phase == "pre_quote_paired_close":
@@ -192,11 +241,23 @@ class NativeMinuteRiskRecorder:
 
     def close(self):
         self.file.close()
+        self.receipt_file.close()
         if self.rows != self.expected_minutes*3 or any(
             count != self.expected_minutes for count in self.phase_counts.values()
         ):
             raise ValueError("RISK_OBSERVER_INCOMPLETE_NATIVE_TRACE")
         summary={"trace_path":str(self.path), "rows":self.rows,
+                 "settled_native_close_receipts": {
+                     "curve": self.settled_curve.summary(),
+                     "receipts": self.receipt_count,
+                     "unavailable_intervening_native_mutation": self.receipt_unavailable,
+                     "first_unavailable": self.receipt_gap_first,
+                     "pending_source_quote_ns": str(self.receipt_pending[0]) if self.receipt_pending else None,
+                     "trace_path": str(self.path.with_name("minute-native-settled-receipts.csv.gz")),
+                     "basis": "ACTUAL_NATIVE_CASH_PLUS_NATIVE_UPNL_AT_CAUSAL_SOURCE_MARKS",
+                     "timestamp_basis": "ACTUAL_LATER_CUSTOM_DATA_RECEIPT_NEVER_BACKDATED",
+                     "mark_age": "receipt_ns-source_quote_ns; source paired marks retained unchanged",
+                     "legacy_callback_curves_retained": True},
                  "end_exclusive_ns": str(self.end_exclusive_ns),
                  "post_boundary_settlement_excluded_from_interval_curves": self.post_boundary_settlement,
                  "curves":{key:curve.summary() for key,curve in self.curves.items()},
@@ -214,6 +275,7 @@ def observed_strategy_type(base, recorder):
     """Preserve strategy class name/order identity; attach read-only callbacks."""
     def on_data(self, data):
         incoming=getattr(data,'data',data)
+        recorder.finalize_receipt(self,getattr(incoming,'ts_event',None))
         self._corridor_finalize_checkpoint(getattr(incoming,'ts_event',None))
         base.on_data(self, data)
         mark=getattr(data,"data",data)
@@ -232,6 +294,9 @@ def observed_strategy_type(base, recorder):
                     self._research_check_portfolio_protection(timestamp, after_observation=True)
                 if self.config.research_btc_episode_loss_20:
                     self._research_check_btc_episode_loss(timestamp, after_observation=True)
+    def on_order_filled(self,event):
+        recorder.note_fill(event.ts_event)
+        base.on_order_filled(self,event)
     def on_quote_tick(self,tick):
         self._corridor_finalize_checkpoint(tick.ts_event)
         base.on_quote_tick(self,tick)
@@ -243,4 +308,4 @@ def observed_strategy_type(base, recorder):
             recorder.capture(self,tick.ts_event,"post_quote_paired_close")
         elif tick.instrument_id==self.config.btc_id:
             recorder.capture(self,tick.ts_event,"post_btc_quote_paired_close")
-    return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick,"_research_protection_defer_to_recorder":True,"_risk_first_observer_driven":True})
+    return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick,"on_order_filled":on_order_filled,"_research_protection_defer_to_recorder":True,"_risk_first_observer_driven":True})

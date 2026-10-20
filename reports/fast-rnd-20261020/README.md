@@ -23,3 +23,6 @@ Next: exact S0 one-run launch after immutable/resource gate; common causal Datas
 
 ## Isolated environment
 Research environment ready: isolated runtime/var/research-envs/fast-rnd-20261020; exact hashed CPU-only dependencies, pip check, API signature checks and one batch-1 CNN forward PASS. Native/trading runtime unchanged. CNN feature/output shapes [1,256,3,60] / [1,6], 898,110 parameters; this is not training. Env 1.454 GB, disk available 3.356 GB at receipt. S0 waits for one bounded default-OFF equity timing check; no full run or model fit yet.
+
+## Shared equity measurement repair
+Default-OFF native fixture confirmed callback snapshots precede settlement: entry callback 10000/no position vs settled 9999/open; exit callback 9999/open vs settled 9998/flat. Shared observer now records a separate coherent, later-receipt equity series at retained causal paired marks. Later fill/account mutations invalidate a pending source receipt rather than mix states. Legacy curves are preserved. Five native tests and narrow independent GO passed; orders, cash, fees and funding parity remain unchanged. Settled DD must include unavailable/pending coverage and mark-age qualifications, not claim complete interval certification from a gapped series. Full S0 reproduction is still pending launch.

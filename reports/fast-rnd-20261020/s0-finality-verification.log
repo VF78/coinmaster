@@ -1,0 +1,28 @@
+.....                                                                    [100%]
+=============================== warnings summary ===============================
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[True]
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[True]
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[False]
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[False]
+tests/test_native_minute_risk.py::test_terminal_settlement_is_excluded_from_interval_native_drawdown
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:896: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[True]
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[True]
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[False]
+tests/test_native_minute_risk.py::test_native_observer_preserves_fills_account_and_avoids_preentry_extrema[False]
+tests/test_native_minute_risk.py::test_terminal_settlement_is_excluded_from_interval_native_drawdown
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:929: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+tests/test_native_minute_risk.py::test_off_settled_receipt_matches_after_run_and_rejects_intervening_fill
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_minute_risk.py::test_off_settled_receipt_matches_after_run_and_rejects_intervening_fill
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_minute_risk.py:152: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:r.file.close();r.receipt_file.close();e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+5 passed, 12 warnings in 8.97s
