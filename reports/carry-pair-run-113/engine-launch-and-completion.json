@@ -51,7 +51,7 @@
   "full_native_event_feed_completed": true,
   "economic_rerun": false,
   "recovered_result_path": "reports/carry-pair-run-113/engine-recovered-native-result.json",
-  "recovered_result_sha256": "7cc3fccb2ae9a528151a40c461c0c834e271f7185ae0ca46a0b571a31f181e1c",
+  "recovered_result_sha256": "4651035fee92027982293b99d6c9711a82201360ac5a4d4acf507491d12e24de",
   "native_terminal_total": "205.42245876",
   "native_minute_DD_percent": "99.84864985552820898675873133",
   "source_unchanged": true,

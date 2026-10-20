@@ -315,7 +315,9 @@
     "specific_liquidation_count": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED",
     "domain_pending_gate_state": "UNKNOWN_IN_MEMORY_STATE_NOT_PERSISTED",
     "source_based_cause_inference": "NATIVE_MARGIN_GUARD_LIQUIDATION_LOCKOUT_CONSISTENT_WITH_DURABLE_MARGIN_AND_INTRADAY_TAKER_CLOSE;EXACT_COUNTER_UNAVAILABLE",
-    "margin_evidence_qualification": "Three conditional OHLC/tier upper-bound breach records exist in minute-risk-summary.json; these are not a directly observed native-account MM breach. The separate pinned tier guard is the source-consistent cause inference; its exact in-memory liquidation counter was not persisted."
+    "margin_evidence_qualification": "Three conditional OHLC/tier upper-bound breach records exist in minute-risk-summary.json; these are not a directly observed native-account MM breach. The separate pinned tier guard is the source-consistent cause inference; its exact in-memory liquidation counter was not persisted.",
+    "last_nonflat_utc": "2025-04-06T20:37:00+00:00",
+    "first_permanent_flat_utc": "2025-04-06T20:38:00+00:00"
   },
   "carry_audit": {
     "admissions": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED",
