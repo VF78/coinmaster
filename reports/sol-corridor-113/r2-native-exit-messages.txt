@@ -1,0 +1,4 @@
+Started cm113-alpha-corridor-v1-native24m-20261020T112508Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/launch.sh.
+cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: A process of this unit has been killed by the OOM killer.
+cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: Failed with result 'oom-kill'.
+cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: Consumed 20min 43.094s CPU time, 648.5M memory peak, 0B memory swap peak.

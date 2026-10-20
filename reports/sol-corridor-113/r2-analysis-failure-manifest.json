@@ -1,0 +1,17 @@
+{
+  "status": "FAILURE_ACCEPTANCE_METADATA_ONLY",
+  "inputs": {
+    "r2-completion.json": "c77c52023417fb89f04c5529b7c012bafe38262516c5a1f5e52cb38f9876ba34",
+    "r2-failure-manifest.json": "57ec4634057e97cf04f8b4a7b5f03fb2d9548ff4b301215477c89d94c4703bc9"
+  },
+  "files": {
+    "r2-analysis-failure.json": {
+      "bytes": 14661,
+      "sha256": "1d9cc51d326d3ea294cbaba0c7fdeddffdf48201f0ae89c25b46c2d38d0dcd16"
+    },
+    "r2-analysis-failure.md": {
+      "bytes": 4243,
+      "sha256": "a107615e0a27bb695ff79f46f1e013ba31a5f412bc29e00c1b5ae033ecfec642"
+    }
+  }
+}

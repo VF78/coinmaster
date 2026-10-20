@@ -1,0 +1,16 @@
+{
+  "status": "ROOT_FAILURE_CHECKPOINT_VERIFIED",
+  "product_code_diff": false,
+  "native_full24m_completed": false,
+  "candidate_economics": "UNKNOWN",
+  "DD50": "NOT_PROVEN",
+  "failure_manifest_identities_checked": 21,
+  "analysis_manifest_checks": "PASS",
+  "project_actual_readback": "OPEN/Todo",
+  "pilot_actual_readback": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "economic_run_count": 1,
+  "retry_or_new_engine": false,
+  "new_tests": "NONE_REPORT_ONLY; existing focused tests reused",
+  "partial_gzip_and_original_funding": "VPS preserved; binary funding mirror in report directory; identities pinned",
+  "source": "f2ebdce94ac6a837712445a50895b6d3eefb3c44"
+}

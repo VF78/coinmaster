@@ -1,0 +1,5 @@
+# One bounded static retention check
+
+Evidence: risk_first_sol.py creates/appends risk_first_sol_audit (12/44); its8192limit applies only to CORRIDOR_BUDGET writer(497). conditional_hedge.py44 separately appends native target/fill/terminal events to that same list without that cap. wave_overlay.py321–324/2315/2933/2957 retains per-order metadata, per-fill audit rows and seen trade IDs. Native cache/cache.pyx2193 retains order objects; native engine.clear_data1262–1274 clears only market input, not order history. Frozen runner889 streams batches, but end/native account/fills/orders/raw exports914–1025 happen after the loop.
+
+Supported hypothesis: growing retained native order/fill/event history could explain memory growth under corridor turnover. Exact allocations, container sizes at death and sole causal contribution are UNKNOWN; no heap/final counters survived. Journal proves650MiB/swap0was insufficient for this actual run before full replay/export; HOSTcgroup memory.stat is not unit evidence. This is one static report only: no source fixes, general audit, engine or replay.

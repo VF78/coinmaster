@@ -1,0 +1,23 @@
+{
+  "status": "ENGINE_STOPPED_AUDITS_NOT_VALIDATED",
+  "observed_utc": "2026-10-20T11:49:01.095510+00:00",
+  "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "engine_PID": 194167,
+  "reader_PID": 194689,
+  "engine_alive": false,
+  "compressed_bytes_consumed_once": 11436420,
+  "native_sample_rows": 392240,
+  "counted_SOL_quote_minutes": 130746,
+  "last_stored_native_sample": {
+    "close_available_ns": "1732993620000000000",
+    "phase": "post_btc_quote_paired_close",
+    "cash": "4869.94269918",
+    "paired_close_equity": "4869.94269918"
+  },
+  "provisional_stored_native_peak": "12456.71194384",
+  "provisional_native_DD_lower_bound_percent": "77.92330403144688216329131654",
+  "current_engine_RSS_bytes": null,
+  "gzip_complete": false,
+  "limitations": "Stored trace phases are observed native values; settlement NOT certified here. Equity and DD provisional/lower-bound until complete durable audit validation. No price/PnL model, no reread.",
+  "last_sample_UTC": "2024-11-30T19:07:00+00:00"
+}

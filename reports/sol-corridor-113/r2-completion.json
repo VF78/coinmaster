@@ -1,0 +1,136 @@
+{
+  "status": "PARTIAL_NATIVE_OOM",
+  "full_24m_completion": "FAILED",
+  "economic_run_count": 1,
+  "excluded_startup_attempts": 1,
+  "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "invocation_id": "a40a9cbb20d2475e9d1583b15aa0f804",
+  "actual_python_PID": 194172,
+  "flock_supervisor_PID": 194167,
+  "source_head": "f2ebdce94ac6a837712445a50895b6d3eefb3c44",
+  "source71_unchanged": true,
+  "source_six_pins": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "98024a287b6b168a41a6b34859821b2db5acc9410909f1cb7fa7f03635472abc",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "exit_journal_events": [
+    {
+      "utc": "2026-10-20T11:27:59.004583+00:00",
+      "message": "Started cm113-alpha-corridor-v1-native24m-20261020T112508Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/launch.sh."
+    },
+    {
+      "utc": "2026-10-20T11:48:54.817428+00:00",
+      "message": "cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: A process of this unit has been killed by the OOM killer."
+    },
+    {
+      "utc": "2026-10-20T11:48:54.881376+00:00",
+      "message": "cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: Failed with result 'oom-kill'."
+    },
+    {
+      "utc": "2026-10-20T11:48:54.883011+00:00",
+      "message": "cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: Consumed 20min 43.094s CPU time, 648.5M memory peak, 0B memory swap peak."
+    }
+  ],
+  "exit_result": "oom-kill",
+  "CPU_time": "20min43.094s",
+  "memory_peak_journal_formatted": "648.5M",
+  "memory_limit_bytes": 681574400,
+  "memory_swap_peak": "0B",
+  "coverage": {
+    "expected_native_sample_rows": 3153600,
+    "reader_complete_csv_rows": 392240,
+    "reader_SOL_quote_minutes": 130746,
+    "first_actual_stored_UTC": "2024-09-01T00:01:00+00:00",
+    "last_actual_stored_UTC": "2024-11-30T19:07:00+00:00",
+    "last_phase": "post_btc_quote_paired_close",
+    "gzip_complete": false,
+    "coverage_rule": "Existing incremental reader only; no additional decode/rescan. Native processing beyond last flushed complete row UNKNOWN."
+  },
+  "raw_native_result": "ABSENT",
+  "native_fills_orders_exports": "ABSENT",
+  "native_terminal_TOTAL": "UNKNOWN",
+  "ROI": "UNKNOWN",
+  "full_native_marked_DD": "UNKNOWN",
+  "full_conditional_OHLC": "UNKNOWN",
+  "native_fees_turnover_fills_liquidations": "UNKNOWN",
+  "BTC_calendar_side_acceptedQ_delays": "UNKNOWN",
+  "terminal_flat_open_orders": "UNKNOWN",
+  "monthly_worst3_11cluster_full_acceptance": "UNKNOWN",
+  "last_partial_observation_NOT_TERMINAL": {
+    "close_available_ns": "1732993620000000000",
+    "phase": "post_btc_quote_paired_close",
+    "cash": "4869.94269918",
+    "paired_close_equity": "4869.94269918"
+  },
+  "provisional_stored_DD_NOT_FINAL": "77.92330403144688216329131654",
+  "surviving_files": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+      "bytes": 4096,
+      "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa",
+      "mtime_ns": 1792495691368929154
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+      "bytes": 32768,
+      "sha256": "e15f587059ec7af3614824a97ee963e1b4c225848b0632be174da4f414643b23",
+      "mtime_ns": 1792496900965276146
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+      "bytes": 1816952,
+      "sha256": "b305e5828c38ff0a071f24dc1d618e5c8950b9ad3b26119eae43fe055e3e4c40",
+      "mtime_ns": 1792496895861101746
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/minute-native-risk.csv.gz",
+      "bytes": 11436420,
+      "sha256": "51da0e4405e7031960e0668395a78a4dfe902c37bfca8f843bfdd29728b1f052",
+      "mtime_ns": 1792496932153341781
+    }
+  ],
+  "all_surviving_hashes_still_equal_exit_capture": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801": true,
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm": true,
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal": true,
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/minute-native-risk.csv.gz": true
+  },
+  "funding_byte_identical_preserved_copies": [
+    {
+      "original": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+      "preserved_copy": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+      "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa",
+      "bytes": 4096
+    },
+    {
+      "original": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+      "preserved_copy": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+      "sha256": "e15f587059ec7af3614824a97ee963e1b4c225848b0632be174da4f414643b23",
+      "bytes": 32768
+    },
+    {
+      "original": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+      "preserved_copy": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+      "sha256": "b305e5828c38ff0a071f24dc1d618e5c8950b9ad3b26119eae43fe055e3e4c40",
+      "bytes": 1816952
+    }
+  ],
+  "funding_signed_attribution": "UNKNOWN_NO_SQLITE_ANALYSIS",
+  "reader_stopped": true,
+  "reader_passes": 1,
+  "additional_trace_scans": 0,
+  "static_check": "r2-memory-static-check.json",
+  "source_changes_after_dispatch": false,
+  "retry_control_repeat": "NONE_FORBIDDEN",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "notes": [
+    "Garbage-collected systemctl Resultsuccess/ExecMainStatus0 is not exit success evidence; journal OOM is authoritative.",
+    "Raw wrapper snapshots protect packaging metadata failures after exports, not loop OOM; no missing audit is fabricated.",
+    "Exact heap allocation UNKNOWN.",
+    "Observer RSS field referred to flock supervisor; use recorded unit memory/journal only, not HOSTcgroup data."
+  ]
+}

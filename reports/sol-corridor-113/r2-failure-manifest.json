@@ -1,0 +1,110 @@
+{
+  "status": "PARTIAL_FAILURE_ARTIFACT_IDENTITIES_ONLY",
+  "files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-completion.json",
+      "bytes": 9123,
+      "sha256": "c77c52023417fb89f04c5529b7c012bafe38262516c5a1f5e52cb38f9876ba34"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-completion.md",
+      "bytes": 2005,
+      "sha256": "5c0a3de5d3a63e84c08208499a14a6377504ef35cb8639186fc0c0bbed67026a"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-native-exit-receipt.json",
+      "bytes": 4791,
+      "sha256": "21602df8bb6e3ca9b530a2a15b6f4c5326da2cbdd80a685d8e91c3350191647e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-native-exit-journal.jsonl",
+      "bytes": 5330,
+      "sha256": "fc31cf3b9b0ff526e5e5b44e2dbb77f5bd3c588b6a710a1698ce09f0f7e1da3e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-native-exit-messages.txt",
+      "bytes": 528,
+      "sha256": "b4b3a99355d6794ec994a003a54256e9bcb67198dce5ba646e1ab981542c6b1f"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-progress.json",
+      "bytes": 1020,
+      "sha256": "67bf6ef5a1a1da821fbe52eb643610e7d6d29b61e14a6cc52adaa1b416058ccc"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-progress-history.jsonl",
+      "bytes": 39393,
+      "sha256": "be121b2edf307edb63ea861fc195c6f432bbe1a945afd67966c8ac01d9fde99e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-progress-observer.py",
+      "bytes": 3194,
+      "sha256": "8f30a4d654abc83ca3a54be30b946836804134681de1d6536fbf74218a3269c2"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-prepare-receipt.json",
+      "bytes": 4762,
+      "sha256": "c218618906f182506fd92112e39c1de22eb73580cdf09c3b80ad0ed2b5ba3c62"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-launch-intent.json",
+      "bytes": 2194,
+      "sha256": "b93a0fe97bbe84e79418136910fc85eed8636f03b1af33be093110f89aa7aea3"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-launch-receipt.json",
+      "bytes": 4778,
+      "sha256": "56c44b77f008364f9d0a2add3e893efd8c565576ebc5b08fbd2a826c9bf1bade"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-memory-static-check.json",
+      "bytes": 2276,
+      "sha256": "8fdb041a7590e41fc187d0afa2d9cb1fb69ecbe63bda41d5fdf6b5ac173c348b"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-memory-static-check.md",
+      "bytes": 1098,
+      "sha256": "5eae58035a583f496db93d69e7981a9d49b1d2d5185a99eb289926d0ad386f69"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+      "bytes": 4096,
+      "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+      "bytes": 32768,
+      "sha256": "e15f587059ec7af3614824a97ee963e1b4c225848b0632be174da4f414643b23"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+      "bytes": 1816952,
+      "sha256": "b305e5828c38ff0a071f24dc1d618e5c8950b9ad3b26119eae43fe055e3e4c40"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/minute-native-risk.csv.gz",
+      "bytes": 11436420,
+      "sha256": "51da0e4405e7031960e0668395a78a4dfe902c37bfca8f843bfdd29728b1f052"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+      "bytes": 4096,
+      "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+      "bytes": 32768,
+      "sha256": "e15f587059ec7af3614824a97ee963e1b4c225848b0632be174da4f414643b23"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+      "bytes": 1816952,
+      "sha256": "b305e5828c38ff0a071f24dc1d618e5c8950b9ad3b26119eae43fe055e3e4c40"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/run.log",
+      "bytes": 307,
+      "sha256": "74e56554f283b7dd632f17d7bbe4f28328b7789641172ceb07ef412a07865185"
+    }
+  ]
+}

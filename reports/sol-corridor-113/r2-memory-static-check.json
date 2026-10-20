@@ -1,0 +1,34 @@
+{
+  "status": "ONE_BOUNDED_STATIC_INSPECTION_NO_FIX_NO_REPLAY",
+  "evidence": [
+    {
+      "path": "runtime/coinmaster/strategy/risk_first_sol.py",
+      "lines": "12,44,495-497",
+      "finding": "risk_first_sol_audit is a list. CORRIDOR_BUDGET samples are capped by len(audit)<8192, but _risk_first_emit itself appends without a universal cap; status counters have fixed status keys."
+    },
+    {
+      "path": "runtime/coinmaster/strategy/conditional_hedge.py",
+      "lines": "44",
+      "finding": "Native TARGET/TRIM/FILL/terminal/ownership event rows append directly into risk_first_sol_audit when corridor owns netting; this writer is not bounded by the CORRIDOR_BUDGET sample cap."
+    },
+    {
+      "path": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": "321-324,2315,2933,2957",
+      "finding": "Retains _order_audit dict per submitted order, fill_audit list per native fill, _seen_trade_ids set per trade. No per-history cap on these writers."
+    },
+    {
+      "path": "runtime/coinmaster/research/native_baseline.py",
+      "lines": "889,914,917-937,1020-1025",
+      "finding": "Weekly engine.clear_data clears streamed market input, while engine.end/account/fills/orders exports and atomic raw snapshots occur after the full loop. OOM during loop cannot reach those exports."
+    },
+    {
+      "path": "installed nautilus_trader/cache/cache.pyx and backtest/engine.pyx",
+      "lines": "cache2193;engine1262-1274",
+      "finding": "Native cache stores order objects keyed by client_order_id; engine.clear_data clears input event stream only. Native purge APIs exist but this frozen runner/strategy path does not call them."
+    }
+  ],
+  "supported_hypothesis": "Cumulative order/fill/event retention under potentially higher corridor turnover plausibly contributed to rising memory despite streamed minute data and disabled terminal analyzer. These containers can grow with event count.",
+  "exact_allocation": "UNKNOWN: no heap profile or final in-memory counters survived; cannot quantify/rank containers or prove sole cause.",
+  "why_cap_failed": "Journal independently proves cgroup OOM at the approved650MiB/swap0 contract before replay/export completion. No host-cgroup memory.stat is used as unit evidence.",
+  "changes": "NONE"
+}

@@ -1,0 +1,264 @@
+{
+  "status": "FAILURE_ACCEPTANCE_ONLY_PARTIAL_NATIVE_OOM",
+  "full_24m_economics": "NOT_EVALUABLE",
+  "criterion_DD_le_50": "NOT_PROVEN",
+  "economic_run_count": 1,
+  "excluded_startup_attempts": 1,
+  "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "invocation_id": "a40a9cbb20d2475e9d1583b15aa0f804",
+  "actual_python_PID": 194172,
+  "source_head": "f2ebdce94ac6a837712445a50895b6d3eefb3c44",
+  "source_six_pins": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "98024a287b6b168a41a6b34859821b2db5acc9410909f1cb7fa7f03635472abc",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "source_provenance": "Five prior R1 source pins match; approved noneconomic analyzer-off native_baseline SHA98024a from NEW prepared receipt is used, not the older request runner pin. Source71 unchanged per owner receipt.",
+  "exit": {
+    "result": "oom-kill",
+    "OOM_UTC": "2026-10-20T11:48:54.817428+00:00",
+    "CPU_time": "20min43.094s",
+    "memory_peak_journal_formatted": "648.5M",
+    "memory_limit_bytes": 681574400,
+    "swap_peak": "0B",
+    "exact_heap_allocation": "UNKNOWN",
+    "warning": "Garbage-collected systemctl Resultsuccess/ExecMainStatus0/not-found is NOT success proof; invocation journal OOM is authoritative."
+  },
+  "partial_coverage": {
+    "expected_native_sample_rows": 3153600,
+    "reader_complete_csv_rows": 392240,
+    "reader_SOL_quote_minutes": 130746,
+    "first_actual_stored_UTC": "2024-09-01T00:01:00+00:00",
+    "last_actual_stored_UTC": "2024-11-30T19:07:00+00:00",
+    "last_phase": "post_btc_quote_paired_close",
+    "gzip_complete": false,
+    "coverage_rule": "Existing incremental reader only; no additional decode/rescan. Native processing beyond last flushed complete row UNKNOWN."
+  },
+  "partial_observation_NOT_TERMINAL": {
+    "close_available_ns": "1732993620000000000",
+    "phase": "post_btc_quote_paired_close",
+    "cash": "4869.94269918",
+    "paired_close_equity": "4869.94269918"
+  },
+  "provisional_stored_DD_NOT_FINAL": "77.92330403144688216329131654",
+  "partial_interpretation": "4869.94269918 is not terminal TOTAL or a full ROI basis. Stored-series77.92330403144688% is copied from the existing one-pass reader and is incomplete/settlement-uncertified, not validated full candidate DD. Native processing beyond the last flushed row is UNKNOWN.",
+  "comparison": [
+    {
+      "metric": "settled TOTAL USDT",
+      "control": "6077107.23887483",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "full ROI percent",
+      "control": "60671.072388748300",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "global native allphase DD percent",
+      "control": "66.31878024969152066570091116",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "conditional OHLC bound percent",
+      "control": "67.54771031869252420136632742",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "actual native fees USDT",
+      "control": "945927.73761825",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "actual native turnover USDT",
+      "control": "2209476512.4321",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "native fill report rows",
+      "control": "621",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "native liquidation audit count",
+      "control": "0",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "signed funding",
+      "control": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "candidate": "UNKNOWN_NO_SQLITE_ANALYSIS_OR_FINAL_COMPONENT_EXPORT"
+    },
+    {
+      "metric": "retained TOTAL share",
+      "control": "100%",
+      "candidate": "UNKNOWN_NO_COMPLETE_NATIVE_EXPORT"
+    },
+    {
+      "metric": "DD<=50 criterion",
+      "control": "ARCHIVED_DD_ABOVE_50_NOT_RECERTIFIED",
+      "candidate": "NOT_PROVEN"
+    }
+  ],
+  "full_acceptance_not_completed": [
+    "24-month TOTAL/ROI/global DD/conditional OHLC",
+    "actual fees/turnover/fills/liquidations",
+    "signed funding/full audit",
+    "BTC calendar/side/acceptedQ/TP delays",
+    "actual target/status/receipt overshoot acceptance",
+    "24-month returns/exposure statistics",
+    "eleven fixed loss-flip portfolio comparisons",
+    "three worst-excursion portfolio comparisons",
+    "terminal flat/open-orders audit"
+  ],
+  "account_finality": "Control/R0 post-SOL samples are not certified settled accounts; control metrics remain archival, not recertified. Candidate deferred finality/receipt acceptance cannot be completed without actual final exports. No invented money or matching/PnL reconstruction.",
+  "blocker": "The single economic unit was OOM-killed under its recorded memory limit during an incomplete stream, before durable final native raw/fills/orders/lifecycle exports. Missing full interval and terminal audits block economic acceptance. Exact heap allocation is UNKNOWN; static collection-path hypotheses do not prove allocation-level cause.",
+  "funding_preservation": {
+    "SQLite_analysis_by_stats_owner": false,
+    "signed_attribution": "UNKNOWN",
+    "original_and_preserved_copy_hashes_verified": true,
+    "scope": "Raw byte identity only, not integrity/completeness or monetary attribution."
+  },
+  "verification": {
+    "owner_completion_SHA256": "c77c52023417fb89f04c5529b7c012bafe38262516c5a1f5e52cb38f9876ba34",
+    "owner_failure_manifest_SHA256": "57ec4634057e97cf04f8b4a7b5f03fb2d9548ff4b301215477c89d94c4703bc9",
+    "manifest_entries": 21,
+    "files": [
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-completion.json",
+        "bytes": 9123,
+        "sha256": "c77c52023417fb89f04c5529b7c012bafe38262516c5a1f5e52cb38f9876ba34",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-completion.md",
+        "bytes": 2005,
+        "sha256": "5c0a3de5d3a63e84c08208499a14a6377504ef35cb8639186fc0c0bbed67026a",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-native-exit-receipt.json",
+        "bytes": 4791,
+        "sha256": "21602df8bb6e3ca9b530a2a15b6f4c5326da2cbdd80a685d8e91c3350191647e",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-native-exit-journal.jsonl",
+        "bytes": 5330,
+        "sha256": "fc31cf3b9b0ff526e5e5b44e2dbb77f5bd3c588b6a710a1698ce09f0f7e1da3e",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-native-exit-messages.txt",
+        "bytes": 528,
+        "sha256": "b4b3a99355d6794ec994a003a54256e9bcb67198dce5ba646e1ab981542c6b1f",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-progress.json",
+        "bytes": 1020,
+        "sha256": "67bf6ef5a1a1da821fbe52eb643610e7d6d29b61e14a6cc52adaa1b416058ccc",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-progress-history.jsonl",
+        "bytes": 39393,
+        "sha256": "be121b2edf307edb63ea861fc195c6f432bbe1a945afd67966c8ac01d9fde99e",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-progress-observer.py",
+        "bytes": 3194,
+        "sha256": "8f30a4d654abc83ca3a54be30b946836804134681de1d6536fbf74218a3269c2",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-prepare-receipt.json",
+        "bytes": 4762,
+        "sha256": "c218618906f182506fd92112e39c1de22eb73580cdf09c3b80ad0ed2b5ba3c62",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-launch-intent.json",
+        "bytes": 2194,
+        "sha256": "b93a0fe97bbe84e79418136910fc85eed8636f03b1af33be093110f89aa7aea3",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-launch-receipt.json",
+        "bytes": 4778,
+        "sha256": "56c44b77f008364f9d0a2add3e893efd8c565576ebc5b08fbd2a826c9bf1bade",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-memory-static-check.json",
+        "bytes": 2276,
+        "sha256": "8fdb041a7590e41fc187d0afa2d9cb1fb69ecbe63bda41d5fdf6b5ac173c348b",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-memory-static-check.md",
+        "bytes": 1098,
+        "sha256": "5eae58035a583f496db93d69e7981a9d49b1d2d5185a99eb289926d0ad386f69",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+        "bytes": 4096,
+        "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+        "bytes": 32768,
+        "sha256": "e15f587059ec7af3614824a97ee963e1b4c225848b0632be174da4f414643b23",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+        "bytes": 1816952,
+        "sha256": "b305e5828c38ff0a071f24dc1d618e5c8950b9ad3b26119eae43fe055e3e4c40",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/minute-native-risk.csv.gz",
+        "bytes": 11436420,
+        "sha256": "51da0e4405e7031960e0668395a78a4dfe902c37bfca8f843bfdd29728b1f052",
+        "verification": "Stats owner raw-byte SHA independently verified once earlier; now size/mtime and stable manifest unchanged. No decode or second hash."
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+        "bytes": 4096,
+        "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+        "bytes": 32768,
+        "sha256": "e15f587059ec7af3614824a97ee963e1b4c225848b0632be174da4f414643b23",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-preserved-funding/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+        "bytes": 1816952,
+        "sha256": "b305e5828c38ff0a071f24dc1d618e5c8950b9ad3b26119eae43fe055e3e4c40",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      },
+      {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/run.log",
+        "bytes": 307,
+        "sha256": "74e56554f283b7dd632f17d7bbe4f28328b7789641172ceb07ef412a07865185",
+        "verification": "Independent raw-byte size/SHA; no SQLite database access"
+      }
+    ],
+    "journal_OOM_proven": true,
+    "coverage_receipts_consistent": true,
+    "final_raw_fills_orders_absent": true,
+    "trace_decode_passes_by_failure_acceptance": 0,
+    "economic_or_PnL_replays": 0,
+    "control_repeat_restart": false
+  },
+  "scope": "Metadata/hash/coverage acceptance only; only r2-analysis-failure report files written. No trace pass, engine, source/service/pilot/swap/secret change, commits, root docs or Project writes."
+}

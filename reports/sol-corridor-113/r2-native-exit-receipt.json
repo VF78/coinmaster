@@ -1,0 +1,73 @@
+{
+  "status": "ENGINE_STOPPED_EXIT_VALIDATION_PENDING",
+  "observed_utc": "2026-10-20T11:49:49.535692+00:00",
+  "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "invocation_id": "a40a9cbb20d2475e9d1583b15aa0f804",
+  "supervisor_PID": 194167,
+  "native_python_PID": 194172,
+  "systemctl_post_collection_NOT_SUCCESS_PROOF": "MainPID=0\nResult=success\nExecMainCode=0\nExecMainStatus=0\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nInvocationID=\n",
+  "journal_path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/r2-native-exit-journal.jsonl",
+  "journal_sha256": "fc31cf3b9b0ff526e5e5b44e2dbb77f5bd3c588b6a710a1698ce09f0f7e1da3e",
+  "last_messages": [
+    "Started cm113-alpha-corridor-v1-native24m-20261020T112508Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/launch.sh.",
+    "cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: A process of this unit has been killed by the OOM killer.",
+    "cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: Failed with result 'oom-kill'.",
+    "cm113-alpha-corridor-v1-native24m-20261020T112508Z.service: Consumed 20min 43.094s CPU time, 648.5M memory peak, 0B memory swap peak."
+  ],
+  "surviving_files": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+      "bytes": 4096,
+      "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa",
+      "mtime_ns": 1792495691368929154
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+      "bytes": 32768,
+      "sha256": "e15f587059ec7af3614824a97ee963e1b4c225848b0632be174da4f414643b23",
+      "mtime_ns": 1792496900965276146
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+      "bytes": 1816952,
+      "sha256": "b305e5828c38ff0a071f24dc1d618e5c8950b9ad3b26119eae43fe055e3e4c40",
+      "mtime_ns": 1792496895861101746
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/minute-native-risk.csv.gz",
+      "bytes": 11436420,
+      "sha256": "51da0e4405e7031960e0668395a78a4dfe902c37bfca8f843bfdd29728b1f052",
+      "mtime_ns": 1792496932153341781
+    }
+  ],
+  "run_log_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/run.log",
+  "run_log_sha256": "74e56554f283b7dd632f17d7bbe4f28328b7789641172ceb07ef412a07865185",
+  "run_log_tail": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/coinmaster/research/native_baseline.py:888: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.\n  engine.run(streaming=True)\n",
+  "source71_all_unchanged": true,
+  "last_provisional_progress": {
+    "status": "ENGINE_STOPPED_AUDITS_NOT_VALIDATED",
+    "observed_utc": "2026-10-20T11:49:01.095510+00:00",
+    "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+    "engine_PID": 194167,
+    "reader_PID": 194689,
+    "engine_alive": false,
+    "compressed_bytes_consumed_once": 11436420,
+    "native_sample_rows": 392240,
+    "counted_SOL_quote_minutes": 130746,
+    "last_stored_native_sample": {
+      "close_available_ns": "1732993620000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "4869.94269918",
+      "paired_close_equity": "4869.94269918"
+    },
+    "provisional_stored_native_peak": "12456.71194384",
+    "provisional_native_DD_lower_bound_percent": "77.92330403144688216329131654",
+    "current_engine_RSS_bytes": null,
+    "gzip_complete": false,
+    "limitations": "Stored trace phases are observed native values; settlement NOT certified here. Equity and DD provisional/lower-bound until complete durable audit validation. No price/PnL model, no reread.",
+    "last_sample_UTC": "2024-11-30T19:07:00+00:00"
+  },
+  "native_terminal_TOTAL": "UNKNOWN_NO_FINAL_NATIVE_EXPORT",
+  "no_retry": true,
+  "pilot_readback": "MainPID=2009732\nNRestarts=0\nActiveState=active\n"
+}
