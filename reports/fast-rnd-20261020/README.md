@@ -1,46 +1,46 @@
 # CoinMaster FAST-RND — 20.10.2026
 
-Current phase: FAST-02, real numeric recognizer comparison. S0 and the shared causal dataset are complete. Previous ALPHA-CORRIDOR runs are owner-stopped partial attempts; no new24m economic result is claimed.
+Current: FAST-02, RDST running. S0, common causal dataset, controls, STUMPY and MiniRocket complete. No recognizer selected; mandatory CNN follows RDST. No trading-policy optimization yet.
 
-[Owner task](owner-task.txt) · [Fixed experiment](experiment-lock.json) · [Project #2](https://github.com/users/VF78/projects/2) · [Issue #113](https://github.com/VF78/coinmaster/issues/113)
+[Owner task](owner-task.txt) · [Frozen experiment](experiment-lock.json) · [Project #2](https://github.com/users/VF78/projects/2) · [Issue #113](https://github.com/VF78/coinmaster/issues/113)
 
-Goal: TOTAL-equity DD≤50% and net profit≥90% of reproduced S0, then maximum net profit. BTC-main-profit premise is not accepted without attribution; archived BTC-only remains a separate control, not standalone SOL attribution.
+## Objective and boundary
+W=ACTIVE equity+RESERVE; DD≤50% (30–50% desirable), NetProfit≥90% of reproduced S0, then maximum NetProfit. With seed10,000 and S0TOTAL6,077,107.23887483 the threshold is TOTAL5,470,396.514987347. Research only: no pilot, deployment, real orders, Hermes/sites/VPN changes. Previous CORRIDOR attempts are owner-stopped prefixes, not completed24m results.
 
-Order: one S0 reproduction + common causal hourly dataset → STUMPY → MiniRocket → RDST → mandatory two-seed CNN → V comparison/OOF → only if informative, compact Optuna policy batches → locked finalists/U/native acceptance. No trading optimization before recognizer comparison. Negative diagnostic result is a valid stopping outcome.
+Fixed order: S0+dataset → STUMPY → MiniRocket → RDST → fixedCNN seeds7/42 → V comparison → ONLY if informative causalOOF/boundedOptuna → lockedfinalists/U/nativeverification. An entirely negative recognizer comparison is a valid end; no broad trade search to mask it.
 
-Preserve the pilot, unique completed results and raw market history; Hermes, both f-ai.studio sites and VPN untouched. Production/live is outside this task. U details stay unopened until the prescribed freeze.
+## Completed baseline and dataset
+- Exact S0TOTAL6,077,107.23887483USDT; ROI+60,671.0723887483%; fees945,927.73761825; notional2,209,476,512.4321;621fills/710orders/0liquidations/flat. One full native run, CPU18m45.469s/peak472MiB/swap0; source/inputpinsPASS.
+- Settled causal-source-mark equity DD66.256914864686864%:1,051,199receipts+seed/0unavailable/0pending. Legacy callback DD66.31878024969152% exactly reproduced. Timing measurement change, not improved trading. Discrete marked receipts do not establish observed intrabar tick DD.
+- Native funding1320receipts; signed aggregateUNKNOWN, not zero. Existing2nativefundingtests+streamedpersistencefixturePASS (−1285.747 persists through later closes); no duplicate posting added.
+- Legacy cash field0.378992825... is a fraction=37.89928254% associated with maximum absolute cash-drop episode, not certified maximum relative cash DD. Archive unchanged.
+- Observer-only settlement repair:5nativePASS+independentGO; no signals/orders/cash/execution/cost change.
+- Dataset17,520hourly IDs;5,959purgedselectedT/3,432V; zeroambiguous;57,697,969bytes;41.814sbuild; source/artifacthashesPASS. Manifest8f51abe51ddb15e95421549279cb8e32121b8797f43e0af9385e6df5e4a7329c.
+- Real hourly prehistory exists:2,208BTC/SOLbars each June–August2024, officialRESTprovenance/SHA/continuity verified; Dailywarmup2022-09-02. No first-week omission/newfetch.
+- Safe cleanup removed7audited paths/reclaimed1,140,477,952bytes; unique results/rawhistory/configs/active services retained. Separate1.454GB CPU MLenv, exacthashedlock/pipcheck/API+forwardPASS; trading venv unchanged.
 
-## FAST-00 checkpoint
-- Corrected CORRIDOR stopped at owner request: 311.7083 days / 535 fill-audit rows / 576 orders; no full-run terminal result. Stop receipts remain in ../sol-corridor-113.
-- Safe cleanup completed: exactly seven reviewed paths, 1,140,477,952 bytes reclaimed; available disk 4,920,049,664 bytes at receipt. Six generated synthetic DB/CSV files and one unused old GUI virtual environment removed; source/configs/unique economic results/raw data retained. Active service identities unchanged.
-- Existing signed/boundary native funding tests: 2 PASS. Additional streamed native fixture confirms -1285.747 funding cash delta persists through later native closes; no duplicate posting or missing-posting defect demonstrated. No economic source change required.
-- Exact S0 preflight saved; one immutable full reproduction is being packaged, not yet claimed complete. BTC-only archive reused with pins. Historical S0 has execution/account-equity qualifications and is not certified venue-faithful.
-- Data: real Bybit execution OHLCV minute history starts 2024-09-01; Daily warmup starts 2022-09-02. Initial missing-intraday-warmup conclusion is superseded: existing genuine Bybit 1h CSVs provide 2,208 bars per asset for June-August 2024, with archived official REST provenance and verified SHA. Builder will validate continuity; no first-week omission or new fetch is needed. Global T/V/U dates remain fixed.
-- Scientific API preflight saved. Isolated ML dependencies needed: do not downgrade trading NumPy. Official JKX supporting ZIP returned 403, so archive contents/pretrained weights remain unverified.
-- Protocol limitation disclosed: scalar BTC-only preflight accidentally printed nested historical U drawdown dates. No new U scan or use in fitting/policy; this old researched period is not a pristine holdout.
+## Validation diagnostics
+Common5,959T/3,432V IDs; lower log loss is better. No U outcomes parsed or model selection yet.
 
-Next: exact S0 one-run launch after immutable/resource gate; common causal DatasetBuilder; then mandatory STUMPY → MiniRocket → RDST → two-seed CNN before any trading-policy search.
+|Method|BTC log loss|SOL log loss|Mean log loss|Fit / inference seconds|
+|---|---:|---:|---:|---:|
+|Train prior|1.101263991|1.099908435|1.100586213|0.0004 /0.0002|
+|Simple38 logistic|1.298052054|1.427180786|1.362616420|3.731 /0.274|
+|STUMPY analogue|1.119859150|1.127457444|1.123658297|253.620 /66.968|
+|MiniRocket|7.125161290|7.300339389|7.212750340|72.438 /4.584|
+|RDST|Pending|Pending|Pending|Running|
+|CNN7/42|Pending|Pending|Pending|Not trained|
 
-## Isolated environment
-Research environment ready: isolated runtime/var/research-envs/fast-rnd-20261020; exact hashed CPU-only dependencies, pip check, API signature checks and one batch-1 CNN forward PASS. Native/trading runtime unchanged. CNN feature/output shapes [1,256,3,60] / [1,6], 898,110 parameters; this is not training. Env 1.454 GB, disk available 3.356 GB at receipt. S0 waits for one bounded default-OFF equity timing check; no full run or model fit yet.
+STUMPY is2.0963%worse than prior. Catalogue3TFpatterns/68occurrence records/6realprice match-continuationSVGs; anyTF≥3independentreadyage-matchedanalogues3226/3432. Fallback forecasts included on every V row. MiniRocket fixedrecipe is negative on both assets; actual1932features/TF,5816includingcontext. No retuning.
 
-## Shared equity measurement repair
-Default-OFF native fixture confirmed callback snapshots precede settlement: entry callback 10000/no position vs settled 9999/open; exit callback 9999/open vs settled 9998/flat. Shared observer now records a separate coherent, later-receipt equity series at retained causal paired marks. Later fill/account mutations invalidate a pending source receipt rather than mix states. Legacy curves are preserved. Five native tests and narrow independent GO passed; orders, cash, fees and funding parity remain unchanged. Settled DD must include unavailable/pending coverage and mark-age qualifications, not claim complete interval certification from a gapped series. Full S0 reproduction is still pending launch.
+MiniRocket initially OOM under an inherited650MiB cap, then under verified768MiB. A single focused memory correction chunks existing StandardScaler, preserves float32 transform rounding in a C/f64 diskmap and closes the obsolete owned mapping before unchanged C1/lbfgs1000 heads. Ten focused testsPASS3.981s; synthetic standardized values/probabilities exactly unchanged; stats drift at reduction precision; independent scopedGO. Corrected actual run succeeded at768MiB/swap0/CPU76.331s; root verified19artifacthashes. Both failed attempts preserved; exact original allocation siteUNKNOWN.
 
-## S0 reproduced and recognizer code prepared
-The one full S0 run completed successfully on source75ffc9c, same Bybit data/policy and 10,000 USDT seed. Terminal TOTAL exactly 6,077,107.23887483 USDT; ROI +60,671.0723887483%; fees945,927.73761825; filled notional2,209,476,512.4321;621 native fills,710 orders,0 liquidations,terminal flat. Funding1320 native receipts; signed aggregate UNKNOWN (post-total journal is not an amount ledger). Existing native funding posting/persistence tests passed; no second posting added.
+RDST actual launch18:09:58UTC/PID334745, same c1d0c69source/IDs/data/lock,512/.8/seed7 fit(X)withouty; effective768MiB/system.slice/swap0/thread1 verified. CNN minimal immutable package prepared only; syntheticB128resourceprobe and3TRAINPNGQA require RDST exit, then actualtwo-seedfit.
 
-Settled-marked native receipt DD66.256914864686864%,1,051,199 receipts +seed /0unavailable /0pending; legacy callback DD66.31878024969152% exactly reproduced. This small difference is measurement timing, not a strategy improvement. This is discrete causal-source-mark equity with actual later receipt timestamps, not observed intrabar tick DD. Historical close execution/slippage/margin qualifications remain NOT_FAITHFUL_DIAGNOSTIC.
+## Reproduce and inspect
+[S0](s0-completion.md) · [Dataset](dataset-completion.md) · [Numeric controls/STUMPY](numeric-validation-summary.md) · [MiniRocket](minirocket-memory-r2-completion.md) · [Memory review](numeric-memory-review.json) · [CNN preparation](cnn-prepare.md)
 
-**Legacy correction:** archived cash summary field0.378992825... is a fraction =37.89928254%, and belongs to the maximum absolute cash-drop episode; it is not a certified global maximum relative cash DD. The earlier0.379%label was wrong. Archive bytes unchanged; current preflight corrected.
+Exact argv, source/input hashes, model/probability locations and systemd receipts are in corresponding JSON/manifest files. Scientific source checkpointc1d0c69; originalS0source75ffc9c.
 
-Measured S0 cost18m45.469s CPU,472.0MiB charged peak,0swap. All72 source/13 input pins verified after exit. Native raw terminal equals final export; pilot2009732/NRestarts0 unchanged.
-
-One causal dataset module and separate numeric/CNN modules are implemented with focused synthetic tests. No recognizer market fit or policy optimization yet. Numeric9/9 suite PASS; dataset5/5 PASS; CNN9 initial unique cases passed in aggregate after a test-calendar correction, plus a lightweight progress-emitter test. See individual receipts for exact reused/new case counts. Full DatasetBuilder completed in41.814s:17,520 aligned hourly rows,5,959 purged selected train IDs/3,432 V evaluation IDs,zero ambiguous,57,697,969bytes; source/artifact hashes validated; mandatory fitting order remains STUMPY → MiniRocket → RDST → CNN.
-
-## Current numeric checkpoint — 17:56 UTC
-Controls and STUMPY completed on identical 5,959 train / 3,432 V IDs. Mean validation log loss: prior 1.1005862131, simple38 1.3626164205, STUMPY 1.123658297. STUMPY is 2.0963% worse than the prior, so it has not demonstrated added information. Its catalogue, 68 occurrence records and six actual-price train-match plots are preserved; mandatory MiniRocket/RDST/CNN comparison continues.
-
-MiniRocket has not produced a model or metrics. The initial attempt was constrained by an inherited old 650 MiB slice despite a 768 MiB unit request. One resource-only retry verified the effective 768 MiB cap in existing system.slice, then also OOM-killed (43.757401s CPU; sampled peak is not final proof). Both partial attempts are retained. The next bounded step is a memory-only dense-feature/scaler/LR correction and numerical equivalence tests, without changing the scientific recipe, sample IDs or data. No further fit is authorized until that focused correction is checked. No production service or global resource setting changed.
-
-Memory correction is now focused-tested and independently reviewed: 10/10 PASS (3.981s,149.7MB processRSS); train-only mean/variance drift at floating-point reduction precision, synthetic standardized values and probabilities exactly unchanged. Chunked StandardScaler preserves float32 transform rounding, writes a C-contiguous float64 disk map and closes the obsolete owned float32 map before the unchanged logistic fits. All rows/features/IDs/recipes remain fixed. Actual fit under768MiB is not yet proven; one corrected attempt is being packaged, no automatic repeats.
+## Qualifications
+Historical close execution/slippage/margin assumptions retain NOT_FAITHFUL_DIAGNOSTIC classification; this is not a guaranteed real-venue ROI or certified intrabar maximum. BTC-only reused as a separate pinned control, not independent SOL attribution. Period2024–2026 was already researched; fixedT/V/U controls this procedure, not an entirely unseen holdout. A preflight accidentally printed nested historical BTC-only U drawdown dates; disclosed, not used for fitting/policy. New U details remain unopened until≤3finalistsfreeze. Official JKX supportingZIP403: contents/weights unverified. No new architecture/hyperparameter search.

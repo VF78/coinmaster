@@ -1,8 +1,8 @@
-Updated: 2026-10-20 18:04 UTC, FAST-RND numeric corrected retry preparation.
+Updated: 2026-10-20 18:11 UTC, FAST-RND RDST active.
 Status: IN_PROGRESS; do not start duplicate fits or another S0/CORRIDOR engine.
 GitHub Project item: https://github.com/VF78/coinmaster/issues/113 ; Project #2 In Progress, current checklist read back.
 Canonical root: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no product development on Mac or manual /opt edits.
-Branch / source HEAD: codex/nautilus-btc-sol-mvp / cb6dfdb8923f861cb0d7cb54bd39a24f192c9097 (published/read back).
+Branch / source HEAD: codex/nautilus-btc-sol-mvp / c1d0c69303635d2c433d29875c7271110b85017f (published/read back).
 origin/main / divergence: ref not present locally; divergence unavailable, not inferred. No main fetch needed for current research.
 Deploy commit marker: NOT_PRESENT
 Goal: W=ACTIVE equity+RESERVE DD<=50%, NetProfit>=90% reproduced S0, then maximum NetProfit. Research only.
@@ -24,11 +24,13 @@ CURRENT: prior/simple/STUMPY COMPLETE; common5959T/3432V. Mean V LL prior1.10058
 STUMPY: catalogue3TFpatterns/68occurrence records/6actualrawpriceSVGs; anyTF >=3independentmatches3226/3432. No model selected.
 MiniRocket firstattempt OOM: inheritedoldrisk.slice650MiB cappedunit768MiB; no scores/model. Partial feature mmap preserved.
 ONEresource-onlyretry actually dispatched17:54:09UTC PID329247, effective768MiB ancestry proven/system.slice max; failedOOM CPU43.757401s. No scores/model; sampledpeak740159488B notcertifiedfinalpeak.
-Current owner: /root/chop_pair_failure_data; ONE focused memory correction DONE: chunk128 scalerpartial_fit/f32rounding→C-f64 diskmap/closeoldownedmap before unchangedLR. No sampling/recipe change.
-Correction tests10/10PASS3.981s/RSS149667840B; mean/variance drifts2.78e-17/6.66e-16, standardizedf32/proba drifts0 synthetic. Independent narrowGO sourcec9312d7eab1642f330c20a5d3fc452c1d020653c86e4ad4ad36536a7412d6db7; actual768MiBfitcapacityunproven.
-Next exact step: rootcheckpoint currenttestedsource; freshimmutable5file package/effective768MiB+hostheadroomproof; thenONEcorrectedMiniRocketfit in newoutputminirocket-memory-r2. No auto repeats. RDST→mandatoryCNN7/42 afteractualresult, no earlyselection.
+Current owner: /root/chop_pair_failure_data; ONE memorycorrection DONE/c1d0c69: chunk128 scaler/f32rounding→C-f64 diskmap/closeoldownedmap. Tests10/10PASS+independentGO; standardizedf32/probadrift0synthetic. ExactoriginalOOMallocUNKNOWN.
+MiniRocket COMPLETE correctedattempt18:05:35UTC PID333276/actualexitSUCCESS: VLL BTC7.125161290/SOL7.300339389/mean7.212750340, same5959T/3432Vhashes/actual1932kernelsperTF+20context=5816. Fit72.438s/infer4.584s/CPU76.331s/768MiBpeak/swap0; no tune/repeat. Root19artifacthashesPASS.
+CURRENT RDST ONEactualfit18:09:58UTC PID334745/invocationec1006ac845b4f859d8667966260ca00; cm113-fast-numeric-validation-20261020T173657Z-rdst.service, sourcec1d0c69/sameIDs/data/lock,512/.8/seed7 fitXwithouty; effective768MiB/system.slice/swap0/thread1 proofPASS. Noauto-repeats.
+CNN prepared ONLY: jobcm113-fast-cnn-validation-20261020T180922Z/fivefilemanifest6d248410...ba569. No imports/probe/fit. Owner sol_corridor_review available; afterRDSTexit rootGO syntheticB128memoryprobe(nooptimizer/marketlabels),3TRAINPNGvisualQA, thenfixedCNNseeds7/42. Smallerbatchonlymemoryreason.
+Next exact step: wait RDST result/artefacts, then mandatoryCNN. No selection/policytrialbeforeallfourcompleted.
 Policy gate: only if recognizer adds information over controls; causalOOF then bounded Optuna8-trial batches/24+24+16 ceilings. No trade search yet.
 Protected runtime: pilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active; no deploy/restart/orders. Hermes/sites/VPN untouched.
 Blocks/limits: JKXofficialZIP403 contents/weights unverified; historical execution/slippage assumptions explicit; no claim new unseen holdout.
-Intentional untracked: original funding fixture SQLite/initial diagnostics; historical CORRIDOR raw release-audit/progress/observer artifacts retained. New numeric receipts pending checkpoint.
+Intentional untracked: original funding fixture SQLite/initial diagnostics; historical CORRIDOR raw release-audit/progress/observer artifacts retained. Completed MiniRocket/RDST launch/CNNprepare receipts pending checkpoint.
 Key files: reports/fast-rnd-20261020/{README,experiment-lock,s0-completion,dataset-completion,numeric-contract,cnn-implementation}.json/md; runtime/coinmaster/research/fast_{dataset,numeric,cnn}.py.
