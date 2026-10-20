@@ -1,0 +1,137 @@
+{
+  "status": "BOUNDED_ANALYSIS_ONLY_NO_ECONOMIC_GO",
+  "canonical_HEAD": "b6310402307e6410d97c80176bd4baed84bcbc0f",
+  "scope": {
+    "source_changed": false,
+    "config_changed": false,
+    "engines_or_backtests": 0,
+    "services_changed": false
+  },
+  "conclusion": "Current portfolio version fails; protection scope/risk ownership must be repaired before parameter optimization. At least one successful carry grant is proven; abstract pair recovery is not mathematically disproved.",
+  "activation": {
+    "successful_grants_lower_bound": 1,
+    "total_successful_grants": "UNKNOWN_IN_MEMORY_AUDIT_LOST",
+    "all_attempts_blocked": false,
+    "first_native_grant": {
+      "utc": "2024-09-17T00:00:00+00:00",
+      "BTC_remaining": "1.219",
+      "BTC_mark": "58185",
+      "SOL_mark": "131.39",
+      "beta90": "1.2114905546983887",
+      "raw_half_SOL_quantity": "222.7934421790152842422629523",
+      "lot_valid_target": "222.7",
+      "actual_SOL_short": "222.7"
+    },
+    "first_exit": {
+      "utc": "2024-09-17T16:08:00+00:00",
+      "both_native_taker_flat": true,
+      "exact_event_label": "UNKNOWN",
+      "source_consistent_inference": "RECOVERY",
+      "old_remaining_entry_fees": "27.63163160",
+      "C0_native_cash": "13359.66080444",
+      "BTC_carry_notional": "70927.515",
+      "benchmark_proxy": "13458.21995104",
+      "preclose_native_E": "13556.09116573",
+      "estimated_taker_close_fees": "57.554026585",
+      "E_less_closefees": "13498.537139145",
+      "headroom_above_proxy": "40.317188105"
+    },
+    "refs": [
+      "runtime/coinmaster/strategy/carry_pair.py:129",
+      "runtime/coinmaster/strategy/carry_pair.py:233",
+      "runtime/coinmaster/strategy/carry_pair.py:244",
+      "runtime/coinmaster/strategy/wave_overlay.py:1228"
+    ]
+  },
+  "terminal_episode": {
+    "fresh_BTC_short_date": "2025-03-30",
+    "completed_Daily_sides_Mar30_to_Apr6": [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "carry_eligibility": "NONE_CURRENT_DAILY_SIDE_NEVER_OPPOSES_SHORT_EPISODE",
+    "seven_midnight_SOL_1000_fills": "ORDINARY_ALPHA_ATTEMPTS_AGAINST_REMAINING_AUTHORITY_NOT_SEVEN_PROVEN_NEW_RIGHTS",
+    "exact_original_levels_and_intent_ids": "UNKNOWN",
+    "BTC_flat_utc": "2025-04-06T18:04:00+00:00",
+    "candidate_SOL_only_at_1807": {
+      "SOL_quantity": "7000",
+      "mark": "110.88",
+      "notional": "776160",
+      "native_E": "37362.09796",
+      "notional_to_E_approx": "20.774"
+    },
+    "control_SOL_only_at_1807": {
+      "SOL_quantity": "4000",
+      "mark": "110.88",
+      "notional": "443520",
+      "native_E": "818323.02296",
+      "notional_to_E_approx": "0.542"
+    },
+    "sizing_formula": "H=(gross_BTC_reference_qty_or_initial_qty)*actual_BTC_entry_VWAP/entry_beta; level_authority=H*level_multiplier*earned_fraction minus actual spent/allocated/retired notional",
+    "current_equity_role": "LAST_SAFE_MARGIN_AND_GROSS_VETO_NOT_SOL_TARGET_RESCALING_OR_AUTOMATIC_HELD_POSITION_REDUCTION",
+    "refs": [
+      "runtime/coinmaster/domain/wave_overlay.py:438",
+      "runtime/coinmaster/domain/wave_overlay.py:560",
+      "runtime/coinmaster/strategy/wave_overlay.py:1888",
+      "runtime/coinmaster/strategy/wave_overlay.py:2234",
+      "runtime/coinmaster/strategy/carry_pair.py:101"
+    ]
+  },
+  "limits": {
+    "half_beta": "RESIDUAL_COMMON_FACTOR_AND_SOL_SPECIFIC_RISK_REMAIN",
+    "benchmark": "RESIDUAL_RECOVERY_NOT_DD_OR_LOSS_STOP",
+    "range": "BTC_ONLY_TWO_CLOSED_HOURS_NOT_INTRAHOUR_OR_SOL_RESIDUAL_PROTECTION",
+    "outside_carry": "BTC_ONLY_AND_SOL_ONLY_RISK_UNBOUNDED_BY_CARRY"
+  },
+  "conditional_edges": [
+    {
+      "fact": "ARM consumes right and freezes beta/range before terminal/native FREEZE",
+      "ref": "runtime/coinmaster/strategy/carry_pair.py:109",
+      "observed_cause": "UNKNOWN"
+    },
+    {
+      "fact": "Rejected carry closes with CHOP_PAIR reason; only REGIME runs current Daily immediately after group flat",
+      "ref": "runtime/coinmaster/strategy/wave_overlay.py:2606",
+      "observed_cause": "UNKNOWN",
+      "classification": "EXPLICIT_CONTRACT_CHOICE_NEEDED"
+    }
+  ],
+  "repairs": [
+    {
+      "proposal": "Whole-book native equity loss/peak budget across all ownership states",
+      "type": "STRUCTURAL_NOT_PARAMETER_TUNING",
+      "falsifiable_precheck": "Existing native DD50/DD90 samples must be covered before maintenance; record execution gap/fee limits",
+      "run_now": false
+    },
+    {
+      "proposal": "Close original SOL when actual BTC becomes flat",
+      "type": "STRUCTURAL_ALPHA_OWNERSHIP_CHANGE",
+      "falsifiable_precheck": "Enumerate all existing BTC-flat/SOL-nonzero intervals, not only final loser; quantify retained native fills/fees",
+      "run_now": false
+    },
+    {
+      "proposal": "Persist lifecycle before final guard; specify reject handoff and stale ARM snapshot policy",
+      "type": "IMPLEMENTATION_PROTOCOL",
+      "falsifiable_precheck": "Explicit lifecycle transition and durable reconciliation table; no economic engine",
+      "run_now": false
+    }
+  ],
+  "evidence_files": [
+    "reports/carry-pair-113/proposal.md",
+    "reports/carry-pair-run-113/postmortem-data.json",
+    "reports/carry-pair-run-113/engine-config-guard-diagnosis.json",
+    "reports/carry-pair-run-113/engine-durable-trace-proof.json",
+    "reports/carry-pair-run-113/engine-recovered-native-result.json"
+  ],
+  "unknowns": [
+    "Total carry admissions/rejections/grants/exit reasons/skipped signals",
+    "Exact liquidation count and terminal internal domain/gate state",
+    "Counterfactual ROI/DD under any proposed structural repair"
+  ]
+}

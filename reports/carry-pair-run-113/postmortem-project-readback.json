@@ -1,0 +1,12 @@
+{
+  "at_utc": "2026-10-20T08:56:32.325512+00:00",
+  "scope": "CHOP_PAIR_POSTMORTEM_COMPLETE_NO_ENGINE",
+  "issue": "https://github.com/VF78/coinmaster/issues/113",
+  "issue_state": "open",
+  "project_status": "Todo",
+  "body_match": true,
+  "assessment": "REJECT_V1_FOR_GLOBAL_DD;LOCAL_PAIR_EDGE_UNPROVEN;RISK_BUDGET_SCOPE_REQUIRED",
+  "new_trading_code": false,
+  "new_economic_runs": 0,
+  "pilot_changed": false
+}

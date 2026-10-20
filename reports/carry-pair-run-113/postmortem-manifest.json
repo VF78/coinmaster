@@ -1,0 +1,44 @@
+{
+  "status": "ANALYSIS_COMPLETE_NO_NEW_ENGINE_NO_CODE_CHANGE",
+  "base_HEAD": "b6310402307e6410d97c80176bd4baed84bcbc0f",
+  "code_commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "at_utc": "2026-10-20T08:57:37.205719+00:00",
+  "files": {
+    "postmortem.md": {
+      "bytes": 10160,
+      "sha256": "d4b0452e1269f0fa988132e47d754350a46b88271ec558cfc99df9765adb6b62"
+    },
+    "postmortem-code.md": {
+      "bytes": 4811,
+      "sha256": "132a34a50939c9c43da91d0c016b1f06f841e2a7ea1e943259f607cac01533ea"
+    },
+    "postmortem-code.json": {
+      "bytes": 5626,
+      "sha256": "87d82bdf35856f9ec2e40ff8959c3012ea05f3c2d6d860c0396cc24417da467b"
+    },
+    "postmortem-data.md": {
+      "bytes": 5249,
+      "sha256": "2a2c4a923103c074f05ae1030fa66d9e67f5c50408ffe3ca97fa9ee0c733663f"
+    },
+    "postmortem-data.json": {
+      "bytes": 730739,
+      "sha256": "dd747f42e8d96d63da20a9a71be89bea286bec35483626e159dbb3ed4dbf57b0"
+    },
+    "postmortem-data.csv": {
+      "bytes": 301475,
+      "sha256": "187b345cff589713a5bf970b71c1173a277e39711fa0b7fc712168a81d858b01"
+    },
+    "postmortem-data-analysis.py": {
+      "bytes": 5085,
+      "sha256": "70f89289ed4b3d725f09addc79e95a68207430d7fbb70aef8d5198170a87d3bb"
+    },
+    "postmortem-project-readback.json": {
+      "bytes": 416,
+      "sha256": "489cea9942fa68c5beadf55686f42f74a96e109500b3ff7f171d81b61240bbfa"
+    }
+  },
+  "native_result_manifest_sha256": "6ece289a3313899e3a6be935fbffcca1c7ba3d456645f0c6681609270f2adcff",
+  "economic_new_runs": 0,
+  "unknowns_preserved": true,
+  "assessment": "REJECT_V1_GLOBAL_DD;LOCAL_PAIR_EDGE_NOT_DISPROVEN_BUT_UNPROVEN;RISK_SCOPE_CHANGE_REQUIRED"
+}
