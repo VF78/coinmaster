@@ -1,4 +1,4 @@
-Updated: 2026-10-20 18:19 UTC, FAST-RND CNN active.
+Updated: 2026-10-20 18:48 UTC, FAST-RND CNN seed7 refit complete, seed42 pending in same active experiment.
 Status: IN_PROGRESS; do not start duplicate fits or another S0/CORRIDOR engine.
 GitHub Project item: https://github.com/VF78/coinmaster/issues/113 ; Project #2 In Progress, current checklist read back.
 Canonical root: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no product development on Mac or manual /opt edits.
@@ -29,10 +29,11 @@ MiniRocket COMPLETE correctedattempt18:05:35UTC PID333276/actualexitSUCCESS: VLL
 RDST COMPLETE: same5959T/3432V/hashPASS; BTC/SOL/meanLL9.180662883/7.822216766/8.501439825;512shapelets/TF/1536featuresTF/18TRAINIDexplanations. Fit208.741s/infer16.477s/CPU221.525s/768MiB/swap0SUCCESS. Root17artifacthashes/pilot/sourcePASS. Allnumericmethodsnegativevsprior, no selectionyet.
 CURRENT CNN ONEactualexperiment18:18:20UTC unitcm113-fast-cnn-validation-20261020T180922Z-fit-b32.service, immutablejob180922Z/c1d0c69; BOTHseeds7/42 batch32, innerTlast15%purged/<=30epochs/patience2→freshallTrefitEXACTbestepoch. VNOTepochchoice/Uunopened.
 CNN exception: B128syntheticOOMunderverified768MiB; B64+oneAdamstepPASSbutpeak772141056B/only31.6MiBheadroombeforeactualdata. Rootchose32forbothseedssolelyresources. ThreeTRAINPNGrootvisualQA PASS. Actualfitcapacitynotyetprovenatlaunch.
-Current owner sol_corridor_review; effective768MiB/system.slice/swap0/thread1/PrivateNetwork/freshRAM+diskguard. Noproductioncredentials/noautomaticwholefitrepeat. Firstepochcostpending.
-Next exact step: wait actualcap+firstepoch/seedresults; completeCNNexports then numericownercommonVcomparison/selectionrequiresallfour. NoOOF/Optunabeforeinfogate.
+Current owner sol_corridor_review; effective768MiB/system.slice/swap0/thread1/PrivateNetwork/freshRAM+diskguard. Noproductioncredentials/noautomaticwholefitrepeat. Firstepochseed7inner211.169s/trainloss1.621413619/innerTloss1.222738387; actualPython337604/batch32/peak516030464B/0OOM, artifactcnn-first-epoch.json.
+Currentphase18:47:37UTC: seed7inner stopped5/best3/loss1.206322714; freshallTrefit EXACT3epochs COMPLETE(227.476/230.436/230.086s), prediction/export→seed42 nextINSAMEprocess337604. Unitactive/peak522584064B/0OOM, no restart/newfit. Do not choose/inspect individualseedVscore.
+Next exact step: let existingCNNcompletebothseeds/exports then numericownercommonVcomparison/selectionrequiresallfour. NoOOF/Optunabeforeinfogate.
 Policy gate: only if recognizer adds information over controls; causalOOF then bounded Optuna8-trial batches/24+24+16 ceilings. No trade search yet.
 Protected runtime: pilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active; no deploy/restart/orders. Hermes/sites/VPN untouched.
 Blocks/limits: JKXofficialZIP403 contents/weights unverified; historical execution/slippage assumptions explicit; no claim new unseen holdout.
-Intentional untracked: original funding fixture SQLite/initial diagnostics; historical CORRIDOR raw release-audit/progress/observer artifacts retained. RDSTcompletion/CNNprobe-renderer-actualfit receipts pending checkpoint.
+Intentional untracked: original funding fixture SQLite/initial diagnostics; historical CORRIDOR raw release-audit/progress/observer artifacts retained. Intentional ongoing cnn-progress.json and historical funding/CORRIDORfixtures untracked; immutable launch/probe/render/numericresults committed b400834 and GitHubreadbackPASS.
 Key files: reports/fast-rnd-20261020/{README,experiment-lock,s0-completion,dataset-completion,numeric-contract,cnn-implementation}.json/md; runtime/coinmaster/research/fast_{dataset,numeric,cnn}.py.

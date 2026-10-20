@@ -1,0 +1,41 @@
+{
+  "status": "FIRST_EPOCH_COMPLETE",
+  "utc": "2026-10-20T18:23:06.858700+00:00",
+  "first_epoch": {
+    "batch_size": 32,
+    "epoch": 1,
+    "event": "CNN_EPOCH_COMPLETE",
+    "inner_loss": 1.2227383871456403,
+    "phase": "inner",
+    "seconds": 211.1693832660094,
+    "seed": 7,
+    "train_loss": 1.621413619298194
+  },
+  "effective_cap_proof": {
+    "status": "EFFECTIVE_CAP_ACCEPTED_BEFORE_IMPORT",
+    "utc": "2026-10-20T18:18:20.937582+00:00",
+    "pid": 337603,
+    "uid": 994,
+    "effective_memory_max": 805306368,
+    "ancestor_caps": [
+      {
+        "path": "/sys/fs/cgroup/system.slice/cm113-fast-cnn-validation-20261020T180922Z-fit-b32.service",
+        "memory_max": "805306368"
+      },
+      {
+        "path": "/sys/fs/cgroup/system.slice",
+        "memory_max": "max"
+      },
+      {
+        "path": "/sys/fs/cgroup",
+        "memory_max": "ROOT_CGROUP_NO_LIMIT_FILE"
+      }
+    ]
+  },
+  "live_cgroup_metrics": {
+    "memory.peak": "516030464",
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+    "memory.current": "454864896"
+  },
+  "process_still_running": true
+}
