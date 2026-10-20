@@ -1,4 +1,4 @@
-Updated: 2026-10-20 17:56 UTC, FAST-RND numeric memory correction.
+Updated: 2026-10-20 18:04 UTC, FAST-RND numeric corrected retry preparation.
 Status: IN_PROGRESS; do not start duplicate fits or another S0/CORRIDOR engine.
 GitHub Project item: https://github.com/VF78/coinmaster/issues/113 ; Project #2 In Progress, current checklist read back.
 Canonical root: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no product development on Mac or manual /opt edits.
@@ -24,9 +24,9 @@ CURRENT: prior/simple/STUMPY COMPLETE; common5959T/3432V. Mean V LL prior1.10058
 STUMPY: catalogue3TFpatterns/68occurrence records/6actualrawpriceSVGs; anyTF >=3independentmatches3226/3432. No model selected.
 MiniRocket firstattempt OOM: inheritedoldrisk.slice650MiB cappedunit768MiB; no scores/model. Partial feature mmap preserved.
 ONEresource-onlyretry actually dispatched17:54:09UTC PID329247, effective768MiB ancestry proven/system.slice max; failedOOM CPU43.757401s. No scores/model; sampledpeak740159488B notcertifiedfinalpeak.
-Current owner: /root/chop_pair_failure_data; root authorized ONE focused memory-only correction of densefeature/scaler/LR allocation, preserving allrows/recipe/IDs and numerical equivalence tests. NOnewactualfit until rootGO.
-Resource correction must use chunkedexistingnormalization/diskmappedfeatures ifvalidated; no globalcap/swap/pilotsettings/newframework or sampling/tuning.
-Next exact step: inspect memory-onlydiff/focusedtests, then atmostoneapprovedcorrectedMiniRocket attempt; RDST then mandatoryCNN7/42 remain pending. No selection before all.
+Current owner: /root/chop_pair_failure_data; ONE focused memory correction DONE: chunk128 scalerpartial_fit/f32rounding→C-f64 diskmap/closeoldownedmap before unchangedLR. No sampling/recipe change.
+Correction tests10/10PASS3.981s/RSS149667840B; mean/variance drifts2.78e-17/6.66e-16, standardizedf32/proba drifts0 synthetic. Independent narrowGO sourcec9312d7eab1642f330c20a5d3fc452c1d020653c86e4ad4ad36536a7412d6db7; actual768MiBfitcapacityunproven.
+Next exact step: rootcheckpoint currenttestedsource; freshimmutable5file package/effective768MiB+hostheadroomproof; thenONEcorrectedMiniRocketfit in newoutputminirocket-memory-r2. No auto repeats. RDST→mandatoryCNN7/42 afteractualresult, no earlyselection.
 Policy gate: only if recognizer adds information over controls; causalOOF then bounded Optuna8-trial batches/24+24+16 ceilings. No trade search yet.
 Protected runtime: pilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active; no deploy/restart/orders. Hermes/sites/VPN untouched.
 Blocks/limits: JKXofficialZIP403 contents/weights unverified; historical execution/slippage assumptions explicit; no claim new unseen holdout.

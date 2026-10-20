@@ -139,26 +139,57 @@ def align_probabilities(model, x):
     return out
 
 
+def scaled_training_memmap(scaler, x, destination, chunk=128):
+    """Same float32 standardized representation, bounded stats and float64 LR storage."""
+    if x.dtype != np.float32:
+        raise ValueError("dense transform input must stay float32")
+    for first in range(0, len(x), chunk):
+        scaler.partial_fit(x[first:first+chunk])
+    result = np.lib.format.open_memmap(destination, mode="w+", dtype=np.float64,
+                                      shape=x.shape, fortran_order=False)
+    for first in range(0, len(x), chunk):
+        # Preserve the original scaler's float32 output rounding before LR's float64 input.
+        block = np.array(x[first:first+chunk], dtype=np.float32, order="C", copy=True)
+        scaler.transform(block, copy=False)
+        result[first:first+len(block)] = block
+    result.flush()  # Clean file-backed pages can be reclaimed under the fixed cap.
+    if not result.flags.c_contiguous:
+        raise ValueError("LR workspace must be C-contiguous")
+    return result
+
+
 class Heads:
-    def fit(self, x, y):
+    def fit(self, x, y, workspace=None, chunk=128, consume_input=False):
         from sklearn.preprocessing import StandardScaler
         from sklearn.linear_model import LogisticRegression
         self.scaler = StandardScaler(copy=False)
-        x = self.scaler.fit_transform(x)
+        if workspace is None:
+            train_x = self.scaler.fit_transform(x)
+        else:
+            train_x = scaled_training_memmap(self.scaler, x, workspace, chunk)
+            if consume_input:
+                if not isinstance(x, np.memmap):
+                    raise ValueError("only an explicitly owned memmap may be consumed")
+                x.flush()
+                x._mmap.close()  # No obsolete float32 mapping while LBFGS uses the float64 map.
         self.models = []
         self.constants = []
-        for a in range(2):
-            classes = np.unique(y[:, a])
-            if len(classes) == 1:
-                self.models.append(None)
-                self.constants.append(int(classes[0]))
-            else:
-                model = LogisticRegression(C=1.0, solver="lbfgs", max_iter=1000)
-                model.fit(x, y[:, a])
-                if int(model.n_iter_.max()) >= 1000:
-                    raise RuntimeError("fixed logistic head failed to converge")
-                self.models.append(model)
-                self.constants.append(None)
+        try:
+            for a in range(2):
+                classes = np.unique(y[:, a])
+                if len(classes) == 1:
+                    self.models.append(None)
+                    self.constants.append(int(classes[0]))
+                else:
+                    model = LogisticRegression(C=1.0, solver="lbfgs", max_iter=1000)
+                    model.fit(train_x, y[:, a])
+                    if int(model.n_iter_.max()) >= 1000:
+                        raise RuntimeError("fixed logistic head failed to converge")
+                    self.models.append(model)
+                    self.constants.append(None)
+        finally:
+            if workspace is not None:
+                train_x._mmap.close()
         return self
 
     def predict(self, x):
@@ -604,7 +635,9 @@ def run(dataset, lock_path, output, stage, fold):
                 tr.fit(ds.tensor(train, tf))  # Deliberately WITHOUT labels for both transforms.
                 transformers.append(tr)
             z, widths = transformed(ds, train, transformers, output/"train-transform.npy")
-            model_heads = Heads().fit(z, y)
+            head_workspace = output/"head-train-float64.npy"
+            model_heads = Heads().fit(z, y, workspace=head_workspace, consume_input=True)
+            del z  # The input mapping was explicitly closed before the two LR fits.
             extra["actual_TF_feature_counts"] = widths
             if stage == "minirocket":
                 extra["requested_kernels"] = 2000
@@ -612,9 +645,12 @@ def run(dataset, lock_path, output, stage, fold):
                 if widths != [1932]*3:
                     raise ValueError("unexpected pinned MiniRocket output width")
             if stage == "rdst":
-                # Heads.fit standardizes z in place; inverse not needed for argmin (positive scale).
-                extra["shapelets_explanation"] = rdst_explanations(
-                    transformers, model_heads, widths, z, train)
+                standardized_z = np.load(head_workspace, mmap_mode="r")
+                try:
+                    extra["shapelets_explanation"] = rdst_explanations(
+                        transformers, model_heads, widths, standardized_z, train)
+                finally:
+                    standardized_z._mmap.close()
             fit_seconds = time.perf_counter()-fit_clock
             infer_clock = time.perf_counter()
             predict_z, _ = transformed(ds, test, transformers, output/"prediction-transform.npy")
@@ -641,7 +677,7 @@ def run(dataset, lock_path, output, stage, fold):
         pickle.dump(model, stream, protocol=5)
     (output/"metrics.json").write_text(json.dumps(result, indent=2, allow_nan=False)+"\n")
     # Temporary transforms are private numeric intermediates, not model artifacts.
-    for name in ("train-transform.npy", "prediction-transform.npy"):
+    for name in ("train-transform.npy", "prediction-transform.npy", "head-train-float64.npy"):
         path = output/name
         if path.exists():
             path.unlink()

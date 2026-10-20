@@ -1,0 +1,13 @@
+{
+  "status": "SCOPED_GO_MEMORY_ONLY",
+  "reviewer": "/root/sol_corridor_review",
+  "source_sha256": "c9312d7eab1642f330c20a5d3fc452c1d020653c86e4ad4ad36536a7412d6db7",
+  "tests": "owner10/10PASS3.981s; no duplicate review tests",
+  "mean_drift": 2.7755575615628914e-17,
+  "variance_drift": 6.661338147750939e-16,
+  "synthetic_standardized_value_and_probability_drift": 0,
+  "preserved": "all5959rows/fullfeatures/IDs/transformrecipe/C1-lbfgs1000; float32 rounding before C-float64 map",
+  "actual_market_fit_capacity": "NOT_YET_PROVEN",
+  "exact_original_OOM_allocation": "UNKNOWN",
+  "scope": "chunkedscaler+ownedmatrixlifetimesonly; no production edits"
+}

@@ -1,0 +1,45 @@
+{
+  "status": "TRUE_768MIB_OOM_SINGLE_RESOURCE_RETRY_FAILED",
+  "files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-resource-r1-failure.json",
+      "bytes": 3775,
+      "sha256": "91416d5257202f4e0416fddce61455f1374d9e0303a00ffa7daff4f82cbaf4ac"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-resource-r1-failure.md",
+      "bytes": 894,
+      "sha256": "150dc0ecc3cc6a7f0b76232dbc318977e632c88026bf382fdca49bf92918018d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-resource-r1-guard1-launch.json",
+      "bytes": 5896,
+      "sha256": "1b94358bf92d52b9bff775441d2f666e14e6f156e8e0590b9b1dd146eceae03b"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-resource-r1-effective-cap.json",
+      "bytes": 542,
+      "sha256": "5833275544c699866a9785932c938ac1e9d1f8bc475474db420e593016f2ac58"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-resource-r1-preflight-guard1.log",
+      "bytes": 458,
+      "sha256": "76b5e040657a25a1ed8eee3b525d62c223b27d62a2d4df8dfb83cffa47a62e4f"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/launch-minirocket-resource-r1-guard1.sh",
+      "bytes": 3767,
+      "sha256": "f91787f35fbacb253534ce9668e741b58c5f34eb2e67d66e5ff3a37843f9b97c"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-resource-r1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-resource-r1/train-transform.npy",
+      "bytes": 138630304,
+      "sha256": "2ad4f9e63cec79cf54319146e54ff6f3a0a1153fa30441f3f73242a3b7cfbf1e"
+    }
+  ]
+}

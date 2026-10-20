@@ -1,0 +1,56 @@
+{
+  "status": "MEMORY_ONLY_DIFF_SYNTHETIC_PASS_PENDING_REVIEW_ROOT_GO",
+  "utc": "2026-10-20T18:03:15.974764+00:00",
+  "source_files": {
+    "runtime/coinmaster/research/fast_numeric.py": "c9312d7eab1642f330c20a5d3fc452c1d020653c86e4ad4ad36536a7412d6db7",
+    "runtime/tests/test_fast_numeric.py": "61133c46ffdfca73386f20062fd99b3b0696478188013f30bcafd8f5a50d1439",
+    "reports/fast-rnd-20261020/numeric-contract.md": "ebf7a7718a9a359b38f6f9d3d2cdbc2f26ded7f7bb10bb0f896e55098fd7abe0"
+  },
+  "failure_manifest": "reports/fast-rnd-20261020/minirocket-resource-r1-failure-manifest.json",
+  "exact_OOM_allocation": "UNKNOWN",
+  "static_dense_shape": [
+    5959,
+    5816
+  ],
+  "float32_payload_bytes": 138630176,
+  "single_float64_matrix_bytes": 277260352,
+  "correction": "chunk128 partial_fit; copiedf32 standardized chunks->C/f64 diskmap; closeobsoletef32map before unchangedLR; standardizedRDSTconsumer",
+  "unchanged": [
+    "5959train/3432V_IDs",
+    "allfeatures",
+    "labels/purge",
+    "transforms",
+    "C1/lbfgs/maxiter1000",
+    "simplecontrolpath",
+    "768MiB/swap0cap",
+    "isolatedenv/data/lock"
+  ],
+  "focused_test": {
+    "n": 10,
+    "seconds": 3.981,
+    "exit": 0,
+    "maxrss_bytes": 149667840,
+    "memory_max_bytes": 268435456,
+    "swap_max": 0,
+    "mean_max_abs": 2.7755575615628914e-17,
+    "variance_max_abs": 6.661338147750939e-16,
+    "standardized_f32_max_abs": 0.0,
+    "proba_max_abs": 0.0,
+    "C_float64_validation_shares_memory": true,
+    "tolerance_stats_rtol_atol": 1e-12,
+    "tolerance_values_probabilities_rtol": 1e-06,
+    "tolerance_values_probabilities_atol": 2e-07
+  },
+  "no_new_market_fit": true,
+  "retry_proposal": {
+    "output": "minirocket-memory-r2",
+    "requires": "independentreview,newimmutablepin,rootGO",
+    "effective_cap_bytes": 805306368,
+    "slice": "system.slice",
+    "swap": 0,
+    "threads": 1,
+    "minimum_fresh_MemAvailable_bytes": 1055306368,
+    "minimum_disk_available_bytes": 2000000000,
+    "no_success_guarantee": "mappedpagesandJITstatecounttowardcgroupcap"
+  }
+}

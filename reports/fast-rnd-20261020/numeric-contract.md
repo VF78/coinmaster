@@ -23,7 +23,7 @@ metrics(rows,proba[N,2,3]) returns per-asset logloss, sum-of-class multiclass Br
 
 ## Resources, outputs, execution gate
 
-AEON/STUMPY/sklearn imports are lazy. NUMBA_NUM_THREADS1 and n_jobs1; CLI threadpool limits1. Inputs are memmaps; six raw panel arrays are loaded from NPZ once and reused by object identity to prevent per-query whole-array copies. Transforms are128-row chunks into private float32 disk arrays, standardized in place, then removed after successful fit. No image corpus or market all-pairs matrix. Native TF STUMPY remains quadratic CPU work and must be measured in the authorized stage; implementation does not claim validated full-fit memory or runtime. Failed stage outputs remain visible for diagnosis; output directories must be new.
+AEON/STUMPY/sklearn imports are lazy. NUMBA_NUM_THREADS1 and n_jobs1; CLI threadpool limits1. Inputs are memmaps; six raw panel arrays are loaded from NPZ once and reused by object identity to prevent per-query whole-array copies. Transforms are128-row chunks into private float32 disk arrays, normalized in128-row train-only chunks for dense heads, then removed after successful fit. No image corpus or market all-pairs matrix. Native TF STUMPY remains quadratic CPU work and must be measured in the authorized stage; implementation does not claim validated full-fit memory or runtime. Failed stage outputs remain visible for diagnosis; output directories must be new.
 
 Per stage/fold: metrics.json (recipe and common-ID SHA256s), predictions.csv (same IDs/class order), model.pkl; STUMPY adds catalogue.json and small SVGs. Never load untrusted pickle. Models are not traded or deployed.
 
@@ -40,3 +40,15 @@ Synthetic focused tests cover strict horizon purge, future-invariant scales, com
 Current status: stdlib syntax compile PASS. Exactly one root-authorized synthetic suite PASS:8 tests in4.015s, process maxRSS148426752bytes, transient MemoryMax268435456bytes / MemorySwapMax0 / CPUWeight10 / Nice15 / BLAS-OMP-Numba threads1. No AEON/STUMPY import/JIT or market reads/fits. Test output: all8 named tests OK; unittest exit0. Full market-fit resource cost remains unverified and separately gated.
 
 Root bounded correction verification: affected numeric suite9/9 PASS in4.049s, peakRSS148918272bytes under256MiB/swap0/thread1. One new targeted test checks continuation timestamps strictly after decision and at/before horizon, genuine raw BTC/SOL prices and single-load panel-cache identity. Original8 tests also remain passing. No market read/fit or AEON/STUMPY import/JIT. No classification/matching recipe change.
+
+## Memory-only correction after the true768MiB OOM
+
+The first MiniRocket attempt inherited650MiB despite unit768MiB; the one explicitly approved resource-only retry proved effective805306368bytes in system.slice and still OOM-killed after43.757401CPU seconds. Both immutable snapshots/partial outputs/failure manifests remain preserved. Their absent scores/models are UNKNOWN. Exact killed allocation remains UNKNOWN.
+
+The partial header5959x5816float32 represents138630176payload bytes; one full float64 copy is277260352bytes. Pinned sklearn1.7.2 extmath._incremental_mean_and_var uses temp=X-T, and LBFGS validation explicitly requests dtypefloat64/orderC. These are concrete dense allocation risks, not a captured failure stack.
+
+Only dense transform heads change storage: StandardScaler.partial_fit128 followed by transform of copied originalfloat32 chunks (preserve f32 output rounding), then assignment to a C-contiguous float64 disk memmap. The obsolete owned f32 input mapping is flushed/closed before the unchanged two C1/lbfgs/maxiter1000 heads. The float64 mapping closes in finally. Simple-control path remains unchanged. RDST explanations explicitly reopen the standardized float64 map. Private float64 workspace is removed only after successful output export. No rows/features/IDs/labels/transforms/hyperparameters change.
+
+Focused synthetic suite10/10PASS3.981s at256MiB/swap0/thread1; peakRSS149667840bytes. Maxabs mean drift2.7755575615628914e-17; variance6.661338147750939e-16; standardizedf32 drift0; fixed-head probability drift0. Acceptance tolerances mean/variance rtol-atol1e-12, standardized/proba rtol1e-6/atol2e-7. C/f64 sklearn check_array shares memory with the map; this eliminates the dtype-coercion clone, not proof of zero optimizer allocations. Raw input map closure tested. Reduction order can cause small general-case drift; no bitwise market-equivalence claim.
+
+A new market fit remains gated by independent narrow review, new immutable source pin and root GO. Proposed single retry output minirocket-memory-r2 uses same5959/3432IDs/lock/dataset/env, effective805306368bytes in system.slice, swap0/threads1/Nice15, freshMemAvailable at least1055306368bytes and disk>2GB. No cap raise/global changes. Mapped pages and AEON/JIT state still count toward the cap, so actual full-fit memory success is not guaranteed by synthetic tests.

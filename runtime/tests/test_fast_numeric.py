@@ -9,7 +9,7 @@ import numpy as np
 from coinmaster.research.fast_numeric import (
     Sample, Heads, admissible_analog, fit_scale, independent, load_samples,
     metrics, partition, prior, raw_channels, select_recognizer, smooth_analogs,
-    transformed, Dataset, historical_continuation,
+    transformed, Dataset, historical_continuation, scaled_training_memmap,
 )
 
 
@@ -130,6 +130,48 @@ class NumericTests(unittest.TestCase):
         self.assertEqual(btc["future_raw_close"],[1063.,1066.])
         self.assertEqual(btc["input_raw_OHLCV_MA20"][-1][3],1060.)
         self.assertEqual(result["assets"]["SOL"]["future_raw_close"],[31.,32.])
+
+
+    def test_chunk_scaler_float32_rounding_and_float64_head_equivalence(self):
+        from sklearn.preprocessing import StandardScaler
+        from sklearn.utils.validation import check_array
+        rng = np.random.default_rng(7)
+        raw = rng.normal(size=(96,45)).astype(np.float32)
+        raw[:,0] = 1; raw[:,1] = 0
+        y = rng.integers(0,3,size=(96,2))
+        query = rng.normal(size=(17,45)).astype(np.float32)
+        expected_scaler = StandardScaler(copy=False)
+        expected = expected_scaler.fit_transform(raw.copy())
+        baseline = Heads().fit(raw.copy(),y)
+        with tempfile.TemporaryDirectory() as tmp:
+            scaler = StandardScaler(copy=False)
+            scaled = scaled_training_memmap(scaler, raw, Path(tmp)/"scaled.npy", chunk=13)
+            self.assertEqual(scaled.dtype,np.float64)
+            self.assertTrue(scaled.flags.c_contiguous)
+            validated = check_array(scaled,dtype=np.float64,order="C",copy=False)
+            self.assertTrue(np.shares_memory(scaled,validated))
+            np.testing.assert_allclose(scaler.mean_,expected_scaler.mean_,rtol=1e-12,atol=1e-12)
+            np.testing.assert_allclose(scaler.var_,expected_scaler.var_,rtol=1e-12,atol=1e-12)
+            np.testing.assert_allclose(scaled,expected.astype(np.float64),rtol=1e-6,atol=2e-7)
+            value_drift = float(np.abs(scaled-expected).max())
+            mean_drift = float(np.abs(scaler.mean_-expected_scaler.mean_).max())
+            var_drift = float(np.abs(scaler.var_-expected_scaler.var_).max())
+            del validated
+            scaled._mmap.close()
+            mapped = np.lib.format.open_memmap(Path(tmp)/"raw.npy",mode="w+",
+                                              dtype=np.float32,shape=raw.shape)
+            mapped[:] = raw; mapped.flush()
+            corrected = Heads().fit(mapped,y,workspace=Path(tmp)/"heads.npy",
+                                    chunk=13,consume_input=True)
+            self.assertTrue(mapped._mmap.closed)
+            actual_proba = corrected.predict(query.copy())
+            baseline_proba = baseline.predict(query.copy())
+            np.testing.assert_allclose(actual_proba,baseline_proba,rtol=1e-6,atol=2e-7)
+            print("MEMORY_ONLY_EQUIVALENCE",{
+                "mean_max_abs":mean_drift,"variance_max_abs":var_drift,
+                "standardized_f32_max_abs":value_drift,
+                "proba_max_abs":float(np.abs(actual_proba-baseline_proba).max()),
+                "C_float64_validation_shares_memory":True})
 
     def test_heads_are_train_only_and_restore_missing_class_order(self):
         # Tiny actual fixed logistic API fit; no aeon/STUMPY compilation or market inputs.
