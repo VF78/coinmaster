@@ -1,5 +1,6 @@
-Updated: 2026-10-20 19:35UTC; FAST-RND COMPLETE validnegative №2, Projectclosed/Done verified.
+Updated: 2026-10-20 20:30UTC; FAST-RND saved-result postanalysis COMPLETE; no new experiments.
 Status: No active research calculations. GoalDD50/NP90% NOT_ACHIEVED; no eligible ML/trading candidate.
+Follow-up analysis: reports/fast-rnd-20261020/postanalysis.md plus diagnostics JSON/84-row ranking CSV. All four recognizers UP/DOWN V AUC below0.5; simple macroBTC0.533175/SOL0.525219 but probability gate stillfailed. Severe MiniRocket/RDST overconfidence measured; calibration alone no established ranking edge. Proposed only: position-conditioned risk task, small regularized control, one bounded native action if signal; CNNdeferred. Root independently reproduced AUCexact/LLerror5.51e-14 and inputhashesPASS; scoped methodological reviewGO. No fits/predictions/U/newbacktest/deploy/productionchanges.
 GitHub Project: https://github.com/VF78/coinmaster/issues/113 ; Issue113CLOSED/completed, Project#2Done; actualREST+GraphQLreadbackPASS/project-final-readback.json.
 Canonical: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no Mac product edits/manual /opt changes.
 Branch/source: codex/nautilus-btc-sol-mvp / c1d0c69303635d2c433d29875c7271110b85017f scientific; publishedfinalresearchdd01b3f08f35bc16977f816ab0eb7dee180ac865/readbackPASS; latermetadataonlydoesnotchangeexperiment.

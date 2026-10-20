@@ -1,0 +1,1642 @@
+{
+  "status": "POSTANALYSIS_SAVED_T_V_SUMMARIES_ONLY",
+  "utc": "2026-10-20T20:20:35.847219+00:00",
+  "analysis_HEAD": "85887e4988168fcbb7571ab491f8022174fb9249",
+  "input_sha256": {
+    "recognizer-comparison-results.json": "5feb9865b0e83abecefc617edf7fceefed27c7da5ec54e1836dbce3a87736689",
+    "recognizer-comparison-results.csv": "2ed5dd7ee79d56b4e0fffe7c19ea6815454004720ae16d8f1a4394086510d571",
+    "recognizer-comparison-monthly.csv": "7ae11dcb80811c98c2b6e7579d6c374b7c4f78dcff017d564abef536ce161b2d",
+    "recognizer-comparison-calibration.csv": "cb6b7d5c5220c82d30172900121f366613eb55e3424125b22c9b63c9bde5a00f",
+    "recognizer-comparison-rule.json": "1dd007bad60465974f735fa0acb2e3b01c967525535d2048540105b14de4be6e",
+    "experiment-lock.json": "04710add1e2adcdfd796b8ebce28ae5139356b753a0be75886c9163c37c7ddb1",
+    "numeric-contract.md": "ebf7a7718a9a359b38f6f9d3d2cdbc2f26ded7f7bb10bb0f896e55098fd7abe0",
+    "minirocket-memory-r2-completion.json": "003dae77e50a4ab56354d5935fd6b557a22149eff15397be38baddd7e5a4c944",
+    "rdst-completion.json": "c8b8b02950cba9eec0027a14af9c5f49ecedcd73b5a8d7467a489eb0959a220d"
+  },
+  "train_n": 5959,
+  "validation_n": 3432,
+  "V_greedy72h_episodes": 48,
+  "V_rows_per_spaced_episode": 71.5,
+  "class_order": [
+    "UP",
+    "DOWN",
+    "NONE"
+  ],
+  "models": {
+    "prior": {
+      "mean_LL": 1.1005862131442883,
+      "delta_vs_prior": 0.0,
+      "monthly_delta": {
+        "2025-11": 0.0,
+        "2025-12": 0.0,
+        "2026-01": 0.0,
+        "2026-02": 0.0,
+        "2026-03": 0.0,
+        "2026-04": 0.0
+      },
+      "months_beating_prior": 0,
+      "asset_months_beating_prior": 0,
+      "mean_Brier": 0.66794833718483,
+      "classwise_ECE": 0.05414452788173211,
+      "high90": {
+        "n": 0,
+        "fraction": 0.0,
+        "confidence": null,
+        "accuracy": null
+      }
+    },
+    "simple": {
+      "mean_LL": 1.3626164204737692,
+      "delta_vs_prior": 0.2620302073294809,
+      "monthly_delta": {
+        "2025-11": 0.24259880992033822,
+        "2025-12": 0.12407550635527853,
+        "2026-01": 0.06668178982013517,
+        "2026-02": 0.644212863016198,
+        "2026-03": 0.28093844904953913,
+        "2026-04": 0.11075320078065326
+      },
+      "months_beating_prior": 0,
+      "asset_months_beating_prior": 1,
+      "mean_Brier": 0.7963205404957518,
+      "classwise_ECE": 0.20721051385903277,
+      "high90": {
+        "n": 383,
+        "fraction": 0.055798368298368296,
+        "confidence": 0.9344693151596386,
+        "accuracy": 0.6422976501305483
+      }
+    },
+    "stumpy": {
+      "mean_LL": 1.1236582971796953,
+      "delta_vs_prior": 0.02307208403540706,
+      "monthly_delta": {
+        "2025-11": 0.016681291408129573,
+        "2025-12": 0.05249163578745808,
+        "2026-01": 0.012988838553672832,
+        "2026-02": 0.017041397521890822,
+        "2026-03": 0.01768125488713046,
+        "2026-04": -0.014031991243041386
+      },
+      "months_beating_prior": 1,
+      "asset_months_beating_prior": 1,
+      "mean_Brier": 0.6817804305055108,
+      "classwise_ECE": 0.06598797817062625,
+      "high90": {
+        "n": 0,
+        "fraction": 0.0,
+        "confidence": null,
+        "accuracy": null
+      }
+    },
+    "minirocket": {
+      "mean_LL": 7.212750339779619,
+      "delta_vs_prior": 6.1121641266353315,
+      "monthly_delta": {
+        "2025-11": 7.9050233385098245,
+        "2025-12": 4.625574810359412,
+        "2026-01": 6.58106481719345,
+        "2026-02": 5.343351462377576,
+        "2026-03": 6.870654211411045,
+        "2026-04": 5.434775015305552
+      },
+      "months_beating_prior": 0,
+      "asset_months_beating_prior": 0,
+      "mean_Brier": 1.240197933061268,
+      "classwise_ECE": 0.4050104427678496,
+      "high90": {
+        "n": 5275,
+        "fraction": 0.768502331002331,
+        "confidence": 0.988133121332957,
+        "accuracy": 0.32796208530805687
+      }
+    },
+    "rdst": {
+      "mean_LL": 8.501439824793124,
+      "delta_vs_prior": 7.400853611648836,
+      "monthly_delta": {
+        "2025-11": 9.254390980918616,
+        "2025-12": 5.436275193261925,
+        "2026-01": 10.471193181385107,
+        "2026-02": 8.200029082713954,
+        "2026-03": 4.414406419041126,
+        "2026-04": 8.041023972231168
+      },
+      "months_beating_prior": 0,
+      "asset_months_beating_prior": 0,
+      "mean_Brier": 1.3513660883111414,
+      "classwise_ECE": 0.44454827510864536,
+      "high90": {
+        "n": 5535,
+        "fraction": 0.8063811188811189,
+        "confidence": 0.9899337516706683,
+        "accuracy": 0.26991869918699185
+      }
+    },
+    "cnn": {
+      "mean_LL": 1.2690942286812104,
+      "delta_vs_prior": 0.16850801553692207,
+      "monthly_delta": {
+        "2025-11": 0.37860232455466936,
+        "2025-12": 0.049177965451304706,
+        "2026-01": 0.24806516388933586,
+        "2026-02": 0.1015200429280968,
+        "2026-03": 0.15267879471414691,
+        "2026-04": 0.12291588302767609
+      },
+      "months_beating_prior": 0,
+      "asset_months_beating_prior": 0,
+      "mean_Brier": 0.755551611661461,
+      "classwise_ECE": 0.14465291698075164,
+      "high90": {
+        "n": 3,
+        "fraction": 0.00043706293706293706,
+        "confidence": 0.9154788255691528,
+        "accuracy": 1.0
+      }
+    }
+  },
+  "class_frequency_drift": {
+    "BTC": {
+      "T_empirical_prior": [
+        0.309280080550428,
+        0.28746433965430446,
+        0.40325557979526755
+      ],
+      "V_frequency": [
+        0.2537878787878788,
+        0.3715034965034965,
+        0.3747086247086247
+      ],
+      "V_minus_T_pp": [
+        -5.549220176254921,
+        8.403915684919205,
+        -2.8546955086642845
+      ],
+      "V_monthly": {
+        "2025-11": {
+          "UP": 0.10648148148148148,
+          "DOWN": 0.5925925925925926,
+          "NONE": 0.30092592592592593
+        },
+        "2025-12": {
+          "UP": 0.24059139784946237,
+          "DOWN": 0.21236559139784947,
+          "NONE": 0.5470430107526881
+        },
+        "2026-01": {
+          "UP": 0.2728494623655914,
+          "DOWN": 0.45564516129032256,
+          "NONE": 0.271505376344086
+        },
+        "2026-02": {
+          "UP": 0.16815476190476192,
+          "DOWN": 0.3958333333333333,
+          "NONE": 0.43601190476190477
+        },
+        "2026-03": {
+          "UP": 0.3817204301075269,
+          "DOWN": 0.31451612903225806,
+          "NONE": 0.30376344086021506
+        },
+        "2026-04": {
+          "UP": 0.4791666666666667,
+          "DOWN": 0.22916666666666666,
+          "NONE": 0.2916666666666667
+        }
+      }
+    },
+    "SOL": {
+      "T_empirical_prior": [
+        0.29283436818258096,
+        0.2960228226212452,
+        0.4111428091961739
+      ],
+      "V_frequency": [
+        0.25961538461538464,
+        0.3744172494172494,
+        0.36596736596736595
+      ],
+      "V_minus_T_pp": [
+        -3.3218983567196325,
+        7.839442679600422,
+        -4.517544322880795
+      ],
+      "V_monthly": {
+        "2025-11": {
+          "UP": 0.12037037037037036,
+          "DOWN": 0.5069444444444444,
+          "NONE": 0.3726851851851852
+        },
+        "2025-12": {
+          "UP": 0.2849462365591398,
+          "DOWN": 0.22043010752688172,
+          "NONE": 0.4946236559139785
+        },
+        "2026-01": {
+          "UP": 0.2862903225806452,
+          "DOWN": 0.42876344086021506,
+          "NONE": 0.2849462365591398
+        },
+        "2026-02": {
+          "UP": 0.2544642857142857,
+          "DOWN": 0.45982142857142855,
+          "NONE": 0.2857142857142857
+        },
+        "2026-03": {
+          "UP": 0.32661290322580644,
+          "DOWN": 0.3333333333333333,
+          "NONE": 0.3400537634408602
+        },
+        "2026-04": {
+          "UP": 0.0,
+          "DOWN": 0.2708333333333333,
+          "NONE": 0.7291666666666666
+        }
+      }
+    }
+  },
+  "CNN_inner_history": {
+    "7": {
+      "selected_epoch": 3,
+      "epoch3": {
+        "epoch": 3,
+        "train_loss": 1.3246020581746294,
+        "seconds": 206.0347308125347,
+        "inner_loss": 1.206322713887497
+      },
+      "epoch5": {
+        "epoch": 5,
+        "train_loss": 1.0979138085860511,
+        "seconds": 208.94649991579354,
+        "inner_loss": 1.3321755254741037
+      },
+      "train_loss_delta3to5": -0.22668824958857825,
+      "inner_loss_delta3to5": 0.12585281158660666
+    },
+    "42": {
+      "selected_epoch": 3,
+      "epoch3": {
+        "epoch": 3,
+        "train_loss": 1.3121005753609332,
+        "seconds": 205.2524823481217,
+        "inner_loss": 1.2066662283766243
+      },
+      "epoch5": {
+        "epoch": 5,
+        "train_loss": 1.1199082735146098,
+        "seconds": 206.24302986823022,
+        "inner_loss": 1.2317124719108457
+      },
+      "train_loss_delta3to5": -0.1921923018463234,
+      "inner_loss_delta3to5": 0.025046243534221357
+    }
+  },
+  "U_records_processed": 0,
+  "dimensions": {
+    "simple": 38,
+    "MiniRocket": 5816,
+    "RDST": 4628,
+    "MiniRocket_per_T_row": 0.9760026850142641,
+    "RDST_per_T_row": 0.776640375901997,
+    "raw_panel_values": 720,
+    "context_features": 20,
+    "T_calendar_days": 438,
+    "V_effective_IID_n": "UNKNOWN"
+  },
+  "STUMPY_coverage": {
+    "analogue_count_ge3_per_TF": [
+      2891,
+      3010,
+      2446
+    ],
+    "analogue_count_ge3_any_TF": 3226,
+    "analogue_coverage_ge3_any_TF": 0.9399766899766899
+  },
+  "limitations": [
+    "These summaries prove failure of the fixed recipes on this T/V selection, not absence of all usable pattern information.",
+    "V overconfidence is directly measured. High dimensionality, dependence and drift are plausible contributors; no MiniRocket/RDST train loss or feature drift audit was inspected, so overfit or its causal share is not proved.",
+    "CNN inner loss deteriorated after selected epoch3 while training loss fell. Early stopping already avoided epochs4/5; this does not establish epoch3 overfit as the cause of V failure.",
+    "Overlapping72h targets,20day daily windows and shared BTC/SOL context limit independent evidence.48greedily spaced episodes is not an IID effective sample size or a significance test.",
+    "Class frequency shift is measured but does not explain conditional failure by itself. November432 and April96 are partial-month rows per asset. April alone provides96 decisions.",
+    "V was historically studied; adaptations chosen after this analysis make V development data. No U details, fits, new predictions, engines, policy, services or Project changes occurred.",
+    "Classwise10bin ECE differs from top-label ECE and depends on binning. High90 class bins uniquely identify the predicted class and allow pooled confidence/accuracy aggregation.",
+    "Probability metrics do not determine native net profit, portfolio drawdown or risk after fees, funding and exposure interactions."
+  ],
+  "proposals_only": [
+    "Audit existing T/inner artifacts, if available: train versus chronological inner losses, confidence tails, feature scales and solver convergence. Any new fit or recalibration needs a separately approved locked experiment; do not tune on inspected V.",
+    "In a separately approved follow-up, reduce capacity and increase shrinkage toward the empirical prior; fit any temperature/prior mixture only on purged chronological T-inner predictions. Predeclare one recipe and a new untouched evaluation period. This tests overconfidence repair; it does not establish edge.",
+    "For trading optimization, predeclare one low-dimensional causal action task, such as SOL entry permission during BTC stress, with costs and native portfolio drawdown as objectives. Begin with a fixed cheap rule/control and one bounded native comparison only after permission. A72h direction label does not identify marginal PnL or portfolio drawdown."
+  ],
+  "saved_prediction_ranking": {
+    "method": "One-vs-rest ROC AUC; rank-sum with average ranks for exact score ties; macro is equal mean of all3classes, undefined when any class absent. No fit, new predictions, score inversion, resampling or tuning.",
+    "prediction_inputs": {
+      "prior": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/prior/predictions.csv",
+        "sha256": "372d5aa93db71e7015c611fb250ae89c42f49450246dbe62e25c018053d0062b"
+      },
+      "simple": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/simple/predictions.csv",
+        "sha256": "23ddcc91708287548b330b140a07250700887bc68ec2b281d69e5f6560557274"
+      },
+      "stumpy": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/stumpy/predictions.csv",
+        "sha256": "766abd14107029e963659d8f795a3ff0df9dab62245a178e3013ef76a87d4805"
+      },
+      "rdst": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/predictions.csv",
+        "sha256": "97dda8869786589b881ecdd2441234d9010ad9a39f9fb892ee2fce5fd653dcea"
+      },
+      "minirocket": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-memory-r2/predictions.csv",
+        "sha256": "ae8e4aa85b055abace06696f28c32efe73fe9025a2371576f874e8addf0f4b51"
+      },
+      "cnn": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/predictions.csv",
+        "sha256": "3dc44f2b8bf51ebfa7369b957a3b83193494f93fe8f4c25a877ebf5d1c6ce0c9"
+      }
+    },
+    "label_source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-datasets/fast-rnd-20261020-v1/samples.csv",
+    "label_prefix_rows_read": 13944,
+    "validation_rows_matched": 3432,
+    "U_records_processed": 0,
+    "max_LL_reproduction_abs_error": 2.220446049250313e-16,
+    "rows": [
+      {
+        "model": "prior",
+        "asset": "BTC",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 871,
+        "n_DOWN": 1275,
+        "n_NONE": 1286
+      },
+      {
+        "model": "prior",
+        "asset": "BTC",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 46,
+        "n_DOWN": 256,
+        "n_NONE": 130
+      },
+      {
+        "model": "prior",
+        "asset": "BTC",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 179,
+        "n_DOWN": 158,
+        "n_NONE": 407
+      },
+      {
+        "model": "prior",
+        "asset": "BTC",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 203,
+        "n_DOWN": 339,
+        "n_NONE": 202
+      },
+      {
+        "model": "prior",
+        "asset": "BTC",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 113,
+        "n_DOWN": 266,
+        "n_NONE": 293
+      },
+      {
+        "model": "prior",
+        "asset": "BTC",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 284,
+        "n_DOWN": 234,
+        "n_NONE": 226
+      },
+      {
+        "model": "prior",
+        "asset": "BTC",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 46,
+        "n_DOWN": 22,
+        "n_NONE": 28
+      },
+      {
+        "model": "prior",
+        "asset": "SOL",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 891,
+        "n_DOWN": 1285,
+        "n_NONE": 1256
+      },
+      {
+        "model": "prior",
+        "asset": "SOL",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 52,
+        "n_DOWN": 219,
+        "n_NONE": 161
+      },
+      {
+        "model": "prior",
+        "asset": "SOL",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 212,
+        "n_DOWN": 164,
+        "n_NONE": 368
+      },
+      {
+        "model": "prior",
+        "asset": "SOL",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 213,
+        "n_DOWN": 319,
+        "n_NONE": 212
+      },
+      {
+        "model": "prior",
+        "asset": "SOL",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 171,
+        "n_DOWN": 309,
+        "n_NONE": 192
+      },
+      {
+        "model": "prior",
+        "asset": "SOL",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.5,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": 0.5,
+        "n_UP": 243,
+        "n_DOWN": 248,
+        "n_NONE": 253
+      },
+      {
+        "model": "prior",
+        "asset": "SOL",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": null,
+        "auc_DOWN": 0.5,
+        "auc_NONE": 0.5,
+        "macro_auc": null,
+        "n_UP": 0,
+        "n_DOWN": 26,
+        "n_NONE": 70
+      },
+      {
+        "model": "simple",
+        "asset": "BTC",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.5221795985082248,
+        "auc_DOWN": 0.523984473715309,
+        "auc_NONE": 0.5533616015328892,
+        "macro_auc": 0.5331752245854743,
+        "n_UP": 871,
+        "n_DOWN": 1275,
+        "n_NONE": 1286
+      },
+      {
+        "model": "simple",
+        "asset": "BTC",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.2666141022752872,
+        "auc_DOWN": 0.9729225852272727,
+        "auc_NONE": 0.7704024452368823,
+        "macro_auc": 0.6699797109131475,
+        "n_UP": 46,
+        "n_DOWN": 256,
+        "n_NONE": 130
+      },
+      {
+        "model": "simple",
+        "asset": "BTC",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.5596677708014041,
+        "auc_DOWN": 0.5756685531602368,
+        "auc_NONE": 0.4942803607492035,
+        "macro_auc": 0.5432055615702814,
+        "n_UP": 179,
+        "n_DOWN": 158,
+        "n_NONE": 407
+      },
+      {
+        "model": "simple",
+        "asset": "BTC",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.7598044125547472,
+        "auc_DOWN": 0.48409628901270985,
+        "auc_NONE": 0.4990957582843155,
+        "macro_auc": 0.5809988199505908,
+        "n_UP": 203,
+        "n_DOWN": 339,
+        "n_NONE": 202
+      },
+      {
+        "model": "simple",
+        "asset": "BTC",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.5351528487976317,
+        "auc_DOWN": 0.6962480091855254,
+        "auc_NONE": 0.8126288868677227,
+        "macro_auc": 0.6813432482836266,
+        "n_UP": 113,
+        "n_DOWN": 266,
+        "n_NONE": 293
+      },
+      {
+        "model": "simple",
+        "asset": "BTC",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.39832363747703614,
+        "auc_DOWN": 0.559368191721133,
+        "auc_NONE": 0.41146171455905967,
+        "macro_auc": 0.456384514585743,
+        "n_UP": 284,
+        "n_DOWN": 234,
+        "n_NONE": 226
+      },
+      {
+        "model": "simple",
+        "asset": "BTC",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": 0.4365217391304348,
+        "auc_DOWN": 0.10196560196560196,
+        "auc_NONE": 0.884453781512605,
+        "macro_auc": 0.4743137075362139,
+        "n_UP": 46,
+        "n_DOWN": 22,
+        "n_NONE": 28
+      },
+      {
+        "model": "simple",
+        "asset": "SOL",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.573711225685514,
+        "auc_DOWN": 0.46807798049581445,
+        "auc_NONE": 0.5338664849896965,
+        "macro_auc": 0.5252185637236749,
+        "n_UP": 891,
+        "n_DOWN": 1285,
+        "n_NONE": 1256
+      },
+      {
+        "model": "simple",
+        "asset": "SOL",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.5665485829959515,
+        "auc_DOWN": 0.8511158273843977,
+        "auc_NONE": 0.7437601705209599,
+        "macro_auc": 0.7204748603004364,
+        "n_UP": 52,
+        "n_DOWN": 219,
+        "n_NONE": 161
+      },
+      {
+        "model": "simple",
+        "asset": "SOL",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.48125620655412116,
+        "auc_DOWN": 0.3171572750210261,
+        "auc_NONE": 0.48719357076780756,
+        "macro_auc": 0.42853568411431825,
+        "n_UP": 212,
+        "n_DOWN": 164,
+        "n_NONE": 368
+      },
+      {
+        "model": "simple",
+        "asset": "SOL",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.7238800031829394,
+        "auc_DOWN": 0.5260483127420247,
+        "auc_NONE": 0.47942970634132503,
+        "macro_auc": 0.5764526740887631,
+        "n_UP": 213,
+        "n_DOWN": 319,
+        "n_NONE": 212
+      },
+      {
+        "model": "simple",
+        "asset": "SOL",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.5313349908370394,
+        "auc_DOWN": 0.6028243601059136,
+        "auc_NONE": 0.8552625868055556,
+        "macro_auc": 0.6631406459161695,
+        "n_UP": 171,
+        "n_DOWN": 309,
+        "n_NONE": 192
+      },
+      {
+        "model": "simple",
+        "asset": "SOL",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.5073885151507684,
+        "auc_DOWN": 0.47374967481789804,
+        "auc_NONE": 0.5098492227687305,
+        "macro_auc": 0.496995804245799,
+        "n_UP": 243,
+        "n_DOWN": 248,
+        "n_NONE": 253
+      },
+      {
+        "model": "simple",
+        "asset": "SOL",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": null,
+        "auc_DOWN": 0.07692307692307693,
+        "auc_NONE": 0.8873626373626373,
+        "macro_auc": null,
+        "n_UP": 0,
+        "n_DOWN": 26,
+        "n_NONE": 70
+      },
+      {
+        "model": "stumpy",
+        "asset": "BTC",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.4694169497330576,
+        "auc_DOWN": 0.47251774887052644,
+        "auc_NONE": 0.5419645794773161,
+        "macro_auc": 0.49463309269363337,
+        "n_UP": 871,
+        "n_DOWN": 1275,
+        "n_NONE": 1286
+      },
+      {
+        "model": "stumpy",
+        "asset": "BTC",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.4834703762108583,
+        "auc_DOWN": 0.5418590198863636,
+        "auc_NONE": 0.6516046867040245,
+        "macro_auc": 0.5589780276004155,
+        "n_UP": 46,
+        "n_DOWN": 256,
+        "n_NONE": 130
+      },
+      {
+        "model": "stumpy",
+        "asset": "BTC",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.4731448064468285,
+        "auc_DOWN": 0.5232319523048343,
+        "auc_NONE": 0.48180214203953076,
+        "macro_auc": 0.4927263002637312,
+        "n_UP": 179,
+        "n_DOWN": 158,
+        "n_NONE": 407
+      },
+      {
+        "model": "stumpy",
+        "asset": "BTC",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.4240140954080657,
+        "auc_DOWN": 0.4215958337885575,
+        "auc_NONE": 0.5558483431368967,
+        "macro_auc": 0.46715275744450663,
+        "n_UP": 203,
+        "n_DOWN": 339,
+        "n_NONE": 202
+      },
+      {
+        "model": "stumpy",
+        "asset": "BTC",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.4944353855652477,
+        "auc_DOWN": 0.40361217082114154,
+        "auc_NONE": 0.5223734094572569,
+        "macro_auc": 0.4734736552812153,
+        "n_UP": 113,
+        "n_DOWN": 266,
+        "n_NONE": 293
+      },
+      {
+        "model": "stumpy",
+        "asset": "BTC",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.4510754745866503,
+        "auc_DOWN": 0.506380928439752,
+        "auc_NONE": 0.5166868828373253,
+        "macro_auc": 0.4913810952879092,
+        "n_UP": 284,
+        "n_DOWN": 234,
+        "n_NONE": 226
+      },
+      {
+        "model": "stumpy",
+        "asset": "BTC",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": 0.7232608695652174,
+        "auc_DOWN": 0.6151719901719902,
+        "auc_NONE": 0.680672268907563,
+        "macro_auc": 0.6730350428815902,
+        "n_UP": 46,
+        "n_DOWN": 22,
+        "n_NONE": 28
+      },
+      {
+        "model": "stumpy",
+        "asset": "SOL",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.4580597615492014,
+        "auc_DOWN": 0.4192182014900893,
+        "auc_NONE": 0.5106893162818471,
+        "macro_auc": 0.46265575977371265,
+        "n_UP": 891,
+        "n_DOWN": 1285,
+        "n_NONE": 1256
+      },
+      {
+        "model": "stumpy",
+        "asset": "SOL",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.40483299595141703,
+        "auc_DOWN": 0.560636268141574,
+        "auc_NONE": 0.4947514381976118,
+        "macro_auc": 0.4867402340968676,
+        "n_UP": 52,
+        "n_DOWN": 219,
+        "n_NONE": 161
+      },
+      {
+        "model": "stumpy",
+        "asset": "SOL",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.47559937579798556,
+        "auc_DOWN": 0.458378889823381,
+        "auc_NONE": 0.5236976757631823,
+        "macro_auc": 0.48589198046151627,
+        "n_UP": 212,
+        "n_DOWN": 164,
+        "n_NONE": 368
+      },
+      {
+        "model": "stumpy",
+        "asset": "SOL",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.41453807591310576,
+        "auc_DOWN": 0.38476857827770605,
+        "auc_NONE": 0.4669102000283728,
+        "macro_auc": 0.42207228473972824,
+        "n_UP": 213,
+        "n_DOWN": 319,
+        "n_NONE": 212
+      },
+      {
+        "model": "stumpy",
+        "asset": "SOL",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.4970701871111578,
+        "auc_DOWN": 0.3847834033182665,
+        "auc_NONE": 0.4911349826388889,
+        "macro_auc": 0.4576628576894377,
+        "n_UP": 171,
+        "n_DOWN": 309,
+        "n_NONE": 192
+      },
+      {
+        "model": "stumpy",
+        "asset": "SOL",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.4388137305635642,
+        "auc_DOWN": 0.38536111472424556,
+        "auc_NONE": 0.5486423609154505,
+        "macro_auc": 0.45760573540108673,
+        "n_UP": 243,
+        "n_DOWN": 248,
+        "n_NONE": 253
+      },
+      {
+        "model": "stumpy",
+        "asset": "SOL",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": null,
+        "auc_DOWN": 0.4318681318681319,
+        "auc_NONE": 0.7126373626373627,
+        "macro_auc": null,
+        "n_UP": 0,
+        "n_DOWN": 26,
+        "n_NONE": 70
+      },
+      {
+        "model": "rdst",
+        "asset": "BTC",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.40147384305158496,
+        "auc_DOWN": 0.4687156271873608,
+        "auc_NONE": 0.5189096427365317,
+        "macro_auc": 0.4630330376584925,
+        "n_UP": 871,
+        "n_DOWN": 1275,
+        "n_NONE": 1286
+      },
+      {
+        "model": "rdst",
+        "asset": "BTC",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.6709281369677855,
+        "auc_DOWN": 0.341552734375,
+        "auc_NONE": 0.5252929190015283,
+        "macro_auc": 0.5125912634481046,
+        "n_UP": 46,
+        "n_DOWN": 256,
+        "n_NONE": 130
+      },
+      {
+        "model": "rdst",
+        "asset": "BTC",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.68665644930044,
+        "auc_DOWN": 0.5261264958741954,
+        "auc_NONE": 0.4872884754190392,
+        "macro_auc": 0.5666904735312248,
+        "n_UP": 179,
+        "n_DOWN": 158,
+        "n_NONE": 407
+      },
+      {
+        "model": "rdst",
+        "asset": "BTC",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.2281398249911221,
+        "auc_DOWN": 0.3065588695873848,
+        "auc_NONE": 0.5843684921997735,
+        "macro_auc": 0.3730223955927601,
+        "n_UP": 203,
+        "n_DOWN": 339,
+        "n_NONE": 202
+      },
+      {
+        "model": "rdst",
+        "asset": "BTC",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.512482783732012,
+        "auc_DOWN": 0.6864235712433794,
+        "auc_NONE": 0.4172287409835475,
+        "macro_auc": 0.5387116986529796,
+        "n_UP": 113,
+        "n_DOWN": 266,
+        "n_NONE": 293
+      },
+      {
+        "model": "rdst",
+        "asset": "BTC",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.48059552969993874,
+        "auc_DOWN": 0.6184933802580861,
+        "auc_NONE": 0.5186472819216182,
+        "macro_auc": 0.5392453972932144,
+        "n_UP": 284,
+        "n_DOWN": 234,
+        "n_NONE": 226
+      },
+      {
+        "model": "rdst",
+        "asset": "BTC",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": 0.18739130434782608,
+        "auc_DOWN": 0.6744471744471745,
+        "auc_NONE": 0.38445378151260506,
+        "macro_auc": 0.41543075343586855,
+        "n_UP": 46,
+        "n_DOWN": 22,
+        "n_NONE": 28
+      },
+      {
+        "model": "rdst",
+        "asset": "SOL",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.44660386717319683,
+        "auc_DOWN": 0.4625275699147666,
+        "auc_NONE": 0.4979605247751967,
+        "macro_auc": 0.4690306539543867,
+        "n_UP": 891,
+        "n_DOWN": 1285,
+        "n_NONE": 1256
+      },
+      {
+        "model": "rdst",
+        "asset": "SOL",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.3140182186234818,
+        "auc_DOWN": 0.5874975882693421,
+        "auc_NONE": 0.5468130457702093,
+        "macro_auc": 0.48277628422101104,
+        "n_UP": 52,
+        "n_DOWN": 219,
+        "n_NONE": 161
+      },
+      {
+        "model": "rdst",
+        "asset": "SOL",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.45444389275074476,
+        "auc_DOWN": 0.4578006728343145,
+        "auc_NONE": 0.4270857423681776,
+        "macro_auc": 0.4464434359844123,
+        "n_UP": 212,
+        "n_DOWN": 164,
+        "n_NONE": 368
+      },
+      {
+        "model": "rdst",
+        "asset": "SOL",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.21926916173753128,
+        "auc_DOWN": 0.2389526092568689,
+        "auc_NONE": 0.42738331678252234,
+        "macro_auc": 0.29520169592564083,
+        "n_UP": 213,
+        "n_DOWN": 319,
+        "n_NONE": 212
+      },
+      {
+        "model": "rdst",
+        "asset": "SOL",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.572434079210001,
+        "auc_DOWN": 0.5610295363163854,
+        "auc_NONE": 0.45944010416666664,
+        "macro_auc": 0.530967906564351,
+        "n_UP": 171,
+        "n_DOWN": 309,
+        "n_NONE": 192
+      },
+      {
+        "model": "rdst",
+        "asset": "SOL",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.6391743262446301,
+        "auc_DOWN": 0.5000162591050988,
+        "auc_NONE": 0.6858311262809624,
+        "macro_auc": 0.6083405705435637,
+        "n_UP": 243,
+        "n_DOWN": 248,
+        "n_NONE": 253
+      },
+      {
+        "model": "rdst",
+        "asset": "SOL",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": null,
+        "auc_DOWN": 0.5719780219780219,
+        "auc_NONE": 0.7373626373626374,
+        "macro_auc": null,
+        "n_UP": 0,
+        "n_DOWN": 26,
+        "n_NONE": 70
+      },
+      {
+        "model": "minirocket",
+        "asset": "BTC",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.43380819149379707,
+        "auc_DOWN": 0.44368267473888023,
+        "auc_NONE": 0.5641995161891123,
+        "macro_auc": 0.48056346080726325,
+        "n_UP": 871,
+        "n_DOWN": 1275,
+        "n_NONE": 1286
+      },
+      {
+        "model": "minirocket",
+        "asset": "BTC",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.5085041676053165,
+        "auc_DOWN": 0.20161576704545456,
+        "auc_NONE": 0.535430463576159,
+        "macro_auc": 0.4151834660756433,
+        "n_UP": 46,
+        "n_DOWN": 256,
+        "n_NONE": 130
+      },
+      {
+        "model": "minirocket",
+        "asset": "BTC",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.7496910070697582,
+        "auc_DOWN": 0.6353523134747483,
+        "auc_NONE": 0.4886883106467676,
+        "macro_auc": 0.6245772103970914,
+        "n_UP": 179,
+        "n_DOWN": 158,
+        "n_NONE": 407
+      },
+      {
+        "model": "minirocket",
+        "asset": "BTC",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.3503091337880043,
+        "auc_DOWN": 0.3723442222950581,
+        "auc_NONE": 0.6573563260385079,
+        "macro_auc": 0.4600032273738568,
+        "n_UP": 203,
+        "n_DOWN": 339,
+        "n_NONE": 202
+      },
+      {
+        "model": "minirocket",
+        "asset": "BTC",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.6187407982015926,
+        "auc_DOWN": 0.5712618985888366,
+        "auc_NONE": 0.6057885399875729,
+        "macro_auc": 0.5985970789260007,
+        "n_UP": 113,
+        "n_DOWN": 266,
+        "n_NONE": 293
+      },
+      {
+        "model": "minirocket",
+        "asset": "BTC",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.29675443968156767,
+        "auc_DOWN": 0.5336936483995307,
+        "auc_NONE": 0.46541326408583045,
+        "macro_auc": 0.43195378405564294,
+        "n_UP": 284,
+        "n_DOWN": 234,
+        "n_NONE": 226
+      },
+      {
+        "model": "minirocket",
+        "asset": "BTC",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": 0.03434782608695652,
+        "auc_DOWN": 0.30773955773955775,
+        "auc_NONE": 0.6932773109243697,
+        "macro_auc": 0.3451215649169613,
+        "n_UP": 46,
+        "n_DOWN": 22,
+        "n_NONE": 28
+      },
+      {
+        "model": "minirocket",
+        "asset": "SOL",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.4896465640267293,
+        "auc_DOWN": 0.4326822876550213,
+        "auc_NONE": 0.5280641889518546,
+        "macro_auc": 0.4834643468778684,
+        "n_UP": 891,
+        "n_DOWN": 1285,
+        "n_NONE": 1256
+      },
+      {
+        "model": "minirocket",
+        "asset": "SOL",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.5300101214574898,
+        "auc_DOWN": 0.49853152399939976,
+        "auc_NONE": 0.5044349201255988,
+        "macro_auc": 0.5109921885274961,
+        "n_UP": 52,
+        "n_DOWN": 219,
+        "n_NONE": 161
+      },
+      {
+        "model": "minirocket",
+        "asset": "SOL",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.5162789048091928,
+        "auc_DOWN": 0.5599558452481077,
+        "auc_NONE": 0.516347710453284,
+        "macro_auc": 0.5308608201701949,
+        "n_UP": 212,
+        "n_DOWN": 164,
+        "n_NONE": 368
+      },
+      {
+        "model": "minirocket",
+        "asset": "SOL",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.3368787742146539,
+        "auc_DOWN": 0.31802323437211877,
+        "auc_NONE": 0.5461856291672578,
+        "macro_auc": 0.4003625459180102,
+        "n_UP": 213,
+        "n_DOWN": 319,
+        "n_NONE": 212
+      },
+      {
+        "model": "minirocket",
+        "asset": "SOL",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.5438246314388766,
+        "auc_DOWN": 0.5367175729046868,
+        "auc_NONE": 0.544921875,
+        "macro_auc": 0.5418213597811877,
+        "n_UP": 171,
+        "n_DOWN": 309,
+        "n_NONE": 192
+      },
+      {
+        "model": "minirocket",
+        "asset": "SOL",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.5207691612659455,
+        "auc_DOWN": 0.3994536940686785,
+        "auc_NONE": 0.553915136488412,
+        "macro_auc": 0.49137933060767863,
+        "n_UP": 243,
+        "n_DOWN": 248,
+        "n_NONE": 253
+      },
+      {
+        "model": "minirocket",
+        "asset": "SOL",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": null,
+        "auc_DOWN": 0.2164835164835165,
+        "auc_NONE": 0.7318681318681318,
+        "macro_auc": null,
+        "n_UP": 0,
+        "n_DOWN": 26,
+        "n_NONE": 70
+      },
+      {
+        "model": "cnn",
+        "asset": "BTC",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.4486820097093603,
+        "auc_DOWN": 0.4418202478024126,
+        "auc_NONE": 0.5507070190263197,
+        "macro_auc": 0.4804030921793642,
+        "n_UP": 871,
+        "n_DOWN": 1275,
+        "n_NONE": 1286
+      },
+      {
+        "model": "cnn",
+        "asset": "BTC",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.6441766163550349,
+        "auc_DOWN": 0.45649857954545453,
+        "auc_NONE": 0.38904737646459503,
+        "macro_auc": 0.49657419078836146,
+        "n_UP": 46,
+        "n_DOWN": 256,
+        "n_NONE": 130
+      },
+      {
+        "model": "cnn",
+        "asset": "BTC",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.6314530083551688,
+        "auc_DOWN": 0.5814684408346654,
+        "auc_NONE": 0.5798379982356243,
+        "macro_auc": 0.5975864824751529,
+        "n_UP": 179,
+        "n_DOWN": 158,
+        "n_NONE": 407
+      },
+      {
+        "model": "cnn",
+        "asset": "BTC",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.34004716680476765,
+        "auc_DOWN": 0.35388761426126225,
+        "auc_NONE": 0.5361696686273794,
+        "macro_auc": 0.4100348165644698,
+        "n_UP": 203,
+        "n_DOWN": 339,
+        "n_NONE": 202
+      },
+      {
+        "model": "cnn",
+        "asset": "BTC",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.5220764006522393,
+        "auc_DOWN": 0.5639560724471276,
+        "auc_NONE": 0.6619989734076562,
+        "macro_auc": 0.5826771488356743,
+        "n_UP": 113,
+        "n_DOWN": 266,
+        "n_NONE": 293
+      },
+      {
+        "model": "cnn",
+        "asset": "BTC",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.45353643600734844,
+        "auc_DOWN": 0.440824534942182,
+        "auc_NONE": 0.4986930672771381,
+        "macro_auc": 0.46435134607555617,
+        "n_UP": 284,
+        "n_DOWN": 234,
+        "n_NONE": 226
+      },
+      {
+        "model": "cnn",
+        "asset": "BTC",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": 0.45260869565217393,
+        "auc_DOWN": 0.3402948402948403,
+        "auc_NONE": 0.6092436974789915,
+        "macro_auc": 0.46738241114200196,
+        "n_UP": 46,
+        "n_DOWN": 22,
+        "n_NONE": 28
+      },
+      {
+        "model": "cnn",
+        "asset": "SOL",
+        "period": "ALL_V",
+        "n": 3432,
+        "auc_UP": 0.4915793997520352,
+        "auc_DOWN": 0.4072017963713733,
+        "auc_NONE": 0.5625409797677032,
+        "macro_auc": 0.4871073919637039,
+        "n_UP": 891,
+        "n_DOWN": 1285,
+        "n_NONE": 1256
+      },
+      {
+        "model": "cnn",
+        "asset": "SOL",
+        "period": "2025-11",
+        "n": 432,
+        "auc_UP": 0.5437246963562753,
+        "auc_DOWN": 0.5947220614401784,
+        "auc_NONE": 0.41129013774609796,
+        "macro_auc": 0.5165789651808506,
+        "n_UP": 52,
+        "n_DOWN": 219,
+        "n_NONE": 161
+      },
+      {
+        "model": "cnn",
+        "asset": "SOL",
+        "period": "2025-12",
+        "n": 744,
+        "auc_UP": 0.6366239892183289,
+        "auc_DOWN": 0.49203111858704796,
+        "auc_NONE": 0.6382400555041629,
+        "macro_auc": 0.5889650544365131,
+        "n_UP": 212,
+        "n_DOWN": 164,
+        "n_NONE": 368
+      },
+      {
+        "model": "cnn",
+        "asset": "SOL",
+        "period": "2026-01",
+        "n": 744,
+        "auc_UP": 0.35210383455788086,
+        "auc_DOWN": 0.33690577171307395,
+        "auc_NONE": 0.4201127819548872,
+        "macro_auc": 0.3697074627419474,
+        "n_UP": 213,
+        "n_DOWN": 319,
+        "n_NONE": 212
+      },
+      {
+        "model": "cnn",
+        "asset": "SOL",
+        "period": "2026-02",
+        "n": 672,
+        "auc_UP": 0.5392373148439962,
+        "auc_DOWN": 0.49258694624978827,
+        "auc_NONE": 0.7045681423611111,
+        "macro_auc": 0.5787974678182985,
+        "n_UP": 171,
+        "n_DOWN": 309,
+        "n_NONE": 192
+      },
+      {
+        "model": "cnn",
+        "asset": "SOL",
+        "period": "2026-03",
+        "n": 744,
+        "auc_UP": 0.43120343674790335,
+        "auc_DOWN": 0.3592855749219563,
+        "auc_NONE": 0.5500591677869637,
+        "macro_auc": 0.4468493931522744,
+        "n_UP": 243,
+        "n_DOWN": 248,
+        "n_NONE": 253
+      },
+      {
+        "model": "cnn",
+        "asset": "SOL",
+        "period": "2026-04",
+        "n": 96,
+        "auc_UP": null,
+        "auc_DOWN": 0.5049450549450549,
+        "auc_NONE": 0.8769230769230769,
+        "macro_auc": null,
+        "n_UP": 0,
+        "n_DOWN": 26,
+        "n_NONE": 70
+      }
+    ],
+    "limitations": [
+      "AUC measures ranking on already inspected V; overlapping labels mean no significance claim.",
+      "AUC above0.5 does not establish profitable actions, calibration, or risk reduction. AUC below0.5 is not authorization to invert/tune scores.",
+      "Binary monotone calibration preserves individual score ranking, but multiclass temperature/normalization or shrinkage may change class rankings; no repair benefit was tested.",
+      "SOL April has zeroUP targets; UP AUC and3class macroAUC are undefined. Missing values are blank, not0.5."
+    ],
+    "interpretation": [
+      "All four recognizer families have full-V macro AUC below0.5 on both assets. Their UP and DOWN AUCs are below0.5 for both assets; only NONE is above0.5, except RDST SOL NONE0.497961.",
+      "Simple control is strongest on full-V macro: BTC0.533175 and SOL0.525219; all BTC classes and SOL UP/NONE exceed0.5, while SOL DOWN0.468078.",
+      "MiniRocket BTC NONE0.564200 and CNN SOL NONE0.562541 exceed simple on those isolated class scores, but neither recognizer demonstrates broad directional ranking. Calibration repair alone therefore has no established general ranking edge to recover.",
+      "Monthly results vary and pooled AUC is not the average of within-month AUCs: RDST BTC has4/6monthly macros above0.5 despite pooled0.463033. Do not treat individual months or score reversal as a selected strategy."
+    ],
+    "monthly_class_above_half_counts": {
+      "prior_BTC": {
+        "UP": {
+          "above": 0,
+          "defined": 6
+        },
+        "DOWN": {
+          "above": 0,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 0,
+          "defined": 6
+        }
+      },
+      "prior_SOL": {
+        "UP": {
+          "above": 0,
+          "defined": 5
+        },
+        "DOWN": {
+          "above": 0,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 0,
+          "defined": 6
+        }
+      },
+      "simple_BTC": {
+        "UP": {
+          "above": 3,
+          "defined": 6
+        },
+        "DOWN": {
+          "above": 4,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 3,
+          "defined": 6
+        }
+      },
+      "simple_SOL": {
+        "UP": {
+          "above": 4,
+          "defined": 5
+        },
+        "DOWN": {
+          "above": 3,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 4,
+          "defined": 6
+        }
+      },
+      "stumpy_BTC": {
+        "UP": {
+          "above": 1,
+          "defined": 6
+        },
+        "DOWN": {
+          "above": 4,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 5,
+          "defined": 6
+        }
+      },
+      "stumpy_SOL": {
+        "UP": {
+          "above": 0,
+          "defined": 5
+        },
+        "DOWN": {
+          "above": 1,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 3,
+          "defined": 6
+        }
+      },
+      "minirocket_BTC": {
+        "UP": {
+          "above": 3,
+          "defined": 6
+        },
+        "DOWN": {
+          "above": 3,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 4,
+          "defined": 6
+        }
+      },
+      "minirocket_SOL": {
+        "UP": {
+          "above": 4,
+          "defined": 5
+        },
+        "DOWN": {
+          "above": 2,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 6,
+          "defined": 6
+        }
+      },
+      "rdst_BTC": {
+        "UP": {
+          "above": 3,
+          "defined": 6
+        },
+        "DOWN": {
+          "above": 4,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 3,
+          "defined": 6
+        }
+      },
+      "rdst_SOL": {
+        "UP": {
+          "above": 2,
+          "defined": 5
+        },
+        "DOWN": {
+          "above": 4,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 3,
+          "defined": 6
+        }
+      },
+      "cnn_BTC": {
+        "UP": {
+          "above": 3,
+          "defined": 6
+        },
+        "DOWN": {
+          "above": 2,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 4,
+          "defined": 6
+        }
+      },
+      "cnn_SOL": {
+        "UP": {
+          "above": 3,
+          "defined": 5
+        },
+        "DOWN": {
+          "above": 2,
+          "defined": 6
+        },
+        "NONE": {
+          "above": 4,
+          "defined": 6
+        }
+      }
+    },
+    "ranking_csv_sha256": "58672a6458f0d351a3683747788e6363e944b1738505048c94b27c385c908648"
+  }
+}

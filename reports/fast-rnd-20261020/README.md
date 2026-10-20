@@ -59,3 +59,7 @@ The largest event's trough contains a losing SOL-long and a positive BTC-short. 
 [Full common comparison](recognizer-comparison-results.md) · [CSV](recognizer-comparison-results.csv) · [JSON](recognizer-comparison-results.json) · [Calibration](recognizer-comparison-calibration.csv) · [Monthly blocks](recognizer-comparison-monthly.csv) · [Five native drawdowns](s0-drawdown-attribution-result.md) · [DD CSV](s0-drawdown-attribution-result.csv) · [Completion](completion.json)
 
 Final protection check19:30UTC: pilotPID2009732/NRestarts0/active, no FAST-RND units running; diskavailable2,822,889,472bytes. No deployment/orders/restart or Hermes/sites/VPN change. Unique results/rawhistory/configs/pilot assets preserved.
+
+## Postanalysis — 20.10.2026
+
+[Причины результата и применимость методов](postanalysis.md): saved V ranking confirms all four recognizers have UP/DOWN AUC below0.5 on both assets; strong MiniRocket/RDST overconfidence is separately measured. Simple-control macroAUC0.5332BTC/0.5252SOL is weak evidence, not a qualified trading candidate. No new fit/inference/economic run or U evaluation; completed negative gate unchanged. [Diagnostics](postanalysis-diagnostics.md) · [JSON](postanalysis-diagnostics.json) · [84-row ranking](postanalysis-ranking.csv) · [Independent numeric verification](postanalysis-verification.json). Proposals are unexecuted, not an authorized research queue.

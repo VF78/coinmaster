@@ -1,0 +1,74 @@
+{
+  "status": "PASS_SAVED_PREDICTIONS_ONLY",
+  "utc": "2026-10-20T20:29:40.740634+00:00",
+  "source_HEAD": "85887e4988168fcbb7571ab491f8022174fb9249",
+  "summary_input_hashes_checked": 9,
+  "prediction_files_checked": 6,
+  "common_V_ids": 3432,
+  "U_outcomes_processed": 0,
+  "new_fits_predictions_backtests": false,
+  "AUC_max_abs_error": 0.0,
+  "LL_max_abs_error": 5.5067062021407764e-14,
+  "probability_sum_max_abs_error": 1.1920928955078125e-07,
+  "probability_sum_tolerance": 1e-06,
+  "probability_tolerance_basis": "original metrics() float32-compatible tolerance; no normalization or prediction changes",
+  "ranking_CSV_rows": 84,
+  "constant_prior_AUC_exactly_0_5": true,
+  "report_files": {
+    "postanalysis.md": "7effc8bf51fe87f1bb894894d6fa867c075591ae15f426fce5f144a6d84683ec",
+    "postanalysis-diagnostics.md": "5b80b65d75d4600c0735cac1fcd00da30d11551be4c70dc15a48a3f9fbb9f6e3",
+    "postanalysis-diagnostics.json": "1ee0b1b81603ce50c3fe378be24f01e3fede51b56309755e3ce71bf5aaa0fdb9",
+    "postanalysis-ranking.csv": "58672a6458f0d351a3683747788e6363e944b1738505048c94b27c385c908648"
+  },
+  "metrics": {
+    "prior": {
+      "macro_AUC": {
+        "BTC": 0.5,
+        "SOL": 0.5
+      },
+      "mean_LL": 1.1005862131442332
+    },
+    "simple": {
+      "macro_AUC": {
+        "BTC": 0.5331752245854743,
+        "SOL": 0.5252185637236749
+      },
+      "mean_LL": 1.3626164204737679
+    },
+    "stumpy": {
+      "macro_AUC": {
+        "BTC": 0.49463309269363337,
+        "SOL": 0.46265575977371265
+      },
+      "mean_LL": 1.1236582971796918
+    },
+    "rdst": {
+      "macro_AUC": {
+        "BTC": 0.4630330376584925,
+        "SOL": 0.4690306539543867
+      },
+      "mean_LL": 8.501439824793142
+    },
+    "minirocket": {
+      "macro_AUC": {
+        "BTC": 0.48056346080726325,
+        "SOL": 0.4834643468778684
+      },
+      "mean_LL": 7.212750339779625
+    },
+    "cnn": {
+      "macro_AUC": {
+        "BTC": 0.4804030921793642,
+        "SOL": 0.4871073919637039
+      },
+      "mean_LL": 1.2690942286812095
+    }
+  },
+  "scoped_methodology_review": {
+    "reviewer": "fast_rnd_method_applicability",
+    "model": "gpt-6.1-sol",
+    "reasoning": "medium",
+    "result": "GO",
+    "scope": "postanalysis.md vs diagnostics; no material methodological findings; read-only"
+  }
+}
