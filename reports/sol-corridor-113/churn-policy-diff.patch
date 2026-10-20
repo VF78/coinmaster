@@ -1,0 +1,34 @@
+diff --git a/runtime/coinmaster/strategy/risk_first_sol.py b/runtime/coinmaster/strategy/risk_first_sol.py
+index 1a56b62..9c5e01f 100644
+--- a/runtime/coinmaster/strategy/risk_first_sol.py
++++ b/runtime/coinmaster/strategy/risk_first_sol.py
+@@ -473,6 +473,20 @@ class SolRiskFirstResearch:
+         feasible=[q for q in candidates if loss(q)<=C and margin_ok(q)]
+         status='FEASIBLE' if feasible else 'SOL_RISK_INFEASIBLE' if interval is None else 'SOL_MARGIN_INSUFFICIENT'
+         target=min(feasible,key=lambda q:(abs(q-alpha),q)) if feasible else min(candidates,key=lambda q:(loss(q),q))
++        # Acquire headroom only after an actual breach; healthy alpha keeps its target.
++        inner_correction=False
++        if C>0 and loss(held)>C:
++            inner,unused=self._corridor_interval(loss,points,D('.8')*C)
++            if inner is not None:
++                inner_candidates=set(candidates)
++                for q in inner:
++                    for rule in (ROUND_FLOOR,ROUND_CEILING):
++                        v=(max(D(0),q)/step).to_integral_value(rounding=rule)*step
++                        if v<=cap and margin_ok(v) and (not v or ((inst.min_quantity is None or v>=inst.min_quantity.as_decimal()) and (inst.min_notional is None or v*sm>=inst.min_notional.as_decimal()))):
++                            inner_candidates.add(v)
++                legal=[q for q in inner_candidates if loss(q)<=D('.8')*C and margin_ok(q)]
++                if legal:
++                    target=min(legal,key=lambda q:(abs(q-alpha),q));inner_correction=True
+         # Healthy actual/alpha receives its ordinary execution, without price-boundary churn.
+         risk=f.get('corridor_risk',False)
+         reverse=self._rf_reverse
+@@ -495,7 +509,7 @@ class SolRiskFirstResearch:
+         self._rf_corridor_counts=getattr(self,'_rf_corridor_counts',{})
+         self._rf_corridor_counts[status]=self._rf_corridor_counts.get(status,0)+1
+         if signature!=self._rf_last_budget and len(self.risk_first_sol_audit)<8192:
+-            self._risk_first_emit('CORRIDOR_BUDGET',ts,status=status,target=str(target),alpha=str(alpha),held=str(held),E=str(E),H=str(self._rf_peak),C=str(C),L=str(loss(target)),held_L=str(loss(held)),pending_L=str(transit),transition_satisfied=transit<=C,beta=str(beta),a=str(a),u=str(u),BTC_actual=str(actual),BTC_possible=[str(bl),str(bh)],Q2_remaining=str(q2),cost=str(cost(target)),native_final_receipt=self._rf_final_receipt,cost_basis='PINNED_TAKER_PROXY_FUTURE_COSTS_ONLY;FUNDING_L2_UNKNOWN')
++            self._risk_first_emit('CORRIDOR_BUDGET',ts,status=status,target=str(target),alpha=str(alpha),held=str(held),E=str(E),H=str(self._rf_peak),C=str(C),L=str(loss(target)),held_L=str(loss(held)),pending_L=str(transit),transition_satisfied=transit<=C,inner_correction=inner_correction,beta=str(beta),a=str(a),u=str(u),BTC_actual=str(actual),BTC_possible=[str(bl),str(bh)],Q2_remaining=str(q2),cost=str(cost(target)),native_final_receipt=self._rf_final_receipt,cost_basis='PINNED_TAKER_PROXY_FUTURE_COSTS_ONLY;FUNDING_L2_UNKNOWN')
+             self._rf_last_budget=signature
+         return self._conditional_reconcile(tick,c,ep,btc,sol,held,abs(actual),target,ts)
+ 

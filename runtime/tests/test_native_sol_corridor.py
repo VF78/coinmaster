@@ -157,9 +157,10 @@ def test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity():
                 for dt in range(4):advance(s,e,t+(90+dt)*minute,sol='1')
                 assert not e.cache.positions_open() and s._domain.episode is None and not s._pending_by_order
             fills=[{k:x[k] for k in ('fill_ns','instrument','px','qty','commission','native_liquidity_side','order_type','post_only')} for x in s.fill_audit]
-            orders=[(str(o.quantity),str(o.filled_qty),int(o.order_type),int(o.time_in_force),o.is_post_only,o.is_reduce_only,int(o.status),o.ts_init,o.ts_last) for o in e.cache.orders()]
+            native_orders=getattr(s,"_test_full_native_orders",lambda:e.cache.orders())()
+            orders=[(str(o.quantity),str(o.filled_qty),int(o.order_type),int(o.time_in_force),o.is_post_only,o.is_reduce_only,int(o.status),o.ts_init,o.ts_last) for o in native_orders]
             cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal();fees=sum(D(x['commission']) for x in s.fill_audit)
-            flow=sum(o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in e.cache.orders() if o.filled_qty.as_decimal()>0)
+            flow=sum(o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in native_orders if o.filled_qty.as_decimal()>0)
             assert cash==D(10000)+flow-fees
             outputs.append((fills,orders,cash,fees,snapshots))
         finally:e.end();e.dispose()
@@ -288,7 +289,7 @@ def test_real_production_tiny_corridor_and_raw_identity(tmp_path):
         research_v0_execution_repairs=True,research_v0_deferred_selective_zero_tp=True,research_v0_selective_lifecycle_repairs=True,research_btc_direction_sizing=True,research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,
         research_sol_risk_first="alpha-corridor-v1",observe_minute_risk=True,artifact_dir=tmp_path/'production')
     assert result['config']['research_sol_risk_first']=='alpha-corridor-v1' and result['config']['candidate']['sol_overlay_enabled']
-    assert isinstance(result['risk_first_sol_audit'],list) and 'risk_first_sol' in result['source_hashes']
+    assert result['risk_first_sol_audit']['schema']=='coinmaster.native-audit.sqlite.v1' and 'risk_first_sol' in result['source_hashes']
     assert result['minute_risk_observations']['curves']['pre_quote_paired_close']['samples']==3
     json.dumps(result)
 
@@ -385,4 +386,57 @@ def test_mathematically_feasible_but_margin_insufficient_is_distinct():
         advance(s,e,20)
         assert last(s)['status']=='SOL_MARGIN_INSUFFICIENT'
         assert not any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
+    finally:e.end();e.dispose()
+
+
+def test_inner_headroom_only_on_breach_holds_marks_then_corrects_new_breach():
+    s,e,ep=setup()
+    try:
+        f=stress(s);advance(s,e,20);advance(s,e,21)
+        acquired=[x for x in s.risk_first_sol_audit if x['event']=='CORRIDOR_BUDGET' and x.get('inner_correction')]
+        assert acquired and D(acquired[0]['L'])<=D('.8')*D(acquired[0]['C'])
+        assert D(acquired[0]['held_L'])>D(acquired[0]['C'])
+        held=next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)
+        count=len(e.cache.orders());advance(s,e,22,btc='100.01');advance(s,e,23,btc='100.02')
+        assert len(e.cache.orders())==count and D(last(s)['target'])==held
+        f['a']=D(1);advance(s,e,24);advance(s,e,25)
+        assert len(e.cache.orders())>count
+        corrected=[x for x in s.risk_first_sol_audit if x['event']=='CORRIDOR_BUDGET' and x.get('inner_correction')][-1]
+        assert D(corrected['held_L'])>D(corrected['C']) and D(corrected['L'])<=D('.8')*D(corrected['C'])
+    finally:e.end();e.dispose()
+
+
+def test_positive_outer_feasible_inner_infeasible_keeps_outer_fallback():
+    s,e,ep=setup()
+    try:
+        stress(s,u='.8');advance(s,e,20)
+        row=last(s)
+        assert row['status']=='FEASIBLE' and not row['inner_correction']
+        assert D('.8')*D(row['C'])<D(row['L'])<=D(row['C'])
+    finally:e.end();e.dispose()
+
+
+def test_nonpositive_budget_never_uses_inner_and_preserves_infeasible_fallback():
+    s,e,ep=setup()
+    try:
+        stress(s);s._rf_peak=D(100000);advance(s,e,20)
+        row=last(s)
+        assert D(row['C'])<0 and row['status']=='SOL_RISK_INFEASIBLE'
+        assert not row['inner_correction']
+    finally:e.end();e.dispose()
+
+
+def test_inner_protection_partial_fills_preserve_fees_rights_and_mandatory_exit():
+    s,e,ep=setup()
+    try:
+        stress(s);rights=dict(ep.sol_add_filled_notional)
+        for ts in range(20,28):advance(s,e,ts,size='5')
+        assert ep.sol_qty==0 and ep.sol_add_filled_notional==rights
+        assert any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
+        close(s,e,ts=40)
+        orders=e.cache.orders()
+        fees=sum((fee.as_decimal() for o in orders for fee in o.commissions()),D(0))
+        flow=sum((o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in orders if o.filled_qty.as_decimal()>0),D(0))
+        assert e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()==D(10000)+flow-fees
+        assert not s._pending_by_order and not e.cache.positions_open()
     finally:e.end();e.dispose()

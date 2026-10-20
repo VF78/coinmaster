@@ -1,0 +1,24 @@
+{
+  "decision": "GO_MEMORY_FIX_SOURCE",
+  "base": "7d08522a4beae4432387455b91f468f564c0eccc",
+  "blocking_findings": [],
+  "sha256": {
+    "runtime/coinmaster/research/native_audit.py": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3",
+    "runtime/coinmaster/research/native_baseline.py": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+    "runtime/tests/test_native_audit_memory.py": "427880a6c588bdfff634d35c54123f65b1792fddbdab35fd0f93cb4ecc64c778",
+    "runtime/tests/test_native_sol_corridor.py": "a5e97aff95211ec8e1a096372f1c7cd9471ccb147bae0bdd8d9c1732f14a6f10"
+  },
+  "verification": "56 unique connected cases covered in aggregate:50initial passes,11correctedsubset passes overlap,final1healthyreader pass; not a single fresh56pass run",
+  "memory": {
+    "closed_30000_orders": 30000,
+    "account_states": 30001,
+    "closed_lifecycles": 15000,
+    "cash": "9700",
+    "PSS_10000": 360146944,
+    "PSS_30000": 365146112,
+    "export_RSS": 386084864,
+    "open_3000_RSS": 366198784,
+    "open_native_fill_events_retained": 3000
+  },
+  "residual": "Active native position history remains retained and can grow. No universal memory or economic parity guarantee. Root launch/resource gate required."
+}

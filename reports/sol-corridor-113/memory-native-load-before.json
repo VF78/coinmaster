@@ -1,0 +1,261 @@
+[
+  {
+    "native_orders": 0,
+    "native_positions": 0,
+    "account_events": 1,
+    "generated": 0,
+    "cash": "10000",
+    "native_fees": "0",
+    "python_history_count": {
+      "risk_audit": 0,
+      "order_audit": 0,
+      "fill_audit": 0,
+      "seen_trade_ids": 0
+    },
+    "python_history_deep_bytes": {
+      "risk_audit": 56,
+      "order_audit": 64,
+      "fill_audit": 56,
+      "seen_trade_ids": 216
+    },
+    "memory": {
+      "Rss": 352686080,
+      "Pss": 336167936,
+      "Private_Dirty": 155660288
+    },
+    "tracemalloc_current_peak": [
+      2110,
+      12446
+    ],
+    "traced_top_files": [
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load.py:0",
+        "bytes": 1270,
+        "count": 22
+      },
+      {
+        "file": "/usr/lib/python3.12/pathlib.py:0",
+        "bytes": 848,
+        "count": 12
+      },
+      {
+        "file": "/usr/lib/python3.12/tracemalloc.py:0",
+        "bytes": 56,
+        "count": 1
+      }
+    ]
+  },
+  {
+    "native_orders": 200,
+    "native_positions": 1,
+    "account_events": 201,
+    "generated": 200,
+    "cash": "9998",
+    "native_fees": "2.00",
+    "python_history_count": {
+      "risk_audit": 300,
+      "order_audit": 200,
+      "fill_audit": 200,
+      "seen_trade_ids": 200
+    },
+    "python_history_deep_bytes": {
+      "risk_audit": 321113,
+      "order_audit": 122891,
+      "fill_audit": 204938,
+      "seen_trade_ids": 21008
+    },
+    "memory": {
+      "Rss": 359698432,
+      "Pss": 343042048,
+      "Private_Dirty": 161390592
+    },
+    "tracemalloc_current_peak": [
+      1713780,
+      1979811
+    ],
+    "traced_top_files": [
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:0",
+        "bytes": 712379,
+        "count": 6938
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:0",
+        "bytes": 674595,
+        "count": 7127
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/conditional_hedge.py:0",
+        "bytes": 291456,
+        "count": 4001
+      },
+      {
+        "file": "/usr/lib/python3.12/uuid.py:0",
+        "bytes": 15400,
+        "count": 200
+      },
+      {
+        "file": "<frozen abc>:0",
+        "bytes": 6700,
+        "count": 88
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load.py:0",
+        "bytes": 3378,
+        "count": 54
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:0",
+        "bytes": 2184,
+        "count": 28
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/dtypes/concat.py:0",
+        "bytes": 1792,
+        "count": 4
+      }
+    ]
+  },
+  {
+    "native_orders": 1000,
+    "native_positions": 1,
+    "account_events": 1001,
+    "generated": 1000,
+    "cash": "9990",
+    "native_fees": "10.00",
+    "python_history_count": {
+      "risk_audit": 1500,
+      "order_audit": 1000,
+      "fill_audit": 1000,
+      "seen_trade_ids": 1000
+    },
+    "python_history_deep_bytes": {
+      "risk_audit": 1599321,
+      "order_audit": 605558,
+      "fill_audit": 1021768,
+      "seen_trade_ids": 95985
+    },
+    "memory": {
+      "Rss": 378912768,
+      "Pss": 362256384,
+      "Private_Dirty": 180604928
+    },
+    "tracemalloc_current_peak": [
+      8244065,
+      11494094
+    ],
+    "traced_top_files": [
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:0",
+        "bytes": 3343324,
+        "count": 31478
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:0",
+        "bytes": 3334791,
+        "count": 37050
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/conditional_hedge.py:0",
+        "bytes": 1457664,
+        "count": 20001
+      },
+      {
+        "file": "/usr/lib/python3.12/uuid.py:0",
+        "bytes": 77000,
+        "count": 1000
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/dtypes/concat.py:0",
+        "bytes": 8192,
+        "count": 4
+      },
+      {
+        "file": "<frozen abc>:0",
+        "bytes": 6590,
+        "count": 86
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load.py:0",
+        "bytes": 6555,
+        "count": 101
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:0",
+        "bytes": 2184,
+        "count": 28
+      }
+    ]
+  },
+  {
+    "native_orders": 3000,
+    "native_positions": 1,
+    "account_events": 3001,
+    "generated": 3000,
+    "cash": "9970",
+    "native_fees": "30.00",
+    "python_history_count": {
+      "risk_audit": 4500,
+      "order_audit": 3000,
+      "fill_audit": 3000,
+      "seen_trade_ids": 3000
+    },
+    "python_history_deep_bytes": {
+      "risk_audit": 4794801,
+      "order_audit": 1845382,
+      "fill_audit": 3068952,
+      "seen_trade_ids": 322289
+    },
+    "memory": {
+      "Rss": 425938944,
+      "Pss": 409174016,
+      "Private_Dirty": 227631104
+    },
+    "tracemalloc_current_peak": [
+      25074475,
+      29188167
+    ],
+    "traced_top_files": [
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:0",
+        "bytes": 10334175,
+        "count": 112081
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:0",
+        "bytes": 10085052,
+        "count": 92533
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/conditional_hedge.py:0",
+        "bytes": 4372144,
+        "count": 60001
+      },
+      {
+        "file": "/usr/lib/python3.12/uuid.py:0",
+        "bytes": 231000,
+        "count": 3000
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/dtypes/concat.py:0",
+        "bytes": 24192,
+        "count": 4
+      },
+      {
+        "file": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load.py:0",
+        "bytes": 9700,
+        "count": 147
+      },
+      {
+        "file": "<frozen abc>:0",
+        "bytes": 6590,
+        "count": 86
+      },
+      {
+        "file": "/usr/lib/python3.12/tracemalloc.py:0",
+        "bytes": 3123,
+        "count": 45
+      }
+    ]
+  }
+]

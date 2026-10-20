@@ -1,0 +1,66 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-675/test_native_archive_orders_fil0')
+
+    def test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate(tmp_path):
+        results=[]
+        for archived in (False, True):
+            s,e,ep=setup()
+            audit=NativeAuditArchive(tmp_path/"audit.sqlite",s) if archived else None
+            seen=[]
+            try:
+                def boundary(ts):
+                    if audit:
+                        audit.capture(e,ts)
+                    seen.append((str(s._v3_equity()),str(s._rf_peak),str(ep.sol_qty),
+                        dict(ep.sol_add_filled_notional),dict(ep.sol_risk_retired_notional),
+                        sorted(s._pending_by_order),s._rf_fill_epoch,s._rf_dirty))
+                original(s,e,ep,20,ts=30);advance(s,e,31);boundary(31)
+                # Both real positions remain live; order cleanup must not alter them.
+                assert len(e.cache.positions_open())==2
+                stress(s,a="1",u=".1");advance(s,e,32);advance(s,e,33);boundary(33)
+                # Mutable acceptance context survives archival, and exact duplicate
+                # native receipt is still filtered after its terminal order is gone.
+                if audit:
+                    body=audit.db.execute("SELECT payload FROM native WHERE kind='order_event' AND json_extract(payload,'$.type')='OrderFilled' LIMIT 1").fetchone()[0]
+                    from nautilus_trader.model.events import OrderFilled
+                    event=OrderFilled.from_dict(json.loads(body));before=s._rf_fill_epoch
+                    s.on_order_filled(event)
+                    assert s._rf_fill_epoch==before
+>                   assert s._order_audit[str(event.client_order_id)]["accept_ns"] is not None
+E                   assert None is not None
+
+runtime/tests/test_native_audit_memory.py:44: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:350: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_audit_memory.py:70: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+1 failed, 12 warnings in 2.84s

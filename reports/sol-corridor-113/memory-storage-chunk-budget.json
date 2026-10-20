@@ -1,0 +1,164 @@
+{
+  "status": "MEASUREMENT_ONLY_NO_SOURCE_OR_ENGINE",
+  "source": "reports/sol-corridor-113/memory-native-load-bundle-measure.sqlite",
+  "target": "reports/sol-corridor-113/memory-native-load-chunk-measure.sqlite",
+  "archive_bytes": 38137856,
+  "gzip_pair_bytes": 2993934,
+  "per_fill_bytes_archive_plus_gzip": 1371.0596666666668,
+  "chunk_records_max": 256,
+  "chunk_stats": {
+    "native:order": {
+      "chunks": 118,
+      "logical_rows": 30000,
+      "compressed_payload_bytes": 4820858
+    },
+    "rows:fill_audit": {
+      "chunks": 118,
+      "logical_rows": 30000,
+      "compressed_payload_bytes": 380276
+    },
+    "rows:risk_first_sol_audit": {
+      "chunks": 176,
+      "logical_rows": 45000,
+      "compressed_payload_bytes": 1251163
+    }
+  },
+  "native_individual_stats": {
+    "account": {
+      "rows": 30001,
+      "compressed_payload_bytes": 7452482
+    },
+    "position": {
+      "rows": 300,
+      "compressed_payload_bytes": 100315
+    },
+    "position_snapshot": {
+      "rows": 14700,
+      "compressed_payload_bytes": 5374706
+    }
+  },
+  "exact_lossless_proof": {
+    "rows:fill_audit": {
+      "rows": 30000,
+      "original_sha": "4a8fce7f5a052becc409bec50419cca58418fc98450f085b2c859d732d131819",
+      "decoded_sha": "4a8fce7f5a052becc409bec50419cca58418fc98450f085b2c859d732d131819",
+      "equal": true
+    },
+    "rows:risk_first_sol_audit": {
+      "rows": 45000,
+      "original_sha": "2c5b92e7b542bb9a5467b62ef92c00cedb0a3278163564886f4c843ec9208687",
+      "decoded_sha": "2c5b92e7b542bb9a5467b62ef92c00cedb0a3278163564886f4c843ec9208687",
+      "equal": true
+    },
+    "native:order": {
+      "rows": 30000,
+      "original_sha": "6f110d6659f95dc5cb320e57089c97696dea3d5954578fd090ceecb21f02ce13",
+      "decoded_sha": "6f110d6659f95dc5cb320e57089c97696dea3d5954578fd090ceecb21f02ce13",
+      "equal": true
+    },
+    "trade_ids": {
+      "rows": 30000,
+      "original_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "decoded_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "equal": true
+    },
+    "contexts": {
+      "rows": 30000,
+      "original_sha": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "decoded_sha": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "equal": true
+    },
+    "native": {
+      "rows": 45001,
+      "original_sha": "0a48c79413f29f16111f41b62bb48ec4a081805490367a4f19fa61fba8db304f",
+      "decoded_sha": "0a48c79413f29f16111f41b62bb48ec4a081805490367a4f19fa61fba8db304f",
+      "equal": true
+    }
+  },
+  "elapsed_seconds": 21.930997570976615,
+  "free_disk_bytes": 3703943168,
+  "derived_reclaimable_bytes": 308326400,
+  "scenarios": [
+    {
+      "native_fills": 1051200,
+      "archive_and_csv_gzip": 1441257921.6000001,
+      "allowance_bytes": 734003200,
+      "total_bytes": 2175261121.6000004
+    },
+    {
+      "native_fills": 2102400,
+      "archive_and_csv_gzip": 2882515843.2000003,
+      "allowance_bytes": 734003200,
+      "total_bytes": 3616519043.2000003
+    }
+  ],
+  "caveat": "Extra real TARGET/TRIM/partial events beyond synthetic full-fill three-event order still require allowance; 2x is conservative planning, not universal hard upper bound.",
+  "full_fill_fixture_bundle_mean_zlib_bytes": 732.0507,
+  "real_small_fixture_partial_bundle_max_dict_bytes": 616,
+  "real_small_fixture_partial_bundle_note": "Different dictionary encoding; not directly subtractable from no-dictionary chunk average.",
+  "planning": {
+    "minimum_native_fill_scenarios": 2102400,
+    "cadence_bound": "NOT_UNIVERSAL_MAXIMUM; same cached quote may reenter after terminal fill; BTC and required reductions add events",
+    "fixed_allowance_bytes": 734003200,
+    "fixed_allowance_breakdown": {
+      "minute_trace": 157286400,
+      "funding_and_working_journals": 104857600,
+      "metadata_logs_and_fixed_budget_samples": 52428800,
+      "reserve": 419430400
+    },
+    "remaining_after_derived_reclamation_bytes": 395750524.7999997,
+    "extra_high_turnover_rows_and_partial_events_bound": "UNKNOWN; real TARGET/TRIM rows and partial/cancel events absent from 30k full-fill fixture",
+    "economic_repeat_launch": "NOT_AUTHORIZED_BY_MEASUREMENT"
+  },
+  "measurement_artifacts": [
+    {
+      "path": "reports/sol-corridor-113/memory-storage-chunk-budget.py",
+      "bytes": 4181,
+      "sha256": "5b7c3f82b663317ebe73cff04c0362cd06285ba73091946a07cfcf7379b784b4"
+    },
+    {
+      "path": "reports/sol-corridor-113/memory-storage-chunk-budget.log",
+      "bytes": 2786,
+      "sha256": "67b722db64ec297ede341590ad4b42477c0353a23f16770454ef45f68e513e09"
+    },
+    {
+      "path": "reports/sol-corridor-113/memory-native-load-chunk-measure.sqlite",
+      "bytes": 38137856,
+      "sha256": "28ba70f8e0385e6a5971152de3894b69ed7c3a9000afd38439f53a41b2993465"
+    },
+    {
+      "path": "reports/sol-corridor-113/memory-load-orders.csv.gz",
+      "bytes": 1465869,
+      "sha256": "fc017288cc46980a99ecaf58785392a8a21ef696e45344fc072986ddeef852a6"
+    },
+    {
+      "path": "reports/sol-corridor-113/memory-load-fills.csv.gz",
+      "bytes": 1528065,
+      "sha256": "c03546277f7dab92680c92b8629c30485541b9b2239d4989cf010c558b5682b2"
+    }
+  ],
+  "persisted_individual_rows_proof": {
+    "trade_ids": {
+      "source_rows": 30000,
+      "persisted_rows": 30000,
+      "source_sha": "f384606691336ac5f1c40949d81743c955150973704c5311f9627ffb1771547c",
+      "persisted_decoded_sha": "f384606691336ac5f1c40949d81743c955150973704c5311f9627ffb1771547c",
+      "equal": true
+    },
+    "contexts": {
+      "source_rows": 30000,
+      "persisted_rows": 30000,
+      "source_sha": "2e973b21d3ce3cb0fa5a01aa240c1085cd7032f6c5e18b52e2e0c035f9c21858",
+      "persisted_decoded_sha": "2e973b21d3ce3cb0fa5a01aa240c1085cd7032f6c5e18b52e2e0c035f9c21858",
+      "equal": true
+    },
+    "native": {
+      "source_rows": 45001,
+      "persisted_rows": 45001,
+      "source_sha": "a15c1a13dc30501f469e056ac3e561a88eab92f5cf305af67e874f951a2de9f4",
+      "persisted_decoded_sha": "a15c1a13dc30501f469e056ac3e561a88eab92f5cf305af67e874f951a2de9f4",
+      "equal": true
+    }
+  },
+  "existing_csv_gzip_decode_proof": "memory-storage-gzip-budget.json; SHA of each decompressed CSV equals original full CSV"
+}

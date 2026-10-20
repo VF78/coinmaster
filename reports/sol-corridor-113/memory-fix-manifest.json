@@ -1,0 +1,215 @@
+{
+  "schema": "cm113.memory-fix-manifest.v1",
+  "status": "FROZEN",
+  "members": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-fix-completion.json",
+      "bytes": 20150,
+      "sha256": "0033a6dbf9abf44e9c1c28d4270ec51d67e32745972b6cc20293ea33ed394ee3",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-fix-completion.md",
+      "bytes": 3322,
+      "sha256": "0a54dccce139e70441c74b2bee04debeb5191ad33ee8068b9c65e126a54f9f49",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-source-inventory.json",
+      "bytes": 2222,
+      "sha256": "0ecab946db773668bbedf0a7d620e28d702f4de91d6cf0dd0b282f24bd521361",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-source-diff.patch",
+      "bytes": 47806,
+      "sha256": "9075a10d2c76bfcd95d3b35bb1324b059fd4ccc04cb2b76d4d4c76ad906e07a6",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-before.json",
+      "bytes": 6919,
+      "sha256": "02d160855324bf075e44dcf83d1f5e63fa11c8daa8659021018a1fcbb7f8f3d1",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-before.log",
+      "bytes": 6131,
+      "sha256": "74fa6e31167d9da929ca445cfac8887905ba214a15a41200ad1884fd0297ad85",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load.py",
+      "bytes": 3231,
+      "sha256": "3414d2275accd9a27b15b923e9872de60a817b304dc50e4f79ae1263399b006f",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bounded.json",
+      "bytes": 2877,
+      "sha256": "3e1263d06fdc2ff255a83f70f981378555212f4195c74d108e0d4e23604c9d4a",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bounded.log",
+      "bytes": 3197,
+      "sha256": "b0a5bb75e9446026998a86dfd1734706b4203aebc924e8bf48353d2d783b607d",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bounded.py",
+      "bytes": 3309,
+      "sha256": "7dcfe460813202c337e8a08a3f34dec57ca1d407eeaf2a5b257fdfa73f57deb8",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-open-residual.json",
+      "bytes": 2454,
+      "sha256": "675a46f4bdaa8a437059f077647060d5eff1d8661b2481439a434c6bf0f716cc",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-open-residual.log",
+      "bytes": 2574,
+      "sha256": "bfdb73c4d53f70a84e6854d2b6f6894e6090b9c426c44c2690445ada497e8b26",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-open-residual.py",
+      "bytes": 3382,
+      "sha256": "7d82279e22f04eb967ee26aa74ac6e4f1936acb05c4c2bca5811b4fd07325822",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-focused-initial.log",
+      "bytes": 5876,
+      "sha256": "17b9f5ecfe3b9e58b5838149c87e30d2fc133099df30f7fb9d1267db01656828",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-focused-source.log",
+      "bytes": 12163,
+      "sha256": "f4f26b4ba6a5593bf217481c2bb886879a54f4c89551a3a588e4358a56d970df",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-focused-corrected.log",
+      "bytes": 2227,
+      "sha256": "9a4a14649d1d5f2677ceff191350afa8bc795ce4bd632679d8ba1a2073cd97ab",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-connected-final.log",
+      "bytes": 62539,
+      "sha256": "f6fec216ac13d091314fc95105b9f3cc9ee37d2300cfde5a1334cde5fdb21c94",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-fixture-corrected-subset.log",
+      "bytes": 9918,
+      "sha256": "c42d32d855d716d2508345b203b48a2e4d973f2888ddc54d9a9e4e63a9a096f9",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-healthy-reader-final.log",
+      "bytes": 2275,
+      "sha256": "f9a4f26a2ac96f5f553b7728847045af2fbb5735dc92ff9c97daeac0ca67579c",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-review-final.json",
+      "bytes": 1249,
+      "sha256": "a9f5c55220a7094f84942a3ee0b4c574433a39f0cc8078fd447c426e11e3674e",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-review-final.md",
+      "bytes": 2317,
+      "sha256": "a415cac997a8c47e1914a4badd501073040e569befa03026c508d3af31b5954b",
+      "git_commit_eligible": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bounded.sqlite",
+      "bytes": 190496768,
+      "sha256": "f038bc699dd652011ddcfc6efc8c8b2eb0b752acb36b89641b19ac830abbac2d",
+      "git_commit_eligible": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-open-residual.sqlite",
+      "bytes": 17473536,
+      "sha256": "e2d49fb03d53bc64e2576438cde23a26d204e4eeb77615c10c067b9c6c367645",
+      "git_commit_eligible": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-orders.csv",
+      "bytes": 9305154,
+      "sha256": "ac1818350671574f31e818c1662a3f1ce2860d7123795620a17a9467f8791473",
+      "git_commit_eligible": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-fills.csv",
+      "bytes": 11127114,
+      "sha256": "82cb4e1edbce0be6da0e7e811099a7f782a886695d0f3751fd741fa4950b1a92",
+      "git_commit_eligible": false
+    }
+  ],
+  "sources": [
+    {
+      "path": "runtime/coinmaster/research/native_baseline.py",
+      "bytes": 109100,
+      "sha256": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+      "base_sha256": "98024a287b6b168a41a6b34859821b2db5acc9410909f1cb7fa7f03635472abc"
+    },
+    {
+      "path": "runtime/coinmaster/research/native_audit.py",
+      "bytes": 14750,
+      "sha256": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3",
+      "base_sha256": null
+    },
+    {
+      "path": "runtime/tests/test_native_audit_memory.py",
+      "bytes": 17327,
+      "sha256": "427880a6c588bdfff634d35c54123f65b1792fddbdab35fd0f93cb4ecc64c778",
+      "base_sha256": null
+    },
+    {
+      "path": "runtime/tests/test_native_sol_corridor.py",
+      "bytes": 22683,
+      "sha256": "a5e97aff95211ec8e1a096372f1c7cd9471ccb147bae0bdd8d9c1732f14a6f10",
+      "base_sha256": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+    }
+  ],
+  "unchanged_trading_sources": [
+    {
+      "path": "runtime/coinmaster/strategy/risk_first_sol.py",
+      "sha256": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/conditional_hedge.py",
+      "sha256": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/research/minute_risk.py",
+      "sha256": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/domain/wave_overlay.py",
+      "sha256": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/research/native_fixture.py",
+      "sha256": "bec814bbf98217b116018bb0498ec3c690592bc1c259c44bf0507fd71ff05df4",
+      "byte_equal_to_head": true
+    }
+  ],
+  "repeat_launched": false
+}

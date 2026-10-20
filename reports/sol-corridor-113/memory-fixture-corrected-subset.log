@@ -1,0 +1,126 @@
+....F.......                                                             [100%]
+=================================== FAILURES ===================================
+_ test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity] _
+
+name = 'test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity'
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-679/test_native_existing_lifecycle2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f6acb6c8860>
+
+    @pytest.mark.parametrize("name",[
+        "test_native_risk_cancel_latepartial_retires_only_unfilled_no_IOC_resurrection",
+        "test_final_receipt_strictly_after_fill_and_never_backdated",
+        "test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity",
+    ])
+    def test_native_existing_lifecycle_with_archive(name,tmp_path,monkeypatch):
+        import test_native_sol_corridor as native
+        active={}
+        originals={key:getattr(native,key) for key in ("setup","alpha_setup","advance","engine")}
+        def wrap_setup(which):
+            def run(*args,**kwargs):
+                s,e,ep=originals[which](*args,**kwargs)
+                if id(e) not in active:
+                    active[id(e)]=NativeAuditArchive(tmp_path/(which+str(len(active))+".sqlite"),s)
+                return s,e,ep
+            return run
+        def advance_with_archive(s,e,ts,*args,**kwargs):
+            result=originals["advance"](s,e,ts,*args,**kwargs)
+            active[id(e)].capture(e,ts)
+            return result
+        def engine_with_archive(s,*args,**kwargs):
+            e=originals["engine"](s,*args,**kwargs)
+            active[id(e)]=NativeAuditArchive(tmp_path/("engine"+str(len(active))+".sqlite"),s)
+            def full_native_orders():
+                from nautilus_trader.model.orders import OrderUnpacker
+                cached={str(o.client_order_id):o for o in e.cache.orders()}
+                for (body,) in active[id(e)].db.execute("SELECT payload FROM native WHERE kind='order'"):
+                    row=json.loads(body)
+                    cached.setdefault(row["client_order_id"],OrderUnpacker.from_dict(row))
+                return list(cached.values())
+            s._test_full_native_orders=full_native_orders
+            return e
+        monkeypatch.setattr(native,"engine",engine_with_archive)
+        monkeypatch.setattr(native,"setup",wrap_setup("setup"))
+        monkeypatch.setattr(native,"alpha_setup",wrap_setup("alpha_setup"))
+        monkeypatch.setattr(native,"advance",advance_with_archive)
+>       try:getattr(native,name)()
+            ^^^^^^^^^^^^^^^^^^^^^^
+
+runtime/tests/test_native_audit_memory.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+runtime/tests/test_native_sol_corridor.py:160: in test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+    native_orders=getattr(s,"_test_full_native_orders",lambda:e.cache.orders())()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def full_native_orders():
+        from nautilus_trader.model.orders import OrderUnpacker
+        cached={str(o.client_order_id):o for o in e.cache.orders()}
+        for (body,) in active[id(e)].db.execute("SELECT payload FROM native WHERE kind='order'"):
+            row=json.loads(body)
+>           cached.setdefault(row["client_order_id"],OrderUnpacker.from_dict(row))
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'nautilus_trader.model.orders.unpacker.OrderUnpacker' has no attribute 'from_dict'. Did you mean: 'from_init'?
+
+runtime/tests/test_native_audit_memory.py:125: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_audit_memory.py: 11 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_audit_memory.py: 52 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:350: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_audit_memory.py:74: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_native_risk_cancel_latepartial_retires_only_unfilled_no_IOC_resurrection]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:380: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_final_receipt_strictly_after_fill_and_never_backdated]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:317: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:166: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_native_Q2_pending_unknown_and_open_order_survive_archive
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_audit_memory.py:159: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:a.close();e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_archival_commit_failure_does_not_purge_native
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_audit_memory.py:174: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:a.close();e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_production_archive_failure_preserves_real_native_artifacts[inner]
+tests/test_native_audit_memory.py::test_production_archive_failure_preserves_real_native_artifacts[outer]
+tests/test_native_audit_memory.py::test_production_archive_failure_preserves_real_native_artifacts[loop]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:896: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_audit_memory.py::test_production_archive_failure_preserves_real_native_artifacts[inner]
+tests/test_native_audit_memory.py::test_production_archive_failure_preserves_real_native_artifacts[outer]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:929: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+tests/test_native_audit_memory.py::test_real_native_partition_parity_and_closed_lifecycle_inventory
+tests/test_native_audit_memory.py::test_real_native_partition_parity_and_closed_lifecycle_inventory
+tests/test_native_audit_memory.py::test_real_native_partition_parity_and_closed_lifecycle_inventory
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_audit_memory.py:285: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:a.close();e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_closed_NETTING_position_keeps_forced_or_unresolved_native_refs
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_audit_memory.py:303: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:a.close();e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+1 failed, 11 passed, 79 warnings in 10.51s

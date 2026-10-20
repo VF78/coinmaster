@@ -1,0 +1,37 @@
+{
+  "CORRIDOR_DAILY90": {
+    "zlib_dict_bytes": 126,
+    "raw_bytes": 182,
+    "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite"
+  },
+  "CORRIDOR_BUDGET": {
+    "zlib_dict_bytes": 379,
+    "raw_bytes": 861,
+    "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite"
+  },
+  "ORIGINAL_AUTHORIZED": {
+    "zlib_dict_bytes": 153,
+    "raw_bytes": 397,
+    "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite"
+  },
+  "TARGET": {
+    "zlib_dict_bytes": 217,
+    "raw_bytes": 504,
+    "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite"
+  },
+  "NATIVE_FILL": {
+    "zlib_dict_bytes": 197,
+    "raw_bytes": 524,
+    "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite"
+  },
+  "ORIGINAL_ATTEMPT_TERMINAL": {
+    "zlib_dict_bytes": 250,
+    "raw_bytes": 616,
+    "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite"
+  },
+  "TRIM": {
+    "zlib_dict_bytes": 191,
+    "raw_bytes": 464,
+    "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "status": "LAST_CODEC_MEASUREMENT_NO_SOURCE_NO_ENGINE",
+  "dictionary": {
+    "path": "reports/sol-corridor-113/memory-storage-schema-dictionary.json",
+    "bytes": 2767,
+    "sha256": "301fd1758b377337cff3c6923fa9d83d15f15c6ccd96b8e16b3425a3e595916e",
+    "keys": 133,
+    "values": "null placeholders only; no prices/order IDs/trading values"
+  },
+  "source": "reports/sol-corridor-113/memory-native-load-bundle-measure.sqlite",
+  "target": "reports/sol-corridor-113/memory-native-load-dictionary-measure.sqlite",
+  "archive_bytes": 64700416,
+  "gzip_pair_bytes": 2993934,
+  "bytes_per_fill_archive_plus_gzip": 2256.4783333333335,
+  "exact_decode_proof": {
+    "rows": {
+      "rows": 75000,
+      "original_sha": "8fc7759e68bf57e5a731650dd2fe1d7ae73adbb3cece7c8048f5682158934581",
+      "decoded_sha": "8fc7759e68bf57e5a731650dd2fe1d7ae73adbb3cece7c8048f5682158934581",
+      "equal": true
+    },
+    "trade_ids": {
+      "rows": 30000,
+      "original_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "decoded_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "equal": true
+    },
+    "contexts": {
+      "rows": 30000,
+      "original_sha": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "decoded_sha": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "equal": true
+    },
+    "native": {
+      "rows": 75001,
+      "original_sha": "f281fa4c79285faa6dc0ce69ba6cc98b81d840dd2eb9d206ebacca0c377729a2",
+      "decoded_sha": "f281fa4c79285faa6dc0ce69ba6cc98b81d840dd2eb9d206ebacca0c377729a2",
+      "equal": true
+    }
+  },
+  "elapsed_seconds": 56.786454264074564,
+  "free_disk_bytes": 3756056576,
+  "scenarios": [
+    {
+      "native_fills": 500000,
+      "archive_plus_gzip": 1128239166.6666667,
+      "allowance_bytes": 734003200,
+      "total": 1862242366.6666667
+    },
+    {
+      "native_fills": 1051200,
+      "archive_plus_gzip": 2372010024.0,
+      "allowance_bytes": 734003200,
+      "total": 3106013224.0
+    },
+    {
+      "native_fills": 2102400,
+      "archive_plus_gzip": 4744020048.0,
+      "allowance_bytes": 734003200,
+      "total": 5478023248.0
+    }
+  ],
+  "caveat": "Need separate actual TARGET/TRIM audit row allowance and a source-supported callback/order bound. No source correction unless positive all-output budget."
+}

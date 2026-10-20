@@ -1,0 +1,567 @@
+{
+  "status": "MEMORY_FIX_FROZEN_REVIEW_GO_REPEAT_NOT_LAUNCHED",
+  "utc": "2026-10-20T14:00:45.564802+00:00",
+  "base_head": "7d08522a4beae4432387455b91f468f564c0eccc",
+  "scope": "Research archive only. No strategy/domain/executor/fees/margin/funding policy changes; OFF legacy schema/cadence unchanged.",
+  "economic_repeat": {
+    "authorized": 1,
+    "launched": 0,
+    "automatic_retries": false,
+    "root_launch_go_required": true
+  },
+  "cause": {
+    "proven": [
+      "Unbounded emitted Python risk audit, fill audit, order contexts and exact trade-ID membership",
+      "Native completed orders/order events/account events and closed NETTING snapshots retained after engine.clear_data",
+      "Terminal reports only exported after full loop; analyzer disabled, so original OOM occurred during loop, not export"
+    ],
+    "exact_allocation_at_original_OOM": "UNKNOWN_NO_HEAP_CAPTURE",
+    "reproduction": {
+      "before_3000": {
+        "native_orders": 3000,
+        "native_positions": 1,
+        "account_events": 3001,
+        "generated": 3000,
+        "cash": "9970",
+        "native_fees": "30.00",
+        "python_history_count": {
+          "risk_audit": 4500,
+          "order_audit": 3000,
+          "fill_audit": 3000,
+          "seen_trade_ids": 3000
+        },
+        "python_history_deep_bytes": {
+          "risk_audit": 4794801,
+          "order_audit": 1845382,
+          "fill_audit": 3068952,
+          "seen_trade_ids": 322289
+        },
+        "memory": {
+          "Rss": 425938944,
+          "Pss": 409174016,
+          "Private_Dirty": 227631104
+        },
+        "tracemalloc_current_peak": [
+          25074475,
+          29188167
+        ],
+        "traced_top_files": [
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:0",
+            "bytes": 10334175,
+            "count": 112081
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:0",
+            "bytes": 10085052,
+            "count": 92533
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/conditional_hedge.py:0",
+            "bytes": 4372144,
+            "count": 60001
+          },
+          {
+            "file": "/usr/lib/python3.12/uuid.py:0",
+            "bytes": 231000,
+            "count": 3000
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/dtypes/concat.py:0",
+            "bytes": 24192,
+            "count": 4
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load.py:0",
+            "bytes": 9700,
+            "count": 147
+          },
+          {
+            "file": "<frozen abc>:0",
+            "bytes": 6590,
+            "count": 86
+          },
+          {
+            "file": "/usr/lib/python3.12/tracemalloc.py:0",
+            "bytes": 3123,
+            "count": 45
+          }
+        ]
+      },
+      "before_200_unpurged": {
+        "native_orders": 200,
+        "native_positions": 1,
+        "account_events": 201,
+        "generated": 200,
+        "cash": "9998",
+        "native_fees": "2.00",
+        "python_history_count": {
+          "risk_audit": 300,
+          "order_audit": 200,
+          "fill_audit": 200,
+          "seen_trade_ids": 200
+        },
+        "python_history_deep_bytes": {
+          "risk_audit": 321113,
+          "order_audit": 122891,
+          "fill_audit": 204938,
+          "seen_trade_ids": 21008
+        },
+        "memory": {
+          "Rss": 359698432,
+          "Pss": 343042048,
+          "Private_Dirty": 161390592
+        },
+        "tracemalloc_current_peak": [
+          1713780,
+          1979811
+        ],
+        "traced_top_files": [
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:0",
+            "bytes": 712379,
+            "count": 6938
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:0",
+            "bytes": 674595,
+            "count": 7127
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/conditional_hedge.py:0",
+            "bytes": 291456,
+            "count": 4001
+          },
+          {
+            "file": "/usr/lib/python3.12/uuid.py:0",
+            "bytes": 15400,
+            "count": 200
+          },
+          {
+            "file": "<frozen abc>:0",
+            "bytes": 6700,
+            "count": 88
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load.py:0",
+            "bytes": 3378,
+            "count": 54
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:0",
+            "bytes": 2184,
+            "count": 28
+          },
+          {
+            "file": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pandas/core/dtypes/concat.py:0",
+            "bytes": 1792,
+            "count": 4
+          }
+        ]
+      },
+      "known_python_history_deep_bytes": 10031424,
+      "traced_heap_bytes": 25074475,
+      "tracing_inflates_RSS": true
+    }
+  },
+  "fix": {
+    "runtime_files": 2,
+    "helper_lines": 327,
+    "research_only": true,
+    "archive": "Fresh per-engine SQLite artifact, DELETE journal, synchronous FULL, 2MiB SQLite page cache/temp files",
+    "mutable_rows": "Current order contexts remain identical mutable dicts until boundary flush; exact historical lookup and dedup retained on disk",
+    "boundary": "After native engine.run returns. Serialize native facts and FULL commit BEFORE supported terminal purge. No same-callback cash or receipt changes.",
+    "purge": "Only closed unowned orders without linked working siblings; closed positions without pending/nonclosed/protected/unmapped work. All open native positions/snapshots retained. Account purge retains latest and asserts native balances/commissions unchanged.",
+    "final_export": "Native terminal order dicts -> bounded256-row CSV chunks, fsync each chunk, atomic rename, streaming SHA; no full archive list/DataFrame",
+    "cadence_minutes": 15,
+    "full_24m_chunks": 70080,
+    "source_of_time": "Existing minute stream only, no added timer",
+    "arrays_schema": "coinmaster.native-audit.sqlite.v1",
+    "array_reference_fields": [
+      "schema",
+      "path",
+      "table",
+      "kind",
+      "rows",
+      "sha256",
+      "view when applicable",
+      "sampling",
+      "completeness"
+    ],
+    "sampling": "UNCHANGED_EXISTING_POLICY; all emitted rows retained. Original CORRIDOR_BUDGET sample cap remains unchanged.",
+    "tables": {
+      "rows": "kind/seq/payload; fill_audit and risk_first_sol_audit",
+      "contexts": "exact client-order context mapping",
+      "trade_ids": "exact native fill dedup membership",
+      "native": "native orders, individual order events, account states, closed positions and lifecycle-unique snapshots"
+    },
+    "partial_failure": "Completed15m native batches fsynced before purge; on loop/OOM full terminal economics remain UNKNOWN. No resume. Inner/outer metadata failures preserve final raw+native exports+archive.",
+    "cash": "Native account.balance_total authoritative; archived account states are native report facts, never a PnL ledger.",
+    "parquet": "Same four Parquet cursors created once by iter_minute_bundles; existing cursor batching unchanged.15m partition does not reopen/reread full sources."
+  },
+  "verification": {
+    "unique_cases": 56,
+    "aggregate_only": true,
+    "not_one_fresh_56_case_pass": true,
+    "connected": {
+      "passed": 50,
+      "failed": 6,
+      "seconds": 13.86
+    },
+    "corrected_new_file": {
+      "passed": 11,
+      "failed": 1,
+      "seconds": 10.51,
+      "overlaps_connected": true
+    },
+    "final_native_reader": {
+      "passed": 1,
+      "failed": 0,
+      "seconds": 2.94
+    },
+    "unresolved_failures": 0,
+    "fixture_repairs": [
+      "historical native orders must be read from preserved events, not cleared live cache",
+      "native OrderUnpacker.from_init + actual events.apply; terminal to_dict equals preserved native dict",
+      "Q2 native ACK tick before asserting OPEN",
+      "required 7.875 candidate in fault fixtures",
+      "Load target set only after Episode bootstrap"
+    ],
+    "commands": [
+      "PYTHONPATH=runtime:runtime/tests OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 nice -n 10 runtime/.venv/bin/pytest -q runtime/tests/test_native_audit_memory.py runtime/tests/test_native_sol_corridor.py runtime/tests/test_native_baseline.py",
+      "PYTHONPATH=runtime:runtime/tests OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 nice -n 10 runtime/.venv/bin/pytest -q runtime/tests/test_native_audit_memory.py",
+      "PYTHONPATH=runtime:runtime/tests OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 nice -n 10 runtime/.venv/bin/pytest -q runtime/tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]"
+    ],
+    "logs": [
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-focused-initial.log",
+        "sha256": "17b9f5ecfe3b9e58b5838149c87e30d2fc133099df30f7fb9d1267db01656828"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-focused-source.log",
+        "sha256": "f4f26b4ba6a5593bf217481c2bb886879a54f4c89551a3a588e4358a56d970df"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-focused-corrected.log",
+        "sha256": "9a4a14649d1d5f2677ceff191350afa8bc795ce4bd632679d8ba1a2073cd97ab"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-connected-final.log",
+        "sha256": "f6fec216ac13d091314fc95105b9f3cc9ee37d2300cfde5a1334cde5fdb21c94"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-fixture-corrected-subset.log",
+        "sha256": "c42d32d855d716d2508345b203b48a2e4d973f2888ddc54d9a9e4e63a9a096f9"
+      },
+      {
+        "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-healthy-reader-final.log",
+        "sha256": "f9a4f26a2ac96f5f553b7728847045af2fbb5735dc92ff9c97daeac0ca67579c"
+      }
+    ],
+    "ci_claim": false
+  },
+  "closed_load": {
+    "checkpoints": [
+      {
+        "generated": 0,
+        "memory": {
+          "Rss": 354762752,
+          "Pss": 338077696,
+          "Private_Dirty": 156966912
+        },
+        "cash": "10000",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 0,
+        "native_snapshots": 0,
+        "disk_orders": 0,
+        "disk_account_events": 0,
+        "closed_lifecycles": 0,
+        "risk_rows": 0,
+        "fill_rows": 0,
+        "mutable_contexts": 0,
+        "db_bytes": 40960
+      },
+      {
+        "generated": 1000,
+        "memory": {
+          "Rss": 363679744,
+          "Pss": 346904576,
+          "Private_Dirty": 164667392
+        },
+        "cash": "9990",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 0,
+        "native_snapshots": 0,
+        "disk_orders": 1000,
+        "disk_account_events": 1001,
+        "closed_lifecycles": 500,
+        "risk_rows": 1500,
+        "fill_rows": 1000,
+        "mutable_contexts": 0,
+        "db_bytes": 6270976
+      },
+      {
+        "generated": 3000,
+        "memory": {
+          "Rss": 367374336,
+          "Pss": 350599168,
+          "Private_Dirty": 168361984
+        },
+        "cash": "9970",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 0,
+        "native_snapshots": 0,
+        "disk_orders": 3000,
+        "disk_account_events": 3001,
+        "closed_lifecycles": 1500,
+        "risk_rows": 4500,
+        "fill_rows": 3000,
+        "mutable_contexts": 0,
+        "db_bytes": 18944000
+      },
+      {
+        "generated": 10000,
+        "memory": {
+          "Rss": 376922112,
+          "Pss": 360146944,
+          "Private_Dirty": 177909760
+        },
+        "cash": "9900",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 0,
+        "native_snapshots": 0,
+        "disk_orders": 10000,
+        "disk_account_events": 10001,
+        "closed_lifecycles": 5000,
+        "risk_rows": 15000,
+        "fill_rows": 10000,
+        "mutable_contexts": 0,
+        "db_bytes": 63295488
+      },
+      {
+        "generated": 30000,
+        "memory": {
+          "Rss": 381878272,
+          "Pss": 365146112,
+          "Private_Dirty": 203186176
+        },
+        "cash": "9700",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 0,
+        "native_snapshots": 0,
+        "disk_orders": 30000,
+        "disk_account_events": 30001,
+        "closed_lifecycles": 15000,
+        "risk_rows": 45000,
+        "fill_rows": 30000,
+        "mutable_contexts": 0,
+        "db_bytes": 190496768
+      },
+      {
+        "stage": "finite_export",
+        "memory": {
+          "Rss": 386084864,
+          "Pss": 369068032,
+          "Private_Dirty": 203448320
+        },
+        "exports": {
+          "orders": {
+            "path": "reports/sol-corridor-113/memory-load-orders.csv",
+            "sha256": "ac1818350671574f31e818c1662a3f1ce2860d7123795620a17a9467f8791473",
+            "rows": 30000
+          },
+          "fills": {
+            "path": "reports/sol-corridor-113/memory-load-fills.csv",
+            "sha256": "82cb4e1edbce0be6da0e7e811099a7f782a886695d0f3751fd741fa4950b1a92",
+            "rows": 30000
+          }
+        },
+        "archive_sha": "f038bc699dd652011ddcfc6efc8c8b2eb0b752acb36b89641b19ac830abbac2d"
+      }
+    ],
+    "elapsed_seconds": 828,
+    "fills_per_second": 36.231884057971016,
+    "caveat": "30k load used archive before final stricter closed-ref guard/constant-time counters/per-chunk fsync/reference row-count/sampling-label amendments. Same closed-path facts; current source verified by connected cases and3k open residual. No repeat30k."
+  },
+  "open_residual": {
+    "checkpoints": [
+      {
+        "generated": 0,
+        "memory": {
+          "Rss": 356229120,
+          "Pss": 339461120,
+          "Private_Dirty": 159600640
+        },
+        "cash": "10000",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 0,
+        "native_snapshots": 0,
+        "disk_orders": 0,
+        "disk_account_events": 0,
+        "closed_lifecycles": 0,
+        "risk_rows": 0,
+        "fill_rows": 0,
+        "mutable_contexts": 0,
+        "db_bytes": 40960,
+        "active_native_fill_events": 0,
+        "domain_pending": 0,
+        "largest_strategy_containers": [
+          [
+            "_conditional",
+            15
+          ],
+          [
+            "terminal_lifecycle",
+            5
+          ],
+          [
+            "_latest_marks",
+            2
+          ],
+          [
+            "split_parent_audit",
+            0
+          ],
+          [
+            "cover_audit",
+            0
+          ]
+        ]
+      },
+      {
+        "generated": 1000,
+        "memory": {
+          "Rss": 362655744,
+          "Pss": 345791488,
+          "Private_Dirty": 165240832
+        },
+        "cash": "9989.99",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 1,
+        "native_snapshots": 0,
+        "disk_orders": 1000,
+        "disk_account_events": 1001,
+        "closed_lifecycles": 0,
+        "risk_rows": 1500,
+        "fill_rows": 1000,
+        "mutable_contexts": 0,
+        "db_bytes": 5849088,
+        "active_native_fill_events": 1000,
+        "domain_pending": 0,
+        "largest_strategy_containers": [
+          [
+            "_conditional",
+            15
+          ],
+          [
+            "_rf_final_receipt",
+            5
+          ],
+          [
+            "terminal_lifecycle",
+            5
+          ],
+          [
+            "_latest_marks",
+            2
+          ],
+          [
+            "split_parent_audit",
+            0
+          ]
+        ]
+      },
+      {
+        "generated": 3000,
+        "memory": {
+          "Rss": 366198784,
+          "Pss": 349335552,
+          "Private_Dirty": 168783872
+        },
+        "cash": "9969.99",
+        "account_events": 1,
+        "native_orders": 0,
+        "native_positions": 1,
+        "native_snapshots": 0,
+        "disk_orders": 3000,
+        "disk_account_events": 3001,
+        "closed_lifecycles": 0,
+        "risk_rows": 4500,
+        "fill_rows": 3000,
+        "mutable_contexts": 0,
+        "db_bytes": 17473536,
+        "active_native_fill_events": 3000,
+        "domain_pending": 0,
+        "largest_strategy_containers": [
+          [
+            "_conditional",
+            15
+          ],
+          [
+            "_rf_final_receipt",
+            5
+          ],
+          [
+            "terminal_lifecycle",
+            5
+          ],
+          [
+            "_latest_marks",
+            2
+          ],
+          [
+            "split_parent_audit",
+            0
+          ]
+        ]
+      }
+    ],
+    "elapsed_seconds": 9,
+    "retention": "ALL3000 active native Position fill events retained; no supported open-position/snapshots-only purge exists. Memory is bounded by fixed caches+batch+active lifecycles, not an infinite open/churning position.",
+    "control_calendar_reference": "Existing winner131-row trades-ledger: maxBTC15.8166667d, maxSOL14.0076389d; descriptive control observation, NOT a hard future-candidate bound.",
+    "conservative_observed_growth_bytes_per_fill": 3323.2213333333334,
+    "exact_future_active_history_peak": "UNKNOWN; retain and monitor within unchanged650MiB/no swap, never crop or fabricate a guarantee."
+  },
+  "resource_plan": {
+    "ram_limit_bytes": 681574400,
+    "swap_limit_bytes": 0,
+    "low_priority": true,
+    "minimum_MemAvailable_bytes": 734003200,
+    "minimum_disk_bytes": 1610612736,
+    "native_transient_evidence": "200 actual unpurged fills before any purge: RSS352686080 ->359698432 (+7012352B, with tracemalloc overhead). Current15m cap has30 primary quote callbacks plus finite lifecycle work; archived batches tested100fills. Open/working work retained.",
+    "actual_export_RSS": 386084864,
+    "actual_export_PSS": 369068032,
+    "throughput": "30k closed-cycle stress828s,36.23fills/s including complete native event archive and final exports;3k open current-source9s. Synthetic stress, not a guaranteed full24m ETA. Existing70,080chunks and unchanged source cursors only; no historical timing trial."
+  },
+  "source_inventory": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-source-inventory.json",
+  "source_diff": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-source-diff.patch",
+  "artifacts_only_not_git": [
+    "memory-native-load-bounded.sqlite",
+    "memory-native-open-residual.sqlite",
+    "memory-load-orders.csv",
+    "memory-load-fills.csv"
+  ],
+  "previous_failed_R2": "UNCHANGED_PARTIAL_NATIVE_OOM; terminal economics still UNKNOWN; no old journal/progress overwrite.",
+  "protected_pilot": {
+    "unit": "coinmaster-hl-stageg-testnet.service",
+    "MainPID": 2009732,
+    "NRestarts": 0,
+    "ActiveState": "active",
+    "changes": false
+  },
+  "review": {
+    "status": "GO",
+    "paths": [
+      "memory-review-final.json",
+      "memory-review-final.md"
+    ]
+  },
+  "next": "Root commit/review, then fresh r2-repeat immutable package with72 source files, same13 inputs/public profiles/policy/data, fresh funding/audit namespaces and SAMEUID sandbox import+SQLite-write preflight; launch requires separate ROOT GO."
+}

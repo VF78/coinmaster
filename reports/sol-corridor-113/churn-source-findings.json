@@ -1,0 +1,46 @@
+{
+  "status": "READ_ONLY_SOURCE_FINDINGS_NOT_ACTUAL_TRADE_ATTRIBUTION",
+  "economic_repeat_count": 0,
+  "source_changes_for_storage_or_churn": false,
+  "tests_or_engine_running": false,
+  "storage_measurement_stop": "Last script completed exit0 before TERM; no further measurement. Derived files retained.",
+  "native_economic_counts": "UNKNOWN_FROM_EXISTING_TERMINAL_EXPORTS_ABSENT; bounded actual trace analysis owned separately",
+  "facts": [
+    {
+      "path": "runtime/coinmaster/strategy/risk_first_sol.py",
+      "lines": "443-481",
+      "finding": "Fresh finalized equity and causal marks recompute nearest lawful alpha target; feasible target is selected nearest alpha on outer budget C, often leaving only lot-rounding slack."
+    },
+    {
+      "path": "runtime/coinmaster/strategy/risk_first_sol.py",
+      "lines": "480-485",
+      "finding": "Reverse15m and .8C release restriction protects healthy held reductions only. It does not hold target fixed when actual held loss exceeds C or selected min-L target changes while risk-infeasible."
+    },
+    {
+      "path": "runtime/coinmaster/strategy/conditional_hedge.py",
+      "lines": "197-250",
+      "finding": "Pending owned SOL work serializes outstanding orders. With no work and SOL quote, every abs(target-held) at least one native quantity step can become a physical TARGET/TRIM intent; no materiality/notional deadband."
+    }
+  ],
+  "interpretation": [
+    "Repeated native orders may be small corrections within one position lifecycle rather than new economic roundtrips.",
+    "1000-unit executable quote size can create partial IOC completion across later quotes.",
+    "Immediate normal same-fill risk reentry is constrained by dirty/final-receipt and pending guards; same cached quote has no universal order-count latch.",
+    "Paid fees alone are not demonstrated cause: prospective adjustment fee reserve releases approximately the same amount as native fee reduces cash at unchanged marks."
+  ],
+  "unproven": [
+    "Actual orders/fills/roundtrips and which target mechanism dominates failed R2.",
+    "A universal one-order-per-minute bound;2x was resource planning only."
+  ],
+  "smallest_followup_plan": [
+    "Read existing actual trace once under stats owner to classify boundary corrections, infeasible min-L adjustments and partial target completion.",
+    "If boundary/infeasible target chasing dominates, explicit policy decision on interior target buffer is needed; adding a trade threshold could leave L>C and violate existing corridor contract.",
+    "Do not change native quote size, fees, cash, lifecycle audit or target cadence merely to conceal churn."
+  ],
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/research/native_audit.py": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3",
+    "runtime/coinmaster/research/native_baseline.py": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41"
+  }
+}

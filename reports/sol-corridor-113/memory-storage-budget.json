@@ -1,0 +1,92 @@
+{
+  "status": "READ_ONLY_FACTS_STREAMCOPY_NO_ENGINE_NO_SOURCE_EDIT",
+  "source": "reports/sol-corridor-113/memory-native-load-bounded.sqlite",
+  "target": "reports/sol-corridor-113/memory-native-load-zlib-measure.sqlite",
+  "source_bytes": 190496768,
+  "compressed_bytes": 120004608,
+  "counts": {
+    "rows": 75000,
+    "trade_ids": 30000,
+    "contexts": 30000,
+    "native": 165001
+  },
+  "exact_payload_decode_digests": {
+    "rows": {
+      "original": "8fc7759e68bf57e5a731650dd2fe1d7ae73adbb3cece7c8048f5682158934581",
+      "decoded": "8fc7759e68bf57e5a731650dd2fe1d7ae73adbb3cece7c8048f5682158934581",
+      "equal": true
+    },
+    "trade_ids": {
+      "original": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "decoded": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "equal": true
+    },
+    "contexts": {
+      "original": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "decoded": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "equal": true
+    },
+    "native": {
+      "original": "b115cdcb57ddf60a212d9daa96f3b6a743f5e3d8dde6840341ef779646520605",
+      "decoded": "b115cdcb57ddf60a212d9daa96f3b6a743f5e3d8dde6840341ef779646520605",
+      "equal": true
+    }
+  },
+  "payload_bytes": {
+    "rows": {
+      "raw": 34474630,
+      "zlib": 20268322
+    },
+    "trade_ids": {
+      "raw": 0,
+      "zlib": 0
+    },
+    "contexts": {
+      "raw": 6108930,
+      "zlib": 4609738
+    },
+    "native": {
+      "raw": 100166905,
+      "zlib": 55340273
+    }
+  },
+  "csv_bytes": {
+    "memory-load-orders.csv": 9305154,
+    "memory-load-fills.csv": 11127114
+  },
+  "free_disk_bytes": 3901202432,
+  "elapsed_seconds": 73.87565619405359,
+  "bytes_per_native_fill": {
+    "plain_archive": 6349.892266666667,
+    "zlib_archive": 4000.1536,
+    "csv_pair": 681.0756
+  },
+  "projected_total_bytes": [
+    {
+      "native_fills": 100000,
+      "plain_archive_plus_csv": 703096786.6666666,
+      "zlib_archive_plus_csv": 468122920.0
+    },
+    {
+      "native_fills": 250000,
+      "plain_archive_plus_csv": 1757741966.6666667,
+      "zlib_archive_plus_csv": 1170307300.0
+    },
+    {
+      "native_fills": 500000,
+      "plain_archive_plus_csv": 3515483933.3333335,
+      "zlib_archive_plus_csv": 2340614600.0
+    },
+    {
+      "native_fills": 1051200,
+      "plain_archive_plus_csv": 7390953421.44,
+      "zlib_archive_plus_csv": 4920908135.04
+    },
+    {
+      "native_fills": 2102400,
+      "plain_archive_plus_csv": 14781906842.88,
+      "zlib_archive_plus_csv": 9841816270.08
+    }
+  ],
+  "caveat": "Fill count is not known before the one candidate run. Quote/minute upper scenarios include conservative churn, not expected ROI/fills prediction. Diagnostic copy is not a production artifact."
+}

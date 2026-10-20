@@ -1,0 +1,12 @@
+{
+  "recorded_utc": "2026-10-20T13:14:16.842547+00:00",
+  "owner_instruction": "Найди и исправь причину роста памяти системно, без костылей и усложнений. После адресных тестов разрешаю один повтор R2 до полного результата. Пилот не трогай.",
+  "previous_economic_run": "PARTIAL_NATIVE_OOM_preserved_7d08522",
+  "authorized_repeat_count": 1,
+  "repeat_started": false,
+  "scope": "diagnose_retention_cause_minimal_non_economic_fix_focused_native_tests_then_one_24m_R2",
+  "preserve": "BTC_SOL_rules_fees_funding_margin_data_period_seed_10000_reserve0_DPoff",
+  "not_authorized": "pilot_changes_deploy_real_orders_grid_control_or_automatic_retry",
+  "source_owner": "sol_corridor_implementation",
+  "root_launch_gate": "cause_evidence_diff_native_parity_load_export_proof_safe_resource_preflight"
+}

@@ -1,0 +1,62 @@
+{
+  "base": "7d08522a4beae4432387455b91f468f564c0eccc",
+  "changed": [
+    {
+      "path": "runtime/coinmaster/research/native_baseline.py",
+      "bytes": 109100,
+      "sha256": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+      "base_sha256": "98024a287b6b168a41a6b34859821b2db5acc9410909f1cb7fa7f03635472abc"
+    },
+    {
+      "path": "runtime/coinmaster/research/native_audit.py",
+      "bytes": 14750,
+      "sha256": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3",
+      "base_sha256": null
+    },
+    {
+      "path": "runtime/tests/test_native_audit_memory.py",
+      "bytes": 17327,
+      "sha256": "427880a6c588bdfff634d35c54123f65b1792fddbdab35fd0f93cb4ecc64c778",
+      "base_sha256": null
+    },
+    {
+      "path": "runtime/tests/test_native_sol_corridor.py",
+      "bytes": 22683,
+      "sha256": "a5e97aff95211ec8e1a096372f1c7cd9471ccb147bae0bdd8d9c1732f14a6f10",
+      "base_sha256": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+    }
+  ],
+  "unchanged": [
+    {
+      "path": "runtime/coinmaster/strategy/risk_first_sol.py",
+      "sha256": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/conditional_hedge.py",
+      "sha256": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/research/minute_risk.py",
+      "sha256": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/domain/wave_overlay.py",
+      "sha256": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+      "byte_equal_to_head": true
+    },
+    {
+      "path": "runtime/coinmaster/research/native_fixture.py",
+      "sha256": "bec814bbf98217b116018bb0498ec3c690592bc1c259c44bf0507fd71ff05df4",
+      "byte_equal_to_head": true
+    }
+  ],
+  "source_frozen": true
+}

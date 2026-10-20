@@ -1,0 +1,50 @@
+........                                                                 [100%]
+=============================== warnings summary ===============================
+tests/test_native_sol_corridor.py::test_native_healthy_alpha_and_completed_account_peak[1]
+tests/test_native_sol_corridor.py::test_native_healthy_alpha_and_completed_account_peak[-1]
+tests/test_native_sol_corridor.py::test_native_excess_alpha_trim_preserves_actual_fill_rights
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_sol_corridor.py::test_inner_headroom_only_on_breach_holds_marks_then_corrects_new_breach
+tests/test_native_sol_corridor.py::test_positive_outer_feasible_inner_infeasible_keeps_outer_fallback
+tests/test_native_sol_corridor.py::test_nonpositive_budget_never_uses_inner_and_preserves_infeasible_fallback
+tests/test_native_sol_corridor.py::test_inner_protection_partial_fills_preserve_fees_rights_and_mandatory_exit
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_sol_corridor.py: 32 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:350: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_sol_corridor.py::test_native_healthy_alpha_and_completed_account_peak[1]
+tests/test_native_sol_corridor.py::test_native_healthy_alpha_and_completed_account_peak[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:55: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_native_excess_alpha_trim_preserves_actual_fill_rights
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:78: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:166: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_inner_headroom_only_on_breach_holds_marks_then_corrects_new_breach
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:406: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_positive_outer_feasible_inner_infeasible_keeps_outer_fallback
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:416: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_nonpositive_budget_never_uses_inner_and_preserves_infeasible_fallback
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:426: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_inner_protection_partial_fills_preserve_fees_rights_and_mandatory_exit
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:442: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+8 passed, 19 deselected, 50 warnings in 4.41s

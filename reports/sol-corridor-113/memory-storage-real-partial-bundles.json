@@ -1,0 +1,840 @@
+{
+  "no_engine": true,
+  "no_source_change": true,
+  "orders": [
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-000000-001-000-1",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 528
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-000000-001-000-2",
+      "order_type": "LIMIT",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 606
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-001000-001-000-3",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "3505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 578
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-002000-001-000-7",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "2505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 579
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-003000-001-000-8",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 577
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-004000-001-000-9",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "505.0",
+      "filled": "505.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 534
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-010000-001-000-10",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 581
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-010100-001-000-11",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 542
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-012000-001-000-12",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 581
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-012100-001-000-13",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 542
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-001100-001-000-4",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 593
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-001100-001-000-5",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 590
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-001100-001-000-6",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "57.500",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 591
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-013000-001-000-14",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "100.000",
+      "filled": "100.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 535
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-164000-001-000-15",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 536
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-164000-001-000-16",
+      "order_type": "LIMIT",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 616
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-165000-001-000-17",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "3505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 578
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-170000-001-000-21",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "2505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 581
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-171000-001-000-22",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 579
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-172000-001-000-23",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "505.0",
+      "filled": "505.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 538
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-174000-001-000-24",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 582
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-174100-001-000-25",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 542
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-180000-001-000-26",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 582
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-180100-001-000-27",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 542
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-165100-001-000-18",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 597
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-165100-001-000-19",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 596
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-165100-001-000-20",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "57.500",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 597
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine0.sqlite",
+      "id": "O-19700101-181000-001-000-28",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "100.000",
+      "filled": "100.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 540
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-000000-001-000-1",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 528
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-000000-001-000-2",
+      "order_type": "LIMIT",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 603
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-001000-001-000-3",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "3505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 575
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-002000-001-000-7",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "2505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 575
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-003000-001-000-8",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 578
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-004000-001-000-9",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "505.0",
+      "filled": "505.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 538
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-010000-001-000-10",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 582
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-010100-001-000-11",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 543
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-012000-001-000-12",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 579
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-012100-001-000-13",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 539
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-001100-001-000-4",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 591
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-001100-001-000-5",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 594
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-001100-001-000-6",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "57.500",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 594
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-013000-001-000-14",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "100.000",
+      "filled": "100.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 537
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-164000-001-000-15",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 535
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-164000-001-000-16",
+      "order_type": "LIMIT",
+      "status": "FILLED",
+      "quantity": "50.000",
+      "filled": "50.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 614
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-165000-001-000-17",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "3505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 581
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-170000-001-000-21",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "2505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 582
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-171000-001-000-22",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1505.0",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 581
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-172000-001-000-23",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "505.0",
+      "filled": "505.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 541
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-174000-001-000-24",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 584
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-174100-001-000-25",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 543
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-180000-001-000-26",
+      "order_type": "MARKET",
+      "status": "CANCELED",
+      "quantity": "1752.5",
+      "filled": "1000.0",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 582
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-180100-001-000-27",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "752.5",
+      "filled": "752.5",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 543
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-165100-001-000-18",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 595
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-165100-001-000-19",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "21.250",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 597
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-165100-001-000-20",
+      "order_type": "LIMIT",
+      "status": "CANCELED",
+      "quantity": "57.500",
+      "filled": "0.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderAccepted",
+        "OrderPendingCancel",
+        "OrderCanceled"
+      ],
+      "native_bundle_bytes": 597
+    },
+    {
+      "source": "/tmp/pytest-of-root/pytest-680/test_native_existing_lifecycle0/engine1.sqlite",
+      "id": "O-19700101-181000-001-000-28",
+      "order_type": "MARKET",
+      "status": "FILLED",
+      "quantity": "100.000",
+      "filled": "100.000",
+      "event_types": [
+        "OrderInitialized",
+        "OrderSubmitted",
+        "OrderFilled"
+      ],
+      "native_bundle_bytes": 538
+    }
+  ],
+  "max_bundle_bytes": 616,
+  "min_bundle_bytes": 528
+}

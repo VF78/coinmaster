@@ -244,6 +244,8 @@ def _peak_rss_bytes() -> int:
 
 def monthly_returns(equity: list[dict[str, str]], initial: Decimal = Decimal("10000")) -> list[dict[str, str]]:
     """Calendar months with carry-forward TOTAL, including silent months."""
+    if callable(getattr(equity, "monthly_returns", None)):
+        return equity.monthly_returns(initial)
     # Keep native insertion order for equal timestamps.  A bare tuple sort
     # uses the amount as a tie breaker, which can silently turn a later debit
     # into an earlier credit at the same native report timestamp.
@@ -343,8 +345,8 @@ def assert_report_boundaries(report: dict) -> None:
     fills = report["fill_timestamps_ns"]
     if any(timestamp < int(start.timestamp() * 1_000_000_000) or timestamp > boundary_ns for timestamp in fills):
         raise ValueError("FILL_OUTSIDE_DECLARED_OR_SETTLEMENT_BOUNDARY")
-    at_boundary = [timestamp for timestamp in fills if timestamp == boundary_ns]
-    if len(at_boundary) != settlement["fill_count"]:
+    at_boundary = sum(timestamp == boundary_ns for timestamp in fills)
+    if at_boundary != settlement["fill_count"]:
         raise ValueError("POST_BOUNDARY_FILL_COUNT_MISMATCH")
     if any(timestamp == boundary_ns for timestamp in fills) != bool(settlement["fill_count"]):
         raise ValueError("POST_BOUNDARY_FILL_CONVENTION_MISMATCH")
@@ -851,6 +853,10 @@ def run_native_diagnostic(
         execution_policy_version=policy.version,
     ))
     engine.add_strategy(strategy)
+    audit_archive = None
+    if research_sol_risk_first == "alpha-corridor-v1":
+        from coinmaster.research.native_audit import NativeAuditArchive
+        audit_archive = NativeAuditArchive(artifacts_root / f"{artifact_label}-native-audit.sqlite", strategy)
     stats = {"expected_rows_per_source": expected_rows, "processed_rows_per_source": 0, "batch_count": 0, "event_count": 0, "max_batch_minutes": 0, "max_batch_events": 0, "cursor_batch_rows": cursor_batch_rows}
     spread = Decimal(policy.symmetric_adverse_spread_bps) / Decimal("10000")
     early_liquidation_cutoff = False
@@ -858,8 +864,10 @@ def run_native_diagnostic(
         mid = Decimal(str(close))
         return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns)
     successful_run = False
+    # Research housekeeping only: bound live reports between archival receipts.
+    archival_batch_minutes = min(weekly_batch_minutes, 15) if audit_archive is not None else weekly_batch_minutes
     try:
-        for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), weekly_batch_minutes):
+        for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), archival_batch_minutes):
             if risk_recorder is not None:
                 risk_recorder.set_week(week)
             marks, signals, quotes, source_bars = [], [], [], []
@@ -887,6 +895,13 @@ def run_native_diagnostic(
             engine.sort_data()
             engine.run(streaming=True)
             engine.clear_data()
+            if audit_archive is not None:
+                rss_before_archive = int(Path("/proc/self/statm").read_text().split()[1])*os.sysconf("SC_PAGE_SIZE")
+                archival = audit_archive.capture(engine, available_ns)
+                archival.update(processed_minutes=stats["processed_rows_per_source"] + len(week), last_available_ns=available_ns,
+                    archival_batch_minutes=archival_batch_minutes, rss_before_archive=rss_before_archive, peak_rss_bytes=_peak_rss_bytes(),
+                    rss_bytes=int(Path("/proc/self/statm").read_text().split()[1])*os.sysconf("SC_PAGE_SIZE"))
+                save_diagnostic_report(data_root, archival, "batch-resource-latest", artifacts_root)
             stats["batch_count"] += 1
             stats["event_count"] += len(marks) + len(signals) + len(quotes)
             stats["max_batch_minutes"] = max(stats["max_batch_minutes"], len(week))
@@ -914,30 +929,52 @@ def run_native_diagnostic(
         engine.end()
         # Retain only one native report DataFrame at a time; native history
         # remains authoritative and report-derived monetary formulas are unchanged.
-        account = engine.trader.generate_account_report(SIM)
-        terminal_active = Decimal(str(account["total"].iloc[-1]))
-        # Native report insertion order is not a reporting-time guarantee when
-        # orders settle across streamed batches. Preserve chronological cash.
-        cash_account_series = sorted(
-            ({"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()),
-            key=lambda row: datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc),
-        )
-        del account
-        interval_cash_series = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in cash_account_series if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
-        interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
-        cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
-        fills = engine.trader.generate_order_fills_report()
-        artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv")}
-        native_fill_count = len(fills)
-        fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
-        fill_timestamps_ns = [_fill_timestamp_ns(value) for value in fills.get("ts_last", ())]
-        boundary_ns = trading_end_ms * 1_000_000
-        boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
-        del fills
-        orders = engine.trader.generate_orders_report()
-        artifacts["orders"] = save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")
-        native_order_rejections = sum("REJECTED" in str(value) for value in orders.get("status", ()))
-        del orders
+        if audit_archive is not None:
+            from coinmaster.research.native_audit import CashRows, FillTimes
+            audit_archive.capture(engine, available_ns, final=True)
+            audit_archive.freeze()
+            terminal_active = engine.cache.account_for_venue(SIM).balance_total().as_decimal()
+            cash_account_series = CashRows(audit_archive)
+            interval_cash_series = CashRows(audit_archive, start_at, end_at, initial_active_seed)
+            interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
+            cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
+            artifacts = {kind: audit_archive.export_orders(artifacts_root / f"{artifact_label}-{kind}.csv", filled=kind=="fills")
+                         for kind in ("orders", "fills")}
+            native_fill_count = artifacts["fills"]["rows"]
+            fees = Decimal("0")
+            native_order_rejections = 0
+            for (body,) in audit_archive.db.execute("SELECT payload FROM native WHERE kind='order'"):
+                row = json.loads(body)
+                native_order_rejections += "REJECTED" in row["status"]
+                fees += sum((Decimal(str(value).split()[0]) for value in row.get("commissions", ())), Decimal("0"))
+            fill_timestamps_ns = FillTimes(audit_archive)
+            boundary_ns = trading_end_ms * 1_000_000
+            boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
+        else:
+            account = engine.trader.generate_account_report(SIM)
+            terminal_active = Decimal(str(account["total"].iloc[-1]))
+            # Native report insertion order is not a reporting-time guarantee when
+            # orders settle across streamed batches. Preserve chronological cash.
+            cash_account_series = sorted(
+                ({"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()),
+                key=lambda row: datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc),
+            )
+            del account
+            interval_cash_series = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in cash_account_series if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
+            interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
+            cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
+            fills = engine.trader.generate_order_fills_report()
+            artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv")}
+            native_fill_count = len(fills)
+            fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
+            fill_timestamps_ns = [_fill_timestamp_ns(value) for value in fills.get("ts_last", ())]
+            boundary_ns = trading_end_ms * 1_000_000
+            boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
+            del fills
+            orders = engine.trader.generate_orders_report()
+            artifacts["orders"] = save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")
+            native_order_rejections = sum("REJECTED" in str(value) for value in orders.get("status", ()))
+            del orders
         adapter = strategy.reporting_state()
         save_diagnostic_report(data_root,{'raw_audit_state':'NATIVE_EXPORTS_COMPLETE_BEFORE_VALIDATION',
             'native_strategy_events':adapter,'native_order_events':strategy._order_audit,'native_risk_first_audit':strategy.risk_first_sol_audit,
@@ -1095,9 +1132,14 @@ def run_native_diagnostic(
             result["minute_risk_observations"] = risk_recorder.close()
             risk_recorder = None
         save_diagnostic_report(data_root,{**raw_native,**result,'raw_audit_state':'NATIVE_COMPLETE_BEFORE_WRAPPER_METADATA'},artifact_label+'-raw-native',artifacts_root)
+        if audit_archive is not None:
+            from coinmaster.research.native_audit import audit_json_default
+            result = json.loads(json.dumps(result, default=audit_json_default))
         successful_run = True
         return result
     finally:
+        if audit_archive is not None:
+            audit_archive.close()
         if risk_recorder is not None:
             risk_recorder.file.close()
         engine.dispose()
@@ -1133,7 +1175,8 @@ def save_diagnostic_report(data_root: Path, report: dict, artifact_name: str = "
     target.parent.mkdir(parents=True, exist_ok=True)
     temporary = target.with_suffix(".tmp")
     with temporary.open('w') as stream:
-        stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        from coinmaster.research.native_audit import audit_json_default
+        stream.write(json.dumps(report, indent=2, sort_keys=True, default=audit_json_default) + "\n")
         stream.flush()
         os.fsync(stream.fileno())
     temporary.replace(target)

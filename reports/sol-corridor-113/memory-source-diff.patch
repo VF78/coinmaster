@@ -1,0 +1,842 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 8159dd0..0f8dd22 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -244,6 +244,8 @@ def _peak_rss_bytes() -> int:
+ 
+ def monthly_returns(equity: list[dict[str, str]], initial: Decimal = Decimal("10000")) -> list[dict[str, str]]:
+     """Calendar months with carry-forward TOTAL, including silent months."""
++    if callable(getattr(equity, "monthly_returns", None)):
++        return equity.monthly_returns(initial)
+     # Keep native insertion order for equal timestamps.  A bare tuple sort
+     # uses the amount as a tie breaker, which can silently turn a later debit
+     # into an earlier credit at the same native report timestamp.
+@@ -343,8 +345,8 @@ def assert_report_boundaries(report: dict) -> None:
+     fills = report["fill_timestamps_ns"]
+     if any(timestamp < int(start.timestamp() * 1_000_000_000) or timestamp > boundary_ns for timestamp in fills):
+         raise ValueError("FILL_OUTSIDE_DECLARED_OR_SETTLEMENT_BOUNDARY")
+-    at_boundary = [timestamp for timestamp in fills if timestamp == boundary_ns]
+-    if len(at_boundary) != settlement["fill_count"]:
++    at_boundary = sum(timestamp == boundary_ns for timestamp in fills)
++    if at_boundary != settlement["fill_count"]:
+         raise ValueError("POST_BOUNDARY_FILL_COUNT_MISMATCH")
+     if any(timestamp == boundary_ns for timestamp in fills) != bool(settlement["fill_count"]):
+         raise ValueError("POST_BOUNDARY_FILL_CONVENTION_MISMATCH")
+@@ -851,6 +853,10 @@ def run_native_diagnostic(
+         execution_policy_version=policy.version,
+     ))
+     engine.add_strategy(strategy)
++    audit_archive = None
++    if research_sol_risk_first == "alpha-corridor-v1":
++        from coinmaster.research.native_audit import NativeAuditArchive
++        audit_archive = NativeAuditArchive(artifacts_root / f"{artifact_label}-native-audit.sqlite", strategy)
+     stats = {"expected_rows_per_source": expected_rows, "processed_rows_per_source": 0, "batch_count": 0, "event_count": 0, "max_batch_minutes": 0, "max_batch_events": 0, "cursor_batch_rows": cursor_batch_rows}
+     spread = Decimal(policy.symmetric_adverse_spread_bps) / Decimal("10000")
+     early_liquidation_cutoff = False
+@@ -858,8 +864,10 @@ def run_native_diagnostic(
+         mid = Decimal(str(close))
+         return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns)
+     successful_run = False
++    # Research housekeeping only: bound live reports between archival receipts.
++    archival_batch_minutes = min(weekly_batch_minutes, 15) if audit_archive is not None else weekly_batch_minutes
+     try:
+-        for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), weekly_batch_minutes):
++        for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), archival_batch_minutes):
+             if risk_recorder is not None:
+                 risk_recorder.set_week(week)
+             marks, signals, quotes, source_bars = [], [], [], []
+@@ -887,6 +895,13 @@ def run_native_diagnostic(
+             engine.sort_data()
+             engine.run(streaming=True)
+             engine.clear_data()
++            if audit_archive is not None:
++                rss_before_archive = int(Path("/proc/self/statm").read_text().split()[1])*os.sysconf("SC_PAGE_SIZE")
++                archival = audit_archive.capture(engine, available_ns)
++                archival.update(processed_minutes=stats["processed_rows_per_source"] + len(week), last_available_ns=available_ns,
++                    archival_batch_minutes=archival_batch_minutes, rss_before_archive=rss_before_archive, peak_rss_bytes=_peak_rss_bytes(),
++                    rss_bytes=int(Path("/proc/self/statm").read_text().split()[1])*os.sysconf("SC_PAGE_SIZE"))
++                save_diagnostic_report(data_root, archival, "batch-resource-latest", artifacts_root)
+             stats["batch_count"] += 1
+             stats["event_count"] += len(marks) + len(signals) + len(quotes)
+             stats["max_batch_minutes"] = max(stats["max_batch_minutes"], len(week))
+@@ -914,30 +929,52 @@ def run_native_diagnostic(
+         engine.end()
+         # Retain only one native report DataFrame at a time; native history
+         # remains authoritative and report-derived monetary formulas are unchanged.
+-        account = engine.trader.generate_account_report(SIM)
+-        terminal_active = Decimal(str(account["total"].iloc[-1]))
+-        # Native report insertion order is not a reporting-time guarantee when
+-        # orders settle across streamed batches. Preserve chronological cash.
+-        cash_account_series = sorted(
+-            ({"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()),
+-            key=lambda row: datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc),
+-        )
+-        del account
+-        interval_cash_series = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in cash_account_series if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
+-        interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
+-        cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
+-        fills = engine.trader.generate_order_fills_report()
+-        artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv")}
+-        native_fill_count = len(fills)
+-        fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
+-        fill_timestamps_ns = [_fill_timestamp_ns(value) for value in fills.get("ts_last", ())]
+-        boundary_ns = trading_end_ms * 1_000_000
+-        boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
+-        del fills
+-        orders = engine.trader.generate_orders_report()
+-        artifacts["orders"] = save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")
+-        native_order_rejections = sum("REJECTED" in str(value) for value in orders.get("status", ()))
+-        del orders
++        if audit_archive is not None:
++            from coinmaster.research.native_audit import CashRows, FillTimes
++            audit_archive.capture(engine, available_ns, final=True)
++            audit_archive.freeze()
++            terminal_active = engine.cache.account_for_venue(SIM).balance_total().as_decimal()
++            cash_account_series = CashRows(audit_archive)
++            interval_cash_series = CashRows(audit_archive, start_at, end_at, initial_active_seed)
++            interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
++            cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
++            artifacts = {kind: audit_archive.export_orders(artifacts_root / f"{artifact_label}-{kind}.csv", filled=kind=="fills")
++                         for kind in ("orders", "fills")}
++            native_fill_count = artifacts["fills"]["rows"]
++            fees = Decimal("0")
++            native_order_rejections = 0
++            for (body,) in audit_archive.db.execute("SELECT payload FROM native WHERE kind='order'"):
++                row = json.loads(body)
++                native_order_rejections += "REJECTED" in row["status"]
++                fees += sum((Decimal(str(value).split()[0]) for value in row.get("commissions", ())), Decimal("0"))
++            fill_timestamps_ns = FillTimes(audit_archive)
++            boundary_ns = trading_end_ms * 1_000_000
++            boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
++        else:
++            account = engine.trader.generate_account_report(SIM)
++            terminal_active = Decimal(str(account["total"].iloc[-1]))
++            # Native report insertion order is not a reporting-time guarantee when
++            # orders settle across streamed batches. Preserve chronological cash.
++            cash_account_series = sorted(
++                ({"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()),
++                key=lambda row: datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc),
++            )
++            del account
++            interval_cash_series = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in cash_account_series if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
++            interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
++            cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
++            fills = engine.trader.generate_order_fills_report()
++            artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv")}
++            native_fill_count = len(fills)
++            fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
++            fill_timestamps_ns = [_fill_timestamp_ns(value) for value in fills.get("ts_last", ())]
++            boundary_ns = trading_end_ms * 1_000_000
++            boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
++            del fills
++            orders = engine.trader.generate_orders_report()
++            artifacts["orders"] = save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")
++            native_order_rejections = sum("REJECTED" in str(value) for value in orders.get("status", ()))
++            del orders
+         adapter = strategy.reporting_state()
+         save_diagnostic_report(data_root,{'raw_audit_state':'NATIVE_EXPORTS_COMPLETE_BEFORE_VALIDATION',
+             'native_strategy_events':adapter,'native_order_events':strategy._order_audit,'native_risk_first_audit':strategy.risk_first_sol_audit,
+@@ -1095,9 +1132,14 @@ def run_native_diagnostic(
+             result["minute_risk_observations"] = risk_recorder.close()
+             risk_recorder = None
+         save_diagnostic_report(data_root,{**raw_native,**result,'raw_audit_state':'NATIVE_COMPLETE_BEFORE_WRAPPER_METADATA'},artifact_label+'-raw-native',artifacts_root)
++        if audit_archive is not None:
++            from coinmaster.research.native_audit import audit_json_default
++            result = json.loads(json.dumps(result, default=audit_json_default))
+         successful_run = True
+         return result
+     finally:
++        if audit_archive is not None:
++            audit_archive.close()
+         if risk_recorder is not None:
+             risk_recorder.file.close()
+         engine.dispose()
+@@ -1133,7 +1175,8 @@ def save_diagnostic_report(data_root: Path, report: dict, artifact_name: str = "
+     target.parent.mkdir(parents=True, exist_ok=True)
+     temporary = target.with_suffix(".tmp")
+     with temporary.open('w') as stream:
+-        stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
++        from coinmaster.research.native_audit import audit_json_default
++        stream.write(json.dumps(report, indent=2, sort_keys=True, default=audit_json_default) + "\n")
+         stream.flush()
+         os.fsync(stream.fileno())
+     temporary.replace(target)
+diff --git a/runtime/tests/test_native_sol_corridor.py b/runtime/tests/test_native_sol_corridor.py
+index 42744af..a2e5a03 100644
+--- a/runtime/tests/test_native_sol_corridor.py
++++ b/runtime/tests/test_native_sol_corridor.py
+@@ -157,9 +157,10 @@ def test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity():
+                 for dt in range(4):advance(s,e,t+(90+dt)*minute,sol='1')
+                 assert not e.cache.positions_open() and s._domain.episode is None and not s._pending_by_order
+             fills=[{k:x[k] for k in ('fill_ns','instrument','px','qty','commission','native_liquidity_side','order_type','post_only')} for x in s.fill_audit]
+-            orders=[(str(o.quantity),str(o.filled_qty),int(o.order_type),int(o.time_in_force),o.is_post_only,o.is_reduce_only,int(o.status),o.ts_init,o.ts_last) for o in e.cache.orders()]
++            native_orders=getattr(s,"_test_full_native_orders",lambda:e.cache.orders())()
++            orders=[(str(o.quantity),str(o.filled_qty),int(o.order_type),int(o.time_in_force),o.is_post_only,o.is_reduce_only,int(o.status),o.ts_init,o.ts_last) for o in native_orders]
+             cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal();fees=sum(D(x['commission']) for x in s.fill_audit)
+-            flow=sum(o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in e.cache.orders() if o.filled_qty.as_decimal()>0)
++            flow=sum(o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in native_orders if o.filled_qty.as_decimal()>0)
+             assert cash==D(10000)+flow-fees
+             outputs.append((fills,orders,cash,fees,snapshots))
+         finally:e.end();e.dispose()
+@@ -288,7 +289,7 @@ def test_real_production_tiny_corridor_and_raw_identity(tmp_path):
+         research_v0_execution_repairs=True,research_v0_deferred_selective_zero_tp=True,research_v0_selective_lifecycle_repairs=True,research_btc_direction_sizing=True,research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,
+         research_sol_risk_first="alpha-corridor-v1",observe_minute_risk=True,artifact_dir=tmp_path/'production')
+     assert result['config']['research_sol_risk_first']=='alpha-corridor-v1' and result['config']['candidate']['sol_overlay_enabled']
+-    assert isinstance(result['risk_first_sol_audit'],list) and 'risk_first_sol' in result['source_hashes']
++    assert result['risk_first_sol_audit']['schema']=='coinmaster.native-audit.sqlite.v1' and 'risk_first_sol' in result['source_hashes']
+     assert result['minute_risk_observations']['curves']['pre_quote_paired_close']['samples']==3
+     json.dumps(result)
+ 
+diff --git a/runtime/coinmaster/research/native_audit.py b/runtime/coinmaster/research/native_audit.py
+new file mode 100644
+index 0000000..77640da
+--- /dev/null
++++ b/runtime/coinmaster/research/native_audit.py
+@@ -0,0 +1,327 @@
++"""Research-only, file-backed native audit; no execution or monetary ledger."""
++from collections.abc import Mapping
++from datetime import datetime, timezone
++from decimal import Decimal
++from pathlib import Path
++import hashlib
++import json
++import os
++import sqlite3
++
++
++class AuditRows:
++    def __init__(self, archive, kind):
++        self.archive, self.kind = archive, kind
++        self.count = 0
++
++    def append(self, row):
++        self.archive.db.execute("INSERT INTO rows(kind,payload) VALUES (?,?)",
++                                (self.kind, json.dumps(row)))
++        self.count += 1
++
++    def __len__(self):
++        return self.count
++
++    def __iter__(self):
++        for (body,) in self.archive.db.execute("SELECT payload FROM rows WHERE kind=? ORDER BY seq", (self.kind,)):
++            yield json.loads(body)
++
++    def __getitem__(self, index):
++        if index < 0:
++            index += self.count
++        row = self.archive.db.execute("SELECT payload FROM rows WHERE kind=? ORDER BY seq LIMIT 1 OFFSET ?",
++                                      (self.kind, index)).fetchone()
++        if row is None:
++            raise IndexError(index)
++        return json.loads(row[0])
++
++    def reference(self):
++        return self.archive.reference("rows", self.kind, self.count)
++
++
++class AuditIds:
++    def __init__(self, archive):
++        self.archive = archive
++
++    def __contains__(self, key):
++        return self.archive.db.execute("SELECT 1 FROM trade_ids WHERE id=?", (key,)).fetchone() is not None
++
++    def add(self, key):
++        self.archive.db.execute("INSERT OR IGNORE INTO trade_ids VALUES (?)", (key,))
++
++    def __len__(self):
++        return self.archive.db.execute("SELECT count(*) FROM trade_ids").fetchone()[0]
++
++
++class OrderContexts(Mapping):
++    """Keep mutable current contexts intact; flush them only at runner boundaries."""
++    def __init__(self, archive):
++        self.archive, self.current = archive, {}
++
++    def __setitem__(self, key, row):
++        self.current[key] = row
++
++    def __getitem__(self, key):
++        if key not in self.current:
++            row = self.archive.db.execute("SELECT payload FROM contexts WHERE id=?", (key,)).fetchone()
++            if row is None:
++                raise KeyError(key)
++            self.current[key] = json.loads(row[0])
++        return self.current[key]
++
++    def __iter__(self):
++        self.flush()
++        for (key,) in self.archive.db.execute("SELECT id FROM contexts"):
++            yield key
++
++    def __len__(self):
++        return self.archive.db.execute("SELECT count(*) FROM contexts").fetchone()[0] + sum(
++            self.archive.db.execute("SELECT 1 FROM contexts WHERE id=?", (key,)).fetchone() is None for key in self.current)
++
++    def flush(self):
++        self.archive.db.executemany("INSERT OR REPLACE INTO contexts VALUES (?,?)",
++                                   ((key, json.dumps(row)) for key, row in self.current.items()))
++
++    def reference(self):
++        return self.archive.reference("contexts", None, len(self))
++
++
++class CashRows:
++    def __init__(self, archive, start=None, end=None, initial=None):
++        self.archive, self.start, self.end, self.initial = archive, start, end, initial
++
++    def __iter__(self):
++        if self.initial is not None:
++            yield dict(timestamp=self.start.isoformat(), active=str(self.initial), reserve="0", total=str(self.initial))
++        for ns, body in self.archive.db.execute("SELECT ns,payload FROM native WHERE kind='account' ORDER BY ns,seq"):
++            from pandas import Timestamp
++            point = Timestamp(ns, unit="ns", tz="UTC")
++            if self.start is not None and not self.start <= point < self.end:
++                continue
++            state = json.loads(body)
++            for balance in state["balances"]:
++                yield dict(timestamp=str(point), active=balance["total"], reserve="0", total=balance["total"])
++
++    def __bool__(self):
++        return True
++
++    def __getitem__(self, index):
++        if index == 0:
++            return next(iter(self))
++        if index == -1:
++            last = None
++            for last in self:
++                pass
++            if last is None:
++                raise IndexError(index)
++            return last
++        raise IndexError(index)
++
++    def monthly_returns(self, initial):
++        months = {}
++        for point in self:
++            months[point["timestamp"][:7]] = Decimal(point["total"])
++        if not months:
++            return []
++        first, last = min(months), max(months)
++        cursor = datetime.fromisoformat(first + "-01").replace(tzinfo=timezone.utc)
++        previous, result = initial, []
++        while cursor.strftime("%Y-%m") <= last:
++            month = cursor.strftime("%Y-%m")
++            total = months.get(month, previous)
++            result.append(dict(month=month, total=str(total), return_=str(total / previous - 1)))
++            result[-1]["return"] = result[-1].pop("return_")
++            previous = total
++            cursor = cursor.replace(year=cursor.year + (cursor.month == 12), month=1 if cursor.month == 12 else cursor.month + 1)
++        return result
++
++    def reference(self):
++        return self.archive.reference("native", "account", sum(1 for _ in self)) | {
++            "view": "native_cash_balances", "start": self.start.isoformat() if self.start else None,
++            "end_exclusive": self.end.isoformat() if self.end else None, "initial": str(self.initial) if self.initial is not None else None}
++
++
++class FillTimes:
++    def __init__(self, archive):
++        self.archive = archive
++
++    def __iter__(self):
++        for (body,) in self.archive.db.execute("SELECT payload FROM native WHERE kind='order' ORDER BY id"):
++            row = json.loads(body)
++            if Decimal(row["filled_qty"]) > 0:
++                yield row["ts_last"]
++
++    def reference(self):
++        return self.archive.reference("native", "order", sum(1 for _ in self)) | {"view": "filled_order_ts_last"}
++
++
++class NativeAuditArchive:
++    def __init__(self, path, strategy):
++        self.path = Path(path)
++        self.path.parent.mkdir(parents=True, exist_ok=True)
++        # An archive belongs to exactly one fresh engine; never resume or merge.
++        if self.path.exists():
++            raise ValueError("NATIVE_AUDIT_NAMESPACE_EXISTS")
++        self.db = sqlite3.connect(self.path)
++        self.db.executescript("""
++            PRAGMA journal_mode=DELETE;
++            PRAGMA synchronous=FULL;
++            PRAGMA cache_size=-2048;
++            PRAGMA temp_store=FILE;
++            CREATE TABLE rows(seq INTEGER PRIMARY KEY,kind TEXT,payload TEXT);
++            CREATE INDEX rows_kind ON rows(kind,seq);
++            CREATE TABLE trade_ids(id TEXT PRIMARY KEY);
++            CREATE TABLE contexts(id TEXT PRIMARY KEY,payload TEXT);
++            CREATE TABLE native(seq INTEGER PRIMARY KEY,kind TEXT,id TEXT,ns INTEGER,payload TEXT,UNIQUE(kind,id));
++            CREATE INDEX native_time ON native(kind,ns,seq);
++        """)
++        self.strategy = strategy
++        self.rows = {name: AuditRows(self, name) for name in ("risk_first_sol_audit", "fill_audit")}
++        for name, rows in self.rows.items():
++            for row in getattr(strategy, name):
++                rows.append(row)
++            setattr(strategy, name, rows)
++        self.contexts = OrderContexts(self)
++        for key, row in strategy._order_audit.items():
++            self.contexts[key] = row
++        strategy._order_audit = self.contexts
++        ids = AuditIds(self)
++        for key in strategy._seen_trade_ids:
++            ids.add(key)
++        strategy._seen_trade_ids = ids
++        self.digest = None
++        self.checkpoints = 0
++        self.native_counts = {}
++
++    def count(self, kind):
++        return self.native_counts.get(kind, 0)
++
++    def native(self, kind, key, ns, row):
++        payload = json.dumps(row, default=str)
++        inserted = self.db.execute("INSERT OR IGNORE INTO native(kind,id,ns,payload) VALUES (?,?,?,?)",
++                                   (kind, key, ns, payload)).rowcount
++        if inserted:
++            self.native_counts[kind] = self.native_counts.get(kind, 0) + 1
++        else:
++            self.db.execute("UPDATE native SET ns=?,payload=? WHERE kind=? AND id=?", (ns, payload, kind, key))
++
++    def capture(self, engine, timestamp, final=False):
++        """Only after engine.run returns: archive first, commit, then supported purge."""
++        from nautilus_trader.model.events import AccountState
++        strategy = self.strategy
++        protected = set(strategy._pending_by_order) | set(strategy._forced_close_orders) | set(strategy._rf_sol_orders) | set(strategy._v3_orders) | set(strategy._deposit_exit_orders)
++        orders = engine.cache.orders()
++        by_id = {str(order.client_order_id): order for order in orders}
++        eligible = []
++        for order in orders:
++            oid = str(order.client_order_id)
++            linked = order.linked_order_ids or ()
++            safe = order.is_closed and oid not in protected and not any(
++                str(key) in protected or str(key) in by_id and not by_id[str(key)].is_closed for key in linked
++            )
++            if not safe and not final:
++                continue
++            self.native("order", oid, order.ts_last or order.ts_init, order.to_dict())
++            for event in order.events:
++                self.native("order_event", str(event.id), event.ts_event, type(event).to_dict(event))
++            if safe:
++                eligible.append(order)
++        account = engine.cache.account_for_venue(strategy.config.btc_id.venue)
++        for event in account.events:
++            self.native("account", str(event.id), event.ts_event, AccountState.to_dict(event))
++        positions = []
++        pending_instruments = {strategy.config.btc_id if intent.action.startswith("BTC") else strategy.config.sol_id
++                               for intent in strategy._pending_by_order.values()}
++        pending_instruments.update(order.instrument_id for order in orders
++                                   if not order.is_closed or str(order.client_order_id) in protected)
++        unmapped_protected = protected - set(by_id) - set(strategy._pending_by_order)
++        for position in engine.cache.positions_closed():
++            if unmapped_protected or position.instrument_id in pending_instruments:
++                continue
++            self.native("position", f"{position.id}:{position.ts_opened}:{position.ts_closed}", position.ts_closed, position.to_dict())
++            for snapshot in engine.cache.position_snapshots(position.id):
++                self.native("position_snapshot", f"{snapshot.id}:{snapshot.ts_opened}:{snapshot.ts_closed}", snapshot.ts_closed, snapshot.to_dict())
++            positions.append(position)
++        self.contexts.flush()
++        self.db.commit()  # FULL fsync completes before a native object is released.
++        before = (account.balance_total(), account.balance_free(), account.balance_locked(), tuple(account.commissions().items()))
++        for order in eligible:
++            engine.cache.purge_order(order.client_order_id, False)
++        for position in positions:
++            engine.cache.purge_position(position.id, False)
++        engine.cache.purge_account_events(timestamp, 0, False)
++        after = (account.balance_total(), account.balance_free(), account.balance_locked(), tuple(account.commissions().items()))
++        if before != after:
++            raise AssertionError("ARCHIVAL_CHANGED_NATIVE_ACCOUNT")
++        # Exact historical lookup is retained on disk, including mutable accept_ns.
++        self.contexts.current.clear()
++        self.checkpoints += 1
++        return dict(checkpoint=self.checkpoints, native_orders=len(engine.cache.orders()),
++                    native_positions=len(engine.cache.positions()), account_events=len(account.events),
++                    archived_orders=self.count("order"), archived_account_events=self.count("account"),
++                    audit_rows={name: len(rows) for name, rows in self.rows.items()},
++                    mutable_contexts=len(self.contexts.current))
++
++    def reference(self, table, kind, count):
++        return dict(schema="coinmaster.native-audit.sqlite.v1", path=str(self.path), table=table,
++                    kind=kind, rows=count, sha256=self.digest, completeness="ALL_EMITTED_ROWS", sampling="UNCHANGED_EXISTING_POLICY")
++
++    def freeze(self):
++        self.contexts.flush()
++        self.db.commit()
++        digest = hashlib.sha256()
++        with self.path.open("rb") as stream:
++            for block in iter(lambda: stream.read(1024 * 1024), b""):
++                digest.update(block)
++        self.digest = digest.hexdigest()
++
++    def export_orders(self, target, filled=False):
++        """Reproduce native ReportProvider rows, in bounded DataFrame chunks."""
++        import pandas as pd
++        columns = []
++        for (body,) in self.db.execute("SELECT payload FROM native WHERE kind='order' ORDER BY id"):
++            row = json.loads(body)
++            if filled and Decimal(row["filled_qty"]) <= 0:
++                continue
++            columns.extend(key for key in row if key not in columns)
++        path = Path(target)
++        temporary = path.with_suffix(".tmp")
++        count, batch = 0, []
++        with temporary.open("w") as stream:
++            if not columns:
++                pd.DataFrame().to_csv(stream)
++            def flush():
++                frame = pd.DataFrame(batch, columns=columns).set_index("client_order_id")
++                if filled:
++                    for key in ("ts_init", "ts_last"):
++                        frame[key] = pd.to_datetime(frame[key], unit="ns", utc=True)
++                frame.to_csv(stream, header=count == 0)
++                stream.flush(); os.fsync(stream.fileno())
++            for (body,) in self.db.execute("SELECT payload FROM native WHERE kind='order' ORDER BY id"):
++                row = json.loads(body)
++                if filled and Decimal(row["filled_qty"]) <= 0:
++                    continue
++                batch.append(row)
++                if len(batch) == 256:
++                    flush(); count += len(batch); batch.clear()
++            if batch:
++                flush(); count += len(batch)
++            stream.flush(); os.fsync(stream.fileno())
++        temporary.replace(path)
++        digest = hashlib.sha256()
++        with path.open("rb") as stream:
++            for block in iter(lambda: stream.read(1024 * 1024), b""):
++                digest.update(block)
++        return dict(path=str(path), sha256=digest.hexdigest(), rows=count)
++
++    def close(self):
++        self.db.commit()
++        self.db.close()
++
++
++
++def audit_json_default(value):
++    reference = getattr(value, "reference", None)
++    if callable(reference):
++        return reference()
++    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+diff --git a/runtime/tests/test_native_audit_memory.py b/runtime/tests/test_native_audit_memory.py
+new file mode 100644
+index 0000000..7e6aecf
+--- /dev/null
++++ b/runtime/tests/test_native_audit_memory.py
+@@ -0,0 +1,314 @@
++"""Real native archival/parity diagnostics; no historical replay."""
++from decimal import Decimal as D
++import hashlib
++import json
++from pathlib import Path
++import pandas as pd
++import pytest
++from coinmaster.research.native_audit import NativeAuditArchive, CashRows, FillTimes, audit_json_default
++from test_native_sol_corridor import setup, original, advance, close, stress
++from test_native_episode_risk import run_ticks, tick
++from coinmaster.research.native_fixture import BTC_PERP, SOL_PERP
++from nautilus_trader.analysis.reporter import ReportProvider
++
++
++def frames(path):
++    return pd.read_csv(path).sort_values("client_order_id").reset_index(drop=True)
++
++
++def test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate(tmp_path):
++    results=[]
++    for archived in (False, True):
++        s,e,ep=setup()
++        audit=NativeAuditArchive(tmp_path/"audit.sqlite",s) if archived else None
++        seen=[]
++        try:
++            def boundary(ts):
++                if audit:
++                    expected=[o.to_dict() for o in e.cache.orders() if o.is_closed and str(o.client_order_id) not in s._pending_by_order]
++                    audit.capture(e,ts)
++                    for row in expected:
++                        stored=audit.db.execute("SELECT payload FROM native WHERE kind='order' AND id=?", (row["client_order_id"],)).fetchone()
++                        assert json.loads(stored[0])==row
++                seen.append((str(s._v3_equity()),str(s._rf_peak),str(ep.sol_qty),
++                    dict(ep.sol_add_filled_notional),dict(ep.sol_risk_retired_notional),
++                    sorted(s._pending_by_order),s._rf_fill_epoch,s._rf_dirty))
++            original(s,e,ep,20,ts=30);advance(s,e,31);boundary(31)
++            # Both real positions remain live; order cleanup must not alter them.
++            assert len(e.cache.positions_open())==2
++            stress(s,a="1",u=".1");advance(s,e,32);advance(s,e,33);boundary(33)
++            # Mutable acceptance context survives archival, and exact duplicate
++            # native receipt is still filtered after its terminal order is gone.
++            if audit:
++                body=audit.db.execute("SELECT payload FROM native WHERE kind='order_event' AND json_extract(payload,'$.type')='OrderFilled' LIMIT 1").fetchone()[0]
++                from nautilus_trader.model.events import OrderFilled
++                event=OrderFilled.from_dict(json.loads(body));before=s._rf_fill_epoch
++                s.on_order_filled(event)
++                assert s._rf_fill_epoch==before
++                assert str(event.client_order_id) in s._order_audit
++            close(s,e)
++            boundary(100000000000000)
++            fees=sum(D(row["commission"]) for row in s.fill_audit)
++            cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
++            fills=list(s.fill_audit)
++            if audit:
++                audit.capture(e,100000000000001,final=True);audit.freeze()
++                paths=[tmp_path/"archived-orders.csv",tmp_path/"archived-fills.csv"]
++                audit.export_orders(paths[0]);audit.export_orders(paths[1],True)
++                account_rows=list(CashRows(audit))
++                times=sorted(FillTimes(audit))
++                assert not e.cache.orders() and not e.cache.positions()
++                assert len(e.cache.account_for_venue(BTC_PERP.id.venue).events)==1
++                descriptor=json.loads(json.dumps(s.fill_audit,default=audit_json_default))
++                assert descriptor["rows"]==len(fills) and descriptor["sha256"]==hashlib.sha256(audit.path.read_bytes()).hexdigest()
++            else:
++                paths=[tmp_path/"native-orders.csv",tmp_path/"native-fills.csv"]
++                e.trader.generate_orders_report().to_csv(paths[0])
++                e.trader.generate_order_fills_report().to_csv(paths[1])
++                account=e.trader.generate_account_report(BTC_PERP.id.venue)
++                account_rows=[dict(timestamp=str(t),active=str(total),reserve="0",total=str(total)) for t,total in account["total"].items()]
++                times=sorted(o.ts_last for o in e.cache.orders() if o.filled_qty.as_decimal()>0)
++            results.append((seen,fills,cash,fees,account_rows,times,dict(s._order_audit),[frames(p) for p in paths]))
++        finally:
++            if audit:audit.close()
++            e.end();e.dispose()
++    assert results[0][:-1]==results[1][:-1]
++    for expected,actual in zip(results[0][-1],results[1][-1]):
++        pd.testing.assert_frame_equal(expected.drop(columns=["init_id"]),actual.drop(columns=["init_id"]),check_dtype=False)
++
++
++def test_mutable_context_and_rows_exact_disk_membership(tmp_path):
++    from types import SimpleNamespace
++    s=SimpleNamespace(risk_first_sol_audit=[],fill_audit=[],_order_audit={},_seen_trade_ids=set())
++    a=NativeAuditArchive(tmp_path/"context.sqlite",s)
++    try:
++        s._order_audit["one"]={"accept_ns":None}
++        row=s._order_audit.get("one")
++        row["accept_ns"]="321"
++        a.contexts.flush();a.db.commit();a.contexts.current.clear()
++        assert s._order_audit["one"]=={"accept_ns":"321"}
++        s._seen_trade_ids.add("old");a.db.commit()
++        assert "old" in s._seen_trade_ids and "new" not in s._seen_trade_ids
++        for i in range(20):s.fill_audit.append({"native":i})
++        a.freeze()
++        assert list(s.fill_audit)==[{"native":i} for i in range(20)]
++    finally:a.close()
++
++@pytest.mark.parametrize("name",[
++    "test_native_risk_cancel_latepartial_retires_only_unfilled_no_IOC_resurrection",
++    "test_final_receipt_strictly_after_fill_and_never_backdated",
++    "test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity",
++])
++def test_native_existing_lifecycle_with_archive(name,tmp_path,monkeypatch):
++    import test_native_sol_corridor as native
++    active={}
++    originals={key:getattr(native,key) for key in ("setup","alpha_setup","advance","engine")}
++    def wrap_setup(which):
++        def run(*args,**kwargs):
++            s,e,ep=originals[which](*args,**kwargs)
++            if id(e) not in active:
++                active[id(e)]=NativeAuditArchive(tmp_path/(which+str(len(active))+".sqlite"),s)
++            return s,e,ep
++        return run
++    def advance_with_archive(s,e,ts,*args,**kwargs):
++        result=originals["advance"](s,e,ts,*args,**kwargs)
++        active[id(e)].capture(e,ts)
++        return result
++    def engine_with_archive(s,*args,**kwargs):
++        e=originals["engine"](s,*args,**kwargs)
++        active[id(e)]=NativeAuditArchive(tmp_path/("engine"+str(len(active))+".sqlite"),s)
++        def full_native_orders():
++            from nautilus_trader.model.orders import OrderUnpacker
++            from nautilus_trader.model import events
++            cached={str(o.client_order_id):o for o in e.cache.orders()}
++            for (body,) in active[id(e)].db.execute("SELECT payload FROM native WHERE kind='order'"):
++                row=json.loads(body);oid=row["client_order_id"]
++                if oid in cached:continue
++                native_events=[]
++                for (payload,) in active[id(e)].db.execute(
++                    "SELECT payload FROM native WHERE kind='order_event' AND json_extract(payload,'$.client_order_id')=? ORDER BY seq",(oid,)):
++                    values=json.loads(payload)
++                    native_events.append(getattr(events,values["type"]).from_dict(values))
++                order=OrderUnpacker.from_init(native_events[0])
++                for event in native_events[1:]:order.apply(event)
++                assert order.to_dict()==row
++                cached[oid]=order
++            return [cached[key] for key in sorted(cached)]
++        s._test_full_native_orders=full_native_orders
++        return e
++    monkeypatch.setattr(native,"engine",engine_with_archive)
++    monkeypatch.setattr(native,"setup",wrap_setup("setup"))
++    monkeypatch.setattr(native,"alpha_setup",wrap_setup("alpha_setup"))
++    monkeypatch.setattr(native,"advance",advance_with_archive)
++    try:getattr(native,name)()
++    finally:
++        for archive in active.values():archive.close()
++
++
++def test_native_Q2_pending_unknown_and_open_order_survive_archive(tmp_path):
++    from nautilus_trader.model.enums import OrderSide,TimeInForce
++    s,e,ep=setup()
++    a=NativeAuditArchive(tmp_path/"pending.sqlite",s)
++    try:
++        intent=s._domain._intent(ep,"BTC_ENTRY",ep.side,None,quantity=10)
++        order=s.order_factory.limit(BTC_PERP.id,OrderSide.BUY,BTC_PERP.make_qty(10),
++            BTC_PERP.make_price(1),time_in_force=TimeInForce.GTC)
++        key=str(order.client_order_id)
++        s._pending_by_order[key]=intent
++        s.submit_order(order)
++        run_ticks(e,[tick(BTC_PERP,10)])
++        s._pending_by_order["UNKNOWN_NATIVE_ACK"]=intent
++        a.capture(e,11)
++        assert e.cache.order(order.client_order_id) is order and order.is_open
++        assert s._pending_by_order[key] is intent and s._pending_by_order["UNKNOWN_NATIVE_ACK"] is intent
++        actual,lo,hi,unknown=s._corridor_btc_endpoints(e.cache.positions_open()[0],10)
++        assert unknown and hi==actual+10 and lo==actual
++        parent=s._split_parent
++        parent.update(closed=False,quantity=D(100),filled=D(50),cancelled=D(0))
++        assert s._split_cover_margin_reserve(BTC_PERP.id,D(50),10)==100
++    finally:a.close();e.end();e.dispose()
++
++
++def test_archival_commit_failure_does_not_purge_native(tmp_path,monkeypatch):
++    s,e,ep=setup()
++    a=NativeAuditArchive(tmp_path/"failure.sqlite",s)
++    try:
++        original(s,e,ep,20,ts=30);advance(s,e,31)
++        orders=list(e.cache.orders());cash=s._v3_equity()
++        def fail():raise OSError("INJECTED_ARCHIVE_FAILURE")
++        monkeypatch.setattr(a.contexts,"flush",fail)
++        with pytest.raises(OSError,match="INJECTED_ARCHIVE_FAILURE"):
++            a.capture(e,31)
++        assert e.cache.orders()==orders and s._v3_equity()==cash
++        a.db.rollback()
++    finally:a.close();e.end();e.dispose()
++
++
++@pytest.mark.parametrize("fault",["inner","outer","loop"])
++def test_production_archive_failure_preserves_real_native_artifacts(tmp_path,monkeypatch,fault):
++    from dataclasses import asdict
++    from datetime import datetime,UTC
++    from test_native_baseline import write_streaming_fixture
++    from coinmaster.research import native_baseline as nb
++    from coinmaster.domain.wave_overlay import Candidate
++    import pyarrow as pa
++    import pyarrow.parquet as pq
++    import sqlite3
++    start,_=write_streaming_fixture(tmp_path,trading_days=1)
++    shift=nb.TRADING_START_MS-start
++    for path in (tmp_path/"normalized").glob("*.parquet"):
++        rows=pq.read_table(path).to_pylist()
++        for row in rows:row["open_time_ms"]+=shift
++        pq.write_table(pa.Table.from_pylist(rows),path)
++    options=dict(trading_start_ms=nb.TRADING_START_MS,trading_end_ms=nb.TRADING_START_MS+2*nb.MINUTE_MS,
++        warmup_start_ms=shift,research_v0_execution_repairs=True,research_v0_deferred_selective_zero_tp=True,
++        research_v0_selective_lifecycle_repairs=True,research_btc_direction_sizing=True,
++        research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,
++        research_sol_risk_first="alpha-corridor-v1",observe_minute_risk=True,include_funding=False)
++    target=tmp_path/"production"
++    def fail(*args,**kwargs):raise ValueError("INJECTED_"+fault)
++    if fault=="inner":
++        monkeypatch.setattr(nb,"assert_report_boundaries",fail)
++    elif fault=="loop":
++        real_capture=NativeAuditArchive.capture
++        def completed_batch_then_fail(self,*args,**kwargs):
++            real_capture(self,*args,**kwargs)
++            fail()
++        monkeypatch.setattr(NativeAuditArchive,"capture",completed_batch_then_fail)
++    if fault!="outer":
++        with pytest.raises(ValueError,match="INJECTED_"+fault):
++            nb.run_native_diagnostic(tmp_path,candidate=Candidate(btc_notional_multiplier=7.875,max_parent_notional=30_000_000),artifact_dir=target,**options)
++    else:
++        policy=nb.ExecutionPolicy();fees=nb.FixedBaseFeePolicy()
++        config={**nb.BASELINE_CONFIG,"candidate":asdict(Candidate()),"execution_policy":asdict(policy),
++            "fixed_base_fee_policy":asdict(fees),"fee_policy_hash":fees.hash,"tp_fee_floor_v1":False,
++            "run_interval":{"start":datetime.fromtimestamp(nb.TRADING_START_MS/1000,UTC).isoformat(),
++                "end_exclusive":datetime.fromtimestamp(nb.TRADING_END_MS/1000,UTC).isoformat(),"initial_active_seed":"10000"}}
++        manifest=tmp_path/"bybit-1m/manifest.json"
++        control={"status":"NOT_FAITHFUL_DIAGNOSTIC","config":config,"policy":asdict(policy),
++            "summary":{"terminal_total":"3386491.65211338"},"data_hash":hashlib.sha256(
++                json.dumps(json.loads(manifest.read_text()),sort_keys=True,separators=(",",":")).encode()).hexdigest()}
++        cp=tmp_path/"control.json";cp.write_text(json.dumps(control))
++        real_run=nb.run_native_diagnostic;real_sha=nb.sha256_file
++        def bounded(*args,**kw):
++            kw.update(options)
++            kw["candidate"]=Candidate(btc_notional_multiplier=7.875,max_parent_notional=30_000_000)
++            return real_run(*args,**kw)
++        def only_outer(path):
++            if Path(path)==cp:fail()
++            return real_sha(path)
++        monkeypatch.setattr(nb,"run_native_diagnostic",bounded)
++        monkeypatch.setattr(nb,"sha256_file",only_outer)
++        with pytest.raises(ValueError,match="INJECTED_outer"):
++            nb.run_research_v0_repairs_cli(tmp_path,target,cp)
++    db=next(target.glob("*-native-audit.sqlite"))
++    connection=sqlite3.connect(f"file:{db}?mode=ro",uri=True)
++    assert connection.execute("PRAGMA integrity_check").fetchone()[0]=="ok"
++    assert connection.execute("SELECT count(*) FROM native WHERE kind='account'").fetchone()[0]>0
++    connection.close()
++    if fault=="loop":
++        assert not list(target.glob("*-raw-native.json"))
++    else:
++        raw=json.loads(next(target.glob("*-raw-native.json")).read_text())
++        assert raw["native_risk_first_audit"]["schema"]=="coinmaster.native-audit.sqlite.v1"
++        assert raw["native_risk_first_audit"]["sha256"]==hashlib.sha256(db.read_bytes()).hexdigest()
++        for artifact in raw["execution_artifacts"].values():
++            assert Path(artifact["path"]).exists()
++            assert artifact["sha256"]==hashlib.sha256(Path(artifact["path"]).read_bytes()).hexdigest()
++
++
++def test_real_native_partition_parity_and_closed_lifecycle_inventory(tmp_path):
++    from test_native_sol_corridor import Observed,config,engine,Episode
++    from test_native_episode_risk import marks
++    class Load(Observed):
++        generated=0;target=0
++        def _conditional_check(self,q):pass
++        def on_quote_tick(self,q):
++            super().on_quote_tick(q)
++            if q.instrument_id!=SOL_PERP.id or self.generated>=self.target:return
++            add=self.generated%2==0
++            i=self._domain._intent(self._domain.episode,"SOL_ADD" if add else "SOL_EXIT",
++                -1 if add else 1,None,quantity=.1,reason="CONDITIONAL_NET_ADD" if add else "CONDITIONAL_NET_EXIT")
++            if add:self._conditional["original_attempts"][i.id]=()
++            self._conditional_physical=True
++            try:self._submit_intent(i,100,100,None,0,ts_now=q.ts_event)
++            finally:self._conditional_physical=False
++            self.generated+=1
++    outputs=[]
++    for partition in (7,60,400):
++        s=Load(config());e=engine(s,rate="1000000/00:00:01")
++        a=NativeAuditArchive(tmp_path/f"partition-{partition}.sqlite",s)
++        try:
++            run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)]);marks(s,2)
++            s._domain.episode=Episode("storage-load",1,10000,1,h=10000);s._conditional_state(2);s.target=400
++            while s.generated<s.target:
++                first=s.generated+10
++                run_ticks(e,[tick(SOL_PERP,t) for t in range(first,first+min(partition,s.target-s.generated))])
++                a.capture(e,s.generated+10)
++            assert a.count("position")+a.count("position_snapshot")==200
++            assert a.count("order")==400 and a.count("account")==401
++            assert not e.cache.orders() and not e.cache.positions() and not s._pending_by_order
++            assert len(s._domain.episode.pending)==0
++            cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
++            assert cash==D(9996)
++            outputs.append((list(s.fill_audit),list(CashRows(a)),cash,s._rf_peak))
++        finally:a.close();e.end();e.dispose()
++    assert outputs[0]==outputs[1]==outputs[2]
++
++
++def test_closed_NETTING_position_keeps_forced_or_unresolved_native_refs(tmp_path):
++    from nautilus_trader.model.enums import OrderSide,TimeInForce
++    s,e,ep=setup()
++    a=NativeAuditArchive(tmp_path/"refs.sqlite",s)
++    try:
++        original(s,e,ep,20,ts=30);advance(s,e,31);close(s,e)
++        position=next(p for p in e.cache.positions_closed() if p.instrument_id==SOL_PERP.id)
++        order=s.order_factory.limit(SOL_PERP.id,OrderSide.BUY,SOL_PERP.make_qty(.1),
++            SOL_PERP.make_price(1),time_in_force=TimeInForce.GTC,reduce_only=True)
++        e.cache.add_order(order)
++        s._forced_close_orders.add(str(order.client_order_id))
++        a.capture(e,100000000000000)
++        assert e.cache.position(position.id) is position
++        assert e.cache.order(order.client_order_id) is order
++    finally:a.close();e.end();e.dispose()
++

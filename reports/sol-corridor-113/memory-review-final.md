@@ -1,0 +1,11 @@
+# Independent memoryfix review: GO
+
+GO for exact hashes in memory-review-final.json, base7d08522. No unresolved blocking finding. Research-only archive/helper and runner integration; strategy/domain unchanged. Reviewer read code, pinned native purge guards and owner evidence; ran no engine or duplicate tests.
+
+Durable SQLite FULL commit precedes supported terminal-only native purges. Mutable order contexts preserve native accept/fill metadata, exact trade-ID dedup remains disk-backed, and open/pending/UNKNOWN orders remain protected. Closed NETTING position purge additionally preserves nonclosed/protected native order references; unmapped protected IDs conservatively block it. Snapshot/position identity now includes native ID plus open/close timestamps, preserving repeated NETTING lifecycles. Native account totals/free/locked/commissions are checked unchanged across purge. No monetary ledger was added.
+
+Streamed native order/fill CSV export follows pinned ReportProvider facts; audit descriptors carry path/count/SHA with unchanged existing policy sampling disclosed. Native initialization plus original archived events reconstructs exact native order.to_dict; corrected fixtures retain cash-flow/fees/rights assertions. Inner/outer packaging and loop failures preserve available native audit; absent completed export is not zero. Legacy OFF schema remains unchanged.
+
+Verification covers56 unique connected cases in aggregate:50 initial passes,11 corrected subset passes with overlap,final1 healthy-reader pass. This is not a single fresh56-case pass. Includes late partial/cancel, deferred final-account receipt, Q2/UNKNOWN retention, healthy two-episode monetary/rights parity, exact 7/60/400 partition parity and closed NETTING ref protection.
+
+Actual30k native load archived30000orders/30001accountstates/15000closedcycles with300fee/cash9700. PSS rose360146944 to365146112bytes from10k to30k; final streamed export RSS386084864bytes. Current-source open-position3k check retained all3000native fill events atRSS366198784bytes. Supported purge cannot discard active native position history; that retained history remains a measured residual risk. No universal memory ceiling or economic-result guarantee is claimed. Root immutable-package/resource/internal one-repeat launch gates remain required.

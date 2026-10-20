@@ -1,0 +1,134 @@
+[
+  {
+    "generated": 0,
+    "memory": {
+      "Rss": 356229120,
+      "Pss": 339461120,
+      "Private_Dirty": 159600640
+    },
+    "cash": "10000",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 0,
+    "native_snapshots": 0,
+    "disk_orders": 0,
+    "disk_account_events": 0,
+    "closed_lifecycles": 0,
+    "risk_rows": 0,
+    "fill_rows": 0,
+    "mutable_contexts": 0,
+    "db_bytes": 40960,
+    "active_native_fill_events": 0,
+    "domain_pending": 0,
+    "largest_strategy_containers": [
+      [
+        "_conditional",
+        15
+      ],
+      [
+        "terminal_lifecycle",
+        5
+      ],
+      [
+        "_latest_marks",
+        2
+      ],
+      [
+        "split_parent_audit",
+        0
+      ],
+      [
+        "cover_audit",
+        0
+      ]
+    ]
+  },
+  {
+    "generated": 1000,
+    "memory": {
+      "Rss": 362655744,
+      "Pss": 345791488,
+      "Private_Dirty": 165240832
+    },
+    "cash": "9989.99",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 1,
+    "native_snapshots": 0,
+    "disk_orders": 1000,
+    "disk_account_events": 1001,
+    "closed_lifecycles": 0,
+    "risk_rows": 1500,
+    "fill_rows": 1000,
+    "mutable_contexts": 0,
+    "db_bytes": 5849088,
+    "active_native_fill_events": 1000,
+    "domain_pending": 0,
+    "largest_strategy_containers": [
+      [
+        "_conditional",
+        15
+      ],
+      [
+        "_rf_final_receipt",
+        5
+      ],
+      [
+        "terminal_lifecycle",
+        5
+      ],
+      [
+        "_latest_marks",
+        2
+      ],
+      [
+        "split_parent_audit",
+        0
+      ]
+    ]
+  },
+  {
+    "generated": 3000,
+    "memory": {
+      "Rss": 366198784,
+      "Pss": 349335552,
+      "Private_Dirty": 168783872
+    },
+    "cash": "9969.99",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 1,
+    "native_snapshots": 0,
+    "disk_orders": 3000,
+    "disk_account_events": 3001,
+    "closed_lifecycles": 0,
+    "risk_rows": 4500,
+    "fill_rows": 3000,
+    "mutable_contexts": 0,
+    "db_bytes": 17473536,
+    "active_native_fill_events": 3000,
+    "domain_pending": 0,
+    "largest_strategy_containers": [
+      [
+        "_conditional",
+        15
+      ],
+      [
+        "_rf_final_receipt",
+        5
+      ],
+      [
+        "terminal_lifecycle",
+        5
+      ],
+      [
+        "_latest_marks",
+        2
+      ],
+      [
+        "split_parent_audit",
+        0
+      ]
+    ]
+  }
+]

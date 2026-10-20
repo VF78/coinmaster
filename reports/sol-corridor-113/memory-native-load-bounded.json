@@ -1,0 +1,123 @@
+[
+  {
+    "generated": 0,
+    "memory": {
+      "Rss": 354762752,
+      "Pss": 338077696,
+      "Private_Dirty": 156966912
+    },
+    "cash": "10000",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 0,
+    "native_snapshots": 0,
+    "disk_orders": 0,
+    "disk_account_events": 0,
+    "closed_lifecycles": 0,
+    "risk_rows": 0,
+    "fill_rows": 0,
+    "mutable_contexts": 0,
+    "db_bytes": 40960
+  },
+  {
+    "generated": 1000,
+    "memory": {
+      "Rss": 363679744,
+      "Pss": 346904576,
+      "Private_Dirty": 164667392
+    },
+    "cash": "9990",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 0,
+    "native_snapshots": 0,
+    "disk_orders": 1000,
+    "disk_account_events": 1001,
+    "closed_lifecycles": 500,
+    "risk_rows": 1500,
+    "fill_rows": 1000,
+    "mutable_contexts": 0,
+    "db_bytes": 6270976
+  },
+  {
+    "generated": 3000,
+    "memory": {
+      "Rss": 367374336,
+      "Pss": 350599168,
+      "Private_Dirty": 168361984
+    },
+    "cash": "9970",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 0,
+    "native_snapshots": 0,
+    "disk_orders": 3000,
+    "disk_account_events": 3001,
+    "closed_lifecycles": 1500,
+    "risk_rows": 4500,
+    "fill_rows": 3000,
+    "mutable_contexts": 0,
+    "db_bytes": 18944000
+  },
+  {
+    "generated": 10000,
+    "memory": {
+      "Rss": 376922112,
+      "Pss": 360146944,
+      "Private_Dirty": 177909760
+    },
+    "cash": "9900",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 0,
+    "native_snapshots": 0,
+    "disk_orders": 10000,
+    "disk_account_events": 10001,
+    "closed_lifecycles": 5000,
+    "risk_rows": 15000,
+    "fill_rows": 10000,
+    "mutable_contexts": 0,
+    "db_bytes": 63295488
+  },
+  {
+    "generated": 30000,
+    "memory": {
+      "Rss": 381878272,
+      "Pss": 365146112,
+      "Private_Dirty": 203186176
+    },
+    "cash": "9700",
+    "account_events": 1,
+    "native_orders": 0,
+    "native_positions": 0,
+    "native_snapshots": 0,
+    "disk_orders": 30000,
+    "disk_account_events": 30001,
+    "closed_lifecycles": 15000,
+    "risk_rows": 45000,
+    "fill_rows": 30000,
+    "mutable_contexts": 0,
+    "db_bytes": 190496768
+  },
+  {
+    "stage": "finite_export",
+    "memory": {
+      "Rss": 386084864,
+      "Pss": 369068032,
+      "Private_Dirty": 203448320
+    },
+    "exports": {
+      "orders": {
+        "path": "reports/sol-corridor-113/memory-load-orders.csv",
+        "sha256": "ac1818350671574f31e818c1662a3f1ce2860d7123795620a17a9467f8791473",
+        "rows": 30000
+      },
+      "fills": {
+        "path": "reports/sol-corridor-113/memory-load-fills.csv",
+        "sha256": "82cb4e1edbce0be6da0e7e811099a7f782a886695d0f3751fd741fa4950b1a92",
+        "rows": 30000
+      }
+    },
+    "archive_sha": "f038bc699dd652011ddcfc6efc8c8b2eb0b752acb36b89641b19ac830abbac2d"
+  }
+]

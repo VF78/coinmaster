@@ -1,0 +1,81 @@
+{
+  "status": "STREAMCOPY_MEASUREMENT_ONLY_NO_SOURCE_OR_ENGINE",
+  "source": "reports/sol-corridor-113/memory-native-load-bounded.sqlite",
+  "target": "reports/sol-corridor-113/memory-native-load-bundle-measure.sqlite",
+  "archive_bytes": 85483520,
+  "gzip_pair_bytes": 2993934,
+  "per_fill_bytes_archive_plus_gzip": 2949.2484666666664,
+  "physical_native_counts": {
+    "account": 30001,
+    "order": 30000,
+    "position": 300,
+    "position_snapshot": 14700
+  },
+  "exact_lossless_proof": {
+    "rows": {
+      "rows": 75000,
+      "original_sha": "8fc7759e68bf57e5a731650dd2fe1d7ae73adbb3cece7c8048f5682158934581",
+      "decoded_sha": "8fc7759e68bf57e5a731650dd2fe1d7ae73adbb3cece7c8048f5682158934581",
+      "equal": true
+    },
+    "trade_ids": {
+      "rows": 30000,
+      "original_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "decoded_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "equal": true
+    },
+    "contexts": {
+      "rows": 30000,
+      "original_sha": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "decoded_sha": "c1210ad2073a4a57c14f4f53cc06ec93bc399dbadba60a31becacc841ecf3b4a",
+      "equal": true
+    },
+    "orders": {
+      "rows": 30000,
+      "original_sha": "9289eba41553279d8dbf24dace5ed91bab9f584d45f665ac66be6fb51a60c2d1",
+      "decoded_sha": "9289eba41553279d8dbf24dace5ed91bab9f584d45f665ac66be6fb51a60c2d1",
+      "equal": true
+    },
+    "order_events": {
+      "logical_rows": 90000,
+      "original_sha": "d0cd1a7d602662b4c475b69fa585332e2665626c334cb4842f3c3c6884ccc11b",
+      "decoded_sha": "d0cd1a7d602662b4c475b69fa585332e2665626c334cb4842f3c3c6884ccc11b",
+      "equal": true
+    },
+    "other_native": {
+      "rows": 45001,
+      "original_sha": "0a48c79413f29f16111f41b62bb48ec4a081805490367a4f19fa61fba8db304f",
+      "decoded_sha": "0a48c79413f29f16111f41b62bb48ec4a081805490367a4f19fa61fba8db304f",
+      "equal": true
+    }
+  },
+  "elapsed_seconds": 48.263874961063266,
+  "free_disk_bytes": 3821162496,
+  "scenarios": [
+    {
+      "native_fills": 250000,
+      "archive_plus_gzip": 737312116.6666666,
+      "extra_allowance_bytes": 734003200,
+      "total": 1471315316.6666665
+    },
+    {
+      "native_fills": 500000,
+      "archive_plus_gzip": 1474624233.3333333,
+      "extra_allowance_bytes": 734003200,
+      "total": 2208627433.333333
+    },
+    {
+      "native_fills": 1051200,
+      "archive_plus_gzip": 3100249988.16,
+      "extra_allowance_bytes": 734003200,
+      "total": 3834253188.16
+    },
+    {
+      "native_fills": 2102400,
+      "archive_plus_gzip": 6200499976.32,
+      "extra_allowance_bytes": 734003200,
+      "total": 6934503176.32
+    }
+  ],
+  "caveat": "Real TARGET/TRIM emitted rows per actual physical submission are absent from this synthetic fixture; not a proven exact candidate bytes/fill or quote-guard upper bound."
+}

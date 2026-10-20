@@ -1,0 +1,21 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:166: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+tests/test_native_audit_memory.py::test_native_existing_lifecycle_with_archive[test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:350: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 8 warnings in 2.94s

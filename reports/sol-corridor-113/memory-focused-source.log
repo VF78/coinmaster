@@ -1,0 +1,141 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+____ test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-676/test_native_archive_orders_fil0')
+
+    def test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate(tmp_path):
+        results=[]
+        for archived in (False, True):
+            s,e,ep=setup()
+            audit=NativeAuditArchive(tmp_path/"audit.sqlite",s) if archived else None
+            seen=[]
+            try:
+                def boundary(ts):
+                    if audit:
+                        audit.capture(e,ts)
+                    seen.append((str(s._v3_equity()),str(s._rf_peak),str(ep.sol_qty),
+                        dict(ep.sol_add_filled_notional),dict(ep.sol_risk_retired_notional),
+                        sorted(s._pending_by_order),s._rf_fill_epoch,s._rf_dirty))
+                original(s,e,ep,20,ts=30);advance(s,e,31);boundary(31)
+                # Both real positions remain live; order cleanup must not alter them.
+                assert len(e.cache.positions_open())==2
+                stress(s,a="1",u=".1");advance(s,e,32);advance(s,e,33);boundary(33)
+                # Mutable acceptance context survives archival, and exact duplicate
+                # native receipt is still filtered after its terminal order is gone.
+                if audit:
+                    body=audit.db.execute("SELECT payload FROM native WHERE kind='order_event' AND json_extract(payload,'$.type')='OrderFilled' LIMIT 1").fetchone()[0]
+                    from nautilus_trader.model.events import OrderFilled
+                    event=OrderFilled.from_dict(json.loads(body));before=s._rf_fill_epoch
+                    s.on_order_filled(event)
+                    assert s._rf_fill_epoch==before
+                    assert str(event.client_order_id) in s._order_audit
+                close(s,e)
+                boundary(100000000000000)
+                fees=sum(D(row["commission"]) for row in s.fill_audit)
+                cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+                fills=list(s.fill_audit)
+                if audit:
+                    audit.capture(e,100000000000001,final=True);audit.freeze()
+                    paths=[tmp_path/"archived-orders.csv",tmp_path/"archived-fills.csv"]
+                    audit.export_orders(paths[0]);audit.export_orders(paths[1],True)
+                    account_rows=list(CashRows(audit))
+                    times=sorted(FillTimes(audit))
+                    assert not e.cache.orders() and not e.cache.positions()
+                    assert len(e.cache.account_for_venue(BTC_PERP.id.venue).events)==1
+                    descriptor=json.loads(json.dumps(s.fill_audit,default=audit_json_default))
+                    assert descriptor["rows"]==len(fills) and descriptor["sha256"]==hashlib.sha256(audit.path.read_bytes()).hexdigest()
+                else:
+                    paths=[tmp_path/"native-orders.csv",tmp_path/"native-fills.csv"]
+                    e.trader.generate_orders_report().to_csv(paths[0])
+                    e.trader.generate_order_fills_report().to_csv(paths[1])
+                    account=e.trader.generate_account_report(BTC_PERP.id.venue)
+                    account_rows=[dict(timestamp=str(t),active=str(total),reserve="0",total=str(total)) for t,total in account["total"].items()]
+                    times=sorted(o.ts_last for o in e.cache.orders() if o.filled_qty.as_decimal()>0)
+                results.append((seen,fills,cash,fees,account_rows,times,dict(s._order_audit),[frames(p) for p in paths]))
+            finally:
+                if audit:audit.close()
+                e.end();e.dispose()
+        assert results[0][:-1]==results[1][:-1]
+        for expected,actual in zip(results[0][-1],results[1][-1]):
+>           pd.testing.assert_frame_equal(expected,actual,check_dtype=False)
+
+runtime/tests/test_native_audit_memory.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+runtime/.venv/lib/python3.12/site-packages/pandas/_testing/asserters.py:846: in assert_extension_array_equal
+    _testing.assert_almost_equal(
+pandas/_libs/testing.pyx:53: in pandas._libs.testing.assert_almost_equal
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   AssertionError: DataFrame.iloc[:, 29] (column name="init_id") are different
+E   
+E   DataFrame.iloc[:, 29] (column name="init_id") values are different (100.0 %)
+E   [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+E   [left]:  [ebf97349-a259-4aad-90d1-a5932a1f3506, 669c67e5-7c4a-4dff-8976-33cf692d8642, 0c6c093c-4ab3-4948-a483-2d3306e6d886, e09d0d42-5cfc-4b6e-9e4d-13da46a8be7d, fa2828dc-4939-41c4-bfba-2d2b59fd8357, 130662cc-bc58-4804-a0ac-48d19091abb6, 508b4662-cf3d-4763-8911-c3937d96fa71, 4a6254ef-56f9-418f-9f44-ac8d4684fd1c, 38318b17-05be-4f6c-96ec-7f928acccfee]
+E   [right]: [82388f2c-df4e-48b4-a59c-c04de4527d10, ab066054-b989-41f0-aa43-4da61f255458, 6cffb772-c74c-416a-bf46-3362864d0491, 0d40ae75-d21f-42b3-b599-9c45871e4355, 8f07fc2b-2d7c-47b3-b9c7-b5d574452b89, 12c3bea0-b4ec-424f-960d-a48ac8835e48, 77d3dcfa-29d4-4da6-a287-dfbbfe8499e2, 309595bf-a5ab-4018-8cd3-b086ae0e112e, d2620c60-64af-432d-ab0b-0b819775b323]
+E   At positional index 0, first diff: ebf97349-a259-4aad-90d1-a5932a1f3506 != 82388f2c-df4e-48b4-a59c-c04de4527d10
+
+pandas/_libs/testing.pyx:171: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_____________ test_real_production_tiny_corridor_and_raw_identity ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-676/test_real_production_tiny_corr0')
+
+    def test_real_production_tiny_corridor_and_raw_identity(tmp_path):
+        from test_native_baseline import write_streaming_fixture
+        from coinmaster.research.native_baseline import run_native_diagnostic,TRADING_START_MS,MINUTE_MS
+        from coinmaster.domain.wave_overlay import Candidate
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+        start,end=write_streaming_fixture(tmp_path,trading_days=1);shift=TRADING_START_MS-start
+        for path in (tmp_path/'normalized').glob('*.parquet'):
+            rows=pq.read_table(path).to_pylist()
+            for row in rows:row['open_time_ms']+=shift
+            pq.write_table(pa.Table.from_pylist(rows),path)
+        result=run_native_diagnostic(tmp_path,candidate=Candidate(btc_notional_multiplier=7.875,max_parent_notional=30_000_000),trading_start_ms=TRADING_START_MS,trading_end_ms=TRADING_START_MS+2*MINUTE_MS,warmup_start_ms=shift,
+            research_v0_execution_repairs=True,research_v0_deferred_selective_zero_tp=True,research_v0_selective_lifecycle_repairs=True,research_btc_direction_sizing=True,research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,
+            research_sol_risk_first="alpha-corridor-v1",observe_minute_risk=True,artifact_dir=tmp_path/'production')
+        assert result['config']['research_sol_risk_first']=='alpha-corridor-v1' and result['config']['candidate']['sol_overlay_enabled']
+>       assert isinstance(result['risk_first_sol_audit'],list) and 'risk_first_sol' in result['source_hashes']
+E       AssertionError: assert (False)
+E        +  where False = isinstance({'completeness': 'ALL_ARCHIVED_ROWS_NO_SAMPLING', 'kind': 'risk_first_sol_audit', 'path': '/tmp/pytest-of-root/pytest-676/test_real_production_tiny_corr0/production/native-diagnostic-native-audit.sqlite', 'rows': 0, ...}, list)
+
+runtime/tests/test_native_sol_corridor.py:291: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_audit_memory.py: 8 warnings
+tests/test_native_sol_corridor.py: 4 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:350: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_audit_memory.py:70: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_real_production_tiny_corridor_and_raw_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:894: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_sol_corridor.py::test_real_production_tiny_corridor_and_raw_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:925: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_audit_memory.py::test_native_archive_orders_fills_cash_fees_rights_and_exact_duplicate
+FAILED runtime/tests/test_native_sol_corridor.py::test_real_production_tiny_corridor_and_raw_identity
+2 failed, 1 passed, 18 warnings in 4.33s

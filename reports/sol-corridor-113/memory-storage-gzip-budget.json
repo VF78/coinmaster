@@ -1,0 +1,58 @@
+{
+  "no_engine": true,
+  "no_source_edit": true,
+  "gzip": [
+    {
+      "source": "reports/sol-corridor-113/memory-load-orders.csv",
+      "gzip": "reports/sol-corridor-113/memory-load-orders.csv.gz",
+      "source_bytes": 9305154,
+      "gzip_bytes": 1465869,
+      "exact_decoded_sha256": "ac1818350671574f31e818c1662a3f1ce2860d7123795620a17a9467f8791473",
+      "seconds": 0.4272558195516467
+    },
+    {
+      "source": "reports/sol-corridor-113/memory-load-fills.csv",
+      "gzip": "reports/sol-corridor-113/memory-load-fills.csv.gz",
+      "source_bytes": 11127114,
+      "gzip_bytes": 1528065,
+      "exact_decoded_sha256": "82cb4e1edbce0be6da0e7e811099a7f782a886695d0f3751fd741fa4950b1a92",
+      "seconds": 0.4062163708731532
+    }
+  ],
+  "gzip_pair_bytes": 2993934,
+  "zlib_archive_plus_gzip_bytes_per_fill": 4099.9514,
+  "cases": [
+    {
+      "fills": 100000,
+      "archive_plus_gzip_bytes": 409995140.0,
+      "reserve_and_trace_bytes": 734003200,
+      "total_with_700MiB_allowance": 1143998340.0
+    },
+    {
+      "fills": 250000,
+      "archive_plus_gzip_bytes": 1024987850.0,
+      "reserve_and_trace_bytes": 734003200,
+      "total_with_700MiB_allowance": 1758991050.0
+    },
+    {
+      "fills": 500000,
+      "archive_plus_gzip_bytes": 2049975700.0,
+      "reserve_and_trace_bytes": 734003200,
+      "total_with_700MiB_allowance": 2783978900.0
+    },
+    {
+      "fills": 1051200,
+      "archive_plus_gzip_bytes": 4309868911.68,
+      "reserve_and_trace_bytes": 734003200,
+      "total_with_700MiB_allowance": 5043872111.68
+    },
+    {
+      "fills": 2102400,
+      "archive_plus_gzip_bytes": 8619737823.36,
+      "reserve_and_trace_bytes": 734003200,
+      "total_with_700MiB_allowance": 9353741023.36
+    }
+  ],
+  "free_disk_bytes": 3898068992,
+  "status": "INSUFFICIENT_FOR_CONSERVATIVE_WHOLE_PERIOD_CHURN_BOUND"
+}
