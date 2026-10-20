@@ -1,0 +1,37 @@
+{
+  "phase": "RUNNING_ONE_ECONOMIC_RUN",
+  "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "job_dir": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "native_engine_python_PID": 194172,
+  "systemd_flock_MainPID": 194167,
+  "invocation": "a40a9cbb20d2475e9d1583b15aa0f804",
+  "first_actual_feed": "2024-09-01T00:01:00Z",
+  "economic_run_count": 1,
+  "economic_result": "UNKNOWN_UNTIL_COMPLETED_EXPORTS",
+  "progress_is_provisional_stored_native_samples": true,
+  "source_commit": "f2ebdce94ac6a837712445a50895b6d3eefb3c44",
+  "pilot_unchanged_PID": 2009732,
+  "progress_snapshot": {
+    "status": "PROVISIONAL_NATIVE_TRACE_PROGRESS",
+    "observed_utc": "2026-10-20T11:32:32.230559+00:00",
+    "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+    "engine_PID": 194167,
+    "reader_PID": 194689,
+    "engine_alive": true,
+    "compressed_bytes_consumed_once": 2460942,
+    "native_sample_rows": 79677,
+    "counted_SOL_quote_minutes": 26559,
+    "last_stored_native_sample": {
+      "close_available_ns": "1726742340000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "7124.72205546",
+      "paired_close_equity": "6971.54137184"
+    },
+    "provisional_stored_native_peak": "12456.71194384",
+    "provisional_native_DD_lower_bound_percent": "45.61589112036855675236757077",
+    "current_engine_RSS_bytes": 2109440,
+    "gzip_complete": false,
+    "limitations": "Stored trace phases are observed native values; settlement NOT certified here. Equity and DD provisional/lower-bound until complete durable audit validation. No price/PnL model, no reread.",
+    "last_sample_UTC": "2024-09-19T10:39:00+00:00"
+  }
+}

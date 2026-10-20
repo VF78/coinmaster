@@ -1,0 +1,4 @@
+Oct 20 11:21:53 MyShopAI-prod-1 systemd[1]: Started cm113-alpha-corridor-v1-native24m-20261020T111659Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z/launch.sh.
+Oct 20 11:22:07 MyShopAI-prod-1 systemd[1]: cm113-alpha-corridor-v1-native24m-20261020T111659Z.service: Main process exited, code=exited, status=1/FAILURE
+Oct 20 11:22:07 MyShopAI-prod-1 systemd[1]: cm113-alpha-corridor-v1-native24m-20261020T111659Z.service: Failed with result 'exit-code'.
+Oct 20 11:22:07 MyShopAI-prod-1 systemd[1]: cm113-alpha-corridor-v1-native24m-20261020T111659Z.service: Consumed 13.060s CPU time, 492.0K memory peak, 0B memory swap peak.

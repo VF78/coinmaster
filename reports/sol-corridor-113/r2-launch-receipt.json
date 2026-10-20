@@ -1,0 +1,63 @@
+{
+  "status": "DISPATCH_RETURNED_FEED_CONFIRMED",
+  "unit": "cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "job_dir": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+  "utc": "2026-10-20T11:27:58.966821+00:00",
+  "command_sha256": "766e4f5190e9328cc3f9edac30ece7a1d803cb97e4f5f9f0339fabb9a78b2a8b",
+  "command": [
+    "systemd-run",
+    "--unit=cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+    "--collect",
+    "--property=User=994",
+    "--property=Group=986",
+    "--property=WorkingDirectory=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+    "--property=Slice=cm113-v3-risk.slice",
+    "--property=MemoryMax=650M",
+    "--property=MemorySwapMax=0",
+    "--property=TasksMax=64",
+    "--property=CPUWeight=10",
+    "--property=Nice=10",
+    "--property=PrivateNetwork=yes",
+    "--property=ProtectHome=yes",
+    "--property=ProtectSystem=strict",
+    "--property=NoNewPrivileges=yes",
+    "--property=UMask=0077",
+    "--property=ReadWritePaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock",
+    "--property=BindReadOnlyPaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/.venv /root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/var/data",
+    "/bin/sh",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/launch.sh"
+  ],
+  "MemAvailable_bytes": 1211179008,
+  "disk_free_bytes": 4291166208,
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "namespace_profile_preflight": "PASS35+35_NO_ENGINE",
+  "interrupted_startup_excluded": "111659Z had no BacktestEngine/feed; preserved separately",
+  "no_retry": true,
+  "dispatch_returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: cm113-alpha-corridor-v1-native24m-20261020T112508Z.service; invocation ID: a40a9cbb20d2475e9d1583b15aa0f804\n",
+  "systemd_initial": "MainPID=194167\nNRestarts=0\nExecMainStartTimestamp=Tue 2026-10-20 11:27:59 UTC\nMemoryCurrent=1368064\nActiveState=active\nInvocationID=a40a9cbb20d2475e9d1583b15aa0f804\n",
+  "systemd_after_startup": "MainPID=194167\nNRestarts=0\nMemoryCurrent=419348480\nActiveState=active\nSubState=running\nInvocationID=a40a9cbb20d2475e9d1583b15aa0f804\n",
+  "first_actual_feed": {
+    "trace": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/minute-native-risk.csv.gz",
+    "compressed_bytes_seen": 34624,
+    "header": "bar_open_ms,close_available_ns,phase,cash,free_cash,native_initial_margin,native_maintenance_margin,paired_close_equity,conditional_adverse_equity,conditional_favorable_equity,conditional_high_mark_mm_upper,conditional_margin_breach,native_positions_and_mark_ohlc_json",
+    "first_actual_native_row": "1725148800000,1725148860000000000,pre_quote_paired_close,10000,10000,0,0,10000,10000,10000,0,False,[]"
+  },
+  "fresh_journal_files": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801",
+      "bytes": 4096
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-wal",
+      "bytes": 37112
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-0e5928b1495c4d53af1a114401bad801-shm",
+      "bytes": 32768
+    }
+  ],
+  "run_log_tail": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/coinmaster/research/native_baseline.py:888: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.\n  engine.run(streaming=True)\n",
+  "receipt_utc": "2026-10-20T11:28:16.426786+00:00"
+}

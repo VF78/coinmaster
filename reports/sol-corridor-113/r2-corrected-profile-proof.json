@@ -1,0 +1,58 @@
+{
+  "utc": "2026-10-20T11:25:08.700604+00:00",
+  "profile_files": [
+    {
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/venue-manifest.json",
+      "winner_source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/source/runtime/var/venue-manifest.json",
+      "destination": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/var/venue-manifest.json",
+      "sha256": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+      "winner_byte_identity": true
+    },
+    {
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json",
+      "winner_source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/source/runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json",
+      "destination": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json",
+      "sha256": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+      "winner_byte_identity": true
+    },
+    {
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json",
+      "winner_source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/source/runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json",
+      "destination": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json",
+      "sha256": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+      "winner_byte_identity": true
+    }
+  ],
+  "preflight_command": [
+    "systemd-run",
+    "--wait",
+    "--pipe",
+    "--unit=cm113-alpha-corridor-v1-native24m-20261020T112508Z-preflight",
+    "--collect",
+    "--property=User=994",
+    "--property=Group=986",
+    "--property=WorkingDirectory=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z",
+    "--property=Slice=cm113-v3-risk.slice",
+    "--property=MemoryMax=650M",
+    "--property=MemorySwapMax=0",
+    "--property=TasksMax=64",
+    "--property=CPUWeight=10",
+    "--property=Nice=10",
+    "--property=PrivateNetwork=yes",
+    "--property=ProtectHome=yes",
+    "--property=ProtectSystem=strict",
+    "--property=NoNewPrivileges=yes",
+    "--property=UMask=0077",
+    "--property=ReadWritePaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock",
+    "--property=BindReadOnlyPaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/.venv /root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/var/data",
+    "/bin/sh",
+    "-c",
+    "sha256sum -c /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source-input-hashes.sha256 >/dev/null && /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/source/runtime/.venv/bin/python /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T112508Z/profile-preflight.py"
+  ],
+  "returncode": 0,
+  "stdout": "{\"status\": \"PASS_NO_ENGINE_OR_REPLAY\", \"tier_rows\": {\"BTCUSDT\": 35, \"SOLUSDT\": 35}, \"profile_hashes\": {\"BTCUSDT\": \"f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab\", \"SOLUSDT\": \"e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9\"}, \"data_hash\": \"7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc\", \"policy_hash\": \"c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834\", \"resolved_config_hash\": \"5c4dd63f05b9e53817369e635e68cda7388cd36859eb5a8d98d2810e571f5bf3\", \"fee_rates\": [\"0.00020\", \"0.00055\"]}\n",
+  "stderr": "Running as unit: cm113-alpha-corridor-v1-native24m-20261020T112508Z-preflight.service; invocation ID: 9218ee8881cf450a9c72c186700ff988\nFinished with result: success\nMain processes terminated with: code=exited/status=0\nService runtime: 3.491s\nCPU time consumed: 3.348s\nMemory peak: 400.0K\nMemory swap peak: 0B\n",
+  "preflight_script_sha256": "6fa916083011c019db8d99011d1db999ec24d033ea8d25f46629b400521514ba",
+  "no_BacktestEngine_constructed": true,
+  "market_rows_replayed": 0
+}
