@@ -1,0 +1,28 @@
+{
+  "schema": "coinmaster.fast-dataset.v1",
+  "module": "runtime/coinmaster/research/fast_dataset.py",
+  "tests": "runtime/tests/test_fast_dataset.py",
+  "arrays": {
+    "features.npy": "float32[N,6,20,6] normalized O,H,L,C,V,MA20",
+    "context.npy": "float32[N,20]",
+    "panel_end_indices.npy": "int32[N,6], inclusive",
+    "panels.npz": "p0..p5_open_ns:int64[M], available_ns:int64[M],values:float64[M,6] raw continuous OHLCV+MA20"
+  },
+  "panels": [
+    "BTC1h",
+    "SOL1h",
+    "BTC4h",
+    "SOL4h",
+    "BTC1d",
+    "SOL1d"
+  ],
+  "samples": "samples.csv; SAMPLE_FIELDS in module; row sample_id=all-array first axis",
+  "first_decision": "2024-09-01T00:00:00Z with genuine warmup",
+  "time": "UTC ns; bars [open,open+duration), available at close; only available<=decision",
+  "labels": "UP0 DOWN1 NONE2 invalid-1; strict future 1m, 72h inclusive; joint ambiguity/censor exclusion",
+  "purge": "full horizon_end_ns < fit cutoff, including internal CNN and OOF",
+  "train_selection": "deterministic linspace <=6000 T decision timestamps BEFORE labels/features masks; no refill",
+  "U": "programmatically saved; aggregate counts only inspected",
+  "resource": "bounded existing ParquetMinuteCursor; asset-at-time temporary numeric OHLCV; only two float64 1m high/low arrays retained (~34MB); no full object DataFrames/images; fullbuild waitsS0complete/resourcegate",
+  "status": "IMPLEMENTED_PENDING_FOCUSED_TESTS"
+}

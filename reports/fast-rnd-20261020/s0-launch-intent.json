@@ -1,0 +1,38 @@
+{
+  "status": "DISPATCH_INTENT_ONCE",
+  "utc": "2026-10-20T17:10:12.900283+00:00",
+  "authorization": "ROOT_GO_75ffc9c; MLenvcomplete + sharedmetricGO + freshresources",
+  "job_name": "cm113-fast-rnd-s0-20261020T170935Z",
+  "head": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "launcher_sha256": "bca28a37baac8c0d1a77bd1ac56a11473f7ef4ff213d2cf0e27d9eb47304bcb4",
+  "command_sha256": "77f58a17cfb37be72a1c1c0acbaa9f86610dd4c3ec839a469e9289171d717c01",
+  "launch_command": [
+    "systemd-run",
+    "--unit=cm113-fast-rnd-s0-20261020T170935Z",
+    "--collect",
+    "--property=User=994",
+    "--property=Group=986",
+    "--property=WorkingDirectory=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z",
+    "--property=Slice=cm113-v3-risk.slice",
+    "--property=MemoryMax=650M",
+    "--property=MemorySwapMax=0",
+    "--property=TasksMax=64",
+    "--property=CPUWeight=10",
+    "--property=Nice=10",
+    "--property=PrivateNetwork=yes",
+    "--property=ProtectHome=yes",
+    "--property=ProtectSystem=strict",
+    "--property=NoNewPrivileges=yes",
+    "--property=UMask=0077",
+    "--property=ReadWritePaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock",
+    "--property=BindReadOnlyPaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/.venv /root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/var/data",
+    "/bin/sh",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/launch.sh"
+  ],
+  "resources": {
+    "MemAvailable_bytes": 1029128192,
+    "disk_free_bytes": 3315277824,
+    "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n"
+  },
+  "economic_run_budget": "0/1 -> dispatch1/1; no automatic retry"
+}

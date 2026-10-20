@@ -1,0 +1,25 @@
+test_each_inner_and_oof_cutoff_is_purged_without_later_epochs (test_fast_cnn.RendererProtocolTests.test_each_inner_and_oof_cutoff_is_purged_without_later_epochs) ... ERROR
+test_epoch_choice_refits_best_checkpoint_not_patience_tail (test_fast_cnn.RendererProtocolTests.test_epoch_choice_refits_best_checkpoint_not_patience_tail) ... ok
+test_fit_gate_precedes_any_dataset_or_torch_access (test_fast_cnn.RendererProtocolTests.test_fit_gate_precedes_any_dataset_or_torch_access) ... ok
+test_lazy_batches_original_rows_and_train_only_context (test_fast_cnn.RendererProtocolTests.test_lazy_batches_original_rows_and_train_only_context) ... ok
+test_preview_is_unlabeled_train_only_png (test_fast_cnn.RendererProtocolTests.test_preview_is_unlabeled_train_only_png) ... ok
+test_renderer_binary_ohlc_volume_and_blank_divider (test_fast_cnn.RendererProtocolTests.test_renderer_binary_ohlc_volume_and_blank_divider) ... ok
+test_renderer_rejects_invalid_shared_features (test_fast_cnn.RendererProtocolTests.test_renderer_rejects_invalid_shared_features) ... ok
+test_torch_lazy_import_and_cli_plan_never_read_dataset (test_fast_cnn.RendererProtocolTests.test_torch_lazy_import_and_cli_plan_never_read_dataset) ... ok
+test_fixed_forward_and_synthetic_backward_no_optimizer_or_weight_update (test_fast_cnn.ZFixedShapeTests.test_fixed_forward_and_synthetic_backward_no_optimizer_or_weight_update) ... ok
+
+======================================================================
+ERROR: test_each_inner_and_oof_cutoff_is_purged_without_later_epochs (test_fast_cnn.RendererProtocolTests.test_each_inner_and_oof_cutoff_is_purged_without_later_epochs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_fast_cnn.py", line 72, in test_each_inner_and_oof_cutoff_is_purged_without_later_epochs
+    train, test, it, iv, cutoff, end, inner = partitions(rows, lock, fold)
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/fast_cnn.py", line 173, in partitions
+    raise ValueError("CNN_EMPTY_PURGED_INNER_PARTITION")
+ValueError: CNN_EMPTY_PURGED_INNER_PARTITION
+
+----------------------------------------------------------------------
+Ran 9 tests in 10.222s
+
+FAILED (errors=1)

@@ -1,0 +1,8 @@
+Running as unit: cm-fast-dataset-build-173034.service; invocation ID: a5165d86174b411eb0dbb320765cdac0
+{"schema": "coinmaster.fast-dataset.v1", "counts": {"T": {"samples": 10512, "features_valid": 10512, "eligible": 10512, "ambiguous": 0, "censored": 0, "selected_train": 6000, "fit_eligible": 5959}, "V": {"samples": 3504, "features_valid": 3504, "eligible": 3504, "ambiguous": 0, "censored": 0, "selected_train": 0, "fit_eligible": 3432}, "U": {"samples": 3504, "features_valid": 3504, "eligible": 3433, "ambiguous": 0, "censored": 71, "selected_train": 0, "fit_eligible": 3432}}, "output": "runtime/var/research-datasets/fast-rnd-20261020-v1"}
+Finished with result: success
+Main processes terminated with: code=exited/status=0
+Service runtime: 41.814s
+CPU time consumed: 40.092s
+Memory peak: 684.0K
+Memory swap peak: 0B

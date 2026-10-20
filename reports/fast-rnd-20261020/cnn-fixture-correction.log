@@ -1,0 +1,6 @@
+test_each_inner_and_oof_cutoff_is_purged_without_later_epochs (test_fast_cnn.RendererProtocolTests.test_each_inner_and_oof_cutoff_is_purged_without_later_epochs) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.063s
+
+OK

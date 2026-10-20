@@ -1,0 +1,42 @@
+{
+  "status": "STABLE_ENGINE_EXITED",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z",
+  "source_count": 72,
+  "input_count": 13,
+  "source_manifest_sha256": "2487e10824fcda8745358521a4db7a5d1160e22028349d6634692ca7ffebf82f",
+  "input_manifest_sha256": "b8b3e5162e5eac52762cf2470910e1c133d66b46a0c2ec51e822f07820f60f0e",
+  "files": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-orders.csv": {
+      "bytes": 265856,
+      "sha256": "737f137a681674712b6626a46cf3abd150c78d3abc4354b3e6c6b9c10a557b6d"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-risk.csv.gz": {
+      "bytes": 75715744,
+      "sha256": "08aa230c05f0553a762d3350e0729b03bb3d17782ccb948776a44c881c4f4d33"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite": {
+      "bytes": 237568,
+      "sha256": "de32e6df8f855f72b557e64c08f227239d32540908e7d7af185609654c555684"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz": {
+      "bytes": 37417891,
+      "sha256": "780efb8da2c71189ebf5feb61c555137c99154e09f709de8c5b10ff19d0f32d3"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-raw-native.json": {
+      "bytes": 2119302,
+      "sha256": "4b284a653aac056bfd74de21971f3647fdee1f97ca9095f27f1dc2e8d9b42237"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv": {
+      "bytes": 245967,
+      "sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-risk-summary.json": {
+      "bytes": 14961,
+      "sha256": "5d9359cae2e73490277135b7d8ede2f4b3572654be5b2a1b84649fa243e72651"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json": {
+      "bytes": 1396782,
+      "sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa"
+    }
+  }
+}

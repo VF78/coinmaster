@@ -9,7 +9,6 @@
     "native_terminal_TOTAL": "6077107.23887483",
     "native_observed_marked_DD_percent": "66.31878024969152066570091116",
     "conditional_OHLC_bound_percent": "67.54771031869252420136632742",
-    "legacy_cash_DD_percent_NOT_SELECTION": "0.3789928254391618089349041484",
     "historical_status": "NOT_FAITHFUL_DIAGNOSTIC",
     "original_SOL": true,
     "no_CORRIDOR_or_other_SOL_research": true,
@@ -54,7 +53,10 @@
     "native_version": "1.231",
     "direction_size": "BTC_LONG5.5_SHORT7.875;parentcap30M;split50discount0.0025PLANREFv1TPIOC",
     "fee_model": "Fixed native maker0.00020/taker0.00055, multiplier1, adverse spread0; executioncloseproxy/L2slippageUNKNOWN; historicalfeeapplicabilityUNKNOWN",
-    "margin": "Public35tierBybitprofiles;BTCleverage40/SOL20;native1mpriorvenueMark funding; automaticliquidationnotvalidated"
+    "margin": "Public35tierBybitprofiles;BTCleverage40/SOL20;native1mpriorvenueMark funding; automaticliquidationnotvalidated",
+    "legacy_cash_max_absolute_drop_fraction_NOT_SELECTION": "0.3789928254391618089349041484",
+    "legacy_cash_max_absolute_drop_percent_NOT_SELECTION": "37.89928254391618089349041484",
+    "legacy_cash_stat_qualification": "Archived field max_drawdown_percent is fraction; standard_drawdown selects greatest absolute drop then its peak-relative fraction, not maximum relative cash DD. Original archive unchanged. Earlier preflight percent label was incorrect."
   },
   "funding_preflight": {
     "module_ast_equal_selected_winner": true,

@@ -1,0 +1,111 @@
+{
+  "status": "COMPLETE_FULL_DATASET_VALIDATED_AGGREGATE_ONLY",
+  "tests": {
+    "passed": 5,
+    "seconds": 2.7,
+    "scope": "320MiB/swap0/nice15/singlethread; initialMemAvailable705265664",
+    "coverage": [
+      "UTC leftclosed aggregation and exact close availability",
+      "future feature perturbation invariance and gap refusal",
+      "MA20 ancestry/normalization/zero volume/169closes",
+      "future barrier order/ambiguity/horizon censor",
+      "selection beforelabels no refill/fullhorizon strictpurge",
+      "tiny4day realParquet cursor endtoend exact shared schema/alignment/provenance"
+    ]
+  },
+  "hashes": {
+    "runtime/coinmaster/research/fast_dataset.py": "dc49bd88091ab949a9bfed7b5d9b2f4100994b28e9344bc63a35e30598236383",
+    "runtime/tests/test_fast_dataset.py": "408f06c7887f62d78e9e34481155589d00664df52f54ad30ad946a6120d57956",
+    "reports/fast-rnd-20261020/dataset-tests.log": "a9f3dd7cb193f65f7020838e3a1b6098fe0adafc09b86ace2b0985db2a46e9d7",
+    "reports/fast-rnd-20261020/dataset-contract.json": "92403c858a42a8e4eb0bfc99c7ab9cb16a1fd3d2ab7c0b243a9940a6bfd23b68"
+  },
+  "no_market_dataset_build": false,
+  "no_model_fit": true,
+  "U_details_inspected": false,
+  "build_command": [
+    "runtime/.venv/bin/python",
+    "-m",
+    "coinmaster.research.fast_dataset",
+    "--data-root",
+    "runtime/var/data",
+    "--repo",
+    "/root/.openclaw/workspace/coinmaster/coinmaster",
+    "--lock",
+    "reports/fast-rnd-20261020/experiment-lock.json",
+    "--output",
+    "runtime/var/research-datasets/fast-rnd-20261020-v1"
+  ],
+  "resource_plan": "full build after S0 completes under512MiB/swap0/singlethread/nice15; boundedArrowcursor; only34MB twoassets1m high/low retained; featuresmemmap (~50MB); temporaryOHLCV oneasset at a time; no fullDataFrames/images",
+  "dataset_dir": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-datasets/fast-rnd-20261020-v1",
+  "dataset_manifest_sha256": "8f51abe51ddb15e95421549279cb8e32121b8797f43e0af9385e6df5e4a7329c",
+  "counts": {
+    "T": {
+      "samples": 10512,
+      "features_valid": 10512,
+      "eligible": 10512,
+      "ambiguous": 0,
+      "censored": 0,
+      "selected_train": 6000,
+      "fit_eligible": 5959
+    },
+    "V": {
+      "samples": 3504,
+      "features_valid": 3504,
+      "eligible": 3504,
+      "ambiguous": 0,
+      "censored": 0,
+      "selected_train": 0,
+      "fit_eligible": 3432
+    },
+    "U": {
+      "samples": 3504,
+      "features_valid": 3504,
+      "eligible": 3433,
+      "ambiguous": 0,
+      "censored": 71,
+      "selected_train": 0,
+      "fit_eligible": 3432
+    }
+  },
+  "artifact_shapes": {
+    "features": [
+      17520,
+      6,
+      20,
+      6
+    ],
+    "context": [
+      17520,
+      20
+    ],
+    "panel_end_indices": [
+      17520,
+      6
+    ]
+  },
+  "artifacts": {
+    "context.npy": {
+      "sha256": "59b2346b66bb1fb6d3e3163f31477215886990e09cd5b2f1de4487257930097b",
+      "bytes": 1401728
+    },
+    "panels.npz": {
+      "sha256": "100ebbb84a72b49eee12d97a782cc59e4d6e950274d9deced34d4b414399226d",
+      "bytes": 3347966
+    },
+    "features.npy": {
+      "sha256": "0389f2c3ca3464ee4875e4bba3f11a05511bffd831b81ac9c3be3f4438eeea44",
+      "bytes": 50457728
+    },
+    "panel_end_indices.npy": {
+      "sha256": "8cd8e7acf07a82781c777ec4b21e74d4cc4cf898cd13f6ef4d2f9f536d636c76",
+      "bytes": 420608
+    },
+    "samples.csv": {
+      "sha256": "e23ecd2340b202f46349d1f73c3f07a4729402cde77360adce7fb945a08e74d0",
+      "bytes": 2069939
+    }
+  },
+  "inputs_sha_validation": "7/7 PASS including lock; artifact hashes all PASS; 17520 sampleID/timestamp rows exact",
+  "U_details_inspected_in_builder": false,
+  "holdout_caveat": "Earlier accidental archivedBTC-onlynestedUtooloutput remains recorded in s0-preflight; this builder inspected no U outcomes beyond aggregate eligibility counts."
+}

@@ -1,0 +1,9 @@
+Running as unit: cm-fast-dataset-tests-172036.service; invocation ID: 4065130a9f144bf384f94c4d2072c9bd
+.....                                                                    [100%]
+5 passed in 2.70s
+Finished with result: success
+Main processes terminated with: code=exited/status=0
+Service runtime: 4.224s
+CPU time consumed: 2.690s
+Memory peak: 696.0K
+Memory swap peak: 0B

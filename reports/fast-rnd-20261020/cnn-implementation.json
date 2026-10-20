@@ -1,0 +1,69 @@
+{
+  "status": "IMPLEMENTED_SYNTHETIC_VERIFIED_NO_MARKET_FIT",
+  "owned_new_files": [
+    "runtime/coinmaster/research/fast_cnn.py",
+    "runtime/tests/test_fast_cnn.py"
+  ],
+  "source_sha256": {
+    "runtime/coinmaster/research/fast_cnn.py": "6172b5c6f51525ca1c84c7f5643a0aaf22d59a04401f2a44b2bc9e71da1e3f91",
+    "runtime/tests/test_fast_cnn.py": "d2d4c3191322ebbd91cde55493b6ed7d81b82185be740aee9f82a80909830212"
+  },
+  "verification": {
+    "full_synthetic": "8PASS1toyfixtureERROR; renderer/shape/syntheticbackwardpassed;9tests10.22s",
+    "fixture_correction": "Onlytestcalendar extended because15%of400h<72hpurge; samecausalityassertions preserved; targeted1PASS.063s",
+    "unique_cases_covered": 9,
+    "single_fresh_full_pass_claim": false,
+    "memory_receipt": {
+      "exit_code": 1,
+      "seconds": 12.568159818649292,
+      "memory_peak": 335544320,
+      "memory_max": "335544320",
+      "swap_max": "0",
+      "synthetic_only": true,
+      "market_fit": false,
+      "optimizer_updates": false
+    },
+    "final_metadata_only_amendments": "ASTverified dataset_manifest_sha256 and singleinteropthread; no training execution."
+  },
+  "recipe": {
+    "feature_reader": "fast_numeric.Dataset features.npy mmap N,6,20,6/context.npy N,20; no U labels parsed",
+    "renderer": "6binaryfloat32 64x60 panels; rint ties-even/BresenhamMA/onecenterpixelvolume; lazy<=batch;3deterministictrain-onlyPNGpreviews",
+    "CNN_parameters": 898110,
+    "seeds": [
+      7,
+      42
+    ],
+    "loss": ".5CEBTC+.5CESOL; logits; average probabilities atprediction",
+    "optimizer": "Adam lr1e-5,Xavier weights/zero biases; no alternativearchitecture",
+    "early_stop": "eachfold innerlast15%calendar; strict72hpurge;max30/patience2;Vunusedforepochs",
+    "refit": "newmodel+newtrain-onlycontextscaler allcommonpurgedtrain for exactly bestcheckpoint epoch perseed",
+    "outputs": "state_dicts+contextstatistics+recipe,perseed/averagedprobabilities,commonmetrics andID/source/datahashes",
+    "folds": [
+      "oof20",
+      "oof40",
+      "validation"
+    ],
+    "U": "notanallowedpredictionfold; noUdetailsread"
+  },
+  "batch_policy": {
+    "default": 128,
+    "fixed_lower_batch": null,
+    "rule": "explicitlowerbatchrequiresmemoryreason; caughtOOMhalvesbatch/restartsphasefromfixedseed; kernel/cgroupkill is hardfailure, not silently retried",
+    "training_capacity": "UNKNOWN; syntheticbatch1 is notbatch128trainingqualification"
+  },
+  "ready_plan_command": "PYTHONPATH=runtime OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 runtime/var/research-envs/fast-rnd-20261020/bin/python -m coinmaster.research.fast_cnn --dataset <COMMON_DATASET> --lock reports/fast-rnd-20261020/experiment-lock.json --output <NEW_OUTPUT> --fold validation",
+  "execution_gate": "DefaultCLI PLAN_ONLY no dataread/fit. Append --execute-fit only rootGO AFTER actual STUMPY->MiniRocket->RDST comparisons. Inspectwrite_previews trainwindows before marketfit. No Optuna/trading/hyperparametersearch.",
+  "no_concurrent_heavy_work": "Syntheticprocessesended; S0engine unchanged, no marketfit/datasetfullbuild launched.",
+  "operational_progress_correction": {
+    "scope": "stageentry and completedepoch smallJSON tostderr flush=True; recipe/model/partition rules unchanged",
+    "events": [
+      "CNN_STAGE_START",
+      "CNN_EPOCH_COMPLETE"
+    ],
+    "fields": "seed,inner/refit phase,actualbatch,timestamp atentry; epoch,completedseconds,trainloss andinnerTloss if applicable",
+    "log": "cnn-progress-tests.log",
+    "tests": "2PASS .001s; emitter flush count/JSON plus existinglightEpochChoice; noTorchrepeat/noactualfit",
+    "source_signature": "_fit_once unchanged",
+    "previous_9_cases": "unchanged; prioraggregate evidence reused"
+  }
+}

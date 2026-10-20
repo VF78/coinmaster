@@ -9,3 +9,5 @@ Funding source is AST-identical to selected winner and calls native exchange.adj
 BTC-only280748.52263020 report SHA/data/policy pins pass and may be reused as the qualified historical additional control; no extraengine.
 
 U protocol incident was reported: an aggregate receipt print accidentally included nested U-dated excursion entries. No new U scan or model/policy use followed; future reads are scalar/config/source only. This procedure cannot claim a pristine untouched holdout.
+
+Cash units correction: archived summary.max_drawdown_percent=0.3789928254391618089349041484 is a fraction, hence 37.89928254391618089349041484%. This legacy statistic selects the greatest absolute cash drop and reports its peak-relative fraction; it is not guaranteed to be the maximum relative cash drawdown. Earlier preflight percent labeling was incorrect; archive and economic data remain unchanged. New settled equity curve ranks relative percentages independently.

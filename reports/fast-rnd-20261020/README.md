@@ -26,3 +26,14 @@ Research environment ready: isolated runtime/var/research-envs/fast-rnd-20261020
 
 ## Shared equity measurement repair
 Default-OFF native fixture confirmed callback snapshots precede settlement: entry callback 10000/no position vs settled 9999/open; exit callback 9999/open vs settled 9998/flat. Shared observer now records a separate coherent, later-receipt equity series at retained causal paired marks. Later fill/account mutations invalidate a pending source receipt rather than mix states. Legacy curves are preserved. Five native tests and narrow independent GO passed; orders, cash, fees and funding parity remain unchanged. Settled DD must include unavailable/pending coverage and mark-age qualifications, not claim complete interval certification from a gapped series. Full S0 reproduction is still pending launch.
+
+## S0 reproduced and recognizer code prepared
+The one full S0 run completed successfully on source75ffc9c, same Bybit data/policy and 10,000 USDT seed. Terminal TOTAL exactly 6,077,107.23887483 USDT; ROI +60,671.0723887483%; fees945,927.73761825; filled notional2,209,476,512.4321;621 native fills,710 orders,0 liquidations,terminal flat. Funding1320 native receipts; signed aggregate UNKNOWN (post-total journal is not an amount ledger). Existing native funding posting/persistence tests passed; no second posting added.
+
+Settled-marked native receipt DD66.256914864686864%,1,051,199 receipts +seed /0unavailable /0pending; legacy callback DD66.31878024969152% exactly reproduced. This small difference is measurement timing, not a strategy improvement. This is discrete causal-source-mark equity with actual later receipt timestamps, not observed intrabar tick DD. Historical close execution/slippage/margin qualifications remain NOT_FAITHFUL_DIAGNOSTIC.
+
+**Legacy correction:** archived cash summary field0.378992825... is a fraction =37.89928254%, and belongs to the maximum absolute cash-drop episode; it is not a certified global maximum relative cash DD. The earlier0.379%label was wrong. Archive bytes unchanged; current preflight corrected.
+
+Measured S0 cost18m45.469s CPU,472.0MiB charged peak,0swap. All72 source/13 input pins verified after exit. Native raw terminal equals final export; pilot2009732/NRestarts0 unchanged.
+
+One causal dataset module and separate numeric/CNN modules are implemented with focused synthetic tests. No recognizer market fit or policy optimization yet. Numeric9/9 suite PASS; dataset5/5 PASS; CNN9 initial unique cases passed in aggregate after a test-calendar correction, plus a lightweight progress-emitter test. See individual receipts for exact reused/new case counts. Full DatasetBuilder completed in41.814s:17,520 aligned hourly rows,5,959 purged selected train IDs/3,432 V evaluation IDs,zero ambiguous,57,697,969bytes; source/artifact hashes validated; mandatory fitting order remains STUMPY → MiniRocket → RDST → CNN.

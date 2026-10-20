@@ -1,0 +1,29 @@
+{
+  "utc": "2026-10-20T17:26:27.559863+00:00",
+  "unit": "Result=success\nExecMainStatus=0\nMemoryCurrent=455770112\nMemoryPeak=495005696\nActiveState=active\nSubState=running\n",
+  "files": [
+    {
+      "name": "minute-native-risk.csv.gz",
+      "bytes": 65218064
+    },
+    {
+      "name": "minute-native-settled-receipts.csv.gz",
+      "bytes": 32249202
+    },
+    {
+      "name": ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite.attempt-63ef06923ff1488abc1de244fda8b806",
+      "bytes": 167936
+    },
+    {
+      "name": ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite.attempt-63ef06923ff1488abc1de244fda8b806-shm",
+      "bytes": 32768
+    },
+    {
+      "name": ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite.attempt-63ef06923ff1488abc1de244fda8b806-wal",
+      "bytes": 4124152
+    }
+  ],
+  "disk_free_bytes": 3261612032,
+  "MemAvailable_bytes": 691621888,
+  "status": "RUNNING_NOT_FINAL_NO_U_DETAIL_READ"
+}

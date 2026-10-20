@@ -1,0 +1,42 @@
+{
+  "utc": "2026-10-20T17:15:42.774755+00:00",
+  "status": "RUNNING_SINGLE_DISPATCH_1_OF_1",
+  "job_name": "cm113-fast-rnd-s0-20261020T170935Z",
+  "head": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "unit": "MainPID=313211\nExecMainStartTimestamp=Tue 2026-10-20 17:10:12 UTC\nMemoryCurrent=458866688\nMemoryPeak=458866688\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nSubState=running\nInvocationID=0c746697799b458fab4c6047f1df465d\n",
+  "processes": [
+    " 313211       1  2028 /usr/bin/flock -n /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime TMPDIR=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/tmp OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMEXPR_MAX_THREADS=1 ARROW_NUM_THREADS=2 /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/.venv/bin/python -m coinmaster.research.native_baseline --data-root /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/var/data --research-v0-execution-repairs --research-v0-deferred-selective-zero-tp --research-v0-selective-lifecycle-repairs --observe-minute-risk --research-btc-direction-sizing --control-report /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/var/data/runs/tp-fee-floor-113/v0/v0.json --artifact-dir /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result --research-btc-split50 --research-btc-split-discount 0.0025 --research-btc-split-planref-v1 --research-btc-split-tp-ioc",
+    " 313235  313211 571668 /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/.venv/bin/python -m coinmaster.research.native_baseline --data-root /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/var/data --research-v0-execution-repairs --research-v0-deferred-selective-zero-tp --research-v0-selective-lifecycle-repairs --observe-minute-risk --research-btc-direction-sizing --control-report /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/source/runtime/var/data/runs/tp-fee-floor-113/v0/v0.json --artifact-dir /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result --research-btc-split50 --research-btc-split-discount 0.0025 --research-btc-split-planref-v1 --research-btc-split-tp-ioc"
+  ],
+  "files": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-risk.csv.gz",
+      "bytes": 21556296
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz",
+      "bytes": 10591283
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite.attempt-63ef06923ff1488abc1de244fda8b806",
+      "bytes": 4096
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite.attempt-63ef06923ff1488abc1de244fda8b806-shm",
+      "bytes": 32768
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite.attempt-63ef06923ff1488abc1de244fda8b806-wal",
+      "bytes": 3394912
+    }
+  ],
+  "initial_native_log": "Started cm113-fast-rnd-s0-20261020T170935Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/launch.sh.\n",
+  "command_sha256": "77f58a17cfb37be72a1c1c0acbaa9f86610dd4c3ec839a469e9289171d717c01",
+  "funding_namespace": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result",
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "first_native_feed_proof": {
+    "bar_open_ms": "1725148800000",
+    "close_available_ns": "1725148860000000000",
+    "phase": "pre_quote_paired_close"
+  }
+}

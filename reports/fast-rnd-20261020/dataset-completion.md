@@ -1,0 +1,3 @@
+FAST-01 complete: one causal DatasetBuilder, 5 focused tests PASS; full build 41.814s under 512MiB/swap0/nice15/thread1. Dataset 17,520 rows: features float32[17520,6,20,6], context[17520,20], inclusive panel end indices[17520,6], true continuous raw OHLCV/MA panels, samples.csv and manifest. All input/artifact hashes and IDs/timestamps validated.
+
+T 10,512 feature-valid observations, 6,000 timestamps selected before labels, 5,959 eligible after strict full72h purge. V 3,432 eligible after purge. U saved programmatically: aggregate 3,504 observations/71 censored; no outcome details inspected. Zero ambiguous labels. Genuine hourly/daily warmup permits first decision at period start. No models fitted.
