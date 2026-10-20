@@ -27,6 +27,7 @@ from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
 from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
 from coinmaster.strategy.immediate_insurance import ImmediateSolInsurance
 from coinmaster.strategy.alpha_cushion import AlphaCushionResearch
+from coinmaster.strategy.carry_pair import CarryPairResearch
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
 from coinmaster.venues.margin_policy import MarginMark, MarginPolicy
@@ -67,6 +68,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_sol_cover: Decimal | None = None
     research_conditional_sol: bool = False
     research_alpha_cushion: bool = False
+    research_chop_pair: bool = False
+    research_carry_daily_seed: tuple[tuple[int, float, float], ...] = ()
     research_immediate_sol: str | None = None
     research_immediate_lookback: int = 90
     research_sol_risk_first: str | None = None
@@ -168,7 +171,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
@@ -177,6 +180,9 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
         self._conditional_init()
         self._insurance_init()
         self._alpha_init()
+        self._carry_init()
+        if config.research_chop_pair and (not config.candidate.sol_overlay_enabled or not config.research_btc_split_tp_ioc or config.research_alpha_cushion or config.research_sol_risk_first or config.research_immediate_sol or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or config.research_v3_risk or len(config.research_confirmation_bars)!=4):
+            raise ValueError("CHOP_PAIR_REQUIRES_EXCLUSIVE_WINNER_NATIVE_BARS")
         if config.research_alpha_cushion and (not config.candidate.sol_overlay_enabled or not config.research_btc_split_tp_ioc or config.research_sol_risk_first or config.research_immediate_sol or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or len(config.research_confirmation_bars)!=4):
             raise ValueError("ALPHA_CUSHION_REQUIRES_SELECTED_BTC_ORIGINAL_ALPHA_EXCLUSIVE_NATIVE_BARS")
         if config.research_immediate_sol is not None and (config.research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=config.research_immediate_lookback<=180 or not config.research_btc_split_tp_ioc or config.candidate.sol_overlay_enabled or config.research_sol_risk_first or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or len(config.research_confirmation_bars)!=4):
@@ -378,6 +384,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
             self._risk_first_bar(bar)
             self._insurance_bar(bar)
             self._alpha_bar(bar)
+            self._carry_bar(bar)
             self._on_confirmation_bar(bar)
             return
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -1098,6 +1105,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
             available_at = datetime.fromtimestamp(
                 max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init, next_session) / 1_000_000_000, UTC,
             )
+            self._carry_daily_bar(btc)
             self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
             self._last_accepted_session = next_session
             self._last_sol_close = float(sol.close)
@@ -1217,6 +1225,9 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
             return
         if self._deferred_entry_session == self._current_btc.ts_event:
             self._deferred_entry_session = None
+        if self._carry_daily(self._current_btc.ts_event):
+            self._daily_decision_reason = "CHOP_PAIR_OWNED_NO_BACKLOG"
+            return
         self._bind_native_lots()
         if self._split_unfinished() and self._domain.episode is not None:
             # Mandatory regime/trail decisions precede the domain pending lock;
@@ -1354,6 +1365,8 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
                     order = self.order_factory.market(instrument_id=tick.instrument_id, order_side=OrderSide.SELL if position.is_long else OrderSide.BUY, quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True)
                     if self._record_submission(order, f"liquidation:{order.client_order_id}", "liquidation", "LIQUIDATION_CLOSE"):
                         self._liquidation_submitted.add(tick.instrument_id); self._liquidation_orders.add(str(order.client_order_id)); self.submit_order(order)
+            return
+        if self._carry_check(tick):
             return
         if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
             candidate = self._b1_candidate
@@ -1736,6 +1749,9 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
         self._domain.on_parent_terminal(intent.id)
 
     def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None, entry_override_qty: Decimal | None = None) -> None:
+        if self._carry_busy() and not self._carry_physical and intent.action != "CLOSE_ALL":
+            self._domain.on_parent_terminal(intent.id)
+            return
         if self.config.research_sol_risk_first=="split-atr" and intent.action=="SOL_ADD" and not self._rf_sol_child and any(p["intent"].id==intent.id for p in self._rf_sol_parents):
             return  # Accepted logical group identity is idempotent.
         if self.config.research_sol_risk_first=="split-atr" and intent.action in {"SOL_HALF_EXIT","SOL_EXIT"}:
@@ -1783,7 +1799,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
         side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
         executable_price = Decimal(str(ask_price if side == OrderSide.BUY else bid_price))
         quantity = intent.quantity
-        if (intent.action == "BTC_ENTRY" or intent.action == "SOL_ADD" and self._rf_sol_child) and entry_override_qty is not None:
+        if (intent.action == "BTC_ENTRY" or intent.action == "SOL_ADD" and (self._rf_sol_child or self._carry_physical)) and entry_override_qty is not None:
             quantity = entry_override_qty
         elif intent.action == "BTC_ENTRY" and intent.requested_notional is not None:
             quantity = float(Decimal(str(intent.requested_notional)) / executable_price)
@@ -2004,6 +2020,8 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
             self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
 
     def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:
+        if self._carry_busy():
+            return
         key = self._reduction_key(intent)
         owner = self._accepted_reductions.get(key)
         if owner is None:
@@ -2114,7 +2132,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
     def _submit_forced_close_on_quote(self, tick: QuoteTick) -> None:
         # Cancel confirmation/reconciliation is authoritative: no market close
         # is submitted while a resting reduction can still consume leaves.
-        if self.cache.orders_open() or (self.config.research_v3_risk and self._pending_by_order):
+        if self.cache.orders_open() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
             return
         if self._forced_close_reason == "RESEARCH_V3_T3" and tick.ts_event < self._v3_trail_trigger_ns:
             return
@@ -2150,7 +2168,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
         """Continue a forced close after the final native cancel confirmation."""
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
-        if self.cache.orders_open():
+        if self.cache.orders_open() or (self._carry_busy() and (self.cache.orders_inflight() or self._pending_by_order)):
             return
         if self.config.research_v3_risk == "t3" and self._forced_close_reason == "RESEARCH_V3_T3":
             return
@@ -2296,6 +2314,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
         self._record_native_fill(event)
         self._seen_trade_ids.add(trade_id)
         self._record_fill_audit(event)
+        self._carry_native_fill(event)
         if str(event.client_order_id) in self._v3_orders:
             self._v3_reduction_fill(event)
             return
@@ -2398,7 +2417,9 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
             else:
                 self._accepted_reductions[key] = original, remaining
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
-        if self._conditional_enabled() and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
+        if intent.reason == "CHOP_PAIR_SINGLE_GRANT" and self._carry_busy():
+            pass  # Native inventory only; original alpha history/basis is retained.
+        elif self._conditional_enabled() and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
             self._conditional_fill(intent,quantity,price,ts_event)
         else:
             self._domain.on_fill(
@@ -2449,7 +2470,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
-        if self._forced_close_reason is not None or self._split_unfinished():
+        if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
             return
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
@@ -2461,7 +2482,7 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
     def _has_confirmed_btc_remainder(self, intent: Intent) -> bool:
         """Return whether a canceled BTC parent had a confirmed unsold remainder."""
         episode = self._domain.episode
-        if episode is None or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
+        if episode is None or self._carry_busy() or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
             return False
         if intent.action == "BTC_ENTRY":
             return episode.btc_initial_qty > 0 and episode.btc_open_qty > 0
@@ -2571,11 +2592,12 @@ class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFi
         """Clear a completed close group after the native cache is actually flat."""
         if not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
             return
-        if self._pending_by_order:
+        if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()):
             return  # An opening order awaiting terminal native receipt may still fill.
         self._group_close_reconciliation_pending = False
         if self._insurance_enabled() and self._insurance_cycle:
             self._insurance_cycle.update(closed=True,target=Decimal(0))
+        self._carry_flat()
         reason = self._domain.on_group_flat()
         if self._forced_close_reason not in {"LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}:
             self._forced_close_reason = None

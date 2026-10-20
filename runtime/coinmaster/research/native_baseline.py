@@ -682,7 +682,7 @@ def run_native_diagnostic(
     research_btc_split_tp_ioc: bool = False,
     research_btc_split_discount: str = "0.0025",
     research_sol_cover: str | None = None,
-    research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False,
+    research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
     research_btc_episode_loss_20: bool = False,
     research_sol_remaining_btc_hedge: bool = False,
 ) -> dict:
@@ -711,6 +711,8 @@ def run_native_diagnostic(
 
     if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None, research_h1_b1 is not None)) > 1:
         raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
+    if research_chop_pair and (research_alpha_cushion or research_immediate_sol or research_sol_risk_first or research_conditional_sol or research_sol_cover or research_h1_b1 or research_v3_risk or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc or not research_btc_direction_sizing or not observe_minute_risk):
+        raise ValueError("CHOP_PAIR_REQUIRES_EXCLUSIVE_WINNER_NATIVE_OBSERVER")
     if research_alpha_cushion and (research_immediate_sol or research_sol_risk_first or research_conditional_sol or research_sol_cover or research_h1_b1 or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc or not research_btc_direction_sizing or not observe_minute_risk):
         raise ValueError("ALPHA_CUSHION_REQUIRES_SELECTED_BTC_EXCLUSIVE_SOL_NATIVE_OBSERVER")
     if research_immediate_sol and (research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=research_immediate_lookback<=180 or research_sol_risk_first or research_conditional_sol or research_sol_cover or research_h1_b1 or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc or not research_btc_direction_sizing or not observe_minute_risk):
@@ -772,13 +774,13 @@ def run_native_diagnostic(
     confirmation_bars = tuple(BarType.new_composite(
         instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
         AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
-    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion else ()
+    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else ()
     minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
                    for instrument in (btc_instrument, sol_instrument)}
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
-        run_analysis=not research_alpha_cushion,
-        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion else {})))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion))
+        run_analysis=not (research_alpha_cushion or research_chop_pair),
+        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
@@ -827,6 +829,8 @@ def run_native_diagnostic(
         research_immediate_sol=research_immediate_sol,
         research_immediate_lookback=research_immediate_lookback,
         research_alpha_cushion=research_alpha_cushion,
+        research_chop_pair=research_chop_pair,
+        research_carry_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_chop_pair else (),
         research_cover_hour_seed=cover_hour_seed,
         research_confirmation_bars=confirmation_bars,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
@@ -854,7 +858,7 @@ def run_native_diagnostic(
             marks, signals, quotes, source_bars = [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
-                if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion:
+                if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair:
                     for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
                         source_bars.append(Bar(minute_bars[instrument.id],
                             instrument.make_price(row["open"]), instrument.make_price(row["high"]),
@@ -1032,6 +1036,13 @@ def run_native_diagnostic(
             result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
             result["config_hash"] = hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
             result["source_hashes"]["split_cover"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/split_cover.py")
+        if research_chop_pair:
+            result["config"]["research_chop_pair"]=True
+            result["carry_pair_audit"]=strategy.carry_pair_audit
+            result["carry_pair_counts"]=strategy.carry_pair_counts
+            result["carry_pair_policy"]={"name":"CHOP_PAIR_50_NET_v1","recovery_label":"REMAINING_INVENTORY_NOT_WHOLE_EPISODE","funding":"UNCHANGED_NATIVE_POSTINGS_ONLY","daily_atr":"EMA_TR_ALPHA_2_15_CAUSAL_SEED","range":"7_CLOSED_DAILY_TWO_CONSECUTIVE_SAME_BOUNDARY_1H"}
+            result["source_hashes"]["carry_pair"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/carry_pair.py")
+            result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         if research_alpha_cushion:
             result["config"]["research_alpha_cushion"]=True
             result["research_housekeeping"]={"native_run_analysis":False,"export":"SEQUENTIAL_UNCHANGED_NATIVE_REPORTS","economic_policy_change":False}
@@ -1202,11 +1213,11 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_batch_minutes: int | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_batch_minutes: int | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
-    if research_batch_minutes is not None and (not research_alpha_cushion or not 1 <= research_batch_minutes <= WEEK_MINUTES):
+    if research_batch_minutes is not None and (not (research_alpha_cushion or research_chop_pair) or not 1 <= research_batch_minutes <= WEEK_MINUTES):
         raise ValueError("BATCH_OVERRIDE_REQUIRES_ALPHA_AND_1_TO_10080_MINUTES")
     if artifact_dir.exists():
         raise ValueError("RESEARCH_ARTIFACT_DIR_MUST_BE_NEW")
@@ -1256,6 +1267,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         label += "-tp-ioc"
     if research_sol_cover:
         label += "-sol-cover" + research_sol_cover
+    if research_chop_pair:
+        label += "-chop-pair-50-net-v1"
     if research_alpha_cushion:
         label += "-alpha-cushion"
     if research_conditional_sol:
@@ -1303,6 +1316,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_immediate_sol=research_immediate_sol,
         research_immediate_lookback=research_immediate_lookback,
         research_alpha_cushion=research_alpha_cushion,
+        research_chop_pair=research_chop_pair,
         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
@@ -1322,6 +1336,7 @@ def main() -> None:
     parser.add_argument("--research-sol-cover", choices=("0.5","0.75","1"))
     parser.add_argument("--research-conditional-sol", action="store_true")
     parser.add_argument("--research-alpha-cushion", action="store_true")
+    parser.add_argument("--research-chop-pair", action="store_true")
     parser.add_argument("--research-batch-minutes", type=int, default=None, help="Isolated ALPHA research cursor and native event batch override; no economic parameter")
     parser.add_argument("--research-immediate-sol", choices=("i25","i25-light","i25-recovery","i33"),default=None)
     parser.add_argument("--research-immediate-lookback",type=int,default=90)
@@ -1382,6 +1397,7 @@ def main() -> None:
             research_sol_cover=args.research_sol_cover,
             research_conditional_sol=args.research_conditional_sol,
             research_alpha_cushion=args.research_alpha_cushion,
+            research_chop_pair=args.research_chop_pair,
             research_batch_minutes=args.research_batch_minutes,
             research_sol_risk_first=args.research_sol_risk_first,
             research_immediate_sol=args.research_immediate_sol,

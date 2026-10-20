@@ -1,0 +1,60 @@
+{
+  "status": "INDEPENDENT_GO_FOR_ONE_RESEARCH_RUN_CODE_CHECKPOINT_AUTHORIZED",
+  "hypothesis": "CHOP_PAIR_50_NET_v1",
+  "base_HEAD": "abb481ea4d45d4e79b52dfd3580c42b917b8872a",
+  "winning_HEAD": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "source_hashes": {
+    "runtime/coinmaster/strategy/carry_pair.py": "7b72df60028d8b87e55b1735a3612c35e2bd7f3bc4fbc03615fa645c50cbb216",
+    "runtime/coinmaster/strategy/wave_overlay.py": "647c85a0faef4829d98d2bbec21f1c797d32b9a5571cb6b7714b26227f22052b",
+    "runtime/coinmaster/research/native_baseline.py": "6be421eb352226808e842ef73f0ab54b9b14aa43a7d90a2ac8cfbe24d74b31fd",
+    "runtime/tests/test_native_carry_pair.py": "65afa9e19e54f34eacbbf60643924a511a685be5be5611205839f113267ef85c"
+  },
+  "tests": {
+    "passed": 98,
+    "failed": 0,
+    "seconds": 15.42,
+    "log_sha256": "c5cbf70159c85db36c0f43e043565e3e1acb497682c432007fdfef4a6de92b0a",
+    "command": "PYTHONPATH=runtime runtime/.venv/bin/python -m pytest -q runtime/tests/test_native_carry_pair.py runtime/tests/test_native_alpha_export.py runtime/tests/test_native_split_cover.py runtime/tests/test_native_episode_risk.py --tb=short --disable-warnings"
+  },
+  "feature_parity": {
+    "path": "reports/carry-pair-run-113/engine-feature-parity.json",
+    "sha256": "53b6ba53740946eb496d33243f86e4d3061cab0351d2e57dd22626e5b065f8ef",
+    "events": 48,
+    "raw": 34,
+    "mismatches": 0
+  },
+  "economic_config_delta": {
+    "research_chop_pair": true
+  },
+  "tp_fee_floor_v1": false,
+  "preexisting_source_drift_commits": [
+    "c82b208 fix(research): bound native export memory and record rejected ALPHA",
+    "d1d9435 fix(research): feed ALPHA confirmation bars and bound data batches",
+    "2b3cd5f feat(research): add native ALPHA-CUSHION SOL cash guard",
+    "262bf2c research: add immediate BTC-owned SOL insurance variants",
+    "157258f research: add three isolated SOL drawdown-first policies",
+    "d83e8fa fix(native): type forced-close lookup and defer denied retry",
+    "44f2e00 fix(research): preserve original SOL IOC terminal semantics",
+    "2a3f830 research: add reviewed conditional SOL 2-1 protection over original overlay"
+  ],
+  "changes": {
+    "tracked_diff": " runtime/coinmaster/research/native_baseline.py | 32 ++++++++++++++++------\n runtime/coinmaster/strategy/wave_overlay.py    | 38 ++++++++++++++++++++------\n 2 files changed, 54 insertions(+), 16 deletions(-)\n",
+    "new_helper_lines": 314,
+    "new_test_lines": 422
+  },
+  "correction": {
+    "findings": [
+      "UNEXPECTED_NATIVE_BTC_SOL_INCREASE",
+      "CONNECTED_TWO_EPISODE_CARRY_SQLITE_FUNDING_EVIDENCE"
+    ],
+    "native_regressions_passed": 3,
+    "log_sha256": "d0b22d76167ebe12ca42588298a083a9ad6f390d76c8e8f8503a1799f46ef099",
+    "funding_evidence_path": "reports/carry-pair-run-113/engine-correction-funding.json",
+    "funding_evidence_sha256": "a36545a05f8d511306df630dfa7d9861012130e0a9cb309ccc6af17d1c073d15",
+    "native_funding_rows": 4,
+    "first_episode_native_cash_and_equity_delta": "-4.8",
+    "second_episode_native_cash_and_equity_delta": "0.52",
+    "both_benchmarks_frozen": true,
+    "both_terminal_flat": true
+  }
+}
