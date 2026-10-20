@@ -1,0 +1,15 @@
+{
+  "state_counts_conserved": true,
+  "exposure_states_conserved": true,
+  "first_BTC_count": 105,
+  "clusters": 11,
+  "above50_excursions": 3,
+  "daily_rows": 730,
+  "monthly_rows": 24,
+  "all_marked_landmarks_captured": 18,
+  "single_native_trace_pass": true,
+  "no_engine_optimizer_or_PnL_simulation": true,
+  "classification_run_rows": 2102,
+  "classification_run_minutes_conserved": true,
+  "control_trace_hash_reused_from_existing_verified_proof": true
+}

@@ -1,0 +1,54 @@
+{
+  "r0-11-clusters.csv": {
+    "bytes": 11372,
+    "sha256": "1eea990866705b815ae0b6158fafe129d18d15592177933d9b787f0500b7d9ab"
+  },
+  "r0-progress.json": {
+    "bytes": 2054,
+    "sha256": "c054acbf5e7b96ba3c862b9833e3b82e1b5167acb830edd4e77e5ee6bd9296ef"
+  },
+  "r0-landmarks.csv": {
+    "bytes": 19262,
+    "sha256": "a31425b37d539f047038f7880068c24f6034e37bf5ab9302f266a8266c5861ef"
+  },
+  "r0-report.md": {
+    "bytes": 19482,
+    "sha256": "9ce68ad8339d02eddc7ee10801a20abebd85db8a4f3537fb38d7bd9e6a4cd3d4"
+  },
+  "r0-finish.py": {
+    "bytes": 14213,
+    "sha256": "104ef000a24770f2435919aee7bd43ea9839cbde70bd338c163f0983b01815f4"
+  },
+  "r0-monthly.csv": {
+    "bytes": 1129,
+    "sha256": "4c6ec33148ecc03cdfa88baf7c48742562e1e3217ae1307599e9f9244a828e7a"
+  },
+  "r0-statistics.json": {
+    "bytes": 221275,
+    "sha256": "faee7da7181b1d6e673398f116e354f4d21a737076dff7cdf77d64a728b36159"
+  },
+  "r0-first-BTC-states.csv": {
+    "bytes": 47278,
+    "sha256": "d0a64d5936bfa84e5a2234198cb1c47bd29067753b6e5a0d0b140231f52434ce"
+  },
+  "r0-final-checks.json": {
+    "bytes": 461,
+    "sha256": "975f854a4be5ce4e95f65c8545f65854c3a752b9a5ea7db7f00ba924dabe73c4"
+  },
+  "r0-scalar-testcases.json": {
+    "bytes": 8191,
+    "sha256": "fcc5c8844ef0d2e4985b5b344bc7f5690d9019721564946ec791267d914f3c3c"
+  },
+  "r0-daily.csv": {
+    "bytes": 25114,
+    "sha256": "620e16f442e5049d98e6050d33dbfcd96fd51b90a431dbb88c45666f682bbb05"
+  },
+  "r0-analysis.py": {
+    "bytes": 12503,
+    "sha256": "85209956fbe47b17429b2717ebd2a53b35aa5b52c2e5e933993ff5ccfe75650f"
+  },
+  "r0-classification-runs.csv": {
+    "bytes": 339170,
+    "sha256": "5774e67703c47d927eaae9ed9f36a84040289734e97fbdfaa3d922274cc05aee"
+  }
+}

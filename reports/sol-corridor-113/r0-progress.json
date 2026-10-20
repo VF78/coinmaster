@@ -1,0 +1,77 @@
+{
+  "through": "2026-08-01T00:01:00Z",
+  "states": 1006561,
+  "counts": {
+    "FLAT_NO_ACTION": 442972,
+    "BTC_ONLY_SAFE": 264097,
+    "HEDGE_ADD": 24942,
+    "SOL_RISK_INFEASIBLE": 105443,
+    "LOT_INFEASIBLE": 1,
+    "ALPHA_TRIM": 43925,
+    "SAFE_ALPHA_HELD": 125181
+  },
+  "by_kind": {
+    "flat": {
+      "FLAT_NO_ACTION": 442972,
+      "SOL_RISK_INFEASIBLE": 18023
+    },
+    "BTC_only": {
+      "BTC_ONLY_SAFE": 264097,
+      "HEDGE_ADD": 19597,
+      "SOL_RISK_INFEASIBLE": 61909,
+      "LOT_INFEASIBLE": 1
+    },
+    "both": {
+      "ALPHA_TRIM": 6889,
+      "SOL_RISK_INFEASIBLE": 16256,
+      "SAFE_ALPHA_HELD": 39689,
+      "HEDGE_ADD": 5345
+    },
+    "SOL_only": {
+      "ALPHA_TRIM": 37036,
+      "SAFE_ALPHA_HELD": 85492,
+      "SOL_RISK_INFEASIBLE": 9255
+    }
+  },
+  "early": {
+    "BTC_ONLY_SAFE": 4647,
+    "SOL_RISK_INFEASIBLE": 985,
+    "HEDGE_ADD": 213,
+    "SAFE_ALPHA_HELD": 156
+  },
+  "first_violation": {
+    "utc": "2024-09-02T23:01:00Z",
+    "ns": 1725318060000000000,
+    "kind": "BTC_only",
+    "classification": "HEDGE_ADD",
+    "E": 8387.59885353,
+    "cash": 9982.85555353,
+    "native_U": -1595.2567,
+    "H_completed": 10161.00531179,
+    "C": 2799.0459320454993,
+    "B": -46986.586500000005,
+    "held_SOL_notional": 0.0,
+    "BTC_qty": -0.791,
+    "SOL_qty": 0.0,
+    "BTC_mark": 59401.5,
+    "SOL_mark": 134.88,
+    "beta": 1.271481702699716,
+    "a": 0.05937334148761146,
+    "u": 0.05885429132263834,
+    "estimate_close_utc": "2024-09-02T00:00:00Z",
+    "L_held": 2815.593268176695,
+    "L_min": 2241.40537058463,
+    "lower_abs_SOL_notional": 1064.9711306935178,
+    "upper_abs_SOL_notional": 41071.25475252402,
+    "target_SOL_notional": 1065.552,
+    "target_SOL_qty": 7.8999999999999995,
+    "L_target": 2799.0369065992822,
+    "turnover_demand_notional": 1065.552,
+    "margin_status": "SOL_MARGIN_UNAVAILABLE",
+    "lot_status": "STEP_RECHECK_PASS",
+    "best_effort_abs_SOL_notional": 36954.197925329296,
+    "best_effort_reduce_only_abs_SOL_notional": 0.0,
+    "episode": 1
+  },
+  "RSS_KiB": 150796
+}

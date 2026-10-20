@@ -1,0 +1,88 @@
+{
+  "scope": "TARGETED_STATIC_OFF_SOURCE_MAPPING_NO_TEST_OR_ENGINE",
+  "current_head": "9df1ade672b29eaa115be456e6cd734eb8dda7a1",
+  "winner_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "winner_raw_sha256_matches": true,
+  "source": {
+    "native_baseline": {
+      "path": "runtime/coinmaster/research/native_baseline.py",
+      "snapshot_sha256": "2d2983638225214831c8cec20a52cf170175b637a344ec27a95a02ad25573b9c",
+      "current_sha256": "6be421eb352226808e842ef73f0ab54b9b14aa43a7d90a2ac8cfbe24d74b31fd",
+      "snapshot_matches_frozen_commit": true,
+      "snapshot_matches_control_pin": true,
+      "changed": true
+    },
+    "wave_strategy": {
+      "path": "runtime/coinmaster/strategy/wave_overlay.py",
+      "snapshot_sha256": "2b76b98397245c66493befc8332c1f1f8c2739a1f347fed82e232c12cc2e1d39",
+      "current_sha256": "647c85a0faef4829d98d2bbec21f1c797d32b9a5571cb6b7714b26227f22052b",
+      "snapshot_matches_frozen_commit": true,
+      "snapshot_matches_control_pin": true,
+      "changed": true
+    },
+    "wave_domain": {
+      "path": "runtime/coinmaster/domain/wave_overlay.py",
+      "snapshot_sha256": "e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2",
+      "current_sha256": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+      "snapshot_matches_frozen_commit": true,
+      "snapshot_matches_control_pin": true,
+      "changed": true
+    },
+    "split_cover": {
+      "path": "runtime/coinmaster/strategy/split_cover.py",
+      "snapshot_sha256": "ac0cbda7fe529d95c29d0a336fe1cabce3f9c4e355900f080c77119e2cb04525",
+      "current_sha256": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+      "snapshot_matches_frozen_commit": true,
+      "snapshot_matches_control_pin": true,
+      "changed": true
+    },
+    "minute_risk": {
+      "path": "runtime/coinmaster/research/minute_risk.py",
+      "snapshot_sha256": "6aca7d78a54681ec5a1bc4129b27fc37c759c012836e05c34c1165f4b751206b",
+      "current_sha256": "2a31baa92464198971bff5b16d44a03b778d1e2cfafdb458b1a073cd008a8f32",
+      "snapshot_matches_frozen_commit": true,
+      "snapshot_matches_control_pin": "NO_CONTROL_EMBEDDED_PIN",
+      "changed": true
+    }
+  },
+  "winner_order_artifact": {
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-orders.csv",
+    "sha256_matches": true,
+    "rows": 710,
+    "status_counts": {
+      "CANCELED": 263,
+      "FILLED": 447
+    },
+    "denied_rejected_expired_count": 0
+  },
+  "winner_log": {
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/run.log",
+    "error_or_terminal_failure_lines": []
+  },
+  "active_OFF_edge_drift": [
+    {
+      "method": "WaveOverlayStrategy._terminal_without_fill",
+      "change": "cache.order(str) becomes cache.order(ClientOrderId(str)) for forced-close failed order",
+      "winner_branch_observed": false
+    },
+    {
+      "method": "WaveOverlayStrategy._terminal_without_fill",
+      "change": "failed forced-close order no longer immediately calls _submit_forced_closes_from_cache; next fresh quote retains retry",
+      "winner_branch_observed": false
+    }
+  ],
+  "classification": {
+    "wave_strategy": "new policies gated OFF; carry callbacks false/noop and split-ATR contexts empty; exception two active denial-edge fixes recorded",
+    "wave_domain": "new ownership/retired credits default zero; first_owned tracks first_fill with ordinary fills; released_lots stays zero; existing ordinary calculations equivalent",
+    "split_cover": "extra hourly history gate OFF for new flags; BTC split decisions unchanged",
+    "minute_risk": "new policy callbacks gated OFF; extra observer-driven flag unused with variants OFF",
+    "native_baseline": "new branches OFF; same original feed/cache/bar_execution/fees/margin; sequential report generation and explicit analysis default True reporting/housekeeping; additional false config key causes hash drift"
+  },
+  "conclusion": "STATIC_ACTUAL_WINNER_PATH_EQUIVALENCE_SUPPORTED_WITH_DECLARED_UNEXERCISED_DENIAL_EDGE_DIFFERENCE; NOT_UNIVERSAL_OFF_PARITY",
+  "limitations": [
+    "No native OFF parity test run in this scope.",
+    "Winner has no separately exported full native event history; all710 terminal order statuses plus clean error log prove no recorded Denied/Rejected/Expired; no claim about unavailable telemetry.",
+    "Future candidate native order semantics can exercise known active denial fix; preserve it and report effect.",
+    "R2 control reuse requires root acceptance of this bounded source mapping plus focused OFF tests after R1; no new control authorized."
+  ]
+}
