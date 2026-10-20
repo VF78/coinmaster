@@ -1,0 +1,12 @@
+{
+  "status": "GO_CANONICAL_ONLY_NOT_ACTIVE",
+  "reviewer": "sol_corridor_review",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "6475dd2df2987abfc8fc1e0c8200b9049bb9a15b6e4eba76a857f9c4aa4c1278",
+    "runtime/tests/test_native_sol_corridor.py": "cf606a2dc09679e7bbdeb59db756ed56a56988fc2f2855271b2ac0c306ad44eb"
+  },
+  "tests": "7 unique focused native passes in aggregate, not one fresh7pass run",
+  "finding": "One fixed infeasible target plan keyed structural state; own SOLfills/fees/marks do not reset; native partial and UNKNOWN ownership preserved; original/mandatory exits preempt; INFEASIBLE remains.",
+  "active_source": "e3eaf7728e11db1651e8a09474a74f4a3faebadd",
+  "new_engine": "NOT_AUTHORIZED_NO_LAUNCH"
+}

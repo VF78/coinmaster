@@ -101,11 +101,17 @@ class SolRiskFirstResearch:
             f["oref"]+=qty;f["ceiling"]=None
         else:f["oref"]=max(D(0),f["oref"]-qty)
         f["dirty"]=True
+        if self.config.research_sol_risk_first=="alpha-corridor-v1":
+            f["permission_revision"]=f.get("permission_revision",0)+1
+            f.pop("infeasible_plan",None)
 
     def _risk_first_original_terminal(self,released):
         if released>0 and self._risk_first_net_owner() and self._conditional is not None:
             f=self._risk_first_state(self._conditional)
             f["oref"]=max(D(0),f["oref"]-released);f["dirty"]=True
+            if self.config.research_sol_risk_first=="alpha-corridor-v1":
+                f["permission_revision"]=f.get("permission_revision",0)+1
+                f.pop("infeasible_plan",None)
 
     def _risk_first_cap(self,c,bqty,ts):
         f=self._risk_first_state(c)
@@ -403,11 +409,13 @@ class SolRiskFirstResearch:
     def _corridor_check(self,tick,c):
         from nautilus_trader.model.identifiers import ClientOrderId
         ts=tick.ts_event;ep=self._domain.episode;f=self._risk_first_state(c)
-        if self._mandatory_sol_exit is not None:return
+        if self._mandatory_sol_exit is not None:
+            f.pop("infeasible_plan",None);return
         positions={p.instrument_id:p for p in self.cache.positions_open()}
         btc=positions.get(self.config.btc_id);sol=positions.get(self.config.sol_id)
         held=sol.quantity.as_decimal() if sol else D(0)
         if c.get('corridor_mandatory_flat'):
+            f.pop("infeasible_plan",None)
             c.update(qc=D(0),active=False)
             if not any(i.action.startswith('SOL') for i in self._pending_by_order.values()):self._corridor_retire(c,D(0),ts)
             self._conditional_reconcile(tick,c,ep,btc,sol,held,btc.quantity.as_decimal() if btc else D(0),D(0),ts)
@@ -418,6 +426,7 @@ class SolRiskFirstResearch:
         actual,bl,bh,bunknown=self._corridor_btc_endpoints(btc,ts)
         # BTC-flat pure protection must close even when risk data is unknown.
         if not actual and not bl and not bh and held>c['original_target']:
+            f.pop("infeasible_plan",None)
             c.update(qc=c['original_target'],active=False)
             return self._conditional_reconcile(tick,c,ep,btc,sol,held,D(0),c['original_target'],ts)
         valid=(not self._rf_dirty and estimate is not None and self._rf_equity is not None and 0<=ts-self._rf_equity[1]<=self.config.max_mark_age_ns
@@ -487,6 +496,18 @@ class SolRiskFirstResearch:
                 legal=[q for q in inner_candidates if loss(q)<=D('.8')*C and margin_ok(q)]
                 if legal:
                     target=min(legal,key=lambda q:(abs(q-alpha),q));inner_correction=True
+        # An unhedgeable state owns one plan, not a moving minute-by-minute optimum.
+        # External permission revisions exclude our own risk retirement and SOL fills.
+        plan_key=(ep.id,ep.side,actual,bl,bh,q2,f.get("permission_revision",0),estimate["closed"],beta,a,u)
+        plan=f.get("infeasible_plan")
+        if interval is None:
+            if plan is not None and plan[0]==plan_key:
+                target=plan[1]
+            else:
+                f["infeasible_plan"]=(plan_key,target)
+                self._risk_first_emit("CORRIDOR_INFEASIBLE_PLAN",ts,target=str(target),C=str(C),L=str(loss(target)),BTC_actual=str(actual),BTC_possible=[str(bl),str(bh)],Q2_remaining=str(q2),alpha=str(alpha),permission_revision=f.get("permission_revision",0),closed_estimate=estimate["closed"])
+        else:
+            f.pop("infeasible_plan",None)
         # Healthy actual/alpha receives its ordinary execution, without price-boundary churn.
         risk=f.get('corridor_risk',False)
         reverse=self._rf_reverse

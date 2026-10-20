@@ -1,0 +1,34 @@
+{
+  "status": "CANONICAL_ONLY_FOCUSED_NATIVE_PASS_REVIEW_PENDING_NOT_IN_RUNNING_ENGINE",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "6475dd2df2987abfc8fc1e0c8200b9049bb9a15b6e4eba76a857f9c4aa4c1278",
+    "runtime/tests/test_native_sol_corridor.py": "cf606a2dc09679e7bbdeb59db756ed56a56988fc2f2855271b2ac0c306ad44eb",
+    "runtime/coinmaster/research/native_audit.py": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3",
+    "runtime/coinmaster/research/native_baseline.py": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+    "reports/sol-corridor-113/churn-infeasible-focused-tests.log": "e90f19fa43f54f20622565fbdb820199a58da0b94c38308b73c34c5703d9aef3",
+    "reports/sol-corridor-113/churn-infeasible-corrected-exit-test.log": "787c4f3ff89cd318191362e3b3a77197ee43a7fd2bd817314baba43088127a97",
+    "reports/sol-corridor-113/churn-infeasible-final-tests.log": "a04e1439dd513073d3936a2f27486677b7e8bb01646ad77233019ac19d21c8e1"
+  },
+  "active_immutable_risk_source_sha256": "35e21dcf8c621fb778f256dcac5750baa03ab21730f3f7410ce5903dab6755d7",
+  "active_job_unchanged": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z",
+  "delta": "22added/1deleted runtime lines; one existing rf plan tuple and permission revision. Mathematical infeasible target fixed until episode/BTCsignedquantities+knownendpoints/Q2/externalpermission/closedriskestimate structural change. SOLfills,fees,markupdates do not change key. Math feasibility clears. Native pending/dataunknown/margin/exits remain existing gates.",
+  "self_retirement_safety": "External permission_revision is advanced only in original admission/authority release hooks, not _corridor_retire. Own risk retirement cannot invalidate its plan.",
+  "tests": {
+    "initial": "6PASS1fixtureFAIL; artificial mandatory-flat flag was checked multiple quotes after it legitimately cleared; corrected to real admitted SOL original and SOL_HARD_TIMEOUT authority.",
+    "corrected_exit": "1PASS",
+    "final_changed_subset": "3PASS27deselected3.39s",
+    "unique_aggregate": "7uniquePASS across prior focused6 plus final3; not claimed7freshsinglepass.",
+    "coverage": [
+      "Native partialIOCcancel/children completion",
+      "Ownfees cash10000-nativefees, no target drift onmarks orreceipts",
+      "UnknownACK remains blocked and retainsplan",
+      "Newclosedestimate/BTCquantity changes replan; restored mathfeasibility clears",
+      "Real admitted alpha ownership and hardtimeout preempt; BTCforcedflat",
+      "Existing Q2endpoint/reserve, nativeDeniedforcedresidual and2episodeOFFhealthyONparity passed in first subset"
+    ]
+  },
+  "policy_limitation": "Fixed plan in model-unhedgeable state, not continuous min-L or proof L<=C; current budget status remains risk-infeasible. No economic acceptance for this delta.",
+  "economic_repeat": "Currente3repeat1/1 continues unchanged. No additional run authorized.",
+  "no_new_codec_framework_or_timer": true,
+  "runtime_numstat": "22\t1\truntime/coinmaster/strategy/risk_first_sol.py"
+}

@@ -1,0 +1,71 @@
+......F                                                                  [100%]
+=================================== FAILURES ===================================
+_______ test_infeasible_plan_original_exit_authority_and_BTCflat_preempt _______
+
+    def test_infeasible_plan_original_exit_authority_and_BTCflat_preempt():
+        s,e,ep=setup()
+        try:
+            stress(s,a='1',u='1');advance(s,e,20);advance(s,e,21)
+            c=s._conditional;old=c['rf']['infeasible_plan'];revision=c['rf'].get('permission_revision',0)
+            i=s._domain._intent(ep,'SOL_ADD',-ep.side,0,quantity=1,reason='SOL_ADD')
+            s._risk_first_original(i,D(1),22)
+            assert 'infeasible_plan' not in c['rf'] and c['rf']['permission_revision']==revision+1
+            advance(s,e,22);assert c['rf']['infeasible_plan'][0]!=old[0]
+            c['corridor_mandatory_flat']=True
+            for ts in range(23,27):advance(s,e,ts)
+>           assert 'infeasible_plan' not in c['rf'] and not any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
+E           AssertionError: assert ('infeasible_plan' not in {'btc_qty': Decimal('0'), 'cap': None, 'cap_btc': None, 'ceiling': None, ...})
+
+runtime/tests/test_native_sol_corridor.py:491: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_sol_corridor.py::test_native_unknown_ACK_serializes_and_Daily90_SOLonly_refresh
+tests/test_native_sol_corridor.py::test_native_Q2_hypothetical_endpoint_and_original_reserve
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_sol_corridor.py::test_actual_native_RiskEngine_throttle_Denied_retains_forced_residual_then_next_quote_flat
+tests/test_native_sol_corridor.py::test_infeasible_plan_survives_partial_fills_marks_fees_and_receipts
+tests/test_native_sol_corridor.py::test_infeasible_plan_revises_on_closed_estimate_and_BTC_exposure_then_feasible_clears
+tests/test_native_sol_corridor.py::test_infeasible_plan_original_exit_authority_and_BTCflat_preempt
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_sol_corridor.py: 28 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:350: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_sol_corridor.py::test_native_unknown_ACK_serializes_and_Daily90_SOLonly_refresh
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:105: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_native_Q2_hypothetical_endpoint_and_original_reserve
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:119: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:166: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_actual_native_RiskEngine_throttle_Denied_retains_forced_residual_then_next_quote_flat
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:201: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_infeasible_plan_survives_partial_fills_marks_fees_and_receipts
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:461: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_infeasible_plan_revises_on_closed_estimate_and_BTC_exposure_then_feasible_clears
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:477: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_corridor.py::test_infeasible_plan_original_exit_authority_and_BTCflat_preempt
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_corridor.py:493: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_sol_corridor.py::test_infeasible_plan_original_exit_authority_and_BTCflat_preempt
+1 failed, 6 passed, 23 deselected, 44 warnings in 5.33s

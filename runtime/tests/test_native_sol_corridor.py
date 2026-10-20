@@ -440,3 +440,64 @@ def test_inner_protection_partial_fills_preserve_fees_rights_and_mandatory_exit(
         assert e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()==D(10000)+flow-fees
         assert not s._pending_by_order and not e.cache.positions_open()
     finally:e.end();e.dispose()
+
+
+def test_infeasible_plan_survives_partial_fills_marks_fees_and_receipts():
+    s,e,ep=setup()
+    try:
+        stress(s,a='1',u='1')
+        advance(s,e,20,size='5')
+        plan=s._conditional['rf']['infeasible_plan']
+        assert plan[1]>5 and ep.sol_qty==0
+        for ts in range(21,35):advance(s,e,ts,btc='100.1',sol='100.2',size='5')
+        assert s._conditional['rf']['infeasible_plan']==plan
+        held=next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)
+        assert held==plan[1] and len([x for x in s.risk_first_sol_audit if x['event']=='CORRIDOR_INFEASIBLE_PLAN'])==1
+        count=len(e.cache.orders())
+        for ts in range(35,40):advance(s,e,ts,btc='100.2',sol='100.1')
+        assert len(e.cache.orders())==count
+        assert last(s)['status']=='SOL_RISK_INFEASIBLE' and D(last(s)['L'])>D(last(s)['C'])
+        assert ep.sol_qty==0 and not ep.sol_add_filled_notional
+        assert any(o.status.name=='CANCELED' and o.filled_qty.as_decimal()>0 for o in e.cache.orders())
+        fees=sum((fee.as_decimal() for o in e.cache.orders() for fee in o.commissions()),D(0))
+        assert e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()==D(10000)-fees
+        intent=s._domain._intent(ep,'SOL_ADD',-ep.side,None,quantity=1)
+        s._pending_by_order['unacknowledged-plan-child']=intent
+        advance(s,e,40)
+        assert last(s,False)['status']=='DATA_UNKNOWN' and s._conditional['rf']['infeasible_plan']==plan
+        assert len(e.cache.orders())==count
+        del s._pending_by_order['unacknowledged-plan-child']
+    finally:e.end();e.dispose()
+
+
+def test_infeasible_plan_revises_on_closed_estimate_and_BTC_exposure_then_feasible_clears():
+    s,e,ep=setup()
+    try:
+        f=stress(s,a='1',u='1');advance(s,e,20);advance(s,e,21)
+        first=s._conditional['rf']['infeasible_plan']
+        f['closed']=1;advance(s,e,22)
+        second=s._conditional['rf']['infeasible_plan'];assert second[0]!=first[0]
+        i=s._domain._intent(ep,'BTC_REDUCE',-ep.side,None,quantity=10)
+        s._submit_intent(i,100,100,None,len(s._bars)-1,ts_now=23)
+        advance(s,e,23);advance(s,e,24);advance(s,e,25)
+        assert s._conditional['rf']['infeasible_plan'][0]!=second[0]
+        f.update(a=D('.01'),u=D('.01'),closed=2);advance(s,e,26)
+        assert 'infeasible_plan' not in s._conditional['rf']
+    finally:e.end();e.dispose()
+
+
+def test_infeasible_plan_original_exit_authority_and_BTCflat_preempt():
+    s,e,ep=setup()
+    try:
+        stress(s,a='1',u='1');advance(s,e,20);advance(s,e,21)
+        c=s._conditional;old=c['rf']['infeasible_plan'];revision=c['rf'].get('permission_revision',0)
+        original(s,e,ep,1,ts=22)
+        assert c['rf']['permission_revision']==revision+1
+        assert c['rf']['infeasible_plan'][0]!=old[0] and ep.sol_qty==1
+        i=s._domain._intent(ep,'SOL_EXIT',ep.side,None,quantity=1,reason='SOL_HARD_TIMEOUT')
+        s.sol_action=lambda q:s._submit_intent(i,100,100,None,len(s._bars)-1,ts_now=q.ts_event)
+        advance(s,e,23)
+        assert 'infeasible_plan' not in c['rf'] and not any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
+        assert ep.sol_qty==0
+        close(s,e,30)
+    finally:e.end();e.dispose()
