@@ -1,0 +1,56 @@
+{
+  "decision": "REJECTED_DD_GT50",
+  "interval": "[2024-09-01,2026-09-01)",
+  "seed_USDT": "10000",
+  "rows": [
+    {
+      "variant": "Control",
+      "TOTAL": "6077107.23887483",
+      "ACTIVE": "6077107.23887483",
+      "RESERVE": "0",
+      "ROI_percent": "60671.072388748300",
+      "DD_minute": "66.31878024969152066570091116",
+      "DD_OHLC": "67.54771031869252420136632742",
+      "fees": "945927.73761825",
+      "fills": 621,
+      "funding_records": 1320,
+      "liquidations": 0,
+      "MAKER_fees": "153876.76812554",
+      "MAKER_notional": "769383840.6277",
+      "TAKER_fees": "792050.96949271",
+      "TAKER_notional": "1440092671.8044"
+    },
+    {
+      "variant": "CHOP_PAIR_50_NET_v1",
+      "TOTAL": "205.42245876",
+      "ACTIVE": "205.42245876",
+      "RESERVE": "0",
+      "ROI_percent": "-97.945775412400",
+      "DD_minute": "99.84864985552820898675873133",
+      "DD_OHLC": "99.84888598112753570535111470",
+      "fees": "11256.90313488",
+      "fills": 186,
+      "funding_records": 489,
+      "liquidations": "UNKNOWN_AUDIT_LOST",
+      "MAKER_fees": "1065.72062230",
+      "MAKER_notional": "5328603.111500000030058",
+      "TAKER_fees": "10191.18251258",
+      "TAKER_notional": "18529422.749899999951334"
+    }
+  ],
+  "TOTAL_delta": "-6076901.81641607",
+  "economic_input_delta": {
+    "research_chop_pair": true
+  },
+  "status": "PROVEN_DURABLE_NATIVE_RESULT_INCOMPLETE_AUDIT",
+  "serialization_metadata_extra": {
+    "research_conditional_sol": false
+  },
+  "funding_signed_amount": "UNKNOWN_NATIVE_POST_ACCOUNT_TOTALS_NOT_COMPONENT_DELTAS",
+  "carry_admissions_exits_skipped_grants": "UNKNOWN_IN_MEMORY_AUDIT_LOST",
+  "historical_code_drift": "Enumerated engine-review-ready.json; old control reused. Exact attribution to carry alone is not claimed.",
+  "notional_precision": "Native CSV filled_qty times exported float avg_px.",
+  "one_economic_run": true,
+  "report": "engine-final-report.md",
+  "manifest": "engine-final-manifest.json"
+}

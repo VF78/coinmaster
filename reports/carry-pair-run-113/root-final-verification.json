@@ -1,0 +1,18 @@
+{
+  "status": "ROOT_DURABLE_NUMBERS_AND_MANIFEST_VERIFIED",
+  "at_utc": "2026-10-20T08:31:41.878017+00:00",
+  "verified_manifest_members": 24,
+  "control_raw_hash_verified": true,
+  "fees_reconciled": "11256.90313488",
+  "native_terminal_total": "205.42245876",
+  "ROI_percent": "-97.945775412400",
+  "DD_minute_percent": "99.84864985552820898675873133",
+  "full_feed_minutes": 1051200,
+  "native_samples": 3153600,
+  "terminal_flat": true,
+  "all_orders_terminal": true,
+  "original_runner_success": false,
+  "missing_event_audit": "UNKNOWN_NOT_RECONSTRUCTED",
+  "pilot_PID": 2009732,
+  "pilot_restarts": 0
+}

@@ -1,0 +1,14 @@
+{
+  "at_utc": "2026-10-20T08:33:55.977307+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/113",
+  "issue_state": "open",
+  "body_readback_match": true,
+  "project_status": "Todo",
+  "scope": "CHOP_PAIR_COMPLETE_REJECTED_DD",
+  "broader_goal": "UNRESOLVED_NEW_SCOPE_REQUIRED",
+  "TOTAL": "205.42245876",
+  "ROI_percent": "-97.9457754124",
+  "DD_percent": "99.8486498555",
+  "original_full_event_audit": "LOST_UNKNOWN",
+  "no_further_engines_authorized": true
+}
