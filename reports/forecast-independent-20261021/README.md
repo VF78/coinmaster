@@ -2,7 +2,7 @@
 
 **Current: TRAIN selection complete; control and STUMPY sealed; MiniRocket → RDST → CNN in progress. CHECK unopened.** Primary window1h×20, alternate15m×20, chosen only within TRAIN. Sourcec78e2b1; operational/report checkpoint8879607. Scientific protocol121942c4 and prepared dataset1bc6c492 unchanged.
 
-Allfive bounded resourceprofiles PASS. RDST sequential transform/head processes reuse the existing Torch model; weightrestore error0,140.783CPU/0swap. Initial resource failures are retained in receipts, not accuracy findings. Explicit CNN-only CPU allowance240min is operational, not scientific: all other600MiB/swap0/1CPU/admission limits remain. Actual20bar timing projects~147min minimum realisticfit; the hard ceiling remains enforced. See cnn-20bar-feasibility.json and resource authorization.
+Allfive bounded resourceprofiles PASS. RDST sequential transform/head processes reuse the existing Torch model; weightrestore error0,140.783CPU/0swap. Initial resource failures are retained in receipts, not accuracy findings. Explicit CNN-only CPU allowance480min (1b7110a; prior240 superseded before fit) is operational, not scientific: all other600MiB/swap0/1CPU/admission limits remain. Actual20bar timing projects~147min minimum realisticfit; the hard ceiling remains enforced. See cnn-20bar-feasibility.json and resource authorization.
 
 No accuracy or economic claim yet. Existing pilot unchanged, S0 not rerun. RootGO and allfive actual seals remain mandatory before CHECK.
 
