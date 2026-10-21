@@ -1,0 +1,17 @@
+"""Completed-development-only real fixed-SL competing-event summaries; zero fits."""
+import json,hashlib
+from pathlib import Path
+import numpy as np,pandas as pd
+from coinmaster.research.btc_pattern_evaluate import paired_ci
+job=Path('runtime/var/research-jobs/btc-pattern-pilot-m2-20261021');run=job/'q-prior-init-development';out=job/'q-prior-init-development-diagnostics';assert (run/'completion.json').exists();meta=np.load(job/'prepared/metadata.npy',mmap_mode='r');minutes=np.load(job/'prepared/minutes.npy',mmap_mode='r');stops={};rows=[]
+for folder in sorted(run.glob('F[123]')):
+ ids=np.load(folder/'prior.npz')['ids']
+ for i in ids:
+  j=int(meta['entry_index'][i]);v=minutes[j:j+4320];assert len(v)==4320;entry=meta['entry'][i];sigma=meta['sigma72'][i];stops[int(i)]=[bool(np.log(v[:,2].min()/entry)<=-sigma),bool(np.log(v[:,1].max()/entry)>=sigma)]
+for method in ['prior','CatBoost','CNN-direct','CNN-knn']:
+ groups=[dict(np.load(f/(method+'.npz'))) for f in sorted(run.glob('F[123]'))];z={key:np.concatenate([g[key] for g in groups]) for key in ['ids','q_raw','q_projected','truth_Q','truth_Q_upper']};origins=meta['origin'][z['ids']];stop=np.array([stops[int(i)] for i in z['ids']]);base_groups=[dict(np.load(job/'development'/f.name/(method+'.npz'))) for f in sorted(run.glob('F[123]'))];baseq=np.concatenate([g['q_projected'] for g in base_groups]);assert all(np.array_equal(a['ids'],b['ids']) for a,b in zip(groups,base_groups))
+ for side in range(2):
+  for k,level in enumerate([.2,.5,.8]):
+   prediction=z['q_projected'][:,side,k];truth=z['truth_Q'][:,side];upper=z['truth_Q_upper'][:,side];lowerhit=truth>=prediction;upperhit=upper>=prediction;sl_lower=stop[:,side]&~upperhit;sl_upper=stop[:,side]&~lowerhit;error=truth-prediction;baseline_error=truth-baseq[:,side,k];loss=np.maximum(level*error,(level-1)*error);bloss=np.maximum(level*baseline_error,(level-1)*baseline_error);ci=paired_ci(lowerhit.astype(float)-(1-level),origins);lci=paired_ci(loss-bloss,origins)
+   rows.append(dict(method=method,side=['long','short'][side],quantile=level,N=len(prediction),horizon_hours=72,SL_fixed_sigma72=1,nominal_TP_before_SL=1-level,TP_before_SL_lower=float(lowerhit.mean()),TP_before_SL_upper=float(upperhit.mean()),TP_hit_lower_CI_low=ci['lower']+1-level,TP_hit_lower_CI_high=ci['upper']+1-level,SL_touch_within_horizon=float(stop[:,side].mean()),SL_before_TP_lower=float(sl_lower.mean()),SL_before_TP_upper=float(sl_upper.mean()),neither_touch_end=float((~stop[:,side]&~lowerhit).mean()),tie_lower_truth=float((truth==prediction).mean()),projected_zero=float((prediction==0).mean()),raw_crossing=float((np.diff(z['q_raw'][:,side],axis=1)<0).any(1).mean()),mean_target_sigma=float(prediction.mean()),mean_target_gross_pct=float((np.expm1(prediction*meta['sigma72'][z['ids']]) if side==0 else -np.expm1(-prediction*meta['sigma72'][z['ids']])).mean()*100),pinball=float(loss.mean()),pinball_delta_vs_same_baseline=lci['mean'],pinball_delta_CI_low=lci['lower'],pinball_delta_CI_high=lci['upper'],cost_validity='NOT_ESTABLISHED_NO_POLICY_ADMISSION'))
+pd.DataFrame(rows).to_csv(out/'fixed-SL-competing-events-and-TP-calibration.csv',index=False);(out/'fixed-SL-diagnostic-receipt.json').write_text(json.dumps(dict(fits=0,CHECK_used=False,policy_admitted=False,SL_learned=False,SL_contract='fixed1sigma72,realentry,72hactualminutes',source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),unique_origins=len(stops)),indent=2)+'\n');print('fixed-SL diagnostic complete, no fits')

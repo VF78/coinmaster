@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-21T21:45:53.524166+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "readback": "PASS",
+  "Q_PRIOR_INIT": "COMPLETE_NO_SKILL",
+  "active_market_job": false,
+  "next": "READ_ONLY_REAL_GRADIENT_DIAGNOSIS_0FITS",
+  "CHECK_opened": false,
+  "pilot_changes": false
+}

@@ -1,0 +1,45 @@
+{
+  "mode": "CNN_Q_PRIOR_INIT",
+  "status": "VARIANT_FITS_COMPLETE",
+  "source_sha256": "b1cc5df55b06fd22d13deaaaef3a7a603b870dc4a37d946801c84d6032eefad2",
+  "recipe_protocol_sha256": "a9ef9fa2ff7a306d75a9faf6cfcccc9ead95163fd37f4295b219b3a9344f7f02",
+  "market_joint_fits": 6,
+  "folds": [
+    {
+      "fold": "F1",
+      "selected_epochs": 6,
+      "subfit_N": 4392,
+      "refit_N": 5064,
+      "outer_N": 2808,
+      "inner_cutoff": 1733270400000,
+      "fit_cutoff": 1735689600000
+    },
+    {
+      "fold": "F2",
+      "selected_epochs": 6,
+      "subfit_N": 8736,
+      "refit_N": 9408,
+      "outer_N": 2880,
+      "inner_cutoff": 1748908800000,
+      "fit_cutoff": 1751328000000
+    },
+    {
+      "fold": "F3",
+      "selected_epochs": 7,
+      "subfit_N": 13152,
+      "refit_N": 13824,
+      "outer_N": 2808,
+      "inner_cutoff": 1764806400000,
+      "fit_cutoff": 1767225600000
+    }
+  ],
+  "CHECK_opened": false,
+  "wall_seconds": 1643.0610552919097,
+  "resource": {
+    "rss_peak_bytes": 2918432768,
+    "mps_driver_bytes": null,
+    "mps_allocated_bytes": null
+  },
+  "gate_status": "NO_SKILL",
+  "shortlist": []
+}

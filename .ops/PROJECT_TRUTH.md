@@ -1,4 +1,4 @@
-2026-10-21T21:13Z current BTC-PATTERN-M2-20261021 / #122 InProgress: full-history CNN_Q_PRIOR_INIT DEVELOPMENT running ONCE PID92981/session84758, sourceb1cc5df5/protoa9ef9fa2/QA98ec922ePASS, max6jointfits under absolute01:46:11Z deadline. Baseline+METRIC_OFF savednegative/weak, RECENT180cancelled0fits, ES3market0 afteroriginalsyntheticQfail. Wholechosenhistorypreserved; noCHECK/policy/native/SOL/pilotchange. Exact current resume/permissions in .ops/ACTIVE_TASK.md.
+2026-10-21T21:49:35.551296+00:00 BTC-PATTERN-M2-20261021/#122: alladmittedmarketrecipesCOMPLETE, noPREDICTIVE_PASS/emptyshortlist; originalCNNQlongbestbutweak. Q_PRIOR_INIT36totalmarketneuralinclbaseline+V1/36CBtotal/4syntheticseparate, fullhistorypreserved. Realgrad0fitfinished/noQ-onlyfitGO; one0fitregime-mixture-vs-withindriftdecompositionactive. NoCHECK/final/native/SOL/pilotchange. Exactstate in ACTIVE_TASK.
 
 Historical checkpoints below (superseded by current ACTIVE_TASK):
 

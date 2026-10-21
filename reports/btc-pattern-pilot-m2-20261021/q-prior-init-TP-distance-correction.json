@@ -1,0 +1,6 @@
+{
+  "status": "BEFORE_FINAL_REPORT",
+  "correction": "Short gross target distance is 1-exp(-q*sigma), long exp(q*sigma)-1. Only derived display distance corrected; forecast/loss/hit/SL counts unchanged.",
+  "fits": 0,
+  "source_sha256": "00f6a5d31008757836be24bb994dad1902dc98a8fa02d9f6b795aad7c33aa4b6"
+}

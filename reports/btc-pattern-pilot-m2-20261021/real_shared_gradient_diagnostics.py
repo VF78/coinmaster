@@ -1,0 +1,27 @@
+"""One frozen zero-fit real-data gradient probe; no optimizer and no CHECK."""
+import json,hashlib,time,resource,math,os
+from pathlib import Path
+import numpy as np,pandas as pd,torch
+from coinmaster.research.btc_pattern_train import Data
+from coinmaster.research.btc_pattern_models import CNN,predict_loss,soft_metric
+from coinmaster.research.btc_pattern_data import folds
+r=Path('reports/btc-pattern-pilot-m2-20261021');job=Path('runtime/var/research-jobs/btc-pattern-pilot-m2-20261021');runs={'ORIGINAL':job/'development','Q_PRIOR_INIT':job/'q-prior-init-development'};out=job/'real-shared-gradient-diagnostics';out.mkdir(exist_ok=False);files=[p for run in runs.values() for p in run.glob('F*/CNN-*.pt')];assert len(files)==12;sha=lambda p:hashlib.file_digest(open(p,'rb'),'sha256').hexdigest();manifest=dict(source_sha256=sha(Path(__file__)),checkpoint_sha256={str(p.resolve()):sha(p) for p in files},selected_checkpoint_role='refit only; six ES states also snapshotted for complete12state provenance',sampling='128 deterministic uniformly spaced IDs across each COMPLETE purgedrefit history; same IDs perrecipe',consistency_rule='Report all six cosines; do not infer conflict from a singlebatch or inconsistent/nonnegative folds',limits=dict(wall_seconds=180,RSS_bytes=6*1024**3,CPU_threads=4,optimizer_steps=0,fits=0,CHECK_used=False));(r/'real-shared-gradient-pre-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');torch.set_num_threads(4);torch.set_num_interop_threads(1);assert torch.backends.mps.is_available();assert os.environ.get('PYTORCH_MPS_HIGH_WATERMARK_RATIO')!='0';data=Data(job/'prepared');data.images=np.load(job/'development/images.npy',mmap_mode='r');began=time.monotonic();rows=[]
+def guard():
+ if time.monotonic()-began>180 or resource.getrusage(resource.RUSAGE_SELF).ru_maxrss>6*1024**3:raise RuntimeError('ZERO_FIT_PROBE_LIMIT')
+for fold in folds(data.meta):
+ full=fold['refit'];ids=full[np.unique(np.linspace(0,len(full)-1,128).astype(int))];prior=np.quantile(data.y[full],[.2,.5,.8],axis=0).T
+ for recipe,run in runs.items():
+  guard();state=torch.load(run/fold['name']/'CNN-refit.pt',weights_only=False,map_location='cpu');assert np.array_equal(state['fit_ids'],full);model=CNN().to('mps');model.load_state_dict(state['weights']);model.eval();x=torch.from_numpy(data.images[ids].transpose(0,3,1,2).astype('float32')/255).to('mps');c=torch.from_numpy(((data.c[ids]-state['context_mean'])/state['context_std']).astype('float32')).to('mps');z,d,q=model(x,c);prediction,dl,ql=predict_loss(d,q,torch.from_numpy(data.d[ids].astype('int64')).to('mps'),torch.from_numpy(data.y[ids]).to('mps'),torch.from_numpy(state['q_scales']).to('mps'));metric,_=soft_metric(z,torch.from_numpy(data.signature[ids]).to('mps'),torch.from_numpy(data.meta['origin'][ids].copy()).to('mps'),torch.from_numpy(data.meta['label_end'][ids].copy()).to('mps'),torch.from_numpy(state['signature_scales']).to('mps'),state['tau']);parameters=[(name,p) for name,p in model.named_parameters() if name.startswith(('encoder.','heads.projection.'))];vectors={};record=dict(recipe=recipe,fold=fold['name'],N=len(ids),population_N=len(full),first_origin=int(data.meta['origin'][ids[0]]),last_origin=int(data.meta['origin'][ids[-1]]),ids_sha256=hashlib.sha256(ids.tobytes()).hexdigest(),dropout_mode='eval',optimizer_steps=0,D_loss=float(dl.detach().cpu()),Q_normalized_loss=float(ql.detach().cpu()),metric_weighted_loss=float((.1*metric).detach().cpu()))
+  for label,loss in [('D',dl),('Q',ql),('metric_weighted',.1*metric)]:
+   guard();grads=torch.autograd.grad(loss,[p for name,p in parameters],retain_graph=True,allow_unused=True);vectors[label]=torch.cat([(torch.zeros_like(p) if g is None else g).detach().reshape(-1) for (name,p),g in zip(parameters,grads)]).cpu().numpy();record[label+'_shared_gradient_norm']=float(np.linalg.norm(vectors[label]))
+   for prefix,key in [('encoder.','encoder'),('heads.projection.','projection')]:record[label+'_'+key+'_gradient_norm']=math.sqrt(sum(float((g.detach()**2).sum().cpu()) for (name,p),g in zip(parameters,grads) if g is not None and name.startswith(prefix)))
+  def cosine(a,b):
+   denominator=np.linalg.norm(vectors[a])*np.linalg.norm(vectors[b]);return float(np.dot(vectors[a],vectors[b])/denominator) if denominator>0 else None
+  record['cosine_D_vs_Q']=cosine('D','Q');record['cosine_metric_vs_Q']=cosine('metric_weighted','Q');raw=q.detach().cpu().numpy();levels=np.array([.2,.5,.8])
+  for side,label in enumerate(['long','short']):
+   for prediction_name,qp in [('raw',raw),('projected',np.maximum(0,np.sort(raw,axis=2))),('own_fit_prior',np.broadcast_to(prior,(len(ids),2,3)))]:
+    error=data.y[ids,side,None]-qp[:,side];record['Q_'+label+'_'+prediction_name+'_pinball']=float(np.maximum(levels*error,(levels-1)*error).mean())
+  rows.append(record);del model,z,d,q,metric,prediction,dl,ql,vectors,grads;torch.mps.empty_cache();guard()
+pd.DataFrame(rows).to_csv(out/'shared-gradients-and-Qlosses.csv',index=False);receipt=dict(status='COMPLETE_ZERO_FIT_REAL_GRADIENT_PROBE',fits=0,optimizer_steps=0,CHECK_used=False,wall_seconds=time.monotonic()-began,RSS_peak_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,source_sha256=sha(Path(__file__)),selected_refit_checkpoints=6,manifest_checkpoints=12);(out/'completion.json').write_text(json.dumps(receipt,indent=2)+'\n')
+for p in out.glob('*'):(r/('real-gradient-'+p.name)).write_bytes(p.read_bytes())
+print(json.dumps(receipt))

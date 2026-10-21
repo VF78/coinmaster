@@ -1,0 +1,8 @@
+{
+  "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F1/CNN-es.pt": "42de980539dfbc9cf6699309bfaf9223ce597849ba1ed54dda1305e4b7712ac3",
+  "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F1/CNN-refit.pt": "46e3eb36df36cf2f96c3c6f4fbd3a7acc9d7b44cfa2c2004b8d204d9589d4e9b",
+  "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F2/CNN-es.pt": "2a9fe1551afc03be28a7c887aa96eebc95ed488ea33cc13b424c8d7f2919827c",
+  "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F2/CNN-refit.pt": "fd8b94967dcbbfceee332ec21483cce0d90dd4e830e6236aca5f88d4afd0837c",
+  "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F3/CNN-es.pt": "0580532417e3ff65cfaac2c5be4cea9a50f16d3937add9f4bff270cc52c1d537",
+  "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F3/CNN-refit.pt": "1846048e13154d7ed1cca97350a80eef759f69479c3fd381ea0b502ca7e3caa2"
+}

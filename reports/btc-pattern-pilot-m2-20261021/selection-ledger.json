@@ -59,5 +59,36 @@
     "status": "CANCELLED_BEFORE_LAUNCH",
     "fits": 0,
     "reason": "owner requires full selected period"
+  },
+  "Q_PRIOR_INIT": {
+    "status": "NO_SKILL",
+    "market_joint_fits": 6,
+    "synthetic_fits": 2,
+    "synthetic_PASS": true,
+    "synthetic_is_independent_market_quality": false,
+    "CHECK_opened": false,
+    "shortlist": [],
+    "selected_epochs": [
+      6,
+      6,
+      7
+    ],
+    "wall_seconds": 1643.0610552919097,
+    "baseline_preserved": true
+  },
+  "FULL_ES3_CNN": {
+    "status": "DEFERRED_NO_MARKET_GO",
+    "market_fits": 0,
+    "original_initialization_synthetic_fits": 2,
+    "original_initialization_synthetic_PASS": false
+  },
+  "conditional_stages": {
+    "final_model": "BLOCKED_NO_ADMITTED_FORECAST_FAMILY",
+    "stability": "NOT_ADMITTED",
+    "CHECK": "NOT_OPENED_NO_PASS",
+    "policy": "BLOCKED_NO_PATH_SKILL",
+    "native": "NOT_ADMITTED",
+    "SOL": "BLOCKED_NO_BTC_PATH_POLICY",
+    "economic": "TARGET_NOT_MET"
   }
 }

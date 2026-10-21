@@ -1,0 +1,9 @@
+{
+  "fits": 0,
+  "CHECK_used": false,
+  "policy_admitted": false,
+  "SL_learned": false,
+  "SL_contract": "fixed1sigma72,realentry,72hactualminutes",
+  "source_sha256": "00f6a5d31008757836be24bb994dad1902dc98a8fa02d9f6b795aad7c33aa4b6",
+  "unique_origins": 8496
+}

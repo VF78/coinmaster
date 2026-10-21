@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETE_ZERO_FIT_REAL_GRADIENT_PROBE",
+  "fits": 0,
+  "optimizer_steps": 0,
+  "CHECK_used": false,
+  "wall_seconds": 7.804353999905288,
+  "RSS_peak_bytes": 680755200,
+  "source_sha256": "85084aaf2852617bac31426a681d92b3a200075a4996a3bfd8ba2139982df844",
+  "selected_refit_checkpoints": 6,
+  "manifest_checkpoints": 12
+}
