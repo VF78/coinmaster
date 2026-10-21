@@ -1,0 +1,138 @@
+{
+  "accounting_start_utc": "2026-10-21T16:28:00Z",
+  "guarded_jobs": {
+    "stage0": [
+      {
+        "job": "controls",
+        "wall_seconds": 55.69291429175064,
+        "status": "PASS",
+        "peak_RSS_bytes": 512081920
+      },
+      {
+        "job": "controls-utc",
+        "wall_seconds": 80.69629870774224,
+        "status": "PASS",
+        "peak_RSS_bytes": 302612480
+      },
+      {
+        "job": "mechanism-screen",
+        "wall_seconds": 17.205564708914608,
+        "status": "PASS",
+        "peak_RSS_bytes": 30703616
+      },
+      {
+        "job": "old-cnn-inference",
+        "wall_seconds": 3.6783932503312826,
+        "status": "PASS",
+        "peak_RSS_bytes": 242515968
+      },
+      {
+        "job": "old-fitset-inference",
+        "wall_seconds": 22.49778800038621,
+        "status": "TECHNICAL_FAILURE_NO_AUTORETRY",
+        "peak_RSS_bytes": 867942400
+      },
+      {
+        "job": "old-inference-utc",
+        "wall_seconds": 14.198593374807388,
+        "status": "PASS",
+        "peak_RSS_bytes": 418643968
+      },
+      {
+        "job": "old-metrics-retry1",
+        "wall_seconds": 3.1350859999656677,
+        "status": "PASS",
+        "peak_RSS_bytes": 162217984
+      },
+      {
+        "job": "old-rdst-inference-retry1",
+        "wall_seconds": 6.796810999978334,
+        "status": "PASS",
+        "peak_RSS_bytes": 286113792
+      },
+      {
+        "job": "prepare-512",
+        "wall_seconds": 1.0488388328813016,
+        "status": "PASS",
+        "peak_RSS_bytes": 179011584
+      },
+      {
+        "job": "prepare-full",
+        "wall_seconds": 9.439780292101204,
+        "status": "PASS",
+        "peak_RSS_bytes": 206012416
+      }
+    ],
+    "A": [
+      {
+        "job": "profile-A",
+        "wall_seconds": 56.199855791870505,
+        "status": "PASS",
+        "peak_RSS_bytes": 902479872
+      },
+      {
+        "job": "profile-baseline",
+        "wall_seconds": 7.32791579188779,
+        "status": "PASS",
+        "peak_RSS_bytes": 482426880
+      },
+      {
+        "job": "profile-scaling",
+        "wall_seconds": 57.76586016593501,
+        "status": "PASS",
+        "peak_RSS_bytes": 425951232
+      },
+      {
+        "job": "stage-A",
+        "wall_seconds": 537.5391515409574,
+        "status": "PASS",
+        "peak_RSS_bytes": 761774080
+      },
+      {
+        "job": "stage-A-utc-corrected",
+        "wall_seconds": 543.412360499613,
+        "status": "PASS",
+        "peak_RSS_bytes": 849362944
+      }
+    ],
+    "B": [
+      {
+        "job": "profile-B",
+        "wall_seconds": 38.74605412501842,
+        "status": "PASS",
+        "peak_RSS_bytes": 472481792
+      }
+    ],
+    "C": [
+      {
+        "job": "profile-C",
+        "wall_seconds": 56.58593383291736,
+        "status": "PASS",
+        "peak_RSS_bytes": 558120960
+      }
+    ]
+  },
+  "guarded_wall_seconds": {
+    "stage0": 214.39006845885888,
+    "A": 1202.2451437902637,
+    "B": 38.74605412501842,
+    "C": 56.58593383291736
+  },
+  "scope": "Actual scientific guarded wall including technical failures/profiles/quarantined initial A; no overlap. Source editing, authorization/network waits not scientific compute. No hidden fit repeats.",
+  "stage0_unguarded_fixtures": "Focused alignment/unit tests and hash/inventory checks; original short receipts in report. New finalconnected9tests2.541s.",
+  "B_preparation": {
+    "budget_reserve_seconds": 60,
+    "observed_preflight_seconds": 5.244912332782805,
+    "weights_download_wall_seconds": 35.94374308409169
+  },
+  "C_preparation": {
+    "budget_reserve_seconds": 30,
+    "random_fixture_seconds": 2.266,
+    "actual_data_pin_preflight_seconds": 1.0008943327702582
+  },
+  "full_job_admission": {
+    "B": "INCOMPLETE_RESOURCE:823.968580813min inclallrequiredcostandmargin",
+    "C": "INCOMPLETE_RESOURCE:96.3558585421min inclallrequiredcostandmargin"
+  },
+  "no_active_scientific_process": true
+}

@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "tests": 1,
+  "wall_seconds": 2.266,
+  "training": false,
+  "fixture": "random-weightTS2Vec32/32/depth6 causalprefix256vsfuture288; futureOHLCVchannelsinvariance; savedaveragedmodelroundtrip; no learnedencoder/scaler"
+}

@@ -1,0 +1,177 @@
+{
+  "stage": "C",
+  "frozen_utc": "2026-10-21T18:00:22.158967+00:00",
+  "conditional_trigger": "A all6NO_SKILL, B INCOMPLETE_RESOURCE; no admitted policy",
+  "upstream_git_SHA": "b0088e14a99706c05451316dc6db8d3da9351163",
+  "upstream_url": "https://github.com/zhihanyue/ts2vec",
+  "paper": "https://arxiv.org/abs/2106.10466",
+  "license": "MIT",
+  "base_protocol_sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586",
+  "device": "cpu",
+  "threads": 1,
+  "RSS_bytes": 3221225472,
+  "wall_budget_seconds": 5400,
+  "pilot_max_wall_seconds": 300,
+  "encoder": {
+    "input_dims": 12,
+    "output_dims": 32,
+    "hidden_dims": 32,
+    "depth": 6,
+    "batch_size": 16,
+    "lr": 0.001,
+    "max_train_length": 256,
+    "n_iters": 600,
+    "seed": 7,
+    "optimizer": "upstream AdamW default unchanged",
+    "no_sweep": true
+  },
+  "channels": {
+    "definition": "two assets x causal1h six X_joint fields; first5normalized by perbarcausal168h sigma*sqrt1/24; volume log1pV minusprevious20 excludingcurrent; float32",
+    "timestamp": "hourly bar_end<=origin",
+    "invalid": "explicitnonfinite; no forwardfill; actualTRAIN commonhourlycoverage verifiedbeforefit"
+  },
+  "scaler": "StandardScaler trained ONLY chronological origins>=2024-09-01 and<encodertrainingend; no outcome/validation/CHECK input in scaler/encoderfit",
+  "ES_isolation": "ESencoder/scaler fits before28dayESboundary; fullprefixencoder/scaler independentfit forheadrefit; no fullprefix encoder used to chooseESiterations",
+  "inference": {
+    "causal": true,
+    "sliding_length": 1,
+    "sliding_padding": 255,
+    "lookback": 256,
+    "encoding_window": null,
+    "endpoint_only": true,
+    "batch_size": 16,
+    "not_full_series_pool": true
+  },
+  "pilot": {
+    "encoder_cutoff": "2026-03-01",
+    "fit_n_iters": 600,
+    "one_encoder_fit": true,
+    "max_train_feature_end": "2026-02-28T23:00:00Z",
+    "inference": "last1279 fixedrealTRAINtimestamps=>1024endpoints after255context; all1279computations timed",
+    "roundtrip": "existing averagedencoderstate save/load onefixed256timestampfixture",
+    "outcomes_opened": false,
+    "save_for_reuse": "exactfullprefixMarch2026encoder/scaler onlyifsameprotocol eventualadmission, no extraresourceprobe fit"
+  },
+  "cost_counts": {
+    "unique_encoder_fits": 14,
+    "original_unreused_encoder_fits": 22,
+    "reused_ES_full_encoder_pairs": [
+      "3developmentcutoffs +finalMarch2026 matchquarterlycutoffs"
+    ],
+    "encoder_cache_roles": [
+      {
+        "cutoff": "2024-12-01",
+        "role": "ES",
+        "encoder_training_end": "2024-11-03",
+        "inference_end_exclusive": "2024-12-01",
+        "causal_inference_timestamps": 2439
+      },
+      {
+        "cutoff": "2024-12-01",
+        "role": "full",
+        "encoder_training_end": "2024-12-01",
+        "inference_end_exclusive": "2025-03-01",
+        "causal_inference_timestamps": 4599
+      },
+      {
+        "cutoff": "2025-03-01",
+        "role": "ES",
+        "encoder_training_end": "2025-02-01",
+        "inference_end_exclusive": "2025-03-01",
+        "causal_inference_timestamps": 4599
+      },
+      {
+        "cutoff": "2025-03-01",
+        "role": "full",
+        "encoder_training_end": "2025-03-01",
+        "inference_end_exclusive": "2025-06-01",
+        "causal_inference_timestamps": 6807
+      },
+      {
+        "cutoff": "2025-06-01",
+        "role": "ES",
+        "encoder_training_end": "2025-05-04",
+        "inference_end_exclusive": "2025-06-01",
+        "causal_inference_timestamps": 6807
+      },
+      {
+        "cutoff": "2025-06-01",
+        "role": "full",
+        "encoder_training_end": "2025-06-01",
+        "inference_end_exclusive": "2025-09-01",
+        "causal_inference_timestamps": 9015
+      },
+      {
+        "cutoff": "2025-09-01",
+        "role": "ES",
+        "encoder_training_end": "2025-08-04",
+        "inference_end_exclusive": "2025-09-01",
+        "causal_inference_timestamps": 9015
+      },
+      {
+        "cutoff": "2025-09-01",
+        "role": "full",
+        "encoder_training_end": "2025-09-01",
+        "inference_end_exclusive": "2025-12-01",
+        "causal_inference_timestamps": 11199
+      },
+      {
+        "cutoff": "2025-12-01",
+        "role": "ES",
+        "encoder_training_end": "2025-11-03",
+        "inference_end_exclusive": "2025-12-01",
+        "causal_inference_timestamps": 11199
+      },
+      {
+        "cutoff": "2025-12-01",
+        "role": "full",
+        "encoder_training_end": "2025-12-01",
+        "inference_end_exclusive": "2026-03-01",
+        "causal_inference_timestamps": 13359
+      },
+      {
+        "cutoff": "2026-03-01",
+        "role": "ES",
+        "encoder_training_end": "2026-02-01",
+        "inference_end_exclusive": "2026-03-01",
+        "causal_inference_timestamps": 13359
+      },
+      {
+        "cutoff": "2026-03-01",
+        "role": "full",
+        "encoder_training_end": "2026-03-01",
+        "inference_end_exclusive": "2026-10-21",
+        "causal_inference_timestamps": 18975
+      },
+      {
+        "cutoff": "2026-06-01",
+        "role": "ES",
+        "encoder_training_end": "2026-05-04",
+        "inference_end_exclusive": "2026-06-01",
+        "causal_inference_timestamps": 15567
+      },
+      {
+        "cutoff": "2026-06-01",
+        "role": "full",
+        "encoder_training_end": "2026-06-01",
+        "inference_end_exclusive": "2026-09-01",
+        "causal_inference_timestamps": 17775
+      }
+    ],
+    "total_causal_encoder_inference_timestamps": 144714,
+    "development_CatBoost_ES_refit": 36,
+    "final_BTC_CatBoost_ES_refit": 6,
+    "quarterly_BTC_CatBoost_ES_refit": 42,
+    "final_BTC_logistic": 1,
+    "final_BTC_linearQ_ES_refit": 4,
+    "development_controls": "reuse A identicalID priors/linear/joint forecasts; no extra baselines",
+    "quarterly_SOL_or_linear_baselines": 0
+  },
+  "head_recipe": "fixedAdepth4/500max/.03/L2=10/seed7/ES50last28fitdays/fullrefit; no newdepths/thresholds",
+  "head_budget_seconds": 3872.256405822671,
+  "head_budget_basis": "same measured500fullprefixcost57.19s scaledactualpurgedprefixcounts; jointonlydevelopment +conditionalBTCfinal/quarterly,782/750featurewidth; final5baselinefits +360sinference/bootstrap/I-O; not unseenES optimism",
+  "preparation_budget_reserve_seconds": 30,
+  "resource_projection": "14unique600iterencoderfits plus allcausalprefixcachetimestamps at measuredpilotper-timestampcost plusallnecessaryheadbudget;20percentwholemargin; includespilotviareuse; no fullC unless<=90min",
+  "full_C_not_authorized": true,
+  "quality_accessed": false
+}

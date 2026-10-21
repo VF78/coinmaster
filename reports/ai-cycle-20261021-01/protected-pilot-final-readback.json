@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-21T18:08:45.526470+00:00",
+  "unit": "coinmaster-hl-stageg-testnet.service",
+  "read_only": true,
+  "ActiveState": "active",
+  "SubState": "running",
+  "MainPID": 2009732,
+  "NRestarts": 0,
+  "ActiveEnterTimestamp": "2026-09-28T07:39:45Z",
+  "start_identity_same": true,
+  "service_config_or_order_mutations_in_task": false,
+  "meaning": "serviceidentity/uptimepreserved;notnewtradinglifecycleacceptance"
+}

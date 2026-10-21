@@ -2077,6 +2077,16 @@
       "wall_seconds": 37.8245828342624,
       "independent_paths": 96,
       "reason": "outcomes-blind resource measurement; no head fitting"
+    },
+    {
+      "utc": "2026-10-21T18:03:06.123788+00:00",
+      "stage": "profile-C",
+      "fit": true,
+      "seed": 7,
+      "encoder_iterations": 600,
+      "wall_seconds": 55.46524062473327,
+      "status": "INCOMPLETE_RESOURCE",
+      "reason": "outcomes-blind contrastive encoder cost + causal inference only"
     }
   ]
 }

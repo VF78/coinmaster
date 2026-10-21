@@ -1,0 +1,18 @@
+{
+  "status": "SKIPPED_NO_ADMITTED_MODEL",
+  "overall": "INCOMPLETE_RESOURCE",
+  "frozen_report_utc": "2026-10-21T18:07:45.748886+00:00",
+  "candidate_shortlist": [],
+  "native_runs_used": 0,
+  "action_value": "ACTION_VALUE_UNIDENTIFIED",
+  "A": "all6NO_SKILL fixeddevelopmentgates",
+  "B": "INCOMPLETE_RESOURCE; fullheadqualityUNKNOWN",
+  "C": "INCOMPLETE_RESOURCE; fullheadqualityUNKNOWN",
+  "March_new_models": "NOT_ADMITTED_NOT_OPENED",
+  "CHECK_new_models": "NOT_ADMITTED_NOT_OPENED",
+  "candidate_TOTAL": null,
+  "candidate_native_DD": null,
+  "candidate_coherent_DD": null,
+  "unknown_money_is_not_zero": true,
+  "reason": "No eligible model and no reconstructible mechanism predecision availability/paired branches; no policy threshold sweep."
+}

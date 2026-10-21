@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-21T18:01:38.541695+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "profile-C"
+  ],
+  "c_protocol_sha256": "d7ea024f31775a3c721115fd8b40f133450ae92c741d8fffa9a62b151abca435",
+  "c_source_input_manifest_sha256": "0d35d2f80b8f6f1872b6e046aff7296d1f28ec9908217ae516e0365fde54ec5b",
+  "module_sha256": {
+    "forecast_cycle_ts2vec.py": "7aee83f033394848d9a584cab3a15a02cc3ddcf5b6a8b03c5bad59fee4ebfae8"
+  },
+  "threads": 1,
+  "device": "cpu",
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "profile-C": 300
+  },
+  "fit_limit": 1,
+  "encoder_iterations": 600,
+  "configuration": "input12/output32/hidden32/depth6/batch16/lr.001/max_train_length256/seed7",
+  "encoder_fit_cutoff": "2026-03-01T00:00:00Z",
+  "causal_inference": "sliding_length1/sliding_padding255/causalTrue/no_pooling;1279inputtimestamps/1024endpoints;actualsavedmodelroundtrip",
+  "outcome_labels_access": false,
+  "full_C_authorized": false,
+  "necessary_costs": "all14uniqueES/fullencoderfits+144714inferenceinputs+requiredheadfits/final/quartercache+margin;reuseprofileencoderonlywithidenticalcutoff/recipe",
+  "no_pilot_or_S0_changes": true,
+  "no_other_stages": true
+}

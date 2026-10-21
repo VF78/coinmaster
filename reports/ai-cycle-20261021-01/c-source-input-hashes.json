@@ -1,0 +1,98 @@
+{
+  "runtime/coinmaster/research/forecast_cycle_ts2vec.py": {
+    "sha256": "7aee83f033394848d9a584cab3a15a02cc3ddcf5b6a8b03c5bad59fee4ebfae8",
+    "bytes": 5957
+  },
+  "runtime/coinmaster/research/forecast_cycle_run.py": {
+    "sha256": "bbc5d61143eba60fedb6ae31e0bdc85502e4aeca877e33892a6e1d07bc4208df",
+    "bytes": 15772
+  },
+  "runtime/coinmaster/research/forecast_cycle_data.py": {
+    "sha256": "ad1fd91c4f768860baa84f29bc3c8d391ab07f585dec38777cb55db405f0a74f",
+    "bytes": 5523
+  },
+  "runtime/coinmaster/research/forecast_cycle_train.py": {
+    "sha256": "ada1279cb988531a6700a99b5ed44c30f7fa64caf927686ac13774741490ebbe",
+    "bytes": 23958
+  },
+  "runtime/coinmaster/research/forecast_cycle_guard.py": {
+    "sha256": "b64887b5394842343d0da1e436f8d4f7def7838b12ecd654092649fc13be7931",
+    "bytes": 2566
+  },
+  "runtime/coinmaster/research/forecast_independent_data.py": {
+    "sha256": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+    "bytes": 13432
+  },
+  "runtime/tests/test_forecast_cycle_ts2vec.py": {
+    "sha256": "cb13270ce3edea210168d8502a09774dd336aae5aabf21945e7eff50c38238d0",
+    "bytes": 1539
+  },
+  "reports/ai-cycle-20261021-01/c-protocol.json": {
+    "sha256": "d7ea024f31775a3c721115fd8b40f133450ae92c741d8fffa9a62b151abca435",
+    "bytes": 6567
+  },
+  "reports/ai-cycle-20261021-01/c-focused-test.json": {
+    "sha256": "eba6cd94397b47ab6e0883b3d47d0ef73ae29f0b9009f48896d8bee00cefe323",
+    "bytes": 244
+  },
+  "reports/ai-cycle-20261021-01/b-dependency-preflight.json": {
+    "sha256": "c9d05729380b2e0563c3b7e31cbff05c0ba7a98a08b9ea35d6cdf5e6b4bd72ec",
+    "bytes": 689
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/utils.py": {
+    "sha256": "85ca67e8e84cad09933d2f3ba60de3bc18bafda78706bd5c4c4a509f577dea90",
+    "bytes": 3954
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/LICENSE": {
+    "sha256": "a0cc2d47952871dab9279d53700c02afb7a5b947afb85487d992f3c609486171",
+    "bytes": 1067
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/ts2vec.py": {
+    "sha256": "2704502598dde115b55559bff8b56563a94eed5cdae4087ec8941a2a077f9972",
+    "bytes": 14350
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/source-hashes.json": {
+    "sha256": "9ed00027fa444d27824e7b005d6500e4cfde3549d8a2a4c9a9bdc3908fa7cfb0",
+    "bytes": 890
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/dilated_conv.py": {
+    "sha256": "9c98e7313e78748670083c400a4ee4d1357a88f1a0457c7f44e780ac4165cdbb",
+    "bytes": 1921
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/encoder.py": {
+    "sha256": "41ceb3902466686dfb0aa119175761ebceb78dd882de7403b45890b965c2fe94",
+    "bytes": 2479
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/losses.py": {
+    "sha256": "c6f38f66a09b29689ab501062f2851bbd8139eb4bdb40dc73aa4bb0ce3bb2f8c",
+    "bytes": 1874
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/__init__.py": {
+    "sha256": "ea9eb54772c0e1bfbdfedf068b36079f44eed61ef09c68cab3b151682a88c2d9",
+    "bytes": 31
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/minutes-BTCUSDT.npy": {
+    "sha256": "486a22880a5c7b7e582ce98bedec0aabb02671f4858f73e6178b7c60c895fa66",
+    "bytes": 44985728
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/minutes-SOLUSDT.npy": {
+    "sha256": "74914e77e6a5783cd5eb17a98f49e8528a52ed3f56cc432564f3a72bff834bda",
+    "bytes": 44985728
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/metadata.npy": {
+    "sha256": "6cf0f19f6e20de5b06e00b0b206ad41bb4c0ff2bca91edc2a79d6fb79032d24d",
+    "bytes": 1572736
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/manifest.json": {
+    "sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+    "bytes": 5394
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+    "sha256": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+    "bytes": 151995
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+    "sha256": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+    "bytes": 142017
+  }
+}

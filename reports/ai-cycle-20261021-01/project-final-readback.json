@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-21T18:11:50.726312+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/121",
+  "readback": "PASS",
+  "issue_state": "open",
+  "Project_status": "Todo",
+  "overall": "INCOMPLETE_RESOURCE",
+  "target_met": false,
+  "A": "NO_SKILL_ALL6",
+  "B": "INCOMPLETE_RESOURCE",
+  "C": "INCOMPLETE_RESOURCE",
+  "candidate_TOTAL": "UNKNOWN",
+  "candidate_DD": "UNKNOWN",
+  "native_runs": 0,
+  "active_scientific_jobs": 0,
+  "pilot_PID": 2009732,
+  "pilot_NRestarts": 0
+}

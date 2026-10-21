@@ -1,0 +1,38 @@
+{
+  "runtime/coinmaster/research/forecast_cycle_data.py": {
+    "sha256": "ad1fd91c4f768860baa84f29bc3c8d391ab07f585dec38777cb55db405f0a74f",
+    "bytes": 5523
+  },
+  "runtime/coinmaster/research/forecast_cycle_metrics.py": {
+    "sha256": "8ef1585b6adf3873323a1f454ba92bb29911c7b573bf629472fa4b4e9889b5d7",
+    "bytes": 1828
+  },
+  "runtime/coinmaster/research/forecast_cycle_mechanism.py": {
+    "sha256": "5aace32756d790a2f28486057bf594c28a980e281b3e0c64739a9fc79c66a778",
+    "bytes": 6041
+  },
+  "runtime/coinmaster/research/forecast_cycle_guard.py": {
+    "sha256": "b64887b5394842343d0da1e436f8d4f7def7838b12ecd654092649fc13be7931",
+    "bytes": 2566
+  },
+  "runtime/coinmaster/research/forecast_cycle_ts2vec.py": {
+    "sha256": "7aee83f033394848d9a584cab3a15a02cc3ddcf5b6a8b03c5bad59fee4ebfae8",
+    "bytes": 5957
+  },
+  "runtime/coinmaster/research/forecast_cycle_run.py": {
+    "sha256": "bbc5d61143eba60fedb6ae31e0bdc85502e4aeca877e33892a6e1d07bc4208df",
+    "bytes": 15772
+  },
+  "runtime/coinmaster/research/forecast_cycle_kronos.py": {
+    "sha256": "5702d5642ba84e20bb9fb52fc4ce0064a502be5847217e3ab85c229f105ff611",
+    "bytes": 6503
+  },
+  "runtime/coinmaster/research/forecast_cycle_controls.py": {
+    "sha256": "f0766ea6663f89357ceda53a5d979336c442bb0a25af6bc747513aafdec74358",
+    "bytes": 4459
+  },
+  "runtime/coinmaster/research/forecast_cycle_train.py": {
+    "sha256": "ada1279cb988531a6700a99b5ed44c30f7fa64caf927686ac13774741490ebbe",
+    "bytes": 23958
+  }
+}

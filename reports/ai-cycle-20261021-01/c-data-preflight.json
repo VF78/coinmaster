@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "rows": 13104,
+  "nonfinite_rows": 0,
+  "last_feature_end_ms": 1772319600000,
+  "channels": 12,
+  "wall_seconds": 1.0008943327702582,
+  "labels_opened": false
+}

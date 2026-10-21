@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "tests": 9,
+  "wall_seconds": 2.541,
+  "pattern": "test_forecast_cycle*.py",
+  "fits": 0,
+  "scope": "newresearchonly; no oldmetrics/rerun"
+}

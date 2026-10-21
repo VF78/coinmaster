@@ -140,8 +140,11 @@ def profile_scaling(a):
 def profile_B(a):
  from .forecast_cycle_kronos import profile_B as run
  run(a)
+def profile_C(a):
+ from .forecast_cycle_ts2vec import profile_C as run
+ run(a)
 def main():
- p=argparse.ArgumentParser();p.add_argument("stage",choices=["freeze","diagnose","prepare","fitset-diagnose","profile-A","stage-A","controls","controls-utc","profile-baseline","resource-estimate","mechanism-screen","profile-scaling","profile-B"]);p.add_argument("--report",type=Path,required=True);p.add_argument("--old-job",type=Path);p.add_argument("--warmup",type=Path);p.add_argument("--output",type=Path);p.add_argument("--limit",type=int);p.add_argument("--family",choices=["control","stumpy","minirocket","rdst","cnn"])
+ p=argparse.ArgumentParser();p.add_argument("stage",choices=["freeze","diagnose","prepare","fitset-diagnose","profile-A","stage-A","controls","controls-utc","profile-baseline","resource-estimate","mechanism-screen","profile-scaling","profile-B","profile-C"]);p.add_argument("--report",type=Path,required=True);p.add_argument("--old-job",type=Path);p.add_argument("--warmup",type=Path);p.add_argument("--output",type=Path);p.add_argument("--limit",type=int);p.add_argument("--family",choices=["control","stumpy","minirocket","rdst","cnn"])
  p.add_argument("--weights",type=Path);p.add_argument("--reuse-inference",type=Path);p.add_argument("--reuse-controls",type=Path);p.add_argument("--negative-only",action="store_true");p.add_argument("--prepared",type=Path);p.add_argument("--fit-authorization",type=Path);p.add_argument("--resource-decision",type=Path);p.add_argument("--profile",type=Path);p.add_argument("--baseline-profile",type=Path);p.add_argument("--scaling-profile",type=Path);p.add_argument("--inputs",type=Path)
  a=p.parse_args();globals()[a.stage.replace("-","_")](a)
 if __name__=="__main__":main()

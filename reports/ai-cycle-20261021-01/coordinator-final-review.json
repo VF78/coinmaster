@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-21T18:12:31.487725+00:00",
+  "decision": "ACCEPT_BOUNDED_RESULTS_NOT_TARGET",
+  "scientific_artifact_hashes_verified": 288,
+  "findings_line_limit": "PASS",
+  "new_research_tests": "9PASS_reused_no_rerun",
+  "Project121": "OPEN/Todo/INCOMPLETE_RESOURCE actualreadbackPASS",
+  "pilot": "activePID2009732/NRestarts0 read-only",
+  "economic_runs": 0,
+  "new_computations_authorized": false,
+  "original_invalid_A_quality": "UNOPENED_QUARANTINED;notreadbyroot",
+  "root_added_metadata": "project-final-readback.json andcoordinator-final-review.json post-science-QA; notmodelinputs"
+}
