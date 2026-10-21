@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-21T18:24:24.716821+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "stage-C-development"
+  ],
+  "c_resume_protocol_sha256": "b93977b443ef1377d29187da40b855319e743727317af271d6441f0237b6556a",
+  "c_resume_manifest_sha256": "bbb3d8d9173046913f8a657f9c5f3c425fc742768b65ce8c62d2bb1489cd193e",
+  "resource_admission_sha256": "112d69f2920ae7ff13218505569639ef1419ee4133019d12729bde3f2bd22a11",
+  "source_sha256": "2985aa0cd249a2dc20dad4fbc2bb7ec03fe7e9a1eec563073b28aa7d35f34cb7",
+  "threads": 1,
+  "device": "cpu",
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "stage-C-development": 7050
+  },
+  "C_total_budget_seconds": 7200,
+  "prior_profile_guard_seconds": 56.58593383291736,
+  "preparation_reserve_seconds": 90,
+  "reserved_total_before_job": 146.58593383291736,
+  "scope": "developmentONLY6independentES/fullencoders+36CatBoostES/refitfits;reuse54Acontrolgroups;noA/S0refits",
+  "encoder_fit_limit": 6,
+  "CatBoost_fit_limit": 36,
+  "no_March_CHECK": true,
+  "policy_native_final_quarterly_authorized_by_this_GO": false,
+  "review": "GO exactsource;prefixES/full/purge/AidenticalIDs/gates",
+  "projected_entire_C_minutes": 97.69338710039848,
+  "no_pilot_or_service_changes": true,
+  "attempt": "C-DEVELOPMENT-120MIN-OWNER-RESUME",
+  "same_recipe_no_retuning": true
+}

@@ -1,0 +1,162 @@
+{
+  "runtime/coinmaster/research/forecast_cycle_c_development.py": {
+    "sha256": "2985aa0cd249a2dc20dad4fbc2bb7ec03fe7e9a1eec563073b28aa7d35f34cb7",
+    "bytes": 12063
+  },
+  "runtime/coinmaster/research/forecast_cycle_data.py": {
+    "sha256": "ad1fd91c4f768860baa84f29bc3c8d391ab07f585dec38777cb55db405f0a74f",
+    "bytes": 5523
+  },
+  "runtime/coinmaster/research/forecast_cycle_metrics.py": {
+    "sha256": "8ef1585b6adf3873323a1f454ba92bb29911c7b573bf629472fa4b4e9889b5d7",
+    "bytes": 1828
+  },
+  "runtime/coinmaster/research/forecast_cycle_mechanism.py": {
+    "sha256": "5aace32756d790a2f28486057bf594c28a980e281b3e0c64739a9fc79c66a778",
+    "bytes": 6041
+  },
+  "runtime/coinmaster/research/forecast_cycle_guard.py": {
+    "sha256": "b64887b5394842343d0da1e436f8d4f7def7838b12ecd654092649fc13be7931",
+    "bytes": 2566
+  },
+  "runtime/coinmaster/research/forecast_cycle_ts2vec.py": {
+    "sha256": "7aee83f033394848d9a584cab3a15a02cc3ddcf5b6a8b03c5bad59fee4ebfae8",
+    "bytes": 5957
+  },
+  "runtime/coinmaster/research/forecast_cycle_run.py": {
+    "sha256": "bcdac052255abe792dd4a7fa4014c645a640bf08eac58a0bf43e0496cb84453e",
+    "bytes": 15893
+  },
+  "runtime/coinmaster/research/forecast_cycle_kronos.py": {
+    "sha256": "5702d5642ba84e20bb9fb52fc4ce0064a502be5847217e3ab85c229f105ff611",
+    "bytes": 6503
+  },
+  "runtime/coinmaster/research/forecast_cycle_controls.py": {
+    "sha256": "f0766ea6663f89357ceda53a5d979336c442bb0a25af6bc747513aafdec74358",
+    "bytes": 4459
+  },
+  "runtime/coinmaster/research/forecast_cycle_train.py": {
+    "sha256": "ada1279cb988531a6700a99b5ed44c30f7fa64caf927686ac13774741490ebbe",
+    "bytes": 23958
+  },
+  "runtime/coinmaster/research/forecast_independent_data.py": {
+    "sha256": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+    "bytes": 13432
+  },
+  "runtime/coinmaster/research/forecast_independent_models.py": {
+    "sha256": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb",
+    "bytes": 21119
+  },
+  "runtime/tests/test_forecast_cycle_c_resume.py": {
+    "sha256": "6d61e0f84bf95c53e2158a236a0bfe23233e77c9ceacaf81e34230f08b4b7d0c",
+    "bytes": 1316
+  },
+  "runtime/tests/test_forecast_cycle_ts2vec.py": {
+    "sha256": "cb13270ce3edea210168d8502a09774dd336aae5aabf21945e7eff50c38238d0",
+    "bytes": 1539
+  },
+  "reports/ai-cycle-20261021-01/c-protocol.json": {
+    "sha256": "d7ea024f31775a3c721115fd8b40f133450ae92c741d8fffa9a62b151abca435",
+    "bytes": 6567
+  },
+  "reports/ai-cycle-20261021-01/protocol.json": {
+    "sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586",
+    "bytes": 12098
+  },
+  "reports/ai-cycle-20261021-01/c-resume-protocol.json": {
+    "sha256": "b93977b443ef1377d29187da40b855319e743727317af271d6441f0237b6556a",
+    "bytes": 2371
+  },
+  "reports/ai-cycle-20261021-01/c-resume-resource-admission.json": {
+    "sha256": "112d69f2920ae7ff13218505569639ef1419ee4133019d12729bde3f2bd22a11",
+    "bytes": 5090
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/utils.py": {
+    "sha256": "85ca67e8e84cad09933d2f3ba60de3bc18bafda78706bd5c4c4a509f577dea90",
+    "bytes": 3954
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/LICENSE": {
+    "sha256": "a0cc2d47952871dab9279d53700c02afb7a5b947afb85487d992f3c609486171",
+    "bytes": 1067
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/ts2vec.py": {
+    "sha256": "2704502598dde115b55559bff8b56563a94eed5cdae4087ec8941a2a077f9972",
+    "bytes": 14350
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/source-hashes.json": {
+    "sha256": "9ed00027fa444d27824e7b005d6500e4cfde3549d8a2a4c9a9bdc3908fa7cfb0",
+    "bytes": 890
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/dilated_conv.py": {
+    "sha256": "9c98e7313e78748670083c400a4ee4d1357a88f1a0457c7f44e780ac4165cdbb",
+    "bytes": 1921
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/encoder.py": {
+    "sha256": "41ceb3902466686dfb0aa119175761ebceb78dd882de7403b45890b965c2fe94",
+    "bytes": 2479
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/losses.py": {
+    "sha256": "c6f38f66a09b29689ab501062f2851bbd8139eb4bdb40dc73aa4bb0ce3bb2f8c",
+    "bytes": 1874
+  },
+  "reports/ai-cycle-20261021-01/ts2vec-upstream/models/__init__.py": {
+    "sha256": "ea9eb54772c0e1bfbdfedf068b36079f44eed61ef09c68cab3b151682a88c2d9",
+    "bytes": 31
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/minutes-BTCUSDT.npy": {
+    "sha256": "486a22880a5c7b7e582ce98bedec0aabb02671f4858f73e6178b7c60c895fa66",
+    "bytes": 44985728
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/minutes-SOLUSDT.npy": {
+    "sha256": "74914e77e6a5783cd5eb17a98f49e8528a52ed3f56cc432564f3a72bff834bda",
+    "bytes": 44985728
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/metadata.npy": {
+    "sha256": "6cf0f19f6e20de5b06e00b0b206ad41bb4c0ff2bca91edc2a79d6fb79032d24d",
+    "bytes": 1572736
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/manifest.json": {
+    "sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+    "bytes": 5394
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+    "sha256": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+    "bytes": 151995
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+    "sha256": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+    "bytes": 142017
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/profile-C/encoder.pt": {
+    "sha256": "146947cca347065a5e999e5c778b26a00f67e6331a07619b77f463700baf8f22",
+    "bytes": 192768
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/profile-C/scaler.pkl": {
+    "sha256": "29c2c69d63afdd1ae0df2c4fe3b7170f01c36026bbad4eafe91d4711eee92dcc",
+    "bytes": 738
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/forecasts.csv.gz": {
+    "sha256": "cfe6757eb46135d4e702910ddbd31afbbf38deb912e2f4bd0c57160f8bd194f8",
+    "bytes": 9105587
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/prepared-full/X_joint.npy": {
+    "sha256": "7bf1744e99c49a011d095e3f5369a201b1660fa8dc0850425d67b6ff3fd8a5dd",
+    "bytes": 56160128
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/prepared-full/valid.npy": {
+    "sha256": "0ac1cdd85b0af95c035ef728def6838a6878e6e028d19c3eb70ef3d6bd165bec",
+    "bytes": 18848
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/prepared-full/origins.npy": {
+    "sha256": "3811f5a9df82f50f8e4e14ef8b6a189c17a97ba494b78e006cb5f1f56409caae",
+    "bytes": 149888
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/labels-train.npz": {
+    "sha256": "04100dfff2c9425ab977c3ef760f2d45f254076658bdf2a3e327a73688ff522c",
+    "bytes": 1136290
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/reports/forecast-independent-20261021/protocol.json": {
+    "sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+    "bytes": 10550
+  }
+}

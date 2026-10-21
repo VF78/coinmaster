@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-21T18:17:48.479907+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/121",
+  "readback": "PASS",
+  "Project_status": "In Progress",
+  "C_budget_seconds": 7200,
+  "C_prior_spent_seconds": 56.5859,
+  "A_rerun": false,
+  "S0_rerun": false,
+  "native_used": 0
+}

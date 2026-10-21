@@ -1,0 +1,144 @@
+{
+  "status": "ADMITTED",
+  "budget_wall_seconds": 7200,
+  "prior_profile_actual_wall_seconds": 56.58593383291736,
+  "remaining_wall_seconds_before_development": 7143.414066167083,
+  "prior_90min_status_preserved": "INCOMPLETE_RESOURCE",
+  "original_90min_protocol_sha256": "d7ea024f31775a3c721115fd8b40f133450ae92c741d8fffa9a62b151abca435",
+  "prior_profile_receipt_sha256": "5b80b2e6fa4e566efdd85e4b0881151a341844516138ba9ee7505623c8b4ca5e",
+  "all_required_encoder_fits_including_reused": 14,
+  "new_encoder_fits_max": 13,
+  "saved_encoder_fit_reused": "full-prefix2026-03-01",
+  "all_required_causal_cache_timestamps": 144714,
+  "necessary_fit_counts": {
+    "unique_encoder_fits": 14,
+    "original_unreused_encoder_fits": 22,
+    "reused_ES_full_encoder_pairs": [
+      "3developmentcutoffs +finalMarch2026 matchquarterlycutoffs"
+    ],
+    "encoder_cache_roles": [
+      {
+        "cutoff": "2024-12-01",
+        "role": "ES",
+        "encoder_training_end": "2024-11-03",
+        "inference_end_exclusive": "2024-12-01",
+        "causal_inference_timestamps": 2439
+      },
+      {
+        "cutoff": "2024-12-01",
+        "role": "full",
+        "encoder_training_end": "2024-12-01",
+        "inference_end_exclusive": "2025-03-01",
+        "causal_inference_timestamps": 4599
+      },
+      {
+        "cutoff": "2025-03-01",
+        "role": "ES",
+        "encoder_training_end": "2025-02-01",
+        "inference_end_exclusive": "2025-03-01",
+        "causal_inference_timestamps": 4599
+      },
+      {
+        "cutoff": "2025-03-01",
+        "role": "full",
+        "encoder_training_end": "2025-03-01",
+        "inference_end_exclusive": "2025-06-01",
+        "causal_inference_timestamps": 6807
+      },
+      {
+        "cutoff": "2025-06-01",
+        "role": "ES",
+        "encoder_training_end": "2025-05-04",
+        "inference_end_exclusive": "2025-06-01",
+        "causal_inference_timestamps": 6807
+      },
+      {
+        "cutoff": "2025-06-01",
+        "role": "full",
+        "encoder_training_end": "2025-06-01",
+        "inference_end_exclusive": "2025-09-01",
+        "causal_inference_timestamps": 9015
+      },
+      {
+        "cutoff": "2025-09-01",
+        "role": "ES",
+        "encoder_training_end": "2025-08-04",
+        "inference_end_exclusive": "2025-09-01",
+        "causal_inference_timestamps": 9015
+      },
+      {
+        "cutoff": "2025-09-01",
+        "role": "full",
+        "encoder_training_end": "2025-09-01",
+        "inference_end_exclusive": "2025-12-01",
+        "causal_inference_timestamps": 11199
+      },
+      {
+        "cutoff": "2025-12-01",
+        "role": "ES",
+        "encoder_training_end": "2025-11-03",
+        "inference_end_exclusive": "2025-12-01",
+        "causal_inference_timestamps": 11199
+      },
+      {
+        "cutoff": "2025-12-01",
+        "role": "full",
+        "encoder_training_end": "2025-12-01",
+        "inference_end_exclusive": "2026-03-01",
+        "causal_inference_timestamps": 13359
+      },
+      {
+        "cutoff": "2026-03-01",
+        "role": "ES",
+        "encoder_training_end": "2026-02-01",
+        "inference_end_exclusive": "2026-03-01",
+        "causal_inference_timestamps": 13359
+      },
+      {
+        "cutoff": "2026-03-01",
+        "role": "full",
+        "encoder_training_end": "2026-03-01",
+        "inference_end_exclusive": "2026-10-21",
+        "causal_inference_timestamps": 18975
+      },
+      {
+        "cutoff": "2026-06-01",
+        "role": "ES",
+        "encoder_training_end": "2026-05-04",
+        "inference_end_exclusive": "2026-06-01",
+        "causal_inference_timestamps": 15567
+      },
+      {
+        "cutoff": "2026-06-01",
+        "role": "full",
+        "encoder_training_end": "2026-06-01",
+        "inference_end_exclusive": "2026-09-01",
+        "causal_inference_timestamps": 17775
+      }
+    ],
+    "total_causal_encoder_inference_timestamps": 144714,
+    "development_CatBoost_ES_refit": 36,
+    "final_BTC_CatBoost_ES_refit": 6,
+    "quarterly_BTC_CatBoost_ES_refit": 42,
+    "final_BTC_logistic": 1,
+    "final_BTC_linearQ_ES_refit": 4,
+    "development_controls": "reuse A identicalID priors/linear/joint forecasts; no extra baselines",
+    "quarterly_SOL_or_linear_baselines": 0
+  },
+  "estimate_seconds": {
+    "prior_profile_actual_wall": 56.58593383291736,
+    "remaining_encoder_fits": 646.223576921504,
+    "all_causal_inference": 219.60343844283219,
+    "all_heads_refits_baselines_metrics_io": 3872.256405822671,
+    "original_preparation_reserve": 30,
+    "resume_preparation_tests_pinning_reserve": 60
+  },
+  "margin_percent": 20,
+  "no_unseen_ES_optimism": true,
+  "no_new_resource_pilot": true,
+  "include_conditional_final_and_quarterly": true,
+  "actual_conditional_fit_rule": "Only development6encoders+36heads initially; futureprefix/finaladmittedheads only. Reuse identicaldevelopment/finalcutoffs forquarterly. No redundantencoders.",
+  "source_HEAD": "1733c072b8b928ac04f784d91d16ff57248ab925",
+  "projected_complete_seconds_including_profile_margin": 5861.603226023909,
+  "projected_complete_minutes": 97.69338710039848
+}

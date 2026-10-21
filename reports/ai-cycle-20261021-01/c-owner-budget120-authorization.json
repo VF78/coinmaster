@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-21T18:17:06.537258+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorization": "ownerraisesCto120min;finishTS2Vecthenpolicy/nativeonlyiforiginalgatespass",
+  "starting_HEAD": "1733c072b8b928ac04f784d91d16ff57248ab925",
+  "branch": "codex/ai-cycle-20261021",
+  "C_total_wall_budget_seconds": 7200,
+  "C_prior_profile_guard_seconds": 56.5859,
+  "C_remaining_seconds": 7143.4141,
+  "original_C_protocol_sha256": "d7ea024f31775a3c721115fd8b40f133450ae92c741d8fffa9a62b151abca435",
+  "scientific_recipe_changed": false,
+  "A_rerun_authorized": false,
+  "S0_rerun_authorized": false,
+  "B_rerun_authorized": false,
+  "pilot_mutations_authorized": false,
+  "policy_screen_budget_seconds": 1800,
+  "native_max_runs_total": 4,
+  "native_runs_already_used": 0,
+  "executor": "ai_cycle_owner GPT6.1Sol/medium",
+  "exact_C_development_GO": "pendingcodefreeze/tests;implementationauthorized",
+  "CPU_threads": 1,
+  "RSS_bytes": 3221225472
+}

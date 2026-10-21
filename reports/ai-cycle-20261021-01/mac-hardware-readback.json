@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-21T18:19:09.462061+00:00",
+  "chip": "Apple M2 Pro",
+  "CPU_physical": 10,
+  "CPU_logical": 10,
+  "performance_cores": 6,
+  "efficiency_cores": 4,
+  "GPU_cores": 16,
+  "memory_bytes": 17179869184,
+  "current_research_limits": {
+    "threads": 1,
+    "RSS_bytes": 3221225472
+  },
+  "B_823_97min_estimate_host": "thisMacCPU1thread notVPS",
+  "GPU_or_full_CPU_benchmark": "NOT_MEASURED",
+  "read_only": true,
+  "limits_changed": false
+}

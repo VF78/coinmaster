@@ -1,0 +1,53 @@
+{
+  "kind": "BUDGET_ONLY_OWNER_RESUME_PLUS_IMPLEMENTATION_FREEZE",
+  "authorized_utc": "2026-10-21T18:21:35.762525+00:00",
+  "source_HEAD": "1733c072b8b928ac04f784d91d16ff57248ab925",
+  "original_C_protocol_sha256": "d7ea024f31775a3c721115fd8b40f133450ae92c741d8fffa9a62b151abca435",
+  "original_90min_result_preserved": true,
+  "changed": "C ceiling90=>120min by explicitowner; model/feature/split/UTC/purge/gates/thresholdrecipes unchanged",
+  "new_budget_seconds": 7200,
+  "prior_profile_actual_seconds": 56.58593383291736,
+  "recipe": "unchanged originalc-protocol.json andtaskcontractsections6-9",
+  "development": {
+    "encoder_fits": 6,
+    "CatBoost_ES_refits": 36,
+    "assets": [
+      "BTCUSDT",
+      "SOLUSDT"
+    ],
+    "heads": [
+      "D",
+      "Q-long",
+      "Q-short"
+    ],
+    "folds": [
+      [
+        "2025-03-01",
+        "2025-06-01"
+      ],
+      [
+        "2025-06-01",
+        "2025-09-01"
+      ],
+      [
+        "2025-09-01",
+        "2025-12-01"
+      ]
+    ],
+    "encoder_ES_end": "headfitcutoff minus28days; scaler/encoderonlyorigin<boundary",
+    "encoder_full_end": "headfitcutoff; separatefullprefixrefitrepresentation",
+    "causal_caches": "real255hourcontext beforefirstorigin; length1/padding255/causalTrue/no pooling; no beyonddevelopmentvalidationend",
+    "scaler": "prefixonlyStandardScaler",
+    "A_baselines": "savedvalidprior/linear/joint rawforecasts reusesameasset/fold/headrowIDs; recomputelossonsameIDsandassertmatcheswithoutfitting",
+    "primary_admission": "unchanged prior+linear mean/fold/blockCI; D rankUP+DOWNstable>=2/3 vsbothlinear+.5; jointablation additionallyreported, no newgate/tuning",
+    "March_CHECK": "UNOPENED; no newmodelfinal/quarterly/policy/nativebeforeconditionalgate"
+  },
+  "reused_March_encoder": {
+    "model_sha256": "146947cca347065a5e999e5c778b26a00f67e6331a07619b77f463700baf8f22",
+    "scaler_sha256": "29c2c69d63afdd1ae0df2c4fe3b7170f01c36026bbad4eafe91d4711eee92dcc",
+    "load_only_for_conditional_final_or_quarterly_notdevelopment": true
+  },
+  "resource_admission_sha256": "112d69f2920ae7ff13218505569639ef1419ee4133019d12729bde3f2bd22a11",
+  "future_steps": "originalgates only; BTC D+bothQ thenonly12fixedfallbackpolicies ifnoS0actionvalue; shortlistfreezebeforeMarch/CHECK; noB/fullMPS/oldA/S0rerun",
+  "full_development_not_authorized_until_exact_coordinator_GO": true
+}

@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-21T18:24:24.716821+00:00",
+  "reviewer": "ai_cycle_causality_review",
+  "decision": "GO_SCOPED_C_DEVELOPMENT",
+  "source_sha256": "2985aa0cd249a2dc20dad4fbc2bb7ec03fe7e9a1eec563073b28aa7d35f34cb7",
+  "protocol_sha256": "b93977b443ef1377d29187da40b855319e743727317af271d6441f0237b6556a",
+  "checks": [
+    "separateUTCES/fullencoders/scalers+cutoffcaches",
+    "closedbarcausalendpoint",
+    "fullhorizonpurge",
+    "exactasset/fold/headIDsandlossesofAcontrols",
+    "rawQ/projectedloss/Dmapping",
+    "existingpairedgatesunchanged"
+  ],
+  "new_fits_or_tests_by_reviewer": 0
+}

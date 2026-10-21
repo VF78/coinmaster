@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "tests": 2,
+  "wall_seconds": 3.249,
+  "training": false,
+  "fixtures": [
+    "originalcausalTS2VecfutureOHLCV/prefix256vs288/savedaveragedmodelroundtrip",
+    "prefixscalerfutureinvarianceES/fullseparation/twoassetrowalignment"
+  ]
+}
