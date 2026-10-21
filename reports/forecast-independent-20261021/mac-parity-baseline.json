@@ -1,0 +1,42 @@
+{
+  "status": "TRAIN_ONLY_RENDER_BASELINE",
+  "images": [
+    {
+      "row": 0,
+      "view": "60x20",
+      "dtype": "float32",
+      "shape": [
+        64,
+        60
+      ],
+      "sha256": "950aa36332a05251917c5e2abc8cfdea9de6eb39f0a4b8c40ad5040c2bc3ea22",
+      "origin_ms": 1725148800000
+    },
+    {
+      "row": 1,
+      "view": "60x20",
+      "dtype": "float32",
+      "shape": [
+        64,
+        60
+      ],
+      "sha256": "f5ae44b6676d33c16a7daca9abfa0cf2a1a5faa46fa3523f4376bc4a8f096240",
+      "origin_ms": 1725148800000
+    }
+  ],
+  "files": [
+    {
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-cnn-20261021T111804Z/result/profile/profile-predictions.npz",
+      "relative": "VPS-CNN20-profile-predictions.npz",
+      "sha256": "df83f4f0da9a888e848f87b1107e216a882ad5f9518fe2867299e43c2ab6e2c2",
+      "bytes": 9442
+    },
+    {
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-cnn-20261021T111804Z/result/profile/result.json",
+      "relative": "VPS-CNN20-result.json",
+      "sha256": "6c64c0e784ea9ff9923c7408327813822313d7edbe4b718631df2f891a980a78",
+      "bytes": 809
+    }
+  ],
+  "CHECK_opened": false
+}

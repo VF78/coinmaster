@@ -1,0 +1,183 @@
+{
+  "status": "ALL26_EXACT_HASHES_PASS_CHECK_LABELS_OPAQUE_ONLY",
+  "at_utc": "2026-10-21T12:02:19.221362+00:00",
+  "job": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021",
+  "python": "3.12.13 (main, Jun 23 2026, 15:44:24) [Clang 22.1.3 ]",
+  "machine": "arm64",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "packages": {
+    "filelock": {
+      "version": "4.2.4",
+      "WHEEL_sha256": "5b77e4a649bbfb07fdbc123967eeecd1e5a478cfaca6eefc23c35e6fdf037848",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: hatchling 1.32.4\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "setuptools": {
+      "version": "84.2.1",
+      "WHEEL_sha256": "98e75747d0b7c0c568bfb71263c3d8f970b3a374a6996087bc642be5cb09a1aa",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (84.2.1)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
+    },
+    "cloudpickle": {
+      "version": "3.1.2",
+      "WHEEL_sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: flit 3.12.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "torch": {
+      "version": "2.14.1",
+      "WHEEL_sha256": "5a7b3cc00f1ee3fe51f2afea4d373004c634c4414d5adec130245f68f3b5523c",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: scikit-build-core 1.1.0\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_14_0_arm64\n\n"
+    },
+    "packaging": {
+      "version": "26.3",
+      "WHEEL_sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: flit 3.12.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "networkx": {
+      "version": "3.7",
+      "WHEEL_sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (84.0.0)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
+    },
+    "joblib": {
+      "version": "1.6.0",
+      "WHEEL_sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (84.0.0)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
+    },
+    "aeon": {
+      "version": "1.6.0",
+      "WHEEL_sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (84.0.0)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
+    },
+    "scikit-learn": {
+      "version": "1.7.2",
+      "WHEEL_sha256": "03f97907ea7c4f247c4dc00caa5343b8235a255b9c7aaba13e3122e036b6c3e5",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: meson\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_12_0_arm64\nGenerator: delocate 0.13.0\n\n"
+    },
+    "pytz": {
+      "version": "2026.5",
+      "WHEEL_sha256": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: bdist_wheel (0.42.0)\nRoot-Is-Purelib: true\nTag: py2-none-any\nTag: py3-none-any\n\n"
+    },
+    "numba": {
+      "version": "0.63.1",
+      "WHEEL_sha256": "0a5b57377950bd76c7c4a0ed883c16d1137317cb365b206e3db3805ff65e4250",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (80.9.0)\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_11_0_arm64\n\n"
+    },
+    "Deprecated": {
+      "version": "3.0.0",
+      "WHEEL_sha256": "5b77e4a649bbfb07fdbc123967eeecd1e5a478cfaca6eefc23c35e6fdf037848",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: hatchling 1.32.4\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "numpy": {
+      "version": "2.3.5",
+      "WHEEL_sha256": "26726246f91715a154e07973ca8a82029674ee3cba86914a77f2e47c1a566739",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: meson\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_14_0_arm64\nGenerator: delocate 0.13.0\n\n"
+    },
+    "wrapt": {
+      "version": "2.5.1",
+      "WHEEL_sha256": "7156dcce88ca058d4e5118bde8900f7f0cacc719d55b67b78cb6de2362e7dbdb",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (84.0.0)\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_11_0_arm64\nGenerator: delocate 0.13.0\n\n"
+    },
+    "tzdata": {
+      "version": "2026.5",
+      "WHEEL_sha256": "e1805f098347e3094ba6fde9cead616c4b8895703858969b28b16ead9ede4cbd",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (84.0.0)\nRoot-Is-Purelib: true\nTag: py2-none-any\nTag: py3-none-any\n\n"
+    },
+    "sympy": {
+      "version": "1.14.0",
+      "WHEEL_sha256": "4a63b1614ee9ccd281a804af409ec38d7dd719417dda5ac684c6f747afe28aa2",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (79.0.1)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
+    },
+    "python-dateutil": {
+      "version": "2.9.0.post0",
+      "WHEEL_sha256": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: bdist_wheel (0.42.0)\nRoot-Is-Purelib: true\nTag: py2-none-any\nTag: py3-none-any\n\n"
+    },
+    "mpmath": {
+      "version": "1.3.0",
+      "WHEEL_sha256": "db07a93359e4e034b8785a58ad6d534ea3dca0635f1e184efe2e66e1c3a299ba",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: bdist_wheel (0.38.4)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
+    },
+    "stumpy": {
+      "version": "1.14.1",
+      "WHEEL_sha256": "60b2577585d0d8543452a9f627eea21080bede239ecbc947df10adbc52e477c4",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (81.0.0)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
+    },
+    "scipy": {
+      "version": "1.16.3",
+      "WHEEL_sha256": "26726246f91715a154e07973ca8a82029674ee3cba86914a77f2e47c1a566739",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: meson\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_14_0_arm64\nGenerator: delocate 0.13.0\n\n"
+    },
+    "fsspec": {
+      "version": "2026.9.0",
+      "WHEEL_sha256": "4c769fa1bee87cdf8db2e30decc838a99c8769023b2a40fe4257106ad6215cfa",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: hatchling 1.32.3\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "Jinja2": {
+      "version": "3.1.6",
+      "WHEEL_sha256": "ff6a3334508b59cf776cae1628708ef9e0d410d0e5a3e76073d714deaa2460ee",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: flit 3.11.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "pandas": {
+      "version": "2.3.3",
+      "WHEEL_sha256": "1a77459ac1909217ac24c074f71779c72d4915ac0a2650d9b7a00c320a89f8fc",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: meson\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_11_0_arm64\nGenerator: delocate 0.13.0\n\n"
+    },
+    "threadpoolctl": {
+      "version": "3.7.0",
+      "WHEEL_sha256": "ff23073da055face9f40cc14a28f3735275308cddcf315d6157461a9a7cdfbb6",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: flit 4.0.2\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "llvmlite": {
+      "version": "0.46.0",
+      "WHEEL_sha256": "0a5b57377950bd76c7c4a0ed883c16d1137317cb365b206e3db3805ff65e4250",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (80.9.0)\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_11_0_arm64\n\n"
+    },
+    "typing_extensions": {
+      "version": "4.16.0",
+      "WHEEL_sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: flit 3.12.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+    },
+    "MarkupSafe": {
+      "version": "3.0.4",
+      "WHEEL_sha256": "7156dcce88ca058d4e5118bde8900f7f0cacc719d55b67b78cb6de2362e7dbdb",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (84.0.0)\nRoot-Is-Purelib: false\nTag: cp312-cp312-macosx_11_0_arm64\nGenerator: delocate 0.13.0\n\n"
+    },
+    "six": {
+      "version": "1.17.0",
+      "WHEEL_sha256": "a7178d5f925db427b9f0f51260ff6ea6673b8dd44f82f4f41a6f646f5487955c",
+      "WHEEL": "Wheel-Version: 1.0\nGenerator: setuptools (75.6.0)\nRoot-Is-Purelib: true\nTag: py2-none-any\nTag: py3-none-any\n\n"
+    }
+  },
+  "verified_files": [
+    "prepared-v1/context.npy",
+    "prepared-v1/labels-train.npz",
+    "prepared-v1/minutes-SOLUSDT.npy",
+    "prepared-v1/metadata.npy",
+    "prepared-v1/features-1x20.npy",
+    "prepared-v1/origin_ids.npy",
+    "prepared-v1/features-60x60.npy",
+    "prepared-v1/labels-check.npz",
+    "prepared-v1/features-1x60.npy",
+    "prepared-v1/features-240x60.npy",
+    "prepared-v1/features-15x60.npy",
+    "prepared-v1/features-60x20.npy",
+    "prepared-v1/features-15x20.npy",
+    "prepared-v1/features-240x20.npy",
+    "prepared-v1/feature-bar-ends.npy",
+    "prepared-v1/minutes-BTCUSDT.npy",
+    "prepared-v1/manifest.json",
+    "runtime/coinmaster/__init__.py",
+    "runtime/coinmaster/research/__init__.py",
+    "runtime/coinmaster/research/forecast_independent_data.py",
+    "runtime/coinmaster/research/forecast_independent_models.py",
+    "runtime/coinmaster/research/forecast_independent_run.py",
+    "reports/forecast-independent-20261021/protocol.json",
+    "reports/forecast-independent-20261021/resource_envelope.py",
+    "reports/forecast-independent-20261021/coordinator-cnn-resource-envelope.json",
+    "selection.json"
+  ],
+  "total_bytes": 388203050,
+  "disk_free_bytes": 16295596032,
+  "source_unchanged": true,
+  "CHECK_labels_opened": false,
+  "native_Torch_platform_variant": "2.14.1 (VPS2.14.1+cpu),samebaseversion"
+}

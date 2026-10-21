@@ -859,12 +859,131 @@
       "status": "PASS",
       "stage": "fit",
       "family": "stumpy"
+    },
+    {
+      "unit": "cm113-pred02-fit-minirocket-20261021T111927Z",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z",
+      "launch": "reports/forecast-independent-20261021/launch-fit-minirocket-60x20-20261021T111927Z.json",
+      "properties": {
+        "Result": "success",
+        "ExecMainStatus": "0",
+        "MemoryPeak": "629145600",
+        "CPUUsageNSec": "1363614961000",
+        "CPUQuotaPerSecUSec": "1s",
+        "MemoryMax": "629145600",
+        "MemorySwapMax": "0",
+        "ActiveState": "active",
+        "SubState": "exited"
+      },
+      "journal_tail": "Started cm113-pred02-fit-minirocket-20261021T111927Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/launch.sh.\n",
+      "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-minirocket-20261021T111927Z-time.txt",
+      "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-minirocket-20261021T111927Z-stdout.txt",
+      "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-minirocket-20261021T111927Z-stderr.txt",
+      "train_result": {
+        "status": "SEALED_READY_FOR_SEPARATE_CHECK",
+        "family": "minirocket",
+        "view": "15x20",
+        "config": 0.001,
+        "final_epochs": 37,
+        "seeds": [
+          7
+        ],
+        "winning_TRAIN_inner_score": {
+          "lower_pinball": 0.23621976283642301,
+          "upper_pinball": 0.2358830966889597,
+          "direction_logloss": 1.2467737051293188,
+          "direction_brier": 0.7472701439177728,
+          "direction_accuracy": 0.3600643382352941
+        },
+        "winning_inner_folds": [
+          {
+            "fold": 0,
+            "score": {
+              "lower_pinball": 0.23189071847645645,
+              "upper_pinball": 0.23115497873617027,
+              "direction_logloss": 1.3190010857128518,
+              "direction_brier": 0.7846832954607095,
+              "direction_accuracy": 0.34065934065934067,
+              "n": 4368
+            },
+            "best_epoch": 37,
+            "predictions_sha256": "805c0873fe6edcf7a453c4214030657659d2d484cb4987ccbffeecd2a2879068"
+          },
+          {
+            "fold": 1,
+            "score": {
+              "lower_pinball": 0.23319644156047206,
+              "upper_pinball": 0.23289805995029117,
+              "direction_logloss": 1.2280444506526944,
+              "direction_brier": 0.7366861648162284,
+              "direction_accuracy": 0.36675824175824173,
+              "n": 4368
+            },
+            "best_epoch": 38,
+            "predictions_sha256": "342964c8a17415600484c71485470f993d578e2eca88307cdcb5cdd5abcf7ebf"
+          },
+          {
+            "fold": 2,
+            "score": {
+              "lower_pinball": 0.2436538214238507,
+              "upper_pinball": 0.24368195309921167,
+              "direction_logloss": 1.1926811553990007,
+              "direction_brier": 0.7201428695603649,
+              "direction_accuracy": 0.3729166666666667,
+              "n": 4320
+            },
+            "best_epoch": 28,
+            "predictions_sha256": "107926e38dc16226e0b8cb9bdc3ac9092e2aa596fb822587654c8e371657b5a8"
+          }
+        ],
+        "final_fit_rows": 26160,
+        "calibration_rows": 1440,
+        "calibration_raw": {
+          "lower_pinball": 0.2158290181956117,
+          "upper_pinball": 0.21593902381811964,
+          "direction_logloss": 1.2035012763183375,
+          "direction_brier": 0.7320572374497255,
+          "direction_accuracy": 0.3541666666666667,
+          "n": 1440
+        },
+        "calibration_adjusted": {
+          "lower_pinball": 0.21427658499531793,
+          "upper_pinball": 0.2141243552712123,
+          "direction_logloss": 1.0977713267000615,
+          "direction_brier": 0.6665991774179477,
+          "direction_accuracy": 0.3541666666666667,
+          "n": 1440
+        },
+        "models": [
+          {
+            "path": "final-seed7/model.pkl",
+            "sha256": "9d3a420badc52c3bb2f8c369e92d4e00f34e716a8aad1845a7d7cafb5a24a5d3"
+          }
+        ],
+        "calibrator_sha256": "69399209a8d1fdab80974d55094a63d1d963a30be423715bf8061fbe70120235",
+        "calibration_predictions_sha256": "95fec0fe2df8136311b61d8755efe9211d1203632db7041ec0ab97eadd56ae37",
+        "selection_sha256": "b54e3727672cf11dd4b40190687e7084f8e8c8711805fceb6cd5965317f3f2a9",
+        "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+        "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+        "source_sha256": {
+          "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+          "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+          "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb"
+        },
+        "no_CHECK_read": true,
+        "prior_cpu_seconds": 90.205046,
+        "cpu_seconds": 1360.071837514,
+        "maxrss_bytes": 647139328
+      },
+      "status": "PASS",
+      "stage": "fit",
+      "family": "minirocket"
     }
   ],
   "cpu_seconds": {
     "control": 681.384612,
     "stumpy": 298.726146,
-    "minirocket": 90.205046,
+    "minirocket": 1453.820007,
     "cnn": 23.210074,
     "rdst": 975.273315
   },
@@ -876,6 +995,11 @@
     "stumpy": {
       "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/seal.json",
       "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+    },
+    "minirocket": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/seal.json",
+      "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
     }
-  }
+  },
+  "execution_handoff": "VPS passive driver STOP; remainingRDST/CNN Mac nativeCPU after focused preflight"
 }

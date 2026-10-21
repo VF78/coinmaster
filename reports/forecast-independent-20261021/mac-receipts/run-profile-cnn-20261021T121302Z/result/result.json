@@ -1,0 +1,36 @@
+{
+  "status": "PROFILE_PASS_NOT_RECIPE_SELECTION",
+  "family": "cnn",
+  "view": "60x20",
+  "train_rows": 256,
+  "validation_rows": 128,
+  "profile_cpu_seconds": 4.276226,
+  "maxrss_bytes": 377168592896,
+  "output_shapes": [
+    [
+      128,
+      2,
+      2,
+      3
+    ],
+    [
+      128,
+      3
+    ]
+  ],
+  "profile_only": true,
+  "measurements": {
+    "epoch_train_cpu_seconds": [
+      0.469846
+    ],
+    "epoch_validation_cpu_seconds": [
+      0.14544099999999993
+    ],
+    "setup_cpu_seconds": 3.497619
+  },
+  "head_features": null,
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "prior_cpu_seconds": 36.388577,
+  "cpu_seconds": 4.508013
+}

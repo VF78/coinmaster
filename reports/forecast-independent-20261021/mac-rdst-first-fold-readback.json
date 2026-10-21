@@ -1,0 +1,27 @@
+{
+  "status": "ACTUAL_FIRST_FOLD_FEASIBLE_WITH_PRIOR_CPU",
+  "completed": [
+    {
+      "fold": "60x20-0.0001-fold0",
+      "CPU_seconds": 27.577368999999997,
+      "phase_native_RSS_bytes": {
+        "transform": 690585600.0,
+        "head": 364003328.0
+      },
+      "best_epoch": 47
+    },
+    {
+      "fold": "60x20-0.0001-fold1",
+      "CPU_seconds": 9.543901000000002,
+      "phase_native_RSS_bytes": {
+        "transform": 351862784.0,
+        "head": 377831424.0
+      },
+      "best_epoch": 33
+    }
+  ],
+  "completed_fold_count": 7,
+  "prior_VPS_CPU_seconds": 975.273315,
+  "budget_seconds": 3600,
+  "Darwin_native_RSS_normalization": "frozen metric /1024 (Linuxassumption); externalcontroller/time authoritative"
+}

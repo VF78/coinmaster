@@ -1,0 +1,227 @@
+{
+  "status": "PREPARATION_ONLY_NO_MAC_EXECUTION",
+  "at_utc": "2026-10-21T11:56:02.138940+00:00",
+  "canonical_source_commit": "25a34192d80117223bae24bdfba184ab4a497e8a",
+  "scientific_source_commit": "c78e2b161e1443b5a0c3beded30812897816c1d2",
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "prepared_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "total_transfer_bytes": 388203050,
+  "files": [
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/context.npy",
+      "relative": "prepared-v1/context.npy",
+      "bytes": 4792448,
+      "sha256": "009b82bdccd3bc6ea76e6cd5ff8dc43533800be333058ef293ca4dfefec6d559"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/labels-train.npz",
+      "relative": "prepared-v1/labels-train.npz",
+      "bytes": 1136290,
+      "sha256": "04100dfff2c9425ab977c3ef760f2d45f254076658bdf2a3e327a73688ff522c"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/minutes-SOLUSDT.npy",
+      "relative": "prepared-v1/minutes-SOLUSDT.npy",
+      "bytes": 44985728,
+      "sha256": "74914e77e6a5783cd5eb17a98f49e8528a52ed3f56cc432564f3a72bff834bda"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/metadata.npy",
+      "relative": "prepared-v1/metadata.npy",
+      "bytes": 1572736,
+      "sha256": "6cf0f19f6e20de5b06e00b0b206ad41bb4c0ff2bca91edc2a79d6fb79032d24d"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-1x20.npy",
+      "relative": "prepared-v1/features-1x20.npy",
+      "bytes": 17971328,
+      "sha256": "36dcff413d6001a59fb5b40183ebd1c2e96ede82f011a8326bb9f3c055c9009a"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/origin_ids.npy",
+      "relative": "prepared-v1/origin_ids.npy",
+      "bytes": 299648,
+      "sha256": "4582ef75fb13b465ec7ec75c3fedb92033cfc647659eb85549ab008e1c181b0c"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-60x60.npy",
+      "relative": "prepared-v1/features-60x60.npy",
+      "bytes": 53913728,
+      "sha256": "d8c11e1f3b8ae704f3dd565e4a995bd3808265d89d78c57ba55461772a2b0d0c"
+    },
+    {
+      "role": "prepared-opaque-check-labels",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/labels-check.npz",
+      "relative": "prepared-v1/labels-check.npz",
+      "bytes": 400258,
+      "sha256": "172e0af51b7fd6e4c518dc185373559d821d95f2d46fd5a8046815aa654056c5"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-1x60.npy",
+      "relative": "prepared-v1/features-1x60.npy",
+      "bytes": 53913728,
+      "sha256": "9fb8f3d465b61e8c4aec9fe2110e12a4a7ad9a28a8163219270d252444d08e05"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-240x60.npy",
+      "relative": "prepared-v1/features-240x60.npy",
+      "bytes": 53913728,
+      "sha256": "f2544b951b8cde5a8ed46b5635e9e608acd16222d0fe907f00d89ec4eeaab5d8"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-15x60.npy",
+      "relative": "prepared-v1/features-15x60.npy",
+      "bytes": 53913728,
+      "sha256": "c1d4b02ca9cab3803a246cae300a8f8db3eeaa0af76815de7ad473f04eae26a9"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-60x20.npy",
+      "relative": "prepared-v1/features-60x20.npy",
+      "bytes": 17971328,
+      "sha256": "bde054e0d043c5d51cfc2107fa03bf210dd3cd10c8e9230230882717c9a36aa1"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-15x20.npy",
+      "relative": "prepared-v1/features-15x20.npy",
+      "bytes": 17971328,
+      "sha256": "a30d1996db52e4e2cd871544a4b8e8122f5745c8abe8c12ebb5214e63c4cb398"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/features-240x20.npy",
+      "relative": "prepared-v1/features-240x20.npy",
+      "bytes": 17971328,
+      "sha256": "48fcb471eceaf0b3e62d1eea3236bb86f0253e9ce9887da365f48c02f6d20190"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/feature-bar-ends.npy",
+      "relative": "prepared-v1/feature-bar-ends.npy",
+      "bytes": 2396288,
+      "sha256": "2da607916b1adadeaeb7075556e2bac468d51b8d2143f6354b2a4b55f1e656de"
+    },
+    {
+      "role": "prepared",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/minutes-BTCUSDT.npy",
+      "relative": "prepared-v1/minutes-BTCUSDT.npy",
+      "bytes": 44985728,
+      "sha256": "486a22880a5c7b7e582ce98bedec0aabb02671f4858f73e6178b7c60c895fa66"
+    },
+    {
+      "role": "prepared-manifest",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-data-20261021T094103Z/result/prepared-v1/manifest.json",
+      "relative": "prepared-v1/manifest.json",
+      "bytes": 5394,
+      "sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/__init__.py",
+      "relative": "runtime/coinmaster/__init__.py",
+      "bytes": 77,
+      "sha256": "be565ccaf9ead97f5f542cf4cd13f0e492a9c3f88b0b3efccebfbe06531681b1"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__init__.py",
+      "relative": "runtime/coinmaster/research/__init__.py",
+      "bytes": 68,
+      "sha256": "4b89f0f2fa63b8c1e4c455ac5157d490e98ba3035c3bc4fbe629ecb5983d2530"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/forecast_independent_data.py",
+      "relative": "runtime/coinmaster/research/forecast_independent_data.py",
+      "bytes": 13432,
+      "sha256": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/forecast_independent_models.py",
+      "relative": "runtime/coinmaster/research/forecast_independent_models.py",
+      "bytes": 21119,
+      "sha256": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/forecast_independent_run.py",
+      "relative": "runtime/coinmaster/research/forecast_independent_run.py",
+      "bytes": 24018,
+      "sha256": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/protocol.json",
+      "relative": "reports/forecast-independent-20261021/protocol.json",
+      "bytes": 10550,
+      "sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/resource_envelope.py",
+      "relative": "reports/forecast-independent-20261021/resource_envelope.py",
+      "bytes": 1472,
+      "sha256": "7d8c444eaac20ea315ccae21bd9d74a639d143fa96e3e34d6a25e3b10a233371"
+    },
+    {
+      "role": "pinned-readonly-source",
+      "source": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/coordinator-cnn-resource-envelope.json",
+      "relative": "reports/forecast-independent-20261021/coordinator-cnn-resource-envelope.json",
+      "bytes": 1083,
+      "sha256": "86f28a90d0b714f5a985c8ad294b10a0391d65eb12946856bfc05bbb6c04c693"
+    },
+    {
+      "role": "frozen-TRAIN-view-selection",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-screen-control-20261021T110643Z/result/train/result.json",
+      "relative": "selection.json",
+      "bytes": 16489,
+      "sha256": "b54e3727672cf11dd4b40190687e7084f8e8c8711805fceb6cd5965317f3f2a9"
+    }
+  ],
+  "VPS_environment_metadata_only_no_heavy_imports": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "packages": {
+      "numpy": "2.3.5",
+      "torch": "2.14.1+cpu",
+      "aeon": "1.6.0",
+      "numba": "0.63.1",
+      "llvmlite": "0.46.0",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.7.2",
+      "stumpy": "1.14.1",
+      "pandas": "2.3.3",
+      "joblib": "1.6.0",
+      "threadpoolctl": "3.7.0"
+    }
+  },
+  "completed_families_do_not_repeat": [
+    "control",
+    "stumpy"
+  ],
+  "active_science_preserved": "MiniRocket",
+  "remaining": [
+    "rdst",
+    "cnn"
+  ],
+  "CHECK_guard": "labels-check.npz hash opaque only; allow_check=False; no CHECK until all5actual seals plus coordinator GO",
+  "platform_notes": [
+    "Use fresh native ARM compiler caches, do not transfer x86 venv/JIT binaries.",
+    "Frozen worker POSIX RLIMIT_CPU and cumulative childCPU supported bymacOS; record actual admission/oneCPU allocation separately.",
+    "resource.ru_maxrss native macOS returns bytes, while frozen runtime multiplies1024 assumingLinux; normalize external resource receipt only, do not change model source.",
+    "CPU Torch only, no MPS unless separately authorized resource probe."
+  ]
+}

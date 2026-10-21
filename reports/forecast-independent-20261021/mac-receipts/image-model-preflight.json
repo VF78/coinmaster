@@ -1,0 +1,68 @@
+{
+  "status": "PASS_TRAIN_IMAGE_EXACT_AND_OPAQUE_MODELS_HASHES",
+  "images": [
+    {
+      "row": 0,
+      "sha256": "950aa36332a05251917c5e2abc8cfdea9de6eb39f0a4b8c40ad5040c2bc3ea22",
+      "exact": true
+    },
+    {
+      "row": 1,
+      "sha256": "f5ae44b6676d33c16a7daca9abfa0cf2a1a5faa46fa3523f4376bc4a8f096240",
+      "exact": true
+    }
+  ],
+  "cpu_seconds": 0.420505,
+  "native_peak_RSS_bytes": 47120384,
+  "disk_free_bytes": 16270200832,
+  "memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 46%\n",
+  "canonical_to_Mac_models": [
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/seal.json",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/seal.json",
+      "sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/calibrator.pkl",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/calibrator.pkl",
+      "sha256": "788642744680a415249775ba2eb412886a717095a95d047eeb52337a606c6be7"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/final-seed7/model.pkl",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/final-seed7/model.pkl",
+      "sha256": "6e35e14c17ecde3eff80af73e60eb3ac7d114c2e581980631f78e193037ab85a"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/seal.json",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/seal.json",
+      "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/calibrator.pkl",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/calibrator.pkl",
+      "sha256": "df0ad19e57576df86726b0511f5ae47248625c24d37492241dfdb2fc8cecd153"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/final-seed7/model.pkl",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/final-seed7/model.pkl",
+      "sha256": "d4afa3f1342364b62fca61ff390ab280e1a3caee5552bc58bd1f220437312930"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/seal.json",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/seal.json",
+      "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/calibrator.pkl",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/calibrator.pkl",
+      "sha256": "69399209a8d1fdab80974d55094a63d1d963a30be423715bf8061fbe70120235"
+    },
+    {
+      "canonical": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/final-seed7/model.pkl",
+      "Mac": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/final-seed7/model.pkl",
+      "sha256": "9d3a420badc52c3bb2f8c369e92d4e00f34e716a8aad1845a7d7cafb5a24a5d3"
+    }
+  ],
+  "CHECK_labels_opened": false,
+  "model_pickles_loaded": false
+}

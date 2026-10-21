@@ -1,0 +1,83 @@
+{
+  "status": "OPAQUE_MODEL_COPY_ONLY_NO_CHECK",
+  "files": [
+    {
+      "family": "control",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/seal.json",
+      "relative": "frozen-models/control/seal.json",
+      "bytes": 3296,
+      "sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+    },
+    {
+      "family": "control",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/calibrator.pkl",
+      "relative": "frozen-models/control/calibrator.pkl",
+      "bytes": 332,
+      "sha256": "788642744680a415249775ba2eb412886a717095a95d047eeb52337a606c6be7"
+    },
+    {
+      "family": "control",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/final-seed7/model.pkl",
+      "relative": "frozen-models/control/final-seed7/model.pkl",
+      "bytes": 9574,
+      "sha256": "6e35e14c17ecde3eff80af73e60eb3ac7d114c2e581980631f78e193037ab85a"
+    },
+    {
+      "family": "stumpy",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/seal.json",
+      "relative": "frozen-models/stumpy/seal.json",
+      "bytes": 5460,
+      "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+    },
+    {
+      "family": "stumpy",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/calibrator.pkl",
+      "relative": "frozen-models/stumpy/calibrator.pkl",
+      "bytes": 332,
+      "sha256": "df0ad19e57576df86726b0511f5ae47248625c24d37492241dfdb2fc8cecd153"
+    },
+    {
+      "family": "stumpy",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/final-seed7/model.pkl",
+      "relative": "frozen-models/stumpy/final-seed7/model.pkl",
+      "bytes": 4174780,
+      "sha256": "d4afa3f1342364b62fca61ff390ab280e1a3caee5552bc58bd1f220437312930"
+    },
+    {
+      "family": "minirocket",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/seal.json",
+      "relative": "frozen-models/minirocket/seal.json",
+      "bytes": 3304,
+      "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
+    },
+    {
+      "family": "minirocket",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/calibrator.pkl",
+      "relative": "frozen-models/minirocket/calibrator.pkl",
+      "bytes": 332,
+      "sha256": "69399209a8d1fdab80974d55094a63d1d963a30be423715bf8061fbe70120235"
+    },
+    {
+      "family": "minirocket",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/final-seed7/model.pkl",
+      "relative": "frozen-models/minirocket/final-seed7/model.pkl",
+      "bytes": 149664,
+      "sha256": "9d3a420badc52c3bb2f8c369e92d4e00f34e716a8aad1845a7d7cafb5a24a5d3"
+    }
+  ],
+  "total_bytes": 4347074,
+  "canonical_seals": {
+    "control": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/seal.json",
+      "sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+    },
+    "stumpy": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/seal.json",
+      "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+    },
+    "minirocket": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/seal.json",
+      "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
+    }
+  }
+}
