@@ -1,0 +1,95 @@
+{
+  "status": "ACTUAL_TRAINABLE_CNN_SYNTHETIC_QA",
+  "PASS": true,
+  "source_sha256": "b1cc5df55b06fd22d13deaaaef3a7a603b870dc4a37d946801c84d6032eefad2",
+  "protocol_sha256": "a9ef9fa2ff7a306d75a9faf6cfcccc9ead95163fd37f4295b219b3a9344f7f02",
+  "synthetic_fits": 2,
+  "market_fits": 0,
+  "CHECK_used": false,
+  "wall_seconds": 26.675439207814634,
+  "results": [
+    {
+      "control": "positive",
+      "accuracy": 1.0,
+      "D_logloss": 0.6600491404533386,
+      "prior_logloss": 1.1067846303921791,
+      "Q_raw_pinball_long_short": [
+        0.07027013083764665,
+        0.04655234587844458
+      ],
+      "Q_projected_pinball_long_short": [
+        0.07027013083764665,
+        0.04655234587844458
+      ],
+      "Q_fit_prior_pinball_long_short": [
+        0.11875000608464019,
+        0.09500000464419539
+      ],
+      "Q_raw_loss_ratio_to_prior": [
+        0.5917484398911184,
+        0.49002466950183443
+      ],
+      "Q_projected_loss_ratio_to_prior": [
+        0.5917484398911184,
+        0.49002466950183443
+      ],
+      "epochs": 8,
+      "fit_N": 512,
+      "heldout_N": 256,
+      "block_hours": 800,
+      "permutation_sha256": "d73acc77f87de4aa8a7aa31ff7b2c1c1783e4c11c6b528d9b57c7836f27eea6d",
+      "checkpoint_sha256": "bbb775bae11cbbe8c731bbd2149c503000671f124b4b970b058a453abdafb353",
+      "fit_receipt": {
+        "kind": "CNN",
+        "selected_epochs": 8,
+        "epochs_executed": 8,
+        "wall_seconds": 13.018244083039463,
+        "fit_rows": 512,
+        "early_stop_rows": 0,
+        "rss_peak_bytes": 771719168
+      }
+    },
+    {
+      "control": "block_shuffled",
+      "accuracy": 0.35546875,
+      "D_logloss": 1.0918433666229248,
+      "prior_logloss": 1.1067846303921791,
+      "Q_raw_pinball_long_short": [
+        0.11887873304076489,
+        0.0951156724399576
+      ],
+      "Q_projected_pinball_long_short": [
+        0.11887873304076489,
+        0.0951156724399576
+      ],
+      "Q_fit_prior_pinball_long_short": [
+        0.11875000608464022,
+        0.09500000464419539
+      ],
+      "Q_raw_loss_ratio_to_prior": [
+        1.0010840164170849,
+        1.0012175556853435
+      ],
+      "Q_projected_loss_ratio_to_prior": [
+        1.0010840164170849,
+        1.0012175556853435
+      ],
+      "epochs": 8,
+      "fit_N": 512,
+      "heldout_N": 256,
+      "block_hours": 800,
+      "permutation_sha256": "a28228db1d298bd90d0d5d6eed089756412fbff7ac97339613f4516da25682fd",
+      "checkpoint_sha256": "16b3ad7d968283156cc6f46d9933c5bda5594907228aa391f7080613a2361842",
+      "fit_receipt": {
+        "kind": "CNN",
+        "selected_epochs": 8,
+        "epochs_executed": 8,
+        "wall_seconds": 12.12369691580534,
+        "fit_rows": 512,
+        "early_stop_rows": 0,
+        "rss_peak_bytes": 813072384
+      }
+    }
+  ],
+  "meaning": "plumbing diagnostic only; no market/OOS skill evidence"
+}

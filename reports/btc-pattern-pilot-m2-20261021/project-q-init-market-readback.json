@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-21T21:14:49.402178+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "readback": "PASS",
+  "Q_PRIOR_INIT": "RUNNING_ONCE",
+  "PID": 92981,
+  "session": 84758,
+  "source_sha256": "b1cc5df55b06fd22d13deaaaef3a7a603b870dc4a37d946801c84d6032eefad2",
+  "market_fits_max": 6,
+  "CHECK_opened": false,
+  "pilot_changes": false
+}

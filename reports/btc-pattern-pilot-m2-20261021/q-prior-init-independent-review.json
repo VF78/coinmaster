@@ -5,5 +5,10 @@
   "source_sha256": "b1cc5df55b06fd22d13deaaaef3a7a603b870dc4a37d946801c84d6032eefad2",
   "protocol_sha256": "a9ef9fa2ff7a306d75a9faf6cfcccc9ead95163fd37f4295b219b3a9344f7f02",
   "findings": "fit-only[side,q]priorbias, originalcompleteRNG/D/encoderinit,finallyfactoryrestore,statecompatibleinference;originalsingle28dES/fullprefix;fixedQAcontrolsunchanged",
-  "market_authorized": false
+  "market_authorized": false,
+  "market_stage": "MARKET_GO",
+  "market_authorized_joint_fits_max": 6,
+  "qa_receipt_sha256": "98ec922e34e6b73c83bb2f5d7c0db43b3cbc08f6468a8188cd634f59d0feded8",
+  "resource_sha256": "70bc13c516ae45207f1a383d240a4466adb3aabb3f2a142c49f658d4f220fee4",
+  "later_stages_authorized": false
 }
