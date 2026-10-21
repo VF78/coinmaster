@@ -1,10 +1,12 @@
 # Independent BTC/SOL forecasting — #113
 
-**Current: TRAIN selection complete; control and STUMPY sealed; MiniRocket → RDST → CNN in progress. CHECK unopened.** Primary window1h×20, alternate15m×20, chosen only within TRAIN. Sourcec78e2b1; operational/report checkpoint8879607. Scientific protocol121942c4 and prepared dataset1bc6c492 unchanged.
+**Current: TRAIN selection complete; control, STUMPY and MiniRocket sealed; RDST onMac, CNN next. CHECK unopened.** Primary window1h×20, alternate15m×20, chosen only within TRAIN. Sourcec78e2b1; operational/report checkpoint8879607. Scientific protocol121942c4 and prepared dataset1bc6c492 unchanged.
 
 Allfive bounded resourceprofiles PASS. RDST sequential transform/head processes reuse the existing Torch model; weightrestore error0,140.783CPU/0swap. Initial resource failures are retained in receipts, not accuracy findings. Explicit CNN-only CPU allowance480min (1b7110a; prior240 superseded before fit) is operational, not scientific: all other600MiB/swap0/1CPU/admission limits remain. Actual20bar timing projects~147min minimum realisticfit; the hard ceiling remains enforced. See cnn-20bar-feasibility.json and resource authorization.
 
 No accuracy or economic claim yet. Existing pilot unchanged, S0 not rerun. RootGO and allfive actual seals remain mandatory before CHECK.
+
+Owner authorized Mac execution on2026-10-21 (M2Pro16GiB). Passive VPS train driver PID686640 SIGSTOP before RDST/CNN; MiniRocket TRAIN/calibration completed and sealed (63b1019b). Mac native Python3.12.13 and exact ML package base versions installed in isolated runtime/var/research-envs/forecast-independent-mac-20261021; immutable26file/388,203,050byte package SHA/size PASS. Local job /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021. Canonical development/source remains VPS; Mac only executes pinned copies. No CHECK-label loading, secrets or pilot data. Mac preflight PASS: exact2TRAIN image hashes, CNN4.64–5.12x faster, maxARMfloat32difference2.33948e-6 accepted atol3e-6/rtol1e-5 beforefit; original stricttest retained. RDST TRAIN running onMac; CNNnext. All5CHECK locally only after all5actualseals/rootGO. Keep1frozenTorchCPUthread, nice10, transientcaffeinate,3GiBtreeRSSguard/CPUledger. Do not resume pausedVPSdriver into duplicate fits.
 
 Owner scope: evaluate STUMPY, MiniRocket, RDST and chart CNN separately from the trading strategy. Main horizon **24h**, predict **three TP levels from patterns**, not fixed-ladder probabilities. TRAIN **[2024-09-01,2026-04-01)**; CHECK **[2026-04-01,2026-10-21)**, i.e. through 20 October inclusive.
 
