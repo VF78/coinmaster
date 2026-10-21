@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-21T17:46:19.137663+00:00",
+  "stage": "A",
+  "status": "NO_SKILL_ALL6",
+  "valid_fit_count": 102,
+  "valid_guard_wall_seconds": 543.412,
+  "actual_A_total_wall_seconds": 1202.245,
+  "all_old_quarantined_quality_unopened": true,
+  "economic_runs": 0,
+  "CHECK_opened": false,
+  "next": "B_PREFLIGHT_ONLY",
+  "root_project_readback": "PASS"
+}

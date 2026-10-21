@@ -1,0 +1,13 @@
+{
+  "at_utc": "2026-10-21T17:29:40.280504+00:00",
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/bin/zsh",
+    "-c",
+    "\nset -e\nfor task_family in control stumpy minirocket rdst cnn; do\n /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-envs/ai-cycle-20261021-01/bin/python -m coinmaster.research.forecast_cycle_run fitset-diagnose --report reports/ai-cycle-20261021-01 --old-job /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021 --output old-fitset-inference-utc --reuse-inference old-fitset-inference --family \"$task_family\"\ndone\n"
+  ],
+  "threads": 1,
+  "RSS_limit_bytes": 3221225472,
+  "wall_limit_seconds": 180.0
+}

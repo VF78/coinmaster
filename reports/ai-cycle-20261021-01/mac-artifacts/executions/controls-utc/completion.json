@@ -1,0 +1,32 @@
+{
+  "at_utc": "2026-10-21T17:27:52.677230+00:00",
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-envs/ai-cycle-20261021-01/bin/python",
+    "-m",
+    "coinmaster.research.forecast_cycle_run",
+    "controls-utc",
+    "--report",
+    "reports/ai-cycle-20261021-01",
+    "--old-job",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021",
+    "--prepared",
+    "prepared-full",
+    "--output",
+    "controls-utc",
+    "--reuse-controls",
+    "controls/controls.json",
+    "--fit-authorization",
+    "reports/ai-cycle-20261021-01/coordinator-utc-diagnostic-go.json"
+  ],
+  "threads": 1,
+  "RSS_limit_bytes": 3221225472,
+  "wall_limit_seconds": 300.0,
+  "pid": 69497,
+  "status": "PASS",
+  "returncode": 0,
+  "wall_seconds": 80.69629870774224,
+  "observed_process_tree_peak_RSS_bytes": 302612480,
+  "native_time_units": "Darwin bytes"
+}

@@ -1,0 +1,1 @@
+{"status": "CONTROLS_COMPLETE", "fits": 6, "positive_pass": true, "shuffle_no_robust_advantage": true}

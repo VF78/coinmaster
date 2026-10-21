@@ -202,6 +202,1872 @@
       "fit_id": "scaling-BTC-Q-short-joint-d4-500",
       "seed": 7,
       "reason": "one fullprefix fixed500iteration resource measurement;noES/noqualityexport"
+    },
+    {
+      "utc": "2026-10-21T17:06:53.462161+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:06:54.313644+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:07:00.952959+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:07:01.309112+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:07:11.077076+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 498
+    },
+    {
+      "utc": "2026-10-21T17:07:21.587497+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:07:26.543326+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 20
+    },
+    {
+      "utc": "2026-10-21T17:07:26.729969+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:07:33.465029+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 5
+    },
+    {
+      "utc": "2026-10-21T17:07:34.298933+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:07:39.058003+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 203
+    },
+    {
+      "utc": "2026-10-21T17:07:43.280345+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:07:43.931590+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 77
+    },
+    {
+      "utc": "2026-10-21T17:07:44.530555+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:07:52.492349+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 15
+    },
+    {
+      "utc": "2026-10-21T17:07:54.597001+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:08:02.737093+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 374
+    },
+    {
+      "utc": "2026-10-21T17:08:10.401137+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:08:13.155419+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:08:27.621263+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 50
+    },
+    {
+      "utc": "2026-10-21T17:08:35.129233+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:08:37.255393+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 45
+    },
+    {
+      "utc": "2026-10-21T17:08:38.799535+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:08:39.780373+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 72
+    },
+    {
+      "utc": "2026-10-21T17:08:40.615477+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:09:10.149375+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 176
+    },
+    {
+      "utc": "2026-10-21T17:09:33.726298+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:09:41.303142+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 322
+    },
+    {
+      "utc": "2026-10-21T17:09:48.801412+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:09:49.756947+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 66
+    },
+    {
+      "utc": "2026-10-21T17:09:50.633666+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:09:59.255757+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 12
+    },
+    {
+      "utc": "2026-10-21T17:10:01.154283+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:10:02.373913+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 5
+    },
+    {
+      "utc": "2026-10-21T17:10:02.997344+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:10:07.257522+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:10:21.834230+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 46
+    },
+    {
+      "utc": "2026-10-21T17:10:29.235948+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:10:31.306254+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 35
+    },
+    {
+      "utc": "2026-10-21T17:10:32.830402+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:10:33.592851+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 40
+    },
+    {
+      "utc": "2026-10-21T17:10:34.254561+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:10:50.191333+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 63
+    },
+    {
+      "utc": "2026-10-21T17:10:59.582394+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:01.915901+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 53
+    },
+    {
+      "utc": "2026-10-21T17:11:03.701619+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:11:04.271770+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 27
+    },
+    {
+      "utc": "2026-10-21T17:11:04.730362+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:12.358654+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:11:12.919736+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:14.126119+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:11:14.736808+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:11:16.032256+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:24.301443+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 14
+    },
+    {
+      "utc": "2026-10-21T17:11:26.346012+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:27.795918+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 23
+    },
+    {
+      "utc": "2026-10-21T17:11:28.733997+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:11:28.992558+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 20
+    },
+    {
+      "utc": "2026-10-21T17:11:29.185569+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:35.537196+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:11:35.913157+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:36.903607+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 2
+    },
+    {
+      "utc": "2026-10-21T17:11:37.352459+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:11:38.013223+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 80
+    },
+    {
+      "utc": "2026-10-21T17:11:38.639781+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:47.833819+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 26
+    },
+    {
+      "utc": "2026-10-21T17:11:51.279700+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:11:53.966372+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 91
+    },
+    {
+      "utc": "2026-10-21T17:11:56.137354+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:11:59.236026+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:12:25.409806+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 139
+    },
+    {
+      "utc": "2026-10-21T17:12:45.421257+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:12:47.534050+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 46
+    },
+    {
+      "utc": "2026-10-21T17:12:49.125787+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:12:49.902726+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 57
+    },
+    {
+      "utc": "2026-10-21T17:12:50.564429+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:13:31.300523+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 262
+    },
+    {
+      "utc": "2026-10-21T17:14:06.201583+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:14:10.245906+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 145
+    },
+    {
+      "utc": "2026-10-21T17:14:13.942077+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:14:14.896455+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 79
+    },
+    {
+      "utc": "2026-10-21T17:14:15.792082+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:14:28.549002+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 46
+    },
+    {
+      "utc": "2026-10-21T17:14:34.999964+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:14:36.539963+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 22
+    },
+    {
+      "utc": "2026-10-21T17:14:37.555475+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:14:41.929915+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:14:54.799600+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 34
+    },
+    {
+      "utc": "2026-10-21T17:15:00.553099+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:15:04.274930+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 109
+    },
+    {
+      "utc": "2026-10-21T17:15:07.519154+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:15:08.424567+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 50
+    },
+    {
+      "utc": "2026-10-21T17:15:09.188941+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:15:16.673471+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:15:17.235005+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:15:18.788112+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 18
+    },
+    {
+      "utc": "2026-10-21T17:15:19.818744+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:15:20.730519+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 50
+    },
+    {
+      "utc": "2026-10-21T17:15:21.507538+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:15:29.041283+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:15:29.650058+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:15:30.850727+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:15:47.602369+00:00",
+      "stage": "A",
+      "fit": false,
+      "status": "DEVELOPMENT_COMPLETE",
+      "reason": "fixed heads gate evaluated; March/CHECK unopened"
+    },
+    {
+      "utc": "2026-10-21T17:27:53.253106+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-0-D",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T17:28:06.752876+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-0-Q-long",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T17:28:18.733028+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-0-Q-short",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T17:28:32.950434+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-1-D",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T17:28:47.697723+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-1-Q-long",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T17:29:00.030519+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-1-Q-short",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T17:29:42.079037+00:00",
+      "stage": "fitset-diagnose",
+      "fit": false,
+      "status": "PASS",
+      "families": 1
+    },
+    {
+      "utc": "2026-10-21T17:29:42.730005+00:00",
+      "stage": "fitset-diagnose",
+      "fit": false,
+      "status": "PASS",
+      "families": 2
+    },
+    {
+      "utc": "2026-10-21T17:29:47.467277+00:00",
+      "stage": "fitset-diagnose",
+      "fit": false,
+      "status": "PASS",
+      "families": 3
+    },
+    {
+      "utc": "2026-10-21T17:29:52.683977+00:00",
+      "stage": "fitset-diagnose",
+      "fit": false,
+      "status": "PASS",
+      "families": 4
+    },
+    {
+      "utc": "2026-10-21T17:29:53.818776+00:00",
+      "stage": "fitset-diagnose",
+      "fit": false,
+      "status": "PASS",
+      "families": 5
+    },
+    {
+      "utc": "2026-10-21T17:31:34.365090+00:00",
+      "stage": "A",
+      "fit": false,
+      "seed": 7,
+      "attempt": "stage-A",
+      "status": "QUARANTINED_INVALID_UTC_SPLITS",
+      "reason": "Date-only parsing used host timezone (-3h); all original A quality unopened and excluded from selection; only technical UTC correction permitted",
+      "wall_seconds_charged": 537.5391515409574
+    },
+    {
+      "utc": "2026-10-21T17:31:34.367489+00:00",
+      "stage": "resources",
+      "fit": false,
+      "seed": 7,
+      "status": "DEPTH6_DROPPED_RESOURCE_ONLY",
+      "reason": "Root decision before controls/development quality; 50-iteration depth6 timings about3xdepth4; retained unchangeddepth4recipe",
+      "decision_evidence": "coordinator-controls-baseline-go.json"
+    },
+    {
+      "utc": "2026-10-21T17:31:34.368909+00:00",
+      "stage": "UTC-diagnostics",
+      "fit": false,
+      "seed": 7,
+      "status": "PASS",
+      "reason": "7TZ/seal/purge tests; identical4032shuffle train/labelIDs;6negative fits only;3positive fits reused;6new+506cached old predictions per method",
+      "A_remaining_wall_seconds": 6541.167216709349
+    },
+    {
+      "utc": "2026-10-21T17:32:03.018404+00:00",
+      "stage": "A",
+      "fit": false,
+      "seed": 7,
+      "attempt": "stage-A-utc-corrected",
+      "status": "ROOT_GO_TECHNICAL_REPLAY",
+      "authorization": "coordinator-stage-a-utc-go.json",
+      "output": "stage-A-utc-corrected",
+      "source_sha256": "ada1279cb988531a6700a99b5ed44c30f7fa64caf927686ac13774741490ebbe",
+      "replaces_unusable_attempt": "stage-A",
+      "reason": "Exact same recipe/seed; only UTC boundary correction; prior quality unopened; 6541remainingseconds includes original wasted fit cost"
+    },
+    {
+      "utc": "2026-10-21T17:32:07.966739+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:32:08.932338+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:32:15.646391+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 2
+    },
+    {
+      "utc": "2026-10-21T17:32:16.143257+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:32:25.846811+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 489
+    },
+    {
+      "utc": "2026-10-21T17:32:36.062632+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:32:40.728285+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 28
+    },
+    {
+      "utc": "2026-10-21T17:32:40.959719+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:32:47.828387+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 5
+    },
+    {
+      "utc": "2026-10-21T17:32:48.696416+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:32:53.791658+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 203
+    },
+    {
+      "utc": "2026-10-21T17:32:58.201129+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:32:58.869018+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-0-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 80
+    },
+    {
+      "utc": "2026-10-21T17:32:59.489300+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:33:08.011596+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 19
+    },
+    {
+      "utc": "2026-10-21T17:33:10.635660+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:33:18.078663+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 338
+    },
+    {
+      "utc": "2026-10-21T17:33:25.172341+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:33:27.954991+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:33:48.069388+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 94
+    },
+    {
+      "utc": "2026-10-21T17:34:01.639989+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:34:03.812092+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 43
+    },
+    {
+      "utc": "2026-10-21T17:34:05.307668+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:34:06.269891+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 76
+    },
+    {
+      "utc": "2026-10-21T17:34:07.151973+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:34:37.638969+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 183
+    },
+    {
+      "utc": "2026-10-21T17:35:02.043749+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:35:08.577280+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 259
+    },
+    {
+      "utc": "2026-10-21T17:35:14.481412+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:35:15.273329+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-1-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 59
+    },
+    {
+      "utc": "2026-10-21T17:35:15.978697+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:35:24.185741+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 12
+    },
+    {
+      "utc": "2026-10-21T17:35:26.089536+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:35:27.414870+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 4
+    },
+    {
+      "utc": "2026-10-21T17:35:28.041713+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:35:32.217787+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:35:44.836639+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 28
+    },
+    {
+      "utc": "2026-10-21T17:35:49.791816+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:35:52.021604+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 40
+    },
+    {
+      "utc": "2026-10-21T17:35:53.702622+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:35:54.472474+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 39
+    },
+    {
+      "utc": "2026-10-21T17:35:55.281019+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:09.756490+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 50
+    },
+    {
+      "utc": "2026-10-21T17:36:17.302895+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:19.498588+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 45
+    },
+    {
+      "utc": "2026-10-21T17:36:21.136587+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:36:21.823156+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-0-2-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 33
+    },
+    {
+      "utc": "2026-10-21T17:36:22.365412+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:29.826165+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-0-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:36:30.358503+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:31.573314+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-0-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:36:32.180940+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:36:33.385277+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:41.630118+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 14
+    },
+    {
+      "utc": "2026-10-21T17:36:43.666500+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:44.833580+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 8
+    },
+    {
+      "utc": "2026-10-21T17:36:45.449589+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:36:45.643670+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 16
+    },
+    {
+      "utc": "2026-10-21T17:36:45.790487+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:52.080677+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:36:52.443897+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:36:53.536710+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 6
+    },
+    {
+      "utc": "2026-10-21T17:36:54.058083+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:36:54.702536+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-0-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 73
+    },
+    {
+      "utc": "2026-10-21T17:36:55.267785+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:37:04.329510+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 24
+    },
+    {
+      "utc": "2026-10-21T17:37:07.517780+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:37:10.963022+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-0-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 129
+    },
+    {
+      "utc": "2026-10-21T17:37:13.889183+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:37:16.494977+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:37:41.028669+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 128
+    },
+    {
+      "utc": "2026-10-21T17:37:59.560933+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:38:01.699757+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 48
+    },
+    {
+      "utc": "2026-10-21T17:38:03.305300+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:38:04.246568+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 76
+    },
+    {
+      "utc": "2026-10-21T17:38:05.129939+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:38:45.463010+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 259
+    },
+    {
+      "utc": "2026-10-21T17:39:20.737383+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:39:24.715556+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 140
+    },
+    {
+      "utc": "2026-10-21T17:39:28.181661+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:39:28.841719+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-1-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 49
+    },
+    {
+      "utc": "2026-10-21T17:39:29.417018+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:39:41.599160+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 42
+    },
+    {
+      "utc": "2026-10-21T17:39:47.559937+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:39:49.130286+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-1-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 22
+    },
+    {
+      "utc": "2026-10-21T17:39:50.132418+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-D",
+      "seed": 7,
+      "reason": "fixed logistic baseline"
+    },
+    {
+      "utc": "2026-10-21T17:39:54.561321+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:40:10.907583+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 55
+    },
+    {
+      "utc": "2026-10-21T17:40:19.748628+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-D-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:40:23.598465+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-D-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 114
+    },
+    {
+      "utc": "2026-10-21T17:40:27.088470+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-long-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:40:28.110787+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-long-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 56
+    },
+    {
+      "utc": "2026-10-21T17:40:29.005372+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:40:36.461776+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:40:36.996552+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-long-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:40:39.180742+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-long-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 46
+    },
+    {
+      "utc": "2026-10-21T17:40:40.835258+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-short-ES",
+      "seed": 7,
+      "reason": "fixed independent pinball baseline earlystop"
+    },
+    {
+      "utc": "2026-10-21T17:40:41.267342+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "linear-1-2-Q-short-refit",
+      "seed": 7,
+      "reason": "full prefix selectedepochs",
+      "epochs": 19
+    },
+    {
+      "utc": "2026-10-21T17:40:41.615397+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:40:49.150699+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "joint-d4-1-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:40:49.683037+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-short-ES",
+      "seed": 7,
+      "reason": "purged last28d earlystop independenthead"
+    },
+    {
+      "utc": "2026-10-21T17:40:50.884049+00:00",
+      "stage": "A",
+      "fit": true,
+      "fit_id": "shape-d4-1-2-Q-short-refit",
+      "seed": 7,
+      "reason": "fullprefix refit",
+      "iterations": 1
+    },
+    {
+      "utc": "2026-10-21T17:41:07.950360+00:00",
+      "stage": "A",
+      "fit": false,
+      "status": "DEVELOPMENT_COMPLETE",
+      "reason": "fixed heads gate evaluated; March/CHECK unopened"
     }
   ]
 }

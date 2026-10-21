@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-21T17:31:29.270514+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "stage-A"
+  ],
+  "protocol_sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586",
+  "source_input_manifest_sha256": "ee93db8d47bed9b54e8b67d2057690ee050d7628fe30e41623b4c17fcbe2b563",
+  "module_sha256": {
+    "forecast_cycle_train.py": "ada1279cb988531a6700a99b5ed44c30f7fa64caf927686ac13774741490ebbe"
+  },
+  "resource_admission_sha256": "a5c6792c82baed7c82a02df0cc640f96b2a6b53eef350271b946e369f854e6b4",
+  "resource_projected_minutes_including_waste": 116.2604,
+  "threads": 1,
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "stage-A": 6541
+  },
+  "A_total_budget_seconds": 7200,
+  "A_already_spent_seconds": 658.8327833,
+  "fit_limit": 102,
+  "depths": [
+    4
+  ],
+  "required_output": "stage-A-utc-corrected",
+  "attempt": "A-UTC-CORRECTED-ONE-TECHNICAL-REPLAY",
+  "scope": "same102developmentfits; noMarch/CHECK/final/prefix/economicyet",
+  "reason": "specificUTCtechnicaldefectcorrected7tests+independentGO;affecteddiagnosticsrevalidated;alloriginalreceipts+qualityunopenedquarantinepreserved",
+  "no_recipe_tuning": true,
+  "no_pilot_or_S0_changes": true,
+  "no_economic_runs": true,
+  "no_additional_automatic_retry": true
+}

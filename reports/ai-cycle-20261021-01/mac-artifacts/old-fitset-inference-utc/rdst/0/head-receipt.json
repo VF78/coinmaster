@@ -1,0 +1,15 @@
+{
+  "phase": "head",
+  "mode": "predict",
+  "train_rows": 0,
+  "predict_rows": 6,
+  "train_ids_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "best_epoch": 49,
+  "head_features": 772,
+  "aeon_loaded": false,
+  "llvmlite_loaded": false,
+  "weight_roundtrip_max_abs_error": 0.0,
+  "measurements": {},
+  "cpu_seconds": 0.989526,
+  "maxrss_bytes": 213775286272
+}
