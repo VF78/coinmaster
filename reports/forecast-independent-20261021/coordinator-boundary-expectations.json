@@ -1,0 +1,38 @@
+{
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "computed_with": "independent UTC datetime arithmetic, no labels or models",
+  "periods": {
+    "TRAIN": {
+      "origins_per_asset": 13848,
+      "full_horizon_eligible_per_asset": 13824,
+      "boundary_censored_or_purged_per_asset": 24,
+      "last_eligible_origin_utc": "2026-03-30T23:00:00+00:00",
+      "last_entry_utc": "2026-03-30T23:01:00+00:00",
+      "last_expiry_utc": "2026-03-31T23:01:00+00:00"
+    },
+    "CHECK": {
+      "origins_per_asset": 4872,
+      "full_horizon_eligible_per_asset": 4848,
+      "boundary_censored_or_purged_per_asset": 24,
+      "last_eligible_origin_utc": "2026-10-19T23:00:00+00:00",
+      "last_entry_utc": "2026-10-19T23:01:00+00:00",
+      "last_expiry_utc": "2026-10-20T23:01:00+00:00"
+    },
+    "final_fit": {
+      "origins_per_asset": 13104,
+      "full_horizon_eligible_per_asset": 13080,
+      "boundary_censored_or_purged_per_asset": 24,
+      "last_eligible_origin_utc": "2026-02-27T23:00:00+00:00",
+      "last_entry_utc": "2026-02-27T23:01:00+00:00",
+      "last_expiry_utc": "2026-02-28T23:01:00+00:00"
+    },
+    "calibration": {
+      "origins_per_asset": 744,
+      "full_horizon_eligible_per_asset": 720,
+      "boundary_censored_or_purged_per_asset": 24,
+      "last_eligible_origin_utc": "2026-03-30T23:00:00+00:00",
+      "last_entry_utc": "2026-03-30T23:01:00+00:00",
+      "last_expiry_utc": "2026-03-31T23:01:00+00:00"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "artifact_SHA_and_size_checks": 16,
+  "rows": 37440,
+  "all_feature_bar_ends_at_or_before_origin": true,
+  "actual_boundary_counts": {
+    "TRAIN": {
+      "eligible_pooled": 27648,
+      "last_eligible_origin_utc": "2026-03-30T23:00:00+00:00"
+    },
+    "CHECK": {
+      "eligible_pooled": 9696,
+      "last_eligible_origin_utc": "2026-10-19T23:00:00+00:00"
+    },
+    "final_fit": {
+      "eligible_pooled": 26160,
+      "last_eligible_origin_utc": "2026-02-27T23:00:00+00:00"
+    },
+    "calibration": {
+      "eligible_pooled": 1440,
+      "last_eligible_origin_utc": "2026-03-30T23:00:00+00:00"
+    }
+  },
+  "CHECK_labels_opened": false,
+  "method_fits": 0,
+  "note": "CHECK NPZ hashed as opaque bytes only; no outcomes loaded."
+}
