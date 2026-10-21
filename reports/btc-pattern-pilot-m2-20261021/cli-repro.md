@@ -11,6 +11,13 @@ PYTHONPATH=runtime <python> -m unittest runtime/tests/test_pattern_q_prior_init.
 
 Completed initial recipe and evaluator commands are recorded in the exact coordinator-development-go.json/pretrain-freeze-request.json. Baseline output is `runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development`; baseline evaluator output is `.../development-evaluation`. METRIC_OFF uses `coinmaster.research.pattern_quality_variants --mode METRIC_OFF`; its exact source/protocol/data/controls are in quality-variants-freeze-request.json/coordinator-quality-variants-go.json. RECENT180 in that historical GO was explicitly revoked; never replay it.
 
+Original baseline exact train/evaluate entry points (completed; original GO remains time-limited):
+
+```sh
+PYTHONPATH=runtime <python> -m coinmaster.research.btc_pattern_run train --protocol reports/btc-pattern-pilot-m2-20261021/protocol.json --prepared runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared --output runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development --authorization reports/btc-pattern-pilot-m2-20261021/coordinator-development-go.json
+PYTHONPATH=runtime <python> -m coinmaster.research.btc_pattern_run evaluate --protocol reports/btc-pattern-pilot-m2-20261021/protocol.json --prepared runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared --input runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development --output runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development-evaluation
+```
+
 Actual Q-prior-initialized synthetic invocation (completed once):
 
 ```sh

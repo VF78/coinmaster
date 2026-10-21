@@ -1,6 +1,6 @@
 # BTC pattern pilot M2 — current research state
 
-Baseline, METRIC_OFF and CNN_Q_PRIOR_INIT DEVELOPMENT runs are complete. No process is training. No recipe passed the frozen forecast/path gates; no shortlist or predictive winner is claimed. Original CNN Q-long remains weak evidence. CHECK/final/stability/policy/native/SOL are unadmitted; economic target NOT_MET. Root decision remains pending the authorized zero-fit shared-gradient diagnostic.
+Baseline, METRIC_OFF and CNN_Q_PRIOR_INIT DEVELOPMENT runs are complete. No process is training. No recipe passed the frozen forecast/path gates; no shortlist or predictive winner is claimed. Original CNN Q-long remains weak evidence. CHECK/final/stability/policy/native/SOL are unadmitted; economic target NOT_MET (unmet/unproven); actual ROI/MaxDD NOT_EVALUATED/native replay0. Authorized real shared-gradient and fixed-model drift decomposition are complete with zero fits. Evidence does not support another Q-only/exit-only fit, a larger epoch cap, or blind regime-mix reweighting; root retains final Project status.
 
 - Genuine contiguous Bybit minutes:2024-05-15–2026-10-21 00:00UTC; retained REST prefix156pages/155,520minutes.20,928origins,20,856mature72h labels,72censored.
 - Every market recipe keeps the fixed expanding history fromJune1,2024.8,496 common outer origins;29blocks for14d paired CI. No regime/month was cropped.
@@ -14,3 +14,5 @@ Baseline, METRIC_OFF and CNN_Q_PRIOR_INIT DEVELOPMENT runs are complete. No proc
 Read findings.md (<=150lines) for the comparison and limits. recipe-comparison-common-IDs.csv gives common-ID losses; recipe-comparison-gates-CI.csv gives per-head paired controls/foldwins. q-prior-init-fixed-SL-competing-events-and-TP-calibration.csv gives real72h fixed-SL/TP-first bounds and gross target distances. Q is attainable MFE before a fixed stop, not an independently optimized stop or executable EV.
 
 Reproducibility: cli-repro.md, protocol.json, per-recipe frozen protocols, exact coordinator authorization receipts and source/data hashes. Artifacts:local-artifact-manifest.json,metric-off-local-artifact-manifest.json,q-prior-init-local-artifact-manifest.json,synthetic-qa-local-artifact-manifest.json. Saved-model/helper hashes were captured before inference. Do not replay into existing output directories or treat old time-limited GO as fresh training authorization.
+
+NEXTQUESTION only, not new-work GO: can available causal volatility/state explain within-regime MFE/calibration drift with the exact existing physical stop and72h horizon preserved? Changing normalization must not silently change SL/metric units.

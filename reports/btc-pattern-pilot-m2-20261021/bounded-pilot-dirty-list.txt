@@ -1,0 +1,15 @@
+ M reports/btc-pattern-pilot-m2-20261021/README.md
+ M reports/btc-pattern-pilot-m2-20261021/cli-repro.md
+ M reports/btc-pattern-pilot-m2-20261021/findings.md
+ M reports/btc-pattern-pilot-m2-20261021/selection-ledger.json
+?? reports/btc-pattern-pilot-m2-20261021/bounded-pilot-artifact-QA.json
+?? reports/btc-pattern-pilot-m2-20261021/bounded-pilot-dirty-list.txt
+?? reports/btc-pattern-pilot-m2-20261021/bounded-pilot-ready-files.json
+?? reports/btc-pattern-pilot-m2-20261021/drift-completion.json
+?? reports/btc-pattern-pilot-m2-20261021/drift-decomposition-pre-manifest.json
+?? reports/btc-pattern-pilot-m2-20261021/drift-decomposition-protocol.json
+?? reports/btc-pattern-pilot-m2-20261021/drift-decomposition.csv
+?? reports/btc-pattern-pilot-m2-20261021/drift-findings.md
+?? reports/btc-pattern-pilot-m2-20261021/drift-populations.json
+?? reports/btc-pattern-pilot-m2-20261021/drift_decomposition.py
+?? reports/btc-pattern-pilot-m2-20261021/final_artifact_qa.py

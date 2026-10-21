@@ -1,4 +1,4 @@
-2026-10-21T21:49:35.551296+00:00 BTC-PATTERN-M2-20261021/#122: alladmittedmarketrecipesCOMPLETE, noPREDICTIVE_PASS/emptyshortlist; originalCNNQlongbestbutweak. Q_PRIOR_INIT36totalmarketneuralinclbaseline+V1/36CBtotal/4syntheticseparate, fullhistorypreserved. Realgrad0fitfinished/noQ-onlyfitGO; one0fitregime-mixture-vs-withindriftdecompositionactive. NoCHECK/final/native/SOL/pilotchange. Exactstate in ACTIVE_TASK.
+2026-10-21T21:59:10.465726+00:00 BTC-PATTERN-M2-20261021 boundedresearchCOMPLETE_NEGATIVE / issue122CLOSED+Project2Done actualreadbackPASS. No predictivewinner; originalCNNQlongweakonly. Fullhistoryretained/RECENT180cancelled0fits;36marketneural+36CB+4syntheticseparate. ArtifactsQA PASS; noactivejobs/noautomaticnextfits. EconomicgoalNOT_MET=unmet/unproven, actualROI/DDNOT_EVALUATED/native0; CHECK/policy/SOLnotadmitted. Pilotuntouched. Currentfacts/nextquestion in ACTIVE_TASK.
 
 Historical checkpoints below (superseded by current ACTIVE_TASK):
 

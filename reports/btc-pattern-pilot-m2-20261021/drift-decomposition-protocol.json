@@ -1,0 +1,15 @@
+{
+  "status": "FROZEN_BEFORE_DECOMPOSITION",
+  "fits": 0,
+  "CHECK_used": false,
+  "models": ["fixed original CNN-refit and fixed original full-fit prior within EACH original outer fold"],
+  "population": "ALL8496 retained original outer origins, all scored calendar months; no good-month or regime selection, no ES/refit model comparison",
+  "split": "Exact calendar midpoint of original fold fit_cutoff and outer_end; earlier origin<midpoint, later origin>=midpoint",
+  "regimes": "Existing causal30d regime CSV, original fold fit-only volatility thresholds, no refitting thresholds",
+  "outcomes": "Conservative trueMFE: raw projected-Q pinball per side/q; CDF truth<=projectedQ per side/q; per-side mean of3pinballs. Also paired CNN-minus-prior as derived outcome, no new model",
+  "decomposition": "Symmetric Kitagawa: mix=sum((pLate-pEarly)*(muLate+muEarly)/2); within=sum((muLate-muEarly)*(pLate+pEarly)/2); exact identity on fixed common support",
+  "missing_support": "Never zero-impute absent regime means. Report full observed delta but full decomposition UNIDENTIFIED if any regime absent in a half; renormalized fixed common-support decomposition with exact early/late excludedN and coverage",
+  "uncertainty": "Descriptive14day calendar-block bootstrap,1000draws,seed7. Resample blocks independently within each half, same draws for both models/paired difference; preserve fixed common regimes. Discard draws missing a required regime; report valid count and conditional-support CI only when>=800 valid draws; otherwise CI_UNIDENTIFIED. No causal or predictive gate claim.",
+  "aggregation": "Report each fold separately; no pooled model-drift attribution hiding fold differences",
+  "limits": {"CPU_threads": 4, "wall_seconds": 180, "fits": 0, "optimizer_steps": 0, "new_predictions": 0}
+}

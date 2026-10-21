@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-21T21:57:53.832337+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "issue_body_readback": "PASS",
+  "issue_state": "closed",
+  "project_status": "Done",
+  "project_status_readback": "PASS",
+  "meaning": "BOUNDED_RESEARCH_COMPLETE_NEGATIVE_NOT_ECONOMIC_GOAL_ACHIEVED",
+  "actual_ROI_MaxDD": "NOT_EVALUATED_NATIVE0",
+  "active_model_jobs": 0,
+  "CHECK_opened": false,
+  "pilot_changes": false
+}

@@ -1,0 +1,12 @@
+{
+  "status": "COMPLETE_DESCRIPTIVE_NO_CAUSALITY",
+  "fits": 0,
+  "optimizer_steps": 0,
+  "new_predictions": 0,
+  "CHECK_used": false,
+  "wall_seconds": 0.5277471248991787,
+  "rows": 126,
+  "N_original_outer": 8496,
+  "source_sha256": "1618c79928c3213c3bd8fccd09c90486a65eb4abfd40130ad09d0e4896455781",
+  "protocol_sha256": "ec9de768288e0c1bd23128209d2a836eab803f5cc08c9fe38a16c540c77ff631"
+}

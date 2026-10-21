@@ -1,6 +1,7 @@
 # BTC-PATTERN-M2-20261021 — completed recipes, decision pending
 
-No recipe has passed the frozen forecast gates; shortlist is empty. The economic target is NOT_MET.
+No recipe has passed the frozen forecast gates; shortlist is empty. TARGET_NOT_MET means the economic goal is unmet/unproven.
+Actual ROI/MaxDD are NOT_EVALUATED (native replay0); no calculation established a low realized ROI.
 Original CNN remains the best direct Q-long result, with WEAK_EVIDENCE rather than a predictive winner.
 CHECK has not been opened in this pilot; final/stability/policy/native/SOL stages remain unadmitted.
 
@@ -92,4 +93,13 @@ Helper/checkpoint hashes were snapshotted before saved inference; artifacts rema
 README/cli-repro.md describe exact invocations; local manifests preserve baseline, METRIC_OFF, oldFAIL, zero-fit diagnosis and revisedQA/market outputs.
 Final model/stability/CHECK/policy/native/SOL are BLOCKED/NOT_ADMITTED. P1 requires actual original S0 stop/horizon/state parity, never72h-label transfer.
 Original S0 metadata snapshot is retained; the full-period90%-net-profit reference is not a shortened-CHECK threshold.
-Next decision is pending one authorized zero-fit full-history shared-gradient diagnostic; no further fit has been authorized.
+Real shared-gradient probe completed7.80s/RSS.681GB/0optimizersteps: original D-vs-Q cosines+.535/−.042/+.187; Q_PRIOR_INIT+.483/−.055/+.364.
+No consistent D/Q opposition supports a Q-only/exit-only fit. Negative metric-vs-Q cosines are not causal harm evidence; metric-off already failed.
+Fixed-model Kitagawa decomposition completed.528s on all8,496origins: common-support within-regime changes dominate short-side F2/F3, while longF2 is mainly mixture.
+F1 excludes35early origins (97.57%/100%coverage); F2 observed low-regime support100%/100%; F3 excludes485late UP_HIGH (100%/64.55%). Full four-regime attribution is UNIDENTIFIED.
+No absent mean was zero-imputed. F1bootstrapCI withheld640/1000valid; F2/F3 conditional-support CIs use999/909valid draws. No causal or pooled-fold attribution.
+F3 common-support CNN-minus-prior short loss worsens+.014719 CI[.001685,.027355]; full/common long deltas even change sign, so missing support cannot be ignored.
+NO-GO for another Q-focused fit, larger epoch cap or blind regime reweighting in this pilot. Detailed within/mix/CDF tables and limits:drift-findings.md/drift-decomposition.csv.
+NEXTQUESTION (not authorization): can available causal volatility/state information explain within-regime MFE/calibration drift while preserving each origin's exact physical stop price and72h horizon?
+Do not improve apparent calibration by changing normalization in a way that changes the stop or metric units. No new investigation or fit is authorized by this question.
+No further fit, policy or deployment has been launched. Root retains the final Project-status decision.

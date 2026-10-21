@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "checks": {
+    "frozen_sources_protocol_QA_image_cache": "PASS",
+    "all9_prepared_artifact_hashes": "PASS",
+    "JSON_CSV_parse_and_helper_compile": {
+      "JSON": 75,
+      "CSV": 33,
+      "compiled": 14
+    },
+    "NPZ_schema_labels_projection_and_commonID_CSV": {
+      "PASS": true,
+      "forecast_groups": 72,
+      "exact_reused_control_groups": 24,
+      "common_origins": 8496
+    },
+    "TP_pinball_hit_bounds_and_signed_price_distance_CSV_vs_NPZ": "PASS",
+    "Kitagawa_identity_support_counts_and_CI_withholding": "PASS",
+    "new_local_model_forecast_neighbor_diagnostic_manifests": "PASS",
+    "preanalysis_checkpoint_data_prediction_hashes": "PASS",
+    "findings_line_limit": 105
+  },
+  "wall_seconds": 2.364887375384569,
+  "UTC": "2026-10-21T21:55:29.284938+00:00",
+  "fits": 0,
+  "optimizer_steps": 0,
+  "new_predictions": 0,
+  "CHECK_used": false,
+  "previous_focused_tests": "16PASS.526s; unchanged training/testsource, not rerun",
+  "source_sha256": "89e7c573580f42a8739331e41887ac6a50474a1a4e619021fa334d7e64c9d5e0",
+  "ready_files_receipt_sha256": "256634097a63075787adc9ce7b8034f7a26103b88fdae212750f6e512c02f002",
+  "training_decision": "NO_GO_Q_ONLY_OR_BLIND_REWEIGHTING",
+  "economic_goal": "TARGET_NOT_MET_UNMET_OR_UNPROVEN",
+  "actual_ROI_MaxDD": "NOT_EVALUATED_NATIVE0",
+  "no_active_pilot_jobs": {
+    "PASS": true,
+    "checked_PIDs": [
+      92981,
+      92744,
+      92141,
+      89809,
+      87138
+    ],
+    "ps_result": "header only; all exited"
+  }
+}

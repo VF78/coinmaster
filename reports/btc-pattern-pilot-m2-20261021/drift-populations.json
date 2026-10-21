@@ -1,0 +1,115 @@
+[
+  {
+    "fold": "F1",
+    "midpoint_UTC": "2025-03-02 00:00:00+00:00",
+    "N": 2808,
+    "early_N": 1440,
+    "late_N": 1368,
+    "early_excluded_N": 35,
+    "late_excluded_N": 0,
+    "early_common_coverage": 0.9756944444444444,
+    "late_common_coverage": 1.0,
+    "regime_counts_early": {
+      "DOWN_HIGH": 523,
+      "DOWN_LOW": 271,
+      "UP_HIGH": 611,
+      "UP_LOW": 35
+    },
+    "regime_counts_late": {
+      "DOWN_HIGH": 946,
+      "DOWN_LOW": 31,
+      "UP_HIGH": 391,
+      "UP_LOW": 0
+    },
+    "common_regimes": [
+      "DOWN_HIGH",
+      "DOWN_LOW",
+      "UP_HIGH"
+    ],
+    "full_decomposition_status": "UNIDENTIFIED_FULL_SUPPORT",
+    "ids_sha256": "29d3b606823a9a96b78017db963999cce081eba1b945251e673ecbcd5c970dd4",
+    "early_blocks": 6,
+    "late_blocks": 5,
+    "all_months": [
+      "2025-01",
+      "2025-02",
+      "2025-03",
+      "2025-04"
+    ]
+  },
+  {
+    "fold": "F2",
+    "midpoint_UTC": "2025-08-31 12:00:00+00:00",
+    "N": 2880,
+    "early_N": 1476,
+    "late_N": 1404,
+    "early_excluded_N": 0,
+    "late_excluded_N": 0,
+    "early_common_coverage": 1.0,
+    "late_common_coverage": 1.0,
+    "regime_counts_early": {
+      "DOWN_HIGH": 0,
+      "DOWN_LOW": 391,
+      "UP_HIGH": 0,
+      "UP_LOW": 1085
+    },
+    "regime_counts_late": {
+      "DOWN_HIGH": 0,
+      "DOWN_LOW": 887,
+      "UP_HIGH": 0,
+      "UP_LOW": 517
+    },
+    "common_regimes": [
+      "DOWN_LOW",
+      "UP_LOW"
+    ],
+    "full_decomposition_status": "UNIDENTIFIED_FULL_SUPPORT",
+    "ids_sha256": "df755d8b83f9cbf3d0cbdd7e2afe50b5574a48c7c50c77667e2fc3fc997b876f",
+    "early_blocks": 6,
+    "late_blocks": 5,
+    "all_months": [
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10"
+    ]
+  },
+  {
+    "fold": "F3",
+    "midpoint_UTC": "2026-03-02 00:00:00+00:00",
+    "N": 2808,
+    "early_N": 1440,
+    "late_N": 1368,
+    "early_excluded_N": 0,
+    "late_excluded_N": 485,
+    "early_common_coverage": 1.0,
+    "late_common_coverage": 0.64546783625731,
+    "regime_counts_early": {
+      "DOWN_HIGH": 597,
+      "DOWN_LOW": 328,
+      "UP_HIGH": 0,
+      "UP_LOW": 515
+    },
+    "regime_counts_late": {
+      "DOWN_HIGH": 276,
+      "DOWN_LOW": 103,
+      "UP_HIGH": 485,
+      "UP_LOW": 504
+    },
+    "common_regimes": [
+      "DOWN_HIGH",
+      "DOWN_LOW",
+      "UP_LOW"
+    ],
+    "full_decomposition_status": "UNIDENTIFIED_FULL_SUPPORT",
+    "ids_sha256": "6970260ab64ec665e4aa1f4b8c182f874bfeca6fc3406571a160d29c184b52fb",
+    "early_blocks": 5,
+    "late_blocks": 5,
+    "all_months": [
+      "2026-01",
+      "2026-02",
+      "2026-03",
+      "2026-04"
+    ]
+  }
+]

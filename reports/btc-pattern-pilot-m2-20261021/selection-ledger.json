@@ -89,6 +89,26 @@
     "policy": "BLOCKED_NO_PATH_SKILL",
     "native": "NOT_ADMITTED",
     "SOL": "BLOCKED_NO_BTC_PATH_POLICY",
-    "economic": "TARGET_NOT_MET"
+    "economic": "TARGET_NOT_MET_UNMET_OR_UNPROVEN",
+    "actual_ROI_MaxDD": "NOT_EVALUATED_NATIVE_REPLAY0"
+  },
+  "post_training_analysis": {
+    "real_gradient": {
+      "fits": 0,
+      "optimizer_steps": 0,
+      "wall_seconds": 7.804353999905288,
+      "D_Q_consistent_opposition": false
+    },
+    "fixed_model_drift": {
+      "fits": 0,
+      "new_predictions": 0,
+      "wall_seconds": 0.5277471248991787,
+      "all_original_outer_origins": 8496,
+      "full_four_regime_attribution": "UNIDENTIFIED_SUPPORT",
+      "supports_mix_only_reweighting": false
+    },
+    "next_Q_focused_fit": "NO_GO_EVIDENCE_INSUFFICIENT",
+    "larger_epoch_cap": "NO_GO_NO_CAP_REACHED",
+    "new_training_launched": false
   }
 }
