@@ -1,10 +1,10 @@
 # Independent BTC/SOL forecasting — #113
 
-**Current: TRAIN eight-view screen running; no CHECK performance opened.** Source `c78e2b1`; protocol `121942c4`. Data/readback and all five bounded resource profiles PASS. Initial22 focused tests, plus addressed8 and phased6 (overlapping sets).
+**Current: TRAIN selection complete; control and STUMPY sealed; MiniRocket → RDST → CNN in progress. CHECK unopened.** Primary window1h×20, alternate15m×20, chosen only within TRAIN. Sourcec78e2b1; operational/report checkpoint8879607. Scientific protocol121942c4 and prepared dataset1bc6c492 unchanged.
 
-RDST execution correction is complete: separate sequential transform and unchanged Torch-head processes; final actual profile140.783CPU seconds, zero swap, exact weight-restore predictions. Initial interrupted/failed resource attempts remain evidence, not predictive failures. All actual model seals remain mandatory before CHECK.
+Allfive bounded resourceprofiles PASS. RDST sequential transform/head processes reuse the existing Torch model; weightrestore error0,140.783CPU/0swap. Initial resource failures are retained in receipts, not accuracy findings. Explicit CNN-only CPU allowance240min is operational, not scientific: all other600MiB/swap0/1CPU/admission limits remain. Actual20bar timing projects~147min minimum realisticfit; the hard ceiling remains enforced. See cnn-20bar-feasibility.json and resource authorization.
 
-Current unit `cm113-pred02-screen-control-20261021T110643Z`; durable `train_sequence.py` then fits control/STUMPY/MiniRocket/RDST/CNN in sequence. No final forecast accuracy or economics yet. Pilot unchanged.
+No accuracy or economic claim yet. Existing pilot unchanged, S0 not rerun. RootGO and allfive actual seals remain mandatory before CHECK.
 
 Owner scope: evaluate STUMPY, MiniRocket, RDST and chart CNN separately from the trading strategy. Main horizon **24h**, predict **three TP levels from patterns**, not fixed-ladder probabilities. TRAIN **[2024-09-01,2026-04-01)**; CHECK **[2026-04-01,2026-10-21)**, i.e. through 20 October inclusive.
 
