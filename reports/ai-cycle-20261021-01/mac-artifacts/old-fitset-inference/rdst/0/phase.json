@@ -1,0 +1,11 @@
+{
+  "dataset": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1",
+  "protocol": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/reports/forecast-independent-20261021/protocol.json",
+  "cache": "old-fitset-inference/rdst/0",
+  "view": "15x20",
+  "l2": 0.001,
+  "seed": 7,
+  "epochs": null,
+  "profile_only": false,
+  "mode": "predict"
+}

@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-21T17:05:49.633245+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "stage-A"
+  ],
+  "protocol_sha256": "969c2bc3aa324b7ee64a1698cd43a61779beaf56718333f70fe515ef5fcfdc37",
+  "source_input_manifest_sha256": "73ad4966cd684f8b1dcdee70ac34e1d5251efce824fb788cd5c9290081774f11",
+  "module_sha256": {
+    "forecast_cycle_train.py": "0b69958f3616b5dfde6cf3b10390fe0b628324192ffc67df01765f1bddc6fbcb"
+  },
+  "resource_admission_sha256": "e9ccc7c08e1893963f170542b6869b932d65840d4e49300fe50992a82992a535",
+  "resource_projected_minutes": 105.40019727449562,
+  "threads": 1,
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "stage-A": 7078
+  },
+  "A_total_budget_seconds": 7200,
+  "A_already_spent_profile_seconds": 121.2936318,
+  "fit_limit": 102,
+  "depths": [
+    4
+  ],
+  "scope": "development3foldsbothassetsindependentD/Qlong/Qshort+fixedbaselines+Xshapeablationonly; noMarch/CHECK/policy/final/quarterlyyet",
+  "no_pilot_or_S0_changes": true,
+  "no_economic_runs": true,
+  "full_stage_cost_ledger_required": true,
+  "no_retry_or_recipe_changes_after_metrics": true,
+  "resource_internal_vs_guarded_wall": "Projectionfitseconds117.717; actualguardedprofiles121.294, remainingroundeddown7078"
+}

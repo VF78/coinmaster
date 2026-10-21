@@ -1,0 +1,236 @@
+# COINMASTER — ограниченный следующий цикл исследования
+Дата: 21.10.2026. Все даты данных и границы интервалов ниже — UTC.
+Результат: реализованный исследовательский код, воспроизводимые артефакты и, при прохождении критериев, кандидат стратегии для Nautilus. Не ограничиваться обзором или новым планом.
+
+## 1. Цель и границы
+
+- Приоритет: доработать S0; новую BTC-стратегию проверять только при наличии пригодного сигнала и отсутствии применимого улучшения S0.
+- S0: seed=10_000; TOTAL=6_077_107.23887483; период [2024-09-01,2026-09-01).
+- Приёмка: TOTAL >= 10_000 + 0.90*(6_077_107.23887483-10_000) = 5_470_396.514987347; глобальный MaxDD <=50%. Желаемый диапазон DD: 30–50%; среди прошедших максимизировать TOTAL.
+- Основной DD — исходный native-phase observer, S0=66.3187802497%. Дополнительно показать прежнюю согласованную денежную проекцию, S0=66.2569148647%. Не менять observer для улучшения результата.
+- Не менять пилот, production, реальные ордера, плечо, комиссии, funding, margin, исполнение и реинвестирование ради сравнения. Не подменять цель снижением риска при потере большей части прибыли.
+- Не убирать SOL на основании доли BTC в PnL: вклад сделки в общей траектории не равен результату отдельной BTC-стратегии.
+- Это отдельное исследование. Завершённые PRED/EV-03 не переоткрывать; старые отчёты/прогнозы не перезаписывать.
+- Работать в отдельной ветке разрешённого checkout, по AGENTS.md и актуальному MODEL_ROUTING. Установки — только в изолированной research-среде. Никаких deploy/merge/live-переключений в этом задании.
+
+## 2. Прочитать только необходимые исходники
+
+База аудита: commit 85fdd78ce248e56d35dc62563a7cdf4f2c100cca; сохранить фактический HEAD и его отличия от базы.
+
+1. AGENTS.md и обязательные startup-файлы; .ops/MODEL_ROUTING.md.
+2. reports/forecast-independent-20261021/{findings.md,protocol.json,train-sequence-progress.json,results/summary.json,results/schema.json}.
+3. runtime/coinmaster/research/forecast_independent_{data,models,run}.py.
+4. reports/btc-sol-event-risk-20261021/{ev02-result.md,ev03-result.md}.
+5. reports/winner-6077107-stats/{README.md,risk-statistics.md}; reports/fast-rnd-20261020/s0-drawdown-attribution-result.md.
+6. Нужные lifecycle/model/data-файлы находить по manifest/receipts. Веса и raw history не входят в GitHub results-export; отсутствие в GitHub не считать отсутствием в разрешённом runtime.
+
+Отчёт: https://github.com/VF78/coinmaster/blob/85fdd78ce248e56d35dc62563a7cdf4f2c100cca/reports/forecast-independent-20261021/findings.md
+Код: https://github.com/VF78/coinmaster/tree/85fdd78ce248e56d35dc62563a7cdf4f2c100cca/runtime/coinmaster/research
+
+Уже установлено; не повторять весь эксперимент:
+- В старом CHECK 9696 mature +48 censored строк на метод. Все calibrated методы проиграли prior.
+- «TRAIN-качество» отчёта — внутренняя валидация, не ошибка на обучающих строках. Отсутствие переобучения не доказано.
+- Старые модели использовали одно own-asset окно; синхронных BTC/SOL и нескольких TF одновременно не было.
+- CNN max(raw probability)=0.484837 <0.50; этим объясняется ноль входов. Не снижать порог по этому CHECK.
+- Калибровка ухудшила TP-ошибку всех методов; конкретная причина не установлена.
+- EV-03 уже отрицательный: 50 пригодных BTC TRAIN-событий и 5 SOL. Не повторять event-only risk-классификатор с другим названием модели.
+- STUMPY/MiniRocket/RDST/CNN, blanket SOL cap, DD/cov и split/ATR не запускать заново в этом цикле.
+
+## 3. Общий протокол: заморозить до обучения
+
+Создать protocol.json, feature-schema.json, selection-ledger.json и hashes входов/кода. В ledger записывать каждую конфигурацию, fit, seed, причину перехода/остановки.
+
+Данные и targets:
+- Переиспользовать проверенные реальные минутные Bybit BTCUSDT/SOLUSDT и общий часовой origin t.
+- Только полностью закрытые бары с bar_end<=t. Решение в t; условный вход — open минуты t+60s. Не использовать фактическую цену этого входа в признаках/вероятностях, рассчитанных в t.
+- sigma=std(last168 completed hourly log returns, ddof=1)*sqrt(24).
+- Сохранить старый контрольный контракт: horizon=24h от входа; terminal classes UP/DOWN за +/-0.25*sigma, иначе NEUTRAL; original SL=1*sigma; lower/upper MFE; q={0.2,0.5,0.8}.
+- Переиспользовать существующую обработку gap-stop, same-minute ambiguity, нулей и ties. Неполные исходы — censored, не нулевые.
+- Любой label допускается в fit только после окончания всего его горизонта. Для portfolio events дополнительно учитывать parent/component purge.
+- Обучаемые scaler, encoder, prior, calibration и early stopping — только внутри разрешённого прошлого. Два актива с одним timestamp не распределять по разным временным частям.
+
+Разбиение:
+- TRAIN=[2024-09-01,2026-04-01). Три development folds: fit_end=2025-03-01/06-01/09-01; validation_end=2025-06-01/09-01/12-01.
+- Final fit до 2026-03-01; март 2026 оставить дополнительной validation без переобучения рецепта.
+- Старый CHECK=[2026-04-01,2026-10-21) уже изучен. Он служит исторической проверкой замороженного нового рецепта; не называть его pristine holdout.
+- В первом проходе calibration отключена. Не обучать мартовские offsets/temperature и не подбирать новые thresholds по CHECK.
+- Выбор семейства/конфигурации/порогов — только по development folds. Март/CHECK не должны запускать второй круг настройки. Проверять CHECK один раз для замороженного shortlist; отрицательный результат завершает цикл.
+- Настоящая последующая проверка: зафиксировать дату заморозки и первый будущий непроверенный origin; подготовить forward-log без торговли. Исторический результат не выдавать за такую проверку.
+
+## 4. Этап 0 — диагностика и применимость; без повторного полного обучения
+
+1. Из сохранённых прогнозов воспроизвести pinball, logloss, Brier, coverage; сверить с отчётом. Добавить per-asset AUROC и распределение уверенности; сравнивать на одинаковых ID.
+2. Если доступны сохранённые веса, получить fit-set predictions на фиксированной выборке TRAIN и сравнить с validation. Не выдумывать отсутствующие learning curves. Недоступные веса/кривые пометить UNKNOWN.
+3. Для новых моделей сохранять по итерациям отдельно fit/validation loss каждого head, число наблюдений, предсказания до/после projection. Для нейросетей добавить gradient norm, диапазоны logits и долю crossing/clipping quantiles.
+4. Один малый положительный synthetic-control и один block-shuffled-label control внутри TRAIN. В отрицательном контроле перемешивать целые14-дневные TRAIN-блоки синхронно для BTC/SOL; временную validation не перемешивать. Проверить способность pipeline выучить известную зависимость и отсутствие преимущества, вызванного утечкой. Это диагностика pipeline, не торговые результаты.
+5. Тест причинности: изменение будущих баров не меняет features/predictions для прошлого origin. Отдельно проверить split/purge и восстановление сохранённой модели.
+6. По всем подходящим saved S0-состояниям проверить два механизма из findings.md:
+   H-BTC: после реально исполненного прибыльного по цене TP и последующего благоприятного движения, при возврате к текущей native средней входа и отсутствии SOL — однократно сократить 50% остатка parent. Нулевые TP не активируют действие; mandatory exits приоритетны; не создавать SOL-права и не переоткрывать сокращённый объём.
+   H-SOL: пропустить одно очередное право добора, если existing SOL UPnL<0, BTC UPnL>0, -SOL_UPnL>BTC_UPnL и equity ниже прежнего running peak. Первичный вход не блокировать; право не повторять по часовому retry.
+   Это screen доступности и своевременности, не оценка контрфактического ROI. Включить прибыльные контрпримеры и все подходящие состояния, не только известные DD-даты.
+7. Проверить вмешательство ДО первого превышения DD=50% в Sep–Oct2024. Модель, начинающая работу позднее, при сохранении ранней S0 не может пройти глобальный DD. Проверить наличие настоящей более ранней истории для warmup; иначе нужен доступный ранний механизм. Не тратить полный 24m replay на заведомо неизменённую раннюю просадку.
+8. Если нет predecision state/ordinary-branch availability, указать точный пробел. Не восстанавливать права и альтернативные fill-события догадками.
+9. Большой устойчивый fit/validation gap — свидетельство overfit. Высокая ошибка на обеих частях сама по себе не различает недообучение, слабые признаки и отсутствие сигнала. Падение fit loss к лимиту без плато отметить как незавершённую диагностику; не увеличивать обучение автоматически.
+
+## 5. Этап A — CatBoost на числовом совместном состоянии
+
+Цель: отдельно проверить нелинейный head и добавление информации. Источник [1].
+
+Два фиксированных набора:
+- X_shape: существующий raw numeric control input; одинаковые bar/row IDs.
+- X_joint: синхронные BTC+SOL, одновременно 15m/1h/4h; по последним 20 закрытым барам каждого TF шесть полей:
+  log(C/Cprev), log(C/O), log(H/max(O,C)), log(min(O,C)/L), log(H/L), log1p(V)-mean_previous20(log1p(V)).
+  Первые пять полей делить на текущую causal sigma*sqrt(TF_hours/24); sigma отдельно сохранять. Не выполнять min-max всей цены и не терять абсолютный режим волатильности.
+- Добавить для каждого актива: log returns за 1/4/24/168h; realized hourly volatility за24/168h; distance to SMA20 на1h/4h, нормированную sigma; age последнего закрытого TF-бара.
+- Совместные признаки: corr и beta SOL~BTC на168 завершённых hourly returns; r_SOL-beta*r_BTC за1/4/24h; log(sigma_SOL/sigma_BTC). Beta и все статистики только из доступного прошлого. Нулевой denominator/недостаточный warmup => явный invalid flag и общее правило покрытия.
+- BTC и SOL обучать отдельно; каждый видит оба актива. Числа float32. Не добавлять десятки индикаторов, новости, funding/OI/order book без проверенного исторического timestamp-контракта.
+
+Heads обучать независимо:
+D: CatBoostClassifier, MultiClass, terminal UP/DOWN/NEUTRAL.
+Q-long/Q-short: CatBoostRegressor, MultiQuantile:alpha=0.2,0.5,0.8, lower MFE до исходного SL. Для отчёта сохранять upper truth; отдельный upper-head сейчас не нужен.
+Выбор D по logloss; каждого Q по pinball. Не выбирать direction head по ошибке TP.
+
+Рецепты:
+- Основной: depth=4, learning_rate=0.03, iterations<=500, l2_leaf_reg=10, random_seed=7, CPU, class_weights отсутствуют.
+- Единственный challenger: depth=6; остальные параметры те же.
+- Early stopping=50 итераций. Его validation — последние28 дней текущего fit-prefix с полным purge, а не будущая оцениваемая часть fold. После выбора числа итераций refit на целом разрешённом prefix.
+- Полный набор двух depth запускать только для X_joint. X_shape — один depth=4 для ablation. Если временной pilot не укладывается в бюджет, оставить заранее приоритетный depth=4; решение принять до просмотра качества.
+- Обязательные baselines: asset-specific TRAIN-prefix class/quantile prior; logistic D на X_joint (StandardScaler, C=1, lbfgs, max_iter=1000, без class weights); linear Q (существующий pinball-head, Adam lr=.001, L2=.001, batch256, max80epochs, patience5). Scaler/early stopping prefix-only, без sweep. Добавить сохранённый старый control как справочный, не заменять им контроль на новых признаках.
+- Записать все head-fit отдельно: два depth × два актива × три folds — 12 наборов, каждый включает D/Q-long/Q-short и раннюю остановку/refit. Это не «12 одиночных обучений».
+
+## 6. Допуск прогнозов и переход между семействами
+
+Считать отдельно по BTC/SOL, head, fold, месяцу:
+- D: logloss, Brier, OVR AUROC отдельно UP/DOWN/NEUTRAL и macro, reliability bins с N; accuracy — дополнительная.
+- Q: lower pinball по side/q, strict/nonstrict exceedance, zero/tie/crossing rates.
+- Paired differences с prior и linear на тех же ID. Основной bootstrap: общие 14-дневные блоки, оба актива вместе, 1000 draws, seed7. 7/28 дней — только sensitivity; не выбирать удобный CI.
+- Сохранять N rows, уникальные дни, число блоков и eligible/abstain/censored. CI по forecast loss не является CI по доходности или DD.
+
+Статусы:
+- PREDICTIVE_PASS: основной loss ниже обоих контролей в среднем и в >=2 из3 folds; верхняя граница paired95%CI разницы с обоими контролями <0. Это исследовательский допуск, не доказательство после множественного выбора.
+- RANK_ONLY применим только к D: loss-критерий не пройден, но OVR AUROC для UP и DOWN устойчиво лучше linear и0.5 с положительными paired/blocked bounds. Улучшения одного NEUTRAL недостаточно. Разрешён только порядковый score; не использовать его как вероятность или ожидаемый PnL. Для Q этого статуса нет. Нужна отдельная проверка решения в этапе8.
+- NO_SKILL: рассчитанный gate не пройден. INCOMPLETE: не хватило данных/ресурсов/валидного исполнения; не объявлять метод неэффективным.
+- В policy-этап переносить только пригодный head. Хороший Q не доказывает качество входов, хороший D не определяет 3TP/SL.
+- Сначала A. Если его кандидат проходит также policy-screen, прекратить поиск семейств и перейти к замороженному shortlist. Иначе B; затем C. CHECK не использовать для такого адаптивного перехода.
+
+## 7. Этапы B/C — по одному ограниченному challenger
+
+B. Kronos-small как замороженный источник признаков; [2].
+- Только оригинальный small и совместимый tokenizer. Зафиксировать Git SHA, Hugging Face revision, hashes весов, лицензию и provenance cutoff. В статье исходное pretraining заканчивается June2024; это нужно подтвердить для выбранных весов. Не переносить cutoff на любую текущую версию.
+- Если provenance не подтверждается: SKIPPED_PROVENANCE. Не заменять модель/веса наугад. Релиз модели после части истории отдельно раскрыть; такой тест не доказывает историческую доступность модели.
+- Без fine-tuning. Own-asset реальные1h OHLC, lookback80, horizon24, max_context512; одинаковый price-only input по документированному режиму с нулевыми volume/amount, явно записать эту абляцию.
+- Sampling: T=1, top_k=0, top_p=0.9, 16 независимых paths; seed выводить детерминированно из asset/origin/sample_id и базового7. Параметры не подбирать.
+- Вычислять каждые6h UTC в g; сохранить generation_origin=g, reference_close(g), sigma(g). Признаки относятся к [g,g+24h]; causal as-of переносить их НЕИЗМЕННЫМИ в строки t>=g с age_hours=t-g. Не пересчитывать их с sigma(t), не выдавать за свежий прогноз [t,t+24h], не делать backfill из следующего расчёта.
+- На каждом path взять terminal log return относительно последнего известного close, нормировать sigma. Признаки: mean/std/q20/q50/q80 и частоты выше+0.25/ниже-0.25; по обоим активам. Это модельные признаки, не уже откалиброванные вероятности сделки.
+- В upstream auto_regressive_inference samples усредняются. Адаптер должен сохранять sample axis ДО mean; альтернатива — независимые sample_count=1 вызовы. Проверить форму и независимость, не выводить распределение из одной средней траектории.
+- Сравнить X_joint+Kronos с X_joint теми же фиксированными D/Q heads и одинаковыми ID. Рецепт head взять из TRAIN этапа A, новых depth/порогов не искать.
+- Минутные entry/TP/SL labels остаются из реальных минутных данных. Не выдавать часовые generated paths за минутный порядок касаний и не считать на среднем path «торговую вероятность».
+- Pilot16 origins без просмотра outcomes; оценить стоимость всех feature generations и fits. При выходе за лимит — INCOMPLETE, без покупки GPU/скрытого увеличения бюджета.
+
+C. TS2Vec; только если A/B не дали применимого кандидата; [3].
+- Один совместный1h ряд BTC+SOL; causal price/volume channels как в X_joint. Lookback256 часов. Scaler и encoder обучать заново только на текущем TRAIN-prefix.
+- Одна конфигурация: output_dims=32, hidden_dims=32, depth=6, batch_size=16, lr=0.001, max_train_length=256, n_iters=600, seed7; не искать размеры/epochs.
+- Inference: causal=True, sliding_length=1, sliding_padding=255; использовать embedding последнего доступного timestamp. Обязательный prefix-invariance тест; не обучать encoder на полном TRAIN+CHECK даже без labels.
+- Сравнить X_joint+embedding32 с X_joint тем же head-рецептом. Если gate не пройден — остановить семейство.
+- Не добавлять CNN, HYDRA, Chronos/Toto/TabPFN, RL, PySR или LLM/news в этот цикл.
+
+## 8. Превратить прошедший прогноз в ограниченную политику
+
+Первый выбор — изменение доступного действия S0, а не новый вход каждый час.
+- Сохранить BTC entry/sizing и SOL-логику; H-BTC/H-SOL из этапа0 — фиксированные механические baselines.
+- Для ML-выбора действия сначала определить: decision time, полный predecision state, допустимые действия, исполнение/издержки, horizon и continuation policy.
+- Старый terminal direction/MFE от нового условного входа НЕ является target ценности сокращения существующей позиции или запрета добора.
+- Action-value target допустим только при восстановимых парных ветках: U(state,action)-U(state,keep_S0) с одинаковым исходным состоянием и заданным продолжением. Изменения capital/sizing/rights учитывать; цену исходной S0-сделки не использовать как выдуманный исход альтернативы.
+- Если готовых восстанавливаемых paired branches нет, пометить ACTION_VALUE_UNIDENTIFIED и ML-overlay в этом цикле не обучать. Не обучать «EV» на исходном future DD/UPnL. Остаются механические кандидаты и описанный BTC-only fallback; новый simulator/массовые native forks ради заполнения пробела не писать.
+- Если paired branches уже доступны, до protocol freeze зафиксировать U=(equity_action(t+24h)-equity_keep(t+24h))/equity(t), одинаковые доступные издержки и точное continuation rule. По каждому действию один CatBoostRegressor: RMSE, depth4, lr=.03, <=500iterations, l2_leaf_reg10, seed7, prefix-only early stopping как в A. Действовать только при predicted U>0 и выполнении исходного eligibility; максимум один раз на parent. Никаких U-threshold sweep. Нет полного контракта до freeze — ML-overlay пропустить.
+- Не использовать маленькую EV-03 выборку как достаточную для новой ML policy. Минимум для её допуска в этом цикле: >=30 независимых parent/components в TRAIN и >=20 в временной validation, по каждому действию не меньше10 наблюдённых случаев; показать блоковую неопределённость. Это бюджетный фильтр, не гарантия мощности теста.
+- Поддержку и качество проверять на реальных eligible состояниях; число перекрывающихся часовых market labels не заменяет число portfolio decisions.
+
+Если действий S0 с определимой ценностью нет, но у BTC прошли D (PREDICTIVE_PASS или RANK_ONLY) И оба Q (PREDICTIVE_PASS), разрешён один BTC-only research-кандидат:
+- Действия long/short/abstain; при открытой позиции новых входов нет. Все maker/fill/fees assumptions явно совпадают с native контрактом.
+- 3TP выводить из Q-long/Q-short; SL=1*sigma; horizon24h. Q обучен именно при этом SL — не оптимизировать SL без нового согласованного label-контракта.
+- TRAIN-only семейство максимум12 комбинаций: общий множитель TP {0.75,1.0}; доли фиксации {1/3,1/3,1/3} или {0.5,0.25,0.25}; порог score на TRAIN-OOF quantile {0.7,0.8,0.9}.
+- Side=argmax(P_UP,P_DOWN), NEUTRAL-argmax => abstain; score=P_side-P_opposite. Порог определять только на прошлом. TP положительные/упорядоченные/различимые после tick rounding; TP1 покрывает издержки по native контракту; иначе abstain.
+- Перебрать эти12 policies на причинных OOF forecasts в простом minute-path screen с одинаковым фиксированным notional. Это диагностика локального net outcome, НЕ полный ROI/DD. Оптимизация начинается только после выбора пригодного представления.
+- Screen-score: сумма net outcomes, нормированных одним фиксированным notional, делённая на число часов общего периода; abstain даёт0. Не максимизировать только прибыль на сделку. Baselines проходят тот же последовательный single-position lifecycle; сравнивать по общему календарю/блокам, даже если конкретные входы различаются.
+- Для policy target хранить first-passage: TP/SL/expiry и время. SL — конкурирующее событие, не обычная цензура; same-minute неопределённость сохранять lower/upper. Основное ранжирование по conservative net outcome, upper — sensitivity.
+- 3TP с частичными выходами — последовательный lifecycle. Независимые вероятности трёх касаний не дают PnL. [4]
+- Альтернативные политики сравнивать на тех же ID с flat/no-trade и с тем же policy template, использующим asset TRAIN-prefix probabilities и MFE quantiles вместо модели. Один выбранный вариант проходит в общий shortlist. Никаких дополнительных семейств/SL/horizons/Optuna sweep.
+
+Для всех кандидатов:
+- Не более2 policies в ОБЩЕМ shortlist: механические и ML вместе.
+- До просмотра март/CHECK и native outcomes зафиксировать policy.json, thresholds, branches, расходы, приоритет exits и abstention.
+- Policy-screen для выбора A→B→C проводится ТОЛЬКО на development folds. BTC-only: conservative mean net outcome выше обоих указанных baselines в среднем и >=2/3 folds, нижняя paired95% block-CI разницы >0; минимум30 неперекрывающихся завершённых позиций суммарно и10 в каждом fold. Проверить покрытие первых месяцев собственной equity. Это операционные support-пороги, не гарантия статистической мощности.
+- ML-overlay: predicted-action rule должен дать положительную среднюю наблюдённую paired U относительно keep-S0 в >=2/3 folds и положительную нижнюю block-CI; дополнительно пройти указанный event support. RMSE самого U-head сравнить с TRAIN-mean U и linear control, но не подменять этим пользу действия.
+- Механический screen: восстановимый predecision state у каждого срабатывания, доказанная возможность раннего вмешательства до первого50%DD для overlay. Все прибыльные контрпримеры вывести; их исходный PnL НЕ объявлять точной потерей альтернативы. Совокупный эффект здесь неизвестен и проверяется только native. Screen вправе отклонить заведомо неприменимое действие, но не подтвердить ROI.
+- March/CHECK/native не разрешают переход к следующему семейству или изменение policy. Хороший forecast loss сам по себе не разрешает native прогон.
+
+## 9. Причинный full-history replay и Nautilus
+
+- Для каждого решения хранить model_id, fit_cutoff, максимальное label_expiry в fit, feature_end, origin и forecast_age.
+- Для 24m нельзя подставить модель, обученную до March2026, в сделки2024/2025.
+- Зафиксировать quarterly expanding refits: 2024-09-01, 12-01, 2025-03-01, 06-01, 09-01, 12-01, 2026-03-01, 06-01. Каждый encoder/scaler/head/early-stopping использует только прошлое данного cutoff.
+- Если для раннего fit нет достаточных реальных данных: abstain→S0 для overlay; flat для новой стратегии, по заранее записанному правилу warmup. Сохранённая ранняя S0-DD>50% исключает overlay; BTC-only с ранним flat оценивается по СВОЕЙ equity и автоматически этим аргументом не исключается.
+- Все необходимые prefix refits и causal caches завершить/проверить ДО native. Timeout/исчерпание бюджета не разрешают заменять модель на S0/flat: это INCOMPLETE без economic run. Invalid input обрабатывать только по замороженному правилу.
+- Выбор рецепта по уже исследованной истории раскрыть: причинные веса не превращают ретроспективно выбранную стратегию в независимый OOS результат.
+- Полный прогон только через существующий native Nautilus. S0 переиспользовать по hashes; не пересчитывать просто для повторения известного числа.
+- Максимум4 economic runs: два заранее выбранных отдельных кандидата; совместный вариант только для совместимых S0 overlays, если каждый отдельно снижает DD и сохраняет >=90% net profit; fresh-engine повтор лучшего прошедшего варианта.
+- Если совместимость/условия не выполнены — слот пропустить. Не расходовать освободившийся слот на новую гипотезу. После native результата параметры не менять.
+- Полный economic replay включает native комиссии, funding, margin, liquidation, cash/equity, order/fill sequencing, взаимные права BTC/SOL и compounding. UNKNOWN денежные агрегаты не заменять нулём.
+- При достижении цели: сохранить исходники кандидата, config, models, causal forecast cache, hashes, команды воспроизведения и diff относительно S0. Live не переключать.
+- При провале: сохранить отрицательный результат, локализовать gate и завершить цикл; не расширять поиск автоматически.
+
+## 10. Ресурсы и короткие проверки
+
+- Один тяжёлый процесс одновременно. Не повышать ограничения существующего host; максимум2 CPU threads и3GiB RAM в уже разрешённой research-среде, если её действующий лимит не строже.
+- До каждой дорогой стадии небольшой timing/memory pilot. Профиль не использовать для выбора модели по outcomes.
+- Wall-clock ceilings по вычислениям: диагностика/подготовка30min; A120min; B90min; C90min; policy-screen30min. Включать final/prefix refits и inference, не только первый fit. Native — лимиты существующего runner и максимум4 runs.
+- Если прогноз затрат выше ceiling — не начинать полный job; вернуть INCOMPLETE_RESOURCE с измерением и требуемым бюджетом. Не превращать timeout в NO_SKILL.
+- Повторять job только после конкретной технической ошибки, сохранив первоначальный receipt и ту же рецептуру. Не менять recipe после плохой метрики.
+- Использовать существующие label/accounting tests. Новые проверки только для causal alignment, split/purge, модельного roundtrip, sample axis, intrabar ambiguity и фактического изменения money semantics.
+
+## 11. Обязательная выдача
+
+Новая report-директория с уникальным task-id:
+1. protocol.json + feature-schema.json + selection-ledger.json + source/data/model hashes + resource receipts.
+2. diagnostics.md: подтверждённые ошибки, признаки overfit/underfit, UNKNOWN; никаких выводов «модель исправна» только по finite loss.
+3. fold-metrics.csv, fit-curves.csv, forecasts.csv.gz: raw outputs, truths/bounds, row IDs, модельный cutoff, статус покрытия.
+4. mechanism-screen.csv: все eligible состояния, возможность действия, время относительно50%DD, прибыльные контрпримеры и missing state.
+5. policy.json + policy-screen.csv; для допущенных — native reports и fresh-engine receipt.
+6. findings.md <=150 строк: что выполнено, какие gates пройдены, baseline/candidate TOTAL и оба DD, выполнена ли цель, точный следующий блокер.
+7. Один CLI entry point и короткие команды reproducing каждого завершённого этапа; зафиксированные версии зависимостей. Не создавать отдельную платформу/оркестратор.
+8. Итоговые статусы: TARGET_MET / TARGET_NOT_MET / NO_SKILL / INCOMPLETE / ACTION_VALUE_UNIDENTIFIED. Не заменять отсутствие результата обещанием.
+
+## Источники для реализации — читать адресно
+
+[1] CatBoost:
+https://github.com/catboost/catboost
+https://catboost.ai/docs/en/concepts/loss-functions-regression
+MultiQuantile — CPU в рассматриваемом рецепте; разные задачи/heads не смешивать в один произвольный loss.
+
+[2] Kronos:
+https://github.com/shiyu-coder/Kronos
+https://arxiv.org/html/2508.02739v1
+https://github.com/shiyu-coder/Kronos/blob/master/model/kronos.py
+Проверить Appendix D/cutoff, оригинальные model/tokenizer revisions и усреднение sample axis.
+
+[3] TS2Vec:
+https://github.com/zhihanyue/ts2vec
+https://arxiv.org/abs/2106.10466
+https://github.com/zhihanyue/ts2vec/blob/main/ts2vec.py
+Использовать causal/sliding API и prefix-only обучение.
+
+[4] First passage / competing risks:
+https://scikit-survival.readthedocs.io/en/v0.24.0/user_guide/competing-risks.html
+https://github.com/havakv/pycox
+В этом цикле достаточно детерминированных first-touch labels и выбранного head. DeepHit/survival network не запускать автоматически; обычный RandomSurvivalForest не объявлять готовой competing-risks моделью.
+
+[5] Диагностика вероятностей:
+https://scikit-learn.org/stable/modules/calibration.html
+https://proceedings.mlr.press/v70/guo17a.html
+Proper loss не является чистой мерой calibration; temperature не создаёт отсутствующее ранжирование.
+
+[6] Разделение прогнозирования и политики:
+https://bfi.uchicago.edu/wp-content/uploads/2023/07/BFI_WP_2023-100.pdf
+Kelly–Xiu, Financial Machine Learning, раздел о portfolio policy/RL; не начинать с online/offline RL на одной траектории S0.
+

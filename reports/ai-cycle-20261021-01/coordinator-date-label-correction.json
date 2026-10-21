@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-21T17:05:49.633716+00:00",
+  "receipt": "coordinator-scale-profile-go.json",
+  "issue": "recipe free-text mistakenly said before2025-03-01; intended largest authorized TRAIN prefix before March2026",
+  "actual_fit_cutoff": "2026-03-01",
+  "actual_N_fit": 13077,
+  "actual_max_label_expiry": 1772308860000,
+  "basis": "owner task permits full TRAINprefix resourceprobe; earlier2025datewas coordinator free-texterror, not requested experimental split",
+  "original_receipt_preserved": true,
+  "future_CHECK_or_March_labels_opened": false,
+  "rerun": false
+}

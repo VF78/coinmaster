@@ -1,0 +1,54 @@
+{
+  "reports/ai-cycle-20261021-01/task-contract.txt": {
+    "sha256": "db90072b63d52b79a1fd70168f720a1e3c542b101429d08cd0fb3eafb733de9f",
+    "bytes": 41217
+  },
+  "reports/ai-cycle-20261021-01/protocol.json": {
+    "sha256": "9ed6dccf2c45ec259ea05bf58fc75da2b8fa5b5cd4c7c8e99eb23f86e09d7ca8",
+    "bytes": 8988
+  },
+  "reports/ai-cycle-20261021-01/feature-schema.json": {
+    "sha256": "9c61fc6f4df63eb716f02b9a793916381069ab067eadc8be0f03e3c083eb4c8d",
+    "bytes": 27807
+  },
+  "runtime/coinmaster/research/forecast_cycle_data.py": {
+    "sha256": "6a76cb31522a7195c0cab031f24f403239e5653f4c945f7f9017c328d94424c3",
+    "bytes": 4765
+  },
+  "runtime/coinmaster/research/forecast_cycle_run.py": {
+    "sha256": "f18aa59721c93a3c55817a47d5a6296c29b9ca659f3e1133e0ef254ee318757a",
+    "bytes": 13888
+  },
+  "runtime/coinmaster/research/forecast_independent_data.py": {
+    "sha256": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+    "bytes": 13432
+  },
+  "runtime/coinmaster/research/forecast_independent_run.py": {
+    "sha256": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+    "bytes": 24018
+  },
+  "runtime/coinmaster/research/forecast_independent_models.py": {
+    "sha256": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb",
+    "bytes": 21119
+  },
+  "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+    "sha256": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+    "bytes": 151995
+  },
+  "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+    "sha256": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+    "bytes": 142017
+  },
+  "runtime/coinmaster/research/forecast_cycle_guard.py": {
+    "sha256": "b64887b5394842343d0da1e436f8d4f7def7838b12ecd654092649fc13be7931",
+    "bytes": 2566
+  },
+  "runtime/coinmaster/research/forecast_cycle_train.py": {
+    "sha256": "aee3e935acc9d7aad48731eb8a4c4d8fc968bf7c5bde53ed7d27fcf3b8e0c485",
+    "bytes": 14135
+  },
+  "runtime/tests/test_forecast_cycle.py": {
+    "sha256": "df49b906083c04dfcb4231940bb8a223561ea5e4ca0dd54e907e49fcc85a714e",
+    "bytes": 2110
+  }
+}

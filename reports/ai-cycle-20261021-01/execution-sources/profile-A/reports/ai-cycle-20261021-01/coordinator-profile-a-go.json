@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-21T16:45:31.451195+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "profile-A"
+  ],
+  "protocol_sha256": "9ed6dccf2c45ec259ea05bf58fc75da2b8fa5b5cd4c7c8e99eb23f86e09d7ca8",
+  "source_input_manifest_sha256": "330c3efc78562f5fd6c73f845e6cd22edb01286cca9a08f11af85724389d673a",
+  "source_module_sha256": "aee3e935acc9d7aad48731eb8a4c4d8fc968bf7c5bde53ed7d27fcf3b8e0c485",
+  "fit_limit": 6,
+  "threads": 1,
+  "process_tree_ram_bytes": 3221225472,
+  "profile_wall_seconds": 900,
+  "profile_counts_within_A_120min": true,
+  "outcomes_blind": true,
+  "full_A_authorized": false,
+  "remaining_GO_conditions": [
+    "stage0positive/shuffle controls and strictcausality/roundtripPASS",
+    "resourceadmission forall342maxfits+refits/inference (notjust6pilotfits)",
+    "allphase/traincachedata/sourcepinsverified"
+  ],
+  "independent_review": "GO_PROFILE_ONLY; no data/selection defect found; full A not yet authorized",
+  "pilot_changes_allowed": false
+}

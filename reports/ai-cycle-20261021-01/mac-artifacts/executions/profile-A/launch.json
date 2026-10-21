@@ -1,0 +1,24 @@
+{
+  "at_utc": "2026-10-21T16:46:15.478616+00:00",
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-envs/ai-cycle-20261021-01/bin/python",
+    "-m",
+    "coinmaster.research.forecast_cycle_run",
+    "profile-A",
+    "--report",
+    "reports/ai-cycle-20261021-01",
+    "--old-job",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021",
+    "--prepared",
+    "prepared-full",
+    "--output",
+    "profile-A",
+    "--fit-authorization",
+    "reports/ai-cycle-20261021-01/coordinator-profile-a-go.json"
+  ],
+  "threads": 1,
+  "RSS_limit_bytes": 3221225472,
+  "wall_limit_seconds": 900.0
+}

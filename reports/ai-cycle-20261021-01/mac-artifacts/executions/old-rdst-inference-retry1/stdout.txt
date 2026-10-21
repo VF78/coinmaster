@@ -1,0 +1,3 @@
+{"RDST_phase_completed": {"phase": "transform", "mode": "predict", "train_rows": 0, "predict_rows": 512, "train_ids_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "width": 772, "dtype": "float32", "torch_loaded": false, "cache_bytes": 1581056, "cpu_seconds": 3.039155, "maxrss_bytes": 269861519360}}
+{"RDST_phase_completed": {"phase": "head", "mode": "predict", "train_rows": 0, "predict_rows": 512, "train_ids_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "best_epoch": 49, "head_features": 772, "aeon_loaded": false, "llvmlite_loaded": false, "weight_roundtrip_max_abs_error": 0.0, "measurements": {}, "cpu_seconds": 1.571802, "maxrss_bytes": 236860735488}}
+{"status": "OLD_FIT_VALIDATION_DIAGNOSED", "families": 4}

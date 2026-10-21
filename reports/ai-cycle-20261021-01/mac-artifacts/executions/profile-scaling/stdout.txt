@@ -1,0 +1,1 @@
+{"status": "RESOURCE_SCALING_ONLY", "fit_id": "scaling-BTC-Q-short-joint-d4-500", "N_fit": 13077, "feature_width": 750, "depth": 4, "computed_iterations": 500, "early_stopping": false, "validation_rows": 0, "fit_cutoff": "2026-03-01", "max_fit_label_expiry": 1772308860000, "wall_seconds": 57.1937461248599, "quality_export": false, "model_saved": false}

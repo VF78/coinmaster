@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/runtime/coinmaster/research/forecast_cycle_run.py", line 104, in <module>
+    if __name__=="__main__":main()
+                            ^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/runtime/coinmaster/research/forecast_cycle_run.py", line 103, in main
+    a=p.parse_args();globals()[a.stage.replace("-","_")](a)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/runtime/coinmaster/research/forecast_cycle_run.py", line 93, in fitset_diagnose
+    prediction=_predict(model,np.r_[fit,val],budget);predictions.append(prediction)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/runtime/coinmaster/research/forecast_independent_run.py", line 16, in _predict
+    def _predict(model,ids,budget):return model.predict(ids,budget) if isinstance(model,(Analog,PhasedRDST)) else model.predict(ids)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/runtime/coinmaster/research/forecast_independent_models.py", line 249, in predict
+    if self.predicted_ids is None or not np.array_equal(self.predicted_ids,ids):self._phases(np.array([],np.int64),ids,budget or Budget(60))
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/runtime/coinmaster/research/forecast_independent_models.py", line 244, in _phases
+    if len(self.saved['head_blob'])>2*1024**2 or len(self.saved['transformer_blob'])>8*1024**2 or 'torch' in sys.modules or 'aeon' in sys.modules:raise ValueError('OPAQUE_RDST_PARENT_OR_ARTIFACT_BOUND')
+                                                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: OPAQUE_RDST_PARENT_OR_ARTIFACT_BOUND
+       22.45 real        18.95 user         1.38 sys
+           565788672  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              252596  page reclaims
+                7970  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                7201  voluntary context switches
+               16843  involuntary context switches
+         99153308674  instructions retired
+         32567158661  cycles elapsed
+           451626040  peak memory footprint

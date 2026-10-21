@@ -1,0 +1,207 @@
+{
+  "task": "AI-CYCLE-20261021-01",
+  "entries": [
+    {
+      "utc": "2026-10-21T16:34:28.152432+00:00",
+      "stage": "freeze",
+      "fit": false,
+      "seed": 7,
+      "reason": "user fixed research contract; no real fits authorized"
+    },
+    {
+      "utc": "2026-10-21T16:35:53.668746+00:00",
+      "stage": "diagnose",
+      "fit": false,
+      "reason": "same savedIDs raw/cal loss,Brier,coverage,perassetAUROC/confidence",
+      "status": "PASS"
+    },
+    {
+      "utc": "2026-10-21T16:36:10.955652+00:00",
+      "stage": "prepare",
+      "fit": false,
+      "origins": 512,
+      "valid": 512,
+      "invalid": 0,
+      "features": 750,
+      "bytes": 1536000,
+      "wall_seconds": 0.7609289577230811
+    },
+    {
+      "utc": "2026-10-21T16:37:37.682941+00:00",
+      "stage": "fitset-diagnose",
+      "fit": false,
+      "status": "PASS",
+      "families": 4
+    },
+    {
+      "utc": "2026-10-21T16:39:54.523137+00:00",
+      "stage": "fitset-diagnose",
+      "fit": false,
+      "status": "PASS",
+      "families": 5
+    },
+    {
+      "utc": "2026-10-21T16:41:45.554084+00:00",
+      "stage": "prepare",
+      "fit": false,
+      "origins": 18720,
+      "valid": 18720,
+      "invalid": 0,
+      "features": 750,
+      "bytes": 56160000,
+      "wall_seconds": 9.203483417164534
+    },
+    {
+      "utc": "2026-10-21T16:46:15.928732+00:00",
+      "stage": "profile-A",
+      "fit": true,
+      "fit_id": "pilot-joint-BTC-d4-D",
+      "seed": 7,
+      "reason": "outcome-blind resource profile; quality is not exported"
+    },
+    {
+      "utc": "2026-10-21T16:46:21.194446+00:00",
+      "stage": "profile-A",
+      "fit": true,
+      "fit_id": "pilot-joint-BTC-d4-Q-long",
+      "seed": 7,
+      "reason": "outcome-blind resource profile; quality is not exported"
+    },
+    {
+      "utc": "2026-10-21T16:46:25.581603+00:00",
+      "stage": "profile-A",
+      "fit": true,
+      "fit_id": "pilot-joint-BTC-d4-Q-short",
+      "seed": 7,
+      "reason": "outcome-blind resource profile; quality is not exported"
+    },
+    {
+      "utc": "2026-10-21T16:46:30.352600+00:00",
+      "stage": "profile-A",
+      "fit": true,
+      "fit_id": "pilot-joint-BTC-d6-D",
+      "seed": 7,
+      "reason": "outcome-blind resource profile; quality is not exported"
+    },
+    {
+      "utc": "2026-10-21T16:46:44.264515+00:00",
+      "stage": "profile-A",
+      "fit": true,
+      "fit_id": "pilot-joint-BTC-d6-Q-long",
+      "seed": 7,
+      "reason": "outcome-blind resource profile; quality is not exported"
+    },
+    {
+      "utc": "2026-10-21T16:46:57.822298+00:00",
+      "stage": "profile-A",
+      "fit": true,
+      "fit_id": "pilot-joint-BTC-d6-Q-short",
+      "seed": 7,
+      "reason": "outcome-blind resource profile; quality is not exported"
+    },
+    {
+      "utc": "2026-10-21T16:50:52.837765+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "positive-D",
+      "seed": 7,
+      "reason": "one fixed known synthetic relationship;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:50:53.428798+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "positive-Q-long",
+      "seed": 7,
+      "reason": "one fixed known synthetic relationship;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:50:53.520438+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "positive-Q-short",
+      "seed": 7,
+      "reason": "one fixed known synthetic relationship;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:50:53.923996+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-0-D",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:51:03.165949+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-0-Q-long",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:51:12.001180+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-0-Q-short",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:51:21.151003+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-1-D",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:51:30.480716+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-1-Q-long",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:51:39.332419+00:00",
+      "stage": "controls",
+      "fit": true,
+      "fit_id": "block-shuffle-1-Q-short",
+      "seed": 7,
+      "reason": "single synchronous14dayTRAIN labelshuffle;unshuffledtemporalvalidation;100iterations"
+    },
+    {
+      "utc": "2026-10-21T16:52:38.926583+00:00",
+      "stage": "profile-baseline",
+      "fit": true,
+      "fit_id": "baseline-pilot-D",
+      "seed": 7,
+      "reason": "fixed resource measurement only; no quality export"
+    },
+    {
+      "utc": "2026-10-21T16:52:39.872275+00:00",
+      "stage": "profile-baseline",
+      "fit": true,
+      "fit_id": "baseline-pilot-Q-long",
+      "seed": 7,
+      "reason": "fixed resource measurement only; no quality export"
+    },
+    {
+      "utc": "2026-10-21T16:52:43.426064+00:00",
+      "stage": "profile-baseline",
+      "fit": true,
+      "fit_id": "baseline-pilot-Q-short",
+      "seed": 7,
+      "reason": "fixed resource measurement only; no quality export"
+    },
+    {
+      "utc": "2026-10-21T16:57:55.272198+00:00",
+      "stage": "profile-scaling",
+      "fit": true,
+      "fit_id": "scaling-BTC-Q-short-joint-d4-500",
+      "seed": 7,
+      "reason": "one fullprefix fixed500iteration resource measurement;noES/noqualityexport"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-21T16:57:27.169437+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "profile-scaling"
+  ],
+  "protocol_sha256": "314c212311cb8eb0a47ba44bb17e820f52660001ca91ccb9060fa296e5c19f41",
+  "source_input_manifest_sha256": "2b6c264e855a0ede59f6dd1ffa5c721de2c2f30ce2549be49d6112346d453aa2",
+  "module_sha256": {
+    "forecast_cycle_train.py": "8a88e3d47216ad5e551470408cd6940b7ae385051fac12a8efdcff67fa5378d8"
+  },
+  "fit_limit": 1,
+  "threads": 1,
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "profile-scaling": 300
+  },
+  "recipe": "BTC Q-short depth4 all750 TRAINprefix before2025-03-01;500computediterations,noES/noevalset,noqualityexport,nosavedmodel",
+  "purpose": "outcome-blind resource scaling only;count against A120min;do not repeat prior profiles/controls",
+  "full_A_authorized": false,
+  "no_pilot_or_S0_changes": true
+}

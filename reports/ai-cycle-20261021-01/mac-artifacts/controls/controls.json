@@ -1,0 +1,123 @@
+{
+  "status": "DIAGNOSTIC_ONLY_NOT_TRADING",
+  "fits": 9,
+  "results": [
+    {
+      "control": "positive",
+      "head": "D",
+      "N_fit": 768,
+      "N_validation": 256,
+      "loss": 0.3398070797481494,
+      "prior_loss": 1.0464338303855985,
+      "learned_known_relation": true,
+      "roundtrip": "PASS"
+    },
+    {
+      "control": "positive",
+      "head": "Q-long",
+      "N_fit": 768,
+      "N_validation": 256,
+      "loss": 0.03154150006851804,
+      "prior_loss": 0.3010783278421362,
+      "learned_known_relation": true,
+      "roundtrip": "PASS"
+    },
+    {
+      "control": "positive",
+      "head": "Q-short",
+      "N_fit": 768,
+      "N_validation": 256,
+      "loss": 0.03154150006851804,
+      "prior_loss": 0.3010783278421362,
+      "learned_known_relation": true,
+      "roundtrip": "PASS"
+    },
+    {
+      "control": "TRAIN_block_shuffle",
+      "asset": 0,
+      "head": "D",
+      "N_fit": 4032,
+      "N_validation": 2184,
+      "mean_loss_difference": 0.0027526663927725566,
+      "CI95": [
+        -0.01652141955961544,
+        0.02794589331751287
+      ],
+      "blocks": 8,
+      "advantage_detected": false
+    },
+    {
+      "control": "TRAIN_block_shuffle",
+      "asset": 0,
+      "head": "Q-long",
+      "N_fit": 4032,
+      "N_validation": 2184,
+      "mean_loss_difference": -0.00194277543579041,
+      "CI95": [
+        -0.009598985089922832,
+        0.007512962656487727
+      ],
+      "blocks": 8,
+      "advantage_detected": false
+    },
+    {
+      "control": "TRAIN_block_shuffle",
+      "asset": 0,
+      "head": "Q-short",
+      "N_fit": 4032,
+      "N_validation": 2184,
+      "mean_loss_difference": 0.001312388526579132,
+      "CI95": [
+        -0.0025844863672651523,
+        0.006016033157138303
+      ],
+      "blocks": 8,
+      "advantage_detected": false
+    },
+    {
+      "control": "TRAIN_block_shuffle",
+      "asset": 1,
+      "head": "D",
+      "N_fit": 4032,
+      "N_validation": 2184,
+      "mean_loss_difference": 0.0025948864356374803,
+      "CI95": [
+        -0.007785028615675505,
+        0.014453949801041853
+      ],
+      "blocks": 8,
+      "advantage_detected": false
+    },
+    {
+      "control": "TRAIN_block_shuffle",
+      "asset": 1,
+      "head": "Q-long",
+      "N_fit": 4032,
+      "N_validation": 2184,
+      "mean_loss_difference": 0.0007013486034078326,
+      "CI95": [
+        -0.0038690550985902876,
+        0.005509085639047707
+      ],
+      "blocks": 8,
+      "advantage_detected": false
+    },
+    {
+      "control": "TRAIN_block_shuffle",
+      "asset": 1,
+      "head": "Q-short",
+      "N_fit": 4032,
+      "N_validation": 2184,
+      "mean_loss_difference": 0.004149512519138903,
+      "CI95": [
+        0.0009962973764167727,
+        0.007225581295399717
+      ],
+      "blocks": 8,
+      "advantage_detected": false
+    }
+  ],
+  "positive_pass": true,
+  "shuffle_no_robust_advantage": true,
+  "interpretation": "No shuffled advantage plus explicit causality checks supports pipeline diagnostic; it does not prove no leakage or trading signal."
+}

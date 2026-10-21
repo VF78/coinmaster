@@ -1,0 +1,28 @@
+{
+  "at_utc": "2026-10-21T16:41:36.240073+00:00",
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-envs/forecast-independent-mac-20261021/bin/python",
+    "-m",
+    "coinmaster.research.forecast_cycle_run",
+    "prepare",
+    "--report",
+    "reports/ai-cycle-20261021-01",
+    "--old-job",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021",
+    "--warmup",
+    "reports/btc-split-sol-cover-20261018",
+    "--output",
+    "prepared-full"
+  ],
+  "threads": 1,
+  "RSS_limit_bytes": 3221225472,
+  "wall_limit_seconds": 120.0,
+  "pid": 63124,
+  "status": "PASS",
+  "returncode": 0,
+  "wall_seconds": 9.439780292101204,
+  "observed_process_tree_peak_RSS_bytes": 206012416,
+  "native_time_units": "Darwin bytes"
+}

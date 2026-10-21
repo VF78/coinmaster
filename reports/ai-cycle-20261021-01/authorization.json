@@ -1,0 +1,36 @@
+{
+  "task_id": "AI-CYCLE-20261021-01",
+  "at": "2026-10-21T16:33:16.576369+00:00",
+  "owner_task_sha256": "db90072b63d52b79a1fd70168f720a1e3c542b101429d08cd0fb3eafb733de9f",
+  "audit_base": "85fdd78ce248e56d35dc62563a7cdf4f2c100cca",
+  "actual_start_head": "31dc0a6b5380ee60ea5cfa3f9189a1d830e352d8",
+  "base_delta": "documentation-only3files",
+  "branch": "codex/ai-cycle-20261021",
+  "scope": "execute attached bounded research stages with conditional gates",
+  "allowed_economic_engines_max": 4,
+  "executed_economic_engines": 0,
+  "pilot_changes_allowed": false,
+  "s0_rerun_allowed": false,
+  "root_compute_GO": "NOT_YET; protocol/resource review pending",
+  "resource_envelope": {
+    "host": "owner-authorized Mac M2Pro16GB",
+    "scientific_threads": 1,
+    "process_tree_ram_bytes": 3221225472,
+    "one_heavy_process": true,
+    "stage0_start_utc": "2026-10-21T16:28:00Z",
+    "ceilings_minutes": {
+      "stage0": 30,
+      "A": 120,
+      "B": 90,
+      "C": 90,
+      "policy": 30
+    }
+  },
+  "protected_pilot_at_start": {
+    "service": "coinmaster-hl-stageg-testnet.service",
+    "PID": 2009732,
+    "NRestarts": 0,
+    "active": "running"
+  },
+  "untracked_legacy_files": "preserved; excluded from staging"
+}

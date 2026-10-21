@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-21T16:50:04.976199+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "controls",
+    "profile-baseline"
+  ],
+  "protocol_sha256": "aad1df48d040355645f50c7aa8f7c805a124e27ca7021c42d78456c1164c76a0",
+  "source_input_manifest_sha256": "ff1970e75641ef6039f78b3a3727784911c1bb05c6d1b1c5adff2a8f9637b07a",
+  "module_sha256": {
+    "forecast_cycle_train.py": "06b348830e30a5f7053b5b0398c58e4d8dafd9b7e7e92760e9736c21716fd566",
+    "forecast_cycle_controls.py": "39f94a1512659dcb0068ab52305c4f030d46fa1883ce2e65e50dca8d2126257b"
+  },
+  "controls_fit_limit": 9,
+  "control_iterations": 100,
+  "profile_baseline_fit_limit": 3,
+  "threads": 1,
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "controls": 300,
+    "profile-baseline": 180
+  },
+  "full_A_authorized": false,
+  "depth6_decision": "DROP_RESOURCE_ONLY before new model quality inspection; measured roughly3xdepth4; samefixed scientificrecipe otherwise",
+  "source_changes_after_quality_not_allowed": true,
+  "no_pilot_or_S0_changes": true,
+  "account_all_costs": true
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-21T17:04:28.456001+00:00",
+  "reviewer": "ai_cycle_causality_review",
+  "source_sha256": "8a88e3d47216ad5e551470408cd6940b7ae385051fac12a8efdcff67fa5378d8",
+  "decision": "GO_FIXED_DEPTH4_A_DEVELOPMENT_SOURCE_ONLY",
+  "checks": [
+    "ID/assets/class-side mapping",
+    "past-only mature labels/scalers/ES/refits",
+    "fixed depth4+shape ablation",
+    "paired same-ID gates and UP/DOWN rank gate",
+    "model-roundtrip beforegate",
+    "March/CHECK closed"
+  ],
+  "execution_authorization": false
+}

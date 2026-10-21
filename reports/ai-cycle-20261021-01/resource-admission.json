@@ -1,0 +1,123 @@
+{
+  "status": "ADMITTED",
+  "budget_wall_seconds": 7200,
+  "depths": [
+    4
+  ],
+  "depth6_decision": "DROP_RESOURCE_ONLY_ROOT_BEFORE_CONTROLS_OR_DEVELOPMENT_QUALITY",
+  "profile_sha256": "47115b88dcda94b52e682c1fbe07b48206ee3a72b975505a1ed44e232cbe9753",
+  "baseline_profile_sha256": "285ca4853a9a6257d84a84aa73255954386ab7d6a0421d444ad18fd7ba2b0e3b",
+  "scaling_profile_sha256": "248fce5309eb53249c87aa59c6d03a5dfc796ed66593bb60d5c8f10af91755cf",
+  "measured_scaling_500": {
+    "status": "RESOURCE_SCALING_ONLY",
+    "fit_id": "scaling-BTC-Q-short-joint-d4-500",
+    "N_fit": 13077,
+    "feature_width": 750,
+    "depth": 4,
+    "computed_iterations": 500,
+    "early_stopping": false,
+    "validation_rows": 0,
+    "fit_cutoff": "2026-03-01",
+    "max_fit_label_expiry": 1772308860000,
+    "wall_seconds": 57.1937461248599,
+    "quality_export": false,
+    "model_saved": false
+  },
+  "cost_safety_head_factor": 1.1035956486047884,
+  "safety_margin_seconds": 1054.0019727449562,
+  "safety_margin_percent": 20,
+  "conservative_shape_feature_discount": false,
+  "measured_profile_iterations_computed": 50,
+  "selected_tree_count_not_used": true,
+  "measured_profile_N_fit": 3645,
+  "measured_profile_N_validation": 648,
+  "structural_original_all_heads_upper_fits": 342,
+  "structural_after_depth6drop_plus_baselinepilots_and_scaling_upper_fits": 310,
+  "necessary_conditional_BTCfallback_counts": {
+    "development_CatBoost_ES_refit": 72,
+    "development_logistic": 6,
+    "development_linearQ_ES_refit": 24,
+    "final_BTC_CatBoost_ES_refit_max": 6,
+    "final_BTC_logistic": 1,
+    "final_BTC_linearQ_ES_refit": 4,
+    "quarterly_BTC_CatBoost_ES_refit_max": 42,
+    "quarterly_Sep2024_skipped_zero_mature_rows": true,
+    "purged_prefix_counts": {
+      "2024-09-01": [
+        0,
+        0,
+        0
+      ],
+      "2024-12-01": [
+        1485,
+        648,
+        2157
+      ],
+      "2025-03-01": [
+        3645,
+        648,
+        4317
+      ],
+      "2025-06-01": [
+        5853,
+        648,
+        6525
+      ],
+      "2025-09-01": [
+        8061,
+        648,
+        8733
+      ],
+      "2025-12-01": [
+        10245,
+        648,
+        10917
+      ],
+      "2026-03-01": [
+        12405,
+        648,
+        13077
+      ],
+      "2026-06-01": [
+        14613,
+        648,
+        15285
+      ]
+    },
+    "SOL_quarterly": 0,
+    "quarterly_linear_baselines": 0,
+    "pilot_CatBoost": 6,
+    "pilot_baselines": 3,
+    "pilot_scaling": 1,
+    "stage0_controls_separate": 9
+  },
+  "estimated_seconds": {
+    "development_CatBoost": 2263.4138735404035,
+    "development_linear": 289.33311709902506,
+    "conditional_final_BTC3heads": 378.36509363075606,
+    "conditional_final_BTClinear_controls": 96.72215987657039,
+    "conditional_quarterly_BTC3heads": 1764.458481411487,
+    "measured_profiles_already_spent": 117.71713816653937,
+    "inference_allowance": 180,
+    "metric_bootstrap_allowance": 120,
+    "serialization_allowance": 60
+  },
+  "total_projected_seconds": 6324.011836469737,
+  "total_projected_minutes": 105.40019727449562,
+  "needed_additional_minutes_over_ceiling": 0,
+  "projection_assumptions": [
+    "measured500fullprefix fit; purgedinputrow scaling for earlier/laterprefixes, allheads raised by largest50iteration head timingratio",
+    "shape chargedfull750feature cost",
+    "20percent whole-stage safety margin",
+    "no quality-driven earlystop assumed",
+    "50-to500iteration fallback extrapolation only if no full500probe; never assume earlystop from unseenquality",
+    "perfit inputrow scaling using actual purgedprefix counts",
+    "linearD1000iterations andQ80epochs; Qlong includes firstTorchimport and conservatively repeats overhead",
+    "all REQUIRED conditional BTC3heads final+7nonemptyquarterly caches reserved, not unusedSOL/linearquarterlyfits",
+    "five-minute total inference/bootstrap/model-I/O allowances stated separately"
+  ],
+  "uncertainty": "Projection not measured full-stage time; earlystopping may reduce actual cost, data/feature scaling and setup costs may differ. No quality-driven faststop assumed.",
+  "development_only_projected_minutes": 50.50773548009946,
+  "cannot_substitute": "A passing development recipe without causal prefix cache is INCOMPLETE, no economic run",
+  "fit_counts_not_instructions": "Do not execute unused conditional fits"
+}

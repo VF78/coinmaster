@@ -1,0 +1,29 @@
+{
+  "status": "RESOURCE_PROFILE_ONLY",
+  "fits": [
+    {
+      "head": "D",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "computed_iterations": 279,
+      "wall_seconds": 0.9239722089841962,
+      "seconds_per_iteration": 0.003311728347613606
+    },
+    {
+      "head": "Q-long",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "computed_iterations": 25,
+      "wall_seconds": 3.552131415810436,
+      "seconds_per_iteration": 0.14208525663241744
+    },
+    {
+      "head": "Q-short",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "computed_iterations": 80,
+      "wall_seconds": 0.4680360001511872,
+      "seconds_per_iteration": 0.00585045000188984
+    }
+  ]
+}

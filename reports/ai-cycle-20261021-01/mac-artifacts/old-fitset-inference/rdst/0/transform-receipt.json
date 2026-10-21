@@ -1,0 +1,13 @@
+{
+  "phase": "transform",
+  "mode": "predict",
+  "train_rows": 0,
+  "predict_rows": 512,
+  "train_ids_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "width": 772,
+  "dtype": "float32",
+  "torch_loaded": false,
+  "cache_bytes": 1581056,
+  "cpu_seconds": 3.039155,
+  "maxrss_bytes": 269861519360
+}

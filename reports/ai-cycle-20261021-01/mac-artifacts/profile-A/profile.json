@@ -1,0 +1,77 @@
+{
+  "status": "PROFILE_ONLY_NO_QUALITY_SELECTION",
+  "fits": [
+    {
+      "fit_id": "pilot-joint-BTC-d4-D",
+      "depth": 4,
+      "head": "D",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "iterations": 1,
+      "wall_seconds": 5.264471792150289
+    },
+    {
+      "fit_id": "pilot-joint-BTC-d4-Q-long",
+      "depth": 4,
+      "head": "Q-long",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "iterations": 5,
+      "wall_seconds": 4.386353791225702
+    },
+    {
+      "fit_id": "pilot-joint-BTC-d4-Q-short",
+      "depth": 4,
+      "head": "Q-short",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "iterations": 15,
+      "wall_seconds": 4.77029045810923
+    },
+    {
+      "fit_id": "pilot-joint-BTC-d6-D",
+      "depth": 6,
+      "head": "D",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "iterations": 3,
+      "wall_seconds": 13.910493000410497
+    },
+    {
+      "fit_id": "pilot-joint-BTC-d6-Q-long",
+      "depth": 6,
+      "head": "Q-long",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "iterations": 4,
+      "wall_seconds": 13.556212374940515
+    },
+    {
+      "fit_id": "pilot-joint-BTC-d6-Q-short",
+      "depth": 6,
+      "head": "Q-short",
+      "N_fit": 3645,
+      "N_validation": 648,
+      "iterations": 15,
+      "wall_seconds": 13.69143099989742
+    }
+  ],
+  "all_fits_counted": 6,
+  "recipe": {
+    "asset": "BTCUSDT",
+    "first_prefix_last_rows": 4096,
+    "ES_validation_days": 28,
+    "heads": [
+      "D",
+      "Q-long",
+      "Q-short"
+    ],
+    "depths": [
+      4,
+      6
+    ],
+    "max_iterations": 50,
+    "quality_hidden": true,
+    "drop_depth6_only_on_resources_before_metrics": true
+  }
+}
