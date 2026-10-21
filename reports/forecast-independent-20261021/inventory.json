@@ -1,0 +1,217 @@
+{
+  "schema": "coinmaster.forecast-independent.inventory.v1",
+  "captured_at": "2026-10-21T09:08:38.827966+00:00",
+  "head": "cf83b9987757eb2d6ab1d846a7a59f6be2711912",
+  "scope": "INVENTORY_PLUS_AUTHORIZED_EXECUTION_TAIL_FETCH_NO_LABELS_FIT_ENGINE_INSTALL_OR_RUNTIME_CHANGE",
+  "period_counts_per_asset_before_warmup_or_horizon_purge": {
+    "TRAIN": {
+      "days": 577,
+      "1m": 830880,
+      "15m": 55392,
+      "1h": 13848,
+      "4h": 3462
+    },
+    "CHECK": {
+      "days": 203,
+      "1m": 292320,
+      "15m": 19488,
+      "1h": 4872,
+      "4h": 1218
+    }
+  },
+  "verified_normalized_1m": {
+    "venue": "Bybit linear BTCUSDT and SOLUSDT",
+    "streams": [
+      "execution OHLCV+turnover",
+      "mark OHLC without volume"
+    ],
+    "range": [
+      "2024-09-01T00:00:00Z",
+      "2026-09-01T00:00:00Z"
+    ],
+    "rows_each_stream": 1051200,
+    "timestamp_steps_ms": {
+      "60000": 1051199
+    },
+    "duplicates": 0,
+    "gaps": 0,
+    "evidence": "Timestamp-column scan and all eight Bybit normalized SHA checks match prior manifests; raw pages not rescanned.",
+    "manifest": "runtime/var/data/bybit-1m/manifest.json",
+    "manifest_sha256": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db"
+  },
+  "missing_1m": {
+    "range": [
+      "2026-09-01T00:00:00Z",
+      "2026-10-21T00:00:00Z"
+    ],
+    "rows_each_stream": 72000,
+    "all_four_stream_rows": 288000,
+    "execution_only_rows": 144000,
+    "pages_at_1000_per_stream": 72,
+    "all_four_pages": 288,
+    "caveat": "Expected counts only; public API payload availability not tested/fetched."
+  },
+  "warmup": {
+    "hourly_execution": {
+      "range": [
+        "2024-06-01T00:00:00Z",
+        "2024-09-01T00:00:00Z"
+      ],
+      "rows_each": 2208,
+      "gaps_duplicates": 0,
+      "manifest": "reports/btc-split-sol-cover-20261018/data-warmup-manifest.json",
+      "raw_public_api_pages_each": 3,
+      "csv_hashes_match": true
+    },
+    "daily_base": {
+      "range": [
+        "2022-09-02T00:00:00Z",
+        "2026-09-01T00:00:00Z"
+      ],
+      "rows_each": 1460,
+      "gaps_duplicates": 0
+    },
+    "daily_current": {
+      "path": "/var/lib/coinmaster-hl-stageg-testnet/data/stageg-bybit-warmup-20261021-verified-4717a45bed69",
+      "range": [
+        "2022-09-02T00:00:00Z",
+        "2026-10-21T00:00:00Z"
+      ],
+      "rows_each": 1510,
+      "manifest_gap_duplicate_counts": 0,
+      "source": "BYBIT_LINEAR_PUBLIC_DAILY_KLINE with complete daily mark_close",
+      "checked": "Manifest only; no copy/hash/raw rescan performed against protected pilot data. Treat as candidate public-data reuse source after provenance verification.",
+      "stale_alias": "runtime/var/data/stageg-bybit-warmup-20260923-verified3 is broken."
+    },
+    "minute_or_15m_before_20240901": "NOT_PRESENT_IN_INSPECTED_INPUTS; hourly/daily cannot be expanded into genuine finer candles"
+  },
+  "funding": {
+    "base_range": [
+      "2022-09-02T00:00:00Z",
+      "2026-09-01T00:00:00Z"
+    ],
+    "BTC": {
+      "rows": 4380,
+      "steps_ms": {
+        "28800000": 4379
+      }
+    },
+    "SOL": {
+      "rows": 4740,
+      "steps_ms": {
+        "28800000": 4259,
+        "7200000": 480
+      }
+    },
+    "tail": "Daily warmup manifests do not establish complete normalized funding-history tail; fetch/verification required only if funding is a contract input. Never assume 8h for SOL.",
+    "semantics": "Real rate history, not signed per-asset native cash PnL; execution and mark domains remain separate."
+  },
+  "resources": {
+    "disk_available_bytes": 2764795904,
+    "memory_available_bytes": 982564864,
+    "RAM_total_bytes": 4005437440,
+    "swap_total_bytes": 2147479552,
+    "swap_free_bytes": 6762496,
+    "CPU_logical": 2,
+    "scientific_env_bytes_approx": "1.5GiB",
+    "suggested_initial_limits": {
+      "one_active_task": true,
+      "CPU": 1,
+      "MemoryMax": "400MiB initially; CNN fit not certified at this cap",
+      "MemorySwapMax": 0,
+      "niceness": 10,
+      "fresh_preflight_each_launch": true
+    },
+    "avoid": "Full minute training tensors/transforms: 1m TRAIN alone 830880 points per asset before purge; cap/sampling and streaming must be frozen in advance."
+  },
+  "dependencies": {
+    "scientific_env": "runtime/var/research-envs/fast-rnd-20261020",
+    "versions": {
+      "numpy": "2.3.5",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.7.2",
+      "aeon": "1.6.0",
+      "stumpy": "1.14.1",
+      "torch": "2.14.1+cpu",
+      "numba": "0.63.1"
+    },
+    "pyarrow": "Absent scientific env; present runtime/.venv 25.0.1. Separate streaming data preparation possible without install."
+  },
+  "reuse": {
+    "fast_dataset.py": "digest/validate_bars/aggregate/with_ma/window reusable patterns. aggregate groups complete UTC [open,close), validates source continuity, available at close. 1m->15m/1h/4h works; full build hardcoded old6panels/72h labels/splits must not reuse blindly. Current builder fills synthetic minute_times separately from cursor; new builder must compare actual timestamp sequence and count before using allocated values.",
+    "fast_numeric.py": "Independent model machinery already separate stages STUMPY, MiniRocket2000, RDST512; mmap chunks, training-only scaler, heads, analogue future-completion admissibility reusable. Dataset contract hardcoded6panels,20bars,2assets,3classes; metrics LL/Brier/reliability bins/monthly available.",
+    "fast_cnn.py": "CPU Torch renderer/batch generator/scaler/fixed architecture/training-inner-validation scaffolding. Hardcoded6inputchannels,2x3class logits, old split windows and 20context dimensions require contract-specific replacement.",
+    "gaps": [
+      "No three-TP+SL target hierarchy or entry/abstention model in old builder; only symmetric sigma sqrt72 UP/DOWN/NONE first touch.",
+      "No frozen independent per-model entry/TP policy; old logistic/CNN are two-asset heads.",
+      "No fitted calibration in existing numeric metrics: reliability diagnostics only; fit any calibrator strictly within TRAIN with inner temporal purge.",
+      "Contract must freeze entry timing/fill convention, horizon, stop/three target definition, intraminute dual-hit ambiguity, right censoring, embargo, metrics and model sampling/resource budgets before data labels/fits.",
+      "CHECK includes historically studied intervals; cannot claim untouched history."
+    ]
+  },
+  "official_API": {
+    "docs": [
+      "https://bybit-exchange.github.io/docs/v5/market/kline",
+      "https://bybit-exchange.github.io/docs/v5/market/mark-kline",
+      "https://bybit-exchange.github.io/docs/v5/market/history-fund-rate"
+    ],
+    "reviewed": "2026-10-21",
+    "facts": "Kline and mark endpoints allow interval1/15/60/240, start/end and max1000 futures rows/page; reverse startTime order. Funding endpoint max200 and symbol-specific intervals.",
+    "fetch_status": "NONE; feasibility documented, actual missing period not proven. Existing bybit_minute.fetch_stream suitable pagination skeleton; normalize currently materializes dictionaries/full pylist: replace bounded batch implementation for long new ranges."
+  },
+  "protection": {
+    "pilot": {
+      "MainPID": 2009732,
+      "NRestarts": 0,
+      "ActiveState": "active"
+    },
+    "changes": "Only this new inventory report; no source/data/service/swap/Hermes/sites/VPN mutations."
+  },
+  "execution_tail_update": {
+    "verified_at": "2026-10-21T09:12:10.989685+00:00",
+    "tail_manifest_sha256": "010126bf0632ef03f5ea42449aa76420c8ab8629b8f0833d7e1941b6088b7a71",
+    "checks": [
+      {
+        "symbol": "BTCUSDT",
+        "CSV_rows_independent": 72000,
+        "exact_timestamp_order": true,
+        "closed_before_every_response_server_time": true,
+        "server_time_min_ms": 1792573813017,
+        "server_time_max_ms": 1792573847482,
+        "hashes_match": true,
+        "raw_pages": 72,
+        "response_errors": 0
+      },
+      {
+        "symbol": "SOLUSDT",
+        "CSV_rows_independent": 72000,
+        "exact_timestamp_order": true,
+        "closed_before_every_response_server_time": true,
+        "server_time_min_ms": 1792573849712,
+        "server_time_max_ms": 1792573886625,
+        "hashes_match": true,
+        "raw_pages": 72,
+        "response_errors": 0
+      }
+    ],
+    "joined_base_tail_expected_rows_each_asset": 1123200,
+    "joined_range": [
+      "2024-09-01T00:00:00Z",
+      "2026-10-21T00:00:00Z"
+    ],
+    "boundary": "base last open1788220740000 plus60000 equals tail first1788220800000; no overlap/gap",
+    "fetch_resource": "stdlib process observed RSS29608KiB; address-space cap256MiB; nice10; CPU0; no new service or swap setting",
+    "models_labels": "NONE"
+  },
+  "minute_warmup_update": {
+    "range": [
+      "2024-08-31T00:00:00Z",
+      "2024-09-01T00:00:00Z"
+    ],
+    "rows_each": 1440,
+    "manifest_sha256": "03b9986393fb2f0da9187fd8e626491b0401db5e657c4609483ef1293aabe707",
+    "verified_hourly_overlap_bars_each": 24,
+    "OHLCV_exact": true,
+    "proof": "reports/forecast-independent-20261021/warmup-verification.json"
+  }
+}

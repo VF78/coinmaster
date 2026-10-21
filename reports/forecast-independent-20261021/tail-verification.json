@@ -1,0 +1,36 @@
+{
+  "verified_at": "2026-10-21T09:12:10.989685+00:00",
+  "tail_manifest_sha256": "010126bf0632ef03f5ea42449aa76420c8ab8629b8f0833d7e1941b6088b7a71",
+  "checks": [
+    {
+      "symbol": "BTCUSDT",
+      "CSV_rows_independent": 72000,
+      "exact_timestamp_order": true,
+      "closed_before_every_response_server_time": true,
+      "server_time_min_ms": 1792573813017,
+      "server_time_max_ms": 1792573847482,
+      "hashes_match": true,
+      "raw_pages": 72,
+      "response_errors": 0
+    },
+    {
+      "symbol": "SOLUSDT",
+      "CSV_rows_independent": 72000,
+      "exact_timestamp_order": true,
+      "closed_before_every_response_server_time": true,
+      "server_time_min_ms": 1792573849712,
+      "server_time_max_ms": 1792573886625,
+      "hashes_match": true,
+      "raw_pages": 72,
+      "response_errors": 0
+    }
+  ],
+  "joined_base_tail_expected_rows_each_asset": 1123200,
+  "joined_range": [
+    "2024-09-01T00:00:00Z",
+    "2026-10-21T00:00:00Z"
+  ],
+  "boundary": "base last open1788220740000 plus60000 equals tail first1788220800000; no overlap/gap",
+  "fetch_resource": "stdlib process observed RSS29608KiB; address-space cap256MiB; nice10; CPU0; no new service or swap setting",
+  "models_labels": "NONE"
+}

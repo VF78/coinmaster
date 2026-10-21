@@ -1,0 +1,25 @@
+{
+  "verified_at": "2026-10-21T09:23:26.926539+00:00",
+  "manifest_sha256": "03b9986393fb2f0da9187fd8e626491b0401db5e657c4609483ef1293aabe707",
+  "checks": [
+    {
+      "symbol": "BTCUSDT",
+      "minute_rows": 1440,
+      "exact_timestamps_and_hash": true,
+      "closed_at_server_time": true,
+      "hourly_overlap_bars": 24,
+      "exact_OHLCV_match": true,
+      "mismatches": []
+    },
+    {
+      "symbol": "SOLUSDT",
+      "minute_rows": 1440,
+      "exact_timestamps_and_hash": true,
+      "closed_at_server_time": true,
+      "hourly_overlap_bars": 24,
+      "exact_OHLCV_match": true,
+      "mismatches": []
+    }
+  ],
+  "base_boundary": "warmup lastopen1725148740000 +60000 = base firstopen1725148800000"
+}

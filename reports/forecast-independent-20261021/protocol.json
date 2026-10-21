@@ -1,0 +1,198 @@
+{
+  "schema": "coinmaster-independent-forecast-v1",
+  "task": "113/PRED-01",
+  "frozen_at_utc": "2026-10-21T09:34:04.483579+00:00",
+  "scope": "Independent BTC/SOL pattern forecasts; no current strategy, PnL simulator, orders, deployment or S0 rerun.",
+  "train": [
+    "2024-09-01T00:00:00Z",
+    "2026-04-01T00:00:00Z"
+  ],
+  "check": [
+    "2026-04-01T00:00:00Z",
+    "2026-10-21T00:00:00Z"
+  ],
+  "holdout_disclosure": "Historically studied price period; recipe-frozen chronological holdout, not pristine unseen market history.",
+  "origin": "Each UTC whole hour t; only source bars whose end<=t. Both assets share timestamps; rows remain asset-specific.",
+  "entry": {
+    "rule": "Conditional on emitted signal, unconditional next-minute market reference: open of actual minute beginning t+60 seconds. No choosing a better future price. Missing data blocks the row. No gap-based cherry-picking.",
+    "forecast": "At t publish side, reference last closed minute close, sigma and contingent TP_j(E)=E*exp(side*sigma*q_j). Displayed reference prices are indicative. At observed entry E reanchor once deterministically, without new inference.",
+    "horizon_seconds_from_entry": 86400
+  },
+  "sigma": {
+    "formula": "sample std(ddof=1) of last168 completed hourly log returns * sqrt(24)",
+    "lookback_hours": 168,
+    "min_returns": 168,
+    "nonpositive": "INVALID_SCALE, never replace with zero"
+  },
+  "label": {
+    "direction": "log(last minute close ending at entry+24h / E); UP if >.25*sigma, DOWN if <-.25*sigma, else NEUTRAL",
+    "stop": "E*exp(-side*sigma), original fixed stop, no breakeven movement",
+    "tp": "For each side independently, conditional quantiles q=.2,.5,.8 of max(0,side*log(price/E))/sigma before original stop or expiry.",
+    "primary": "Conservative lower MFE bound; zeros/ambiguous examples retained.",
+    "upper": "Companion optimistic upper-bound target and heads, separately scored, never selected using CHECK.",
+    "stop_minute": "If minute open already crosses stop, terminate at open; later extremes excluded. Otherwise lower includes prior guaranteed extrema plus minute open before stop, upper additionally includes favorable stop-minute extreme. Minute high/low ordering is unknown.",
+    "expiry": "Use every whole minute [entry,entry+24h); terminal close from last minute ending at expiry.",
+    "purge": "Require whole horizon through entry+24h<=partition end regardless of early stop. Apply at fit/validation/calibration/CHECK boundaries.",
+    "censor": "Last-day incomplete forecasts reported separately, excluded from fully observed label denominators, never labelled zero."
+  },
+  "quantiles": [
+    0.2,
+    0.5,
+    0.8
+  ],
+  "features": {
+    "timeframes_minutes": [
+      1,
+      15,
+      60,
+      240
+    ],
+    "windows_bars": [
+      20,
+      60
+    ],
+    "fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "SMA20"
+    ],
+    "warmup": "Genuine minute Aug31; genuine hourly Jun-Aug; complete bins only, no synthetic upsampling.",
+    "representations": "One shape-normalized OHLC/SMA/volume view plus causal sigma, last-price/last-panel-close, panel age and asset indicator. Numerical and image methods see same underlying bar IDs. Normalization uses window only; learned scalers fit TRAIN prefix only.",
+    "pooled_assets": true
+  },
+  "inner_folds": [
+    {
+      "fit_end": "2025-03-01T00:00:00Z",
+      "validation_end": "2025-06-01T00:00:00Z"
+    },
+    {
+      "fit_end": "2025-06-01T00:00:00Z",
+      "validation_end": "2025-09-01T00:00:00Z"
+    },
+    {
+      "fit_end": "2025-09-01T00:00:00Z",
+      "validation_end": "2025-12-01T00:00:00Z"
+    }
+  ],
+  "final_fit_end": "2026-03-01T00:00:00Z",
+  "calibration_end": "2026-04-01T00:00:00Z",
+  "selection": {
+    "metric": "Mean lower-bound normalized pinball loss across both sides/three quantiles/all validation origins; tie: lower direction logloss, then smaller view/config.",
+    "view_screen": "Raw flattened shape+context linear/quantile control, L2=.001, evaluate all8 TF/window views on same3 TRAIN folds. Primary1h20 plus best other TRAIN-control view. This screening does not establish untested family/TF combinations are ineffective.",
+    "method_views": 2,
+    "numeric_l2": [
+      0.0001,
+      0.001
+    ],
+    "seeds": {
+      "numeric": [
+        7
+      ],
+      "cnn_inner": [
+        7
+      ],
+      "cnn_final": [
+        7,
+        42
+      ]
+    },
+    "check_rule": "No CHECK labels, scores, plots or performance summaries before selected recipe/model/calibration hashes are sealed for each method. No CHECK tuning/retraining; one final evaluation per frozen method. No automatic retries after failed fit or invalid result."
+  },
+  "methods": {
+    "stumpy": {
+      "library_cap_per_asset": 2048,
+      "library_selection": "Uniform timestamp-stratified mature TRAIN origins, independent of labels; same asset only. Exact normalized MASS-distance on selected windows, checked against installed stumpy.mass; explicitly name optimized backend.",
+      "neighbours": [
+        20,
+        50
+      ],
+      "neighbour_independence": "Greedy distance ranking with separation at least max(24h,input-window span); identical future labels cannot count as independent analogues.",
+      "outputs": "Empirical lower/upper MFE quantiles and terminal class frequencies, shrink to TRAIN prior with weight n/(n+20); no support<10 independent analogues actionable."
+    },
+    "minirocket": {
+      "features": 2016,
+      "max_dilations_per_kernel": 32,
+      "head": "Streaming regularized linear quantile +3-class heads; no full float64 solver/Gram matrix."
+    },
+    "rdst": {
+      "max_shapelets": 256,
+      "proba_normalization": 0.8,
+      "threshold_percentiles": [
+        5,
+        10
+      ],
+      "alpha_similarity": 0.5,
+      "head": "Same quantile/classification head; do not use RidgeClassifier fake one-hot probabilities."
+    },
+    "cnn": {
+      "architecture": "Single grayscale OHLC+SMA+volume chart; three convolution stages channels8/16/32, vertical pooling, small spatial head retaining horizontal recency; plus same causal context. <=50000 parameters. No pretrained-weight claim.",
+      "20bar_image": [
+        64,
+        60
+      ],
+      "60bar_image": [
+        96,
+        180
+      ],
+      "batch_size": 32,
+      "max_epochs": 20,
+      "patience": 3,
+      "min_epochs": 5,
+      "optimizer": "Adam lr .001 weight_decay .0001",
+      "final_epochs": "Median best epoch across winning view inner folds, fresh fixed-epoch final fits seeds7/42; mean prediction ensemble then March calibration."
+    }
+  },
+  "shared_head": {
+    "outputs": "12 quantiles: lower/upper x long/short x3; and3 direction logits.",
+    "loss": "mean lower pinball + .5*mean upper pinball + .2*direction crossentropy; no class weights.",
+    "linear_training": "Adam lr.001 batch256 max80epochs min10 patience5; one selected best epoch per fold. Final epochs=median winning inner-fold best epoch. Weight decay=L2 candidate.",
+    "monotonicity": "Clip quantiles>=0 then ascending rearrangement within side/bound. Ties preserved; no artificial TP gaps.",
+    "calibration": "March only: additive residual quantile correction per side/bound/q, then nonnegative rearrangement; one positive temperature for direction logits constrained[.25,4]. CNN ensemble calibrated after averaging. Save uncalibrated and calibrated scores."
+  },
+  "actionable": {
+    "side": "Highest direction class must be UP or DOWN and its calibrated p>=.50. No tuning this on CHECK.",
+    "levels": "Primary lower-bound TP1 strictly exceeds .0011 log-distance (conservative .11% all-taker round trip relevance screen); all3 targets positive and separated by at least1e-6 log-distance. Otherwise explicit ABSTAIN; keep all-origin scores.",
+    "price_rule": "Continuous prices are main forecast targets; report indicative and entry-reanchored levels. No assertion of maker execution from a candle touch; this is not exchange queue simulation.",
+    "invalidation": "Original common SL, 24h expiry, or missing actual entry data; no discretionary cancel after observing outcome."
+  },
+  "metrics": [
+    "all-origin lower and upper pinball by quantile/side/asset/month",
+    "quantile exceedance/calibration, predicted target distances",
+    "direction logloss/Brier/accuracy vs prefix prior and raw numeric control",
+    "actionable TP1/2/3 first touch before SL with lower/upper same-minute bounds and time-to-touch",
+    "signal/abstention/censor/ambiguity coverage and entry gap distribution",
+    "paired14-day block uncertainty and comparisons on same row IDs",
+    "actual example pattern catalogue, model/data/recipe hashes, resource and validation receipts"
+  ],
+  "resources": {
+    "one_process_at_once": true,
+    "cpu_threads": 1,
+    "memory_max_mib": 600,
+    "swap_max": 0,
+    "mem_available_min_mib": 850,
+    "disk_free_min_mib": 1536,
+    "cache_max_mib": 256,
+    "low_priority": true,
+    "no_installs_services_swap_changes": true,
+    "budget_cpu_minutes": {
+      "dataset_and_raw_control": 60,
+      "stumpy": 60,
+      "minirocket": 60,
+      "rdst": 60,
+      "cnn": 120
+    },
+    "profile": "Measured bounded subset/one-epoch profiling before full fit; stop resource failure and report INCOMPLETE rather than declaring method ineffective. Do not change recipe based on CHECK or silently increase caps."
+  },
+  "tests": [
+    "minute path gap-stop and same-minute TP/SL ambiguity, long/short symmetry, zero MFE",
+    "next-minute entry and horizon timestamps; final24h censor and every boundary purge",
+    "feature bar_end<=origin, SMA warmup, no hourly-to-minute upsampling",
+    "TRAIN-only transform/scaler/library/calibration and immutable CHECK IDs",
+    "MASS optimized distance parity vs installedSTUMPY; correctquantileloss and noncrossing",
+    "CNN renderer deterministic/past-only; outputcontract, batchmemory profile",
+    "independent metrics/sourcehash verification on actual persisted predictions; no duplicate CHECK evaluation"
+  ]
+}
