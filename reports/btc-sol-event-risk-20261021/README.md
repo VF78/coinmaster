@@ -37,3 +37,5 @@ One bounded own-fill guard correction uses native order-ID causality, not termin
 ## Operational boundary
 
 Pilot active **PID2009732 / NRestarts0**, same as start; active owned research units0. No runtime/product trading source edits, deploy, real orders, secrets, service/swap, Hermes/sites/VPN changes. All code added is report-local research analysis. Unused economic slots do not authorize new hypotheses/repeats. Limited cycle finished; further scope requires a new owner instruction.
+
+Published research checkpoint `371a1b464e8a0a1772f74a4822d32dcb816b295c` read back from GitHub. [Project final read-back](project-final-readback.json): #113 closed/completed, Project Done for this bounded negative experiment; overall DD/ROI objective remains unachieved.

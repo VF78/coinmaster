@@ -52,5 +52,10 @@
   "active_owned_research_units": 0,
   "production_deploy_orders_service_changes": false,
   "Project": "https://github.com/VF78/coinmaster/issues/113",
-  "pre_final_HEAD": "f142124e6299bcd56af2dfedd07c5d0b1ef3bc1c"
+  "pre_final_HEAD": "f142124e6299bcd56af2dfedd07c5d0b1ef3bc1c",
+  "published_research_commit": "371a1b464e8a0a1772f74a4822d32dcb816b295c",
+  "project_issue_state": "closed",
+  "project_item_status": "Done",
+  "project_readback": "project-final-readback.json",
+  "scope_done_not_goal_achieved": true
 }

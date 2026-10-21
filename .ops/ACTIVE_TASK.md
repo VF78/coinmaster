@@ -1,5 +1,5 @@
 Updated: 2026-10-21T08:13:10.527660+00:00; EVENT-RISK limited cycle COMPLETE_VALID_NEGATIVE_RESULT; no active research.
-Project #113 finalupdatepending rootpublication/readback; closuremeanscompletedboundedexperiment, NOT DD50goalachieved.
+Project #113 CLOSED/completed / ProjectDone actualREST+GraphQLreadbackPASS; reports/btc-sol-event-risk-20261021/project-final-readback.json. Publishedresearch371a1b464e8a0a1772f74a4822d32dcb816b295c readbackPASS. Closure means completedboundedexperiment, NOT DD50goalachieved.
 Canonical root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster branchcodex/nautilus-btc-sol-mvp; no Macproduct/manual /opt edits. Gitmutations core.hooksPath=/dev/null (oldhooks deploy). Modelnewtasks GPT-6.1Sol only.
 Current report reports/btc-sol-event-risk-20261021/README.md+completion.json; approvedplan1b887b8/authorization.json. H-BTCmanagement andH-SOLentry/addfilter; causalnativeevidence, no newengine.
 S0 REUSED / rerunPROHIBITED: existingjobcm113-fast-rnd-s0-20261020T170935Z TOTAL6077107.23887483/ROI60671.0723887483/DDmarked66.2569148647. GoalDD<=50%/NP>=90%→TOTAL>=5470396.514987347/maxTOTAL NOTachieved. No newpolicyTOTAL/ROI/DDexists.
