@@ -1,0 +1,11 @@
+{
+  "status": "DIAGNOSIS_COMPLETE_NO_NEW_FIT",
+  "V2_fits": 0,
+  "source_sha256": {
+    "reports/btc-pattern-pilot-m2-20261021/variant_diagnostics.py": "21a9d3543b8d6bd423dcf886b18d89a563cd837e4b0ae91f0feb857e1864d8a6",
+    "reports/btc-pattern-pilot-m2-20261021/variant_saved_model_diagnostics.py": "126cb5aadbdcc188977a23811f1422c0a6299104112cb30b639b6c4b7be80a46",
+    "reports/btc-pattern-pilot-m2-20261021/fullhistory_geometry.py": "1211209341256260aa60334a4ea2782de3d3417d0859e6b6e0f7035a8ad82cee"
+  },
+  "new_fits": 0,
+  "CHECK_used": false
+}

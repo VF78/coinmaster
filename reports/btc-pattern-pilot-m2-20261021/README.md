@@ -2,7 +2,7 @@
 
 Owner task: `owner-task.txt`. New local branch/checkout explicitly authorized; production untouched.
 
-Preparation and resource admission are complete. No development fits or CHECK metrics opened yet. Exact freeze request: `pretrain-freeze-request.json`.
+Baseline and the authorized full-history METRIC_OFF variant have completed. Baseline: 18 joint neural fits +18 CatBoost head fits; mandatory 4h-only control:18 CatBoost head fits. METRIC_OFF:12 joint neural fits,886.42s,NO_SKILL,empty shortlist. RECENT180 was cancelled before launch to preserve the owner's full-history requirement; zero fits. No process is currently training. CHECK remains unopened; no final/native/SOL promotion is authorized. Exact GO and immutable source receipts are retained; later proposals require a new GO.
 
 - Genuine Bybit BTCUSDT linear-perpetual minutes: 2024-05-15 00:00 through 2026-10-21 00:00 UTC, contiguous. Public prefix retains 156 raw REST pages / 155,520 real minutes. Existing immutable source array verified by SHA before reuse.
 - DEVELOPMENT is June 1, 2024 through May 1, 2026. CHECK actual confirmed end is October 21 00:00 UTC; prior requested freeze-hour retained separately. This CHECK was exposed by prior research and is historical validation.

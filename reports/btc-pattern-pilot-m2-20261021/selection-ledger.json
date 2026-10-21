@@ -37,5 +37,27 @@
     "family": "CatBoost",
     "head_fits": 18,
     "auxiliary_only": true
+  },
+  "latest_owner_period_constraint": {
+    "FULL_history_required": true,
+    "RECENT180": "NOT_RUN_OWNER_AUTHORIZATION_REVOKED",
+    "V2_started": false,
+    "V2_fits": 0,
+    "V2_PID": null,
+    "V1": "CONTINUE_UNCHANGED_FULL_EXPANDING_PREFIX",
+    "next": "After V1 only one targeted FULL-history proposal; no fit until exactrootGO"
+  },
+  "METRIC_OFF_result": {
+    "status": "NO_SKILL",
+    "shortlist": [],
+    "neural_joint_fits": 12,
+    "wall_seconds": 886.4221397498623,
+    "CHECK_opened": false,
+    "full_history": true
+  },
+  "RECENT180_result": {
+    "status": "CANCELLED_BEFORE_LAUNCH",
+    "fits": 0,
+    "reason": "owner requires full selected period"
   }
 }

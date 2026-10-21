@@ -14,7 +14,7 @@ All targets were recomputed: first-passage D, conservative/upper stop-conditione
 Separate entry-gap and current-close/entry minute pointers preserve fill versus existing-position semantics; entry is never X.
 Three fixed purged expanding folds score 8,496 common mature origins, with 29 blocks for the 14-day paired bootstrap.
 Zero D ambiguities occurred on these scored IDs; synthetic ties/gaps/censoring are tested. Bounds remain stored rather than invented tick order.
-Six focused causal/path/purge/metric/control tests passed; CPU/MPS shapes, gradients, parity and save/load passed on 128 true windows.
+Nine focused causal/path/purge/metric/window/control tests passed; CPU/MPS shapes, gradients, parity and save/load passed on 128 true windows.
 
 ## What ran
 
@@ -64,5 +64,30 @@ Exact MPS peak is UNKNOWN; sampled allocation/driver data are labeled as samples
 Saved-model diagnostics took 33.37s with zero fits/CHECK use; exact 36-checkpoint/helper hashes were snapshotted before inference.
 Models/index/caches remain in the new local job directory; manifests, forecasts, neighbors, per-q/month/regime metrics and fixed-ten-time examples are preserved.
 P1 requires original S0 stop/horizon/native-state parity; P2 lacks demonstrated path skill; SOL and hedge claims remain blocked.
-Next: root may admit one precisely diagnosed DEVELOPMENT-only adaptation with frozen source/resource/settings. No adaptation is selected or launched here.
+METRIC_OFF completed as the authorized full-history diagnostic below. RECENT180 was cancelled before launch; zero fits. Any next adaptation requires a new exact GO.
 CHECK remains unopened and cannot select the adaptation. The original full-period S0 TOTAL/90%-net-profit goal is a separate reference.
+
+## Full-history METRIC_OFF result
+
+V1 completed all12 ES/refit neural fits across all3 fixed expanding folds in886.42s. All8,496 outer origins are paired to the original baseline and unchanged controls. Every task remains NO_SKILL; shortlist is empty. V2 RECENT180 never started.
+
+| V1 head | D delta vs prior [14d CI] | Q-long delta [CI] | Q-short delta [CI] |
+|---|---:|---:|---:|
+| TCN direct | +.030603 [.002613,.057355] | +.003573 [-.000948,.007783] | +.011405 [.002432,.021475] |
+| CNN direct | +.000100 [-.043600,.041670] | -.001891 [-.006347,.002241] | +.005260 [-.001351,.013177] |
+
+Removing metric loss did not create transferable path skill. TCN direct Q-long and Q-short worsen versus its original baseline with paired CI above zero. CNN Q-long average is nearly unchanged but only1/3fold wins versus prior, down from3/3. All retrieval tasks fail the unchanged strong controls.
+
+Training-curve embedding rank/variance are LOCAL128h probes on the first128 consecutive fit origins, not global collapse evidence. A separate no-fit probe uniformly sampled512 origins across each complete refit and outer period, with exact dates/N/checkpoint hashes in metric-off-fullhistory-geometry.csv. Baseline TCN outer ranks1.38/7.50/1.57 become3.88/8.15/4.50 with metric-off; CNN2.52/3.30/3.50 become2.10/2.94/2.82. Variance generally rises, yet forecasts do not improve. Geometry alone is not useful-path evidence, nor proof all representations collapsed.
+
+CNN raw refit/ES/outer losses: D1.030649/1.040452/1.093108; Q-long.201736/.157661/.203699; Q-short.247536/.229049/.262196. TCN: D1.005901/1.053461/1.123935; Q-long.201236/.153900/.209183; Q-short.251600/.244894/.268386. These use raw comparable loss units; ES being easier than refit on Q also reflects target distribution, so outer-minus-ES is not a pure overfit estimate.
+
+V1 epoch choices TCN4/3/1, CNN3/2/1; no30epoch cap reached. CNN F1 D optimum epoch1 versus Q7, selected3; F2 D2 versus Q6, selected2; F3 both1. F1/F2 Q minima improve only.00049/.00632 normalized Q loss from the joint-selected epoch. This local D/Q conflict exists but cannot explain the whole outer gap by itself. The single28dES has documented distribution shift and remains a plausible selection weakness; no alternate epoch was selected using outer outcomes.
+
+CNN regime deltas versus prior (D,Q-long,Q-short), all CIs include zero: DOWN_HIGH N2342(-.032089,-.007248,+.012173); DOWN_LOW N2011(+.032347,+.002724,+.004776); UP_HIGH N1487(-.017122,-.004493,-.000419); UP_LOW N2656(+.013711,+.000797,+.002711). All rise/fall regimes remain included. This is heterogeneity, not permission to retain only a good regime.
+
+Equal-fold V1 CNN q.2/.5/.8 pre-stop target hit rates: long77.2/51.7/23.5%, short81.4/50.4/25.5% (desired80/50/20). Tie bounds coincide on these IDs; projected zero inflation is absent; short raw crossing rate~.036%. Q predicts attainable MFE BEFORE a fixed SL. It does not learn an independently optimal SL or establish executable EV/ROI; actual first-touch/path summaries are required for stop-policy evaluation.
+
+The existing toy positive/shuffle test exercises numeric kNN with an individual random label permutation, not a trained TCN/CNN or genuine block shuffle. A future recipe must include a small actual-trainable positive + genuine temporally block-shuffled synthetic diagnostic; synthetic fit success is not market OOS skill.
+
+One full-history proposal, not authorization: retain original CNN architecture/metric.1 and all June1-origin history; test a single fixed three-anchor temporal ES aggregate (anchors full cutoff−90d,−45d,full cutoff; each preceding28d, purged earlier expanding subfit), then fresh full-prefix refit at the aggregate-selected epoch. Retain exact outer folds/targets/controls/gates. This addresses one short ES segment's temporal composition without cropping history or raising epoch cap. Exact aggregate criterion, source, trainable synthetic QA and worst-case cost must be frozen and reviewed before any fit. No new fit has been launched.

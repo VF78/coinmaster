@@ -1,0 +1,2171 @@
+{
+  "status": "NO_SKILL",
+  "tasks": {
+    "CatBoost": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": -0.008634084407372844,
+            "lower": -0.0412066450369535,
+            "upper": 0.026688546001128955,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.021314588956785414,
+            "lower": -0.04943212933412977,
+            "upper": 0.0093849109296868,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.03255640163842465,
+            "lower": -0.06062593506117667,
+            "upper": -0.006560204699369905,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": true
+          }
+        },
+        "archived_comparisons": {
+          "CatBoost": {
+            "method": "CatBoost",
+            "task": "D",
+            "archived_reference": "CatBoost",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CatBoost",
+            "task": "D",
+            "archived_reference": "prior",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -0.008634084407372844,
+            "lower": -0.0412066450369535,
+            "upper": 0.026688546001128955,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CatBoost",
+            "task": "D",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.021314588956785414,
+            "lower": -0.04943212933412977,
+            "upper": 0.0093849109296868,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CatBoost",
+            "task": "D",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": true,
+            "mean": -0.03255640163842465,
+            "lower": -0.06062593506117667,
+            "upper": -0.006560204699369905,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0042669566614303685,
+            "lower": 0.0005488645340459659,
+            "upper": 0.008696729546188815,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.001692337473034376,
+            "lower": -0.00254728508823177,
+            "upper": 0.006613979436875879,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.0006029815772697613,
+            "lower": -0.004733716795566856,
+            "upper": 0.006044483235952937,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CatBoost": {
+            "method": "CatBoost",
+            "task": "Q-long",
+            "archived_reference": "CatBoost",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CatBoost",
+            "task": "Q-long",
+            "archived_reference": "prior",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.0042669566614303685,
+            "lower": 0.0005488645340459659,
+            "upper": 0.008696729546188815,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CatBoost",
+            "task": "Q-long",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.001692337473034376,
+            "lower": -0.00254728508823177,
+            "upper": 0.006613979436875879,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CatBoost",
+            "task": "Q-long",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.0006029815772697613,
+            "lower": -0.004733716795566856,
+            "upper": 0.006044483235952937,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0037343838341361013,
+            "lower": -0.0037455715601047374,
+            "upper": 0.012509628816530338,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0016414695963295695,
+            "lower": -0.009103766896727445,
+            "upper": 0.006175617992976522,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0011658031170044816,
+            "lower": -0.007333829192204619,
+            "upper": 0.006043835702439609,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CatBoost": {
+            "method": "CatBoost",
+            "task": "Q-short",
+            "archived_reference": "CatBoost",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CatBoost",
+            "task": "Q-short",
+            "archived_reference": "prior",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.0037343838341361013,
+            "lower": -0.0037455715601047374,
+            "upper": 0.012509628816530338,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CatBoost",
+            "task": "Q-short",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0016414695963295695,
+            "lower": -0.009103766896727445,
+            "upper": 0.006175617992976522,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CatBoost",
+            "task": "Q-short",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0011658031170044816,
+            "lower": -0.007333829192204619,
+            "upper": 0.006043835702439609,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      }
+    },
+    "TCN-knn": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.05777186902873786,
+            "lower": 0.018509525385330135,
+            "upper": 0.0985525356597036,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.06640595343611068,
+            "lower": 0.025198674726344288,
+            "upper": 0.10740953418880857,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.04509136447932529,
+            "lower": 0.00591850482510733,
+            "upper": 0.08431489030613212,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.03384955179768604,
+            "lower": 0.004742840637750009,
+            "upper": 0.06037008459641418,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "TCN-knn": {
+            "method": "TCN-knn",
+            "task": "D",
+            "archived_reference": "TCN-knn",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0068054696633350524,
+            "lower": -0.03629109020294399,
+            "upper": 0.05701417174473695,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "TCN-knn",
+            "task": "D",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.05777186902873786,
+            "lower": 0.018509525385330135,
+            "upper": 0.0985525356597036,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "TCN-knn",
+            "task": "D",
+            "archived_reference": "CatBoost",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.06640595343611068,
+            "lower": 0.025198674726344288,
+            "upper": 0.10740953418880857,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "TCN-knn",
+            "task": "D",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.04509136447932529,
+            "lower": 0.00591850482510733,
+            "upper": 0.08431489030613212,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "TCN-knn",
+            "task": "D",
+            "archived_reference": "random-context",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.03384955179768604,
+            "lower": 0.004742840637750009,
+            "upper": 0.06037008459641418,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0037474622361241333,
+            "lower": -6.653981972399401e-05,
+            "upper": 0.007648295594153538,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.0005194944253062357,
+            "lower": -0.006605241703421526,
+            "upper": 0.0051217854697513275,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.0011728430477281405,
+            "lower": -0.003612540559570841,
+            "upper": 0.00522784046517808,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 8.348715196352593e-05,
+            "lower": -0.0033151538642640734,
+            "upper": 0.0035162292322871457,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "TCN-knn": {
+            "method": "TCN-knn",
+            "task": "Q-long",
+            "archived_reference": "TCN-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0023207621406869045,
+            "lower": -0.007934458455465865,
+            "upper": 0.002823770577045641,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "TCN-knn",
+            "task": "Q-long",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0037474622361241333,
+            "lower": -6.653981972399401e-05,
+            "upper": 0.007648295594153538,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "TCN-knn",
+            "task": "Q-long",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -0.0005194944253062357,
+            "lower": -0.006605241703421526,
+            "upper": 0.0051217854697513275,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "TCN-knn",
+            "task": "Q-long",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.0011728430477281405,
+            "lower": -0.003612540559570841,
+            "upper": 0.00522784046517808,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "TCN-knn",
+            "task": "Q-long",
+            "archived_reference": "random-context",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 8.348715196352593e-05,
+            "lower": -0.0033151538642640734,
+            "upper": 0.0035162292322871457,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.009785497579016126,
+            "lower": 0.0020887579372043555,
+            "upper": 0.01728851666015173,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0060511137448800234,
+            "lower": -0.001743518336817398,
+            "upper": 0.013205802300253809,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.004409644148550455,
+            "lower": -0.003020625059498839,
+            "upper": 0.010897066112262255,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.004885310627875543,
+            "lower": -0.0013242867597790134,
+            "upper": 0.010238020609302933,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "TCN-knn": {
+            "method": "TCN-knn",
+            "task": "Q-short",
+            "archived_reference": "TCN-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.0016674130179843883,
+            "lower": -0.00636193850655486,
+            "upper": 0.009156447161712189,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "TCN-knn",
+            "task": "Q-short",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.009785497579016126,
+            "lower": 0.0020887579372043555,
+            "upper": 0.01728851666015173,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "TCN-knn",
+            "task": "Q-short",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0060511137448800234,
+            "lower": -0.001743518336817398,
+            "upper": 0.013205802300253809,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "TCN-knn",
+            "task": "Q-short",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.004409644148550455,
+            "lower": -0.003020625059498839,
+            "upper": 0.010897066112262255,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "TCN-knn",
+            "task": "Q-short",
+            "archived_reference": "random-context",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.004885310627875543,
+            "lower": -0.0013242867597790134,
+            "upper": 0.010238020609302933,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      }
+    },
+    "numeric-knn": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.01268050454941257,
+            "lower": 0.0012814262946451668,
+            "upper": 0.02421681153704762,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.021314588956785414,
+            "lower": -0.009384910929686806,
+            "upper": 0.04943212933412977,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.011241812681639242,
+            "lower": -0.036566064887969846,
+            "upper": 0.011845277354010773,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "numeric-knn": {
+            "method": "numeric-knn",
+            "task": "D",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "numeric-knn",
+            "task": "D",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.01268050454941257,
+            "lower": 0.0012814262946451668,
+            "upper": 0.02421681153704762,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "numeric-knn",
+            "task": "D",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.021314588956785414,
+            "lower": -0.009384910929686806,
+            "upper": 0.04943212933412977,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "numeric-knn",
+            "task": "D",
+            "archived_reference": "random-context",
+            "fold_wins": 3,
+            "PASS": false,
+            "mean": -0.011241812681639242,
+            "lower": -0.036566064887969846,
+            "upper": 0.011845277354010773,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0025746191883959935,
+            "lower": 3.129871935314311e-05,
+            "upper": 0.004860020094435893,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.001692337473034376,
+            "lower": -0.006613979436875881,
+            "upper": 0.0025472850882317694,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0010893558957646144,
+            "lower": -0.005189953848631783,
+            "upper": 0.0037137810753624617,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "numeric-knn": {
+            "method": "numeric-knn",
+            "task": "Q-long",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "numeric-knn",
+            "task": "Q-long",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0025746191883959935,
+            "lower": 3.129871935314311e-05,
+            "upper": 0.004860020094435893,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "numeric-knn",
+            "task": "Q-long",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -0.001692337473034376,
+            "lower": -0.006613979436875881,
+            "upper": 0.0025472850882317694,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "numeric-knn",
+            "task": "Q-long",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0010893558957646144,
+            "lower": -0.005189953848631783,
+            "upper": 0.0037137810753624617,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.00537585343046567,
+            "lower": 0.0017983333890837494,
+            "upper": 0.009013662514834514,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0016414695963295695,
+            "lower": -0.006175617992976526,
+            "upper": 0.009103766896727443,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.00047566647932508773,
+            "lower": -0.004056315961839541,
+            "upper": 0.0053517534969116775,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "numeric-knn": {
+            "method": "numeric-knn",
+            "task": "Q-short",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "numeric-knn",
+            "task": "Q-short",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.00537585343046567,
+            "lower": 0.0017983333890837494,
+            "upper": 0.009013662514834514,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "numeric-knn",
+            "task": "Q-short",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0016414695963295695,
+            "lower": -0.006175617992976526,
+            "upper": 0.009103766896727443,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "numeric-knn",
+            "task": "Q-short",
+            "archived_reference": "random-context",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.00047566647932508773,
+            "lower": -0.004056315961839541,
+            "upper": 0.0053517534969116775,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      }
+    },
+    "CNN-knn": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.011020287922719236,
+            "lower": -0.027512940370893538,
+            "upper": 0.055658455783018805,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.01965437233009208,
+            "lower": -0.01010849945645929,
+            "upper": 0.04767134400597493,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0016602166266933345,
+            "lower": -0.037269153717996016,
+            "upper": 0.03846612686226992,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.012902029308332579,
+            "lower": -0.03511919523033983,
+            "upper": 0.0116548050911873,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CNN-knn": {
+            "method": "CNN-knn",
+            "task": "D",
+            "archived_reference": "CNN-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0006532358036708034,
+            "lower": -0.009732710080373049,
+            "upper": 0.009715136761762269,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CNN-knn",
+            "task": "D",
+            "archived_reference": "prior",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.011020287922719236,
+            "lower": -0.027512940370893538,
+            "upper": 0.055658455783018805,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "CNN-knn",
+            "task": "D",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.01965437233009208,
+            "lower": -0.01010849945645929,
+            "upper": 0.04767134400597493,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CNN-knn",
+            "task": "D",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0016602166266933345,
+            "lower": -0.037269153717996016,
+            "upper": 0.03846612686226992,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CNN-knn",
+            "task": "D",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.012902029308332579,
+            "lower": -0.03511919523033983,
+            "upper": 0.0116548050911873,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.000729365506557153,
+            "lower": -0.005854153034517921,
+            "upper": 0.007493615564751203,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.003537591154873216,
+            "lower": -0.011041317962485555,
+            "upper": 0.004336180160494164,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0018452536818388404,
+            "lower": -0.009040654425608191,
+            "upper": 0.005053089631285377,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.002934609577603455,
+            "lower": -0.0075666577057615,
+            "upper": 0.001902438819547702,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CNN-knn": {
+            "method": "CNN-knn",
+            "task": "Q-long",
+            "archived_reference": "CNN-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0005752480066482536,
+            "lower": -0.0022158513281235106,
+            "upper": 0.0008171569068728345,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CNN-knn",
+            "task": "Q-long",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.000729365506557153,
+            "lower": -0.005854153034517921,
+            "upper": 0.007493615564751203,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "CNN-knn",
+            "task": "Q-long",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -0.003537591154873216,
+            "lower": -0.011041317962485555,
+            "upper": 0.004336180160494164,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CNN-knn",
+            "task": "Q-long",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 3,
+            "PASS": false,
+            "mean": -0.0018452536818388404,
+            "lower": -0.009040654425608191,
+            "upper": 0.005053089631285377,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CNN-knn",
+            "task": "Q-long",
+            "archived_reference": "random-context",
+            "fold_wins": 3,
+            "PASS": false,
+            "mean": -0.002934609577603455,
+            "lower": -0.0075666577057615,
+            "upper": 0.001902438819547702,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0038473038879507254,
+            "lower": -0.002290691757490365,
+            "upper": 0.009852993874053197,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.00011292005381462353,
+            "lower": -0.0074573242244051876,
+            "upper": 0.007325981206619571,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0015285495425149457,
+            "lower": -0.007354202778536881,
+            "upper": 0.0035271803836367027,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0010528830631898582,
+            "lower": -0.004666488422583352,
+            "upper": 0.0023866752285530484,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CNN-knn": {
+            "method": "CNN-knn",
+            "task": "Q-short",
+            "archived_reference": "CNN-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0016407234121548985,
+            "lower": -0.004297659117798611,
+            "upper": 0.0008979167643335531,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CNN-knn",
+            "task": "Q-short",
+            "archived_reference": "prior",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0038473038879507254,
+            "lower": -0.002290691757490365,
+            "upper": 0.009852993874053197,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "CNN-knn",
+            "task": "Q-short",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.00011292005381462353,
+            "lower": -0.0074573242244051876,
+            "upper": 0.007325981206619571,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CNN-knn",
+            "task": "Q-short",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0015285495425149457,
+            "lower": -0.007354202778536881,
+            "upper": 0.0035271803836367027,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CNN-knn",
+            "task": "Q-short",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0010528830631898582,
+            "lower": -0.004666488422583352,
+            "upper": 0.0023866752285530484,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      }
+    },
+    "CNN-direct": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.00010022458564842271,
+            "lower": -0.04360043284582246,
+            "upper": 0.041670150113275795,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.008734308993021253,
+            "lower": -0.012178707345449123,
+            "upper": 0.03165379311416188,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.012580279963764162,
+            "lower": -0.049699879113783346,
+            "upper": 0.02471424451859894,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0238220926454034,
+            "lower": -0.05429387530086769,
+            "upper": 0.0032172628393978848,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CNN-direct": {
+            "method": "CNN-direct",
+            "task": "D",
+            "archived_reference": "CNN-direct",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0038598862541541316,
+            "lower": -0.007159308093818066,
+            "upper": 0.014026998225436441,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CNN-direct",
+            "task": "D",
+            "archived_reference": "prior",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.00010022458564842271,
+            "lower": -0.04360043284582246,
+            "upper": 0.041670150113275795,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "CNN-direct",
+            "task": "D",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.008734308993021253,
+            "lower": -0.012178707345449123,
+            "upper": 0.03165379311416188,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CNN-direct",
+            "task": "D",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.012580279963764162,
+            "lower": -0.049699879113783346,
+            "upper": 0.02471424451859894,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CNN-direct",
+            "task": "D",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.0238220926454034,
+            "lower": -0.05429387530086769,
+            "upper": 0.0032172628393978848,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": -0.0018905081744695939,
+            "lower": -0.006346733298557131,
+            "upper": 0.0022412387102521106,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.006157464835899963,
+            "lower": -0.012076581772400228,
+            "upper": -0.0008626901703838475,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": true
+          },
+          "numeric-knn": {
+            "mean": -0.004465127362865587,
+            "lower": -0.008684511706162376,
+            "upper": -0.0005222587764069886,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          },
+          "random-context": {
+            "mean": -0.005554483258630201,
+            "lower": -0.011906740873168235,
+            "upper": 0.0009882660059560612,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CNN-direct": {
+            "method": "CNN-direct",
+            "task": "Q-long",
+            "archived_reference": "CNN-direct",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 8.719314242861196e-05,
+            "lower": -0.005110526058698295,
+            "upper": 0.005227052994194943,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CNN-direct",
+            "task": "Q-long",
+            "archived_reference": "prior",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -0.0018905081744695939,
+            "lower": -0.006346733298557131,
+            "upper": 0.0022412387102521106,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "CNN-direct",
+            "task": "Q-long",
+            "archived_reference": "CatBoost",
+            "fold_wins": 2,
+            "PASS": true,
+            "mean": -0.006157464835899963,
+            "lower": -0.012076581772400228,
+            "upper": -0.0008626901703838475,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CNN-direct",
+            "task": "Q-long",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 3,
+            "PASS": true,
+            "mean": -0.004465127362865587,
+            "lower": -0.008684511706162376,
+            "upper": -0.0005222587764069886,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CNN-direct",
+            "task": "Q-long",
+            "archived_reference": "random-context",
+            "fold_wins": 3,
+            "PASS": false,
+            "mean": -0.005554483258630201,
+            "lower": -0.011906740873168235,
+            "upper": 0.0009882660059560612,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.005260348050315423,
+            "lower": -0.0013505848753978286,
+            "upper": 0.013177153156899027,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0015259642161793215,
+            "lower": -0.008980175082816347,
+            "upper": 0.012189904790819052,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.00011550538015024749,
+            "lower": -0.007468088472161348,
+            "upper": 0.00892242821806503,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.0003601610991748396,
+            "lower": -0.007558297208477693,
+            "upper": 0.009233921552804628,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "CNN-direct": {
+            "method": "CNN-direct",
+            "task": "Q-short",
+            "archived_reference": "CNN-direct",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.005382085381115498,
+            "lower": -0.0017550076111699285,
+            "upper": 0.01337583704833087,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "CNN-direct",
+            "task": "Q-short",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.005260348050315423,
+            "lower": -0.0013505848753978286,
+            "upper": 0.013177153156899027,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "CNN-direct",
+            "task": "Q-short",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0015259642161793215,
+            "lower": -0.008980175082816347,
+            "upper": 0.012189904790819052,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "CNN-direct",
+            "task": "Q-short",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.00011550538015024749,
+            "lower": -0.007468088472161348,
+            "upper": 0.00892242821806503,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "CNN-direct",
+            "task": "Q-short",
+            "archived_reference": "random-context",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": 0.0003601610991748396,
+            "lower": -0.007558297208477693,
+            "upper": 0.009233921552804628,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      }
+    },
+    "random-context": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.02392231723105181,
+            "lower": -0.0014388543302206922,
+            "upper": 0.05184328529218291,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.03255640163842465,
+            "lower": 0.006560204699369903,
+            "upper": 0.06062593506117666,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.011241812681639242,
+            "lower": -0.011845277354010779,
+            "upper": 0.03656606488796984,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "random-context": {
+            "method": "random-context",
+            "task": "D",
+            "archived_reference": "random-context",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "random-context",
+            "task": "D",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.02392231723105181,
+            "lower": -0.0014388543302206922,
+            "upper": 0.05184328529218291,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "random-context",
+            "task": "D",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.03255640163842465,
+            "lower": 0.006560204699369903,
+            "upper": 0.06062593506117666,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "random-context",
+            "task": "D",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.011241812681639242,
+            "lower": -0.011845277354010779,
+            "upper": 0.03656606488796984,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0036639750841606085,
+            "lower": -0.0007711349060973585,
+            "upper": 0.008053945059767309,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.0006029815772697613,
+            "lower": -0.006044483235952938,
+            "upper": 0.004733716795566854,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.0010893558957646144,
+            "lower": -0.0037137810753624617,
+            "upper": 0.005189953848631783,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "random-context": {
+            "method": "random-context",
+            "task": "Q-long",
+            "archived_reference": "random-context",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "random-context",
+            "task": "Q-long",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0036639750841606085,
+            "lower": -0.0007711349060973585,
+            "upper": 0.008053945059767309,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "random-context",
+            "task": "Q-long",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -0.0006029815772697613,
+            "lower": -0.006044483235952938,
+            "upper": 0.004733716795566854,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "random-context",
+            "task": "Q-long",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0010893558957646144,
+            "lower": -0.0037137810753624617,
+            "upper": 0.005189953848631783,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.004900186951140584,
+            "lower": 6.502186237137911e-05,
+            "upper": 0.009752049027969069,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0011658031170044816,
+            "lower": -0.006043835702439609,
+            "upper": 0.007333829192204618,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.00047566647932508773,
+            "lower": -0.005351753496911678,
+            "upper": 0.004056315961839541,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "random-context": {
+            "method": "random-context",
+            "task": "Q-short",
+            "archived_reference": "random-context",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "random-context",
+            "task": "Q-short",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.004900186951140584,
+            "lower": 6.502186237137911e-05,
+            "upper": 0.009752049027969069,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "random-context",
+            "task": "Q-short",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0011658031170044816,
+            "lower": -0.006043835702439609,
+            "upper": 0.007333829192204618,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "random-context",
+            "task": "Q-short",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 2,
+            "PASS": false,
+            "mean": -0.00047566647932508773,
+            "lower": -0.005351753496911678,
+            "upper": 0.004056315961839541,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      }
+    },
+    "TCN-direct": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.03060304702519775,
+            "lower": 0.002613396522603574,
+            "upper": 0.057355077899045905,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.039237131432570585,
+            "lower": 0.003041915360662627,
+            "upper": 0.07758061838318052,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.017922542475785175,
+            "lower": -0.011435443597675045,
+            "upper": 0.045524434059428014,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.006680729794145932,
+            "lower": -0.018932045193459753,
+            "upper": 0.030092500049958663,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "TCN-direct": {
+            "method": "TCN-direct",
+            "task": "D",
+            "archived_reference": "TCN-direct",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.02339355968177431,
+            "lower": -0.008614684283963614,
+            "upper": 0.05623177156647164,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "TCN-direct",
+            "task": "D",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.03060304702519775,
+            "lower": 0.002613396522603574,
+            "upper": 0.057355077899045905,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "TCN-direct",
+            "task": "D",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.039237131432570585,
+            "lower": 0.003041915360662627,
+            "upper": 0.07758061838318052,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "TCN-direct",
+            "task": "D",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.017922542475785175,
+            "lower": -0.011435443597675045,
+            "upper": 0.045524434059428014,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "TCN-direct",
+            "task": "D",
+            "archived_reference": "random-context",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.006680729794145932,
+            "lower": -0.018932045193459753,
+            "upper": 0.030092500049958663,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0035730596384109985,
+            "lower": -0.0009483665428651291,
+            "upper": 0.007783033792922255,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.000693897023019371,
+            "lower": -0.0071078828071086154,
+            "upper": 0.0054825498809109915,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.0009984404500150037,
+            "lower": -0.003998147962488148,
+            "upper": 0.0058292382307362995,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -9.091544574960928e-05,
+            "lower": -0.00815073901744238,
+            "upper": 0.007551842757021028,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "TCN-direct": {
+            "method": "TCN-direct",
+            "task": "Q-long",
+            "archived_reference": "TCN-direct",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.004268928328217684,
+            "lower": 0.0008496503237855682,
+            "upper": 0.007766097640761713,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "TCN-direct",
+            "task": "Q-long",
+            "archived_reference": "prior",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0035730596384109985,
+            "lower": -0.0009483665428651291,
+            "upper": 0.007783033792922255,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "TCN-direct",
+            "task": "Q-long",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -0.000693897023019371,
+            "lower": -0.0071078828071086154,
+            "upper": 0.0054825498809109915,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "TCN-direct",
+            "task": "Q-long",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0009984404500150037,
+            "lower": -0.003998147962488148,
+            "upper": 0.0058292382307362995,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "TCN-direct",
+            "task": "Q-long",
+            "archived_reference": "random-context",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": -9.091544574960928e-05,
+            "lower": -0.00815073901744238,
+            "upper": 0.007551842757021028,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.011404913559346067,
+            "lower": 0.002431834776858573,
+            "upper": 0.021474687115084906,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.007670529725209964,
+            "lower": -0.006327279709728096,
+            "upper": 0.02058069969329568,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.0060290601288803935,
+            "lower": -0.004151164881659957,
+            "upper": 0.017065002275701582,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.0065047266082054805,
+            "lower": -0.004924695460825063,
+            "upper": 0.019448716391111173,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        },
+        "archived_comparisons": {
+          "TCN-direct": {
+            "method": "TCN-direct",
+            "task": "Q-short",
+            "archived_reference": "TCN-direct",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.008400521240061489,
+            "lower": 9.58469800735751e-05,
+            "upper": 0.017424602602978508,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "prior": {
+            "method": "TCN-direct",
+            "task": "Q-short",
+            "archived_reference": "prior",
+            "fold_wins": 0,
+            "PASS": false,
+            "mean": 0.011404913559346067,
+            "lower": 0.002431834776858573,
+            "upper": 0.021474687115084906,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "CatBoost": {
+            "method": "TCN-direct",
+            "task": "Q-short",
+            "archived_reference": "CatBoost",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.007670529725209964,
+            "lower": -0.006327279709728096,
+            "upper": 0.02058069969329568,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "numeric-knn": {
+            "method": "TCN-direct",
+            "task": "Q-short",
+            "archived_reference": "numeric-knn",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0060290601288803935,
+            "lower": -0.004151164881659957,
+            "upper": 0.017065002275701582,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          },
+          "random-context": {
+            "method": "TCN-direct",
+            "task": "Q-short",
+            "archived_reference": "random-context",
+            "fold_wins": 1,
+            "PASS": false,
+            "mean": 0.0065047266082054805,
+            "lower": -0.004924695460825063,
+            "upper": 0.019448716391111173,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000
+          }
+        }
+      }
+    }
+  },
+  "shortlist": [],
+  "CHECK_opened": false,
+  "SOL": "BLOCKED_PENDING_BTC_PATH_AND_POLICY",
+  "policy": "BLOCKED_NO_PATH_SKILL",
+  "economic_goal": "TARGET_NOT_MET",
+  "mode": "METRIC_OFF",
+  "original_controls_required": true
+}

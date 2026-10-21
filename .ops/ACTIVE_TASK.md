@@ -1,28 +1,27 @@
-Updated: 2026-10-21T20:46:12.981247+00:00
-Status: ACTIVE, BTC-PATTERN-M2-20261021 control DEVELOPMENT COMPLETE, V1_METRIC_OFF RUNNING ONCE; no CHECK/policy/native/SOL.
-GitHub Project item: #122 https://github.com/VF78/coinmaster/issues/122; item PVTI_lAHOBIUvJs4BPJNjzhCgS1E, In Progress; actual readbacks PASS.
-Canonical root for THIS explicit owner-local pilot: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021
-Historical VPS canonical repo is read-only for reference; /opt is never edited; owner-task section1 authorizes local exception.
-Branch / sourceHEAD: codex/btc-pattern-pilot-m2-20261021 / d3c6d3865164d2491ea9ef43da866a9f45cdee34 published+GitHubreadbackPASS (baseline5a0fdb7/source94160b9).
-origin/main local tracking f85d79a4b3c5d25531004b5f40f0fb6ac9037e95; divergence main...HEAD=0/612, not a new remote-main verification.
-Deploy metadata /opt/coinmaster/.deploy-source-commit ABSENT by read-only check; no deployment attempted/attested.
-Goal: reliable BTC numerical/visual historical analogues; 72h first-passage/3TP/SL, then gated BTC policy/native and SOL. Full24m S0 target not inferred from shortCHECK.
-Data: real Bybit BTC linear minutes May15 2024–Oct21 2026 00UTC;156 publicprefix pages155520rows;20928validorigins/20856mature72h/72censored. No substitutions.
-Done: startup/protocol/data/schemas/env/smoke. 6focusedtestsPASS1.003s; CPU/MPSagreement/restore PASS; causal source review GO incl logging delta.
-Frozen6 source sourcecheckpoint94160b9: protocol52deb5b1; preparedmanifestbc660056; resourcef39d1d48; modelsbbe7cdca/train3e6f4051. Exact fullpins in pretrain-freeze-request/coordinator-development-go.json.
-Owner: btc_pattern_m2_owner GPT6.1Sol/medium source/tests/results. Root .ops/Project/checkpoints; btc_pattern_causality_review completed GO, no fits.
-Execution CURRENT V1: PID89809/session93585, output runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF; V2RECENT180REVOKEDbeforestartbyownerfullhistorypriority. Baseline87138exited0; neverrelaunch.
-Guard: oneheavyprocess, CPU4, MPS TCN/CNN, CPUfrozenKronos/projection/CB; RSS6GiB; deadlineOct22T01:46:11UTC. Temporary caffeinate -i -w89809/session23599 expireswithcurrentjob.
-Current phase: baseline COMPLETE exit0 at20:20:54UTC (~34m44s),18neuraljoint+18CBheadfits/30groups; peakRSS4198465536B. AllretrievalNO_SKILL, CNNdirectweakONLY/emptyshortlist. Saved-modeldiagnostics33.37s and4hCBcontrol18fits COMPLETE.
-Next exact step: WAIT CURRENT V1; V2RECENT180DO_NOT_LAUNCH perowner-full-history-priority.json. Originaltwo-modeGOpartiallysuperseded; wrapper81603dda/proto e7a6fad3/resource0d20b1e1,9testsPASS+addressedreviewGO. No new fits outsideauthorized2modes.
-Diagnosis: softtargetentropy~98%maximum/lowembeddingrank; Kronos overfit; strongD/Qlabelshift. V1isolatesmetriconFULLhistory; V2shortwindowrevoked. Analyzequalitybyrise/fall/volregimes; preserveallfullhistorytraining.
-Latest owner authorizes diagnosed improvements to learning/segments after baseline; V1fullhistoryvariantcontinues;V2cancelledbeforestart;anynextfullhistoryimprovementrequiresdiagnosis+exactGO. No unbounded search/CHECK-driven tuning.
-Conditional seed17/27/final/CHECK/policy/native/SOL require gates and remaining-budget estimate+20%; original6hBTC planning accounted cumulatively. Current mainworst12174s; actual faster. No unused slots authorize new families.
-Extra read-only diagnosis helper pattern_training_diagnostics.py approved postcore only; snapshot helper+checkpointmanifest before inference. Do not alter frozen6 modules midrun.
-Prior AI cycle121 COMPLETE negative / Project Done; A/C NO_SKILL, B unassessedresource. Old24h outcomes not new72h evidence; S0 notrerun.
-S0 exact6file archived launch snapshot saved; source759823d6, BTC5.5long7.875short/split50/.0025/planref/tp-ioc/DPoff. No giantresultopen; separate from liveV3.
-Checks/commit/push: startup e3376bc/source94160b9, baseline5a0fdb7, variantsd3c6d38 published. Baseline18neural+18CB and4h18CB done; V1planned12neural;V2cancelledbeforestart/0fits. Newreportmetadata intentionallydirty/untracked pendingnextcheckpoint.
-Production/pilot/orders/secrets/services unchanged; no live authorization inferred. No data/runtime deletion requested/performed.
-Key files: reports/btc-pattern-pilot-m2-20261021/owner-task.txt, protocol.json, data-receipt.json, resource-report.json, coordinator-development-go.json, run-start.json, owner-quality-iteration-authorization.json.
-Intentionaldirty/untracked: report-onlyREADME/schema/summary/metadata andnewvariantreceipts. Core6+quality/control/diagnostic sourcesalreadycommitted; do noteditwhilevariantsrun. Runtime datasets/weights/caches ignored and REQUIRED; never clean them during job.
-Blockers: none for current run. Future fit/policy/forward passes UNKNOWN; not a claim of forecast or economic skill.
+Updated: 2026-10-21T20:57:35.234797+00:00
+Status: ACTIVE BTC-PATTERN-M2-20261021; baseline and METRIC_OFF complete, no confident forecast PASS; FULL_ES3_CNN implementation only.
+GitHub Project item: #122 https://github.com/VF78/coinmaster/issues/122, PVTI_lAHOBIUvJs4BPJNjzhCgS1E In Progress; last actual readback project-full-history-readback.json PASS.
+Canonical root THIS owner-local pilot: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021. Owner-task section1 permits local exception; VPS canonical read-only, never edit /opt.
+Branch: codex/btc-pattern-pilot-m2-20261021; last published HEAD2bc347f3347c4cde77d4a89f1a3166e874123499/refreadbackPASS; frozen core94160b9, variantwrapperd3c6d38.
+origin/main local tracking f85d79a4b3c5d25531004b5f40f0fb6ac9037e95 stale, divergence atdf26017=0/612; no new remote-main claim. /opt/coinmaster/.deploy-source-commit absent/read-only; no deployment.
+Goal: numerical/visual BTC historical analogues,72h/aux24h first-passage/3TP/SL; gated policy/native/SOL. Full24mS0 target not inferred from shortCHECK.
+Data: genuine Bybit BTCUSDT minutes May15 2024–Oct21 2026 00UTC;156pages155520prefixminutes;20928origins/20856mature72h/72censored, manifestbc660056. No substitution.
+Dates: DEVELOPMENT Jun1 2024–May1 2026; original3expandingfolds/72h+1min maturity; preserve ALL available historicalmonths in finalfoldrefits. HistoricalCHECK previously exposed; unopened in THIS pilot.
+Owner: btc_pattern_m2_owner GPT6.1Sol/medium source/tests/results; root ops/Project/checkpoints. btc_pattern_causality_review completed scopedGO, reuse only changed causal functions.
+Done baseline: PID87138 EXIT0 at20:20:54Z/~34m44s,18neuraljoint+18CBheadfits; allretrievalNO_SKILL/CNNdirectweak; emptyshortlist. PeakRSS4.198GB includingexport. Neverrerun.
+Done auxiliary4h-onlyCB:18headfits, pairedCIs cross0. Saved-modeldiagnosis original0fits33.37s; fit/ES/outer drifts+source snapshots retained.
+Done METRIC_OFF: PID89809/session93585EXIT0,12jointneuralfits/886.42s, noCBrefits; NO_SKILL/emptyshortlist. All fullhistory; no further job launched.
+V2 RECENT180 CANCELLED BEFORE START/0fits by owner-full-history-priority.json; originaltwo-modeGOpartiallyrevoked. Neverlaunch V2.
+V1 diagnostics complete0fits: rawquantile/calibration/regimes/fitESouter/epochs+512uniform wholehistorygeometry. LOCAL128h rank was narrowprobe, not proofglobalcollapse. Geometryimprovementdidnotrestoreforecastskill.
+Next exact step: implement ONE FULL_ES3_CNN candidate per coordinator-full-es3-implementation.json; no marketfitsuntil source/protocol/resource exactGO. Anchors−90/−45/0 days, each28d ES/originalL_predict, medianepochs, FULLprefixrefit.
+Reuse immutable baseline anchor0ES and identical-epoch refit whenvalid; max6newES+3refits. OriginalCNN+metric.1 unchanged; noTCN/Kronosnewfits/noarch/grid/features/targets change.
+Pre-fit QA: actualCNNtrain positive and genuineblockshuffledsynthetic diagnostic, not existingtoy-kNN test. Freeze diagnostic source/config before readquality; synthetic outcome neverprovesmarketedge.
+Guard: oneheavyprocess/CPU4/measuredMPS/defaultwatermarkON/noCPUfallback/RSS6GiB; absoluteBTCdeadline2026-10-22T01:46:11Z, measuredwholephase+20percentreserve beforeGO. No temporaryswap/serviceactions.
+Current active compute: NONE; owner implementation only. No CHECK/final/stability/policy/native/SOL admitted. Conditionalnextstage only forecast/path gates + remainingresource + exactGO.
+Important limitation: Q predicts MFE BEFORE FIXED SL, not independentlyoptimalSL/EV. P1 requires exactS0stop/horizon/lifecycle; P2/SOL requirepathskill; no counterfeitPnLengine.
+S0:6077107.23887483/start10000/[2024Sep1,2026Sep1),90percentnetfloor5470396.514987347. Exact6metadatafiles/source759823d6/split50/.0025/planref/tpioc/long5.5short7.875/DPoff saved, notliveV3.
+Checks: frozenbase6testsPASS1.003s, variant9testsPASS. Causal/MPS/restore/protocolpins pass; metricoffvalidnegative, actualtrainableneuralpositive+blockshuffleQA not yet claimed.
+Key reports: owner-task.txt,protocol.json,data-receipt.json,findings.md,selection-ledger.json,metric-off-*.csv/json,owner-full-history-priority.json,coordinator-full-es3-implementation.json.
+Intentionaldirty: finished reports for rootcheckpoint and new FULL_ES3 implementation owned by agent. Required ignored datasets/images/weights/index remain local; do notclean runtime.
+Production/pilot/VPSservices/secrets/orders unchanged. PriorAIcycle#121 completednegative, A/S0 notrerun; old24htargets notnew72hevidence.
+Blocker: no confident predictive/pathskill yet, not a resourcefailure. FULL_ES3 quality unknown; no readiness/ROI/MaxDD success claimed.

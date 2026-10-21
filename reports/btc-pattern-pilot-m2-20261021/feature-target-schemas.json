@@ -37,5 +37,18 @@
     "q_loss_scales": "fit-only median absolute deviation lower MFE, floor1e-6",
     "tau_y": "median nonzero outcome distances on fixed seed7 train-only 8192pairs",
     "entry_gap": "separate log(entry/reference)/sigma24 and sigma72; never X"
+  },
+  "stored_arrays": {
+    "features": "N x2[4h,1h] x64 x6 engineered fields float32",
+    "context": "N x12 field order defined in btc_pattern_data.CONTEXT",
+    "raw": "N x2[4h,1h] x64 x5[O,H,L,C,volume] float32",
+    "stamps": "bar_start UTCms; bar_end=bar_start+TF hours; all<=origin",
+    "mfe": "N x2[long,short] x2[conservative lower,upper]",
+    "policy_mfe": "N x2[24h,72h] x3[SL.75,1,1.5] x2[long,short] x2[lower,upper]; MFE units base sigma_H, not sigma_H*SL",
+    "signature": "N x12: first6 return horizons1/4/12/24/48/72h; next6 first-touch times (+.5,+1,+2,-.5,-1,-2)*sigma72 /72h, no hit=2",
+    "entry_gap": "N x2 log(entry/reference)/[sigma24,sigma72]; never X",
+    "path_reference_indices": "N x2 [last known minute close index,entry minute open index] into immutable minutes; includes intervening gap minute",
+    "direction": "UP=0 DOWN=1 NONE=2 ambiguous=-1; D-only exclusion",
+    "censor": "meta.observed=False => unknown labels remain NaN; no zero imputation"
   }
 }

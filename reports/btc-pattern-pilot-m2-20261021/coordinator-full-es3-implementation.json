@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-21T20:57:35.234797+00:00",
+  "status": "IMPLEMENTATION_ONLY_NOT_MARKET_FIT_GO",
+  "mode": "FULL_ES3_CNN",
+  "owner_basis": "Optimize training quality on entire chosen rising/falling DEVELOPMENT period; do not shorten to180days",
+  "unchanged": "Original CNN metric0.1/seed7/data/targets/optimizer/scalers/sizing/controls; frozen six modules unchanged",
+  "epoch_selection": "For each original outerfold:28day chronological ES anchors fitcutoff minus90days,minus45days,and0; subfit expanding fromJun1 with maturitypurge. Median of three originalL_predict selectedepochs; fresh entire prefixrefit. Reuse baseline anchor0 and identical refit when possible, exactSHAs.",
+  "market_fit_max": 9,
+  "new_architectures": false,
+  "CHECK": false,
+  "required_before_fit": [
+    "addressed source and cutoff review",
+    "actual trainable positive synthetic and genuine blockshuffle QA",
+    "exact source/protocol/control/cache hashes",
+    "measured remaining resource plus20percent reserve"
+  ],
+  "deadline_utc": "2026-10-22T01:46:11Z",
+  "RSS_GiB": 6,
+  "heavy_processes": 1,
+  "production_changes": false
+}

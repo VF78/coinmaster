@@ -1,0 +1,24 @@
+{
+  "origin": "2024-06-01T00:00:00+00:00",
+  "last_known_minute": {
+    "start": "2024-05-31T23:59:00+00:00",
+    "bar_end": "2024-06-01T00:00:00+00:00",
+    "close": 67555.8,
+    "path_index": 24479
+  },
+  "intervening_minute": {
+    "start": "2024-06-01T00:00:00+00:00",
+    "bar_end": "2024-06-01T00:01:00+00:00",
+    "included_in_X": false
+  },
+  "conditional_entry": {
+    "start": "2024-06-01T00:01:00+00:00",
+    "open": 67591.2,
+    "path_index": 24481,
+    "known_at_origin": false
+  },
+  "label_end": "2024-06-04T00:01:00+00:00",
+  "sigma72": 0.030555905774235725,
+  "entry_gap_sigma72": 0.017144771282978585,
+  "features_use": "only bars with bar_end<=origin; no actual entry price"
+}
