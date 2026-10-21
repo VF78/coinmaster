@@ -1,13 +1,16 @@
 {
   "status": "PASS",
   "checks": [
-    "authorization hash",
-    "corrupt hash rejection",
-    "non-CNN rejection",
-    "same main invoked",
-    "cumulative prior50min -> remaining190min",
-    "launcher syntax"
+    "authorization SHA valid",
+    "corrupt hash rejected",
+    "unchanged main invoked",
+    "480\u221250 prior=430CPUmin remaining",
+    "OSLimitCPU480min minus cumulative prior",
+    "no scientific source diff"
   ],
-  "scientific_source_changes": false,
-  "wrapper_lines": 17
+  "protocol_cap_minutes": 120,
+  "effective_cap_minutes": 480,
+  "before_first_CNN_fit": true,
+  "authorization_sha256": "86f28a90d0b714f5a985c8ad294b10a0391d65eb12946856bfc05bbb6c04c693",
+  "wrapper_sha256": "7d8c444eaac20ea315ccae21bd9d74a639d143fa96e3e34d6a25e3b10a233371"
 }

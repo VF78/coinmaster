@@ -37,5 +37,8 @@
   "budget_cpu_seconds": 7200,
   "excludes_setup_and_final_calibration_overhead": true,
   "CPU_or_resource_limits_unchanged": true,
-  "no_CHECK_opened": true
+  "no_CHECK_opened": true,
+  "effective_coordinator_budget_cpu_seconds": 28800,
+  "protocol_budget_cpu_seconds_unchanged": 7200,
+  "final_envelope_before_first_fit": "480CPUmin; earliest146.6min/worst421.8min plus setup/CHECK, unchanged early-stop recipe"
 }

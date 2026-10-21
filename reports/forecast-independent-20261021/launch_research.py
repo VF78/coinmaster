@@ -10,8 +10,8 @@ if resource_budget is not None and resource_budget.is_absolute():resource_budget
 effective_budget_minutes=120 if a.family=='cnn' else 60
 if resource_budget is not None:
  envelope=json.loads(resource_budget.read_text())
- if a.family!='cnn' or a.stage not in envelope['stages'] or envelope['effective_budget_cpu_minutes']!=240 or envelope['protocol_budget_cpu_minutes']!=120:raise ValueError('RESOURCE_OVERRIDE_SCOPE')
- effective_budget_minutes=240
+ if a.family!='cnn' or a.stage not in envelope['stages'] or envelope['effective_budget_cpu_minutes']!=480 or envelope['protocol_budget_cpu_minutes']!=120:raise ValueError('RESOURCE_OVERRIDE_SCOPE')
+ effective_budget_minutes=480
 if a.stage=='fit' and a.family=='cnn':a.prior_cpu_seconds=(a.prior_cpu_seconds or 0)+13.178503 # Authorized20bar timing probe cgroup CPU, charged exactly once at launch.
 if a.focused_resource_tests and a.stage!='tests':raise ValueError('TEST_ONLY_EXCEPTION_CANNOT_APPLY_TO_MODELS')
 if a.stage in ('screen','fit'):
