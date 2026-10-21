@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-21T19:49:27.152116+00:00",
+  "request": "Continue; maximize Mac utilization/time efficiency and training/forecast quality",
+  "application": "Measured MPS for TCN/CNN; CPU4 selected for frozenbackbone/projections/CB. HigherCPUorcachebatch allowed if timing improves withoutmemorypressure; no resourceprobe delays required whilemainjobruns. Scientificvariants selectedonlyDEVELOPMENT, beforeCHECK. No unboundedsweep/newfamilies/pilotchanges.",
+  "new_heavy_jobs_authorized": false,
+  "current_job": 87138,
+  "frozen_main_receipt": "coordinator-development-go.json"
+}
