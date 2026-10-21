@@ -1,0 +1,18 @@
+{
+  "status": "COMPLETE_VALID_NEGATIVE_STOP",
+  "utc": "2026-10-21T08:08:45.430729+00:00",
+  "files": {
+    "reports/btc-sol-event-risk-20261021/ev03-result.md": "f2f48353af37f13ba5793fe934c59e1b722678774fcc936588dafc442cd08bd4",
+    "reports/btc-sol-event-risk-20261021/ev03-output/result.json": "394881bbf48af6a16e3aa7194702b4553c560e42128bf173ba41aee029ac4e3e",
+    "reports/btc-sol-event-risk-20261021/ev03-btc-comparison.py": "a79441627a45b09d03b86216ff490342a565069044bdc9b70e88da3b554be982",
+    "reports/btc-sol-event-risk-20261021/ev03-launch.py": "30e5752c30bd4e2e1ee73f960f382f4fc40c7ff38e7fe2c7d5016cdcdb99b7bd",
+    "reports/btc-sol-event-risk-20261021/ev03-input-source-manifest.json": "82f225adf37b17525bddc92205ce8af6aec4aaee023ee639e2e603c84c0ba323",
+    "reports/btc-sol-event-risk-20261021/ev03-synthetic-exit.json": "1240b9bfee485b0e1c23993b4fe640084f3df195e703e610eb06b5d9ffb855c4",
+    "reports/btc-sol-event-risk-20261021/ev03-real-exit.json": "852b87e5d4a14f02aa3d6b79592d771bbe4c304ff12b1abd706bd4924c01afd4"
+  },
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "research_units_remaining": "",
+  "real_fit_started_marker_present": true,
+  "native_economic_slots_used": 0,
+  "new_U_outcomes": 0
+}

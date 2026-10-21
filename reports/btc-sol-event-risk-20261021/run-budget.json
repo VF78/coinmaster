@@ -7,7 +7,7 @@
     {
       "slot": 1,
       "policy": "H-BTC",
-      "status": "NOT_ELIGIBLE_BEFORE_INFO_GATE",
+      "status": "STOP_BTC_INFORMATION_GATE_FAILED",
       "run_id": null
     },
     {
@@ -19,15 +19,16 @@
     {
       "slot": 3,
       "policy": "combined",
-      "status": "NOT_ADMITTED_SOL_BRANCH_STOP",
+      "status": "NOT_ACTIVATED_SEPARATE_GATES_FAILED",
       "run_id": null
     },
     {
       "slot": 4,
       "policy": "fresh_selected_pass_repeat",
-      "status": "CONDITIONAL_DD50_NP90_WINNER",
+      "status": "NOT_ACTIVATED_NO_ELIGIBLE_WINNER",
       "run_id": null
     }
   ],
-  "no_automatic_retries_or_new_hypotheses": true
+  "no_automatic_retries_or_new_hypotheses": true,
+  "status": "CLOSED_LIMITED_SCOPE_VALID_NEGATIVE_NO_ELIGIBLE_POLICY"
 }

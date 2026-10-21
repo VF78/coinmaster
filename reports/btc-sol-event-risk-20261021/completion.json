@@ -1,0 +1,56 @@
+{
+  "status": "COMPLETE_VALID_NEGATIVE_RESULT",
+  "utc": "2026-10-21T08:13:10.527660+00:00",
+  "goal_DD50_NP90_achieved": false,
+  "baseline_reused": {
+    "TOTAL_USDT": "6077107.23887483",
+    "ROI_percent": "60671.0723887483",
+    "native_marked_DD_percent": "66.256914864686864",
+    "S0_rerun": false
+  },
+  "target": {
+    "DD_max_percent": 50,
+    "minimum_TOTAL_USDT": "5470396.514987347",
+    "then": "MAX_TOTAL"
+  },
+  "EV01": "COMPLETE_NATIVE_LIFECYCLE_EVIDENCE",
+  "EV02": "COMPLETE_BTC_SUPPORT_PASS_SOL_SUPPORT_STOP",
+  "EV03": "COMPLETE_BTC_NO_ADDED_INFORMATION",
+  "EV04": "NOT_ACTIVATED_INFORMATION_GATE_FAILED",
+  "EV05": "NOT_ACTIVATED_NO_ELIGIBLE_SEPARATE_POLICY",
+  "EV06": "NOT_ACTIVATED_NO_COMBINED_OR_WINNER",
+  "selected_policy": null,
+  "new_policy_economic_results": null,
+  "native_economic_runs_used": 0,
+  "native_economic_runs_cap": 4,
+  "U_new_outcomes_inspected": 0,
+  "new_numeric_fit_count": 1,
+  "new_economic_or_pilot_source_changes": false,
+  "BTC_CHECK_component_equal_metrics": {
+    "prior": {
+      "log_loss": 0.6302204559128756,
+      "Brier": 0.2190869425607437
+    },
+    "rule": {
+      "log_loss": 0.6509786267239459,
+      "Brier": 0.22787176561899147
+    },
+    "numeric": {
+      "log_loss": 0.7209749828752491,
+      "Brier": 0.24893931555280693
+    },
+    "stumpy": {
+      "log_loss": 0.7079289690771631,
+      "Brier": 0.25251755510167656
+    }
+  },
+  "independent_verification": "GO_VALID_NEGATIVE_22_CHECKS",
+  "independent_report_sha256": "d23ffc1aabaebf0da8f11afa816dd1220fc10be951d52970e857fbcb0c76c063",
+  "fit_seconds": 11.818165353499353,
+  "fit_peak_RSS_bytes": 318984192,
+  "pilot_readback": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "active_owned_research_units": 0,
+  "production_deploy_orders_service_changes": false,
+  "Project": "https://github.com/VF78/coinmaster/issues/113",
+  "pre_final_HEAD": "f142124e6299bcd56af2dfedd07c5d0b1ef3bc1c"
+}

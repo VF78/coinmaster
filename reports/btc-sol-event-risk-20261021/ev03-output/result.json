@@ -1,0 +1,177 @@
+{
+  "status": "EV03_FIXED_COMPARISON_COMPLETE",
+  "recipe_sha256": "eb21d1eea69b51847c81efb9a6736a24e80958c125190ad21af5fee0b7cb43e5",
+  "manifest_sha256": "82f225adf37b17525bddc92205ce8af6aec4aaee023ee639e2e603c84c0ba323",
+  "metrics": {
+    "prior": {
+      "log_loss": 0.6302204559128756,
+      "Brier": 0.2190869425607437
+    },
+    "rule": {
+      "log_loss": 0.6509786267239459,
+      "Brier": 0.22787176561899147
+    },
+    "numeric": {
+      "log_loss": 0.7209749828752491,
+      "Brier": 0.24893931555280693
+    },
+    "stumpy": {
+      "log_loss": 0.7079289690771631,
+      "Brier": 0.25251755510167656
+    }
+  },
+  "comparisons": {
+    "rule": {
+      "prior": {
+        "relative_LL_improvement": -0.03293795149984802,
+        "paired_component_bootstrap": {
+          "mean_difference": 0.020758170811070332,
+          "ci95": [
+            0.0056131059927627775,
+            0.03479640801680534
+          ],
+          "component_count": 21,
+          "resamples": 10000,
+          "seed": 7
+        },
+        "quarter_differences": {
+          "0": 0.022755433693577392,
+          "1": 0.010458754352237865,
+          "2": 0.021788140050208647,
+          "3": 0.0251715667034881
+        },
+        "improving_quarters": 0,
+        "gate_pass": false
+      }
+    },
+    "numeric": {
+      "prior": {
+        "relative_LL_improvement": -0.14400441323491386,
+        "paired_component_bootstrap": {
+          "mean_difference": 0.09075452696237367,
+          "ci95": [
+            -0.004897750303021518,
+            0.20582743143246957
+          ],
+          "component_count": 21,
+          "resamples": 10000,
+          "seed": 7
+        },
+        "quarter_differences": {
+          "0": 0.139130590050929,
+          "1": 0.14805217612599514,
+          "2": 0.08859316666532713,
+          "3": -0.020648720395454394
+        },
+        "improving_quarters": 1,
+        "gate_pass": false
+      },
+      "rule": {
+        "relative_LL_improvement": -0.10752481460652596,
+        "paired_component_bootstrap": {
+          "mean_difference": 0.06999635615130335,
+          "ci95": [
+            -0.03133871821765578,
+            0.18984754266861445
+          ],
+          "component_count": 21,
+          "resamples": 10000,
+          "seed": 7
+        },
+        "quarter_differences": {
+          "0": 0.11637515635735161,
+          "1": 0.13759342177375727,
+          "2": 0.06680502661511849,
+          "3": -0.045820287098942494
+        },
+        "improving_quarters": 1,
+        "gate_pass": false
+      }
+    },
+    "stumpy": {
+      "prior": {
+        "relative_LL_improvement": -0.12330369862673929,
+        "paired_component_bootstrap": {
+          "mean_difference": 0.07770851316428762,
+          "ci95": [
+            0.022907256022398993,
+            0.14192971972192273
+          ],
+          "component_count": 21,
+          "resamples": 10000,
+          "seed": 7
+        },
+        "quarter_differences": {
+          "0": 0.10933780037488597,
+          "1": 0.06453235124399685,
+          "2": 0.07134244165515947,
+          "3": 0.050334512114810645
+        },
+        "improving_quarters": 0,
+        "gate_pass": false
+      },
+      "rule": {
+        "relative_LL_improvement": -0.08748419689263853,
+        "paired_component_bootstrap": {
+          "mean_difference": 0.05695034235321728,
+          "ci95": [
+            0.003016277668332978,
+            0.118424640769954
+          ],
+          "component_count": 21,
+          "resamples": 10000,
+          "seed": 7
+        },
+        "quarter_differences": {
+          "0": 0.08658236668130859,
+          "1": 0.05407359689175899,
+          "2": 0.04955430160495082,
+          "3": 0.025162945411322545
+        },
+        "improving_quarters": 0,
+        "gate_pass": false
+      }
+    }
+  },
+  "qualifying_methods": [],
+  "selected_method": null,
+  "decision": "NO_ADDED_INFORMATION_STOP_NO_ECONOMIC_RUN",
+  "stumpy": {
+    "fallback_queries": 9,
+    "queries": 80,
+    "invalid_train_windows": 0,
+    "invalid_check_windows": 0
+  },
+  "constant_probability": 0.29248366013071897,
+  "rule_bin_probabilities": {
+    "False": 0.32804011700793984,
+    "True": 0.28237585199610515
+  },
+  "check_quarter_block_counts": {
+    "0": 7,
+    "1": 4,
+    "2": 5,
+    "3": 5
+  },
+  "weights": "equal BTC dependence-component weight; no IID event bootstrap",
+  "resources": {
+    "wall_seconds": 11.818165353499353,
+    "peak_RSS_bytes": 318984192
+  },
+  "new_fits": 1,
+  "U_outcomes_inspected": 0,
+  "economic_runs": 0,
+  "limitations": [
+    "CHECK development, not untouched holdout",
+    "S0 risk forecast is not actionvalue",
+    "BTC action reachability UNKNOWN until sourcegate",
+    "no TRAIN weights backwards and no S0 timestamp forecast replay"
+  ],
+  "outputs": {
+    "synthetic-checks.json": "f07f0d83ffae63730d3f07bf15db20dc4f806d38d58fafb26aae1712e4a0f447",
+    "numeric-model.json": "14792647003193f77ac9ea1507fb3a908b299baed08302fef57f1e991b37f0b6",
+    "check-predictions.csv": "b841ad29473fbfe87f7956610990217eaf6c935c8055216696b82feab3a608f7",
+    "real-fit-started.json": "21f8cea561607c2a9ccaaa321f0e336c485a248958e22b1bcf959b8f99c79437",
+    "stumpy-matches.json": "d5e3c330713582a243af7c3e1bad817135e11f7fe1f437fbcfc31b4a28df52e1"
+  }
+}

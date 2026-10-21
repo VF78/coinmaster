@@ -1,0 +1,270 @@
+{
+  "status": "GO_VALID_NEGATIVE",
+  "utc": "2026-10-21T08:10:15.943443+00:00",
+  "scope": "Independent saved-results verification only; no original scorer execution, model fit, new predictions, hypothesis, engine, AUC analysis or U payload inspection.",
+  "checks": {
+    "frozen_input_source_hashes": {
+      "pass": true,
+      "details": {
+        "checked": 9,
+        "paths": [
+          "reports/btc-sol-event-risk-20261021/ev03-btc-comparison.py",
+          "reports/btc-sol-event-risk-20261021/ev03-btc-recipes-proposed.md",
+          "reports/btc-sol-event-risk-20261021/ev03-freeze.json",
+          "reports/btc-sol-event-risk-20261021/ev02-events.json",
+          "reports/btc-sol-event-risk-20261021/ev02-sufficiency.json",
+          "reports/btc-sol-event-risk-20261021/ev02-connected-blocks.json",
+          "reports/fast-rnd-20261020/env-lock.txt",
+          "reports/fast-rnd-20261020/env-freeze.txt",
+          "runtime/var/research-datasets/fast-rnd-20261020-v1/panels.npz"
+        ]
+      }
+    },
+    "result_recipe_hash": {
+      "pass": true,
+      "details": null
+    },
+    "result_manifest_hash": {
+      "pass": true,
+      "details": null
+    },
+    "saved_output_hashes": {
+      "pass": true,
+      "details": {
+        "checked": 5
+      }
+    },
+    "EV02_CSV_hash": {
+      "pass": true,
+      "details": null
+    },
+    "event_export_no_U": {
+      "pass": true,
+      "details": null
+    },
+    "counts": {
+      "pass": true,
+      "details": {
+        "TRAIN": 50,
+        "CHECK": 80,
+        "prediction_rows": 80,
+        "TRAIN_components": 15,
+        "CHECK_components": 21
+      }
+    },
+    "common_event_IDs_labels_timestamps_components": {
+      "pass": true,
+      "details": null
+    },
+    "partition_component_disjoint": {
+      "pass": true,
+      "details": null
+    },
+    "BTC_sufficiency_pinned": {
+      "pass": true,
+      "details": null
+    },
+    "constant_and_rule_TRAIN_only_reproduction": {
+      "pass": true,
+      "details": {
+        "TRAIN_component_weight_sum": 15.0,
+        "constant": 0.29248366013071897,
+        "rule_bins": {
+          "False": 0.3280401170079398,
+          "True": 0.28237585199610515
+        }
+      }
+    },
+    "component_equal_LL_Brier_reproduction": {
+      "pass": true,
+      "details": {
+        "prior": {
+          "log_loss": 0.6302204559128756,
+          "Brier": 0.2190869425607438
+        },
+        "rule": {
+          "log_loss": 0.6509786267239459,
+          "Brier": 0.22787176561899147
+        },
+        "numeric": {
+          "log_loss": 0.7209749828752492,
+          "Brier": 0.24893931555280696
+        },
+        "stumpy": {
+          "log_loss": 0.7079289690771632,
+          "Brier": 0.25251755510167656
+        }
+      }
+    },
+    "quarter_whole_component_counts": {
+      "pass": true,
+      "details": {
+        "0": 7,
+        "1": 4,
+        "2": 5,
+        "3": 5
+      }
+    },
+    "comparison_rule_vs_prior": {
+      "pass": true,
+      "details": null
+    },
+    "comparison_numeric_vs_prior": {
+      "pass": true,
+      "details": null
+    },
+    "comparison_numeric_vs_rule": {
+      "pass": true,
+      "details": null
+    },
+    "comparison_stumpy_vs_prior": {
+      "pass": true,
+      "details": null
+    },
+    "comparison_stumpy_vs_rule": {
+      "pass": true,
+      "details": null
+    },
+    "negative_gate_follows_frozen_rules": {
+      "pass": true,
+      "details": null
+    },
+    "source_TRAIN_only_fit_and_constants_review": {
+      "pass": true,
+      "details": "Read frozen source: TRAIN-only prior/bin estimates, scaler fit and one numeric fit; CHECK used only transform/predict/score. Original scorer was not executed/imported."
+    },
+    "freeze_precedes_fit_receipt": {
+      "pass": true,
+      "details": null
+    },
+    "saved_execution_scope_receipts": {
+      "pass": true,
+      "details": "Receipt/source verification only; no new fit or runtime process audit performed."
+    }
+  },
+  "recomputed_metrics": {
+    "prior": {
+      "log_loss": 0.6302204559128756,
+      "Brier": 0.2190869425607438
+    },
+    "rule": {
+      "log_loss": 0.6509786267239459,
+      "Brier": 0.22787176561899147
+    },
+    "numeric": {
+      "log_loss": 0.7209749828752492,
+      "Brier": 0.24893931555280696
+    },
+    "stumpy": {
+      "log_loss": 0.7079289690771632,
+      "Brier": 0.25251755510167656
+    }
+  },
+  "comparisons": {
+    "rule": {
+      "prior": {
+        "mean_LL_difference": 0.02075817081107028,
+        "ci95": [
+          0.005613105992762749,
+          0.0347964080168053
+        ],
+        "relative_LL_improvement": -0.03293795149984802,
+        "quarter_differences": {
+          "0": 0.022755433693577336,
+          "1": 0.010458754352237837,
+          "2": 0.021788140050208616,
+          "3": 0.025171566703488024
+        },
+        "winning_quarters": 0,
+        "gate_pass": false
+      }
+    },
+    "numeric": {
+      "prior": {
+        "mean_LL_difference": 0.09075452696237359,
+        "ci95": [
+          -0.004897750303021628,
+          0.20582743143246948
+        ],
+        "relative_LL_improvement": -0.14400441323491409,
+        "quarter_differences": {
+          "0": 0.1391305900509289,
+          "1": 0.1480521761259951,
+          "2": 0.08859316666532707,
+          "3": -0.020648720395454533
+        },
+        "winning_quarters": 1,
+        "gate_pass": false
+      },
+      "rule": {
+        "mean_LL_difference": 0.0699963561513033,
+        "ci95": [
+          -0.03133871821765581,
+          0.18984754266861445
+        ],
+        "relative_LL_improvement": -0.10752481460652619,
+        "quarter_differences": {
+          "0": 0.11637515635735156,
+          "1": 0.13759342177375727,
+          "2": 0.06680502661511846,
+          "3": -0.04582028709894256
+        },
+        "winning_quarters": 1,
+        "gate_pass": false
+      }
+    },
+    "stumpy": {
+      "prior": {
+        "mean_LL_difference": 0.07770851316428755,
+        "ci95": [
+          0.022907256022398938,
+          0.1419297197219227
+        ],
+        "relative_LL_improvement": -0.12330369862673951,
+        "quarter_differences": {
+          "0": 0.10933780037488594,
+          "1": 0.06453235124399682,
+          "2": 0.07134244165515945,
+          "3": 0.05033451211481053
+        },
+        "winning_quarters": 0,
+        "gate_pass": false
+      },
+      "rule": {
+        "mean_LL_difference": 0.05695034235321728,
+        "ci95": [
+          0.003016277668332991,
+          0.11842464076995396
+        ],
+        "relative_LL_improvement": -0.08748419689263875,
+        "quarter_differences": {
+          "0": 0.08658236668130859,
+          "1": 0.05407359689175899,
+          "2": 0.049554301604950834,
+          "3": 0.025162945411322503
+        },
+        "winning_quarters": 0,
+        "gate_pass": false
+      }
+    }
+  },
+  "quarter_wins_vs_prior": {
+    "prior": 0,
+    "rule": 0,
+    "numeric": 1,
+    "stumpy": 0
+  },
+  "material_issues": [],
+  "verification_input_hashes": {
+    "result.json": "394881bbf48af6a16e3aa7194702b4553c560e42128bf173ba41aee029ac4e3e",
+    "manifest.json": "82f225adf37b17525bddc92205ce8af6aec4aaee023ee639e2e603c84c0ba323",
+    "events.csv": "a25ea91c6c348c68d6411474fec569119f822ab2eac2fa9ae3b1bc5c1ec2d7a4",
+    "sufficiency.json": "dd92ef413f5b256dcddba0d7876e6b8ca5898955af0cdec256b33df0c12b32bb"
+  },
+  "limitations": [
+    "GO validates the recorded negative information gate, not economic performance, live readiness, or causal action value.",
+    "Only21 CHECK dependence components; fixed percentile CI reproduced, no significance extension or additional statistical analysis.",
+    "Single-fit/no-retry/no-U/no-engine claims agree with saved receipts and frozen source; no process-history forensic audit was requested.",
+    "Canonical sufficiency filename is ev02-sufficiency.json; no standalone sufficiency.json exists."
+  ]
+}

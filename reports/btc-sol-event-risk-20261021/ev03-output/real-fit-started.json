@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-21T08:07:16.120337+00:00",
+  "recipe_sha256": "eb21d1eea69b51847c81efb9a6736a24e80958c125190ad21af5fee0b7cb43e5",
+  "train_events": 50,
+  "check_events": 80,
+  "model_fits_planned": 1,
+  "automatic_retries": false
+}

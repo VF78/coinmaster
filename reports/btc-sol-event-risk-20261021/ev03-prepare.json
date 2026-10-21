@@ -1,0 +1,17 @@
+{
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-event-btc-ev03-20261021T0810Z",
+  "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-event-btc-ev03-20261021T0810Z/source",
+  "python": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-event-btc-ev03-20261021T0810Z/env/bin/python",
+  "canonical": "/root/.openclaw/workspace/coinmaster/coinmaster",
+  "out": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-event-btc-ev03-20261021T0810Z/source/reports/btc-sol-event-risk-20261021/ev03-output",
+  "resource": {
+    "MemoryMax": "400M",
+    "MemorySwapMax": 0,
+    "CPUQuota": "100%",
+    "threads": 1,
+    "nice": 15
+  },
+  "read_only_env": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-envs/fast-rnd-20261020",
+  "created_utc": "2026-10-21T08:05:27.843652+00:00",
+  "real_fit_started": false
+}

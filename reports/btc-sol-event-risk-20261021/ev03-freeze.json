@@ -1,0 +1,24 @@
+{
+  "status": "GO_EV03_BTC_FIXED_METHOD_COMPARISON",
+  "utc": "2026-10-21T08:01:35.048364+00:00",
+  "recipe_sha256": "eb21d1eea69b51847c81efb9a6736a24e80958c125190ad21af5fee0b7cb43e5",
+  "event_sufficiency_sha256": "dd92ef413f5b256dcddba0d7876e6b8ca5898955af0cdec256b33df0c12b32bb",
+  "authorized": "one fixed rule, one small numeric fit, one STUMPY variant; focused tests and source/input freeze before single CHECK comparison",
+  "features": 6,
+  "TRAIN_CHECK_events": [
+    50,
+    80
+  ],
+  "TRAIN_CHECK_blocks": [
+    15,
+    21
+  ],
+  "input_source_manifest_required_before_fit": true,
+  "allow_threshold_feature_grid": false,
+  "U_outcomes": false,
+  "native_economic_runs": false,
+  "native_budget_used": 0,
+  "pilot_changes": false,
+  "no_automatic_real_fit_retries": true,
+  "postgate": "no qualifying method -> stop; gatePASS only permits separate economicpolicy/sourcefreeze next"
+}

@@ -1,0 +1,2473 @@
+[
+  {
+    "query_event_id": "BTC:421678a9-d6cd-4d14-94dd-e10393e5441e:1744416000000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741219200000000000:",
+        "block_id": "block-0013",
+        "distance": 2.350956201200069,
+        "label": 0,
+        "horizon_end_ns": 1741478400000000000
+      },
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740268800000000000:",
+        "block_id": "block-0012",
+        "distance": 4.434955626403408,
+        "label": 0,
+        "horizon_end_ns": 1740528000000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:7e613237-e157-4576-9678-26a72d6e8c7e:1744848000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 3.1688579568936013,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 6.02959630188298,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 7.561481285655477,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:cd1fb8eb-3a59-4f85-89fa-c3799974b500:1745020800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728864000000000000:",
+        "block_id": "block-0002",
+        "distance": 4.770603350628442,
+        "label": 0,
+        "horizon_end_ns": 1729123200000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 4.98125802185831,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 8.203807813498385,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:cd1fb8eb-3a59-4f85-89fa-c3799974b500:1745193600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1736121600000000000:",
+        "block_id": "block-0008",
+        "distance": 2.855632284197171,
+        "label": 0,
+        "horizon_end_ns": 1736380800000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730678400000000000:",
+        "block_id": "block-0004",
+        "distance": 4.459158520064217,
+        "label": 1,
+        "horizon_end_ns": 1730937600000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1737072000000000000:",
+        "block_id": "block-0009",
+        "distance": 4.91456686746165,
+        "label": 0,
+        "horizon_end_ns": 1737331200000000000
+      },
+      {
+        "event_id": "BTC:ffade3cb-431b-4ee8-88f8-713e4665bf6f:1738195200000000000:",
+        "block_id": "block-0010",
+        "distance": 5.2806643867692,
+        "label": 1,
+        "horizon_end_ns": 1738454400000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729987200000000000:",
+        "block_id": "block-0003",
+        "distance": 5.535031328469511,
+        "label": 0,
+        "horizon_end_ns": 1730246400000000000
+      }
+    ],
+    "probability": 0.42857142857142855
+  },
+  {
+    "query_event_id": "BTC:daff9d12-5e81-4277-b8e3-45e1e5b667aa:1746662400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732147200000000000:",
+        "block_id": "block-0005",
+        "distance": 5.123921256149327,
+        "label": 1,
+        "horizon_end_ns": 1732406400000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 5.410384522103937,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728432000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.939608318228841,
+        "label": 1,
+        "horizon_end_ns": 1728691200000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730851200000000000:",
+        "block_id": "block-0004",
+        "distance": 6.123602810033916,
+        "label": 0,
+        "horizon_end_ns": 1731110400000000000
+      },
+      {
+        "event_id": "BTC:ffade3cb-431b-4ee8-88f8-713e4665bf6f:1738368000000000000:",
+        "block_id": "block-0010",
+        "distance": 6.180251855897682,
+        "label": 1,
+        "horizon_end_ns": 1738627200000000000
+      }
+    ],
+    "probability": 0.5714285714285714
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748217600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728864000000000000:",
+        "block_id": "block-0002",
+        "distance": 4.691306168618089,
+        "label": 0,
+        "horizon_end_ns": 1729123200000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 4.7982141686682125,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 7.204877910775105,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748304000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 3.5448815594152188,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 4.155505526094458,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 7.895739889910574,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748390400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 4.207246422012824,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728777600000000000:",
+        "block_id": "block-0002",
+        "distance": 5.1521816460318215,
+        "label": 0,
+        "horizon_end_ns": 1729036800000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 6.000885960301515,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748476800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 4.440387652466135,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.930493043838379,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 8.659668987748708,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748563200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 3.3339794967844942,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.194288267655824,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 8.097955022531043,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748649600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 3.558677259516438,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 4.544678447124579,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 8.01130051124157,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748736000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 2.9459244614599447,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728777600000000000:",
+        "block_id": "block-0002",
+        "distance": 3.5650643226715397,
+        "label": 0,
+        "horizon_end_ns": 1729036800000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 6.77543953996269,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748822400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 4.281806760561866,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728777600000000000:",
+        "block_id": "block-0002",
+        "distance": 4.605505443767153,
+        "label": 0,
+        "horizon_end_ns": 1729036800000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 6.060032098639734,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748908800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 3.8421219860541354,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728864000000000000:",
+        "block_id": "block-0002",
+        "distance": 3.9371667925495686,
+        "label": 0,
+        "horizon_end_ns": 1729123200000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 7.746623893815772,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748995200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 3.3595293318005393,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728777600000000000:",
+        "block_id": "block-0002",
+        "distance": 4.238884098761023,
+        "label": 0,
+        "horizon_end_ns": 1729036800000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 6.137686794178984,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1749081600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.8152060915944634,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 4.894686169228498,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 7.900591552412141,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:5e6e6cd3-a8cc-44fe-b463-01bc8579ee02:1749427200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1735948800000000000:",
+        "block_id": "block-0008",
+        "distance": 2.1307174701583778,
+        "label": 0,
+        "horizon_end_ns": 1736208000000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1736985600000000000:",
+        "block_id": "block-0009",
+        "distance": 2.6318024683715042,
+        "label": 0,
+        "horizon_end_ns": 1737244800000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1730073600000000000:",
+        "block_id": "block-0003",
+        "distance": 2.91029636214084,
+        "label": 0,
+        "horizon_end_ns": 1730332800000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737676800000000000:",
+        "block_id": "block-0010",
+        "distance": 3.431809966582182,
+        "label": 0,
+        "horizon_end_ns": 1737936000000000000
+      },
+      {
+        "event_id": "BTC:d9d0c494-2929-4f25-aed3-ab5b79f4f94d:1735171200000000000:",
+        "block_id": "block-0007",
+        "distance": 3.4922391780439836,
+        "label": 1,
+        "horizon_end_ns": 1735430400000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:ca3dd9e3-cd7b-49d1-b1e9-944a8077ff24:1749945600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728864000000000000:",
+        "block_id": "block-0002",
+        "distance": 4.516696828279342,
+        "label": 0,
+        "horizon_end_ns": 1729123200000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 5.005519781740835,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 7.983424200492744,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:ca3dd9e3-cd7b-49d1-b1e9-944a8077ff24:1750032000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.549100146303889,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 5.739197040366564,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 6.850532112844099,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:ca3dd9e3-cd7b-49d1-b1e9-944a8077ff24:1750118400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 2.7660457491859134,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728777600000000000:",
+        "block_id": "block-0002",
+        "distance": 3.872033658081895,
+        "label": 0,
+        "horizon_end_ns": 1729036800000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 7.273110971597747,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1750896000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732147200000000000:",
+        "block_id": "block-0005",
+        "distance": 2.2273385339251153,
+        "label": 1,
+        "horizon_end_ns": 1732406400000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1736985600000000000:",
+        "block_id": "block-0009",
+        "distance": 3.1991926191791604,
+        "label": 0,
+        "horizon_end_ns": 1737244800000000000
+      },
+      {
+        "event_id": "BTC:d9d0c494-2929-4f25-aed3-ab5b79f4f94d:1735171200000000000:",
+        "block_id": "block-0007",
+        "distance": 3.3247133743823953,
+        "label": 1,
+        "horizon_end_ns": 1735430400000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1730073600000000000:",
+        "block_id": "block-0003",
+        "distance": 3.553011933622327,
+        "label": 0,
+        "horizon_end_ns": 1730332800000000000
+      },
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1735948800000000000:",
+        "block_id": "block-0008",
+        "distance": 4.26955437932075,
+        "label": 0,
+        "horizon_end_ns": 1736208000000000000
+      }
+    ],
+    "probability": 0.42857142857142855
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1750982400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730592000000000000:",
+        "block_id": "block-0004",
+        "distance": 3.760590819231987,
+        "label": 1,
+        "horizon_end_ns": 1730851200000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 3.7774839250132177,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731801600000000000:",
+        "block_id": "block-0005",
+        "distance": 4.132032635351749,
+        "label": 0,
+        "horizon_end_ns": 1732060800000000000
+      },
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 4.350096799527192,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728345600000000000:",
+        "block_id": "block-0002",
+        "distance": 5.413339331276609,
+        "label": 1,
+        "horizon_end_ns": 1728604800000000000
+      }
+    ],
+    "probability": 0.42857142857142855
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751068800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1736121600000000000:",
+        "block_id": "block-0008",
+        "distance": 4.620479786920536,
+        "label": 0,
+        "horizon_end_ns": 1736380800000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730592000000000000:",
+        "block_id": "block-0004",
+        "distance": 4.735195322094999,
+        "label": 1,
+        "horizon_end_ns": 1730851200000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731974400000000000:",
+        "block_id": "block-0005",
+        "distance": 5.1442311597083,
+        "label": 0,
+        "horizon_end_ns": 1732233600000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1737072000000000000:",
+        "block_id": "block-0009",
+        "distance": 5.4824232526225645,
+        "label": 0,
+        "horizon_end_ns": 1737331200000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 5.537108297565454,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751155200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731974400000000000:",
+        "block_id": "block-0005",
+        "distance": 3.901931419512333,
+        "label": 0,
+        "horizon_end_ns": 1732233600000000000
+      },
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 4.845292811524825,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:ffade3cb-431b-4ee8-88f8-713e4665bf6f:1738368000000000000:",
+        "block_id": "block-0010",
+        "distance": 5.310500293189273,
+        "label": 1,
+        "horizon_end_ns": 1738627200000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730592000000000000:",
+        "block_id": "block-0004",
+        "distance": 5.3413675141688515,
+        "label": 1,
+        "horizon_end_ns": 1730851200000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729987200000000000:",
+        "block_id": "block-0003",
+        "distance": 5.921076555775456,
+        "label": 0,
+        "horizon_end_ns": 1730246400000000000
+      }
+    ],
+    "probability": 0.42857142857142855
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751241600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732147200000000000:",
+        "block_id": "block-0005",
+        "distance": 4.883569849069592,
+        "label": 1,
+        "horizon_end_ns": 1732406400000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 5.12079471247383,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737763200000000000:",
+        "block_id": "block-0010",
+        "distance": 5.474669768387875,
+        "label": 0,
+        "horizon_end_ns": 1738022400000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728432000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.71281780798477,
+        "label": 1,
+        "horizon_end_ns": 1728691200000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730764800000000000:",
+        "block_id": "block-0004",
+        "distance": 5.857631675804267,
+        "label": 0,
+        "horizon_end_ns": 1731024000000000000
+      }
+    ],
+    "probability": 0.42857142857142855
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751328000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 3.6052768619669036,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730592000000000000:",
+        "block_id": "block-0004",
+        "distance": 4.277808668355549,
+        "label": 1,
+        "horizon_end_ns": 1730851200000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731801600000000000:",
+        "block_id": "block-0005",
+        "distance": 4.937809154081898,
+        "label": 0,
+        "horizon_end_ns": 1732060800000000000
+      },
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 5.365495294012364,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1737072000000000000:",
+        "block_id": "block-0009",
+        "distance": 5.494433764920574,
+        "label": 0,
+        "horizon_end_ns": 1737331200000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751414400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730764800000000000:",
+        "block_id": "block-0004",
+        "distance": 3.0325252836202767,
+        "label": 0,
+        "horizon_end_ns": 1731024000000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 3.1774800838111608,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 3.696277133889847,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 4.065755181985414,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731888000000000000:",
+        "block_id": "block-0005",
+        "distance": 4.134136088177064,
+        "label": 0,
+        "horizon_end_ns": 1732147200000000000
+      }
+    ],
+    "probability": 0.14285714285714285
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751500800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1736985600000000000:",
+        "block_id": "block-0009",
+        "distance": 2.554657163341426,
+        "label": 0,
+        "horizon_end_ns": 1737244800000000000
+      },
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1735948800000000000:",
+        "block_id": "block-0008",
+        "distance": 2.6122725762331775,
+        "label": 0,
+        "horizon_end_ns": 1736208000000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1730073600000000000:",
+        "block_id": "block-0003",
+        "distance": 2.6715471559615116,
+        "label": 0,
+        "horizon_end_ns": 1730332800000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732147200000000000:",
+        "block_id": "block-0005",
+        "distance": 2.864274969886802,
+        "label": 1,
+        "horizon_end_ns": 1732406400000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730851200000000000:",
+        "block_id": "block-0004",
+        "distance": 2.9348121014766426,
+        "label": 0,
+        "horizon_end_ns": 1731110400000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751587200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732147200000000000:",
+        "block_id": "block-0005",
+        "distance": 4.16840247804733,
+        "label": 1,
+        "horizon_end_ns": 1732406400000000000
+      },
+      {
+        "event_id": "BTC:d9d0c494-2929-4f25-aed3-ab5b79f4f94d:1735171200000000000:",
+        "block_id": "block-0007",
+        "distance": 4.552831229876961,
+        "label": 1,
+        "horizon_end_ns": 1735430400000000000
+      },
+      {
+        "event_id": "BTC:ffade3cb-431b-4ee8-88f8-713e4665bf6f:1738195200000000000:",
+        "block_id": "block-0010",
+        "distance": 4.803810958255535,
+        "label": 1,
+        "horizon_end_ns": 1738454400000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1736985600000000000:",
+        "block_id": "block-0009",
+        "distance": 4.877514685472051,
+        "label": 0,
+        "horizon_end_ns": 1737244800000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729987200000000000:",
+        "block_id": "block-0003",
+        "distance": 5.2473414513934555,
+        "label": 0,
+        "horizon_end_ns": 1730246400000000000
+      }
+    ],
+    "probability": 0.5714285714285714
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751673600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 2.187633636809465,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730764800000000000:",
+        "block_id": "block-0004",
+        "distance": 2.975422815468111,
+        "label": 0,
+        "horizon_end_ns": 1731024000000000000
+      },
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 3.8359299677465284,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731801600000000000:",
+        "block_id": "block-0005",
+        "distance": 4.176541142978431,
+        "label": 0,
+        "horizon_end_ns": 1732060800000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 4.68351233396787,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      }
+    ],
+    "probability": 0.14285714285714285
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751760000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1736121600000000000:",
+        "block_id": "block-0008",
+        "distance": 5.050288144799543,
+        "label": 0,
+        "horizon_end_ns": 1736380800000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728432000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.101669234515849,
+        "label": 1,
+        "horizon_end_ns": 1728691200000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730764800000000000:",
+        "block_id": "block-0004",
+        "distance": 5.211194217410656,
+        "label": 0,
+        "horizon_end_ns": 1731024000000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 5.5601617424002265,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 5.692345949409862,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751846400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1730073600000000000:",
+        "block_id": "block-0003",
+        "distance": 1.3600945437304905,
+        "label": 0,
+        "horizon_end_ns": 1730332800000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1736985600000000000:",
+        "block_id": "block-0009",
+        "distance": 2.1457924252537732,
+        "label": 0,
+        "horizon_end_ns": 1737244800000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732147200000000000:",
+        "block_id": "block-0005",
+        "distance": 2.639006271683769,
+        "label": 1,
+        "horizon_end_ns": 1732406400000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737676800000000000:",
+        "block_id": "block-0010",
+        "distance": 3.396108581769146,
+        "label": 0,
+        "horizon_end_ns": 1737936000000000000
+      },
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1735948800000000000:",
+        "block_id": "block-0008",
+        "distance": 3.4625606418191976,
+        "label": 0,
+        "horizon_end_ns": 1736208000000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1751932800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 2.470346986633662,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730764800000000000:",
+        "block_id": "block-0004",
+        "distance": 2.819689748732287,
+        "label": 0,
+        "horizon_end_ns": 1731024000000000000
+      },
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 3.737673463296494,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731801600000000000:",
+        "block_id": "block-0005",
+        "distance": 3.7969493673617327,
+        "label": 0,
+        "horizon_end_ns": 1732060800000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 4.2604673413738565,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      }
+    ],
+    "probability": 0.14285714285714285
+  },
+  {
+    "query_event_id": "BTC:bcef231d-58c3-48c7-bc51-5919fa37d031:1752019200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732147200000000000:",
+        "block_id": "block-0005",
+        "distance": 4.221349391132757,
+        "label": 1,
+        "horizon_end_ns": 1732406400000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737763200000000000:",
+        "block_id": "block-0010",
+        "distance": 4.391878181525565,
+        "label": 0,
+        "horizon_end_ns": 1738022400000000000
+      },
+      {
+        "event_id": "BTC:d9d0c494-2929-4f25-aed3-ab5b79f4f94d:1735171200000000000:",
+        "block_id": "block-0007",
+        "distance": 4.752693365998529,
+        "label": 1,
+        "horizon_end_ns": 1735430400000000000
+      },
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1735948800000000000:",
+        "block_id": "block-0008",
+        "distance": 4.844044880908273,
+        "label": 0,
+        "horizon_end_ns": 1736208000000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1736985600000000000:",
+        "block_id": "block-0009",
+        "distance": 4.86042707487882,
+        "label": 0,
+        "horizon_end_ns": 1737244800000000000
+      }
+    ],
+    "probability": 0.42857142857142855
+  },
+  {
+    "query_event_id": "BTC:e6c22d13-5128-471d-8d4a-de2653ae46c3:1754179200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 2.5028483632130425,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 4.0918170471085515,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.369625703152917,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:e6c22d13-5128-471d-8d4a-de2653ae46c3:1754265600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725321600000000000:",
+        "block_id": "block-0000",
+        "distance": 2.7090212370564504,
+        "label": 0,
+        "horizon_end_ns": 1725580800000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 4.561495236745466,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 7.137504145640774,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:7c95017b-fe65-4898-9c3b-d26fa96615a0:1757116800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 3.434223460711398,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 5.107313436726224,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 6.38519963770426,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:7c95017b-fe65-4898-9c3b-d26fa96615a0:1757203200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725580800000000000:",
+        "block_id": "block-0000",
+        "distance": 2.594954941180746,
+        "label": 0,
+        "horizon_end_ns": 1725840000000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 3.6656296950764213,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.827612977426406,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:7c95017b-fe65-4898-9c3b-d26fa96615a0:1757289600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725321600000000000:",
+        "block_id": "block-0000",
+        "distance": 2.976699076179529,
+        "label": 0,
+        "horizon_end_ns": 1725580800000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 5.948410853398643,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 8.107168164154926,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:7c95017b-fe65-4898-9c3b-d26fa96615a0:1757376000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725321600000000000:",
+        "block_id": "block-0000",
+        "distance": 2.7989157097341497,
+        "label": 0,
+        "horizon_end_ns": 1725580800000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 5.399186639834222,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 8.276868898715792,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:7c95017b-fe65-4898-9c3b-d26fa96615a0:1757462400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 3.0009431427199718,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 5.26184841235296,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.953996405490643,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:e2da1a0b-1950-4744-bffa-e8b6544c1709:1758758400000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741219200000000000:",
+        "block_id": "block-0013",
+        "distance": 3.4294481834798,
+        "label": 0,
+        "horizon_end_ns": 1741478400000000000
+      },
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740268800000000000:",
+        "block_id": "block-0012",
+        "distance": 4.29428415384313,
+        "label": 0,
+        "horizon_end_ns": 1740528000000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:bc020b69-ede2-4edc-91a8-4075878906e0:1759276800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 4.737180363161275,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728864000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.123167825295916,
+        "label": 0,
+        "horizon_end_ns": 1729123200000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 6.577782238741914,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:ef74d779-c297-4d72-9084-e3981daafb3a:1760313600000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741132800000000000:",
+        "block_id": "block-0013",
+        "distance": 2.832338977005795,
+        "label": 0,
+        "horizon_end_ns": 1741392000000000000
+      },
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740268800000000000:",
+        "block_id": "block-0012",
+        "distance": 4.701974035660746,
+        "label": 0,
+        "horizon_end_ns": 1740528000000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:ef74d779-c297-4d72-9084-e3981daafb3a:1760400000000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741132800000000000:",
+        "block_id": "block-0013",
+        "distance": 3.679875818722734,
+        "label": 0,
+        "horizon_end_ns": 1741392000000000000
+      },
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740355200000000000:",
+        "block_id": "block-0012",
+        "distance": 5.857336961109896,
+        "label": 0,
+        "horizon_end_ns": 1740614400000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:ef74d779-c297-4d72-9084-e3981daafb3a:1760486400000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741132800000000000:",
+        "block_id": "block-0013",
+        "distance": 4.345979965581592,
+        "label": 0,
+        "horizon_end_ns": 1741392000000000000
+      },
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740268800000000000:",
+        "block_id": "block-0012",
+        "distance": 6.737247381390413,
+        "label": 0,
+        "horizon_end_ns": 1740528000000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:ef74d779-c297-4d72-9084-e3981daafb3a:1760572800000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740355200000000000:",
+        "block_id": "block-0012",
+        "distance": 2.029792797599761,
+        "label": 0,
+        "horizon_end_ns": 1740614400000000000
+      },
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741305600000000000:",
+        "block_id": "block-0013",
+        "distance": 3.5242014960658596,
+        "label": 0,
+        "horizon_end_ns": 1741564800000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:d4fbcb91-6839-4795-9aef-18681fbf143f:1761264000000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741219200000000000:",
+        "block_id": "block-0013",
+        "distance": 4.813972296230953,
+        "label": 0,
+        "horizon_end_ns": 1741478400000000000
+      },
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740268800000000000:",
+        "block_id": "block-0012",
+        "distance": 5.602373919980192,
+        "label": 0,
+        "horizon_end_ns": 1740528000000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:d4fbcb91-6839-4795-9aef-18681fbf143f:1761350400000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740355200000000000:",
+        "block_id": "block-0012",
+        "distance": 3.7155604679628205,
+        "label": 0,
+        "horizon_end_ns": 1740614400000000000
+      },
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741305600000000000:",
+        "block_id": "block-0013",
+        "distance": 4.381405047743302,
+        "label": 0,
+        "horizon_end_ns": 1741564800000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:d4fbcb91-6839-4795-9aef-18681fbf143f:1761436800000000000:",
+    "fallback": true,
+    "neighbors": [
+      {
+        "event_id": "BTC:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741219200000000000:",
+        "block_id": "block-0013",
+        "distance": 4.199800215298324,
+        "label": 0,
+        "horizon_end_ns": 1741478400000000000
+      },
+      {
+        "event_id": "BTC:5dada14a-69ee-46bf-90a1-feb88d6e6631:1740268800000000000:",
+        "block_id": "block-0012",
+        "distance": 5.11049953468914,
+        "label": 0,
+        "horizon_end_ns": 1740528000000000000
+      }
+    ],
+    "probability": 0.29248366013071897
+  },
+  {
+    "query_event_id": "BTC:d4cb29e8-e239-4aab-b949-6b0237eb12fe:1761609600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.342121903886305,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 4.9719128791804925,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 7.455226056734099,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:4536493e-1453-4118-b614-2d66fcad6474:1762992000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 3.6374456655280625,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 4.096707683079081,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 6.573234494108749,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:ad31c053-62be-47b7-9e02-c42215f7ca48:1764201600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 3.60365069389125,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 3.643047700993161,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 6.036403405386201,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:ad31c053-62be-47b7-9e02-c42215f7ca48:1764288000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 5.463826169071092,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 5.568771285081782,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.9443914928994195,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:ad31c053-62be-47b7-9e02-c42215f7ca48:1764374400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 3.8533601078413224,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725580800000000000:",
+        "block_id": "block-0000",
+        "distance": 5.882583208112135,
+        "label": 0,
+        "horizon_end_ns": 1725840000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 7.108688111404352,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:ad31c053-62be-47b7-9e02-c42215f7ca48:1764460800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 4.44269927457583,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 6.06397822521136,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 6.680099212143205,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:ad31c053-62be-47b7-9e02-c42215f7ca48:1764547200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 4.394419675853871,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 4.8081987560476565,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 8.46215406640529,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:35fdb92e-8d56-4db9-9f75-98705c0fbe69:1767571200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 3.937305496805263,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730592000000000000:",
+        "block_id": "block-0004",
+        "distance": 4.730733845233812,
+        "label": 1,
+        "horizon_end_ns": 1730851200000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731888000000000000:",
+        "block_id": "block-0005",
+        "distance": 4.864416436519463,
+        "label": 0,
+        "horizon_end_ns": 1732147200000000000
+      },
+      {
+        "event_id": "BTC:ffade3cb-431b-4ee8-88f8-713e4665bf6f:1738108800000000000:",
+        "block_id": "block-0010",
+        "distance": 5.108303740685556,
+        "label": 0,
+        "horizon_end_ns": 1738368000000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 5.530986743727285,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:35fdb92e-8d56-4db9-9f75-98705c0fbe69:1767657600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c6b2f893-1003-48a6-98d9-fb50f2b9c3ef:1735948800000000000:",
+        "block_id": "block-0008",
+        "distance": 1.5611799952528775,
+        "label": 0,
+        "horizon_end_ns": 1736208000000000000
+      },
+      {
+        "event_id": "BTC:8e861186-a9cd-43de-a9b6-189421be7589:1736985600000000000:",
+        "block_id": "block-0009",
+        "distance": 2.5638867917709907,
+        "label": 0,
+        "horizon_end_ns": 1737244800000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1730073600000000000:",
+        "block_id": "block-0003",
+        "distance": 2.679406545586055,
+        "label": 0,
+        "horizon_end_ns": 1730332800000000000
+      },
+      {
+        "event_id": "BTC:d9d0c494-2929-4f25-aed3-ab5b79f4f94d:1735171200000000000:",
+        "block_id": "block-0007",
+        "distance": 2.833492036138847,
+        "label": 1,
+        "horizon_end_ns": 1735430400000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737849600000000000:",
+        "block_id": "block-0010",
+        "distance": 3.091678726076006,
+        "label": 1,
+        "horizon_end_ns": 1738108800000000000
+      }
+    ],
+    "probability": 0.42857142857142855
+  },
+  {
+    "query_event_id": "BTC:35fdb92e-8d56-4db9-9f75-98705c0fbe69:1767744000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 3.064107725639842,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      },
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730764800000000000:",
+        "block_id": "block-0004",
+        "distance": 3.340774588391985,
+        "label": 0,
+        "horizon_end_ns": 1731024000000000000
+      },
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728432000000000000:",
+        "block_id": "block-0002",
+        "distance": 4.275994719588707,
+        "label": 1,
+        "horizon_end_ns": 1728691200000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 4.5045034759958105,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731888000000000000:",
+        "block_id": "block-0005",
+        "distance": 5.286787772297667,
+        "label": 0,
+        "horizon_end_ns": 1732147200000000000
+      }
+    ],
+    "probability": 0.2857142857142857
+  },
+  {
+    "query_event_id": "BTC:35fdb92e-8d56-4db9-9f75-98705c0fbe69:1767830400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:b900a522-00d4-4edd-89b4-4910f9c92f0e:1730764800000000000:",
+        "block_id": "block-0004",
+        "distance": 2.5547579385592214,
+        "label": 0,
+        "horizon_end_ns": 1731024000000000000
+      },
+      {
+        "event_id": "BTC:06288f6a-a8c2-4db1-ad10-795b139a7502:1737590400000000000:",
+        "block_id": "block-0010",
+        "distance": 2.5619482893141265,
+        "label": 0,
+        "horizon_end_ns": 1737849600000000000
+      },
+      {
+        "event_id": "BTC:8b6f5a17-f1fb-4510-961c-320288771b81:1734825600000000000:",
+        "block_id": "block-0006",
+        "distance": 3.860619277733446,
+        "label": 0,
+        "horizon_end_ns": 1735084800000000000
+      },
+      {
+        "event_id": "BTC:d22ad1c5-3795-4be1-ad43-fed08efe9b40:1729900800000000000:",
+        "block_id": "block-0003",
+        "distance": 4.004520360263878,
+        "label": 0,
+        "horizon_end_ns": 1730160000000000000
+      },
+      {
+        "event_id": "BTC:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1731801600000000000:",
+        "block_id": "block-0005",
+        "distance": 4.2786188464121775,
+        "label": 0,
+        "horizon_end_ns": 1732060800000000000
+      }
+    ],
+    "probability": 0.14285714285714285
+  },
+  {
+    "query_event_id": "BTC:039813b1-c02b-4d72-885b-f463ec7be46c:1768089600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 4.532897259456993,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.811926206354776,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 6.521198627864116,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:039813b1-c02b-4d72-885b-f463ec7be46c:1768176000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.666714134450594,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 5.109797240621074,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728777600000000000:",
+        "block_id": "block-0002",
+        "distance": 5.640822120321955,
+        "label": 0,
+        "horizon_end_ns": 1729036800000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:039813b1-c02b-4d72-885b-f463ec7be46c:1768262400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 4.8980205377588515,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728864000000000000:",
+        "block_id": "block-0002",
+        "distance": 6.1946982013646865,
+        "label": 0,
+        "horizon_end_ns": 1729123200000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 6.650286162688327,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769040000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 4.824286152571782,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725321600000000000:",
+        "block_id": "block-0000",
+        "distance": 5.834224793412602,
+        "label": 0,
+        "horizon_end_ns": 1725580800000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 5.850309105048475,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769126400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 2.0821126048528877,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 4.195048701986367,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 5.684594253285019,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769212800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 4.642306832221595,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 4.693158114743083,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.749976702937715,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769299200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 2.3985272766834163,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 3.9739275096978277,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 5.48548839215679,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769385600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 2.7643836187433033,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725580800000000000:",
+        "block_id": "block-0000",
+        "distance": 2.900993167461998,
+        "label": 0,
+        "horizon_end_ns": 1725840000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 6.104688379517425,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769472000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725321600000000000:",
+        "block_id": "block-0000",
+        "distance": 5.440529207096842,
+        "label": 0,
+        "horizon_end_ns": 1725580800000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 6.201279587502952,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 7.018127782777854,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769558400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 4.173849376947946,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 4.983055596458205,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.1679040152566005,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:5d13bb8e-5ca8-439d-b252-1eff9951a5b5:1769644800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 4.533286870180021,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725321600000000000:",
+        "block_id": "block-0000",
+        "distance": 5.298457487193917,
+        "label": 0,
+        "horizon_end_ns": 1725580800000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 7.760292194690053,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:56c12224-ca0b-4013-a030-aec525046b7d:1770595200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725321600000000000:",
+        "block_id": "block-0000",
+        "distance": 3.4236802995182076,
+        "label": 0,
+        "horizon_end_ns": 1725580800000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738972800000000000:",
+        "block_id": "block-0011",
+        "distance": 5.414110971525184,
+        "label": 0,
+        "horizon_end_ns": 1739232000000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 8.235935210465883,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:56c12224-ca0b-4013-a030-aec525046b7d:1770681600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 3.9773508927976624,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 4.038629123878992,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 5.5868601296363085,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:43091c0b-8b28-4f3d-a8ab-cecf07266dc4:1771200000000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 2.751743670400584,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.0863829840988934,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738800000000000000:",
+        "block_id": "block-0011",
+        "distance": 5.0895088085818605,
+        "label": 1,
+        "horizon_end_ns": 1739059200000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:85cbf1e8-c3e8-4b19-a75f-037544166ae0:1773273600000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725494400000000000:",
+        "block_id": "block-0000",
+        "distance": 2.6267359978244,
+        "label": 0,
+        "horizon_end_ns": 1725753600000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 4.8578448050461205,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 7.077316201839575,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      }
+    ],
+    "probability": 0.2
+  },
+  {
+    "query_event_id": "BTC:e2504c80-7eae-4ded-8038-1b05009e4222:1773446400000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:c51347eb-000c-4bb5-a9e5-fa7c70bf98d4:1728172800000000000:",
+        "block_id": "block-0002",
+        "distance": 3.790555302924645,
+        "label": 0,
+        "horizon_end_ns": 1728432000000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726444800000000000:",
+        "block_id": "block-0001",
+        "distance": 4.295969304049844,
+        "label": 1,
+        "horizon_end_ns": 1726704000000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 6.390269881313048,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:e2504c80-7eae-4ded-8038-1b05009e4222:1773532800000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 5.141370113355428,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      },
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728864000000000000:",
+        "block_id": "block-0002",
+        "distance": 5.3269211863702814,
+        "label": 0,
+        "horizon_end_ns": 1729123200000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 7.3136159508329195,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:e2504c80-7eae-4ded-8038-1b05009e4222:1773619200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:b59b0db5-9672-4ec2-ad9d-e7dbc68828c7:1728777600000000000:",
+        "block_id": "block-0002",
+        "distance": 4.283780248384707,
+        "label": 0,
+        "horizon_end_ns": 1729036800000000000
+      },
+      {
+        "event_id": "BTC:90353e2a-ebc4-42b9-bd83-41c18ec54607:1742947200000000000:",
+        "block_id": "block-0014",
+        "distance": 5.624473647949978,
+        "label": 0,
+        "horizon_end_ns": 1743206400000000000
+      },
+      {
+        "event_id": "BTC:a156cdcd-16a8-40df-8bc3-f6e625961156:1726358400000000000:",
+        "block_id": "block-0001",
+        "distance": 6.444474394942189,
+        "label": 1,
+        "horizon_end_ns": 1726617600000000000
+      }
+    ],
+    "probability": 0.4
+  },
+  {
+    "query_event_id": "BTC:03738e2a-5b70-4a30-a398-861a67a8cb87:1774051200000000000:",
+    "fallback": false,
+    "neighbors": [
+      {
+        "event_id": "BTC:6cc9a311-511b-4cfc-9315-d0a79366b296:1725408000000000000:",
+        "block_id": "block-0000",
+        "distance": 3.3877183578229695,
+        "label": 0,
+        "horizon_end_ns": 1725667200000000000
+      },
+      {
+        "event_id": "BTC:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1728000000000000000:",
+        "block_id": "block-0002",
+        "distance": 4.296243020904979,
+        "label": 0,
+        "horizon_end_ns": 1728259200000000000
+      },
+      {
+        "event_id": "BTC:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1739059200000000000:",
+        "block_id": "block-0011",
+        "distance": 6.338516819698357,
+        "label": 0,
+        "horizon_end_ns": 1739318400000000000
+      }
+    ],
+    "probability": 0.2
+  }
+]

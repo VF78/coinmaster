@@ -1,0 +1,63 @@
+{
+  "status": "FROZEN_BEFORE_REAL_FIT",
+  "utc": "2026-10-21T08:06:50.220964+00:00",
+  "sha256": {
+    "reports/btc-sol-event-risk-20261021/ev03-btc-comparison.py": "a79441627a45b09d03b86216ff490342a565069044bdc9b70e88da3b554be982",
+    "reports/btc-sol-event-risk-20261021/ev03-btc-recipes-proposed.md": "eb21d1eea69b51847c81efb9a6736a24e80958c125190ad21af5fee0b7cb43e5",
+    "reports/btc-sol-event-risk-20261021/ev03-freeze.json": "82ff96ceb9f804f0fb6f90e3de1c78f64227993c02e1a7b7eef2e69b01ec05f5",
+    "reports/btc-sol-event-risk-20261021/ev02-events.json": "1656117a1fb75cd83f1a3240f0e70758fd24efd2f422ce2b3b287888144990de",
+    "reports/btc-sol-event-risk-20261021/ev02-sufficiency.json": "dd92ef413f5b256dcddba0d7876e6b8ca5898955af0cdec256b33df0c12b32bb",
+    "reports/btc-sol-event-risk-20261021/ev02-connected-blocks.json": "33f61bc86e88a90d4cfe464033e6ba227ad9f31a31ded8688cee765b19fb487e",
+    "reports/fast-rnd-20261020/env-lock.txt": "84a973702349d3d6154234404260d4ecd445a58da4b73a06ff3dd5d0dcb67186",
+    "reports/fast-rnd-20261020/env-freeze.txt": "9b37faa74a21a7b379ee11510aac6baf288918dbd489d237c72eaebe3553bf47",
+    "runtime/var/research-datasets/fast-rnd-20261020-v1/panels.npz": "100ebbb84a72b49eee12d97a782cc59e4d6e950274d9deced34d4b414399226d"
+  },
+  "dependency_versions": {
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "scikit-learn": "1.7.2",
+    "stumpy": "1.14.1",
+    "numba": "0.63.1"
+  },
+  "synthetic_tests": {
+    "status": "PASS_SYNTHETIC_ONLY_NO_REAL_FIT",
+    "checks": [
+      "component_weights",
+      "Laplace_prior",
+      "strict_prior_panel_clock",
+      "20contiguous_window_boundary",
+      "block_equal_scores",
+      "paired_bootstrap",
+      "fixed_quarter_boundaries",
+      "fixed_rule",
+      "genuine_STUMPY_mass_API"
+    ],
+    "versions": {
+      "numpy": "2.3.5",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.7.2",
+      "stumpy": "1.14.1",
+      "numba": "0.63.1"
+    },
+    "peak_RSS_bytes": 312459264
+  },
+  "resource_cap": {
+    "MemoryMax": "400M",
+    "MemorySwapMax": 0,
+    "CPUQuota": "100%",
+    "threads": 1,
+    "nice": 15
+  },
+  "train_check_events": [
+    50,
+    80
+  ],
+  "train_check_blocks": [
+    15,
+    21
+  ],
+  "source_byte_parity": true,
+  "automatic_real_fit_retries": false,
+  "U_outcomes": false,
+  "economic_engines": false
+}
