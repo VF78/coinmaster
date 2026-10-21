@@ -32,6 +32,48 @@ def blocks(q, baseline, y, origins, start):
     for _ in range(1000):
         pick = rng.integers(0, len(unique), len(unique)); estimates.append(sums[pick].sum()/counts[pick].sum())
     return dict(mean_lower_pinball_difference=float(delta.mean()), paired14day_CI95=np.quantile(estimates, [.025, .975]).tolist(), blocks=len(unique), bootstrap_replicates=1000, seed=7)
+def verify_touches(folder, dataset, manifest, meta, ids, quantiles, result):
+    """Full persisted aggregation; bounded deterministic independent genuine-path sample."""
+    rows = read(folder/'actionable-forecasts.json'); rowids = [r['row'] for r in rows]
+    require(len(set(rowids)) == len(rowids) and np.isin(rowids, ids).all(), 'ACTIONABLE_ROW_IDS')
+    require(len(rows) == result['coverage']['actionable'], 'ACTIONABLE_COUNT')
+    receipt = {'scope':'Full persisted hit aggregation; first20 actionable rows per asset independently path-checked', 'assets':{}}
+    for asset,symbol in enumerate(('BTCUSDT','SOLUSDT')):
+        group = sorted([r for r in rows if r['asset'] == symbol], key=lambda r:r['row'])
+        require(len(group) == result['actionable_touch_summary'][symbol]['n'], 'TOUCH_ASSET_COUNT')
+        for j in range(3):
+            for bound in ('lower','upper'):
+                freq = sum(r['touch'][j][bound+'_hit'] for r in group)/len(group) if group else None
+                expected = result['actionable_touch_summary'][symbol]['targets'][j][bound+'_hit_frequency']
+                if freq is None: require(expected is None, 'EMPTY_TOUCH_FREQUENCY')
+                else: close(freq,expected,'FULL_TOUCH_AGGREGATE')
+        path = np.load(dataset/f'minutes-{symbol}.npy',mmap_mode='r',allow_pickle=False)
+        for r in group[:20]:
+            row = r['row']; require(int(meta['asset'][row]) == asset, 'TOUCH_ASSET_ID')
+            entry_ms = int(meta['origin'][row])+60000; offset = (entry_ms-manifest['minute_start_ms'])//60000
+            require((entry_ms-manifest['minute_start_ms'])%60000 == 0 and offset >= 0, 'TOUCH_PATH_OFFSET')
+            v = path[offset:offset+1440]; require(len(v) == 1440, 'TOUCH_WHOLE_HORIZON')
+            side = r['side']; require(side in (-1,1), 'TOUCH_SIDE'); sidx = 0 if side == 1 else 1
+            e = float(v[0,0]); sigma = float(meta['sigma'][row]); sl = e*np.exp(-side*sigma)
+            tp = e*np.exp(side*sigma*quantiles[np.searchsorted(ids,row),0,sidx])
+            require(r['entry_ms'] == entry_ms and r['expiry_ms'] == entry_ms+DAY and r['origin_ms'] == int(meta['origin'][row]), 'TOUCH_TIMESTAMPS')
+            close([r['entry'],r['entry_SL']],[e,sl],'TOUCH_ENTRY_SL'); close(r['entry_TP'],tp,'TOUCH_TP_PRICES')
+            stopmask = v[:,2] <= sl if side == 1 else v[:,1] >= sl
+            stop = int(np.nonzero(stopmask)[0][0]) if stopmask.any() else 1440
+            gap = stop < 1440 and (v[stop,0] <= sl if side == 1 else v[stop,0] >= sl)
+            reached = v[:,1,None] >= tp if side == 1 else v[:,2,None] <= tp
+            for j in range(3):
+                prior = np.nonzero(reached[:stop,j])[0]; certain = int(prior[0])+1 if len(prior) else None
+                maybe = certain
+                if stop < 1440 and not gap and reached[stop,j] and maybe is None:
+                    maybe = stop+1
+                    if v[stop,0] >= tp[j] if side == 1 else v[stop,0] <= tp[j]: certain = stop+1
+                expected = {'lower_hit':certain is not None,'upper_hit':maybe is not None,'lower_time_minutes':certain,'upper_time_minutes':maybe}
+                require(r['touch'][j] == expected, f'INDEPENDENT_TP_PATH:{row}:{j}')
+        receipt['assets'][symbol] = {'all_actionable_rows':len(group),'path_verified_ids':[r['row'] for r in group[:20]]}
+        del path
+    require(sum(v['all_actionable_rows'] for v in receipt['assets'].values()) == len(rows), 'TOUCH_UNKNOWN_ASSET')
+    return receipt
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     for name in ('dataset', 'protocol', 'registry', 'source-root', 'output'): ap.add_argument('--'+name, type=Path, required=True)
@@ -104,6 +146,7 @@ def main():
         compare(metrics(bq,bz,y,d),result['prefix_prior']['all'],'PREFIX_PRIOR')
         compare(blocks(pred['calibrated_q'],bq,y,meta['origin'][ids],begin),result['vs_prefix_prior'],'PRIOR_BLOCKS')
         require(result['coverage']['fully_observed'] == len(ids) and result['coverage']['censored_origins'] == len(allids)-len(ids), 'COVERAGE_COUNTS')
+        report['TP_path_verification'] = verify_touches(folder,a.dataset,manifest,meta,ids,pred['calibrated_q'],result)
         exports[family] = pred; reports[family] = report
     for family,pred in exports.items():
         r = read(checks[family]/'result.json')
@@ -116,7 +159,7 @@ def main():
         require(len(np.unique(csv_ids)) == len(csv_ids),'CSV_DUPLICATE_IDS')
         require(np.array_equal(np.sort(csv_ids),ids) or np.array_equal(np.sort(csv_ids),allids),'CSV_ID_SET')
         reports[family].setdefault('csv',[]).append({'path':path,'sha256':digest(path),'rows':len(csv_ids)})
-    payload = {'status':'INDEPENDENT_PERSISTED_RESULT_VERIFICATION_PASS','verifier_sha256':digest(__file__),'protocol_sha256':protocol_sha,'registry_sha256':digest(a.registry),'families':reports,'scope':'Metrics, tie intervals and identity only; no model execution or independent reconstruction of 1m target paths.'}
+    payload = {'status':'INDEPENDENT_PERSISTED_RESULT_VERIFICATION_PASS','verifier_sha256':digest(__file__),'protocol_sha256':protocol_sha,'registry_sha256':digest(a.registry),'families':reports,'scope':'Metrics, tie intervals, identity, full persisted TP aggregation and explicit genuine1m TP path sample; no model execution or reconstruction of MFE labels.'}
     with a.output.open('x') as f: json.dump(payload,f,indent=2,allow_nan=False)
     print(json.dumps({'status':payload['status'],'output':str(a.output)}))
 if __name__ == '__main__': main()

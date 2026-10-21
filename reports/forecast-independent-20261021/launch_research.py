@@ -2,10 +2,10 @@
 import argparse,json,os,shutil,subprocess,hashlib
 from pathlib import Path
 from datetime import datetime,timezone
-p=argparse.ArgumentParser();p.add_argument('stage',choices=['tests','profile','screen','fit']);p.add_argument('--family',default='control',choices=['control','stumpy','minirocket','rdst','cnn']);p.add_argument('--view',default='60x20');p.add_argument('--selection',type=Path);p.add_argument('--prior-cpu-seconds',type=float);p.add_argument('--execute-authorized-train',action='store_true');p.add_argument('--focused-resource-tests',action='store_true');p.add_argument('--focused-phase-tests',action='store_true');p.add_argument('--resource-budget',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('stage',choices=['tests','profile','screen','fit','check']);p.add_argument('--family',default='control',choices=['control','stumpy','minirocket','rdst','cnn']);p.add_argument('--view',default='60x20');p.add_argument('--selection',type=Path);p.add_argument('--prior-cpu-seconds',type=float);p.add_argument('--execute-authorized-train',action='store_true');p.add_argument('--focused-resource-tests',action='store_true');p.add_argument('--focused-phase-tests',action='store_true');p.add_argument('--resource-budget',type=Path);p.add_argument('--seal',type=Path);p.add_argument('--all-method-seals',type=Path);p.add_argument('--baseline',type=Path);p.add_argument('--execute-authorized-check',action='store_true');a=p.parse_args()
 if a.focused_phase_tests:a.focused_resource_tests=True
 resource_budget=a.resource_budget
-if resource_budget is None and a.stage=='fit' and a.family=='cnn':resource_budget=Path('reports/forecast-independent-20261021/coordinator-cnn-resource-envelope.json')
+if resource_budget is None and a.stage in ('fit','check') and a.family=='cnn':resource_budget=Path('reports/forecast-independent-20261021/coordinator-cnn-resource-envelope.json')
 if resource_budget is not None and resource_budget.is_absolute():resource_budget=resource_budget.relative_to(Path.cwd())
 effective_budget_minutes=120 if a.family=='cnn' else 60
 if resource_budget is not None:
@@ -18,6 +18,11 @@ if a.stage in ('screen','fit'):
  if not a.execute_authorized_train or a.prior_cpu_seconds is None:raise ValueError('EXPLICIT_CONDITIONAL_TRAIN_GO_AND_BUDGET_REQUIRED')
  gate=json.loads(Path('reports/forecast-independent-20261021/profile-sequence-completion.json').read_text())
  if not gate['all_pass']:raise ValueError('ALL_FIVE_RESOURCE_PROFILES_REQUIRED')
+if a.stage=='check':
+ if not a.execute_authorized_check or a.seal is None or a.all_method_seals is None or a.prior_cpu_seconds is None:raise ValueError('SEPARATE_EXPLICIT_CHECK_GO_SEALS_AND_CUMULATIVE_PRIOR_REQUIRED')
+ registry=json.loads(a.all_method_seals.read_text())
+ if set(registry)!={'control','stumpy','minirocket','rdst','cnn'} or any(v.get('status')=='INCOMPLETE_RESOURCE' for v in registry.values()):raise ValueError('ALL_FIVE_ACTUAL_SEALS_REQUIRED')
+ if a.family!='control' and a.baseline is None:raise ValueError('RAW_CONTROL_BASELINE_REQUIRED')
 repo=Path.cwd();report=repo/'reports/forecast-independent-20261021';stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ');unit=f'cm113-pred02-{a.stage}-{a.family}-{stamp}'
 available=int(next(x.split()[1] for x in Path('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:')))*1024;free=shutil.disk_usage(repo).free
 admission_mib=650 if a.focused_resource_tests else 850
@@ -44,6 +49,10 @@ if a.stage in ('screen','fit'):
  if a.stage=='fit':
   if a.selection is None:raise ValueError('SELECTION_REQUIRED')
   shutil.copyfile(a.selection,job/'selection.json');cmd+=['--selection',str(job/'selection.json')]
+if a.stage=='check':
+ shutil.copyfile(a.all_method_seals,source/'check-registry.json');os.chown(source/'check-registry.json',994,986);os.chmod(source/'check-registry.json',0o444)
+ cmd=[python,'-m','coinmaster.research.forecast_independent_run','check','--family',a.family,'--dataset',str(job/'dataset'),'--protocol',protocol,'--output',str(job/'result/check'),'--execute-check','--prior-cpu-seconds',str(a.prior_cpu_seconds),'--seal',str(a.seal.resolve()),'--all-method-seals',str(source/'check-registry.json')]
+ if a.baseline is not None:cmd+=['--baseline',str(a.baseline.resolve())]
 if resource_budget is not None:
  budget_sha=hashlib.file_digest(resource_budget.open('rb'),'sha256').hexdigest();cmd=[python,str(source/'reports/forecast-independent-20261021/resource_envelope.py'),'--resource-budget',str(source/resource_budget),'--resource-budget-sha256',budget_sha,*cmd[3:]]
 script=job/'launch.sh';script.write_text('#!/bin/sh\nset -eu\nexport PYTHONPATH="'+str(source/'runtime')+':'+str(source/'runtime/tests')+'" OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR="'+str(job/'cache/numba')+'" TMPDIR="'+str(job/'tmp')+'" FORECAST_DATASET="'+str(job/'dataset')+'" FORECAST_PROTOCOL="'+protocol+'" FORECAST_SOURCE_ROOT="'+str(source)+'"\ncd "'+str(source)+'"\nexec /usr/bin/time -v -o "'+str(job/'result/time.txt')+'" '+__import__('shlex').join(cmd)+' >"'+str(job/'result/stdout.txt')+'" 2>"'+str(job/'result/stderr.txt')+'"\n')
@@ -51,9 +60,10 @@ for root,dirs,fs in os.walk(job):
  os.chown(root,994,986);os.chmod(root,0o755)
  for name in fs:os.chown(Path(root)/name,994,986);os.chmod(Path(root)/name,0o644)
 binds=[f'{repo}/runtime/var/research-envs/fast-rnd-20261020:{source}/runtime/.venv',f'{dataset}:{job}/dataset',f'{repo}/runtime/var/data/normalized:{source}/runtime/var/data/normalized']+[f'{repo/base/part}:{source/base/part}' for part in ['execution-tail','execution-warmup']]
+if a.stage=='check':binds += [str(Path(v['path']).resolve().parent) for v in registry.values()]+([str(a.baseline.resolve().parent)] if a.baseline is not None else [])
 remaining_cpu=int((effective_budget_minutes*60)-(a.prior_cpu_seconds or 0))
 if remaining_cpu<=0:raise RuntimeError('CPU_BUDGET_EXHAUSTED_BEFORE_LAUNCH')
 props=[f'LimitCPU={remaining_cpu}','User=994','Group=986',f'WorkingDirectory={job}',f'MemoryMax={limit_mib}M','MemorySwapMax=0','CPUQuota=100%','CPUWeight=10','IOWeight=10','Nice=15','TasksMax=64','PrivateNetwork=yes','ProtectHome=yes','ProtectSystem=strict','NoNewPrivileges=yes','UMask=0077','PrivateTmp=yes','RemainAfterExit=yes','MemoryAccounting=yes','CPUAccounting=yes','InaccessiblePaths=-/srv/coinmaster -/srv/coinmaster-native-gui -/opt/coinmaster -/var/lib/coinmaster-hl-stageg-testnet',f'ReadWritePaths={job}/result {job}/cache {job}/tmp',f'BindReadOnlyPaths={source} {script} '+(str(job/'selection.json')+' ' if a.stage=='fit' else '')+' '.join(binds)]
 command=['systemd-run','--unit='+unit,*['--property='+v for v in props],'/bin/sh',str(script)]
-receipt={'unit':unit,'job':str(job),'stage':a.stage,'family':a.family,'view':a.view,'dataset_manifest_sha256':hashlib.file_digest((dataset/'manifest.json').open('rb'),'sha256').hexdigest(),'source_files':{name:hashlib.file_digest((repo/name).open('rb'),'sha256').hexdigest() for name in files},'available_before':available,'disk_free_before':free,'protocol_cpu_budget_minutes':120 if a.family=='cnn' else 60,'effective_cpu_budget_minutes':effective_budget_minutes,'resource_authorization_sha256':budget_sha if resource_budget is not None else None,'test_only_exception':a.focused_resource_tests,'admission_mib':admission_mib,'memory_limit_mib':limit_mib,'headroom_mib':250,'command':command,'compute_command':cmd,'at':stamp};rp=report/f'launch-{a.stage}-{a.family}-{a.view}-{stamp}.json';rp.write_text(json.dumps(receipt,indent=2)+'\n')
+receipt={'unit':unit,'job':str(job),'stage':a.stage,'family':a.family,'view':a.view,'dataset_manifest_sha256':hashlib.file_digest((dataset/'manifest.json').open('rb'),'sha256').hexdigest(),'source_files':{name:hashlib.file_digest((repo/name).open('rb'),'sha256').hexdigest() for name in files},'available_before':available,'disk_free_before':free,'protocol_cpu_budget_minutes':120 if a.family=='cnn' else 60,'effective_cpu_budget_minutes':effective_budget_minutes,'resource_authorization_sha256':budget_sha if resource_budget is not None else None,'CHECK_explicit_authorization':a.execute_authorized_check,'all_method_registry_sha256':hashlib.file_digest(a.all_method_seals.open('rb'),'sha256').hexdigest() if a.stage=='check' else None,'test_only_exception':a.focused_resource_tests,'admission_mib':admission_mib,'memory_limit_mib':limit_mib,'headroom_mib':250,'command':command,'compute_command':cmd,'at':stamp};rp=report/f'launch-{a.stage}-{a.family}-{a.view}-{stamp}.json';rp.write_text(json.dumps(receipt,indent=2)+'\n')
 r=subprocess.run(command,capture_output=True,text=True);receipt.update(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr);rp.write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps({'unit':unit,'job':str(job),'receipt':str(rp),'returncode':r.returncode}));r.check_returncode()

@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NO_CHECK_EXECUTED",
+  "checks": [
+    "CHECK without separate GO/seals/prior rejects before creating job",
+    "same CNN envelope for fit and CHECK",
+    "effective CPU minutes passed to OS limit",
+    "raw control baseline mandatory",
+    "all five actual seals mandatory"
+  ],
+  "scientific_source_unchanged": true
+}
