@@ -8,5 +8,34 @@
       "decision": "DROP_RESOURCE_ONLY",
       "basis": "not installed; preserve main budget; before B1 quality"
     }
-  ]
+  ],
+  "prequality_4h_control_rule": {
+    "required": true,
+    "when": "after fixedmain development completes",
+    "selection": "admitted numeric family architecture if one exists; otherwise fixedCatBoost descriptor4h-only+samehourlycontext",
+    "folds": "same3 expanding folds, ES/refitpurge, fixedrecipe",
+    "fallback_head_fits": 18,
+    "comparison": "paired4h-only vs samefamily4h+1h; auxiliarycontrol, no independentCHECKpromotion",
+    "quality_seen_before_rule": false
+  },
+  "baseline_result": {
+    "status": "NO_SKILL",
+    "confident_PASS_heads": 0,
+    "weak_heads": [
+      "CNN-directD",
+      "CNN-directQlong",
+      "CNN-directQshort",
+      "TCN-directQlong"
+    ],
+    "shortlist": [],
+    "CHECK_opened": false,
+    "policy": "BLOCKED_NO_PATH_SKILL",
+    "next": "Owner-authorized localizeddiagnosis thenrootexactGOforoneboundedadaptationifchosen"
+  },
+  "fourhour_control": {
+    "status": "COMPLETE",
+    "family": "CatBoost",
+    "head_fits": 18,
+    "auxiliary_only": true
+  }
 }

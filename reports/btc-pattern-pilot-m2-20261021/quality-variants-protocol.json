@@ -1,0 +1,40 @@
+{
+  "schema": "btc-pattern.quality-variants.v1",
+  "frozen_at": "2026-10-21T20:34:13.973766+00:00",
+  "owner_authorization": "owner-quality-iteration-authorization.json",
+  "base_protocol_sha256": "52deb5b1ae03b0a225364ed70d38ac478dc39c9868a0e308cc32e98f579cbf2c",
+  "families": [
+    "TCN",
+    "CNN"
+  ],
+  "seed": 7,
+  "no_new_architecture": true,
+  "no_new_targets": true,
+  "no_CHECK": true,
+  "modes": {
+    "METRIC_OFF": {
+      "training_window": "original expanding prefixes",
+      "metric_weight": 0,
+      "all_other_parameters": "exact original",
+      "controls": "immutable baseline prior/CatBoost/numeric/random forecasts reused exactIDs"
+    },
+    "RECENT180": {
+      "training_window": "max(2024-06-01,full-fit-cutoff minus180days) to full-fit-cutoff",
+      "shared_window_start": "same for subfit and refit; never reset to inner-cutoff minus180days",
+      "inner_ES_days": 28,
+      "purge": "label_end<=correspondingcutoff",
+      "metric_weight": 0.1,
+      "all_other_parameters": "exact original",
+      "controls": "same-window prior/numeric/random and18CatBoostheadfits; additionally compare archived fullprefix prior/CB/numeric/random and samefamily",
+      "admission": "originalcomplexgate against currentANDarchived fullprefixcontrols; cannotwinonlybyweakeningcontrol"
+    }
+  },
+  "selection": "same perhead/CI/2of3 rules; shortlistmax2; no weakonlyCHECK; finalseed7",
+  "cache": "immutable baseline images.npy mmap, no rerender and no Kronoscache/retraining",
+  "sequence": [
+    "METRIC_OFF",
+    "RECENT180"
+  ],
+  "budget_deadline_utc": "2026-10-22T01:46:11+00:00",
+  "memory": "6GiBRSS/sourceguard; defaultMPSwatermarkenabled; record samplemaxGPUallocated/driver honestly"
+}

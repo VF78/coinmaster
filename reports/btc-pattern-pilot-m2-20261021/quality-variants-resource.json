@@ -1,0 +1,37 @@
+{
+  "schema": "btc-pattern.quality-variants.resource.v1",
+  "measured_profile_sha256": "4e0225753171c05194f1d80967d05236224b7701304c262331cba6aa18bcfee0",
+  "modes": {
+    "METRIC_OFF": {
+      "total_fit_rows": 54576,
+      "max_epochs": 30,
+      "joint_neural_fits": 12,
+      "CatBoost_head_fits": 0,
+      "raw_forward_backward_seconds": {
+        "TCN": 136.82480515446514,
+        "CNN": 4329.869033612777
+      },
+      "optimizer_metric_io_overhead_factor": 2,
+      "training_bound_seconds": 8933.387677534483
+    },
+    "RECENT180": {
+      "total_fit_rows": 23472,
+      "max_epochs": 30,
+      "joint_neural_fits": 12,
+      "CatBoost_head_fits": 18,
+      "raw_forward_backward_seconds": {
+        "TCN": 58.845496675930924,
+        "CNN": 1862.186418150086
+      },
+      "optimizer_metric_io_overhead_factor": 2,
+      "training_bound_seconds": 3842.0638296520337
+    }
+  },
+  "combined_training_bound_seconds": 12775.451507186517,
+  "including20percent_plus780second_controls_index_eval_reserve": 16110.54180862382,
+  "remaining_to_original6h_deadline_seconds": 18717.026234,
+  "admissible": true,
+  "no_render_or_Kronos_cost": true,
+  "conditional_stability_final_CHECK": "separate observed-runtime+20percent resource/admission gate if a headpasses; not authorized here",
+  "deadline_utc": "2026-10-22T01:46:11+00:00"
+}

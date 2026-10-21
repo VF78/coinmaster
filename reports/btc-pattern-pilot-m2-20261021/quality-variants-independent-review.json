@@ -1,0 +1,10 @@
+{
+  "status": "GO",
+  "scope": "METRIC_OFF then RECENT180, exactly one separate CLI process per mode/sequential; sharedmutableloss hook may not carry across modes; no other fits, no CHECK/final/stability/policy/native/SOL",
+  "source_sha256": "81603dda1043b7b9fc9e2a1f9a7afa5cb70ed35906497820cb767df6d7a43360",
+  "protocol_sha256": "e7a6fad30da07546c792a235504134f0eb17c8f9afbbbbeba063e936136bd094",
+  "reviewer": "btc_pattern_causality_review",
+  "new_compute": false,
+  "critical_blockers": [],
+  "required_separate_mode_processes": true
+}

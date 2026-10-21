@@ -52,3 +52,33 @@ class PatternDataTests(unittest.TestCase):
         loss,s=soft_metric(z,y,o,o+72*HOUR,torch.ones(6),1.);self.assertTrue(torch.isfinite(loss));loss.backward();self.assertEqual(s['eligible_anchors'],1)
         model=TCN();self.assertLess(sum(p.numel() for p in model.parameters()),300000)
 if __name__=='__main__':unittest.main()
+
+class QualityVariantTests(unittest.TestCase):
+    def metadata(self):
+        n=20928;m=np.zeros(n,dtype=META);m['origin']=np.arange(ms('2024-06-01'),ms('2024-06-01')+n*HOUR,HOUR);m['label_end']=m['origin']+MINUTE+72*HOUR;m['input_start']=m['origin']-256*HOUR;m['valid']=True;m['observed']=True
+        return m
+    def test_recent_window_same_start_and_unchanged_outer(self):
+        from coinmaster.research.pattern_quality_variants import variant_folds
+        m=self.metadata();original=list(folds(m));recent=list(variant_folds(m,'RECENT180'))
+        for f,b,expected in zip(recent,original,['2024-07-05','2025-01-02','2025-07-05']):
+            self.assertEqual(f['window_start'],ms(expected));np.testing.assert_array_equal(f['outer'],b['outer']);np.testing.assert_array_equal(f['early_stop'],b['early_stop'])
+            self.assertEqual(len(f['subfit']),3576);self.assertEqual(len(f['refit']),4248)
+            for part,cut in [('subfit',f['inner_cutoff']),('early_stop',f['fit_cutoff']),('refit',f['fit_cutoff'])]:
+                ids=f[part];self.assertTrue((m['origin'][ids]>=f['window_start']).all());self.assertTrue((m['label_end'][ids]<=cut).all())
+            self.assertEqual(m['origin'][f['subfit'][0]],m['origin'][f['refit'][0]])
+        for f,b in zip(variant_folds(m,'METRIC_OFF'),original):
+            for part in ['subfit','early_stop','refit','outer']:np.testing.assert_array_equal(f[part],b[part])
+    def test_recent_index_maturity_and_query_window(self):
+        from coinmaster.research.pattern_quality_variants import variant_folds
+        m=self.metadata();f=next(variant_folds(m,'RECENT180'));index=f['refit'];q=f['outer'][0];z=np.tile([1.,0.],(len(index),1));got=neighbors(z,np.array([1.,0.]),m['origin'][index],m['label_end'][index],f['fit_cutoff'],m['input_start'][q]);chosen=index[got]
+        self.assertGreaterEqual(len(chosen),16);self.assertTrue((m['origin'][chosen]>=f['window_start']).all());self.assertTrue((m['label_end'][chosen]<=m['input_start'][q]).all());self.assertTrue((np.diff(m['origin'][chosen])>=72*HOUR).all())
+    def test_metric_off_zero_gradient_preserves_support_statistics(self):
+        import torch
+        from coinmaster.research import btc_pattern_models as models
+        from coinmaster.research.pattern_quality_variants import install_metric_off
+        original=models.soft_metric
+        try:
+            torch.manual_seed(7);z=torch.randn(8,64,requires_grad=True);y=torch.randn(8,12);o=torch.arange(8)*100*HOUR
+            expected,stat=original(z,y,o,o+72*HOUR,torch.ones(6),1.);self.assertGreater(float(expected.detach()),0)
+            install_metric_off();actual,actualstat=models.soft_metric(z,y,o,o+72*HOUR,torch.ones(6),1.);actual.backward();self.assertEqual(float(actual.detach()),0);self.assertEqual(float(z.grad.abs().sum()),0);self.assertEqual(stat,actualstat)
+        finally:models.soft_metric=original
