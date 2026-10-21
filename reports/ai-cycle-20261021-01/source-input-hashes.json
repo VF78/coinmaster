@@ -4,20 +4,20 @@
     "bytes": 41217
   },
   "reports/ai-cycle-20261021-01/protocol.json": {
-    "sha256": "969c2bc3aa324b7ee64a1698cd43a61779beaf56718333f70fe515ef5fcfdc37",
-    "bytes": 11342
+    "sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586",
+    "bytes": 12098
   },
   "reports/ai-cycle-20261021-01/feature-schema.json": {
     "sha256": "9c61fc6f4df63eb716f02b9a793916381069ab067eadc8be0f03e3c083eb4c8d",
     "bytes": 27807
   },
   "runtime/coinmaster/research/forecast_cycle_data.py": {
-    "sha256": "6a76cb31522a7195c0cab031f24f403239e5653f4c945f7f9017c328d94424c3",
-    "bytes": 4765
+    "sha256": "ad1fd91c4f768860baa84f29bc3c8d391ab07f585dec38777cb55db405f0a74f",
+    "bytes": 5523
   },
   "runtime/coinmaster/research/forecast_cycle_run.py": {
-    "sha256": "3a955d90e991ad5af69bf813d601493d37e872dc3762bebb12e750a766feac20",
-    "bytes": 14594
+    "sha256": "64a7c229043bceb34d333d5bc81a218c62334b005583bd0e6c7146e106cc056b",
+    "bytes": 15552
   },
   "runtime/coinmaster/research/forecast_independent_data.py": {
     "sha256": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
@@ -44,16 +44,16 @@
     "bytes": 2566
   },
   "runtime/coinmaster/research/forecast_cycle_train.py": {
-    "sha256": "0b69958f3616b5dfde6cf3b10390fe0b628324192ffc67df01765f1bddc6fbcb",
-    "bytes": 23688
+    "sha256": "ada1279cb988531a6700a99b5ed44c30f7fa64caf927686ac13774741490ebbe",
+    "bytes": 23958
   },
   "runtime/tests/test_forecast_cycle.py": {
-    "sha256": "df49b906083c04dfcb4231940bb8a223561ea5e4ca0dd54e907e49fcc85a714e",
-    "bytes": 2110
+    "sha256": "3be28491ac2d4d6878c1daedf355dbf693d2785b2d47822659450d4bb042b328",
+    "bytes": 4063
   },
   "runtime/coinmaster/research/forecast_cycle_controls.py": {
-    "sha256": "39f94a1512659dcb0068ab52305c4f030d46fa1883ce2e65e50dca8d2126257b",
-    "bytes": 4164
+    "sha256": "f0766ea6663f89357ceda53a5d979336c442bb0a25af6bc747513aafdec74358",
+    "bytes": 4459
   },
   "runtime/coinmaster/research/forecast_cycle_mechanism.py": {
     "sha256": "5aace32756d790a2f28486057bf594c28a980e281b3e0c64739a9fc79c66a778",

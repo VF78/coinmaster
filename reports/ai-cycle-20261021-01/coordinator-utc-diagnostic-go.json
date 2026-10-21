@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-21T17:27:14.728165+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "controls-utc",
+    "fitset-diagnose"
+  ],
+  "protocol_sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586",
+  "source_input_manifest_sha256": "ee93db8d47bed9b54e8b67d2057690ee050d7628fe30e41623b4c17fcbe2b563",
+  "module_sha256": {
+    "forecast_cycle_train.py": "ada1279cb988531a6700a99b5ed44c30f7fa64caf927686ac13774741490ebbe",
+    "forecast_cycle_controls.py": "f0766ea6663f89357ceda53a5d979336c442bb0a25af6bc747513aafdec74358"
+  },
+  "fit_limit": 6,
+  "recipe": "same6negativecontrolfitsONLY;3datelesspositivesreuse;oldweightinferenceonly6missingIDspermethod,reuse506IDs",
+  "threads": 1,
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "controls-utc": 300,
+    "fitset-diagnose": 180
+  },
+  "full_A_authorized": false,
+  "reason": "concreteUTCtechnicalerror;independentUTCcorrectionGO;7focusedtestsPASS",
+  "no_recipe_tuning": true,
+  "no_pilot_or_S0_changes": true
+}

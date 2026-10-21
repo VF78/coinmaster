@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-21T17:22:10.000830+00:00",
+  "status": "TECHNICAL_UTC_CORRECTION_IN_PROGRESS",
+  "original_A": "QUARANTINED_QUALITY_UNOPENED",
+  "original_A_guarded_wall_seconds": 537.5391515,
+  "actual_A_consumed_profiles_plus_failed": 658.8327833,
+  "A_remaining_seconds": 6541.1672167,
+  "rootcause": "Inheritednaivedatetime.timestamp usesMacMoscow; dateonlyUTCcontracts shifted-3hours",
+  "scope": "newresearchwrapperonly;oldsource/pilot/S0unchanged",
+  "independent_review": "oneinheritedTRAINsealboundaryalsoUTCnormalize;realfixturebeforeGO",
+  "new_fits_authorized": false,
+  "Project121_readback": "PASS AI01 reopened foraffectedMarchsample; A pending technicalcorrection",
+  "native_economic_runs": 0
+}

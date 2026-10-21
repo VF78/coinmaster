@@ -1,0 +1,24 @@
+{
+  "status": "QUARANTINED_INVALID_UTC_SPLITS",
+  "original_A_output": "Mac taskimage/stage-A",
+  "original_A_quality_inspected_or_used": false,
+  "original_A_wall_seconds": 537.5391515409574,
+  "original_A_fits": 102,
+  "original_code_sha256": "0b69958f3616b5dfde6cf3b10390fe0b628324192ffc67df01765f1bddc6fbcb",
+  "observed_defect": {
+    "date": "2025-03-01",
+    "old_naive_ms_Moscow": 1740776400000,
+    "correct_UTC_ms": 1740787200000,
+    "hours_offset": -3
+  },
+  "correction": "newexplicitUTCwrapper and in-memory verifiedlock normalization; originaldata/modelsource unchanged",
+  "controls_train_ids_unchanged": true,
+  "controls_shuffled_label_ids_unchanged": true,
+  "controls_rows_per_asset": 4032,
+  "controls_train_row_ids_sha256": "6643c0e3e756df0b9ef5ed83e91e6ae738548e7e785839d52a4cca7a86e2b76e",
+  "positive_controls_reused": 3,
+  "negative_controls_need_recompute": "six fitted models notsaved; sameexacttrainingIDs, changedcorrectvalidationIDs",
+  "old_model_inference": "only6 new MarchIDs/method; allother506 predictions reused",
+  "test_result": "7PASS inclrealinheritedMarch/CHECKseal underUTC+Moscow",
+  "all_cost_charged": true
+}

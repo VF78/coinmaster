@@ -1,9 +1,46 @@
 """Task-local alignment/purge/ambiguity tests; no real model fitting."""
-import unittest,pickle
+import unittest,pickle,os,time
 import numpy as np
-from coinmaster.research.forecast_cycle_data import feature_names,early_split,project_quantiles,JointFeatures
-from coinmaster.research.forecast_independent_data import META,HOUR,DAY,ms,targets
+from coinmaster.research.forecast_cycle_data import feature_names,early_split,project_quantiles,JointFeatures,Dataset,ms,utc_boundary
+from coinmaster.research.forecast_independent_data import META,HOUR,DAY,targets
 class ContractTests(unittest.TestCase):
+ def test_explicit_UTC_boundaries_across_host_timezones(self):
+  previous=os.environ.get("TZ")
+  try:
+   expected=1740787200000
+   for tz in ("UTC","Europe/Moscow"):
+    os.environ["TZ"]=tz;time.tzset()
+    self.assertEqual(ms("2025-03-01"),expected)
+    self.assertEqual(ms("2025-03-01T00:00:00Z"),expected)
+    self.assertEqual(utc_boundary("2025-03-01"),"2025-03-01T00:00:00Z")
+    from unittest.mock import patch
+    with patch("coinmaster.research.forecast_independent_data.Dataset.rows",return_value="sentinel") as legacy:
+     self.assertEqual(Dataset.rows(object.__new__(Dataset),"2025-03-01","2025-06-01"),"sentinel")
+     legacy.assert_called_once_with("2025-03-01T00:00:00Z","2025-06-01T00:00:00Z")
+    self.test_purge()
+  finally:
+   if previous is None:os.environ.pop("TZ",None)
+   else:os.environ["TZ"]=previous
+   time.tzset()
+ def test_inherited_seal_with_date_only_lock_under_both_TZ(self):
+  from unittest.mock import patch
+  previous=os.environ.get("TZ")
+  def fixture_init(obj,*args,**kwargs):
+   obj.lock={"train":["2024-09-01","2026-04-01"],"check":["2026-04-01","2026-10-21"]};obj.allow_check=False
+   obj.meta=np.zeros(31*24,dtype=META);obj.meta["origin"]=ms("2026-03-01")+np.arange(31*24)*HOUR;obj.meta["expiry"]=obj.meta["origin"]+DAY+60000;obj.meta["observed"]=True
+   obj.direction=np.zeros(31*24,np.int8);obj.targets=np.zeros((31*24,2,2))
+  try:
+   for tz in ("UTC","Europe/Moscow"):
+    os.environ["TZ"]=tz;time.tzset()
+    with patch("coinmaster.research.forecast_independent_data.Dataset.__init__",fixture_init):
+     ds=Dataset("fixture","fixture")
+    self.assertEqual(ds.lock["train"][1],"2026-04-01T00:00:00Z")
+    self.assertEqual(len(ds.rows("2026-03-01","2026-04-01")),720)
+    with self.assertRaisesRegex(ValueError,"CHECK_LABELS_SEALED"):ds.rows("2026-04-01","2026-04-02")
+  finally:
+   if previous is None:os.environ.pop("TZ",None)
+   else:os.environ["TZ"]=previous
+   time.tzset()
  def test_schema(self):self.assertEqual(len(feature_names()),750);self.assertEqual(len(set(feature_names())),750)
  def test_purge(self):
   m=np.zeros(24*80,dtype=META);end=ms("2025-03-01")

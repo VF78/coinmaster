@@ -357,5 +357,17 @@
     "scikit-learn": "1.7.2",
     "torch": "2.14.1",
     "environment": "new isolated overlay, baseMLsitepackages read-only reuse"
+  },
+  "utc_technical_correction": {
+    "reason": "Legacy ms(datetime.timestamp) interpreted date-only strings in host timezone; MacMoscow shifted intendedUTC folds -3h",
+    "all_date_only_boundaries": "Normalize to explicitUTCZ before parentDataset.rows and normalize verified in-memorylock; oldsource/diskprotocol unchanged",
+    "original_A_quality_used": false,
+    "original_A_status": "QUARANTINED_INVALID_UTC_SPLITS",
+    "original_A_wall_seconds": 537.5391515409574,
+    "all_recipe_hyperparameters_seeds_unchanged": true,
+    "negative_only_replay_fits": 6,
+    "positive_synthetic_reused": 3,
+    "old_March_inference_extension": "reuse506 existing IDs and predict6 missing IDs peroldmethod, no fits",
+    "A_replay_requires_new_root_GO": true
   }
 }

@@ -2,7 +2,21 @@
 from pathlib import Path
 import csv
 import numpy as np
-from .forecast_independent_data import HOUR, MINUTE, DAY, aggregate, mature, ms
+from .forecast_independent_data import HOUR, MINUTE, DAY, aggregate, mature, Dataset as LegacyDataset, ms as legacy_ms
+from datetime import datetime,timezone
+def utc_boundary(value):
+ dt=datetime.fromisoformat(str(value).replace("Z","+00:00"))
+ if dt.tzinfo is None:dt=dt.replace(tzinfo=timezone.utc)
+ return dt.astimezone(timezone.utc).isoformat().replace("+00:00","Z")
+def ms(value):return legacy_ms(utc_boundary(value))
+class Dataset(LegacyDataset):
+ def __init__(self,*args,**kwargs):
+  super().__init__(*args,**kwargs)
+  for key in ("train","check"):
+   if key in self.lock:self.lock[key]=[utc_boundary(v) for v in self.lock[key]]
+  for key in ("final_fit_end","calibration_end"):
+   if key in self.lock:self.lock[key]=utc_boundary(self.lock[key])
+ def rows(self,start,end):return super().rows(utc_boundary(start),utc_boundary(end))
 ASSETS=("BTCUSDT","SOLUSDT")
 FIELDS=("r1","body","upper_wick","lower_wick","range","volume_deviation")
 def feature_names():

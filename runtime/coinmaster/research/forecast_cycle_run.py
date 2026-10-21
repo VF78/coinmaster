@@ -4,7 +4,8 @@ import argparse,csv,datetime,hashlib,json,os,platform,resource,subprocess,time
 from pathlib import Path
 import numpy as np
 from .forecast_cycle_data import JointFeatures,feature_names,ASSETS
-from .forecast_independent_data import Dataset,sha,write_json,ms
+from .forecast_independent_data import sha,write_json
+from .forecast_cycle_data import Dataset,ms
 from .forecast_independent_models import scores,softmax,pinball
 TASK="AI-CYCLE-20261021-01"
 BASE="31dc0a6b5380ee60ea5cfa3f9189a1d830e352d8"
@@ -81,21 +82,29 @@ def fitset_diagnose(a):
  from .forecast_independent_models import Budget
  ds=Dataset(a.old_job/"prepared-v1",a.old_job/"reports/forecast-independent-20261021/protocol.json")
  fit=ds.rows("2024-09-01","2026-03-01")[:256];val=ds.rows("2026-03-01","2026-04-01")[:256]
- registry=json.loads((a.old_job/"all-method-seals.json").read_text());output=json.loads((a.report/"old-fit-validation.json").read_text()) if (a.report/"old-fit-validation.json").exists() else {}
+ result_path=a.report/("old-fit-validation-utc.json" if a.reuse_inference else "old-fit-validation.json")
+ registry=json.loads((a.old_job/"all-method-seals.json").read_text());output=json.loads(result_path.read_text()) if result_path.exists() else {}
  if a.family: registry={a.family:registry[a.family]}
  for family,rec in registry.items():
   sp=Path(rec["path"]);seal=json.loads(sp.read_text())
   if sha(sp)!=rec["sha256"]:raise ValueError("OLD_SEAL_DRIFT")
+  allids=np.r_[fit,val];oldids={};oldq=None;oldl=None
+  if a.reuse_inference:
+   with np.load(a.reuse_inference/f"{family}-fit-validation.npz") as z:oldids={int(row):i for i,row in enumerate(z["ids"])};oldq=z["q"].copy();oldl=z["logits"].copy()
+  missing=np.array([int(row) for row in allids if int(row) not in oldids],np.int64)
   predictions=[];budget=Budget(10)
   for k,record in enumerate(seal["models"]):
    path=sp.parent/record["path"]
    if sha(path)!=record["sha256"]:raise ValueError("OLD_MODEL_DRIFT")
    model=_load_model(ds,path,a.output/family/str(k))
-   prediction=_predict(model,np.r_[fit,val],budget);predictions.append(prediction)
+   prediction=_predict(model,missing,budget);predictions.append(prediction)
    del model
-  q,l=average(predictions);output[family]={"sample_rule":"first256 mature chronological fitIDs + first256 mature MarchIDs; fixed before inference; no fit","fit":scores(q[:len(fit)],l[:len(fit)],ds.targets[fit],ds.direction[fit]),"validation":scores(q[len(fit):],l[len(fit):],ds.targets[val],ds.direction[val]),"learning_curves":"UNKNOWN_NOT_SAVED","fit_sample_ids":fit.tolist(),"validation_sample_ids":val.tolist()}
+  newq,newl=average(predictions);newids={int(row):i for i,row in enumerate(missing)}
+  q=np.stack([oldq[oldids[int(row)]] if int(row) in oldids else newq[newids[int(row)]] for row in allids])
+  l=np.stack([oldl[oldids[int(row)]] if int(row) in oldids else newl[newids[int(row)]] for row in allids])
+  output[family]={"sample_rule":"first256 mature chronological fitIDs + first256 mature MarchIDs; fixed before inference; no fit","fit":scores(q[:len(fit)],l[:len(fit)],ds.targets[fit],ds.direction[fit]),"validation":scores(q[len(fit):],l[len(fit):],ds.targets[val],ds.direction[val]),"learning_curves":"UNKNOWN_NOT_SAVED","cached_rows_reused":len(allids)-len(missing),"new_inference_rows":len(missing),"fit_sample_ids":fit.tolist(),"validation_sample_ids":val.tolist()}
   a.output.mkdir(parents=True,exist_ok=True);np.savez(a.output/f"{family}-fit-validation.npz",ids=np.r_[fit,val],q=q,logits=l)
-  write_json(a.report/"old-fit-validation.json",output)
+  write_json(result_path,output)
  ledger(a.report,{"stage":"fitset-diagnose","fit":False,"status":"PASS","families":len(output)})
  print(json.dumps({"status":"OLD_FIT_VALIDATION_DIAGNOSED","families":len(output)}))
 
@@ -111,6 +120,9 @@ def controls(a):
  verify_freeze(a)
  from .forecast_cycle_controls import run
  run(a)
+def controls_utc(a):
+ a.negative_only=True
+ controls(a)
 def profile_baseline(a):
  verify_freeze(a)
  from .forecast_cycle_train import profile_baseline as run
@@ -126,7 +138,7 @@ def profile_scaling(a):
  from .forecast_cycle_train import profile_scaling as run
  run(a)
 def main():
- p=argparse.ArgumentParser();p.add_argument("stage",choices=["freeze","diagnose","prepare","fitset-diagnose","profile-A","stage-A","controls","profile-baseline","resource-estimate","mechanism-screen","profile-scaling"]);p.add_argument("--report",type=Path,required=True);p.add_argument("--old-job",type=Path);p.add_argument("--warmup",type=Path);p.add_argument("--output",type=Path);p.add_argument("--limit",type=int);p.add_argument("--family",choices=["control","stumpy","minirocket","rdst","cnn"])
- p.add_argument("--prepared",type=Path);p.add_argument("--fit-authorization",type=Path);p.add_argument("--resource-decision",type=Path);p.add_argument("--profile",type=Path);p.add_argument("--baseline-profile",type=Path);p.add_argument("--scaling-profile",type=Path);p.add_argument("--inputs",type=Path)
+ p=argparse.ArgumentParser();p.add_argument("stage",choices=["freeze","diagnose","prepare","fitset-diagnose","profile-A","stage-A","controls","controls-utc","profile-baseline","resource-estimate","mechanism-screen","profile-scaling"]);p.add_argument("--report",type=Path,required=True);p.add_argument("--old-job",type=Path);p.add_argument("--warmup",type=Path);p.add_argument("--output",type=Path);p.add_argument("--limit",type=int);p.add_argument("--family",choices=["control","stumpy","minirocket","rdst","cnn"])
+ p.add_argument("--reuse-inference",type=Path);p.add_argument("--reuse-controls",type=Path);p.add_argument("--negative-only",action="store_true");p.add_argument("--prepared",type=Path);p.add_argument("--fit-authorization",type=Path);p.add_argument("--resource-decision",type=Path);p.add_argument("--profile",type=Path);p.add_argument("--baseline-profile",type=Path);p.add_argument("--scaling-profile",type=Path);p.add_argument("--inputs",type=Path)
  a=p.parse_args();globals()[a.stage.replace("-","_")](a)
 if __name__=="__main__":main()

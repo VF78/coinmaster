@@ -3,13 +3,16 @@ from pathlib import Path
 import json,time,pickle
 import numpy as np
 from .forecast_cycle_train import approve,inputs,getx,y_for,catfit,predict,loss,block_ci,record,TAU
-from .forecast_independent_data import ms,DAY,write_json,sha
+from .forecast_independent_data import DAY,write_json,sha
+from .forecast_cycle_data import ms
 def run(a):
- approve(a,"controls");a.output.mkdir(parents=True,exist_ok=False);rng=np.random.default_rng(7);outputs=[]
+ approve(a,"controls-utc" if a.negative_only else "controls");a.output.mkdir(parents=True,exist_ok=False);rng=np.random.default_rng(7);outputs=[]
  # Synthetic rows only. A deterministic nonlinear relation, held fixed across temporal parts.
  x=rng.normal(size=(1024,8)).astype(np.float32);z=x[:,0]*x[:,1]
  dy=np.where(z>.35,0,np.where(z<-.35,1,2));qy=(2*(x[:,0]>.2)+.2*np.abs(x[:,1])).astype(np.float32)
- for head in ("D","Q-long","Q-short"):
+ if a.negative_only:
+  previous=json.loads(a.reuse_controls.read_text());outputs=[r for r in previous["results"] if r["control"]=="positive"]
+ for head in (() if a.negative_only else ("D","Q-long","Q-short")):
   y=dy if head=="D" else qy;fitid="positive-"+head;record(a,dict(stage="controls",fit=True,fit_id=fitid,seed=7,reason="one fixed known synthetic relationship;100iterations"))
   model=catfit(head,4,x[:768],y[:768],iterations=100);p=predict(model,head,x[768:])
   prior=np.bincount(y[:768].astype(int),minlength=3)/768 if head=="D" else np.quantile(y[:768],TAU)
@@ -32,5 +35,5 @@ def run(a):
    if head=="D":prior=np.maximum(prior,1e-12);prior/=prior.sum()
    delta=loss(head,truth,p)-loss(head,truth,np.tile(prior,(len(val),1)));ci,blocks=block_ci(delta,ds.meta["origin"][val])
    outputs.append(dict(control="TRAIN_block_shuffle",asset=asset,head=head,N_fit=len(ids),N_validation=len(val),mean_loss_difference=float(delta.mean()),CI95=ci,blocks=blocks,advantage_detected=ci[1]<0))
- write_json(a.output/"controls.json",{"status":"DIAGNOSTIC_ONLY_NOT_TRADING","fits":9,"results":outputs,"positive_pass":all(r["learned_known_relation"] for r in outputs if r["control"]=="positive"),"shuffle_no_robust_advantage":not any(r["advantage_detected"] for r in outputs if r["control"]=="TRAIN_block_shuffle"),"interpretation":"No shuffled advantage plus explicit causality checks supports pipeline diagnostic; it does not prove no leakage or trading signal."})
- print(json.dumps({"status":"CONTROLS_COMPLETE","fits":9,"positive_pass":all(r["learned_known_relation"] for r in outputs if r["control"]=="positive"),"shuffle_no_robust_advantage":not any(r["advantage_detected"] for r in outputs if r["control"]=="TRAIN_block_shuffle")}))
+ write_json(a.output/"controls.json",{"status":"DIAGNOSTIC_ONLY_NOT_TRADING","fits":6 if a.negative_only else 9,"results":outputs,"positive_pass":all(r["learned_known_relation"] for r in outputs if r["control"]=="positive"),"shuffle_no_robust_advantage":not any(r["advantage_detected"] for r in outputs if r["control"]=="TRAIN_block_shuffle"),"interpretation":"No shuffled advantage plus explicit causality checks supports pipeline diagnostic; it does not prove no leakage or trading signal."})
+ print(json.dumps({"status":"CONTROLS_COMPLETE","fits":6 if a.negative_only else 9,"positive_pass":all(r["learned_known_relation"] for r in outputs if r["control"]=="positive"),"shuffle_no_robust_advantage":not any(r["advantage_detected"] for r in outputs if r["control"]=="TRAIN_block_shuffle")}))

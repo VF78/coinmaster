@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-21T17:27:14.728165+00:00",
+  "reviewer": "ai_cycle_causality_review",
+  "decision": "UTC_CORRECTION_GO",
+  "data_sha256": "ad1fd91c4f768860baa84f29bc3c8d391ab07f585dec38777cb55db405f0a74f",
+  "test_sha256": "3be28491ac2d4d6878c1daedf355dbf693d2785b2d47822659450d4bb042b328",
+  "addressed": "verifiedin-memorylegacylockUTCnormalization+realMarch/CHECKsealfixtureunderUTC/Moscow",
+  "new_review_fits_tests": 0
+}
