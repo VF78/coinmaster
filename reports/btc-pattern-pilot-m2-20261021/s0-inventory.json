@@ -1,0 +1,18 @@
+{
+  "status": "ARCHIVED_LAUNCH_SNAPSHOT_VERIFIED_BY_ROOT",
+  "fixed_fullperiod": [
+    "2024-09-01",
+    "2026-09-01"
+  ],
+  "seed": 10000,
+  "TOTAL": 6077107.23887483,
+  "netprofit90_floor": 5470396.514987347,
+  "source_receipt": "reports/winner-6077107-stats/trades-proof.json",
+  "source_receipt_sha256": "5d5d0b16872ec6ad4d5530b6cf3be7f36bcc93d1ea29fe64a98e8260611747f6",
+  "raw_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+  "raw_result_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "verification": "existing exact reference receipt; no new raw giant result read or native economic rerun",
+  "policy_config": "Use exact archived S0 launch snapshot/sourcecommit/immutable hashes; live v3 profile/current defaults are not S0",
+  "archived_launch_snapshot": "reports/btc-pattern-pilot-m2-20261021/s0-archived-launch-snapshot.json",
+  "archived_launch_snapshot_sha256": "be9373fa0eb0e9d0ea517b63202e6103e210bca30b7fef6c966af285be530017"
+}

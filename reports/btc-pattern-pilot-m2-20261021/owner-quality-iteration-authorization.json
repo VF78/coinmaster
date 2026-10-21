@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-21T20:03:54.664431+00:00",
+  "request": "Continue, analyze accuracy and algorithm quality, localize problems, optimize learning and training segments; maximize 3TP and SL forecast quality",
+  "current_baseline": "Keep frozen seed7 core job87138 running unchanged; preserve all baseline data/recipes/results",
+  "subsequent_scope": "Diagnose completed DEVELOPMENT folds before selecting a bounded adaptation. Changes to training recipe or historical window allowed if linked to observed failure and frozen before comparison; no blind architecture/grid expansion. Exact subsequent root source/resource GO required.",
+  "check_isolation": "CHECK never chooses recipe, training interval, TP/SL calibration or stop. Reusing an observed CHECK after changes is exploratory, not independent evidence.",
+  "quality_reporting": [
+    "fit/ES/outer gaps and cap/collapse diagnostics",
+    "per-side/q pinball + coverage and price-level errors",
+    "TP first-passage before SL with same-minute ambiguity bounds",
+    "month and causal-regime stability",
+    "raw versus projected forecasts; thresholds and costs unchanged unless separately frozen"
+  ],
+  "compute": "Use measured MPS/CPU selection, one heavy process; account remaining original 6h BTC planning before adaptations/stability/final. No unlimited repeats authorized.",
+  "production_changes": false,
+  "real_orders": false
+}

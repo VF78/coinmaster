@@ -1,0 +1,21 @@
+{
+  "stage": "seed7-development",
+  "pid": 87138,
+  "exec_session": 28481,
+  "start_utc_approx": "2026-10-21T19:46:11Z",
+  "deadline_utc_approx": "2026-10-22T01:46:11Z",
+  "output": "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development",
+  "authorization": "reports/btc-pattern-pilot-m2-20261021/coordinator-development-go.json",
+  "one_heavy_process": true,
+  "threads": 4,
+  "RSS_ceiling": 6442450944,
+  "watermark": "DEFAULT_ENABLED",
+  "stages": [
+    "render-cache",
+    "frozen-Kronos-cache",
+    "3fold expanding ES+refit controls/TCN/KronosProjection/CNN",
+    "development-evaluate"
+  ],
+  "CHECK": false,
+  "production": false
+}
