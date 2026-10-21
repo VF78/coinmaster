@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-21T20:45:12.677219+00:00",
+  "owner_request": "Keep full selected DEVELOPMENT history covering rising and falling regimes; improve training on that full period, be careful with reduced history",
+  "supersedes": "coordinator-quality-variants-go.json for RECENT180 only",
+  "continue_unchanged": "METRIC_OFF PID89809 uses full expanding history; do not mutate frozen source/protocol midrun",
+  "revoked_before_start": "RECENT180",
+  "next": "Analyze completed full-history variant including chronological regime quality; propose at most one diagnosed full-history improvement before any new exact fit GO",
+  "CHECK_opened": false,
+  "pilot_changes": false
+}
