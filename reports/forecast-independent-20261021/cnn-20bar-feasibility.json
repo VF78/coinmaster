@@ -1,0 +1,41 @@
+{
+  "status": "OPERATIONAL_FEASIBILITY_NOT_RECIPE_OR_OUTCOME_SELECTION",
+  "selected_views": [
+    "60x20",
+    "15x20"
+  ],
+  "same_image_shape": [
+    64,
+    60
+  ],
+  "profile_receipt": "receipts/cm113-pred02-profile-cnn-20261021T111804Z.json",
+  "probe_cgroup_cpu_seconds": 13.178503,
+  "folds": [
+    {
+      "train_rows": 8640,
+      "validation_rows": 4368
+    },
+    {
+      "train_rows": 13056,
+      "validation_rows": 4368
+    },
+    {
+      "train_rows": 17472,
+      "validation_rows": 4320
+    }
+  ],
+  "final_fit_rows": 26160,
+  "inner_fits": 6,
+  "final_seeds": 2,
+  "minimum_best_epoch": 5,
+  "earliest_patience_stop_epoch": 8,
+  "cpu_seconds_per_train_row": 0.008515779445312496,
+  "cpu_seconds_per_validation_row": 0.005817438476562506,
+  "projected_cpu_seconds_inner5_final5": 6339.4673863462485,
+  "projected_cpu_seconds_inner8_final5": 8796.458542730248,
+  "projected_cpu_seconds_inner20_final20": 25307.60687694749,
+  "budget_cpu_seconds": 7200,
+  "excludes_setup_and_final_calibration_overhead": true,
+  "CPU_or_resource_limits_unchanged": true,
+  "no_CHECK_opened": true
+}

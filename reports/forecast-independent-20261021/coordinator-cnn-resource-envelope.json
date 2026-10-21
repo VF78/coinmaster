@@ -1,0 +1,16 @@
+{
+  "schema": "coinmaster.research.resource-envelope.v1",
+  "coordinator": "/root",
+  "authorized_at_utc": "2026-10-21T11:23:47.513253+00:00",
+  "authorization": "Explicit coordinator GO: CNN-only up to240CPU minutes including all probes; same600MiB/swap0/oneCPU/lowpriority; unchanged scientific recipe and CHECK gate. Operational cap, not protocol/model amendment.",
+  "family": "cnn",
+  "stages": [
+    "fit",
+    "check"
+  ],
+  "protocol_budget_cpu_minutes": 120,
+  "effective_budget_cpu_minutes": 240,
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "probe_cpu_seconds": 13.178503,
+  "source_commit": "c78e2b161e1443b5a0c3beded30812897816c1d2"
+}

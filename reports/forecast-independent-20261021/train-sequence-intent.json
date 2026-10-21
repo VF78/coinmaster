@@ -1,0 +1,12 @@
+{
+  "purpose": "TRAIN_ONLY_SCREEN_THEN_FIVE_SEALS_NO_CHECK",
+  "prior_cpu_seconds": {
+    "control": 394.396565,
+    "stumpy": 2.985177,
+    "minirocket": 90.205046,
+    "cnn": 23.210074,
+    "rdst": 975.273315
+  },
+  "interrupted_RDST_CPU_included": true,
+  "source_commit": "c78e2b161e1443b5a0c3beded30812897816c1d2"
+}

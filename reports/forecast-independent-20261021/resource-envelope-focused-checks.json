@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": [
+    "authorization hash",
+    "corrupt hash rejection",
+    "non-CNN rejection",
+    "same main invoked",
+    "cumulative prior50min -> remaining190min",
+    "launcher syntax"
+  ],
+  "scientific_source_changes": false,
+  "wrapper_lines": 17
+}

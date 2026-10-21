@@ -99,24 +99,31 @@ def main():
     if len(identities) != 1 or any(v is None for pair in identities for v in pair):
         raise ValueError('MIXED_OR_MISSING_EXPORT_IDENTITIES')
     body = ['<!doctype html><meta charset="utf-8"><title>Independent forecast results</title><style>body{font:16px system-ui;max-width:1100px;margin:36px auto;padding:0 20px;color:#172331}table{border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #ddd}svg{max-width:100%;height:auto}img{image-rendering:pixelated;max-width:100%}section{margin:36px 0}pre{white-space:pre-wrap}</style><h1>Independent 24h pattern forecasts</h1><p>Persisted exports only. No fitting, inference, label loading or PnL calculation. CHECK is a previously studied historical period. Ambiguous intraminute ordering remains bounded.</p>',
-            '<table><tr><th>Method</th><th>Lower pinball raw → calibrated</th><th>Direction logloss raw → calibrated</th><th>Actionable / observed</th></tr>']
+            '<table><tr><th>Method</th><th>Lower pinball ↓ raw → calibrated</th><th>Direction logloss ↓ raw → calibrated</th><th>Actionable / observed</th></tr>']
     for _, r in results:
         if r['status'] == 'INCOMPLETE_RESOURCE':
             body.append(f'<tr><td>{esc(r["family"])}</td><td colspan="3">INCOMPLETE_RESOURCE; no predictive conclusion</td></tr>')
             continue
         a, b, c = r['raw']['all'], r['calibrated']['all'], r['coverage']
         body.append(f'<tr><td>{esc(r["family"])}</td><td>{a["lower_pinball"]:.6g} → {b["lower_pinball"]:.6g}</td><td>{a["direction_logloss"]:.6g} → {b["direction_logloss"]:.6g}</td><td>{c["actionable"]} / {c["fully_observed"]}</td></tr>')
-    body.append('</table>')
+    body.append('</table><p>Lower pinball, direction logloss and Brier are better when smaller. Actionable coverage is a frequency, not a quality score. Raw → calibrated uses frozen March calibration.</p>')
     for directory, r in results:
         if r['status'] == 'INCOMPLETE_RESOURCE':
             continue
-        body.append(f'<section><h2>{esc(r["family"])}</h2><pre>{esc(json.dumps({k:r[k] for k in ("coverage","vs_raw_control","vs_prefix_prior","actionable_touch_summary") if k in r},indent=2))}</pre>')
+        body.append(f'<section><h2>{esc(r["family"])}</h2>')
+        cov = r['coverage']
+        body.append(f'<p>{cov["actionable"]:,} actionable forecasts; {cov["abstain"]:,} abstentions; {cov["fully_observed"]:,} fully observed origins. {cov["censored_origins"]:,} incomplete-horizon origins excluded from scored denominators; {cov["label_ambiguity_rows"]:,} rows have ambiguous MFE bounds.</p>')
+        for key, label in [('vs_raw_control','raw numerical control'),('vs_prefix_prior','TRAIN-prefix prior')]:
+            if key not in r:
+                continue
+            comparison = r[key]; low, high = comparison['paired14day_CI95']
+            body.append(f'<p>Lower pinball difference versus {label}: {comparison["mean_lower_pinball_difference"]:+.5g}; paired 14-day block 95% interval [{low:+.5g}, {high:+.5g}], {comparison["blocks"]} blocks. Negative favors this method; an interval crossing zero does not establish improvement.</p>')
         for asset in ('BTCUSDT','SOLUSDT'):
             group = r['calibrated']['groups'].get(f'{0 if asset=="BTCUSDT" else 1}:ALL')
             if group:
                 v = group['exceedance_bound_side_q']
                 body.append(chart([v[b][s] for b in range(2) for s in range(2)], ['lower L','lower S','upper L','upper S'], f'{asset}: empirical MFE ≥ target, q .2/.5/.8'))
-                body.append('<p>Exceedance uses ≥; zero/tied targets can prevent equality with 1−q. Endpoint calibration is not an exact latent-path guarantee.</p>')
+                body.append('<p>Bars are q .2/.5/.8, nominally 80%/50%/20% exceedance only for a continuous, correctly calibrated target. Exceedance uses ≥: zero mass and ties change that relationship. These are lower/upper MFE endpoints, not guaranteed executable TP hit probabilities.</p>')
             example = next((e for e in r['deterministic_examples'] if e['asset']==asset), None)
             if example is None:
                 body.append(f'<p>{asset}: no actionable example; none substituted.</p>')
@@ -128,7 +135,12 @@ def main():
                 body.append(f'<p>Past input chart; normalized price/volume axes.</p><img alt="Past chart input" src="data:image/png;base64,{base64.b64encode(image.read_bytes()).decode()}">')
             else:
                 missing.append(str(image))
-            body.append(f'<pre>{esc(json.dumps(example,indent=2))}</pre>')
+            body.append(f'<p>Side: {"LONG" if example["side"]==1 else "SHORT"}. Entry {esc(stamp(example["entry_ms"]))}; expiry {esc(stamp(example["expiry_ms"]))}. Reference-to-entry log gap {example["entry_gap_log"]:+.6g}.</p>')
+            body.append('<table><tr><th>Level</th><th>At reference</th><th>Reanchored at entry</th><th>Before-SL touch bounds</th></tr>')
+            for label, ref, price, touch in [('Entry',example['reference'],example['entry'],None),('SL',example['reference_SL'],example['entry_SL'],None),*[(f'TP{j+1}',example['reference_TP'][j],example['entry_TP'][j],example['touch'][j]) for j in range(3)]]:
+                hit = '—' if touch is None else f'{int(touch["lower_hit"])}–{int(touch["upper_hit"])}; first-minute bounds {touch["lower_time_minutes"]} / {touch["upper_time_minutes"]}'
+                body.append(f'<tr><td>{label}</td><td>{ref:.8g}</td><td>{price:.8g}</td><td>{esc(hit)}</td></tr>')
+            body.append('</table><p>Touch 0–1 means intraminute order is unresolved; 1–1 is a guaranteed touch under the stated minute-bar bounds. None means no qualifying touch. Examples are the first actionable origin per asset, without selection by outcome.</p>')
             drawing, absent = future(directory/f'example-path-{asset}.json', example, evidence)
             body.append(drawing)
             if absent:

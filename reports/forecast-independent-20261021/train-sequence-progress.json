@@ -1,0 +1,881 @@
+{
+  "results": [
+    {
+      "unit": "cm113-pred02-screen-control-20261021T110643Z",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-screen-control-20261021T110643Z",
+      "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-screen-control-60x20-20261021T110643Z.json",
+      "properties": {
+        "Result": "success",
+        "ExecMainStatus": "0",
+        "MemoryPeak": "503267328",
+        "CPUUsageNSec": "261768472000",
+        "CPUQuotaPerSecUSec": "1s",
+        "MemoryMax": "629145600",
+        "MemorySwapMax": "0",
+        "ActiveState": "active",
+        "SubState": "exited"
+      },
+      "journal_tail": "Started cm113-pred02-screen-control-20261021T110643Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-screen-control-20261021T110643Z/launch.sh.\n",
+      "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-screen-control-20261021T110643Z-time.txt",
+      "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-screen-control-20261021T110643Z-stdout.txt",
+      "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-screen-control-20261021T110643Z-stderr.txt",
+      "train_result": {
+        "status": "TRAIN_ONLY_SCREEN_COMPLETE",
+        "primary": "60x20",
+        "alternate": "15x20",
+        "method_views": [
+          "60x20",
+          "15x20"
+        ],
+        "control_best": {
+          "view": "60x20",
+          "config": 0.001,
+          "folds": [
+            {
+              "fold": 0,
+              "score": {
+                "lower_pinball": 0.20317235781159534,
+                "upper_pinball": 0.20289210404496866,
+                "direction_logloss": 1.0874868656852992,
+                "direction_brier": 0.6587551388034137,
+                "direction_accuracy": 0.4059065934065934,
+                "n": 4368
+              },
+              "best_epoch": 59,
+              "predictions_sha256": "817f35cf66d7079f401e8c40a3542a43c479765b7c32d0161eaf25b22c4f02e0"
+            },
+            {
+              "fold": 1,
+              "score": {
+                "lower_pinball": 0.21460395254693143,
+                "upper_pinball": 0.2144342878959133,
+                "direction_logloss": 1.083553253654187,
+                "direction_brier": 0.6586868109610221,
+                "direction_accuracy": 0.36996336996337,
+                "n": 4368
+              },
+              "best_epoch": 49,
+              "predictions_sha256": "d3129aa321a28fab424ea9eb0ea6a52f4041b12e5aa88f39b2450927a6165d46"
+            },
+            {
+              "fold": 2,
+              "score": {
+                "lower_pinball": 0.22679349933659773,
+                "upper_pinball": 0.226626726091743,
+                "direction_logloss": 1.0833907407743584,
+                "direction_brier": 0.6571511959892185,
+                "direction_accuracy": 0.37430555555555556,
+                "n": 4320
+              },
+              "best_epoch": 36,
+              "predictions_sha256": "6fef9c2633f4d334753e1246d5d7382ebf627166b31e4ce81958b5510ea04cb1"
+            }
+          ],
+          "score": {
+            "lower_pinball": 0.2148127175842637,
+            "upper_pinball": 0.2146070110841071,
+            "direction_logloss": 1.084815505623476,
+            "direction_brier": 0.6582015627485048,
+            "direction_accuracy": 0.3834252450980392
+          }
+        },
+        "records": [
+          {
+            "view": "1x20",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.204078859749964,
+                  "upper_pinball": 0.2039668887475485,
+                  "direction_logloss": 1.08719339363206,
+                  "direction_brier": 0.6596003128925214,
+                  "direction_accuracy": 0.38553113553113555,
+                  "n": 4368
+                },
+                "best_epoch": 73,
+                "predictions_sha256": "eaa1675fe69ba7738b18e20a34b22005586194ff08bd18f9db049d2e369e8652"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.21413415422818516,
+                  "upper_pinball": 0.2141452112483654,
+                  "direction_logloss": 1.0794600807724744,
+                  "direction_brier": 0.6561701832119722,
+                  "direction_accuracy": 0.3791208791208791,
+                  "n": 4368
+                },
+                "best_epoch": 60,
+                "predictions_sha256": "b901bf3492cec639ae29f5aec65b2d4eb861bc3ec12929cb90e02957a965be3f"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.22919211339266246,
+                  "upper_pinball": 0.2290709550271266,
+                  "direction_logloss": 1.092749529355628,
+                  "direction_brier": 0.6635222568174697,
+                  "direction_accuracy": 0.3701388888888889,
+                  "n": 4320
+                },
+                "best_epoch": 38,
+                "predictions_sha256": "735716bac664759d10fdf97b6679a870e14d42c1cb26c9ca36f8fc843f1f2aea"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.21575247969614408,
+              "upper_pinball": 0.2156786288679028,
+              "direction_logloss": 1.0864445728412468,
+              "direction_brier": 0.6597504347760338,
+              "direction_accuracy": 0.3782935049019608
+            }
+          },
+          {
+            "view": "1x60",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.20695698109213903,
+                  "upper_pinball": 0.20656062943605277,
+                  "direction_logloss": 1.107808965138659,
+                  "direction_brier": 0.6721030538563104,
+                  "direction_accuracy": 0.37477106227106227,
+                  "n": 4368
+                },
+                "best_epoch": 61,
+                "predictions_sha256": "908bb087cc36f91addcb70a52765c0a34dc0bd7e2af770de40a29f1bc0420ec4"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.2162082300792594,
+                  "upper_pinball": 0.21574663939952288,
+                  "direction_logloss": 1.0892571935492554,
+                  "direction_brier": 0.6620596818019242,
+                  "direction_accuracy": 0.37934981684981683,
+                  "n": 4368
+                },
+                "best_epoch": 40,
+                "predictions_sha256": "a6138c6a6c1b8208d3421f433b8d09862c927d96bbd095d33e5fb33bbd4975de"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.23024738184064505,
+                  "upper_pinball": 0.22997960527335298,
+                  "direction_logloss": 1.0971073487684562,
+                  "direction_brier": 0.666606210855445,
+                  "direction_accuracy": 0.3625,
+                  "n": 4320
+                },
+                "best_epoch": 38,
+                "predictions_sha256": "67959f12a41cd52ea50dc1f639d382316d3038dfa29be771bd50f898265d36b3"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.21775845067005628,
+              "upper_pinball": 0.21738281595087922,
+              "direction_logloss": 1.0980613302564752,
+              "direction_brier": 0.6669241467716522,
+              "direction_accuracy": 0.37224264705882354
+            }
+          },
+          {
+            "view": "15x20",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.20417903259067802,
+                  "upper_pinball": 0.20398588436070073,
+                  "direction_logloss": 1.087190044530735,
+                  "direction_brier": 0.659594727440579,
+                  "direction_accuracy": 0.388507326007326,
+                  "n": 4368
+                },
+                "best_epoch": 64,
+                "predictions_sha256": "571e42c8bf7f819e7f4f6f465515c605541d2238197884eb0b94f5f22a462071"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.21381280137338338,
+                  "upper_pinball": 0.2137561085230567,
+                  "direction_logloss": 1.0772239048621295,
+                  "direction_brier": 0.6546110538959832,
+                  "direction_accuracy": 0.38873626373626374,
+                  "n": 4368
+                },
+                "best_epoch": 52,
+                "predictions_sha256": "12f5748958bcf9a21a8b8d7c83bece1733dfc9da2cacb51841e8f570cdf09b6a"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.22860368293126404,
+                  "upper_pinball": 0.2285805889663634,
+                  "direction_logloss": 1.0884344232729073,
+                  "direction_brier": 0.6609632356404739,
+                  "direction_accuracy": 0.36689814814814814,
+                  "n": 4320
+                },
+                "best_epoch": 54,
+                "predictions_sha256": "57c14e5c6ac60910df5f200051d09621dbc8defab1f1b6174aac694378421657"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.2154837807152329,
+              "upper_pinball": 0.215392552791892,
+              "direction_logloss": 1.0842675275342364,
+              "direction_brier": 0.6583802106958448,
+              "direction_accuracy": 0.38143382352941174
+            }
+          },
+          {
+            "view": "15x60",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.206002366645259,
+                  "upper_pinball": 0.205576150873531,
+                  "direction_logloss": 1.098595414745812,
+                  "direction_brier": 0.6663057443623155,
+                  "direction_accuracy": 0.3866758241758242,
+                  "n": 4368
+                },
+                "best_epoch": 58,
+                "predictions_sha256": "87817bad7673962da99ed9f62da1bd806d17027898431b4006d16e7d77730fc9"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.2144751861995724,
+                  "upper_pinball": 0.21426464670524722,
+                  "direction_logloss": 1.0844217582346274,
+                  "direction_brier": 0.659390887824843,
+                  "direction_accuracy": 0.3917124542124542,
+                  "n": 4368
+                },
+                "best_epoch": 49,
+                "predictions_sha256": "05b8ab4886974f5b3baee15c6d69e15ff3c4c43f17e940a872dae1190026d8e9"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.22945844876499127,
+                  "upper_pinball": 0.22903911764165596,
+                  "direction_logloss": 1.0920615975153631,
+                  "direction_brier": 0.6644305795134033,
+                  "direction_accuracy": 0.36574074074074076,
+                  "n": 4320
+                },
+                "best_epoch": 31,
+                "predictions_sha256": "db6c493f08033c38cafb5db97c0e539112f61cae6caf0aceb9b36e35bd39b72f"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.21659822682988555,
+              "upper_pinball": 0.21624644546844798,
+              "direction_logloss": 1.0916915680794217,
+              "direction_brier": 0.6633718591369034,
+              "direction_accuracy": 0.38143382352941174
+            }
+          },
+          {
+            "view": "60x20",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.20317235781159534,
+                  "upper_pinball": 0.20289210404496866,
+                  "direction_logloss": 1.0874868656852992,
+                  "direction_brier": 0.6587551388034137,
+                  "direction_accuracy": 0.4059065934065934,
+                  "n": 4368
+                },
+                "best_epoch": 59,
+                "predictions_sha256": "817f35cf66d7079f401e8c40a3542a43c479765b7c32d0161eaf25b22c4f02e0"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.21460395254693143,
+                  "upper_pinball": 0.2144342878959133,
+                  "direction_logloss": 1.083553253654187,
+                  "direction_brier": 0.6586868109610221,
+                  "direction_accuracy": 0.36996336996337,
+                  "n": 4368
+                },
+                "best_epoch": 49,
+                "predictions_sha256": "d3129aa321a28fab424ea9eb0ea6a52f4041b12e5aa88f39b2450927a6165d46"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.22679349933659773,
+                  "upper_pinball": 0.226626726091743,
+                  "direction_logloss": 1.0833907407743584,
+                  "direction_brier": 0.6571511959892185,
+                  "direction_accuracy": 0.37430555555555556,
+                  "n": 4320
+                },
+                "best_epoch": 36,
+                "predictions_sha256": "6fef9c2633f4d334753e1246d5d7382ebf627166b31e4ce81958b5510ea04cb1"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.2148127175842637,
+              "upper_pinball": 0.2146070110841071,
+              "direction_logloss": 1.084815505623476,
+              "direction_brier": 0.6582015627485048,
+              "direction_accuracy": 0.3834252450980392
+            }
+          },
+          {
+            "view": "60x60",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.2053011434810754,
+                  "upper_pinball": 0.20492674462816787,
+                  "direction_logloss": 1.1028127348174817,
+                  "direction_brier": 0.6666063375526589,
+                  "direction_accuracy": 0.39789377289377287,
+                  "n": 4368
+                },
+                "best_epoch": 57,
+                "predictions_sha256": "da59f97e2701c41307386c08134e7efd6b4516376e259f3ec1051fae9bcd68b9"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.21681269858306498,
+                  "upper_pinball": 0.2165833632201595,
+                  "direction_logloss": 1.1309701712262725,
+                  "direction_brier": 0.6914047308174858,
+                  "direction_accuracy": 0.33722527472527475,
+                  "n": 4368
+                },
+                "best_epoch": 46,
+                "predictions_sha256": "669f314f4a4ac15f3acf7cc260c412c1e5da3495fd0761c6ff63e995ae230c85"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.2308250688770661,
+                  "upper_pinball": 0.2301958664197109,
+                  "direction_logloss": 1.0993228513801168,
+                  "direction_brier": 0.6679867870587852,
+                  "direction_accuracy": 0.36574074074074076,
+                  "n": 4320
+                },
+                "best_epoch": 27,
+                "predictions_sha256": "e2f8d955231b6dbb46ac3ab66f6d534cde8d740598bcc15962e39020d391852f"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.2175978523043115,
+              "upper_pinball": 0.21718767570577857,
+              "direction_logloss": 1.1110783127727653,
+              "direction_brier": 0.6753596252094627,
+              "direction_accuracy": 0.3669577205882353
+            }
+          },
+          {
+            "view": "240x20",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.20886628944989252,
+                  "upper_pinball": 0.20845832505339698,
+                  "direction_logloss": 1.1191169896018789,
+                  "direction_brier": 0.6780456753935306,
+                  "direction_accuracy": 0.39125457875457875,
+                  "n": 4368
+                },
+                "best_epoch": 61,
+                "predictions_sha256": "06cf78e1d714e3fd0824ce597d32303346b67053600f76e2ced1e9bfbc7ba32c"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.21971019068181044,
+                  "upper_pinball": 0.21858870063550195,
+                  "direction_logloss": 1.1146700752649776,
+                  "direction_brier": 0.6822191413956583,
+                  "direction_accuracy": 0.3321886446886447,
+                  "n": 4368
+                },
+                "best_epoch": 33,
+                "predictions_sha256": "327e38130debe73f3c170d96ed9d2325e7e02cae1bbb3940ff73d192e76f757b"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.22663406801121436,
+                  "upper_pinball": 0.22650184572453608,
+                  "direction_logloss": 1.0926689842287622,
+                  "direction_brier": 0.6634883486155155,
+                  "direction_accuracy": 0.38657407407407407,
+                  "n": 4320
+                },
+                "best_epoch": 42,
+                "predictions_sha256": "e05468f964e6969ad44d5cd930ad508f4c43f48653b49037ecbd75314952e353"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.2183732566654201,
+              "upper_pinball": 0.21781781416506635,
+              "direction_logloss": 1.1088780569245313,
+              "direction_brier": 0.6746251827323992,
+              "direction_accuracy": 0.36994485294117646
+            }
+          },
+          {
+            "view": "240x60",
+            "config": 0.001,
+            "folds": [
+              {
+                "fold": 0,
+                "score": {
+                  "lower_pinball": 0.20926650294607158,
+                  "upper_pinball": 0.20839584291972693,
+                  "direction_logloss": 1.1246395811051595,
+                  "direction_brier": 0.6809051455239273,
+                  "direction_accuracy": 0.4084249084249084,
+                  "n": 4368
+                },
+                "best_epoch": 51,
+                "predictions_sha256": "222d4c5724b5b108a676b49b5553fdcc01598173b236257c7a3091eb37c4c29c"
+              },
+              {
+                "fold": 1,
+                "score": {
+                  "lower_pinball": 0.21802011972789198,
+                  "upper_pinball": 0.21796640145158008,
+                  "direction_logloss": 1.103757871023996,
+                  "direction_brier": 0.6710361667578079,
+                  "direction_accuracy": 0.38713369963369965,
+                  "n": 4368
+                },
+                "best_epoch": 49,
+                "predictions_sha256": "3195c67ffc2e5d4c441e47e7395c07c9abac21908c2bd4ad82023fbbcff9d4db"
+              },
+              {
+                "fold": 2,
+                "score": {
+                  "lower_pinball": 0.23062476891146869,
+                  "upper_pinball": 0.23042658701601026,
+                  "direction_logloss": 1.1262145345427212,
+                  "direction_brier": 0.6878585529675538,
+                  "direction_accuracy": 0.3576388888888889,
+                  "n": 4320
+                },
+                "best_epoch": 33,
+                "predictions_sha256": "54b1c87cda3a184ad717b550cba266d1e7b6d550d3658ef3ced7a78a887d8f92"
+              }
+            ],
+            "score": {
+              "lower_pinball": 0.21926217597559877,
+              "upper_pinball": 0.21888734216628625,
+              "direction_logloss": 1.1181745450463163,
+              "direction_brier": 0.6799041514144035,
+              "direction_accuracy": 0.38449754901960786
+            }
+          }
+        ],
+        "no_CHECK_read": true,
+        "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+        "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+        "prior_cpu_seconds": 394.396565,
+        "cpu_seconds": 260.035383152,
+        "maxrss_bytes": 497180672
+      },
+      "status": "PASS",
+      "stage": "screen",
+      "family": "control"
+    },
+    {
+      "unit": "cm113-pred02-fit-control-20261021T111115Z",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z",
+      "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-fit-control-60x20-20261021T111115Z.json",
+      "properties": {
+        "Result": "success",
+        "ExecMainStatus": "0",
+        "MemoryPeak": "409608192",
+        "CPUUsageNSec": "25219575000",
+        "CPUQuotaPerSecUSec": "1s",
+        "MemoryMax": "629145600",
+        "MemorySwapMax": "0",
+        "ActiveState": "active",
+        "SubState": "exited"
+      },
+      "journal_tail": "Started cm113-pred02-fit-control-20261021T111115Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/launch.sh.\n",
+      "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-control-20261021T111115Z-time.txt",
+      "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-control-20261021T111115Z-stdout.txt",
+      "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-control-20261021T111115Z-stderr.txt",
+      "train_result": {
+        "status": "SEALED_READY_FOR_SEPARATE_CHECK",
+        "family": "control",
+        "view": "60x20",
+        "config": 0.001,
+        "final_epochs": 49,
+        "seeds": [
+          7
+        ],
+        "winning_TRAIN_inner_score": {
+          "lower_pinball": 0.2148127175842637,
+          "upper_pinball": 0.2146070110841071,
+          "direction_logloss": 1.084815505623476,
+          "direction_brier": 0.6582015627485048,
+          "direction_accuracy": 0.3834252450980392
+        },
+        "winning_inner_folds": [
+          {
+            "fold": 0,
+            "score": {
+              "lower_pinball": 0.20317235781159534,
+              "upper_pinball": 0.20289210404496866,
+              "direction_logloss": 1.0874868656852992,
+              "direction_brier": 0.6587551388034137,
+              "direction_accuracy": 0.4059065934065934,
+              "n": 4368
+            },
+            "best_epoch": 59,
+            "predictions_sha256": "817f35cf66d7079f401e8c40a3542a43c479765b7c32d0161eaf25b22c4f02e0"
+          },
+          {
+            "fold": 1,
+            "score": {
+              "lower_pinball": 0.21460395254693143,
+              "upper_pinball": 0.2144342878959133,
+              "direction_logloss": 1.083553253654187,
+              "direction_brier": 0.6586868109610221,
+              "direction_accuracy": 0.36996336996337,
+              "n": 4368
+            },
+            "best_epoch": 49,
+            "predictions_sha256": "d3129aa321a28fab424ea9eb0ea6a52f4041b12e5aa88f39b2450927a6165d46"
+          },
+          {
+            "fold": 2,
+            "score": {
+              "lower_pinball": 0.22679349933659773,
+              "upper_pinball": 0.226626726091743,
+              "direction_logloss": 1.0833907407743584,
+              "direction_brier": 0.6571511959892185,
+              "direction_accuracy": 0.37430555555555556,
+              "n": 4320
+            },
+            "best_epoch": 36,
+            "predictions_sha256": "6fef9c2633f4d334753e1246d5d7382ebf627166b31e4ce81958b5510ea04cb1"
+          }
+        ],
+        "final_fit_rows": 26160,
+        "calibration_rows": 1440,
+        "calibration_raw": {
+          "lower_pinball": 0.20014126091503429,
+          "upper_pinball": 0.20007999543865657,
+          "direction_logloss": 1.0832943230883296,
+          "direction_brier": 0.6599190387880193,
+          "direction_accuracy": 0.32569444444444445,
+          "n": 1440
+        },
+        "calibration_adjusted": {
+          "lower_pinball": 0.1988942156421904,
+          "upper_pinball": 0.19887238642848576,
+          "direction_logloss": 1.0817151014506543,
+          "direction_brier": 0.6577398811469044,
+          "direction_accuracy": 0.32569444444444445,
+          "n": 1440
+        },
+        "models": [
+          {
+            "path": "final-seed7/model.pkl",
+            "sha256": "6e35e14c17ecde3eff80af73e60eb3ac7d114c2e581980631f78e193037ab85a"
+          }
+        ],
+        "calibrator_sha256": "788642744680a415249775ba2eb412886a717095a95d047eeb52337a606c6be7",
+        "calibration_predictions_sha256": "ba70f36ce75b963657954175657eea0bbff0cbcf079a2a43a57c8556857e3c3e",
+        "selection_sha256": "b54e3727672cf11dd4b40190687e7084f8e8c8711805fceb6cd5965317f3f2a9",
+        "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+        "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+        "source_sha256": {
+          "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+          "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+          "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb"
+        },
+        "no_CHECK_read": true,
+        "prior_cpu_seconds": 656.165037,
+        "cpu_seconds": 23.685924083,
+        "maxrss_bytes": 375152640
+      },
+      "status": "PASS",
+      "stage": "fit",
+      "family": "control"
+    },
+    {
+      "unit": "cm113-pred02-fit-stumpy-20261021T111145Z",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z",
+      "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-fit-stumpy-60x20-20261021T111145Z.json",
+      "properties": {
+        "Result": "success",
+        "ExecMainStatus": "0",
+        "MemoryPeak": "293502976",
+        "CPUUsageNSec": "295740969000",
+        "CPUQuotaPerSecUSec": "1s",
+        "MemoryMax": "629145600",
+        "MemorySwapMax": "0",
+        "ActiveState": "active",
+        "SubState": "exited"
+      },
+      "journal_tail": "Started cm113-pred02-fit-stumpy-20261021T111145Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/launch.sh.\n",
+      "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-stumpy-20261021T111145Z-time.txt",
+      "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-stumpy-20261021T111145Z-stdout.txt",
+      "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-fit-stumpy-20261021T111145Z-stderr.txt",
+      "train_result": {
+        "status": "SEALED_READY_FOR_SEPARATE_CHECK",
+        "family": "stumpy",
+        "view": "60x20",
+        "config": 50,
+        "final_epochs": null,
+        "seeds": [
+          7
+        ],
+        "winning_TRAIN_inner_score": {
+          "lower_pinball": 0.2154001856047009,
+          "upper_pinball": 0.2154001856047009,
+          "direction_logloss": 1.0863606149952176,
+          "direction_brier": 0.658968446810972,
+          "direction_accuracy": 0.3851102941176471
+        },
+        "winning_inner_folds": [
+          {
+            "fold": 0,
+            "score": {
+              "lower_pinball": 0.20260220268063603,
+              "upper_pinball": 0.20260220268063603,
+              "direction_logloss": 1.0843350155506775,
+              "direction_brier": 0.656890700750182,
+              "direction_accuracy": 0.40613553113553114,
+              "n": 4368
+            },
+            "best_epoch": null,
+            "predictions_sha256": "04f451704cacd44761ffe2586ae2b859441b8960c569b8b3974384a180f4be1f",
+            "catalogue": [
+              {
+                "query_row": 8688,
+                "analogue_rows": [
+                  84,
+                  6000,
+                  4096
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 8690,
+                "analogue_rows": [
+                  194,
+                  6004,
+                  88
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 8692,
+                "analogue_rows": [
+                  6004,
+                  88,
+                  194
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 8694,
+                "analogue_rows": [
+                  6008,
+                  198,
+                  7494
+                ],
+                "neighbours": 50
+              }
+            ]
+          },
+          {
+            "fold": 1,
+            "score": {
+              "lower_pinball": 0.21503938747377063,
+              "upper_pinball": 0.21503938747377063,
+              "direction_logloss": 1.0885804438627171,
+              "direction_brier": 0.6611737368371887,
+              "direction_accuracy": 0.37133699633699635,
+              "n": 4368
+            },
+            "best_epoch": null,
+            "predictions_sha256": "20e0fb059654472a6a3f440ee2527c4ad9293245898cc20cf68b1b13147e6554",
+            "catalogue": [
+              {
+                "query_row": 13104,
+                "analogue_rows": [
+                  12530,
+                  5904,
+                  196
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 13106,
+                "analogue_rows": [
+                  196,
+                  12588,
+                  7492
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 13108,
+                "analogue_rows": [
+                  3920,
+                  3392,
+                  12536
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 13110,
+                "analogue_rows": [
+                  8794,
+                  5528,
+                  10758
+                ],
+                "neighbours": 50
+              }
+            ]
+          },
+          {
+            "fold": 2,
+            "score": {
+              "lower_pinball": 0.2287051753380849,
+              "upper_pinball": 0.2287051753380849,
+              "direction_logloss": 1.0861642274675583,
+              "direction_brier": 0.6588394856903738,
+              "direction_accuracy": 0.37777777777777777,
+              "n": 4320
+            },
+            "best_epoch": null,
+            "predictions_sha256": "1629b93cca741a71d8b2d4e148e2346acfa03ef9df1da8d8910f7a3fc7702a21",
+            "catalogue": [
+              {
+                "query_row": 17520,
+                "analogue_rows": [
+                  1134,
+                  12894,
+                  16146
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 17522,
+                "analogue_rows": [
+                  6766,
+                  4112,
+                  1134
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 17524,
+                "analogue_rows": [
+                  4838,
+                  8482,
+                  11478
+                ],
+                "neighbours": 50
+              },
+              {
+                "query_row": 17526,
+                "analogue_rows": [
+                  4838,
+                  15506,
+                  1476
+                ],
+                "neighbours": 50
+              }
+            ]
+          }
+        ],
+        "final_fit_rows": 26160,
+        "calibration_rows": 1440,
+        "calibration_raw": {
+          "lower_pinball": 0.19841837321373496,
+          "upper_pinball": 0.19841837321373496,
+          "direction_logloss": 1.0637610699326627,
+          "direction_brier": 0.6443741946146732,
+          "direction_accuracy": 0.41597222222222224,
+          "n": 1440
+        },
+        "calibration_adjusted": {
+          "lower_pinball": 0.1974454105628975,
+          "upper_pinball": 0.1974454105628975,
+          "direction_logloss": 1.0635350524844247,
+          "direction_brier": 0.6441875134667977,
+          "direction_accuracy": 0.41597222222222224,
+          "n": 1440
+        },
+        "models": [
+          {
+            "path": "final-seed7/model.pkl",
+            "sha256": "d4afa3f1342364b62fca61ff390ab280e1a3caee5552bc58bd1f220437312930"
+          }
+        ],
+        "calibrator_sha256": "df0ad19e57576df86726b0511f5ae47248625c24d37492241dfdb2fc8cecd153",
+        "calibration_predictions_sha256": "69cf7ab09bc314487327f83f77d0d57133c56e55a59f99095428c7656f192515",
+        "selection_sha256": "b54e3727672cf11dd4b40190687e7084f8e8c8711805fceb6cd5965317f3f2a9",
+        "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+        "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+        "source_sha256": {
+          "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+          "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+          "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb"
+        },
+        "no_CHECK_read": true,
+        "prior_cpu_seconds": 2.985177,
+        "cpu_seconds": 295.211932741,
+        "maxrss_bytes": 108036096
+      },
+      "status": "PASS",
+      "stage": "fit",
+      "family": "stumpy"
+    }
+  ],
+  "cpu_seconds": {
+    "control": 681.384612,
+    "stumpy": 298.726146,
+    "minirocket": 90.205046,
+    "cnn": 23.210074,
+    "rdst": 975.273315
+  },
+  "seals": {
+    "control": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/seal.json",
+      "sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+    },
+    "stumpy": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/seal.json",
+      "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+    }
+  }
+}
