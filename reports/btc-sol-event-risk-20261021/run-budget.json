@@ -13,13 +13,13 @@
     {
       "slot": 2,
       "policy": "H-SOL",
-      "status": "NOT_ELIGIBLE_BEFORE_INFO_GATE",
+      "status": "STOP_INSUFFICIENT_SOL_SUPPORT",
       "run_id": null
     },
     {
       "slot": 3,
       "policy": "combined",
-      "status": "CONDITIONAL_BOTH_SEPARATE_DD_IMPROVE_NP90",
+      "status": "NOT_ADMITTED_SOL_BRANCH_STOP",
       "run_id": null
     },
     {

@@ -1,0 +1,13 @@
+{
+  "status": "PASS_EV02_ARTIFACT_AND_SUPPORT_READBACK",
+  "utc": "2026-10-21T07:58:39.763335+00:00",
+  "input_output_hashes": 8,
+  "events": 248,
+  "labels": 141,
+  "BTC": "ELIGIBLE_FOR_FIXED_METHOD_COMPARISON",
+  "SOL": "STOP_INSUFFICIENT_SUPPORT_NOT_MISSING_RAWDATA",
+  "native_budget_used": 0,
+  "U_model_fits_engines": 0,
+  "ownfill_guard_correction": "verified initial-preserved/nativeID-specific/notfilled-sample-selection",
+  "no_new_full_replay_or_source_behavior": true
+}

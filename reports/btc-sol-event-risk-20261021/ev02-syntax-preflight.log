@@ -1,0 +1,4 @@
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-sol-event-risk-20261021/ev02-events.py", line 101
+    assert len({(e["parent_id"],e["level"]) for e in events if e["hypothesis"]=="SOL")==26
+                                                                                     ^
+SyntaxError: closing parenthesis ')' does not match opening parenthesis '{'

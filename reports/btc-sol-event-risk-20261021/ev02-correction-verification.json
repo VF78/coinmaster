@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "BTC_222_event_universe_features_labels_unchanged": true,
+  "initial_preserved": "ev02-initial",
+  "own_fill_id_predicate_not_fill_selected": true,
+  "focused_fixtures": [
+    "own_fill_allowed",
+    "no_fill_allowed",
+    "other_fill_rejected",
+    "strict_prior_clock"
+  ],
+  "final_sufficiency_sha256": "dd92ef413f5b256dcddba0d7876e6b8ca5898955af0cdec256b33df0c12b32bb"
+}

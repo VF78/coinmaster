@@ -1,0 +1,730 @@
+[
+  {
+    "block_id": "block-0000",
+    "split": "TRAIN",
+    "first_event_ns": 1725321600000000000,
+    "last_event_ns": 1725580800000000000,
+    "horizon_end_ns": 1725840000000000000,
+    "parent_ids": [
+      "6cc9a311-511b-4cfc-9315-d0a79366b296"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 4,
+    "labels": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0001",
+    "split": "TRAIN",
+    "first_event_ns": 1726358400000000000,
+    "last_event_ns": 1726444800000000000,
+    "horizon_end_ns": 1726704000000000000,
+    "parent_ids": [
+      "a156cdcd-16a8-40df-8bc3-f6e625961156"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 2,
+    "labels": [
+      1,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0002",
+    "split": "TRAIN",
+    "first_event_ns": 1728000000000000000,
+    "last_event_ns": 1728432000000000000,
+    "horizon_end_ns": 1728691200000000000,
+    "parent_ids": [
+      "c51347eb-000c-4bb5-a9e5-fa7c70bf98d4",
+      "d043c04b-da7a-4282-8b5e-7d6219d0f9ce"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 4,
+    "labels": [
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0003",
+    "split": "TRAIN",
+    "first_event_ns": 1728777600000000000,
+    "last_event_ns": 1728864000000000000,
+    "horizon_end_ns": 1729123200000000000,
+    "parent_ids": [
+      "b59b0db5-9672-4ec2-ad9d-e7dbc68828c7"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 2,
+    "labels": [
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0004",
+    "split": "TRAIN",
+    "first_event_ns": 1729900800000000000,
+    "last_event_ns": 1730073600000000000,
+    "horizon_end_ns": 1730332800000000000,
+    "parent_ids": [
+      "d22ad1c5-3795-4be1-ad43-fed08efe9b40"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 3,
+    "labels": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0005",
+    "split": "TRAIN",
+    "first_event_ns": 1730592000000000000,
+    "last_event_ns": 1730851200000000000,
+    "horizon_end_ns": 1731110400000000000,
+    "parent_ids": [
+      "b900a522-00d4-4edd-89b4-4910f9c92f0e"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 4,
+    "labels": [
+      1,
+      1,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0006",
+    "split": "TRAIN",
+    "first_event_ns": 1731801600000000000,
+    "last_event_ns": 1732147200000000000,
+    "horizon_end_ns": 1732406400000000000,
+    "parent_ids": [
+      "2201aea0-5ce6-48a7-bc6a-06c5025c6622"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 4,
+    "labels": [
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0007",
+    "split": "TRAIN",
+    "first_event_ns": 1734825600000000000,
+    "last_event_ns": 1734825600000000000,
+    "horizon_end_ns": 1735084800000000000,
+    "parent_ids": [
+      "8b6f5a17-f1fb-4510-961c-320288771b81"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0008",
+    "split": "TRAIN",
+    "first_event_ns": 1735171200000000000,
+    "last_event_ns": 1735171200000000000,
+    "horizon_end_ns": 1735430400000000000,
+    "parent_ids": [
+      "d9d0c494-2929-4f25-aed3-ab5b79f4f94d"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      1
+    ]
+  },
+  {
+    "block_id": "block-0009",
+    "split": "TRAIN",
+    "first_event_ns": 1735948800000000000,
+    "last_event_ns": 1736121600000000000,
+    "horizon_end_ns": 1736380800000000000,
+    "parent_ids": [
+      "c6b2f893-1003-48a6-98d9-fb50f2b9c3ef"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 3,
+    "labels": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0010",
+    "split": "TRAIN",
+    "first_event_ns": 1736985600000000000,
+    "last_event_ns": 1737072000000000000,
+    "horizon_end_ns": 1737331200000000000,
+    "parent_ids": [
+      "8e861186-a9cd-43de-a9b6-189421be7589"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 2,
+    "labels": [
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0011",
+    "split": "TRAIN",
+    "first_event_ns": 1737590400000000000,
+    "last_event_ns": 1738454400000000000,
+    "horizon_end_ns": 1738713600000000000,
+    "parent_ids": [
+      "06288f6a-a8c2-4db1-ad10-795b139a7502",
+      "ffade3cb-431b-4ee8-88f8-713e4665bf6f"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 9,
+    "labels": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0012",
+    "split": "TRAIN",
+    "first_event_ns": 1738800000000000000,
+    "last_event_ns": 1739059200000000000,
+    "horizon_end_ns": 1739318400000000000,
+    "parent_ids": [
+      "a4680cab-3544-4e3a-8f08-2d383b2ea22c"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 3,
+    "labels": [
+      1,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0013",
+    "split": "TRAIN",
+    "first_event_ns": 1740268800000000000,
+    "last_event_ns": 1740355200000000000,
+    "horizon_end_ns": 1740614400000000000,
+    "parent_ids": [
+      "5dada14a-69ee-46bf-90a1-feb88d6e6631"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 2,
+    "labels": [
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0014",
+    "split": "TRAIN",
+    "first_event_ns": 1741132800000000000,
+    "last_event_ns": 1741478400000000000,
+    "horizon_end_ns": 1741737600000000000,
+    "parent_ids": [
+      "d1b035f6-a451-463a-b4e6-c8bfdd2eb856"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 5,
+    "labels": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0015",
+    "split": "TRAIN",
+    "first_event_ns": 1742947200000000000,
+    "last_event_ns": 1742947200000000000,
+    "horizon_end_ns": 1743206400000000000,
+    "parent_ids": [
+      "90353e2a-ebc4-42b9-bd83-41c18ec54607"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0016",
+    "split": "CHECK",
+    "first_event_ns": 1744416000000000000,
+    "last_event_ns": 1744416000000000000,
+    "horizon_end_ns": 1744675200000000000,
+    "parent_ids": [
+      "421678a9-d6cd-4d14-94dd-e10393e5441e"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      1
+    ]
+  },
+  {
+    "block_id": "block-0017",
+    "split": "CHECK",
+    "first_event_ns": 1744848000000000000,
+    "last_event_ns": 1745193600000000000,
+    "horizon_end_ns": 1745452800000000000,
+    "parent_ids": [
+      "7e613237-e157-4576-9678-26a72d6e8c7e",
+      "cd1fb8eb-3a59-4f85-89fa-c3799974b500"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 3,
+    "labels": [
+      1,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0018",
+    "split": "CHECK",
+    "first_event_ns": 1746662400000000000,
+    "last_event_ns": 1746662400000000000,
+    "horizon_end_ns": 1746921600000000000,
+    "parent_ids": [
+      "daff9d12-5e81-4277-b8e3-45e1e5b667aa"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0019",
+    "split": "CHECK",
+    "first_event_ns": 1748217600000000000,
+    "last_event_ns": 1749081600000000000,
+    "horizon_end_ns": 1749340800000000000,
+    "parent_ids": [
+      "d359dbb1-4924-4c02-9c29-8dd982c0a71f"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 11,
+    "labels": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0020",
+    "split": "CHECK",
+    "first_event_ns": 1749427200000000000,
+    "last_event_ns": 1749427200000000000,
+    "horizon_end_ns": 1749686400000000000,
+    "parent_ids": [
+      "5e6e6cd3-a8cc-44fe-b463-01bc8579ee02"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0021",
+    "split": "CHECK",
+    "first_event_ns": 1749945600000000000,
+    "last_event_ns": 1750118400000000000,
+    "horizon_end_ns": 1750377600000000000,
+    "parent_ids": [
+      "ca3dd9e3-cd7b-49d1-b1e9-944a8077ff24"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 3,
+    "labels": [
+      0,
+      0,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0022",
+    "split": "CHECK",
+    "first_event_ns": 1750896000000000000,
+    "last_event_ns": 1752019200000000000,
+    "horizon_end_ns": 1752278400000000000,
+    "parent_ids": [
+      "bcef231d-58c3-48c7-bc51-5919fa37d031"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 14,
+    "labels": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0023",
+    "split": "CHECK",
+    "first_event_ns": 1754179200000000000,
+    "last_event_ns": 1754265600000000000,
+    "horizon_end_ns": 1754524800000000000,
+    "parent_ids": [
+      "e6c22d13-5128-471d-8d4a-de2653ae46c3"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 2,
+    "labels": [
+      1,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0024",
+    "split": "CHECK",
+    "first_event_ns": 1757116800000000000,
+    "last_event_ns": 1757462400000000000,
+    "horizon_end_ns": 1757721600000000000,
+    "parent_ids": [
+      "7c95017b-fe65-4898-9c3b-d26fa96615a0"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 5,
+    "labels": [
+      0,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0025",
+    "split": "CHECK",
+    "first_event_ns": 1758758400000000000,
+    "last_event_ns": 1758758400000000000,
+    "horizon_end_ns": 1759017600000000000,
+    "parent_ids": [
+      "e2da1a0b-1950-4744-bffa-e8b6544c1709"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0026",
+    "split": "CHECK",
+    "first_event_ns": 1759276800000000000,
+    "last_event_ns": 1759276800000000000,
+    "horizon_end_ns": 1759536000000000000,
+    "parent_ids": [
+      "bc020b69-ede2-4edc-91a8-4075878906e0"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0027",
+    "split": "CHECK",
+    "first_event_ns": 1760313600000000000,
+    "last_event_ns": 1760572800000000000,
+    "horizon_end_ns": 1760832000000000000,
+    "parent_ids": [
+      "ef74d779-c297-4d72-9084-e3981daafb3a"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 4,
+    "labels": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0028",
+    "split": "CHECK",
+    "first_event_ns": 1761264000000000000,
+    "last_event_ns": 1761609600000000000,
+    "horizon_end_ns": 1761868800000000000,
+    "parent_ids": [
+      "d4cb29e8-e239-4aab-b949-6b0237eb12fe",
+      "d4fbcb91-6839-4795-9aef-18681fbf143f"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 4,
+    "labels": [
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "block_id": "block-0029",
+    "split": "CHECK",
+    "first_event_ns": 1762992000000000000,
+    "last_event_ns": 1762992000000000000,
+    "horizon_end_ns": 1763251200000000000,
+    "parent_ids": [
+      "4536493e-1453-4118-b614-2d66fcad6474"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0030",
+    "split": "CHECK",
+    "first_event_ns": 1764201600000000000,
+    "last_event_ns": 1764547200000000000,
+    "horizon_end_ns": 1764806400000000000,
+    "parent_ids": [
+      "ad31c053-62be-47b7-9e02-c42215f7ca48"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 5,
+    "labels": [
+      1,
+      1,
+      1,
+      1,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0031",
+    "split": "CHECK",
+    "first_event_ns": 1767571200000000000,
+    "last_event_ns": 1768262400000000000,
+    "horizon_end_ns": 1768521600000000000,
+    "parent_ids": [
+      "039813b1-c02b-4d72-885b-f463ec7be46c",
+      "35fdb92e-8d56-4db9-9f75-98705c0fbe69"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 7,
+    "labels": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0032",
+    "split": "CHECK",
+    "first_event_ns": 1769040000000000000,
+    "last_event_ns": 1769644800000000000,
+    "horizon_end_ns": 1769904000000000000,
+    "parent_ids": [
+      "5d13bb8e-5ca8-439d-b252-1eff9951a5b5"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 8,
+    "labels": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0033",
+    "split": "CHECK",
+    "first_event_ns": 1770595200000000000,
+    "last_event_ns": 1770681600000000000,
+    "horizon_end_ns": 1770940800000000000,
+    "parent_ids": [
+      "56c12224-ca0b-4013-a030-aec525046b7d"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 2,
+    "labels": [
+      1,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0034",
+    "split": "CHECK",
+    "first_event_ns": 1771200000000000000,
+    "last_event_ns": 1771200000000000000,
+    "horizon_end_ns": 1771459200000000000,
+    "parent_ids": [
+      "43091c0b-8b28-4f3d-a8ab-cecf07266dc4"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  },
+  {
+    "block_id": "block-0035",
+    "split": "CHECK",
+    "first_event_ns": 1773273600000000000,
+    "last_event_ns": 1773619200000000000,
+    "horizon_end_ns": 1773878400000000000,
+    "parent_ids": [
+      "85cbf1e8-c3e8-4b19-a75f-037544166ae0",
+      "e2504c80-7eae-4ded-8038-1b05009e4222"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 4,
+    "labels": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "block_id": "block-0036",
+    "split": "CHECK",
+    "first_event_ns": 1774051200000000000,
+    "last_event_ns": 1774051200000000000,
+    "horizon_end_ns": 1774310400000000000,
+    "parent_ids": [
+      "03738e2a-5b70-4a30-a398-861a67a8cb87"
+    ],
+    "hypotheses": [
+      "BTC"
+    ],
+    "event_count": 1,
+    "labels": [
+      0
+    ]
+  }
+]

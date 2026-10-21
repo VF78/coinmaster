@@ -1,0 +1,12 @@
+{
+  "status": "INITIAL_OWN_FILL_OVEREXCLUSION_PRESERVED",
+  "root_authorized_correction": true,
+  "files": {
+    "ev02-events.log": "46e893761e200966ee1f92955413ed86303d98f56b137eb8664fd355c89165fb",
+    "ev02-events.csv": "affb182aa55ee5182451fa323b273fca921eb8121002eecfbc2d5f55a2b73a36",
+    "ev02-sufficiency.json": "46e893761e200966ee1f92955413ed86303d98f56b137eb8664fd355c89165fb",
+    "ev02-connected-blocks.json": "869fb0098d4943aca6112753236e356467a46685d1bd613473558a5f12e70c6c",
+    "ev02-events.py": "b5de5dfda5a14e1d8b92f5f93989e953ffa58898c776a07bf0af5687d996f0e1",
+    "ev02-events.json": "c984f4a80c1f6cf3ca67c9fb39655ca51fb8e7bbe9727ec35400185954612579"
+  }
+}

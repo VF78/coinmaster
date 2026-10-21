@@ -1,4 +1,4 @@
-Updated: 2026-10-21T07:32:36.188442+00:00; APPROVED event-risk cycle, EV-01 COMPLETE / EV-02 IN PROGRESS.
+Updated: 2026-10-21T07:32:36.188442+00:00; APPROVED event-risk cycle, EV-01/02 COMPLETE / EV-03 BTC PREPARATION.
 Canonical root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster; branch codex/nautilus-btc-sol-mvp. No Mac product edits/manual /opt edits. Model newtasks GPT-6.1 Sol only, medium for research/trading.
 Projecttruth #113 OPEN / In Progress, REST+GraphQL read-back PASS: reports/btc-sol-event-risk-20261021/project-start-readback.json. Existing issue reused; priorFAST-RND archived as completednegative, not rerun.
 Approvedplan1b887b8/reports/fast-rnd-20261020/next-cycle-plan.md; exactownerquote+planSHA authorization.json. Scope: H-BTC one managementaction, H-SOL one entry/addfilter; preserveBTCentry/sizingformula/sharedcompounding, originaloverlay control.
@@ -12,3 +12,5 @@ Protectedpilot coinmaster-hl-stageg-testnet.service: readonly environmentalrecei
 Known intentionaluntracked funding/CORRIDORfixtures preserve. Only explicitowned reports/source staged; gitmutations -c core.hooksPath=/dev/null (oldhooks deploy).
 
 EV01 COMPLETE: reports/btc-sol-event-risk-20261021/ev01-contract.md SHA349b7eee60dac275a481187e747a932b1b50bf62bb23018ac3dad891c949ff49, narrowreviewGO/root4inputSHAPASS; ev01-freeze.json authorizesEV02 labels+sufficiencyONLY. 84BTCparents/222dailyopportunities notexactruntimeadmission;26SOLfirst-rights/23parents. NeweventTRAIN2024-09-01→2025-04-08/CHECK→2026-04-08, frozenbeforelabels, U0. RisknativeW10%72h, wholeparentORoverlapblocks, min10/6distinct/disjoint5+5/3+3classsupport. No fits/engines yet, budget0/4. Next EV02causalfeatures+labelsupport then decide fiteligibility.
+
+EV02 COMPLETE reports/btc-sol-event-risk-20261021/ev02-sufficiency.json,20focusedchecksPASS/root8inputoutputSHAPASS,12.24s27.4MB;248events141labels37blocks,U0. BTC TRAIN50events15blocks/CHECK80/21 disjointminPASS. SOL5TRAINevents4blocks/CHECK6allnegative STOPsupport; no newmodels/hypotheses/thresholdshift. Budget0/4;SOL/combinedslotsNOTadmitted. OwnfillnativeIDguardcorrection preservesinitial/everyBTCeventlabel, no runtimebehaviorchanges. Next freezeBTCsmallmodel/STUMPY/rule recipes + causalactivation; no trainedfutureweightsappliedbackwards/no fixedS0predictionreplay onchangedbook.

@@ -1,0 +1,172 @@
+{
+  "status": "SOL_SUPPORT_FAIL_ROBUST_TO_OWN_FILL_CORRECTION",
+  "implementation_limitation": "Current conservative same-boundary exclusion includes event own fill. Own fill after its submission cannot itself make preaction state ambiguous. This is an overexclusion, not a lack of historical SOL events.",
+  "native_fills_sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7",
+  "correctable_only_own_fill_events": {
+    "TRAIN": 5,
+    "CHECK": 6
+  },
+  "other_gap_events": 15,
+  "train_independent_block_upper_bound": 5,
+  "frozen_train_minimum_blocks": 10,
+  "gate": "FAIL even if all own-fill-only events are recovered; no new label pass or lower support threshold needed",
+  "details": [
+    {
+      "event_id": "SOL:d043c04b-da7a-4282-8b5e-7d6219d0f9ce:1727913600000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:fa3a802e-b632-485b-b894-7f8246b21a4b:1728604800000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:2201aea0-5ce6-48a7-bc6a-06c5025c6622:1732233600000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:fac90298-1fa8-4ae7-949a-ed401cd9cd13:1734923700000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:6f1d189e-773b-4785-bbce-60784c9d4177:1735320060000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 4
+    },
+    {
+      "event_id": "SOL:6f1d189e-773b-4785-bbce-60784c9d4177:1735320060000000000:1",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 4
+    },
+    {
+      "event_id": "SOL:ce18b991-7e4f-47a9-a199-57d2d5128e0d:1736467200000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 2
+    },
+    {
+      "event_id": "SOL:a4680cab-3544-4e3a-8f08-2d383b2ea22c:1738886400000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:d1b035f6-a451-463a-b4e6-c8bfdd2eb856:1741564800000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:ad10c256-c358-41f5-aa7b-27e0a4d119ea:1741910400000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:8de4a8de-85b9-400e-820f-b41ac3068972:1742688000000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:c4a34a7e-a810-4430-8da8-c87d0d2577bc:1743034620000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:3d72745a-d53b-45da-b000-211461ad0fc3:1743638520000000000:0",
+      "split": "TRAIN",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:421678a9-d6cd-4d14-94dd-e10393e5441e:1744329900000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:cd1fb8eb-3a59-4f85-89fa-c3799974b500:1746057600000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:daff9d12-5e81-4277-b8e3-45e1e5b667aa:1746835200000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:d359dbb1-4924-4c02-9c29-8dd982c0a71f:1748133840000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:5e6e6cd3-a8cc-44fe-b463-01bc8579ee02:1749600000000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:bcef231d-58c3-48c7-bc51-5919fa37d031:1753142400000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:69f568e8-4eee-4480-aab6-d21983f92290:1754611200000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    },
+    {
+      "event_id": "SOL:5d10e865-36a4-47bc-9256-6f1e0b224af0:1755316920000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:53a60178-20a4-4c9e-86a8-2e326fa4aa77:1755913020000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 2
+    },
+    {
+      "event_id": "SOL:53a60178-20a4-4c9e-86a8-2e326fa4aa77:1755913020000000000:1",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 2
+    },
+    {
+      "event_id": "SOL:df246d15-03c0-4403-897b-481792e67ebd:1757635200000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 2
+    },
+    {
+      "event_id": "SOL:df246d15-03c0-4403-897b-481792e67ebd:1757721600000000000:1",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 1
+    },
+    {
+      "event_id": "SOL:bc020b69-ede2-4edc-91a8-4075878906e0:1759449600000000000:0",
+      "split": "CHECK",
+      "same_time_own_order_fills": 1,
+      "other_gap_fills": 0
+    }
+  ],
+  "no_new_outcomes_or_labels": true
+}

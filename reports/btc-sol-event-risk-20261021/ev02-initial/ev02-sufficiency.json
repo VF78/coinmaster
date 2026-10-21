@@ -1,0 +1,204 @@
+{
+  "status": "EV02_COMPLETE_NO_FITS",
+  "contract_sha256": "349b7eee60dac275a481187e747a932b1b50bf62bb23018ac3dad891c949ff49",
+  "freeze_sha256": "aa92741378a69caf199d6b66b03c55aa9ee885ce12f0ca4cb8e9bd1738a2b3b0",
+  "inputs": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-raw-native.json": "4b284a653aac056bfd74de21971f3647fdee1f97ca9095f27f1dc2e8d9b42237",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz": "780efb8da2c71189ebf5feb61c555137c99154e09f709de8c5b10ff19d0f32d3",
+    "reports/btc-sol-event-risk-20261021/ev01-daily-state-inventory.csv": "6319e2074c6dcffdfdfc246cd16b853187a612f52f35135832b9d218e0edcc27",
+    "reports/btc-sol-event-risk-20261021/ev01-native-order-inventory.csv": "9ca4407d9d3d015d1afb1f96b3813f92d01c00d36df79f4caf0c1ab81a878e1e"
+  },
+  "outputs": {
+    "reports/btc-sol-event-risk-20261021/ev02-events.json": "c984f4a80c1f6cf3ca67c9fb39655ca51fb8e7bbe9727ec35400185954612579",
+    "reports/btc-sol-event-risk-20261021/ev02-connected-blocks.json": "869fb0098d4943aca6112753236e356467a46685d1bd613473558a5f12e70c6c",
+    "reports/btc-sol-event-risk-20261021/ev02-events.csv": "affb182aa55ee5182451fa323b273fca921eb8121002eecfbc2d5f55a2b73a36"
+  },
+  "counts": {
+    "all_events": 248,
+    "labeled_events": 130,
+    "connected_blocks": 37,
+    "native_receipts": 840958
+  },
+  "summary": {
+    "BTC": {
+      "TRAIN": {
+        "events": 79,
+        "parents_before_exclusion": 29,
+        "valid_labeled_events": 50,
+        "valid_parents": 18,
+        "labels": {
+          "0": 36,
+          "1": 14
+        },
+        "excluded_events": 29,
+        "exclusion_reason_counts": {
+          "UNSETTLED_OR_SAME_BOUNDARY_NATIVE_FILL": 29,
+          "CONSERVATIVE_PARENT_INTERVAL_CROSSES_SPLIT": 3,
+          "FULL72H_HORIZON_NOT_INSIDE_PARTITION": 2
+        },
+        "connected_blocks": 16,
+        "total_blocks_minimum": 10,
+        "total_blocks_minimum_pass": true,
+        "pure_positive": 2,
+        "pure_negative": 9,
+        "mixed": 5,
+        "disjoint_allocation": {
+          "block-0001": "positive",
+          "block-0008": "positive",
+          "block-0000": "negative",
+          "block-0003": "negative",
+          "block-0004": "negative",
+          "block-0007": "negative",
+          "block-0009": "negative",
+          "block-0010": "negative",
+          "block-0013": "negative",
+          "block-0014": "negative",
+          "block-0015": "negative",
+          "block-0002": "positive",
+          "block-0005": "positive",
+          "block-0006": "positive",
+          "block-0011": "unused_mixed",
+          "block-0012": "unused_mixed"
+        },
+        "remaining_positive_deficit": 0,
+        "remaining_negative_deficit": 0,
+        "class_minimum": 5,
+        "disjoint_class_minimum_pass": true,
+        "sufficiency_pass": true
+      },
+      "CHECK": {
+        "events": 143,
+        "parents_before_exclusion": 46,
+        "valid_labeled_events": 80,
+        "valid_parents": 25,
+        "labels": {
+          "1": 27,
+          "0": 53
+        },
+        "excluded_events": 63,
+        "exclusion_reason_counts": {
+          "UNSETTLED_OR_SAME_BOUNDARY_NATIVE_FILL": 63
+        },
+        "connected_blocks": 21,
+        "total_blocks_minimum": 6,
+        "total_blocks_minimum_pass": true,
+        "pure_positive": 3,
+        "pure_negative": 10,
+        "mixed": 8,
+        "disjoint_allocation": {
+          "block-0016": "positive",
+          "block-0023": "positive",
+          "block-0028": "positive",
+          "block-0018": "negative",
+          "block-0020": "negative",
+          "block-0022": "negative",
+          "block-0025": "negative",
+          "block-0026": "negative",
+          "block-0027": "negative",
+          "block-0029": "negative",
+          "block-0034": "negative",
+          "block-0035": "negative",
+          "block-0036": "negative",
+          "block-0017": "unused_mixed",
+          "block-0019": "unused_mixed",
+          "block-0021": "unused_mixed",
+          "block-0024": "unused_mixed",
+          "block-0030": "unused_mixed",
+          "block-0031": "unused_mixed",
+          "block-0032": "unused_mixed",
+          "block-0033": "unused_mixed"
+        },
+        "remaining_positive_deficit": 0,
+        "remaining_negative_deficit": 0,
+        "class_minimum": 3,
+        "disjoint_class_minimum_pass": true,
+        "sufficiency_pass": true
+      },
+      "eligible_for_method_comparison": true
+    },
+    "SOL": {
+      "TRAIN": {
+        "events": 13,
+        "parents_before_exclusion": 12,
+        "valid_labeled_events": 0,
+        "valid_parents": 0,
+        "labels": {},
+        "excluded_events": 13,
+        "exclusion_reason_counts": {
+          "UNSETTLED_OR_SAME_BOUNDARY_NATIVE_FILL": 13,
+          "CONSERVATIVE_PARENT_INTERVAL_CROSSES_SPLIT": 1
+        },
+        "connected_blocks": 0,
+        "total_blocks_minimum": 10,
+        "total_blocks_minimum_pass": false,
+        "pure_positive": 0,
+        "pure_negative": 0,
+        "mixed": 0,
+        "disjoint_allocation": {},
+        "remaining_positive_deficit": 5,
+        "remaining_negative_deficit": 5,
+        "class_minimum": 5,
+        "disjoint_class_minimum_pass": false,
+        "sufficiency_pass": false
+      },
+      "CHECK": {
+        "events": 13,
+        "parents_before_exclusion": 11,
+        "valid_labeled_events": 0,
+        "valid_parents": 0,
+        "labels": {},
+        "excluded_events": 13,
+        "exclusion_reason_counts": {
+          "UNSETTLED_OR_SAME_BOUNDARY_NATIVE_FILL": 13
+        },
+        "connected_blocks": 0,
+        "total_blocks_minimum": 6,
+        "total_blocks_minimum_pass": false,
+        "pure_positive": 0,
+        "pure_negative": 0,
+        "mixed": 0,
+        "disjoint_allocation": {},
+        "remaining_positive_deficit": 3,
+        "remaining_negative_deficit": 3,
+        "class_minimum": 3,
+        "disjoint_class_minimum_pass": false,
+        "sufficiency_pass": false
+      },
+      "eligible_for_method_comparison": false
+    }
+  },
+  "checks": {
+    "status": "PASS",
+    "names": [
+      "OR_components_cross_parent_transitive",
+      "same_parent_disjoint_time_union",
+      "nonoverlap_stays_separate",
+      "mixed_blocks_not_double_counted",
+      "nativeW_threshold_exact_decimal",
+      "4_EV01_input_hashes_previously_frozen_2_reread_here",
+      "26_unique_SOL_first_rights",
+      "222_complete_BTC_opportunity_universe",
+      "source_receipt_strictly_before_event",
+      "stale_and_unsettled_fill_exclusions",
+      "full72h_partition_purge",
+      "conservative_wholeparent_purge",
+      "no_component_across_partition",
+      "U_boundary_before_payload",
+      "840958_native_receipts_monotone"
+    ]
+  },
+  "resources": {
+    "wall_seconds": 15.472370184026659,
+    "peak_RSS_bytes": 27078656
+  },
+  "limitations": [
+    "BTC daily events are opportunity risk samples; action reachability remains UNKNOWN",
+    "parent association uses entry-start intervals; full-parent purge conservative",
+    "risk of original S0 continuation is not reduce/skip actionvalue",
+    "small counts exploratory only; no statistical/economic guarantee",
+    "native signed funding and perasset PnL remain UNKNOWN"
+  ],
+  "U_payloads_inspected": 0,
+  "engine_launches": 0,
+  "model_fits": 0
+}
