@@ -11,3 +11,5 @@ PRED-01 contract frozen; narrow target/validation review GO with timestamp/entry
 Protected pilot remains active PID2009732/NRestarts0. No pilot/service/deploy/order/secret changes; S0 is not rerun. Old event-risk study and its unused four-native-run slots are closed historical scope, not budget for this new task.
 
 Project readback: `project-start-readback.json` verifies existing [issue #113](https://github.com/VF78/coinmaster/issues/113) OPEN and Project #2 In Progress. Progress and results will replace this current section rather than create a parallel backlog.
+
+Pre-fit narrow visual review: deterministic upper=max(upper,lower) after rearrangement and after March calibration; primary lower forecast unchanged. This corrects the bound-output contract before fitting/CHECK, with no extra experiment.

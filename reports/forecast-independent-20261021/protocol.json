@@ -149,7 +149,7 @@
     "outputs": "12 quantiles: lower/upper x long/short x3; and3 direction logits.",
     "loss": "mean lower pinball + .5*mean upper pinball + .2*direction crossentropy; no class weights.",
     "linear_training": "Adam lr.001 batch256 max80epochs min10 patience5; one selected best epoch per fold. Final epochs=median winning inner-fold best epoch. Weight decay=L2 candidate.",
-    "monotonicity": "Clip quantiles>=0 then ascending rearrangement within side/bound. Ties preserved; no artificial TP gaps.",
+    "monotonicity": "Clip quantiles>=0 then ascending rearrangement within side/bound. Ties preserved; no artificial TP gaps. Then upper=max(upper,lower) elementwise for each side/q, both before and after calibration; primary lower unchanged. This deterministic dominance projection preserves within-bound ordering.",
     "calibration": "March only: additive residual quantile correction per side/bound/q, then nonnegative rearrangement; one positive temperature for direction logits constrained[.25,4]. CNN ensemble calibrated after averaging. Save uncalibrated and calibrated scores."
   },
   "actionable": {
@@ -194,5 +194,10 @@
     "MASS optimized distance parity vs installedSTUMPY; correctquantileloss and noncrossing",
     "CNN renderer deterministic/past-only; outputcontract, batchmemory profile",
     "independent metrics/sourcehash verification on actual persisted predictions; no duplicate CHECK evaluation"
-  ]
+  ],
+  "pre_fit_review_amendment": {
+    "reason": "Narrow visual review: bound-head quantile dominance must survive calibration. No labels/fits/CHECK scores inspected.",
+    "supersedes_sha256": "65e1444c3ef8e35c6b18d46c3dd457cf902868c0f8f1ec74ce93c81d3906c872",
+    "review": "GO with ordered-upper projection"
+  }
 }
