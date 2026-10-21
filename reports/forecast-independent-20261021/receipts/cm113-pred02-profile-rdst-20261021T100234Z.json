@@ -1,0 +1,21 @@
+{
+  "unit": "cm113-pred02-profile-rdst-20261021T100234Z",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T100234Z",
+  "launch": "reports/forecast-independent-20261021/launch-profile-rdst-240x60-20261021T100234Z.json",
+  "properties": {
+    "Result": "success",
+    "ExecMainStatus": "0",
+    "MemoryPeak": "[not set]",
+    "CPUUsageNSec": "[not set]",
+    "CPUQuotaPerSecUSec": "infinity",
+    "MemoryMax": "infinity",
+    "MemorySwapMax": "infinity",
+    "ActiveState": "inactive",
+    "SubState": "dead"
+  },
+  "journal_tail": "Started cm113-pred02-profile-rdst-20261021T100234Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T100234Z/launch.sh.\nStopping cm113-pred02-profile-rdst-20261021T100234Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T100234Z/launch.sh...\ncm113-pred02-profile-rdst-20261021T100234Z.service: Deactivated successfully.\nStopped cm113-pred02-profile-rdst-20261021T100234Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T100234Z/launch.sh.\ncm113-pred02-profile-rdst-20261021T100234Z.service: Consumed 11min 46.728s CPU time, 600.0M memory peak, 0B memory swap peak.\n",
+  "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T100234Z-time.txt",
+  "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T100234Z-stdout.txt",
+  "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T100234Z-stderr.txt",
+  "status": "INTERRUPTED_RESOURCE_THRASH_NOT_PREDICTIVE_FAILURE"
+}

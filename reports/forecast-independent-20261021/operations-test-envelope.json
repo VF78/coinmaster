@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-21T10:39:06.325635+00:00",
+  "authorization": "coordinator within owner-authorized research task",
+  "scope": "Focused source tests ONLY; no model fitting/profile/CHECK",
+  "test_MemoryMax_mib": 400,
+  "test_MemorySwapMax": 0,
+  "test_MemAvailable_min_mib": 650,
+  "observed_previous_test_peak_bytes": 321429504,
+  "unchanged_free_headroom_mib": 250,
+  "full_model_MemoryMax_mib": 600,
+  "full_model_admission_min_mib": 850,
+  "reason": "Task-specific smaller measured test envelope preserves original 250MiB host headroom; avoid waiting for unrelated 6MiB RAM fluctuation. No cap increase, services/swap/drop-cache changes or scientific target/data/recipe change.",
+  "scientific_protocol_sha256_unchanged": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626"
+}

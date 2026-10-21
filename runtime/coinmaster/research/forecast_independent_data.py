@@ -149,7 +149,7 @@ def verify_prepared(path):
  return manifest
 class Dataset:
  def __init__(self,path,protocol_path,allow_check=False):
-  self.path=Path(path);self.lock=protocol(protocol_path);self.manifest=verify_prepared(self.path);self.meta=np.load(self.path/'metadata.npy',mmap_mode='r');self.context=np.load(self.path/'context.npy',mmap_mode='r');self.views=self.manifest['views'];self._features={};self.targets=np.full((len(self.meta),2,2),np.nan);self.direction=np.full(len(self.meta),-1,np.int8)
+  self.path=Path(path);self.protocol_path=Path(protocol_path);self.lock=protocol(protocol_path);self.manifest=verify_prepared(self.path);self.meta=np.load(self.path/'metadata.npy',mmap_mode='r');self.context=np.load(self.path/'context.npy',mmap_mode='r');self.views=self.manifest['views'];self._features={};self.targets=np.full((len(self.meta),2,2),np.nan);self.direction=np.full(len(self.meta),-1,np.int8)
   for part in (['train','check'] if allow_check else ['train']):
    with np.load(self.path/f'labels-{part}.npz') as z:self.targets[z['ids']]=z['target'];self.direction[z['ids']]=z['direction']
   self.allow_check=allow_check

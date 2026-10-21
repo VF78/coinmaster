@@ -1,0 +1,23 @@
+	Command being timed: "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T105732Z/source/runtime/.venv/bin/python -m unittest -v test_forecast_independent_models.ModelContractTests.test_opaque_rdst_parent_roundtrip_and_missing_cache_ids test_forecast_independent_models.ModelContractTests.test_injected_features_preserve_exact_existing_torch_head test_forecast_independent_models.ModelContractTests.test_budget_counts_completed_child_cpu test_forecast_independent_models.ModelContractTests.test_numeric_transform_and_scaler_precede_torch_import test_forecast_independent_models.ModelContractTests.test_early_best_cannot_bypass_family_minimum test_forecast_independent_models.ModelContractTests.test_projection_pre_and_post_calibration"
+	User time (seconds): 6.47
+	System time (seconds): 1.46
+	Percent of CPU this job got: 85%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:09.29
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 312936
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 702
+	Minor (reclaiming a frame) page faults: 61407
+	Voluntary context switches: 3101
+	Involuntary context switches: 1230
+	Swaps: 0
+	File system inputs: 308800
+	File system outputs: 64
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

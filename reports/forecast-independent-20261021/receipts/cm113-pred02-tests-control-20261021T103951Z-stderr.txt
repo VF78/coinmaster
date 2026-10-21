@@ -1,0 +1,13 @@
+test_numeric_transform_and_scaler_precede_torch_import (test_forecast_independent_models.ModelContractTests.test_numeric_transform_and_scaler_precede_torch_import) ... ok
+test_early_best_cannot_bypass_family_minimum (test_forecast_independent_models.ModelContractTests.test_early_best_cannot_bypass_family_minimum) ... ok
+test_projection_pre_and_post_calibration (test_forecast_independent_models.ModelContractTests.test_projection_pre_and_post_calibration) ... ok
+test_training_only_scaler (test_forecast_independent_models.ModelContractTests.test_training_only_scaler) ... ok
+test_actual_counts_expiries_and_censor (test_forecast_independent_actual.ActualPreparedContractTests.test_actual_counts_expiries_and_censor) ... ok
+test_actual_feature_bar_ids_and_sigma (test_forecast_independent_actual.ActualPreparedContractTests.test_actual_feature_bar_ids_and_sigma) ... ok
+test_actual_source_entry_terminal_and_label_parity (test_forecast_independent_actual.ActualPreparedContractTests.test_actual_source_entry_terminal_and_label_parity) ... ok
+test_source_manifest_pins (test_forecast_independent_actual.ActualPreparedContractTests.test_source_manifest_pins) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 2.845s
+
+OK

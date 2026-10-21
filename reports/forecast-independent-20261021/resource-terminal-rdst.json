@@ -1,0 +1,13 @@
+{
+  "family": "rdst",
+  "status": "INCOMPLETE_RESOURCE",
+  "authorization": "Root explicit RDST terminal resource exception 2026-10-21; no further retry or cap increase",
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "models": [],
+  "predictive_result": "UNKNOWN_NOT_EVALUATED",
+  "corrected_attempt_receipt": "receipts/cm113-pred02-profile-rdst-20261021T104128Z.json",
+  "corrected_attempt_sha256": "a4e7e063f166e2ce624dec70620403bdd89952abfd95b332ca012a340b87edc6",
+  "initial_interruption_receipt": "resource-interruption-rdst-initial.json",
+  "smallest_future_fix": "Terminate numeric/LLVM process after persisted f32 transform + fitted transformer; start fresh Torch-only quantile-head process. Not implemented or authorized in this scope."
+}

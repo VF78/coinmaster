@@ -4,7 +4,7 @@ import argparse,json,pickle,resource,time,traceback,os,struct,zlib
 from pathlib import Path
 import numpy as np
 from .forecast_independent_data import Dataset,PROTOCOL_SHA,ms,sha,write_json,DAY,MINUTE
-from .forecast_independent_models import Analog,Budget,Calibrator,Learned,project,scores,softmax,pinball
+from .forecast_independent_models import Analog,Budget,Calibrator,Learned,PhasedRDST,project,scores,softmax,pinball
 
 def emit(obj):print(json.dumps(obj,allow_nan=False),flush=True)
 def average(predictions):
@@ -13,30 +13,35 @@ def average(predictions):
 def aggregate_scores(records):
  n=sum(r['score']['n'] for r in records);return {k:sum(r['score'][k]*r['score']['n'] for r in records)/n for k in ['lower_pinball','upper_pinball','direction_logloss','direction_brier','direction_accuracy']}
 def ordering(score,view,config):return (score['lower_pinball'],score['direction_logloss'],int(view.split('x')[0]),int(view.split('x')[1]),config)
-def _predict(model,ids,budget):return model.predict(ids,budget) if isinstance(model,Analog) else model.predict(ids)
+def _predict(model,ids,budget):return model.predict(ids,budget) if isinstance(model,(Analog,PhasedRDST)) else model.predict(ids)
 def _fit(ds,family,view,config,train,val,cache,budget,seed=7,epochs=None,progress=None,profile_only=False):
  if family=='stumpy':return Analog(ds,view,int(config)).fit(train)
+ if family=='rdst':return PhasedRDST(ds,view,float(config),seed,cache).fit(train,val,budget,epochs,progress,profile_only)
  return Learned(ds,view,family,float(config),seed,cache).fit(train,val,budget,epochs,progress,profile_only)
 def _save_model(model,path):
+ if isinstance(model,PhasedRDST):
+  with Path(path).open('wb') as f:pickle.dump(model.artifact(),f,protocol=5)
+  return
  obj={'kind':'stumpy','view':model.view,'k':model.k,'library':model.library,'train':model.train,'prior_q':model.prior_q,'prior_p':model.prior_p} if isinstance(model,Analog) else {'kind':'learned','state':model.artifact()}
  with Path(path).open('wb') as f:pickle.dump(obj,f,protocol=5)
 def _load_model(ds,path,cache):
  with Path(path).open('rb') as f:obj=pickle.load(f)
  if obj['kind']=='learned':return Learned.restore(ds,obj['state'],cache)
+ if obj['kind']=='rdst-phased':return PhasedRDST.restore(ds,obj,cache)
  model=Analog(ds,obj['view'],obj['k']);model.library=obj['library'];model.train=obj['train'];model.prior_q=obj['prior_q'];model.prior_p=obj['prior_p'];return model
 
 def profile(ds,family,view,output,budget):
  fold=ds.lock['inner_folds'][0];train=ds.rows(ds.lock['train'][0],fold['fit_end']);val=ds.rows(fold['fit_end'],fold['validation_end'])
  # Uniform timestamps, independent of labels; profile is not a final trained recipe.
  train=train[np.linspace(0,len(train)-1,min(256,len(train)),dtype=int)];val=val[np.linspace(0,len(val)-1,min(128,len(val)),dtype=int)]
- config=20 if family=='stumpy' else .001;before=time.process_time()
+ config=20 if family=='stumpy' else .001;before=Budget.cpu()
  model=_fit(ds,family,view,config,train,val,output/'cache',budget,epochs=1,progress=lambda o:emit({'profile_epoch':o}),profile_only=True)
  q,logits=_predict(model,val,budget)
  if q.shape!=(len(val),2,2,3) or logits.shape!=(len(val),3) or not np.isfinite(q).all() or not np.isfinite(logits).all():raise ValueError('PROFILE_INVALID_OUTPUT_CONTRACT')
  # These TRAIN-only profile predictions are retained but never used for recipe selection.
  np.savez(output/'profile-predictions.npz',ids=val,q=q,logits=logits)
  if not isinstance(model,Analog):model.release_training_cache()
- return {'status':'PROFILE_PASS_NOT_RECIPE_SELECTION','family':family,'view':view,'train_rows':len(train),'validation_rows':len(val),'profile_cpu_seconds':time.process_time()-before,'maxrss_bytes':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024,'output_shapes':[list(q.shape),list(logits.shape)],'profile_only':True,'measurements':getattr(model,'measurements',{}),'head_features':None if isinstance(model,Analog) or family=='cnn' else len(model.scale.mean)}
+ return {'status':'PROFILE_PASS_NOT_RECIPE_SELECTION','family':family,'view':view,'train_rows':len(train),'validation_rows':len(val),'profile_cpu_seconds':Budget.cpu()-before,'maxrss_bytes':max(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss)*1024,'output_shapes':[list(q.shape),list(logits.shape)],'profile_only':True,'measurements':getattr(model,'measurements',{}),'head_features':None if isinstance(model,Analog) or family=='cnn' else model.head_features if isinstance(model,PhasedRDST) else len(model.scale.mean)}
 
 def fold_candidates(ds,family,views,configs,output,budget):
  records=[]
@@ -134,7 +139,8 @@ def validate_registry(path,dataset):
  for family,record in records.items():
   seal_path=Path(record['path'])
   if not seal_path.is_absolute():seal_path=path.parent/seal_path
-  if sha(seal_path)!=record['sha256'] or check_identity(seal_path,dataset)['family']!=family:raise ValueError('METHOD_SEAL_REGISTRY_MISMATCH')
+  if sha(seal_path)!=record['sha256']:raise ValueError('METHOD_SEAL_REGISTRY_MISMATCH')
+  if check_identity(seal_path,dataset)['family']!=family:raise ValueError('METHOD_SEAL_REGISTRY_MISMATCH')
  return sha(path)
 
 def acquire_check_lock(seal_path,output):
@@ -185,6 +191,10 @@ def evaluate(ds,seal_path,output,budget,baseline_path=None):
   if first is not None:
    row=first['row'];x,_=ds.features([row],seal['view']);from .forecast_independent_models import render
    image=render(x[0]);png(output/f'example-{symbol}.png',image);examples.append(first)
+   minute_name=f'minutes-{symbol}.npy';minute=np.load(ds.path/minute_name,mmap_mode='r');entry=first['entry_ms'];offset=(entry-ds.manifest['minute_start_ms'])//MINUTE;path=minute[offset:offset+1440,:4]
+   if len(path)!=1440:raise ValueError('POSTHOC_EXAMPLE_REQUIRES_FULL_PATH')
+   actual={'status':'POSTHOC_ACTUAL_PATH_NEVER_FEATURE','row':row,'asset':symbol,'origin_ms':first['origin_ms'],'entry_ms':entry,'expiry_ms':first['expiry_ms'],'reference':first['reference'],'entry':first['entry'],'side':first['side'],'reference_SL':first['reference_SL'],'entry_SL':first['entry_SL'],'reference_TP':first['reference_TP'],'entry_TP':first['entry_TP'],'minute_UTC_epoch_ms':(entry+np.arange(1440)*MINUTE).tolist(),'OHLC_fields':['open','high','low','close'],'OHLC':path.tolist(),'prepared_minutes_sha256':ds.manifest['artifacts'][minute_name]['sha256'],'source_sha256':ds.manifest['artifacts'][minute_name]['sha256'],'minutes':np.column_stack((entry+np.arange(1440)*MINUTE,path)).tolist(),'ambiguous_minute_ms':sorted({entry+(v['upper_time_minutes']-1)*MINUTE for v in first['touch'] if v['upper_hit'] and not v['lower_hit'] and v['upper_time_minutes'] is not None})}
+   write_json(output/f'example-path-{symbol}.json',actual);del minute
  result['deterministic_examples']=examples
  result['entry_gap_all_observed']={'n':len(ids),'mean_log':float(np.log(ds.meta['entry'][ids]/ds.meta['reference'][ids]).mean()),'quantiles_0_25_50_75_100':np.quantile(np.log(ds.meta['entry'][ids]/ds.meta['reference'][ids]),[0,.25,.5,.75,1]).tolist()}
  result['actionable_touch_summary']={}
@@ -202,7 +212,7 @@ def main():
  if a.stage in ('screen','fit') and not a.execute_train:raise ValueError('EXPLICIT_TRAIN_EXECUTION_FLAG_REQUIRED')
  if a.stage=='check' and (not a.execute_check or a.seal is None):raise ValueError('EXPLICIT_SEPARATE_CHECK_FLAG_AND_SEAL_REQUIRED')
  if a.stage!='profile' and (a.prior_cpu_seconds is None or a.prior_cpu_seconds<0):raise ValueError('DURABLE_PRIOR_CPU_BUDGET_ACCOUNTING_REQUIRED')
- a.output.mkdir(parents=True,exist_ok=False);started=time.process_time();budget=Budget(max(0,(120 if a.family=='cnn' else 60)-(a.prior_cpu_seconds or 0)/60));write_json(a.output/'intent.json',{'stage':a.stage,'family':a.family,'source_sha256':source_hashes(),'protocol_sha256':PROTOCOL_SHA,'CHECK_read_authorized':a.stage=='check'})
+ a.output.mkdir(parents=True,exist_ok=False);started=Budget.cpu();budget=Budget(max(0,(120 if a.family=='cnn' else 60)-(a.prior_cpu_seconds or 0)/60));write_json(a.output/'intent.json',{'stage':a.stage,'family':a.family,'source_sha256':source_hashes(),'protocol_sha256':PROTOCOL_SHA,'CHECK_read_authorized':a.stage=='check'})
  try:
   if a.stage=='check':
    seal=check_identity(a.seal,a.dataset);validate_registry(a.all_method_seals,a.dataset)
@@ -213,7 +223,7 @@ def main():
   elif a.stage=='screen':result=screen(ds,a.output,budget)
   elif a.stage=='fit':result=fit_family(ds,a.family,a.selection,a.output,budget)
   else:result=evaluate(ds,a.seal,a.output,budget,a.baseline)
-  result.update(protocol_sha256=PROTOCOL_SHA,dataset_manifest_sha256=sha(ds.path/'manifest.json'),prior_cpu_seconds=a.prior_cpu_seconds or 0,cpu_seconds=time.process_time()-started,maxrss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024);write_json(a.output/'result.json',result);emit(result)
+  result.update(protocol_sha256=PROTOCOL_SHA,dataset_manifest_sha256=sha(ds.path/'manifest.json'),prior_cpu_seconds=a.prior_cpu_seconds or 0,cpu_seconds=Budget.cpu()-started,maxrss_bytes=max(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss)*1024);write_json(a.output/'result.json',result);emit(result)
  except BaseException as error:
-  write_json(a.output/'failure.json',{'status':'INCOMPLETE_NO_AUTOMATIC_RETRY','error':str(error),'type':type(error).__name__,'cpu_seconds':time.process_time()-started,'traceback':traceback.format_exc()});raise
+  write_json(a.output/'failure.json',{'status':'INCOMPLETE_NO_AUTOMATIC_RETRY','error':str(error),'type':type(error).__name__,'cpu_seconds':Budget.cpu()-started,'traceback':traceback.format_exc()});raise
 if __name__=='__main__':main()

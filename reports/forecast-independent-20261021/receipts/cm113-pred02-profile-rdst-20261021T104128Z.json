@@ -1,0 +1,21 @@
+{
+  "unit": "cm113-pred02-profile-rdst-20261021T104128Z",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T104128Z",
+  "launch": "reports/forecast-independent-20261021/launch-profile-rdst-240x60-20261021T104128Z.json",
+  "properties": {
+    "Result": "oom-kill",
+    "ExecMainStatus": "15",
+    "MemoryPeak": "629145600",
+    "CPUUsageNSec": "127839711000",
+    "CPUQuotaPerSecUSec": "1s",
+    "MemoryMax": "629145600",
+    "MemorySwapMax": "0",
+    "ActiveState": "failed",
+    "SubState": "failed"
+  },
+  "journal_tail": "Started cm113-pred02-profile-rdst-20261021T104128Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T104128Z/launch.sh.\ncm113-pred02-profile-rdst-20261021T104128Z.service: A process of this unit has been killed by the OOM killer.\ncm113-pred02-profile-rdst-20261021T104128Z.service: Failed with result 'oom-kill'.\ncm113-pred02-profile-rdst-20261021T104128Z.service: Consumed 2min 7.839s CPU time, 600.0M memory peak, 0B memory swap peak.\n",
+  "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T104128Z-time.txt",
+  "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T104128Z-stdout.txt",
+  "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T104128Z-stderr.txt",
+  "status": "INCOMPLETE_NO_PROFILE_OUTPUT"
+}

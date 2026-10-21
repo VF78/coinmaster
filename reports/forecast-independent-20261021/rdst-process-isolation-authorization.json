@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-21T10:50:20.915708+00:00",
+  "scope": "RDST research execution isolation only; no statistical model/target/recipe/data change",
+  "evidence": "Corrected RDST transform/materialize/scale completed without Torch; subsequent Torch import OOM at600MiB,127.839711CPU. Initial co-import attempt caused215GBphysicalreads, interrupted. No full TRAIN or CHECK performance exposed.",
+  "authorized": "One final substantive memory correction: true sequential process boundary for RDST transform and SAME existing Torch head, opaque serialized artifacts retain current model seal packaging. Same600MiB/swap0/oneCPU. No new services/executor frameworks/optimizer backend.",
+  "limit": "If >about150addedlines/new orchestration needed, report before implementing. Focused tests + one phased bounded profile; no unlimited retries. Count all previous RDSTCPU in60CPUminute budget.",
+  "other_families": "Control/STUMPY/MiniRocket/CNN resource profiles PASS; hold shared-source TRAIN freeze briefly until final isolation source is fixed, to preserve all-family source seals.",
+  "protected_pilot": "UnchangedPID2009732/NRestarts0; no deployment/orders/S0"
+}

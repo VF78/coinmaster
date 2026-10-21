@@ -1,0 +1,11 @@
+test_opaque_rdst_parent_roundtrip_and_missing_cache_ids (test_forecast_independent_models.ModelContractTests.test_opaque_rdst_parent_roundtrip_and_missing_cache_ids) ... ok
+test_injected_features_preserve_exact_existing_torch_head (test_forecast_independent_models.ModelContractTests.test_injected_features_preserve_exact_existing_torch_head) ... ok
+test_budget_counts_completed_child_cpu (test_forecast_independent_models.ModelContractTests.test_budget_counts_completed_child_cpu) ... ok
+test_numeric_transform_and_scaler_precede_torch_import (test_forecast_independent_models.ModelContractTests.test_numeric_transform_and_scaler_precede_torch_import) ... ok
+test_early_best_cannot_bypass_family_minimum (test_forecast_independent_models.ModelContractTests.test_early_best_cannot_bypass_family_minimum) ... ok
+test_projection_pre_and_post_calibration (test_forecast_independent_models.ModelContractTests.test_projection_pre_and_post_calibration) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.763s
+
+OK

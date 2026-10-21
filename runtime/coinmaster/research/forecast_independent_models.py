@@ -1,6 +1,6 @@
 """Independent bounded forecasters. Imports Torch/aeon only on requested model paths."""
 from __future__ import annotations
-import copy,json,pickle,time
+import copy,json,pickle,time,sys,resource,subprocess,argparse
 from pathlib import Path
 import numpy as np
 from .forecast_independent_data import DAY,MINUTE,ms,write_json,sha
@@ -17,9 +17,13 @@ def scores(q,logits,y,d):
  p=softmax(logits);loss=pinball(q,y);truth=np.eye(3)[d]
  return {'lower_pinball':float(loss[:,0].mean()),'upper_pinball':float(loss[:,1].mean()),'direction_logloss':float(-np.log(np.maximum(p[np.arange(len(d)),d],1e-12)).mean()),'direction_brier':float(((p-truth)**2).sum(1).mean()),'direction_accuracy':float((p.argmax(1)==d).mean()),'n':len(d)}
 class Budget:
- def __init__(self,minutes):self.started=time.process_time();self.limit=minutes*60
+ @staticmethod
+ def cpu():
+  child=resource.getrusage(resource.RUSAGE_CHILDREN);return time.process_time()+child.ru_utime+child.ru_stime
+ def __init__(self,minutes):self.started=self.cpu();self.limit=minutes*60
+ def remaining(self):return max(0.,self.limit-(self.cpu()-self.started))
  def check(self):
-  if time.process_time()-self.started>self.limit:raise RuntimeError('INCOMPLETE_CPU_BUDGET_EXCEEDED')
+  if self.cpu()-self.started>self.limit:raise RuntimeError('INCOMPLETE_CPU_BUDGET_EXCEEDED')
 class Scale:
  def fit(self,getter,ids,chunk=256):
   total=0;mean=None;m2=None
@@ -131,15 +135,21 @@ class Learned:
   with torch.no_grad():
    for i in range(0,len(ids),self.batch_size):out.append(self.forward(ids[i:i+self.batch_size]).numpy())
   return unpack(np.vstack(out))
- def fit(self,train,validation,budget,epochs=None,progress=None,profile_only=False):
-  import torch
-  torch.set_num_threads(1);torch.manual_seed(self.seed);np.random.seed(self.seed);fit_started=time.process_time();self.measurements={'epoch_train_cpu_seconds':[],'epoch_validation_cpu_seconds':[]}
+ def fit(self,train,validation,budget,epochs=None,progress=None,profile_only=False,feature_provider=None):
+  np.random.seed(self.seed);fit_started=time.process_time();self.measurements={'epoch_train_cpu_seconds':[],'epoch_validation_cpu_seconds':[]}
   if self.family=='cnn':
+   import torch
+   torch.set_num_threads(1);torch.manual_seed(self.seed)
    self.batch_size=32;self.scale=Scale().fit(lambda ids:self.ds.features(ids,self.view)[1],train);self.model=cnn_model();maximum=20;minimum=5;patience=3;decay=.0001
   else:
-   self.batch_size=256;self.features=NumericFeatures(self.ds,self.view,self.family,self.cache).fit(train)
-   if self.family!='control':self.features.materialize(np.r_[train,validation] if validation is not None else train)
-   self.scale=Scale().fit(self.features.get,train);self.model=torch.nn.Linear(len(self.scale.mean),15);maximum=80;minimum=10;patience=5;decay=self.l2
+   if progress:progress({'phase':'NUMERIC_TRANSFORM_BEGIN','torch_loaded':'torch' in sys.modules})
+   self.batch_size=256;self.features=feature_provider if feature_provider is not None else NumericFeatures(self.ds,self.view,self.family,self.cache).fit(train)
+   if feature_provider is None and self.family!='control':self.features.materialize(np.r_[train,validation] if validation is not None else train)
+   self.scale=Scale().fit(self.features.get,train)
+   if progress:progress({'phase':'NUMERIC_TRANSFORM_COMPLETE','torch_loaded':'torch' in sys.modules})
+   import torch
+   torch.set_num_threads(1);torch.manual_seed(self.seed)
+   self.model=torch.nn.Linear(len(self.scale.mean),15);maximum=80;minimum=10;patience=5;decay=self.l2
   if epochs is not None and epochs<minimum and not profile_only:raise ValueError('FINAL_EPOCHS_BELOW_FROZEN_MINIMUM')
   choice=EpochChoice(minimum,patience,profile_only);optimizer=torch.optim.Adam(self.model.parameters(),lr=.001,weight_decay=decay);best=None;self.measurements['setup_cpu_seconds']=time.process_time()-fit_started
   for epoch in range(1,(epochs if epochs is not None else maximum)+1):
@@ -204,3 +214,77 @@ class Analog:
      q[at]=weight*empirical+(1-weight)*self.prior_q;prob[at]=weight*freq+(1-weight)*self.prior_p
      if len(self.catalogue)<4:self.catalogue.append({'query_row':int(ids[at]),'analogue_rows':chosen[:3],'neighbours':n})
   return project(q),np.log(np.maximum(prob,1e-12))
+
+class DiskFeatures:
+ """Head-only f32 reader; unpickles neither aeon nor its fitted transformer."""
+ def __init__(self,ds,cache):
+  self.transformer=None;self.array=np.load(Path(cache)/'transformed.npy',mmap_mode='r');ids=np.load(Path(cache)/'cache-ids.npy');self.lookup=np.full(len(ds.meta),-1,np.int64);self.lookup[ids]=np.arange(len(ids))
+  if self.array.dtype!=np.float32 or len(ids)!=len(self.array) or len(np.unique(ids))!=len(ids):raise ValueError('PHASE_CACHE_CONTRACT')
+ def get(self,ids):
+  rows=self.lookup[ids]
+  if np.any(rows<0):raise ValueError('PHASE_CACHE_MISSING_IDS')
+  return np.array(self.array[rows],copy=True)
+ def clear(self):self.array._mmap.close()
+
+class PhasedRDST:
+ """RDST-only serialized compute boundary; parent retains opaque pickle bytes."""
+ def __init__(self,ds,view,l2,seed,cache):self.ds=ds;self.view=view;self.family='rdst';self.l2=l2;self.seed=seed;self.cache=Path(cache);self.saved=None;self.predicted_ids=None
+ def _phases(self,train,predict,budget,validation=None,epochs=None,profile_only=False):
+  self.cache.mkdir(parents=True,exist_ok=True);np.savez(self.cache/'ids.npz',train=train,predict=predict,validation=np.array([],np.int64) if validation is None else validation)
+  cfg={'dataset':str(self.ds.path),'protocol':str(self.ds.protocol_path),'cache':str(self.cache),'view':self.view,'l2':self.l2,'seed':self.seed,'epochs':epochs,'profile_only':profile_only,'mode':'fit' if self.saved is None else 'predict'}
+  if self.saved is not None:
+   (self.cache/'transformer.pkl').write_bytes(self.saved['transformer_blob']);(self.cache/'head.pkl').write_bytes(self.saved['head_blob'])
+  write_json(self.cache/'phase.json',cfg);self.measurements={}
+  for phase in ('transform','head'):
+   budget.check();subprocess.run([sys.executable,'-m','coinmaster.research.forecast_independent_models','--rdst-phase',phase,'--config',str(self.cache/'phase.json'),'--cpu-seconds',str(max(1,int(budget.remaining())))],check=True)
+   self.measurements[phase]=json.loads((self.cache/f'{phase}-receipt.json').read_text());budget.check()
+  self.best_epoch=self.measurements['head']['best_epoch'];self.head_features=self.measurements['head']['head_features'];self.predicted_ids=np.array(predict)
+  with np.load(self.cache/'predictions.npz') as z:self.prediction=(z['q'].copy(),z['logits'].copy())
+  self.saved={'kind':'rdst-phased','view':self.view,'l2':self.l2,'seed':self.seed,'best_epoch':self.best_epoch,'head_features':self.head_features,'transformer_blob':(self.cache/'transformer.pkl').read_bytes(),'head_blob':(self.cache/'head.pkl').read_bytes()}
+  if len(self.saved['head_blob'])>2*1024**2 or len(self.saved['transformer_blob'])>8*1024**2 or 'torch' in sys.modules or 'aeon' in sys.modules:raise ValueError('OPAQUE_RDST_PARENT_OR_ARTIFACT_BOUND')
+  self.measurements['parent_frameworks']={'torch_loaded':False,'aeon_loaded':False,'head_blob_bytes':len(self.saved['head_blob']),'transformer_blob_bytes':len(self.saved['transformer_blob'])};return self
+ def fit(self,train,validation,budget,epochs=None,progress=None,profile_only=False):
+  predict=validation if validation is not None else self.ds.rows(self.ds.lock['final_fit_end'],self.ds.lock['calibration_end']);return self._phases(train,predict,budget,validation,epochs,profile_only)
+ def predict(self,ids,budget=None):
+  if self.predicted_ids is None or not np.array_equal(self.predicted_ids,ids):self._phases(np.array([],np.int64),ids,budget or Budget(60))
+  return self.prediction
+ def release_training_cache(self):
+  p=self.cache/'transformed.npy'
+  if p.exists():p.unlink()
+ def artifact(self):return self.saved
+ @classmethod
+ def restore(cls,ds,obj,cache):
+  model=cls(ds,obj['view'],obj['l2'],obj['seed'],cache);model.saved=obj;model.best_epoch=obj['best_epoch'];model.head_features=obj['head_features'];return model
+
+def _rdst_worker():
+ from .forecast_independent_data import Dataset
+ p=argparse.ArgumentParser();p.add_argument('--rdst-phase',choices=['transform','head'],required=True);p.add_argument('--config',type=Path,required=True);p.add_argument('--cpu-seconds',type=int,required=True);a=p.parse_args();resource.setrlimit(resource.RLIMIT_CPU,(a.cpu_seconds,a.cpu_seconds));cfg=json.loads(a.config.read_text());cache=Path(cfg['cache']);started=Budget.cpu();ds=Dataset(cfg['dataset'],cfg['protocol'])
+ with np.load(cache/'ids.npz') as z:train=z['train'];predict=z['predict'];validation=z['validation']
+ fit=cfg['mode']=='fit';receipt={'phase':a.rdst_phase,'mode':cfg['mode'],'train_rows':len(train),'predict_rows':len(predict),'train_ids_sha256':__import__('hashlib').sha256(train.tobytes()).hexdigest()}
+ if a.rdst_phase=='transform':
+  if 'torch' in sys.modules:raise ValueError('TORCH_IN_RDST_TRANSFORM_WORKER')
+  np.random.seed(cfg['seed']);features=NumericFeatures(ds,cfg['view'],'rdst',cache)
+  if fit:features.fit(train)
+  else:
+   with (cache/'transformer.pkl').open('rb') as f:features.transformer=pickle.load(f)
+  ids=np.r_[train,predict] if fit else predict;features.materialize(ids);np.save(cache/'cache-ids.npy',ids)
+  with (cache/'transformer.pkl').open('wb') as f:pickle.dump(features.transformer,f,protocol=5)
+  receipt.update(width=features.array.shape[1],dtype=str(features.array.dtype),torch_loaded='torch' in sys.modules,cache_bytes=int(features.array.nbytes));features.array.flush();features.array._mmap.close()
+ else:
+  provider=DiskFeatures(ds,cache)
+  if fit:
+   model=Learned(ds,cfg['view'],'rdst',cfg['l2'],cfg['seed'],cache).fit(train,validation if len(validation) else None,Budget(a.cpu_seconds/60),cfg['epochs'],None,cfg['profile_only'],provider)
+   artifact=model.artifact()
+   if set(artifact)!={'family','view','l2','seed','scale','state','transformer','best_epoch'} or artifact['transformer'] is not None:raise ValueError('HEAD_ARTIFACT_CONTENTS')
+   with (cache/'head.pkl').open('wb') as f:pickle.dump(artifact,f,protocol=5)
+  else:
+   with (cache/'head.pkl').open('rb') as f:model=Learned.restore(ds,pickle.load(f),cache)
+   model.features=provider
+  q,logits=model.predict(predict)
+  with (cache/'head.pkl').open('rb') as f:restored=Learned.restore(ds,pickle.load(f),cache)
+  restored.features=provider;rq,rl=restored.predict(predict);error=max(float(np.max(abs(q-rq))),float(np.max(abs(logits-rl))))
+  if error>1e-12 or 'aeon' in sys.modules or 'llvmlite' in sys.modules:raise ValueError('HEAD_PHASE_FRAMEWORK_OR_WEIGHT_ROUNDTRIP')
+  np.savez(cache/'predictions.npz',ids=predict,q=q,logits=logits);receipt.update(best_epoch=model.best_epoch,head_features=len(model.scale.mean),aeon_loaded=False,llvmlite_loaded=False,weight_roundtrip_max_abs_error=error,measurements=getattr(model,'measurements',{}));provider.clear()
+ receipt.update(cpu_seconds=Budget.cpu()-started,maxrss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024);write_json(cache/f'{a.rdst_phase}-receipt.json',receipt);print(json.dumps({'RDST_phase_completed':receipt}),flush=True)
+
+if __name__=='__main__':_rdst_worker()

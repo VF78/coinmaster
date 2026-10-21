@@ -21,6 +21,11 @@ if failure.exists():summary['failure']=json.loads(failure.read_text())
 train_failure=job/'result/train/failure.json'
 if train_failure.exists():summary['failure']=json.loads(train_failure.read_text())
 summary['status']='PASS' if props.get('Result')=='success' and props.get('ExecMainStatus')=='0' and (job/'result/time.txt').exists() and 'Exit status: 0' in (job/'result/time.txt').read_text() else 'INCOMPLETE'
+if receipt.get('stage')=='profile' and not result.exists():summary['status']='INCOMPLETE_NO_PROFILE_OUTPUT'
+interruption=Path('reports/forecast-independent-20261021/resource-interruption-rdst-initial.json')
+if interruption.exists() and json.loads(interruption.read_text())['unit']==unit:summary['status']='INTERRUPTED_RESOURCE_THRASH_NOT_PREDICTIVE_FAILURE'
+generic_interruption=Path('reports/forecast-independent-20261021')/f'resource-interruption-{unit}.json'
+if generic_interruption.exists():summary['status']='INTERRUPTED_RESOURCE_THRASH_NOT_PREDICTIVE_FAILURE'
 (report/f'{unit}.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps(summary))
 # Stop only this completed own transient unit after durable readback.
-subprocess.run(['systemctl','stop',unit],check=True)
+subprocess.run(['systemctl','stop',unit],check=False,capture_output=True)

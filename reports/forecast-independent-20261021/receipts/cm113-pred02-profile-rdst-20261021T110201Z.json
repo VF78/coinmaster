@@ -1,0 +1,92 @@
+{
+  "unit": "cm113-pred02-profile-rdst-20261021T110201Z",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T110201Z",
+  "launch": "reports/forecast-independent-20261021/launch-profile-rdst-240x60-20261021T110201Z.json",
+  "properties": {
+    "Result": "success",
+    "ExecMainStatus": "0",
+    "MemoryPeak": "629145600",
+    "CPUUsageNSec": "140782533000",
+    "CPUQuotaPerSecUSec": "1s",
+    "MemoryMax": "629145600",
+    "MemorySwapMax": "0",
+    "ActiveState": "active",
+    "SubState": "exited"
+  },
+  "journal_tail": "Started cm113-pred02-profile-rdst-20261021T110201Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T110201Z/launch.sh.\n",
+  "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T110201Z-time.txt",
+  "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T110201Z-stdout.txt",
+  "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-rdst-20261021T110201Z-stderr.txt",
+  "profile": {
+    "status": "PROFILE_PASS_NOT_RECIPE_SELECTION",
+    "family": "rdst",
+    "view": "240x60",
+    "train_rows": 256,
+    "validation_rows": 128,
+    "profile_cpu_seconds": 137.839811722,
+    "maxrss_bytes": 598409216,
+    "output_shapes": [
+      [
+        128,
+        2,
+        2,
+        3
+      ],
+      [
+        128,
+        3
+      ]
+    ],
+    "profile_only": true,
+    "measurements": {
+      "transform": {
+        "phase": "transform",
+        "mode": "fit",
+        "train_rows": 256,
+        "predict_rows": 128,
+        "train_ids_sha256": "a5218d9db037d434c2adfee6e77c41401ad44f99d4fc9b6ae9d315bf6e2634a8",
+        "width": 772,
+        "dtype": "float32",
+        "torch_loaded": false,
+        "cache_bytes": 1185792,
+        "cpu_seconds": 126.01971664300001,
+        "maxrss_bytes": 598409216
+      },
+      "head": {
+        "phase": "head",
+        "mode": "fit",
+        "train_rows": 256,
+        "predict_rows": 128,
+        "train_ids_sha256": "a5218d9db037d434c2adfee6e77c41401ad44f99d4fc9b6ae9d315bf6e2634a8",
+        "best_epoch": 1,
+        "head_features": 772,
+        "aeon_loaded": false,
+        "llvmlite_loaded": false,
+        "weight_roundtrip_max_abs_error": 0.0,
+        "measurements": {
+          "epoch_train_cpu_seconds": [
+            0.05512858300000012
+          ],
+          "epoch_validation_cpu_seconds": [
+            0.004788276999999397
+          ],
+          "setup_cpu_seconds": 5.818235231
+        },
+        "cpu_seconds": 7.785172629999999,
+        "maxrss_bytes": 325459968
+      },
+      "parent_frameworks": {
+        "torch_loaded": false,
+        "aeon_loaded": false,
+        "head_blob_bytes": 53578,
+        "transformer_blob_bytes": 171406
+      }
+    },
+    "head_features": 772,
+    "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+    "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+    "prior_cpu_seconds": 0,
+    "cpu_seconds": 140.248261832
+  },
+  "status": "PASS"
+}
