@@ -1,0 +1,17 @@
+component,parameter_group,gradient_L2,loss,batch,optimizer_steps
+Q_only,encoder,0.11055054112820475,0.3471381366252899,fixedfitIDs0..63,0
+Q_only,projection,0.177190106335117,0.3471381366252899,fixedfitIDs0..63,0
+Q_only,D_head,0.0,0.3471381366252899,fixedfitIDs0..63,0
+Q_only,Q_head,0.33058853300748664,0.3471381366252899,fixedfitIDs0..63,0
+D_only,encoder,0.47312598455373406,0.6400710344314575,fixedfitIDs0..63,0
+D_only,projection,0.4035662848909303,0.6400710344314575,fixedfitIDs0..63,0
+D_only,D_head,0.5084629294912355,0.6400710344314575,fixedfitIDs0..63,0
+D_only,Q_head,0.0,0.6400710344314575,fixedfitIDs0..63,0
+metric_weighted,encoder,0.2158673027138191,0.04869968816637993,fixedfitIDs0..63,0
+metric_weighted,projection,0.19423367829644167,0.04869968816637993,fixedfitIDs0..63,0
+metric_weighted,D_head,0.0,0.04869968816637993,fixedfitIDs0..63,0
+metric_weighted,Q_head,0.0,0.04869968816637993,fixedfitIDs0..63,0
+original_total,encoder,0.28038886289275033,1.0359089374542236,fixedfitIDs0..63,0
+original_total,projection,0.24904137598202564,1.0359089374542236,fixedfitIDs0..63,0
+original_total,D_head,0.5084629294912355,1.0359089374542236,fixedfitIDs0..63,0
+original_total,Q_head,0.33058853300748664,1.0359089374542236,fixedfitIDs0..63,0

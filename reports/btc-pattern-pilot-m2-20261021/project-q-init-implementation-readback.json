@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-21T21:08:51.868435+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "readback": "PASS",
+  "ES3": "SYNTHETIC_QA_FAIL_MARKET0",
+  "Q_PRIOR_INIT": "IMPLEMENTATION_ONLY",
+  "CHECK_opened": false,
+  "pilot_changes": false
+}

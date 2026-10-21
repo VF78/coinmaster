@@ -1,0 +1,64 @@
+{
+  "basis": "maximum actual originalCNNsec/epoch/fitrow incloptimizer,predictive+metricloss+ESvalidation applied to6fits atfull30epochs",
+  "measured_rate": 0.003481394219984701,
+  "fits": [
+    {
+      "fold": "F1",
+      "role": "subfit",
+      "N": 4392,
+      "epochs": 30,
+      "worst_seconds": 458.7085024251842
+    },
+    {
+      "fold": "F1",
+      "role": "refit",
+      "N": 5064,
+      "epochs": 30,
+      "worst_seconds": 528.8934099000758
+    },
+    {
+      "fold": "F2",
+      "role": "subfit",
+      "N": 8736,
+      "epochs": 30,
+      "worst_seconds": 912.4037971735904
+    },
+    {
+      "fold": "F2",
+      "role": "refit",
+      "N": 9408,
+      "epochs": 30,
+      "worst_seconds": 982.588704648482
+    },
+    {
+      "fold": "F3",
+      "role": "subfit",
+      "N": 13152,
+      "epochs": 30,
+      "worst_seconds": 1373.6189034371637
+    },
+    {
+      "fold": "F3",
+      "role": "refit",
+      "N": 13824,
+      "epochs": 30,
+      "worst_seconds": 1443.8038109120553
+    }
+  ],
+  "synthetic_seconds": 180,
+  "hash_inference_3fold_index_exclusion_scan_bootstrap_output_seconds": 900,
+  "image_render_seconds": 0,
+  "image_cache": "exactexisting3GB reuse+hash",
+  "margin": 0.2,
+  "remaining_seconds": 16617.133176088333,
+  "one_heavy_process": true,
+  "CPU_threads": 4,
+  "MPS": true,
+  "high_watermark": "defaultON",
+  "fallback": false,
+  "RSS_guard_bytes": 6442450944,
+  "additional_marketfamilies": 0,
+  "final_stability_CHECK_policy_fits": 0,
+  "worst_seconds_with_20pct": 8136.02055419586,
+  "within_remaining": true
+}

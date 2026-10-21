@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-21T21:08:25.368976+00:00",
+  "stage": "IMPLEMENTATION_ONLY_NOT_FIT_GO",
+  "mode": "CNN_Q_PRIOR_INIT",
+  "basis": "Positive CNN synthetic exposes low-amplitude Q underfit after64updates; correct shapes/manualpinball/finitegradientroute confirmed0fits. Actualmarketfits480\u20131512steps, so no proof marketmathbroken.",
+  "single_change": "After originalCNN construction/RNGdraws, zero Qlastweight and bias tofit-only marginalquantiles(.2,.5,.8)flattenedside/q. Allotherparametersoriginal, including metric0.1/single28dES/fullhistoricalprefixes.",
+  "no_ES3_combination": true,
+  "frozen_core_edits": false,
+  "synthetic_policy": "New named2x8epoch comparison under identical frozenQAdata/thresholds; disclose observedpreviousFAIL/debugiteration, not independentmarketquality. Exact source/protocol/resourceGO before fits.",
+  "market_max_CNN_joint_fits": 6,
+  "guards": "oneheavyMPS/CPU4/RSS6GiB/defaultwatermark/deadline01:46:11Z +20%resources",
+  "CHECK_opened": false,
+  "pilot_changes": false,
+  "review": "btc_pattern_causality_review contractGO, fit-onlysubfitforES and fullprefixforrefit, correctside/qorder,RNGidentity"
+}

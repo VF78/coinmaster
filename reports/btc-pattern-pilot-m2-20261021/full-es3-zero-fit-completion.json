@@ -1,0 +1,106 @@
+{
+  "status": "ZERO_FIT_SAVED_SYNTHETIC_DIAGNOSIS",
+  "checkpoint_sha256": "70ae04f48baea7cecf6d780e1fc8cb2cd0204c91901e526dc47420c3cef568b8",
+  "source_sha256": "be05f7f0ac6df85223a0f4eddc48eaafbb7b89c70dbeda2e90ed722addbf7999",
+  "fits": 0,
+  "optimizer_steps": 0,
+  "CHECK_used": false,
+  "q_shape": [
+    64,
+    2,
+    3
+  ],
+  "target_shape": [
+    64,
+    2
+  ],
+  "q_scale_MAD": [
+    0.5,
+    0.4000000059604645
+  ],
+  "q_scale_applied": "pinball divided by fit-only MAD broadcast[1,2,1]",
+  "canonical_normalized_Qloss": 0.3471381366252899,
+  "manual_normalized_Qloss": 0.347138117563018,
+  "manual_agrees": true,
+  "initial_Q_bias": [
+    [
+      0.03674483299255371,
+      -0.032793134450912476,
+      -0.005702152848243713
+    ],
+    [
+      0.031440556049346924,
+      -0.065167635679245,
+      -0.04230514168739319
+    ]
+  ],
+  "trained_Q_bias": [
+    [
+      0.08198799937963486,
+      0.02234906330704689,
+      0.0550113171339035
+    ],
+    [
+      0.09484125673770905,
+      -0.005167611408978701,
+      0.014250590465962887
+    ]
+  ],
+  "synthetic_optimizer_steps": 64,
+  "baseline_optimizer_steps": [
+    {
+      "fold": "F1",
+      "role": "CNN-es.receipt.json",
+      "fit_rows": 4392,
+      "selected_epochs": 6,
+      "executed_epochs": 11,
+      "steps_to_selected": 414,
+      "steps_executed": 759
+    },
+    {
+      "fold": "F1",
+      "role": "CNN-refit.receipt.json",
+      "fit_rows": 5064,
+      "selected_epochs": 6,
+      "executed_epochs": 6,
+      "steps_to_selected": 480,
+      "steps_executed": 480
+    },
+    {
+      "fold": "F2",
+      "role": "CNN-es.receipt.json",
+      "fit_rows": 8736,
+      "selected_epochs": 5,
+      "executed_epochs": 10,
+      "steps_to_selected": 685,
+      "steps_executed": 1370
+    },
+    {
+      "fold": "F2",
+      "role": "CNN-refit.receipt.json",
+      "fit_rows": 9408,
+      "selected_epochs": 5,
+      "executed_epochs": 5,
+      "steps_to_selected": 735,
+      "steps_executed": 735
+    },
+    {
+      "fold": "F3",
+      "role": "CNN-es.receipt.json",
+      "fit_rows": 13152,
+      "selected_epochs": 7,
+      "executed_epochs": 12,
+      "steps_to_selected": 1442,
+      "steps_executed": 2472
+    },
+    {
+      "fold": "F3",
+      "role": "CNN-refit.receipt.json",
+      "fit_rows": 13824,
+      "selected_epochs": 7,
+      "executed_epochs": 7,
+      "steps_to_selected": 1512,
+      "steps_executed": 1512
+    }
+  ]
+}

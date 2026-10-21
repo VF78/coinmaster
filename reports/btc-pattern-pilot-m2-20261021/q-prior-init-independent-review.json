@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-21T21:10:35.969308+00:00",
+  "stage": "SYNTHETIC_ONLY_GO",
+  "reviewer": "btc_pattern_causality_review",
+  "source_sha256": "b1cc5df55b06fd22d13deaaaef3a7a603b870dc4a37d946801c84d6032eefad2",
+  "protocol_sha256": "a9ef9fa2ff7a306d75a9faf6cfcccc9ead95163fd37f4295b219b3a9344f7f02",
+  "findings": "fit-only[side,q]priorbias, originalcompleteRNG/D/encoderinit,finallyfactoryrestore,statecompatibleinference;originalsingle28dES/fullprefix;fixedQAcontrolsunchanged",
+  "market_authorized": false
+}
