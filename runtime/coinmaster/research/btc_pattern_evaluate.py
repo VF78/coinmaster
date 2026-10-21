@@ -59,6 +59,11 @@ def safe_auc(labels,scores):
     return value if np.isfinite(value) else None
 
 
+def required_references(method):
+    complex_=method.split('-')[0] in ('TCN','CNN','Kronos','Context','CNNSpatial','Flat')
+    return ['prior']+(['CatBoost'] if complex_ else [])+(['numeric-knn','random-context'] if method.endswith('-knn') and complex_ else [])
+
+
 def losses(p,q,d,y):
     valid=d>=0;dl=np.full(len(d),np.nan);dl[valid]=-np.log(np.maximum(p[valid,d[valid]],1e-12))
     error=y[:,:,None]-q;pin=np.maximum(np.array([.2,.5,.8])*error,(np.array([.2,.5,.8])-1)*error).mean(2)
@@ -103,7 +108,7 @@ def evaluate(a):
                     if not np.array_equal(ids,ref[1]):raise ValueError('PAIRED_IDS_MISMATCH')
                     delta=loss[:,j]-ref[2][:,j];dd.extend(delta);oo.extend(meta['origin'][ids]);fold_wins+=int(np.nanmean(delta)<0)
                 ci=paired_ci(np.array(dd),np.array(oo));ci['fold_wins']=fold_wins;ci['PASS']=ci['mean'] is not None and ci['mean']<0 and fold_wins>=2 and ci['upper']<0;result[reference]=ci;comparisons.append(dict(method=method,task=task,reference=reference,**ci))
-            priorpass=result['prior']['PASS'];complex_=method.split('-')[0] in ('TCN','CNN','Kronos');required=['prior']+(['CatBoost'] if complex_ else [])+(['numeric-knn','random-context'] if method.endswith('-knn') and complex_ else [])
+            priorpass=result['prior']['PASS'];required=required_references(method)
             tasks[task]=dict(status='PREDICTIVE_PASS' if all(result[r]['PASS'] for r in required) else 'WEAK_EVIDENCE' if result['prior']['mean'] is not None and result['prior']['mean']<0 and result['prior']['fold_wins']>=2 else 'NO_SKILL',comparisons=result)
         gates[method]=tasks
     pd.DataFrame(comparisons).to_csv(a.output/'paired-comparisons.csv',index=False);write_json(a.output/'diagnostics.json',extras)

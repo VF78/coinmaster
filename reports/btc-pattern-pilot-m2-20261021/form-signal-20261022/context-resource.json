@@ -1,0 +1,21 @@
+{
+  "stage": "CONTEXT_OUTCOME_BLIND_RESOURCE",
+  "source_sha256": "44ead4aa672181748f1ca086220340c699bfb2f6b710968e9188f0bf8f7820e5",
+  "protocol_sha256": "e5c3e7f7a5436805c7230e8e29647534167e1cc769e40ed1696524a12396c700",
+  "device": "cpu",
+  "threads": 4,
+  "batch": 64,
+  "warmup": 2,
+  "timed_batches": 20,
+  "median_forward_backward_seconds": 0.0007675625383853912,
+  "p95_forward_backward_seconds": 0.0009825957007706166,
+  "max_market_optimizer_steps": 25650,
+  "optimizer_step_timing_allowance": "included within180s aggregate reserve along with ES/inference/scales/curves/retrieval/evaluation",
+  "max_full_cost_with20percent_seconds": 246.24429566971958,
+  "wall_request_seconds": 600,
+  "rss_peak_bytes": 213745664,
+  "optimizer_steps": 0,
+  "market_fits": 0,
+  "synthetic_fits": 0,
+  "parameter_changes": 0
+}

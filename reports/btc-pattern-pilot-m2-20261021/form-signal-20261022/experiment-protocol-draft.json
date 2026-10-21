@@ -1,0 +1,86 @@
+{
+  "schema": "btc-pattern.form-signal.v1",
+  "status": "IMPLEMENTATION_ONLY_NO_MARKET_GO",
+  "development": [
+    "2024-06-01",
+    "2026-05-01"
+  ],
+  "CHECK_opened": false,
+  "seed": 7,
+  "epochs_max": 30,
+  "patience": 5,
+  "loss": "original D + scaled long/short pinball + .1 metric",
+  "optimizer": {
+    "name": "AdamW",
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "clip_norm": 1
+  },
+  "FORM01": {
+    "name": "Context",
+    "input": "same12context only; fit-only standardization",
+    "architecture": "Heads(0): normalized64projection, D3,Q2x3",
+    "batch": 64,
+    "market_fits_max": 6,
+    "support": "actual169h; retrieval preserves common conservative raw256h eligibility withCNN",
+    "direct_and_knn": true,
+    "primary_comparison": "direct forecasts prior/context/originalCNN onidenticalIDs; learnedknn usescommonrawsupport",
+    "comparison": "sameCNN minibatch64/optimizer/metric pair support; onlyinput+unavoidableHeads dimensioncapacity changes"
+  },
+  "FORM02": {
+    "name": "Flat",
+    "input": "full2x64x6 origin-normalized engineered features flattened + same12context",
+    "dimensions": 780,
+    "old_groupmean_dimensions": 204,
+    "standardization": "fit-only per-coordinate mean/std floor1e-6; L2 normalization; unchanged COSINE",
+    "encoder_fits": 0,
+    "k": 32,
+    "greedy_spacing_hours": 72,
+    "prior_mass": 8,
+    "support": "true engineered dependency"
+  },
+  "FORM03": {
+    "name": "CNNSpatial",
+    "status": "CONDITIONAL_AFTER_FORM01_AND_FORM02",
+    "change_only": "AdaptiveAvgPool2d((2,8)); Heads(128*2*8); flatten",
+    "batch": 64,
+    "market_fits_max": 6,
+    "images": "originalcache unchanged",
+    "support": "originalrawsupport",
+    "pre_market_probe": "deterministic distinct position patterns differ under2x8 but collide underglobalpool"
+  },
+  "folds": [
+    {
+      "name": "F1",
+      "subfit": 4392,
+      "ES": 600,
+      "refit": 5064,
+      "outer": 2808,
+      "context_max_optimizer_steps": 4470
+    },
+    {
+      "name": "F2",
+      "subfit": 8736,
+      "ES": 600,
+      "refit": 9408,
+      "outer": 2880,
+      "context_max_optimizer_steps": 8520
+    },
+    {
+      "name": "F3",
+      "subfit": 13152,
+      "ES": 600,
+      "refit": 13824,
+      "outer": 2808,
+      "context_max_optimizer_steps": 12660
+    }
+  ],
+  "controls": "FORM00 corrected original savedcontrols unchanged; complex gate includesCatBoost +numeric/random forlearnedknn",
+  "prohibited": [
+    "CHECK",
+    "croppinghistory",
+    "newtargets",
+    "optimizersearch",
+    "pilot/native/economicruns"
+  ]
+}

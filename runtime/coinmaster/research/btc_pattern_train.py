@@ -55,14 +55,16 @@ def aggregate_predict(records):
 def neural_fit(data,kind,fit_ids,es_ids,out,epochs=None,device='cpu',seed=7):
     import torch
     from .btc_pattern_models import TCN,CNN,Projection,predict_loss,soft_metric
+    from .pattern_form_models import Context,CNNSpatial
     torch.manual_seed(seed);rng=np.random.default_rng(seed)
-    factory={'TCN':TCN,'CNN':CNN,'Kronos':Projection};model=factory[kind]().to(device);opt=torch.optim.AdamW(model.parameters(),lr=.001,weight_decay=.0001)
+    factory={'TCN':TCN,'CNN':CNN,'Kronos':Projection,'Context':Context,'CNNSpatial':CNNSpatial};model=factory[kind]().to(device);opt=torch.optim.AdamW(model.parameters(),lr=.001,weight_decay=.0001)
     cm,cs=normalize(data.c,fit_ids);xm,xs=normalize(data.x,fit_ids) if kind=='TCN' else (0.,1.)
     km,ks=normalize(data.kronos,fit_ids) if kind=='Kronos' else (0.,1.)
-    ys,qs,tau=scales(data,fit_ids);batch=64 if kind=='CNN' else 128
+    ys,qs,tau=scales(data,fit_ids);batch=64 if kind in ('CNN','CNNSpatial','Context') else 128
     def input_batch(ids):
         if kind=='TCN':x=(np.asarray(data.x[ids])-xm)/xs
-        elif kind=='CNN':x=np.asarray(data.images[ids]).transpose(0,3,1,2).astype('float32')/255
+        elif kind in ('CNN','CNNSpatial'):x=np.asarray(data.images[ids]).transpose(0,3,1,2).astype('float32')/255
+        elif kind=='Context':x=np.empty((len(ids),0),dtype='float32')
         else:x=(np.asarray(data.kronos[ids])-km)/ks
         return torch.from_numpy(np.asarray(x,dtype='float32')).to(device),torch.from_numpy(((np.asarray(data.c[ids])-cm)/cs).astype('float32')).to(device)
     def loss_for(ids,training):
@@ -101,12 +103,14 @@ def neural_fit(data,kind,fit_ids,es_ids,out,epochs=None,device='cpu',seed=7):
 def neural_predict(data,state,ids,device='cpu'):
     import torch
     from .btc_pattern_models import TCN,CNN,Projection
-    kind=state['kind'];model={'TCN':TCN,'CNN':CNN,'Kronos':Projection}[kind]().to(device);model.load_state_dict(state['weights']);model.eval();zall=[];pall=[];qall=[]
+    from .pattern_form_models import Context,CNNSpatial
+    kind=state['kind'];model={'TCN':TCN,'CNN':CNN,'Kronos':Projection,'Context':Context,'CNNSpatial':CNNSpatial}[kind]().to(device);model.load_state_dict(state['weights']);model.eval();zall=[];pall=[];qall=[]
     with torch.inference_mode():
-        for a in range(0,len(ids),128 if kind!='CNN' else 64):
-            resource_guard(device);ii=ids[a:a+(128 if kind!='CNN' else 64)]
+        for a in range(0,len(ids),64 if kind in ('CNN','CNNSpatial','Context') else 128):
+            resource_guard(device);ii=ids[a:a+(64 if kind in ('CNN','CNNSpatial','Context') else 128)]
             if kind=='TCN':x=(np.array(data.x[ii])-state['x_mean'])/state['x_std']
-            elif kind=='CNN':x=np.array(data.images[ii]).transpose(0,3,1,2).astype('float32')/255
+            elif kind in ('CNN','CNNSpatial'):x=np.array(data.images[ii]).transpose(0,3,1,2).astype('float32')/255
+            elif kind=='Context':x=np.empty((len(ii),0),dtype='float32')
             else:x=(np.array(data.kronos[ii])-state['k_mean'])/state['k_std']
             c=(np.array(data.c[ii])-state['context_mean'])/state['context_std'];z,p,q=model(torch.from_numpy(x.astype('float32')).to(device),torch.from_numpy(c.astype('float32')).to(device));zall.append(z.cpu().numpy());pall.append(torch.softmax(p,1).cpu().numpy());qall.append(q.cpu().numpy())
     result=tuple(np.concatenate(a) for a in (zall,pall,qall));del model;gc.collect()

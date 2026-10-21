@@ -41,7 +41,7 @@ def method_input_start(meta, method):
         return raw # preserve the original conservative256h control exclusion
     if method == 'Context':
         return meta['origin'] - 169*HOUR
-    if method in ('CNN', 'Kronos'):
+    if method in ('CNN', 'CNNSpatial', 'Kronos'):
         return np.minimum(raw, meta['origin'] - 169*HOUR)
     raise ValueError('UNKNOWN_METHOD_SUPPORT: '+method)
 

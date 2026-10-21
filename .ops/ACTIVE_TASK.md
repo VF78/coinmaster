@@ -1,17 +1,17 @@
-Updated: 2026-10-21T23:34:13.234183+00:00
-Status: FORM_IMPLEMENTATION_IN_PROGRESS. Latestownerexplicitlyauthorizesboundednewtrainings, supersedingearlierNO_FITSonlyforFORM01max6+FORM03max6. Pilot/S0/VPSprotected.
-Canonicalowner-localworktree /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; currentpublishedbase759565d0d7bb0b64d1b65272adf3cdfc2a598443. Sourceeditsuncommittedintentionalownedbtc_pattern_m2_owner.
-Plan reports/btc-pattern-pilot-m2-20261021/form-signal-20261022/PLAN.md. Existing122OPEN/ProjectInProgressactualreadback project-start-readback.json; notnewduplicateissues.
-Owners: btc_pattern_m2_ownerSOLEsharedsource/tests/experiments; btc_pattern_causality_reviewnarrowpreflight/review; openai_pattern_route_analysisDOCSDONE; rootops/Project/plan/checkpoints. No concurrentengine/sourceowners.
-FORM00implementedB1/B2/B3/B4/R1data/train/evaluate+wrapper;4focusedtestsPASS+fullrelevant20testsPASS3.067s. Actualartifacthashvalidation/completion/3fold/canonicaltruth+active180s/RSS6GiBguards reviewedGO. Randomlegacyconservativemaskretained; CNN/Kronos/priorunaffectedexactcopies.
-FORM00sourcepins datae4314302/traincd1cfcf1/eval8e696d14/wrapperf0989e09/tests0105d890; corefrozenuntilA0checkpoint. One0fitrescoreEXIT0session29067/100.011sCPU4;savedTCNzreconstructed(readinference),numericexistingarrays;30validatedforecastgroups+24unchangedcopies. GateNO_SKILL.
-FORM00comparabilityDONE32.270s/0fits0inference: sameCPUoldmask→correctedmask TCNQchanges141/88/14; archived→CPUoldmask15/1/101. F3extra101entirelynear-tierankCPUdrift(max3.576e−7). TCNpuremaskallpairedCIinclude0. NumericD−.000679CI[−.001479,−.000118]vsoldnumeric,stillNO_SKILL. All710invalidpairsabsent/24filesexact/30forecastgroupscanonical.
-CheckpointA0+plan/docs follows gitHEAD; source/results/testreceiptsready. Next ownerFORM01/02integration +frozenprotocol/sourceGO beforemarket. OwnercanprepareA1newwrapperbutNOsharedcoremutationuntilrootcheckpoint; NOmarketfitlaunchedyet. ExistingreviewGOonlyFORM00.
-FORM01ContextOnly12scaledcontext→Heads(0),sameD/Q+metric.1loss/AdamW/batch64/ES/fullprefix/seed7.3ES+3freshrefitsmax6. Compareprior/context/originalCNN; noCNNretrain.
-FORM02full2x64x6flatten+12ctx=780vsold204;fitstandardize→L2→COSINE/samek32/greedy72/prior8/support; NOrawEuclideanchange/noencoderfit. Outputfeaturecountconfoundexplicit.
-FORM03after01/02+deterministicspatialpatternQA: ONLYCNNpool1x1→2x8/Heads2048+flatten,allotherrecipeunchanged;max6marketfits. Nojointbarriertargets/newSL/horizon/seedgridnow.
-CurrentfullDEVJun1 2024–May1 2026/threepurgedfolds/all8496outerIDs unchanged. Everyrefitfullprefix, no180dcrop. Originaltests/negativeforecastsretained; newstudyonexaminedhistoryEXPLORATORY;CHECKnotopened.
-FORM04ONEconditionalapplicationstandaloneBTC becauseexisting72h/stoplabelsfit; noS0statetransfer. Needproperhistoricalactionpaths/partials/fees/funding/margin/nativeengineandidenticalpolicy/sizingcontrol, exposurematchedifneeded. Freezeexactactiondatesbeforeeconomicrun; ifnoligiblecomponentstopNOT_EVALUATED, noEVfromD+3quantiles.
-FORM05OpenAIanalysisDONE59linesopenai-route.md: chatcontext≠weighttraining; hostednumeric/fewshot/visionoptionrequiresprompt/query/$cap; noAPIrequests/uploads/keysdiscovery/paidfine-tuning. OfficialdocsnewFTusersclosed/currentvisionGPT4oretirement2027Jan14; don'tpromisefinetuning6.1.
-ResourceoneheavyprocessCPU4/defaultMPSwatermark/RSS6GiB; onefitbudget12MARKETtotal, noautomaticretries/grids/originalS0/CNNreruns. Rootmustfreeze+reviewprotocolbeforeFORM01/03GO, ownerauthorizednoextrahumanquestionneededforboundedfits.
-Protectedworkingpilot/services/positions/orders/secrets/largecachesuntouched. NoVPScleanup/deploy/live. ActualROI/DDforforecastresearchstillNOT_EVALUATED/native0.
+Status: FORM01/02 GO; source frozen, one owner job may launch once. Updated: 2026-10-21T23:43:16.757671+00:00
+Canonical owner-local research exception: research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021.
+Existing issue #122 / Project #2 In Progress; PLAN reports/btc-pattern-pilot-m2-20261021/form-signal-20261022/PLAN.md.
+FORM00 completed/published 980a2d4: B1/B2/B3/B4/R1 corrected,20 relevant tests PASS;100.011s re-score+32.270s precision decomposition;0fits.
+All710 invalid neighbor pairs absent;24unaffected controls byte-identical,30canonical groups; no confirmed skill. TCN CPU-near-tie effects separately attributed.
+FORM01/02 source freeze runner77f66d2b/protocol e5c3e7f7/resource48b0f514;25focused checks PASS; source review GO.
+Root GO Context max6 joint market fits (3ES+3refit), Flat numeric nofit. CPU4/wall600s/RSS6GiB; source hashes pinned before launch.
+Context Heads(0)/12features/batch64, same losses/optimizer/full prefixes; Flat780 coordinates retains fit-standardize/L2/cosine/k32/72h/prior8.
+Report paired candidate minus comparator and 2of3fold evidence. Compare originalCNN vsContext and Flat vscorrectednumeric onidentical IDs.
+Every refit starts June1 2024, DEVELOPMENT endsMay1 2026, common8496outer IDs; no180dcrop/CHECK/seedgrid/newlabels.
+Owner btc_pattern_m2_owner sole source/tests/runs. Reviewer btc_pattern_causality_review scoped GO. Root ops/Project/checkpoints only.
+FORM03 conditional after01/02: onlypool1x1->2x8/Heads2048; sameimages/context/targets/training; max6fits under separate source/resource GO.
+FORM04 standaloneBTC conditional action/path validity+signal evidence; native engine only, equalpolicy/sizing/executioncontrol. NoEVfrom3quantiles; otherwise NOT_EVALUATED.
+FORM05 OpenAI route DONE: chat formulation !=weight training; hosted calls/FT unavailable without separate access/cost/protocol;0APIrequests/uploads.
+Historical exploratory research, not pristine holdout. Original negative results retained; originalCNN/S0 not rerun.
+Pilot/S0/VPS/services/secrets/orders protected. No deploy/live/cleanup/economicrun in current GO. Total new authorized marketfits <=12.
+Next: collect sole owner session/outputs, compare direct/paired heads, prepare exact spatial GO. No duplicate runs.
