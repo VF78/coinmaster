@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-21T18:41:08.619992+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/121",
+  "issue_state": "closed",
+  "state_reason": "completed",
+  "Project_status": "Done",
+  "readback": "PASS",
+  "overall": "TARGET_NOT_MET",
+  "A": "NO_SKILL_REUSED",
+  "B": "INCOMPLETE_RESOURCE_QUALITY_UNKNOWN",
+  "C": "COMPLETE_NO_SKILL",
+  "native_used": 0,
+  "policy_CHECK_native": "SKIPPED_BY_GATE",
+  "pilot_untouched": true
+}

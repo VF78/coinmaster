@@ -1,0 +1,206 @@
+{
+  "joint-ts2vec-d4-0-0-D.cbm": {
+    "sha256": "69bcc32bd71db4e1a45cd7442086cd354ed18cf623271a80469b800042da9533",
+    "fit_cutoff": "2025-03-01",
+    "max_fit_label_expiry": 1740783660000,
+    "ES_encoder": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404",
+    "full_encoder": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2",
+    "selected_iterations": 1,
+    "class_mapping": [
+      0,
+      1,
+      2
+    ],
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-0-Q-long.cbm": {
+    "sha256": "bee9c5c10fba00d0b8626463d96bf255a5853d68a1fa5ce6ab1faacb7cf4e8d4",
+    "fit_cutoff": "2025-03-01",
+    "max_fit_label_expiry": 1740783660000,
+    "ES_encoder": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404",
+    "full_encoder": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2",
+    "selected_iterations": 22,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-0-Q-short.cbm": {
+    "sha256": "bda6fefe21a8985ae1d293709e5334790b866da685d99bf5b7c550bbc7f6296d",
+    "fit_cutoff": "2025-03-01",
+    "max_fit_label_expiry": 1740783660000,
+    "ES_encoder": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404",
+    "full_encoder": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2",
+    "selected_iterations": 74,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-0-D.cbm": {
+    "sha256": "362e514e2c01f5c42e97cbbc1b96df642d1b8252702bb49ee4a8532749f61d97",
+    "fit_cutoff": "2025-03-01",
+    "max_fit_label_expiry": 1740783660000,
+    "ES_encoder": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404",
+    "full_encoder": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2",
+    "selected_iterations": 21,
+    "class_mapping": [
+      0,
+      1,
+      2
+    ],
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-0-Q-long.cbm": {
+    "sha256": "ccb5eae8729b4e6eb2702b431894adf222aade9bb03f7b3524d4fb85cd6ccc15",
+    "fit_cutoff": "2025-03-01",
+    "max_fit_label_expiry": 1740783660000,
+    "ES_encoder": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404",
+    "full_encoder": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2",
+    "selected_iterations": 1,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-0-Q-short.cbm": {
+    "sha256": "5dee80baeb47dc1eeb4a023657417e8fbd2df1b0d51b9d0e38bbee011dad2ff2",
+    "fit_cutoff": "2025-03-01",
+    "max_fit_label_expiry": 1740783660000,
+    "ES_encoder": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404",
+    "full_encoder": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2",
+    "selected_iterations": 3,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-1-D.cbm": {
+    "sha256": "b6d867fe8e8ff0de39212c54b76f88d0376fa4831ea0970b9e20709abd3d1c7e",
+    "fit_cutoff": "2025-06-01",
+    "max_fit_label_expiry": 1748732460000,
+    "ES_encoder": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+    "full_encoder": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2",
+    "selected_iterations": 104,
+    "class_mapping": [
+      0,
+      1,
+      2
+    ],
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-1-Q-long.cbm": {
+    "sha256": "48f1904efad42e430ffe5ccb2e5dd69dd41d285e4b172cda7795ffbb862d4ec2",
+    "fit_cutoff": "2025-06-01",
+    "max_fit_label_expiry": 1748732460000,
+    "ES_encoder": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+    "full_encoder": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2",
+    "selected_iterations": 146,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-1-Q-short.cbm": {
+    "sha256": "b87fd196de8d66706b6d790f687c39b3c4846c0bfe7ffde397c3f1663c898386",
+    "fit_cutoff": "2025-06-01",
+    "max_fit_label_expiry": 1748732460000,
+    "ES_encoder": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+    "full_encoder": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2",
+    "selected_iterations": 7,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-1-D.cbm": {
+    "sha256": "f8bba96d502229eb948e18c8a502700f9146b1d22f8cb4d3f5ad68918ceb3a25",
+    "fit_cutoff": "2025-06-01",
+    "max_fit_label_expiry": 1748732460000,
+    "ES_encoder": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+    "full_encoder": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2",
+    "selected_iterations": 186,
+    "class_mapping": [
+      0,
+      1,
+      2
+    ],
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-1-Q-long.cbm": {
+    "sha256": "c962fb47e19d04f5801f6950b52bda88c041be1bc6c549d0dc44284fd78f2b6f",
+    "fit_cutoff": "2025-06-01",
+    "max_fit_label_expiry": 1748732460000,
+    "ES_encoder": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+    "full_encoder": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2",
+    "selected_iterations": 184,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-1-Q-short.cbm": {
+    "sha256": "eac3516bf41b5ff11a1df1d3bcae3ae6374b545f5631df9bb4c83fbb915f9a2e",
+    "fit_cutoff": "2025-06-01",
+    "max_fit_label_expiry": 1748732460000,
+    "ES_encoder": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+    "full_encoder": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2",
+    "selected_iterations": 34,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-2-D.cbm": {
+    "sha256": "777ba7ad2c4643407c7b065cad6b0090935f8c5f41e30a0a48c0d05745182fbe",
+    "fit_cutoff": "2025-09-01",
+    "max_fit_label_expiry": 1756681260000,
+    "ES_encoder": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d",
+    "full_encoder": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6",
+    "selected_iterations": 67,
+    "class_mapping": [
+      0,
+      1,
+      2
+    ],
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-2-Q-long.cbm": {
+    "sha256": "c368c6ba4c549a80dd617a522e57e5646b8c138d9db3110e42347aea356cc714",
+    "fit_cutoff": "2025-09-01",
+    "max_fit_label_expiry": 1756681260000,
+    "ES_encoder": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d",
+    "full_encoder": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6",
+    "selected_iterations": 31,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-0-2-Q-short.cbm": {
+    "sha256": "d46b691f746fa55615f6bcd2a8fc51d615c871a5a7478db40d16fd018b509186",
+    "fit_cutoff": "2025-09-01",
+    "max_fit_label_expiry": 1756681260000,
+    "ES_encoder": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d",
+    "full_encoder": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6",
+    "selected_iterations": 1,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-2-D.cbm": {
+    "sha256": "a51e73f4b9c692f7e6ad68b4508fc739108deba5849bb6cf6e88dfe28e420321",
+    "fit_cutoff": "2025-09-01",
+    "max_fit_label_expiry": 1756681260000,
+    "ES_encoder": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d",
+    "full_encoder": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6",
+    "selected_iterations": 48,
+    "class_mapping": [
+      0,
+      1,
+      2
+    ],
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-2-Q-long.cbm": {
+    "sha256": "eae8ac51a55c3330ddc8fdce006255effcda885bfacf075e5775b145da478ad5",
+    "fit_cutoff": "2025-09-01",
+    "max_fit_label_expiry": 1756681260000,
+    "ES_encoder": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d",
+    "full_encoder": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6",
+    "selected_iterations": 1,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  },
+  "joint-ts2vec-d4-1-2-Q-short.cbm": {
+    "sha256": "d1b59f06e57a30461c0a64a9aa6d885db06c978f78e0ab9c29f6cdaa2d930e9f",
+    "fit_cutoff": "2025-09-01",
+    "max_fit_label_expiry": 1756681260000,
+    "ES_encoder": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d",
+    "full_encoder": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6",
+    "selected_iterations": 1,
+    "class_mapping": null,
+    "roundtrip": "PASS"
+  }
+}

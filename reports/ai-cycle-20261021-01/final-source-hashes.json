@@ -1,4 +1,8 @@
 {
+  "runtime/coinmaster/research/forecast_cycle_c_development.py": {
+    "sha256": "2985aa0cd249a2dc20dad4fbc2bb7ec03fe7e9a1eec563073b28aa7d35f34cb7",
+    "bytes": 12063
+  },
   "runtime/coinmaster/research/forecast_cycle_data.py": {
     "sha256": "ad1fd91c4f768860baa84f29bc3c8d391ab07f585dec38777cb55db405f0a74f",
     "bytes": 5523
@@ -20,8 +24,8 @@
     "bytes": 5957
   },
   "runtime/coinmaster/research/forecast_cycle_run.py": {
-    "sha256": "bbc5d61143eba60fedb6ae31e0bdc85502e4aeca877e33892a6e1d07bc4208df",
-    "bytes": 15772
+    "sha256": "bcdac052255abe792dd4a7fa4014c645a640bf08eac58a0bf43e0496cb84453e",
+    "bytes": 15893
   },
   "runtime/coinmaster/research/forecast_cycle_kronos.py": {
     "sha256": "5702d5642ba84e20bb9fb52fc4ce0064a502be5847217e3ab85c229f105ff611",

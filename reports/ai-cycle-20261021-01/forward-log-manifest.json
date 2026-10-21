@@ -1,12 +1,12 @@
 {
   "status": "NO_ADMITTED_MODEL",
-  "report_sealed_utc": "2026-10-21T18:07:45.748886+00:00",
+  "report_sealed_utc": "2026-10-21T18:38:54.044724+00:00",
   "selected_recipe_model_policy_seal_utc": null,
   "first_future_unchecked_origin": null,
   "forecasts": [],
   "trading": false,
   "daemon_service_automation": false,
-  "reason": "No admitted model exists; no backdated forward predictions. Initial fixed protocol timestamp retained unchanged.",
+  "reason": "A/C gates fail; B resourceunassessed. No admittedmodelseal exists; no backdated predictions.",
   "required_log_fields": [
     "origin",
     "model_id",
@@ -16,5 +16,6 @@
     "forecast_age",
     "prediction",
     "abstain_reason"
-  ]
+  ],
+  "previous_report_seal_utc": "2026-10-21T18:07:45.748886+00:00"
 }

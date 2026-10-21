@@ -109,6 +109,12 @@
         "wall_seconds": 56.58593383291736,
         "status": "PASS",
         "peak_RSS_bytes": 558120960
+      },
+      {
+        "job": "stage-C-development",
+        "wall_seconds": 655.5859868326224,
+        "status": "PASS",
+        "peak_RSS_bytes": 1071497216
       }
     ]
   },
@@ -116,7 +122,7 @@
     "stage0": 214.39006845885888,
     "A": 1202.2451437902637,
     "B": 38.74605412501842,
-    "C": 56.58593383291736
+    "C": 712.1719206655398
   },
   "scope": "Actual scientific guarded wall including technical failures/profiles/quarantined initial A; no overlap. Source editing, authorization/network waits not scientific compute. No hidden fit repeats.",
   "stage0_unguarded_fixtures": "Focused alignment/unit tests and hash/inventory checks; original short receipts in report. New finalconnected9tests2.541s.",
@@ -132,7 +138,17 @@
   },
   "full_job_admission": {
     "B": "INCOMPLETE_RESOURCE:823.968580813min inclallrequiredcostandmargin",
-    "C": "INCOMPLETE_RESOURCE:96.3558585421min inclallrequiredcostandmargin"
+    "C": "Original90 INCOMPLETE preserved; owner120 ADMITTED97.6934minprojection; actualCdevelopment all6NO_SKILL"
   },
-  "no_active_scientific_process": true
+  "no_active_scientific_process": true,
+  "C_owner_resume": {
+    "ceiling_seconds": 7200,
+    "budget_only": true,
+    "original90minhistory_preserved": true,
+    "preparation_reserve_seconds": 90,
+    "remaining_scientific_seconds": 6487.82807933446,
+    "remaining_after_preparation_reserve_seconds": 6397.82807933446,
+    "current_result": "NO_SKILLall6",
+    "no_downstream_due_gates": true
+  }
 }

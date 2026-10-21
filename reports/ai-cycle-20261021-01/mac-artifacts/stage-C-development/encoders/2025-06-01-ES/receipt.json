@@ -1,0 +1,21 @@
+{
+  "role": "ES",
+  "fit_cutoff": "2025-06-01",
+  "encoder_training_end": 1746316800000,
+  "max_train_feature_end": 1746313200000,
+  "N_train_timestamps": 5880,
+  "iterations": 600,
+  "fit_wall_seconds": 46.938734916970134,
+  "inference_wall_seconds": 11.645674540661275,
+  "wall_seconds": 59.546706875320524,
+  "inference_end_exclusive": 1748736000000,
+  "causal": true,
+  "sliding_length": 1,
+  "sliding_padding": 255,
+  "output_dims": 32,
+  "encoder_sha256": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+  "scaler_sha256": "5d5625b17b9342196f90bd5b06bd60900ca04ad812eb551e068c4fcaa551e4ff",
+  "embedding_sha256": "2278901e04d6808514c403d20c802bba1d1d93d48ef38e88195bb1f40155bcd4",
+  "roundtrip": "PASS",
+  "quality_selection": false
+}

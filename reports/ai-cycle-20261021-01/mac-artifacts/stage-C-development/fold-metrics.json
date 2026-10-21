@@ -1,0 +1,2498 @@
+[
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0976574806895856,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6660310219642881,
+    "accuracy": 0.35943223443223443,
+    "AUROC": [
+      0.502135013251655,
+      0.5326980174762754,
+      0.5310525783566004
+    ],
+    "AUROC_macro": 0.5219618696948435,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0868620715730544,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6589102187250336,
+    "accuracy": 0.3942307692307692,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "AUROC_macro": 0.5,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.8203467118750913,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.888235893181933,
+    "accuracy": 0.37637362637362637,
+    "AUROC": [
+      0.5351052538708089,
+      0.5512590435027718,
+      0.5335955420962154
+    ],
+    "AUROC_macro": 0.5399866131565987,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0960235255259352,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6649340083830669,
+    "accuracy": 0.40293040293040294,
+    "AUROC": [
+      0.5527006776384575,
+      0.5577760030066712,
+      0.5291323160768744
+    ],
+    "AUROC_macro": 0.5465363322406677,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2180234551776869,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.13857002156242043,
+      0.264651087917286,
+      0.2508492560533543
+    ],
+    "strict_exceedance": [
+      0.7724358974358975,
+      0.5027472527472527,
+      0.20833333333333334
+    ],
+    "nonstrict_exceedance": [
+      0.7724358974358975,
+      0.5027472527472527,
+      0.20833333333333334
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.22236567317289907,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.14011039884966484,
+      0.2698526633099378,
+      0.2571339573590934
+    ],
+    "strict_exceedance": [
+      0.7742673992673993,
+      0.5054945054945055,
+      0.20604395604395603
+    ],
+    "nonstrict_exceedance": [
+      0.7742673992673993,
+      0.5054945054945055,
+      0.20604395604395603
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.27357773655167755,
+    "crossing": 0.3804945054945055,
+    "clipping": 0.08791208791208792,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1603338467359323,
+      0.2909197398176306,
+      0.3694796231014691
+    ],
+    "strict_exceedance": [
+      0.706959706959707,
+      0.5952380952380952,
+      0.5412087912087912
+    ],
+    "nonstrict_exceedance": [
+      0.706959706959707,
+      0.5952380952380952,
+      0.5412087912087912
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.08791208791208792,
+      0.024725274725274724,
+      0.005952380952380952
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.22084373747193362,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.13957628510228182,
+      0.26794757661831314,
+      0.255007350695206
+    ],
+    "strict_exceedance": [
+      0.7715201465201466,
+      0.5041208791208791,
+      0.20558608058608058
+    ],
+    "nonstrict_exceedance": [
+      0.7715201465201466,
+      0.5041208791208791,
+      0.20558608058608058
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.18389924606516833,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12519789182139163,
+      0.22727337393827024,
+      0.1992264724358432
+    ],
+    "strict_exceedance": [
+      0.7509157509157509,
+      0.4555860805860806,
+      0.1533882783882784
+    ],
+    "nonstrict_exceedance": [
+      0.7509157509157509,
+      0.4555860805860806,
+      0.1533882783882784
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.1819308111084403,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12200777229443589,
+      0.22318609017836422,
+      0.20059857085252086
+    ],
+    "strict_exceedance": [
+      0.8122710622710623,
+      0.5242673992673993,
+      0.15476190476190477
+    ],
+    "nonstrict_exceedance": [
+      0.8122710622710623,
+      0.5242673992673993,
+      0.15476190476190477
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.20952928762300693,
+    "crossing": 0.16666666666666666,
+    "clipping": 0.190018315018315,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.13681904063557307,
+      0.24561854747280729,
+      0.2461502747606402
+    ],
+    "strict_exceedance": [
+      0.7614468864468864,
+      0.5457875457875457,
+      0.33516483516483514
+    ],
+    "nonstrict_exceedance": [
+      0.7619047619047619,
+      0.5457875457875457,
+      0.33516483516483514
+    ],
+    "tie_rate": [
+      0.0004578754578754579,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.190018315018315,
+      0.09935897435897435,
+      0.06272893772893773
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.18113817890344794,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12219678314112314,
+      0.22198212313259366,
+      0.1992356304366268
+    ],
+    "strict_exceedance": [
+      0.7793040293040293,
+      0.4826007326007326,
+      0.13553113553113552
+    ],
+    "nonstrict_exceedance": [
+      0.7793040293040293,
+      0.4826007326007326,
+      0.13553113553113552
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0773211218390217,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6523624966481169,
+    "accuracy": 0.4184981684981685,
+    "AUROC": [
+      0.5772783722631463,
+      0.5626116600755278,
+      0.5307893342393597
+    ],
+    "AUROC_macro": 0.556893122192678,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0825383159142266,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.656364530102956,
+    "accuracy": 0.3782051282051282,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "AUROC_macro": 0.5,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.7485092263211996,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.8815871072662043,
+    "accuracy": 0.37957875457875456,
+    "AUROC": [
+      0.5424219605511627,
+      0.5735066523551584,
+      0.45533676168318404
+    ],
+    "AUROC_macro": 0.5237551248631683,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "D",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0822370226302696,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.65565304179631,
+    "accuracy": 0.42994505494505497,
+    "AUROC": [
+      0.5506330814020642,
+      0.577866075663185,
+      0.48847403930639477
+    ],
+    "AUROC_macro": 0.5389910654572146,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.21895776549402074,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.140283477508411,
+      0.26879378125323444,
+      0.24779603772041678
+    ],
+    "strict_exceedance": [
+      0.804945054945055,
+      0.49221611721611724,
+      0.22756410256410256
+    ],
+    "nonstrict_exceedance": [
+      0.804945054945055,
+      0.49221611721611724,
+      0.22756410256410256
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2189555991348841,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1402741031555023,
+      0.26878866829709536,
+      0.24780402595205392
+    ],
+    "strict_exceedance": [
+      0.8072344322344323,
+      0.49313186813186816,
+      0.22893772893772893
+    ],
+    "nonstrict_exceedance": [
+      0.8072344322344323,
+      0.49313186813186816,
+      0.22893772893772893
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2892189672674706,
+    "crossing": 0.7074175824175825,
+    "clipping": 0.12728937728937728,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.14966396805035653,
+      0.3034643683728892,
+      0.41452856537916427
+    ],
+    "strict_exceedance": [
+      0.793040293040293,
+      0.7225274725274725,
+      0.6396520146520146
+    ],
+    "nonstrict_exceedance": [
+      0.7944139194139194,
+      0.722985347985348,
+      0.6396520146520146
+    ],
+    "tie_rate": [
+      0.0013736263736263737,
+      0.0004578754578754579,
+      0.0
+    ],
+    "zero_prediction": [
+      0.12728937728937728,
+      0.05448717948717949,
+      0.0173992673992674
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-long",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.21890076133503558,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1402746977070779,
+      0.26876303505293836,
+      0.2476645512450907
+    ],
+    "strict_exceedance": [
+      0.8058608058608059,
+      0.49404761904761907,
+      0.22802197802197802
+    ],
+    "nonstrict_exceedance": [
+      0.8058608058608059,
+      0.49404761904761907,
+      0.22802197802197802
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.1860916184554794,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12837858481319553,
+      0.22785405961960392,
+      0.20204221093363875
+    ],
+    "strict_exceedance": [
+      0.7921245421245421,
+      0.48305860805860806,
+      0.1575091575091575
+    ],
+    "nonstrict_exceedance": [
+      0.7921245421245421,
+      0.48305860805860806,
+      0.1575091575091575
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.18682937373072264,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12847579467927903,
+      0.22866742645302135,
+      0.20334490005986822
+    ],
+    "strict_exceedance": [
+      0.7925824175824175,
+      0.4816849816849817,
+      0.15934065934065933
+    ],
+    "nonstrict_exceedance": [
+      0.7925824175824175,
+      0.4816849816849817,
+      0.15934065934065933
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2193605909499252,
+    "crossing": 0.1717032967032967,
+    "clipping": 0.19734432234432234,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.14731256797825013,
+      0.25540533021248385,
+      0.25536387465904176
+    ],
+    "strict_exceedance": [
+      0.7591575091575091,
+      0.5801282051282052,
+      0.42445054945054944
+    ],
+    "nonstrict_exceedance": [
+      0.76007326007326,
+      0.5805860805860806,
+      0.42445054945054944
+    ],
+    "tie_rate": [
+      0.0009157509157509158,
+      0.0004578754578754579,
+      0.0
+    ],
+    "zero_prediction": [
+      0.19734432234432234,
+      0.09615384615384616,
+      0.05723443223443223
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 0,
+    "head": "Q-short",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.18355734756943456,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12759903281303314,
+      0.22564630442262715,
+      0.19742670547264365
+    ],
+    "strict_exceedance": [
+      0.782051282051282,
+      0.46382783882783885,
+      0.1620879120879121
+    ],
+    "nonstrict_exceedance": [
+      0.782051282051282,
+      0.46382783882783885,
+      0.1620879120879121
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.080686051825211,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6557149157322754,
+    "accuracy": 0.36034798534798534,
+    "AUROC": [
+      0.5529137868057747,
+      0.5095548467364626,
+      0.617045985117587
+    ],
+    "AUROC_macro": 0.5598382062199415,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0871220148428824,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6592932450571434,
+    "accuracy": 0.3836996336996337,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "AUROC_macro": 0.5,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.3926599810049871,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.8174033562948908,
+    "accuracy": 0.33653846153846156,
+    "AUROC": [
+      0.4795682070450056,
+      0.44695577072768666,
+      0.5329491941852643
+    ],
+    "AUROC_macro": 0.48649105731931885,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0804270233653743,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6555731689228169,
+    "accuracy": 0.3585164835164835,
+    "AUROC": [
+      0.5389610159333587,
+      0.502107356448089,
+      0.6185907748106116
+    ],
+    "AUROC_macro": 0.5532197157306864,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.20775509074268325,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1393791865665302,
+      0.25274993798007445,
+      0.23113614768144508
+    ],
+    "strict_exceedance": [
+      0.7683150183150184,
+      0.4803113553113553,
+      0.18223443223443223
+    ],
+    "nonstrict_exceedance": [
+      0.7683150183150184,
+      0.4803113553113553,
+      0.18223443223443223
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.21518157045982808,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.13640805885278703,
+      0.2572124533987145,
+      0.2519241991279813
+    ],
+    "strict_exceedance": [
+      0.8136446886446886,
+      0.5068681318681318,
+      0.16804029304029305
+    ],
+    "nonstrict_exceedance": [
+      0.8136446886446886,
+      0.5068681318681318,
+      0.16804029304029305
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.23729543199140837,
+    "crossing": 0.07005494505494506,
+    "clipping": 0.07692307692307693,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.15311099765386343,
+      0.28630997751261505,
+      0.2724653208077465
+    ],
+    "strict_exceedance": [
+      0.7454212454212454,
+      0.4967948717948718,
+      0.2573260073260073
+    ],
+    "nonstrict_exceedance": [
+      0.7454212454212454,
+      0.4967948717948718,
+      0.2573260073260073
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.07692307692307693,
+      0.011904761904761904,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2082520554495407,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.13960416207531176,
+      0.2539117747805694,
+      0.23124022949274192
+    ],
+    "strict_exceedance": [
+      0.7623626373626373,
+      0.46794871794871795,
+      0.18772893772893773
+    ],
+    "nonstrict_exceedance": [
+      0.7623626373626373,
+      0.46794871794871795,
+      0.18772893772893773
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2173473838468321,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.13725267695046317,
+      0.2658481091185658,
+      0.24894136547146736
+    ],
+    "strict_exceedance": [
+      0.7980769230769231,
+      0.47985347985347987,
+      0.21565934065934067
+    ],
+    "nonstrict_exceedance": [
+      0.7980769230769231,
+      0.47985347985347987,
+      0.21565934065934067
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.21636523667065546,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1372289524996771,
+      0.2642281383670354,
+      0.24763861914525337
+    ],
+    "strict_exceedance": [
+      0.804945054945055,
+      0.5009157509157509,
+      0.2271062271062271
+    ],
+    "nonstrict_exceedance": [
+      0.804945054945055,
+      0.5009157509157509,
+      0.2271062271062271
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.23508106174622295,
+    "crossing": 0.054945054945054944,
+    "clipping": 0.09203296703296704,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.15213279201561986,
+      0.2877819598752224,
+      0.2653284333478257
+    ],
+    "strict_exceedance": [
+      0.73992673992674,
+      0.45695970695970695,
+      0.29853479853479853
+    ],
+    "nonstrict_exceedance": [
+      0.7408424908424909,
+      0.4574175824175824,
+      0.29853479853479853
+    ],
+    "tie_rate": [
+      0.0009157509157509158,
+      0.0004578754578754579,
+      0.0
+    ],
+    "zero_prediction": [
+      0.09203296703296704,
+      0.0173992673992674,
+      0.006868131868131868
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.21767020694152975,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1374260140196283,
+      0.2671372461995924,
+      0.24844736060536748
+    ],
+    "strict_exceedance": [
+      0.7825091575091575,
+      0.45787545787545786,
+      0.20100732600732601
+    ],
+    "nonstrict_exceedance": [
+      0.7825091575091575,
+      0.45787545787545786,
+      0.20100732600732601
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0892518078800486,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6654212493154703,
+    "accuracy": 0.36904761904761907,
+    "AUROC": [
+      0.48082027010013917,
+      0.47354356581814006,
+      0.48665268442429915
+    ],
+    "AUROC_macro": 0.4803388401141928,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0517153122484688,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6379078554646076,
+    "accuracy": 0.37362637362637363,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "AUROC_macro": 0.5,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.395892492451852,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.8077248135768546,
+    "accuracy": 0.36446886446886445,
+    "AUROC": [
+      0.5082743261957665,
+      0.46093929165233344,
+      0.5018424421085296
+    ],
+    "AUROC_macro": 0.4903520199855431,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "D",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 1.0806571626065915,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6593366674317809,
+    "accuracy": 0.3566849816849817,
+    "AUROC": [
+      0.4769395796400706,
+      0.48472705968352253,
+      0.4737431220112264
+    ],
+    "AUROC_macro": 0.47846992044493986,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2141372535979405,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1460437055658895,
+      0.2661446268924185,
+      0.23022342833551349
+    ],
+    "strict_exceedance": [
+      0.7857142857142857,
+      0.5407509157509157,
+      0.2802197802197802
+    ],
+    "nonstrict_exceedance": [
+      0.7857142857142857,
+      0.5407509157509157,
+      0.2802197802197802
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.21584952562463275,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1478557242408572,
+      0.2716321436577348,
+      0.2280607089753058
+    ],
+    "strict_exceedance": [
+      0.8282967032967034,
+      0.5737179487179487,
+      0.26144688644688646
+    ],
+    "nonstrict_exceedance": [
+      0.8282967032967034,
+      0.5737179487179487,
+      0.26144688644688646
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.24582494889903184,
+    "crossing": 0.11721611721611722,
+    "clipping": 0.11538461538461539,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.16112643084495473,
+      0.2984158216339289,
+      0.2779325942182109
+    ],
+    "strict_exceedance": [
+      0.7948717948717948,
+      0.5970695970695971,
+      0.36721611721611724
+    ],
+    "nonstrict_exceedance": [
+      0.7957875457875457,
+      0.5970695970695971,
+      0.36721611721611724
+    ],
+    "tie_rate": [
+      0.0009157509157509158,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.11538461538461539,
+      0.024725274725274724,
+      0.004120879120879121
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-long",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.2187585686722314,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.15117444516426337,
+      0.26995979047747487,
+      0.23514147037495572
+    ],
+    "strict_exceedance": [
+      0.7747252747252747,
+      0.5384615384615384,
+      0.29532967032967034
+    ],
+    "nonstrict_exceedance": [
+      0.7747252747252747,
+      0.5384615384615384,
+      0.29532967032967034
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "joint-ts2vec-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.20803317911887304,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.14109915830247857,
+      0.2629555716701646,
+      0.22004480738397583
+    ],
+    "strict_exceedance": [
+      0.7353479853479854,
+      0.45146520146520147,
+      0.18452380952380953
+    ],
+    "nonstrict_exceedance": [
+      0.7353479853479854,
+      0.45146520146520147,
+      0.18452380952380953
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "prior",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.20673699287202693,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.13720321257967943,
+      0.2588321022339398,
+      0.22417566380246218
+    ],
+    "strict_exceedance": [
+      0.782051282051282,
+      0.4816849816849817,
+      0.21611721611721613
+    ],
+    "nonstrict_exceedance": [
+      0.782051282051282,
+      0.4816849816849817,
+      0.21611721611721613
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "linear",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.24129549159942584,
+    "crossing": 0.10119047619047619,
+    "clipping": 0.07142857142857142,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1698210781163939,
+      0.28624992403106486,
+      0.2678154726508199
+    ],
+    "strict_exceedance": [
+      0.6785714285714286,
+      0.47527472527472525,
+      0.3557692307692308
+    ],
+    "nonstrict_exceedance": [
+      0.6785714285714286,
+      0.47527472527472525,
+      0.3557692307692308
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.07142857142857142,
+      0.014652014652014652,
+      0.006868131868131868
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 1,
+    "head": "Q-short",
+    "method": "joint-d4",
+    "N": 2184,
+    "unique_days": 91,
+    "loss": 0.20941199684019615,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.14270136604652162,
+      0.2639782634181994,
+      0.22155636105586612
+    ],
+    "strict_exceedance": [
+      0.728021978021978,
+      0.4491758241758242,
+      0.1858974358974359
+    ],
+    "nonstrict_exceedance": [
+      0.728021978021978,
+      0.4491758241758242,
+      0.1858974358974359
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "joint-ts2vec-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.0913276859844683,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6641037901033102,
+    "accuracy": 0.36527777777777776,
+    "AUROC": [
+      0.4316669642434202,
+      0.5048381326388831,
+      0.5862900893581539
+    ],
+    "AUROC_macro": 0.5075983954134857,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "prior",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.08609503644508,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6587444248258696,
+    "accuracy": 0.3787037037037037,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "AUROC_macro": 0.5,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "linear",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.1998435383878998,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.7160471727318628,
+    "accuracy": 0.3912037037037037,
+    "AUROC": [
+      0.5489024883489592,
+      0.5639514513473463,
+      0.5798411335578634
+    ],
+    "AUROC_macro": 0.564231691084723,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "joint-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.091962934400173,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6631495674305572,
+    "accuracy": 0.3541666666666667,
+    "AUROC": [
+      0.4224864177467488,
+      0.497136502178477,
+      0.5684904762279854
+    ],
+    "AUROC_macro": 0.49603779871773707,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "joint-ts2vec-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.1854338273368272,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12814523254655816,
+      0.2319384926420299,
+      0.19621775682189352
+    ],
+    "strict_exceedance": [
+      0.7875,
+      0.4837962962962963,
+      0.17453703703703705
+    ],
+    "nonstrict_exceedance": [
+      0.7875,
+      0.4837962962962963,
+      0.17453703703703705
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "prior",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.17912968408758584,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12097397051039135,
+      0.22392682368267186,
+      0.1924882580696945
+    ],
+    "strict_exceedance": [
+      0.8064814814814815,
+      0.4949074074074074,
+      0.17175925925925925
+    ],
+    "nonstrict_exceedance": [
+      0.8064814814814815,
+      0.4949074074074074,
+      0.17175925925925925
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "linear",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.1966969225871987,
+    "crossing": 0.026851851851851852,
+    "clipping": 0.07037037037037037,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1346893503780522,
+      0.24402288811418854,
+      0.21137852926935488
+    ],
+    "strict_exceedance": [
+      0.7518518518518519,
+      0.4689814814814815,
+      0.30787037037037035
+    ],
+    "nonstrict_exceedance": [
+      0.7532407407407408,
+      0.4689814814814815,
+      0.30787037037037035
+    ],
+    "tie_rate": [
+      0.001388888888888889,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.07037037037037037,
+      0.006481481481481481,
+      0.000925925925925926
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "joint-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.18657133786959298,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12864346703045007,
+      0.23392855758621145,
+      0.1971419889921169
+    ],
+    "strict_exceedance": [
+      0.774537037037037,
+      0.48055555555555557,
+      0.175
+    ],
+    "nonstrict_exceedance": [
+      0.774537037037037,
+      0.48055555555555557,
+      0.175
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "joint-ts2vec-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.28004430956182935,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.16625916344516334,
+      0.3340572953101696,
+      0.3398164699301552
+    ],
+    "strict_exceedance": [
+      0.8115740740740741,
+      0.5236111111111111,
+      0.25046296296296294
+    ],
+    "nonstrict_exceedance": [
+      0.8115740740740741,
+      0.5236111111111111,
+      0.25046296296296294
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "prior",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.2805223026145127,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.16632627322531612,
+      0.3345719197345264,
+      0.34066871488369505
+    ],
+    "strict_exceedance": [
+      0.8125,
+      0.525,
+      0.25046296296296294
+    ],
+    "nonstrict_exceedance": [
+      0.8125,
+      0.525,
+      0.25046296296296294
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "linear",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.2913853857238297,
+    "crossing": 0.08055555555555556,
+    "clipping": 0.10833333333333334,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.17164059706306226,
+      0.3299863823803179,
+      0.3725291777281093
+    ],
+    "strict_exceedance": [
+      0.8050925925925926,
+      0.5652777777777778,
+      0.41944444444444445
+    ],
+    "nonstrict_exceedance": [
+      0.8064814814814815,
+      0.5652777777777778,
+      0.41944444444444445
+    ],
+    "tie_rate": [
+      0.001388888888888889,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.10833333333333334,
+      0.019444444444444445,
+      0.001851851851851852
+    ]
+  },
+  {
+    "asset": "BTCUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "joint-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.2802014140990836,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.16628240488277057,
+      0.33412154497239,
+      0.3402002924420906
+    ],
+    "strict_exceedance": [
+      0.8115740740740741,
+      0.5236111111111111,
+      0.2490740740740741
+    ],
+    "nonstrict_exceedance": [
+      0.8115740740740741,
+      0.5236111111111111,
+      0.2490740740740741
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "joint-ts2vec-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.0790893096677088,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6546326259288685,
+    "accuracy": 0.387037037037037,
+    "AUROC": [
+      0.5134050594494068,
+      0.5416752758005592,
+      0.5810378602198455
+    ],
+    "AUROC_macro": 0.5453727318232705,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "prior",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.0816450950713177,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6558464698817834,
+    "accuracy": 0.36712962962962964,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "AUROC_macro": 0.5,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "linear",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.1849849927046556,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.7069166377007314,
+    "accuracy": 0.41064814814814815,
+    "AUROC": [
+      0.5446329486887368,
+      0.5818252687177609,
+      0.5313822972370766
+    ],
+    "AUROC_macro": 0.5526135048811914,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "D",
+    "method": "joint-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 1.0794078724866525,
+    "crossing": null,
+    "clipping": null,
+    "brier": 0.6549136804234935,
+    "accuracy": 0.3902777777777778,
+    "AUROC": [
+      0.514612589492367,
+      0.5416220420294158,
+      0.5645854222370766
+    ],
+    "AUROC_macro": 0.5402733512529531,
+    "pinball_by_q": null,
+    "strict_exceedance": null,
+    "nonstrict_exceedance": null,
+    "tie_rate": null,
+    "zero_prediction": null
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "joint-ts2vec-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.16641596717160595,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.11754127381879151,
+      0.20976603210073444,
+      0.17194059559529196
+    ],
+    "strict_exceedance": [
+      0.7907407407407407,
+      0.487962962962963,
+      0.15648148148148147
+    ],
+    "nonstrict_exceedance": [
+      0.7907407407407407,
+      0.487962962962963,
+      0.15648148148148147
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "prior",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.1664695147510626,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.11750404395157828,
+      0.20981819604560148,
+      0.17208630425600824
+    ],
+    "strict_exceedance": [
+      0.7907407407407407,
+      0.48703703703703705,
+      0.15694444444444444
+    ],
+    "nonstrict_exceedance": [
+      0.7907407407407407,
+      0.48703703703703705,
+      0.15694444444444444
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "linear",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.1755555243635324,
+    "crossing": 0.0375,
+    "clipping": 0.07083333333333333,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.12614442168410506,
+      0.22086339402373326,
+      0.17965875738275888
+    ],
+    "strict_exceedance": [
+      0.7578703703703704,
+      0.4671296296296296,
+      0.22685185185185186
+    ],
+    "nonstrict_exceedance": [
+      0.7592592592592593,
+      0.4675925925925926,
+      0.22685185185185186
+    ],
+    "tie_rate": [
+      0.001388888888888889,
+      0.000462962962962963,
+      0.0
+    ],
+    "zero_prediction": [
+      0.07083333333333333,
+      0.009722222222222222,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-long",
+    "method": "joint-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.16647201801918993,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.11751728054118755,
+      0.2098425368304744,
+      0.17205623668590778
+    ],
+    "strict_exceedance": [
+      0.7912037037037037,
+      0.48703703703703705,
+      0.1574074074074074
+    ],
+    "nonstrict_exceedance": [
+      0.7912037037037037,
+      0.48703703703703705,
+      0.1574074074074074
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "joint-ts2vec-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.2890007828482648,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.17352273614588648,
+      0.3394456108658112,
+      0.35403400153309666
+    ],
+    "strict_exceedance": [
+      0.8291666666666667,
+      0.5111111111111111,
+      0.23703703703703705
+    ],
+    "nonstrict_exceedance": [
+      0.8291666666666667,
+      0.5111111111111111,
+      0.23703703703703705
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "prior",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.289601652049576,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.1737435658961807,
+      0.3400929114580014,
+      0.35496847879454546
+    ],
+    "strict_exceedance": [
+      0.8296296296296296,
+      0.5106481481481482,
+      0.23796296296296296
+    ],
+    "nonstrict_exceedance": [
+      0.8296296296296296,
+      0.5106481481481482,
+      0.23796296296296296
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "linear",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.3348897346636416,
+    "crossing": 0.15833333333333333,
+    "clipping": 0.07916666666666666,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.18178789164017345,
+      0.3569122253467205,
+      0.4659690870040312
+    ],
+    "strict_exceedance": [
+      0.8064814814814815,
+      0.6324074074074074,
+      0.549074074074074
+    ],
+    "nonstrict_exceedance": [
+      0.8069444444444445,
+      0.6324074074074074,
+      0.549074074074074
+    ],
+    "tie_rate": [
+      0.000462962962962963,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.07916666666666666,
+      0.006944444444444444,
+      0.0023148148148148147
+    ]
+  },
+  {
+    "asset": "SOLUSDT",
+    "fold": 2,
+    "head": "Q-short",
+    "method": "joint-d4",
+    "N": 2160,
+    "unique_days": 90,
+    "loss": 0.28944908740592384,
+    "crossing": 0.0,
+    "clipping": 0.0,
+    "brier": null,
+    "accuracy": null,
+    "AUROC": null,
+    "AUROC_macro": null,
+    "pinball_by_q": [
+      0.17375838085895484,
+      0.3399189245887082,
+      0.35466995677010726
+    ],
+    "strict_exceedance": [
+      0.8296296296296296,
+      0.5106481481481482,
+      0.23935185185185184
+    ],
+    "nonstrict_exceedance": [
+      0.8296296296296296,
+      0.5106481481481482,
+      0.23935185185185184
+    ],
+    "tie_rate": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "zero_prediction": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+]

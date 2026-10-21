@@ -1,121 +1,27 @@
 {
   "status": "PASS",
+  "resume_tests": "c-resume-focused-tests.json",
+  "tests_rerun_after_result": false,
   "checks": {
-    "findings_lines": 56,
-    "CSV_and_gzip": {
-      "fold-metrics.csv": {
-        "rows": 72,
-        "columns": [
-          "asset",
-          "fold",
-          "head",
-          "method",
-          "N",
-          "loss",
-          "zero_truth",
-          "crossing",
-          "clipping",
-          "brier",
-          "accuracy",
-          "AUROC",
-          "AUROC_macro",
-          "pinball_by_q",
-          "strict_exceedance",
-          "nonstrict_exceedance",
-          "tie_rate",
-          "zero_prediction"
-        ]
-      },
-      "fit-curves.csv": {
-        "rows": 13348,
-        "columns": [
-          "fit_id",
-          "phase",
-          "head",
-          "partition",
-          "iteration",
-          "loss",
-          "N",
-          "gradient_norm",
-          "logit_min",
-          "logit_max",
-          "fit_loss",
-          "validation_loss",
-          "raw_min",
-          "raw_max",
-          "N_fit",
-          "N_validation",
-          "fit_quantile_crossing",
-          "fit_quantile_clipping",
-          "validation_quantile_crossing",
-          "validation_quantile_clipping"
-        ]
-      },
-      "mechanism-screen.csv": {
-        "rows": 649,
-        "columns": [
-          "mechanism",
-          "parent",
-          "time_ns",
-          "level",
-          "source",
-          "eligibility",
-          "action_available",
-          "before_first50",
-          "profitable_counterexample",
-          "original_net_ex_funding",
-          "missing",
-          "counterfactual_ROI"
-        ]
-      },
-      "policy-screen.csv": {
-        "rows": 1,
-        "columns": [
-          "candidate",
-          "status",
-          "reason",
-          "net_outcome",
-          "TOTAL",
-          "native_DD",
-          "coherent_DD"
-        ]
-      },
-      "forecasts.csv.gz": {
-        "rows": 156672,
-        "columns": [
-          "row",
-          "model_id",
-          "asset",
-          "fold",
-          "head",
-          "method",
-          "origin",
-          "fit_cutoff",
-          "max_fit_label_expiry",
-          "feature_end",
-          "forecast_age",
-          "truth",
-          "upper_truth",
-          "raw",
-          "raw_logits",
-          "projected",
-          "loss",
-          "coverage"
-        ]
-      }
+    "C_fixed_gates": "all6NO_SKILL; D rankfailed; no downstream",
+    "C_CSV_rows": {
+      "fold-metrics.csv": 72,
+      "fit-curves.csv": 4596,
+      "monthly-metrics.csv": 216,
+      "reliability-bins.csv": 720,
+      "coverage.csv": 6
     },
-    "json_readback": "PASS",
-    "current_C_pins": {
-      "local_verified": 18,
-      "external_mac_data_pins_previously_verified": 6,
-      "receipt": "c-data-preflight.json"
+    "C_forecast_rows": 156672,
+    "C_new_forecast_rows": 39168,
+    "same_ID_coverage_and_past_cutoffs": "PASS72groups",
+    "saved_models_encoders_scalers_caches_hashes": "PASS18heads6encoders",
+    "frozen_resume_pins": {
+      "local_verified": 26,
+      "external_Mac_pins_verified_atjob_start": 14
     },
-    "B_code_pins_at_B_checkpoint": 8,
+    "original90min_protocol_result_preserved": true,
     "candidate_money_unknown": true,
-    "original_invalid_A_quality_not_collected": true,
-    "artifact_hash_readback_count": 288,
-    "protected_pilot_receipt": "read-only identity preservation only"
-  },
-  "newtests": "final-connected-tests.json",
-  "no_fits_or_inference": true
+    "findings_lines": 70,
+    "artifact_hash_readback_count": 379
+  }
 }

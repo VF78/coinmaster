@@ -1,0 +1,191 @@
+{
+  "head_ES_runs": 18,
+  "at500cap": 0,
+  "atcap_fit_still_falling": 0,
+  "per_fit": [
+    {
+      "fit_id": "joint-ts2vec-d4-0-0-D",
+      "computed_iterations": 51,
+      "at500cap": false,
+      "fit_loss_last": 1.0088595678845285,
+      "ES_loss_last": 1.1240599345501519,
+      "ES_minus_fit_last": 0.11520036666562339,
+      "fit_last10_change": -0.012077890659744739,
+      "ES_last10_change": 0.005122447026415511
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-0-Q-long",
+      "computed_iterations": 72,
+      "at500cap": false,
+      "fit_loss_last": 0.19166002772657886,
+      "ES_loss_last": 0.18587108304297142,
+      "ES_minus_fit_last": -0.005788944683607439,
+      "fit_last10_change": -0.002980145526143979,
+      "ES_last10_change": 0.002675917580507392
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-0-Q-short",
+      "computed_iterations": 124,
+      "at500cap": false,
+      "fit_loss_last": 0.15822135005065457,
+      "ES_loss_last": 0.37437285266471637,
+      "ES_minus_fit_last": 0.2161515026140618,
+      "fit_last10_change": -0.002128966549488326,
+      "ES_last10_change": 0.0005989343567756045
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-0-D",
+      "computed_iterations": 71,
+      "at500cap": false,
+      "fit_loss_last": 0.9784493540293515,
+      "ES_loss_last": 1.100026036258404,
+      "ES_minus_fit_last": 0.12157668222905249,
+      "fit_last10_change": -0.010085020775865594,
+      "ES_last10_change": -0.00024840232422973507
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-0-Q-long",
+      "computed_iterations": 51,
+      "at500cap": false,
+      "fit_loss_last": 0.1836811459795584,
+      "ES_loss_last": 0.14899986855016567,
+      "ES_minus_fit_last": -0.034681277429392726,
+      "fit_last10_change": -0.002238718517138999,
+      "ES_last10_change": -1.4102260329384997e-05
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-0-Q-short",
+      "computed_iterations": 53,
+      "at500cap": false,
+      "fit_loss_last": 0.17619260039704768,
+      "ES_loss_last": 0.3278674480210151,
+      "ES_minus_fit_last": 0.1516748476239674,
+      "fit_last10_change": -0.002849892500946083,
+      "ES_last10_change": -0.00045134387298045864
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-1-D",
+      "computed_iterations": 154,
+      "at500cap": false,
+      "fit_loss_last": 0.9727879294334314,
+      "ES_loss_last": 1.078171794043647,
+      "ES_minus_fit_last": 0.10538386461021565,
+      "fit_last10_change": -0.005116196874034307,
+      "ES_last10_change": 0.00026049745149414605
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-1-Q-long",
+      "computed_iterations": 196,
+      "at500cap": false,
+      "fit_loss_last": 0.17594527671736582,
+      "ES_loss_last": 0.21744439198840335,
+      "ES_minus_fit_last": 0.04149911527103753,
+      "fit_last10_change": -0.0010843530222985898,
+      "ES_last10_change": -3.1423342691405676e-05
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-1-Q-short",
+      "computed_iterations": 57,
+      "at500cap": false,
+      "fit_loss_last": 0.1945236809899418,
+      "ES_loss_last": 0.1753603655746786,
+      "ES_minus_fit_last": -0.0191633154152632,
+      "fit_last10_change": -0.0030455666847003238,
+      "ES_last10_change": 0.0012135822353966375
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-1-D",
+      "computed_iterations": 236,
+      "at500cap": false,
+      "fit_loss_last": 0.9162505161033974,
+      "ES_loss_last": 1.0528187076083224,
+      "ES_minus_fit_last": 0.13656819150492505,
+      "fit_last10_change": -0.00524899702731807,
+      "ES_last10_change": -0.0003862245114620855
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-1-Q-long",
+      "computed_iterations": 234,
+      "at500cap": false,
+      "fit_loss_last": 0.16257735513924343,
+      "ES_loss_last": 0.2453263351257779,
+      "ES_minus_fit_last": 0.08274897998653447,
+      "fit_last10_change": -0.001248799215986196,
+      "ES_last10_change": 0.00016332982593009193
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-1-Q-short",
+      "computed_iterations": 84,
+      "at500cap": false,
+      "fit_loss_last": 0.18443350568560019,
+      "ES_loss_last": 0.1807703161835755,
+      "ES_minus_fit_last": -0.003663189502024683,
+      "fit_last10_change": -0.0017838544991301275,
+      "ES_last10_change": 0.0003622890471882967
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-2-D",
+      "computed_iterations": 117,
+      "at500cap": false,
+      "fit_loss_last": 1.0040341346626744,
+      "ES_loss_last": 1.0864852985551754,
+      "ES_minus_fit_last": 0.08245116389250096,
+      "fit_last10_change": -0.004919258927170267,
+      "ES_last10_change": -0.0006003822188758168
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-2-Q-long",
+      "computed_iterations": 81,
+      "at500cap": false,
+      "fit_loss_last": 0.19236511716765095,
+      "ES_loss_last": 0.2209524823466014,
+      "ES_minus_fit_last": 0.02858736517895044,
+      "fit_last10_change": -0.0013619895768490486,
+      "ES_last10_change": 0.00013723869813686562
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-0-2-Q-short",
+      "computed_iterations": 51,
+      "at500cap": false,
+      "fit_loss_last": 0.19812703873122176,
+      "ES_loss_last": 0.2367718342575419,
+      "ES_minus_fit_last": 0.038644795526320136,
+      "fit_last10_change": -0.002320551468715487,
+      "ES_last10_change": 0.002447748622640772
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-2-D",
+      "computed_iterations": 98,
+      "at500cap": false,
+      "fit_loss_last": 1.0028780571846072,
+      "ES_loss_last": 1.079618739331963,
+      "ES_minus_fit_last": 0.07674068214735574,
+      "fit_last10_change": -0.0062809956425493585,
+      "ES_last10_change": 0.005837306666382602
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-2-Q-long",
+      "computed_iterations": 51,
+      "at500cap": false,
+      "fit_loss_last": 0.19036495807204556,
+      "ES_loss_last": 0.24040552849637045,
+      "ES_minus_fit_last": 0.05004057042432489,
+      "fit_last10_change": -0.0017070612183221479,
+      "ES_last10_change": 0.0004968108920649361
+    },
+    {
+      "fit_id": "joint-ts2vec-d4-1-2-Q-short",
+      "computed_iterations": 51,
+      "at500cap": false,
+      "fit_loss_last": 0.1950640917510362,
+      "ES_loss_last": 0.20179951595422163,
+      "ES_minus_fit_last": 0.0067354242031854306,
+      "fit_last10_change": -0.0016592097186158283,
+      "ES_last10_change": 0.0022556718059209002
+    }
+  ],
+  "encoder_runs": 6,
+  "encoder_iterations_each": 600,
+  "encoder_diagnostics": "Contrastiveloss/gradienthistorysaved, noforecastvalidationlossinvented; contrastivelossdoesnotestablishforecastskill. Fixed600capnotextended.",
+  "interpretation": "Positivefit/ESgapconsistentwithoverfit/regimeshift; highlossdoesnotidentifyundertrainingvsweaksignal/features. No automaticextensionorrecipechange."
+}

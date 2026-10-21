@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-21T18:37:42.009569+00:00",
+  "service": "coinmaster-hl-stageg-testnet.service",
+  "ActiveState": "active",
+  "SubState": "running",
+  "MainPID": 2009732,
+  "NRestarts": 0,
+  "ActiveEnterTimestamp": "2026-09-28T07:39:45Z",
+  "identity_unchanged": true,
+  "scope": "read-only process identity, not new lifecycle acceptance"
+}

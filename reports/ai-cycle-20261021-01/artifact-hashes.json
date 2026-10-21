@@ -54,14 +54,54 @@
     "bytes": 185,
     "symlink": null
   },
+  "c-development-independent-review.json": {
+    "sha256": "ea9e143a27c915aeb9151f386ee035e0687569d7ca0f3084cb25ab253dc3ca0f",
+    "bytes": 595,
+    "symlink": null
+  },
   "c-focused-test.json": {
     "sha256": "eba6cd94397b47ab6e0883b3d47d0ef73ae29f0b9009f48896d8bee00cefe323",
     "bytes": 244,
     "symlink": null
   },
+  "c-owner-budget120-authorization.json": {
+    "sha256": "1a8bb4e43c0781960161675293dfa99425fd55aa53726cce630b5e01fcc58524",
+    "bytes": 948,
+    "symlink": null
+  },
   "c-protocol.json": {
     "sha256": "d7ea024f31775a3c721115fd8b40f133450ae92c741d8fffa9a62b151abca435",
     "bytes": 6567,
+    "symlink": null
+  },
+  "c-resume-focused-tests.json": {
+    "sha256": "967b31e313a9ab500ad577d9aee9eead253bdc43edf20bd76bc3c325624937b9",
+    "bytes": 259,
+    "symlink": null
+  },
+  "c-resume-protocol.json": {
+    "sha256": "b93977b443ef1377d29187da40b855319e743727317af271d6441f0237b6556a",
+    "bytes": 2371,
+    "symlink": null
+  },
+  "c-resume-reference-preflight.json": {
+    "sha256": "c9356561a6a99049e3ad231f4d1292e8993dd56721dfab6046a51a916c91b620",
+    "bytes": 134,
+    "symlink": null
+  },
+  "c-resume-resource-admission.json": {
+    "sha256": "112d69f2920ae7ff13218505569639ef1419ee4133019d12729bde3f2bd22a11",
+    "bytes": 5090,
+    "symlink": null
+  },
+  "c-resume-reuse-inputs.json": {
+    "sha256": "d3f3c8ab6bc880d4e459ae606457d0523333b7e2047ecbceb74ef8f63bf41db8",
+    "bytes": 1866,
+    "symlink": null
+  },
+  "c-resume-source-input-hashes.json": {
+    "sha256": "bbb3d8d9173046913f8a657f9c5f3c425fc742768b65ce8c62d2bb1489cd193e",
+    "bytes": 7707,
     "symlink": null
   },
   "c-source-input-hashes.json": {
@@ -77,6 +117,11 @@
   "coordinator-date-label-correction.json": {
     "sha256": "edb946cd9cc8f8e448a458adb398b6435b2082398202d536a1c0b6f8b20fd437",
     "bytes": 575,
+    "symlink": null
+  },
+  "coordinator-final-review.json": {
+    "sha256": "910337a8f4347ba5be4e6b279bf613b9c03f5d490cb58665086331422b5d5bb2",
+    "bytes": 599,
     "symlink": null
   },
   "coordinator-profile-a-go.json": {
@@ -109,6 +154,11 @@
     "bytes": 1283,
     "symlink": null
   },
+  "coordinator-stage-c-development-go.json": {
+    "sha256": "08ce7035263da86a12a84db32a4c6940aa571d782eef3efca5b1ecbdd8ec0a50",
+    "bytes": 1329,
+    "symlink": null
+  },
   "coordinator-utc-diagnostic-go.json": {
     "sha256": "e2cbb513fbef62c4aedfb36c541e8af8d2b986c99bf831e56e6c8c7c851ae477",
     "bytes": 1022,
@@ -120,13 +170,13 @@
     "symlink": null
   },
   "diagnostics.md": {
-    "sha256": "5a754d702aa1a5edc7c709b1c5c938d7e8c8bf44c2571d5d5b86802936ce193e",
-    "bytes": 6307,
+    "sha256": "eaaa6aedf014d40ae96596da35ca6d4ea9ece9f13758d2978893c02c83598000",
+    "bytes": 6802,
     "symlink": null
   },
   "executed-commands.json": {
-    "sha256": "209e615e16dda466f6a8dd9bca57be0d7f73c051a78ca4e1372e472a122c4a6e",
-    "bytes": 13265,
+    "sha256": "b6127b4382e098f9a05a5d6af93a7b5799406c5d762470015ed42abbe68fd0f6",
+    "bytes": 14188,
     "symlink": null
   },
   "execution-sources/controls-baseline/forecast_cycle_train.py": {
@@ -175,13 +225,13 @@
     "symlink": null
   },
   "final-source-hashes.json": {
-    "sha256": "1e7aabffea5fa8bf2450103f31d9266dc4996d93829f955c0482467b56df7572",
-    "bytes": 1489,
+    "sha256": "18db6c156b415031af56a401dd863ffd5c1b90933c96c96f731fce1de3892b2d",
+    "bytes": 1662,
     "symlink": null
   },
   "findings.md": {
-    "sha256": "47b4d42658dbbf9aa072d041cb75db317425f2d79c8bd5b07c4447f3824aece0",
-    "bytes": 6356,
+    "sha256": "4aa6649c72fc41dafe59d6e80acf8f7900df89b004a3aa6c8a1bd861683cd5c9",
+    "bytes": 8563,
     "symlink": null
   },
   "fit-curves.csv": {
@@ -200,8 +250,8 @@
     "symlink": "mac-artifacts/stage-A-utc-corrected/forecasts.csv.gz"
   },
   "forward-log-manifest.json": {
-    "sha256": "50f937296c73d7bec242720cee7395c4fc3cc13c22e8da4c2eaa4703e504e037",
-    "bytes": 576,
+    "sha256": "2d6df5f3d8d59d4b0dfcc3770a09911b500f54a2cee010f34c78b0ecd7cc7948",
+    "bytes": 622,
     "symlink": null
   },
   "kronos-provenance/b-origin-counts.json": {
@@ -674,6 +724,26 @@
     "bytes": 4793,
     "symlink": null
   },
+  "mac-artifacts/executions/stage-C-development/completion.json": {
+    "sha256": "f6e1c288ad5676abe0837626c53758bc605f565909a7b8dd9048669239c182c9",
+    "bytes": 1028,
+    "symlink": null
+  },
+  "mac-artifacts/executions/stage-C-development/launch.json": {
+    "sha256": "59fcfdb9e765fd161e409486b107ee5d7760377f150ff2eecb17c6bac8d0544c",
+    "bytes": 843,
+    "symlink": null
+  },
+  "mac-artifacts/executions/stage-C-development/stderr-time.txt": {
+    "sha256": "05c57722a026307fa58722db127fa58cf2c9b0cf656e90a9635714941d0b18d8",
+    "bytes": 777,
+    "symlink": null
+  },
+  "mac-artifacts/executions/stage-C-development/stdout.txt": {
+    "sha256": "509918c228fd8c7db175b6fd4a58029712cf2fe7641d9302eed12e185e331070",
+    "bytes": 6958,
+    "symlink": null
+  },
   "mac-artifacts/old-fitset-inference/cnn-fit-validation.npz": {
     "sha256": "c637fe119c48c0c8ec94e058af7a7294d11897bfa011dee9c85ca119c1e5c9b9",
     "bytes": 41698,
@@ -945,8 +1015,8 @@
     "symlink": null
   },
   "mac-artifacts/reports/ai-cycle-20261021-01/selection-ledger.json": {
-    "sha256": "030acdeca603bfeebd1a8ee60873f7701ca44ab1ed405ad3d22f622e07a88e4a",
-    "bytes": 55888,
+    "sha256": "ac2f89b59ef3a4d595e473c8daa174103b100b68ec421d80c427bf16be80b69c",
+    "bytes": 68405,
     "symlink": null
   },
   "mac-artifacts/resource-admission-final/resource-admission.json": {
@@ -1274,6 +1344,376 @@
     "bytes": 10160,
     "symlink": null
   },
+  "mac-artifacts/stage-C-development/completion.json": {
+    "sha256": "93301dace5069660a1c81b662b0e9c593ac94c49424570a9e37cf6cffcb352fe",
+    "bytes": 12169,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/coverage.csv": {
+    "sha256": "8792267379b523e4daeb822504ec5ae253dcdc3a71b7a55d6cf21ffde55f27fa",
+    "bytes": 760,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-ES/embedding.npy": {
+    "sha256": "1a4f48a2e684e48d76fbd688733cc4a0f1d9720f4d24566d01e5204c442836a0",
+    "bytes": 588800,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-ES/encoder.pt": {
+    "sha256": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404",
+    "bytes": 192768,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-ES/fit-curves.csv": {
+    "sha256": "57adf31aca9b17e54c73eab88d80291c4fc8fa557e610f983c29892a1b12d3bd",
+    "bytes": 72569,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-ES/fit-curves.json": {
+    "sha256": "ee4172bedac4859ef27e3ed43bec3e304ff4aaf0d535635f2e9b4f7fea9f01ee",
+    "bytes": 190649,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-ES/origins.npy": {
+    "sha256": "81d66db8db5c8ddaeef5346b6c731b77e92c7589940ca3a7e20d9ecbb86020a0",
+    "bytes": 36920,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-ES/receipt.json": {
+    "sha256": "9d35c83bcc838d32722bae0fe629627a0bc0af22b75cef277228599957e6954b",
+    "bytes": 759,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-ES/scaler.pkl": {
+    "sha256": "3dc4ab0a3ae2f92fce73b40239013385e0ed7579cf517c37dc4179e75462b9d4",
+    "bytes": 738,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-full/embedding.npy": {
+    "sha256": "41b33a6efaabb795e08ba26ba7a83f576d3083acc70d6462f73bc5355e0536ee",
+    "bytes": 871424,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-full/encoder.pt": {
+    "sha256": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2",
+    "bytes": 192768,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-full/fit-curves.csv": {
+    "sha256": "504976c0ecb4daf30a3f44ba7c8e31d3073e862d815bcc2abb9befd6a4df4204",
+    "bytes": 73747,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-full/fit-curves.json": {
+    "sha256": "1e10fd43f643b92479a28f831f131404444ba070edce2332b7fa45f325727c9e",
+    "bytes": 191827,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-full/origins.npy": {
+    "sha256": "60c095fe150379fb7a780f59d38a4f341174a574b1a5c588431d5b32ec33a464",
+    "bytes": 54584,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-full/receipt.json": {
+    "sha256": "00f8f40b295a20716c964829f8e855d2b72b162ca0f6159180bdceed7154cfd6",
+    "bytes": 761,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-03-01-full/scaler.pkl": {
+    "sha256": "dc6d28293c2c3f3c63371991523ede5ea797bf9f880543087d73629a1d27bccf",
+    "bytes": 738,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-ES/embedding.npy": {
+    "sha256": "2278901e04d6808514c403d20c802bba1d1d93d48ef38e88195bb1f40155bcd4",
+    "bytes": 871424,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-ES/encoder.pt": {
+    "sha256": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990",
+    "bytes": 192768,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-ES/fit-curves.csv": {
+    "sha256": "a2451ab5a4260ff7beeefc21e79b6f71e1363f8c3cfb202b4e33378fc7d126c2",
+    "bytes": 72526,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-ES/fit-curves.json": {
+    "sha256": "e0d8cd195c5b798044546387841288c7d1bcca7b478a92810e59b3c90a7d847c",
+    "bytes": 190606,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-ES/origins.npy": {
+    "sha256": "60c095fe150379fb7a780f59d38a4f341174a574b1a5c588431d5b32ec33a464",
+    "bytes": 54584,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-ES/receipt.json": {
+    "sha256": "e6e079af5c1f8dc3f283b5a9de5f70ab87ea7561c2b7db4e06f28bd2b020de05",
+    "bytes": 761,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-ES/scaler.pkl": {
+    "sha256": "5d5625b17b9342196f90bd5b06bd60900ca04ad812eb551e068c4fcaa551e4ff",
+    "bytes": 738,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-full/embedding.npy": {
+    "sha256": "2a9d0d1c7eb34e90b898a68d02cf2b49d65a6a9759e3fd93a259b2e9eb2dc4c2",
+    "bytes": 1154048,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-full/encoder.pt": {
+    "sha256": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2",
+    "bytes": 192768,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-full/fit-curves.csv": {
+    "sha256": "26518fc2960084fd9f3ff65d4cb968d3ea27f56cc4a64dba6f82fb8422de8ae1",
+    "bytes": 73721,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-full/fit-curves.json": {
+    "sha256": "6d5b6e20c54231691bcab5fc18d84fbb40dd6176f5c0348b8009f0561679db73",
+    "bytes": 191801,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-full/origins.npy": {
+    "sha256": "1c00a85b741de5dbbc6029903ec82b19557636cfc566589680f09028e91f5806",
+    "bytes": 72248,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-full/receipt.json": {
+    "sha256": "b6cb0141dad274801898de86f1b4ef0daa56daeb58f84317ec054ca22ca4cb1c",
+    "bytes": 760,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-06-01-full/scaler.pkl": {
+    "sha256": "c01b31ce230dbde3c7eff42a338838e0a79047cf6a4774b929d722c223a8252c",
+    "bytes": 738,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-ES/embedding.npy": {
+    "sha256": "873362e427279d8203cdf04fe98d6f92295dfb4699c98f479f8b0694cf61647f",
+    "bytes": 1154048,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-ES/encoder.pt": {
+    "sha256": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d",
+    "bytes": 192768,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-ES/fit-curves.csv": {
+    "sha256": "73653cb7fc9854388f86bb1f25529835d92516e11e42858fa38719d770a64e13",
+    "bytes": 72531,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-ES/fit-curves.json": {
+    "sha256": "2ab11998f784eb2ea89f21f6983e96afc33e54d288b8c0a973960dee45095d86",
+    "bytes": 190611,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-ES/origins.npy": {
+    "sha256": "1c00a85b741de5dbbc6029903ec82b19557636cfc566589680f09028e91f5806",
+    "bytes": 72248,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-ES/receipt.json": {
+    "sha256": "1765ed0a5eb34c91fcba1ffc0771c8fca8758a28e813584a818acc04938a2436",
+    "bytes": 759,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-ES/scaler.pkl": {
+    "sha256": "bc2772af88e232ba53cbf2f57042685809f24187185e140c8f37f4ad64e7c60d",
+    "bytes": 738,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-full/embedding.npy": {
+    "sha256": "8bc8272144615dd8c88344e49b21b99033d7e1111ed13ffd6221e86ec9f9c790",
+    "bytes": 1433600,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-full/encoder.pt": {
+    "sha256": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6",
+    "bytes": 192768,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-full/fit-curves.csv": {
+    "sha256": "47716379927f30641a4649785d4bfa41ef55ce2c4895e54c77be06c047b0d294",
+    "bytes": 73732,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-full/fit-curves.json": {
+    "sha256": "5cf56495b0400b1ad1ec2d50d62bc4cfc856a0b7ae94b684ba2f441f099dd22e",
+    "bytes": 191812,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-full/origins.npy": {
+    "sha256": "1a5d666f6bd2e6ba3d2c9ad104396877965613b62051e5987fe00bebb0714dbd",
+    "bytes": 89720,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-full/receipt.json": {
+    "sha256": "350cf81635916164781e359aa855422890e521d30d905820e5753ba996b972a7",
+    "bytes": 761,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/encoders/2025-09-01-full/scaler.pkl": {
+    "sha256": "5b7aba18b1c69752411b7c7fad893d261d4f0183fcdf8fbe8d12629c82d98b73",
+    "bytes": 738,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/fit-curve-diagnostics.json": {
+    "sha256": "468285069e0ee4d6e3fe07830fa46341a2b7607d1b4acd000c21c8a15312b4c5",
+    "bytes": 6769,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/fit-curves.csv": {
+    "sha256": "e05867182c213231320472764613115376c97829cf720ea377cd206bed8530b0",
+    "bytes": 335467,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/fit-curves.json": {
+    "sha256": "0a047452d164f5319b659a5a0d12bcc65e81ce97754a41d619c0322c15720321",
+    "bytes": 1162670,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/fold-metrics.csv": {
+    "sha256": "8c7815d61fa78802267f6c531815ce1bf2ccbaad7cbdd7c51c0eac57e97d9423",
+    "bytes": 19301,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/fold-metrics.json": {
+    "sha256": "26e1263064b1b7276a049a0eb73d9136f2e45d5a874da156279ba4c1f3d41f55",
+    "bytes": 49925,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/forecasts.csv.gz": {
+    "sha256": "6bd82814a0bd5ba0d033afaa89171830da8fae1071d2f2290415321e253aecea",
+    "bytes": 8789629,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/gates.json": {
+    "sha256": "f82b20afbcda1aca9b68c6308b63687a308a90fbc1053f2628a32274f7763934",
+    "bytes": 11065,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-D.cbm": {
+    "sha256": "69bcc32bd71db4e1a45cd7442086cd354ed18cf623271a80469b800042da9533",
+    "bytes": 25928,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-long.cbm": {
+    "sha256": "bee9c5c10fba00d0b8626463d96bf255a5853d68a1fa5ce6ab1faacb7cf4e8d4",
+    "bytes": 39008,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-short.cbm": {
+    "sha256": "bda6fefe21a8985ae1d293709e5334790b866da685d99bf5b7c550bbc7f6296d",
+    "bytes": 71328,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-D.cbm": {
+    "sha256": "b6d867fe8e8ff0de39212c54b76f88d0376fa4831ea0970b9e20709abd3d1c7e",
+    "bytes": 87792,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-long.cbm": {
+    "sha256": "48f1904efad42e430ffe5ccb2e5dd69dd41d285e4b172cda7795ffbb862d4ec2",
+    "bytes": 116112,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-short.cbm": {
+    "sha256": "b87fd196de8d66706b6d790f687c39b3c4846c0bfe7ffde397c3f1663c898386",
+    "bytes": 29680,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-D.cbm": {
+    "sha256": "777ba7ad2c4643407c7b065cad6b0090935f8c5f41e30a0a48c0d05745182fbe",
+    "bytes": 65520,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-long.cbm": {
+    "sha256": "c368c6ba4c549a80dd617a522e57e5646b8c138d9db3110e42347aea356cc714",
+    "bytes": 44600,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-short.cbm": {
+    "sha256": "d46b691f746fa55615f6bcd2a8fc51d615c871a5a7478db40d16fd018b509186",
+    "bytes": 25952,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-D.cbm": {
+    "sha256": "362e514e2c01f5c42e97cbbc1b96df642d1b8252702bb49ee4a8532749f61d97",
+    "bytes": 37960,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-long.cbm": {
+    "sha256": "ccb5eae8729b4e6eb2702b431894adf222aade9bb03f7b3524d4fb85cd6ccc15",
+    "bytes": 25952,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-short.cbm": {
+    "sha256": "5dee80baeb47dc1eeb4a023657417e8fbd2df1b0d51b9d0e38bbee011dad2ff2",
+    "bytes": 27184,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-D.cbm": {
+    "sha256": "f8bba96d502229eb948e18c8a502700f9146b1d22f8cb4d3f5ad68918ceb3a25",
+    "bytes": 137032,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-long.cbm": {
+    "sha256": "c962fb47e19d04f5801f6950b52bda88c041be1bc6c549d0dc44284fd78f2b6f",
+    "bytes": 139768,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-short.cbm": {
+    "sha256": "eac3516bf41b5ff11a1df1d3bcae3ae6374b545f5631df9bb4c83fbb915f9a2e",
+    "bytes": 46512,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-D.cbm": {
+    "sha256": "a51e73f4b9c692f7e6ad68b4508fc739108deba5849bb6cf6e88dfe28e420321",
+    "bytes": 54128,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-long.cbm": {
+    "sha256": "eae8ac51a55c3330ddc8fdce006255effcda885bfacf075e5775b145da478ad5",
+    "bytes": 25944,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-short.cbm": {
+    "sha256": "d1b59f06e57a30461c0a64a9aa6d885db06c978f78e0ab9c29f6cdaa2d930e9f",
+    "bytes": 25944,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/model-manifest.json": {
+    "sha256": "657b94349cdd96fb8470716fa98df281915283a00a783f78a84f299085e65b48",
+    "bytes": 8358,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/monthly-metrics.csv": {
+    "sha256": "256940d429b8cd8170e6235b43eaf0f5a8e963664f377a6ecd64fd01b481107f",
+    "bytes": 51240,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/progress.json": {
+    "sha256": "9b5fd64e810d297105388f60edecb12bbd1b151d1b9c7aa7009a5112d0c2d680",
+    "bytes": 185,
+    "symlink": null
+  },
+  "mac-artifacts/stage-C-development/reliability-bins.csv": {
+    "sha256": "aace9924f1dd70eb1e96f830bf2728a22fad0292f2f80c2c16b5e00a96959122",
+    "bytes": 35231,
+    "symlink": null
+  },
+  "mac-hardware-readback.json": {
+    "sha256": "1d564bfa97665431f815e284e3d2984173a82cf0ac0490de67bfc245382b5e16",
+    "bytes": 453,
+    "symlink": null
+  },
   "mechanism-screen-summary.json": {
     "sha256": "5d37415f135652bf91ac148c34e6c3f27c840ac58cf657cbd190a435d0e1be4e",
     "bytes": 1090,
@@ -1305,13 +1745,13 @@
     "symlink": null
   },
   "policy-screen.csv": {
-    "sha256": "6907c366b2e12c4f8fe5b07b7d6c3463cb4e833032cb349eb5fae61a3586a9bd",
+    "sha256": "8dd4e9cf07d73034a9b9cc838e5b6f5b065c28f23b7da828129aad254a6e6913",
     "bytes": 192,
     "symlink": null
   },
   "policy.json": {
-    "sha256": "1953b1112110e2e28f4d20b4363711a6dbad1d4653fa3b6ab448b9d3a9a585f2",
-    "bytes": 754,
+    "sha256": "5d69609a06cda0210fb1947857848213fc4be8fb51a1eeb80ebbac1e43d06b3c",
+    "bytes": 782,
     "symlink": null
   },
   "project-A-readback.json": {
@@ -1324,6 +1764,16 @@
     "bytes": 6260,
     "symlink": null
   },
+  "project-C-resume-readback.json": {
+    "sha256": "9f788ae8efa8c1ad4ce2fa934a925773720dd1681b0c1957019350e6e01faa4a",
+    "bytes": 289,
+    "symlink": null
+  },
+  "project-final-readback.json": {
+    "sha256": "b31f6d2e04b296329531d7c09454d5ecaebe5168f63fa95f158728fd494d4d38",
+    "bytes": 485,
+    "symlink": null
+  },
   "project-stage0-readback.json": {
     "sha256": "207a1b89779c418c8b458f05196bb9c4f9cc1cb808c918695d84bdc2a9589130",
     "bytes": 260,
@@ -1334,19 +1784,29 @@
     "bytes": 398,
     "symlink": null
   },
+  "protected-pilot-C-final-readback.json": {
+    "sha256": "b4139df02220d07b921710205054fa14f07862405792de7155411ba1b614074c",
+    "bytes": 343,
+    "symlink": null
+  },
+  "protected-pilot-final-readback.json": {
+    "sha256": "ed7e6b9ccd39f448cacaf3d1050559414e6ba5b8f75e3ce4b0c1e655149002d9",
+    "bytes": 426,
+    "symlink": null
+  },
   "protocol.json": {
     "sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586",
     "bytes": 12098,
     "symlink": null
   },
   "reproduce.md": {
-    "sha256": "918f2335bb52cce60c2d47d6fbb90e9200a38210d9a3981326d576fbe4679766",
-    "bytes": 4416,
+    "sha256": "408e0f4c557920583f8dadb93113932a977746bba0f8940bd2cf2428d589e520",
+    "bytes": 5538,
     "symlink": null
   },
   "resource-accounting.json": {
-    "sha256": "c936adee0828494001bbcba1a351774c39c304c7b35833d75e3e15624987355f",
-    "bytes": 3886,
+    "sha256": "5538cbf79c3c307315b6c758557e4b225349d31eccc14bb1672853880ec9d0d5",
+    "bytes": 4446,
     "symlink": null
   },
   "resource-admission-utc.json": {
@@ -1360,8 +1820,8 @@
     "symlink": null
   },
   "selection-ledger.json": {
-    "sha256": "657335fa6e4040c0ff1c8729053e7fd485270bf876c0050ea4daa2b78dc75b4e",
-    "bytes": 56320,
+    "sha256": "573f2397c8ad6c64f9f786d6d634e4a7b59536e696388a71cfb535d3da53db74",
+    "bytes": 68808,
     "symlink": null
   },
   "source-input-hashes.json": {
@@ -1432,11 +1892,6 @@
   "utc-independent-review.json": {
     "sha256": "88626efc87c94157096d80a2849a1a338817ad67c8438f2d15fa2f319ff91782",
     "bytes": 429,
-    "symlink": null
-  },
-  "protected-pilot-final-readback.json": {
-    "sha256": "ed7e6b9ccd39f448cacaf3d1050559414e6ba5b8f75e3ce4b0c1e655149002d9",
-    "bytes": 426,
     "symlink": null
   }
 }

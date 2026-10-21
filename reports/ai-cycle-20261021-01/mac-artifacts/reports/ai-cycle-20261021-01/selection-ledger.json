@@ -2087,6 +2087,403 @@
       "wall_seconds": 55.46524062473327,
       "status": "INCOMPLETE_RESOURCE",
       "reason": "outcomes-blind contrastive encoder cost + causal inference only"
+    },
+    {
+      "utc": "2026-10-21T18:07:45.748886+00:00",
+      "stage": "final-seal",
+      "fit": false,
+      "status": "INCOMPLETE_RESOURCE",
+      "A": "NO_SKILLall6",
+      "B": "INCOMPLETE_RESOURCE",
+      "C": "INCOMPLETE_RESOURCE",
+      "policy": "SKIPPED_NO_ADMITTED_MODEL",
+      "forward": "NO_ADMITTED_MODEL",
+      "native_runs": 0,
+      "reason": "fixedbudgetceilings, no automatic extra fits/profiles/recipes"
+    },
+    {
+      "utc": "2026-10-21T18:24:55.957373+00:00",
+      "stage": "attempt:stage-C-development",
+      "fit": false,
+      "seed": 7,
+      "output": "stage-C-development",
+      "source_sha256": "2985aa0cd249a2dc20dad4fbc2bb7ec03fe7e9a1eec563073b28aa7d35f34cb7",
+      "authorization_sha256": "08ce7035263da86a12a84db32a4c6940aa571d782eef3efca5b1ecbdd8ec0a50",
+      "protocol_sha256": "b93977b443ef1377d29187da40b855319e743727317af271d6441f0237b6556a",
+      "reason": "Owner raised C ceiling only; one fixeddevelopment attempt6encoders36CatBoostfits; priorprofile56.5859s and90sprep reserved; Acontrols reused; nootherstage"
+    },
+    {
+      "utc": "2026-10-21T18:25:02.556638+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "encoder-2025-03-01-ES",
+      "seed": 7,
+      "iterations": 600,
+      "encoder_training_end": 1738368000000,
+      "reason": "fixed prefix-only contrastiveencoder; ES/full isolated"
+    },
+    {
+      "utc": "2026-10-21T18:25:44.825589+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "encoder-2025-03-01-full",
+      "seed": 7,
+      "iterations": 600,
+      "encoder_training_end": 1740787200000,
+      "reason": "fixed prefix-only contrastiveencoder; ES/full isolated"
+    },
+    {
+      "utc": "2026-10-21T18:26:42.257018+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-0-D-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:26:47.261682+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-0-D-refit",
+      "seed": 7,
+      "iterations": 1,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:26:47.827784+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-0-Q-long-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:26:54.481896+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-0-Q-long-refit",
+      "seed": 7,
+      "iterations": 22,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:26:57.113467+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-0-Q-short-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:27:08.667437+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-0-Q-short-refit",
+      "seed": 7,
+      "iterations": 74,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:27:16.051387+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-0-D-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:27:23.421345+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-0-D-refit",
+      "seed": 7,
+      "iterations": 21,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:27:25.878954+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-0-Q-long-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:27:30.534144+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-0-Q-long-refit",
+      "seed": 7,
+      "iterations": 1,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:27:31.015993+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-0-Q-short-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:27:35.846137+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-0-Q-short-refit",
+      "seed": 7,
+      "iterations": 3,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:27:36.540096+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "encoder-2025-06-01-ES",
+      "seed": 7,
+      "iterations": 600,
+      "encoder_training_end": 1746316800000,
+      "reason": "fixed prefix-only contrastiveencoder; ES/full isolated"
+    },
+    {
+      "utc": "2026-10-21T18:28:36.087507+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "encoder-2025-06-01-full",
+      "seed": 7,
+      "iterations": 600,
+      "encoder_training_end": 1748736000000,
+      "reason": "fixed prefix-only contrastiveencoder; ES/full isolated"
+    },
+    {
+      "utc": "2026-10-21T18:29:38.351758+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-1-D-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:29:54.609658+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-1-D-refit",
+      "seed": 7,
+      "iterations": 104,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:30:05.974836+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-1-Q-long-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:30:25.330961+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-1-Q-long-refit",
+      "seed": 7,
+      "iterations": 146,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:30:40.511312+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-1-Q-short-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:30:46.324817+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-1-Q-short-refit",
+      "seed": 7,
+      "iterations": 7,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:30:47.549948+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-1-D-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:31:11.434561+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-1-D-refit",
+      "seed": 7,
+      "iterations": 186,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:31:31.508362+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-1-Q-long-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:31:54.574273+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-1-Q-long-refit",
+      "seed": 7,
+      "iterations": 184,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:32:13.420839+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-1-Q-short-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:32:22.003671+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-1-Q-short-refit",
+      "seed": 7,
+      "iterations": 34,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:32:26.099380+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "encoder-2025-09-01-ES",
+      "seed": 7,
+      "iterations": 600,
+      "encoder_training_end": 1754265600000,
+      "reason": "fixed prefix-only contrastiveencoder; ES/full isolated"
+    },
+    {
+      "utc": "2026-10-21T18:33:27.458013+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "encoder-2025-09-01-full",
+      "seed": 7,
+      "iterations": 600,
+      "encoder_training_end": 1756684800000,
+      "reason": "fixed prefix-only contrastiveencoder; ES/full isolated"
+    },
+    {
+      "utc": "2026-10-21T18:34:30.511263+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-2-D-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:34:43.934894+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-2-D-refit",
+      "seed": 7,
+      "iterations": 67,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:34:52.363828+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-2-Q-long-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:35:01.149992+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-2-Q-long-refit",
+      "seed": 7,
+      "iterations": 31,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:35:05.104552+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-2-Q-short-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:35:10.765044+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-0-2-Q-short-refit",
+      "seed": 7,
+      "iterations": 1,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:35:11.492781+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-2-D-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:35:22.805909+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-2-D-refit",
+      "seed": 7,
+      "iterations": 48,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:35:28.959837+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-2-Q-long-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:35:34.603304+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-2-Q-long-refit",
+      "seed": 7,
+      "iterations": 1,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:35:35.352747+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-2-Q-short-ES",
+      "seed": 7,
+      "reason": "fixedAdepth4 recipe; independent ESencoder/scaler before28dayboundary"
+    },
+    {
+      "utc": "2026-10-21T18:35:41.039848+00:00",
+      "stage": "C",
+      "fit": true,
+      "fit_id": "joint-ts2vec-d4-1-2-Q-short-refit",
+      "seed": 7,
+      "iterations": 1,
+      "reason": "fixedselectediterationcount; independentfullprefixencoder"
+    },
+    {
+      "utc": "2026-10-21T18:35:53.119633+00:00",
+      "stage": "C",
+      "fit": false,
+      "status": "DEVELOPMENT_COMPLETE",
+      "reason": "fixedindependentheads; Acontrolsreused; originalgates; noMarch/CHECK"
     }
   ]
 }

@@ -10,7 +10,9 @@ Use exact source checkpoint for each completed scientific stage. The current sin
 - Initial profile code:execution-sources/profile-A exact archive; source/code hashes retained.
 - Valid UTC diagnostics/A:checkpointa3f1556150a30e17b46a79d1d9785ef7b061a394, same scientific source as68af2f43fca9183fd5ce3060acbce59969657512.
 - B:checkpointcb9de4fe683ab95cc7287c73baa20247bbb5068a; exact b-protocol/b-source-input-hashes.
-- C:final published branch codex/ai-cycle-20261021, exact c-protocol/c-source-input-hashes.
+- C resource pilot:original90min checkpoint1733c072b8b928ac04f784d91d16ff57248ab925 (oldCmanifest).
+- C120 development:checkpoint1e01cc744bf0ed7c97ef05b7a8a217d445df2103, c-resume-protocol/manifest and savedAforecast hashes; no pilot/A/S0 repeat.
+- Final results:final published branch codex/ai-cycle-20261021, exact c-protocol/c-source-input-hashes.
 Never replace the original invalid A quarantine with a rerun or read its quality for selection.
 
 Representative exact single-CLI invocations (PY is the Python path above; OLD is the old input path). Each expensive command requires its saved coordinator authorization and the original source/input hashes; authorization files document historical execution, not permission for new runs.
@@ -31,3 +33,11 @@ For EXACT argv, wrappers,wall caps, all family-isolated old inference, profiles 
 Caps:stage-A original/corrected authorized remaining wall; B300s; C300s. Old-weight inference was split into isolated family processes; controls-utc reused3saved positives and retrained only6negatives; old fit validation reused506/512 predictions/method and inferred6new each.
 
 Reuse existing base environment read-only via isolated new environment .pth; pinned new dependencies/actual versions in dependencies.json. No Torch redownload or base environment modification. Original HFweights are Mac runtime artifacts; b-provenance.json gives exact original revisions, download URLs/SHA. Vendor files are byte-exact pinned official source and MIT license.
+
+C120 exact completed development command (guard7050s, source/auth/image pins required):
+
+```sh
+PYTHONPATH=runtime "$PY" -m coinmaster.research.forecast_cycle_run stage-C-development --report reports/ai-cycle-20261021-01 --old-job "$OLD" --warmup reports/btc-split-sol-cover-20261018 --prepared prepared-full --reuse-inference stage-A-utc-corrected --output stage-C-development --fit-authorization reports/ai-cycle-20261021-01/coordinator-stage-c-development-go.json
+```
+
+Saved C March2026 encoder/scaler model146947cca347065a5e999e5c778b26a00f67e6331a07619b77f463700baf8f22/scaler29c2c69d63afdd1ae0df2c4fe3b7170f01c36026bbad4eafe91d4711eee92dcc remain unchanged. They were reserved for conditional final/quarterly reuse, which was unnecessary after development gates failed. C120 current focused test receipt:c-resume-focused-tests.json (2PASS,no learned fits).
