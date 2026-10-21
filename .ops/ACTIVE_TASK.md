@@ -1,3 +1,5 @@
+Updated: 2026-10-21T14:27:42.273966+00:00. Owner-requested saved-results analysis COMPLETE; next mechanism screen proposed, AWAITING_OWNER_APPROVAL. No new fits/inference/scans/native runs, pilot operations or strategy edits.
+
 Updated: 2026-10-21T14:09:29.531986+00:00. #113 independent forecast research COMPLETE_VALID_NEGATIVE; published; #113 CLOSED completed / Project #2 Done readback PASS.
 Canonical development: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster, codex/nautilus-btc-sol-mvp. Mac checkout remains stale; only pinned research copies executed there. Git mutations core.hooksPath=/dev/null; never edit /opt manually.
 
@@ -16,3 +18,5 @@ Owner-authorized M2Pro16GiB used for RDST/CNN/CHECK; exactnativebasepackages, on
 Protected pilot finalreadback active/running PID2009732 NRestarts0. No pilot/config/strategy/deploy/secrets/Hermes/sites/VPN/swap changes. Historical untracked funding/corridor files preserved. New work GPT6.1Sol/medium, minimalcontext.
 
 Project existing#113 CLOSED completed / Project#2 Done, actual readback PASS. Published result1671dd6; closure+actualCI receipt reports/forecast-independent-20261021/project-completion-readback.json. NEXT: await owner direction; no additional research runs. No further research/optimization authorized in this completed scope. Historical economic DD/ROI goal is not claimed achieved.
+
+Latest analysis: reports/forecast-independent-20261021/findings.md#разбор-причин-и-предложение-следующего-шага--21102026. Prior event-risk scope already negative and must not be relaunched; 0/4 unused slots grant no authority. Proposed saved-lifecycle BTC positive-TP retest reduction / stressed SOL add veto require causal availability + good-counterexample screen and separately frozen rules before any native engine. No forecast signal promoted. Net-profit90% floor TOTAL5470396.514987347; allnative/settled/OHLC DD conventions remain distinct. Project#113 remains Done for completed research; no unapproved implementation added.
