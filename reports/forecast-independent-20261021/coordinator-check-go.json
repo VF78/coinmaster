@@ -1,0 +1,30 @@
+{
+  "status": "ROOT_GO_ONE_FROZEN_CHECK_PER_FAMILY_AFTER_THIS_CHECKPOINT_PUBLISHED",
+  "at_utc": "2026-10-21T13:38:34.008137+00:00",
+  "coordinator": "/root",
+  "freeze_commit": "771a08fd2e50e53de963ae40d9d80d21d7f2543d",
+  "independent_gate_sha256": "1c1b2246dc741b07d2fe41b1a36bf8b8ee13d4c5007a0a4f608f5a04dc8f8547",
+  "registry_sha256": "c5808ed67aa8f012e80c38163fa354bb74928eaafa77208dd371de5a62a11f9e",
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "families_order": [
+    "control",
+    "stumpy",
+    "minirocket",
+    "rdst",
+    "cnn"
+  ],
+  "executor": "owner-authorized isolated M2Pro Mac research job",
+  "check_utc": [
+    "2026-04-01T00:00:00Z",
+    "2026-10-21T00:00:00Z"
+  ],
+  "constraints": [
+    "One CHECK evaluation per frozen method; control first, others use its persisted baseline",
+    "All five actual seals/data/source/model/calibrator hashes remain unchanged",
+    "No CHECK-driven retraining, threshold/view/TP tuning or automatic repeats",
+    "Same 24h entry/TP/SL targets and lower/upper OHLC ambiguity; retain censored rows",
+    "No pilot, current strategy, deploy, keys or real orders"
+  ],
+  "execute_only_after": "Root follow-up confirms successful checkpoint publication"
+}

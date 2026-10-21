@@ -1,6 +1,6 @@
 # Independent BTC/SOL forecasting — #113
 
-**Current: four model seals; CNN TRAIN on Mac, CHECK unopened.** Sourcec78e2b1/scientificprotocol121942c4/prepared1bc6c492 unchanged. See train-sequence-progress.json and checkpointe77ea2a for actual paths/ledger; no final accuracy yet.
+**Current: all5models sealed; independent134-check gatePASS. CHECK begins only after published rootGO.** See coordinator-check-go.json, freeze771a08f, registryc5808ed6. No CHECK accuracy or ROI claimed yet.
 
 Allfive bounded resourceprofiles PASS. RDST sequential transform/head processes reuse the existing Torch model; weightrestore error0,140.783CPU/0swap. Initial resource failures are retained in receipts, not accuracy findings. Explicit CNN-only CPU allowance480min (1b7110a; prior240 superseded before fit) is operational, not scientific: all other600MiB/swap0/1CPU/admission limits remain. Actual20bar timing projects~147min minimum realisticfit; the hard ceiling remains enforced. See cnn-20bar-feasibility.json and resource authorization.
 
