@@ -1,0 +1,53 @@
+{
+  "mode": "FULL_ES3_CNN",
+  "status": "FROZEN_BEFORE_NEW_FITS",
+  "architectures": [
+    "original CNN"
+  ],
+  "metric_weight": 0.1,
+  "anchor_offsets_days": [
+    90,
+    45,
+    0
+  ],
+  "inner_ES_days": 28,
+  "selection": "Each independent chronological ES fit uses ORIGINAL L_predict, patience5,max30,seed7. Fold final epochs = integer median of its3 selected epochs; never average losses with differing scales.",
+  "subfit": "origins>=2024-06-01 and origin<anchor\u221228d and label_end<=anchor\u221228d; scalers, target scales, tau from this subfit only",
+  "validation": "origins[anchor\u221228d,anchor), label_end<=anchor",
+  "refit": "original complete expanding June1 prefix, label_end<=originalfitcutoff; all original outer IDs and controls unchanged",
+  "reuse": "offset0 original ES artifacts; if median matches originalrefit epoch reuse EXACT original CNNrefit/forecasts, only after source/data/recipe hashes verified",
+  "max_new_market_joint_fits": 9,
+  "required_control_family_names": [
+    "prior",
+    "CatBoost",
+    "numeric-knn",
+    "random-context"
+  ],
+  "CHECK_used": false,
+  "new_architectures": false,
+  "synthetic": {
+    "source_seed": 701,
+    "shuffle_seeds": [
+      702,
+      703
+    ],
+    "N": 768,
+    "fit_N": 512,
+    "heldout_N": 256,
+    "block_N": 8,
+    "origin_spacing_hours": 100,
+    "whole_block_hours": 800,
+    "actual_model": "original CNN",
+    "same_optimizer_loss_metric": true,
+    "epochs_each": 8,
+    "fits": 2,
+    "positive_accuracy_min": 0.7,
+    "positive_logloss_vsprior_improvement_min": 0.1,
+    "shuffled_accuracy_max_exclusive": 0.55,
+    "positive_Q_raw_and_projected_each_side_max_ratio_to_fit_prior": 0.8,
+    "shuffled_Q_raw_and_projected_each_side_min_ratio_to_fit_prior": 0.8,
+    "selection": "No ES; fixed8epochs, no retuning/retry",
+    "meaning": "Actual trainable plumbing diagnostic, not market skill"
+  },
+  "pipeline_deadline_utc": "2026-10-22T01:46:11Z"
+}

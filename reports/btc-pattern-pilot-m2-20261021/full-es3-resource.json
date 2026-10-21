@@ -1,0 +1,97 @@
+{
+  "basis": "maximum measured original CNN seconds per epoch / fit rows, includes ES optimizer+predictive+metric loss/validation; applied to all6new ES+3worst new fullprefixrefits at30epochs",
+  "measured_max_seconds_per_epoch_per_fitrow": 0.003481394219984701,
+  "fits": [
+    {
+      "fold": "F1",
+      "role": "ES",
+      "offset_days": 90,
+      "fit_N": 2232,
+      "ES_N": 600,
+      "epochs": 30,
+      "worst_seconds": 233.11415697017557
+    },
+    {
+      "fold": "F1",
+      "role": "ES",
+      "offset_days": 45,
+      "fit_N": 3312,
+      "ES_N": 600,
+      "epochs": 30,
+      "worst_seconds": 345.9113296976799
+    },
+    {
+      "fold": "F1",
+      "role": "refit",
+      "fit_N": 5064,
+      "epochs": 30,
+      "worst_seconds": 528.8934099000758
+    },
+    {
+      "fold": "F2",
+      "role": "ES",
+      "offset_days": 90,
+      "fit_N": 6576,
+      "ES_N": 600,
+      "epochs": 30,
+      "worst_seconds": 686.8094517185818
+    },
+    {
+      "fold": "F2",
+      "role": "ES",
+      "offset_days": 45,
+      "fit_N": 7656,
+      "ES_N": 600,
+      "epochs": 30,
+      "worst_seconds": 799.6066244460861
+    },
+    {
+      "fold": "F2",
+      "role": "refit",
+      "fit_N": 9408,
+      "epochs": 30,
+      "worst_seconds": 982.588704648482
+    },
+    {
+      "fold": "F3",
+      "role": "ES",
+      "offset_days": 90,
+      "fit_N": 10992,
+      "ES_N": 600,
+      "epochs": 30,
+      "worst_seconds": 1148.024557982155
+    },
+    {
+      "fold": "F3",
+      "role": "ES",
+      "offset_days": 45,
+      "fit_N": 12072,
+      "ES_N": 600,
+      "epochs": 30,
+      "worst_seconds": 1260.8217307096593
+    },
+    {
+      "fold": "F3",
+      "role": "refit",
+      "fit_N": 13824,
+      "epochs": 30,
+      "worst_seconds": 1443.8038109120553
+    }
+  ],
+  "market_training_worst_seconds": 7429.573776984951,
+  "synthetic_QA_worst_seconds": 180,
+  "cache_render_seconds": 0,
+  "cache_note": "reuse exact3GB original images, no rendering; hash validation budget included overhead",
+  "hashing_all_data_source_and_cache_plus_3fold_predict_index_scan_exclusions_evaluation_bootstrap_and_writes_seconds": 900,
+  "margin_fraction": 0.2,
+  "remaining_seconds_at_receipt": 17058.164188861847,
+  "CPU_threads": 4,
+  "device": "MPS",
+  "RSS_limit_bytes": 6442450944,
+  "high_watermark": "default enabled",
+  "fallback": false,
+  "one_heavy_process": true,
+  "stability_final_CHECK_fits": 0,
+  "aggregate_worst_seconds_with_20pct": 10211.488532381942,
+  "fits_remaining_budget": true
+}

@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-21T21:03:08.153457+00:00",
+  "reviewer": "btc_pattern_causality_review",
+  "stage": "SYNTHETIC_ONLY_GO",
+  "source_sha256": "884857c484ef67cd2f965ec841fa725cafc85c7ef0f1569856277f792f7422cf",
+  "protocol_sha256": "11d68220a18e91145950d5a7feff73b6ee676be79ac9b466d83925de70539f0e",
+  "market_causal_contract": "GO: purged anchor-specific subfit transforms, original fullprefixrefit,medianepochs,sameouterIDs anddualcontrolgates,50SHAguardedreuse",
+  "QA_delta": "GO: fixedDandraw/projectedQlong/shortfitpriorcomparison, whole8rowtemporalblockshuffle, no retune/retry",
+  "boundary_delta": "GO: exact30dnegativeindexstaysUNKNOWN, nofuturewrap",
+  "market_compute": "NOT_AUTHORIZED_PENDING_QA_PASS"
+}
