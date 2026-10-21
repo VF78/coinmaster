@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NO_CHECK_EXECUTED",
+  "checks": [
+    "parser missing separateGO/seals rejects before job creation",
+    "all5families supported",
+    "control baseline required forother4",
+    "CNNsame480minuspriorCPU wrapper",
+    "same run.main source identity"
+  ],
+  "scientific_modules_changed": false
+}

@@ -1,0 +1,23 @@
+{
+  "status": "EXACT3TRAIN_CALIBRATION_FILES_HASH_PASS_REQUEST_SAME_GATE_RERUN",
+  "files": [
+    {
+      "family": "control",
+      "sha256": "ba70f36ce75b963657954175657eea0bbff0cbcf079a2a43a57c8556857e3c3e",
+      "bytes": 289260
+    },
+    {
+      "family": "stumpy",
+      "sha256": "69cf7ab09bc314487327f83f77d0d57133c56e55a59f99095428c7656f192515",
+      "bytes": 358380
+    },
+    {
+      "family": "minirocket",
+      "sha256": "95fec0fe2df8136311b61d8755efe9211d1203632db7041ec0ab97eadd56ae37",
+      "bytes": 289260
+    }
+  ],
+  "initial_gate_sha256": "4969524dbf2f25de656dbd975e424f0653e7c5fb53feed07a421eebfacb5bdcf",
+  "CHECK_opened": false,
+  "refit_or_recalibration": false
+}

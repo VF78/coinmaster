@@ -63,9 +63,33 @@
       "relative": "frozen-models/minirocket/final-seed7/model.pkl",
       "bytes": 149664,
       "sha256": "9d3a420badc52c3bb2f8c369e92d4e00f34e716a8aad1845a7d7cafb5a24a5d3"
+    },
+    {
+      "family": "control",
+      "role": "FROZEN_TRAIN_MARCH_CALIBRATION_PREDICTIONS",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/calibration-predictions.npz",
+      "relative": "frozen-models/control/calibration-predictions.npz",
+      "bytes": 289260,
+      "sha256": "ba70f36ce75b963657954175657eea0bbff0cbcf079a2a43a57c8556857e3c3e"
+    },
+    {
+      "family": "stumpy",
+      "role": "FROZEN_TRAIN_MARCH_CALIBRATION_PREDICTIONS",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/calibration-predictions.npz",
+      "relative": "frozen-models/stumpy/calibration-predictions.npz",
+      "bytes": 358380,
+      "sha256": "69cf7ab09bc314487327f83f77d0d57133c56e55a59f99095428c7656f192515"
+    },
+    {
+      "family": "minirocket",
+      "role": "FROZEN_TRAIN_MARCH_CALIBRATION_PREDICTIONS",
+      "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/calibration-predictions.npz",
+      "relative": "frozen-models/minirocket/calibration-predictions.npz",
+      "bytes": 289260,
+      "sha256": "95fec0fe2df8136311b61d8755efe9211d1203632db7041ec0ab97eadd56ae37"
     }
   ],
-  "total_bytes": 4347074,
+  "total_bytes": 5283974,
   "canonical_seals": {
     "control": {
       "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/seal.json",
@@ -79,5 +103,6 @@
       "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/seal.json",
       "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
     }
-  }
+  },
+  "admission_correction": "Exact3existingTRAINcalibrationNPZ added afterindependentprecheckmissingfiles; no refit/recalibration"
 }

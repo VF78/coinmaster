@@ -1,0 +1,34 @@
+{
+  "scope": "isolated report plotting only; no active ML environment change",
+  "python": "3.12.13",
+  "python_executable": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/report-env/bin/python",
+  "matplotlib_constraint": ">=3.10,<3.11",
+  "resolved_packages": {
+    "contourpy": "1.4.0",
+    "cycler": "0.12.1",
+    "fonttools": "4.67.0",
+    "kiwisolver": "1.5.1",
+    "matplotlib": "3.10.9",
+    "numpy": "2.5.4",
+    "packaging": "26.3",
+    "pillow": "13.0.0",
+    "pyparsing": "3.3.3",
+    "python-dateutil": "2.9.0.post0",
+    "six": "1.17.0"
+  },
+  "check_exports_opened": false,
+  "source_helper": "reports/forecast-independent-20261021/plot_results.py",
+  "locked_requirements": [
+    "contourpy==1.4.0",
+    "cycler==0.12.1",
+    "fonttools==4.67.0",
+    "kiwisolver==1.5.1",
+    "matplotlib==3.10.9",
+    "numpy==2.5.4",
+    "packaging==26.3",
+    "pillow==13.0.0",
+    "pyparsing==3.3.3",
+    "python-dateutil==2.9.0.post0",
+    "six==1.17.0"
+  ]
+}

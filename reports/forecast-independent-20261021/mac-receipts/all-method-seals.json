@@ -1,0 +1,22 @@
+{
+  "control": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/seal.json",
+    "sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+  },
+  "stumpy": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/seal.json",
+    "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+  },
+  "minirocket": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/seal.json",
+    "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
+  },
+  "rdst": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-rdst-20261021T121554Z/result/seal.json",
+    "sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37"
+  },
+  "cnn": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/seal.json",
+    "sha256": "4d3f745ed0cf04034427403f6a2b63bd38ac7e02d8e48d48937e48aae2cd351b"
+  }
+}

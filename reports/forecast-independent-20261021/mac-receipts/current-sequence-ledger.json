@@ -1,5 +1,5 @@
 {
-  "status": "FOUR_ACTUAL_SEALS_CNN_TRAIN_RUNNING_CHECK_CLOSED",
+  "status": "ALL_FIVE_SEALED_AWAIT_ROOT_CHECK_GO",
   "rdst_external_fit_cpu_seconds": 155.27,
   "rdst_prior_VPS_CPU_seconds": 975.273315,
   "rdst_cumulative_CPU_seconds": 1130.543315,
@@ -9,7 +9,7 @@
     "Mac20bar_profile": 4.87
   },
   "cnn_prior_total": 41.258577,
-  "CNN_pid": 36205,
+  "CNN_pid": null,
   "CNN_job": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z",
   "CNN_protocol_cap_minutes": 120,
   "CNN_effective_operational_cap_minutes": 480,
@@ -17,5 +17,8 @@
   "scientific_threads": 1,
   "native_time_precision": "external user+sys rounded0.01s; exact runtime CPU separately retained",
   "operational_launcher_sha256": "4935b9a772801cb64d4669bb242392797c25b27080ba2df17a0004ce566ab152",
-  "CHECK_labels_opened": false
+  "CHECK_labels_opened": false,
+  "cnn_external_fit_CPU_seconds": 3211.41,
+  "cnn_cumulative_CPU_seconds": 3252.668577,
+  "all5_registry_sha256": "c5808ed67aa8f012e80c38163fa354bb74928eaafa77208dd371de5a62a11f9e"
 }

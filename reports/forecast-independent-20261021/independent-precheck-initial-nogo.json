@@ -1,0 +1,668 @@
+{
+  "status": "NO_GO",
+  "at_utc": "2026-10-21T13:20:51.981898+00:00",
+  "registry_sha256": "c5808ed67aa8f012e80c38163fa354bb74928eaafa77208dd371de5a62a11f9e",
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "selection_sha256": "b54e3727672cf11dd4b40190687e7084f8e8c8711805fceb6cd5965317f3f2a9",
+  "root_cause_reasons": [
+    "calibration-predictions.npz_HASH:control",
+    "calibration-predictions.npz_HASH:stumpy",
+    "calibration-predictions.npz_HASH:minirocket"
+  ],
+  "recipes": {
+    "control": {
+      "view": "60x20",
+      "config": 0.001,
+      "final_epochs": 49,
+      "seeds": [
+        7
+      ],
+      "final_fit_rows": 26160,
+      "calibration_rows": 1440
+    },
+    "stumpy": {
+      "view": "60x20",
+      "config": 50,
+      "final_epochs": null,
+      "seeds": [
+        7
+      ],
+      "final_fit_rows": 26160,
+      "calibration_rows": 1440
+    },
+    "minirocket": {
+      "view": "15x20",
+      "config": 0.001,
+      "final_epochs": 37,
+      "seeds": [
+        7
+      ],
+      "final_fit_rows": 26160,
+      "calibration_rows": 1440
+    },
+    "rdst": {
+      "view": "15x20",
+      "config": 0.001,
+      "final_epochs": 49,
+      "seeds": [
+        7
+      ],
+      "final_fit_rows": 26160,
+      "calibration_rows": 1440
+    },
+    "cnn": {
+      "view": "60x20",
+      "config": 0.0001,
+      "final_epochs": 10,
+      "seeds": [
+        7,
+        42
+      ],
+      "final_fit_rows": 26160,
+      "calibration_rows": 1440
+    }
+  },
+  "artifacts": {
+    "control": {
+      "seal_sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0",
+      "models": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/final-seed7/model.pkl",
+          "sha256": "6e35e14c17ecde3eff80af73e60eb3ac7d114c2e581980631f78e193037ab85a"
+        }
+      ],
+      "calibrator_sha256": "788642744680a415249775ba2eb412886a717095a95d047eeb52337a606c6be7",
+      "calibration_predictions_sha256": "ba70f36ce75b963657954175657eea0bbff0cbcf079a2a43a57c8556857e3c3e",
+      "source_sha256": {
+        "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+        "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+        "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb"
+      }
+    },
+    "stumpy": {
+      "seal_sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31",
+      "models": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/final-seed7/model.pkl",
+          "sha256": "d4afa3f1342364b62fca61ff390ab280e1a3caee5552bc58bd1f220437312930"
+        }
+      ],
+      "calibrator_sha256": "df0ad19e57576df86726b0511f5ae47248625c24d37492241dfdb2fc8cecd153",
+      "calibration_predictions_sha256": "69cf7ab09bc314487327f83f77d0d57133c56e55a59f99095428c7656f192515",
+      "source_sha256": {
+        "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+        "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+        "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb"
+      }
+    },
+    "minirocket": {
+      "seal_sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82",
+      "models": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/final-seed7/model.pkl",
+          "sha256": "9d3a420badc52c3bb2f8c369e92d4e00f34e716a8aad1845a7d7cafb5a24a5d3"
+        }
+      ],
+      "calibrator_sha256": "69399209a8d1fdab80974d55094a63d1d963a30be423715bf8061fbe70120235",
+      "calibration_predictions_sha256": "95fec0fe2df8136311b61d8755efe9211d1203632db7041ec0ab97eadd56ae37",
+      "source_sha256": {
+        "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12",
+        "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+        "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb"
+      }
+    },
+    "rdst": {
+      "seal_sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37",
+      "models": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-rdst-20261021T121554Z/result/final-seed7/model.pkl",
+          "sha256": "b47c2406cf19f41fd7f8fbb374350e126670d67ad7a4ce08560a6006d5948948"
+        }
+      ],
+      "calibrator_sha256": "5034127f97ff73886a3f2301a29c5118e4a4023e694d61d5b257d0ce30c78905",
+      "calibration_predictions_sha256": "ff70e9c3c93716cf493e3eab9ca0bee85fc7aea1a7ed45012b66cd4621131130",
+      "source_sha256": {
+        "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb",
+        "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+        "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12"
+      }
+    },
+    "cnn": {
+      "seal_sha256": "4d3f745ed0cf04034427403f6a2b63bd38ac7e02d8e48d48937e48aae2cd351b",
+      "models": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/final-seed7/model.pkl",
+          "sha256": "1154bf374e274aae1dbec2ad4c7bc6f18579a4e7f551f2f8bb857f773c12e951"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/final-seed42/model.pkl",
+          "sha256": "f4637832d9bda7adff9209b6bb2c9551cdc7f7a29c982b28a5df5634a392257c"
+        }
+      ],
+      "calibrator_sha256": "c83a8982f2f96892ef75abca61d13811de1a73e350302481a41108d84fec7524",
+      "calibration_predictions_sha256": "6ed7af63903850e0e46529278cadc6ad6b703d387b6461ac9492a27f89834faf",
+      "source_sha256": {
+        "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb",
+        "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+        "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12"
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "OWNER_REGISTRY_EXACT_HASH",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_PROTOCOL_EXACT_HASH",
+      "pass": true
+    },
+    {
+      "name": "PREPARED_MANIFEST_EXACT_HASH",
+      "pass": true
+    },
+    {
+      "name": "DATA_PROTOCOL_BINDING",
+      "pass": true
+    },
+    {
+      "name": "EXACT_FIVE_FAMILIES",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:context.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:labels-train.npz",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:minutes-SOLUSDT.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:metadata.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-1x20.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:origin_ids.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-60x60.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:labels-check.npz",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-1x60.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-240x60.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-15x60.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-60x20.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-15x20.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:features-240x20.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:feature-bar-ends.npy",
+      "pass": true
+    },
+    {
+      "name": "OPAQUE_DATA_HASH:minutes-BTCUSDT.npy",
+      "pass": true
+    },
+    {
+      "name": "EXACT_FULL_HORIZON_METADATA",
+      "pass": true
+    },
+    {
+      "name": "TRAIN26160_CAL1440_FULL_HORIZON_IDS",
+      "pass": true
+    },
+    {
+      "name": "TRAIN_CAL_DISJOINT",
+      "pass": true
+    },
+    {
+      "name": "TRAIN_SELECTED_VIEW_SET",
+      "pass": true
+    },
+    {
+      "name": "TRAIN_SELECTION_IDENTITY",
+      "pass": true
+    },
+    {
+      "name": "SEAL_HASH:control",
+      "pass": true
+    },
+    {
+      "name": "SEAL_STATUS:control",
+      "pass": true
+    },
+    {
+      "name": "COMMON_SEAL_IDENTITIES:control",
+      "pass": true
+    },
+    {
+      "name": "SEAL_PARTITION_COUNTS:control",
+      "pass": true
+    },
+    {
+      "name": "ALLOWED_SELECTED_VIEW:control",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SEEDS:control",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:control:forecast_independent_data.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:control:forecast_independent_run.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:control:forecast_independent_models.py",
+      "pass": true
+    },
+    {
+      "name": "MODEL_HASH:control:final-seed7/model.pkl",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_COUNT:control",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_PATH:control:7",
+      "pass": true
+    },
+    {
+      "name": "calibrator.pkl_HASH:control",
+      "pass": true
+    },
+    {
+      "name": "calibration-predictions.npz_HASH:control",
+      "pass": false
+    },
+    {
+      "name": "FROZEN_EPOCH_RECIPE:control",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_CONFIG:control",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:control:0",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:control:1",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:control:2",
+      "pass": true
+    },
+    {
+      "name": "SEAL_HASH:stumpy",
+      "pass": true
+    },
+    {
+      "name": "SEAL_STATUS:stumpy",
+      "pass": true
+    },
+    {
+      "name": "COMMON_SEAL_IDENTITIES:stumpy",
+      "pass": true
+    },
+    {
+      "name": "SEAL_PARTITION_COUNTS:stumpy",
+      "pass": true
+    },
+    {
+      "name": "ALLOWED_SELECTED_VIEW:stumpy",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SEEDS:stumpy",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:stumpy:forecast_independent_data.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:stumpy:forecast_independent_run.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:stumpy:forecast_independent_models.py",
+      "pass": true
+    },
+    {
+      "name": "MODEL_HASH:stumpy:final-seed7/model.pkl",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_COUNT:stumpy",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_PATH:stumpy:7",
+      "pass": true
+    },
+    {
+      "name": "calibrator.pkl_HASH:stumpy",
+      "pass": true
+    },
+    {
+      "name": "calibration-predictions.npz_HASH:stumpy",
+      "pass": false
+    },
+    {
+      "name": "STUMPY_RECIPE",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:stumpy:0",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:stumpy:1",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:stumpy:2",
+      "pass": true
+    },
+    {
+      "name": "SEAL_HASH:minirocket",
+      "pass": true
+    },
+    {
+      "name": "SEAL_STATUS:minirocket",
+      "pass": true
+    },
+    {
+      "name": "COMMON_SEAL_IDENTITIES:minirocket",
+      "pass": true
+    },
+    {
+      "name": "SEAL_PARTITION_COUNTS:minirocket",
+      "pass": true
+    },
+    {
+      "name": "ALLOWED_SELECTED_VIEW:minirocket",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SEEDS:minirocket",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:minirocket:forecast_independent_data.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:minirocket:forecast_independent_run.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:minirocket:forecast_independent_models.py",
+      "pass": true
+    },
+    {
+      "name": "MODEL_HASH:minirocket:final-seed7/model.pkl",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_COUNT:minirocket",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_PATH:minirocket:7",
+      "pass": true
+    },
+    {
+      "name": "calibrator.pkl_HASH:minirocket",
+      "pass": true
+    },
+    {
+      "name": "calibration-predictions.npz_HASH:minirocket",
+      "pass": false
+    },
+    {
+      "name": "FROZEN_EPOCH_RECIPE:minirocket",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_CONFIG:minirocket",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:minirocket:0",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:minirocket:1",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:minirocket:2",
+      "pass": true
+    },
+    {
+      "name": "SEAL_HASH:rdst",
+      "pass": true
+    },
+    {
+      "name": "SEAL_STATUS:rdst",
+      "pass": true
+    },
+    {
+      "name": "COMMON_SEAL_IDENTITIES:rdst",
+      "pass": true
+    },
+    {
+      "name": "SEAL_PARTITION_COUNTS:rdst",
+      "pass": true
+    },
+    {
+      "name": "ALLOWED_SELECTED_VIEW:rdst",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SEEDS:rdst",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:rdst:forecast_independent_models.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:rdst:forecast_independent_run.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:rdst:forecast_independent_data.py",
+      "pass": true
+    },
+    {
+      "name": "MODEL_HASH:rdst:final-seed7/model.pkl",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_COUNT:rdst",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_PATH:rdst:7",
+      "pass": true
+    },
+    {
+      "name": "calibrator.pkl_HASH:rdst",
+      "pass": true
+    },
+    {
+      "name": "calibration-predictions.npz_HASH:rdst",
+      "pass": true
+    },
+    {
+      "name": "EXACT_CALIBRATION_IDS:rdst",
+      "pass": true
+    },
+    {
+      "name": "CALIBRATION_OUTPUT_SHAPES:rdst",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_EPOCH_RECIPE:rdst",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_CONFIG:rdst",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:rdst:0",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:rdst:1",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:rdst:2",
+      "pass": true
+    },
+    {
+      "name": "SEAL_HASH:cnn",
+      "pass": true
+    },
+    {
+      "name": "SEAL_STATUS:cnn",
+      "pass": true
+    },
+    {
+      "name": "COMMON_SEAL_IDENTITIES:cnn",
+      "pass": true
+    },
+    {
+      "name": "SEAL_PARTITION_COUNTS:cnn",
+      "pass": true
+    },
+    {
+      "name": "ALLOWED_SELECTED_VIEW:cnn",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SEEDS:cnn",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:cnn:forecast_independent_models.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:cnn:forecast_independent_run.py",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_SOURCE:cnn:forecast_independent_data.py",
+      "pass": true
+    },
+    {
+      "name": "MODEL_HASH:cnn:final-seed7/model.pkl",
+      "pass": true
+    },
+    {
+      "name": "MODEL_HASH:cnn:final-seed42/model.pkl",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_COUNT:cnn",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_PATH:cnn:7",
+      "pass": true
+    },
+    {
+      "name": "MODEL_SEED_PATH:cnn:42",
+      "pass": true
+    },
+    {
+      "name": "calibrator.pkl_HASH:cnn",
+      "pass": true
+    },
+    {
+      "name": "calibration-predictions.npz_HASH:cnn",
+      "pass": true
+    },
+    {
+      "name": "EXACT_CALIBRATION_IDS:cnn",
+      "pass": true
+    },
+    {
+      "name": "CALIBRATION_OUTPUT_SHAPES:cnn",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_EPOCH_RECIPE:cnn",
+      "pass": true
+    },
+    {
+      "name": "FROZEN_CONFIG:cnn",
+      "pass": true
+    },
+    {
+      "name": "CNN_EXPECTED_ACTUAL_RECIPE",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:cnn:0",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:cnn:1",
+      "pass": true
+    },
+    {
+      "name": "INNER_FULL_HORIZON_COUNT:cnn:2",
+      "pass": true
+    },
+    {
+      "name": "NO_PRIOR_CHECK_ATTEMPTS_OR_EXPORT_FILES",
+      "pass": true
+    }
+  ],
+  "CHECK_attempt_or_export_files": [],
+  "access_disclosure": "No CHECK NPZ decoded and no CHECK outcomes/scores opened; dataset artifact hashes opaque; metadata timestamps and TRAIN calibration arrays only. No model unpickled, inference or fitting."
+}

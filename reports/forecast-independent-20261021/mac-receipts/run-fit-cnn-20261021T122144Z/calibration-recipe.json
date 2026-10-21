@@ -1,0 +1,38 @@
+{
+  "status": "FROZEN_MARCH_CALIBRATION_NO_CHECK",
+  "family": "cnn",
+  "rows": 1440,
+  "seeds_averaged_before_calibration": [
+    7,
+    42
+  ],
+  "residual_quantile_offsets": [
+    [
+      [
+        -0.05779663663980912,
+        -0.08411285064098112,
+        0.08383217361358475
+      ],
+      [
+        0.03345440557697358,
+        0.04936139684364543,
+        0.0614070183173734
+      ]
+    ],
+    [
+      [
+        -0.0582031821164233,
+        -0.08747203093972844,
+        0.08048330579372738
+      ],
+      [
+        0.03237463992895646,
+        0.045445023468930756,
+        0.05424481392604533
+      ]
+    ]
+  ],
+  "temperature": 1.0010174195123698,
+  "projection": "nonnegative ascending; upper=max(lower,upper), before/aftercalibration",
+  "calibrator_sha256": "c83a8982f2f96892ef75abca61d13811de1a73e350302481a41108d84fec7524"
+}

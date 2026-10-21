@@ -1084,13 +1084,124 @@
         "maxrss_bytes": 707159654400
       },
       "resource_receipt": "reports/forecast-independent-20261021/mac-receipts/run-fit-rdst-20261021T121554Z/completion.json"
+    },
+    {
+      "stage": "fit",
+      "family": "cnn",
+      "status": "PASS",
+      "host": "Mac nativearm64 CPU",
+      "job": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z",
+      "external_cpu_seconds": 3211.41,
+      "CPU_source": "Darwintime user+sys",
+      "train_result": {
+        "status": "SEALED_READY_FOR_SEPARATE_CHECK",
+        "family": "cnn",
+        "view": "60x20",
+        "config": 0.0001,
+        "final_epochs": 10,
+        "seeds": [
+          7,
+          42
+        ],
+        "winning_TRAIN_inner_score": {
+          "lower_pinball": 0.21383055375762516,
+          "upper_pinball": 0.21379608707702671,
+          "direction_logloss": 1.0807528701623064,
+          "direction_brier": 0.6557963302164654,
+          "direction_accuracy": 0.38135723039215685
+        },
+        "winning_inner_folds": [
+          {
+            "fold": 0,
+            "score": {
+              "lower_pinball": 0.2025777329550925,
+              "upper_pinball": 0.20249621487567734,
+              "direction_logloss": 1.0855182813064053,
+              "direction_brier": 0.6577703078744485,
+              "direction_accuracy": 0.3926282051282051,
+              "n": 4368
+            },
+            "best_epoch": 10,
+            "predictions_sha256": "670232ca8a565fb42ba5b5c7042b48735896b72f326ca7c36275d83016a26167"
+          },
+          {
+            "fold": 1,
+            "score": {
+              "lower_pinball": 0.2129675368818114,
+              "upper_pinball": 0.21298319669242258,
+              "direction_logloss": 1.0775608148529656,
+              "direction_brier": 0.6554479399539656,
+              "direction_accuracy": 0.3617216117216117,
+              "n": 4368
+            },
+            "best_epoch": 8,
+            "predictions_sha256": "3099945b70a4c7bf8cf1a0a1f28494a18e03c86bc4e43cfc7cd3d4f8713cd718"
+          },
+          {
+            "fold": 2,
+            "score": {
+              "lower_pinball": 0.22608101185461985,
+              "upper_pinball": 0.2260434359139353,
+              "direction_logloss": 1.0791620325960511,
+              "direction_brier": 0.6541526807388103,
+              "direction_accuracy": 0.38981481481481484,
+              "n": 4320
+            },
+            "best_epoch": 11,
+            "predictions_sha256": "783bc2f4e3675e972a8bbb067d68577a6c8b3c126e9acab4f26f108c042417e1"
+          }
+        ],
+        "final_fit_rows": 26160,
+        "calibration_rows": 1440,
+        "calibration_raw": {
+          "lower_pinball": 0.19845896527238258,
+          "upper_pinball": 0.1983178143513685,
+          "direction_logloss": 1.0724680004421139,
+          "direction_brier": 0.6511256914819263,
+          "direction_accuracy": 0.3527777777777778,
+          "n": 1440
+        },
+        "calibration_adjusted": {
+          "lower_pinball": 0.19728854666905812,
+          "upper_pinball": 0.19724022743845004,
+          "direction_logloss": 1.0724679762857947,
+          "direction_brier": 0.6511244978752478,
+          "direction_accuracy": 0.3527777777777778,
+          "n": 1440
+        },
+        "models": [
+          {
+            "path": "final-seed7/model.pkl",
+            "sha256": "1154bf374e274aae1dbec2ad4c7bc6f18579a4e7f551f2f8bb857f773c12e951"
+          },
+          {
+            "path": "final-seed42/model.pkl",
+            "sha256": "f4637832d9bda7adff9209b6bb2c9551cdc7f7a29c982b28a5df5634a392257c"
+          }
+        ],
+        "calibrator_sha256": "c83a8982f2f96892ef75abca61d13811de1a73e350302481a41108d84fec7524",
+        "calibration_predictions_sha256": "6ed7af63903850e0e46529278cadc6ad6b703d387b6461ac9492a27f89834faf",
+        "selection_sha256": "b54e3727672cf11dd4b40190687e7084f8e8c8711805fceb6cd5965317f3f2a9",
+        "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+        "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+        "source_sha256": {
+          "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb",
+          "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+          "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12"
+        },
+        "no_CHECK_read": true,
+        "prior_cpu_seconds": 41.258577,
+        "cpu_seconds": 3210.966553,
+        "maxrss_bytes": 361918103552
+      },
+      "resource_receipt": "reports/forecast-independent-20261021/mac-receipts/run-fit-cnn-20261021T122144Z/completion.json"
     }
   ],
   "cpu_seconds": {
-    "control": 681.384612,
-    "stumpy": 298.726146,
-    "minirocket": 1453.820007,
-    "cnn": 41.258577,
+    "control": 683.644566,
+    "stumpy": 298.773539,
+    "minirocket": 1461.17266,
+    "cnn": 3252.668577,
     "rdst": 1130.543315
   },
   "seals": {
@@ -1110,40 +1221,46 @@
       "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-rdst-20261021T121554Z/result/seal.json",
       "sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37",
       "canonical_receipt": "reports/forecast-independent-20261021/mac-receipts/run-fit-rdst-20261021T121554Z/result/seal.json"
+    },
+    "cnn": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/seal.json",
+      "sha256": "4d3f745ed0cf04034427403f6a2b63bd38ac7e02d8e48d48937e48aae2cd351b",
+      "canonical_receipt": "reports/forecast-independent-20261021/mac-receipts/run-fit-cnn-20261021T122144Z/result/seal.json"
     }
   },
   "execution_handoff": "VPS passive driver686640 SIGSTOP; neverresume newVPSfits; remainingCNN onMac; allCHECK laterMac only after5actualseals+rootGO",
   "CPU_accounting_notes": {
     "CNN": "Prior23.210074+13.178503+Mac4.87=41.258577; all probes charged once beforefit",
-    "RDST": "VPS975.273315+Mac155.27=1130.543315; all failed/interrupted engineering attempts counted"
+    "RDST": "VPS975.273315+Mac155.27=1130.543315; all failed/interrupted engineering attempts counted",
+    "portability": "9.66externalCPUchargedonce: control2.259954(includesstartup/exitresidual),STUMPY0.047393,MiniRocket7.352653"
   },
   "Mac_registry_progress": {
     "control": {
-      "canonical_seal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/seal.json",
       "Mac_seal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/seal.json",
-      "sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+      "sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0",
+      "canonical_seal_or_receipt": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/seal.json"
     },
     "stumpy": {
-      "canonical_seal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/seal.json",
       "Mac_seal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/seal.json",
-      "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+      "sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31",
+      "canonical_seal_or_receipt": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/seal.json"
     },
     "minirocket": {
-      "canonical_seal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/seal.json",
       "Mac_seal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/seal.json",
-      "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
+      "sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82",
+      "canonical_seal_or_receipt": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/seal.json"
     },
     "rdst": {
-      "canonical_seal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-rdst-20261021T121554Z/result/seal.json",
       "Mac_seal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-rdst-20261021T121554Z/result/seal.json",
-      "sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37"
+      "sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37",
+      "canonical_seal_or_receipt": "reports/forecast-independent-20261021/mac-receipts/run-fit-rdst-20261021T121554Z/result/seal.json"
+    },
+    "cnn": {
+      "Mac_seal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/seal.json",
+      "sha256": "4d3f745ed0cf04034427403f6a2b63bd38ac7e02d8e48d48937e48aae2cd351b",
+      "canonical_seal_or_receipt": "reports/forecast-independent-20261021/mac-receipts/run-fit-cnn-20261021T122144Z/result/seal.json"
     }
   },
-  "running": {
-    "family": "cnn",
-    "PID": 36205,
-    "host": "Mac",
-    "job": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z",
-    "status": "TRAIN_ONLY_CHECK_CLOSED"
-  }
+  "running": null,
+  "status": "ALL_FIVE_SEALED_INDEPENDENT134_PASS_CHECK_CLOSED"
 }

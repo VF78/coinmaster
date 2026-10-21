@@ -1,0 +1,16 @@
+{
+  "status": "FIRST_CNN_FOLD_COMPLETE_NORMAL_ETA",
+  "first_fold": "60x20-0.0001-fold0",
+  "first_fold_best_epoch": 10,
+  "first_fold_epochs_run": 13,
+  "first_fold_wall_seconds": 282.9898645877838,
+  "completed_folds": 1,
+  "active_process_measurement": "36205   0:00.00   0.0    464\n36207   7:07.61 100.0 114320\n",
+  "estimated_full_CNN_CPU_minutes": [
+    45,
+    91
+  ],
+  "effective_hard_ceiling_CPU_minutes": 480,
+  "no_source_recipe_or_cap_change": true,
+  "NOTE": "Perfoldwall is measured; perFoldCPU wasnot instrumented in frozen source. CPU upperprojection uses actual20bar profile plus full20epoch bound."
+}

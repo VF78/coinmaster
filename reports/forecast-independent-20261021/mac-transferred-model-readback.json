@@ -1,0 +1,110 @@
+{
+  "status": "PASS",
+  "TRAIN_only": true,
+  "CHECK_opened": false,
+  "refit_or_recalibration": false,
+  "rtol": 1e-05,
+  "atol": 3e-06,
+  "records": [
+    {
+      "family": "control",
+      "rows": [
+        26208,
+        26209,
+        26210,
+        26211,
+        26212,
+        26213,
+        26214,
+        26215,
+        26216,
+        26217,
+        26218,
+        26219,
+        26220,
+        26221,
+        26222,
+        26223
+      ],
+      "comparisons": {
+        "q": {
+          "max_abs_error": 0.0,
+          "allclose": true
+        },
+        "logits": {
+          "max_abs_error": 0.0,
+          "allclose": true
+        }
+      },
+      "cpu_seconds": 1.771438,
+      "seal_sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+    },
+    {
+      "family": "stumpy",
+      "rows": [
+        26208,
+        26209,
+        26210,
+        26211,
+        26212,
+        26213,
+        26214,
+        26215,
+        26216,
+        26217,
+        26218,
+        26219,
+        26220,
+        26221,
+        26222,
+        26223
+      ],
+      "comparisons": {
+        "q": {
+          "max_abs_error": 0.0,
+          "allclose": true
+        },
+        "logits": {
+          "max_abs_error": 2.220446049250313e-16,
+          "allclose": true
+        }
+      },
+      "cpu_seconds": 0.047392999999999796,
+      "seal_sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+    },
+    {
+      "family": "minirocket",
+      "rows": [
+        26208,
+        26209,
+        26210,
+        26211,
+        26212,
+        26213,
+        26214,
+        26215,
+        26216,
+        26217,
+        26218,
+        26219,
+        26220,
+        26221,
+        26222,
+        26223
+      ],
+      "comparisons": {
+        "q": {
+          "max_abs_error": 1.0728836059570312e-06,
+          "allclose": true
+        },
+        "logits": {
+          "max_abs_error": 8.937441489109688e-07,
+          "allclose": true
+        }
+      },
+      "cpu_seconds": 7.352652999999999,
+      "seal_sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
+    }
+  ],
+  "native_maxrss_bytes": 459276288
+}
