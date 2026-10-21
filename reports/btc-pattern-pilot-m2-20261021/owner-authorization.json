@@ -1,0 +1,16 @@
+{
+  "task_id": "BTC-PATTERN-M2-20261021",
+  "accepted_utc": "2026-10-21T19:28:59.851363+00:00",
+  "source_sha256": "21447333d5d257fcb6d43dd492617e1f5062be234def632ea68a0b57f1015592",
+  "base_head": "0bd7351897a9854c144817fdfca6c548e7984673",
+  "local_original_head": "a649594dcadfcf22cb425ce6107155c0c343d224",
+  "checkout": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "local_development_authority": "Owner attached task section1 explicit local checkout pilot overrides historical canonical-only development rule for this scope",
+  "prior_cycle": "COMPLETE: all6A/C NO_SKILL, B resource-incomplete; immutable reference only, not comparable 72h results",
+  "production_changes": false,
+  "cpu_threads_max": 4,
+  "BTC_planning_seconds": 21600,
+  "heavy_processes_max": 1,
+  "no_old_results_overwrite": true
+}
