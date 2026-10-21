@@ -1,0 +1,11 @@
+{
+  "recorded_utc": "2026-10-21T07:32:36.188442+00:00",
+  "owner_request": "Согласовано, обнови Project и приступай по плану. Пилот не трогай, S0 не пересчитывай. Максимум четыре прогона, цель — DD до 50% при сохранении не менее 90% чистой прибыли S0.",
+  "approved_plan_commit": "1b887b8cdc7d6af8876a3f7e2a9c5a894815ec69",
+  "approved_plan_sha256": "4d1a1e79fc9966d7898f3203cd5c8b36eb1567ac0573507c300d051ce0fe44de",
+  "native_economic_cap": 4,
+  "S0_rerun": false,
+  "pilot_changes": false,
+  "live_orders_deployment": false,
+  "Project": "https://github.com/VF78/coinmaster/issues/113"
+}

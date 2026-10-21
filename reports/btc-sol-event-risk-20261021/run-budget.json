@@ -1,0 +1,33 @@
+{
+  "cap": 4,
+  "used": 0,
+  "S0_rerun_allowed": false,
+  "launch_authority": "root only after frozen contract, focused tests and scoped independent review",
+  "slots": [
+    {
+      "slot": 1,
+      "policy": "H-BTC",
+      "status": "NOT_ELIGIBLE_BEFORE_INFO_GATE",
+      "run_id": null
+    },
+    {
+      "slot": 2,
+      "policy": "H-SOL",
+      "status": "NOT_ELIGIBLE_BEFORE_INFO_GATE",
+      "run_id": null
+    },
+    {
+      "slot": 3,
+      "policy": "combined",
+      "status": "CONDITIONAL_BOTH_SEPARATE_DD_IMPROVE_NP90",
+      "run_id": null
+    },
+    {
+      "slot": 4,
+      "policy": "fresh_selected_pass_repeat",
+      "status": "CONDITIONAL_DD50_NP90_WINNER",
+      "run_id": null
+    }
+  ],
+  "no_automatic_retries_or_new_hypotheses": true
+}

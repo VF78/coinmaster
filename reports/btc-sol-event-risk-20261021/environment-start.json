@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-21T07:32:36.188442+00:00",
+  "pilot_read_only": "MainPID=2009732\nNRestarts=0\nActiveState=active\nActiveEnterTimestamp=Mon 2026-09-28 07:39:45 UTC\n",
+  "disk_root": "  1B-blocks        Used      Avail Use%\n39973924864 36766535680 2783703040  93%\n",
+  "memory": [
+    "MemAvailable:     921436 kB",
+    "SwapTotal:       2097148 kB",
+    "SwapFree:            696 kB"
+  ],
+  "service_mutations": false
+}
