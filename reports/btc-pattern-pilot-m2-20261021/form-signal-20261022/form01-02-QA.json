@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "forecast_groups_canonical_validated_by_runner": 69,
+  "identical_outer_IDs_each_run": 8496,
+  "unit_tests": 25,
+  "context_joint_fits": 6,
+  "flat_encoder_fits": 0,
+  "CHECK_opened": false,
+  "context_wall_seconds": 36.86310737533495,
+  "flat_wall_seconds": 32.04807100025937,
+  "all60_reused_forecast_files_byte_identical": true
+}

@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-21T23:43:56.118333+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "project_status": "In Progress",
+  "body_readback": "PASS",
+  "checkpoint": "21795a1",
+  "FORM01": "CONTEXT_RUNNING",
+  "FORM02": "SERIAL_PENDING_NOFIT",
+  "FORM03": "CONDITIONAL",
+  "pid": 527,
+  "max_market_fits": 6,
+  "pilot_changes": false
+}
