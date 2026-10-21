@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-21T20:37:36.198187+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "readback": "PASS",
+  "status": "In Progress",
+  "source_commit": "d3c6d3865164d2491ea9ef43da866a9f45cdee34",
+  "mode": "METRIC_OFF",
+  "pid": 89809,
+  "V2": "AUTHORIZED_ONLY_AFTER_V1_EXIT_SEPARATE_PROCESS",
+  "baseline_finished": true,
+  "CHECK_opened": false
+}
