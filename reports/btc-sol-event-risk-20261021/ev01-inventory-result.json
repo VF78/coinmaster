@@ -1,0 +1,372 @@
+{
+  "status": "EV01_INVENTORY_ONLY_CONTRACT_PENDING",
+  "scope": "T+V only; U timestamp boundary checked before payload; no outcomes/labels fit",
+  "inputs": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-raw-native.json": {
+      "bytes": 2119302,
+      "sha256": "4b284a653aac056bfd74de21971f3647fdee1f97ca9095f27f1dc2e8d9b42237",
+      "verified": true
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-orders.csv": {
+      "bytes": 265856,
+      "sha256": "737f137a681674712b6626a46cf3abd150c78d3abc4354b3e6c6b9c10a557b6d",
+      "verified": true
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv": {
+      "bytes": 245967,
+      "sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7",
+      "verified": true
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz": {
+      "bytes": 37417891,
+      "sha256": "780efb8da2c71189ebf5feb61c555137c99154e09f709de8c5b10ff19d0f32d3",
+      "verified": true
+    }
+  },
+  "parent_count": 84,
+  "parents_by_split": {
+    "T": 66,
+    "V": 18
+  },
+  "order_fill_counts": [
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "BTC_ENTRY",
+      "reason": "BTC_ENTRY",
+      "level": "",
+      "count": 132
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "0",
+      "count": 26
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "1",
+      "count": 17
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP2",
+      "level": "1",
+      "count": 22
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP3",
+      "level": "2",
+      "count": 35
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "FORCED_CLOSE",
+      "reason": "REGIME",
+      "level": "",
+      "count": 74
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "FORCED_CLOSE",
+      "reason": "TRAIL",
+      "level": "",
+      "count": 39
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "SOL_ADD",
+      "reason": "SOL_ADD",
+      "level": "0",
+      "count": 73
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "SOL_ADD",
+      "reason": "SOL_ADD",
+      "level": "1",
+      "count": 11
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "SOL_EXIT",
+      "reason": "SOL_Z_FULL_EXIT",
+      "level": "",
+      "count": 1
+    },
+    {
+      "split": "T",
+      "kind": "fills",
+      "action": "SOL_HALF_EXIT",
+      "reason": "SOL_Z_HALF_EXIT",
+      "level": "",
+      "count": 1
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "BTC_ENTRY",
+      "reason": "BTC_ENTRY",
+      "level": "",
+      "count": 158
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "0",
+      "count": 26
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "1",
+      "count": 17
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP2",
+      "level": "1",
+      "count": 24
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP3",
+      "level": "2",
+      "count": 66
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "FORCED_CLOSE",
+      "reason": "REGIME",
+      "level": "",
+      "count": 74
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "FORCED_CLOSE",
+      "reason": "TRAIL",
+      "level": "",
+      "count": 39
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "SOL_ADD",
+      "reason": "SOL_ADD",
+      "level": "0",
+      "count": 73
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "SOL_ADD",
+      "reason": "SOL_ADD",
+      "level": "1",
+      "count": 11
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "SOL_EXIT",
+      "reason": "SOL_Z_FULL_EXIT",
+      "level": "",
+      "count": 1
+    },
+    {
+      "split": "T",
+      "kind": "orders",
+      "action": "SOL_HALF_EXIT",
+      "reason": "SOL_Z_HALF_EXIT",
+      "level": "",
+      "count": 1
+    },
+    {
+      "split": "V",
+      "kind": "fills",
+      "action": "BTC_ENTRY",
+      "reason": "BTC_ENTRY",
+      "level": "",
+      "count": 36
+    },
+    {
+      "split": "V",
+      "kind": "fills",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "0",
+      "count": 8
+    },
+    {
+      "split": "V",
+      "kind": "fills",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "1",
+      "count": 8
+    },
+    {
+      "split": "V",
+      "kind": "fills",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP3",
+      "level": "2",
+      "count": 12
+    },
+    {
+      "split": "V",
+      "kind": "fills",
+      "action": "FORCED_CLOSE",
+      "reason": "REGIME",
+      "level": "",
+      "count": 6
+    },
+    {
+      "split": "V",
+      "kind": "fills",
+      "action": "FORCED_CLOSE",
+      "reason": "TRAIL",
+      "level": "",
+      "count": 1
+    },
+    {
+      "split": "V",
+      "kind": "orders",
+      "action": "BTC_ENTRY",
+      "reason": "BTC_ENTRY",
+      "level": "",
+      "count": 40
+    },
+    {
+      "split": "V",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "0",
+      "count": 8
+    },
+    {
+      "split": "V",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "level": "1",
+      "count": 8
+    },
+    {
+      "split": "V",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP2",
+      "level": "1",
+      "count": 1
+    },
+    {
+      "split": "V",
+      "kind": "orders",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP3",
+      "level": "2",
+      "count": 18
+    },
+    {
+      "split": "V",
+      "kind": "orders",
+      "action": "FORCED_CLOSE",
+      "reason": "REGIME",
+      "level": "",
+      "count": 6
+    },
+    {
+      "split": "V",
+      "kind": "orders",
+      "action": "FORCED_CLOSE",
+      "reason": "TRAIL",
+      "level": "",
+      "count": 1
+    }
+  ],
+  "daily_predecision_state_counts": [
+    {
+      "split": "T",
+      "assets": "BTC",
+      "count": 138
+    },
+    {
+      "split": "T",
+      "assets": "BTC+SOL",
+      "count": 40
+    },
+    {
+      "split": "T",
+      "assets": "FLAT",
+      "count": 178
+    },
+    {
+      "split": "T",
+      "assets": "SOL",
+      "count": 81
+    },
+    {
+      "split": "V",
+      "assets": "BTC",
+      "count": 44
+    },
+    {
+      "split": "V",
+      "assets": "FLAT",
+      "count": 102
+    }
+  ],
+  "daily_snapshots": 583,
+  "btc_open_daily": 222,
+  "btc_open_daily_parent_count": 75,
+  "btc_reduce_order_parent_count": 84,
+  "sol_add_order_parent_count": 23,
+  "sol_unique_parent_levels": 26,
+  "sol_order_terminal_statuses": {
+    "FILLED": 4,
+    "CANCELED": 80
+  },
+  "receipt_rows": 840958,
+  "resources": {
+    "wall_seconds": 10.486135937273502,
+    "peak_rss_bytes": 27029504
+  },
+  "missing": [
+    "no complete per-decision domain snapshot / pending-intent/right consumption trace",
+    "native order audit omits intent_id and episode_id; parent association uses causal parent start interval",
+    "no native per-asset close UPnL/realized position report",
+    "no signed funding cash delta"
+  ],
+  "not_claimed": [
+    "daily open-position opportunity is not proof ordinary domain branch was reachable",
+    "filled/submitted SOL intents are not every preintent qualifying state",
+    "no perasset synthetic PnL",
+    "no risk outcome is action value"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "status": "GO_EV02_LABELS_AND_SUFFICIENCY_ONLY",
+  "utc": "2026-10-21T07:46:47.873288+00:00",
+  "contract_sha256": "349b7eee60dac275a481187e747a932b1b50bf62bb23018ac3dad891c949ff49",
+  "reviewer": "fast_rnd_method_applicability",
+  "review_model": "gpt-6.1-sol/medium",
+  "review_result": "GO",
+  "root_input_hashes_checked": 4,
+  "train": [
+    "2024-09-01",
+    "2025-04-08"
+  ],
+  "check": [
+    "2025-04-08",
+    "2026-04-08"
+  ],
+  "label": "S0 native W decline>=10% within72h; risk not actionvalue",
+  "support": "sameparent OR overlapping72h connectedblocks; disjoint5positive+5negativeTRAIN,3+3CHECK/min10and6blocks",
+  "allowed": "bounded event features/native labels/sufficiency + focused causal checks",
+  "new_model_fits": false,
+  "new_U_outcome_inspection": false,
+  "native_backtests": false,
+  "native_runs_used": 0,
+  "pilot_changes": false
+}

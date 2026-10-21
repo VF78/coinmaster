@@ -1,0 +1,23 @@
+{
+  "protocol": "PROPOSED_REVISION_PENDING_ROOT_METHOD_REVIEW",
+  "train": [
+    "2024-09-01",
+    "2025-04-08"
+  ],
+  "check": [
+    "2025-04-08",
+    "2026-04-08"
+  ],
+  "sol_first_right_events": {
+    "TRAIN": 13,
+    "CHECK": 13
+  },
+  "sol_parent_episodes": {
+    "TRAIN": 12,
+    "CHECK": 11
+  },
+  "before_purge": true,
+  "cutoff_search": false,
+  "outcomes_inspected": false,
+  "U_payloads_inspected": false
+}

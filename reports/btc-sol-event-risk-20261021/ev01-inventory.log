@@ -1,0 +1,68 @@
+{
+  "status": "EV01_INVENTORY_ONLY_CONTRACT_PENDING",
+  "scope": "T+V only; U timestamp boundary checked before payload; no outcomes/labels fit",
+  "parent_count": 84,
+  "parents_by_split": {
+    "T": 66,
+    "V": 18
+  },
+  "daily_predecision_state_counts": [
+    {
+      "split": "T",
+      "assets": "BTC",
+      "count": 138
+    },
+    {
+      "split": "T",
+      "assets": "BTC+SOL",
+      "count": 40
+    },
+    {
+      "split": "T",
+      "assets": "FLAT",
+      "count": 178
+    },
+    {
+      "split": "T",
+      "assets": "SOL",
+      "count": 81
+    },
+    {
+      "split": "V",
+      "assets": "BTC",
+      "count": 44
+    },
+    {
+      "split": "V",
+      "assets": "FLAT",
+      "count": 102
+    }
+  ],
+  "daily_snapshots": 583,
+  "btc_open_daily": 222,
+  "btc_open_daily_parent_count": 75,
+  "btc_reduce_order_parent_count": 84,
+  "sol_add_order_parent_count": 23,
+  "sol_unique_parent_levels": 26,
+  "sol_order_terminal_statuses": {
+    "FILLED": 4,
+    "CANCELED": 80
+  },
+  "receipt_rows": 840958,
+  "resources": {
+    "wall_seconds": 10.486135937273502,
+    "peak_rss_bytes": 27029504
+  },
+  "missing": [
+    "no complete per-decision domain snapshot / pending-intent/right consumption trace",
+    "native order audit omits intent_id and episode_id; parent association uses causal parent start interval",
+    "no native per-asset close UPnL/realized position report",
+    "no signed funding cash delta"
+  ],
+  "not_claimed": [
+    "daily open-position opportunity is not proof ordinary domain branch was reachable",
+    "filled/submitted SOL intents are not every preintent qualifying state",
+    "no perasset synthetic PnL",
+    "no risk outcome is action value"
+  ]
+}
