@@ -1,0 +1,10 @@
+{
+  "status": "GO_PUBLICATION_DIAGNOSIS_ONLY",
+  "reviewer": "btc_pattern_causality_review",
+  "source_sha256": "26dbcfa89fb12da9661cf9e46dd8039246492995e33e09b8cd4f50645a4c57da",
+  "manifest_sha256": "62f51d1e91f36cff3df2509ab837791dc74129993c8e20303c598c8f51db497a",
+  "material_blockers": [],
+  "new_fits_authorized": false,
+  "CHECK_authorized": false,
+  "pilot_changes_authorized": false
+}

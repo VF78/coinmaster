@@ -1,0 +1,13 @@
+{
+  "status": "COMPLETE_ZERO_FIT_DESCRIPTIVE",
+  "fits": 0,
+  "optimizer_steps": 0,
+  "new_predictions": 0,
+  "CHECK": false,
+  "wall_seconds": 0.8206259589642286,
+  "origins": 8496,
+  "source_sha256": "26dbcfa89fb12da9661cf9e46dd8039246492995e33e09b8cd4f50645a4c57da",
+  "protocol_sha256": "b7f4502ba15b352523936ee5e43087d85b31268c8dabe78b5d459734712aec6b",
+  "freeze_sha256": "b11061d26e39a01267ada62efe35dcef8e9eb421b953c36753388a693c7e434e",
+  "statistics_are_evaluation_not_conditional_calibration": true
+}

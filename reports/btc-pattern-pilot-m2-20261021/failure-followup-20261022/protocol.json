@@ -1,0 +1,14 @@
+{
+ "status":"FROZEN_BEFORE_OUTCOME_CONTRASTS","fits":0,"new_predictions":0,"CHECK":false,
+ "data":"Original three outer folds/all8496retainedIDs; originalfullJune1purgedrefitprefixes for FEATURE thresholds only; no month deletion",
+ "state":"context[4]/context[5]=causalvol24/vol168, alreadyavailable inputs, NOTnewrawinformation; independently verify128uniformorigins against169completedhourcloseprices",
+ "strata":"perfoldfeature-onlypurgedrefit ratio terciles(1/3,2/3); low<first,mid[first,second),high>=second; freezeedgesandfitIDhashBEFOREloadingoutertargets",
+ "preliminary_hypothesis":"Higher causalvolratio associates with morefixedphysicalSLtouch and loweroriginalCNNmedianCDFcoverage versuslowstate within frozen30dregimes. Reportdirection/CIeveryfold, notpooledwinner; featureassociationisnotcausalornewpredictiveskill",
+ "outcomes":"savedoriginalCNN andprior projectedQ pinball/CDF-minusnominal perlong/short/q; pairedmeanpinballgap; actual72hfixed1sigma72SLtouch",
+ "adjustment":"rawhigh-minuslow plus equalweightoverpredeclaredregimeswithbothstatesobserved, common-supportonly; neverzerofillabsentmeans; reportallcellcounts/blocks/excludedpopulation and early/latecalendarhalf contrasts",
+ "uncertainty":"14daycalendarblockbootstrap1000seed7withinouterfold, same drawsalloutcomes; nohourlyIID. CIswithheldwhen<800replicatesretainfixedcommonsupport. Halfpointcontrastsdescriptive(noCI). Allfoldsreportedseparately",
+ "coherence":"AtTP1sigma72, firstpassageDcauseequalsMFE>=1beforeoppositestop onunambiguouslabels. Deriveconservative survivalboundsfromq.2/.5/.8 withoutinterpolation; qwithin1e-6ofthresholdgivesnobound. ReportDproboutsideinterval andexcess>.05; nofitting/calibration",
+ "SL_sensitivity":"existingpolicy_mfe72h allSL.75/1/1.5 inORIGINALsigma72units; actualstop-touchfromrealminuteextrema, originalCNNTPsheldfixed. TheseareDIFFERENTphysicalstopcontracts; descriptiveonly,noimprovedsame-taskscore/bestSL/EV/policyclaim",
+ "limits":{"wall_seconds":180,"CPU_threads":4,"fits":0,"optimizer_steps":0,"new_predictions":0},
+ "next_experiment":"Onlyproposedifnumericallymotivated: onejointstate-conditionedcompeting-barrierdistributionusingexistingcausalinputs/fullhistory, coherentTPquantiles+SLrisk, alloriginalphysicalcontractsandcontrols; noexperimentstarted"
+}

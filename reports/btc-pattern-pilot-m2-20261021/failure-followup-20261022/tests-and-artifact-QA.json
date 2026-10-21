@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "focused_tests": 3,
+  "test_wall_seconds": 0.012,
+  "checks": [
+    "completed-price causality and exactwarmupnegativeindexboundary",
+    "featuretercilesfit-only andlabelmaturitycutoff",
+    "nonparametricquantilesurvivalbounds/tieconservatism"
+  ],
+  "training_fits": 0,
+  "new_predictions": 0,
+  "analysis_seconds": 0.8206259589642286,
+  "artifact_parse_compile": "PASS",
+  "analysis_origins": 8496
+}

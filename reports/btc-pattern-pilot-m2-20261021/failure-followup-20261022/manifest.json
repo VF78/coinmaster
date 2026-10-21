@@ -1,0 +1,71 @@
+{
+  "files": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/DQ-coherence.csv",
+      "bytes": 602,
+      "sha256": "59dcf0d3186f20b067153485f310a3aef820bb99fade3479e2360f660fc2f0b4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/completion.json",
+      "bytes": 512,
+      "sha256": "3d775cacc7891c137fe047c92d1c4464235493d167fb4f5f7ea2624a762edbfd"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/feature-strata-freeze.json",
+      "bytes": 21689,
+      "sha256": "b11061d26e39a01267ada62efe35dcef8e9eb421b953c36753388a693c7e434e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/findings.md",
+      "bytes": 6055,
+      "sha256": "6def223c29108642674cb1034b820e9ed0ba037a2984b8f61d041dfe935a69ef"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/followup.py",
+      "bytes": 10758,
+      "sha256": "26dbcfa89fb12da9661cf9e46dd8039246492995e33e09b8cd4f50645a4c57da"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/populations.json",
+      "bytes": 2105,
+      "sha256": "58dde12b29e4842842865556c2bf16960fbeafe6920e007dca018f285e40e194"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/protocol.json",
+      "bytes": 2285,
+      "sha256": "b7f4502ba15b352523936ee5e43087d85b31268c8dabe78b5d459734712aec6b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/repro.md",
+      "bytes": 986,
+      "sha256": "fd0953fc64b6605dc9ad5ba7732a26dade54b2e113396d04c8f05185efadd266"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/state-contrasts.csv",
+      "bytes": 60716,
+      "sha256": "4a8323845c29630a9cbc1fd094d2b3c519e306bf779295b7d1438aa28bcbe515"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/state-regime-cells.csv",
+      "bytes": 113390,
+      "sha256": "2bfe5d2613774161c096b363327a2257021125c263007c41b287b706eb4367f5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/stop-sensitivity.csv",
+      "bytes": 26514,
+      "sha256": "9f533f13d27a19323d01261e6148cc5220c1e1523b29426d28c6ae08076abce6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/test_followup.py",
+      "bytes": 1126,
+      "sha256": "899b928254e736f70abc1f64a92b0833688ae07415e92ff619336346f8f63df6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/tests-and-artifact-QA.json",
+      "bytes": 428,
+      "sha256": "9fffa0ee84b442e363afea0b9026302bc9b8a92c82ae8b80010b0dfe3ee9e625"
+    }
+  ],
+  "fits": 0,
+  "old_reports_and_core_edited": false
+}
