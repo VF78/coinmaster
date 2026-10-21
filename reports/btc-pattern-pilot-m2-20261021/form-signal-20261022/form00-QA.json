@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "unit_tests": 20,
+  "unit_wall_seconds": 3.067,
+  "synthetic_fixture_only": true,
+  "compile": "PASS",
+  "forecast_groups_validated": 30,
+  "unchanged_forecast_files_byte_identical": 24,
+  "support_violations": 0,
+  "encoder_fits": 0,
+  "CHECK_opened": false,
+  "wall_seconds": 100.01100270915776,
+  "TCN_cpu_vs_original_saved_neighbor_distance": [
+    {
+      "fold": "F1",
+      "old_pairs": 89856,
+      "max_abs_cosine_distance_delta": 3.5762786865234375e-07,
+      "CPU_saved_original_weights": true
+    },
+    {
+      "fold": "F2",
+      "old_pairs": 92160,
+      "max_abs_cosine_distance_delta": 3.5762786865234375e-07,
+      "CPU_saved_original_weights": true
+    },
+    {
+      "fold": "F3",
+      "old_pairs": 89856,
+      "max_abs_cosine_distance_delta": 3.5762786865234375e-07,
+      "CPU_saved_original_weights": true
+    }
+  ],
+  "source_hashes": {
+    "runtime/coinmaster/research/btc_pattern_data.py": "e4314302cd2683659f3e4500bf6c8574618a517a16c7b8035ac227aa0a73dad5",
+    "runtime/coinmaster/research/btc_pattern_train.py": "cd1cfcf1f16f4a3ccd52760f9a33cccfd24230d86871293b911bd49f40077b02",
+    "runtime/coinmaster/research/btc_pattern_evaluate.py": "8e696d146c96a34ac0135f4df5b51c1bbe2b1b323452ad67442f80fea1e3779c",
+    "runtime/coinmaster/research/pattern_form00.py": "f0989e099515fc11a8710bef17d7f9a346a43c0d8db37cd19a06efbde8e0fadc",
+    "runtime/tests/test_pattern_form00.py": "0105d8906832db4445ed60d2cd836c4c31a0921b882317ba2adcfea8bb85389e"
+  },
+  "all710_archived_invalid_pairs_absent": true,
+  "precision_decomposition_seconds": 32.270107709337026
+}

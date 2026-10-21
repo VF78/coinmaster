@@ -1,0 +1,33 @@
+{
+  "stage": "FORM00_ZERO_ENCODER_FITS",
+  "source_hashes": {
+    "runtime/coinmaster/research/btc_pattern_data.py": "e4314302cd2683659f3e4500bf6c8574618a517a16c7b8035ac227aa0a73dad5",
+    "runtime/coinmaster/research/btc_pattern_train.py": "cd1cfcf1f16f4a3ccd52760f9a33cccfd24230d86871293b911bd49f40077b02",
+    "runtime/coinmaster/research/btc_pattern_evaluate.py": "8e696d146c96a34ac0135f4df5b51c1bbe2b1b323452ad67442f80fea1e3779c",
+    "runtime/coinmaster/research/pattern_form00.py": "f0989e099515fc11a8710bef17d7f9a346a43c0d8db37cd19a06efbde8e0fadc",
+    "runtime/tests/test_pattern_form00.py": "0105d8906832db4445ed60d2cd836c4c31a0921b882317ba2adcfea8bb85389e"
+  },
+  "protocol_sha256": "52deb5b1ae03b0a225364ed70d38ac478dc39c9868a0e308cc32e98f579cbf2c",
+  "methods_changed": [
+    "TCN-knn",
+    "numeric-knn"
+  ],
+  "invariants": {
+    "distance": "unchanged normalized cosine",
+    "k": 32,
+    "greedy_spacing_hours": 72,
+    "prior_mass": 8,
+    "full_history": true,
+    "CHECK_opened": false,
+    "random_control": "unchanged legacy conservative raw support"
+  },
+  "resource": {
+    "cpu_threads": 4,
+    "device": "cpu",
+    "wall_guard_seconds": 180,
+    "rss_guard_GiB": 6,
+    "encoder_fits": 0,
+    "read_only_original_TCN_checkpoint_inference": true
+  },
+  "tests": "4 targeted tests PASS; see test receipt on completion"
+}

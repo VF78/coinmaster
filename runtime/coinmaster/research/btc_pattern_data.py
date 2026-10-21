@@ -17,7 +17,7 @@ def ms(value):
 
 FOLDS=[('F1','2025-01-01','2025-05-01'),('F2','2025-07-01','2025-11-01'),('F3','2026-01-01','2026-05-01')]
 CONTEXT=['return1h','return4h','return24h','return168h','volatility24h','volatility168h','ATR14/price','current_range/price','relative_volume20','closed4h_age_hours','sigma24','sigma72']
-META=np.dtype([('origin','<i8'),('entry_time','<i8'),('label_end','<i8'),('input_start','<i8'),('entry_index','<i8'),('reference','<f8'),('entry','<f8'),('sigma24','<f8'),('sigma72','<f8'),('valid','?'),('observed','?')])
+META=np.dtype([('origin','<i8'),('entry_time','<i8'),('label_end','<i8'),('input_start','<i8'),('raw_input_start','<i8'),('engineered_input_start','<i8'),('entry_index','<i8'),('reference','<f8'),('entry','<f8'),('sigma24','<f8'),('sigma72','<f8'),('valid','?'),('observed','?')])
 
 
 def folds(meta):
@@ -29,6 +29,21 @@ def folds(meta):
         select=lambda a,b: np.flatnonzero(eligible&(meta['origin']>=a)&(meta['origin']<b)&(meta['label_end']<=b))
         yield dict(name=name,inner_cutoff=inner,fit_cutoff=cut,outer_end=end,
                    subfit=select(start,inner),early_stop=select(inner,cut),refit=select(start,cut),outer=select(cut,end))
+
+
+def method_input_start(meta, method):
+    """Earliest actual observed bar per representation; legacy v1 input_start was raw."""
+    raw = meta['raw_input_start'] if 'raw_input_start' in meta.dtype.names else meta['input_start']
+    engineered = meta['engineered_input_start'] if 'engineered_input_start' in meta.dtype.names else raw - 80*HOUR
+    if method in ('TCN', 'numeric-knn', 'CatBoost', 'flat-knn'):
+        return engineered
+    if method == 'random-context':
+        return raw # preserve the original conservative256h control exclusion
+    if method == 'Context':
+        return meta['origin'] - 169*HOUR
+    if method in ('CNN', 'Kronos'):
+        return np.minimum(raw, meta['origin'] - 169*HOUR)
+    raise ValueError('UNKNOWN_METHOD_SUPPORT: '+method)
 
 
 def features_at(panels,origin):
@@ -144,7 +159,7 @@ def prepare(args):
         if f is None:continue
         x,c,raw,stamps,ins,ref=f
         for key,value in [('features',x),('context',c),('raw',raw),('stamps',stamps)]:arrays[key][i]=value
-        meta['valid'][i]=True;meta['input_start'][i]=ins;meta['reference'][i]=ref;meta['sigma24'][i]=c[-2];meta['sigma72'][i]=c[-1]
+        meta['valid'][i]=True;meta['raw_input_start'][i]=ins;meta['engineered_input_start'][i]=ins-80*HOUR;meta['input_start'][i]=ins-80*HOUR;meta['reference'][i]=ref;meta['sigma24'][i]=c[-2];meta['sigma72'][i]=c[-1]
         j=meta['entry_index'][i]
         if j<len(v):meta['entry'][i]=v[j,0]
         if meta['label_end'][i]>end:continue
@@ -157,7 +172,7 @@ def prepare(args):
         if i%2000==0:print(json.dumps(dict(event='prepare_progress',rows=i,total=n)),flush=True)
     for a in arrays.values():a.flush()
     np.save(output/'entry-gap.npy',np.column_stack((np.log(meta['entry']/meta['reference'])/meta['sigma24'],np.log(meta['entry']/meta['reference'])/meta['sigma72'])));np.save(output/'path-reference-indices.npy',np.column_stack(((meta['origin']-start)//MINUTE-1,meta['entry_index'])));np.save(output/'metadata.npy',meta);np.savez(output/'labels.npz',direction=d,mfe=y,signature=sig,ambiguous=ambiguous,policy_mfe=policy)
-    receipt=dict(source_code_sha256=sha(__file__),schema='btc-pattern.data.v1',protocol_sha256=sha(args.protocol),minute_start=start,minute_end=end,requested_development_start=ms('2024-06-01'),genuine_june_coverage=True,origins=n,valid=int(meta['valid'].sum()),mature=int(meta['observed'].sum()),source=dict(path=str(source),sha256=sha(source)),prefix_receipt_sha256=sha(output/'public-prefix/receipt.json'),amount='proxy volume*mean(OHLC); no real quote turnover in reused source')
+    receipt=dict(source_code_sha256=sha(__file__),schema='btc-pattern.data.v2',protocol_sha256=sha(args.protocol),minute_start=start,minute_end=end,requested_development_start=ms('2024-06-01'),genuine_june_coverage=True,origins=n,valid=int(meta['valid'].sum()),mature=int(meta['observed'].sum()),source=dict(path=str(source),sha256=sha(source)),prefix_receipt_sha256=sha(output/'public-prefix/receipt.json'),amount='proxy volume*mean(OHLC); no real quote turnover in reused source')
     receipt['artifacts']={p.name:dict(bytes=p.stat().st_size,sha256=sha(p)) for p in output.glob('*') if p.is_file() and p.name!='manifest.json'}
     write_json(output/'manifest.json',receipt)
     return receipt

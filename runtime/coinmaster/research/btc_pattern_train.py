@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy,csv,gc,json,os,pickle,resource,time
 from pathlib import Path
 import numpy as np
-from .btc_pattern_data import folds,ms,HOUR,DAY,neighbors
+from .btc_pattern_data import folds,ms,HOUR,DAY,neighbors,method_input_start
 from .forecast_independent_data import sha,write_json
 
 DEADLINE=None
@@ -43,6 +43,15 @@ def scales(data,ids):
     dist=.5*abs((data.signature[a,:6]-data.signature[b,:6])/ys).mean(1)+.5*abs(data.signature[a,6:]-data.signature[b,6:]).mean(1)
     return ys.astype('float32'),qs.astype('float32'),float(np.median(dist[dist>0])) if (dist>0).any() else 1.
 
+def aggregate_predict(records):
+    """(rows, valid D rows, D mean, Q mean); independent head denominators."""
+    r=np.asarray(records,dtype=float)
+    dn=r[:,1].sum(); qn=r[:,0].sum()
+    d=float((r[:,1]*r[:,2]).sum()/dn) if dn else 0.
+    q=float((r[:,0]*r[:,3]).sum()/qn) if qn else 0.
+    return np.array([d+q,d,q])
+
+
 def neural_fit(data,kind,fit_ids,es_ids,out,epochs=None,device='cpu',seed=7):
     import torch
     from .btc_pattern_models import TCN,CNN,Projection,predict_loss,soft_metric
@@ -60,21 +69,22 @@ def neural_fit(data,kind,fit_ids,es_ids,out,epochs=None,device='cpu',seed=7):
         x,c=input_batch(ids);z,d,q=model(x,c);pred,dl,ql=predict_loss(d,q,torch.from_numpy(data.d[ids].astype('int64')).to(device),torch.from_numpy(data.y[ids]).to(device),torch.from_numpy(qs).to(device))
         ml,stat=soft_metric(z,torch.from_numpy(data.signature[ids]).to(device),torch.from_numpy(data.meta['origin'][ids].copy()).to(device),torch.from_numpy(data.meta['label_end'][ids].copy()).to(device),torch.from_numpy(ys).to(device),tau) if training else (pred*0,dict(eligible_anchors=0,eligible_pairs=0,target_entropy=0))
         return pred+.1*ml,pred,dl,ql,ml,stat
-    history=[];best=np.inf;best_epoch=1;wait=0;selected=None;start=time.monotonic()
+    optimizer_steps=0;history=[];best=np.inf;best_epoch=1;wait=0;selected=None;start=time.monotonic()
     for epoch in range(1,(epochs or 30)+1):
         model.train();order=rng.permutation(fit_ids);records=[]
         for a in range(0,len(order),batch):
-            resource_guard(device);ids=order[a:a+batch];opt.zero_grad(set_to_none=True);total,pred,dl,ql,ml,stat=loss_for(ids,True);total.backward();torch.nn.utils.clip_grad_norm_(model.parameters(),1.);opt.step();records.append([float(v.detach().cpu()) for v in (pred,dl,ql,ml)]+[stat['eligible_anchors'],stat['eligible_pairs'],stat['target_entropy']])
+            resource_guard(device);ids=order[a:a+batch];opt.zero_grad(set_to_none=True);total,pred,dl,ql,ml,stat=loss_for(ids,True);total.backward();torch.nn.utils.clip_grad_norm_(model.parameters(),1.);opt.step();optimizer_steps+=1;records.append([len(ids),int((data.d[ids]>=0).sum()),float(dl.detach().cpu()),float(ql.detach().cpu()),float(ml.detach().cpu()),stat['eligible_anchors'],stat['eligible_pairs'],stat['target_entropy']])
         model.eval();validation=[]
         if es_ids is not None:
             with torch.no_grad():
                 for a in range(0,len(es_ids),batch):
-                    ids=es_ids[a:a+batch];values=loss_for(ids,False);validation.append((len(ids),*[float(v.detach().cpu()) for v in values[1:4]]))
-            w=np.array(validation);vl=np.average(w[:,1:],axis=0,weights=w[:,0]);score=vl[0]
+                    ids=es_ids[a:a+batch];values=loss_for(ids,False);validation.append((len(ids),int((data.d[ids]>=0).sum()),*[float(v.detach().cpu()) for v in values[2:4]]))
+            vl=aggregate_predict(validation);score=vl[0]
         else:vl=[None]*3;score=None
         with torch.no_grad():
             probe_x,probe_c=input_batch(fit_ids[:128]);probe_z=model(probe_x,probe_c)[0].cpu().numpy();singular=np.linalg.svd(probe_z-probe_z.mean(0),compute_uv=False);energy=singular**2;energy=energy/max(float(energy.sum()),1e-12);rank=float(np.exp(-(energy[energy>0]*np.log(energy[energy>0])).sum()))
-        row=dict(target_entropy=float(np.mean(records,axis=0)[6]),embedding_variance=float(probe_z.var(0).mean()),embedding_effective_rank=rank,epoch=epoch,fit_predict=float(np.mean(records,axis=0)[0]),fit_D=float(np.mean(records,axis=0)[1]),fit_Q=float(np.mean(records,axis=0)[2]),metric=float(np.mean(records,axis=0)[3]),eligible_anchors=float(np.mean(records,axis=0)[4]),eligible_pairs=float(np.mean(records,axis=0)[5]),early_stop_predict=vl[0],early_stop_D=vl[1],early_stop_Q=vl[2]);history.append(row)
+        online=aggregate_predict([r[:4] for r in records]); rr=np.asarray(records); metric=float(np.average(rr[:,4],weights=rr[:,0]))
+        row=dict(target_entropy=float(np.mean(rr[:,7])),embedding_variance=float(probe_z.var(0).mean()),embedding_effective_rank=rank,epoch=epoch,fit_predict=float(online[0]),fit_D=float(online[1]),fit_Q=float(online[2]),metric=metric,fit_rows=int(rr[:,0].sum()),valid_D_rows=int(rr[:,1].sum()),optimizer_steps=optimizer_steps,loss_semantics='online_parameter_changing_head_weighted',eligible_anchors=float(np.mean(rr[:,5])),eligible_pairs=float(np.mean(rr[:,6])),early_stop_predict=vl[0],early_stop_D=vl[1],early_stop_Q=vl[2]);history.append(row)
         write_json(out.with_suffix('.curve.json'),history)
         if es_ids is not None:
             if score<best-1e-8:best=score;best_epoch=epoch;wait=0;selected=copy.deepcopy({k:v.cpu() for k,v in model.state_dict().items()})
@@ -82,7 +92,7 @@ def neural_fit(data,kind,fit_ids,es_ids,out,epochs=None,device='cpu',seed=7):
             if wait>=5:break
     if selected is not None:model.load_state_dict(selected)
     state=dict(kind=kind,seed=seed,epochs=epochs or best_epoch,fit_ids=fit_ids,fit_cutoff=int(data.meta['label_end'][fit_ids].max()),context_mean=cm,context_std=cs,x_mean=xm,x_std=xs,k_mean=km,k_std=ks,signature_scales=ys,q_scales=qs,tau=tau,weights={k:v.cpu() for k,v in model.state_dict().items()})
-    torch.save(state,out);receipt=dict(kind=kind,selected_epochs=epochs or best_epoch,epochs_executed=len(history),wall_seconds=time.monotonic()-start,fit_rows=len(fit_ids),early_stop_rows=0 if es_ids is None else len(es_ids),rss_peak_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+    torch.save(state,out);receipt=dict(optimizer_steps=optimizer_steps,kind=kind,selected_epochs=epochs or best_epoch,epochs_executed=len(history),wall_seconds=time.monotonic()-start,fit_rows=len(fit_ids),early_stop_rows=0 if es_ids is None else len(es_ids),rss_peak_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
     write_json(out.with_suffix('.receipt.json'),receipt);del model,opt;gc.collect()
     if device=='mps':torch.mps.empty_cache()
     return state,receipt
@@ -94,7 +104,7 @@ def neural_predict(data,state,ids,device='cpu'):
     kind=state['kind'];model={'TCN':TCN,'CNN':CNN,'Kronos':Projection}[kind]().to(device);model.load_state_dict(state['weights']);model.eval();zall=[];pall=[];qall=[]
     with torch.inference_mode():
         for a in range(0,len(ids),128 if kind!='CNN' else 64):
-            ii=ids[a:a+(128 if kind!='CNN' else 64)]
+            resource_guard(device);ii=ids[a:a+(128 if kind!='CNN' else 64)]
             if kind=='TCN':x=(np.array(data.x[ii])-state['x_mean'])/state['x_std']
             elif kind=='CNN':x=np.array(data.images[ii]).transpose(0,3,1,2).astype('float32')/255
             else:x=(np.array(data.kronos[ii])-state['k_mean'])/state['k_std']
@@ -120,20 +130,21 @@ def catboost_fit(data,fit,es,out,iterations=None):
     return models,selected
 
 
-def empirical(data,index,query,iz,qz,cutoff,random_context=False):
+def empirical(data,index,query,iz,qz,cutoff,random_context=False,support_method=None):
+    support_start=method_input_start(data.meta,support_method or ('random-context' if random_context else 'numeric-knn'))
     priorids=index[data.d[index]>=0];pp=np.bincount(data.d[priorids],minlength=3)/len(priorids)
     pq=np.quantile(data.y[index],[.2,.5,.8],axis=0).T
     probabilities=[];quantiles=[];records=[];support=[];rng=np.random.default_rng(7);vcut=np.median(data.c[index,5])
     for row,qi in enumerate(query):
-        local=index
+        resource_guard();local=index
         if random_context:
-            match=(np.sign(data.c[index,3])==np.sign(data.c[qi,3]))&((data.c[index,5]>=vcut)==(data.c[qi,5]>=vcut));eligible=np.flatnonzero(match&(data.meta['label_end'][index]<=cutoff)&(data.meta['label_end'][index]<=data.meta['input_start'][qi]));order=rng.permutation(eligible);chosen=[]
+            match=(np.sign(data.c[index,3])==np.sign(data.c[qi,3]))&((data.c[index,5]>=vcut)==(data.c[qi,5]>=vcut));eligible=np.flatnonzero(match&(data.meta['label_end'][index]<=cutoff)&(data.meta['label_end'][index]<=support_start[qi]));order=rng.permutation(eligible);chosen=[]
             for j in order:
                 if all(abs(int(data.meta['origin'][index[j]])-int(data.meta['origin'][index[k]]))>=72*HOUR for k in chosen):
                     chosen.append(int(j))
                     if len(chosen)==32:break
             ni=np.array(chosen,dtype='int64')
-        else:ni=neighbors(iz,qz[row],data.meta['origin'][index],data.meta['label_end'][index],cutoff,data.meta['input_start'][qi])
+        else:ni=neighbors(iz,qz[row],data.meta['origin'][index],data.meta['label_end'][index],cutoff,support_start[qi])
         chosen=index[ni];n=len(chosen);support.append(n)
         if n<16:p,q=pp,pq
         else:
@@ -143,7 +154,7 @@ def empirical(data,index,query,iz,qz,cutoff,random_context=False):
                 vals=np.r_[data.y[chosen,side],data.y[index,side]];weights=np.r_[np.ones(n),np.full(len(index),8/len(index))];order=np.argsort(vals,kind='stable');cdf=np.cumsum(weights[order]);q.append(vals[order][np.searchsorted(cdf,np.array([.2,.5,.8])*cdf[-1],side='left')])
             q=np.array(q)
         probabilities.append(p);quantiles.append(q)
-        for j in ni:records.append(dict(query=int(qi),neighbor=int(index[j]),query_origin=int(data.meta['origin'][qi]),neighbor_origin=int(data.meta['origin'][index[j]]),neighbor_label_end=int(data.meta['label_end'][index[j]]),query_input_start=int(data.meta['input_start'][qi]),cosine_distance=float(1-iz[j]@qz[row]),direction=int(data.d[index[j]])))
+        for j in ni:records.append(dict(query=int(qi),neighbor=int(index[j]),query_origin=int(data.meta['origin'][qi]),neighbor_origin=int(data.meta['origin'][index[j]]),neighbor_label_end=int(data.meta['label_end'][index[j]]),query_input_start=int(support_start[qi]),cosine_distance=float(1-iz[j]@qz[row]),direction=int(data.d[index[j]])))
     return np.array(probabilities),np.array(quantiles),np.array(support),records
 
 
@@ -175,9 +186,11 @@ def train(a):
         models,_=catboost_fit(data,index,None,out/'catboost-refit',iterations);save('CatBoost',models[0].predict_proba(data.descriptor[query]),np.stack([m.predict(data.descriptor[query]) for m in models[1:]],axis=1));del models
         for kind in ('TCN','Kronos','CNN'):
             esstate,receipt=neural_fit(data,kind,fold['subfit'],fold['early_stop'],out/f'{kind}-es.pt',device='mps' if kind in ('TCN','CNN') and torch.backends.mps.is_available() else 'cpu');del esstate
-            state,_=neural_fit(data,kind,index,None,out/f'{kind}-refit.pt',epochs=receipt['selected_epochs'],device='mps' if kind in ('TCN','CNN') and torch.backends.mps.is_available() else 'cpu');z,pred,qraw=neural_predict(data,state,np.r_[index,query],device='mps' if kind in ('TCN','CNN') and torch.backends.mps.is_available() else 'cpu');iz,qz=z[:len(index)],z[len(index):];save(kind+'-direct',pred[len(index):],qraw[len(index):]);pp,qq,ss,nr=empirical(data,index,query,iz,qz,fold['fit_cutoff']);save(kind+'-knn',pp,qq,ss);allneighbors.extend([dict(method=kind+'-knn',fold=name,**r) for r in nr]);del state
+            state,_=neural_fit(data,kind,index,None,out/f'{kind}-refit.pt',epochs=receipt['selected_epochs'],device='mps' if kind in ('TCN','CNN') and torch.backends.mps.is_available() else 'cpu');z,pred,qraw=neural_predict(data,state,np.r_[index,query],device='mps' if kind in ('TCN','CNN') and torch.backends.mps.is_available() else 'cpu');iz,qz=z[:len(index)],z[len(index):];save(kind+'-direct',pred[len(index):],qraw[len(index):]);pp,qq,ss,nr=empirical(data,index,query,iz,qz,fold['fit_cutoff'],support_method=kind);save(kind+'-knn',pp,qq,ss);allneighbors.extend([dict(method=kind+'-knn',fold=name,**r) for r in nr]);del state
             write_json(a.output/'progress.json',dict(completed=ledger,quality_opened=False))
     import pandas as pd
     pd.DataFrame(allneighbors).to_parquet(a.output/'neighbors.parquet',index=False)
     write_json(a.output/'development-complete.json',dict(status='DEVELOPMENT_FITS_COMPLETE_METRICS_PENDING',ledger=ledger,source_hashes=sources,protocol_sha256=sha(a.protocol),resource=resource_guard()))
+    from .btc_pattern_evaluate import write_evaluation_contract
+    write_evaluation_contract(a.output,a.prepared,a.protocol,sorted({r['method'] for r in ledger}),dict(mode='same_run',authorization_sha256=sha(a.authorization)))
     return dict(status='DEVELOPMENT_FITS_COMPLETE_METRICS_PENDING',groups=len(ledger))
