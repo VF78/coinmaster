@@ -1,0 +1,1153 @@
+{
+  "status": "NO_SKILL",
+  "tasks": {
+    "CatBoost": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": -0.008634084407372844,
+            "lower": -0.0412066450369535,
+            "upper": 0.026688546001128955,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.021314588956785414,
+            "lower": -0.04943212933412977,
+            "upper": 0.0093849109296868,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.03255640163842465,
+            "lower": -0.06062593506117667,
+            "upper": -0.006560204699369905,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": true
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0042669566614303685,
+            "lower": 0.0005488645340459659,
+            "upper": 0.008696729546188815,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.001692337473034376,
+            "lower": -0.00254728508823177,
+            "upper": 0.006613979436875879,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.0006029815772697613,
+            "lower": -0.004733716795566856,
+            "upper": 0.006044483235952937,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0037343838341361013,
+            "lower": -0.0037455715601047374,
+            "upper": 0.012509628816530338,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0016414695963295695,
+            "lower": -0.009103766896727445,
+            "upper": 0.006175617992976522,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0011658031170044816,
+            "lower": -0.007333829192204619,
+            "upper": 0.006043835702439609,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        }
+      }
+    },
+    "TCN-knn": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0509663993654028,
+            "lower": 0.009204808419969993,
+            "upper": 0.0918925812079498,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.05960048377277565,
+            "lower": 0.0050894924380012925,
+            "upper": 0.105140932305803,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.038285894815990235,
+            "lower": -0.00576117680687692,
+            "upper": 0.07857432403910986,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.027044082134350993,
+            "lower": -0.0199675398097142,
+            "upper": 0.0718722067771662,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.006068224376811037,
+            "lower": 0.0024750386806903593,
+            "upper": 0.009630713902630933,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0018012677153806684,
+            "lower": -0.003792717191913917,
+            "upper": 0.006996972872331338,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.0034936051884150434,
+            "lower": 2.4390832997315404e-05,
+            "upper": 0.006901923501896952,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.00240424929265043,
+            "lower": -0.0037158013215242923,
+            "upper": 0.008719370823866751,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.008118084561031738,
+            "lower": -0.0014288425498137985,
+            "upper": 0.01750203023420173,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.004383700726895635,
+            "lower": -0.004788358027558031,
+            "upper": 0.013491428387227883,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.002742231130566066,
+            "lower": -0.006310820311856223,
+            "upper": 0.012210133340404977,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.003217897609891153,
+            "lower": -0.006924798858854439,
+            "upper": 0.012950243615595398,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      }
+    },
+    "numeric-knn": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.01268050454941257,
+            "lower": 0.0012814262946451668,
+            "upper": 0.02421681153704762,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.021314588956785414,
+            "lower": -0.009384910929686806,
+            "upper": 0.04943212933412977,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.011241812681639242,
+            "lower": -0.036566064887969846,
+            "upper": 0.011845277354010773,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0025746191883959935,
+            "lower": 3.129871935314311e-05,
+            "upper": 0.004860020094435893,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.001692337473034376,
+            "lower": -0.006613979436875881,
+            "upper": 0.0025472850882317694,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0010893558957646144,
+            "lower": -0.005189953848631783,
+            "upper": 0.0037137810753624617,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.00537585343046567,
+            "lower": 0.0017983333890837494,
+            "upper": 0.009013662514834514,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0016414695963295695,
+            "lower": -0.006175617992976526,
+            "upper": 0.009103766896727443,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.00047566647932508773,
+            "lower": -0.004056315961839541,
+            "upper": 0.0053517534969116775,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        }
+      }
+    },
+    "Kronos-direct": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.07928677799126378,
+            "lower": 0.033503155147212464,
+            "upper": 0.12531275764067998,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.08792086239863661,
+            "lower": 0.034745592076919844,
+            "upper": 0.13092025380024255,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.06660627344185119,
+            "lower": 0.02012716850627046,
+            "upper": 0.11100545270532099,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.055364460760211946,
+            "lower": 0.00886934995135329,
+            "upper": 0.10256649304648953,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.018968870763325076,
+            "lower": 0.011691183180715027,
+            "upper": 0.025821490654077607,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.014701914101894706,
+            "lower": 0.005575515054770781,
+            "upper": 0.022879204187747814,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.016394251574929086,
+            "lower": 0.00849028754702105,
+            "upper": 0.023889218274318346,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.015304895679164467,
+            "lower": 0.005725824679606119,
+            "upper": 0.0245602991907778,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.025922561305995642,
+            "lower": 0.012519496111147378,
+            "upper": 0.040175805812139684,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.02218817747185954,
+            "lower": 0.007096064521349661,
+            "upper": 0.038035673707471296,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.020546707875529976,
+            "lower": 0.007039065581857025,
+            "upper": 0.03484025369478247,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.02102237435485506,
+            "lower": 0.005285406326629319,
+            "upper": 0.037897824546305935,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      }
+    },
+    "CNN-knn": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.011673523726390033,
+            "lower": -0.021094115780295217,
+            "upper": 0.04882515446316661,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.020307608133762877,
+            "lower": -0.006260388137471006,
+            "upper": 0.04490574205383486,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0010069808230225344,
+            "lower": -0.030546037032116724,
+            "upper": 0.03352496024281264,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.012248793504661777,
+            "lower": -0.02990711778294926,
+            "upper": 0.005666461226176438,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0013046135132054062,
+            "lower": -0.0049342062388376086,
+            "upper": 0.007815791266679062,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.0029623431482249636,
+            "lower": -0.009462236701584612,
+            "upper": 0.004400521441009565,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0012700056751905873,
+            "lower": -0.008105425594472172,
+            "upper": 0.004931366240324702,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0023593615709552014,
+            "lower": -0.006697148764493487,
+            "upper": 0.002139851351993577,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.005488027300105623,
+            "lower": 0.0005595170065913585,
+            "upper": 0.01042544820243496,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0017536434659695221,
+            "lower": -0.004736640460472363,
+            "upper": 0.007719691684201062,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.00011217386963995305,
+            "lower": -0.004060238502076849,
+            "upper": 0.004168077830923459,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.0005878403489650404,
+            "lower": -0.003140708817251601,
+            "upper": 0.004084617414368055,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        }
+      }
+    },
+    "CNN-direct": {
+      "D": {
+        "status": "WEAK_EVIDENCE",
+        "comparisons": {
+          "prior": {
+            "mean": -0.0037596616685057127,
+            "lower": -0.044147462137628664,
+            "upper": 0.03768926340741831,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.004874422738867118,
+            "lower": -0.017884402508025813,
+            "upper": 0.02963169963567393,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.01644016621791829,
+            "lower": -0.05078383003716893,
+            "upper": 0.021188690975439805,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.027681978899557532,
+            "lower": -0.056009109632047124,
+            "upper": -0.0011911062335808744,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": true
+          }
+        }
+      },
+      "Q-long": {
+        "status": "WEAK_EVIDENCE",
+        "comparisons": {
+          "prior": {
+            "mean": -0.001977701316898205,
+            "lower": -0.004953004448505617,
+            "upper": 0.0010214703081863217,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.006244657978328574,
+            "lower": -0.01058556263383645,
+            "upper": -0.0018662881229399633,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          },
+          "numeric-knn": {
+            "mean": -0.004552320505294198,
+            "lower": -0.00854798244227221,
+            "upper": -0.0007667739900599654,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          },
+          "random-context": {
+            "mean": -0.005641676401058813,
+            "lower": -0.00876218003478004,
+            "upper": -0.002630041162497631,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          }
+        }
+      },
+      "Q-short": {
+        "status": "WEAK_EVIDENCE",
+        "comparisons": {
+          "prior": {
+            "mean": -0.00012173733080007522,
+            "lower": -0.006359523924922019,
+            "upper": 0.006186435541345074,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.003856121164936176,
+            "lower": -0.010170393251839797,
+            "upper": 0.0019749321707606704,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.005497590761265746,
+            "lower": -0.011309639835557203,
+            "upper": -0.00042847442371886927,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          },
+          "random-context": {
+            "mean": -0.005021924281940658,
+            "lower": -0.009566970890512906,
+            "upper": -0.0006014035174456548,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          }
+        }
+      }
+    },
+    "random-context": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.02392231723105181,
+            "lower": -0.0014388543302206922,
+            "upper": 0.05184328529218291,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.03255640163842465,
+            "lower": 0.006560204699369903,
+            "upper": 0.06062593506117666,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.011241812681639242,
+            "lower": -0.011845277354010779,
+            "upper": 0.03656606488796984,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0036639750841606085,
+            "lower": -0.0007711349060973585,
+            "upper": 0.008053945059767309,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.0006029815772697613,
+            "lower": -0.006044483235952938,
+            "upper": 0.004733716795566854,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.0010893558957646144,
+            "lower": -0.0037137810753624617,
+            "upper": 0.005189953848631783,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.004900186951140584,
+            "lower": 6.502186237137911e-05,
+            "upper": 0.009752049027969069,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.0011658031170044816,
+            "lower": -0.006043835702439609,
+            "upper": 0.007333829192204618,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.00047566647932508773,
+            "lower": -0.005351753496911678,
+            "upper": 0.004056315961839541,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        }
+      }
+    },
+    "TCN-direct": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0072094873434234395,
+            "lower": -0.01597319502034537,
+            "upper": 0.027661193790625933,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.015843571750796277,
+            "lower": -0.03145348789546635,
+            "upper": 0.05704212850795227,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.005471017205989135,
+            "lower": -0.033999514567415276,
+            "upper": 0.01805904192048235,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.016712829887628376,
+            "lower": -0.05991280416283726,
+            "upper": 0.020691300572561695,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          }
+        }
+      },
+      "Q-long": {
+        "status": "WEAK_EVIDENCE",
+        "comparisons": {
+          "prior": {
+            "mean": -0.0006958686898066868,
+            "lower": -0.0025668246765690956,
+            "upper": 0.0013856930263107033,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.004962825351237055,
+            "lower": -0.009778360621751152,
+            "upper": -0.0005897978985815834,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          },
+          "numeric-knn": {
+            "mean": -0.00327048787820268,
+            "lower": -0.006056147164864698,
+            "upper": -0.0004387280162919458,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": true
+          },
+          "random-context": {
+            "mean": -0.004359843773967295,
+            "lower": -0.010270445193111941,
+            "upper": 0.0015389359972584548,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.0030043923192845756,
+            "lower": -0.002117970610894167,
+            "upper": 0.007452243300180826,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": -0.0007299915148515258,
+            "lower": -0.009249436784377603,
+            "upper": 0.006471735104336825,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": -0.0023714611111810948,
+            "lower": -0.007769370504389114,
+            "upper": 0.002719437474932759,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 3,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": -0.0018957946318560075,
+            "lower": -0.009215747049426628,
+            "upper": 0.004630040939573379,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 2,
+            "PASS": false
+          }
+        }
+      }
+    },
+    "Kronos-knn": {
+      "D": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.16498839774741586,
+            "lower": 0.10080182628795088,
+            "upper": 0.22886198636418914,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.1736224821547887,
+            "lower": 0.0992443935953473,
+            "upper": 0.2329088399351025,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.1523078931980033,
+            "lower": 0.08745182862396898,
+            "upper": 0.21302616831699395,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.14106608051636405,
+            "lower": 0.07566141043356514,
+            "upper": 0.20320662473278747,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      },
+      "Q-long": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.023275923195289643,
+            "lower": 0.011468479372712595,
+            "upper": 0.03465378902024248,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.019008966533859268,
+            "lower": 0.006357230010420212,
+            "upper": 0.030491360550041206,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 1,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.020701304006893646,
+            "lower": 0.008046285334281422,
+            "upper": 0.031628882930105934,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.019611948111129027,
+            "lower": 0.00825955216190119,
+            "upper": 0.02973499161118735,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      },
+      "Q-short": {
+        "status": "NO_SKILL",
+        "comparisons": {
+          "prior": {
+            "mean": 0.02664232499662451,
+            "lower": 0.012616703126888113,
+            "upper": 0.04184446087363412,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "CatBoost": {
+            "mean": 0.022907941162488406,
+            "lower": 0.011713718964623617,
+            "upper": 0.03429323988503373,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "numeric-knn": {
+            "mean": 0.021266471566158834,
+            "lower": 0.008612478432190927,
+            "upper": 0.03463639172526535,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          },
+          "random-context": {
+            "mean": 0.021742138045483927,
+            "lower": 0.00839071684821095,
+            "upper": 0.03538161555641899,
+            "blocks": 29,
+            "rows": 8496,
+            "draws": 1000,
+            "fold_wins": 0,
+            "PASS": false
+          }
+        }
+      }
+    }
+  },
+  "shortlist": [],
+  "CHECK_opened": false,
+  "SOL": "BLOCKED_PENDING_BTC_PATH_AND_POLICY",
+  "policy": "BLOCKED_NO_PATH_SKILL",
+  "economic_goal": "TARGET_NOT_MET"
+}

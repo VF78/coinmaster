@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-21T20:30:19.321618+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "readback": "PASS",
+  "BP-02": "BASELINE_COMPLETE",
+  "BP-03": "BASELINE_COMPLETE",
+  "baseline_forecast": "NO_PASS_WEAK_CNN_DIRECT",
+  "CHECK_opened": false,
+  "adaptation": "TWO_DIAGNOSED_VARIANTS_PREPARATION",
+  "native_runs": 0
+}

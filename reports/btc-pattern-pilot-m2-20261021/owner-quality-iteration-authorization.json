@@ -13,5 +13,30 @@
   ],
   "compute": "Use measured MPS/CPU selection, one heavy process; account remaining original 6h BTC planning before adaptations/stability/final. No unlimited repeats authorized.",
   "production_changes": false,
-  "real_orders": false
+  "real_orders": false,
+  "diagnosed_development_followups": [
+    {
+      "id": "V1_METRIC_OFF",
+      "change": "Metric loss weight0 only, expanding dates unchanged",
+      "models": [
+        "TCN",
+        "CNN"
+      ],
+      "reason": "target entropy about98% maximum; low effective embedding rank and failedretrieval vsmodestdirect signal",
+      "other_rules": "same heads/split/data/seed/optimizer/batches/earlystop; sharedfrozencontrols reused"
+    },
+    {
+      "id": "V2_RECENT180",
+      "change": "180closedday learned history andindex/prior; originalmetric.1",
+      "models": [
+        "TCN",
+        "CNN"
+      ],
+      "reason": "observed Dclass/Qdistribution shift andpoorKronosfit-to-outergeneralization",
+      "window_contract": "start=max(DEVELOPMENTstart,fullfitcutoff\u2212180days); ESsubfit sharesstart; inner/refit maturitypurges unchanged",
+      "controls": "new same-window prior/numeric/random/CatBoost AND originalexpandingcontrols on samequery IDs"
+    }
+  ],
+  "admission_status": "IMPLEMENTATION_ONLY; exact source/resource review+rootGO before any additional fits",
+  "not_authorized": "No combined\u03bb+windowchange, noKronosrefits, no additional architecture, no CHECK/privatepilot changes"
 }

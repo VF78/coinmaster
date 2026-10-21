@@ -1,0 +1,11 @@
+{
+  "status": "FOURH_CONTROL_COMPLETE",
+  "family": "CatBoost",
+  "auxiliary_only": true,
+  "main_recipe_unchanged": true,
+  "independent_CHECK_promotion": false,
+  "CB_head_fits": 18,
+  "neural_joint_fits": 0,
+  "scaler_fits": 0,
+  "source_sha256": "c605df3f0db1def39e071018c668a2353ee6ee41f8bca2306928b5fa2388319b"
+}

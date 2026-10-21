@@ -1,0 +1,10 @@
+fold,model,variant,task,loss
+F1,CatBoost,4h-direct,D,0.9982036528605942
+F1,CatBoost,4h-direct,Q-long,0.19646312943323085
+F1,CatBoost,4h-direct,Q-short,0.2534524625422175
+F2,CatBoost,4h-direct,D,1.1447237125251388
+F2,CatBoost,4h-direct,Q-long,0.2223123125273762
+F2,CatBoost,4h-direct,Q-short,0.2716170521238229
+F3,CatBoost,4h-direct,D,1.103919533860824
+F3,CatBoost,4h-direct,Q-long,0.2117248686243253
+F3,CatBoost,4h-direct,Q-short,0.2592734443102812
