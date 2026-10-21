@@ -1,0 +1,244 @@
+{
+  "schema": "btc-pattern.protocol.v1",
+  "frozen_at": "2026-10-21T19:31:55.887887+00:00",
+  "eval_end": "2026-10-21T00:00:00+00:00",
+  "development": [
+    "2024-06-01",
+    "2026-05-01"
+  ],
+  "check": [
+    "2026-05-01",
+    "2026-10-21T00:00:00+00:00"
+  ],
+  "historical_check_previously_exposed": true,
+  "horizons": [
+    72,
+    24
+  ],
+  "entry": "origin+60s minute OPEN; first path close at entry+1min",
+  "label_end": "origin+60s+72h",
+  "folds": [
+    {
+      "name": "F1",
+      "fit": [
+        "2024-06-01",
+        "2025-01-01"
+      ],
+      "outer": [
+        "2025-01-01",
+        "2025-05-01"
+      ],
+      "inner_early_stop_days": 28
+    },
+    {
+      "name": "F2",
+      "fit": [
+        "2024-06-01",
+        "2025-07-01"
+      ],
+      "outer": [
+        "2025-07-01",
+        "2025-11-01"
+      ],
+      "inner_early_stop_days": 28
+    },
+    {
+      "name": "F3",
+      "fit": [
+        "2024-06-01",
+        "2026-01-01"
+      ],
+      "outer": [
+        "2026-01-01",
+        "2026-05-01"
+      ],
+      "inner_early_stop_days": 28
+    }
+  ],
+  "features": {
+    "timeframes_hours": [
+      4,
+      1
+    ],
+    "bars": 64,
+    "fields": [
+      "logC/Cprev",
+      "logC/O",
+      "logH/maxOC",
+      "logminOC/L",
+      "logH/L",
+      "log1pV-minus-previous20mean"
+    ],
+    "price_scaling": "causal hourly168 std(ddof1)*sqrt(TF)",
+    "context": [
+      "return1/4/24/168",
+      "vol24/168",
+      "ATR14/price",
+      "range/price",
+      "relativevolume20",
+      "closed4h_age",
+      "sigma24/72"
+    ]
+  },
+  "targets": {
+    "direction": "FIRST+sigma72/FIRST-sigma72/NONE; ambiguous excluded only from D",
+    "quantiles": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "mfe": "side MFE BEFORE first 1sigma72 stop; conservative lower; upper sensitivity",
+    "signature": "6 terminal logreturns 1/4/12/24/48/72h +6 firsttouch +/-0.5/1/2sigma72",
+    "signature_scales": "fit-only robust IQR on returns; touch fixed; zero scales floor1e-6",
+    "q_loss_scales": "fit-only median absolute deviation lower MFE, floor1e-6",
+    "tau_y": "median nonzero outcome distances on fixed seed7 train-only 8192pairs",
+    "entry_gap": "separate log(entry/reference)/sigma24 and sigma72; never X"
+  },
+  "models": {
+    "catboost": {
+      "depth": 4,
+      "learning_rate": 0.03,
+      "iterations": 400,
+      "l2_leaf_reg": 10,
+      "early_stop": 40,
+      "seed": 7,
+      "task_type": "CPU",
+      "threads": 4
+    },
+    "TCN": {
+      "branches": 2,
+      "blocks": 6,
+      "width": 32,
+      "kernel": 3,
+      "dilations": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ],
+      "dropout": 0.1,
+      "embedding": 64
+    },
+    "CNN": {
+      "channels": [
+        32,
+        64,
+        128
+      ],
+      "stride": 2,
+      "groupnorm": 8,
+      "canvas": [
+        224,
+        224,
+        3
+      ]
+    },
+    "Kronos": {
+      "frozen": true,
+      "repo_commit": "67b630e67f6a18c9e9be918d9b4337c960db1e9a",
+      "model_revision": "ac5c409a313c4eadd1ca78201322f5cadb9c34ab",
+      "tokenizer_revision": "9ef143b98ee3c2488eebd85404e0c215c112b46a",
+      "cache": "separate64x4h and64x1h last context512 each; no trajectory generations",
+      "amount": "volume*OHLCmean proxy"
+    },
+    "neural": {
+      "adamw_lr": 0.001,
+      "weight_decay": 0.0001,
+      "max_epochs": 30,
+      "patience": 5,
+      "batch": 128,
+      "cnn_batch": 64,
+      "gradient_clip": 1,
+      "seed": 7,
+      "metric_weight": 0.1,
+      "cosine_temperature": 0.1
+    }
+  },
+  "selection": {
+    "primary_losses": [
+      "D_logloss",
+      "Qlong_meanpinball",
+      "Qshort_meanpinball"
+    ],
+    "pass_rule": "paired loss delta prior mean<0; >=2of3folds<0; blockCIupper<0",
+    "complex_rule": "report + require added task loss against CatBoost; retrieval additionally against numeric-kNN and context-matched random; same IDs",
+    "bootstrap": {
+      "block_days": 14,
+      "draws": 1000,
+      "seed": 7
+    },
+    "allow_exit_without_direction": true,
+    "check_max_candidates": 2,
+    "calibration": false,
+    "seeds_if_positive": [
+      17,
+      27
+    ],
+    "final_seed": 7,
+    "final_epochs": "fold medians separately per neural model / CatBoosthead",
+    "shortlist": "per-head retain PASS including EXIT-only; max2 by largest absolute paired prior loss improvement among passed heads; method lexical tie; complex direct requires CatBoostCIpass; learned retrieval additionally numeric/randomCIpass; numeric baseline requirespriorPASS",
+    "weak_positive": "No weak-only CHECK candidate or SOL; one policy screen may be added only by separately pinned implementation before reading CHECK. Current core only PASS shortlist."
+  },
+  "retrieval": {
+    "k": 32,
+    "min_support": 16,
+    "prior_weight": 8,
+    "separation_hours": 72,
+    "exclusion": "label_end<=fit cutoff AND label_end<=earliest query input start; filter BEFORE rank",
+    "low_support": "prior+LOW_SUPPORT no entry",
+    "random_context": "fit/refit median volatility168h high/low + sign return168h; seed7 random rank within matching bins; same querywindow+72hseparation; no outcomes in matching"
+  },
+  "resource": {
+    "cpu_threads": 4,
+    "num_workers": 0,
+    "heavy_processes": 1,
+    "btc_planning_seconds": 21600,
+    "mps_high_watermark": "enabled default",
+    "optional_DINO": "DROP_RESOURCE_ONLY: not installed / reserve main TCN+Kronos+CNN; decision before any B1 quality",
+    "optional_15m": "only positive main BTC; before expansion resource gate",
+    "no_production": true,
+    "owner_resource_steering": "maximize measured Mac resource use; trainingMPS best, frozenCPU4 retained; no extra threadbenchmark needed",
+    "stability_continuation": "conditional seeded retries/final require observed selectedepochs/runtime forecast+20percent within remaining21600; otherwise INCOMPLETE_RESOURCE_STABILITY noCHECK"
+  },
+  "gates": {
+    "training": "root exact protocol/source/resource GO required",
+    "SOL": "BTC path+policy DEVELOPMENT and CHECK pass",
+    "P1": "native target/stop/horizon/lifecycle equality required",
+    "P2": "joint empirical paths, fixed menu/costs/sizing; no direct EV inferred from 3quantiles"
+  },
+  "policy": {
+    "horizons": [
+      24,
+      72
+    ],
+    "SL": [
+      0.75,
+      1,
+      1.5
+    ],
+    "TP_quantiles": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "shares": [
+      0.2125,
+      0.2125,
+      0.575
+    ],
+    "margin_candidates": [
+      0,
+      0.5,
+      1
+    ],
+    "one_position": true,
+    "threshold_selection": "OOF mean net profit/equity max subject eachfold DD<=50%; tie lowerDD",
+    "fallback_sizing": "1x equity diagnostic only if S0 sizing isolation unavailable"
+  },
+  "owner_task_sha256": "21447333d5d257fcb6d43dd492617e1f5062be234def632ea68a0b57f1015592",
+  "source_base": "0bd7351897a9854c144817fdfca6c548e7984673",
+  "requested_eval_end": "2026-10-21T19:00:00+00:00",
+  "eval_end_reason": "last confirmed immutable minute end; no current-tail fetch"
+}

@@ -1,0 +1,17 @@
+{
+  "status": "GO",
+  "scope": "ONLY seed7 fixed development core controls/TCN/Kronos/CNN; 3foldES+refit. No final/stability/CHECK/policy/native/SOL admission.",
+  "reviewer": "btc_pattern_causality_review",
+  "sources": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_smoke.py": "af303c31d50ed5250043a9a6763d9f2e8bf5f6e43e8716afe0371c23bd9178ad",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_train.py": "3e6f405100400aac8b39dbe10d253b1c88c55b7e5636f7a645b6745668c56c0a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_run.py": "09e359f740a969584f6d0d159015325068775a3ffcd42e0e352e644e365dc08d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_evaluate.py": "fd59408fe8f1f54b55d0105090f27dc29bfaf54d2640679437e91e41d7f30aca",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_models.py": "bbe7cdca07c289fad98de98e3c8a0fec422685e150c0d60079988a578106c772",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_data.py": "d6ad604b95195d8c61e07f01888bab5b77ae57af1b1582e834c5a2f444ebb311"
+  },
+  "protocol_sha256": "52deb5b1ae03b0a225364ed70d38ac478dc39c9868a0e308cc32e98f579cbf2c",
+  "tests_sha256": "57c273ca5fd6964d5c2d62bb875a7db9e5087aab22e984e0ec3024206f484590",
+  "new_compute": false,
+  "critical_blockers": []
+}

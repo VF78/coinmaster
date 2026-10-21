@@ -1,0 +1,33 @@
+{
+  "status": "CORE_RESOURCE_ADMISSIBLE_CONDITIONAL_STABILITY_SEPARATE_GATE",
+  "quality_accessed": false,
+  "planning_ceiling_seconds": 21600,
+  "total_fold_fit_rows": 54576,
+  "maxepochs": 30,
+  "core_training_raw_seconds": {
+    "TCN": 136.82480515446514,
+    "CNN": 4329.869033612777,
+    "KronosProjection": 4.113983230199665
+  },
+  "optimizer_metric_and_data_overhead_factor": 2,
+  "render_and_retrieval_index_reserve_seconds": 1800,
+  "frozen_cache_seconds": 232.53333333333333,
+  "CatBoost_and_final_reserve_seconds": 1200,
+  "core_total_seconds": 12174.148977328216,
+  "conditional_two_seed_CNN_worst_seconds": 18039.476134451106,
+  "total_with_worst_stability_seconds": 30213.62511177932,
+  "conditional_rule": "Before seed17/27, final/CHECK require observed selectedepochs+runtime projection incl20percent within remaining21600; otherwise INCOMPLETE_RESOURCE_STABILITY no CHECK. No arbitrary epoch changes.",
+  "devices": {
+    "TCN": "mps",
+    "CNN": "mps",
+    "KronosFrozen": "cpu",
+    "KronosProjection": "cpu",
+    "CatBoost": "cpu4"
+  },
+  "MPS_peak": "UNKNOWN exact; sampled current allocated/driver recorded in smoke, not falsely called peak",
+  "rss_sampled_peak_bytes": 1239252992,
+  "RSS_abort_bytes": 6442450944,
+  "DINO": "DROP_RESOURCE_ONLY before quality; main priority; no download",
+  "smoke_sha256": "6e4198602260a39a2e271a966569e03c94bcc8a8006700aa23aa5b231ea7f3c9",
+  "profile_sha256": "4e0225753171c05194f1d80967d05236224b7701304c262331cba6aa18bcfee0"
+}

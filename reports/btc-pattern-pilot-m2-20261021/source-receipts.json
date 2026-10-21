@@ -1,0 +1,72 @@
+{
+  "author_task_sha256": "21447333d5d257fcb6d43dd492617e1f5062be234def632ea68a0b57f1015592",
+  "data_code_sha256": "d6ad604b95195d8c61e07f01888bab5b77ae57af1b1582e834c5a2f444ebb311",
+  "public_pages": 156,
+  "public_rows": 155520,
+  "old_minute_sha256": "486a22880a5c7b7e582ce98bedec0aabb02671f4858f73e6178b7c60c895fa66",
+  "sources": [
+    {
+      "url": "https://docs.pytorch.org/docs/2.14/notes/mps.html",
+      "note": "Installed2.14.1 built+available host verified; synchronize timing; no fallback"
+    },
+    {
+      "url": "https://docs.pytorch.org/docs/stable/mps_environment_variables.html",
+      "note": "default enabled high watermark retained; 0 forbidden"
+    },
+    {
+      "url": "https://github.com/shiyu-coder/Kronos/blob/67b630e67f6a18c9e9be918d9b4337c960db1e9a/model/kronos.py",
+      "note": "local pinned copy encode(half=True) twoIDstreams;decode_s1 returns logits+512context; window normalize+clip5; timestamp minute/hour/weekday/day/month"
+    },
+    {
+      "url": "https://huggingface.co/NeoQuasar/Kronos-small",
+      "note": "checkpoint ac5c409a313c4eadd1ca78201322f5cadb9c34ab;author reported pretraining throughJune2024, not independentlyaudited"
+    },
+    {
+      "url": "https://huggingface.co/NeoQuasar/Kronos-Tokenizer-base",
+      "note": "checkpoint9ef143b98ee3c2488eebd85404e0c215c112b46a;not2k"
+    },
+    {
+      "url": "https://arxiv.org/html/2602.10711v2",
+      "note": "future-aligned loss adapted to per-episode barrier outcomes; no imported cross-sectional performance claim"
+    },
+    {
+      "url": "https://github.com/locuslab/TCN",
+      "note": "causal residual dilatedConv1d architecture reference, no performance claim"
+    },
+    {
+      "url": "https://catboost.ai/docs/en/concepts/loss-functions-regression",
+      "note": "MultiQuantile alpha.2,.5,.8 CPU controls"
+    }
+  ],
+  "weights": {
+    "small/config.json": {
+      "sha256": "5e0f6a605d5f81b5c9b559fe5cf716a1acb041c744e6f41bd05b097b7a685396",
+      "bytes": 228,
+      "revision": "ac5c409a313c4eadd1ca78201322f5cadb9c34ab",
+      "repo": "NeoQuasar/Kronos-small",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-small/resolve/ac5c409a313c4eadd1ca78201322f5cadb9c34ab/config.json"
+    },
+    "small/model.safetensors": {
+      "sha256": "b082dfcbd8e8c142a725c8bbb99781802f38fec81210e13479effb32b3c3e020",
+      "bytes": 98980656,
+      "revision": "ac5c409a313c4eadd1ca78201322f5cadb9c34ab",
+      "repo": "NeoQuasar/Kronos-small",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-small/resolve/ac5c409a313c4eadd1ca78201322f5cadb9c34ab/model.safetensors"
+    },
+    "tokenizer/config.json": {
+      "sha256": "2366e7ccfec76cbc19cf3c4c1b9c5d901be336ca1e83f2d2292c9bff381b77a2",
+      "bytes": 301,
+      "revision": "9ef143b98ee3c2488eebd85404e0c215c112b46a",
+      "repo": "NeoQuasar/Kronos-Tokenizer-base",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-Tokenizer-base/resolve/9ef143b98ee3c2488eebd85404e0c215c112b46a/config.json"
+    },
+    "tokenizer/model.safetensors": {
+      "sha256": "59d85f6af76a2c3b8240ea06cb21db4213b4eeca053f246b23e29cf832fc6bee",
+      "bytes": 15842368,
+      "revision": "9ef143b98ee3c2488eebd85404e0c215c112b46a",
+      "repo": "NeoQuasar/Kronos-Tokenizer-base",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-Tokenizer-base/resolve/9ef143b98ee3c2488eebd85404e0c215c112b46a/model.safetensors"
+    },
+    "download_wall_seconds": 35.94374308409169
+  }
+}

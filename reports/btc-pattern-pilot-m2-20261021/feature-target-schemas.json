@@ -1,0 +1,41 @@
+{
+  "features": {
+    "timeframes_hours": [
+      4,
+      1
+    ],
+    "bars": 64,
+    "fields": [
+      "logC/Cprev",
+      "logC/O",
+      "logH/maxOC",
+      "logminOC/L",
+      "logH/L",
+      "log1pV-minus-previous20mean"
+    ],
+    "price_scaling": "causal hourly168 std(ddof1)*sqrt(TF)",
+    "context": [
+      "return1/4/24/168",
+      "vol24/168",
+      "ATR14/price",
+      "range/price",
+      "relativevolume20",
+      "closed4h_age",
+      "sigma24/72"
+    ]
+  },
+  "targets": {
+    "direction": "FIRST+sigma72/FIRST-sigma72/NONE; ambiguous excluded only from D",
+    "quantiles": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "mfe": "side MFE BEFORE first 1sigma72 stop; conservative lower; upper sensitivity",
+    "signature": "6 terminal logreturns 1/4/12/24/48/72h +6 firsttouch +/-0.5/1/2sigma72",
+    "signature_scales": "fit-only robust IQR on returns; touch fixed; zero scales floor1e-6",
+    "q_loss_scales": "fit-only median absolute deviation lower MFE, floor1e-6",
+    "tau_y": "median nonzero outcome distances on fixed seed7 train-only 8192pairs",
+    "entry_gap": "separate log(entry/reference)/sigma24 and sigma72; never X"
+  }
+}

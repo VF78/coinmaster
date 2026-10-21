@@ -1,0 +1,12 @@
+{
+  "status": "PRETRAIN_PREQUALITY",
+  "learned_fits": 0,
+  "quality_opened": false,
+  "decisions": [
+    {
+      "component": "DINO",
+      "decision": "DROP_RESOURCE_ONLY",
+      "basis": "not installed; preserve main budget; before B1 quality"
+    }
+  ]
+}
