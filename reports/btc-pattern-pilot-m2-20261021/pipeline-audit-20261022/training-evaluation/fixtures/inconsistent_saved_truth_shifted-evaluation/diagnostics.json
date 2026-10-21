@@ -1,0 +1,557 @@
+[
+  {
+    "fold": "F1",
+    "method": "CatBoost",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F1",
+    "method": "numeric-knn",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F1",
+    "method": "prior",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F1",
+    "method": "random-context",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F1",
+    "method": "TCN-direct",
+    "brier": 0.0006000000000000007,
+    "AUROC": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "accuracy": 1.0,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.0,
+      0.0
+    ],
+    "upper_sensitivity_pinball": [
+      0.0,
+      0.0
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F2",
+    "method": "CatBoost",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F2",
+    "method": "numeric-knn",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F2",
+    "method": "prior",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F2",
+    "method": "random-context",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F2",
+    "method": "TCN-direct",
+    "brier": 0.0006000000000000007,
+    "AUROC": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "accuracy": 1.0,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.0,
+      0.0
+    ],
+    "upper_sensitivity_pinball": [
+      0.0,
+      0.0
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F3",
+    "method": "CatBoost",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F3",
+    "method": "numeric-knn",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F3",
+    "method": "prior",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F3",
+    "method": "random-context",
+    "brier": 0.6666666666666669,
+    "AUROC": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accuracy": 0.3333333333333333,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.5,
+      0.5
+    ],
+    "upper_sensitivity_pinball": [
+      0.5,
+      0.5
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "fold": "F3",
+    "method": "TCN-direct",
+    "brier": 0.0006000000000000007,
+    "AUROC": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "accuracy": 1.0,
+    "ambiguous_D_count": 0,
+    "Q_zero_fraction": [
+      0.0,
+      0.0
+    ],
+    "raw_crossing_fraction": 0.0,
+    "raw_pinball": [
+      0.0,
+      0.0
+    ],
+    "upper_sensitivity_pinball": [
+      0.0,
+      0.0
+    ],
+    "coverage": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ]
+  }
+]

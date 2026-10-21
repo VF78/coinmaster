@@ -1,0 +1,162 @@
+{
+  "source": "reports/btc-pattern-pilot-m2-20261021/neighbors.parquet",
+  "source_rows": 1332029,
+  "strict_extra_warmup_hours": 80,
+  "counts": [
+    {
+      "fold": "F1",
+      "method": "CNN-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 182,
+      "queries": 2808,
+      "affected_queries": 173,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F1",
+      "method": "Kronos-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 186,
+      "queries": 2808,
+      "affected_queries": 184,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F1",
+      "method": "TCN-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 148,
+      "queries": 2808,
+      "affected_queries": 148,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": true
+    },
+    {
+      "fold": "F1",
+      "method": "numeric-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 83,
+      "queries": 2808,
+      "affected_queries": 83,
+      "max_overlap_hours": 75.01666666666667,
+      "uses_engineered_80h_dependency": true
+    },
+    {
+      "fold": "F1",
+      "method": "random-context",
+      "neighbor_rows": 62525,
+      "affected_neighbor_rows": 118,
+      "queries": 2808,
+      "affected_queries": 118,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F2",
+      "method": "CNN-knn",
+      "neighbor_rows": 92160,
+      "affected_neighbor_rows": 238,
+      "queries": 2880,
+      "affected_queries": 228,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F2",
+      "method": "Kronos-knn",
+      "neighbor_rows": 92160,
+      "affected_neighbor_rows": 148,
+      "queries": 2880,
+      "affected_queries": 147,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F2",
+      "method": "TCN-knn",
+      "neighbor_rows": 92160,
+      "affected_neighbor_rows": 114,
+      "queries": 2880,
+      "affected_queries": 114,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": true
+    },
+    {
+      "fold": "F2",
+      "method": "numeric-knn",
+      "neighbor_rows": 92160,
+      "affected_neighbor_rows": 196,
+      "queries": 2880,
+      "affected_queries": 196,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": true
+    },
+    {
+      "fold": "F2",
+      "method": "random-context",
+      "neighbor_rows": 92160,
+      "affected_neighbor_rows": 163,
+      "queries": 2880,
+      "affected_queries": 163,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F3",
+      "method": "CNN-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 54,
+      "queries": 2808,
+      "affected_queries": 52,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F3",
+      "method": "Kronos-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 31,
+      "queries": 2808,
+      "affected_queries": 31,
+      "max_overlap_hours": 72.01666666666667,
+      "uses_engineered_80h_dependency": false
+    },
+    {
+      "fold": "F3",
+      "method": "TCN-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 14,
+      "queries": 2808,
+      "affected_queries": 14,
+      "max_overlap_hours": 77.01666666666667,
+      "uses_engineered_80h_dependency": true
+    },
+    {
+      "fold": "F3",
+      "method": "numeric-knn",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 155,
+      "queries": 2808,
+      "affected_queries": 155,
+      "max_overlap_hours": 76.01666666666667,
+      "uses_engineered_80h_dependency": true
+    },
+    {
+      "fold": "F3",
+      "method": "random-context",
+      "neighbor_rows": 89856,
+      "affected_neighbor_rows": 83,
+      "queries": 2808,
+      "affected_queries": 83,
+      "max_overlap_hours": 79.01666666666667,
+      "uses_engineered_80h_dependency": false
+    }
+  ],
+  "execution": {
+    "wall_seconds": 0.2775719999335706,
+    "fits": 0,
+    "market_predictions": 0
+  }
+}

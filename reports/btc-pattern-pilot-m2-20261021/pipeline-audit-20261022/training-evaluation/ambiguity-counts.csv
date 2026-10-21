@@ -1,0 +1,13 @@
+fold,role,N,ambiguous_D
+F1,subfit,4392,0
+F1,early_stop,600,0
+F1,refit,5064,0
+F1,outer,2808,0
+F2,subfit,8736,0
+F2,early_stop,600,0
+F2,refit,9408,0
+F2,outer,2880,0
+F3,subfit,13152,0
+F3,early_stop,600,0
+F3,refit,13824,0
+F3,outer,2808,0

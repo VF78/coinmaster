@@ -1,0 +1,74 @@
+{
+  "scope": "ORACLE LABEL SPACE, NOT CAUSAL FORECAST, NOT TRADEABLE UPPER BOUND; DEVELOPMENT REFIT ONLY",
+  "selection": "128 uniform anchors per fold; all refit peer labels disjoint from anchor label window; stable target-distance ranking or seed7 random; same greedy72h peer spacing; k32",
+  "q_units": "original normalized MFE sigma72; not currency/percent",
+  "summary": [
+    {
+      "fold": "F1",
+      "method": "oracle-signature",
+      "anchors": 128,
+      "pairs": 4096,
+      "D_disagreement": 0.173095703125,
+      "long_absolute_MFE_deviation": 0.3014358894433826,
+      "short_absolute_MFE_deviation": 0.381177383242175,
+      "signature_distance": 0.2824592748656869
+    },
+    {
+      "fold": "F1",
+      "method": "random",
+      "anchors": 128,
+      "pairs": 4096,
+      "D_disagreement": 0.65869140625,
+      "long_absolute_MFE_deviation": 0.747931259451434,
+      "short_absolute_MFE_deviation": 0.8790893910918385,
+      "signature_distance": 0.8233405998907983
+    },
+    {
+      "fold": "F2",
+      "method": "oracle-signature",
+      "anchors": 128,
+      "pairs": 4096,
+      "D_disagreement": 0.06640625,
+      "long_absolute_MFE_deviation": 0.22976386288064532,
+      "short_absolute_MFE_deviation": 0.2957150339789223,
+      "signature_distance": 0.228317562607117
+    },
+    {
+      "fold": "F2",
+      "method": "random",
+      "anchors": 128,
+      "pairs": 4096,
+      "D_disagreement": 0.66162109375,
+      "long_absolute_MFE_deviation": 0.7211824140977114,
+      "short_absolute_MFE_deviation": 0.8866606238298118,
+      "signature_distance": 0.843838800676167
+    },
+    {
+      "fold": "F3",
+      "method": "oracle-signature",
+      "anchors": 128,
+      "pairs": 4096,
+      "D_disagreement": 0.031982421875,
+      "long_absolute_MFE_deviation": 0.21299448088393547,
+      "short_absolute_MFE_deviation": 0.2950817098899279,
+      "signature_distance": 0.19374353194143623
+    },
+    {
+      "fold": "F3",
+      "method": "random",
+      "anchors": 128,
+      "pairs": 4096,
+      "D_disagreement": 0.658935546875,
+      "long_absolute_MFE_deviation": 0.7293380096089095,
+      "short_absolute_MFE_deviation": 0.9423163330648094,
+      "signature_distance": 0.83778570080176
+    }
+  ],
+  "execution": {
+    "wall_seconds": 2.6146733751520514,
+    "fits": 0,
+    "optimizer_steps": 0,
+    "market_predictions": 0,
+    "CHECK_accessed": false
+  }
+}

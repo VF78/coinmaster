@@ -1,0 +1,41 @@
+{
+  "status": "PASS_WHOLE_ARRAY_INVARIANTS",
+  "fits": 0,
+  "new_targets": 0,
+  "new_predictions": 0,
+  "CHECK_scored": false,
+  "CHECK_outcomes_indexed": false,
+  "minutes_N": 1280160,
+  "OHLC_price_values_checked": 5120640,
+  "DEVELOPMENT_mature_N": 16704,
+  "DEVELOPMENT_outer_N": 8496,
+  "outer_ambiguous_D_N": 0,
+  "outer_identity_mismatches_long_short": [
+    0,
+    0
+  ],
+  "checks": {
+    "all_minutes_finite": true,
+    "all_prices_positive": true,
+    "volume_nonnegative": true,
+    "high_ge_open_close": true,
+    "low_le_open_close": true,
+    "high_ge_low": true,
+    "minute_count_matches_manifest": true,
+    "manifest_start_end_UTC_minute_aligned": true,
+    "origin_clock_regular_unique": true,
+    "entry_indices_match_implicit_UTC_clock": true,
+    "DEVELOPMENT_MFE_finite": true,
+    "DEVELOPMENT_signature_finite": true,
+    "DEVELOPMENT_policy_MFE_finite": true,
+    "DEVELOPMENT_MFE_nonnegative": true,
+    "DEVELOPMENT_MFE_lower_le_upper": true,
+    "DEVELOPMENT_policy_MFE_nonnegative": true,
+    "DEVELOPMENT_policy_MFE_lower_le_upper": true,
+    "DEVELOPMENT_direction_valid": true,
+    "DEVELOPMENT_ambiguity_matches_D": true,
+    "outer_direction_MFE_identity_both_sides": true
+  },
+  "chronology_scope": "minutes.npy has no timestamp column: length/alignment/implicit UTC axis verified; original explicit source timestamp gap/duplicate validation is reused from prepare validate()+source receipts, not independently rediscovered from OHLCV",
+  "wall_seconds": 0.16612420789897442
+}

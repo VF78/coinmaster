@@ -1,0 +1,19 @@
+{
+  "status": "PASS_ARTIFACT_INTEGRITY_NOT_SOURCE_BUGS_FIXED",
+  "frozen_core_modules": 6,
+  "training_manifest_entries_checked": 73,
+  "parsed_compiled": {
+    "json": 16,
+    "csv": 12,
+    "python_compile": 6
+  },
+  "historical_forecast_groups": 72,
+  "new_model_fits": 0,
+  "new_market_forecasts": 0,
+  "CHECK_scored": false,
+  "pilot_changed": false,
+  "review": "GO_NARRATIVE_PUBLICATION_ONLY",
+  "intentional_counterexamples": "CONFIRMED_DEFECTS_REMAIN_UNFIXED",
+  "project_final_readback_present": true,
+  "project_final_status": "OPEN_TODO_AUDIT_COMPLETE_REPAIRS_PENDING"
+}

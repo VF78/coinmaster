@@ -1,0 +1,8 @@
+{
+  "curve_unweighted_example": 5.0,
+  "curve_row_weighted_example": 0.15384615384615385,
+  "masked_ES_implemented_D": 5.0,
+  "masked_ES_correct_valid_D": 3.3333333333333335,
+  "CNN_F1_refit_last8_report_weight": 0.0125,
+  "CNN_F1_refit_last8_row_weight": 0.001579778830963665
+}

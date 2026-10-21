@@ -1,19 +1,21 @@
-Updated: 2026-10-21T22:58:53.416454+00:00
-Status: COMPLETE_ZERO_FIT_FAILURE_FOLLOWUP; diagnosis+ONE next3TP/SL hypothesis proposed, NOT implemented/trained. No predictivewinner/economicclaim.
-Canonical localresearchcheckout: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021. Owner-tasklocalexception applies; VPSrepo read-only/nevermanualeditopt.
-Baseline published46db74ee7f4e0befd434ef02c3494856c1607ed8 unchanged. CurrentgitHEAD authoritative forfollowupcheckpoint.
-Project: existing122 https://github.com/VF78/coinmaster/issues/122 analyticalfollowupDone/closed afteractualreadback followup-project-final-readback.json; boundedcompletionNOTeconomicgoalsuccess.
-Ownerbtc_pattern_m2_owner source/reportDONE; btc_pattern_causality_review scopedpublicationGO; rootops/Project/checkpoint. Noactivecompute/jobs.
-Userboundaries: NOnewtrainings/fits/calibration/native/CHECK. FullDEVELOPMENTJun1 2024–May1 2026,threepurgedexpandingfolds retained. CHECKunopened; pilot/S0/VPS/services/secrets/ordersuntouched.
-Baseline: originalCNNQlong.203798 vsprior.205775 delta−.001978 CI[−.004953,+.001021] WEAK_EVIDENCE; short≈noadvantage; metric-off/prior-initnegative; original36neural+36CB+4syntheticfits totalsUNCHANGED.
-Thisfollowup: .821s CPU/8496IDs/0fits/0optimizersteps/0newpredictions/0backtests. Source/protocol/features/fit-onlytercilesfrozenbeforecontrasts; allfolds/monthsretained.
-Volratio24/168alreadyderivedfromcontext; universalcorrectionUNSUPPORTED duefold/sidereversals; F1common-supportCIwithheld663/1000, rarecells5/9. Nozero-imputation/newfeatureclaim.
-ExactDvsTP1sigma-beforeSL1sigma labelidentity0mismatches/0ambiguities. OriginalCNNshortincoherenceF1/F2/F3=24.11/8.23/1.75%; >5pp=5.63/.69/0%. EpisodicNOTsolecauseorforecastgainproof.
-SLsensitivityexisting.75/1/1.5sigma72 SAMEoriginalCNNTPs: widerSLlowersstop-touchbutmedianTPhitgainonly.38–3.95pp/foldside, widthabout+50%. DIFFERENTphysicalcontracts/notimprovedsamescore/optimalSL/EV.
-ONEproposal: keepCNNencoder/context12/fullhistory/optimizer/seed7/72h; sharedbarrier-firsteventhead TPfirst/SLfirst/neither; Dderived1/1;3TPderived80/50/20%. CandidateSL.75/1/1.5,TPgrid.25/.5/.75/1/1.5/2/3/4; originalsigma/physicalprices. Monotonicity/outgrid/ambiguity mustfreezeBEFOREfuturefit.
-Next: awaitseparateownertrainingauthorization. NoautoGO; proposedjointmodelnotimplemented, comparison/skill/economicSLobjective/S0stateparitystillunproven. DoNOTrepeatoldfits/S0/nativeortouchpilot.
-Checks:3focusedtestsPASS.012s; artifactparse/compilePASS; narrowcausality/method/narrativereviewGO; gitdiffcheckPASS. Old16tests/core/reportresultsunchangednotrerun.
-Report: reports/btc-pattern-pilot-m2-20261021/failure-followup-20261022/findings.md; repro.md,13filemanifest.json,tests-and-artifact-QA.json,CSV/JSON.
-Pins: source26dbcfa8/protocolb7f4502b/findings6def223c; manifestSHA62f51d1e91f36cff3df2509ab837791dc74129993c8e20303c598c8f51db497a.
-Earlierboundedpilot: findings.md/recipecomparisons/gradient/drift/TPdiagnostics/132filemanifest retained. OriginalfinalQA b46e9df1. Largeweights/data/index/cachesREQUIREDlocal/no cleanup.
-S0referenceTOTAL6077107.23887483/seed10000/[2024Sep1,2026Sep1),90percentnetfloor5470396.514987347/nativeDD<=50; NOT rerun. ActualROI/DDforforecastresearchNOT_EVALUATED/native0.
+Updated: 2026-10-21T23:18:22.739835+00:00
+Status: END_TO_END_PIPELINE_AUDIT_COMPLETE / RESEARCH_CORRECTNESS_REPAIRS_TODO. Auditonly, nofix/newfit/marketforecast/native/CHECK/pilotdeployment.
+Canonical owner-localresearchcheckout /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021. Localexceptionowner-task§1, VPSrepo readonly/nooptedits.
+Basepublisheda32c9e42be9b1888122ed33c965c102651adb13c; currentgitHEAD authoritativeforauditcheckpoint. Oldsource/models/reportsimmutable.
+Existing122 https://github.com/VF78/coinmaster/issues/122 auditcheckboxescomplete, OPEN/ProjectTodo foractualunimplementedB1/B2/B3/B4/R1. Actualreadback pipeline-audit-20261022/project-final-readback.json; notclaimgoalcomplete.
+OwnersallDONE: data-labels btc_pattern_causality_review, training-evaluation btc_pattern_m2_owner, models-retrieval pattern_model_retrieval_audit GPT6.1Sol/medium; root .ops/Project/literature/integration/checkpoint. Noactivejobs.
+Scopefullchaindata→features→labels→splits→train/ES/refit→embedding/retrieval→inference→evaluation. Model/docs/primarypapersmappedtoliterature.md; oneintegratednarrativereviewGO.
+DataQA283assertions+.17s20whole-arrayinvariantgroups:1,280,160minuteOHLCV valid,16,704maturepurgedDEVlabelsvalid;8496outerD/MFEidentity0mismatch. Rawtimestampvalidationreusesoriginalreceipt/implicitUTCarray.
+TrainingQA1.626s:18baselineNNstates+18CBmodels+72historicalforecastgroups canonicalIDs/truth/projectionPASS. Parametersdifferinitial;ESbest/freshrefit/fullprefix/fit-onlyscales/quantileordercorrect. Nooptimizerbrokenproof.
+B1P1actualbug: engineered4hrelativevolumeearliestdependency80hbeforerecordedinput_start; mutation−.2298544496. Saved1,332,029neighborrowsscan:276TCN+434numeric=710affectedpairs. RawCNN/KronosNOTaffectedbyolderengineeredwarmup. Known-pastoverlapNOTfutureleak/mainnegativecauseproof.
+B2P1actualguardbug: incompleteF1/F2candidatefalselyPREDICTIVE_PASS; cyclicshiftedtruthsameIDfalselypasses3folds(reportedNLL.020203/canonical4.60517). Requireexactfolds/IDs/maturity/canonicaltruth/schema/source/data/protocol/completion. ACTUAL72groupsclean; fixturefilesexplicitlysyntheticguardcases.
+B3P2actualAPIbug: installedsingleclassAUROCreturnsNaN,ValueErrorcatchmisses,strictJSONcrashes. ProposedNone+reasonnotzero/norelaxedJSON.
+B4P2latentbug: ES_D batchmeansweightedallrowsinsteadvalidD; fixture5vs10/3. ActualESambiguity0 soselectedepochsnotaffected. R1onlinecurveunweightedbatchmeanslastCNN8rows7.91xloggedweight; notoptimizerweightproof.
+ModelsQA:KLmatchesNumPy5.55e−17/allmasked0/finitegradient;TCNfutureperturbation0/RF253>64;CNNnonzeroOHLCchangecanrenderidentically;Kronospreprocessing/pinnedAPIcorrect. PretrainingtemporalcorpusUNKNOWN;frozenfeaturesnotrolloutforecastreproduction.
+Patterntargetoracle128purgedrefitanchors/fold+32peers/2.615s: Ddisagree17.31/6.64/3.20%vsrandom65.87/66.16/65.89;longMFEdev.3014/.2298/.2130vs.7479/.7212/.7293. Signatureinformativebutqueryfutureknown; NOcausalforecast/learnability/attainabletradingupperboundclaim.
+PreviousoriginalCNNQlong.203798vsprior.205775 delta−.001978 CI[−.004953,+.001021]weak;metric-off/priorinitfailed. DQincoherenceshort24.11/8.23/1.75episodic;SLfixednotoptimized. AuditdoesNOTpromiserepairscreatepredictiveskill.
+Nextproposalonly: repairB1/B2/B3/B4/R1narrowtests+re-scoreaffectedcachedretrievalWITHOUTnewfits, preservecontrols. Thenownerapprovedfullraw-pathpositive/shuffledlearningacceptance beforeONEfrozenjointbarrierexperiment. NoautomaticGO/currenttrainingprohibitionremains.
+FullDEVELOPMENTJun1 2024–May1 2026 retained;threepurgedexpandingfolds;no180dcrop. CHECKunscored;allNN/CBtrainingtotalsunchanged. Newmodel fits/optimizersteps/marketpredictions/nativebacktests=0.
+S0TOTAL6077107.23887483/start10000/[2024Sep1,2026Sep1),90percentnetfloor5470396.514987347/DD<=50 remainsreference/NOT rerun. ActualforecastresearchROI/DDNOT_EVALUATED/native0.
+Reports: reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/findings.md(62lines)/literature.md +3ownedsubdirs/probes/results/fixtures/manifests/integrated-review. Source6coreunchanged;gitdiffcheckPASS;integratedartifactQA+manifestrecordedbeforecheckpoint.
+Protectedpilot/VPS/services/secrets/positions/orders/workingresearchdata/modelcachesNOTtouched. Prior46db74e/a32c9e4resultscompleteunchanged; nogarbagecleanup/newinfrastructure.

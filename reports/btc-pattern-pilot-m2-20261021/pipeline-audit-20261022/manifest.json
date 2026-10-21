@@ -1,0 +1,471 @@
+{
+  "base_commit": "a32c9e42be9b1888122ed33c965c102651adb13c",
+  "scope": "AUDIT_ONLY_FROZEN_SOURCE_NO_MODEL_FITS",
+  "files": [
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/artifact-QA.json",
+      "bytes": 583,
+      "sha256": "3137c5e2ddde603192f4bc1a982894079d30d8ed4b3e84d9234813ef18b555d6"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/data-labels/findings.md",
+      "bytes": 7695,
+      "sha256": "4f968afcd7a788dbf3e40fd860454795550f6f6f6f01ba3c60276ade06ec06b1"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/data-labels/probe.py",
+      "bytes": 6024,
+      "sha256": "471c8520f08ef8f89cb88d15cd0fee9d967c16880a7b77d7da36e5d50ef74953"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/data-labels/results.json",
+      "bytes": 14739,
+      "sha256": "1ad2086523288c2a8e6fd03a5e9dd0b98247ecf440a2f784229c4bf3cec39896"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/data-labels/whole-array-results.json",
+      "bytes": 1514,
+      "sha256": "8c965f4fc1620bc6e33b964bba59423b291b0fc56afb22d0f62cb60c80368706"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/data-labels/whole_array_probe.py",
+      "bytes": 3355,
+      "sha256": "c9308628945cf212afc10f9833813647fe8bbc17f35dd082131a65d4753c9406"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/findings.md",
+      "bytes": 10725,
+      "sha256": "3d17686b3849bd25e4258de1cb7a6bd98c273db6af5af2e79de21e1ba58e0778"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/integrated-review.json",
+      "bytes": 324,
+      "sha256": "7c963d195fd9457ab25f7a9f38db50952444b2c3159b0c167f3b6e64b5f71cfe"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/literature.md",
+      "bytes": 6016,
+      "sha256": "e0df7f5f05f0d860c89e059298e7e4d15f4a3ade672c8dc56cc20017e52328c9"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/findings.md",
+      "bytes": 14166,
+      "sha256": "c413a320dbfb72cf947e8517d43279bd8603e63b6c2ddeea784ccb0c20838567"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/overlap-examples.csv",
+      "bytes": 1074,
+      "sha256": "28d9ef0230624da677b19c4096f1c003bc36ba538c5895e8ec2fbfe7252776cb"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/probe-result.json",
+      "bytes": 7075,
+      "sha256": "bba4cbc2e1d8f0cb530e347713dcb9ac3eb3944afb282e255a24e65679c30280"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/probe.py",
+      "bytes": 4422,
+      "sha256": "9576cd90b02eb9345b399cf69a6428b204f3b58ef9598a2f8d56ee3aaad4dad1"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/target-adequacy.json",
+      "bytes": 2388,
+      "sha256": "725131bbe2b3163fe102ae7c0edcee72f4d606e2368c21aefb7095d92db8a8f1"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/target-adequacy.py",
+      "bytes": 3007,
+      "sha256": "71ccf60c5d6bcad5bde330f7eb667a0b8a9b1dccab03ebfd35fa52993c3a5e81"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/warmup-overlap.json",
+      "bytes": 4379,
+      "sha256": "61ac764f276edc89edaa920dbacd669f181b0f4236bbbcebfa8c10034bac4609"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/models-retrieval/warmup-overlap.py",
+      "bytes": 1296,
+      "sha256": "b237fc4bb9766fb063d98a1bdb76defcf4181634ac118c272276a35800cb03a0"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/project-final-readback.json",
+      "bytes": 320,
+      "sha256": "3b1b40ad87ee37612ecea336ead0b6ad00c9d6be730bea2f8966b8759a027cf1"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/project-start-readback.json",
+      "bytes": 267,
+      "sha256": "2401c8c1217e43e876a1c7ab03f2b87e2d493dfac298c6b7e3b37fad1d10209f"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/aggregation-repro.json",
+      "bytes": 279,
+      "sha256": "275a7bda6844dd7503a3a252ff449b6709fe7a5e3cdfa6f115f1440c57825b06"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/ambiguity-counts.csv",
+      "bytes": 233,
+      "sha256": "23162250099b6fad9c84a8bde94014de564f126ee8d5a2a4f918716aa620cc3a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/artifact-QA.json",
+      "bytes": 1674,
+      "sha256": "8860d5c0e3fc7f804ab0582472aecb97392eb17aed854d7150644cef59c73abc"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/audit.py",
+      "bytes": 9220,
+      "sha256": "00d2a39d35fd548cfe41dc895b2f4e6042146da609137b81dd8800088d43bdaf"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/catboost-checks.csv",
+      "bytes": 736,
+      "sha256": "ab113219163b14a4a34f0b3d830698d2e376091f0e6b217fe57249072236add5"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/checkpoint-checks.csv",
+      "bytes": 2191,
+      "sha256": "e88e38f1af0678fabca247c55172d0f3e637933a42ef155032d70d9f0a11eb97"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/completion.json",
+      "bytes": 530,
+      "sha256": "2d965d071e48445fc92b9b11990c8217e165b3d659167ac1da7353c525d52e47"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/evaluator-guard-repro.json",
+      "bytes": 3295,
+      "sha256": "b65723cedda3240ed337856919755f047c06ecb879dc52db543302ac6b772a3d"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/findings.md",
+      "bytes": 8388,
+      "sha256": "38866865d390c428b9b7e963b5586c325f0447e04d22051c12e5b00bf7d96e27"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F1/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F1/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "fb79575e7020736304fb3c7af01c18ef1f78c3a65a8545eb348355c2cbc5b0da"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F1/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F1/prior.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F1/random-context.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F2/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F2/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "0be9a58b6754e5916d3cf70baf649848e0b814c9038a820de293ceccdfd04c00"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F2/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F2/prior.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F2/random-context.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F3/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F3/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "6f809493d36eada236abf4b5b81fd5b5478cbe25894d8fe1386e0010dbada697"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F3/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F3/prior.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth/F3/random-context.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth-evaluation/forecasts.parquet",
+      "bytes": 11561,
+      "sha256": "9d9178573b34976520d82d0b6c358d5ec4e0843235e1a5fdb7142112ee8ee0fb"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth-evaluation/metrics.csv",
+      "bytes": 1437,
+      "sha256": "5448edaf1cfd5eb39ce4481ef144140063e57474dbcfb39883b5ac37d98234c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth-evaluation/paired-comparisons.csv",
+      "bytes": 2550,
+      "sha256": "1a6857dff82fded7ec5c5b1c4c63b7a66e5bf726a2292c8f1138261e68f4fbfc"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth-evaluation-resumed/forecasts.parquet",
+      "bytes": 11561,
+      "sha256": "9d9178573b34976520d82d0b6c358d5ec4e0843235e1a5fdb7142112ee8ee0fb"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth-evaluation-resumed/metrics.csv",
+      "bytes": 1437,
+      "sha256": "5448edaf1cfd5eb39ce4481ef144140063e57474dbcfb39883b5ac37d98234c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth-evaluation-resumed/paired-comparisons.csv",
+      "bytes": 2550,
+      "sha256": "1a6857dff82fded7ec5c5b1c4c63b7a66e5bf726a2292c8f1138261e68f4fbfc"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F1/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F1/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "2e0e04da04eb272be4b8405d39c50713c012b3d42ce48af7055d7203efa8eaf6"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F1/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F1/prior.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F1/random-context.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F2/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F2/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "054c05f6a9bfe3e9a933ea707368b0d926ea5af72675417917db9ffa5dc08d76"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F2/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F2/prior.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F2/random-context.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F3/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F3/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "472547a3d6d7029c835f6e1adf54e24da436d24c22fc0ca1eb0c8dd42c995bfc"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F3/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F3/prior.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted/F3/random-context.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted-evaluation/development-gates.json",
+      "bytes": 11431,
+      "sha256": "ec5c13f526c255adbe1d907dfa6b24bc4cd4005dd617cfed74dd22d973963e4d"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted-evaluation/diagnostics.json",
+      "bytes": 8031,
+      "sha256": "c4428c920b15d58bb6e74b7628d5e7151094febf5d4909975935de6df91b0dd8"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted-evaluation/forecasts.parquet",
+      "bytes": 11605,
+      "sha256": "138960fab59712bc360aaeccfa8e131436064785a768e879c64f0330affcb148"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted-evaluation/metrics.csv",
+      "bytes": 1437,
+      "sha256": "5448edaf1cfd5eb39ce4481ef144140063e57474dbcfb39883b5ac37d98234c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/inconsistent_saved_truth_shifted-evaluation/paired-comparisons.csv",
+      "bytes": 2550,
+      "sha256": "1a6857dff82fded7ec5c5b1c4c63b7a66e5bf726a2292c8f1138261e68f4fbfc"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F1/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F1/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "a34b9ff3ee16b680213664f4c9829a52a51e0a276b65ffcb445c0853b4ae096e"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F1/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F1/prior.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F1/random-context.npz",
+      "bytes": 3930,
+      "sha256": "6fbbeffdb02a91e568bc4ef35cd51b7b37c3fcbacd4be9ae019f8845e2984e1a"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F2/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F2/TCN-direct.npz",
+      "bytes": 3930,
+      "sha256": "9a274891ba1ef8af090ebc08b86d069d2aede1fd7dd819cd6f73c4dc680a0783"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F2/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F2/prior.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F2/random-context.npz",
+      "bytes": 3930,
+      "sha256": "9ac62ea46006f2bb22f3f3db53bd531dcfc0becd881f04d6ddc0a0b292b63d14"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F3/CatBoost.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F3/numeric-knn.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F3/prior.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3/F3/random-context.npz",
+      "bytes": 3930,
+      "sha256": "93534130a8aed409b1f029e820e8d5553aa5c1025671737deb699462e94050c7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3-evaluation/development-gates.json",
+      "bytes": 11419,
+      "sha256": "17e4084c32d51fcb1f8f4202afef1fc7731ff70e9dfd878c549aed2ff1c18944"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3-evaluation/diagnostics.json",
+      "bytes": 7505,
+      "sha256": "0e61004a8d2223cd66aa7a41ae9a93e4b4d225d6b45ef8e5194c0beab5269dd6"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3-evaluation/forecasts.parquet",
+      "bytes": 11553,
+      "sha256": "b366f9c8d0c907d10fe352c405e2a2f65b860ad7113e0d34c607fc43f8d150f2"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3-evaluation/metrics.csv",
+      "bytes": 1340,
+      "sha256": "446d4c2034efee6a7f7a16a1cdcfa50d38ccec39ad090a7b944b02be6435ea81"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/missing_candidate_F3-evaluation/paired-comparisons.csv",
+      "bytes": 2538,
+      "sha256": "86b34065c154dba93e0db7109ed5f29e61d2ab0b1c7c07cf799f497a94421ccd"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/fixtures/prepared/metadata.npy",
+      "bytes": 704,
+      "sha256": "459377740c516dff302cd7e5fc5c6564b6a04d0d215b232ac69fd5d851b2e2bd"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/installed-AUROC-source.txt",
+      "bytes": 1228,
+      "sha256": "a59647cc1214a1ba8355b354599138e51ba6af6ce61a8a31755bcdf919e2073f"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/manifest.json",
+      "bytes": 25847,
+      "sha256": "29ce6b923139cc92646b479943f1d8c2bb9ee8a281adb8eb2ced40a52cfe24fa"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/repro.md",
+      "bytes": 973,
+      "sha256": "61f6f6f09f88b96d0c9669d53e9cbde40a5d268fc323d77867d18170ab33e4c9"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/pipeline-audit-20261022/training-evaluation/sources.md",
+      "bytes": 2178,
+      "sha256": "405d6fe775f29022cdb975c92f4d33663b2167e08f73f6d1bded0a642211766d"
+    }
+  ]
+}

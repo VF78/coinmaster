@@ -1,0 +1,131 @@
+{
+  "missing_candidate_F3": {
+    "status": "SHORTLIST_READY",
+    "shortlist": [
+      {
+        "method": "TCN-direct",
+        "tasks": [
+          "D",
+          "Q-long",
+          "Q-short"
+        ],
+        "rank": 1.0784095813505903,
+        "path": false,
+        "status": "DIRECT_FORECAST_PASS"
+      }
+    ],
+    "D": {
+      "status": "PREDICTIVE_PASS",
+      "comparisons": {
+        "prior": {
+          "mean": -1.0784095813505903,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 8,
+          "rows": 24,
+          "draws": 1000,
+          "fold_wins": 2,
+          "PASS": true
+        },
+        "CatBoost": {
+          "mean": -1.0784095813505903,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 8,
+          "rows": 24,
+          "draws": 1000,
+          "fold_wins": 2,
+          "PASS": true
+        },
+        "numeric-knn": {
+          "mean": -1.0784095813505903,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 8,
+          "rows": 24,
+          "draws": 1000,
+          "fold_wins": 2,
+          "PASS": true
+        },
+        "random-context": {
+          "mean": -1.0784095813505903,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 8,
+          "rows": 24,
+          "draws": 1000,
+          "fold_wins": 2,
+          "PASS": true
+        }
+      }
+    },
+    "missing_prepared_labels_accepted": true
+  },
+  "inconsistent_saved_truth": {
+    "exception": "ValueError",
+    "message": "Out of range float values are not JSON compliant: nan",
+    "cause": "one-classAUROCnan reachesstrictJSON instead ofNone"
+  },
+  "inconsistent_saved_truth_shifted": {
+    "status": "SHORTLIST_READY",
+    "shortlist": [
+      {
+        "method": "TCN-direct",
+        "tasks": [
+          "D",
+          "Q-long",
+          "Q-short"
+        ],
+        "rank": 1.0784095813505905,
+        "path": false,
+        "status": "DIRECT_FORECAST_PASS"
+      }
+    ],
+    "D": {
+      "status": "PREDICTIVE_PASS",
+      "comparisons": {
+        "prior": {
+          "mean": -1.0784095813505905,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 11,
+          "rows": 36,
+          "draws": 1000,
+          "fold_wins": 3,
+          "PASS": true
+        },
+        "CatBoost": {
+          "mean": -1.0784095813505905,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 11,
+          "rows": 36,
+          "draws": 1000,
+          "fold_wins": 3,
+          "PASS": true
+        },
+        "numeric-knn": {
+          "mean": -1.0784095813505905,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 11,
+          "rows": 36,
+          "draws": 1000,
+          "fold_wins": 3,
+          "PASS": true
+        },
+        "random-context": {
+          "mean": -1.0784095813505905,
+          "lower": -1.0784095813505905,
+          "upper": -1.07840958135059,
+          "blocks": 11,
+          "rows": 36,
+          "draws": 1000,
+          "fold_wins": 3,
+          "PASS": true
+        }
+      }
+    },
+    "missing_prepared_labels_accepted": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "status": "COMPLETE_AUDIT",
+  "wall_seconds": 1.6263707089237869,
+  "fit_calls": 0,
+  "optimizer_steps": 0,
+  "saved_model_inference_calls": 0,
+  "new_forecasts": 0,
+  "CHECK_used": false,
+  "baseline_checkpoints_checked": 18,
+  "CatBoost_models_checked": 18,
+  "historical_forecast_groups_truth_and_fold_verified": 72,
+  "manual_loss": {
+    "D": 0.6342291831970215,
+    "Q": 0.198888897895813,
+    "matches_numpy": true
+  },
+  "all_actual_ES_D_ambiguity": 0,
+  "bootstrap_arithmetic_matches": true,
+  "core_edited": false
+}

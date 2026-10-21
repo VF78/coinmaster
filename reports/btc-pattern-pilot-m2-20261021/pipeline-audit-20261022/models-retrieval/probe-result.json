@@ -1,0 +1,260 @@
+{
+  "metric": {
+    "torch_loss": 0.45638212176493725,
+    "numpy_loss": 0.4563821217649372,
+    "absolute_error": 5.551115123125783e-17,
+    "finite_gradient": true,
+    "all_masked_loss": 0.0,
+    "self_exclusion": true,
+    "stats": {
+      "eligible_anchors": 1.0,
+      "eligible_pairs": 0.6122449040412903,
+      "target_entropy": 1.413260161849611
+    }
+  },
+  "TCN": {
+    "prefix_perturbation_max_abs_before_32": 0.0,
+    "receptive_field": 253,
+    "bars": 64,
+    "future_padding": 0
+  },
+  "CNN": {
+    "microprice_change_input_abs": 1.099920709179969e-06,
+    "identical_raster": true,
+    "price_vertical_steps": 78,
+    "volume_vertical_steps": 20
+  },
+  "neighbors_toy": {
+    "chosen": [
+      1,
+      0
+    ],
+    "all_eligible": true,
+    "no_ineligible_nearest": true
+  },
+  "archived_neighbors": [
+    {
+      "fold": "F1",
+      "method": "CNN-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 8.821487426757812e-05,
+      "cosine_distance_max": 0.2640560269355774
+    },
+    {
+      "fold": "F1",
+      "method": "Kronos-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.023822784423828125,
+      "cosine_distance_max": 0.6423110961914062
+    },
+    {
+      "fold": "F1",
+      "method": "TCN-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 1.919269561767578e-05,
+      "cosine_distance_max": 0.11351245641708374
+    },
+    {
+      "fold": "F1",
+      "method": "numeric-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.21339762210845947,
+      "cosine_distance_max": 0.8858256340026855
+    },
+    {
+      "fold": "F1",
+      "method": "random-context",
+      "neighbor_rows": 62525,
+      "queries": 2808,
+      "min_support": 16,
+      "max_support": 29,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.2988572120666504,
+      "cosine_distance_max": 1.4753422737121582
+    },
+    {
+      "fold": "F2",
+      "method": "CNN-knn",
+      "neighbor_rows": 92160,
+      "queries": 2880,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.00010693073272705078,
+      "cosine_distance_max": 0.1766291856765747
+    },
+    {
+      "fold": "F2",
+      "method": "Kronos-knn",
+      "neighbor_rows": 92160,
+      "queries": 2880,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.04429137706756592,
+      "cosine_distance_max": 0.5166095495223999
+    },
+    {
+      "fold": "F2",
+      "method": "TCN-knn",
+      "neighbor_rows": 92160,
+      "queries": 2880,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.002473890781402588,
+      "cosine_distance_max": 0.12049156427383423
+    },
+    {
+      "fold": "F2",
+      "method": "numeric-knn",
+      "neighbor_rows": 92160,
+      "queries": 2880,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.20739823579788208,
+      "cosine_distance_max": 0.8082537651062012
+    },
+    {
+      "fold": "F2",
+      "method": "random-context",
+      "neighbor_rows": 92160,
+      "queries": 2880,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.320440411567688,
+      "cosine_distance_max": 1.4639673233032227
+    },
+    {
+      "fold": "F3",
+      "method": "CNN-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 1.9431114196777344e-05,
+      "cosine_distance_max": 0.03095221519470215
+    },
+    {
+      "fold": "F3",
+      "method": "Kronos-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.06594663858413696,
+      "cosine_distance_max": 0.5377168655395508
+    },
+    {
+      "fold": "F3",
+      "method": "TCN-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 8.821487426757812e-06,
+      "cosine_distance_max": 0.008995771408081055
+    },
+    {
+      "fold": "F3",
+      "method": "numeric-knn",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.2830636501312256,
+      "cosine_distance_max": 0.7354225516319275
+    },
+    {
+      "fold": "F3",
+      "method": "random-context",
+      "neighbor_rows": 89856,
+      "queries": 2808,
+      "min_support": 32,
+      "max_support": 32,
+      "min_neighbor_spacing_hours": 72.0,
+      "input_exclusion_violations": 0,
+      "self_matches": 0,
+      "cosine_distance_min": 0.36250126361846924,
+      "cosine_distance_max": 1.4412939548492432
+    }
+  ],
+  "exclusion_scope": [
+    {
+      "fold": "F1",
+      "first_query": 5136,
+      "refit_index_rows": 5064,
+      "query_window_excluded_neighbor_rows_still_in_global_prior": 256
+    },
+    {
+      "fold": "F2",
+      "first_query": 9480,
+      "refit_index_rows": 9408,
+      "query_window_excluded_neighbor_rows_still_in_global_prior": 256
+    },
+    {
+      "fold": "F3",
+      "first_query": 13896,
+      "refit_index_rows": 13824,
+      "query_window_excluded_neighbor_rows_still_in_global_prior": 256
+    }
+  ],
+  "execution": {
+    "wall_seconds": 1.1579822497442365,
+    "fits": 0,
+    "optimizer_steps": 0,
+    "market_predictions": 0,
+    "device": "CPU",
+    "threads": 1
+  }
+}

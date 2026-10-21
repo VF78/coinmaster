@@ -1,0 +1,10 @@
+{
+  "reviewer": "btc_pattern_causality_review",
+  "status": "GO_NARRATIVE_PUBLICATION_ONLY",
+  "material_blockers": [],
+  "full_history_retained": true,
+  "oracle_is_not_forecast_or_attainable_upper_bound": true,
+  "historical_72_groups_verified": true,
+  "new_fits_authorized": false,
+  "pilot_changes_authorized": false
+}
