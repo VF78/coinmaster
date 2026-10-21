@@ -1,6 +1,6 @@
 Updated: 2026-10-21T14:09:29.531986+00:00. CoinMaster current truth.
 Canonical checkout root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster; branch codex/nautilus-btc-sol-mvp. Develop there; pinned research execution on owner-authorized M2Pro Mac is permitted. Mac product checkout is stale. Never edit /opt manually; Git hooks disabled for mutations.
-Current#113 forecast benchmark is COMPLETE_VALID_NEGATIVE, awaiting final publication/Project closure. All4families/control tested once on frozen CHECK; no model beat TRAIN-prefix prior overall.48,720CSVrows/94realminuteTPpaths independentlyverified; plots verified. Finalresultsdec27fc1. See .ops/ACTIVE_TASK.md and reports/forecast-independent-20261021/README.md for exact state/artifacts.
+Current#113 forecast benchmark is COMPLETE_VALID_NEGATIVE, published; #113 CLOSED completed / Project #2 Done readback PASS. Closure/actual CI receipt: reports/forecast-independent-20261021/project-completion-readback.json. All4families/control tested once on frozen CHECK; no model beat TRAIN-prefix prior overall.48,720CSVrows/94realminuteTPpaths independentlyverified; plots verified. Finalresultsdec27fc1. See .ops/ACTIVE_TASK.md and reports/forecast-independent-20261021/README.md for exact state/artifacts.
 Pilot preserved active PID2009732/NRestarts0. No economic/native runs, S0 rerun, deployment or orders. Prior DD/ROI/live goals are not declared achieved. Existing GitHubProject#2 remains backlog/status authority; no more research runs in this completed scope.
 
 Historical completed scopes below:

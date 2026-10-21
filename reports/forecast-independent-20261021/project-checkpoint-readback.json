@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-21T14:16:24.028380+00:00",
+  "result_commit": "1671dd6798b0c83356a0c6ccaec74c0ccf9544ae",
+  "result": "COMPLETE_VALID_NEGATIVE",
+  "issue": "https://github.com/VF78/coinmaster/issues/113",
+  "issue_state": "closed",
+  "state_reason": "completed",
+  "Project_status": "Done",
+  "readback": "PASS",
+  "body_sha256": "374bd54a7634f29c612b2df239869c828f987ecb14467c6bf9cff6fe117e65bd",
+  "project_readback": {
+    "data": {
+      "node": {
+        "fieldValueByName": {
+          "name": "Done"
+        }
+      }
+    }
+  },
+  "CI": {
+    "check_runs": [],
+    "combined_state": "pending",
+    "statuses": []
+  },
+  "CI_interpretation": "Only actual GitHub checks are reported; an empty list is not a CI pass. Local/native scientific QA is separate."
+}

@@ -1,4 +1,4 @@
-Updated: 2026-10-21T14:09:29.531986+00:00. #113 independent forecast research COMPLETE_VALID_NEGATIVE; final publication/Project closure pending.
+Updated: 2026-10-21T14:09:29.531986+00:00. #113 independent forecast research COMPLETE_VALID_NEGATIVE; published; #113 CLOSED completed / Project #2 Done readback PASS.
 Canonical development: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster, codex/nautilus-btc-sol-mvp. Mac checkout remains stale; only pinned research copies executed there. Git mutations core.hooksPath=/dev/null; never edit /opt manually.
 
 Scope complete: strategy-independent STUMPY/MASS, MiniRocket, RDST, chartCNN plus raw-feature control and TRAIN-prefix prior. TRAIN [2024-09-01,2026-04-01), CHECK [2026-04-01,2026-10-21) UTC. Closed hourly origin, next-minute entry, <=24h horizon, learned3TP, common1sigma SL. No S0/current-strategy rerun, economic/native backtest, PnL engine, deployment or orders.
@@ -15,4 +15,4 @@ Owner-authorized M2Pro16GiB used for RDST/CNN/CHECK; exactnativebasepackages, on
 
 Protected pilot finalreadback active/running PID2009732 NRestarts0. No pilot/config/strategy/deploy/secrets/Hermes/sites/VPN/swap changes. Historical untracked funding/corridor files preserved. New work GPT6.1Sol/medium, minimalcontext.
 
-Project existing#113/Project#2 administrative closure pending publication. NEXT: publish exactcheckpoint, close#113completed/setDone, readback actual Project+CI status and persist final receipt. No further research/optimization authorized in this completed scope. Historical economic DD/ROI goal is not claimed achieved.
+Project existing#113 CLOSED completed / Project#2 Done, actual readback PASS. Published result1671dd6; closure+actualCI receipt reports/forecast-independent-20261021/project-completion-readback.json. NEXT: await owner direction; no additional research runs. No further research/optimization authorized in this completed scope. Historical economic DD/ROI goal is not claimed achieved.
