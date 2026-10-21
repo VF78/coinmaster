@@ -1,0 +1,43 @@
+{
+  "status": "FROZEN_MARCH_TRAIN_CALIBRATION_NOT_CHECK",
+  "family": "rdst",
+  "period": [
+    "2026-03-01T00:00:00Z",
+    "2026-04-01T00:00:00Z"
+  ],
+  "rows": 1440,
+  "residual_quantile_offsets": [
+    [
+      [
+        -0.03731864874880837,
+        -0.021876377498513816,
+        0.16254321820533824
+      ],
+      [
+        0.03751644350615087,
+        0.06313010983459894,
+        0.054262682935219624
+      ]
+    ],
+    [
+      [
+        -0.05380148851813927,
+        -0.036505418477400076,
+        0.14829378066060123
+      ],
+      [
+        0.027467911443402618,
+        0.05038746242220754,
+        0.03998768712770336
+      ]
+    ]
+  ],
+  "temperature": 2.371754008412985,
+  "temperature_bounds": [
+    0.25,
+    4.0
+  ],
+  "projection": "nonnegative, ascending byq, upper=max(upper,lower), before/after calibration",
+  "calibrator_sha256": "5034127f97ff73886a3f2301a29c5118e4a4023e694d61d5b257d0ce30c78905",
+  "seal_sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37"
+}

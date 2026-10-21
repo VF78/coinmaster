@@ -1,0 +1,93 @@
+{
+  "status": "SEALED_READY_FOR_SEPARATE_CHECK",
+  "family": "rdst",
+  "view": "15x20",
+  "config": 0.001,
+  "final_epochs": 49,
+  "seeds": [
+    7
+  ],
+  "winning_TRAIN_inner_score": {
+    "lower_pinball": 0.22334729712788698,
+    "upper_pinball": 0.22270559157158193,
+    "direction_logloss": 1.1407231113995995,
+    "direction_brier": 0.6928315726748342,
+    "direction_accuracy": 0.37002144607843135
+  },
+  "winning_inner_folds": [
+    {
+      "fold": 0,
+      "score": {
+        "lower_pinball": 0.21255514528545702,
+        "upper_pinball": 0.21178739238366592,
+        "direction_logloss": 1.152095075354277,
+        "direction_brier": 0.6994632744152226,
+        "direction_accuracy": 0.37042124542124544,
+        "n": 4368
+      },
+      "best_epoch": 56,
+      "predictions_sha256": "21eb2f726fef31e9837d65436146dec14b7f5b335e7a94f1778ed6a3e6648a1f"
+    },
+    {
+      "fold": 1,
+      "score": {
+        "lower_pinball": 0.22188866196319873,
+        "upper_pinball": 0.22126870912898614,
+        "direction_logloss": 1.1381864060628055,
+        "direction_brier": 0.6927480319081759,
+        "direction_accuracy": 0.36721611721611724,
+        "n": 4368
+      },
+      "best_epoch": 49,
+      "predictions_sha256": "5e10d228e83de0e28bf094af9c56352c4efb8c63674965490073193205900423"
+    },
+    {
+      "fold": 2,
+      "score": {
+        "lower_pinball": 0.2357342039906398,
+        "upper_pinball": 0.2351979518868772,
+        "direction_logloss": 1.131789683241517,
+        "direction_brier": 0.6862106543569513,
+        "direction_accuracy": 0.37245370370370373,
+        "n": 4320
+      },
+      "best_epoch": 34,
+      "predictions_sha256": "6330ca578dec8176498a6984bd199d7bfa754edd4326a93840f50a61721a6e18"
+    }
+  ],
+  "final_fit_rows": 26160,
+  "calibration_rows": 1440,
+  "calibration_raw": {
+    "lower_pinball": 0.2030986310425658,
+    "upper_pinball": 0.20291938373586263,
+    "direction_logloss": 1.108900108763236,
+    "direction_brier": 0.674329384877204,
+    "direction_accuracy": 0.38055555555555554,
+    "n": 1440
+  },
+  "calibration_adjusted": {
+    "lower_pinball": 0.20202680304814788,
+    "upper_pinball": 0.20198182884933022,
+    "direction_logloss": 1.0847875749200107,
+    "direction_brier": 0.6578725983624807,
+    "direction_accuracy": 0.38055555555555554,
+    "n": 1440
+  },
+  "models": [
+    {
+      "path": "final-seed7/model.pkl",
+      "sha256": "b47c2406cf19f41fd7f8fbb374350e126670d67ad7a4ce08560a6006d5948948"
+    }
+  ],
+  "calibrator_sha256": "5034127f97ff73886a3f2301a29c5118e4a4023e694d61d5b257d0ce30c78905",
+  "calibration_predictions_sha256": "ff70e9c3c93716cf493e3eab9ca0bee85fc7aea1a7ed45012b66cd4621131130",
+  "selection_sha256": "b54e3727672cf11dd4b40190687e7084f8e8c8711805fceb6cd5965317f3f2a9",
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "source_sha256": {
+    "forecast_independent_models.py": "24ab44b89d254e738fb52e293946f7a19132cc470093229fe61af66af5dd05bb",
+    "forecast_independent_run.py": "29898437d70b8577a4b5503132e951233e12ee489933842bd9fc043bbbf9ba61",
+    "forecast_independent_data.py": "fe5532888cc66130dbafc4a1b7430733c7a2b081bf6d1c2a5bebdffec9723a12"
+  },
+  "no_CHECK_read": true
+}
