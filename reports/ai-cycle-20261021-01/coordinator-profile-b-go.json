@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-21T17:54:07.700506+00:00",
+  "task": "AI-CYCLE-20261021-01",
+  "authorized_stages": [
+    "profile-B"
+  ],
+  "b_protocol_sha256": "3610e0028ec58dbeac5c1d06d021a5ff5a566fbf9660bc70dba41b6aa8fab403",
+  "b_source_input_manifest_sha256": "949db7e6db8898909d7064048e5315e6b22c649c507753ff4a1155d748321a0e",
+  "module_sha256": {
+    "forecast_cycle_kronos.py": "5702d5642ba84e20bb9fb52fc4ce0064a502be5847217e3ab85c229f105ff611"
+  },
+  "b_provenance_sha256": "e34dac7dd05c8e97e5c7b66091100b5227342dc50a94147bb9802b117ec6dee0",
+  "threads": 1,
+  "device": "cpu",
+  "process_tree_ram_bytes": 3221225472,
+  "wall_seconds": {
+    "profile-B": 300
+  },
+  "max_common_origins": 16,
+  "max_asset_generations": 32,
+  "max_independent_paths": 512,
+  "fit_limit": 0,
+  "outcomes_or_labels_access": false,
+  "early_resource_stop": "after>=3pairedorigins,excludingload/firstpair,usefastest>=2warmedpairs;stopifgeneration-onlyprojection>5400seconds",
+  "full_B_authorized": false,
+  "full_stage_cost_includes_refits_inference_margin": true,
+  "no_pilot_or_S0_changes": true,
+  "no_other_stages": true
+}

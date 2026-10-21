@@ -1,0 +1,7 @@
+TECHNICAL_DEPENDENCY_PREFLIGHT_ONLY; no weights loaded/inference/fits.
+Elapsed1.88792725s.
+Error importing huggingface_hub.hub_mixin: No module named requests
+model/kronos.py: from huggingface_hub import PyTorchModelHubMixin
+huggingface_hub/hub_mixin.py imports errors; errors.py imports requests.HTTPError, Response
+ModuleNotFoundError: No module named requests
+Resolved by isolated requests2.32.5/PyYAML6.0.3 dependency installation; existing base ML environment unchanged.

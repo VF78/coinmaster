@@ -1,0 +1,22 @@
+{
+  "status": "B_ALL_PINS_AND_IMPORT_PASS",
+  "wall_seconds": 2.9241878329776227,
+  "weights_loaded": false,
+  "inference_or_fits": 0,
+  "dependency_versions": {
+    "torch": "2.14.1",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "einops": "0.8.1",
+    "huggingface_hub": "0.33.1",
+    "safetensors": "0.6.2",
+    "tqdm": "4.67.1",
+    "requests": "2.32.5",
+    "PyYAML": "6.0.3",
+    "certifi": "2026.10.19",
+    "charset-normalizer": "3.5.2",
+    "idna": "3.20",
+    "urllib3": "2.8.0"
+  },
+  "technical_preflight_error": "First hubmixin import lacked requests; no weights loaded/no inference, isolated dependency closure installed, original error retained in preflight-error.txt"
+}

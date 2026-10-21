@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "tests": 1,
+  "wall_seconds": 0.347,
+  "scope": "16 independent sample_count1 calls, shape16x24x6, distinct seeds, zeroV/amount, futureOHLCV invariance of paths/features, causal-asof/reference/sigma frozen, no backfill",
+  "real_inference_or_fits": 0
+}

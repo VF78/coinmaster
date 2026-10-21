@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED_AUTHOR_ORIGINAL_WEIGHT_PROVENANCE",
+  "paper": "https://arxiv.org/html/2508.02739v1",
+  "evidence": "Appendix D forecasting task setup states pretraining ends June2024; evaluation begins July2024. Original June30 2025 small/tokenizer weights are tied to the original release, no later weight substitution.",
+  "cutoff": "2024-06 (author reported, not independently reconstructed training corpus)",
+  "historical_availability": "Released2025-06-30 after part of TRAIN; retrospective representation test does not establish historical availability.",
+  "code_git_SHA": "67b630e67f6a18c9e9be918d9b4337c960db1e9a",
+  "weights": {
+    "small/config.json": {
+      "sha256": "5e0f6a605d5f81b5c9b559fe5cf716a1acb041c744e6f41bd05b097b7a685396",
+      "bytes": 228,
+      "revision": "ac5c409a313c4eadd1ca78201322f5cadb9c34ab",
+      "repo": "NeoQuasar/Kronos-small",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-small/resolve/ac5c409a313c4eadd1ca78201322f5cadb9c34ab/config.json"
+    },
+    "small/model.safetensors": {
+      "sha256": "b082dfcbd8e8c142a725c8bbb99781802f38fec81210e13479effb32b3c3e020",
+      "bytes": 98980656,
+      "revision": "ac5c409a313c4eadd1ca78201322f5cadb9c34ab",
+      "repo": "NeoQuasar/Kronos-small",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-small/resolve/ac5c409a313c4eadd1ca78201322f5cadb9c34ab/model.safetensors"
+    },
+    "tokenizer/config.json": {
+      "sha256": "2366e7ccfec76cbc19cf3c4c1b9c5d901be336ca1e83f2d2292c9bff381b77a2",
+      "bytes": 301,
+      "revision": "9ef143b98ee3c2488eebd85404e0c215c112b46a",
+      "repo": "NeoQuasar/Kronos-Tokenizer-base",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-Tokenizer-base/resolve/9ef143b98ee3c2488eebd85404e0c215c112b46a/config.json"
+    },
+    "tokenizer/model.safetensors": {
+      "sha256": "59d85f6af76a2c3b8240ea06cb21db4213b4eeca053f246b23e29cf832fc6bee",
+      "bytes": 15842368,
+      "revision": "9ef143b98ee3c2488eebd85404e0c215c112b46a",
+      "repo": "NeoQuasar/Kronos-Tokenizer-base",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-Tokenizer-base/resolve/9ef143b98ee3c2488eebd85404e0c215c112b46a/model.safetensors"
+    },
+    "download_wall_seconds": 35.94374308409169
+  },
+  "license": {
+    "code": "MIT",
+    "original_HF_metadata": "apache-2.0",
+    "corrected_current_HF_metadata": "MIT",
+    "correction_commit": "23958ab79d4c35c9225b35cc2fea57a66d7b26f9",
+    "correction_date": "2025-08-07",
+    "small_current_revision": "901c26c1332695a2a8f243eb2f37243a37bea320",
+    "tokenizer_current_revision": "0e0117387f39004a9016484a186a908917e22426",
+    "weight_hashes_unchanged": true
+  }
+}

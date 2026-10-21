@@ -2068,6 +2068,15 @@
       "fit": false,
       "status": "DEVELOPMENT_COMPLETE",
       "reason": "fixed heads gate evaluated; March/CHECK unopened"
+    },
+    {
+      "utc": "2026-10-21T17:55:19.592954+00:00",
+      "stage": "profile-B",
+      "fit": false,
+      "status": "INCOMPLETE_RESOURCE",
+      "wall_seconds": 37.8245828342624,
+      "independent_paths": 96,
+      "reason": "outcomes-blind resource measurement; no head fitting"
     }
   ]
 }

@@ -1,0 +1,30 @@
+{
+  "ts2vec.py": {
+    "sha256": "2704502598dde115b55559bff8b56563a94eed5cdae4087ec8941a2a077f9972",
+    "bytes": 14350
+  },
+  "models/encoder.py": {
+    "sha256": "41ceb3902466686dfb0aa119175761ebceb78dd882de7403b45890b965c2fe94",
+    "bytes": 2479
+  },
+  "models/losses.py": {
+    "sha256": "c6f38f66a09b29689ab501062f2851bbd8139eb4bdb40dc73aa4bb0ce3bb2f8c",
+    "bytes": 1874
+  },
+  "models/dilated_conv.py": {
+    "sha256": "9c98e7313e78748670083c400a4ee4d1357a88f1a0457c7f44e780ac4165cdbb",
+    "bytes": 1921
+  },
+  "utils.py": {
+    "sha256": "85ca67e8e84cad09933d2f3ba60de3bc18bafda78706bd5c4c4a509f577dea90",
+    "bytes": 3954
+  },
+  "models/__init__.py": {
+    "sha256": "ea9eb54772c0e1bfbdfedf068b36079f44eed61ef09c68cab3b151682a88c2d9",
+    "bytes": 31
+  },
+  "LICENSE": {
+    "sha256": "a0cc2d47952871dab9279d53700c02afb7a5b947afb85487d992f3c609486171",
+    "bytes": 1067
+  }
+}

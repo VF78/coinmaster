@@ -1,0 +1,26 @@
+{
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/minutes-BTCUSDT.npy": {
+    "sha256": "486a22880a5c7b7e582ce98bedec0aabb02671f4858f73e6178b7c60c895fa66",
+    "bytes": 44985728
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/minutes-SOLUSDT.npy": {
+    "sha256": "74914e77e6a5783cd5eb17a98f49e8528a52ed3f56cc432564f3a72bff834bda",
+    "bytes": 44985728
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/metadata.npy": {
+    "sha256": "6cf0f19f6e20de5b06e00b0b206ad41bb4c0ff2bca91edc2a79d6fb79032d24d",
+    "bytes": 1572736
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/prepared-v1/manifest.json": {
+    "sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+    "bytes": 5394
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+    "sha256": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+    "bytes": 151995
+  },
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+    "sha256": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+    "bytes": 142017
+  }
+}

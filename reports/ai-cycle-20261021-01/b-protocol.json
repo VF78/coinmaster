@@ -1,0 +1,138 @@
+{
+  "stage": "B",
+  "frozen_utc": "2026-10-21T17:50:02.042548+00:00",
+  "conditional_trigger": "A corrected all6 NO_SKILL; no A policy/final/CHECK/native",
+  "base_protocol_sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586",
+  "code_git_SHA": "67b630e67f6a18c9e9be918d9b4337c960db1e9a",
+  "original_weights_only": {
+    "small/config.json": {
+      "sha256": "5e0f6a605d5f81b5c9b559fe5cf716a1acb041c744e6f41bd05b097b7a685396",
+      "bytes": 228,
+      "revision": "ac5c409a313c4eadd1ca78201322f5cadb9c34ab",
+      "repo": "NeoQuasar/Kronos-small",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-small/resolve/ac5c409a313c4eadd1ca78201322f5cadb9c34ab/config.json"
+    },
+    "small/model.safetensors": {
+      "sha256": "b082dfcbd8e8c142a725c8bbb99781802f38fec81210e13479effb32b3c3e020",
+      "bytes": 98980656,
+      "revision": "ac5c409a313c4eadd1ca78201322f5cadb9c34ab",
+      "repo": "NeoQuasar/Kronos-small",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-small/resolve/ac5c409a313c4eadd1ca78201322f5cadb9c34ab/model.safetensors"
+    },
+    "tokenizer/config.json": {
+      "sha256": "2366e7ccfec76cbc19cf3c4c1b9c5d901be336ca1e83f2d2292c9bff381b77a2",
+      "bytes": 301,
+      "revision": "9ef143b98ee3c2488eebd85404e0c215c112b46a",
+      "repo": "NeoQuasar/Kronos-Tokenizer-base",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-Tokenizer-base/resolve/9ef143b98ee3c2488eebd85404e0c215c112b46a/config.json"
+    },
+    "tokenizer/model.safetensors": {
+      "sha256": "59d85f6af76a2c3b8240ea06cb21db4213b4eeca053f246b23e29cf832fc6bee",
+      "bytes": 15842368,
+      "revision": "9ef143b98ee3c2488eebd85404e0c215c112b46a",
+      "repo": "NeoQuasar/Kronos-Tokenizer-base",
+      "url": "https://huggingface.co/NeoQuasar/Kronos-Tokenizer-base/resolve/9ef143b98ee3c2488eebd85404e0c215c112b46a/model.safetensors"
+    },
+    "download_wall_seconds": 35.94374308409169
+  },
+  "provenance": "b-provenance.json",
+  "model": "Kronos-small",
+  "device": "cpu",
+  "threads": 1,
+  "RSS_bytes": 3221225472,
+  "wall_budget_seconds": 5400,
+  "pilot_max_wall_seconds": 300,
+  "lookback_hours": 80,
+  "horizon_hours": 24,
+  "max_context": 512,
+  "price_only_zero_volume_amount": true,
+  "input_timestamp": "Real hourly bar open timestamps, bar_end<=g; generated opens g..g+23h, terminal close atg+24h",
+  "sampling": {
+    "paths": 16,
+    "temperature": 1,
+    "top_k": 0,
+    "top_p": 0.9,
+    "sample_count": 1,
+    "independent_calls": 16,
+    "seed": "uint32little SHA256 UTF8 7|asset|g_epoch_ms|sample_id first4bytes",
+    "no_KV_or_batch_recipe_substitution": true
+  },
+  "features": {
+    "per_asset": [
+      "mean",
+      "sample_std_ddof1",
+      "q20",
+      "q50",
+      "q80",
+      "freq_gt+.25",
+      "freq_lt-.25"
+    ],
+    "terminal": "log(generated_terminal_close/reference_close_g)/sigma_g",
+    "generation_grid": "every6hUTC",
+    "asof": "most recent g<=t; unchanged7 values/reference_close_g/sigma_g, age_hours=t-g; no backfill",
+    "augmented_width": 766,
+    "invalid": "any terminal<=0/nonfinite or missing real warmup => explicit invalid, no imputation",
+    "generated_paths": "never used as minute entry/touch labels"
+  },
+  "pilot_origins": [
+    1725148800000,
+    1728280800000,
+    1731434400000,
+    1734566400000,
+    1737720000000,
+    1740852000000,
+    1744005600000,
+    1747137600000,
+    1750291200000,
+    1753423200000,
+    1756576800000,
+    1759708800000,
+    1762862400000,
+    1765994400000,
+    1769148000000,
+    1772301600000
+  ],
+  "generation_counts": {
+    "all_unique_six_hour_origins": 3120,
+    "development_and_train_origins": 1824,
+    "final_prefix_origins": 2184,
+    "full_first_g": 1725148800000,
+    "full_last_g": 1792519200000,
+    "origin_sha256": "7cf96df7237d74e63871636a0ec6e76f9096c0963f681eb9d0700a496d296db5"
+  },
+  "pilot": "16 fixed common origins TRAIN-only; outcomes never loaded; save all16 paths perasset origin separately",
+  "early_resource_stop": "After >=3 completed paired origins (first pair warmup plus2 warmed pairs), exclude load/startup and firstpair; if FASTEST warmed pairseconds times3120 exceeds5400, stop outcome-blind INCOMPLETE_RESOURCE. Record all asset/pair times. No recipe/pathcount/device change.",
+  "head_recipe": "unchanged A selected resource-prioritydepth4 CatBoost500 ES50 last28fitdays/refit; no challenger/no shape repetition",
+  "fit_counts": {
+    "development_CatBoost_ES_refit": 36,
+    "final_BTC_CatBoost_ES_refit_conditional": 6,
+    "quarterly_BTC_CatBoost_ES_refit_conditional": 42,
+    "final_BTC_logistic_conditional": 1,
+    "final_BTC_linear_Q_ES_refit_conditional": 4,
+    "A_OOF_priors_linear_joint_heads": "reuse valid identical IDs, no refit",
+    "quarterly_SOL_or_linear_baselines": 0
+  },
+  "head_budget_seconds": 3802.373806559276,
+  "resource_projection": "measured generation pairedmean x3120 shared cache + headbudget + model load, whole20percentmargin; includes pilot by reusing its fixed cache; no fullB unless <=90min",
+  "head_budget_basis": "prior measured full50057.19s scaling with actual prefixrows; halfAdevelopment (jointonly), final/quarterBTConly, width766/750 factor; final5baselinefits +360s inference/bootstrap/I-O",
+  "full_B_not_authorized": true,
+  "quality_accessed": false,
+  "preparation_budget_reserve_seconds": 60,
+  "preparation_observed_scientific_seconds": 5.244912332782805,
+  "preparation_download_wall_seconds": 35.94374308409169,
+  "dependency_versions": {
+    "torch": "2.14.1",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "einops": "0.8.1",
+    "huggingface_hub": "0.33.1",
+    "safetensors": "0.6.2",
+    "tqdm": "4.67.1",
+    "requests": "2.32.5",
+    "PyYAML": "6.0.3",
+    "certifi": "2026.10.19",
+    "charset-normalizer": "3.5.2",
+    "idna": "3.20",
+    "urllib3": "2.8.0"
+  }
+}
