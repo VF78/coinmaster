@@ -1,0 +1,69 @@
+{
+  "stage": "SPATIAL_OUTCOME_BLIND_RESOURCE",
+  "source_sha256": "75fec223c3bc14cee8461738e99d9850a29928b449c83b355235b15eeee85beb",
+  "model_source_sha256": "3f38bf29c0db2aec761177cad97b9f30b226658de86ec945d9b3b523dab79177",
+  "protocol_sha256": "e5c3e7f7a5436805c7230e8e29647534167e1cc769e40ed1696524a12396c700",
+  "torch_version": "2.14.1",
+  "cpu_threads": 4,
+  "batch": 64,
+  "results": [
+    {
+      "device": "cpu",
+      "forward_loss_metric_backward_seconds": [
+        0.5008136252872646,
+        0.4938785000704229,
+        0.48614437505602837
+      ],
+      "forward_seconds": [
+        0.31283508287742734,
+        0.30753745790570974,
+        0.3264560420066118
+      ],
+      "sampled_memory_max": {
+        "rss_peak_bytes": 1106509824,
+        "mps_allocated_bytes": 0,
+        "mps_driver_bytes": 0
+      },
+      "full_worst_with20percent_seconds": 16301.210580693707
+    },
+    {
+      "device": "mps",
+      "forward_loss_metric_backward_seconds": [
+        0.06899779103696346,
+        0.06671704212203622,
+        0.06640104204416275
+      ],
+      "forward_seconds": [
+        0.0131676672026515,
+        0.013258958235383034,
+        0.013233916368335485
+      ],
+      "sampled_memory_max": {
+        "rss_peak_bytes": 1106984960,
+        "mps_allocated_bytes": 40635904,
+        "mps_driver_bytes": 1095467008
+      },
+      "full_worst_with20percent_seconds": 2455.5603641943635
+    }
+  ],
+  "selected_device": "mps",
+  "wall_request_seconds": 2456,
+  "pool_parity": {
+    "output_max_abs_delta": 0.0,
+    "input_gradient_max_abs_delta": 0.0,
+    "tolerance": 1e-06
+  },
+  "max_market_optimizer_steps": 25650,
+  "max_ES_forward_batches": 900,
+  "max_refit_outer_inference_batches": 575,
+  "optimizer_timing_allowance_seconds": 76.95,
+  "IO_scalers_SVD_retrieval_evaluation_reserve_seconds": 180,
+  "exact_MPS_peak": "UNKNOWN; sampled afterbackward/inference only",
+  "watermark_env": "DEFAULT",
+  "fallback_env": "UNSET",
+  "optimizer_steps": 0,
+  "parameter_changes": 0,
+  "market_fits": 0,
+  "synthetic_fits": 0,
+  "wall_seconds": 4.5650867922231555
+}

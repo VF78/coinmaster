@@ -1,0 +1,8 @@
+{
+  "status": "FAILED_TECHNICAL_BEFORE_FIT",
+  "cause": "MPS native adaptive28x28 to2x8 requires divisible input/output",
+  "torch_version": "2.14.1",
+  "market_fits": 0,
+  "optimizer_steps": 0,
+  "source": "https://github.com/pytorch/pytorch/issues/96056"
+}
