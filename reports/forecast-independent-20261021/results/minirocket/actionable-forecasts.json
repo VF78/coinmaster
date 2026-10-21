@@ -1,0 +1,1221 @@
+[
+  {
+    "row": 27755,
+    "asset": "SOLUSDT",
+    "origin_ms": 1775106000000,
+    "entry_ms": 1775106060000,
+    "expiry_ms": 1775192460000,
+    "entry": 78.82,
+    "reference": 78.78,
+    "side": -1,
+    "reference_TP": [
+      77.0295834514113,
+      75.73096838463417,
+      74.20959732372253
+    ],
+    "entry_TP": [
+      77.06869468951813,
+      75.76942025992464,
+      74.2472767333817
+    ],
+    "upper_entry_TP": [
+      77.06869468951813,
+      75.76942025992464,
+      74.2472767333817
+    ],
+    "upper_reference_TP": [
+      77.0295834514113,
+      75.73096838463417,
+      74.20959732372253
+    ],
+    "reference_SL": 81.32366963237912,
+    "entry_SL": 81.36496116303785,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 513,
+        "upper_time_minutes": 513
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0005076142240977125
+  },
+  {
+    "row": 27987,
+    "asset": "SOLUSDT",
+    "origin_ms": 1775523600000,
+    "entry_ms": 1775523660000,
+    "expiry_ms": 1775610060000,
+    "entry": 79.7,
+    "reference": 79.83,
+    "side": -1,
+    "reference_TP": [
+      77.75696574201415,
+      76.49999876449198,
+      73.56964944099369
+    ],
+    "entry_TP": [
+      77.6303415963739,
+      76.37542153989742,
+      73.4498441744607
+    ],
+    "upper_entry_TP": [
+      77.6303415963739,
+      76.37542153989742,
+      73.33945627400897
+    ],
+    "upper_reference_TP": [
+      77.75696574201415,
+      76.49999876449198,
+      73.45908148499542
+    ],
+    "reference_SL": 82.32072601038726,
+    "entry_SL": 82.18666996151653,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.001629787861538137
+  },
+  {
+    "row": 28535,
+    "asset": "SOLUSDT",
+    "origin_ms": 1776510000000,
+    "entry_ms": 1776510060000,
+    "expiry_ms": 1776596460000,
+    "entry": 86.88,
+    "reference": 86.93,
+    "side": -1,
+    "reference_TP": [
+      85.727985460192,
+      84.58855586115507,
+      80.28285300645366
+    ],
+    "entry_TP": [
+      85.67867682942,
+      84.53990260229095,
+      80.236676282074
+    ],
+    "upper_entry_TP": [
+      85.67867682942,
+      84.53990260229095,
+      80.0150672806338
+    ],
+    "upper_reference_TP": [
+      85.727985460192,
+      84.58855586115507,
+      80.06111646760472
+    ],
+    "reference_SL": 89.70218599784819,
+    "entry_SL": 89.65059150457897,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 869,
+        "upper_time_minutes": 869
+      },
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 1222,
+        "upper_time_minutes": 1222
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.0005753409053477883
+  },
+  {
+    "row": 28581,
+    "asset": "SOLUSDT",
+    "origin_ms": 1776592800000,
+    "entry_ms": 1776592860000,
+    "expiry_ms": 1776679260000,
+    "entry": 84.44,
+    "reference": 84.52,
+    "side": -1,
+    "reference_TP": [
+      82.85344006815251,
+      81.52356018753078,
+      78.03116067475399
+    ],
+    "entry_TP": [
+      82.77501750301465,
+      81.44639638233672,
+      77.95730250090187
+    ],
+    "upper_entry_TP": [
+      82.77501750301465,
+      81.44639638233672,
+      77.95730250090187
+    ],
+    "upper_reference_TP": [
+      82.85344006815251,
+      81.52356018753078,
+      78.03116067475399
+    ],
+    "reference_SL": 87.0042801408032,
+    "entry_SL": 86.92192871615502,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.0009469697677360357
+  },
+  {
+    "row": 28583,
+    "asset": "SOLUSDT",
+    "origin_ms": 1776596400000,
+    "entry_ms": 1776596460000,
+    "expiry_ms": 1776682860000,
+    "entry": 84.75,
+    "reference": 84.73,
+    "side": -1,
+    "reference_TP": [
+      82.53211800373035,
+      81.77903534973605,
+      79.25904664939833
+    ],
+    "entry_TP": [
+      82.55159920708304,
+      81.79833879251895,
+      79.27775526420994
+    ],
+    "upper_entry_TP": [
+      82.55159920708304,
+      81.79833879251895,
+      79.27775526420994
+    ],
+    "upper_reference_TP": [
+      82.53211800373035,
+      81.77903534973605,
+      79.25904664939833
+    ],
+    "reference_SL": 87.22072114976584,
+    "entry_SL": 87.24130906931022,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0002360160501869469
+  },
+  {
+    "row": 28627,
+    "asset": "SOLUSDT",
+    "origin_ms": 1776675600000,
+    "entry_ms": 1776675660000,
+    "expiry_ms": 1776762060000,
+    "entry": 84.69,
+    "reference": 84.62,
+    "side": 1,
+    "reference_TP": [
+      85.02464452407746,
+      87.49134533242146,
+      91.54888855388502
+    ],
+    "entry_TP": [
+      85.09497925719829,
+      87.56372058854612,
+      91.62462032177406
+    ],
+    "upper_entry_TP": [
+      85.09497925719829,
+      87.56372058854612,
+      91.6810822335854
+    ],
+    "upper_reference_TP": [
+      85.02464452407746,
+      87.49134533242146,
+      91.60530379744948
+    ],
+    "reference_SL": 82.15726722676895,
+    "entry_SL": 82.2252299862333,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 38,
+        "upper_time_minutes": 38
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0008268856415860858
+  },
+  {
+    "row": 28960,
+    "asset": "BTCUSDT",
+    "origin_ms": 1777276800000,
+    "entry_ms": 1777276860000,
+    "expiry_ms": 1777363260000,
+    "entry": 77608.5,
+    "reference": 77558.2,
+    "side": -1,
+    "reference_TP": [
+      76955.27781937167,
+      76370.40723168779,
+      74213.48824551547
+    ],
+    "entry_TP": [
+      77005.18679707247,
+      76419.93689436374,
+      74261.61904868974
+    ],
+    "upper_entry_TP": [
+      77005.18679707247,
+      76419.93689436374,
+      74261.61904868974
+    ],
+    "upper_reference_TP": [
+      76955.27781937167,
+      76370.40723168779,
+      74213.48824551547
+    ],
+    "reference_SL": 78909.80518096847,
+    "entry_SL": 78960.98175804998,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 438,
+        "upper_time_minutes": 438
+      },
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 690,
+        "upper_time_minutes": 690
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0006483350069559218
+  },
+  {
+    "row": 29122,
+    "asset": "BTCUSDT",
+    "origin_ms": 1777568400000,
+    "entry_ms": 1777568460000,
+    "expiry_ms": 1777654860000,
+    "entry": 76239.1,
+    "reference": 76213.7,
+    "side": 1,
+    "reference_TP": [
+      76523.32142764484,
+      77592.65191693648,
+      79206.08798130875
+    ],
+    "entry_TP": [
+      76548.82461623511,
+      77618.51148494972,
+      79232.4852646676
+    ],
+    "upper_entry_TP": [
+      76548.82461623511,
+      77656.09827364767,
+      79232.4852646676
+    ],
+    "upper_reference_TP": [
+      76523.32142764484,
+      77630.22618313046,
+      79206.08798130875
+    ],
+    "reference_SL": 75079.40951677921,
+    "entry_SL": 75104.4314879173,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 495,
+        "upper_time_minutes": 495
+      },
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 1154,
+        "upper_time_minutes": 1154
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0003332178908491684
+  },
+  {
+    "row": 29304,
+    "asset": "BTCUSDT",
+    "origin_ms": 1777896000000,
+    "entry_ms": 1777896060000,
+    "expiry_ms": 1777982460000,
+    "entry": 78709.7,
+    "reference": 78753.7,
+    "side": -1,
+    "reference_TP": [
+      78040.06788342049,
+      77066.38227275449,
+      75352.33554598254
+    ],
+    "entry_TP": [
+      77996.46659247327,
+      77023.32498376361,
+      75310.23590159728
+    ],
+    "upper_entry_TP": [
+      77996.46659247327,
+      77023.32498376361,
+      75298.67529341855
+    ],
+    "upper_reference_TP": [
+      78040.06788342049,
+      77066.38227275449,
+      75340.76847523617
+    ],
+    "reference_SL": 80058.1349538796,
+    "entry_SL": 80013.40616097247,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.0005588600417009747
+  },
+  {
+    "row": 30211,
+    "asset": "SOLUSDT",
+    "origin_ms": 1779526800000,
+    "entry_ms": 1779526860000,
+    "expiry_ms": 1779613260000,
+    "entry": 82.04,
+    "reference": 82.09,
+    "side": -1,
+    "reference_TP": [
+      80.78070756721436,
+      79.42616850734157,
+      76.25488370496663
+    ],
+    "entry_TP": [
+      80.73150504098265,
+      79.37779101403707,
+      76.20843780186945
+    ],
+    "upper_entry_TP": [
+      80.73150504098265,
+      79.37779101403707,
+      76.20843780186945
+    ],
+    "upper_reference_TP": [
+      80.78070756721436,
+      79.42616850734157,
+      76.25488370496663
+    ],
+    "reference_SL": 84.13171988915319,
+    "entry_SL": 84.08047630291298,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.0006092731559948491
+  },
+  {
+    "row": 30335,
+    "asset": "SOLUSDT",
+    "origin_ms": 1779750000000,
+    "entry_ms": 1779750060000,
+    "expiry_ms": 1779836460000,
+    "entry": 84.81,
+    "reference": 84.76,
+    "side": -1,
+    "reference_TP": [
+      83.44413792684729,
+      82.00674723564522,
+      79.35598491592538
+    ],
+    "entry_TP": [
+      83.49336169863047,
+      82.05512308937082,
+      79.40279708258177
+    ],
+    "upper_entry_TP": [
+      83.49336169863047,
+      82.05512308937082,
+      79.40279708258177
+    ],
+    "upper_reference_TP": [
+      83.44413792684729,
+      82.00674723564522,
+      79.35598491592538
+    ],
+    "reference_SL": 86.92906684332502,
+    "entry_SL": 86.98034637780079,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 1106,
+        "upper_time_minutes": 1106
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0005897269735102135
+  },
+  {
+    "row": 30433,
+    "asset": "SOLUSDT",
+    "origin_ms": 1779926400000,
+    "entry_ms": 1779926460000,
+    "expiry_ms": 1780012860000,
+    "entry": 82.48,
+    "reference": 82.38,
+    "side": -1,
+    "reference_TP": [
+      80.90572930410853,
+      79.42485883909372,
+      76.55726986000997
+    ],
+    "entry_TP": [
+      81.00393970627424,
+      79.52127163205209,
+      76.65020172437026
+    ],
+    "upper_entry_TP": [
+      81.00393970627424,
+      79.52127163205209,
+      76.65020172437026
+    ],
+    "upper_reference_TP": [
+      80.90572930410853,
+      79.42485883909372,
+      76.55726986000997
+    ],
+    "reference_SL": 84.54442609137027,
+    "entry_SL": 84.64705345977447,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 198,
+        "upper_time_minutes": 198
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0012131507007699974
+  },
+  {
+    "row": 30909,
+    "asset": "SOLUSDT",
+    "origin_ms": 1780783200000,
+    "entry_ms": 1780783260000,
+    "expiry_ms": 1780869660000,
+    "entry": 61.76,
+    "reference": 61.87,
+    "side": 1,
+    "reference_TP": [
+      63.1565498871633,
+      65.08462708228717,
+      68.89507139219094
+    ],
+    "entry_TP": [
+      63.04426250252474,
+      64.96891172784962,
+      68.77258136708765
+    ],
+    "upper_entry_TP": [
+      63.269068192021855,
+      64.96891172784962,
+      68.77258136708765
+    ],
+    "upper_reference_TP": [
+      63.38175597539495,
+      65.08462708228717,
+      68.89507139219094
+    ],
+    "reference_SL": 58.80872879378693,
+    "entry_SL": 58.70417149352321,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 188,
+        "upper_time_minutes": 188
+      },
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 570,
+        "upper_time_minutes": 570
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.0017795038263766362
+  },
+  {
+    "row": 31270,
+    "asset": "BTCUSDT",
+    "origin_ms": 1781434800000,
+    "entry_ms": 1781434860000,
+    "expiry_ms": 1781521260000,
+    "entry": 64476.3,
+    "reference": 64489.2,
+    "side": 1,
+    "reference_TP": [
+      65084.37669460172,
+      66143.37957638307,
+      68701.53155234843
+    ],
+    "entry_TP": [
+      65071.357639327965,
+      66130.14868506274,
+      68687.78894495021
+    ],
+    "upper_entry_TP": [
+      65104.454148470046,
+      66269.46341984993,
+      68687.78894495021
+    ],
+    "upper_reference_TP": [
+      65117.47982547873,
+      66282.722184359,
+      68701.53155234843
+    ],
+    "reference_SL": 63101.11281072443,
+    "entry_SL": 63088.49047465486,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 640,
+        "upper_time_minutes": 640
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.00020005350334810897
+  },
+  {
+    "row": 32417,
+    "asset": "SOLUSDT",
+    "origin_ms": 1783497600000,
+    "entry_ms": 1783497660000,
+    "expiry_ms": 1783584060000,
+    "entry": 78.26,
+    "reference": 78.26,
+    "side": -1,
+    "reference_TP": [
+      76.0333904138552,
+      74.78399722264784,
+      72.7785173545214
+    ],
+    "entry_TP": [
+      76.0333904138552,
+      74.78399722264784,
+      72.7785173545214
+    ],
+    "upper_entry_TP": [
+      76.0333904138552,
+      74.74244822614415,
+      72.7785173545214
+    ],
+    "upper_reference_TP": [
+      76.0333904138552,
+      74.74244822614415,
+      72.7785173545214
+    ],
+    "reference_SL": 80.63848670588335,
+    "entry_SL": 80.63848670588335,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0
+  },
+  {
+    "row": 32422,
+    "asset": "BTCUSDT",
+    "origin_ms": 1783508400000,
+    "entry_ms": 1783508460000,
+    "expiry_ms": 1783594860000,
+    "entry": 62115.7,
+    "reference": 62153.4,
+    "side": 1,
+    "reference_TP": [
+      62929.7399547973,
+      64143.14601190769,
+      66193.21729380646
+    ],
+    "entry_TP": [
+      62891.56905511528,
+      64104.239104085274,
+      66153.06688703905
+    ],
+    "upper_entry_TP": [
+      62891.56905511528,
+      64104.239104085274,
+      66153.06688703905
+    ],
+    "upper_reference_TP": [
+      62929.7399547973,
+      64143.14601190769,
+      66193.21729380646
+    ],
+    "reference_SL": 60794.82499384777,
+    "entry_SL": 60757.94905621172,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 1199,
+        "upper_time_minutes": 1199
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.0006067477942076866
+  },
+  {
+    "row": 33736,
+    "asset": "BTCUSDT",
+    "origin_ms": 1785873600000,
+    "entry_ms": 1785873660000,
+    "expiry_ms": 1785960060000,
+    "entry": 64181.6,
+    "reference": 64206.0,
+    "side": 1,
+    "reference_TP": [
+      64490.01545589498,
+      65086.329500003274,
+      66314.26838990621
+    ],
+    "entry_TP": [
+      64465.50752241332,
+      65061.594951210325,
+      66289.06719144012
+    ],
+    "upper_entry_TP": [
+      64701.728249758096,
+      65122.32812358291,
+      66289.06719144012
+    ],
+    "upper_reference_TP": [
+      64726.325987572265,
+      65147.085761382776,
+      66314.26838990621
+    ],
+    "reference_SL": 63188.399149736644,
+    "entry_SL": 63164.38586532002,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 196,
+        "upper_time_minutes": 196
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.00038009901725353476
+  },
+  {
+    "row": 33817,
+    "asset": "SOLUSDT",
+    "origin_ms": 1786017600000,
+    "entry_ms": 1786017660000,
+    "expiry_ms": 1786104060000,
+    "entry": 73.41,
+    "reference": 73.42,
+    "side": -1,
+    "reference_TP": [
+      72.65739980318789,
+      71.93929980554206,
+      70.14730400423744
+    ],
+    "entry_TP": [
+      72.6475036713705,
+      71.92950148086139,
+      70.13774975416877
+    ],
+    "upper_entry_TP": [
+      72.6475036713705,
+      71.92950148086139,
+      70.13774975416877
+    ],
+    "upper_reference_TP": [
+      72.65739980318789,
+      71.93929980554206,
+      70.14730400423744
+    ],
+    "reference_SL": 74.6483520660005,
+    "entry_SL": 74.63818476116992,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 438,
+        "upper_time_minutes": 438
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.00013621194599829656
+  },
+  {
+    "row": 34277,
+    "asset": "SOLUSDT",
+    "origin_ms": 1786845600000,
+    "entry_ms": 1786845660000,
+    "expiry_ms": 1786932060000,
+    "entry": 75.37,
+    "reference": 75.39,
+    "side": -1,
+    "reference_TP": [
+      74.74179485259342,
+      73.9449121024968,
+      72.18569013315255
+    ],
+    "entry_TP": [
+      74.72196681310474,
+      73.9252954657804,
+      72.16654019545972
+    ],
+    "upper_entry_TP": [
+      74.72196681310474,
+      73.9252954657804,
+      72.16654019545972
+    ],
+    "upper_reference_TP": [
+      74.74179485259342,
+      73.9449121024968,
+      72.18569013315255
+    ],
+    "reference_SL": 76.54235347913989,
+    "entry_SL": 76.5220477745427,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 1180,
+        "upper_time_minutes": 1180
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.00026532236823197
+  },
+  {
+    "row": 34281,
+    "asset": "SOLUSDT",
+    "origin_ms": 1786852800000,
+    "entry_ms": 1786852860000,
+    "expiry_ms": 1786939260000,
+    "entry": 75.57,
+    "reference": 75.54,
+    "side": 1,
+    "reference_TP": [
+      76.11188687625878,
+      76.81317508487389,
+      78.21978410406219
+    ],
+    "entry_TP": [
+      76.14211399574894,
+      76.84368071437541,
+      78.25084835509635
+    ],
+    "upper_entry_TP": [
+      76.25727750088427,
+      76.85919777906895,
+      78.25084835509635
+    ],
+    "upper_reference_TP": [
+      76.22700466344844,
+      76.82868598955761,
+      78.21978410406219
+    ],
+    "reference_SL": 74.40207235652424,
+    "entry_SL": 74.43162043927106,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.00039706174831749926
+  },
+  {
+    "row": 36061,
+    "asset": "SOLUSDT",
+    "origin_ms": 1790056800000,
+    "entry_ms": 1790056860000,
+    "expiry_ms": 1790143260000,
+    "entry": 116.91,
+    "reference": 116.76,
+    "side": -1,
+    "reference_TP": [
+      114.30104996896785,
+      112.02627696178757,
+      108.3453213799284
+    ],
+    "entry_TP": [
+      114.44789098896908,
+      112.17019561153292,
+      108.48451115559632
+    ],
+    "upper_entry_TP": [
+      114.44789098896908,
+      112.17019561153292,
+      108.48451115559632
+    ],
+    "upper_reference_TP": [
+      114.30104996896785,
+      112.02627696178757,
+      108.3453213799284
+    ],
+    "reference_SL": 120.57847478935972,
+    "entry_SL": 120.73338033251152,
+    "touch": [
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 0.0012838620328135086
+  },
+  {
+    "row": 36455,
+    "asset": "SOLUSDT",
+    "origin_ms": 1790766000000,
+    "entry_ms": 1790766060000,
+    "expiry_ms": 1790852460000,
+    "entry": 119.53,
+    "reference": 119.83,
+    "side": 1,
+    "reference_TP": [
+      121.55842598204238,
+      123.57174538978015,
+      128.8979306216963
+    ],
+    "entry_TP": [
+      121.25409878689415,
+      123.26237775549046,
+      128.57522863399282
+    ],
+    "upper_entry_TP": [
+      121.29029889008535,
+      123.26237775549046,
+      128.57522863399282
+    ],
+    "upper_reference_TP": [
+      121.59471694134467,
+      123.57174538978015,
+      128.8979306216963
+    ],
+    "reference_SL": 116.35820252352205,
+    "entry_SL": 116.06689433060662,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 95,
+        "upper_time_minutes": 95
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": -0.0025066858045355795
+  },
+  {
+    "row": 37262,
+    "asset": "BTCUSDT",
+    "origin_ms": 1792220400000,
+    "entry_ms": 1792220460000,
+    "expiry_ms": 1792306860000,
+    "entry": 81599.6,
+    "reference": 81597.7,
+    "side": 1,
+    "reference_TP": [
+      81851.95669816756,
+      82742.92936805474,
+      84585.70750812608
+    ],
+    "entry_TP": [
+      81853.86261852717,
+      82744.85603468628,
+      84587.67708379141
+    ],
+    "upper_entry_TP": [
+      82019.64192569471,
+      82813.15513493295,
+      84587.67708379141
+    ],
+    "upper_reference_TP": [
+      82017.73214525878,
+      82811.22687799594,
+      84585.70750812608
+    ],
+    "reference_SL": 80160.51886762555,
+    "entry_SL": 80162.38540290594,
+    "touch": [
+      {
+        "lower_hit": true,
+        "upper_hit": true,
+        "lower_time_minutes": 1121,
+        "upper_time_minutes": 1121
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      },
+      {
+        "lower_hit": false,
+        "upper_hit": false,
+        "lower_time_minutes": null,
+        "upper_time_minutes": null
+      }
+    ],
+    "entry_gap_log": 2.328469895140778e-05
+  }
+]

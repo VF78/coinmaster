@@ -1,0 +1,112 @@
+{
+  "status": "DESCRIPTIVE_SAVED_CSV_COHORT_READBACK_PASS",
+  "prefix_prior_constant_class": "UP",
+  "prior_class_basis": "Frozen evaluator uses pooled constant TRAIN-prefix class; its saved direction accuracy uniquely equals this class frequency in the saved mature CSV; no model load or new prediction",
+  "mature_class_counts": {
+    "NEUTRAL": 2390,
+    "DOWN": 3498,
+    "UP": 3808
+  },
+  "pooled_prior_saved_accuracy": 0.3927392739273927,
+  "censored_excluded": true,
+  "no_models_or_inference": true,
+  "cohorts": [
+    {
+      "family": "control",
+      "asset": "BTCUSDT",
+      "evaluated_actionable_N": 0,
+      "terminal_direction_correct_rate": "UNKNOWN",
+      "prefix_prior_accuracy_same_IDs": "UNKNOWN",
+      "calibrated_control_accuracy_same_IDs": "UNKNOWN",
+      "unique_UTC_origin_days": 0
+    },
+    {
+      "family": "control",
+      "asset": "SOLUSDT",
+      "evaluated_actionable_N": 5,
+      "terminal_direction_correct_rate": 0.2,
+      "prefix_prior_accuracy_same_IDs": 0.8,
+      "calibrated_control_accuracy_same_IDs": 0.2,
+      "unique_UTC_origin_days": 3
+    },
+    {
+      "family": "stumpy",
+      "asset": "BTCUSDT",
+      "evaluated_actionable_N": 49,
+      "terminal_direction_correct_rate": 0.32653061224489793,
+      "prefix_prior_accuracy_same_IDs": 0.30612244897959184,
+      "calibrated_control_accuracy_same_IDs": 0.3877551020408163,
+      "unique_UTC_origin_days": 39
+    },
+    {
+      "family": "stumpy",
+      "asset": "SOLUSDT",
+      "evaluated_actionable_N": 174,
+      "terminal_direction_correct_rate": 0.367816091954023,
+      "prefix_prior_accuracy_same_IDs": 0.4482758620689655,
+      "calibrated_control_accuracy_same_IDs": 0.26436781609195403,
+      "unique_UTC_origin_days": 99
+    },
+    {
+      "family": "minirocket",
+      "asset": "BTCUSDT",
+      "evaluated_actionable_N": 7,
+      "terminal_direction_correct_rate": 0.7142857142857143,
+      "prefix_prior_accuracy_same_IDs": 0.7142857142857143,
+      "calibrated_control_accuracy_same_IDs": 0.7142857142857143,
+      "unique_UTC_origin_days": 7
+    },
+    {
+      "family": "minirocket",
+      "asset": "SOLUSDT",
+      "evaluated_actionable_N": 16,
+      "terminal_direction_correct_rate": 0.3125,
+      "prefix_prior_accuracy_same_IDs": 0.3125,
+      "calibrated_control_accuracy_same_IDs": 0.1875,
+      "unique_UTC_origin_days": 14
+    },
+    {
+      "family": "rdst",
+      "asset": "BTCUSDT",
+      "evaluated_actionable_N": 8,
+      "terminal_direction_correct_rate": 0.625,
+      "prefix_prior_accuracy_same_IDs": 0.5,
+      "calibrated_control_accuracy_same_IDs": 0.5,
+      "unique_UTC_origin_days": 8
+    },
+    {
+      "family": "rdst",
+      "asset": "SOLUSDT",
+      "evaluated_actionable_N": 18,
+      "terminal_direction_correct_rate": 0.4444444444444444,
+      "prefix_prior_accuracy_same_IDs": 0.4444444444444444,
+      "calibrated_control_accuracy_same_IDs": 0.4444444444444444,
+      "unique_UTC_origin_days": 13
+    },
+    {
+      "family": "cnn",
+      "asset": "BTCUSDT",
+      "evaluated_actionable_N": 0,
+      "terminal_direction_correct_rate": "UNKNOWN",
+      "prefix_prior_accuracy_same_IDs": "UNKNOWN",
+      "calibrated_control_accuracy_same_IDs": "UNKNOWN",
+      "unique_UTC_origin_days": 0
+    },
+    {
+      "family": "cnn",
+      "asset": "SOLUSDT",
+      "evaluated_actionable_N": 0,
+      "terminal_direction_correct_rate": "UNKNOWN",
+      "prefix_prior_accuracy_same_IDs": "UNKNOWN",
+      "calibrated_control_accuracy_same_IDs": "UNKNOWN",
+      "unique_UTC_origin_days": 0
+    }
+  ],
+  "CSV_sha256": {
+    "control": "c60a1f8d40ae6290a00d52afa727b2f8152ad7d84bdc668986fb66c27291c696",
+    "stumpy": "ff55261cf59851fbad05b83c82929911494cb32801c5931e4b2508e0a246ff2d",
+    "minirocket": "b3e53514421b8ae84bd7d4d11748e2a03de41b202ab21828cd5c1285e6aa4758",
+    "rdst": "6405694f12aa95b9986cb22f02bbfd6e526646377a42fac12de1260aa5472c59",
+    "cnn": "963938188fafee5e770fe2216aaf2c7322e4f2d0f7bc76e0fcbb60bd909ad5db"
+  }
+}

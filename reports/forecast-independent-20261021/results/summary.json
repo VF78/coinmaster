@@ -1,0 +1,428 @@
+{
+  "control": {
+    "raw": {
+      "lower_pinball": 0.2128431484352485,
+      "upper_pinball": 0.2128285665892008,
+      "direction_logloss": 1.0911870532174952,
+      "direction_brier": 0.6626677266327938,
+      "direction_accuracy": 0.36252062706270627,
+      "n": 9696
+    },
+    "calibrated": {
+      "lower_pinball": 0.21515333270661566,
+      "upper_pinball": 0.21514675424023544,
+      "direction_logloss": 1.0863430041104403,
+      "direction_brier": 0.6595438680008995,
+      "direction_accuracy": 0.36252062706270627,
+      "n": 9696
+    },
+    "coverage": {
+      "fully_observed": 9696,
+      "censored_origins": 48,
+      "actionable": 5,
+      "abstain": 9691,
+      "label_ambiguity_rows": 0
+    },
+    "vs_prefix_prior": {
+      "mean_lower_pinball_difference": 0.0031342736519291846,
+      "paired14day_CI95": [
+        -0.0008214955166017677,
+        0.006013791851466393
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "vs_calibrated_control": null,
+    "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-control-20261021T134117Z/result",
+    "export_directory": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/control",
+    "CHECK_wall_seconds": 4.04,
+    "CHECK_external_CPU_seconds": 2.4,
+    "cumulative_CPU_seconds": 686.0445660000001,
+    "seal_sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0",
+    "actionable_touch_summary": {
+      "BTCUSDT": {
+        "n": 0,
+        "targets": [
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          },
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          },
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          }
+        ]
+      },
+      "SOLUSDT": {
+        "n": 5,
+        "targets": [
+          {
+            "lower_hit_frequency": 0.8,
+            "upper_hit_frequency": 0.8
+          },
+          {
+            "lower_hit_frequency": 0.4,
+            "upper_hit_frequency": 0.4
+          },
+          {
+            "lower_hit_frequency": 0.2,
+            "upper_hit_frequency": 0.2
+          }
+        ]
+      }
+    }
+  },
+  "stumpy": {
+    "raw": {
+      "lower_pinball": 0.2131915422618282,
+      "upper_pinball": 0.2131915422618282,
+      "direction_logloss": 1.0923970592034713,
+      "direction_brier": 0.6629028240285101,
+      "direction_accuracy": 0.37293729372937295,
+      "n": 9696
+    },
+    "calibrated": {
+      "lower_pinball": 0.21489720829838224,
+      "upper_pinball": 0.21489720829838224,
+      "direction_logloss": 1.09472953597528,
+      "direction_brier": 0.664286259478043,
+      "direction_accuracy": 0.37293729372937295,
+      "n": 9696
+    },
+    "coverage": {
+      "fully_observed": 9696,
+      "censored_origins": 48,
+      "actionable": 223,
+      "abstain": 9473,
+      "label_ambiguity_rows": 0
+    },
+    "vs_prefix_prior": {
+      "mean_lower_pinball_difference": 0.002878149243695792,
+      "paired14day_CI95": [
+        -5.870324533532318e-05,
+        0.004859357181714463
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "vs_calibrated_control": {
+      "mean_lower_pinball_difference": -0.0002561244082333925,
+      "paired14day_CI95": [
+        -0.0019018171822816794,
+        0.0013125665522102042
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-stumpy-20261021T134446Z/result",
+    "export_directory": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/stumpy",
+    "CHECK_wall_seconds": 11.55,
+    "CHECK_external_CPU_seconds": 11.27,
+    "cumulative_CPU_seconds": 310.04353900000007,
+    "seal_sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31",
+    "actionable_touch_summary": {
+      "BTCUSDT": {
+        "n": 49,
+        "targets": [
+          {
+            "lower_hit_frequency": 0.7551020408163265,
+            "upper_hit_frequency": 0.7551020408163265
+          },
+          {
+            "lower_hit_frequency": 0.3469387755102041,
+            "upper_hit_frequency": 0.3469387755102041
+          },
+          {
+            "lower_hit_frequency": 0.061224489795918366,
+            "upper_hit_frequency": 0.061224489795918366
+          }
+        ]
+      },
+      "SOLUSDT": {
+        "n": 174,
+        "targets": [
+          {
+            "lower_hit_frequency": 0.735632183908046,
+            "upper_hit_frequency": 0.735632183908046
+          },
+          {
+            "lower_hit_frequency": 0.3620689655172414,
+            "upper_hit_frequency": 0.3620689655172414
+          },
+          {
+            "lower_hit_frequency": 0.09195402298850575,
+            "upper_hit_frequency": 0.09195402298850575
+          }
+        ]
+      }
+    }
+  },
+  "minirocket": {
+    "raw": {
+      "lower_pinball": 0.22783246265788878,
+      "upper_pinball": 0.22811585788888383,
+      "direction_logloss": 1.1785547759171011,
+      "direction_brier": 0.7138908713256384,
+      "direction_accuracy": 0.3758250825082508,
+      "n": 9696
+    },
+    "calibrated": {
+      "lower_pinball": 0.22898210769412872,
+      "upper_pinball": 0.22898008248020313,
+      "direction_logloss": 1.0893518009792973,
+      "direction_brier": 0.6607800702949449,
+      "direction_accuracy": 0.3758250825082508,
+      "n": 9696
+    },
+    "coverage": {
+      "fully_observed": 9696,
+      "censored_origins": 48,
+      "actionable": 23,
+      "abstain": 9673,
+      "label_ambiguity_rows": 0
+    },
+    "vs_prefix_prior": {
+      "mean_lower_pinball_difference": 0.016963048639442282,
+      "paired14day_CI95": [
+        0.011896599010700542,
+        0.02066163975596434
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "vs_calibrated_control": {
+      "mean_lower_pinball_difference": 0.013828774987513094,
+      "paired14day_CI95": [
+        0.01138761760704681,
+        0.016325231601276264
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-minirocket-20261021T134552Z/result",
+    "export_directory": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/minirocket",
+    "CHECK_wall_seconds": 7.27,
+    "CHECK_external_CPU_seconds": 5.93,
+    "cumulative_CPU_seconds": 1467.1026599999998,
+    "seal_sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82",
+    "actionable_touch_summary": {
+      "BTCUSDT": {
+        "n": 7,
+        "targets": [
+          {
+            "lower_hit_frequency": 0.8571428571428571,
+            "upper_hit_frequency": 0.8571428571428571
+          },
+          {
+            "lower_hit_frequency": 0.2857142857142857,
+            "upper_hit_frequency": 0.2857142857142857
+          },
+          {
+            "lower_hit_frequency": 0.0,
+            "upper_hit_frequency": 0.0
+          }
+        ]
+      },
+      "SOLUSDT": {
+        "n": 16,
+        "targets": [
+          {
+            "lower_hit_frequency": 0.5625,
+            "upper_hit_frequency": 0.5625
+          },
+          {
+            "lower_hit_frequency": 0.125,
+            "upper_hit_frequency": 0.125
+          },
+          {
+            "lower_hit_frequency": 0.0,
+            "upper_hit_frequency": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "rdst": {
+    "raw": {
+      "lower_pinball": 0.2188416349301722,
+      "upper_pinball": 0.2188034548984935,
+      "direction_logloss": 1.121466186135616,
+      "direction_brier": 0.6807560799855237,
+      "direction_accuracy": 0.380259900990099,
+      "n": 9696
+    },
+    "calibrated": {
+      "lower_pinball": 0.220638714595304,
+      "upper_pinball": 0.22070276335301475,
+      "direction_logloss": 1.088623615226937,
+      "direction_brier": 0.6603368136328077,
+      "direction_accuracy": 0.380259900990099,
+      "n": 9696
+    },
+    "coverage": {
+      "fully_observed": 9696,
+      "censored_origins": 48,
+      "actionable": 26,
+      "abstain": 9670,
+      "label_ambiguity_rows": 0
+    },
+    "vs_prefix_prior": {
+      "mean_lower_pinball_difference": 0.008619655540617518,
+      "paired14day_CI95": [
+        0.0046825977966544925,
+        0.01162903666815872
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "vs_calibrated_control": {
+      "mean_lower_pinball_difference": 0.005485381888688334,
+      "paired14day_CI95": [
+        0.0026087471238814665,
+        0.008270526606313704
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-rdst-20261021T134728Z/result",
+    "export_directory": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/rdst",
+    "CHECK_wall_seconds": 7.6,
+    "CHECK_external_CPU_seconds": 6.34,
+    "cumulative_CPU_seconds": 1136.8833149999998,
+    "seal_sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37",
+    "actionable_touch_summary": {
+      "BTCUSDT": {
+        "n": 8,
+        "targets": [
+          {
+            "lower_hit_frequency": 0.75,
+            "upper_hit_frequency": 0.75
+          },
+          {
+            "lower_hit_frequency": 0.375,
+            "upper_hit_frequency": 0.375
+          },
+          {
+            "lower_hit_frequency": 0.125,
+            "upper_hit_frequency": 0.125
+          }
+        ]
+      },
+      "SOLUSDT": {
+        "n": 18,
+        "targets": [
+          {
+            "lower_hit_frequency": 0.7222222222222222,
+            "upper_hit_frequency": 0.7222222222222222
+          },
+          {
+            "lower_hit_frequency": 0.3888888888888889,
+            "upper_hit_frequency": 0.3888888888888889
+          },
+          {
+            "lower_hit_frequency": 0.0,
+            "upper_hit_frequency": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "cnn": {
+    "raw": {
+      "lower_pinball": 0.21233614806428275,
+      "upper_pinball": 0.2123551277266663,
+      "direction_logloss": 1.08477910736482,
+      "direction_brier": 0.6578934771862756,
+      "direction_accuracy": 0.35705445544554454,
+      "n": 9696
+    },
+    "calibrated": {
+      "lower_pinball": 0.21413132299089543,
+      "upper_pinball": 0.2141364021817288,
+      "direction_logloss": 1.0847589718711683,
+      "direction_brier": 0.6578829951015047,
+      "direction_accuracy": 0.35705445544554454,
+      "n": 9696
+    },
+    "coverage": {
+      "fully_observed": 9696,
+      "censored_origins": 48,
+      "actionable": 0,
+      "abstain": 9696,
+      "label_ambiguity_rows": 0
+    },
+    "vs_prefix_prior": {
+      "mean_lower_pinball_difference": 0.002112263936209005,
+      "paired14day_CI95": [
+        -0.0013138712804812364,
+        0.004510021641640438
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "vs_calibrated_control": {
+      "mean_lower_pinball_difference": -0.0010220097157201795,
+      "paired14day_CI95": [
+        -0.0019476271739549422,
+        3.824314141243868e-05
+      ],
+      "blocks": 15,
+      "bootstrap_replicates": 1000,
+      "seed": 7
+    },
+    "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-cnn-20261021T134817Z/result",
+    "export_directory": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/cnn",
+    "CHECK_wall_seconds": 25.01,
+    "CHECK_external_CPU_seconds": 24.310000000000002,
+    "cumulative_CPU_seconds": 3276.978577,
+    "seal_sha256": "4d3f745ed0cf04034427403f6a2b63bd38ac7e02d8e48d48937e48aae2cd351b",
+    "actionable_touch_summary": {
+      "BTCUSDT": {
+        "n": 0,
+        "targets": [
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          },
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          },
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          }
+        ]
+      },
+      "SOLUSDT": {
+        "n": 0,
+        "targets": [
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          },
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          },
+          {
+            "lower_hit_frequency": null,
+            "upper_hit_frequency": null
+          }
+        ]
+      }
+    }
+  }
+}

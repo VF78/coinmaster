@@ -1,0 +1,35 @@
+{
+  "status": "REPORT_ONLY_V2_PASS",
+  "source_original": "runtime/var/research-results/cm113-final-results-v1",
+  "original_manifest_sha256": "9fa7ecd07a22c9695dcbc1d6e821e4915808a90d8fbdd78422eaaeb28b8712de",
+  "source_correction_sha256": "994182bbf15413b2770980f600f6dc5ec69a1ee105019e38ceaf99eb0c2e6dd3",
+  "counts": {
+    "control": {
+      "all_origin_actionable_forecast": 5,
+      "evaluated_actionable": 5,
+      "rows": 9744
+    },
+    "stumpy": {
+      "all_origin_actionable_forecast": 225,
+      "evaluated_actionable": 223,
+      "rows": 9744
+    },
+    "minirocket": {
+      "all_origin_actionable_forecast": 23,
+      "evaluated_actionable": 23,
+      "rows": 9744
+    },
+    "rdst": {
+      "all_origin_actionable_forecast": 26,
+      "evaluated_actionable": 26,
+      "rows": 9744
+    },
+    "cnn": {
+      "all_origin_actionable_forecast": 0,
+      "evaluated_actionable": 0,
+      "rows": 9744
+    }
+  },
+  "inference_repeated": false,
+  "original_preserved": true
+}

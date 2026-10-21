@@ -1,0 +1,101 @@
+{
+  "status": "ALL_FIVE_ONE_FROZEN_CHECK_COMPLETE",
+  "at_utc": "2026-10-21T13:58:39.646034+00:00",
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "all_methods_registry_sha256": "c5808ed67aa8f012e80c38163fa354bb74928eaafa77208dd371de5a62a11f9e",
+  "order": [
+    "control",
+    "stumpy",
+    "minirocket",
+    "rdst",
+    "cnn"
+  ],
+  "per_family": {
+    "control": {
+      "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-control-20261021T134117Z/result",
+      "CHECK_wall_seconds": 4.04,
+      "CHECK_external_CPU_seconds": 2.4,
+      "cumulative_CPU_seconds": 686.0445660000001,
+      "seal_sha256": "6d7d067b9e83183130547d4a00be3552822e24357cc0400dd4dec38e55d1c1d0"
+    },
+    "stumpy": {
+      "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-stumpy-20261021T134446Z/result",
+      "CHECK_wall_seconds": 11.55,
+      "CHECK_external_CPU_seconds": 11.27,
+      "cumulative_CPU_seconds": 310.04353900000007,
+      "seal_sha256": "18aa66a2f9a5a5ee4afccb2c81525b888d48562bf5bae505572b298e68eacc31"
+    },
+    "minirocket": {
+      "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-minirocket-20261021T134552Z/result",
+      "CHECK_wall_seconds": 7.27,
+      "CHECK_external_CPU_seconds": 5.93,
+      "cumulative_CPU_seconds": 1467.1026599999998,
+      "seal_sha256": "63b1019b5482cc9e5d5f1560a200643d2ce33e9173be82b275dd94b54161eb82"
+    },
+    "rdst": {
+      "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-rdst-20261021T134728Z/result",
+      "CHECK_wall_seconds": 7.6,
+      "CHECK_external_CPU_seconds": 6.34,
+      "cumulative_CPU_seconds": 1136.8833149999998,
+      "seal_sha256": "81d47ceba9e3092dc905e66fbcef5b7961a58f59c0a0563743b6ceb00875bd37"
+    },
+    "cnn": {
+      "actual_output": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-check-cnn-20261021T134817Z/result",
+      "CHECK_wall_seconds": 25.01,
+      "CHECK_external_CPU_seconds": 24.310000000000002,
+      "cumulative_CPU_seconds": 3276.978577,
+      "seal_sha256": "4d3f745ed0cf04034427403f6a2b63bd38ac7e02d8e48d48937e48aae2cd351b"
+    }
+  },
+  "single_model_evaluations": true,
+  "no_refit_recalibration_or_repeated_inference": true,
+  "report_only_export_version": 2,
+  "original_v1_preserved": "runtime/var/research-results/cm113-final-results-v1",
+  "canonical_final_exports": "reports/forecast-independent-20261021/results",
+  "artifact_manifest_sha256": "3e90d29211b45aedf1243e17f72241a656774e1bab2c38c20fab7d16f13fa3c1",
+  "report_QA": "PASS",
+  "pilot_final_readback": {
+    "unit": "coinmaster-hl-stageg-testnet.service",
+    "ActiveState": "active",
+    "SubState": "running",
+    "MainPID": 2009732,
+    "NRestarts": 0,
+    "read_only": true
+  },
+  "native_resource_note": "Darwin external time/ps receipts are authoritative for RSS; frozen runtime wrongly scales ru_maxrss by Linux1024",
+  "independent_QA": {
+    "independent-postcheck-verification-v2.json": {
+      "sha256": "aaf9fb011b9bd75bad7f7a56fd728178f5a1375e253bd3cd1a79c8ddd1a77d25",
+      "status": "PASS_AS_CONFIRMED_BY_COORDINATOR"
+    },
+    "final-report-v2/static-qa.json": {
+      "sha256": "7294192860e4c0ea2918c4c49f93104ba00361629cfe17a0249b406ddaedc5af",
+      "status": "PASS_AS_CONFIRMED_BY_COORDINATOR"
+    },
+    "final-report-v2/report.receipt.json": {
+      "sha256": "aef1fcbc0f23c49532fb71322f5996e031abb477d76883882569cc92aa939cea",
+      "status": "PASS_AS_CONFIRMED_BY_COORDINATOR"
+    },
+    "final-report-v1/visual-qa.json": {
+      "sha256": "605fb34965c630bb09fdab9f8177659a8f0ecde7f5dbb5faeac5344d134f3efc",
+      "status": "PASS_AS_CONFIRMED_BY_COORDINATOR"
+    },
+    "numeric_scope": "all5metrics,48720CSVrows,94 actual1mTP paths;no inference"
+  },
+  "canonical_export_hash_readback": {
+    "status": "PASS",
+    "files": 77,
+    "bytes": 37818090
+  },
+  "obsolete_VPS_driver_cleanup": {
+    "pid": 686640,
+    "verified_cmd": "python3 reports/forecast-independent-20261021/train_sequence.py",
+    "prior_state": "T",
+    "child_science": [],
+    "action": "SIGKILL only obsolete STOPPED driver;never resumed",
+    "reason": "all remaining fits and all5CHECK completed onMac",
+    "after_exists": false,
+    "at_utc": "2026-10-21T14:02:59.423448+00:00"
+  }
+}

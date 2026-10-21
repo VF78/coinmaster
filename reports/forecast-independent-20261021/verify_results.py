@@ -1,5 +1,5 @@
 """Independent persisted-forecast verification; never imports a model or scorer."""
-import argparse, csv, hashlib, json
+import argparse, csv, gzip, hashlib, json
 from datetime import datetime
 from pathlib import Path
 import numpy as np
@@ -131,7 +131,7 @@ def main():
             q,z = pred[qkey],pred[zkey]
             require(q.shape == (len(ids),2,2,3) and z.shape == (len(ids),3), 'OUTPUT_SHAPES')
             require(np.isfinite(q).all() and np.isfinite(z).all() and (q >= 0).all() and (np.diff(q,axis=-1) >= 0).all() and (q[:,1] >= q[:,0]).all(), 'OUTPUT_DOMAIN')
-            compare(metrics(q,z,y,d),result[label]['all'],label+':ALL')
+            report[label] = metrics(q,z,y,d); compare(report[label],result[label]['all'],label+':ALL')
             for asset in (0,1):
                 for month in ['ALL',*sorted(set(months))]:
                     mask = meta['asset'][ids] == asset
@@ -153,13 +153,34 @@ def main():
         if 'vs_raw_control' in r: compare(blocks(pred['calibrated_q'],exports['control']['calibrated_q'],y,meta['origin'][ids],begin),r['vs_raw_control'],'CONTROL_BLOCKS:'+family)
     for spec in a.csv:
         family,path = spec.split(':',1); require(family in families,'CSV_FAMILY')
-        with Path(path).open() as f:
-            reader = csv.DictReader(f); key = next((k for k in ('row','row_id','ids') if k in (reader.fieldnames or [])),None)
-            require(key is not None,'CSV_ROW_ID_COLUMN_REQUIRED'); csv_ids = np.array([int(row[key]) for row in reader],dtype=np.int64)
-        require(len(np.unique(csv_ids)) == len(csv_ids),'CSV_DUPLICATE_IDS')
-        require(np.array_equal(np.sort(csv_ids),ids) or np.array_equal(np.sort(csv_ids),allids),'CSV_ID_SET')
-        reports[family].setdefault('csv',[]).append({'path':path,'sha256':digest(path),'rows':len(csv_ids)})
-    payload = {'status':'INDEPENDENT_PERSISTED_RESULT_VERIFICATION_PASS','verifier_sha256':digest(__file__),'protocol_sha256':protocol_sha,'registry_sha256':digest(a.registry),'families':reports,'scope':'Metrics, tie intervals, identity, full persisted TP aggregation and explicit genuine1m TP path sample; no model execution or reconstruction of MFE labels.'}
+        with gzip.open(path,'rt') if path.endswith('.gz') else Path(path).open() as f: rows = list(csv.DictReader(f))
+        csv_ids = np.array([int(r['row']) for r in rows]); require(np.array_equal(csv_ids,allids),'CSV_ALL_EXACT_IDS')
+        schema = read(Path(path).parent.parent/'schema.json'); require(list(rows[0]) == schema['columns'],'CSV_SCHEMA')
+        with np.load(checks[family]/'predictions-all-origins.npz',allow_pickle=False) as f: full = {k:f[k] for k in f.files}
+        evaluated = {r['row'] for r in read(checks[family]/'actionable-forecasts.json')}; emitted = set(evaluated)
+        emitted |= {r['row'] for r in read(checks[family]/'censored-forecasts.json') if r['actionable_forecast']}
+        for i,r in enumerate(rows):
+            row = int(r['row']); observed = bool(meta['observed'][row]); m = meta[row]
+            require(r['asset'] == ('BTCUSDT','SOLUSDT')[int(m['asset'])],'CSV_ASSET')
+            require([int(r[k]) for k in ('origin_ms','entry_ms','expiry_ms')] == [int(m['origin']),int(m['origin'])+60000,int(m['expiry'])],'CSV_EXACT_TIMES')
+            close([float(r[k]) for k in ('reference','entry','sigma24')],[m['reference'],m['entry'],m['sigma']],'CSV_METADATA')
+            require(int(r['fully_observed']) == observed and int(r['censored']) == (not observed),'CSV_CENSOR_FLAGS')
+            require(int(r['actionable_forecast']) == (row in emitted),'CSV_ACTIONABLE_FORECAST')
+            require(int(r['evaluated_actionable']) == (row in evaluated),'CSV_EVALUATED_ACTIONABLE')
+            require(r['direction_truth'] == (('UP','DOWN','NEUTRAL')[dall[row]] if observed else 'UNKNOWN'),'CSV_DIRECTION_TRUTH')
+            for bound,bi in [('lower',0),('upper',1)]:
+                for side,si in [('long',0),('short',1)]:
+                    truth = r[f'truth_{bound}_{side}']
+                    if observed: close(float(truth),yall[row,bi,si],'CSV_TARGET')
+                    else: require(truth == '', 'CSV_CENSORED_TARGET_MUST_BE_BLANK')
+                    for prefix,qkey in [('raw','q'),('calibrated','calibrated_q')]:
+                        close([float(r[f'{prefix}_{bound}_{side}_q{q}']) for q in (20,50,80)],full[qkey][i,bi,si],'CSV_QUANTILES')
+            for prefix,zkey in [('raw','logits'),('calibrated','calibrated_logits')]:
+                z = full[zkey][i]; prob = np.exp(z-z.max()); prob /= prob.sum()
+                close([float(r[f'{prefix}_logit_{c}']) for c in ('UP','DOWN','NEUTRAL')],z,'CSV_LOGITS')
+                close([float(r[f'{prefix}_probability_{c}']) for c in ('UP','DOWN','NEUTRAL')],prob,'CSV_PROBABILITIES')
+        reports[family].setdefault('csv',[]).append({'path':path,'sha256':digest(path),'rows':len(csv_ids),'numeric_prediction_target_metadata_parity':'PASS','actionable_forecast':len(emitted),'evaluated_actionable':len(evaluated)})
+    payload = {'status':'INDEPENDENT_PERSISTED_RESULT_VERIFICATION_PASS','verifier_sha256':digest(__file__),'protocol_sha256':protocol_sha,'registry_sha256':digest(a.registry),'comparison_note':'vs_raw_control is calibrated method versus calibrated raw-feature control','families':reports,'scope':'Metrics, tie intervals, identity, full persisted TP aggregation and explicit genuine1m TP path sample; no model execution or reconstruction of MFE labels.'}
     with a.output.open('x') as f: json.dump(payload,f,indent=2,allow_nan=False)
     print(json.dumps({'status':payload['status'],'output':str(a.output)}))
 if __name__ == '__main__': main()

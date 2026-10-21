@@ -1,0 +1,25 @@
+{
+  "status": "FAIL_CSV_ACTIONABLE_PARITY",
+  "verifier_sha256": "c087fe35fc61887ed5ecd4f6e7e7309cede9d82d46e430808210539ac2c12dbd",
+  "failure": "CSV_ACTIONABLE",
+  "mismatches": [
+    {
+      "family": "stumpy",
+      "row": 37397,
+      "fully_observed": false,
+      "CSV_actionable": false,
+      "censored_JSON_actionable_forecast": true
+    },
+    {
+      "family": "stumpy",
+      "row": 37407,
+      "fully_observed": false,
+      "CSV_actionable": false,
+      "censored_JSON_actionable_forecast": true
+    }
+  ],
+  "completed_before_failure": "All5 identity/metrics/month/tie/block/sampleTP checks; fullcontrolCSV; STUMPY CSVuntilfirstmismatch. Later CSVfamiliesnotcompleted.",
+  "models_or_scorers_imported": false,
+  "inference_or_fit": false,
+  "rerun": false
+}

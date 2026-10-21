@@ -1,0 +1,18 @@
+{
+  "status": "PASS_STATIC_HTML_REFINEMENT",
+  "reference_row_first": true,
+  "prior_row": "TRAIN-prefix prior (reference) | 0.212019 | 1.08052 | 39.27% | Reference only; N=9,696; no signals assigned | ",
+  "local_links_valid": [
+    "../final-report-v1/figures.html",
+    "../final-report-v1/first-actionable-BTCUSDT.png",
+    "../final-report-v1/first-actionable-SOLUSDT.png"
+  ],
+  "v1_artifacts_unchanged": true,
+  "figures_reused_without_rerender": "../final-report-v1",
+  "no_model_or_metric_changes": true,
+  "files": {
+    "report.html": "05d069c660d6fc122c603fd8683b91cb715203df85c08daf187fe6c4424d5e69",
+    "report.receipt.json": "aef1fcbc0f23c49532fb71322f5996e031abb477d76883882569cc92aa939cea"
+  },
+  "helper_sha256": "73ee294831e1252a7cda5226b111dbcce569e481001d947bf19f9b202e939f67"
+}

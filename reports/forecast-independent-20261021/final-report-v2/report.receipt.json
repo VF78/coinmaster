@@ -1,0 +1,32 @@
+{
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/control/result.json": "0b0826a4fc344279134f42855cabe034445dc22023ed56bb60d22bf8f50975f7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/stumpy/result.json": "939d8d16af65510fb4df00225dd777ec754a047ca8a4070e74efeef5a5cfb858",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/minirocket/result.json": "a37c1dcf4e0692de35a27fcc451c3fa2a90112c2d7b216fe602f1491b3eabc23",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/rdst/result.json": "58693e2ac03b19f34277648818beb9e6feaba831bd979cbbb122652fbb1be023",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/cnn/result.json": "52136af50ad4b58aa8b7064b8504decc80982e8b9039fa223b50aa2ceb15b9e0",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/control/quantile-tie-coverage.json": "e1f0e6c73d44d2e342cdf856dff025491e010eac1b5f5928d18b097a4aa6f6a0",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/control/example-SOLUSDT.png": "6fe0868d00be8c93317f08454b8b1fb709ebbc018f6954f1508633cf1b49ec6a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/control/example-path-SOLUSDT.json": "1c1edc45239e3dfa0c5dd411a17df9cceb46a3fd618288d72ee056ba5aea8068",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/stumpy/quantile-tie-coverage.json": "6a672998857954ea586d5a2fa61a9d6373d42b42004fbef048e11b548da902d8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/stumpy/example-BTCUSDT.png": "0d5aebb9165640a79b5e480aff26ee237ad793185b9eca7eac6e9be2a8735b15",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/stumpy/example-path-BTCUSDT.json": "daf120c7a94471cf3444c42bf15c69e555da78d866a634f1004d7d0dbe142eda",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/stumpy/example-SOLUSDT.png": "71fa24b6c2664fb19d80a4b7c67fe55ede2d33fa2d8594f478f05df03e611cd9",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/stumpy/example-path-SOLUSDT.json": "a424e3b78a0fc84ae915230a58989aa810642fa78b95b9425d7ff79d3013d68d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/minirocket/quantile-tie-coverage.json": "3d1ff260a916b60e4806468cd74728a0e06a662857366fc2abfdf45d5771392e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/minirocket/example-BTCUSDT.png": "328adc8d2d2fc21ac522c0262b2ded23f6f64e7bcd7b9cd77dc2a4fe19290fe3",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/minirocket/example-path-BTCUSDT.json": "5eff9eabbab7d883402bfdb35e856023ba3a3ad0f745bd34ec2d1cb9d807ab37",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/minirocket/example-SOLUSDT.png": "fa98ce0d095314c75a71b51cc23a157fcbcb0f44036a8dfa66782582ed90741f",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/minirocket/example-path-SOLUSDT.json": "194e08b6fd0ccc7ac16503550b1549bbcab9ca19aa7988b4c599ddd26dca579d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/rdst/quantile-tie-coverage.json": "1f67ad3ec6b5dde8fa436f19a328ee9f1087eb5734687984b3067f1a2a8d6be3",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/rdst/example-BTCUSDT.png": "351474f0ad08d16ee9998c3bb960814dd48fb3ac1f9b2c8e2426aa97e34d7ccb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/rdst/example-path-BTCUSDT.json": "34dc97e2d8bc93ce24503e72ef7bad903de0a97c2c3938a86c9491c10aaafca8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/rdst/example-SOLUSDT.png": "3478a47d04dc86f3ee6e904207644d8efad075746edf71908e6b9e3dd9e78542",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/rdst/example-path-SOLUSDT.json": "de1696950cd7634f4a82c2d463df92ccba85004487a6f2870ae5feb317fa3654",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/final-results-v1/cnn/quantile-tie-coverage.json": "8f69c7e3dc37736326055eb540b2bf3471ccd77f7e985277a3f7f252b08b1c82"
+  },
+  "output_sha256": "05d069c660d6fc122c603fd8683b91cb715203df85c08daf187fe6c4424d5e69",
+  "missing_exports": [],
+  "recomputed_models_labels_or_PnL": false,
+  "report_helper_sha256": "73ee294831e1252a7cda5226b111dbcce569e481001d947bf19f9b202e939f67"
+}

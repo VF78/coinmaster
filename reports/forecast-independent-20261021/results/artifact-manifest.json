@@ -1,0 +1,392 @@
+{
+  "version": 2,
+  "artifacts": [
+    {
+      "path": "cnn/TRAIN-example-BTCUSDT.png",
+      "bytes": 351,
+      "sha256": "e82e55baf1b5e5474cd888c1f3efa85813a45c2406f0240bbf1af756b4591506"
+    },
+    {
+      "path": "cnn/TRAIN-example-SOLUSDT.png",
+      "bytes": 316,
+      "sha256": "d846ebafefdb49321bce8020c3a6aab83f2cf1db3ed58858267ec55498eef991"
+    },
+    {
+      "path": "cnn/actionable-forecasts.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "cnn/censored-forecasts.json",
+      "bytes": 29499,
+      "sha256": "33d981b4d108d485a13b3c914ad3bcd1a751267cae63f4df65976fcd295babf4"
+    },
+    {
+      "path": "cnn/completion.json",
+      "bytes": 2964,
+      "sha256": "8ee4141a367f52fbdd3c5211dc1981e4df9dd6d02ba63933f18382d203c17b6e"
+    },
+    {
+      "path": "cnn/forecasts.csv.gz",
+      "bytes": 3140568,
+      "sha256": "963938188fafee5e770fe2216aaf2c7322e4f2d0f7bc76e0fcbb60bd909ad5db"
+    },
+    {
+      "path": "cnn/launch.json",
+      "bytes": 2709,
+      "sha256": "ed914ccdcfe1900d3b8813df5c873aa9080459b65362b52b8936c3c6ed83265a"
+    },
+    {
+      "path": "cnn/predictions-all-origins.npz",
+      "bytes": 1960052,
+      "sha256": "c99f28bd738a01a0d78d6246b69caa720b8ed7dc1144383678b4027f817297ec"
+    },
+    {
+      "path": "cnn/predictions.npz",
+      "bytes": 1940460,
+      "sha256": "5849964a2280b7af38a7c916db6b62ca4eac2cf02b22325f11e01acbea8acb9c"
+    },
+    {
+      "path": "cnn/quantile-tie-coverage.json",
+      "bytes": 12048,
+      "sha256": "8f69c7e3dc37736326055eb540b2bf3471ccd77f7e985277a3f7f252b08b1c82"
+    },
+    {
+      "path": "cnn/result.json",
+      "bytes": 106036,
+      "sha256": "52136af50ad4b58aa8b7064b8504decc80982e8b9039fa223b50aa2ceb15b9e0"
+    },
+    {
+      "path": "cnn/stderr-time.txt",
+      "bytes": 777,
+      "sha256": "de92f21d6b6211b8972d4a674ed14d57b7ba15152d470ace87be6f3c1d00f8b3"
+    },
+    {
+      "path": "control/TRAIN-example-BTCUSDT.png",
+      "bytes": 351,
+      "sha256": "e82e55baf1b5e5474cd888c1f3efa85813a45c2406f0240bbf1af756b4591506"
+    },
+    {
+      "path": "control/TRAIN-example-SOLUSDT.png",
+      "bytes": 316,
+      "sha256": "d846ebafefdb49321bce8020c3a6aab83f2cf1db3ed58858267ec55498eef991"
+    },
+    {
+      "path": "control/actionable-forecasts.json",
+      "bytes": 5923,
+      "sha256": "e6ceb7e43860059dab4f5cf4b9efc26c2685fb8c20ab7d74596b6364327c6383"
+    },
+    {
+      "path": "control/censored-forecasts.json",
+      "bytes": 29501,
+      "sha256": "b8f41d1ed5eae9f20f06d11d663106662b632e9c5017679d3382a24eb4928e49"
+    },
+    {
+      "path": "control/completion.json",
+      "bytes": 2365,
+      "sha256": "49658e23e3b4fe7d2c520dab82951807746bb1b4838b014c261f1ca714e67975"
+    },
+    {
+      "path": "control/example-SOLUSDT.png",
+      "bytes": 271,
+      "sha256": "6fe0868d00be8c93317f08454b8b1fb709ebbc018f6954f1508633cf1b49ec6a"
+    },
+    {
+      "path": "control/example-path-SOLUSDT.json",
+      "bytes": 244445,
+      "sha256": "1c1edc45239e3dfa0c5dd411a17df9cceb46a3fd618288d72ee056ba5aea8068"
+    },
+    {
+      "path": "control/forecasts.csv.gz",
+      "bytes": 2963797,
+      "sha256": "c60a1f8d40ae6290a00d52afa727b2f8152ad7d84bdc668986fb66c27291c696"
+    },
+    {
+      "path": "control/launch.json",
+      "bytes": 2111,
+      "sha256": "b74f6db5798e86b3867e8efd8d1025f9b8ed3f21a9210ce202dc61f4be4d5ef9"
+    },
+    {
+      "path": "control/predictions-all-origins.npz",
+      "bytes": 1960052,
+      "sha256": "cf6b57ce528312c38f4d6a629fc516b5456332f073dd6ecded113d69c756e538"
+    },
+    {
+      "path": "control/predictions.npz",
+      "bytes": 1940460,
+      "sha256": "b95817c4d17e307c36e86756312204d57ce7f55f7624b6eda46031656d88e2d1"
+    },
+    {
+      "path": "control/quantile-tie-coverage.json",
+      "bytes": 12071,
+      "sha256": "e1f0e6c73d44d2e342cdf856dff025491e010eac1b5f5928d18b097a4aa6f6a0"
+    },
+    {
+      "path": "control/result.json",
+      "bytes": 107223,
+      "sha256": "0b0826a4fc344279134f42855cabe034445dc22023ed56bb60d22bf8f50975f7"
+    },
+    {
+      "path": "control/stderr-time.txt",
+      "bytes": 777,
+      "sha256": "a55ffe31dc2778f86d9c9c48d6b647f73377eca9811903cf889b767e5db5150d"
+    },
+    {
+      "path": "csv-v2-correction.json",
+      "bytes": 987,
+      "sha256": "d438f17e5d7d062525347fa442284905d67f92608d1295b4a4b68060c5eeead9"
+    },
+    {
+      "path": "minirocket/TRAIN-example-BTCUSDT.png",
+      "bytes": 287,
+      "sha256": "bd3530544bbc399752ecc65d641e41c5529450eb4cd5160f8f258277fcfb2ab4"
+    },
+    {
+      "path": "minirocket/TRAIN-example-SOLUSDT.png",
+      "bytes": 336,
+      "sha256": "53ca4809a7c7d8fb0ecc5c769047577c8d635ce596f660dad865140b340731d8"
+    },
+    {
+      "path": "minirocket/actionable-forecasts.json",
+      "bytes": 27355,
+      "sha256": "616f9a479b8a1383ffadf512f0bac86b01e6ce1ea244ba97463c10e20fe87938"
+    },
+    {
+      "path": "minirocket/censored-forecasts.json",
+      "bytes": 29321,
+      "sha256": "0c21135374150f3d54d4ee5ec16e2a43e6bd4aef75c6e60ffe19bf9f8ef84672"
+    },
+    {
+      "path": "minirocket/completion.json",
+      "bytes": 2561,
+      "sha256": "c29fee50e258f8e0491118bd6ee8c93b36d0182677912cafbb3cc8faaad124d0"
+    },
+    {
+      "path": "minirocket/example-BTCUSDT.png",
+      "bytes": 287,
+      "sha256": "328adc8d2d2fc21ac522c0262b2ded23f6f64e7bcd7b9cd77dc2a4fe19290fe3"
+    },
+    {
+      "path": "minirocket/example-SOLUSDT.png",
+      "bytes": 304,
+      "sha256": "fa98ce0d095314c75a71b51cc23a157fcbcb0f44036a8dfa66782582ed90741f"
+    },
+    {
+      "path": "minirocket/example-path-BTCUSDT.json",
+      "bytes": 268679,
+      "sha256": "5eff9eabbab7d883402bfdb35e856023ba3a3ad0f745bd34ec2d1cb9d807ab37"
+    },
+    {
+      "path": "minirocket/example-path-SOLUSDT.json",
+      "bytes": 244445,
+      "sha256": "194e08b6fd0ccc7ac16503550b1549bbcab9ca19aa7988b4c599ddd26dca579d"
+    },
+    {
+      "path": "minirocket/forecasts.csv.gz",
+      "bytes": 3117850,
+      "sha256": "b3e53514421b8ae84bd7d4d11748e2a03de41b202ab21828cd5c1285e6aa4758"
+    },
+    {
+      "path": "minirocket/launch.json",
+      "bytes": 2307,
+      "sha256": "f79ff95d2958589f0154ce01bdd9b2b27138cd7445068d33a38711847ad50522"
+    },
+    {
+      "path": "minirocket/predictions-all-origins.npz",
+      "bytes": 1960052,
+      "sha256": "4fe0418f4e500f6dbd881166ea268fe7286606cb2167833d79b03ed4a2f615c4"
+    },
+    {
+      "path": "minirocket/predictions.npz",
+      "bytes": 1940460,
+      "sha256": "88b6fa5bd407d115beb4e936196d5975cb46bedde20deae0bbc86958e0355215"
+    },
+    {
+      "path": "minirocket/quantile-tie-coverage.json",
+      "bytes": 12110,
+      "sha256": "3d1ff260a916b60e4806468cd74728a0e06a662857366fc2abfdf45d5771392e"
+    },
+    {
+      "path": "minirocket/result.json",
+      "bytes": 108741,
+      "sha256": "a37c1dcf4e0692de35a27fcc451c3fa2a90112c2d7b216fe602f1491b3eabc23"
+    },
+    {
+      "path": "minirocket/stderr-time.txt",
+      "bytes": 777,
+      "sha256": "79624b039af92dfd8beb0539235aaf0a5ad83aa07e5beb5e3a72a69ce69a933d"
+    },
+    {
+      "path": "rdst/TRAIN-example-BTCUSDT.png",
+      "bytes": 287,
+      "sha256": "bd3530544bbc399752ecc65d641e41c5529450eb4cd5160f8f258277fcfb2ab4"
+    },
+    {
+      "path": "rdst/TRAIN-example-SOLUSDT.png",
+      "bytes": 336,
+      "sha256": "53ca4809a7c7d8fb0ecc5c769047577c8d635ce596f660dad865140b340731d8"
+    },
+    {
+      "path": "rdst/actionable-forecasts.json",
+      "bytes": 30875,
+      "sha256": "f5e33b223037c9664ae7a78d17cfd3102f90f2cc16ccda4daa452e5bccd1bf1d"
+    },
+    {
+      "path": "rdst/censored-forecasts.json",
+      "bytes": 29446,
+      "sha256": "7cbc1e961a7573e0fe14194f026c0d766687e3738aa18260aaee9ca182c5845c"
+    },
+    {
+      "path": "rdst/completion.json",
+      "bytes": 2552,
+      "sha256": "4a8c59537ade5f73b8095da161c9419d21f6173b0069308c0b57470dfdba7aa4"
+    },
+    {
+      "path": "rdst/example-BTCUSDT.png",
+      "bytes": 268,
+      "sha256": "351474f0ad08d16ee9998c3bb960814dd48fb3ac1f9b2c8e2426aa97e34d7ccb"
+    },
+    {
+      "path": "rdst/example-SOLUSDT.png",
+      "bytes": 330,
+      "sha256": "3478a47d04dc86f3ee6e904207644d8efad075746edf71908e6b9e3dd9e78542"
+    },
+    {
+      "path": "rdst/example-path-BTCUSDT.json",
+      "bytes": 268676,
+      "sha256": "34dc97e2d8bc93ce24503e72ef7bad903de0a97c2c3938a86c9491c10aaafca8"
+    },
+    {
+      "path": "rdst/example-path-SOLUSDT.json",
+      "bytes": 244322,
+      "sha256": "de1696950cd7634f4a82c2d463df92ccba85004487a6f2870ae5feb317fa3654"
+    },
+    {
+      "path": "rdst/forecasts.csv.gz",
+      "bytes": 3099518,
+      "sha256": "6405694f12aa95b9986cb22f02bbfd6e526646377a42fac12de1260aa5472c59"
+    },
+    {
+      "path": "rdst/launch.json",
+      "bytes": 2298,
+      "sha256": "dbcf5e9a4c154f1e7a0195cefe6eeddbc10b6f1ce19f934fa96075c87107d63c"
+    },
+    {
+      "path": "rdst/predictions-all-origins.npz",
+      "bytes": 1960052,
+      "sha256": "5670634ffcaf3e2c4075fd999931770997d875ca144addc22bc1d72160a47dee"
+    },
+    {
+      "path": "rdst/predictions.npz",
+      "bytes": 1940460,
+      "sha256": "384fefa5443d45baa5dfe01e3a274c2ebc1e514145165cebddb942abe1889fb6"
+    },
+    {
+      "path": "rdst/quantile-tie-coverage.json",
+      "bytes": 12065,
+      "sha256": "1f67ad3ec6b5dde8fa436f19a328ee9f1087eb5734687984b3067f1a2a8d6be3"
+    },
+    {
+      "path": "rdst/result.json",
+      "bytes": 108709,
+      "sha256": "58693e2ac03b19f34277648818beb9e6feaba831bd979cbbb122652fbb1be023"
+    },
+    {
+      "path": "rdst/stderr-time.txt",
+      "bytes": 777,
+      "sha256": "d6f4065e4bdec9ad5f3abab1600de002d365e8bb9cd3f0647f2ee78be8097594"
+    },
+    {
+      "path": "schema.json",
+      "bytes": 2681,
+      "sha256": "abfe36e63f4fcb2faa6fa7ad9f496cfd0c8306072797c3f8dc13cb3c54a51e1b"
+    },
+    {
+      "path": "stumpy/TRAIN-example-BTCUSDT.png",
+      "bytes": 351,
+      "sha256": "e82e55baf1b5e5474cd888c1f3efa85813a45c2406f0240bbf1af756b4591506"
+    },
+    {
+      "path": "stumpy/TRAIN-example-SOLUSDT.png",
+      "bytes": 316,
+      "sha256": "d846ebafefdb49321bce8020c3a6aab83f2cf1db3ed58858267ec55498eef991"
+    },
+    {
+      "path": "stumpy/actionable-forecasts.json",
+      "bytes": 265075,
+      "sha256": "9803b71b4064935c7f1daf2256ef679f45fed15e9ec274144889a8e24fa0cab6"
+    },
+    {
+      "path": "stumpy/censored-forecasts.json",
+      "bytes": 29486,
+      "sha256": "6ebf81b45180652631afac59490b0e342af73285b42cf196af0a2b2d1112a4cf"
+    },
+    {
+      "path": "stumpy/completion.json",
+      "bytes": 2542,
+      "sha256": "b1e294f9b64a230ac10605e134456e821d29fd60ad6ce716dd0ef8b8a41c3c7d"
+    },
+    {
+      "path": "stumpy/example-BTCUSDT.png",
+      "bytes": 291,
+      "sha256": "0d5aebb9165640a79b5e480aff26ee237ad793185b9eca7eac6e9be2a8735b15"
+    },
+    {
+      "path": "stumpy/example-SOLUSDT.png",
+      "bytes": 266,
+      "sha256": "71fa24b6c2664fb19d80a4b7c67fe55ede2d33fa2d8594f478f05df03e611cd9"
+    },
+    {
+      "path": "stumpy/example-path-BTCUSDT.json",
+      "bytes": 268677,
+      "sha256": "daf120c7a94471cf3444c42bf15c69e555da78d866a634f1004d7d0dbe142eda"
+    },
+    {
+      "path": "stumpy/example-path-SOLUSDT.json",
+      "bytes": 244435,
+      "sha256": "a424e3b78a0fc84ae915230a58989aa810642fa78b95b9425d7ff79d3013d68d"
+    },
+    {
+      "path": "stumpy/forecasts.csv.gz",
+      "bytes": 2149423,
+      "sha256": "ff55261cf59851fbad05b83c82929911494cb32801c5931e4b2508e0a246ff2d"
+    },
+    {
+      "path": "stumpy/launch.json",
+      "bytes": 2288,
+      "sha256": "d48e1d676b37a72185b4f49818fb878693db71a6bca0034b05ce7a4aed961292"
+    },
+    {
+      "path": "stumpy/predictions-all-origins.npz",
+      "bytes": 2427764,
+      "sha256": "4385b2860ff175ceddee26b34c9b96a5cd81d6d42aeb07ff51745c9759a96cf8"
+    },
+    {
+      "path": "stumpy/predictions.npz",
+      "bytes": 2405868,
+      "sha256": "405410403e9eb2358fdc029958c9095fa5b66b85eb201779d7922e1f36b95cb2"
+    },
+    {
+      "path": "stumpy/quantile-tie-coverage.json",
+      "bytes": 12090,
+      "sha256": "6a672998857954ea586d5a2fa61a9d6373d42b42004fbef048e11b548da902d8"
+    },
+    {
+      "path": "stumpy/result.json",
+      "bytes": 109457,
+      "sha256": "939d8d16af65510fb4df00225dd777ec754a047ca8a4070e74efeef5a5cfb858"
+    },
+    {
+      "path": "stumpy/stderr-time.txt",
+      "bytes": 777,
+      "sha256": "e0dbf081ffe71deed33e5d78706c7f4f69837f1cf534596adfc7a84154d7fe77"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 13027,
+      "sha256": "8eb0370770ce591c3322ef580be493cc901a978695c66de532ea4250630abb50"
+    }
+  ],
+  "total_bytes": 37818090,
+  "models_or_raw_history_in_export": false
+}

@@ -1,0 +1,24 @@
+{
+  "status": "ACTUAL_RENDER_STATIC_AND_IMAGE_QA_PASS_BROWSER_UNAVAILABLE",
+  "image_QA": "Both full Matplotlib asset PNGs inspected with view_image; readable labels/legends, explicit missing-actionable rows, no fabricated examples",
+  "browser_QA": "IAB unavailable; Chrome file URL rejected by browser security policy; no workaround attempted",
+  "html_inline_past_images": 7,
+  "html_local_links_checked": 3,
+  "model_or_label_recomputation": false,
+  "files": {
+    "first-actionable-BTCUSDT.png": "ba9cb423eca9cc8f5f1030bdbadce5ee8a8d271601deeef944fade9240f88d04",
+    "first-actionable-BTCUSDT.pdf": "86afca1672f91b3962a2e3b9627fca2d76d25ee34c4b67039dc05552a9306090",
+    "figures.html": "aea62468fff4cc5bbaeb3e8d3d497f0f759c77ee0598e92531cf012a1b401d17",
+    "report.receipt.json": "0e076fb453de0bd238086be53150b93beac8ff914d8ba96d3a4c6314ebf4e2aa",
+    "first-actionable-BTCUSDT.svg": "7f754d1dc14177dc8029b408d5ab88eabe96a90172d0b2bc50e896e9224912bd",
+    "first-actionable-SOLUSDT.svg": "d8081998fb6b042a5692849bcfe48c661be5e7d81bfcf901b81eef12ac943ffe",
+    "report.html": "f092f31b2361db1f5bbf33defcbf91051564310b0b4b0b88f5da3d8c1799f9ce",
+    "first-actionable-SOLUSDT.pdf": "a6bda473ced49b826a03c9f41bfdd5333a601cd58509e7d1b37bb59452500057",
+    "receipt.json": "8f45014661214e0053670925c8a596c9bcbbaab7b64af0d508aed7e5d4c87b2b",
+    "first-actionable-SOLUSDT.png": "997e48791b5caf6f654c68ff17d11034363a0a1a0c9e8484179bb449b2211c67"
+  },
+  "helpers": {
+    "plot_results.py": "f9c63832e579061b72737408053f83be755d83b59208157ec50773b74cf82260",
+    "render_results.py": "034a9b0e4c624320746b993bc3dedcfd00ab054e63bad9f83e6ddf5a692bf87e"
+  }
+}

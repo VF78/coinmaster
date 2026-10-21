@@ -83,6 +83,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root-go', action='store_true', help='Required explicit authorization to read completed CHECK exports')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--figure-base', default='.', help='Relative directory containing unchanged standalone figures')
     parser.add_argument('exports', nargs='+', type=Path)
     args = parser.parse_args()
     if not args.root_go:
@@ -99,26 +100,42 @@ def main():
     if len(identities) != 1 or any(v is None for pair in identities for v in pair):
         raise ValueError('MIXED_OR_MISSING_EXPORT_IDENTITIES')
     body = ['<!doctype html><meta charset="utf-8"><title>Independent forecast results</title><style>body{font:16px system-ui;max-width:1100px;margin:36px auto;padding:0 20px;color:#172331}table{border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #ddd}svg{max-width:100%;height:auto}img{image-rendering:pixelated;max-width:100%}section{margin:36px 0}pre{white-space:pre-wrap}</style><h1>Independent 24h pattern forecasts</h1><p>Persisted exports only. No fitting, inference, label loading or PnL calculation. CHECK is a previously studied historical period. Ambiguous intraminute ordering remains bounded.</p>',
-            '<table><tr><th>Method</th><th>Lower pinball ↓ raw → calibrated</th><th>Direction logloss ↓ raw → calibrated</th><th>Actionable / observed</th></tr>']
+            '<table><tr><th>Method</th><th>Lower pinball ↓ raw → calibrated</th><th>Direction logloss ↓ raw → calibrated</th><th>24h direction accuracy (3 classes)</th><th>Actionable / observed</th></tr>']
+    complete = [r for _,r in results if r['status']=='ONE_FROZEN_CHECK_EVALUATION_COMPLETE']
+    prior = complete[0]['prefix_prior']['all']
+    if any(r['prefix_prior']['all']!=prior for r in complete):
+        raise ValueError('PREFIX_PRIOR_EXPORTS_DISAGREE')
+    body.append(f'<tr><td><strong>TRAIN-prefix prior (reference)</strong></td><td>{prior["lower_pinball"]:.6g}</td><td>{prior["direction_logloss"]:.6g}</td><td>{prior["direction_accuracy"]:.2%}</td><td>Reference only; N={prior["n"]:,}; no signals assigned</td></tr>')
     for _, r in results:
         if r['status'] == 'INCOMPLETE_RESOURCE':
-            body.append(f'<tr><td>{esc(r["family"])}</td><td colspan="3">INCOMPLETE_RESOURCE; no predictive conclusion</td></tr>')
+            body.append(f'<tr><td>{esc(r["family"])}</td><td colspan="4">INCOMPLETE_RESOURCE; no predictive conclusion</td></tr>')
             continue
         a, b, c = r['raw']['all'], r['calibrated']['all'], r['coverage']
-        body.append(f'<tr><td>{esc(r["family"])}</td><td>{a["lower_pinball"]:.6g} → {b["lower_pinball"]:.6g}</td><td>{a["direction_logloss"]:.6g} → {b["direction_logloss"]:.6g}</td><td>{c["actionable"]} / {c["fully_observed"]}</td></tr>')
+        body.append(f'<tr><td>{esc(r["family"])}</td><td>{a["lower_pinball"]:.6g} → {b["lower_pinball"]:.6g}</td><td>{a["direction_logloss"]:.6g} → {b["direction_logloss"]:.6g}</td><td>{b["direction_accuracy"]:.2%}</td><td>{c["actionable"]} / {c["fully_observed"]}</td></tr>')
     body.append('</table><p>Lower pinball, direction logloss and Brier are better when smaller. Actionable coverage is a frequency, not a quality score. Raw → calibrated uses frozen March calibration.</p>')
+    if all(r['calibrated']['all']['lower_pinball']>prior['lower_pinball'] and r['calibrated']['all']['direction_logloss']>prior['direction_logloss'] for r in complete):
+        body.append('<p><strong>No evidence of added pattern forecasting value on this CHECK: all five methods have higher calibrated MFE pinball error and terminal 24h direction logloss than the TRAIN-prefix prior.</strong> CNN emitted zero actionable forecasts under the frozen admission rule. TP touch before SL is scored separately from three-class terminal direction. The prior receives no invented signals or examples.</p>')
+    body.append(('<p>Standalone figures: <a href="figures.html">all PNG/PDF/SVG downloads</a>; <a href="first-actionable-BTCUSDT.png">BTC</a>; <a href="first-actionable-SOLUSDT.png">SOL</a>.</p>').replace('href="', 'href="'+esc(args.figure_base.rstrip('/'))+'/'))
     for directory, r in results:
         if r['status'] == 'INCOMPLETE_RESOURCE':
             continue
         body.append(f'<section><h2>{esc(r["family"])}</h2>')
         cov = r['coverage']
         body.append(f'<p>{cov["actionable"]:,} actionable forecasts; {cov["abstain"]:,} abstentions; {cov["fully_observed"]:,} fully observed origins. {cov["censored_origins"]:,} incomplete-horizon origins excluded from scored denominators; {cov["label_ambiguity_rows"]:,} rows have ambiguous MFE bounds.</p>')
-        for key, label in [('vs_raw_control','raw numerical control'),('vs_prefix_prior','TRAIN-prefix prior')]:
+        for key, label in [('vs_raw_control','calibrated raw numerical control'),('vs_prefix_prior','TRAIN-prefix prior')]:
             if key not in r:
                 continue
             comparison = r[key]; low, high = comparison['paired14day_CI95']
             body.append(f'<p>Lower pinball difference versus {label}: {comparison["mean_lower_pinball_difference"]:+.5g}; paired 14-day block 95% interval [{low:+.5g}, {high:+.5g}], {comparison["blocks"]} blocks. Negative favors this method; an interval crossing zero does not establish improvement.</p>')
+        ties = read(directory/'quantile-tie-coverage.json', evidence) if (directory/'quantile-tie-coverage.json').exists() else None
         for asset in ('BTCUSDT','SOLUSDT'):
+            summary = r.get('actionable_touch_summary', {}).get(asset)
+            if summary:
+                rates = '; '.join(f'TP{j+1}: {v["lower_hit_frequency"]:.1%}–{v["upper_hit_frequency"]:.1%}' for j,v in enumerate(summary['targets'])) if summary['n'] else 'no actionable sample'
+                body.append(f'<h3>{asset}</h3><p>Actionable N={summary["n"]}; touch-before-SL frequency bounds: {rates}. These differ from terminal 24h direction classification.</p>')
+            if ties:
+                t = ties['calibrated']['0' if asset=='BTCUSDT' else '1']; count = sum(v for side in t['exact_tie_count'][0] for v in side)
+                body.append(f'<p>Scored asset N={t["n"]}; exact ties across six lower-bound quantile outputs={count}; zero lower-MFE truth counts long/short={t["zero_truth_count"][0]}.</p>')
             group = r['calibrated']['groups'].get(f'{0 if asset=="BTCUSDT" else 1}:ALL')
             if group:
                 v = group['exceedance_bound_side_q']
