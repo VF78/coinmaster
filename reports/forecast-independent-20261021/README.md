@@ -1,23 +1,31 @@
-# Independent BTC/SOL forecasting — #113
+# BTC/SOL: независимая проверка прогнозирования — #113
 
-**Current: all5models sealed; independent134-check gatePASS. CHECK begins only after published rootGO.** See coordinator-check-go.json, freeze771a08f, registryc5808ed6. No CHECK accuracy or ROI claimed yet.
+Исследование завершено. **Подтверждённого преимущества над простым TRAIN-приором не получено.** Пилот и S0 не менялись. Это проверка точности прогнозов, без расчёта ROI и исполнения сделок.
 
-Allfive bounded resourceprofiles PASS. RDST sequential transform/head processes reuse the existing Torch model; weightrestore error0,140.783CPU/0swap. Initial resource failures are retained in receipts, not accuracy findings. Explicit CNN-only CPU allowance480min (1b7110a; prior240 superseded before fit) is operational, not scientific: all other600MiB/swap0/1CPU/admission limits remain. Actual20bar timing projects~147min minimum realisticfit; the hard ceiling remains enforced. See cnn-20bar-feasibility.json and resource authorization.
+TRAIN: **01.09.2024–31.03.2026**. CHECK: **01.04.2026–20.10.2026**, UTC. Реальные минутные Bybit BTCUSDT/SOLUSDT; общий часовой момент решения, вход на следующей минуте, горизонт24ч. Методы прогнозируют уровни трёх TP; общий SL — одна оценка суточной волатильности. Все модели/окна/калибровки зафиксированы до CHECK.
 
-No accuracy or economic claim yet. Existing pilot unchanged, S0 not rerun. RootGO and allfive actual seals remain mandatory before CHECK.
+| Метод | Ошибка TP ↓ | Точность направления | Сигналов / 9696 |
+|---|---:|---:|---:|
+| TRAIN-приор | 0.212019 | 39.27% | — |
+| Линейный контроль | 0.215153 | 36.25% | 5 |
+| STUMPY/MASS | 0.214897 | 37.29% | 223 |
+| MiniRocket | 0.228982 | 37.58% | 23 |
+| RDST | 0.220639 | 38.03% | 26 |
+| CNN | 0.214131 | 35.71% | 0 |
 
-Owner-authorized Mac execution (M2Pro16GiB): isolated nativePython3.12.13/pinnedbasepackages,26immutablefiles/388,203,050bytes exactSHA. TRAINimagehashes exact; CNNprofile4.64–5.12x faster, maxfloat32ARMdifference2.33948e-6 acceptedrtol1e-5/atol3e-6 beforefit; original stricttest retained. Macjob /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021; oneTorchthread/nice10/transientcaffeinate/3GiBRSSguard/CPUledger. Canonical development remains VPS; no productsourceeditsMac. VPSpassivedriverPID686640 stopped, never resume duplicatefits. All5CHECK plannedMac only after all5actualseals/rootGO. No secrets/pilotdata transferred.
+Ошибка — нормированный quantile/pinball loss уровней TP, меньше лучше. Направление имеет **три класса**: рост/нейтрально/падение; это не бинарный win rate. По каждому методу9696завершённых прогнозов (4848/asset), ещё48censored сохранены без выдуманных исходов. Сигналы перекрываются по времени и не являются независимыми сделками.
 
-Owner scope: evaluate STUMPY, MiniRocket, RDST and chart CNN separately from the trading strategy. Main horizon **24h**, predict **three TP levels from patterns**, not fixed-ladder probabilities. TRAIN **[2024-09-01,2026-04-01)**; CHECK **[2026-04-01,2026-10-21)**, i.e. through 20 October inclusive.
+CNN/STUMPY не показали уверенного преимущества даже над линейным контролем: paired14day95%CI разницы ошибок включает0. MiniRocket/RDST хуже контроля. Мартовская калибровка повысила ошибку TP у каждого метода; без неё все также уступили TRAIN-приору по точечной оценке. У CNN нет входов с заданной уверенностью, хотя все прогнозы уровней оценены. Малые группы входов и точные same-ID сравнения приведены отдельно; они не доказывают торгового преимущества.
 
-`protocol.json` is the frozen scientific/compute contract. The entry is an actionable side/time signal with a fixed next-minute reference execution rule, not a retrospectively chosen best entry. TP forecasts are contingent offsets, deterministically reanchored to that observed entry; reference-price displays are indicative. Labels retain zero excursions and ambiguous OHLC ordering. Full-horizon boundary purge and final-day censoring apply. These are forecast/touch statistics, **not ROI or executable fill guarantees**.
+Артефакты:
 
-PRED-00 data/source inventory complete: true minute execution history for both assets is continuous through 20 October; genuine warmup verified. `inventory.json`, `tail-verification.json`, `warmup-verification.json`, `feasibility.md`. Primary sources and maintainer discussions are summarized in `sources.md`.
+- [Численные выводы: raw/cal, TP1/2/3, confidence intervals](findings.md).
+- [HTML с таблицей и реальными паттернами](final-report-v2/report.html); [графики/PDF/SVG](final-report-v1/figures.html).
+- [Все9744прогноза/метод: CSV.gz, цели, вероятности, JSON и схема](results/).
+- [Метрики по активу и месяцу](metrics-by-asset-month.csv); [качество отобранных входов на тех же ID](actionable-entry-cohorts.csv).
+- [Независимая проверка](independent-postcheck-verification-v2.json): все48720строкCSV и94реальные минутные TP/SL-траектории. Report-onlyv2 исправляет два censored-флага STUMPY; `actionable_forecast` и `evaluated_actionable` разделены. Прогнозы и метрики не менялись.
+- [Протокол](protocol.json), [первичные источники](sources.md), [freeze/GO](coordinator-check-go.json), [фактические запуски/ресурсы](check-sequence-completion.json).
 
-PRED-01 contract frozen (latest SHA121942c4); narrow target/validation review GO with entry-based direction, exact timestamps, censoring and ordered-bound clarification incorporated. PRED-02 actual dataset prepared and independently verified:37,440rows,16artifactSHA/sizes, allfeaturebarends<=origin; TRAIN27,648/CHECK9,696 mature pooled cases. Prepare330.57swall/319.01sCPU/568.6Mmemory/0swap. See coordinator-data-readback.json and coordinator-boundary-expectations.json. TRAIN eight-view screen is running; all resource profiles PASS; CHECK remains unopened. Then bounded TRAIN selection, mandatory separate evaluations of all four families, sealed CHECK and independent verification. Existing raw helpers may be reused; old strategy-dependent labels/models are not reused. One sequential implementation owner; coordinator owns Project/current state.
+Частоты TP — касания до SL/24ч с нижней/верхней оценкой неоднозначности минутного OHLC. Номинальные80/50/20% для квантилей не гарантируются на отобранных сигналах; нули/связки сохранены. CHECK-история раньше исследовалась: это замороженный хронологический тест, **не pristine holdout**. Использовано15парных14дневных блоков; конечная выборка ограничивает уверенность.
 
-Protected pilot remains active PID2009732/NRestarts0. No pilot/service/deploy/order/secret changes; S0 is not rerun. Old event-risk study and its unused four-native-run slots are closed historical scope, not budget for this new task.
-
-Project readback: `project-start-readback.json` verifies existing [issue #113](https://github.com/VF78/coinmaster/issues/113) OPEN and Project #2 In Progress. Progress and results will replace this current section rather than create a parallel backlog.
-
-Pre-fit narrow visual review: deterministic upper=max(upper,lower) after rearrangement and after March calibration; primary lower forecast unchanged. This corrects the bound-output contract before fitting/CHECK, with no extra experiment.
+Подготовка/адресные тесты PASS; пять моделей обучены и проверены по одному разу, повторной подгонки по CHECK нет. Обучение RDST/CNN и CHECK завершены на разрешённом M2Pro16GB в изолированных средах. Source/data/model SHA сохранены; веса/большие raw/memmap остаются runtime. Source Nautilus/торговые параметры не менялись. Пилот: active PID2009732, NRestarts0. Итоговая цель ROI/DD этим исследованием не достигнута и не заявляется.
