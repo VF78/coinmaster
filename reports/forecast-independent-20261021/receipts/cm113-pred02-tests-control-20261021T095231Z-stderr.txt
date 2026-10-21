@@ -1,0 +1,31 @@
+test_actual_timestamps_and_no_upsampling (test_forecast_independent.DataContractTests.test_actual_timestamps_and_no_upsampling) ... ok
+test_entry_expiry_and_every_boundary_purge (test_forecast_independent.DataContractTests.test_entry_expiry_and_every_boundary_purge) ... ok
+test_gap_stop_excludes_later_extreme (test_forecast_independent.DataContractTests.test_gap_stop_excludes_later_extreme) ... ok
+test_identity_guard_rejects_stale_and_corrupt (test_forecast_independent.DataContractTests.test_identity_guard_rejects_stale_and_corrupt) ... ok
+test_invalid_and_partial_horizon (test_forecast_independent.DataContractTests.test_invalid_and_partial_horizon) ... ok
+test_past_only_sma_and_latest_complete_bin (test_forecast_independent.DataContractTests.test_past_only_sma_and_latest_complete_bin) ... ok
+test_stop_minute_bounds_and_symmetry (test_forecast_independent.DataContractTests.test_stop_minute_bounds_and_symmetry) ... ok
+test_vectorized_matches_scalar (test_forecast_independent.DataContractTests.test_vectorized_matches_scalar) ... ok
+test_zero_mfe_and_terminal_entry_basis (test_forecast_independent.DataContractTests.test_zero_mfe_and_terminal_entry_basis) ... ok
+test_actual_counts_expiries_and_censor (test_forecast_independent_actual.ActualPreparedContractTests.test_actual_counts_expiries_and_censor) ... ok
+test_actual_feature_bar_ids_and_sigma (test_forecast_independent_actual.ActualPreparedContractTests.test_actual_feature_bar_ids_and_sigma) ... /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T095231Z/source/runtime/tests/test_forecast_independent_actual.py:26: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T095231Z/source/reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv' mode='r' encoding='UTF-8'>
+  p=Path(os.environ['FORECAST_SOURCE_ROOT'])/f'reports/btc-split-sol-cover-20261018/data-warmup-{symbol}-1h.csv';rows=list(csv.DictReader(p.open()));close=np.array([float(r['close']) for r in rows[-169:]]);expected=np.std(np.diff(np.log(close)),ddof=1)*np.sqrt(24);self.assertAlmostEqual(expected,d.meta['sigma'][a],places=13)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T095231Z/source/runtime/tests/test_forecast_independent_actual.py:26: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T095231Z/source/reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv' mode='r' encoding='UTF-8'>
+  p=Path(os.environ['FORECAST_SOURCE_ROOT'])/f'reports/btc-split-sol-cover-20261018/data-warmup-{symbol}-1h.csv';rows=list(csv.DictReader(p.open()));close=np.array([float(r['close']) for r in rows[-169:]]);expected=np.std(np.diff(np.log(close)),ddof=1)*np.sqrt(24);self.assertAlmostEqual(expected,d.meta['sigma'][a],places=13)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_actual_source_entry_terminal_and_label_parity (test_forecast_independent_actual.ActualPreparedContractTests.test_actual_source_entry_terminal_and_label_parity) ... ok
+test_source_manifest_pins (test_forecast_independent_actual.ActualPreparedContractTests.test_source_manifest_pins) ... ok
+test_atomic_check_lock_prevents_duplicate_output_paths (test_forecast_independent_models.ModelContractTests.test_atomic_check_lock_prevents_duplicate_output_paths) ... ok
+test_mass_optimized_exact_stumpy_parity (test_forecast_independent_models.ModelContractTests.test_mass_optimized_exact_stumpy_parity) ... ok
+test_pinball_and_joint_loss_exact (test_forecast_independent_models.ModelContractTests.test_pinball_and_joint_loss_exact) ... ok
+test_projection_pre_and_post_calibration (test_forecast_independent_models.ModelContractTests.test_projection_pre_and_post_calibration) ... ok
+test_renderer_model_shape_and_determinism (test_forecast_independent_models.ModelContractTests.test_renderer_model_shape_and_determinism) ... ok
+test_temperature_and_quantile_calibration (test_forecast_independent_models.ModelContractTests.test_temperature_and_quantile_calibration) ... ok
+test_training_only_scaler (test_forecast_independent_models.ModelContractTests.test_training_only_scaler) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 18.913s
+
+OK

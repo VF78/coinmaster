@@ -1,0 +1,37 @@
+{
+  "status": "PROFILE_PENDING_NOT_FULL_FIT_READY",
+  "source_files": {
+    "runtime/coinmaster/research/forecast_independent_data.py": "02cd73e970c2baeabbe4925fa02d77194646caffae0fdf7b092a33af27eb8bd3",
+    "runtime/coinmaster/research/forecast_independent_run.py": "a5ddcfc4d90caadb29a89fe649b48ecd4b9267a87d710741dbc20ac443dd59aa",
+    "runtime/coinmaster/research/forecast_independent_models.py": "89051f80aafb5e84f090a2451e5ba71f11bb5b34f33a1598d2a79662dcb7ffda",
+    "runtime/tests/test_forecast_independent_actual.py": "9ff8761d10f4413fd9978cac8302db0cecd028e1ca00f02cf9c18859f2967735",
+    "runtime/tests/test_forecast_independent.py": "a7d1590cf60e95844070dd9d270770d5d7120c2a61d539a009743668e0bd6cce",
+    "runtime/tests/test_forecast_independent_models.py": "63a2dc7d9bdafab9c797ed4776912a8c26d66855adfc935bd76c616866485845"
+  },
+  "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+  "prepared_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+  "tests": {
+    "current": 22,
+    "passed": 22,
+    "seconds": 17.194,
+    "receipt": "receipts/cm113-pred02-tests-control-20261021T100021Z.json"
+  },
+  "prepare": {
+    "wall_seconds": 330.56734517402947,
+    "CPU_seconds": 319.007,
+    "peak_from_final_journal": "568.6MiB",
+    "swap_peak_bytes": 0
+  },
+  "interfaces": {
+    "prepare": "python -m coinmaster.research.forecast_independent_data --repo ... --output ... --protocol ...",
+    "profile": "python -m coinmaster.research.forecast_independent_run profile --family ... --view ... --dataset ... --protocol ... --output ...",
+    "screen": "stage screen with --execute-train and --prior-cpu-seconds; writes TRAIN-only control selection result.json",
+    "fit": "stage fit --family ... --selection <screen/result.json> --execute-train --prior-cpu-seconds; per-family seal.json",
+    "check": "separate stage check requires --execute-check, target seal, all-five-method seal registry, raw-control baseline except control itself, and atomic never-repeated seal-side CHECK lock"
+  },
+  "CHECK": "No labels read by Dataset in tests/profiles; opaque prepared labels artifact hash only. No full TRAIN fits yet.",
+  "profile_receipts": "profile-sequence-progress.json; each own unit fully resource capped and timing persisted",
+  "pending": "Complete five profiles; explicit owned commit; proceed conditionally authorized TRAIN screen/fits, all five seals before CHECK.",
+  "STUMPY_backend": "NumPy float64 z-normalized MASS-equivalent matrix dot product, explicitly parity-tested against installed stumpy.mass; greedy time-independent same-asset analogues",
+  "TRAIN_driver": "train_sequence.py ready; conditional gate requires all five bounded profiles PASS"
+}

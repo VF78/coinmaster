@@ -1,0 +1,186 @@
+[
+  {
+    "unit": "cm113-pred02-tests-control-20261021T100021Z",
+    "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T100021Z",
+    "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-tests-control-240x60-20261021T100021Z.json",
+    "properties": {
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "MemoryPeak": "321429504",
+      "CPUUsageNSec": "17628400000",
+      "CPUQuotaPerSecUSec": "1s",
+      "MemoryMax": "629145600",
+      "MemorySwapMax": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "journal_tail": "Started cm113-pred02-tests-control-20261021T100021Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T100021Z/launch.sh.\n",
+    "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T100021Z-time.txt",
+    "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T100021Z-stdout.txt",
+    "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T100021Z-stderr.txt",
+    "status": "PASS"
+  },
+  {
+    "unit": "cm113-pred02-profile-control-20261021T100041Z",
+    "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-control-20261021T100041Z",
+    "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-profile-control-240x60-20261021T100041Z.json",
+    "properties": {
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "MemoryPeak": "314646528",
+      "CPUUsageNSec": "10143148000",
+      "CPUQuotaPerSecUSec": "1s",
+      "MemoryMax": "629145600",
+      "MemorySwapMax": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "journal_tail": "Started cm113-pred02-profile-control-20261021T100041Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-control-20261021T100041Z/launch.sh.\n",
+    "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-control-20261021T100041Z-time.txt",
+    "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-control-20261021T100041Z-stdout.txt",
+    "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-control-20261021T100041Z-stderr.txt",
+    "profile": {
+      "status": "PROFILE_PASS_NOT_RECIPE_SELECTION",
+      "family": "control",
+      "view": "240x60",
+      "train_rows": 256,
+      "validation_rows": 128,
+      "profile_cpu_seconds": 6.50875118,
+      "maxrss_bytes": 344150016,
+      "output_shapes": [
+        [
+          128,
+          2,
+          2,
+          3
+        ],
+        [
+          128,
+          3
+        ]
+      ],
+      "profile_only": true,
+      "measurements": {
+        "epoch_train_cpu_seconds": [
+          0.03607917299999919
+        ],
+        "epoch_validation_cpu_seconds": [
+          0.021980485999998578
+        ],
+        "setup_cpu_seconds": 3.155212744
+      },
+      "head_features": 364,
+      "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+      "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+      "prior_cpu_seconds": 0,
+      "cpu_seconds": 8.371587937
+    },
+    "status": "PASS"
+  },
+  {
+    "unit": "cm113-pred02-profile-stumpy-20261021T100053Z",
+    "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-stumpy-20261021T100053Z",
+    "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-profile-stumpy-240x60-20261021T100053Z.json",
+    "properties": {
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "MemoryPeak": "269594624",
+      "CPUUsageNSec": "2985177000",
+      "CPUQuotaPerSecUSec": "1s",
+      "MemoryMax": "629145600",
+      "MemorySwapMax": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "journal_tail": "Started cm113-pred02-profile-stumpy-20261021T100053Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-stumpy-20261021T100053Z/launch.sh.\n",
+    "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-stumpy-20261021T100053Z-time.txt",
+    "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-stumpy-20261021T100053Z-stdout.txt",
+    "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-stumpy-20261021T100053Z-stderr.txt",
+    "profile": {
+      "status": "PROFILE_PASS_NOT_RECIPE_SELECTION",
+      "family": "stumpy",
+      "view": "240x60",
+      "train_rows": 256,
+      "validation_rows": 128,
+      "profile_cpu_seconds": 0.7249358629999998,
+      "maxrss_bytes": 62672896,
+      "output_shapes": [
+        [
+          128,
+          2,
+          2,
+          3
+        ],
+        [
+          128,
+          3
+        ]
+      ],
+      "profile_only": true,
+      "measurements": {},
+      "head_features": null,
+      "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+      "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+      "prior_cpu_seconds": 0,
+      "cpu_seconds": 2.5764728920000004
+    },
+    "status": "PASS"
+  },
+  {
+    "unit": "cm113-pred02-profile-minirocket-20261021T100058Z",
+    "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-minirocket-20261021T100058Z",
+    "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-profile-minirocket-240x60-20261021T100058Z.json",
+    "properties": {
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "MemoryPeak": "629145600",
+      "CPUUsageNSec": "90205046000",
+      "CPUQuotaPerSecUSec": "1s",
+      "MemoryMax": "629145600",
+      "MemorySwapMax": "0",
+      "ActiveState": "active",
+      "SubState": "exited"
+    },
+    "journal_tail": "Started cm113-pred02-profile-minirocket-20261021T100058Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-minirocket-20261021T100058Z/launch.sh.\n",
+    "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-minirocket-20261021T100058Z-time.txt",
+    "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-minirocket-20261021T100058Z-stdout.txt",
+    "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-minirocket-20261021T100058Z-stderr.txt",
+    "profile": {
+      "status": "PROFILE_PASS_NOT_RECIPE_SELECTION",
+      "family": "minirocket",
+      "view": "240x60",
+      "train_rows": 256,
+      "validation_rows": 128,
+      "profile_cpu_seconds": 84.658909297,
+      "maxrss_bytes": 630804480,
+      "output_shapes": [
+        [
+          128,
+          2,
+          2,
+          3
+        ],
+        [
+          128,
+          3
+        ]
+      ],
+      "profile_only": true,
+      "measurements": {
+        "epoch_train_cpu_seconds": [
+          0.14616617199999382
+        ],
+        "epoch_validation_cpu_seconds": [
+          0.0054256960000031995
+        ],
+        "setup_cpu_seconds": 81.324129223
+      },
+      "head_features": 2020,
+      "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+      "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+      "prior_cpu_seconds": 0,
+      "cpu_seconds": 86.708843529
+    },
+    "status": "PASS"
+  }
+]

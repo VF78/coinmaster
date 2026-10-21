@@ -1,0 +1,12 @@
+{
+  "stages": [
+    "tests-current-source",
+    "profile-control",
+    "profile-stumpy",
+    "profile-minirocket",
+    "profile-rdst",
+    "profile-cnn"
+  ],
+  "view": "240x60",
+  "only_bounded_profiles": true
+}

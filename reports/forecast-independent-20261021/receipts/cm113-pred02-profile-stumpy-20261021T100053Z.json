@@ -1,0 +1,49 @@
+{
+  "unit": "cm113-pred02-profile-stumpy-20261021T100053Z",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-stumpy-20261021T100053Z",
+  "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-profile-stumpy-240x60-20261021T100053Z.json",
+  "properties": {
+    "Result": "success",
+    "ExecMainStatus": "0",
+    "MemoryPeak": "269594624",
+    "CPUUsageNSec": "2985177000",
+    "CPUQuotaPerSecUSec": "1s",
+    "MemoryMax": "629145600",
+    "MemorySwapMax": "0",
+    "ActiveState": "active",
+    "SubState": "exited"
+  },
+  "journal_tail": "Started cm113-pred02-profile-stumpy-20261021T100053Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-stumpy-20261021T100053Z/launch.sh.\n",
+  "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-stumpy-20261021T100053Z-time.txt",
+  "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-stumpy-20261021T100053Z-stdout.txt",
+  "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-profile-stumpy-20261021T100053Z-stderr.txt",
+  "profile": {
+    "status": "PROFILE_PASS_NOT_RECIPE_SELECTION",
+    "family": "stumpy",
+    "view": "240x60",
+    "train_rows": 256,
+    "validation_rows": 128,
+    "profile_cpu_seconds": 0.7249358629999998,
+    "maxrss_bytes": 62672896,
+    "output_shapes": [
+      [
+        128,
+        2,
+        2,
+        3
+      ],
+      [
+        128,
+        3
+      ]
+    ],
+    "profile_only": true,
+    "measurements": {},
+    "head_features": null,
+    "protocol_sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626",
+    "dataset_manifest_sha256": "1bc6c49215ff894d086093dec1626485df5f95add26569cc8ba9241e2cde5e76",
+    "prior_cpu_seconds": 0,
+    "cpu_seconds": 2.5764728920000004
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,21 @@
+{
+  "unit": "cm113-pred02-tests-control-20261021T095231Z",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T095231Z",
+  "launch": "reports/forecast-independent-20261021/launch-tests-control-60x20.json",
+  "properties": {
+    "Result": "success",
+    "ExecMainStatus": "0",
+    "MemoryPeak": "[not set]",
+    "CPUUsageNSec": "18584036000",
+    "CPUQuotaPerSecUSec": "1s",
+    "MemoryMax": "629145600",
+    "MemorySwapMax": "0",
+    "ActiveState": "active",
+    "SubState": "exited"
+  },
+  "journal_tail": "Started cm113-pred02-tests-control-20261021T095231Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T095231Z/launch.sh.\n",
+  "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T095231Z-time.txt",
+  "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T095231Z-stdout.txt",
+  "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T095231Z-stderr.txt",
+  "status": "PASS"
+}

@@ -1,0 +1,21 @@
+{
+  "unit": "cm113-pred02-tests-control-20261021T100021Z",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T100021Z",
+  "launch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/forecast-independent-20261021/launch-tests-control-240x60-20261021T100021Z.json",
+  "properties": {
+    "Result": "success",
+    "ExecMainStatus": "0",
+    "MemoryPeak": "321429504",
+    "CPUUsageNSec": "17628400000",
+    "CPUQuotaPerSecUSec": "1s",
+    "MemoryMax": "629145600",
+    "MemorySwapMax": "0",
+    "ActiveState": "active",
+    "SubState": "exited"
+  },
+  "journal_tail": "Started cm113-pred02-tests-control-20261021T100021Z.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-tests-control-20261021T100021Z/launch.sh.\n",
+  "time_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T100021Z-time.txt",
+  "stdout_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T100021Z-stdout.txt",
+  "stderr_receipt": "reports/forecast-independent-20261021/receipts/cm113-pred02-tests-control-20261021T100021Z-stderr.txt",
+  "status": "PASS"
+}
