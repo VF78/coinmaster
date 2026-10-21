@@ -63,3 +63,7 @@ Final protection check19:30UTC: pilotPID2009732/NRestarts0/active, no FAST-RND u
 ## Postanalysis — 20.10.2026
 
 [Причины результата и применимость методов](postanalysis.md): saved V ranking confirms all four recognizers have UP/DOWN AUC below0.5 on both assets; strong MiniRocket/RDST overconfidence is separately measured. Simple-control macroAUC0.5332BTC/0.5252SOL is weak evidence, not a qualified trading candidate. No new fit/inference/economic run or U evaluation; completed negative gate unchanged. [Diagnostics](postanalysis-diagnostics.md) · [JSON](postanalysis-diagnostics.json) · [84-row ranking](postanalysis-ranking.csv) · [Independent numeric verification](postanalysis-verification.json). Proposals are unexecuted, not an authorized research queue.
+
+## Proposed next cycle — awaiting approval, 21.10.2026
+
+[Единый план BTC management / SOL action filter](next-cycle-plan.md). Planning only; owner approval required before implementation, fits or economic runs. Existing completed FAST-RND result and Project Done unchanged.
