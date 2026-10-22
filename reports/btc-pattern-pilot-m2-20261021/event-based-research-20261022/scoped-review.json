@@ -1,0 +1,18 @@
+{
+  "status": "findings",
+  "scope": "One final targeted challenge of REPORT.md only; discussion of a future protocol, not authorization for training or execution.",
+  "findings": [
+    {
+      "id": "E1_IDENTIFIABILITY",
+      "severity": "medium",
+      "location": "REPORT.md, E1: 'Так отдельно проверяются событие, состояние и форма'",
+      "finding": "Keeping identical event-selected query IDs across E1 comparators can isolate representation/state/shape conditional on those query times, but it cannot independently establish that event sampling or event timing beats uniform hourly sampling. The sentence currently claims a broader decomposition than that design identifies.",
+      "minimal_correction": "State that the initial E1 evaluates event representation and shape at fixed event-selected times. Leave the independent contribution of event timing unassessed, or reserve a separately authorized timing comparison on a common calendar evaluation population with explicit coverage/abstention handling. Do not add that experiment to the initial scope automatically."
+    }
+  ],
+  "other_material_findings": [],
+  "assessment": "The causal extreme/confirmation distinction, unfinished-prefix restriction, matured-label library, same-price-event volume ablation, complete-event catalog, and resolution-versus-freshness distinction are coherent for owner protocol discussion. No further material leakage or unnecessary architecture was identified in this scoped read. Detector initialization, exact coefficients, alignment and budgets remain explicit future frozen-protocol decisions rather than asserted results.",
+  "historical_roi_drawdown_assessment": "not_assessed",
+  "new_runs": "none",
+  "authorization": "No GO for data scans, training, predictions, scoring, backtesting, API/VPS actions, or pilot."
+}

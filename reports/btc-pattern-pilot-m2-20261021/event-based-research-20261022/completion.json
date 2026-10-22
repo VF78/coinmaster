@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-22T11:25:22.717484+00:00",
+  "status": "COMPLETE_ANALYSIS_ONLY",
+  "owner_steering": [
+    "completed wave/correction events",
+    "price+volume phase features",
+    "1H / 4H / both on matched history"
+  ],
+  "hypotheses": {
+    "E1": "causal event-prefix conditional representation/analogue test; timing benefit notidentified",
+    "E2": "V0/Vbase/Vevent on samepriceeventIDs",
+    "E3": "H1/H4/both sequence-resolution with history/freshness controls"
+  },
+  "market_effects": "UNTESTED",
+  "event_counts": "UNKNOWN_NOT_SCANNED",
+  "new_fits": 0,
+  "new_model_forecasts": 0,
+  "new_market_scans": 0,
+  "new_backtests": 0,
+  "new_CHECK_access": 0,
+  "pilot_or_VPS_changes": false,
+  "strategy_source_changes": false,
+  "previous_trial_raw_responses": 58,
+  "previous_trial_checkpoint": "d9169df87567f933e9c7e272af2d8f7fa85c94a6",
+  "verification": "existingCSV arithmetic/source-protocol crosscheck/literature review; no new model or market validation",
+  "scoped_review": "one material interpretation finding, coordinator corrected literal scope and checked text; no second independent GO claimed",
+  "corrected_finding": "E1 fixedqueryIDs does not test independent event timing benefit",
+  "all_future_execution": "REQUIRES_SEPARATE_PROTOCOL_APPROVAL",
+  "next_proposed_step": "causal full-period event catalogue and availability/sample-size QA, before forecast budget/fitting"
+}
