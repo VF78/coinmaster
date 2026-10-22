@@ -5,6 +5,7 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 import numpy as np
+from .research_rss import peak_rss_bytes
 from .btc_pattern_data import HOUR, MINUTE, DAY, FOLDS, ms, features_at
 from .btc_pattern_inapp import targets, forecast_scores, block_ci, display, calibration, digest
 
@@ -15,9 +16,9 @@ def write(path,obj):
 
 def guard(started):
     import resource
-    rss=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    rss=peak_rss_bytes(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
     if time.monotonic()-started>1800: raise RuntimeError('TIME_BUDGET_EXCEEDED')
-    if rss>6*1024**3: raise RuntimeError('RSS_BUDGET_EXCEEDED') # Darwin bytes
+    if rss>6*1024**3: raise RuntimeError('RSS_BUDGET_EXCEEDED')
 
 class Detector:
     """Incremental state; no hindsight relabelling of emitted queries."""

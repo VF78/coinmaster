@@ -1,0 +1,94 @@
+{
+  "schema": "coinmaster.audit-integration.v1",
+  "reviewed_baseline": "1e33e40",
+  "archive": "/Users/vf/Downloads/BTC_pattern_audit_Astra_20261022.zip",
+  "verification": {
+    "archive_sha256": "89f4ca537e1cca45f2b33325c1400353a392de2666d3f8c3932fadc5cae1b7a6",
+    "protocol_hash": true,
+    "seal_hash": true,
+    "source_results_hash": true,
+    "source_scoring_hash": true,
+    "input_hashes": true,
+    "response_hashes": true,
+    "aggregate_recomputed_from_saved_cases": true,
+    "fresh_model_calls": 0,
+    "archive_scripts_executed": false,
+    "astra_D_touch_violations": 0
+  },
+  "six_case_metrics": {
+    "prior": {
+      "TP_pinball": 0.20470492234485022,
+      "SL_Brier": 0.20137666150547748,
+      "D_logloss": 1.0680831289286794,
+      "D_correct": 3
+    },
+    "Sol_P": {
+      "TP_pinball": 0.17004597374908928,
+      "SL_Brier": 0.17425000000000002,
+      "D_logloss": 0.9015261262002388,
+      "D_correct": 5
+    },
+    "Sol_C": {
+      "TP_pinball": 0.16108617988637652,
+      "SL_Brier": 0.16830833333333334,
+      "D_logloss": 0.979283556989416,
+      "D_correct": 5
+    },
+    "Astra_P": {
+      "TP_pinball": 0.1750274232759518,
+      "SL_Brier": 0.18285833333333334,
+      "D_logloss": 0.9550353706157992,
+      "D_correct": 5
+    },
+    "Astra_C": {
+      "TP_pinball": 0.1635999674980024,
+      "SL_Brier": 0.16855555555555554,
+      "D_logloss": 0.8879557606186755,
+      "D_correct": 5
+    }
+  },
+  "disposition_matrix": [
+    {
+      "recommendation": "Direct detector support activation-169h / anchor-1h",
+      "disposition": "ALREADY_FIXED_NO_RERUN",
+      "evidence": "ed943a8; btc_event_research.direct_input_start"
+    },
+    {
+      "recommendation": "90-day conditional E1",
+      "disposition": "ALREADY_COMPLETED_NEGATIVE_NO_RERUN",
+      "evidence": "5e98d0c; event-d90-20261022/RESULTS.json"
+    },
+    {
+      "recommendation": "D/touch joint probability validation",
+      "disposition": "INTEGRATED_FUTURE_ONLY_ENTRYPOINT",
+      "evidence": "response_arrays_future; legacy parser/scoring preserved; boundary/invalid fixtures pass; must explicitly select this API in a separately approved future study"
+    },
+    {
+      "recommendation": "Linux RSS units",
+      "disposition": "INTEGRATED_PORTABLE_HELPER_NO_RERUN",
+      "evidence": "research_rss.peak_rss_bytes reused by E1 guard; Darwin bytes and Linux KiB tests pass"
+    },
+    {
+      "recommendation": "EMA seeded support / OLD_STRICT versus CAUSAL_WALK_FORWARD",
+      "disposition": "INTEGRATE_COUNTS_ONLY_STAGE_A",
+      "evidence": "OLD_STRICT inherits May15; proposed CAUSAL library fixed at original fold prefix; no new targets/forecasts"
+    },
+    {
+      "recommendation": "Six-case Astra/max diagnostic",
+      "disposition": "VERIFIED_ARCHIVE_EXPLORATORY_NO_WINNER",
+      "evidence": "6 existing origins, 12 sealed answers; no incremental P benefit or strategy conclusion"
+    },
+    {
+      "recommendation": "Synthetic recovery/Astra reranking capped 26/new BTC decision study",
+      "disposition": "PENDING_SEPARATE_OWNER_APPROVAL",
+      "evidence": "Known-positive/causal-motif/balanced-null small unit assertions now verify plumbing only. Full synthetic benchmark, Astra reranking and market/model study remain pending separate owner approval."
+    }
+  ],
+  "limits": [
+    "Read-only archive JSON/hash derivation only; no archive code execution",
+    "Seals verify internal consistency, not external timing or pretraining isolation",
+    "Archived Sol/prior aggregates recomputed from stored per-case scores; Astra scores independently reconstructed from JSON and saved truth",
+    "Six reused development origins cannot establish superiority or ROI/DD",
+    "Stage B and audit-proposed model work remain unapproved"
+  ]
+}

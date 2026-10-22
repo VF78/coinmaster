@@ -265,3 +265,17 @@ def main():
     print(json.dumps(out))
 
 if __name__=='__main__':main()
+
+
+def response_arrays_future(obj, window_id):
+    """Future validation contract only; archived validation/scoring stays unchanged."""
+    p, q, touch, errors, cross = response_arrays(obj, window_id)
+    if errors:
+        return p, q, touch, errors, cross
+    u, d, n = p
+    up, down = touch[1, 1], touch[0, 1]
+    tol = 1e-6
+    if (up < u-tol or up > 1-n+tol or down < d-tol or
+            down > 1-n+tol or up+down < 1-n-tol):
+        return None, None, None, ['D_SL1_TOUCH_INCOHERENT'], cross
+    return p, q, touch, [], cross

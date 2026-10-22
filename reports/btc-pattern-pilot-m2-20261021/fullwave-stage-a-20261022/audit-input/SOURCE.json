@@ -1,0 +1,13 @@
+{
+  "archive_name": "BTC_pattern_audit_Astra_20261022.zip",
+  "archive_sha256": "89f4ca537e1cca45f2b33325c1400353a392de2666d3f8c3932fadc5cae1b7a6",
+  "selected_input_texts": {
+    "CODEX_NEXT_STEP_RU.txt": "aa44fc7ea83d5c205a770690697abc4265a2c9daea29bcf38f9b2aa168abc504",
+    "README_RU.txt": "1be842ab78a195fd7dbf988b90551547c1526ea7c0abb723af4413c7246dbf98",
+    "AUDIT_RU.txt": "97d2661ceabdc8909054fad929ba64392448cb07b4e7e95e62e197b570a411df"
+  },
+  "authority": "User asked to study audit findings/recommendations and supplement approvedStageAplan. Attachednext-step commands are recommendations, not blanket authorization for26Astraresponses ormarketforecasting.",
+  "stale_base": "b27dd2d",
+  "actual_starting_head": "1e33e40b6ca10a8059fd4b3e7ab84301fe4b941f",
+  "archive_scripts_executed": false
+}
