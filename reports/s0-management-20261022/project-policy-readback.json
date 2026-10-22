@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-22T16:28:21.109368+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "body_readback": "PASS",
+  "policy": "freshcross25aftereligibility, losinglegtrim50/75; onepolicy",
+  "budget": "0/4",
+  "stage": "FOCUSED_IMPLEMENTATION_NATIVE_TESTS_REVIEW"
+}

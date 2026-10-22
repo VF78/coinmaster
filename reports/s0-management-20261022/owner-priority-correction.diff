@@ -1,0 +1,178 @@
+--- reviewed-original-patch
++++ P1-corrected-final-patch
+@@ -111,7 +111,7 @@
+              research_btc_split50=args.research_btc_split50,
+              research_btc_split_planref_v1=args.research_btc_split_planref_v1,
+ diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+-index 28f4ebc..8d5c180 100644
++index 28f4ebc..be16838 100644
+ --- a/runtime/coinmaster/strategy/wave_overlay.py
+ +++ b/runtime/coinmaster/strategy/wave_overlay.py
+ @@ -23,6 +23,7 @@ from nautilus_trader.trading.strategy import Strategy
+@@ -145,7 +145,15 @@
+          self._split_cover_init()
+          self._risk_first_init()
+          self._conditional_init()
+-@@ -1394,6 +1399,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -1346,6 +1351,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++             if (tick.instrument_id != self.config.sol_id
++                     or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open())
++                     or any(owner["instrument_id"] == self.config.sol_id for owner in self._v3_orders.values())
+++                    or any(owner["instrument_id"] == self.config.sol_id for owner in self._s0_orders.values())
++                     or (self.config.research_h1_b1 == "h1" and any(i.action == "SOL_ADD" for i in self._pending_by_order.values()))):
++                 return
++             intent, sigma, index = self._mandatory_sol_exit
++@@ -1394,10 +1400,15 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+          self._cover_check(tick)
+          self._conditional_check(tick)
+          self._risk_first_sol_check(tick)
+@@ -154,7 +162,14 @@
+          for item in list(self._queued_intents):
+              intent, sigma, index = item
+              if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
+-@@ -2020,6 +2027,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++                 continue
+++            pending_asset = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
+++            if intent.action != "CLOSE_ALL" and any(o["instrument_id"] == pending_asset for o in self._s0_orders.values()):
+++                continue  # Priority is handed back, but unresolved child leaves still wait.
++             if self._split_unfinished() and intent.action == "BTC_REDUCE":
++                 continue
++             if self._split_tp_ioc_eligible(intent) and any(self._reduction_key(owned)==self._reduction_key(intent) for owned in self._pending_by_order.values()):
++@@ -2020,6 +2031,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+              self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
+  
+      def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:
+@@ -163,7 +178,7 @@
+          if self._carry_busy():
+              return
+          key = self._reduction_key(intent)
+-@@ -2097,6 +2106,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2097,6 +2110,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+                  and not (self.config.deposit_runtime is not None and self._deposit.latched))
+  
+      def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+@@ -171,7 +186,16 @@
+          self._risk_first_sol_stop(reason)
+          self._split_stop(reason)
+          if self.config.deposit_runtime is not None and self._deposit.latched:
+-@@ -2318,6 +2328,15 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2130,6 +2144,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++             self.cancel_order(order)
++ 
++     def _submit_forced_close_on_quote(self, tick: QuoteTick) -> None:
+++        if self.config.research_s0_management_fraction is not None and (self._s0_orders or self.cache.orders_inflight()):
+++            return  # Unresolved management child ACK/cancel retains native leaves ownership.
++         # Cancel confirmation/reconciliation is authoritative: no market close
++         # is submitted while a resting reduction can still consume leaves.
++         if self.cache.orders_open() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
++@@ -2318,6 +2334,15 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+              self._rf_fill_epoch+=1
+              self._rf_last_fill_ns=event.ts_event
+          self._record_fill_audit(event)
+@@ -187,7 +211,7 @@
+          self._carry_native_fill(event)
+          if str(event.client_order_id) in self._v3_orders:
+              self._v3_reduction_fill(event)
+-@@ -2474,6 +2493,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2474,6 +2499,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+  
+      def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
+          """Queue every remaining confirmed-entry target for the next quote."""
+@@ -196,7 +220,7 @@
+          if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
+              return
+          if self.config.deposit_runtime is not None and self._deposit.latched:
+-@@ -2503,6 +2524,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2503,6 +2530,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+      def on_order_canceled(self, event: OrderCanceled) -> None:
+          self._terminal_submission(str(event.client_order_id))
+          client_order_id = str(event.client_order_id)
+@@ -206,7 +230,7 @@
+          if client_order_id in self._v3_orders:
+              self._v3_reduction_terminal(client_order_id, event.ts_event)
+              return
+-@@ -2648,6 +2672,10 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2648,6 +2678,10 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+          self._terminal_without_fill(str(event.client_order_id))
+  
+      def _terminal_without_fill(self, client_order_id: str) -> None:
+@@ -219,7 +243,7 @@
+          if self._conditional_enabled():
+ --- /dev/null
+ +++ b/runtime/coinmaster/strategy/s0_management.py
+-@@ -0,0 +1,180 @@
++@@ -0,0 +1,184 @@
+ +"""Default-OFF native S0 remainder management; no independent money ledger."""
+ +from decimal import Decimal as D
+ +from nautilus_trader.model.enums import OrderSide, TimeInForce
+@@ -327,6 +351,10 @@
+ +        if self._s0_emergency() or position is None or self._s0_cycle(position) != owner['cycle']:
+ +            self._s0_finish(owner, 'PREEMPTED', tick.ts_event, restore=False)
+ +            return False
+++        # Queued native exits must own handoff even while a cancel ACK/child is pending.
+++        if any(self._s0_intent_asset(i, tick.instrument_id) for i, _, _ in self._queued_intents):
+++            self._s0_finish(owner, 'PRIORITY_OR_BUSY', tick.ts_event, restore=False)
+++            return False
+ +        if owner['orders']:
+ +            return True
+ +        if tick.ts_event < owner['receipt'] or owner['source'] >= owner['receipt']:
+@@ -402,7 +430,7 @@
+ +            self._queue_confirmed_btc_targets(None, len(self._bars)-1, timestamp)
+ --- /dev/null
+ +++ b/runtime/tests/test_native_s0_management.py
+-@@ -0,0 +1,184 @@
++@@ -0,0 +1,231 @@
+ +from decimal import Decimal as D
+ +from datetime import UTC, datetime
+ +import pytest
+@@ -587,3 +615,50 @@
+ +        r.receipt_pending=(1,bundle);r.note_fill(2);r.finalize_receipt(s,3)
+ +        assert not s._s0_previous and r.receipt_unavailable==1 and len(delivered)==1
+ +    finally:r.file.close();r.receipt_file.close();e.end();e.dispose()
+++
+++
+++@pytest.mark.parametrize('action',['CLOSE_ALL','BTC_REDUCE'])
+++@pytest.mark.parametrize('pending_child',[False,True])
+++def test_queued_native_exit_preempts_claim_before_pending_child_or_cancel_ack_wait(action,pending_child):
+++    s,e,ep=setup()
+++    try:
+++        receipt(s,2,'.20');receipt(s,3,'.30')
+++        owner=s._s0_targets[BTC_PERP.id]
+++        if pending_child:
+++            owner['orders'].add('unknown-ack-child')
+++            s._s0_orders['unknown-ack-child']=owner
+++        intent=s._domain._intent(ep,action,-1,None if action=='CLOSE_ALL' else 0,quantity=1.,reason='REGIME' if action=='CLOSE_ALL' else None)
+++        s._queued_intents.append((intent,None,0))
+++        run_ticks(e,[tick(BTC_PERP,5,'90'),tick(BTC_PERP,6,'90')])
+++        assert not [r for r in s.s0_management_audit if r['event']=='SUBMIT']
+++        assert not s._s0_targets
+++        if pending_child:assert s._s0_orders['unknown-ack-child'] is owner
+++        if action=='CLOSE_ALL':
+++            if pending_child:
+++                assert s._s0_position(BTC_PERP.id).quantity.as_decimal()==4
+++                s._s0_terminal('unknown-ack-child',7,'CANCELED')
+++                run_ticks(e,[tick(BTC_PERP,8,'90')])
+++            assert not e.cache.positions_open()
+++        else:
+++            if pending_child:
+++                assert s._s0_position(BTC_PERP.id).quantity.as_decimal()==4 and s._queued_intents
+++                s._s0_terminal('unknown-ack-child',7,'CANCELED')
+++                run_ticks(e,[tick(BTC_PERP,8,'90')])
+++            assert s._s0_position(BTC_PERP.id).quantity.as_decimal()==3
+++    finally:e.end();e.dispose()
+++
+++
+++def test_mandatory_sol_timeout_waits_unknown_management_child_then_closes_actual_leaves():
+++    s,e,ep=setup(assets=(SOL_PERP,))
+++    try:
+++        receipt(s,2,'.20');receipt(s,3,'.30')
+++        owner=s._s0_targets[SOL_PERP.id];owner['orders'].add('unknown');s._s0_orders['unknown']=owner
+++        timeout=s._domain._intent(ep,'SOL_EXIT',-1,None,quantity=4.,reason='SOL_HARD_TIMEOUT')
+++        s._mandatory_sol_exit=(timeout,None,0)
+++        run_ticks(e,[tick(SOL_PERP,5,'90')])
+++        assert s._s0_position(SOL_PERP.id).quantity.as_decimal()==4
+++        s._s0_terminal('unknown',6,'CANCELED')
+++        run_ticks(e,[tick(SOL_PERP,7,'90')])
+++        assert not e.cache.positions_open()
+++        assert not [r for r in s.s0_management_audit if r['event']=='SUBMIT']
+++    finally:e.end();e.dispose()

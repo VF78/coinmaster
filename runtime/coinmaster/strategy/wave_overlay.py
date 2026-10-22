@@ -23,6 +23,7 @@ from nautilus_trader.trading.strategy import Strategy
 
 from coinmaster.domain.wave_overlay import btc_management_price
 from coinmaster.strategy.split_cover import SplitCoverResearch
+from coinmaster.strategy.s0_management import S0ManagementResearch
 from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
 from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
 from coinmaster.strategy.immediate_insurance import ImmediateSolInsurance
@@ -61,6 +62,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
+    research_s0_management_fraction: Decimal | None = None
     research_btc_split50: bool = False
     research_btc_split_planref_v1: bool = False
     research_btc_split_tp_ioc: bool = False
@@ -171,10 +173,13 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(S0ManagementResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
+        self._s0_init()
+        if config.research_s0_management_fraction not in (None, Decimal(".5"), Decimal(".75")):
+            raise ValueError("S0_MANAGEMENT_FRACTION_INVALID")
         self._split_cover_init()
         self._risk_first_init()
         self._conditional_init()
@@ -1346,6 +1351,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             if (tick.instrument_id != self.config.sol_id
                     or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open())
                     or any(owner["instrument_id"] == self.config.sol_id for owner in self._v3_orders.values())
+                    or any(owner["instrument_id"] == self.config.sol_id for owner in self._s0_orders.values())
                     or (self.config.research_h1_b1 == "h1" and any(i.action == "SOL_ADD" for i in self._pending_by_order.values()))):
                 return
             intent, sigma, index = self._mandatory_sol_exit
@@ -1394,10 +1400,15 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         self._cover_check(tick)
         self._conditional_check(tick)
         self._risk_first_sol_check(tick)
+        if self._s0_on_quote(tick):
+            return
         for item in list(self._queued_intents):
             intent, sigma, index = item
             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
                 continue
+            pending_asset = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
+            if intent.action != "CLOSE_ALL" and any(o["instrument_id"] == pending_asset for o in self._s0_orders.values()):
+                continue  # Priority is handed back, but unresolved child leaves still wait.
             if self._split_unfinished() and intent.action == "BTC_REDUCE":
                 continue
             if self._split_tp_ioc_eligible(intent) and any(self._reduction_key(owned)==self._reduction_key(intent) for owned in self._pending_by_order.values()):
@@ -2020,6 +2031,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
 
     def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:
+        if (self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id) in self._s0_targets:
+            return
         if self._carry_busy():
             return
         key = self._reduction_key(intent)
@@ -2097,6 +2110,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
                 and not (self.config.deposit_runtime is not None and self._deposit.latched))
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+        self._s0_abort(reason)
         self._risk_first_sol_stop(reason)
         self._split_stop(reason)
         if self.config.deposit_runtime is not None and self._deposit.latched:
@@ -2130,6 +2144,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             self.cancel_order(order)
 
     def _submit_forced_close_on_quote(self, tick: QuoteTick) -> None:
+        if self.config.research_s0_management_fraction is not None and (self._s0_orders or self.cache.orders_inflight()):
+            return  # Unresolved management child ACK/cancel retains native leaves ownership.
         # Cancel confirmation/reconciliation is authoritative: no market close
         # is submitted while a resting reduction can still consume leaves.
         if self.cache.orders_open() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
@@ -2165,6 +2181,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         self.submit_order(order)
 
     def _submit_forced_closes_from_cache(self) -> None:
+        if self.config.research_s0_management_fraction is not None and (self._s0_orders or self.cache.orders_inflight()):
+            return  # Cancel callbacks share the same unresolved-child leaves guard.
         """Continue a forced close after the final native cancel confirmation."""
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
@@ -2318,6 +2336,15 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             self._rf_fill_epoch+=1
             self._rf_last_fill_ns=event.ts_event
         self._record_fill_audit(event)
+        if self.config.research_s0_management_fraction is not None:
+            self._s0_previous.pop(event.instrument_id, None)
+        if str(event.client_order_id) in self._s0_orders:
+            self._s0_fill(event)
+            return
+        owned = self._pending_by_order.get(str(event.client_order_id))
+        if owned is not None and owned.action in {"BTC_ENTRY", "SOL_ADD"}:
+            self._s0_last_increase[event.instrument_id] = event.ts_event
+            self._s0_previous.pop(event.instrument_id, None)
         self._carry_native_fill(event)
         if str(event.client_order_id) in self._v3_orders:
             self._v3_reduction_fill(event)
@@ -2474,6 +2501,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
+        if self.config.btc_id in self._s0_targets:
+            return
         if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
             return
         if self.config.deposit_runtime is not None and self._deposit.latched:
@@ -2503,6 +2532,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
     def on_order_canceled(self, event: OrderCanceled) -> None:
         self._terminal_submission(str(event.client_order_id))
         client_order_id = str(event.client_order_id)
+        if client_order_id in self._s0_orders:
+            self._s0_terminal(client_order_id, event.ts_event, "CANCELED")
+            return
         if client_order_id in self._v3_orders:
             self._v3_reduction_terminal(client_order_id, event.ts_event)
             return
@@ -2648,6 +2680,10 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         self._terminal_without_fill(str(event.client_order_id))
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
+        if client_order_id in self._s0_orders:
+            self._terminal_submission(client_order_id)
+            self._s0_terminal(client_order_id, self.clock.timestamp_ns(), "DENIED_REJECTED_OR_EXPIRED")
+            return
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
         if self._conditional_enabled():

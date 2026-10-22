@@ -1,0 +1,26 @@
+{
+  "status": "PRELAUNCH_HASH_AND_RESOURCE_PASS_NO_DISPATCH",
+  "utc": "2026-10-22T16:45:05.939964+00:00",
+  "variants": [
+    {
+      "variant": "m1",
+      "hash_checks": 87,
+      "bytes_hashed": 85177832,
+      "source_input_sha256": "f041ee8fcf8678ae331898f2cef8da7ec6de3f0ab256920c2d1c2681a7275c87",
+      "result_absent": true,
+      "status": "PASS_WITH_CANONICAL_READONLY_DATA_BIND_RESOLUTION"
+    },
+    {
+      "variant": "m2",
+      "hash_checks": 87,
+      "bytes_hashed": 85177832,
+      "source_input_sha256": "9ac47a34c7ae21d9e6eabd1e0e7f60b73c1aa38b5a06e425801cef9eec79b03f",
+      "result_absent": true,
+      "status": "PASS_WITH_CANONICAL_READONLY_DATA_BIND_RESOLUTION"
+    }
+  ],
+  "MemAvailable_bytes": 1155559424,
+  "disk_free_bytes": 3854069760,
+  "protected_pilot_pid_exists": true,
+  "native_runs": 0
+}

@@ -1,0 +1,73 @@
+--- P1-corrected
++++ P1-callback-closure
+@@ -111,7 +111,7 @@
+              research_btc_split50=args.research_btc_split50,
+              research_btc_split_planref_v1=args.research_btc_split_planref_v1,
+ diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+-index 28f4ebc..be16838 100644
++index 28f4ebc..3653d66 100644
+ --- a/runtime/coinmaster/strategy/wave_overlay.py
+ +++ b/runtime/coinmaster/strategy/wave_overlay.py
+ @@ -23,6 +23,7 @@ from nautilus_trader.trading.strategy import Strategy
+@@ -195,7 +195,16 @@
+          # Cancel confirmation/reconciliation is authoritative: no market close
+          # is submitted while a resting reduction can still consume leaves.
+          if self.cache.orders_open() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
+-@@ -2318,6 +2334,15 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2165,6 +2181,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++         self.submit_order(order)
++ 
++     def _submit_forced_closes_from_cache(self) -> None:
+++        if self.config.research_s0_management_fraction is not None and (self._s0_orders or self.cache.orders_inflight()):
+++            return  # Cancel callbacks share the same unresolved-child leaves guard.
++         """Continue a forced close after the final native cancel confirmation."""
++         if self.config.deposit_runtime is not None and self._deposit.latched:
++             return
++@@ -2318,6 +2336,15 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+              self._rf_fill_epoch+=1
+              self._rf_last_fill_ns=event.ts_event
+          self._record_fill_audit(event)
+@@ -211,7 +220,7 @@
+          self._carry_native_fill(event)
+          if str(event.client_order_id) in self._v3_orders:
+              self._v3_reduction_fill(event)
+-@@ -2474,6 +2499,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2474,6 +2501,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+  
+      def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
+          """Queue every remaining confirmed-entry target for the next quote."""
+@@ -220,7 +229,7 @@
+          if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
+              return
+          if self.config.deposit_runtime is not None and self._deposit.latched:
+-@@ -2503,6 +2530,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2503,6 +2532,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+      def on_order_canceled(self, event: OrderCanceled) -> None:
+          self._terminal_submission(str(event.client_order_id))
+          client_order_id = str(event.client_order_id)
+@@ -230,7 +239,7 @@
+          if client_order_id in self._v3_orders:
+              self._v3_reduction_terminal(client_order_id, event.ts_event)
+              return
+-@@ -2648,6 +2678,10 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
++@@ -2648,6 +2680,10 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+          self._terminal_without_fill(str(event.client_order_id))
+  
+      def _terminal_without_fill(self, client_order_id: str) -> None:
+@@ -430,7 +439,7 @@
+ +            self._queue_confirmed_btc_targets(None, len(self._bars)-1, timestamp)
+ --- /dev/null
+ +++ b/runtime/tests/test_native_s0_management.py
+-@@ -0,0 +1,231 @@
++@@ -0,0 +1,232 @@
+ +from decimal import Decimal as D
+ +from datetime import UTC, datetime
+ +import pytest
+@@ -635,6 +644,7 @@
+ +        if pending_child:assert s._s0_orders['unknown-ack-child'] is owner
+ +        if action=='CLOSE_ALL':
+ +            if pending_child:
+++                s._submit_forced_closes_from_cache()  # Ordinary cancel callback continuation.
+ +                assert s._s0_position(BTC_PERP.id).quantity.as_decimal()==4
+ +                s._s0_terminal('unknown-ack-child',7,'CANCELED')
+ +                run_ticks(e,[tick(BTC_PERP,8,'90')])

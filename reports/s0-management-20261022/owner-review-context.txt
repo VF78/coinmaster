@@ -1,0 +1,220 @@
+runtime/coinmaster/strategy/wave_overlay.py 1324 1422
+1324:         if self.config.research_h1_b1 == "h1" and tick.instrument_id == self.config.sol_id:
+1325:             self._h1_sol_quote_sequence += 1
+1326:         if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
+1327:             self._b1_btc_quote_sequence += 1
+1328:         if self._v3_reduction is not None and tick.instrument_id == self._v3_reduction["instrument_id"] and self._forced_close_reason is None and not self._liquidating and self._mandatory_sol_exit is None:
+1329:             self._v3_submit_reduction(tick)
+1330:             return
+1331:         if self.config.deposit_runtime is not None and self._deposit.latched:
+1332:             self._risk_first_sol_stop("DP")
+1333:             self._split_stop("DP")
+1334:             if self.config.research_v0_deferred_selective_zero_tp:
+1335:                 self._discard_queued_intents(lambda queued: queued.action == "BTC_ENTRY")
+1336:             return
+1337:         if self.config.research_v0_deferred_selective_zero_tp and tick.instrument_id == self.config.btc_id:
+1338:             self._activate_selective_sol_rights(tick)
+1339:         # Verified artifacts are queued off-thread. A quote may apply one
+1340:         # after the latest paired session is buffered, but must not consume
+1341:         # warmup history before any live signal establishes a safe cutoff.
+1342:         if self._latest_seen_session is not None and (
+1343:             self._last_accepted_session is None or self._latest_seen_session > self._last_accepted_session
+1344:         ):
+1345:             self._apply_verified_backfill()
+1346:         self._retry_deferred_daily_decision()
+1347:         if self._mandatory_sol_exit is not None:
+1348:             # A timeout is allowed to cancel a stale/resting SOL reduction,
+1349:             # then uses the actual native position leaves on the next SOL
+1350:             # quote. No queued increase may pass while this is in progress.
+1351:             if (tick.instrument_id != self.config.sol_id
+1352:                     or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open())
+1353:                     or any(owner["instrument_id"] == self.config.sol_id for owner in self._v3_orders.values())
+1354:                     or (self.config.research_h1_b1 == "h1" and any(i.action == "SOL_ADD" for i in self._pending_by_order.values()))):
+1355:                 return
+1356:             intent, sigma, index = self._mandatory_sol_exit
+1357:             if self.config.research_v0_execution_repairs and tick.ts_event < self._mandatory_sol_retry_after_ns:
+1358:                 return
+1359:             self._mandatory_sol_exit = None
+1360:             self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+1361:             return
+1362:         if self._forced_close_reason is not None:
+1363:             self._submit_forced_close_on_quote(tick)
+1364:             return
+1365:         if self._liquidating:
+1366:             if tick.instrument_id in self._liquidation_waiting and tick.instrument_id not in self._liquidation_submitted:
+1367:                 position = next((item for item in self.cache.positions_open() if item.instrument_id == tick.instrument_id), None)
+1368:                 instrument = self.cache.instrument(tick.instrument_id)
+1369:                 if position is not None and instrument is not None:
+1370:                     order = self.order_factory.market(instrument_id=tick.instrument_id, order_side=OrderSide.SELL if position.is_long else OrderSide.BUY, quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True)
+1371:                     if self._record_submission(order, f"liquidation:{order.client_order_id}", "liquidation", "LIQUIDATION_CLOSE"):
+1372:                         self._liquidation_submitted.add(tick.instrument_id); self._liquidation_orders.add(str(order.client_order_id)); self.submit_order(order)
+1373:             return
+1374:         if self._carry_check(tick):
+1375:             return
+1376:         if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
+1377:             candidate = self._b1_candidate
+1378:             if (candidate and candidate["confirmed_ns"] is not None
+1379:                     and self._confirmation_receipt_is_current(candidate["confirmed_ns"],
+1380:                         (candidate.get("confirmation_receipt_ns"), candidate.get("eligible_quote_sequence")),
+1381:                         self._b1_btc_quote_sequence, tick.ts_event)
+1382:                     and self._confirmation_marks_current(tick.ts_event)
+1383:                     and self._b1_flat_resolved()
+1384:                     and self._entries_enabled()):
+1385:                 self._current_btc_mark = self._latest_marks.get(self.config.btc_id)
+1386:                 self._current_sol_mark = self._latest_marks.get(self.config.sol_id)
+1387:                 self._b1_consuming = True
+1388:                 try:
+1389:                     self._advance_current_day()
+1390:                 finally:
+1391:                     self._b1_consuming = False
+1392:                 if self._domain.episode is not None:
+1393:                     self.h1_b1_audit.append({"event": "B1_CONFIRMED_ENTRY", **candidate,
+1394:                                             "quote_ns": tick.ts_event})
+1395:                     self._b1_candidate = None
+1396:         if tick.instrument_id == self.config.sol_id:
+1397:             self._h1_check(tick.ts_event)
+1398:         self._split_check(tick)
+1399:         self._cover_check(tick)
+1400:         self._conditional_check(tick)
+1401:         self._risk_first_sol_check(tick)
+1402:         if self._s0_on_quote(tick):
+1403:             return
+1404:         for item in list(self._queued_intents):
+1405:             intent, sigma, index = item
+1406:             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
+1407:                 continue
+1408:             if self._split_unfinished() and intent.action == "BTC_REDUCE":
+1409:                 continue
+1410:             if self._split_tp_ioc_eligible(intent) and any(self._reduction_key(owned)==self._reduction_key(intent) for owned in self._pending_by_order.values()):
+1411:                 continue
+1412:             target = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
+1413:             if intent.action == "CLOSE_ALL":
+1414:                 self._queued_intents.remove(item)
+1415:                 self._queued_intent_ready_ns.pop(intent.id, None)
+1416:                 self._begin_forced_close(intent.reason or "CLOSE_ALL", intent)
+1417:                 continue
+1418:             if target == tick.instrument_id:
+1419:                 if self.config.research_v0_selective_lifecycle_repairs and intent.action == "BTC_REDUCE" and intent.limit_price is None and self._reduction_key(intent) in self._accepted_reductions:
+1420:                     episode = self._domain.episode
+1421:                     if episode is None or episode.btc_entry_vwap is None or intent.level is None:
+1422:                         continue
+runtime/coinmaster/strategy/wave_overlay.py 2498 2587
+2498:         if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
+2499:             return
+2500:         if self.config.deposit_runtime is not None and self._deposit.latched:
+2501:             return
+2502:         self._bind_native_lots()
+2503:         for target in self._domain.plan_confirmed_btc_targets():
+2504:             self._queued_intents.append((target, sigma, decision_index))
+2505:             self._queued_intent_ready_ns[target.id] = ready_ns + 1
+2506: 
+2507:     def _has_confirmed_btc_remainder(self, intent: Intent) -> bool:
+2508:         """Return whether a canceled BTC parent had a confirmed unsold remainder."""
+2509:         episode = self._domain.episode
+2510:         if episode is None or self._carry_busy() or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
+2511:             return False
+2512:         if intent.action == "BTC_ENTRY":
+2513:             return episode.btc_initial_qty > 0 and episode.btc_open_qty > 0
+2514:         return (
+2515:             intent.action == "BTC_REDUCE"
+2516:             and intent.level is not None
+2517:             and intent.level not in episode.btc_filled_tps
+2518:             and episode.btc_tp_filled_qty.get(intent.level, 0.0) > 0
+2519:         )
+2520: 
+2521:     def _after_domain_fill(self, event: OrderFilled) -> None:
+2522:         """Optional durable domain checkpoint, before any follow-on decision."""
+2523: 
+2524:     def on_order_canceled(self, event: OrderCanceled) -> None:
+2525:         self._terminal_submission(str(event.client_order_id))
+2526:         client_order_id = str(event.client_order_id)
+2527:         if client_order_id in self._s0_orders:
+2528:             self._s0_terminal(client_order_id, event.ts_event, "CANCELED")
+2529:             return
+2530:         if client_order_id in self._v3_orders:
+2531:             self._v3_reduction_terminal(client_order_id, event.ts_event)
+2532:             return
+2533:         if client_order_id in self._forced_close_orders:
+2534:             order = self.cache.order(event.client_order_id)
+2535:             if order is not None:
+2536:                 self._forced_close_submitted.discard(order.instrument_id)
+2537:             self._forced_close_orders.discard(client_order_id)
+2538:         intent = self._pending_by_order.pop(str(event.client_order_id), None)
+2539:         if self._conditional_enabled():
+2540:             self._conditional_attempt_terminal(intent,event.ts_event,"CANCELED",str(event.client_order_id))
+2541:         if intent is not None and intent.action == "BTC_ENTRY":
+2542:             self._daily_decision_reason = (
+2543:                 "PARTIAL_ENTRY_RETAINED" if self._domain.episode is not None and self._domain.episode.btc_initial_qty > 0
+2544:                 else "NATIVE_ENTRY_ZERO_FILL_CANCELED"
+2545:             )
+2546:         sigma = self._sigma_by_order.pop(str(event.client_order_id), None)
+2547:         decision_index = self._decision_index_by_order.pop(str(event.client_order_id), 0)
+2548:         if intent is not None:
+2549:             self._domain.on_parent_cancelled(intent.id)
+2550:             if self._has_confirmed_btc_remainder(intent):
+2551:                 # IOC entry and TP parents can cancel after a real partial
+2552:                 # fill. Re-plan from confirmed domain leaves; the next quote
+2553:                 # still sizes every reduction against the native position.
+2554:                 self._queue_confirmed_btc_targets(sigma, decision_index, event.ts_event)
+2555:                 if self.config.research_v0_execution_repairs and intent.action == "BTC_ENTRY" and self._domain.episode is not None and self._domain.episode.btc_omitted_zero_levels:
+2556:                     self._advance_current_day()
+2557:         if intent is not None:
+2558:             self._requeue_accepted_reduction(intent, sigma, decision_index, event.ts_event)
+2559:         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,event.ts_event,"CANCELED")
+2560:         self._reconcile_terminal_flat()
+2561:         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+2562:             self._rearm_mandatory_sol_exit(event.ts_event)
+2563:         if self._forced_close_reason is not None and not self.cache.orders_open():
+2564:             self._submit_forced_closes_from_cache()
+2565:         if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
+2566:             self._group_close_reconciliation_pending = True
+2567:             self._reconcile_group_flat()
+2568: 
+2569:     def on_order_event(self, event) -> None:
+2570:         # Event identity, not client order identity, preserves the sequence
+2571:         # Submitted -> Accepted -> terminal without manufacturing an ACK.
+2572:         event_id = getattr(event, "id", None)
+2573:         if event_id is None:
+2574:             event_id = f"{event.client_order_id}:{type(event).__name__}:{getattr(event, 'ts_event', getattr(event, 'ts_init', ''))}"
+2575:         self._record_native_event(str(event_id), "order")
+2576:         if isinstance(event, OrderAccepted):
+2577:             self._accept_native_order(event)
+2578: 
+2579:     def on_order_accepted(self, event: OrderAccepted) -> None:
+2580:         self._accept_native_order(event)
+2581: 
+2582:     def _accept_native_order(self, event: OrderAccepted) -> None:
+2583:         context = self._order_audit.get(str(event.client_order_id))
+2584:         if context is not None and context.get("accept_ns") is None:
+2585:             context["accept_ns"] = str(event.ts_event)
+2586:         self._acknowledge_submission(str(event.client_order_id))
+2587:         if self.config.research_sol_risk_first=="split-atr":
+runtime/coinmaster/domain/wave_overlay.py 420 447
+420:             return []
+421:         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
+422:         # An invalid current beta permits only exits/reductions, never new risk.
+423:         if feature.beta is None or not 0.2 < feature.beta < 4:
+424:             return self._sol_exits(episode, feature, bars[index], index)
+425:         if not self.config.episode_fixed_beta:
+426:             z = feature.z if episode.fixed_sigma is None else (feature.relative - feature.mu) / episode.fixed_sigma if feature.relative is not None and feature.mu is not None else None
+427:         elif index >= self.config.relative_days:
+428:             prior = bars[index - self.config.relative_days]
+429:             relative = log(bars[index].sol_close / prior.sol_close) - episode.beta_entry * log(bars[index].btc_close / prior.btc_close)
+430:             z = (relative - feature.mu) / feature.sigma if feature.mu is not None and feature.sigma not in (None, 0) else None
+431:         else:
+432:             z = None
+433:         if z is not None:
+434:             signed_z = episode.side * z
+435:             for level in sorted(episode.sol_rights):
+436:                 strict_cycle = not self.config.sol_late_entry_after_tp
+437:                 fraction = episode.sol_right_fraction.get(level, 1.0)
+438:                 allowed_notional = episode.h * self.config.sol_size_multipliers_h[level] * fraction
+439:                 remaining_notional = allowed_notional - episode.sol_add_filled_notional.get(level, 0.0) - episode.sol_ownership_transfer_credit.get(level, 0.0) - episode.sol_risk_retired_notional.get(level, 0.0)
+440:                 if remaining_notional > 1e-12 and (not strict_cycle or episode.sol_right_decision_index.get(level) == index) and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
+441:                     episode.attempted_sol_at[level] = index
+442:                     intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=remaining_notional))
+443:             if intents:
+444:                 return intents
+445:         return self._sol_exits(episode, feature, bars[index], index, z)
+446: 
+447:     def _sol_exits(self, episode: Episode, feature: Features, bar: DailyBar, index: int, z: float | None = None) -> list[Intent]:

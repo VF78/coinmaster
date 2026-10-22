@@ -1,0 +1,185 @@
+{
+  "utc": "2026-10-22T16:13:24.803740+00:00",
+  "open_issues": [
+    {
+      "number": 105,
+      "title": "[HL GUI-4] Safe dry-run controls and premium production UX",
+      "html_url": "https://github.com/VF78/coinmaster/issues/105"
+    },
+    {
+      "number": 101,
+      "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout",
+      "html_url": "https://github.com/VF78/coinmaster/issues/101"
+    },
+    {
+      "number": 100,
+      "title": "[HL GUI] Premium trader workstation for Stage-G dry run",
+      "html_url": "https://github.com/VF78/coinmaster/issues/100"
+    },
+    {
+      "number": 99,
+      "title": "[L100 / current Sandbox] Natural lifecycle observation",
+      "html_url": "https://github.com/VF78/coinmaster/issues/99"
+    },
+    {
+      "number": 93,
+      "title": "[HL Launch] Stage-G to virtual Hyperliquid paper dry run",
+      "html_url": "https://github.com/VF78/coinmaster/issues/93"
+    },
+    {
+      "number": 75,
+      "title": "[Nautilus P0] \u0414\u0430\u043d\u043d\u044b\u0435, \u0431\u0438\u0440\u0436\u0438 \u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043e\u043a\u0440\u0443\u0436\u0435\u043d\u0438\u044f",
+      "html_url": "https://github.com/VF78/coinmaster/issues/75"
+    },
+    {
+      "number": 74,
+      "title": "Wave Engine GUI: settings + replay visualization of waves, breaks, entries, TP/SL",
+      "html_url": "https://github.com/VF78/coinmaster/issues/74"
+    },
+    {
+      "number": 73,
+      "title": "Research/Build: New 4H wave trading engine",
+      "html_url": "https://github.com/VF78/coinmaster/issues/73"
+    },
+    {
+      "number": 72,
+      "title": "Research: extract or reproduce private TradingView indicator logic",
+      "html_url": "https://github.com/VF78/coinmaster/issues/72"
+    },
+    {
+      "number": 71,
+      "title": "Strategy C: robust positive ROI action plan and validation gates",
+      "html_url": "https://github.com/VF78/coinmaster/issues/71"
+    },
+    {
+      "number": 70,
+      "title": "Research/Build: Strategy C \u2014 15m Adaptive Volatility Breakout + FreqAI Regime Engine",
+      "html_url": "https://github.com/VF78/coinmaster/issues/70"
+    },
+    {
+      "number": 69,
+      "title": "Research: BTC 24/7 Freqtrade backtest + hyperopt loop (2026-01-01..2026-04-26)",
+      "html_url": "https://github.com/VF78/coinmaster/issues/69"
+    },
+    {
+      "number": 68,
+      "title": "\u041f\u043e\u0434\u0437\u0430\u0434\u0430\u0447\u0430 #67: GUI \u0434\u043b\u044f Freqtrade Radar policy decisions",
+      "html_url": "https://github.com/VF78/coinmaster/issues/68"
+    },
+    {
+      "number": 67,
+      "title": "\u041f\u043e\u0434\u0437\u0430\u0434\u0430\u0447\u0430 #66: Freqtrade-native Radar policy bridge",
+      "html_url": "https://github.com/VF78/coinmaster/issues/67"
+    },
+    {
+      "number": 66,
+      "title": "\u042d\u0442\u0430\u043f 2: Freqtrade-native Radar, FreqAI \u0438 governance \u0431\u0435\u0437 \u0432\u0442\u043e\u0440\u043e\u0433\u043e \u0434\u0432\u0438\u0436\u043a\u0430",
+      "html_url": "https://github.com/VF78/coinmaster/issues/66"
+    },
+    {
+      "number": 65,
+      "title": "\u042d\u0442\u0430\u043f 1: \u041f\u043e\u043b\u043d\u044b\u0439 \u043f\u0435\u0440\u0435\u0445\u043e\u0434 CoinMaster \u043d\u0430 native Freqtrade core",
+      "html_url": "https://github.com/VF78/coinmaster/issues/65"
+    },
+    {
+      "number": 54,
+      "title": "[TR] Runtime clarity: explicit blocks, denial reasons, and legacy-path cleanup",
+      "html_url": "https://github.com/VF78/coinmaster/issues/54"
+    },
+    {
+      "number": 53,
+      "title": "[TR] Post-trade and optimizer feedback by setup, timeframe, asset, and source",
+      "html_url": "https://github.com/VF78/coinmaster/issues/53"
+    },
+    {
+      "number": 52,
+      "title": "[TR] Setup quality uplift: entries, exits, TP/SL, and sizing inside the same engine",
+      "html_url": "https://github.com/VF78/coinmaster/issues/52"
+    },
+    {
+      "number": 51,
+      "title": "[TR] Asset-aware symbol profiles for crypto, gold, and oil",
+      "html_url": "https://github.com/VF78/coinmaster/issues/51"
+    },
+    {
+      "number": 50,
+      "title": "[TR] Deterministic filters: regime, session, and volatility gates",
+      "html_url": "https://github.com/VF78/coinmaster/issues/50"
+    },
+    {
+      "number": 49,
+      "title": "[TR] Canonical engine: one decision path across live, replay, backtest, and optimizer",
+      "html_url": "https://github.com/VF78/coinmaster/issues/49"
+    },
+    {
+      "number": 48,
+      "title": "[TR] Epic: one deterministic trading engine across live, backtest, and optimizer",
+      "html_url": "https://github.com/VF78/coinmaster/issues/48"
+    },
+    {
+      "number": 47,
+      "title": "[RADAR] Optional AI second pass for ambiguous/high-impact signals",
+      "html_url": "https://github.com/VF78/coinmaster/issues/47"
+    },
+    {
+      "number": 29,
+      "title": "AO-01 Account overview and execution controls data correctness + cleanup",
+      "html_url": "https://github.com/VF78/coinmaster/issues/29"
+    },
+    {
+      "number": 28,
+      "title": "TR-05 Trading Rules UI/UX cleanup and consistency pass",
+      "html_url": "https://github.com/VF78/coinmaster/issues/28"
+    },
+    {
+      "number": 27,
+      "title": "TR-04 Unified realtime rules engine + risk/DD hard guarantees",
+      "html_url": "https://github.com/VF78/coinmaster/issues/27"
+    },
+    {
+      "number": 26,
+      "title": "TR-03 FVG retrace trigger engine (structure break + retrace %) ",
+      "html_url": "https://github.com/VF78/coinmaster/issues/26"
+    },
+    {
+      "number": 21,
+      "title": "P1 Target architecture for 24/7 realtime trading engine (Coinmaster)",
+      "html_url": "https://github.com/VF78/coinmaster/issues/21"
+    },
+    {
+      "number": 17,
+      "title": "P1-9 Telegram trigger/confirmation notifications",
+      "html_url": "https://github.com/VF78/coinmaster/issues/17"
+    },
+    {
+      "number": 12,
+      "title": "P0-4 Hyperliquid private command layer to production minimum",
+      "html_url": "https://github.com/VF78/coinmaster/issues/12"
+    },
+    {
+      "number": 8,
+      "title": "Add exchange-adapter readiness tests (Bybit/Binance expansion path)",
+      "html_url": "https://github.com/VF78/coinmaster/issues/8"
+    },
+    {
+      "number": 7,
+      "title": "Implement manual confirmation flow for live order execution",
+      "html_url": "https://github.com/VF78/coinmaster/issues/7"
+    },
+    {
+      "number": 6,
+      "title": "Prepare Hetzner production baseline (Docker/systemd/healthchecks/runbook)",
+      "html_url": "https://github.com/VF78/coinmaster/issues/6"
+    },
+    {
+      "number": 4,
+      "title": "Implement Hyperliquid private command layer (account + trading)",
+      "html_url": "https://github.com/VF78/coinmaster/issues/4"
+    },
+    {
+      "number": 2,
+      "title": "Build historical replay engine (close-only engulf entry)",
+      "html_url": "https://github.com/VF78/coinmaster/issues/2"
+    }
+  ]
+}

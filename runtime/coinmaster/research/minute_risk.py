@@ -187,6 +187,8 @@ class NativeMinuteRiskRecorder:
             if len(self.receipt_gap_first) < 10:
                 self.receipt_gap_first.append({"source_quote_ns":str(source),"receipt_ns":str(timestamp),"last_fill_ns":str(self.last_fill_ns),"account_ns":str(account_ns)})
             self.receipt_pending = None
+            if getattr(strategy.config, "research_s0_management_fraction", None) is not None:
+                strategy._s0_previous.clear()  # Unavailable receipt breaks consecutive eligibility.
             return
         epoch = self.fill_epoch
         snapshot = self._snapshot(strategy, source, bundle)
@@ -197,6 +199,9 @@ class NativeMinuteRiskRecorder:
         self.receipt_writer.writerow([source,timestamp,epoch,cash,equity,json.dumps(details,separators=(",",":"))])
         self.receipt_count += 1
         self.receipt_pending = None
+        if getattr(strategy.config, "research_s0_management_fraction", None) is not None:
+            marks = tuple((row["instrument_id"], D(row["mark_ohlc"]["close"])) for row in details)
+            strategy._s0_receipt(source, timestamp, equity, D(self.settled_curve.peak["equity"]), epoch, account_ns, marks)
 
     def capture(self, strategy, timestamp, phase):
         if timestamp not in self.bundles:

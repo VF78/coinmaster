@@ -1,0 +1,35 @@
+{
+  "task": "S0-MANAGE-01",
+  "frozen_utc": "2026-10-22T16:24:58.715976+00:00",
+  "root_decision": "ONE fresh-cross losing-remainder reduction; selected before code/full native outputs",
+  "threshold_dd_fraction": "0.25",
+  "variants": [
+    {
+      "id": "M1",
+      "reduce_fraction": "0.50"
+    },
+    {
+      "id": "M2",
+      "reduce_fraction": "0.75"
+    }
+  ],
+  "predicate": "Two consecutive same-native-cycle eligible settled money receipts: previousDD<0.25,currentDD>=0.25,current native legUPnL<0. First eligible receipt seeds only; ineligibility resets predecessor; busy crosses missed; no date/side/timer/ML/localpeak condition.",
+  "cycle_key": [
+    "instrument_id",
+    "native_position_id",
+    "opening_order_id",
+    "ts_opened"
+  ],
+  "execution": "Single fixed absolute remainder target, native reduce-only IOC on next causal quote; higher-priority native exits win; actual fills only/no new SOL rights; original consumed-add notional retained; no percentage retries.",
+  "initial_btc_signals_and_sizing_formula": "UNCHANGED",
+  "s0_control_rerun": false,
+  "accepted_screen_limits": "18 observed original intervals;0<=1min;6 profitable originals;pending/ordinary eligibility UNKNOWN;earlySOL1 no direct observed crossing;not action EV/alternativeequity",
+  "native_budget_maximum": 4,
+  "future_data_status": "historical research-used; no pristineholdout claim",
+  "evidence_sha256": {
+    "decision-stats.md": "5f7a8809e92dc8e686176a9a92ddb3e9696cebb8df3358c4bba1cc1a71db8657",
+    "decision-stats.json": "408e62fe17d95f066ca085591bd6f0d20f8b2581ee2a5d24321ebb776363106b",
+    "decision-level-precheck.md": "2da85c68a1dfa69d99bb3a1d182f119bf36914e77adf2826c15e47cc69330518"
+  },
+  "source_freeze_status": "OWNER_IMPLEMENTATION_AND_TEST_REVIEW_PENDING"
+}

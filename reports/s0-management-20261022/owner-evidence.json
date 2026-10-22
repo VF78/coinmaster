@@ -1,0 +1,119 @@
+{
+  "status": "FOCUSED_IMPLEMENTATION_REVIEW_GO_READY_FOR_ROOT_RUN_RESERVATION",
+  "canonical_development_path": "/root/.openclaw/workspace/coinmaster/coinmaster",
+  "canonical_HEAD": "0bd7351897a9854c144817fdfca6c548e7984673",
+  "canonical_dirty_state": "Expected intentional ML artifact deletions and preexisting untracked research files; no strategy edits during inspection",
+  "mac_report_only_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/s0-management-20261022",
+  "saved_S0_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z",
+  "S0_source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "scientific_frozen_source": "c1d0c69",
+  "source_manifest_sha256": "2487e10824fcda8745358521a4db7a5d1160e22028349d6634692ca7ffebf82f",
+  "input_manifest_sha256": "b8b3e5162e5eac52762cf2470910e1c133d66b46a0c2ec51e822f07820f60f0e",
+  "source_input_sha256": "07fb8e4622ebe179a8b4dc03841e3ab02e27a6ca298c317a943c0795b1e83502",
+  "control_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "S0_config_hash": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "S0_original_launch_command_sha256": "77f58a17cfb37be72a1c1c0acbaa9f86610dd4c3ec839a469e9289171d717c01",
+  "S0_core_canonical_hashes_verified": {
+    "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "runtime/coinmaster/research/minute_risk.py": "1dd1fc2f1801cac07aa0cd5781ea66165aa3dc61953e90d9e9fd04ceef94436d",
+    "runtime/coinmaster/research/native_baseline.py": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+    "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87"
+  },
+  "canonical_diff_75ffc9c_on_core": "EMPTY",
+  "native_environment": {
+    "python": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python",
+    "nautilus_trader": "1.231.0",
+    "exists_verified": true,
+    "AI_environment_replacement": "NONE"
+  },
+  "observed_resources": {
+    "disk_free_bytes": 3866079232,
+    "MemAvailable_kB": 1164312,
+    "swap": "2GiB nearly fully occupied",
+    "protected_pilot_process_2009732_RSS_kB": 134428,
+    "resource_conclusion": "One sequential native process only; recheck immediately before launch, no swap permitted. No service/process mutation."
+  },
+  "archived_S0_resources": {
+    "wall_seconds": 1141.922261,
+    "CPU_seconds": 1125.469,
+    "peak_MiB": 472.0,
+    "memory_limit_MiB": 650,
+    "swap_limit": 0
+  },
+  "native_run_count_this_task": 0,
+  "saved_control": {
+    "terminal_total": "6077107.23887483",
+    "settled_receipt_DD_percent": "66.25691486468686414439256686",
+    "native_fees": "945927.73761825",
+    "funding_count": 1320,
+    "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "qualified_historical_classification": "NOT_FAITHFUL_DIAGNOSTIC"
+  },
+  "minimum_terminal_total": "5470396.514987347",
+  "minimum_terminal_total_cents": "5470396.52",
+  "maximum_settled_money_DD_percent": "50",
+  "actual_candidate": {
+    "ema_period": 34,
+    "beta_days": 270,
+    "relative_days": 65,
+    "z_history_days": 180,
+    "BTC_direction_long": "5.5",
+    "BTC_direction_short": "7.875",
+    "BTC_split": "50%; discount0.0025;PLANREF_V1;TP_IOC",
+    "original_SOL_overlay": true
+  },
+  "input_pin_location": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/input-hashes.json",
+  "saved_launcher": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/launch.sh",
+  "protected_scope": "Pilot/services/deployment/real orders/secrets untouched",
+  "stats": {
+    "source": "decision-stats.json",
+    "saved_settled_receipts": 1051199,
+    "native_trade_intervals": {
+      "BTC": 105,
+      "SOL": 26
+    },
+    "fresh_crossing_upper_opportunities": {
+      "BTC": 15,
+      "SOL": 3
+    },
+    "original_profitable_counterexamples": {
+      "BTC": 4,
+      "SOL": 2
+    },
+    "within_one_minute": 0,
+    "early_SOL1_direct_crossing": false,
+    "eligibility_scope": "MAX_OBSERVABLE_UPPER_BOUND; saved pending/order/domain gates unavailable",
+    "D1": "1460 contiguous daily sessions per asset, exact numerical features not exported; no D1 feature introduced"
+  },
+  "exact_input_pins": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+    "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+    "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+    "normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+    "normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+    "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+    "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+    "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+  },
+  "input_path_resolution": "First10 paths are beneath canonical runtime/var/data; final3 are canonical repository-relative. Frozen source-input-hashes.sha256 remains authoritative resolution.",
+  "cycle_identity": "(instrument_id,position.id,opening_order_id,ts_opened); pending installed API/native two-cycle verification after GO, no assumption of NETTING id uniqueness",
+  "implementation_freeze": "owner-source-freeze.json",
+  "focused_tests": {
+    "passed": 100,
+    "seconds": 13.09,
+    "warnings": 246,
+    "diff_check": "PASS"
+  },
+  "run_preparation": "owner-run-freeze.json; r1 only, initial stale names never launch",
+  "review_patch_sha256": "10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968",
+  "review": "review.json/GO",
+  "source_publication": "owner-source-transfer.json; exact five files transferred to existing Mac branch"
+}

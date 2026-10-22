@@ -1,0 +1,12 @@
+{
+  "status": "REVIEWED_FIVE_FILES_PUBLISHED_TO_EXISTING_MAC_RESEARCH_BRANCH",
+  "files": {
+    "runtime/tests/test_native_s0_management.py": "95516abc4b27008173be8e66d441fd5531905e8eeef0d97a6a281d5a772595d9",
+    "runtime/coinmaster/research/native_baseline.py": "7d2d862497a368bd19951931afde03cee11688b192687d7df96f2bd201fda95b",
+    "runtime/coinmaster/strategy/wave_overlay.py": "b8b0b242dd3d8db5654fe419b977ab8a37baa90571cec76dcb469c9accc49649",
+    "runtime/coinmaster/strategy/s0_management.py": "a7bb9a695d79e76d1055e89baf2ef4a73a2bc296d604c5a7130063930a238ab1",
+    "runtime/coinmaster/research/minute_risk.py": "dfda9442212e14c80bde363f2be1671e6e6dde79f571fcca39169ba97c1b0ffa"
+  },
+  "git_untouched": true,
+  "canonical_development_authority": true
+}

@@ -1,0 +1,87 @@
+{
+  "status": "GO_NARROW_SOURCE_AND_FOCUSED_TEST_REVIEW",
+  "scope": "Narrow independent S0-MANAGE protocol/native lifecycle review; no simulation, implementation, ops, Project or git actions",
+  "reviewed": [
+    "owner-protocol.md draft",
+    "owner-evidence.json",
+    "policy-freeze.json",
+    "owner-source-review.patch",
+    "owner-review-context.txt",
+    "owner-priority-correction.diff",
+    "owner-priority-closure.diff",
+    "owner-source-freeze.json/patch"
+  ],
+  "go": true,
+  "blocking_before_run": [],
+  "architecture": "Conditionally coherent: unchanged settled money recorder delivers immutable successful receipt after finalization; same native strategy queues fixed remaining target and submits native reduce-only child on next causal quote. Observer never submits or computes alternative PnL.",
+  "required_targeted_evidence": [
+    "Immutable settled receipt identity/source/receipt/fill and account mutation epochs, no same-entry backdating, unchanged original monetary W/H.",
+    "Claim consumed before potentially synchronous native submit; cycle rechecked at quote; stale prior-cycle callbacks harmless.",
+    "Native partial-fill/cancel/reject/denied ends one IOC claim without retrim/deadlock; ordinary TP restored from reconciled actual quantity.",
+    "TP/timeout/forced/liquidation priority at claim and again at quote; pending split/increase blocks.",
+    "Protective fills earn no BTC TP/SOL rights; SOL consumed add notional preserved; later genuine rights work.",
+    "Freshness/causality does not bypass BTC/SOL timestamps; fixed target reconciles late TP fills without double-selling.",
+    "Per-leg fresh crossing starts only after eligibility; initial already-underwater observation cannot trigger; crossing while profitable does not become a later level trigger; eligibility gaps and missed crossings explicitly tested."
+  ],
+  "candidate_gate": {
+    "settled_money_dd_max_percent": "50",
+    "terminal_total_min": "5470396.514987347",
+    "max_full_native_attempts_including_repeat": 4,
+    "saved_S0_only": true
+  },
+  "root_pre_freeze_revision": "Root explicitly rejects original DD>=25% level predicate and chooses fresh DD crossing from below25% to at least25% after leg eligibility; same 50%/75% remainder actions. Saved original-screen evidence:33/57 hits within1minute,40 entries already underwater.",
+  "fresh_cross_contract": "First eligible settled receipt seeds only. Same-cycle consecutive eligible predecessor DD<25 and currentDD>=25 with current native UPnL<0 trigger once. Any ineligibility resets predecessor; missed busy crossings discarded. Already-underwater entry must first observe below25 then recross. Source strictly later than final increase fill. Next causal quote rechecks ordinary/daily/forced precedence.",
+  "recorder_source_read": "Canonical minute_risk.py finalize_receipt169-200 / observed_strategy_type274-311 read: existing settled finalization precedes base.on_data; callback must be after writer/count/pending finalization, execution deferred.",
+  "resting_tp_clarification": "Acknowledged resting nonmarketable BTC post-only TP alone is cancelable, not an eligibility block. Queued/executable/marketable/inflight ordinary TP and owned SOL planned/timeout work retain priority. Claim exists before cancellation; wait terminal cache reconciliation; late TP fills keep genuine rights and fixed remaining target prevents double sell.",
+  "source_limit": "Canonical recorder source read succeeded; two narrowly scoped strategy reads failed SSH banner timeout. Actual owner diff/tests pending; no GO.",
+  "reviewed_patch_sha256": "10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968",
+  "reviewed_source_files": {
+    "runtime/coinmaster/strategy/s0_management.py": {
+      "sha256": "a7bb9a695d79e76d1055e89baf2ef4a73a2bc296d604c5a7130063930a238ab1",
+      "lines": 184
+    },
+    "runtime/coinmaster/strategy/wave_overlay.py": {
+      "sha256": "b8b0b242dd3d8db5654fe419b977ab8a37baa90571cec76dcb469c9accc49649",
+      "lines": 3025
+    },
+    "runtime/coinmaster/research/minute_risk.py": {
+      "sha256": "dfda9442212e14c80bde363f2be1671e6e6dde79f571fcca39169ba97c1b0ffa",
+      "lines": 316
+    },
+    "runtime/coinmaster/research/native_baseline.py": {
+      "sha256": "7d2d862497a368bd19951931afde03cee11688b192687d7df96f2bd201fda95b",
+      "lines": 1513
+    },
+    "runtime/tests/test_native_s0_management.py": {
+      "sha256": "95516abc4b27008173be8e66d441fd5531905e8eeef0d97a6a281d5a772595d9",
+      "lines": 232
+    }
+  },
+  "reported_focused_tests": {
+    "passed": 100,
+    "seconds": 13.09,
+    "warnings": 246,
+    "diff_check": "PASS",
+    "scope": [
+      "test_native_s0_management.py",
+      "test_native_minute_risk.py",
+      "test_native_episode_risk.py",
+      "test_native_split_cover.py"
+    ]
+  },
+  "positive_findings": [
+    "Frozen fresh-cross semantics match implementation.",
+    "Native two-flat-cycle fixture distinguishes actual causal cycle key and addition keeps key.",
+    "Opt-in observer delivery occurs after original curve/writer/count/pending commit and immutable tuple/Decimals; original money ledger unchanged.",
+    "One consumed claim/fixed absolute target handles late ordinary TP fills; protective fills update quantities without false TP rights.",
+    "Domain SOL remaining-notional subtracts retained consumed add notional, so same-right refill is prevented.",
+    "Default-OFF hook returns without execution; 95 owner-reported focused tests pass."
+  ],
+  "go_scope": "Five reviewed source/test files match frozen policy; coordinator may publish exact source and prepare first isolated native candidate within root-owned run budget after own source/input/resource gates. This review does not assert performance or independently execute tests.",
+  "resolved_p1": "Queued ordinary/CLOSE_ALL priority now preempts target before child/cancel-ACK wait; original queue regains control while unresolved native child mapping/inflight prevents duplicate leaves. Both quote forced-close and legacy cancel-callback cache continuation share ownership guard. Focused fixtures verify terminal ACK then normal native closure.",
+  "limitations": [
+    "Owner-reported 100 focused test results reviewed, not rerun independently.",
+    "No full native candidate or S0 rerun performed by reviewer.",
+    "Review limited to five-file diff, necessary native quote/TP/SOL context and frozen policy; no total audit."
+  ]
+}

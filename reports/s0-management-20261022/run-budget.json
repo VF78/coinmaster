@@ -1,0 +1,41 @@
+{
+  "task": "S0-MANAGE-20261022",
+  "authorized_by_owner": true,
+  "maximum_full_native_attempts": 4,
+  "consumed": 1,
+  "reserved_fresh_engine_confirmation": 1,
+  "s0_reruns": 0,
+  "attempts": [
+    {
+      "ordinal": 1,
+      "variant": "M1",
+      "role": "FIRST_FIXED_INTENSITY",
+      "status": "RESERVED_FOR_DISPATCH",
+      "admitted_utc": "2026-10-22T16:45:13.703242+00:00",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1",
+      "fraction": "0.5",
+      "config_hash": "fd4ed64c98437680146c044e9cf82e102582affe7205cc957e989ea6f95120d7",
+      "source_manifest_sha256": "ade52744e6cfc95ceb8096a2bb4a47d7a2367218b41039ce71161aa223358d67",
+      "source_input_manifest_sha256": "f041ee8fcf8678ae331898f2cef8da7ec6de3f0ab256920c2d1c2681a7275c87",
+      "command_sha256": "5d3b162f28853600917afed12de63b56d9d3252f6c194136a51b6e25a596df08",
+      "reviewed_patch_sha256": "10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968"
+    }
+  ],
+  "rule_status": "SOURCE_REVIEW_GO_M1_RESERVED",
+  "no_automatic_retries": true,
+  "pilot_protected": true,
+  "pre_native_screen_decision": "Reject DD-level>=25 predicate:33/57 hits<=1min;40of57 native intervals started withDD>=25. Fresh crossing after native eligibility chosen before any fullrun, no thresholdgrid.",
+  "provisional_variants": [
+    {
+      "id": "M1",
+      "trigger": "fresh settled-money DD crossing <25% -> >=25%, posteligible native losing leg",
+      "trim_fraction": "0.50"
+    },
+    {
+      "id": "M2",
+      "trigger": "same as M1",
+      "trim_fraction": "0.75"
+    }
+  ],
+  "policy_freeze_sha256": "b83fc202b7192a7e89c8322a74303cc1191c2912ebcba308d9ee1c7a571c5778"
+}

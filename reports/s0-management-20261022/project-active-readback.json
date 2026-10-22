@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-22T16:15:17.308968+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "number": 123,
+  "node_id": "I_kwDORPv5-M8AAAABZJ-fQg",
+  "item_id": "PVTI_lAHOBIUvJs4BPJNjzhCw1CE",
+  "issue_state": "open",
+  "project_status": "In Progress",
+  "body_readback": "PASS",
+  "historical_121_state": "CLOSED",
+  "native_budget": "0/4 consumed; one fresh repeat reserved"
+}

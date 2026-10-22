@@ -683,6 +683,7 @@ def run_native_diagnostic(
     research_btc_direction_sizing: bool = False,
     research_btc_drawdown_sizing: bool = False,
     research_v3_risk: str | None = None,
+    research_s0_management_fraction: str | None = None,
     research_h1_b1: str | None = None,
     research_btc_split50: bool = False,
     research_btc_split_planref_v1: bool = False,
@@ -716,6 +717,8 @@ def run_native_diagnostic(
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
     from coinmaster.venues.signals import daily_signal, daily_signal_data_type
 
+    if research_s0_management_fraction is not None and (research_s0_management_fraction not in {"0.5", "0.75"} or not observe_minute_risk or not research_v0_selective_lifecycle_repairs or not research_btc_direction_sizing or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc or not (candidate or Candidate()).sol_overlay_enabled or any((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_drawdown_sizing, research_v3_risk, research_h1_b1, research_sol_cover, research_conditional_sol, research_immediate_sol, research_sol_risk_first, research_alpha_cushion, research_chop_pair))):
+        raise ValueError("S0_MANAGEMENT_REQUIRES_EXACT_S0_AND_EXCLUSIVE_NEW_POLICY")
     if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None, research_h1_b1 is not None)) > 1:
         raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
     if research_chop_pair and (research_alpha_cushion or research_immediate_sol or research_sol_risk_first or research_conditional_sol or research_sol_cover or research_h1_b1 or research_v3_risk or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc or not research_btc_direction_sizing or not observe_minute_risk):
@@ -827,6 +830,7 @@ def run_native_diagnostic(
         research_btc_direction_sizing=research_btc_direction_sizing,
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
+        research_s0_management_fraction=Decimal(research_s0_management_fraction) if research_s0_management_fraction else None,
         research_h1_b1=research_h1_b1,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
@@ -1010,6 +1014,8 @@ def run_native_diagnostic(
                     "remaining_btc_stage2_cap": False, "btc_partial_trim": False, "recovery_fraction": "0.01",
                     "recovery_confirmation": "FRESH_REVERSE_SOL_1H", "max_holding_days": 14,
                     "btc_flat_sol_flat": True, "closed_cycle_reentry": False} if research_h1_b1 == "h1" else None}
+        if research_s0_management_fraction is not None:
+            full_config["research_s0_management"] = {"fraction": research_s0_management_fraction, "threshold": "0.25", "predicate": "FRESH_SAME_CYCLE_ELIGIBLE_SETTLED_DD_CROSS_AND_NATIVE_LOSS", "child_attempts": 1}
         if research_v3_risk:
             full_config["research_v3_risk"] = {"variant": research_v3_risk, "direction_sizing": {"long": "5.5", "short": "7.875"}, "sampling": "CAUSAL_PAIRED_PREQUOTE_AFTER_OBSERVATION", "execution": "CURRENT_NATIVE_QUOTE_ONLY", "signed_funding": "SEPARATE_UNKNOWN"}
         if research_portfolio_protect_45:
@@ -1115,6 +1121,8 @@ def run_native_diagnostic(
             result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         if research_h1_b1:
             result["h1_b1_audit"] = strategy.h1_b1_audit
+        if research_s0_management_fraction is not None:
+            result["s0_management_audit"] = strategy.s0_management_audit
         if research_v3_risk:
             result["v3_risk_audit"] = strategy.v3_risk_audit
             result["btc_sizing_audit"] = strategy.btc_sizing_audit
@@ -1283,7 +1291,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_batch_minutes: int | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_s0_management_fraction: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_batch_minutes: int | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1361,6 +1369,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         label += "-btcloss20"
     if research_sol_remaining_btc_hedge:
         label += "-solhedge"
+    if research_s0_management_fraction is not None:
+        label += "-s0-manage-" + research_s0_management_fraction
     report = run_native_diagnostic(
         data_root, include_funding=True, candidate=candidate,
         execution_policy=policy, fixed_base_fee_policy=fee_policy,
@@ -1375,6 +1385,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_btc_direction_sizing=research_btc_direction_sizing,
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
+        research_s0_management_fraction=research_s0_management_fraction,
         research_h1_b1=research_h1_b1,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
@@ -1420,6 +1431,7 @@ def main() -> None:
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
     parser.add_argument("--research-h1-b1", choices=("h1", "b1"), default=None)
+    parser.add_argument("--research-s0-management-fraction", choices=("0.5", "0.75"), default=None)
     parser.add_argument("--research-v3-risk", choices=("b25", "s10_15", "r2", "t3"), default=None, help="One default-OFF research risk variation on V3 directional sizing")
     parser.add_argument("--research-btc-direction-sizing", action="store_true", help="Research-only frozen episode long5.5 short7.875 multiplier")
     parser.add_argument("--research-btc-drawdown-sizing", action="store_true", help="Research-only global paired-minute DD25/15 sizing7.875/3.9375")
@@ -1459,6 +1471,7 @@ def main() -> None:
             research_btc_direction_sizing=args.research_btc_direction_sizing,
             research_btc_drawdown_sizing=args.research_btc_drawdown_sizing,
             research_v3_risk=args.research_v3_risk,
+            research_s0_management_fraction=args.research_s0_management_fraction,
             research_h1_b1=args.research_h1_b1,
             research_btc_split50=args.research_btc_split50,
             research_btc_split_planref_v1=args.research_btc_split_planref_v1,

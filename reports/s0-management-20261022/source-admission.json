@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-22T16:45:13.703242+00:00",
+  "status": "SOURCE_AND_POLICY_ADMITTED",
+  "policy_freeze_sha256": "b83fc202b7192a7e89c8322a74303cc1191c2912ebcba308d9ee1c7a571c5778",
+  "reviewed_patch_sha256": "10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968",
+  "source_files": {
+    "runtime/coinmaster/strategy/s0_management.py": {
+      "sha256": "a7bb9a695d79e76d1055e89baf2ef4a73a2bc296d604c5a7130063930a238ab1",
+      "lines": 184
+    },
+    "runtime/coinmaster/strategy/wave_overlay.py": {
+      "sha256": "b8b0b242dd3d8db5654fe419b977ab8a37baa90571cec76dcb469c9accc49649",
+      "lines": 3025
+    },
+    "runtime/coinmaster/research/minute_risk.py": {
+      "sha256": "dfda9442212e14c80bde363f2be1671e6e6dde79f571fcca39169ba97c1b0ffa",
+      "lines": 316
+    },
+    "runtime/coinmaster/research/native_baseline.py": {
+      "sha256": "7d2d862497a368bd19951931afde03cee11688b192687d7df96f2bd201fda95b",
+      "lines": 1513
+    },
+    "runtime/tests/test_native_s0_management.py": {
+      "sha256": "95516abc4b27008173be8e66d441fd5531905e8eeef0d97a6a281d5a772595d9",
+      "lines": 232
+    }
+  },
+  "focused_tests": {
+    "passed": 100,
+    "seconds": 13.09,
+    "warnings": 246,
+    "diff_check": "PASS",
+    "scope": [
+      "test_native_s0_management.py",
+      "test_native_minute_risk.py",
+      "test_native_episode_risk.py",
+      "test_native_split_cover.py"
+    ]
+  },
+  "review_go": true,
+  "same_13_input_pins": true,
+  "variants": [
+    {
+      "variant": "m1",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1",
+      "config_hash": "fd4ed64c98437680146c044e9cf82e102582affe7205cc957e989ea6f95120d7",
+      "source_manifest_sha256": "ade52744e6cfc95ceb8096a2bb4a47d7a2367218b41039ce71161aa223358d67",
+      "source_input_manifest_sha256": "f041ee8fcf8678ae331898f2cef8da7ec6de3f0ab256920c2d1c2681a7275c87",
+      "command_sha256": "5d3b162f28853600917afed12de63b56d9d3252f6c194136a51b6e25a596df08"
+    },
+    {
+      "variant": "m2",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m2-20261022-r1",
+      "config_hash": "3b7c03714f228577bafe2584503bd843765a0a7251b9e088f6d5bf688355a42d",
+      "source_manifest_sha256": "ade52744e6cfc95ceb8096a2bb4a47d7a2367218b41039ce71161aa223358d67",
+      "source_input_manifest_sha256": "9ac47a34c7ae21d9e6eabd1e0e7f60b73c1aa38b5a06e425801cef9eec79b03f",
+      "command_sha256": "a892da7c9dfa8f4b81497bb4981edb176c4c22da7a4061a54eafad9ce2da3d96"
+    }
+  ],
+  "s0_rerun": false,
+  "pilot_changes": 0
+}

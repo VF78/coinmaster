@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-22T16:26:05.479974+00:00",
+  "status": "PASS_SAVED_SCREEN_AND_FROZEN_CONTRACT",
+  "rows": 18,
+  "BTC": 15,
+  "SOL": 3,
+  "profitable_originals": 6,
+  "within1min": 0,
+  "months": 24,
+  "receipts": 1051199,
+  "native_runs": 0,
+  "alternate_equity_or_EV": "NOT_CALCULATED",
+  "observed_eligibility": "UPPER_OPPORTUNITIES_ONLY; busy/full-entry state UNKNOWN",
+  "economic_rule_frozen_before_outputs": true
+}
