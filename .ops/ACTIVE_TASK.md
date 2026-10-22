@@ -1,5 +1,5 @@
 Updated: 2026-10-22T09:06:48.627151+00:00
-Status: INAPP_COMPLETE_SCORED / final report and Project close in progress. No more authorized forecast calls.
+Status: INAPP_COMPLETE_REPORTED / Project close in progress. No more authorized forecast calls.
 Task: existing GitHub#122/Project#2. Bounded in-app extension, prior FORM negative results retained.
 Worktree: owner-authorized Mac research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021.
 Source checkpoint164fd4f; debug/input checkpoint71178a4; final HEAD via git. No deploy.
@@ -13,7 +13,7 @@ Result FEASIBILITY_PASS only. Exploratory_signal=false,window_bundle_incremental
 All24IDs TPpinball P.29236698/C.30399556/prior.29548767; SLBrier P.19534948/C.20264670/prior.18776932. Lowerbetter.
 Direction accuracy P12/24,C10/24,prior11/24; not independentproof. Pdisplay14/24,TP1/2/3 attained12/6/2; SLfull72htouch2/14. Selected populations differ,not fair skill ranking.
 H72h/all6sideSLrows scored;SLtouch ignoresTPexits,notactualtradestopout. Conservative/upperminuteambiguity and positive-onlyTPdenominators reported.
-3focusedtests+29pairQA+preflightPASS, all58 rawJSON hashes retained, no invalid/fallback/crossSLerrors. Reportowner exports72case/432forecastrows; scopednumericalcheck pending.
+3focusedtests+29pairQA+preflightPASS, all58 rawJSON hashes retained, no invalid/fallback/crossSLerrors. Report exports72case/432forecastrows QA PASS; coordinator arithmetic/rawhash reconciliation PASS. Additional independent model review interrupted byusage limit, notclaimed.
 Rawresponses58 +frozeninputs archive1.78MB durableinreport. Modelweightsnottrained, historicalpretraining/carryover cannotbeexcluded; small historicalexploratorysample.
 Pilot/S0/VPS/services/orders/secrets/CHECK untouched;0API/localtraining/nativeeconomicruns. ROI/DDnotassessed. Noautomaticnextforecasts orpromotion.
-Next exact steps: finish report+scopedcheck, update#122Done/readback,finalcommit/push/readback, report actual forecastaccuracy andlimits toowner.
+Next exact steps: publish report, update#122Done/readback,finalcommit/push/readback, report actual forecastaccuracy andlimits toowner.

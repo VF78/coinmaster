@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-22T10:56:57.434810+00:00",
+  "status": "PASS",
+  "kind": "coordinator arithmetic and durable artifact reconciliation; not independent model review",
+  "checks": {
+    "P": {
+      "TP": 0.2923669787881765,
+      "SL": 0.19534947916666667,
+      "D_correct": 12,
+      "display": 14
+    },
+    "C": {
+      "TP": 0.30399556469614786,
+      "SL": 0.20264670138888893,
+      "D_correct": 10,
+      "display": 12
+    },
+    "prior": {
+      "TP": 0.2954876702372529,
+      "SL": 0.18776932088693532,
+      "D_correct": 11,
+      "display": 0
+    }
+  },
+  "24_cases": true,
+  "48_valid_eval_seal": true,
+  "58_raw_sha256": true,
+  "all_primary_14d_CIs_cross_zero": true,
+  "forecast_calls_added": 0,
+  "native_runs_added": 0,
+  "prior_reviewer_status": "usage-limit interruption; no independent review claimed"
+}
