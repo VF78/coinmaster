@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-22T16:49:16.698821+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "body_readback": "PASS",
+  "stage": "M1_RUNNING",
+  "native_budget": "1/4",
+  "source_checkpoint": "efa7c723d9f0c5c1bdc8f491abf12921ac41c275"
+}

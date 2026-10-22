@@ -1,0 +1,11 @@
+# M1 native result — target not met
+
+Exact frozen fresh DD25 crossing rule,50% losing-remainder trim. One root-reserved native run, completed successfully; no retry. Final native TOTAL/ACTIVE **2615745.21476479 USDT**, RESERVE0; retained S0 net profit **42.94872519%**. Agreed settled moneyDD **58.77409504467889817197266501%**. Both acceptance inequalities fail (DD>50%, retained net profit<90%). This is a negative result, not a new parameter-selection opportunity.
+
+All1,051,200 source minutes processed;1,051,199 settled receipts, unavailable0/pendingNone; terminal native positions0, liquidations0. All87 frozen source/input checks pass after exit; actualconfigfd4ed64c… matches admittedfreeze. Native funding1,305 postings, signed amountUNKNOWN. Exit consumed20m8.459CPU,490.2MiBpeak,0swap. OriginalS0 remains reused and unchanged.
+
+Native strategy made26claims/submissions/fills/terminal records, BTC20/SOL6. One child per claim. All26 have native fill and terminal callbacks, but4 SOL IOC children partially filled and then canceled;22 orders fully filled. The4 partial actions are incomplete relative to their fixed requested targets and were not retried, as frozen. Native protective fills are taker. Total native fills621, maker135/taker486; fees710,655.26790133 (maker105,069.53920944/taker605,585.72869189), reconciled to native. Lower commissions are descriptive, already included in account money.
+
+Early Sep14→Oct3moneyDD46.59348097%, versus originalS066.25691486%; the full native path changes through earlier BTC management and compounding despite the absence of a saved direct earlySOL1crossing. The largest candidate DD moves to May15→Aug11 2026,58.77409504%; Apr11→Jun6 2025 remains55.28993928%. Lower early DD does not satisfy the complete two-year objective. Conditional OHLC upper-to-later-lower drawdown bound60.31991708% is a separate fixed-exposure estimate, not an observed tick DD. Historicalexecution classification remainsNOT_FAITHFUL_DIAGNOSTIC.
+
+Exact output hashes/native action rows/fees/drawdown endpoint facts are retained in m1-completion.json and remote result-manifest.json. Independent receipt/fee/monthly validation is in progress through the stats owner. M2 stays frozen at75%, with no threshold/source/parameter changes; only root may reserve its slot. No third variant or fresh repeat is authorized by this failed M1 result.

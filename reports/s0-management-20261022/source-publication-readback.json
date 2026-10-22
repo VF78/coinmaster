@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-22T16:49:10.511120+00:00",
+  "source_checkpoint": "efa7c723d9f0c5c1bdc8f491abf12921ac41c275",
+  "push": "PASS",
+  "GitHub_ref_readback": "PASS",
+  "route": "existing tasklocal SSH proxy after direct30s timeout; no forcepush/host/VPN changes",
+  "native_M1_parallel": "RUNNING_NO_RELAUNCH"
+}

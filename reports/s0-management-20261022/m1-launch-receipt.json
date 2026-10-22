@@ -1,0 +1,25 @@
+{
+  "status": "M1_DISPATCHED_EXACT_RESERVED_SLOT_1_OF_4",
+  "utc": "2026-10-22T16:46:02.516507+00:00",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1",
+  "unit": "cm123-s0-manage-m1-20261022-r1.service",
+  "command_sha256": "5d3b162f28853600917afed12de63b56d9d3252f6c194136a51b6e25a596df08",
+  "source_input_sha256": "f041ee8fcf8678ae331898f2cef8da7ec6de3f0ab256920c2d1c2681a7275c87",
+  "source_checkpoint": "efa7c723d9f0c5c1bdc8f491abf12921ac41c275",
+  "reviewed_patch_sha256": "10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968",
+  "config_hash": "fd4ed64c98437680146c044e9cf82e102582affe7205cc957e989ea6f95120d7",
+  "prelaunch_guard": {
+    "MemAvailable_bytes": 1203449856,
+    "disk_free_bytes": 3854057472,
+    "result_absent": true,
+    "funding_namespace_fresh": true,
+    "MemoryMax_bytes": 681574400,
+    "MemorySwapMax": 0,
+    "S0_reused_no_replay": true
+  },
+  "dispatch_stdout": "",
+  "dispatch_stderr": "Running as unit: cm123-s0-manage-m1-20261022-r1.service; invocation ID: 0c9b29367735455d8ac866c369737a26\n",
+  "actual_unit_state": "MainPID=1405114\nResult=success\nExecMainStartTimestamp=Thu 2026-10-22 16:46:02 UTC\nExecMainStatus=0\nControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm123-s0-manage-m1-20261022-r1.service\nMemoryCurrent=43212800\nMemoryPeak=43212800\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nSubState=running\nInvocationID=0c9b29367735455d8ac866c369737a26\n",
+  "never_auto_retry": true,
+  "M2_not_authorized": true
+}

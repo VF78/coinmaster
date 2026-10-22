@@ -1,0 +1,156 @@
+{
+  "status": "PREPARATION_READY_WAITING_FOR_ROOT_SEALED_COMPLETION_SIGNAL",
+  "native_runs_added": 0,
+  "candidate_outputs_read": false,
+  "baseline_saved_receipt_passes_this_preparation": 1,
+  "baseline_original_TOTAL": "6077107.23887483",
+  "baseline_money_DD_percent": "66.25691486468686414439256686",
+  "baseline_receipt_rows": 1051199,
+  "baseline_input_pins": {
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/input-hashes.json",
+    "sha256": "b8b3e5162e5eac52762cf2470910e1c133d66b46a0c2ec51e822f07820f60f0e",
+    "input_pins": {
+      "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+      "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+      "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+      "normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+      "normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+      "normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+      "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+      "normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+      "normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+      "normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+      "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+      "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+      "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+    }
+  },
+  "expected_variants": [
+    {
+      "variant": "m1",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1",
+      "source_manifest_sha256": "ade52744e6cfc95ceb8096a2bb4a47d7a2367218b41039ce71161aa223358d67",
+      "source_input_manifest_sha256": "f041ee8fcf8678ae331898f2cef8da7ec6de3f0ab256920c2d1c2681a7275c87",
+      "source_owner_hashes": {
+        "runtime/coinmaster/strategy/s0_management.py": "a7bb9a695d79e76d1055e89baf2ef4a73a2bc296d604c5a7130063930a238ab1",
+        "runtime/coinmaster/strategy/wave_overlay.py": "b8b0b242dd3d8db5654fe419b977ab8a37baa90571cec76dcb469c9accc49649",
+        "runtime/coinmaster/research/minute_risk.py": "dfda9442212e14c80bde363f2be1671e6e6dde79f571fcca39169ba97c1b0ffa",
+        "runtime/coinmaster/research/native_baseline.py": "7d2d862497a368bd19951931afde03cee11688b192687d7df96f2bd201fda95b",
+        "runtime/tests/test_native_s0_management.py": "95516abc4b27008173be8e66d441fd5531905e8eeef0d97a6a281d5a772595d9"
+      },
+      "config_hash": "fd4ed64c98437680146c044e9cf82e102582affe7205cc957e989ea6f95120d7",
+      "input_manifest_sha256": "b8b3e5162e5eac52762cf2470910e1c133d66b46a0c2ec51e822f07820f60f0e",
+      "input_pins": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+        "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+        "normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+        "normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+        "normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+        "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+        "normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+        "normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+        "normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+        "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+        "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+        "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+      },
+      "launcher_sha256": "cd71ad8ff4b1a92798db2cadf8f5b170706bdaea57f58165c90af1fd59498fe3",
+      "command_sha256": "5d3b162f28853600917afed12de63b56d9d3252f6c194136a51b6e25a596df08"
+    },
+    {
+      "variant": "m2",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m2-20261022-r1",
+      "source_manifest_sha256": "ade52744e6cfc95ceb8096a2bb4a47d7a2367218b41039ce71161aa223358d67",
+      "source_input_manifest_sha256": "9ac47a34c7ae21d9e6eabd1e0e7f60b73c1aa38b5a06e425801cef9eec79b03f",
+      "source_owner_hashes": {
+        "runtime/coinmaster/strategy/s0_management.py": "a7bb9a695d79e76d1055e89baf2ef4a73a2bc296d604c5a7130063930a238ab1",
+        "runtime/coinmaster/strategy/wave_overlay.py": "b8b0b242dd3d8db5654fe419b977ab8a37baa90571cec76dcb469c9accc49649",
+        "runtime/coinmaster/research/minute_risk.py": "dfda9442212e14c80bde363f2be1671e6e6dde79f571fcca39169ba97c1b0ffa",
+        "runtime/coinmaster/research/native_baseline.py": "7d2d862497a368bd19951931afde03cee11688b192687d7df96f2bd201fda95b",
+        "runtime/tests/test_native_s0_management.py": "95516abc4b27008173be8e66d441fd5531905e8eeef0d97a6a281d5a772595d9"
+      },
+      "config_hash": "3b7c03714f228577bafe2584503bd843765a0a7251b9e088f6d5bf688355a42d",
+      "input_manifest_sha256": "b8b3e5162e5eac52762cf2470910e1c133d66b46a0c2ec51e822f07820f60f0e",
+      "input_pins": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+        "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+        "normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+        "normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+        "normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+        "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+        "normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+        "normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+        "normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+        "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+        "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+        "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+      },
+      "launcher_sha256": "c9f771ac2a94798db2ca30441265beffb93ca721b202d002a0626996043bfd50",
+      "command_sha256": "a892da7c9dfa8f4b81497bb4981edb176c4c22da7a4061a54eafad9ce2da3d96"
+    }
+  ],
+  "final_native_artifacts": {
+    "report": "result/*direction-s0-manage-{0.5,0.75}.json",
+    "raw": "same-report-stem-raw-native.json",
+    "receipts": "result/minute-native-settled-receipts.csv.gz",
+    "risk": "result/minute-native-risk.csv.gz; no extra curve pass required unless discrepancy",
+    "fills_orders": "execution_artifacts.{fills,orders}.{path,rows,sha256}",
+    "action_audit": "s0_management_audit; owner validates claim/submit/fill/terminal pairing",
+    "input_metadata": "job/input-hashes.json13path->sha, immutable-source-hashes.json,source-input-hashes.sha256,launch-command.json"
+  },
+  "acceptance": {
+    "agreed_money_DD_percent_lte": "50",
+    "net_profit_retention_formula": "(candidate_terminal_TOTAL-10000)/(6077107.23887483-10000)",
+    "net_profit_retention_fraction_gte": "0.90",
+    "minimum_candidate_TOTAL": "5470396.514987347",
+    "terminal_boundary_DD": "Additionally append final native flat cash TOTAL to retained native-receipt running peak and report max(receiptDD,boundary endpointDD), exposing any50% crossing."
+  },
+  "independent_final_checks": [
+    "One complete saved settled-receipt pass per completed candidate; exact Decimal highwater DD with seed10000 versus reported settled curve; calendar source_quote UTC; coverage/lag/fill epoch monotonic and unavailable0.",
+    "24-month receipt endingW,returns,within-monthDD,globalDD,recorded native exposure sample means/maxima and book-state counts; final cash is separate.",
+    "Raw/wrapped terminal TOTAL agree; TOTAL=ACTIVE+RESERVE; native cash-account finalrow matches; terminal_open_positions0/lifecycleFLAT and native finalorder statuses allterminal.",
+    "Sum recorded native fill_audit commissions/notional/count bymaker/taker/explicitunknown; native_fee and fee_attribution agree; independently sum nativefillsCSV commission columns/count; verify native artifacts filehashes.",
+    "M1/M2 recorded input-pins match all13archivedpins; source/input/launcher/command filehashes match owner frozen pins; native reportconfig_hash and source hashes match approved core; record observed identity limitations rather than infer actual execution from manifests alone.",
+    "Owner audits s0_management_audit causally ordered claim/submit/fill/terminal; this validator independently records allfill action counts and BTC/SOL counts without reconstructing positions/PnL.",
+    "Report native conditional OHLC bounds as saved conditional estimates, not tickDD or provenintrabar paths; actualtickDD and signedfunding may remainUNKNOWN."
+  ],
+  "baseline_checks_passed": {
+    "receipt_DD_equals_reported_within_1e-20pp": true,
+    "coverage_receipts_matches_report": true,
+    "coverage_report_samples_includes_seed": true,
+    "24_calendar_months": true,
+    "expected_1051199_receipts": true,
+    "final_TOTAL_equals_ACTIVE_plus_RESERVE": true,
+    "raw_wrapper_terminal_TOTAL_equal": true,
+    "native_cash_tail_total_equals_TOTAL": true,
+    "native_cash_tail_active_equals_ACTIVE": true,
+    "native_cash_tail_reserve_equals_RESERVE": true,
+    "native_final_position_count_zero": true,
+    "native_lifecycle_FLAT": true,
+    "fee_audit_sum_equals_native_fees": true,
+    "native_fill_report_rows_equal_audit": true,
+    "native_fill_report_commissions_equal_audit": true,
+    "no_intervening_native_mutation_unavailable": true,
+    "no_stream_coverage_issues": true,
+    "archived_13_input_pins_identical_to_M1_M2_freeze": true,
+    "final_order_report_has_no_open_status": true
+  },
+  "baseline_elapsed_seconds": 62.04149971250445,
+  "baseline_peakRSS_KiB_Linux": 29176,
+  "validator_sha256": "4fb830fadf91374b749552451f661c8229287762c36ab835c9e9df441c7a80c6",
+  "limitations": [
+    "No nativeengine/import/economic simulation/training/S0replay, no candidateinterimROI inspected.",
+    "Provenance identity is established through frozen and output native artifact hashes; no giant input dataset rehash is planned while candidates run.",
+    "Saved conditional bounds availability is confirmed; conditional bounds are not independently reconstructed from OHLC.",
+    "Native report NOT_FAITHFUL_DIAGNOSTIC/ranking_eligible false is preserved; economic acceptance is not live/OOS promotion."
+  ],
+  "metadata_field_mapping": {
+    "job/launch.sh": "launcher_sha256",
+    "job/launch-command.json": "command_sha256; exact full file bytes including newline",
+    "job/immutable-source-hashes.json": "source_manifest_sha256",
+    "job/source-input-hashes.sha256": "source_input_manifest_sha256",
+    "job/input-hashes.json": "input_manifest_sha256 plus exact13entry dict comparison"
+  }
+}

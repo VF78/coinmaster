@@ -1,0 +1,790 @@
+{
+  "label": "S0_ARCHIVE",
+  "status": "SAVED_NATIVE_OUTPUT_VALIDATION",
+  "inputs": {
+    "report": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "report_sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa",
+    "raw": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-raw-native.json",
+    "raw_sha256": "4b284a653aac056bfd74de21971f3647fdee1f97ca9095f27f1dc2e8d9b42237",
+    "receipts": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz",
+    "receipts_sha256": "780efb8da2c71189ebf5feb61c555137c99154e09f709de8c5b10ff19d0f32d3"
+  },
+  "native_artifacts": {
+    "fills": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv",
+      "sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7",
+      "reported_sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7",
+      "matches_reported_sha256": true,
+      "reported_rows": 621
+    },
+    "orders": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-orders.csv",
+      "sha256": "737f137a681674712b6626a46cf3abd150c78d3abc4354b3e6c6b9c10a557b6d",
+      "reported_sha256": "737f137a681674712b6626a46cf3abd150c78d3abc4354b3e6c6b9c10a557b6d",
+      "matches_reported_sha256": true,
+      "reported_rows": 710
+    }
+  },
+  "checks": {
+    "receipt_DD_equals_reported_within_1e-20pp": true,
+    "coverage_receipts_matches_report": true,
+    "coverage_report_samples_includes_seed": true,
+    "24_calendar_months": true,
+    "expected_1051199_receipts": true,
+    "final_TOTAL_equals_ACTIVE_plus_RESERVE": true,
+    "raw_wrapper_terminal_TOTAL_equal": true,
+    "native_cash_tail_total_equals_TOTAL": true,
+    "native_cash_tail_active_equals_ACTIVE": true,
+    "native_cash_tail_reserve_equals_RESERVE": true,
+    "native_final_position_count_zero": true,
+    "native_lifecycle_FLAT": true,
+    "fee_audit_sum_equals_native_fees": true,
+    "native_fill_report_rows_equal_audit": true,
+    "native_fill_report_commissions_equal_audit": true,
+    "no_intervening_native_mutation_unavailable": true,
+    "no_stream_coverage_issues": true,
+    "archived_13_input_pins_identical_to_M1_M2_freeze": true,
+    "final_order_report_has_no_open_status": true
+  },
+  "stream_issues": {},
+  "receipt_rows": 1051199,
+  "receipt_source_quote_step_ns": 60000000000,
+  "receipt_lag_counts_ns": {
+    "60000000000": 1051199
+  },
+  "months": [
+    {
+      "month": "2024-09",
+      "start_equity": "10000",
+      "end_equity": "9715.41746022",
+      "minimum": "6999.90832336",
+      "maximum": "13426.6743211",
+      "within_month_DD_percent": "47.86565789892100222709408040",
+      "maximum_global_DD_percent": "47.86565789892100222709408040",
+      "receipts": 43199,
+      "gross_native_notional_to_equity_max": 9.842097698635365,
+      "states": {
+        "FLAT": 27790,
+        "BTC": 15409
+      },
+      "asset_open_samples": {
+        "BTC": 15409
+      },
+      "return_percent": "-2.845825397800",
+      "gross_native_notional_to_equity_mean": 1.8488999237343193
+    },
+    {
+      "month": "2024-10",
+      "start_equity": "9715.41746022",
+      "end_equity": "24159.92503525",
+      "minimum": "4530.57414701",
+      "maximum": "24159.92503525",
+      "within_month_DD_percent": "60.47510028593404040112028480",
+      "maximum_global_DD_percent": "66.25691486468686414439256686",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 33.456312829585706,
+      "states": {
+        "FLAT": 20253,
+        "BTC": 20067,
+        "BTC+SOL": 2880,
+        "SOL": 1440
+      },
+      "asset_open_samples": {
+        "BTC": 22947,
+        "SOL": 4320
+      },
+      "return_percent": "148.6761390766106358751511291",
+      "gross_native_notional_to_equity_mean": 3.2699631109824447
+    },
+    {
+      "month": "2024-11",
+      "start_equity": "24159.92503525",
+      "end_equity": "69642.5791262",
+      "minimum": "19885.36335157",
+      "maximum": "70691.74197097",
+      "within_month_DD_percent": "30.70261214600468867658244303",
+      "maximum_global_DD_percent": "30.70261214600468867658244303",
+      "receipts": 43200,
+      "gross_native_notional_to_equity_max": 9.738364799652215,
+      "states": {
+        "FLAT": 21370,
+        "BTC": 16070,
+        "SOL": 5760
+      },
+      "asset_open_samples": {
+        "BTC": 16070,
+        "SOL": 5760
+      },
+      "return_percent": "188.2566027195429933717140878",
+      "gross_native_notional_to_equity_mean": 2.379988951171068
+    },
+    {
+      "month": "2024-12",
+      "start_equity": "69642.5791262",
+      "end_equity": "119635.72982674",
+      "minimum": "61891.88421207",
+      "maximum": "187955.72982674",
+      "within_month_DD_percent": "37.97464566567194131798799674",
+      "maximum_global_DD_percent": "37.97464566567194131798799674",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 11.880520901710982,
+      "states": {
+        "FLAT": 26124,
+        "BTC": 9672,
+        "BTC+SOL": 937,
+        "SOL": 7907
+      },
+      "asset_open_samples": {
+        "BTC": 10609,
+        "SOL": 8844
+      },
+      "return_percent": "71.78532347279517287453196100",
+      "gross_native_notional_to_equity_mean": 2.1667868385222064
+    },
+    {
+      "month": "2025-01",
+      "start_equity": "119635.72982674",
+      "end_equity": "468953.77753161",
+      "minimum": "108690.12904281",
+      "maximum": "537132.64568937",
+      "within_month_DD_percent": "24.05428374775103875940952609",
+      "maximum_global_DD_percent": "42.17248437012164854972645329",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 13.290122706828784,
+      "states": {
+        "SOL": 10080,
+        "FLAT": 10474,
+        "BTC": 24086
+      },
+      "asset_open_samples": {
+        "SOL": 10080,
+        "BTC": 24086
+      },
+      "return_percent": "291.9847174508507796586722552",
+      "gross_native_notional_to_equity_mean": 2.5436307992137395
+    },
+    {
+      "month": "2025-02",
+      "start_equity": "468953.77753161",
+      "end_equity": "446870.02206984",
+      "minimum": "320840.04666373",
+      "maximum": "473922.90951614",
+      "within_month_DD_percent": "32.30121603716154256341180886",
+      "maximum_global_DD_percent": "40.26800470264555526714864550",
+      "receipts": 40320,
+      "gross_native_notional_to_equity_max": 7.8496768750194565,
+      "states": {
+        "BTC": 13049,
+        "FLAT": 15751,
+        "BTC+SOL": 4184,
+        "SOL": 7336
+      },
+      "asset_open_samples": {
+        "BTC": 17233,
+        "SOL": 11520
+      },
+      "return_percent": "-4.709153976327962605671244650",
+      "gross_native_notional_to_equity_mean": 2.1311487264443794
+    },
+    {
+      "month": "2025-03",
+      "start_equity": "446870.02206984",
+      "end_equity": "752467.02647581",
+      "minimum": "419255.94691234",
+      "maximum": "782345.71228199",
+      "within_month_DD_percent": "17.88116959733976493292625033",
+      "maximum_global_DD_percent": "21.94554729134811395379506432",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 8.44510931495576,
+      "states": {
+        "FLAT": 15914,
+        "BTC": 14343,
+        "SOL": 12112,
+        "BTC+SOL": 2271
+      },
+      "asset_open_samples": {
+        "BTC": 16614,
+        "SOL": 14383
+      },
+      "return_percent": "68.38610542512720711685850310",
+      "gross_native_notional_to_equity_mean": 1.2898072103136744
+    },
+    {
+      "month": "2025-04",
+      "start_equity": "752467.02647581",
+      "end_equity": "475637.29269793",
+      "minimum": "397355.1894008",
+      "maximum": "915175.73025689",
+      "within_month_DD_percent": "56.58154207288010976525549755",
+      "maximum_global_DD_percent": "56.58154207288010976525549755",
+      "receipts": 43200,
+      "gross_native_notional_to_equity_max": 9.951836078127267,
+      "states": {
+        "SOL": 6113,
+        "FLAT": 16417,
+        "BTC": 12390,
+        "BTC+SOL": 8280
+      },
+      "asset_open_samples": {
+        "SOL": 14393,
+        "BTC": 20670
+      },
+      "return_percent": "-36.78961655960075590711182118",
+      "gross_native_notional_to_equity_mean": 2.902372717022706
+    },
+    {
+      "month": "2025-05",
+      "start_equity": "475637.29269793",
+      "end_equity": "523287.75316214",
+      "minimum": "444465.07245388",
+      "maximum": "658890.42864335",
+      "within_month_DD_percent": "29.60585892009508850196382700",
+      "maximum_global_DD_percent": "51.43390960235379380335111587",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 5.847657566545218,
+      "states": {
+        "SOL": 25920,
+        "FLAT": 5701,
+        "BTC": 2983,
+        "BTC+SOL": 10036
+      },
+      "asset_open_samples": {
+        "SOL": 35956,
+        "BTC": 13019
+      },
+      "return_percent": "10.01823473385045979995140620",
+      "gross_native_notional_to_equity_mean": 1.794805049867407
+    },
+    {
+      "month": "2025-06",
+      "start_equity": "523287.75316214",
+      "end_equity": "550892.10019471",
+      "minimum": "367509.64806046",
+      "maximum": "577066.68295326",
+      "within_month_DD_percent": "33.33600485840135795065352665",
+      "maximum_global_DD_percent": "59.84272354367395947974450388",
+      "receipts": 43200,
+      "gross_native_notional_to_equity_max": 9.401608329814875,
+      "states": {
+        "BTC+SOL": 7200,
+        "FLAT": 6173,
+        "BTC": 26947,
+        "SOL": 2880
+      },
+      "asset_open_samples": {
+        "BTC": 34147,
+        "SOL": 10080
+      },
+      "return_percent": "5.275175439471221590473828900",
+      "gross_native_notional_to_equity_mean": 3.2274463429968585
+    },
+    {
+      "month": "2025-07",
+      "start_equity": "550892.10019471",
+      "end_equity": "696427.62602153",
+      "minimum": "521003.47044275",
+      "maximum": "698507.62602153",
+      "within_month_DD_percent": "9.620306076142437999477352580",
+      "maximum_global_DD_percent": "43.07066356572805666142405189",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 3.1113658170500145,
+      "states": {
+        "BTC": 12698,
+        "FLAT": 17542,
+        "SOL": 14400
+      },
+      "asset_open_samples": {
+        "BTC": 12698,
+        "SOL": 14400
+      },
+      "return_percent": "26.41815443993137884714803720",
+      "gross_native_notional_to_equity_mean": 1.1418130328713219
+    },
+    {
+      "month": "2025-08",
+      "start_equity": "696427.62602153",
+      "end_equity": "842025.80973756",
+      "minimum": "516422.48110494",
+      "maximum": "893334.18254448",
+      "within_month_DD_percent": "29.98007500707704445558852183",
+      "maximum_global_DD_percent": "43.57122200345281094761222240",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 8.144663018381811,
+      "states": {
+        "FLAT": 17289,
+        "BTC": 11850,
+        "BTC+SOL": 9873,
+        "SOL": 5628
+      },
+      "asset_open_samples": {
+        "BTC": 21723,
+        "SOL": 15501
+      },
+      "return_percent": "20.90643424755939315745933130",
+      "gross_native_notional_to_equity_mean": 2.2162309471706108
+    },
+    {
+      "month": "2025-09",
+      "start_equity": "842025.80973756",
+      "end_equity": "1200789.25675321",
+      "minimum": "641758.63567412",
+      "maximum": "1241636.19575321",
+      "within_month_DD_percent": "26.57994714782789596022023730",
+      "maximum_global_DD_percent": "29.87591186514766623122994752",
+      "receipts": 43200,
+      "gross_native_notional_to_equity_max": 8.950199029521865,
+      "states": {
+        "FLAT": 11908,
+        "BTC": 15452,
+        "BTC+SOL": 15840
+      },
+      "asset_open_samples": {
+        "BTC": 31292,
+        "SOL": 15840
+      },
+      "return_percent": "42.60717936038899823194313810",
+      "gross_native_notional_to_equity_mean": 4.0159315535539015
+    },
+    {
+      "month": "2025-10",
+      "start_equity": "1200789.25675321",
+      "end_equity": "1639528.47170574",
+      "minimum": "1195294.38774031",
+      "maximum": "2088471.56378771",
+      "within_month_DD_percent": "39.74943101775715951800226062",
+      "maximum_global_DD_percent": "39.74943101775715951800226062",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 8.533165504984558,
+      "states": {
+        "BTC": 22503,
+        "FLAT": 10617,
+        "SOL": 11520
+      },
+      "asset_open_samples": {
+        "BTC": 22503,
+        "SOL": 11520
+      },
+      "return_percent": "36.53756997616952105561590320",
+      "gross_native_notional_to_equity_mean": 2.5241042027838634
+    },
+    {
+      "month": "2025-11",
+      "start_equity": "1639528.47170574",
+      "end_equity": "1387005.82493454",
+      "minimum": "937712.12544458",
+      "maximum": "2069026.3481032",
+      "within_month_DD_percent": "54.67857979168623451744365152",
+      "maximum_global_DD_percent": "55.10055575073671291811943329",
+      "receipts": 43200,
+      "gross_native_notional_to_equity_max": 16.81685578430967,
+      "states": {
+        "FLAT": 33500,
+        "BTC": 9700
+      },
+      "asset_open_samples": {
+        "BTC": 9700
+      },
+      "return_percent": "-15.40215074816476677762444144",
+      "gross_native_notional_to_equity_mean": 2.184928240053984
+    },
+    {
+      "month": "2025-12",
+      "start_equity": "1387005.82493454",
+      "end_equity": "2236365.45841725",
+      "minimum": "1376262.25057348",
+      "maximum": "2408094.24462978",
+      "within_month_DD_percent": "12.85030476079907550453930340",
+      "maximum_global_DD_percent": "34.10193969423971567069425957",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 11.139968192553017,
+      "states": {
+        "BTC": 1440,
+        "FLAT": 43200
+      },
+      "asset_open_samples": {
+        "BTC": 1440
+      },
+      "return_percent": "61.23691899583735974394160430",
+      "gross_native_notional_to_equity_mean": 0.18153405043614115
+    },
+    {
+      "month": "2026-01",
+      "start_equity": "2236365.45841725",
+      "end_equity": "2664602.92081457",
+      "minimum": "2008309.06307096",
+      "maximum": "2726371.854918",
+      "within_month_DD_percent": "26.33766888958134760709142902",
+      "maximum_global_DD_percent": "26.33766888958134760709142902",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 5.7731113269258545,
+      "states": {
+        "FLAT": 16480,
+        "BTC": 28160
+      },
+      "asset_open_samples": {
+        "BTC": 28160
+      },
+      "return_percent": "19.14881401809871691863178040",
+      "gross_native_notional_to_equity_mean": 2.4359994537521907
+    },
+    {
+      "month": "2026-02",
+      "start_equity": "2664602.92081457",
+      "end_equity": "4370676.67047471",
+      "minimum": "1783557.592621",
+      "maximum": "4532569.67987108",
+      "within_month_DD_percent": "35.93764337131228345668078382",
+      "maximum_global_DD_percent": "35.93764337131228345668078382",
+      "receipts": 40320,
+      "gross_native_notional_to_equity_max": 12.257935694620295,
+      "states": {
+        "FLAT": 31816,
+        "BTC": 8504
+      },
+      "asset_open_samples": {
+        "BTC": 8504
+      },
+      "return_percent": "64.02731665319171408616846580",
+      "gross_native_notional_to_equity_mean": 1.4006557503198307
+    },
+    {
+      "month": "2026-03",
+      "start_equity": "4370676.67047471",
+      "end_equity": "5899180.91000022",
+      "minimum": "3529023.80503336",
+      "maximum": "6056326.4678278",
+      "within_month_DD_percent": "23.73357524992693931997790909",
+      "maximum_global_DD_percent": "23.73357524992693931997790909",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 8.360714379834308,
+      "states": {
+        "FLAT": 24356,
+        "BTC": 20284
+      },
+      "asset_open_samples": {
+        "BTC": 20284
+      },
+      "return_percent": "34.97179852838428735122854440",
+      "gross_native_notional_to_equity_mean": 2.059895581445232
+    },
+    {
+      "month": "2026-04",
+      "start_equity": "5899180.91000022",
+      "end_equity": "8598090.61254731",
+      "minimum": "5681410.80750808",
+      "maximum": "8726177.69365514",
+      "within_month_DD_percent": "13.43569796359418430630290368",
+      "maximum_global_DD_percent": "13.43569796359418430630290368",
+      "receipts": 43200,
+      "gross_native_notional_to_equity_max": 5.320781889781873,
+      "states": {
+        "FLAT": 29080,
+        "BTC": 14120
+      },
+      "asset_open_samples": {
+        "BTC": 14120
+      },
+      "return_percent": "45.75058374582022012808146270",
+      "gross_native_notional_to_equity_mean": 1.106239805498684
+    },
+    {
+      "month": "2026-05",
+      "start_equity": "8598090.61254731",
+      "end_equity": "8431097.76034144",
+      "minimum": "7654288.53725515",
+      "maximum": "9344768.15337548",
+      "within_month_DD_percent": "18.09011832476230749471631635",
+      "maximum_global_DD_percent": "18.09011832476230749471631635",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 3.793550964346661,
+      "states": {
+        "BTC": 11315,
+        "FLAT": 16045,
+        "BTC+SOL": 4791,
+        "SOL": 12489
+      },
+      "asset_open_samples": {
+        "BTC": 16106,
+        "SOL": 17280
+      },
+      "return_percent": "-1.942208563866203859786723070",
+      "gross_native_notional_to_equity_mean": 0.9315875115450196
+    },
+    {
+      "month": "2026-06",
+      "start_equity": "8431097.76034144",
+      "end_equity": "8986291.50529802",
+      "minimum": "8134578.33050676",
+      "maximum": "9079421.20045559",
+      "within_month_DD_percent": "4.774100908667985561977848295",
+      "maximum_global_DD_percent": "12.95045316273127700426294997",
+      "receipts": 43200,
+      "gross_native_notional_to_equity_max": 3.6444669107023446,
+      "states": {
+        "SOL": 2891,
+        "FLAT": 38870,
+        "BTC": 1439
+      },
+      "asset_open_samples": {
+        "SOL": 2891,
+        "BTC": 1439
+      },
+      "return_percent": "6.585070660289626801071597300",
+      "gross_native_notional_to_equity_mean": 0.0770683660284512
+    },
+    {
+      "month": "2026-07",
+      "start_equity": "8986291.50529802",
+      "end_equity": "6480897.22625338",
+      "minimum": "6304208.93183548",
+      "maximum": "9361910.09938506",
+      "within_month_DD_percent": "32.66108235487570063114655025",
+      "maximum_global_DD_percent": "32.66108235487570063114655025",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 4.58705539735666,
+      "states": {
+        "FLAT": 4331,
+        "BTC": 33109,
+        "BTC+SOL": 1900,
+        "SOL": 5300
+      },
+      "asset_open_samples": {
+        "BTC": 35009,
+        "SOL": 7200
+      },
+      "return_percent": "-27.88018035657470569113633558",
+      "gross_native_notional_to_equity_mean": 1.7821995278677938
+    },
+    {
+      "month": "2026-08",
+      "start_equity": "6480897.22625338",
+      "end_equity": "6086634.57861444",
+      "minimum": "5543599.77088397",
+      "maximum": "6643490.86197382",
+      "within_month_DD_percent": "16.55592088468781188921294055",
+      "maximum_global_DD_percent": "40.78559063232082212618548499",
+      "receipts": 44640,
+      "gross_native_notional_to_equity_max": 5.400820250069113,
+      "states": {
+        "FLAT": 13556,
+        "BTC": 29644,
+        "SOL": 1440
+      },
+      "asset_open_samples": {
+        "BTC": 29644,
+        "SOL": 1440
+      },
+      "return_percent": "-6.083457797198614836257830050",
+      "gross_native_notional_to_equity_mean": 2.0027163335376956
+    }
+  ],
+  "book_state_receipts": {
+    "FLAT": 474557,
+    "BTC": 375234,
+    "BTC+SOL": 68192,
+    "SOL": 133216
+  },
+  "recomputed_money_DD_percent": "66.25691486468686414439256686",
+  "reported_money_DD_percent": "66.25691486468686414439256686",
+  "worst_receipt_excursion": {
+    "peak_receipt_ns": 1726273200000000000,
+    "peak_equity": "13426.6743211",
+    "trough_receipt_ns": 1727970300000000000,
+    "trough_equity": "4530.57414701",
+    "DD_percent": "66.25691486468686414439256686"
+  },
+  "last_interval_receipt": {
+    "source_quote_ns": 1788220740000000000,
+    "receipt_ns": 1788220800000000000,
+    "cash": "5990509.00011444",
+    "equity": "6086634.57861444",
+    "native_positions": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "2",
+        "quantity": "220.598",
+        "avg_px_open": "78089.15000000001",
+        "mark_ohlc": {
+          "open_time_ms": 1788220680000,
+          "open": "78522.2",
+          "high": "78526.65",
+          "low": "78520.2",
+          "close": "78524.9"
+        },
+        "low_native_pnl": "95088.7679",
+        "high_native_pnl": "96500.5951"
+      }
+    ]
+  },
+  "terminal_TOTAL": "6077107.23887483",
+  "terminal_ACTIVE": "6077107.23887483",
+  "terminal_RESERVE": "0",
+  "native_cash_tail": {
+    "active": "6077107.23887483",
+    "reserve": "0",
+    "timestamp": "2026-09-01 00:00:00+00:00",
+    "total": "6077107.23887483"
+  },
+  "native_terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "17322435.8902"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "post_boundary_settlement": {
+    "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 1,
+    "interval_cash_total_before_settlement": "5990509.00011444",
+    "settled_cash_total": "6077107.23887483"
+  },
+  "fee_groups": {
+    "taker": {
+      "count": 486,
+      "fees": "792050.96949271",
+      "notional": "1440092671.8044"
+    },
+    "maker": {
+      "count": 135,
+      "fees": "153876.76812554",
+      "notional": "769383840.6277"
+    },
+    "unknown": {
+      "count": 0,
+      "fees": "0",
+      "notional": "0"
+    }
+  },
+  "fee_group_checks": {
+    "taker": {
+      "count_matches": true,
+      "fees_match": true,
+      "notional_matches": true
+    },
+    "maker": {
+      "count_matches": true,
+      "fees_match": true,
+      "notional_matches": true
+    },
+    "unknown": {
+      "count_matches": true,
+      "fees_match": true,
+      "notional_matches": true
+    }
+  },
+  "native_fill_audit_count": 621,
+  "native_order_report_fill_rows": 621,
+  "native_fill_report_commissions": "945927.73761825",
+  "fill_action_counts": {
+    "BTC_ENTRY": 210,
+    "BTC_REDUCE": 155,
+    "FORCED_CLOSE": 139,
+    "SOL_ADD": 102,
+    "SOL_HALF_EXIT": 1,
+    "SOL_EXIT": 13,
+    "TERMINAL_CLOSE": 1
+  },
+  "asset_fill_counts": {
+    "BTC": 416,
+    "SOL": 205
+  },
+  "native_funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 899,
+      "SOLUSDT-PERP.P1SIM": 421
+    },
+    "count": 1320,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "source_hashes": {
+    "native_baseline": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+    "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+    "wave_domain": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "wave_strategy": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87"
+  },
+  "config_hash": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+  "conditional_OHLC_upper_to_later_lower": {
+    "actual_intrabar_path_proven": false,
+    "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+    "maximum": {
+      "drawdown_fraction": "0.6754771031869252420136632742",
+      "drawdown_peak_percent": "67.54771031869252420136632742",
+      "peak": {
+        "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+        "equity": "13478.6013251",
+        "timestamp_ns": "1726063200000000000"
+      },
+      "trough": {
+        "equity": "4374.11474701",
+        "timestamp_ns": "1727970300000000000"
+      }
+    },
+    "same_bar_extrema_order_assumed": false,
+    "samples": 1051200
+  },
+  "conditional_OHLC_verification": "Saved native conditional bound only; not independently restreamed; actual tick DD UNKNOWN; no intrabar extrema ordering inferred.",
+  "retention": {
+    "formula": "(candidate terminal TOTAL -10000)/(6077107.23887483-10000)",
+    "net_profit_retention_fraction": "1",
+    "minimum_TOTAL_for_90_percent_net_profit": "5470396.514987347",
+    "money_DD_le_50": false,
+    "net_profit_retention_ge_90_percent": true,
+    "money_DD_with_terminal_endpoint_le_50": false
+  },
+  "native_economic_runs_added": 0,
+  "limitations": [
+    "Receipt equity and native fill costs are observations, not an alternative equity/fill/PnL engine.",
+    "Last interval receipt marked equity may differ from final boundary-settled native cash/TOTAL.",
+    "Monthly returns use consecutive source-quote UTC month-end receipt equity, with seed10000; post-boundary final cash is separate.",
+    "Exposure is recorded native quantity times same-source recorded native close mark over saved equity; receipt sample statistics are not tick statistics.",
+    "Signed funding remains native-report UNKNOWN where no cash-delta audit exists."
+  ],
+  "elapsed_seconds": 62.04149971250445,
+  "maxrss_native_units": 29176,
+  "native_receipt_running_peak_equity": "9361910.09938506",
+  "terminal_boundary_endpoint_DD_percent": "35.08688745821211534316623679",
+  "receipt_DD_with_terminal_native_cash_endpoint_percent": "66.25691486468686414439256686",
+  "endpoint_postprocessing": "Computed solely from already retained month maxima and final native cash TOTAL; no further receipt pass.",
+  "native_final_order_report_status_counts": {
+    "FILLED": 447,
+    "CANCELED": 263
+  },
+  "input_pin_metadata": {
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/input-hashes.json",
+    "sha256": "b8b3e5162e5eac52762cf2470910e1c133d66b46a0c2ec51e822f07820f60f0e",
+    "input_pins": {
+      "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+      "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+      "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+      "normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+      "normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+      "normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+      "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+      "normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+      "normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+      "normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+      "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+      "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+      "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+    }
+  },
+  "input_pins_identical_to_frozen_M1_M2": true,
+  "monthly_receipt_return_distribution": {
+    "months": 24,
+    "positive": 17,
+    "negative": 7,
+    "zero": 0,
+    "minimum_percent": -36.78961655960076,
+    "median_percent": 23.662294343745387,
+    "maximum_percent": 291.9847174508508
+  },
+  "native_report_status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "ranking_eligible": false
+}

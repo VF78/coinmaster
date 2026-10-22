@@ -1,0 +1,1759 @@
+{
+  "status": "M1_SEALED_COMPLETE_NATIVE_BASIC_INVARIANTS_PASS",
+  "utc": "2026-10-22T17:08:07.797837+00:00",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1",
+  "source_input_postchecks": 87,
+  "result_manifest_sha256": "4c9e0c40ab6ce6666bc076e312a3b3e8635300f6f5649decf3a2ced8d6fba77a",
+  "result_files": {
+    "result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5.json": {
+      "sha256": "764f3f0e853609823735198fe8af15601a7e5beae66710f3a87edffc0c45047e",
+      "bytes": 1443153
+    },
+    "result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-funding.sqlite": {
+      "sha256": "9eb80366e8542facc4394bbdc9661b4a4e722be3fb358f9bfe4b9309a02019d1",
+      "bytes": 237568
+    },
+    "result/minute-native-risk.csv.gz": {
+      "sha256": "cf2b60db1aea74368bc3607356ebd340f3ca515be78ccb48c7035bc04bcc001c",
+      "bytes": 74964539
+    },
+    "result/minute-native-settled-receipts.csv.gz": {
+      "sha256": "4b73340426c9f13acce8c45e7103aa4ed20886f1258419c8bb70e01987ed39d6",
+      "bytes": 37035291
+    },
+    "result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-raw-native.json": {
+      "sha256": "c54643237be54fdd0b7be5d9114adc9a08226308c12a17bca5d7bd12961e80e1",
+      "bytes": 2174287
+    },
+    "result/minute-risk-summary.json": {
+      "sha256": "cc5bf777fb7227bc0e35cdd26e57b083d10e8394b4cd9c28880da3afbf55a925",
+      "bytes": 14365
+    },
+    "result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-orders.csv": {
+      "sha256": "9befe4a521366170b22b2c881b4c176229b18ad94444771b92fba621a794829c",
+      "bytes": 272061
+    },
+    "result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-fills.csv": {
+      "sha256": "60865b762bdb13531784524c1d11da13e46ca1f74f220c267238df709e873e26",
+      "bytes": 245747
+    }
+  },
+  "config_hash": "fd4ed64c98437680146c044e9cf82e102582affe7205cc957e989ea6f95120d7",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "terminal_total": "2615745.21476479",
+  "terminal_active": "2615745.21476479",
+  "terminal_reserve": "0",
+  "roi_fraction": "260.574521476479",
+  "retained_S0_net_profit_fraction": "0.4294872518600868131639311323",
+  "settled_money_DD_percent": "58.77409504467889817197266501",
+  "settled_receipts": 1051199,
+  "settled_unavailable": 0,
+  "settled_pending": null,
+  "streaming": {
+    "batch_count": 105,
+    "cursor_batch_rows": 10080,
+    "event_count": 4206260,
+    "expected_rows_per_source": 1051200,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 619847680,
+    "processed_rows_per_source": 1051200
+  },
+  "terminal_open_positions": 0,
+  "liquidation_count": 0,
+  "native_fees": "710655.26790133",
+  "fills": 621,
+  "funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 896,
+      "SOLUSDT-PERP.P1SIM": 409
+    },
+    "count": 1305,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "management_counts": {
+    "CLAIM": 26,
+    "SUBMIT": 26,
+    "FILL": 26,
+    "TERMINAL": 26
+  },
+  "management_claims_by_instrument": {
+    "BTCUSDT-PERP.P1SIM": 20,
+    "SOLUSDT-PERP.P1SIM": 6
+  },
+  "acceptance": {
+    "DD_le50": false,
+    "net_profit_ge90pct_S0": false,
+    "both": false
+  },
+  "native_action_audit": [
+    {
+      "account_ns": "1726473600000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240914-000200-001-000-8",
+        1726272120000000000
+      ],
+      "dd": "0.2537398909152125855684914055",
+      "event": "CLAIM",
+      "fill_epoch": 8,
+      "fraction": "0.5",
+      "held": "1.219",
+      "native_pnl": "-3350.163",
+      "receipt_ns": "1726497300000000000",
+      "source_ns": "1726497240000000000",
+      "target": "0.610"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240914-000200-001-000-8",
+        1726272120000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "57622.6",
+      "order_id": "O-20240916-143500-001-000-11",
+      "quantity": "0.609",
+      "quote_ns": "1726497300000000000",
+      "receipt_ns": "1726497300000000000",
+      "source_ns": "1726497240000000000"
+    },
+    {
+      "commission": "19.30068987 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240914-000200-001-000-8",
+        1726272120000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1726497300000000000",
+      "order_id": "O-20240916-143500-001-000-11",
+      "price": "57622.6",
+      "quantity": "0.609"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240914-000200-001-000-8",
+        1726272120000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1726497300000000000"
+    },
+    {
+      "account_ns": "1726533420000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240917-000100-001-000-14",
+        1726531260000000000
+      ],
+      "dd": "0.2519119132899990453764876193",
+      "event": "CLAIM",
+      "fill_epoch": 13,
+      "fraction": "0.5",
+      "held": "1.09",
+      "native_pnl": "-140.4465",
+      "receipt_ns": "1726548780000000000",
+      "source_ns": "1726548720000000000",
+      "target": "0.545"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240917-000100-001-000-14",
+        1726531260000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "58269.9",
+      "order_id": "O-20240917-045300-001-000-19",
+      "quantity": "0.545",
+      "quote_ns": "1726548780000000000",
+      "receipt_ns": "1726548780000000000",
+      "source_ns": "1726548720000000000"
+    },
+    {
+      "commission": "17.46640253 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240917-000100-001-000-14",
+        1726531260000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1726548780000000000",
+      "order_id": "O-20240917-045300-001-000-19",
+      "price": "58269.9",
+      "quantity": "0.545"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20240917-000100-001-000-14",
+        1726531260000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1726548780000000000"
+    },
+    {
+      "account_ns": "1727829000000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241002-000100-001-000-27",
+        1727827260000000000
+      ],
+      "dd": "0.2510324048676161197485292299",
+      "event": "CLAIM",
+      "fill_epoch": 22,
+      "fraction": "0.5",
+      "held": "0.799",
+      "native_pnl": "-639.8031",
+      "receipt_ns": "1727837280000000000",
+      "source_ns": "1727837220000000000",
+      "target": "0.400"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241002-000100-001-000-27",
+        1727827260000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "61671.9",
+      "order_id": "O-20241002-024800-001-000-30",
+      "quantity": "0.399",
+      "quote_ns": "1727837280000000000",
+      "receipt_ns": "1727837280000000000",
+      "source_ns": "1727837220000000000"
+    },
+    {
+      "commission": "13.53389846 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241002-000100-001-000-27",
+        1727827260000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1727837280000000000",
+      "order_id": "O-20241002-024800-001-000-30",
+      "price": "61671.9",
+      "quantity": "0.399"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241002-000100-001-000-27",
+        1727827260000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1727837280000000000"
+    },
+    {
+      "account_ns": "1727913600000000000",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241003-000000-001-000-32",
+        1727913600000000000
+      ],
+      "dd": "0.2653197411239619823268076275",
+      "event": "CLAIM",
+      "fill_epoch": 24,
+      "fraction": "0.5",
+      "held": "894",
+      "native_pnl": "-590.04",
+      "receipt_ns": "1727913960000000000",
+      "source_ns": "1727913900000000000",
+      "target": "447.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241003-000000-001-000-32",
+        1727913600000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "139.46",
+      "order_id": "O-20241003-000600-001-000-33",
+      "quantity": "447.0",
+      "quote_ns": "1727913960000000000",
+      "receipt_ns": "1727913960000000000",
+      "source_ns": "1727913900000000000"
+    },
+    {
+      "commission": "34.28624100 USDT",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241003-000000-001-000-32",
+        1727913600000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1727913960000000000",
+      "order_id": "O-20241003-000600-001-000-33",
+      "price": "139.46",
+      "quantity": "447.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241003-000000-001-000-32",
+        1727913600000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1727913960000000000"
+    },
+    {
+      "account_ns": "1728524940000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241010-000100-001-000-42",
+        1728518460000000000
+      ],
+      "dd": "0.2502547895199650401238032305",
+      "event": "CLAIM",
+      "fill_epoch": 34,
+      "fraction": "0.5",
+      "held": "0.771",
+      "native_pnl": "-221.6252",
+      "receipt_ns": "1728539520000000000",
+      "source_ns": "1728539460000000000",
+      "target": "0.386"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241010-000100-001-000-42",
+        1728518460000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "60988.1",
+      "order_id": "O-20241010-055200-001-000-45",
+      "quantity": "0.385",
+      "quote_ns": "1728539520000000000",
+      "receipt_ns": "1728539520000000000",
+      "source_ns": "1728539460000000000"
+    },
+    {
+      "commission": "12.91423018 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241010-000100-001-000-42",
+        1728518460000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1728539520000000000",
+      "order_id": "O-20241010-055200-001-000-45",
+      "price": "60988.1",
+      "quantity": "0.385"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241010-000100-001-000-42",
+        1728518460000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1728539520000000000"
+    },
+    {
+      "account_ns": "1732233600000000000",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241122-000000-001-000-70",
+        1732233600000000000
+      ],
+      "dd": "0.2601459363242321909088156978",
+      "event": "CLAIM",
+      "fill_epoch": 57,
+      "fraction": "0.5",
+      "held": "926.3",
+      "native_pnl": "-5835.69",
+      "receipt_ns": "1732245540000000000",
+      "source_ns": "1732245480000000000",
+      "target": "463.2"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241122-000000-001-000-70",
+        1732233600000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "263.72",
+      "order_id": "O-20241122-031900-001-000-71",
+      "quantity": "463.1",
+      "quote_ns": "1732245540000000000",
+      "receipt_ns": "1732245540000000000",
+      "source_ns": "1732245480000000000"
+    },
+    {
+      "commission": "67.17080260 USDT",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241122-000000-001-000-70",
+        1732233600000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1732245540000000000",
+      "order_id": "O-20241122-031900-001-000-71",
+      "price": "263.72",
+      "quantity": "463.1"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241122-000000-001-000-70",
+        1732233600000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1732245540000000000"
+    },
+    {
+      "account_ns": "1734681600000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241220-000100-001-000-84",
+        1734652860000000000
+      ],
+      "dd": "0.2513620346451223328667804671",
+      "event": "CLAIM",
+      "fill_epoch": 71,
+      "fraction": "0.5",
+      "held": "2.466",
+      "native_pnl": "-12706.49763296",
+      "receipt_ns": "1734696720000000000",
+      "source_ns": "1734696660000000000",
+      "target": "1.233"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241220-000100-001-000-84",
+        1734652860000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "92351.3",
+      "order_id": "O-20241220-121200-001-000-89",
+      "quantity": "1.233",
+      "quote_ns": "1734696720000000000",
+      "receipt_ns": "1734696720000000000",
+      "source_ns": "1734696660000000000"
+    },
+    {
+      "commission": "62.62803410 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241220-000100-001-000-84",
+        1734652860000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1734696720000000000",
+      "order_id": "O-20241220-121200-001-000-89",
+      "price": "92351.3",
+      "quantity": "1.233"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20241220-000100-001-000-84",
+        1734652860000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1734696720000000000"
+    },
+    {
+      "account_ns": "1736755200000000000",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250110-000000-001-000-132",
+        1736467200000000000
+      ],
+      "dd": "0.2529269165041692565774924446",
+      "event": "CLAIM",
+      "fill_epoch": 115,
+      "fraction": "0.5",
+      "held": "4000",
+      "native_pnl": "-51360",
+      "receipt_ns": "1736773380000000000",
+      "source_ns": "1736773320000000000",
+      "target": "2000.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250110-000000-001-000-132",
+        1736467200000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "174.25",
+      "order_id": "O-20250113-130300-001-000-136",
+      "quantity": "2000.0",
+      "quote_ns": "1736773380000000000",
+      "receipt_ns": "1736773380000000000",
+      "source_ns": "1736773320000000000"
+    },
+    {
+      "commission": "95.83750000 USDT",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250110-000000-001-000-132",
+        1736467200000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1736773380000000000",
+      "order_id": "O-20250113-130300-001-000-136",
+      "price": "174.25",
+      "quantity": "1000.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250110-000000-001-000-132",
+        1736467200000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "CANCELED",
+      "timestamp_ns": "1736773380000000000"
+    },
+    {
+      "account_ns": "1738512000000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250128-000100-001-000-153",
+        1738022460000000000
+      ],
+      "dd": "0.2519909792085132592450012992",
+      "event": "CLAIM",
+      "fill_epoch": 133,
+      "fraction": "0.5",
+      "held": "9.434",
+      "native_pnl": "-42812.4354",
+      "receipt_ns": "1738517160000000000",
+      "source_ns": "1738517100000000000",
+      "target": "4.717"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250128-000100-001-000-153",
+        1738022460000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "97830.4",
+      "order_id": "O-20250202-172600-001-000-158",
+      "quantity": "4.717",
+      "quote_ns": "1738517160000000000",
+      "receipt_ns": "1738517160000000000",
+      "source_ns": "1738517100000000000"
+    },
+    {
+      "commission": "253.80629824 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250128-000100-001-000-153",
+        1738022460000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1738517160000000000",
+      "order_id": "O-20250202-172600-001-000-158",
+      "price": "97830.4",
+      "quantity": "4.717"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250128-000100-001-000-153",
+        1738022460000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1738517160000000000"
+    },
+    {
+      "account_ns": "1738630200000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250204-000200-001-000-165",
+        1738627320000000000
+      ],
+      "dd": "0.2559048930145694439681089684",
+      "event": "CLAIM",
+      "fill_epoch": 141,
+      "fraction": "0.5",
+      "held": "15.884",
+      "native_pnl": "-31723.5248",
+      "receipt_ns": "1738645620000000000",
+      "source_ns": "1738645560000000000",
+      "target": "7.942"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250204-000200-001-000-165",
+        1738627320000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "99447.2",
+      "order_id": "O-20250204-050700-001-000-169",
+      "quantity": "7.942",
+      "quote_ns": "1738645620000000000",
+      "receipt_ns": "1738645620000000000",
+      "source_ns": "1738645560000000000"
+    },
+    {
+      "commission": "434.39531432 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250204-000200-001-000-165",
+        1738627320000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1738645620000000000",
+      "order_id": "O-20250204-050700-001-000-169",
+      "price": "99447.2",
+      "quantity": "7.942"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250204-000200-001-000-165",
+        1738627320000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1738645620000000000"
+    },
+    {
+      "account_ns": "1740153600000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250221-000200-001-000-179",
+        1740096120000000000
+      ],
+      "dd": "0.2522425312399769639599363475",
+      "event": "CLAIM",
+      "fill_epoch": 152,
+      "fraction": "0.5",
+      "held": "12.702",
+      "native_pnl": "-26517.86853435",
+      "receipt_ns": "1740165540000000000",
+      "source_ns": "1740165480000000000",
+      "target": "6.351"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250221-000200-001-000-179",
+        1740096120000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "96142.1",
+      "order_id": "O-20250221-191900-001-000-183",
+      "quantity": "6.351",
+      "quote_ns": "1740165540000000000",
+      "receipt_ns": "1740165540000000000",
+      "source_ns": "1740165480000000000"
+    },
+    {
+      "commission": "335.82916240 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250221-000200-001-000-179",
+        1740096120000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1740165540000000000",
+      "order_id": "O-20250221-191900-001-000-183",
+      "price": "96142.1",
+      "quantity": "6.351"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250221-000200-001-000-179",
+        1740096120000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1740165540000000000"
+    },
+    {
+      "account_ns": "1740384000000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250222-000100-001-000-186",
+        1740182460000000000
+      ],
+      "dd": "0.2544681099329520278107113626",
+      "event": "CLAIM",
+      "fill_epoch": 157,
+      "fraction": "0.5",
+      "held": "16.811",
+      "native_pnl": "-31.15787769",
+      "receipt_ns": "1740389700000000000",
+      "source_ns": "1740389640000000000",
+      "target": "8.406"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250222-000100-001-000-186",
+        1740182460000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "96055.4",
+      "order_id": "O-20250224-093500-001-000-190",
+      "quantity": "8.405",
+      "quote_ns": "1740389700000000000",
+      "receipt_ns": "1740389700000000000",
+      "source_ns": "1740389640000000000"
+    },
+    {
+      "commission": "444.04010035 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250222-000100-001-000-186",
+        1740182460000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1740389700000000000",
+      "order_id": "O-20250224-093500-001-000-190",
+      "price": "96055.4",
+      "quantity": "8.405"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250222-000100-001-000-186",
+        1740182460000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1740389700000000000"
+    },
+    {
+      "account_ns": "1744387200000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250411-000100-001-000-258",
+        1744329660000000000
+      ],
+      "dd": "0.2515622911166767952755724575",
+      "event": "CLAIM",
+      "fill_epoch": 224,
+      "fraction": "0.5",
+      "held": "32.818",
+      "native_pnl": "-141388.1485",
+      "receipt_ns": "1744393320000000000",
+      "source_ns": "1744393260000000000",
+      "target": "16.409"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250411-000100-001-000-258",
+        1744329660000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "83763.1",
+      "order_id": "O-20250411-174200-001-000-264",
+      "quantity": "16.409",
+      "quote_ns": "1744393320000000000",
+      "receipt_ns": "1744393320000000000",
+      "source_ns": "1744393260000000000"
+    },
+    {
+      "commission": "755.95778935 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250411-000100-001-000-258",
+        1744329660000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1744393320000000000",
+      "order_id": "O-20250411-174200-001-000-264",
+      "price": "83763.1",
+      "quantity": "16.409"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250411-000100-001-000-258",
+        1744329660000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1744393320000000000"
+    },
+    {
+      "account_ns": "1753660800000000000",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250722-000000-001-000-355",
+        1753142400000000000
+      ],
+      "dd": "0.2526924051665994957507044514",
+      "event": "CLAIM",
+      "fill_epoch": 306,
+      "fraction": "0.5",
+      "held": "4000",
+      "native_pnl": "-1720",
+      "receipt_ns": "1753682100000000000",
+      "source_ns": "1753682040000000000",
+      "target": "2000.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250722-000000-001-000-355",
+        1753142400000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "194.92",
+      "order_id": "O-20250728-055500-001-000-359",
+      "quantity": "2000.0",
+      "quote_ns": "1753682100000000000",
+      "receipt_ns": "1753682100000000000",
+      "source_ns": "1753682040000000000"
+    },
+    {
+      "commission": "107.20600000 USDT",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250722-000000-001-000-355",
+        1753142400000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1753682100000000000",
+      "order_id": "O-20250728-055500-001-000-359",
+      "price": "194.92",
+      "quantity": "1000.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250722-000000-001-000-355",
+        1753142400000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "CANCELED",
+      "timestamp_ns": "1753682100000000000"
+    },
+    {
+      "account_ns": "1754467200000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250806-000100-001-000-371",
+        1754438460000000000
+      ],
+      "dd": "0.2505847750465388935973612345",
+      "event": "CLAIM",
+      "fill_epoch": 318,
+      "fraction": "0.5",
+      "held": "18.535",
+      "native_pnl": "-21341.4659",
+      "receipt_ns": "1754492340000000000",
+      "source_ns": "1754492280000000000",
+      "target": "9.268"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250806-000100-001-000-371",
+        1754438460000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "115090.4",
+      "order_id": "O-20250806-145900-001-000-375",
+      "quantity": "9.267",
+      "quote_ns": "1754492340000000000",
+      "receipt_ns": "1754492340000000000",
+      "source_ns": "1754492280000000000"
+    },
+    {
+      "commission": "586.59850524 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250806-000100-001-000-371",
+        1754438460000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1754492340000000000",
+      "order_id": "O-20250806-145900-001-000-375",
+      "price": "115090.4",
+      "quantity": "9.267"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250806-000100-001-000-371",
+        1754438460000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1754492340000000000"
+    },
+    {
+      "account_ns": "1754784000000000000",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250808-000000-001-000-381",
+        1754611200000000000
+      ],
+      "dd": "0.2509216504972430736561328244",
+      "event": "CLAIM",
+      "fill_epoch": 325,
+      "fraction": "0.5",
+      "held": "3000",
+      "native_pnl": "-19330",
+      "receipt_ns": "1754789820000000000",
+      "source_ns": "1754789760000000000",
+      "target": "1500.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250808-000000-001-000-381",
+        1754611200000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "183.92",
+      "order_id": "O-20250810-013700-001-000-384",
+      "quantity": "1500.0",
+      "quote_ns": "1754789820000000000",
+      "receipt_ns": "1754789820000000000",
+      "source_ns": "1754789760000000000"
+    },
+    {
+      "commission": "101.15600000 USDT",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250808-000000-001-000-381",
+        1754611200000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1754789820000000000",
+      "order_id": "O-20250810-013700-001-000-384",
+      "price": "183.92",
+      "quantity": "1000.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250808-000000-001-000-381",
+        1754611200000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "CANCELED",
+      "timestamp_ns": "1754789820000000000"
+    },
+    {
+      "account_ns": "1758153600000000000",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250912-000000-001-000-435",
+        1757635200000000000
+      ],
+      "dd": "0.2585765428368827799229790245",
+      "event": "CLAIM",
+      "fill_epoch": 383,
+      "fraction": "0.5",
+      "held": "13000",
+      "native_pnl": "-104500",
+      "receipt_ns": "1758160020000000000",
+      "source_ns": "1758159960000000000",
+      "target": "6500.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250912-000000-001-000-435",
+        1757635200000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "247.23",
+      "order_id": "O-20250918-014700-001-000-448",
+      "quantity": "6500.0",
+      "quote_ns": "1758160020000000000",
+      "receipt_ns": "1758160020000000000",
+      "source_ns": "1758159960000000000"
+    },
+    {
+      "commission": "135.97650000 USDT",
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250912-000000-001-000-435",
+        1757635200000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1758160020000000000",
+      "order_id": "O-20250918-014700-001-000-448",
+      "price": "247.23",
+      "quantity": "1000.0"
+    },
+    {
+      "cycle": [
+        "SOLUSDT-PERP.P1SIM",
+        "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20250912-000000-001-000-435",
+        1757635200000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "CANCELED",
+      "timestamp_ns": "1758160020000000000"
+    },
+    {
+      "account_ns": "1761465600000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251022-000100-001-000-493",
+        1761091260000000000
+      ],
+      "dd": "0.2540746211225084121302344084",
+      "event": "CLAIM",
+      "fill_epoch": 430,
+      "fraction": "0.5",
+      "held": "62.29",
+      "native_pnl": "-283874.217",
+      "receipt_ns": "1761478620000000000",
+      "source_ns": "1761478560000000000",
+      "target": "31.145"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251022-000100-001-000-493",
+        1761091260000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "112752",
+      "order_id": "O-20251026-113700-001-000-498",
+      "quantity": "31.145",
+      "quote_ns": "1761478620000000000",
+      "receipt_ns": "1761478620000000000",
+      "source_ns": "1761478560000000000"
+    },
+    {
+      "commission": "1931.41357200 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251022-000100-001-000-493",
+        1761091260000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1761478620000000000",
+      "order_id": "O-20251026-113700-001-000-498",
+      "price": "112752.0",
+      "quantity": "31.145"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251022-000100-001-000-493",
+        1761091260000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1761478620000000000"
+    },
+    {
+      "account_ns": "1762934400000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251112-000100-001-000-512",
+        1762905660000000000
+      ],
+      "dd": "0.2513666076287586172260948427",
+      "event": "CLAIM",
+      "fill_epoch": 442,
+      "fraction": "0.5",
+      "held": "60.137",
+      "native_pnl": "-119233.501",
+      "receipt_ns": "1762950060000000000",
+      "source_ns": "1762950000000000000",
+      "target": "30.069"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251112-000100-001-000-512",
+        1762905660000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "105267.7",
+      "order_id": "O-20251112-122100-001-000-515",
+      "quantity": "30.068",
+      "quote_ns": "1762950060000000000",
+      "receipt_ns": "1762950060000000000",
+      "source_ns": "1762950000000000000"
+    },
+    {
+      "commission": "1740.85406198 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251112-000100-001-000-512",
+        1762905660000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1762950060000000000",
+      "order_id": "O-20251112-122100-001-000-515",
+      "price": "105267.7",
+      "quantity": "30.068"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251112-000100-001-000-512",
+        1762905660000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1762950060000000000"
+    },
+    {
+      "account_ns": "1764172800000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251126-000100-001-000-517",
+        1764115260000000000
+      ],
+      "dd": "0.2554831067688657458525297372",
+      "event": "CLAIM",
+      "fill_epoch": 446,
+      "fraction": "0.5",
+      "held": "126.676",
+      "native_pnl": "-160580.8314",
+      "receipt_ns": "1764178200000000000",
+      "source_ns": "1764178140000000000",
+      "target": "63.338"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251126-000100-001-000-517",
+        1764115260000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "88619.9",
+      "order_id": "O-20251126-173000-001-000-520",
+      "quantity": "63.338",
+      "quote_ns": "1764178200000000000",
+      "receipt_ns": "1764178200000000000",
+      "source_ns": "1764178140000000000"
+    },
+    {
+      "commission": "3087.15397441 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251126-000100-001-000-517",
+        1764115260000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1764178200000000000",
+      "order_id": "O-20251126-173000-001-000-520",
+      "price": "88619.9",
+      "quantity": "63.338"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20251126-000100-001-000-517",
+        1764115260000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1764178200000000000"
+    },
+    {
+      "account_ns": "1769184000000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260121-000100-001-000-537",
+        1768953660000000000
+      ],
+      "dd": "0.2541274119663351550590477213",
+      "event": "CLAIM",
+      "fill_epoch": 461,
+      "fraction": "0.5",
+      "held": "79.628",
+      "native_pnl": "-186636.0878",
+      "receipt_ns": "1769189460000000000",
+      "source_ns": "1769189400000000000",
+      "target": "39.814"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260121-000100-001-000-537",
+        1768953660000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "90924.9",
+      "order_id": "O-20260123-173100-001-000-540",
+      "quantity": "39.814",
+      "quote_ns": "1769189460000000000",
+      "receipt_ns": "1769189460000000000",
+      "source_ns": "1769189400000000000"
+    },
+    {
+      "commission": "1991.04618273 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260121-000100-001-000-537",
+        1768953660000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1769189460000000000",
+      "order_id": "O-20260123-173100-001-000-540",
+      "price": "90924.9",
+      "quantity": "39.814"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260121-000100-001-000-537",
+        1768953660000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1769189460000000000"
+    },
+    {
+      "account_ns": "1770537600000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260208-000100-001-000-542",
+        1770508860000000000
+      ],
+      "dd": "0.2537043845299027385457854496",
+      "event": "CLAIM",
+      "fill_epoch": 465,
+      "fraction": "0.5",
+      "held": "179.324",
+      "native_pnl": "-204752.1432",
+      "receipt_ns": "1770539640000000000",
+      "source_ns": "1770539580000000000",
+      "target": "89.662"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260208-000100-001-000-542",
+        1770508860000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "70459",
+      "order_id": "O-20260208-083400-001-000-545",
+      "quantity": "89.662",
+      "quote_ns": "1770539640000000000",
+      "receipt_ns": "1770539640000000000",
+      "source_ns": "1770539580000000000"
+    },
+    {
+      "commission": "3474.62217190 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260208-000100-001-000-542",
+        1770508860000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1770539640000000000",
+      "order_id": "O-20260208-083400-001-000-545",
+      "price": "70459.0",
+      "quantity": "89.662"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260208-000100-001-000-542",
+        1770508860000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1770539640000000000"
+    },
+    {
+      "account_ns": "1779033600000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260515-000100-001-000-618",
+        1778803260000000000
+      ],
+      "dd": "0.2649329250626129215710303995",
+      "event": "CLAIM",
+      "fill_epoch": 532,
+      "fraction": "0.5",
+      "held": "370.054",
+      "native_pnl": "-1398230.53629999",
+      "receipt_ns": "1779061320000000000",
+      "source_ns": "1779061260000000000",
+      "target": "185.027"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260515-000100-001-000-618",
+        1778803260000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "76750.6",
+      "order_id": "O-20260517-234200-001-000-621",
+      "quantity": "185.027",
+      "quote_ns": "1779061320000000000",
+      "receipt_ns": "1779061320000000000",
+      "source_ns": "1779061260000000000"
+    },
+    {
+      "commission": "7810.51329641 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260515-000100-001-000-618",
+        1778803260000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1779061320000000000",
+      "order_id": "O-20260517-234200-001-000-621",
+      "price": "76750.6",
+      "quantity": "185.027"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260515-000100-001-000-618",
+        1778803260000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1779061320000000000"
+    },
+    {
+      "account_ns": "1784160000000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260715-000100-001-000-664",
+        1784073660000000000
+      ],
+      "dd": "0.2503765987492660475136400348",
+      "event": "CLAIM",
+      "fill_epoch": 572,
+      "fraction": "0.5",
+      "held": "216.529",
+      "native_pnl": "-144814.5139",
+      "receipt_ns": "1784187600000000000",
+      "source_ns": "1784187540000000000",
+      "target": "108.265"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260715-000100-001-000-664",
+        1784073660000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "64231.5",
+      "order_id": "O-20260716-074000-001-000-667",
+      "quantity": "108.264",
+      "quote_ns": "1784187600000000000",
+      "receipt_ns": "1784187600000000000",
+      "source_ns": "1784187540000000000"
+    },
+    {
+      "commission": "3824.67751380 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260715-000100-001-000-664",
+        1784073660000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1784187600000000000",
+      "order_id": "O-20260716-074000-001-000-667",
+      "price": "64231.5",
+      "quantity": "108.264"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260715-000100-001-000-664",
+        1784073660000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1784187600000000000"
+    },
+    {
+      "account_ns": "1784534400000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260718-000100-001-000-676",
+        1784332860000000000
+      ],
+      "dd": "0.2554416413738700689976917776",
+      "event": "CLAIM",
+      "fill_epoch": 582,
+      "fraction": "0.5",
+      "held": "206.493",
+      "native_pnl": "-14289.32606509",
+      "receipt_ns": "1784536740000000000",
+      "source_ns": "1784536680000000000",
+      "target": "103.247"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260718-000100-001-000-676",
+        1784332860000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "63928.4",
+      "order_id": "O-20260720-083900-001-000-682",
+      "quantity": "103.246",
+      "quote_ns": "1784536740000000000",
+      "receipt_ns": "1784536740000000000",
+      "source_ns": "1784536680000000000"
+    },
+    {
+      "commission": "3630.19337252 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260718-000100-001-000-676",
+        1784332860000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1784536740000000000",
+      "order_id": "O-20260720-083900-001-000-682",
+      "price": "63928.4",
+      "quantity": "103.246"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260718-000100-001-000-676",
+        1784332860000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1784536740000000000"
+    },
+    {
+      "account_ns": "1785052800000000000",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260725-000200-001-000-686",
+        1784937720000000000
+      ],
+      "dd": "0.2500568743584981315127365669",
+      "event": "CLAIM",
+      "fill_epoch": 589,
+      "fraction": "0.5",
+      "held": "269.094",
+      "native_pnl": "-184194.88732073",
+      "receipt_ns": "1785079320000000000",
+      "source_ns": "1785079260000000000",
+      "target": "134.547"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260725-000200-001-000-686",
+        1784937720000000000
+      ],
+      "event": "SUBMIT",
+      "executable_price": "64745.2",
+      "order_id": "O-20260726-152200-001-000-691",
+      "quantity": "134.547",
+      "quote_ns": "1785079320000000000",
+      "receipt_ns": "1785079320000000000",
+      "source_ns": "1785079260000000000"
+    },
+    {
+      "commission": "4791.19983342 USDT",
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260725-000200-001-000-686",
+        1784937720000000000
+      ],
+      "event": "FILL",
+      "fill_ns": "1785079320000000000",
+      "order_id": "O-20260726-152200-001-000-691",
+      "price": "64745.2",
+      "quantity": "134.547"
+    },
+    {
+      "cycle": [
+        "BTCUSDT-PERP.P1SIM",
+        "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "O-20260725-000200-001-000-686",
+        1784937720000000000
+      ],
+      "event": "TERMINAL",
+      "reason": "FILLED",
+      "timestamp_ns": "1785079320000000000"
+    }
+  ],
+  "native_phase_curve": {
+    "maximum_loss_below_seed_amount": "2829.28062318",
+    "maximum_loss_below_seed_percent": "28.292806231800",
+    "minimum": {
+      "equity": "7170.71937682",
+      "timestamp_ns": "1727970240000000000"
+    },
+    "samples": 3153599,
+    "top3_distinct_excursions": [
+      {
+        "drawdown_amount": "3370231.34722551",
+        "drawdown_peak_percent": "58.77409504467889817197266501",
+        "peak": {
+          "equity": "5734212.23187448",
+          "timestamp_ns": "1778813640000000000"
+        },
+        "recovery": null,
+        "trough": {
+          "equity": "2363980.88464897",
+          "timestamp_ns": "1786450440000000000"
+        }
+      },
+      {
+        "drawdown_amount": "328058.95372153",
+        "drawdown_peak_percent": "55.28993927768639978317024965",
+        "peak": {
+          "equity": "593342.94449827",
+          "timestamp_ns": "1744333200000000000"
+        },
+        "recovery": {
+          "equity": "619131.45370523",
+          "timestamp_ns": "1756064220000000000"
+        },
+        "trough": {
+          "equity": "265283.99077674",
+          "timestamp_ns": "1749223020000000000"
+        }
+      },
+      {
+        "drawdown_amount": "6280.61694828",
+        "drawdown_peak_percent": "46.69139776514589974936824056",
+        "peak": {
+          "equity": "13451.3363251",
+          "timestamp_ns": "1726063200000000000"
+        },
+        "recovery": {
+          "equity": "13473.93911043",
+          "timestamp_ns": "1728638280000000000"
+        },
+        "trough": {
+          "equity": "7170.71937682",
+          "timestamp_ns": "1727970240000000000"
+        }
+      }
+    ]
+  },
+  "conditional_OHLC_bound": {
+    "actual_intrabar_path_proven": false,
+    "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+    "maximum": {
+      "drawdown_fraction": "0.6031991708026072060797779635",
+      "drawdown_peak_percent": "60.31991708026072060797779635",
+      "peak": {
+        "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+        "equity": "191622.19611982",
+        "timestamp_ns": "1735828380000000000"
+      },
+      "trough": {
+        "equity": "76035.84631297",
+        "timestamp_ns": "1735862460000000000"
+      }
+    },
+    "same_bar_extrema_order_assumed": false,
+    "samples": 1051200
+  },
+  "worst_settled_DD_periods": [
+    {
+      "drawdown_amount": "3370231.34722551",
+      "drawdown_peak_percent": "58.77409504467889817197266501",
+      "peak": {
+        "equity": "5734212.23187448",
+        "timestamp_ns": "1778813700000000000"
+      },
+      "recovery": null,
+      "trough": {
+        "equity": "2363980.88464897",
+        "timestamp_ns": "1786450500000000000"
+      }
+    },
+    {
+      "drawdown_amount": "328058.95372153",
+      "drawdown_peak_percent": "55.28993927768639978317024965",
+      "peak": {
+        "equity": "593342.94449827",
+        "timestamp_ns": "1744333260000000000"
+      },
+      "recovery": {
+        "equity": "619131.45370523",
+        "timestamp_ns": "1756064280000000000"
+      },
+      "trough": {
+        "equity": "265283.99077674",
+        "timestamp_ns": "1749223080000000000"
+      }
+    },
+    {
+      "drawdown_amount": "6255.95494428",
+      "drawdown_peak_percent": "46.59348096683015179714933556",
+      "peak": {
+        "equity": "13426.6743211",
+        "timestamp_ns": "1726273200000000000"
+      },
+      "recovery": {
+        "equity": "13439.35911043",
+        "timestamp_ns": "1728638280000000000"
+      },
+      "trough": {
+        "equity": "7170.71937682",
+        "timestamp_ns": "1727970300000000000"
+      }
+    }
+  ],
+  "fee_attribution": {
+    "audited_total": "710655.26790133",
+    "maker": {
+      "count": 135,
+      "fees": "105069.53920944",
+      "notional": "525347696.0472"
+    },
+    "native_total": "710655.26790133",
+    "reconciled": true,
+    "taker": {
+      "count": 486,
+      "fees": "605585.72869189",
+      "notional": "1101064961.2573"
+    },
+    "unknown": {
+      "count": 0,
+      "fees": "0",
+      "notional": "0"
+    }
+  },
+  "unit_exit_journal": "Started cm123-s0-manage-m1-20261022-r1.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1/launch.sh.\ncm123-s0-manage-m1-20261022-r1.service: Deactivated successfully.\ncm123-s0-manage-m1-20261022-r1.service: Consumed 20min 8.459s CPU time, 490.2M memory peak, 0B memory swap peak.\n",
+  "M2_preflight": {
+    "hash_checks": 87,
+    "result_absent": true,
+    "MemAvailable_bytes": 1054507008,
+    "disk_free_bytes": 3736408064,
+    "minimums_pass": true,
+    "no_dispatch": true
+  },
+  "no_relaunch": true,
+  "management_execution_qualification": {
+    "full_orders": 22,
+    "partial_canceled_orders": 4,
+    "partial_asset": "SOL",
+    "all_protective_native_fills": "TAKER",
+    "no_retry_per_frozen_rule": true
+  }
+}
