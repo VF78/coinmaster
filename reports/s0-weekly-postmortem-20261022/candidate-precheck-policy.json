@@ -1,0 +1,20 @@
+{
+  "status": "CANDIDATE_UNDER_REVIEW_NOT_RECOMMENDED_OR_OPTIMUM",
+  "frozen_policy": "Starting from archived original S0 only: after completed native entry and ordinary native priority eligibility, if settled portfolio moneyDD>=0.25 and side*(current_native_mark/current_native_average_open-1)<=-0.02, one fixed50% native remainder-target reduce-only IOC attempt per native position cycle. Level condition persists; no portfolio crossing predecessor. Same ruleBTC/SOL. No retry/fresh rights/new sizing formula.",
+  "thresholds_fixed_before_all_calendar_screen": {
+    "portfolio_DD_fraction": "0.25",
+    "own_adverse_price_fraction": "0.02",
+    "reduction_fraction": "0.50"
+  },
+  "stream_authorization": "Root authorized one saved-output37,417,891byte/1,051,199receipt read, nice19/lowRAM; zero native/replay/model/code/pilot actions.",
+  "stream_scope": "Original saved native receipt states only, first qualifying state per original native trade; recorded quantity/avg/mark/W/book, causal running price excursions, TPstage and descriptive original outcomes; no alternate equity/PnL.",
+  "native_runs_authorized": 0,
+  "candidate_execution_or_simulation_authorized": false,
+  "known_counterevidence": [
+    "At least5profitable originals among10already-stored first-DD25+adverse snapshots passing2%; incomplete subset only.",
+    "ADVERSE-50 earlierBTCfinite-contextproxy at1.9175212144% adverse/50% cut had negative optimistic dimensionless endpoint deltas in calibration andholdout. Different universe/predicate; no evidence2%is predictive.",
+    "EarlySOL1 ultimately profitable; price loss filter can cut recovery.",
+    "M1/M2IOC partial fills show desired50%target may not actually execute atlargerSOLsizes."
+  ],
+  "final_ONE_candidate_selection": "Await root weekly inventory; this price candidate may be rejected without a native run."
+}

@@ -1,0 +1,92 @@
+{
+  "status": "MECHANISM_DISTINCT_SPECIFICATION_CONDITIONAL_ECONOMIC_EDGE_UNKNOWN",
+  "scope": "Analysis only; minimal three reports, no source/native/stream/pilot",
+  "reviewed_sources": {
+    "weekly-inventory.md": "cd2cf79236f20b23d70ef93d5b5dd7187fd4f146338cd6562be671be91b2eaff",
+    "m1-m2-analysis.md": "9e564ea49c5af8f570df7262b950f28e16987b2daa737b9ddde6822168cc3310",
+    "candidate-precheck.md": "4178661d36c0ac86823437df35db5721a5441560d4d1b5ff547e2804292279e0"
+  },
+  "mechanism_difference": "Original policies permanently removed a percentage of remainder. Proposed policy caps only excess leg notional relative to contemporaneous settled portfolio equity and creates at most one actual-fill-backed same-cycle restoration credit. This changes exposure duration and amount, not an established positive edge.",
+  "recommendation": "May present as ONE concrete unimplemented hypothesis after specification freeze and saved-snapshot cap/cost summary. Do not admit native or claim superior expectation from current evidence.",
+  "critical_findings": [
+    "Early SOL1 cap at N/W14.3245 would trim about72.51%, stronger than50% M1. Restoration may or may not preserve its profitable rebound.",
+    "Restoration above actual cut VWAP for long/below for short locks adverse roundtrip price difference plus additional fees/spread; favorable breakout is not free recovery.",
+    "32 original first-hit snapshots can assess original-path cap selection and indicative immediate trim costs, but cannot prove first eligible cap event, restoration candle timing, actual fills or alternative capital path.",
+    "Uniform3.9375 gross leg N/W is a convention derived from half existing BTCshort multiplier; it does not equalize BTC/SOL risk, impose portfolio cap or promise DD50.",
+    "W and N must be positive settled source equity and same-source held mark notional; target is fixed absolute quantity at claim, not ongoing rebalance. Quote move/gap/partialIOC can leave actual N/W above cap.",
+    "Restoration credit must be actual filled trim quantity, one same native cycle, consumed by actual restoration fills; canceled/rejected/partial restore is one attempt, not repeated percentage clipping.",
+    "Original-plan-remaining must exclude later ordinary TP/exit fills and already used restore credit; protective BTC restoration earns no SOL rights, SOL restoration does not reset consumed add notional. No reentry after cycle flat or ordinary forced terminal exit.",
+    "Define actual cut price as volume-weighted confirmed trim fills, finalize trim attempt before evaluating candles, use only fully closed post-cut15m candles and strictly earlier closed candle high/low. Existing prior/busy qualifying candles cannot be retroactively executed."
+  ],
+  "preliminary_tests_missing": [
+    "Saved32 snapshot cap pass/skip counts by asset, original winners retained/affected, distribution of trim fraction and cap gross notional, partial-liquidity flags.",
+    "Separate assumed trim-only and trim-plus-restoration fee/notional/spread costs; missing funding signed amount stays UNKNOWN.",
+    "Restoration availability/first qualifying candle/wrong-way rebound tradeoff require already stored causal closed15m observations; absent these, explicitly UNKNOWN, not inferred from endpoint winners/extrema.",
+    "Before any separately approved native work, native fixture contract must prove cycle identity, fixed target/actual fill credit, once-only restore, closed-bar causality, ordinary-exit/unknownACK priority, no false rights or same-right refill, margin/minimum/rounding guards."
+  ],
+  "full_terminal_TOTAL": "UNKNOWN",
+  "full_settled_money_DD": "UNKNOWN",
+  "probability_of_90pct_net_retention": "UNKNOWN",
+  "alternative_if_restore_entitlement_cannot_be_defined": "Drop restoration and label one-shot equity-relative excess cap as an unproved risk-mechanism baseline; do not call it a solution. It is simpler but shares permanent-cut downside, so reject economic recommendation absent evidence.",
+  "new_runs": 0,
+  "appendices": [
+    {
+      "status": "CONCRETE_PROPOSAL_FOR_CONSENT_NOT_READY_NATIVE",
+      "reviewed_additional_sources": {
+        "candidate-precheck-temporary-cap.md": "ea80ec7e406c9f68ae42525d6c126ce14de151f68dbb3b573ca31cbbcb9c21bb",
+        "candidate-precheck-temporary-cap.json": "8a54dfbadf945b206f83de704c0c55e869c2fb9e1afce33d1aa8cb976f6b27f8"
+      },
+      "saved_snapshot_precheck": {
+        "rows": 32,
+        "selected": 20,
+        "BTC_selected": 17,
+        "SOL_selected": 3,
+        "original_winners_selected": 7,
+        "all_selected_SOL_original_winners": [
+          1,
+          3,
+          22
+        ],
+        "same_price_two_taker_fee_reference": "46382.2219023925554375",
+        "cost_reference_is_ceiling": false,
+        "cost_reference_is_lower_bound": false,
+        "early_SOL1_ideal_trim_fraction": "0.7251215363382381254388547872",
+        "SOL22_ideal_trim_qty": "2216.0911000746637579",
+        "native_actual_actions": "UNKNOWN_ELIGIBILITY_NOT_EXPORTED"
+      },
+      "root_spec_clarifications": [
+        "W=same finalized current nativeTOTAL equity; DD/global peak same original monetary receipt.",
+        "Absolute native cap quantity frozen at claim; trim one attempt, actual fills supply credit.",
+        "Restore at most actual trim credit, one attempt; cycle change or any ordinary/forced exit intent including partial TP/half exit invalidates credit.",
+        "Do not regenerate rights/reset consumedSOLnotional/change baseline price anchors or initial plan references.",
+        "Only fully closed post-cut15m close beyond actualtrimVWAP and breaking previousclosed15m high(long)/low(short); decision then next causalquote; pending original increase/exit blocked."
+      ],
+      "remaining_specification_gate": "Literal ANY ordinary exit intent may include pre-existing or routinely requeued passive BTC TP targets, immediately canceling restoration credit. Must explicitly state whether those invalidate credit, or only a new independent original exit decision after cut; any actual ordinary partial fill cancels. Without this distinction temporary BTC mechanism may collapse to permanent cap. No silent policy revision proposed.",
+      "verdict": "Concrete unimplemented risk-mechanism proposal may be presented for consent with this intent semantics explicit. It is not economically proven, not ready for native, and does not support50/90 expectations.",
+      "unknowns": [
+        "Causal15m restoration availability/timing/price and ordinaryexit ordering",
+        "Actual partialIOC trim/restoration quantity and cost",
+        "Changed later equity/quantities/triggers",
+        "Full TOTAL/settledDD/netprofit retention"
+      ],
+      "new_streams_source_reads_engine_runs": 0
+    },
+    {
+      "type": "ROOT_FINAL_SPEC_CLARIFICATION",
+      "status": "CONCRETE_CONSENT_PROPOSAL_NOT_READY_NATIVE",
+      "passive_TP_exception": "Existing/restored passive nonmarketable TP leaves and technical recreation do not cancel restoration credit.",
+      "credit_invalidators": "Any actual ordinary partial fill, new independent exit decision (regime/trail/timeout/forced with source after cut), new native cycle or flat invalidates credit.",
+      "ordering": "Marketable/queued/pending-unknown ordinary work has priority and blocks restore; late TP fill invalidates credit and updates actual quantity before any increase. No new PnL or rights.",
+      "specification_gate_resolved": true,
+      "economic_verdict_unchanged": "NOT_READY_NATIVE; restoration path/full TOTAL/settled DD/netprofit retention UNKNOWN.",
+      "future_focused_tests_required_not_run": [
+        "Passive nonmarketable TP recreation preserves credit.",
+        "Late actual TP partial fill invalidates credit before restore submit, with reconciled quantity.",
+        "New independent post-cut regime/trail/timeout/forced decision invalidates credit; queued/marketable/pendingunknown order blocks restore.",
+        "Cycle flat/reopen never inherits credit.",
+        "Trim/restore native partial/cancel/reject uses actual fill credit, one attempt, no extra rights/consumed-notional reset."
+      ],
+      "new_streams_source_code_engine_or_audits": 0
+    }
+  ]
+}

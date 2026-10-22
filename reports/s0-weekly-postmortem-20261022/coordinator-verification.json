@@ -1,0 +1,31 @@
+{
+  "status": "PASS_SAVED_OUTPUT_ARITHMETIC_AND_SCOPE",
+  "utc": "2026-10-22T18:26:25.468275+00:00",
+  "checks": {
+    "weekly_unique_78": true,
+    "inventory_csv_json_rows": true,
+    "settled_rows_complete": true,
+    "no_new_native": true,
+    "32_snapshots": true,
+    "selected20": true,
+    "asset_counts": true,
+    "selected7_original_winners": true,
+    "all_cap_decimal_formulas": true,
+    "fee_reference_sum": true,
+    "native_proposal_still_not_authorized": true
+  },
+  "original_snapshot_streams_added": 1,
+  "new_native_runs": 0,
+  "S0_engine_reruns": 0,
+  "pilot_changed": false,
+  "proposal_economic_value": "UNKNOWN_NOT_NATIVE_READY",
+  "file_sha256": {
+    "weekly-inventory.json": "0936215611e0f8d9e0dccfc6c4e3b28f0f334df324f4cae406b5b6ddd042ab34",
+    "weekly-inventory.csv": "b65a7a69c2d2ec555d83e1b1d429428e1d4af4fbd7ad9cb97371d44cf45f414b",
+    "m1-m2-analysis.json": "cb546580c7d15ddc2cf0c5f9fd384ccb58a7fc3723e3db79f44bf13907619f9b",
+    "candidate-precheck.json": "30fb7684d8d14eae2856d8c8ae5e578f5213c0aed6332f6aec5b0ac2a61c0f6e",
+    "candidate-precheck-temporary-cap.json": "8a54dfbadf945b206f83de704c0c55e869c2fb9e1afce33d1aa8cb976f6b27f8",
+    "candidate-precheck-temporary-cap.csv": "8c63f75b6490e6d1cbd9364ca6486975be48292bd64d3f90187c3ba98acbd06e",
+    "PROPOSAL.json": "3f5a8a0b9e2dec99f863f53b2162546e954836ab81f84b11143dca3daa330c1f"
+  }
+}

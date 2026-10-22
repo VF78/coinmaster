@@ -1,0 +1,52 @@
+{
+  "id": "TEMP_CAP_RESTORE_1",
+  "status": "CONCRETE_PROPOSAL_FOR_OWNER_CONSENT_NOT_READY_NATIVE",
+  "created_UTC": "2026-10-22T18:25:07.463276+00:00",
+  "parent_S0_TOTAL": "6077107.23887483",
+  "objective": {
+    "max_settled_DD_percent": "50",
+    "min_S0_net_profit_retention_percent": "90",
+    "minimum_TOTAL": "5470396.514987347"
+  },
+  "new_native_authorized": false,
+  "native_runs_added": 0,
+  "initial_BTC_signals_and_plan_sizing": "UNCHANGED",
+  "original_SOL_overlay": "UNCHANGED_except_management_cut_and_reserved_restore",
+  "trigger": {
+    "native_cycle": "instrument/native_position_id/opening_order_id/ts_opened",
+    "first_only": "First observed eligible completed-entry same-cycle event satisfying portfolio DD and adverse price; if below exposure cap skip rest of cycle",
+    "portfolio_settled_money_DD_at_least": ".25",
+    "own_native_mark_adverse_to_average_at_least": ".02",
+    "asset_native_mark_notional_divided_by_current_settled_equity_greater_than": "3.9375",
+    "cap_derivation": "Existing S0 maximum BTC multiplier7.875/2; fixed hypothesis, not estimated optimum",
+    "busy_or_forced_ordinary_exit": "Priority/block management; actual complete entry/ACK eligibility not certified by archived snapshots"
+  },
+  "cut": {
+    "target_notional": "3.9375 * current finalized native equity frozen at claim",
+    "target_quantity": "target_notional / native mark, future implementation uses native instrument precision and held-quantity limits",
+    "order": "Existing native reduce-only MARKET IOC executor; ONE attempt per cycle, fixed absolute target",
+    "partial": "Only actual filled quantity becomes restoration credit; canceled leaves not assumed filled, no repeated percentage cut",
+    "no_new_SOL_rights": true
+  },
+  "restore": {
+    "maximum_attempts_per_cycle": 1,
+    "quantity_cap": "At most actual protective filled quantity, existing original plan remaining entitlement and native margin; no synthetic funding/rights reset",
+    "cut_reference": "Actual completed protective attempt fill VWAP; no submitted target quantity credit",
+    "confirmation": "First fully closed post-cut15m candle with close beyond actual trimVWAP in original leg direction AND close above previous closed15m high (long) or below previous closed15m low (short)",
+    "timing": "Decision only after full candle closure; execute on next causal quote through existing native executor",
+    "cancel_credit": "Actual ordinary partial fill, NEW independent post-cut normal/forced exit decision, flat or changed cycle",
+    "passive_TP_exception": "Existing nonmarketable resting TP and technical recreation of same leaves do not cancel credit; marketable/queued/unknown ordinary states block restore; late ordinary fill invalidates credit before increase",
+    "partial_restore": "Actual fills only; unused canceled remainder not assumed filled or retried",
+    "anchors": "S0 initial plan/price references, parameters and consumed SOL notional remain original"
+  },
+  "anti_churn": "No timer, no continuous rebalance, max ONEcut plus ONErestore attempt per cycle; no restore after ordinary exit",
+  "risk_scope": "Common gross leg cap is not beta neutral, not equal asset risk and not a portfolio DD guarantee",
+  "precheck": "Only stored32 first-hit snapshots; selection20, BTC17/SOL3,7originalwinners; actual native actions UNKNOWN",
+  "economic_result": {
+    "TOTAL": "UNKNOWN_NOT_RUN",
+    "DD": "UNKNOWN_NOT_RUN",
+    "retention": "UNKNOWN_NOT_RUN",
+    "restore_paths_and_fill_costs": "NOT_YET_EVALUATED"
+  },
+  "next_consent_step": "Before any native admission: examine actual closed15m paths and next-quote prices for all selected opportunities, original exit interactions and post-restore relapse; then decide whether ONE full native comparison is justified. Do not use same-price fee arithmetic as payoff proof."
+}
