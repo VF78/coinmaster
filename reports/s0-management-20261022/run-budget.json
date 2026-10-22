@@ -3,7 +3,7 @@
   "authorized_by_owner": true,
   "maximum_full_native_attempts": 4,
   "consumed": 2,
-  "reserved_fresh_engine_confirmation": 1,
+  "reserved_fresh_engine_confirmation": 0,
   "s0_reruns": 0,
   "attempts": [
     {
@@ -39,7 +39,7 @@
       "ordinal": 2,
       "variant": "M2",
       "role": "SECOND_FIXED_INTENSITY",
-      "status": "RUNNING",
+      "status": "COMPLETE_VALIDATED_ECONOMIC_FAIL",
       "admitted_utc": "2026-10-22T17:08:55.592034+00:00",
       "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m2-20261022-r1",
       "fraction": "0.75",
@@ -52,10 +52,20 @@
       "main_pid": 1416481,
       "started_utc": "2026-10-22T17:09:47.327983+00:00",
       "launch_receipt": "m2-launch-receipt.json",
-      "source_checkpoint": "efa7c723d9f0c5c1bdc8f491abf12921ac41c275"
+      "source_checkpoint": "efa7c723d9f0c5c1bdc8f491abf12921ac41c275",
+      "observed_end_utc": "2026-10-22T17:31:40.386934+00:00",
+      "exec_main_status": 0,
+      "unit_result": "success",
+      "terminal_TOTAL": "2044863.63091774",
+      "settled_money_DD_percent": "70.64462755333227667738160314",
+      "retained_S0_net_profit_percent": "33.53927251984940738597509242",
+      "completion_receipt": "m2-completion.json",
+      "independent_validation": "economic-validation-m2.json",
+      "independent_checks_passed": 44,
+      "independent_fee_checks_passed": 9
     }
   ],
-  "rule_status": "M1_ECONOMIC_FAIL_M2_RUNNING_SOURCE_FROZEN",
+  "rule_status": "M1_FAIL_M2_FAIL_NO_QUALIFYING_CANDIDATE",
   "no_automatic_retries": true,
   "pilot_protected": true,
   "pre_native_screen_decision": "Reject DD-level>=25 predicate:33/57 hits<=1min;40of57 native intervals started withDD>=25. Fresh crossing after native eligibility chosen before any fullrun, no thresholdgrid.",
@@ -71,5 +81,8 @@
       "trim_fraction": "0.75"
     }
   ],
-  "policy_freeze_sha256": "b83fc202b7192a7e89c8322a74303cc1191c2912ebcba308d9ee1c7a571c5778"
+  "policy_freeze_sha256": "b83fc202b7192a7e89c8322a74303cc1191c2912ebcba308d9ee1c7a571c5778",
+  "unused_slots": 2,
+  "stop_reason": "Both frozen intensities fail DD<=50% and >=90% S0 net profit; no passing candidate for confirmation and no admitted optional execution correction.",
+  "status": "COMPLETE_VALID_NEGATIVE_STOP_2_OF_4"
 }

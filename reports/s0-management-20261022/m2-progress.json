@@ -1,0 +1,40 @@
+{
+  "utc": "2026-10-22T17:29:30.411689+00:00",
+  "unit": "MainPID=0\nResult=success\nExecMainStatus=0\nActiveState=inactive\nSubState=dead\n",
+  "native_child_pids": "1416490",
+  "cgroup_memory_events": "UNIT_EXITED_NO_OOM_OBSERVED",
+  "coarse_cursor": {
+    "record_count": 1261,
+    "last_native_funding_UTC": "2026-08-19T08:00:00+00:00",
+    "qualification": "COARSE_NOT_EXACT_PROGRESS"
+  },
+  "files": [
+    {
+      "name": ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.75-funding.sqlite.attempt-16562a882e85404b9fe4056b665e7640",
+      "bytes": 167936
+    },
+    {
+      "name": "minute-native-risk.csv.gz",
+      "bytes": 73037901
+    },
+    {
+      "name": "minute-native-settled-receipts.csv.gz",
+      "bytes": 36091545
+    },
+    {
+      "name": ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.75-funding.sqlite.attempt-16562a882e85404b9fe4056b665e7640-shm",
+      "bytes": 32768
+    },
+    {
+      "name": ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.75-funding.sqlite.attempt-16562a882e85404b9fe4056b665e7640-wal",
+      "bytes": 4120032
+    }
+  ],
+  "log_tail": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m2-20261022-r1/source/runtime/coinmaster/research/native_baseline.py:900: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.\n  engine.run(streaming=True)\n",
+  "wrapper_alive": false,
+  "native_alive": false,
+  "no_relaunch": true,
+  "final_status": "COMPLETED_EXIT0_SEALED",
+  "final_completion_report": "m2-completion.json",
+  "final_result_manifest_sha256": "c7745937e8af80ecdf21a1382cc2c7afee5bcc1ee9b3a283e867c84b0f2dd3ca"
+}

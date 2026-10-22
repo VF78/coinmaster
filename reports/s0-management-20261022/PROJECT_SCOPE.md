@@ -1,28 +1,35 @@
-# S0-MANAGE — одно изменение сопровождения, DD50 / netprofit90
+# S0-MANAGE — завершённый native-эксперимент, цель не достигнута
 
-Владелец согласовал выполнение 22.10.2026. Приоритет P0 исследовательской очереди. Это новый bounded native-пакет после завершённых #121/#122, а не возобновление моделей. [Единый принятый план](https://github.com/VF78/coinmaster/blob/66dacb18fe4cef4cdae263d21094a90a45c8a8bc/reports/s0-optimization-plan-20261022/PLAN.md).
+[Принятый общий план](https://github.com/VF78/coinmaster/blob/66dacb18fe4cef4cdae263d21094a90a45c8a8bc/reports/s0-optimization-plan-20261022/PLAN.md). Пакет проверяет **одно** изменение сопровождения S0. Закрытие означает выполнение ограниченного исследования; кандидата для экономической цели DD≤50% / netprofit≥90% не найдено.
 
-Неизменный точный S0: TOTAL6077107.23887483 USDT, seed10000, [2024-09-01,2026-09-01), source75ffc9c/frozen scientificc1d0c69; готовый control не пересчитывать. Приёмка: сопоставимый минутный DD<=50%, TOTAL>=5470396.514987347 (min cents5470396.52), затем maxTOTAL. BTC исходные сигналы/формула sizing и оригинальный SOL-overlay остаются контролем; последующие абсолютные количества естественно зависят от нового капитала. Только native Nautilus, одинаковые данные/fees/funding/margin/execution/observer; сохранить UNKNOWN/исторические ограничения. Пилот/production/services/orders/secrets не менять.
+Точный сохранённый S0: TOTAL **6 077 107,23887483 USDT**, [2024-09-01,2026-09-01), seed10000. Его BacktestEngine не пересчитывался. Требуемый TOTAL **≥5 470 396,514987347 USDT** (min cents5470396,52); затем maxTOTAL среди прошедших DD≤50%. Данные/fees/funding/margin/execution/observer одинаковые, RESERVE0. Начальные BTC-сигналы/правила sizing и исходный SOL-overlay сохранены; будущие фактические объёмы зависят от изменённого капитала.
 
-- [x] Saved actual decisions/D1/path states за все месяцы: наблюдаемая проблема, причины, прибыльные/обычные контрпримеры и доступные причинные признаки; без нового replay/AI.
-- [x] Зафиксировать ONE remainder-management predicate/action/repeat/TP precedence и два уровня интенсивности до полных запусков. Никаких date exclusions, posthoc trade deletion, нового matching/PnL/risk/recovery framework.
-- [x] Один владелец реализации, focused native tests и независимый адресный review ордеров/денег; source/input/config pins и безопасный isolated resource preflight.
-- [ ] Полные nativeM1/M2; optional M+execution только при доказанном дефекте/прошедшемM; fresh-engine повтор победителя. **Максимум4 полных попытки всего**, включая повтор; S0непересчитывать; без автоматических retry/grid. Каждый запуск в run-budget.json до старта, отдельные engine/funding journal.
-- [ ] Итог S0/M1/M2/(optional)/repeat: TOTAL/ROI/netprofitretention, money-DD + отдельная OHLC квалификация, maker/taker fees/notional/funding, BTC/SOL fills/exposure, DDпериоды, причина эффекта, JSON/CSV. Отрицательный результат сохраняется без расширения поиска.
-- [ ] Опубликованные source/results/checkpoint и read-back Project. Для прошедшего варианта freeze и план genuinely subsequent data; deployment и пилот не входят.
+- [x] Saved decisions/D1/path states за все24 месяца, прибыльные и убыточные контрпримеры; без AI/control rerun.
+- [x] До запусков зафиксировано одно правило и два уровня интенсивности; policy-freeze.json, source/input/config/command pins.
+- [x] Реализация одним владельцем, **100 focused tests PASS**, независимый scoped review GO после одного P1 исправления приоритета выходов.
+- [x] Последовательные полные nativeM1/M2 с отдельными engine/account/funding journals; **2/4** попытки использованы, автоматических retry/grid нет.
+- [x] Проверка покрытия, terminal cash/flat, минутной DD, native fees/fills/ордеров и post-run hashes; независимая сверка saved outputs. Signed funding UNKNOWN сохранён.
+- [x] JSON/CSV с TOTAL/ROI/netprofitretention/DD/fees/notional/funding/fills, месячными состояниями и фактическими сокращениями; причины эффекта описаны.
+- [x] Fresh-engine повтор и optional execution-вариант **не допущены**: ни один M не прошёл оба порога, доказанного нового дефекта исполнения нет. Оставшиеся2 слота не используются.
 
-Зависимости: сохранённый exactS0 и native/data/D1 артефакты доступны после проверенной очистки; завершённые AIгипотезы не являются пререквизитом. Сначала протокол/пины/тесты/review, затем последовательные прогоны. AIмодели/широкая оптимизация/второйvenue/GUI/live не входят. Старые #121/#122 сохраняют Done.
+## Фиксированное правило
 
-## Правило зафиксировано до прогонов
+Два последовательных пригодных settled money наблюдения одного native-цикла: DD ранее<25%, теперь≥25%, текущая позиция имеет отрицательный native UPnL. M1 запрашивает сокращение50% остатка, M2 —75%. Один fixed target/native reduce-only MARKET IOC child на цикл, фактические fills; частично исполненные отменённые остатки не повторяются. Native TP/forced/ordinary exits имеют приоритет. Защитное исполнение не даёт фиктивного BTC-TP/SOL-права. Eligibility gaps сбрасывают predecessor; первое наблюдение только задаёт его. Нет date-exclusions/ML/cooldown/reset peak/нового исполнительного или PnL-контура.
 
-Два последовательных пригодных settled money наблюдения одного nativeцикла: DD ранее<25%, теперь>=25%, текущая nativeпозиция убыточна. Первое пригодное наблюдение только задаёт predecessor; потеря пригодности его очищает; пересечение во время pendingincrease/старшегоexit пропускается. Одинаковое правило BTC/SOL; M1 сокращает50% остатка,M2 75%. Один claim/цикл, один IOCchild; TP/forcedexit имеют явно описанный приоритет, нет новых SOLправ от защитного fill. Открытие при ужеDD>=25 не даёт немедленного сокращения. Нет cooldown/новогоpeak/ML/дат-исключений.
+До кода level-predicate отвергнут за33/57 срабатываний в первую минуту; выбран fresh crossing (18 архивных интервалов,0 в первую минуту). Это диагностика возможностей, не обещание доходности.
 
-Saved-precheck: levelpredicate отвергнут до кода за33/57hits в1минуту; freshcross18интервалов (BTC15/SOL3),0впервуюминуту,6прибыльныхконтрпримеров. Pending/ordinaryeligibility встаромвыгрузе UNKNOWN. СамаяранняяSOL1 не имеет прямого freshcross; улучшениеTOTAL/DDнепредполагается, проверяетсяполнойтраекторией. Пины policy-freeze.json; fullnative2/4: M1 complete, M2 running.
+## Фактические результаты
 
-## Текущий checkpoint — M1 завершён, M2 работает / budget 2 of 4
+|Вариант|TOTAL USDT|ROI|Сохранено чистой прибыли S0|Settled minute DD|Native fees USDT|
+|---|---:|---:|---:|---:|---:|
+|Saved S0|6 077 107,24|+60 671,07%|100%|66,26%|945 927,74|
+|M1 /50%|2 615 745,21|+26 057,45%|42,95%|58,77%|710 655,27|
+|M2 /75%|2 044 863,63|+20 348,64%|33,54%|70,64%|614 360,75|
 
-Source [efa7c723](https://github.com/VF78/coinmaster/commit/efa7c723d9f0c5c1bdc8f491abf12921ac41c275) опубликован и GitHub ref проверен. 100 focused tests PASS / 13.09s, independent review GO; единственный P1 исправлен до запусков. 77 исходных файлов в изолированной job, 13 входных артефактов S0, отдельные engine/account/funding journals, RAM650MiB / no swap / one thread / private network.
+**Оба M отклонены; целевого победителя нет.** M1 уменьшает раннюю DD, но теряет рост капитала и получает худшую DD позднее. M2 увеличивает даже раннюю DD; ранний SOL1 остаётся без защитного claim. Изменения затрагивают также исходно прибыльные эпизоды. Комиссии ниже, но результат падает сильнее; точный изолированный causal PnL отдельных сокращений не выводился.
 
-M1 (50%) завершён штатно 22.10.2026 17:07:06 UTC: exit0, полный период, source/input 87 checks PASS, terminal flat, liquidation0. TOTAL **2 615 745,21476479 USDT**, settled minute DD **58,774095%**, retention S0 net profit **42,948725%**: оба экономических критерия FAIL. 26 защитных заявок BTC20/SOL6: 22 полностью FILLED, 4 SOL частично исполнены и CANCELED согласно зафиксированному IOC. 621 fills, fees710655,26790133; signed funding UNKNOWN. Независимая проверка saved outputs: 17 основных и9 комиссионных checks PASS; финальный cash endpoint учтён, DD не меняется.
+Оба native-процесса exit0,1 051 200 минут/source,1 051 199 settled receipts,87 source/input postchecks PASS, terminal flat, liquidation0. M1:26 protective fills BTC20/SOL6 (22 full+4 partial CANCELED),621 total fills. M2:25 protective fills BTC19/SOL6 (22 full+3 partial CANCELED),610 total fills. Исполнения не называются количеством полных сделок.
 
-M2 (75%) запущен один раз 22.10.2026 **17:09:47 UTC**, unit `cm123-s0-manage-m2-20261022-r1.service`, MainPID1416481. Тот же frozen source/правило/данные, параметры после M1 не менялись. Результат ожидается; автоматических повторов/третьих вариантов нет. Бюджет **2/4**, fresh-engine confirmation только для прошедшего оба критерия кандидата. S0 не пересчитывался, пилот/production не менялись. Полные пины и квитанции: run-budget.json, m1-completion.json, m2-launch-receipt.json.
+Источник: [efa7c723](https://github.com/VF78/coinmaster/commit/efa7c723d9f0c5c1bdc8f491abf12921ac41c275). [Отчёт и JSON/CSV](https://github.com/VF78/coinmaster/tree/codex/btc-pattern-pilot-m2-20261021/reports/s0-management-20261022). Exact manifests/launch/completion/economic-validation и run-budget.json сохранены. GitHub CI для source отсутствует (0 check/0 Actions); локальные tests и native validation указаны отдельно.
+
+Пилот/production не изменялись, PID2009732 сохранялся; deployment/restart/внешние ордера0. Native Nautilus — единственный движок. Сохраняется исторический NOT_FAITHFUL_DIAGNOSTIC; OHLC conditional bound — отдельная оценка, не tick-path proof. Signed funding и per-asset realized PnL остаются UNKNOWN. #121/#122 сохраняют Done. Новые гипотезы/прогоны/AI/GUI/live не входят в этот завершённый пакет.

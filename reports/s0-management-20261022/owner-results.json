@@ -1,0 +1,306 @@
+{
+  "status": "COMPLETED_TARGET_NOT_MET_ROOT_STOP_2_OF_4",
+  "S0": {
+    "terminal_total": "6077107.23887483",
+    "settled_money_DD_percent": "66.25691486468686414439256686",
+    "reused_not_rerun": true
+  },
+  "M1": {
+    "terminal_total": "2615745.21476479",
+    "settled_money_DD_percent": "58.77409504467889817197266501",
+    "retained_S0_net_profit_fraction": "0.4294872518600868131639311323",
+    "acceptance": {
+      "DD_le50": false,
+      "net_profit_ge90pct_S0": false,
+      "both": false
+    },
+    "management_counts": {
+      "CLAIM": 26,
+      "SUBMIT": 26,
+      "FILL": 26,
+      "TERMINAL": 26
+    },
+    "management_claims_by_instrument": {
+      "BTCUSDT-PERP.P1SIM": 20,
+      "SOLUSDT-PERP.P1SIM": 6
+    },
+    "native_fees": "710655.26790133",
+    "fills": 621,
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 896,
+        "SOLUSDT-PERP.P1SIM": 409
+      },
+      "count": 1305,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "terminal_open_positions": 0,
+    "liquidation_count": 0,
+    "management_execution_qualification": {
+      "full_orders": 22,
+      "partial_canceled_orders": 4,
+      "partial_asset": "SOL",
+      "all_protective_native_fills": "TAKER",
+      "no_retry_per_frozen_rule": true
+    },
+    "independent_validation": "44+9 checks PASS; checkpoint bb5be5a",
+    "fill_record_count_changes": {
+      "BTC_ENTRY": {
+        "S0": 210,
+        "M1": 210
+      },
+      "BTC_REDUCE": {
+        "S0": 155,
+        "M1": 152
+      },
+      "SOL_ADD": {
+        "S0": 102,
+        "M1": 92
+      },
+      "qualification": "Native fill records, not independent trades"
+    }
+  },
+  "M2": {
+    "terminal_total": "2044863.63091774",
+    "settled_money_DD_percent": "70.64462755333227667738160314",
+    "retained_S0_net_profit_fraction": "0.3353927251984940738597509242",
+    "acceptance": {
+      "DD_le50": false,
+      "net_profit_ge90pct_S0": false,
+      "both": false
+    },
+    "management_counts": {
+      "CLAIM": 25,
+      "SUBMIT": 25,
+      "FILL": 25,
+      "TERMINAL": 25
+    },
+    "management_claims_by_instrument": {
+      "BTCUSDT-PERP.P1SIM": 19,
+      "SOLUSDT-PERP.P1SIM": 6
+    },
+    "management_terminal_reasons": {
+      "FILLED": 22,
+      "CANCELED": 3
+    },
+    "management_order_native_statuses": {
+      "FILLED": 22,
+      "CANCELED": 3
+    },
+    "management_execution_qualification": {
+      "full_orders": 22,
+      "partial_orders": 3,
+      "per_order_actual_fill": [
+        {
+          "order_id": "O-20240916-143500-001-000-11",
+          "requested_quantity": "0.914",
+          "actual_filled_quantity": "0.914",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20241003-014700-001-000-29",
+          "requested_quantity": "0.517",
+          "actual_filled_quantity": "0.517",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20241122-031900-001-000-66",
+          "requested_quantity": "750.0",
+          "actual_filled_quantity": "750.0",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20241220-121200-001-000-85",
+          "requested_quantity": "1.654",
+          "actual_filled_quantity": "1.654",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250113-115100-001-000-129",
+          "requested_quantity": "3000.0",
+          "actual_filled_quantity": "1000.0",
+          "fully_filled": false,
+          "partial_filled": true
+        },
+        {
+          "order_id": "O-20250202-172600-001-000-151",
+          "requested_quantity": "6.511",
+          "actual_filled_quantity": "6.511",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250204-050700-001-000-162",
+          "requested_quantity": "10.980",
+          "actual_filled_quantity": "10.980",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250207-134200-001-000-170",
+          "requested_quantity": "8.172",
+          "actual_filled_quantity": "8.172",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250221-153500-001-000-178",
+          "requested_quantity": "8.202",
+          "actual_filled_quantity": "8.202",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250411-174200-001-000-258",
+          "requested_quantity": "24.832",
+          "actual_filled_quantity": "24.832",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250413-020800-001-000-265",
+          "requested_quantity": "21.661",
+          "actual_filled_quantity": "21.661",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250525-222800-001-000-311",
+          "requested_quantity": "750.0",
+          "actual_filled_quantity": "750.0",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20250813-030300-001-000-382",
+          "requested_quantity": "4500.0",
+          "actual_filled_quantity": "1000.0",
+          "fully_filled": false,
+          "partial_filled": true
+        },
+        {
+          "order_id": "O-20250918-014800-001-000-443",
+          "requested_quantity": "9750.0",
+          "actual_filled_quantity": "1000.0",
+          "fully_filled": false,
+          "partial_filled": true
+        },
+        {
+          "order_id": "O-20251026-113700-001-000-493",
+          "requested_quantity": "48.407",
+          "actual_filled_quantity": "48.407",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20251126-174400-001-000-513",
+          "requested_quantity": "112.458",
+          "actual_filled_quantity": "112.458",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260123-173100-001-000-533",
+          "requested_quantity": "61.494",
+          "actual_filled_quantity": "61.494",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260208-082400-001-000-538",
+          "requested_quantity": "129.126",
+          "actual_filled_quantity": "129.126",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260215-040900-001-000-546",
+          "requested_quantity": "70.119",
+          "actual_filled_quantity": "70.119",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260227-040500-001-000-551",
+          "requested_quantity": "127.884",
+          "actual_filled_quantity": "127.884",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260305-075300-001-000-556",
+          "requested_quantity": "85.781",
+          "actual_filled_quantity": "85.781",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260517-234200-001-000-618",
+          "requested_quantity": "215.294",
+          "actual_filled_quantity": "215.294",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260714-222200-001-000-645",
+          "requested_quantity": "191.888",
+          "actual_filled_quantity": "191.888",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260720-185900-001-000-665",
+          "requested_quantity": "750.0",
+          "actual_filled_quantity": "750.0",
+          "fully_filled": true,
+          "partial_filled": false
+        },
+        {
+          "order_id": "O-20260726-120800-001-000-680",
+          "requested_quantity": "185.032",
+          "actual_filled_quantity": "185.032",
+          "fully_filled": true,
+          "partial_filled": false
+        }
+      ],
+      "no_retry_per_frozen_rule": true
+    },
+    "native_fees": "614360.75019949",
+    "fills": 610,
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 890,
+        "SOLUSDT-PERP.P1SIM": 379
+      },
+      "count": 1269,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "terminal_open_positions": 0,
+    "liquidation_count": 0,
+    "result_manifest_sha256": "c7745937e8af80ecdf21a1382cc2c7afee5bcc1ee9b3a283e867c84b0f2dd3ca",
+    "native_fill_record_actions": {
+      "BTC_ENTRY": 210,
+      "BTC_REDUCE": 150,
+      "PROTECTIVE_REDUCTION": 25,
+      "FORCED_CLOSE": 133,
+      "SOL_ADD": 89,
+      "SOL_HALF_EXIT": 1,
+      "SOL_EXIT": 1,
+      "TERMINAL_CLOSE": 1
+    },
+    "independent_validation": "PENDING_STATS_OWNER_SAVED_OUTPUT_PASS_ONLY"
+  },
+  "native_attempts_reserved": 2,
+  "max_attempts": 4,
+  "slots3_4": "UNUSED_ROOT_STOP_NO_THIRD_OR_REPEAT",
+  "policy_unchanged": true,
+  "protected_scope": "Pilot/services/deployment/realorders/secrets untouched",
+  "native_attempts_completed": 2,
+  "root_budget_authority": "run-budget.json (root-owned; owner does not edit)",
+  "candidate_admitted": false,
+  "owner_runtime_guard_qualification": "Only comparable owner observation is protected pilot PID2009732 present before/after, and no production action by owner. No owner-captured 15-unit/3-container baseline; no full-runtime identity claim."
+}

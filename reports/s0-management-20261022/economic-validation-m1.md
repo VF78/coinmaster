@@ -37,3 +37,21 @@ Native per-asset facts (actual saved fill rows; realized per-asset PnL remainsUN
 The report-only validator is reusable for sealed M2 with the same receipt/fee/source fields. No M2 interim result was read and no second S0 stream is needed.
 
 Monthly CSV also includes actual native UTC fill-month fees byBTC/SOL and fill-action counts. This timestamp basis differs from source-quote receipt calendar; the final2026-09-01 boundary fill cost is stored separately inJSON, never folded intoAugust receiptreturn. Signed funding and per-asset realizedPnL remainUNKNOWN.
+
+Worst-period shortlist (native settled scalars; primary independently restreamed):
+
+|Rank|Peak receipt UTC|Trough receipt UTC|DD%|
+|---|---|---|---:|
+|1|2026-05-15T02:55:00+00:00|2026-08-11T12:15:00+00:00|58.77409504467889817197266501|
+|2|2025-04-11T01:01:00+00:00|2025-06-06T15:18:00+00:00|55.28993927768639978317024965|
+|3|2024-09-14T00:20:00+00:00|2024-10-03T15:45:00+00:00|46.59348096683015179714933556|
+
+For the worst late drawdown, July2026 has35,009BTC-only /1,440SOL-only /8,191flat receipt samples; August29,644BTC-only /1,440SOL-only /13,556flat. Gross native notional/equity sample mean is2.874x/2.752x, max6.580x/8.419x. These are complete monthly exposure contexts, not exact excursion-only or trough exposure. Exact M1 trough positions were not retained by the first validator and remainUNKNOWN; no extra receipt scan was performed.
+
+Exposure context for the shortlist, using whole UTC calendar months touching each peak→trough (includes samples outside precise excursion endpoints; no extra scan):
+
+|DD rank|Whole months|BTC-only samples|SOL-only|BTC+SOL|Flat|Mean gross notional/W|Max|
+|---|---|---:|---:|---:|---:|---:|---:|
+|1|2026-05..2026-08|82198|23043|0|71879|1.858x|8.419x|
+|2|2025-04..2025-06|42320|34913|25516|28291|2.746x|9.952x|
+|3|2024-09..2024-10|35476|1440|2880|48043|2.139x|15.091x|

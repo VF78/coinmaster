@@ -1,0 +1,27 @@
+{
+  "status": "OWNER_FILES_FINALIZED_ROOT_STOP_2_OF_4",
+  "native_attempts_completed": 2,
+  "no_candidate_admitted": true,
+  "source_unchanged_since_review": true,
+  "independent_M2_saved_output_validation": "Root/stats-owned pending; no further native attempt",
+  "files": {
+    "owner-evidence.md": "cbbf5abbea96d64c394cf473c5a56ed1ab6b88955ced8fb72fff65106174ecb1",
+    "owner-evidence.json": "cd6f18f3dd1d187ea1d9195a8a7547b164bae732f0c3a0de296571d5984e99e3",
+    "owner-protocol.md": "91c876270cec8d71b05ce6d2e3ee5dced154ce1c659670d88c4c0d1139d4fe1d",
+    "owner-summary.md": "b9b06d58be51dd690bcff693da8767210649381f7fafac0b0ecc447ad3e5e3a5",
+    "owner-results.json": "6c3c388a03d05ee2c61c2145a899f68488663a73bad3c689287bb43af3e6bbdf",
+    "owner-source-freeze.json": "340e3ad472033e1cc415a680af5fffd3804c2245d53b14c17d2d86068f6925fe",
+    "owner-source-freeze.patch": "10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968",
+    "owner-source-transfer.json": "074e3cf14b122670a0d18302bffd6990c787389a5f15b89e1ced53a4ea5791ae",
+    "owner-run-freeze.json": "100031000045823079502362b6bb7a12cff7731097c9eec0e463f9f4eb06b8ef",
+    "owner-prelaunch-verified.json": "ce6eee22cc818256227dc5fa1f3a570e5ee1228b394773fc8f524f1291e476de",
+    "m1-launch-receipt.json": "22f8dece4bd0e461d6eb0da6b3c6e667dc6bfb859f7445cce344099234d02ac7",
+    "m1-completion.json": "9d1f8e9804f4990ac51373ad804051a4fda38273ac30d4b7ec9d367029f6f125",
+    "m1-summary.md": "48cdf9e40ec81592965503707cf29059c01211a20fb6f15912b71801869f4fa0",
+    "m1-progress.json": "0ab06154d9864b4c1c6cfc9d2e8c066f9e6abfffe1344591a23d25efd0434738",
+    "m2-launch-receipt.json": "a439461c58c27e85522b018df089d03c6f3facd2ab6d507f0d403059b2a963a0",
+    "m2-completion.json": "24ba1b88922851c0f35012a57b607fb25b5da40c9a4e0601e796ec6ec8d9afc6",
+    "m2-summary.md": "f0c3862883b3c1c850e519763367185e32867930bb79a75b81f2e0926c53bf11",
+    "m2-progress.json": "0aef5b2482cbe232bbd35878d623d021d7077219fead882b27de0b6884297a1e"
+  }
+}

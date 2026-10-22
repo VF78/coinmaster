@@ -1,5 +1,5 @@
 {
-  "status": "FOCUSED_IMPLEMENTATION_REVIEW_GO_READY_FOR_ROOT_RUN_RESERVATION",
+  "status": "COMPLETED_TARGET_NOT_MET_ROOT_STOP_2_OF_4",
   "canonical_development_path": "/root/.openclaw/workspace/coinmaster/coinmaster",
   "canonical_HEAD": "0bd7351897a9854c144817fdfca6c548e7984673",
   "canonical_dirty_state": "Expected intentional ML artifact deletions and preexisting untracked research files; no strategy edits during inspection",
@@ -43,7 +43,7 @@
     "memory_limit_MiB": 650,
     "swap_limit": 0
   },
-  "native_run_count_this_task": 0,
+  "native_run_count_this_task": 2,
   "saved_control": {
     "terminal_total": "6077107.23887483",
     "settled_receipt_DD_percent": "66.25691486468686414439256686",
@@ -115,5 +115,9 @@
   "run_preparation": "owner-run-freeze.json; r1 only, initial stale names never launch",
   "review_patch_sha256": "10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968",
   "review": "review.json/GO",
-  "source_publication": "owner-source-transfer.json; exact five files transferred to existing Mac branch"
+  "source_publication": "owner-source-transfer.json; exact five files transferred to existing Mac branch",
+  "actual_results": "owner-results.json",
+  "native_attempts_completed": 2,
+  "summary": "owner-summary.md",
+  "runtime_guard_qualification": "Only comparable owner observation is protected pilot PID2009732 present before/after, and no production action by owner. No owner-captured 15-unit/3-container baseline; no full-runtime identity claim."
 }

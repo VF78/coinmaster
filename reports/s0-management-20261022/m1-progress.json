@@ -1,0 +1,47 @@
+{
+  "utc": "2026-10-22T17:07:06.095912+00:00",
+  "unit": "MainPID=0\nResult=success\nExecMainStatus=0\nActiveState=inactive\nSubState=dead\n",
+  "cgroup_memory_events": "UNIT_EXITED_NO_OOM_OBSERVED",
+  "coarse_cursor": null,
+  "files": [
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5.json",
+      "bytes": 1443153
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-funding.sqlite",
+      "bytes": 237568
+    },
+    {
+      "name": "minute-native-risk.csv.gz",
+      "bytes": 74964539
+    },
+    {
+      "name": "minute-native-settled-receipts.csv.gz",
+      "bytes": 37035291
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-raw-native.json",
+      "bytes": 2174287
+    },
+    {
+      "name": "minute-risk-summary.json",
+      "bytes": 14365
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-orders.csv",
+      "bytes": 272061
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5-fills.csv",
+      "bytes": 245747
+    }
+  ],
+  "log_tail": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1/source/runtime/coinmaster/research/native_baseline.py:900: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.\n  engine.run(streaming=True)\n/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1/source/runtime/coinmaster/research/native_baseline.py:933: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.\n  engine.end()\n{\"artifact\": \"/var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-s0-manage-0.5.json\", \"artifact_sha256\": \"764f3f0e853609823735198fe8af15601a7e5beae66710f3a87edffc0c45047e\", \"status\": \"COMPLETED\"}\n",
+  "wrapper_alive": false,
+  "native_alive": false,
+  "no_relaunch": true,
+  "final_status": "COMPLETED_EXIT0_SEALED",
+  "final_completion_report": "m1-completion.json",
+  "final_result_manifest_sha256": "4c9e0c40ab6ce6666bc076e312a3b3e8635300f6f5649decf3a2ced8d6fba77a"
+}
