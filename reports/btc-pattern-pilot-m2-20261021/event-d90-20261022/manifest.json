@@ -1,0 +1,26 @@
+{
+  "status": "COMPLETE_VALID_NEGATIVE_ONE_APPROVED_EVALUATION",
+  "source_checkpoint": "ed943a8c4ec5accf78430d016a3397feebbb61a9",
+  "artifacts": {
+    "ATTEMPT.json": "60c1a39e90a77e3e6fa63801624569bd681b7d340e2c9fac9b5f94e81d5763c0",
+    "COMPLETION_RECEIPT.json": "a102db2a59433a2a5506fad37b8b12c046fd6509b8630a811d46df530977e0fe",
+    "IMPLEMENTATION.md": "30dc6dc5ab6072e7af4cd7d2e32cc7d5d94ce0263dffbb42c0ee5b7be47ffdd0",
+    "PREFLIGHT.json": "81d296241eee8728fb09c2cdf6d63e4af995dab3853ab677330b8d662e4f90f8",
+    "PROTOCOL.json": "20ff0db98c7b3eaa2a3f9dc0bff66266157b338c10d561a7f5329fac31643973",
+    "REPORT.md": "7c069595f7e97411b2ca5f09e9ab57c107d6729427161a3fac06dc86b1365ab1",
+    "RESULTS.json": "136ec6bec0be89b07f28168f5a654200412bd80ac414236f8911c513f8b365c3",
+    "ROOT_GO.json": "4e9fccb9f672f729d3c63a30fdb28d3dcf678de032cdab7e7abf30dafe11579f",
+    "TEST_RECEIPT.json": "87554f875700e1ceab6600ac610f480489bc3fd035d658e9d6859cab9203d794",
+    "accuracy.csv": "0cbd84553750287e6ad88a65a6e5ed04bae4ac8d0af908cf437cca0d77fdec23",
+    "case_arm_forecasts.csv": "c55a533b1fe742415428171ab6878bc06a3f32bad0b1df170739a1585ccfa908",
+    "catalogue.json": "5cf375c5fa0700465e7474db51d96736d1699b69c2c3eb96f9fcf3886ac54adb",
+    "coordinator-result-verification.json": "87ed8208d276ec05ed377b8679c1837125838e4ec2bf6ddefb43bf5d7fdfc45b",
+    "initial-PREFLIGHT.json": "93317f0e2ae7dab773e9ffbb43ae67d28638746dcf9d145783a2146cd1b89026",
+    "initial-catalogue.json": "5cf375c5fa0700465e7474db51d96736d1699b69c2c3eb96f9fcf3886ac54adb",
+    "labels.json": "86e1ed8ab67f0877acddf0748df3560d5add132dd762afe816d3b8b5f8d8c1f9",
+    "launch-command.txt": "b85eff65948cc0d8ad8e2aaf5f969f67b1628b2a8f6eeb9e27b4c190e33dba49",
+    "project-final-readback.json": "fdaff8c7ef6dd156aefbc18cdf0c3c4d7fb90cf0d4d6bbfcd67d7ad23d0db505",
+    "project-start-readback.json": "944814cf43242250ef274855e15bedc40d5fb44068d9caccc16733f5112e9ecb",
+    "review-preflight.json": "6ae9ab6fca945ea4114d9ec2a3e23bfbc9654f0f71b42891adb499bea640a9aa"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-22T12:16:41.126253+00:00",
+  "status": "PASS_SAVED_RESULT_QA",
+  "original_query_ids": 198,
+  "truth_exact_all": true,
+  "same_pool_all_arms_all_queries": true,
+  "loss_recalculated_casewise_all": true,
+  "ordered_quantiles_nested_SL_all": true,
+  "causal_D1_time_and_support_all": true,
+  "pins_verified": 9,
+  "case_rows": 594,
+  "accuracy_rows": 54,
+  "metrics": {
+    "prior": {
+      "TP": 0.25334155308472095,
+      "SL": 0.2078605869098109
+    },
+    "phase": {
+      "TP": 0.25748141902314414,
+      "SL": 0.20942553717259507
+    },
+    "daily90": {
+      "TP": 0.2564488145991976,
+      "SL": 0.2107361145042432
+    }
+  },
+  "daily90_relative_error_increase_percent": {
+    "TP": 1.2265108019755333,
+    "SL": 1.3833924156482658
+  },
+  "RESULTS_sha256": "136ec6bec0be89b07f28168f5a654200412bd80ac414236f8911c513f8b365c3",
+  "new_forecasts_or_reruns": 0
+}
