@@ -1,0 +1,57 @@
+{
+  "status": "INAPP_FORECASTS_RUNNING",
+  "approved_at": "2026-10-22T07:37:58.433524+00:00",
+  "owner_approval": "GPT-6.1 Sol/high,24windows,max60responses,fullhistory,pilotuntouched",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "max_forecast_responses": 60,
+  "used": 3,
+  "attempts": [
+    {
+      "phase": "debug",
+      "slot": 1,
+      "window_id": "8f27b5ff09389ab0",
+      "arm": "C",
+      "task_name": "inapp_d01_c",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "status": "RESERVED",
+      "reserved_at": "2026-10-22T07:48:48.309721+00:00",
+      "packet": "/private/tmp/cm-inapp-forecast-20261022/8f27b5ff09389ab0C/packet.json",
+      "chart": null,
+      "response": "/private/tmp/cm-inapp-forecast-20261022/8f27b5ff09389ab0C/response.json"
+    },
+    {
+      "phase": "debug",
+      "slot": 1,
+      "window_id": "8f27b5ff09389ab0",
+      "arm": "P",
+      "task_name": "inapp_d01_p",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "status": "RESERVED",
+      "reserved_at": "2026-10-22T07:48:48.309977+00:00",
+      "packet": "/private/tmp/cm-inapp-forecast-20261022/8f27b5ff09389ab0P/packet.json",
+      "chart": "/private/tmp/cm-inapp-forecast-20261022/8f27b5ff09389ab0P/chart.png",
+      "response": "/private/tmp/cm-inapp-forecast-20261022/8f27b5ff09389ab0P/response.json"
+    },
+    {
+      "phase": "debug",
+      "slot": 2,
+      "window_id": "f5c745d3e2682d10",
+      "arm": "C",
+      "task_name": "inapp_d02_c",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "status": "RESERVED",
+      "reserved_at": "2026-10-22T07:48:48.310071+00:00",
+      "packet": "/private/tmp/cm-inapp-forecast-20261022/f5c745d3e2682d10C/packet.json",
+      "chart": null,
+      "response": "/private/tmp/cm-inapp-forecast-20261022/f5c745d3e2682d10C/response.json"
+    }
+  ],
+  "API_calls": 0,
+  "local_model_training": 0,
+  "native_runs": 0,
+  "pilot_changes": false
+}

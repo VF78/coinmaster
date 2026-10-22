@@ -1,0 +1,17 @@
+{
+  "status": "ROOT_DEBUG_GO",
+  "at": "2026-10-22T07:48:48.253121+00:00",
+  "freeze_sha256": "7ea0cd8c624ef72cab364dbc337f4d7d4895fa0c2c33baadce67cd82ee435755",
+  "source_sha256": "bbbdded5e9bdd04c2434769e87d7f6963ee75f6717ba475c4919a758a9703248",
+  "imported_target_helper_sha256": "8692cb61b41e4f15326b05793fe1950196af0c690b972ca949f7e74f0b1c0bf8",
+  "instructions_sha256": "5a7086dc2bf660a816d2de7190e438c511ecd6c4432208f4beb8ee65898cfd3e",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "debug_actual_responses": 10,
+  "evaluation_responses": 48,
+  "max_responses": 60,
+  "current_response_count": 0,
+  "pilot_changes": false,
+  "review": "GO",
+  "tests": 3
+}
