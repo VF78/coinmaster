@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "tests": 20,
+  "method": "runpy direct all test_* functions in runtime/tests/test_btc_event_research.py; no pytest available required",
+  "elapsed_seconds": 0.21945283329114318,
+  "market_evaluation_launched": false,
+  "test_file_sha256": "eadc4b34352d3bc76a3061383595035bf72631395e78704df766ce9ea33acc17",
+  "correction": "One review correction: reject existing mutableoutputs and source overlap/alias beforewrites; independent hardcodednegativeD1 and weightedCDF tests. Initial support receipts archived unchanged."
+}

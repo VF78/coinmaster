@@ -101,3 +101,125 @@ def test_target_requires_full_uncensored_horizon():
     try:targets(np.ones((4319,5)),.1)
     except ValueError as e:assert str(e)=='WHOLE_HORIZON_REQUIRED'
     else:raise AssertionError('censored path accepted')
+
+# D90 tests use synthetic prices/labels; no market forecast evaluation.
+def test_d90_corrected_direct_support_boundaries():
+    from coinmaster.research.btc_event_research import direct_input_start
+    r=dict(anchor=600*HOUR,activation=700*HOUR)
+    assert direct_input_start(r,900*HOUR)==531*HOUR
+    r['anchor']=100*HOUR
+    assert direct_input_start(r,900*HOUR)==99*HOUR
+    assert direct_input_start(r,2*HOUR)==2*HOUR
+
+def test_d90_causal_completed_days_prefix_and_invalid():
+    from coinmaster.research.btc_event_d90 import daily_context
+    from coinmaster.research.btc_event_research import WARM, DAY
+    v=np.ones((94*1440,5));v[:,:4]=np.repeat(np.arange(1,95),1440)[:,None]
+    t=WARM+91*DAY+5*HOUR
+    a=daily_context(v,[WARM+90*DAY,t,WARM+91*DAY])
+    assert a[0]['state'] is None
+    assert a[1]['state']==a[2]['state']==1
+    assert a[1]['endpoint']==WARM+91*DAY and a[1]['input_start']==WARM
+    assert a[1]==daily_context(v[:91*1440],[t])[0]
+    v[91*1440:,:4]=100000
+    assert a[1]==daily_context(v,[t])[0]
+    v[2,:4]=np.nan
+    assert daily_context(v,[t])[0]['state'] is None
+    v[:,:4]=100
+    z=daily_context(v,[t])[0]
+    assert z['state'] is None and z['logreturn90']==0
+
+def test_d90_shared_weights_quantiles_and_empty_unknown_fallback():
+    from coinmaster.research.btc_event_d90 import predict, weighted_empirical
+    e,x,y=synthetic(24)
+    for j,r in enumerate(e):r['daily90']=dict(state=1 if j%2 else None)
+    i=20;e[i]['daily90']['state']=1
+    before=predict(e,x,y,i,1500*HOUR);f=before['daily90'];pool=f['pool'];cell=f['neighbors']
+    assert all(e[j]['daily90']['state']==1 for j in cell)
+    assert any(e[j]['daily90']['state'] is None for j in pool)
+    assert np.allclose(f['arrays'][2],(np.sum([y[j]['touch'] for j in cell],axis=0)+32*before['prior']['arrays'][2])/(len(cell)+32))
+    assert np.all(np.diff(f['arrays'][1],axis=-1)>=0)
+    for state in (None,-1):
+        e[i]['daily90']['state']=state;after=predict(e,x,y,i,1500*HOUR)
+        assert not after['daily90']['supported']
+        assert all(np.array_equal(a,b) for a,b in zip(after['daily90']['arrays'],after['prior']['arrays']))
+    try:weighted_empirical(y,[],[])
+    except ValueError as exc:assert str(exc)=='EMPTY_EVENT_PRIOR_INFEASIBLE'
+    else:raise AssertionError('fabricated empty prediction')
+
+def test_d90_missing_invalid_labels_never_fabricate():
+    from coinmaster.research.btc_event_d90 import predict
+    e,x,y=synthetic(24)
+    for r in e:r['daily90']=dict(state=1)
+    y[0]['touch'][0][0]=float('nan')
+    try:predict(e,x,y,20,1500*HOUR)
+    except ValueError as exc:assert str(exc)=='INVALID_TRUTH_NO_FORECAST'
+    else:raise AssertionError('fabricated invalid prediction')
+
+def test_d90_predictions_prefix_and_phase_semantics():
+    from coinmaster.research.btc_event_d90 import predict as d90_predict
+    from coinmaster.research.btc_event_research import predict
+    e,x,y=synthetic(40)
+    for r in e:r['daily90']=dict(state=1)
+    a=d90_predict(e,x,y,30,2200*HOUR);old=predict(e,x,y,30,2200*HOUR)
+    assert all(np.array_equal(v,w) for v,w in zip(a['phase']['arrays'],old['phase']['arrays']))
+    for arm in x:x[arm][31:]=np.nan
+    for j in range(31,40):y[j]={'invalid':True}
+    b=d90_predict(e[:31],{k:v[:31] for k,v in x.items()},y,30,2200*HOUR)
+    for arm in a:assert all(np.array_equal(v,w) for v,w in zip(a[arm]['arrays'],b[arm]['arrays']))
+
+def test_d90_gate_both_metrics_and_nonworse_phase():
+    from coinmaster.research.btc_event_d90 import gate
+    c={arm:{task:dict(primary_14d=dict(pass_rule=True,mean=-.1)) for task in ('TP','SL')} for arm in ('prior','phase')}
+    assert gate(c)['pass_rule']
+    c['phase']['SL']['primary_14d']['mean']=.001
+    assert not gate(c)['pass_rule']
+    c['phase']['SL']['primary_14d']['mean']=0;c['prior']['TP']['primary_14d']['pass_rule']=False
+    assert not gate(c)['pass_rule']
+
+def test_d90_handcomputed_negative_daily_return_and_support():
+    from coinmaster.research.btc_event_d90 import daily_context
+    from coinmaster.research.btc_event_research import WARM, DAY
+    v=np.tile([100.,100.,100.,100.,1.],(92*1440,1));v[90*1440:91*1440,:4]=50
+    c=daily_context(v,[WARM+91*DAY+HOUR])[0]
+    assert c['state']==-1 and np.isclose(c['logreturn90'],np.log(.5),rtol=0,atol=1e-15)
+    assert c['endpoint']==WARM+91*DAY and c['input_start']==WARM
+
+def test_d90_handcomputed_inverseCDF_and_shared_touch_weights():
+    from coinmaster.research.btc_event_d90 import weighted_empirical
+    # Global pool0,1:32pseudo split16/16; same-state cell1 adds1.
+    # CDF at0=16/33; therefore q20=0,q50=q80=10; touch=17/33.
+    y={0:dict(D=0,Q=np.zeros((2,3,2)).tolist(),touch=np.zeros((2,3)).tolist()),
+       1:dict(D=1,Q=np.full((2,3,2),10.).tolist(),touch=np.ones((2,3)).tolist())}
+    p,q,t=weighted_empirical(y,[0,1],[1])
+    assert np.array_equal(q,np.tile([0.,10.,10.],(2,3,1)))
+    assert np.allclose(t,17/33,rtol=0,atol=1e-15)
+    assert np.allclose(p,[16/33,17/33,0],rtol=0,atol=1e-15)
+
+def test_d90_all_output_guards_preserve_bytes_and_reject_source_overlap():
+    import tempfile
+    from pathlib import Path
+    from coinmaster.research.btc_event_d90 import check_outputs, prepare, evaluate, MUTABLE_OUTPUTS
+    with tempfile.TemporaryDirectory() as d:
+        root=Path(d);prepared=root/'prepared';reference=root/'reference';out=root/'out'
+        for path in (prepared,reference,out):path.mkdir()
+        for stage,names in [('prepare',MUTABLE_OUTPUTS),('evaluate',MUTABLE_OUTPUTS[2:])]:
+            for name in names:
+                p=out/name;p.write_bytes(b'preserve exact output bytes')
+                before={x.name:x.read_bytes() for x in out.iterdir()}
+                try:
+                    if stage=='prepare':prepare(prepared,reference,out,root/'missing-protocol')
+                    else:evaluate(prepared,reference,out,root/'missing-protocol','no-go')
+                except ValueError as exc:assert str(exc)=='OUTPUT_ALREADY_EXISTS:'+name
+                else:raise AssertionError('existing output overwritten')
+                assert before=={x.name:x.read_bytes() for x in out.iterdir()}
+                p.unlink()
+        for source in (prepared,reference):
+            for candidate in (source,source/'nested',root):
+                try:check_outputs(prepared,reference,candidate,'prepare')
+                except ValueError as exc:assert str(exc)=='OUTPUT_SOURCE_OVERLAP'
+                else:raise AssertionError('source overlap allowed')
+        alias=root/'alias';alias.symlink_to(reference,target_is_directory=True)
+        try:check_outputs(prepared,reference,alias,'evaluate')
+        except ValueError as exc:assert str(exc)=='OUTPUT_SOURCE_OVERLAP'
+        else:raise AssertionError('source alias allowed')

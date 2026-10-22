@@ -62,6 +62,10 @@ def shapes(t,logp,row,sigma):
     interp=lambda x:(np.interp(x,tx,px)-row['anchor_log'])/sigma
     return interp(clock),interp(phase),[int(tx[0]),int(tx[-1])]
 
+def direct_input_start(row, context_start):
+    """Raw-bar support of anchor, context and frozen 168-return threshold."""
+    return min(row['anchor']-HOUR, row['activation']-169*HOUR, context_start)
+
 def eligible(events,i,cutoff):
     q=events[i]
     return np.array([j for j,r in enumerate(events) if r['label_end']<=min(cutoff,q['input_start']) and r['origin']<q['input_start']],dtype=int)
@@ -102,7 +106,7 @@ def catalogue(prepared,output,protocol):
         f=features_at(panels,r['origin'])
         if f is None:invalid.append(r['id']);r['feature_valid']=False;continue
         _,ctx,_,_,ins,_=f;s=float(ctx[-2]);r['sigma24']=s;r['sigma72']=float(ctx[-1]);r['feature_valid']=True
-        r['input_start']=min(r['anchor'],int(ins)-80*HOUR);r['entry_time']=r['origin']+MINUTE;r['label_end']=r['entry_time']+72*HOUR
+        r['input_start']=direct_input_start(r, int(ins)-80*HOUR);r['entry_time']=r['origin']+MINUTE;r['label_end']=r['entry_time']+72*HOUR
         r['horizon_status']='MATURE' if r['label_end']<=END else 'RIGHT_CENSORED_HORIZON'
         r['fold']=next((name for name,a,b in FOLDS if ms(a)<=r['origin']<ms(b)),None)
         st=[r['direction'],r['direction']*(r['extreme_log']-r['anchor_log'])/s,np.log1p((r['extreme']-r['anchor'])/HOUR),np.log1p((r['origin']-r['extreme'])/HOUR),r['direction']*(r['confirmation_log']-r['extreme_log'])/s,r['delta']/s]

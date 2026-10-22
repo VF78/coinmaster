@@ -1,0 +1,56 @@
+{
+  "schema": "btc-event-d90.v1",
+  "status": "PREREGISTERED_BEFORE_NEW_FORECAST_QUALITY",
+  "period": [
+    "2024-06-01",
+    "2026-05-01"
+  ],
+  "period_days": 699,
+  "events": 372,
+  "query_count": 198,
+  "query_identity": "exact ordered198 saved E1 RESULTS case IDs; same origins/folds/maturity",
+  "folds": [
+    [
+      "F1",
+      "2025-01-01",
+      "2025-05-01"
+    ],
+    [
+      "F2",
+      "2025-07-01",
+      "2025-11-01"
+    ],
+    [
+      "F3",
+      "2026-01-01",
+      "2026-05-01"
+    ]
+  ],
+  "targets": "existing btc_pattern_inapp.targets untouched; H72h entry origin+60s native1mOPEN, sigma72 at query; both sides x SL.75/1/1.5 x Q20/50/80=18Q and6 full-horizon adverse touches; intraminute lower/upper; D secondary; incomplete horizon registry retained unscored censored",
+  "candidate": "ONE fixed90 completedUTC D1 logreturn sign: >0 up,<0 down; zero/unavailable/empty cell=>globalprior",
+  "daily_support": "lastclosedD1endpoint\u221291d raw barstart; reject invalid/incomplete91dailybar prefix; full genuine May15 warmup only",
+  "common_support": "min(original existing input_start, anchor\u22121h,activation\u2212169h,lastclosedD1endpoint\u221291d) for all3arms; same strict eligible pool; historicalmissing states globalonly",
+  "weights": "same-state labels weight1 each + ALLglobalpool labels weight32/Nglobal each; same vector alltargets; weighted empirical inverseCDF Q20/50/80; touch weightedmean; D secondary excludes ambiguous only",
+  "controls": [
+    "global empirical prior",
+    "original E1phase .5state+.5phase distance, per-pool scaler, stable32 nearest greedy72h,8globalpseudo, fewer8=>prior"
+  ],
+  "arms": [
+    "prior",
+    "phase",
+    "daily90"
+  ],
+  "labels": "reuse198 savedquerytruth; unchanged targets() only on remaining maturelibrary paths; recompute overlapping198 paths for exact target-equality validation, no target/marketdata edits",
+  "acceptance": "BOTH TPpinball18 and SLBrier6 vsprior paired14d withinfold occupiedblock bootstrap1000 seed7 upper95CI<0 and mean<0 and >=2/3fold negative and >=2occupiedblocks/fold; candidate aggregate mean <=E1phase for BOTH; report phase pairedCI; no equivalence claim",
+  "sensitivity": "paired28d samebootstrap, upperMFE, all24coordinates, fold/state/calendar counts, support/fallback, zeroTPandpositive reach bounds, calibration, full72hadversetouch nottradedstopout",
+  "resources": "singleprocess<=4threads,<=6GiBRSS, hard1800salarm and RSSchecks, no automaticreruns; ATTEMPT.json exclusive before marketforecast; boundedMay15\u2192May1 rawslice only",
+  "launch": "prepare support/test first; exactprotocol/source/inputpins then root scopedreview GO required before ONCE evaluate",
+  "limitations": [
+    "Retrospective hypothesis after E1postmortem; no independent replication",
+    "F3 has no positive90state; daily state/timefoldconfounding",
+    "14/28dblocks do not establish100\u2013200dcycle robustness",
+    "Fullcyclemacro hypothesis not tested",
+    "No ROI/DD/native/pilot/CHECK/VPS/deploy/trading changes"
+  ],
+  "prohibited": "No recursiveEMA/180dcandidate/grid/encoder/newquery/targetchange/fetch/autorerun"
+}

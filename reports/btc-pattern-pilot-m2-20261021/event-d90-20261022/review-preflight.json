@@ -1,0 +1,39 @@
+{
+  "schema": "btc-event-d90.preflight-review.v1",
+  "decision": "GO_SOURCE_FOR_ONE_RUN",
+  "scope": "One focused source/contract review plus one correction validation; no forecast quality evaluated and no unbounded follow-up authorized.",
+  "protocol_sha256": "20ff0db98c7b3eaa2a3f9dc0bff66266157b338c10d561a7f5329fac31643973",
+  "catalogue_sha256": "5cf375c5fa0700465e7474db51d96736d1699b69c2c3eb96f9fcf3886ac54adb",
+  "preflight_sha256": "81d296241eee8728fb09c2cdf6d63e4af995dab3853ab677330b8d662e4f90f8",
+  "reviewed_pins": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_event_d90.py": "7bbf29ea3f46489efa1da87b53d66e741b5e4e1a4ab8cad75197ba02472bd319",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_event_research.py": "23186948825453325a7efea2ee2fed9d353d32233c3e0fece12f4e3edad6afd0",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_inapp.py": "bbbdded5e9bdd04c2434769e87d7f6963ee75f6717ba475c4919a758a9703248",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_data.py": "8692cb61b41e4f15326b05793fe1950196af0c690b972ca949f7e74f0b1c0bf8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/manifest.json": "bc660056af9117a246a1334837b7e42c9bb2d0635945a0346a4b088a459685ff",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/PROTOCOL.json": "50df8d14dd42e92ce250cc0f5aa066bb6a1788604aa55608d222fcf0fa8f1a6d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/catalogue.json": "f46e2e98ceae2dd078f03f4594899b3ac769d85dffe11e32001a6523ea6dbe61",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/inputs.npz": "2aaac52695a83c0dc60ec7836e9d2484fd6fdd7db5df3e532e4191327980fe85",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/RESULTS.json": "6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c"
+  },
+  "checks": {
+    "common_support": "PASS: anchor-1h, frozen sigma activation-169h, completed D1 endpoint-91d shared by prior/phase/daily90",
+    "population": "PASS: full 699 days,372 catalogue events,198 ordered original IDs; F1/F2/F3 64/67/67; H72 and18TP/6SL unchanged",
+    "candidate": "PASS: one sign90 two-state empirical distribution;32 global pseudo-observations;shared weights;zero/missing/empty fallback;historical unknown states retained globally",
+    "control": "PASS: original E1 phase distance/scaler/32-neighbor72h/8-pseudo/fallback semantics retained on common pool",
+    "labels": "PASS: saved198 query truths reused with equality validation;remaining mature labels use unchanged target implementation;bounded May15 through May1 only",
+    "outputs": "PASS after one correction: every mutable target guarded before writes;source overlap and symlink alias rejected;exclusive ATTEMPT prevents retry",
+    "gate": "PASS: both TP/SL paired14d upper95CI<0 and>=2/3 fold wins versus prior;both means nonworse than E1phase;28d sensitivity;no post-quality tuning",
+    "tests": "PASS: reviewer independently executed all20 synthetic tests, including independent daily return/support,weighted quantile/touch expected values,prefix invariance,phase parity,and output byte preservation",
+    "identity": "PASS: all9 pins,protocol,catalogue matched;forecast outputs absent at review"
+  },
+  "correction": "Initial mutable-output overwrite protection and independent expected-value tests corrected; single correction validation passed.",
+  "limitations": [
+    "Retrospective postmortem-selected hypothesis; no independent confirmation",
+    "F3 has no positive state; daily state is fold-confounded",
+    "14/28d bootstrap does not establish100\u2013200d full-cycle robustness",
+    "Complete100\u2013200d waves are not available future-aware features; no macro-cycle validation",
+    "No forecast run by reviewer; no native/economic/pilot/CHECK/VPS action"
+  ],
+  "run_authority": "Source ready for root-scoped authorization of exactly one frozen evaluate attempt; no automatic retry,training,grid or follow-up."
+}
