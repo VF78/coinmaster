@@ -1,0 +1,78 @@
+{
+  "status": "SINGLE_E1_EVALUATION_COMPLETE",
+  "process_pid": "not exposed by synchronous exec_command; process exited0",
+  "elapsed_seconds": 1.0706496252678335,
+  "query_count": 198,
+  "fold_counts": {
+    "F1": 64,
+    "F2": 67,
+    "F3": 67
+  },
+  "gate": {
+    "pass_rule": false,
+    "supported_coverage_pass": true,
+    "all_comparisons_pass": false,
+    "required": "phase BOTH co-primary versus EACH prior/state/clock;14d upper95CI<0, >=2/3foldwins,>=2occupiedblocks/fold; state/clock/phase supportedcoverage>=.9"
+  },
+  "metrics": {
+    "prior": {
+      "all_ID": {
+        "TP": 0.25132860033690174,
+        "SL": 0.2057208126327234
+      },
+      "coverage": 1.0,
+      "fallbacks": 0,
+      "NO_TRADE": 198
+    },
+    "state": {
+      "all_ID": {
+        "TP": 0.25424947666543235,
+        "SL": 0.20675908734765241
+      },
+      "coverage": 1.0,
+      "fallbacks": 0,
+      "NO_TRADE": 90
+    },
+    "clock": {
+      "all_ID": {
+        "TP": 0.25515122250182254,
+        "SL": 0.2066130412659791
+      },
+      "coverage": 1.0,
+      "fallbacks": 0,
+      "NO_TRADE": 123
+    },
+    "phase": {
+      "all_ID": {
+        "TP": 0.25429851228178907,
+        "SL": 0.20729858037687632
+      },
+      "coverage": 1.0,
+      "fallbacks": 0,
+      "NO_TRADE": 122
+    }
+  },
+  "artifacts": {
+    "CATALOGUE_QA.json": "88a4a2a52b8ae8b1a4f62559299317e80a9519d77306f1fe8cb457cbd54d980a",
+    "EVALUATOR_PREFLIGHT.json": "e1d3d26d0e70092155aeb4849c8755bc1254f1e48df7fcd3633b5f167aae2c06",
+    "PROTOCOL.json": "50df8d14dd42e92ce250cc0f5aa066bb6a1788604aa55608d222fcf0fa8f1a6d",
+    "PROTOCOL.md": "0b04d1bc4f4c00cdb4ffd5f1f067884264a5a911a957461b4fbe09177cb0b557",
+    "REPORT.md": "d5a62befe99f4a7a15d664a3942a962d9664a5d5138b4df306725fd5f61569e8",
+    "RESULTS.json": "6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c",
+    "STAGE1_RECEIPT.json": "0e5e79a3c487076fb9089b9289e11deb17ba111bc56c7b80838ba278782080b0",
+    "accuracy.csv": "9b392e48e0a8520a61c515e0f1d1c5d1b2e40130704c748e136562fac29883e0",
+    "case_arm_forecasts.csv": "8297bbfc04237f07e11bf836492b136c5753fdaa01d76543a3bb066ee9dd6d2c",
+    "catalogue.json": "f46e2e98ceae2dd078f03f4594899b3ac769d85dffe11e32001a6523ea6dbe61",
+    "causal-review.json": "01cbc9b100aa2359a9828db06adb4b5ac7ae6b1fbe800fc7993460fe865c24c0",
+    "comparisons.csv": "f42792b7e27706efc4f4c80c249847600a9e3c3057810c67841a0bdd760bb85c",
+    "coordinator-catalogue-check.json": "4e936e984feae06e28caa6532c48ca9cb1c03ba468d71b0ddac48a4ff5742ed6",
+    "coordinator-e1-go.json": "98fef3931f63a58d1a43715cb4327bd61d8c193063226984486a3e1f0f622ca1",
+    "coordinator-result-verification.json": "ca23f625f29ccc57bd89853419ea26ef965978f3d2f1d92484f244480b12985c",
+    "export_saved_results.py": "2ffa6d55aeaaef5c9f844d3651856bc57567fab2fe5ef533ac34f2daa09dec26",
+    "inputs.npz": "2aaac52695a83c0dc60ec7836e9d2484fd6fdd7db5df3e532e4191327980fe85",
+    "project-start-readback.json": "a990e7e0d8daeaf84f550597ef23ac1b69cee494b2273017c72fa9cae2fcd805"
+  },
+  "economic_or_operational_actions": false,
+  "E2_E3": "SKIPPED_GATE_FAILED",
+  "report_export": "SAVED_RESULTS_ONLY"
+}

@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-22T11:39:21.355059+00:00",
+  "saved_result_verification": "PASS",
+  "result_sha256": "6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c",
+  "cases": 198,
+  "forecast_records": 792,
+  "forecast_TP_levels": 14256,
+  "forecast_SL_probabilities": 4752,
+  "same_query_ids_and_pool": "PASS",
+  "pool_maturity_and_actual_support_purge": "PASS",
+  "neighbor72h_spacing": "PASS",
+  "saved_forecast_scores_and_TP_counts_recomputed": "PASS",
+  "old_target_and_inapp_source_hashes": "UNCHANGED",
+  "preregistered_gate": "FAILED_NO_E2_E3",
+  "new_market_predictions_or_fits": 0,
+  "pilot_changes": false
+}

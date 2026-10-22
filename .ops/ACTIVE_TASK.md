@@ -1,15 +1,15 @@
-Updated: 2026-10-22T11:34:09.798676+00:00
-Status: ACTIVE — owner-approved event catalogue → E1; E2/E3 conditional on preregistered improvement.
-Worktree: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021; starting HEAD b95c24bb5cffaa9c1652404bdac91c1e83d8249d.
-Scope: full [2024-06-01,2026-05-01), 699 days. Preserve all earlier negative results and original expanding folds; no shortened training period.
-Existing issue #122 OPEN / Project #2 In Progress; exact body/status read-back PASS (project-start-readback.json).
-Sole source owner: event_e1_owner, GPT-6.1 Sol/medium, fresh minimal context. Reviewer: event_e1_causal_review, GPT-6.1 Sol/medium, causal contract only. Root owns ops/Project/commits.
-Execution: protocol frozen before query-quality reads; catalogue + focused tests first; root internal GO before E1. No additional owner approval needed for authorized execution.
-E1: fixed closed-1H directional-change event prefixes, prior/state/clock/phase controls on common eligible history/query IDs. H72h; fixed SL menu .75/1/1.5 sigma72; stop-conditioned 3TP quantiles and full-horizon SL-touch probabilities.
-Gate: TP macro pinball AND SL Brier improvement against prior/state/clock with primary paired 14d CI upper<0, >=2/3 fold improvements per metric/comparator, coverage>=90%; 28d sensitivity reported. Insufficient independent support => inconclusive. Exact protocol before scoring.
-E2 phase-volume and E3 1H/4H/both run separately only if E1 gate passes; otherwise explicitly skipped. No model/detector/distance grid, no automatic retries.
-Budget: one bounded E1 evaluation, max30min, CPU<=4, RSS<=6GiB; one focused verification and at most one substantial correction. Catalogue and targets limited to authorized period; CHECK unopened.
-Outputs: reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/. Forecast accuracy, all IDs/fallbacks, controls, uncertainty, targets, protocol/source/data hashes and catalogue QA.
-Protected: pilot/VPS/services/orders/secrets/S0/strategy/native economics/backtests unchanged. No economic ROI/DD result inferred from forecast scores.
-Catalogue accepted: 372 events (186/186), 699 days, 2 horizon-censored, median confirmation delay12h/max95h, max observed prefix622h, zero invalid minute bars. Seven focused tests PASS; hashes/arithmetic/timing verified by root. No quality labels read. Evaluator and11 focused tests complete; independent causal review GO_FOR_E1. Root verified exact source/protocol/test/review hashes and authorizes ONE E1 evaluation (coordinator-e1-go.json).
-Next: sole owner launches ONE E1 → conditional E2/E3 only if gate passes → report/Project read-back/checkpoint. No duplicate run.
+Updated: 2026-10-22T11:40:34.209286+00:00
+Status: COMPLETE_NEGATIVE — approved full catalogue/E1 completed; E2/E3 SKIPPED_GATE_FAILED. No active research jobs or automatic next runs.
+Worktree: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021.
+Scope: full [2024-06-01,2026-05-01),699 days retained; prior negative results and original expanding folds preserved. No period shortening.
+Catalogue checkpoint196ab78:372 causal confirmed events (186/186),2 horizon-censored, unknown/left-truncated/right-censored registry retained; confirmation delay median12h/max95h; max observed prefix622h; no invalid minute bars.
+Evaluator checkpointf486403: one fixed1H directional-change rule and phase32+32 versus matched clock64/state18/global event prior; source690c97cb, protocol50df8d14;11 focused tests PASS and independent causal review GO. No neural/model/detector grid.
+Single E1 actual:198 common mature query IDs (F1=64,F2=67,F3=67),100% supported coverage/no fallbacks; elapsed1.071s. All NO_TRADE rows retained in scoring.
+TP pinball / SL-touch Brier (lower better): prior0.251328600/0.205720813; state0.254249477/0.206759087; clock0.255151223/0.206613041; phase0.254298512/0.207298580.
+Gate FAILED: all6 primary14d paired CIs cross0;28d sensitivity no admission. Phase vs prior TP error+1.18%,SL error+0.77%. E2volume and E3timeframe ablations NOT_RUN, not claimed implemented successes.
+FixedSL1 on198IDs: phase longTP1/2/3=77.78/44.95/20.20%;short80.30/56.57/22.73%. Full72hSL-touch actuallong33.84%,short31.82%; not actual traded stopouts. Level hit rates alone cannot rank different forecast levels.
+Outputs: reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/REPORT.md; immutableRESULTSsha6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c;792forecastCSVrows/72accuracy/12comparisons; saved-result export script; protocol/catalogue/GO/completion/rootverification.
+Root verification PASS: commonIDs/pools, label maturity/actual-support purge,72hneighbor spacing,18Q/6SL arrays, all saved loss arithmetic/TP counts, source/helper hashes; completion hashes and CSVrowcounts. No repeat evaluator/market read.
+Existing#122 / Project2 closure and exact read-back pending; no new issue. Result commit/publication pending.
+Protected: pilot/VPS/services/orders/secrets/S0/CHECK/native strategy unchanged. No economic/native backtest, no ROI/DD evaluated or improved claim. Event timing benefit not identified by same-event-ID comparison.
+Next: publish results, close this bounded package in existingProject and verify read-back. Further experiments require a new agreed hypothesis; no automatic training or backtest.
