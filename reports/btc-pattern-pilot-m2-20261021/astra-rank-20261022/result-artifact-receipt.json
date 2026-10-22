@@ -1,0 +1,130 @@
+{
+  "schema": "btc-astra.result-artifact-receipt.v1",
+  "recorded_at": "2026-10-22T14:24:01.029494+00:00",
+  "status": "COMPLETE_EXPLORATORY_NO_AUTOMATIC_EXPANSION",
+  "checks": {
+    "original_source_and_input_pins_unchanged": true,
+    "all26_packet_hashes_unchanged": true,
+    "all26_sealed_raw_responses_unchanged": true,
+    "results_sha256_unchanged": true
+  },
+  "counts": {
+    "attempts": 26,
+    "hardcap": 26,
+    "debug": 2,
+    "evaluation": 24,
+    "valid_evaluation": 24,
+    "matched20": 20,
+    "no_match4": 4,
+    "invalid": 0,
+    "missing": 0,
+    "labels_reused": 370,
+    "target_recomputations": 0,
+    "scoring_attempts": 1,
+    "model_retries": 0,
+    "source_correction_passes": 1,
+    "csv_rows": {
+      "forecasts.csv": 144,
+      "accuracy.csv": 108,
+      "all198_forecasts.csv": 666,
+      "all198_accuracy.csv": 54
+    }
+  },
+  "resources": {
+    "threads_cap": 4,
+    "RSS_cap_GiB": 6,
+    "wall_cap_seconds": 1800,
+    "prepare_elapsed_seconds": 0.9028930831700563,
+    "score_elapsed_seconds": 0.9233365841209888,
+    "peak_RSS_bytes": null,
+    "peak_RSS_note": "Not persisted in original execution; guards passed. Expected1GiB is estimate, not measurement.",
+    "model": "gpt-6-astra",
+    "reasoning": "max",
+    "paid_API_calls": 0,
+    "new_dependencies": 0,
+    "GPU": false
+  },
+  "transport": {
+    "debug_final_capacity_errors_after_saved_valid_JSON": 1,
+    "retries": 0,
+    "model_substitution": false,
+    "actual_template_recorded_during_execution": true
+  },
+  "files": {
+    "RESULTS.json": {
+      "sha256": "27acf07b23ee2eeb7fb4102092b79efdb9f6182570de1c50f33759d5304f9ba5",
+      "bytes": 12863806
+    },
+    "derived-statistics.json": {
+      "sha256": "fd92d5e8a01e729e0acbd4c192d0354bfe70b15f93751fcf00b9b40611425256",
+      "bytes": 77020
+    },
+    "findings.md": {
+      "sha256": "2da2a910982c636414c8284bb4a2e5706d3dc5efe7d33e66e7f9c48cbce71c42",
+      "bytes": 12427
+    },
+    "forecasts.csv": {
+      "sha256": "0f12c9c641946bc656a72c83fbc3d73630b2aed994217f2934e245c87977c3ca",
+      "bytes": 119119
+    },
+    "accuracy.csv": {
+      "sha256": "f3b686309d5e80232348f9d762cb1e726d1e9ccb811e33d8f199f9859c5359ae",
+      "bytes": 9321
+    },
+    "all198_forecasts.csv": {
+      "sha256": "fa79caf35d31096d70550da9846e41f40d12cd21e880cdeaf92de89b39d9fecd",
+      "bytes": 543508
+    },
+    "all198_accuracy.csv": {
+      "sha256": "d5d1e483e2fb4100d38419f8f1c49d0eb07e486d97c9f01070a94c61279d5865",
+      "bytes": 5134
+    },
+    "protocol.json": {
+      "sha256": "54cacf6dffb952c65a2bc32fa40c0cd0b306ffd76fddd3c555cb45154405715a",
+      "bytes": 6666
+    },
+    "freeze.json": {
+      "sha256": "6fe2aa4e3321041f72e06ba524b6aaba1bbb34c86a73ab9c2c4e21ca2acf2aca",
+      "bytes": 107435
+    },
+    "evaluation-sealed.json": {
+      "sha256": "e14e5f3a6f5a75834f42fa95da193dd770301cfe9d3475fb5df6dbca2dd8439d",
+      "bytes": 7763
+    },
+    "debug-sealed.json": {
+      "sha256": "b9a1c5349fbae2cbf65e6eb14ba220c35db47b29f86c9f6c5a6edd2a88685b97",
+      "bytes": 972
+    },
+    "prompt.json": {
+      "sha256": "e75826d6893ae67102d18ce1c7f6b1f09fdae8080b9cd867127f4503d24419fa",
+      "bytes": 1406
+    },
+    "ACTUAL_DISPATCH_TEMPLATE.json": {
+      "sha256": "4c371c44abb1187adbceb314e437b7aa9d5df2efa6fccf3825fb5781e5bf9937",
+      "bytes": 2113
+    },
+    "DISPATCH_ATTEMPTS.json": {
+      "sha256": "73453608d086d98048d44ce7da49884b3a46e38a0589b2a54c9f6359053e6bbe",
+      "bytes": 10344
+    },
+    "SCORE_ATTEMPT.json": {
+      "sha256": "4a480f4e4977e1f95354ac4992a03ad436e49836a358bb3a63c598c597a1584f",
+      "bytes": 107
+    },
+    "TEST_RECEIPT.json": {
+      "sha256": "be2163feb42150b56fc26e60f3b9a461909e25009c282b3dfe5b794ffe0b069b",
+      "bytes": 821
+    },
+    "availability.json": {
+      "sha256": "002b0d81ca33c941f3b1fcd0218833595a9a0d49e03bc37af54262cf5de2f873",
+      "bytes": 103479
+    }
+  },
+  "artifact_changes_only": [
+    "derived-statistics.json",
+    "findings.md",
+    "result-artifact-receipt.json"
+  ],
+  "no_predictions_recomputed": true,
+  "no_source_protocol_raw_results_seal_edits": true
+}

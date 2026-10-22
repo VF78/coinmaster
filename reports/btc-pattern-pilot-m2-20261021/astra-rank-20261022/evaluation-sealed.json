@@ -1,0 +1,397 @@
+{
+  "phase": "evaluation",
+  "freeze_sha256": "6fe2aa4e3321041f72e06ba524b6aaba1bbb34c86a73ab9c2c4e21ca2acf2aca",
+  "records": [
+    {
+      "query_id": "fed7ed7df152",
+      "response_sha256": "5d0b3caab9908c321808ec2592bd2cc8b915bdd74be78138c12467494565f359",
+      "valid": true,
+      "rank": [
+        59,
+        63,
+        101,
+        47,
+        1,
+        25,
+        73,
+        93
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "7fa99b388b7d",
+      "response_sha256": "26efaee4a127dbac755c9c3a162bbeaaac76d60b06d082079489d95e7bc0c2aa",
+      "valid": true,
+      "rank": [
+        42,
+        58,
+        92,
+        38,
+        26,
+        22,
+        106,
+        86
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "e55b4be56262",
+      "response_sha256": "054310472040c1589d60295a2b057dabd19f8d17e3f98a1aa5056291a6729c96",
+      "valid": true,
+      "rank": [
+        106,
+        42,
+        52,
+        60,
+        46,
+        58,
+        32,
+        28
+      ],
+      "no_match": true
+    },
+    {
+      "query_id": "6a8164f9ddb6",
+      "response_sha256": "97b1c8045f71c0ca525ec2a7c0a89b2d7710cc7d948e3514b1ff5dc3b3a23f0f",
+      "valid": true,
+      "rank": [
+        54,
+        30,
+        72,
+        78,
+        60,
+        82,
+        0,
+        102
+      ],
+      "no_match": true
+    },
+    {
+      "query_id": "d5a0bb9df607",
+      "response_sha256": "e584e986373188be1d4d1de3452048810765e7bb52ab4353aaea016955e8a712",
+      "valid": true,
+      "rank": [
+        41,
+        43,
+        23,
+        99,
+        105,
+        55,
+        87,
+        38
+      ],
+      "no_match": true
+    },
+    {
+      "query_id": "edb52008e72b",
+      "response_sha256": "4f2bf4851fe2ba8d2f69a6377b40b496cea439e5895d390f1b78707639ca8680",
+      "valid": true,
+      "rank": [
+        28,
+        8,
+        0,
+        24,
+        64,
+        78,
+        14,
+        54
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "774353f33e1a",
+      "response_sha256": "75528f6faf21bb25b0c1646b401e345047fa8380181dde4e72deeba96014e19a",
+      "valid": true,
+      "rank": [
+        53,
+        45,
+        19,
+        107,
+        105,
+        23,
+        71,
+        61
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "d310e53c42a9",
+      "response_sha256": "6893cf3635c7434fba879ac7e7fa048958350e77011d0efdf61ecb9d04cca671",
+      "valid": true,
+      "rank": [
+        51,
+        35,
+        69,
+        81,
+        53,
+        7,
+        83,
+        103
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "a73b54eaf4f2",
+      "response_sha256": "c2f6668a37af54471a5197529da599b36c04a0b5eb2d6bae4c507401fff5d84e",
+      "valid": true,
+      "rank": [
+        110,
+        138,
+        64,
+        12,
+        162,
+        188,
+        178,
+        0
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "9c2424dbed88",
+      "response_sha256": "cd17c223bb108956123c6bcd83ac036f5f137ca5643a4419609065a3c5080d04",
+      "valid": true,
+      "rank": [
+        189,
+        185,
+        135,
+        177,
+        163,
+        109,
+        139,
+        5
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "d12b6341838c",
+      "response_sha256": "007b2507c5a27153377a1a494eb1c5e2cea0f31194af9d3f3a0ab26c91b75466",
+      "valid": true,
+      "rank": [
+        70,
+        188,
+        12,
+        0,
+        138,
+        32,
+        64,
+        110
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "5b3a25d69080",
+      "response_sha256": "8b8f46a40b43271ca869c787eddc0f16c1c342e8d7884eae7de518e6f963041e",
+      "valid": true,
+      "rank": [
+        61,
+        159,
+        71,
+        11,
+        189,
+        161,
+        135,
+        9
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "612f035a180e",
+      "response_sha256": "d716e3ec1f47b3151071d0b963a60822cb7c99c58d3ae7d2d5d4975c802aaf4d",
+      "valid": true,
+      "rank": [
+        134,
+        138,
+        110,
+        0,
+        32,
+        64,
+        162,
+        184
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "fc975e02ecb6",
+      "response_sha256": "74d3d8a136d758d22e1d3a0af4365783d2c470c458e3580c79025509fa3236e9",
+      "valid": true,
+      "rank": [
+        2,
+        16,
+        192,
+        10,
+        66,
+        112,
+        164,
+        186
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "e5cc3b77b5c8",
+      "response_sha256": "3681dfbf876bef7a5b48f5c5bea85d8b95db503572ec44d2017821c883b0e4ed",
+      "valid": true,
+      "rank": [
+        177,
+        163,
+        55,
+        195,
+        189,
+        135,
+        9,
+        5
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "56b2155da904",
+      "response_sha256": "98b3c3edd92454239265f8e47bcd78b026574737c7bc9563dc4c88acffc22b06",
+      "valid": true,
+      "rank": [
+        136,
+        52,
+        132,
+        42,
+        30,
+        82,
+        174,
+        180
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "74222ffae44e",
+      "response_sha256": "7999582a9c88171c7874784b0c672ea2811d2b3f390cf80cdf1349376d06e2e7",
+      "valid": true,
+      "rank": [
+        290,
+        30,
+        252,
+        208,
+        82,
+        174,
+        214,
+        200
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "3892764686ee",
+      "response_sha256": "f5bbb9f5b0c71354cc40cd99b34a52d5ab796eedb433c78e25e6ff7730db215f",
+      "valid": true,
+      "rank": [
+        50,
+        68,
+        296,
+        268,
+        62,
+        26,
+        182,
+        58
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "ce448fb03c1e",
+      "response_sha256": "ca6d6b5be327d471cf5d17e12c60256331654e8982d766649c007e562b24eb5f",
+      "valid": true,
+      "rank": [
+        131,
+        37,
+        171,
+        45,
+        39,
+        21,
+        155,
+        107
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "e54981865f08",
+      "response_sha256": "f18e2e11961245dc8b9b191078883d2b553ffdd13c6f90140a7a89d645ee1c1b",
+      "valid": true,
+      "rank": [
+        269,
+        229,
+        139,
+        219,
+        185,
+        135,
+        235,
+        271
+      ],
+      "no_match": true
+    },
+    {
+      "query_id": "335548af304c",
+      "response_sha256": "74982916ae3be9332ee5c2ea71d294d4feb5acf4db4175c146018478741cf58d",
+      "valid": true,
+      "rank": [
+        72,
+        30,
+        230,
+        108,
+        292,
+        34,
+        278,
+        102
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "03339fcd9564",
+      "response_sha256": "1bb7b5842a708fb525965792a24de709c2bcd3bc28ded749fcf5ae4ee5c7d13c",
+      "valid": true,
+      "rank": [
+        55,
+        227,
+        229,
+        45,
+        271,
+        61,
+        281,
+        183
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "539909c65894",
+      "response_sha256": "f8d65b521748ff001e75604b07b2a1e1b56e4df97c683d31d9ffbacf7daf60e2",
+      "valid": true,
+      "rank": [
+        232,
+        136,
+        274,
+        268,
+        64,
+        178,
+        254,
+        216
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "3e2a3b6ce20c",
+      "response_sha256": "7054668f5761b78e1d4f250d177fd40d085f01a4dcd1c6f51f3b14d165591f86",
+      "valid": true,
+      "rank": [
+        31,
+        119,
+        223,
+        241,
+        71,
+        11,
+        297,
+        231
+      ],
+      "no_match": false
+    }
+  ],
+  "count": 24,
+  "valid": 24,
+  "actual_response_files": 26,
+  "actual_dispatch_attempts": 26,
+  "dispatch_ledger_sha256": "73453608d086d98048d44ce7da49884b3a46e38a0589b2a54c9f6359053e6bbe",
+  "model": "gpt-6-astra",
+  "reasoning": "max"
+}

@@ -1,0 +1,84 @@
+{
+  "decision": "GO_FOR_DELIVERY",
+  "scope": "Saved result/seal/provenance/arithmetic/report verification only; no scoring/model/native rerun",
+  "reviewed_at_utc": "2026-10-22T14:25:24.277273+00:00",
+  "source_checkpoint": "2c13442",
+  "packet_debug_checkpoint": "53ccbae",
+  "pins": {
+    "RESULTS.json": "27acf07b23ee2eeb7fb4102092b79efdb9f6182570de1c50f33759d5304f9ba5",
+    "evaluation-sealed.json": "e14e5f3a6f5a75834f42fa95da193dd770301cfe9d3475fb5df6dbca2dd8439d",
+    "debug-sealed.json": "b9a1c5349fbae2cbf65e6eb14ba220c35db47b29f86c9f6c5a6edd2a88685b97",
+    "DISPATCH_ATTEMPTS.json": "73453608d086d98048d44ce7da49884b3a46e38a0589b2a54c9f6359053e6bbe",
+    "ACTUAL_DISPATCH_TEMPLATE.json": "4c371c44abb1187adbceb314e437b7aa9d5df2efa6fccf3825fb5781e5bf9937",
+    "protocol.json": "54cacf6dffb952c65a2bc32fa40c0cd0b306ffd76fddd3c555cb45154405715a",
+    "PREFLIGHT.json": "0cd183c853a44c3e7f57fbccb43c7e405279ee115f49d92e91c60511de67184f",
+    "freeze.json": "6fe2aa4e3321041f72e06ba524b6aaba1bbb34c86a73ab9c2c4e21ca2acf2aca",
+    "derived-statistics.json": "fd92d5e8a01e729e0acbd4c192d0354bfe70b15f93751fcf00b9b40611425256",
+    "findings.md": "2da2a910982c636414c8284bb4a2e5706d3dc5efe7d33e66e7f9c48cbce71c42",
+    "result-artifact-receipt.json": "b54bebb6896a99006b15ec24b1dec33e83faa66714a71a0dff688b0404472762"
+  },
+  "verified": {
+    "all20_source_input_pins_unchanged": true,
+    "all26_packet_hashes_and_size_caps": true,
+    "all26_raw_response_seals": true,
+    "source_semantic_prompt_transport_template_identity": true,
+    "ledger": {
+      "attempts": 26,
+      "unique_phase_query": 26,
+      "debug": 2,
+      "evaluation": 24,
+      "evaluation_valid": 24,
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "retries": 0
+    },
+    "population": {
+      "selected": 24,
+      "per_fold": 8,
+      "original198_identity": true,
+      "same8_candidates_all_rankers": true,
+      "no_match_global_fallback": 4,
+      "all_selected_denominator": 24
+    },
+    "numeric": {
+      "saved_empirical_forecasts_checked": 666,
+      "saved_labels_only": true,
+      "nonnegative_weights": true,
+      "harmonic_local8_global8": true,
+      "weighted_CDF_bracketing_tolerance": 2e-12,
+      "weighted_touch_means_and_D_separate_denominator": true,
+      "quantile_and_SL_monotonicity": true,
+      "n_eff": true,
+      "percase_loss_arithmetic": true,
+      "pooled_metrics_and_CSV": true,
+      "derived_matched20_no_match4_attribution": true,
+      "derived_three_quantiles_and_touch_counts": true
+    },
+    "no_quality_before_seal": "Source sequencing, root score GO and score-attempt seal hashes consistent; procedural shared-filesystem evidence, not isolation guarantee",
+    "one_scoring_attempt_receipt": true,
+    "artifact_receipt_all_file_hashes": true
+  },
+  "provenance_disclosures": [
+    "Literal identical spawn template captured during execution; source semantic prompt and dispatch transport frozen before calls",
+    "debug02 final model-capacity error followed a valid saved JSON; same attempt accepted, no retry/substitution",
+    "Shared filesystem means procedural blinding only; fresh fork-none predictor restricted to exact packet and output",
+    "PeakRSS not persisted; cap/guard and expectation disclosed separately"
+  ],
+  "interpretation": {
+    "pooled_astra_better_than_numeric8": [
+      "TP3.670328%",
+      "SL6.882688%"
+    ],
+    "incremental_over_numericD1_uncertain": true,
+    "phase32_TP_slightly_better": true,
+    "all_primary14d_and28d_intervals_cross_zero": true,
+    "exploratory_seen_development_dependent_H1_events": true,
+    "no_confirmed_deployable_winner": true,
+    "no_ROI_DD_or_macrocycle_validation": true,
+    "no_automatic_expansion": true
+  },
+  "blockers": [],
+  "reviewer_new_score_runs": 0,
+  "reviewer_model_calls": 0,
+  "reviewer_native_runs": 0
+}

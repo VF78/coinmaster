@@ -1,0 +1,20 @@
+{
+  "decision": "ROOT_ACCEPT_COMPLETE_EXPLORATORY_SCREEN",
+  "at": "2026-10-22T14:26:30.454929+00:00",
+  "source_checkpoint": "2c13442f226c5bd8c42ab0ea9bb2fa7647a00d48",
+  "packet_checkpoint": "53ccbae",
+  "source_input_pins_verified": 20,
+  "result_receipt_files_verified": 17,
+  "review_pins_verified": 11,
+  "packets_verified": 26,
+  "responses_verified": 26,
+  "evaluation_valid": 24,
+  "focused_tests_passed": 10,
+  "independent_review": "GO_FOR_DELIVERY",
+  "result_sha256": "27acf07b23ee2eeb7fb4102092b79efdb9f6182570de1c50f33759d5304f9ba5",
+  "scoring_runs": 1,
+  "new_target_computations": 0,
+  "no_further_automatic_calls": true,
+  "trading_or_economic_claim": false,
+  "pilot_untouched": true
+}

@@ -1,0 +1,15 @@
+{
+  "query_id": "d12b6341838c",
+  "ranked_candidate_ids": [
+    "4a7918093ea3",
+    "0934a3ec9feb",
+    "b6b447f54c12",
+    "5574658573fe",
+    "a1817588b8dd",
+    "b85b39361064",
+    "95cf15f106be",
+    "55682199c454"
+  ],
+  "no_match": false,
+  "evidence": "4a7918093ea3 leads: H1 durations 13/20 h versus 17/23 h, B=-0.773 versus -0.716, and a rebound interrupted by another dip; its D1 B=-3.697 versus -4.781 and observed B-to-P path similarly rises above +1 before a late pullback. 0934a3ec9feb closely matches the two-leg H1 fall with an intervening recovery, A/B=-0.010/-0.640, and positive-to-negative H4 descent, but its rebound lasts 9 h and D1 B=-11.657. b6b447f54c12 has a similar H4 collapse/recovery and H1 trough -0.593, but A-to-B lasts 36 h and D1 is missing. 5574658573fe retains comparable local scale, but its 57 h rebound is mostly flat near -0.35 and D1 is missing. a1817588b8dd matches 15/24 h timing and B=-0.701; its D1 A-to-B rise from -1.567 to +2.431 conflicts with the query's decline. b85b39361064 matches 15/22 h timing, but H4 predominantly recovers from negative levels and its observed D1 rebound remains below P. 95cf15f106be has similar local A/B=+0.105/-0.753, but only a 10 h rebound and an H4 rise from around -3.5. 55682199c454 concentrates its H1 decline early; D1 rises from -14.212 to +2.560, unlike the query's A-to-B decline."
+}

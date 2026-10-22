@@ -1,0 +1,12 @@
+{
+  "decision": "ROOT_GO_SINGLE_SCORING",
+  "at": "2026-10-22T14:19:17.686495+00:00",
+  "evaluation_seal_sha256": "e14e5f3a6f5a75834f42fa95da193dd770301cfe9d3475fb5df6dbca2dd8439d",
+  "actual_dispatch_template_sha256": "4c371c44abb1187adbceb314e437b7aa9d5df2efa6fccf3825fb5781e5bf9937",
+  "model_attempts": 26,
+  "valid_evaluation_responses": 24,
+  "quality_computed_before_seal": false,
+  "no_further_model_calls": true,
+  "native_economic_runs": 0,
+  "pilot_untouched": true
+}

@@ -7,7 +7,9 @@
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:37:25.626530+00:00",
       "agent_task": "/root/rank_debug01",
-      "status": "COMPLETE_RESPONSE_PRESENT"
+      "status": "COMPLETE_RESPONSE_PRESENT",
+      "saved_response_sha256": "9f08a5edf48ef7d6bab0ac2e8447ac88eea5008927b90860ca4be4e43a0c8aae",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "debug",
@@ -19,7 +21,9 @@
       "status": "RESPONSE_PRESENT_VALID_FINAL_TRANSPORT_ERROR",
       "error": "Selected model is at capacity. Please try a different model.",
       "recorded_at": "2026-10-22T13:42:16.661423+00:00",
-      "note": "debug seal found valid unique JSON already written despite final agent capacity error; no retry/substitution"
+      "note": "debug seal found valid unique JSON already written despite final agent capacity error; no retry/substitution",
+      "saved_response_sha256": "26cf496563af3bb101acb50ecdca77c5679f59d8ccd5c98f441617cfbcd84af5",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -27,7 +31,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:43:58.531642+00:00",
-      "agent_task": "/root/rank_eval01"
+      "agent_task": "/root/rank_eval01",
+      "saved_response_sha256": "5d0b3caab9908c321808ec2592bd2cc8b915bdd74be78138c12467494565f359",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -35,7 +41,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:43:58.532531+00:00",
-      "agent_task": "/root/rank_eval02"
+      "agent_task": "/root/rank_eval02",
+      "saved_response_sha256": "26efaee4a127dbac755c9c3a162bbeaaac76d60b06d082079489d95e7bc0c2aa",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -43,7 +51,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:43:58.532701+00:00",
-      "agent_task": "/root/rank_eval03"
+      "agent_task": "/root/rank_eval03",
+      "saved_response_sha256": "054310472040c1589d60295a2b057dabd19f8d17e3f98a1aa5056291a6729c96",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -51,7 +61,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:48:28.163959+00:00",
-      "agent_task": "/root/rank_eval04"
+      "agent_task": "/root/rank_eval04",
+      "saved_response_sha256": "97b1c8045f71c0ca525ec2a7c0a89b2d7710cc7d948e3514b1ff5dc3b3a23f0f",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -59,7 +71,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:48:28.164105+00:00",
-      "agent_task": "/root/rank_eval05"
+      "agent_task": "/root/rank_eval05",
+      "saved_response_sha256": "e584e986373188be1d4d1de3452048810765e7bb52ab4353aaea016955e8a712",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -67,7 +81,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:49:49.725644+00:00",
-      "agent_task": "/root/rank_eval06"
+      "agent_task": "/root/rank_eval06",
+      "saved_response_sha256": "4f2bf4851fe2ba8d2f69a6377b40b496cea439e5895d390f1b78707639ca8680",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -75,7 +91,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:51:27.032665+00:00",
-      "agent_task": "/root/rank_eval07"
+      "agent_task": "/root/rank_eval07",
+      "saved_response_sha256": "75528f6faf21bb25b0c1646b401e345047fa8380181dde4e72deeba96014e19a",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -83,7 +101,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:52:24.873469+00:00",
-      "agent_task": "/root/rank_eval08"
+      "agent_task": "/root/rank_eval08",
+      "saved_response_sha256": "6893cf3635c7434fba879ac7e7fa048958350e77011d0efdf61ecb9d04cca671",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -91,7 +111,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:54:26.376225+00:00",
-      "agent_task": "/root/rank_eval09"
+      "agent_task": "/root/rank_eval09",
+      "saved_response_sha256": "c2f6668a37af54471a5197529da599b36c04a0b5eb2d6bae4c507401fff5d84e",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -99,7 +121,9 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:54:43.893405+00:00",
-      "agent_task": "/root/rank_eval10"
+      "agent_task": "/root/rank_eval10",
+      "saved_response_sha256": "cd17c223bb108956123c6bcd83ac036f5f137ca5643a4419609065a3c5080d04",
+      "response_present_at_final_seal": true
     },
     {
       "phase": "evaluation",
@@ -107,7 +131,139 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "dispatch_recorded_at": "2026-10-22T13:56:14.930331+00:00",
-      "agent_task": "/root/rank_eval11"
+      "agent_task": "/root/rank_eval11",
+      "saved_response_sha256": "007b2507c5a27153377a1a494eb1c5e2cea0f31194af9d3f3a0ab26c91b75466",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "5b3a25d69080",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:57:15.159598+00:00",
+      "agent_task": "/root/rank_eval12",
+      "saved_response_sha256": "8b8f46a40b43271ca869c787eddc0f16c1c342e8d7884eae7de518e6f963041e",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "612f035a180e",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:58:33.998617+00:00",
+      "agent_task": "/root/rank_eval13",
+      "saved_response_sha256": "d716e3ec1f47b3151071d0b963a60822cb7c99c58d3ae7d2d5d4975c802aaf4d",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "fc975e02ecb6",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:01:31.004080+00:00",
+      "agent_task": "/root/rank_eval14",
+      "saved_response_sha256": "74d3d8a136d758d22e1d3a0af4365783d2c470c458e3580c79025509fa3236e9",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "e5cc3b77b5c8",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:01:47.993321+00:00",
+      "agent_task": "/root/rank_eval15",
+      "saved_response_sha256": "3681dfbf876bef7a5b48f5c5bea85d8b95db503572ec44d2017821c883b0e4ed",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "56b2155da904",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:02:57.898721+00:00",
+      "agent_task": "/root/rank_eval16",
+      "saved_response_sha256": "98b3c3edd92454239265f8e47bcd78b026574737c7bc9563dc4c88acffc22b06",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "74222ffae44e",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:05:37.344156+00:00",
+      "agent_task": "/root/rank_eval17",
+      "saved_response_sha256": "7999582a9c88171c7874784b0c672ea2811d2b3f390cf80cdf1349376d06e2e7",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "3892764686ee",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:05:52.837155+00:00",
+      "agent_task": "/root/rank_eval18",
+      "saved_response_sha256": "f5bbb9f5b0c71354cc40cd99b34a52d5ab796eedb433c78e25e6ff7730db215f",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "ce448fb03c1e",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:06:36.547561+00:00",
+      "agent_task": "/root/rank_eval19",
+      "saved_response_sha256": "ca6d6b5be327d471cf5d17e12c60256331654e8982d766649c007e562b24eb5f",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "e54981865f08",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:10:19.721118+00:00",
+      "agent_task": "/root/rank_eval20",
+      "saved_response_sha256": "f18e2e11961245dc8b9b191078883d2b553ffdd13c6f90140a7a89d645ee1c1b",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "335548af304c",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:10:28.596400+00:00",
+      "agent_task": "/root/rank_eval21",
+      "saved_response_sha256": "74982916ae3be9332ee5c2ea71d294d4feb5acf4db4175c146018478741cf58d",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "03339fcd9564",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:10:28.596726+00:00",
+      "agent_task": "/root/rank_eval22",
+      "saved_response_sha256": "1bb7b5842a708fb525965792a24de709c2bcd3bc28ded749fcf5ae4ee5c7d13c",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "539909c65894",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:14:12.128012+00:00",
+      "agent_task": "/root/rank_eval23",
+      "saved_response_sha256": "f8d65b521748ff001e75604b07b2a1e1b56e4df97c683d31d9ffbacf7daf60e2",
+      "response_present_at_final_seal": true
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "3e2a3b6ce20c",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T14:15:01.788647+00:00",
+      "agent_task": "/root/rank_eval24",
+      "saved_response_sha256": "7054668f5761b78e1d4f250d177fd40d085f01a4dcd1c6f51f3b14d165591f86",
+      "response_present_at_final_seal": true
     }
   ]
 }
