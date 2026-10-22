@@ -1,0 +1,38 @@
+{
+  "decision": "GO_FOR_ROOT_ADMISSION",
+  "scope": "Narrow causal/blinding/contract source preflight only; root GO required before ONE prepare, model attempts or quality scoring",
+  "protocol_sha256": "54cacf6dffb952c65a2bc32fa40c0cd0b306ffd76fddd3c555cb45154405715a",
+  "source_sha256": "893e16c029821b813b6867b9627e077927a529e595f310fdb7ae8960b4dd50bb",
+  "preflight_sha256": "0cd183c853a44c3e7f57fbccb43c7e405279ee115f49d92e91c60511de67184f",
+  "test_receipt_sha256": "be2163feb42150b56fc26e60f3b9a461909e25009c282b3dfe5b794ffe0b069b",
+  "verified_source_data_pins": 20,
+  "correction_passes": 1,
+  "tests": {
+    "reported_passed": 10,
+    "test_source_hash_verified": true,
+    "reviewer_execution": "Source/test inspection and independent all20 pin hash verification; owner ran bundled-runtime functions"
+  },
+  "checks": {
+    "population": "699d, original198, original3 folds/H72/targets retained; calendar8 per fold +2 fit-only debug",
+    "availability": "fixedfold mature labels, scalers fit eligible past only; OLD_STRICT metadata separate",
+    "candidate_fairness": "same8 from original E1 stable greedy72h; numericalD1 reranks same8; no missing context deletion",
+    "blinding": "no query/candidate outcomes, calendar, absolute price, sigma or future entry; hashed IDs and independently hashed presentation order; fresh fork-none exact packet-only prompt",
+    "normalization": "signed ownlastH1/sigma72 OHLC+phase; relative past20 volume; closedH1/H4; tests cover price inversion/volume roundtrip/future mutation",
+    "D1": "saved causal StageA prefix A/B only; past completed D1 plus current observedH1 endpoint; no final C/D or full future duration; one frozen68geometry missingness/distance recipe",
+    "forecast": "six arms; rank harmoniclocal8+global8; same CDF vector18Q/6touch; invalid/missing/no_match globalfallback retained",
+    "sequence": "root durable ledger before dispatch; <=26 attempts includes missing/invalid, no duplicate query; debug seal before evaluation; allresponses sealed before savedtruth join and one score",
+    "focused_tests": "positive/null rank-scoring; maturity/future mutation/inversion/weights/invalid coverage/volume/closedH4 present",
+    "packet_serialization": "compact JSON separators, full precision preserved, actual250000byte assertion before calls"
+  },
+  "blockers": [],
+  "root_execution_obligations": [
+    "Persist ROOT GO before market preparation, inspect frozen24+2 packets and actual <=250000byte limit before calls",
+    "Count all attempts in durable ledger, use exact gpt-6-astra/max or mark INCOMPLETE, no evaluation quality retries/model substitution",
+    "Restrict each fresh predictor to exact packet/output; shared filesystem provides procedural blinding only, not enforced isolation",
+    "Seal all responses before joining truth; retain fallback/all-ID denominator and one score; historical sources/results/caches remain immutable",
+    "Disclose dependent H1/wave samples, exploratory seen DEVELOPMENT; StageA macrocycle engineering gate does not block this hourly screen or establish largecycle validation"
+  ],
+  "quality_reviewed": false,
+  "models_called_by_reviewer": 0,
+  "timestamp_utc": "2026-10-22T13:35:13.389083+00:00"
+}

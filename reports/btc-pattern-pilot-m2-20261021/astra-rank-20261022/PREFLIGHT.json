@@ -1,0 +1,38 @@
+{
+  "status": "IMPLEMENTED_NOT_PREPARED_NOT_EVALUATED",
+  "pins": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_astra_rank.py": "893e16c029821b813b6867b9627e077927a529e595f310fdb7ae8960b4dd50bb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_event_research.py": "a55ca53b19bc133d7a37f637ab7762486c2b7eec084d488a279cb534daee60bf",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_event_d90.py": "7bbf29ea3f46489efa1da87b53d66e741b5e4e1a4ab8cad75197ba02472bd319",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_inapp.py": "f13e016b87c07d3517d89f4f1a73befdca410725eef04480a9721a53cec10481",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_data.py": "8692cb61b41e4f15326b05793fe1950196af0c690b972ca949f7e74f0b1c0bf8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/research_rss.py": "7404ea50e3b5b4936b980ef649564a48e91f0003324d4f8e3a9850efabfb9a6f",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/astra-rank-20261022/protocol.json": "54cacf6dffb952c65a2bc32fa40c0cd0b306ffd76fddd3c555cb45154405715a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/manifest.json": "bc660056af9117a246a1334837b7e42c9bb2d0635945a0346a4b088a459685ff",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/catalogue.json": "f46e2e98ceae2dd078f03f4594899b3ac769d85dffe11e32001a6523ea6dbe61",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/inputs.npz": "2aaac52695a83c0dc60ec7836e9d2484fd6fdd7db5df3e532e4191327980fe85",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/RESULTS.json": "6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-d90-20261022/labels.json": "86e1ed8ab67f0877acddf0748df3560d5add132dd762afe816d3b8b5f8d8c1f9",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/event-d90-20261022/PREFLIGHT.json": "81d296241eee8728fb09c2cdf6d63e4af995dab3853ab677330b8d662e4f90f8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/fullwave-stage-a-20261022/run/catalogue.json": "f60c02dd558729317fd1a94d753e191f335ace498a0fbd4539a72a9837bfee37",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/minutes.npy": "dd0e8212a4e2ef949301265653dfe83d789fcaf89d455722a7400d4fe22b41a7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/metadata.npy": "42998f9d5678ffb661613dcd4714271a0106c22f20d2a197239ab2abc35252ec",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/context.npy": "1fba194c807d20735f1ec2cd68a5bbb60ef2224b874fdefd601946d570df4413",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/raw.npy": "ec910508ee1018a7cfbbd987991788ad2db0bc31110ca4a71e43881fa0c9e16f",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/features.npy": "ec1facef9627952fccf8d82ce41f92c99c369a095db3061bf95a631771e854d0",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/stamps.npy": "1deeb8a6d0d3c5e35294b885a10273c3476aea960cc6ae7a021322f821c4637e"
+  },
+  "protocol_sha256": "54cacf6dffb952c65a2bc32fa40c0cd0b306ffd76fddd3c555cb45154405715a",
+  "resource": {
+    "threads": 4,
+    "rss_gib": 6,
+    "hard_wall_seconds": 1800,
+    "expected_wall_seconds": 180,
+    "expected_rss_gib": 1
+  },
+  "model": "gpt-6-astra",
+  "reasoning": "max",
+  "responses_cap": 26,
+  "quality_computed": false,
+  "elapsed_seconds": 0.3255438329651952
+}

@@ -1,0 +1,17 @@
+{
+  "passed": 10,
+  "tests": [
+    "test_contract_availability_and_fixed_cutoff",
+    "test_selection_calendar_nonoverlap_and_debug_past_only",
+    "test_harmonic_aggregate_weights_one_cdf_and_missing_global",
+    "test_schema_ids_and_no_match_never_drops_rank",
+    "test_packet_future_mutation_roundtrip_and_direction",
+    "test_d1_snapshot_causal_and_future_mutation",
+    "test_numeric_d1_scaling_not_query_fitted_and_missing_retained",
+    "test_rank_known_positive_and_balanced_null_same_scorer",
+    "test_invalid_missing_no_match_all_ids_exact_global_fallback",
+    "test_volume_roundtrip_and_closed_h4_nonboundary_origin"
+  ],
+  "runner": "runpy functions; stdlib unittest+numpy; bundled python3; no dependencies installed",
+  "test_sha256": "206ed27639f78b7a62c7305c64ac37a211d43828de358510689a84e1ce80db7a"
+}
