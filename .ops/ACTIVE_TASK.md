@@ -10,6 +10,6 @@ Gate FAILED: all6 primary14d paired CIs cross0;28d sensitivity no admission. Pha
 FixedSL1 on198IDs: phase longTP1/2/3=77.78/44.95/20.20%;short80.30/56.57/22.73%. Full72hSL-touch actuallong33.84%,short31.82%; not actual traded stopouts. Level hit rates alone cannot rank different forecast levels.
 Outputs: reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/REPORT.md; immutableRESULTSsha6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c;792forecastCSVrows/72accuracy/12comparisons; saved-result export script; protocol/catalogue/GO/completion/rootverification.
 Root verification PASS: commonIDs/pools, label maturity/actual-support purge,72hneighbor spacing,18Q/6SL arrays, all saved loss arithmetic/TP counts, source/helper hashes; completion hashes and CSVrowcounts. No repeat evaluator/market read.
-Existing#122 / Project2 closure and exact read-back pending; no new issue. Result commit/publication pending.
+Existing#122 CLOSED(completed) / Project2 Done; exact issuebody/state/status read-back PASS (project-final-readback.json). No new issue. Results4d4785d published; GitHub refSHA read-back PASS.
 Protected: pilot/VPS/services/orders/secrets/S0/CHECK/native strategy unchanged. No economic/native backtest, no ROI/DD evaluated or improved claim. Event timing benefit not identified by same-event-ID comparison.
-Next: publish results, close this bounded package in existingProject and verify read-back. Further experiments require a new agreed hypothesis; no automatic training or backtest.
+Next: no further authorized execution pending. E2/E3 remain SKIPPED by failed gate; further experiments require a new agreed hypothesis. No automatic training or backtest. Final checkpoint via gitHEAD.
