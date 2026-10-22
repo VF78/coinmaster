@@ -26,5 +26,10 @@
   "scoped_review": "one material interpretation finding, coordinator corrected literal scope and checked text; no second independent GO claimed",
   "corrected_finding": "E1 fixedqueryIDs does not test independent event timing benefit",
   "all_future_execution": "REQUIRES_SEPARATE_PROTOCOL_APPROVAL",
-  "next_proposed_step": "causal full-period event catalogue and availability/sample-size QA, before forecast budget/fitting"
+  "next_proposed_step": "causal full-period event catalogue and availability/sample-size QA, before forecast budget/fitting",
+  "project_status": "Done",
+  "issue_state": "closed",
+  "project_readback": "PASS",
+  "report_commit": "19c61bfea04fdde8dccbebaba6eb5269174b2140",
+  "report_url": "https://github.com/VF78/coinmaster/blob/19c61bfea04fdde8dccbebaba6eb5269174b2140/reports/btc-pattern-pilot-m2-20261021/event-based-research-20261022/REPORT.md"
 }

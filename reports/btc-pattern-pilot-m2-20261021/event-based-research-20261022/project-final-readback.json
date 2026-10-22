@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-22T11:27:00.772344+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "issue_state": "closed",
+  "project_status": "Done",
+  "body_readback": "PASS",
+  "scope": "COMPLETE_ANALYSIS_ONLY_PROPOSALS_PENDING_APPROVAL",
+  "report_commit": "19c61bfea04fdde8dccbebaba6eb5269174b2140",
+  "report_url": "https://github.com/VF78/coinmaster/blob/19c61bfea04fdde8dccbebaba6eb5269174b2140/reports/btc-pattern-pilot-m2-20261021/event-based-research-20261022/REPORT.md",
+  "new_fits": 0,
+  "new_forecasts": 0,
+  "pilot_changes": false
+}

@@ -1,10 +1,11 @@
 {
-  "at": "2026-10-22T11:25:22.717484+00:00",
+  "at": "2026-10-22T11:27:48.935047+00:00",
   "files": {
     "REPORT.md": "5ef38def45863194ffccc05a4b349ad1087c2c77f4f3ad137ec468c23fe270e5",
-    "completion.json": "b59365c4d1f9a5244ab5e783a40c0860008ef696cf6444dcf06f2ad68ccef6ed",
+    "completion.json": "28a3263ce13a902eccbf58a3489d5270208ab19c42f6c87a0de715c4b69c546e",
     "event-wave-methods.md": "84726e4e25f1d572c520d6988df05de3c2c81e1671de8f7deb6c2873b55dfd9a",
     "price-volume.md": "f070fbaffc4d0545ddde1aec7216829a0102a986d76fb16877a4a0e234c76655",
+    "project-final-readback.json": "ac346decfd354eb2531ff24cfcad8102e5a2d269db7d0d82c7e1bc9c6939544a",
     "project-start-readback.json": "f3f84c7a6f9cd041d357bfda8a026847bda856d41dffd2c2b4cd1d431a8d4ae0",
     "results-audit.md": "6a3665647162e38f01fea2b54875de62c70755eb72e85295d25954c43f874fbf",
     "scoped-review.json": "7adfd93b3bfd378bb06b13d404d1268b948cf425f74bcee4eec284a9bf9e2d2e",
