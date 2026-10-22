@@ -1,0 +1,116 @@
+{
+  "duration_stats_full_in_period": {
+    "impulse_days": {
+      "n": 27,
+      "min": 1.0,
+      "median": 15.0,
+      "max": 101.0,
+      "count_100_200_inclusive": 1
+    },
+    "correction_days": {
+      "n": 27,
+      "min": 1.0,
+      "median": 14.0,
+      "max": 101.0,
+      "count_100_200_inclusive": 1
+    },
+    "A_C_days": {
+      "n": 27,
+      "min": 10.0,
+      "median": 29.0,
+      "max": 115.0,
+      "count_100_200_inclusive": 3
+    },
+    "A_D_days": {
+      "n": 27,
+      "min": 19.0,
+      "median": 40.0,
+      "max": 123.0,
+      "count_100_200_inclusive": 4
+    },
+    "confirmation_lag_days": {
+      "n": 30,
+      "min": 2.0,
+      "median": 8.5,
+      "max": 33.0,
+      "count_100_200_inclusive": 0
+    }
+  },
+  "terminal": {
+    "asof": 1777593600000,
+    "mode": "UP",
+    "support_start": 1715731200000,
+    "known_pivot_ids": [
+      "P0000",
+      "P0001",
+      "P0002",
+      "P0003",
+      "P0004",
+      "P0005",
+      "P0006",
+      "P0007",
+      "P0008",
+      "P0009",
+      "P0010",
+      "P0011",
+      "P0012",
+      "P0013",
+      "P0014",
+      "P0015",
+      "P0016",
+      "P0017",
+      "P0018",
+      "P0019",
+      "P0020",
+      "P0021",
+      "P0022",
+      "P0023",
+      "P0024",
+      "P0025",
+      "P0026",
+      "P0027",
+      "P0028",
+      "P0029"
+    ],
+    "A": {
+      "bar": 1773619200000,
+      "price": 74854.7,
+      "log": 11.223304180127592,
+      "id": "P0028",
+      "kind": "HIGH",
+      "confirmation": 1774224000000,
+      "confirmation_bar": 1774137600000,
+      "confirmation_price": 67828.1,
+      "lag_days": 7.0,
+      "initialisation": false
+    },
+    "B": {
+      "bar": 1774742400000,
+      "price": 65990.7,
+      "log": 11.097269101989035,
+      "id": "P0029",
+      "kind": "LOW",
+      "confirmation": 1775865600000,
+      "confirmation_bar": 1775779200000,
+      "confirmation_price": 72920.0,
+      "lag_days": 13.0,
+      "initialisation": false
+    },
+    "running_extreme": {
+      "bar": 1777161600000,
+      "price": 78622.1,
+      "log": 11.272408109379747
+    },
+    "status": "C_D_UNKNOWN",
+    "C": null,
+    "D": null
+  },
+  "all_h1_complete": true,
+  "h72_censored_ids": [],
+  "left_truncated_macro_ids": [
+    "M0000",
+    "M0001"
+  ],
+  "cross_A_full": 15,
+  "old_mapping_before_first_macro": 8
+}

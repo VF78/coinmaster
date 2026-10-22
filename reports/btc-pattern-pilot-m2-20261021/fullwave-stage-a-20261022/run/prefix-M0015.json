@@ -1,0 +1,55 @@
+{
+  "asof": 1744502400000,
+  "mode": "UP",
+  "support_start": 1715731200000,
+  "known_pivot_ids": [
+    "P0000",
+    "P0001",
+    "P0002",
+    "P0003",
+    "P0004",
+    "P0005",
+    "P0006",
+    "P0007",
+    "P0008",
+    "P0009",
+    "P0010",
+    "P0011",
+    "P0012",
+    "P0013",
+    "P0014",
+    "P0015"
+  ],
+  "A": {
+    "bar": 1742774400000,
+    "price": 87459.9,
+    "log": 11.378935681586427,
+    "id": "P0014",
+    "kind": "HIGH",
+    "confirmation": 1743984000000,
+    "confirmation_bar": 1743897600000,
+    "confirmation_price": 78376.1,
+    "lag_days": 14.0,
+    "initialisation": false
+  },
+  "B": {
+    "bar": 1744070400000,
+    "price": 76286.9,
+    "log": 11.242256511837388,
+    "id": "P0015",
+    "kind": "LOW",
+    "confirmation": 1744502400000,
+    "confirmation_bar": 1744416000000,
+    "confirmation_price": 85238.4,
+    "lag_days": 5.0,
+    "initialisation": false
+  },
+  "running_extreme": {
+    "bar": 1744416000000,
+    "price": 85238.4,
+    "log": 11.353207315506117
+  },
+  "status": "C_D_UNKNOWN",
+  "C": null,
+  "D": null
+}

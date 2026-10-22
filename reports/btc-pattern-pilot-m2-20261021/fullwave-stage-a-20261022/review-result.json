@@ -1,0 +1,42 @@
+{
+  "status": "GO_FOR_DELIVERY",
+  "prediction_admission": false,
+  "scope": "saved-result metadata/hash QA only; no detector replay or target computation",
+  "source_checkpoint": "b516de74c8e83e643b3d84263bfd08274506d32f",
+  "sealed_catalogue_sha256": "f60c02dd558729317fd1a94d753e191f335ace498a0fbd4539a72a9837bfee37",
+  "sealed_summary_sha256": "620516be5f7ccd3f9a45145e71d12b8a1e040fa92bfb391b7c114e1246620534",
+  "checks": {
+    "source_protocol_input_pins_match_run_go_review": true,
+    "original_core_output_receipt_hashes_match": true,
+    "old_result_catalogue_artifacts_unchanged": true,
+    "all_699_dates_preserved": true,
+    "372_old_ids_and_198_scored_exact_unchanged_mapping": true,
+    "all_prefixes_and_old_ID_mapping_known_at_origin": true,
+    "current_C_D_unknown": true,
+    "raw24_H1_and_h72_metadata_no_outcomes": true,
+    "cross_A_left_truncation_terminal_censor_consistent": true,
+    "OLD_STRICT_all_zero": true,
+    "CAUSAL_fixed_fold_raw_support": [
+      4,
+      14,
+      19
+    ],
+    "CAUSAL_fixed_fold_nonoverlap_upper_bound": [
+      2,
+      5,
+      6
+    ],
+    "single_attempt_no_retry": true
+  },
+  "catalogue_counts": {
+    "dates": 699,
+    "pivots": 30,
+    "triples": 28,
+    "full_in_period": 27,
+    "left_truncated": 1,
+    "cross_A": 15,
+    "macro_queries": 30
+  },
+  "conclusion": "Delivery approved for catalogue-only failed feasibility result. F1/F2 past nonoverlap support below six blocks forecast admission. Stage B/audit model work remain unapproved. Root handles visual/duration QA separately.",
+  "presentation_note": "Presentation-only derived views may be added from saved catalogue; original catalogue/SUMMARY remain sealed."
+}

@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-22T13:07:46.414213+00:00",
+  "status": "PASS_SAVED_CATALOGUE_QA",
+  "pins_verified": 8,
+  "receipt_outputs_verified": 21,
+  "dates": 699,
+  "old_h1_ids": 372,
+  "scored_ids": 198,
+  "causal_prefix_and_H1_timestamp_checks": "PASS",
+  "original_C_D_unknown_in_all_query_snapshots": true,
+  "full_waves": 27,
+  "A_C_duration_days": {
+    "min": 10.0,
+    "median": 29.0,
+    "max": 115.0,
+    "100to200": 3
+  },
+  "long_interval_nonoverlap_upper_bound": 2,
+  "long_nonoverlap_ids": [
+    "W0004",
+    "W0020"
+  ],
+  "catalogue_sha256": "f60c02dd558729317fd1a94d753e191f335ace498a0fbd4539a72a9837bfee37",
+  "new_detector_or_target_or_forecast_runs": 0,
+  "visualQA": "Full readableD1overview inspected; original charts retained",
+  "source_checkpoint": "b516de74c8e83e643b3d84263bfd08274506d32f"
+}

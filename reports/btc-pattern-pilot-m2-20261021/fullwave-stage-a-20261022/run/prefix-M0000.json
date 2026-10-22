@@ -1,0 +1,18 @@
+{
+  "asof": 1718841600000,
+  "mode": "DOWN",
+  "support_start": 1715731200000,
+  "known_pivot_ids": [
+    "P0000"
+  ],
+  "A": null,
+  "B": null,
+  "running_extreme": {
+    "bar": 1718755200000,
+    "price": 64940.2,
+    "log": 11.081222125418032
+  },
+  "status": "NO_CONFIRMED_B",
+  "C": null,
+  "D": null
+}

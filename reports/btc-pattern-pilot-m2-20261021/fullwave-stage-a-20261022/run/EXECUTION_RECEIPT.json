@@ -1,0 +1,49 @@
+{
+  "status": "COMPLETE_EXIT0",
+  "source_checkpoint": "b516de74c8e83e643b3d84263bfd08274506d32f",
+  "attempt": {
+    "pid": 56302,
+    "started": "2026-10-22T13:02:39.543292+00:00",
+    "pins": {
+      "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/manifest.json": "bc660056af9117a246a1334837b7e42c9bb2d0635945a0346a4b088a459685ff",
+      "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/prepared/minutes.npy": "dd0e8212a4e2ef949301265653dfe83d789fcaf89d455722a7400d4fe22b41a7",
+      "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/catalogue.json": "f46e2e98ceae2dd078f03f4594899b3ac769d85dffe11e32001a6523ea6dbe61",
+      "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/RESULTS.json": "6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c",
+      "reports/btc-pattern-pilot-m2-20261021/fullwave-stage-a-20261022/PROTOCOL.md": "f63c1038c6c308e137cfd42ad891debbce5559b35a17b1b643ac65c35beda16a",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_fullwave_stage_a.py": "90dcf2d1c3c3e7d06728ea6cdecb4bd1d9240286935c1de57674e5707d89e945",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/research_rss.py": "7404ea50e3b5b4936b980ef649564a48e91f0003324d4f8e3a9850efabfb9a6f",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_inapp.py": "f13e016b87c07d3517d89f4f1a73befdca410725eef04480a9721a53cec10481"
+    },
+    "no_retry": true
+  },
+  "elapsed_seconds": 0.7914794581010938,
+  "peak_rss_bytes": 131645440,
+  "launches": 1,
+  "retries": 0,
+  "targets_computed": false,
+  "visuals_derived_from_sealed_catalogue_only": true,
+  "sha256": {
+    "ATTEMPT.json": "291e5a54f5108eae9b9d7adfed6400ea3538909eaa84fc6aa22979dd46ad9158",
+    "DERIVED_METADATA.json": "c16545bbf792f6f8c2cfaf7dfad4067bdfdc9d8b5e65c7692d11b59494ccf0c9",
+    "REPORT.md": "25f2bdc7a940026ce84b9591f2d2edf8016f6cc34d7b5e2a879d9c9e0d3e9710",
+    "SUMMARY.json": "620516be5f7ccd3f9a45145e71d12b8a1e040fa92bfb391b7c114e1246620534",
+    "catalogue.json": "f60c02dd558729317fd1a94d753e191f335ace498a0fbd4539a72a9837bfee37",
+    "findings.md": "775f073687f1c50151c19b5c2bb6a56cc9321226ff1d365daa773e30af311169",
+    "full-d1-readable.png": "76c89972053ea44e510d67cf85c60c79feff4a1cba51aa86ee3f25376d66f1b4",
+    "full-d1.png": "3dd70cc497315292af296b5bbb3f6639a4d3e1c1f87bddbaf2c2b7cb3bdc40b6",
+    "macro-query-support.csv": "d48d25386740063fbfe4d0830f72c841f4e56507bf9def984a60e32edab53f8e",
+    "old-h1-mapping.csv": "a8d87a0d86612d4bd68d6d3a05936c47299db250cfe18da13ec58991c6bba363",
+    "pivots.csv": "7257b2cbc6ee60a42e040d4e04f746da49ab06d7ca3f4df0ba6b69f3d27a38d7",
+    "prefix-M0000-readable.png": "fd74a50bb25b0c1f95a80a73979f0b21cf356e4890751fd23601ff73c0d2512d",
+    "prefix-M0000.json": "f7421f00454747a9c19701c738b49da79921136e126ebf2198c74ab7905dc2c2",
+    "prefix-M0000.png": "b0226bc5aa5c88725cfcbf002b3db33338443d978f505f7841e8048796400802",
+    "prefix-M0015-readable.png": "b4a4690405d2616c2776eaaadd7bd6af011e2a4ddcc4edd486967b22c97cff94",
+    "prefix-M0015.json": "eebf6b4fa5237b64c5ff4375182892745a70fd6cbd9b93b1ec06ffa8b6cea61c",
+    "prefix-M0015.png": "6de4c82238c4ea595047574e757e53c0bda2e411cbd4cb0061d3ad6edd6fb956",
+    "prefix-M0029-readable.png": "8809c45ba24a8fce94d616c69bd7ce9b12a0797546bd4e04b05cd615d26ab320",
+    "prefix-M0029.json": "7567ac7f66098e705eede4ae50086102f312ad2a555aa83675b45472700a3640",
+    "prefix-M0029.png": "ef60c6f3833c020c78cb3899bdc0615aed901b1b2733ca1ab7007ad2b060086f",
+    "waves.csv": "e256871472849e8047a6d4314b5b9dbf6854934f7e9520432fc96db8749cea4d"
+  },
+  "visual_qa": "Original full and all3prefix charts inspected; supplemental overview/prefix exports from saved catalogue; January/March overlap reduced with collision-managed labels"
+}
