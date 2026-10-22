@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-22T10:59:33.753829+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "issue_state": "closed",
+  "project_status": "Done",
+  "body_readback": "PASS",
+  "stage": "INAPP_COMPLETE_NO_CONFIRMED_SIGNAL",
+  "forecast_responses_used": 58,
+  "forecast_cap": 60,
+  "report_commit": "19231e901cb0c1ddac4cd3256f65dde694740026",
+  "report_url": "https://github.com/VF78/coinmaster/blob/19231e901cb0c1ddac4cd3256f65dde694740026/reports/btc-pattern-pilot-m2-20261021/inapp-chatgpt-protocol-20261022/REPORT.md",
+  "pilot_changes": false
+}

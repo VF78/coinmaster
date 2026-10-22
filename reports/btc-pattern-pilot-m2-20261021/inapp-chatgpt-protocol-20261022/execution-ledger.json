@@ -1,5 +1,5 @@
 {
-  "status": "FORECASTS_SEALED_SCORED_REPORT_IN_PROGRESS",
+  "status": "COMPLETE_NO_CONFIRMED_SIGNAL",
   "approved_at": "2026-10-22T07:37:58.433524+00:00",
   "owner_approval": "GPT-6.1 Sol/high,24windows,max60responses,fullhistory,pilotuntouched",
   "model": "gpt-6.1-sol",
@@ -1003,5 +1003,12 @@
   "retries": 0,
   "completed_at": "2026-10-22T09:05:45.993717+00:00",
   "result_sha256": "bb056b3e297b93cb5e28238895b5e2501b698811582bceb2fa3a9eef80a7e72d",
-  "pilot_touched": false
+  "pilot_touched": false,
+  "report_complete_at": "2026-10-22T11:00:11.442216+00:00",
+  "report_commit": "19231e901cb0c1ddac4cd3256f65dde694740026",
+  "project_status": "Done",
+  "project_readback": "PASS",
+  "export_case_rows": 72,
+  "export_forecast_rows": 432,
+  "post_resume_forecast_calls": 0
 }
