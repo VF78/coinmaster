@@ -1,0 +1,8 @@
+{
+  "ps_success": true,
+  "process_matches": [],
+  "lsof_returncode": 0,
+  "lsof_scoped_open_matches": [],
+  "lsof_stderr_present": false,
+  "note": "Only scoped matching paths and executable names emitted; full process arguments and unrelated open files are never stored."
+}

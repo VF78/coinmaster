@@ -1,0 +1,1538 @@
+{
+  "status": "awaiting_internal_GO",
+  "created_utc": "2026-10-22T15:21:11.266870+00:00",
+  "delete_allowlist": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-2-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "8c68d3760819fb07926236d3e2eddc855808655844812f30d63f075b51afa1b9",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-0-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "1aa491416143953c06b6b8f1e29d84c7def577e83db7ddf4e877a20216175626",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-0-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "1cb8b6248006c4af2cbaa1b7dd502dd98e91a8187b7e0eceed463ff21d8e0f50",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-0-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "59fb0f9de93e4542af081ef0468d072aca97b0a9525b12735fee77b3ccabbc41",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-2-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "625b8fc043f742a6fffbd5cf729d6b11b3b18683f5eef8efcdcc5e5f8d6b59b3",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-2-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "e81ecc08df1bf235f6300a39da43e8287191a1d694d9c3da50bbe3de0d9574de",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-1-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "58cfabe5dc9ad06ba42eeee7bddcbe44cd2a8184e1ef4c92ed1728150950ec09",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-1-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "fef79ac856d3b85fd89cc8c40824dfea8ea8787f6cf5ed9d62572c11bc93649e",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-1-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "689accc6005778a4c8d7503fed1d92f2f8f0026ec7090b6d9fd40b7b0a745d56",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-1-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "32985546d564b420a44a57d50a2a64a1a85b3eb48887a32285cd9625387edc2b",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-1-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "6ac961566e28af2299413db0392cb73b9c1bf06fe4a526b3666c91a42fa29661",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-1-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "0df9f9b75e4d69508b60aa34e98bbe05907f42a20e6028f1b9d94b86f1d12942",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-0-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "160afb2f6c6705273756d3b0830c0502a0fcd8d8f48f331cdb5f8f69d8f1aa90",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-0-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "683513dede1ae512904e65ac3f0692b2a46486f6be4112517d0135a1bba40899",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-0-2-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "bfc62c6e85f75e750809ed52a8dd77d2787d67707055dd550d86b6241c6a073e",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-2-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "69d6cbcda901653dcaae9d1e9ca2f620bd3801aca9f7035d16de68c1cd421338",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-2-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "73d835aa9452edd48f8828b3a93bbabaa415fd740d70f3c67d86c98076d44b3a",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/linear-1-0-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "f0ece46cb8c247befe85b8a8d9351379e10621d3bd3a40c2b005f81e27124ed0",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-06-01-ES/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "5d5625b17b9342196f90bd5b06bd60900ca04ad812eb551e068c4fcaa551e4ff",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-03-01-full/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "dc6d28293c2c3f3c63371991523ede5ea797bf9f880543087d73629a1d27bccf",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-03-01-ES/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "3dc4ab0a3ae2f92fce73b40239013385e0ed7579cf517c37dc4179e75462b9d4",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-09-01-full/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "5b7aba18b1c69752411b7c7fad893d261d4f0183fcdf8fbe8d12629c82d98b73",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-09-01-ES/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "bc2772af88e232ba53cbf2f57042685809f24187185e140c8f37f4ad64e7c60d",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-06-01-full/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "c01b31ce230dbde3c7eff42a338838e0a79047cf6a4774b929d722c223a8252c",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/profile-C/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "29c2c69d63afdd1ae0df2c4fe3b7170f01c36026bbad4eafe91d4711eee92dcc",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-2-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "c61e94d8ef5934f966aeed518db908fc7bbb12b67b339c4226f8756960ede1b2",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-0-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "df16ec8a78a4b409a8317d7a15e0822a5bfe1251b9e25430ab13a0f130215bdd",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-0-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "9d5b9cc62d6a8a90a2a7c5acb0cf92ae788cc6dbafb18419b5b74db66ca24963",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-0-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "bcd6d7efc32c5fa2b01f1987fd7241c3626b7eeaca50aec302109d63e1eff37b",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-2-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "25d6f6f45b12b0b2b746cac3af2bdcce105564b910ff9daebbf3bf3835dbbfe3",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-2-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "9ee3abd8ab4a2ff7e69e7b2a8530a5c9a9ca2a13babe6cd4baadd5b73da08d62",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-1-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "41ba4560f17d7bdbbdc7c9dc516d2d9dbdb2579a2c6dba791965e933f80436e5",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-1-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "bdb4e19913935644f4f90211845712afc40f032b70cbba4f4a8711679acf3c31",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-1-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "a638320ac01a79a2c22fe90be1e73467579fbb2d4021c5e3e992a595540756b2",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-1-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "e65f97b7bee3e1147d8b2398c70442b57c9e5335bcfb2c0fcab13fbabbd9ab28",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-1-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "1afacd0424e83fe1a952697ae1d166817e488dfa63601a081877ba62b3c29ee9",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-1-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "f202c2090aca7de5cc62aa2ec3ff040157a9764d9bd92250ad047b5405a074e0",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-0-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "4077cec9458575751a1594e1dadaa5a41db50f54d97f80b08ee917f86ee67eb5",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-0-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "d1339cbaab4e203c5f6478449fdc5681207c7cb052af8906f3eaa3700c2dfd4d",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-0-2-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "1aff48ab198c137de0427e0dc2e4c4817672f624a7b26e2bc224074927b29f67",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-2-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "08665f4ce4439ae2f411c788cac0e25d9a9a21b8ceb6d18727c7e0195cdd814b",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-2-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "47a68dcfdcca773f321983288e519f27af19abe6efb1017480e51d8eab5eae7b",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/linear-1-0-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "3c5170308d5303d27fad76d2708b5030c5a6e1673d3f82e274063c9b37d55492",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "8c68d3760819fb07926236d3e2eddc855808655844812f30d63f075b51afa1b9",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "1aa491416143953c06b6b8f1e29d84c7def577e83db7ddf4e877a20216175626",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "1cb8b6248006c4af2cbaa1b7dd502dd98e91a8187b7e0eceed463ff21d8e0f50",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "59fb0f9de93e4542af081ef0468d072aca97b0a9525b12735fee77b3ccabbc41",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "625b8fc043f742a6fffbd5cf729d6b11b3b18683f5eef8efcdcc5e5f8d6b59b3",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "e81ecc08df1bf235f6300a39da43e8287191a1d694d9c3da50bbe3de0d9574de",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "58cfabe5dc9ad06ba42eeee7bddcbe44cd2a8184e1ef4c92ed1728150950ec09",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "fef79ac856d3b85fd89cc8c40824dfea8ea8787f6cf5ed9d62572c11bc93649e",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "689accc6005778a4c8d7503fed1d92f2f8f0026ec7090b6d9fd40b7b0a745d56",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "32985546d564b420a44a57d50a2a64a1a85b3eb48887a32285cd9625387edc2b",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "6ac961566e28af2299413db0392cb73b9c1bf06fe4a526b3666c91a42fa29661",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-Q-long.pkl",
+      "logical_bytes": 28235,
+      "sha256": "0df9f9b75e4d69508b60aa34e98bbe05907f42a20e6028f1b9d94b86f1d12942",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "160afb2f6c6705273756d3b0830c0502a0fcd8d8f48f331cdb5f8f69d8f1aa90",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "683513dede1ae512904e65ac3f0692b2a46486f6be4112517d0135a1bba40899",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "bfc62c6e85f75e750809ed52a8dd77d2787d67707055dd550d86b6241c6a073e",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "69d6cbcda901653dcaae9d1e9ca2f620bd3801aca9f7035d16de68c1cd421338",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-Q-short.pkl",
+      "logical_bytes": 28235,
+      "sha256": "73d835aa9452edd48f8828b3a93bbabaa415fd740d70f3c67d86c98076d44b3a",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-D.pkl",
+      "logical_bytes": 37156,
+      "sha256": "f0ece46cb8c247befe85b8a8d9351379e10621d3bd3a40c2b005f81e27124ed0",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "5d5625b17b9342196f90bd5b06bd60900ca04ad812eb551e068c4fcaa551e4ff",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "dc6d28293c2c3f3c63371991523ede5ea797bf9f880543087d73629a1d27bccf",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "3dc4ab0a3ae2f92fce73b40239013385e0ed7579cf517c37dc4179e75462b9d4",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "5b7aba18b1c69752411b7c7fad893d261d4f0183fcdf8fbe8d12629c82d98b73",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "bc2772af88e232ba53cbf2f57042685809f24187185e140c8f37f4ad64e7c60d",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "c01b31ce230dbde3c7eff42a338838e0a79047cf6a4774b929d722c223a8252c",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/scaler.pkl",
+      "logical_bytes": 738,
+      "sha256": "29c2c69d63afdd1ae0df2c4fe3b7170f01c36026bbad4eafe91d4711eee92dcc",
+      "reason": "serialized fitted forecast baseline pipeline or expired TS2Vec encoder scaler; source confirms fit-only research recipe, native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-0-Q-long.cbm",
+      "logical_bytes": 135752,
+      "sha256": "8e7b21f1ec30e89bf48860b3f1f139ef46b9a3a225177ed597f1aae6e3d04b4c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-2-D.cbm",
+      "logical_bytes": 33584,
+      "sha256": "56d971cf07ac86dffbaa7c49fdbb24a03b865f7eee348de9e2c4079ea671307b",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-0-D.cbm",
+      "logical_bytes": 302304,
+      "sha256": "f8416c5053f3341b3c2c72fa898c3abbff3de899a5400c738a82fcbdac98d627",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-0-Q-long.cbm",
+      "logical_bytes": 13264,
+      "sha256": "edd151244a2d72d213e54aaa5fe5f41532a68e9a1fa70911eedc0dfab245ae31",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-0-D.cbm",
+      "logical_bytes": 14352,
+      "sha256": "ef007c421cba6fc697fb689c501f5e5b7f29340234a83353458d56514eafd187",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-1-Q-short.cbm",
+      "logical_bytes": 23240,
+      "sha256": "fe4c4e5b9ce5699a8145a105e4857c27b287a0b4b74761ce559a3cf42825d3e5",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-1-Q-short.cbm",
+      "logical_bytes": 32032,
+      "sha256": "5b0bb763d3e0d4205d693b0580bfffc39ea3d80fe713f6e347c43aa6b8ba2584",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-2-D.cbm",
+      "logical_bytes": 77944,
+      "sha256": "de882487a038eb0279f009e96ad484b9e00e09f9625c07820bd2788e162c4a36",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-2-Q-long.cbm",
+      "logical_bytes": 37520,
+      "sha256": "1b74574030cd5a6dc8ea89f0c1e9e44b7916e838f5d571c233b2683a1565c0c6",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-1-D.cbm",
+      "logical_bytes": 35384,
+      "sha256": "1e8f04d81b2a84063e74d2ce5bc4880a16c1de2afc16b577144c73f64f291ba0",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-1-Q-long.cbm",
+      "logical_bytes": 185592,
+      "sha256": "efef9f5aee2a0e653b5f11179f3598e1784ced7a71f4b64c41192e6d20d10164",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-2-Q-short.cbm",
+      "logical_bytes": 25184,
+      "sha256": "d85083d57f4751261f7bdbb2318a752852ba2dd622c35cfacdec0a644bd30b88",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-2-Q-short.cbm",
+      "logical_bytes": 10160,
+      "sha256": "31caf22ae5f5f8ce44d631cac89e99cb3d90a4a5ed15925d05142a0daba50295",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-1-Q-long.cbm",
+      "logical_bytes": 138264,
+      "sha256": "ddb20a33b2b1b5a86276c14792a71b98edea1d3647dbaa68da3ac005ccf56f26",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-2-Q-long.cbm",
+      "logical_bytes": 38104,
+      "sha256": "0d611eaa03de9398244d748215418e8b9114c62dbfbcdc2975531e09fc96e413",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-1-D.cbm",
+      "logical_bytes": 38416,
+      "sha256": "ef2758567eb227d62525fe1f380bff66cf6d51e3a03e90a302ac88b7faf4805f",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-0-Q-short.cbm",
+      "logical_bytes": 39504,
+      "sha256": "686ab822f88c41fbebd53ac141a71def619cf91515745c5a3a5ef65675f0332e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-0-Q-short.cbm",
+      "logical_bytes": 219296,
+      "sha256": "89d81c6cecb9943cab34dcc726218eb2f6e5ef5c6dc3b9c807112f14db2b16b7",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-1-Q-long.cbm",
+      "logical_bytes": 96512,
+      "sha256": "832711ad531813a012e7d31cb647a2715e1ba968997d6bd4d662cb904376786b",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-2-Q-long.cbm",
+      "logical_bytes": 55648,
+      "sha256": "61a09d6c46de9a16718f4914f53fd3ef9b2e3d5a5dc2b01243425f2ce3f30d86",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-0-D.cbm",
+      "logical_bytes": 32976,
+      "sha256": "cf301fed9edc071e5a7287007da6182f24c167c757129098a4824e5e269faafb",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-2-D.cbm",
+      "logical_bytes": 57560,
+      "sha256": "152ca2072fc550488c329d5daa62600a00f29cfc97741b30f6431e91061d3239",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-1-0-Q-short.cbm",
+      "logical_bytes": 89752,
+      "sha256": "36071954ef69f058385d7ad46e0dd4246ddcd6726d4347eb4a74215eea89ce61",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-0-Q-short.cbm",
+      "logical_bytes": 36392,
+      "sha256": "c672395ef3b628bbdd2ada715173f5897955c553507066b0efb80d08d6926313",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-2-Q-long.cbm",
+      "logical_bytes": 25176,
+      "sha256": "60cc379b7a7957c4576ae970324a15a9064a45173090292dd0fada0de9e30c22",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-2-D.cbm",
+      "logical_bytes": 41360,
+      "sha256": "11c6b585f781c41091d0aab343a5c1742b620f266e0adf93aa490933f95d4702",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-1-Q-long.cbm",
+      "logical_bytes": 170440,
+      "sha256": "af2a59fd6aebc9b0c4450f7dcf3640a1ad20113a92f13a6503be266ee9327f4c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-2-Q-short.cbm",
+      "logical_bytes": 10160,
+      "sha256": "59a24dbc41a8a73b780cda197892cf0ec79574a2952021ca8155c040c313ece1",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-2-Q-short.cbm",
+      "logical_bytes": 25184,
+      "sha256": "cc104186a4a7ba7752282ad861277f567d0a118077947e2f342a6d97f1ca0c69",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-0-D.cbm",
+      "logical_bytes": 25760,
+      "sha256": "7ecd542204f28b3d30089e73dbfd7679eb76bb3b5033f02c4a1a46c643143658",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-1-Q-short.cbm",
+      "logical_bytes": 50696,
+      "sha256": "dfc0cfe70eeacef2ee9288cb68f16fb5afd6e15fcd013d9691c83dbc1cdac5f0",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-0-Q-long.cbm",
+      "logical_bytes": 27680,
+      "sha256": "b0fe9b8c0a108b13ef038948310dd44228fcc8937fe5d69d80989df639ecb457",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/shape-d4-0-1-Q-short.cbm",
+      "logical_bytes": 12032,
+      "sha256": "c922a0cf40656978be2d57c031cd5d5f3cb98421b8d843c8d6f5dd03c33d3c9d",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-1-D.cbm",
+      "logical_bytes": 101480,
+      "sha256": "cdeaa15b94ffc62c300ef23444bfddf7249ab6541c38fe99825a5babb6fe7cff",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-1-0-Q-long.cbm",
+      "logical_bytes": 25176,
+      "sha256": "a425dfb4303b2e13ae231562e82f3d738141b18f8cf4eb656c472294dcfe4a79",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A-utc-corrected/joint-d4-0-1-D.cbm",
+      "logical_bytes": 81024,
+      "sha256": "6fb0f1b79a8c31447f1b1af26d0046486d14fa4ad665dd59e4c9201bc25f305c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-2-Q-long.cbm",
+      "logical_bytes": 44600,
+      "sha256": "c368c6ba4c549a80dd617a522e57e5646b8c138d9db3110e42347aea356cc714",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-2-Q-long.cbm",
+      "logical_bytes": 25944,
+      "sha256": "eae8ac51a55c3330ddc8fdce006255effcda885bfacf075e5775b145da478ad5",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-1-Q-short.cbm",
+      "logical_bytes": 29680,
+      "sha256": "b87fd196de8d66706b6d790f687c39b3c4846c0bfe7ffde397c3f1663c898386",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-2-Q-short.cbm",
+      "logical_bytes": 25952,
+      "sha256": "d46b691f746fa55615f6bcd2a8fc51d615c871a5a7478db40d16fd018b509186",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-0-Q-long.cbm",
+      "logical_bytes": 39008,
+      "sha256": "bee9c5c10fba00d0b8626463d96bf255a5853d68a1fa5ce6ab1faacb7cf4e8d4",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-0-Q-short.cbm",
+      "logical_bytes": 27184,
+      "sha256": "5dee80baeb47dc1eeb4a023657417e8fbd2df1b0d51b9d0e38bbee011dad2ff2",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-0-Q-long.cbm",
+      "logical_bytes": 25952,
+      "sha256": "ccb5eae8729b4e6eb2702b431894adf222aade9bb03f7b3524d4fb85cd6ccc15",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-0-Q-short.cbm",
+      "logical_bytes": 71328,
+      "sha256": "bda6fefe21a8985ae1d293709e5334790b866da685d99bf5b7c550bbc7f6296d",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-1-D.cbm",
+      "logical_bytes": 87792,
+      "sha256": "b6d867fe8e8ff0de39212c54b76f88d0376fa4831ea0970b9e20709abd3d1c7e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-2-Q-short.cbm",
+      "logical_bytes": 25944,
+      "sha256": "d1b59f06e57a30461c0a64a9aa6d885db06c978f78e0ab9c29f6cdaa2d930e9f",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-1-D.cbm",
+      "logical_bytes": 137032,
+      "sha256": "f8bba96d502229eb948e18c8a502700f9146b1d22f8cb4d3f5ad68918ceb3a25",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-0-D.cbm",
+      "logical_bytes": 25928,
+      "sha256": "69bcc32bd71db4e1a45cd7442086cd354ed18cf623271a80469b800042da9533",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-2-D.cbm",
+      "logical_bytes": 65520,
+      "sha256": "777ba7ad2c4643407c7b065cad6b0090935f8c5f41e30a0a48c0d05745182fbe",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-1-Q-short.cbm",
+      "logical_bytes": 46512,
+      "sha256": "eac3516bf41b5ff11a1df1d3bcae3ae6374b545f5631df9bb4c83fbb915f9a2e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-1-Q-long.cbm",
+      "logical_bytes": 139768,
+      "sha256": "c962fb47e19d04f5801f6950b52bda88c041be1bc6c549d0dc44284fd78f2b6f",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-2-D.cbm",
+      "logical_bytes": 54128,
+      "sha256": "a51e73f4b9c692f7e6ad68b4508fc739108deba5849bb6cf6e88dfe28e420321",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-0-1-Q-long.cbm",
+      "logical_bytes": 116112,
+      "sha256": "48f1904efad42e430ffe5ccb2e5dd69dd41d285e4b172cda7795ffbb862d4ec2",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/joint-ts2vec-d4-1-0-D.cbm",
+      "logical_bytes": 37960,
+      "sha256": "362e514e2c01f5c42e97cbbc1b96df642d1b8252702bb49ee4a8532749f61d97",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/controls/positive-Q-short.cbm",
+      "logical_bytes": 68560,
+      "sha256": "dd6200e05d039ab2220955ede0f6eafd879ecba936fb85e3741556c92c62f223",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/controls/positive-Q-long.cbm",
+      "logical_bytes": 68560,
+      "sha256": "6f7bd7766c05d1150107ac898b44c0fff8cd0579854fd9c64adff911591f10ef",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/controls/positive-D.cbm",
+      "logical_bytes": 66448,
+      "sha256": "c12bb03206049d0228d9778f7167d50dbf741bce108c4e231b92069f3302cb84",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-0-Q-long.cbm",
+      "logical_bytes": 135776,
+      "sha256": "bdc4ff3b5a1e98d89ab8dfcefe464bdf68148f2b3cc598ccdeb264de970ad947",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-2-D.cbm",
+      "logical_bytes": 30576,
+      "sha256": "de7da10dddb10c6424cbddf3c7563a8deffb2fa92c680db4dddac796a25ef70b",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-0-D.cbm",
+      "logical_bytes": 307712,
+      "sha256": "e21bba7cd943f44f46bc20567d7bdcd5bc613edc6bf2334d715fe0ff9d460aa8",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-0-Q-long.cbm",
+      "logical_bytes": 10784,
+      "sha256": "b97271afcfcae3d6170a0b84efacf7c94f75fc37459b6b445b3f3b43d5d29943",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-0-D.cbm",
+      "logical_bytes": 23368,
+      "sha256": "3bda5f40280573b186be17adc1aa8f4fdb2894f8ef9466eb9b7b990c3bffa49c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-1-Q-short.cbm",
+      "logical_bytes": 23240,
+      "sha256": "a450a1dd5932d2f6273cf4701ed5ccbb53ef47e36bf557a04c494b9828802d4e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-1-Q-short.cbm",
+      "logical_bytes": 32024,
+      "sha256": "c9fc8153e7940dcb4d33c13564fd89fee4a45cffa493ae61d538efd3fae2bb9c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-2-D.cbm",
+      "logical_bytes": 74936,
+      "sha256": "0db934b59cda9abe5afd67584490888c7eb47cff7446327fa899ff12ccb75a25",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-2-Q-long.cbm",
+      "logical_bytes": 42472,
+      "sha256": "4bde2af9e4896eeb75a405ac2fa7fd60ea777ed6e3bf63c27e998d62bc7084a1",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-1-D.cbm",
+      "logical_bytes": 36584,
+      "sha256": "d2226ffa73ad676be1db9c935ab288fd643036ebf7a16a8ddc4b661c30edf30c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-1-Q-long.cbm",
+      "logical_bytes": 187504,
+      "sha256": "cddb4bd6ee6f800ea71e9599c8ca623231a9088a9fa063b5832c87c8ee25ad39",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-2-Q-short.cbm",
+      "logical_bytes": 25184,
+      "sha256": "500ed004fa35456592fc872c810a8e99b9a72d5538c10a74bf967f719d47e394",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-2-Q-short.cbm",
+      "logical_bytes": 10160,
+      "sha256": "c43514275687051d352a4e53b45597ac5d44ce7bbc811bda1e57dcc9fb11d11c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-1-Q-long.cbm",
+      "logical_bytes": 133936,
+      "sha256": "ca01b61ed5606d3e319ea113d38cd4dedf33c35609410a2d5955df1ed2fac789",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-2-Q-long.cbm",
+      "logical_bytes": 20720,
+      "sha256": "7ec8c4a734fb17222e7b2cf44f60192ab692d61094f888a64b6c9c8a02b14992",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-1-D.cbm",
+      "logical_bytes": 37208,
+      "sha256": "60ddd577da736db330b5dffdca346e431a6e1264230c900b17a3cc60b9d81946",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-0-Q-short.cbm",
+      "logical_bytes": 40744,
+      "sha256": "e73219dec54ef6d63ca1d03b6de8130a7a603d55710a806f8ca837212a25ae6e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-0-Q-short.cbm",
+      "logical_bytes": 241488,
+      "sha256": "e67c4adc5cd581715252f218f8aab0d545f13a5202cc78e041cb9b03819ce356",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-1-Q-long.cbm",
+      "logical_bytes": 99632,
+      "sha256": "615e40ea13a7c0c006ab6c1d8bc08f4c3d8e0290f22334563049f8bcdcf1b3a9",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-2-Q-long.cbm",
+      "logical_bytes": 63720,
+      "sha256": "afe27aa0dd7966373ad84510acaf80b7ce558df9253bff04d968f0ac38836bf4",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-0-D.cbm",
+      "logical_bytes": 32976,
+      "sha256": "71fd6038d05df772be03fe83a70e7b6ee493dcef47cec586b43130fbced1ce6d",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-2-D.cbm",
+      "logical_bytes": 44968,
+      "sha256": "92250f2a0ae185eb1659ec695ee105b46098954c6dfd0fd1071a95b281746af1",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-1-0-Q-short.cbm",
+      "logical_bytes": 66168,
+      "sha256": "70b74a162e4e5cf286378cbf97d42524840afe6900206242003255ff6aa99c3a",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-0-Q-short.cbm",
+      "logical_bytes": 33904,
+      "sha256": "ef4a22540102a6e2efc5402658a59985726c0c62d0389ecfd7136b29771eb402",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-2-Q-long.cbm",
+      "logical_bytes": 25184,
+      "sha256": "612a6b28db8a3511e9a20e796326426952b9ae991f83f12334f86c422e3000eb",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-2-D.cbm",
+      "logical_bytes": 52144,
+      "sha256": "dcb6b8d09adc63f307bf983bedee0558e7bbb0554cfd2628ed2fa6cac544a859",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-1-Q-long.cbm",
+      "logical_bytes": 209472,
+      "sha256": "58c63e4328bb46fa23583c56b52122e374bc5f440e23deb8312e45954a62dff1",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-2-Q-short.cbm",
+      "logical_bytes": 10160,
+      "sha256": "3ada1af5b3e14ba9d87f1cb3b9633b507ecfb23fc2ceed162dded6d2b5f1309b",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-2-Q-short.cbm",
+      "logical_bytes": 25184,
+      "sha256": "81f2b6a3cbce3b093dacf379ca3f4a097b3e2cf74d68bf9772d75d1059c8ada5",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-0-D.cbm",
+      "logical_bytes": 25160,
+      "sha256": "ca8d1866ea5fffa0807a25fd447b8079fc6b87237e463113f4a8494d10240c24",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-1-Q-short.cbm",
+      "logical_bytes": 53184,
+      "sha256": "2595ae12458a929e9287b3412eef9ab881295714cbf041497fb8e803157877b3",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-0-Q-long.cbm",
+      "logical_bytes": 27672,
+      "sha256": "ab997dfc9927fe049106cb1820820ecdb426ccd41e6ed5ed602b7a82235a1921",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/shape-d4-0-1-Q-short.cbm",
+      "logical_bytes": 12656,
+      "sha256": "c6f0df57f9100dc561405ec77303a8dea701438f16f8e5cd510dfe66b6a7e15b",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-1-D.cbm",
+      "logical_bytes": 108072,
+      "sha256": "e539f73d9efa4db3aa7de52360830786d98da44b1fe8bb913eb0b767607a8f93",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-1-0-Q-long.cbm",
+      "logical_bytes": 25176,
+      "sha256": "fc6be6d7c681894e4d667abf0ccdb299ef1a75060298b890eda40513cc90c685",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-A/joint-d4-0-1-D.cbm",
+      "logical_bytes": 54600,
+      "sha256": "7a9fc2b41c7dcfa08c16fc63a8f76b78cb35d0b3d822e697d53e71db7473c021",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-Q-long.cbm",
+      "logical_bytes": 135752,
+      "sha256": "8e7b21f1ec30e89bf48860b3f1f139ef46b9a3a225177ed597f1aae6e3d04b4c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-D.cbm",
+      "logical_bytes": 33584,
+      "sha256": "56d971cf07ac86dffbaa7c49fdbb24a03b865f7eee348de9e2c4079ea671307b",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-D.cbm",
+      "logical_bytes": 302304,
+      "sha256": "f8416c5053f3341b3c2c72fa898c3abbff3de899a5400c738a82fcbdac98d627",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-Q-long.cbm",
+      "logical_bytes": 13264,
+      "sha256": "edd151244a2d72d213e54aaa5fe5f41532a68e9a1fa70911eedc0dfab245ae31",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-D.cbm",
+      "logical_bytes": 14352,
+      "sha256": "ef007c421cba6fc697fb689c501f5e5b7f29340234a83353458d56514eafd187",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-Q-short.cbm",
+      "logical_bytes": 23240,
+      "sha256": "fe4c4e5b9ce5699a8145a105e4857c27b287a0b4b74761ce559a3cf42825d3e5",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-Q-short.cbm",
+      "logical_bytes": 32032,
+      "sha256": "5b0bb763d3e0d4205d693b0580bfffc39ea3d80fe713f6e347c43aa6b8ba2584",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-D.cbm",
+      "logical_bytes": 77944,
+      "sha256": "de882487a038eb0279f009e96ad484b9e00e09f9625c07820bd2788e162c4a36",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-Q-long.cbm",
+      "logical_bytes": 37520,
+      "sha256": "1b74574030cd5a6dc8ea89f0c1e9e44b7916e838f5d571c233b2683a1565c0c6",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-D.cbm",
+      "logical_bytes": 35384,
+      "sha256": "1e8f04d81b2a84063e74d2ce5bc4880a16c1de2afc16b577144c73f64f291ba0",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-Q-long.cbm",
+      "logical_bytes": 185592,
+      "sha256": "efef9f5aee2a0e653b5f11179f3598e1784ced7a71f4b64c41192e6d20d10164",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-Q-short.cbm",
+      "logical_bytes": 25184,
+      "sha256": "d85083d57f4751261f7bdbb2318a752852ba2dd622c35cfacdec0a644bd30b88",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-Q-short.cbm",
+      "logical_bytes": 10160,
+      "sha256": "31caf22ae5f5f8ce44d631cac89e99cb3d90a4a5ed15925d05142a0daba50295",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-Q-long.cbm",
+      "logical_bytes": 138264,
+      "sha256": "ddb20a33b2b1b5a86276c14792a71b98edea1d3647dbaa68da3ac005ccf56f26",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-Q-long.cbm",
+      "logical_bytes": 38104,
+      "sha256": "0d611eaa03de9398244d748215418e8b9114c62dbfbcdc2975531e09fc96e413",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-D.cbm",
+      "logical_bytes": 38416,
+      "sha256": "ef2758567eb227d62525fe1f380bff66cf6d51e3a03e90a302ac88b7faf4805f",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-Q-short.cbm",
+      "logical_bytes": 39504,
+      "sha256": "686ab822f88c41fbebd53ac141a71def619cf91515745c5a3a5ef65675f0332e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-Q-short.cbm",
+      "logical_bytes": 219296,
+      "sha256": "89d81c6cecb9943cab34dcc726218eb2f6e5ef5c6dc3b9c807112f14db2b16b7",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-Q-long.cbm",
+      "logical_bytes": 96512,
+      "sha256": "832711ad531813a012e7d31cb647a2715e1ba968997d6bd4d662cb904376786b",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-Q-long.cbm",
+      "logical_bytes": 55648,
+      "sha256": "61a09d6c46de9a16718f4914f53fd3ef9b2e3d5a5dc2b01243425f2ce3f30d86",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-D.cbm",
+      "logical_bytes": 32976,
+      "sha256": "cf301fed9edc071e5a7287007da6182f24c167c757129098a4824e5e269faafb",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-D.cbm",
+      "logical_bytes": 57560,
+      "sha256": "152ca2072fc550488c329d5daa62600a00f29cfc97741b30f6431e91061d3239",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-Q-short.cbm",
+      "logical_bytes": 89752,
+      "sha256": "36071954ef69f058385d7ad46e0dd4246ddcd6726d4347eb4a74215eea89ce61",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-Q-short.cbm",
+      "logical_bytes": 36392,
+      "sha256": "c672395ef3b628bbdd2ada715173f5897955c553507066b0efb80d08d6926313",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-Q-long.cbm",
+      "logical_bytes": 25176,
+      "sha256": "60cc379b7a7957c4576ae970324a15a9064a45173090292dd0fada0de9e30c22",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-D.cbm",
+      "logical_bytes": 41360,
+      "sha256": "11c6b585f781c41091d0aab343a5c1742b620f266e0adf93aa490933f95d4702",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-Q-long.cbm",
+      "logical_bytes": 170440,
+      "sha256": "af2a59fd6aebc9b0c4450f7dcf3640a1ad20113a92f13a6503be266ee9327f4c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-Q-short.cbm",
+      "logical_bytes": 10160,
+      "sha256": "59a24dbc41a8a73b780cda197892cf0ec79574a2952021ca8155c040c313ece1",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-Q-short.cbm",
+      "logical_bytes": 25184,
+      "sha256": "cc104186a4a7ba7752282ad861277f567d0a118077947e2f342a6d97f1ca0c69",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-D.cbm",
+      "logical_bytes": 25760,
+      "sha256": "7ecd542204f28b3d30089e73dbfd7679eb76bb3b5033f02c4a1a46c643143658",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-Q-short.cbm",
+      "logical_bytes": 50696,
+      "sha256": "dfc0cfe70eeacef2ee9288cb68f16fb5afd6e15fcd013d9691c83dbc1cdac5f0",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-Q-long.cbm",
+      "logical_bytes": 27680,
+      "sha256": "b0fe9b8c0a108b13ef038948310dd44228fcc8937fe5d69d80989df639ecb457",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-Q-short.cbm",
+      "logical_bytes": 12032,
+      "sha256": "c922a0cf40656978be2d57c031cd5d5f3cb98421b8d843c8d6f5dd03c33d3c9d",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-D.cbm",
+      "logical_bytes": 101480,
+      "sha256": "cdeaa15b94ffc62c300ef23444bfddf7249ab6541c38fe99825a5babb6fe7cff",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-Q-long.cbm",
+      "logical_bytes": 25176,
+      "sha256": "a425dfb4303b2e13ae231562e82f3d738141b18f8cf4eb656c472294dcfe4a79",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-D.cbm",
+      "logical_bytes": 81024,
+      "sha256": "6fb0f1b79a8c31447f1b1af26d0046486d14fa4ad665dd59e4c9201bc25f305c",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-long.cbm",
+      "logical_bytes": 44600,
+      "sha256": "c368c6ba4c549a80dd617a522e57e5646b8c138d9db3110e42347aea356cc714",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-long.cbm",
+      "logical_bytes": 25944,
+      "sha256": "eae8ac51a55c3330ddc8fdce006255effcda885bfacf075e5775b145da478ad5",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-short.cbm",
+      "logical_bytes": 29680,
+      "sha256": "b87fd196de8d66706b6d790f687c39b3c4846c0bfe7ffde397c3f1663c898386",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-short.cbm",
+      "logical_bytes": 25952,
+      "sha256": "d46b691f746fa55615f6bcd2a8fc51d615c871a5a7478db40d16fd018b509186",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-long.cbm",
+      "logical_bytes": 39008,
+      "sha256": "bee9c5c10fba00d0b8626463d96bf255a5853d68a1fa5ce6ab1faacb7cf4e8d4",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-short.cbm",
+      "logical_bytes": 27184,
+      "sha256": "5dee80baeb47dc1eeb4a023657417e8fbd2df1b0d51b9d0e38bbee011dad2ff2",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-long.cbm",
+      "logical_bytes": 25952,
+      "sha256": "ccb5eae8729b4e6eb2702b431894adf222aade9bb03f7b3524d4fb85cd6ccc15",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-short.cbm",
+      "logical_bytes": 71328,
+      "sha256": "bda6fefe21a8985ae1d293709e5334790b866da685d99bf5b7c550bbc7f6296d",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-D.cbm",
+      "logical_bytes": 87792,
+      "sha256": "b6d867fe8e8ff0de39212c54b76f88d0376fa4831ea0970b9e20709abd3d1c7e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-short.cbm",
+      "logical_bytes": 25944,
+      "sha256": "d1b59f06e57a30461c0a64a9aa6d885db06c978f78e0ab9c29f6cdaa2d930e9f",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-D.cbm",
+      "logical_bytes": 137032,
+      "sha256": "f8bba96d502229eb948e18c8a502700f9146b1d22f8cb4d3f5ad68918ceb3a25",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-D.cbm",
+      "logical_bytes": 25928,
+      "sha256": "69bcc32bd71db4e1a45cd7442086cd354ed18cf623271a80469b800042da9533",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-D.cbm",
+      "logical_bytes": 65520,
+      "sha256": "777ba7ad2c4643407c7b065cad6b0090935f8c5f41e30a0a48c0d05745182fbe",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-short.cbm",
+      "logical_bytes": 46512,
+      "sha256": "eac3516bf41b5ff11a1df1d3bcae3ae6374b545f5631df9bb4c83fbb915f9a2e",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-long.cbm",
+      "logical_bytes": 139768,
+      "sha256": "c962fb47e19d04f5801f6950b52bda88c041be1bc6c549d0dc44284fd78f2b6f",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-D.cbm",
+      "logical_bytes": 54128,
+      "sha256": "a51e73f4b9c692f7e6ad68b4508fc739108deba5849bb6cf6e88dfe28e420321",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-long.cbm",
+      "logical_bytes": 116112,
+      "sha256": "48f1904efad42e430ffe5ccb2e5dd69dd41d285e4b172cda7795ffbb862d4ec2",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-D.cbm",
+      "logical_bytes": 37960,
+      "sha256": "362e514e2c01f5c42e97cbbc1b96df642d1b8252702bb49ee4a8532749f61d97",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-Q-short.cbm",
+      "logical_bytes": 68560,
+      "sha256": "dd6200e05d039ab2220955ede0f6eafd879ecba936fb85e3741556c92c62f223",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-Q-long.cbm",
+      "logical_bytes": 68560,
+      "sha256": "6f7bd7766c05d1150107ac898b44c0fff8cd0579854fd9c64adff911591f10ef",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-D.cbm",
+      "logical_bytes": 66448,
+      "sha256": "c12bb03206049d0228d9778f7167d50dbf741bce108c4e231b92069f3302cb84",
+      "reason": "CatBoost serialized fitted AI-cycle stage A/C forecast model; save_model artifacts, not numeric market inputs or outputs"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/catboost-refit-head2.cbm",
+      "logical_bytes": 12064,
+      "sha256": "e2f0cba9ee147b8a533a65eef456750bad7ac88cebbb321e1b0ff17ed052197c",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/catboost-refit-head0.cbm",
+      "logical_bytes": 87528,
+      "sha256": "53839452fb665ec959b7ff308affdc8c17f9c696d9e0335309e301aa32d964f5",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/catboost-refit-head1.cbm",
+      "logical_bytes": 238192,
+      "sha256": "225e949e0c45d385a5c1beab163913ea308eecde9c7b286f277593cf140e0145",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/catboost-es-head2.cbm",
+      "logical_bytes": 16792,
+      "sha256": "bc81bd96e852ad14f98a9e4d38a52292163fc34ad146b460016c4bd57975a70f",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/catboost-es-head1.cbm",
+      "logical_bytes": 263472,
+      "sha256": "42b722128f7f6a857de014eb2bdcd7f282e3ce1d1c1815bca16c34e3ebeb6153",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/catboost-es-head0.cbm",
+      "logical_bytes": 94952,
+      "sha256": "1f3c9d77a9eb78232e04e3c699b5d04867a52d22d282195f268ab0010f942bca",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/catboost-refit-head2.cbm",
+      "logical_bytes": 87160,
+      "sha256": "f4c2301d97bd6bab0860405d46c6f07b7e412fc8038ae19b345dfa58c81a9a75",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/catboost-refit-head0.cbm",
+      "logical_bytes": 82200,
+      "sha256": "d903d5155e5acf2201272353d63582c22974152d96ecbc4b6c878348e7fa2b12",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/catboost-refit-head1.cbm",
+      "logical_bytes": 20152,
+      "sha256": "76f2cf35d2a98a9d4584b1e8e6870c66ea4389e6cf920bec2b95b734b15ee546",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/catboost-es-head2.cbm",
+      "logical_bytes": 98848,
+      "sha256": "aba91b181f3d6126783c561c90c6fc7a4eaded44213b606d5bd7dda4d6ef376c",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/catboost-es-head1.cbm",
+      "logical_bytes": 25624,
+      "sha256": "3c297dd8dfb861c17afe0235614f822f72094e14e27928483e79a85a8f2fb26a",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/catboost-es-head0.cbm",
+      "logical_bytes": 89304,
+      "sha256": "9bc316a1d347b49768ffe5e42f509764762b1a8590d862fbc70f4803650deaeb",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/catboost-refit-head2.cbm",
+      "logical_bytes": 23888,
+      "sha256": "e8f8ffa9c0db3d40073f6c92825f2d167aee137dc8e67aca840c5ae02d14f2bb",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/catboost-refit-head0.cbm",
+      "logical_bytes": 37240,
+      "sha256": "17a6f39a7edac11815616425a5a5ecbef99514f5bb4c8004594a8fc56ec277e7",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/catboost-refit-head1.cbm",
+      "logical_bytes": 33848,
+      "sha256": "0a4744ee9d0bed0125181bd5d95d4312606a6941bfb0810fbef4981fec4c1efa",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/catboost-es-head2.cbm",
+      "logical_bytes": 29696,
+      "sha256": "601e82533a85ca923acdcb559a44bd3aaa9feb4ff3323756dcd5df2dba44d2b2",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/catboost-es-head1.cbm",
+      "logical_bytes": 40592,
+      "sha256": "1a68401670e4dffae6701bcfa5fea2fe5e136c5b16dede5e535ca9e9768fb39a",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/catboost-es-head0.cbm",
+      "logical_bytes": 41672,
+      "sha256": "7f49086820ade447d13c7f78cc38804cce00285e8c818c939fa99089229762e4",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F3/es-head1.cbm",
+      "logical_bytes": 250128,
+      "sha256": "5dd49fa4bbe2b7b0fc506b8e7d166c71f50827a7252e5fe6be57a172606dd499",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F3/es-head0.cbm",
+      "logical_bytes": 59624,
+      "sha256": "cbd960d7a72910f3a47646a9528d8eb1493519cf8f8c872f0151c12fe41fcd1b",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F3/es-head2.cbm",
+      "logical_bytes": 14472,
+      "sha256": "83885e1ee730d3898e394d5ea923c7ece6259270f36811097b38189b5778022f",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F3/refit-head2.cbm",
+      "logical_bytes": 9760,
+      "sha256": "1425d495d9880ec65764b65c25c26b114a88cfd774d0f800fc44c2968a8df1fd",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F3/refit-head1.cbm",
+      "logical_bytes": 225344,
+      "sha256": "54a467a85f6d4994bc133ea2ea0d31c8fcbaf366a67a81f741b598b2478e1b80",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F3/refit-head0.cbm",
+      "logical_bytes": 54080,
+      "sha256": "62ebd6d9fdadcc05c540f6a0fe68f818e0044957d3bbb821fa44364c9b07c152",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F2/es-head1.cbm",
+      "logical_bytes": 14472,
+      "sha256": "d194a3a7fdba392a257a2a0c3d32b3e144af924bb27603f3aacd2264b253252f",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F2/es-head0.cbm",
+      "logical_bytes": 101608,
+      "sha256": "426bcf40063f4406fa2273e8fe4e5ac3e31298c517867ce132ab8c65752142c7",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F2/es-head2.cbm",
+      "logical_bytes": 122920,
+      "sha256": "ac14ac2986e953954bfca09e33c1f4655155fbf19ab959a641a824ad5f78d72f",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F2/refit-head2.cbm",
+      "logical_bytes": 109008,
+      "sha256": "5f7cabb5f1f43f27983e7acbfb3d798a27d4bd33eaa97d1cd72b01c39b0c178b",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F2/refit-head1.cbm",
+      "logical_bytes": 9752,
+      "sha256": "c37e2c0009120dd524708d93d2055e2acc470c5982cdb9add38fd8df01b8ce5d",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F2/refit-head0.cbm",
+      "logical_bytes": 93648,
+      "sha256": "06eb84d8fbac8860a0fcf227606eab49ba891421a83c9a92d1215f5bf516719c",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F1/es-head1.cbm",
+      "logical_bytes": 30816,
+      "sha256": "b82ea9cac892a30b3ea9a67ed860881fc23efbae63c33464f15dd2bafe242beb",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F1/es-head0.cbm",
+      "logical_bytes": 59080,
+      "sha256": "230bdd931e08e7ea6854ff23314b82370d44396db93cafcbc60c7a4e22a9ab49",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F1/es-head2.cbm",
+      "logical_bytes": 27392,
+      "sha256": "98297e45b67119bbd58936aef0d3f32c0c4bb967fbaaa04f86283d8d5b18be42",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F1/refit-head2.cbm",
+      "logical_bytes": 21592,
+      "sha256": "61a5ac63d048ee391310af2eb2de015dbe554b0ee0564742ef89db313d2daa18",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F1/refit-head1.cbm",
+      "logical_bytes": 24704,
+      "sha256": "c9eabe8b42c824ba9bcf87f7a11f535d83f18e2d8e6f07090aa4915fe8e62047",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/fourhour-control/F1/refit-head0.cbm",
+      "logical_bytes": 53512,
+      "sha256": "460c5d533020e16b91fb670fe30b668ae18ba30b8104f325c28e0add646cbdae",
+      "reason": "BTC pattern pilot serialized fitted CatBoost model; native engine does not consume it"
+    }
+  ],
+  "paths": 254,
+  "logical_bytes": 13874816,
+  "evidence": [
+    "runtime/coinmaster/research/forecast_cycle_train.py:133-155 creates linear fitted pipelines and .cbm forecast model artifacts",
+    "runtime/coinmaster/research/forecast_cycle_c_development.py:30-44 scaler for trained TS2Vec encoder only",
+    "runtime/coinmaster/research/forecast_cycle_ts2vec.py:40-54 profile scaler saved with encoder"
+  ],
+  "preserved": "all actual prepared normalized numeric input arrays, labels, prediction NPZ/forecasts, metrics, CSV, cache IDs, source and JSON model manifests/provenance; no pickle loading or training"
+}

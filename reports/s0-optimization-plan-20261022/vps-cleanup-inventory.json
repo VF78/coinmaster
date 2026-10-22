@@ -1,0 +1,450 @@
+{
+  "task": "CLEANUP-AI-VPS-20261022",
+  "utc": "2026-10-22T15:14:51Z",
+  "delete_candidates": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/seed-42.pt",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/seed-42.pt",
+      "kind": "file",
+      "bytes": 3606494,
+      "allocated_bytes": 3608576,
+      "device": 2049,
+      "inode": 303375,
+      "sha256": "ae8a518da9d539e2c6c50cb1e48bce4d8c8ff124a56168a7cf87a6818efeeb52",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/seed-7.pt",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/seed-7.pt",
+      "kind": "file",
+      "bytes": 3605825,
+      "allocated_bytes": 3608576,
+      "device": 2049,
+      "inode": 305456,
+      "sha256": "b2f6b7372330251f87e3e4f779064400a67cb299ee8271e7aeaf6bd7e24d55a6",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-memory-r2/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-memory-r2/model.pkl",
+      "kind": "file",
+      "bytes": 453398,
+      "allocated_bytes": 454656,
+      "device": 2049,
+      "inode": 303440,
+      "sha256": "56959a042214fecf4b79b97e5262e420083330b074aa5193de910332560c0736",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-resource-r1/train-transform.npy",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-resource-r1/train-transform.npy",
+      "kind": "file",
+      "bytes": 138630304,
+      "allocated_bytes": 138637312,
+      "device": 2049,
+      "inode": 303419,
+      "sha256": "2ad4f9e63cec79cf54319146e54ff6f3a0a1153fa30441f3f73242a3b7cfbf1e",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket/train-transform.npy",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket/train-transform.npy",
+      "kind": "file",
+      "bytes": 138630304,
+      "allocated_bytes": 138637312,
+      "device": 2049,
+      "inode": 303411,
+      "sha256": "845589e43d5f10b1668de55e28caedb994cef63fdcdcde2d9ce30e908c420dec",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/prior/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/prior/model.pkl",
+      "kind": "file",
+      "bytes": 177,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 303351,
+      "sha256": "7973f5760117094eae26c35dd79a9fdeb481e32cce2e4bcec54d6b9deaa05a2a",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/model.pkl",
+      "kind": "file",
+      "bytes": 2169138,
+      "allocated_bytes": 2170880,
+      "device": 2049,
+      "inode": 304662,
+      "sha256": "4c7eb6b703ab876bc69a00c2dd9a16e878c095b69419fa9444451aa823311d26",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/simple/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/simple/model.pkl",
+      "kind": "file",
+      "bytes": 4104,
+      "allocated_bytes": 8192,
+      "device": 2049,
+      "inode": 303384,
+      "sha256": "be82cb1fa8a98fde1736435e4ec6dee8756e93b2f3d1ce217d19894b62b5aaf5",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/stumpy/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/stumpy/model.pkl",
+      "kind": "file",
+      "bytes": 2146055,
+      "allocated_bytes": 2146304,
+      "device": 2049,
+      "inode": 303396,
+      "sha256": "79e75c6b49874ec8b7cfa74f74cb84c85303ee6042fa02060ae8dd3fa81c0c44",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/calibrator.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/calibrator.pkl",
+      "kind": "file",
+      "bytes": 332,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 316334,
+      "sha256": "788642744680a415249775ba2eb412886a717095a95d047eeb52337a606c6be7",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/final-seed7/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-control-20261021T111115Z/result/train/final-seed7/model.pkl",
+      "kind": "file",
+      "bytes": 9574,
+      "allocated_bytes": 12288,
+      "device": 2049,
+      "inode": 316272,
+      "sha256": "6e35e14c17ecde3eff80af73e60eb3ac7d114c2e581980631f78e193037ab85a",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/calibrator.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/calibrator.pkl",
+      "kind": "file",
+      "bytes": 332,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 316907,
+      "sha256": "69399209a8d1fdab80974d55094a63d1d963a30be423715bf8061fbe70120235",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/final-seed7/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-minirocket-20261021T111927Z/result/train/final-seed7/model.pkl",
+      "kind": "file",
+      "bytes": 149664,
+      "allocated_bytes": 151552,
+      "device": 2049,
+      "inode": 316867,
+      "sha256": "9d3a420badc52c3bb2f8c369e92d4e00f34e716a8aad1845a7d7cafb5a24a5d3",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/calibrator.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/calibrator.pkl",
+      "kind": "file",
+      "bytes": 332,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 316514,
+      "sha256": "df0ad19e57576df86726b0511f5ae47248625c24d37492241dfdb2fc8cecd153",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/final-seed7/model.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-fit-stumpy-20261021T111145Z/result/train/final-seed7/model.pkl",
+      "kind": "file",
+      "bytes": 4174780,
+      "allocated_bytes": 4177920,
+      "device": 2049,
+      "inode": 316511,
+      "sha256": "d4afa3f1342364b62fca61ff390ab280e1a3caee5552bc58bd1f220437312930",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T100234Z/result/profile/cache/transformed.npy",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T100234Z/result/profile/cache/transformed.npy",
+      "kind": "file",
+      "bytes": 1185920,
+      "allocated_bytes": 8192,
+      "device": 2049,
+      "inode": 315750,
+      "sha256": "1ef8783d09bd82b58e5c3c0ae3fceb9d5db029fc20f3a2da370e923bdcd1a927",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T104128Z/result/profile/cache/transformed.npy",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T104128Z/result/profile/cache/transformed.npy",
+      "kind": "file",
+      "bytes": 1185920,
+      "allocated_bytes": 1187840,
+      "device": 2049,
+      "inode": 315918,
+      "sha256": "8183fa0526bfe5a68117e487388ca78d72f1ebda54a21f2d914be730c8b7d4ea",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T110201Z/result/profile/cache/head.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T110201Z/result/profile/cache/head.pkl",
+      "kind": "file",
+      "bytes": 53578,
+      "allocated_bytes": 57344,
+      "device": 2049,
+      "inode": 316080,
+      "sha256": "b6692342da0c546314830a1debc537abf53f4be4ba3dd0380faf0beaf5d4e510",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T110201Z/result/profile/cache/transformer.pkl",
+      "resolved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-pred02-profile-rdst-20261021T110201Z/result/profile/cache/transformer.pkl",
+      "kind": "file",
+      "bytes": 171406,
+      "allocated_bytes": 172032,
+      "device": 2049,
+      "inode": 316074,
+      "sha256": "49166a1a4d805f6b0ebd55c6bd3ee1df94e7d02e6bcd21d1908c695a0dda09aa",
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete fitted AI model or method-specific transform cache; archived outputs retained"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-envs/fast-rnd-20261020",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-envs/fast-rnd-20261020",
+      "kind": "directory",
+      "bytes": 1551142912,
+      "allocated_bytes": 1551142912,
+      "device": 2049,
+      "inode": 1197215,
+      "sha256": null,
+      "decision": "PROPOSE_DELETE",
+      "reason": "Obsolete isolated AI environment"
+    }
+  ],
+  "candidate_allocated_bytes": 1846198272,
+  "process_dependencies": [],
+  "services": {
+    "coinmaster-paper.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "WorkingDirectory": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime",
+      "Id": "coinmaster-paper.service",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "FragmentPath": "/etc/systemd/system/coinmaster-paper.service"
+    },
+    "coinmaster-hl-stageg-live.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "WorkingDirectory": "/srv/coinmaster/hl-live/current",
+      "Id": "coinmaster-hl-stageg-live.service",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "FragmentPath": "/etc/systemd/system/coinmaster-hl-stageg-live.service"
+    },
+    "coinmaster-connections.service": {
+      "MainPID": "1089245",
+      "NRestarts": "0",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "Id": "coinmaster-connections.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/etc/systemd/system/coinmaster-connections.service"
+    },
+    "coinmaster-hl-stageg-testnet.service": {
+      "MainPID": "2009732",
+      "NRestarts": "0",
+      "WorkingDirectory": "/srv/coinmaster/runtime",
+      "Id": "coinmaster-hl-stageg-testnet.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/etc/systemd/system/coinmaster-hl-stageg-testnet.service"
+    },
+    "coinmaster-hl-stageg-warmup.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "WorkingDirectory": "/srv/coinmaster/runtime",
+      "Id": "coinmaster-hl-stageg-warmup.service",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "FragmentPath": "/etc/systemd/system/coinmaster-hl-stageg-warmup.service"
+    },
+    "coinmaster-runtime.service": {
+      "MainPID": "1089244",
+      "NRestarts": "0",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "Id": "coinmaster-runtime.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/etc/systemd/system/coinmaster-runtime.service"
+    },
+    "containerd.service": {
+      "MainPID": "1247553",
+      "NRestarts": "0",
+      "WorkingDirectory": "",
+      "Id": "containerd.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/usr/lib/systemd/system/containerd.service"
+    },
+    "docker.service": {
+      "MainPID": "1067",
+      "NRestarts": "0",
+      "WorkingDirectory": "",
+      "Id": "docker.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/usr/lib/systemd/system/docker.service"
+    },
+    "fai-app-vpn-shortcut.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "WorkingDirectory": "",
+      "Id": "fai-app-vpn-shortcut.service",
+      "ActiveState": "active",
+      "SubState": "exited",
+      "FragmentPath": "/etc/systemd/system/fai-app-vpn-shortcut.service"
+    },
+    "fai-content-backup.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "WorkingDirectory": "",
+      "Id": "fai-content-backup.service",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "FragmentPath": "/etc/systemd/system/fai-content-backup.service"
+    },
+    "fai-content-platform.service": {
+      "MainPID": "1247629",
+      "NRestarts": "0",
+      "WorkingDirectory": "/opt/fai-content-engine/current/content-platform",
+      "Id": "fai-content-platform.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/etc/systemd/system/fai-content-platform.service"
+    },
+    "hermes-daniil-gateway.service": {
+      "MainPID": "1867980",
+      "NRestarts": "1",
+      "WorkingDirectory": "/var/lib/hermes-daniil/workspace",
+      "Id": "hermes-daniil-gateway.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/etc/systemd/system/hermes-daniil-gateway.service"
+    },
+    "hermes-gateway.service": {
+      "MainPID": "1089318",
+      "NRestarts": "0",
+      "WorkingDirectory": "/root/.openclaw/workspace/myshopai",
+      "Id": "hermes-gateway.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/etc/systemd/system/hermes-gateway.service"
+    },
+    "myshopai-website.service": {
+      "MainPID": "3958400",
+      "NRestarts": "0",
+      "WorkingDirectory": "/root/.openclaw/workspace/myshopai/website",
+      "Id": "myshopai-website.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/etc/systemd/system/myshopai-website.service"
+    },
+    "nginx.service": {
+      "MainPID": "2235511",
+      "NRestarts": "0",
+      "WorkingDirectory": "",
+      "Id": "nginx.service",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/usr/lib/systemd/system/nginx.service"
+    }
+  },
+  "containers": [
+    {
+      "name": "/hermes-db8f04b6",
+      "id": "d5f2959816109741654d9898248f557e1643f4c9488b5bdde55f8f3041d89fab",
+      "pid": 26361,
+      "started_at": "2026-10-11T18:55:10.459126198Z",
+      "running": true,
+      "restart_count": 0,
+      "candidate_mounts": []
+    },
+    {
+      "name": "/fai-paperclip-postgres",
+      "id": "3f2f4cca025919a4863eb495ca846223e218e7e192caba5a3982ad8e467953cd",
+      "pid": 1691527,
+      "started_at": "2026-09-18T17:53:08.088446388Z",
+      "running": true,
+      "restart_count": 0,
+      "candidate_mounts": []
+    },
+    {
+      "name": "/amnezia-awg2",
+      "id": "3962d227b5209fbbafccc0a63cb2ab0ee493e8f76ebdfcee93135d6c97abaa10",
+      "pid": 455728,
+      "started_at": "2026-09-02T09:50:06.868233194Z",
+      "running": true,
+      "restart_count": 0,
+      "candidate_mounts": []
+    }
+  ],
+  "keep": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv",
+      "allocated_bytes": 938823680,
+      "reason": "Canonical native Nautilus runtime and archived S0 interpreter; never delete"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data",
+      "reason": "Real BTC/SOL prices, funding, archived backtest and money/trade evidence"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-datasets",
+      "reason": "Reusable numerical D1 features and real historical-path infrastructure"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs",
+      "reason": "All job source/config/locks, S0, JSON CSV forecasts labels metrics probabilities and evidence preserved; only individual allowlisted models/cache files removed"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports",
+      "reason": "Source copies, upstream provenance, archived reports preserved"
+    },
+    {
+      "path": "/root/.hermes",
+      "reason": "Hermes runtime and any shared model caches protected"
+    },
+    {
+      "path": "/srv /opt /etc /var/lib/* runtime state",
+      "reason": "Protected installed services, secrets/releases/journals/state DBs; not cleanup candidates"
+    }
+  ],
+  "disk": {
+    "total": 39973924864,
+    "used": 37539295232,
+    "free": 2010943488
+  }
+}

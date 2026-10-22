@@ -1,0 +1,1060 @@
+{
+  "task": "CLEANUP-AI-MAC-20261022",
+  "finished_utc": "2026-10-22T15:16:11.427138+00:00",
+  "status": "PASS",
+  "inventory_sha256": "b38845161b61245df49add9fb47e065c23f08762f72cdd85d6ae25a1d75aa6db",
+  "before_disk": {
+    "free_bytes": 37769883648,
+    "total_bytes": 494384795648
+  },
+  "before_disk_timing": "inventory baseline before cleanup; immediate pre-delete in-memory reading was lost when receipt timestamp failed after all deletes",
+  "after_disk": {
+    "free_bytes": 37682978816,
+    "total_bytes": 494384795648
+  },
+  "observed_free_delta_bytes": -86904832,
+  "removed_paths": 116,
+  "removed_logical_bytes": 4893550748,
+  "allowlist_remaining": [],
+  "preserved_files_verified": 4424,
+  "preserved_logical_bytes": 2618532399,
+  "preserved_mismatches": [],
+  "removed": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-envs/forecast-independent-mac-20261021",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 948009079,
+      "allocated_bytes": 1011851264,
+      "file_count": 26378
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-envs/ai-cycle-20261021-01",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 108330706,
+      "allocated_bytes": 109748224,
+      "file_count": 618
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-envs/btc-pattern-pilot-m2-20261021",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 111492686,
+      "allocated_bytes": 113119232,
+      "file_count": 773
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/uv-cache",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 110337117,
+      "allocated_bytes": 111394816,
+      "file_count": 467
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/report-env",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 81887786,
+      "allocated_bytes": 87957504,
+      "file_count": 2562
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/report-uv-cache",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 78533852,
+      "allocated_bytes": 83787776,
+      "file_count": 2195
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/report-mpl-cache",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 125096,
+      "allocated_bytes": 126976,
+      "file_count": 1
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/numba-cache",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 3266318,
+      "allocated_bytes": 3379200,
+      "file_count": 42
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/uv-cache",
+      "kind": "directory",
+      "reason": "project_scoped_AI_environment_or_build_cache",
+      "logical_bytes": 111996244,
+      "allocated_bytes": 113573888,
+      "file_count": 754
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-rdst-20261021T121554Z/result/calibrator.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 332,
+      "allocated_bytes": 4096,
+      "file_count": 1,
+      "sha256": "5034127f97ff73886a3f2301a29c5118e4a4023e694d61d5b257d0ce30c78905"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-rdst-20261021T121554Z/result/final-seed7/model.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 212930,
+      "allocated_bytes": 212992,
+      "file_count": 1,
+      "sha256": "b47c2406cf19f41fd7f8fbb374350e126670d67ad7a4ce08560a6006d5948948"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/calibrator.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 332,
+      "allocated_bytes": 4096,
+      "file_count": 1,
+      "sha256": "df0ad19e57576df86726b0511f5ae47248625c24d37492241dfdb2fc8cecd153"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/stumpy/final-seed7/model.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 4174780,
+      "allocated_bytes": 4177920,
+      "file_count": 1,
+      "sha256": "d4afa3f1342364b62fca61ff390ab280e1a3caee5552bc58bd1f220437312930"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/calibrator.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 332,
+      "allocated_bytes": 4096,
+      "file_count": 1,
+      "sha256": "69399209a8d1fdab80974d55094a63d1d963a30be423715bf8061fbe70120235"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/minirocket/final-seed7/model.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 149664,
+      "allocated_bytes": 151552,
+      "file_count": 1,
+      "sha256": "9d3a420badc52c3bb2f8c369e92d4e00f34e716a8aad1845a7d7cafb5a24a5d3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/calibrator.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 332,
+      "allocated_bytes": 4096,
+      "file_count": 1,
+      "sha256": "788642744680a415249775ba2eb412886a717095a95d047eeb52337a606c6be7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/frozen-models/control/final-seed7/model.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 9574,
+      "allocated_bytes": 12288,
+      "file_count": 1,
+      "sha256": "6e35e14c17ecde3eff80af73e60eb3ac7d114c2e581980631f78e193037ab85a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/calibrator.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 332,
+      "allocated_bytes": 4096,
+      "file_count": 1,
+      "sha256": "c83a8982f2f96892ef75abca61d13811de1a73e350302481a41108d84fec7524"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/final-seed42/model.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 46185,
+      "allocated_bytes": 49152,
+      "file_count": 1,
+      "sha256": "f4637832d9bda7adff9209b6bb2c9551cdc7f7a29c982b28a5df5634a392257c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/forecast-independent-mac-20261021/run-fit-cnn-20261021T122144Z/result/final-seed7/model.pkl",
+      "kind": "file",
+      "reason": "obsolete_forecast_model",
+      "logical_bytes": 46185,
+      "allocated_bytes": 49152,
+      "file_count": 1,
+      "sha256": "1154bf374e274aae1dbec2ad4c7bc6f18579a4e7f551f2f8bb857f773c12e951"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-06-01-ES/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 871424,
+      "allocated_bytes": 872448,
+      "file_count": 1,
+      "sha256": "2278901e04d6808514c403d20c802bba1d1d93d48ef38e88195bb1f40155bcd4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-06-01-ES/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-03-01-full/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 871424,
+      "allocated_bytes": 872448,
+      "file_count": 1,
+      "sha256": "41b33a6efaabb795e08ba26ba7a83f576d3083acc70d6462f73bc5355e0536ee"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-03-01-full/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-03-01-ES/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 588800,
+      "allocated_bytes": 589824,
+      "file_count": 1,
+      "sha256": "1a4f48a2e684e48d76fbd688733cc4a0f1d9720f4d24566d01e5204c442836a0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-03-01-ES/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-09-01-full/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 1433600,
+      "allocated_bytes": 1433600,
+      "file_count": 1,
+      "sha256": "8bc8272144615dd8c88344e49b21b99033d7e1111ed13ffd6221e86ec9f9c790"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-09-01-full/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-09-01-ES/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 1154048,
+      "allocated_bytes": 1155072,
+      "file_count": 1,
+      "sha256": "873362e427279d8203cdf04fe98d6f92295dfb4699c98f479f8b0694cf61647f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-09-01-ES/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-06-01-full/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 1154048,
+      "allocated_bytes": 1155072,
+      "file_count": 1,
+      "sha256": "2a9d0d1c7eb34e90b898a68d02cf2b49d65a6a9759e3fd93a259b2e9eb2dc4c2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/stage-C-development/encoders/2025-06-01-full/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/profile-C/pilot-embeddings.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 131200,
+      "allocated_bytes": 135168,
+      "file_count": 1,
+      "sha256": "660d8ca4e2b9fd9e4b5cadff03874b94b7a249a950399008187ca09ba627379b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/profile-C/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "146947cca347065a5e999e5c778b26a00f67e6331a07619b77f463700baf8f22"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/kronos-weights/tokenizer/model.safetensors",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 15842368,
+      "allocated_bytes": 15843328,
+      "file_count": 1,
+      "sha256": "59d85f6af76a2c3b8240ea06cb21db4213b4eeca053f246b23e29cf832fc6bee"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/ai-cycle-20261021-01/kronos-weights/small/model.safetensors",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 98980656,
+      "allocated_bytes": 98983936,
+      "file_count": 1,
+      "sha256": "b082dfcbd8e8c142a725c8bbb99781802f38fec81210e13479effb32b3c3e020"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/full-es3-synthetic/block_shuffled.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 424725,
+      "allocated_bytes": 425984,
+      "file_count": 1,
+      "sha256": "1c08b6d26b9f9343297dd14b1b407c9cb98f95322dda17f7dd76c9aa2ccc2172"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/full-es3-synthetic/positive.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 424581,
+      "allocated_bytes": 425984,
+      "file_count": 1,
+      "sha256": "70ae04f48baea7cecf6d780e1fc8cb2cd0204c91901e526dc47420c3cef568b8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F2-CNNSpatial-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 3244526,
+      "allocated_bytes": 3248128,
+      "file_count": 1,
+      "sha256": "b3cfc99cda21770c910e23e35c3ac1cd518bf5e97190e6e134ecc69fd38faf99"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F3-CNNSpatial-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 4391342,
+      "allocated_bytes": 4395008,
+      "file_count": 1,
+      "sha256": "f7874f4ab2e857fa7cf0e26e77e1b6437de99f8565b984bd2a01ef56373a52c5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F1-CNNSpatial-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 2078702,
+      "allocated_bytes": 2080768,
+      "file_count": 1,
+      "sha256": "01da78ce9427cd2d5a9531aaeb2dfdf31ab74b970dbc5924115966d05dfb7132"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F3/CNNSpatial-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 1023677,
+      "allocated_bytes": 1024000,
+      "file_count": 1,
+      "sha256": "5a1f7858b11d40ec733e2187c9bb07e1056dac2cca0c33d70318f82e2f3b8ece"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F3/CNNSpatial-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 1029509,
+      "allocated_bytes": 1032192,
+      "file_count": 1,
+      "sha256": "823a67aa5b39deedcde1810847d134deb5d9a2c689ddb0d4d3c48f94e5d904ba"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F2/CNNSpatial-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 986109,
+      "allocated_bytes": 987136,
+      "file_count": 1,
+      "sha256": "dcdaf3537cdb95d86e990c91d23dab211c0a72ca0914cdf273b809c75c7948a1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F2/CNNSpatial-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 991877,
+      "allocated_bytes": 995328,
+      "file_count": 1,
+      "sha256": "135458f43f5ce3d5a037bae3226d89f55a4fd3ebd65f4428b9508bffca55d382"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F1/CNNSpatial-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 949181,
+      "allocated_bytes": 950272,
+      "file_count": 1,
+      "sha256": "874bf032a3e6d54ad5103bb6a87b0fde9487753e2b9d36bbb7fafb28ac92f8fb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form03-spatial/F1/CNNSpatial-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 955013,
+      "allocated_bytes": 958464,
+      "file_count": 1,
+      "sha256": "c5cd790828a1ca4bf0cba12f20b8d43d048178a1f33b5f5129948f2d1a7abc05"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/images.npy",
+      "kind": "file",
+      "reason": "reproducible_chart_image_tensor",
+      "logical_bytes": 3150250112,
+      "allocated_bytes": 3150254080,
+      "file_count": 1,
+      "sha256": "9717f43542387eb2429f7247a866466aa9d51498fdfab2b8c3bf1254dcbe64de"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/Kronos-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 400785,
+      "allocated_bytes": 401408,
+      "file_count": 1,
+      "sha256": "3a140bd429719c6ffa2977bfc06f6c9aa9dc8ebc3a9edbe1c7d1e7956bf4bc13"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/TCN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 437557,
+      "allocated_bytes": 438272,
+      "file_count": 1,
+      "sha256": "f3cca1daecf1a9121590794614ecfa79924b3df0e62e3a59041ad9cd21ddd56f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/Kronos-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 395053,
+      "allocated_bytes": 397312,
+      "file_count": 1,
+      "sha256": "c72ecb042a4444bdd4439e2adae47b592b246775ef19b8e5f5d0038e5b0dfa11"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/TCN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 447157,
+      "allocated_bytes": 450560,
+      "file_count": 1,
+      "sha256": "ccdac52aebb83f62c13cb95d897e63c6ed619cd7b1bcfc2d10e1806aeba304d4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 537757,
+      "allocated_bytes": 540672,
+      "file_count": 1,
+      "sha256": "d5fcdd8b2f24dd4dcb4678559bb79250b0375fd089c448b6e7b8749e1d8faaf5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F3/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 530901,
+      "allocated_bytes": 532480,
+      "file_count": 1,
+      "sha256": "339cff6a91d09eee7f895bd6fd64271a8c821e7c07fd549d8c885cb26600f653"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/Kronos-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 363217,
+      "allocated_bytes": 364544,
+      "file_count": 1,
+      "sha256": "d90e1db13374d71757bc0b853ca9bd19ccd8aed73ee1019b628247ba07991e4d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/TCN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 400053,
+      "allocated_bytes": 401408,
+      "file_count": 1,
+      "sha256": "1cda5eb73c7f3d95e3af34d5d0386b82580fd2713eb9719507f7ac6cba5574e2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/Kronos-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 357485,
+      "allocated_bytes": 360448,
+      "file_count": 1,
+      "sha256": "1b7db74e5fae761b020421d86bda341e2d76def0204c58924b154133b1f93c2e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/TCN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 409589,
+      "allocated_bytes": 409600,
+      "file_count": 1,
+      "sha256": "48bf96952cb4b32f2b9ef9919eec4cbc39d93e8fb36edaa016062ee587b9398a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 500189,
+      "allocated_bytes": 503808,
+      "file_count": 1,
+      "sha256": "dc7014ff442904aaef35fd8766d722f607737570e036d8ac9063fd58e9db6ef3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F2/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 493397,
+      "allocated_bytes": 495616,
+      "file_count": 1,
+      "sha256": "c0c248cb3e66d06654c52da742095d080624b31b1766854374331ffd3b91cae8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/Kronos-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 326353,
+      "allocated_bytes": 327680,
+      "file_count": 1,
+      "sha256": "0651c08dda9d221e20a78168adaf9e4b2399a8351b17269ce664f94586d46f75"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/TCN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 362997,
+      "allocated_bytes": 364544,
+      "file_count": 1,
+      "sha256": "7433cb8559ccff3a60316d34edc585012b8b7041f32ed26d3e26738df3472dbd"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/Kronos-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 320685,
+      "allocated_bytes": 323584,
+      "file_count": 1,
+      "sha256": "2ec31cfabb37246202219bb3f4543181b0959fb2af49825bad434490964e8034"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/TCN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 372661,
+      "allocated_bytes": 372736,
+      "file_count": 1,
+      "sha256": "cf71670ef15b0b5affb169eb0767c6a8331b241239c98c17120204f8d239b905"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 463261,
+      "allocated_bytes": 466944,
+      "file_count": 1,
+      "sha256": "11c93cb88619525e19b6ae09f933e4067a229254d639a87579f91103d2bbbfed"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/development/F1/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 456469,
+      "allocated_bytes": 458752,
+      "file_count": 1,
+      "sha256": "6bde0e9d85c393b74bb6c03923f3694f1821422ed3f53840d17b4ae66bef3783"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form00-corrected/F2-TCN-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 3244526,
+      "allocated_bytes": 3248128,
+      "file_count": 1,
+      "sha256": "1cd39fe179c68314498c3d1a28faee43bb5c751e3898464a546fc34abcbac692"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form00-corrected/F1-TCN-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 2078702,
+      "allocated_bytes": 2080768,
+      "file_count": 1,
+      "sha256": "7f3eba753d1e4a7b30382c4ba8e3ecd4a81bfbb0e6697a47b98fb1cb6250a4a4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form00-corrected/F3-TCN-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 4391342,
+      "allocated_bytes": 4395008,
+      "file_count": 1,
+      "sha256": "ca02890265fae842df4cec9df854351fc63d99836635a0928bdf2d20a280e89a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-synthetic/block_shuffled.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 424725,
+      "allocated_bytes": 425984,
+      "file_count": 1,
+      "sha256": "16b3ad7d968283156cc6f46d9933c5bda5594907228aa391f7080613a2361842"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-synthetic/positive.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 424581,
+      "allocated_bytes": 425984,
+      "file_count": 1,
+      "sha256": "bbb775bae11cbbe8c731bbd2149c503000671f124b4b970b058a453abdafb353"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F3/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 537757,
+      "allocated_bytes": 540672,
+      "file_count": 1,
+      "sha256": "1846048e13154d7ed1cca97350a80eef759f69479c3fd381ea0b502ca7e3caa2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F3/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 530901,
+      "allocated_bytes": 532480,
+      "file_count": 1,
+      "sha256": "0580532417e3ff65cfaac2c5be4cea9a50f16d3937add9f4bff270cc52c1d537"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F2/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 500189,
+      "allocated_bytes": 503808,
+      "file_count": 1,
+      "sha256": "fd8b94967dcbbfceee332ec21483cce0d90dd4e830e6236aca5f88d4afd0837c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F2/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 493397,
+      "allocated_bytes": 495616,
+      "file_count": 1,
+      "sha256": "2a9fe1551afc03be28a7c887aa96eebc95ed488ea33cc13b424c8d7f2919827c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F1/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 463261,
+      "allocated_bytes": 466944,
+      "file_count": 1,
+      "sha256": "46e3eb36df36cf2f96c3c6f4fbd3a7acc9d7b44cfa2c2004b8d204d9589d4e9b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/q-prior-init-development/F1/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 456469,
+      "allocated_bytes": 458752,
+      "file_count": 1,
+      "sha256": "42de980539dfbc9cf6699309bfaf9223ce597849ba1ed54dda1305e4b7712ac3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F3-Context-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 4391342,
+      "allocated_bytes": 4395008,
+      "file_count": 1,
+      "sha256": "2ca000e2db5115d9198da232162e7d3ec98777cc2f77e14b2d5717238f42bd63"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F2-Context-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 3244526,
+      "allocated_bytes": 3248128,
+      "file_count": 1,
+      "sha256": "16e45e0ef4c0dde0400d854ad103646abeb404413f3c5bb81c21c85dac262622"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F1-Context-representations.npz",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 2078702,
+      "allocated_bytes": 2080768,
+      "file_count": 1,
+      "sha256": "c9dacf3b4dd2c251a62bb5e71990ba5e0dbfd0af960a2cc0ec6d3a1d0122f255"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F3/Context-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 127069,
+      "allocated_bytes": 131072,
+      "file_count": 1,
+      "sha256": "299c7cbb5320813b10d7497946f0c367fc590b7b76f4a082dd6868981245ea95"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F3/Context-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 121273,
+      "allocated_bytes": 122880,
+      "file_count": 1,
+      "sha256": "6c2f64ac1e1a65c43454853eb67d698e440b8ce033a85ee800bc85d536c491e6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F2/Context-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 89501,
+      "allocated_bytes": 90112,
+      "file_count": 1,
+      "sha256": "f2f3c8cc3a021cf5c00ae129974ca2b27c9e65bcd24ea0bce344e37f483edd0f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F2/Context-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 83769,
+      "allocated_bytes": 86016,
+      "file_count": 1,
+      "sha256": "0eb816d84ef7c71e2d5c565eaf844ba4b3e25e569afd17f3801c3d6ea192385d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F1/Context-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 52573,
+      "allocated_bytes": 53248,
+      "file_count": 1,
+      "sha256": "533cc1a76cb56b72d7ae8417b00941972ff956dfbb137c054f9911424c85a60a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F1/Context-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 46841,
+      "allocated_bytes": 49152,
+      "file_count": 1,
+      "sha256": "1f84e725fe0b24746714c6e7505f301241e1a393138c26dd06af36cfc5179d02"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/smoke-02/CNN-cpu.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 419181,
+      "allocated_bytes": 421888,
+      "file_count": 1,
+      "sha256": "44c266aa3ef1547cb5141444b2a1817e397710d56c8f2efa3367405d2188148e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/smoke-02/CNN-mps.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 419181,
+      "allocated_bytes": 421888,
+      "file_count": 1,
+      "sha256": "40818ee86ee934a48a885d429d1de825d4f916c4f3bd77d624c7d335748b0199"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/smoke-02/TCN-cpu.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 321653,
+      "allocated_bytes": 323584,
+      "file_count": 1,
+      "sha256": "c3ff3a4c3172803b7d937a6961fdc844d9f5f7df70b31d29cd6c378b133214e3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/smoke-02/TCN-mps.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 321653,
+      "allocated_bytes": 323584,
+      "file_count": 1,
+      "sha256": "315c068c22c582e4d95794814fb3dd609d9b2324685efcee33fbeb5b8cdca3d6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F3/TCN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 437557,
+      "allocated_bytes": 438272,
+      "file_count": 1,
+      "sha256": "1df547562ba93630446d158fbbadaacb23f119dd588416917eb2dc4f39aa9d1e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F3/TCN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 447157,
+      "allocated_bytes": 450560,
+      "file_count": 1,
+      "sha256": "3be30f6b53183ec3150ce3a264e770200566cf225b361dc2134c73141bacfba7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F3/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 537757,
+      "allocated_bytes": 540672,
+      "file_count": 1,
+      "sha256": "e1ca061cac3f42a771d58a5d2b5542e691e0601ec4bb2e28ba4706a71b21204d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F3/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 530901,
+      "allocated_bytes": 532480,
+      "file_count": 1,
+      "sha256": "7c318d3ef6bb03f4aca34f3810cdc648e168911497714fd096240887c937e9e0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F2/TCN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 400053,
+      "allocated_bytes": 401408,
+      "file_count": 1,
+      "sha256": "b9e3071b32ed6a3216c91fe33b321aaa201cbc31623fa0ca95c1dd3061e03bfe"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F2/TCN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 409589,
+      "allocated_bytes": 409600,
+      "file_count": 1,
+      "sha256": "427a7fe03d37be7cff34b88cc1a53c8e33c430afac4557922e4e242528e8de44"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F2/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 500189,
+      "allocated_bytes": 503808,
+      "file_count": 1,
+      "sha256": "a7bc1993238c1633331315506bedaf4fd9c9f9be85306249f7a19e862a6a620e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F2/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 493397,
+      "allocated_bytes": 495616,
+      "file_count": 1,
+      "sha256": "40554fb18b2c882245833323417602286a0ebb910e42fd4ec2ad01e2f5e04b96"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F1/TCN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 362997,
+      "allocated_bytes": 364544,
+      "file_count": 1,
+      "sha256": "705420fa9eea61edfbb72b834105afbf23535beb114efdf8e52ff97869840bde"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F1/TCN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 372661,
+      "allocated_bytes": 372736,
+      "file_count": 1,
+      "sha256": "96c917e81a3e511f2a8d148cd07003cb0be3ade26357dc938a9217f51c91af4c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F1/CNN-refit.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 463261,
+      "allocated_bytes": 466944,
+      "file_count": 1,
+      "sha256": "24a22eb7912fd1a20122e7adaa4fc9db5b5e9e54ee7ae2ca1fa7c111b8835aa0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/quality-variants/METRIC_OFF/F1/CNN-es.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 456469,
+      "allocated_bytes": 458752,
+      "file_count": 1,
+      "sha256": "988284f95a46da4abacd11fa8d8fbc56a87d80523e91f908029e79599bfdb1c4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 871424,
+      "allocated_bytes": 872448,
+      "file_count": 1,
+      "sha256": "2278901e04d6808514c403d20c802bba1d1d93d48ef38e88195bb1f40155bcd4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 871424,
+      "allocated_bytes": 872448,
+      "file_count": 1,
+      "sha256": "41b33a6efaabb795e08ba26ba7a83f576d3083acc70d6462f73bc5355e0536ee"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 588800,
+      "allocated_bytes": 589824,
+      "file_count": 1,
+      "sha256": "1a4f48a2e684e48d76fbd688733cc4a0f1d9720f4d24566d01e5204c442836a0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 1433600,
+      "allocated_bytes": 1433600,
+      "file_count": 1,
+      "sha256": "8bc8272144615dd8c88344e49b21b99033d7e1111ed13ffd6221e86ec9f9c790"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 1154048,
+      "allocated_bytes": 1155072,
+      "file_count": 1,
+      "sha256": "873362e427279d8203cdf04fe98d6f92295dfb4699c98f479f8b0694cf61647f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/embedding.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 1154048,
+      "allocated_bytes": 1155072,
+      "file_count": 1,
+      "sha256": "2a9d0d1c7eb34e90b898a68d02cf2b49d65a6a9759e3fd93a259b2e9eb2dc4c2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/pilot-embeddings.npy",
+      "kind": "file",
+      "reason": "obsolete_learned_embeddings",
+      "logical_bytes": 131200,
+      "allocated_bytes": 135168,
+      "file_count": 1,
+      "sha256": "660d8ca4e2b9fd9e4b5cadff03874b94b7a249a950399008187ca09ba627379b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/encoder.pt",
+      "kind": "file",
+      "reason": "obsolete_neural_checkpoint",
+      "logical_bytes": 192768,
+      "allocated_bytes": 196608,
+      "file_count": 1,
+      "sha256": "146947cca347065a5e999e5c778b26a00f67e6331a07619b77f463700baf8f22"
+    }
+  ],
+  "note": "Removal completed on reviewed allowlist. Receipt timestamp compatibility error on datetime.UTC occurred after removal; regenerated receipt by proving all 116 paths absent and rehashing all 4424 retained files. No source change/test/forecast/backtest/S0 execution, service or other application action. Native environments, global runtimes and shared caches untouched."
+}

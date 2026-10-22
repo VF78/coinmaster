@@ -1,0 +1,38 @@
+{
+  "task": "CLEANUP-AI-VPS-20261022",
+  "status": "COMPLETE",
+  "deleted_path_count": 120,
+  "deleted_allocated_bytes": 1858576384,
+  "sum_observed_free_space_deltas": 1858441216,
+  "disk_initial": {
+    "total": 39973924864,
+    "used": 37539422208,
+    "free": 2010816512
+  },
+  "disk_final": {
+    "total": 39973924864,
+    "used": 35681243136,
+    "free": 3868995584
+  },
+  "wall_interval_free_delta": 1858179072,
+  "initial_retained_file_count": 20396,
+  "intentional_supplemental_model_deletions": 100,
+  "final_retained_file_count": 20296,
+  "native_data_job_hashes_unchanged_from_first_pass": {
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv": true,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data": true,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-datasets": true,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-results": true,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster": true,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/configs": true,
+    "/var/lib/coinmaster-native-gui/data/runs/jobs": true
+  },
+  "retained_report_hash_comparison": "Supplemental before/after excluding exact100 intentional learned-model deletions matches; original full reports digest intentionally changes",
+  "services_unchanged_from_start": true,
+  "containers_unchanged_from_start": true,
+  "all120_paths_absent": true,
+  "receipts": [
+    "vps-cleanup-result.json",
+    "vps-cleanup-addendum-result.json"
+  ]
+}

@@ -1,0 +1,906 @@
+{
+  "delete_candidates": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-D.cbm",
+      "bytes": 66448,
+      "allocated_bytes": 69632,
+      "device": 2049,
+      "inode": 1215795,
+      "sha256": "c12bb03206049d0228d9778f7167d50dbf741bce108c4e231b92069f3302cb84"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-Q-long.cbm",
+      "bytes": 68560,
+      "allocated_bytes": 69632,
+      "device": 2049,
+      "inode": 1215793,
+      "sha256": "6f7bd7766c05d1150107ac898b44c0fff8cd0579854fd9c64adff911591f10ef"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/controls/positive-Q-short.cbm",
+      "bytes": 68560,
+      "allocated_bytes": 69632,
+      "device": 2049,
+      "inode": 1215791,
+      "sha256": "dd6200e05d039ab2220955ede0f6eafd879ecba936fb85e3741556c92c62f223"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference/rdst/0/head.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference/rdst/0/head.pkl",
+      "bytes": 53585,
+      "allocated_bytes": 57344,
+      "device": 2049,
+      "inode": 1215838,
+      "sha256": "6c53ff57815d7f0c701a99dcdce77becffd4482f9fc5d75491c25ac6f8d53739"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference/rdst/0/transformer.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference/rdst/0/transformer.pkl",
+      "bytes": 159218,
+      "allocated_bytes": 159744,
+      "device": 2049,
+      "inode": 1215832,
+      "sha256": "f1cb07ec0b4df8ee464cf06d56b48148353e8c4fcc5b58d0e51bc53f046e8061"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference-utc/rdst/0/head.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference-utc/rdst/0/head.pkl",
+      "bytes": 53585,
+      "allocated_bytes": 57344,
+      "device": 2049,
+      "inode": 1215891,
+      "sha256": "6c53ff57815d7f0c701a99dcdce77becffd4482f9fc5d75491c25ac6f8d53739"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference-utc/rdst/0/transformer.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/old-fitset-inference-utc/rdst/0/transformer.pkl",
+      "bytes": 159218,
+      "allocated_bytes": 159744,
+      "device": 2049,
+      "inode": 1215888,
+      "sha256": "f1cb07ec0b4df8ee464cf06d56b48148353e8c4fcc5b58d0e51bc53f046e8061"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/encoder.pt",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/encoder.pt",
+      "bytes": 192768,
+      "allocated_bytes": 196608,
+      "device": 2049,
+      "inode": 1216033,
+      "sha256": "146947cca347065a5e999e5c778b26a00f67e6331a07619b77f463700baf8f22"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/pilot-embeddings.npy",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/pilot-embeddings.npy",
+      "bytes": 131200,
+      "allocated_bytes": 135168,
+      "device": 2049,
+      "inode": 1216030,
+      "sha256": "660d8ca4e2b9fd9e4b5cadff03874b94b7a249a950399008187ca09ba627379b"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/scaler.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/profile-C/scaler.pkl",
+      "bytes": 738,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 1216026,
+      "sha256": "29c2c69d63afdd1ae0df2c4fe3b7170f01c36026bbad4eafe91d4711eee92dcc"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-D.cbm",
+      "bytes": 25760,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215944,
+      "sha256": "7ecd542204f28b3d30089e73dbfd7679eb76bb3b5033f02c4a1a46c643143658"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-Q-long.cbm",
+      "bytes": 27680,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215946,
+      "sha256": "b0fe9b8c0a108b13ef038948310dd44228fcc8937fe5d69d80989df639ecb457"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-0-Q-short.cbm",
+      "bytes": 36392,
+      "allocated_bytes": 36864,
+      "device": 2049,
+      "inode": 1215934,
+      "sha256": "c672395ef3b628bbdd2ada715173f5897955c553507066b0efb80d08d6926313"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-D.cbm",
+      "bytes": 81024,
+      "allocated_bytes": 81920,
+      "device": 2049,
+      "inode": 1215959,
+      "sha256": "6fb0f1b79a8c31447f1b1af26d0046486d14fa4ad665dd59e4c9201bc25f305c"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-Q-long.cbm",
+      "bytes": 138264,
+      "allocated_bytes": 139264,
+      "device": 2049,
+      "inode": 1215920,
+      "sha256": "ddb20a33b2b1b5a86276c14792a71b98edea1d3647dbaa68da3ac005ccf56f26"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-1-Q-short.cbm",
+      "bytes": 32032,
+      "allocated_bytes": 32768,
+      "device": 2049,
+      "inode": 1215910,
+      "sha256": "5b0bb763d3e0d4205d693b0580bfffc39ea3d80fe713f6e347c43aa6b8ba2584"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-D.cbm",
+      "bytes": 41360,
+      "allocated_bytes": 45056,
+      "device": 2049,
+      "inode": 1215937,
+      "sha256": "11c6b585f781c41091d0aab343a5c1742b620f266e0adf93aa490933f95d4702"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-Q-long.cbm",
+      "bytes": 55648,
+      "allocated_bytes": 57344,
+      "device": 2049,
+      "inode": 1215928,
+      "sha256": "61a09d6c46de9a16718f4914f53fd3ef9b2e3d5a5dc2b01243425f2ce3f30d86"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-0-2-Q-short.cbm",
+      "bytes": 25184,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215916,
+      "sha256": "d85083d57f4751261f7bdbb2318a752852ba2dd622c35cfacdec0a644bd30b88"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-D.cbm",
+      "bytes": 32976,
+      "allocated_bytes": 36864,
+      "device": 2049,
+      "inode": 1215929,
+      "sha256": "cf301fed9edc071e5a7287007da6182f24c167c757129098a4824e5e269faafb"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-Q-long.cbm",
+      "bytes": 25176,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215958,
+      "sha256": "a425dfb4303b2e13ae231562e82f3d738141b18f8cf4eb656c472294dcfe4a79"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-0-Q-short.cbm",
+      "bytes": 39504,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215924,
+      "sha256": "686ab822f88c41fbebd53ac141a71def619cf91515745c5a3a5ef65675f0332e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-D.cbm",
+      "bytes": 101480,
+      "allocated_bytes": 102400,
+      "device": 2049,
+      "inode": 1215954,
+      "sha256": "cdeaa15b94ffc62c300ef23444bfddf7249ab6541c38fe99825a5babb6fe7cff"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-Q-long.cbm",
+      "bytes": 185592,
+      "allocated_bytes": 188416,
+      "device": 2049,
+      "inode": 1215915,
+      "sha256": "efef9f5aee2a0e653b5f11179f3598e1784ced7a71f4b64c41192e6d20d10164"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-1-Q-short.cbm",
+      "bytes": 50696,
+      "allocated_bytes": 53248,
+      "device": 2049,
+      "inode": 1215945,
+      "sha256": "dfc0cfe70eeacef2ee9288cb68f16fb5afd6e15fcd013d9691c83dbc1cdac5f0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-D.cbm",
+      "bytes": 57560,
+      "allocated_bytes": 61440,
+      "device": 2049,
+      "inode": 1215930,
+      "sha256": "152ca2072fc550488c329d5daa62600a00f29cfc97741b30f6431e91061d3239"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-Q-long.cbm",
+      "bytes": 25176,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215936,
+      "sha256": "60cc379b7a7957c4576ae970324a15a9064a45173090292dd0fada0de9e30c22"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/joint-d4-1-2-Q-short.cbm",
+      "bytes": 25184,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215942,
+      "sha256": "cc104186a4a7ba7752282ad861277f567d0a118077947e2f342a6d97f1ca0c69"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-D.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-D.pkl",
+      "bytes": 37156,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215950,
+      "sha256": "683513dede1ae512904e65ac3f0692b2a46486f6be4112517d0135a1bba40899"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-Q-long.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-Q-long.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215911,
+      "sha256": "59fb0f9de93e4542af081ef0468d072aca97b0a9525b12735fee77b3ccabbc41"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-Q-short.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-0-Q-short.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215947,
+      "sha256": "160afb2f6c6705273756d3b0830c0502a0fcd8d8f48f331cdb5f8f69d8f1aa90"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-D.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-D.pkl",
+      "bytes": 37156,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215935,
+      "sha256": "32985546d564b420a44a57d50a2a64a1a85b3eb48887a32285cd9625387edc2b"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-Q-long.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-Q-long.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215933,
+      "sha256": "689accc6005778a4c8d7503fed1d92f2f8f0026ec7090b6d9fd40b7b0a745d56"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-Q-short.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-1-Q-short.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215926,
+      "sha256": "58cfabe5dc9ad06ba42eeee7bddcbe44cd2a8184e1ef4c92ed1728150950ec09"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-D.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-D.pkl",
+      "bytes": 37156,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215951,
+      "sha256": "bfc62c6e85f75e750809ed52a8dd77d2787d67707055dd550d86b6241c6a073e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-Q-long.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-Q-long.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215923,
+      "sha256": "e81ecc08df1bf235f6300a39da43e8287191a1d694d9c3da50bbe3de0d9574de"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-Q-short.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-0-2-Q-short.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215899,
+      "sha256": "8c68d3760819fb07926236d3e2eddc855808655844812f30d63f075b51afa1b9"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-D.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-D.pkl",
+      "bytes": 37156,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215961,
+      "sha256": "f0ece46cb8c247befe85b8a8d9351379e10621d3bd3a40c2b005f81e27124ed0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-Q-long.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-Q-long.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215904,
+      "sha256": "1aa491416143953c06b6b8f1e29d84c7def577e83db7ddf4e877a20216175626"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-Q-short.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-0-Q-short.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215908,
+      "sha256": "1cb8b6248006c4af2cbaa1b7dd502dd98e91a8187b7e0eceed463ff21d8e0f50"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-D.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-D.pkl",
+      "bytes": 37156,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215939,
+      "sha256": "6ac961566e28af2299413db0392cb73b9c1bf06fe4a526b3666c91a42fa29661"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-Q-long.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-Q-long.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215943,
+      "sha256": "0df9f9b75e4d69508b60aa34e98bbe05907f42a20e6028f1b9d94b86f1d12942"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-Q-short.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-1-Q-short.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215932,
+      "sha256": "fef79ac856d3b85fd89cc8c40824dfea8ea8787f6cf5ed9d62572c11bc93649e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-D.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-D.pkl",
+      "bytes": 37156,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215957,
+      "sha256": "69d6cbcda901653dcaae9d1e9ca2f620bd3801aca9f7035d16de68c1cd421338"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-Q-long.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-Q-long.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215917,
+      "sha256": "625b8fc043f742a6fffbd5cf729d6b11b3b18683f5eef8efcdcc5e5f8d6b59b3"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-Q-short.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/linear-1-2-Q-short.pkl",
+      "bytes": 28235,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1215960,
+      "sha256": "73d835aa9452edd48f8828b3a93bbabaa415fd740d70f3c67d86c98076d44b3a"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-D.cbm",
+      "bytes": 302304,
+      "allocated_bytes": 303104,
+      "device": 2049,
+      "inode": 1215903,
+      "sha256": "f8416c5053f3341b3c2c72fa898c3abbff3de899a5400c738a82fcbdac98d627"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-Q-long.cbm",
+      "bytes": 135752,
+      "allocated_bytes": 139264,
+      "device": 2049,
+      "inode": 1215901,
+      "sha256": "8e7b21f1ec30e89bf48860b3f1f139ef46b9a3a225177ed597f1aae6e3d04b4c"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-0-Q-short.cbm",
+      "bytes": 219296,
+      "allocated_bytes": 221184,
+      "device": 2049,
+      "inode": 1215925,
+      "sha256": "89d81c6cecb9943cab34dcc726218eb2f6e5ef5c6dc3b9c807112f14db2b16b7"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-D.cbm",
+      "bytes": 35384,
+      "allocated_bytes": 36864,
+      "device": 2049,
+      "inode": 1215914,
+      "sha256": "1e8f04d81b2a84063e74d2ce5bc4880a16c1de2afc16b577144c73f64f291ba0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-Q-long.cbm",
+      "bytes": 170440,
+      "allocated_bytes": 172032,
+      "device": 2049,
+      "inode": 1215938,
+      "sha256": "af2a59fd6aebc9b0c4450f7dcf3640a1ad20113a92f13a6503be266ee9327f4c"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-1-Q-short.cbm",
+      "bytes": 12032,
+      "allocated_bytes": 12288,
+      "device": 2049,
+      "inode": 1215948,
+      "sha256": "c922a0cf40656978be2d57c031cd5d5f3cb98421b8d843c8d6f5dd03c33d3c9d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-D.cbm",
+      "bytes": 33584,
+      "allocated_bytes": 36864,
+      "device": 2049,
+      "inode": 1215902,
+      "sha256": "56d971cf07ac86dffbaa7c49fdbb24a03b865f7eee348de9e2c4079ea671307b"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-Q-long.cbm",
+      "bytes": 37520,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215913,
+      "sha256": "1b74574030cd5a6dc8ea89f0c1e9e44b7916e838f5d571c233b2683a1565c0c6"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-0-2-Q-short.cbm",
+      "bytes": 10160,
+      "allocated_bytes": 12288,
+      "device": 2049,
+      "inode": 1215941,
+      "sha256": "59a24dbc41a8a73b780cda197892cf0ec79574a2952021ca8155c040c313ece1"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-D.cbm",
+      "bytes": 14352,
+      "allocated_bytes": 16384,
+      "device": 2049,
+      "inode": 1215907,
+      "sha256": "ef007c421cba6fc697fb689c501f5e5b7f29340234a83353458d56514eafd187"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-Q-long.cbm",
+      "bytes": 13264,
+      "allocated_bytes": 16384,
+      "device": 2049,
+      "inode": 1215906,
+      "sha256": "edd151244a2d72d213e54aaa5fe5f41532a68e9a1fa70911eedc0dfab245ae31"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-0-Q-short.cbm",
+      "bytes": 89752,
+      "allocated_bytes": 90112,
+      "device": 2049,
+      "inode": 1215931,
+      "sha256": "36071954ef69f058385d7ad46e0dd4246ddcd6726d4347eb4a74215eea89ce61"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-D.cbm",
+      "bytes": 38416,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215922,
+      "sha256": "ef2758567eb227d62525fe1f380bff66cf6d51e3a03e90a302ac88b7faf4805f"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-Q-long.cbm",
+      "bytes": 96512,
+      "allocated_bytes": 98304,
+      "device": 2049,
+      "inode": 1215927,
+      "sha256": "832711ad531813a012e7d31cb647a2715e1ba968997d6bd4d662cb904376786b"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-1-Q-short.cbm",
+      "bytes": 23240,
+      "allocated_bytes": 24576,
+      "device": 2049,
+      "inode": 1215909,
+      "sha256": "fe4c4e5b9ce5699a8145a105e4857c27b287a0b4b74761ce559a3cf42825d3e5"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-D.cbm",
+      "bytes": 77944,
+      "allocated_bytes": 81920,
+      "device": 2049,
+      "inode": 1215912,
+      "sha256": "de882487a038eb0279f009e96ad484b9e00e09f9625c07820bd2788e162c4a36"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-Q-long.cbm",
+      "bytes": 38104,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1215921,
+      "sha256": "0d611eaa03de9398244d748215418e8b9114c62dbfbcdc2975531e09fc96e413"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-A-utc-corrected/shape-d4-1-2-Q-short.cbm",
+      "bytes": 10160,
+      "allocated_bytes": 12288,
+      "device": 2049,
+      "inode": 1215918,
+      "sha256": "31caf22ae5f5f8ce44d631cac89e99cb3d90a4a5ed15925d05142a0daba50295"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-D.cbm",
+      "bytes": 25928,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1211906,
+      "sha256": "69bcc32bd71db4e1a45cd7442086cd354ed18cf623271a80469b800042da9533"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-long.cbm",
+      "bytes": 39008,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1211676,
+      "sha256": "bee9c5c10fba00d0b8626463d96bf255a5853d68a1fa5ce6ab1faacb7cf4e8d4"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-0-Q-short.cbm",
+      "bytes": 71328,
+      "allocated_bytes": 73728,
+      "device": 2049,
+      "inode": 1211683,
+      "sha256": "bda6fefe21a8985ae1d293709e5334790b866da685d99bf5b7c550bbc7f6296d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-D.cbm",
+      "bytes": 87792,
+      "allocated_bytes": 90112,
+      "device": 2049,
+      "inode": 1211751,
+      "sha256": "b6d867fe8e8ff0de39212c54b76f88d0376fa4831ea0970b9e20709abd3d1c7e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-long.cbm",
+      "bytes": 116112,
+      "allocated_bytes": 118784,
+      "device": 2049,
+      "inode": 1213150,
+      "sha256": "48f1904efad42e430ffe5ccb2e5dd69dd41d285e4b172cda7795ffbb862d4ec2"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-1-Q-short.cbm",
+      "bytes": 29680,
+      "allocated_bytes": 32768,
+      "device": 2049,
+      "inode": 1211632,
+      "sha256": "b87fd196de8d66706b6d790f687c39b3c4846c0bfe7ffde397c3f1663c898386"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-D.cbm",
+      "bytes": 65520,
+      "allocated_bytes": 65536,
+      "device": 2049,
+      "inode": 1211941,
+      "sha256": "777ba7ad2c4643407c7b065cad6b0090935f8c5f41e30a0a48c0d05745182fbe"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-long.cbm",
+      "bytes": 44600,
+      "allocated_bytes": 45056,
+      "device": 2049,
+      "inode": 1199187,
+      "sha256": "c368c6ba4c549a80dd617a522e57e5646b8c138d9db3110e42347aea356cc714"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-0-2-Q-short.cbm",
+      "bytes": 25952,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1211674,
+      "sha256": "d46b691f746fa55615f6bcd2a8fc51d615c871a5a7478db40d16fd018b509186"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-D.cbm",
+      "bytes": 37960,
+      "allocated_bytes": 40960,
+      "device": 2049,
+      "inode": 1213156,
+      "sha256": "362e514e2c01f5c42e97cbbc1b96df642d1b8252702bb49ee4a8532749f61d97"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-long.cbm",
+      "bytes": 25952,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1211682,
+      "sha256": "ccb5eae8729b4e6eb2702b431894adf222aade9bb03f7b3524d4fb85cd6ccc15"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-0-Q-short.cbm",
+      "bytes": 27184,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1211678,
+      "sha256": "5dee80baeb47dc1eeb4a023657417e8fbd2df1b0d51b9d0e38bbee011dad2ff2"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-D.cbm",
+      "bytes": 137032,
+      "allocated_bytes": 139264,
+      "device": 2049,
+      "inode": 1211777,
+      "sha256": "f8bba96d502229eb948e18c8a502700f9146b1d22f8cb4d3f5ad68918ceb3a25"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-long.cbm",
+      "bytes": 139768,
+      "allocated_bytes": 143360,
+      "device": 2049,
+      "inode": 1212102,
+      "sha256": "c962fb47e19d04f5801f6950b52bda88c041be1bc6c549d0dc44284fd78f2b6f"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-1-Q-short.cbm",
+      "bytes": 46512,
+      "allocated_bytes": 49152,
+      "device": 2049,
+      "inode": 1212101,
+      "sha256": "eac3516bf41b5ff11a1df1d3bcae3ae6374b545f5631df9bb4c83fbb915f9a2e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-D.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-D.cbm",
+      "bytes": 54128,
+      "allocated_bytes": 57344,
+      "device": 2049,
+      "inode": 1212195,
+      "sha256": "a51e73f4b9c692f7e6ad68b4508fc739108deba5849bb6cf6e88dfe28e420321"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-long.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-long.cbm",
+      "bytes": 25944,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1211595,
+      "sha256": "eae8ac51a55c3330ddc8fdce006255effcda885bfacf075e5775b145da478ad5"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-short.cbm",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/joint-ts2vec-d4-1-2-Q-short.cbm",
+      "bytes": 25944,
+      "allocated_bytes": 28672,
+      "device": 2049,
+      "inode": 1211752,
+      "sha256": "d1b59f06e57a30461c0a64a9aa6d885db06c978f78e0ab9c29f6cdaa2d930e9f"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/embedding.npy",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/embedding.npy",
+      "bytes": 588800,
+      "allocated_bytes": 589824,
+      "device": 2049,
+      "inode": 1215997,
+      "sha256": "1a4f48a2e684e48d76fbd688733cc4a0f1d9720f4d24566d01e5204c442836a0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/encoder.pt",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/encoder.pt",
+      "bytes": 192768,
+      "allocated_bytes": 196608,
+      "device": 2049,
+      "inode": 1216061,
+      "sha256": "1ad8fe86bf759fd521f31a1bd17d2a6a98ca13e795bd767966bfb1fff9e06404"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/scaler.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-ES/scaler.pkl",
+      "bytes": 738,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 1215996,
+      "sha256": "3dc4ab0a3ae2f92fce73b40239013385e0ed7579cf517c37dc4179e75462b9d4"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/embedding.npy",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/embedding.npy",
+      "bytes": 871424,
+      "allocated_bytes": 872448,
+      "device": 2049,
+      "inode": 1216064,
+      "sha256": "41b33a6efaabb795e08ba26ba7a83f576d3083acc70d6462f73bc5355e0536ee"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/encoder.pt",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/encoder.pt",
+      "bytes": 192768,
+      "allocated_bytes": 196608,
+      "device": 2049,
+      "inode": 1216068,
+      "sha256": "d7c0db9a5f7a9e18b674edcf573378cf5029640bd15b3ca60a60c8429f5dc4c2"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/scaler.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-03-01-full/scaler.pkl",
+      "bytes": 738,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 1216063,
+      "sha256": "dc6d28293c2c3f3c63371991523ede5ea797bf9f880543087d73629a1d27bccf"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/embedding.npy",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/embedding.npy",
+      "bytes": 871424,
+      "allocated_bytes": 872448,
+      "device": 2049,
+      "inode": 1216071,
+      "sha256": "2278901e04d6808514c403d20c802bba1d1d93d48ef38e88195bb1f40155bcd4"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/encoder.pt",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/encoder.pt",
+      "bytes": 192768,
+      "allocated_bytes": 196608,
+      "device": 2049,
+      "inode": 1216075,
+      "sha256": "8ff1668bb0443c3067bdaf758c576106fbfbe0bc064d119a90bc0cedd78fe990"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/scaler.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-ES/scaler.pkl",
+      "bytes": 738,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 1216070,
+      "sha256": "5d5625b17b9342196f90bd5b06bd60900ca04ad812eb551e068c4fcaa551e4ff"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/embedding.npy",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/embedding.npy",
+      "bytes": 1154048,
+      "allocated_bytes": 1159168,
+      "device": 2049,
+      "inode": 1213554,
+      "sha256": "2a9d0d1c7eb34e90b898a68d02cf2b49d65a6a9759e3fd93a259b2e9eb2dc4c2"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/encoder.pt",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/encoder.pt",
+      "bytes": 192768,
+      "allocated_bytes": 196608,
+      "device": 2049,
+      "inode": 1213809,
+      "sha256": "5f15acfeac1a66c3e370190774f79a16890c40f71da5649b2f97e674fd0269f2"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/scaler.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-06-01-full/scaler.pkl",
+      "bytes": 738,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 1213553,
+      "sha256": "c01b31ce230dbde3c7eff42a338838e0a79047cf6a4774b929d722c223a8252c"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/embedding.npy",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/embedding.npy",
+      "bytes": 1154048,
+      "allocated_bytes": 1159168,
+      "device": 2049,
+      "inode": 1215842,
+      "sha256": "873362e427279d8203cdf04fe98d6f92295dfb4699c98f479f8b0694cf61647f"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/encoder.pt",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/encoder.pt",
+      "bytes": 192768,
+      "allocated_bytes": 196608,
+      "device": 2049,
+      "inode": 1215858,
+      "sha256": "634c5937e5965e30173e8f6672b94ed1c34bc40e2af97eda8fbc55dcda1ab60d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/scaler.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-ES/scaler.pkl",
+      "bytes": 738,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 1213811,
+      "sha256": "bc2772af88e232ba53cbf2f57042685809f24187185e140c8f37f4ad64e7c60d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/embedding.npy",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/embedding.npy",
+      "bytes": 1433600,
+      "allocated_bytes": 1437696,
+      "device": 2049,
+      "inode": 1215977,
+      "sha256": "8bc8272144615dd8c88344e49b21b99033d7e1111ed13ffd6221e86ec9f9c790"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/encoder.pt",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/encoder.pt",
+      "bytes": 192768,
+      "allocated_bytes": 196608,
+      "device": 2049,
+      "inode": 1215994,
+      "sha256": "cc044c4cb729477ebe6a0026aba169945d2fede39d2e06dfc1b7e5fef70852b6"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/scaler.pkl",
+      "resolved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/ai-cycle-20261021-01/mac-artifacts/stage-C-development/encoders/2025-09-01-full/scaler.pkl",
+      "bytes": 738,
+      "allocated_bytes": 4096,
+      "device": 2049,
+      "inode": 1215860,
+      "sha256": "5b7aba18b1c69752411b7c7fad893d261d4f0183fcdf8fbe8d12629c82d98b73"
+    }
+  ],
+  "allocated_bytes": 12378112,
+  "logical_bytes": 12141264
+}
