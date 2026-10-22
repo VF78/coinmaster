@@ -1,0 +1,37 @@
+{
+  "status": "GO_FOR_DELIVERY",
+  "review_type": "final_document_consistency_and_causal_semantics_only",
+  "date": "2026-10-22",
+  "reviewed_files": [
+    "REPORT.md",
+    "PROTOCOL_PROPOSAL.md",
+    "methods-full-waves.md",
+    "stats-findings.md"
+  ],
+  "checks": {
+    "full_699_day_period_preserved": true,
+    "original_three_calendar_folds_including_F3_preserved": true,
+    "no_claim_old_198_ids_are_new_macro_queries": true,
+    "existing_H72_18TP_6SL_target_function_preserved": true,
+    "full_mature_historical_ABC_D_distinct_from_causal_ABP_query": true,
+    "same_canonical_side_permutation_and_query_inverse_for_all_arms": true,
+    "undefined_direction_not_inferred_from_future": true,
+    "only_stage_A_catalogue_feasibility_requested_now": true,
+    "exact_stage_B_and_changed_validation_contract_need_separate_approval": true,
+    "old_strict_purge_empty_support_disclosed": true,
+    "initialisation_truncation_censoring_and_unsupported_rows_preserved": true,
+    "overlapping_legs_not_counted_as_IID_cycles": true,
+    "no_measured_macro_forecast_or_economic_performance_claim": true,
+    "D90_attribution_distinguished_from_causal_effect_in_report": true,
+    "no_new_research_source_or_model_runs_in_review": true
+  },
+  "material_blockers": [],
+  "editorial_recommendation": {
+    "file": "REPORT.md",
+    "text": "Сейчас доказаны конкретные механизмы отрицательного результатаD90.",
+    "suggested_replacement": "Разложены наблюдаемые источники ухудшенияD90 в сохранённой выборке; причинный эффект состояния не установлен.",
+    "reason": "Avoid an isolated concluding sentence sounding stronger than the explicit noncausal caveats already present in the report.",
+    "communicated_to_root": true
+  },
+  "limits": "Document semantic review only; root independently verifies metrics, hashes and Project state. Stage A may legitimately conclude insufficient full-wave support; no forecast authorisation inferred."
+}

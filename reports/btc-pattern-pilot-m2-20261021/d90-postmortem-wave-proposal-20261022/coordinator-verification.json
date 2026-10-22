@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-22T12:32:22.837088+00:00",
+  "status": "PASS_SAVED_OUTPUT_AND_SCOPE_QA",
+  "unchanged_D90_results_sha256": "136ec6bec0be89b07f28168f5a654200412bd80ac414236f8911c513f8b365c3",
+  "ids_unchanged": 198,
+  "Brier_delta": 0.002875527594432072,
+  "adjustment_square": 0.000861310750916515,
+  "harmful_alignment": 0.0020142168435155587,
+  "alignment_share": 0.7004686191903419,
+  "probability_variance_ratio": 4.1543914476439,
+  "pins_verified": 9,
+  "saved_query_delta_rows": 198,
+  "new_market_or_catalogue_or_target_or_forecast_or_model_runs": 0,
+  "proposal_status": "STAGE_A_CATALOGUE_ONLY_AWAITING_OWNER_AGREEMENT",
+  "limits": "Numerical decomposition is exact; state/timeconfounding and fullwave forecast value remain unproved."
+}
