@@ -1,5 +1,5 @@
-Updated: 2026-10-22T17:36:00.366371+00:00
-Status: S0_MANAGEMENT_COMPLETE_NEGATIVE_PUBLICATION_PENDING — Project #123 final update pending.
+Updated: 2026-10-22T17:41:01.538155+00:00
+Status: S0_MANAGEMENT_COMPLETE_VALID_NEGATIVE — #123 CLOSED(completed), Project #2 Done; exact body/status readback PASS.
 
 Owner scope: ONE S0 remainder-management adaptation, ≤4 full native attempts, DD≤50% and ≥90% S0 net profit. Two fixed intensities tested; both fail both economic criteria. STOP2/4, unused2; no third intensity, execution retune or fresh repeat. S0 engine reruns0; no pilot/production/deploy/orders changes. Do not relaunch.
 
@@ -13,8 +13,8 @@ M2: exit0/full24m/87source-inputchecksPASS/terminalflat0/liq0. TOTAL2044863.6309
 
 Native jobs: /var/lib/coinmaster-native-gui/data/runs/jobs/cm123-s0-manage-m1-20261022-r1 and ...m2-20261022-r1, both finished. Source77files ade52744e6cfc95ceb8096a2bb4a47d7a2367218b41039ce71161aa223358d67 +13exactinputs; reviewed patch10bf3a34e7ebc56588e4ecc50ef66664b528f3b6f15941d8ce7b49ca4400e968. Frozen commands/config/source/input pins and fresh separate funding journals in owner-run-freeze.json/run-budget.json. No stale non-r1 job launched. Resources650MiB/noswap/thread1/privateNetwork, noOOM/retry; final free3.619GB/MemAvailable1.080GB.
 
-Source efa7c723d9f0c5c1bdc8f491abf12921ac41c275 published/GitHubrefPASS;100focusedtestsPASS13.09s, independentGO afteroneP1prioritycorrection. GitHub sourceCI0check/0Actions, no newCItrigger. Interim report checkpointbb5be5a3cb2f1716fb249bcdc49c9637c48ef9da published/refPASS. Owner18files frozen owner-final-files.json. Final results publication pending.
+Source efa7c723d9f0c5c1bdc8f491abf12921ac41c275 published/GitHubrefPASS;100focusedtestsPASS13.09s, independentGO afteroneP1prioritycorrection. GitHub sourceCI0check/0Actions, no newCItrigger. Interim report checkpointbb5be5a3cb2f1716fb249bcdc49c9637c48ef9da published/refPASS. Owner18files frozen owner-final-files.json. Final result7d119f50ca0b7928dd5a0e9ea148964bcddd1df5 published/GitHubrefPASS; result-publication-readback.json.
 
 Canonical development: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster HEAD0bd7351897a9854c144817fdfca6c548e7984673; expected5ownedsourcefiles+100authorizedmodeldeletions+preexistingresearchoutputs, NEVERreset. Mac research/publication checkout /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021, branch codex/btc-pattern-pilot-m2-20261021. Never /optmanualedit. PilotPID2009732 existed before/after; no full-runtime identity claim without comparablebaseline. Owner source/run DONE, scoped reviewer DONE, stats DONE, root reports/Project/git.
 
-NEXT comparison.json/csv and REPORT complete; publish final results, update/readback existing123 as completed negative experiment (economic target NOT achieved), final metadata commit/push/refverify. #121/#122remainDone; no AI/research/runtime restart authorized by unused slots. SSH publication uses existing owner tasklocal /private/tmp/coinmaster-s0-management-20261022.sock; no muxkill/VPN/service changes.
+NEXT no further action inside completed experiment. comparison.json/csv + REPORT and both independent validations complete; source/results published; existing123 CLOSED(completed)/ProjectDone exactreadbackPASS in project-final-readback.json. Economic target NOT achieved. Final metadata checkpoint records these receipts; no new native/retune/repeat. #121/#122remainDone; no AI/research/runtime restart authorized by unused slots. SSH publication uses existing owner tasklocal /private/tmp/coinmaster-s0-management-20261022.sock; no muxkill/VPN/service changes.
