@@ -1,0 +1,35 @@
+{
+  "schema": "btc-event-e1.v1",
+  "status": "PREREGISTERED_BEFORE_CATALOGUE_AND_LABEL_READ",
+  "period": ["2024-06-01", "2026-05-01"],
+  "warmup": "2024-05-15 through June1 initialization only; never warmup query labels",
+  "detector": {
+    "input": "completed UTC 1H close log prices",
+    "delta": "1 * existing sigma24 = sample std of last168 hourly log returns * sqrt24; frozen at observable activation of each leg",
+    "initial": "unknown direction at first finite scale; track running extrema; first threshold crossing establishes direction, produces no query; first initialized leg left-truncated and excluded from queries",
+    "turn": "up leg ends at highest close once close <= peak-delta; inverse for down; earliest equal extreme retained; confirmation is origin, never extreme time",
+    "activation": "new leg activation is confirmation; anchor is now-known previous extreme; new delta uses sigma24 at confirmation; query describes completed leg plus observed correction",
+    "query": "one at each confirmed turn after initial left-truncated leg; full variable-length anchor-extreme-confirmation retained",
+    "gaps": "nonfinite/invalid OHLCV or missing hour resets detector and scale warmup; registry retains GAP_RESET, UNKNOWN_INITIAL, LEFT_TRUNCATED, RIGHT_CENSORED",
+    "failed": "queries with full72h horizon but no barriers are observed timeout, never discarded; still-open legs right censored"
+  },
+  "features": {
+    "state": "existing12 context plus completed-leg direction, signed log extreme/anchor divided by causal query sigma24, log1p impulse hours, log1p correction hours, signed log confirm/extreme divided by causal query sigma24, frozen delta/query sigma24",
+    "support": "earliest full prefix anchor and existing features_at dependency (closed4h endpoint minus336h, context169h); common across arms and scaler purge",
+    "shape": "price-only log(close/anchor)/query sigma24 sampled over complete observed anchor to confirmation; no future total duration/peak/normalizer",
+    "phase": "32 equally spaced samples anchor to extreme plus32 extreme to confirmation, duplicate extreme intentional",
+    "clock": "64 equally spaced samples same physical anchor to confirmation interval",
+    "normalization": "per-query common eligible past library mean/std state; zero std=1; squared Euclidean state mean, shape squared Euclidean mean; E1/clock distance .5state+.5shape; state-only state distance; no learned shape scaling"
+  },
+  "library": "event labels all mature by min(original expanding fold cutoff, earliest actual query feature dependency); entire library event anchor-to-confirmation must end before query input; same IDs/purge for every arm; scaler only these IDs; all event queries in permitted training period; fixed max32 nearest greedy72h origin separation; ties stable query ID; fewer8 neighbors => prior fallback counted failure",
+  "arms": ["prior", "state", "clock", "phase"],
+  "prior": "global empirical event prior on same eligible pool; neighbor empirical distributions mixed with8 prior pseudo-observations; weighted inverse-CDF quantiles20/50/80 from conservative lower MFE; D excludes ambiguous labels; empty prior is explicit infeasible query, no fabricated forecast",
+  "targets": "existing btc_pattern_inapp.targets untouched; H72h entry origin+60s native1mOPEN, sigma72 at query; both sides x SL.75/1/1.5 x Q20/50/80=18Q and6 full-horizon adverse touches; intraminute lower/upper; D secondary; incomplete horizon registry retained unscored censored",
+  "folds": [["F1","2025-01-01","2025-05-01"],["F2","2025-07-01","2025-11-01"],["F3","2026-01-01","2026-05-01"]],
+  "evaluation": "all confirmed query IDs in original folds, require label_end<=fold end; fallback and NO_TRADE remain denominators; no event completion/success selection",
+  "metrics": "co-primary mean18 pinball lower MFE and mean6 full-horizon adverse-touch Brier; upper sensitivity, D, zero/positive TP denominators and bounds, calibration, fallback, neighbor concentration secondary; adverse touch is not actual traded stopout",
+  "uncertainty": "paired per-event deltas, within-fold UTC14d and28d occupied-block bootstrap1000 seed7; min2occupiedblocks each of3folds; primary14d upper95CI<0 and >=2/3fold negative for BOTH co-primary versus EACH prior/state/clock; all three learned-arm coverage>=90%;28d sensitivity reported",
+  "resources": "one process, threads<=4, RSS<=6GiB, 30minute overall guard; mmap source readonly and slice only warmup throughMay1; no CHECK materialization or labels beyondMay1",
+  "stages": "catalogue and tests only first; rootGO required before single E1 evaluation; no grid/automatic retry or postquality tuning; E2/E3 separately only after defined improvement",
+  "prohibited": "neural/API/LLM forecasts, economic/native backtest, VPS/pilot/CHECK changes; old source/results/data edits"
+}

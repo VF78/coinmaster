@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-22T11:35:12.433758+00:00",
+  "stage": "CATALOGUE_ACCEPTED_EVALUATOR_IMPLEMENTATION_ONLY",
+  "catalogue_qa": "PASS",
+  "protocol_sha256": "50df8d14dd42e92ce250cc0f5aa066bb6a1788604aa55608d222fcf0fa8f1a6d",
+  "catalogue_sha256": "f46e2e98ceae2dd078f03f4594899b3ac769d85dffe11e32001a6523ea6dbe61",
+  "events": 372,
+  "quality_evaluation_authorized": false,
+  "next": "evaluator focused tests + scoped review; separate root GO before E1",
+  "pilot_changes": false
+}

@@ -1,0 +1,74 @@
+{
+  "period_days": 699,
+  "events": 372,
+  "by_month": {
+    "2024-06": 15,
+    "2024-07": 19,
+    "2024-08": 18,
+    "2024-09": 14,
+    "2024-10": 14,
+    "2024-11": 15,
+    "2024-12": 14,
+    "2025-01": 21,
+    "2025-02": 19,
+    "2025-03": 16,
+    "2025-04": 8,
+    "2025-05": 13,
+    "2025-06": 13,
+    "2025-07": 19,
+    "2025-08": 12,
+    "2025-09": 19,
+    "2025-10": 20,
+    "2025-11": 16,
+    "2025-12": 18,
+    "2026-01": 15,
+    "2026-02": 17,
+    "2026-03": 20,
+    "2026-04": 17
+  },
+  "by_direction": {
+    "-1": 186,
+    "1": 186
+  },
+  "registry": {
+    "UNKNOWN_INITIAL": 1,
+    "LEFT_TRUNCATED": 1,
+    "RIGHT_CENSORED": 1
+  },
+  "bad_minutes": 0,
+  "horizon_censored": 2,
+  "fold_support": {
+    "F1": {
+      "queries": 64,
+      "mature_in_fold": 64,
+      "neighbor_count_min": 32,
+      "neighbor_count_median": 32.0,
+      "at_least8": 64
+    },
+    "F2": {
+      "queries": 70,
+      "mature_in_fold": 67,
+      "neighbor_count_min": 32,
+      "neighbor_count_median": 32.0,
+      "at_least8": 70
+    },
+    "F3": {
+      "queries": 69,
+      "mature_in_fold": 67,
+      "neighbor_count_min": 32,
+      "neighbor_count_median": 32.0,
+      "at_least8": 69
+    }
+  },
+  "confirmation_delay_hours": {
+    "median": 12.0,
+    "maximum": 95.0
+  },
+  "max_prefix_hours": 622.0,
+  "protocol_sha256": "50df8d14dd42e92ce250cc0f5aa066bb6a1788604aa55608d222fcf0fa8f1a6d",
+  "manifest_sha256": "bc660056af9117a246a1334837b7e42c9bb2d0635945a0346a4b088a459685ff",
+  "catalogue_sha256": "f46e2e98ceae2dd078f03f4594899b3ac769d85dffe11e32001a6523ea6dbe61",
+  "input_sha256": "2aaac52695a83c0dc60ec7836e9d2484fd6fdd7db5df3e532e4191327980fe85",
+  "quality_labels_read": false,
+  "elapsed_seconds": 0.549753500148654
+}
