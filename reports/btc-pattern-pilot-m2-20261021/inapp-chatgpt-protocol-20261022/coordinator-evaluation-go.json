@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-22T07:55:56.339931+00:00",
+  "status": "GO",
+  "debug_valid": 10,
+  "debug_attempts": 10,
+  "debug_skipped": "July LOW_SUPPORT, no replacement",
+  "prompt_revisions": 0,
+  "evaluation_responses": 48,
+  "forecast_cap": 60,
+  "expected_total": 58,
+  "freeze_sha256": "7ea0cd8c624ef72cab364dbc337f4d7d4895fa0c2c33baadce67cd82ee435755",
+  "query_outcomes_inspected": false,
+  "model": "gpt-6.1-sol",
+  "reasoning": "high",
+  "pilot_touched": false
+}

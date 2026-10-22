@@ -1,0 +1,12 @@
+{
+  "status": "FORMAT_PASS_PROMPT_UNCHANGED",
+  "at": "2026-10-22T07:52:06.180462+00:00",
+  "first4_debug_slots": 4,
+  "July_low_support_skipped": true,
+  "responses": 6,
+  "valid": 6,
+  "prompt_revisions_used": 0,
+  "prompt_sha256": "27fa2132a0273cb02f730b2a83529a86cb85090777c8a45c08a0d844f0c7ac4e",
+  "instructions_sha256": "5a7086dc2bf660a816d2de7190e438c511ecd6c4432208f4beb8ee65898cfd3e",
+  "evaluation_truth_revealed": false
+}
