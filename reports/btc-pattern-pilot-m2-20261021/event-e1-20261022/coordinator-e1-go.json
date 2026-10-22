@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-22T11:37:41.394716+00:00",
+  "decision": "GO_SINGLE_E1_EVALUATION",
+  "protocol_sha256": "50df8d14dd42e92ce250cc0f5aa066bb6a1788604aa55608d222fcf0fa8f1a6d",
+  "source_sha256": "690c97cbdcb913f8c1f5aade9eabf07c13aec92feeb2f74a92af864ea33d3acd",
+  "tests_sha256": "d963f505eca04bd8ada4fb866604836570550ffba933b43a243d18fb42e39eee",
+  "review_sha256": "01cbc9b100aa2359a9828db06adb4b5ac7ae6b1fbe800fc7993460fe865c24c0",
+  "prepared_manifest_sha256": "bc660056af9117a246a1334837b7e42c9bb2d0635945a0346a4b088a459685ff",
+  "tests_passed": 11,
+  "E2_E3": "CONDITIONAL_ONLY_ON_FROZEN_E1_GATE",
+  "pilot_changes": false,
+  "native_backtests": 0,
+  "CHECK_access": false
+}

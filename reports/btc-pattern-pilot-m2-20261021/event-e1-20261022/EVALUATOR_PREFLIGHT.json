@@ -1,0 +1,11 @@
+{
+  "stage": "EVALUATOR_IMPLEMENTED_SYNTHETIC_TESTS_ONLY",
+  "tests_passed": 11,
+  "runner": "bundled Python runpy; pytest unavailable",
+  "labels_or_quality_read": false,
+  "evaluation": "PENDING_FINAL_ROOT_GO",
+  "files": {
+    "runtime/coinmaster/research/btc_event_research.py": "690c97cbdcb913f8c1f5aade9eabf07c13aec92feeb2f74a92af864ea33d3acd",
+    "runtime/tests/test_btc_event_research.py": "d963f505eca04bd8ada4fb866604836570550ffba933b43a243d18fb42e39eee"
+  }
+}

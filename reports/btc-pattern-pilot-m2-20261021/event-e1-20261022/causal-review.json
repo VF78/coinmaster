@@ -1,0 +1,35 @@
+{
+  "decision": "GO_FOR_E1",
+  "scope": "Pre-outcome causal/preregistration and focused evaluator review only. Root owns launch authorization.",
+  "reviewed_sha256": {
+    "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/PROTOCOL.json": "50df8d14dd42e92ce250cc0f5aa066bb6a1788604aa55608d222fcf0fa8f1a6d",
+    "runtime/coinmaster/research/btc_event_research.py": "690c97cbdcb913f8c1f5aade9eabf07c13aec92feeb2f74a92af864ea33d3acd",
+    "runtime/tests/test_btc_event_research.py": "d963f505eca04bd8ada4fb866604836570550ffba933b43a243d18fb42e39eee"
+  },
+  "quality_labels_or_results_read": false,
+  "market_scan_or_forecast_run_by_reviewer": false,
+  "test_receipt": {
+    "path": "EVALUATOR_PREFLIGHT.json",
+    "synthetic_tests_passed": 11,
+    "compile_passed_reported_by_owner": true,
+    "reviewer_reran_tests": false
+  },
+  "findings": [],
+  "resolved_finding": "Manifest validation now requires exact full authoritative SHA-256; prefix fallback removed.",
+  "checks": [
+    "Closed-1H confirmation origin follows extreme; activation freezes each leg threshold; first left-truncated leg excluded and gap/end censoring retained.",
+    "Phase/clock share full observed anchor-to-confirmation physical history; state includes durations and amplitude; no future event completion normalization.",
+    "Common eligible event pool and scaler restricted to labels mature by min(fold fit cutoff, earliest actual feature history); input support includes full event prefix and 336h closed-4H engineered dependency.",
+    "Evaluation preserves original three folds and requires full label horizon <= fold endpoint, bounded by 2026-05-01; entry at origin+minute OPEN.",
+    "Existing stop-conditioned conservative lower Q and full-horizon SL-touch targets unchanged across arms; upper intraminute Q sensitivity separate.",
+    "Neighbors deterministic, max32 and >=72h origin separation; min8 or same empirical-prior fallback retained in every all-ID score denominator; prior smoothing weight8.",
+    "One query per confirmed event; paired event losses bootstrap within fold using occupied14d blocks, seed7 and1000 draws;28d sensitivity also emitted.",
+    "Success requires BOTH TP pinball and SL Brier versus EACH prior/state/clock, primaryCI upper<0 and >=2/3fold negative, plus >=90% supported coverage in each state/clock/phase arm.",
+    "No economic/native/VPS/pilot/CHECK changes or model training in reviewed scope."
+  ],
+  "limitations": [
+    "This is repeatedly studied DEVELOPMENT research, not a new untouched holdout or evidence of event-timing superiority/ROI.",
+    "Fourteen-day occupied-block bootstrap is the preregistered dependence approximation;28d sensitivity and event-neighbor reuse are reported.",
+    "Empty eligible/unambiguous prior raises explicit infeasibility rather than fabricating forecasts."
+  ]
+}
