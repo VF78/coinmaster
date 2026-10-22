@@ -1,0 +1,12 @@
+{
+  "decision": "ROOT_GO_PREPARE_ONCE_THEN_BOUNDED_SCREEN",
+  "at": "2026-10-22T13:36:04.009482+00:00",
+  "source_checkpoint": "2c13442f226c5bd8c42ab0ea9bb2fa7647a00d48",
+  "protocol_sha256": "54cacf6dffb952c65a2bc32fa40c0cd0b306ffd76fddd3c555cb45154405715a",
+  "verified_pins": 20,
+  "review_sha256": "ab94fabbceb0a8c3dcd6cbbf49900899714124ca71bf3a75ed10714b75c03e2e",
+  "forecast_attempt_cap": 26,
+  "quality_computed": false,
+  "pilot_untouched": true,
+  "source_immutable_after_evaluation": true
+}

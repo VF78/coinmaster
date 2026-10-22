@@ -1,0 +1,45 @@
+{
+  "phase": "debug",
+  "freeze_sha256": "6fe2aa4e3321041f72e06ba524b6aaba1bbb34c86a73ab9c2c4e21ca2acf2aca",
+  "records": [
+    {
+      "query_id": "04ada96b3111",
+      "response_sha256": "9f08a5edf48ef7d6bab0ac2e8447ac88eea5008927b90860ca4be4e43a0c8aae",
+      "valid": true,
+      "rank": [
+        32,
+        62,
+        26,
+        74,
+        46,
+        24,
+        22,
+        58
+      ],
+      "no_match": false
+    },
+    {
+      "query_id": "7ead954b8a25",
+      "response_sha256": "26cf496563af3bb101acb50ecdca77c5679f59d8ccd5c98f441617cfbcd84af5",
+      "valid": true,
+      "rank": [
+        93,
+        63,
+        47,
+        59,
+        79,
+        1,
+        25,
+        29
+      ],
+      "no_match": false
+    }
+  ],
+  "count": 2,
+  "valid": 2,
+  "actual_response_files": 2,
+  "actual_dispatch_attempts": 2,
+  "dispatch_ledger_sha256": "e48f137d227f22bd57aedb488ea2b4c566da0c519d7fd0fca45b942cf4349b30",
+  "model": "gpt-6-astra",
+  "reasoning": "max"
+}

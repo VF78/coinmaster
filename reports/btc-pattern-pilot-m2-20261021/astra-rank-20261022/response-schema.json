@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "query_id",
+    "ranked_candidate_ids",
+    "no_match",
+    "evidence"
+  ],
+  "properties": {
+    "query_id": {
+      "type": "string"
+    },
+    "ranked_candidate_ids": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "no_match": {
+      "type": "boolean"
+    },
+    "evidence": {
+      "type": "string",
+      "maxLength": 1500
+    }
+  }
+}

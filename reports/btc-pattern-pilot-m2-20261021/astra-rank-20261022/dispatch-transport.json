@@ -1,0 +1,5 @@
+{
+  "transport": "Use only exact packet and unique response output. Read every candidate; use complete bounded/chunked reads or arithmetic summaries over all arrays, never silently truncated output. No outcomes, other files, browse, other models or agents. Write JSON exclusively once to supplied output, then return same JSON. No quality retries. Same transport applies all26 attempts.",
+  "frozen_at": "2026-10-22T13:37:25.628155+00:00",
+  "quality_computed": false
+}

@@ -1,0 +1,113 @@
+{
+  "attempts": [
+    {
+      "phase": "debug",
+      "query_id": "04ada96b3111",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:37:25.626530+00:00",
+      "agent_task": "/root/rank_debug01",
+      "status": "COMPLETE_RESPONSE_PRESENT"
+    },
+    {
+      "phase": "debug",
+      "query_id": "7ead954b8a25",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:37:25.627661+00:00",
+      "agent_task": "/root/rank_debug02",
+      "status": "RESPONSE_PRESENT_VALID_FINAL_TRANSPORT_ERROR",
+      "error": "Selected model is at capacity. Please try a different model.",
+      "recorded_at": "2026-10-22T13:42:16.661423+00:00",
+      "note": "debug seal found valid unique JSON already written despite final agent capacity error; no retry/substitution"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "fed7ed7df152",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:43:58.531642+00:00",
+      "agent_task": "/root/rank_eval01"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "7fa99b388b7d",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:43:58.532531+00:00",
+      "agent_task": "/root/rank_eval02"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "e55b4be56262",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:43:58.532701+00:00",
+      "agent_task": "/root/rank_eval03"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "6a8164f9ddb6",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:48:28.163959+00:00",
+      "agent_task": "/root/rank_eval04"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "d5a0bb9df607",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:48:28.164105+00:00",
+      "agent_task": "/root/rank_eval05"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "edb52008e72b",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:49:49.725644+00:00",
+      "agent_task": "/root/rank_eval06"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "774353f33e1a",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:51:27.032665+00:00",
+      "agent_task": "/root/rank_eval07"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "d310e53c42a9",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:52:24.873469+00:00",
+      "agent_task": "/root/rank_eval08"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "a73b54eaf4f2",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:54:26.376225+00:00",
+      "agent_task": "/root/rank_eval09"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "9c2424dbed88",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:54:43.893405+00:00",
+      "agent_task": "/root/rank_eval10"
+    },
+    {
+      "phase": "evaluation",
+      "query_id": "d12b6341838c",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "dispatch_recorded_at": "2026-10-22T13:56:14.930331+00:00",
+      "agent_task": "/root/rank_eval11"
+    }
+  ]
+}

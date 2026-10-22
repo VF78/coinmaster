@@ -1,0 +1,169 @@
+{
+  "decision": "ROOT_PACKET_CHECK_PASS",
+  "at": "2026-10-22T13:38:19.838246+00:00",
+  "source_checkpoint": "2c13442f226c5bd8c42ab0ea9bb2fa7647a00d48",
+  "freeze_sha256": "6fe2aa4e3321041f72e06ba524b6aaba1bbb34c86a73ab9c2c4e21ca2acf2aca",
+  "packets": [
+    {
+      "query_id": "fed7ed7df152",
+      "phase": "evaluation",
+      "bytes": 146831,
+      "packet_sha256": "cb9f90a2cfc3cd50e65cc89eb656bb636b818e8dcc55d9acae03285e5dbcf4a8"
+    },
+    {
+      "query_id": "7fa99b388b7d",
+      "phase": "evaluation",
+      "bytes": 149174,
+      "packet_sha256": "b3d4a6f353964ac89e6cd0b81763cc90f8ade6a8f25f36f915362d7f89cf199b"
+    },
+    {
+      "query_id": "e55b4be56262",
+      "phase": "evaluation",
+      "bytes": 150720,
+      "packet_sha256": "9b67ba68d0e459273ff8f355c54a92e338dfbb480fc27a9f2daf6466b679437b"
+    },
+    {
+      "query_id": "6a8164f9ddb6",
+      "phase": "evaluation",
+      "bytes": 148883,
+      "packet_sha256": "d3d89e0aa5ddf6b78e8d6bfecd6c6d4c72674bc53ffb28870e5be573c8584206"
+    },
+    {
+      "query_id": "d5a0bb9df607",
+      "phase": "evaluation",
+      "bytes": 147036,
+      "packet_sha256": "e2020ec04a60dfd32cdcfeae36795d08f05ecaece692a8cb8191409dcd335b9b"
+    },
+    {
+      "query_id": "edb52008e72b",
+      "phase": "evaluation",
+      "bytes": 145406,
+      "packet_sha256": "b6423af8d8afcd08c15cdcee85097ccab060fc4858334ee8ceef1ae010c9ef6b"
+    },
+    {
+      "query_id": "774353f33e1a",
+      "phase": "evaluation",
+      "bytes": 145420,
+      "packet_sha256": "b7792baac9dbbe8ad23c463013291269d113e0f5ac4a156976c63cfa1f2f71c1"
+    },
+    {
+      "query_id": "d310e53c42a9",
+      "phase": "evaluation",
+      "bytes": 145229,
+      "packet_sha256": "03900a59412beaa9fdd00098b4956665c10068a654d29fcf3e8ebd2f82995463"
+    },
+    {
+      "query_id": "a73b54eaf4f2",
+      "phase": "evaluation",
+      "bytes": 148575,
+      "packet_sha256": "be0d4e94c4d0dfe869285277ef71dfa5b498c01ac5006706c5aa1829fd8b1a1c"
+    },
+    {
+      "query_id": "9c2424dbed88",
+      "phase": "evaluation",
+      "bytes": 146893,
+      "packet_sha256": "ca320d7f0a589a2e1530e3c341122d7005d90827e2c7f46fa0fb135ee5546612"
+    },
+    {
+      "query_id": "d12b6341838c",
+      "phase": "evaluation",
+      "bytes": 148154,
+      "packet_sha256": "ae794323352cd20c97226b8a6f4ce50eea95544919cd08c1ba7467bd8994a9eb"
+    },
+    {
+      "query_id": "5b3a25d69080",
+      "phase": "evaluation",
+      "bytes": 146205,
+      "packet_sha256": "9c40b0acaddb8e8897e3a7c9a07a211ac481600ad083d0a18680fbe5c75df512"
+    },
+    {
+      "query_id": "612f035a180e",
+      "phase": "evaluation",
+      "bytes": 149850,
+      "packet_sha256": "7bc72dbb0a373102273a9874b3d139866330144558044bbd4223bdb56ddbc864"
+    },
+    {
+      "query_id": "fc975e02ecb6",
+      "phase": "evaluation",
+      "bytes": 142840,
+      "packet_sha256": "c9ecea7fc413d9919392ed7df91c01141606b05f80a74cb02835a563275f000b"
+    },
+    {
+      "query_id": "e5cc3b77b5c8",
+      "phase": "evaluation",
+      "bytes": 144838,
+      "packet_sha256": "f1fe89ee72e487c1ae3962323a1776b7b28f2c272e3febeb7b7d6ca83b1ae0ae"
+    },
+    {
+      "query_id": "56b2155da904",
+      "phase": "evaluation",
+      "bytes": 150988,
+      "packet_sha256": "70f2c0db21ac3757b950f1b9e86ee8925c0df4f6a00899a3c8e303cb48134b7a"
+    },
+    {
+      "query_id": "74222ffae44e",
+      "phase": "evaluation",
+      "bytes": 149941,
+      "packet_sha256": "ad984f8ec3646f1f37e49dd9e04cd6719d1f55c178f96c861347d18c774eda48"
+    },
+    {
+      "query_id": "3892764686ee",
+      "phase": "evaluation",
+      "bytes": 148908,
+      "packet_sha256": "60f96682af2f6cb18cd237def5b4de91fe291b050872d9c529abd24830d3780b"
+    },
+    {
+      "query_id": "ce448fb03c1e",
+      "phase": "evaluation",
+      "bytes": 145965,
+      "packet_sha256": "913e63b4c41a5ecdcfbb918da91171ae3e487691609bfdb30195132c287f03f0"
+    },
+    {
+      "query_id": "e54981865f08",
+      "phase": "evaluation",
+      "bytes": 146809,
+      "packet_sha256": "1f8125e0d31631c84e00a1ad3476b773b19d4f298b1c7890f13f3329d01f222a"
+    },
+    {
+      "query_id": "335548af304c",
+      "phase": "evaluation",
+      "bytes": 149667,
+      "packet_sha256": "583388e2c4c31ed444de7f67413fb354b735b08fd7492c9dc442189e15d61421"
+    },
+    {
+      "query_id": "03339fcd9564",
+      "phase": "evaluation",
+      "bytes": 147493,
+      "packet_sha256": "efb91191ecfaa1eef0d678918b442fc72e9d1c6fd0884975290f7e8b1eb0a876"
+    },
+    {
+      "query_id": "539909c65894",
+      "phase": "evaluation",
+      "bytes": 150899,
+      "packet_sha256": "6f55d5027aa8d1a6e7373433b09869ae1e5aaa2f237f70fe3b8df1893b66c05a"
+    },
+    {
+      "query_id": "3e2a3b6ce20c",
+      "phase": "evaluation",
+      "bytes": 147985,
+      "packet_sha256": "ff6dfcffa47d27de95c98ea93c6655b16b1023df4f07aec5e59f36ddf4c5fc5a"
+    },
+    {
+      "query_id": "04ada96b3111",
+      "phase": "debug",
+      "bytes": 147931,
+      "packet_sha256": "09015db4bcc9cef6bc120069dd34bb56c1373377307f2490487c7bd07d70548a"
+    },
+    {
+      "query_id": "7ead954b8a25",
+      "phase": "debug",
+      "bytes": 146669,
+      "packet_sha256": "6b6a3ee7762c3987bc6f2d2bed0a8ca30dfca44f5cc74291a0c562aa736455fb"
+    }
+  ],
+  "max_packet_bytes": 150988,
+  "same8_all_rankers": true,
+  "quality_computed": false,
+  "labels_read": false,
+  "query_truth_joined": false
+}
