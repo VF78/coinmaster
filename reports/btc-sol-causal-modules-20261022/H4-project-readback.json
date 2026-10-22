@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-22T23:00:51.592119+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "state": "open",
+  "Project_status": "Todo",
+  "body_readback": "PASS",
+  "current_scope": "H4_NO_STANDALONE_SOL_PROPOSAL_AWAITING_OWNER_AGREEMENT",
+  "proposed_full_native_budget": 4,
+  "authorized_H4_full_runs": 0,
+  "new_native_runs": 0,
+  "pilot_changed": false
+}

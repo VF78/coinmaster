@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-22T23:01:47.040879+00:00",
+  "status": "PROPOSAL_ARITHMETIC_AND_PROVENANCE_PASS_NOT_NATIVE_ACCEPTANCE",
+  "prior_scientific_artifact_hashes": "ALL_UNCHANGED_PASS",
+  "minimum_TOTAL_exact": "5470396.514987347",
+  "whole_SOL_TP_fractions": [
+    "0.10625",
+    "0.10625",
+    "0.2875"
+  ],
+  "remaining_insurance_fraction": "0.5",
+  "example_discount_percent": "0.4211313609786419018966071973",
+  "Project_readback": "OPEN/Todo/exact body PASS",
+  "product_tests": "NOT_RUN_NO_PRODUCT_DIFF",
+  "new_engine_instances": 0,
+  "new_full_backtests": 0,
+  "pilot_actions": 0,
+  "deployment": false,
+  "proposal_sha256": "ae1df00deaf88a6f96e79cd455c9451429375ee11aeedd01b82a6cb45b73f7b4",
+  "source_docs": "Nautilus latest orders/execution; exact pinned 1.231 source paths reviewed, capabilities require future focused tests",
+  "network": "GitHub direct local gh saved auth PASS; old SSH route banner timeout, no service/VPN intervention"
+}
