@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "independent_formula_precision": "float64 accumulation of float32 D-logloss elements; initial helper accumulation precision corrected, no forecast changes",
+  "source_and_runtime_hashes_verified": 229,
+  "canonical_forecast_groups": 135,
+  "independent_CSV_vs_NPZ_loss_count_checks": 405,
+  "byte_identical_reused_control_files": 90,
+  "compiled_helpers": [
+    "artifact_qa.py",
+    "spatial_resource_probe.py",
+    "context_resource_probe.py",
+    "form03_completed_analysis.py",
+    "form00_precision_diagnostic.py"
+  ],
+  "distinct_local_unit_tests": 25,
+  "pool_focused_test_after_backend_change": "PASS",
+  "MPS_pool_output_and_gradient_parity": "exact0",
+  "applicable_research_CI": false,
+  "model_fits": 0,
+  "model_inference": 0,
+  "optimizer_updates": 0,
+  "CHECK_opened": false,
+  "model_jobs_active": false,
+  "wall_seconds": 0.262770333327353
+}

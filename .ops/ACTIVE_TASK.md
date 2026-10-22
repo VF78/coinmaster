@@ -1,5 +1,5 @@
 Updated: 2026-10-22T00:07:32.336590+00:00
-Status: FORM bounded research COMPLETE_NEGATIVE; FORM04 NOT_ADMITTED. Final Project read-back/checkpoint pending.
+Status: FORM bounded research COMPLETE_NEGATIVE; FORM04 NOT_ADMITTED. Final Project read-back PASS: #122 closed / Project #2 Done (bounded study complete; economic goal unproven).
 Worktree: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021
 Branch: codex/btc-pattern-pilot-m2-20261021. Existing issue #122 / GitHub Project #2; no duplicates.
 Plan/results: reports/btc-pattern-pilot-m2-20261021/form-signal-20261022/PLAN.md; form-findings.md.
@@ -19,4 +19,6 @@ FORM05 OpenAI route DONE in openai-route.md: ChatGPT formulates frozen causal pa
 Root owns ops/Project/checkpoints; btc_pattern_m2_owner sole source/runs/results; btc_pattern_causality_review final narrowQA PASS numerical/source/narrative; no further review needed.
 Pilot/S0/VPS/services/secrets/orders/deploy untouched. Source changes are research-only, owner-local exception preserved. No /opt edits.
 CI: only unrelated HL wheel workflow, no applicable research-branch CI; do notclaimCIgreen. Local tests/artifact QA are actual evidence.
-Next: publish final artifacts and verified Project completion for bounded study, then report. No new studies without fresh scope/budget.
+Final artifacts checkpoint f7bf5cba627083bf4e31117d2b3cf462418e169e published; final QA/read-back receipt checkpoint follows. No active jobs or automatic next studies.
+
+Final artifact-only QA PASS:229source/runtime hashes,135canonical groups (includesFORM00),405CSV-vs-NPZ checks,90byte-identical controls,5helpers compile;0fits/inference. Finalreadback2026-10-22T00:09:32Z PASS in form-final-project-readback.json.
