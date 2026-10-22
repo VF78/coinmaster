@@ -1,3 +1,5 @@
+2026-10-22 In-app ChatGPT protocolv1 PROPOSED, awaitingownerapproval, no forecasts/calculations. GPT6.1Sol/high;Pwindowbundle vsC12ctx+empiricalprior;24testIDs/6debug(max60responses),full699darchive retained,72h/3SLmenu. Prior#122staysDone; no newtest InProgress. See ACTIVE_TASK and inapp-chatgpt-protocol-20261022/PROTOCOL_PROPOSAL.md. Pilot/S0/VPS untouched.
+
 2026-10-22 FORM study COMPLETE_NEGATIVE: FORM00 repaired/re-scored; Context6fits/Flat0/spatialCNN6fit completed; all8496IDs/full history retained. No usable forecast/path component, FORM04 NOT_ADMITTED/native0/ROI_DD_NOT_EVALUATED. OriginalCNN short-Q beatscontext but notprior; Flat andspatial increments unconfirmed. Existing#122 CLOSED / Project2Done actualfinalreadbackPASS; no active researchjobs, no moreautomaticfits. Pilot/S0/VPS untouched. Current ACTIVE_TASK/PLAN/form-findings are authoritative.
 
 2026-10-22 FORM01/02 source/preflight complete:25tests PASS; scoped GO Context<=6fits+Flat0fits, CPU4/wall600s/RSS6GiB. Source freeze77f66d2b/protoe5c3e7f7; only owner launches once. FORM00 published980a2d4. Existing#122InProgress. PLAN/Form report is current truth; pilot/S0/CHECK untouched.
