@@ -1,0 +1,7 @@
+{
+  "status": "ARTIFACT_CALCULATION_COMPLETE_STDOUT_SERIALIZATION_FAILED",
+  "cause": "numpyint64 fold_wins in stdout jsondump; CSV/QA/manifest alreadywritten",
+  "fix": "cast only stdout/CSV fold_wins toPythonint; no scientific result change",
+  "model_fits": 0,
+  "new_model_inference": 0
+}

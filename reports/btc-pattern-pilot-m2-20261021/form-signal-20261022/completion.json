@@ -1,0 +1,33 @@
+{
+  "status": "FORM00_01_02_03_COMPLETE_NEGATIVE",
+  "FORM04": "NOT_ADMITTED",
+  "new_market_joint_fits": 12,
+  "Context_fits": 6,
+  "Flat_encoder_fits": 0,
+  "Spatial_fits": 6,
+  "new_optimizer_steps": 8833,
+  "canonical_groups_validated": 105,
+  "unchanged_control_files_byte_identical": 90,
+  "findings_lines": 55,
+  "source_hashes": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_data.py": "8692cb61b41e4f15326b05793fe1950196af0c690b972ca949f7e74f0b1c0bf8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_train.py": "9ea4ba472e201bd7ba820336cd63133931e8b21eea3a4cae3ab42f23c73f0b3b",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_evaluate.py": "c8425e312d003ce84a517f1a95954ce576812e32d44f417ce96eaf2e34debfdf",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_models.py": "bbe7cdca07c289fad98de98e3c8a0fec422685e150c0d60079988a578106c772",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/pattern_form_models.py": "3f38bf29c0db2aec761177cad97b9f30b226658de86ec945d9b3b523dab79177",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/pattern_form_experiment.py": "77f66d2bfd537e2698a7f261bc7da8bbedf6a82e15fbc86e690c840d9c4f1228"
+  },
+  "CHECK_opened": false,
+  "native_runs": 0,
+  "ROI_DD": "NOT_EVALUATED",
+  "economic_goal": "TARGET_NOT_MET",
+  "model_jobs_active": false,
+  "QA_paths": [
+    "form00-QA.json",
+    "form01-02-QA.json",
+    "form03-QA.json"
+  ],
+  "helper_sha256": "b07adf8eb32347dd98aacf8d6614aef230b10686eceeccc8a3083de4c1d555de",
+  "findings_path": "form-findings.md",
+  "summary_metrics_path": "form-summary-metrics.csv"
+}

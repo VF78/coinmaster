@@ -1,0 +1,38 @@
+{
+  "schema": "btc-pattern.form.exact-go.v1",
+  "coordinator": "/root",
+  "authorized_at": "2026-10-21T23:52:00.647318+00:00",
+  "scope": "root explicit FORM03 max6jointmarketfits once",
+  "mode": "spatial",
+  "source_hashes": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_data.py": "8692cb61b41e4f15326b05793fe1950196af0c690b972ca949f7e74f0b1c0bf8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_train.py": "9ea4ba472e201bd7ba820336cd63133931e8b21eea3a4cae3ab42f23c73f0b3b",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_evaluate.py": "c8425e312d003ce84a517f1a95954ce576812e32d44f417ce96eaf2e34debfdf",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_models.py": "bbe7cdca07c289fad98de98e3c8a0fec422685e150c0d60079988a578106c772",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/pattern_form_models.py": "3f38bf29c0db2aec761177cad97b9f30b226658de86ec945d9b3b523dab79177",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/pattern_form_experiment.py": "77f66d2bfd537e2698a7f261bc7da8bbedf6a82e15fbc86e690c840d9c4f1228"
+  },
+  "protocol_sha256": "e5c3e7f7a5436805c7230e8e29647534167e1cc769e40ed1696524a12396c700",
+  "prepared_manifest_sha256": "bc660056af9117a246a1334837b7e42c9bb2d0635945a0346a4b088a459685ff",
+  "baseline_contract_sha256": "ea5f66da3724cca284b56fc8df111395424d19d0fc14861090ed6b4c607b5f61",
+  "image_cache_sha256": "9717f43542387eb2429f7247a866466aa9d51498fdfab2b8c3bf1254dcbe64de",
+  "resource_sha256": "fabd677a3d9197c07cbd5ce2d162dde5f579730cf7cfb5cc4dee2daf3c815db0",
+  "device": "mps",
+  "wall_seconds": 2456,
+  "cpu_threads": 4,
+  "rss_limit_GiB": 6,
+  "max_market_joint_fits": 6,
+  "CHECK_opened": false,
+  "pilot_changes": false,
+  "mandatory_postrun_context_comparison": {
+    "orientation": "CNNSpatial-direct minus Context-direct; negativebetter",
+    "method": "sameIDs,14dpairedblocks,1000draws,seed7,eachhead/foldwins",
+    "forecasts": {
+      "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F1/Context-direct.npz": "e40bec15e6616b4584a57ac90b2025715d754a69f4388b132d55f896aa6d23d5",
+      "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F2/Context-direct.npz": "e1d09daf4983611d60bcdb5a6fa6b520cbe9c7ad3fe09589c0a75e075095334d",
+      "runtime/var/research-jobs/btc-pattern-pilot-m2-20261021/form01-context/F3/Context-direct.npz": "2012ece768098cbfc9eec065776c26cbb70f283d37c91a66c204370b49694610"
+    },
+    "generic_gate_is_not_incremental_pass": true,
+    "additional_fits": 0
+  }
+}

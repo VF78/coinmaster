@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "helper_source_sha256": "b07adf8eb32347dd98aacf8d6614aef230b10686eceeccc8a3083de4c1d555de",
+  "all_forecast_groups_validated": 36,
+  "outer_ids_each_method": 8496,
+  "Context_comparator_hashes_verified": true,
+  "comparison_orientation": "CNNSpatial minus comparator; negativebetter",
+  "market_joint_fits": 6,
+  "total_optimizer_steps": 3632,
+  "folds": [
+    {
+      "fold": "F1",
+      "selected_epochs": 2,
+      "ES_epochs_executed": 7,
+      "ES_optimizer_steps": 483,
+      "refit_optimizer_steps": 160,
+      "refit_rows": 5064
+    },
+    {
+      "fold": "F2",
+      "selected_epochs": 3,
+      "ES_epochs_executed": 8,
+      "ES_optimizer_steps": 1096,
+      "refit_optimizer_steps": 441,
+      "refit_rows": 9408
+    },
+    {
+      "fold": "F3",
+      "selected_epochs": 1,
+      "ES_epochs_executed": 6,
+      "ES_optimizer_steps": 1236,
+      "refit_optimizer_steps": 216,
+      "refit_rows": 13824
+    }
+  ],
+  "gate": "NO_SKILL",
+  "runtime_seconds": 775.9969032499939,
+  "resource": {
+    "rss_peak_bytes": 3078094848,
+    "mps_driver_bytes": 10092544,
+    "mps_allocated_bytes": 0
+  },
+  "CHECK_opened": false,
+  "analysis_fits": 0,
+  "analysis_model_inference": 0,
+  "analysis_wall_seconds": 0.08946220809593797
+}

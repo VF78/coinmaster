@@ -42,3 +42,13 @@ Before any native run, freeze the exact admissible action menu, common available
 Do not claim window-pattern skill when CNN merely matches context, do not erase negative experiments, and do not expand the family after outer results. Complete the approved comparisons and report measured effects. If no usable component survives, stop before native trading and explain the failed condition. Report implemented / tested / inferred separately; update existing#122 rather than create duplicate research issues. All trading changes and real orders remain outside this research task.
 
 PyTorch supports tuple output sizes for [AdaptiveAvgPool2d](https://docs.pytorch.org/docs/2.14/generated/torch.nn.AdaptiveAvgPool2d.html). This confirms API feasibility, not forecast quality; spatial-pattern acceptance is checked before the market variant.
+
+## Measured checkpoints
+
+- FORM00:980a2d4;20testsPASS; corrected retrieval remainsNO_SKILL.
+- FORM01/02:c25d1a0;Context6jointfits/36.863s,Flat0fits/32.048s;25focusedchecks;8496matchedIDs/60controlSHAidentical. See form01-02-comparison.csv andQA.
+- FORM01:originalCNN beatsContext forQ-short in3/3folds withpaired95%CI; itdoesnot beatprior there. D/Q-long increment unresolved. Thisis an input/capacity comparison, notproof oftradablepathskill.
+- FORM02:all3paired full-vs-grouped descriptorCIs includezero; no demonstratedgain.
+- FORM03:d5eecb3 source/resource frozen;oneMPSrunmax6fits under2456s/RSS6GiBguard. ExactstockCPU pooling isused onlyforMPSnondivisible28x28->2x8 support;output+inputgradientCPU/MPSparityzero. Noresize/newlabels/modelversionchange. Primaryupstream limitation: https://github.com/pytorch/pytorch/issues/96056 .
+
+- FORM03 completed once:6jointfits/775.997s; all paired spatial-vs-CNN confidence intervals includezero. Noeligiblecomponent, henceFORM04 NOT_ADMITTED/native0/ROI-DD NOT_EVALUATED. Totalnewmarketfits12; noautomaticcontinuation. See form-findings.md and form03-paired-comparison.csv.
