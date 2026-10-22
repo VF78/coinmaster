@@ -1,0 +1,107 @@
+{
+  "task": "AI-DECISION-20261022",
+  "mode": "analysis_only_saved_reports",
+  "sources": [
+    {
+      "path": "reports/ai-cycle-20261021-01/findings.md",
+      "sha256": "4aa6649c72fc41dafe59d6e80acf8f7900df89b004a3aa6c8a1bd861683cd5c9"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/findings.md",
+      "sha256": "bb70064b6a1980ac5839e64c88c3b3512c074829c66c42d80e27c0c64a3aad89"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/form-signal-20261022/form-findings.md",
+      "sha256": "7f31553ffb2ffc37bd5570c88b59eb4184aad56866261f3165f8952ad433613c"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/inapp-chatgpt-protocol-20261022/REPORT.md",
+      "sha256": "9566771ca34eaf7e47be549c56b35b80b2e3f2f21308ceefde8b170bd8c279a7"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/REPORT.md",
+      "sha256": "d5a62befe99f4a7a15d664a3942a962d9664a5d5138b4df306725fd5f61569e8"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/event-d90-20261022/REPORT.md",
+      "sha256": "7c069595f7e97411b2ca5f09e9ab57c107d6729427161a3fac06dc86b1365ab1"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/fullwave-stage-a-20261022/REPORT.md",
+      "sha256": "f1264cec45eb9dd9902a1f665a718eeb73882aa1df24e43a6bda79d2b28f7d40"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/astra-rank-20261022/findings.md",
+      "sha256": "2da2a910982c636414c8284bb4a2e5706d3dc5efe7d33e66e7f9c48cbce71c42"
+    },
+    {
+      "path": "reports/fast-rnd-20261020/recognizer-comparison-results.md",
+      "sha256": "fb027f274681707befc2def495eaa5fab72f9d3f791a56d766d39dcd1240c275"
+    },
+    {
+      "path": "reports/fast-rnd-20261020/postanalysis.md",
+      "sha256": "7effc8bf51fe87f1bb894894d6fa867c075591ae15f426fce5f144a6d84683ec"
+    }
+  ],
+  "admitted_native_economic_improvements": 0,
+  "roi_dd_new_candidates": "NOT_EVALUATED",
+  "ai_cycle_B": "UNASSESSED_RESOURCE",
+  "m2_oof_ids": 8496,
+  "event_oof_ids": 198,
+  "astra_screen_ids": 24,
+  "astra_d1_clusters": 16,
+  "astra_fallbacks": 4,
+  "astra_losses": {
+    "astra8": {
+      "TP": 0.291767342,
+      "SL": 0.193792267
+    },
+    "numeric8": {
+      "TP": 0.302884186,
+      "SL": 0.208116261
+    },
+    "numericD1_8": {
+      "TP": 0.291796346,
+      "SL": 0.198038482
+    }
+  },
+  "astra_minus_numericD1_percent": {
+    "TP": -0.00994,
+    "SL": -2.144136
+  },
+  "astra_fallback_share_of_total_vs_numeric8_improvement_approx": {
+    "TP": 0.4,
+    "SL": 0.58
+  },
+  "astra_primary_14_and_28d_comparison_intervals_all_cross_zero": true,
+  "fullwave": {
+    "complete_triples": 27,
+    "max_nonoverlap": 9,
+    "median_price_cycle_days": 29,
+    "price_cycles_100_200d": 3,
+    "historical_nonoverlap_F1_F2_F3": [
+      2,
+      5,
+      6
+    ]
+  },
+  "saved_pins_not_reverified_payloads": {
+    "inapp_result_sha256": "bb056b3e297b93cb5e28238895b5e2501b698811582bceb2fa3a9eef80a7e72d",
+    "fullwave_catalogue_sha256": "f60c02dd558729317fd1a94d753e191f335ace498a0fbd4539a72a9837bfee37",
+    "fullwave_source": "b516de74c8e83e643b3d84263bfd08274506d32f"
+  },
+  "recommendation": "Stop open-ended AI forecast search; return attention to archived economic winner subject to its existing risk/execution limitations. No experiment or operational action approved.",
+  "fast_rnd": {
+    "train_ids_per_asset": 5959,
+    "validation_ids_per_asset": 3432,
+    "all_four_completed": true,
+    "mean_logloss": {
+      "prior": 1.100586,
+      "STUMPY": 1.123658,
+      "CNN": 1.269094,
+      "MiniRocket": 7.21275,
+      "RDST": 8.50144
+    },
+    "beats_both_controls": 0
+  }
+}

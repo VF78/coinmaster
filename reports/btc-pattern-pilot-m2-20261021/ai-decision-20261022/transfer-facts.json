@@ -1,0 +1,156 @@
+{
+  "task": "AI-DECISION-20261022",
+  "status": "ANALYSIS_ONLY_PROPOSALS_NOT_APPROVED",
+  "recommendation": "Prioritize existing winner BTC management and selective SOL-add veto; no automatic broad AI continuation",
+  "s0": {
+    "start_usdt": "10000",
+    "total_usdt": "6077107.23887483",
+    "net_profit_usdt": "6067107.23887483",
+    "roi_percent": "60671.0723887483",
+    "native_phase_callback_dd_percent": "66.3187802497",
+    "agreed_money_projection_receipt_dd_percent": "66.2569148647",
+    "native_fees_usdt": "945927.73761825",
+    "native_fills": 621,
+    "liquidations": 0,
+    "terminal_flat": true,
+    "signed_funding_aggregate": "UNKNOWN",
+    "asset_realized_allocation": "UNKNOWN",
+    "historical_execution_classification": "NOT_FAITHFUL_DIAGNOSTIC",
+    "intraminute_tick_max_proven": false,
+    "stress_equivalence_proven": false
+  },
+  "economic_acceptance": {
+    "terminal_threshold_formula": "10000 + 0.9 * (6077107.23887483 - 10000)",
+    "terminal_threshold_usdt": "5470396.514987347",
+    "retained_net_profit_fraction": "0.9",
+    "dd_target_percent": "50",
+    "guaranteed": false,
+    "terminal_threshold_usdt_cents_rounded_up": "5470396.52"
+  },
+  "mechanism_screen": {
+    "status": "ACTION_VALUE_UNIDENTIFIED",
+    "states_scanned": 3153600,
+    "independent_episodes": "UNKNOWN; states overlap",
+    "btc_crossings": 573,
+    "originally_profitable_trade_crossings": 301,
+    "crossings_before_first_dd_over_50": 2,
+    "first_native_phase_dd_over50_utc": "2024-10-03T09:01:00Z",
+    "recorded_sol_zero_right_activations": 76,
+    "ordinary_action_availability": "UNKNOWN",
+    "complete_eligible_action_universe": "UNKNOWN",
+    "restorable_paired_action_branches": "NOT_AVAILABLE",
+    "missing_branches_blocks": "Reliable saved-log off-policy EV/action-value learning; not ordinary deterministic-rule BacktestEngine evaluation",
+    "paired_branches_current_optimization_gate": false
+  },
+  "saved_drawdown_mechanisms": [
+    {
+      "rank": 1,
+      "agreed_dd_percent": "66.256915",
+      "cash_delta": "-3738.47267409",
+      "upnl_delta": "-5157.62750000",
+      "trough": "SOL long loss with positive BTC short; no causal veto value identified"
+    },
+    {
+      "rank": 2,
+      "agreed_dd_percent": "59.842724",
+      "cash_delta": "-407279.98224643",
+      "upnl_delta": "-140386.09995000",
+      "mechanism": "Cash decline plus open-book decline; no exact asset realized allocation"
+    },
+    {
+      "rank": 3,
+      "agreed_dd_percent": "55.100556",
+      "cash_delta": "12589.11625687",
+      "btc_upnl_peak": "225132.0842",
+      "btc_upnl_trough": "-938216.4704",
+      "mechanism": "BTC-only endpoints; quantities differ"
+    },
+    {
+      "rank": 4,
+      "agreed_dd_percent": "42.172484",
+      "cash_delta": "-190.14478393",
+      "sol_upnl_peak": "80370",
+      "sol_upnl_trough": "1294.544",
+      "mechanism": "SOL-only positive open-profit decline; quantities differ"
+    },
+    {
+      "rank": 5,
+      "agreed_dd_percent": "40.268005",
+      "cash_delta": "2552.47182436",
+      "btc_upnl_peak": "93132.17585",
+      "btc_upnl_trough": "-125712.895",
+      "mechanism": "BTC-only endpoints; quantities differ"
+    }
+  ],
+  "transfer_categories": {
+    "directly_reusable": [
+      "causal IDs/timestamp pins and full-horizon purge",
+      "prefix fit/ES separation, prior/numeric controls and paired time blocks",
+      "native money observer and saved drawdown attribution",
+      "hashes/resource receipts/negative-result retention"
+    ],
+    "promising_not_economically_tested": [
+      "one fixed BTC remainder reduction",
+      "one causal SOL-add veto",
+      "state-conditioned simple risk rule; D1 context and abstention as research clues"
+    ],
+    "rejected": [
+      "automatic trading use of failed forecast heads",
+      "Astra pooled-mean win as economic proof",
+      "delete all SOL or subtract ledger losses to invent new TOTAL",
+      "new architecture/grid or confidence/inversion tuning on seen V",
+      "count overlapping states as independent episodes"
+    ]
+  },
+  "astra": {
+    "evaluation_ids": 24,
+    "d1_clusters": 16,
+    "fallbacks": 4,
+    "vs_numeric8_tp_percent": "-3.670328",
+    "vs_numeric8_sl_percent": "-6.882688",
+    "vs_numericD1_tp_percent": "-0.009940",
+    "vs_numericD1_sl_percent": "-2.144136",
+    "fallback_tp_gain_contribution_approx_percent": 40,
+    "fallback_sl_gain_contribution_approx_percent": 58,
+    "all_primary_14_28d_CI_cross_zero": true,
+    "roi_dd_evaluated": false
+  },
+  "ai_cycle": {
+    "A_heads": "6 NO_SKILL",
+    "C_heads": "6 NO_SKILL",
+    "B_quality": "UNKNOWN_RESOURCE_UNASSESSED"
+  },
+  "bounded_checks_proposed_only": [
+    "1. Compact causal lifecycle/state audit using saved artifacts/existing callbacks to freeze simple rules and disclose unavailable fields; no snapshot/recovery framework or S0 replay",
+    "2. One frozen BTC-management version; after separate approval one full native trajectory in existing BacktestEngine versus saved S0; original SOL, BTC entry/sizing formula and shared reinvested capital retained",
+    "3. One frozen SOL-add veto version with rights/retry semantics; after separate approval one full native trajectory in existing BacktestEngine versus saved S0; original BTC/shared reinvested capital retained"
+  ],
+  "required_invariants": [
+    "unmodified original BTC entry logic and sizing formula",
+    "shared reinvested capital, future absolute quantities evolve naturally",
+    "native fees/funding/margin/orders and subsequent trades",
+    "same DD methodology, separate tick/OHLC/stress uncertainty",
+    "no automatic joint variant or added model/grid",
+    "reuse saved S0 without baseline rerun",
+    "no new branch/recovery engine prerequisite",
+    "full paired branches only for later action-value inference without full counterfactual simulation"
+  ],
+  "execution_this_analysis": {
+    "market_runs": 0,
+    "forecasts": 0,
+    "fits": 0,
+    "native_runs": 0,
+    "replay_runs": 0,
+    "code_pilot_s0_git_project_changes": false
+  },
+  "sources": [
+    "reports/ai-cycle-20261021-01/findings.md",
+    "reports/ai-cycle-20261021-01/mechanism-screen-summary.json",
+    "reports/fast-rnd-20261020/s0-completion.md",
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-result.md",
+    "reports/fast-rnd-20261020/postanalysis.md",
+    "reports/fast-rnd-20261020/next-cycle-plan.md",
+    "reports/btc-pattern-pilot-m2-20261021/astra-rank-20261022/findings.md"
+  ],
+  "matched_exposure_control": "Conditional on timing-value claim beyond mechanical exposure reduction; include in agreed budget if planned; not an automatic extra run"
+}
