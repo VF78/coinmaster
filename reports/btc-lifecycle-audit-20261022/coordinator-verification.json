@@ -1,0 +1,63 @@
+{
+  "utc": "2026-10-22T20:13:09.683755+00:00",
+  "status": "PASS_SAVED_OUTPUT_QA",
+  "checks": {
+    "105_unique_intervals": true,
+    "53long52short": true,
+    "57winners48losers": true,
+    "CSV105": true,
+    "155_reductions": true,
+    "73_generic": true,
+    "28TP2_54TP3": true,
+    "none_same_first_or_completion": true,
+    "all_real_entry_qty_equal_plan": true,
+    "all_firstplussecond_equalactual": true,
+    "zero_omission_counts": true,
+    "no_new_native": true,
+    "no_15m1h_censoring": true,
+    "24h_censor17_21": true
+  },
+  "source_notes": "No native engines/price streams or product source changes. Local read-only artifact arithmetic.",
+  "price_adversity_counterexamples": [
+    {
+      "adverse_price_threshold_percent": 2,
+      "original_winner_intervals_touching_or_exceeding": 11,
+      "original_loser_intervals_touching_or_exceeding": 32
+    },
+    {
+      "adverse_price_threshold_percent": 3,
+      "original_winner_intervals_touching_or_exceeding": 7,
+      "original_loser_intervals_touching_or_exceeding": 18
+    },
+    {
+      "adverse_price_threshold_percent": 5,
+      "original_winner_intervals_touching_or_exceeding": 2,
+      "original_loser_intervals_touching_or_exceeding": 8
+    }
+  ],
+  "counterexample_scope": "Contemporaneous native avg mark CLOSE over whole original interval incl postTP. NOT simulated SL outcomes/quantity/portfolio PnL.",
+  "native_runs_added": 0,
+  "pilot_changed": false,
+  "file_sha256": {
+    "methodology-sources.md": "97c529da17f11166ece14b25d5fc5905c30509ebdcb193de1825b41320ef2a77",
+    "source-audit.json": "17f797822a17a30308f6c3ffddef4e2e0ee72d146391801a29eebe923e287679",
+    "PROJECT_SCOPE.md": "ae4a251ff2902da6e47ba43468c00a289e69638c14ec820dfb0aea9733a00f0d",
+    "experiment-transfer.md": "55e1dbef114574c957a098846dbe5b09c07216dca4c9bdeeb8d5c64356d14272",
+    "btc-statistics.md": "9f1545e1a34077c315f81684545ef3f6604c06dfc01168b3646a304b9d292c96",
+    "project-start-readback.json": "b01fbde834265877e2bad4e87b80ad95d274d26a966cd3c68ad295fdef93d6dd",
+    "btc-statistics.csv": "9b84119827c5b41ee7cbb803ea6712fc4146cf2ead0b043f7055a42618cf4a0b",
+    "source-audit.md": "7016a29637a9b809139372f1c09cb4e8ea7f5bd7101e662dd14f5d4a535f718c",
+    "btc-statistics.json": "8c67c24c230ca32296fb2496f6fb92d0da1920dd2365c32dbf54ea0179dd5da4",
+    "experiment-transfer.json": "d6fe20e2a88340a31402a47cf6e7b7def086326ab07c96241ae0a72d6c0b12f7",
+    "REPORT.md": "6821de0625944a9c7b8b7106d94f8649edda861eeb7c9e837e1879a18304439d"
+  },
+  "derived_earlyTP2": {
+    "count": 13,
+    "all_from_EARLY_TP_completion": true,
+    "all_60seconds_after_completion": true,
+    "first_entry_delay_seconds_minmax": [
+      120,
+      4320
+    ]
+  }
+}

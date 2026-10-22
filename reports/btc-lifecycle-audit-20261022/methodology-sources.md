@@ -1,0 +1,18 @@
+# Методология и внешние источники
+
+Проверено 2026-10-22. Это дополнение к фактическому source/results audit, не новая торговая модель и не доказательство доходности.
+
+1. NautilusTrader, Orders / Limit: https://nautilustrader.io/docs/latest/concepts/orders/ и https://nautilustrader.io/docs/latest/concepts/orders/limit/ . Post-only не должен забирать ликвидность; IOC может исполниться частично с отменой остатка. Поэтому makerTP и market/IOC fallback — разные действия/расходы, а касание уровня и заявленный объём не равны fill. Latest docs используются для общих понятий; точная установленная1.231 реализация определяется замороженным кодом/результатами CoinMaster, миграции нет.
+2. Kaminski & Lo, When Do Stop-Loss Rules Stop Losses?, Journal of Financial Markets18(2014),234–254: https://dspace.mit.edu/entities/publication/bb69ca4b-0cdc-487f-831d-63b2e84fafee . Работа задаёт framework для добавленной/потерянной доходности и изменённой волатильности после stop rules; определённые политики на фьючерсных данных помогали. Это не универсальное подтверждение заданного%SL для BTC или гарантия снижения DD нашей стратегии. Здесь необходима проверка native полного портфеля и восстановлений после adverse excursion.
+3. Bailey etal., The Probability of Backtest Overfitting(2015): https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf . Перебор конфигураций и повторное использование holdout создают риск ложного улучшения. Следствие для нашего процесса: учитывать все уже проверенные варианты, заморозить малое число новых изменений, не объявлять изученные24месяца новым независимым тестом. Не навязывается Sharpe как критерий — сохраняется owner TOTAL при DD<=50 и >=90% netprofit S0.
+
+# Системный исследовательский контракт — предложение, НЕ запуск
+
+* Отдельные estimands: качество цены исполнения, направление/частота входов, post-entry MAE/MFE, весь portfolio TOTAL/DD. Хорошая первая метрика не доказывает остальные.
+* Нельзя смешивать P0 managementreference, фактический avgfill и будущую статистику. Входной/ATR/режимный контекст только из завершённых и уже доступных bars, цена исполнения только следующая реально допустимая.
+* Единица учёта — все105 BTCparents, фактические partialfills, TP sequence, forced/REGIME/TRAIL/censored случаи и их SOLrights. Успешные/провальные метки разрешены для диагностики, не causal runtimefeatures.
+* Для оценки3TP требуется распределение достижения TP ДО выбранного SL/штатного exit/horizon, с порядком касаний и затратами. Три marginal quantiles MFE не являются совместной гарантией трёх исполнимых TP; conditional-on-surviving/positive-only выборка завышает достижимость без учёта остальных волн.
+* Если сравнивать daily-close waveMFE с минутной статистикой, исторический путь начинается только ПОСЛЕ исторического causal entry. Highпервогодня доnextopen/actualfill не может улучшать post-entry targets. Minute-close matching и OHLC-bound не подменяют historicalBBO/L2/tape.
+* ATR-normalized/volatility-aware entry или SL — только гипотезы до числового precheck. Не оптимизировать сразу EMA/offset/TPfractions/quantiles/SL/holdtime: эффект станет неидентифицируемым.
+* План precheck: сначала exactS0 decision-to-fill-to-TP ledger и MAE/MFE до выхода/TP, затем один фиксированный вопрос (entryexecution ИЛИ jointTP/SL), allmonths/counterexamples/censoring. Не строить новый PnLengine и не получать портфельную equity удалением losers.
+* При достаточном support — заморозить ONE adaptation. Только после ownerconsent один nativecandidate; freshidenticalrepeat только если проходит BOTH DD<=50 и TOTAL>=5470396.514987347. ExactS0 повторно не пересчитывать. Пилот не трогать.

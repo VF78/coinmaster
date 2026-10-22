@@ -292,3 +292,7 @@ The backed-up production overlay is active. A root-owned 0600 shared internal-to
 ## 2026-10-22 S0 weekly postmortem and bounded price diagnostic
 
 Analysis only completed in reports/s0-weekly-postmortem-20261022/. M1/M2 fail50/90; 19 distinct weekly economic recipes inventoried. One saved settled stream plus one bounded real-price diagnostic (17/20 conditional returns,11/17 repeated cut-level touches) did not establish a new economic winner. TEMP_CAP_RESTORE_1 remains prechecked-with-counterexamples / NOT_READY_NATIVE. No new engine/S0 rerun/model fit/production/pilot action. Exact S0 and target TOTAL>=5470396.514987347 preserved. Existing #123 reused/closed ProjectDone; readback and final publication recorded in ACTIVE_TASK and report receipts. No future native authorized by unused budget.
+
+## 2026-10-22 BTC lifecycle analysis
+
+ExactS0 source/105BTC intervals/155native reductions audited without newengine/model runs or pilotaction. No exact-entry-price reductions;76zeroallocations alreadyomitted inPASSIVE,73genericfallbacks profitable exfunding.13earlyTP2catchups(7fee-negative) mustnotbeblindlyremoved: nativecompletioncomparisongained71619TOTAL. Daily-closewaveMFE vs1m-closeexecution identified as untestedresolutionhypothesis, notbugfix. No fixeddownsideBTC SL inS0; dailyregime/trailandwinnerMAEtails audited. Source/stats/17-row experimentmatrix/primarysources and systematicconsentproposal in reports/btc-lifecycle-audit-20261022/. Noeconomic50/90GO. Existing#123 reused; currentpublication/readbacks inACTIVE_TASK.

@@ -1,0 +1,379 @@
+{
+  "status": "ANALYSIS_ONLY_COMPLETE_NO_CANDIDATE_ADMITTED",
+  "scope": "Saved local reports only; no traces/engines/models/strategy edits/services; oldreferences outsideweek explicitly marked",
+  "control": {
+    "TOTAL": "6077107.23887483",
+    "seed": "10000",
+    "reserve": "0",
+    "profit_floor_TOTAL": "5470396.514987347",
+    "agreed_settled_DD_percent": "66.25691486468686414439256686",
+    "control_native_source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "scientific_freeze": "c1d0c69",
+    "original_selected_source": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "BTC": "dailyEMA34; originalpermissions/directions/sizing5.5long/7.875short; cap30m; split0.25%; managementfirstfillP0; actualVWAPforH",
+    "TP": "completed-wavehistory730d/min8; quantiles.10/.30/.60; fractions.2125/.2125/.575; actualfillSOLrights; nativeTPIOC",
+    "SL": "NofixedpriceSL; daily3%profittrail armsbest_f>.03; dailyREGIME closes; mandatory originalexits priority",
+    "preserve": "OriginalSOLoverlay/rights/H; nativefees/funding/margin; same24months/13inputs; reuseS0/no controlrerun; noobserverdefinitionchange"
+  },
+  "matrix": [
+    {
+      "experiment": "TP_FEE_FLOOR_V1",
+      "date_scope": "2026-09-29 publication; OUTSIDE_WEEK",
+      "execution_kind": "FULL_NATIVE",
+      "control": "V0 TOTAL3386491.65211338; not exactS0",
+      "source_pin": "code_hash deb7de5227d3a72a30bc082a317e98603143d8afd9b657f31d2afe5196984168; executedcommit UNKNOWN",
+      "entry_price_or_latency": "Not isolated / entry MAE UNKNOWN",
+      "post_entry_risk": "Marked DD and per-entry MAE UNKNOWN",
+      "tp_sl_lifecycle": "TPs nonpositive after allocated trading fees82→0; TP fills233→248; SOL adds114→116. Floor reprices/retimes portfolio, not just removing fees",
+      "total_usdt": "2661216.57346484",
+      "fees_usdt": "586047.08315500",
+      "exact_S0_transfer": "Do not blanket-repeat: TOTAL−725275.07864854 while fees−35026.64733942; older source/control",
+      "evidence": "reports/tp-fee-floor-113/comparison.json"
+    },
+    {
+      "experiment": "SELECTIVE_ZERO_TP",
+      "date_scope": "2026-10-09; OUTSIDE_WEEK",
+      "execution_kind": "FULL_NATIVE",
+      "control": "technical control3553011.15835738; originalV0 different",
+      "source_pin": "a9c4d62 (implementation ee8cdc3 plus correction)",
+      "entry_price_or_latency": "105 actual entries;45 passive/reduced,60 full/fallback; q0→q1 delay60s. Own normalized entry MAE UNKNOWN",
+      "post_entry_risk": "Cash DD58.14621682→62.46697029%; marked DD UNKNOWN",
+      "tp_sl_lifecycle": "Omit zero allocations76; earn all76 rights after real fill+causal reference touch. Positive reductions82→82; zero-maker76→0, positive-gross zero fallback75→73",
+      "total_usdt": "3747041.97080334",
+      "fees_usdt": "597517.54289494",
+      "exact_S0_transfer": "Improved TOTAL+194030.81244596 vs technical; fees−23648.66459948. Embedded ancestor of S0, not a new available fee tweak",
+      "evidence": "reports/selective-zero-tp-113/README.md"
+    },
+    {
+      "experiment": "SPLIT_btc025",
+      "date_scope": "2026-10-18",
+      "execution_kind": "FULL_NATIVE_24M",
+      "control": "V3 5437208.56951095",
+      "source_pin": "e4f4e675c468d799d406198e04323ba04655d913",
+      "entry_price_or_latency": "Blended management VWAP changes;104 vs105 control calendars. Exact price benefit cannot stand alone as calendar/exposure held fixed",
+      "post_entry_risk": "CallbackDD77.93815411506285660798517398%; per-entry MAE UNKNOWN",
+      "tp_sl_lifecycle": "Full-reference TP/TRAIL moved with blended entry; missing parent and changed fallback/rights path",
+      "total_usdt": "4759384.60025755",
+      "fees_usdt": "809694.77098014",
+      "exact_S0_transfer": "Negative old-V3 sibling; cannot transfer ROI as exactS0 delta",
+      "evidence": "reports/btc-split-sol-cover-20261018/btc025-receipt.json"
+    },
+    {
+      "experiment": "SPLIT_btc050",
+      "date_scope": "2026-10-18",
+      "execution_kind": "FULL_NATIVE_24M",
+      "control": "V3 5437208.56951095",
+      "source_pin": "e4f4e675c468d799d406198e04323ba04655d913",
+      "entry_price_or_latency": "Blended management VWAP changes;104 vs105 control calendars. Exact price benefit cannot stand alone as calendar/exposure held fixed",
+      "post_entry_risk": "CallbackDD77.64973936453904445216719591%; per-entry MAE UNKNOWN",
+      "tp_sl_lifecycle": "Full-reference TP/TRAIL moved with blended entry; missing parent and changed fallback/rights path",
+      "total_usdt": "4379050.17052615",
+      "fees_usdt": "843273.58556398",
+      "exact_S0_transfer": "Negative old-V3 sibling; cannot transfer ROI as exactS0 delta",
+      "evidence": "reports/btc-split-sol-cover-20261018/btc050-receipt.json"
+    },
+    {
+      "experiment": "SPLIT_btc025-planref",
+      "date_scope": "2026-10-18",
+      "execution_kind": "FULL_NATIVE_24M",
+      "control": "V3 5437208.56951095",
+      "source_pin": "0280fd67c30b29b94406ffb6b78cd07dec344599",
+      "entry_price_or_latency": "105/105 same first-fill P0/time/q0/q1 asV3; entryprice mean+3.41749bp, median+12.50152bp, min−77.35625bp; fullcost mean+4.51781bp",
+      "post_entry_risk": "CallbackDD70.47335375%; per-entry MAE UNKNOWN. Entrycost better yet post-entry DD worse thanV3",
+      "tp_sl_lifecycle": "ManagementP0 frozen atfirstfill; H uses actualVWAP. Completion66limit/17deadline/22earlyTP. Marketable positive post-only targets could be missed",
+      "total_usdt": "6005487.81325989",
+      "fees_usdt": "960263.20625722",
+      "exact_S0_transfer": "Execution benefit, but target omission hurt DD; already corrected in exactS0",
+      "evidence": "reports/btc-split-sol-cover-20261018/btc025-planref-receipt.json"
+    },
+    {
+      "experiment": "SPLIT_btc025-planref-tp-ioc",
+      "date_scope": "2026-10-18",
+      "execution_kind": "FULL_NATIVE_24M",
+      "control": "V3 5437208.56951095",
+      "source_pin": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+      "entry_price_or_latency": "Same105 permissions/P0; price mean+3.41746bp/fullcost+4.51778bp vsV3; waitsmedian2520s,max14460s",
+      "post_entry_risk": "CallbackDD66.31878025; settled66.25691486. Apr–Jun2025DD59.8427 vsPLANREF70.4734/V362.2527. No per-entry MAE or ATR-normalized risk exported",
+      "tp_sl_lifecycle": "13 actualnativeMARKET/IOC/TAKER catchups,10543.77fees;7allocationnetlosers/totalnet−1817.86, yetportfolioTOTAL+71619.43 vsPLANREF. PositiveP0 target not guaranteed netpositive",
+      "total_usdt": "6077107.23887483",
+      "fees_usdt": "945927.73761825",
+      "exact_S0_transfer": "ExactS0. Retain reference/TPcompletion native mechanics and profitable fallbacks; no fake maker or local removal of7losers",
+      "evidence": "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-receipt.json"
+    },
+    {
+      "experiment": "HIST_H1",
+      "date_scope": "2026-10-13",
+      "execution_kind": "HISTORICAL_FULL_NATIVE",
+      "control": "V3 5437208.56951095",
+      "source_pin": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+      "entry_price_or_latency": "H1 changesSOL lifecycle, notBTC confirmation",
+      "post_entry_risk": "CallbackDD62.59782854591043914435112227%; no per-entryMAE. Relative tooldV3 only",
+      "tp_sl_lifecycle": "H1:31stage1hedges,0stage2;12recovery/19REGIME exits; sourceSOLoverlay replaced",
+      "total_usdt": "190593.96574493",
+      "fees_usdt": "65995.56966132",
+      "exact_S0_transfer": "Do not repeat as unexplored confirmation; H1TOTAL−96.49%,B1−74.48% vsV3; exactS0 deltaUNKNOWN",
+      "evidence": "reports/h1-b1-113/comparison/h1-receipt.json"
+    },
+    {
+      "experiment": "HIST_B1",
+      "date_scope": "2026-10-13",
+      "execution_kind": "HISTORICAL_FULL_NATIVE",
+      "control": "V3 5437208.56951095",
+      "source_pin": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+      "entry_price_or_latency": "104arms→104confirmed/nativeparents; completed dailyarm→actualentrymedian47min,min17,max287; confirmation→actualfill120s. Entryprice/MAE benefitUNKNOWN",
+      "post_entry_risk": "CallbackDD64.63694826076578537374201893%; no per-entryMAE. Relative tooldV3 only",
+      "tp_sl_lifecycle": "BTC entry confirmation delays/resequences whole book; BTC/SOLfills302/184 vsV3311/205",
+      "total_usdt": "1387384.71961010",
+      "fees_usdt": "511337.12585341",
+      "exact_S0_transfer": "Do not repeat as unexplored confirmation; H1TOTAL−96.49%,B1−74.48% vsV3; exactS0 deltaUNKNOWN",
+      "evidence": "reports/h1-b1-113/comparison/b1-receipt.json"
+    },
+    {
+      "experiment": "HIST_R2",
+      "date_scope": "2026-10-11",
+      "execution_kind": "HISTORICAL_FULL_NATIVE",
+      "control": "V3 5437208.56951095",
+      "source_pin": "250020911a1ac671740cd3346c27f0235792703c",
+      "entry_price_or_latency": "R2 waits2completed dailyEMA34closes after immediateREGIMEclose",
+      "post_entry_risk": "CallbackDD92.12768311851301711461260340%; post-entryMAEUNKNOWN",
+      "tp_sl_lifecycle": "R2 changes genuine re-entry/calendar; not simply betterentryprice",
+      "total_usdt": "2248382.68295321",
+      "fees_usdt": "530522.98435944",
+      "exact_S0_transfer": "OUTSIDE_WEEK V3 only; DD>92/TOTAL collapse, not freshS0 opportunity",
+      "evidence": "reports/v3-risk-four-113/comparison/comparison.csv"
+    },
+    {
+      "experiment": "HIST_T3",
+      "date_scope": "2026-10-11",
+      "execution_kind": "HISTORICAL_FULL_NATIVE",
+      "control": "V3 5437208.56951095",
+      "source_pin": "250020911a1ac671740cd3346c27f0235792703c",
+      "entry_price_or_latency": "Originalentry unchanged; no minute same-side reopen",
+      "post_entry_risk": "CallbackDD92.78074221257453857021296809%; post-entryMAEUNKNOWN",
+      "tp_sl_lifecycle": "Minute mark evaluates daily-armed3% profittrail; closes BOTHlegs; cannot stop never-profitable losses",
+      "total_usdt": "466727.71769381",
+      "fees_usdt": "605085.67561994",
+      "exact_S0_transfer": "OUTSIDE_WEEK V3 only; DD>92/TOTAL collapse, not freshS0 opportunity",
+      "evidence": "reports/v3-risk-four-113/comparison/comparison.csv"
+    },
+    {
+      "experiment": "S0_MANAGE_M1",
+      "date_scope": "2026-10-22",
+      "execution_kind": "FULL_NATIVE_24M",
+      "control": "exactS0 settled6077107.23887483",
+      "source_pin": "efa7c723d9f0c5c1bdc8f491abf12921ac41c275; patch10bf3a34…",
+      "entry_price_or_latency": "BTC_ENTRY210 fillrecords unchanged; actual quantitiescompound withcapital, not fixedQ",
+      "post_entry_risk": "SettledDD58.77409504467889817197266501%; M1earlyDD46.59 but later58.77; M2early70.64; MAE/ATRbytradeUNKNOWN",
+      "tp_sl_lifecycle": "Fresh eligibleDDcross25 AND ownUPnL<0; oncefixedtargetIOC; M1half/M2threequarters. M1=22full+4partialcanceled; M2=22full+3partialcanceled; noTPcredit",
+      "total_usdt": "2615745.21476479",
+      "fees_usdt": "710655.26790133",
+      "exact_S0_transfer": "ExactS0 descendants, both fail50/90. Moreaggressive cut notmonotoneDD. SOLentryrights/exposure path changes despite unchangedBTCentrycount",
+      "evidence": "reports/s0-management-20261022/m1-completion.json"
+    },
+    {
+      "experiment": "S0_MANAGE_M2",
+      "date_scope": "2026-10-22",
+      "execution_kind": "FULL_NATIVE_24M",
+      "control": "exactS0 settled6077107.23887483",
+      "source_pin": "efa7c723d9f0c5c1bdc8f491abf12921ac41c275; patch10bf3a34…",
+      "entry_price_or_latency": "BTC_ENTRY210 fillrecords unchanged; actual quantitiescompound withcapital, not fixedQ",
+      "post_entry_risk": "SettledDD70.64462755333227667738160314%; M1earlyDD46.59 but later58.77; M2early70.64; MAE/ATRbytradeUNKNOWN",
+      "tp_sl_lifecycle": "Fresh eligibleDDcross25 AND ownUPnL<0; oncefixedtargetIOC; M1half/M2threequarters. M1=22full+4partialcanceled; M2=22full+3partialcanceled; noTPcredit",
+      "total_usdt": "2044863.63091774",
+      "fees_usdt": "614360.75019949",
+      "exact_S0_transfer": "ExactS0 descendants, both fail50/90. Moreaggressive cut notmonotoneDD. SOLentryrights/exposure path changes despite unchangedBTCentrycount",
+      "evidence": "reports/s0-management-20261022/m2-completion.json"
+    },
+    {
+      "experiment": "ADVERSE50_SCREEN",
+      "date_scope": "2026-10-19",
+      "execution_kind": "SAVED_PRICE_PROXY_ANALYSIS",
+      "control": "57cal/48holdout BTCcontexts",
+      "source_pin": "publication e560dfe/91ec919; exact executable source UNKNOWN",
+      "entry_price_or_latency": "No entryprice experiment; existing BTCcontexts",
+      "post_entry_risk": "No nativeDD/MAE estimate; price threshold1.9175212144% notATR",
+      "tp_sl_lifecycle": "Halfcut screen:15crosses perpartition;7positive/8negative endpoint effects each; optimistic normalizedpayoff−2.504182%/−1.069702% beforefees",
+      "total_usdt": null,
+      "fees_usdt": null,
+      "exact_S0_transfer": "Strong counterexample to selecting stop from loser-class hitrate; DD25+ownadverse2% isdifferent/unvalidated",
+      "evidence": "reports/chop-pair-113/stats-adverse-payoff-bound.md"
+    },
+    {
+      "experiment": "PATTERN_BASE",
+      "date_scope": "2026-10-21..22",
+      "execution_kind": "FORECAST_ONLY_FIT",
+      "control": "fullhistoryprior/CB/numeric/random/CNNcontrols",
+      "source_pin": "94160b9 publication; exact sourcefiles pinned in package",
+      "entry_price_or_latency": "Forecastorigin data, not nativeentryfills; no measuredentryprice or postentryDD effect",
+      "post_entry_risk": "PortfolioTOTAL/DD/fees NOT_EVALUATED; MAE beforeTP/ATR not established as actionableeconomicgate",
+      "tp_sl_lifecycle": "full-historyTCN/Kronosprojection/CNN+18CBheads,allretrievalfail; originalCNNQlongweakCIcross0; TPquantile/SLprobability calibration isnotjointcostedexitpolicy",
+      "total_usdt": null,
+      "fees_usdt": null,
+      "exact_S0_transfer": "Not admitted to exactS0 entry/TP/SL; must preserve causalavailability, comparejointTP/SL toprior and no-action, notselect winners",
+      "evidence": "reports/btc-pattern-pilot-m2-20261021/findings.md"
+    },
+    {
+      "experiment": "H24_CHECK_cnn",
+      "date_scope": "2026-10-21",
+      "execution_kind": "FORECAST_ONLY_TRAIN_AND_CHECK",
+      "control": "TRAINpriorpinball.212019/DLL1.080523",
+      "source_pin": "771a08f/c331e6a freezes; execution-source commit UNKNOWN",
+      "entry_price_or_latency": "Forecastorigin data, not nativeentryfills; no measuredentryprice or postentryDD effect",
+      "post_entry_risk": "PortfolioTOTAL/DD/fees NOT_EVALUATED; MAE beforeTP/ATR not established as actionableeconomicgate",
+      "tp_sl_lifecycle": "Allcalibratedworseprior; CNNactionable0; CNNvscontrolCIincludes0; TPquantile/SLprobability calibration isnotjointcostedexitpolicy",
+      "total_usdt": null,
+      "fees_usdt": null,
+      "exact_S0_transfer": "Not admitted to exactS0 entry/TP/SL; must preserve causalavailability, comparejointTP/SL toprior and no-action, notselect winners",
+      "evidence": "reports/forecast-independent-20261021/findings.md"
+    },
+    {
+      "experiment": "EVENT_E1",
+      "date_scope": "2026-10-22",
+      "execution_kind": "FORECAST_ONLY_EMPIRICAL_ANALOGUE",
+      "control": "matchedprefixprior/phase/numeric/context perownprotocol",
+      "source_pin": "4d4785d publication; exactexecutioncommit UNKNOWN",
+      "entry_price_or_latency": "Forecastorigin data, not nativeentryfills; no measuredentryprice or postentryDD effect",
+      "post_entry_risk": "PortfolioTOTAL/DD/fees NOT_EVALUATED; MAE beforeTP/ATR not established as actionableeconomicgate",
+      "tp_sl_lifecycle": "phaseTP+1.18%/SL+0.77%worseprior;6primaryCIsinclude0;E2/E3skipped; TPquantile/SLprobability calibration isnotjointcostedexitpolicy",
+      "total_usdt": null,
+      "fees_usdt": null,
+      "exact_S0_transfer": "Not admitted to exactS0 entry/TP/SL; must preserve causalavailability, comparejointTP/SL toprior and no-action, notselect winners",
+      "evidence": "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/REPORT.md"
+    },
+    {
+      "experiment": "LLM_ASTRA_RANK",
+      "date_scope": "2026-10-22",
+      "execution_kind": "LLM_FORECAST_OR_RANK_ONLY",
+      "control": "matchedprefixprior/phase/numeric/context perownprotocol",
+      "source_pin": "b012c1b publication; exactexecutioncommit UNKNOWN",
+      "entry_price_or_latency": "Forecastorigin data, not nativeentryfills; no measuredentryprice or postentryDD effect",
+      "post_entry_risk": "PortfolioTOTAL/DD/fees NOT_EVALUATED; MAE beforeTP/ATR not established as actionableeconomicgate",
+      "tp_sl_lifecycle": "noCI-backedwinner;TPnearequalnumericD1;4fallbacks~40%TPand58%SLgainvsnumeric8; TPquantile/SLprobability calibration isnotjointcostedexitpolicy",
+      "total_usdt": null,
+      "fees_usdt": null,
+      "exact_S0_transfer": "Not admitted to exactS0 entry/TP/SL; must preserve causalavailability, comparejointTP/SL toprior and no-action, notselect winners",
+      "evidence": "reports/btc-pattern-pilot-m2-20261021/astra-rank-20261022/findings.md"
+    }
+  ],
+  "MAE_qualification": "No exact-S0 all-opportunity entry MAEbeforeTP or causalATR-normalized distribution computed/exported in inspectedcompactreports. Portfolio DD isnottradeMAE; normalized entryprice bp isnotpostentryrisk. NeverfillUNKNOWN withzero.",
+  "fee_mechanism": "Fees are endogenous to notional/path. Floor changed targettimes/retainedBTC/SOLauthorization/compounding; V1BTCtp233→248,SOLadds114→116, not merelyfewerfills. Selective saved23648feesbutcashDDworsened. S0IOC paysTAKERand7of13catchupsloseafterallocatedfeesbutportfolioimproves. Neither loweringfees nor banningnegativeTP allocations is sufficient. SignedfundingUNKNOWN.",
+  "search_protocol": [
+    {
+      "gate": 1,
+      "name": "Causal opportunity and lifecycle contract",
+      "budget": "ONE saved-data pass; fixed105 originalBTCcalendarparents, all accepted/rejected/partial opportunities, no losing-trade removal",
+      "outputs": "Map dailyarm→q0/q1→firstfill→splitcompletion→TP1/2/3/REGIME/TRAIL. Record entryVWAP/P0/actualfees, unfinishedqty, SOLearned/consumedrights. Freeze next-quote and pending/cancel/exit priority. If required state missing, UNKNOWN and stop; no simulatedfills",
+      "causality": "ATR computed from prior completedbars at originaldecision; no hindsight ATR or futuretrough trigger; labels used only as outcomes"
+    },
+    {
+      "gate": 2,
+      "name": "ONE joint TP/SL question, not a threshold grid",
+      "budget": "ONE preregistered summary from gate1; no fitting/newforecasts/replay now; no threshold sweep",
+      "outputs": "For all opportunities report side-normalized MAEbefore each firstactualTP and MFE, dividedby frozenpriorATR; separate noTP/censored and partialentry paths; TP-before-SL/SL-before-TP/both-sameminute ambiguous; recoveredwinners/cost/rights foregone. Test one proposed predicate only againstTRAINprior/no-action and existing exactS0 path; blocked economicstates remainUNKNOWN",
+      "joint": "Conditional TPdistance/SLdistance/horizon/remainingqty must be assessed together: marginal goodTP pinball or goodSLBrier doesnot establish jointpositiveEV. Nativepaths/capital cannot be reconstructed by subtracting badfills",
+      "admission": "Reject if evidence relies on excluded losers, same-minute ordering oracle, saved-fee gain alone, lost profitablefallbacks, unquantifiedSOLrights, or no causal mechanism for BTC-only55.10%DD"
+    },
+    {
+      "gate": 3,
+      "name": "Freeze and owner admission (no extra research loop)",
+      "budget": "Only if gates1–2 support ONEchange; exactsource/input/config/predicate and failurecriteria before native",
+      "native_budget": "At most2 fullnative total: ONEcandidate run, and only if it passes bothDD<=50 andTOTAL>=5470396.514987347 a fresh identicalrepeat. No secondintensity/grid/autoretry/controlrun. Require explicitownerconsent before eitherlaunch",
+      "measurement": "Original archivedsettledobserver/highwater; full730days, terminalflat/orderstates, nativefees/fundingresidual, partialIOC actualtargets, sameinputs/sourcepins. No runtime inferencer/modelchange/pilot/deploy"
+    }
+  ],
+  "candidate": "NONE_ADMITTED; firsttestablequestion is whether causalATR-normalized MAE/MFEbeforeTP jointlyidentifies a BTCexposure-tail action preservingcompletion/TPrights. No numericthreshold/expectedTOTAL/DD selected; ownerchooses ONE onlyafterprechecks.",
+  "evidence": [
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/astra-rank-20261022/findings.md",
+      "sha256": "2da2a910982c636414c8284bb4a2e5706d3dc5efe7d33e66e7f9c48cbce71c42"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/REPORT.md",
+      "sha256": "d5a62befe99f4a7a15d664a3942a962d9664a5d5138b4df306725fd5f61569e8"
+    },
+    {
+      "path": "reports/btc-pattern-pilot-m2-20261021/findings.md",
+      "sha256": "bb70064b6a1980ac5839e64c88c3b3512c074829c66c42d80e27c0c64a3aad89"
+    },
+    {
+      "path": "reports/btc-split-sol-cover-20261018/btc025-planref-receipt.json",
+      "sha256": "cf5a0d1f2670578debe296aa7dce3ff9f2215df5c19e793ee29af8f9d7ea9768"
+    },
+    {
+      "path": "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-receipt.json",
+      "sha256": "4cb3edf8a90203ea49a0d018f02b1ab6bc15de78db09e900f6eb5e1d10af6cee"
+    },
+    {
+      "path": "reports/btc-split-sol-cover-20261018/btc025-receipt.json",
+      "sha256": "48f5473de37deee8eec69401dc2f0a9573b6d550b03d486bed20c82326948a98"
+    },
+    {
+      "path": "reports/btc-split-sol-cover-20261018/btc050-receipt.json",
+      "sha256": "707c540014a7172b03b147af588a39e83104356f1a8de6bca12c02d95523b61f"
+    },
+    {
+      "path": "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-summary.json",
+      "sha256": "6ad2a6a7ee0f90c544e5eb588432defc926b9f42262fd9ecbe43610097042d1c"
+    },
+    {
+      "path": "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-summary.json",
+      "sha256": "03c9a6b71c1db859e30c1dc0495354a0aa7d11db709be2c1941ce57c7253b34d"
+    },
+    {
+      "path": "reports/chop-pair-113/stats-adverse-payoff-bound.md",
+      "sha256": "b97bc9d729bf0625e57912bf807e93d47d6e2645bbbc56433dfca7901d005cea"
+    },
+    {
+      "path": "reports/forecast-independent-20261021/findings.md",
+      "sha256": "753b47aa660030c9ce66ba66fba6873c9560a0edff988d24959804f49967aab2"
+    },
+    {
+      "path": "reports/h1-b1-113/comparison/README.md",
+      "sha256": "963d0595b52fcfd602bc90a5d3119464452045af7b0d23a2f5b15b161f6202b4"
+    },
+    {
+      "path": "reports/h1-b1-113/comparison/b1-receipt.json",
+      "sha256": "83433cf19a190484d632bf627a8b2761f3405b5c5f30043dbd20b4eda3932c85"
+    },
+    {
+      "path": "reports/h1-b1-113/comparison/h1-receipt.json",
+      "sha256": "1692af9f58f849f51d08a6e8e783b4d31650c15d0b5d15cd420d84cd641241e4"
+    },
+    {
+      "path": "reports/s0-management-20261022/m1-completion.json",
+      "sha256": "9d1f8e9804f4990ac51373ad804051a4fda38273ac30d4b7ec9d367029f6f125"
+    },
+    {
+      "path": "reports/s0-management-20261022/m2-completion.json",
+      "sha256": "24ba1b88922851c0f35012a57b607fb25b5da40c9a4e0601e796ec6ec8d9afc6"
+    },
+    {
+      "path": "reports/s0-management-20261022/policy-freeze.json",
+      "sha256": "b83fc202b7192a7e89c8322a74303cc1191c2912ebcba308d9ee1c7a571c5778"
+    },
+    {
+      "path": "reports/s0-weekly-postmortem-20261022/weekly-inventory.json",
+      "sha256": "0936215611e0f8d9e0dccfc6c4e3b28f0f334df324f4cae406b5b6ddd042ab34"
+    },
+    {
+      "path": "reports/selective-lifecycle-cap30m-113/v3-drawdown-causes/parameter-review.md",
+      "sha256": "c0c1dcd7b6586b74822ab2ef194e152995b9e9da8bbef8e3d25095f2204150e8"
+    },
+    {
+      "path": "reports/selective-zero-tp-113/README.md",
+      "sha256": "e00a236413db93dea1ce0d025e849675fd1bfc6bc5186bae9bce326cb997f145"
+    },
+    {
+      "path": "reports/selective-zero-tp-113/audit/README.md",
+      "sha256": "ef4c877878f39e8a615faa0a86d530ed3960ced0d30af65ac14ba2d0932d8595"
+    },
+    {
+      "path": "reports/tp-fee-floor-113/comparison.json",
+      "sha256": "c97ab0c6b76ba7da88b59753fada923aff247e503dc4d557fe0bb2782e97cae0"
+    },
+    {
+      "path": "reports/v3-risk-four-113/comparison/comparison.csv",
+      "sha256": "9124a73606030ae8af9f419c30b2e36d6e2e65acb6eefdf412909703472a4ecd"
+    }
+  ]
+}

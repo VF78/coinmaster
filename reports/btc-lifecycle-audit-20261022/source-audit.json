@@ -1,0 +1,149 @@
+{
+  "status": "BOUNDED_FROZEN_SOURCE_AUDIT_COMPLETE_NO_RUNS",
+  "scientific_source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "exact_S0_TOTAL": "6077107.23887483",
+  "settled_DD_percent": "66.25691486468686414439256686",
+  "callback_DD_percent": "66.31878024969152066570091116",
+  "config_pin": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+  "source_hashes": {
+    "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae"
+  },
+  "zero_root_cause": "Completed same-side daily EMA wave close-MFE is clamped at zero; linear0.10/0.30/0.60 quantiles include genuine zeros. No intraday high/low MFE. Zero order statistics produce zero targets by design, not missing calculations. Native level0=TP1,1=TP2,2=TP3; no fourthTP0.",
+  "zero_source_lines": [
+    "domain/wave_overlay.py:175-193",
+    "strategy/wave_overlay.py:1457-1529",
+    "strategy/wave_overlay.py:1531-1555"
+  ],
+  "zero_omission_counts": {
+    "parents": 105,
+    "parents_with_omissions": 45,
+    "level0_omitted": 45,
+    "level1_omitted": 31,
+    "scope": "Passive-branch omitted allocations only, NOT all zero thresholds."
+  },
+  "zero_execution": "Passive q1 branch omits zero BTC allocation; real net entry plus causal executable reference touch activates proportional SOL rights. Full q1 branch retains quantity but suppresses resting zero TP; daily f>=0 can trigger actual marketIOC, owned conditional leaves recheck quote threshold. Zero target is neither guaranteed immediate fill nor net profit.",
+  "positive_TP": "P0*(1+side*threshold), gross-plan fractions0.2125/0.2125/0.575, integer native lots. Resting reduce-only postonlyGTC after split; completed-parent already-crossed positive targets use actual MARKET/IOC/TAKER catchup. Actual TPfills earn proportional SOL rights, not ACK/submit.",
+  "positive_TP_lines": [
+    "domain/wave_overlay.py:407-416",
+    "domain/wave_overlay.py:475-520",
+    "domain/wave_overlay.py:562-586",
+    "strategy/wave_overlay.py:1403-1419",
+    "strategy/wave_overlay.py:1907-1968",
+    "strategy/split_cover.py:186-194"
+  ],
+  "entry": "Daily close>EMA34 long else short; beta0.2..4 and >=8 completed same-side waves in730d. Genuine episode sizing long5.5/short7.875 times active equity, cap30m. q0 gross lots/reference frozen; next fresh q1 selects old-reference passivity, not profit prediction.",
+  "split": "Half accepted net lots first; rest postonly0.25% better vs completedfirsthalfVWAP. Deadline4h/nextUTCday-1min or earlypositiveTP -> cancellation then IOC remainder. UnknownACK prevents duplicate.",
+  "PLANREF": "Frozen firsthalfP0 used only for management TP/dailyfallback/best_f/trail/earlyTP. Actual native blendedVWAP/cash/PnL untouched. H=grossReferenceQ*actualblendedVWAP/beta.",
+  "entry_lines": [
+    "domain/wave_overlay.py:361-384",
+    "domain/wave_overlay.py:560",
+    "strategy/wave_overlay.py:945-950",
+    "strategy/wave_overlay.py:1457-1529",
+    "strategy/split_cover.py:88-206"
+  ],
+  "risk_exits": "No fixed BTC lossSL/standing downside stop: configbtc_close_stop_fraction null, portfolio_loss_limit_fraction null, DP OFF; researchBTC20/B25 not enabled. REGIME daily EMA side reversal -> groupCLOSE_ALL. TRAIL only after best_f>0.03 then f<=best_f-0.03 using DAILY CLOSE return relativeP0. This is3percentagepoints of entry-relative return, not intraday3%pricepeakstop or initial lossSL. Margin gates protect increases; terminal settlement not tradingstop; liquidation model unvalidated.",
+  "risk_lines": [
+    "domain/wave_overlay.py:388-395",
+    "strategy/wave_overlay.py:1184-1239"
+  ],
+  "measured": {
+    "plans": 105,
+    "filled_plans": 105,
+    "limit_deadline_earlyTP": [
+      66,
+      17,
+      22
+    ],
+    "entry_cost_improvement_mean_bp": "4.517777003270067",
+    "entry_cost_improvement_min_bp": "-77.31370570968592",
+    "waiting_seconds_mean": "5021.714285714285",
+    "waiting_seconds_max": "14460",
+    "blended025_TOTAL": "4759384.60",
+    "PLANREF_TOTAL": "6005487.81325989",
+    "PLANREF_TP_IOC_TOTAL": "6077107.23887483",
+    "IOC_added_TOTAL": "71619.42561494",
+    "catchups": 13,
+    "actual_native_IOC_TAKER": 13,
+    "catchups_losing_after_allocated_fees": 7,
+    "catchups_allocated_net_ex_funding": "-1817.861394284821406597558174",
+    "parent_reason_occurrences": {
+      "BTC_TP3": 54,
+      "REGIME": 48,
+      "BTC_TP2": 28,
+      "BTC_REDUCE": 42,
+      "TRAIL": 2,
+      "TERMINAL_BOUNDARY_SETTLEMENT": 1
+    },
+    "reason_scope": "Parents containing reason, not fills or mutually exclusive exits.",
+    "older_fee_floor_control_TOTAL": "3386491.65211338",
+    "older_fee_floor_TOTAL": "2661216.57346484",
+    "older_fee_floor_delta": "-725275.07864854",
+    "older_floor_scope": "PRE-S0 counterexample, not exactS0 counterfactual."
+  },
+  "forcing_all_positive": "Not justified as defect correction. Excludingzero waves/raisingthresholds/fee floor alters empirical distribution, entry netting, exposure, SOLright timing and future capital. Older floor removed82 negative feeallocatedTPs but worsenedTOTAL. ExactS0 allpositive alternative TOTAL/DD UNKNOWN.",
+  "already_addressed_source": [
+    "Earned actualfill before touchguard1537-1538",
+    "q1 capnormalization1859-1865",
+    "Accepted ordinarySOL/zeroBTC/positiveIOC residualownership2012-2020",
+    "Crossed positiveTP nativeIOC1907-1918"
+  ],
+  "unproven_opportunities": [
+    "Economic benefit of new entryconfirmation/SL/positiveTP policy",
+    "Material ROI/DD impact of remaining execution defects; no new defect established in this narrow pass."
+  ],
+  "limitations": [
+    "Historical NOT_FAITHFUL_DIAGNOSTIC; L2/spread/slippage/historicalmargin/liquidation applicability UNKNOWN.",
+    "Signedfunding/authoritative standaloneperassetmoney UNKNOWN.",
+    "Old selective/fee-floor lineage not exactS0 or installedpilot.",
+    "No source edits, tests/native/model runs, streams, deploy or pilot actions."
+  ],
+  "report_hashes": {
+    "reports/selective-zero-tp-113/README.md": "e00a236413db93dea1ce0d025e849675fd1bfc6bc5186bae9bce326cb997f145",
+    "reports/tp-fee-floor-113/comparison.json": "c97ab0c6b76ba7da88b59753fada923aff247e503dc4d557fe0bb2782e97cae0",
+    "reports/fast-rnd-20261020/s0-completion.md": "2b124edf94c63cfde2c4343465833e04f2d6cbcca7cf39ccfcc19c18d253f130",
+    "reports/fast-rnd-20261020/s0-prepare-receipt.json": "2cccead8da45ac2bbc078d5e46555def57b5bd09f1e1e85aa6c1fc01525f0da8",
+    "reports/btc-split-sol-cover-20261018/README.md": "136ab98e4b5e96001ebf8e28c8c95cb48875c275e3b899f78fe4c433a106b18b",
+    "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-resolved-parameters.json": "e985fb578d5755d07ea399bf2894255d7218bd8959dbc33839049248328cc4fc",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-summary.json": "03c9a6b71c1db859e30c1dc0495354a0aa7d11db709be2c1941ce57c7253b34d",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-catchups.json": "095ed37e46279c6f9f0d82a2f4f1f6b9e5f53eed4c90fdde7754749f22f7e16d",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-parents.csv": "1e0e67d5efc55b2206487ebc329cf1ac92dea86b0333e8fff2daa56093820476",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-btc-fill-attribution.csv": "701eb127374d83869ee9ed3afcd382aa3744b57a92ae5b5b6fcca3022019e2d0"
+  },
+  "structural_resolution_mismatch": {
+    "wave_statistic": "Daily close-only MFE, next-day OPEN anchor at bars[start+1].btc_open; sampled closes start+1..end inclusive first opposite observed signalbar, clipped0 (domain175-193).",
+    "exact_S0_execution": "Native 1m executionCLOSE-derived bid/ask, separate1m markCLOSE. native_baseline863-894 creates OHLC sourcebars only for H1/cover/conditional/riskfirst/insurance/alpha/chop, all OFF exactS0. Thus exactS0 TP matching is1mCLOSE proxy, not high/low/ticks.",
+    "consequence": "Intraday favorable1m move can exist even if all daily observed returns are adverse and dailyMFE=0. Structural statistical/management sampling difference, not established implementation defect or edge.",
+    "hypothesis_boundary": "A future completed-wave post-entry1m/highlow MFE comparison needs separate frozen consent/precheck; exclude firstday highs/lows before causal actual entry, preserve completed-only availability. No new catalogue/threshold evaluated."
+  },
+  "generic_BTC_REDUCE": {
+    "source": "domain407-416 emits reasonNone for ordinary daily fallback for ANY non-omitted threshold whose resting target is absent. strategy2044-2047 preserves reason on accepted residual children.",
+    "interpretation": "Generic reason BTC_REDUCE is not proof of zero threshold. It can be zeroFULLfallback or positive unavailable-resting fallback. L0=42/L1=31 supplied by root are fill-label counts pending joined per-entry vector; no zero total inferred.",
+    "full_vector": "FULL branch vector not present in entry sizingaudit per root; no complete per-entry frozenwave vector located in permitted reports inspected. Recovery from existing trace UNKNOWN; no new wave catalogue or data pass."
+  },
+  "reentry": {
+    "REGIME": "After native positions/orders/pending opening mappings clear, on_group_flat removes episode and strategy2595-2611 immediately calls _advance_current_day only for REGIME: fresh current-side episode possible on same accepted daily signal after closure, with new sizing/levels/entry/P0.",
+    "TRAIL": "Flat group clears episode but no immediate _advance_current_day call for TRAIL; next accepted daily decision may open again in SAME EMA regime if entry gates pass. No permanent trend lockout or additional fixed cooldown in exactS0.",
+    "BTC_flat_only": "BTC TP flat alone is not automatically a new episode if original group/SOL remains owned; fresh creation requires episode cleared.",
+    "guards": "Daily entry idempotence _last_entry_attempt prevents same decision/side repeated entry; actual flat/order/pending reconciliation precedes REGIME creation.",
+    "anchors": "Every genuine new episode gets new wave_levels, beta/H and first-completed-half P0. Old P0 not carried through regime reversal."
+  },
+  "trailing_example": "Long P0=100, best DAILY close110 => best_f=.10. A later dailyclose107 gives f=.07 and satisfies f<=best_f-.03; close110 armed best_f>.03. This is decision threshold, NOT a promise native fill at107; native cancel/quote/execution follow.",
+  "stats_agent_saved_export_crosscheck": {
+    "authority": "Independent s0_decision_stats saved S0 export result communicated directly; no new source/stream by reviewer.",
+    "actual_BTC_reductions": 155,
+    "same_first_entry_timestamp": 0,
+    "same_entry_completion_timestamp": 0,
+    "generic_reductions": 73,
+    "generic_level0": 42,
+    "generic_level1": 31,
+    "generic_all_delayed": true,
+    "generic_all_price_positive_vs_P0_and_actual_blended": true,
+    "generic_with_return_leq1bp": 0,
+    "BTC_TP2_count": 28,
+    "TP2_includes_positive_IOC_catchups": 13,
+    "zero_wave_classification": "UNKNOWN_FULL_VECTOR_ABSENT; label alone insufficient.",
+    "fee_net_profit": "Price-positive does not establish positive after allocated fees/funding."
+  }
+}
