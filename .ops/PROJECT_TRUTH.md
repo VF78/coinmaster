@@ -296,3 +296,7 @@ Analysis only completed in reports/s0-weekly-postmortem-20261022/. M1/M2 fail50/
 ## 2026-10-22 BTC lifecycle analysis
 
 ExactS0 source/105BTC intervals/155native reductions audited without newengine/model runs or pilotaction. No exact-entry-price reductions;76zeroallocations alreadyomitted inPASSIVE,73genericfallbacks profitable exfunding.13earlyTP2catchups(7fee-negative) mustnotbeblindlyremoved: nativecompletioncomparisongained71619TOTAL. Daily-closewaveMFE vs1m-closeexecution identified as untestedresolutionhypothesis, notbugfix. No fixeddownsideBTC SL inS0; dailyregime/trailandwinnerMAEtails audited. Source/stats/17-row experimentmatrix/primarysources and systematicconsentproposal in reports/btc-lifecycle-audit-20261022/. Noeconomic50/90GO. Existing#123 reused; currentpublication/readbacks inACTIVE_TASK.
+
+## 2026-10-22 H1/H2/H3 prechecks and H4 idea
+
+Approvedstagedpackageexecutedthroughsaved-data/cost/addressabilitygates: H1NO_ECONOMIC_GO,H2NO_NATIVE_GO(earlySOL1miss),H3precheckcostnegative. No24m/nativeengine/model/productchanges/S0rerun/pilotaction; no eligibilityforconditionalfullruns. NewH4BTC-styleSOL+BTChedgeideaaddedandcausal730day/105entrydirectioncensuscompleted: same69/105, independenttrendnotautomatichedge. H4role/sizing/exit/NETTINGdesignnextbacklog, no automaticgridfromunusedbudget. Reports/taskplan/25QA and provenance under reports/btc-sol-causal-modules-20261022/. Canonicaldirtyunchanged/isolate75ffcCLEAN; exactS0goal50/90stillunmet. CurrentProjectreadback/publicationstateinACTIVE_TASK.

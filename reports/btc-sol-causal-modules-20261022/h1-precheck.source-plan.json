@@ -1,0 +1,23 @@
+{
+  "status": "SOURCE_RESOURCE_PLAN_ONLY_NO_RAW_SCAN_YET",
+  "source": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+    "bytes": 27571600,
+    "sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "rows_known_from_prior_saved_report": 1051200
+  },
+  "native_audit": "/tmp/btc-audit-exact-s0-direction.json",
+  "native_sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa",
+  "resource_limit": {
+    "seconds": 180,
+    "target_RSS_MiB": 320,
+    "ceiling_RSS_MiB": 350,
+    "priority_nice": 19
+  },
+  "local_blocker": "Both system and bundled Python lack pyarrow; no duckdb/polars available. No dependency install.",
+  "remote_reader_probe": "PENDING_NO_OUTPUT; rawcollector notstarted",
+  "h1_method": "105 firstentry actualVWAP, firststrictlylater1mclose +.25/-.25 directional thresholds until4h; strictnext1mclose conditional addreference, ordinaryactualfill upperbound. Half-onlycontrol noPnL.",
+  "h3_proposed_method_pending_root": "ActualpositiveTP2 only; fullypostactivation closedUTC4h CLOSE maximum vsP0, 3percentagepointgiveback checked closed4h,strictnext1mclose; actualnativeqty only.",
+  "native_runs_added": 0,
+  "alternative_TOTAL_DD_PnL": "NOT_COMPUTED"
+}

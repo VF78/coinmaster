@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-22T20:59:38.436761+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "state": "open",
+  "Project_status": "Todo",
+  "body_readback": "PASS",
+  "current_prechecks": "COMPLETE_REJECTED_NO_NATIVE_GO",
+  "remaining_task": "H4_ROLE_AND_PARAMETER_PROTOCOL_BACKLOG",
+  "new_native_full_runs": 0,
+  "pilot_changed": false
+}

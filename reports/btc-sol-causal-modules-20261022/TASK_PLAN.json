@@ -1,0 +1,93 @@
+{
+  "updated_utc": "2026-10-22T20:59:18.597358+00:00",
+  "status": "CURRENT_PRECHECKS_COMPLETE_NO_NATIVE_GO_H4_DESIGN_BACKLOG",
+  "control": {
+    "id": "EXACT_S0",
+    "source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "TOTAL": "6077107.23887483",
+    "initial": "10000",
+    "period": "[2024-09-01,2026-09-01)",
+    "settled_money_DD_percent": "66.25691486468686414439256686",
+    "rerun": false
+  },
+  "goal": {
+    "max_global_settled_DD_percent": 50,
+    "min_net_profit_retention_percent": 90,
+    "minimum_TOTAL_exact": "5470396.514987347",
+    "ranking": "MAX_TOTAL among candidates meeting both"
+  },
+  "isolation": {
+    "development_checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/btc-sol-modules-20261022",
+    "branch": "codex/btc-sol-modules-20261022",
+    "pilot": "UNTOUCHED",
+    "production_deploy": false,
+    "external_orders_transfers": false,
+    "research_secrets": false,
+    "engine": "existing native Nautilus 1.231 only"
+  },
+  "H1": {
+    "priority": 1,
+    "stage": "REJECTED_PRECHECK_NO_ECONOMIC_GO",
+    "rule": "Keep original firsthalf. Secondhalf onlyaftercausal +0.25% favorable from actualfirsthalfVWAP, strictpostfirsthalfterminal, original4h/UTCdeadline, expirywinsatequality. No mandatorydeadline/earlyTPadd. Finalizenativeactualpartial qty; noSOLcreditforunfilledvolume. Maxoriginalplan unchanged.",
+    "control": "HALF_ONLY noadd, savedpathscreen then nativecontrol onlyifH1admitted",
+    "precheck": "all105 first4h, plus/minus touchorder, strictnextquoteprice, ordinaryexitpriority, delayedwinnercounterexamples, fees/adverseselection. Originalfutureoutcomes diagnostic notruntimefeatures.",
+    "result": "49/105adds,27originalwinnersnotfullyadded; all105primaryunitpricecostmean S0+.376810%,H1+.245942%;8monthsbetter/14worse;notTOTAL"
+  },
+  "H2": {
+    "priority": 2,
+    "stage": "REJECTED_REQUIRED_EARLY_CASE_AND_ECONOMIC_COUNTEREXAMPLES",
+    "rule": "Hourly log residual rSOL-beta0*rBTC; beta0 exactcausallyavailableacceptedSOLentryfeature. Freeze preceding2160completehourreturns mu/popstd atentry, G=max(0,G-sideSOL*zResidual-.5), alarm>=5; once50%actualnativeSOLtrim+cancelpendingadds, norestore.",
+    "raw_data": "Existing pinnedBTC/SOL1m; obtain genuineBybitlinear1h June-Aug2024 onlyforpriorindicatorwarmup; overlapvalidate, sourcehash. No dailyreplacement/shortenedwindow.",
+    "comparator": "SimpleSOLadverseprice threshold calibratedatentry fromonlypreceding90nonoverlap24hblocks to match prior CUSUMalarmfraction, tiehandling disclosed. Never use future26alarmcount.",
+    "reconstruction": "OriginalpinnedS0dailywarmup/formula deterministicfeatures only; no newbetaestimator/Hbacksolve/strategyengine.",
+    "result": "26cycles4CUSUMalarms;earlySOL1NOalarmmaxG2.8797<5;3/4endpointreferencesnegative;oneidealcut2500>1000liquidity;oneusefulhedgeremoval"
+  },
+  "H3": {
+    "priority": 3,
+    "stage": "PRECHECK_COMPLETE_REJECTED_COST_GATE_NO_IMPLEMENTATION",
+    "rule": "ActualpositiveTP2 -> fullypostactivationclosed4hclose maxsignedreturn vsP0; atclosed4h3p.p.giveback onehalfactualBTCremaining reduction, otherhalf/originalSOLcontinue; no newepisode/SOLrights.",
+    "scope": "Noeconomiccode/fullnative inthispackage. UnknownFULLgenericTP2 mapping notinvented.",
+    "result": "28actualTP2activations10actions;primaryperunitmean-.302990%all28/-.848371%actions,secondarynegative;noalternativeTOTAL/DD"
+  },
+  "H4": {
+    "priority": 4,
+    "stage": "INITIAL_DESIGN_CENSUS_COMPLETE_NEXT_RULE_SPEC_BACKLOG",
+    "owner_steering": "BTC-styleSOLentry/management, futureboundedSOL-specificcalibration; coordinateBTCpresence, ifBTCopen SOLmustbeopposite andriskadjusted toBTCnotional.",
+    "required_design": "Resolve SOLtrend same-sideBTC vs stricthedge conflict; standaloneSOLwhenBTCflat andpositiontransitionwhenBTCopens; sizecoefficient/hedgeratio/margin/exits/sharedcapital/NETTINGownership. OriginalSOLoverlayreplacement separateversion. User addition does not override currentH1/H2/H3 sequence or authorizewideparametergrid. OwnSOLTP/trail exits conflictwithcontinuous100%BTChedge unlesscoverageisallowedtodecreaseorBTCresizecoupled; no automatichedgereadds(timerchurn). Causal coefficient updates only at closed dailydecision, freeze for newly opened hedge/cycle; do not continuouslyresizeoldinventoryfromdailycoefficientchanges.",
+    "limits": "No implementation/optimizer/grid/native addednow; notsimultaneouswithH1/H2/H3. Fullnotionalhedge afterbeta is not guaranteedDDprotection.",
+    "sizing_definition": "N_SOL=k*N_BTC. k must be explicitly chosen/tested: volmatching sigmaBTC/sigmaSOL vs minimumvariance cov(BTC,SOL)/var(SOL). InverseSOL-onBTC beta is NOT generally the same coefficient. No assumption of guaranteed losscompensation.",
+    "result": "SOL/BTCEMA34same597/730daysand69/105BTCentries. DirectioncensusNOTactualtradecount; noSOLparametergrid/native.",
+    "occupancy": {
+      "source": "saved native interval ledger only",
+      "BTC_flat_days": 422.0652777777778,
+      "BTC_flat_percent": 57.81716133942162,
+      "both_flat_days": 329.5541666666667,
+      "both_flat_percent": 45.144406392694066,
+      "interpretation": "Baseline clock-time availability only, not signal/admission/PnL or future H4 occupancy."
+    }
+  },
+  "gates": {
+    "prechecks": "Savedrealpaths only, no alternativeportfolioTOTAL/equity/PnLengine. Counts/cost/recoveredwinners/allmonths/actualeligibility unknowns preserved. Rejectlate/nonselective/uneconomicactions.",
+    "module_admission": "Targetepisodes improve withreasonableprice-cost andcounterexamples; nativeonlyafterrootwrittenGO, sameS0fees/funding/margin/DP/execution pins. UnaddressedoldglobalDD alone notmodulerejection. No claimed50/90 beforefullnative.",
+    "combine": "Only if standalone economicresults justify both; no additiveequity shortcuts.",
+    "root_decisions": "H1NO_ECONOMIC_GO,H2NO_NATIVE_GO,H3NO_ECONOMIC_GO,H4DESIGN_ONLY"
+  },
+  "native_budget": {
+    "conditional_slots": [
+      "H1 conditionaladd ifprecheckPASS",
+      "HALF_ONLY matchedexposurecontrol onlyifH1admitted",
+      "H2 SOLCUSUM ifprecheckPASS",
+      "H1+H2 combined onlyifstandaloneresults justify; otherwiseunusedslot mayconfirmchosen50/90PASS result"
+    ],
+    "H3_native": false,
+    "H4_native": false,
+    "S0_rerun": false,
+    "wide_grid": false,
+    "automatic_retry": false,
+    "status": "ZERO_USED_NO_CURRENT_MODULE_ADMITTED_UNUSED_SLOTS_NOT_AUTOMATIC_H4_AUTHORIZATION",
+    "maximum_full_24m_runs": 4,
+    "focused_native_fixture_tests": "Necessary bounded native lifecycle acceptance tests, reported separately from full24m economicruns. No fullS0rerun.",
+    "full_runs_used": 0
+  },
+  "provenance": "User approved combined plan incl attachedthreehypotheses. LatestH4isadditionalidea for analysis/list, notpermissionforwideSOLoptimizer. Nativecap4 includeshalfcontrol,combination/confirm not4perhypothesis."
+}

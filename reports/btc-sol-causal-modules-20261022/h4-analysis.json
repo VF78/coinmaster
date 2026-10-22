@@ -1,0 +1,113 @@
+{
+  "status": "PRELIMINARY_DESIGN_CENSUS_ONLY_NO_H4_NATIVE_APPROVAL",
+  "S0_TOTAL": "6077107.23887483",
+  "daily_window": "Decision availability [2024-09-01T00:00Z,2026-09-01T00:00Z); use previous completed daily bar, not future daily close",
+  "model": "Frozen batch_features_for, EMA34 on BTC and same function with SOL as signal series. No parameter optimization, strategy execution, model fitting, or PnL. Same close>EMA long, else short; ties are short. Full730day warmup retained.",
+  "counts_all_730": {
+    "n": 730,
+    "same": 597,
+    "opposite": 133,
+    "BTC_long_SOL_long": 276,
+    "BTC_short_SOL_short": 321,
+    "BTC_long_SOL_short": 89,
+    "BTC_short_SOL_long": 44
+  },
+  "counts_at_105_actual_S0_BTC_entry_decisions": {
+    "n": 105,
+    "same": 69,
+    "opposite": 36,
+    "BTC_long_SOL_long": 26,
+    "BTC_short_SOL_short": 43,
+    "BTC_long_SOL_short": 27,
+    "BTC_short_SOL_long": 9
+  },
+  "BTC_signal_parent_side_match": "105/105",
+  "eligibility": "Standalone SOL beta/wave/admission eligibility NOT_RECONSTRUCTED; direction count is not trade count, held-position overlap, or executable opportunity.",
+  "fixed90day_summary_all730": {
+    "causal_90d_corr": {
+      "min": 0.6276254878791736,
+      "median": 0.8293685566521869,
+      "max": 0.934895555344904
+    },
+    "causal_90d_volmatch_k": {
+      "min": 0.38643303009271185,
+      "median": 0.5936391923677546,
+      "max": 0.8089672630632008
+    },
+    "causal_90d_minvariance_k": {
+      "min": 0.27676988689585036,
+      "median": 0.47122689491669834,
+      "max": 0.7424828775909559
+    },
+    "causal_90d_beta_SOL_on_BTC": {
+      "min": 1.0173449698488783,
+      "median": 1.2795503865739317,
+      "max": 2.0913683424817133
+    },
+    "causal_90d_inverse_beta_k": {
+      "min": 0.4781558464317932,
+      "median": 0.7815245363913952,
+      "max": 0.9829507488974415
+    }
+  },
+  "fixed90day_summary_105entries": {
+    "causal_90d_corr": {
+      "min": 0.6423020861524691,
+      "median": 0.8148687208806428,
+      "max": 0.9308057408664978
+    },
+    "causal_90d_volmatch_k": {
+      "min": 0.3916269027004612,
+      "median": 0.6305001725360113,
+      "max": 0.7798488465736597
+    },
+    "causal_90d_minvariance_k": {
+      "min": 0.27827676646917177,
+      "median": 0.48097647356206175,
+      "max": 0.722184097407683
+    },
+    "causal_90d_beta_SOL_on_BTC": {
+      "min": 1.0584011432278453,
+      "median": 1.2639319253231796,
+      "max": 2.0182709661514826
+    },
+    "causal_90d_inverse_beta_k": {
+      "min": 0.4954736092284173,
+      "median": 0.791181850829748,
+      "max": 0.9448213528476196
+    }
+  },
+  "coefficient_definitions": {
+    "returns": "Daily close-to-close log returns, last90 completed available returns inclusive decision bar; population moments, no future returns",
+    "volmatch_k": "sigmaBTC/sigmaSOL; equal USD return-vol contribution, ignores correlation",
+    "minvariance_k": "cov(rBTC,rSOL)/var(rSOL) = rho*sigmaBTC/sigmaSOL; minimizes variance of rBTC-k*rSOL before cost/constraints",
+    "inverse_beta_k": "1/betaSOLonBTC = varBTC/cov = sigmaBTC/(rho*sigmaSOL). NOT minvariance except abs(rho)=1; kmin/inversebeta=rho^2",
+    "units": "If BTC USD notional NB, opposite SOL hedge USD notional NS=k*NB; native quantity NS/SOLmark. Negative/nonfinite k cannot silently become opposite hedge."
+  },
+  "design_conflicts": [
+    "When BTC open and standalone SOL EMA side equals BTC side, it cannot simultaneously be its opposite hedge without an explicit override/filter. Census does not measure actual held overlap.",
+    "BTC flat: standalone SOL owns its own cycle/TP/SL/size/admission. BTC opening with existing same-side SOL needs preselected wait/reduce/close/override semantics; no silent flip.",
+    "NETTING supports one physical SOL inventory: standalone, original S0 SOL overlay, and new hedge cannot each claim full position. Either exclusive mode or explicit fill-based virtual ownership within one executor is necessary; no parallel PnL/cache authority.",
+    "BTC becomes flat: existing hedge disposition must be explicit, no automatic standalone reclassification or invented new rights. Mandatory exits/unknown ACK/partial fills retain native ownership.",
+    "Original S0 SOL overlay is an alpha/right lifecycle, not an always-beta-balanced hedge; H4 replacement/addition is a new economic version, not baseline-preserving toggle."
+  ],
+  "H1": "NO_ECONOMIC_GO; no implementation",
+  "H2": "NO_NATIVE_GO; no implementation",
+  "H3": "PRECHECK_ONLY",
+  "H4": "BACKLOG_ANALYSIS_ONLY_NO_OPTIMIZER_NO_NATIVE",
+  "pins": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+  },
+  "helper_sha256": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+  "parents_sha256": "1e0e67d5efc55b2206487ebc329cf1ac92dea86b0333e8fff2daa56093820476",
+  "new_native_runs": 0,
+  "new_product_edits": 0,
+  "final_source_guard": {
+    "canonical_HEAD": "0bd7351897a9854c144817fdfca6c548e7984673",
+    "canonical_preserved_status_sha256": "852caf1e6416dec5a14bb47d48da478d6f2df05c5672cbf38955f6d919691837",
+    "isolated_HEAD": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "isolated_status": "CLEAN",
+    "product_edits": 0
+  }
+}

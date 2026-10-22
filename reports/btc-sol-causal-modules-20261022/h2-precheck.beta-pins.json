@@ -1,0 +1,312 @@
+{
+  "source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "source_sha256": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+  "input_pins": {
+    "BTCUSDT-daily": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "SOLUSDT-daily": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "BTCUSDT-execution-1m": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "SOLUSDT-execution-1m": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+  },
+  "candidate": {
+    "beta_days": 270,
+    "btc_close_trail_fraction": 0.03,
+    "btc_notional_multiplier": 7.875,
+    "btc_tp_fractions_initial_qty": [
+      0.2125,
+      0.2125,
+      0.575
+    ],
+    "ema_period": 34,
+    "episode_fixed_beta": false,
+    "max_parent_notional": 30000000.0,
+    "relative_days": 65,
+    "sol_entry_z": [
+      1.25,
+      2.5,
+      3.75
+    ],
+    "sol_exit_all_z": 0.125,
+    "sol_exit_half_z": 0.375,
+    "sol_late_entry_after_tp": true,
+    "sol_max_holding_days": 14,
+    "sol_overlay_enabled": true,
+    "sol_size_multipliers_h": [
+      1.75,
+      2.625,
+      3.5
+    ],
+    "sol_timeout_preempts_add": false,
+    "wave_history_days": 730,
+    "wave_min_count": 8,
+    "wave_quantiles": [
+      0.1,
+      0.3,
+      0.6
+    ],
+    "z_history_days": 180
+  },
+  "rows": [
+    {
+      "trade_number": 1,
+      "actual_entry_ns": "1727913600000000000",
+      "entry_utc": "2024-10-03T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1727913600000000000",
+      "daily_feature_available_utc": "2024-10-03T00:00:00+00:00",
+      "beta0": 1.179081410345596,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 2,
+      "actual_entry_ns": "1728604800000000000",
+      "entry_utc": "2024-10-11T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1728604800000000000",
+      "daily_feature_available_utc": "2024-10-11T00:00:00+00:00",
+      "beta0": 1.1857657064608158,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 3,
+      "actual_entry_ns": "1732233600000000000",
+      "entry_utc": "2024-11-22T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1732233600000000000",
+      "daily_feature_available_utc": "2024-11-22T00:00:00+00:00",
+      "beta0": 1.1400166480770288,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 4,
+      "actual_entry_ns": "1734923700000000000",
+      "entry_utc": "2024-12-23T03:15:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1734912000000000000",
+      "daily_feature_available_utc": "2024-12-23T00:00:00+00:00",
+      "beta0": 1.2030665394073978,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 5,
+      "actual_entry_ns": "1735320060000000000",
+      "entry_utc": "2024-12-27T17:21:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1735257600000000000",
+      "daily_feature_available_utc": "2024-12-27T00:00:00+00:00",
+      "beta0": 1.2007689964769148,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 6,
+      "actual_entry_ns": "1736467200000000000",
+      "entry_utc": "2025-01-10T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1736467200000000000",
+      "daily_feature_available_utc": "2025-01-10T00:00:00+00:00",
+      "beta0": 1.195635261573238,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 7,
+      "actual_entry_ns": "1738886400000000000",
+      "entry_utc": "2025-02-07T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1738886400000000000",
+      "daily_feature_available_utc": "2025-02-07T00:00:00+00:00",
+      "beta0": 1.2193677568447026,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 8,
+      "actual_entry_ns": "1741564800000000000",
+      "entry_utc": "2025-03-10T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1741564800000000000",
+      "daily_feature_available_utc": "2025-03-10T00:00:00+00:00",
+      "beta0": 1.3117109194895267,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 9,
+      "actual_entry_ns": "1741910400000000000",
+      "entry_utc": "2025-03-14T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1741910400000000000",
+      "daily_feature_available_utc": "2025-03-14T00:00:00+00:00",
+      "beta0": 1.3055627958365845,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 10,
+      "actual_entry_ns": "1742688000000000000",
+      "entry_utc": "2025-03-23T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1742688000000000000",
+      "daily_feature_available_utc": "2025-03-23T00:00:00+00:00",
+      "beta0": 1.3428293105106086,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 11,
+      "actual_entry_ns": "1743034620000000000",
+      "entry_utc": "2025-03-27T00:17:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1743033600000000000",
+      "daily_feature_available_utc": "2025-03-27T00:00:00+00:00",
+      "beta0": 1.3404730578613455,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 12,
+      "actual_entry_ns": "1743638520000000000",
+      "entry_utc": "2025-04-03T00:02:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1743638400000000000",
+      "daily_feature_available_utc": "2025-04-03T00:00:00+00:00",
+      "beta0": 1.3353915351307546,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 13,
+      "actual_entry_ns": "1744329900000000000",
+      "entry_utc": "2025-04-11T00:05:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1744329600000000000",
+      "daily_feature_available_utc": "2025-04-11T00:00:00+00:00",
+      "beta0": 1.3424907802395019,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 14,
+      "actual_entry_ns": "1746057600000000000",
+      "entry_utc": "2025-05-01T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1746057600000000000",
+      "daily_feature_available_utc": "2025-05-01T00:00:00+00:00",
+      "beta0": 1.3389637141450412,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 15,
+      "actual_entry_ns": "1746835200000000000",
+      "entry_utc": "2025-05-10T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1746835200000000000",
+      "daily_feature_available_utc": "2025-05-10T00:00:00+00:00",
+      "beta0": 1.3638846155890099,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 16,
+      "actual_entry_ns": "1748133840000000000",
+      "entry_utc": "2025-05-25T00:44:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1748131200000000000",
+      "daily_feature_available_utc": "2025-05-25T00:00:00+00:00",
+      "beta0": 1.4036906069381287,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 17,
+      "actual_entry_ns": "1749600000000000000",
+      "entry_utc": "2025-06-11T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1749600000000000000",
+      "daily_feature_available_utc": "2025-06-11T00:00:00+00:00",
+      "beta0": 1.4183419584120436,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 18,
+      "actual_entry_ns": "1753142400000000000",
+      "entry_utc": "2025-07-22T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1753142400000000000",
+      "daily_feature_available_utc": "2025-07-22T00:00:00+00:00",
+      "beta0": 1.4394191789574948,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 19,
+      "actual_entry_ns": "1754611200000000000",
+      "entry_utc": "2025-08-08T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1754611200000000000",
+      "daily_feature_available_utc": "2025-08-08T00:00:00+00:00",
+      "beta0": 1.4724974066860097,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 20,
+      "actual_entry_ns": "1755316920000000000",
+      "entry_utc": "2025-08-16T04:02:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1755302400000000000",
+      "daily_feature_available_utc": "2025-08-16T00:00:00+00:00",
+      "beta0": 1.5531511948436298,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 21,
+      "actual_entry_ns": "1755913020000000000",
+      "entry_utc": "2025-08-23T01:37:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1755907200000000000",
+      "daily_feature_available_utc": "2025-08-23T00:00:00+00:00",
+      "beta0": 1.5806374311317837,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 22,
+      "actual_entry_ns": "1757635200000000000",
+      "entry_utc": "2025-09-12T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1757635200000000000",
+      "daily_feature_available_utc": "2025-09-12T00:00:00+00:00",
+      "beta0": 1.627632954066401,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 23,
+      "actual_entry_ns": "1759449600000000000",
+      "entry_utc": "2025-10-03T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1759449600000000000",
+      "daily_feature_available_utc": "2025-10-03T00:00:00+00:00",
+      "beta0": 1.6652465906554352,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 24,
+      "actual_entry_ns": "1779235200000000000",
+      "entry_utc": "2026-05-20T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1779235200000000000",
+      "daily_feature_available_utc": "2026-05-20T00:00:00+00:00",
+      "beta0": 1.3683609967669061,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 25,
+      "actual_entry_ns": "1784505600000000000",
+      "entry_utc": "2026-07-20T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1784505600000000000",
+      "daily_feature_available_utc": "2026-07-20T00:00:00+00:00",
+      "beta0": 1.2677312732740593,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    },
+    {
+      "trade_number": 26,
+      "actual_entry_ns": "1787875200000000000",
+      "entry_utc": "2026-08-28T00:00:00+00:00",
+      "first_SOL_submit_equals_fill": true,
+      "daily_feature_available_ns": "1787875200000000000",
+      "daily_feature_available_utc": "2026-08-28T00:00:00+00:00",
+      "beta0": 1.231217760490294,
+      "origin": "Frozen batch_features_for on exact pinned daily bars; latest completed/available dailyfeature at first actual market SOLADD submit/fill. Original accepted-session cache not exported; current available decision inferred from matched market timing and original stale-add guard, not runtime receipt-attested."
+    }
+  ],
+  "no_new_fit": true,
+  "beta_not_BTC_episode_beta": true
+}

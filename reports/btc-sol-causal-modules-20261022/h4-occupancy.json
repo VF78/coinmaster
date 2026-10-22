@@ -1,0 +1,65 @@
+{
+  "status": "FINAL_SAVED_LEDGER_METADATA_ONLY",
+  "source": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/winner-6077107-stats/trades-ledger.csv",
+  "source_sha256": "791ec027990e6ad3028ff708afd7a7439b1dbdca8cfd16a666fd17d0bfa29317",
+  "columns_used": [
+    "asset",
+    "start_ns",
+    "end_ns"
+  ],
+  "interval_convention": "Half-open [first native opening fill,last native flat fill), clipped to [2024-09-01,2026-09-01) UTC; simultaneous closes/opens have zero duration",
+  "denominator_seconds": 63072000,
+  "denominator_days": 730,
+  "ledger_intervals": {
+    "BTC": 105,
+    "SOL": 26
+  },
+  "metrics": {
+    "BTC_OPEN_SOL_OPEN": {
+      "seconds": 4091520,
+      "days": 47.355555555555554,
+      "fraction_730d": 0.06487062404870624,
+      "percent_730d": 6.487062404870624
+    },
+    "BTC_OPEN_SOL_FLAT": {
+      "seconds": 22514040,
+      "days": 260.57916666666665,
+      "fraction_730d": 0.3569577625570776,
+      "percent_730d": 35.69577625570776
+    },
+    "BTC_FLAT_SOL_OPEN": {
+      "seconds": 7992960,
+      "days": 92.5111111111111,
+      "fraction_730d": 0.1267275494672755,
+      "percent_730d": 12.672754946727549
+    },
+    "BOTH_FLAT": {
+      "seconds": 28473480,
+      "days": 329.5541666666667,
+      "fraction_730d": 0.45144406392694064,
+      "percent_730d": 45.144406392694066
+    },
+    "BTC_OPEN": {
+      "seconds": 26605560,
+      "days": 307.9347222222222,
+      "fraction_730d": 0.42182838660578387,
+      "percent_730d": 42.18283866057838
+    },
+    "BTC_FLAT": {
+      "seconds": 36466440,
+      "days": 422.0652777777778,
+      "fraction_730d": 0.5781716133942162,
+      "percent_730d": 57.81716133942162
+    },
+    "SOL_OPEN": {
+      "seconds": 12084480,
+      "days": 139.86666666666667,
+      "fraction_730d": 0.19159817351598174,
+      "percent_730d": 19.159817351598175
+    }
+  },
+  "standalone_time_interpretation": "BTC flat is maximum baseline clock-time opportunity for a standalone SOL mode, not number of causal signals, eligible entry capacity, executable trades or profitable hours. Existing SOL may already occupy some of it. BOTH_FLAT is time with neither baseline leg held. Alternative H4 actions change future occupancy.",
+  "role_priority_proposal": "Root proposed BTC-open hedge override; BTC-flat standalone SOL. This requires explicit native role transition/ownership, not implementation approval.",
+  "incompatibility": "Independent SOL TP reductions/flat exits conflict with continuous full-BTC hedge coverage: own TP reduces coverage unless hedge replenishes, while replenishment overrides standalone exit and changes turnover/rights. Choose explicit mode/priority; cannot promise both without changed policy.",
+  "restrictions": "No quantity/PnL/fees/market read, model, engine or threshold scan; no source changes; final metadata stop."
+}

@@ -1,0 +1,164 @@
+{
+  "status": "STAGED_PRECHECKS_CLOSED_NO_ECONOMIC_IMPLEMENTATION",
+  "canonical": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster",
+    "HEAD": "0bd7351897a9854c144817fdfca6c548e7984673",
+    "branch": "codex/ai-cycle-20261021",
+    "dirty_before": 123,
+    "deleted_tracked": 100,
+    "dirty_after": 124,
+    "preserved_status_sha256_excluding_new_checkout": "852caf1e6416dec5a14bb47d48da478d6f2df05c5672cbf38955f6d919691837"
+  },
+  "isolated": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/btc-sol-modules-20261022",
+    "HEAD": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "branch": "codex/btc-sol-modules-20261022",
+    "status": "CLEAN",
+    "tracked_bytes": 63355009,
+    "runtime": "canonical runtime/.venv retained, Nautilus1.231.0; no newenv/install/symlink"
+  },
+  "baseline": {
+    "TOTAL": "6077107.23887483",
+    "settled_DD_percent": "66.25691486468686414439256686",
+    "config_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+    "scientific_source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "source_hashes": {
+      "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+      "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+      "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae"
+    },
+    "S0_rerun": false,
+    "qualification": "Exactsource/corehashes matched existingfrozenreport; no economicreproduction claimed"
+  },
+  "resources": {
+    "postcheckout_MemAvailable_MiB": 1066,
+    "postcheckout_disk_free_MiB": 3378,
+    "swap_used_MiB": 2046,
+    "swap_total_MiB": 2047,
+    "run_admission": "NOT_GRANTED; no native/fullrun/model/training",
+    "pilot": {
+      "unit": "coinmaster-hl-stageg-testnet.service",
+      "MainPID": 2009732,
+      "NRestarts": 0,
+      "ActiveState": "active"
+    },
+    "transport_ControlPath": "/private/tmp/cm-btc-audit-20261022.sock"
+  },
+  "H1_contract": {
+    "H1_stage": "PREFLIGHT_ONLY_WAIT_ROOT_PRECHECK_GO",
+    "default": "New flags defaultOFF; original S0 path unchanged. HALF_ONLY is separate exclusive economicversion, not mixed withH1",
+    "first_half": "Original accepted netlots, original signal/sizing/gates; firstquantity max(1,floor(lots/2)). Singlelot originalimmediate; no inventedhalf lot",
+    "anchor": "Freeze actualfirsthalf completednativeVWAP/P0 once, not mark/dailyclose; preserve nativeblendedVWAP/money. If firsthalf itself terminalpartial, use authoritativeactualfills only and finalizationcontract must explicitly freeze actualanchor, no invented completion",
+    "trigger": "Only aftercompleted firsthalf, causal executableprice favorable+0.25% in originalside vsactualfirsthalfP0; quote timestamp/sequence strictly afteranchor. Thresholdobserved during pendingfirsthalf cannotretroactivelytrigger. Executionviaexistingnativeexecutor atactualquote, nofill atthreshold assumption",
+    "window": "Originaldeadline min(start+4h,nextUTCday−1min); boundaryequality isexpiry. No deadline/earlyTP forcedadd. Native ordinary/forcedexit priority before anyadd",
+    "remaining": "No restingadverse0.25%limit inH1. Atmostoriginalremainingacceptedqty viaone existing owner; never expand targetafterpartial. Trigger doesnotgrant fill orSOLrights",
+    "finalization": "At expiry, ordinaryearlyTP or forcedclose, stopnewadds, cancelownedentrychild, waitauthoritativeterminal/reconciledpartials; unknownACK blocks duplicate/targetcreation. Closedlogicalparent only after noentrychild unresolved; actualfills+cancelledleaves=acceptedplan. Nativecache actualposition authoritative",
+    "TP_basis": "On settledpartialfinalization, TP targetbasis isactualconfirmedentryqty, integerlots/fractions .2125/.2125/.575; do not retain phantomtargets forcancelledqty; currentfilledTP/leaves/actualnativeposition constrainorders. NoTPsubmission untilentryownerresolved",
+    "rights": "KEEP originalbtc_net_planned_qty denominator; omittedrights=actualentryqty/originalnetplanned. NativepositiveTPrights usefilledtargetfraction * entryfraction. Do NOT rebase denominator toactualqty (wouldinflatehalf-entryrightstocomplete). KeepgrossreferenceH andactualVWAP formula; noSOLrightsforcancel/submit/ACK",
+    "IOC": "Existing _split_tp_ioc_eligible requires fullfilledquantity==planned andcancelled0; must narrowly allow authoritativecompletedpartialvariant afternewterminalflag, retainingpositivelevel/ordinarypriority/nativeIOC. No newmatching/accountingexecutor",
+    "recovery": "Researchstate only inone existingstrategy/executor; no productionrecoveryclaim. Pending/cancel/partial callbacks mustnotreopenexpiredparent; staleepisodecallback cannotmutatenextcycle",
+    "tests_after_GO": [
+      "defaultOFF exactcontrolbranch",
+      "long/short favorabletrigger and strictlylaterquote",
+      "HALF_ONLY exclusiveversion",
+      "expiry/noearlyTPforcedadd",
+      "partialfirstchild+partialremainder+cancelACK/latefill",
+      "unknownACK no duplicate",
+      "TPsumactualqty/lotrounding",
+      "omittedandpositiveSOLrights actualfraction/noinflation",
+      "ordinaryTP/REGIME/forcedpriority",
+      "two successivecycles stalecallback"
+    ]
+  },
+  "H2_scope": "Later onlyifrootGO: pairedcompletedhourlyreturns; beta/mu/scale frozenSOLentry frompriorhistory; CUSUM k.5/h5 onlyifprefrozen; once50%actualSOLcut+cancelpendingadds/noRestore; nativeexistingexecutor; hourly availability/warmup/gap/entrycycle definitions require precheck. No implementationnow",
+  "H3_scope": "PRECHECK_ONLY; postTP2 partialtrail NOTimplemented",
+  "changes_this_stage": "Onlyisolatedgitworktreecreation andtwoownedreports. No productcode/trading/services/orders/keys/opt change; nofullnative/modelcall/tests yet",
+  "evidence": [
+    {
+      "path": "reports/btc-lifecycle-audit-20261022/source-audit.md",
+      "sha256": "7016a29637a9b809139372f1c09cb4e8ea7f5bd7101e662dd14f5d4a535f718c"
+    },
+    {
+      "path": "reports/btc-lifecycle-audit-20261022/source-audit.json",
+      "sha256": "17f797822a17a30308f6c3ffddef4e2e0ee72d146391801a29eebe923e287679"
+    },
+    {
+      "path": "reports/btc-lifecycle-audit-20261022/experiment-transfer.json",
+      "sha256": "d6fe20e2a88340a31402a47cf6e7b7def086326ab07c96241ae0a72d6c0b12f7"
+    },
+    {
+      "path": "reports/fast-rnd-20261020/s0-completion.md",
+      "sha256": "2b124edf94c63cfde2c4343465833e04f2d6cbcca7cf39ccfcc19c18d253f130"
+    }
+  ],
+  "H2_beta_support": {
+    "local_daily_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized",
+    "BTCUSDT_sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "SOLUSDT_sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "original_13_input_pin_match": true,
+    "daily_bytes": [
+      70113,
+      65957
+    ],
+    "frozen_helper": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/domain/wave_overlay.py",
+    "helper_sha256": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "functions": "DailyBar, Candidate, batch_features_for; pure standard library, no Nautilus or engine imports",
+    "beta": "270 completed daily log returns, population cov(SOL,BTC)/var(BTC); include only current available completed day; daily close becomes available at open+24h",
+    "warning": "Current feature.beta at accepted SOL entry differs from frozen BTC Episode.beta_entry/H. H2 beta0 must explicitly choose its contract value; do not silently reuse H denominator.",
+    "status": "Paths/helper sent reviewer; no feature calculation or engine here"
+  },
+  "native_availability": {
+    "Mac": {
+      "python": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+      "machine": "arm64",
+      "python_version": "3.12.13",
+      "nautilus_version": "1.231.0",
+      "compiled_module": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.cpython-312-darwin.so",
+      "BacktestEngine_import": "PASS",
+      "instances_created": 0,
+      "installs": 0,
+      "qualification": "Wheel availability proven by existing installed binary import. Cross-platform economic/rounding/callback parity and full-run resource use NOT validated. Focused fixtures only after GO; no automatic full S0 repeat."
+    },
+    "VPS_saved_measurements": [
+      {
+        "run": "S0",
+        "CPU_seconds": "1125.469",
+        "peak_MiB": "472.0",
+        "swap_peak": 0,
+        "evidence": "reports/fast-rnd-20261020/s0-completion.json"
+      },
+      {
+        "run": "M1",
+        "CPU_seconds": "1208.459",
+        "peak_MiB": "490.2",
+        "swap_peak": 0,
+        "evidence": "reports/s0-management-20261022/m1-completion.json"
+      },
+      {
+        "run": "M2",
+        "CPU_seconds": "1178.352",
+        "peak_MiB": "612.1",
+        "swap_peak": 0,
+        "evidence": "reports/s0-management-20261022/m2-completion.json"
+      }
+    ],
+    "VPS_cap_MiB": 650,
+    "interpretation": "18.75-20.14 CPU minutes observed, not measured wall time or Mac speed estimate. M2 headroom 37.9 MiB. No limit/thread/service changes; host swap pressure retained."
+  },
+  "H4_status": "BACKLOG_ANALYSIS_ONLY; no product implementation, native plan or optimizer",
+  "final_gates": {
+    "H1": "NO_ECONOMIC_GO",
+    "H2": "NO_NATIVE_GO",
+    "H3": "PRECHECK_ONLY",
+    "H4": "ANALYSIS_ONLY",
+    "HALF_ONLY": "NOT_ADMITTED",
+    "combined": "NOT_ADMITTED"
+  },
+  "final_source_guard": {
+    "canonical_HEAD": "0bd7351897a9854c144817fdfca6c548e7984673",
+    "canonical_preserved_status_sha256": "852caf1e6416dec5a14bb47d48da478d6f2df05c5672cbf38955f6d919691837",
+    "isolated_HEAD": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "isolated_status": "CLEAN",
+    "product_edits": 0
+  }
+}

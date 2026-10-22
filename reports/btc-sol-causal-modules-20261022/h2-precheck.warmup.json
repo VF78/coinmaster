@@ -1,0 +1,106 @@
+{
+  "source": "Genuine Bybit public linear Kline interval60; indicator warmup only",
+  "requests": {
+    "captured_utc": "2026-10-22T20:35:41.081883+00:00",
+    "category": "linear",
+    "interval": "60",
+    "start_ms": 1717200000000,
+    "end_exclusive_ms": 1725235200000,
+    "reason": "Genuine public indicator warmup plus Sep1 overlap; no execution substitution",
+    "requests": [
+      {
+        "symbol": "BTCUSDT",
+        "page": 1,
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1725235199999&limit=1000",
+        "http_status": "200",
+        "exit_code": 0,
+        "seconds": 0.610048770904541,
+        "stderr": "",
+        "sha256": "77bc31199628aae187180a992875f66793fe6eddb1c5c4b26c692f177ac56f9b",
+        "bytes": 84027
+      },
+      {
+        "symbol": "BTCUSDT",
+        "page": 2,
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1721635199999&limit=1000",
+        "http_status": "200",
+        "exit_code": 0,
+        "seconds": 0.5141911506652832,
+        "stderr": "",
+        "sha256": "7fa5e1a02f72beb68f36a22a18233b6932d56ea3be427a36a6fa87b8d4d18c3b",
+        "bytes": 84007
+      },
+      {
+        "symbol": "BTCUSDT",
+        "page": 3,
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1718035199999&limit=1000",
+        "http_status": "200",
+        "exit_code": 0,
+        "seconds": 0.43047380447387695,
+        "stderr": "",
+        "sha256": "817ac64c3cc0ae514ad446b38f76d643efbb0a2ce6cfee8d29f164dd2a901ae5",
+        "bytes": 19425
+      },
+      {
+        "symbol": "SOLUSDT",
+        "page": 1,
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1725235199999&limit=1000",
+        "http_status": "200",
+        "exit_code": 0,
+        "seconds": 0.6326181888580322,
+        "stderr": "",
+        "sha256": "b1aff0672bc37dfd5d858bca41efde99306e1c5925e78391660f95cd3427f722",
+        "bytes": 79667
+      },
+      {
+        "symbol": "SOLUSDT",
+        "page": 2,
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1721635199999&limit=1000",
+        "http_status": "200",
+        "exit_code": 0,
+        "seconds": 0.7303752899169922,
+        "stderr": "",
+        "sha256": "8d1ff7c18582e55cb6c47b89b65950f877d211a9076e75d12dd7760b12f93cac",
+        "bytes": 79317
+      },
+      {
+        "symbol": "SOLUSDT",
+        "page": 3,
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1718035199999&limit=1000",
+        "http_status": "200",
+        "exit_code": 0,
+        "seconds": 0.4504561424255371,
+        "stderr": "",
+        "sha256": "ed88a27c1d91eff1bc58661913250172768d0260ca8ffc16a633614b08ed565e",
+        "bytes": 18361
+      }
+    ]
+  },
+  "quality": {
+    "BTCUSDT": {
+      "fetched_rows": 2232,
+      "contiguous": true,
+      "overlap_rows": 24,
+      "exact_close_matches": 24,
+      "max_abs_close_delta": 0.0,
+      "raw_hourly_sha256": "75cfb79487e7d5ca0db60fc61da279d33027633ad7e4e6c1586f4726b63685f1"
+    },
+    "SOLUSDT": {
+      "fetched_rows": 2232,
+      "contiguous": true,
+      "overlap_rows": 24,
+      "exact_close_matches": 24,
+      "max_abs_close_delta": 0.0,
+      "raw_hourly_sha256": "e2e1e24a1639e0ed5ea77abacc4c5fcc776b60216e1133628ed155e58b4e6593"
+    }
+  },
+  "warmup_used": true,
+  "first_hour_close_utc": "2024-06-01T01:00:00+00:00",
+  "native_data_unchanged": true,
+  "input_pins": {
+    "BTCUSDT-daily": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "SOLUSDT-daily": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "BTCUSDT-execution-1m": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "SOLUSDT-execution-1m": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+  }
+}
