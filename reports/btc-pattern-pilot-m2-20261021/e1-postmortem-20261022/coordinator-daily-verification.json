@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-22T12:04:41.943316+00:00",
+  "result": "PASS_REPORT_DATA_QA_ONLY",
+  "ids_unchanged": 198,
+  "causal_daily_timestamp_all": true,
+  "saved_loss_reproduction_all": true,
+  "group_means": {
+    "macro_sign:-1": {
+      "n": 115,
+      "TP": -0.0005767237901198087,
+      "SL": -0.0003995454654493597
+    },
+    "macro_sign:1": {
+      "n": 83,
+      "TP": 0.007883925312668148,
+      "SL": 0.004317418576734389
+    },
+    "return90d:-1": {
+      "n": 108,
+      "TP": -0.00039464680315103723,
+      "SL": -0.0006887633634713408
+    },
+    "return90d:1": {
+      "n": 90,
+      "TP": 0.007007382442533229,
+      "SL": 0.0042976050733020315
+    }
+  },
+  "unchanged_sha256": {
+    "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/RESULTS.json": "6f0688686681f8bd70f104ce451313a068611f6d8dfef22f10d034cf2029c65c",
+    "runtime/coinmaster/research/btc_event_research.py": "690c97cbdcb913f8c1f5aade9eabf07c13aec92feeb2f74a92af864ea33d3acd"
+  },
+  "runtime_changes": false,
+  "forecast_or_training_or_backtest_runs": 0,
+  "new_hypothesis": "PROPOSED_NOT_RUN",
+  "limits": "Descriptive posthoc associations and eligible counts do not demonstrate predictive benefit or full 100-200day wave robustness."
+}

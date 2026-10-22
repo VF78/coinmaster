@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-22",
+  "reviewed": ["REPORT.md", "stats-daily-results.json"],
+  "scope": "One final delivery review of factual interpretation, causal support and proposed contract. No new data analysis, forecasts, research or source edits.",
+  "decision": "GO",
+  "meaning": "GO for delivery of this report and its explicitly unexecuted proposal; not permission to run the proposed experiment.",
+  "material_blockers": [],
+  "checks": {
+    "699_day_catalogue_and_198_query_ids_preserved": true,
+    "daily_aggregation_distinguished_from_new_forecast": true,
+    "EMA34_reference_not_claimed_full_100_200_day_cycle": true,
+    "completed_cycle_labels_distinguished_from_causal_query_prefix": true,
+    "90_day_sign_pooled_losses_and_fold_counts_match_saved_evidence": true,
+    "strong_fold_confounding_and_F3_missing_positive_state_disclosed": true,
+    "recursive_EMA_support_not_misrepresented_as_34_days": true,
+    "finite_90_day_return_raw_daily_support_91_days_disclosed": true,
+    "early_conditional_cell_size_2_and_global_shrinkage_disclosed": true,
+    "undefined_historical_context_retained_in_eligible_global_pool": true,
+    "one_90_day_two_state_candidate_replaces_four_cell_proposal": true,
+    "32_pseudo_observations_fixed_proposed_not_optimized": true,
+    "candidate_has_no_claimed_measured_forecast_gain": true,
+    "14_28_day_uncertainty_not_claimed_long_cycle_validation": true,
+    "purge_correction_common_to_candidate_and_controls": true,
+    "proposal_requires_separate_owner_approval": true
+  },
+  "note": "The report honestly narrows the daily-wave idea to a finite-support daily-context diagnostic. It does not establish completed long-wave ground truth, independent cycle robustness, a stable causal mechanism, or economic benefit. Earlier methods-review.json remains historical to the prior four-cell report."
+}

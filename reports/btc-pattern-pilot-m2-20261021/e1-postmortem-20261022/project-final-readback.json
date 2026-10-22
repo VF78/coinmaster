@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-22T12:06:18.462079+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/122",
+  "state": "closed",
+  "project_status": "Done",
+  "body_readback": "PASS",
+  "scope": "COMPLETE_ANALYSIS_ONLY_PROPOSAL_NOT_RUN",
+  "evidence_head_before_final_commit": "93b49acda9254a610d7dd31755b4146df9fa1a1e",
+  "report_sha256": "12bfc027118d6d1a36f182f2f2786b469d30e01295cd34bbba586ba8fc2ec91f"
+}
