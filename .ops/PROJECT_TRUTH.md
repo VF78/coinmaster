@@ -306,3 +306,5 @@ H1/H2/H3/H4 research checkpoint 126d6d025de7c7ce9a673a362d08763a72a59e19 publish
 ## 2026-10-23 H4 clarification and proposed protocol
 
 Owner removes standalone SOL: BTC flat forbids SOL entries; BTC open allows only opposite risk-adjusted hedge. Prior H4 standalone branch superseded. H4_PROPOSAL.md defines actual-fill entry/90d cov-var sizing, proportional BTC-linked reductions, no timer refills, F continuous hedge / T 50% core+50% ownTP / S scaled split-entry, proposed3candidates+conditionalrepeat. Plan only pending agreement, native/product/model/deploy0, exactS0/pilot unchanged. Existing123 OPEN/Todo proposal/readback/checkpoint state in ACTIVE_TASK. Old scientific reports remain immutable.
+
+H4 proposal checkpoint811764d928205afbfd06a69585625d74c5519c2b published/GitHub-ref PASS; existing123 OPEN/Todo/exact-body readback PASS. Await owner agreement before code/native experiments; H4-publication.json records actual scope.

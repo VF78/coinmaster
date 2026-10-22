@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-22T23:02:59.995938+00:00",
+  "proposal_commit": "811764d928205afbfd06a69585625d74c5519c2b",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "push": "PASS",
+  "GitHub_ref_readback": "PASS",
+  "Project": "https://github.com/VF78/coinmaster/issues/123",
+  "Project_status": "OPEN/Todo",
+  "body_readback": "PASS",
+  "owner_agreement": "PENDING",
+  "new_native_runs": 0,
+  "product_changes": 0,
+  "pilot_changed": false
+}

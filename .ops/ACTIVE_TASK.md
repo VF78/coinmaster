@@ -7,8 +7,8 @@ Current deliverable: reports/btc-sol-causal-modules-20261022/H4_PROPOSAL.md. Pro
 
 ExactS0 source75ffc9c69e9d79c4da4cd0614634a3eeba48d716 / TOTAL6077107.23887483 / settledDD66.2569148647 reused, no rerun. Goal DD<=50 and TOTAL>=5470396.514987347 remains unachieved. Latest old science checkpoint126d6d0, metadata880d87b published/refPASS. H1/H2/H3 rejected by approved prechecks; no pending implementations/full native jobs.
 
-This turn: targeted saved-source/docs review and proposal only; product code/native/model/order/deploy/service actions0. Pilot untouched; no current runtime health recheck claimed. No executor launched for an unapproved implementation. Existing #123 remains OPEN/Todo; proposal exact body/state/Project Todo readback PASS2026-10-22T23:00:51UTC; checkpoint publication pending.
+This turn: targeted saved-source/docs review and proposal only; product code/native/model/order/deploy/service actions0. Pilot untouched; no current runtime health recheck claimed. No executor launched for an unapproved implementation. Existing #123 remains OPEN/Todo; proposal exact body/state/Project Todo readback PASS2026-10-22T23:00:51UTC; proposal checkpoint 811764d928205afbfd06a69585625d74c5519c2b published; GitHub ref readback PASS, receipt H4-publication.json.
 
 Publication checkout: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021, branch codex/btc-pattern-pilot-m2-20261021. Future source owner must use canonical isolated /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/btc-sol-modules-20261022 (75ffc CLEAN at prior check), preserve main canonical dirty state. Do not edit /opt or deploy.
 
-Next: publish proposal checkpoint (Project readback complete), present concrete F→T→S for owner agreement. Do not run H4 implementations/native experiments before agreement.
+Next: owner agreement on F→T→S/50% core/proposed budget; plan publication and Project readback complete. Do not run H4 implementations/native experiments before agreement.
