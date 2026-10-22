@@ -1,6 +1,6 @@
 {
   "utc": "2026-10-22T15:27:54.379942+00:00",
-  "status": "PLAN_COMPLETE_CLEANUP_VERIFIED_PUBLICATION_PENDING",
+  "status": "COMPLETE_PUBLISHED_PROJECT_READBACK_PASS",
   "preserved_report_pins_verified": 14,
   "pinned_s0_readme_sha256": "b86ab689a2d324f9194c4f94333b4b12d6463cf8fda0adfc499da54d8e08638c",
   "s0_total": "6077107.23887483",
@@ -25,5 +25,7 @@
   "cleanup_receipt_sha256": {
     "mac-cleanup-final-receipt.json": "9696c208e413baf496dd9e00a39c966a19411de21d9a506984f3d73487b87123",
     "vps-cleanup-final.json": "57123382a34a21c1412038c6ec937b6b5937a322e200ece4439be8797872feef"
-  }
+  },
+  "publication_checkpoint": "66dacb18fe4cef4cdae263d21094a90a45c8a8bc",
+  "project_comment_readback": "PASS"
 }

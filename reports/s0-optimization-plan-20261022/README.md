@@ -22,4 +22,4 @@ Mac: за интервал свободное место уменьшилось 
 - [Mac: итог](mac-cleanup-completion.md), [cumulative JSON](mac-cleanup-final-receipt.json).
 - [VPS: итог](vps-cleanup-final.md), [cumulative JSON](vps-cleanup-final.json).
 - [Root verification](coordinator-verification.json); точные initial/supplemental allowlists рядом.
-- Project: существующая #121, завершённые ИИ-эксперименты остаются Done; новый план будет приложен без объявления будущих прогонов выполняющимися. Фактический read-back — project-final-readback.json после публикации.
+- Project: [существующая #121 / итог и план](https://github.com/VF78/coinmaster/issues/121#issuecomment-6344559152), точный read-back PASS. Завершённые ИИ-эксперименты остались Done; будущие прогоны не объявлялись выполняющимися. Подтверждения — project-final-readback.json и publication-readback.json.

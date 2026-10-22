@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-22T15:29:54.565490+00:00",
+  "published_plan_cleanup_commit": "66dacb18fe4cef4cdae263d21094a90a45c8a8bc",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "git_push": "PASS",
+  "GitHub_ref_readback": "PASS",
+  "evidence": "bounded IPv4 publisher returned exact GitHub ref SHA equal to local HEAD",
+  "project_readback": "project-final-readback.json",
+  "project_comment": "https://github.com/VF78/coinmaster/issues/121#issuecomment-6344559152",
+  "future_native_scope": "PROPOSED_NOT_STARTED"
+}
