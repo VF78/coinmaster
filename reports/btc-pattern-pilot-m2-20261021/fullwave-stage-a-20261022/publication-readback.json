@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-22T13:15:38.521670+00:00",
+  "results_commit": "dea14b1adb07e512f3f7b2f63577dc33ea7e6353",
+  "source_commit": "b516de74c8e83e643b3d84263bfd08274506d32f",
+  "GitHub_ref_readback": "PASS",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "route": "localgit/gh,per-commandIPv4;noVPNorVPSchange",
+  "scope": "resultpublicationnotdeployment"
+}
