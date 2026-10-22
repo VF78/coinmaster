@@ -1,6 +1,6 @@
 {
   "id": "TEMP_CAP_RESTORE_1",
-  "status": "CONCRETE_PROPOSAL_FOR_OWNER_CONSENT_NOT_READY_NATIVE",
+  "status": "PRECHECKED_WITH_COUNTEREXAMPLES_NOT_READY_NATIVE",
   "created_UTC": "2026-10-22T18:25:07.463276+00:00",
   "parent_S0_TOTAL": "6077107.23887483",
   "objective": {
@@ -41,12 +41,12 @@
   },
   "anti_churn": "No timer, no continuous rebalance, max ONEcut plus ONErestore attempt per cycle; no restore after ordinary exit",
   "risk_scope": "Common gross leg cap is not beta neutral, not equal asset risk and not a portfolio DD guarantee",
-  "precheck": "Only stored32 first-hit snapshots; selection20, BTC17/SOL3,7originalwinners; actual native actions UNKNOWN",
+  "precheck": "32 stored snapshots plus ONE bounded original-price diagnostic for20selected opportunities; no alternative equity or PnL",
   "economic_result": {
     "TOTAL": "UNKNOWN_NOT_RUN",
     "DD": "UNKNOWN_NOT_RUN",
     "retention": "UNKNOWN_NOT_RUN",
-    "restore_paths_and_fill_costs": "NOT_YET_EVALUATED"
+    "restore_paths_and_fill_costs": "CONDITIONAL_ONLY:17/20confirm+nextclose;11/17recrosscut; median gap+fees0.68624941%,max1.48106488% of per-unit cut reference. Actual native eligibility/fills UNKNOWN"
   },
-  "next_consent_step": "Before any native admission: examine actual closed15m paths and next-quote prices for all selected opportunities, original exit interactions and post-restore relapse; then decide whether ONE full native comparison is justified. Do not use same-price fee arithmetic as payoff proof."
+  "next_consent_step": "No new native authorized. Owner may consider this exact temporary-cap/one-restore proposal, but price diagnostic exposes early SOL relapse and does not support economic GO; do not claim predicted50/90 success or silently tune confirmation."
 }

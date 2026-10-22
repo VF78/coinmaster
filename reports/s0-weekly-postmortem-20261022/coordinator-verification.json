@@ -1,6 +1,6 @@
 {
   "status": "PASS_SAVED_OUTPUT_ARITHMETIC_AND_SCOPE",
-  "utc": "2026-10-22T18:26:25.468275+00:00",
+  "utc": "2026-10-22T18:44:52.726883+00:00",
   "checks": {
     "weekly_unique_78": true,
     "inventory_csv_json_rows": true,
@@ -12,7 +12,17 @@
     "selected7_original_winners": true,
     "all_cap_decimal_formulas": true,
     "fee_reference_sum": true,
-    "native_proposal_still_not_authorized": true
+    "native_proposal_still_not_authorized": true,
+    "path_rows_20": true,
+    "path_csv_rows_20": true,
+    "path_confirm_17": true,
+    "path_relapse_11": true,
+    "path_timestamp_QA": true,
+    "path_no_engine": true,
+    "path_resource_limit": true,
+    "path_pinned_snapshot_input": true,
+    "path_all_price_fee_and_time_formulas": true,
+    "path_collector_hash_matches": true
   },
   "original_snapshot_streams_added": 1,
   "new_native_runs": 0,
@@ -26,6 +36,10 @@
     "candidate-precheck.json": "30fb7684d8d14eae2856d8c8ae5e578f5213c0aed6332f6aec5b0ac2a61c0f6e",
     "candidate-precheck-temporary-cap.json": "8a54dfbadf945b206f83de704c0c55e869c2fb9e1afce33d1aa8cb976f6b27f8",
     "candidate-precheck-temporary-cap.csv": "8c63f75b6490e6d1cbd9364ca6486975be48292bd64d3f90187c3ba98acbd06e",
-    "PROPOSAL.json": "3f5a8a0b9e2dec99f863f53b2162546e954836ab81f84b11143dca3daa330c1f"
-  }
+    "PROPOSAL.json": "d9ae148002d049575552d8564888f32774e49c5b3d62262d811a0b840e52f9b8",
+    "candidate-path-diagnostic.json": "94fa099b2cb09833300bee5e4fa68c176a169e6fb78d6009e18b6754effb4af0",
+    "candidate-path-diagnostic.csv": "4f6a7f4b4994fb025c882b7a52c56d8e8b18b8b305e4b7fd745bad61dd99aaf0",
+    "candidate-path-diagnostic-collector.py": "33cbe68f8c2a02e1b936435c65e81b11f9ae991f7e0df93818e1d042ecb2ea2b"
+  },
+  "saved_price_diagnostics_added": 1
 }
