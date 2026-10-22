@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-22T18:46:45.295587+00:00",
+  "analysis_commit": "475aa488b5d6212442caf672db7d7bcc1d30e8bf",
+  "GitHub_exact_ref_readback": "PASS_after_eventual_consistency_retry",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "project_status": "Done",
+  "issue_state": "closed",
+  "Project_exact_body_readback_UTC": "2026-10-22T18:45:16.191228+00:00",
+  "scope": "ANALYSIS_COMPLETE_NO_NEW_NATIVE",
+  "proposal": "PRECHECKED_WITH_COUNTEREXAMPLES_NOT_READY_NATIVE",
+  "native_runs_added": 0,
+  "S0_recalculated": false,
+  "pilot_changed": false,
+  "arithmetic_source_scope_checks": 21
+}

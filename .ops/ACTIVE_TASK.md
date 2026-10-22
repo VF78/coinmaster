@@ -1,5 +1,5 @@
 Updated: 2026-10-22T18:44:52.726883+00:00
-Status: S0_WEEKLY_POSTMORTEM_COMPLETE_FINAL_PUBLICATION_PENDING.
+Status: S0_WEEKLY_POSTMORTEM_COMPLETE_PUBLISHED.
 
 Owner requested M1/M2 causes, weekly experiment audit, ONE next S0 proposal with preliminary calculations. ANALYSIS COMPLETE. No new native/backtest/replay/fit/forecast/optimizer; S0 not rerun; pilot/production untouched. Economic goal NOT achieved: exact S0 TOTAL6077107.23887483 / settled minute DD66.2569148647; target TOTAL>=5470396.514987347 and DD<=50. Existing #123 analysis closed / Project2 Done / body readback PASS18:29:52UTC; final addendum exact body/state/ProjectDone readback PASS18:45:16UTC. #121/#122 stay completed.
 
@@ -11,6 +11,6 @@ Prechecks only: ONE original settled CSV stream1051199rows/43.42s/RSS23416KiB/SH
 
 ONE paperproposal TEMP_CAP_RESTORE_1: first eligible completed-entry DD25+ownadverse2% event, only excessive assetnotional>3.9375W; fixed native reduceonly IOC target3.9375W, maxonecut plus one actual-filled-credit restore after fullyclosed15m recovery+breakpreviousbar. Ordinaryfill/newexit/cyclechange cancels, existingnonmarketableTPdoesnot; no newSOLrights/consumedreset/timeradds. PRECHECKED_WITH_COUNTEREXAMPLES / NOT_READY_NATIVE / ECONOMIC_EDGE_UNKNOWN. Price diagnostic does NOT support economic GO; no silently tuned new condition. Any future native requires owner agreement. No promise50/90.
 
-Science analysis779358de0c400fd26a42d643818cd322ec75b91d published/refPASS before price addendum. Next: publish addendum+final Project exact readback, metadata checkpoint, final concise owner report. No product tests rerun for report-only change. No service/deploy/action/orders.
+Science analysis779358de0c400fd26a42d643818cd322ec75b91d published/refPASS before price addendum. Final analysis475aa488b5d6212442caf672db7d7bcc1d30e8bf published / GitHub exact ref PASS after eventual-consistency retry; Project exact readback PASS18:45:16UTC/Done. publication.json records verification. NEXT: owner decision only; no authorized new native work remains. No product tests rerun for report-only change. No service/deploy/action/orders.
 
 Canonical development root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster HEAD0bd7351, expected5dirtysource/test changes/100authorizedAIdeletions/preexistingoutputs; NEVER reset or /optedit. Mac analysis/publication branch codex/btc-pattern-pilot-m2-20261021 at /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021. All three existing owners DONE. Preserve protected pilot and exact S0.
