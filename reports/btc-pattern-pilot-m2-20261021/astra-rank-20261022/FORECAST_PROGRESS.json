@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-22T14:26:30.454929+00:00",
+  "at": "2026-10-22T14:28:54.575495+00:00",
   "reserved_total": 26,
   "evaluation_reserved": 24,
   "evaluation_response_files": 24,
@@ -7,10 +7,13 @@
   "debug_sealed": true,
   "evaluation_sealed": true,
   "scored": true,
-  "next": "Only publication and existing Project final readback; no more forecasts/scoring.",
+  "next": "No automatic expansion. Bounded task complete, await separately agreed future scope.",
   "source_checkpoint": "2c13442f226c5bd8c42ab0ea9bb2fa7647a00d48",
   "packet_checkpoint": "53ccbae",
   "score_attempts": 1,
   "result_sha256": "27acf07b23ee2eeb7fb4102092b79efdb9f6182570de1c50f33759d5304f9ba5",
-  "status": "COMPLETE_SCIENCE_QA_PASS_PUBLICATION_PENDING"
+  "status": "COMPLETE_PUBLISHED_PROJECT_DONE",
+  "project_state": "closed",
+  "project_status": "Done",
+  "science_checkpoint": "b012c1b0febb7cc92f930d5545e5c480ccd98563"
 }
