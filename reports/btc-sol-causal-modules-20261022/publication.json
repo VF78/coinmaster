@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-22T21:01:18.241853+00:00",
+  "science_commit": "126d6d025de7c7ce9a673a362d08763a72a59e19",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "push": "PASS",
+  "GitHub_ref_readback": "PASS",
+  "Project_issue": "https://github.com/VF78/coinmaster/issues/123",
+  "Project_status": "Todo",
+  "Project_body_readback": "PASS",
+  "current_prechecks": "COMPLETE_REJECTED_BY_APPROVED_GATES",
+  "remaining": "H4_ROLE_AND_PARAMETER_PROTOCOL_BACKLOG",
+  "new_native_full_runs": 0,
+  "new_model_runs": 0,
+  "product_code_changes": 0,
+  "S0_recalculated": false,
+  "pilot_changed": false,
+  "QA": {
+    "count_formula_occupancy_scope": 25,
+    "JSON_parse": 16,
+    "analysis_script_AST_parse": 5,
+    "all": "PASS",
+    "diff_check": "PASS with standard CSV CRLF allowed (core.whitespace cr-at-eol); default check flags CSV carriage returns only"
+  }
+}

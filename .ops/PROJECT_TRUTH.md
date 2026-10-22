@@ -300,3 +300,5 @@ ExactS0 source/105BTC intervals/155native reductions audited without newengine/m
 ## 2026-10-22 H1/H2/H3 prechecks and H4 idea
 
 Approvedstagedpackageexecutedthroughsaved-data/cost/addressabilitygates: H1NO_ECONOMIC_GO,H2NO_NATIVE_GO(earlySOL1miss),H3precheckcostnegative. No24m/nativeengine/model/productchanges/S0rerun/pilotaction; no eligibilityforconditionalfullruns. NewH4BTC-styleSOL+BTChedgeideaaddedandcausal730day/105entrydirectioncensuscompleted: same69/105, independenttrendnotautomatichedge. H4role/sizing/exit/NETTINGdesignnextbacklog, no automaticgridfromunusedbudget. Reports/taskplan/25QA and provenance under reports/btc-sol-causal-modules-20261022/. Canonicaldirtyunchanged/isolate75ffcCLEAN; exactS0goal50/90stillunmet. CurrentProjectreadback/publicationstateinACTIVE_TASK.
+
+H1/H2/H3/H4 research checkpoint 126d6d025de7c7ce9a673a362d08763a72a59e19 published in codex/btc-pattern-pilot-m2-20261021; GitHub ref PASS. Existing #123 OPEN/Project Todo exact body/status readback PASS; current prechecks complete, H4 role/parameter protocol remains backlog. All 25 count/formula/occupancy checks PASS; native/model/product changes0, S0/pilot unchanged.
