@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-22T09:04:19.085976+00:00",
+  "pins": "PASS",
+  "artifacts": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/inapp-chatgpt-protocol-20261022/frozen/freeze.json": "7ea0cd8c624ef72cab364dbc337f4d7d4895fa0c2c33baadce67cd82ee435755",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_inapp.py": "bbbdded5e9bdd04c2434769e87d7f6963ee75f6717ba475c4919a758a9703248",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/runtime/coinmaster/research/btc_pattern_data.py": "8692cb61b41e4f15326b05793fe1950196af0c690b972ca949f7e74f0b1c0bf8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/inapp-chatgpt-protocol-20261022/frozen/prompt.json": "27fa2132a0273cb02f730b2a83529a86cb85090777c8a45c08a0d844f0c7ac4e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-pattern-pilot-m2-20261021/inapp-chatgpt-protocol-20261022/frozen/response-schema.json": "101323f0eee0134503ee1ed2c10041b16545e66bc42cf1dc1f0b5e4bc87e555c",
+    "/private/tmp/cm-inapp-forecast-20261022/instructions.txt": "5a7086dc2bf660a816d2de7190e438c511ecd6c4432208f4beb8ee65898cfd3e"
+  },
+  "query_truth_revealed": false
+}
