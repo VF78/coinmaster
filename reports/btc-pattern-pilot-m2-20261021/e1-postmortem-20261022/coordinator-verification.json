@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-22T11:56:27.207607+00:00",
+  "status": "PASS_ANALYSIS_ONLY",
+  "checks": {
+    "saved_result_sha_unchanged": true,
+    "evaluator_source_unchanged": true,
+    "all198_ids_partitioned_once": true,
+    "fourcell_means_and_quantile_coverage_recomputed": true,
+    "brier_decomposition_exact": true,
+    "no_market_reads_training_or_forecast_runs": true,
+    "pilot_touched": false
+  },
+  "csv_rows": {
+    "stats-breakdown.csv": 450,
+    "stats-four-cell.csv": 288
+  },
+  "new_hypothesis": "FOUR_CELL_CONDITIONAL_PRIOR_PROPOSED_NOT_RUN",
+  "review": {
+    "date": "2026-10-22",
+    "reviewed": "REPORT.md",
+    "scope": "One final read; methodology and interpretation only. No new computation, research, source edits or forecast runs.",
+    "decision": "GO",
+    "meaning": "GO for delivering the postmortem and proposed experiment contract; not authorization to execute it.",
+    "material_corrections": [],
+    "checks": {
+      "quantile_coverage_distinguished_from_reach": true,
+      "tiny_fixed_shrinkage_not_recommended_for_new_run": true,
+      "single_four_cell_conditional_empirical_prior_proposal": true,
+      "fixed_32_global_pseudo_observations_proposed_not_tuned": true,
+      "shared_event_weights_preserve_target_order_not_claimed_calibration": true,
+      "direct_support_defect_distinguished_from_future_price_leakage": true,
+      "purge_sensitivity_not_presented_as_corrected_forecast": true,
+      "full_699_day_period_and_198_query_ids_preserved": true,
+      "development_posthoc_and_small_cell_limits_disclosed": true,
+      "new_run_awaits_owner_approval": true
+    },
+    "note": "The acceptance contract requires both primary losses to beat the same-causality global prior under paired 14-day criteria and no deterioration versus same-causality E1. This is an exploratory development gate; the report does not claim independent validation or trading benefit."
+  }
+}

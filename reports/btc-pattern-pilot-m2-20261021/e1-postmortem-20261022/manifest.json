@@ -1,0 +1,15 @@
+{
+  "classification": "SAVED_RESULTS_ANALYSIS_ONLY_NO_EXECUTION_APPROVAL",
+  "artifacts": {
+    "REPORT.md": "f896fd21607d77dbab6415cec5720d22c428e0999f25c9e483ca92f4fbbdcbe4",
+    "coordinator-verification.json": "8664f2de35ae7731553fc473b31f21f9069209bfa2a85fa11607be1685a51634",
+    "methods-audit.md": "2dec68084749df532b28c6dc047a08218f189a1c8fac3b6d941c7e99c19f811c",
+    "methods-review.json": "848609a7391c11af6ce85aa23530e334d17124512b70a3404798955026be8ee9",
+    "project-start-readback.json": "cd199013b505ee36160e02ed9a778f809e0469780202a7110744571128f34aa9",
+    "stats-analysis.py": "21694b35df80cb2c20a383a3cdd358db2597882d591da7a8e75253744a7afbff",
+    "stats-breakdown.csv": "a3d4eec6488bbaae9b24e58a05d7fb4a4a70fe39b06477a34658e7351f6aeb77",
+    "stats-findings.md": "0f66530e97ad0dab539023d0dd028e5bd48e32d603b230e677bda09ea6f25ab7",
+    "stats-four-cell.csv": "e2c776de6204bbe5ea75029e92f34c59c34fe914f23eea5c4b2b1a7248b0f862",
+    "stats-results.json": "7ffcbe84819f48e870f44f962213be610666c155df76b20befa3192aaa5daa9a"
+  }
+}
