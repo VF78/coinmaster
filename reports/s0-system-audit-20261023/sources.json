@@ -1,0 +1,83 @@
+{
+  "checked_utc": "2026-10-23T14:50:41.338989+00:00",
+  "sources": [
+    {
+      "id": "NIST_DOE",
+      "url": "https://www.itl.nist.gov/div898/handbook/pri/section3/pri33.htm",
+      "type": "Official handbook",
+      "use": "Screen mechanisms before response-surface optimization; choose design for question, preserve run reserve.",
+      "limit": "Applied saved common-base 2x2 contrasts; no new design executed."
+    },
+    {
+      "id": "JRC_SENSITIVITY",
+      "url": "https://joint-research-centre.ec.europa.eu/sensitivity-analysis-samo/methods_en",
+      "type": "Official research center",
+      "use": "One-at-a-time screening is local and misses interactions.",
+      "limit": "Supported here by actual measured E4/Z/S interaction contrasts, not a new Morris/Sobol fit."
+    },
+    {
+      "id": "PBO",
+      "url": "https://escholarship.org/uc/item/4w1110bb",
+      "type": "Original paper / author repository",
+      "use": "Repeated strategy selection can overfit; CSCV needs a strategy return matrix.",
+      "limit": "Trials universe and aligned return matrix incomplete; no PBO number claimed."
+    },
+    {
+      "id": "STOPLOSS",
+      "url": "https://dspace.mit.edu/entities/publication/bb69ca4b-0cdc-487f-831d-63b2e84fafee",
+      "type": "Original Kaminski/Lo manuscript",
+      "use": "Stop rules have conditional costs/benefits; they need a defined comparison.",
+      "limit": "Used to interpret observed recovery losses and reject universal tighter-stop claims."
+    },
+    {
+      "id": "DD_CONTROL",
+      "url": "https://arxiv.org/html/1710.01503v1",
+      "type": "Original Hsieh/Barmish paper",
+      "use": "Drawdown modulation links exposure to remaining equity cushion under bounded returns.",
+      "limit": "Assumptions do not establish bounded crypto gaps or executable limit; derive headroom diagnostic, no guarantee."
+    },
+    {
+      "id": "HEDGE_RATIO",
+      "url": "https://mingze-gao.com/posts/minimum-variance-hedge-ratio/index.html",
+      "type": "Author teaching note / Macquarie researcher",
+      "use": "Cross-hedge minimum variance depends on covariance, not just direction.",
+      "limit": "Analytic notional-return model; logs vs simple returns and live basis risk retained as limitations."
+    },
+    {
+      "id": "NATIVE_FILL",
+      "url": "https://nautilustrader.io/docs/latest/concepts/backtesting/trade-execution/",
+      "type": "Official current docs",
+      "use": "Trade/book data constrain fill evidence and passive quantity/queue assumptions.",
+      "limit": "Conceptual only: do not transplant latest API claims to pinned historical S0; pinned source reviewed separately."
+    },
+    {
+      "id": "QC_FORUM",
+      "url": "https://www.quantconnect.com/forum/discussion/8483/stop-loss-take-profit-on-algorithm-framework/",
+      "type": "Official forum / staff implementation discussion",
+      "use": "Independent risk close and continuously active alpha can reopen immediately; lifecycle must coordinate.",
+      "limit": "Qualitative implementation lesson, not trading evidence or reason to add another execution/risk service."
+    },
+    {
+      "id": "CARVER_INTERVIEW",
+      "url": "https://www.toptradersunplugged.com/podcast/266-systematic-investor-series-ft-rob-carver-october-21st-2023/",
+      "type": "Direct expert interview transcript",
+      "use": "Complex stopping/reentry adds parameters; short-horizon information may assist execution; repeated fitting on full data is implicit selection.",
+      "limit": "Practice guidance only; does not validate our thresholds."
+    },
+    {
+      "id": "CARVER_WEBCAST",
+      "url": "https://cmtassociation.org/video/systematic-trading-2/",
+      "type": "Expert webcast landing / CMT",
+      "use": "System design concerns: overfitting, overbetting and overtrading.",
+      "limit": "Landing page scope only; no claim to have watched full video or downloaded unavailable slides."
+    },
+    {
+      "id": "AHL_FAST_REVERSAL",
+      "url": "https://acc.aima.org/article/trend-following-and-long-short-quality-loading-the-dice.html",
+      "type": "Direct Man AHL author article",
+      "use": "Fast reversal risk differs from slow trend diversification.",
+      "limit": "Qualitative external context; not BTC/SOL or a live portability proof."
+    }
+  ],
+  "external_quotes_used": false
+}

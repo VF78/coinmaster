@@ -1,0 +1,847 @@
+{
+  "status": "COMPLETE_READ_ONLY_OFFLINE_BTC_AUDIT_NO_RUNS",
+  "scientific_source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "audit_date": "2026-10-23",
+  "source_verification": {
+    "method": "local git show SHA:path; sha256 compared to S0 prepare source_pins",
+    "matches": 72,
+    "mismatches": 0,
+    "all_verified_source_hashes": {
+      "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+      "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+      "runtime/coinmaster/__init__.py": "be565ccaf9ead97f5f542cf4cd13f0e492a9c3f88b0b3efccebfbe06531681b1",
+      "runtime/coinmaster/api/__init__.py": "cb43cb616f8e8c8cb875cb286051116eb49d20e0881570e81622036e1f688ab3",
+      "runtime/coinmaster/api/app.py": "b47b87beb7acf76e16b0860a06adef81c67111b5970f69527d990c698dfc3ac8",
+      "runtime/coinmaster/api/connections_broker.py": "24262e81fda20f58ee4b0f25328bf71537a9fad4b89a3d170c1967b6bc299143",
+      "runtime/coinmaster/api/execution_modes.py": "81a94085123cefe3a546523a1ab0e7596e25e26d8d11a18eca3ae988aadf4fa1",
+      "runtime/coinmaster/api/gui_auth.py": "71a724d2c4b8f1cff52a6ce5d1a0629c5be75fdfc43be34e350ece70f1b45077",
+      "runtime/coinmaster/api/hl_public_candles.py": "2e90e70d60b14e6f12e7222a550f60e758de2aa8a994e999e59c5f932b677eb7",
+      "runtime/coinmaster/api/research_jobs.py": "007920874a6293fdc4454ac8105d4133abd26eb9fe61cb8064eec133da2ddf0e",
+      "runtime/coinmaster/api/runtime_sidecar.py": "a754d1c514af127647d0f29d9504720e817917dcea7bb55d309eefe6d81a7570",
+      "runtime/coinmaster/domain/__init__.py": "b1783d438e3e7c6836a8d621897d80da8e6557555df6237a2aed065776a325d8",
+      "runtime/coinmaster/domain/deposit_protection.py": "aaf9a9debb92335e83a0e4ed5d2cf47e577be0e6fdb2aaf1862605fce7774ec2",
+      "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+      "runtime/coinmaster/ledger/__init__.py": "69fe7fe44e1a8d31eb36e1aa4687d376ed6c63a631e494f190d164c245767214",
+      "runtime/coinmaster/ledger/journal.py": "5eaf4ae62b5f0d4967b5d3da15b756a452ac1cf6fe210739938ac0e158ce5ccc",
+      "runtime/coinmaster/ops/hl_info_receipt.py": "f162a23ee1cd38d29a85b571338b6c3abb8bffbddbc2c8c6a3d5eb199dffe402",
+      "runtime/coinmaster/ops/hl_live_credential_preflight.py": "fa7c5534a8a9f03fc68d7d68e6be65468bab6e8ccfdb94c0e6478c804c2af20d",
+      "runtime/coinmaster/ops/hl_live_epoch.py": "9793f97424e01a28d13b9fc685b4ec0df5ce2e896d483908c5b6de44ce77364a",
+      "runtime/coinmaster/ops/hl_live_execution.py": "297d878dd4ecd74b45912db917ccf3219cb211f276d4eee5f88e591d1ed67a63",
+      "runtime/coinmaster/ops/hl_live_money.py": "9fd36143807ac7a87ca18f708ec60ae85d9b2b67acc671d1c04fd881f00ca032",
+      "runtime/coinmaster/ops/hl_live_profile.py": "c5ab2336c7b78f5b7708c502e0106a9b149ff4052d6f30a15dc554241f1546f2",
+      "runtime/coinmaster/ops/hl_live_worker.py": "d1f067c8d8b1e953657b600cd423c6552101bc88ee4f55877030dd65a8ec3a73",
+      "runtime/coinmaster/ops/hl_native_account.py": "0dfe92bb18b66da60a380dcbe0510fc2aee5295e433c611edd8b7214210c5ea4",
+      "runtime/coinmaster/ops/hl_qualified_reports.py": "3c43378fd813107fbc9f12b40b929287fb955d8c77455895e7689003073fd59c",
+      "runtime/coinmaster/ops/hl_readonly_observer.py": "7004c5d692deea8601e6183ffe6fa6a79f01b3a2badf98b3ba87668155dd8ccf",
+      "runtime/coinmaster/ops/hl_sandbox_money.py": "665f0b05288e4e52f1c617bc2952d197853e4217f4ffb6dcb810a72b53ff2fd0",
+      "runtime/coinmaster/ops/hyperliquid_testnet.py": "e78393de912df84ef2c15a8891239c81b36c3c3306664b5d969b175004d103bb",
+      "runtime/coinmaster/ops/hyperliquid_testnet_worker.py": "3b9caf3695009f2eb527becaa2ad1f2d71d80a09b394ff3140b646b7261afcb4",
+      "runtime/coinmaster/ops/live_recovery.py": "8a9de999070bcc9cb0fdc1d0aa35bf7c770745e9a0f830ae7d66f59251e5e8c3",
+      "runtime/coinmaster/ops/native_paper_node.py": "43164535ed3baf0927dc8210cb9c26ac5b6e9b5f2f70ddb092677e189c7b108f",
+      "runtime/coinmaster/ops/native_sandbox_selftest.py": "7ae7d00c0496bb1102072ed9fe1f3f7717210eb1aaa5c909fe85a28ab1764884",
+      "runtime/coinmaster/ops/paper.py": "095de459baa932154caeaff53094d983b6c2ebbfaf7e42c98000d9d233288dfe",
+      "runtime/coinmaster/ops/paper_worker.py": "7d0b4da9a6bb58c5fe8021b48d925bd3316d936bdfc163f303ee87549798f7f6",
+      "runtime/coinmaster/ops/stage_g_config.py": "483764644a250dc8068955c18ae3a73b1911fb9cfa94145e202c49599ff2ea38",
+      "runtime/coinmaster/ops/stage_g_refresh.py": "46dbbf560a7d5e8148f50d1a5a827e64bfe2c5e6a1fe65a780a28e111a79689e",
+      "runtime/coinmaster/ops/stage_g_warmup.py": "a5152b56efd031afa5dbcfe860c4af21ec8215e386de5ce131ced9ccb5943682",
+      "runtime/coinmaster/research/__init__.py": "4b89f0f2fa63b8c1e4c455ac5157d490e98ba3035c3bc4fbe629ecb5983d2530",
+      "runtime/coinmaster/research/bybit_data.py": "81d3b048ade5ee7a3ca20954d48efed53f3ab706e9ea8ff8a5de4fa5f07789b6",
+      "runtime/coinmaster/research/bybit_minute.py": "db23b1dc96bec935a26e42a7225781ddbb90ab8d795d9f6055dae28b79a3d376",
+      "runtime/coinmaster/research/catalog.py": "3ceb79e1a0a42c7ede11e75ea642f8c5ce46f0d648c07ecfc69f02b484a504d9",
+      "runtime/coinmaster/research/hyperliquid_data.py": "a28d5928fba4fcb8c02cf21a1285ab9ffaa032c48233187f7d0e535a199e7822",
+      "runtime/coinmaster/research/job_limiter.py": "b434ee90c422cf1420b6a3e355abc2c493ac23e11375d7734ab9e9f1abdaec64",
+      "runtime/coinmaster/research/job_protocol.py": "76588a59ac140eea13726b9e6cec49ebe52dfc88186bcf958bab3ee87d998b8e",
+      "runtime/coinmaster/research/job_test_helper.py": "8c243a46a9fb11c4b4f310115bb38bfcb825b99a8141fad9aa2200a4cff4dcce",
+      "runtime/coinmaster/research/minute_risk.py": "1dd1fc2f1801cac07aa0cd5781ea66165aa3dc61953e90d9e9fd04ceef94436d",
+      "runtime/coinmaster/research/native_audit.py": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3",
+      "runtime/coinmaster/research/native_baseline.py": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+      "runtime/coinmaster/research/native_fixture.py": "bec814bbf98217b116018bb0498ec3c690592bc1c259c44bf0507fd71ff05df4",
+      "runtime/coinmaster/research/native_optimizer.py": "a3e1fbd671205dfe331bf8c5357cda0c2c727c09393a98a6ce6cd0e42694a37c",
+      "runtime/coinmaster/research/native_sequential.py": "a47f1456f558655d297c616d4edb57c24961097113e9a59004c63da273972903",
+      "runtime/coinmaster/research/native_validation.py": "b8e4179fd402233ed27a4286d38b74c1491bebd20d2a6a1321d7b52ffe64e141",
+      "runtime/coinmaster/research/optimizer_job.py": "f3b913ee1abfe47061ae904ebb5ba1ee0375b3df36d8a7bca372b70ac078d9db",
+      "runtime/coinmaster/strategy/__init__.py": "836a0e715d63cc164f8bd76b6685a016c6b8b5c42bb42d2c57b6ad2981fbde9a",
+      "runtime/coinmaster/strategy/alpha_cushion.py": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c",
+      "runtime/coinmaster/strategy/carry_pair.py": "7b72df60028d8b87e55b1735a3612c35e2bd7f3bc4fbc03615fa645c50cbb216",
+      "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+      "runtime/coinmaster/strategy/immediate_insurance.py": "fcb43bea1d233a9ce9557d1d992e964b2dad23654fa5bb011c68aa405e5daf75",
+      "runtime/coinmaster/strategy/live_recovery.py": "0c702dfda60f47b5d26e4c250226135bfd670fb401dadc11adbdbbd2260b42bd",
+      "runtime/coinmaster/strategy/risk_first_sol.py": "6475dd2df2987abfc8fc1e0c8200b9049bb9a15b6e4eba76a857f9c4aa4c1278",
+      "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+      "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+      "runtime/coinmaster/venues/__init__.py": "7ca0fa95024781562c10d94040f6d34f3e38be1327b79bac96b6ce7275709799",
+      "runtime/coinmaster/venues/bybit_profile.py": "9a26ffc79aa7f4e80d14fb1bb42a91846e153378e83d0b9a79695e46195088e7",
+      "runtime/coinmaster/venues/hyperliquid_profile.py": "0d56401ba02de4ca7032c3480f1bdb2be2eac3ee36a6c7260786e496dd084bc1",
+      "runtime/coinmaster/venues/margin.py": "a9e1e8860ded3450bfa04f5f13a94e2f83b19480e940b46acf766c6a15e397ab",
+      "runtime/coinmaster/venues/margin_policy.py": "ca855858ff19791544bb17930721e591e35acb2d33adb257db85bf6b175c1e15",
+      "runtime/coinmaster/venues/marks.py": "c783b323164b06dc22ee60d7c329364df7414135b7f1328131ef20fa54f42372",
+      "runtime/coinmaster/venues/production_preflight.py": "a5c00a40fa109d2ec60fdd474591c6e255a914be4894b6dfb326f63e3f4cdfa1",
+      "runtime/coinmaster/venues/profiles.py": "23666adb03477781619782b0f1c3c8ed553d76c4e699284f15160bd7b1e7b5fc",
+      "runtime/coinmaster/venues/signals.py": "2548d380be312126bb35e02cc36a8d3654930b15953ff41ff4c450a1fb00b46c",
+      "runtime/tests/test_native_sol_corridor.py": "cf606a2dc09679e7bbdeb59db756ed56a56988fc2f2855271b2ac0c306ad44eb"
+    }
+  },
+  "exact_saved_artifact": {
+    "path": "/tmp/btc-audit-exact-s0-direction.json",
+    "sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa",
+    "bytes": 1396782,
+    "prior_hash_match": true,
+    "config_hash_recomputed": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc"
+  },
+  "exact_config": {
+    "account": "SIM_MARGIN_USDT_10000",
+    "btc_close_stop_fraction": null,
+    "btc_management_reference_policy": "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1",
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 30000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": true,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "cover_hour_warmup_sha256": {},
+    "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+    "execution_policy": {
+      "execution_delay_minutes": 1,
+      "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+      "fee_historical_applicability": "UNKNOWN",
+      "fee_multiplier": "1",
+      "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+      "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+      "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+      "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+      "nonmatching_daily_signals": true,
+      "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+      "symmetric_adverse_spread_bps": "0",
+      "version": "bybit-native-resting-reductions-v2"
+    },
+    "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+    "fixed_base_fee_policy": {
+      "bybit_maker": "0.00020",
+      "bybit_taker": "0.00055",
+      "hyperliquid_maker": "0.00015",
+      "hyperliquid_taker": "0.00045",
+      "venue": "bybit",
+      "version": "fixed-base-native-maker-taker-execution-v3"
+    },
+    "freeze_sigma_on_first_sol_fill": true,
+    "future_sol_margin_fraction": "0",
+    "include_zero_waves": true,
+    "initial_active_fraction": "1.0",
+    "initial_total_usdt": "10000",
+    "insufficient_margin": "reject",
+    "live_enabled": false,
+    "mode": "paper",
+    "portfolio_loss_limit_fraction": null,
+    "positive_tp_ioc_policy": "COMPLETED_PARENT_CROSSED_POSITIVE_TARGET_NATIVE_IOC_ACTUAL_TAKER",
+    "post_liquidation": "restart_from_reserve_else_pause",
+    "research_btc_direction_sizing": {
+      "freeze": "GENUINE_EPISODE_CREATION",
+      "long": "5.5",
+      "short": "7.875"
+    },
+    "research_btc_split50": true,
+    "research_btc_split_discount": "0.0025",
+    "research_btc_split_planref_v1": true,
+    "research_btc_split_tp_ioc": true,
+    "research_conditional_sol": false,
+    "research_sol_cover": null,
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_execution_repairs": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "reserve_transfer_fraction": "0",
+    "reserve_trigger_multiple": "4",
+    "restart_target": "initial_active_seed",
+    "run_interval": {
+      "end_exclusive": "2026-09-01T00:00:00+00:00",
+      "initial_active_seed": "10000",
+      "start": "2024-09-01T00:00:00+00:00"
+    },
+    "signal_timeframe": "1D",
+    "sol_direction": "opposite_btc",
+    "sol_entry_eligibility": "persistent_after_btc_level",
+    "sol_z_stop": null,
+    "strategy_id": "btc_sol_wave_overlay_v1",
+    "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+    "tp_fee_floor_v1": false,
+    "venue": "bybit"
+  },
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "source_hashes": {
+    "native_baseline": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+    "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+    "wave_domain": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "wave_strategy": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87"
+  },
+  "economics": {
+    "terminal_total": "6077107.23887483",
+    "initial_seed": "10000",
+    "profit": "6067107.23887483",
+    "profit90_total_threshold": "5470396.514987347",
+    "total90_threshold": "5469396.514987347",
+    "settled_DD_percent": "66.25691486468686414439256686",
+    "callback_DD_percent": "66.31878024969152066570091116",
+    "target_DD_percent": "50",
+    "fees": "945927.73761825",
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 899,
+        "SOLUSDT-PERP.P1SIM": 421
+      },
+      "count": 1320,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "liquidation_count": 0,
+    "terminal_open_positions": 0
+  },
+  "native_event_counts": [
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "action": "BTC_ENTRY",
+      "reason": "BTC_ENTRY",
+      "fills": 210
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_REDUCE",
+      "fills": 73
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP2",
+      "fills": 28
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP3",
+      "fills": 54
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "action": "FORCED_CLOSE",
+      "reason": "REGIME",
+      "fills": 48
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "action": "FORCED_CLOSE",
+      "reason": "TRAIL",
+      "fills": 2
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "action": "TERMINAL_CLOSE",
+      "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+      "fills": 1
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "action": "FORCED_CLOSE",
+      "reason": "REGIME",
+      "fills": 50
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "action": "FORCED_CLOSE",
+      "reason": "TRAIL",
+      "fills": 39
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "action": "SOL_ADD",
+      "reason": "SOL_ADD",
+      "fills": 102
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "action": "SOL_EXIT",
+      "reason": "SOL_HARD_TIMEOUT",
+      "fills": 12
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "action": "SOL_EXIT",
+      "reason": "SOL_Z_FULL_EXIT",
+      "fills": 1
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "action": "SOL_HALF_EXIT",
+      "reason": "SOL_Z_HALF_EXIT",
+      "fills": 1
+    }
+  ],
+  "parents": {
+    "accepted": 105,
+    "all_filled": true,
+    "completion_reason_counts": {
+      "LIMIT_NATIVE": 66,
+      "DEADLINE": 17,
+      "EARLY_TP": 22
+    },
+    "branch_counts": {
+      "PASSIVE_NET_ZERO_LEVELS": 45,
+      "MARKETABLE_FULL_ENTRY_FALLBACK": 60
+    }
+  },
+  "existing_thin_statistics": {
+    "counts": {
+      "BTC_intervals": 105,
+      "long": 53,
+      "short": 52,
+      "native_BTC_fills": 416,
+      "native_all_asset_fills": 621,
+      "native_entry_fills": 210,
+      "native_reduce_fills": 155,
+      "branches": {
+        "PASSIVE_NET_ZERO_LEVELS": 45,
+        "MARKETABLE_FULL_ENTRY_FALLBACK": 60
+      },
+      "omitted_zero_level_slots": {
+        "0": 45,
+        "1": 31
+      },
+      "completion_reasons": {
+        "LIMIT_NATIVE": 66,
+        "DEADLINE": 17,
+        "EARLY_TP": 22
+      },
+      "final_flat_reasons": {
+        "BTC_TP3": 39,
+        "REGIME": 48,
+        "BTC_REDUCE": 15,
+        "TRAIL": 2,
+        "TERMINAL_BOUNDARY_SETTLEMENT": 1
+      }
+    },
+    "MAE_MFE": {
+      "winner": {
+        "trades": 57,
+        "15m": {
+          "censored": 0,
+          "MAE_observed_percent": {
+            "n": 57,
+            "median": 0.12513920706711534,
+            "p75": 0.20722417253697945,
+            "p90": 0.29992539716170885,
+            "max": 0.5530784286709611
+          },
+          "MFE_observed_percent": {
+            "n": 57,
+            "median": 0.1164790518254355,
+            "p75": 0.2346654275092952,
+            "p90": 0.3836618557714133,
+            "max": 1.3710497463543803
+          },
+          "MAE_complete_only_percent": {
+            "n": 57,
+            "median": 0.12513920706711534,
+            "p75": 0.20722417253697945,
+            "p90": 0.29992539716170885,
+            "max": 0.5530784286709611
+          }
+        },
+        "60m": {
+          "censored": 0,
+          "MAE_observed_percent": {
+            "n": 57,
+            "median": 0.21316959107331446,
+            "p75": 0.4086254374225273,
+            "p90": 0.6712329267086002,
+            "max": 1.1290226439689577
+          },
+          "MFE_observed_percent": {
+            "n": 57,
+            "median": 0.24452596638575574,
+            "p75": 0.39898394872951437,
+            "p90": 0.6782680283792341,
+            "max": 2.155419722438401
+          },
+          "MAE_complete_only_percent": {
+            "n": 57,
+            "median": 0.21316959107331446,
+            "p75": 0.4086254374225273,
+            "p90": 0.6712329267086002,
+            "max": 1.1290226439689577
+          }
+        },
+        "1440m": {
+          "censored": 17,
+          "MAE_observed_percent": {
+            "n": 57,
+            "median": 0.8136281614971708,
+            "p75": 1.5724354314457845,
+            "p90": 2.1593571385707966,
+            "max": 4.290682346411345
+          },
+          "MFE_observed_percent": {
+            "n": 57,
+            "median": 2.109079287092974,
+            "p75": 3.3494441591606305,
+            "p90": 4.516252784348005,
+            "max": 5.596821295582588
+          },
+          "MAE_complete_only_percent": {
+            "n": 40,
+            "median": 1.0269197705544464,
+            "p75": 1.8193101629221693,
+            "p90": 3.2855503701078153,
+            "max": 4.290682346411345
+          }
+        },
+        "whole_native_current_average_MAE_percent": {
+          "n": 57,
+          "median": 0.9900357917441956,
+          "p75": 1.8999406875951175,
+          "p90": 3.280404770290457,
+          "max": 7.768315105802916
+        },
+        "whole_native_current_average_MFE_percent": {
+          "n": 57,
+          "median": 3.773392038114652,
+          "p75": 4.93362589893827,
+          "p90": 5.24109581763812,
+          "max": 9.821195141705076
+        }
+      },
+      "loser": {
+        "trades": 48,
+        "15m": {
+          "censored": 0,
+          "MAE_observed_percent": {
+            "n": 48,
+            "median": 0.08253020458431348,
+            "p75": 0.20116950546246182,
+            "p90": 0.31738995571736206,
+            "max": 0.5666314887432744
+          },
+          "MFE_observed_percent": {
+            "n": 48,
+            "median": 0.07644571608872996,
+            "p75": 0.14381336950051726,
+            "p90": 0.28053840645624895,
+            "max": 0.7763191298952421
+          },
+          "MAE_complete_only_percent": {
+            "n": 48,
+            "median": 0.08253020458431348,
+            "p75": 0.20116950546246182,
+            "p90": 0.31738995571736206,
+            "max": 0.5666314887432744
+          }
+        },
+        "60m": {
+          "censored": 0,
+          "MAE_observed_percent": {
+            "n": 48,
+            "median": 0.24496498240996756,
+            "p75": 0.40353465479166795,
+            "p90": 0.5744168525405936,
+            "max": 1.50053962058041
+          },
+          "MFE_observed_percent": {
+            "n": 48,
+            "median": 0.15063679965017784,
+            "p75": 0.3061104106192897,
+            "p90": 0.6018860863476775,
+            "max": 0.9986006869355024
+          },
+          "MAE_complete_only_percent": {
+            "n": 48,
+            "median": 0.24496498240996756,
+            "p75": 0.40353465479166795,
+            "p90": 0.5744168525405936,
+            "max": 1.50053962058041
+          }
+        },
+        "1440m": {
+          "censored": 21,
+          "MAE_observed_percent": {
+            "n": 48,
+            "median": 1.6355134779631908,
+            "p75": 2.7439918830731185,
+            "p90": 4.6217244365288055,
+            "max": 5.873740039715458
+          },
+          "MFE_observed_percent": {
+            "n": 48,
+            "median": 0.6566841129618417,
+            "p75": 1.1192184812924388,
+            "p90": 1.4666352669395604,
+            "max": 2.1072633937434304
+          },
+          "MAE_complete_only_percent": {
+            "n": 27,
+            "median": 0.993715351569846,
+            "p75": 1.9558498231188548,
+            "p90": 2.6348594215552765,
+            "max": 5.873740039715458
+          }
+        },
+        "whole_native_current_average_MAE_percent": {
+          "n": 48,
+          "median": 2.5203222284083786,
+          "p75": 3.659727190838863,
+          "p90": 5.35072845491242,
+          "max": 7.934981486405018
+        },
+        "whole_native_current_average_MFE_percent": {
+          "n": 48,
+          "median": 1.0125207944540504,
+          "p75": 1.5515375591890481,
+          "p90": 2.820743830109343,
+          "max": 3.9418867156780273
+        }
+      }
+    },
+    "metric_contract": {
+      "quantiles": "Type7 linear interpolation; MAE magnitude, percent",
+      "finite_horizon": "Saved execution 1m CLOSE path from synchronized first native-entry minute close, NOT blended native fill; stop at original actual exit or horizon. 24h censoring informative. No highs/lows or executable fills assumed.",
+      "whole": "Saved native settled receipt close MARK versus contemporaneous native average-open; average changes with split fills. Not same denominator as finite horizon.",
+      "winner_labels": "Native fill ledger diagnostic net after allocated entry and exit commissions, excluding UNKNOWN signed funding; not per-asset authoritative native cash.",
+      "TP_price_flags": "Side-signed fill price versus frozen first-leg P0 and completed actual blended VWAP separately; 1bp is descriptive tolerance, not optimized threshold.",
+      "allocation_net": "side*(actual_fill_px-completed_native_avg)*qty - proportional actual_entry_commissions - native_exit_commission; diagnostic ex funding, no alternative equity.",
+      "prefix_MAE_until_first_native_TP": "UNKNOWN_NOT_EXPORTED",
+      "daily_numeric_EMA_distance_ATR_slope": "UNKNOWN_NOT_EXPORTED_IN_USED_THIN_REPORTS",
+      "zero_formula_mapping": "PASSIVE omitted slots directly observed; FULL frozen wave vector not exported. Generic BTC_REDUCE reason alone cannot identify zero-wave fallback.",
+      "fixed_stop_warning": "Original profitable/losing labels are hindsight. A new fixed stop censors subsequent recoveries, TPs and capital path; MAE tails do not establish optimal SL or alternative PnL."
+    },
+    "scope": "Existing saved descriptive statistics; no new path calculation"
+  },
+  "evidence": {
+    "daily_features": {
+      "file": "runtime/coinmaster/domain/wave_overlay.py",
+      "lines": [
+        141,
+        164
+      ]
+    },
+    "wave_statistics": {
+      "file": "runtime/coinmaster/domain/wave_overlay.py",
+      "lines": [
+        172,
+        193
+      ]
+    },
+    "entry_and_exits": {
+      "file": "runtime/coinmaster/domain/wave_overlay.py",
+      "lines": [
+        361,
+        425
+      ]
+    },
+    "partial_fill_rights_and_H": {
+      "file": "runtime/coinmaster/domain/wave_overlay.py",
+      "lines": [
+        475,
+        560
+      ]
+    },
+    "native_TP": {
+      "file": "runtime/coinmaster/domain/wave_overlay.py",
+      "lines": [
+        562,
+        586
+      ]
+    },
+    "direction_sizing": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        945,
+        950
+      ]
+    },
+    "accepted_daily_decision": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        1184,
+        1239
+      ]
+    },
+    "fallback_quote_guard": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        1401,
+        1419
+      ]
+    },
+    "q0_q1": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        1457,
+        1529
+      ]
+    },
+    "earned_omitted_SOL_rights": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        1531,
+        1555
+      ]
+    },
+    "q1_cap": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        1859,
+        1865
+      ]
+    },
+    "positive_IOC": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        1904,
+        1918
+      ]
+    },
+    "native_flat_reentry": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        2595,
+        2611
+      ]
+    },
+    "split_and_PLANREF": {
+      "file": "runtime/coinmaster/strategy/split_cover.py",
+      "lines": [
+        88,
+        206
+      ]
+    },
+    "execution_close_model": {
+      "file": "runtime/coinmaster/research/native_baseline.py",
+      "lines": [
+        863,
+        894
+      ]
+    },
+    "loaded_candidate_cap_override": {
+      "file": "runtime/coinmaster/research/native_baseline.py",
+      "lines": [
+        1319,
+        1321
+      ]
+    },
+    "margin_policy_formula": {
+      "file": "runtime/coinmaster/research/native_fixture.py",
+      "lines": [
+        348,
+        396
+      ]
+    },
+    "native_margin_module": {
+      "file": "runtime/coinmaster/research/native_fixture.py",
+      "lines": [
+        399,
+        446
+      ]
+    },
+    "captured_tiers": {
+      "file": "runtime/coinmaster/venues/bybit_profile.py",
+      "lines": [
+        25,
+        77
+      ]
+    },
+    "model_wiring": {
+      "file": "runtime/coinmaster/research/native_baseline.py",
+      "lines": [
+        757,
+        824
+      ]
+    },
+    "liquidation_trigger": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        1028,
+        1081
+      ]
+    },
+    "margin_admission": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        2228,
+        2298
+      ]
+    },
+    "unfinished_parent_reservation": {
+      "file": "runtime/coinmaster/strategy/split_cover.py",
+      "lines": [
+        365,
+        384
+      ]
+    },
+    "liquidation_lockout": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": [
+        2613,
+        2620
+      ]
+    },
+    "cash_boundary_reporting": {
+      "file": "runtime/coinmaster/research/native_baseline.py",
+      "lines": [
+        953,
+        1034
+      ]
+    }
+  },
+  "important_corrections": [
+    {
+      "claim": "Only two TRAIL exits occurred",
+      "correction": "Two BTC TRAIL forced-close fills, but39 SOL TRAIL forced-close fills. BTC interval final reasons are not group-close counts."
+    },
+    {
+      "claim": "S0 active beta uses720 hourly returns",
+      "correction": "Disabled cover metadata only; active original domain beta uses270 daily log returns."
+    },
+    {
+      "claim": "Oct18 winner resolved parameters are byte-identical exact S0",
+      "correction": "Trading settings agree, but Oct18 config74ecee/source hashes differ. Oct20 S0 config22e1ee and source75ffc9c verified separately."
+    },
+    {
+      "claim": "Generic73 BTC_REDUCE are proven all zeroTP fills",
+      "correction": "Reason also covers positive non-resting fallback; complete FULL-branch frozen wave vectors absent."
+    },
+    {
+      "claim": "Zero thresholds mean immediate entry-price exits",
+      "correction": "No recorded reduction timestamp equals first entry or split completion; omission and actual fill differ."
+    },
+    {
+      "claim": "Positive TP implies positive net outcome",
+      "correction": "13 positiveIOCcatchups include7 feeallocated losers; group capital and funding also matter."
+    },
+    {
+      "claim": "There is no executable liquidation model",
+      "correction": "Stale configlabel; capturedtierMM/cash+UPnL trigger/owned native close/flatlockout is implemented; historical/intrabar validity remains unknown."
+    }
+  ],
+  "economic_assessment": {
+    "coherent_mechanisms": [
+      "causal completed daily features and waves",
+      "native lot and cancelACK ownership",
+      "P0 separate from actual blended money",
+      "real partial fill based SOL rights",
+      "mandatory group exit priority"
+    ],
+    "selected_unproven_numbers": [
+      "EMA34",
+      "270dailybeta and0.2..4range",
+      "730day,min8,quantiles.1/.3/.6",
+      "long5.5/short7.875",
+      "cap30m",
+      "TPfractions.2125/.2125/.575",
+      "split50/discount.0025/4h",
+      "dailytrail.03"
+    ],
+    "not_established": [
+      "independentOOSoptimality",
+      "best SL/ATR/confirmation/reentry threshold",
+      "economic value of allpositiveTP",
+      "50/90 candidate",
+      "liveHL or trueintrabar faithfulness"
+    ]
+  },
+  "next_controls": [
+    "Durable frozen per-episode wavevector/catalogue provenance/native group reason and signed funding/perasset cash exports",
+    "Joint marked BTC+SOL risk budget with explicit residual ownership/rearm and gap headroom",
+    "Prespecified entry no-chase hypothesis including missed winners and SOL authorization cost",
+    "Sizing/reentry concentration audit before threshold selection",
+    "One frozen causal candidate; native settled globalDD<=50 and seed-adjusted profitretention>=90; separate OOS requirement"
+  ],
+  "source_report_hashes": {
+    "reports/fast-rnd-20261020/s0-prepare-receipt.json": "2cccead8da45ac2bbc078d5e46555def57b5bd09f1e1e85aa6c1fc01525f0da8",
+    "reports/fast-rnd-20261020/s0-completion.json": "c1dea1baa8bf730efa6a17791e98f28f5b817d93ee6edf5ed340a39c5ccdbbfa",
+    "reports/fast-rnd-20261020/s0-launch-receipt.json": "9de8abd6e3c6bf90b1d91658adb59b4110a5b1d1a6714fb3e8ff118e1aaa7640",
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-result.json": "879c48e7111c7c1123aeee8e844ad2a79fce06b826ddcab0f908905703ab3114",
+    "reports/btc-lifecycle-audit-20261022/source-audit.json": "17f797822a17a30308f6c3ffddef4e2e0ee72d146391801a29eebe923e287679",
+    "reports/btc-lifecycle-audit-20261022/btc-statistics.json": "8c67c24c230ca32296fb2496f6fb92d0da1920dd2365c32dbf54ea0179dd5da4",
+    "reports/btc-lifecycle-audit-20261022/btc-statistics.csv": "9b84119827c5b41ee7cbb803ea6712fc4146cf2ead0b043f7055a42618cf4a0b",
+    "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-resolved-parameters.json": "e985fb578d5755d07ea399bf2894255d7218bd8959dbc33839049248328cc4fc",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-parents.csv": "1e0e67d5efc55b2206487ebc329cf1ac92dea86b0333e8fff2daa56093820476"
+  },
+  "limitations": [
+    "NOT_FAITHFUL_DIAGNOSTIC/ranking ineligible",
+    "1m executionCLOSE syntheticquotes with0configuredspread; noL2/tape/intraminute matching",
+    "historical margin/liquidation/fee applicability unknown",
+    "signedfunding unknown",
+    "thinBTCstats diagnosticexfunding not native standaloneasset account",
+    "priorpath metrics have anchor differences and informative censoring"
+  ],
+  "activity": {
+    "new_native_runs": 0,
+    "simulations": 0,
+    "optimization_training": 0,
+    "source_edits": 0,
+    "service_pilot_actions": 0,
+    "network_calls": 0,
+    "written_files": [
+      "reports/s0-system-audit-20261023/btc-audit.md",
+      "reports/s0-system-audit-20261023/btc-audit.json"
+    ]
+  },
+  "markdown_sha256": "c132d74bb8fb935dd73d5e59e35422443497a541b48f37c5f19bddb835096ca8",
+  "native_margin_liquidation": {
+    "label": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+    "label_interpretation": "STALE_METADATA_NOT_EXECUTABLE_MODEL_ABSENCE",
+    "actual_model": "diagnostic captured-tier IM/MM admission and mark-triggered owned liquidation group close with flatlockout",
+    "native_selected_leverage": {
+      "BTC": "40",
+      "SOL": "20"
+    },
+    "max_mark_age_minutes": 2,
+    "initial_margin_formula": "notional*max(tier.im,1/selectedleverage)",
+    "maintenance_formula": "max(0,notional*tier.mm-tier.deduction)",
+    "trigger": "nativecash+sum(nativepositionmarkedUPnL)<=sum(tierMM)",
+    "prospective_admission": "IM+MM less boundedactualcurrentnative reservationcredit; nativefree margin/grossbound/freshmarks",
+    "unfinished_split_reservation": "fullacceptedBTCparent",
+    "original_future_SOL_margin_fraction": "0",
+    "historical_intrabar_applicability": "UNKNOWN_NOT_VALIDATED",
+    "zero_liquidations_interpretation": "No model trigger on this savedpath; not live safety"
+  },
+  "terminal_boundary": {
+    "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 1,
+    "interval_cash_total_before_settlement": "5990509.00011444",
+    "settled_cash_total": "6077107.23887483",
+    "settlement_delta": "86598.23876039",
+    "monthly_returns_exclude_boundary_fill": true,
+    "candidate_requirement": "Preserve convention; show terminal effect separately; do not mixcash and markedDD"
+  }
+}

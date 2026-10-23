@@ -1,0 +1,44 @@
+{
+  "verdict": "PASS",
+  "scope": "Independent scoped synthesis review of the frozen report against BTC/SOL audits, saved experiment outcomes/frontier, method algebra and endpoint diagnostics; read-only except these reviewer outputs.",
+  "correction_rounds": 1,
+  "corrections": [
+    {
+      "file": "method-calculations.json",
+      "original_issue": "7.875 multiplier was labelled relative to initial BTC, which can differ from gross reference due selective zero-netting.",
+      "fixed": "Renamed to S0_full_SOL_commonfactor_over_gross_reference_BTC_at_entry_reference; explicit NOT actual initial net BTC and caps/margin/fills/fees/price changes qualification.",
+      "status": "FIXED_VERIFIED"
+    }
+  ],
+  "open_findings": [],
+  "checks": {
+    "exact_source_72_of72_pins": "PASS recomputed SHA256 of72 historical git source blobs against exact preparation pins",
+    "exact_S0_identity": "PASS exact SHA/config/TOTAL/settledDD consistent; predecessor sources distinguished",
+    "SOL_endpoint_algebra": "PASS Oct3 frozen beta292.2924% coverage and beta net83824.09 are exposure diagnostics; SOL-only example and native PnL bounds correctly qualified",
+    "covariance_algebra": "PASS h*=Cov(B,S)/Var(S); inverse SOL-on-BTC beta=sigmaB/(rho*sigmaS); h*/inversebeta=rho^2 for nonzero covariance; no DD guarantee claimed",
+    "frontier_15_rows": "PASS independently recomputed retention, every dominance list/profit-floor flag; nondominatedS0/E4/S; no50/90winner",
+    "interactions": "PASS two same-base saved native outcome additive contrasts independently recomputed; missing cells not synthesized",
+    "fixed_endpoint_gaps": "PASS5 cash+UPnL identities and50/30 floor gaps independently recomputed; fees already included and not a new curve",
+    "liquidation_correction": "PASS exact historical code1028-1081 has maintenance-triggered native close; stale NO_LIQUIDATION_MODEL literal properly distinguished from unvalidated venue fidelity",
+    "TRAIL_counts": "PASS exact621fill audit contains2BTC and39SOL forced-close TRAIL fills; fills not group event counts",
+    "planned_vs_executed": "PASS proposed P0-P4 future protocol is explicitly not implemented/not authorized; no new trading runs/fits claimed; invalid/partial/repeat results separated",
+    "limitations": "PASS signed funding and asset realizedPnL UNKNOWN, settlement boundary separate, T+V cutoff separate from full24m DD, 1m proxy/OOS/selection limits explicit"
+  },
+  "reviewed_files_sha256": {
+    "REPORT.md": "258e86b6b9ed124e611d3d85fc83b4705f1a24767fab019d603951ac441e181c",
+    "btc-audit.md": "c132d74bb8fb935dd73d5e59e35422443497a541b48f37c5f19bddb835096ca8",
+    "btc-audit.json": "bc751d32124fb94ebd2b14f07d5521ee6cea1e17a21b6bbe415167c8db79df99",
+    "sol-audit.md": "2803fec5b6e6bd6e784c1b94ad5c42044927a7f420571f574de19a4efa719363",
+    "sol-audit.json": "56959c804445b1ebe0ebbbbe30ca2d74071634d222b6714938b2ef59a29193cf",
+    "experiments.md": "3ec47db79aef9a781517b733e5daf8da314e95ec6d9592e3e9335108280b300f",
+    "experiments.json": "4799e5157ea09a958010bfbb27c0d09f1b7217652b0aa401b6385630b6658cf7",
+    "experiment-frontier.csv": "c3becdb92bafda8458cf9f01c93c6eb2e89b31bcafceafd086c00dff8a11b3f3",
+    "method-calculations.json": "361c86a233ed63eddc95028d425a2cf1894619e3da718a80539a1b1ed88c9212",
+    "drawdown-floor-diagnostics.json": "948173a2e5911812137b956a1bd7e5938dc4c1a1208994a7ce2483c22ad356ae"
+  },
+  "new_native_runs": 0,
+  "new_market_data_audits": 0,
+  "source_edits": 0,
+  "other_report_edits": 0,
+  "limits": "Review establishes supported synthesis and arithmetic within saved evidence, not formal source correctness, independent empirical alpha, historical venue fidelity, statistical significance or future50/90 feasibility."
+}

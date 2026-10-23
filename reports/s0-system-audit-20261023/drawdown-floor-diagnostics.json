@@ -1,0 +1,123 @@
+{
+  "basis": "fixed archived endpoints only; no removed-fee curve, no alternative strategy, no S0 rerun",
+  "coverage_cutoff_exclusive": "2026-04-08T00:00:00+00:00",
+  "full24m_globalDD_from_separate_completion": "66.25691486468686414439256686",
+  "rows": [
+    {
+      "rank": 1,
+      "peak_utc": "2024-09-14T00:19:00+00:00",
+      "trough_utc": "2024-10-03T15:44:00+00:00",
+      "peak": "13426.6743211",
+      "trough": "4530.57414701",
+      "DD_percent": "66.25691486468686414439256686",
+      "cash_delta": "-3738.47267409",
+      "UPnL_delta": "-5157.62750000",
+      "fees_in_path": "244.56222208",
+      "gap_to_50pct_floor_at_same_peak": "2182.76301354",
+      "gap_to_30pct_floor_at_same_peak": "4868.09787776",
+      "fees_fraction_of_peak_to_trough_loss": "0.027490947414496348356058353064129372991054221061743",
+      "positions_at_trough": [
+        {
+          "asset": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "qty": "0.724"
+        },
+        {
+          "asset": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "qty": "810.9"
+        }
+      ],
+      "fees_to_50pct_endpoint_gap": "0.11204249868764706373035403160627443843012003761113"
+    },
+    {
+      "rank": 2,
+      "peak_utc": "2025-04-11T01:00:00+00:00",
+      "trough_utc": "2025-06-06T15:17:00+00:00",
+      "peak": "915175.73025689",
+      "trough": "367509.64806046",
+      "DD_percent": "59.84272354367395947974450388",
+      "cash_delta": "-407279.98224643",
+      "UPnL_delta": "-140386.09995000",
+      "fees_in_path": "25108.05208803",
+      "gap_to_50pct_floor_at_same_peak": "90078.217067985",
+      "gap_to_30pct_floor_at_same_peak": "273113.363119363",
+      "fees_fraction_of_peak_to_trough_loss": "0.045845548782815728311967120300286002665790101816747",
+      "positions_at_trough": [
+        {
+          "asset": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "qty": "29.484"
+        }
+      ],
+      "fees_to_50pct_endpoint_gap": "0.27873611296147353094604683392693048082287897929037"
+    },
+    {
+      "rank": 3,
+      "peak_utc": "2025-10-22T21:29:00+00:00",
+      "trough_utc": "2025-11-28T14:28:00+00:00",
+      "peak": "2088471.56378771",
+      "trough": "937712.12544458",
+      "DD_percent": "55.10055575073671291811943329",
+      "cash_delta": "12589.11625687",
+      "UPnL_delta": "-1163348.55460000",
+      "fees_in_path": "32537.26917082",
+      "gap_to_50pct_floor_at_same_peak": "106523.656449275",
+      "gap_to_30pct_floor_at_same_peak": "524217.969206817",
+      "fees_fraction_of_peak_to_trough_loss": "0.028274605522825296703717285473224585306918376144256",
+      "positions_at_trough": [
+        {
+          "asset": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "qty": "169.664"
+        }
+      ],
+      "fees_to_50pct_endpoint_gap": "0.30544641683712546512204253163536127223724901458142"
+    },
+    {
+      "rank": 4,
+      "peak_utc": "2024-12-31T17:10:00+00:00",
+      "trough_utc": "2025-01-01T09:41:00+00:00",
+      "peak": "187955.72982674",
+      "trough": "108690.12904281",
+      "DD_percent": "42.17248437012164854972645329",
+      "cash_delta": "-190.14478393",
+      "UPnL_delta": "-79075.45600000",
+      "fees_in_path": "71.4343344",
+      "gap_to_50pct_floor_at_same_peak": "0",
+      "gap_to_30pct_floor_at_same_peak": "22878.881835908",
+      "fees_fraction_of_peak_to_trough_loss": "0.00090120220743324409992300509612440472279520252996454",
+      "positions_at_trough": [
+        {
+          "asset": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "qty": "7686.4"
+        }
+      ],
+      "fees_to_50pct_endpoint_gap": null
+    },
+    {
+      "rank": 5,
+      "peak_utc": "2025-01-21T18:38:00+00:00",
+      "trough_utc": "2025-02-04T22:12:00+00:00",
+      "peak": "537132.64568937",
+      "trough": "320840.04666373",
+      "DD_percent": "40.26800470264555526714864550",
+      "cash_delta": "2552.47182436",
+      "UPnL_delta": "-218845.07085000",
+      "fees_in_path": "6272.95305096",
+      "gap_to_50pct_floor_at_same_peak": "0",
+      "gap_to_30pct_floor_at_same_peak": "55152.805318829",
+      "fees_fraction_of_peak_to_trough_loss": "0.029002162252516021409708471860634837447643424765738",
+      "positions_at_trough": [
+        {
+          "asset": "BTCUSDT-PERP.P1SIM",
+          "side": "2",
+          "qty": "24.290"
+        }
+      ],
+      "fees_to_50pct_endpoint_gap": null
+    }
+  ],
+  "interpretation": "Fees are already included in observed W. Ratios describe the original path only; deleting fees changes capital and future execution, so this is not a fee-free counterfactual or global upper bound on a new policy."
+}

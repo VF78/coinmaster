@@ -1,0 +1,366 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "profit floor",
+      "pass": true
+    },
+    {
+      "name": "comparable candidates",
+      "pass": true
+    },
+    {
+      "name": "S0 retention",
+      "pass": true
+    },
+    {
+      "name": "S0 constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "S0 Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "S0 dominance exact",
+      "pass": true
+    },
+    {
+      "name": "B retention",
+      "pass": true
+    },
+    {
+      "name": "B constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "B Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "B dominance exact",
+      "pass": true
+    },
+    {
+      "name": "E4 retention",
+      "pass": true
+    },
+    {
+      "name": "E4 constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "E4 Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "E4 dominance exact",
+      "pass": true
+    },
+    {
+      "name": "EP retention",
+      "pass": true
+    },
+    {
+      "name": "EP constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "EP Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "EP dominance exact",
+      "pass": true
+    },
+    {
+      "name": "Z retention",
+      "pass": true
+    },
+    {
+      "name": "Z constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "Z Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "Z dominance exact",
+      "pass": true
+    },
+    {
+      "name": "S retention",
+      "pass": true
+    },
+    {
+      "name": "S constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "S Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "S dominance exact",
+      "pass": true
+    },
+    {
+      "name": "XZ retention",
+      "pass": true
+    },
+    {
+      "name": "XZ constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "XZ Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "XZ dominance exact",
+      "pass": true
+    },
+    {
+      "name": "XS retention",
+      "pass": true
+    },
+    {
+      "name": "XS constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "XS Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "XS dominance exact",
+      "pass": true
+    },
+    {
+      "name": "XZS retention",
+      "pass": true
+    },
+    {
+      "name": "XZS constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "XZS Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "XZS dominance exact",
+      "pass": true
+    },
+    {
+      "name": "M1 retention",
+      "pass": true
+    },
+    {
+      "name": "M1 constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "M1 Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "M1 dominance exact",
+      "pass": true
+    },
+    {
+      "name": "M2 retention",
+      "pass": true
+    },
+    {
+      "name": "M2 constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "M2 Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "M2 dominance exact",
+      "pass": true
+    },
+    {
+      "name": "RESIDUAL_R2C retention",
+      "pass": true
+    },
+    {
+      "name": "RESIDUAL_R2C constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "RESIDUAL_R2C Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "RESIDUAL_R2C dominance exact",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_SOL retention",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_SOL constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_SOL Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_SOL dominance exact",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_BTC_CORRECTED retention",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_BTC_CORRECTED constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_BTC_CORRECTED Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "BUDGET_TP3_BTC_CORRECTED dominance exact",
+      "pass": true
+    },
+    {
+      "name": "V2_C0 retention",
+      "pass": true
+    },
+    {
+      "name": "V2_C0 constrained acceptance",
+      "pass": true
+    },
+    {
+      "name": "V2_C0 Pareto membership",
+      "pass": true
+    },
+    {
+      "name": "V2_C0 dominance exact",
+      "pass": true
+    },
+    {
+      "name": "no winner",
+      "pass": true
+    },
+    {
+      "name": "frontier",
+      "pass": true
+    },
+    {
+      "name": "E4 remaining profit headroom",
+      "pass": true
+    },
+    {
+      "name": "E4 Z interaction",
+      "pass": true
+    },
+    {
+      "name": "E4 S interaction",
+      "pass": true
+    },
+    {
+      "name": "endpoint bridge 1",
+      "pass": true
+    },
+    {
+      "name": "endpoint DD 1",
+      "pass": true
+    },
+    {
+      "name": "endpoint floor gap 1",
+      "pass": true
+    },
+    {
+      "name": "endpoint bridge 2",
+      "pass": true
+    },
+    {
+      "name": "endpoint DD 2",
+      "pass": true
+    },
+    {
+      "name": "endpoint floor gap 2",
+      "pass": true
+    },
+    {
+      "name": "endpoint bridge 3",
+      "pass": true
+    },
+    {
+      "name": "endpoint DD 3",
+      "pass": true
+    },
+    {
+      "name": "endpoint floor gap 3",
+      "pass": true
+    },
+    {
+      "name": "endpoint bridge 4",
+      "pass": true
+    },
+    {
+      "name": "endpoint DD 4",
+      "pass": true
+    },
+    {
+      "name": "endpoint floor gap 4",
+      "pass": true
+    },
+    {
+      "name": "endpoint bridge 5",
+      "pass": true
+    },
+    {
+      "name": "endpoint DD 5",
+      "pass": true
+    },
+    {
+      "name": "endpoint floor gap 5",
+      "pass": true
+    },
+    {
+      "name": "exact source",
+      "pass": true
+    },
+    {
+      "name": "S0 archived identity",
+      "pass": true
+    },
+    {
+      "name": "S0 active config",
+      "pass": true
+    },
+    {
+      "name": "no new economic runs",
+      "pass": true
+    },
+    {
+      "name": "no pilot/source changes",
+      "pass": true
+    },
+    {
+      "name": "beta basis gross not net",
+      "pass": true
+    }
+  ],
+  "count": 88,
+  "basis": "saved paths and factual arithmetic; no new portfolio result, no new native engine, no training",
+  "inputs": {
+    "reports/s0-system-audit-20261023/experiment-frontier.csv": "c3becdb92bafda8458cf9f01c93c6eb2e89b31bcafceafd086c00dff8a11b3f3",
+    "reports/s0-system-audit-20261023/method-calculations.json": "361c86a233ed63eddc95028d425a2cf1894619e3da718a80539a1b1ed88c9212",
+    "reports/s0-system-audit-20261023/drawdown-floor-diagnostics.json": "948173a2e5911812137b956a1bd7e5938dc4c1a1208994a7ce2483c22ad356ae",
+    "reports/fast-rnd-20261020/s0-completion.json": "c1dea1baa8bf730efa6a17791e98f28f5b817d93ee6edf5ed340a39c5ccdbbfa"
+  },
+  "script_sha256": "a31c0a611d0413f13a56ae7a67f50a9754b6cdaa79b4fc38832f1589e709fb70"
+}

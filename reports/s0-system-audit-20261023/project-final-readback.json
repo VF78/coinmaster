@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-23T14:59:51.662885+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "status": "Done",
+  "state": "closed",
+  "title": "[S0 DD50] System audit complete \u2014 no validated 50/90 policy",
+  "body_sha256": "46791ccb5acbef9acff8b81373a289b17718993704506d9cf4f15a43287523bc",
+  "readback": "PASS",
+  "new_issues": 0,
+  "native_runs": 0,
+  "economic_goal_achieved": false,
+  "audit_complete": true
+}

@@ -1,0 +1,17 @@
+{
+  "profit_floor": "5470396.514987347",
+  "E4_headroom": "161220.844549883",
+  "S0_dd_gap_to50pp": "16.25691486468686414439256686",
+  "E4_dd_gap_to50pp": "7.58541045962226379114466259",
+  "inverse_beta_vs_minvariance": {
+    "defined_beta": "Cov(r_SOL,r_BTC)/Var(r_BTC)",
+    "notional_h_min": "Cov(r_BTC,r_SOL)/Var(r_SOL)=rho*sigma_BTC/sigma_SOL",
+    "inverse_beta": "sigma_BTC/(rho*sigma_SOL)",
+    "h_min_over_inverse_beta": "rho^2",
+    "model": "one-step linear return covariance model; not a causal portfolio PnL engine or DD guarantee"
+  },
+  "S0_active_SOL_sum_multipliers": "7.875",
+  "new_native_runs": 0,
+  "new_fits": 0,
+  "S0_full_SOL_commonfactor_over_gross_reference_BTC_at_entry_reference": "7.875 before caps/margin/fills/fees/price changes; relative to gross reference, NOT actual initial net BTC; not observed all-cycle coverage"
+}

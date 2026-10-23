@@ -1,0 +1,9 @@
+# Final scoped synthesis review — PASS
+
+Reviewed the frozen `REPORT.md` against BTC/SOL source evidence, the15-row experiment frontier, saved interactions, method algebra and fixed-endpoint DD diagnostics. **No open findings.** One label correction was requested and verified:7.875 is relative to **gross reference BTC at entry**, not actual initial net BTC after selective zero-netting. `method-calculations.json` now states that distinction and its caps/fills/fees/price qualifications.
+
+Independently checked72/72 historical source SHA256 pins;15 profit retentions and full dominance lists/profit-floor flags; the S0/E4/S frontier; two interaction contrasts; five cash/UPnL identities and50/30 endpoint gaps; exact2BTC/39SOL TRAIL fill counts; and the historical maintenance-triggered liquidation code. The inverse-beta/minimum-variance covariance identities are correct. SOL fitted-beta exposures, native endpoint PnL bounds and fee/headroom arithmetic are not presented as alternative portfolio results.
+
+The synthesis distinguishes exact S0 from predecessor instrumentation, settled DD from callback/OHLC/cash measures, full24m completion from the bounded T+V endpoint subset, and actual runs from proposals, invalid attempts and repeats. The stale liquidation label is correctly corrected without claiming historical venue fidelity. Future research remains explicitly proposed/not implemented; signed funding, asset settlement attribution, intraminute execution and independent OOS/selection limits remain explicit.
+
+This review ran no engine, market replay, training or large market-data audit and edited no strategy or another author's report. Reviewed hashes and detailed check outcomes are preserved in `reviewer-final.json`. The PASS concerns evidence-supported synthesis, not proof of future50/90 feasibility or universal strategy correctness.

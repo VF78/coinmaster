@@ -1,0 +1,15 @@
+{
+  "started_utc": "2026-10-23T14:45:45.002936+00:00",
+  "scope": "READ_ONLY_S0_SYSTEM_AUDIT",
+  "native_runs_authorized": 0,
+  "native_runs_started": 0,
+  "pilot_changes": 0,
+  "source_changes": 0,
+  "S0_reruns": 0,
+  "selected_for_deploy": null,
+  "status": "COMPLETE_READ_ONLY_AUDIT_NO_NEW_POLICY_SELECTED",
+  "completed_utc": "2026-10-23T14:58:49.173240+00:00",
+  "economic_goal_achieved": false,
+  "independent_review": "PASS",
+  "factual_arithmetic_checks": 88
+}
