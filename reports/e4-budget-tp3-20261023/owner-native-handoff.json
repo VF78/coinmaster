@@ -1,0 +1,149 @@
+{
+  "engine_source_commits": {
+    "SOL": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+    "BTC_INVALID": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+    "BTC_CORRECTED": "6061446164cc32c27b3ea0e13e86c9cc56d955ac"
+  },
+  "base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "scope": "E4_ONLY_PLUS_FROZEN_SOL_BUDGET_OR_SEQUENTIAL_EARLY_TP3_NO_XS_R2C",
+  "results": {
+    "SOL": {
+      "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+      "status": "VALID_NATIVE_COMPLETED",
+      "total": "1360086.36695243",
+      "profit_retention_percent": "22.25255486340816800127320123",
+      "settled_native_DD_percent": "66.85904748908962764036494870",
+      "fills": 478,
+      "native_fees": "325966.74779559",
+      "liquidation_count": 0,
+      "config_sha256": "7392a050356ed09c9615c63c654242eb4c119d426ad74c2c157129b0a59be374",
+      "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "policy_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "settled_observer_coverage": {
+        "receipts": 1051199,
+        "unavailable_intervening_native_mutation": 0,
+        "first_unavailable": [],
+        "curve_samples": 1051200,
+        "complete": true,
+        "qualification": "COMPLETE_SETTLED_RECEIPTS",
+        "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/SOL/result/minute-native-settled-receipts.csv.gz",
+        "positive_50_90_claim_allowed": true
+      },
+      "mechanical_checks": {
+        "full_rows": true,
+        "terminal_positions_flat": true,
+        "terminal_open_orders_zero": true,
+        "terminal_pending_flat": true,
+        "expected_config_exact": true,
+        "s0_data_exact": true,
+        "s0_execution_policy_exact": true,
+        "native_fills_export_rows": true,
+        "btc_split_quantity_conserved": true,
+        "source_freeze_exact": true
+      }
+    },
+    "BTC_CORRECTED": {
+      "source_commit": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+      "status": "VALID_NATIVE_COMPLETED",
+      "total": "4120806.47444031",
+      "profit_retention_percent": "67.75562574698574100393451199",
+      "settled_native_DD_percent": "61.07965831810633248928463321",
+      "fills": 601,
+      "native_fees": "648028.54314295",
+      "liquidation_count": 0,
+      "config_sha256": "1db706c900756195f3e265e1779260856b499db8a4118642df5d32269dd1f644",
+      "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "policy_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "settled_observer_coverage": {
+        "receipts": 1051199,
+        "unavailable_intervening_native_mutation": 0,
+        "first_unavailable": [],
+        "curve_samples": 1051200,
+        "complete": true,
+        "qualification": "COMPLETE_SETTLED_RECEIPTS",
+        "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC_CORRECTED/result/minute-native-settled-receipts.csv.gz",
+        "positive_50_90_claim_allowed": true
+      },
+      "mechanical_checks": {
+        "full_rows": true,
+        "terminal_positions_flat": true,
+        "terminal_open_orders_zero": true,
+        "terminal_pending_flat": true,
+        "expected_config_exact": true,
+        "s0_data_exact": true,
+        "s0_execution_policy_exact": true,
+        "native_fills_export_rows": true,
+        "btc_split_quantity_conserved": true,
+        "source_freeze_exact": true
+      }
+    }
+  },
+  "physical_attempts": 3,
+  "valid_recipes": 2,
+  "invalid_attempts": 1,
+  "attempt_cap": 4,
+  "active": 0,
+  "reserved": 0,
+  "unspent": 1,
+  "launch_closed": true,
+  "combined_run": false,
+  "repeat_run": false,
+  "failed_BTC_attempt": {
+    "status": "INVALID_REPORT_ASSERT_WITH_INCOMPLETE_EXPORT",
+    "original_exit_code": 1,
+    "preserved": true,
+    "scalar_identity_with_corrected": {
+      "terminal_total": true,
+      "native_fees": true,
+      "fills": true,
+      "liquidation_count": true
+    },
+    "qualification": "Scalar identity with incomplete original raw diagnostic only; NOT successful independent reproduction",
+    "correction": "REPORT_ONLY_LOCAL_DECIMAL80_UNCHANGED_1E-24_GUARD"
+  },
+  "report_only_diff": {
+    "product_files": [
+      "runtime/coinmaster/research/native_baseline.py"
+    ],
+    "strategy_domain_execution_accounting_inputs_unchanged": true,
+    "new_regression": "runtime/tests/test_native_report_precision.py",
+    "focused_tests": "6 PASSED"
+  },
+  "actual_SOL_budget": {
+    "trigger_cycles": 5,
+    "native_risk_fill_rows": 26,
+    "actual_native_quantity_reduced": "23994.6",
+    "blanket_restoration": false
+  },
+  "actual_BTC_early_TP3": {
+    "allocation_cycles": 82,
+    "eligible_cycles": 82,
+    "ineligible_cycles": 0,
+    "native_early_fill_rows": 68,
+    "actual_native_early_quantity": "1589.682",
+    "native_liquidity_counts": {
+      "MAKER": 66,
+      "TAKER": 2
+    },
+    "early_tranche_proposal_rows": 82,
+    "original_price_remaining_proposal_rows": 68,
+    "rights_contract": "Existing aggregate original TP3 target-lot denominator and proportional actual-fill SOL grants; no independent level/synthetic fill",
+    "corrected_required_native_exports_missing": false,
+    "split_parent_quantity_conservation": true,
+    "independent_saved_output_audit": "COORDINATOR_VERIFIER_PENDING"
+  },
+  "economic_outcome": "NO_50_90_WINNER_BOTH_VALID_RECIPES_FAIL_PROFIT_AND_DD",
+  "hist_controls_rerun": false,
+  "pilot_services_keys_real_orders_deploy_touched": false,
+  "source_and_proof_artifact_sha256": {
+    "owner-source.patch": "3101a12e00c7f7b943dbd345bbfeb7fd1acbd8a79e2976d98acf7cad5e9dd627",
+    "owner-report-precision-source.patch": "04c6db4d817541e14a3721572efbf1bed8348c36578f9fcc35722aec508ce9e5",
+    "owner-relevant-tests.log": "79396c10619af0a1972dda59a34230ed32314e5d7ed8c41cc7c33f08ad6c7969",
+    "owner-focused-final-tests.log": "dd2bf8bc6fbd9fdaf2329581aafa56bab1b3438ec6d6bedf4078edf7415d047e",
+    "owner-report-precision-tests.log": "8e36e7c96ed0719c7202be912170c145d3470947ed22ff4cc839f6ba84cd4124",
+    "owner-BTC-invalidation.json": "33b94a931f174db31921ae354d9c8bbd2ef0970448f5a533d42d66acc7433e65",
+    "owner-SOL-receipt.json": "4dc591d5e33aa3560d5c959705b59348c832c99f748a507e0fba5a8e0d747bb7",
+    "owner-BTC_CORRECTED-receipt.json": "422739f6ee9b4cbc51fecae171f6c879d154162863f61625663a78f586dc066f",
+    "owner-run-budget.json": "ef91a9c1adb87882e25cfae449755557b4c11fea149fdac132349509fc875d1a"
+  }
+}

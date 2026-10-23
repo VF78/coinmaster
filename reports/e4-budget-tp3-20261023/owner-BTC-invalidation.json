@@ -1,0 +1,16 @@
+{
+  "recipe": "BTC",
+  "physical_attempt": 2,
+  "status": "INVALID_REPORT_ASSERT_WITH_INCOMPLETE_EXPORT",
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "original_exit_code": 1,
+  "cause": "Context28 compounded monthly returns error1.2e-24 vs unchanged1e-24 guard; observer.close not reached, settled receipt gzip lacks full footer",
+  "original_raw_monetary_TOTAL_diagnostic_only": "4120806.47444031",
+  "raw_monetary_fact_does_not_establish_valid_trial": true,
+  "original_files_preserved": true,
+  "manual_gzip_repair": false,
+  "recovery_report_created": false,
+  "root_decision": "One report-only Decimal80 correction and fresh BTC_CORRECTED native attempt3 require explicit rootGO",
+  "combined_or_SOL_rerun_allowed": false,
+  "physical_slots_consumed": 2
+}

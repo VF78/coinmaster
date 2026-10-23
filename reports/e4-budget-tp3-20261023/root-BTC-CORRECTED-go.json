@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-23T13:59:40.622176+00:00",
+  "decision": "GO_ONE_CORRECTED_BTC_PHYSICAL_ATTEMPT3_ONLY",
+  "source_commit": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "source_manifest_sha256": "5c29dfa050eefde5425794ef672584572083f39e65517d52914c1a45f54df440",
+  "protocol_sha256": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39",
+  "correction_amendment_sha256": "67abe2ebd07ed6e97d19ba747c18b8eccfb377515b6bbe4b673a1b6c89212031",
+  "authorized_recipes": [
+    "BTC_CORRECTED"
+  ],
+  "max_physical_attempts": 4,
+  "physical_started_before_GO": 2,
+  "expected_next_attempt": 3,
+  "review_receipt_sha256": "e64e3b46e17e184ca04e0a191ef2dd646ca107e702963f4ef81a0090c8ff2f44",
+  "tooling_freeze_sha256": "e4dc0eb90be653717c06bafbf76b3b3de222b1b1ae34ef0763cf27315213532a",
+  "expected_config_sha256": "1db706c900756195f3e265e1779260856b499db8a4118642df5d32269dd1f644",
+  "economic_parameters_changed": false,
+  "only_change": "localreportDecimal80 ORIGINAL1e-24 guard",
+  "first_BTC_attempt2": "INVALID_ORIGINAL_EXIT1_INCOMPLETE_GZIP_EXPORT_PRESERVED",
+  "manual_gzip_or_report_repair": false,
+  "combined_authorized": false,
+  "repeat_authorized": false,
+  "source_tests": "6 reportfocused PASS; original224 relevantnative preserved",
+  "conditions": "fresh output/journal, no automaticfourth launch; complete normal report/observerclosure required; independentlyaudited before economicselection",
+  "pilot_changes_authorized": false
+}

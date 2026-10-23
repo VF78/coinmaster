@@ -1,0 +1,141 @@
+{
+  "status": "FROZEN",
+  "files": [
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC-attempt2-invalid.json",
+      "sha256": "a2dd642a510d43cd1548f36ccca825922e208cb9d2d315c25c7d319067040d3f",
+      "bytes": 2071
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-DD-ge30-episodes.csv",
+      "sha256": "e9aa3f177f5b7331839d3c2350c7c0d5ad3b3e2f4243ed4c2a38d5cd10d4ccf3",
+      "bytes": 18305
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-asset-fill-net.csv",
+      "sha256": "ef79ecfd74cc9d019babac73ea46591e928d8dea1ab54e7ae2ca6ae20883168f",
+      "bytes": 340
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-audit.json",
+      "sha256": "1a1c11aac83e1c7fb8c74c3e0d36683cd7a1d38ea1830bcaeb986d520cec2eef",
+      "bytes": 83841
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-closed-cycle-ledger.csv",
+      "sha256": "b4f606c1e91a706727ad11911b9b033abe2254c5066723c33cbc5e223566148b",
+      "bytes": 20334
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-loss-streaks.csv",
+      "sha256": "44c3e0a25555d24422baf3ee5ea6a0213acac69201c34248bf30476df81c6c29",
+      "bytes": 1686
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-mechanisms.json",
+      "sha256": "46829fae6ef39a5d7acc086a786dca6092e84c4e2d864f8742d9bde9a1254ce0",
+      "bytes": 76484
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-monthly.csv",
+      "sha256": "971aaadf4992ab15d3629bee84f1dd8be6171a92d5726861ff232c17483e1793",
+      "bytes": 4335
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-preparation-pins.json",
+      "sha256": "9ca3ade3cb74537225e1b8122a72f0ce8ae5f2ac7ee157a03f62441b87ab04a0",
+      "bytes": 24433
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-BTC_CORRECTED-risk-cache.json",
+      "sha256": "f364c5307e1211c995f2f91f018bcb02b25a80805875de90943580aa93d32d46",
+      "bytes": 63768
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-DD-ge30-episodes.csv",
+      "sha256": "7b2a93654db02ef9082eac3924e0322d18015da21110c2b7f3fa2fc5ac0f8131",
+      "bytes": 22808
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-admission-quotes.json",
+      "sha256": "7a469af15b36d371d61e2f7e6c4def4a50bc2e146391f495f0c0cff44adc421b",
+      "bytes": 5301
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-admission-quotes.py",
+      "sha256": "fdd17f272a143503fff11b4081df6e343cd7f06ac1f2a46f55c4d042c324fc61",
+      "bytes": 1837
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-asset-fill-net.csv",
+      "sha256": "fb4a81299c717014f353670343a04ce6100b76078d9c83f7babe86aeb80862bd",
+      "bytes": 339
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-audit.json",
+      "sha256": "c9f20bd5866d4010156c8d56ae906568807cf0754fb655177e25dae9e968c797",
+      "bytes": 88088
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-closed-cycle-ledger.csv",
+      "sha256": "41b993a0318bee9dee62480c7efbeefad99aa49a047a28ca2128abe903ae966a",
+      "bytes": 19666
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-loss-streaks.csv",
+      "sha256": "a5a9547450acaadfebdb032780011eaaa9d9861b60a882cdc2e7052d678d4442",
+      "bytes": 2012
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-mechanisms.json",
+      "sha256": "37ae3e04cd27122118bfe00db81642b0066ee9318bac5ebac16084707d67bbe9",
+      "bytes": 4667
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-monthly.csv",
+      "sha256": "516380f1bfeb7455be3ec7ea9b1aca6cb68708b35cbca9246992a6a3acbefceb",
+      "bytes": 4319
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-SOL-risk-cache.json",
+      "sha256": "7d316659026c84eae63389239beae7e9e2d46bb777ad8e8078b2a039b748f24d",
+      "bytes": 68156
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-control-windows.json",
+      "sha256": "73534c6f6461503051ca9b5c90099328f4bbf89fcc7302f4539bdca0082d99df",
+      "bytes": 23264
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-control-windows.py",
+      "sha256": "effc7e511c6907a8fdbcc505ef051bd53ab3ebea50bdc2b69c9d520fe6109754",
+      "bytes": 3725
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-final-summary.csv",
+      "sha256": "df2cf9d0aea59c57376b43c1511fa43404b1b228aa8acba2c1f1e986ef92912d",
+      "bytes": 863
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-final-summary.json",
+      "sha256": "cf0e0d2f40b1dd4f2dfccb7cacbe84b968efb416176871a6906b692a3afe3814",
+      "bytes": 3232
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-mechanisms.py",
+      "sha256": "6e5bee2e8ac19cf28303d79317b0d02a804bff08f00c4da7e8263c7539b45d4a",
+      "bytes": 9268
+    },
+    {
+      "path": "reports/e4-budget-tp3-20261023/verifier-saved.py",
+      "sha256": "244f58b63802cb2cfb81950d6335a18f6c67d2146c79d01197140748bb90af3b",
+      "bytes": 19824
+    }
+  ],
+  "files_count": 26,
+  "study_status": "TWO_VALID_NATIVE_NEGATIVES_NO_GO",
+  "physical_attempts": 3,
+  "valid_complete": 2,
+  "invalid": 1,
+  "no_additional_trace_passes": true
+}

@@ -1,0 +1,33 @@
+{
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-TP3E-B-ATR0.5-btc-direction-raw-native.json",
+  "raw_sha256": "fe677c955d9159c07d23a42ec10766288d9f729286832ab0f4a9c786444088b8",
+  "historical_engines_started": 0,
+  "stored_cash_or_returns_modified": false,
+  "months": 24,
+  "same_source_monthly_recomputation": true,
+  "last_month_equals_interval_cash": true,
+  "precision_checks": {
+    "28": {
+      "compounded": "406.9369873568769999999999988",
+      "ratio": "406.936987356877",
+      "delta": "-1.2E-24",
+      "original_guard": "1e-24",
+      "full_unchanged_assert_report_boundaries": "ValueError:MONTHLY_COMPOUNDING_MISMATCH"
+    },
+    "50": {
+      "compounded": "406.93698735687699999999999927411949004712766325780",
+      "ratio": "406.936987356877",
+      "delta": "-7.2588050995287233674220E-25",
+      "original_guard": "1e-24",
+      "full_unchanged_assert_report_boundaries": "PASS"
+    },
+    "80": {
+      "compounded": "406.93698735687699999999999927411949004712766325777590258634512707103796658345414",
+      "ratio": "406.936987356877",
+      "delta": "-7.2588050995287233674222409741365487292896203341654586E-25",
+      "original_guard": "1e-24",
+      "full_unchanged_assert_report_boundaries": "PASS"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "source_commit": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "source_manifest_sha256": "5c29dfa050eefde5425794ef672584572083f39e65517d52914c1a45f54df440",
+  "disposition": "GO_REPORT_PRECISION_SOURCE_FOR_PHYSICAL_ATTEMPT_3",
+  "checks": {
+    "only_reporter_changed": true,
+    "only_precision_test_added": true,
+    "expected_config_same": true,
+    "data_pins_same": true,
+    "protocol_same": true,
+    "no_engine_started": true,
+    "six_focused_pass": true,
+    "frozen_tooling_all_hashes": true,
+    "changed_source_actual_hash": true,
+    "test_actual_hash": true,
+    "original_raw_unchanged_since_review": true
+  },
+  "changed": [
+    "runtime/coinmaster/research/native_baseline.py"
+  ],
+  "added": [
+    "runtime/tests/test_native_report_precision.py"
+  ],
+  "guard": "LOCAL_DECIMAL80_ORIGINAL_1e-24_NO_GLOBAL_CONTEXT_OR_MONEY_CHANGE",
+  "engines_started_by_reviewer": 0,
+  "original_attempt_2": "INVALID_PRESERVED_NO_RECOVERY",
+  "recovery_never_executed": "OWNER_ATTESTED_NO_HELPER_EXECUTED_NO_RAW_OR_GZIP_MODIFIED_NO_RECOVERED_REPORT",
+  "economic_validity": "NOT_YET_TESTED_BY_NEW_COMPLETE_RUN",
+  "root_per_run_authorization_required": true
+}

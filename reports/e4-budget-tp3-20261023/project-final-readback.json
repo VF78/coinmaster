@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-23T14:26:39.345644+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "Project": "https://github.com/users/VF78/projects/2",
+  "title": "[S0 DD50] E4 SOL budget / BTC TP3 \u2014 complete; no 50/90 winner",
+  "state": "closed",
+  "state_reason": "completed",
+  "status": "Done",
+  "issue_body_sha256": "1ddc700226bfd37de3e8b7c874fd320a08eda7aac0df116e27e2426b355ab6b4",
+  "body_and_status_readback": "PASS",
+  "scope": "E4_BUDGET_TP3_COMPLETE_NO_GO_ECONOMIC_GOAL_NOT_MET",
+  "completed": [
+    "T00",
+    "T01",
+    "T02",
+    "T03",
+    "T04",
+    "T05",
+    "T06"
+  ],
+  "new_issues": 0,
+  "comments_created": 0,
+  "economic_goal_achieved": false,
+  "physical_runs": 3,
+  "active_engines": 0,
+  "pilot_changes": 0,
+  "task_id_basis": "Exact seven checked T00..T06 lines in read-back issue body; generic updater R aliases normalized locally, body/status evidence unchanged"
+}

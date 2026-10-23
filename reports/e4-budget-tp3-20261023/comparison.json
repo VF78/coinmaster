@@ -1,0 +1,142 @@
+[
+  {
+    "recipe": "S0",
+    "TOTAL": "6077107.23887483",
+    "ROI_percent": "60671.072388748300",
+    "net_profit_retention_percent": "100",
+    "global_settled_DD_percent": "66.25691486468686414439256686",
+    "fees": "945927.73761825",
+    "BTC_fills": "416",
+    "SOL_fills": "205",
+    "maker_notional": "769383840.627700008811020",
+    "taker_notional": "1440092671.804400002680068",
+    "maker_fees": "153876.76812554",
+    "taker_fees": "792050.96949271",
+    "BTC_fill_net_ex_funding": "5345694.488795810293496",
+    "SOL_fill_net_ex_funding": "678661.20768595",
+    "unallocated_cash_bridge": "42751.542393069706504",
+    "PASS_50_90": false,
+    "state": "REUSED_ARCHIVE_NOT_RERUN"
+  },
+  {
+    "recipe": "E4",
+    "TOTAL": "5631617.35953723",
+    "ROI_percent": "56216.173595372300",
+    "net_profit_retention_percent": "92.65729347120922274896207062",
+    "global_settled_DD_percent": "57.58541045962226379114466259",
+    "fees": "706755.52937844",
+    "BTC_fills": "337",
+    "SOL_fills": "198",
+    "maker_notional": "652023664.7018",
+    "taker_notional": "1047910538.9778",
+    "maker_fees": "130404.73294036",
+    "taker_fees": "576350.79643808",
+    "BTC_fill_net_ex_funding": "4858451.835330331913550",
+    "SOL_fill_net_ex_funding": "713702.32329125",
+    "unallocated_cash_bridge": "49463.200915648086450",
+    "PASS_50_90": false,
+    "state": "REUSED_ARCHIVE_NOT_RERUN"
+  },
+  {
+    "recipe": "SOL",
+    "TOTAL": "1360086.36695243",
+    "ROI_percent": "13500.863669524300",
+    "net_profit_retention_percent": "22.25255486340816800127320123",
+    "global_settled_DD_percent": "66.85904748908962764036494870",
+    "fees": "325966.74779559",
+    "BTC_fills": 337,
+    "SOL_fills": 141,
+    "BTC_fill_net_ex_funding": "1197550.358815470119772",
+    "SOL_fill_net_ex_funding": "105967.82138895",
+    "unallocated_cash_bridge": "46568.186748009880228",
+    "maker_notional": "277903134.5515",
+    "maker_fees": "55580.62691030",
+    "taker_notional": "491611128.8819",
+    "taker_fees": "270386.12088529",
+    "liquidations": 0,
+    "complete_native_receipts": 1051199,
+    "global_peak_trough_recovery": {
+      "peak_utc": "2026-07-06T13:40:00+00:00",
+      "peak_equity": "3769756.2231621",
+      "trough_utc": "2026-08-19T06:14:00+00:00",
+      "trough_equity": "1249333.11969524",
+      "recovery_utc": null,
+      "recovery_equity": null
+    },
+    "fixed_protocol_windows": {
+      "OCT": {
+        "local_window_rebased_DD_percent": "50.13219246355733358296512994",
+        "continuous_global_peak_DD_inside_window_percent": "50.13219246355733358296512994"
+      },
+      "JAN": {
+        "local_window_rebased_DD_percent": "44.53328872098787558241546539",
+        "continuous_global_peak_DD_inside_window_percent": "44.53328872098787558241546539"
+      },
+      "NOV": {
+        "local_window_rebased_DD_percent": "54.79202121391766277174895510",
+        "continuous_global_peak_DD_inside_window_percent": "54.79202121391766277174895510"
+      }
+    },
+    "source": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+    "config_sha256": "7392a050356ed09c9615c63c654242eb4c119d426ad74c2c157129b0a59be374",
+    "signed_asset_funding": "UNKNOWN",
+    "TOTAL_minus_E4": "-4271530.99258480",
+    "fees_minus_E4": "-380788.78158285",
+    "BTC_fill_net_ex_funding_minus_E4": "-3660901.476514861793778",
+    "SOL_fill_net_ex_funding_minus_E4": "-607734.50190230",
+    "unallocated_cash_bridge_minus_E4": "-2895.014167638206222",
+    "PASS_50_90": false,
+    "state": "VALID_NATIVE_INDEPENDENT_MONEY_AUDIT_PASS"
+  },
+  {
+    "recipe": "BTC_CORRECTED",
+    "TOTAL": "4120806.47444031",
+    "ROI_percent": "41108.064744403100",
+    "net_profit_retention_percent": "67.75562574698574100393451199",
+    "global_settled_DD_percent": "61.07965831810633248928463321",
+    "fees": "648028.54314295",
+    "BTC_fills": 405,
+    "SOL_fills": 196,
+    "BTC_fill_net_ex_funding": "3351516.490087319823024",
+    "SOL_fill_net_ex_funding": "710371.27886975",
+    "unallocated_cash_bridge": "48918.705483240176976",
+    "maker_notional": "635406093.4877",
+    "maker_fees": "127081.21869754",
+    "taker_notional": "947176953.5366",
+    "taker_fees": "520947.32444541",
+    "liquidations": 0,
+    "complete_native_receipts": 1051199,
+    "global_peak_trough_recovery": {
+      "peak_utc": "2024-10-03T04:01:00+00:00",
+      "peak_equity": "14056.6316829",
+      "trough_utc": "2024-10-03T15:45:00+00:00",
+      "trough_equity": "5470.88907995",
+      "recovery_utc": "2024-10-04T16:30:00+00:00",
+      "recovery_equity": "14080.49067148"
+    },
+    "fixed_protocol_windows": {
+      "OCT": {
+        "local_window_rebased_DD_percent": "61.07965831810633248928463321",
+        "continuous_global_peak_DD_inside_window_percent": "61.07965831810633248928463321"
+      },
+      "JAN": {
+        "local_window_rebased_DD_percent": "54.23204989631995540378287831",
+        "continuous_global_peak_DD_inside_window_percent": "54.23204989631995540378287831"
+      },
+      "NOV": {
+        "local_window_rebased_DD_percent": "43.86911442860763348053841105",
+        "continuous_global_peak_DD_inside_window_percent": "43.86911442860763348053841105"
+      }
+    },
+    "source": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+    "config_sha256": "1db706c900756195f3e265e1779260856b499db8a4118642df5d32269dd1f644",
+    "signed_asset_funding": "UNKNOWN",
+    "TOTAL_minus_E4": "-1510810.88509692",
+    "fees_minus_E4": "-58726.98623549",
+    "BTC_fill_net_ex_funding_minus_E4": "-1506935.345243012090526",
+    "SOL_fill_net_ex_funding_minus_E4": "-3331.04442150",
+    "unallocated_cash_bridge_minus_E4": "-544.495432407909474",
+    "PASS_50_90": false,
+    "state": "VALID_NATIVE_INDEPENDENT_MONEY_AUDIT_PASS"
+  }
+]

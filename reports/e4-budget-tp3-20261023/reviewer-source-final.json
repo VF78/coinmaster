@@ -1,0 +1,19 @@
+{
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "disposition": "GO_SCOPED_BOUNDED_RESEARCH_SOURCE_ONLY",
+  "checks": {
+    "runtime/coinmaster/research/native_baseline.py": true,
+    "runtime/coinmaster/strategy/next_band.py": true,
+    "runtime/coinmaster/strategy/wave_overlay.py": true,
+    "runtime/tests/test_native_budget_tp3.py": true,
+    "runtime/tests/test_wave_native_integration.py": true,
+    "full_patch": true,
+    "protocol": true,
+    "focused_12": true,
+    "relevant_219": true,
+    "no_started": true
+  },
+  "unique_passing_cases": 224,
+  "historical_engines_by_reviewer": 0,
+  "no_pilot_authorization": true
+}

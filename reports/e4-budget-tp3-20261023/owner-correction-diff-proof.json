@@ -1,0 +1,15 @@
+{
+  "changed": [
+    "runtime/coinmaster/research/native_baseline.py"
+  ],
+  "added": [
+    "runtime/tests/test_native_report_precision.py"
+  ],
+  "economic_strategy_source_exact": true,
+  "focused_test_source_exact": true,
+  "engine_config_exact": true,
+  "engine_input_pins_exact": true,
+  "old_engine_source_preserved": true,
+  "no_recovery_report_created": true,
+  "new_physical_engines": 0
+}

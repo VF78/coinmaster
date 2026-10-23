@@ -1,0 +1,21 @@
+{
+  "source_commit": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "base_engine_source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "branch": "codex/e4-budget-report-precision-20261023",
+  "source_snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-6061446",
+  "source_manifest_sha256": "5c29dfa050eefde5425794ef672584572083f39e65517d52914c1a45f54df440",
+  "files_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-prepare-corrected.py": "20f185c7914403c7effb8273cdac26d0f4f60dd8b7f63b082444dad034eb4fdf",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-runner.py": "111383ef60216580ee8d7445afd35e208f2d5a0bfbb1ab3efa832499143229c8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-collect-native.py": "6df1f8e5f966d3ef5db96c2941c7c466292cc4b4cee300f2c04e676e64400477",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-report-precision-source.patch": "04c6db4d817541e14a3721572efbf1bed8348c36578f9fcc35722aec508ce9e5",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-report-precision-tests.log": "8e36e7c96ed0719c7202be912170c145d3470947ed22ff4cc839f6ba84cd4124",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC_CORRECTED/preparation.json": "71df689351d2b5b0c0805285916773c822667106f91e93ccffca4b5df5c33541",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC_CORRECTED/expected-config.json": "7fde050e55577b921109836bea1141a81a44f5ae85fd382c113188f74d90394a"
+  },
+  "focused_tests": "6 PASSED,17 DESELECTED",
+  "report_guard": "LOCAL_DECIMAL80_UNCHANGED_1E-24_THRESHOLD_NO_MONETARY_ENGINE_CHANGE",
+  "new_historical_engines": 0,
+  "physical_attempts_already_consumed": 2,
+  "aborted_recovery": "NO_HELPER_EXECUTED_NO_RAW_OR_GZIP_MODIFIED_NO_RECOVERED_REPORT"
+}

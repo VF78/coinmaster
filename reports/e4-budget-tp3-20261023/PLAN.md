@@ -11,13 +11,15 @@ At most FOUR full physical historical native attempts, including invalid attempt
 ## Tasks and dependencies
 
 - [x] T00: verify current HEAD/state and accepted scope; preserve completed studies.
-- [ ] T01: inspect exact source/state/ATR/TP-right semantics; freeze one causal SOL numerical recipe and BTC exact native lot/right contract BEFORE implementation and historical execution.
-- [ ] T02: one focused source pass in canonical isolated checkout; relevant native partial/cancel/denied/latefill/ownership/quote/rights tests. Source flags OFF/default invariants and archived parameter pins.
-- [ ] T03: independent scoped source/money review; immutable source/config/input/tooling freeze and root exact GO. No GO before focused tests pass.
-- [ ] T04: full native SOL and BTC separately; independent saved output checks and root combined selection.
-- [ ] T05: conditional combined and passing-candidate fresh repeat within4 physical attempts.
-- [ ] T06: full comparison/control/attribution/global minute DD/native fees-notional/right lifecycle artifacts; checkpoint and existing Project#123 readback. Complete research is not equivalent to goal met.
+- [x] T01: inspect exact source/state/ATR/TP-right semantics; freeze one causal SOL numerical recipe and BTC exact native lot/right contract BEFORE implementation and historical execution.
+- [x] T02: one focused source pass in canonical isolated checkout; relevant native partial/cancel/denied/latefill/ownership/quote/rights tests. Source flags OFF/default invariants and archived parameter pins.
+- [x] T03: independent scoped source/money review; immutable source/config/input/tooling freeze and root exact GO. No GO before focused tests pass.
+- [x] T04: full native SOL and BTC separately; independent saved output checks and root combined selection.
+- [x] T05: conditional combined and passing-candidate fresh repeat within4 physical attempts.
+- [x] T06: full comparison/control/attribution/global minute DD/native fees-notional/right lifecycle artifacts; checkpoint and existing Project#123 readback. Complete research is not equivalent to goal met.
 
 Numerical recipe frozen in protocol-freeze.json before implementation: SOL35% activation/55%H warningfloor/1xclosedD1WilderATR14/conservativeBTCreserve/oncecycle-excesscut; genuine unused original adds admitted only withinbudget, no automaticrestoration. No parameter grid or selecting date-specific exceptions. Proposed B-TP3:20% actualinitialBTC at favorable1% from frozenPLANREF carved out of existingpositiveTP3, remaining atoriginalTP3. TP1/2fallback preserve. Source inspection proved existing proportional actual-partial-fill SOL grants; preserve this formula and total originalTP3 lot budget. No new completion-only gate; legitimate early partial advances fractional entitlement in time.
 
 Full launch ledger begins0/4, active0. New code/protocol changes after first run require explicit traceable correction within originalbudget; at most one substantial correction. Previous read-only postmortem9916139 is evidence, not new run authorization beyond this accepted task.
+
+Final: all bounded tasks complete, TWO_VALID_NATIVE_NEGATIVES_NO_GO; conditional combination/repeat NOT_RUN_GATE_FAILED, not executed.3/4physical consumed, launch closed. Economic goal unmet. Project#123 Done/closed exactbody/statusreadbackPASS; pilot untouched.

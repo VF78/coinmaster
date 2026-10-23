@@ -1,27 +1,36 @@
-# E4: SOL risk budget + ранний частичный BTC TP3 — принято 23.10.2026
+# E4 SOL budget / BTC early TP3 — завершено, цель50/90 НЕ достигнута
 
-Владелец разрешил реализацию и отдельные native-проверки SOL и BTC, затем сочетание только при полезных результатах. Максимум **4 полных физических исторических native-попытки**, включая invalid/corrections. **S0 не пересчитывается, пилот и production не меняются.** Предыдущие исследования завершены; отрицательные результаты сохранены.
+Выполнено согласованное исследование:3/4 физических native-попытки, две валидные версии и одна сохранённая невалидная попытка. Done означает завершение bounded research, а не экономической цели. Пилот/production/сервисы/ключи/реальные ордера/deployment не менялись. S0/E4 не пересчитывались.
 
-Приоритет P1: снижать DD при сохранении прибыли. Цель: непрерывная global settled-minute DD≤50%, TOTAL≥5470396.514987347 (90% чистой прибыли S0),0 ликвидаций, полные native receipts и terminal flat; затем MAX_TOTAL. Период [2024-09-01,2026-09-01),10000USDT,RESERVE0/DPoff, прежние Bybit/fees/funding/margin/execution.
+[Отчёт и JSON/CSV](https://github.com/VF78/coinmaster/tree/codex/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023). Source5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e; report-only precision fix6061446164cc32c27b3ea0e13e86c9cc56d955ac, оба exact GitHub refs PASS.
 
-Контроль exact E4: TOTAL5631617.35953723/DD57.5854104596%, source bd04c9b3858bcda40060a08eff488849c69af5d8; архивный S0 TOTAL6077107.23887483. Контроли не пересчитывать. [Новый протокол/артефакты](https://github.com/VF78/coinmaster/tree/codex/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023). [Постмортем](https://github.com/VF78/coinmaster/tree/codex/btc-pattern-pilot-m2-20261021/reports/e4-postmortem-20261023).
+Acceptance:global settled-minute DD≤50%,TOTAL≥5470396.514987347(≥90% чистой прибыли S0),затемMAX_TOTAL. [2024-09-01,2026-09-01),10000USDT,RESERVE0/DPoff,прежние Bybit/fees/funding/margin/native execution.
 
-## Зафиксированные версии
+|Версия|TOTAL USDT|Сохранено прибыли S0|Global DD|
+|---|---:|---:|---:|
+|S0 архив|6077107.23887483|100%|66.2569148647%|
+|E4 архив|5631617.35953723|92.6572934712%|57.5854104596%|
+|SOL budget|1360086.36695243|22.2525548634%|66.8590474891%|
+|BTC early TP3 corrected|4120806.47444031|67.7556257470%|61.0796583181%|
 
-**SOL only:** global DD35%, warning floor55% непрерывного native equity high-water, стресс1×completedD1 WilderATR14. Консервативный BTC-reserve без hedge-credit. При доминирующем SOL stress сокращать только превышение commission-aware допустимого native lot остатка, один раз за actual SOL-cycle. Новые исходные неиспользованные adds допускаются целиком только в budget; consumed права не возрождаются, автоматического восстановления/таймеров нет. Mandatory/ordinary exit приоритет. UNKNOWN не flat/0. Сильный stress может дать полный выход; это явно проверяемый риск гипотезы.
+## Выполненные задачи
 
-**BTC only:**20% actualinitialBTC из существующей положительной TP3-доли на1% favorable от frozen PLANREF после завершения split; остаток по старомуTP3. TP1/TP2/fallback сохраняются. Существующая пропорциональная выдачаSOLправа по actualpartialfills сохраняется с исходным общим TP3-denominator. Один существующий native level-owner: ранняя tranche, затем original-price remaining на следующей допустимой quote; без двойного резервирования/раннего completion.
+- [x] T00: HEAD/контроли/действующее разрешение сверены, прежние результаты и пользовательские изменения сохранены.
+- [x] T01: до реализации/прогонов frozen SOL35%DD/55%H/1×completedD1WilderATR14/conservativeBTCreserve/oncecycle-excesscut/genuine-unused-add budget; BTC20%actualinitial изTP3 на1%PLANREF,remainingTP3 по старой цели,TP1/2fallback и existing actualpartial proportional SOL rights.
+- [x] T02: isolatedcanonicalVPS/defaultOFF/прежний nativeexecutor/domain/PnL;224unique focused/relevant PASS,actualpartial/cancel/denied/forcedexit/SOLsubmit/no-consumption.
+- [x] T03: independent scopedreview/source/config/data/toolingfreeze/rootGO. Одна report-only коррекция localDecimal80 месячнойсверки, ПРЕЖНИЙ1e−24guard.6focusedPASS+independent correctionGO, стратегия/config/data/fees unchanged.
+- [x] T04: SOL#1VALID; BTC#2 послеengine прерванreportassert+незакрытыйgzip — INVALID,rawнечинился. BTC_CORRECTED#3 newengine/journal,normalcompleteexports. Две валидные версии independently PASS,1051199/1051199receiptsкаждая,0gaps/0liq/terminalflat.
+- [x] T05: COMBINED=NOT_RUN_GATE_FAILED;FRESH_REPEAT=NOT_RUN_NO_50_90_CANDIDATE. Четвёртаяпопытканепотрачена,launchauthorizationclosed,active/reserved0.
+- [x] T06: comparison/fees/maker-takerturnover/cashbridge/48months/21globalexcursions/targetwindows/actualrisk+TP3lots;26independentfilehashes/934rootQA/finalcompactreviewPASS;checkpoint/Projectreadback.
 
-## Задачи и зависимости
+T00→T01→T02→T03→T04→T05→T06 завершены. Ни скрытогоP0/controlrerun,ни сетки/новоймодели/SDK/PnLengine/миграцииNautilus/деплоя.
 
-- [x] T00: HEAD/state/контроли/новое разрешение сверены, старые результаты сохранены.
-- [x] T01: causal числовой SOL-рецепт и BTC actual partial-right/native lot контракт зафиксированы до реализации/прогонов.
-- [ ] T02 (в работе): defaultOFF research source только isolated canonical VPS checkout; один владелец, focused tests и relevant native lifecycle pass.
-- [ ] T03: независимое адресное money/order review, immutable source/config/input/tooling и root GO перед historical engine.
-- [ ] T04: отдельные SOL и BTC full native, разные engine/account/funding journal; независимая верификация actual outputs.
-- [ ] T05: условное сочетание, только если оба технически валидны, сохраняют≥90% прибыли, globalDD не хужеE4 и улучшают свои SOL/BTC target-window DD; BTC globalmax не обязан уменьшаться, пока октябрьскийSOL не изменён. Повтор только кандидата50/90, всё внутри4.
-- [ ] T06: comparison TOTAL/ROI/DD/fees/notional/funding/rights/календарь/capital attribution, checkpoint и Project readback. Done=пакет завершён, не автоматическое достижение50/90.
+## Выводы
 
-Зависимости T00→T01→T02→T03→T04→T05→T06. Запусков0/4, active0; source tests не являются full historical runs. Без скрытого P0/сеток/других порогов. Один engine на Mac; source edits только canonical VPS, Mac immutable execution mirror. Research не получает trading secrets. Нет SDK/нового PnL engine/миграцииверсии/деплоя.
+SOL:5decisions/26actualriskfills/23994.6SOL;13отказов полнойштатнойadd. ОктябрьDD50.1322%,январь44.5333% лучшеE4,ноTOTALпотерял4.272млн,globalDD66.8590%летом2026. BTCcalendar/prices337fillsсохранены,320qtyизменены вследзакапиталом.
 
-Benchmark NOT_FAITHFUL_DIAGNOSTIC,1m CLOSE synthetic quotes; DD не intraminute/live гарантия; история не freshOOS, signedassetfundingUNKNOWN. Новые результаты пока отсутствуют.
+BTC:82allocations/68actualearlyfills,66MAKER+2TAKER;early+remainingнепревышаютoriginalTP3target. НоябрьDD43.8691%вместо54.7928%,нооктябрь61.0797%/январь54.2320%,TOTALпотерял1.511млн. Локальныйэффектнепроходитпортфельнуюцель.
+
+Новыйвариантдляdeployневыбран;S0сохранён,E4остаётсяисследовательскойбазой. Следующиеновыепрогоны/параметрытолькопосленовогозадания;незатраченныйслотнеразрешаетпродолжать.
+
+NOT_FAITHFUL_DIAGNOSTIC/1mCLOSEsyntheticquotes/notfreshOOS;settledDDнеintraminute/liveгарантия.SignedassetfundingUNKNOWN,cashbridgeнеfunding.ОтсутствующаяasofпроекцияPLANREF/доменныхправUNKNOWN;формулапроверенаsource+nativefixtures,доступныеlots/ownership/fillsпроверены.OriginalfailedBTCневыдаётсязауспешныйrepeat.

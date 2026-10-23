@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-23T14:00:31.516450+00:00",
+  "repository": "https://github.com/VF78/coinmaster",
+  "branch": "codex/e4-budget-report-precision-20261023",
+  "source_commit": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "exact_GitHub_ref_readback": "PASS",
+  "normal_push": "PASS",
+  "bundle_sha256": "0e1e001068cc1ae47dcb4f4fdc5909970278dee5dfb8afdc521e1075186b2902",
+  "Mac_product_edits": false,
+  "source_objects_imported_only": true,
+  "deployment": false,
+  "pilot_touched": false
+}

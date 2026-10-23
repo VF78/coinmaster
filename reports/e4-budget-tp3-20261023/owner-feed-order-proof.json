@@ -1,0 +1,29 @@
+{
+  "status": "PASS_ACTUAL_NATIVE_BOTH_MARKS_BEFORE_BOTH_QUOTES",
+  "events": [
+    {
+      "kind": "MARK",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "ns": 1
+    },
+    {
+      "kind": "MARK",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "ns": 1
+    },
+    {
+      "kind": "QUOTE",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "ns": 1,
+      "paired_before_callback": true
+    },
+    {
+      "kind": "QUOTE",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "ns": 1,
+      "paired_before_callback": true
+    }
+  ],
+  "historical_engines_added": 0,
+  "source_order": "identical native_baseline marks.add_data before quotes.add_data then sort_data"
+}

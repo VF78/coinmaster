@@ -1,0 +1,130 @@
+{
+  "recipe": "SOL",
+  "status": "PASS",
+  "checks": {
+    "enabled_SOL_only_or_BTC_only": true,
+    "actual_native_liquidity_all_fills": true,
+    "actual_native_liquidity_fees_exact": true,
+    "market_fills_not_relabeled_maker": true,
+    "all13_actual_execution_quote_rows_exact": true,
+    "trigger_0_numerical_cap": true,
+    "trigger_0_DD_and_SOL_dominance": true,
+    "trigger_0_actual_excess_only": true,
+    "trigger_0_completed_D1": true,
+    "trigger_1_numerical_cap": true,
+    "trigger_1_DD_and_SOL_dominance": true,
+    "trigger_1_actual_excess_only": true,
+    "trigger_1_completed_D1": true,
+    "trigger_2_numerical_cap": true,
+    "trigger_2_DD_and_SOL_dominance": true,
+    "trigger_2_actual_excess_only": true,
+    "trigger_2_completed_D1": true,
+    "trigger_3_numerical_cap": true,
+    "trigger_3_DD_and_SOL_dominance": true,
+    "trigger_3_actual_excess_only": true,
+    "trigger_3_completed_D1": true,
+    "trigger_4_numerical_cap": true,
+    "trigger_4_DD_and_SOL_dominance": true,
+    "trigger_4_actual_excess_only": true,
+    "trigger_4_completed_D1": true,
+    "add_0_stress_math": true,
+    "add_0_entire_request_budget_decision": true,
+    "add_1_stress_math": true,
+    "add_1_entire_request_budget_decision": true,
+    "add_2_stress_math": true,
+    "add_2_entire_request_budget_decision": true,
+    "add_3_stress_math": true,
+    "add_3_entire_request_budget_decision": true,
+    "add_4_stress_math": true,
+    "add_4_entire_request_budget_decision": true,
+    "add_5_stress_math": true,
+    "add_5_entire_request_budget_decision": true,
+    "add_6_stress_math": true,
+    "add_6_entire_request_budget_decision": true,
+    "add_7_stress_math": true,
+    "add_7_entire_request_budget_decision": true,
+    "add_8_stress_math": true,
+    "add_8_entire_request_budget_decision": true,
+    "add_9_stress_math": true,
+    "add_9_entire_request_budget_decision": true,
+    "add_10_stress_math": true,
+    "add_10_entire_request_budget_decision": true,
+    "add_11_stress_math": true,
+    "add_11_entire_request_budget_decision": true,
+    "add_12_stress_math": true,
+    "add_12_entire_request_budget_decision": true,
+    "once_per_actual_SOL_native_cycle": true,
+    "no_unknown_budget_events": true
+  },
+  "failed_checks": [],
+  "notes": {
+    "trigger_table": [
+      {
+        "timestamp_ns": 1727945340000000000,
+        "held": "1000",
+        "cap": "0",
+        "expected_excess": "1000",
+        "actual_reduction": "1000",
+        "native_risk_fill_count": 1
+      },
+      {
+        "timestamp_ns": 1736751960000000000,
+        "held": "4000",
+        "cap": "820.8",
+        "expected_excess": "3179.2",
+        "actual_reduction": "3179.2",
+        "native_risk_fill_count": 4
+      },
+      {
+        "timestamp_ns": 1747902000000000000,
+        "held": "7000",
+        "cap": "3722.3",
+        "expected_excess": "3277.7",
+        "actual_reduction": "3277.7",
+        "native_risk_fill_count": 4
+      },
+      {
+        "timestamp_ns": 1755091800000000000,
+        "held": "6000",
+        "cap": "1013.9",
+        "expected_excess": "4986.1",
+        "actual_reduction": "4986.1",
+        "native_risk_fill_count": 5
+      },
+      {
+        "timestamp_ns": 1758148020000000000,
+        "held": "13000",
+        "cap": "1448.4",
+        "expected_excess": "11551.6",
+        "actual_reduction": "11551.6",
+        "native_risk_fill_count": 12
+      }
+    ],
+    "SB_event_counts": {
+      "SB_TRIGGER": 5,
+      "SB_NATIVE_FLAT_RESET": 5,
+      "SB_ADD_ADMISSION": 13,
+      "SB_ADD_BUSY": 5
+    },
+    "actual_risk_fill_count": 26,
+    "fee_price_basis": "Frozen source _submit_intent passes native executable quote price; _next_budget_admit charges qty*executable*fee, stress uses raw mark. All13saved poststress values exactly match independently read frozen execution parquet completed-minute close (open+60sec), distinct from saved rawmark where applicable.",
+    "right_semantics": "Observed allow/deny events audit full requested quantity; preservation of unused entitlement and mandatory priority also require frozen source/native focused tests. No absence-of-event counterfactual claimed."
+  },
+  "actual_native_liquidity": {
+    "MAKER": {
+      "fills": 113,
+      "notional": "277903134.5515",
+      "fees": "55580.62691030"
+    },
+    "TAKER": {
+      "fills": 365,
+      "notional": "491611128.8819",
+      "fees": "270386.12088529"
+    }
+  },
+  "signed_asset_funding": "UNKNOWN",
+  "no_new_engine": true,
+  "no_receipt_rescan": true,
+  "artifact_sha256": "8f374604511ed76701a97fb3bbfb37d0daf7fefc456df64ca154902f80c30902",
+  "raw_sha256": "73ff19d19fb44c1439165e11962a2f812b9ae7dbdc3242b758440678ae2a89fa"
+}

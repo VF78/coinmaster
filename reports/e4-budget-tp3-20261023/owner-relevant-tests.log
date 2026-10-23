@@ -1,0 +1,477 @@
+........................................................................ [ 32%]
+........................................................................ [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=============================== warnings summary ===============================
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py: 5 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py: 6 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py: 9 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py: 45 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py: 18 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_btc_sizing.py: 13 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_minute_risk.py: 1 warning
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py::test_budget_cap_fee_dominance_no_churn_and_unused_right
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py:60: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py::test_tp3_native_sequential_actual_partial_rights_and_lots[1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py::test_tp3_native_sequential_actual_partial_rights_and_lots[-1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py:96: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py::test_budget_current_native_equity_stale_unknown_and_native_cut
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py:119: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py::test_global_peak_keeps_flat_history_even_with_unknown_atr
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_budget_tp3.py:132: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py::test_defaults_and_ep_unique_latch_origin_gap_side_change
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py:46: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py::test_e4_closed_bar_buffers_until_quote_uses_accepted_daily_and_preserves_attempt
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py:67: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py::test_z_native_partial_cancel_retired_budget_no_rights_positive_tp_preserved
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py:88: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py::test_z_unarmed_no_stop_and_ordinary_reduction_cancels_arm
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py:101: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py::test_s_cancel_add_late_fill_reconciles_frozen_remaining_partial_no_readd
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py:134: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py::test_custom_closed_ohlc_never_matches_with_original_bar_execution_true
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py:157: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py::test_z_cancel_ack_late_risk_fill_before_ordinary_tp_no_fake_sol_rights
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_next_band.py:181: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_default_off_h4_separate_bar_branch_and_no_early_signal
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:45: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_h4_native_partial_children_target_reduction_expiry_and_no_liquidity_reuse
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:73: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_h4_signal_reversal_native_exit_and_second_activation_keeps_new_deadline
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:89: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_final_btc_tp_invalidates_unused_rights_and_native_group_flat[True]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_final_btc_tp_invalidates_unused_rights_and_native_group_flat[False]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:109: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_h4_final_btc_flat_waits_cancel_ack_and_native_late_fill_then_closes
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:160: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_b_latch_only_after_actual_regime_group_terminal_and_only_fill_clears
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:190: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_h4_pending_activation_keeps_original_deadline_through_partial_old_exit
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:210: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_h4_native_composite_receipt_uses_only_delivered_complete_minutes
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:232: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.run(streaming=True);e.clear_data()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_h4_native_composite_receipt_uses_only_delivered_complete_minutes
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/coinmaster/strategy/wave_overlay.py:374: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(self.config.research_h4_bar_type)
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_h4_native_composite_receipt_uses_only_delivered_complete_minutes
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:239: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py::test_c0_intermediate_btc_tp_preserves_original_sol_quantity
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_hedge_band.py:254: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_split_exact_odd_lots_first_immediate_second_native_maker_and_fixed_targets[1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_split_exact_odd_lots_first_immediate_second_native_maker_and_fixed_targets[-1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:61: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_split_partial_first_retries_only_first_and_unknown_ack_blocks_duplicate
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:82: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_limit_cancel_ack_then_only_remaining_fallback_and_targets[deadline]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_limit_cancel_ack_then_only_remaining_fallback_and_targets[early_tp]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:102: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_split_delayed_cancel_ack_and_racing_partial_never_exceeds_parent
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:131: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_mandatory_close_preempts_second_and_cancels_parent_quantity
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:145: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_pause_stops_entry_remainder_and_fixed_target_basis_has_native_reduce_cap
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:163: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py: 60 warnings
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/coinmaster/strategy/wave_overlay.py:370: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_base_on_actual_btc_fills_trims_after_tp_and_closes_flat[0.5]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_base_on_actual_btc_fills_trims_after_tp_and_closes_flat[0.75]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_base_on_actual_btc_fills_trims_after_tp_and_closes_flat[1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:198: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_cover_partial_base_and_unknown_ack_no_duplicate_native_owner
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:217: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tactical_later_closed_15m_then_future_quote_cap_and_expiry[0.75]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tactical_later_closed_15m_then_future_quote_cap_and_expiry[1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:247: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_closed_bar_pipeline_tactical_uses_first_future_quote
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:318: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.add_data(quotes,sort=False);e.sort_data();e.run(streaming=True);e.clear_data()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_closed_bar_pipeline_tactical_uses_first_future_quote
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:330: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_split_denied_child_cancels_accepted_remainder_without_extra_orders
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:344: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_split_dp_latch_cancels_waiting_parent_before_next_quote
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:359: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_joint_margin_reserves_full_btc_plan_and_mandatory_sol_not_double_child
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:374: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_omitted_zero_parent_exact_q_two_children_reference_h_and_causal_rights[deferred]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_native_omitted_zero_parent_exact_q_two_children_reference_h_and_causal_rights[zero_net]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:421: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_daily_mandatory_close_preempts_unfinished_split_parent[REGIME]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_daily_mandatory_close_preempts_unfinished_split_parent[TRAIL]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:439: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_permanent_cover_has_no_legacy_sol_hard_timeout_owner
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:454: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_paused_base_retries_on_first_resumed_quote
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:469: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_denied_base_retries_after_explicit_one_hour_admission_cooldown
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:487: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_hourly_five_pp_drift_rebalances_on_future_quote_not_every_price_tick
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:505: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_one_lot_parent_is_explicit_immediate_rounding_exception_with_exact_q
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:518: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_partial_tactical_rechecks_quality_and_does_not_buy_fallback
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:553: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_pending_btc_without_native_fill_does_not_start_sol_anchor_or_tactic_window
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:570: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_initial_base_anchor_is_actual_native_partial_fill_vwap_and_freezes
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:598: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[-1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:631: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_partial_first_leg_cannot_freeze_or_invent_completion
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:649: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:671: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_early_tp_accelerates_cancel_ack_path_and_keeps_reference
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:684: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_default_off_retains_actual_blended_management_reference
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:695: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_mandatory_close_before_first_leg_complete_cancels_truthful_leaves
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:721: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_planref_v1_freeze_preserves_real_native_tp_and_sol_right
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:741: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_crossed_positive_targets_after_complete_parent_use_native_taker_and_actual_rights[1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_crossed_positive_targets_after_complete_parent_use_native_taker_and_actual_rights[-1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:765: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_uncrossed_target_keeps_native_postonly_maker_and_off_keeps_original_skip
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_uncrossed_target_keeps_native_postonly_maker_and_off_keeps_original_skip
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:779: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_partial_unknown_ack_and_adverse_recheck_conserve_target_leaves
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:807: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_mandatory_close_preempts_partial_retry_and_clears_owner
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:821: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_cannot_run_before_parent_complete_or_for_zero_level
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:839: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py::test_tp_ioc_partial_retry_never_exceeds_current_native_position
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_split_cover.py:862: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[accepted_canceled-REGIME]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[accepted_canceled-TRAIL]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[partial_late_fill-REGIME]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[partial_late_fill-TRAIL]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[rejected-REGIME]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[rejected-TRAIL]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[denied-REGIME]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[denied-TRAIL]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py:103: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_half_completion_day_is_followed_by_later_daily_full_only
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py:140: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[1-False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[1-True]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[-1-False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[-1-True]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py:235: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[False-1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[False--1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[True-1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[True--1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py:275: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py: 2 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_minute_risk.py: 5 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_baseline.py: 5 warnings
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/coinmaster/research/native_baseline.py:946: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py: 2 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_minute_risk.py: 5 warnings
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_baseline.py: 5 warnings
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/coinmaster/research/native_baseline.py:979: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py::test_native_btc_final_realized_fee_persists_while_sol_keeps_episode_active
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_episode_risk.py:378: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_btc_sizing.py: 12 warnings
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_btc_sizing.py:93: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_btc_sizing.py::test_v4_native_whole_equity_peak_hysteresis_causal_marks_and_no_held_reduction
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_btc_sizing.py:145: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_minute_risk.py::test_off_settled_receipt_matches_after_run_and_rejects_intervening_fill
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_native_minute_risk.py:152: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:r.file.close();r.receipt_file.close();e.end();e.dispose()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_control_a_sol_exit_is_taker_ioc_at_zero_spread
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_control_a_sol_exit_is_taker_ioc_at_zero_spread
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:328: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_native_order_submission_hook_receives_enum_names_not_numeric_values
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_native_order_submission_hook_receives_enum_names_not_numeric_values
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:358: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_queued_increase_is_rejected_after_pause_gate_transition
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_queued_increase_is_rejected_after_pause_gate_transition
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:371: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_notional_sizing_uses_buy_ask_and_sell_bid_before_rounding
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_notional_sizing_uses_buy_ask_and_sell_bid_before_rounding
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:386: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_forced_liquidation_supersedes_timeout_and_closes_native_remaining_leaves
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_forced_liquidation_supersedes_timeout_and_closes_native_remaining_leaves
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:405: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_streams
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_streams
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:446: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_seed_warmup_never_replays_orders_and_first_live_daily_close_can_fill
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_seed_warmup_never_replays_orders_and_first_live_daily_close_can_fill
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:490: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(data, sort=False); engine.add_data(custom_marks, client_id=ClientId("TEST_MARKS"), sort=False); engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_warmup_only_has_no_native_orders
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_warmup_only_has_no_native_orders
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:518: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(data, sort=False); engine.add_data(marks, client_id=ClientId("TEST_MARKS"), sort=False); engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_native_callback_cache_reconciliation_reenters_on_next_quote_timestamp
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_native_callback_cache_reconciliation_reenters_on_next_quote_timestamp
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:545: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:641: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:825: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_pinned_market_exit_calls_python_submit_hook_for_tagged_reduce_only_ioc
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_pinned_market_exit_calls_python_submit_hook_for_tagged_reduce_only_ioc
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:920: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[True]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[True]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1024: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deposit_control_on_initial_confirmed_flat_native_run
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deposit_control_on_initial_confirmed_flat_native_run
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1234: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_native_entry_and_resting_tp_fill
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_native_entry_and_resting_tp_fill
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1281: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_native_taker_fallback_waits_for_executable_quote
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_native_taker_fallback_waits_for_executable_quote
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1331: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_marketable_post_only_does_not_grant_right_or_bypass_fallback
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_marketable_post_only_does_not_grant_right_or_bypass_fallback
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1381: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_does_not_delay_native_emergency_close_below_break_even
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_fee_floor_v1_does_not_delay_native_emergency_close_below_break_even
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1422: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py: 10 warnings
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1475: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail0-PASSIVE_NET_ZERO_LEVELS-expected_qty0-False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail0-PASSIVE_NET_ZERO_LEVELS-expected_qty0-False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail1-PASSIVE_NET_ZERO_LEVELS-expected_qty1-False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail1-PASSIVE_NET_ZERO_LEVELS-expected_qty1-False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[101.0-tail2-MARKETABLE_FULL_ENTRY_FALLBACK-expected_qty2-False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[101.0-tail2-MARKETABLE_FULL_ENTRY_FALLBACK-expected_qty2-False]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1693: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_entry_expires_without_fresh_q1
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_deferred_selective_entry_expires_without_fresh_q1
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1738: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_HALF_EXIT-1000]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_HALF_EXIT-1000]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_EXIT-2000]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_EXIT-2000]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1849: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_zero_fallback_retries_profitable_leaves_not_adverse_quotes
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_zero_fallback_retries_profitable_leaves_not_adverse_quotes
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1898: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks, sort=False); engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:1962: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[-1]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[-1]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:2002: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_immediate_q1_fill_then_reference_touch_earns_once
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_native_immediate_q1_fill_then_reference_touch_earns_once
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:2067: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:2113: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[False]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[True]
+var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[True]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-working/runtime/tests/test_wave_native_integration.py:2153: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+219 passed, 2 deselected, 360 warnings in 16.96s

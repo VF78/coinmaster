@@ -1,0 +1,70 @@
+{
+  "status": "ARCHIVED_NATIVE_ASOF_STRESS_SIZING_ONLY",
+  "historical_engines_started": 0,
+  "first_trigger_by_requested_month": {
+    "2024-10": {
+      "utc": "2024-10-03T08:49:00+00:00",
+      "native_equity": "9506.13907805",
+      "global_peak": "14743.45772484",
+      "DD_percent": "35.52300107976764861465106712",
+      "BTC_qty": "0.940",
+      "SOL_qty": "1000.0",
+      "BTC_ATR14": "2258.652589692071",
+      "SOL_ATR14": "8.625589567544266",
+      "BTC_stress": "2123.133434310546740",
+      "SOL_stress": "8625.5895675442660000",
+      "BTC_reserve": "2155.43365172941754070700",
+      "admissible_SOL_remaining": "0.0",
+      "cut_qty": "1000.0",
+      "trigger": true,
+      "source_quote_ns": 1727945340000000000,
+      "receipt_ns": "1727945400000000000",
+      "selection": "FIRST_BUDGET_TRIGGER_IN_MONTH"
+    },
+    "2025-01": {
+      "utc": "2025-01-13T11:34:00+00:00",
+      "native_equity": "112854.29784059",
+      "global_peak": "174073.90411259",
+      "DD_percent": "35.16874432390710945720674218",
+      "BTC_qty": "0",
+      "SOL_qty": "4000.0",
+      "BTC_ATR14": "3523.04001792818",
+      "SOL_ATR14": "12.426346772949596",
+      "BTC_stress": "0E-11",
+      "SOL_stress": "49705.3870917983840000",
+      "BTC_reserve": "0E-16",
+      "admissible_SOL_remaining": "1345.2",
+      "cut_qty": "2654.8",
+      "trigger": true,
+      "source_quote_ns": 1736768040000000000,
+      "receipt_ns": "1736768100000000000",
+      "selection": "FIRST_BUDGET_TRIGGER_IN_MONTH"
+    },
+    "2025-09": {
+      "utc": "2025-09-18T17:13:00+00:00",
+      "native_equity": "558582.31450768",
+      "global_peak": "868768.43036162",
+      "DD_percent": "35.70411918914074308480906067",
+      "BTC_qty": "20.298",
+      "SOL_qty": "15000.0",
+      "BTC_ATR14": "2465.316311407168",
+      "SOL_ATR14": "11.446513968874028",
+      "BTC_stress": "50040.990488942696064",
+      "SOL_stress": "171697.7095331104200000",
+      "BTC_reserve": "51382.54235588861454683520",
+      "admissible_SOL_remaining": "2382.6",
+      "cut_qty": "12617.4",
+      "trigger": true,
+      "source_quote_ns": 1758215580000000000,
+      "receipt_ns": "1758215640000000000",
+      "selection": "FIRST_BUDGET_TRIGGER_IN_MONTH"
+    }
+  },
+  "archived_trigger_minutes_by_month": {
+    "2024-10": 824,
+    "2025-01": 251,
+    "2025-09": 4
+  },
+  "selected_snapshots": 25,
+  "qualification": "Saved settled native inventory/equity and causal completed-D1 ATR; original archived path only. Native ACK/queued ownership unavailable in receipt, so these are potential size snapshots, not executable order claims or alternative PnL. No parameter optimization, future extrema, or policy path simulation."
+}

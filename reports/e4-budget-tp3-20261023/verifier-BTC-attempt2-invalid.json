@@ -1,0 +1,51 @@
+{
+  "status": "INVALID_PHYSICAL_ATTEMPT_2_INCOMPLETE_EXPORTS",
+  "original_wrapper_exit": 1,
+  "original_wrapper_failure": "MONTHLY_COMPOUNDING_MISMATCH",
+  "independent_first_receipt_pass": {
+    "stream_passes": 1,
+    "status": "FAILED_GZIP_EOF",
+    "error": "EOFError: Compressed file ended before the end-of-stream marker was reached",
+    "cache_written": false,
+    "rescan_authorized": false,
+    "repair_authorized": false
+  },
+  "TOTAL_raw_native_diagnostic_only": "4120806.47444031",
+  "retention_raw_native_diagnostic_only": "67.75562574698574100393451199",
+  "raw_native_fees": "648028.54314295",
+  "raw_native_fills": 601,
+  "raw_native_assets": [
+    {
+      "asset": "BTC",
+      "filled_order_rows": 405,
+      "signed_terminal_quantity": "0.000",
+      "gross_fill_cashflow": "3982172.919100019823024",
+      "native_fees": "630656.42901270",
+      "confirmed_fill_net_ex_funding": "3351516.490087319823024",
+      "native_report_turnover": "1550997384.969300003269588",
+      "signed_funding": "UNKNOWN"
+    },
+    {
+      "asset": "SOL",
+      "filled_order_rows": 196,
+      "signed_terminal_quantity": "0.0",
+      "gross_fill_cashflow": "727743.393",
+      "native_fees": "17372.11413025",
+      "confirmed_fill_net_ex_funding": "710371.27886975",
+      "native_report_turnover": "31585662.055",
+      "signed_funding": "UNKNOWN"
+    }
+  ],
+  "raw_native_unallocated_cash_bridge": "48918.705483240176976",
+  "continuous_settled_DD": "UNKNOWN_INCOMPLETE_EXPORT_NO_COMPLETE_AUDIT",
+  "fixed_window_DD": "UNKNOWN_NO_COMPLETE_AUDIT",
+  "pass_50_90": false,
+  "economic_candidate_eligibility": false,
+  "split_parent_state": "UNKNOWN_NOT_EXPORTED",
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "raw_sha256": "fe677c955d9159c07d23a42ec10766288d9f729286832ab0f4a9c786444088b8",
+  "trace_compressed_sha256": "2d395ecc4c8b0501a64c928136e104e36c2eedafa2434cfd02254b49a2157e48",
+  "signed_asset_funding": "UNKNOWN",
+  "qualification": "NOT_FAITHFUL_DIAGNOSTIC;1m CLOSE synthetic execution quotes;not fresh OOS",
+  "no_new_engine": true
+}

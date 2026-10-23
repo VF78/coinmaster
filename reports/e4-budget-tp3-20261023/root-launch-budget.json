@@ -1,8 +1,8 @@
 {
   "scope": "E4_SOL_BUDGET_BTC_TP3",
   "cap": 4,
-  "started": 0,
-  "completed": 0,
+  "started": 3,
+  "completed": 3,
   "active": 0,
   "historical_baseline_reruns": 0,
   "recipes": [
@@ -13,7 +13,40 @@
   ],
   "go_required": true,
   "protocol_frozen": true,
-  "launches": [],
+  "launches": [
+    {
+      "recipe": "SOL",
+      "started_utc": "2026-10-23T13:39:27.729872+00:00",
+      "finished_utc": "2026-10-23T13:42:27.437076+00:00",
+      "state": "COMPLETED_VALID_NATIVE",
+      "exit_code": 0
+    },
+    {
+      "recipe": "BTC",
+      "started_utc": "2026-10-23T13:44:02.859663+00:00",
+      "finished_utc": "2026-10-23T13:46:49.304139+00:00",
+      "state": "INVALID_REPORT_ASSERT_WITH_INCOMPLETE_EXPORT",
+      "exit_code": 1
+    },
+    {
+      "recipe": "BTC_CORRECTED",
+      "started_utc": "2026-10-23T13:59:59.147937+00:00",
+      "finished_utc": "2026-10-23T14:02:40.096060+00:00",
+      "state": "COMPLETED_VALID_NATIVE",
+      "exit_code": 0
+    }
+  ],
   "pilot_changes": 0,
-  "protocol_sha256": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39"
+  "protocol_sha256": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39",
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "go_authorized_recipes": [],
+  "go_receipt_sha256": "8eecb0302856207b189296ab85193dbb7bb95ae7f4f1e77dc3de7e08dec21e72",
+  "stage": "CLOSED_TWO_VALID_NATIVE_NEGATIVES_NO_GO",
+  "actual_owner_ledger_sha256": "77547b6a028b1f3d42eb634a8eb38c0836c96ad0c2fc93e4262f088ead269f7f",
+  "last_update_utc": "2026-10-23T13:44:55.496085+00:00",
+  "substantial_corrections": 1,
+  "valid_complete": 2,
+  "invalid": 1,
+  "unspent": 1,
+  "launch_authorization_closed": true
 }

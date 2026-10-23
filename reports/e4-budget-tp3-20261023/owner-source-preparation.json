@@ -1,0 +1,26 @@
+{
+  "base_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "branch": "codex/e4-budget-tp3-20261023",
+  "checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-budget-tp3-20261023",
+  "source_snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/source-5dc17f0",
+  "source_files": {
+    "runtime/coinmaster/research/native_baseline.py": "49eaf719a571dec720e0a799601a86ccae4056ff8db610c11197e9ce25fc7946",
+    "runtime/coinmaster/strategy/next_band.py": "c030d8d8bb346a053d3c9e595be59fe250e24b5a1a5f4e11e996284d1f0f3c95",
+    "runtime/coinmaster/strategy/wave_overlay.py": "d57f22b4340d7fc57ce7a1bf0595eee0915a7746e3c4c377fd02119314948be4",
+    "runtime/tests/test_native_budget_tp3.py": "28d8f22146f075359a11a6b3426e3f6b59acf4d999c642889d33a10a7efc6132",
+    "runtime/tests/test_wave_native_integration.py": "d8b0ebc8ee043a39d17cff4aca6a010e8490749627a43fbc73581b419eb7b039"
+  },
+  "tested_working_source_exact": true,
+  "full_research_engines_started": 0,
+  "full_research_requires_root_go": true,
+  "test_result": {
+    "complete_relevant_pass": 219,
+    "explicitly_deselected_inherited_clock_cases": 2,
+    "exact_base_focused_clock_failures": 2,
+    "final_focused_pass": 12,
+    "unique_passing_cases": 224
+  },
+  "pilot_touched": false,
+  "source_patch_sha256": "3101a12e00c7f7b943dbd345bbfeb7fd1acbd8a79e2976d98acf7cad5e9dd627"
+}

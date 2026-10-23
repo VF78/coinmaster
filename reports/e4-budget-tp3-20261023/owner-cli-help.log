@@ -1,0 +1,105 @@
+usage: native_baseline.py [-h] [--research-btc-split50]
+                          [--research-btc-split-planref-v1]
+                          [--research-btc-split-tp-ioc]
+                          [--research-btc-split-discount {0.0025,0.005}]
+                          [--research-sol-cover {0.5,0.75,1}]
+                          [--research-conditional-sol]
+                          [--research-alpha-cushion] [--research-chop-pair]
+                          [--research-batch-minutes RESEARCH_BATCH_MINUTES]
+                          [--research-immediate-sol {i25,i25-light,i25-recovery,i33}]
+                          [--research-immediate-lookback RESEARCH_IMMEDIATE_LOOKBACK]
+                          [--research-sol-risk-first {cap50,dd-cov,split-atr,alpha-corridor-v1}]
+                          [--data-root DATA_ROOT] [--diagnostic-no-funding]
+                          [--diagnostic-with-prior-minute-funding]
+                          [--job-request JOB_REQUEST]
+                          [--research-v0-execution-repairs]
+                          [--research-v0-original-zero-tp]
+                          [--research-v0-deferred-selective-zero-tp]
+                          [--research-v0-selective-lifecycle-repairs]
+                          [--research-sol-btc-open-only] [--research-wait-4h]
+                          [--research-wait-persist] [--research-zero-retrace]
+                          [--research-sol-dominant] [--research-sol-budget]
+                          [--research-btc-early-tp3]
+                          [--research-h4-ema {13,34,89}]
+                          [--research-h4-gamma {0.5,1}]
+                          [--research-h4-warmup RESEARCH_H4_WARMUP]
+                          [--research-regime-reentry-band {0,0.5}]
+                          [--research-h1-b1 {h1,b1}]
+                          [--research-v3-risk {b25,s10_15,r2,t3}]
+                          [--research-btc-direction-sizing]
+                          [--research-btc-drawdown-sizing]
+                          [--research-btc-episode-loss-20]
+                          [--research-sol-remaining-btc-hedge]
+                          [--research-portfolio-protect-45]
+                          [--research-sol-notional-cap-6x]
+                          [--observe-minute-risk]
+                          [--control-report CONTROL_REPORT]
+                          [--artifact-dir ARTIFACT_DIR]
+
+options:
+  -h, --help            show this help message and exit
+  --research-btc-split50
+  --research-btc-split-planref-v1
+  --research-btc-split-tp-ioc
+  --research-btc-split-discount {0.0025,0.005}
+  --research-sol-cover {0.5,0.75,1}
+  --research-conditional-sol
+  --research-alpha-cushion
+  --research-chop-pair
+  --research-batch-minutes RESEARCH_BATCH_MINUTES
+                        Isolated ALPHA research cursor and native event batch
+                        override; no economic parameter
+  --research-immediate-sol {i25,i25-light,i25-recovery,i33}
+  --research-immediate-lookback RESEARCH_IMMEDIATE_LOOKBACK
+  --research-sol-risk-first {cap50,dd-cov,split-atr,alpha-corridor-v1}
+  --data-root DATA_ROOT
+  --diagnostic-no-funding
+  --diagnostic-with-prior-minute-funding
+  --job-request JOB_REQUEST
+  --research-v0-execution-repairs
+  --research-v0-original-zero-tp
+                        With research repairs, retain original BTC entry and
+                        zero-threshold TP levels
+  --research-v0-deferred-selective-zero-tp
+                        Research-only one-quote deferred BTC entry with causal
+                        zero-target selection
+  --research-v0-selective-lifecycle-repairs
+                        Research-only accepted-target/causal-right/margin
+                        repairs with 30m parent cap
+  --research-sol-btc-open-only
+  --research-wait-4h
+  --research-wait-persist
+  --research-zero-retrace
+  --research-sol-dominant
+  --research-sol-budget
+  --research-btc-early-tp3
+  --research-h4-ema {13,34,89}
+  --research-h4-gamma {0.5,1}
+  --research-h4-warmup RESEARCH_H4_WARMUP
+  --research-regime-reentry-band {0,0.5}
+  --research-h1-b1 {h1,b1}
+  --research-v3-risk {b25,s10_15,r2,t3}
+                        One default-OFF research risk variation on V3
+                        directional sizing
+  --research-btc-direction-sizing
+                        Research-only frozen episode long5.5 short7.875
+                        multiplier
+  --research-btc-drawdown-sizing
+                        Research-only global paired-minute DD25/15
+                        sizing7.875/3.9375
+  --research-btc-episode-loss-20
+                        Research-only native BTC episode loss20 group exit
+  --research-sol-remaining-btc-hedge
+                        Research-only earned SOL admission clipped to
+                        remaining native BTC/beta
+  --research-portfolio-protect-45
+                        Research-only paired-minute 45% protective epoch
+                        drawdown; resume next genuine BTC episode
+  --research-sol-notional-cap-6x
+                        Research-only aggregate SOL entry notional capped at
+                        6x fresh native marked equity
+  --observe-minute-risk
+                        Research-only non-mutating native close-equity and
+                        conditional OHLC risk recorder
+  --control-report CONTROL_REPORT
+  --artifact-dir ARTIFACT_DIR

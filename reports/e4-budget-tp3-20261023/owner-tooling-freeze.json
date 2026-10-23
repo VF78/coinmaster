@@ -1,0 +1,20 @@
+{
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "files_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-runner.py": "111383ef60216580ee8d7445afd35e208f2d5a0bfbb1ab3efa832499143229c8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-prepare-runs.py": "44fd4f6857e68ee2654b1bb3fa1a1be7ea12a0cb879cbdf890e568c9774993fa",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-collect-native.py": "6df1f8e5f966d3ef5db96c2941c7c466292cc4b4cee300f2c04e676e64400477",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-run-preparation.json": "ce5f99d0e679a06444b43ea1636327fba26d586b5ccea2ac5f6f6fd342bbb809",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/protocol-freeze.json": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/SOL/preparation.json": "a5edac02c11200cbf2a9bc0dbf983b1d6c92323476c5217c4d2d2e5b8635d880",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC/preparation.json": "cfc67f1a18f76a537cab415c5ef3f6ad2c9ddf3f257ce32cbc97321127deca80",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/COMBINED/preparation.json": "68e46ec68602157085031304f19303e5fe26b3a3c67dfb4ddd959a79d8a27753"
+  },
+  "source_manifest_sha256": "df8a746d3d3fbbfb19888086dbed2a97ee9c1f787cce13fa5f4177984733ee8a",
+  "base_config_except_new_policy_exact": true,
+  "engines_started": 0,
+  "engines_active": 0,
+  "argv_wrapper": "NONE_EXISTING_NATIVE_PYTHON_DIRECT",
+  "max_physical_attempts": 4,
+  "authorization": "ROOT_GO_REQUIRED_NO_ENGINE_STARTED"
+}

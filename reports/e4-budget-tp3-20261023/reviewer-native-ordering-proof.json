@@ -1,0 +1,47 @@
+{
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "question": "Does first BTC quote consume budget timestamp before paired marks in frozen benchmark?",
+  "disposition": "HYPOTHESIS_REJECTED_FOR_FROZEN_BENCHMARK",
+  "synthetic_native_fixture": {
+    "historical_data": false,
+    "timestamps_ns": [
+      60000000000,
+      120000000000
+    ],
+    "native_orders": 0,
+    "ingestion": "Same native_baseline pattern: add_data both marks before add_data both quotes, sort_data, native run(streaming=True)",
+    "observed_each_timestamp": [
+      "BTC mark",
+      "SOL mark",
+      "BTC quote: paired=true; _next_budget_state called",
+      "SOL quote: paired=true; budget timestamp already handled"
+    ],
+    "source_mutations": 0
+  },
+  "saved_SOL_result": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/SOL/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-SB-B-ATR0.5-btc-direction.json",
+    "sha256": "8f374604511ed76701a97fb3bbfb37d0daf7fefc456df64ca154902f80c30902",
+    "SB_TRIGGER_count": 5,
+    "RISK_FILL_count": 26,
+    "SB_UNKNOWN_count": 0,
+    "first_trigger": {
+      "btc_atr": "2258.652589692071",
+      "btc_qty": "0.94",
+      "btc_reserve": "2155.4336517294175407070",
+      "btc_stress": "2123.13343431054674",
+      "cap": "0.0",
+      "daily_ns": "1727913600000000000",
+      "drawdown": "0.3552300107976764861465106712",
+      "equity": "9506.13907805",
+      "event": "SB_TRIGGER",
+      "peak": "14743.45772484",
+      "sol_atr": "8.625589567544266",
+      "sol_fee": "0.00055",
+      "sol_mark": "136.432",
+      "sol_qty": "1000",
+      "sol_stress": "8625.589567544266000",
+      "timestamp_ns": 1727945340000000000
+    }
+  },
+  "qualification": "A hypothetical asynchronous BTCmark/BTCquote/SOLmark/SOLquote feed could consume timestamp while incomplete; not supported/general live behavior. Current policy remains research-only and frozen historical feed is proven paired before quote. No correction or additional historical run justified by this hypothesis."
+}

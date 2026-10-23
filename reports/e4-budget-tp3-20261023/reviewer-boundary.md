@@ -1,0 +1,13 @@
+# Independent BTC report-boundary diagnosis
+
+2026-10-23. Read-only review of frozen source 5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e and the saved failed BTC attempt's raw native JSON. No historical engine, replay, money mutation or product edit. Exact evidence and raw SHA256 are in reviewer-boundary.json.
+
+**Finding: the observed failure is caused by accumulation precision inside the report's Decimal compounding check. No native account bug or float conversion is implicated by this failure.** This does not independently certify all native accounting or turn the failed physical attempt into a valid result.
+
+Frozen assert_report_boundaries at native_baseline.py336 multiplies 24 stored monthly Decimal returns using the ambient default28 significant digits, then compares the product to interval cash/initial seed with fixed absolute guard1e-24. Every stored monthly row exactly matches recomputation by the unchanged source monthly_returns function from saved native interval cash rows. The final monthly total equals interval cash4069369.87356877 exactly.
+
+For the *identical unchanged stored return strings*, default28 compounding gives406.9369873568769999999999988 versus ratio406.936987356877: delta−1.2e-24, narrowly outside the guard. At precision50 and80 the product converges to a delta−7.2588050995287e-25, inside the same original1e-24 guard. The entire unchanged assert_report_boundaries function passes at both higher precisions, including all subsequent time/boundary/fill checks; default28 reproduces MONTHLY_COMPOUNDING_MISMATCH. This isolates arithmetic-rounding accumulation in the assertion, rather than a broken monthly base/chaining formula.
+
+A narrow correction can perform the compounding verification in a local higher-precision Decimal context, preserving the exact stored returns, cash, fixed1e-24 guard and all remaining boundary checks. Do not change global context, strategy calculations, native cash precision, TOTAL, return strings or thresholds. Require a focused saved-data regression that reproduces default28 failure and corrected pass, plus a genuinely corrupted-return negative case that still fails. This is a packaging validation change; source attribution and any recovery packaging must remain explicit. The physical failed attempt stays consumed, and no automatic rerun is authorized by this review.
+
+Scope limitation: no whole minute trace, funding bridge or cycle re-audit. The raw BTC report remains NATIVE_COMPLETE_PACKAGING_NOT_VALIDATED until root approves an exact correction/recovery procedure; the numeric cash above is diagnostic evidence, not a promoted final BTC result.

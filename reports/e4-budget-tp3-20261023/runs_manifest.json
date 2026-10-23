@@ -1,0 +1,201 @@
+{
+  "scope": "E4_SOL_BUDGET_BTC_EARLY_TP3",
+  "protocol_sha256": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39",
+  "correction_amendment_sha256": "67abe2ebd07ed6e97d19ba747c18b8eccfb377515b6bbe4b673a1b6c89212031",
+  "controls": "S0/E4 immutable archives notrerun",
+  "new_valid": [
+    {
+      "recipe": "SOL",
+      "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/SOL/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-SB-B-ATR0.5-btc-direction.json",
+      "artifact_sha256": "8f374604511ed76701a97fb3bbfb37d0daf7fefc456df64ca154902f80c30902",
+      "raw_artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/SOL/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-SB-B-ATR0.5-btc-direction-raw-native.json",
+      "raw_sha256": "73ff19d19fb44c1439165e11962a2f812b9ae7dbdc3242b758440678ae2a89fa",
+      "config_sha256": "7392a050356ed09c9615c63c654242eb4c119d426ad74c2c157129b0a59be374",
+      "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "policy_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "funding": {
+        "by_instrument_count": {
+          "BTCUSDT-PERP.P1SIM": 841,
+          "SOLUSDT-PERP.P1SIM": 374
+        },
+        "count": 1215,
+        "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+      },
+      "exports": {
+        "fills": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/native-fills.csv",
+          "rows": 478,
+          "sha256": "560ed2fef4c5e3efdbd6e938a1ea5ead630ace4ee954704a18e718d0696bed85"
+        },
+        "orders": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/native-orders.csv",
+          "rows": 541,
+          "sha256": "21ad20ad3e0fa7ff64bab6d1330a29e1b5dccd60cdb7658f491805e91b73adcb"
+        },
+        "native-fill-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/native-fill-audit.csv",
+          "rows": 478,
+          "sha256": "0d5fd3b5c3ede1a5c8bd3264d000363a83a82bb53a4ce942ba4d6c274fc8f66c"
+        },
+        "native-order-events.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/native-order-events.csv",
+          "rows": 541,
+          "sha256": "f7841fbdf0fa728491ee09acf7d07cc542d29dfde8f3e9522c41c0460a8c6ec3"
+        },
+        "hedge-band-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/hedge-band-audit.csv",
+          "rows": 490,
+          "sha256": "ce4c854a27e4b8f90989c79b89fcfb720c10bdca0e7f3389c346c48e03088ba0"
+        },
+        "next-band-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/next-band-audit.csv",
+          "rows": 22534,
+          "sha256": "7e2d35d50da2200f98e30d522973651092efb633d4b5f76518cb20082fe850a1"
+        },
+        "entry-sizing-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/entry-sizing-audit.csv",
+          "rows": 83,
+          "sha256": "fc85af8d9f2569b5d4f32d13cae6492dd7f9f7a23039888ff49c78db51896869"
+        },
+        "split-parent-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/split-parent-audit.csv",
+          "rows": 83,
+          "sha256": "3b9c790c076b2448b1eea030a5e59be757c9c51b85b09419020f2c0b77b2b23e"
+        },
+        "rights_lifecycle": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-SOL-events/actual-rights-and-fill-lifecycle.csv",
+          "rows": 262,
+          "sha256": "c8d18c545bc8c2fc3cb278a1b507caf097120b712fdd2ba6d97d805dc73728f2"
+        }
+      },
+      "settled_trace_hash": "7163d4238fdf84b5473203573fe552744cfef72ee63d84f1a2d521fc62e60859"
+    },
+    {
+      "recipe": "BTC_CORRECTED",
+      "source_commit": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-TP3E-B-ATR0.5-btc-direction.json",
+      "artifact_sha256": "637b662cf7974dcd578947e975d60a7223bcfde2c0edd4e4dc33b193acf03211",
+      "raw_artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-TP3E-B-ATR0.5-btc-direction-raw-native.json",
+      "raw_sha256": "a047b62af6a1f87d287d982b0448add90f771f215f037d7d50387b8caa9a0fda",
+      "config_sha256": "1db706c900756195f3e265e1779260856b499db8a4118642df5d32269dd1f644",
+      "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "policy_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "funding": {
+        "by_instrument_count": {
+          "BTCUSDT-PERP.P1SIM": 841,
+          "SOLUSDT-PERP.P1SIM": 407
+        },
+        "count": 1248,
+        "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+      },
+      "exports": {
+        "fills": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/native-fills.csv",
+          "rows": 601,
+          "sha256": "ff4a44f5f5e7a6db1d0d83537d9168ffae4ace725abb5735d06d651637f4d53e"
+        },
+        "orders": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/native-orders.csv",
+          "rows": 664,
+          "sha256": "541c59c95618bbc0efaa8ecb56a4d57fce8356024faf7c5e21b09e69761df72f"
+        },
+        "native-fill-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/native-fill-audit.csv",
+          "rows": 601,
+          "sha256": "4f3f08d16490b5aee8739058fc2b1a7e4114151d45e495e69e682807cfab72d2"
+        },
+        "native-order-events.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/native-order-events.csv",
+          "rows": 664,
+          "sha256": "50525338dcd7d2fdfbd82f8d313d2d070d0af0bcb47a014d6321b461e1f6569d"
+        },
+        "hedge-band-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/hedge-band-audit.csv",
+          "rows": 490,
+          "sha256": "ce4c854a27e4b8f90989c79b89fcfb720c10bdca0e7f3389c346c48e03088ba0"
+        },
+        "next-band-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/next-band-audit.csv",
+          "rows": 22686,
+          "sha256": "27e0ffc932491ba5467fffe19d827abbd9f390066f3c0722f34a4255f02164f7"
+        },
+        "entry-sizing-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/entry-sizing-audit.csv",
+          "rows": 83,
+          "sha256": "954083c8be278fda2256b51f630527bbd14532024a802b65012dbbe6c2b7b832"
+        },
+        "split-parent-audit.csv": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/split-parent-audit.csv",
+          "rows": 83,
+          "sha256": "aad8652df58b41a5bde0483c35c183bc0cf9e286c2d513f1eb454330aa067602"
+        },
+        "rights_lifecycle": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-BTC_CORRECTED-events/actual-rights-and-fill-lifecycle.csv",
+          "rows": 320,
+          "sha256": "e6c3ee5120c2cb93b63ef13f62041c022b18f17c8d984e68a61d72b01d8b9fd0"
+        }
+      },
+      "settled_trace_hash": "cb9eac8d4f94175ee9dcf1277ac5938dcb1670017ad558c9a311481854521ade"
+    }
+  ],
+  "invalid_attempt2": {
+    "status": "INVALID_PHYSICAL_ATTEMPT_2_INCOMPLETE_EXPORTS",
+    "original_wrapper_exit": 1,
+    "original_wrapper_failure": "MONTHLY_COMPOUNDING_MISMATCH",
+    "independent_first_receipt_pass": {
+      "stream_passes": 1,
+      "status": "FAILED_GZIP_EOF",
+      "error": "EOFError: Compressed file ended before the end-of-stream marker was reached",
+      "cache_written": false,
+      "rescan_authorized": false,
+      "repair_authorized": false
+    },
+    "TOTAL_raw_native_diagnostic_only": "4120806.47444031",
+    "retention_raw_native_diagnostic_only": "67.75562574698574100393451199",
+    "raw_native_fees": "648028.54314295",
+    "raw_native_fills": 601,
+    "raw_native_assets": [
+      {
+        "asset": "BTC",
+        "filled_order_rows": 405,
+        "signed_terminal_quantity": "0.000",
+        "gross_fill_cashflow": "3982172.919100019823024",
+        "native_fees": "630656.42901270",
+        "confirmed_fill_net_ex_funding": "3351516.490087319823024",
+        "native_report_turnover": "1550997384.969300003269588",
+        "signed_funding": "UNKNOWN"
+      },
+      {
+        "asset": "SOL",
+        "filled_order_rows": 196,
+        "signed_terminal_quantity": "0.0",
+        "gross_fill_cashflow": "727743.393",
+        "native_fees": "17372.11413025",
+        "confirmed_fill_net_ex_funding": "710371.27886975",
+        "native_report_turnover": "31585662.055",
+        "signed_funding": "UNKNOWN"
+      }
+    ],
+    "raw_native_unallocated_cash_bridge": "48918.705483240176976",
+    "continuous_settled_DD": "UNKNOWN_INCOMPLETE_EXPORT_NO_COMPLETE_AUDIT",
+    "fixed_window_DD": "UNKNOWN_NO_COMPLETE_AUDIT",
+    "pass_50_90": false,
+    "economic_candidate_eligibility": false,
+    "split_parent_state": "UNKNOWN_NOT_EXPORTED",
+    "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+    "raw_sha256": "fe677c955d9159c07d23a42ec10766288d9f729286832ab0f4a9c786444088b8",
+    "trace_compressed_sha256": "2d395ecc4c8b0501a64c928136e104e36c2eedafa2434cfd02254b49a2157e48",
+    "signed_asset_funding": "UNKNOWN",
+    "qualification": "NOT_FAITHFUL_DIAGNOSTIC;1m CLOSE synthetic execution quotes;not fresh OOS",
+    "no_new_engine": true
+  },
+  "physical_attempts": 3,
+  "valid": 2,
+  "invalid": 1,
+  "unspent": 1,
+  "active": 0,
+  "launch_closed": true,
+  "CI": "NOT_INSPECTED_NO_GREEN_CLAIM",
+  "pilot_touched": false
+}

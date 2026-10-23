@@ -1,0 +1,25 @@
+{
+  "decision": "NO_GO_NO_50_90_CANDIDATE",
+  "required_TOTAL": "5470396.514987347",
+  "required_global_DD_percent": "50",
+  "selected_for_deploy": null,
+  "S0_retained": true,
+  "E4_research_control_retained": true,
+  "COMBINED": "NOT_RUN_GATE_FAILED_BOTH_RECIPES_FAIL_RETENTION_AND_GLOBAL_DD",
+  "FRESH_REPEAT": "NOT_RUN_NO_PASSING_CANDIDATE",
+  "physical_attempts": 3,
+  "valid_recipes": 2,
+  "invalid_attempts": [
+    {
+      "recipe": "BTC",
+      "number": 2,
+      "source": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+      "reason": "MONTHLY_COMPOUNDING_DECIMAL28_ASSERT_EXIT1_AND_INCOMPLETE_GZIP; originalexportsunmodified; no recoveryrepair"
+    }
+  ],
+  "remaining_unspent": 1,
+  "active": 0,
+  "launch_authorization_closed": true,
+  "substantial_correction_count": 1,
+  "pilot_changes": 0
+}

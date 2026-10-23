@@ -1,0 +1,10 @@
+{
+  "base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "base_source": "immutable archived bd04 source copied without edits",
+  "base_tests": "git archive exact bd04 runtime/tests",
+  "focused_base_result": "SAME_TWO_FAILURES_ABSTRACT_CLOCK_TIMESTAMP_NS",
+  "unchanged_product_terminal_method_exact": true,
+  "proof_log": "research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-budget-tp3-20261023/owner-base-clock-proof.log",
+  "historical_engines": 0,
+  "remediation": "Register those fixtures with actual native_engine; no product clock fallback, no stub clock, no assertion removal"
+}

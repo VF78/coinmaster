@@ -1,0 +1,17 @@
+{
+  "disposition": "PASS_FINAL_COMPACT_REPORT_CONSISTENCY",
+  "scope": "REPORT/comparison/selection/verifier compact outputs only; no source or historical trace re-audit",
+  "checks": {
+    "all13_SOL_add_decisions_denied": true,
+    "four_comparison_rows": true,
+    "correct_BTC_peak": true,
+    "rights_asof_UNKNOWN_explicit": true
+  },
+  "metrics_fees_fixed_windows": "Exact comparison to compact money audits and verifier-final-summary PASS for SOL/BTC; four-row displayed rounding PASS",
+  "attempts": "3 physical =2 valid +1 invalid; one report-only precision correction; correct source versions; combined/repeat NOT_RUN; launch closed",
+  "contract_qualification": "Proportional real-fill rights formula backed by prior frozen-source/native fixture review; missing historical as-of rights/splitparent/exact PLANREF explicitly UNKNOWN",
+  "findings": [],
+  "report_sha256": "8a1e2dbc8171d4b57c41f168e1f744e00718dd1e7317575a553158944ccd088d",
+  "engines_by_reviewer_this_review": 0,
+  "trace_passes_this_review": 0
+}

@@ -1,0 +1,153 @@
+{
+  "source": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+  "pinned_sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+  "source_rows_returned": 13,
+  "causal_mapping": "completed bar open_time_ms+60000 gives native quote timestamp_ns",
+  "rows": [
+    {
+      "timestamp_ns": 1728000000000000000,
+      "source_open_time_ms": 1727999940000,
+      "source_close": "136.73",
+      "executable_quote": "136.73",
+      "raw_mark": "136.73",
+      "calculated_post_stress": "6366.167321631266063425750",
+      "saved_post_stress": "6366.167321631266063425750",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1728604800000000000,
+      "source_open_time_ms": 1728604740000,
+      "source_close": "138.97",
+      "executable_quote": "138.97",
+      "raw_mark": "138.97",
+      "calculated_post_stress": "3148.268334910200920649725",
+      "saved_post_stress": "3148.268334910200920649725",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1749600000000000000,
+      "source_open_time_ms": 1749599940000,
+      "source_close": "165.06",
+      "executable_quote": "165.06",
+      "raw_mark": "165.065",
+      "calculated_post_stress": "158378.012300982333844457570",
+      "saved_post_stress": "158378.012300982333844457570",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1749686400000000000,
+      "source_open_time_ms": 1749686340000,
+      "source_close": "160.88",
+      "executable_quote": "160.88",
+      "raw_mark": "160.906",
+      "calculated_post_stress": "156219.81043783944888675800",
+      "saved_post_stress": "156219.81043783944888675800",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1758153600000000000,
+      "source_open_time_ms": 1758153540000,
+      "source_close": "244.72",
+      "executable_quote": "244.72",
+      "raw_mark": "244.73",
+      "calculated_post_stress": "150929.904455715404275104520",
+      "saved_post_stress": "150929.904455715404275104520",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1758240000000000000,
+      "source_open_time_ms": 1758239940000,
+      "source_close": "247.41",
+      "executable_quote": "247.41",
+      "raw_mark": "247.413",
+      "calculated_post_stress": "155018.209971519981602523965",
+      "saved_post_stress": "155018.209971519981602523965",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1758326400000000000,
+      "source_open_time_ms": 1758326340000,
+      "source_close": "238.44",
+      "executable_quote": "238.44",
+      "raw_mark": "238.44",
+      "calculated_post_stress": "148097.890177578429413825760",
+      "saved_post_stress": "148097.890177578429413825760",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1758412800000000000,
+      "source_open_time_ms": 1758412740000,
+      "source_close": "239.35",
+      "executable_quote": "239.35",
+      "raw_mark": "239.361",
+      "calculated_post_stress": "153506.701520706735307383755",
+      "saved_post_stress": "153506.701520706735307383755",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1758499200000000000,
+      "source_open_time_ms": 1758499140000,
+      "source_close": "236.07",
+      "executable_quote": "236.07",
+      "raw_mark": "236.09",
+      "calculated_post_stress": "218858.129683139328149242540",
+      "saved_post_stress": "218858.129683139328149242540",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1784592000000000000,
+      "source_open_time_ms": 1784591940000,
+      "source_close": "77.81",
+      "executable_quote": "77.81",
+      "raw_mark": "77.82",
+      "calculated_post_stress": "1415040.715338218646596475720",
+      "saved_post_stress": "1415040.715338218646596475720",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1784764800000000000,
+      "source_open_time_ms": 1784764740000,
+      "source_close": "77.93",
+      "executable_quote": "77.93",
+      "raw_mark": "77.937",
+      "calculated_post_stress": "1556106.892467498189394044042",
+      "saved_post_stress": "1556106.892467498189394044042",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1784851200000000000,
+      "source_open_time_ms": 1784851140000,
+      "source_close": "75.82",
+      "executable_quote": "75.82",
+      "raw_mark": "75.821",
+      "calculated_post_stress": "1425754.241439934872050403182",
+      "saved_post_stress": "1425754.241439934872050403182",
+      "exact_match": true,
+      "budget_denied": true
+    },
+    {
+      "timestamp_ns": 1787875200000000000,
+      "source_open_time_ms": 1787875140000,
+      "source_close": "109.08",
+      "executable_quote": "109.08",
+      "raw_mark": "109.08",
+      "calculated_post_stress": "856726.2911671162024448281075",
+      "saved_post_stress": "856726.2911671162024448281075",
+      "exact_match": true,
+      "budget_denied": true
+    }
+  ],
+  "all_exact": true,
+  "no_engine": true
+}

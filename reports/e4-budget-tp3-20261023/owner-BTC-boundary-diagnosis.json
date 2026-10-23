@@ -1,0 +1,19 @@
+{
+  "status": "SAVED_RAW_REPORT_PASSES_UNCHANGED_BOUNDARY_ASSERT_AT_DECIMAL80",
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-budget-tp3-20261023/BTC/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-TP3E-B-ATR0.5-btc-direction-raw-native.json",
+  "raw_sha256": "fe677c955d9159c07d23a42ec10766288d9f729286832ab0f4a9c786444088b8",
+  "original_default28_failure": "MONTHLY_COMPOUNDING_MISMATCH",
+  "default28_error": "1.2E-24",
+  "threshold_unchanged": "1E-24",
+  "precision80_same_saved_returns_error": "7.2588050995287233674222409741365487292896203341654586E-25",
+  "all_24_month_totals_exact_native_cash_endpoints": true,
+  "saved_monthly_returns_exact_recompute_default28": true,
+  "native_interval_cash": "4069369.87356877",
+  "native_post_boundary_cash": "4120806.47444031",
+  "post_boundary_bridge": "51436.60087154",
+  "money_or_returns_modified": false,
+  "product_source_changed": false,
+  "new_historical_engines": 0,
+  "qualification": "Reporting validation proof only; original failed process/artifacts preserved. No validated final report manufactured; root review required for saved raw completion qualification."
+}

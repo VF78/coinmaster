@@ -1,0 +1,78 @@
+{
+  "status": "TWO_VALID_NATIVE_NEGATIVES_NO_GO",
+  "valid_complete_candidates": [
+    {
+      "recipe": "SOL",
+      "economic_status": "PASS",
+      "mechanism_observed_checks": "PASS",
+      "TOTAL": "1360086.36695243",
+      "retention_percent": "22.25255486340816800127320123",
+      "global_settled_DD_percent": "66.85904748908962764036494870",
+      "OCT_local_DD_percent": "50.13219246355733358296512994",
+      "JAN_local_DD_percent": "44.53328872098787558241546539",
+      "NOV_local_DD_percent": "54.79202121391766277174895510",
+      "fees": "325966.74779559",
+      "fills": 478,
+      "liquidations": 0,
+      "receipts": 1051199,
+      "missing_receipts": 0,
+      "pass_50_90": false,
+      "cash_bridge": "46568.186748009880228",
+      "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+      "signed_asset_funding": "UNKNOWN"
+    },
+    {
+      "recipe": "BTC_CORRECTED",
+      "economic_status": "PASS",
+      "mechanism_observed_checks": "PASS",
+      "TOTAL": "4120806.47444031",
+      "retention_percent": "67.75562574698574100393451199",
+      "global_settled_DD_percent": "61.07965831810633248928463321",
+      "OCT_local_DD_percent": "61.07965831810633248928463321",
+      "JAN_local_DD_percent": "54.23204989631995540378287831",
+      "NOV_local_DD_percent": "43.86911442860763348053841105",
+      "fees": "648028.54314295",
+      "fills": 601,
+      "liquidations": 0,
+      "receipts": 1051199,
+      "missing_receipts": 0,
+      "pass_50_90": false,
+      "cash_bridge": "48918.705483240176976",
+      "source_commit": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+      "signed_asset_funding": "UNKNOWN"
+    }
+  ],
+  "invalid_physical_attempts": [
+    {
+      "recipe": "BTC",
+      "attempt": 2,
+      "reason": "MONTHLY_COMPOUNDING_MISMATCH; incompletely closed gzip exports independently detected",
+      "evidence": "verifier-BTC-attempt2-invalid.json"
+    }
+  ],
+  "physical_attempts_total": 3,
+  "baseline_reruns": 0,
+  "combined": "NOT_RUN_GATE_FAILED_BOTH_RETAIN_LT90_AND_GLOBAL_DD_WORSE_THAN_E4",
+  "fresh_repeat": "NOT_RUN_NO_FULL50_90_WINNER",
+  "signed_asset_funding": "UNKNOWN",
+  "qualifications": [
+    "NOT_FAITHFUL_DIAGNOSTIC",
+    "1m CLOSE synthetic execution quotes",
+    "not fresh OOS",
+    "not intraminute/tick/live DD guarantee",
+    "signed asset funding UNKNOWN"
+  ],
+  "trace_passes": {
+    "archived_E4": 1,
+    "SOL": 1,
+    "BTC_attempt2": 1,
+    "BTC_CORRECTED": 1
+  },
+  "trace_pass_qualification": "BTC attempt2 pass failed at missing gzip EOF; never rescanned,repaired, or promoted. Other3 completed passes cached.",
+  "source_proof_limitations": {
+    "BTC": "Saved output checks actual native lot/fill ownership and money only; unexported splitparent/proportional right state/exact PLANREF reference remain UNKNOWN. Frozen source and native tests independently qualify contract.",
+    "SOL": "Saved numerical caps,actual once-cycle trims,full-request budget decision exact. Untriggered mandatory priority/unused right contracts rely native/source tests."
+  },
+  "continuous_DD": "Full continuous observed settled minute global peak retained. Local fixed windows separately rebased; neither represents intraminute/live guarantee.",
+  "no_new_engine": true
+}

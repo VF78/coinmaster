@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-23T13:38:57.156312+00:00",
+  "decision": "GO_SOL_THEN_BTC_ONLY",
+  "source_commit": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "source_manifest_sha256": "df8a746d3d3fbbfb19888086dbed2a97ee9c1f787cce13fa5f4177984733ee8a",
+  "protocol_sha256": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39",
+  "authorized_recipes": [
+    "SOL",
+    "BTC"
+  ],
+  "max_physical_attempts": 4,
+  "physical_started_before_GO": 0,
+  "review_receipt_sha256": "8d94a94406a4384d1406f1737794e040e93fcc35e5266df94c63b3ebe420984a",
+  "tooling_freeze_sha256": "af5b997399c0b7ff685afbc1ce3ffddac84ec218c82b0c181d61bada63e6814b",
+  "expected_config_sha256": {
+    "SOL": "7392a050356ed09c9615c63c654242eb4c119d426ad74c2c157129b0a59be374",
+    "BTC": "1db706c900756195f3e265e1779260856b499db8a4118642df5d32269dd1f644"
+  },
+  "source_tests": "224 UNIQUE PASS, existing baselineclock fixture correction documented; no product clock workaround",
+  "root_tooling_hash_checks": 8,
+  "input_pins_each": 13,
+  "combined_authorized": false,
+  "repeat_authorized": false,
+  "no_baseline_rerun": true,
+  "pilot_changes_authorized": false,
+  "conditions": "sequential isolated engines, fresh journal perrun; no retry/correction/thirdengine without newrootGO; aftereachrun save actualreceipt and budget; report useful gates only afterindependent audit"
+}

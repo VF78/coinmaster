@@ -1,0 +1,629 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 5c904db..66e02a3 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -688,7 +688,7 @@ def run_native_diagnostic(
+     research_btc_split_planref_v1: bool = False,
+     research_btc_split_tp_ioc: bool = False,
+     research_btc_split_discount: str = "0.0025",
+-    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
++    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_sol_budget: bool = False, research_btc_early_tp3: bool = False,
+     research_sol_cover: str | None = None,
+     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
+     research_btc_episode_loss_20: bool = False,
+@@ -789,7 +789,7 @@ def run_native_diagnostic(
+         modules.insert(0, PerpetualFundingModule(funding_events, journal))
+     def kind(instrument, price_type):
+         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
+-    next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
++    next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant or research_sol_budget or research_btc_early_tp3
+     from coinmaster.strategy.next_band import next_bar_type, next_closed_bar
+     next_bar_types = tuple(next_bar_type(inst.id,hours) for inst,hours in ((btc_instrument,4),(sol_instrument,1))) if next_enabled else ()
+     confirmation_bars = tuple(BarType.new_composite(
+@@ -861,8 +861,9 @@ def run_native_diagnostic(
+         research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
+         research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
+         research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+-        research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
++        research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_sol_budget=research_sol_budget, research_btc_early_tp3=research_btc_early_tp3, research_next_signals=next_bar_types,
+         research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
++        research_budget_sol_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["SOLUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_sol_budget else (),
+         research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
+         research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+         research_conditional_sol=research_conditional_sol,
+@@ -1052,6 +1053,8 @@ def run_native_diagnostic(
+         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+         if next_enabled:
+             full_config["next_band_research"] = dict(wait_4h=research_wait_4h,wait_persist=research_wait_persist,zero_retrace=research_zero_retrace,sol_dominant=research_sol_dominant,bar_contract="PINNED_CLOSED_OHLC_D1_BEFORE_INTRADAY_QUOTE")
++        if research_sol_budget or research_btc_early_tp3:
++            full_config["budget_tp3_research"]=dict(sol_budget=research_sol_budget,btc_early_tp3=research_btc_early_tp3,sol_policy="DD35_WARN45_CLOSED_D1_WILDER14_ATR1_GROSS_BTC_RESERVE_SOL_DOMINANT_ONCE_ACTUAL_CYCLE_ORIGINAL_FULL_ADD_BUDGET",btc_policy="SEQUENTIAL_TP3_20PCT_ACTUAL_INITIAL_PLANREF1PCT_ORIGINAL_LOTS_PROPORTIONAL_ACTUAL_RIGHTS")
+         if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+             full_config["hedge_band_research"] = dict(c0=research_sol_btc_open_only, h4_ema=research_h4_ema,
+                 h4_gamma=research_h4_gamma, h4_warmup_sha256=h4_warmup_hash, regime_reentry_band=research_regime_reentry_band,
+@@ -1344,7 +1347,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_sol_budget: bool = False, research_btc_early_tp3: bool = False, research_batch_minutes: int | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1400,7 +1403,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         label += "-sol-cover" + research_sol_cover
+     if research_sol_btc_open_only:
+         label += "-C0"
+-    for enabled, name in ((research_wait_4h,"E4"),(research_wait_persist,"EP"),(research_zero_retrace,"Z"),(research_sol_dominant,"S")):
++    for enabled, name in ((research_wait_4h,"E4"),(research_wait_persist,"EP"),(research_zero_retrace,"Z"),(research_sol_dominant,"S"),(research_sol_budget,"SB"),(research_btc_early_tp3,"TP3E")):
+         if enabled:label += "-"+name
+     if research_h4_ema is not None:
+         label += f"-H4-4H-E{research_h4_ema}-G{research_h4_gamma}"
+@@ -1460,7 +1463,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
+         research_regime_reentry_band=research_regime_reentry_band,
+         research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+-        research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant,
++        research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_sol_budget=research_sol_budget, research_btc_early_tp3=research_btc_early_tp3,
+         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
+         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
+         research_btc_episode_loss_20=research_btc_episode_loss_20,
+@@ -1494,7 +1497,7 @@ def main() -> None:
+     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
+     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
+     parser.add_argument("--research-sol-btc-open-only", action="store_true")
+-    for flag in ("wait-4h", "wait-persist", "zero-retrace", "sol-dominant"):
++    for flag in ("wait-4h", "wait-persist", "zero-retrace", "sol-dominant", "sol-budget", "btc-early-tp3"):
+         parser.add_argument("--research-"+flag, action="store_true")
+     parser.add_argument("--research-h4-ema", type=int, choices=(13,34,89))
+     parser.add_argument("--research-h4-gamma", choices=("0.5","1"), default="0.5")
+@@ -1555,7 +1558,7 @@ def main() -> None:
+             research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
+             research_regime_reentry_band=args.research_regime_reentry_band,
+             research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
+-            research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant,
++            research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant, research_sol_budget=args.research_sol_budget, research_btc_early_tp3=args.research_btc_early_tp3,
+             research_batch_minutes=args.research_batch_minutes,
+             research_sol_risk_first=args.research_sol_risk_first,
+             research_immediate_sol=args.research_immediate_sol,
+diff --git a/runtime/coinmaster/strategy/next_band.py b/runtime/coinmaster/strategy/next_band.py
+index 6ab961b..2964b60 100644
+--- a/runtime/coinmaster/strategy/next_band.py
++++ b/runtime/coinmaster/strategy/next_band.py
+@@ -1,6 +1,7 @@
+ """Bounded B follow-ups: policy state only; existing native executor owns orders."""
+ from decimal import Decimal as D, ROUND_CEILING, ROUND_FLOOR
+ from math import isfinite
++from dataclasses import replace
+ from coinmaster.venues.signals import DailySignalBar
+ from nautilus_trader.model.data import CustomData, DataType
+ 
+@@ -26,12 +27,13 @@ H4=DAY//6
+ H1=DAY//24
+ Z_REASON='ZERO_RETRACE_RISK'
+ S_REASON='SOL_DOMINANT_ADVERSE_RISK'
++SB_REASON='SOL_ATR_BUDGET_RISK'
+ 
+ class NextBandResearch:
+     def _next_init(self):
+         c=self.config
+         self.next_band_audit=[]
+-        self._next_enabled=bool(c.research_wait_4h or c.research_wait_persist or c.research_zero_retrace or c.research_sol_dominant)
++        self._next_enabled=bool(c.research_wait_4h or c.research_wait_persist or c.research_zero_retrace or c.research_sol_dominant or c.research_sol_budget or c.research_btc_early_tp3)
+         if self._next_enabled and (c.research_regime_reentry_band != D('.5') or c.research_h4_ema is not None or c.research_sol_btc_open_only):
+             raise ValueError('NEXT_REQUIRES_ORIGINAL_B')
+         if c.research_wait_4h and c.research_wait_persist:raise ValueError('E4_EP_EXCLUSIVE')
+@@ -49,6 +51,13 @@ class NextBandResearch:
+         self._next_s=None
+         self._next_risk_intents={}
+         self._next_entry_terminal={}
++        self._next_sol_ohlc={int(ns):(float(h),float(l)) for ns,h,l in c.research_budget_sol_daily_seed}
++        self._next_budget_cut_used=False
++        self._next_budget_atr_cache=None
++        self._next_budget_last_ns=None
++        self._next_tp3_freeze=None
++        if (c.research_sol_budget or c.research_btc_early_tp3) and (not c.research_wait_4h or c.research_sol_dominant or c.research_zero_retrace or not c.research_btc_split_planref_v1 or not c.research_btc_split_tp_ioc):
++            raise ValueError('BUDGET_TP3_REQUIRES_EXACT_E4')
+ 
+     def _next_log(self,event,ns,**kw):
+         self.next_band_audit.append(dict(event=event,timestamp_ns=int(ns),**kw))
+@@ -104,7 +113,7 @@ class NextBandResearch:
+     def _next_higher(self,instrument):
+         if self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None:return True
+         def ordinary(i):
+-            if not ((i.action.startswith('BTC') if instrument==self.config.btc_id else i.action.startswith('SOL')) and i.reason not in (Z_REASON,S_REASON) and i.action not in ('BTC_ENTRY','SOL_ADD')):return False
++            if not ((i.action.startswith('BTC') if instrument==self.config.btc_id else i.action.startswith('SOL')) and i.reason not in (Z_REASON,S_REASON,SB_REASON) and i.action not in ('BTC_ENTRY','SOL_ADD')):return False
+             if instrument==self.config.btc_id and i.action=='BTC_REDUCE' and i.limit_price is not None:
+                 q=self.cache.quote_tick(instrument)
+                 if q is not None and (q.bid_price.as_decimal()<D(str(i.limit_price)) if i.side==-1 else q.ask_price.as_decimal()>D(str(i.limit_price))):return False
+@@ -141,14 +150,14 @@ class NextBandResearch:
+     def _next_before_submit(self,intent,ns):
+         if not self._next_enabled:return True
+         if intent.action=='SOL_ADD':
+-            if self._next_s is not None:
++            if self._next_s is not None and not self.config.research_sol_budget:
+                 self._domain.on_parent_terminal(intent.id);self._next_log('S_BLOCK_INCREASE',ns,episode_id=intent.episode_id);return False
+             if self._next_z is not None:
+                 self._next_cancel_task(self._next_z,ns,'SOL_INCREASE')
+                 if any(self._next_risk_intents.get(i.id) is self._next_z for i in self._pending_by_order.values()):return False
+         instrument=self.config.btc_id if intent.action.startswith('BTC') else self.config.sol_id
+         task=self._next_z if instrument==self.config.btc_id else self._next_s
+-        if task and intent.reason not in (Z_REASON,S_REASON) and intent.action not in ('BTC_ENTRY','SOL_ADD'):
++        if task and intent.reason not in (Z_REASON,S_REASON,SB_REASON) and intent.action not in ('BTC_ENTRY','SOL_ADD'):
+             self._next_cancel_task(task,ns,'ORDINARY_OR_MANDATORY_REDUCTION')
+             return not any(self._next_risk_intents.get(i.id) is task for i in self._pending_by_order.values())
+         return True
+@@ -232,7 +241,8 @@ class NextBandResearch:
+                 executable=tick.bid_price.as_decimal() if z['side']==1 else tick.ask_price.as_decimal()
+                 if z['side']*(executable-z['G'])<=0:
+                     z['triggered']=True;self._next_log('Z_TRIGGER',ns,episode_id=z['episode_id'],G=str(z['G']),actual_quote=str(executable),slots=z['slots'])
+-        if self._next_s:self._next_sol_cancel_adds()
++        if self.config.research_sol_budget:self._next_budget_signal(ns)
++        if self._next_s and not self.config.research_sol_budget:self._next_sol_cancel_adds()
+         for task,instrument in ((self._next_z,self.config.btc_id),(self._next_s,self.config.sol_id)):
+             if not task or task['canceled'] or not task['triggered'] or tick.instrument_id!=instrument:continue
+             if self._next_higher(instrument):self._next_cancel_task(task,ns,'HIGHER_PRIORITY');continue
+@@ -244,11 +254,12 @@ class NextBandResearch:
+             else:qty=max(D(0),position.quantity.as_decimal()-task['remaining'])
+             qty=(qty//step)*step
+             if qty<=0:continue
+-            intent=self._domain._intent(ep,'BTC_REDUCE' if task['kind']=='Z' else 'SOL_EXIT',-task['side'],None,quantity=float(qty),reason=Z_REASON if task['kind']=='Z' else S_REASON)
++            intent=self._domain._intent(ep,'BTC_REDUCE' if task['kind']=='Z' else 'SOL_EXIT',-task['side'],None,quantity=float(qty),reason=Z_REASON if task['kind']=='Z' else SB_REASON if task['kind']=='SB' else S_REASON)
+             self._next_risk_intents[intent.id]=task
+             self._next_log('RISK_CHILD',ns,kind=task['kind'],quantity=str(qty),intent_id=intent.id)
+             self._submit_intent(intent,float(tick.bid_price),float(tick.ask_price),None,len(self._bars)-1,ts_now=ns)
+         if self._next_s and self._hb_position(self.config.sol_id) is None and not self._next_busy(self.config.sol_id):self._next_s=None
++        if self.config.research_sol_budget and self._next_s and not self._next_budget_working():self._next_s=None
+ 
+     def _next_risk_fill(self,intent,quantity,ns):
+         task=self._next_risk_intents.get(intent.id)
+@@ -264,3 +275,129 @@ class NextBandResearch:
+         else:ep.sol_qty=max(0,ep.sol_qty-quantity)
+         self._next_log('RISK_FILL',ns,kind=task['kind'],quantity=quantity,episode_id=ep.id,retired_lots=dict(ep.btc_risk_retired_lots))
+         return True
++
++
++    def _next_budget_working(self):
++        task=self._next_s
++        if not task or task.get('canceled'):return False
++        position=self._hb_position(self.config.sol_id)
++        return self._next_busy(self.config.sol_id) or (position is not None and position.quantity.as_decimal()>task['remaining'])
++
++    def _next_budget_atrs(self):
++        ns=self._last_accepted_session
++        cached=self._next_budget_atr_cache
++        if cached and cached[0]==ns:return cached[1]
++        result=[]
++        for asset,ohlc in (('btc',self._hb_daily_ohlc),('sol',self._next_sol_ohlc)):
++            previous=last=None;atr=None;trs=[]
++            for row in self._bars:
++                stamp=int(row.close_time.timestamp()*1_000_000_000)
++                if stamp>ns:return None
++                close=getattr(row,asset+'_close')
++                if previous is not None:
++                    hl=ohlc.get(stamp)
++                    if hl is None or stamp!=last+DAY:return None
++                    h,l=hl
++                    if not all(isfinite(x) and x>0 for x in (h,l,close,previous)) or not l<=close<=h:return None
++                    tr=max(h-l,abs(h-previous),abs(l-previous))
++                    if atr is None:
++                        trs.append(tr)
++                        if len(trs)==14:atr=sum(trs)/14
++                    else:atr=(13*atr+tr)/14
++                previous=close;last=stamp
++            if last!=ns or atr is None or not isfinite(atr) or atr<=0:return None
++            result.append(D(str(atr)))
++        self._next_budget_atr_cache=(ns,tuple(result))
++        return tuple(result)
++
++    def _next_budget_state(self,ns):
++        marks=self._latest_marks
++        ids=(self.config.btc_id,self.config.sol_id)
++        if not all(i in marks and marks[i].ts_event==ns for i in ids):return None
++        try:equity=self._v3_equity()
++        except (ValueError,AttributeError,KeyError):return None
++        if not equity.is_finite() or equity<=0:return None
++        self._next_peak=max(self._next_peak,equity)
++        if self._last_accepted_session is None or not 0<=ns-self._last_accepted_session<=DAY:return None
++        atrs=self._next_budget_atrs()
++        if atrs is None:return None
++        # Unknown native orders are never assumed flat. Known resting BTC TP
++        # leaves can only reduce the conservative confirmed BTC reserve.
++        for order in self.cache.orders_open()+self.cache.orders_inflight():
++            if str(order.client_order_id) not in self._pending_by_order:return None
++        if any(i.action=='BTC_ENTRY' for i in self._pending_by_order.values()) or self._split_unfinished():return None
++        btc=self._hb_position(ids[0]);sol=self._hb_position(ids[1])
++        qb=btc.quantity.as_decimal() if btc else D(0);qs=sol.quantity.as_decimal() if sol else D(0)
++        b=marks[ids[0]].price;s=marks[ids[1]].price
++        fb=self.cache.instrument(ids[0]).taker_fee;fs=self.cache.instrument(ids[1]).taker_fee
++        ab,ass=atrs;rb=qb*(ab+fb*(b+ab))
++        cap=max(D(0),(equity-D('.55')*self._next_peak-rb-fs*s*qs)/(ass*(1+fs)))
++        step=self.cache.instrument(ids[1]).size_increment.as_decimal()
++        cap=(cap//step)*step
++        return dict(equity=equity,peak=self._next_peak,drawdown=1-equity/self._next_peak,btc_qty=qb,sol_qty=qs,btc_atr=ab,sol_atr=ass,btc_reserve=rb,sol_fee=fs,sol_mark=s,cap=cap,sol_stress=qs*ass,btc_stress=qb*ab,daily_ns=self._last_accepted_session)
++
++    def _next_budget_signal(self,ns):
++        if self._next_budget_last_ns==ns:return
++        self._next_budget_last_ns=ns
++        state=self._next_budget_state(ns)
++        sol=self._hb_position(self.config.sol_id)
++        if sol is None and not self._next_busy(self.config.sol_id):
++            if self._next_budget_cut_used:self._next_log('SB_NATIVE_FLAT_RESET',ns)
++            self._next_budget_cut_used=False;self._next_s=None
++            return
++        if state is None:
++            # Bounded audit: repeated missing states are counted once/session.
++            key=('SB_UNKNOWN',self._last_accepted_session)
++            if getattr(self,'_next_budget_unknown',None)!=key:
++                self._next_budget_unknown=key;self._next_log('SB_UNKNOWN',ns,reason='MARK_ATR_OR_NATIVE_OWNERSHIP')
++            return
++        if state['drawdown']<D('.35') or self._next_budget_cut_used or sol is None:return
++        if state['sol_stress']<=state['btc_stress'] or state['cap']>=state['sol_qty']:return
++        if self._next_higher(self.config.sol_id):return
++        if self._next_busy(self.config.sol_id,True):
++            self._next_sol_cancel_adds();return
++        ep=self._domain.episode
++        if ep is None:return
++        self._next_budget_cut_used=True
++        self._next_s=dict(kind='SB',episode_id=ep.id,side=1 if sol.is_long else -1,remaining=state['cap'],triggered=True,canceled=False)
++        self._next_log('SB_TRIGGER',ns,**{k:str(v) for k,v in state.items()})
++
++    def _next_budget_admit(self,qty,executable,ns):
++        state=self._next_budget_state(ns)
++        if state is None:
++            self._next_log('SB_ADD_UNKNOWN',ns,requested=str(qty));return False
++        if state['drawdown']<D('.35'):return True
++        if self._next_budget_working() or self._next_busy(self.config.sol_id,True):
++            self._next_log('SB_ADD_BUSY',ns,requested=str(qty));return False
++        post=state['equity']-qty*executable*state['sol_fee']-state['btc_reserve']-(state['sol_qty']+qty)*(state['sol_atr']+state['sol_fee']*(state['sol_mark']+state['sol_atr']))
++        allowed=post>=D('.55')*state['peak']
++        self._next_log('SB_ADD_ADMISSION',ns,requested=str(qty),allowed=allowed,post_stress_equity=str(post),**{k:str(v) for k,v in state.items()})
++        return allowed
++
++    def _next_tp3_target(self,target,ns):
++        if not self.config.research_btc_early_tp3 or target.level!=2:return target
++        ep=self._domain.episode;p=self._split_parent
++        if not ep or not p or self._split_unfinished() or not p.get('closed') or p.get('filled')!=p.get('quantity') or p.get('cancelled'):return target
++        frozen=self._next_tp3_freeze
++        if not frozen or frozen['episode_id']!=ep.id:
++            self._domain._ensure_btc_targets(ep)
++            inst=self.cache.instrument(self.config.btc_id);step=inst.size_increment.as_decimal()
++            actual=self._domain._lots(ep.btc_initial_qty,step)
++            lots=int((D(actual)*D('.20')).to_integral_value(rounding=ROUND_FLOOR))
++            total=ep.btc_tp_target_lots.get(2,0)
++            available=total-ep.btc_tp_filled_lots.get(2,0)-ep.btc_risk_retired_lots.get(2,0)
++            from coinmaster.strategy.wave_overlay import _native_limit_price
++            ref=ep.btc_planref_vwap
++            early=_native_limit_price(inst,ref*(1+D(ep.side)*D('.01'))).as_decimal() if ref else D(0)
++            old=_native_limit_price(inst,D(str(target.limit_price))).as_decimal()
++            eligible=bool(ref and ep.wave_levels[2]>0 and lots>0 and available>=lots and ep.side*(old-early)>0 and ep.side*(early-ref)>0)
++            frozen=self._next_tp3_freeze=dict(episode_id=ep.id,eligible=eligible,early_lots=lots,early_price=early,old_price=old,target_lots=total)
++            self._next_log('TP3_ALLOCATION',ns,**{k:str(v) for k,v in frozen.items()})
++        if not frozen['eligible']:return target
++        filled=ep.btc_tp_filled_lots.get(2,0)
++        leaves=max(0,frozen['early_lots']-filled)
++        if leaves:
++            step=self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
++            target=replace(target,quantity=float(D(leaves)*step),limit_price=float(frozen['early_price']),reason='BTC_TP3_EARLY')
++        self._next_log('TP3_TRANCHE',ns,episode_id=ep.id,early=bool(leaves),quantity=target.quantity,price=target.limit_price,aggregate_filled_lots=filled,original_target_lots=frozen['target_lots'])
++        return target
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 07c4e30..01708f3 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -72,6 +72,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_wait_persist: bool = False
+     research_zero_retrace: bool = False
+     research_sol_dominant: bool = False
++    research_sol_budget: bool = False
++    research_btc_early_tp3: bool = False
++    research_budget_sol_daily_seed: tuple[tuple[int, float, float], ...] = ()
+     research_next_signals: tuple[DataType, ...] = ()
+     research_h4_ema: int | None = None
+     research_h4_gamma: Decimal = Decimal(".5")
+@@ -1138,6 +1141,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             )
+             if self.config.research_regime_reentry_band is not None:
+                 self._hb_daily_ohlc[next_session] = (float(btc.high), float(btc.low))
++            if self.config.research_sol_budget:
++                self._next_sol_ohlc[next_session] = (float(sol.high), float(sol.low))
+             self._carry_daily_bar(btc)
+             self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
+             self._last_accepted_session = next_session
+@@ -1945,6 +1950,9 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
+                 self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
+                 return
++        if intent.action == "SOL_ADD" and self.config.research_sol_budget and not self._next_budget_admit(rounded, executable_price, ts_now or 0):
++            self._domain.on_parent_terminal(intent.id)
++            return
+         if intent.action == "SOL_ADD":
+             rounded = self._risk_first_sol_prepare(intent,rounded,step,ts_now or 0,sigma,decision_index)
+         if intent.action == "BTC_ENTRY":
+@@ -2520,7 +2528,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         self._decision_index_by_order.pop(client_order_id, None)
+         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,ts_event,"FILL_TERMINAL")
+         self._requeue_accepted_reduction(intent, sigma, intent.decision_index, ts_event)
+-        if intent.action == "BTC_ENTRY":
++        if intent.action == "BTC_ENTRY" or intent.reason == "BTC_TP3_EARLY":
+             self._queue_confirmed_btc_targets(sigma, intent.decision_index, ts_event)
+ 
+     def _bind_native_lots(self) -> None:
+@@ -2542,6 +2550,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             return
+         self._bind_native_lots()
+         for target in self._domain.plan_confirmed_btc_targets():
++            target = self._next_tp3_target(target, ready_ns)
++            self._domain.episode.pending[target.id] = target
+             self._queued_intents.append((target, sigma, decision_index))
+             self._queued_intent_ready_ns[target.id] = ready_ns + 1
+ 
+@@ -2550,6 +2560,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         episode = self._domain.episode
+         if episode is None or self._carry_busy() or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
+             return False
++        if intent.reason == "BTC_TP3_EARLY":
++            return episode.btc_open_qty > 0 and intent.level not in episode.btc_filled_tps
+         if intent.action == "BTC_ENTRY":
+             return episode.btc_initial_qty > 0 and episode.btc_open_qty > 0
+         return (
+diff --git a/runtime/tests/test_native_budget_tp3.py b/runtime/tests/test_native_budget_tp3.py
+new file mode 100644
+index 0000000..7d2b6dd
+--- /dev/null
++++ b/runtime/tests/test_native_budget_tp3.py
+@@ -0,0 +1,211 @@
++from datetime import UTC,datetime,timedelta
++from decimal import Decimal as D
++from types import SimpleNamespace
++import pytest
++from coinmaster.domain.wave_overlay import Candidate,DailyBar,Episode
++from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP
++from coinmaster.strategy.next_band import DAY,SB_REASON
++from test_native_next_band import cfg,held
++from test_native_episode_risk import NativeProbe,marks,run_ticks,tick
++from test_wave_native_integration import native_engine
++
++def config(**kw):
++    return cfg(research_wait_4h=True,research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,**kw)
++
++def daily(s):
++    base=datetime(1970,1,1,tzinfo=UTC)
++    s._bars=[DailyBar(base+timedelta(days=i),base+timedelta(days=i+1),base+timedelta(days=i+1),100,100,100) for i in range(20)]
++    s._last_accepted_session=20*DAY
++    s._hb_daily_ohlc={int(r.close_time.timestamp()*1e9):(110,90) for r in s._bars}
++    s._next_sol_ohlc={int(r.close_time.timestamp()*1e9):(105,95) for r in s._bars}
++
++def test_atr_completed_only_future_poison_and_gap():
++    s=NativeProbe(config(research_sol_budget=True));daily(s)
++    assert s._next_budget_atrs()==(D(20),D(10))
++    s._next_sol_ohlc[21*DAY]=(1e15,1e-8);s._next_budget_atr_cache=None
++    assert s._next_budget_atrs()==(D(20),D(10))
++    s._next_sol_ohlc.pop(19*DAY);s._next_budget_atr_cache=None
++    assert s._next_budget_atrs() is None
++
++def test_exact_e4_only_and_defaults():
++    c=cfg()
++    assert not c.research_sol_budget and not c.research_btc_early_tp3
++    with pytest.raises(ValueError,match='EXACT_E4'):
++        NativeProbe(cfg(research_sol_budget=True))
++
++def test_budget_cap_fee_dominance_no_churn_and_unused_right(monkeypatch):
++    s,e,ep=held(side=-1)
++    try:
++        # Native SOL open under unchanged admission; then enable frozen policy
++        # through the test state, without replacing native money.
++        add=s._domain._intent(ep,'SOL_ADD',1,0,quantity=100)
++        s._submit_intent(add,100,100,.01,2,ts_now=5)
++        run_ticks(e,[tick(SOL_PERP,6),tick(SOL_PERP,7)])
++        used=dict(ep.sol_add_filled_notional)
++        state=dict(equity=D(6000),peak=D(10000),drawdown=D('.4'),btc_qty=D(1),sol_qty=D(100),btc_atr=D(10),sol_atr=D(10),btc_reserve=D(11),sol_fee=D('.00055'),sol_mark=D(100),cap=D(40),sol_stress=D(1000),btc_stress=D(10),daily_ns=2)
++        monkeypatch.setattr(s,'_next_budget_state',lambda ns:state)
++        s._next_budget_signal(10)
++        assert s._next_s['remaining']==40 and s._next_budget_cut_used
++        state['cap']=D(0);s._next_budget_signal(11)
++        assert s._next_s['remaining']==40
++        assert ep.sol_add_filled_notional==used
++        s._next_s=None
++        state['drawdown']=D('.1')
++        assert s._next_budget_admit(D(1),D(100),12)
++        state['drawdown']=D('.4');state['equity']=D(5500)
++        assert not s._next_budget_admit(D(100),D(100),13)
++        assert ep.sol_add_filled_notional==used
++        s._next_budget_cut_used=False;state['btc_stress']=D(2000);s._next_budget_signal(14)
++        assert s._next_s is None
++    finally:e.end();e.dispose()
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_tp3_native_sequential_actual_partial_rights_and_lots(side):
++    from test_native_btc_sizing import prepare_day
++    s=NativeProbe(config(research_btc_early_tp3=True,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
++    e=native_engine(s)
++    run_ticks(e,[tick(BTC_PERP,1)])
++    prepare_day(s,2);marks(s,2)
++    ep=s._domain.episode=Episode('tp3',side,10000,1,wave_levels=(.02,.04,.10))
++    entry=s._domain._intent(ep,'BTC_ENTRY',side,None,quantity=100)
++    s._submit_intent(entry,100,100,.01,0,ts_now=2)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,'99' if side==1 else '101')])
++        assert s._split_parent['closed'] and ep.btc_initial_qty==100
++        target=next(i for i,_,_ in s._queued_intents if i.level==2)
++        assert target.reason=='BTC_TP3_EARLY' and target.quantity==20
++        assert D(str(target.limit_price))==D(101 if side==1 else 99)
++        original=dict(ep.btc_tp_target_lots)
++        # Crossed positive target uses existing actual taker IOC catchup;
++        # unlike this wheel's resting maker model, IOC honors finite size.
++        favorable='101.1' if side==1 else '98.9'
++        run_ticks(e,[tick(BTC_PERP,11,favorable,size='5')])
++        assert ep.btc_tp_filled_lots[2]==5000 and ep.sol_right_fraction[2]>0
++        assert 2 not in ep.btc_filled_tps
++        assert not any(x.get('event')=='TP3_TRANCHE' and x.get('early') is False for x in s.next_band_audit)
++        for n in range(12,19):run_ticks(e,[tick(BTC_PERP,n,favorable,size='5')])
++        assert ep.btc_tp_filled_lots[2]==20000
++        remaining=[i for i in s._pending_by_order.values() if i.level==2]
++        assert len(remaining)==1 and remaining[0].reason=='BTC_TP3' and remaining[0].quantity==37.5
++        assert BTC_PERP.make_price(D(str(remaining[0].limit_price))).as_decimal()==D(110 if side==1 else 90)
++        assert ep.btc_tp_target_lots==original
++        final='111' if side==1 else '89'
++        run_ticks(e,[tick(BTC_PERP,20,final),tick(BTC_PERP,21,'112' if side==1 else '88'),tick(BTC_PERP,22,'113' if side==1 else '87')])
++        assert ep.btc_tp_filled_lots[2]==original[2] and 2 in ep.btc_filled_tps
++        assert ep.sol_right_fraction[2]==1 and not ep.btc_risk_retired_lots
++    finally:e.end();e.dispose()
++
++
++def test_budget_current_native_equity_stale_unknown_and_native_cut(monkeypatch):
++    s,e,ep=held(side=-1)
++    try:
++        i=s._domain._intent(ep,'SOL_ADD',1,0,quantity=100)
++        s._submit_intent(i,100,100,.01,2,ts_now=5)
++        run_ticks(e,[tick(SOL_PERP,6),tick(SOL_PERP,7)])
++        consumed=dict(ep.sol_add_filled_notional)
++        daily(s);ns=20*DAY;marks(s,ns)
++        native=s._v3_equity()
++        s._next_equity=D(1) # previous receipt cannot be current monetary source
++        state=s._next_budget_state(ns)
++        assert state['equity']==native and state['equity']!=s._next_equity
++        assert s._next_budget_state(ns+1) is None
++        s._next_enabled=True
++        s._next_s=dict(kind='SB',episode_id=ep.id,side=1,remaining=D(40),triggered=True,canceled=False)
++        for n in range(8,18):run_ticks(e,[tick(SOL_PERP,n,size='10')])
++        assert ep.sol_qty==40 and s._hb_position(SOL_PERP.id).quantity.as_decimal()==40
++        assert ep.sol_add_filled_notional==consumed
++        assert not ep.sol_half_done
++        assert sum(D(str(x['quantity'])) for x in s.next_band_audit if x['event']=='RISK_FILL' and x['kind']=='SB')==60
++    finally:e.end();e.dispose()
++
++
++def test_global_peak_keeps_flat_history_even_with_unknown_atr(monkeypatch):
++    s=NativeProbe(config(research_sol_budget=True));e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)])
++        marks(s,10);monkeypatch.setattr(s,'_v3_equity',lambda:D(20000))
++        s._next_budget_cut_used=True;s._next_budget_signal(10)
++        assert s._next_peak==20000 and not s._next_budget_cut_used
++        marks(s,11);monkeypatch.setattr(s,'_v3_equity',lambda:D(10000))
++        s._next_budget_signal(11)
++        assert s._next_peak==20000
++    finally:e.end();e.dispose()
++
++
++def test_early_native_resting_cancel_unknown_ack_and_forced_precedence():
++    from test_native_btc_sizing import prepare_day
++    s=NativeProbe(config(research_btc_early_tp3=True,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
++    e=native_engine(s);run_ticks(e,[tick(BTC_PERP,1)])
++    prepare_day(s,2);marks(s,2)
++    ep=s._domain.episode=Episode('cancel-early',1,10000,1,wave_levels=(.02,.04,.10))
++    entry=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
++    s._submit_intent(entry,100,100,.01,0,ts_now=2)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,'99'),tick(BTC_PERP,6,'100')])
++        early=next(o for o in s.cache.orders_open() if s._pending_by_order[str(o.client_order_id)].reason=='BTC_TP3_EARLY')
++        assert early.is_post_only and early.price.as_decimal()==101
++        intent=s._pending_by_order[str(early.client_order_id)]
++        s._pending_by_order['UNKNOWN_ACK']=intent
++        before=len(s._queued_intents);s._queue_confirmed_btc_targets(None,0,7)
++        assert len(s._queued_intents)==before and not ep.sol_rights
++        s._pending_by_order.pop('UNKNOWN_ACK')
++        s.cancel_order(early)
++        run_ticks(e,[tick(BTC_PERP,7,'100')])
++        assert not ep.sol_rights and not ep.btc_tp_filled_lots
++        replacement=[i for i,_,_ in s._queued_intents if i.reason=='BTC_TP3_EARLY']+[i for i in s._pending_by_order.values() if i.reason=='BTC_TP3_EARLY']
++        assert len(replacement)==1 and replacement[0].quantity==20
++        s._begin_forced_close('REGIME')
++        run_ticks(e,[tick(BTC_PERP,8,'100'),tick(BTC_PERP,9,'100')])
++        assert not s._queued_intents and not ep.sol_rights
++        assert not s.cache.orders_open()
++    finally:e.end();e.dispose()
++
++
++def test_budget_rejected_original_submit_keeps_native_orders_and_consumed_rights():
++    from test_native_btc_sizing import prepare_day
++    s=NativeProbe(config(research_sol_budget=True));e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)]);daily(s);ns=20*DAY;marks(s,ns)
++        ep=s._domain.episode=Episode('unused-add',-1,10000,1,h=10000)
++        ep.sol_rights={0};ep.sol_right_fraction={0:1.0}
++        s._next_peak=D(20000)
++        before=len(s.cache.orders());consumed=dict(ep.sol_add_filled_notional);rights=set(ep.sol_rights)
++        i=s._domain._intent(ep,'SOL_ADD',1,0,quantity=10)
++        s._submit_intent(i,100,100,.01,19,ts_now=ns)
++        assert len(s.cache.orders())==before and not s._pending_by_order
++        assert i.id not in ep.pending
++        assert ep.sol_add_filled_notional==consumed and ep.sol_rights==rights
++        assert s.next_band_audit[-1]['event']=='SB_ADD_ADMISSION' and not s.next_band_audit[-1]['allowed']
++    finally:e.end();e.dispose()
++
++def test_early_ineligible_noop_and_native_denied_before_first_fill():
++    from dataclasses import replace
++    from nautilus_trader.model.enums import OrderSide,TimeInForce
++    from nautilus_trader.model.objects import Quantity
++    from test_native_btc_sizing import prepare_day
++    s=NativeProbe(config(research_btc_early_tp3=True,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
++    e=native_engine(s);run_ticks(e,[tick(BTC_PERP,1)])
++    prepare_day(s,2);marks(s,2)
++    ep=s._domain.episode=Episode('denied-early',1,10000,1,wave_levels=(.02,.04,.10))
++    entry=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
++    s._submit_intent(entry,100,100,.01,0,ts_now=2)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,'99')])
++        item=next(x for x in s._queued_intents if x[0].reason=='BTC_TP3_EARLY');i=item[0]
++        frozen=s._next_tp3_freeze;s._next_tp3_freeze=None
++        ep.wave_levels=(.02,.04,.005)
++        original=replace(i,reason='BTC_TP3',quantity=57.5,limit_price=100.5)
++        assert s._next_tp3_target(original,5) is original
++        assert not ep.sol_rights and not ep.btc_tp_filled_lots
++        ep.wave_levels=(.02,.04,.10);s._next_tp3_freeze=frozen
++        s._queued_intents.remove(item)
++        # Fault-inject invalid wire precision; native RiskEngine generates
++        # OrderDenied. No direct domain fill or fabricated callback.
++        bad=s.order_factory.limit(BTC_PERP.id,OrderSide.SELL,Quantity.from_str('0.0001'),BTC_PERP.make_price(D(101)),time_in_force=TimeInForce.GTC,post_only=True,reduce_only=True)
++        oid=str(bad.client_order_id);s._pending_by_order[oid]=i;s._sigma_by_order[oid]=None;s._decision_index_by_order[oid]=0
++        s.submit_order(bad);run_ticks(e,[tick(BTC_PERP,6,'100')])
++        assert s.cache.order(bad.client_order_id).status.name=='DENIED'
++        assert not ep.sol_rights and not ep.btc_tp_filled_lots and ep.btc_open_qty==100
++        replacements=[x[0] for x in s._queued_intents if x[0].reason=='BTC_TP3_EARLY']+[x for x in s._pending_by_order.values() if x.reason=='BTC_TP3_EARLY']
++        assert len(replacements)==1 and replacements[0].quantity==20
++    finally:e.end();e.dispose()
+diff --git a/runtime/tests/test_wave_native_integration.py b/runtime/tests/test_wave_native_integration.py
+index 9c9352e..35bd48e 100644
+--- a/runtime/tests/test_wave_native_integration.py
++++ b/runtime/tests/test_wave_native_integration.py
+@@ -693,6 +693,7 @@ def test_btc_entry_local_denial_and_native_zero_terminal_are_distinct() -> None:
+     assert strategy.daily_decision_status()["reason"] == "LOCAL_ENTRY_DENIED:INSTRUMENT_MISSING"
+ 
+     rejected = WaveOverlayStrategy(probe_config())
++    rejected_engine = native_engine(rejected)
+     entry = Intent("native-entry", "episode-2", "BTC_ENTRY", None, 1, requested_notional=100)
+     rejected._domain.episode = Episode("episode-2", 1, 10_000, 1.0)
+     rejected._domain.episode.pending[entry.id] = entry
+@@ -700,10 +701,12 @@ def test_btc_entry_local_denial_and_native_zero_terminal_are_distinct() -> None:
+     rejected.on_order_rejected(SimpleNamespace(client_order_id="order-1"))
+     assert rejected._domain.episode is None
+     assert rejected.daily_decision_status()["reason"] == "NATIVE_ENTRY_ZERO_FILL_TERMINAL"
++    rejected_engine.dispose()
+ 
+ 
+ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> None:
+     strategy = WaveOverlayStrategy(probe_config())
++    strategy_engine = native_engine(strategy)
+     entry = Intent("unknown-entry", "episode", "BTC_ENTRY", None, 1, requested_notional=100)
+     strategy._domain.episode = Episode("episode", 1, 10_000, 1.0)
+     strategy._domain.episode.pending[entry.id] = entry
+@@ -714,8 +717,10 @@ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> No
+     assert entry.id in strategy._domain.episode.pending
+     strategy.on_order_expired(SimpleNamespace(client_order_id="order-unknown"))
+     assert strategy._domain.episode is None
++    strategy_engine.dispose()
+ 
+     partial = WaveOverlayStrategy(probe_config())
++    partial_engine = native_engine(partial)
+     entry = Intent("partial-entry", "episode-2", "BTC_ENTRY", None, 1, requested_notional=100)
+     partial._domain.episode = Episode("episode-2", 1, 10_000, 1.0)
+     partial._domain.episode.pending[entry.id] = entry
+@@ -725,6 +730,7 @@ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> No
+     assert partial._domain.episode is not None
+     assert partial._domain.episode.btc_open_qty == 0.25
+     assert partial.daily_decision_status()["reason"] == "PARTIAL_ENTRY_RETAINED"
++    partial_engine.dispose()
+ 
+ 
+ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash(tmp_path) -> None:

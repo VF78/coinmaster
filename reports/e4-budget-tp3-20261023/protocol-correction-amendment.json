@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-23T13:56:18.544783+00:00",
+  "original_protocol_sha256": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39",
+  "reason": "BTC attempt2 completed native engine but post-run MONTHLY_COMPOUNDING_MISMATCH at28-digit Decimal aborted packaging before observer closure; independent receipt pass EOF confirmed incomplete gzip. Original exports retained unmodified.",
+  "original_engine_source": "5dc17f0a8c6bc764746683f4d38bcf1fa9dcc77e",
+  "correction": "LOCAL Decimal context80 only inside reporting compounding multiplication, original1e-24tolerance and sameinputs; no money/strategy/config/data/fees change",
+  "corrected_source": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "substantial_correction_count": 1,
+  "next_recipe": "BTC_CORRECTED",
+  "next_physical_attempt": 3,
+  "cap": 4,
+  "failed_attempt2_counted": true,
+  "no_manual_repair_or_synthetic_report": true,
+  "recover_helper_executed": false,
+  "no_new_hypothesis_or_grid": true,
+  "go_required_before_next_engine": true,
+  "combined_gate_already_failed": "SOL retention22.25%, globalDD66.86%",
+  "baseline_reruns": 0,
+  "pilot_changes": 0
+}
