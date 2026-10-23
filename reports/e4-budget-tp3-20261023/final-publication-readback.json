@@ -1,0 +1,13 @@
+{
+  "head": "e548212cb875d35076f59e1e5ae9877017c172fe",
+  "push": "PASS",
+  "GitHub_ref_readback": "PASS",
+  "verified_at": "2026-10-23T14:31:26.821302+00:00",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "report_sha256": "8a1e2dbc8171d4b57c41f168e1f744e00718dd1e7317575a553158944ccd088d",
+  "project_issue": 123,
+  "project_state": "Done / closed",
+  "economic_goal": "NOT_MET",
+  "launch_budget": "CLOSED_3_OF_4",
+  "pilot": "UNTOUCHED_NOT_INSPECTED"
+}
