@@ -17,8 +17,8 @@ SOL1=BarType(SOL_PERP.id,BarSpecification(1,BarAggregation.HOUR,PriceType.LAST),
 
 def cfg(**kw):return lifecycle_config(research_regime_reentry_band=D('.5'),max_mark_age_ns=100*DAY,research_next_signals=(next_bar_type(BTC_PERP.id,4),next_bar_type(SOL_PERP.id,1)),**kw)
 
-def held(z=False,s=False,cls=NativeProbe,side=1):
-    strategy=cls(cfg(research_zero_retrace=z,research_sol_dominant=s,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
+def held(z=False,s=False,cls=NativeProbe,side=1,**kw):
+    strategy=cls(cfg(research_zero_retrace=z,research_sol_dominant=s,**kw,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
     engine=native_engine(strategy);run_ticks(engine,[tick(BTC_PERP,1)])
     prepare_day(strategy,2,side)
     ep=strategy._domain.episode=Episode('next',side,10000,1,wave_levels=(0.,0.,.10),btc_planref_vwap=D(100))
@@ -101,12 +101,13 @@ def test_z_unarmed_no_stop_and_ordinary_reduction_cancels_arm():
     finally:e.end();e.dispose()
 
 
-def test_s_cancel_add_late_fill_reconciles_frozen_remaining_partial_no_readd():
+@pytest.mark.parametrize('variant',['old','R1','R2'])
+def test_s_cancel_add_late_fill_reconciles_frozen_remaining_partial_no_readd(variant):
     class Delayed(NativeProbe):
         def cancel_order(self,order,*a,**kw):
             if not order.is_reduce_only:return
             return super().cancel_order(order,*a,**kw)
-    s,e,ep=held(s=True,cls=Delayed,side=-1)
+    s,e,ep=held(s=True,cls=Delayed,side=-1,research_sol_residual=variant!='old',research_sol_minute=variant=='R2')
     try:
         i=s._domain._intent(ep,'SOL_ADD',1,0,quantity=100)
         s._submit_intent(i,100,100,.01,2,ts_now=5);run_ticks(e,[tick(SOL_PERP,6),tick(SOL_PERP,7)])
@@ -118,7 +119,11 @@ def test_s_cancel_add_late_fill_reconciles_frozen_remaining_partial_no_readd():
         age=ep.sol_first_fill_at;sigma=ep.fixed_sigma
         # beta2*100SOL*97 > 100BTC*100; lower BTC position makes dominance true.
         s._split_parent['planref_v1_beta']=2.
-        s._next_closed_bar(bar(SOL1,H1,97));run_ticks(e,[tick(SOL_PERP,H1+1,'97')])
+        if variant=='R2':
+            s._next_observe_settled(D(5000),H1,H1-60_000_000_000)
+            run_ticks(e,[tick(BTC_PERP,H1),tick(SOL_PERP,H1,'97')])
+        else:
+            s._next_closed_bar(bar(SOL1,H1,97));run_ticks(e,[tick(SOL_PERP,H1+1,'97')])
         assert s._next_s['remaining']==50 and ep.sol_qty==100
         # Real late fill after cancellation request; wait until native terminal.
         run_ticks(e,[tick(SOL_PERP,H1+2,'89',size='20')]);assert ep.sol_qty>=50
@@ -179,3 +184,127 @@ def test_z_cancel_ack_late_risk_fill_before_ordinary_tp_no_fake_sol_rights():
         assert ep.sol_rights=={2} and ep.btc_tp_filled_lots.get(2)==1000
         assert not s._pending_by_order and not s._queued_intents
     finally:e.end();e.dispose()
+
+
+@pytest.mark.parametrize('minute',[False,True])
+def test_residual_native_flat_single_frozen_target_preserves_rights(minute):
+    s,e,ep=held(s=True,side=-1,research_sol_residual=True,research_sol_minute=minute)
+    try:
+        add=s._domain._intent(ep,'SOL_ADD',1,0,quantity=100)
+        s._submit_intent(add,100,100,.01,2,ts_now=5)
+        run_ticks(e,[tick(SOL_PERP,6),tick(SOL_PERP,7)])
+        for order in s.cache.orders_open():
+            if order.instrument_id==BTC_PERP.id:s.cancel_order(order)
+        close=s._domain._intent(ep,'BTC_REDUCE',1,2,quantity=100)
+        s._submit_intent(close,100,100,None,2,ts_now=8)
+        run_ticks(e,[tick(BTC_PERP,9),tick(BTC_PERP,10)])
+        assert s._next_residual_btc_flat(ep,s._split_parent)
+        rights=set(ep.sol_rights);retired=dict(ep.btc_risk_retired_lots)
+        age=ep.sol_first_fill_at;sigma=ep.fixed_sigma
+        ns=H1 if not minute else H1//60
+        marks(s,ns,'100','97');s._next_observe_settled(D(5000),ns,ns-60_000_000_000)
+        if not minute:s._next_closed_bar(bar(SOL1,ns,97))
+        run_ticks(e,[tick(BTC_PERP,ns,'100'),tick(SOL_PERP,ns,'97')])
+        assert s._next_s['remaining']==50
+        for n in range(1,5):run_ticks(e,[tick(SOL_PERP,ns+n,'97')])
+        assert ep.sol_qty==50 and s._hb_position(SOL_PERP.id).quantity.as_decimal()==50
+        assert len([x for x in s.next_band_audit if x['event']=='S_TRIGGER'])==1
+        assert ep.sol_rights==rights and ep.btc_risk_retired_lots==retired
+        assert ep.sol_first_fill_at==age and ep.fixed_sigma==sigma and not ep.sol_half_done
+        future=s._domain._intent(ep,'SOL_ADD',1,1,quantity=20)
+        s._submit_intent(future,97,97,.01,2,ts_now=ns+10)
+        assert ep.sol_qty==50 and future.id not in ep.pending
+        task=s._next_s
+        s._split_parent=None
+        entry=s._domain._intent(ep,'BTC_ENTRY',-1,None,quantity=1)
+        s._submit_intent(entry,100,100,None,2,ts_now=ns+11)
+        run_ticks(e,[tick(BTC_PERP,ns+12),tick(BTC_PERP,ns+13)])
+        assert s._hb_position(BTC_PERP.id) is not None
+        assert s._next_s is task and task['remaining']==50
+        ordinary=s._domain._intent(ep,'SOL_EXIT',-1,None,quantity=50,reason='SOL_HARD_TIMEOUT')
+        s._submit_intent(ordinary,97,97,.01,2,ts_now=ns+14)
+        assert task['canceled']
+        run_ticks(e,[tick(SOL_PERP,ns+15,'97'),tick(SOL_PERP,ns+16,'97')])
+        assert s._hb_position(SOL_PERP.id) is None
+    finally:e.end();e.dispose()
+
+
+@pytest.mark.parametrize('blocked',['prior','domain','split','pending','queued','native'])
+def test_residual_flat_requires_all_authoritative_evidence(blocked):
+    s,e,ep=held(s=True,research_sol_residual=True)
+    try:
+        for order in s.cache.orders_open():
+            if order.instrument_id==BTC_PERP.id:s.cancel_order(order)
+        close=s._domain._intent(ep,'BTC_REDUCE',-1,2,quantity=100)
+        s._submit_intent(close,100,100,None,2,ts_now=5)
+        run_ticks(e,[tick(BTC_PERP,6),tick(BTC_PERP,7)])
+        assert s._next_residual_btc_flat(ep,s._split_parent)
+        if blocked=='prior':ep.btc_initial_qty=0
+        if blocked=='domain':ep.btc_open_qty=.001
+        if blocked=='split':s._split_parent['closed']=False
+        i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=1)
+        if blocked=='pending':s._pending_by_order['unknown-ACK']=i
+        if blocked=='queued':s._queued_intents.append((i,None,2))
+        if blocked=='native':
+            s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.BUY,BTC_PERP.make_qty(D(1))))
+            run_ticks(e,[tick(BTC_PERP,9),tick(BTC_PERP,10)])
+            ep.btc_open_qty=0 # cache disagreement must still fail closed
+        assert not s._next_residual_btc_flat(ep,s._split_parent)
+    finally:e.end();e.dispose()
+
+
+@pytest.mark.parametrize('bad',['stale_receipt','unknown_source','stale_source','stale_quote','future_mark','stale_mark','not_minute'])
+def test_minute_requires_current_causal_paired_quote_receipt_and_marks(bad):
+    s,e,ep=held(s=True,side=-1,research_sol_residual=True,research_sol_minute=True)
+    try:
+        add=s._domain._intent(ep,'SOL_ADD',1,0,quantity=100)
+        s._submit_intent(add,100,100,.01,2,ts_now=5)
+        run_ticks(e,[tick(SOL_PERP,6),tick(SOL_PERP,7)])
+        ns=H1
+        marks(s,ns,'100','97');s._next_observe_settled(D(5000),ns,ns-60_000_000_000)
+        if bad=='stale_receipt':s._next_equity_ns=ns-60_000_000_000
+        if bad=='unknown_source':s._next_equity_source=None
+        if bad=='stale_source':s._next_equity_source=ns-120_000_000_000
+        if bad=='future_mark':marks(s,ns+1,'100','97')
+        if bad=='stale_mark':marks(s,-200*DAY,'100','97')
+        if bad=='not_minute':ns+=1
+        run_ticks(e,[tick(BTC_PERP,ns-1 if bad=='stale_quote' else ns),tick(SOL_PERP,ns,'97')])
+        assert s._next_s is None
+    finally:e.end();e.dispose()
+
+
+def test_new_flags_default_off_and_dependency_validation():
+    c=lifecycle_config()
+    assert not c.research_sol_residual and not c.research_sol_minute
+    with pytest.raises(ValueError,match='RESIDUAL_REQUIRES_S'):NativeProbe(cfg(research_sol_residual=True))
+    with pytest.raises(ValueError,match='MINUTE_REQUIRES_RESIDUAL_S'):NativeProbe(cfg(research_sol_dominant=True,research_sol_minute=True))
+
+
+def test_r2_real_observer_receipt_precedes_paired_quote_and_native_cut_once(tmp_path):
+    from coinmaster.research.minute_risk import NativeMinuteRiskRecorder,observed_strategy_type
+    from coinmaster.venues.marks import venue_mark
+    r=NativeMinuteRiskRecorder(tmp_path/'risk.csv.gz',D(10000),(BTC_PERP,SOL_PERP),
+        {BTC_PERP.id:D(40),SOL_PERP.id:D(20)},10*H1)
+    s,e,ep=held(s=True,side=-1,cls=observed_strategy_type(NativeProbe,r),
+        research_sol_residual=True,research_sol_minute=True)
+    try:
+        add=s._domain._intent(ep,'SOL_ADD',1,0,quantity=100)
+        s._submit_intent(add,100,100,.01,2,ts_now=5)
+        run_ticks(e,[tick(SOL_PERP,6),tick(SOL_PERP,7)])
+        ts=[H1//60,2*H1//60,3*H1//60]
+        r.set_week([SimpleNamespace(open_time_ms=t//1_000_000-60000,
+            btc_mark={k:'100' for k in ('open','high','low','close')},
+            sol_mark={k:'55' for k in ('open','high','low','close')}) for t in ts])
+        for n,t in enumerate(ts):
+            e.add_data([venue_mark(BTC_PERP.id,D(100),t),venue_mark(SOL_PERP.id,D(55),t)],
+                client_id=s.config.mark_client_id)
+            run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t,'55')])
+            if n==0:assert s._next_s is None and r.receipt_count==0
+            if n==1:
+                assert r.receipt_count==1 and s._next_equity_ns==t
+                assert s._next_equity/s._next_peak<D('.6')
+                assert s._next_s['remaining']==50
+        assert len([x for x in s.next_band_audit if x['event']=='S_TRIGGER'])==1
+        assert any(x['event']=='RISK_FILL' and x['kind']=='S' for x in s.next_band_audit)
+        assert ep.sol_qty==50
+    finally:r.file.close();r.receipt_file.close();e.end();e.dispose()

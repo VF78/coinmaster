@@ -30,6 +30,9 @@ S_REASON='SOL_DOMINANT_ADVERSE_RISK'
 class NextBandResearch:
     def _next_init(self):
         c=self.config
+        if c.research_sol_residual and not c.research_sol_dominant:raise ValueError('RESIDUAL_REQUIRES_S')
+        if c.research_sol_minute and not c.research_sol_residual:raise ValueError('MINUTE_REQUIRES_RESIDUAL_S')
+        self._next_s_minute_ns=None
         self.next_band_audit=[]
         self._next_enabled=bool(c.research_wait_4h or c.research_wait_persist or c.research_zero_retrace or c.research_sol_dominant)
         if self._next_enabled and (c.research_regime_reentry_band != D('.5') or c.research_h4_ema is not None or c.research_sol_btc_open_only):
@@ -45,6 +48,7 @@ class NextBandResearch:
         self._next_peak=D(str(c.active_seed))
         self._next_equity=None
         self._next_equity_ns=None
+        self._next_equity_source=None
         self._next_z=None
         self._next_s=None
         self._next_risk_intents={}
@@ -59,7 +63,7 @@ class NextBandResearch:
 
     def _next_observe_settled(self,equity,ns,source):
         if not self._next_enabled:return
-        self._next_equity=D(str(equity));self._next_equity_ns=ns
+        self._next_equity=D(str(equity));self._next_equity_ns=ns;self._next_equity_source=source
         self._next_peak=max(self._next_peak,self._next_equity)
 
     def _next_daily(self):
@@ -192,7 +196,7 @@ class NextBandResearch:
                         tick=self.cache.instrument(self.config.btc_id).price_increment.as_decimal()
                         if z['side']*(close-z['G'])>=tick:
                             z['armed']=True;z['armed_ns']=ns;self._next_log('Z_ARM',ns,signal_asof_ns=bar_ns,episode_id=z['episode_id'],G=str(z['G']),slots=z['slots'])
-            if step==1 and instrument==self.config.sol_id and self.config.research_sol_dominant:self._next_s_signal(bar_ns,close,ns)
+            if step==1 and instrument==self.config.sol_id and self.config.research_sol_dominant and not self.config.research_sol_minute:self._next_s_signal(bar_ns,close,ns)
 
     def _next_intraday_entry(self,ns):
         if self._domain.episode is not None or self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight() or self._pending_by_order or self._queued_intents or self._forced_close_reason or self._liquidating or not self._entries_enabled():return
@@ -206,25 +210,44 @@ class NextBandResearch:
             self._queued_intents.append((i,self._current_signals[-1].sigma,len(self._bars)-1));self._queued_intent_ready_ns[i.id]=ns
             self._next_log('E4_ENTRY_INTENT',ns,signal_asof_ns=self._next_release['signal_asof_ns'],daily_asof_ns=self._last_accepted_session,episode_id=i.episode_id)
 
+    def _next_residual_btc_flat(self,ep,p):
+        # Absent position alone is not evidence of a completed actual entry.
+        return bool(ep.btc_initial_qty>0 and ep.btc_open_qty==0 and p.get('episode_id')==ep.id
+            and p.get('closed') and not self._split_unfinished()
+            and self._hb_position(self.config.btc_id) is None and not self._next_busy(self.config.btc_id))
+
+    def _next_s_minute(self,tick):
+        ns=tick.ts_event
+        if tick.instrument_id!=self.config.sol_id or ns%60_000_000_000 or self._next_s_minute_ns==ns:return
+        # Native observer finalizes the causal receipt before these quotes.
+        if self._next_equity_ns!=ns or self._next_equity_source!=ns-60_000_000_000 or not self._confirmation_marks_current(ns):return
+        quotes=[self.cache.quote_tick(i) for i in (self.config.btc_id,self.config.sol_id)]
+        if any(q is None or q.ts_event!=ns for q in quotes):return
+        self._next_s_minute_ns=ns
+        self._next_s_signal(ns,self._latest_marks[self.config.sol_id].price,ns)
+
     def _next_s_signal(self,bar_ns,close,ns):
         if self._next_s is not None:return
         btc=self._hb_position(self.config.btc_id);sol=self._hb_position(self.config.sol_id);p=self._split_parent;ep=self._domain.episode
-        if btc is None or sol is None or p is None or ep is None or btc.is_long==sol.is_long or self._next_higher(self.config.sol_id):return
+        if sol is None or p is None or ep is None or self._next_higher(self.config.sol_id):return
+        residual=self.config.research_sol_residual and self._next_residual_btc_flat(ep,p)
+        if not residual and (btc is None or btc.is_long==sol.is_long):return
         beta=p.get('planref_v1_beta');bm=self._latest_marks.get(self.config.btc_id);sm=self._latest_marks.get(self.config.sol_id)
         if beta is None or not isfinite(beta) or not .2<beta<4 or bm is None or sm is None or self._next_equity is None or self._next_equity_ns is None or self._next_equity_ns>ns:return
-        if D(str(beta))*sol.quantity.as_decimal()*sm.price<=btc.quantity.as_decimal()*bm.price:return
+        if not residual and D(str(beta))*sol.quantity.as_decimal()*sm.price<=btc.quantity.as_decimal()*bm.price:return
         if 1-self._next_equity/self._next_peak<D('.4'):return
         side=1 if sol.is_long else -1
         if -side*(close/D(str(sol.avg_px_open))-1)<D('.02'):return
         step=self.cache.instrument(self.config.sol_id).size_increment.as_decimal();held=sol.quantity.as_decimal();remaining=(held*D('.5')//step)*step
         self._next_s=dict(kind='S',episode_id=ep.id,side=side,remaining=remaining,triggered=True,canceled=False)
-        self._next_sol_cancel_adds();self._next_log('S_TRIGGER',ns,signal_asof_ns=bar_ns,held=str(held),desired_remaining=str(remaining),beta=beta,settled_equity=str(self._next_equity),peak=str(self._next_peak))
+        self._next_sol_cancel_adds();self._next_log('S_TRIGGER',ns,signal_asof_ns=bar_ns,held=str(held),desired_remaining=str(remaining),beta=beta,settled_equity=str(self._next_equity),peak=str(self._next_peak),**(dict(residual_btc_flat=bool(residual),cadence='MINUTE' if self.config.research_sol_minute else 'H1') if self.config.research_sol_residual else {}))
 
     def _next_quote(self,tick):
         if not self._next_enabled:return
         ns=tick.ts_event
         if self.config.terminal_close_at_ns is not None and ns>=self.config.terminal_close_at_ns:return
         self._next_daily();self._next_process_bars(ns)
+        if self.config.research_sol_minute:self._next_s_minute(tick)
         if self._next_z and not self._next_z['canceled']:
             z=self._next_z;fresh=self._next_z_state(ns)
             if not fresh:self._next_cancel_task(z,ns,'ELIGIBILITY_CHANGED')
