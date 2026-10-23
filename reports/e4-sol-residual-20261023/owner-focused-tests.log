@@ -1,0 +1,64 @@
+........................                                                 [100%]
+=============================== warnings summary ===============================
+tests/test_native_next_band.py::test_defaults_and_ep_unique_latch_origin_gap_side_change
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:46: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py: 22 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_next_band.py::test_e4_closed_bar_buffers_until_quote_uses_accepted_daily_and_preserves_attempt
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:67: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_z_native_partial_cancel_retired_budget_no_rights_positive_tp_preserved
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:88: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_z_unarmed_no_stop_and_ordinary_reduction_cancels_arm
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:101: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_s_cancel_add_late_fill_reconciles_frozen_remaining_partial_no_readd[old]
+tests/test_native_next_band.py::test_s_cancel_add_late_fill_reconciles_frozen_remaining_partial_no_readd[R1]
+tests/test_native_next_band.py::test_s_cancel_add_late_fill_reconciles_frozen_remaining_partial_no_readd[R2]
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:137: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_custom_closed_ohlc_never_matches_with_original_bar_execution_true
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:160: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_z_cancel_ack_late_risk_fill_before_ordinary_tp_no_fake_sol_rights
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:184: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_residual_native_flat_single_frozen_target_preserves_rights[False]
+tests/test_native_next_band.py::test_residual_native_flat_single_frozen_target_preserves_rights[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:227: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_residual_flat_requires_all_authoritative_evidence[prior]
+tests/test_native_next_band.py::test_residual_flat_requires_all_authoritative_evidence[domain]
+tests/test_native_next_band.py::test_residual_flat_requires_all_authoritative_evidence[split]
+tests/test_native_next_band.py::test_residual_flat_requires_all_authoritative_evidence[pending]
+tests/test_native_next_band.py::test_residual_flat_requires_all_authoritative_evidence[queued]
+tests/test_native_next_band.py::test_residual_flat_requires_all_authoritative_evidence[native]
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:251: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_minute_requires_current_causal_paired_quote_receipt_and_marks[stale_receipt]
+tests/test_native_next_band.py::test_minute_requires_current_causal_paired_quote_receipt_and_marks[stale_quote]
+tests/test_native_next_band.py::test_minute_requires_current_causal_paired_quote_receipt_and_marks[future_mark]
+tests/test_native_next_band.py::test_minute_requires_current_causal_paired_quote_receipt_and_marks[stale_mark]
+tests/test_native_next_band.py::test_minute_requires_current_causal_paired_quote_receipt_and_marks[not_minute]
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:269: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_next_band.py::test_r2_real_observer_receipt_precedes_paired_quote_and_native_cut_once
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023/runtime/tests/test_native_next_band.py:306: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:r.file.close();r.receipt_file.close();e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+24 passed, 45 warnings in 2.78s

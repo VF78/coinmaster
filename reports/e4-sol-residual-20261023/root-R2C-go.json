@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-23T11:56:54.600147+00:00",
+  "source_commit": "bae093f9549bb523ae55e1c4e4676431bef8a889",
+  "authorized_recipes": [
+    "R2C"
+  ],
+  "scope": "ONE_CORRECTED_PRIMARY_MINUTE_RUN_FOURTH_FINAL_PHYSICAL_ATTEMPT",
+  "maximum_physical_attempts": 4,
+  "prior_physical_completed": 3,
+  "no_more_runs_after_this": true,
+  "no_repeats_grid_or_parameter_changes": true,
+  "native_config_exact_original_R2": "efaecd826f1da0274bb4c62da000f8cbbd40998fed98d4225fe40d64e72dfde9",
+  "correction_review_sha256": "0546eeadb45593029119e8c89f02c1b3bde52f579c1022beb981442b233728bc",
+  "correction_tooling_freeze_sha256": "5b44eddc5b239fd93363c4fcb4522663c766bfc9948e6f1b96e44d120f536531",
+  "protocol_amendment_sha256": "2d12df36258489dcb99ccb5a10b4d657ab9f9ee32be6d6217d6e18f896b6bde7",
+  "source_correction_patch_sha256": "ee2de8de9a44e3666b2e2d8272ca65acda88e4a2e6d70ad7613aed9d59d1f3da",
+  "native_tests": "144 PASS; faithful fractional lifecycle",
+  "source_review": "GO_ROOT_AUTHORIZED_R2C_FOURTH_FINAL_ATTEMPT_ONLY",
+  "pilot_actions": false,
+  "S0_E4_rerun": false
+}

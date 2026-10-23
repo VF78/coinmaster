@@ -1,0 +1,91 @@
+{
+  "recipe": "R1",
+  "status": "PASS",
+  "checks": {
+    "fills_frozen_hash": true,
+    "fills_row_count": true,
+    "orders_frozen_hash": true,
+    "orders_row_count": true,
+    "native-fill-audit.csv_frozen_hash": true,
+    "native-fill-audit.csv_row_count": true,
+    "native-order-events.csv_frozen_hash": true,
+    "native-order-events.csv_row_count": true,
+    "hedge-band-audit.csv_frozen_hash": true,
+    "hedge-band-audit.csv_row_count": true,
+    "next-band-audit.csv_frozen_hash": true,
+    "next-band-audit.csv_row_count": true,
+    "entry-sizing-audit.csv_frozen_hash": true,
+    "entry-sizing-audit.csv_row_count": true,
+    "split-parent-audit.csv_frozen_hash": true,
+    "split-parent-audit.csv_row_count": true,
+    "rights_lifecycle_frozen_hash": true,
+    "rights_lifecycle_row_count": true,
+    "zero_BTC_Z_trigger": true,
+    "zero_BTC_risk_order_intents": true,
+    "all_actual_risk_fills_SOL_no_BTC_TP_action": true,
+    "zero_risk_right_retirements": true,
+    "risk_event_native_fill_total_exact": true,
+    "risk_fill_receipts_match_native_audit": true,
+    "expected_residual_flag": true,
+    "expected_minute_flag": true
+  },
+  "failed_checks": [],
+  "S_triggers": [
+    {
+      "beta": 1.1799500345645464,
+      "cadence": "H1",
+      "desired_remaining": "500.0",
+      "event": "S_TRIGGER",
+      "held": "1000",
+      "peak": "14743.45772484",
+      "residual_btc_flat": false,
+      "settled_equity": "7874.35307805",
+      "signal_asof_ns": 1727967600000000000,
+      "timestamp_ns": 1727967600000000000
+    }
+  ],
+  "actual_risk_fills": [
+    {
+      "accept_ns": "1727967600000000000",
+      "action": "SOL_EXIT",
+      "commission": "37.048",
+      "commission_currency": "USDT",
+      "fill_ns": "1727967600000000000",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "67360.00",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "134.72",
+      "qty": "500",
+      "reason": "SOL_DOMINANT_ADVERSE_RISK",
+      "submit_ns": "1727967600000000000",
+      "venue": "P1SIM"
+    }
+  ],
+  "risk_fill_events": [
+    {
+      "episode_id": "119a0d77-c554-46ae-b3b6-e8a03726a937",
+      "event": "RISK_FILL",
+      "kind": "S",
+      "quantity": 500.0,
+      "retired_lots": {},
+      "timestamp_ns": 1727967600000000000
+    }
+  ],
+  "BTC_fallback_entries": 45,
+  "ordinary_BTC_TP_native_fills": 74,
+  "ordinary_native_SOL_exit_reasons": [
+    "REGIME",
+    "SOL_ADD",
+    "SOL_HARD_TIMEOUT",
+    "SOL_Z_FULL_EXIT",
+    "SOL_Z_HALF_EXIT",
+    "TRAIL"
+  ],
+  "qualification": "Output checks confirm actual risk action separation and zero right retirements. Preservation of rights code paths and fallback semantics additionally depends on independent frozen-source review; later economic calendars may legitimately differ.",
+  "no_trace_read": true,
+  "no_engine": true
+}

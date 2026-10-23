@@ -1,0 +1,138 @@
+{
+  "recipe": "R2C",
+  "comparison": "ARCHIVED_XS",
+  "first_economic_native_fill_divergence": {
+    "sequence_index": 17,
+    "old": {
+      "accept_ns": "1727967600000000000",
+      "action": "SOL_EXIT",
+      "commission": "37.048",
+      "commission_currency": "USDT",
+      "fill_ns": "1727967600000000000",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "67360.00",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "134.72",
+      "qty": "500",
+      "reason": "SOL_DOMINANT_ADVERSE_RISK",
+      "submit_ns": "1727967600000000000",
+      "venue": "P1SIM"
+    },
+    "new": {
+      "accept_ns": "1727946180000000000",
+      "action": "SOL_EXIT",
+      "commission": "37.2625",
+      "commission_currency": "USDT",
+      "fill_ns": "1727946180000000000",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "67750.0",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "135.5",
+      "qty": "500",
+      "reason": "SOL_DOMINANT_ADVERSE_RISK",
+      "submit_ns": "1727946180000000000",
+      "venue": "P1SIM"
+    },
+    "first_changed_fill_utc": "2024-10-03T09:03:00+00:00",
+    "latest_causal_S_trigger_at_or_before": {
+      "beta": 1.1799500345645464,
+      "cadence": "MINUTE",
+      "desired_remaining": "500.0",
+      "event": "S_TRIGGER",
+      "held": "1000",
+      "peak": "14743.45772484",
+      "residual_btc_flat": false,
+      "settled_equity": "8815.06907805",
+      "signal_asof_ns": 1727946180000000000,
+      "timestamp_ns": 1727946180000000000
+    }
+  },
+  "first_economic_S_trigger_divergence": {
+    "sequence_index": 0,
+    "old": {
+      "beta": 1.1799500345645464,
+      "desired_remaining": "500.0",
+      "event": "S_TRIGGER",
+      "held": "1000",
+      "peak": "14743.45772484",
+      "settled_equity": "7874.35307805",
+      "signal_asof_ns": 1727967600000000000,
+      "timestamp_ns": 1727967600000000000
+    },
+    "new": {
+      "beta": 1.1799500345645464,
+      "cadence": "MINUTE",
+      "desired_remaining": "500.0",
+      "event": "S_TRIGGER",
+      "held": "1000",
+      "peak": "14743.45772484",
+      "residual_btc_flat": false,
+      "settled_equity": "8815.06907805",
+      "signal_asof_ns": 1727946180000000000,
+      "timestamp_ns": 1727946180000000000
+    }
+  },
+  "all_new_S_triggers": [
+    {
+      "beta": 1.1799500345645464,
+      "cadence": "MINUTE",
+      "desired_remaining": "500.0",
+      "event": "S_TRIGGER",
+      "held": "1000",
+      "peak": "14743.45772484",
+      "residual_btc_flat": false,
+      "settled_equity": "8815.06907805",
+      "signal_asof_ns": 1727946180000000000,
+      "timestamp_ns": 1727946180000000000
+    },
+    {
+      "beta": 1.198538291519836,
+      "cadence": "MINUTE",
+      "desired_remaining": "2000.0",
+      "event": "S_TRIGGER",
+      "held": "4000",
+      "peak": "153953.41110258",
+      "residual_btc_flat": true,
+      "settled_equity": "91693.80483058",
+      "signal_asof_ns": 1736768580000000000,
+      "timestamp_ns": 1736768580000000000
+    },
+    {
+      "beta": 1.3518363752663054,
+      "cadence": "MINUTE",
+      "desired_remaining": "3500.0",
+      "event": "S_TRIGGER",
+      "held": "7000",
+      "peak": "474434.92740777",
+      "residual_btc_flat": true,
+      "settled_equity": "282304.75666561",
+      "signal_asof_ns": 1747991220000000000,
+      "timestamp_ns": 1747991220000000000
+    },
+    {
+      "beta": 1.6214199755365906,
+      "cadence": "MINUTE",
+      "desired_remaining": "7500.0",
+      "event": "S_TRIGGER",
+      "held": "15000",
+      "peak": "642551.01429202",
+      "residual_btc_flat": false,
+      "settled_equity": "380110.66811787",
+      "signal_asof_ns": 1758215220000000000,
+      "timestamp_ns": 1758215220000000000
+    }
+  ],
+  "XS_first_S_trigger_utc": "2024-10-03T15:00:00+00:00",
+  "new_first_S_trigger_utc": "2024-10-03T09:03:00+00:00",
+  "qualification": "First divergence in complete saved native fill sequence and causal S_TRIGGER sequence. Fill projection includes all economic time/quantity/price/fee/liquidity/action/reason fields. Trigger comparison ignores only added residual_btc_flat/cadence metadata. Not a first-minute marked-trace divergence claim; old full trace not reread.",
+  "no_trace_read": true,
+  "no_engine": true
+}

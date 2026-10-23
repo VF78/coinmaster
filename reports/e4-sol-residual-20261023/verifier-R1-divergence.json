@@ -1,0 +1,25 @@
+{
+  "recipe": "R1",
+  "comparison": "ARCHIVED_XS",
+  "first_economic_native_fill_divergence": null,
+  "first_economic_S_trigger_divergence": null,
+  "all_new_S_triggers": [
+    {
+      "beta": 1.1799500345645464,
+      "cadence": "H1",
+      "desired_remaining": "500.0",
+      "event": "S_TRIGGER",
+      "held": "1000",
+      "peak": "14743.45772484",
+      "residual_btc_flat": false,
+      "settled_equity": "7874.35307805",
+      "signal_asof_ns": 1727967600000000000,
+      "timestamp_ns": 1727967600000000000
+    }
+  ],
+  "XS_first_S_trigger_utc": "2024-10-03T15:00:00+00:00",
+  "new_first_S_trigger_utc": "2024-10-03T15:00:00+00:00",
+  "qualification": "First divergence in complete saved native fill sequence and causal S_TRIGGER sequence. Fill projection includes all economic time/quantity/price/fee/liquidity/action/reason fields. Trigger comparison ignores only added residual_btc_flat/cadence metadata. Not a first-minute marked-trace divergence claim; old full trace not reread.",
+  "no_trace_read": true,
+  "no_engine": true
+}

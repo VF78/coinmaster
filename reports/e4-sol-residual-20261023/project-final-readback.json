@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-23T12:13:27.512008+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "Project": "https://github.com/users/VF78/projects/2",
+  "title": "[S0 DD50] E4 residual SOL — complete; guard works, 50/90 fails",
+  "state": "closed",
+  "state_reason": "completed",
+  "status": "Done",
+  "issue_body_sha256": "ff2cf6b1d29da344552900900355f7299266348f7e1a5a9c513a27fc60b7d769",
+  "body_and_status_readback": "PASS",
+  "scope": "BOUNDED_RESEARCH_COMPLETE_NO_GO_ECONOMIC_GOAL_NOT_MET",
+  "completed": [
+    "R00",
+    "R01",
+    "R02",
+    "R03",
+    "R04",
+    "R05",
+    "R06"
+  ],
+  "new_issues": 0,
+  "comments_created": 0,
+  "economic_goal_achieved": false,
+  "physical_runs": 4,
+  "active_engines": 0,
+  "pilot_changes": 0
+}

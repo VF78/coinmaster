@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-23T11:38:16.961785+00:00",
+  "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "authorized_recipes": [
+    "P0"
+  ],
+  "scope": "ONE_MANDATORY_NEW_FLAGS_OFF_XS_PARITY_ONLY",
+  "maximum_physical_attempts": 4,
+  "P0_must_be_exact_XS": true,
+  "source_review": "independent_review.json",
+  "source_review_sha256": "e34b899d66978b6c438993184f828e861a2f36c2e8ba5f38797b92c8823275b3",
+  "owner_contract_sha256": "fc9eb3324dd3afe075e925fcd51c7143ef200ef1710075d24274efc01f9d67e9",
+  "root_protocol_sha256": "bd37d3b6c76a4c0b425e6644fa5aa07ad6a29043440c3cdddd9e048c4fdec38b",
+  "S0_E4_rerun": false,
+  "pilot_actions": false,
+  "source_frozen": true,
+  "following_recipes_need_explicit_root_GO_after_parity": true
+}

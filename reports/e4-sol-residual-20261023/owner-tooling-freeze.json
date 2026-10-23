@@ -1,0 +1,14 @@
+{
+  "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "change": "TIME_WRAPPER_REMOVED_R1_R2_ONLY",
+  "native_argv_config_source_changed": false,
+  "files_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-sol-residual-20261023/owner-prepare-runs.py": "1041de8b38dba96fb8c87c8e65eca04582a7c9890a2ce3731180a1e00147258a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-sol-residual-20261023/owner-runner.py": "6ec8c1e20f6741f67d2738262bab1d75d4ac929d61e484275b7c5ee17d54132e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-sol-residual-20261023/owner-run-preparation.json": "7a9249b874ae569ecd3685ecf132b69560ce1e9281486b5e1c99d302345f4393",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-sol-residual-20261023/R1/preparation.json": "56cb698a2f1a0948ccc8e271abb9dbff52467564fee7d55da72516de8bebdddb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-sol-residual-20261023/R2/preparation.json": "598d232618bc309e108ae6a44eae83c5e1dc8d0b9a0babeb00848d6c8c0103dc"
+  },
+  "engines_started": 1,
+  "engines_active": 0
+}

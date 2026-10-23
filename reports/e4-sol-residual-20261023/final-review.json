@@ -1,0 +1,32 @@
+{
+  "decision": "FINAL_SAVED_OUTPUT_CONSISTENCY_PASS",
+  "economic_decision": "NO_GO_NO_50_90_PASS",
+  "all_seven_rows_arithmetic": "PASS",
+  "four_new_rows_match_verifier": "PASS",
+  "R1_defect_vs_R2_partial_activity_qualification": "PASS",
+  "R2C_R2_zero_economic_delta_vs_native_correctness_separation": "PASS",
+  "BTC_calendar_337_same_292_quantity_differences": "PASS",
+  "cached_local_and_global_DD_claims": "PASS",
+  "R2C_TOTAL": "2610652.32119763",
+  "R2C_retention_percent": "42.86478248701487717743300172",
+  "R2C_global_DD_percent": "61.75868639156480895429480109",
+  "findings": [
+    {
+      "severity": "P2_PRESENTATION",
+      "file": "REPORT.md",
+      "issue": "asset fill-net decomposition omits initial10000 seed while TOTAL includes it",
+      "requested_fix": "add initial seed10000/delta0 row or explicit TOTAL seed inclusion note",
+      "conclusions_affected": false,
+      "status": "RESOLVED_EXPLICIT_INITIAL_SEED_ROW"
+    }
+  ],
+  "physical_runs_closed": 4,
+  "active_engines": 0,
+  "reserved_engines": 0,
+  "selected_for_deploy": null,
+  "S0_retained": true,
+  "pilot_touched": false,
+  "reviewer_new_tests_engines_source_audits_raw_scans_VPS_actions": false,
+  "open_findings": [],
+  "reviewed_REPORT_sha256": "68bedcb0075f67ea00103da568e36f7c2dbbc41361cf7d31bbbf8d6e48a2d69b"
+}

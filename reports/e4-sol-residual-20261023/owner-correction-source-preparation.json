@@ -1,0 +1,12 @@
+{
+  "base_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "branch": "codex/e4-sol-residual-fix-20261023",
+  "checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-fix-20261023",
+  "files_sha256": {
+    "runtime/coinmaster/strategy/next_band.py": "3e05e101b1db5320629b39eb7ec76bfb5fe43bb9249d26920330ffb45f09c21d",
+    "runtime/tests/test_native_next_band.py": "63cd7557b322c04ba793283983d86cede76e0468a00a27b538d9fc575c54b423"
+  },
+  "full_relevant": "144 PASSED",
+  "correction_historical_engines_started": 0,
+  "root_go_required": true
+}

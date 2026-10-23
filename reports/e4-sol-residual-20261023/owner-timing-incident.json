@@ -1,0 +1,15 @@
+{
+  "recipe": "P0",
+  "native_status": "COMPLETED",
+  "native_artifact_valid": true,
+  "exact_XS_parity": "21/21_PASS_FULL_UNCOMPRESSED_SETTLED_TRACE_EXACT",
+  "wrapper_exit_code": 1,
+  "diagnostic": "time: sysctl kern.clockrate: Operation not permitted",
+  "maximum_resident_set_size_bytes": null,
+  "RSS_status": "UNKNOWN_NOT_REPORTED",
+  "elapsed_monotonic_seconds": 169.37380662500001,
+  "classification": "RESOURCE_WRAPPER_FAILURE_AFTER_NATIVE_COMPLETED_ARTIFACT",
+  "rerun": false,
+  "fix": "R1_R2_NATIVE_ARGV_DIRECT_WITH_EXISTING_MONOTONIC_ELAPSED_NO_TIME_WRAPPER",
+  "source_changed": false
+}

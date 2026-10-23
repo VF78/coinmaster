@@ -1,0 +1,36 @@
+{
+  "decision": "GO_ROOT_AUTHORIZED_R2C_FOURTH_FINAL_ATTEMPT_ONLY",
+  "source_commit": "bae093f9549bb523ae55e1c4e4676431bef8a889",
+  "base_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "p1_findings": [],
+  "scope": "residual predicate native quantum correction plus faithful native regression fixture",
+  "checks": {
+    "nonnegative_sub_native_lot_domain_dust_accepted_with_strict_native_flat": "PASS",
+    "one_or_more_lot_domain_conflict_rejected": "PASS",
+    "negative_domain_quantity_rejected": "PASS",
+    "prior_entry_closed_parent_native_flat_owned_work_gates_unchanged": "PASS",
+    "real_fractional_split_TP_callback_dust_and_actual_H1_M1_SOL_cut": "PASS",
+    "baseline_flags_OFF_execution_path_unchanged": "PASS",
+    "BTC_domain_fallback_TP_right_semantics_unchanged": "PASS",
+    "canonical_frozen_SHA_source_pins_clean_worktree": "PASS"
+  },
+  "owner_native_test_receipt": {"passed": 144, "warnings": 298, "seconds": 21.48, "reviewer_reran": false},
+  "evidence_sha256": {
+    "owner-correction-source.patch": "ee2de8de9a44e3666b2e2d8272ca65acda88e4a2e6d70ad7613aed9d59d1f3da",
+    "owner-correction-relevant-tests.log": "b92824bfb2c19eac3b80fe3aa2ebf1a8b6df81021c5d482438e9b09edf03c308",
+    "owner-correction-source-preparation.json": "273b53aba7d31e815d15e0f104514d2d5a8f9208cf012d187da3801ebf85c2e5"
+  },
+  "source_sha256": {
+    "runtime/coinmaster/strategy/next_band.py": "3e05e101b1db5320629b39eb7ec76bfb5fe43bb9249d26920330ffb45f09c21d",
+    "runtime/tests/test_native_next_band.py": "63cd7557b322c04ba793283983d86cede76e0468a00a27b538d9fc575c54b423"
+  },
+  "old_R1_January_float_defect": "CONFIRMED",
+  "old_R2_entirely_orphan_inactive": false,
+  "economic_improvement": "UNKNOWN_NO_GUARANTEE",
+  "root_go_required": true,
+  "new_parity_engine_requested": false,
+  "maximum_physical_runs": 4,
+  "reviewer_engines_or_source_or_VPS_mutations": false,
+  "pilot_touched": false,
+  "live_or_deploy_approval": false
+}

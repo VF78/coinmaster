@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-23T11:43:48.562115+00:00",
+  "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "authorized_recipes": [
+    "R1",
+    "R2"
+  ],
+  "scope": "TWO_PREREGISTERED_SEQUENTIAL_RESIDUAL_GUARD_NATIVE_RUNS",
+  "one_native_engine_at_once": true,
+  "R2_requires_valid_complete_R1": true,
+  "maximum_physical_attempts": 4,
+  "no_repeats_or_grid": true,
+  "repeat_needs_separate_GO_and_pass50_90": true,
+  "P0_exact_parity_sha256": "bb46b5aa1f535360ae7c65b2a074130b8c8411d8b02ca5701bc0a834fbbe3813",
+  "independent_P0_audit_sha256": "3822b67e68c726cabcb2fb0bfb9a551f04d6d6aa85570784ccb2533c47afcbca",
+  "tooling_freeze_sha256": "bd7dac9ab7899cbcd455639346a931dc62441818fd92fdcd2ef5b2521af3b4af",
+  "root_protocol_freeze_sha256": "bd37d3b6c76a4c0b425e6644fa5aa07ad6a29043440c3cdddd9e048c4fdec38b",
+  "source_review": "GO_P0_ALREADY_PARITY_PROVEN",
+  "P0_wrapper_warning": "RECORDED_RESOURCE_ONLY_NATIVE_OUTPUTS_INDEPENDENTLY_VALIDATED_NO_RERUN",
+  "pilot_actions": false,
+  "S0_E4_rerun": false
+}

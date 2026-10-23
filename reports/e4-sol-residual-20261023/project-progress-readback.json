@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-23T11:47:37.030502+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "status": "In Progress",
+  "state": "open",
+  "body_and_status_readback": "PASS",
+  "body_sha256": "81d1b77ed6c16ac0e393f9ea65520c856658fcc34441c3d3ee7a26a85a439451",
+  "completed": [
+    "R00",
+    "R01",
+    "R02",
+    "R03"
+  ],
+  "pending": [
+    "R04",
+    "R05",
+    "R06"
+  ],
+  "physical_started": 2,
+  "physical_completed": 2,
+  "pilot_changes": 0
+}

@@ -1,0 +1,18 @@
+{
+  "status": "NO_GO_NO_50_90_PASS",
+  "selected_for_deploy": null,
+  "S0_retained": true,
+  "corrected_recipe": "R2C",
+  "TOTAL": "2610652.32119763",
+  "retention_percent": "42.86478248701487717743300172",
+  "global_DD_percent": "61.75868639156480895429480109",
+  "correction_native_correctness": "PASS_144_NATIVE_TESTS_AND_INDEPENDENT_REVIEW",
+  "correction_historical_economic_delta": "EXACT_ZERO_VS_R2_FULL_TRACE",
+  "R1": "OBSERVED_JAN_FALSE_NEGATIVE_RETAINED_DIAGNOSTIC_NOT_CORRECTED_H1_ECONOMICS",
+  "corrected_H1_historical_run": "NOT_RUN_PRIMARY_MINUTE_CORRECTION_USED_FINAL_SLOT",
+  "physical_runs": 4,
+  "one_material_correction": true,
+  "budget_closed": true,
+  "no_automatic_followup": true,
+  "pilot_unchanged": true
+}

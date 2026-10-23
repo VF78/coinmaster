@@ -1,0 +1,150 @@
+{
+  "final_source_commit": "bae093f9549bb523ae55e1c4e4676431bef8a889",
+  "final_source_branch": "codex/e4-sol-residual-fix-20261023",
+  "original_source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "original_source_preserved": true,
+  "base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "source_scope": "Default-off residual/minute risk predicate; native BTC quantum correction only. Baseline BTC fallback/TP/right code unchanged.",
+  "final_tests": "144 PASSED",
+  "results": {
+    "P0": {
+      "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+      "status": "VALID_NATIVE_COMPLETED",
+      "total": "5406345.11636863",
+      "profit_retention_percent": "88.94428438303662495658496376",
+      "settled_native_DD_percent": "58.94743688415397241603930272",
+      "fills": 532,
+      "native_fees": "691507.32515017",
+      "liquidation_count": 0,
+      "settled_observer_coverage": {
+        "receipts": 1051199,
+        "unavailable_intervening_native_mutation": 0,
+        "first_unavailable": [],
+        "curve_samples": 1051200,
+        "complete": true,
+        "qualification": "COMPLETE_SETTLED_RECEIPTS",
+        "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-sol-residual-20261023/P0/result/minute-native-settled-receipts.csv.gz",
+        "positive_50_90_claim_allowed": true
+      }
+    },
+    "R1": {
+      "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+      "status": "VALID_NATIVE_COMPLETED",
+      "total": "5406345.11636863",
+      "profit_retention_percent": "88.94428438303662495658496376",
+      "settled_native_DD_percent": "58.94743688415397241603930272",
+      "fills": 532,
+      "native_fees": "691507.32515017",
+      "liquidation_count": 0,
+      "settled_observer_coverage": {
+        "receipts": 1051199,
+        "unavailable_intervening_native_mutation": 0,
+        "first_unavailable": [],
+        "curve_samples": 1051200,
+        "complete": true,
+        "qualification": "COMPLETE_SETTLED_RECEIPTS",
+        "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-sol-residual-20261023/R1/result/minute-native-settled-receipts.csv.gz",
+        "positive_50_90_claim_allowed": true
+      }
+    },
+    "R2": {
+      "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+      "status": "VALID_NATIVE_COMPLETED",
+      "total": "2610652.32119763",
+      "profit_retention_percent": "42.86478248701487717743300172",
+      "settled_native_DD_percent": "61.75868639156480895429480109",
+      "fills": 492,
+      "native_fees": "521683.64232669",
+      "liquidation_count": 0,
+      "settled_observer_coverage": {
+        "receipts": 1051199,
+        "unavailable_intervening_native_mutation": 0,
+        "first_unavailable": [],
+        "curve_samples": 1051200,
+        "complete": true,
+        "qualification": "COMPLETE_SETTLED_RECEIPTS",
+        "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-sol-residual-20261023/R2/result/minute-native-settled-receipts.csv.gz",
+        "positive_50_90_claim_allowed": true
+      }
+    },
+    "R2C": {
+      "source_commit": "bae093f9549bb523ae55e1c4e4676431bef8a889",
+      "status": "VALID_NATIVE_COMPLETED",
+      "total": "2610652.32119763",
+      "profit_retention_percent": "42.86478248701487717743300172",
+      "settled_native_DD_percent": "61.75868639156480895429480109",
+      "fills": 492,
+      "native_fees": "521683.64232669",
+      "liquidation_count": 0,
+      "settled_observer_coverage": {
+        "receipts": 1051199,
+        "unavailable_intervening_native_mutation": 0,
+        "first_unavailable": [],
+        "curve_samples": 1051200,
+        "complete": true,
+        "qualification": "COMPLETE_SETTLED_RECEIPTS",
+        "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-sol-residual-20261023/R2C/result/minute-native-settled-receipts.csv.gz",
+        "positive_50_90_claim_allowed": true
+      }
+    }
+  },
+  "R2C_minus_R2_actual_native_scalar_delta": {
+    "total": "0E-8",
+    "profit_retention_percent": "0E-26",
+    "settled_native_DD_percent": "0E-26",
+    "native_fees": "0E-8"
+  },
+  "final_economic_outcome": "NO_50_90_WINNER_NO_GO",
+  "R1_qualification": "Native mechanically valid but residual exact-domain-zero predicate has proven January fractional false negative; do not claim no reachable orphan protection needed.",
+  "R2_qualification": "Two actual residual-flat triggers present; minute guard improves local SOL episodes but fails global portfolio gates.",
+  "R2C_qualification": "Native quantum guard correctness restored; independent saved-output audit PASS and entire settled trajectory/economic signatures exactly equal original R2. No owner trace rescan.",
+  "physical_attempts": 4,
+  "attempt_cap": 4,
+  "active": 0,
+  "reserved": 0,
+  "extra_authorized": 0,
+  "launch_closed": true,
+  "pilot_touched": false,
+  "source_and_proof_artifact_sha256": {
+    "owner-jan-domain-dust-proof.json": "afa1a6c9a9f02d3ddca1b2296cc38e2856204077bb8b858e1322a9b044a0c201",
+    "owner-jan-domain-dust-proof.csv": "7543a79bdc965e2aafc0e877b41e89d6649ad3e28142ce92a1a1270f79722e30",
+    "owner-correction-source.patch": "ee2de8de9a44e3666b2e2d8272ca65acda88e4a2e6d70ad7613aed9d59d1f3da",
+    "owner-correction-relevant-tests.log": "b92824bfb2c19eac3b80fe3aa2ebf1a8b6df81021c5d482438e9b09edf03c308",
+    "owner-P0-parity.json": "bb46b5aa1f535360ae7c65b2a074130b8c8411d8b02ca5701bc0a834fbbe3813",
+    "owner-run-budget.json": "39acaec3da924cf0116bcb06468d4b21cfaa16f0ed44a98f3d70d42db5f852c3",
+    "owner-btc-calendar-comparison.json": "2926d637b83b7f4d059ca9ba5c967a99065a4a7c9fd5873d5d4d193108cf294f",
+    "verifier-R2C-audit.json": "9558e1c1bb7697105e1bf439d76149baca053ee0b7f3e7ca797c3e949a097866",
+    "verifier-R2C-mechanisms.json": "4011df8af12f803e4402f485be91377526f256b16cac47a3c80e965b4644b913"
+  },
+  "timing": "P0 resource wrapper error retained in owner-timing-incident.json; valid native completion/full XS parity. R1/R2/R2C actual native child exit0; RSS UNKNOWN.",
+  "native_PnL": "TOTAL/fees from actual native results only; no fixed-state PnL surrogate.",
+  "verifier_cohort_authority": "verifier-risk-cut-timeline.csv / verifier-actual-risk-fills.csv / verifier-DD-native-snapshots.csv / verifier-R2C-* once complete",
+  "private_proof_location": "Authorized Mac report only; optional VPS copy not required or retried.",
+  "pilot_services_keys_real_orders_deploy_touched": false,
+  "R2C_vs_R2_complete_trajectory": "INDEPENDENT_VERIFIER_FULL_SETTLED_TRACE_EXACT_AND_ECONOMIC_SIGNATURES_EXACT",
+  "final_actual_SOL_risk": {
+    "trigger_cycles": 4,
+    "mixed_BTC_SOL_cycles": 2,
+    "confirmed_BTCflat_cycles": 2,
+    "native_child_fills": 15,
+    "actual_SOL_reduced": "13500",
+    "BTC_risk_fills": 0,
+    "BTC_Z_triggers": 0,
+    "risk_right_retirements": 0
+  },
+  "actual_BTC_calendar": {
+    "native_fills_each": 337,
+    "same_P0_R2C_calendar_prices_liquidity_reasons": true,
+    "quantity_changed_rows": 292,
+    "qualification": "Actual calendar preserved, later capital and native sizing differ; no fixed-state hypothetical PnL."
+  },
+  "first_actual_new_risk_divergence_vs_XS": {
+    "utc": "2024-10-03T09:03:00+00:00",
+    "SOL_cut": "500",
+    "native_price": "135.5",
+    "archived_XS_utc": "2024-10-03T15:00:00+00:00",
+    "archived_XS_native_price": "134.72",
+    "mode": "MIXED_BTC_SOL"
+  },
+  "hist_controls_rerun": false
+}

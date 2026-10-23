@@ -1,0 +1,13 @@
+# Independent final saved-output findings
+
+NO_GO: no candidate meets settled native minute global DD <=50% and TOTAL >=5470396.514987347. All four completed saved native artifacts pass source/config/input/data/policy, native cash/flat/report/fees/liquidity and 1,051,199 receipt/zero-gap audits. The verifier launched no engine, streamed each new trace once and reused its immediate persistent cache; no old full trace was rescanned.
+
+P0 and R1: TOTAL 5406345.11636863, DD 58.94743688415397241603930272%, fees 691507.32515017, 532 fills. P0 exact XS parity includes normalized economic reports and full uncompressed trace. R1 also exactly equals the XS full trace. Its observed Jan13 exact-zero domain predicate rejected native-flat dust; preserve the false-negative qualification.
+
+R2 and corrected R2C: TOTAL 2610652.32119763, DD 61.75868639156480895429480109%, retention 42.864782487014877%, fees 521683.64232669, 492 fills. Four triggers produce fifteen actual native child risk fills; two triggers report residual BTC flat. Zero BTC Z/risk intents and zero risk right retirements. The earliest native economic divergence vs XS is Oct3 2024 09:03 UTC, SOL500 at135.5/fee37.2625 rather than XS15:00 at134.72/fee37.048; this is minute cadence while BTC remains open. The new maximum DD runs July6 2026 peak6259005.7918654 to Aug19 trough2393526.03363737 and is unrecovered.
+
+R2C uses reviewed native-quantum correction source bae093f and exactly the R2 config. Its full settled trace, normalized native fills/orders/cash/funding and all actual triggers/risk fills exactly equal R2; TOTAL, fees, DD and retention deltas are all zero. This establishes no historical economic benefit on this minute calendar while preserving the separate native regression correctness result. R2 remains partially active/exposed to the original defect; do not claim all its residual execution was blocked.
+
+Asset fill net excludes funding. Signed asset funding remains UNKNOWN and the cash bridge is unallocated. Native fill fee/liquidity source is explicit native MAKER/TAKER, not inferred order type. All risk-cut timeline quantities are native filled-order report reconstructions; source/native tests establish domain/cache/ACK guard semantics. No later native SOL increase occurs before actual SOL flat after a risk cut. P0's time-l sysctl resource warning and unknown RSS are retained; later actual native child exits are zero.
+
+See verifier-final-decision.json, verifier-final-summary.csv, verifier-controls-comparison.csv, verifier-liquidity-costs.csv, verifier-cash-bridges.csv, verifier-risk-cut-timeline.csv and perrecipe audit/mechanism/divergence/cache files. Budget closed at4/4; no repeat/grid or promotion.

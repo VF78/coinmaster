@@ -1,0 +1,15 @@
+{
+  "base_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "branch": "codex/e4-sol-residual-20261023",
+  "checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-sol-residual-20261023",
+  "source_files": {
+    "runtime/coinmaster/strategy/next_band.py": "59c80e2f5111498c124be860a3d98dc288140f7e2ffb4c55ffb92c2f9cca9151",
+    "runtime/coinmaster/strategy/wave_overlay.py": "8431188e0e6e2a345c57c1651a8ef764ea2e7119655ada9a1b64592f2eba806b",
+    "runtime/coinmaster/research/native_baseline.py": "ebdd7d94e20b52ae7b9070fbc232336458e0ee525fb0105de61e8822ecc30b7c",
+    "runtime/tests/test_native_next_band.py": "9177e7c329528f64df4bcb4333a72272ecec8d81d28d96c661ab7245c9b9da59"
+  },
+  "full_research_engines_started": 0,
+  "full_research_requires_root_go": true,
+  "test_result": "137 PASSED",
+  "pilot_touched": false
+}

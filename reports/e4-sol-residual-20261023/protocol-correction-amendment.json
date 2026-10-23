@@ -1,0 +1,49 @@
+{
+  "utc": "2026-10-23T11:55:37.191812+00:00",
+  "status": "ONE_CORRECTNESS_CORRECTION_PREREGISTERED_BEFORE_FOURTH_ENGINE",
+  "authority": "current owner request for functioning E4 residual SOL protection; necessary correctness fix, no new economic hypothesis",
+  "original_protocol_freeze_sha256": "bd37d3b6c76a4c0b425e6644fa5aa07ad6a29043440c3cdddd9e048c4fdec38b",
+  "maximum_physical_attempts_unchanged": 4,
+  "used": 3,
+  "remaining": 1,
+  "reallocated_slot": {
+    "from": "conditional fresh repeat only if50/90",
+    "to": "ONE_R2C_CORRECTED_PRIMARY_MINUTE_RUN"
+  },
+  "source_original": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "source_corrected": "bae093f9549bb523ae55e1c4e4676431bef8a889",
+  "native_config_unchanged": "R2C=R2 exactly; source/predicate bugfix and isolated result/journal directory only",
+  "economic_thresholds_unchanged": {
+    "global_DD_trigger_percent": "40",
+    "SOL_adverse_percent": "2",
+    "reduce_fraction": "0.50",
+    "cadence": "COMPLETE_REAL_MINUTE_QUOTE_PAIR",
+    "goal_DD_percent": "50",
+    "min_TOTAL": "5470396.514987347"
+  },
+  "defect": "new residual flat predicate rejected positive binaryfloat domain dust despite authoritative native0lots",
+  "actual_Jan_native_quantities": [
+    "4.552",
+    "4.553",
+    "-5.237",
+    "-1.934",
+    "-1.934"
+  ],
+  "actual_domain_residue": "4.440892098500626e-16",
+  "correction": "NEW residual predicate accepts nonnegative sub-native-quantum domain residue ONLY with original strict nativecache/priorfill/closedparent/noownedwork proof; no epsilon; >=1lot/negative conflicts block",
+  "domain_BTC_fallback_and_TP_right_code_changed": false,
+  "R1_status": "OBSERVED_FALSE_NEGATIVE_JAN13_DOMAIN_DUST_NATIVE_ECONOMICS_VALID",
+  "R2_status": "PARTIALLY_ACTIVE_TWO_RESIDUAL_TRIGGERS_NATIVE_ECONOMICS_FAIL_50_90",
+  "R2_no_residual_claim": "EXPLICITLY_FALSE_DO_NOT_GENERALIZE_R1_PATH",
+  "source_review_and_tests_required": true,
+  "new_engine_authorized_now": false,
+  "new_engine_requires_separate_root_GO": true,
+  "no_more_runs_after_R2C": true,
+  "pilot_changes": 0,
+  "evidence_sha256": {
+    "owner-jan-domain-dust-proof.json": "afa1a6c9a9f02d3ddca1b2296cc38e2856204077bb8b858e1322a9b044a0c201",
+    "owner-jan-domain-dust-proof.csv": "7543a79bdc965e2aafc0e877b41e89d6649ad3e28142ce92a1a1270f79722e30",
+    "owner-correction-source.patch": "ee2de8de9a44e3666b2e2d8272ca65acda88e4a2e6d70ad7613aed9d59d1f3da",
+    "owner-correction-relevant-tests.log": "b92824bfb2c19eac3b80fe3aa2ebf1a8b6df81021c5d482438e9b09edf03c308"
+  }
+}

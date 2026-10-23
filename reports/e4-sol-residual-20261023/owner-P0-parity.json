@@ -1,0 +1,37 @@
+{
+  "status": "PASS_EXACT_XS_PARITY",
+  "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "reference_source": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "checks": {
+    "terminal_total": true,
+    "terminal_active": true,
+    "terminal_reserve": true,
+    "terminal_open_positions": true,
+    "fills": true,
+    "native_fees": true,
+    "funding": true,
+    "liquidation_count": true,
+    "config_hash": true,
+    "data_hash": true,
+    "policy_hash": true,
+    "fill_audit": true,
+    "post_boundary_settlement": true,
+    "cash_account_series_exact": true,
+    "interval_cash_account_series_exact": true,
+    "settled_curve_exact": true,
+    "settled_receipts_exact": true,
+    "settled_unavailable_intervening_native_mutation_exact": true,
+    "settled_first_unavailable_exact": true,
+    "full_uncompressed_settled_trace_exact": true,
+    "ordered_native_order_economic_fields_exact": true
+  },
+  "trace_sha256": {
+    "old": "cbc74c61318bde1cff1805dc7619cece47c98b0f2a5433f759947e615a56c4b9",
+    "new": "cbc74c61318bde1cff1805dc7619cece47c98b0f2a5433f759947e615a56c4b9"
+  },
+  "old_TOTAL": "5406345.11636863",
+  "new_TOTAL": "5406345.11636863",
+  "new_config": "6023cbbcddfcb2047af780b9c07bbdf8d326962e7edf7ead4287007f44e167ea",
+  "basis": "No exclusions/tolerance changes; native economic order fields separate from random init UUID identities",
+  "no_extra_engine": true
+}

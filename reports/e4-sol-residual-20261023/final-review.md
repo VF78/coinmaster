@@ -1,0 +1,13 @@
+# Final saved-output consistency review
+
+**Result: final saved-output consistency PASS; no open findings.** REPORT.md, comparison.json and selection.json agree with verifier-final-decision.json/final-summary.csv, correction economic-identity evidence, correctionreview and cached native risk evidence. This approves the negative research conclusion, not deployment.
+
+All seven comparison rows independently reconcile TOTAL/ACTIVE/RESERVE, ROI, net-profit retention, maker+taker fees/turnover, BTC+SOL fill counts, initial10000+asset fill-net+unallocated cash bridge, and 50/90 gate arithmetic. The four new rows match the verifier's exact totals, retention, global DD, fees and fill counts. R2C TOTAL2610652.32119763, retention42.86478248701487717743300172%, DD61.75868639156480895429480109% fail both economic gates. No new candidate is selected; S0 is retained; budget4/4 is closed with0active/0reserved and no automatic follow-up.
+
+The report correctly qualifies R1's concrete January fractional-domain false negative without claiming original R2 orphan-inactive. Original R2 had2residual triggers. Corrected source native eligibility proof144PASS is separate from the exact zero observed R2C−R2 economic delta, which the saved verifier establishes across full trace/native cash/fills/orders/funding and4triggers/15risk fills. BTC calendar comparison confirms337same-timestamp/price/reason/level/liquidity fills,292quantity changes for R2/R2C against P0; this supports changed capital sizing rather than lost BTC signals.
+
+Cached native excursions support the report: October R2C49.93633979351949% vs E457.58541045962226%; January R2C49.40679990605632% vs E451.41471763286941% and XS58.94743688415397%. The unrecovered global July6→August19 excursion is61.75868639156481%, with BTC-only endpoint snapshots (short275.755→new long120.624). Local SOL-tail improvement is therefore correctly separated from global failure. No old full trace was scanned for this review; old E4 values came from its saved native risk cache.
+
+Presentation note resolved: one bounded reread confirmed REPORT now includes an explicit initial seed10000/10000/delta0 row before TOTAL. The decomposition reconciles with comparison.json. Final reviewed REPORT SHA-256: `68bedcb0075f67ea00103da568e36f7c2dbbc41361cf7d31bbbf8d6e48a2d69b`. No open findings remain.
+
+Pilot/production untouched and current health uninspected, UNKNOWN signed asset funding/unallocated bridge, synthetic1m-CLOSE/NOT_FAITHFUL_DIAGNOSTIC/not-fresh-OOS and settled-vs-intraminute limitations are retained. Reviewer performed only saved-summary/cache arithmetic and consistency reading; no source audit, tests, engine, raw trace scan or VPS action in this final pass. Only final-review.md/json written.

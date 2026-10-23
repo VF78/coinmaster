@@ -1,0 +1,72 @@
+{
+  "decision": "P1_EXACT_FLOAT_ZERO_FALSE_NEGATIVE_NATIVE_FLAT",
+  "source_commit": "5bb4939c2adbcfcabf835b9e2ed97634f6fba4da",
+  "base_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "scope": "independent frozen source money/order review",
+  "later_R1_actual_January_attribution": {
+    "root_supplied_native_entry_quantities": [
+      "4.552",
+      "4.553"
+    ],
+    "root_supplied_TP_quantities": [
+      "5.237",
+      "1.934",
+      "1.934"
+    ],
+    "domain_float_remaining": "4.440892098500626e-16",
+    "native_remaining_lots": 0
+  },
+  "later_R2_verifier_evidence": {
+    "residual_flat_triggers": 2,
+    "residual_trigger_dates": [
+      "January13",
+      "May23"
+    ],
+    "total_triggers": 4,
+    "native_child_fills": 15,
+    "whole_R2_orphan_inactive_claim": false
+  },
+  "p1_findings": [
+    {
+      "gate": "ep.btc_open_qty == 0",
+      "proof": "native .001 lots: split .006+.007, ordinary fullTP .002/.002/.009 leaves binaryfloat1.734723475976807e-18; native0lots",
+      "impact": "genuine nativeflat may fail residual eligibility",
+      "specific_January_cause": "CONFIRMED_BY_ROOT_BOUNDED_NATIVE_FILL_QUANTITIES",
+      "required_fixture": "real fractional split entry to ordinary fullTP with retainedSOL; no manuallyseeded closedparent"
+    }
+  ],
+  "checks": {
+    "R2_real_observer_callback_reachable": "PASS",
+    "R2_exact_receipt_source_pair_timestamp_and_causal_marks": "PASS",
+    "residual_prior_actual_entry_and_confirmed_native_flat": "PASS",
+    "unknown_ACK_pending_queued_open_inflight_block": "PASS",
+    "SOL_episode_frozen_target_survives_new_BTC": "PASS",
+    "native_partial_cancel_latefill_priority_coverage": "PASS",
+    "no_new_BTC_fallback_or_TP_right_logic": "PASS",
+    "flags_OFF_source_predicates_and_audit_config_fields": "PASS",
+    "flags_OFF_full_calendar_exact_XS_parity": "PENDING_MANDATORY_P0"
+  },
+  "owner_native_test_receipt": {
+    "passed": 137,
+    "warnings": 284,
+    "seconds": 20.09,
+    "reviewer_reran": false
+  },
+  "evidence_sha256": {
+    "owner-source.patch": "c511d33adc87ad47feb8639539fe8e48140debfda33be15708bbee29c8a36df7",
+    "owner-relevant-tests.log": "c4324f3ee3d024e0b3d289df32f1b26cc263a97ca8e5858014b4fff6d9ce3cf9",
+    "owner-source-preparation.json": "cb5f68f262eb9e61fb56e7eb2a48a00d572c6b481e90e070591c338273e614a0"
+  },
+  "ordering_proof_scope": "ACTUAL_BENCHMARK_BTC_THEN_SOL_QUOTES_ONLY_NOT_LIVE_GENERAL",
+  "R1_R2_precondition": "EXACT_FULL_TRACE_P0_XS_PARITY",
+  "reviewer_actions": {
+    "source_edits": false,
+    "tests": false,
+    "engines": false,
+    "VPS_mutations": false,
+    "pilot_touched": false
+  },
+  "economic_acceptance": "NOT_EVALUATED",
+  "launch_authority": "ROOT_GO_REQUIRED",
+  "maximum_physical_runs": 4
+}
