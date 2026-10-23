@@ -13,4 +13,6 @@ Final reports: reports/sol-conditional-hedge-btc-band-20261023/REPORT.md, compar
 
 Report/publication checkout /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021, branchcodex/btc-pattern-pilot-m2-20261021. Existing Project2/#123 finalDone/closed readback handled by root, no issuebody/comments/messages. Research completion is NOT economic goal achieved. Pilot/production/services/secrets/orders/deployment untouched. Do not infer current pilot health from this offline task.
 
-Next: publish/checkpoint final artifacts and Project readback, then owner direction only. No more native runs, optimizer, AI, TP/SL redesign or deployment authorized by unused slot. Intraday post-entry wave-MFE is backlog only and requires identical full causal prehistory.
+Published research checkpoint e39bcc6efe5dff7e4c53a5f8f46d4d14b988f35b, push and exact GitHubref readback PASS. Existing Project2/#123 Done/closed completed, exact readback PASS; see publication-readback.json/project-final-readback.json.
+
+Next: owner direction only. No more native runs, optimizer, AI, TP/SL redesign or deployment authorized by unused slot. Intraday post-entry wave-MFE is backlog only and requires identical full causal prehistory.
