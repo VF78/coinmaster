@@ -1,0 +1,11 @@
+# One approved native-quantum correction
+
+Original frozen source 5bb4939 is immutable. This correction changes only the new residual eligibility predicate: nonnegative domain quantity below the existing native BTC size increment is zero executable lots, admissible only alongside unchanged actual prior entry, matching closed parent, no unfinished split, actual native BTC-flat and no pending/queued/open/inflight BTC ownership. One lot or more, negative domain quantity, unknown ACK and native exposure still block. No arbitrary epsilon and no mutation to baseline domain quantities, BTC exits, fallback sizing, TP targets or SOL rights.
+
+The original integer fixture missed floating subtraction dust. The new faithful native lifecycle fixture produces fractional split fills and all ordinary TP closes through actual native callbacks, retains the resulting positive sublot domain residue, opens actual SOL, obtains real native settled observer receipts through CustomData, and proves one residual cut in H1 and minute modes. No closed parent or zero BTC quantity is injected into this fixture. Native-quantum conflict negatives cover negative quantity and quantities at/above one lot. Existing ownership, stale/future/unknown receipt, partial/cancel/latefill tests remain unchanged.
+
+Focused correction tests: 7 passed. Full relevant correction pass: 144 passed,298 warnings,21.48s. Original historical P0/R1/R2 results remain on 5bb4939; R1 has a proven exact-domain-zero false negative. Original R2 already had actual residual-flat triggers and failed 50/90 economically. No claim of absent R2 coverage or economic improvement from this correction.
+
+Actual archived January native fill arithmetic evidence is saved in the authorized Mac report as owner-jan-domain-dust-proof.json/csv. A requested copy to the VPS was blocked by automatic approval review; no bypass was attempted. This canonical source contract references that saved proof without copying its private native receipt payload.
+
+R2C is the same minute recipe/config/40% DD/2% adverse/50% frozen target. It is the fourth and final physical attempt only after independent correction review and new root GO. It is a correctness restoration, not economic tuning, repeat or grid.

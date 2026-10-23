@@ -308,3 +308,74 @@ def test_r2_real_observer_receipt_precedes_paired_quote_and_native_cut_once(tmp_
         assert any(x['event']=='RISK_FILL' and x['kind']=='S' for x in s.next_band_audit)
         assert ep.sol_qty==50
     finally:r.file.close();r.receipt_file.close();e.end();e.dispose()
+
+
+@pytest.mark.parametrize('minute',[False,True])
+def test_real_fractional_split_native_tp_flat_carry_cut_with_domain_dust(tmp_path,minute):
+    from coinmaster.research.minute_risk import NativeMinuteRiskRecorder,observed_strategy_type
+    from coinmaster.venues.marks import venue_mark
+    r=NativeMinuteRiskRecorder(tmp_path/'risk.csv.gz',D(10000),(BTC_PERP,SOL_PERP),
+        {BTC_PERP.id:D(40),SOL_PERP.id:D(20)},10*H1)
+    cls=observed_strategy_type(NativeProbe,r)
+    s=cls(cfg(research_sol_dominant=True,research_sol_residual=True,research_sol_minute=minute,
+        research_btc_split50=True,research_btc_split_planref_v1=True,
+        research_btc_split_tp_ioc=True,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
+    e=native_engine(s)
+    try:
+        run_ticks(e,[tick(BTC_PERP,1)])
+        prepare_day(s,2,-1)
+        ep=s._domain.episode=Episode('fractional-native',-1,10000,1,wave_levels=(0.,0.,.03))
+        i=s._domain._intent(ep,'BTC_ENTRY',-1,None,quantity=9.105)
+        s._submit_intent(i,100,100,.01,2,ts_now=2)
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,'101')])
+        p=s._split_parent
+        assert p['first_filled']==D('4.552') and p['filled']==D('9.105') and p['closed']
+        assert ep.btc_initial_qty==4.552+4.553
+        # Original positive TP3 fills natively first, exactly as actual Jan9.
+        run_ticks(e,[tick(BTC_PERP,6,'97'),tick(BTC_PERP,7,'97')])
+        assert ep.btc_tp_filled_lots.get(2)==5237
+        # The original zero TP slots close on the next accepted decision.
+        for level in (0,1):
+            leaves=ep.btc_tp_target_lots[level]-ep.btc_tp_filled_lots.get(level,0)
+            assert leaves==1934
+            i=s._domain._intent(ep,'BTC_REDUCE',1,level,quantity=float(D(leaves)*BTC_PERP.size_increment.as_decimal()))
+            s._submit_intent(i,100,100,None,2,ts_now=8+level*2)
+            run_ticks(e,[tick(BTC_PERP,9+level*2),tick(BTC_PERP,10+level*2)])
+        assert ep.btc_open_qty==4.440892098500626e-16
+        assert s._hb_position(BTC_PERP.id) is None and not s._next_busy(BTC_PERP.id)
+        assert s._next_residual_btc_flat(ep,p)
+        # No assignment to parent/domain BTC state: actual native callbacks own it.
+        i=s._domain._intent(ep,'SOL_ADD',1,0,quantity=100)
+        s._submit_intent(i,100,100,.01,2,ts_now=13)
+        run_ticks(e,[tick(SOL_PERP,14),tick(SOL_PERP,15)])
+        assert ep.sol_qty==100
+        rights=set(ep.sol_rights);retired=dict(ep.btc_risk_retired_lots)
+        ts=[H1//60,H1,H1+H1//60]
+        r.set_week([SimpleNamespace(open_time_ms=t//1_000_000-60000,
+            btc_mark={k:'100' for k in ('open','high','low','close')},
+            sol_mark={k:'55' for k in ('open','high','low','close')}) for t in ts])
+        # First receipt comes from a real preceding minute; H1 quote then cuts.
+        if minute:ts=[H1-H1//60,H1,H1+H1//60];r.set_week([SimpleNamespace(open_time_ms=t//1_000_000-60000,btc_mark={k:'100' for k in ('open','high','low','close')},sol_mark={k:'55' for k in ('open','high','low','close')}) for t in ts])
+        for t in ts:
+            e.add_data([venue_mark(BTC_PERP.id,D(100),t),venue_mark(SOL_PERP.id,D(55),t)],client_id=s.config.mark_client_id)
+            if not minute and t==H1:s._next_closed_bar(bar(SOL1,H1,55))
+            run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t,'55')])
+        assert ep.sol_qty==50
+        triggers=[x for x in s.next_band_audit if x['event']=='S_TRIGGER']
+        assert len(triggers)==1 and triggers[0]['residual_btc_flat']
+        assert s._next_s['remaining']==50 and ep.sol_rights==rights and ep.btc_risk_retired_lots==retired
+    finally:r.file.close();r.receipt_file.close();e.end();e.dispose()
+
+
+@pytest.mark.parametrize('qty,allowed',[('0',True),('0.000999999',True),('0.001',False),('0.002',False),('-0.000001',False)])
+def test_residual_domain_native_quantum_conflicts(qty,allowed):
+    s,e,ep=held(s=True,research_sol_residual=True)
+    try:
+        for order in s.cache.orders_open():
+            if order.instrument_id==BTC_PERP.id:s.cancel_order(order)
+        i=s._domain._intent(ep,'BTC_REDUCE',-1,2,quantity=100)
+        s._submit_intent(i,100,100,None,2,ts_now=5)
+        run_ticks(e,[tick(BTC_PERP,6),tick(BTC_PERP,7)])
+        ep.btc_open_qty=float(qty)
+        assert s._next_residual_btc_flat(ep,s._split_parent)==allowed
+    finally:e.end();e.dispose()

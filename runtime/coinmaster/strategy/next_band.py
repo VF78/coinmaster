@@ -212,7 +212,11 @@ class NextBandResearch:
 
     def _next_residual_btc_flat(self,ep,p):
         # Absent position alone is not evidence of a completed actual entry.
-        return bool(ep.btc_initial_qty>0 and ep.btc_open_qty==0 and p.get('episode_id')==ep.id
+        step=self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
+        # Domain float subtraction can retain less than one native quantum.
+        # Accept zero native lots only with all independent flat/terminal proof.
+        domain_qty=D(str(ep.btc_open_qty))
+        return bool(ep.btc_initial_qty>0 and D(0)<=domain_qty<step and p.get('episode_id')==ep.id
             and p.get('closed') and not self._split_unfinished()
             and self._hb_position(self.config.btc_id) is None and not self._next_busy(self.config.btc_id))
 
