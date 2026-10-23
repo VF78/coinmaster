@@ -33,6 +33,12 @@ for _risk_variant in ("cap50","dd-cov","split-atr"):
 for _insurance_variant in ("i25","i25-light","i25-recovery","i33"):
     VARIANTS["immediate-"+_insurance_variant]=VARIANTS["btc025-planref-tp-ioc"]+["--research-immediate-sol",_insurance_variant,"--research-immediate-lookback","90"]
 VARIANTS["alpha-cushion"]=VARIANTS["btc025-planref-tp-ioc"]+["--research-alpha-cushion"]
+VARIANTS["C0"] = VARIANTS["btc025-planref-tp-ioc"] + ["--research-sol-btc-open-only"]
+VARIANTS["B"] = VARIANTS["btc025-planref-tp-ioc"] + ["--research-regime-reentry-band", "0.5"]
+# H4 warmup is an explicit verified input; never guessed from another report.
+for _ema in (34,13,89):
+    for _gamma,_label in (("0.5","050"),("1","100")):
+        VARIANTS[f"H4_4H_E{_ema}_G{_label}"] = VARIANTS["btc025-planref-tp-ioc"] + ["--research-h4-ema",str(_ema),"--research-h4-gamma",_gamma]
 PILOT = "coinmaster-hl-stageg-testnet.service"
 
 
@@ -56,11 +62,16 @@ def main():
     p.add_argument("--job-name", required=True)
     p.add_argument("--joint-btc", choices=("btc025","btc050","btc025-planref"))
     p.add_argument("--joint-sol", choices=("sol50","sol75","sol100"))
+    p.add_argument("--h4-warmup", type=Path)
     p.add_argument("--launch", action="store_true")
     a = p.parse_args()
     if not a.job_name.startswith("cm115-split-") or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in a.job_name):
         raise ValueError("INVALID_ISOLATED_JOB_NAME")
     args = list(VARIANTS.get(a.variant, []))
+    if a.variant.startswith("H4_"):
+        if a.h4_warmup is None or not a.h4_warmup.is_file():
+            p.error("H4 requires explicit verified --h4-warmup CSV")
+        args += ["--research-h4-warmup",str(a.h4_warmup.resolve())]
     if a.variant == "joint":
         if not a.joint_btc or not a.joint_sol:
             p.error("joint requires the selected separate BTC and SOL variants")
@@ -96,6 +107,11 @@ def main():
         dest.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(path,dest)
         hashes[str(relative)] = digest(dest)
+    if a.variant.startswith("H4_"):
+        frozen_warmup=source/"h4-warmup.csv"
+        shutil.copy2(a.h4_warmup,frozen_warmup)
+        hashes["h4-warmup.csv"]=digest(frozen_warmup)
+        args[args.index("--research-h4-warmup")+1]=str(frozen_warmup)
     for relative in ("runtime/.venv","runtime/var/data"):
         (source/relative).mkdir(parents=True,exist_ok=True)
     (job/"tmp").mkdir()

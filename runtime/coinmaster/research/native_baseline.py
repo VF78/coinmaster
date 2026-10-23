@@ -688,6 +688,7 @@ def run_native_diagnostic(
     research_btc_split_planref_v1: bool = False,
     research_btc_split_tp_ioc: bool = False,
     research_btc_split_discount: str = "0.0025",
+    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None,
     research_sol_cover: str | None = None,
     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
     research_btc_episode_loss_20: bool = False,
@@ -730,6 +731,14 @@ def run_native_diagnostic(
         raise ValueError("RISK_FIRST_REQUIRES_SELECTED_BTC_AND_EXCLUSIVE_SOL_POLICY")
     if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not observe_minute_risk:
         raise ValueError("PORTFOLIO_PROTECTION_REQUIRES_PRE_ACTION_MINUTE_OBSERVER")
+    if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+        if candidate is None or candidate.ema_period != 34 or candidate.beta_days != 270:
+            raise ValueError("HEDGE_BAND_REQUIRES_RESOLVED_S0_EMA34_BETA270_CANDIDATE")
+        if not all((research_v0_execution_repairs, research_v0_deferred_selective_zero_tp,
+                    research_v0_selective_lifecycle_repairs, research_btc_split50,
+                    research_btc_split_planref_v1, research_btc_split_tp_ioc,
+                    research_btc_direction_sizing, observe_minute_risk)):
+            raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
     candidate = candidate or Candidate()
     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
@@ -783,13 +792,26 @@ def run_native_diagnostic(
     confirmation_bars = tuple(BarType.new_composite(
         instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
         AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
-    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else ()
+    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else ()
+    h4_bar_type = BarType.new_composite(sol_instrument.id, BarSpecification(4, BarAggregation.HOUR, PriceType.LAST),
+        AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL) if research_h4_ema is not None else None
+    h4_seed = ()
+    h4_warmup_hash = None
+    if research_h4_ema is not None:
+        import csv
+        if research_h4_warmup is None:
+            raise ValueError("H4_WARMUP_REQUIRED_BLOCKED_DATA")
+        h4_warmup_hash = sha256_file(research_h4_warmup)
+        with research_h4_warmup.open() as handle:
+            h4_seed = tuple((int(r["close_time_ns"]), float(r["close"])) for r in csv.DictReader(handle))
+        if len(h4_seed) != 730 or h4_seed[-1][0] != trading_start_ms*1_000_000 or any(b[0]-a[0] != 14_400_000_000_000 for a,b in zip(h4_seed,h4_seed[1:])):
+            raise ValueError("H4_EXACT_730_CLOSED_WARMUP_REQUIRED")
     minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
                    for instrument in (btc_instrument, sol_instrument)}
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
         run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first=="alpha-corridor-v1"),
-        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
+        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
@@ -832,6 +854,11 @@ def run_native_diagnostic(
         research_btc_split_planref_v1=research_btc_split_planref_v1,
         research_btc_split_tp_ioc=research_btc_split_tp_ioc,
         research_btc_split_discount=Decimal(research_btc_split_discount),
+        research_sol_btc_open_only=research_sol_btc_open_only,
+        research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
+        research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
+        research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
+        research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
         research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
         research_conditional_sol=research_conditional_sol,
         research_sol_risk_first=research_sol_risk_first,
@@ -873,7 +900,7 @@ def run_native_diagnostic(
             marks, signals, quotes, source_bars = [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
-                if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair:
+                if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair:
                     for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
                         source_bars.append(Bar(minute_bars[instrument.id],
                             instrument.make_price(row["open"]), instrument.make_price(row["high"]),
@@ -1001,6 +1028,11 @@ def run_native_diagnostic(
             full_config["research_v0_selective_lifecycle_repairs"] = True
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+        if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+            full_config["hedge_band_research"] = dict(c0=research_sol_btc_open_only, h4_ema=research_h4_ema,
+                h4_gamma=research_h4_gamma, h4_warmup_sha256=h4_warmup_hash, regime_reentry_band=research_regime_reentry_band,
+                beta="LATEST_ACCEPTED_DAILY_LOG_RETURN_270_FREEZE_AT_ACTIVATION", ttl_ns=14_400_000_000_000,
+                atr="WILDER14_ORIGINAL_DAILY_OHLC_SEED", execution="EXISTING_NATIVE_ONLY")
         if research_h1_b1:
             full_config["research_h1_b1"] = {"variant": research_h1_b1, "direction_sizing": {"long": "5.5", "short": "7.875"},
                 "confirmation": "NATIVE_INTERNAL_15M_OR_1H_CLOSE_PREVIOUS_HIGH_LOW", "bar_execution": False, "native_bar_cache_capacity_per_type": 128, "build_empty_bars": False,
@@ -1032,6 +1064,8 @@ def run_native_diagnostic(
                 "beta_entry_open_interval": ["0.2", "4"],
             }
         result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": native_fill_count, "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "entry_sizing_audit": adapter["entry_sizing_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": native_order_rejections, "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+        if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+            result["hedge_band_audit"] = strategy.hedge_band_audit
         result.update({
             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",
             "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
@@ -1051,6 +1085,7 @@ def run_native_diagnostic(
                     ("native_baseline", "research/native_baseline.py"),
                     ("wave_domain", "domain/wave_overlay.py"),
                     ("wave_strategy", "strategy/wave_overlay.py"),
+                    *(((("hedge_band", "strategy/hedge_band.py"),)) if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None else ()),
                 )
             }
         # Preserve native facts before any boundary/metadata packaging assertion.
@@ -1283,7 +1318,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_batch_minutes: int | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_batch_minutes: int | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1337,6 +1372,12 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         label += "-tp-ioc"
     if research_sol_cover:
         label += "-sol-cover" + research_sol_cover
+    if research_sol_btc_open_only:
+        label += "-C0"
+    if research_h4_ema is not None:
+        label += f"-H4-4H-E{research_h4_ema}-G{research_h4_gamma}"
+    if research_regime_reentry_band is not None:
+        label += "-B-ATR"+research_regime_reentry_band
     if research_chop_pair:
         label += "-chop-pair-50-net-v1"
     if research_alpha_cushion:
@@ -1387,6 +1428,9 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_immediate_lookback=research_immediate_lookback,
         research_alpha_cushion=research_alpha_cushion,
         research_chop_pair=research_chop_pair,
+        research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
+        research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
+        research_regime_reentry_band=research_regime_reentry_band,
         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
@@ -1419,6 +1463,11 @@ def main() -> None:
     parser.add_argument("--research-v0-original-zero-tp", action="store_true", help="With research repairs, retain original BTC entry and zero-threshold TP levels")
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
+    parser.add_argument("--research-sol-btc-open-only", action="store_true")
+    parser.add_argument("--research-h4-ema", type=int, choices=(13,34,89))
+    parser.add_argument("--research-h4-gamma", choices=("0.5","1"), default="0.5")
+    parser.add_argument("--research-h4-warmup", type=Path)
+    parser.add_argument("--research-regime-reentry-band", choices=("0","0.5"))
     parser.add_argument("--research-h1-b1", choices=("h1", "b1"), default=None)
     parser.add_argument("--research-v3-risk", choices=("b25", "s10_15", "r2", "t3"), default=None, help="One default-OFF research risk variation on V3 directional sizing")
     parser.add_argument("--research-btc-direction-sizing", action="store_true", help="Research-only frozen episode long5.5 short7.875 multiplier")
@@ -1431,6 +1480,8 @@ def main() -> None:
     parser.add_argument("--control-report", type=Path)
     parser.add_argument("--artifact-dir", type=Path)
     args = parser.parse_args()
+    if (args.research_sol_btc_open_only or args.research_h4_ema is not None or args.research_regime_reentry_band is not None) and not args.research_v0_execution_repairs:
+        parser.error("C0/H4/B require the explicit native research repair pipeline")
     if args.job_request is not None:
         raise SystemExit(run_job_request(args.job_request))
     if (args.research_v0_original_zero_tp or args.research_v0_deferred_selective_zero_tp) and not args.research_v0_execution_repairs:
@@ -1468,6 +1519,9 @@ def main() -> None:
             research_conditional_sol=args.research_conditional_sol,
             research_alpha_cushion=args.research_alpha_cushion,
             research_chop_pair=args.research_chop_pair,
+            research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
+            research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
+            research_regime_reentry_band=args.research_regime_reentry_band,
             research_batch_minutes=args.research_batch_minutes,
             research_sol_risk_first=args.research_sol_risk_first,
             research_immediate_sol=args.research_immediate_sol,

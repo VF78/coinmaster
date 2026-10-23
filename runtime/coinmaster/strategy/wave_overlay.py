@@ -22,6 +22,7 @@ from nautilus_trader.model.identifiers import ClientId, ClientOrderId, Instrumen
 from nautilus_trader.trading.strategy import Strategy
 
 from coinmaster.domain.wave_overlay import btc_management_price
+from coinmaster.strategy.hedge_band import HedgeBandResearch
 from coinmaster.strategy.split_cover import SplitCoverResearch
 from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
 from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
@@ -65,6 +66,13 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_planref_v1: bool = False
     research_btc_split_tp_ioc: bool = False
     research_btc_split_discount: Decimal = Decimal("0.0025")
+    research_sol_btc_open_only: bool = False
+    research_h4_ema: int | None = None
+    research_h4_gamma: Decimal = Decimal(".5")
+    research_h4_seed: tuple[tuple[int, float], ...] = ()
+    research_h4_bar_type: BarType | None = None
+    research_regime_reentry_band: Decimal | None = None
+    research_band_daily_seed: tuple[tuple[int, float, float], ...] = ()
     research_sol_cover: Decimal | None = None
     research_conditional_sol: bool = False
     research_alpha_cushion: bool = False
@@ -171,7 +179,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
@@ -237,6 +245,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
                 raise ValueError("RESEARCH_H1_FIXED_ADVERSE_2_5_PERCENT")
             if len(config.research_confirmation_bars) != 4:
                 raise ValueError("RESEARCH_H1_B1_REQUIRES_NATIVE_CONFIRMATION_BARS")
+        self._hedge_band_init()
         self.h1_b1_audit: list[dict[str, object]] = []
         self._confirmation_state: dict[BarType, dict] = {}
         self._confirmation_events: dict[tuple, tuple[int, int]] = {}
@@ -275,6 +284,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
         self._domain = WaveOverlayState(self._candidate)
         self._domain.research_sol_cover = config.research_sol_cover is not None
+        self._domain.research_h4_owned = config.research_h4_ema is not None
         self._bars: list[DailyBar] = list(config.seed_bars)
         self._last_accepted_session: int | None = (
             int(self._bars[-1].close_time.timestamp() * 1_000_000_000) if self._bars else None
@@ -348,6 +358,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
     def on_start(self) -> None:
         for confirmation_bar in self.config.research_confirmation_bars:
             self.subscribe_bars(confirmation_bar)
+        if self.config.research_h4_bar_type is not None:
+            self.subscribe_bars(self.config.research_h4_bar_type)
         self.subscribe_bars(self.config.btc_bar_type)
         self.subscribe_bars(self.config.sol_bar_type)
         # Research feeds explicit VenueMark CustomData.  The live Bybit data
@@ -378,6 +390,12 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             self.clock.cancel_timer(self._deposit_timer_name)
 
     def on_bar(self, bar: Bar) -> None:
+        h4 = self.config.research_h4_bar_type
+        if h4 is not None and bar.bar_type in (h4, h4.standard()):
+            if bar.bar_type.instrument_id != self.config.sol_id or bar.bar_type.spec.aggregation != BarAggregation.HOUR or bar.bar_type.spec.step != 4:
+                raise ValueError("H4_EXPLICIT_BAR_TYPE_REQUIRED")
+            self._hedge_h4_bar(bar)
+            return
         if any(bar.bar_type == kind.standard() or bar.bar_type == kind for kind in self.config.research_confirmation_bars):
             self._cover_bar(bar)
             self._conditional_bar(bar)
@@ -1105,6 +1123,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             available_at = datetime.fromtimestamp(
                 max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init, next_session) / 1_000_000_000, UTC,
             )
+            if self.config.research_regime_reentry_band is not None:
+                self._hb_daily_ohlc[next_session] = (float(btc.high), float(btc.low))
             self._carry_daily_bar(btc)
             self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
             self._last_accepted_session = next_session
@@ -1194,6 +1214,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             return
         if self._liquidating or self._backfill_error is not None:
             return
+        if not self._hedge_band_allowed():
+            return
         if not self._b1_gate_daily():
             self._daily_decision_reason = "B1_WAIT_FRESH_CONFIRMATION"
             return
@@ -1266,6 +1288,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             self._research_protect_latch = None
         self._daily_decision_reason = getattr(self._domain, "last_decision_reason", "CURRENT_DECISION_EVALUATED") if not intents else "CURRENT_DECISION_INTENTS"
         for intent in intents:
+            if self.config.research_sol_btc_open_only and intent.action == "SOL_ADD" and self._hb_position(self.config.btc_id) is None:
+                self._domain.on_parent_terminal(intent.id)
+                continue
             if intent.action == "CLOSE_ALL":
                 if self.config.research_v3_risk == "r2" and intent.reason == "REGIME":
                     self._v3_regime_wait = True
@@ -1453,6 +1478,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
                 self._queued_intents.remove(item)
                 self._queued_intent_ready_ns.pop(intent.id, None)
                 self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+
+        self._hedge_quote(tick)
 
     def _select_deferred_btc_entry(self, intent: Intent, tick: QuoteTick) -> Decimal | None:
         """Observe q0, then choose entry lots from the next causal BTC quote."""
@@ -1789,6 +1816,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
                     self._decision_index_by_order.pop(client_order_id, None)
                     continue
                 self.submit_order(order)
+            return
+        if intent.action == "SOL_ADD" and (self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and self._hb_position(self.config.btc_id) is None:
+            self._domain.on_parent_terminal(intent.id)
             return
         instrument_id = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
         instrument = self.cache.instrument(instrument_id)
@@ -2425,12 +2455,20 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             pass  # Native inventory only; original alpha history/basis is retained.
         elif self._conditional_enabled() and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
             self._conditional_fill(intent,quantity,price,ts_event)
+        elif self.config.research_h4_ema is not None and intent.action.startswith("SOL"):
+            self._hedge_sol_fill(intent, quantity, ts_event)
         else:
             self._domain.on_fill(
                 intent.id, quantity, price, when, sigma,
                 decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
                 entry_qty=entry_qty, entry_price=entry_price,
             )
+        if intent.action == "BTC_ENTRY":
+            self._hb_wait_regime = False
+        if intent.action == "BTC_REDUCE":
+            self._hedge_btc_flat(intent, ts_event)
+        if intent.action.startswith("BTC"):
+            self._hedge_refresh(ts_event)
         self._insurance_btc_fill(intent,price,ts_event)
         self._alpha_btc_fill(intent,ts_event)
         if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
@@ -2450,6 +2488,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             self._domain.on_half_exit_decision(max(self._decision_index_by_order.get(client_order_id, intent.decision_index), len(self._bars) - 1))
         if not order_closed:
             return
+        self._hedge_terminal(intent, ts_event, "FILLED_TERMINAL")
         if self._conditional_enabled():
             self._conditional_attempt_terminal(intent,ts_event,"NATIVE_TERMINAL_AFTER_FILL",client_order_id)
         self._domain.on_parent_terminal(intent.id)
@@ -2512,6 +2551,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
+        self._hedge_terminal(intent, event.ts_event, "CANCELED")
         if self._conditional_enabled():
             self._conditional_attempt_terminal(intent,event.ts_event,"CANCELED",str(event.client_order_id))
         if intent is not None and intent.action == "BTC_ENTRY":
@@ -2579,6 +2619,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         self._terminal_without_fill(str(event.client_order_id))
 
     def on_position_event(self, event) -> None:
+        self._hedge_refresh(event.ts_event)
         self._insurance_position(event)
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
         self._research_capture_btc_episode(event)
@@ -2596,7 +2637,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         """Clear a completed close group after the native cache is actually flat."""
         if not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
             return
-        if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()):
+        if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and (self._queued_intents or self.cache.orders_inflight())):
             return  # An opening order awaiting terminal native receipt may still fill.
         self._group_close_reconciliation_pending = False
         if self._insurance_enabled() and self._insurance_cycle:
@@ -2608,6 +2649,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
             self._forced_close_intent = None
             self._forced_close_orders.clear()
         if reason == "REGIME":
+            if self.config.research_regime_reentry_band is not None:
+                self._hb_wait_regime = True
+                self._hb_log("WAIT_REGIME_REENTRY", self.clock.timestamp_ns())
             self._advance_current_day()
 
     def _reconcile_liquidation_flat(self) -> None:
@@ -2631,6 +2675,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         self._reconcile_liquidation_flat()
         self._reconcile_terminal_flat()
         return {
+            "hedge_band_audit": self.hedge_band_audit,
             "liquidations": self.liquidation_audit,
             "liquidation_lockout": self._liquidating,
             "terminal_lifecycle": self.terminal_lifecycle,
@@ -2650,6 +2695,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
     def _terminal_without_fill(self, client_order_id: str) -> None:
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
+        self._hedge_terminal(failed_intent, self.clock.timestamp_ns(), "DENIED_REJECTED_EXPIRED")
         if self._conditional_enabled():
             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
         if failed_intent and failed_intent.reason and failed_intent.reason.startswith("SOL_COVER") and self._cover_cycle:

@@ -75,6 +75,11 @@ def main():
         "disk_free_after":shutil.disk_usage(job).free,"pilot_after":pilot,
         "scope":"RESEARCH_ONLY_NATIVE_ACCOUNTING_DIAGNOSTIC_NO_PRODUCTION_PROMOTION",
     }
+    if result.get("config",{}).get("hedge_band_research"):
+        audit=result.get("hedge_band_audit")
+        if not isinstance(audit,list):
+            raise ValueError("HEDGE_BAND_NATIVE_AUDIT_MISSING")
+        receipt["hedge_band_audit"]={"event_count":len(audit),"sha256":hashlib.sha256(json.dumps(audit,sort_keys=True,separators=(",",":")).encode()).hexdigest()}
     if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first") or result.get("config",{}).get("research_immediate_sol") or result.get("config",{}).get("research_alpha_cushion"):
         audit_key="alpha_cushion_audit" if result.get("config",{}).get("research_alpha_cushion") else "immediate_sol_insurance_audit" if result.get("config",{}).get("research_immediate_sol") else "risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
         audit=result.get(audit_key)

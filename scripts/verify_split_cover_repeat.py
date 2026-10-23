@@ -78,6 +78,8 @@ def main():
         for path,expected in manifest.items():
             if hashlib.sha256((job/'source'/path).read_bytes()).hexdigest()!=expected:
                 raise ValueError('FROZEN_SOURCE_CHANGED:'+str(job/'source'/path))
+    if 'hedge_band_audit' in a or 'hedge_band_audit' in b:
+        compare('hedge_band_native_lifecycle',canonical(a.get('hedge_band_audit')),canonical(b.get('hedge_band_audit')))
     compare('fill_audit_economic_ordered',canonical(a['fill_audit']),canonical(b['fill_audit']))
     for kind in ('fills','orders'):
         compare('native_'+kind+'_economic_signature',economic_csv(a['execution_artifacts'][kind]['path']),economic_csv(b['execution_artifacts'][kind]['path']))

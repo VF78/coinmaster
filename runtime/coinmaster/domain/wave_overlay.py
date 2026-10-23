@@ -396,7 +396,7 @@ class WaveOverlayState:
         # A due timeout is a mandatory reduction.  It must preempt a queued
         # add or a resting planned exit under every candidate, including the
         # legacy control flag retained in the immutable candidate schema.
-        timeout = self._sol_exits(episode, feature, bars[index], index)
+        timeout = [] if getattr(self, "research_h4_owned", False) else self._sol_exits(episode, feature, bars[index], index)
         if timeout:
             return timeout
         # Ordinary work waits for a parent to become terminal, but the
@@ -416,7 +416,7 @@ class WaveOverlayState:
                     intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=leaves))
         if intents:
             return intents
-        if not self.config.sol_overlay_enabled:
+        if getattr(self, "research_h4_owned", False) or not self.config.sol_overlay_enabled:
             return []
         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
         # An invalid current beta permits only exits/reductions, never new risk.
