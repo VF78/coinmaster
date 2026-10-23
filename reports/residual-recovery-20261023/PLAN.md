@@ -11,10 +11,10 @@ Bound: at most4 physical full native attempts (failed/invalid/repeated included)
 - [x] R2: focused tests + scoped independent trading/money review; immutable source/data/config/tooling pins.
 - [x] R3: one native candidate, complete export and independent money/globalDD/actual-actions audit.
 - [x] R4: causal postmortem; justified refinement only when evidence supports same mechanism; total attemptscap4.
-- [ ] R5: selection or explicitNO_GO, freshrepeat only passingcandidate within budget, Project/readback/checkpoint.
+- [x] R5: selection or explicitNO_GO, freshrepeat only passingcandidate within budget, Project/readback/checkpoint.
 
 Design must distinguish SOLoverhedge/SOLonly/BTCunhedged/realizedcashloss, preserve actual native order ownership and SOL rights, measure falsepositives/missedrecoveries/frequency and additional fees. No cut+immediate readd loop. Proposed numerical rules are not accepted until frozen before corresponding engine.
 
 Source owner residual_recovery_owner, independent designreview residual_recovery_design_review, independent data/result verifier residual_recovery_data_verify; allGPT6.1Sol/medium with narrow context. Product edits canonical isolatedVPSonly; Macimmutableexecutionmirror.
 
-R4: STOP family, no C2/repeat;2/4 physical attempts,1invalid/1valid,0active,2unused closed. R5 final Project/publication pending.
+R4: STOP family, no C2/repeat;2/4 physical attempts,1invalid/1valid,0active,2unused closed. R5 complete: Project Done/closed readback PASS; results822b574 published/exact remote ref PASS.

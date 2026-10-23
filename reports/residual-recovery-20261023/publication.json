@@ -1,0 +1,16 @@
+{
+  "status": "PUBLISHED_EXACT_REMOTE_REF_PASS",
+  "utc": "2026-10-23T16:57:17.028052+00:00",
+  "results_checkpoint": "822b574f3789d50df2d58046ed2bbc1782d9a90f",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "repository": "https://github.com/VF78/coinmaster",
+  "normal_push": true,
+  "exact_remote_ref_readback": true,
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "Project": "https://github.com/users/VF78/projects/2",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "issue_closed": true,
+  "project_Done_readback": "PASS",
+  "economic_goal": "NOT_MET",
+  "candidate_deployed": false
+}
