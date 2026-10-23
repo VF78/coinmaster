@@ -54,6 +54,7 @@ class NextBandResearch:
         self.next_band_audit.append(dict(event=event,timestamp_ns=int(ns),**kw))
 
     def _next_terminal(self,intent,ns):
+        self._c1_terminal(intent,ns)
         if self._next_enabled and intent is not None and intent.action=='BTC_ENTRY':
             self._next_entry_terminal[intent.episode_id]=max(ns,self._next_entry_terminal.get(intent.episode_id,0))
 
@@ -86,6 +87,7 @@ class NextBandResearch:
         return allowed
 
     def _next_closed_bar(self,bar):
+        self._c1_closed_bar(bar)
         if not self._next_enabled:return
         ns=bar.ts_event
         instrument=getattr(bar,'instrument_id',None);hours=getattr(bar,'hours',None)
@@ -139,6 +141,7 @@ class NextBandResearch:
             if o.instrument_id==self.config.sol_id and not o.is_reduce_only and not o.is_pending_cancel:self.cancel_order(o)
 
     def _next_before_submit(self,intent,ns):
+        if not self._c1_before_submit(intent,ns):return False
         if not self._next_enabled:return True
         if intent.action=='SOL_ADD':
             if self._next_s is not None:

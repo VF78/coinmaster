@@ -199,6 +199,9 @@ class NativeMinuteRiskRecorder:
         self.receipt_writer.writerow([source,timestamp,epoch,cash,equity,json.dumps(details,separators=(",",":"))])
         self.receipt_count += 1
         self.receipt_pending = None
+        # C1 decisions consume the committed consistent receipt and frozen marks.
+        if getattr(strategy.config,"research_residual_recovery",False):
+            strategy._c1_observe(equity,timestamp,source,epoch,details)
 
     def capture(self, strategy, timestamp, phase):
         if timestamp not in self.bundles:
@@ -297,6 +300,7 @@ def observed_strategy_type(base, recorder):
                 if self.config.research_btc_episode_loss_20:
                     self._research_check_btc_episode_loss(timestamp, after_observation=True)
     def on_order_filled(self,event):
+        if getattr(self.config,"research_residual_recovery",False) and str(event.trade_id) in self._seen_trade_ids:return
         recorder.note_fill(event.ts_event)
         base.on_order_filled(self,event)
     def on_quote_tick(self,tick):

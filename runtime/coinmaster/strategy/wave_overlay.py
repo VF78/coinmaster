@@ -6,6 +6,7 @@ finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
 from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
+from coinmaster.strategy.residual_recovery import ResidualRecoveryResearch
 
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
@@ -72,6 +73,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_wait_persist: bool = False
     research_zero_retrace: bool = False
     research_sol_dominant: bool = False
+    research_residual_recovery: bool = False
     research_next_signals: tuple[DataType, ...] = ()
     research_h4_ema: int | None = None
     research_h4_gamma: Decimal = Decimal(".5")
@@ -185,7 +187,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
@@ -253,6 +255,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 raise ValueError("RESEARCH_H1_B1_REQUIRES_NATIVE_CONFIRMATION_BARS")
         self._hedge_band_init()
         self._next_init()
+        self._c1_init()
         self.h1_b1_audit: list[dict[str, object]] = []
         self._confirmation_state: dict[BarType, dict] = {}
         self._confirmation_events: dict[tuple, tuple[int, int]] = {}
@@ -1354,6 +1357,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        if self.config.research_residual_recovery and (self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None):self._c1_revoke(tick.ts_event,"MANDATORY_QUOTE_PRIORITY")
         if self.config.research_h1_b1 == "h1" and tick.instrument_id == self.config.sol_id:
             self._h1_sol_quote_sequence += 1
         if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
@@ -1382,6 +1386,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             # then uses the actual native position leaves on the next SOL
             # quote. No queued increase may pass while this is in progress.
             if (tick.instrument_id != self.config.sol_id
+                    or (self.config.research_residual_recovery and self._c1_own_pending())
                     or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open())
                     or any(owner["instrument_id"] == self.config.sol_id for owner in self._v3_orders.values())
                     or (self.config.research_h1_b1 == "h1" and any(i.action == "SOL_ADD" for i in self._pending_by_order.values()))):
@@ -1496,6 +1501,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
 
         self._hedge_quote(tick)
         self._next_quote(tick)
+        self._c1_quote(tick)
 
     def _select_deferred_btc_entry(self, intent: Intent, tick: QuoteTick) -> Decimal | None:
         """Observe q0, then choose entry lots from the next causal BTC quote."""
@@ -2048,6 +2054,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                     "omitted_zero_levels": sorted(episode.btc_omitted_zero_levels),
                     "reference_target_lots": dict(episode.btc_reference_target_lots),
                 })
+        self._c1_bind_submission(intent,client_order_id,ts_now or self.clock.timestamp_ns())
         self.submit_order(order)
 
     @staticmethod
@@ -2145,6 +2152,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 and not (self.config.deposit_runtime is not None and self._deposit.latched))
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+        if self.config.research_residual_recovery:self._c1_revoke(self.clock.timestamp_ns(),"MANDATORY_GROUP_CLOSE")
         self._risk_first_sol_stop(reason)
         self._split_stop(reason)
         if self.config.deposit_runtime is not None and self._deposit.latched:
@@ -2359,6 +2367,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             return
         # The audit event may have committed just before a crash; it is not
         # an atomic receipt that the domain fill was applied.
+        self._c1_native_fill(event)
         self._record_native_fill(event)
         self._seen_trade_ids.add(trade_id)
         if self.config.research_sol_risk_first=="alpha-corridor-v1":
@@ -2469,7 +2478,9 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             else:
                 self._accepted_reductions[key] = original, remaining
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
-        if self._next_risk_fill(intent,quantity,ts_event):
+        if self._c1_fill(intent,quantity,price,ts_event):
+            pass
+        elif self._next_risk_fill(intent,quantity,ts_event):
             pass
         elif intent.reason == "CHOP_PAIR_SINGLE_GRANT" and self._carry_busy():
             pass  # Native inventory only; original alpha history/basis is retained.
@@ -2663,7 +2674,11 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             return
         if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and (self._queued_intents or self.cache.orders_inflight())):
             return  # An opening order awaiting terminal native receipt may still fill.
+        if self.config.research_residual_recovery and (self.cache.orders_inflight() or self._queued_intents):return
         self._group_close_reconciliation_pending = False
+        if self._c1_state is not None:
+            self._c1_log("GROUP_FLAT_RESET", self.clock.timestamp_ns(), credit_expired=self._c1_state["credit"])
+            self._c1_state = None
         if self._insurance_enabled() and self._insurance_cycle:
             self._insurance_cycle.update(closed=True,target=Decimal(0))
         self._carry_flat()
@@ -2697,11 +2712,13 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         if self.config.research_v0_selective_lifecycle_repairs and self._pending_by_order:
             return
         self.terminal_lifecycle["status"] = "FLAT"
+        self._c1_terminal_flat(self.clock.timestamp_ns())
 
     def reporting_state(self) -> dict[str, object]:
         """Authoritative native adapter state for diagnostic-only exports."""
         self._reconcile_liquidation_flat()
         self._reconcile_terminal_flat()
+        if self.terminal_lifecycle["status"]=="FLAT":self._c1_terminal_flat(self.clock.timestamp_ns())
         return {
             "hedge_band_audit": self.hedge_band_audit,
             "liquidations": self.liquidation_audit,
@@ -2723,6 +2740,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
     def _terminal_without_fill(self, client_order_id: str) -> None:
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
+        self._c1_terminal(failed_intent,self.clock.timestamp_ns())
         self._hedge_terminal(failed_intent, self.clock.timestamp_ns(), "DENIED_REJECTED_EXPIRED")
         if self._conditional_enabled():
             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
