@@ -68,6 +68,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_tp_ioc: bool = False
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_btc_open_only: bool = False
+    research_sol_explicit_child: bool = False
     research_wait_4h: bool = False
     research_wait_persist: bool = False
     research_zero_retrace: bool = False
@@ -185,7 +186,10 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+from coinmaster.strategy.system_contract import SystemContractResearch
+
+
+class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
@@ -253,6 +257,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 raise ValueError("RESEARCH_H1_B1_REQUIRES_NATIVE_CONFIRMATION_BARS")
         self._hedge_band_init()
         self._next_init()
+        self._sc_init()
         self.h1_b1_audit: list[dict[str, object]] = []
         self._confirmation_state: dict[BarType, dict] = {}
         self._confirmation_events: dict[tuple, tuple[int, int]] = {}
@@ -1774,6 +1779,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         return _native_account_money(account, free=True)
 
     def _deny_local_entry(self, intent: Intent, reason: str, ts_now: int | None) -> None:
+        self._sc_denied(intent, reason)
         if self._conditional_enabled():
             self._conditional_failed(intent, ts_now or self.clock.timestamp_ns())
         self._selected_entry_audits.pop(intent.id, None)
@@ -1866,6 +1872,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             quantity = min(quantity, float(position.quantity))
         step = instrument.size_increment.as_decimal()
         rounded = (Decimal(str(quantity)) // step) * step
+        if intent.action == "SOL_ADD":
+            rounded = self._sc_sol_quantity(intent, rounded, step, executable_price, ts_now or 0)
         if intent.action == "SOL_ADD" and self._v3_sol_block_episode is not None:
             episode = self._domain.episode
             if episode is None or episode.id == self._v3_sol_block_episode or any(p.instrument_id == self.config.sol_id for p in self.cache.positions_open()):
@@ -2016,12 +2024,14 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
         client_order_id = str(order.client_order_id)
         self._risk_first_sol_bind(intent,order)
+        self._sc_bind(intent, order)
         self._pending_by_order[client_order_id] = intent
         # A pre-submit durable checkpoint must see the exact order-to-episode
         # mapping before native transport can accept or fill this order.
         self._sigma_by_order[client_order_id] = sigma
         self._decision_index_by_order[client_order_id] = decision_index
         if not self._record_submission(order, intent.id, intent.episode_id, intent.action, intent.reason, intent.level):
+            self._sc_denied(intent, "DURABLE_SUBMIT_PREP_REJECTED")
             if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,ts_now or 0,"LOCAL_UNSENT_PREP_DENIED")
             self._pending_by_order.pop(client_order_id, None)
             self._sigma_by_order.pop(client_order_id, None)
@@ -2607,6 +2617,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             self._reconcile_group_flat()
 
     def on_order_event(self, event) -> None:
+        self._sc_native_event(event)
         # Event identity, not client order identity, preserves the sequence
         # Submitted -> Accepted -> terminal without manufacturing an ACK.
         event_id = getattr(event, "id", None)
@@ -2704,6 +2715,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         self._reconcile_terminal_flat()
         return {
             "hedge_band_audit": self.hedge_band_audit,
+            "system_contract_audit": self.system_contract_audit,
             "liquidations": self.liquidation_audit,
             "liquidation_lockout": self._liquidating,
             "terminal_lifecycle": self.terminal_lifecycle,
