@@ -193,6 +193,8 @@ class NativeMinuteRiskRecorder:
         if epoch != self.fill_epoch:
             return
         _, cash, _, _, _, equity, _, _, _, details = snapshot
+        if hasattr(strategy,"_next_observe_settled"):
+            strategy._next_observe_settled(equity,timestamp,source)
         self.settled_curve.add(timestamp, equity)
         self.receipt_writer.writerow([source,timestamp,epoch,cash,equity,json.dumps(details,separators=(",",":"))])
         self.receipt_count += 1

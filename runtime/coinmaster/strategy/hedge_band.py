@@ -100,6 +100,7 @@ class HedgeBandResearch:
             return False
         side = 1 if close > ema else -1
         allowed = side*(close-ema) >= float(band)*atr
+        allowed = self._next_wait_allowed(side,close,ema,atr,ns,allowed)
         self._daily_decision_reason = 'B_ENTRY_ALLOWED' if allowed else 'WAIT_REGIME_REENTRY'
         self._hb_log(self._daily_decision_reason, ns, side=side, close=close, ema=ema, atr14=atr)
         return allowed

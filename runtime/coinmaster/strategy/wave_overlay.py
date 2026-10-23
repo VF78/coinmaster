@@ -5,6 +5,7 @@ or funding.  It is deliberately not declared a research baseline until a
 finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
+from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
 
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
@@ -67,6 +68,11 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_tp_ioc: bool = False
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_btc_open_only: bool = False
+    research_wait_4h: bool = False
+    research_wait_persist: bool = False
+    research_zero_retrace: bool = False
+    research_sol_dominant: bool = False
+    research_next_signals: tuple[DataType, ...] = ()
     research_h4_ema: int | None = None
     research_h4_gamma: Decimal = Decimal(".5")
     research_h4_seed: tuple[tuple[int, float], ...] = ()
@@ -179,7 +185,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
@@ -246,6 +252,7 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
             if len(config.research_confirmation_bars) != 4:
                 raise ValueError("RESEARCH_H1_B1_REQUIRES_NATIVE_CONFIRMATION_BARS")
         self._hedge_band_init()
+        self._next_init()
         self.h1_b1_audit: list[dict[str, object]] = []
         self._confirmation_state: dict[BarType, dict] = {}
         self._confirmation_events: dict[tuple, tuple[int, int]] = {}
@@ -358,6 +365,8 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
     def on_start(self) -> None:
         for confirmation_bar in self.config.research_confirmation_bars:
             self.subscribe_bars(confirmation_bar)
+        for kind in self.config.research_next_signals:
+            self.subscribe_data(kind, client_id=self.config.signal_client_id)
         if self.config.research_h4_bar_type is not None:
             self.subscribe_bars(self.config.research_h4_bar_type)
         self.subscribe_bars(self.config.btc_bar_type)
@@ -599,6 +608,10 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
             "first_parent_terminal": cycle["first_terminal"]})
 
     def on_data(self, data) -> None:
+        incoming=getattr(data,'data',data)
+        if isinstance(incoming,NextClosedBar):
+            self._next_closed_bar(incoming)
+            return
         """Receive explicit marks without ever making them execution data."""
         # Native fill and position events are not guaranteed to reach strategy
         # callbacks in cache-finalized order. The next public data event is a
@@ -1475,11 +1488,14 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
                         ):
                             self._advance_current_day()
                         continue
+                if not self._next_before_submit(intent,tick.ts_event):
+                    continue
                 self._queued_intents.remove(item)
                 self._queued_intent_ready_ns.pop(intent.id, None)
                 self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
 
         self._hedge_quote(tick)
+        self._next_quote(tick)
 
     def _select_deferred_btc_entry(self, intent: Intent, tick: QuoteTick) -> Decimal | None:
         """Observe q0, then choose entry lots from the next causal BTC quote."""
@@ -1819,6 +1835,8 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
             return
         if intent.action == "SOL_ADD" and (self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and self._hb_position(self.config.btc_id) is None:
             self._domain.on_parent_terminal(intent.id)
+            return
+        if not self._next_before_submit(intent, ts_now or self.clock.timestamp_ns()):
             return
         instrument_id = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
         instrument = self.cache.instrument(instrument_id)
@@ -2399,7 +2417,7 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
         order = self.cache.order(event.client_order_id)
         closed = order is not None and order.is_closed
         entry_fee = None
-        if intent.action == "BTC_ENTRY" and self.config.tp_fee_floor_v1:
+        if intent.action == "BTC_ENTRY" and (self.config.tp_fee_floor_v1 or self.config.research_zero_retrace):
             instrument = self.cache.instrument(event.instrument_id)
             if instrument is None or event.commission is None or event.commission.currency != instrument.quote_currency:
                 raise ValueError("BTC_TP_ENTRY_FEE_CURRENCY_UNSUPPORTED")
@@ -2451,7 +2469,9 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
             else:
                 self._accepted_reductions[key] = original, remaining
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
-        if intent.reason == "CHOP_PAIR_SINGLE_GRANT" and self._carry_busy():
+        if self._next_risk_fill(intent,quantity,ts_event):
+            pass
+        elif intent.reason == "CHOP_PAIR_SINGLE_GRANT" and self._carry_busy():
             pass  # Native inventory only; original alpha history/basis is retained.
         elif self._conditional_enabled() and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
             self._conditional_fill(intent,quantity,price,ts_event)
@@ -2465,6 +2485,8 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
             )
         if intent.action == "BTC_ENTRY":
             self._hb_wait_regime = False
+            self._next_release=None
+            self._next_count=0
         if intent.action == "BTC_REDUCE":
             self._hedge_btc_flat(intent, ts_event)
         if intent.action.startswith("BTC"):
@@ -2491,6 +2513,7 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
         self._hedge_terminal(intent, ts_event, "FILLED_TERMINAL")
         if self._conditional_enabled():
             self._conditional_attempt_terminal(intent,ts_event,"NATIVE_TERMINAL_AFTER_FILL",client_order_id)
+        self._next_terminal(intent,ts_event)
         self._domain.on_parent_terminal(intent.id)
         self._pending_by_order.pop(client_order_id, None)
         self._sigma_by_order.pop(client_order_id, None)
@@ -2551,6 +2574,7 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
+        self._next_terminal(intent,event.ts_event)
         self._hedge_terminal(intent, event.ts_event, "CANCELED")
         if self._conditional_enabled():
             self._conditional_attempt_terminal(intent,event.ts_event,"CANCELED",str(event.client_order_id))
@@ -2651,6 +2675,10 @@ class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionRese
         if reason == "REGIME":
             if self.config.research_regime_reentry_band is not None:
                 self._hb_wait_regime = True
+                self._next_latch_ns=self.clock.timestamp_ns()
+                self._next_daily_ns=None
+                self._next_count=0
+                self._next_daily()
                 self._hb_log("WAIT_REGIME_REENTRY", self.clock.timestamp_ns())
             self._advance_current_day()
 
