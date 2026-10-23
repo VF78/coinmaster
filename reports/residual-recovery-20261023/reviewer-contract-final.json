@@ -1,0 +1,45 @@
+{
+  "status": "GO_ONE_FOCUSED_IMPLEMENTATION_SUBJECT_TO_ROOT_CHOICE",
+  "contract_sha256": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+  "contract_file": "owner-contract.md",
+  "supersedes": "reviewer-design.md/json provisional5percentcontroller review",
+  "contract_blockers": [],
+  "native_engine_GO": false,
+  "economic_GO": false,
+  "source_changes_by_reviewer": 0,
+  "native_runs_by_reviewer": 0,
+  "accepted_policy": {
+    "trigger_DD": ".40",
+    "own_loss_gate": "abs(most_negative_current_native_UPnL)>max(0,E-.50H)",
+    "cut": "floor(actual_held_native_lots/2)_fixed_target",
+    "max_cut_attempts_per_genuine_domain_group": 1,
+    "max_restore_attempts_per_genuine_domain_group": 1,
+    "restore_DD": ".35",
+    "restore_confirmation": "whole_completed_UTC4h_interval_strictly_after_last_actual_cut_fill_and_terminal_resolution_plus_current_executable_reclaim",
+    "credit": "actual_protective_fills_only_original_authority_conserved",
+    "controller": "NO5PERCENTSTRESSCAP_OR_CROSSGROUPCONTROLLER"
+  },
+  "implementation_review_requirements": [
+    "freeze_actual_paired_checkpoint_hook_order_source_quote_ns_receipt_ns_fill_epoch",
+    "native_unknownACK_and_late_fill_ownership",
+    "integer_BTC_perlevel_bucket_and_SOL_consumption_conservation",
+    "mandatory_ordinary_exit_priority",
+    "whole_postcut4h_interval_and_fresh_executable_recheck",
+    "focused_native_fixtures_and_observer_only_transition_receipts"
+  ],
+  "screen": {
+    "opportunities_original_E4_path": 4,
+    "conditional_restore_proxies": 3,
+    "original_below50_opportunities": 1,
+    "candidate_native_eligibility": "UNKNOWN",
+    "candidate_TOTAL_DD": "UNKNOWN"
+  },
+  "risks_acknowledged": [
+    "June_original_below50_falsepositive",
+    "samegroup_relapse_no_secondcut",
+    "postrelease_genuine_unused_originalrights_can_add_risk",
+    "changed_compounding_and_otherleg_loss",
+    "no_hard_DD_or_hedge_guarantee"
+  ],
+  "next_gate": "root_chooses_exact_contract_then_one_focused_implementation_tests_independent_source_review_no_historical_engine_yet"
+}

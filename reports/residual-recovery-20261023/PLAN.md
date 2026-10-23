@@ -7,7 +7,7 @@ Economic objective: native TOTAL=ACTIVE+RESERVE; retain>=90%S0netprofit => TOTAL
 Bound: at most4 physical full native attempts (failed/invalid/repeated included), sequential, each needs rootGO receipt after fixed rule/source/tests/review/pins. No grid/ML/new engine. Budget closed unless root explicitly reserves/launches next justified attempt within4. At most one substantive correction; use observer/report improvements narrowly, preserve negative/invalid outputs.
 
 - [x] R0: exact base/data witnesses, full-calendar saved-data screening; select one action and causal restoration contract.
-- [ ] R1: freeze policy/initial candidate/source ownership/native acceptance; existing single executor/domain/journal only, defaultOFF.
+- [x] R1: freeze policy/initial candidate/source ownership/native acceptance; existing single executor/domain/journal only, defaultOFF.
 - [ ] R2: focused tests + scoped independent trading/money review; immutable source/data/config/tooling pins.
 - [ ] R3: one native candidate, complete export and independent money/globalDD/actual-actions audit.
 - [ ] R4: causal postmortem; justified refinement only when evidence supports same mechanism; total attemptscap4.

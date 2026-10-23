@@ -1,0 +1,60 @@
+{
+  "status": "DESIGN_ONLY_PENDING_OWNER_SINGLE_CONTRACT",
+  "reviewer": "residual_recovery_design_review",
+  "files_written": [
+    "reviewer-design.md",
+    "reviewer-design.json"
+  ],
+  "native_runs_added": 0,
+  "source_edits": 0,
+  "preferred_base": "bd04c9b_E4_pending_identity_verification",
+  "objective": {
+    "minimum_TOTAL": "5470396.514987347",
+    "maximum_settled_DD_percent": "50"
+  },
+  "contract": "one_existing_native_owner_temporary_residual_reduction_plus_one_capacity_gated_hysteretic_restoration",
+  "max_cut_attempts_per_native_cycle": 1,
+  "max_restore_attempts_per_native_cycle": 1,
+  "credit": "actual_protective_fills_only_never_refund_SOL_consumption_or_mint_TP_rights",
+  "mandatory_exit_priority": true,
+  "unknown_ACK_blocks_duplicate": true,
+  "execution_time_recheck": true,
+  "numerical_trigger_capacity_hysteresis": "PENDING_OWNER_FREEZE_NOT_INFERRED_FROM_SCREEN",
+  "economic_GO": false,
+  "implementation_design_GO": "PENDING_SINGLE_OWNER_CONTRACT",
+  "measured_support": {
+    "E4_TOTAL": "5631617.35953723",
+    "E4_DD_percent": "57.5854104596",
+    "profit_floor_headroom": "161220.844549883",
+    "TEMP_CAP_RESTORE_1_conditional_restore": 17,
+    "TEMP_CAP_RESTORE_1_retouch_cut": 11,
+    "TEMP_CAP_RESTORE_1_is_native_result": false
+  },
+  "unknowns": [
+    "signed_asset_funding",
+    "archived_intent_ACK_rights_path",
+    "native_restoration_economics",
+    "tick_depth_and_fill_fidelity"
+  ],
+  "root_physical_native_attempt_cap": 4,
+  "constraints": [
+    "no_S0_rerun",
+    "no_reviewer_engines",
+    "no_product_source_pilot_service_edits",
+    "no_grids",
+    "no_hedge_DD_guarantee"
+  ],
+  "owner_provisional_contract": {
+    "trigger_DD_percent": "40",
+    "restore_DD_percent": "35",
+    "reclaim_completed_hours": 4,
+    "shock_fraction": "0.05",
+    "selected_leg": "most_negative_current_native_UPnL",
+    "status": "CONDITIONAL_DESIGN_GO_PENDING_THREE_CLARIFICATIONS",
+    "blockers": [
+      "selected_leg_only_vs_joint_shared_cushion",
+      "exact_cycle_attempt_budget_and_relapse",
+      "all_increases_and_pending_risk_reservations"
+    ]
+  }
+}

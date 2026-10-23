@@ -2,10 +2,10 @@
 
 Owner утвердил порядок из полного S0-аудита и последовательное уточнение по результатам. Цель: DD≤50%(30–50 желательно),TOTAL≥5470396.514987347(≥90%чистойприбылиS0),затемMAXTOTAL. Точные S0/E4 архивы не пересчитываются. Пилот/production/сервисы/ключи/ордера/deploy не меняются.
 
-Бюджет координатора: максимум4 физических полных native-попытки включая ошибки/повторы; sequential, каждыйrunтолькопослеfrozenrule/source/tests/scopedreview/rootGO. Сейчас0запусков. Без сетки/новойML/второгоPnLengine/новыхсервисов. ПродуктовыйsourceтолькоcanonicalisolatedVPS,Macimmutablemirror.
+Бюджет координатора: максимум4 физических полных native-попытки включая ошибки/повторы; sequential, каждыйrunтолькопослеfrozenrule/source/tests/scopedreview/rootGO. Сейчас0запусков. C1 sourceimplementationGO после independentcontractreview; historicalengineGO пока нет. Без сетки/новойML/второгоPnLengine/новыхсервисов. ПродуктовыйsourceтолькоcanonicalisolatedVPS,Macimmutablemirror.
 
-- [ ] R0: полнокалендарный saved-data screen, точныеbase/pins, достаточность as-of witnesses, одно решение.
-- [ ] R1: freeze residual-control+ограниченный возврат риска; state/rights/ACK/rearm/no-churn contract.
+- [x] R0: полнокалендарный saved-data screen, точныеbase/pins, достаточность as-of witnesses, одно решение.
+- [x] R1: freeze residual-control+ограниченный возврат риска; state/rights/ACK/rearm/no-churn contract.
 - [ ] R2: focusednativeacceptance+independentscopedreview,source/data/config/toolingfreeze.
 - [ ] R3: один полныйnativecandidate,normalexport,independent money/globalDD/actions audit.
 - [ ] R4: причинныйpostmortem,толькообоснованноеуточнениетогожемеханизма,budget<=4.
@@ -14,6 +14,8 @@ Owner утвердил порядок из полного S0-аудита и п�
 S0TOTAL6077107.23887483/DD66.2569148647;E4TOTAL5631617.35953723/DD57.5854104596. Новаяполитиканеобъявляетсяполезнойпоодномуокнуилиэкономииfees. Всеordinary/mandatoryexitsприоритетны,actualSOLrights/деньгиnative;cut+immediatereaddзапрещёнконтрактом.
 
 [Пакет](https://github.com/VF78/coinmaster/tree/codex/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023) будет опубликован сcheckpoint.
+
+R0/R1 checkpoint: b55c9fe. Проверены1051199E4receipts/24месяца/0minute gaps. C1: DD≥40%, biggestnegative nativeUPnL>max(0,E−.5H), fixedactualhalfcut oncegroup; onerestoreDD≤35+entireclosedpostcut4h/currentquotereclaim/nativeownership+margin. Four originalpathopportunities incloneJuneoriginalDD48.34%;3conditionalreclaimproxies; nativeeligibility/TOTAL/DD UNKNOWNuntilcandidate. ContractSHA8214eb8a,reviewGO/root-sourceGO. Отменён preparatory5%shockcontroller; нетgrid. [Frozencontract](https://github.com/VF78/coinmaster/blob/codex/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-contract.md).
 
 ---
 ## Предыдущий завершённый аудит / результаты сохранены

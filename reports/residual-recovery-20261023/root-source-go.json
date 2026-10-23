@@ -1,0 +1,14 @@
+{
+  "status": "ROOT_C1_SOURCE_IMPLEMENTATION_GO_NOT_ENGINE_GO",
+  "utc": "2026-10-23T15:47:02.824176+00:00",
+  "contract_sha256": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+  "source_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "report_only_fix": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "source_owner": "residual_recovery_owner",
+  "scope": "one focused native/source+tests implementation, defaultOFF, observer evidence, sourcecanonicalVPSonly; no generalizedstressbudget/no newexecutor",
+  "native_launch_authorized": false,
+  "physical_native_cap": 4,
+  "started": 0,
+  "pilot_changes": 0,
+  "S0_E4_rerun": false
+}
