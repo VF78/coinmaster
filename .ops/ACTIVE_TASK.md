@@ -1,3 +1,6 @@
+2026-10-23 — E4_POSTMORTEM_COMPLETE_ANALYSIS_ONLY; next proposals await owner approval.
+Read reports/e4-postmortem-20261023/REPORT.md, arithmetic.json, e4-excursions.csv, causality.md, weekly.md. No new engine/replay/training/optimizer; no pilot/VPS/source/deployment actions. E4 retained TOTAL5631617.35953723/DD57.5854104596/ret92.6573; target TOTAL5470396.514987347 leaves161220.844549883 headroom. Exact E4 >50 tails: Oct3 2024 SOL57.5854; Jan13 2025 residualSOL51.4147; Oct22→Nov28 BTC54.7928. E4 summer46.3347 already passes; R2C61.7587 is introduced on changed capital, not baseline E4 failure. Four SOL actual cycles account for98.6996% of R2C−XS SOL fill-net decline; Sep contribution83.0479%; cut fees1631.24775 cannot explain ROI loss. Root saved-ledger arithmetic reconciles all TOTAL deltas. Proposed narrow SOL risk-budget/optional add-lock ablation and BTC early partial from TP3 are NOT_RUN, no chosen numeric SOL rule, no promise50/90. Preserve TP1/2fallback; future TP3 rights/native reservation contract requires explicit scoped verification. Budgetclosed; no runs authorized by this analysis. Project#123 prior bounded implementation remains Done; this analysis did not mutate Project.
+
 Updated: 2026-10-23T12:12:49.869266+00:00
 Status: E4_SOL_RESIDUAL_COMPLETE_VALID_NEGATIVE_NO_GO.
 

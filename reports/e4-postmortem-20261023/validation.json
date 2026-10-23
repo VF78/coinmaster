@@ -1,0 +1,13 @@
+{
+  "basis": "SAVED_ARTIFACT_ARITHMETIC_ONLY",
+  "native_runs": 0,
+  "pilot_actions": 0,
+  "source_edits": 0,
+  "profit_floor_exact": "5470396.514987347",
+  "e4_headroom_exact": "161220.844549883",
+  "e4_excursions_ge30": 7,
+  "e4_excursions_above50": 3,
+  "four_total_decompositions_exact": true,
+  "proposals": "NOT_RUN_NOT_APPROVED",
+  "source_reports_unchanged": true
+}

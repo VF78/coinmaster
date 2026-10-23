@@ -1,0 +1,34 @@
+{
+  "E4_minus_S0": {
+    "TOTAL": "-445489.87933760",
+    "fees": "-239172.20823981",
+    "BTC_fill_net_ex_funding": "-487242.653465478379946",
+    "SOL_fill_net_ex_funding": "35041.11560530",
+    "unallocated_cash_bridge": "6711.658522578379946"
+  },
+  "E4_minus_B": {
+    "TOTAL": "1009583.08617286",
+    "fees": "114665.21267926",
+    "BTC_fill_net_ex_funding": "912145.822394554743412",
+    "SOL_fill_net_ex_funding": "81751.32832620",
+    "unallocated_cash_bridge": "15685.935452105256588"
+  },
+  "R2C_minus_E4": {
+    "TOTAL": "-3020965.03833960",
+    "fees": "-185071.88705175",
+    "BTC_fill_net_ex_funding": "-2559503.972514104062430",
+    "SOL_fill_net_ex_funding": "-472856.91933415",
+    "unallocated_cash_bridge": "11395.853508654062430"
+  },
+  "R2C_minus_XS": {
+    "TOTAL": "-2795692.79517100",
+    "fees": "-169823.68282348",
+    "BTC_fill_net_ex_funding": "-2348093.138433874235842",
+    "SOL_fill_net_ex_funding": "-459145.51134265",
+    "unallocated_cash_bridge": "11545.854605524235842"
+  },
+  "profit_floor": "5470396.514987347",
+  "E4_terminal_headroom": "161220.844549883",
+  "four_risk_fill_fees": "1631.24775",
+  "scope": "Saved-artifact accounting only; no new engine, simulation, alternative equity or data scan."
+}
