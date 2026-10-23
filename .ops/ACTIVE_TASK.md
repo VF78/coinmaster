@@ -1,11 +1,17 @@
-Updated: 2026-10-23T08:19:51.852538+00:00
-Status: B_50_90_NEXT_OWNER_ACCEPTED_PRECHECK_IMPLEMENTATION.
+Updated: 2026-10-23T08:49:49.699032+00:00
+Status: B_50_90_NEXT_SOURCE_FROZEN_REVIEW_PENDING.
 
-Owner accepted attached Codex_B_50_90_Next_Experiments_20261023.txt SHA1da0c2df0ee992016f10ebc7fff8d4be50879c5f4c2eb14f18c149c3cd8571d2 and execution of unified E4/EP/Z/S package. Prior analysis-only/newrun prohibition superseded only for this bounded research. Plan reports/b-50-90-next-20261023/PLAN.md; old reports/b-band-postmortem-20261023 analysis preserved, generic20%guard superseded NOT_IMPLEMENTED. Existing Project2/#123 reused InProgress.
+Owneraccepted task reports/b-50-90-next-20261023/owner-task.txt SHA1da0c2df0ee992016f10ebc7fff8d4be50879c5f4c2eb14f18c149c3cd8571d2; unifiedPLAN/protocol. Project2/#123 reused InProgress; B00/B01/B02complete exactreadback. PriorBpostmortem+acceptedPLANpublisheda1d782fc3917855cbaadfc3e240ce5c9c769611d. Generic20%guard supersededNOT_IMPLEMENTED.
 
-Separate canonicalVPS research branch from exactB25a085f596292df58e51188dd91e996adbe5724c. One engine/domain owner h4_band_owner; b_roi_postmortem independently verifies savedfillattribution; b_weekly_lessons narrowcontract/code reviewer. GPT6.1Solmedium all. ProducteditsVPSonly, Macimmutableexecutionmirror. Max8main fullnative(P0,E4,EP,Z,S,XZ,XS,XZS)+up to4 conditionalcontrols; no newfullnative beforefocusedtests+independentreview. Currentfullattempts0. S0 notrerun, pilot/services/secrets/deploy/orders untouched.
+Sourcebd04c9b3858bcda40060a08eff488849c69af5d8 frozen clean canonicalVPS isolatedresearch-worktrees/b-50-90-next-20261023, branchcodex/b-50-90-next-20261023, base25a085f.73focusednative testsPASS +compile/CLI/diffcheck; nofullengineyet. NewH1/4h is decision-only NextClosedBarCustomData; originalbar_execution andexecution1mquotes/funding unchangedON/OFF. One materialdeliverycorrection beforefreeze; early67testsnapshotwasnotfinalGO. SSHintermittentbanner resolvedIPv4ControlMaster, noserviceactions.
 
-GoalDD<=50%,TOTAL>=5470396.514987347,liq0; S0TOTAL6077107.23887483/B4622034.27336437. Samecanonical24mBybitcosts/funding/margin/settlement/DPoff/reserve0; separateengine+journal each. Z requiresactualzero+causalNovembercoverage,S beforeearlyDD50; negativeunitproxy noteconomicveto. No broadoptimizer/newmodel/hedge. Nextcommonprecheck+singlefocusedimplementation, review,P0,thenfrozenboundedstandalones/combinations. Oldcompletedhistory belowpreserved.
+Immutableexecutionmirror /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/source-bd04c9b; source/inputpins and fiveinitialrecipes inowner-run-preparation.json. P0configEXACToldB06c9e99ce88bed050a62ac38cb9c0370cde35ce8c990582b888c06e68bcf53ea. Authoritativephysicalledgerowner-run-budget.json current0, max8main+4conditional; rootruns_manifestaggregateonly. Fullnative blockedpendingindependentcodeGO, thenP0exactBparitybeforecandidates. NoS0rerun.
+
+Ownerh4_band_owner ownsallengine/domain/source/runner. b_weekly_lessons independentscopedreview active; b_roi_postmortem independentnativeoutputverifier prepared, noengines. AllGPT6.1Solmedium,minimalcontext/disjointfiles. Attribution24/24docnumbers+636selfchecksPASS, root16precheckchecksPASS.77parents/46fullbranches/41WAIT/43800closedbars; ZNovemberactualzeros/armreturnreachable, S beforeearlyDD50; savedqueueUNKNOWN/runtime revalidationmandatory.
+
+GoalDD<=50%,TOTAL>=5470396.514987347,liq0,S0retained6077107.23887483/B4622034.27336437. Samecanonical24mBybitfees/funding/margin/settlement/DPoff/reserve0,separateengine+journal. Z/Scoveragegates; E*selection+dedup/combinationrulesperprotocol. No pilot/production/services/secrets/orders/deploychanges; producteditsVPSonly/Macmirrorreadonly. Nextindependentreview→P0→boundedE4/EP/Z/S/combinations; no broadoptimizer/AI/newhedge.
+
+Oldcompletedhistory belowpreserved.
 
 Updated: 2026-10-23T07:29:18.314592+00:00
 Status: B_BAND_POSTMORTEM_ACTIVE_ANALYSIS_ONLY.

@@ -1,0 +1,33 @@
+{
+  "utc": "2026-10-23T08:39:06.745725+00:00",
+  "status": "SAVED_PATH_PRECHECK_QA_PASS_NOT_NATIVE_ECONOMICS",
+  "checks": {
+    "parents77": true,
+    "unique_parents77": true,
+    "full_branches46": true,
+    "waits41": true,
+    "unique_waits41": true,
+    "bars43800": true,
+    "bar_times_causal": true,
+    "genuine_row_count": true,
+    "ohlc_valid": true,
+    "bar_keys_unique": true,
+    "E4_strict_post_latch": true,
+    "EP_no_pre_latch": true,
+    "B50_actual_zero": true,
+    "B50_zero_lots59814": true,
+    "Z_before_Nov_trough": true,
+    "S_before_first_DD50": true
+  },
+  "full_native_runs": 0,
+  "historical_queue_snapshot": "UNKNOWN",
+  "timing_qualification": "closedbar availability and conservative receipt(+1minute) distinguished; runtime pins in owner contract/focused tests",
+  "files_sha256": {
+    "owner-precheck.json": "aeb83365d3ea3b0e0f3258a0e55c0388e9166ffa34c54cea3141bcd00b5e917a",
+    "owner-closed-bars.csv": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+    "owner-btc-parent-precheck.csv": "59b2414851e1425cde6ea050e6bad4a1bbcab3b6c970275b5e7896c0d30e6f81",
+    "owner-wait-precheck.csv": "66b6eb1a52fb64cfcf6cb9ae9e4afc7c7ceb2fffedf7443808bd07131c6b857d",
+    "owner-zero-guard-precheck.csv": "ff4480483c43626922f0b661e16db6aaf861860e733687640d7378dea1977e97",
+    "owner-sol-risk-precheck.csv": "ca11ecb97677197328be307a2ce31fb9f2b95d47154b9ec6b9d5c0cc13ed2079"
+  }
+}

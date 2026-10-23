@@ -1,0 +1,66 @@
+{
+  "source": "25a085f596292df58e51188dd91e996adbe5724c",
+  "kind": "SAVED_B_PATH_REACHABILITY_NOT_NATIVE_POLICY_PNL",
+  "parents": 77,
+  "full_branches": 46,
+  "closed_bar_rows": 43800,
+  "first_dd50_receipt_ns": 1727968920000000000,
+  "S_first_trigger_receipt_ns": 1727967660000000000,
+  "S_before_first_dd50": true,
+  "B50": {
+    "parent": 50,
+    "episode_id": "839d26de-0dbe-4735-a685-7506929fcba9",
+    "start_ns": 1764115260000000000,
+    "start_utc": "2025-11-26T00:01:00+00:00",
+    "side": -1,
+    "branch": "MARKETABLE_FULL_ENTRY_FALLBACK",
+    "actual_wave_levels": "[0.0, 0.0, 0.03168744903307756]",
+    "omitted_zero_levels": "[]",
+    "suppressed_zero_levels": "[0, 1]",
+    "reference_target_lots": "{\"0\":29907,\"1\":29907,\"2\":80925}",
+    "P0": "87305.7",
+    "actual_VWAP": "87414.85077554906600160580934",
+    "actual_entry_fees": "4610.80091782",
+    "actual_entry_qty": 140.739,
+    "beta": "1.715415825442117",
+    "native_parent_terminal_ns": 1764115500000000000,
+    "first_ordinary_reduce_ns": 1764603300000000000,
+    "G": "87305.7",
+    "eligible_zero_lots": 59814,
+    "arm_ns": 1764129660000000000,
+    "trigger_ns": 1764133620000000000,
+    "sol_increase_state": "RECONSTRUCTED_NATIVE_ORDER_INTERVALS_NO_CACHE_SNAPSHOT"
+  },
+  "inputs": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-daily.parquet",
+      "sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-daily.parquet",
+      "sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88"
+    }
+  ],
+  "UNKNOWN": [
+    "Exact historical queued/inflight/unknown_ACK snapshots not exported",
+    "saved path reachability does not guarantee future candidate admission/fill",
+    "zero return scan requires eligibility revalidation at trigger in runtime"
+  ],
+  "WAIT_count": 41,
+  "EP_strictly_earlier_D1_permissions": 12,
+  "S_first_trigger_utc": "2024-10-03T15:01:00+00:00",
+  "first_dd50_utc": "2024-10-03T15:22:00+00:00",
+  "new_full_native_runs": 0
+}

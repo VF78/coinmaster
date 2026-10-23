@@ -1,13 +1,24 @@
 {
-  "utc": "2026-10-23T08:21:18.174819+00:00",
+  "utc": "2026-10-23T08:39:53.675542+00:00",
   "issue": "https://github.com/VF78/coinmaster/issues/123",
   "Project": "https://github.com/users/VF78/projects/2",
   "title": "[S0 DD50] B refinement: E4 / EP / zero-TP guard / SOL risk cut",
   "state": "open",
   "status": "In Progress",
-  "issue_body_sha256": "bb502e64073fd9e54c07aa7edf04708f7120b733f953949110ed554ceb8777eb",
+  "issue_body_sha256": "7befe0455d39428bde677f7e898717de90200ac1b6b443dbde251477def3383c",
   "body_and_status_readback": "PASS",
   "new_issues": 0,
   "comments_created": 0,
-  "scope": "OWNER_ACCEPTED_B_50_90_E4_EP_Z_S"
+  "scope": "OWNER_ACCEPTED_B_50_90_E4_EP_Z_S",
+  "completed": [
+    "B00",
+    "B01",
+    "B02"
+  ],
+  "active": [
+    "B03",
+    "B04",
+    "B05",
+    "B06"
+  ]
 }

@@ -10,7 +10,7 @@
 
 - [x] B00: точные source/config/result pins, отдельный clean canonical research checkout от B, принятый план; состояние Project прочитать обратно.
 - [x] B01: независимая fill-net/fees/bridge/matched-Q атрибуция:24/24 чисел вложения,636 selfchecks PASS; funding нераспределён/UNKNOWN.
-- [ ] B02 (сейчас): один causal census закрытых4h/H1, всех41WAIT/77BTCparents/46fullbranches; actualzero/suppressed/leaves, NovemberZ и earlySOL S reachability. Никаких будущих данных или фильтров по ID.
+- [x] B02: один causal census закрытых4h/H1, всех41WAIT/77BTCparents/46fullbranches; actualzero/suppressed/leaves, NovemberZ и earlySOL S reachability. Никаких будущих данных или фильтров по ID. Root16precheckchecksPASS; Z/Ssavedpathcoverageесть, runtimeочереди повторно валидируются.
 - [ ] B03: E4, дополнительный closed4h допуск postREGIME WAIT при прежних frozenD1 EMA34/ATR14/side и0.5ATR; реальные signal_asof/decision_time/nativequote, исходные attempt limits.
 - [ ] B04: EP отдельно отE4, daily strong0.5 OR unique contiguous same-side2D weak0.25; no duplicate count/lookahead.
 - [ ] B05: Z при подтверждённой coverage, one-shot actual remaining zero-TP lots после closed4h arm/return к fee floor; native IOC actualprice, retiredlots отдельны отTP/SOLrights.
