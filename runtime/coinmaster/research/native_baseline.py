@@ -13,7 +13,7 @@ import os
 import platform
 import resource
 from dataclasses import asdict, dataclass, replace
-from decimal import Decimal
+from decimal import Decimal, localcontext
 from pathlib import Path
 from typing import Iterator
 from uuid import uuid4
@@ -328,12 +328,16 @@ def assert_report_boundaries(report: dict) -> None:
     interval_terminal = Decimal(summary["interval_cash_terminal_total"])
     if Decimal(months[-1]["total"]) != interval_terminal:
         raise ValueError("MONTHLY_INTERVAL_CASH_MISMATCH")
-    compounded = Decimal("1")
-    for month in months:
-        compounded *= Decimal("1") + Decimal(month["return"])
-    ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
-    if abs(compounded - ratio) > Decimal("1e-24"):
-        raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
+    # Validation must not amplify context-28 multiplication roundoff across
+    # 24 exported monthly ratios. Inputs and tolerance remain unchanged.
+    with localcontext() as context:
+        context.prec = 80
+        compounded = Decimal("1")
+        for month in months:
+            compounded *= Decimal("1") + Decimal(month["return"])
+        ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
+        if abs(compounded - ratio) > Decimal("1e-24"):
+            raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
     for timestamp in (summary["drawdown_start"], summary["drawdown_trough"]):
         point = datetime.fromisoformat(timestamp)
         if not start <= point < end:
