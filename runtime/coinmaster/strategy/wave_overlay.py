@@ -68,6 +68,10 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_tp_ioc: bool = False
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_btc_open_only: bool = False
+    research_sol_add_budget: bool = False
+    research_btc_repeat_sizing: bool = False
+    research_sc_btc_daily_seed: tuple[tuple[int, float, float], ...] = ()
+    research_sc_sol_daily_seed: tuple[tuple[int, float, float], ...] = ()
     research_sol_explicit_child: bool = False
     research_wait_4h: bool = False
     research_wait_persist: bool = False
@@ -651,6 +655,7 @@ class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandRes
         if mark.instrument_id not in (self.config.btc_id, self.config.sol_id):
             return
         self._latest_marks[mark.instrument_id] = mark
+        self._sc_mark(mark)
         self._update_margin_mark(mark.instrument_id, mark.price, mark.ts_event)
         self._check_mark_first_liquidation(mark.ts_event)
         self._research_check_portfolio_protection(mark.ts_event)
@@ -1150,6 +1155,7 @@ class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandRes
             self._current_btc, self._current_sol = btc, sol
             self._current_btc_mark, self._current_sol_mark = btc_mark, sol_mark
             self._current_signals = features_for(self._bars, self._candidate)
+            self._sc_daily(next_session, int(available_at.timestamp()*1_000_000_000), btc, sol)
             if next_session < (self._latest_seen_session or next_session):
                 # This session arrived after a newer signal. It repairs the
                 # feature chain but must never replay an old execution price.
@@ -1515,7 +1521,8 @@ class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandRes
                 return Decimal("0")
             step = instrument.size_increment.as_decimal()
             # Match the existing q0 native entry's float-to-Decimal lot path.
-            gross_quantity = float(Decimal(str(intent.requested_notional)) / price)
+            sc_notional = self._sc_btc_plan(intent, tick, _native_limit_price(instrument, price).as_decimal())
+            gross_quantity = float(sc_notional / price)
             gross_lots = int(Decimal(str(gross_quantity)) // step)
             if gross_lots <= 0:
                 return Decimal("0")
@@ -1874,6 +1881,7 @@ class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandRes
         rounded = (Decimal(str(quantity)) // step) * step
         if intent.action == "SOL_ADD":
             rounded = self._sc_sol_quantity(intent, rounded, step, executable_price, ts_now or 0)
+            rounded = self._sc_budget(intent, rounded, step, executable_price, ts_now or 0)
         if intent.action == "SOL_ADD" and self._v3_sol_block_episode is not None:
             episode = self._domain.episode
             if episode is None or episode.id == self._v3_sol_block_episode or any(p.instrument_id == self.config.sol_id for p in self.cache.positions_open()):
@@ -2432,6 +2440,7 @@ class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandRes
             if instrument is None or event.commission is None or event.commission.currency != instrument.quote_currency:
                 raise ValueError("BTC_TP_ENTRY_FEE_CURRENCY_UNSUPPORTED")
             entry_fee = event.commission.as_decimal()
+        self._sc_btc_fill(intent, event)
         self._h1_native_fill(intent, event)
         self._risk_first_sol_fill(intent,event)
         self._split_native_fill(intent, event)
@@ -2442,6 +2451,7 @@ class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandRes
             entry_qty=event.last_qty.as_decimal() if intent.action == "BTC_ENTRY" else None,
             entry_price=event.last_px.as_decimal() if intent.action == "BTC_ENTRY" else None,
         )
+        self._sc_btc_outcome(intent,event)
         self._after_domain_fill(event)
         if closed:
             self._terminal_submission(str(event.client_order_id))
@@ -2715,6 +2725,10 @@ class WaveOverlayStrategy(SystemContractResearch, NextBandResearch, HedgeBandRes
         self._reconcile_terminal_flat()
         return {
             "hedge_band_audit": self.hedge_band_audit,
+            "sc_sol_budget_audit": self.sc_sol_budget_audit,
+            "sc_btc_outcomes": self.sc_btc_outcomes,
+            "sc_btc_decisions": self.sc_btc_decisions,
+            "sc_btc_labels": self._sc_labels_report(),
             "system_contract_audit": self.system_contract_audit,
             "liquidations": self.liquidation_audit,
             "liquidation_lockout": self._liquidating,

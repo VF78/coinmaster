@@ -58,6 +58,7 @@ class NextBandResearch:
             self._next_entry_terminal[intent.episode_id]=max(ns,self._next_entry_terminal.get(intent.episode_id,0))
 
     def _next_observe_settled(self,equity,ns,source):
+        self._sc_observe_settled(D(str(equity)))
         if not self._next_enabled:return
         self._next_equity=D(str(equity));self._next_equity_ns=ns
         self._next_peak=max(self._next_peak,self._next_equity)
