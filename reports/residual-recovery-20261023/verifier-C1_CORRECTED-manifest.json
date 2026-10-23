@@ -1,0 +1,27 @@
+{
+  "status": "COMPLETE_INDEPENDENT_AUDIT_VALID_NATIVE_NEGATIVE",
+  "files": {
+    "verifier-C1_CORRECTED-summary.md": "ed2d42c025d43b1cc3570816f2913392ea7c9538846d01f81fdc68875d6f8dd2",
+    "verifier-C1_CORRECTED-adjudication.json": "10c52627cdd5f4f84527b2d2b3e5ccfcf42083365b635a2274dfbd89dc1675ec",
+    "verifier-C1_CORRECTED-postmortem.json": "342c3975b56b517e26762fc2a7da9e14e87f390857e52d7c018f285ea3ea9f21",
+    "verifier-C1_CORRECTED-claim-attribution.csv": "daabcc7089f07a1b04374be07a65cab47a848f70e25150d262e350ae6d161272",
+    "verifier-c1-witness-adjudicated.py": "baee716919dc938c057bcb103b7f92ade34283d50ad2e08bb8c91fdbf1ef2bd8",
+    "verifier-c1-witness-adjudication.patch": "af63a7fc13a7fd38380765b5d19b9ae44305611c2a25de41331ee9ca4426b9de",
+    "verifier-witness-adjudicated-smoke.py": "37a2782c87de008953259b260eaf1c2048e9cfafe8f08822f8913595b0118db1",
+    "verifier-compact-postmortem.py": "f7f682a043111929e21c3ed5d39c8609181d48111f444576a892b8749eeff840"
+  },
+  "audit_outputs": {
+    "verifier-C1_CORRECTED-audit/owner-C1_CORRECTED-receipt.json": "61eaeff6969705b4db60d6ecdb37cf306990318a8c9eebf4a407203ae29a1def",
+    "verifier-C1_CORRECTED-audit/protocol-freeze.json": "a9b96585df6bf49368bbb96f271007982466e8bc900a14173f95e23f194e5b68",
+    "verifier-C1_CORRECTED-audit/verifier-C1_CORRECTED-DD-ge30-episodes.csv": "87e7d8408472ed5b7c2482b0b1c84f7444d04cfb7706d0f618a8961aeef93cbf",
+    "verifier-C1_CORRECTED-audit/verifier-C1_CORRECTED-asset-fill-net.csv": "0680e5ea87b1329ffc1c5615d874d9a04e13dc05eb9991ee49ebef9ec47deb3c",
+    "verifier-C1_CORRECTED-audit/verifier-C1_CORRECTED-audit.json": "da80d765e732b13ee04d22621c7397d7cd1d43521fc2f501e5abba45c330b482",
+    "verifier-C1_CORRECTED-audit/verifier-C1_CORRECTED-closed-cycle-ledger.csv": "8446e9525e7e540e3e358b155f75bd2f38c4557ba920db58aa9985cdb8b70833",
+    "verifier-C1_CORRECTED-audit/verifier-C1_CORRECTED-loss-streaks.csv": "e8835e96c06e29c0e3de8316d567e794cae3ec33949a769002281f969731762a",
+    "verifier-C1_CORRECTED-audit/verifier-C1_CORRECTED-monthly.csv": "805e21b4b5e3e124355e8875c0fdd60c931a99d2874712c905bb17af23081979",
+    "verifier-C1_CORRECTED-audit/verifier-C1_CORRECTED-risk-cache.json": "890aa99b4cab136a2314b684c58d41ad570093a67fd33de8793d6d117a26c8a8"
+  },
+  "trace_passes": 1,
+  "supplement_trace_passes": 0,
+  "native_engines": 0
+}

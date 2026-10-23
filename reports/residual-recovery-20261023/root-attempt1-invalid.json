@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-23T16:27:57.298209+00:00",
+  "attempt": 1,
+  "status": "INVALID_EXPORT_FAILURE_PRESERVED",
+  "exit_code": 1,
+  "native_end_reached": true,
+  "normal_export_complete": false,
+  "root_cause": "C1 ATTEMPT_SUBMIT confirmation.close Decimal rejected by native audit JSON serializer",
+  "actual_final_c1_audit_persisted": false,
+  "raw_prefix": "earlier native-only raw report exists; not candidate acceptance",
+  "TOTAL": null,
+  "DD": null,
+  "manual_repair": false,
+  "retry_authorized": false,
+  "next": "minimal observer-only string serialization, native fixture full report regression, scoped review then new root GO if PASS",
+  "attempts_started": 1,
+  "cap": 4
+}

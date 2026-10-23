@@ -1,0 +1,138 @@
+{
+  "status": "NATIVE_COMPLETED_FOOTER_ALL_REPORTS_PRESENT_WRAPPER1_PENDING_QUALIFIED_AUDIT",
+  "attempt": 2,
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "wrapper_exit_code": 1,
+  "native_child_exact_exit": "UNKNOWN",
+  "native_footer": "COMPLETED with exact artifact hash; no Python traceback",
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json",
+  "artifact_sha256": "6f8150684aedc5c69672e401daa7d85b8b6915eb94f53903527205143011d9e5",
+  "artifact_bytes": 7187604,
+  "raw_artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.json",
+  "raw_sha256": "7e7f3def0d937fb09752379640191208e98634cba3f3a8033de49c05c1f3c117",
+  "raw_bytes": 7907636,
+  "config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "expected_config_exact": true,
+  "total": "4388613.38225343",
+  "native_fees": "671063.37411189",
+  "fills": 539,
+  "liquidation_count": 0,
+  "terminal_open_positions": 0,
+  "c1_terminal_state": {
+    "H": "8512743.25964487",
+    "active_hold": false,
+    "credit": 0,
+    "group": null,
+    "native_inflight": 0,
+    "native_orders": 0,
+    "native_positions": 0,
+    "pending": 0,
+    "queued": 0,
+    "state": "IDLE"
+  },
+  "c1_events": 124,
+  "settled": {
+    "basis": "ACTUAL_NATIVE_CASH_PLUS_NATIVE_UPNL_AT_CAUSAL_SOURCE_MARKS",
+    "curve": {
+      "maximum_loss_below_seed_amount": "2718.83042195",
+      "maximum_loss_below_seed_percent": "27.188304219500",
+      "minimum": {
+        "equity": "7281.16957805",
+        "timestamp_ns": "1727970300000000000"
+      },
+      "samples": 1051200,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "83426.17527200",
+          "drawdown_peak_percent": "51.80315157406654834417870238",
+          "peak": {
+            "equity": "161044.59427091",
+            "timestamp_ns": "1736728620000000000"
+          },
+          "recovery": {
+            "equity": "161226.8282767",
+            "timestamp_ns": "1737420600000000000"
+          },
+          "trough": {
+            "equity": "77618.41899891",
+            "timestamp_ns": "1736779020000000000"
+          }
+        },
+        {
+          "drawdown_amount": "7462.28814679",
+          "drawdown_peak_percent": "50.61423368968206387218769810",
+          "peak": {
+            "equity": "14743.45772484",
+            "timestamp_ns": "1727928060000000000"
+          },
+          "recovery": {
+            "equity": "14748.53369265",
+            "timestamp_ns": "1728641160000000000"
+          },
+          "trough": {
+            "equity": "7281.16957805",
+            "timestamp_ns": "1727970300000000000"
+          }
+        },
+        {
+          "drawdown_amount": "4278408.05944285",
+          "drawdown_peak_percent": "50.25886402242247705004589722",
+          "peak": {
+            "equity": "8512743.25964487",
+            "timestamp_ns": "1783345200000000000"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "4234335.20020202",
+            "timestamp_ns": "1787120040000000000"
+          }
+        }
+      ]
+    },
+    "first_unavailable": [],
+    "legacy_callback_curves_retained": true,
+    "mark_age": "receipt_ns-source_quote_ns; source paired marks retained unchanged",
+    "pending_source_quote_ns": null,
+    "receipts": 1051199,
+    "timestamp_basis": "ACTUAL_LATER_CUSTOM_DATA_RECEIPT_NEVER_BACKDATED",
+    "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/minute-native-settled-receipts.csv.gz",
+    "unavailable_intervening_native_mutation": 0
+  },
+  "files": {
+    "minute-native-risk.csv.gz": {
+      "bytes": 71666995,
+      "sha256": "debc309c8ac3914f752ecacee6c01e2a97facf474d225cec3ae5d06bccb2ed46"
+    },
+    "minute-native-settled-receipts.csv.gz": {
+      "bytes": 35321864,
+      "sha256": "cce639eea80ef7c2ca3da6fef2f69f46ce247eba35943ece8a9eafc653994673"
+    },
+    "minute-risk-summary.json": {
+      "bytes": 14403,
+      "sha256": "122842cfa4e37ca022d98564ad3804d7ebbe04a4f760684db51a2690b6dfad38"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-fills.csv": {
+      "bytes": 213269,
+      "sha256": "405dbf75c09057d69d5191f2a24f14631a911134b97b8af4d093457f9ccdddd7"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-funding.sqlite": {
+      "bytes": 229376,
+      "sha256": "47365faad666e43ffb1f1e820a31bac1f1515d7c9967bd43411904c65b05e463"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-orders.csv": {
+      "bytes": 229203,
+      "sha256": "1e9aee77b32928bf4eb62c18bdcd00fceb2000f2fe69adcfa70659bad9693da4"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.json": {
+      "bytes": 7907636,
+      "sha256": "7e7f3def0d937fb09752379640191208e98634cba3f3a8033de49c05c1f3c117"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": {
+      "bytes": 7187604,
+      "sha256": "6f8150684aedc5c69672e401daa7d85b8b6915eb94f53903527205143011d9e5"
+    }
+  },
+  "independent_audit": "REQUIRED_NOT_YET_DONE",
+  "original_attempt1": "INVALID_UNCHANGED_NO_RECOVERY",
+  "no_retry": true
+}

@@ -1,0 +1,10 @@
+{
+  "state": "PARTIAL_FILE_READ_ONLY_PROGRESS_NOT_ECONOMIC_AUDIT",
+  "attempt": 1,
+  "sampled_utc": "2026-10-23T16:23:30.391257+00:00",
+  "elapsed_seconds": 80.019797,
+  "complete_decoded_receipts_so_far": 468545,
+  "last_source_utc": "2025-07-23T09:05:00+00:00",
+  "compressed_bytes_at_sample": 16071143,
+  "progress_read_seconds": 1.3290177080780268
+}

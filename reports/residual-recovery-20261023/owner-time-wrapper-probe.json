@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/usr/bin/true"
+  ],
+  "kind": "NON_ENGINE_ENVIRONMENT_PROBE",
+  "exit_code": 1,
+  "stdout_stderr": "        0.00 real         0.00 user         0.00 sys\ntime: sysctl kern.clockrate: Operation not permitted\n",
+  "finding": "Instrumented wrapper can return1 even when requested child is true; actual candidate child exact exit remains UNKNOWN",
+  "full_native_attempts_added": 0
+}

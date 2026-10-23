@@ -1,0 +1,3 @@
+asset,filled_order_rows,signed_terminal_quantity,gross_fill_cashflow,native_fees,confirmed_fill_net_ex_funding,native_report_turnover,signed_funding
+BTC,345,0.000,4291455.960700023481288,653771.26054844,3637684.700151583481288,1567055817.542300000408132,UNKNOWN
+SOL,194,0.0,704419.653,17292.11356345,687127.53943655,31440206.479,UNKNOWN

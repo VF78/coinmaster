@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-23T16:54:34.204827+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "issue_state": "closed",
+  "project": "https://github.com/users/VF78/projects/2",
+  "project_status": "Done",
+  "body_sha256": "9ed78789d5711788ca9d4dfadf19ba0b87fc2397f5346a6ee55652a89aa5b696",
+  "readback": "PASS",
+  "meaning": "BOUNDED_RESEARCH_COMPLETE_ECONOMIC_GOAL_NOT_MET",
+  "physical_attempts": 2,
+  "active": 0
+}

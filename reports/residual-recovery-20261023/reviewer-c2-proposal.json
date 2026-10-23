@@ -1,0 +1,58 @@
+{
+  "status": "RECOMMEND_STOP_FAMILY_NO_C2_GO",
+  "scope": "ONE_NARROW_SAME_FAMILY_C2_PROPOSAL_REVIEW",
+  "C1_TOTAL": "4388613.38225343",
+  "C1_net_profit_retention_percent": "72.16970476799190164204208923",
+  "C1_global_DD_percent": "51.80315157406654834417870238",
+  "C1_profit_floor_shortfall": "1081783.132733917",
+  "native_intervention_fees": "30498.04072762",
+  "matched_restore_pair_cashflow_ex_fees": "-385696.0245",
+  "matched_pair_is_counterfactual_TOTAL": false,
+  "C2_components": [
+    "global_DD_excursion_arm",
+    "bounded_multi_child_completion_of_frozen_protective_target",
+    "stronger_cut_fraction_to_change_first_October_path"
+  ],
+  "global_latch_saved_August": {
+    "claims": 5,
+    "kept": 1,
+    "later_suppressed": 4,
+    "all_claim_cushions_positive": true,
+    "mixed_later_unit_path_signs": true,
+    "counterfactual_profit": "UNKNOWN"
+  },
+  "January": {
+    "native_held_SOL": "4000",
+    "requested_cut_SOL": "2000",
+    "actual_cut_SOL": "1000",
+    "single_quote_capacity_SOL": "1000",
+    "fraction_increase_alone_extra_actual_SOL": "0_under_same_quote_capacity",
+    "multi_child_contract_is_economic_change": true
+  },
+  "October": {
+    "full_C1_cut_SOL": "500",
+    "saved_gap_to_half_peak": "90.55928437",
+    "conditional_extra100SOL_saved_unit_gain_before_fees": "213.4",
+    "saved_arithmetic_is_new_DD": false,
+    "unchanged_50percent_first_intervention_still_fails_saved_first_window": true
+  },
+  "rationale": [
+    "profit_shortfall_large_vs_unproven_suppressed_cut_recovery",
+    "expensive_native_restoration_pair_cashflow",
+    "three_simultaneous_economic_refinements",
+    "history_reuse_and_threshold_selection",
+    "prespecified_negative_family_stop_rule"
+  ],
+  "source_GO": false,
+  "engine_GO": false,
+  "new_source_edits": 0,
+  "new_engines": 0,
+  "new_fulltrace_passes": 0,
+  "budget_remaining_at_request": 2,
+  "recommendation": "retain_valid_C1_negative_and_close_family_goal_unmet_no_automatic_trial",
+  "evidence_sha256": {
+    "owner-C1-CORRECTED-postmortem.json": "22ab583a64361c84e42384cb00d5ece2dff22f907a3f8eea3ef4872f5d1d2cd9",
+    "verifier-C1_CORRECTED-postmortem.json": "342c3975b56b517e26762fc2a7da9e14e87f390857e52d7c018f285ea3ea9f21",
+    "owner-C1-CORRECTED-groups.csv": "2801485179ded5aaf8c254687cbe4bdb8654cb9ca9c335cc9f198074edd06648"
+  }
+}

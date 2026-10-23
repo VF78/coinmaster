@@ -1,0 +1,116 @@
+{
+  "status": "VALID_NATIVE_NEGATIVE_COMPACT_POSTMORTEM",
+  "TOTAL": "4388613.38225343",
+  "retention_percent": "72.16970476799190164204208923",
+  "global_DD": "51.80315157406654834417870238",
+  "E4_TOTAL_difference": "-1243003.97728380",
+  "profit_floor_shortfall": "1081783.132733917",
+  "claims": 9,
+  "cut_orders": 9,
+  "restore_orders": 3,
+  "credit_revoked": 6,
+  "late_Aug_claims": 5,
+  "partial_cut_count": 1,
+  "actual_C1_fees": "30498.04072762",
+  "actual_C1_turnover": "55450983.1411",
+  "blocked_increase_intents": 4,
+  "positive_candidate_cycle_contexts": 3,
+  "paired_cut_restore_native_price_gap_cost": "385696.0245",
+  "fixed_windows": {
+    "OCT": {
+      "E4_DD": "57.58541045962226379114466259",
+      "C1_DD": "50.61423368968206387218769810",
+      "delta_pp": "-6.97117676994019991895696449"
+    },
+    "JAN": {
+      "E4_DD": "51.41471763286941011971118379",
+      "C1_DD": "51.80315157406654834417870238",
+      "delta_pp": "0.38843394119713822446751859"
+    },
+    "NOV": {
+      "E4_DD": "54.79275178668975590389245138",
+      "C1_DD": "47.27309039331245120857106825",
+      "delta_pp": "-7.51966139337730469532138313"
+    }
+  },
+  "recovery_episodes": [
+    {
+      "peak_utc": "2024-10-03T04:01:00+00:00",
+      "trough_utc": "2024-10-03T15:45:00+00:00",
+      "DD_percent": "50.61423368968206387218769810",
+      "recovery_utc": "2024-10-11T10:06:00+00:00",
+      "peak_to_recovery_hours": "198.0833333333333333333333333",
+      "trough_to_recovery_hours": "186.35"
+    },
+    {
+      "peak_utc": "2024-11-22T19:18:00+00:00",
+      "trough_utc": "2024-11-23T04:43:00+00:00",
+      "DD_percent": "30.70184271261777827311555020",
+      "recovery_utc": "2024-11-24T10:49:00+00:00",
+      "peak_to_recovery_hours": "39.51666666666666666666666667",
+      "trough_to_recovery_hours": "30.1"
+    },
+    {
+      "peak_utc": "2025-01-13T00:37:00+00:00",
+      "trough_utc": "2025-01-13T14:37:00+00:00",
+      "DD_percent": "51.80315157406654834417870238",
+      "recovery_utc": "2025-01-21T00:50:00+00:00",
+      "peak_to_recovery_hours": "192.2166666666666666666666667",
+      "trough_to_recovery_hours": "178.2166666666666666666666667"
+    },
+    {
+      "peak_utc": "2025-04-11T01:01:00+00:00",
+      "trough_utc": "2025-06-06T15:18:00+00:00",
+      "DD_percent": "43.99498741249528660078020337",
+      "recovery_utc": "2025-07-30T19:00:00+00:00",
+      "peak_to_recovery_hours": "2657.983333333333333333333333",
+      "trough_to_recovery_hours": "1299.7"
+    },
+    {
+      "peak_utc": "2025-09-06T17:47:00+00:00",
+      "trough_utc": "2025-09-18T17:14:00+00:00",
+      "DD_percent": "38.37438461572260740105562117",
+      "recovery_utc": "2025-09-22T00:34:00+00:00",
+      "peak_to_recovery_hours": "366.7833333333333333333333333",
+      "trough_to_recovery_hours": "79.33333333333333333333333333"
+    },
+    {
+      "peak_utc": "2025-10-22T21:30:00+00:00",
+      "trough_utc": "2025-11-28T14:29:00+00:00",
+      "DD_percent": "47.27309039331245120857106825",
+      "recovery_utc": "2026-01-13T22:12:00+00:00",
+      "peak_to_recovery_hours": "1992.7",
+      "trough_to_recovery_hours": "1111.716666666666666666666667"
+    },
+    {
+      "peak_utc": "2026-02-08T00:44:00+00:00",
+      "trough_utc": "2026-02-08T23:09:00+00:00",
+      "DD_percent": "35.93763675569247721053475144",
+      "recovery_utc": "2026-02-09T10:33:00+00:00",
+      "peak_to_recovery_hours": "33.81666666666666666666666667",
+      "trough_to_recovery_hours": "11.4"
+    },
+    {
+      "peak_utc": "2026-03-11T12:10:00+00:00",
+      "trough_utc": "2026-03-20T08:14:00+00:00",
+      "DD_percent": "30.67145257629779025033646127",
+      "recovery_utc": "2026-03-27T00:37:00+00:00",
+      "peak_to_recovery_hours": "372.45",
+      "trough_to_recovery_hours": "160.3833333333333333333333333"
+    },
+    {
+      "peak_utc": "2026-07-06T13:40:00+00:00",
+      "trough_utc": "2026-08-19T06:14:00+00:00",
+      "DD_percent": "50.25886402242247705004589722",
+      "recovery_utc": null,
+      "peak_to_recovery_hours": null,
+      "trough_to_recovery_hours": null
+    }
+  ],
+  "funding": "SIGNED_ASSET_UNKNOWN;unallocated bridge not called funding",
+  "missed_false_positive_scope": "Exact missed-benefit/false-positive PnL UNKNOWN without native counterfactual; report native percycle positive contexts/3completedrestores/6creditrevocations/4blockedincreases, not syntheticTOTAL. DD35 minima/crossings betweenclaims are NOT cached; no fulltrace reread in this postmortem.",
+  "wrapper_exit_code": 1,
+  "native_child_exact_exit": "UNKNOWN",
+  "engines_added": 0,
+  "fulltrace_passes_added": 0
+}

@@ -10,5 +10,8 @@
   ],
   "in_progress": "R3_NATIVE_C1",
   "source": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
-  "cap": 4
+  "cap": 4,
+  "project": "https://github.com/users/VF78/projects/2",
+  "project_status_readback": "In Progress",
+  "project_status_readback_utc": "2026-10-23T16:25:09.465162+00:00"
 }

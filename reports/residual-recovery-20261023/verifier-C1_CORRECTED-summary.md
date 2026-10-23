@@ -1,0 +1,29 @@
+# Independent C1_CORRECTED saved-output audit
+
+**Valid completed native exports, adjudicated mechanism PASS, economic goal FAIL.** Native TOTAL **4,388,613.38225343**, seed-adjusted S0 profit retention **72.169704768%**, full global settled DD **51.8031515741%**. Both required thresholds fail. TOTAL is 1,081,783.132733917 below the profit floor and 1,243,003.97728380 below archived E4. No passing repeat is warranted by this result.
+
+44 native accounting/source/input/coverage checks PASS. Exactly 1,051,199 complete settled receipts cover all24 source-quote UTC months with zero source gaps/invalid timestamps; all source files, input/config/source pins, native fill/order report hashes and fee/flat inventory/cash reconciliations pass. Native fees671,063.37411189 comprise maker118,919.67948578 and taker552,143.69462611;539 filled native order rows (345BTC/194SOL). Signed asset funding remains UNKNOWN (1,245native funding events); the unallocated53,801.142665296518712 cash bridge is not labeled funding. Terminal native inventory/open/inflight/pending/queued orders and restoration credit are zero. Terminal native high-water equity8,512,743.25964487 exactly matches the observed global risk maximum.
+
+| Frozen receipt-time window | E4 global DD% | C1 global DD% | Change pp |
+|---|---:|---:|---:|
+| OCT |57.58541046|50.61423369|−6.97117677|
+| JAN |51.41471763|51.80315157|+0.38843394|
+| NOV |54.79275179|47.27309039|−7.51966139|
+
+The overall worst drawdown moved to January13,2025: peak161,044.59427091 at00:37UTC; trough77,618.41899891 at14:37UTC; native recoveryJanuary21 at00:50UTC. Peak-to-recovery192.2167h; trough-to-recovery178.2167h. October's trough-to-recovery186.35h and November's1111.7167h show that shallower troughs still coexist with long recovery periods. The final July6→August19 excursion reaches50.25886402% and remains unrecovered by the end-exclusive boundary.
+
+Nine actual cuts and three actual restorations were verified against native order IDs/trade IDs/quantities/fees. Six credits were revoked; four queued increase intents were blocked. January's cut requested2000SOL but natively filled1000SOL; its credit and later restoration used only that actual1000SOL. No requested-quantity credit was invented. All twelve C1 actual fills preserve original TP target/filled ledgers, SOL permission/fraction/consumed ledgers and PLANREF/H; actual BTC retirement/SOL held buckets and restored lots reconcile. Ordinary/mandatory revocations preempt further C1 submissions; each genuine group uses at most one actual native cut and one actual native restore. All933 supplemental witness assertions pass on124events.
+
+Actual cut→restore waits were26.97h (OctoberSOL),16.07h (JanuarySOL) and97.63h (NovemberBTC). Their matched native cut/restoration execution price gaps cost2,415/8,970/374,311.0245 USDT respectively before fees, totaling385,696.0245. This is an actual trade-pair execution metric, not an alternative TOTAL or proof that removing the cuts improves the whole portfolio. All12C1fills paid30,498.04072762 native fees on55,450,983.1411 turnover. Three cut-containing actual candidate cycles ultimately had positive confirmed fill net ex funding: useful recovery counterexamples, not causal false-positive classifications.
+
+Five BTC groups were cut in August. Their claim DDs were43.7892/46.8729/48.9556/49.6275/49.4507%; each later lost its credit to an ordinary/mandatory close and none restored. The saved audit cache has native global peak/trough/recovery episodes and monthly/window metrics, but not DD35 minima between claims. No additional full-trace pass was made to infer hysteresis or a new policy. Exact missed-opportunity/false-positive profit attribution remains UNKNOWN without a new authorized native counterfactual; no fills were deleted or hypothetical equity constructed.
+
+## Transparent verifier adjudication
+
+The original frozen checker and its report remain unchanged, including13 witness failures. Eleven failures came from a verifier enum assumption: actual pinned Nautilus `PositionSide` is FLAT1/LONG2/SHORT3, while the original checker assumed1=LONG. Two failures compared a native Decimal price to a domain float log. Pinned source passes `float(event.last_px)` into the domain. The pinned native model reproduces exactly `Price.from_str('103604.1').__float__()`→`103604.09999999999` and64840.2→64840.19999999999; each difference is−1e−11.
+
+Separate `verifier-c1-witness-adjudicated.py` and its patch correct only the enum and this documented price representation boundary. A domain price must equal the native Decimal price **or the exact pinned Price.__float__ transform**, and both must round to the same native price precision. No broad tolerance is introduced; arbitrary price perturbations are rejected. Six tiny verifier smoke checks plus actual native representation cases PASS. No native money, fee, notional, cash, DD or fill record is altered. `verifier-C1_CORRECTED-adjudication.json` pins original checker/report, patch, supplemental checker and native result hashes. Only124event records were reevaluated; no full trace or engine rerun occurred.
+
+Internal tier/margin implementation and worst native open-loss selection remain qualified by frozen source and focused native fixtures; the observer verifies their returned gate decisions without reexecuting a second economic engine.
+
+The original attempt1 remains INVALID_EXPORT_ERROR and consumes one physical slot. Attempt2 has native CLI COMPLETED footer, exact final JSON/raw/all8exports and no Python traceback. Preserve the actual wrapper exit1: the macOS time-l sysctlclockrate probe fails, independently reproduced with a nonengine true command; exact native child exit is UNKNOWN. This qualification is not rewritten as exit0. Two physical attempts are spent, zero active; this audit starts zero engines and does not authorize another launch.

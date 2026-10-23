@@ -1,0 +1,8 @@
+{
+  "recorded_utc": "2026-10-23T16:55:10.841784+00:00",
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "branch": "codex/residual-recovery-serialization-20261023",
+  "normal_push": "PASS",
+  "exact_remote_ref_readback": "PASS",
+  "deployment": false
+}

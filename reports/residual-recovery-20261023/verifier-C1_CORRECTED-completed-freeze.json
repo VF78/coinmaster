@@ -1,0 +1,18 @@
+{
+  "status": "COMPLETE_VALID_NATIVE",
+  "validity_scope": "NORMAL_COMPLETE_EXPORT_READY_FOR_INDEPENDENT_AUDIT_NOT_FINAL_MECHANISM_OR_ECONOMIC_ACCEPTANCE",
+  "utc": "2026-10-23T16:37:57.072787+00:00",
+  "recipe": "C1_CORRECTED",
+  "attempt": 2,
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json",
+  "artifact_sha256": "6f8150684aedc5c69672e401daa7d85b8b6915eb94f53903527205143011d9e5",
+  "raw_sha256": "7e7f3def0d937fb09752379640191208e98634cba3f3a8033de49c05c1f3c117",
+  "trace_sha256": "cce639eea80ef7c2ca3da6fef2f69f46ce247eba35943ece8a9eafc653994673",
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "wrapper_exit_code": 1,
+  "native_child_exact_exit": "UNKNOWN",
+  "wrapper_qualification": "macOS time -l sysctlclockrate denied; independent nonengine true probe reproduces wrapper1; nativeCLI COMPLETED footer matchinghash/noPythontraceback/all8exports present; retaincode1",
+  "root_observation_sha256": "30cd463c8eb85e3c53d1087a4a204df0e2d37b60afae84208feb37f0e0dbf156",
+  "new_engines_authorized": false
+}

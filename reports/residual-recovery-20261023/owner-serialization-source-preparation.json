@@ -1,0 +1,32 @@
+{
+  "status": "SERIALIZATION_CORRECTION_REVIEWED_PREPARED_NO_ENGINE",
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "base_source": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "branch": "codex/residual-recovery-serialization-20261023",
+  "checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/residual-recovery-20261023",
+  "source_snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a",
+  "source_manifest_sha256": "e5b4b4c06b409ca2a2b7357cd0f929b9da6afad3e7e454b9dcca6785d3fc8d97",
+  "source_manifest": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a-sha256.json",
+  "source_file_count": 92,
+  "source_files": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "01ea8b85e38cf30c40238130b19c2f90db3e96a983844fe40cf2e8cf587a9776",
+    "runtime/tests/test_native_residual_recovery.py": "cc624065fe390bf2201a5272424fcab3f5010602591667cfdd9fd384093b30e0"
+  },
+  "source_files_read_only": true,
+  "patch_sha256": "ae081dee3b9b2aa0eb12835efc572d378b7ab91df39f2e330da5e324bb460560",
+  "source_bundle": "/private/tmp/coinmaster-residual-recovery-serialization-20261023.bundle",
+  "source_bundle_sha256": "e887f67351061bf53b34a9e0e791ab2043ea6e8bacbd3765b502dd28f655c4b3",
+  "tests": "owner-serialization-tests.log",
+  "tests_sha256": "5cdfa694e85568f8b5bf3686f94e3bf3c927f0a30826eae8867e9ba37ba757d2",
+  "test_result": "18PASS,3.51s;actualnativepayloadunchangedserializerroundtrip;numericstateDecimalpreserved",
+  "economic_config_unchanged": true,
+  "expected_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "full_native_attempts_started_by_this_preparation": 0,
+  "physical_attempts_already_consumed": 1,
+  "original_frozen_files": {
+    "owner-source-preparation.json": "daa246514e72497469b3932c621057177abea03a5c1f9b51c8b8726776edfee3",
+    "owner-run-preparation.json": "a0617917cb28cafce6b1c03dddf1b19fdc74f48958ea2e2c7ac9e9e88de34afa",
+    "protocol-freeze.json": "bfcd3226fc331693c8d5556070c2017d5fa65da69dfc136a4fce2c6a08ead8a4",
+    "root-C1-engine-go.json": "9fbd047c105efb1b1ac4a1ca1a0ee56419e31924d36915eb5e674496fc8d435f"
+  }
+}

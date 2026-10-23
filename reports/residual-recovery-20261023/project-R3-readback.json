@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-23T16:35:31.920566+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "body_sha256": "a95fbbd8e7c5d895539c39cd4f82d77682a6bfd2364fc24ccb2dc332c5c50b5a",
+  "readback": "PASS",
+  "completed": [
+    "R0",
+    "R1",
+    "R2"
+  ],
+  "in_progress": "R3_NATIVE_C1_CORRECTED",
+  "source": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "physical_started": 2,
+  "active": 1,
+  "invalid": 1,
+  "cap": 4
+}

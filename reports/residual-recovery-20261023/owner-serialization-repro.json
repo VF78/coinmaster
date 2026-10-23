@@ -1,0 +1,14 @@
+{
+  "provenance": "BOUNDED_REAL_NATIVE_C1_FIXTURE_NOT_HISTORICAL_ATTEMPT_PAYLOAD",
+  "source": "78100d4",
+  "native_events": 3,
+  "c1_events": 17,
+  "unsupported_values": [
+    {
+      "path": "$.c1_audit[10].confirmation.close",
+      "type": "Decimal",
+      "exact_repr": "Decimal('80')"
+    }
+  ],
+  "error": "Object of type Decimal is not JSON serializable"
+}

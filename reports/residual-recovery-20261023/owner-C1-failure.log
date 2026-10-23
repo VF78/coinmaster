@@ -1,0 +1,44 @@
+/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_baseline.py:948: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+  engine.run(streaming=True)
+/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_baseline.py:981: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+  engine.end()
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_baseline.py", line 1597, in <module>
+    main()
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_baseline.py", line 1543, in main
+    artifact = run_research_v0_repairs_cli(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_baseline.py", line 1442, in run_research_v0_repairs_cli
+    report = run_native_diagnostic(
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_baseline.py", line 1132, in run_native_diagnostic
+    save_diagnostic_report(data_root,raw_native,artifact_label+'-raw-native',artifacts_root)
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_baseline.py", line 1249, in save_diagnostic_report
+    stream.write(json.dumps(report, indent=2, sort_keys=True, default=audit_json_default) + "\n")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4/runtime/coinmaster/research/native_audit.py", line 327, in audit_json_default
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+TypeError: Object of type Decimal is not JSON serializable
+      182.12 real       175.60 user         2.06 sys
+time: sysctl kern.clockrate: Operation not permitted

@@ -1,0 +1,24 @@
+{
+  "status": "PREPARED_AWAIT_ROOT_COMPLETE_NO_CANDIDATE_OUTPUT_READS",
+  "output_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/verifier-C1_CORRECTED-audit",
+  "preparation": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-serialization-run-preparation.json",
+  "recipe": "C1_CORRECTED",
+  "original_tooling_hashes_match": {
+    "verifier-validate-candidate.py": true,
+    "verifier-c1-witness.py": true,
+    "verifier-witness-smoke.py": true
+  },
+  "original_protocol_sha256": "bfcd3226fc331693c8d5556070c2017d5fa65da69dfc136a4fce2c6a08ead8a4",
+  "amendment_sha256": "2d8001fba6cfa0f928be79cf97f840cd786865329728ec8ce54fd9db8ff4cc73",
+  "derived_protocol_sha256": "a9b96585df6bf49368bbb96f271007982466e8bc900a14173f95e23f194e5b68",
+  "completed_freeze_required_fields": {
+    "status": "COMPLETE_VALID_NATIVE",
+    "recipe": "C1_CORRECTED",
+    "artifact_sha256": "FROM_COMPLETED_OWNER_RECEIPT",
+    "raw_sha256": "FROM_COMPLETED_OWNER_RECEIPT",
+    "trace_sha256": "COMPRESSED_SETTLED_GZIP_SHA256"
+  },
+  "owner_receipt_required_destination": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/verifier-C1_CORRECTED-audit/owner-C1_CORRECTED-receipt.json",
+  "native_engines": 0,
+  "candidate_trace_scans": 0
+}

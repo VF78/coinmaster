@@ -1,0 +1,34 @@
+--- frozen/verifier-c1-witness.py
++++ supplement/verifier-c1-witness-adjudicated.py
+@@ -2,6 +2,13 @@
+ from collections import Counter,defaultdict
+ from decimal import Decimal as D
+ import ast
++from nautilus_trader.model.objects import Price
++
++def exact_native_domain_price(logged,native):
++    # Exact pinned Price.__float__ source transform, plus same native precision.
++    native_price=Price.from_str(str(native));actual=D(str(logged));wire=D(str(native))
++    quantum=D(1).scaleb(-native_price.precision)
++    return actual in (wire,D(str(float(native_price)))) and actual.quantize(quantum)==wire.quantize(quantum)
+ 
+ 
+ def validate_c1(d,filled_orders):
+@@ -39,7 +46,7 @@
+             held=int(r['frozen_held_lots']);target=int(r['frozen_target_lots']);ck('fixed_half_remaining_target',held>1 and target==held-held//2,seq)
+             pos=next((p for p in proposed['positions'] if p['instrument_id']==proposed['selected']),None)
+             ck('selected_native_position_exists',pos is not None,seq)
+-            asset=proposed['selected'].split('USDT')[0];side=1 if str(pos['side'])=='1' else -1
++            asset=proposed['selected'].split('USDT')[0];ck('valid_native_position_side',str(pos['side']) in ('2','3'),seq);side=1 if str(pos['side'])=='2' else -1
+             groups[group]={'claim':r,'proposal':proposed,'asset':asset,'side':side,'cut_cap':held-target,'cut':0,'restore':0,'credit':0,'revoked':False,'released':False,'terminal_cut':None,'last_cut_fill':None,'confirmation':None,'attempts':Counter(),'orders':Counter(),'cut_value':D(0),'bucket':{}}
+             livegroup=group;proposed=None
+         elif event in ('GROUP_FLAT_RESET','TERMINAL_FLAT_CONFIRMED'):
+@@ -93,7 +100,7 @@
+                 intent=r['intent_id'];kind=r['kind'];lots=int(r['lots']);q=receipts.get(intent,[])
+                 ck('actual_fill_has_native_receipt',bool(q),seq);ck('positive_fill_lots',lots>0,seq)
+                 if q:
+-                    native=q.pop(0);ck('fill_price_time_matches_native',D(r['price'])==D(native['price']) and ts==int(native['timestamp_ns']),seq);ck('actual_lots_match_native_quantity',D(native['quantity'])==D(lots)*g['step'],seq);fills[intent].append(native)
++                    native=q.pop(0);ck('fill_price_time_matches_native',exact_native_domain_price(r['price'],native['price']) and ts==int(native['timestamp_ns']),seq);ck('actual_lots_match_native_quantity',D(native['quantity'])==D(lots)*g['step'],seq);fills[intent].append(native)
+                 ck('fill_attempt_kind_bound',intent in submits and submits[intent][1]==kind,seq)
+                 rights(r['rights_before'],r['rights_after'],kind,lots,g['asset'],seq)
+                 ck('credit_before_actual_fill_exact',int(r['credit_before'])==g['credit'],seq)

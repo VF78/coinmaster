@@ -1,0 +1,22 @@
+{
+  "candidate": "C1_CORRECTED",
+  "attempt": 2,
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "started_utc": "2026-10-23T16:33:40.850641+00:00",
+  "finished_utc": "2026-10-23T16:36:38.690317+00:00",
+  "exit_code": 1,
+  "error": null,
+  "elapsed_monotonic_seconds": 177.833673833,
+  "pid": 71161,
+  "log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/native.log",
+  "log_sha256": "3db8dba8d6156018349c5cab1b51e480327e7fc0effc7540687abe674b367dd5",
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json",
+  "normal_complete": false,
+  "state": "FAILED_PHYSICAL_ATTEMPT_PRESERVE_ALL_NO_RETRY",
+  "resources": {
+    "time_real_seconds": 177.82,
+    "user_seconds": 173.29,
+    "system_seconds": 1.51,
+    "maximum_resident_set_size_bytes": null
+  }
+}

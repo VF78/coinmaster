@@ -1,21 +1,30 @@
-# Residual risk + bounded recovery — согласованный цикл в работе
+# C1 residual risk / bounded recovery — пакет завершён, NO_GO
 
-Owner утвердил порядок из полного S0-аудита и последовательное уточнение по результатам. Цель: DD≤50%(30–50 желательно),TOTAL≥5470396.514987347(≥90%чистойприбылиS0),затемMAXTOTAL. Точные S0/E4 архивы не пересчитываются. Пилот/production/сервисы/ключи/ордера/deploy не меняются.
+Цель DD≤50% и ≥90% чистой прибыли S0 НЕ достигнута. C1 в production не переносился. Пилот/сервисы/ключи/ордера/deployment не менялись; S0/E4 переиспользованы без пересчёта.
 
-Бюджет координатора: максимум4 физических полных native-попытки включая ошибки/повторы; sequential, каждыйrunтолькопослеfrozenrule/source/tests/scopedreview/rootGO. C1: исходники 78100d4 закреплены; независимое source-review GO, 18 адресных тестов PASS, прежние 206 relevant PASS с двумя документированными inherited исключениями. 92 source/13 input pins PASS. Первый native-прогон разрешён и зарезервирован, максимум 4 физических попытки; следующий — только по результатам. Без сетки/новойML/второгоPnLengine/новыхсервисов. ПродуктовыйsourceтолькоcanonicalisolatedVPS,Macimmutablemirror.
+| Вариант | TOTAL USDT | Сохранено прибыли S0 | Global settled-minute DD |
+|---|---:|---:|---:|
+| S0, архив | 6 077 107,24 | 100,00% | 66,26% |
+| E4, архив | 5 631 617,36 | 92,66% | 57,59% |
+| C1, native | 4 388 613,38 | 72,17% | 51,80% |
 
-- [x] R0: полнокалендарный saved-data screen, точныеbase/pins, достаточность as-of witnesses, одно решение.
-- [x] R1: freeze residual-control+ограниченный возврат риска; state/rights/ACK/rearm/no-churn contract.
-- [x] R2: focusednativeacceptance+independentscopedreview,source/data/config/toolingfreeze.
-- [ ] R3: один полныйnativecandidate,normalexport,independent money/globalDD/actions audit.
-- [ ] R4: причинныйpostmortem,толькообоснованноеуточнениетогожемеханизма,budget<=4.
-- [ ] R5: selection/NO_GO,repeatтолькопрошедшеговариантавбюджете,Project/readback/checkpoint.
+- [x] R0: полнокалендарный saved-data screen и exact control/data pins.
+- [x] R1: зафиксированы причинные правила cut/restore, actual-fill credit, ownership и SOL/TP rights.
+- [x] R2: source/review/native focused tests; финальные 18 PASS, 92 read-only source / 13 input pins.
+- [x] R3: полный native путь, 1 051 199 receipts / 24 месяца / 0 gaps; 44 accounting checks и 933 assertions по механизму PASS после документированного исправления verifier.
+- [x] R4: причинный postmortem; C2 не реализован/не запущен, отрицательное семейство остановлено.
+- [x] R5: сохранены сравнение JSON/CSV, hashes, отрицательные результаты, инцидент экспорта и решение NO_GO. Done означает завершение этого исследовательского пакета, а не достижение экономической цели.
 
-S0TOTAL6077107.23887483/DD66.2569148647;E4TOTAL5631617.35953723/DD57.5854104596. Новаяполитиканеобъявляетсяполезнойпоодномуокнуилиэкономииfees. Всеordinary/mandatoryexitsприоритетны,actualSOLrights/деньгиnative;cut+immediatereaddзапрещёнконтрактом.
+Причины: 9 сокращений / 3 возврата; ценовой разрыв cut→restore 385 696,02 до комиссий, 30 498,04 комиссий самих вмешательств. В январе native IOC исполнил лишь 1 000 из запрошенных 2 000 SOL; оставшаяся экспозиция сохранила DD 51,80%. Пять августовских cut относятся к затяжной общей просадке, четыре могли бы запрещаться общим rearm, но их исходы смешанные. Эти cashflow и локальная арифметика не выданы за новый портфельный TOTAL.
 
-[Пакет](https://github.com/VF78/coinmaster/tree/codex/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023) будет опубликован сcheckpoint.
+Бюджет закрыт: 2/4 физических попытки, 1 невалидный export и 1 полностью проверенный native-результат; 0 active/reserved. Два слота не израсходованы, новых автоматических запусков нет. Более сильный cut, завершение partial target и общий rearm потребовали бы трёх экономических изменений без обоснованного восстановления недостающих 1,08 млн до profit-floor. Независимый review рекомендует STOP.
 
-R0/R1 checkpoint: b55c9fe. Проверены1051199E4receipts/24месяца/0minute gaps. C1: DD≥40%, biggestnegative nativeUPnL>max(0,E−.5H), fixedactualhalfcut oncegroup; onerestoreDD≤35+entireclosedpostcut4h/currentquotereclaim/nativeownership+margin. Four originalpathopportunities incloneJuneoriginalDD48.34%;3conditionalreclaimproxies; nativeeligibility/TOTAL/DD UNKNOWNuntilcandidate. ContractSHA8214eb8a,reviewGO/root-sourceGO. Отменён preparatory5%shockcontroller; нетgrid. [Frozencontract](https://github.com/VF78/coinmaster/blob/codex/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-contract.md).
+Source 78100d4; export-only correction 78cb85a, numeric state/orders/config неизменны. Первая попытка не восстановлена и не принята. У второй сохранён wrapper exit1 из-за macOS time-l/sysctl; native child exact exit UNKNOWN, но native CLI COMPLETED/hash, все выгрузки и независимые checks подтверждены. Исходные 13 verifier FAIL сохранены; отдельное adjudication исправляет enum/точный native Price float representation, без изменения денег/DD.
+
+[Итоговый отчёт и материалы](https://github.com/VF78/coinmaster/tree/codex/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023).
+
+Следующее предложенное направление исходного порядка — saved-decision анализ исполнения второй BTC-половины и прибыльных fallback; перед новым native запуском нужны конкретное действие и численное обоснование. Большая оптимизация/новая ML/новый хедж не запускаются. Нынешний diagnostic 1m CLOSE не является tick/HL-live или новым OOS доказательством.
+
 
 ---
 ## Предыдущий завершённый аудит / результаты сохранены

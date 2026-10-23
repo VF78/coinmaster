@@ -1,0 +1,15 @@
+{
+  "status": "READY_FOR_ROOT_CORRECTED_ATTEMPT_DECISION_NOT_LAUNCHED",
+  "before_source": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "after_source": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "exact_change": "Copy only confirmation witness close to exact str at ATTEMPT_SUBMIT log boundary; stored Decimal policy state/global serializer/guards unchanged",
+  "diagnosis": "owner-serialization-repro.json",
+  "historical_c1_payload": "UNAVAILABLE_NOT_EXPORTED;no repair/reconstruction",
+  "source_preparation": "owner-serialization-source-preparation.json",
+  "run_preparation": "owner-serialization-run-preparation.json",
+  "economic_config_sha256_unchanged": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "first_attempt_invalid_preserved": true,
+  "physical_started": 1,
+  "active": 0,
+  "next_attempt_requires_new_root_GO": true
+}

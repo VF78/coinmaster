@@ -1,0 +1,217 @@
+{
+  "status": "ADJUDICATED_MECHANISM_PASS_VALID_NATIVE_ECONOMIC_NEGATIVE",
+  "original_frozen_report_preserved": true,
+  "original_report_sha256": "da80d765e732b13ee04d22621c7397d7cd1d43521fc2f501e5abba45c330b482",
+  "original_checker_sha256": "9ff2a194b69078675a357769f9a89789f904897f6dc7cc1f536cbfda4fbcbe39",
+  "supplement_checker_sha256": "baee716919dc938c057bcb103b7f92ade34283d50ad2e08bb8c91fdbf1ef2bd8",
+  "patch_sha256": "af63a7fc13a7fd38380765b5d19b9ae44305611c2a25de41331ee9ca4426b9de",
+  "smoke_sha256": "37a2782c87de008953259b260eaf1c2048e9cfafe8f08822f8913595b0118db1",
+  "native_artifact_sha256": "6f8150684aedc5c69672e401daa7d85b8b6915eb94f53903527205143011d9e5",
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "enum_evidence": {
+    "NO_POSITION_SIDE": 0,
+    "FLAT": 1,
+    "LONG": 2,
+    "SHORT": 3
+  },
+  "source_float_boundary": "wave_overlay.py _apply_confirmed_domain_fill(...float(event.last_px)...), C1 logs str(price); supplemental exact Price.__float__ transform and native precision equality only",
+  "price_evidence": [
+    {
+      "native_price": "103604.1",
+      "exact_native_Price_float_str": "103604.09999999999",
+      "logged_minus_native": "-1E-11"
+    },
+    {
+      "native_price": "64840.2",
+      "exact_native_Price_float_str": "64840.19999999999",
+      "logged_minus_native": "-1E-11"
+    }
+  ],
+  "original_13_failed_checks": [
+    {
+      "check": "attempt_frozen_instrument_side",
+      "sequence": 3
+    },
+    {
+      "check": "confirmation_price_reclaims",
+      "sequence": 11
+    },
+    {
+      "check": "attempt_frozen_instrument_side",
+      "sequence": 12
+    },
+    {
+      "check": "current_executable_reclaim",
+      "sequence": 12
+    },
+    {
+      "check": "attempt_frozen_instrument_side",
+      "sequence": 22
+    },
+    {
+      "check": "confirmation_price_reclaims",
+      "sequence": 31
+    },
+    {
+      "check": "attempt_frozen_instrument_side",
+      "sequence": 32
+    },
+    {
+      "check": "current_executable_reclaim",
+      "sequence": 32
+    },
+    {
+      "check": "fill_price_time_matches_native",
+      "sequence": 46
+    },
+    {
+      "check": "fill_price_time_matches_native",
+      "sequence": 75
+    },
+    {
+      "check": "attempt_frozen_instrument_side",
+      "sequence": 82
+    },
+    {
+      "check": "attempt_frozen_instrument_side",
+      "sequence": 104
+    },
+    {
+      "check": "attempt_frozen_instrument_side",
+      "sequence": 116
+    }
+  ],
+  "mechanisms": {
+    "status": "PASS",
+    "checks_evaluated": {
+      "sequence_contiguous": 124,
+      "timestamps_nondecreasing": 124,
+      "causal_proposed_checkpoint": 9,
+      "proposal_positive_money": 9,
+      "proposal_DD_trigger": 9,
+      "proposal_cushion_exact": 9,
+      "open_loss_dominates": 9,
+      "proposal_complete_gates": 9,
+      "claim_preceded_by_proposal": 9,
+      "claim_one_per_group": 9,
+      "fixed_half_remaining_target": 9,
+      "selected_native_position_exists": 9,
+      "valid_native_position_side": 9,
+      "intent_unique": 12,
+      "no_submit_after_revoke_or_release": 12,
+      "attempt_checkpoint_causal": 12,
+      "attempt_after_claim": 12,
+      "one_cut_proposal": 9,
+      "cut_within_fixed_target": 9,
+      "fresh_epoch_at_attempt": 12,
+      "current_quote_time": 12,
+      "native_account_event_not_newer_than_checkpoint": 12,
+      "attempt_no_competing_native_owner": 12,
+      "attempt_frozen_instrument_side": 12,
+      "attempt_money_DD_consistent": 12,
+      "native_cut_reduceonly_bypass": 9,
+      "native_order_has_attempt": 12,
+      "native_order_kind_matches": 12,
+      "one_native_attempt_per_kind": 12,
+      "submit_outcome_known_intent": 12,
+      "submit_outcome_bound_native_order": 12,
+      "native_trade_unique": 12,
+      "fill_bound_to_submitted_native_order": 12,
+      "actual_fill_has_native_receipt": 12,
+      "positive_fill_lots": 12,
+      "fill_price_time_matches_native": 12,
+      "actual_lots_match_native_quantity": 12,
+      "fill_attempt_kind_bound": 12,
+      "rights_preserved_btc_targets": 12,
+      "rights_preserved_btc_filled": 12,
+      "rights_preserved_sol_rights": 12,
+      "rights_preserved_sol_right_fraction": 12,
+      "rights_preserved_sol_consumed": 12,
+      "rights_preserved_PLANREF": 12,
+      "rights_preserved_H": 12,
+      "actual_fill_owned_level_lots": 12,
+      "other_asset_owned_levels_unchanged": 12,
+      "credit_before_actual_fill_exact": 12,
+      "cut_actual_within_cap": 9,
+      "credit_exact_after_actual_fill": 12,
+      "bucket_tracks_actual_unrestored_lots": 12,
+      "attempt_counter_caps": 12,
+      "terminal_known_intent": 12,
+      "terminal_credit_exact": 12,
+      "bar_fully_postcut_terminal": 3,
+      "four_hour_closed_bar": 3,
+      "confirmation_DD": 3,
+      "confirmation_after_actual_cut": 3,
+      "confirmation_price_reclaims": 3,
+      "restore_with_actual_credit": 3,
+      "restore_after_confirmation": 3,
+      "logged_confirmation_matches": 3,
+      "current_restore_DD": 3,
+      "current_executable_reclaim": 3,
+      "native_restore_admission_witness": 3,
+      "restore_not_above_actual_cut": 3,
+      "flat_reset_known_group": 9,
+      "native_terminal_zero_native_positions": 1,
+      "native_terminal_zero_native_orders": 1,
+      "native_terminal_zero_native_inflight": 1,
+      "native_terminal_zero_pending": 1,
+      "native_terminal_zero_queued": 1,
+      "actual_C1_order_in_native_fills": 12,
+      "native_C1_quantity_exact": 12,
+      "native_C1_fees_exact": 12,
+      "native_CUT_reduceonly_RESTORE_increase": 12,
+      "no_unconsumed_native_fill_receipts": 1,
+      "final_state_zero_native_positions": 1,
+      "final_state_zero_native_orders": 1,
+      "final_state_zero_native_inflight": 1,
+      "final_state_zero_pending": 1,
+      "final_state_zero_queued": 1,
+      "final_state_zero_credit": 1,
+      "final_no_active_hold": 1
+    },
+    "failed_checks": [],
+    "unproven": [],
+    "qualifications": [
+      "Internal tier/margin/admission implementation and worst-native-open-loss selection proved by frozen source and focused fixtures; saved observer proves returned decisions, not independent native reexecution."
+    ],
+    "monthly_denial_counts": {},
+    "event_counts": {
+      "PROPOSED_DECISION": 9,
+      "CLAIM": 9,
+      "ATTEMPT_SUBMIT": 12,
+      "NATIVE_ORDER_SUBMITTED": 12,
+      "SUBMIT_OUTCOME": 12,
+      "NATIVE_FILL_RECEIPT": 12,
+      "ACTUAL_FILL": 12,
+      "ATTEMPT_TERMINAL": 12,
+      "ORIGINAL_TP_LEAVES_REQUEUED": 12,
+      "QUEUED_INCREASE_BLOCKED": 4,
+      "CLOSED_4H_RECLAIM": 3,
+      "GROUP_FLAT_RESET": 8,
+      "TOKEN_REVOKED": 6,
+      "TERMINAL_FLAT_CONFIRMED": 1
+    },
+    "groups": 9,
+    "native_C1_cut_orders": 9,
+    "native_C1_restore_orders": 3,
+    "actual_cut_lots": 706703,
+    "actual_restored_lots": 92329,
+    "mechanism_acceptance": true,
+    "terminal_global_H_matches_saved_risk": true
+  },
+  "money_unchanged": {
+    "TOTAL": "4388613.38225343",
+    "retention_percent": "72.16970476799190164204208923",
+    "fees": "671063.37411189",
+    "fills": 539,
+    "unallocated_cash_bridge": "53801.142665296518712",
+    "native_money_pass_50_90": false
+  },
+  "global_DD_unchanged": "51.80315157406654834417870238",
+  "pass_50_90": false,
+  "wrapper_exit_code": 1,
+  "native_child_exact_exit": "UNKNOWN",
+  "wrapper_qualification": "macOS time -l sysctlclockrate denied; independent nonengine true probe reproduces wrapper1; nativeCLI COMPLETED footer matchinghash/noPythontraceback/all8exports present; retaincode1",
+  "fulltrace_passes_added": 0,
+  "native_engines_added": 0
+}

@@ -1,9 +1,9 @@
 {
   "scope": "RESIDUAL_RECOVERY_20261023",
   "cap_physical_full_native_attempts": 4,
-  "started": 1,
-  "completed": 0,
-  "active": 1,
+  "started": 2,
+  "completed": 2,
+  "active": 0,
   "reserved": 0,
   "root_GO_required": true,
   "S0_reruns": 0,
@@ -13,16 +13,41 @@
     {
       "attempt": 1,
       "candidate": "C1",
-      "status": "RUNNING",
+      "status": "FAILED_PHYSICAL_ATTEMPT_PRESERVE_ALL_NO_RETRY",
       "source_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
       "GO_sha256": "9fbd047c105efb1b1ac4a1ca1a0ee56419e31924d36915eb5e674496fc8d435f",
       "utc": "2026-10-23T16:21:06.134918+00:00",
       "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1/result",
       "started_utc": "2026-10-23T16:22:10.371580+00:00",
-      "pid": 70343
+      "pid": 70343,
+      "finished_utc": "2026-10-23T16:25:12.505248+00:00",
+      "exit_code": 1,
+      "completion": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1/completion.json"
+    },
+    {
+      "attempt": 2,
+      "candidate": "C1_CORRECTED",
+      "status": "FAILED_PHYSICAL_ATTEMPT_PRESERVE_ALL_NO_RETRY",
+      "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+      "GO_sha256": "fee201946af6da2b15a5a6f82fd3eeaddd9e14fedf98eba7a009ea1796bb1ec0",
+      "utc": "2026-10-23T16:32:55.414844+00:00",
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result",
+      "started_utc": "2026-10-23T16:33:40.850641+00:00",
+      "pid": 71161,
+      "finished_utc": "2026-10-23T16:36:38.690317+00:00",
+      "exit_code": 1,
+      "completion": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/completion.json",
+      "final_adjudication": "NATIVE_EXPORT_ACCOUNTING_MECHANISM_PASS_ECONOMIC_NEGATIVE",
+      "native_child_exact_exit": "UNKNOWN",
+      "wrapper_exit_code": 1
     }
   ],
-  "status": "C1_ATTEMPT1_RUNNING",
+  "status": "CLOSED_VALID_NATIVE_NEGATIVE_NO_MORE_LAUNCHES",
   "contract_sha256": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
-  "candidate": "C1"
+  "candidate": "C1",
+  "valid_native_results": 1,
+  "invalid_attempts": 1,
+  "unused_closed_slots": 2,
+  "GO_for_further_attempts": false,
+  "close_utc": "2026-10-23T16:51:17.048983+00:00"
 }

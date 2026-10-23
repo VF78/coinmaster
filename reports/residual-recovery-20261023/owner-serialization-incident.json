@@ -1,0 +1,41 @@
+{
+  "status": "INVALID_PHYSICAL_ATTEMPT1_POST_ENGINE_EXPORT_NO_RETRY",
+  "started": 1,
+  "active": 0,
+  "normal_complete": false,
+  "source": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "historical_c1_audit_payload": "UNAVAILABLE_NOT_EXPORTED; existing704KiBrawprefix lacks C1 audit; failing tmp0bytes",
+  "economic_result": "UNKNOWN_NO_NORMAL_COMPLETE_REPORT; no reconstruction/repair",
+  "cause": "ATTEMPT_SUBMIT.confirmation.close retained Decimal; native_audit.audit_json_default deliberately rejects Decimal",
+  "files_preserved_unchanged": {
+    ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-funding.sqlite.attempt-9a6342b811774e9791ab5b956e87b831.aborted-7a42b5885f10489a992c18a45b3c525a": {
+      "bytes": 229376,
+      "sha256": "47365faad666e43ffb1f1e820a31bac1f1515d7c9967bd43411904c65b05e463"
+    },
+    "minute-native-risk.csv.gz": {
+      "bytes": 71666995,
+      "sha256": "2097a5a21b8aad42f65cd22142a5d7a4438d7162f154758e94c5baac0239c1f7"
+    },
+    "minute-native-settled-receipts.csv.gz": {
+      "bytes": 35286905,
+      "sha256": "5f7502e85d20d8f7990cdadb9582f61a617cb17f08f1a1e6fa1f5a1386ddd9b0"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-fills.csv": {
+      "bytes": 213269,
+      "sha256": "745d33d289cc8377df26ce8490c044994ac90db1c0bcda2e0c541cd40baacaba"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-orders.csv": {
+      "bytes": 229203,
+      "sha256": "d2a899cddb198b97fec508992749cbb695a8db4ef0cb064d30a4034ee6cec108"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.json": {
+      "bytes": 720990,
+      "sha256": "1622b2f4ec4dcb61799ea9b649dfcb5cfe09f197db797453a9b62c1cd6ba6287"
+    },
+    "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.tmp": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "log_sha256": "4313d04271e83d92852f36de2b5854943c04574841afd747bc45d2940d4099e9"
+}

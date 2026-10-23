@@ -1,0 +1,43 @@
+{
+  "status": "GO_SERIALIZATION_ONLY_CORRECTION",
+  "source_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "parent_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "canonical_HEAD_and_clean_worktree_verified": true,
+  "economic_semantics_changed": false,
+  "native_order_semantics_changed": false,
+  "production_serializer_changed": false,
+  "delta": "copy_confirmation_for_audit_close_exactstr_only_storedDecimal_unchanged",
+  "files_sha256": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "01ea8b85e38cf30c40238130b19c2f90db3e96a983844fe40cf2e8cf587a9776",
+    "runtime/tests/test_native_residual_recovery.py": "cc624065fe390bf2201a5272424fcab3f5010602591667cfdd9fd384093b30e0"
+  },
+  "reproduction": {
+    "provenance": "BOUNDED_REAL_NATIVE_C1_FIXTURE_NOT_HISTORICAL_ATTEMPT_PAYLOAD",
+    "old_source": "78100d4",
+    "native_events": 3,
+    "c1_events": 17,
+    "path": "$.c1_audit[10].confirmation.close",
+    "value": "Decimal('80')",
+    "error": "Object of type Decimal is not JSON serializable",
+    "historical_complete_final_C1_audit": "UNAVAILABLE_NOT_RECONSTRUCTED"
+  },
+  "focused_regression": {
+    "owner_log": "owner-serialization-tests.log",
+    "result": "18PASS/3.51s",
+    "actual_native_payload_json_roundtrip": true,
+    "stored_numeric_state_remains_Decimal": true,
+    "reviewer_reran_tests": false
+  },
+  "original_reviewer_source_files_modified": false,
+  "attempt1_status": "INVALID_NORMAL_FINAL_REPORT_EXPORT_FAILED_EXIT1_NO_TOTAL_CLAIM",
+  "physical_attempts_consumed": 1,
+  "physical_attempt_cap": 4,
+  "native_retry_GO": false,
+  "manual_artifact_repair": false,
+  "historical_engine_runs_by_reviewer": 0,
+  "next_gate": "root_separate_exact_corrected_source_fresh_attempt_GO",
+  "evidence_sha256": {
+    "owner-serialization-repro.json": "1cc3c0a098111f5fa0832b3a2fc2372813f6d33b99b63eea7fbfc682468b0998",
+    "owner-serialization-tests.log": "5cdfa694e85568f8b5bf3686f94e3bf3c927f0a30826eae8867e9ba37ba757d2"
+  }
+}
