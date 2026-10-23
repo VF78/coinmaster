@@ -59,6 +59,12 @@ def test_actual_halfcut_restore_native_money_original_btc_basis_rights_and_one_g
   for n in range(1,6):
    observe(s,2*H4+n,btc=restore);run_ticks(e,[tick(BTC_PERP,2*H4+n,restore)])
   assert t['state']=='RELEASED' and t['restore_filled']==50000 and t['credit']==0
+  witness=next(x for x in s.c1_audit if x['event']=='ATTEMPT_SUBMIT' and x['kind']=='RESTORE')
+  assert D(witness['DD'])<=D('.35') and witness['fill_epoch']==witness['current_fill_epoch']
+  assert side*(D(witness['executable_price'])-D(witness['cut_actual_vwap']))>0
+  assert witness['pending_ids']==[] and witness['native_open_orders']==witness['native_inflight_orders']==witness['queued_intents']==0
+  assert witness['source_quote_ns']<witness['receipt_ns']<=witness['quote_ns'] and witness['account_event_ns']<=witness['source_quote_ns']
+  assert witness['native_admission']=='PASSED_EXISTING_INCREASE_GATES'
   assert ep.btc_open_qty==100 and sum(ep.btc_risk_retired_lots.values())==0 and not ep.sol_rights
   assert original==(ep.btc_initial_qty,saved_targets,ep.btc_planref_vwap,ep.h,ep.sol_add_filled_notional)
   observe(s,3*H4,btc=adverse);run_ticks(e,[tick(BTC_PERP,3*H4+1,adverse)])

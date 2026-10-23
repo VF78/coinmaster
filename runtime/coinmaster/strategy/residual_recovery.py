@@ -176,7 +176,7 @@ class ResidualRecoveryResearch:
             return False
         t=self._c1_state
         if ep is None or not t or ep.id!=t['group']:raise ValueError('C1_FILL_LOST_GROUP')
-        lots=self._domain._lots(quantity,t['step']);kind=self._c1_intents[i.id];before=self._c1_rights()
+        lots=self._domain._lots(quantity,t['step']);kind=self._c1_intents[i.id];before=self._c1_rights();credit_before=t['credit']
         if kind=='CUT':
             if t['cut_filled']+lots>t['cut_lots']:raise ValueError('C1_CUT_EXCEEDS_FIXED_TARGET')
             if t['instrument']==self.config.btc_id:
@@ -209,7 +209,7 @@ class ResidualRecoveryResearch:
                 for k,n in allocation.items():t['bucket'][k]-=n;ledger[k]=ledger.get(k,0)+n
                 ep.sol_qty=float(D(str(ep.sol_qty))+D(lots)*t['step'])
             t['credit']=max(0,t['credit']-lots);t['restore_filled']+=lots
-        self._c1_log('ACTUAL_FILL',ns,cut_attempts=int(t['cut_submitted']),restore_attempts=int(t['restore_submitted']),kind=kind,intent_id=i.id,lots=lots,price=str(price),credit=t['credit'],bucket=dict(t['bucket']),rights_before=before,rights_after=self._c1_rights())
+        self._c1_log('ACTUAL_FILL',ns,cut_attempts=int(t['cut_submitted']),restore_attempts=int(t['restore_submitted']),kind=kind,intent_id=i.id,lots=lots,price=str(price),credit_before=credit_before,credit=t['credit'],bucket=dict(t['bucket']),rights_before=before,rights_after=self._c1_rights())
         return True
 
     def _c1_terminal_flat(self,ns):
@@ -284,8 +284,9 @@ class ResidualRecoveryResearch:
         ep=self._domain.episode
         if ep is None or ep.id!=t['group']:raise ValueError('C1_SUBMIT_LOST_GROUP')
         i=self._domain._intent(ep,action,side,None,quantity=float(D(lots)*t['step']),reason=reason);self._c1_intents[i.id]=kind
-        self._c1_log('ATTEMPT_SUBMIT',ns,claim_ns=t['claim_ns'],confirmation=t['confirmation'],kind=kind,intent_id=i.id,lots=lots,source_quote_ns=c['source'],receipt_ns=c['receipt'],fill_epoch=c['epoch'],rights=self._c1_rights())
+        self._c1_log('ATTEMPT_SUBMIT',ns,claim_ns=t['claim_ns'],confirmation=t['confirmation'],kind=kind,intent_id=i.id,instrument=str(t['instrument']),side=side,original_side=t['side'],step=str(t['step']),lots=lots,quote_ns=tick.ts_event,bid=str(tick.bid_price),ask=str(tick.ask_price),executable_price=str(tick.ask_price if side==1 else tick.bid_price),E=str(c['E']),H=str(c['H']),DD=str(c['DD']),source_quote_ns=c['source'],receipt_ns=c['receipt'],fill_epoch=c['epoch'],current_fill_epoch=self._c1_fill_epoch,account_event_ns=self.cache.account_for_venue(self.config.btc_id.venue).last_event.ts_event,pending_ids=list(self._pending_by_order),native_open_orders=len(self.cache.orders_open()),native_inflight_orders=len(self.cache.orders_inflight()),queued_intents=len(self._queued_intents),cut_actual_vwap=str(t['cut_value']/(D(t['cut_filled'])*t['step'])) if t['cut_filled'] else None,cut_last_fill_ns=t['last_cut_fill_ns'],cut_terminal_ns=t['cut_terminal_ns'],native_admission='PASSED_EXISTING_INCREASE_GATES' if kind=='RESTORE' else 'REDUCE_ONLY_BYPASS',rights=self._c1_rights())
         self._submit_intent(i,float(tick.bid_price),float(tick.ask_price),None,len(self._bars)-1,ts_now=ns)
+        self._c1_log('SUBMIT_OUTCOME',ns,intent_id=i.id,kind=kind,native_submitted=bool(t.get('native_order_ids',{}).get(i.id)),order_id=t.get('native_order_ids',{}).get(i.id),pending_native=any(x.id==i.id for x in self._pending_by_order.values()),terminal_receipt=i.id in self._c1_terminal_ids)
         if not any(x.id==i.id for x in self._pending_by_order.values()) and i.id not in self._c1_terminal_ids:
             if kind=='RESTORE' and not t.get('native_order_ids',{}).get(i.id):
                 t['state']='HELD';t['restore_submitted']=False;t['restore_committed']=0;t['confirmation']=None
