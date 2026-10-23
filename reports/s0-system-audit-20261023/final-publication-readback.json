@@ -1,0 +1,13 @@
+{
+  "report_commit": "ff3886babd648fbc9939d58268002fa8eb139a25",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "normal_push": "PASS",
+  "exact_remote_git_ref_readback": "PASS",
+  "utc": "2026-10-23T15:01:25.232935+00:00",
+  "Project_123": "Done/closed exact readback PASS",
+  "native_runs": 0,
+  "S0_reruns": 0,
+  "pilot_changes": 0,
+  "economic_goal": "NOT_MET",
+  "audit": "COMPLETE"
+}
