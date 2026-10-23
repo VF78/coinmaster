@@ -1,0 +1,19 @@
+{
+  "status": "FROZEN_PRECHECK_AFTER_NATIVE_STATE_CENSUS_AUGMENTATION",
+  "files": {
+    "owner-precheck.py": "4f05c65b3a8cfa1eda2ad18452c2310e8b17b2b398d932ff018b3539382b9c99",
+    "owner-wait-precheck.py": "074f60db13f03855fc5c8f91e820145bd3e6074fdbebd6b27680f262e2cd60c4",
+    "owner-precheck-state.py": "4e65906946c42d4702346992ce8700bf717e5bfc75a5fd4cd92574e9de4f13b5",
+    "owner-precheck.json": "aeb83365d3ea3b0e0f3258a0e55c0388e9166ffa34c54cea3141bcd00b5e917a",
+    "owner-closed-bars.csv": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+    "owner-wait-precheck.csv": "66b6eb1a52fb64cfcf6cb9ae9e4afc7c7ceb2fffedf7443808bd07131c6b857d",
+    "owner-btc-parent-precheck.csv": "ec627b9398a4a216333b7bd68a79e3456a9e8656805fa162830e12b244edd61d",
+    "owner-zero-guard-precheck.csv": "ff4480483c43626922f0b661e16db6aaf861860e733687640d7378dea1977e97",
+    "owner-sol-risk-precheck.csv": "ca11ecb97677197328be307a2ce31fb9f2b95d47154b9ec6b9d5c0cc13ed2079",
+    "owner-implementation-contract.md": "6cd8eff4271a5a096538c1f3d2eb1bf41b133dd5c2348d0bfa558909c4a86b70"
+  },
+  "native_engine_runs_used_for_precheck": 0,
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "missing_cache_state": "UNKNOWN_EXACT_HISTORICAL_QUEUE_INFLIGHT_NOT_EXPORTED",
+  "parent_csv_refinement": "Added77actualsavedpostterminalnativecash/equity/BTCopenlots/SOLqty andactualTPfilledlotfields; no changes to waves,entrybranch,signals or eligibility thresholds."
+}

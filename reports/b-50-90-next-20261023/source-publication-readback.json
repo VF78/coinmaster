@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-23T08:55:26.574498+00:00",
+  "source": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "branch": "codex/b-50-90-next-20261023",
+  "push": "PASS",
+  "exact_ref_readback": "PASS",
+  "check_run_count": 0,
+  "CI_claim": "No green CI claim; focused local/native tests and independent code review separate",
+  "bundle_sha256": "2a9f646b308af3ea88610548226b9e240a0afc6f6b745518e80e34f397b477ea",
+  "deployment": false
+}

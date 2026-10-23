@@ -1,0 +1,150 @@
+{
+  "settled_native_DD_percent": "60.29622291086218148072256726",
+  "settled_observer_coverage": {
+    "receipts": 1051199,
+    "unavailable_intervening_native_mutation": 0,
+    "first_unavailable": [],
+    "curve_samples": 1051200,
+    "complete": true,
+    "qualification": "COMPLETE_SETTLED_RECEIPTS",
+    "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZ/result/minute-native-settled-receipts.csv.gz",
+    "positive_50_90_claim_allowed": true
+  },
+  "liquidation_count": 0,
+  "native_status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "recipe": "XZ",
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZ/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-Z-B-ATR0.5-btc-direction.json",
+  "artifact_sha256": "30fdf91c74c6f4d4cc4a00f43a3e0c872a97913d11e18ce83ee0150c9418aef3",
+  "raw_artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZ/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-Z-B-ATR0.5-btc-direction-raw-native.json",
+  "raw_sha256": "4c5a5ed1bf9b60d0a648e4504b3a64f2db55126c39286e3cb540e49df6eb1bda",
+  "config_sha256": "31ad27f517f95a6a4ebdcca19bef121a14da014c04348657c86092294ee16024",
+  "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "total": "4877453.55144460",
+  "cumulative_ROI_percent": "48674.53551444600",
+  "geometric_monthly_ROI_percent": 29.42198234697311,
+  "profit_retention_percent": "80.22692462491052470340223871",
+  "settled_post_quote_DD_percent": "60.29622291086218148072256726",
+  "all_native_close_DD_percent": "60.29622291086218148072256726",
+  "fills": 494,
+  "native_fees": "684757.69258637",
+  "funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 838,
+      "SOLUSDT-PERP.P1SIM": 326
+    },
+    "count": 1164,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "native_fill_action_counts": {
+    "BTC_ENTRY": 165,
+    "BTC_REDUCE": 128,
+    "FORCED_CLOSE": 102,
+    "SOL_ADD": 83,
+    "SOL_HALF_EXIT": 1,
+    "SOL_EXIT": 14,
+    "TERMINAL_CLOSE": 1
+  },
+  "hedge_event_counts": {
+    "WAIT_REGIME_REENTRY": 445,
+    "B_ENTRY_ALLOWED": 45
+  },
+  "next_event_counts": {
+    "CLOSED_BAR": 21898,
+    "WAIT_D1_COUNT": 82,
+    "WAIT_PERMISSION": 445,
+    "RISK_PREEMPT": 111,
+    "Z_ARM": 37,
+    "Z_TRIGGER": 14,
+    "RISK_CHILD": 14,
+    "RISK_FILL": 14,
+    "E4_ENTRY_INTENT": 29
+  },
+  "native_order_status_counts": {
+    "FILLED": 352,
+    "CANCELED": 205
+  },
+  "native_partial_terminal_order_count": 142,
+  "pre_submit_gate_blocks_count": 4,
+  "pre_submit_gate_blocks": [
+    {
+      "action": "SOL_ADD",
+      "intent_id": "5c360458-93d1-4509-a0b1-4ac523526a0d",
+      "reason": "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM",
+      "timestamp": "1734972420000000000"
+    }
+  ],
+  "new_risk_fill_semantics": "RISK_FILL native actual quantity; BTC zero retirement distinct from ordinary TP rights; all causal proposal rows retained",
+  "resources": {
+    "elapsed_monotonic_seconds": 174.5259311660193,
+    "time_real_seconds": 174.52,
+    "user_seconds": 167.93,
+    "system_seconds": 1.83,
+    "maximum_resident_set_size_bytes": 443858944,
+    "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZ/native.log",
+    "wrapper_exit_code": 0
+  },
+  "mechanical_checks": {
+    "full_rows": true,
+    "terminal_positions_flat": true,
+    "terminal_open_orders_zero": true,
+    "terminal_pending_flat": true,
+    "expected_config_exact": true,
+    "s0_data_exact": true,
+    "s0_execution_policy_exact": true,
+    "native_fills_export_rows": true,
+    "btc_split_quantity_conserved": true,
+    "source_freeze_exact": true
+  },
+  "status": "VALID_NATIVE_COMPLETED",
+  "exports": {
+    "fills": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/native-fills.csv",
+      "rows": 494,
+      "sha256": "243f5bd65f68705a3af586402882116b8194075c77e5d9669440ab529e99ee6b"
+    },
+    "orders": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/native-orders.csv",
+      "rows": 557,
+      "sha256": "e010cf3b8ea383265f624044f98881dfeb98f044e74c413114f1fafe31dfe36c"
+    },
+    "native-fill-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/native-fill-audit.csv",
+      "rows": 494,
+      "sha256": "b4bb3bc610b1d0e18186717fa255f3fe60521d8b10a1385b1d6c71c3b6745833"
+    },
+    "native-order-events.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/native-order-events.csv",
+      "rows": 557,
+      "sha256": "31c40a9ab137150fea6471aae28d713f6dd2e0ceeda8b5f23e42025f813e3f6b"
+    },
+    "hedge-band-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/hedge-band-audit.csv",
+      "rows": 490,
+      "sha256": "ce4c854a27e4b8f90989c79b89fcfb720c10bdca0e7f3389c346c48e03088ba0"
+    },
+    "next-band-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/next-band-audit.csv",
+      "rows": 22644,
+      "sha256": "7afa80c9bdfd72926c541427563d40408810a3ecbadff51ea022fdcb09282f29"
+    },
+    "entry-sizing-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/entry-sizing-audit.csv",
+      "rows": 83,
+      "sha256": "c4f680a6c4f4932c508ccd8752af6de8ba308ab945797c3bed63a204907b85bd"
+    },
+    "split-parent-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/split-parent-audit.csv",
+      "rows": 83,
+      "sha256": "3e350e68093d73e78b39488cc76765ad4ea8cddebf7c124afcb1e73427179034"
+    },
+    "rights_lifecycle": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-XZ-events/actual-rights-and-fill-lifecycle.csv",
+      "rows": 351,
+      "sha256": "29eb1d154fa45dcb227c945b43d282a3b66a8cf971505c06e8a95bfd1ac2d9e7"
+    }
+  },
+  "rights_export_note": "Actual native fill rows and explicit final-flat right invalidation events; no inferred fill, ownership, or PnL. Native partial/terminal data preserved in native orders/events exports.",
+  "no_extra_engine": true
+}

@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "bybit-1m/manifest.json": true,
+    "runs/tp-fee-floor-113/v0/v0.json": true,
+    "normalized/bybit-BTCUSDT-daily.parquet": true,
+    "normalized/bybit-BTCUSDT-execution-1m.parquet": true,
+    "normalized/bybit-BTCUSDT-mark-1m.parquet": true,
+    "normalized/bybit-BTCUSDT-funding.parquet": true,
+    "normalized/bybit-SOLUSDT-daily.parquet": true,
+    "normalized/bybit-SOLUSDT-execution-1m.parquet": true,
+    "normalized/bybit-SOLUSDT-mark-1m.parquet": true,
+    "normalized/bybit-SOLUSDT-funding.parquet": true,
+    "runtime/var/venue-manifest.json": true,
+    "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": true,
+    "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": true
+  },
+  "all_pass": true
+}

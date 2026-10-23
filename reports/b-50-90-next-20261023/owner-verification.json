@@ -1,0 +1,28 @@
+{
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "canonical_clean": true,
+  "focused": {
+    "command": "cd CANONICAL/runtime && PYTHONPATH=. EXISTING_VENV/bin/python -m pytest -q tests/test_native_next_band.py tests/test_native_hedge_band.py tests/test_native_split_cover.py tests/test_native_minute_risk.py --disable-warnings",
+    "passed": 73,
+    "warnings": 198,
+    "seconds": 9.66,
+    "log": "owner-focused-tests.log"
+  },
+  "compileall": "PASS",
+  "CLI_help": "PASS_NO_ENGINE",
+  "git_diff_check": "PASS",
+  "patch_sha256": "15616d8792543fa2452645b45355021a28d6c8716330f5110b2c63800667401f",
+  "focused_log_sha256": "5d6766ee5a6ea5bf693ad9c62e6d9c4a1b42c7f6307ac7081f026a2e4efb2185",
+  "independent_review": "GO",
+  "full_native_runs": 0,
+  "prior_failures_retained_on_VPS": [
+    "/tmp/b-next-focused.log",
+    "/tmp/b-next-focused-correction.log",
+    "/tmp/b-next-customdata.log",
+    "/tmp/b-next-final-focused.log",
+    "/tmp/b-next-final-focused-v2.log"
+  ],
+  "no_product_edits_on_Mac": true,
+  "independent_review_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/independent_review.md",
+  "source_publication": "Rootpublishedcodex/b-50-90-next-20261023awaitingexactrefreadback"
+}

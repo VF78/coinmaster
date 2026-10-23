@@ -1,6 +1,6 @@
 {
   "utc": "2026-10-23T08:19:51.852538+00:00",
-  "status": "OWNER_ACCEPTED_IMPLEMENTATION_PRECHECK_IN_PROGRESS",
+  "status": "COMPLETED_VALID_NEGATIVE_NO_GO",
   "authority": "owner-task.txt + direct owner instruction integrate and execute",
   "source_base": "25a085f596292df58e51188dd91e996adbe5724c",
   "controls": {
@@ -30,7 +30,7 @@
   ],
   "main_full_attempt_limit": 8,
   "conditional_control_limit": 4,
-  "full_attempts_used": 0,
+  "full_attempts_used": 8,
   "extra_controls_eligible_if": {
     "pass_50_90": true,
     "or_near_Pareto": {
@@ -56,5 +56,8 @@
   "source_product_edits_canonical_VPS_only": true,
   "general20percent_guard": "SUPERSEDED_NOT_IMPLEMENTED",
   "backtest_qualification": "NOT_FAITHFUL_DIAGNOSTIC",
-  "old_history_is_fresh_OOS": false
+  "old_history_is_fresh_OOS": false,
+  "conditional_attempts_used": 0,
+  "native_launches_closed": true,
+  "final_selection": "selection.json"
 }

@@ -1,0 +1,30 @@
+{
+  "status": "FROZEN_OWNER_SCOPE_COMPLETE",
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "freeze_utc": "2026-10-23T09:43:54.776125+00:00",
+  "manifest": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-file-manifest.json",
+    "sha256": "bc89ca141213a55d6ba9a7b55379d2930dae8a3338eb516c01cee05e0fd18987",
+    "bytes": 105932
+  },
+  "main_completed": 8,
+  "conditional_completed": 0,
+  "active_engines": 0,
+  "reserved": 0,
+  "ledger_owner": "root_finalization",
+  "native_launches_closed": true,
+  "no_source_changes_or_new_native_after_this_freeze": true,
+  "owner_file_count": 144,
+  "native_file_count": 64,
+  "all_8_mechanical_checks_PASS": true,
+  "complete_settled_receipts_each": 1051199,
+  "Z_first_arm_equivalence_armed_cohorts": 74,
+  "initial_slot_reconstruction_exact_cohorts": 74,
+  "resources": {
+    "time_real_seconds": "1397.55",
+    "user_seconds": "1340.98",
+    "system_seconds": "15.65",
+    "maximum_resident_set_size_bytes": 468992000,
+    "qualification": "Sum of eight /usr/bin/time -l native wrappers; peak RSS is maximum, not sum; offline analysis excluded."
+  }
+}

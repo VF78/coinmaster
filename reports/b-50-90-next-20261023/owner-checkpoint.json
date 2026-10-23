@@ -1,0 +1,21 @@
+{
+  "status": "OWNER_OUTPUTS_FROZEN_ALL_8_MAIN_COMPLETE_NO_GO",
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "source_mirror": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/source-bd04c9b",
+  "source_manifest": "owner-file-manifest.json",
+  "budget": "owner-run-budget.json",
+  "P0": "owner-P0-parity.json",
+  "focused": "owner-verification.json",
+  "rootcause": "owner-rootcause.md",
+  "precheck_freeze": "owner-precheck-freeze.json",
+  "full_runs_completed": 8,
+  "full_runs_started": 8,
+  "conditional_runs": 0,
+  "active_engines": 0,
+  "reserved": 0,
+  "no_further_native_authorization": true,
+  "ledger_owner": "root_finalization",
+  "no_pilot_or_services_changes": true,
+  "source_edits_after_results": false,
+  "freeze_utc": "2026-10-23T09:43:54.776125+00:00"
+}

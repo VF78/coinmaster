@@ -1,0 +1,13 @@
+{
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "authorized_recipes": [
+    "XZ",
+    "XS",
+    "XZS"
+  ],
+  "authorization": "ROOT_GO_ALL_THREE_FROZEN_E_STAR_E4_AFTER_VALID_ACTIVE_COMPONENTS",
+  "E_star": "E4",
+  "Z_source_qualification": "owner-Z-arm-equivalence.json",
+  "conditional_extras_authorized": 0,
+  "authorized_utc": "2026-10-23T09:18:09.606708+00:00"
+}

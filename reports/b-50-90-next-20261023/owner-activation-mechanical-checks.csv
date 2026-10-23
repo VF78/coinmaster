@@ -1,0 +1,9 @@
+recipe,native_risk_fill_count,policy_risk_fill_receipts,native_risk_BTC_units,native_risk_SOL_units,policy_risk_BTC_units,policy_risk_SOL_units,actual_fill_qty_equal,Z_triggers,S_triggers,first_risk_fill_utc,no_extra_engine
+E4,0,0,0,0,0,0,True,0,0,,True
+EP,0,0,0,0,0,0,True,0,0,,True
+P0,0,0,0,0,0,0,True,0,0,,True
+S,1,1,0,500,0,500.0,True,0,1,2024-10-03T15:00:00+00:00,True
+XS,1,1,0,500,0,500.0,True,0,1,2024-10-03T15:00:00+00:00,True
+XZ,14,14,1371.718,0,1371.718,0,True,14,0,2024-09-18T05:07:00+00:00,True
+XZS,15,15,1346.674,500,1346.674,500.0,True,14,1,2024-09-18T05:07:00+00:00,True
+Z,15,15,780.337,0,780.337,0,True,15,0,2024-09-18T05:07:00+00:00,True

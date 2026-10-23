@@ -1,0 +1,122 @@
+{
+  "P0": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  },
+  "E4": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  },
+  "EP": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  },
+  "Z": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  },
+  "S": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  },
+  "XZ": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  },
+  "XS": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  },
+  "XZS": {
+    "checks": {
+      "frozen_native_audit_export": true,
+      "native_audit_count": true,
+      "all_liquidity_explicit": true,
+      "all_commission_currency_USDT": true,
+      "native_fee_total": true,
+      "native_fill_notional_total": true,
+      "BTC_actual_native_commission_exact": true,
+      "BTC_actual_native_count_exact": true,
+      "SOL_actual_native_commission_exact": true,
+      "SOL_actual_native_count_exact": true
+    },
+    "all_pass": true
+  }
+}

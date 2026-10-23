@@ -1,0 +1,16 @@
+{
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "authorized_recipes": [
+    "P0",
+    "E4",
+    "EP",
+    "Z",
+    "S"
+  ],
+  "authorization": "ROOT_GO_AFTER_INDEPENDENT_REVIEW_ACCEPTED_BOUNDED_OWNER_PROTOCOL",
+  "authorized_utc": "2026-10-23T08:51:10.486784+00:00",
+  "candidate_precondition": "P0_EXACT_B_ECONOMIC_ACTION_SETTLED_RISK_PARITY",
+  "independent_review": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/independent_review.md",
+  "max_main": 8,
+  "conditional_extras_authorized": 0
+}

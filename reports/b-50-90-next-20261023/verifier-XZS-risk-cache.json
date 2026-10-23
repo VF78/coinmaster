@@ -1,0 +1,637 @@
+{
+  "compressed_trace_sha256": "e0d15eb6421d7212bd0892493eab35483014b0a38a07134b0c2d27856fc152bd",
+  "risk": {
+    "receipts": 1051199,
+    "missing_source_minutes": 0,
+    "invalid_timestamp_rows": 0,
+    "global_settled_DD_percent": "58.71953818315642454894385564",
+    "global_peak_trough_recovery": {
+      "peak_utc": "2025-01-13T00:37:00+00:00",
+      "peak_equity": "152418.7843454",
+      "trough_utc": "2025-01-13T14:37:00+00:00",
+      "trough_equity": "62919.1780734",
+      "recovery_utc": "2025-01-14T14:42:00+00:00",
+      "recovery_equity": "152531.35187706"
+    },
+    "maximum_equity": "8497605.28553849",
+    "maximum_equity_utc": "2026-07-06T13:40:00+00:00",
+    "minimum_equity": "7019.03775762",
+    "minimum_equity_utc": "2024-10-03T15:45:00+00:00",
+    "last_preterminal_observation": {
+      "receipt_ns": 1788220800000000000,
+      "source_quote_ns": 1788220740000000000,
+      "equity": "4704161.25666766",
+      "cash": "4622512.16466766",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"187.376\",\"avg_px_open\":\"78089.15\",\"mark_ohlc\":{\"open_time_ms\":1788220680000,\"open\":\"78522.2\",\"high\":\"78526.65\",\"low\":\"78520.2\",\"close\":\"78524.9\"},\"low_native_pnl\":\"80768.4248\",\"high_native_pnl\":\"81967.6312\"}]"
+    },
+    "monthly": [
+      {
+        "month": "2024-09",
+        "start_equity": "10000",
+        "start_receipt_utc": "2024-09-01T00:00:00+00:00",
+        "end_equity": "12018.26221825",
+        "end_receipt_utc": "2024-09-30T23:59:00+00:00",
+        "samples": 43198,
+        "peak": "13426.6743211",
+        "local_DD_fraction": "0.2708832789251738097705127631",
+        "return_percent": "20.182622182500"
+      },
+      {
+        "month": "2024-10",
+        "start_equity": "12018.26221825",
+        "start_receipt_utc": "2024-10-01T00:00:00+00:00",
+        "end_equity": "20907.87571818",
+        "end_receipt_utc": "2024-10-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "20907.87571818",
+        "local_DD_fraction": "0.5046921091371682377806349204",
+        "return_percent": "73.96754487875063218064929240"
+      },
+      {
+        "month": "2024-11",
+        "start_equity": "20907.87571818",
+        "start_receipt_utc": "2024-11-01T00:00:00+00:00",
+        "end_equity": "60273.98867537",
+        "end_receipt_utc": "2024-11-30T23:59:00+00:00",
+        "samples": 43200,
+        "peak": "61181.64318005",
+        "local_DD_fraction": "0.3070240933653074621301784795",
+        "return_percent": "188.2836567799187327166421522"
+      },
+      {
+        "month": "2024-12",
+        "start_equity": "60273.98867537",
+        "start_receipt_utc": "2024-12-01T00:00:00+00:00",
+        "end_equity": "66602.96650185",
+        "end_receipt_utc": "2024-12-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "76242.96650185",
+        "local_DD_fraction": "0.2539112693878133147155951937",
+        "return_percent": "10.50034677573318689437104390"
+      },
+      {
+        "month": "2025-01",
+        "start_equity": "66482.96650185",
+        "start_receipt_utc": "2025-01-01T00:00:00+00:00",
+        "end_equity": "172931.83317131",
+        "end_receipt_utc": "2025-01-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "198230.54092083",
+        "local_DD_fraction": "0.5871953818315642454894385564",
+        "return_percent": "160.1144958934675122024990432"
+      },
+      {
+        "month": "2025-02",
+        "start_equity": "173066.93517131",
+        "start_receipt_utc": "2025-02-01T00:00:00+00:00",
+        "end_equity": "233231.92812113",
+        "end_receipt_utc": "2025-02-28T23:59:00+00:00",
+        "samples": 40320,
+        "peak": "233877.45326236",
+        "local_DD_fraction": "0.1981091192464391318141743046",
+        "return_percent": "34.76400208408717010545675230"
+      },
+      {
+        "month": "2025-03",
+        "start_equity": "233231.92812113",
+        "start_receipt_utc": "2025-03-01T00:00:00+00:00",
+        "end_equity": "441116.24192647",
+        "end_receipt_utc": "2025-03-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "450377.41952695",
+        "local_DD_fraction": "0.1788015923739496493303273404",
+        "return_percent": "89.13201356264327239603756320"
+      },
+      {
+        "month": "2025-04",
+        "start_equity": "441176.24192647",
+        "start_receipt_utc": "2025-04-01T00:00:00+00:00",
+        "end_equity": "425720.46722567",
+        "end_receipt_utc": "2025-04-30T23:59:00+00:00",
+        "samples": 43200,
+        "peak": "553177.48912388",
+        "local_DD_fraction": "0.3424529411209589724536596291",
+        "return_percent": "-3.503310747947298665499228920"
+      },
+      {
+        "month": "2025-05",
+        "start_equity": "425720.46722567",
+        "start_receipt_utc": "2025-05-01T00:00:00+00:00",
+        "end_equity": "403181.73154577",
+        "end_receipt_utc": "2025-05-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "457921.77127601",
+        "local_DD_fraction": "0.1510665298651068658011716459",
+        "return_percent": "-5.294257010187966886052677170"
+      },
+      {
+        "month": "2025-06",
+        "start_equity": "403262.98064577",
+        "start_receipt_utc": "2025-06-01T00:00:00+00:00",
+        "end_equity": "402626.87106541",
+        "end_receipt_utc": "2025-06-30T23:59:00+00:00",
+        "samples": 43200,
+        "peak": "423183.07204217",
+        "local_DD_fraction": "0.3250468372765458228727260212",
+        "return_percent": "-0.1577406335045578225448854600"
+      },
+      {
+        "month": "2025-07",
+        "start_equity": "402967.42866541",
+        "start_receipt_utc": "2025-07-01T00:00:00+00:00",
+        "end_equity": "546107.03504212",
+        "end_receipt_utc": "2025-07-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "549107.03504212",
+        "local_DD_fraction": "0.1238690066167410843716139538",
+        "return_percent": "35.52138366387944411283280960"
+      },
+      {
+        "month": "2025-08",
+        "start_equity": "547027.03504212",
+        "start_receipt_utc": "2025-08-01T00:00:00+00:00",
+        "end_equity": "777756.72970154",
+        "end_receipt_utc": "2025-08-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "788278.07712532",
+        "local_DD_fraction": "0.1397731557940136541860280238",
+        "return_percent": "42.17884672585775760773299120"
+      },
+      {
+        "month": "2025-09",
+        "start_equity": "777756.72970154",
+        "start_receipt_utc": "2025-09-01T00:00:00+00:00",
+        "end_equity": "1166656.3708952",
+        "end_receipt_utc": "2025-09-30T23:59:00+00:00",
+        "samples": 43200,
+        "peak": "1166656.3708952",
+        "local_DD_fraction": "0.3783405418529166434185444783",
+        "return_percent": "50.00273560383054026201645730"
+      },
+      {
+        "month": "2025-10",
+        "start_equity": "1166656.3708952",
+        "start_receipt_utc": "2025-10-01T00:00:00+00:00",
+        "end_equity": "1293670.17741773",
+        "end_receipt_utc": "2025-10-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "1742192.64879297",
+        "local_DD_fraction": "0.3761351872361799110159753217",
+        "return_percent": "10.88699377907392145724368310"
+      },
+      {
+        "month": "2025-11",
+        "start_equity": "1293670.17741773",
+        "start_receipt_utc": "2025-11-01T00:00:00+00:00",
+        "end_equity": "1356619.84667231",
+        "end_receipt_utc": "2025-11-30T23:59:00+00:00",
+        "samples": 43200,
+        "peak": "1696918.26779090",
+        "local_DD_fraction": "0.3271784382026659939453120787",
+        "return_percent": "4.865975142151967691119510500"
+      },
+      {
+        "month": "2025-12",
+        "start_equity": "1362215.12027231",
+        "start_receipt_utc": "2025-12-01T00:00:00+00:00",
+        "end_equity": "1840481.63809411",
+        "end_receipt_utc": "2025-12-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "1840481.63809411",
+        "local_DD_fraction": "0.08041767768390251701586907382",
+        "return_percent": "35.10947064852674667691229390"
+      },
+      {
+        "month": "2026-01",
+        "start_equity": "1840481.63809411",
+        "start_receipt_utc": "2026-01-01T00:00:00+00:00",
+        "end_equity": "2116168.80218637",
+        "end_receipt_utc": "2026-01-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "2165231.83449632",
+        "local_DD_fraction": "0.2633769196366252793814919227",
+        "return_percent": "14.97907712775362068105952320"
+      },
+      {
+        "month": "2026-02",
+        "start_equity": "2116168.80218637",
+        "start_receipt_utc": "2026-02-01T00:00:00+00:00",
+        "end_equity": "3407666.55222295",
+        "end_receipt_utc": "2026-02-28T23:59:00+00:00",
+        "samples": 40320,
+        "peak": "3533888.25161552",
+        "local_DD_fraction": "0.2271345555703936147634101168",
+        "return_percent": "61.02999669507642590977891490"
+      },
+      {
+        "month": "2026-03",
+        "start_equity": "3407666.55222295",
+        "start_receipt_utc": "2026-03-01T00:00:00+00:00",
+        "end_equity": "5309250.49461219",
+        "end_receipt_utc": "2026-03-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "5466396.05243977",
+        "local_DD_fraction": "0.3025325408757975582285106245",
+        "return_percent": "55.80311081636684047350740110"
+      },
+      {
+        "month": "2026-04",
+        "start_equity": "5309250.49461219",
+        "start_receipt_utc": "2026-04-01T00:00:00+00:00",
+        "end_equity": "7671375.84904826",
+        "end_receipt_utc": "2026-04-30T23:59:00+00:00",
+        "samples": 43200,
+        "peak": "7734011.48529373",
+        "local_DD_fraction": "0.1466217713375757186275235184",
+        "return_percent": "44.49074981173231640570538000"
+      },
+      {
+        "month": "2026-05",
+        "start_equity": "7660361.07384826",
+        "start_receipt_utc": "2026-05-01T00:00:00+00:00",
+        "end_equity": "7485949.82792805",
+        "end_receipt_utc": "2026-05-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "8409479.84399094",
+        "local_DD_fraction": "0.2224678853028481744751350883",
+        "return_percent": "-2.276801892741496367642969240"
+      },
+      {
+        "month": "2026-06",
+        "start_equity": "7485709.82792805",
+        "start_receipt_utc": "2026-06-01T00:00:00+00:00",
+        "end_equity": "8121986.69145145",
+        "end_receipt_utc": "2026-06-30T23:59:00+00:00",
+        "samples": 43200,
+        "peak": "8215116.38660902",
+        "local_DD_fraction": "0.05311509948456105700704093493",
+        "return_percent": "8.499886826357433161401513200"
+      },
+      {
+        "month": "2026-07",
+        "start_equity": "8121986.69145145",
+        "start_receipt_utc": "2026-07-01T00:00:00+00:00",
+        "end_equity": "5297582.21781435",
+        "end_receipt_utc": "2026-07-31T23:59:00+00:00",
+        "samples": 44640,
+        "peak": "8497605.28553849",
+        "local_DD_fraction": "0.3955800547430044694434685693",
+        "return_percent": "-34.77479809970436177828605923"
+      },
+      {
+        "month": "2026-08",
+        "start_equity": "5297582.21781435",
+        "start_receipt_utc": "2026-08-01T00:00:00+00:00",
+        "end_equity": "4704161.25666766",
+        "end_receipt_utc": "2026-09-01T00:00:00+00:00",
+        "samples": 44641,
+        "peak": "5476260.71196439",
+        "local_DD_fraction": "0.2131263091383329720238520370",
+        "return_percent": "-11.20173197409139324111761566"
+      }
+    ],
+    "excursions_ge_30percent": [
+      {
+        "peak_utc": "2024-10-03T04:01:00+00:00",
+        "peak_equity": "14171.0598339",
+        "trough_utc": "2024-10-03T15:45:00+00:00",
+        "trough_equity": "7019.03775762",
+        "drawdown_fraction": "0.5046921091371682377806349204",
+        "recovery_utc": "2024-10-11T14:44:00+00:00",
+        "recovery_equity": "14214.14236575",
+        "peak_native_snapshot": {
+          "receipt_ns": 1727928060000000000,
+          "source_quote_ns": 1727928000000000000,
+          "equity": "14171.0598339",
+          "cash": "11929.1910339",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"0.896\",\"avg_px_open\":\"60887.24999999999\",\"mark_ohlc\":{\"open_time_ms\":1727927940000,\"open\":\"61446.9\",\"high\":\"61447\",\"low\":\"61436.79\",\"close\":\"61443.17\"},\"low_native_pnl\":\"-492.3968\",\"high_native_pnl\":\"-501.536\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"1000.0\",\"avg_px_open\":\"140.09\",\"mark_ohlc\":{\"open_time_ms\":1727927940000,\"open\":\"142.756\",\"high\":\"142.94\",\"low\":\"142.707\",\"close\":\"142.83\"},\"low_native_pnl\":\"2620\",\"high_native_pnl\":\"2850\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1727970300000000000,
+          "source_quote_ns": 1727970240000000000,
+          "equity": "7019.03775762",
+          "cash": "9872.13215762",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"0.896\",\"avg_px_open\":\"60887.24999999999\",\"mark_ohlc\":{\"open_time_ms\":1727970180000,\"open\":\"60186.45\",\"high\":\"60230\",\"low\":\"60155.17\",\"close\":\"60209.94\"},\"low_native_pnl\":\"655.9168\",\"high_native_pnl\":\"588.896\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"500.0\",\"avg_px_open\":\"140.09\",\"mark_ohlc\":{\"open_time_ms\":1727970180000,\"open\":\"133.596\",\"high\":\"133.72\",\"low\":\"133.161\",\"close\":\"133.166\"},\"low_native_pnl\":\"-3465\",\"high_native_pnl\":\"-3185\"}]"
+        },
+        "recovery_native_snapshot": {
+          "receipt_ns": 1728657840000000000,
+          "source_quote_ns": 1728657780000000000,
+          "equity": "14214.14236575",
+          "cash": "10197.75336575",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"770.9\",\"avg_px_open\":\"138.97\",\"mark_ohlc\":{\"open_time_ms\":1728657720000,\"open\":\"144.12\",\"high\":\"144.31\",\"low\":\"144.12\",\"close\":\"144.184\"},\"low_native_pnl\":\"3970.135\",\"high_native_pnl\":\"4116.606\"}]"
+        }
+      },
+      {
+        "peak_utc": "2024-11-22T19:18:00+00:00",
+        "peak_equity": "34588.13819844",
+        "trough_utc": "2024-11-23T04:43:00+00:00",
+        "trough_equity": "23968.74642687",
+        "drawdown_fraction": "0.3070240933653074621301784795",
+        "recovery_utc": "2024-11-24T10:49:00+00:00",
+        "recovery_equity": "34621.10110589",
+        "peak_native_snapshot": {
+          "receipt_ns": 1732303080000000000,
+          "source_quote_ns": 1732303020000000000,
+          "equity": "34588.13819844",
+          "cash": "30383.86719844",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"863.3\",\"avg_px_open\":\"256.64\",\"mark_ohlc\":{\"open_time_ms\":1732302960000,\"open\":\"252.02\",\"high\":\"252.31\",\"low\":\"251.61\",\"close\":\"251.77\"},\"low_native_pnl\":\"4342.399\",\"high_native_pnl\":\"3738.089\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1732336980000000000,
+          "source_quote_ns": 1732336920000000000,
+          "equity": "23968.74642687",
+          "cash": "30426.23042687",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"863.3\",\"avg_px_open\":\"256.64\",\"mark_ohlc\":{\"open_time_ms\":1732336860000,\"open\":\"263.79\",\"high\":\"264.22\",\"low\":\"263.72\",\"close\":\"264.12\"},\"low_native_pnl\":\"-6112.164\",\"high_native_pnl\":\"-6543.814\"}]"
+        },
+        "recovery_native_snapshot": {
+          "receipt_ns": 1732445340000000000,
+          "source_quote_ns": 1732445280000000000,
+          "equity": "34621.10110589",
+          "cash": "30701.71910589",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"863.3\",\"avg_px_open\":\"256.64\",\"mark_ohlc\":{\"open_time_ms\":1732445220000,\"open\":\"252.39\",\"high\":\"252.39\",\"low\":\"251.05\",\"close\":\"252.101\"},\"low_native_pnl\":\"4825.847\",\"high_native_pnl\":\"3669.025\"}]"
+        }
+      },
+      {
+        "peak_utc": "2025-01-13T00:37:00+00:00",
+        "peak_equity": "152418.7843454",
+        "trough_utc": "2025-01-13T14:37:00+00:00",
+        "trough_equity": "62919.1780734",
+        "drawdown_fraction": "0.5871953818315642454894385564",
+        "recovery_utc": "2025-01-14T14:42:00+00:00",
+        "recovery_equity": "152531.35187706",
+        "peak_native_snapshot": {
+          "receipt_ns": 1736728620000000000,
+          "source_quote_ns": 1736728560000000000,
+          "equity": "152418.7843454",
+          "cash": "134218.7843454",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"4000.0\",\"avg_px_open\":\"187.23\",\"mark_ohlc\":{\"open_time_ms\":1736728500000,\"open\":\"191.45\",\"high\":\"191.82\",\"low\":\"191.441\",\"close\":\"191.78\"},\"low_native_pnl\":\"16840\",\"high_native_pnl\":\"18360\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1736779020000000000,
+          "source_quote_ns": 1736778960000000000,
+          "equity": "62919.1780734",
+          "cash": "134199.1780734",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"4000.0\",\"avg_px_open\":\"187.23\",\"mark_ohlc\":{\"open_time_ms\":1736778900000,\"open\":\"171.88\",\"high\":\"172.6\",\"low\":\"168.923\",\"close\":\"169.41\"},\"low_native_pnl\":\"-73240\",\"high_native_pnl\":\"-58520\"}]"
+        },
+        "recovery_native_snapshot": {
+          "receipt_ns": 1736865720000000000,
+          "source_quote_ns": 1736865660000000000,
+          "equity": "152531.35187706",
+          "cash": "133951.35187706",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"5000.0\",\"avg_px_open\":\"186.334\",\"mark_ohlc\":{\"open_time_ms\":1736865600000,\"open\":\"189.71\",\"high\":\"190.05\",\"low\":\"189.71\",\"close\":\"190.05\"},\"low_native_pnl\":\"16880\",\"high_native_pnl\":\"18580\"}]"
+        }
+      },
+      {
+        "peak_utc": "2025-04-11T01:01:00+00:00",
+        "peak_equity": "553177.48912388",
+        "trough_utc": "2025-06-06T15:18:00+00:00",
+        "trough_equity": "285628.75288589",
+        "drawdown_fraction": "0.4836580329068206947291433479",
+        "recovery_utc": "2025-08-02T14:40:00+00:00",
+        "recovery_equity": "553261.51912692",
+        "peak_native_snapshot": {
+          "receipt_ns": 1744333260000000000,
+          "source_quote_ns": 1744333200000000000,
+          "equity": "553177.48912388",
+          "cash": "536979.57106246",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"30.600\",\"avg_px_open\":\"79549.64960985038\",\"mark_ohlc\":{\"open_time_ms\":1744333140000,\"open\":\"79060\",\"high\":\"79060\",\"low\":\"78933.7\",\"close\":\"79005.6\"},\"low_native_pnl\":\"18848.05806142\",\"high_native_pnl\":\"14983.27806142\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"1000.0\",\"avg_px_open\":\"112.65\",\"mark_ohlc\":{\"open_time_ms\":1744333140000,\"open\":\"112.222\",\"high\":\"112.26\",\"low\":\"112.104\",\"close\":\"112.2\"},\"low_native_pnl\":\"-550\",\"high_native_pnl\":\"-390\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1749223080000000000,
+          "source_quote_ns": 1749223020000000000,
+          "equity": "285628.75288589",
+          "cash": "373689.95213589",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"22.915\",\"avg_px_open\":\"101382.65000000001\",\"mark_ohlc\":{\"open_time_ms\":1749222960000,\"open\":\"105170.55\",\"high\":\"105293.94\",\"low\":\"105152.29\",\"close\":\"105225.64\"},\"low_native_pnl\":\"-86381.52975\",\"high_native_pnl\":\"-89626.29375\"}]"
+        },
+        "recovery_native_snapshot": {
+          "receipt_ns": 1754145600000000000,
+          "source_quote_ns": 1754145540000000000,
+          "equity": "553261.51912692",
+          "cash": "545757.33842692",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"21.849\",\"avg_px_open\":\"113427.45648313424\",\"mark_ohlc\":{\"open_time_ms\":1754145480000,\"open\":\"113182.7\",\"high\":\"113182.7\",\"low\":\"113083.98\",\"close\":\"113083.98\"},\"low_native_pnl\":\"7504.1807\",\"high_native_pnl\":\"5347.6844\"}]"
+        }
+      },
+      {
+        "peak_utc": "2025-09-06T17:47:00+00:00",
+        "peak_equity": "807375.63527723",
+        "trough_utc": "2025-09-18T17:14:00+00:00",
+        "trough_equity": "501912.6999476",
+        "drawdown_fraction": "0.3783405418529166434185444783",
+        "recovery_utc": "2025-09-22T00:34:00+00:00",
+        "recovery_equity": "807524.78200151",
+        "peak_native_snapshot": {
+          "receipt_ns": 1757180820000000000,
+          "source_quote_ns": 1757180760000000000,
+          "equity": "807375.63527723",
+          "cash": "777575.41237723",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"31.819\",\"avg_px_open\":\"110876.15435117381\",\"mark_ohlc\":{\"open_time_ms\":1757180700000,\"open\":\"109948.2\",\"high\":\"109959.3\",\"low\":\"109939.31\",\"close\":\"109939.61\"},\"low_native_pnl\":\"29809.7686\",\"high_native_pnl\":\"29173.3886\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1758215640000000000,
+          "source_quote_ns": 1758215580000000000,
+          "equity": "501912.6999476",
+          "cash": "678010.1167476",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"18.864\",\"avg_px_open\":\"114130.85\",\"mark_ohlc\":{\"open_time_ms\":1758215520000,\"open\":\"117559.4\",\"high\":\"117703.43\",\"low\":\"117559.4\",\"close\":\"117703.43\"},\"low_native_pnl\":\"64676.1672\",\"high_native_pnl\":\"67392.5832\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"15000.0\",\"avg_px_open\":\"236.98733333333334\",\"mark_ohlc\":{\"open_time_ms\":1758215520000,\"open\":\"252.425\",\"high\":\"253.22\",\"low\":\"252.228\",\"close\":\"253.22\"},\"low_native_pnl\":\"-228640\",\"high_native_pnl\":\"-243490\"}]"
+        },
+        "recovery_native_snapshot": {
+          "receipt_ns": 1758501240000000000,
+          "source_quote_ns": 1758501180000000000,
+          "equity": "807524.78200151",
+          "cash": "676721.61320151",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"18.864\",\"avg_px_open\":\"114130.85\",\"mark_ohlc\":{\"open_time_ms\":1758501120000,\"open\":\"115021.16\",\"high\":\"115021.16\",\"low\":\"114786.84\",\"close\":\"114813.75\"},\"low_native_pnl\":\"12373.8408\",\"high_native_pnl\":\"16795.5624\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"22000.0\",\"avg_px_open\":\"238.24\",\"mark_ohlc\":{\"open_time_ms\":1758501120000,\"open\":\"233.67\",\"high\":\"234.06\",\"low\":\"232.53\",\"close\":\"232.88\"},\"low_native_pnl\":\"125620\",\"high_native_pnl\":\"91960\"}]"
+        }
+      },
+      {
+        "peak_utc": "2025-10-22T21:30:00+00:00",
+        "peak_equity": "1742192.64879297",
+        "trough_utc": "2025-10-29T21:37:00+00:00",
+        "trough_equity": "1086892.69063773",
+        "drawdown_fraction": "0.3761351872361799110159753217",
+        "recovery_utc": "2025-12-01T04:27:00+00:00",
+        "recovery_equity": "1742974.93323214",
+        "peak_native_snapshot": {
+          "receipt_ns": 1761168600000000000,
+          "source_quote_ns": 1761168540000000000,
+          "equity": "1742192.64879297",
+          "cash": "1629112.14479297",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"68.240\",\"avg_px_open\":\"108337.9\",\"mark_ohlc\":{\"open_time_ms\":1761168480000,\"open\":\"106777.54\",\"high\":\"106777.54\",\"low\":\"106680.06\",\"close\":\"106680.8\"},\"low_native_pnl\":\"113128.272\",\"high_native_pnl\":\"106481.696\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1761773820000000000,
+          "source_quote_ns": 1761773760000000000,
+          "equity": "1086892.69063773",
+          "cash": "1126168.15623773",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"46.144\",\"avg_px_open\":\"110890.54999999999\",\"mark_ohlc\":{\"open_time_ms\":1761773700000,\"open\":\"111736.82\",\"high\":\"111763\",\"low\":\"111736.82\",\"close\":\"111741.66\"},\"low_native_pnl\":\"-39049.36\",\"high_native_pnl\":\"-40258.3328\"}]"
+        },
+        "recovery_native_snapshot": {
+          "receipt_ns": 1764563220000000000,
+          "source_quote_ns": 1764563160000000000,
+          "equity": "1742974.93323214",
+          "cash": "1602497.7000208",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"83.263\",\"avg_px_open\":\"87414.8507537723\",\"mark_ohlc\":{\"open_time_ms\":1764563100000,\"open\":\"85807.32\",\"high\":\"85807.32\",\"low\":\"85727.69\",\"close\":\"85727.69\"},\"low_native_pnl\":\"140477.23321134\",\"high_native_pnl\":\"133849.49841134\"}]"
+        }
+      },
+      {
+        "peak_utc": "2026-03-17T01:37:00+00:00",
+        "peak_equity": "4526796.98990549",
+        "trough_utc": "2026-03-20T08:14:00+00:00",
+        "trough_equity": "3157293.59452047",
+        "drawdown_fraction": "0.3025325408757975582285106245",
+        "recovery_utc": "2026-03-27T08:30:00+00:00",
+        "recovery_equity": "4538020.2826055",
+        "peak_native_snapshot": {
+          "receipt_ns": 1773711420000000000,
+          "source_quote_ns": 1773711360000000000,
+          "equity": "4526796.98990549",
+          "cash": "3891986.84990549",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"167.600\",\"avg_px_open\":\"72170.54999999999\",\"mark_ohlc\":{\"open_time_ms\":1773711300000,\"open\":\"75844.13\",\"high\":\"75996.04\",\"low\":\"75841.6\",\"close\":\"75958.2\"},\"low_native_pnl\":\"615267.98\",\"high_native_pnl\":\"641145.42\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1773994440000000000,
+          "source_quote_ns": 1773994380000000000,
+          "equity": "3157293.59452047",
+          "cash": "3715361.00372047",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"419.789\",\"avg_px_open\":\"69968.50020819984\",\"mark_ohlc\":{\"open_time_ms\":1773994320000,\"open\":\"71254.5\",\"high\":\"71338\",\"low\":\"71232.51\",\"close\":\"71297.86\"},\"low_native_pnl\":\"-530613.2086\",\"high_native_pnl\":\"-574900.9481\"}]"
+        },
+        "recovery_native_snapshot": {
+          "receipt_ns": 1774600200000000000,
+          "source_quote_ns": 1774600140000000000,
+          "equity": "4538020.2826055",
+          "cash": "4287204.2694055",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"436.088\",\"avg_px_open\":\"68808.75\",\"mark_ohlc\":{\"open_time_ms\":1774600080000,\"open\":\"68292.86\",\"high\":\"68300\",\"low\":\"68225.72\",\"close\":\"68233.6\"},\"low_native_pnl\":\"254261.1084\",\"high_native_pnl\":\"221859.77\"}]"
+        }
+      },
+      {
+        "peak_utc": "2026-07-06T13:40:00+00:00",
+        "peak_equity": "8497605.28553849",
+        "trough_utc": "2026-08-19T06:14:00+00:00",
+        "trough_equity": "4309125.47854416",
+        "drawdown_fraction": "0.4929011958371878689883902632",
+        "recovery_utc": null,
+        "recovery_equity": null,
+        "peak_native_snapshot": {
+          "receipt_ns": 1783345200000000000,
+          "source_quote_ns": 1783345140000000000,
+          "equity": "8497605.28553849",
+          "cash": "8142722.38828849",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"275.755\",\"avg_px_open\":\"62653.649999999994\",\"mark_ohlc\":{\"open_time_ms\":1783345080000,\"open\":\"61427\",\"high\":\"61454.9\",\"low\":\"61285.5\",\"close\":\"61366.7\"},\"low_native_pnl\":\"377274.20325\",\"high_native_pnl\":\"330561.30625\"}]"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1787120040000000000,
+          "source_quote_ns": 1787119980000000000,
+          "equity": "4309125.47854416",
+          "cash": "4448326.32054416",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"217.162\",\"avg_px_open\":\"64778.700000000004\",\"mark_ohlc\":{\"open_time_ms\":1787119920000,\"open\":\"64149.34\",\"high\":\"64149.35\",\"low\":\"64137.74\",\"close\":\"64137.74\"},\"low_native_pnl\":\"-139200.842\",\"high_native_pnl\":\"-136681.7628\"}]"
+        },
+        "recovery_native_snapshot": null
+      }
+    ],
+    "fixed_prior_A_C_D_boundary_snapshots": {
+      "2024-09-01T00:00:00+00:00": {
+        "target_ns": 1725148800000000000,
+        "prior_native_receipt": {
+          "receipt_ns": 1725148800000000000,
+          "source_quote_ns": 1725148800000000000,
+          "equity": "10000",
+          "cash": "10000",
+          "native_positions_and_mark_ohlc_json": "[]",
+          "basis": "ORIGINAL_FLAT_SEED"
+        },
+        "first_native_receipt_at_or_after": {
+          "receipt_ns": 1725148920000000000,
+          "source_quote_ns": 1725148860000000000,
+          "equity": "10000",
+          "cash": "10000",
+          "native_positions_and_mark_ohlc_json": "[]"
+        }
+      },
+      "2024-10-04T00:00:00+00:00": {
+        "target_ns": 1728000000000000000,
+        "prior_native_receipt": {
+          "receipt_ns": 1727999940000000000,
+          "source_quote_ns": 1727999880000000000,
+          "equity": "8356.23900921",
+          "cash": "9877.81500921",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"0.896\",\"avg_px_open\":\"60887.24999999999\",\"mark_ohlc\":{\"open_time_ms\":1727999820000,\"open\":\"60731.2\",\"high\":\"60750.26\",\"low\":\"60726.86\",\"close\":\"60749.53\"},\"low_native_pnl\":\"143.6736\",\"high_native_pnl\":\"122.7072\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"500.0\",\"avg_px_open\":\"140.09\",\"mark_ohlc\":{\"open_time_ms\":1727999820000,\"open\":\"136.658\",\"high\":\"136.81\",\"low\":\"136.658\",\"close\":\"136.802\"},\"low_native_pnl\":\"-1715\",\"high_native_pnl\":\"-1640\"}]"
+        },
+        "first_native_receipt_at_or_after": {
+          "receipt_ns": 1728000000000000000,
+          "source_quote_ns": 1727999940000000000,
+          "equity": "8332.81500921",
+          "cash": "9877.81500921",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"0.896\",\"avg_px_open\":\"60887.24999999999\",\"mark_ohlc\":{\"open_time_ms\":1727999880000,\"open\":\"60749.53\",\"high\":\"60762.3\",\"low\":\"60730.9\",\"close\":\"60731.02\"},\"low_native_pnl\":\"140.0896\",\"high_native_pnl\":\"111.9552\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"500.0\",\"avg_px_open\":\"140.09\",\"mark_ohlc\":{\"open_time_ms\":1727999880000,\"open\":\"136.802\",\"high\":\"136.87\",\"low\":\"136.712\",\"close\":\"136.715\"},\"low_native_pnl\":\"-1690\",\"high_native_pnl\":\"-1610\"}]"
+        }
+      },
+      "2025-10-22T00:00:00+00:00": {
+        "target_ns": 1761091200000000000,
+        "prior_native_receipt": {
+          "receipt_ns": 1761091140000000000,
+          "source_quote_ns": 1761091080000000000,
+          "equity": "1631174.88965425",
+          "cash": "1631174.88965425",
+          "native_positions_and_mark_ohlc_json": "[]"
+        },
+        "first_native_receipt_at_or_after": {
+          "receipt_ns": 1761091200000000000,
+          "source_quote_ns": 1761091140000000000,
+          "equity": "1631174.88965425",
+          "cash": "1631174.88965425",
+          "native_positions_and_mark_ohlc_json": "[]"
+        }
+      },
+      "2025-11-29T00:00:00+00:00": {
+        "target_ns": 1764374400000000000,
+        "prior_native_receipt": {
+          "receipt_ns": 1764374340000000000,
+          "source_quote_ns": 1764374280000000000,
+          "equity": "1314777.96124007",
+          "cash": "1602097.69572873",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"83.263\",\"avg_px_open\":\"87414.8507537723\",\"mark_ohlc\":{\"open_time_ms\":1764374220000,\"open\":\"90862.08\",\"high\":\"90872.6\",\"low\":\"90858.12\",\"close\":\"90865.6\"},\"low_native_pnl\":\"-286695.26198866\",\"high_native_pnl\":\"-287902.57548866\"}]"
+        },
+        "first_native_receipt_at_or_after": {
+          "receipt_ns": 1764374400000000000,
+          "source_quote_ns": 1764374340000000000,
+          "equity": "1316459.87384007",
+          "cash": "1602097.69572873",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"83.263\",\"avg_px_open\":\"87414.8507537723\",\"mark_ohlc\":{\"open_time_ms\":1764374280000,\"open\":\"90865.6\",\"high\":\"90865.6\",\"low\":\"90845.42\",\"close\":\"90845.42\"},\"low_native_pnl\":\"-285637.82188866\",\"high_native_pnl\":\"-287319.73448866\"}]"
+        }
+      },
+      "2026-07-06T00:00:00+00:00": {
+        "target_ns": 1783296000000000000,
+        "prior_native_receipt": {
+          "receipt_ns": 1783295940000000000,
+          "source_quote_ns": 1783295880000000000,
+          "equity": "7889216.90939198",
+          "cash": "8141877.42814198",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"275.755\",\"avg_px_open\":\"62653.649999999994\",\"mark_ohlc\":{\"open_time_ms\":1783295820000,\"open\":\"63547.5\",\"high\":\"63569.9\",\"low\":\"63542.7\",\"close\":\"63569.9\"},\"low_native_pnl\":\"-245159.98275\",\"high_native_pnl\":\"-252660.51875\"}]"
+        },
+        "first_native_receipt_at_or_after": {
+          "receipt_ns": 1783296000000000000,
+          "source_quote_ns": 1783295940000000000,
+          "equity": "7886404.20839198",
+          "cash": "8141877.42814198",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"275.755\",\"avg_px_open\":\"62653.649999999994\",\"mark_ohlc\":{\"open_time_ms\":1783295880000,\"open\":\"63569.9\",\"high\":\"63580.12\",\"low\":\"63562.78\",\"close\":\"63580.11\"},\"low_native_pnl\":\"-250702.65825\",\"high_native_pnl\":\"-255473.21975\"}]"
+        }
+      },
+      "2026-08-19T00:00:00+00:00": {
+        "target_ns": 1787097600000000000,
+        "prior_native_receipt": {
+          "receipt_ns": 1787097540000000000,
+          "source_quote_ns": 1787097480000000000,
+          "equity": "4431272.51373374",
+          "cash": "4448580.32513374",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"217.162\",\"avg_px_open\":\"64778.700000000004\",\"mark_ohlc\":{\"open_time_ms\":1787097420000,\"open\":\"64693.4\",\"high\":\"64699\",\"low\":\"64693.31\",\"close\":\"64699\"},\"low_native_pnl\":\"-18545.6348\",\"high_native_pnl\":\"-17307.8114\"}]"
+        },
+        "first_native_receipt_at_or_after": {
+          "receipt_ns": 1787097600000000000,
+          "source_quote_ns": 1787097540000000000,
+          "equity": "4430143.27133374",
+          "cash": "4448580.32513374",
+          "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"217.162\",\"avg_px_open\":\"64778.700000000004\",\"mark_ohlc\":{\"open_time_ms\":1787097480000,\"open\":\"64699\",\"high\":\"64699\",\"low\":\"64693.71\",\"close\":\"64693.85\"},\"low_native_pnl\":\"-18458.77\",\"high_native_pnl\":\"-17307.8114\"}]"
+        }
+      }
+    },
+    "trace_stream_passes": 1,
+    "uncompressed_trace_sha256": "c57e7e33ea564dbd95253957d1e43f0b05985b87d1ae547ee66713c1c5d2e1b8"
+  }
+}

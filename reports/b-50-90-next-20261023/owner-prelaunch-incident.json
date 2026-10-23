@@ -1,0 +1,7 @@
+{
+  "classification": "LOCAL_RUNNER_PATH_TYPO_BEFORE_PYTHON_OR_NATIVE_CLI",
+  "native_engine_started": false,
+  "physical_full_attempts": 0,
+  "ledger_changed": false,
+  "subsequent_action": "Correct path launched Z exactly once under existing GO"
+}

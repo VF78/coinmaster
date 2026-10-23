@@ -1,0 +1,112 @@
+{
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "main_physical_attempts": 8,
+  "conditional_physical_attempts": 0,
+  "invalid_physical_native_attempts": 0,
+  "prelaunch_incident": "owner-prelaunch-incident.json (no native invocation, not an economic attempt)",
+  "resources": {
+    "time_real_seconds": "1397.55",
+    "user_seconds": "1340.98",
+    "system_seconds": "15.65",
+    "maximum_resident_set_size_bytes": 468992000,
+    "qualification": "Sum of eight /usr/bin/time -l native wrappers; peak RSS is maximum, not sum; offline analysis excluded."
+  },
+  "runs": [
+    {
+      "recipe": "P0",
+      "resources": {
+        "elapsed_monotonic_seconds": 167.2328320830129,
+        "time_real_seconds": 167.22,
+        "user_seconds": 161.18,
+        "system_seconds": 1.75,
+        "maximum_resident_set_size_bytes": 443924480,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/P0/native.log",
+        "wrapper_exit_code": 0
+      }
+    },
+    {
+      "recipe": "E4",
+      "resources": {
+        "elapsed_monotonic_seconds": 176.47748683393002,
+        "time_real_seconds": 176.5,
+        "user_seconds": 170.75,
+        "system_seconds": 1.82,
+        "maximum_resident_set_size_bytes": 468992000,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/native.log",
+        "wrapper_exit_code": 0
+      }
+    },
+    {
+      "recipe": "EP",
+      "resources": {
+        "elapsed_monotonic_seconds": 174.20289516681805,
+        "time_real_seconds": 174.19,
+        "user_seconds": 168.97,
+        "system_seconds": 1.84,
+        "maximum_resident_set_size_bytes": 447414272,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/EP/native.log",
+        "wrapper_exit_code": 0
+      }
+    },
+    {
+      "recipe": "Z",
+      "resources": {
+        "elapsed_monotonic_seconds": 168.39368562493473,
+        "time_real_seconds": 168.33,
+        "user_seconds": 163.53,
+        "system_seconds": 1.43,
+        "maximum_resident_set_size_bytes": 463175680,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/Z/native.log",
+        "wrapper_exit_code": 0
+      }
+    },
+    {
+      "recipe": "S",
+      "resources": {
+        "elapsed_monotonic_seconds": 177.297817917075,
+        "time_real_seconds": 177.3,
+        "user_seconds": 168.6,
+        "system_seconds": 2.48,
+        "maximum_resident_set_size_bytes": 418217984,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/S/native.log",
+        "wrapper_exit_code": 0
+      }
+    },
+    {
+      "recipe": "XZ",
+      "resources": {
+        "elapsed_monotonic_seconds": 174.5259311660193,
+        "time_real_seconds": 174.52,
+        "user_seconds": 167.93,
+        "system_seconds": 1.83,
+        "maximum_resident_set_size_bytes": 443858944,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZ/native.log",
+        "wrapper_exit_code": 0
+      }
+    },
+    {
+      "recipe": "XS",
+      "resources": {
+        "elapsed_monotonic_seconds": 187.12625325005502,
+        "time_real_seconds": 187.12,
+        "user_seconds": 172.4,
+        "system_seconds": 3.11,
+        "maximum_resident_set_size_bytes": 442548224,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XS/native.log",
+        "wrapper_exit_code": 0
+      }
+    },
+    {
+      "recipe": "XZS",
+      "resources": {
+        "elapsed_monotonic_seconds": 172.37917212489992,
+        "time_real_seconds": 172.37,
+        "user_seconds": 167.62,
+        "system_seconds": 1.39,
+        "maximum_resident_set_size_bytes": 443285504,
+        "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZS/native.log",
+        "wrapper_exit_code": 0
+      }
+    }
+  ]
+}

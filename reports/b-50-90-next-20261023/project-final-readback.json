@@ -1,0 +1,33 @@
+{
+  "utc": "2026-10-23T09:56:58.125760+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "Project": "https://github.com/users/VF78/projects/2",
+  "title": "[S0 DD50] B refinement — research complete; no 50/90 winner",
+  "state": "closed",
+  "state_reason": "completed",
+  "status": "Done",
+  "issue_body_sha256": "21fe985afbd7452eb448a7a070cdba65e3d441f36875a0a06793e6f0c805f14a",
+  "body_and_status_readback": "PASS",
+  "new_issues": 0,
+  "comments_created": 0,
+  "scope": "BOUNDED_RESEARCH_COMPLETE_NEGATIVE_NO_GO_NOT_GOAL_ACHIEVED",
+  "completed": [
+    "B00",
+    "B01",
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B06",
+    "B07",
+    "B08",
+    "B09",
+    "B10"
+  ],
+  "active": [],
+  "full_native_started": 8,
+  "full_native_completed": 8,
+  "conditional_runs": 0,
+  "economic_goal_achieved": false,
+  "pilot_changes": 0
+}

@@ -1,0 +1,36 @@
+{
+  "status": "FROZEN_ACTUAL_PROTOCOL_SELECTION",
+  "rule": "Accepted PLAN section9; no tuning; ties DD then actual fill turnover",
+  "stage": "2_MIN_DD_RETENTION90_DD_LE_S0",
+  "selected": "E4",
+  "rows": [
+    {
+      "recipe": "B",
+      "receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-P0-receipt.json",
+      "total": "4622034.27336437",
+      "dd": "57.58541045962226379114466259",
+      "retention": "76.01702247510777033476616279",
+      "turnover": "1406637279.4840",
+      "valid": true
+    },
+    {
+      "recipe": "E4",
+      "receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-receipt.json",
+      "total": "5631617.35953723",
+      "dd": "57.58541045962226379114466259",
+      "retention": "92.65729347120922274896207062",
+      "turnover": "1699934203.6796",
+      "valid": true
+    },
+    {
+      "recipe": "EP",
+      "receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-EP-receipt.json",
+      "total": "3992055.58641779",
+      "dd": "57.58541045962226379114466259",
+      "retention": "65.63351247366905933081845698",
+      "turnover": "1457295323.2032",
+      "valid": true
+    }
+  ],
+  "combination_launch_authorized": false
+}

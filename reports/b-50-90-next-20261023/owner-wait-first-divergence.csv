@@ -1,0 +1,6 @@
+recipe,first_divergent_parent_index,actual_entry_ns,actual_entry_utc,actual_side,actual_qty,actual_P0,reference_B_entry_ns,reference_B_side,reference_B_qty,permission_signal_asof_ns,permission_decision_time_ns,daily_signal_asof_ns,interpretation
+E4,6,1728230520000000000,2024-10-06T16:02:00+00:00,1,1.289,62755.4,1728259260000000000,1,0.742,1728230400000000000,1728230400000000000,1728172800000000000,First ordered calendar divergence; later paths not forced onto baseline entries
+EP,15,1734998460000000000,2024-12-24T00:01:00+00:00,-1,7.98,94761.2,1735084860000000000,1,5.359,,,,First ordered calendar divergence; later paths not forced onto baseline entries
+XS,6,1728230520000000000,2024-10-06T16:02:00+00:00,1,0.892,62755.4,1728259260000000000,1,0.742,1728230400000000000,1728230400000000000,1728172800000000000,First ordered calendar divergence; later paths not forced onto baseline entries
+XZ,6,1728230520000000000,2024-10-06T16:02:00+00:00,1,1.214,62755.4,1728259260000000000,1,0.742,1728230400000000000,1728230400000000000,1728172800000000000,First ordered calendar divergence; later paths not forced onto baseline entries
+XZS,6,1728230520000000000,2024-10-06T16:02:00+00:00,1,0.902,62755.4,1728259260000000000,1,0.742,1728230400000000000,1728230400000000000,1728172800000000000,First ordered calendar divergence; later paths not forced onto baseline entries

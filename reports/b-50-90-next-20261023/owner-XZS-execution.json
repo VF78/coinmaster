@@ -1,0 +1,23 @@
+{
+  "recipe": "XZS",
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "finished_utc": "2026-10-23T09:30:34.421831+00:00",
+  "exit_code": 0,
+  "resources": {
+    "elapsed_monotonic_seconds": 172.37917212489992,
+    "time_real_seconds": 172.37,
+    "user_seconds": 167.62,
+    "system_seconds": 1.39,
+    "maximum_resident_set_size_bytes": 443285504,
+    "resource_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZS/native.log",
+    "wrapper_exit_code": 0
+  },
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZS/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-Z-S-B-ATR0.5-btc-direction.json",
+  "log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/XZS/native.log",
+  "log_sha256": "1ba342975b71eaff64eb10bed5b555c71614d87c82d14b58efbfe91c96c1c1f6",
+  "state": "COMPLETED_PENDING_COLLECTION",
+  "native_status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "total": "4696068.73175334",
+  "config_sha256": "f444d5246b050cfeca499d1dbb5b6e9ce118027d4c29e9e732cdfd76731074b3",
+  "config_exact": true
+}

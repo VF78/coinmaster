@@ -1,0 +1,17 @@
+{
+  "status": "NO_GO_NO_50_90_WINNER",
+  "utc": "2026-10-23T09:44:48.520509+00:00",
+  "selected_for_pilot_or_live": null,
+  "S0_retained": true,
+  "best_new_TOTAL_recipe": "E4",
+  "research_candidate_only": true,
+  "lowest_DD_recipe": "S",
+  "E_star": "E4",
+  "E_star_selected_before_combinations": true,
+  "economic_goal_achieved": false,
+  "conditional_gate_passed": false,
+  "conditional_runs": 0,
+  "no_automatic_followup": true,
+  "future_runs_require_new_owner_agreement": true,
+  "reason": "All8DD>55%; E4retention92.6573/DD57.5854; SminimumDD57.1470; neither50/90norpreregisteredneargate"
+}

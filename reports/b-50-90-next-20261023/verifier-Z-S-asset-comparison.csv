@@ -1,0 +1,7 @@
+recipe,asset,confirmed_fill_net_ex_funding,native_fees,unallocated_cash_bridge,qualification
+P0,BTC,3946306.012935777170138,577343.13666423,33777.265463542829862,Actual closed native inventory; no causal allocation to individual risk intervention
+P0,SOL,631950.99496505,14747.18003495,33777.265463542829862,Actual closed native inventory; no causal allocation to individual risk intervention
+Z,BTC,1973456.171314044271116,425038.09408596,38982.179274735728884,Actual closed native inventory; no causal allocation to individual risk intervention
+Z,SOL,495268.43114540,13068.23285460,38982.179274735728884,Actual closed native inventory; no causal allocation to individual risk intervention
+S,BTC,3501449.380877217076984,542749.20082279,36726.031872722923016,Actual closed native inventory; no causal allocation to individual risk intervention
+S,SOL,607450.36588245,14344.42511755,36726.031872722923016,Actual closed native inventory; no causal allocation to individual risk intervention
