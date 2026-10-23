@@ -1,0 +1,87 @@
+{
+  "review_type": "independent_planning_methods_and_coverage",
+  "status": "PLANNING_COVERAGE_PASS_G1_PENDING",
+  "g0": "ROOT_REPORTED_PASS",
+  "full_native_attempts_at_handoff": 0,
+  "physical_full_attempt_cap": 6,
+  "full_engine_go": false,
+  "source_target": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "nautilus_pin": "1.231",
+  "scope": [
+    "SC-00 whole audit and rule evidence",
+    "SC-01 execution equivalence",
+    "SC-02 causal BTC records",
+    "SC-03 ADD-only H_SOL",
+    "SC-04 causal H_BTC",
+    "SC-05 portfolio acceptance"
+  ],
+  "reused_methods": [
+    "source identity/state machine review",
+    "saved native ablations and Pareto screening",
+    "saved common-base two-factor contrasts",
+    "native money and exposure attribution",
+    "recovery and risk migration",
+    "selection-bias limitations"
+  ],
+  "missing_actual_evidence": [
+    "rule-by-rule source/provenance/benefit/disposition",
+    "pinned native shared-liquidity and execution fixtures",
+    "child1000 admission/lifecycle/calendar equivalence",
+    "H_SOL unique reservation transitions and affine units",
+    "causal H_BTC label/Q90 prefix tests",
+    "new coupled economic outcomes and complete attribution"
+  ],
+  "h_sol_contract": {
+    "units": {
+      "equity_high_water": "USD",
+      "ATR": "USD per asset",
+      "fee": "dimensionless",
+      "risk_reserve": "USD"
+    },
+    "inventory": "held + unique opening leaves + unique unsubmitted reservations; candidate exactly once",
+    "fees": "paid held-entry fees already in equity; only unbooked pending/candidate entry fees deducted, distinct from stressed future close fees",
+    "monotonicity": "conditional on fixed state and nonnegative constant stress/entry coefficients along fixed add direction",
+    "proof_status": "CONTRACT_CONDITIONAL_SOURCE_TESTS_PENDING",
+    "invalid_ownership": "FAIL_CLOSED",
+    "margin": "independent native admission"
+  },
+  "h_btc_contract": {
+    "observation": "one actual-filled parent, partials do not increase weight",
+    "label_reference": "first actual native fill; separate from unchanged management PLANREF",
+    "features": "available prefix only; ATR_fraction frozen before fill",
+    "labels": "direction-correct minute MARK through closed D1 EMA switch",
+    "availability": "ready_at < decision_time",
+    "groups": "first/repeat; sides pooled; at least 8 valid in each; independent waves reported",
+    "quantile": "Decimal linear interpolation at (n-1)*0.9",
+    "fallback": "k=1 with reason for insufficient/invalid/zero denominator",
+    "application": "once before zero-TP and lot corrections",
+    "proof_status": "SOURCE_PREFIX_TESTS_PENDING"
+  },
+  "control_reuse": "conditional matching engine/model/data/costs/margin/observer/terminal; otherwise matched S0/E4 consume cap",
+  "acceptance": {
+    "global_dd_max": 0.5,
+    "profit_retention_min": 0.9,
+    "original_absolute_total_floor": "5470396.514987347",
+    "model_liquidations": 0,
+    "terminal_accounting": "complete",
+    "repeat": "passing full candidate only; reproducibility not OOS",
+    "separate_outputs": [
+      "matched_goal_pass",
+      "legacy_absolute_pass"
+    ],
+    "automatic_live_authorization": false
+  },
+  "new_sources": [
+    {
+      "url": "https://www.itl.nist.gov/div898/handbook/pri/section3/pri3345.htm",
+      "use": "screening versus interaction identification; no missing cells inferred"
+    },
+    {
+      "url": "https://arxiv.org/abs/1705.00109",
+      "use": "forecast/risk/cost separation; no CoinMaster coefficient validation"
+    }
+  ],
+  "product_changes": false,
+  "native_runs_started_by_reviewer": 0,
+  "liquidity_stress": "Short fixtures only establish local execution; portfolio robustness requires budgeted full native matched controls"
+}

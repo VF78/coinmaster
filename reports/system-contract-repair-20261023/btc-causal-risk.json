@@ -1,0 +1,69 @@
+{
+  "parents": 83,
+  "groups": {
+    "first": 50,
+    "repeat": 33
+  },
+  "independent_actual_EMA_waves": 50,
+  "label_status": {
+    "VALID_COMPLETED_WAVE": 81,
+    "CENSORED_INCOMPLETE_WAVE": 2
+  },
+  "potential_k_reduced": 19,
+  "k_activation": {
+    "FIRST_ENTRY": 50,
+    "INSUFFICIENT_COMPLETED_GROUPS": 9,
+    "ACTIVE_VALID_Q90": 24
+  },
+  "tests": {
+    "actual_fill_chronology_explicit": true,
+    "actual_first_fill_unique_parent_join": true,
+    "decision_fill_same_actual_EMA_wave": true,
+    "q0_q1_causal_order": true,
+    "all83_actual_parents": true,
+    "unique_parent_one_case": true,
+    "all_closed_features_available": true,
+    "first_actual_anchor_found": true,
+    "global_mark_gap_count_zero": true,
+    "future_parents_do_not_change_k_prefix_10": true,
+    "future_parents_do_not_change_k_prefix_20": true,
+    "future_parents_do_not_change_k_prefix_40": true,
+    "future_parents_do_not_change_k_prefix_60": true,
+    "future_parents_do_not_change_k_prefix_82": true,
+    "incomplete_wave_excluded": true,
+    "strict_ready_at_equality_excluded": true,
+    "own_future_label_excluded": true,
+    "partial_fills_do_not_create_cases": true,
+    "quantile_linear_nminus1": true,
+    "native_tick_rounding": true,
+    "partial_fill_group_weight": true,
+    "first_and_repeat_separate": true,
+    "censored_u_not_zero": true,
+    "closed_ATR_future_invariance": true,
+    "prefix_features_match": true,
+    "future_MAE_not_feature_20": true,
+    "future_MAE_not_feature_50": true,
+    "seven_E4_DD_exact": true
+  },
+  "all_tests_pass": true,
+  "frozen_contract": {
+    "ATR": "closed D1 Wilder14 exact E4 seed; first TR requires previousclose",
+    "ATR_denominator": "q0 reference_wire_price",
+    "label_anchor": "FIRST_ACTUAL_FILL_PRICE; distinct native management PLANREF first-child-completed VWAP",
+    "marks": "exact Decimal source MARK CLOSE extremes; available=open+1minute strictly after firstfill through completed D1 EMA switch",
+    "ready": "strict label_ready_at<decision_ns",
+    "quantile": "Decimal linear(n\u22121),Q90,first/repeat sidespooled,min8each",
+    "unknowns": "decision held/pending/equity/internalgate details not exported; no zero imputation",
+    "no_native_engine": true
+  },
+  "inputs": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "095beffa398c39e97a53965db5d374a7ae7b91f5f3da11a1b4ab568b7cb46535",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-orders.csv": "88de5adde5c709673bd97fd01371e99f23630bc0640aacfba7f0800d5acbbaac",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/system-contract-repair-20261023/data-source-domain.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/verifier-E4-DD-ge30-episodes.csv": "f3098eb3c57efd49d235d5fcaa72265b660b039e79fd5f6130788e6e12a842bd"
+  },
+  "source_script_sha256": "4bd3c42ddd4ecb589ec84b83a19925b66785cfe36556bf8934ec0b5acf80f73b"
+}

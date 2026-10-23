@@ -1,0 +1,4 @@
+,total,locked,free,currency,account_id,account_type,base_currency,margins,reported,info
+1970-01-01 00:00:00.000000001+00:00,10000.00000000,0.00000000,10000.00000000,USDT,P1SIM-001,MARGIN,USDT,[],True,{}
+1970-01-01 00:00:00.000000004+00:00,9999.00000000,5.00000000,9994.00000000,USDT,P1SIM-001,MARGIN,USDT,"[{'type': 'MarginBalance', 'initial': '0.00000000', 'maintenance': '10.00000000', 'currency': 'USDT', 'instrument_id': 'SOLUSDT-PERP.P1SIM'}]",False,{}
+1970-01-01 00:00:00.000000004+00:00,9998.00000000,10.00000000,9988.00000000,USDT,P1SIM-001,MARGIN,USDT,"[{'type': 'MarginBalance', 'initial': '0.00000000', 'maintenance': '10.00000000', 'currency': 'USDT', 'instrument_id': 'SOLUSDT-PERP.P1SIM'}]",False,{}

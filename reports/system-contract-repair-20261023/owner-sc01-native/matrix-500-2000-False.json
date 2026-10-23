@@ -1,0 +1,49 @@
+{
+  "entry_sizing_audit": [],
+  "fill_audit": [
+    {
+      "accept_ns": "4",
+      "action": "SOL_ADD",
+      "commission": "0.5",
+      "commission_currency": "USDT",
+      "fill_ns": "4",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "0",
+      "native_liquidity_side": "TAKER",
+      "notional": "500",
+      "order_type": "1",
+      "policy_hash": "",
+      "post_only": "false",
+      "px": "1",
+      "qty": "500",
+      "reason": "SOL_ADD",
+      "submit_ns": "2",
+      "venue": "P1SIM"
+    }
+  ],
+  "hedge_band_audit": [],
+  "liquidation_lockout": false,
+  "liquidations": [],
+  "marked_equity_checkpoints": [],
+  "native_orders": [
+    {
+      "commissions": [
+        "0.50000000 USDT"
+      ],
+      "filled_quantity": "500.0",
+      "id": "O-19700101-000000-001-000-1",
+      "quantity": "500.0",
+      "status": "FILLED"
+    }
+  ],
+  "pre_submit_tier_margin_gate_blocks": [],
+  "system_contract_audit": [],
+  "terminal_lifecycle": {
+    "close_fills": [],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null
+  },
+  "terminal_open_orders": 0
+}

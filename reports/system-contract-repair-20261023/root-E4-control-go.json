@@ -1,0 +1,17 @@
+{
+  "status": "ROOT_GO_FIRST_FULL_CONTROL_ONLY",
+  "authorized_recipes": [
+    "E4_EXPLICIT_CONTROL"
+  ],
+  "physical_attempt": 1,
+  "source_commit": "1ad834a91447bd877cc0a5aa204684d4badda16c",
+  "source_manifest_sha256": "2bac9e8028adcb8b1a44aaa3212be9b4c1a1030b7391108f7940e40437210421",
+  "expected_config_sha256": "50138251d27d5433881dde8f66879d534aa71406c32bd413efbd8317c8ab958a",
+  "protocol_sha256": "8e0ed8e3d8a41d72ee44997dac958babdfabe626a0564d22b57794515ab77500",
+  "preparation_sha256": "17c1eadca1158d3ce87e4d31ef57bdc523a5c0c483f71547cea8dd472fd6746b",
+  "root_preflight_sha256": "bc5d21030d5216458f8a27cc51218abcedd0a82f8174bdd81bcb4e06dcdbc827",
+  "review_sha256": "ab57fe059b7e46d14acf6be0dfc5fdc138d5a7bd3d9df553e28e3ff95cdff900",
+  "native_historical_limit": 6,
+  "pilot_changes": false,
+  "automatic_next": false
+}

@@ -1,0 +1,132 @@
+{
+  "status": "DRAFT_PENDING_SOURCE_FREEZE_NO_ENGINE_GO",
+  "owner_task_sha256": "394661afb629dffdd4f4dfa239d7607df97261e189581dd9e601775a667f612e",
+  "source_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "engine": "nautilus_trader==1.231.0",
+  "interval": [
+    "2024-09-01T00:00:00Z",
+    "2026-09-01T00:00:00Z"
+  ],
+  "end_exclusive": true,
+  "seed": "10000",
+  "reserve": "0",
+  "venue": "Bybit",
+  "fees": {
+    "maker": "0.0002",
+    "taker": "0.00055",
+    "classification": "native_actual_liquidity"
+  },
+  "data_policy": "same immutable normalized Bybit1m execution/mark/D1/funding/risk-limit inputs as archived E4",
+  "execution": "diagnostic1mCLOSE synthetic L1 displayed1000; per-IOC depth reuse pinned native semantics; not exchange L2/tick simulation",
+  "observer": "global settled marked-equity; high-water never reset; expected1051199 settled rows from1051200 each source",
+  "settlement": "same exclusive-end forced terminal native settlement; post-boundary cash TOTAL separately from in-interval DD",
+  "funding": "same native journal; signed per-asset attribution UNKNOWN unless supported; unallocated cash bridge is not funding",
+  "controls": {
+    "S0": {
+      "source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+      "config_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+      "total": "6077107.23887483",
+      "dd_percent": "66.25691486468686414439256686"
+    },
+    "E4": {
+      "source": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+      "config_sha256": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+      "total": "5631617.35953723",
+      "dd_percent": "57.58541045962226379114466259"
+    },
+    "reuse_gate": "matching data/engine/costs/funding/margin/observer/terminal and economic-state equivalence; if false run matched S0/E4 within same six slots"
+  },
+  "execution_policy": {
+    "flag": "research_sol_explicit_child",
+    "default": false,
+    "child_cap_SOL": "1000",
+    "scope": "each originally eligible level at original D1 attempt; no new intraday retry",
+    "rights": "actual fills consume original notional; preserve genuine unused rights; native statuses unchanged"
+  },
+  "H_SOL": {
+    "default": false,
+    "floor": "0.55*global_high_water",
+    "ATR": "closed D1 Wilder14, first TR requires previous close",
+    "inventory": "held+unique corresponding opening leaves+unique unsubmitted reservations+candidate, exactly once",
+    "fees": "paid entry already in equity; unbooked pending/candidate entry and stressed future close fees distinct",
+    "budget": "native equity minus candidate/unbooked entry fees minus conservative BTC reserve minus gross SOL ATR/close reserve >= floor",
+    "quantity": "largest nonnegative lot <= original right, child1000, margin/minimum and monotone affine budget",
+    "no_trim": true,
+    "no_auto_restore": true,
+    "no_DD35_trigger": true,
+    "source_exact_formula": "PENDING_FINAL_SOURCE_CONTRACT"
+  },
+  "H_BTC": {
+    "default": false,
+    "group": "one actual-filled parent; first/repeat within actual EMA wave; sides pooled",
+    "ATR_fraction": "frozen closed D1 Wilder14 / prefill q0 price",
+    "label_reference": "first actual native fill; distinct unchanged management PLANREF first-child VWAP",
+    "label": "direction-correct potential MAE from minute MARK after entry through closed D1 EMA switch; gaps/incomplete censored",
+    "label_available": "ready_at < decision_time",
+    "u": "MAE/frozen_ATR_fraction",
+    "minimum_valid_each_group": 8,
+    "quantile": "Decimal linear interpolation at (n-1)*0.9",
+    "k": "first=1; repeat=min(1,Q90first/Q90repeat); insufficient/invalid/zero denominator =>1 with reason",
+    "target": "k * min(original_side_multiplier * current_native_equity, original_notional_cap), once after cap before zeroTP/lot",
+    "no_SOL_leverage_frequency_compensation": true
+  },
+  "physical_full_attempt_cap": 6,
+  "old_ledgers": "closed immutable, not reset or transferred",
+  "historical_engines": "sequential, root explicit per-attempt GO, fresh engine+journal+namespace",
+  "run_order": [
+    "E4_EXPLICIT_CONTROL",
+    "S0_MATCHED_ONLY_IF_EXECUTION_NOT_EQUIVALENT",
+    "H_SOL",
+    "H_BTC",
+    "COMBINED_ONLY_IF_G2",
+    "FRESH_REPEAT_ONLY_IF_FULL_PASS"
+  ],
+  "combination_G2": [
+    "each individual technically valid",
+    "each rule actually activated",
+    "declared local risk mechanism confirmed",
+    "no money/rights/calendar/unit-accounting defect",
+    "matched comparable base"
+  ],
+  "combination_note": "individual global50/90 pass not required; nonactivation or invalidity cannot be cured by combining unknowns",
+  "corrections": "maximum one substantive concrete defect correction; every failed/invalid/corrected physical attempt consumes cap; no coefficient search",
+  "acceptance": {
+    "matched_goal_pass": "globalDD<=50% AND (TOTAL-10000)/(matchedS0TOTAL-10000)>=0.90 AND zero model liquidation AND complete terminal/account/order checks",
+    "legacy_absolute_pass": "TOTAL>=5470396.514987347",
+    "additional_DD_goal_percent": "30",
+    "selection": "maximum terminal TOTAL among matched_goal_pass; legacy threshold reported separately",
+    "no_live_authorization": true
+  },
+  "episodes": "seven-episodes.json exact recipe-specific archive peak/trough/recovery; dates for diagnosis only, plus all24months/new global worst",
+  "episode_outputs": [
+    "local/global DD",
+    "recovery",
+    "held/pending BTC/SOL",
+    "equity/notionals",
+    "fills BTC/SOL",
+    "fees",
+    "unallocated cash bridge",
+    "missed recovery",
+    "unused rights",
+    "admission denials",
+    "partial/canceled",
+    "calendar/price/quantity divergence"
+  ],
+  "validity": [
+    "focused native tests and independent narrow source review",
+    "source/config/input/engine hashes frozen",
+    "normal native completion and complete exports",
+    "full settled receipt coverage",
+    "money and terminal flat/order reconciliation",
+    "defaultOFF experimental policies",
+    "causal prefix and parent-weight checks",
+    "new raw payload JSON roundtrip"
+  ],
+  "safety": "pilot/production/services/credentials/orders/deployment unchanged; canonical isolated development only; immutable Mac execution",
+  "full_native_runs_started": 0,
+  "first_control_source_commit": "PENDING",
+  "first_control_config_sha256": "PENDING",
+  "source_manifest_sha256": "PENDING",
+  "input_manifest_sha256": "PENDING",
+  "review_sha256": "PENDING"
+}

@@ -1,0 +1,98 @@
+{
+  "entry_sizing_audit": [],
+  "fill_audit": [],
+  "hedge_band_audit": [],
+  "liquidation_lockout": false,
+  "liquidations": [],
+  "marked_equity_checkpoints": [],
+  "native_orders": [
+    {
+      "commissions": [],
+      "filled_quantity": "0.0",
+      "id": "O-19700101-000000-001-000-1",
+      "quantity": "1000.0",
+      "status": "CANCELED"
+    }
+  ],
+  "pre_submit_tier_margin_gate_blocks": [],
+  "system_contract_audit": [
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "decision_index": -1,
+      "episode_id": "receipts",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "1",
+      "filled_notional": "0",
+      "filled_quantity": "0",
+      "intended_quantity": "1000",
+      "intent_id": "c12b08ce-def2-4832-9b93-965a9453b149",
+      "level": 0,
+      "native_status": "CANCELED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 0,
+      "original_remaining_notional": "1000",
+      "submitted_quantity": "1000",
+      "timestamp_ns": 2,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderInitialized",
+      "filled_quantity": "0",
+      "native_event_id": "50663560-fee9-40b4-a4c9-680ca8fe90cc",
+      "native_status": "NOT_SUBMITTED",
+      "timestamp_ns": 1,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderSubmitted",
+      "filled_quantity": "0",
+      "native_event_id": "25a21c28-db93-4aba-8294-77a6a681baa5",
+      "native_status": "SUBMITTED",
+      "timestamp_ns": 1,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderAccepted",
+      "filled_quantity": "0",
+      "native_event_id": "1dfc42b8-63d9-4db6-80fb-0db939042277",
+      "native_status": "ACCEPTED",
+      "timestamp_ns": 3,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderPendingCancel",
+      "filled_quantity": "0",
+      "native_event_id": "5b1ee763-56d7-4d32-8b63-4d25fc4eac66",
+      "native_status": "PENDING_CANCEL",
+      "timestamp_ns": 3,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderCanceled",
+      "filled_quantity": "0",
+      "native_event_id": "301bd243-99e4-457e-9f7b-0800f6b5503a",
+      "native_status": "CANCELED",
+      "timestamp_ns": 4,
+      "unused_right_notional": "1000"
+    }
+  ],
+  "terminal_lifecycle": {
+    "close_fills": [],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null
+  },
+  "terminal_open_orders": 0
+}

@@ -1,0 +1,68 @@
+{
+  "entry_sizing_audit": [],
+  "fill_audit": [],
+  "hedge_band_audit": [],
+  "liquidation_lockout": false,
+  "liquidations": [],
+  "marked_equity_checkpoints": [],
+  "native_orders": [
+    {
+      "commissions": [],
+      "filled_quantity": "0.00",
+      "id": "O-19700101-000000-001-000-1",
+      "quantity": "1.01",
+      "status": "DENIED"
+    }
+  ],
+  "pre_submit_tier_margin_gate_blocks": [],
+  "system_contract_audit": [
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "decision_index": -1,
+      "episode_id": "receipts",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "1",
+      "filled_notional": "0",
+      "filled_quantity": "0",
+      "intended_quantity": "1000",
+      "intent_id": "6a43d23f-e3c7-45b8-92cf-59c9a4cdae3f",
+      "level": 0,
+      "native_status": "DENIED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 0,
+      "original_remaining_notional": "1000",
+      "submitted_quantity": "1.01",
+      "timestamp_ns": 2,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderInitialized",
+      "filled_quantity": "0",
+      "native_event_id": "e9bb4452-457c-4a9b-8504-a44d0b5600af",
+      "native_status": "NOT_SUBMITTED",
+      "timestamp_ns": 1,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderDenied",
+      "filled_quantity": "0",
+      "native_event_id": "fd595474-32bc-40c6-b777-47667858c4d2",
+      "native_status": "DENIED",
+      "timestamp_ns": 1,
+      "unused_right_notional": "1000"
+    }
+  ],
+  "terminal_lifecycle": {
+    "close_fills": [],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null
+  },
+  "terminal_open_orders": 0
+}

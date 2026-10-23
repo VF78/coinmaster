@@ -1,0 +1,78 @@
+{
+  "entry_sizing_audit": [],
+  "fill_audit": [],
+  "hedge_band_audit": [],
+  "liquidation_lockout": false,
+  "liquidations": [],
+  "marked_equity_checkpoints": [],
+  "native_orders": [
+    {
+      "commissions": [],
+      "filled_quantity": "0.0",
+      "id": "O-19700101-000000-001-000-1",
+      "quantity": "1000.0",
+      "status": "REJECTED"
+    }
+  ],
+  "pre_submit_tier_margin_gate_blocks": [],
+  "system_contract_audit": [
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "decision_index": -1,
+      "episode_id": "receipts",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "1",
+      "filled_notional": "0",
+      "filled_quantity": "0",
+      "intended_quantity": "1000",
+      "intent_id": "16e6ba93-6b9f-40fc-ada2-6cfce1eb4209",
+      "level": 0,
+      "native_status": "REJECTED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 0,
+      "original_remaining_notional": "1000",
+      "submitted_quantity": "1000",
+      "timestamp_ns": 2,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderInitialized",
+      "filled_quantity": "0",
+      "native_event_id": "88a35c69-df60-42ee-a8f7-81b2f1922eb3",
+      "native_status": "NOT_SUBMITTED",
+      "timestamp_ns": 1,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderSubmitted",
+      "filled_quantity": "0",
+      "native_event_id": "336c6324-2a7c-49db-bc9c-0837a3d5728d",
+      "native_status": "SUBMITTED",
+      "timestamp_ns": 1,
+      "unused_right_notional": "1000"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderRejected",
+      "filled_quantity": "0",
+      "native_event_id": "49f2b3a7-9f52-4d7f-a33f-4283dfbd59c4",
+      "native_status": "REJECTED",
+      "timestamp_ns": 3,
+      "unused_right_notional": "1000"
+    }
+  ],
+  "terminal_lifecycle": {
+    "close_fills": [],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null
+  },
+  "terminal_open_orders": 0
+}

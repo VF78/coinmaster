@@ -1,0 +1,31 @@
+{
+  "folder": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result",
+  "source_sha": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "raw_sha256": "095beffa398c39e97a53965db5d374a7ae7b91f5f3da11a1b4ab568b7cb46535",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "config_hash": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+  "terminal_total": "5631617.35953723",
+  "native_fees": "706755.52937844",
+  "fill_count": 535,
+  "files": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "095beffa398c39e97a53965db5d374a7ae7b91f5f3da11a1b4ab568b7cb46535",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-orders.csv": "88de5adde5c709673bd97fd01371e99f23630bc0640aacfba7f0800d5acbbaac",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "4d43e5b54b208f0f4c728e21bd16e22960d72f40e04ab98fb4084862f097b8c3",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/minute-native-settled-receipts.csv.gz": "1342832a43e4b1f86c8e8e011361e9131975a641d574d1d43fa99ecddf2cce11",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/minute-native-risk.csv.gz": "9e13bf0196da06e329cd857f088f6244d9b001c74cbda103ccc9b879ef4948fe"
+  },
+  "expected_signatures": {
+    "fill_audit": "000e4623849ebb12ac40d54b9b8487e90799534e7f691bf38d87c02d28c73c4b",
+    "cash_account_series": "b65102e346bcad03b6610bb7d940db3bbb23893cacfed9aa3cc5e762321ad144",
+    "entry_sizing_audit": "81c63b31acbf8371da8cb6d92bc483f3cc01a4ad94cc5e9f6bb66a583cf653d4",
+    "split_cover_audit": "59ac4a2a7a8439b2d17a8781ca9b52ecc5ee39d5db0873eff2d422a3a94c542c",
+    "terminal_lifecycle": "9d7db961064b4360d41953cf9f60b61abe196465e62d96a6d1c2c7f8c3d83834",
+    "post_boundary_settlement": "2777e2d807bfff3ad8e53f3058e1d672ace6fbd8c663e399cdd1891ad665faaa"
+  },
+  "funding_signature": "9dcaf405fe4877e845832dda3c5d38164862deff6ae4c463fb98c7b108c60afd",
+  "pending_inventory": "UNKNOWN_NOT_EXPORTED",
+  "complete_rights_balances": "UNKNOWN_NOT_EXPORTED",
+  "complete_admission_vector": "UNKNOWN_NOT_EXPORTED",
+  "qualification": "Freeze exact old E4 references before candidate; no source/config equality assumption after explicit policy flag"
+}

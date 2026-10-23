@@ -1,0 +1,198 @@
+{
+  "entry_sizing_audit": [],
+  "fill_audit": [
+    {
+      "accept_ns": "4",
+      "action": "SOL_ADD",
+      "commission": "0.5",
+      "commission_currency": "USDT",
+      "fill_ns": "4",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "0",
+      "native_liquidity_side": "TAKER",
+      "notional": "500",
+      "order_type": "1",
+      "policy_hash": "",
+      "post_only": "false",
+      "px": "1",
+      "qty": "500",
+      "reason": "SOL_ADD",
+      "submit_ns": "2",
+      "venue": "P1SIM"
+    },
+    {
+      "accept_ns": "4",
+      "action": "SOL_ADD",
+      "commission": "0.5",
+      "commission_currency": "USDT",
+      "fill_ns": "4",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "1",
+      "native_liquidity_side": "TAKER",
+      "notional": "500",
+      "order_type": "1",
+      "policy_hash": "",
+      "post_only": "false",
+      "px": "1",
+      "qty": "500",
+      "reason": "SOL_ADD",
+      "submit_ns": "2",
+      "venue": "P1SIM"
+    }
+  ],
+  "hedge_band_audit": [],
+  "liquidation_lockout": false,
+  "liquidations": [],
+  "marked_equity_checkpoints": [],
+  "native_orders": [
+    {
+      "commissions": [
+        "0.50000000 USDT"
+      ],
+      "filled_quantity": "500.0",
+      "id": "O-19700101-000000-001-000-1",
+      "quantity": "1000.0",
+      "status": "CANCELED"
+    },
+    {
+      "commissions": [
+        "0.50000000 USDT"
+      ],
+      "filled_quantity": "500.0",
+      "id": "O-19700101-000000-001-000-2",
+      "quantity": "1000.0",
+      "status": "CANCELED"
+    }
+  ],
+  "pre_submit_tier_margin_gate_blocks": [],
+  "system_contract_audit": [
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "decision_index": -1,
+      "episode_id": "sc01",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "1",
+      "filled_notional": "500",
+      "filled_quantity": "500",
+      "intended_quantity": "2500.0",
+      "intent_id": "e34a60b8-1fa1-4a51-a058-8156e4967f3b",
+      "level": 0,
+      "native_status": "CANCELED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 0,
+      "original_remaining_notional": "2500.0",
+      "submitted_quantity": "1000",
+      "timestamp_ns": 3,
+      "unused_right_notional": "2000.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderInitialized",
+      "filled_quantity": "0",
+      "native_event_id": "f0a0abdc-20a0-452f-ba08-5eda82b46510",
+      "native_status": "NOT_SUBMITTED",
+      "timestamp_ns": 2,
+      "unused_right_notional": "2500.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderSubmitted",
+      "filled_quantity": "0",
+      "native_event_id": "8e97db4d-a8d3-4803-b942-f127f4b806ca",
+      "native_status": "SUBMITTED",
+      "timestamp_ns": 2,
+      "unused_right_notional": "2500.0"
+    },
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-19700101-000000-001-000-2",
+      "decision_index": -1,
+      "episode_id": "sc01",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "1",
+      "filled_notional": "500",
+      "filled_quantity": "500",
+      "intended_quantity": "2500.0",
+      "intent_id": "4de6662c-1c2c-4d0b-a215-1924a9ed4c46",
+      "level": 1,
+      "native_status": "CANCELED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 0,
+      "original_remaining_notional": "2500.0",
+      "submitted_quantity": "1000",
+      "timestamp_ns": 3,
+      "unused_right_notional": "2000.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-2",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderInitialized",
+      "filled_quantity": "0",
+      "native_event_id": "a281830e-d0c1-43ad-8167-80f90ba5f5d7",
+      "native_status": "NOT_SUBMITTED",
+      "timestamp_ns": 2,
+      "unused_right_notional": "2500.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-2",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderSubmitted",
+      "filled_quantity": "0",
+      "native_event_id": "49aff373-db83-4702-bb9d-605f3c4ec714",
+      "native_status": "SUBMITTED",
+      "timestamp_ns": 2,
+      "unused_right_notional": "2500.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "0.50000000 USDT",
+      "event": "OrderFilled",
+      "filled_quantity": "500",
+      "native_event_id": "f7bdecc9-7d05-4ea5-93a8-d6af8ef5a4f7",
+      "native_status": "PARTIALLY_FILLED",
+      "timestamp_ns": 4,
+      "unused_right_notional": "2000.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderCanceled",
+      "filled_quantity": "500",
+      "native_event_id": "525ad7cf-f374-45fc-830f-4bfb03f6d2a4",
+      "native_status": "CANCELED",
+      "timestamp_ns": 4,
+      "unused_right_notional": "2000.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-2",
+      "commission": "0.50000000 USDT",
+      "event": "OrderFilled",
+      "filled_quantity": "500",
+      "native_event_id": "aa1cd970-cebf-4e6c-aede-b456f47050d0",
+      "native_status": "PARTIALLY_FILLED",
+      "timestamp_ns": 4,
+      "unused_right_notional": "2000.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-2",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderCanceled",
+      "filled_quantity": "500",
+      "native_event_id": "3ea45b57-789c-4e00-8b91-e67f6a6f3877",
+      "native_status": "CANCELED",
+      "timestamp_ns": 4,
+      "unused_right_notional": "2000.0"
+    }
+  ],
+  "terminal_lifecycle": {
+    "close_fills": [],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null
+  },
+  "terminal_open_orders": 0
+}

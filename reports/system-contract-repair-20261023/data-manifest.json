@@ -1,0 +1,99 @@
+{
+  "canonical_branch": "codex/system-contract-data-20261023",
+  "canonical_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "canonical_checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-data-20261023",
+  "source_only_commit": "3c83534020a0d4403f69cbe8ab7baa4e4f4ebb2a",
+  "Mac_role": "immutable source execution only; outputs authorized reportfiles",
+  "source_ownership": "data_source.py and rule_inventory.py only; no tradingfiles/hooks edited",
+  "no_engine": true,
+  "files": {
+    "data_source.py": {
+      "sha256": "4bd3c42ddd4ecb589ec84b83a19925b66785cfe36556bf8934ec0b5acf80f73b",
+      "bytes": 18921
+    },
+    "rule_inventory.py": {
+      "sha256": "c982cf8954749c5fd0b6c8c0f95ca322cb1392cb8f6fbb83b0725ae041256d01",
+      "bytes": 23492
+    },
+    "data-source-domain.py": {
+      "sha256": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+      "bytes": 36608
+    },
+    "btc-causal-risk.csv": {
+      "sha256": "f405bacaa51edc7eb624fb73bab7dacfac22609c0182ef56ac543ae03c70b261",
+      "bytes": 78345
+    },
+    "btc-causal-risk.json": {
+      "sha256": "7a48d8f98682f224f8c6f26ca89515bb6052a2beafaf7802ef8a3ed7d381f5bd",
+      "bytes": 4051
+    },
+    "evidence-audit.json": {
+      "sha256": "a4cf4a9fde729a1d3479a177a783f81e24744d210ac8ccd68bed46730df31b14",
+      "bytes": 8333
+    },
+    "evidence-audit.md": {
+      "sha256": "24eb1eb11fc56041ce431fe4cdb2b5873746d536bd170fdf30804a6965da2746",
+      "bytes": 5483
+    },
+    "rule-registry.csv": {
+      "sha256": "2445a887e50fc2279822efe1246ff91189b8c433436d0ed786a11b8c6dcd8abc",
+      "bytes": 20321
+    },
+    "rule-registry.json": {
+      "sha256": "da95c7ff133294e2366b6e9a7df8e315de3d2c23f3a6d61f92d2d2da3faca479",
+      "bytes": 43386
+    },
+    "seven-episodes.json": {
+      "sha256": "16ff08b65802a3800bee5dbdbdff542eea8ee08c8201eefc17e4e2997f5c7f76",
+      "bytes": 19351
+    },
+    "q1-sensitivity.csv": {
+      "sha256": "fbd745fac8e1469d9da14af51464e1e9a540e7dad73dc15f8eb7b5c9eb8a8ef4",
+      "bytes": 129896
+    },
+    "data-tests.json": {
+      "sha256": "39a0893e04e05334131d774c93c4aaa2e34025c5f769042e6dd6b830d5a1c009",
+      "bytes": 1238
+    }
+  },
+  "runtime_versions": {
+    "nautilus_trader": "1.231.0",
+    "pyarrow": "25.0.1",
+    "numpy": "2.5.3"
+  },
+  "review_correction": "economic benefit separate from implementation; parent chronology/wave/uniqueactualfilljoin checked",
+  "tests": {
+    "checks": {
+      "actual_fill_chronology_explicit": true,
+      "actual_first_fill_unique_parent_join": true,
+      "decision_fill_same_actual_EMA_wave": true,
+      "q0_q1_causal_order": true,
+      "all83_actual_parents": true,
+      "unique_parent_one_case": true,
+      "all_closed_features_available": true,
+      "first_actual_anchor_found": true,
+      "global_mark_gap_count_zero": true,
+      "future_parents_do_not_change_k_prefix_10": true,
+      "future_parents_do_not_change_k_prefix_20": true,
+      "future_parents_do_not_change_k_prefix_40": true,
+      "future_parents_do_not_change_k_prefix_60": true,
+      "future_parents_do_not_change_k_prefix_82": true,
+      "incomplete_wave_excluded": true,
+      "strict_ready_at_equality_excluded": true,
+      "own_future_label_excluded": true,
+      "partial_fills_do_not_create_cases": true,
+      "quantile_linear_nminus1": true,
+      "native_tick_rounding": true,
+      "partial_fill_group_weight": true,
+      "first_and_repeat_separate": true,
+      "censored_u_not_zero": true,
+      "closed_ATR_future_invariance": true,
+      "prefix_features_match": true,
+      "future_MAE_not_feature_20": true,
+      "future_MAE_not_feature_50": true,
+      "seven_E4_DD_exact": true
+    },
+    "all_pass": true,
+    "no_engine": true
+  }
+}

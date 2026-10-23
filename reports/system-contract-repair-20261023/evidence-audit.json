@@ -1,0 +1,223 @@
+{
+  "source_sha": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "status": "READ_ONLY_ARCHIVE_RECOUNT_NO_ENGINE",
+  "claims": {
+    "synthetic_quote_1000": {
+      "status": "VERIFIED",
+      "source": "native_fixture.py:472\u2013476; native_baseline.py:895\u2013897,935",
+      "qualification": "Synthetic BBO size; not venue historical liquidity"
+    },
+    "SOL_96_of98_1000_cancel": {
+      "status": "VERIFIED",
+      "orders": 98,
+      "filled_status_counts": {
+        "('1000.0', 'CANCELED')": 96,
+        "('54.5', 'FILLED')": 1,
+        "('197.5', 'FILLED')": 1
+      },
+      "largest_order": {
+        "client_order_id": "O-20260724-000000-001-000-565",
+        "trader_id": "BACKTESTER-001",
+        "strategy_id": "WaveOverlayStrategy-000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "venue_order_id": "P1SIM-2-192",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "account_id": "P1SIM-001",
+        "last_trade_id": "T-3f51ad5c9fd22f43-192",
+        "type": "MARKET",
+        "side": "SELL",
+        "quantity": "395673.9",
+        "time_in_force": "IOC",
+        "is_reduce_only": "False",
+        "is_quote_quantity": "False",
+        "filled_qty": "1000.0",
+        "liquidity_side": "TAKER",
+        "avg_px": "75.82",
+        "slippage": "0.0",
+        "commissions": "['41.70100000 USDT']",
+        "emulation_trigger": "NO_TRIGGER",
+        "status": "CANCELED",
+        "contingency_type": "NO_CONTINGENCY",
+        "order_list_id": "",
+        "linked_order_ids": "",
+        "parent_order_id": "",
+        "exec_algorithm_id": "",
+        "exec_algorithm_params": "",
+        "exec_spawn_id": "",
+        "tags": "",
+        "init_id": "d5bcb93d-6f5e-49f8-a293-927867362159",
+        "ts_init": "1784851200000000000",
+        "ts_last": "1784851200000000000",
+        "price": "",
+        "expire_time_ns": "",
+        "is_post_only": "",
+        "display_qty": "",
+        "trigger_instrument_id": ""
+      }
+    },
+    "BTC_zero_TPs": {
+      "status": "VERIFIED",
+      "reconstructed_exact_completed_wave_counts": {
+        "TP1_zero": 83,
+        "TP2_zero": 58,
+        "parents": 83
+      },
+      "fractions": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "branch_counts": {
+        "PASSIVE_NET_ZERO_LEVELS": 38,
+        "MARKETABLE_FULL_ENTRY_FALLBACK": 45
+      }
+    },
+    "q1_local_sensitivity": {
+      "status": "VERIFIED",
+      "changed_parent_counts_by_bp": {
+        "-5": 25,
+        "-2": 9,
+        "-1": 6,
+        "-.5": 3,
+        "-.1": 0,
+        ".1": 1,
+        ".5": 7,
+        "1": 10,
+        "2": 17,
+        "5": 30
+      },
+      "qualification": "Pinned Nautilus Price(Decimal,precision1), BTC native tick0.1, of shifted quote. Branch classification only; no synthetic fill/money claim"
+    },
+    "SOL_BTCflat_linkage": {
+      "status": "VERIFIED",
+      "SOL_active_ns": 11677800000000000,
+      "SOL_active_with_BTCflat_ns": 6646620000000000,
+      "SOL_active_with_BTCflat_percent": "56.91671376457894466423470174",
+      "SOL_cycles": 25,
+      "cycles_start_BTCflat": 13,
+      "missing_side_joins": [],
+      "terminal_quantities": {
+        "BTC": "0.000",
+        "SOL": "0.0"
+      }
+    },
+    "SOL_H_gross_additive_rights": {
+      "status": "VERIFIED",
+      "source": "domain/wave_overlay.py:435\u2013447,495\u2013560; strategy/wave_overlay.py:1530\u20131575",
+      "qualification": "H gross BTC reference, additive budgets, actual reductions earn rights, group flat gates next BTC; source+saved72pin audit reused"
+    },
+    "R2C_XS_calendar": {
+      "status": "VERIFIED",
+      "saved_evidence": {
+        "native_BTC_fill_count": 337,
+        "baseline_count": 337,
+        "same_actual_calendar_prices_sides_reasons": true,
+        "calendar_comparison_fields": [
+          "action",
+          "fill_ns",
+          "px",
+          "level",
+          "native_liquidity_side",
+          "reason",
+          "instrument",
+          "order_type",
+          "post_only"
+        ],
+        "calendar_differences": [],
+        "quantity_changed_rows": 292,
+        "first_quantity_change": {
+          "index": 17,
+          "baseline": {
+            "accept_ns": "1728230520000000000",
+            "action": "BTC_ENTRY",
+            "commission": "15.39389962",
+            "commission_currency": "USDT",
+            "fill_ns": "1728230520000000000",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "level": "",
+            "native_liquidity_side": "TAKER",
+            "notional": "27988.9084",
+            "order_type": "1",
+            "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+            "post_only": "false",
+            "px": "62755.4",
+            "qty": "0.446",
+            "reason": "BTC_ENTRY",
+            "submit_ns": "1728230520000000000",
+            "venue": "P1SIM"
+          },
+          "candidate": {
+            "accept_ns": "1728230520000000000",
+            "action": "BTC_ENTRY",
+            "commission": "15.98066261",
+            "commission_currency": "USDT",
+            "fill_ns": "1728230520000000000",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "level": "",
+            "native_liquidity_side": "TAKER",
+            "notional": "29055.7502",
+            "order_type": "1",
+            "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+            "post_only": "false",
+            "px": "62755.4",
+            "qty": "0.463",
+            "reason": "BTC_ENTRY",
+            "submit_ns": "1728230520000000000",
+            "venue": "P1SIM"
+          }
+        },
+        "baseline_native_BTC_fees": "674229.07544992",
+        "candidate_native_BTC_fees": "507396.90828379",
+        "source_csv": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-sol-residual-20261023/owner-R2C-events/native-fill-audit.csv",
+        "source_sha256": "64dfdb689d6fe8ee0b9d99b3a16513a395588e7dd292bb663adc81b9c24c5358",
+        "qualification": "Actual native fill calendar/prices comparison; quantity/fee differences do not imply fixed-state alternative PnL. Original capital changes can resize later BTC without entry calendar changes."
+      },
+      "qualification": "P0 exact XS verified21checks; reuse archived field-by-field comparison"
+    },
+    "R2C_flat_fix_no_economic_change": {
+      "status": "VERIFIED",
+      "saved_evidence": {
+        "status": "CORRECTION_NO_OBSERVED_ECONOMIC_EFFECT_ON_THIS_R2_CALENDAR",
+        "checks": {
+          "TOTAL": true,
+          "fees": true,
+          "fills": true,
+          "BTC_fills": true,
+          "SOL_fills": true,
+          "signature_fill_audit": true,
+          "signature_native_fills": true,
+          "signature_native_orders": true,
+          "signature_native_cash": true,
+          "signature_funding": true,
+          "config_hash": true,
+          "data_hash": true,
+          "policy_hash": true,
+          "full_trace_uncompressed_exact": true,
+          "trigger_receipts_exact": true,
+          "actual_risk_fill_audit_exact": true,
+          "distinct_corrected_source": true
+        },
+        "failed_checks": [],
+        "TOTAL_delta": "0E-8",
+        "fees_delta": "0E-8",
+        "DD_percentage_points_delta": "0E-26",
+        "profit_retention_percentage_points_delta": "0E-26",
+        "full_trace_sha256": "184acc15efdc22f3a1b8476deaba2542c40bc94cd957d068b79e72f91df357cc",
+        "trigger_count": 4,
+        "residual_flat_trigger_count": 2,
+        "actual_native_risk_orders": 15,
+        "qualification": "Corrected predicate native regression correctness is separate from historical economic benefit. Exact full trace, normalized native reports, cash, funding and actual trigger/fill identity establish zero economic effect on this minute trajectory. Does not undo observed R1 Jan13 gate false-negative.",
+        "no_additional_trace_scan": true,
+        "no_engine": true
+      }
+    },
+    "continuous_SOL_hedge": {
+      "status": "CONTRADICTED",
+      "reason": "SOL-only durations and cycles; selectivealpha/sourcegate, not continuous hedge"
+    },
+    "H_BTC_predictive_benefit": {
+      "status": "HYPOTHESIS",
+      "reason": "Offline causal data/prefix tests do not prove economic benefit; native candidate required"
+    }
+  }
+}

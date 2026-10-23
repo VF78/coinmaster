@@ -1,0 +1,100 @@
+{
+  "entry_sizing_audit": [],
+  "fill_audit": [
+    {
+      "accept_ns": "4",
+      "action": "SOL_ADD",
+      "commission": "1",
+      "commission_currency": "USDT",
+      "fill_ns": "4",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "0",
+      "native_liquidity_side": "TAKER",
+      "notional": "1000",
+      "order_type": "1",
+      "policy_hash": "",
+      "post_only": "false",
+      "px": "1",
+      "qty": "1000",
+      "reason": "SOL_ADD",
+      "submit_ns": "2",
+      "venue": "P1SIM"
+    }
+  ],
+  "hedge_band_audit": [],
+  "liquidation_lockout": false,
+  "liquidations": [],
+  "marked_equity_checkpoints": [],
+  "native_orders": [
+    {
+      "commissions": [
+        "1.00000000 USDT"
+      ],
+      "filled_quantity": "1000.0",
+      "id": "O-19700101-000000-001-000-1",
+      "quantity": "1000.0",
+      "status": "FILLED"
+    }
+  ],
+  "pre_submit_tier_margin_gate_blocks": [],
+  "system_contract_audit": [
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "decision_index": -1,
+      "episode_id": "sc01",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "1",
+      "filled_notional": "1000",
+      "filled_quantity": "1000",
+      "intended_quantity": "1000.0",
+      "intent_id": "f046be98-4795-4c07-ba82-7aabafc784a6",
+      "level": 0,
+      "native_status": "FILLED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 0,
+      "original_remaining_notional": "1000.0",
+      "submitted_quantity": "1000",
+      "timestamp_ns": 3,
+      "unused_right_notional": "0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderInitialized",
+      "filled_quantity": "0",
+      "native_event_id": "324ddc57-7c39-4c22-8ac1-1c968a5adb15",
+      "native_status": "NOT_SUBMITTED",
+      "timestamp_ns": 2,
+      "unused_right_notional": "1000.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "UNKNOWN_NOT_A_FILL",
+      "event": "OrderSubmitted",
+      "filled_quantity": "0",
+      "native_event_id": "4a6aefc3-691e-4df2-9087-c88c67cc06a3",
+      "native_status": "SUBMITTED",
+      "timestamp_ns": 2,
+      "unused_right_notional": "1000.0"
+    },
+    {
+      "client_order_id": "O-19700101-000000-001-000-1",
+      "commission": "1.00000000 USDT",
+      "event": "OrderFilled",
+      "filled_quantity": "1000",
+      "native_event_id": "eacec89d-f72a-494e-9e85-b88cf8568de0",
+      "native_status": "FILLED",
+      "timestamp_ns": 4,
+      "unused_right_notional": "0"
+    }
+  ],
+  "terminal_lifecycle": {
+    "close_fills": [],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null
+  },
+  "terminal_open_orders": 0
+}
