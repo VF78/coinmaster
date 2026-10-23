@@ -1,0 +1,18 @@
+{
+  "status": "C1_PROPOSED_FOR_ROOT_CONTRACT_CHOICE_NOT_IMPLEMENTED",
+  "source_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "e4_config_sha256": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+  "report_only_precision_correction": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "economic_results": "UNKNOWN_NOT_RUN",
+  "full_native_attempts_started": 0,
+  "max_root_attempts": 4,
+  "source_changed": false,
+  "files": {
+    "owner-contract.md": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+    "owner-preparation.md": "ccd4f4a0b82e1981670b833aab94bca83f382eb947306cad770f27facb226ba4",
+    "owner-C1-screen.py": "5860a02564c5c379b121835dc2b9d8fc481da100d264de152b47251419258508",
+    "owner-C1-screen-events.csv": "e862fec63b15f8de742135b9e8dcf0630f7b9aa6fbe3e93eb6fc914376055977",
+    "owner-C1-screen-monthly.csv": "e9273e20b9aa95b2ee902cc2a930e77d10b69fc9451b65f70fd7ed464e259a0c",
+    "owner-C1-screen-summary.json": "ab52b4e4a1c72c8dfd6b32f1758e482103fb25dfc01cfd5c7d90e5a18f2ebdde"
+  }
+}

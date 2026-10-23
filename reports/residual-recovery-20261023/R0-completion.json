@@ -1,0 +1,16 @@
+{
+  "stage": "R0_COMPLETE",
+  "utc": "2026-10-23T15:44:32.123625+00:00",
+  "base": "exactE4_bd04c9b",
+  "screen_status": "DESCRIPTIVE_ORIGINAL_E4_ONLY_NOT_ELIGIBILITY_OR_COUNTERFACTUAL",
+  "rows": 1051199,
+  "months": 24,
+  "native_engines": 0,
+  "original_path_opportunities": 4,
+  "original_below50_opportunities": 1,
+  "conditional_price_restore_proxies": 3,
+  "native_action_eligibility": "UNKNOWN_UNTIL_CURRENT_CANDIDATE_NATIVE_STATE",
+  "selection_note": "C1 is data-informed on repeatedly seen history. Earlier40DD-only/5pctshock proposals abandoned before any economicrun; strict currentlossdominance/fullcalendar recheck retained laterJune opportunity. No counterfactualPnL/TOTAL or OOS success implied.",
+  "contract_sha256": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+  "next": "final_scoped_contract_review_then_root_source_GO_only"
+}

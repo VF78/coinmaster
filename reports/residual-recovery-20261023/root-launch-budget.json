@@ -1,0 +1,14 @@
+{
+  "scope": "RESIDUAL_RECOVERY_20261023",
+  "cap_physical_full_native_attempts": 4,
+  "started": 0,
+  "completed": 0,
+  "active": 0,
+  "reserved": 0,
+  "root_GO_required": true,
+  "S0_reruns": 0,
+  "E4_reruns": 0,
+  "pilot_changes": 0,
+  "engines": [],
+  "status": "SCREENING_NO_LAUNCH_YET"
+}
