@@ -1,0 +1,33 @@
+# E4 + residual SOL: saved-evidence precheck
+
+Status: **root selected R1/R2 half-cut contract; no economic PASS**. Only saved report evidence was read. No engine, raw-trace scan, product edit, VPS, pilot or service action occurred. Source evidence hashes and exact XS native snapshots are in `precheck.json`.
+
+## What the saved evidence establishes
+
+E4 TOTAL is **5631617.35953723**, profit retention **92.6572934712%**, global settled DD **57.5854104596%**. Its first entry-calendar divergence is after the initial October loss. S TOTAL is **4155625.77863239**, DD **57.1470%** (rounded); XS TOTAL **5406345.11636863**, retention **88.94428438303662495658496376%**, DD **58.94743688415397241603930272%**. None passes 50/90.
+
+Existing S requires closed H1, opposite actual BTC/SOL, causal beta-weighted SOL dominance, global DD>=40%, and adverse SOL move>=2% from actual VWAP; it freezes a half-size remaining target and blocks additions for that real SOL cycle. S and XS each have one saved S trigger: **2024-10-03 15:00 UTC**, held1000 SOL, sold500 at **134.72**, fee **37.048**, remaining500; decision equity **7874.35307805** against peak **14743.45772484**. It acted before the trough, but XS still fell to **6991.32907805** at15:45 from peak14,743.45772484 at04:01: **52.58012598855353113295331574% DD**. The trough retains BTC short0.940 and SOL long500. Merely permitting BTCflat cannot change this already-eligible early half-cut. Surviving500 later exited ordinarily at143.12 on October5; S forfeited recovery and the54.5 SOL top-up seen in E4. These actual paths are not fixed-state alternative profits.
+
+On **2025-01-13** XS has **only SOL long4000**, average187.23, at both peak00:37 and trough14:37; BTC is absent. Equity moves **151829.51287244 -> 62329.90660044**; cash **133629.51287244 -> 133609.90660044**; DD **58.94743688415397241603930272%**. S/XS January cycle has no risk fill; five actual1000-SOL adds precede ordinary5000 close January15 at187.44. At the trough, the unprotected residual is4000; the fifth add is January14. This proves a BTC-parent-dependent eligibility hole, but saved endpoints cannot prove the first qualifying closed-H1 trigger or executable exit price.
+
+## Root selected contract: R1/R2 half cut
+
+The root selected **R1 = original XS + confirmed native BTCflat eligibility**, retaining original closed-H1/DD>=40%/adverse>=2% and a one-shot frozen50%-of-actual-SOL remaining target. **R2 = the same contract sampled once per1m paired native executable quote**, using the **prior fully completed settled-equity receipt**; no incomplete/current callback equity. The original opposing BTC/SOL beta-dominance branch remains; the confirmed BTCflat branch covers genuine residual SOL without inventing a BTC parent or fill. No full cut is selected.
+
+R1 alone leaves the already-eligible October S trigger,500 cut, and known52.5801259886% early DD intact. It closes an orphan eligibility hole; it does not prove DD50. R2 changes sampling and may act sooner than the hourly check. Its first eligible minute and price are UNKNOWN from the bounded saved evidence, so an early50 improvement cannot be quantified or promised.
+
+Minimal authoritative state: signed actual BTC/SOL inventory and native SOL VWAP, fresh causal paired executable quotes, valid immutable causal beta for the mixed branch, unrestarted global settled-equity high-water mark, and a SOL-cycle risk owner independent of BTC episode lifetime. BTCflat is explicit reconciled zero, never a missing parent. Cancel pending SOL increases with ACK/late-fill reconciliation; serialize exits and risk retries to avoid oversell; preserve the frozen remaining target through partial/late fills. Block additions for the affected real SOL cycle; no timer rearm. Preserve ordinary-half status, BTC fallback/P0/TP budgets, and existing actual TP-right ledger truth. SOL risk fills do not create BTC reductions or TP rights.
+
+## Bounded witness availability and time semantics
+
+A filename/metadata check found only the XS monolithic `minute-native-settled-receipts.csv.gz` (**35,539,697 compressed bytes**), with no saved day extract/index surfaced. It was **not opened or decompressed**: reading through January14 would process multiple months. No new raw scan or witness-price estimate was made. October firstDD40/R2 quote, January first-H1/R2 quote, and descriptive fixed-state exposure difference remain UNKNOWN.
+
+Known actual H1 runtime acceptance is October3 **15:00 UTC**, closed-H1 CustomData and executable fill134.72 at the same timestamp. `owner-sol-risk-precheck.csv` gives a conservative **15:01 receipt /15:00 source** witness from the original precheck; it is not a one-minute runtime delay and is not proof of the first R2 event. Native audit snapshot receipts likewise carry a source-quote timestamp separately. An R2 decision must consume only paired quotes available at its event timestamp and the last complete settled receipt; no eventual minute high/low, unfinished equity, or later quote may determine admission. An adverse-exposure comparison requires an actual earlier causal quote;135.84 or any illustrative price is not a substitute.
+
+The full-zero-target idea from the initial precheck is retained only in `precheck.json` as **unimplemented and excluded by root selection**. There are no additional selected parameters or recipes in this precheck.
+
+## Acceptance and limits
+
+Neither R1 nor R2 has saved-evidence proof of a new full-calendar DD<=50%. January first-H1 timing, gaps, fees, pending ownership, recovery profit forgone, and changed capital/entry calendar require native validation; do not assign a fixed-state PnL or expected TOTAL. A SOL guard has no direct action on the **XS** October22-to-November28 BTC-only trough (154.583 BTC short, **54.79286414593273308791098386%** excursion). This54.7928641459% is specifically XS, not the separate B November54.678...% figure, and is not the January SOL-only episode. Earlier SOL changes can alter later capital, so neither success nor an unchanged future DD is inferred.
+
+Acceptance requires one complete calendar with unchanged global peak definition, native cash/fees/fills, zero liquidations, DD<=50%, and profit retention (TOTAL-10000)/(6077107.23887483-10000)>=0.90: exact TOTAL floor **5470396.514987347**. Require actual early mixed and orphan risk receipts, preserved BTC profitable fallback/ordinary TP rights, no duplicate or synthetic rights, and separately audited partial/cancel/late fills. Funding attribution remains UNKNOWN where absent. No promise of 90% ROI, retention, or a passing result is made. This precheck does not launch a run or authorize pilot changes.

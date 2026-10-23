@@ -1,0 +1,37 @@
+{
+  "accepted_utc": "2026-10-23T11:30:25.830256+00:00",
+  "authority": "direct owner message E4 + residualSOL; target50/90; pilotuntouched",
+  "status": "IMPLEMENTATION_IN_PROGRESS",
+  "source_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "recipes": [
+    "P0_XS_FLAGS_OFF_PARITY",
+    "R1_RESIDUAL_H1",
+    "R2_RESIDUAL_M1"
+  ],
+  "conditional_repeat": "MAX_TOTAL_PASSING_50_90_ONLY",
+  "maximum_physical_runs": 4,
+  "started": 0,
+  "S0_rerun": false,
+  "E4_rerun": false,
+  "control_S0_TOTAL": "6077107.23887483",
+  "control_E4_TOTAL": "5631617.35953723",
+  "control_XS_TOTAL": "5406345.11636863",
+  "threshold_TOTAL": "5470396.514987347",
+  "max_global_settled_DD_percent": "50",
+  "liquidations": 0,
+  "guard": {
+    "portfolio_DD_percent": "40",
+    "SOL_adverse_percent": "2",
+    "reduce_fraction": "0.50",
+    "R1_cadence": "CLOSED_H1",
+    "R2_cadence": "COMPLETE_PAIRED_REAL_MINUTE_QUOTES",
+    "one_shot": true
+  },
+  "source_product_edits": "CANONICAL_VPS_ONLY",
+  "single_native_engine_at_once": true,
+  "pilot_touched": false,
+  "preserve_BTC_fallback": true,
+  "preserve_ordinary_BTC_TP_SOL_rights": true,
+  "not_fresh_OOS": true,
+  "benchmark_qualification": "NOT_FAITHFUL_DIAGNOSTIC"
+}

@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-23T11:31:45.477185+00:00",
+  "issue": "https://github.com/VF78/coinmaster/issues/123",
+  "Project": "https://github.com/users/VF78/projects/2",
+  "title": "[S0 DD50] E4 residual SOL protection — H1 vs minute",
+  "state": "open",
+  "status": "In Progress",
+  "issue_body_sha256": "158119eb945a21e884bda586ee84311ab31b7085978e100739d422d92727115f",
+  "body_and_status_readback": "PASS",
+  "new_issues": 0,
+  "comments_created": 0,
+  "scope": "E4_RESIDUAL_SOL_H1_VS_MINUTE",
+  "full_native_started": 0,
+  "pilot_changes": 0
+}
