@@ -1,0 +1,55 @@
+{
+  "status": "FINAL_SOURCE_AND_FOCUSED_RECEIPTS_VERIFIED",
+  "decision": "GO_AUTHORIZED_C0_H4_B_NATIVE_RESEARCH_MECHANICAL_GATE",
+  "findings": [],
+  "reviewer_product_edits": 0,
+  "reviewer_native_runs": 0,
+  "base": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "preliminary_source_sha256": {
+    "runtime/coinmaster/strategy/hedge_band.py": "a76f866d4c181d23021ecdd3e586fa8d2ecf95fceb2aefd9737c67b4e989ae0d",
+    "runtime/coinmaster/strategy/wave_overlay.py": "85c2445745116b1085c7b3526ffb3f4bb2c6ebe8edc94e1bf6b65b39570019fd",
+    "runtime/coinmaster/domain/wave_overlay.py": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+    "runtime/coinmaster/research/native_baseline.py": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+    "runtime/tests/test_native_hedge_band.py": "e2ed068841410579e6029cfbc9fa619b7650b401c10d99e26247d2b16a0627db"
+  },
+  "pending": [],
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "isolated_status": "CLEAN",
+  "final_diff_check": "PASS",
+  "owner_reported_checks": {
+    "focused": "47passed,16deselected,3.08s",
+    "original_S0_split": "3passed,2.05s",
+    "compileall": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "final_source_sha256": {
+    "runtime/coinmaster/strategy/hedge_band.py": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+    "runtime/coinmaster/strategy/wave_overlay.py": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d",
+    "runtime/coinmaster/domain/wave_overlay.py": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+    "runtime/coinmaster/research/native_baseline.py": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+    "scripts/launch_split_cover_native.py": "b10bd56e9dd0c6043eb07fc821095a09487d224dabd9cf1280ab531a960daef0",
+    "scripts/collect_split_cover_native.py": "dd609ec91207a3bc0aafb433df0a0b865dcaddc45c8db2e0a26239e7a7d927a1",
+    "scripts/verify_split_cover_repeat.py": "ac37c335a2c091c31db603bfa5fef8d0581dfc2618823048e657b82a8b032302",
+    "runtime/tests/test_native_hedge_band.py": "2b0bfd67ddf3fe6119461db53c6fd02084e068ca92d1930bf8ad12e3b3d9a3f4"
+  },
+  "limitations": [
+    "No full candidate economic result or 50/90 claim.",
+    "Root P0/data/resource/budget gates remain separate.",
+    "No live/service/pilot authorization from this review."
+  ],
+  "verified_receipts": {
+    "owner-focused-tests.log": {
+      "sha256": "c6d7fd243092014e562b4d486cf63e2255911d297f64287f69d2ffd98745a306"
+    },
+    "owner-s0-split-tests.log": {
+      "sha256": "2c889e44488f95237728a4b93857a7617210e5d41ea45e4c1bcb1f285ab40e98"
+    },
+    "owner-source-sha256.txt": {
+      "sha256": "31be4b17da3d6d175f498367d252e03eec030495d80a49035c3df9e4e58cebe6"
+    },
+    "owner-source.patch": {
+      "sha256": "56e273f732307549d8d177b0e9acdefe95eb08144fd8d04f387f36173389cc0f"
+    }
+  },
+  "source_receipt_matches_independent_remote_read": true
+}

@@ -1,0 +1,67 @@
+{
+  "utc": "2026-10-23T05:46:07.702928+00:00",
+  "status": "PASS_REAL_BYBIT_LINEAR_4H_WARMUP_ONLY",
+  "request_source": "existing pinned bybit_data.backwards_pages",
+  "request": {
+    "endpoint": "https://api.bybit.com/v5/market/kline",
+    "category": "linear",
+    "symbol": "SOLUSDT",
+    "interval": "240",
+    "start_ms": 1714636800000,
+    "end_exclusive_ms": 1725235200000
+  },
+  "raw": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/indicator-warmup/raw/SOLUSDT-4h-0000-32f04fb155418ada03ec9f864dc657194c0e56442ed4d948953c36f0b4b10c4a.json",
+      "sha256": "32f04fb155418ada03ec9f864dc657194c0e56442ed4d948953c36f0b4b10c4a"
+    }
+  ],
+  "warmup_csv": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/indicator-warmup/SOLUSDT-4h-730.csv",
+  "warmup_sha256": "8155662408cdeae23a4319d6a2fbdd667e5840d048e49e1b707fa1051630e26b",
+  "bars": 730,
+  "first_close_ns": 1714651200000000000,
+  "last_close_ns": 1725148800000000000,
+  "availability": "bar open+4h; no unfinished bars",
+  "execution_original_sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+  "overlap_24h": [
+    {
+      "open_ms": 1725148800000,
+      "API4hclose": "134",
+      "pinned1maggregateclose": "134",
+      "equal": true
+    },
+    {
+      "open_ms": 1725163200000,
+      "API4hclose": "132.73",
+      "pinned1maggregateclose": "132.73",
+      "equal": true
+    },
+    {
+      "open_ms": 1725177600000,
+      "API4hclose": "131.81",
+      "pinned1maggregateclose": "131.81",
+      "equal": true
+    },
+    {
+      "open_ms": 1725192000000,
+      "API4hclose": "134.17",
+      "pinned1maggregateclose": "134.17",
+      "equal": true
+    },
+    {
+      "open_ms": 1725206400000,
+      "API4hclose": "135.13",
+      "pinned1maggregateclose": "135.13",
+      "equal": true
+    },
+    {
+      "open_ms": 1725220800000,
+      "API4hclose": "128.34",
+      "pinned1maggregateclose": "128.34",
+      "equal": true
+    }
+  ],
+  "execution_data_modified": false,
+  "wall_seconds": 0.7340307501144707,
+  "new_native_runs": 0
+}

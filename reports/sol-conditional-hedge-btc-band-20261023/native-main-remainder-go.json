@@ -1,0 +1,39 @@
+{
+  "utc": "2026-10-23T06:13:38.828693+00:00",
+  "status": "GO_REMAINING_CORE_ONLY",
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "policy_sha256": "d6bcdad21ad8ba0fb6e2c3b49d9ccc9aa77aaefb408c937d26686704ad7c18b1",
+  "first_two_review": {
+    "C0": {
+      "status": "VALID_NATIVE_COMPLETED_LIQUIDATED",
+      "total": "306.48185220",
+      "settled_DD_percent": "97.53441776076043948608313353",
+      "all_mechanical_checks": true,
+      "receipt_sha256": "d76c9dd4f87cdaf04f13867308bf90a78c121045ad16c0efe5a2f824c953c7eb"
+    },
+    "H4_4H_E34_G050": {
+      "status": "VALID_NATIVE_COMPLETED_LIQUIDATED",
+      "total": "437.07391017",
+      "settled_DD_percent": "96.48383203633569295829914875",
+      "all_mechanical_checks": true,
+      "receipt_sha256": "c690cccc5cd63d680f33b286e711f2db0f4523b185e3728f587228321db72a7d"
+    }
+  },
+  "decision": "No observed technical violation in first two native event receipts; liquidation is an economic result. Continue frozen independent recipes; do not change parameters to rescue them.",
+  "sequence": [
+    "BTC_REGIME_REENTRY_BAND_05",
+    "H4_4H_E13_G050",
+    "H4_4H_E89_G050",
+    "H4_4H_E34_G100",
+    "H4_4H_E13_G100",
+    "H4_4H_E89_G100"
+  ],
+  "constraints": [
+    "one native engine at a time",
+    "fully original SOL in B, not C0",
+    "no new full repeats",
+    "hold after core8 for X/R selection",
+    "pilot and production untouched",
+    "ledger owner h4_band_owner"
+  ]
+}

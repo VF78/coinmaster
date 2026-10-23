@@ -1,0 +1,119 @@
+{
+  "recipe": "H4_4H_E34_G050",
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E34-G0.5-btc-direction.json",
+  "artifact_sha256": "cf590a2a3aa5e43f76e75bd10527c16a3bf36abbdce75762a95568b8d1802662",
+  "raw_artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E34-G0.5-btc-direction-raw-native.json",
+  "raw_sha256": "3501f46c3f0b321b1b2aa21ce49ebdd157962016563ecb68434c340e42d81108",
+  "config_sha256": "7614e7c40b0c330d8c93516372efe327d9e47f9eb78d58dc10dd663705c42c48",
+  "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "total": "437.07391017",
+  "cumulative_ROI_percent": "-95.629260898300",
+  "geometric_monthly_ROI_percent": -12.227907227911327,
+  "profit_retention_percent": "-0.1576192032432821146100664172",
+  "settled_post_quote_DD_percent": "96.48383203633569295829914875",
+  "all_native_close_DD_percent": "96.48383203633569295829914875",
+  "fills": 12,
+  "native_fees": "271.18878063",
+  "funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 32,
+      "SOLUSDT-PERP.P1SIM": 11
+    },
+    "count": 43,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "native_fill_action_counts": {
+    "BTC_ENTRY": 4,
+    "BTC_REDUCE": 1,
+    "SOL_ADD": 3,
+    "SOL_EXIT": 3,
+    "LIQUIDATION_CLOSE": 1
+  },
+  "hedge_event_counts": {
+    "H4_SIGNAL": 4380,
+    "BTC_FLAT_INVALIDATE_RIGHTS": 1,
+    "H4_ACTIVATION": 3,
+    "H4_TARGET": 3,
+    "H4_NATIVE_CHILD": 6,
+    "H4_FIRST_FILL": 3,
+    "H4_HALF_INITIAL_TARGET_FILL": 3,
+    "H4_NATIVE_CHILD_TERMINAL": 6
+  },
+  "native_order_status_counts": {
+    "FILLED": 12,
+    "CANCELED": 2
+  },
+  "native_partial_terminal_order_count": 0,
+  "resources": {
+    "wall_seconds": 142.22,
+    "user_CPU_seconds": 139.98,
+    "system_CPU_seconds": 0.95,
+    "max_RSS_bytes": 452182016
+  },
+  "mechanical_checks": {
+    "full_rows": true,
+    "terminal_positions_flat": true,
+    "terminal_open_orders_zero": true,
+    "terminal_pending_flat": true,
+    "expected_config_exact": true,
+    "s0_data_exact": true,
+    "s0_execution_policy_exact": true,
+    "native_fills_export_rows": true,
+    "btc_split_quantity_conserved": true,
+    "source_freeze_exact": true,
+    "h4_increase_strictly_before_frozen_deadline": true,
+    "h4_single_increase_per_pinned_sol_quote": true,
+    "h4_activations_finite_positive_daily_beta": true,
+    "h4_fixed_activation_ttl": true,
+    "h4_increase_only_positive_unfilled_target": true
+  },
+  "status": "VALID_NATIVE_COMPLETED_LIQUIDATED",
+  "exports": {
+    "fills": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/native-fills.csv",
+      "rows": 12,
+      "sha256": "44d002a21df2382cf2d853842f76fcc01078f5b66a274b12fc4ac48e61bb4a99"
+    },
+    "orders": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/native-orders.csv",
+      "rows": 14,
+      "sha256": "f92d525ad2f494fa54241f47fa188f58bdb63cc01e72feb501209451eec9d3b4"
+    },
+    "native-fill-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/native-fill-audit.csv",
+      "rows": 12,
+      "sha256": "d3b79a2e53bb8612c6c4e6b9a48f3575ab8b21e794f0d76fec6521530c49f4ba"
+    },
+    "native-order-events.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/native-order-events.csv",
+      "rows": 14,
+      "sha256": "9b364c625c808cefe88a6c8757b3cf8d599515ec920a69d78118d86d452ca3f8"
+    },
+    "hedge-band-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/hedge-band-audit.csv",
+      "rows": 4405,
+      "sha256": "a8c7c31de5a18c493bacbadb9dca62449b2910c5489a88bbc0aabe831845c364"
+    },
+    "entry-sizing-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/entry-sizing-audit.csv",
+      "rows": 2,
+      "sha256": "02795a6137088b119fba24d268fb21566ca63556dc65fd49436b50563001aa30"
+    },
+    "split-parent-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/split-parent-audit.csv",
+      "rows": 2,
+      "sha256": "5f51f38c4565ad63af95e797615b7870f459fbd38ca2aa850ef690b56f2df2e3"
+    },
+    "rights_lifecycle": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-events/actual-rights-and-fill-lifecycle.csv",
+      "rows": 8,
+      "sha256": "852980d12324b352481d9abc52a7d23627da42da4385419c855951d8f8006b65"
+    }
+  },
+  "rights_export_note": "Actual native fill rows and explicit final-flat right invalidation events; no inferred fill, ownership, or PnL. Native partial/terminal data preserved in native orders/events exports.",
+  "no_extra_engine": true,
+  "liquidation_count": 1,
+  "native_status": "LIQUIDATED_EARLY_CUTOFF"
+}

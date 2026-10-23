@@ -1,0 +1,11 @@
+{
+  "fixed_input_log_differences": [
+    {
+      "return_index": 260,
+      "asset": "BTC",
+      "Mac": "0x1.14f09ec787132p-7",
+      "VPS": "0x1.14f09ec787133p-7"
+    }
+  ],
+  "count": 1
+}

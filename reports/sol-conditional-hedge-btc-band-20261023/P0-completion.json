@@ -1,0 +1,32 @@
+{
+  "utc": "2026-10-23T05:51:47.551350+00:00",
+  "state": "COMPLETED_PRELIM_PARITY_PASS_INDEPENDENT_VALIDATION_PENDING",
+  "exit_code": 0,
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+  "artifact_sha256": "d8a0d10829462b5bceca23a957bcaa93ee19749c917ca81b52125e16c386f875",
+  "resources": {
+    "wall_seconds": 178.6,
+    "user_CPU_seconds": 166.28,
+    "system_CPU_seconds": 2.51,
+    "max_RSS_bytes": 457441280
+  },
+  "checks": {
+    "exact_TOTAL": true,
+    "config_SHA": true,
+    "data_SHA": true,
+    "policy_SHA": true,
+    "settled_DD_exact": true,
+    "native_fees_exact": true
+  },
+  "counts": {
+    "fills": 621,
+    "fill_audit": 621,
+    "terminal_open_positions": 0,
+    "liquidation_count": 0,
+    "funding_count": 1320
+  },
+  "full_run_slot": 1,
+  "source": "75ffc9c original unchanged",
+  "pilot_changed": false,
+  "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+}

@@ -1,0 +1,970 @@
+diff --git a/runtime/coinmaster/domain/wave_overlay.py b/runtime/coinmaster/domain/wave_overlay.py
+index 954d988..67de836 100644
+--- a/runtime/coinmaster/domain/wave_overlay.py
++++ b/runtime/coinmaster/domain/wave_overlay.py
+@@ -396,7 +396,7 @@ class WaveOverlayState:
+         # A due timeout is a mandatory reduction.  It must preempt a queued
+         # add or a resting planned exit under every candidate, including the
+         # legacy control flag retained in the immutable candidate schema.
+-        timeout = self._sol_exits(episode, feature, bars[index], index)
++        timeout = [] if getattr(self, "research_h4_owned", False) else self._sol_exits(episode, feature, bars[index], index)
+         if timeout:
+             return timeout
+         # Ordinary work waits for a parent to become terminal, but the
+@@ -416,7 +416,7 @@ class WaveOverlayState:
+                     intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=leaves))
+         if intents:
+             return intents
+-        if not self.config.sol_overlay_enabled:
++        if getattr(self, "research_h4_owned", False) or not self.config.sol_overlay_enabled:
+             return []
+         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
+         # An invalid current beta permits only exits/reductions, never new risk.
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 0f8dd22..5bd8f8a 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -688,6 +688,7 @@ def run_native_diagnostic(
+     research_btc_split_planref_v1: bool = False,
+     research_btc_split_tp_ioc: bool = False,
+     research_btc_split_discount: str = "0.0025",
++    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None,
+     research_sol_cover: str | None = None,
+     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
+     research_btc_episode_loss_20: bool = False,
+@@ -730,6 +731,14 @@ def run_native_diagnostic(
+         raise ValueError("RISK_FIRST_REQUIRES_SELECTED_BTC_AND_EXCLUSIVE_SOL_POLICY")
+     if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not observe_minute_risk:
+         raise ValueError("PORTFOLIO_PROTECTION_REQUIRES_PRE_ACTION_MINUTE_OBSERVER")
++    if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
++        if candidate is None or candidate.ema_period != 34 or candidate.beta_days != 270:
++            raise ValueError("HEDGE_BAND_REQUIRES_RESOLVED_S0_EMA34_BETA270_CANDIDATE")
++        if not all((research_v0_execution_repairs, research_v0_deferred_selective_zero_tp,
++                    research_v0_selective_lifecycle_repairs, research_btc_split50,
++                    research_btc_split_planref_v1, research_btc_split_tp_ioc,
++                    research_btc_direction_sizing, observe_minute_risk)):
++            raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
+     candidate = candidate or Candidate()
+     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
+         candidate = replace(candidate, sol_overlay_enabled=False)
+@@ -783,13 +792,26 @@ def run_native_diagnostic(
+     confirmation_bars = tuple(BarType.new_composite(
+         instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
+         AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
+-    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else ()
++    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else ()
++    h4_bar_type = BarType.new_composite(sol_instrument.id, BarSpecification(4, BarAggregation.HOUR, PriceType.LAST),
++        AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL) if research_h4_ema is not None else None
++    h4_seed = ()
++    h4_warmup_hash = None
++    if research_h4_ema is not None:
++        import csv
++        if research_h4_warmup is None:
++            raise ValueError("H4_WARMUP_REQUIRED_BLOCKED_DATA")
++        h4_warmup_hash = sha256_file(research_h4_warmup)
++        with research_h4_warmup.open() as handle:
++            h4_seed = tuple((int(r["close_time_ns"]), float(r["close"])) for r in csv.DictReader(handle))
++        if len(h4_seed) != 730 or h4_seed[-1][0] != trading_start_ms*1_000_000 or any(b[0]-a[0] != 14_400_000_000_000 for a,b in zip(h4_seed,h4_seed[1:])):
++            raise ValueError("H4_EXACT_730_CLOSED_WARMUP_REQUIRED")
+     minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
+                    for instrument in (btc_instrument, sol_instrument)}
+     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+         run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first=="alpha-corridor-v1"),
+-        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
+-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
++        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
++    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
+     engine.add_instrument(btc_instrument)
+     engine.add_instrument(sol_instrument)
+     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
+@@ -832,6 +854,11 @@ def run_native_diagnostic(
+         research_btc_split_planref_v1=research_btc_split_planref_v1,
+         research_btc_split_tp_ioc=research_btc_split_tp_ioc,
+         research_btc_split_discount=Decimal(research_btc_split_discount),
++        research_sol_btc_open_only=research_sol_btc_open_only,
++        research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
++        research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
++        research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
++        research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
+         research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+         research_conditional_sol=research_conditional_sol,
+         research_sol_risk_first=research_sol_risk_first,
+@@ -873,7 +900,7 @@ def run_native_diagnostic(
+             marks, signals, quotes, source_bars = [], [], [], []
+             for minute in week:
+                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
+-                if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair:
++                if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair:
+                     for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
+                         source_bars.append(Bar(minute_bars[instrument.id],
+                             instrument.make_price(row["open"]), instrument.make_price(row["high"]),
+@@ -1001,6 +1028,11 @@ def run_native_diagnostic(
+             full_config["research_v0_selective_lifecycle_repairs"] = True
+         stats["peak_rss_bytes"] = _peak_rss_bytes()
+         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
++        if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
++            full_config["hedge_band_research"] = dict(c0=research_sol_btc_open_only, h4_ema=research_h4_ema,
++                h4_gamma=research_h4_gamma, h4_warmup_sha256=h4_warmup_hash, regime_reentry_band=research_regime_reentry_band,
++                beta="LATEST_ACCEPTED_DAILY_LOG_RETURN_270_FREEZE_AT_ACTIVATION", ttl_ns=14_400_000_000_000,
++                atr="WILDER14_ORIGINAL_DAILY_OHLC_SEED", execution="EXISTING_NATIVE_ONLY")
+         if research_h1_b1:
+             full_config["research_h1_b1"] = {"variant": research_h1_b1, "direction_sizing": {"long": "5.5", "short": "7.875"},
+                 "confirmation": "NATIVE_INTERNAL_15M_OR_1H_CLOSE_PREVIOUS_HIGH_LOW", "bar_execution": False, "native_bar_cache_capacity_per_type": 128, "build_empty_bars": False,
+@@ -1032,6 +1064,8 @@ def run_native_diagnostic(
+                 "beta_entry_open_interval": ["0.2", "4"],
+             }
+         result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": native_fill_count, "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "entry_sizing_audit": adapter["entry_sizing_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": native_order_rejections, "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
++        if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
++            result["hedge_band_audit"] = strategy.hedge_band_audit
+         result.update({
+             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",
+             "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
+@@ -1051,6 +1085,7 @@ def run_native_diagnostic(
+                     ("native_baseline", "research/native_baseline.py"),
+                     ("wave_domain", "domain/wave_overlay.py"),
+                     ("wave_strategy", "strategy/wave_overlay.py"),
++                    *(((("hedge_band", "strategy/hedge_band.py"),)) if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None else ()),
+                 )
+             }
+         # Preserve native facts before any boundary/metadata packaging assertion.
+@@ -1283,7 +1318,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_batch_minutes: int | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_batch_minutes: int | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1337,6 +1372,12 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         label += "-tp-ioc"
+     if research_sol_cover:
+         label += "-sol-cover" + research_sol_cover
++    if research_sol_btc_open_only:
++        label += "-C0"
++    if research_h4_ema is not None:
++        label += f"-H4-4H-E{research_h4_ema}-G{research_h4_gamma}"
++    if research_regime_reentry_band is not None:
++        label += "-B-ATR"+research_regime_reentry_band
+     if research_chop_pair:
+         label += "-chop-pair-50-net-v1"
+     if research_alpha_cushion:
+@@ -1387,6 +1428,9 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         research_immediate_lookback=research_immediate_lookback,
+         research_alpha_cushion=research_alpha_cushion,
+         research_chop_pair=research_chop_pair,
++        research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
++        research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
++        research_regime_reentry_band=research_regime_reentry_band,
+         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
+         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
+         research_btc_episode_loss_20=research_btc_episode_loss_20,
+@@ -1419,6 +1463,11 @@ def main() -> None:
+     parser.add_argument("--research-v0-original-zero-tp", action="store_true", help="With research repairs, retain original BTC entry and zero-threshold TP levels")
+     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
+     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
++    parser.add_argument("--research-sol-btc-open-only", action="store_true")
++    parser.add_argument("--research-h4-ema", type=int, choices=(13,34,89))
++    parser.add_argument("--research-h4-gamma", choices=("0.5","1"), default="0.5")
++    parser.add_argument("--research-h4-warmup", type=Path)
++    parser.add_argument("--research-regime-reentry-band", choices=("0","0.5"))
+     parser.add_argument("--research-h1-b1", choices=("h1", "b1"), default=None)
+     parser.add_argument("--research-v3-risk", choices=("b25", "s10_15", "r2", "t3"), default=None, help="One default-OFF research risk variation on V3 directional sizing")
+     parser.add_argument("--research-btc-direction-sizing", action="store_true", help="Research-only frozen episode long5.5 short7.875 multiplier")
+@@ -1431,6 +1480,8 @@ def main() -> None:
+     parser.add_argument("--control-report", type=Path)
+     parser.add_argument("--artifact-dir", type=Path)
+     args = parser.parse_args()
++    if (args.research_sol_btc_open_only or args.research_h4_ema is not None or args.research_regime_reentry_band is not None) and not args.research_v0_execution_repairs:
++        parser.error("C0/H4/B require the explicit native research repair pipeline")
+     if args.job_request is not None:
+         raise SystemExit(run_job_request(args.job_request))
+     if (args.research_v0_original_zero_tp or args.research_v0_deferred_selective_zero_tp) and not args.research_v0_execution_repairs:
+@@ -1468,6 +1519,9 @@ def main() -> None:
+             research_conditional_sol=args.research_conditional_sol,
+             research_alpha_cushion=args.research_alpha_cushion,
+             research_chop_pair=args.research_chop_pair,
++            research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
++            research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
++            research_regime_reentry_band=args.research_regime_reentry_band,
+             research_batch_minutes=args.research_batch_minutes,
+             research_sol_risk_first=args.research_sol_risk_first,
+             research_immediate_sol=args.research_immediate_sol,
+diff --git a/runtime/coinmaster/strategy/hedge_band.py b/runtime/coinmaster/strategy/hedge_band.py
+new file mode 100644
+index 0000000..27616b7
+--- /dev/null
++++ b/runtime/coinmaster/strategy/hedge_band.py
+@@ -0,0 +1,237 @@
++"""Default-off research policies; native executor remains the only order owner."""
++from decimal import Decimal as D
++from math import isfinite
++
++H4_NS = 14_400_000_000_000
++
++
++class HedgeBandResearch:
++    def _hedge_band_init(self):
++        c = self.config
++        if c.research_sol_btc_open_only and c.research_h4_ema is not None:
++            raise ValueError("C0_AND_H4_ARE_EXCLUSIVE")
++        if c.research_h4_ema not in (None, 13, 34, 89) or c.research_h4_gamma not in (D('.5'), D('1')):
++            raise ValueError("H4_FIXED_GRID_REQUIRED")
++        if c.research_regime_reentry_band not in (None, D('0'), D('.5')):
++            raise ValueError("B_FIXED_HALF_ATR_REQUIRED")
++        enabled = c.research_sol_btc_open_only or c.research_h4_ema is not None or c.research_regime_reentry_band is not None
++        if enabled and (c.research_h1_b1 or c.research_v3_risk or c.research_sol_cover is not None or c.research_conditional_sol or c.research_sol_risk_first or c.research_immediate_sol or c.research_alpha_cushion or c.research_chop_pair):
++            raise ValueError("HEDGE_BAND_REQUIRES_EXCLUSIVE_S0_PIPELINE")
++        self.hedge_band_audit = []
++        self._hb_wait_regime = False
++        self._hb_daily_ohlc = {int(ns): (float(h), float(l)) for ns, h, l in c.research_band_daily_seed}
++        self._hb_ema = None
++        self._hb_count = 0
++        self._hb_bar_ns = None
++        self._hb_side = None
++        self._hb_cycle = None
++        self._hb_eligible = False
++        self._hb_quote_seq = 0
++        self._hb_last_submit_seq = -1
++        self._hb_cancel_ids = set()
++        self._hb_exit_pending = False
++        for ns, close in c.research_h4_seed:
++            self._hedge_h4_close(int(ns), float(close))
++        if c.research_h4_ema is not None and self._hb_count < 730:
++            raise ValueError("H4_REQUIRES_730_CLOSED_4H_WARMUP_BARS")
++
++    def _hb_log(self, event, ns, **fields):
++        self.hedge_band_audit.append(dict(event=event, timestamp_ns=int(ns), **fields))
++
++    def _hb_position(self, instrument):
++        return next((p for p in self.cache.positions_open() if p.instrument_id == instrument), None)
++
++    def _hedge_h4_close(self, ns, close):
++        if self._hb_bar_ns is not None and ns <= self._hb_bar_ns:
++            return
++        period = self.config.research_h4_ema
++        if period is None:
++            return
++        if ns % H4_NS or not isfinite(close) or close <= 0:
++            raise ValueError("INVALID_CLOSED_UTC_H4_BAR")
++        if self._hb_bar_ns is not None and ns != self._hb_bar_ns + H4_NS:
++            raise ValueError("H4_CAUSAL_BAR_GAP")
++        alpha = 2 / (period + 1)
++        self._hb_ema = close if self._hb_ema is None else alpha * close + (1-alpha) * self._hb_ema
++        self._hb_count += 1
++        self._hb_side = 1 if close > self._hb_ema else -1
++        self._hb_bar_ns = ns
++
++    def _hedge_h4_bar(self, bar):
++        # Called by its own explicitly typed branch, never legacy HOUR/1h.
++        self._hedge_h4_close(bar.ts_event, float(bar.close))
++        self._hb_log('H4_SIGNAL', bar.ts_event, side=self._hb_side, ema=self._hb_ema,
++                     receipt_ns=self.clock.timestamp_ns(), quote_sequence=self._hb_quote_seq)
++        self._hedge_refresh(self.clock.timestamp_ns())
++
++    def _hedge_band_allowed(self):
++        if self.config.research_regime_reentry_band is None or not self._hb_wait_regime or self._domain.episode is not None:
++            return True
++        # Rebuild only the original accepted seed/closed daily chain. EMA seed is
++        # exactly FeatureState's first close, and TR needs a previous close.
++        ema = previous = atr = None
++        trs = []
++        for row in self._bars:
++            close = row.btc_close
++            ema = close if ema is None else 2/(self._candidate.ema_period+1)*close + (1-2/(self._candidate.ema_period+1))*ema
++            ns = int(row.close_time.timestamp()*1_000_000_000)
++            hl = self._hb_daily_ohlc.get(ns)
++            if previous is not None:
++                if hl is None:
++                    self._daily_decision_reason = 'B_OHLC_UNAVAILABLE'
++                    return False
++                high, low = hl
++                tr = max(high-low, abs(high-previous), abs(low-previous))
++                if not isfinite(tr) or low <= 0 or high < max(low, close) or low > close:
++                    self._daily_decision_reason = 'B_OHLC_INVALID'
++                    return False
++                if atr is None:
++                    trs.append(tr)
++                    if len(trs) == 14:
++                        atr = sum(trs)/14
++                else:
++                    atr = (13*atr+tr)/14
++            previous = close
++        band = self.config.research_regime_reentry_band
++        if band == 0:
++            return True  # Permission-only short oracle; no ATR gate at zero.
++        if atr is None or not isfinite(atr) or atr <= 0:
++            self._daily_decision_reason = 'B_ATR_UNAVAILABLE'
++            return False
++        side = 1 if close > ema else -1
++        allowed = side*(close-ema) >= float(band)*atr
++        self._daily_decision_reason = 'B_ENTRY_ALLOWED' if allowed else 'WAIT_REGIME_REENTRY'
++        self._hb_log(self._daily_decision_reason, ns, side=side, close=close, ema=ema, atr14=atr)
++        return allowed
++
++    def _hedge_btc_flat(self, intent, ns):
++        if not (self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None):
++            return
++        ep = self._domain.episode
++        if ep is None or ep.btc_open_qty > 0:
++            return
++        ep.sol_rights.clear()
++        ep.sol_right_fraction.clear()
++        ep.sol_right_decision_index.clear()
++        if self._hb_cycle is not None:
++            self._hb_log('H4_BTC_FLAT_CANCEL_BUILD', ns, activation_ns=self._hb_cycle.get('activation_ns'), target=str(self._hb_cycle['target']))
++        self._hb_cycle = None
++        self._hb_eligible = False
++        # True terminal cause, never fabricated REGIME/same-session restart.
++        ep.close_reason = ep.close_reason or intent.reason or 'BTC_TP_FLAT'
++        close = self._domain._intent(ep, 'CLOSE_ALL', -ep.side, None, reason=ep.close_reason)
++        self._group_close_reconciliation_pending = True
++        self._begin_forced_close(ep.close_reason, close)
++        self._hb_log('BTC_FLAT_INVALIDATE_RIGHTS', ns, reason=ep.close_reason)
++
++    def _hedge_refresh(self, ns):
++        if self.config.research_h4_ema is None:
++            return
++        ep = self._domain.episode
++        btc = self._hb_position(self.config.btc_id)
++        side = (1 if btc.is_long else -1) if btc is not None else None
++        eligible = bool(ep is not None and btc is not None and self._hb_side == -side and self._forced_close_reason is None and not self._liquidating)
++        cycle = self._hb_cycle
++        key = (ep.id, side) if ep is not None else None
++        new = eligible and (not self._hb_eligible or cycle is None or cycle['key'] != key)
++        if not eligible:
++            if cycle is not None:
++                self._hb_exit_pending = True
++                cycle['exit'] = True
++                cycle['target'] = D(0)
++            self._hb_eligible = False
++            return
++        if new:
++            beta = self._current_signals[-1].beta if self._current_signals else None
++            bm, sm = self._latest_marks.get(self.config.btc_id), self._latest_marks.get(self.config.sol_id)
++            self._hb_eligible = True
++            if beta is None or not isfinite(beta) or beta <= 0 or bm is None or sm is None or bm.price <= 0 or sm.price <= 0:
++                self._hb_cycle = dict(key=key, side=-side, invalid=True, target=D(0), exit=True, deadline_ns=ns+H4_NS)
++                self._hb_log('H4_ACTIVATION_INVALID', ns, beta=beta)
++                return
++            ratio = self.config.research_h4_gamma * D(str(bm.price)) / (D(str(beta))*D(str(sm.price)))
++            cycle = self._hb_cycle = dict(key=key, side=-side, activation_ns=ns, deadline_ns=ns+H4_NS,
++                beta=beta, pb0=str(bm.price), ps0=str(sm.price), ratio=ratio, target=D(0), initial_target=None,
++                ready_sequence=self._hb_quote_seq+1, exit=False, invalid=False, first_fill_ns=None, half_fill_ns=None)
++            self._hb_log('H4_ACTIVATION', ns, episode_id=ep.id, beta0=beta, r0=str(ratio), deadline_ns=ns+H4_NS)
++        if cycle is None or cycle.get('invalid'):
++            return
++        step = self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
++        target = (cycle['ratio']*btc.quantity.as_decimal()//step)*step
++        if cycle['initial_target'] is None:
++            cycle['initial_target'] = target
++        if target != cycle['target']:
++            self._hb_log('H4_TARGET', ns, previous=str(cycle['target']), target=str(target), actual_btc=str(btc.quantity))
++        if target < cycle['target']:
++            self._hedge_cancel_openers()
++        cycle['target'] = target
++
++    def _hedge_cancel_openers(self):
++        self._discard_queued_intents(lambda i: i.action == 'SOL_ADD')
++        for order in list(self.cache.orders_open()):
++            if order.instrument_id == self.config.sol_id and not order.is_reduce_only:
++                oid = str(order.client_order_id)
++                if oid not in self._hb_cancel_ids:
++                    self._hb_cancel_ids.add(oid)
++                    self.cancel_order(order)
++
++    def _hedge_quote(self, tick):
++        if self.config.research_h4_ema is None or tick.instrument_id != self.config.sol_id:
++            return
++        self._hb_quote_seq += 1
++        self._hedge_refresh(tick.ts_event)
++        cycle = self._hb_cycle
++        ep = self._domain.episode
++        if ep is None or cycle is None:
++            return
++        held = self._hb_position(self.config.sol_id)
++        qty = held.quantity.as_decimal() if held is not None else D(0)
++        target = cycle['target'] if not cycle['exit'] and not self._hb_exit_pending else D(0)
++        expired = tick.ts_event >= cycle['deadline_ns']
++        if cycle['exit'] or self._hb_exit_pending or expired or qty >= target:
++            self._hedge_cancel_openers()
++        # Every child remains owned until a native terminal receipt. The
++        # sequence is consumed before submit (including synchronous callbacks).
++        busy = any(i.action.startswith('SOL') for i in self._pending_by_order.values()) or any(o.instrument_id == self.config.sol_id for o in self.cache.orders_open()+self.cache.orders_inflight())
++        if busy or self._hb_last_submit_seq == self._hb_quote_seq:
++            return
++        if self._hb_exit_pending and qty == 0:
++            self._hb_exit_pending = False
++            return  # Complete old mandatory exit before considering pending activation.
++        wrong = held is not None and (1 if held.is_long else -1) != cycle['side']
++        reduction = qty if wrong or cycle['exit'] or self._hb_exit_pending else max(D(0), qty-target)
++        if reduction > 0:
++            intent = self._domain._intent(ep, 'SOL_EXIT', -1 if held.is_long else 1, None,
++                quantity=float(reduction), reason='H4_TARGET_REDUCTION')
++        elif qty < target and not self._hb_exit_pending and not expired and not cycle['exit'] and self._hb_quote_seq >= cycle['ready_sequence'] and self._forced_close_reason is None and not self._liquidating and not self._split_unfinished() and not any(i.action.startswith('BTC') for i,_,_ in self._queued_intents):
++            intent = self._domain._intent(ep, 'SOL_ADD', cycle['side'], None,
++                quantity=float(target-qty), reason='H4_INCREASE')
++        else:
++            return
++        self._hb_last_submit_seq = self._hb_quote_seq
++        self._hb_log('H4_NATIVE_CHILD', tick.ts_event, action=intent.action, quantity=intent.quantity, activation_ns=cycle.get('activation_ns'), deadline_ns=cycle['deadline_ns'], target=str(target), initial_target=str(cycle.get('initial_target')), held=str(qty))
++        self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, len(self._bars)-1, ts_now=tick.ts_event)
++
++    def _hedge_sol_fill(self, intent, quantity, ns):
++        ep = self._domain.episode
++        if ep is None:
++            raise ValueError('H4_FILL_WITHOUT_OWNED_EPISODE')
++        ep.sol_qty = max(0.0, ep.sol_qty + quantity if intent.action == 'SOL_ADD' else ep.sol_qty-quantity)
++        cycle = self._hb_cycle
++        if cycle and not cycle.get('invalid') and intent.action == 'SOL_ADD':
++            if cycle['first_fill_ns'] is None:
++                cycle['first_fill_ns'] = ns
++                self._hb_log('H4_FIRST_FILL', ns, delay_ns=ns-cycle['activation_ns'])
++            if cycle['half_fill_ns'] is None and D(str(ep.sol_qty)) >= cycle['initial_target']/2:
++                cycle['half_fill_ns'] = ns
++                self._hb_log('H4_HALF_INITIAL_TARGET_FILL', ns, delay_ns=ns-cycle['activation_ns'], initial_target=str(cycle['initial_target']))
++
++    def _hedge_terminal(self, intent, ns, outcome):
++        if self.config.research_h4_ema is None or intent is None or not intent.action.startswith('SOL'):
++            return
++        c = self._hb_cycle
++        self._hb_log('H4_NATIVE_CHILD_TERMINAL', ns, action=intent.action, outcome=outcome,
++            activation_ns=c.get('activation_ns') if c else None,
++            time_from_activation_ns=ns-c['activation_ns'] if c and 'activation_ns' in c else None,
++            target=str(c['target']) if c else '0',
++            actual_sol=str(self._hb_position(self.config.sol_id).quantity) if self._hb_position(self.config.sol_id) else '0')
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 28f4ebc..91cbdfa 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -22,6 +22,7 @@ from nautilus_trader.model.identifiers import ClientId, ClientOrderId, Instrumen
+ from nautilus_trader.trading.strategy import Strategy
+ 
+ from coinmaster.domain.wave_overlay import btc_management_price
++from coinmaster.strategy.hedge_band import HedgeBandResearch
+ from coinmaster.strategy.split_cover import SplitCoverResearch
+ from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
+ from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
+@@ -65,6 +66,13 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_btc_split_planref_v1: bool = False
+     research_btc_split_tp_ioc: bool = False
+     research_btc_split_discount: Decimal = Decimal("0.0025")
++    research_sol_btc_open_only: bool = False
++    research_h4_ema: int | None = None
++    research_h4_gamma: Decimal = Decimal(".5")
++    research_h4_seed: tuple[tuple[int, float], ...] = ()
++    research_h4_bar_type: BarType | None = None
++    research_regime_reentry_band: Decimal | None = None
++    research_band_daily_seed: tuple[tuple[int, float, float], ...] = ()
+     research_sol_cover: Decimal | None = None
+     research_conditional_sol: bool = False
+     research_alpha_cushion: bool = False
+@@ -171,7 +179,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
+     return result
+ 
+ 
+-class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
++class WaveOverlayStrategy(HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+     """Turns completed native daily bars into later native market orders."""
+     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+         super().__init__(config)
+@@ -237,6 +245,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+                 raise ValueError("RESEARCH_H1_FIXED_ADVERSE_2_5_PERCENT")
+             if len(config.research_confirmation_bars) != 4:
+                 raise ValueError("RESEARCH_H1_B1_REQUIRES_NATIVE_CONFIRMATION_BARS")
++        self._hedge_band_init()
+         self.h1_b1_audit: list[dict[str, object]] = []
+         self._confirmation_state: dict[BarType, dict] = {}
+         self._confirmation_events: dict[tuple, tuple[int, int]] = {}
+@@ -275,6 +284,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
+         self._domain = WaveOverlayState(self._candidate)
+         self._domain.research_sol_cover = config.research_sol_cover is not None
++        self._domain.research_h4_owned = config.research_h4_ema is not None
+         self._bars: list[DailyBar] = list(config.seed_bars)
+         self._last_accepted_session: int | None = (
+             int(self._bars[-1].close_time.timestamp() * 1_000_000_000) if self._bars else None
+@@ -348,6 +358,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+     def on_start(self) -> None:
+         for confirmation_bar in self.config.research_confirmation_bars:
+             self.subscribe_bars(confirmation_bar)
++        if self.config.research_h4_bar_type is not None:
++            self.subscribe_bars(self.config.research_h4_bar_type)
+         self.subscribe_bars(self.config.btc_bar_type)
+         self.subscribe_bars(self.config.sol_bar_type)
+         # Research feeds explicit VenueMark CustomData.  The live Bybit data
+@@ -378,6 +390,12 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+             self.clock.cancel_timer(self._deposit_timer_name)
+ 
+     def on_bar(self, bar: Bar) -> None:
++        h4 = self.config.research_h4_bar_type
++        if h4 is not None and bar.bar_type in (h4, h4.standard()):
++            if bar.bar_type.instrument_id != self.config.sol_id or bar.bar_type.spec.aggregation != BarAggregation.HOUR or bar.bar_type.spec.step != 4:
++                raise ValueError("H4_EXPLICIT_BAR_TYPE_REQUIRED")
++            self._hedge_h4_bar(bar)
++            return
+         if any(bar.bar_type == kind.standard() or bar.bar_type == kind for kind in self.config.research_confirmation_bars):
+             self._cover_bar(bar)
+             self._conditional_bar(bar)
+@@ -1105,6 +1123,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+             available_at = datetime.fromtimestamp(
+                 max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init, next_session) / 1_000_000_000, UTC,
+             )
++            if self.config.research_regime_reentry_band is not None:
++                self._hb_daily_ohlc[next_session] = (float(btc.high), float(btc.low))
+             self._carry_daily_bar(btc)
+             self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
+             self._last_accepted_session = next_session
+@@ -1194,6 +1214,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+             return
+         if self._liquidating or self._backfill_error is not None:
+             return
++        if not self._hedge_band_allowed():
++            return
+         if not self._b1_gate_daily():
+             self._daily_decision_reason = "B1_WAIT_FRESH_CONFIRMATION"
+             return
+@@ -1266,6 +1288,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+             self._research_protect_latch = None
+         self._daily_decision_reason = getattr(self._domain, "last_decision_reason", "CURRENT_DECISION_EVALUATED") if not intents else "CURRENT_DECISION_INTENTS"
+         for intent in intents:
++            if self.config.research_sol_btc_open_only and intent.action == "SOL_ADD" and self._hb_position(self.config.btc_id) is None:
++                self._domain.on_parent_terminal(intent.id)
++                continue
+             if intent.action == "CLOSE_ALL":
+                 if self.config.research_v3_risk == "r2" and intent.reason == "REGIME":
+                     self._v3_regime_wait = True
+@@ -1454,6 +1479,8 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+                 self._queued_intent_ready_ns.pop(intent.id, None)
+                 self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+ 
++        self._hedge_quote(tick)
++
+     def _select_deferred_btc_entry(self, intent: Intent, tick: QuoteTick) -> Decimal | None:
+         """Observe q0, then choose entry lots from the next causal BTC quote."""
+         episode = self._domain.episode
+@@ -1790,6 +1817,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+                     continue
+                 self.submit_order(order)
+             return
++        if intent.action == "SOL_ADD" and (self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and self._hb_position(self.config.btc_id) is None:
++            self._domain.on_parent_terminal(intent.id)
++            return
+         instrument_id = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
+         instrument = self.cache.instrument(instrument_id)
+         if instrument is None:
+@@ -2425,12 +2455,20 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+             pass  # Native inventory only; original alpha history/basis is retained.
+         elif self._conditional_enabled() and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
+             self._conditional_fill(intent,quantity,price,ts_event)
++        elif self.config.research_h4_ema is not None and intent.action.startswith("SOL"):
++            self._hedge_sol_fill(intent, quantity, ts_event)
+         else:
+             self._domain.on_fill(
+                 intent.id, quantity, price, when, sigma,
+                 decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
+                 entry_qty=entry_qty, entry_price=entry_price,
+             )
++        if intent.action == "BTC_ENTRY":
++            self._hb_wait_regime = False
++        if intent.action == "BTC_REDUCE":
++            self._hedge_btc_flat(intent, ts_event)
++        if intent.action.startswith("BTC"):
++            self._hedge_refresh(ts_event)
+         self._insurance_btc_fill(intent,price,ts_event)
+         self._alpha_btc_fill(intent,ts_event)
+         if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
+@@ -2450,6 +2488,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+             self._domain.on_half_exit_decision(max(self._decision_index_by_order.get(client_order_id, intent.decision_index), len(self._bars) - 1))
+         if not order_closed:
+             return
++        self._hedge_terminal(intent, ts_event, "FILLED_TERMINAL")
+         if self._conditional_enabled():
+             self._conditional_attempt_terminal(intent,ts_event,"NATIVE_TERMINAL_AFTER_FILL",client_order_id)
+         self._domain.on_parent_terminal(intent.id)
+@@ -2512,6 +2551,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+                 self._forced_close_submitted.discard(order.instrument_id)
+             self._forced_close_orders.discard(client_order_id)
+         intent = self._pending_by_order.pop(str(event.client_order_id), None)
++        self._hedge_terminal(intent, event.ts_event, "CANCELED")
+         if self._conditional_enabled():
+             self._conditional_attempt_terminal(intent,event.ts_event,"CANCELED",str(event.client_order_id))
+         if intent is not None and intent.action == "BTC_ENTRY":
+@@ -2579,6 +2619,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+         self._terminal_without_fill(str(event.client_order_id))
+ 
+     def on_position_event(self, event) -> None:
++        self._hedge_refresh(event.ts_event)
+         self._insurance_position(event)
+         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
+         self._research_capture_btc_episode(event)
+@@ -2596,7 +2637,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+         """Clear a completed close group after the native cache is actually flat."""
+         if not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
+             return
+-        if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()):
++        if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and (self._queued_intents or self.cache.orders_inflight())):
+             return  # An opening order awaiting terminal native receipt may still fill.
+         self._group_close_reconciliation_pending = False
+         if self._insurance_enabled() and self._insurance_cycle:
+@@ -2608,6 +2649,9 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+             self._forced_close_intent = None
+             self._forced_close_orders.clear()
+         if reason == "REGIME":
++            if self.config.research_regime_reentry_band is not None:
++                self._hb_wait_regime = True
++                self._hb_log("WAIT_REGIME_REENTRY", self.clock.timestamp_ns())
+             self._advance_current_day()
+ 
+     def _reconcile_liquidation_flat(self) -> None:
+@@ -2631,6 +2675,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+         self._reconcile_liquidation_flat()
+         self._reconcile_terminal_flat()
+         return {
++            "hedge_band_audit": self.hedge_band_audit,
+             "liquidations": self.liquidation_audit,
+             "liquidation_lockout": self._liquidating,
+             "terminal_lifecycle": self.terminal_lifecycle,
+@@ -2650,6 +2695,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
+     def _terminal_without_fill(self, client_order_id: str) -> None:
+         forced_close_terminal = client_order_id in self._forced_close_orders
+         failed_intent = self._pending_by_order.get(client_order_id)
++        self._hedge_terminal(failed_intent, self.clock.timestamp_ns(), "DENIED_REJECTED_EXPIRED")
+         if self._conditional_enabled():
+             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
+         if failed_intent and failed_intent.reason and failed_intent.reason.startswith("SOL_COVER") and self._cover_cycle:
+diff --git a/runtime/tests/test_native_hedge_band.py b/runtime/tests/test_native_hedge_band.py
+new file mode 100644
+index 0000000..a3da84e
+--- /dev/null
++++ b/runtime/tests/test_native_hedge_band.py
+@@ -0,0 +1,254 @@
++from datetime import UTC, datetime, timedelta
++from decimal import Decimal as D
++from types import SimpleNamespace
++import pytest
++from nautilus_trader.model.data import BarType, BarSpecification
++from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType
++from coinmaster.domain.wave_overlay import Candidate, DailyBar, Episode
++from coinmaster.research.native_fixture import BTC_PERP, SOL_PERP
++from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++from coinmaster.strategy.hedge_band import H4_NS
++from test_wave_native_integration import lifecycle_config, native_engine
++from test_native_episode_risk import NativeProbe, tick, run_ticks, marks
++from test_native_btc_sizing import prepare_day
++from test_native_h1_b1 import bar
++
++
++def config(**kw):
++    return lifecycle_config(research_h4_ema=34,
++        research_h4_seed=tuple((i*H4_NS,90. if i == 0 else 100.) for i in range(-729,1)),
++        max_mark_age_ns=10*H4_NS, **kw)
++
++
++def setup(c0=False, cls=NativeProbe):
++    s=cls(lifecycle_config(research_sol_btc_open_only=True) if c0 else config())
++    e=native_engine(s)
++    run_ticks(e,[tick(BTC_PERP,1)])
++    prepare_day(s,2)
++    ep=s._domain.episode=Episode('hedge',1,10000,1,wave_levels=(.01,.02,.03),h=10000)
++    i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
++    s._submit_intent(i,100,100,None,0,ts_now=2)
++    run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4)])
++    return s,e,ep
++
++
++def test_default_off_h4_separate_bar_branch_and_no_early_signal():
++    assert lifecycle_config().research_h4_ema is None
++    kind=BarType(SOL_PERP.id,BarSpecification(4,BarAggregation.HOUR,PriceType.LAST),AggregationSource.EXTERNAL)
++    s=NativeProbe(config(research_h4_bar_type=kind));e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,H4_NS-1)])
++        assert s._hb_bar_ns==0
++        s.on_bar(bar(kind,H4_NS,101))
++        assert s._hb_bar_ns==H4_NS and s._hb_side==1
++        assert not s._confirmation_state and not s._confirmation_events
++    finally:e.end();e.dispose()
++
++
++def test_h4_native_partial_children_target_reduction_expiry_and_no_liquidity_reuse():
++    s,e,ep=setup()
++    try:
++        c=s._hb_cycle
++        assert c['target']==50 and c['deadline_ns']==3+H4_NS
++        run_ticks(e,[tick(SOL_PERP,4,size='10')])
++        first=len(e.cache.orders()); qty=ep.sol_qty
++        assert 0<qty<=10
++        # Explicit same-receipt call cannot mint another child/liquidity.
++        s._hedge_refresh(4)
++        assert len(e.cache.orders())==first
++        run_ticks(e,[tick(SOL_PERP,5,size='10')])
++        assert ep.sol_qty<=20
++        # Confirmed actual BTC TP lowers target; no previous quantity restoration.
++        i=s._domain._intent(ep,'BTC_REDUCE',-1,0,quantity=80)
++        s._submit_intent(i,100,100,None,0,ts_now=6)
++        run_ticks(e,[tick(BTC_PERP,7),tick(SOL_PERP,8),tick(SOL_PERP,9)])
++        assert s._hb_cycle['target']==10
++        assert ep.sol_qty<=10
++        frozen=c['ratio']; deadline=c['deadline_ns']
++        marks(s,10,'200','50');s._hedge_refresh(10)
++        assert c['ratio']==frozen and c['deadline_ns']==deadline and c['target']==10
++        run_ticks(e,[tick(SOL_PERP,deadline),tick(SOL_PERP,deadline+1)])
++        assert c['deadline_ns']==deadline
++        assert not any(i.action=='SOL_ADD' for i in s._pending_by_order.values())
++    finally:e.end();e.dispose()
++
++
++def test_h4_signal_reversal_native_exit_and_second_activation_keeps_new_deadline():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(SOL_PERP,4),tick(SOL_PERP,5)])
++        s._hedge_h4_close(H4_NS,200);s._hedge_refresh(H4_NS)
++        run_ticks(e,[tick(SOL_PERP,H4_NS+1),tick(SOL_PERP,H4_NS+2)])
++        assert ep.sol_qty==0
++        s._hedge_h4_close(2*H4_NS,1);s._hedge_refresh(2*H4_NS)
++        c=s._hb_cycle
++        assert c['activation_ns']==2*H4_NS and c['deadline_ns']==3*H4_NS
++        run_ticks(e,[tick(SOL_PERP,2*H4_NS+1),tick(SOL_PERP,2*H4_NS+2)])
++        assert ep.sol_qty>0
++        assert len([a for a in s.hedge_band_audit if a['event']=='H4_ACTIVATION'])==2
++    finally:e.end();e.dispose()
++
++
++@pytest.mark.parametrize('c0',[True,False])
++def test_final_btc_tp_invalidates_unused_rights_and_native_group_flat(c0):
++    s,e,ep=setup(c0)
++    try:
++        ep.sol_rights.update((0,1,2))
++        if c0:
++            i=s._domain._intent(ep,'SOL_ADD',-1,0,quantity=5)
++            s._submit_intent(i,100,100,None,0,ts_now=4)
++        run_ticks(e,[tick(SOL_PERP,5),tick(SOL_PERP,6)])
++        i=s._domain._intent(ep,'BTC_REDUCE',-1,2,quantity=100)
++        s._submit_intent(i,100,100,None,0,ts_now=7)
++        run_ticks(e,[tick(BTC_PERP,8),tick(SOL_PERP,9),tick(BTC_PERP,10),tick(SOL_PERP,11)])
++        assert not ep.sol_rights
++        assert not e.cache.positions_open() and not s._pending_by_order
++        assert s._domain.episode is None
++        assert not s._hb_wait_regime
++        assert [a for a in s.hedge_band_audit if a['event']=='BTC_FLAT_INVALIDATE_RIGHTS'][-1]['reason']!='REGIME'
++    finally:e.end();e.dispose()
++
++
++def test_b_initial_permissions_weak_strong_and_latest_side_with_wilder_seed():
++    s=NativeProbe(lifecycle_config(research_regime_reentry_band=D('.5'),candidate=Candidate(ema_period=34)))
++    assert s._hedge_band_allowed()  # initial opening is unfiltered
++    now=datetime(2020,1,1,tzinfo=UTC)
++    s._bars=[DailyBar(now+timedelta(days=i),now+timedelta(days=i+1),now+timedelta(days=i+1),100,100,100) for i in range(20)]
++    s._hb_daily_ohlc={int(r.close_time.timestamp()*1e9):(110,90) for r in s._bars}
++    s._hb_wait_regime=True
++    assert not s._hedge_band_allowed()
++    last=s._bars[-1]
++    s._bars[-1]=DailyBar(last.open_time,last.close_time,last.available_at,100,130,100)
++    s._hb_daily_ohlc[int(last.close_time.timestamp()*1e9)]=(135,90)
++    assert s._hedge_band_allowed() and s._hb_wait_regime
++    s._bars[-1]=DailyBar(last.open_time,last.close_time,last.available_at,100,70,100)
++    s._hb_daily_ohlc[int(last.close_time.timestamp()*1e9)]=(110,65)
++    assert s._hedge_band_allowed() and s.hedge_band_audit[-1]['side']==-1
++    zero=NativeProbe(lifecycle_config(research_regime_reentry_band=D('0')))
++    zero._hb_wait_regime=True
++    assert zero._hedge_band_allowed()
++
++
++def test_h4_final_btc_flat_waits_cancel_ack_and_native_late_fill_then_closes():
++    from nautilus_trader.model.enums import OrderSide, TimeInForce
++    class Delayed(NativeProbe):
++        def cancel_order(self, order, *a, **kw):
++            if not order.is_reduce_only:
++                return  # Venue cancellation pending; matching may still fill.
++            return super().cancel_order(order,*a,**kw)
++    s,e,ep=setup(cls=Delayed)
++    try:
++        # Genuine resting native SOL opening order, owned by the same executor.
++        i=s._domain._intent(ep,'SOL_ADD',-1,None,quantity=5,reason='H4_INCREASE')
++        order=s.order_factory.limit(SOL_PERP.id,OrderSide.SELL,SOL_PERP.make_qty(D(5)),
++            SOL_PERP.make_price(D(110)),time_in_force=TimeInForce.GTC)
++        oid=str(order.client_order_id)
++        s._pending_by_order[oid]=i;s._sigma_by_order[oid]=None;s._decision_index_by_order[oid]=0
++        assert s._record_submission(order,i.id,i.episode_id,i.action,i.reason)
++        s.submit_order(order)
++        final=s._domain._intent(ep,'BTC_REDUCE',-1,2,quantity=100)
++        s._submit_intent(final,100,100,None,0,ts_now=6)
++        run_ticks(e,[tick(BTC_PERP,7),tick(SOL_PERP,8)])
++        assert s._domain.episode is ep and s._group_close_reconciliation_pending
++        assert not ep.sol_rights and s._forced_close_reason!='REGIME'
++        run_ticks(e,[tick(SOL_PERP,9,'111'),tick(SOL_PERP,10,'111'),tick(BTC_PERP,11),tick(SOL_PERP,12,'111')])
++        assert not e.cache.positions_open() and not s._pending_by_order
++        assert s._domain.episode is None and not s._hb_wait_regime
++        fills=[r for r in s.fill_audit if r['instrument']==str(SOL_PERP.id)]
++        assert [r['action'] for r in fills]==['SOL_ADD','FORCED_CLOSE']
++        assert fills[-1]['reason']=='BTC_TP_FLAT'
++    finally:e.end();e.dispose()
++
++
++def test_b_latch_only_after_actual_regime_group_terminal_and_only_fill_clears():
++    s=NativeProbe(lifecycle_config(research_regime_reentry_band=D('.5')))
++    e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)])
++        prepare_day(s,2)
++        ep=s._domain.episode=Episode('regime',1,10000,1,close_reason='REGIME')
++        s._group_close_reconciliation_pending=True
++        # An unresolved opening ACK forbids completed group/latch transition.
++        old=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=1)
++        s._pending_by_order['awaiting-ack']=old
++        s._reconcile_group_flat()
++        assert not s._hb_wait_regime and s._domain.episode is ep
++        s._pending_by_order.clear();ep.pending.clear()
++        s._reconcile_group_flat()
++        assert s._hb_wait_regime and s._domain.episode is None
++        # Zero-fill local denial is not an entry fill and retains the latch.
++        ep=s._domain.episode=Episode('zero-reject',-1,10000,1,wave_levels=(.01,.02,.03))
++        i=s._domain._intent(ep,'BTC_ENTRY',-1,None,quantity=.00001)
++        s._submit_intent(i,100,100,None,0,ts_now=3)
++        assert s._hb_wait_regime
++        ep=s._domain.episode=Episode('confirmed',-1,10000,1,wave_levels=(.01,.02,.03))
++        i=s._domain._intent(ep,'BTC_ENTRY',-1,None,quantity=1)
++        s._submit_intent(i,100,100,None,0,ts_now=4)
++        assert s._hb_wait_regime
++        run_ticks(e,[tick(BTC_PERP,5)])
++        assert not s._hb_wait_regime and ep.btc_open_qty==1
++    finally:e.end();e.dispose()
++
++
++def test_h4_pending_activation_keeps_original_deadline_through_partial_old_exit():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(SOL_PERP,5),tick(SOL_PERP,6)])
++        assert ep.sol_qty==50
++        s._hedge_h4_close(H4_NS,200);s._hedge_refresh(H4_NS)
++        run_ticks(e,[tick(SOL_PERP,H4_NS+1,size='10')])
++        assert ep.sol_qty==40 and s._hb_exit_pending
++        s._hedge_h4_close(2*H4_NS,1);s._hedge_refresh(2*H4_NS)
++        c=s._hb_cycle
++        assert c['activation_ns']==2*H4_NS and c['deadline_ns']==3*H4_NS
++        run_ticks(e,[tick(SOL_PERP,2*H4_NS+1,size='10')])
++        assert ep.sol_qty==30 and s._hb_exit_pending
++        # Completion after original pending deadline cannot restart the clock.
++        run_ticks(e,[tick(SOL_PERP,3*H4_NS+1),tick(SOL_PERP,3*H4_NS+2),tick(SOL_PERP,3*H4_NS+3)])
++        assert ep.sol_qty==0 and c['deadline_ns']==3*H4_NS
++        assert not any(i.action=='SOL_ADD' for i in s._pending_by_order.values())
++    finally:e.end();e.dispose()
++
++
++def test_h4_native_composite_receipt_uses_only_delivered_complete_minutes():
++    from nautilus_trader.backtest.engine import BacktestEngine
++    from nautilus_trader.backtest.config import BacktestEngineConfig
++    from nautilus_trader.config import LoggingConfig
++    from nautilus_trader.cache.config import CacheConfig
++    from nautilus_trader.data.config import DataEngineConfig
++    from nautilus_trader.model.enums import AccountType, OmsType
++    from nautilus_trader.model.objects import Money
++    from coinmaster.research.native_fixture import SIM
++    base=1725148800*1_000_000_000
++    kind=BarType.new_composite(SOL_PERP.id,BarSpecification(4,BarAggregation.HOUR,PriceType.LAST),AggregationSource.INTERNAL,1,BarAggregation.MINUTE,AggregationSource.EXTERNAL)
++    s=NativeProbe(lifecycle_config(research_h4_ema=34,research_h4_bar_type=kind,
++        research_h4_seed=tuple((base+i*H4_NS,100.) for i in range(-729,1))))
++    e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR'),cache=CacheConfig(bar_capacity=128),data_engine=DataEngineConfig(time_bars_build_with_no_updates=False)))
++    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,bar_execution=False)
++    e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
++    minute=BarType(SOL_PERP.id,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL)
++    try:
++        e.add_data([bar(minute,base+m*60_000_000_000,100+m) for m in range(1,240)])
++        e.run(streaming=True);e.clear_data()
++        assert s._hb_bar_ns==base and not s.hedge_band_audit
++        e.add_data([bar(minute,base+m*60_000_000_000,100+m) for m in (240,241)])
++        e.run(streaming=True);e.clear_data()
++        assert s._hb_bar_ns==base+H4_NS
++        assert s.hedge_band_audit[-1]['ema']==pytest.approx(2/35*340+(1-2/35)*100)
++        assert not s._confirmation_state and not s._confirmation_events
++    finally:e.end();e.dispose()
++
++
++def test_c0_intermediate_btc_tp_preserves_original_sol_quantity():
++    s,e,ep=setup(c0=True)
++    try:
++        i=s._domain._intent(ep,'SOL_ADD',-1,0,quantity=5)
++        s._submit_intent(i,100,100,None,0,ts_now=5)
++        run_ticks(e,[tick(SOL_PERP,6)])
++        assert ep.sol_qty==5
++        i=s._domain._intent(ep,'BTC_REDUCE',-1,0,quantity=40)
++        s._submit_intent(i,100,100,None,0,ts_now=7)
++        run_ticks(e,[tick(BTC_PERP,8),tick(SOL_PERP,9)])
++        assert ep.btc_open_qty==60 and ep.sol_qty==5
++        assert s._forced_close_reason is None
++    finally:e.end();e.dispose()
+diff --git a/scripts/collect_split_cover_native.py b/scripts/collect_split_cover_native.py
+index cbed9d9..0a9144c 100644
+--- a/scripts/collect_split_cover_native.py
++++ b/scripts/collect_split_cover_native.py
+@@ -75,6 +75,11 @@ def main():
+         "disk_free_after":shutil.disk_usage(job).free,"pilot_after":pilot,
+         "scope":"RESEARCH_ONLY_NATIVE_ACCOUNTING_DIAGNOSTIC_NO_PRODUCTION_PROMOTION",
+     }
++    if result.get("config",{}).get("hedge_band_research"):
++        audit=result.get("hedge_band_audit")
++        if not isinstance(audit,list):
++            raise ValueError("HEDGE_BAND_NATIVE_AUDIT_MISSING")
++        receipt["hedge_band_audit"]={"event_count":len(audit),"sha256":hashlib.sha256(json.dumps(audit,sort_keys=True,separators=(",",":")).encode()).hexdigest()}
+     if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first") or result.get("config",{}).get("research_immediate_sol") or result.get("config",{}).get("research_alpha_cushion"):
+         audit_key="alpha_cushion_audit" if result.get("config",{}).get("research_alpha_cushion") else "immediate_sol_insurance_audit" if result.get("config",{}).get("research_immediate_sol") else "risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
+         audit=result.get(audit_key)
+diff --git a/scripts/launch_split_cover_native.py b/scripts/launch_split_cover_native.py
+index 1c12c4f..4047eb2 100644
+--- a/scripts/launch_split_cover_native.py
++++ b/scripts/launch_split_cover_native.py
+@@ -33,6 +33,12 @@ for _risk_variant in ("cap50","dd-cov","split-atr"):
+ for _insurance_variant in ("i25","i25-light","i25-recovery","i33"):
+     VARIANTS["immediate-"+_insurance_variant]=VARIANTS["btc025-planref-tp-ioc"]+["--research-immediate-sol",_insurance_variant,"--research-immediate-lookback","90"]
+ VARIANTS["alpha-cushion"]=VARIANTS["btc025-planref-tp-ioc"]+["--research-alpha-cushion"]
++VARIANTS["C0"] = VARIANTS["btc025-planref-tp-ioc"] + ["--research-sol-btc-open-only"]
++VARIANTS["B"] = VARIANTS["btc025-planref-tp-ioc"] + ["--research-regime-reentry-band", "0.5"]
++# H4 warmup is an explicit verified input; never guessed from another report.
++for _ema in (34,13,89):
++    for _gamma,_label in (("0.5","050"),("1","100")):
++        VARIANTS[f"H4_4H_E{_ema}_G{_label}"] = VARIANTS["btc025-planref-tp-ioc"] + ["--research-h4-ema",str(_ema),"--research-h4-gamma",_gamma]
+ PILOT = "coinmaster-hl-stageg-testnet.service"
+ 
+ 
+@@ -56,11 +62,16 @@ def main():
+     p.add_argument("--job-name", required=True)
+     p.add_argument("--joint-btc", choices=("btc025","btc050","btc025-planref"))
+     p.add_argument("--joint-sol", choices=("sol50","sol75","sol100"))
++    p.add_argument("--h4-warmup", type=Path)
+     p.add_argument("--launch", action="store_true")
+     a = p.parse_args()
+     if not a.job_name.startswith("cm115-split-") or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in a.job_name):
+         raise ValueError("INVALID_ISOLATED_JOB_NAME")
+     args = list(VARIANTS.get(a.variant, []))
++    if a.variant.startswith("H4_"):
++        if a.h4_warmup is None or not a.h4_warmup.is_file():
++            p.error("H4 requires explicit verified --h4-warmup CSV")
++        args += ["--research-h4-warmup",str(a.h4_warmup.resolve())]
+     if a.variant == "joint":
+         if not a.joint_btc or not a.joint_sol:
+             p.error("joint requires the selected separate BTC and SOL variants")
+@@ -96,6 +107,11 @@ def main():
+         dest.parent.mkdir(parents=True,exist_ok=True)
+         shutil.copy2(path,dest)
+         hashes[str(relative)] = digest(dest)
++    if a.variant.startswith("H4_"):
++        frozen_warmup=source/"h4-warmup.csv"
++        shutil.copy2(a.h4_warmup,frozen_warmup)
++        hashes["h4-warmup.csv"]=digest(frozen_warmup)
++        args[args.index("--research-h4-warmup")+1]=str(frozen_warmup)
+     for relative in ("runtime/.venv","runtime/var/data"):
+         (source/relative).mkdir(parents=True,exist_ok=True)
+     (job/"tmp").mkdir()
+diff --git a/scripts/verify_split_cover_repeat.py b/scripts/verify_split_cover_repeat.py
+index ccc1f1d..aa9bdb0 100644
+--- a/scripts/verify_split_cover_repeat.py
++++ b/scripts/verify_split_cover_repeat.py
+@@ -78,6 +78,8 @@ def main():
+         for path,expected in manifest.items():
+             if hashlib.sha256((job/'source'/path).read_bytes()).hexdigest()!=expected:
+                 raise ValueError('FROZEN_SOURCE_CHANGED:'+str(job/'source'/path))
++    if 'hedge_band_audit' in a or 'hedge_band_audit' in b:
++        compare('hedge_band_native_lifecycle',canonical(a.get('hedge_band_audit')),canonical(b.get('hedge_band_audit')))
+     compare('fill_audit_economic_ordered',canonical(a['fill_audit']),canonical(b['fill_audit']))
+     for kind in ('fills','orders'):
+         compare('native_'+kind+'_economic_signature',economic_csv(a['execution_artifacts'][kind]['path']),economic_csv(b['execution_artifacts'][kind]['path']))

@@ -1,0 +1,71 @@
+{
+  "status": "FOCUSED_IMPLEMENTATION_VERIFIED_WAIT_ROOT_FULL_RUN_GO",
+  "source_base": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "canonical_checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/btc-sol-modules-20261022",
+  "branch": "codex/btc-sol-modules-20261022",
+  "initial_status": "CLEAN",
+  "final_status": "CLEAN",
+  "frozen_s0_config_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+  "policy_freeze_sha256": "d6bcdad21ad8ba0fb6e2c3b49d9ccc9aa77aaefb408c937d26686704ad7c18b1",
+  "full_native_runs_by_owner": 0,
+  "product_edits_on_mac": false,
+  "changes": {
+    "files": 8,
+    "insertions": 623,
+    "deletions": 9,
+    "scope": "Default-OFF C0/H4/B policy hooks into existing native executor; native accounting/admission/execution preserved"
+  },
+  "root_causes": [
+    "Original domain SOL exits execute before sol_overlay_enabled; H4 needs explicit full economic ownership guard.",
+    "Final BTC_REDUCE does not finish Episode; explicit final-fill right invalidation plus native group-flat reconciliation required.",
+    "Legacy confirmation handler treats all HOUR bars as 1h; H4 has separate typed native composite delivery.",
+    "REGIME automatically restarts same session; B latch must be armed after actual flat/all terminal and before restart."
+  ],
+  "checks": [
+    {
+      "command": "cd /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/btc-sol-modules-20261022 && PYTHONPATH=runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q runtime/tests/test_native_hedge_band.py runtime/tests/test_wave_overlay.py runtime/tests/test_native_episode_risk.py -k \"hedge_band or ordinary_close_waits or overlay\" --disable-warnings --maxfail=1",
+      "result": "47 passed, 16 deselected, 37 warnings in 3.08s",
+      "log": "owner-focused-tests.log"
+    },
+    {
+      "command": "cd /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/btc-sol-modules-20261022 && PYTHONPATH=runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q runtime/tests/test_native_split_cover.py::test_split_exact_odd_lots_first_immediate_second_native_maker_and_fixed_targets runtime/tests/test_native_split_cover.py::test_split_partial_first_retries_only_first_and_unknown_ack_blocks_duplicate --disable-warnings --maxfail=1",
+      "result": "3 passed, 6 warnings in 2.05s",
+      "log": "owner-s0-split-tests.log"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "PYTHONPATH=runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m compileall -q runtime/coinmaster/strategy/hedge_band.py runtime/coinmaster/strategy/wave_overlay.py runtime/coinmaster/domain/wave_overlay.py runtime/coinmaster/research/native_baseline.py scripts/launch_split_cover_native.py scripts/collect_split_cover_native.py scripts/verify_split_cover_repeat.py",
+      "result": "PASS"
+    }
+  ],
+  "coverage": [
+    "Default OFF; separate typed 4h branch; actual native 239 completed minute bars cannot expose 4h close; 240th delivered bar can.",
+    "Actual H4 partial IOC children, BTC TP target reduction, frozen ratio, fixed expiry, single quote sequence.",
+    "Two actual H4 cycles and exits; pending activation keeps original 4h deadline across partial old exit, no expired refill.",
+    "C0 intermediate BTC TP preserves SOL; C0/H4 final BTC TP clears all unused SOL rights and native group lifecycle.",
+    "Delayed cancel request then real native SOL late fill, forced actual close, no invented REGIME/latch.",
+    "B initial unfiltered permissions; weak/strong/latest-side band; actual REGIME group waits ACK before latch; zero rejection retains latch, actual BTC entry fill clears."
+  ],
+  "attempt_notes": [
+    "Initial unprivileged SSH refused by network sandbox; explicitly authorized escalated SSH succeeded.",
+    "One broad existing native split/domain SSH verification lost transport (255) without summary: NOT claimed PASS. Exact bounded S0 split rerun passed.",
+    "Late audit patch transfer had banner timeout/no effect confirmed; reapplied once successfully.",
+    "Fixture-only corrections: establish a genuinely opposite SOL EMA signal; submit original BTC TP queue before checking H4 action; native fill audit filters by SOL instrument including FORCED_CLOSE. No economic parameter correction."
+  ],
+  "known_limits": [
+    "Full 24-month runs not launched by implementation owner; require root GO and run ledger.",
+    "H4 CSV input requires verified same-source 730 closed bars; root supplied matching CSV SHA8155662408cdeae23a4319d6a2fbdd667e5840d048e49e1b707fa1051630e26b.",
+    "Native actual terminal receipt audits included; no independent PnL engine or price-proxy economic claims."
+  ],
+  "artifacts": {
+    "owner-s0-split-tests.log": "2c889e44488f95237728a4b93857a7617210e5d41ea45e4c1bcb1f285ab40e98",
+    "owner-source.patch": "56e273f732307549d8d177b0e9acdefe95eb08144fd8d04f387f36173389cc0f",
+    "owner-focused-tests.log": "c6d7fd243092014e562b4d486cf63e2255911d297f64287f69d2ffd98745a306",
+    "owner-task-v2.txt": "dc318a114e77470f8feb2b1abf0296d70419ce48aca01dfda2553e16471e19b1",
+    "owner-source-sha256.txt": "31be4b17da3d6d175f498367d252e03eec030495d80a49035c3df9e4e58cebe6"
+  }
+}

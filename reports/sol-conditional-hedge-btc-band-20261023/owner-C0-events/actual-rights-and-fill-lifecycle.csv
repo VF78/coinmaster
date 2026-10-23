@@ -1,0 +1,3 @@
+accept_ns,action,commission,commission_currency,event,fill_ns,instrument,level,native_liquidity_side,notional,order_type,policy_hash,post_only,px,qty,reason,source_index,source_kind,submit_ns,timestamp_ns,venue
+1725236280000000000,BTC_REDUCE,8.655913,USDT,,1725634080000000000,BTCUSDT-PERP.P1SIM,2,MAKER,43279.565,2,c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834,true,54715,0.791,BTC_TP3,2,native_fill_audit,1725236280000000000,1725634080000000000,P1SIM
+,,,,BTC_FLAT_INVALIDATE_RIGHTS,,,,,,,,,,,BTC_TP3,0,hedge_band_audit,,1725634080000000000,

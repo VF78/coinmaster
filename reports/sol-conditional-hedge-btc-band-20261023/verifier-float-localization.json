@@ -1,0 +1,65 @@
+{
+  "status": "LOCALIZED_LIBM_LOG_ROUNDING_NOT_SERIALIZATION",
+  "probe": "270 fixed paired prior-day price ratios from identical pinned daily candles; math-only log/mean/covariance/variance/division, no engine/strategy run",
+  "inputs_sha256": "056c361f9be5447e2804fb28d36acc88f878076222fe2975c44720a8356bd42a",
+  "Mac_runtime": "3.12.13 (main, Jun 23 2026, 15:44:24) [Clang 22.1.3 ]",
+  "VPS_runtime": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "different_log_outputs": [
+    {
+      "return_index": 260,
+      "asset": "BTC",
+      "Mac": "0x1.14f09ec787132p-7",
+      "VPS": "0x1.14f09ec787133p-7"
+    }
+  ],
+  "first_difference_input": {
+    "return_index": 260,
+    "BTC_ratio": 1.0084873507838095,
+    "BTC_ratio_hex": "0x1.022c3a1e0bcffp+0"
+  },
+  "beta": {
+    "original": 1.1957320011177692,
+    "original_hex": "0x1.321b7e0f94da3p+0",
+    "Mac": 1.195732001117769,
+    "Mac_hex": "0x1.321b7e0f94da2p+0",
+    "Mac_minus_original_ULP": -1
+  },
+  "H": {
+    "original": 61610.393324870296,
+    "original_hex": "0x1.e154c961e09d4p+15",
+    "Mac": 61610.39332487031,
+    "Mac_hex": "0x1.e154c961e09d6p+15",
+    "Mac_minus_original_ULP": 2
+  },
+  "covariance": {
+    "original_hex": "0x1.f80906ede75a3p-11",
+    "Mac_hex": "0x1.f80906ede75a1p-11"
+  },
+  "means_and_variance_identical": true,
+  "cross_replay": "VPS logs replayed through same Mac arithmetic give exact original beta hex0x1.321b7e0f94da3p+0, isolating log rounding rather than accumulation/serialization",
+  "source_sites": {
+    "feature_log": "runtime/coinmaster/domain/wave_overlay.py:149",
+    "feature_beta": "runtime/coinmaster/domain/wave_overlay.py:154",
+    "episode_beta_creation": "runtime/coinmaster/domain/wave_overlay.py:379",
+    "beta_relative_use": "runtime/coinmaster/domain/wave_overlay.py:429",
+    "H_SOL_budget_use": "runtime/coinmaster/domain/wave_overlay.py:438",
+    "H_compute": "runtime/coinmaster/domain/wave_overlay.py:560",
+    "parent_H_log": "runtime/coinmaster/strategy/wave_overlay.py:2469",
+    "parent_beta_log": "runtime/coinmaster/strategy/wave_overlay.py:2471"
+  },
+  "native_impact_observed": {
+    "BTC3_interval_SOL_fills": 0,
+    "all_native_SOL_fill_rows_exact": 205,
+    "all_native_SOL_ADD_rows_exact": 102,
+    "all_native_BTC_fill_rows_exact": 416,
+    "all_native_order_rows_exact": 710,
+    "all_native_funding_rows_exact": 1320,
+    "all_entry_sizing_plans_exact": true,
+    "all_parent_fields_except_two_values_exact": true,
+    "all_native_cash_and_risk_curves_exact": true
+  },
+  "interpretation": "beta/H are used by trading math, not intrinsically display-only. This saved P0 history shows no native lot/action/money effect. No guarantee of arbitrary future cross-architecture bit identity is inferred.",
+  "new_tolerances": 0,
+  "new_exclusions": 0,
+  "new_native_runs": 0
+}

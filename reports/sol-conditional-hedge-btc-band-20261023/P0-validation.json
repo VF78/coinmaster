@@ -1,0 +1,437 @@
+{
+  "status": "P0_PARITY_FAIL",
+  "decision": "ROOT_DECISION_REQUIRED_P0_ECONOMIC_PARITY_VERSUS_STRICT_R_CONTRACT",
+  "reference": "Immutable originalS0 remains authoritative; P0 validates Mac portability only.",
+  "checks": {
+    "config": {
+      "exact_equal": true,
+      "reference_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+      "P0_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+      "reference_count": 43,
+      "P0_count": 43
+    },
+    "config_hash": {
+      "exact_equal": true,
+      "reference_sha256": "8003fe1e12d08f5c83593dface48010bc669bb73635fdc1ed8894c753ddf8f9b",
+      "P0_sha256": "8003fe1e12d08f5c83593dface48010bc669bb73635fdc1ed8894c753ddf8f9b"
+    },
+    "data_hash": {
+      "exact_equal": true,
+      "reference_sha256": "df7953981cfba2f85ef5752e0b96cd2aae717bf377982d1bed52e27bc811bb27",
+      "P0_sha256": "df7953981cfba2f85ef5752e0b96cd2aae717bf377982d1bed52e27bc811bb27"
+    },
+    "policy": {
+      "exact_equal": true,
+      "reference_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "P0_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "reference_count": 12,
+      "P0_count": 12
+    },
+    "policy_hash": {
+      "exact_equal": true,
+      "reference_sha256": "cc571e60776465a25dbbf3a1cff39349e773039df9e1cdb94673973003dd23f7",
+      "P0_sha256": "cc571e60776465a25dbbf3a1cff39349e773039df9e1cdb94673973003dd23f7"
+    },
+    "native_fees": {
+      "exact_equal": true,
+      "reference_sha256": "5045f95d4c1b85cb25df2043992f44a1d1afe88eaf468b04ae8981e16e553b2b",
+      "P0_sha256": "5045f95d4c1b85cb25df2043992f44a1d1afe88eaf468b04ae8981e16e553b2b"
+    },
+    "fills": {
+      "exact_equal": true,
+      "reference_sha256": "90b0ce469fbd8e30a2862bb24d562dc641c534a9b43c7c33c25cfaefe25e5e47",
+      "P0_sha256": "90b0ce469fbd8e30a2862bb24d562dc641c534a9b43c7c33c25cfaefe25e5e47"
+    },
+    "native_order_rejections": {
+      "exact_equal": true,
+      "reference_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "P0_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "terminal_total": {
+      "exact_equal": true,
+      "reference_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816",
+      "P0_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816"
+    },
+    "terminal_active": {
+      "exact_equal": true,
+      "reference_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816",
+      "P0_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816"
+    },
+    "terminal_reserve": {
+      "exact_equal": true,
+      "reference_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b",
+      "P0_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b"
+    },
+    "terminal_open_positions": {
+      "exact_equal": true,
+      "reference_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "P0_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "liquidation_count": {
+      "exact_equal": true,
+      "reference_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "P0_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "liquidation_value": {
+      "exact_equal": true,
+      "reference_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b",
+      "P0_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b"
+    },
+    "summary": {
+      "exact_equal": true,
+      "reference_sha256": "8d86789e048263ec2b0fcf3a5ac91dd4c7c9bab9b91641ed269c0574fdaad317",
+      "P0_sha256": "8d86789e048263ec2b0fcf3a5ac91dd4c7c9bab9b91641ed269c0574fdaad317",
+      "reference_count": 12,
+      "P0_count": 12
+    },
+    "fill_audit_economic": {
+      "exact_equal": true,
+      "reference_sha256": "05fed9f41f53ca974c055e79b45d93a01db7c1af980ebed7ef97d9c67b6d9c3c",
+      "P0_sha256": "05fed9f41f53ca974c055e79b45d93a01db7c1af980ebed7ef97d9c67b6d9c3c",
+      "reference_count": 621,
+      "P0_count": 621
+    },
+    "entry_sizing_audit_economic": {
+      "exact_equal": true,
+      "reference_sha256": "b72c2bbe462bfc4444c21dc891c625e2d34e9a94b37e0213c87559f1f9c4a427",
+      "P0_sha256": "b72c2bbe462bfc4444c21dc891c625e2d34e9a94b37e0213c87559f1f9c4a427",
+      "reference_count": 105,
+      "P0_count": 105
+    },
+    "minute_risk_observations_economic": {
+      "exact_equal": true,
+      "reference_sha256": "fceb640a53b35df4c6147dee1855e8e3a7eb1df81c1e8c025d9905a3b4d4f84d",
+      "P0_sha256": "fceb640a53b35df4c6147dee1855e8e3a7eb1df81c1e8c025d9905a3b4d4f84d",
+      "reference_count": 10,
+      "P0_count": 10
+    },
+    "cash_account_series_economic": {
+      "exact_equal": true,
+      "reference_sha256": "e2456865e1c18cb8363440a059c2dd42c0e546a8a7315f6ac2078009c75d01d0",
+      "P0_sha256": "e2456865e1c18cb8363440a059c2dd42c0e546a8a7315f6ac2078009c75d01d0",
+      "reference_count": 2429,
+      "P0_count": 2429
+    },
+    "interval_cash_account_series_economic": {
+      "exact_equal": true,
+      "reference_sha256": "15315dd0a233b81c26c983c05c87602ffd778ece6cce8e15265137d28cfa6cd0",
+      "P0_sha256": "15315dd0a233b81c26c983c05c87602ffd778ece6cce8e15265137d28cfa6cd0",
+      "reference_count": 2428,
+      "P0_count": 2428
+    },
+    "fee_attribution_economic": {
+      "exact_equal": true,
+      "reference_sha256": "c9f55fc726d22857f36a4bb582a240fae32da53dfa22284910c6abc4e33c18f4",
+      "P0_sha256": "c9f55fc726d22857f36a4bb582a240fae32da53dfa22284910c6abc4e33c18f4",
+      "reference_count": 6,
+      "P0_count": 6
+    },
+    "terminal_lifecycle_economic": {
+      "exact_equal": true,
+      "reference_sha256": "9d7db961064b4360d41953cf9f60b61abe196465e62d96a6d1c2c7f8c3d83834",
+      "P0_sha256": "9d7db961064b4360d41953cf9f60b61abe196465e62d96a6d1c2c7f8c3d83834",
+      "reference_count": 5,
+      "P0_count": 5
+    },
+    "post_boundary_settlement_economic": {
+      "exact_equal": true,
+      "reference_sha256": "5ccf4904c420067cfd97e7d74a3df58615878e5eb91c2fa5ff97505e49cf5361",
+      "P0_sha256": "5ccf4904c420067cfd97e7d74a3df58615878e5eb91c2fa5ff97505e49cf5361",
+      "reference_count": 5,
+      "P0_count": 5
+    },
+    "source_hashes_economic": {
+      "exact_equal": true,
+      "reference_sha256": "2d66c701b321c122eb6105d8b5c96bcd721517b2e0025ebd4d5c3d77666b3e21",
+      "P0_sha256": "2d66c701b321c122eb6105d8b5c96bcd721517b2e0025ebd4d5c3d77666b3e21",
+      "reference_count": 4,
+      "P0_count": 4
+    },
+    "parent_lots_planref": {
+      "exact_equal": false,
+      "reference_sha256": "0a8c1d964379f8ae26015f37259a9c015304e5da2329cf2f89e7fc37aa0a1e91",
+      "P0_sha256": "4ca415635fadcf328e2e558b4c4f41c4a6f754905d8508525348d145609adba0",
+      "reference_count": 105,
+      "P0_count": 105
+    },
+    "streaming_schedule": {
+      "exact_equal": true,
+      "reference_sha256": "14134b9bd001b76ae83daf260ae08ba726dd0094486b299523313d0e040d9250",
+      "P0_sha256": "14134b9bd001b76ae83daf260ae08ba726dd0094486b299523313d0e040d9250",
+      "reference_count": 7,
+      "P0_count": 7
+    },
+    "native_fills_economic_signature": {
+      "exact_equal": true,
+      "reference_sha256": "2e48860e8229850152a47ab91034c4d9deb3ee5d3ea0a67c7e7c22f165ebecfb",
+      "P0_sha256": "2e48860e8229850152a47ab91034c4d9deb3ee5d3ea0a67c7e7c22f165ebecfb",
+      "reference_count": 621,
+      "P0_count": 621
+    },
+    "native_orders_economic_signature": {
+      "exact_equal": true,
+      "reference_sha256": "4464145ab4435418d6a14c120e7f8610147ad28f94ffe8ee31d40eb7cbc73e04",
+      "P0_sha256": "4464145ab4435418d6a14c120e7f8610147ad28f94ffe8ee31d40eb7cbc73e04",
+      "reference_count": 710,
+      "P0_count": 710
+    },
+    "funding_canonical_instrument_time_rate_mark_account_total_after": {
+      "exact_equal": true,
+      "reference_sha256": "e463d6838d6b4a7139a0412f0bc46ffc70d9ed30abf8d3bdbf05487fd3af6462",
+      "P0_sha256": "e463d6838d6b4a7139a0412f0bc46ffc70d9ed30abf8d3bdbf05487fd3af6462",
+      "reference_count": 1320,
+      "P0_count": 1320
+    },
+    "funding_rows_expected1320": {
+      "exact_equal": true,
+      "reference_sha256": "5f0fbfc126a9876e177921aeb69a9705447e5b4f29fc96631ab4ac6d31c62717",
+      "P0_sha256": "5f0fbfc126a9876e177921aeb69a9705447e5b4f29fc96631ab4ac6d31c62717"
+    },
+    "fill_rows_expected621": {
+      "exact_equal": true,
+      "reference_sha256": "90b0ce469fbd8e30a2862bb24d562dc641c534a9b43c7c33c25cfaefe25e5e47",
+      "P0_sha256": "90b0ce469fbd8e30a2862bb24d562dc641c534a9b43c7c33c25cfaefe25e5e47"
+    },
+    "fees_sum_equals_native_fees": {
+      "exact_equal": true,
+      "reference_sha256": "5045f95d4c1b85cb25df2043992f44a1d1afe88eaf468b04ae8981e16e553b2b",
+      "P0_sha256": "5045f95d4c1b85cb25df2043992f44a1d1afe88eaf468b04ae8981e16e553b2b"
+    },
+    "native_account_cash_tail": {
+      "exact_equal": true,
+      "reference_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816",
+      "P0_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816"
+    },
+    "native_flat_position_count": {
+      "exact_equal": true,
+      "reference_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "P0_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "native_terminal_flat": {
+      "exact_equal": true,
+      "reference_sha256": "1e0c97cf2bf4382cab0b508c16a904f25fbdce786ea796ffe36d54b6057e5a86",
+      "P0_sha256": "1e0c97cf2bf4382cab0b508c16a904f25fbdce786ea796ffe36d54b6057e5a86"
+    },
+    "ROI_fraction": {
+      "exact_equal": true,
+      "reference_sha256": "05a15139914b1f495c09e9d022fe84f4fdbeb82beeb3b6a65961d32ac4f1ec23",
+      "P0_sha256": "05a15139914b1f495c09e9d022fe84f4fdbeb82beeb3b6a65961d32ac4f1ec23"
+    },
+    "signed_funding_unknown": {
+      "exact_equal": true,
+      "reference_sha256": "6905ec841729821e6bbef51f6e8547385802198d1c904a32735b153d818829f0",
+      "P0_sha256": "6905ec841729821e6bbef51f6e8547385802198d1c904a32735b153d818829f0"
+    },
+    "funding_count_summary": {
+      "exact_equal": true,
+      "reference_sha256": "5f0fbfc126a9876e177921aeb69a9705447e5b4f29fc96631ab4ac6d31c62717",
+      "P0_sha256": "5f0fbfc126a9876e177921aeb69a9705447e5b4f29fc96631ab4ac6d31c62717"
+    },
+    "settled_receipts_expected1051199": {
+      "exact_equal": true,
+      "reference_sha256": "36b1ea930cdc714e97ca4009acc270c0a5fc2d76fe594bebe3c2f24ab0515a6f",
+      "P0_sha256": "36b1ea930cdc714e97ca4009acc270c0a5fc2d76fe594bebe3c2f24ab0515a6f"
+    },
+    "settled_samples_seed1051200": {
+      "exact_equal": true,
+      "reference_sha256": "bf824fbabeea930aae7bf2bb4ce0c7883b884de625783eef0e30a6ba47b2ef54",
+      "P0_sha256": "bf824fbabeea930aae7bf2bb4ce0c7883b884de625783eef0e30a6ba47b2ef54"
+    },
+    "settled_unavailable0": {
+      "exact_equal": true,
+      "reference_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "P0_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "settled_no_pending_quote": {
+      "exact_equal": true,
+      "reference_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "P0_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "settled_DD_exact": {
+      "exact_equal": true,
+      "reference_sha256": "7bf1939f630f41130a00723f69172ead0286b430e8bcb4f372b9f09a375fd365",
+      "P0_sha256": "7bf1939f630f41130a00723f69172ead0286b430e8bcb4f372b9f09a375fd365"
+    },
+    "callback_DD_exact": {
+      "exact_equal": true,
+      "reference_sha256": "c7f6d761e19dada3d7b5f8943b6cd78c992d49c9e50cc68432706042d560cb81",
+      "P0_sha256": "c7f6d761e19dada3d7b5f8943b6cd78c992d49c9e50cc68432706042d560cb81"
+    },
+    "conditional_OHLC_bound_exact": {
+      "exact_equal": true,
+      "reference_sha256": "c7f91f012b443260dfe5aafe1fe3be0002aecdfff6be557e5be18e1e6b3b9b73",
+      "P0_sha256": "c7f91f012b443260dfe5aafe1fe3be0002aecdfff6be557e5be18e1e6b3b9b73",
+      "reference_count": 5,
+      "P0_count": 5
+    },
+    "raw_wrapper_terminal_TOTAL": {
+      "exact_equal": true,
+      "reference_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816",
+      "P0_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816"
+    }
+  },
+  "failed_checks": [
+    "parent_lots_planref"
+  ],
+  "inputs": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/verifier-reference-fills.csv": {
+      "sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7",
+      "matches_original_manifest": true
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv": {
+      "sha256": "e8caf0047b9e9b47243ed3befbba42180ac9f7fce544ff4c4e712d62ae6df710"
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/verifier-reference-orders.csv": {
+      "sha256": "737f137a681674712b6626a46cf3abd150c78d3abc4354b3e6c6b9c10a557b6d",
+      "matches_original_manifest": true
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-orders.csv": {
+      "sha256": "a97e7a176c1ab52eddfcce286feb24c8b8e40fb9913fa1eebf598a170a0ac1bb"
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/verifier-reference-funding.sqlite": {
+      "sha256": "de32e6df8f855f72b557e64c08f227239d32540908e7d7af185609654c555684",
+      "matches_original_manifest": true
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite": {
+      "sha256": "c13fb3f7d8ca26f2f2c9b3dbcbb12b99839a917359f7f909748deda469c9040a"
+    },
+    "/private/tmp/btc-audit-exact-s0-direction.json": {
+      "sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa"
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json": {
+      "sha256": "d8a0d10829462b5bceca23a957bcaa93ee19749c917ca81b52125e16c386f875"
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-raw-native.json": {
+      "sha256": "ca70e0508a8d272c90662deeb6d006a0054a3969c327bd7dea55d64f30eddbc7"
+    },
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/scripts/verify_split_cover_repeat.py": {
+      "sha256": "2ebe052e4cf6c5f0bdab44751210321d8100e860b49b94e6c1ffb53ecfc886c9"
+    }
+  },
+  "metrics": {
+    "TOTAL": "6077107.23887483",
+    "ROI_fraction": "606.710723887483",
+    "native_fees": "945927.73761825",
+    "fills": 621,
+    "orders": 710,
+    "funding_rows": 1320,
+    "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "settled_DD_percent": "66.25691486468686414439256686",
+    "callback_DD_percent": "66.31878024969152066570091116",
+    "conditional_OHLC_bound_percent": "67.54771031869252420136632742"
+  },
+  "identity_exclusions": [
+    "client_order_id",
+    "episode_id",
+    "exec_spawn_id",
+    "init_id",
+    "intent_id",
+    "last_trade_id",
+    "linked_order_ids",
+    "order_list_id",
+    "parent_order_id",
+    "position_id",
+    "trade_id",
+    "venue_order_id"
+  ],
+  "path_exclusions": [
+    "summary_path",
+    "trace_path"
+  ],
+  "performance_exclusion": "streaming.peak_rss_bytes",
+  "new_tolerances": 0,
+  "technical_note": "SQLite immutable=1 read-only URI avoids journal/shm writes; exact repeat-verifier SELECT/order reused unchanged. Initial saved-data attempt corrected missing settled metadata key; no engine was imported or run.",
+  "new_native_runs": 0,
+  "remote_giant_traces_read": 0,
+  "exact_parent_differences": [
+    {
+      "parent_index": 2,
+      "trade_number": 3,
+      "field": "planref_v1_beta",
+      "reference": 1.1957320011177692,
+      "P0": 1.195732001117769
+    },
+    {
+      "parent_index": 2,
+      "trade_number": 3,
+      "field": "planref_v1_h_actual",
+      "reference": 61610.393324870296,
+      "P0": 61610.39332487031
+    }
+  ],
+  "exact_economic_parity": {
+    "status": "PASS",
+    "basis": "Every observed native fill/order/funding row, entry sizing plan, money/account series, fees, terminal state and saved risk curves is exactly equal under preexisting identity/path/performance normalization.",
+    "native_economic_checks": {
+      "config": true,
+      "config_hash": true,
+      "data_hash": true,
+      "policy": true,
+      "policy_hash": true,
+      "native_fees": true,
+      "fills": true,
+      "native_order_rejections": true,
+      "terminal_total": true,
+      "terminal_active": true,
+      "terminal_reserve": true,
+      "terminal_open_positions": true,
+      "liquidation_count": true,
+      "liquidation_value": true,
+      "summary": true,
+      "fill_audit_economic": true,
+      "entry_sizing_audit_economic": true,
+      "minute_risk_observations_economic": true,
+      "cash_account_series_economic": true,
+      "interval_cash_account_series_economic": true,
+      "fee_attribution_economic": true,
+      "terminal_lifecycle_economic": true,
+      "post_boundary_settlement_economic": true,
+      "source_hashes_economic": true,
+      "streaming_schedule": true,
+      "native_fills_economic_signature": true,
+      "native_orders_economic_signature": true,
+      "funding_canonical_instrument_time_rate_mark_account_total_after": true,
+      "funding_rows_expected1320": true,
+      "fill_rows_expected621": true,
+      "fees_sum_equals_native_fees": true,
+      "native_account_cash_tail": true,
+      "native_flat_position_count": true,
+      "native_terminal_flat": true,
+      "ROI_fraction": true,
+      "signed_funding_unknown": true,
+      "funding_count_summary": true,
+      "settled_receipts_expected1051199": true,
+      "settled_samples_seed1051200": true,
+      "settled_unavailable0": true,
+      "settled_no_pending_quote": true,
+      "settled_DD_exact": true,
+      "callback_DD_exact": true,
+      "conditional_OHLC_bound_exact": true,
+      "raw_wrapper_terminal_TOTAL": true
+    },
+    "localization": "verifier-float-localization.json"
+  },
+  "strict_repeat_contract": {
+    "status": "FAIL_UNRESOLVED",
+    "failed_check": "parent_lots_planref",
+    "exact_equal": false,
+    "differences": [
+      {
+        "parent_index": 2,
+        "trade_number": 3,
+        "field": "planref_v1_beta",
+        "reference": 1.1957320011177692,
+        "P0": 1.195732001117769
+      },
+      {
+        "parent_index": 2,
+        "trade_number": 3,
+        "field": "planref_v1_h_actual",
+        "reference": 61610.393324870296,
+        "P0": 61610.39332487031
+      }
+    ],
+    "no_tolerance_or_exclusion_added": true
+  },
+  "scope_recommendation": "Section9 distinguishes P0 attested economic parity from R previous strict repeat contract. Evidence supports root attestation of exact observed economic parity for this P0; strict original-vs-Mac parent audit remains false. FutureR on oneMac retains original strict contract unchanged."
+}

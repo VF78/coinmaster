@@ -1,0 +1,86 @@
+[
+  {
+    "timestamp": "2024-09-02T00:01:00+00:00",
+    "action": "BTC_ENTRY",
+    "reason": "BTC_ENTRY",
+    "qty": "0.395",
+    "px": "57313"
+  },
+  {
+    "timestamp": "2024-09-02T00:17:00+00:00",
+    "action": "BTC_ENTRY",
+    "reason": "BTC_ENTRY",
+    "qty": "0.396",
+    "px": "57456.3"
+  },
+  {
+    "timestamp": "2024-09-06T14:48:00+00:00",
+    "action": "BTC_REDUCE",
+    "reason": "BTC_TP3",
+    "qty": "0.791",
+    "px": "54715"
+  },
+  {
+    "timestamp": "2024-09-07T00:01:00+00:00",
+    "action": "BTC_ENTRY",
+    "reason": "BTC_ENTRY",
+    "qty": "0.882",
+    "px": "53912.4"
+  },
+  {
+    "timestamp": "2024-09-07T04:02:00+00:00",
+    "action": "BTC_ENTRY",
+    "reason": "BTC_ENTRY",
+    "qty": "0.883",
+    "px": "53802.2"
+  },
+  {
+    "timestamp": "2024-09-09T00:01:00+00:00",
+    "action": "SOL_ADD",
+    "reason": "H4_INCREASE",
+    "qty": "308.2",
+    "px": "130.13"
+  },
+  {
+    "timestamp": "2024-09-09T04:01:00+00:00",
+    "action": "SOL_EXIT",
+    "reason": "H4_TARGET_REDUCTION",
+    "qty": "308.2",
+    "px": "128.61"
+  },
+  {
+    "timestamp": "2024-09-09T20:01:00+00:00",
+    "action": "SOL_ADD",
+    "reason": "H4_INCREASE",
+    "qty": "309.1",
+    "px": "134.87"
+  },
+  {
+    "timestamp": "2024-09-11T16:01:00+00:00",
+    "action": "SOL_EXIT",
+    "reason": "H4_TARGET_REDUCTION",
+    "qty": "309.1",
+    "px": "131.22"
+  },
+  {
+    "timestamp": "2024-09-11T20:01:00+00:00",
+    "action": "SOL_ADD",
+    "reason": "H4_INCREASE",
+    "qty": "318.5",
+    "px": "132.57"
+  },
+  {
+    "timestamp": "2024-09-13T12:01:00+00:00",
+    "action": "SOL_EXIT",
+    "reason": "H4_TARGET_REDUCTION",
+    "qty": "318.5",
+    "px": "132.56"
+  },
+  {
+    "timestamp": "2024-09-13T15:50:00+00:00",
+    "action": "LIQUIDATION_CLOSE",
+    "reason": "LIQUIDATION",
+    "qty": "1.765",
+    "px": "59448.2"
+  }
+]

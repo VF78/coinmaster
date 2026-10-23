@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-23T06:08:32.786269+00:00",
+  "state": "FIRST_TWO_COMPLETE_AWAITING_ROOT_EVENT_REVIEW_BEFORE_NEXT_GO",
+  "task_complete": false,
+  "source": "25a085f596292df58e51188dd91e996adbe5724c",
+  "physical_full_runs_completed": 3,
+  "max_full_runs": 11,
+  "current_engine": null,
+  "owner_full_runs": 2,
+  "remaining_recipe_launches_authorized": false,
+  "receipts": {
+    "C0": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-C0-receipt.json",
+      "sha256": "d76c9dd4f87cdaf04f13867308bf90a78c121045ad16c0efe5a2f824c953c7eb",
+      "status": "VALID_NATIVE_COMPLETED_LIQUIDATED",
+      "total": "306.48185220",
+      "config_sha256": "a399cac7468eb64c5f19a45d34ecc34d5d083666d928828fee14b97e33a34ef3"
+    },
+    "H4_4H_E34_G050": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-H4_4H_E34_G050-receipt.json",
+      "sha256": "c690cccc5cd63d680f33b286e711f2db0f4523b185e3728f587228321db72a7d",
+      "status": "VALID_NATIVE_COMPLETED_LIQUIDATED",
+      "total": "437.07391017",
+      "config_sha256": "7614e7c40b0c330d8c93516372efe327d9e47f9eb78d58dc10dd663705c42c48"
+    }
+  },
+  "report_tools": {
+    "owner-run-prepared.py": "a00e196ac30e8cf6d614c8239a1d11154296d74cde511af014b19aadf72a3d31",
+    "owner-collect-native.py": "f2bb556d896f82f767f9ecd4eb5bb3ee40158ffaa895e57f8344094e3cfc6471"
+  }
+}

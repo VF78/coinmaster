@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-23T06:00:15.113460+00:00",
+  "decision": "GO_C0_THEN_H4_E34_G050_ONLY",
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "policy_sha256": "d6bcdad21ad8ba0fb6e2c3b49d9ccc9aa77aaefb408c937d26686704ad7c18b1",
+  "P0_predeclared_gate": "P0 mustreproduceTOTAL/fees621fills/settledDD/canonicalfunding; mismatch blocks candidate economics until localized",
+  "exact_economic_parity": "PASS",
+  "strict_cross_platform_repeat_contract": "FAIL_UNRESOLVED_PRESERVED",
+  "localization": "single math.log glibc/libSystem1ULP difference on same270ratios; BTC3 operationalbeta -1ULP andH+2ULP. Native quantities/621fills/710orders/1320funding/equity/risk all exactlyequal; BTC3 noSOLfills. NotJSONserialization.",
+  "new_tolerance_or_exclusion": false,
+  "root_reason": "v2section9 P0 asksobservedeconomicruntimeattestation; prelaunchP0comparison_gate explicitlyTOTAL/fees/fills/settledDD/funding. Allthese satisfyexactequality. Strictartifactfalse remains visible; no field rewrittentoPASS. Candidates comparedononefrozenMacruntime. Doesnotassertuniversalbitwisearchitectureequivalence.",
+  "R_repeat_requirement": "unchangedfullstrictcontract on sameMac, no result-dependent widening",
+  "source_mechanical_review": "independentGO47focused+3originalsplitPASS",
+  "candidate_preflight": "89sourcehashes+13publicinputpinsperrecipePASS, correctC0/H4modeisolation;resultdirsabsent",
+  "run_budget": {
+    "max": 11,
+    "completed": 1,
+    "remaining_before_first2": 10,
+    "execution_owner": "h4_band_owner",
+    "scope_of_GO": [
+      "C0",
+      "H4_4H_E34_G050"
+    ],
+    "one_engine": true,
+    "next_gate": "AfteractualC0andfirstH4receipts rootchecksrealactions/lifecycle beforeBandremaining5H4. Noeconomicproxyveto."
+  },
+  "pilot_changed": false
+}
