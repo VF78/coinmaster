@@ -1,0 +1,70 @@
+{
+  "utc": "2026-10-23T18:51:47.930217+00:00",
+  "status": "PASS",
+  "parent": {
+    "url": "https://github.com/VF78/coinmaster/issues/123",
+    "state": "closed",
+    "project_status": "Done",
+    "body_sha256": "c7868af4fda291e45a54f40fbf48169071b2d613fff9bcec816f990f0953aa92"
+  },
+  "packages": [
+    {
+      "task": "SC-00",
+      "number": 124,
+      "url": "https://github.com/VF78/coinmaster/issues/124",
+      "issue_state": "closed",
+      "body_sha256": "04f3303546a50eb1f27c3a58847f476c107ac9646e03c55b543a646c1c02e2dc",
+      "project_status_readback": "Done",
+      "native_parent": 123
+    },
+    {
+      "task": "SC-01",
+      "number": 125,
+      "url": "https://github.com/VF78/coinmaster/issues/125",
+      "issue_state": "closed",
+      "body_sha256": "30626d4870a8eec57cd3cbadae373dbbd0af7f45092d59d0790d0e0d484abbc2",
+      "project_status_readback": "Done",
+      "native_parent": 123
+    },
+    {
+      "task": "SC-02",
+      "number": 126,
+      "url": "https://github.com/VF78/coinmaster/issues/126",
+      "issue_state": "closed",
+      "body_sha256": "4aec4d5224ec8c57622794ae15710c8834b050a37187e91a42d31ad72582f6cb",
+      "project_status_readback": "Done",
+      "native_parent": 123
+    },
+    {
+      "task": "SC-03",
+      "number": 127,
+      "url": "https://github.com/VF78/coinmaster/issues/127",
+      "issue_state": "closed",
+      "body_sha256": "53eb75f8ee5beca74605ea12c6d0452781257ed9d4a8ed8e5f855cb44d958bca",
+      "project_status_readback": "Done",
+      "native_parent": 123
+    },
+    {
+      "task": "SC-04",
+      "number": 128,
+      "url": "https://github.com/VF78/coinmaster/issues/128",
+      "issue_state": "closed",
+      "body_sha256": "ee4f08a91bd7dd292ffe3bd63f2164ed2dd9987352420496d105448459242a0b",
+      "project_status_readback": "Done",
+      "native_parent": 123
+    },
+    {
+      "task": "SC-05",
+      "number": 129,
+      "url": "https://github.com/VF78/coinmaster/issues/129",
+      "issue_state": "closed",
+      "body_sha256": "aa37b8b3d1027dfa9408cb8c4e668fcdd4220a043a092de302fcf51f568d8b94",
+      "project_status_readback": "Done",
+      "native_parent": 123
+    }
+  ],
+  "native_parent_links": "PASS",
+  "checkpoint": "070f1ecda5619187656bb3390e7811c83488c4f9",
+  "economic_goal": "NOT_MET",
+  "research_completion": "COMPLETE_VALID_NEGATIVE_NO_GO"
+}
