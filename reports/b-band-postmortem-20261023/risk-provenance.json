@@ -1,0 +1,20 @@
+{
+  "inputs": [
+    {
+      "recipe": "S0",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "artifact_sha256": "d8a0d10829462b5bceca23a957bcaa93ee19749c917ca81b52125e16c386f875",
+      "trace_sha256": "5867b5d5ae2174e8b19e6107dcaeb733a48b4d53e132658aec66eb55dd4d8c0b",
+      "matches_existing_manifest": true
+    },
+    {
+      "recipe": "BTC_REGIME_REENTRY_BAND_05",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/BTC_REGIME_REENTRY_BAND_05/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-B-ATR0.5-btc-direction.json",
+      "artifact_sha256": "665a2dccc67d1644017c4a39e8201cfd14cd9086b80dcf78975f1470b5967039",
+      "trace_sha256": "676e4c95047505f3a4df866b8812baa06bd09a832b3d1bc32c0702a97e429d2d",
+      "matches_existing_manifest": true
+    }
+  ],
+  "method": "One settled trace scan S0/B; one B callback risk scan; no engine. SHA256 checked saved pins; endpoint equity arithmetic exact Decimal.",
+  "script_sha256": "5a7c9d41d45fea85d1e8abbe9d9ebdff82a19614b4eb8278232cfc922675f579"
+}

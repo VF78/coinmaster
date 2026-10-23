@@ -1,0 +1,11 @@
+{
+  "fixed_alternative": ".25ATR; one comparison only",
+  "latches": 41,
+  "earlier": 21,
+  "same": 20,
+  "total_gate_hours_earlier": 1200.0,
+  "max_gate_hours_earlier": 216.0,
+  "side_changed": 6,
+  "no_portfolio_economics": true,
+  "no_causal_branch_or_fill_validation": true
+}

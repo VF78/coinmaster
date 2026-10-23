@@ -1,0 +1,25 @@
+month,S0_BTC_starts,B_BTC_starts,B_new_calendar_starts,missing_S0_BTC_starts,B_BTC_fills,B_SOL_fills,B_SOL_add_fills,B_SOL_add_quantity,B_SOL_add_notional,B_right_activation_events,B_right_activation_level_count,qualification
+2024-09,5,4,0,1,14,0,0,0,0,2,4,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2024-10,5,5,2,2,19,6,3,2054.5,286511.785,3,6,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2024-11,3,3,0,0,15,4,2,1286.4,330296.352,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2024-12,5,4,1,2,19,1,1,1000,191230.00,1,1,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-01,5,5,2,2,23,15,7,7000,1315100.00,1,1,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-02,5,3,0,2,13,3,1,1000,189400.0,2,3,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-03,5,4,1,2,19,10,6,6000,745660.00,1,1,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-04,7,2,1,6,9,22,10,10000,1159200.00,1,1,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-05,2,1,0,1,2,18,9,9000,1542310.00,1,2,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-06,7,5,3,5,20,5,2,2000,325940.00,2,4,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-07,0,0,0,0,1,4,4,4000,777920.00,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-08,8,5,3,6,17,24,10,10000,1850130.00,4,8,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-09,4,3,1,2,13,34,17,17000,4088260.00,1,2,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-10,4,4,2,2,20,2,1,1000,234620.00,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-11,2,2,1,1,7,0,0,0,0,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2025-12,0,0,0,0,3,0,0,0,0,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-01,4,3,1,2,11,0,0,0,0,2,4,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-02,3,3,0,0,13,0,0,0,0,1,2,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-03,9,5,3,7,21,0,0,0,0,1,2,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-04,4,4,0,0,17,0,0,0,0,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-05,2,2,1,1,11,2,2,2000,164460.00,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-06,1,1,0,0,5,2,0,0,0,0,0,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-07,10,5,2,7,16,8,4,4000,310060.00,5,8,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution
+2026-08,5,4,2,3,13,2,1,1000,109080.00,3,6,Actual saved B entry-right events and native fill activity; S0 rights not exported here; quantities/rights are not profit attribution

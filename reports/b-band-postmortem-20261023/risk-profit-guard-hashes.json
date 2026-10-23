@@ -1,0 +1,11 @@
+{
+  "risk-profit-guard-D-parents.csv": "bbeeca883c662bb92c44e385c43136697f3c79bf50a54c9adb8fba9ca7a21ca9",
+  "risk-profit-guard-counterexamples.csv": "dc90f9329a3ed673cafe82be0669ab812080d96fb6e98492c1bc6e64b2606068",
+  "risk-profit-guard-cycles.csv": "bdab111ab6a6725055edd52c4bf7f848944f59d4d130af4ec6aa28df7d96f431",
+  "risk-profit-guard-finalize.py": "82a21d37cd30651859c06930d865bef9108e0c1f9bad16faf5bd50d1f4ca255f",
+  "risk-profit-guard-findings.md": "228982f4ca3bbf57635e814fa71eb88fb41c98bcff24284b395c1a27bcb916b7",
+  "risk-profit-guard-mandatory-counterexamples.csv": "94341d03276c05d4616b48276dd2e38727e66d6377dcc02f0b29dce6d680345e",
+  "risk-profit-guard-native-cache.json": "9a20e2e7a102800da7879eb5a13483aff4be087f326778e1c99730da4c350ab4",
+  "risk-profit-guard-oracle-trough.csv": "62e1a83571d1755c33d6bee4a2b4ffe1e8ae4273f8cd605bf1188f926f336be7",
+  "risk-profit-guard-scan.py": "7bcc4807d030676664458e87445426466a5ee98c9a689ce998aea80178b8313e"
+}

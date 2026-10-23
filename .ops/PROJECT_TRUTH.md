@@ -1,3 +1,14 @@
+Updated: 2026-10-23T08:19:51.852538+00:00
+Status: B_50_90_NEXT_OWNER_ACCEPTED_PRECHECK_IMPLEMENTATION.
+
+Owner accepted attached Codex_B_50_90_Next_Experiments_20261023.txt SHA1da0c2df0ee992016f10ebc7fff8d4be50879c5f4c2eb14f18c149c3cd8571d2 and execution of unified E4/EP/Z/S package. Prior analysis-only/newrun prohibition superseded only for this bounded research. Plan reports/b-50-90-next-20261023/PLAN.md; old reports/b-band-postmortem-20261023 analysis preserved, generic20%guard superseded NOT_IMPLEMENTED. Existing Project2/#123 reused InProgress.
+
+Separate canonicalVPS research branch from exactB25a085f596292df58e51188dd91e996adbe5724c. One engine/domain owner h4_band_owner; b_roi_postmortem independently verifies savedfillattribution; b_weekly_lessons narrowcontract/code reviewer. GPT6.1Solmedium all. ProducteditsVPSonly, Macimmutableexecutionmirror. Max8main fullnative(P0,E4,EP,Z,S,XZ,XS,XZS)+up to4 conditionalcontrols; no newfullnative beforefocusedtests+independentreview. Currentfullattempts0. S0 notrerun, pilot/services/secrets/deploy/orders untouched.
+
+GoalDD<=50%,TOTAL>=5470396.514987347,liq0; S0TOTAL6077107.23887483/B4622034.27336437. Samecanonical24mBybitcosts/funding/margin/settlement/DPoff/reserve0; separateengine+journal each. Z requiresactualzero+causalNovembercoverage,S beforeearlyDD50; negativeunitproxy noteconomicveto. No broadoptimizer/newmodel/hedge. Nextcommonprecheck+singlefocusedimplementation, review,P0,thenfrozenboundedstandalones/combinations. Oldcompletedhistory belowpreserved.
+
+2026-10-23 B_BAND_POSTMORTEM_ACTIVE_ANALYSIS_ONLY: ownerrequestsfullB ROI/DD causes+lastweekapplicability+nextproposals,0newruns/pilot/sourcechanges.3scoped6.1Solmedium analyticalagents/disjointfiles; rootops/Project. Exact S0/B native results reused, unusedoldbudgetNOTapproval. CurrentACTIVE_TASK/report b-band-postmortem-20261023 authoritative.
+
 2026-10-23 H4_BTC_BAND_V2_FINAL_PUBLISHED: research e39bcc6efe5dff7e4c53a5f8f46d4d14b988f35b exactGitHubrefPASS; source25a published; Project2/#123Done/closedcompleted exactreadbackPASS. Allboundedworkcomplete, economicgoalNOT_MET/NO_GO/S0retained;0activeengines/noautomatictrial/pilotuntouched.
 
 2026-10-23 H4_BTC_BAND_V2_COMPLETE_NO_GO:10/11physicalnative(P0+8core+X),0active/reserved,Rskipno50/90winner. BbestTOTAL4622034.27336437/DD57.58541046/netretention76.0170%; C0/H4x6/Xearlymodel-liquidation. ExactS0retained6077107.23887483/DD66.25691486. Source25a publishedrefPASS,47+3tests/sourceGO/9independentmetricQA/128ownerhashes/rootoutputQA PASS. StrictP0artifactFAILlibmULP preserved, observedeconomicexact; H4DDriskgaps28-32funding lowerbounds, signedassetfundingUNKNOWN, exactadmissionblockcomponentUNKNOWN. Finalreport/selection/manifest/CSVsin sol-conditional-hedge-btc-band-20261023. Pilot/deploy/ordersuntouched; no nextautomatictrial. Current ACTIVE_TASK authoritative.

@@ -1,0 +1,3 @@
+recipe,aggregated_native_report_notional,comparison_notional,native_report_minus_comparison,qualification
+S0,2209476512.432100011491088,2209476512.432100011491088,0E-15,"B native report avg_px serialization has tiny Decimal residual vs exact native fill audit; preserve both, no tolerance/exact equality claim"
+B,1406637279.484000008583510,1406637279.4840,8.583510E-9,"B native report avg_px serialization has tiny Decimal residual vs exact native fill audit; preserve both, no tolerance/exact equality claim"

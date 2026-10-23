@@ -1,0 +1,13 @@
+{
+  "risk-B-native-events.csv": "753e63274b6ebbf707645f3b6a1c7507d6ecb8c1b323a3812f949817e8617270",
+  "risk-derive.py": "a1d3969c263d40aad3f293c4421d271895f95db881322117562c595155cf51c4",
+  "risk-extract.py": "5a7c9d41d45fea85d1e8abbe9d9ebdff82a19614b4eb8278232cfc922675f579",
+  "risk-findings.md": "eb7a2eebf101f4f5a843dc48b12e0275fd7b17f8b8376f647fe298155f1c310d",
+  "risk-first45-oracle-bounds.csv": "9fe93d3bdf2939bdbab416530f54275a467ab3e96c496dc4a85505ef619e174f",
+  "risk-fixed-state-decomposition.csv": "1a193e715a797f344bdb1cef5fa06025d34503acb4b042c28ad4291267f22de6",
+  "risk-native-extract.json": "f34413ffac872d9621de47930622a488af620e6403a81dc005f903ee10a60e78",
+  "risk-provenance.json": "4b700080311aa08be7c687a45e5e56ebb8d66c56c75838aca2b606d7c46731cb",
+  "risk-target-gaps.csv": "997f9649d87e41f03f8d2923a20204055ea4ac0cb310574051b31a84fb2893af",
+  "risk-threshold-counterexamples.csv": "37b268507da3d32058dd4bb6aeaca2a6dc6ff50b1441229ef0daba6129404f17",
+  "risk-top3-endpoints.csv": "3aea62d88c28b36982a17f827585703cda686b5e41709e3e4ba183fb309d4ef7"
+}

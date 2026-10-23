@@ -1,0 +1,300 @@
+COINMASTER: ДОРАБОТКА B ДО DD <= 50% И СОХРАНЕНИЯ >= 90% ЧИСТОЙ ПРИБЫЛИ S0
+Дата задания: 23.10.2026. Это новый исследовательский цикл; live/pilot не изменять.
+
+1. ЦЕЛЬ И ЗАФИКСИРОВАННЫЕ КОНТРОЛИ
+
+Период native: [2024-09-01T00:00:00Z, 2026-09-01T00:00:00Z), seed 10000 USDT, прежние данные, warm-up, комиссии, funding, venue, lot/tick, admission, margin и settlement.
+
+S0:
+TOTAL = 6077107.23887483
+net_profit = 6067107.23887483
+global settled marked-equity DD = 66.256914864686864%
+fees = 945927.73761825
+BTC parents = 105.
+
+B = BTC_REGIME_REENTRY_BAND_05:
+TOTAL = 4622034.27336437
+net_profit = 4612034.27336437
+retention = 76.01702247510777%
+global settled DD = 57.585410459622264%
+fees = 592090.31669918
+BTC parents = 77.
+
+Единственный основной экономический gate:
+retention = (candidate_TOTAL - 10000) / (S0_TOTAL - 10000) >= 0.90
+global_DD <= 0.50
+liquidations == 0.
+Точный TOTAL-порог = 5470396.514987347; при сравнении округленных центов >= 5470396.52.
+Не использовать 90% прибыли B, TOTAL/seed вместо net retention, cash DD, локально обнуленный peak или DD только четырех диагностических окон.
+
+Контрольные pins:
+reports: 7fa5800f9ae58a84281a561532f1248ef0eaecdb
+B executed source: 25a085f596292df58e51188dd91e996adbe5724c
+S0 scientific source: 75ffc9c69e9d79c4da4cd0614634a3eeba48d716
+B config SHA256: 06c9e99ce88bed050a62ac38cb9c0370cde35ce8c990582b888c06e68bcf53ea.
+
+Создать отдельную research-ветку от B source. Зафиксировать source/config/input hashes каждого фактического запуска. Не переносить новые параметры в default/pilot. Не сбрасывать действующие ограничения, чтобы провести отвергнутый ордер.
+
+2. ОБЯЗАТЕЛЬНЫЕ ИСХОДНИКИ И РЕЗУЛЬТАТЫ
+
+База ссылок reports:
+https://github.com/VF78/coinmaster/tree/7fa5800f9ae58a84281a561532f1248ef0eaecdb/reports/sol-conditional-hedge-btc-band-20261023
+
+Прочитать в этой директории:
+REPORT.md, comparison.json, global-risk.csv, monthly.csv, owner-windows.csv,
+owner-mechanistic-findings.md, owner-B-skip-delay.csv, owner-sizing-calendar.csv,
+owner-terminal-settlement.csv, reviewer-result-validation.md,
+verifier-reference-fills.csv,
+owner-BTC_REGIME_REENTRY_BAND_05-events/{native-fills.csv,native-fill-audit.csv,native-orders.csv,hedge-band-audit.csv,split-parent-audit.csv,entry-sizing-audit.csv,actual-rights-and-fill-lifecycle.csv}.
+
+Исходный B gate:
+https://github.com/VF78/coinmaster/blob/25a085f596292df58e51188dd91e996adbe5724c/runtime/coinmaster/strategy/hedge_band.py
+
+Недельный реестр:
+https://github.com/VF78/coinmaster/blob/7fa5800f9ae58a84281a561532f1248ef0eaecdb/reports/s0-weekly-postmortem-20261022/weekly-inventory.md
+https://github.com/VF78/coinmaster/blob/7fa5800f9ae58a84281a561532f1248ef0eaecdb/reports/s0-weekly-postmortem-20261022/REPORT.md
+
+Исторические контроли zero-TP:
+https://github.com/VF78/coinmaster/blob/7fa5800f9ae58a84281a561532f1248ef0eaecdb/reports/selective-zero-tp-113/README.md
+https://github.com/VF78/coinmaster/blob/7fa5800f9ae58a84281a561532f1248ef0eaecdb/reports/tp-fee-floor-113/comparison.json
+
+Не читать заново все AI-отчеты и не обучать модели. PLANREF, split50/50 с расстоянием второй части 0.25%, positive-TP native IOC и исходная SOL-логика уже входят в B.
+
+3. УСТАНОВЛЕННЫЕ МЕХАНИЗМЫ, КОТОРЫЕ НУЖНО СОХРАНИТЬ В АНАЛИЗЕ
+
+B корректно запрещает только повторный BTC-вход после закрытия группы по REGIME, пока aligned daily distance < 0.5 ATR. Initial/post-TP/post-TRAIL поведение прежнее. Latch снимается фактическим BTC fill. REGIME exit не задерживается. Пока B запрещает вход, нового BTC episode/plan еще нет. После допуска создается свежий причинный план, проходит исходный q0/q1 selector и split. Это не установленный bug.
+
+41 latch, 83 weak D1 refusals, 41 allow; 9 latch без слабого отказа. 51 совпавшая дата BTC входа, 54 отсутствующие даты S0, 26 новые даты B; 39/51 совпавших размеров различаются.
+
+Фактический net PnL по fills без распределенного funding:
+BTC S0 5345694.49 -> B 3946306.01, delta -1399388.48.
+SOL S0 678661.21 -> B 631950.99, delta -46710.21.
+Нераспределенный cash bridge delta -8974.28.
+TOTAL delta -1455072.97; gross PnL delta -1799936.11; экономия комиссий +353837.42.
+
+Для совпавших дат BTC: delta -705981.09; симметричный Q-компонент -709196.21, unit-компонент +3215.12. Это бухгалтерское разложение двух фактических историй, не causal PnL новой политики. Quantity меняют capital, cap, zero-level netting и q0/q1 branch.
+
+Критические примеры задержки (S0 -> B; trade net без funding):
+03.01.2025 -> 04.01: +46092.34 -> -5426.91.
+13.03.2026 -> 16.03: +658351.95 -> -262204.15.
+20.03.2026 -> 22.03: +772145.16 -> -504557.97.
+18.07.2026 -> 21.07: +707107.22 -> -329339.68.
+18.08.2026 -> 19.08: +252667.68 -> +778571.68, но утренний риск вырос.
+
+Ранний SOL cash важен: два S0 цикла 23.12.2024 и 27.12.2024–03.01.2025 дали +176722.78; B только +49370.36. Дельта -127352.42 возникла до январского падения BTC sizing. Нельзя сделать вывод «SOL неважен» из небольшой итоговой двухлетней дельты.
+
+Оставшиеся B DD:
+A: peak 14743.45772484 03.10.2024 04:01Z -> trough 6253.37707805 03.10 15:45Z; DD57.5854%.
+C: peak 1716298.31194939 26.11.2025 12:23Z -> trough 777855.08072325 28.11 14:29Z; DD54.6783%.
+D: peak 7290323.10477185 06.07.2026 13:40Z -> trough 3613503.497695 19.08 06:14Z; DD50.43425%.
+Окно D в старой таблице заканчивается до последнего дна; его 48.1705% не является полным DD эпизода.
+
+На раннем дне B: BTC short0.94, SOL long1000@140.09. При native marks60209.9/133.17: BTC UPnL+636.709; SOL -6920. B сохранил больше cash, но не уменьшил опасный SOL.
+Ноябрь B50: short140.739, actualVWAP87414.85077555, P0=87305.7, SOL0; до дна сокращений нет. Первый выход TP3 01.12 15:35Z qty80.925; две доли29.907+29.907 только02.12 00:00Z. Весь цикл затем +293923.03. Не писать «TP1 1 декабря».
+Август: B76 на дне держит321.238 BTC, S0 уже267.361. Будущий B winner +778571.68 пересекает DD50 после серии семи BTC losses; нельзя закрывать его полностью только потому, что итоговый DD>50%.
+
+4. ОДИН ОБЩИЙ PRECHECK; НЕ ПОДМЕНЯТЬ ИМ NATIVE
+
+Один раз построить закрытые 4h/H1 бары из pinned исходных данных с явными open/close timestamps. Сигналы используют только полностью закрытые бары. D1 EMA34 и Wilder ATR14 — исходная цепочка и warm-up. Не подмешивать текущий 4h close внутрь D1 EMA. Не подставлять отсутствующие high/low фиктивными значениями.
+
+Для всех 41 B WAIT и всех 77 BTC parents экспортировать только нужные поля:
+latch_time, D1 accepted time/side, EMA, ATR, aligned_distance, consecutive_side_count,
+first_eligible_4h_release,
+entry branch, actual wave_levels, omitted/suppressed zero sets,
+P0, actual VWAP/entry fees, target/filled/open lots, native cash/equity,
+actual SOL qty и pending/inflight increases, beta snapshot,
+first arm/trigger/ordinary exit и actual later recovery.
+
+Особенно проверить actual wave_levels и suppressed levels B50. CSV доказывает full fallback и target slots, но значения [0,0,x] пока не экспортированы: не выводить их как факт по виду ордеров. Для Z нужен причинно доступный arm и возврат ДО ноябрьского дна. Если их нет, Z данной спецификации не адресует ноябрь; записать NO_MECHANISTIC_COVERAGE и не подгонять автоматически таймфрейм/порог.
+
+Для S заново вычислить триггеры на B, а не копировать S0 timestamp/price из H2. Проверить, возникает ли фактическое действие до DD50.
+
+Precheck проверяет data/causality/достижимость действия. Отрицательная сумма исторических endpoint price differences не запрещает native страховой гипотезы: это не ее DD/compounding. Не суммировать пропущенные S0 выигрыши как восстанавливаемую прибыль. После исправления конкретной ошибки precheck продолжить разрешенные full native; не заканчивать работу только диагностическим отчетом.
+
+5. E4: УСКОРИТЬ РАЗРЕШЕНИЕ ДЕЙСТВУЮЩЕГО WAIT, СОХРАНИВ 0.5 ATR
+
+Recipe B_WAIT_4H_RELEASE.
+База B; исходная D1 ветвь допуска сохранена.
+
+Только при активном original REGIME latch и штатной возможности создать новый BTC episode:
+s = последнее принятое закрытое D1 направление, +/-1;
+D = s*(C_4h - EMA34_last_closed_D1)/ATR14_last_closed_D1.
+На полностью закрытом 4h баре ПОСЛЕ latch разрешить штатный BTC entry, если D>=0.5.
+Внутри D1 EMA/ATR/s остаются неизменными. Если D1 обновился, брать новый принятый D1. При одинаковом timestamp явно обработать закрытый D1 до 4h проверки; никаких незакрытых данных.
+
+Это permission снять уже существующий запрет, не дополнительный фильтр всех входов и не замена raw D1 direction на4h.
+Current capital, quote, native admission, q0/q1 selector, split и новый P0 — реальные на момент entry. Нельзя исполнять по старой S0 цене/размеру.
+Не фабриковать paired D1 executable session ради обхода старой eligibility: добавить явный исследовательский intraday entry path с отдельными signal_asof и decision_time.
+Latch до actual fill; rejected/no-fill сохраняет WAIT. Соблюдать исходный запрет повторного entry attempt той же принятой session/side. Не сбрасывать его ради повторных4h попыток.
+SOL group lifecycle, права, original REGIME exits и положительные TP прежние.
+
+6. EP: МЯГКОЕ РАЗРЕШЕНИЕ ПО УСТОЙЧИВОМУ D1 НАПРАВЛЕНИЮ
+
+Recipe B_WAIT_PERSIST_2D_025.
+Самостоятельная альтернатива E4 на B, не комбинация E4+EP.
+
+D=s*(C_D1-EMA34)/ATR14, то есть aligned distance неотрицателен для согласованной стороны.
+ALLOW = (D>=0.5) OR (same_side_count>=2 AND D>=0.25).
+
+Counter:
+- начинается с1 на первом принятом D1 в новом WAIT;
+- обновляется один раз на каждый unique accepted closed D1 при активном WAIT, даже если entry еще не eligible;
+- прежняя raw-side -> +1; смена ->1;
+- не считать повторные callback/quote/admission события новыми D1;
+- пропуск/неполная D1 цепочка не означает два последовательных дня;
+- после actual BTC fill счетчик/WAIT заканчивается.
+Немедленная ветвь >=0.5 не ждет двух дней.
+
+Read-only на сохраненном B пути: 12 из41 WAIT получили бы ранний допуск, в том числе20.04 вместо22.04.2025 и19.07 вместо21.07.2026. Но также24.12.2024 SHORT вместо25.12 LONG,28.10.2025 LONG вместо30.10 SHORT,08.08.2026 LONG вместо13.08 SHORT. Это не новые fills и не гарантия сохранения защиты.
+03.01.2025,20.03.2026 и18.08.2026 этот вариант по старому пути не спасает: первый weak day еще не имеет counter2.
+
+Не добавлять fixed timeout, unconditional WAIT reset при side flip или общую двухдневную задержку всех входов. Не начинать с Optuna/широкой сетки EMA/ATR/TP.
+
+7. Z: ЗАЩИТИТЬ СОХРАНЕННЫЕ НУЛЕВЫЕ TP-ДОЛИ ПРИ ОБРАТНОМ ХОДЕ
+
+Recipe B_ZERO_RETRACE_GUARD_4H_ONCE.
+Отдельный новый execution contract, НЕ установленное исправление бага.
+
+Задача: дать движению продолжиться; при возврате после наблюдаемой прибыли сократить только реально сохраненные нулевые TP-доли. Не делать instant zero-TP на первом прибыльном tick: августовские136.526 BTC при обычном выходе69305 против раннего BE~64687 дают около630тыс потенциальной упущенной gross прибыли на старых количествах.
+
+Eligibility для arm:
+- MARKETABLE_FULL_ENTRY_FALLBACK;
+- реальный wave_level==0, уровень не omitted и имеются leaves;
+- оба split-child/parent terminal; все entry fills/fees известны;
+- до первого обычного BTC TP/reduction;
+- BTC фактически открыт;
+- SOL фактически0, нет queued/open/inflight/unknown-ACK SOL increases;
+- нет mandatory REGIME/TRAIL/liquidation/terminal close или более приоритетного исполнимого сокращения.
+
+P0 исходный immutable PLANREF, A actual blended entry VWAP, c actual entry fees/actual entry qty, f действующая taker exit fee:
+long feeBE=(A+c)/(1-f);
+short feeBE=(A-c)/(1+f).
+G=ceil_to_tick(max(P0,feeBE)) для long;
+G=floor_to_tick(min(P0,feeBE)) для short.
+Это floor по торговым комиссиям, не по funding. Не обещать net0 при gap/slippage.
+
+Arm после полностью закрытого post-entry4h close на благоприятной стороне G минимум на1 native tick. Arm не исполняет выход.
+После arm первая последующая причинная executable quote (long: bid<=G; short: ask>=G) вызывает native reduce-only IOC по фактической доступной цене. Не рисовать fill поG. Максимум один trigger на BTC episode; повторы допускаются только для исполнения уже принятого конкретного residual target, не для нового arm.
+Количество = remaining eligible zero-slot lots, ограниченное фактическим BTC и уже зарезервированными reductions.
+Для B50 исходный zero-budget, ЕСЛИ нули подтверждены:59.814BTC.
+
+При появлении ordinary TP/D1 fallback, REGIME/TRAIL, SOL increase или изменении eligibility отменять/согласовывать guard. Приоритеты реализовать через cancel ACK и обработку late fills, а не одним if.
+Не менять положительные TP, P0, grossQ, beta/H или первоначальные плановые знаменатели.
+
+Accounting:
+actual risk fill -> отдельный risk_retired_lots[level];
+future zero leaves = original target - ordinary actualTPfilled - actual risk_retired;
+не записывать risk fills как TP и не выдавать им SOL rights;
+не отнимать TP3 allocation, не сбрасывать группу/WAIT/триггер нового BTC;
+partial fills retire только реально исполненные lots;
+сумма всех owned pending reductions <= реально доступный position budget.
+Формулы legacy SOL сохраняются, но фактические будущие SOL rights могут исчезнуть после risk retirement: это экономический эффект кандидата, показать отдельно.
+
+Действие должно быть проверено по всей подходящей выборке из 46 full branches, а не только B50. Обязательно показать August 19 false-stop/recovery и последующие SOL opportunities. Не включать общий tp_fee_floor_v1: прежний общий fee-floor терял725275 на другой базе и является отдельным вмешательством.
+
+8. S: УСЛОВНОЕ СОКРАЩЕНИЕ УБЫТОЧНОГО SOL, КОТОРЫЙ ПЕРЕКРЫВАЕТ BTC
+
+Recipe B_SOL_DOMINANT_ADVERSE_HALF_ONCE.
+Низший приоритет, отдельный риск-эксперимент; постоянный SOL cap/новый hedge не вводить.
+
+На закрытом H1 при одновременном состоянии:
+- BTC и SOL фактически открыты в противоположных направлениях;
+- beta = causal immutable planref_v1_beta текущего исходного BTC episode, finite и в исходном допустимом диапазоне;
+- beta*abs(SOL_native_qty)*SOL_current_mark > abs(BTC_native_qty)*BTC_current_mark;
+- global settled equity DD >=40% (состояние, не требование нового crossing);
+- -s_SOL*(H1_close/SOL_actual_entry_VWAP - 1) >=2%;
+- этот SOL cycle еще не имел такого protective cut.
+
+Один раз сократить 50% actual held SOL с округлением вниз к lot, через отдельный native reduce-only risk owner. Trigger quantity фиксируется один раз; partial fills не создают повторную половину. Исходные more-priority exits имеют приоритет.
+Отменить pending SOL increases, корректно обработать late fills, заблокировать дальнейшие SOL additions этого cycle; не допускать восстановления риска автоматическим добором. Не выдавать cut за SOL_Z_HALF_EXIT и не ставить его half_done без корректного отдельного учета.
+Сохранить BTC episode/TP/P0, исходные SOL age/sigma и обычные exits оставшегося SOL. Не завершать группу как C0; не rearm BTC; не добавлять restore-таймеры.
+Если после сокращения SOL=0 из-за native lot/minimum, закрытие его owner не должно выдумывать новый BTC trigger.
+
+Иллюстрация масштаба, НЕ прогноз:
+на B старом раннем дне не хватает 1118.35 USDT до DD50 при неизменном пике;
+условный 500 SOL cut@135.84 против native trough133.17 дает 1297.644 после exit fee 0.055%, до funding/latency/других состояний.
+Запас мал. Реальный SOL потом восстанавливался: показать цену утраченной прибыли и влияние на следующие BTC sizes. Прохождение50/90 не предполагается.
+
+9. ОГРАНИЧЕННЫЙ НАБОР FULL NATIVE
+
+Не более8 основных прогонов:
+P0: новая кодовая ветка, все новые flags OFF, исходный B ON; подтвердить прежнюю экономику.
+E4: B+WAIT4H.
+EP: B+PERSIST2D025.
+Z: B+ZERO_RETRACE, если causal precheck подтверждает ноябрьскую достижимость.
+S: B+SOL_DOMINANT_CUT, если causal precheck подтверждает действие до раннегоDD50.
+XZ: выбранный E* + Z.
+XS: выбранный E* + S.
+XZS: выбранный E* + Z + S.
+
+E* выбирается из B/E4/EP, не из произвольных новых рецептов:
+1) если есть 50/90 — максимум TOTAL среди проходящих;
+2) иначе если есть retention>=90%,DD<=S0, no liquidation — минимум global DD среди них;
+3) иначе максимум TOTAL среди DD<=S0, no liquidation;
+4) ties: меньший DD, затем меньший turnover.
+Если E*=B, не повторять дубликат BZ/BS.
+Комбинации запускать только для корректных, реально активных компонентов; отсутствие отдельного 50/90 у компонента НЕ является запретом комбинации. По одному компоненту невозможно автоматически устранить все три разных риска.
+
+Не выбирать даты/episode IDs для действия, не менять TP/EMA/плечо одновременно, не оптимизировать all-history thresholds, не добавлять CNN/LLM/новыеhedges. Не повторять H4/C0: они разрушали lifecycle и ликвидировались раньше эффектаB.
+
+До 4 дополнительных контрольных прогонов только при проходящем или близком Pareto-кандидате:
+- свежий repeat с теми же seeds/config/input в одном окружении;
+- один adverse execution-cost stress, например дополнительный 1 bp на fill notional через тот же native account path (не постфактум вычитание при неизменном sizing);
+- до двух локальных neighbors одного активного параметра, выбранных до просмотра результатов: для E4 band 0.45/0.55; для EP weak band 0.20/0.30 при unchanged strong band 0.5; для S adverse 1.8%/2.2% при unchanged DD40. Выбрать ровно одну такую пару по компоненту, давшему основное улучшение.
+Z не имеет подбираемого MFE-порога; для него stress costs/one-minute delay, а не сетка стопов.
+Если никто не проходит и нового измеримого механизма нет, остановить набор и выдать Pareto-таблицу; не заполнять бюджет случайными переборами.
+
+10. ВЕРИФИКАЦИЯ И РЕЗУЛЬТАТ
+
+Сфокусированные проверки:
+- закрытые D1/4h/H1, одинаковый timestamp, без lookahead и поддельных paired sessions;
+- B latch только по actual fill; no-fill/cancel сохраняют WAIT;
+- Z ordinary TP versus risk-stop, partial/cancel/late fills, correct retired-lot budget, no SOL rights;
+- S cancel/add race и отсутствие автодобора/искусственного rearm;
+- new flags OFF parity с B.
+Не переделывать всю test-систему и не писать тесты только на формулу, повторяющую implementation.
+
+Для каждого прогона:
+TOTAL/post-boundary cash, net retention S0, full global settled DD,
+max dollar DD, peak/trough/recovery timestamps, все global DD episodes >=30%,
+максимальная серия убытков и время под водой,
+BTC/SOL net fill PnL/fees/turnover, signed funding если реально доступен,
+unallocated bridge, monthly equity, liquidation count,
+actual entry calendar/quantity/branch/TP phase, actual risk cuts и lost SOL rights,
+risk receipt coverage/missing counts, source/config/data hashes.
+
+Основной DD расчет — по native marked equity после settlement на исходных причинных marks; не по cash, не по PnL закрытых сделок, не по синтетическому одновременному OHLC-экстремуму. Учитывать funding cash mutations/fees и terminal cash bridge. Missing receipts = unknown/lower bound, не нулевой риск.
+
+Отдельный episode-ledger для A/C/D и всех новых максимумов:
+какое событие сработало ДО падения, сколько actual units сократилось,
+изменились ли cash peak/entry/TP/SOL rights, цена пропущенного восстановления,
+почему улучшился DD, почему изменился ROI.
+Сопоставление PnL старых эпизодов — descriptive; итог новой политики только native.
+
+Старый 24m период многократно использован для отбора; его хронологические срезы НЕ называть fresh OOS.
+Показать устойчивость по календарным частям на единой непрерывной equity без перезапуска капитала. Настоящий нетронутый период/forward paper обозначать только при фактическом наличии.
+Benchmark 1m CLOSE synthetic quotes остается NOT_FAITHFUL_DIAGNOSTIC; прохождение 50/90 на нем не обещает live DD или ROI.
+
+Выходные артефакты:
+REPORT.md — итог, таблица всех вариантов, причины ROI/DD, решение PASS/FAIL/UNKNOWN;
+comparison.csv/json; runs_manifest.json; wait_first_divergence.csv;
+zero_guard_cohort.csv; sol_risk_cohort.csv; global_drawdown_episodes.csv;
+matched_entry_attribution.csv; independent_review.md.
+Сохранить полные параметры и неудачи, не только winner.
+Не заменять отсутствующие данные предполагаемыми. Не заканчивать формулировкой «правило могло бы помочь» после одного precheck, если native корректного оговоренного кандидата еще не исполнен.
+
+11. ИСТОЧНИКИ ОБЩИХ МЕТОДОВ (НЕ ДОКАЗАТЕЛЬСТВО ЭФФЕКТИВНОСТИ РЕЦЕПТОВ)
+
+No-trade buffer / цена оборота:
+https://arxiv.org/abs/1204.6488
+Dynamic trading / alpha decay / transaction costs:
+https://www.aqr.com/Insights/Research/Journal-Article/Dynamic-Trading-With-Predictable-Returns-and-Transactions-Costs
+Stop-loss зависит от процесса и восстановления:
+https://dspace.mit.edu/entities/publication/bb69ca4b-0cdc-487f-831d-63b2e84fafee
+Multiple testing / backtest overfitting:
+https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf
+Native order semantics:
+https://nautilustrader.io/docs/latest/concepts/orders/
+
+Критерий завершения: либо новый воспроизводимый кандидат 50/90 с полной native сверкой, либо завершенный ограниченный набор с точным объяснением, какой механизм не прошел. Не объявлять найденного победителя по одному cohort/proxy.
+

@@ -1,0 +1,3 @@
+recipe,native_TOTAL,seed,net_profit,confirmed_fill_net_ex_funding,unallocated_cash_bridge,signed_asset_funding,qualification
+S0,6077107.23887483,10000,6067107.23887483,6024355.696481760293496,42751.542393069706504,UNKNOWN,Residual is not identified funding; includes native funding and ledger/account/serialization basis until independently reconciled
+B,4622034.27336437,10000,4612034.27336437,4578257.007900827170138,33777.265463542829862,UNKNOWN,Residual is not identified funding; includes native funding and ledger/account/serialization basis until independently reconciled

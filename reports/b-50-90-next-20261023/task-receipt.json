@@ -1,0 +1,9 @@
+{
+  "received_utc": "2026-10-23T08:16:44.207556+00:00",
+  "owner_request": "Integrate attachment with completed B analysis; execute unified bounded tasks",
+  "attachment_sha256": "1da0c2df0ee992016f10ebc7fff8d4be50879c5f4c2eb14f18c149c3cd8571d2",
+  "distinction": "Attachment is an accepted research specification, not evidence its numerical claims are independently verified. Actual native results override illustrative or descriptive claims.",
+  "pilot_and_production_changes_authorized": false,
+  "source_base": "25a085f596292df58e51188dd91e996adbe5724c",
+  "reports_base": "7fa5800f9ae58a84281a561532f1248ef0eaecdb"
+}

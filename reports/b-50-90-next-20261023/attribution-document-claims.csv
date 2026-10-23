@@ -1,0 +1,25 @@
+claim,measured_exact,document_cents,cents_match,qualification
+S0_BTC_net,5345694.488795810293496,5345694.49,True,Exact Decimal ledger value compared only at document precision
+B_BTC_net,3946306.012935777170138,3946306.01,True,Exact Decimal ledger value compared only at document precision
+S0_SOL_net,678661.20768595,678661.21,True,Exact Decimal ledger value compared only at document precision
+B_SOL_net,631950.99496505,631950.99,True,Exact Decimal ledger value compared only at document precision
+BTC_net_delta,-1399388.475860033123358,-1399388.48,True,Exact Decimal ledger value compared only at document precision
+SOL_net_delta,-46710.21272090,-46710.21,True,Exact Decimal ledger value compared only at document precision
+unallocated_bridge_delta,-8974.276929526876642,-8974.28,True,Exact Decimal ledger value compared only at document precision
+gross_cashflow_delta,-1799936.109500003123358,-1799936.11,True,Exact Decimal ledger value compared only at document precision
+matched_delta,-705981.086361189416376,-705981.09,True,Exact Decimal ledger value compared only at document precision
+matched_symmetric_Q_component,-709196.209124880006798472439842633080984522191,-709196.21,True,Exact Decimal ledger value compared only at document precision
+matched_symmetric_unit_component,3215.12276369059042247243984263308098452218288,3215.12,True,Exact Decimal ledger value compared only at document precision
+delay_1_S0,46092.34400612,46092.34,True,Exact Decimal ledger value compared only at document precision
+delay_1_B,-5426.91204235,-5426.91,True,Exact Decimal ledger value compared only at document precision
+delay_2_S0,658351.95132688,658351.95,True,Exact Decimal ledger value compared only at document precision
+delay_2_B,-262204.15386452,-262204.15,True,Exact Decimal ledger value compared only at document precision
+delay_3_S0,772145.15518148214648,772145.16,True,Exact Decimal ledger value compared only at document precision
+delay_3_B,-504557.96696470914148,-504557.97,True,Exact Decimal ledger value compared only at document precision
+delay_4_S0,707107.22398714269880,707107.22,True,Exact Decimal ledger value compared only at document precision
+delay_4_B,-329339.675908088988796,-329339.68,True,Exact Decimal ledger value compared only at document precision
+delay_5_S0,252667.684456898000604,252667.68,True,Exact Decimal ledger value compared only at document precision
+delay_5_B,778571.68332722815288,778571.68,True,Exact Decimal ledger value compared only at document precision
+early_SOL_S0,176722.77717600,176722.78,True,Exact Decimal ledger value compared only at document precision
+early_SOL_B,49370.35750000,49370.36,True,Exact Decimal ledger value compared only at document precision
+early_SOL_delta,-127352.41967600,-127352.42,True,Exact Decimal ledger value compared only at document precision

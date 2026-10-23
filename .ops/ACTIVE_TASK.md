@@ -1,3 +1,25 @@
+Updated: 2026-10-23T08:19:51.852538+00:00
+Status: B_50_90_NEXT_OWNER_ACCEPTED_PRECHECK_IMPLEMENTATION.
+
+Owner accepted attached Codex_B_50_90_Next_Experiments_20261023.txt SHA1da0c2df0ee992016f10ebc7fff8d4be50879c5f4c2eb14f18c149c3cd8571d2 and execution of unified E4/EP/Z/S package. Prior analysis-only/newrun prohibition superseded only for this bounded research. Plan reports/b-50-90-next-20261023/PLAN.md; old reports/b-band-postmortem-20261023 analysis preserved, generic20%guard superseded NOT_IMPLEMENTED. Existing Project2/#123 reused InProgress.
+
+Separate canonicalVPS research branch from exactB25a085f596292df58e51188dd91e996adbe5724c. One engine/domain owner h4_band_owner; b_roi_postmortem independently verifies savedfillattribution; b_weekly_lessons narrowcontract/code reviewer. GPT6.1Solmedium all. ProducteditsVPSonly, Macimmutableexecutionmirror. Max8main fullnative(P0,E4,EP,Z,S,XZ,XS,XZS)+up to4 conditionalcontrols; no newfullnative beforefocusedtests+independentreview. Currentfullattempts0. S0 notrerun, pilot/services/secrets/deploy/orders untouched.
+
+GoalDD<=50%,TOTAL>=5470396.514987347,liq0; S0TOTAL6077107.23887483/B4622034.27336437. Samecanonical24mBybitcosts/funding/margin/settlement/DPoff/reserve0; separateengine+journal each. Z requiresactualzero+causalNovembercoverage,S beforeearlyDD50; negativeunitproxy noteconomicveto. No broadoptimizer/newmodel/hedge. Nextcommonprecheck+singlefocusedimplementation, review,P0,thenfrozenboundedstandalones/combinations. Oldcompletedhistory belowpreserved.
+
+Updated: 2026-10-23T07:29:18.314592+00:00
+Status: B_BAND_POSTMORTEM_ACTIVE_ANALYSIS_ONLY.
+
+Latest owner requests detailed B ROI decline/DD improvement/remaining tail mechanisms and prior-week applicable experiments, then next concrete tests. NO new native/backtest/replay/model/optimizer/training or deployment before owner agreement. Pilot untouched. Prior 10/11 native cycle complete; unusedslot is not authorization.
+
+Read saved exact S0/B outputs only. S0TOTAL6077107.23887483/DD66.2569148647%; B4622034.27336437/DD57.5854104596%, profitretention76.0170%. Goal DD<=50% and TOTAL>=5470396.514987347 (>=90%netprofit),30% aspirational. Source25a/resultse39/ops7fa immutable. B uses fullyoriginalSOL, gates post-REGIMEreentry only at0.5WilderATR14; do not import failed H4/C0.
+
+Three scoped fresh GPT6.1Sol/medium agents: b_roi_postmortem saveddecisions/capital/calendar; b_risk_postmortem savedriskmechanisms; b_weekly_lessons actualexperimentlineages. Disjointnewfiles under reports/b-band-postmortem-20261023, root REPORT/ops/Project. No product edits (canonicalVPS-only policy preserved), no native engine. SignedassetfundingUNKNOWN; fixedstate diagnostics notportfolio counterfactual economics. Entryoutcomelabels future-onlydiagnostic, notcausalfilters. Project#123 reused viafieldstatus/readback, no issuecomments/bodymessages.
+
+Next: awaitscopedanalyses, verifyexactarithmetic/counterexamples, integrate ranked smallcausalhypotheses and proposed boundednativeprotocol; no run or implementation until agreed. Preserve old complete research below.
+
+Previous completed scope:
+
 Updated: 2026-10-23T07:01:49.580765+00:00
 Status: H4_BTC_BAND_V2_COMPLETE_VALID_NEGATIVE_NO_GO.
 

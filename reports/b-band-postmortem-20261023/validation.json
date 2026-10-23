@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-23T08:22:06.513311+00:00",
+  "status": "ANALYSIS_COMPLETE",
+  "checks": {
+    "roi_12_selfchecks": true,
+    "exact_goal": true,
+    "total_gap": true,
+    "goal_gap": true,
+    "fee_saving": true,
+    "native_runs_analysis": true,
+    "roi-file-manifest.json": true,
+    "risk-file-hashes.json": true,
+    "risk-profit-guard-hashes.json": true,
+    "new_attribution_selfchecks": true
+  },
+  "new_native_runs": 0,
+  "source_changes": 0,
+  "pilot_actions": 0,
+  "future_proposal": "SUPERSEDED_BY_OWNER_ACCEPTED_NEW_CYCLE",
+  "new_fill_net_evidence": "../b-50-90-next-20261023/attribution-findings.md",
+  "qualifications": [
+    "Old native exported perasset net incl funding UNKNOWN remains; new flatinventory fillnet ex funding separately measured",
+    "Generic20%guard proposal preserved historical, notimplemented",
+    "No claim of50/90 achievement"
+  ]
+}

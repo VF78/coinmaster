@@ -1,0 +1,60 @@
+{
+  "utc": "2026-10-23T08:19:51.852538+00:00",
+  "status": "OWNER_ACCEPTED_IMPLEMENTATION_PRECHECK_IN_PROGRESS",
+  "authority": "owner-task.txt + direct owner instruction integrate and execute",
+  "source_base": "25a085f596292df58e51188dd91e996adbe5724c",
+  "controls": {
+    "S0_total": "6077107.23887483",
+    "B_total": "4622034.27336437",
+    "S0_settled_dd_percent": "66.25691486468686414439256686",
+    "B_settled_dd_percent": "57.58541045962226379114466259",
+    "S0_rerun": false,
+    "new_code_flags_off_B_P0_required": true
+  },
+  "acceptance": {
+    "min_total": "5470396.514987347",
+    "min_net_retention": "0.90",
+    "max_global_settled_dd": "0.50",
+    "max_liquidations": 0,
+    "ranking": "MAX_TOTAL among passing50/90"
+  },
+  "main_recipes": [
+    "P0",
+    "E4",
+    "EP",
+    "Z",
+    "S",
+    "XZ",
+    "XS",
+    "XZS"
+  ],
+  "main_full_attempt_limit": 8,
+  "conditional_control_limit": 4,
+  "full_attempts_used": 0,
+  "extra_controls_eligible_if": {
+    "pass_50_90": true,
+    "or_near_Pareto": {
+      "max_dd": "0.55",
+      "min_retention": "0.85",
+      "liquidations": 0,
+      "nondominated": true,
+      "better_than_B_in_both": true
+    }
+  },
+  "conditional_controls": [
+    "fresh_same_recipe_repeat",
+    "one_native_account_1bp_cost_stress",
+    "one_frozen_neighbor_pair_E4_OR_EP_OR_S"
+  ],
+  "E_selection": "doc9 lexicographic; exact E* from B/E4/EP only; B dedupZ/S; singles need not individually50/90",
+  "Z_precondition": "actualzero leaves + causalclosed4h arm and return beforeNovembertrough; otherwiseNO_MECHANISTIC_COVERAGE, no automaticretune",
+  "S_precondition": "exactB closedH1 factor/DD40/adverse2 trigger beforeearlyDD50",
+  "single_native_engine_at_once": true,
+  "separate_funding_journal": true,
+  "pilot_untouched": true,
+  "production_changes": false,
+  "source_product_edits_canonical_VPS_only": true,
+  "general20percent_guard": "SUPERSEDED_NOT_IMPLEMENTED",
+  "backtest_qualification": "NOT_FAITHFUL_DIAGNOSTIC",
+  "old_history_is_fresh_OOS": false
+}

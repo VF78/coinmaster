@@ -1,0 +1,16 @@
+{
+  "status": "INDEPENDENT_SAVED_FILL_ATTRIBUTION_PASS",
+  "files": {
+    "attribution-BTC-parent-ledger.csv": "01596f8bcee6ce9943084934cbe3d45fcc14d9f3a7d00d979a5b92031b8acf69",
+    "attribution-SOL-cycles.csv": "d729eedd3db10600130a06a9b30c7b0522dc5f70754a1b2795ea7d8ae25848d7",
+    "attribution-asset-fill-cashflows.csv": "d47883111ec207bfd80ec49fa7239d6889bac30940e8b9c9c0ea93333f3d287b",
+    "attribution-cash-bridge.csv": "3c0fb875ccee14d40a3ded4692235382a480fe25b255b9f5909ad73661e6413a",
+    "attribution-cited-delay-pairs.csv": "ba3b4d96c2ceeaa1dc7662b4cc96d8b5cdf70332ff73280aab543c285d50bdf6",
+    "attribution-derive.py": "24c66ac5130e3f36f33c88d925f25d1a2e91bff4b69f38cbd205828a3854c68e",
+    "attribution-document-claims.csv": "12d46f874a6a50c3770a68d970e3780ba922e5e8cbcfe141097a10c2f6cdad7e",
+    "attribution-early-SOL.csv": "9bdc97eb830edb0bd575c9efc0e0048545dea81370a1d5753baeb0194f9d03f5",
+    "attribution-findings.md": "532972945654edca0840522b6f4bc826b57f07c31666fabd971088e59da3a0c6",
+    "attribution-matched_entry_attribution.csv": "377ff82e96c00ab157f6783e4483bd95a9e505e416183dddded87f7b12ab71d0",
+    "attribution-summary.json": "1671f1c26645d6504cbbcb75bd8eabb707a192e8e733cba73c039ceee70c1f7e"
+  }
+}

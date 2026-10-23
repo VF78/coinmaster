@@ -1,0 +1,82 @@
+{
+  "utc": "2026-10-23T08:09:16.476842+00:00",
+  "status": "SUPERSEDED_BY_OWNER_ACCEPTED_E4_EP_Z_S",
+  "current_authorized_native_runs": 0,
+  "current_source_implementation_changes": 0,
+  "pilot_untouched": true,
+  "baseline": {
+    "S0_TOTAL": "6077107.23887483",
+    "B_TOTAL": "4622034.27336437",
+    "S0_DD_percent": "66.25691486468686414439256686",
+    "B_DD_percent": "57.58541045962226379114466259",
+    "source": "25a085f596292df58e51188dd91e996adbe5724c",
+    "data_period": "[2024-09-01,2026-09-01)",
+    "initial": "10000 USDT",
+    "controls_reused_not_rerun": true
+  },
+  "goal": {
+    "settled_global_DD_max_percent": "50",
+    "S0_net_profit_min_retention_percent": "90",
+    "TOTAL_min_exact": "5470396.514987347",
+    "aspirational_DD_percent": "30",
+    "final_ranking": "MAX_TOTAL among valid50/90, thenfreshrepeat",
+    "reset_global_high_water_mark": false
+  },
+  "A": {
+    "id": "B_RELEASE_4H",
+    "status": "NOT_RUN_PRECHECK_REQUIRED",
+    "base": "B, original SOL unchanged",
+    "scope": "post-REGIME actual groupflat+terminal reentry latch only",
+    "change": "Allow original daily band OR accepted closedBTC4h close beyond latest accepted dailyEMA34 +/-0.5WilderATR14 in accepted daily side",
+    "inclusive_band_edge": true,
+    "indicators": "freeze latest available completed daily EMA/ATR; no intradayindicatorrecompute",
+    "execution": "first permissible native quote after actualbarreceipt; no fillassumed atbarclose",
+    "simultaneous_boundary": "newaccepteddaily takesprecedence; mandatory/UNKNOWNACK/pending lifecycle dominates",
+    "clears_latch": "actualBTCfill only",
+    "all_other_B_rules": "unchanged"
+  },
+  "G": {
+    "id": "B_PROTECT20_RETURN_TO_ENTRY",
+    "status": "NOT_RUN_FOCUSED_NATIVE_SEMANTICS_REQUIRED",
+    "base": "B, entry sizing/daily signals/TP levels/original SOL rights unchanged",
+    "arm": "actual native leg price >=1%favorable from currentactualVWAP, beforefirstordinaryreduction atgrossprice betterthanVWAP",
+    "entry_completion": "BTC originalsplit complete; SOL currentownednativeincrease terminal (partialaccepted) andnoqueued/inflight/unresolvedincrease; economicSOLlevel neednot befullyfilled",
+    "add_before_trigger": "resetarm/entrybasis to updated actualVWAP; only subsequentcompletedmarks canarm; no oldMFEreuse",
+    "trigger": "latercausalreceivedprice returns to/throughgrossactualVWAP; not netbreakeven",
+    "quantity": "freeze desiredremaining=0.8*confirmedcurrentqty, native lotnormalization; actual ordinaryreductions count towardthis target",
+    "ownership": "oneexistingnativeexecutor; actualreduce-only/terminal/partial/cancel/latefill/UNKNOWNACK; no competingqueue",
+    "fees": "actualcurrent native fees; riskreductionTAKER, notMAKER; grossVWAPfillnotguaranteed",
+    "rights": "guardisnotTP, grantsnoSOLrights; retaincumulativeentryfillednotional; originalunfilledentitlement/newlevels stayeligible; no timerreadd/syntheticreplacement",
+    "one_shot": "one per real instrument+sidecycle, notsol_half_done; actualfillconfirmation ownsusedstate; resetonlyauthoritativeflat+noownedwork",
+    "mandatory_exits": "unrestricted andhigherpriority",
+    "net_cyclic_funding_PnL": "UNKNOWN whereunexported"
+  },
+  "sequence": [
+    "oneboundedcausalAprecheckonall41waits/wholecalendar/counterexamples",
+    "focusednativeG/Aordering/partial/ownership tests, existingcodeonly",
+    "A standalone fullnative",
+    "G standalone fullnative",
+    "ifnonepasses50/90 and A TOTAL>B and G DD<B, oneactualcombinedX",
+    "ifany50/90candidate, onefreshrepeatmaximumTOTALeligible; no forcedX ifstandalonepass"
+  ],
+  "proposed_full_native_budget_max": 4,
+  "full_invalid_runs_consume_budget": true,
+  "extra_optimizer_grid_thresholdsearch": false,
+  "no_date_whitelists_or_futurewinner_filter": true,
+  "same_native_account_and_complete_capital_path": true,
+  "separate_engine_and_funding_journal_each": true,
+  "runtime": "existingMacPython3.12.13/Nautilus1.231,oneengineatonce",
+  "data_fees_margin_funding_execution_DP_settlement": "sameas frozenS0/B diagnostic,DPoff,RESERVE0",
+  "OHLC_bound": "reportseparately; settled49.9notclaimedtickDD50",
+  "new_training_models_SDK_risk_service": false,
+  "deployment_or_live_orders": false,
+  "limits": [
+    "Allhistoryrepeatedlystudied, notindependentOOS",
+    "CurrentGprecheck grossVWAPoracle scale isnotactualfill orTOTAL/DD",
+    "SOLparent/priorqueue snapshot unknown, requireexistingnativefocusedproof before sourceGO",
+    "Counterexample14BTCpositive-priceordinaryreductions and15SOLfavorablefinalcloselabels retained",
+    "Threeof6late losingBTCparentsqualify, notall; cannotguaranteeDD50/30"
+  ],
+  "superseded_by": "../b-50-90-next-20261023/owner-task.txt",
+  "historical_proposal_preserved": true
+}

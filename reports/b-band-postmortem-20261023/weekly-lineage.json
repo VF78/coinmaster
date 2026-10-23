@@ -1,0 +1,34 @@
+{
+  "status": "ANALYSIS_ONLY_NO_NEW_RUNS",
+  "new_native_runs": 0,
+  "new_fits": 0,
+  "new_replays": 0,
+  "product_edits": 0,
+  "source_inventory": "reports/s0-weekly-postmortem-20261022/weekly-inventory.csv",
+  "source_inventory_rows": 78,
+  "archive_not_exhaustive_external_history": true,
+  "baseline_lineage": [
+    {
+      "id": "CAP30M",
+      "total": "5146884.95718200",
+      "note": "lifecycle+cap repair bundle; cash DD62.30510948; separate marked69.34097"
+    },
+    {
+      "id": "V3",
+      "total": "5437208.56951095",
+      "note": "directional sizing; callback DD67.2863064484"
+    },
+    {
+      "id": "EXACT_S0",
+      "total": "6077107.23887483",
+      "note": "PLANREF+IOC; settled DD66.2569148647 distinct from callback66.3187802497"
+    }
+  ],
+  "goal": {
+    "minimum_total": "5470396.514987347",
+    "maximum_global_settled_dd_percent": "50"
+  },
+  "new_proposal_economics": "NOT_RUN_UNKNOWN",
+  "proposal_count": 1,
+  "recommended_native_runs_now": 0
+}
