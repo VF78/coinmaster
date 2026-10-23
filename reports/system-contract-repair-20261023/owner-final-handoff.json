@@ -1,0 +1,29 @@
+{
+  "status": "IMPLEMENTATION_AND_MECHANISM_HANDOFF_STOP",
+  "canonical_source": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023",
+  "source_commit": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+  "branch": "codex/system-contract-repair-20261023",
+  "control_source_commit": "1ad834a91447bd877cc0a5aa204684d4badda16c",
+  "native_version": "1.231.0",
+  "source_manifest_sha256": "75a568790fc43ac3bb80901131cad450472bc737be7916549ff61937c84cbcef",
+  "source_archive_sha256": "92c39a2e2c5af6a91d9ebbed0e712e6b0c944494806176a91a61896519f31d77",
+  "source_bundle_sha256": "de86c60da0a77eb6d1f8d43006798d2769219c1d66905858af8b7b7c3f6ddc62",
+  "tests": {
+    "functional_checkpoint_relevant": 142,
+    "final_immutable_mac_focused": 42,
+    "review": "FUNCTIONAL27c_AND_OBSERVER8f_PASS",
+    "functional_corrections_used": 0
+  },
+  "mechanism_validators": {
+    "H_SOL": 722,
+    "H_BTC": 1155
+  },
+  "combination": "PREPARED_NOT_EXECUTED;source+actualnativeprefixprovesJan13DD65.6947708irrevocable;rootNOT_RUNdecision",
+  "full_historical_engines_started_by_implementation_owner": 0,
+  "root_physical_attempts_at_handoff": 4,
+  "unused_slots": "2;rootclosing\u2014notauthorization",
+  "artifact_pin_count": 100,
+  "artifact_pin_manifest_sha256": "aff9d88d831cda277783efa0eff571feb7ba6da9d8c23dc232895cadfe034f53",
+  "remaining_owner_work": "NONE;no source changes, extra fixtures, historical engines, combination or repeat authorized",
+  "independent_data_qa": "Owned by data agent; money/DD/liquidations/MAEgroundtruth not replaced by mechanism audits"
+}

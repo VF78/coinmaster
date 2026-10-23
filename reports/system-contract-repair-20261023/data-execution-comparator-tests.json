@@ -1,0 +1,27 @@
+{
+  "checks": {
+    "cash_mutation_detected": true,
+    "preceding_common_state_preserved": true,
+    "count_mutation_detected": true,
+    "identical_sequence_equal": true,
+    "UUID_identity_excluded": true,
+    "real_status_request_change_reported": true,
+    "status_change_not_automatically_fill_change": true,
+    "distinct_equal_streams": true,
+    "cash_stream_mutation": true,
+    "held_stream_mutation": true,
+    "margin_stream_mutation": true,
+    "stream_count_mutation": true,
+    "two_missing_streams_UNKNOWN": true,
+    "one_missing_stream_UNKNOWN": true,
+    "terminal_money_mismatch_blocks_path_match": true,
+    "archive_1051199_complete_receipts": true,
+    "archive_24months": true,
+    "monthly_boundary_uses_previous_receipt": true,
+    "archive_exact_E4_global_DD": true,
+    "seven_fixed_window_DDs_reproduce_archive": true,
+    "seven_native_endpoint_cash_identities": true
+  },
+  "all_pass": true,
+  "basis": "short mutation fixtures plus separate archive identity/collector pass; no trading engine"
+}

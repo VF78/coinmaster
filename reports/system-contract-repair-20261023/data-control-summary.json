@@ -1,0 +1,132 @@
+{
+  "status": "TWO_VALID_COMPLETED_CONTROLS_CHANGED_EXECUTION_MODEL",
+  "technical": {
+    "E4_EXPLICIT_CONTROL": {
+      "status": "VALID_COMPLETED_CHANGED_EXECUTION_MODEL",
+      "checks_passed": 60,
+      "checks": 60,
+      "TOTAL": "6022427.55763206",
+      "DD": "57.58541045962226379114466259"
+    },
+    "S0_EXPLICIT_CONTROL": {
+      "status": "VALID_COMPLETED_CHANGED_EXECUTION_MODEL",
+      "checks_passed": 60,
+      "checks": 60,
+      "TOTAL": "6482334.93387961",
+      "DD": "66.25691486468686414439256686"
+    }
+  },
+  "matched_90profit_floor": "5835101.440491649",
+  "original_absolute_floor": "5470396.514987347",
+  "E4_matched_profit_retention_percent": "92.89425870345255834767166787",
+  "E4_pass_matched90": true,
+  "E4_pass_DD50": false,
+  "archive_E4_economic_equivalence": "CONTRADICTED",
+  "first_actual_native_money_held_divergence": {
+    "index": 163726,
+    "fields": [
+      "cash",
+      "fill_epoch",
+      "native_positions_and_mark_ohlc_json",
+      "paired_close_equity"
+    ],
+    "baseline": {
+      "source_quote_ns": "1734972420000000000",
+      "receipt_ns": "1734972480000000000",
+      "fill_epoch": "70",
+      "cash": "89182.98481569",
+      "paired_close_equity": "88561.72411569",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"4.346\",\"avg_px_open\":\"93406.65000000001\",\"mark_ohlc\":{\"open_time_ms\":1734972360000,\"open\":\"93415.24\",\"high\":\"93549.61\",\"low\":\"93405.46\",\"close\":\"93549.61\"},\"low_native_pnl\":\"4.9979\",\"high_native_pnl\":\"-621.2607\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"1000.0\",\"avg_px_open\":\"183.81\",\"mark_ohlc\":{\"open_time_ms\":1734972360000,\"open\":\"183.78\",\"high\":\"184.03\",\"low\":\"183.75\",\"close\":\"183.81\"},\"low_native_pnl\":\"-60\",\"high_native_pnl\":\"220\"}]"
+    },
+    "candidate": {
+      "source_quote_ns": "1734972420000000000",
+      "receipt_ns": "1734972480000000000",
+      "fill_epoch": "71",
+      "cash": "89081.88931569",
+      "paired_close_equity": "88460.62861569",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"4.346\",\"avg_px_open\":\"93406.65000000001\",\"mark_ohlc\":{\"open_time_ms\":1734972360000,\"open\":\"93415.24\",\"high\":\"93549.61\",\"low\":\"93405.46\",\"close\":\"93549.61\"},\"low_native_pnl\":\"4.9979\",\"high_native_pnl\":\"-621.2607\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"2000.0\",\"avg_px_open\":\"183.81\",\"mark_ohlc\":{\"open_time_ms\":1734972360000,\"open\":\"183.78\",\"high\":\"184.03\",\"low\":\"183.75\",\"close\":\"183.81\"},\"low_native_pnl\":\"-120\",\"high_native_pnl\":\"440\"}]"
+    },
+    "preceding_common_state": {
+      "index": 163725,
+      "state": {
+        "source_quote_ns": "1734972360000000000",
+        "receipt_ns": "1734972420000000000",
+        "fill_epoch": "68",
+        "cash": "89324.72554187",
+        "paired_close_equity": "89052.66594187",
+        "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"2.173\",\"avg_px_open\":\"93290.0\",\"mark_ohlc\":{\"open_time_ms\":1734972300000,\"open\":\"93419.04\",\"high\":\"93437.88\",\"low\":\"93269.08\",\"close\":\"93415.24\"},\"low_native_pnl\":\"45.4157\",\"high_native_pnl\":\"-321.3867\"}]"
+      }
+    }
+  },
+  "old_direct_admission_blocks": [
+    {
+      "action": "SOL_ADD",
+      "intent_id": "0eed4215-d0c5-43eb-bef3-441178d9a772",
+      "reason": "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM",
+      "timestamp": "1734972420000000000"
+    }
+  ],
+  "new_SOL_attempts_at_first_divergence": [
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-20241223-164700-001-000-81",
+      "decision_index": 842,
+      "episode_id": "c0d6fd63-52ac-45b5-9859-9e0900a7cfe0",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "183.81",
+      "filled_notional": "183810.00",
+      "filled_quantity": "1000",
+      "intended_quantity": "5586.8",
+      "intent_id": "2c765008-852a-47c2-bd2f-bd16417f56b3",
+      "level": 0,
+      "native_status": "FILLED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 843,
+      "original_remaining_notional": "1026911.6592948801",
+      "submitted_quantity": "1000",
+      "timestamp_ns": 1734972420000000000,
+      "unused_right_notional": "843101.6592948801"
+    },
+    {
+      "allowed_quantity": "1000.0",
+      "client_order_id": "O-20241223-164700-001-000-82",
+      "decision_index": 842,
+      "episode_id": "c0d6fd63-52ac-45b5-9859-9e0900a7cfe0",
+      "event": "SOL_ATTEMPT",
+      "executable_price": "183.81",
+      "filled_notional": "183810.00",
+      "filled_quantity": "1000",
+      "intended_quantity": "8380.2",
+      "intent_id": "ca832a9a-5bfd-45bf-b184-096d94212c82",
+      "level": 1,
+      "native_status": "FILLED",
+      "next_attempt_condition": "ORIGINAL_D1_SIGNAL_RIGHT_AND_ADMISSION",
+      "next_attempt_earliest_decision_index": 843,
+      "original_remaining_notional": "1540367.4889423202",
+      "submitted_quantity": "1000",
+      "timestamp_ns": 1734972420000000000,
+      "unused_right_notional": "1356557.4889423202"
+    }
+  ],
+  "old_block_exact_level": "UNKNOWN_NOT_EXPORTED; UUID appears only generic gate event; do not infer exact level from TOTAL",
+  "source_argument": "Domain435\u2013447 emits all eligible earned levels in one loop before returning; source-owner whole-clock fixture is separate required evidence for original L1 eligibility, not provided by old block UUID alone",
+  "BTC_calendar": {
+    "old_fills": 337,
+    "new_fills": 337,
+    "same_fields": [
+      "action",
+      "fill_ns",
+      "px",
+      "level",
+      "native_liquidity_side",
+      "reason",
+      "instrument",
+      "order_type",
+      "post_only"
+    ],
+    "same_calendar_prices_reasons": true,
+    "quantity_changed_rows": 189
+  },
+  "scope": "Independent saved-native accounting/attribution; no source/trading changes or engine. Fullpending/rights/admissionvectors absent oldarchive remainUNKNOWN. Matchingcontrols valid only in identical explicit execution model.",
+  "no_engine": true
+}

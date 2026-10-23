@@ -1,0 +1,40 @@
+{
+  "stage": "FROZEN_SEPARATE_HYPOTHESES",
+  "utc": "2026-10-23T18:27:51.128725+00:00",
+  "source": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+  "source_manifest_sha256": "75a568790fc43ac3bb80901131cad450472bc737be7916549ff61937c84cbcef",
+  "contract_sha256": "b53483d6473cde3f8cf4f30e272372dff43f2e3ca44d13ad7978a3a59d1f594e",
+  "review_sha256": "6054de1a44d08cced63236cb5fa6ee2ebe11bdc8aff92e04cb72962881ab2c4c",
+  "owner_final_focused_tests": 42,
+  "owner_relevant_tests": 142,
+  "independent_final_focused_tests": 42,
+  "hypotheses_separate_no_combination_GO": true,
+  "H_SOL": {
+    "BTCreserve": "(heldBTC+uniqueOpeningLeaves+unfinishedParentTopup)*(ATRbtc+fbtc*(markBTC+ATRbtc))+unbookedBTCentryfees",
+    "parent_topup": "max(unfilledFullParent-currentPhysicalOpeningLeaves,0)",
+    "c": "ATRsol+fsol*(markSOL+ATRsol)",
+    "post": "E-BTCreserve-pendingSOLentryfees-(heldSOL+pendingSOL)*c-q*(executableSOL*fsol+c)",
+    "inequality": "post>=.55*globalH",
+    "q": "floor_lot(min(original_child_request,max(0,E-.55H-BTCreserve-pendingSOLentryfees-(heldSOL+pendingSOL)*c)/(executableSOL*fsol+c)))",
+    "bounds": "original_right/child1000/minlot/native margin; invalid state fails closed; held paid-entry fees not doubled",
+    "no_trim_restore_new_attempt": true
+  },
+  "H_BTC": {
+    "one_case": "actual filled parent; first/repeat actual EMA wave; sides pooled",
+    "ATRfraction": "closed Wilder14/q0 wire price frozen before fill",
+    "label_reference": "first actual native fill, management PLANREF unchanged",
+    "label": "direction-correct minute MARK after entry through closed EMA switch; complete contiguous stream required; censored=>null",
+    "ready": "ready_at<decision_time",
+    "minimum_valid_each": 8,
+    "quantile": "Decimal linear(n-1)*.9",
+    "k": "first1;repeat=min(1,Q90first/Q90repeat); insufficient/invalid/zero denominator=>1 reason",
+    "apply": "once: k*min(original_side_multiplier*current_native_equity,original_notional_cap), before zeroTP/lot"
+  },
+  "matched_S0_total": "6482334.93387961",
+  "matched_90_floor": "5835101.440491649",
+  "legacy_absolute_floor": "5470396.514987347",
+  "G2": "separate technically valid, each activated, declared local risk mechanism confirmed, no rights/money/calendar/unit defect, comparable base; neither individually needs entireglobal50/90pass",
+  "no_parameter_search": true,
+  "physical_cap": 6,
+  "pilot_changes": false
+}

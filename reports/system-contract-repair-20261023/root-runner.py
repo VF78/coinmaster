@@ -17,7 +17,7 @@ s=Path(prep['source_snapshot']);mf=J/(s.name+'-sha256.json');assert sha(mf)==pre
 for rel,pin in read(mf).items():assert sha(s/rel)==pin,('SOURCE_DRIFT',rel)
 for rel,pin in prep['input_pins'].items():assert sha(s/rel if rel.startswith('runtime/') else Path(prep['data_root'])/rel)==pin,('INPUT_DRIFT',rel)
 lock=(J.parent/'coinmaster-full-native.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-lp=R/'run-ledger.json';b=read(lp);assert b['active']==0 and b['started']<b['physical_full_attempt_cap'];assert b['started']+1==g['physical_attempt']
+lp=R/'run-ledger.json';b=read(lp);assert not b.get('launches_closed',False),'STUDY_CLOSED';assert b['active']==0 and b['started']<b['physical_full_attempt_cap'];assert b['started']+1==g['physical_attempt']
 assert not any(t['recipe']==a.recipe for t in b['attempts']);art=Path(prep['artifact_dir']);assert not art.exists()
 log=Path(prep['stdout_stderr_log']);assert not log.exists()
 t={'attempt':g['physical_attempt'],'recipe':a.recipe,'state':'STARTING','started_utc':utc(),'source_commit':prep['source_commit'],'config_sha256':prep['expected_config_sha256'],'go_sha256':sha(a.go),'artifact_dir':str(art),'log':str(log),'argv':prep['argv'],'pid':None}

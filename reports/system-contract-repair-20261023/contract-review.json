@@ -1,5 +1,5 @@
 {
-  "status": "SC01_EXPLICIT_CONTROL_SOURCE_GO_ROOT_PREFLIGHT_PENDING",
+  "status": "SC01_SC03_SC04_SOURCE_GO_ROOT_ENGINE_DECISIONS_SEPARATE",
   "sc01_commit": "6e7ab3da243d3916538f246f1cc7420bdc260a25",
   "native_version": "1.231.0",
   "blocking_sc01_source_findings": [],
@@ -54,12 +54,7 @@
     "live_hook_prefix_proof": "PENDING",
     "predictive_benefit": "HYPOTHESIS"
   },
-  "pending_delta_review": [
-    "SC03 units/reservation transitions/monotonic lot sizing",
-    "SC04 streaming labels/finite fallbacks/once-only sizing",
-    "future-run decision state hooks",
-    "final immutable pins"
-  ],
+  "pending_delta_review": [],
   "full_engine_go": false,
   "full_engine_go_owner": "root",
   "reviewer_full_attempts": 0,
@@ -79,5 +74,69 @@
     "reviewer_independent_precision_tests_pass": 2,
     "snapshot": "runtime/var/research-jobs/system-contract-repair-20261023/source-1ad834a",
     "hypothesis_source_in_snapshot": false
-  }
+  },
+  "hypothesis_delta": {
+    "commit": "27c1904a9b132c30632c1b471d7f688ab0f6c053",
+    "status": "FUNCTIONAL_AND_BOUNDED_OBSERVER_SOURCE_PASS",
+    "reviewer_independent_risk_tests_pass": 9,
+    "owner_frozen_focused_pass": 40,
+    "owner_relevant_pass": 142,
+    "functional_blockers": [],
+    "telemetry_gaps": [
+      "full internal gate vector remains explicitly unknown by design"
+    ]
+  },
+  "control_non_equivalence": {
+    "root_reported_total": "6022427.55763206",
+    "archive_E4_total": "5631617.35953723",
+    "status": "ECONOMICALLY_NOT_EQUIVALENT_MATCHED_S0_REQUIRED",
+    "first_difference_interpretation": "old same-time SOL_ADD margin denial vs explicit capped fill; old denied exact level unknown unless mapped; new calendar attempt not proven",
+    "scheduling_fix_justified": false,
+    "schedule_rule": "already authorized levels may coexist; new child-completion-created intraday attempts forbidden if demonstrated"
+  },
+  "final_observer_delta": {
+    "commit": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+    "status": "PASS",
+    "reviewer_independent_final_suite_pass": 42,
+    "functional_changes_from_27c": false,
+    "prefix_telemetry": "signed positions, native order qty/filled/leaves/status/owners, unresolved submissions, free margin, closed ATR/EMA/distance/wave age",
+    "gate_qualification": "PASSED_TO_Q0_NOT_FULL_INTERNAL_GATE_VECTOR",
+    "whole_advance_clock": "original two-level batch once per D1 in native CANCELED/FILLED modes, next-D1 unused-right retry",
+    "further_source_changes_requested": false
+  },
+  "root_preflight_pending": [
+    "final immutable source/config/input/engine/observer/terminal pins for each recipe",
+    "matched explicit-model controls and physical cap accounting",
+    "root individual historical engine GO"
+  ],
+  "comparator_review": {
+    "status": "PASS_AFTER_BOUNDED_CORRECTION",
+    "data_owner_commit": "7adad5dbdf210da5b9f5f86422c89b802800494c",
+    "reported_targeted_checks_pass": 21,
+    "resolved": [
+      "missing streams UNKNOWN",
+      "monthly boundary preceding receipt seed/local peak",
+      "terminal scalar mismatch blocks exported path match"
+    ],
+    "qualification": "full archive pending/rights/admission remain unknown; source-quote month basis explicit"
+  },
+  "combination_futility_review": {
+    "status": "PASS_NOT_RUN_JUSTIFIED",
+    "proof_file": "owner-combination-prefix-futility.json",
+    "reviewer_recomputed_with_actual_frozen_repeat_sizing": true,
+    "q0_prefix_decisions": 19,
+    "all_prefix_k": "1",
+    "max_completed_counts": [
+      10,
+      7
+    ],
+    "native_prior_DD_percent": "65.69477083251083711659723613",
+    "config_only_delta": "research_btc_repeat_sizing false->true",
+    "argument": "same initial state/input/native engine/H_SOL; only target multiplication by exact1 through witnessed trough implies identical economic prefix; later cannot erase global max",
+    "combined_total": "NOT_RUN_UNKNOWN_NO_SYNTHETIC_TOTAL",
+    "repeat": "none unless a full candidate passes; H_BTC terminal profit already below matched S0 floor",
+    "full_attempts_root_reported": 4,
+    "unused_cap_slots": 2
+  },
+  "final_report_review": "PASS reviewer-final-report.json; bounded research complete NO_GO, goal NOT_MET"
 }

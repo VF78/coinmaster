@@ -13,8 +13,9 @@
   "first_old_admission_witness": "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM",
   "old_exact_level_and_component": "UNKNOWN",
   "interpretation": "original queued attempt newly admitted after wire-size cap; no proven additional opportunity; same-level/D1 attempt guard unchanged",
-  "matched_S0": "REQUIRED_RUNNING_PHYSICAL_ATTEMPT2",
+  "matched_S0": "COMPLETED_6482334.93387961_SAME_EXECUTION_MODEL",
   "native_statuses": "truthful FILLED versus partial CANCELED; no fabricated mapping",
   "evidence": "data-execution-equivalence-E4_EXPLICIT_CONTROL.json",
-  "economic_goal_pass": false
+  "economic_goal_pass": false,
+  "whole_native_batch_clock_fixture": "PASS: original two-level batch before fills; same attempts/D1 and nextD1 retry, native statuses truthful"
 }

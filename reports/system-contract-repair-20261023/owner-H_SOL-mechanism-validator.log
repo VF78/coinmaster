@@ -1,0 +1,59 @@
+{
+  "recipe": "H_SOL",
+  "status": "PASS",
+  "checks": 722,
+  "failures": [],
+  "source_commit": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+  "source_manifest_sha256": "75a568790fc43ac3bb80901131cad450472bc737be7916549ff61937c84cbcef",
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/H_SOL/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json",
+  "artifact_sha256": "4f9ea7dada6efc73571e04a51ef61e2c5ea25d3e58f87847c0dc6d33320a1a90",
+  "summary": {
+    "sol_attempts": 102,
+    "distinct_level_D1_attempts": 102,
+    "h_sol_decisions": 102,
+    "known_budget_states": 102,
+    "fail_closed_states": 0,
+    "partial_clips": 5,
+    "full_denials": 17,
+    "pending_sol_states": 8,
+    "pending_btc_states": 0,
+    "fail_closed_reasons": {},
+    "curtailed_candidate_sol_quantity_sum": "18444.0",
+    "original_child_exceeds_frozen_budget": 22,
+    "existing_inventory_already_below_warning_floor": 16
+  },
+  "scope": "Saved audit/native bindings and frozen mechanism arithmetic; source clock/causal proofs from42tests. Independent money/global DD/liquidation/account reconciliation and mark-label ground truth belong to data verifier.",
+  "no_engine_or_source_mutations": true,
+  "local_mechanism_examples": [
+    {
+      "timestamp_ns": 1727913600000000000,
+      "intent_id": "738622a8-e41b-48cf-9e59-443923845237",
+      "requested": "1000.0",
+      "allowed": "375.0",
+      "existing_stressed_equity": "10700.46051978058245929300",
+      "warning_floor": "7405.9884119265",
+      "full_requested_stressed_equity": "1916.027877974167112993000",
+      "allowed_stressed_equity": "7406.298279103176704430500"
+    },
+    {
+      "timestamp_ns": 1728000000000000000,
+      "intent_id": "4f9158e1-206c-463f-8099-fc722f43ff0e",
+      "requested": "694.9",
+      "allowed": "0.0",
+      "existing_stressed_equity": "6068.55229075723588589140",
+      "warning_floor": "7405.9884119265",
+      "full_requested_stressed_equity": "-105.908637338235472513030",
+      "allowed_stressed_equity": "6068.552290757235885891400"
+    },
+    {
+      "timestamp_ns": 1728604800000000000,
+      "intent_id": "ed2a4e60-4df6-4151-8307-88acf34c00c5",
+      "requested": "942.6",
+      "allowed": "640.5",
+      "existing_stressed_equity": "12542.52901046000000000000",
+      "warning_floor": "7514.9511549420",
+      "full_requested_stressed_equity": "5144.695781047173265922690",
+      "allowed_stressed_equity": "7515.675431594186799091325"
+    }
+  ]
+}

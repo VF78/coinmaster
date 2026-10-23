@@ -1,0 +1,403 @@
+{
+  "status": "PASS",
+  "source_commit": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+  "source_manifest_sha256": "75a568790fc43ac3bb80901131cad450472bc737be7916549ff61937c84cbcef",
+  "h_sol_artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/H_SOL/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json",
+  "h_sol_artifact_sha256": "4f9ea7dada6efc73571e04a51ef61e2c5ea25d3e58f87847c0dc6d33320a1a90",
+  "attribution_sha256": "df2775333cff099ae9e1d7b95ccbc4a9f949ac890d51b0572938450de2952aa0",
+  "checks": [
+    {
+      "name": "H_SOL_VALID_NATIVE_EXPORT_EXACT_CONFIG",
+      "pass_": true
+    },
+    {
+      "name": "IRREVERSIBLE_PRIOR_GLOBAL_DD_GT50",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1725235200000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1725235200000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1726012800000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1726012800000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1726272060000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1726272060000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1726617600000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1726617600000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1727827200000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1727827200000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1728230460000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1728230460000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1728518400000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1728518400000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1728720060000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1728720060000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1729814400000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1729814400000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1730505600000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1730505600000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1731715200000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1731715200000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1732665600000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1732665600000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1733875200000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1733875200000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1734652800000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1734652800000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1734969660000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1734969660000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1735084800000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1735084800000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1735502460000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1735502460000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1735934460000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1735934460000000000",
+      "pass_": true
+    },
+    {
+      "name": "PREFIX_STRICT_PAST_Q90_K1_1736380800000000000",
+      "pass_": true
+    },
+    {
+      "name": "K1_EXACT_DECIMAL_VALUE_1736380800000000000",
+      "pass_": true
+    },
+    {
+      "name": "NO_H_BTC_INTERVENTION_BEFORE_H_SOL_FAILURE",
+      "pass_": true
+    },
+    {
+      "name": "COMBINED_ONLY_FUNCTIONAL_CONFIG_DELTA_IS_H_BTC",
+      "pass_": true
+    },
+    {
+      "name": "FROZEN_SOURCE_runtime/coinmaster/strategy/system_contract.py",
+      "pass_": true
+    },
+    {
+      "name": "FROZEN_SOURCE_runtime/coinmaster/strategy/wave_overlay.py",
+      "pass_": true
+    },
+    {
+      "name": "FROZEN_SOURCE_runtime/coinmaster/strategy/next_band.py",
+      "pass_": true
+    }
+  ],
+  "irreversible_native_global_DD": {
+    "peak_utc": "2025-01-13T00:37:00+00:00",
+    "peak_equity": "109846.69194005",
+    "trough_utc": "2025-01-13T14:37:00+00:00",
+    "trough_equity": "37683.15940294",
+    "DD_percent": "65.69477083251083711659723613",
+    "recovery_utc": "2025-01-17T15:07:00+00:00",
+    "recovery_equity": "110333.89586842"
+  },
+  "prefix_decisions": [
+    {
+      "decision_ns": 1725235200000000000,
+      "parent_id": "10196a5e-58dd-4511-87db-781696d4d78c",
+      "repeated": false,
+      "n_first": 0,
+      "n_repeat": 0,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "78750.0"
+    },
+    {
+      "decision_ns": 1726012800000000000,
+      "parent_id": "fa7880d4-083b-4557-b379-299a1502147d",
+      "repeated": true,
+      "n_first": 0,
+      "n_repeat": 0,
+      "k": "1",
+      "fallback": "INSUFFICIENT_COMPLETED_GROUPS",
+      "before_k_notional": "95196.511553535"
+    },
+    {
+      "decision_ns": 1726272060000000000,
+      "parent_id": "0f510c80-2dbb-486f-b292-fba7b9a954ae",
+      "repeated": false,
+      "n_first": 1,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "73756.87703505"
+    },
+    {
+      "decision_ns": 1726617600000000000,
+      "parent_id": "34ff5ee7-6346-4642-8f6d-1a79b61524e8",
+      "repeated": false,
+      "n_first": 2,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "58014.366847139994"
+    },
+    {
+      "decision_ns": 1727827200000000000,
+      "parent_id": "bfa523a4-a8d2-4f71-a71e-47d74496e29a",
+      "repeated": false,
+      "n_first": 2,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "99348.73404553125"
+    },
+    {
+      "decision_ns": 1728230460000000000,
+      "parent_id": "822fbe88-1183-4b14-91e6-87bd8d56730b",
+      "repeated": false,
+      "n_first": 4,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "69166.57328801"
+    },
+    {
+      "decision_ns": 1728518400000000000,
+      "parent_id": "2d296cc4-fc3e-4ff7-8250-acb2b5b10518",
+      "repeated": false,
+      "n_first": 4,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "88538.4281187"
+    },
+    {
+      "decision_ns": 1728720060000000000,
+      "parent_id": "1aa76e25-a7f7-4186-8a79-c2769e5b479b",
+      "repeated": false,
+      "n_first": 6,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "91331.72198073"
+    },
+    {
+      "decision_ns": 1729814400000000000,
+      "parent_id": "c7011424-0b16-4772-b0fc-81904a570199",
+      "repeated": true,
+      "n_first": 6,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "INSUFFICIENT_COMPLETED_GROUPS",
+      "before_k_notional": "105136.423768585"
+    },
+    {
+      "decision_ns": 1730505600000000000,
+      "parent_id": "0cc809c1-c448-41a5-afc3-c0bd5826452c",
+      "repeated": true,
+      "n_first": 6,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "INSUFFICIENT_COMPLETED_GROUPS",
+      "before_k_notional": "126056.736345265"
+    },
+    {
+      "decision_ns": 1731715200000000000,
+      "parent_id": "b83db8d3-d2a4-478e-8e8c-3653f31cdd87",
+      "repeated": true,
+      "n_first": 6,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "INSUFFICIENT_COMPLETED_GROUPS",
+      "before_k_notional": "158779.87686792"
+    },
+    {
+      "decision_ns": 1732665600000000000,
+      "parent_id": "314f978b-8177-48ec-8906-fcc8f2171c51",
+      "repeated": true,
+      "n_first": 6,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "INSUFFICIENT_COMPLETED_GROUPS",
+      "before_k_notional": "301668.194803525"
+    },
+    {
+      "decision_ns": 1733875200000000000,
+      "parent_id": "a4ab0615-0cd0-45c3-94f9-779e661e4372",
+      "repeated": true,
+      "n_first": 6,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "INSUFFICIENT_COMPLETED_GROUPS",
+      "before_k_notional": "363391.68184385"
+    },
+    {
+      "decision_ns": 1734652800000000000,
+      "parent_id": "3cf47ff7-2844-4ecf-a43f-9dbd3e91a976",
+      "repeated": true,
+      "n_first": 6,
+      "n_repeat": 1,
+      "k": "1",
+      "fallback": "INSUFFICIENT_COMPLETED_GROUPS",
+      "before_k_notional": "421321.28262240504"
+    },
+    {
+      "decision_ns": 1734969660000000000,
+      "parent_id": "085b4465-012b-4837-bcac-f39a47fc9fea",
+      "repeated": false,
+      "n_first": 7,
+      "n_repeat": 7,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "556083.6719315063"
+    },
+    {
+      "decision_ns": 1735084800000000000,
+      "parent_id": "73203916-304b-48c2-a06c-c52bef1d31fd",
+      "repeated": false,
+      "n_first": 7,
+      "n_repeat": 7,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "328716.647755815"
+    },
+    {
+      "decision_ns": 1735502460000000000,
+      "parent_id": "302415ee-d948-42d9-8742-8e941213883d",
+      "repeated": false,
+      "n_first": 9,
+      "n_repeat": 7,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "427677.29369946"
+    },
+    {
+      "decision_ns": 1735934460000000000,
+      "parent_id": "8f10586b-ba13-4511-ad6b-5b702eed0bce",
+      "repeated": false,
+      "n_first": 10,
+      "n_repeat": 7,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "454545.629524195"
+    },
+    {
+      "decision_ns": 1736380800000000000,
+      "parent_id": "df2de607-0d6c-4ad6-a580-697075c97f32",
+      "repeated": false,
+      "n_first": 10,
+      "n_repeat": 7,
+      "k": "1",
+      "fallback": "FIRST_ENTRY",
+      "before_k_notional": "610864.488195885"
+    }
+  ],
+  "first_h_sol_path_8_each_eligible_ns": 1741046400000000000,
+  "first_h_sol_path_counterfactual_k_below1_ns": 1748131200000000000,
+  "induction": "Same frozen engine, inputs and H_SOL policy. Enabling H_BTC changes only the already-capped q0 target from before to before*k. Every actual H_SOL q0 before the witnessed January trough recomputes k=1 using strict-past completed labels. Thus each target, zero-TP branch input, lot, native order/fill/equity state and subsequent label remains the H_SOL prefix by induction. Metadata and random episode IDs do not create an economic intervention. The combined policy therefore retains at least the witnessed January global drawdown; later trades cannot erase a global historical maximum.",
+  "conclusion": "COMBINED_NOT_RUN_PROVEN_DD50_FUTILITY",
+  "scope": "No synthetic PnL or claimed combined TOTAL; logical prefix bound from a valid native H_SOL path and exact frozen source. Root retains launch/status authority.",
+  "actual_h_btc_crosscheck": {
+    "native_exit": 0,
+    "artifact_sha256": "9ba90db214ec5634fee6989d538038f62881dc03289be565d8dfe3c34f9c2a36",
+    "prefix_decisions": 19,
+    "all_prefix_k1": true,
+    "first_actual_k_below1_ns": 1748131200000000000
+  }
+}

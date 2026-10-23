@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "conclusion": "COMBINED_NOT_RUN_PROVEN_DD50_FUTILITY",
+  "first_h_sol_path_8_each_eligible_ns": 1741046400000000000,
+  "first_h_sol_path_counterfactual_k_below1_ns": 1748131200000000000,
+  "actual_h_btc_crosscheck": {
+    "native_exit": 0,
+    "artifact_sha256": "9ba90db214ec5634fee6989d538038f62881dc03289be565d8dfe3c34f9c2a36",
+    "prefix_decisions": 19,
+    "all_prefix_k1": true,
+    "first_actual_k_below1_ns": 1748131200000000000
+  }
+}

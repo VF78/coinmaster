@@ -1,0 +1,54 @@
+{
+  "status": "PASS_FINAL_BOUNDED_NEGATIVE_REPORT",
+  "scope": "one final report/comparison/selection/ledger consistency review",
+  "independent_assertions": 37,
+  "passed": 37,
+  "economic_outcome": "NO_GO_NOT_MET",
+  "selected_policy": null,
+  "matched_S0_TOTAL": "6482334.93387961",
+  "matched_profit_floor": "5835101.440491649",
+  "legacy_absolute_floor": "5470396.514987347",
+  "actual_recipe_count": 4,
+  "physical_cap": 6,
+  "unused_slots": 2,
+  "episode_rows": 28,
+  "monthly_rows": 96,
+  "combination": "NOT_RUN_PREFIX_FUTILITY_REVIEWED_PASS_NO_TOTAL_CLAIM",
+  "repeat": "NOT_RUN_NO_PASSING_CANDIDATE",
+  "final_native_causal_reported_assertions_each": 2407,
+  "final_native_causal_reported_status": "PASS for H_SOL and H_BTC, no failures",
+  "native_account_reported_checks_each": 60,
+  "coverage": [
+    "original0methods",
+    "original1whole rules",
+    "original2BTC",
+    "original3SOL",
+    "original4portfolio interactions",
+    "OWNER_TASK execution/causality/budget/acceptance/artifacts"
+  ],
+  "additional_implementation_requested": false,
+  "additional_native_engines_requested": false,
+  "live_or_deploy_authorization": false,
+  "closing_corrections_resolved": [
+    "finalize stale ledger pending-validation states with acceptance references",
+    "spell q1 -1bp six parents and +1bp ten parents unambiguously"
+  ],
+  "bookkeeping_readback": {
+    "all_four_valid_completed": true,
+    "acceptance_references_present": true,
+    "active": 0,
+    "reserved": 0,
+    "unused_slots": 2,
+    "launches_closed": true,
+    "q1_text_unambiguous": true,
+    "final2407diagnostic_qualification_present": true,
+    "protocol_index": "immutable Stage1 plus pre-candidate Stage2/Stage3 amendments"
+  },
+  "reviewed_final_sha256": {
+    "REPORT.md": "1ee8740f4e32a7852e5ee9d7ff6e3548cf66f878b5d6d8162cb42030e78d5920",
+    "comparison.json": "19cd7ad694b8aface8480f5ed640945f2cafbc2f51cfcc2e660d910e32bf72cf",
+    "selection.json": "21d0fb7e71a70d15c865b18384efac77b73ba77aeecb739499126b8067211066",
+    "run-ledger.json": "cd5ac127c47b91002dea55809e6bd56a99dd01b53940a8959b77937b77a60034",
+    "protocol-final-index.json": "d6359453a1fab8508b0a1886761fee75f00a730dcd2ac2a04b34b0c417f77b7a"
+  }
+}

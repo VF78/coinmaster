@@ -1,0 +1,68 @@
+..........................................                               [100%]
+=============================== warnings summary ===============================
+tests/test_system_contract.py: 30 warnings
+tests/test_system_contract_risk.py: 7 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_system_contract.py: 18 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract.py:66: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_system_contract.py::test_two_native_levels_shared_liquidity[500]
+tests/test_system_contract.py::test_two_native_levels_shared_liquidity[1000]
+tests/test_system_contract.py::test_two_native_levels_shared_liquidity[2000]
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract.py:85: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[rejected]
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[canceled]
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[late_fill]
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[denied]
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract.py:150: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract.py::test_local_margin_denial_preserves_right_and_original_attempt
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract.py:164: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract.py::test_same_fill_money_rights_depth1000_explicit_vs_large_ioc
+tests/test_system_contract.py::test_same_fill_money_rights_depth1000_explicit_vs_large_ioc
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract.py:178: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract.py::test_actual_advance_clock_both_levels_one_original_attempt_per_d1[False]
+tests/test_system_contract.py::test_actual_advance_clock_both_levels_one_original_attempt_per_d1[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract.py:229: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_second_level_sees_first_native_reservation_before_ack_and_partial_to_held
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract_risk.py:68: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_unknown_pending_owner_and_missing_atr_fail_closed_without_right_spend
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract_risk.py:84: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_actual_partial_parent_one_label_first_fill_reference_and_closed_wave_marks
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract_risk.py:146: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_k_once_before_zero_tp_cap_and_current_future_mae_not_feature
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract_risk.py:164: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_pending_btc_sol_leaves_dedup_and_margin_reservations_are_native
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract_risk.py:193: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_missing_minutes_never_mints_zero_mae_label
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract_risk.py:209: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_closed_wilder14_price_units_seed_and_no_current_partial_bar
+  /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023/runtime/tests/test_system_contract_risk.py:235: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+42 passed, 74 warnings in 2.78s

@@ -1,6 +1,6 @@
 # Execution and strategy contracts — current evidence
 
-Status: implementation/verification in progress. Scope: original owner audit0–4 plus OWNER_TASK, SC00–05. No pilot, deployment, real orders or production config changes.
+Status: bounded package completed, valid negative economic result; goal50/90 NOT_MET. Scope: original owner audit0–4 plus OWNER_TASK, SC00–05. No pilot, deployment, real orders or production config changes.
 
 ## Confirmed dependencies
 
@@ -16,9 +16,9 @@ The43-row rule registry covers source/purpose/provenance/implementation/economic
 
 Existing72source pins,15 saved comparable paths, two actual2×2 interactions and11 external sources are reused from the completed systematic audit. New work applies actual native lifecycle fixtures, controlled changed-model comparison, local branch perturbation, prefix-causal labels and full portfolio trajectory attribution. Missing factorial cells do not prove interaction; fresh repeat is not OOS. See rule-registry.json, evidence-audit.md, methods-and-coverage-review.md.
 
-## H_SOL and H_BTC — implemented, historical results pending
+## H_SOL and H_BTC — implemented and tested, both economically negative
 
-The frozen source contract is owner-risk-SC03-SC04-CONTRACT.md. Functional source27c1904 passed focused independent review/9risk tests; owner40focused/142relevantPASS. Later bounded observational fields require final source pins; neither hypothesis has historical GO yet.
+The frozen source contract is owner-risk-SC03-SC04-CONTRACT.md. Functional source27c1904 passed focused independent review/9risk tests; owner40focused/142relevantPASS. Final observer/test-only source8f2f780 is pinned and independently42testsPASS. Both individual historical candidates completed normally and passed60accountchecks each; neither passes50/90.
 
 H_SOL: every ADD is admitted only when fixed nonnegative gross stress coefficients leave at least55% global high-water. Unique held/opening leaves/unfinished parent reservations and unpaid entry fees are counted once. Maximal lot is solved from a monotone affine inequality; native margin remains independent. No forced cut, DD35trigger, stop, automatic restore or new retry.
 
@@ -26,6 +26,6 @@ H_BTC: one observation per actual-filled parent, first/repeat by actual EMA wave
 
 Offline causal dataset:83parents/50actual waves,81completed/2censored;24eligible repeated decisions,19potential k-reductions.28offline checksPASS. This is activation feasibility on the old path, not predictive or portfolio benefit. Archived decision-time held/pending/internalgate/equity are UNKNOWN; native hooks must provide available state and precisely qualify any missing gate vector.
 
-## Remaining acceptance
+## Completed acceptance and explicit limits
 
-Matched S0, H_SOL, H_BTC, conditional combination and passing-only fresh repeat remain individually gated. Maximum6 physical attempts including controls/failures/corrections. Every candidate needs complete native money/positions/orders, full settled DD, all24months/seven fixed E4 episodes/new global worst and explicit rights/pending evidence limits. Current economic50/90 goal is NOT_MET, no winner selected.
+MatchedS0, H_SOL and H_BTC completed:4physicalattempts total. CombinationNOT_RUN by independently verified actual-prefix DD65.6948lowerbound; repeatNOT_RUN because no candidate passes. Two unused slots closed. Maximum6 physical attempts including controls/failures/corrections. Every candidate needs complete native money/positions/orders, full settled DD, all24months/seven fixed E4 episodes/new global worst and explicit rights/pending evidence limits. Economic50/90 goal is NOT_MET, no winner selected. Native causal datasets each2407groundtruthchecksPASS; archiveUNKNOWN fields were not backfilled with invented values.

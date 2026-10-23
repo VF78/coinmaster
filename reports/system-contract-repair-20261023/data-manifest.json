@@ -2,7 +2,7 @@
   "canonical_branch": "codex/system-contract-data-20261023",
   "canonical_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
   "canonical_checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-data-20261023",
-  "source_only_commit": "3c83534020a0d4403f69cbe8ab7baa4e4f4ebb2a",
+  "source_only_commit": "4898a273183c51e666623de13ae5476527d72c78",
   "Mac_role": "immutable source execution only; outputs authorized reportfiles",
   "source_ownership": "data_source.py and rule_inventory.py only; no tradingfiles/hooks edited",
   "no_engine": true,
@@ -54,6 +54,154 @@
     "data-tests.json": {
       "sha256": "39a0893e04e05334131d774c93c4aaa2e34025c5f769042e6dd6b830d5a1c009",
       "bytes": 1238
+    },
+    "data-control-summary.json": {
+      "sha256": "59adae87e7dc1df2e548f79a4fb3379d88ff33d5181df15832bb03c5643a75be",
+      "bytes": 6255
+    },
+    "data-native-acceptance-E4_EXPLICIT_CONTROL.json": {
+      "sha256": "c1e05cb58a3b1acbfaffeda21e2d77e699bb3a2bb5f9762a548840ac06b847d4",
+      "bytes": 19643
+    },
+    "execution_compare_tests.py": {
+      "sha256": "e66e419083ef8cc8694f4d2237f4c94bdd8ede81f7192a9fb7479351502e2446",
+      "bytes": 3768
+    },
+    "data-attribution-E4_EXPLICIT_CONTROL.json": {
+      "sha256": "aff78a6b64a3f3992d9ae8079ea2e1e30067ca63aaa0928043dcd144deb5028d",
+      "bytes": 81404
+    },
+    "data-execution-reference.json": {
+      "sha256": "0722bfcac97f125dbb2a60ea92f2062d52333cc8bdc53a48d834993683b41af7",
+      "bytes": 2844
+    },
+    "data-execution-comparator-tests.json": {
+      "sha256": "b251f77e78cbc9ae54bb047ca4eacfb12e9fcd727524e6078513cca5e4948cec",
+      "bytes": 1028
+    },
+    "data-attribution-E4_EXPLICIT_CONTROL-months.csv": {
+      "sha256": "bd0e12b24e16e84748c6c866b34b61e43382de72886af64dd539d8cd3dc21ac6",
+      "bytes": 4024
+    },
+    "data-attribution-ARCHIVE_SELFTEST-seven-windows.csv": {
+      "sha256": "b7f2a196b16fd167e9cfcbedd7eb0cce91e30068c6a80b8bbae00ce8c96b9021",
+      "bytes": 16440
+    },
+    "data-native-acceptance-S0_EXPLICIT_CONTROL.json": {
+      "sha256": "4692af0d18df29d70b082dd36222e55e4421f7fe9d99674dc17effe9e6f5cb9e",
+      "bytes": 19583
+    },
+    "data-attribution-S0_EXPLICIT_CONTROL-seven-windows.csv": {
+      "sha256": "95958432609ab72fbf80f6870067c6a06434f33aaa8fb73cc2cd2f25aad98fc8",
+      "bytes": 16466
+    },
+    "data-attribution-S0_EXPLICIT_CONTROL.json": {
+      "sha256": "30c0fe765a749a3f37dd88e7ad2bee57f36bf64d5ed8442490a93eefa5f0db5a",
+      "bytes": 82492
+    },
+    "data-execution-equivalence-E4_EXPLICIT_CONTROL.json": {
+      "sha256": "c19a1b70d9f1ac921523dca46e73c4ee9c846ac0d5e263d361f098e61992c63f",
+      "bytes": 37424
+    },
+    "control_summary.py": {
+      "sha256": "2506f279ab14fc2b25be7a0814fd956ed72e4dbce9c1c826c92ed466e6925df1",
+      "bytes": 4872
+    },
+    "data-attribution-S0_EXPLICIT_CONTROL-months.csv": {
+      "sha256": "add6f2d4411e03277005664eac9eb834d130dea146af34f03496dac5806a3ee3",
+      "bytes": 4013
+    },
+    "data-execution-equivalence-ARCHIVE_SELFTEST.json": {
+      "sha256": "5d8da8edf4e4e92a846d074a70f664fda87f0990f224be5c164afa32d286faef",
+      "bytes": 10797
+    },
+    "execution_compare.py": {
+      "sha256": "c7eaaba08c1235d8fb54d045d38fbc4dc853fd6344f757860157c3a4ce01fe83",
+      "bytes": 18217
+    },
+    "data-attribution-E4_EXPLICIT_CONTROL-seven-windows.csv": {
+      "sha256": "d38053c8664949f0740086982f19520514b8df8003e7db8f504070405b3da35f",
+      "bytes": 16430
+    },
+    "data-attribution-ARCHIVE_SELFTEST-months.csv": {
+      "sha256": "bf7552b82a3959e321ab0406ab50245951e6327426f6eb59141822b5fe377daa",
+      "bytes": 4019
+    },
+    "data-attribution-ARCHIVE_SELFTEST.json": {
+      "sha256": "3befddcf23ef1c3638a0f039335a8f93b82a129c52c1353f85389f0faddb82ab",
+      "bytes": 81374
+    },
+    "data-control-summary.md": {
+      "sha256": "138f3063e3830d643bb591f3a4796da90abc2f993b6d45aab045a2bdacb83f13",
+      "bytes": 1594
+    },
+    "saved_native_acceptance.py": {
+      "sha256": "ac126a0cb6a6e2ebca93b1344e656f131fe0f1a35591cc5a258a60c25a2e0461",
+      "bytes": 7857
+    },
+    "data-native-causal-H_SOL.json": {
+      "sha256": "c56f9ee1aa3130691c065189c223bf0b5b90059273e879f7383e7529f7d1ecf7",
+      "bytes": 2289
+    },
+    "data-native-causal-H_BTC.csv": {
+      "sha256": "14fa93dd01d1f1033e30f36ea6d4b2e2a22bfa910e32d5bd14f82eb199264106",
+      "bytes": 136561
+    },
+    "data-attribution-H_BTC-seven-windows.csv": {
+      "sha256": "9f199e19ae3442e4e1665dab385d31da117ab108c1afbceb7458d6f4a852b4f5",
+      "bytes": 16422
+    },
+    "data-native-causal-H_BTC.json": {
+      "sha256": "6f2106c2398e436c2f3923771c4a671d77a61342cd9dd228d4b0cc30f9a22ea4",
+      "bytes": 2289
+    },
+    "data-attribution-H_SOL-months.csv": {
+      "sha256": "6864a7d3a5b9fe9cd0fe00a2c922a5613df26e5944dbfcc7ef80a27f4da6a477",
+      "bytes": 4009
+    },
+    "native_causal_groundtruth.py": {
+      "sha256": "a0184683b77f144b5143cedacfad977fad4de67c1a62cf49c3ca8e4aa854d394",
+      "bytes": 12247
+    },
+    "data-attribution-H_BTC-months.csv": {
+      "sha256": "7723c8b1f778e738ccb4ba0b1d513adfae5904150da08cec7d78ab804ba96201",
+      "bytes": 4026
+    },
+    "data-candidate-impact-H_BTC.json": {
+      "sha256": "e77503dba9d94a9e6fb46b97ee3aa5031b33603ac2e5e191bcb7b36061918361",
+      "bytes": 20999
+    },
+    "data-attribution-H_SOL-seven-windows.csv": {
+      "sha256": "74dcde9599788a92e3ce3df7e12ff3c7a471bb5e1b16b96bdef7eeaa894c12e5",
+      "bytes": 16475
+    },
+    "data-candidate-impact-H_SOL.json": {
+      "sha256": "abbc6b3a75a6b7dc49de3eb3581267238ac21d3fca932e87e00a842016652b41",
+      "bytes": 22628
+    },
+    "candidate_diagnostics.py": {
+      "sha256": "bec2418809b1d2419dbaee0453e0346bc36f426fa48b154cd0b0e77660edc544",
+      "bytes": 5493
+    },
+    "data-attribution-H_SOL.json": {
+      "sha256": "df2775333cff099ae9e1d7b95ccbc4a9f949ac890d51b0572938450de2952aa0",
+      "bytes": 82868
+    },
+    "data-attribution-H_BTC.json": {
+      "sha256": "4abbed5cb3bdb436fe6afd826612178423c07b4e28fa06217f0f291e8778929c",
+      "bytes": 81043
+    },
+    "data-native-acceptance-H_SOL.json": {
+      "sha256": "44d8cb0db88e8c57dd98c3b5bf2a7851e6439d0e647c29a77c3f81e8e4906efa",
+      "bytes": 19601
+    },
+    "data-native-acceptance-H_BTC.json": {
+      "sha256": "a55a9bb25043fc14a775b99070303da1601d2eb7e3b1d8f24d52c582557983b7",
+      "bytes": 19601
+    },
+    "data-native-causal-H_SOL.csv": {
+      "sha256": "f6387cd329f5cc2d2b718576feed8460058f9a386976fd93d9866880778d61ce",
+      "bytes": 136630
     }
   },
   "runtime_versions": {
@@ -95,5 +243,53 @@
     },
     "all_pass": true,
     "no_engine": true
-  }
+  },
+  "comparator_tests": {
+    "checks": {
+      "cash_mutation_detected": true,
+      "preceding_common_state_preserved": true,
+      "count_mutation_detected": true,
+      "identical_sequence_equal": true,
+      "UUID_identity_excluded": true,
+      "real_status_request_change_reported": true,
+      "status_change_not_automatically_fill_change": true,
+      "distinct_equal_streams": true,
+      "cash_stream_mutation": true,
+      "held_stream_mutation": true,
+      "margin_stream_mutation": true,
+      "stream_count_mutation": true,
+      "two_missing_streams_UNKNOWN": true,
+      "one_missing_stream_UNKNOWN": true,
+      "terminal_money_mismatch_blocks_path_match": true,
+      "archive_1051199_complete_receipts": true,
+      "archive_24months": true,
+      "monthly_boundary_uses_previous_receipt": true,
+      "archive_exact_E4_global_DD": true,
+      "seven_fixed_window_DDs_reproduce_archive": true,
+      "seven_native_endpoint_cash_identities": true
+    },
+    "all_pass": true,
+    "basis": "short mutation fixtures plus separate archive identity/collector pass; no trading engine"
+  },
+  "native_controls": {
+    "E4_EXPLICIT_CONTROL": "VALID_COMPLETED_CHANGED_EXECUTION_MODEL",
+    "S0_EXPLICIT_CONTROL": "VALID_COMPLETED_CHANGED_EXECUTION_MODEL"
+  },
+  "month_basis": "source_quote UTC calendar; preceding receipt equity boundary; no omitted boundary movement",
+  "native_candidates": {
+    "H_SOL": {
+      "status": "VALID_COMPLETED_CHANGED_EXECUTION_MODEL",
+      "checks": 60,
+      "causal_groundtruth": "PASS",
+      "groundtruth_assertions": 2407
+    },
+    "H_BTC": {
+      "status": "VALID_COMPLETED_CHANGED_EXECUTION_MODEL",
+      "checks": 60,
+      "causal_groundtruth": "PASS",
+      "groundtruth_assertions": 2407
+    }
+  },
+  "final_causal_diagnostics": "\u00b11 frozenATR fraction report-only MARK first-touch and extremum times, distinct D1executionCLOSE MAE/MFE diagnostics neverusedQ90;2x2407PASS",
+  "no_combined_proof": "ActualnewH_SOL/H_BTC19q0prefixparentsbeforeJantrough maxcompletedrepeat7<8; allk1; combinedsourceinduction preservesH_SOLJanDD65.6947708325 without simulatedTOTAL"
 }

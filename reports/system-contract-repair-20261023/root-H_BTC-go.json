@@ -1,0 +1,17 @@
+{
+  "status": "ROOT_GO_H_BTC_ONLY",
+  "authorized_recipes": [
+    "H_BTC"
+  ],
+  "physical_attempt": 4,
+  "source_commit": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+  "source_manifest_sha256": "75a568790fc43ac3bb80901131cad450472bc737be7916549ff61937c84cbcef",
+  "expected_config_sha256": "69b025d88c79da43db84c3ea64d19d92555f57013f57393683ca2fbcc49e3c6f",
+  "protocol_sha256": "8e0ed8e3d8a41d72ee44997dac958babdfabe626a0564d22b57794515ab77500",
+  "preparation_sha256": "360968a239ba0e884a5440fceeb04fe014c52ad2d3e54f2f00ec8e60e0275c21",
+  "amendment_sha256": "1e10bff01f2c50c079b740ed7ddb78f691e866bbd7fcb7bcf034a142602f68b7",
+  "root_preflight_sha256": "a8c796e40b82e09005706624e8931fb1bf365bbc7e3ac424ece763a00079f3af",
+  "review_sha256": "6054de1a44d08cced63236cb5fa6ee2ebe11bdc8aff92e04cb72962881ab2c4c",
+  "native_historical_limit": 6,
+  "automatic_next": false
+}

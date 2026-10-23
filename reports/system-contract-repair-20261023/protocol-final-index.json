@@ -1,0 +1,26 @@
+{
+  "status": "FINAL_FROZEN_PROTOCOL_INDEX",
+  "base_protocol": {
+    "file": "protocol.json",
+    "sha256": "8e0ed8e3d8a41d72ee44997dac958babdfabe626a0564d22b57794515ab77500",
+    "stage": "SC01control baseline frozen before attempt1; immutable"
+  },
+  "amendments": [
+    {
+      "file": "stage2-matched-control-amendment.json",
+      "sha256": "ddd8c37e7b6d66d7cb62ea281e23a3e812f611702e485a12a7aa7b067d2161c8"
+    },
+    {
+      "file": "stage3-hypotheses-freeze.json",
+      "sha256": "1e10bff01f2c50c079b740ed7ddb78f691e866bbd7fcb7bcf034a142602f68b7"
+    }
+  ],
+  "note": "Stage1 PENDING hypothesis source field resolved before candidate attempts by exact Stage3 amendment; base artifact not rewritten after engines.",
+  "final_ledger_sha256": "cd5ac127c47b91002dea55809e6bd56a99dd01b53940a8959b77937b77a60034",
+  "full_attempt_cap": 6,
+  "full_attempts_completed": 4,
+  "active": 0,
+  "launches_closed": true,
+  "goal": "NOT_MET",
+  "selection_sha256": "21d0fb7e71a70d15c865b18384efac77b73ba77aeecb739499126b8067211066"
+}

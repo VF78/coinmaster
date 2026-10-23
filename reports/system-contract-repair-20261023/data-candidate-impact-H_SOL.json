@@ -1,0 +1,590 @@
+{
+  "recipe": "H_SOL",
+  "status": "ACTUAL_NATIVE_PATH_DIAGNOSTICS",
+  "TOTAL": "3964359.61000698",
+  "baseline_TOTAL": "6022427.55763206",
+  "delta_TOTAL": "-2058067.94762508",
+  "assets": [
+    {
+      "asset": "BTC",
+      "baseline": {
+        "asset": "BTC",
+        "filled_order_rows": 337,
+        "signed_terminal_quantity": "0.000",
+        "gross_fill_cashflow": "5929327.632900021657170",
+        "native_fees": "714034.75531038",
+        "confirmed_fill_net_ex_funding": "5215292.877589641657170",
+        "native_report_turnover": "1728998085.114700002719082",
+        "signed_funding": "UNKNOWN"
+      },
+      "candidate": {
+        "asset": "BTC",
+        "filled_order_rows": 337,
+        "signed_terminal_quantity": "0.000",
+        "gross_fill_cashflow": "4017212.010300021470008",
+        "native_fees": "594527.09137268",
+        "confirmed_fill_net_ex_funding": "3422684.918927341470008",
+        "native_report_turnover": "1431398983.207700002153560",
+        "signed_funding": "UNKNOWN"
+      },
+      "delta_native_fill_net_ex_funding": "-1792607.958662300187162",
+      "delta_native_fees": "-119507.66393770"
+    },
+    {
+      "asset": "SOL",
+      "baseline": {
+        "asset": "SOL",
+        "filled_order_rows": 206,
+        "signed_terminal_quantity": "0.0",
+        "gross_fill_cashflow": "765211.255",
+        "native_fees": "18191.37920875",
+        "confirmed_fill_net_ex_funding": "747019.87579125",
+        "native_report_turnover": "33075234.925",
+        "signed_funding": "UNKNOWN"
+      },
+      "candidate": {
+        "asset": "SOL",
+        "filled_order_rows": 172,
+        "signed_terminal_quantity": "0.0",
+        "gross_fill_cashflow": "491774.519",
+        "native_fees": "14154.11000355",
+        "confirmed_fill_net_ex_funding": "477620.40899645",
+        "native_report_turnover": "25734745.461",
+        "signed_funding": "UNKNOWN"
+      },
+      "delta_native_fill_net_ex_funding": "-269399.46679480",
+      "delta_native_fees": "-4037.26920520"
+    }
+  ],
+  "baseline_unallocated_cash_bridge": "50114.804251168342830",
+  "candidate_unallocated_cash_bridge": "54054.282083188529992",
+  "delta_unallocated_cash_bridge": "3939.477832020187162",
+  "total_delta_identity_exact": true,
+  "signed_asset_funding": "UNKNOWN",
+  "asset_calendars": {
+    "BTC": {
+      "baseline_fills": 337,
+      "candidate_fills": 337,
+      "same_calendar_prices_reasons": true,
+      "quantity_changed_same_calendar_rows": 261,
+      "first_calendar_mismatch": null
+    },
+    "SOL": {
+      "baseline_fills": 206,
+      "candidate_fills": 172,
+      "same_calendar_prices_reasons": false,
+      "quantity_changed_same_calendar_rows": "NOT_ALIGNED_CALENDARS",
+      "first_calendar_mismatch": {
+        "index": 1,
+        "baseline": {
+          "accept_ns": "1728000000000000000",
+          "action": "SOL_ADD",
+          "commission": "4.09848175",
+          "commission_currency": "USDT",
+          "fill_ns": "1728000000000000000",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "level": "0",
+          "native_liquidity_side": "TAKER",
+          "notional": "7451.785",
+          "order_type": "1",
+          "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+          "post_only": "false",
+          "px": "136.73",
+          "qty": "54.5",
+          "reason": "SOL_ADD",
+          "submit_ns": "1728000000000000000",
+          "venue": "P1SIM"
+        },
+        "candidate": {
+          "accept_ns": "1728086400000000000",
+          "action": "FORCED_CLOSE",
+          "commission": "29.5185",
+          "commission_currency": "USDT",
+          "fill_ns": "1728086400000000000",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "level": "",
+          "native_liquidity_side": "TAKER",
+          "notional": "53670.00",
+          "order_type": "1",
+          "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+          "post_only": "false",
+          "px": "143.12",
+          "qty": "375",
+          "reason": "REGIME",
+          "submit_ns": "1728086400000000000",
+          "venue": "P1SIM"
+        }
+      }
+    }
+  },
+  "worst10_actual_common_calendar_cycles": [
+    {
+      "asset": "BTC",
+      "start": "2026-02-27 00:01:00+00:00",
+      "end": "2026-02-28 00:00:00+00:00",
+      "baseline_entry_qty": "424.469",
+      "candidate_entry_qty": "263.544",
+      "baseline_actual_fill_net_ex_funding": "825884.85809352787766",
+      "candidate_actual_fill_net_ex_funding": "512774.35548703868228",
+      "delta": "-313110.50260648919538",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-03-20 00:01:00+00:00",
+      "end": "2026-03-22 21:20:00+00:00",
+      "baseline_entry_qty": "429.296",
+      "candidate_entry_qty": "329.645",
+      "baseline_actual_fill_net_ex_funding": "772145.15518148214648",
+      "candidate_actual_fill_net_ex_funding": "592910.54197353164823",
+      "delta": "-179234.61320795049825",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-03-06 16:02:00+00:00",
+      "end": "2026-03-08 22:04:00+00:00",
+      "baseline_entry_qty": "437.776",
+      "candidate_entry_qty": "318.288",
+      "baseline_actual_fill_net_ex_funding": "652508.16832580",
+      "candidate_actual_fill_net_ex_funding": "474410.14556888",
+      "delta": "-178098.02275692",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-02-15 00:01:00+00:00",
+      "end": "2026-02-16 15:33:00+00:00",
+      "baseline_entry_qty": "205.679",
+      "candidate_entry_qty": "127.703",
+      "baseline_actual_fill_net_ex_funding": "463117.76219633897160",
+      "candidate_actual_fill_net_ex_funding": "287542.88775221936148",
+      "delta": "-175574.87444411961012",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "SOL",
+      "start": "2025-09-11 06:33:00+00:00",
+      "end": "2025-09-23 00:00:00+00:00",
+      "baseline_entry_qty": "22000.0",
+      "candidate_entry_qty": "14000.0",
+      "baseline_actual_fill_net_ex_funding": "388251.18200000",
+      "candidate_actual_fill_net_ex_funding": "213167.59000000",
+      "delta": "-175083.59200000",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-02-08 00:01:00+00:00",
+      "end": "2026-02-11 06:14:00+00:00",
+      "baseline_entry_qty": "309.283",
+      "candidate_entry_qty": "192.027",
+      "baseline_actual_fill_net_ex_funding": "453818.94436700023197",
+      "candidate_actual_fill_net_ex_funding": "281767.48524564014403",
+      "delta": "-172051.45912136008794",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-01-04 04:02:00+00:00",
+      "end": "2026-01-14 14:47:00+00:00",
+      "baseline_entry_qty": "82.011",
+      "candidate_entry_qty": "50.919",
+      "baseline_actual_fill_net_ex_funding": "394438.88256421",
+      "candidate_actual_fill_net_ex_funding": "244899.24320251",
+      "delta": "-149539.63936170",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2025-11-11 00:01:00+00:00",
+      "end": "2025-11-12 00:00:00+00:00",
+      "baseline_entry_qty": "119.138",
+      "candidate_entry_qty": "73.970",
+      "baseline_actual_fill_net_ex_funding": "386055.71076556",
+      "candidate_actual_fill_net_ex_funding": "239693.06931774",
+      "delta": "-146362.64144782",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2025-11-26 00:01:00+00:00",
+      "end": "2025-12-02 00:00:00+00:00",
+      "baseline_entry_qty": "179.449",
+      "candidate_entry_qty": "111.416",
+      "baseline_actual_fill_net_ex_funding": "374768.97358154076264",
+      "candidate_actual_fill_net_ex_funding": "232687.02408532047350",
+      "delta": "-142081.94949622028914",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-01-21 00:01:00+00:00",
+      "end": "2026-01-29 15:14:00+00:00",
+      "baseline_entry_qty": "120.979",
+      "candidate_entry_qty": "75.114",
+      "baseline_actual_fill_net_ex_funding": "353200.51026528",
+      "candidate_actual_fill_net_ex_funding": "219296.68500460",
+      "delta": "-133903.82526068",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    }
+  ],
+  "best5_actual_common_calendar_cycles": [
+    {
+      "asset": "BTC",
+      "start": "2026-03-13 12:02:00+00:00",
+      "end": "2026-03-19 00:00:00+00:00",
+      "baseline_entry_qty": "368.014",
+      "candidate_entry_qty": "228.888",
+      "baseline_actual_fill_net_ex_funding": "-131916.03146845",
+      "candidate_actual_fill_net_ex_funding": "-82046.07496008",
+      "delta": "49869.95650837",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-08-07 12:02:00+00:00",
+      "end": "2026-08-11 00:00:00+00:00",
+      "baseline_entry_qty": "461.410",
+      "candidate_entry_qty": "362.102",
+      "baseline_actual_fill_net_ex_funding": "-484220.370884298615770",
+      "candidate_actual_fill_net_ex_funding": "-380002.957755458913694",
+      "delta": "104217.413128839702076",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2025-04-11 00:01:00+00:00",
+      "end": "2025-04-13 00:00:00+00:00",
+      "baseline_entry_qty": "57.042",
+      "candidate_entry_qty": "30.973",
+      "baseline_actual_fill_net_ex_funding": "-240633.80860990",
+      "candidate_actual_fill_net_ex_funding": "-130664.52357127",
+      "delta": "109969.28503863",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2026-01-20 00:01:00+00:00",
+      "end": "2026-01-21 00:00:00+00:00",
+      "baseline_entry_qty": "93.915",
+      "candidate_entry_qty": "58.310",
+      "baseline_actual_fill_net_ex_funding": "-388112.96608774906085",
+      "candidate_actual_fill_net_ex_funding": "-240971.88675769941690",
+      "delta": "147141.07933004964395",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    },
+    {
+      "asset": "BTC",
+      "start": "2025-10-22 00:01:00+00:00",
+      "end": "2025-10-27 00:00:00+00:00",
+      "baseline_entry_qty": "142.716",
+      "candidate_entry_qty": "88.610",
+      "baseline_actual_fill_net_ex_funding": "-468838.72126605071358",
+      "candidate_actual_fill_net_ex_funding": "-291101.59545335044305",
+      "delta": "177737.12581270027053",
+      "qualification": "Observed actual alternative-path closed cycles; not fixed-state removed-PnL or causal missed-recovery estimate"
+    }
+  ],
+  "unmatched_cycle_keys": {
+    "baseline_only": [
+      "('SOL', '2026-08-28 00:00:00+00:00', '2026-08-29 00:00:00+00:00')"
+    ],
+    "candidate_only": []
+  },
+  "January_fixed_native_endpoints": [
+    {
+      "time": "2025-01-13T00:37:00+00:00",
+      "baseline_native": {
+        "receipt_ns": 1736728620000000000,
+        "source_quote_ns": 1736728560000000000,
+        "cash": "192375.706477",
+        "equity": "210575.706477",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "4000.0",
+            "avg_px_open": "187.23",
+            "mark_ohlc": {
+              "open_time_ms": 1736728500000,
+              "open": "191.45",
+              "high": "191.82",
+              "low": "191.441",
+              "close": "191.78"
+            },
+            "low_native_pnl": "16840",
+            "high_native_pnl": "18360"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "candidate_native": {
+        "receipt_ns": 1736728620000000000,
+        "source_quote_ns": 1736728560000000000,
+        "cash": "94242.27194005",
+        "equity": "109846.69194005",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "3225.2",
+            "avg_px_open": "186.94172020339823",
+            "mark_ohlc": {
+              "open_time_ms": 1736728500000,
+              "open": "191.45",
+              "high": "191.82",
+              "low": "191.441",
+              "close": "191.78"
+            },
+            "low_native_pnl": "14507.852",
+            "high_native_pnl": "15733.428"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "delta_cash": "-98133.43453695",
+      "delta_equity": "-100729.01453695"
+    },
+    {
+      "time": "2025-01-13T14:37:00+00:00",
+      "baseline_native": {
+        "receipt_ns": 1736779020000000000,
+        "source_quote_ns": 1736778960000000000,
+        "cash": "192356.100205",
+        "equity": "121076.100205",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "4000.0",
+            "avg_px_open": "187.23",
+            "mark_ohlc": {
+              "open_time_ms": 1736778900000,
+              "open": "171.88",
+              "high": "172.6",
+              "low": "168.923",
+              "close": "169.41"
+            },
+            "low_native_pnl": "-73240",
+            "high_native_pnl": "-58520"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "candidate_native": {
+        "receipt_ns": 1736779020000000000,
+        "source_quote_ns": 1736778960000000000,
+        "cash": "94226.46340294",
+        "equity": "37683.15940294",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "3225.2",
+            "avg_px_open": "186.94172020339823",
+            "mark_ohlc": {
+              "open_time_ms": 1736778900000,
+              "open": "171.88",
+              "high": "172.6",
+              "low": "168.923",
+              "close": "169.41"
+            },
+            "low_native_pnl": "-58123.652",
+            "high_native_pnl": "-46254.916"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "delta_cash": "-98129.63680206",
+      "delta_equity": "-83392.94080206"
+    }
+  ],
+  "January_window": {
+    "baseline": {
+      "anchor_trough": "2025-01-13T14:37:00+00:00",
+      "start_ns": 1736728620000000000,
+      "end_inclusive_ns": 1736865720000000000,
+      "samples": 2286,
+      "local_dd": "42.50234168478287336887081078",
+      "continuous_global_dd": "42.50234168478287336887081078",
+      "local_recovery": {
+        "utc": "2025-01-14T09:36:00+00:00",
+        "equity": "211576.73031108"
+      },
+      "local_worst": {
+        "peak_utc": "2025-01-13T00:37:00+00:00",
+        "peak_equity": "210575.706477",
+        "trough_utc": "2025-01-13T14:37:00+00:00",
+        "trough_equity": "121076.100205"
+      },
+      "actual_native_fills": {
+        "BTC": 0,
+        "SOL": 2
+      },
+      "actual_native_fees": "201.0250",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-89499.606272",
+        "delta_cash": "-19.606272",
+        "delta_aggregate_native_UPnL": "-89480.000000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1736728620000000000,
+          "source_quote_ns": 1736728560000000000,
+          "cash": "192375.706477",
+          "equity": "210575.706477",
+          "held_native_positions": [
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "4000.0",
+              "avg_px_open": "187.23",
+              "mark_ohlc": {
+                "open_time_ms": 1736728500000,
+                "open": "191.45",
+                "high": "191.82",
+                "low": "191.441",
+                "close": "191.78"
+              },
+              "low_native_pnl": "16840",
+              "high_native_pnl": "18360"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1736779020000000000,
+          "source_quote_ns": 1736778960000000000,
+          "cash": "192356.100205",
+          "equity": "121076.100205",
+          "held_native_positions": [
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "4000.0",
+              "avg_px_open": "187.23",
+              "mark_ohlc": {
+                "open_time_ms": 1736778900000,
+                "open": "171.88",
+                "high": "172.6",
+                "low": "168.923",
+                "close": "169.41"
+              },
+              "low_native_pnl": "-73240",
+              "high_native_pnl": "-58520"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    },
+    "candidate": {
+      "anchor_trough": "2025-01-13T14:37:00+00:00",
+      "start_ns": 1736728620000000000,
+      "end_inclusive_ns": 1736865720000000000,
+      "samples": 2286,
+      "local_dd": "65.69477083251083711659723613",
+      "continuous_global_dd": "65.69477083251083711659723613",
+      "local_recovery": {
+        "utc": "2025-01-17T15:07:00+00:00",
+        "equity": "110333.89586842"
+      },
+      "local_worst": {
+        "peak_utc": "2025-01-13T00:37:00+00:00",
+        "peak_equity": "109846.69194005",
+        "trough_utc": "2025-01-13T14:37:00+00:00",
+        "trough_equity": "37683.15940294"
+      },
+      "actual_native_fills": {
+        "BTC": 0,
+        "SOL": 0
+      },
+      "actual_native_fees": "0",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-72163.53253711",
+        "delta_cash": "-15.80853711",
+        "delta_aggregate_native_UPnL": "-72147.72400000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1736728620000000000,
+          "source_quote_ns": 1736728560000000000,
+          "cash": "94242.27194005",
+          "equity": "109846.69194005",
+          "held_native_positions": [
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "3225.2",
+              "avg_px_open": "186.94172020339823",
+              "mark_ohlc": {
+                "open_time_ms": 1736728500000,
+                "open": "191.45",
+                "high": "191.82",
+                "low": "191.441",
+                "close": "191.78"
+              },
+              "low_native_pnl": "14507.852",
+              "high_native_pnl": "15733.428"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1736779020000000000,
+          "source_quote_ns": 1736778960000000000,
+          "cash": "94226.46340294",
+          "equity": "37683.15940294",
+          "held_native_positions": [
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "3225.2",
+              "avg_px_open": "186.94172020339823",
+              "mark_ohlc": {
+                "open_time_ms": 1736778900000,
+                "open": "171.88",
+                "high": "172.6",
+                "low": "168.923",
+                "close": "169.41"
+              },
+              "low_native_pnl": "-58123.652",
+              "high_native_pnl": "-46254.916"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    }
+  },
+  "global_DD_percent": "65.69477083251083711659723613",
+  "retained_matchedS0_profit_percent": "61.09633772671094405061558740",
+  "matched_profit_floor": "5835101.440491649",
+  "pass_matched_90": false,
+  "pass_global_DD50": false,
+  "scope": "Full actual portfolio path differences. Native equity/cash snapshots identify capital and remaining inventory interaction. Changed cycles and quantities do not by themselves identify a fixed-state missed recovery; no invented causal equity or funding.",
+  "no_engine": true
+}

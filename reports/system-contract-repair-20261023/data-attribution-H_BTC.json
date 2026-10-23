@@ -1,0 +1,2319 @@
+{
+  "global_settled_DD_percent": "57.58541045962226379114466259",
+  "global_peak_trough_recovery": {
+    "peak_utc": "2024-10-03T04:01:00+00:00",
+    "peak_equity": "14743.45772484",
+    "trough_utc": "2024-10-03T15:45:00+00:00",
+    "trough_equity": "6253.37707805",
+    "DD_percent": "57.58541045962226379114466259",
+    "recovery_utc": "2024-10-04T16:26:00+00:00",
+    "recovery_equity": "14745.98689336"
+  },
+  "global_excursions_ge30": [
+    {
+      "peak_utc": "2024-10-03T04:01:00+00:00",
+      "peak_equity": "14743.45772484",
+      "trough_utc": "2024-10-03T15:45:00+00:00",
+      "trough_equity": "6253.37707805",
+      "DD_percent": "57.58541045962226379114466259",
+      "recovery_utc": "2024-10-04T16:26:00+00:00",
+      "recovery_equity": "14745.98689336"
+    },
+    {
+      "peak_utc": "2025-01-13T00:37:00+00:00",
+      "peak_equity": "210575.706477",
+      "trough_utc": "2025-01-13T14:37:00+00:00",
+      "trough_equity": "121076.100205",
+      "DD_percent": "42.50234168478287336887081078",
+      "recovery_utc": "2025-01-14T09:36:00+00:00",
+      "recovery_equity": "211576.73031108"
+    },
+    {
+      "peak_utc": "2025-04-11T01:01:00+00:00",
+      "peak_equity": "753159.67592633",
+      "trough_utc": "2025-06-06T15:18:00+00:00",
+      "trough_equity": "382813.23641164",
+      "DD_percent": "49.17236694319721953981155407",
+      "recovery_utc": "2025-08-19T15:09:00+00:00",
+      "recovery_equity": "755214.58405049"
+    },
+    {
+      "peak_utc": "2025-09-06T17:47:00+00:00",
+      "peak_equity": "1013701.72608036",
+      "trough_utc": "2025-09-18T17:14:00+00:00",
+      "trough_equity": "706291.21667577",
+      "DD_percent": "30.32553871573662459049951825",
+      "recovery_utc": "2025-09-22T00:52:00+00:00",
+      "recovery_equity": "1015354.71155632"
+    },
+    {
+      "peak_utc": "2025-10-22T21:30:00+00:00",
+      "peak_equity": "2213051.89754458",
+      "trough_utc": "2025-11-28T14:29:00+00:00",
+      "trough_equity": "1120420.62691994",
+      "DD_percent": "49.37214856266740107800670646",
+      "recovery_utc": "2025-12-01T04:15:00+00:00",
+      "recovery_equity": "2232394.71077417"
+    },
+    {
+      "peak_utc": "2026-07-06T13:40:00+00:00",
+      "peak_equity": "9142232.38315497",
+      "trough_utc": "2026-08-19T06:14:00+00:00",
+      "trough_equity": "4934241.38598324",
+      "DD_percent": "46.02804677033990392628596839",
+      "recovery_utc": null,
+      "recovery_equity": null
+    }
+  ],
+  "seven_fixed_E4_anchor_windows": [
+    {
+      "anchor_trough": "2024-10-03T15:45:00+00:00",
+      "start_ns": 1727928060000000000,
+      "end_inclusive_ns": 1728059160000000000,
+      "samples": 2186,
+      "local_dd": "57.58541045962226379114466259",
+      "continuous_global_dd": "57.58541045962226379114466259",
+      "local_recovery": {
+        "utc": "2024-10-04T16:26:00+00:00",
+        "equity": "14745.98689336"
+      },
+      "local_worst": {
+        "peak_utc": "2024-10-03T04:01:00+00:00",
+        "peak_equity": "14743.45772484",
+        "trough_utc": "2024-10-03T15:45:00+00:00",
+        "trough_equity": "6253.37707805"
+      },
+      "actual_native_fills": {
+        "BTC": 0,
+        "SOL": 1
+      },
+      "actual_native_fees": "4.09848175",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-8490.08064679",
+        "delta_cash": "10.61735321",
+        "delta_aggregate_native_UPnL": "-8500.69800000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1727928060000000000,
+          "source_quote_ns": 1727928000000000000,
+          "cash": "12526.05072484",
+          "equity": "14743.45772484",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "0.940",
+              "avg_px_open": "60887.24999999999",
+              "mark_ohlc": {
+                "open_time_ms": 1727927940000,
+                "open": "61446.9",
+                "high": "61447",
+                "low": "61436.79",
+                "close": "61443.17"
+              },
+              "low_native_pnl": "-516.577",
+              "high_native_pnl": "-526.165"
+            },
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "1000.0",
+              "avg_px_open": "140.09",
+              "mark_ohlc": {
+                "open_time_ms": 1727927940000,
+                "open": "142.756",
+                "high": "142.94",
+                "low": "142.707",
+                "close": "142.83"
+              },
+              "low_native_pnl": "2620",
+              "high_native_pnl": "2850"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1727970300000000000,
+          "source_quote_ns": 1727970240000000000,
+          "cash": "12536.66807805",
+          "equity": "6253.37707805",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "0.940",
+              "avg_px_open": "60887.24999999999",
+              "mark_ohlc": {
+                "open_time_ms": 1727970180000,
+                "open": "60186.45",
+                "high": "60230",
+                "low": "60155.17",
+                "close": "60209.94"
+              },
+              "low_native_pnl": "688.127",
+              "high_native_pnl": "617.815"
+            },
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "1000.0",
+              "avg_px_open": "140.09",
+              "mark_ohlc": {
+                "open_time_ms": 1727970180000,
+                "open": "133.596",
+                "high": "133.72",
+                "low": "133.161",
+                "close": "133.166"
+              },
+              "low_native_pnl": "-6930",
+              "high_native_pnl": "-6370"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    },
+    {
+      "anchor_trough": "2025-01-13T14:37:00+00:00",
+      "start_ns": 1736728620000000000,
+      "end_inclusive_ns": 1736865720000000000,
+      "samples": 2286,
+      "local_dd": "42.50234168478287336887081078",
+      "continuous_global_dd": "42.50234168478287336887081078",
+      "local_recovery": {
+        "utc": "2025-01-14T09:36:00+00:00",
+        "equity": "211576.73031108"
+      },
+      "local_worst": {
+        "peak_utc": "2025-01-13T00:37:00+00:00",
+        "peak_equity": "210575.706477",
+        "trough_utc": "2025-01-13T14:37:00+00:00",
+        "trough_equity": "121076.100205"
+      },
+      "actual_native_fills": {
+        "BTC": 0,
+        "SOL": 2
+      },
+      "actual_native_fees": "201.0250",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-89499.606272",
+        "delta_cash": "-19.606272",
+        "delta_aggregate_native_UPnL": "-89480.000000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1736728620000000000,
+          "source_quote_ns": 1736728560000000000,
+          "cash": "192375.706477",
+          "equity": "210575.706477",
+          "held_native_positions": [
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "4000.0",
+              "avg_px_open": "187.23",
+              "mark_ohlc": {
+                "open_time_ms": 1736728500000,
+                "open": "191.45",
+                "high": "191.82",
+                "low": "191.441",
+                "close": "191.78"
+              },
+              "low_native_pnl": "16840",
+              "high_native_pnl": "18360"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1736779020000000000,
+          "source_quote_ns": 1736778960000000000,
+          "cash": "192356.100205",
+          "equity": "121076.100205",
+          "held_native_positions": [
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "4000.0",
+              "avg_px_open": "187.23",
+              "mark_ohlc": {
+                "open_time_ms": 1736778900000,
+                "open": "171.88",
+                "high": "172.6",
+                "low": "168.923",
+                "close": "169.41"
+              },
+              "low_native_pnl": "-73240",
+              "high_native_pnl": "-58520"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    },
+    {
+      "anchor_trough": "2025-06-06T15:18:00+00:00",
+      "start_ns": 1744333260000000000,
+      "end_inclusive_ns": 1754158560000000000,
+      "samples": 163756,
+      "local_dd": "49.17236694319721953981155407",
+      "continuous_global_dd": "49.17236694319721953981155407",
+      "local_recovery": {
+        "utc": "2025-08-19T15:09:00+00:00",
+        "equity": "755214.58405049"
+      },
+      "local_worst": {
+        "peak_utc": "2025-04-11T01:01:00+00:00",
+        "peak_equity": "753159.67592633",
+        "trough_utc": "2025-06-06T15:18:00+00:00",
+        "trough_equity": "382813.23641164"
+      },
+      "actual_native_fills": {
+        "BTC": 27,
+        "SOL": 32
+      },
+      "actual_native_fees": "19384.34900664",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-370346.43951469",
+        "delta_cash": "-230115.91956469",
+        "delta_aggregate_native_UPnL": "-140230.51995000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1744333260000000000,
+          "source_quote_ns": 1744333200000000000,
+          "cash": "730949.99342633",
+          "equity": "753159.67592633",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "41.650",
+              "avg_px_open": "79549.65",
+              "mark_ohlc": {
+                "open_time_ms": 1744333140000,
+                "open": "79060",
+                "high": "79060",
+                "low": "78933.7",
+                "close": "79005.6"
+              },
+              "low_native_pnl": "25654.3175",
+              "high_native_pnl": "20393.9225"
+            },
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "1000.0",
+              "avg_px_open": "112.65",
+              "mark_ohlc": {
+                "open_time_ms": 1744333140000,
+                "open": "112.222",
+                "high": "112.26",
+                "low": "112.104",
+                "close": "112.2"
+              },
+              "low_native_pnl": "-550",
+              "high_native_pnl": "-390"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1749223080000000000,
+          "source_quote_ns": 1749223020000000000,
+          "cash": "500834.07386164",
+          "equity": "382813.23641164",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "30.711",
+              "avg_px_open": "101382.65",
+              "mark_ohlc": {
+                "open_time_ms": 1749222960000,
+                "open": "105170.55",
+                "high": "105293.94",
+                "low": "105152.29",
+                "close": "105225.64"
+              },
+              "low_native_pnl": "-115769.72115",
+              "high_native_pnl": "-120118.39875"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    },
+    {
+      "anchor_trough": "2025-09-18T17:14:00+00:00",
+      "start_ns": 1757180820000000000,
+      "end_inclusive_ns": 1758502260000000000,
+      "samples": 22025,
+      "local_dd": "30.32553871573662459049951825",
+      "continuous_global_dd": "30.32553871573662459049951825",
+      "local_recovery": {
+        "utc": "2025-09-22T00:52:00+00:00",
+        "equity": "1015354.71155632"
+      },
+      "local_worst": {
+        "peak_utc": "2025-09-06T17:47:00+00:00",
+        "peak_equity": "1013701.72608036",
+        "trough_utc": "2025-09-18T17:14:00+00:00",
+        "trough_equity": "706291.21667577"
+      },
+      "actual_native_fills": {
+        "BTC": 3,
+        "SOL": 22
+      },
+      "actual_native_fees": "6212.52025008",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-307410.50940459",
+        "delta_cash": "-115405.47720459",
+        "delta_aggregate_native_UPnL": "-192005.03220000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1757180820000000000,
+          "source_quote_ns": 1757180760000000000,
+          "cash": "979309.73698036",
+          "equity": "1013701.72608036",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "36.722",
+              "avg_px_open": "110876.15",
+              "mark_ohlc": {
+                "open_time_ms": 1757180700000,
+                "open": "109948.2",
+                "high": "109959.3",
+                "low": "109939.31",
+                "close": "109939.61"
+              },
+              "low_native_pnl": "34403.0057",
+              "high_native_pnl": "33668.5657"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1758215640000000000,
+          "source_quote_ns": 1758215580000000000,
+          "cash": "863904.25977577",
+          "equity": "706291.21667577",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "24.038",
+              "avg_px_open": "114130.84999999999",
+              "mark_ohlc": {
+                "open_time_ms": 1758215520000,
+                "open": "117559.4",
+                "high": "117703.43",
+                "low": "117559.4",
+                "close": "117703.43"
+              },
+              "low_native_pnl": "82415.4849",
+              "high_native_pnl": "85876.9569"
+            },
+            {
+              "instrument_id": "SOLUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "15000.0",
+              "avg_px_open": "236.98733333333334",
+              "mark_ohlc": {
+                "open_time_ms": 1758215520000,
+                "open": "252.425",
+                "high": "253.22",
+                "low": "252.228",
+                "close": "253.22"
+              },
+              "low_native_pnl": "-228640",
+              "high_native_pnl": "-243490"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    },
+    {
+      "anchor_trough": "2025-11-28T14:29:00+00:00",
+      "start_ns": 1761168600000000000,
+      "end_inclusive_ns": 1764559980000000000,
+      "samples": 56524,
+      "local_dd": "49.37214856266740107800670646",
+      "continuous_global_dd": "49.37214856266740107800670646",
+      "local_recovery": {
+        "utc": "2025-12-01T04:15:00+00:00",
+        "equity": "2232394.71077417"
+      },
+      "local_worst": {
+        "peak_utc": "2025-10-22T21:30:00+00:00",
+        "peak_equity": "2213051.89754458",
+        "trough_utc": "2025-11-28T14:29:00+00:00",
+        "trough_equity": "1120420.62691994"
+      },
+      "actual_native_fills": {
+        "BTC": 16,
+        "SOL": 0
+      },
+      "actual_native_fees": "30880.17710936",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-1092631.27062464",
+        "delta_cash": "15839.05667536",
+        "delta_aggregate_native_UPnL": "-1108470.32730000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1761168600000000000,
+          "source_quote_ns": 1761168540000000000,
+          "cash": "1986935.49594458",
+          "equity": "2213051.89754458",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "136.453",
+              "avg_px_open": "108337.9009915502",
+              "mark_ohlc": {
+                "open_time_ms": 1761168480000,
+                "open": "106777.54",
+                "high": "106777.54",
+                "low": "106680.06",
+                "close": "106680.8"
+              },
+              "low_native_pnl": "226211.9187",
+              "high_native_pnl": "212921.3965"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1764340140000000000,
+          "source_quote_ns": 1764340080000000000,
+          "cash": "2002774.55261994",
+          "equity": "1120420.62691994",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "159.562",
+              "avg_px_open": "87414.85",
+              "mark_ohlc": {
+                "open_time_ms": 1764340020000,
+                "open": "92782.02",
+                "high": "92944.7",
+                "low": "92782.02",
+                "close": "92944.7"
+              },
+              "low_native_pnl": "-856393.1883",
+              "high_native_pnl": "-882353.9257"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    },
+    {
+      "anchor_trough": "2026-02-08T23:09:00+00:00",
+      "start_ns": 1770511440000000000,
+      "end_inclusive_ns": 1770633180000000000,
+      "samples": 2030,
+      "local_dd": "28.19174091264465976615059244",
+      "continuous_global_dd": "28.19174091264465976615059244",
+      "local_recovery": {
+        "utc": "2026-02-09T10:33:00+00:00",
+        "equity": "2885620.76250194"
+      },
+      "local_worst": {
+        "peak_utc": "2026-02-08T00:44:00+00:00",
+        "peak_equity": "2876499.87747506",
+        "trough_utc": "2026-02-08T23:09:00+00:00",
+        "trough_equity": "2065564.48466475"
+      },
+      "actual_native_fills": {
+        "BTC": 0,
+        "SOL": 0
+      },
+      "actual_native_fees": "0",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-810935.39281031",
+        "delta_cash": "-949.89081031",
+        "delta_aggregate_native_UPnL": "-809985.50200000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1770511440000000000,
+          "source_quote_ns": 1770511380000000000,
+          "cash": "2773274.53127506",
+          "equity": "2876499.87747506",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "245.599",
+              "avg_px_open": "69271.30035220012",
+              "mark_ohlc": {
+                "open_time_ms": 1770511320000,
+                "open": "68871",
+                "high": "68911.9",
+                "low": "68850.97",
+                "close": "68850.97"
+              },
+              "low_native_pnl": "103225.3462",
+              "high_native_pnl": "88268.3671"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1770592140000000000,
+          "source_quote_ns": 1770592080000000000,
+          "cash": "2772324.64046475",
+          "equity": "2065564.48466475",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "245.599",
+              "avg_px_open": "69271.30035220012",
+              "mark_ohlc": {
+                "open_time_ms": 1770592020000,
+                "open": "72060.19",
+                "high": "72243.35",
+                "low": "71941.67",
+                "close": "72149"
+              },
+              "low_native_pnl": "-655847.4831",
+              "high_native_pnl": "-729944.7014"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    },
+    {
+      "anchor_trough": "2026-08-19T06:14:00+00:00",
+      "start_ns": 1783345200000000000,
+      "end_inclusive_ns": 1788220800000000000,
+      "samples": 81261,
+      "local_dd": "46.02804677033990392628596839",
+      "continuous_global_dd": "46.02804677033990392628596839",
+      "local_recovery": null,
+      "local_worst": {
+        "peak_utc": "2026-07-06T13:40:00+00:00",
+        "peak_equity": "9142232.38315497",
+        "trough_utc": "2026-08-19T06:14:00+00:00",
+        "trough_equity": "4934241.38598324"
+      },
+      "actual_native_fills": {
+        "BTC": 38,
+        "SOL": 10
+      },
+      "actual_native_fees": "220171.64645699",
+      "unused_rights": "UNKNOWN_FULL_BALANCES_NOT_EXPORTED",
+      "pending": "UNKNOWN_NOT_EXPORTED",
+      "lost_recoveries": "NOT_IDENTIFIED_CAUSALLY_BY_SAVED_PATH",
+      "fixed_endpoint_native_cash_bridge": {
+        "delta_equity": "-4207990.99717173",
+        "delta_cash": "-3809811.52732173",
+        "delta_aggregate_native_UPnL": "-398179.46985000",
+        "identity_exact": true,
+        "peak_native_snapshot": {
+          "receipt_ns": 1783345200000000000,
+          "source_quote_ns": 1783345140000000000,
+          "cash": "8903447.81930497",
+          "equity": "9142232.38315497",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "3",
+              "quantity": "185.543",
+              "avg_px_open": "62653.649999999994",
+              "mark_ohlc": {
+                "open_time_ms": 1783345080000,
+                "open": "61427",
+                "high": "61454.9",
+                "low": "61285.5",
+                "close": "61366.7"
+              },
+              "low_native_pnl": "253850.65545",
+              "high_native_pnl": "222419.67125"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "trough_native_snapshot": {
+          "receipt_ns": 1787120040000000000,
+          "source_quote_ns": 1787119980000000000,
+          "cash": "5093636.29198324",
+          "equity": "4934241.38598324",
+          "held_native_positions": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "side": "2",
+              "quantity": "248.666",
+              "avg_px_open": "64778.700000000004",
+              "mark_ohlc": {
+                "open_time_ms": 1787119920000,
+                "open": "64149.34",
+                "high": "64149.35",
+                "low": "64137.74",
+                "close": "64137.74"
+              },
+              "low_native_pnl": "-159394.906",
+              "high_native_pnl": "-156510.3804"
+            }
+          ],
+          "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+          "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+        },
+        "signed_asset_funding": "UNKNOWN_NOT_UNALLOCATED_CASH_BRIDGE"
+      }
+    }
+  ],
+  "window_basis": "inclusive frozen E4 peak\u2192E4recovery; missing E4recovery\u2192last causal preterminal observation, including delayed receipt at intervalend; local rebased DD distinct from continuous global DD; candidate own recovery searched through full saved period",
+  "boundary_snapshots": {
+    "2024-10-03T04:01:00+00:00": {
+      "target_ns": 1727928060000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1727928000000000000,
+        "source_quote_ns": 1727927940000000000,
+        "cash": "12526.05072484",
+        "equity": "14669.97972484",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.940",
+            "avg_px_open": "60887.24999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1727927880000,
+              "open": "61427.46",
+              "high": "61447",
+              "low": "61427.33",
+              "close": "61446.9"
+            },
+            "low_native_pnl": "-507.647",
+            "high_native_pnl": "-526.165"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727927880000,
+              "open": "142.54",
+              "high": "142.87",
+              "low": "142.54",
+              "close": "142.756"
+            },
+            "low_native_pnl": "2450",
+            "high_native_pnl": "2780"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1727928060000000000,
+        "source_quote_ns": 1727928000000000000,
+        "cash": "12526.05072484",
+        "equity": "14743.45772484",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.940",
+            "avg_px_open": "60887.24999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1727927940000,
+              "open": "61446.9",
+              "high": "61447",
+              "low": "61436.79",
+              "close": "61443.17"
+            },
+            "low_native_pnl": "-516.577",
+            "high_native_pnl": "-526.165"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727927940000,
+              "open": "142.756",
+              "high": "142.94",
+              "low": "142.707",
+              "close": "142.83"
+            },
+            "low_native_pnl": "2620",
+            "high_native_pnl": "2850"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2024-10-03T15:45:00+00:00": {
+      "target_ns": 1727970300000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1727970240000000000,
+        "source_quote_ns": 1727970180000000000,
+        "cash": "12536.66807805",
+        "equity": "6705.46707805",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.940",
+            "avg_px_open": "60887.24999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1727970120000,
+              "open": "60199.82",
+              "high": "60219.7",
+              "low": "60148.85",
+              "close": "60186.45"
+            },
+            "low_native_pnl": "694.143",
+            "high_native_pnl": "627.497"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727970120000,
+              "open": "133.395",
+              "high": "133.69",
+              "low": "133.31",
+              "close": "133.596"
+            },
+            "low_native_pnl": "-6780",
+            "high_native_pnl": "-6400"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1727970300000000000,
+        "source_quote_ns": 1727970240000000000,
+        "cash": "12536.66807805",
+        "equity": "6253.37707805",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.940",
+            "avg_px_open": "60887.24999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "60186.45",
+              "high": "60230",
+              "low": "60155.17",
+              "close": "60209.94"
+            },
+            "low_native_pnl": "688.127",
+            "high_native_pnl": "617.815"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "133.596",
+              "high": "133.72",
+              "low": "133.161",
+              "close": "133.166"
+            },
+            "low_native_pnl": "-6930",
+            "high_native_pnl": "-6370"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2024-10-04T16:26:00+00:00": {
+      "target_ns": 1728059160000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1728059100000000000,
+        "source_quote_ns": 1728059040000000000,
+        "cash": "12545.98989336",
+        "equity": "14540.27389336",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.940",
+            "avg_px_open": "60887.24999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1728058980000,
+              "open": "61860.5",
+              "high": "61899.9",
+              "low": "61860.5",
+              "close": "61888.4"
+            },
+            "low_native_pnl": "-914.855",
+            "high_native_pnl": "-951.891"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1054.5",
+            "avg_px_open": "139.91634423897582",
+            "mark_ohlc": {
+              "open_time_ms": 1728058980000,
+              "open": "142.52",
+              "high": "142.83",
+              "low": "142.51",
+              "close": "142.7"
+            },
+            "low_native_pnl": "2735.01",
+            "high_native_pnl": "3072.45"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1728059160000000000,
+        "source_quote_ns": 1728059100000000000,
+        "cash": "12545.98989336",
+        "equity": "14745.98689336",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.940",
+            "avg_px_open": "60887.24999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1728059040000,
+              "open": "61888.4",
+              "high": "61920.1",
+              "low": "61871.12",
+              "close": "61882.7"
+            },
+            "low_native_pnl": "-924.819",
+            "high_native_pnl": "-970.879"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1054.5",
+            "avg_px_open": "139.91634423897582",
+            "mark_ohlc": {
+              "open_time_ms": 1728059040000,
+              "open": "142.7",
+              "high": "142.94",
+              "low": "142.7",
+              "close": "142.89"
+            },
+            "low_native_pnl": "2935.365",
+            "high_native_pnl": "3188.445"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-01-13T00:37:00+00:00": {
+      "target_ns": 1736728620000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1736728560000000000,
+        "source_quote_ns": 1736728500000000000,
+        "cash": "192375.706477",
+        "equity": "209255.706477",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "4000.0",
+            "avg_px_open": "187.23",
+            "mark_ohlc": {
+              "open_time_ms": 1736728440000,
+              "open": "191.414",
+              "high": "191.68",
+              "low": "191.352",
+              "close": "191.45"
+            },
+            "low_native_pnl": "16480",
+            "high_native_pnl": "17800"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1736728620000000000,
+        "source_quote_ns": 1736728560000000000,
+        "cash": "192375.706477",
+        "equity": "210575.706477",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "4000.0",
+            "avg_px_open": "187.23",
+            "mark_ohlc": {
+              "open_time_ms": 1736728500000,
+              "open": "191.45",
+              "high": "191.82",
+              "low": "191.441",
+              "close": "191.78"
+            },
+            "low_native_pnl": "16840",
+            "high_native_pnl": "18360"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-01-13T14:37:00+00:00": {
+      "target_ns": 1736779020000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1736778960000000000,
+        "source_quote_ns": 1736778900000000000,
+        "cash": "192356.100205",
+        "equity": "130956.100205",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "4000.0",
+            "avg_px_open": "187.23",
+            "mark_ohlc": {
+              "open_time_ms": 1736778840000,
+              "open": "172.72",
+              "high": "173.096",
+              "low": "171.2",
+              "close": "171.88"
+            },
+            "low_native_pnl": "-64120",
+            "high_native_pnl": "-56520"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1736779020000000000,
+        "source_quote_ns": 1736778960000000000,
+        "cash": "192356.100205",
+        "equity": "121076.100205",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "4000.0",
+            "avg_px_open": "187.23",
+            "mark_ohlc": {
+              "open_time_ms": 1736778900000,
+              "open": "171.88",
+              "high": "172.6",
+              "low": "168.923",
+              "close": "169.41"
+            },
+            "low_native_pnl": "-73240",
+            "high_native_pnl": "-58520"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-01-14T14:42:00+00:00": {
+      "target_ns": 1736865720000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1736865660000000000,
+        "source_quote_ns": 1736865600000000000,
+        "cash": "191996.73031108",
+        "equity": "215836.73031108",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "6000.0",
+            "avg_px_open": "185.73666666666668",
+            "mark_ohlc": {
+              "open_time_ms": 1736865540000,
+              "open": "189.96",
+              "high": "189.98",
+              "low": "189.535",
+              "close": "189.71"
+            },
+            "low_native_pnl": "22760",
+            "high_native_pnl": "25460"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1736865720000000000,
+        "source_quote_ns": 1736865660000000000,
+        "cash": "191996.73031108",
+        "equity": "217876.73031108",
+        "held_native_positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "6000.0",
+            "avg_px_open": "185.73666666666668",
+            "mark_ohlc": {
+              "open_time_ms": 1736865600000,
+              "open": "189.71",
+              "high": "190.05",
+              "low": "189.71",
+              "close": "190.05"
+            },
+            "low_native_pnl": "23840",
+            "high_native_pnl": "25880"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-04-11T01:01:00+00:00": {
+      "target_ns": 1744333260000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1744333200000000000,
+        "source_quote_ns": 1744333140000000000,
+        "cash": "730949.99342633",
+        "equity": "750913.91592633",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "41.650",
+            "avg_px_open": "79549.65",
+            "mark_ohlc": {
+              "open_time_ms": 1744333080000,
+              "open": "79143.72",
+              "high": "79143.72",
+              "low": "79057.36",
+              "close": "79060"
+            },
+            "low_native_pnl": "20502.2125",
+            "high_native_pnl": "16907.8175"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_px_open": "112.65",
+            "mark_ohlc": {
+              "open_time_ms": 1744333080000,
+              "open": "112.18",
+              "high": "112.242",
+              "low": "112.165",
+              "close": "112.222"
+            },
+            "low_native_pnl": "-480",
+            "high_native_pnl": "-410"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1744333260000000000,
+        "source_quote_ns": 1744333200000000000,
+        "cash": "730949.99342633",
+        "equity": "753159.67592633",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "41.650",
+            "avg_px_open": "79549.65",
+            "mark_ohlc": {
+              "open_time_ms": 1744333140000,
+              "open": "79060",
+              "high": "79060",
+              "low": "78933.7",
+              "close": "79005.6"
+            },
+            "low_native_pnl": "25654.3175",
+            "high_native_pnl": "20393.9225"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_px_open": "112.65",
+            "mark_ohlc": {
+              "open_time_ms": 1744333140000,
+              "open": "112.222",
+              "high": "112.26",
+              "low": "112.104",
+              "close": "112.2"
+            },
+            "low_native_pnl": "-550",
+            "high_native_pnl": "-390"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-06-06T15:18:00+00:00": {
+      "target_ns": 1749223080000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1749223020000000000,
+        "source_quote_ns": 1749222960000000000,
+        "cash": "500834.07386164",
+        "equity": "384502.34141164",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "30.711",
+            "avg_px_open": "101382.65",
+            "mark_ohlc": {
+              "open_time_ms": 1749222900000,
+              "open": "105128.56",
+              "high": "105274.4",
+              "low": "105128.56",
+              "close": "105170.55"
+            },
+            "low_native_pnl": "-115041.87045",
+            "high_native_pnl": "-119519.53425"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1749223080000000000,
+        "source_quote_ns": 1749223020000000000,
+        "cash": "500834.07386164",
+        "equity": "382813.23641164",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "30.711",
+            "avg_px_open": "101382.65",
+            "mark_ohlc": {
+              "open_time_ms": 1749222960000,
+              "open": "105170.55",
+              "high": "105293.94",
+              "low": "105152.29",
+              "close": "105225.64"
+            },
+            "low_native_pnl": "-115769.72115",
+            "high_native_pnl": "-120118.39875"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-08-02T18:16:00+00:00": {
+      "target_ns": 1754158560000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1754158500000000000,
+        "source_quote_ns": 1754158440000000000,
+        "cash": "694396.96271588",
+        "equity": "715992.40691588",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "27.788",
+            "avg_px_open": "113427.45000000001",
+            "mark_ohlc": {
+              "open_time_ms": 1754158380000,
+              "open": "112630.1",
+              "high": "112661.89",
+              "low": "112630.1",
+              "close": "112650.3"
+            },
+            "low_native_pnl": "22156.7618",
+            "high_native_pnl": "21273.1034"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1754158560000000000,
+        "source_quote_ns": 1754158500000000000,
+        "cash": "694396.96271588",
+        "equity": "721419.40331588",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "27.788",
+            "avg_px_open": "113427.45000000001",
+            "mark_ohlc": {
+              "open_time_ms": 1754158440000,
+              "open": "112650.3",
+              "high": "112651.3",
+              "low": "112454.58",
+              "close": "112455.03"
+            },
+            "low_native_pnl": "27033.5558",
+            "high_native_pnl": "21567.6562"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-09-06T17:47:00+00:00": {
+      "target_ns": 1757180820000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1757180760000000000,
+        "source_quote_ns": 1757180700000000000,
+        "cash": "979309.73698036",
+        "equity": "1013385.91688036",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "36.722",
+            "avg_px_open": "110876.15",
+            "mark_ohlc": {
+              "open_time_ms": 1757180640000,
+              "open": "110002.66",
+              "high": "110002.83",
+              "low": "109942.5",
+              "close": "109948.2"
+            },
+            "low_native_pnl": "34285.4953",
+            "high_native_pnl": "32071.1587"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1757180820000000000,
+        "source_quote_ns": 1757180760000000000,
+        "cash": "979309.73698036",
+        "equity": "1013701.72608036",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "36.722",
+            "avg_px_open": "110876.15",
+            "mark_ohlc": {
+              "open_time_ms": 1757180700000,
+              "open": "109948.2",
+              "high": "109959.3",
+              "low": "109939.31",
+              "close": "109939.61"
+            },
+            "low_native_pnl": "34403.0057",
+            "high_native_pnl": "33668.5657"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-09-18T17:14:00+00:00": {
+      "target_ns": 1758215640000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1758215580000000000,
+        "source_quote_ns": 1758215520000000000,
+        "cash": "863904.25977577",
+        "equity": "714679.74467577",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "24.038",
+            "avg_px_open": "114130.84999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1758215460000,
+              "open": "117573.7",
+              "high": "117598.9",
+              "low": "117558.12",
+              "close": "117559.4"
+            },
+            "low_native_pnl": "82384.2355",
+            "high_native_pnl": "83364.9859"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "15000.0",
+            "avg_px_open": "236.98733333333334",
+            "mark_ohlc": {
+              "open_time_ms": 1758215460000,
+              "open": "252.631",
+              "high": "252.96",
+              "low": "252.425",
+              "close": "252.425"
+            },
+            "low_native_pnl": "-231640",
+            "high_native_pnl": "-239590"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1758215640000000000,
+        "source_quote_ns": 1758215580000000000,
+        "cash": "863904.25977577",
+        "equity": "706291.21667577",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "24.038",
+            "avg_px_open": "114130.84999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1758215520000,
+              "open": "117559.4",
+              "high": "117703.43",
+              "low": "117559.4",
+              "close": "117703.43"
+            },
+            "low_native_pnl": "82415.4849",
+            "high_native_pnl": "85876.9569"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "15000.0",
+            "avg_px_open": "236.98733333333334",
+            "mark_ohlc": {
+              "open_time_ms": 1758215520000,
+              "open": "252.425",
+              "high": "253.22",
+              "low": "252.228",
+              "close": "253.22"
+            },
+            "low_native_pnl": "-228640",
+            "high_native_pnl": "-243490"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-09-22T00:51:00+00:00": {
+      "target_ns": 1758502260000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1758502200000000000,
+        "source_quote_ns": 1758502140000000000,
+        "cash": "862210.62225632",
+        "equity": "999722.16855632",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "24.038",
+            "avg_px_open": "114130.84999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1758502080000,
+              "open": "114655.6",
+              "high": "114683.2",
+              "low": "114560.5",
+              "close": "114634.7"
+            },
+            "low_native_pnl": "10327.9267",
+            "high_native_pnl": "13277.3893"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "22000.0",
+            "avg_px_open": "238.24",
+            "mark_ohlc": {
+              "open_time_ms": 1758502080000,
+              "open": "232.49",
+              "high": "232.55",
+              "low": "232.324",
+              "close": "232.538"
+            },
+            "low_native_pnl": "130240",
+            "high_native_pnl": "125180"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1758502260000000000,
+        "source_quote_ns": 1758502200000000000,
+        "cash": "862210.62225632",
+        "equity": "1011225.19035632",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "24.038",
+            "avg_px_open": "114130.84999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1758502140000,
+              "open": "114634.7",
+              "high": "114651.3",
+              "low": "114499.94",
+              "close": "114545.8"
+            },
+            "low_native_pnl": "8871.2239",
+            "high_native_pnl": "12510.5771"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "22000.0",
+            "avg_px_open": "238.24",
+            "mark_ohlc": {
+              "open_time_ms": 1758502140000,
+              "open": "232.538",
+              "high": "232.661",
+              "low": "231.9",
+              "close": "231.92"
+            },
+            "low_native_pnl": "139480",
+            "high_native_pnl": "122760"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-10-22T21:30:00+00:00": {
+      "target_ns": 1761168600000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1761168540000000000,
+        "source_quote_ns": 1761168480000000000,
+        "cash": "1986935.49594458",
+        "equity": "2199856.89244458",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "136.453",
+            "avg_px_open": "108337.9009915502",
+            "mark_ohlc": {
+              "open_time_ms": 1761168420000,
+              "open": "106805.16",
+              "high": "106805.16",
+              "low": "106728.97",
+              "close": "106777.54"
+            },
+            "low_native_pnl": "219539.367",
+            "high_native_pnl": "209141.6484"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1761168600000000000,
+        "source_quote_ns": 1761168540000000000,
+        "cash": "1986935.49594458",
+        "equity": "2213051.89754458",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "136.453",
+            "avg_px_open": "108337.9009915502",
+            "mark_ohlc": {
+              "open_time_ms": 1761168480000,
+              "open": "106777.54",
+              "high": "106777.54",
+              "low": "106680.06",
+              "close": "106680.8"
+            },
+            "low_native_pnl": "226211.9187",
+            "high_native_pnl": "212921.3965"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-11-28T14:29:00+00:00": {
+      "target_ns": 1764340140000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1764340080000000000,
+        "source_quote_ns": 1764340020000000000,
+        "cash": "2002774.55261994",
+        "equity": "1146381.36431994",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "159.562",
+            "avg_px_open": "87414.85",
+            "mark_ohlc": {
+              "open_time_ms": 1764339960000,
+              "open": "92667.3",
+              "high": "92800",
+              "low": "92667.3",
+              "close": "92782.02"
+            },
+            "low_native_pnl": "-838091.4269",
+            "high_native_pnl": "-859265.3043"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1764340140000000000,
+        "source_quote_ns": 1764340080000000000,
+        "cash": "2002774.55261994",
+        "equity": "1120420.62691994",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "159.562",
+            "avg_px_open": "87414.85",
+            "mark_ohlc": {
+              "open_time_ms": 1764340020000,
+              "open": "92782.02",
+              "high": "92944.7",
+              "low": "92782.02",
+              "close": "92944.7"
+            },
+            "low_native_pnl": "-856393.1883",
+            "high_native_pnl": "-882353.9257"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2025-12-01T03:33:00+00:00": {
+      "target_ns": 1764559980000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1764559920000000000,
+        "source_quote_ns": 1764559860000000000,
+        "cash": "2003431.21887417",
+        "equity": "2180010.50617417",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "159.562",
+            "avg_px_open": "87414.85",
+            "mark_ohlc": {
+              "open_time_ms": 1764559800000,
+              "open": "86359.2",
+              "high": "86374.69",
+              "low": "86306.14",
+              "close": "86308.17"
+            },
+            "low_native_pnl": "176914.3675",
+            "high_native_pnl": "165968.4143"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1764559980000000000,
+        "source_quote_ns": 1764559920000000000,
+        "cash": "2003431.21887417",
+        "equity": "2194514.69197417",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "159.562",
+            "avg_px_open": "87414.85",
+            "mark_ohlc": {
+              "open_time_ms": 1764559860000,
+              "open": "86308.17",
+              "high": "86337.8",
+              "low": "86216.49",
+              "close": "86217.3"
+            },
+            "low_native_pnl": "191211.1227",
+            "high_native_pnl": "171856.2521"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2026-02-08T00:44:00+00:00": {
+      "target_ns": 1770511440000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1770511380000000000,
+        "source_quote_ns": 1770511320000000000,
+        "cash": "2773274.53127506",
+        "equity": "2871587.89747506",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "245.599",
+            "avg_px_open": "69271.30035220012",
+            "mark_ohlc": {
+              "open_time_ms": 1770511260000,
+              "open": "68917.1",
+              "high": "68958.6",
+              "low": "68870.4",
+              "close": "68871"
+            },
+            "low_native_pnl": "98460.7256",
+            "high_native_pnl": "76798.8938"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1770511440000000000,
+        "source_quote_ns": 1770511380000000000,
+        "cash": "2773274.53127506",
+        "equity": "2876499.87747506",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "245.599",
+            "avg_px_open": "69271.30035220012",
+            "mark_ohlc": {
+              "open_time_ms": 1770511320000,
+              "open": "68871",
+              "high": "68911.9",
+              "low": "68850.97",
+              "close": "68850.97"
+            },
+            "low_native_pnl": "103225.3462",
+            "high_native_pnl": "88268.3671"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2026-02-08T23:09:00+00:00": {
+      "target_ns": 1770592140000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1770592080000000000,
+        "source_quote_ns": 1770592020000000000,
+        "cash": "2772324.64046475",
+        "equity": "2087373.67586475",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "245.599",
+            "avg_px_open": "69271.30035220012",
+            "mark_ohlc": {
+              "open_time_ms": 1770591960000,
+              "open": "71936.21",
+              "high": "72174.93",
+              "low": "71882.12",
+              "close": "72060.19"
+            },
+            "low_native_pnl": "-641209.7827",
+            "high_native_pnl": "-713121.1699"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1770592140000000000,
+        "source_quote_ns": 1770592080000000000,
+        "cash": "2772324.64046475",
+        "equity": "2065564.48466475",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "245.599",
+            "avg_px_open": "69271.30035220012",
+            "mark_ohlc": {
+              "open_time_ms": 1770592020000,
+              "open": "72060.19",
+              "high": "72243.35",
+              "low": "71941.67",
+              "close": "72149"
+            },
+            "low_native_pnl": "-655847.4831",
+            "high_native_pnl": "-729944.7014"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2026-02-09T10:33:00+00:00": {
+      "target_ns": 1770633180000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1770633120000000000,
+        "source_quote_ns": 1770633060000000000,
+        "cash": "2772276.73750194",
+        "equity": "2854233.21030194",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "245.599",
+            "avg_px_open": "69271.30035220012",
+            "mark_ohlc": {
+              "open_time_ms": 1770633000000,
+              "open": "69002",
+              "high": "69002",
+              "low": "68937.58",
+              "close": "68937.58"
+            },
+            "low_native_pnl": "81956.4728",
+            "high_native_pnl": "66139.8972"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1770633180000000000,
+        "source_quote_ns": 1770633120000000000,
+        "cash": "2772276.73750194",
+        "equity": "2885620.76250194",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "245.599",
+            "avg_px_open": "69271.30035220012",
+            "mark_ohlc": {
+              "open_time_ms": 1770633060000,
+              "open": "68937.58",
+              "high": "68957.9",
+              "low": "68793.02",
+              "close": "68809.8"
+            },
+            "low_native_pnl": "117470.0882",
+            "high_native_pnl": "76970.8131"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2026-07-06T13:40:00+00:00": {
+      "target_ns": 1783345200000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1783345140000000000,
+        "source_quote_ns": 1783345080000000000,
+        "cash": "8903447.81930497",
+        "equity": "9131044.14025497",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "185.543",
+            "avg_px_open": "62653.649999999994",
+            "mark_ohlc": {
+              "open_time_ms": 1783345020000,
+              "open": "61378.28",
+              "high": "61462.05",
+              "low": "61376.81",
+              "close": "61427"
+            },
+            "low_native_pnl": "236910.57955",
+            "high_native_pnl": "221083.76165"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1783345200000000000,
+        "source_quote_ns": 1783345140000000000,
+        "cash": "8903447.81930497",
+        "equity": "9142232.38315497",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "185.543",
+            "avg_px_open": "62653.649999999994",
+            "mark_ohlc": {
+              "open_time_ms": 1783345080000,
+              "open": "61427",
+              "high": "61454.9",
+              "low": "61285.5",
+              "close": "61366.7"
+            },
+            "low_native_pnl": "253850.65545",
+            "high_native_pnl": "222419.67125"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    },
+    "2026-08-19T06:14:00+00:00": {
+      "target_ns": 1787120040000000000,
+      "prior_native_receipt": {
+        "receipt_ns": 1787119980000000000,
+        "source_quote_ns": 1787119920000000000,
+        "cash": "5093636.29198324",
+        "equity": "4937125.91158324",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "248.666",
+            "avg_px_open": "64778.700000000004",
+            "mark_ohlc": {
+              "open_time_ms": 1787119860000,
+              "open": "64155.8",
+              "high": "64159.1",
+              "low": "64149.11",
+              "close": "64149.34"
+            },
+            "low_native_pnl": "-156560.1136",
+            "high_native_pnl": "-154073.4536"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      },
+      "first_native_receipt_at_or_after": {
+        "receipt_ns": 1787120040000000000,
+        "source_quote_ns": 1787119980000000000,
+        "cash": "5093636.29198324",
+        "equity": "4934241.38598324",
+        "held_native_positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "248.666",
+            "avg_px_open": "64778.700000000004",
+            "mark_ohlc": {
+              "open_time_ms": 1787119920000,
+              "open": "64149.34",
+              "high": "64149.35",
+              "low": "64137.74",
+              "close": "64137.74"
+            },
+            "low_native_pnl": "-159394.906",
+            "high_native_pnl": "-156510.3804"
+          }
+        ],
+        "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+        "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+      }
+    }
+  },
+  "monthly": [
+    {
+      "month": "2024-09",
+      "start_equity": "10000",
+      "first_receipt_ns": 1725148920000000000,
+      "last_equity": "12615.71225975",
+      "last_receipt_ns": 1727740800000000000,
+      "samples": 43199,
+      "peak": "13426.6743211",
+      "local_DD_percent": "29.10658646317584583302133522",
+      "return_percent": "26.157122597500"
+    },
+    {
+      "month": "2024-10",
+      "start_equity": "12615.71225975",
+      "first_receipt_ns": 1727740860000000000,
+      "last_equity": "29003.96819593",
+      "last_receipt_ns": 1730419200000000000,
+      "samples": 44640,
+      "peak": "29003.96819593",
+      "local_DD_percent": "57.58541045962226379114466259",
+      "return_percent": "129.9035329813772942888398061"
+    },
+    {
+      "month": "2024-11",
+      "start_equity": "29003.96819593",
+      "first_receipt_ns": 1730419260000000000,
+      "last_equity": "83683.51437181",
+      "last_receipt_ns": 1733011200000000000,
+      "samples": 43200,
+      "peak": "84944.22503814",
+      "local_DD_percent": "29.14224031258881857862383291",
+      "return_percent": "188.5243626199843287603430836"
+    },
+    {
+      "month": "2024-12",
+      "start_equity": "83683.51437181",
+      "first_receipt_ns": 1733011260000000000,
+      "last_equity": "98502.68384435",
+      "last_receipt_ns": 1735689600000000000,
+      "samples": 44640,
+      "peak": "109353.33629812",
+      "local_DD_percent": "25.38488340967161144518842698",
+      "return_percent": "17.70858882276107083420524450"
+    },
+    {
+      "month": "2025-01",
+      "start_equity": "98502.68384435",
+      "first_receipt_ns": 1735689660000000000,
+      "last_equity": "251123.86326088",
+      "last_receipt_ns": 1738368000000000000,
+      "samples": 44640,
+      "peak": "287635.95594985",
+      "local_DD_percent": "42.50234168478287336887081078",
+      "return_percent": "154.9411381091868333932396260"
+    },
+    {
+      "month": "2025-02",
+      "start_equity": "251123.86326088",
+      "first_receipt_ns": 1738368060000000000,
+      "last_equity": "333486.2285582",
+      "last_receipt_ns": 1740787200000000000,
+      "samples": 40320,
+      "peak": "334409.30476281",
+      "local_DD_percent": "19.80975976430873211582465772",
+      "return_percent": "32.79750646865362417771361910"
+    },
+    {
+      "month": "2025-03",
+      "start_equity": "333486.2285582",
+      "first_receipt_ns": 1740787260000000000,
+      "last_equity": "613353.36689699",
+      "last_receipt_ns": 1743465600000000000,
+      "samples": 44640,
+      "peak": "625621.60369763",
+      "local_DD_percent": "17.88082338287731798907370611",
+      "return_percent": "83.92164784398213941683123950"
+    },
+    {
+      "month": "2025-04",
+      "start_equity": "613353.36689699",
+      "first_receipt_ns": 1743465660000000000,
+      "last_equity": "572355.38508753",
+      "last_receipt_ns": 1746057600000000000,
+      "samples": 43200,
+      "peak": "753159.67592633",
+      "local_DD_percent": "36.46335093538419210776992452",
+      "return_percent": "-6.684235225914302465419468870"
+    },
+    {
+      "month": "2025-05",
+      "start_equity": "572355.38508753",
+      "first_receipt_ns": 1746057660000000000,
+      "last_equity": "544010.30674149",
+      "last_receipt_ns": 1748736000000000000,
+      "samples": 44640,
+      "peak": "680239.35698357",
+      "local_DD_percent": "28.67669574532888738911317303",
+      "return_percent": "-4.952356365390919222918349660"
+    },
+    {
+      "month": "2025-06",
+      "start_equity": "544010.30674149",
+      "first_receipt_ns": 1748736060000000000,
+      "last_equity": "534098.90596012",
+      "last_receipt_ns": 1751328000000000000,
+      "samples": 43200,
+      "peak": "572421.76601896",
+      "local_DD_percent": "33.12392030897017020652901863",
+      "return_percent": "-1.821914154666894993448973430"
+    },
+    {
+      "month": "2025-07",
+      "start_equity": "534098.90596012",
+      "first_receipt_ns": 1751328060000000000,
+      "last_equity": "695537.98674012",
+      "last_receipt_ns": 1754006400000000000,
+      "samples": 44640,
+      "peak": "697617.98674012",
+      "local_DD_percent": "9.633117912396136578606798806",
+      "return_percent": "30.22643914422365507161634100"
+    },
+    {
+      "month": "2025-08",
+      "start_equity": "695537.98674012",
+      "first_receipt_ns": 1754006460000000000,
+      "last_equity": "979519.01588307",
+      "last_receipt_ns": 1756684800000000000,
+      "samples": 44640,
+      "peak": "1001340.74456355",
+      "local_DD_percent": "21.58059159864273608294529322",
+      "return_percent": "40.82897477302793810457185070"
+    },
+    {
+      "month": "2025-09",
+      "start_equity": "979519.01588307",
+      "first_receipt_ns": 1756684860000000000,
+      "last_equity": "1365671.72992158",
+      "last_receipt_ns": 1759276800000000000,
+      "samples": 43200,
+      "peak": "1365671.72992158",
+      "local_DD_percent": "30.32553871573662459049951825",
+      "return_percent": "39.42268682659316005625513880"
+    },
+    {
+      "month": "2025-10",
+      "start_equity": "1365671.72992158",
+      "first_receipt_ns": 1759276860000000000,
+      "last_equity": "1655926.73587335",
+      "last_receipt_ns": 1761955200000000000,
+      "samples": 44640,
+      "peak": "2213051.89754458",
+      "local_DD_percent": "37.13459562191019053007781699",
+      "return_percent": "21.25364387299992711463731790"
+    },
+    {
+      "month": "2025-11",
+      "start_equity": "1655926.73587335",
+      "first_receipt_ns": 1761955260000000000,
+      "last_equity": "1542962.83550877",
+      "last_receipt_ns": 1764547200000000000,
+      "samples": 43200,
+      "peak": "2184375.03089399",
+      "local_DD_percent": "48.70749706100649974122383156",
+      "return_percent": "-6.821793375115830082810149080"
+    },
+    {
+      "month": "2025-12",
+      "start_equity": "1542962.83550877",
+      "first_receipt_ns": 1764547260000000000,
+      "last_equity": "2341751.82061348",
+      "last_receipt_ns": 1767225600000000000,
+      "samples": 44640,
+      "peak": "2503253.94873934",
+      "local_DD_percent": "11.58511191480401127490286751",
+      "return_percent": "51.76981368065943849755195010"
+    },
+    {
+      "month": "2026-01",
+      "start_equity": "2341751.82061348",
+      "first_receipt_ns": 1767225660000000000,
+      "last_equity": "2779650.66218342",
+      "last_receipt_ns": 1769904000000000000,
+      "samples": 44640,
+      "peak": "2779650.66218342",
+      "local_DD_percent": "23.77406147818405974294625063",
+      "return_percent": "18.69962639573059163833475600"
+    },
+    {
+      "month": "2026-02",
+      "start_equity": "2779650.66218342",
+      "first_receipt_ns": 1769904060000000000,
+      "last_equity": "4111809.87689165",
+      "last_receipt_ns": 1772323200000000000,
+      "samples": 40320,
+      "peak": "4235237.88545862",
+      "local_DD_percent": "28.19174091264465976615059244",
+      "return_percent": "47.92541857262800159936377360"
+    },
+    {
+      "month": "2026-03",
+      "start_equity": "4111809.87689165",
+      "first_receipt_ns": 1772323260000000000,
+      "last_equity": "6226501.66727276",
+      "last_receipt_ns": 1775001600000000000,
+      "samples": 44640,
+      "peak": "6383647.22510034",
+      "local_DD_percent": "28.46305639446236079203969453",
+      "return_percent": "51.42970744502723242076318910"
+    },
+    {
+      "month": "2026-04",
+      "start_equity": "6226501.66727276",
+      "first_receipt_ns": 1775001660000000000,
+      "last_equity": "8456202.06675303",
+      "last_receipt_ns": 1777593600000000000,
+      "samples": 43200,
+      "peak": "8550391.47301517",
+      "local_DD_percent": "13.26062643642358730007788154",
+      "return_percent": "35.80984184425490294156232700"
+    },
+    {
+      "month": "2026-05",
+      "start_equity": "8456202.06675303",
+      "first_receipt_ns": 1777593660000000000,
+      "last_equity": "8466951.03333887",
+      "last_receipt_ns": 1780272000000000000,
+      "samples": 44640,
+      "peak": "9005240.65681901",
+      "local_DD_percent": "16.49438212050542406953358967",
+      "return_percent": "0.127113407425555219792489500"
+    },
+    {
+      "month": "2026-06",
+      "start_equity": "8466951.03333887",
+      "first_receipt_ns": 1780272060000000000,
+      "last_equity": "8889495.91675194",
+      "last_receipt_ns": 1782864000000000000,
+      "samples": 43200,
+      "peak": "8952158.72759174",
+      "local_DD_percent": "3.194142881352737740738776953",
+      "return_percent": "4.990519984694455300127468000"
+    },
+    {
+      "month": "2026-07",
+      "start_equity": "8889495.91675194",
+      "first_receipt_ns": 1782864060000000000,
+      "last_equity": "6189901.72525212",
+      "last_receipt_ns": 1785542400000000000,
+      "samples": 44640,
+      "peak": "9142232.38315497",
+      "local_DD_percent": "34.05941375931100226220530255",
+      "return_percent": "-30.36836077974376953358841837"
+    },
+    {
+      "month": "2026-08",
+      "start_equity": "6189901.72525212",
+      "first_receipt_ns": 1785542460000000000,
+      "last_equity": "5358246.19903925",
+      "last_receipt_ns": 1788220800000000000,
+      "samples": 44640,
+      "peak": "6368580.21940216",
+      "local_DD_percent": "22.52211299857923749841226171",
+      "return_percent": "-13.43568223094843978252874109"
+    }
+  ],
+  "receipts": 1051199,
+  "missing_source_minutes": 0,
+  "last_native_receipt": {
+    "receipt_ns": 1788220800000000000,
+    "source_quote_ns": 1788220740000000000,
+    "cash": "5296496.40453925",
+    "equity": "5358246.19903925",
+    "held_native_positions": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "2",
+        "quantity": "141.709",
+        "avg_px_open": "78089.14931020612",
+        "mark_ohlc": {
+          "open_time_ms": 1788220680000,
+          "open": "78522.2",
+          "high": "78526.65",
+          "low": "78520.2",
+          "close": "78524.9"
+        },
+        "low_native_pnl": "61083.7622",
+        "high_native_pnl": "61990.6998"
+      }
+    ],
+    "pending": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+    "unused_rights": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT",
+    "admission": "UNKNOWN_NOT_EXPORTED_IN_RECEIPT"
+  },
+  "terminal_total": "5352125.97225949",
+  "native_fees": "661862.02516131",
+  "fill_count": 543,
+  "terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "11127685.0541"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "signed_asset_funding": "UNKNOWN",
+  "cash_bridge": "UNALLOCATED_NOT_CALLED_FUNDING",
+  "monthly_basis": "SOURCE_QUOTE_UTC_CALENDAR; observed later native receipt; boundary start is preceding receipt equity",
+  "no_engine": true
+}

@@ -1,0 +1,112 @@
+{
+  "status": "SC01_SC03_SC04_SOURCE_GO_ROOT_ENGINE_DECISIONS_SEPARATE",
+  "sc01_commit": "6e7ab3da243d3916538f246f1cc7420bdc260a25",
+  "native_version": "1.231.0",
+  "blocking_sc01_source_findings": [],
+  "evidence_reviewed": [
+    "canonical frozen git diff and surrounding submit path",
+    "owner native matrix/shared/lifecycle JSON receipts",
+    "owner test source",
+    "131 relevant PASS log",
+    "SC01-CONTRACT.md"
+  ],
+  "independent_suite_rerun": false,
+  "owner_reported_focused_pass": 29,
+  "owner_log_relevant_pass": 131,
+  "execution_findings": {
+    "default_off": true,
+    "cap_before_minimum_margin": true,
+    "original_rights_clock_unchanged_in_diff": true,
+    "native_status_preserved": true,
+    "depth1000_local_correspondence": "old2500 CANCELED1000 vs child1000 FILLED1000; tested cash/initmargin/rights/held/pending equality",
+    "depth2000_divergence": "old fills2000 versus child1000",
+    "shared_displayed_depth": "not cumulatively consumed across separate IOC in pinned default L1 fixture",
+    "historical_equivalence": "NOT_TESTED"
+  },
+  "precision_limits": [
+    "late_fill fixture suppresses cancellation transport; proves local unconfirmed cancellation request then real native fill, not cancel ACK race",
+    "local margin denial mocks tier gate; no historical admission equivalence claim",
+    "short depth fixtures are not portfolio liquidity robustness"
+  ],
+  "data_review": {
+    "source_sha256": "4bd3c42ddd4ecb589ec84b83a19925b66785cfe36556bf8934ec0b5acf80f73b",
+    "status": "OFFLINE_DESCRIPTION_AND_ELIGIBILITY_PASS",
+    "targeted_checks_reported_pass": 28,
+    "parents": 83,
+    "first_repeat": [
+      50,
+      33
+    ],
+    "independent_actual_waves": 50,
+    "completed_censored": [
+      81,
+      2
+    ],
+    "descriptive_eligible_repeat": 24,
+    "descriptive_k_below_one": 19,
+    "economic_status_correction": "mechanical verification no longer presented as benefit; scoped measured E4vsB retained",
+    "unknown_archival_state": [
+      "decision held",
+      "decision pending",
+      "decision equity",
+      "full internal E4 gate"
+    ],
+    "live_hook_prefix_proof": "PENDING",
+    "predictive_benefit": "HYPOTHESIS"
+  },
+  "pending_delta_review": [],
+  "full_engine_go": false,
+  "full_engine_go_owner": "root",
+  "reviewer_full_attempts": 0,
+  "physical_full_cap": 6,
+  "staged_g1": {
+    "explicit_E4_control": "SC01 checkpoint plus reviewed precision delta, final pins/tests/preflight; H flags OFF",
+    "unused_hypothesis_code_completion_required_for_control": false,
+    "sc01_additional_blockers": "none after precision review; root final pin/preflight verification remains",
+    "H_SOL_H_BTC_candidates": "individual delta review/GO before their engines",
+    "full_engine_go_owner": "root"
+  },
+  "precision_delta": {
+    "commit": "1ad834a91447bd877cc0a5aa204684d4badda16c",
+    "status": "PASS",
+    "scope": "only reporting boundary assertion localcontext precision80; unchanged inputs/tolerance/money",
+    "owner_frozen_tests_pass": 31,
+    "reviewer_independent_precision_tests_pass": 2,
+    "snapshot": "runtime/var/research-jobs/system-contract-repair-20261023/source-1ad834a",
+    "hypothesis_source_in_snapshot": false
+  },
+  "hypothesis_delta": {
+    "commit": "27c1904a9b132c30632c1b471d7f688ab0f6c053",
+    "status": "FUNCTIONAL_AND_BOUNDED_OBSERVER_SOURCE_PASS",
+    "reviewer_independent_risk_tests_pass": 9,
+    "owner_frozen_focused_pass": 40,
+    "owner_relevant_pass": 142,
+    "functional_blockers": [],
+    "telemetry_gaps": [
+      "full internal gate vector remains explicitly unknown by design"
+    ]
+  },
+  "control_non_equivalence": {
+    "root_reported_total": "6022427.55763206",
+    "archive_E4_total": "5631617.35953723",
+    "status": "ECONOMICALLY_NOT_EQUIVALENT_MATCHED_S0_REQUIRED",
+    "first_difference_interpretation": "old same-time SOL_ADD margin denial vs explicit capped fill; old denied exact level unknown unless mapped; new calendar attempt not proven",
+    "scheduling_fix_justified": false,
+    "schedule_rule": "already authorized levels may coexist; new child-completion-created intraday attempts forbidden if demonstrated"
+  },
+  "final_observer_delta": {
+    "commit": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+    "status": "PASS",
+    "reviewer_independent_final_suite_pass": 42,
+    "functional_changes_from_27c": false,
+    "prefix_telemetry": "signed positions, native order qty/filled/leaves/status/owners, unresolved submissions, free margin, closed ATR/EMA/distance/wave age",
+    "gate_qualification": "PASSED_TO_Q0_NOT_FULL_INTERNAL_GATE_VECTOR",
+    "whole_advance_clock": "original two-level batch once per D1 in native CANCELED/FILLED modes, next-D1 unused-right retry",
+    "further_source_changes_requested": false
+  },
+  "root_preflight_pending": [
+    "final immutable source/config/input/engine/observer/terminal pins for each recipe",
+    "matched explicit-model controls and physical cap accounting",
+    "root individual historical engine GO"
+  ]
+}

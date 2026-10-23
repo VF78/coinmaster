@@ -1,0 +1,15 @@
+{
+  "recipe": "H_SOL",
+  "finished_utc": "2026-10-23T18:30:48.173107+00:00",
+  "source_commit": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+  "native_process_exit_code": 0,
+  "error": null,
+  "elapsed_monotonic_seconds": 176.87843662500381,
+  "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/H_SOL/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json",
+  "log_sha256": "2ce3686ad2d1905c5827569c4f2a5d3e288af82bece97560d68b4ed3002147c2",
+  "state": "COMPLETED_PENDING_INDEPENDENT_VALIDATION",
+  "total": "3964359.61000698",
+  "native_status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "config_sha256": "756503ebd4d2dae6fb16676e725caf591faa0b59467ac60a899c0a89322c86dc",
+  "config_exact": true
+}

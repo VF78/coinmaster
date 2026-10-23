@@ -1,0 +1,63 @@
+........................................                                 [100%]
+=============================== warnings summary ===============================
+tests/test_system_contract.py: 28 warnings
+tests/test_system_contract_risk.py: 7 warnings
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_system_contract.py: 18 warnings
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract.py:66: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_system_contract.py::test_two_native_levels_shared_liquidity[500]
+tests/test_system_contract.py::test_two_native_levels_shared_liquidity[1000]
+tests/test_system_contract.py::test_two_native_levels_shared_liquidity[2000]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract.py:85: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[rejected]
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[canceled]
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[late_fill]
+tests/test_system_contract.py::test_actual_native_receipts_terminal_and_late_fill[denied]
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract.py:150: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract.py::test_local_margin_denial_preserves_right_and_original_attempt
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract.py:164: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract.py::test_same_fill_money_rights_depth1000_explicit_vs_large_ioc
+tests/test_system_contract.py::test_same_fill_money_rights_depth1000_explicit_vs_large_ioc
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract.py:178: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_second_level_sees_first_native_reservation_before_ack_and_partial_to_held
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract_risk.py:68: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_unknown_pending_owner_and_missing_atr_fail_closed_without_right_spend
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract_risk.py:84: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_actual_partial_parent_one_label_first_fill_reference_and_closed_wave_marks
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract_risk.py:146: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_k_once_before_zero_tp_cap_and_current_future_mae_not_feature
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract_risk.py:164: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_pending_btc_sol_leaves_dedup_and_margin_reservations_are_native
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract_risk.py:187: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_missing_minutes_never_mints_zero_mae_label
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract_risk.py:203: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_system_contract_risk.py::test_closed_wilder14_price_units_seed_and_no_current_partial_bar
+  /Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/system-contract-repair-20261023/source-27c1904/runtime/tests/test_system_contract_risk.py:224: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+40 passed, 70 warnings in 1.87s
