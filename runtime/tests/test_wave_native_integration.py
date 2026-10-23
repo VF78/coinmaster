@@ -693,6 +693,7 @@ def test_btc_entry_local_denial_and_native_zero_terminal_are_distinct() -> None:
     assert strategy.daily_decision_status()["reason"] == "LOCAL_ENTRY_DENIED:INSTRUMENT_MISSING"
 
     rejected = WaveOverlayStrategy(probe_config())
+    rejected_engine = native_engine(rejected)
     entry = Intent("native-entry", "episode-2", "BTC_ENTRY", None, 1, requested_notional=100)
     rejected._domain.episode = Episode("episode-2", 1, 10_000, 1.0)
     rejected._domain.episode.pending[entry.id] = entry
@@ -700,10 +701,12 @@ def test_btc_entry_local_denial_and_native_zero_terminal_are_distinct() -> None:
     rejected.on_order_rejected(SimpleNamespace(client_order_id="order-1"))
     assert rejected._domain.episode is None
     assert rejected.daily_decision_status()["reason"] == "NATIVE_ENTRY_ZERO_FILL_TERMINAL"
+    rejected_engine.dispose()
 
 
 def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> None:
     strategy = WaveOverlayStrategy(probe_config())
+    strategy_engine = native_engine(strategy)
     entry = Intent("unknown-entry", "episode", "BTC_ENTRY", None, 1, requested_notional=100)
     strategy._domain.episode = Episode("episode", 1, 10_000, 1.0)
     strategy._domain.episode.pending[entry.id] = entry
@@ -714,8 +717,10 @@ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> No
     assert entry.id in strategy._domain.episode.pending
     strategy.on_order_expired(SimpleNamespace(client_order_id="order-unknown"))
     assert strategy._domain.episode is None
+    strategy_engine.dispose()
 
     partial = WaveOverlayStrategy(probe_config())
+    partial_engine = native_engine(partial)
     entry = Intent("partial-entry", "episode-2", "BTC_ENTRY", None, 1, requested_notional=100)
     partial._domain.episode = Episode("episode-2", 1, 10_000, 1.0)
     partial._domain.episode.pending[entry.id] = entry
@@ -725,6 +730,7 @@ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> No
     assert partial._domain.episode is not None
     assert partial._domain.episode.btc_open_qty == 0.25
     assert partial.daily_decision_status()["reason"] == "PARTIAL_ENTRY_RETAINED"
+    partial_engine.dispose()
 
 
 def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash(tmp_path) -> None:

@@ -1,6 +1,7 @@
 """Bounded B follow-ups: policy state only; existing native executor owns orders."""
 from decimal import Decimal as D, ROUND_CEILING, ROUND_FLOOR
 from math import isfinite
+from dataclasses import replace
 from coinmaster.venues.signals import DailySignalBar
 from nautilus_trader.model.data import CustomData, DataType
 
@@ -26,12 +27,13 @@ H4=DAY//6
 H1=DAY//24
 Z_REASON='ZERO_RETRACE_RISK'
 S_REASON='SOL_DOMINANT_ADVERSE_RISK'
+SB_REASON='SOL_ATR_BUDGET_RISK'
 
 class NextBandResearch:
     def _next_init(self):
         c=self.config
         self.next_band_audit=[]
-        self._next_enabled=bool(c.research_wait_4h or c.research_wait_persist or c.research_zero_retrace or c.research_sol_dominant)
+        self._next_enabled=bool(c.research_wait_4h or c.research_wait_persist or c.research_zero_retrace or c.research_sol_dominant or c.research_sol_budget or c.research_btc_early_tp3)
         if self._next_enabled and (c.research_regime_reentry_band != D('.5') or c.research_h4_ema is not None or c.research_sol_btc_open_only):
             raise ValueError('NEXT_REQUIRES_ORIGINAL_B')
         if c.research_wait_4h and c.research_wait_persist:raise ValueError('E4_EP_EXCLUSIVE')
@@ -49,6 +51,13 @@ class NextBandResearch:
         self._next_s=None
         self._next_risk_intents={}
         self._next_entry_terminal={}
+        self._next_sol_ohlc={int(ns):(float(h),float(l)) for ns,h,l in c.research_budget_sol_daily_seed}
+        self._next_budget_cut_used=False
+        self._next_budget_atr_cache=None
+        self._next_budget_last_ns=None
+        self._next_tp3_freeze=None
+        if (c.research_sol_budget or c.research_btc_early_tp3) and (not c.research_wait_4h or c.research_sol_dominant or c.research_zero_retrace or not c.research_btc_split_planref_v1 or not c.research_btc_split_tp_ioc):
+            raise ValueError('BUDGET_TP3_REQUIRES_EXACT_E4')
 
     def _next_log(self,event,ns,**kw):
         self.next_band_audit.append(dict(event=event,timestamp_ns=int(ns),**kw))
@@ -104,7 +113,7 @@ class NextBandResearch:
     def _next_higher(self,instrument):
         if self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None:return True
         def ordinary(i):
-            if not ((i.action.startswith('BTC') if instrument==self.config.btc_id else i.action.startswith('SOL')) and i.reason not in (Z_REASON,S_REASON) and i.action not in ('BTC_ENTRY','SOL_ADD')):return False
+            if not ((i.action.startswith('BTC') if instrument==self.config.btc_id else i.action.startswith('SOL')) and i.reason not in (Z_REASON,S_REASON,SB_REASON) and i.action not in ('BTC_ENTRY','SOL_ADD')):return False
             if instrument==self.config.btc_id and i.action=='BTC_REDUCE' and i.limit_price is not None:
                 q=self.cache.quote_tick(instrument)
                 if q is not None and (q.bid_price.as_decimal()<D(str(i.limit_price)) if i.side==-1 else q.ask_price.as_decimal()>D(str(i.limit_price))):return False
@@ -141,14 +150,14 @@ class NextBandResearch:
     def _next_before_submit(self,intent,ns):
         if not self._next_enabled:return True
         if intent.action=='SOL_ADD':
-            if self._next_s is not None:
+            if self._next_s is not None and not self.config.research_sol_budget:
                 self._domain.on_parent_terminal(intent.id);self._next_log('S_BLOCK_INCREASE',ns,episode_id=intent.episode_id);return False
             if self._next_z is not None:
                 self._next_cancel_task(self._next_z,ns,'SOL_INCREASE')
                 if any(self._next_risk_intents.get(i.id) is self._next_z for i in self._pending_by_order.values()):return False
         instrument=self.config.btc_id if intent.action.startswith('BTC') else self.config.sol_id
         task=self._next_z if instrument==self.config.btc_id else self._next_s
-        if task and intent.reason not in (Z_REASON,S_REASON) and intent.action not in ('BTC_ENTRY','SOL_ADD'):
+        if task and intent.reason not in (Z_REASON,S_REASON,SB_REASON) and intent.action not in ('BTC_ENTRY','SOL_ADD'):
             self._next_cancel_task(task,ns,'ORDINARY_OR_MANDATORY_REDUCTION')
             return not any(self._next_risk_intents.get(i.id) is task for i in self._pending_by_order.values())
         return True
@@ -232,7 +241,8 @@ class NextBandResearch:
                 executable=tick.bid_price.as_decimal() if z['side']==1 else tick.ask_price.as_decimal()
                 if z['side']*(executable-z['G'])<=0:
                     z['triggered']=True;self._next_log('Z_TRIGGER',ns,episode_id=z['episode_id'],G=str(z['G']),actual_quote=str(executable),slots=z['slots'])
-        if self._next_s:self._next_sol_cancel_adds()
+        if self.config.research_sol_budget:self._next_budget_signal(ns)
+        if self._next_s and not self.config.research_sol_budget:self._next_sol_cancel_adds()
         for task,instrument in ((self._next_z,self.config.btc_id),(self._next_s,self.config.sol_id)):
             if not task or task['canceled'] or not task['triggered'] or tick.instrument_id!=instrument:continue
             if self._next_higher(instrument):self._next_cancel_task(task,ns,'HIGHER_PRIORITY');continue
@@ -244,11 +254,12 @@ class NextBandResearch:
             else:qty=max(D(0),position.quantity.as_decimal()-task['remaining'])
             qty=(qty//step)*step
             if qty<=0:continue
-            intent=self._domain._intent(ep,'BTC_REDUCE' if task['kind']=='Z' else 'SOL_EXIT',-task['side'],None,quantity=float(qty),reason=Z_REASON if task['kind']=='Z' else S_REASON)
+            intent=self._domain._intent(ep,'BTC_REDUCE' if task['kind']=='Z' else 'SOL_EXIT',-task['side'],None,quantity=float(qty),reason=Z_REASON if task['kind']=='Z' else SB_REASON if task['kind']=='SB' else S_REASON)
             self._next_risk_intents[intent.id]=task
             self._next_log('RISK_CHILD',ns,kind=task['kind'],quantity=str(qty),intent_id=intent.id)
             self._submit_intent(intent,float(tick.bid_price),float(tick.ask_price),None,len(self._bars)-1,ts_now=ns)
         if self._next_s and self._hb_position(self.config.sol_id) is None and not self._next_busy(self.config.sol_id):self._next_s=None
+        if self.config.research_sol_budget and self._next_s and not self._next_budget_working():self._next_s=None
 
     def _next_risk_fill(self,intent,quantity,ns):
         task=self._next_risk_intents.get(intent.id)
@@ -264,3 +275,129 @@ class NextBandResearch:
         else:ep.sol_qty=max(0,ep.sol_qty-quantity)
         self._next_log('RISK_FILL',ns,kind=task['kind'],quantity=quantity,episode_id=ep.id,retired_lots=dict(ep.btc_risk_retired_lots))
         return True
+
+
+    def _next_budget_working(self):
+        task=self._next_s
+        if not task or task.get('canceled'):return False
+        position=self._hb_position(self.config.sol_id)
+        return self._next_busy(self.config.sol_id) or (position is not None and position.quantity.as_decimal()>task['remaining'])
+
+    def _next_budget_atrs(self):
+        ns=self._last_accepted_session
+        cached=self._next_budget_atr_cache
+        if cached and cached[0]==ns:return cached[1]
+        result=[]
+        for asset,ohlc in (('btc',self._hb_daily_ohlc),('sol',self._next_sol_ohlc)):
+            previous=last=None;atr=None;trs=[]
+            for row in self._bars:
+                stamp=int(row.close_time.timestamp()*1_000_000_000)
+                if stamp>ns:return None
+                close=getattr(row,asset+'_close')
+                if previous is not None:
+                    hl=ohlc.get(stamp)
+                    if hl is None or stamp!=last+DAY:return None
+                    h,l=hl
+                    if not all(isfinite(x) and x>0 for x in (h,l,close,previous)) or not l<=close<=h:return None
+                    tr=max(h-l,abs(h-previous),abs(l-previous))
+                    if atr is None:
+                        trs.append(tr)
+                        if len(trs)==14:atr=sum(trs)/14
+                    else:atr=(13*atr+tr)/14
+                previous=close;last=stamp
+            if last!=ns or atr is None or not isfinite(atr) or atr<=0:return None
+            result.append(D(str(atr)))
+        self._next_budget_atr_cache=(ns,tuple(result))
+        return tuple(result)
+
+    def _next_budget_state(self,ns):
+        marks=self._latest_marks
+        ids=(self.config.btc_id,self.config.sol_id)
+        if not all(i in marks and marks[i].ts_event==ns for i in ids):return None
+        try:equity=self._v3_equity()
+        except (ValueError,AttributeError,KeyError):return None
+        if not equity.is_finite() or equity<=0:return None
+        self._next_peak=max(self._next_peak,equity)
+        if self._last_accepted_session is None or not 0<=ns-self._last_accepted_session<=DAY:return None
+        atrs=self._next_budget_atrs()
+        if atrs is None:return None
+        # Unknown native orders are never assumed flat. Known resting BTC TP
+        # leaves can only reduce the conservative confirmed BTC reserve.
+        for order in self.cache.orders_open()+self.cache.orders_inflight():
+            if str(order.client_order_id) not in self._pending_by_order:return None
+        if any(i.action=='BTC_ENTRY' for i in self._pending_by_order.values()) or self._split_unfinished():return None
+        btc=self._hb_position(ids[0]);sol=self._hb_position(ids[1])
+        qb=btc.quantity.as_decimal() if btc else D(0);qs=sol.quantity.as_decimal() if sol else D(0)
+        b=marks[ids[0]].price;s=marks[ids[1]].price
+        fb=self.cache.instrument(ids[0]).taker_fee;fs=self.cache.instrument(ids[1]).taker_fee
+        ab,ass=atrs;rb=qb*(ab+fb*(b+ab))
+        cap=max(D(0),(equity-D('.55')*self._next_peak-rb-fs*s*qs)/(ass*(1+fs)))
+        step=self.cache.instrument(ids[1]).size_increment.as_decimal()
+        cap=(cap//step)*step
+        return dict(equity=equity,peak=self._next_peak,drawdown=1-equity/self._next_peak,btc_qty=qb,sol_qty=qs,btc_atr=ab,sol_atr=ass,btc_reserve=rb,sol_fee=fs,sol_mark=s,cap=cap,sol_stress=qs*ass,btc_stress=qb*ab,daily_ns=self._last_accepted_session)
+
+    def _next_budget_signal(self,ns):
+        if self._next_budget_last_ns==ns:return
+        self._next_budget_last_ns=ns
+        state=self._next_budget_state(ns)
+        sol=self._hb_position(self.config.sol_id)
+        if sol is None and not self._next_busy(self.config.sol_id):
+            if self._next_budget_cut_used:self._next_log('SB_NATIVE_FLAT_RESET',ns)
+            self._next_budget_cut_used=False;self._next_s=None
+            return
+        if state is None:
+            # Bounded audit: repeated missing states are counted once/session.
+            key=('SB_UNKNOWN',self._last_accepted_session)
+            if getattr(self,'_next_budget_unknown',None)!=key:
+                self._next_budget_unknown=key;self._next_log('SB_UNKNOWN',ns,reason='MARK_ATR_OR_NATIVE_OWNERSHIP')
+            return
+        if state['drawdown']<D('.35') or self._next_budget_cut_used or sol is None:return
+        if state['sol_stress']<=state['btc_stress'] or state['cap']>=state['sol_qty']:return
+        if self._next_higher(self.config.sol_id):return
+        if self._next_busy(self.config.sol_id,True):
+            self._next_sol_cancel_adds();return
+        ep=self._domain.episode
+        if ep is None:return
+        self._next_budget_cut_used=True
+        self._next_s=dict(kind='SB',episode_id=ep.id,side=1 if sol.is_long else -1,remaining=state['cap'],triggered=True,canceled=False)
+        self._next_log('SB_TRIGGER',ns,**{k:str(v) for k,v in state.items()})
+
+    def _next_budget_admit(self,qty,executable,ns):
+        state=self._next_budget_state(ns)
+        if state is None:
+            self._next_log('SB_ADD_UNKNOWN',ns,requested=str(qty));return False
+        if state['drawdown']<D('.35'):return True
+        if self._next_budget_working() or self._next_busy(self.config.sol_id,True):
+            self._next_log('SB_ADD_BUSY',ns,requested=str(qty));return False
+        post=state['equity']-qty*executable*state['sol_fee']-state['btc_reserve']-(state['sol_qty']+qty)*(state['sol_atr']+state['sol_fee']*(state['sol_mark']+state['sol_atr']))
+        allowed=post>=D('.55')*state['peak']
+        self._next_log('SB_ADD_ADMISSION',ns,requested=str(qty),allowed=allowed,post_stress_equity=str(post),**{k:str(v) for k,v in state.items()})
+        return allowed
+
+    def _next_tp3_target(self,target,ns):
+        if not self.config.research_btc_early_tp3 or target.level!=2:return target
+        ep=self._domain.episode;p=self._split_parent
+        if not ep or not p or self._split_unfinished() or not p.get('closed') or p.get('filled')!=p.get('quantity') or p.get('cancelled'):return target
+        frozen=self._next_tp3_freeze
+        if not frozen or frozen['episode_id']!=ep.id:
+            self._domain._ensure_btc_targets(ep)
+            inst=self.cache.instrument(self.config.btc_id);step=inst.size_increment.as_decimal()
+            actual=self._domain._lots(ep.btc_initial_qty,step)
+            lots=int((D(actual)*D('.20')).to_integral_value(rounding=ROUND_FLOOR))
+            total=ep.btc_tp_target_lots.get(2,0)
+            available=total-ep.btc_tp_filled_lots.get(2,0)-ep.btc_risk_retired_lots.get(2,0)
+            from coinmaster.strategy.wave_overlay import _native_limit_price
+            ref=ep.btc_planref_vwap
+            early=_native_limit_price(inst,ref*(1+D(ep.side)*D('.01'))).as_decimal() if ref else D(0)
+            old=_native_limit_price(inst,D(str(target.limit_price))).as_decimal()
+            eligible=bool(ref and ep.wave_levels[2]>0 and lots>0 and available>=lots and ep.side*(old-early)>0 and ep.side*(early-ref)>0)
+            frozen=self._next_tp3_freeze=dict(episode_id=ep.id,eligible=eligible,early_lots=lots,early_price=early,old_price=old,target_lots=total)
+            self._next_log('TP3_ALLOCATION',ns,**{k:str(v) for k,v in frozen.items()})
+        if not frozen['eligible']:return target
+        filled=ep.btc_tp_filled_lots.get(2,0)
+        leaves=max(0,frozen['early_lots']-filled)
+        if leaves:
+            step=self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
+            target=replace(target,quantity=float(D(leaves)*step),limit_price=float(frozen['early_price']),reason='BTC_TP3_EARLY')
+        self._next_log('TP3_TRANCHE',ns,episode_id=ep.id,early=bool(leaves),quantity=target.quantity,price=target.limit_price,aggregate_filled_lots=filled,original_target_lots=frozen['target_lots'])
+        return target

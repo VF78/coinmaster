@@ -72,6 +72,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_wait_persist: bool = False
     research_zero_retrace: bool = False
     research_sol_dominant: bool = False
+    research_sol_budget: bool = False
+    research_btc_early_tp3: bool = False
+    research_budget_sol_daily_seed: tuple[tuple[int, float, float], ...] = ()
     research_next_signals: tuple[DataType, ...] = ()
     research_h4_ema: int | None = None
     research_h4_gamma: Decimal = Decimal(".5")
@@ -1138,6 +1141,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             )
             if self.config.research_regime_reentry_band is not None:
                 self._hb_daily_ohlc[next_session] = (float(btc.high), float(btc.low))
+            if self.config.research_sol_budget:
+                self._next_sol_ohlc[next_session] = (float(sol.high), float(sol.low))
             self._carry_daily_bar(btc)
             self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
             self._last_accepted_session = next_session
@@ -1945,6 +1950,9 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
                 self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
                 return
+        if intent.action == "SOL_ADD" and self.config.research_sol_budget and not self._next_budget_admit(rounded, executable_price, ts_now or 0):
+            self._domain.on_parent_terminal(intent.id)
+            return
         if intent.action == "SOL_ADD":
             rounded = self._risk_first_sol_prepare(intent,rounded,step,ts_now or 0,sigma,decision_index)
         if intent.action == "BTC_ENTRY":
@@ -2520,7 +2528,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         self._decision_index_by_order.pop(client_order_id, None)
         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,ts_event,"FILL_TERMINAL")
         self._requeue_accepted_reduction(intent, sigma, intent.decision_index, ts_event)
-        if intent.action == "BTC_ENTRY":
+        if intent.action == "BTC_ENTRY" or intent.reason == "BTC_TP3_EARLY":
             self._queue_confirmed_btc_targets(sigma, intent.decision_index, ts_event)
 
     def _bind_native_lots(self) -> None:
@@ -2542,6 +2550,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             return
         self._bind_native_lots()
         for target in self._domain.plan_confirmed_btc_targets():
+            target = self._next_tp3_target(target, ready_ns)
+            self._domain.episode.pending[target.id] = target
             self._queued_intents.append((target, sigma, decision_index))
             self._queued_intent_ready_ns[target.id] = ready_ns + 1
 
@@ -2550,6 +2560,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         episode = self._domain.episode
         if episode is None or self._carry_busy() or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
             return False
+        if intent.reason == "BTC_TP3_EARLY":
+            return episode.btc_open_qty > 0 and intent.level not in episode.btc_filled_tps
         if intent.action == "BTC_ENTRY":
             return episode.btc_initial_qty > 0 and episode.btc_open_qty > 0
         return (
