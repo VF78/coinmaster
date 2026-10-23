@@ -9,7 +9,7 @@ Sourcebd04c9b3858bcda40060a08eff488849c69af5d8 publishedexactGitHubrefPASS/0CI(n
 
 Researchvalidnegative, notgoalachieved. E4profitimprovementusefulbutDDnotfixed. SearlyDD52.5801thenJan13globalmaxSOL4000/BTCabsent (acceptedSrequiresBTCopen); Zreducedcapital/BTCwhileSOL1000retained. FundingassetUNKNOWN/unallocatedbridgepreserved. Zarmoverwrite/aliasauditbenchmarkproof74cohorts, NOTlive-spreadapproval. BenchmarkNOT_FAITHFUL_DIAGNOSTIC/1mCLOSE/notfreshOOS/nottickDDguarantee.
 
-Project2/#123 finalDone/closedresearchNO_GO exactbody/statusreadbackPASS at2026-10-23T09:56:58Z;11/11boundedtaskscomplete, no50/90claim. Resultscheckpointpublication pending finalrootstep. Reportbranchcodex/btc-pattern-pilot-m2-20261021. Sourcebranchcodex/b-50-90-next-20261023. Priorpublisheda1d782fanalysis/550167fprechecks preserved. Ownerfilesfrozen144, ledgerroot_finalization, no automaticfollowup.
+Project2/#123 finalDone/closedresearchNO_GO exactbody/statusreadbackPASS at2026-10-23T09:56:58Z;11/11boundedtaskscomplete, no50/90claim. Resultspublished4f54c2cbf2821b0ed05cedd30c46d9e866304925 normalFFpush/exactGitHubrefreadbackPASS; final-publication-readback.json recordsproof. Reportbranchcodex/btc-pattern-pilot-m2-20261021. Sourcebranchcodex/b-50-90-next-20261023. Priorpublisheda1d782fanalysis/550167fprechecks preserved. Ownerfilesfrozen144, ledgerroot_finalization, no automaticfollowup.
 
 Pilot/production/services/keys/orders/deploy untouched; currentpilothealthNOTinspected. Nextownerdecisiononly: possibleE4researchbase+SOL-onlyriskcoveragewithprofitableBTCfallbackpreserved. No more engine/newparameter/TP/SL/recovery/deploymentwithoutnewdirection. No access/data blocker; economicacceptance NOT_MET.
 
