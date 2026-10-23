@@ -1,0 +1,13 @@
+{
+  "scope": "SYSTEM_CONTRACT_REPAIR_20261023",
+  "physical_full_attempt_cap": 6,
+  "started": 0,
+  "completed": 0,
+  "active": 0,
+  "reserved": 0,
+  "attempts": [],
+  "root_GO_required": true,
+  "old_ledgers": "IMMUTABLE_CLOSED_NOT_RESET_NOT_TRANSFERRED",
+  "pilot_changes": 0,
+  "status": "PREPARATION_NO_ENGINE_GO"
+}

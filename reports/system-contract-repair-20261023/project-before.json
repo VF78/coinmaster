@@ -1,0 +1,132 @@
+{
+  "items": [
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ5w",
+      "number": 77,
+      "title": "[R0] Canonical entry-day statistics and real Hyperliquid data coverage",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/77"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXeo",
+      "number": 101,
+      "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout",
+      "status": "Todo",
+      "url": "https://github.com/VF78/coinmaster/issues/101"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8Tk3g",
+      "number": 108,
+      "title": "[L100-3] Deposit protection and GUI read-back",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/108"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8UL2k",
+      "number": 109,
+      "title": "[HL GUI-4c] coinmaster24.com HTTPS and single operator login",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/109"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8n8qc",
+      "number": 110,
+      "title": "[L100-2] Native HL account/execution and manual recovery boundary",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/110"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oUc",
+      "number": 111,
+      "title": "[CM-00] Canonical baseline and release identity",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/111"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oVg",
+      "number": 112,
+      "title": "[L100-1] Native order lifecycle and executable target/leaves",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/112"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oW4",
+      "number": 113,
+      "title": "[Forecast] BTC/SOL: STUMPY / MiniRocket / RDST / CNN \u2014 learned entry+3TP, H24",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/113"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg9LMV4",
+      "number": 114,
+      "title": "[HL GUI-5] Secure exchange connections and account selection",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/114"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSe4",
+      "number": 115,
+      "title": "[R1 BTC-SPLIT] Same accepted BTC plan, native 50/50 execution",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/115"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
+      "number": 116,
+      "title": "[R2 SOL] Conditional hedge 2% / 1% / 50% over preserved winner overlay",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/116"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSgM",
+      "number": 117,
+      "title": "[R3 Acceptance] Native comparison, combined candidate and fresh repeat",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/117"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBp-0w",
+      "number": 118,
+      "title": "[R2 SOL Risk] Three independent drawdown-first variants: held cap, portfolio target, split execution",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/118"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhB3Hv4",
+      "number": 119,
+      "title": "[R2 SOL] Immediate SOL insurance: I25 / Light / Recovery / I33 native comparisons",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/119"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhB6Hag",
+      "number": 120,
+      "title": "[R2 SOL] ALPHA-CUSHION: preserve alpha, constrain SOL risk, native24m comparison",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/120"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhCdx_A",
+      "number": 121,
+      "title": "[AI-CYCLE] S0 DD50 / netprofit90: diagnostics \u2192 CatBoost \u2192 gated Kronos/TS2Vec",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/121"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhCgS1E",
+      "number": 122,
+      "title": "[Research / M2] BTC learned-pattern retrieval, numeric/visual 72h pilot",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/122"
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhCw1CE",
+      "number": 123,
+      "title": "[S0 DD50] C1 residual recovery - complete, NO_GO",
+      "status": "Done",
+      "url": "https://github.com/VF78/coinmaster/issues/123"
+    }
+  ],
+  "full_snapshot_sha256": "beb796d62033a0f08f149441e02e7f7b555f1ea5f1d1c6e4f19f8537ac46893f",
+  "unrelated_completed_tasks_preserved": true
+}

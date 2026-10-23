@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-23T17:44:32.231883+00:00",
+  "owner_task_sha256": "394661afb629dffdd4f4dfa239d7607df97261e189581dd9e601775a667f612e",
+  "report_head": "d56fcdf5db133853dc26c3691557734f429fccfb",
+  "report_branch": "codex/btc-pattern-pilot-m2-20261021",
+  "canonical_base_HEAD": "0bd7351897a9854c144817fdfca6c548e7984673",
+  "canonical_base_dirty": true,
+  "previous_source_HEAD": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "scientific_E4_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "S0_source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "existing_e4_budget_tp3": "COMPLETE_NEGATIVE_3_PHYSICAL_CLOSED_NO_RERUN",
+  "C1": "COMPLETE_NEGATIVE_2_PHYSICAL_CLOSED_NO_RERUN",
+  "new_limit": 6,
+  "new_started": 0,
+  "no_pilot_services_credentials_or_deploy": true,
+  "Project_parent": 123
+}

@@ -1,0 +1,32 @@
+{
+  "status": "G0_PROJECT_COVERAGE_PASS_SOURCE_AND_SHORT_NATIVE_TESTS_GO_NOT_HISTORICAL_ENGINE_GO",
+  "utc": "2026-10-23T17:55:28.705684+00:00",
+  "Project_parent": 123,
+  "children": {
+    "SC-00": 124,
+    "SC-01": 125,
+    "SC-02": 126,
+    "SC-03": 127,
+    "SC-04": 128,
+    "SC-05": 129
+  },
+  "Project_readback_sha256": "0dbe0d9e4388fa93bbbdc07e5795e94ba5ce763b89410ead6b6a0e897b3a6c59",
+  "task_sha256": "394661afb629dffdd4f4dfa239d7607df97261e189581dd9e601775a667f612e",
+  "plan_sha256": "2df5bd0f1a56c333246fbdedb6c90bf578423c7990363e5254fbcb93de65b6c3",
+  "canonical_source_root": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-repair-20261023",
+  "canonical_data_root": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/system-contract-data-20261023",
+  "sole_engine_owner": "system_contract_owner",
+  "data_owner": "system_contract_data",
+  "reviewer": "system_contract_review",
+  "models": "GPT-6.1 Sol/medium",
+  "allowed_now": [
+    "SC00 rule/evidence/source-method registry",
+    "SC01 pinned native fixtures and explicit child1000 policy / observation tests",
+    "SC02 causal data + sensitivity / prefix validation",
+    "SC03/SC04 exact inherited contract preparation; source implementation only after reviewed unambiguous units/causality"
+  ],
+  "full_historical_engines_authorized": false,
+  "physical_full_cap": 6,
+  "new_started": 0,
+  "pilot_services_credentials_orders_deploy_changes_authorized": false
+}

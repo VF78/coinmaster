@@ -1,0 +1,134 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-23T17:54:15.757865+00:00",
+  "project": "https://github.com/users/VF78/projects/2",
+  "parent": {
+    "number": 123,
+    "url": "https://github.com/VF78/coinmaster/issues/123",
+    "item": "PVTI_lAHOBIUvJs4BPJNjzhCw1CE",
+    "body_sha256": "bb1822ffc72cfa22b3654e68b0a6c82f6946eb524b04063e30d85b79e533ac99"
+  },
+  "packages": {
+    "SC-00": {
+      "number": 124,
+      "id": 6002827829,
+      "node_id": "I_kwDORPv5-M8AAAABZcviNQ",
+      "url": "https://github.com/VF78/coinmaster/issues/124",
+      "status": "In Progress",
+      "title": "[SC-00] S0 rules, evidence, controls and systematic optimization methods",
+      "body_sha256": "d4ef62424fc89d1b42d532c932d37367e620be2c37a988737ca151d067df7b8f",
+      "item": "PVTI_lAHOBIUvJs4BPJNjzhDD9jA"
+    },
+    "SC-01": {
+      "number": 125,
+      "id": 6002828038,
+      "node_id": "I_kwDORPv5-M8AAAABZcvjBg",
+      "url": "https://github.com/VF78/coinmaster/issues/125",
+      "status": "In Progress",
+      "title": "[SC-01] Explicit SOL execution policy and native equivalence",
+      "body_sha256": "5a834d83262975120daca9e13ba657d78e57f16bfdde47b71b5020b8ca98ca65",
+      "item": "PVTI_lAHOBIUvJs4BPJNjzhDD9kU"
+    },
+    "SC-02": {
+      "number": 126,
+      "id": 6002828585,
+      "node_id": "I_kwDORPv5-M8AAAABZcvlKQ",
+      "url": "https://github.com/VF78/coinmaster/issues/126",
+      "status": "In Progress",
+      "title": "[SC-02] Causal BTC parent dataset and zero-TP branch sensitivity",
+      "body_sha256": "288d2f8486e0be023454720937e615516cd7935dd1cf8ddccb8ca29e6d59b3bd",
+      "item": "PVTI_lAHOBIUvJs4BPJNjzhDD9mQ"
+    },
+    "SC-03": {
+      "number": 127,
+      "id": 6002828777,
+      "node_id": "I_kwDORPv5-M8AAAABZcvl6Q",
+      "url": "https://github.com/VF78/coinmaster/issues/127",
+      "status": "Todo",
+      "title": "[SC-03] H_SOL add-only portfolio risk admission",
+      "body_sha256": "e9ca96d4c42bacbc2ded85d3aad51e47c08ad81ddeb4692be2af472691c41fa2",
+      "item": "PVTI_lAHOBIUvJs4BPJNjzhDD9m0"
+    },
+    "SC-04": {
+      "number": 128,
+      "id": 6002828917,
+      "node_id": "I_kwDORPv5-M8AAAABZcvmdQ",
+      "url": "https://github.com/VF78/coinmaster/issues/128",
+      "status": "Todo",
+      "title": "[SC-04] H_BTC causal repeated-entry Q90 sizing",
+      "body_sha256": "be333cacf68cb9b3ae23def72b69fdc11c52ff6a726ac55cae4517e740f81c97",
+      "item": "PVTI_lAHOBIUvJs4BPJNjzhDD9oA"
+    },
+    "SC-05": {
+      "number": 129,
+      "id": 6002829314,
+      "node_id": "I_kwDORPv5-M8AAAABZcvoAg",
+      "url": "https://github.com/VF78/coinmaster/issues/129",
+      "status": "Todo",
+      "title": "[SC-05] Native controls, separate hypotheses and gated acceptance",
+      "body_sha256": "039d88a7dec5a66b1441e3bc9b714b6ab4cc049d86cd94ba20d98785bcf839c8",
+      "item": "PVTI_lAHOBIUvJs4BPJNjzhDD9ow"
+    }
+  },
+  "actual_issue_and_Project_checks": [
+    {
+      "number": 123,
+      "url": "https://github.com/VF78/coinmaster/issues/123",
+      "state": "open",
+      "Project_status": "In Progress",
+      "body_sha256": "bb1822ffc72cfa22b3654e68b0a6c82f6946eb524b04063e30d85b79e533ac99"
+    },
+    {
+      "number": 124,
+      "url": "https://github.com/VF78/coinmaster/issues/124",
+      "state": "open",
+      "Project_status": "In Progress",
+      "body_sha256": "d4ef62424fc89d1b42d532c932d37367e620be2c37a988737ca151d067df7b8f"
+    },
+    {
+      "number": 125,
+      "url": "https://github.com/VF78/coinmaster/issues/125",
+      "state": "open",
+      "Project_status": "In Progress",
+      "body_sha256": "5a834d83262975120daca9e13ba657d78e57f16bfdde47b71b5020b8ca98ca65"
+    },
+    {
+      "number": 126,
+      "url": "https://github.com/VF78/coinmaster/issues/126",
+      "state": "open",
+      "Project_status": "In Progress",
+      "body_sha256": "288d2f8486e0be023454720937e615516cd7935dd1cf8ddccb8ca29e6d59b3bd"
+    },
+    {
+      "number": 127,
+      "url": "https://github.com/VF78/coinmaster/issues/127",
+      "state": "open",
+      "Project_status": "Todo",
+      "body_sha256": "e9ca96d4c42bacbc2ded85d3aad51e47c08ad81ddeb4692be2af472691c41fa2"
+    },
+    {
+      "number": 128,
+      "url": "https://github.com/VF78/coinmaster/issues/128",
+      "state": "open",
+      "Project_status": "Todo",
+      "body_sha256": "be333cacf68cb9b3ae23def72b69fdc11c52ff6a726ac55cae4517e740f81c97"
+    },
+    {
+      "number": 129,
+      "url": "https://github.com/VF78/coinmaster/issues/129",
+      "state": "open",
+      "Project_status": "Todo",
+      "body_sha256": "039d88a7dec5a66b1441e3bc9b714b6ab4cc049d86cd94ba20d98785bcf839c8"
+    }
+  ],
+  "subissue_numbers": [
+    124,
+    125,
+    126,
+    127,
+    128,
+    129
+  ],
+  "full_native_started": 0,
+  "cap": 6
+}
