@@ -15,7 +15,13 @@ def iso(ns): return datetime.fromtimestamp(int(ns)/1e9,UTC).isoformat()
 def quantile(v):
  v=sorted(map(D,v)); p=D(len(v)-1)*D('.9'); j=int(p); return v[j]+(v[min(j+1,len(v)-1)]-v[j])*(p-j)
 def coefficient(rows,ns,group):
- a=[r for r in rows if r['label_status']=='VALID_COMPLETED_WAVE' and int(r['label_ready_at_ns'])<ns]
+ by_parent={}
+ for r in rows:
+  if r['parent_id'] in by_parent:
+   old=by_parent[r['parent_id']]
+   if any(old.get(k)!=r.get(k) for k in ['entry_group','wave_id','label_status','label_ready_at_ns','u_mae_over_atr']):raise ValueError('CONFLICTING_PARENT_OBSERVATIONS')
+  by_parent[r['parent_id']]=r
+ a=[r for r in by_parent.values() if r['label_status']=='VALID_COMPLETED_WAVE' and int(r['label_ready_at_ns'])<ns]
  g={k:[r for r in a if r['entry_group']==k] for k in ['first','repeat']}
  q={k:quantile([r['u_mae_over_atr'] for r in z]) if z else None for k,z in g.items()}
  why='FIRST_ENTRY' if group=='first' else 'INSUFFICIENT_COMPLETED_GROUPS' if min(map(len,g.values()))<8 else 'INVALID_OR_ZERO_REPEAT_Q90' if q['repeat'] is None or q['repeat']<=0 else 'ACTIVE_VALID_Q90'
@@ -54,7 +60,7 @@ def main():
    lo=int(np.searchsorted(mt,startns,side='right'));hi=int(np.searchsorted(mt,ready,side='right'));path=mv[lo:hi];markcount=len(path);expected=max(0,(ready-startns)//MIN)
    if markcount!=expected or (markcount and (mt[lo]!=startns+MIN or mt[hi-1]!=ready)):label='MISSING_MINUTE_MARKS'
    if label=='VALID_COMPLETED_WAVE':
-    signed=int(p['side'])*(path/float(anchor)-1);mae=D(str(max(0.,-float(np.min(signed)))));mfe=D(str(max(0.,float(np.max(signed)))));u=mae/fraction
+    low=D(marks['close'][lo+int(np.argmin(path))].as_py());high=D(marks['close'][lo+int(np.argmax(path))].as_py());adverse=low if int(p['side'])==1 else high;favorable=high if int(p['side'])==1 else low;mae=max(D(0),-int(p['side'])*(adverse/anchor-1));mfe=max(D(0),int(p['side'])*(favorable/anchor-1));u=mae/fraction
   row=dict(parent_id=p['episode_id'],actual_parent_fill_count=1,decision_ns=decision,decision_utc=iso(decision),decision_index=i,closed_daily_asof_ns=int(bars[i].available_at.timestamp()*1e9),wave_id=wid,wave_start_index=wave,wave_age_days=i-wave,entry_group=group,side=int(p['side']),closed_ema34=str(emas[i]),closed_atr14=str(atr),atr_fraction_denominator=au['reference_wire_price'],frozen_atr_fraction=str(fraction),first_actual_fill_ns=startns,first_actual_fill_label_anchor=str(anchor),first_child_completed_vwap=p['first_vwap'],native_management_PLANREF=p['management_reference_v1'],actual_blended_vwap=p['planref_v1_actual_blended_vwap'],q0_ns=au['q0_ns'],q0_reference=au['reference_wire_price'],q1_ns=au['q1_ns'],q1_bid=au['q1_bid'],q1_ask=au['q1_ask'],zero_branch=au['branch'],wave_TP_vector=list(levels),gross_reference_qty=au['reference_btc_qty'],net_submitted_qty=au['net_submitted_btc_qty'],actual_filled_qty=p['filled'],parent_cap=au.get('parent_notional_cap','30000000.0'),lot=p['step'],original_h=p['planref_v1_h_actual'],actual_SOL_right_activations=au['sol_right_activations'],decision_positions='UNKNOWN_NOT_EXPORTED_AT_Q0',decision_pending='UNKNOWN_NOT_EXPORTED_AT_Q0',decision_equity='UNKNOWN_NOT_EXPORTED_AT_Q0',E4_gate='ACCEPTED_PARENT_EXACT_INTERNAL_GATE_STATE_NOT_FULLY_EXPORTED',label_status=label,label_ready_at_ns=ready,label_ready_at=iso(ready) if ready else None,label_mark_count=markcount,potential_MAE_fraction=str(mae) if mae is not None else None,potential_MFE_fraction=str(mfe) if mfe is not None else None,u_mae_over_atr=str(u) if u is not None else None)
   rows.append(row)
   ref=D(au['reference_wire_price']);orig=au['branch'].startswith('PASSIVE');side=int(p['side']);q=D(au['q1_bid'] if side==1 else au['q1_ask'])
@@ -71,7 +77,7 @@ def main():
  tests['partial_fills_do_not_create_cases']=len(rows)==len(parents)
  tests['quantile_linear_nminus1']=quantile(['0','10'])==D(9)
  tests['native_tick_rounding']=str(Price(D('57313.05'),1))=='57313.1'
- tests['partial_fill_group_weight']=len({x['parent_id'] for x in rows for _ in range(3)})==len(rows)
+ tests['partial_fill_group_weight']=all(coefficient(rows*3,int(r['decision_ns']),r['entry_group'])==coefficient(rows,int(r['decision_ns']),r['entry_group']) for r in rows)
  tests['first_and_repeat_separate']=all(r['entry_group']==('first' if sum(x['wave_id']==r['wave_id'] and x['first_actual_fill_ns']<r['first_actual_fill_ns'] for x in rows)==0 else 'repeat') for r in rows)
  tests['censored_u_not_zero']=all(r['u_mae_over_atr'] is None for r in rows if r['label_status']!='VALID_COMPLETED_WAVE')
  # Append-future invariance of exact closed ATR prefix, with an independently recomputed prefix chain.
@@ -136,6 +142,6 @@ def main():
   e=matched[0];x=dict(e);x['recomputed_drawdown_fraction']=str(1-D(e['trough_equity'])/D(e['peak_equity']));x['archive_source']=str(epfile);seven.append(x)
  tests['seven_E4_DD_exact']=all(abs(D(e['recomputed_drawdown_fraction'])-D(e['drawdown_fraction']))<D('1e-25') for e in seven)
  writecsv(out/'btc-causal-risk.csv',rows);writecsv(out/'q1-sensitivity.csv',sens);dump(out/'evidence-audit.json',evidence);dump(out/'seven-episodes.json',dict(episodes=seven,qualification='Recipe-specific archived E4 global-highwater episodes, not trading calendar conditions; other candidate full path requires native receipts'))
- summary=dict(parents=len(rows),groups=dict(Counter(r['entry_group'] for r in rows)),independent_actual_EMA_waves=len(seen),label_status=dict(Counter(r['label_status'] for r in rows)),potential_k_reduced=sum(D(r['k'])<1 for r in rows),k_activation=dict(Counter(r['fallback'] for r in rows)),tests=tests,all_tests_pass=all(tests.values()),frozen_contract=dict(ATR='closed D1 Wilder14 exact E4 seed; first TR requires previousclose',ATR_denominator='q0 reference_wire_price',label_anchor='FIRST_ACTUAL_FILL_PRICE; distinct native management PLANREF first-child-completed VWAP',marks='one minute MARK CLOSE available=open+1minute strictly after firstfill through completed D1 EMA switch',ready='strict label_ready_at<decision_ns',quantile='Decimal linear(n−1),Q90,first/repeat sidespooled,min8each',unknowns='decision held/pending/equity/internalgate details not exported; no zero imputation',no_native_engine=True),inputs={str(p):sha(p) for p in [raw,orderspath,bp,sp,mp,o.domain,epfile]},source_script_sha256=sha(__file__))
+ summary=dict(parents=len(rows),groups=dict(Counter(r['entry_group'] for r in rows)),independent_actual_EMA_waves=len(seen),label_status=dict(Counter(r['label_status'] for r in rows)),potential_k_reduced=sum(D(r['k'])<1 for r in rows),k_activation=dict(Counter(r['fallback'] for r in rows)),tests=tests,all_tests_pass=all(tests.values()),frozen_contract=dict(ATR='closed D1 Wilder14 exact E4 seed; first TR requires previousclose',ATR_denominator='q0 reference_wire_price',label_anchor='FIRST_ACTUAL_FILL_PRICE; distinct native management PLANREF first-child-completed VWAP',marks='exact Decimal source MARK CLOSE extremes; available=open+1minute strictly after firstfill through completed D1 EMA switch',ready='strict label_ready_at<decision_ns',quantile='Decimal linear(n−1),Q90,first/repeat sidespooled,min8each',unknowns='decision held/pending/equity/internalgate details not exported; no zero imputation',no_native_engine=True),inputs={str(p):sha(p) for p in [raw,orderspath,bp,sp,mp,o.domain,epfile]},source_script_sha256=sha(__file__))
  dump(out/'btc-causal-risk.json',summary);dump(out/'data-tests.json',dict(checks=tests,all_pass=all(tests.values()),no_engine=True));print(json.dumps(dict(zero=dict(zero),governor={str(k):v for k,v in governor.items()},SOLflat=str(flatpct),cycles=[cycles,flatcycles],causal_summary={k:v for k,v in summary.items() if k not in ['inputs','frozen_contract','tests']},tests_failed=[k for k,v in tests.items() if not v]),default=str))
 if __name__=='__main__':main()
