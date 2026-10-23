@@ -1,0 +1,2 @@
+from pathlib import Path
+p=Path('/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/residual-recovery-20261023/runtime/coinmaster/strategy/wave_overlay.py');s=p.read_text();needle='        self._group_close_reconciliation_pending = False\n        if self._c1_state is not None:';assert needle in s;s=s.replace(needle,'        if self.config.research_residual_recovery and (self.cache.orders_inflight() or self._queued_intents):return\n'+needle);p.write_text(s)

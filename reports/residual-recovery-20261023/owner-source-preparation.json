@@ -1,0 +1,41 @@
+{
+  "status": "SOURCE_FROZEN_REVIEW_READY_NO_ENGINE",
+  "base_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "report_precision_provenance": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "source_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "branch": "codex/residual-recovery-20261023",
+  "checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/residual-recovery-20261023",
+  "source_snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4",
+  "source_files": {
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/research/native_baseline.py": "b0afd075b2c9f5d603937bb6aeaa19268107271991529682772c8c93a2c6e4d8",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/residual_recovery.py": "0f02d9f46dd4d38b2d1e63982bfc889256bc32ba880230c7106e1208bb15d5a4",
+    "runtime/coinmaster/strategy/wave_overlay.py": "8a5d47733a035d60bf65819fe598c416cee88da3505a64984451e781b4027165",
+    "runtime/tests/test_native_report_precision.py": "18e40d210c51237c48abee4ec5714b1bc5936ef1dcaddad8d624e949295e00d3",
+    "runtime/tests/test_native_residual_recovery.py": "5cb677bb20ed63432c8a949c4ffb0f3c48d96933ef0c8e7073d132a727821c9b"
+  },
+  "source_manifest": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4-sha256.json",
+  "source_manifest_sha256": "da3f2efcddba5901ac2ed930a947ec8c1645d45bcd5a18e210af5e5e5581b960",
+  "source_file_count": 92,
+  "source_archive_sha256": "a08262f3af9b8130915424632c8a0c401ec3844a8b637cff357e80bb7d1e1d21",
+  "source_bundle": "/private/tmp/coinmaster-residual-recovery-20261023.bundle",
+  "source_bundle_sha256": "1864b56c10ec21e706c51df3490b294b588972eeaaac4aff5935675eb1eac13b",
+  "source_patch_sha256": "96989b4a97cdc9e02e5f2e50428f9dd5125234cdd8a58d7699e5ed472e7bf910",
+  "tested_canonical_source": true,
+  "source_changes_canonical_VPS_only": true,
+  "full_native_engines_started": 0,
+  "pilot_touched": false,
+  "test_result": {
+    "relevant_suite_pass": 206,
+    "documented_inherited_E4_clock_deselections": 2,
+    "final_focused_pass": 18,
+    "last_flat_guard_delta_pass": 3,
+    "diff_check": "PASS",
+    "broad_suite_qualification": "BEFORE_FINAL_OWNERSHIP_DELTA; exact-current-source affected-focused18PASS"
+  },
+  "test_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-tests.json",
+  "test_receipt_sha256": "d2a73642de5003405cb22330e3511109148c3ed2646bc7bc42826567fc4aaa72",
+  "supersedes_frozen_source": "69e72cd29d83ed7782bc467c92a1b2c56d8d1fcf",
+  "witness_only_amendment": "root-authorized current quote/money/epoch/owner/outcome fields; no policy or order semantics change"
+}

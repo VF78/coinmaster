@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-23T16:21:06.134918+00:00",
+  "decision": "GO_ONE_C1_FULL_NATIVE_ATTEMPT1_ONLY",
+  "candidate": "C1",
+  "source_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "source_manifest_sha256": "da3f2efcddba5901ac2ed930a947ec8c1645d45bcd5a18e210af5e5e5581b960",
+  "protocol_sha256": "bfcd3226fc331693c8d5556070c2017d5fa65da69dfc136a4fce2c6a08ead8a4",
+  "rule_freeze_sha256": "14e0511f0bfd4eb2b3a25fc777021ae3330d4a99403d9269b36dfbe0f03f956d",
+  "reviewer_source_sha256": "171d015d2fe4e690b7822ce7e61dde3dd8c46eb3224148d6042fd6aec5d3d9c0",
+  "preflight_sha256": "bcf5263dcbf1e7ab4299a432d8d0dc6b6fba3a3186f49e8c3b854fa766292a05",
+  "expected_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "max_physical_attempts": 4,
+  "physical_started_before_GO": 0,
+  "expected_next_attempt": 1,
+  "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1/result",
+  "conditions": "exact prepared argv/env/source/data; fresh native engine and funding journal; one launch only; no automatic retry/refinement/repeat; normal complete export then independent audit",
+  "pilot_changes_authorized": false
+}

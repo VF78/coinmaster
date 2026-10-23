@@ -1,0 +1,67 @@
+{
+  "status": "PASS_RELEVANT_AND_FINAL_FOCUSED",
+  "frozen_source": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "runtime": "canonical VPS Python3.12 pinned native runtime; no historical engine",
+  "relevant_suite": {
+    "pass": 206,
+    "deselected": 2,
+    "elapsed_seconds": 72.19,
+    "source_qualification": "Before final cross-asset TP/mandatory/terminal ownership delta and witness-only amendment",
+    "files": [
+      "test_native_residual_recovery.py",
+      "test_native_report_precision.py",
+      "test_native_next_band.py",
+      "test_native_hedge_band.py",
+      "test_native_split_cover.py",
+      "test_native_episode_risk.py",
+      "test_native_btc_sizing.py",
+      "test_native_minute_risk.py",
+      "test_wave_native_integration.py",
+      "test_wave_overlay.py"
+    ],
+    "excluded": [
+      "test_btc_entry_local_denial_and_native_zero_terminal_are_distinct",
+      "test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal"
+    ],
+    "existing_exact_E4_failure_proof": "reports/e4-budget-tp3-20261023/owner-base-clock-proof.json"
+  },
+  "final_focused": {
+    "pass": 18,
+    "elapsed_seconds": 3.47,
+    "files": [
+      "test_native_residual_recovery.py",
+      "test_native_report_precision.py"
+    ],
+    "source": "Exact frozen78100d4 working bytes before commit",
+    "covers": [
+      "actual native BTC long/short cut/restore",
+      "SOL original consumed rights, clocks, sigma and level lots",
+      "partial/zero actual cut fills",
+      "real native rejected/denied protective attempt",
+      "native admission denial keeps token and requires later closed bar",
+      "strict complete post-cut4h and current executable reclaim",
+      "same-clock submission blocked",
+      "duplicate native fill recorder/controller epoch parity",
+      "same-group no repeat",
+      "two genuine native groups with original H preserved",
+      "selected SOL retains native BTC TP exits",
+      "owned C1 pending holds mandatory SOL timeout slot until terminal",
+      "terminal native flat exports zero credit/no active hold",
+      "bounded denial aggregation and original TP integer allocations",
+      "report-only precision80 guard regressions"
+    ]
+  },
+  "last_guard_delta": {
+    "pass": 3,
+    "deselected": 13,
+    "elapsed_seconds": 2.16,
+    "tests": [
+      "genuine_group_reset",
+      "mandatory_sol_timeout",
+      "terminal_native_flat"
+    ],
+    "source": "69e72cd before observer-only amendment"
+  },
+  "diff_check": "PASS",
+  "full_historical_attempts": 0
+}

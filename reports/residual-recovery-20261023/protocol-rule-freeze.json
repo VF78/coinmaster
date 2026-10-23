@@ -1,0 +1,71 @@
+{
+  "status": "RULES_FROZEN_BEFORE_SOURCE_AND_HISTORICAL_ENGINE",
+  "utc": "2026-10-23T15:54:31.881873+00:00",
+  "owner_approval": "2026-10-23 recommended order accepted; execute and adapt from evidence",
+  "contract_sha256": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+  "candidate": "C1",
+  "base_source": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "base_E4_config_sha256": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+  "report_precision_fix_only": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "source_commit": "MUST_BE_FROZEN_IN_SEPARATE_SOURCE_PREPARATION_BEFORE_ROOT_ENGINE_GO",
+  "S0_TOTAL": "6077107.23887483",
+  "E4_TOTAL": "5631617.35953723",
+  "E4_global_settled_DD_percent": "57.58541045962226379114466259",
+  "profit_floor_TOTAL": "5470396.514987347",
+  "global_DD_limit_percent": "50",
+  "selection": "profitfloor_and_globalDD_then_MAXTOTAL; no new Sharpe/liquidation penalty",
+  "interval": [
+    "2024-09-01T00:00:00Z",
+    "2026-09-01T00:00:00Z"
+  ],
+  "end_exclusive": true,
+  "seed": "10000",
+  "reserve": "0",
+  "DP": "OFF_IDENTICALLY",
+  "venue": "Bybit",
+  "fees": {
+    "maker": "0.0002",
+    "taker": "0.00055",
+    "native_actual_liquidity": true
+  },
+  "execution_margin_funding": "IDENTICAL_E4; diagnostic1mCLOSE;1320countnotrequiredsamepath;signedfundingUNKNOWNunlessnativeproof;distinctengineandjournal",
+  "boundary_convention": "sameexclusiveendforcedsettlement,totalpostsettledcash;inintervalDDnotbackdated",
+  "expected_rows_each_source": 1051200,
+  "expected_settled_rows": 1051199,
+  "fixed_window_basis": "receipt_ns in half-open UTC interval, localHinitializesfirstincludedW; globalHneverresets",
+  "target_windows_UTC": {
+    "OCT": [
+      "2024-10-03T00:00:00Z",
+      "2024-10-06T00:00:00Z"
+    ],
+    "JAN": [
+      "2025-01-10T00:00:00Z",
+      "2025-01-22T00:00:00Z"
+    ],
+    "NOV": [
+      "2025-10-22T00:00:00Z",
+      "2025-12-03T00:00:00Z"
+    ]
+  },
+  "monthly_basis": "sourcequoteUTC markedmonthends; cashmonthlyandboundaryseparatelynamed, no silently mixedriskbasis",
+  "C1": {
+    "DD_trigger": ".40",
+    "negative_UPnL_strictly_exceeds": "max(0,E-.50H)",
+    "select": "mostnegativecurrentnativeUPnL;BTCtiepriority",
+    "cut_fraction": ".50",
+    "restore_DD_max": ".35",
+    "confirm": "entireclosedUTC4hbarafterlastactualcutfillANDcutterminal;nextquoteexecutablerecheck",
+    "per_genuine_group_budget": "max1cutattempt+1restoreattempt; creditactualfills/lots only",
+    "mandatory_exits_preempt": true,
+    "hold_all_group_increases": true,
+    "TP_rights_and_H_PLANREF": "no newTPgrant/refundSOLrights;retire/returnonlyactualoriginalbucketlots"
+  },
+  "allcalendar_screen": "4originalpathopps,1below50June retained;3conditionalproxies;notnativeeligibility/counterfactual",
+  "max_physical_full_attempts": 4,
+  "failed_attempts_and_repeats_consume_budget": true,
+  "fresh_repeat": "onlypassingcandidatewithinbudget+newrootGO",
+  "adaptation": "aftervalidnativepostmortemonly,explicitfrozenamendmentandrootGO;noautomaticgrid",
+  "S0_E4_rerun": false,
+  "pilot_source_prod_services_orders_keys_deploy": "UNCHANGED",
+  "new_risk_service_or_PnL_engine": false
+}

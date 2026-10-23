@@ -1,0 +1,10 @@
+from pathlib import Path
+R=Path('/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/residual-recovery-20261023')
+p=R/'runtime/coinmaster/research/minute_risk.py';s=p.read_text();needle='    def on_order_filled(self,event):\n        recorder.note_fill(event.ts_event)';assert needle in s;s=s.replace(needle,'    def on_order_filled(self,event):\n        if getattr(self.config,"research_residual_recovery",False) and str(event.trade_id) in self._seen_trade_ids:return\n        recorder.note_fill(event.ts_event)');p.write_text(s)
+p=R/'runtime/coinmaster/strategy/residual_recovery.py';s=p.read_text();s=s.replace('sol_rights=sorted(ep.sol_rights),sol_consumed=', 'sol_rights=sorted(ep.sol_rights),sol_right_fraction=dict(ep.sol_right_fraction),sol_held_lots=dict(self._c1_sol_levels.get(ep.id,{})),sol_consumed=')
+s=s.replace("claim_ns=ns,cut_terminal_ns=None", "claim_ns=ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,cut_terminal_ns=None")
+s=s.replace("            held=int(p.quantity.as_decimal()/t['step']);lots=", "            if ns<=t['claim_ns']:return\n            held=int(p.quantity.as_decimal()/t['step']);lots=")
+s=s.replace("        self._c1_log('CLAIM',ns,frozen_held_lots=", "        self._c1_log('CLAIM',ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,frozen_held_lots=")
+s=s.replace("self._c1_log('ATTEMPT_SUBMIT',ns,kind=kind", "self._c1_log('ATTEMPT_SUBMIT',ns,claim_ns=t['claim_ns'],confirmation=t['confirmation'],kind=kind")
+p.write_text(s)
+print('C1 duplicate epoch and causal fresh quote witnesses aligned')

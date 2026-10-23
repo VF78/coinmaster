@@ -2,11 +2,11 @@
 
 Owner утвердил порядок из полного S0-аудита и последовательное уточнение по результатам. Цель: DD≤50%(30–50 желательно),TOTAL≥5470396.514987347(≥90%чистойприбылиS0),затемMAXTOTAL. Точные S0/E4 архивы не пересчитываются. Пилот/production/сервисы/ключи/ордера/deploy не меняются.
 
-Бюджет координатора: максимум4 физических полных native-попытки включая ошибки/повторы; sequential, каждыйrunтолькопослеfrozenrule/source/tests/scopedreview/rootGO. Сейчас0запусков. C1 sourceimplementationGO после independentcontractreview; historicalengineGO пока нет. Без сетки/новойML/второгоPnLengine/новыхсервисов. ПродуктовыйsourceтолькоcanonicalisolatedVPS,Macimmutablemirror.
+Бюджет координатора: максимум4 физических полных native-попытки включая ошибки/повторы; sequential, каждыйrunтолькопослеfrozenrule/source/tests/scopedreview/rootGO. C1: исходники 78100d4 закреплены; независимое source-review GO, 18 адресных тестов PASS, прежние 206 relevant PASS с двумя документированными inherited исключениями. 92 source/13 input pins PASS. Первый native-прогон разрешён и зарезервирован, максимум 4 физических попытки; следующий — только по результатам. Без сетки/новойML/второгоPnLengine/новыхсервисов. ПродуктовыйsourceтолькоcanonicalisolatedVPS,Macimmutablemirror.
 
 - [x] R0: полнокалендарный saved-data screen, точныеbase/pins, достаточность as-of witnesses, одно решение.
 - [x] R1: freeze residual-control+ограниченный возврат риска; state/rights/ACK/rearm/no-churn contract.
-- [ ] R2: focusednativeacceptance+independentscopedreview,source/data/config/toolingfreeze.
+- [x] R2: focusednativeacceptance+independentscopedreview,source/data/config/toolingfreeze.
 - [ ] R3: один полныйnativecandidate,normalexport,independent money/globalDD/actions audit.
 - [ ] R4: причинныйpostmortem,толькообоснованноеуточнениетогожемеханизма,budget<=4.
 - [ ] R5: selection/NO_GO,repeatтолькопрошедшеговариантавбюджете,Project/readback/checkpoint.

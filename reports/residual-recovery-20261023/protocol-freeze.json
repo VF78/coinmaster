@@ -1,0 +1,92 @@
+{
+  "status": "FINAL_FROZEN_BEFORE_FIRST_NATIVE_ENGINE",
+  "utc": "2026-10-23T15:54:31.881873+00:00",
+  "owner_approval": "2026-10-23 recommended order accepted; execute and adapt from evidence",
+  "contract_sha256": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+  "candidate": "C1",
+  "base_source": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "base_E4_config_sha256": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+  "report_precision_fix_only": "6061446164cc32c27b3ea0e13e86c9cc56d955ac",
+  "source_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "S0_TOTAL": "6077107.23887483",
+  "E4_TOTAL": "5631617.35953723",
+  "E4_global_settled_DD_percent": "57.58541045962226379114466259",
+  "profit_floor_TOTAL": "5470396.514987347",
+  "global_DD_limit_percent": "50",
+  "selection": "profitfloor_and_globalDD_then_MAXTOTAL; no new Sharpe/liquidation penalty",
+  "interval": [
+    "2024-09-01T00:00:00Z",
+    "2026-09-01T00:00:00Z"
+  ],
+  "end_exclusive": true,
+  "seed": "10000",
+  "reserve": "0",
+  "DP": "OFF_IDENTICALLY",
+  "venue": "Bybit",
+  "fees": {
+    "maker": "0.0002",
+    "taker": "0.00055",
+    "native_actual_liquidity": true
+  },
+  "execution_margin_funding": "IDENTICAL_E4; diagnostic1mCLOSE;1320countnotrequiredsamepath;signedfundingUNKNOWNunlessnativeproof;distinctengineandjournal",
+  "boundary_convention": "sameexclusiveendforcedsettlement,totalpostsettledcash;inintervalDDnotbackdated",
+  "expected_rows_each_source": 1051200,
+  "expected_settled_rows": 1051199,
+  "fixed_window_basis": "receipt_ns in half-open UTC interval, localHinitializesfirstincludedW; globalHneverresets",
+  "target_windows_UTC": {
+    "OCT": [
+      "2024-10-03T00:00:00Z",
+      "2024-10-06T00:00:00Z"
+    ],
+    "JAN": [
+      "2025-01-10T00:00:00Z",
+      "2025-01-22T00:00:00Z"
+    ],
+    "NOV": [
+      "2025-10-22T00:00:00Z",
+      "2025-12-03T00:00:00Z"
+    ]
+  },
+  "monthly_basis": "sourcequoteUTC markedmonthends; cashmonthlyandboundaryseparatelynamed, no silently mixedriskbasis",
+  "C1": {
+    "DD_trigger": ".40",
+    "negative_UPnL_strictly_exceeds": "max(0,E-.50H)",
+    "select": "mostnegativecurrentnativeUPnL;BTCtiepriority",
+    "cut_fraction": ".50",
+    "restore_DD_max": ".35",
+    "confirm": "entireclosedUTC4hbarafterlastactualcutfillANDcutterminal;nextquoteexecutablerecheck",
+    "per_genuine_group_budget": "max1cutattempt+1restoreattempt; creditactualfills/lots only",
+    "mandatory_exits_preempt": true,
+    "hold_all_group_increases": true,
+    "TP_rights_and_H_PLANREF": "no newTPgrant/refundSOLrights;retire/returnonlyactualoriginalbucketlots"
+  },
+  "allcalendar_screen": "4originalpathopps,1below50June retained;3conditionalproxies;notnativeeligibility/counterfactual",
+  "max_physical_full_attempts": 4,
+  "failed_attempts_and_repeats_consume_budget": true,
+  "fresh_repeat": "onlypassingcandidatewithinbudget+newrootGO",
+  "adaptation": "aftervalidnativepostmortemonly,explicitfrozenamendmentandrootGO;noautomaticgrid",
+  "S0_E4_rerun": false,
+  "pilot_source_prod_services_orders_keys_deploy": "UNCHANGED",
+  "new_risk_service_or_PnL_engine": false,
+  "freeze_utc": "2026-10-23T16:21:06.134918+00:00",
+  "candidate_source_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "source_snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78100d4",
+  "source_manifest_sha256": "da3f2efcddba5901ac2ed930a947ec8c1645d45bcd5a18e210af5e5e5581b960",
+  "expected_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "tooling_pins": {
+    "verifier-validate-candidate.py": "44b4373a17c3297b1db7a25417805298402cd36b5b7ca77a0781a98420299194",
+    "verifier-c1-witness.py": "9ff2a194b69078675a357769f9a89789f904897f6dc7cc1f536cbfda4fbcbe39",
+    "verifier-witness-smoke.py": "760ca20c584e893aa9815393bf1d9572b36df9e0161068307074e8bf36104f72",
+    "owner-source-preparation.json": "daa246514e72497469b3932c621057177abea03a5c1f9b51c8b8726776edfee3",
+    "owner-run-preparation.json": "a0617917cb28cafce6b1c03dddf1b19fdc74f48958ea2e2c7ac9e9e88de34afa",
+    "owner-tests.json": "d2a73642de5003405cb22330e3511109148c3ed2646bc7bc42826567fc4aaa72",
+    "reviewer-source.json": "171d015d2fe4e690b7822ce7e61dde3dd8c46eb3224148d6042fd6aec5d3d9c0",
+    "root-preflight.json": "bcf5263dcbf1e7ab4299a432d8d0dc6b6fba3a3186f49e8c3b854fa766292a05",
+    "owner-contract.md": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+    "protocol-rule-freeze.json": "14e0511f0bfd4eb2b3a25fc777021ae3330d4a99403d9269b36dfbe0f03f956d"
+  },
+  "shared_saved_verifier_sha256": "244f58b63802cb2cfb81950d6335a18f6c67d2146c79d01197140748bb90af3b",
+  "root_preflight": "PASS",
+  "entry": "owner-run-preparation.json/jobs/0",
+  "physical_attempt": 1
+}

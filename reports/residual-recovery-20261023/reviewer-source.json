@@ -1,0 +1,72 @@
+{
+  "status": "GO_FROZEN_SOURCE_NO_SCOPED_BLOCKERS",
+  "source_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "source_base": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "contract_sha256": "8214eb8ad048f75ed11fa01b78ddcc11392356a5578fd36a6da28ebb9838c176",
+  "canonical_worktree": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/residual-recovery-20261023",
+  "clean_worktree_independently_verified": true,
+  "files_sha256": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "0f02d9f46dd4d38b2d1e63982bfc889256bc32ba880230c7106e1208bb15d5a4",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/research/native_baseline.py": "b0afd075b2c9f5d603937bb6aeaa19268107271991529682772c8c93a2c6e4d8",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/wave_overlay.py": "8a5d47733a035d60bf65819fe598c416cee88da3505a64984451e781b4027165",
+    "runtime/tests/test_native_report_precision.py": "18e40d210c51237c48abee4ec5714b1bc5936ef1dcaddad8d624e949295e00d3",
+    "runtime/tests/test_native_residual_recovery.py": "5cb677bb20ed63432c8a949c4ffb0f3c48d96933ef0c8e7073d132a727821c9b"
+  },
+  "actual_diff": "7files +652/-19",
+  "review_mode": "ONE_ACTUAL_SOURCE_REVIEW_PLUS_SAME_PASS_FOCUSED_CORRECTION_DELTA",
+  "open_blockers": [],
+  "closed_findings": [
+    "local_restore_denial_attempt_consumption",
+    "passive_BTC_TP_recreation_both_selected_assets_zero_fill",
+    "duplicate_native_fill_epoch_alignment",
+    "mandatory_SOL_timeout_slot_retention",
+    "terminal_native_flat_token_hold_witness"
+  ],
+  "timing": {
+    "delayed_receipt_hook": "state_claim_only_after_commit",
+    "economic_dispatch": "existing_fresh_quote_callback_and_native_submit_intent",
+    "cut_quote_strictly_after_claim_receipt": true,
+    "restore_quote_strictly_after_closed4h": true,
+    "whole4h_interval_after_last_fill_and_terminal": true
+  },
+  "validation": {
+    "owner_reported_final_focused": "18PASS/3.47s_exact78100d4",
+    "owner_reported_final_targeted": "3PASS/2.16s",
+    "owner_reported_earlier_relevant": "206PASS/2known_inherited_E4_clock_cases_excluded_before_final_ownership_delta",
+    "final_full_suite_claimed": false,
+    "reviewer_reran_tests": false,
+    "fixture_source_independently_read": true,
+    "owner_archived_receipt_linkage": "owner-tests.json_and_owner-tests.log_read",
+    "receipt_sha256": "d2a73642de5003405cb22330e3511109148c3ed2646bc7bc42826567fc4aaa72",
+    "excluded_tests": [
+      "test_btc_entry_local_denial_and_native_zero_terminal_are_distinct",
+      "test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal"
+    ],
+    "inherited_base_proof": "reports/e4-budget-tp3-20261023/owner-base-clock-proof.json"
+  },
+  "default_off": true,
+  "quantity_rights_conservation": "actual_fill_credit_original_BTC_perlevel_retirement_restoration_SOL_consumed_notional_unchanged",
+  "terminal_witness": "c1_terminal_state_zero_native_positions_orders_inflight_pending_queued_credit_no_active_hold",
+  "native_engine_GO": false,
+  "economic_GO": false,
+  "full_historical_attempts_started_by_reviewer": 0,
+  "reviewer_product_edits": 0,
+  "next_gate": "root_exact_native_launch_GO_after_source_config_input_receipts",
+  "previous_reviewed_source_commit": "69e72cd29d83ed7782bc467c92a1b2c56d8d1fcf",
+  "observer_only_delta": {
+    "status": "GO_READ_AND_VERIFIED",
+    "from": "69e72cd29d83ed7782bc467c92a1b2c56d8d1fcf",
+    "to": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+    "semantics_changed": false,
+    "adds": [
+      "current_quote_money_epochs_ownership_cut_timing",
+      "submission_outcome",
+      "actual_fill_credit_before",
+      "focused_witness_assertions"
+    ]
+  },
+  "source_manifest_sha256": "da3f2efcddba5901ac2ed930a947ec8c1645d45bcd5a18e210af5e5e5581b960",
+  "source_file_count": 92
+}

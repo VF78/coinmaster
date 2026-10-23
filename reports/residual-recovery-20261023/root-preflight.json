@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-23T16:20:39.819507+00:00",
+  "source_commit": "78100d4d69a12144a92dbb9a713b7a7f7ce2f54d",
+  "read_only_source_files": 92,
+  "input_hashes": 13,
+  "config_delta_vs_exact_E4": {
+    "residual_recovery_research": [
+      null,
+      {
+        "version": "C1",
+        "trigger_DD": "0.40",
+        "open_loss_dominates_remaining_50_cushion": true,
+        "cut_fraction": "0.50",
+        "restore_DD": "0.35",
+        "restore_closed_hours": 4,
+        "max_cut_restore_per_group": 1
+      }
+    ]
+  },
+  "expected_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "fresh_output": true,
+  "scrubbed_env": true,
+  "reviewer_source_sha256": "171d015d2fe4e690b7822ce7e61dde3dd8c46eb3224148d6042fd6aec5d3d9c0",
+  "source_preparation_sha256": "daa246514e72497469b3932c621057177abea03a5c1f9b51c8b8726776edfee3",
+  "run_preparation_sha256": "a0617917cb28cafce6b1c03dddf1b19fdc74f48958ea2e2c7ac9e9e88de34afa",
+  "tests_sha256": "d2a73642de5003405cb22330e3511109148c3ed2646bc7bc42826567fc4aaa72",
+  "full_native_started": 0
+}
