@@ -178,6 +178,12 @@ def test_pending_btc_sol_leaves_dedup_and_margin_reservations_are_native():
         held,pending,fees=s._sc_opening_inventory(2)
         assert pending[BTC_PERP.id]==20
         assert pending[SOL_PERP.id]==D(row['allowed_quantity'])
+        snapshot=s._sc_prefix_snapshot(2,s._sc_atrs())
+        assert len(snapshot['native_open_orders'])==2
+        assert all(x['side'] in ('BUY','SELL') and D(x['leaves_quantity'])>0 for x in snapshot['native_open_orders'])
+        assert snapshot['closed_btc_atr14_price']=='1'
+        assert snapshot['gate_witness']['status']=='PASSED_TO_Q0_NOT_FULL_INTERNAL_GATE_VECTOR'
+        json.loads(json.dumps(snapshot))
         run_ticks(e,[tick(BTC_PERP,3,'1',size='10')])
         held,pending,fees=s._sc_opening_inventory(3)
         assert held[BTC_PERP.id]==10 and pending[BTC_PERP.id]==0
@@ -218,6 +224,11 @@ def test_closed_wilder14_price_units_seed_and_no_current_partial_bar():
             s._sc_ohlc[SOL_PERP.id][ns]=(11.,9.)
         s._last_accepted_session=ns
         assert s._sc_atrs()==(D(2),D(2))
+        s._current_signals=[NS(side=-1)]*16
+        snapshot=s._sc_prefix_snapshot(ns,s._sc_atrs())
+        assert D(snapshot['closed_btc_ema'])==100
+        assert snapshot['current_ema_wave_closed_bar_count']==16
+        assert D(snapshot['signed_ema_distance_atr'])==0
         # A future unaccepted OHLC row never enters the already-closed ATR.
         s._sc_ohlc[BTC_PERP.id][ns+DAY]=(1000000.,1.)
         assert s._sc_atrs()==(D(2),D(2))

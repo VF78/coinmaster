@@ -293,6 +293,7 @@ class SystemContractResearch:
         row['daily_index']=len(self._bars)-1
         row['original_ema_e4_gate']='PASSED_EXISTING_ADMISSION_TO_Q0'
         row['future_label_is_feature']=False
+        row['available_prefix_snapshot']=self._sc_prefix_snapshot(tick.ts_event,atrs)
         self._sc_btc_plans[intent.id]=row;self.sc_btc_decisions.append(row)
         return after
 
@@ -344,3 +345,49 @@ class SystemContractResearch:
             btc_remaining_quantity=str(episode.btc_open_qty) if episode is not None else None,
             sol_right_fraction=dict(episode.sol_right_fraction) if episode is not None else None,
             sol_consumed_notional=dict(episode.sol_add_filled_notional) if episode is not None else None))
+
+
+    def _sc_prefix_snapshot(self,ns,atrs):
+        """Read-only q0 evidence; no gate evaluation or admission mutation."""
+        positions=[dict(instrument=str(p.instrument_id),side='LONG' if p.is_long else 'SHORT',
+                        quantity=str(p.quantity.as_decimal()),average_open_price=str(p.avg_px_open))
+                   for p in self.cache.positions_open()]
+        orders={str(o.client_order_id):o for o in self.cache.orders_open()+self.cache.orders_inflight()}
+        from nautilus_trader.model.identifiers import ClientOrderId
+        unknown=[]
+        for oid in self._pending_by_order:
+            order=self.cache.order(ClientOrderId(oid))
+            if order is None:unknown.append(oid)
+            elif not order.is_closed:orders[oid]=order
+        opening=[dict(client_order_id=oid,instrument=str(o.instrument_id),side=o.side.name,
+                      native_status=o.status.name,reduce_only=bool(o.is_reduce_only),
+                      quantity=str(o.quantity.as_decimal()),filled_quantity=str(o.filled_qty.as_decimal()),
+                      leaves_quantity=str(o.quantity.as_decimal()-o.filled_qty.as_decimal()),
+                      limit_price=str(o.price.as_decimal()) if hasattr(o,'price') else None,
+                      owned_intent_id=self._pending_by_order[oid].id if oid in self._pending_by_order else None)
+                 for oid,o in sorted(orders.items())]
+        ema=None;alpha=2/(self._candidate.ema_period+1)
+        closed=[bar for bar in self._bars if int(bar.close_time.timestamp()*1_000_000_000)<=self._last_accepted_session] if self._last_accepted_session is not None else []
+        for bar in closed:ema=bar.btc_close if ema is None else alpha*bar.btc_close+(1-alpha)*ema
+        side=self._current_signals[-1].side if self._current_signals else None
+        age=0
+        for feature in reversed(self._current_signals[:len(closed)]):
+            if feature.side!=side:break
+            age+=1
+        atr=atrs[0] if atrs is not None else None
+        close=D(str(closed[-1].btc_close)) if closed else None
+        distance=close-D(str(ema)) if close is not None and ema is not None else None
+        available=dict(timestamp_ns=int(ns),positions=positions,native_open_orders=opening,
+            unresolved_submission_ids=sorted(unknown),closed_daily_ns=self._last_accepted_session,
+            closed_btc_atr14_price=str(atr) if atr is not None else None,
+            closed_btc_ema=str(ema) if ema is not None else None,
+            close_minus_ema_price=str(distance) if distance is not None else None,
+            signed_ema_distance_atr=str(D(side)*distance/atr) if side is not None and distance is not None and atr is not None and atr>0 else None,
+            current_ema_wave_closed_bar_count=age if closed else None,
+            gate_witness=dict(status='PASSED_TO_Q0_NOT_FULL_INTERNAL_GATE_VECTOR',
+                reentry_band=str(self.config.research_regime_reentry_band) if self.config.research_regime_reentry_band is not None else None,
+                wait_regime=bool(self._hb_wait_regime),closed_wait_count=self._next_count,
+                e4_release=dict(self._next_release) if self._next_release is not None else None))
+        account=self.cache.account_for_venue(self.config.btc_id.venue)
+        available['native_account_free_margin']=str(self._free_margin_for_increase(account)) if account is not None else None
+        return available

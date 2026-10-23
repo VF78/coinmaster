@@ -178,3 +178,52 @@ def test_same_fill_money_rights_depth1000_explicit_vs_large_ioc():
         finally:e.end();e.dispose()
     assert receipts[0][0]=='CANCELED' and receipts[1][0]=='FILLED'
     assert receipts[0][1:]==receipts[1][1:]
+
+
+@pytest.mark.parametrize('explicit',[False,True])
+def test_actual_advance_clock_both_levels_one_original_attempt_per_d1(explicit):
+    from datetime import timedelta
+    from types import SimpleNamespace as NS
+    from coinmaster.domain.wave_overlay import Features,DailyBar
+    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+    from test_native_btc_sizing import prepare_day
+    class ClockProbe(WaveOverlayStrategy):
+        # Only the unrelated tier policy is fixed; real _advance_current_day,
+        # domain batch construction, native callbacks and queued executor run.
+        def _tier_allows_increase(self,*args):return True
+    s=ClockProbe(lifecycle_config(research_sol_explicit_child=explicit));e=native_engine(s)
+    try:
+        run_ticks(e,[tick(SOL_PERP,1,'1')]);prepare_day(s)
+        ns=int(s._bars[-1].close_time.timestamp()*1_000_000_000)
+        s._current_btc=NS(ts_event=ns);s._current_sol=NS(ts_event=ns)
+        s._last_accepted_session=s._latest_seen_session=ns
+        marks(s,ns,btc='1',sol='1')
+        s._current_btc_mark=s._latest_marks[BTC_PERP.id];s._current_sol_mark=s._latest_marks[SOL_PERP.id]
+        s._current_signals=[Features(n,1,1.,.03,0.,.01,3.) for n in range(3)]
+        ep=s._domain.episode=Episode('clock',1,10000,1.,btc_initial_qty=25,btc_open_qty=25,
+            btc_entry_vwap=100.,btc_reference_qty=25.,h=2500.,wave_levels=(9,9,9),sol_rights={0,1})
+        s._advance_current_day()
+        batch=[i for i,_,_ in s._queued_intents]
+        assert {i.level for i in batch}=={0,1} and len(batch)==2
+        assert ep.attempted_sol_at=={0:2,1:2}
+        run_ticks(e,[tick(SOL_PERP,ns+60_000_000_000,'1'),tick(SOL_PERP,ns+120_000_000_000,'1')])
+        original=e.cache.orders()
+        assert len(original)==2 and all(o.filled_qty.as_decimal()==1000 for o in original)
+        assert all(o.status.name==('FILLED' if explicit else 'CANCELED') for o in original)
+        assert not s._queued_intents
+        assert ep.attempted_sol_at=={0:2,1:2}
+        s._advance_current_day()
+        run_ticks(e,[tick(SOL_PERP,ns+180_000_000_000,'1')])
+        assert len(e.cache.orders())==2 and not s._queued_intents
+        # Same genuine unused rights become eligible only on next D1.
+        previous=s._bars[-1];end=previous.close_time+timedelta(days=1);next_ns=int(end.timestamp()*1_000_000_000)
+        s._bars.append(DailyBar(previous.close_time,end,end,100.,100.,100.))
+        s._current_signals.append(Features(3,1,1.,.03,0.,.01,3.))
+        s._current_btc=s._current_sol=NS(ts_event=next_ns)
+        s._last_accepted_session=s._latest_seen_session=next_ns
+        marks(s,next_ns,btc='1',sol='1');s._current_btc_mark=s._latest_marks[BTC_PERP.id];s._current_sol_mark=s._latest_marks[SOL_PERP.id]
+        s._advance_current_day()
+        assert {i.level for i,_,_ in s._queued_intents}=={0,1}
+        assert ep.attempted_sol_at=={0:3,1:3}
+        assert len(e.cache.orders())==2
+    finally:e.end();e.dispose()
