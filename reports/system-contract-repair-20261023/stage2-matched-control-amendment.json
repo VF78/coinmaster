@@ -1,0 +1,22 @@
+{
+  "stage": "MATCHED_S0_CONTROL_REQUIRED",
+  "utc": "2026-10-23T18:21:20.932479+00:00",
+  "reason": "explicit policy E4 is not economically equivalent; cap-before-margin admitted original queued SOL_ADD that old large wire request locally denied",
+  "first_fill_difference": {
+    "timestamp_ns": 1734972420000000000,
+    "archive_SOL": "1000",
+    "explicit_SOL": "2000",
+    "price": "183.81",
+    "extra_fee": "101.0955",
+    "old_denial": "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM",
+    "old_exact_denied_level_and_component": "UNKNOWN"
+  },
+  "attempt_vs_fill": "same-clock old SOL_ADD denial demonstrates original attempt; no proven new schedule opportunity; FILLED callback not independently causal; no blind continuation fix",
+  "old_E4_TOTAL": "5631617.35953723",
+  "explicit_E4_TOTAL": "6022427.55763206",
+  "source_unchanged": "1ad834a91447bd877cc0a5aa204684d4badda16c",
+  "matched_S0_recipe": "S0_EXPLICIT_CONTROL",
+  "conditional_control_already_in_frozen_protocol": true,
+  "physical_attempt": 2,
+  "pilot_changes": false
+}

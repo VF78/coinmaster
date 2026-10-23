@@ -1,0 +1,10 @@
+{
+  "report_commit": "0c40faaf2a01068c3fe4a11cb4e2a8a1a3bd6a05",
+  "report_ref_readback": "PASS",
+  "control_source_commit": "1ad834a91447bd877cc0a5aa204684d4badda16c",
+  "control_source_ref_readback": "PASS",
+  "new_full_attempts": 2,
+  "completed": 2,
+  "active": 0,
+  "utc": "2026-10-23T18:25:19.444673+00:00"
+}
