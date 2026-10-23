@@ -1,0 +1,234 @@
+{
+  "inputs": [
+    {
+      "recipe": "S0",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "artifact_sha256": "d8a0d10829462b5bceca23a957bcaa93ee19749c917ca81b52125e16c386f875",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "5867b5d5ae2174e8b19e6107dcaeb733a48b4d53e132658aec66eb55dd4d8c0b",
+      "settled_rows_streamed": 1051199,
+      "missing_settled_receipts": 0,
+      "source_hashes": {
+        "native_baseline": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+        "wave_strategy": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87"
+      },
+      "config_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc"
+    },
+    {
+      "recipe": "C0",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/C0/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C0-btc-direction.json",
+      "artifact_sha256": "6c93399e24134506b17a08ef6859ba55d3902f95d48aa6e6414a6fa5eec2028a",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/C0/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "d4a810510c4d9d1704df8ced6e2774910f8207d8baf805b19ff8624cfa455f4e",
+      "settled_rows_streamed": 1051199,
+      "missing_settled_receipts": 0,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "a399cac7468eb64c5f19a45d34ecc34d5d083666d928828fee14b97e33a34ef3"
+    },
+    {
+      "recipe": "H4_4H_E34_G050",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E34-G0.5-btc-direction.json",
+      "artifact_sha256": "cf590a2a3aa5e43f76e75bd10527c16a3bf36abbdce75762a95568b8d1802662",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G050/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "bea67f9d6607c90915553242aeb5dab1ff24f1009f468a2f0e8ddfecadd626a8",
+      "settled_rows_streamed": 1051167,
+      "missing_settled_receipts": 32,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "7614e7c40b0c330d8c93516372efe327d9e47f9eb78d58dc10dd663705c42c48"
+    },
+    {
+      "recipe": "BTC_REGIME_REENTRY_BAND_05",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/BTC_REGIME_REENTRY_BAND_05/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-B-ATR0.5-btc-direction.json",
+      "artifact_sha256": "665a2dccc67d1644017c4a39e8201cfd14cd9086b80dcf78975f1470b5967039",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/BTC_REGIME_REENTRY_BAND_05/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "676e4c95047505f3a4df866b8812baa06bd09a832b3d1bc32c0702a97e429d2d",
+      "settled_rows_streamed": 1051199,
+      "missing_settled_receipts": 0,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "06c9e99ce88bed050a62ac38cb9c0370cde35ce8c990582b888c06e68bcf53ea"
+    },
+    {
+      "recipe": "H4_4H_E13_G050",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E13_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E13-G0.5-btc-direction.json",
+      "artifact_sha256": "3a46cf8b5effb22760ed1abf3e47eea3697408af9444e1744134bcaf10e32908",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E13_G050/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "dc781a9a91b7f319b8dce0cf0e769ed447de6bc320a2607747db0c717837e783",
+      "settled_rows_streamed": 1051167,
+      "missing_settled_receipts": 32,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "5bee63f116ebfc4e23283e3dfcd5837dbb32c0cc5166f36ce0c560ba5a23cb74"
+    },
+    {
+      "recipe": "H4_4H_E89_G050",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E89_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E89-G0.5-btc-direction.json",
+      "artifact_sha256": "c650adc1cbd3b7b6855dc1609314c0e4c73769f3f3a155faa49263aaec185f87",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E89_G050/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "f502dd758849416819b70555acef6f5505d8fc5c016ac10b76432e23893c744f",
+      "settled_rows_streamed": 1051167,
+      "missing_settled_receipts": 32,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "5b4d3c14c18d6e56e56e4d00da5715288be40d936c0a85962e82be47fc09b66f"
+    },
+    {
+      "recipe": "H4_4H_E34_G100",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G100/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E34-G1-btc-direction.json",
+      "artifact_sha256": "b0dadff18c1e30a077b38dff3a38bfe89c68c31d1b4ceb06a7e9e154bd009ee1",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G100/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "975df7de8ae942e2ca1e799d4c7130eb9902eb098ee3f3d28009ae26c87a8a1f",
+      "settled_rows_streamed": 1051167,
+      "missing_settled_receipts": 32,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "3b63fa3ff1f200339ee4bf3a55c5925cc7371a6a8c43b2fcedf9f34a116c455b"
+    },
+    {
+      "recipe": "H4_4H_E13_G100",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E13_G100/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E13-G1-btc-direction.json",
+      "artifact_sha256": "dd1cfdd607069f6321abbb72edaf860b39a760e750e3e4e90c6e81abb48ce22d",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E13_G100/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "9d40595e88bbf968d53ec3f4a2bc4c76ff9d14efd7639996f335cc5e936f76aa",
+      "settled_rows_streamed": 1051171,
+      "missing_settled_receipts": 28,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "79f22e8bddaae768dc5b4a3f09df830c2d0ac794c94b24df067d2141fe2b7f06"
+    },
+    {
+      "recipe": "H4_4H_E89_G100",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E89_G100/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E89-G1-btc-direction.json",
+      "artifact_sha256": "cc35bcfed5c99d2fae1621fdd06ea6e05506cfe83267ca9f54632d9edc9a2ab1",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E89_G100/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "ac91c1cc5c5d1c63bbc9073a36706c8e36df85847ad7c8fe64354e356de12287",
+      "settled_rows_streamed": 1051167,
+      "missing_settled_receipts": 32,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "743c7b45bfa70d80eda7cec9e065f1b509d3e4098a936e42899377110a266e6b"
+    },
+    {
+      "recipe": "X_H4_4H_E89_G100_B05",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/X_H4_4H_E89_G100_B05/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E89-G1-B-ATR0.5-btc-direction.json",
+      "artifact_sha256": "e56c1ec3d92027e8bbf4c7a6f4689d2eb574a9468a40e8cdb1ed21abe8390c38",
+      "settled_trace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/X_H4_4H_E89_G100_B05/result/minute-native-settled-receipts.csv.gz",
+      "settled_trace_sha256": "055d37b9657d8737268bad556be56635280472937b8c440bc87f25afea510443",
+      "settled_rows_streamed": 1051167,
+      "missing_settled_receipts": 32,
+      "source_hashes": {
+        "hedge_band": "e1e45897766ae2e7cb98f67591a5108cd004ad0d317aa8b69f3dcd42a0a6099a",
+        "native_baseline": "69ccf9e1683253716f92ac74a1525ca73211498b800053282ed9749aca2a5e7e",
+        "split_cover": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+        "wave_domain": "d6556e643cf1e7ac5a8c7ab361ce7feb92bc64635b9569ad3c16a0c9653a76fe",
+        "wave_strategy": "ef13df540448a4e2a59510ccc0631191397a107f4c5b2ea3ea00a546e9457e4d"
+      },
+      "config_sha256": "f86d4cfcd9180fa3dc1c3ae436a5364007cbd0c23e35798f6980ba6ddd031138"
+    }
+  ],
+  "reference_episode_labels": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/selective-lifecycle-cap30m-113/v3-drawdown-causes/attribution-episodes.csv",
+    "sha256": "7e3027a7765c7d08bf588d60635c904b3eaa3db862345e935bed06cc92d74db8",
+    "S0_BTC_exact_start_matches": 105
+  },
+  "exports": {
+    "owner-monthly.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-monthly.csv",
+      "rows": 240,
+      "sha256": "c0d4635c50c1ccabc813f1b69dfad12975dfdeb3977a6127989e60abedf6deeb"
+    },
+    "owner-global-risk.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-global-risk.csv",
+      "rows": 10,
+      "sha256": "203ffab95122cde8bf29d28dc7a1c9648d58dce0ccc2ce07485b6e80e9e3ef8d"
+    },
+    "owner-windows.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-windows.csv",
+      "rows": 80,
+      "sha256": "8d63f93d57f19617e44c5965d8eb39f899a62cfba75165fa4ad2925cbe8b4858"
+    },
+    "owner-episode-comparison.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-episode-comparison.csv",
+      "rows": 1344,
+      "sha256": "3e0a83f335bcc4bd352b4c60d4e53675fc22e8dd038de96cec3d1567dde632ee"
+    },
+    "owner-signal-events.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-signal-events.csv",
+      "rows": 30864,
+      "sha256": "65b328fabeec9205272be5374763416037d1f24099d16717c5bea7bde854c712"
+    },
+    "owner-action-audit.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-action-audit.csv",
+      "rows": 5583,
+      "sha256": "d723fa030bb297156700bb0df372f964601e79e0aa653ef3fc2784e0fbc0dcf1"
+    },
+    "owner-coverage.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-coverage.csv",
+      "rows": 80,
+      "sha256": "d3cd6b4fea2ba7eff143950f7edcbafa13f5a12c6878357ce2e5da21c820a422"
+    },
+    "owner-B-skip-delay.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-B-skip-delay.csv",
+      "rows": 41,
+      "sha256": "cc07f35cb9b70136455f1d7a5db781bd4d71a73b5e20bd7cfeb12bc627115485"
+    },
+    "owner-terminal-settlement.csv": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-terminal-settlement.csv",
+      "rows": 10,
+      "sha256": "7625195c0ff2447de24ccb8a48a134bb7710013c8643205cdf8f57f0e57c68dc"
+    }
+  },
+  "method": "One bounded saved-native-receipt stream per recipe; no new engine, no PnL ledger. A-D local diagnostic rebasing; E1-E4 disjoint complements kept separate. Global native observer curve untouched. Monthly receipt equity separate original native cash monthly returns. All S0 winners/counterexamples included, candidate calendar and quantities not forced.",
+  "limitations": [
+    "Missing settled receipts qualify DD as observed lower bound. No interpolation/backdating of monetary equity.",
+    "Perasset native settled PnL and signed perasset funding UNKNOWN; existing S0 confirmed-fill diagnostics used as historical labels only.",
+    "Coverage integrates observed native receipt positions capped60seconds; does not prove intraminute inventory path or protective effectiveness.",
+    "Fixed S0 episode-window account equity diagnostics include all assets and capital/calendar effects; not candidate asset PnL."
+  ],
+  "global_dollar_drawdown_method": "Additional bounded read of saved settled native equity receipts only; maximum absolute dollar drawdown independently retained from maximum percent drawdown event. No engine/account reconstruction.",
+  "terminal_endpoint_contract": "Risk GLOBAL/window/monthly interval endpoint equities are preterminal native observations. Native TOTAL is post-boundary settled native cash; owner-terminal-settlement.csv explicitly preserves the bridge, native interval cash and actual boundary close fees. No silent equality/substitution."
+}

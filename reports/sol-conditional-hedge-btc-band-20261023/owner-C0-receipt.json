@@ -95,5 +95,17 @@
   "no_extra_engine": true,
   "liquidation_count": 1,
   "measurement_wrapper_note": "Native CLI emitted COMPLETED and full24m artifact; /usr/bin/time wrapper exit1 from sandbox sysctl kern.clockrate denial, RSS unknown, no repeat.",
-  "native_status": "LIQUIDATED_EARLY_CUTOFF"
+  "native_status": "LIQUIDATED_EARLY_CUTOFF",
+  "prior_receipt_sha256": "d76c9dd4f87cdaf04f13867308bf90a78c121045ad16c0efe5a2f824c953c7eb",
+  "settled_native_DD_percent": "97.53441776076043948608313353",
+  "settled_observer_coverage": {
+    "receipts": 1051199,
+    "unavailable_intervening_native_mutation": 0,
+    "first_unavailable": [],
+    "curve_samples": 1051200,
+    "complete": true,
+    "qualification": "COMPLETE_SETTLED_RECEIPTS",
+    "trace_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/C0/result/minute-native-settled-receipts.csv.gz",
+    "positive_50_90_claim_allowed": true
+  }
 }

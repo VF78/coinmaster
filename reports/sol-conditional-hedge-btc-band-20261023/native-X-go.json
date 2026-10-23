@@ -1,0 +1,61 @@
+{
+  "utc": "2026-10-23T06:39:52.865649+00:00",
+  "status": "GO_ONE_X_ONLY",
+  "selected_H4": "H4_4H_E89_G100",
+  "selected_H4_TOTAL": "540.33349549",
+  "selection_tier": "MAX_TOTAL_VALID_H4_ROI_FAIL",
+  "criterion_unchanged": true,
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "policy_sha256": "d6bcdad21ad8ba0fb6e2c3b49d9ccc9aa77aaefb408c937d26686704ad7c18b1",
+  "X": "S0+H4_4H_E89_G100+BTC_REGIME_REENTRY_BAND_05",
+  "ema": 89,
+  "gamma": "1.0",
+  "band_ATR": "0.5",
+  "condition_evidence": {
+    "H4_actual_SOL_add_fills": 3,
+    "B_actual_allow_events": 41
+  },
+  "core_H4_economics": [
+    {
+      "recipe": "H4_4H_E13_G050",
+      "TOTAL": "316.84518776",
+      "DD": "97.09949333268982022336289428"
+    },
+    {
+      "recipe": "H4_4H_E13_G100",
+      "TOTAL": "483.07378823",
+      "DD": "95.96060656929091799869884291"
+    },
+    {
+      "recipe": "H4_4H_E34_G050",
+      "TOTAL": "437.07391017",
+      "DD": "96.48383203633569295829914875"
+    },
+    {
+      "recipe": "H4_4H_E34_G100",
+      "TOTAL": "455.91575064",
+      "DD": "96.33225338042525607496275649"
+    },
+    {
+      "recipe": "H4_4H_E89_G050",
+      "TOTAL": "447.07510136",
+      "DD": "96.40337455021605260945614721"
+    },
+    {
+      "recipe": "H4_4H_E89_G100",
+      "TOTAL": "540.33349549",
+      "DD": "95.65313032343266042172502489"
+    }
+  ],
+  "physical_runs_completed": 9,
+  "next_reserved_physical_slot": 10,
+  "max_full_runs": 11,
+  "R": "Only if X actually passes50/90 with complete qualification; otherwise SKIP_GATE_FAILED, no replacement run",
+  "constraints": [
+    "single fresh engine/funding journal",
+    "no parameter changes/no extra grid",
+    "source/config pinned before run",
+    "pilot unchanged",
+    "no deployment or real orders"
+  ]
+}

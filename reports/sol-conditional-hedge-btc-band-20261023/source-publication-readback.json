@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-23T06:52:56.904710+00:00",
+  "source_commit": "25a085f596292df58e51188dd91e996adbe5724c",
+  "branch": "codex/sol-conditional-hedge-btc-band-v2-20261023",
+  "GitHub_ref_readback": "PASS",
+  "CI_check_runs": 0,
+  "CI_green_claim": false,
+  "deployment": false
+}

@@ -1,0 +1,78 @@
+{
+  "inputs": [
+    {
+      "recipe": "H4_4H_E34_G050",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E34-G0.5-btc-direction.json",
+      "artifact_sha256": "cf590a2a3aa5e43f76e75bd10527c16a3bf36abbdce75762a95568b8d1802662",
+      "signals": 4380,
+      "activation_count": 3
+    },
+    {
+      "recipe": "H4_4H_E13_G050",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E13_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E13-G0.5-btc-direction.json",
+      "artifact_sha256": "3a46cf8b5effb22760ed1abf3e47eea3697408af9444e1744134bcaf10e32908",
+      "signals": 4380,
+      "activation_count": 10
+    },
+    {
+      "recipe": "H4_4H_E89_G050",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E89_G050/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E89-G0.5-btc-direction.json",
+      "artifact_sha256": "c650adc1cbd3b7b6855dc1609314c0e4c73769f3f3a155faa49263aaec185f87",
+      "signals": 4380,
+      "activation_count": 5
+    },
+    {
+      "recipe": "H4_4H_E34_G100",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E34_G100/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E34-G1-btc-direction.json",
+      "artifact_sha256": "b0dadff18c1e30a077b38dff3a38bfe89c68c31d1b4ceb06a7e9e154bd009ee1",
+      "signals": 4380,
+      "activation_count": 3
+    },
+    {
+      "recipe": "H4_4H_E13_G100",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E13_G100/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E13-G1-btc-direction.json",
+      "artifact_sha256": "dd1cfdd607069f6321abbb72edaf860b39a760e750e3e4e90c6e81abb48ce22d",
+      "signals": 4380,
+      "activation_count": 8
+    },
+    {
+      "recipe": "H4_4H_E89_G100",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/H4_4H_E89_G100/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E89-G1-btc-direction.json",
+      "artifact_sha256": "cc35bcfed5c99d2fae1621fdd06ea6e05506cfe83267ca9f54632d9edc9a2ab1",
+      "signals": 4380,
+      "activation_count": 5
+    },
+    {
+      "recipe": "X_H4_4H_E89_G100_B05",
+      "artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/X_H4_4H_E89_G100_B05/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-H4-4H-E89-G1-B-ATR0.5-btc-direction.json",
+      "artifact_sha256": "e56c1ec3d92027e8bbf4c7a6f4689d2eb574a9468a40e8cdb1ed21abe8390c38",
+      "signals": 4380,
+      "activation_count": 5
+    }
+  ],
+  "exports": {
+    "factor": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-factor-diagnostic.csv",
+      "rows": 30766,
+      "sha256": "8e6a2c5bc85aaace40d3a0bc5e9f9edcf307ec277bc61fba840fb973f84347cd"
+    },
+    "activation_marks": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-activation-mark-freeze.csv",
+      "rows": 39,
+      "sha256": "123d2b0e975ed7d496d762c4bd1da3f4fb30970d24502329089ca145f81f8ef0"
+    },
+    "latency": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/owner-hedge-latency-shortfall.csv",
+      "rows": 39,
+      "sha256": "4a444f9497598ec661d2ff152ec77d0c63ae153e807b10d1398799f17882f814"
+    }
+  },
+  "diagnostic_only": true,
+  "not_native_alternative_TOTAL": true,
+  "formula": "SOL_signed_Q*PS_start*(beta0*rBTC) + SOL_signed_Q*PS_start*(rSOL-beta0*rBTC); matched BTC reduction=-BTCside*abs(SOLQ)*PS_start*beta0*rBTC; exact same actual native held mask",
+  "price_source": "Unchanged pinned Bybit mark1m parquet; exact close availability at native events, no price fetch",
+  "funding": "UNKNOWN_NO_RECONSTRUCTED_NATIVE_ASSET_NET",
+  "all_native_H4_signals_included": true,
+  "quantity_path": "Actual confirmed native fills, no simulated fill/cash or economic optimizer",
+  "limitations": "Fixed-state recorded mark diagnostic excludes mark-vs-execution price and signed funding; never compare as autonomous native TOTAL."
+}

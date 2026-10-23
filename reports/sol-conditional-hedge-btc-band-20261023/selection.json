@@ -1,0 +1,23 @@
+{
+  "utc": "2026-10-23T06:46:21.044416+00:00",
+  "status": "NO_GO",
+  "passing_candidates": [],
+  "scope": "Only the eight frozen core recipes and one frozen selected combination on repeatedly studied canonical history",
+  "candidate_runs": 9,
+  "P0_runtime_parity_runs": 1,
+  "physical_full_runs_completed": 10,
+  "max_full_runs": 11,
+  "R": {
+    "status": "NOT_RUN_GATE_FAILED",
+    "reason": "No valid candidate meets DD<=50% and netprofit retention>=90%; unusedslot notpermissionfornewtrial"
+  },
+  "best_tested_by_TOTAL": "BTC_REGIME_REENTRY_BAND_05",
+  "best_tested_by_TOTAL_accepted": false,
+  "retained_control": "BTC025_PLANREF_V1_POSITIVE_TP_NATIVE_IOC",
+  "retained_control_TOTAL": "6077107.23887483",
+  "selection_policy_changed": false,
+  "next_new_runs": false,
+  "pilot_untouched": true,
+  "deployment": false,
+  "real_orders": false
+}
