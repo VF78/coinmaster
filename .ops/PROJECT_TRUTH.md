@@ -308,3 +308,7 @@ H1/H2/H3/H4 research checkpoint 126d6d025de7c7ce9a673a362d08763a72a59e19 publish
 Owner removes standalone SOL: BTC flat forbids SOL entries; BTC open allows only opposite risk-adjusted hedge. Prior H4 standalone branch superseded. H4_PROPOSAL.md defines actual-fill entry/90d cov-var sizing, proportional BTC-linked reductions, no timer refills, F continuous hedge / T 50% core+50% ownTP / S scaled split-entry, proposed3candidates+conditionalrepeat. Plan only pending agreement, native/product/model/deploy0, exactS0/pilot unchanged. Existing123 OPEN/Todo proposal/readback/checkpoint state in ACTIVE_TASK. Old scientific reports remain immutable.
 
 H4 proposal checkpoint811764d928205afbfd06a69585625d74c5519c2b published/GitHub-ref PASS; existing123 OPEN/Todo/exact-body readback PASS. Await owner agreement before code/native experiments; H4-publication.json records actual scope.
+
+## 2026-10-23 conditional SOL hedge + BTC reentry band v2 ACTIVE
+
+Owner adopted v2 shadc318a114e77470f8feb2b1abf0296d70419ce48aca01dfda2553e16471e19b1; replaces prior proposedF/T/S with C0+six4hH4+oneB+conditionalP0/X/R, max11 physicalfullruns. policy-freeze beforeoutputs; rootledger0/11. OnecanonicalsourceownerGPT6.1Solmedium+scopedspec/independentreview. ExistingMacarm64economicparityunknown→oneconditionalP0allowed/needed; originalLinuxS0 remainsreference. No product/production/pilot/order changesbyroot; actualimplementation/preflight underway. Scope no externalmessages; Projectfields only. CurrentfactsinACTIVE_TASK/newreportfolder.

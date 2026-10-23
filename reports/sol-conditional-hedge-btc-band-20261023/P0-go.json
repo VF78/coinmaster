@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-23T05:41:19.533058+00:00",
+  "decision": "GO_ONE_ORIGINAL_S0_P0_ARCH_PARITY",
+  "reason": "v2section9 permits1P0 whenruntimearchitecturechanged; LinuxS0 vs existingMacarm64 noattestedparity",
+  "policy_sha256": "d6bcdad21ad8ba0fb6e2c3b49d9ccc9aa77aaefb408c937d26686704ad7c18b1",
+  "source_commit": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "source_snapshot_sha256": "fb4f3009e08e7477ba92e6f58f7b2e43cd725c39b7e91964029cb4bff4d7e8e1",
+  "input_pins_PASS": 13,
+  "CLI_import_help": "PASS",
+  "original_S0_flags_only": true,
+  "new_H4_B_flags": false,
+  "command_sha256": "f749bf3ede8df1cc6d69e0982914736f75aa0f2151974ad40d497f9a92309a3c",
+  "max_concurrent_Mac_native": 1,
+  "artifact_and_funding_namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/P0/result",
+  "S0_reference_not_replaced": true,
+  "comparison_gate": "P0 mustreproduceTOTAL/fees621fills/settledDD/canonicalfunding; mismatch blocks candidate economics until localized",
+  "owner_task_sha256": "dc318a114e77470f8feb2b1abf0296d70419ce48aca01dfda2553e16471e19b1",
+  "pilot_changed": false
+}

@@ -1,0 +1,8 @@
+{
+  "policy_sha256": "d6bcdad21ad8ba0fb6e2c3b49d9ccc9aa77aaefb408c937d26686704ad7c18b1",
+  "max_full_runs": 11,
+  "physical_full_runs_completed": 0,
+  "full_runs_reserved": 0,
+  "attempts": [],
+  "current_engine": null
+}

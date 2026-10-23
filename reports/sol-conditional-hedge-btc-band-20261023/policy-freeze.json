@@ -1,0 +1,175 @@
+{
+  "status": "FROZEN_BEFORE_NEW_NATIVE_RESULTS",
+  "frozen_utc": "2026-10-23T05:36:16.026925+00:00",
+  "owner_task_sha256": "dc318a114e77470f8feb2b1abf0296d70419ce48aca01dfda2553e16471e19b1",
+  "supersedes": "H4 F/T/S ownTP and90d minimumvariance proposal; does not rewrite old experiments",
+  "baseline": {
+    "candidate": "BTC025_PLANREF_V1_POSITIVE_TP_NATIVE_IOC",
+    "scientific_source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "source_not_report_HEAD": true,
+    "config_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+    "TOTAL": "6077107.23887483",
+    "initial": "10000",
+    "settled_DD_percent": "66.25691486468686414439256686",
+    "legacy_callback_DD_percent": "66.31878024969152066570091116",
+    "OHLC_bound_DD_percent": "67.5477103187",
+    "interval": "[2024-09-01T00:00:00Z,2026-09-01T00:00:00Z)",
+    "classification": "NOT_FAITHFUL_DIAGNOSTIC"
+  },
+  "acceptance": {
+    "primary": "settled-native-minute global maxDD<=50 AND (TOTAL-10000)/(6077107.23887483-10000)>=.9",
+    "TOTAL_min_exact": "5470396.514987347",
+    "TOTAL_min_cent_up": "5470396.52",
+    "ranking": "MAX_TOTAL among valid50/90; after repeat PASS_50_90",
+    "other_metrics": "diagnostic only",
+    "reset_peak": false,
+    "cheap_price_mean_gate": false
+  },
+  "recipes": [
+    {
+      "id": "C0_OLD_SOL_BTC_OPEN_ONLY",
+      "old_SOL": "original except actualBTC-open admission and full close on BTC-flat",
+      "proportional_SOL_on_BTC_TP": false
+    },
+    {
+      "id": "H4_4H_E34_G050",
+      "EMA": 34,
+      "gamma": "0.5",
+      "old_SOL": "OFF_REPLACED"
+    },
+    {
+      "id": "H4_4H_E13_G050",
+      "EMA": 13,
+      "gamma": "0.5",
+      "old_SOL": "OFF_REPLACED"
+    },
+    {
+      "id": "H4_4H_E89_G050",
+      "EMA": 89,
+      "gamma": "0.5",
+      "old_SOL": "OFF_REPLACED"
+    },
+    {
+      "id": "H4_4H_E34_G100",
+      "EMA": 34,
+      "gamma": "1",
+      "old_SOL": "OFF_REPLACED"
+    },
+    {
+      "id": "H4_4H_E13_G100",
+      "EMA": 13,
+      "gamma": "1",
+      "old_SOL": "OFF_REPLACED"
+    },
+    {
+      "id": "H4_4H_E89_G100",
+      "EMA": 89,
+      "gamma": "1",
+      "old_SOL": "OFF_REPLACED"
+    },
+    {
+      "id": "BTC_REGIME_REENTRY_BAND_05",
+      "band_ATR14": "0.5",
+      "old_SOL": "FULL_ORIGINAL_S0_NOT_C0"
+    }
+  ],
+  "H4": {
+    "tf": "4h UTC fullyclosed",
+    "warmup": "exactly730 completed4h bars sharedseed, sameBybitlinear source, >=1day execution overlap checked",
+    "direction": "ownSOLclose>EMA long else short; only opposite actualBTC; state not freshcross",
+    "beta": "last accepted causal dailySOL-on-BTC beta270=Cov(rSOL,rBTC)/Var(rBTC), finite>0; notminimumvariance/beta720h",
+    "activation": "eligible false->true or newactualBTCcycle; freeze beta0/PB0/PS0/r0/ts/TTL immediately, preserve pending activation through oldexit withoutreset",
+    "ratio": "r0=gamma*PB0/(beta0*PS0); target=floor_SOL_lot(r0*abs(actual_remainingBTC))",
+    "target_updates": "only actualBTCquantity; no price/equity/dailybeta rebalance; downwardtarget cancelsstaleincreases before reduction",
+    "TTL": "4h fromactivation, expirywinsatequality, actualpartial retained untilout; no increaseafternon-newactivationexpiry even iflateBTCadd",
+    "liquidity": "oneactivechild, next afterterminal andnewquote; fixedsyntheticcapacity1000SOL notrefreshedrecursivelyononequote",
+    "exits": [
+      "ownSOLsignal no longeropposite",
+      "BTCflat",
+      "BTCreversal",
+      "originalmandatorygroupclose",
+      "terminalsettlement"
+    ],
+    "old_SOL_controls": "disabled includingold_sol_exits/timeout/rights",
+    "own_TP_SL": false
+  },
+  "C0_H4_flat_lifecycle": {
+    "at_confirmedBTCflat": "invalidateunusedSOLincrease rights/pendingH4 activation, cancelownedqueues+openingorders, retainpendingreceipts/latefills, closeactualSOL, arm_group_close_reconciliation_pending",
+    "finish": "existing_reconcile_group_flat -> domain.on_group_flat onlyafteractualflat+terminalownedwork",
+    "no_fake_REGIME": true
+  },
+  "B": {
+    "scope": "afteractualgroupclose reasonREGIME only",
+    "gate": "new_side*(accepted_daily_close-originalEMA34)>=.5*WilderATR14",
+    "ATR": "dailyOHLC actualTR inclpreviousclose, meanfirst14TR then(13*prevATR+TR)/14; originaldailywarmupseed",
+    "set_latch": "beforeoriginalsame-session_advance_current_day aftergroupprovenflat",
+    "clear_latch": "firstactualBTCentryfill notintent/ACK; terminalzerofill retry rechecksband",
+    "current_signal": "latestaccepteddailybar; newsideifsidechanges; noextra1daydelayifalreadystrong",
+    "unchanged": [
+      "initialentry",
+      "postTP/TRAILentry",
+      "existingREGIMEexit",
+      "rawEMA34wavecatalogue"
+    ]
+  },
+  "priority": [
+    "mandatoryclose/liquidation",
+    "originalBTCTP/ordinary/acceptedBTCsplit",
+    "SOLreduction",
+    "newH4increase"
+  ],
+  "invariants": {
+    "engine": "existingnativeNautilus1.231 only",
+    "data_execution_fees_margin_funding_DP": "sameexactS0 pins; DPOFF/reserve0; UNKNOWNfunding staysUNKNOWN",
+    "BTC": "originalsplit50/50discount.0025/PLANREF/positiveTPIOC/direction5.5and7.875/cap30m; exceptionBREGIMEentrybandonly",
+    "no_fixed_original_trade_schedule_or_dollar_Q": true,
+    "pilot_production_orders_deploy": "UNTOUCHED",
+    "messages": "NO externalcomments/messages pertask; Projectstatusfieldonly",
+    "source_edit": "canonicalisolatedVPS only; Macimmutable sourceexecutionmirrorallowed",
+    "concurrency": "onefullnativeengine onM2Pro16GB"
+  },
+  "native_budget": {
+    "max_physical_full_runs": 11,
+    "core_runs": 8,
+    "P0": {
+      "status": "REQUIRED_ARCH_CHANGED_NO_ECONOMIC_PARITY",
+      "reason": "S0Linux vs existingMacarm64CPython3.12.13/Nautilus1.231; onlyimportpreviouslyproved",
+      "max": 1
+    },
+    "X": {
+      "max": 1,
+      "condition": "H4andB technicallyvalid andactualactions",
+      "selection_H4": "maxTOTAL among50/90; else minDD among>=90netprofit(tieMAXTOTAL); elseMAXTOTAL valid H4 labelledROI_FAIL"
+    },
+    "R": {
+      "max": 1,
+      "condition": "fresh exactrepeat MAXTOTAL valid50/90 candidate; pinhashesbefore; oldrepeatcontract unchanged"
+    },
+    "order": [
+      "P0 ifrequired",
+      "C0",
+      "H4_4H_E34_G050",
+      "BTC_REGIME_REENTRY_BAND_05",
+      "H4_4H_E13_G050",
+      "H4_4H_E89_G050",
+      "H4_4H_E34_G100",
+      "H4_4H_E13_G100",
+      "H4_4H_E89_G100",
+      "X ifeligible",
+      "R if50/90candidate"
+    ],
+    "count_full_INVALID_and_fulltechnicalrepeat": true,
+    "aborted_prefixes": "recordresourceandreasonseparately, noendlessretry",
+    "free_extra_runs_for_plots": false
+  },
+  "data_diagnostic_only_windows": {
+    "A": "[2024-09-01,2024-10-04)",
+    "B": "[2025-04-11,2025-06-07)",
+    "C": "[2025-10-22,2025-11-29)",
+    "D": "[2026-07-06,2026-08-19)",
+    "E": "allothercalendar/opportunities/recoveries"
+  },
+  "no_trading_date_whitelists": true,
+  "no_new_AI_models_grid_TP_SL_optimizer": true,
+  "forward": "thishistoryalreadyresearched, notindependentOOS; freezefinalcandidatebeforeuntouchedfuture"
+}

@@ -1,0 +1,84 @@
+{
+  "observed_report_checkout_HEAD": "714089967f049f521b4339bfa248e5ea1ab3a984",
+  "frozen_S0_source_unchanged": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "files": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/REPORT.md",
+      "sha256": "26ed7b81a5080c9a2ea20acfbab546b4e984e299b3ba2f5d81eacdc8b3fb052f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/TASK_PLAN.json",
+      "sha256": "41a1b316d57f5d52244f07224d10d1451a0d91c40984247568a727ed44bb6091"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/bounded-price-collector.py",
+      "sha256": "1ae656c7790b8fe84c962ea68e7c9881b63e3013b712efa12fe195f11564fe30"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h2-precheck.method.py",
+      "sha256": "ae49a148acd3a4b4015b4b3906ffc3c73f7e9d61317224bd8def85db566ee2b6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h2-precheck.json",
+      "sha256": "094b597fa3617969e98fb1df61414fc846016e421900fcbcc3fe297c097fb2d2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h2-precheck.beta-pins.json",
+      "sha256": "eef9a72f2a48e296e770c5d3358741b6bbd963cb3ee2f7debc3f11ecfa9592f6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h2-precheck.warmup.json",
+      "sha256": "c07dc3de3dbca36e8f0f88b0ddd7ad3a89d46dbb39aa7807d99d156634ef3260"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h1-action-cost.py",
+      "sha256": "53cb060af99df835215ddf96e468d4b0bb3e240a19b8ec3ca8e4582baae90544"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h1-action-cost.json",
+      "sha256": "0ab605ca9cf23e3a37fa742f2bd9fcf302dccabd3ba6344cc147963b1a9d9462"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h3-feasibility.json",
+      "sha256": "fd205a8e232bf8fb4b4825126f9f9bc970465b9bc36dd3ad0d52f4e1ce0046b2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h3-action-cost.py",
+      "sha256": "f185e6d18bbe2c7d827990ca9b6357ca4fe577713f7626c9e607cf951e2bc32b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/h3-action-cost.json",
+      "sha256": "3769e7f63e159087d3941ed5693ca2064830426d6b08086f3612e906d6c68b8b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/PROJECT_SCOPE.md",
+      "sha256": "726a107a645f0e8c43e6a203fb2841acddb8f77efb0a7e7f87a1b54f9609c3d7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/btc-sol-causal-modules-20261022/research-module-owner.md",
+      "sha256": "cec1bda19c2a91199e31d01f048eb108a7400ac4fc58b8cad9c58dfb82098e77"
+    },
+    {
+      "path": "/Users/vf/.codex/attachments/a864d357-ba2e-4f76-9cc5-216d53a62e39/Pasted text.txt",
+      "sha256": "3d47c2918a414d7b8721680cc011e3b4ff296ea32a54456f9c2f2421bc1b3c36"
+    },
+    {
+      "path": "/Users/vf/Downloads/Codex_SOL_Hedge_BTC_Reentry_Plan_v2.txt",
+      "sha256": "dc318a114e77470f8feb2b1abf0296d70419ce48aca01dfda2553e16471e19b1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/spec-diff.md",
+      "sha256": "e9921e6d15a1fcf1cca7e10619dac587456a29728c4c222b3940ad42823d75b0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/spec-check-method.py",
+      "sha256": "3a181776937b92e175bb344a095658ef7e040b46d93c5bcc278a0f25b4c3b879"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-conditional-hedge-btc-band-20261023/spec-check-results.json",
+      "sha256": "e688fa132e1c0b150fb4cff51a4c77e0fa11468cbf6ba136c2b111e6656947b2"
+    }
+  ],
+  "verification": "JSON counts26H2/28H3, expected3guardedtrades, no late guarded signals; no second price pass",
+  "old_artifact_policy": "Read-only; no old artifact was rewritten. No product diff inspected."
+}
