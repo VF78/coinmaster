@@ -1,0 +1,93 @@
+{
+  "scope": "E4_SOL_BUDGET_BTC_EARLY_TP3",
+  "owner_approved": true,
+  "physical_full_native_cap": 4,
+  "baseline_reruns": 0,
+  "period": [
+    "2024-09-01",
+    "2026-09-01"
+  ],
+  "seed": "10000",
+  "reserve": "0",
+  "deposit_protection": false,
+  "base_source": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "base_recipe": "E4_ONLY",
+  "S0_TOTAL": "6077107.23887483",
+  "E4_TOTAL": "5631617.35953723",
+  "E4_DD_percent": "57.58541045962226379114466259",
+  "required_TOTAL": "5470396.514987347",
+  "required_DD_percent": "50",
+  "SOL": {
+    "name": "SOL_BUDGET_35_55_ATR14_V1",
+    "global_DD_activation": "0.35",
+    "warning_equity_floor_fraction_of_H": "0.55",
+    "atr_period_completed_D1": 14,
+    "atr_method": "WILDER",
+    "atr_multiplier": "1",
+    "hedge_credit": false,
+    "dominance": "held_SOL*ATR_SOL > abs(native_BTC_qty)*ATR_BTC",
+    "equity": "current paired quote native cash + native unrealized; no prior-minute receipt substitution",
+    "H": "continuous native observed high-water including current equity; never reset",
+    "BTC_reserve": "abs(qBTC)*(ATR_BTC + fBTC*(markBTC+ATR_BTC))",
+    "qcap": "floor_native_SOL_lot(max(0,(E-0.55*H-BTC_reserve-fSOL*markSOL*heldSOL)/(ATR_SOL*(1+fSOL))))",
+    "trim": "only actual excess held-qcap, at most once per native zero-to-zero SOL cycle; frozen target and existing native executor",
+    "add_admission": "while current global DD>=0.35, accept entire original requested add only if E-entry_fee-0.55H-BTC_reserve-(held+add)*(ATR_SOL+fSOL*(markSOL+ATR_SOL)) >= 0; otherwise no consumption of unused entitlement",
+    "add_below_activation": "original rules",
+    "readd": "no automatic restoration of consumed/sold rights; unused genuine original rights remain subject to signals/budget",
+    "unknown": "block increases, no invented cash/flat/ATR; explicit reason",
+    "mandatory_exits": "original priority"
+  },
+  "BTC": {
+    "name": "BTC_TP3_EARLY20_AT1_PLANREF_V1",
+    "early_fraction_actual_initial_filled_qty": "0.20",
+    "favorable_price_distance_PLANREF": "0.01",
+    "after": "native split complete with coherent owned work",
+    "eligibility": "positive originalTP3 farther than early target; enough actual native target leaves; otherwise unchanged",
+    "quantity_conservation": "early+remaining originalTP3 target lots equals originalTP3 budget; native rounding; no overlap/oversell",
+    "TP1_TP2": "original quantities, targets and profitable fallbacks",
+    "right_semantics": "PRESERVE_EXISTING_PROPORTIONAL_REAL_FILL_GRANTS; combined original TP3 target denominator; actual early partial advances legitimate fractional SOL entitlement; no completion-only gate or synthetic credit",
+    "limit_semantics": "native actual maker/taker; no market fill relabeled maker",
+    "other_exits": "original mandatory/ordinary priorities",
+    "order_sequence": "Existing single ownership key per episode/action/level preserved. Early TP3 tranche first; after actual early tranche filled/terminal queue original-price remaining on next eligible quote. No concurrent same-level TP3 orders; no premature original target completion.",
+    "transition_qualification": "At least next eligible native quote required for remaining order; ordinary exit/pending gates may delay. Test gaps through both levels and partial/cancel/denied."
+  },
+  "run_order": [
+    "SOL",
+    "BTC",
+    "COMBINED_IF_USEFUL",
+    "FRESH_REPEAT_IF_50_90"
+  ],
+  "useful": {
+    "both": "technically valid complete native outputs; retain >=90% S0 net profit; global DD no worse than E4",
+    "SOL": "reduce maximum observed DD in fixed original Oct2024/Jan2025 SOL target windows",
+    "BTC": "reduce observed DD in fixed original Oct22-Nov2025 BTC target window; global max need not fall while Oct SOL unchanged"
+  },
+  "target_windows_UTC": {
+    "OCT": [
+      "2024-10-03T00:00:00Z",
+      "2024-10-06T00:00:00Z"
+    ],
+    "JAN": [
+      "2025-01-10T00:00:00Z",
+      "2025-01-22T00:00:00Z"
+    ],
+    "NOV": [
+      "2025-10-22T00:00:00Z",
+      "2025-12-03T00:00:00Z"
+    ]
+  },
+  "acceptance": "FULL continuous global settled minute DD<=50%, TOTAL>=required,0liq/complete receipts/native terminalflat thenMAX_TOTAL",
+  "diagnostic_windows": "local window DD separate from global peak; exact archived E4 same-window value must be extracted from saved receipts, not replaced by different-date B value",
+  "combination": "only if both separate recipes satisfy useful; no automatic economic retries",
+  "repeat": "only winner passes all50/90 criteria; exact source/config newengine/newjournal; must reproduce",
+  "pilot_changes": false,
+  "source_development": "canonical isolated VPS checkout; Mac immutable execution mirror",
+  "source_tests_review_root_go": "required before each authorized launch set",
+  "qualifications": [
+    "NOT_FAITHFUL_DIAGNOSTIC",
+    "1m CLOSE synthetic execution quotes",
+    "not fresh OOS",
+    "not intraminute/tick/live DD guarantee",
+    "signed asset funding UNKNOWN"
+  ]
+}

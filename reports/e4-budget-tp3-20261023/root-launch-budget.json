@@ -1,0 +1,19 @@
+{
+  "scope": "E4_SOL_BUDGET_BTC_TP3",
+  "cap": 4,
+  "started": 0,
+  "completed": 0,
+  "active": 0,
+  "historical_baseline_reruns": 0,
+  "recipes": [
+    "SOL",
+    "BTC",
+    "CONDITIONAL_COMBINED",
+    "PASS_ONLY_FRESH_REPEAT"
+  ],
+  "go_required": true,
+  "protocol_frozen": true,
+  "launches": [],
+  "pilot_changes": 0,
+  "protocol_sha256": "048234b57aace91940fc258dcf2941bd0ca39082518f0bf66aee5beb09f60c39"
+}
