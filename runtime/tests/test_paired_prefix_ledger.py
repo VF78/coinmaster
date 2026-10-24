@@ -87,3 +87,30 @@ def test_cap5_requires_hash_pinned_explicit_owner_amendment_and_only_extra_off(t
     assert r['physical_started']==5 and [a['logical_slot'] for a in r['attempts']]==[1,4,5,2,3]
     assert [a['status'] for a in r['attempts'][:2]]==['FAILED','FAILED']
     with pytest.raises(ValueError,match='BUDGET_EXHAUSTED'):claim_attempt(p,f,'OFF',tmp_path/'sixth')
+
+
+def test_lot_corridor_logical_eight_fits_physical_seven_and_preserves_failures(tmp_path,monkeypatch):
+    import coinmaster.research.paired_prefix_run as runner
+    p=new_ledger(tmp_path)
+    r=json.loads(p.read_text())
+    old=[dict(physical_index=i,logical_slot=i,variant='OFF',status='FAILED',detail={'original':i}) for i in range(1,5)]
+    r.update(physical_prefix_max=7,physical_started=4,protocol_sha256=runner.LOT_PROTOCOL_SHA,attempts=old)
+    for slot in r['slots']:
+        if slot['slot']<=5:slot['status']='NOT_RUN_SUPERSEDED'
+    p.write_text(json.dumps(r))
+    approval=tmp_path/'TEST_ONLY_APPROVAL.json'
+    approval.write_text(json.dumps(dict(status='APPROVED_BY_OWNER',authorized_native_prefix_max=7,
+        authorized_full_max=0,protocol_sha256=runner.LOT_PROTOCOL_SHA,base_source_commit=runner.LOT_BASE_SOURCE,no_reserve=True)))
+    # Test-only digest injection; production constant pins the actual human receipt.
+    monkeypatch.setattr(runner,'LOT_APPROVAL_SHA',runner.sha(approval))
+    for logical,variant in ((6,'OFF'),(7,'B2'),(8,'B2_F0')):
+        f=freeze(logical,'lot-source');f.update(protocol_sha256=runner.LOT_PROTOCOL_SHA,physical_prefix_max=7,
+            owner_budget_amendment=dict(path=str(approval),sha256=runner.sha(approval)))
+        a=claim_attempt(p,f,variant,tmp_path/variant);finish_attempt(p,a,'COMPLETED',{})
+    actual=json.loads(p.read_text())
+    assert actual['attempts'][:4]==old
+    assert actual['physical_started']==7
+    assert [a['logical_slot'] for a in actual['attempts'][4:]]==[6,7,8]
+    with pytest.raises(ValueError,match='BUDGET_EXHAUSTED'):claim_attempt(p,f,'B2_F0',tmp_path/'extra')
+    f['owner_budget_amendment']['sha256']='bad'
+    with pytest.raises(ValueError,match='APPROVAL_PIN'):runner.effective_prefix_cap(f,actual)

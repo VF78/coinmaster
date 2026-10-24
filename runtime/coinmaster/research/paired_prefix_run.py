@@ -15,9 +15,12 @@ import tempfile
 import uuid
 
 PROTOCOL_SHA="9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1"
+LOT_PROTOCOL_SHA="0e7bca174c0268f0dc2769a4918d7017d88e98f84115ee52ad22dd59c97ca7be"
+LOT_APPROVAL_SHA="8da53003133e9d9781545975a37d929239834bbbbe141b3db84c6fd21d63ab8f"
+LOT_BASE_SOURCE="3323f08c57ede411058f93d96acee88928c93481"
 START_MS=1725148800000
 END_MS=1736899200000
-SLOTS={1:"MATCHED_OFF_CONTROL",2:"B2_PAIRED",3:"B2_F0_PAIRED",4:"ONE_CONCRETE_CORRECTION_OR_RESERVE",5:"VALID_OFF_AFTER_NONTRADING_BOUNDARY_REPAIR"}
+SLOTS={1:"MATCHED_OFF_CONTROL",2:"B2_PAIRED",3:"B2_F0_PAIRED",4:"ONE_CONCRETE_CORRECTION_OR_RESERVE",5:"VALID_OFF_AFTER_NONTRADING_BOUNDARY_REPAIR",6:"LOT_CORRIDOR_MATCHED_OFF",7:"LOT_CORRIDOR_B2",8:"LOT_CORRIDOR_COMBINED"}
 VARIANTS={"OFF":None,"B2":"B2","B2_F0":"B2_F0"}
 
 
@@ -40,9 +43,19 @@ def ledger_transaction(path):
 def effective_prefix_cap(freeze,ledger):
     """Default4; ceiling5 is inert without separately pinned owner amendment."""
     frozen=freeze.get("physical_prefix_max",4);recorded=ledger["physical_prefix_max"]
-    if any(type(value) is not int or value not in (4,5) for value in (frozen,recorded)):
+    if any(type(value) is not int or value not in (4,5,7) for value in (frozen,recorded)):
         raise ValueError("INVALID_PREFIX_CAP_OR_CEILING")
     cap=min(frozen,recorded)
+    if cap==7:
+        evidence=freeze.get("owner_budget_amendment",{})
+        if evidence.get("sha256")!=LOT_APPROVAL_SHA or not evidence.get("path") or sha(evidence["path"])!=LOT_APPROVAL_SHA:
+            raise ValueError("LOT_CORRIDOR_OWNER_APPROVAL_PIN_REQUIRED")
+        approval=json.loads(Path(evidence["path"]).read_text())
+        if (approval.get("status")!="APPROVED_BY_OWNER" or approval.get("authorized_native_prefix_max")!=7
+            or approval.get("authorized_full_max")!=0 or approval.get("protocol_sha256")!=LOT_PROTOCOL_SHA
+            or approval.get("base_source_commit")!=LOT_BASE_SOURCE or not approval.get("no_reserve")
+            or freeze.get("protocol_sha256")!=LOT_PROTOCOL_SHA or ledger.get("protocol_sha256")!=LOT_PROTOCOL_SHA):
+            raise ValueError("LOT_CORRIDOR_APPROVED_SCOPE_REQUIRED")
     if cap==5:
         evidence=freeze.get("owner_budget_amendment")
         if not isinstance(evidence,dict) or not evidence.get("path") or not evidence.get("sha256"):
@@ -58,11 +71,11 @@ def effective_prefix_cap(freeze,ledger):
 def claim_attempt(path,freeze,variant,artifact_dir):
     if freeze.get("internal_go") is not True or freeze.get("independent_review")!="PASS" or freeze.get("launch_gates")!="PASS":
         raise ValueError("ROOT_INTERNAL_GO_AND_REVIEWED_LAUNCH_GATES_REQUIRED")
-    if freeze.get("protocol_sha256")!=PROTOCOL_SHA or freeze.get("full_max")!=0:
+    if freeze.get("protocol_sha256") not in (PROTOCOL_SHA,LOT_PROTOCOL_SHA) or freeze.get("full_max")!=0:
         raise ValueError("FROZEN_APPROVED_PREFIX_SCOPE_REQUIRED")
     if variant not in VARIANTS:raise ValueError("UNAPPROVED_VARIANT")
     with ledger_transaction(path) as ledger:
-        if ledger["full_max"]!=0 or ledger["protocol_sha256"]!=PROTOCOL_SHA:
+        if ledger["full_max"]!=0 or ledger["protocol_sha256"]!=freeze["protocol_sha256"]:
             raise ValueError("INVALID_CANONICAL_LEDGER")
         cap=effective_prefix_cap(freeze,ledger)
         if ledger["physical_started"]>=cap:raise ValueError("PHYSICAL_PREFIX_BUDGET_EXHAUSTED")
@@ -70,10 +83,15 @@ def claim_attempt(path,freeze,variant,artifact_dir):
         physical=ledger["physical_started"]+1
         number=int(freeze["logical_slot"])
         if number not in SLOTS:raise ValueError("INVALID_LOGICAL_SLOT")
+        if number in (6,7,8):
+            if cap!=7 or physical!={6:5,7:6,8:7}[number]:
+                raise ValueError("LOT_CORRIDOR_PHYSICAL_SEQUENCE_REQUIRED")
+        elif cap==7:
+            raise ValueError("LOT_CORRIDOR_RETIRED_LOGICAL_SLOT")
         if number==5 and cap<5:raise ValueError("LOGICAL_SLOT5_REQUIRES_OWNER_AMENDMENT")
         slot=next((item for item in ledger["slots"] if item["slot"]==number),None)
         if slot is None:raise ValueError("LOGICAL_SLOT_NOT_AUTHORIZED_IN_LEDGER")
-        required={1:"OFF",2:"B2",3:"B2_F0",5:"OFF"}.get(number)
+        required={1:"OFF",2:"B2",3:"B2_F0",5:"OFF",6:"OFF",7:"B2",8:"B2_F0"}.get(number)
         if required is not None and variant!=required:raise ValueError("FROZEN_SLOT_ORDER_REQUIRED")
         if number==4 and not freeze.get("concrete_correction_reserve_reason"):
             raise ValueError("RESERVE_REQUIRES_ONE_CONCRETE_CORRECTION_REASON")

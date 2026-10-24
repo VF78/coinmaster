@@ -55,34 +55,56 @@ def sol_allocations(held_lots, consumed):
     return result
 
 
+def exact_lots(value, lot):
+    """Exact native Decimal lattice membership, independent of Decimal context."""
+    if not isinstance(value, D) or not isinstance(lot, D) or not value.is_finite() or not lot.is_finite() or value < 0 or lot <= 0:
+        raise ValueError("PAIRED_UNKNOWN_NATIVE_LOTS")
+    vn, vd = value.as_integer_ratio(); ln, ld = lot.as_integer_ratio()
+    count, remainder = divmod(vn * ld, vd * ln)
+    if remainder:
+        raise ValueError("PAIRED_UNKNOWN_NONINTEGRAL_NATIVE_LOTS")
+    return count
+
+
 @dataclass
 class PairedCaps:
     qref: D
-    k: D
+    k: D  # Display only; never an input to cap arithmetic.
     btc_lot: D
     sol_lot: D
+    intended_sol: D
     bmax: D = field(init=False)
+    u: int = field(init=False)
+    v: int = field(init=False)
     initialized: bool = False
 
     def __post_init__(self):
-        if self.qref <= 0 or self.k <= 0:
+        self.u = exact_lots(self.intended_sol, self.sol_lot)
+        self.v = exact_lots(self.qref, self.btc_lot)
+        if not self.u or not self.v:
             raise ValueError("PAIRED_INVALID_RATIO")
         self.bmax = self.qref
 
+    def coverage(self, actual_sol):
+        return D(self.v * exact_lots(actual_sol, self.sol_lot) // self.u) * self.btc_lot
+
     def entry_terminal(self, actual_sol):
-        self.bmax = min(self.bmax, floor_lot(actual_sol / self.k, self.btc_lot))
+        self.bmax = min(self.bmax, self.coverage(actual_sol))
         self.initialized = True
 
     def reconcile(self, actual_btc, actual_sol, *, sol_reduced, btc_reduced, active_risk):
+        exact_lots(actual_btc, self.btc_lot)
+        exact_lots(actual_sol, self.sol_lot)
         if self.initialized and sol_reduced and active_risk:
-            self.bmax = min(self.bmax, floor_lot(actual_sol / self.k, self.btc_lot))
+            self.bmax = min(self.bmax, self.coverage(actual_sol))
         if btc_reduced:
             self.bmax = min(self.bmax, actual_btc)
         return max(D(0), actual_btc - self.bmax), max(D(0), actual_sol - self.solmax)
 
     @property
     def solmax(self):
-        return floor_lot(self.k * self.bmax, self.sol_lot)
+        numerator = self.u * exact_lots(self.bmax, self.btc_lot)
+        return D((numerator + self.v - 1) // self.v) * self.sol_lot
 
 
 class PairedPrefixResearch:
@@ -201,7 +223,7 @@ class PairedPrefixResearch:
             self._begin_forced_close("PAIRED_UNHEDGEABLE_ZERO_INTENDED")
             return
         self._pair = dict(parent=ep.id, side=side, branch=branch, signal_ns=ns,
-            eligible_ns=ns + MINUTE, quantity=quantity, caps=PairedCaps(qref, k, btc.size_increment.as_decimal(), sol.size_increment.as_decimal()),
+            eligible_ns=ns + MINUTE, quantity=quantity, caps=PairedCaps(qref, k, btc.size_increment.as_decimal(), sol.size_increment.as_decimal(), quantity),
             boundary=D(str(signal[("K_" + str(side)) if branch == "B2" else "O"])), atr=D(str(signal["ATR_SOL"])),
             risk="ACTIVE_RISK", first_fill_ns=None, deadline_ns=None, entry_terminal=False,
             entry_qty=D(0), entry_notional=D(0), p0=None, consumed=set(), signature=None,

@@ -28,7 +28,7 @@ def test_price_fee_floor_stop_and_exact_lot_rights(side):
 
 
 def test_absolute_caps_actual_partial_zero_unknown_inactive_and_no_recursion():
-    c = PairedCaps(D(100), D(1), D(1), D(1)); c.entry_terminal(D(100))
+    c = PairedCaps(D(100), D(1), D(1), D(1), D(100)); c.entry_terminal(D(100))
     assert c.reconcile(D(100), D(75), sol_reduced=True, btc_reduced=False, active_risk=True) == (D(25), D(0))
     assert c.reconcile(D(75), D(75), sol_reduced=False, btc_reduced=True, active_risk=True) == (D(0), D(0))
     assert c.bmax == D(75) and c.solmax == D(75)
@@ -36,7 +36,7 @@ def test_absolute_caps_actual_partial_zero_unknown_inactive_and_no_recursion():
     assert c.reconcile(D(70), D(0), sol_reduced=True, btc_reduced=True, active_risk=False) == (D(0), D(0))
     assert c.bmax == D(70)  # Inactive close cannot forgive earlier debt or restore.
     for actual, expected in ((D(20), D(10)), (D(0), D(0))):
-        partial = PairedCaps(D(100), D(2), D(1), D(1)); partial.entry_terminal(actual)
+        partial = PairedCaps(D(100), D(2), D(1), D(1), D(200)); partial.entry_terminal(actual)
         assert partial.bmax == expected
 
 
@@ -62,7 +62,7 @@ class Probe(NativeProbe):
         return super().on_order_canceled(event)
 
 
-def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True):
+def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True, btc_quantity=100):
     config=cfg(True,research_btc_real_u=True,research_btc_q_mode="CLEAN_Q", research_sol_off=True,
         research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_btc_split_discount=D(".005"))
     config=config.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)))
@@ -79,8 +79,8 @@ def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True):
     run_ticks(e,[tick(BTC_PERP,1)])
     prepare_day(s,2);marks(s,2)
     ep=s._domain.episode=Episode("paired",side,10000,1,wave_levels=(0,0,.03),h=10000)
-    intent=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=100)
-    s._submit_intent(intent,100,100,.01,0,ts_now=2)
+    intent=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=btc_quantity)
+    s._submit_intent(intent,btc_quantity,100,.01,0,ts_now=2)
     run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(SOL_PERP,5)])
     selected(s,a=a,side=side,valid=valid)
     return s,e,ep
@@ -359,3 +359,54 @@ def test_native_raw_risk_unavailable_feature_is_unhedgeable_no_go_not_valid_acti
         assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0
         assert not e.cache.orders_open() and not e.cache.orders_inflight()
     finally:e.end();e.dispose()
+
+
+@pytest.mark.parametrize("side", [1, -1])
+def test_native_coprime_actual_1037_1817_single_tp_stable_corridor(side):
+    # Native cache entry and fills, with the actual production integer ratio.
+    from decimal import localcontext
+    with localcontext() as ctx:
+        ctx.prec = 80
+        a = str(D("181.7") / D("1.037"))
+        s,e,ep = native_setup(side=side, a=a, btc_quantity=1.037)
+    try:
+        t=covered(s,e)
+        p=s._pair
+        assert p["caps"].u==1817 and p["caps"].v==1037
+        assert s._pair_qty(BTC_PERP.id)==D("1.037")
+        assert s._pair_qty(SOL_PERP.id)==D("181.7")
+        price="99" if side==1 else "101"
+        run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t,price,size="45.4")])
+        assert s._pair_qty(SOL_PERP.id)==D("136.3")
+        for dt in range(1,12):
+            run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,price)])
+        assert s._pair_qty(BTC_PERP.id)==D(".777"),json.dumps(s._pair_report())
+        assert s._pair_qty(SOL_PERP.id)==D("136.2"),json.dumps(s._pair_report())
+        fills=[x for x in s.paired_prefix_audit if x['event']=='ACTUAL_FILL']
+        assert sum(x['kind']=='BTC_DEBT' for x in fills)==1
+        assert sum(x['kind']=='SOL_CAP' for x in fills)==1
+        assert p['consumed']=={0} and p['debt_since'] is None
+        assert not s._pair_failures,json.dumps(s._pair_report())
+        assert p['caps'].k==D("181.7")/D("1.037") or p['caps'].u==1817
+        cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
+        before=json.dumps(s._pair_report(),sort_keys=True)
+        for event in reversed(list(s.native_fill_events)):s.on_order_filled(event)
+        assert json.dumps(s._pair_report(),sort_keys=True)==before
+        assert e.cache.account_for_venue(SIM).balance_total().as_decimal()==cash
+    finally:e.end();e.dispose()
+
+
+def test_exact_integer_caps_boundary_undershoot_and_nonintegral_unknown():
+    from coinmaster.strategy.paired_prefix import exact_lots
+    c=PairedCaps(D('1.037'),D('0.00001'),D('.001'),D('.1'),D('181.7'))
+    c.entry_terminal(D('181.7'))
+    assert c.solmax==D('181.7')  # k is deliberately wrong: caps use frozen lots.
+    c.reconcile(D('1.037'),D('136.3'),sol_reduced=True,btc_reduced=False,active_risk=True)
+    assert c.bmax==D('.777') and c.solmax==D('136.2')
+    c.reconcile(D('.777'),D('136.1'),sol_reduced=True,btc_reduced=True,active_risk=True)
+    assert c.bmax==D('.776') and c.solmax==D('136.0')
+    assert c.reconcile(D('.776'),D('136.0'),sol_reduced=True,btc_reduced=True,active_risk=True)==(D(0),D(0))
+    c.reconcile(D(0),D('136.0'),sol_reduced=False,btc_reduced=True,active_risk=True)
+    assert c.solmax==0
+    for value in (D('.0001'),float('.001')):
+        with pytest.raises(ValueError,match='UNKNOWN'):exact_lots(value,D('.001'))
