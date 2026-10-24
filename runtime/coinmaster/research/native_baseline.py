@@ -1158,7 +1158,7 @@ def run_native_diagnostic(
             paired_stop_type="NATIVE_STOP_MARKET_IOC_NO_SYNTHETIC_L1_REMAINDER")
 
         result.setdefault("source_hashes",{}).update({name:sha256_file(Path(__file__).resolve().parents[1]/relative) for name,relative in (
-            ("market_redesign","strategy/market_redesign.py"),("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
+            ("market_redesign","strategy/market_redesign.py"),("paired_prefix","strategy/paired_prefix.py"),("paired_observer","research/paired_observer.py"),("paired_feed_reader","research/paired_signal_feed.py"),("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
         result["funding"]["signed_native_cash_deltas"]=journal.funding_cash_audit() if journal else []
         result["funding"]["signed_amount"]=str(sum((Decimal(row[5]) for row in result["funding"]["signed_native_cash_deltas"]),Decimal(0)))
         result["funding"]["signed_amount_basis"]="NATIVE_BALANCE_AFTER_MINUS_BEFORE_EACH_FUNDING_MUTATION"

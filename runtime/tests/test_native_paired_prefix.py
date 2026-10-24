@@ -49,18 +49,23 @@ def selected(s, ns=10, a="2", side=1):
 
 class Probe(NativeProbe):
     def __init__(self, config):
+        self.native_fill_events=[]
         super().__init__(config.__replace__(research_paired_prefix="B2_F0", research_btc_q_mode="CLEAN_Q"))
 
+    def on_order_filled(self,event):
+        self.native_fill_events.append(event)
+        return super().on_order_filled(event)
 
-def native_setup(side=1, a="2"):
+
+def native_setup(side=1, a="2", probe=Probe, modules=()):
     config=cfg(True,research_btc_real_u=True,research_btc_q_mode="CLEAN_Q", research_sol_off=True,
         research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_btc_split_discount=D(".005"))
     config=config.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)))
-    s=Probe(config)
+    s=probe(config)
     e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
     e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
         starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,
-        default_leverage=D(1),liquidity_consumption=True,bar_execution=False)
+        default_leverage=D(1),liquidity_consumption=True,bar_execution=False,modules=list(modules))
     for inst in (BTC_PERP,SOL_PERP):
         e.add_instrument(perpetual(inst.raw_symbol.value,inst.base_currency,
             str(inst.price_increment),str(inst.size_increment),str(inst.margin_init),
@@ -156,3 +161,132 @@ def test_native_zero_ioc_terminal_forces_full_btc_risk_close():
         assert s._pair is not None  # Unconfirmed native cancel remains NO_GO, never hidden.
     finally:
         e.end();e.dispose()
+
+
+def test_native_btc_e_callback_cannot_send_sol_entry_against_previous_quote():
+    s,e,ep=native_setup(a=".2")
+    try:
+        t=s._pair["eligible_ns"]
+        run_ticks(e,[tick(BTC_PERP,t)])
+        assert not any(o["kind"]=="ENTRY" for o in s._pair_orders.values())
+        assert s.cache.quote_tick(SOL_PERP.id).ts_event==5
+        run_ticks(e,[tick(SOL_PERP,t)])
+        assert len([o for o in s._pair_orders.values() if o["kind"]=="ENTRY"])==1
+        assert any(r["event"]=="ACTUAL_FILL" and r["kind"]=="ENTRY" and int(r["timestamp_ns"])>=t for r in s.paired_prefix_audit)
+    finally:e.end();e.dispose()
+
+
+def test_native_risk_recovered_before_first_executable_sol_quote_consumes_no_entry():
+    s,e,ep=native_setup(a=".2")
+    try:
+        p=s._pair;p["boundary"]=D("100.2");t=p["eligible_ns"]
+        run_ticks(e,[tick(BTC_PERP,t,"100.2"),tick(SOL_PERP,t)])
+        assert p["risk"]=="INACTIVE_RISK" and p["entry_terminal"]
+        assert not s._pair_orders and s._pair_qty(SOL_PERP.id)==0
+        assert p["caps"].bmax==D(50) and s._pair_qty(BTC_PERP.id)==D(50)
+        assert p["parent"] in s._pair_used
+    finally:e.end();e.dispose()
+
+
+def test_native_actual_fill_debt_clock_and_first_next_minute_execution():
+    s,e,ep=native_setup(a=".2")
+    try:
+        t=covered(s,e)
+        run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t,"99",size="2.5")])
+        p=s._pair
+        assert p["debt_since"]==t,json.dumps(s._pair_report())
+        assert s._pair_qty(BTC_PERP.id)==D(50)
+        # Cancel ACK was requested on the causal SOL fill, not on this quote.
+        run_ticks(e,[tick(BTC_PERP,t+60_000_000_000),tick(SOL_PERP,t+60_000_000_000,"99",size="2.5")])
+        assert s._pair_qty(BTC_PERP.id)==D("37.5"),json.dumps(s._pair_report())
+        assert not s._pair_failures,json.dumps(s._pair_report())
+        targets=[o for o in e.cache.orders_open() if o.instrument_id==BTC_PERP.id and o.is_reduce_only]
+        assert len(targets)==3 and sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D("37.5")
+    finally:e.end();e.dispose()
+
+
+def test_native_btc_tp_cap_trim_creates_only_absolute_rounding_deficit():
+    s,e,ep=native_setup(a=".2")
+    try:
+        t=covered(s,e)
+        for dt in range(5):
+            run_ticks(e,[tick(BTC_PERP,t+dt,"101"),tick(SOL_PERP,t+dt)])
+        p=s._pair
+        assert s._pair_qty(BTC_PERP.id)==D(39),json.dumps(s._pair_report())
+        assert s._pair_qty(SOL_PERP.id)==D("7.8"),json.dumps(s._pair_report())
+        assert p["caps"].bmax==D(39) and p["caps"].solmax==D("7.8")
+        assert not s._pair_failures,json.dumps(s._pair_report())
+    finally:e.end();e.dispose()
+
+
+def test_native_partial_ioc_stop_remains_no_go_and_closes_actual_both_legs():
+    s,e,ep=native_setup(a=".2")
+    try:
+        t=covered(s,e)
+        run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t,"102",size="3")])
+        assert "PARTIAL_NATIVE_STOP" in s._pair_failures
+        for dt in range(1,5):
+            run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,"102",size="7.1")])
+        assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0,json.dumps(s._pair_report())
+        assert not s._pair_work() and s._pair is None,json.dumps(s._pair_report())
+        assert not e.cache.orders_open() and not e.cache.orders_inflight()
+    finally:e.end();e.dispose()
+
+
+class HeldTransportProbe(Probe):
+    def submit_order(self,order,*args,**kwargs):
+        owner=self._pair_orders.get(str(order.client_order_id))
+        if owner and owner["kind"]=="ENTRY" and not hasattr(self,"held_entry"):
+            self.held_entry=order
+            return
+        return super().submit_order(order,*args,**kwargs)
+
+    def release_native_entry_transport(self):
+        return super().submit_order(self.held_entry)
+
+
+def test_native_late_entry_after_btc_flat_cancel_request_never_recreates_btc():
+    s,e,ep=native_setup(a=".2",probe=HeldTransportProbe)
+    try:
+        t=s._pair["eligible_ns"]
+        run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t)])
+        assert hasattr(s,"held_entry") and s._pair_qty(SOL_PERP.id)==0
+        run_ticks(e,[tick(BTC_PERP,t+1,"103")])
+        assert s._pair_qty(BTC_PERP.id)==0 and s._pair is not None
+        s.release_native_entry_transport()
+        for dt in range(2,6):
+            run_ticks(e,[tick(BTC_PERP,t+dt,"103"),tick(SOL_PERP,t+dt)])
+        assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0,json.dumps(s._pair_report())
+        assert s._pair is None and not s._pair_work() and not e.cache.orders_inflight()
+        fills=[r for r in s.paired_prefix_audit if r["event"]=="ACTUAL_FILL"]
+        assert any(r["kind"]=="ENTRY" for r in fills) and any(r["kind"]=="SOL_CLOSE" for r in fills)
+    finally:e.end();e.dispose()
+
+
+class OversizeCapProbe(Probe):
+    def _pair_submit(self,instrument,side,qty,kind,ns,**kwargs):
+        if kind=="SOL_CAP" and not hasattr(self,"injected_oversize"):
+            self.injected_oversize=True
+            qty*=2  # Fault injection is an ACTUAL native order, never a fake fill.
+        return super()._pair_submit(instrument,side,qty,kind,ns,**kwargs)
+
+
+def test_native_late_oversize_btc_caused_cap_actual_deficit_is_not_deduplicated_away():
+    s,e,ep=native_setup(a=".2",probe=OversizeCapProbe)
+    try:
+        t=covered(s,e)
+        for dt in range(6):
+            run_ticks(e,[tick(BTC_PERP,t+dt,"101"),tick(SOL_PERP,t+dt)])
+        assert s.injected_oversize
+        assert s._pair_qty(SOL_PERP.id)==D("5.6"),json.dumps(s._pair_report())
+        assert s._pair_qty(BTC_PERP.id)==D(28),json.dumps(s._pair_report())
+        assert s._pair["caps"].bmax==D(28)
+        assert not s._pair_failures,json.dumps(s._pair_report())
+        before=json.dumps(s._pair_report(),sort_keys=True);cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
+        # Replay only genuine already-applied callbacks in reverse order. The
+        # native engine/cache is not modified; duplicate callbacks earn no credit.
+        for event in reversed(list(s.native_fill_events)):
+            s.on_order_filled(event)
+        assert json.dumps(s._pair_report(),sort_keys=True)==before
+        assert e.cache.account_for_venue(SIM).balance_total().as_decimal()==cash
+    finally:e.end();e.dispose()

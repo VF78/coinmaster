@@ -151,7 +151,27 @@ class PairedPrefixResearch:
             if order.instrument_id == self.config.btc_id and not order.is_reduce_only and not order.is_closed and not order.is_pending_cancel:
                 self.cancel_order(order)
 
+    def _pair_arm_btc_debt(self, ns):
+        p = self._pair
+        if p and self._pair_qty(self.config.btc_id) > p["caps"].bmax:
+            if p["debt_since"] is None:
+                p["debt_since"] = ns
+                self._pair_log("ACTUAL_BTC_DEBT_OPEN", ns, actual_btc=self._pair_qty(self.config.btc_id), bmax=p["caps"].bmax)
+            # Cancel at the actual causal fill/terminal timestamp, so ACK can
+            # precede the next distinct executable BTC quote, not one quote later.
+            work = [(oid, {}, self.cache.order(ClientOrderId(oid))) for oid, intent in self._pending_by_order.items()
+                    if intent.action.startswith("BTC")]
+            self._pair_cancel(work)
+
+    def _pair_release_if_terminal(self, ns):
+        p = self._pair
+        if p and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight():
+            self._pair_log("PARENT_NATIVE_TERMINAL_FLAT", ns, parent=p["parent"])
+            self._pair = None
+
     def _pair_start(self, signal, ns):
+        if self._forced_close_reason or self._liquidating:
+            return
         signal = signal.owner_row() if hasattr(signal, "owner_row") else signal
         ep = self._domain.episode
         position = self._pair_position(self.config.btc_id)
@@ -249,6 +269,7 @@ class PairedPrefixResearch:
             p["entry_terminal"] = True
             p["caps"].entry_terminal(p["entry_qty"])
             self._pair_log("ENTRY_TERMINAL_P0_FROZEN", ns, actual_sol=p["entry_qty"], p0=p["p0"], bmax=p["caps"].bmax)
+            self._pair_arm_btc_debt(ns)
         if p and owner["kind"] == "STOP":
             order = self.cache.order(ClientOrderId(oid))
             if order is not None and order.filled_qty.as_decimal() > 0 and order.filled_qty.as_decimal() < order.quantity.as_decimal():
@@ -257,6 +278,7 @@ class PairedPrefixResearch:
             self._pair_fail("NATIVE_" + owner["kind"] + "_REJECTED", ns)
         if p and owner["kind"] in {"TP", "STOP"}:
             self._pair_protect(ns)
+        self._pair_release_if_terminal(ns)
         return True
 
     def _pair_fill(self, event):
@@ -316,6 +338,7 @@ class PairedPrefixResearch:
             after = self._pair_qty(self.config.sol_id)
             p["caps"].reconcile(p["last_btc"], after, sol_reduced=True,
                                 btc_reduced=False, active_risk=True)
+        self._pair_arm_btc_debt(event.ts_event)
         self._pair_log("ACTUAL_FILL", event.ts_event, order_id=oid, kind=owner["kind"],
                        level=owner["level"], qty=qty, price=px, risk=p["risk"], bmax=p["caps"].bmax)
         if order is not None and order.is_closed:
@@ -334,7 +357,10 @@ class PairedPrefixResearch:
             p["close_sol"] = True
             self._pair_cancel(self._pair_work(instrument=self.config.sol_id, kinds={"ENTRY", "TP", "STOP"}))
         self._pair_log("CACHE_POSITION", ns, btc=btc, sol=sol, bmax=p["caps"].bmax, solmax=p["caps"].solmax)
+        self._pair_arm_btc_debt(ns)
         self._pair_protect(ns)
+        self._md_reconcile(ns)
+        self._pair_release_if_terminal(ns)
 
     def _pair_protect(self, ns):
         p = self._pair
@@ -393,6 +419,13 @@ class PairedPrefixResearch:
         if p["first_fill_ns"] is not None and (btc_quote is None or ns - btc_quote.ts_event > MINUTE):
             self._pair_fail("UNKNOWN_RISK_MISSING_FRESH_BTC_CLOSE", ns)
         self._pair_cancel_btc_increases(ns)
+        if self._forced_close_reason or self._liquidating or self.terminal_lifecycle.get("lockout"):
+            p["close_sol"] = True
+            self._pair_cancel(self._pair_work())
+            if p["debt_since"] is not None and ns > p["debt_since"] + MINUTE:
+                self._pair_fail("TRIM_DEBT_OVERDUE_DURING_HIGHER_NATIVE_CLOSE", ns)
+            self._pair_release_if_terminal(ns)
+            return  # Existing native forced/terminal owner serializes all closure.
         btc = self._pair_qty(self.config.btc_id); sol = self._pair_qty(self.config.sol_id)
         if p["protection_since"] is not None and ns > p["protection_since"]:
             self._pair_fail("PROTECTION_OVERDUE_NEXT_QUOTE", ns)
@@ -426,10 +459,8 @@ class PairedPrefixResearch:
                 self._pair_submit(self.config.sol_id, p["side"], excess, "SOL_CLOSE" if p["close_sol"] else "SOL_CAP", ns)
         else:
             self._pair_protect(ns)
-        if not btc and not sol and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight():
-            self._pair_log("PARENT_NATIVE_TERMINAL_FLAT", ns, parent=p["parent"])
-            self._pair = None
+        self._pair_release_if_terminal(ns)
 
     def _pair_report(self):
         return dict(events=self.paired_prefix_audit, failures=list(self._pair_failures),
-                    open_owner=self._pair is not None, physical_prefix=False)
+                    open_owner=self._pair is not None, physical_budget_authority="EXTERNAL_SINGLE_SOURCE_RUN_LEDGER")
