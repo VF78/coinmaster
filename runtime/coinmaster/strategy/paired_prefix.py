@@ -290,7 +290,10 @@ class PairedPrefixResearch:
         self._terminal_submission(oid)
         if p and owner["kind"] == "ENTRY" and not p["entry_terminal"]:
             p["entry_terminal"] = True
-            p["caps"].entry_terminal(p["entry_qty"])
+            try:
+                p["caps"].entry_terminal(p["entry_qty"])
+            except ValueError as error:
+                self._pair_fail(str(error), ns)
             self._pair_log("ENTRY_TERMINAL_P0_FROZEN", ns, actual_sol=p["entry_qty"], p0=p["p0"], bmax=p["caps"].bmax)
             self._pair_arm_btc_debt(ns)
         if p and owner["kind"] == "STOP":
@@ -359,8 +362,11 @@ class PairedPrefixResearch:
             # Stock execution engine commits cache/account before strategy
             # fill delivery. Read that same actual native state, never pending relief.
             after = self._pair_qty(self.config.sol_id)
-            p["caps"].reconcile(p["last_btc"], after, sol_reduced=True,
-                                btc_reduced=False, active_risk=True)
+            try:
+                p["caps"].reconcile(p["last_btc"], after, sol_reduced=True,
+                                    btc_reduced=False, active_risk=True)
+            except ValueError as error:
+                self._pair_fail(str(error), event.ts_event)
         self._pair_arm_btc_debt(event.ts_event)
         self._pair_log("ACTUAL_FILL", event.ts_event, order_id=oid, kind=owner["kind"],
                        level=owner["level"], qty=qty, price=px, risk=p["risk"], bmax=p["caps"].bmax)
@@ -373,8 +379,11 @@ class PairedPrefixResearch:
             return
         p = self._pair
         btc = self._pair_qty(self.config.btc_id); sol = self._pair_qty(self.config.sol_id)
-        p["caps"].reconcile(btc, sol, sol_reduced=sol < p["last_sol"],
-            btc_reduced=btc < p["last_btc"], active_risk=p["risk"] != "INACTIVE_RISK")
+        try:
+            p["caps"].reconcile(btc, sol, sol_reduced=sol < p["last_sol"],
+                btc_reduced=btc < p["last_btc"], active_risk=p["risk"] != "INACTIVE_RISK")
+        except ValueError as error:
+            self._pair_fail(str(error), ns)
         p["last_btc"], p["last_sol"] = btc, sol
         if not btc:
             p["close_sol"] = True

@@ -93,7 +93,7 @@ def test_lot_corridor_logical_eight_fits_physical_seven_and_preserves_failures(t
     import coinmaster.research.paired_prefix_run as runner
     p=new_ledger(tmp_path)
     r=json.loads(p.read_text())
-    old=[dict(physical_index=i,logical_slot=i,variant='OFF',status='FAILED',detail={'original':i}) for i in range(1,5)]
+    old=[dict(attempt_id="old-"+str(i),physical_index=i,logical_slot=i,variant='OFF',status='FAILED',detail={'original':i}) for i in range(1,5)]
     r.update(physical_prefix_max=7,physical_started=4,protocol_sha256=runner.LOT_PROTOCOL_SHA,attempts=old)
     for slot in r['slots']:
         if slot['slot']<=5:slot['status']='NOT_RUN_SUPERSEDED'

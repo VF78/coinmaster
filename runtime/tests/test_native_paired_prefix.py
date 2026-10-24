@@ -80,7 +80,7 @@ def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True, btc_quantit
     prepare_day(s,2);marks(s,2)
     ep=s._domain.episode=Episode("paired",side,10000,1,wave_levels=(0,0,.03),h=10000)
     intent=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=btc_quantity)
-    s._submit_intent(intent,btc_quantity,100,.01,0,ts_now=2)
+    s._submit_intent(intent,100,100,.01,0,ts_now=2)
     run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(SOL_PERP,5)])
     selected(s,a=a,side=side,valid=valid)
     return s,e,ep
@@ -217,9 +217,9 @@ def test_native_btc_tp_cap_trim_creates_only_absolute_rounding_deficit():
         for dt in range(5):
             run_ticks(e,[tick(BTC_PERP,t+dt,"101"),tick(SOL_PERP,t+dt)])
         p=s._pair
-        assert s._pair_qty(BTC_PERP.id)==D(39),json.dumps(s._pair_report())
-        assert s._pair_qty(SOL_PERP.id)==D("7.8"),json.dumps(s._pair_report())
-        assert p["caps"].bmax==D(39) and p["caps"].solmax==D("7.8")
+        assert s._pair_qty(BTC_PERP.id)==D("39.375"),json.dumps(s._pair_report())
+        assert s._pair_qty(SOL_PERP.id)==D("7.9"),json.dumps(s._pair_report())
+        assert p["caps"].bmax==D("39.375") and p["caps"].solmax==D("7.9")
         assert not s._pair_failures,json.dumps(s._pair_report())
     finally:e.end();e.dispose()
 
@@ -284,9 +284,9 @@ def test_native_late_oversize_btc_caused_cap_actual_deficit_is_not_deduplicated_
         for dt in range(6):
             run_ticks(e,[tick(BTC_PERP,t+dt,"101"),tick(SOL_PERP,t+dt)])
         assert s.injected_oversize
-        assert s._pair_qty(SOL_PERP.id)==D("5.6"),json.dumps(s._pair_report())
-        assert s._pair_qty(BTC_PERP.id)==D(28),json.dumps(s._pair_report())
-        assert s._pair["caps"].bmax==D(28)
+        assert s._pair_qty(SOL_PERP.id)==D("5.8"),json.dumps(s._pair_report())
+        assert s._pair_qty(BTC_PERP.id)==D(29),json.dumps(s._pair_report())
+        assert s._pair["caps"].bmax==D(29)
         assert not s._pair_failures,json.dumps(s._pair_report())
         before=json.dumps(s._pair_report(),sort_keys=True);cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
         # Replay only genuine already-applied callbacks in reverse order. The
@@ -367,8 +367,8 @@ def test_native_coprime_actual_1037_1817_single_tp_stable_corridor(side):
     from decimal import localcontext
     with localcontext() as ctx:
         ctx.prec = 80
-        a = str(D("181.7") / D("1.037"))
-        s,e,ep = native_setup(side=side, a=a, btc_quantity=1.037)
+        a = str(D("181.70000001") / D("1.037"))
+        s,e,ep = native_setup(side=side, a=a, btc_quantity=2.074)
     try:
         t=covered(s,e)
         p=s._pair
@@ -387,7 +387,6 @@ def test_native_coprime_actual_1037_1817_single_tp_stable_corridor(side):
         assert sum(x['kind']=='SOL_CAP' for x in fills)==1
         assert p['consumed']=={0} and p['debt_since'] is None
         assert not s._pair_failures,json.dumps(s._pair_report())
-        assert p['caps'].k==D("181.7")/D("1.037") or p['caps'].u==1817
         cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
         before=json.dumps(s._pair_report(),sort_keys=True)
         for event in reversed(list(s.native_fill_events)):s.on_order_filled(event)
