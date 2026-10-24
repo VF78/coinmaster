@@ -17,8 +17,8 @@ from test_native_episode_risk import tick,run_ticks
 
 def run_observed(tmp_path, enabled=True):
     journal=NativeEventJournal(str(tmp_path/'funding.sqlite'))
-    funds=(FundingInstruction('btc-pay',BTC_PERP.id,D('.001'),60_000_000_000,D(100),'test'),
-           FundingInstruction('sol-receive',SOL_PERP.id,D('.002'),60_000_000_000,D(100),'test'))
+    funds=(FundingInstruction('btc-pay',BTC_PERP.id,D('.001'),120_000_000_000,D(100),'test'),
+           FundingInstruction('sol-receive',SOL_PERP.id,D('.002'),120_000_000_000,D(100),'test'))
     modules=[PerpetualFundingModule(funds,journal)]
     observer=CommittedNativeObserver(tmp_path/'events.jsonl.gz',D(1000000),(BTC_PERP,SOL_PERP),journal) if enabled else None
     if observer:modules.append(observer)
@@ -31,18 +31,16 @@ def run_observed(tmp_path, enabled=True):
     if observer:
         observer.set_week([SimpleNamespace(open_time_ms=x,btc_mark={'close':'100'},sol_mark={'close':'100'}) for x in (0,60000,120000)])
     try:
-        run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
+        run_ticks(e,[tick(BTC_PERP,60_000_000_000),tick(SOL_PERP,60_000_000_000)])
         for inst,side in ((BTC_PERP,OrderSide.BUY),(SOL_PERP,OrderSide.SELL)):
             s.submit_order(s.order_factory.market(inst.id,side,inst.make_qty(D(10)),time_in_force=TimeInForce.IOC))
-        run_ticks(e,[tick(BTC_PERP,2),tick(SOL_PERP,2)])
-        # Paired completed marks first exist at60s; opening events use no
-        # future marks and are therefore expected UNKNOWN in this first fixture.
-        run_ticks(e,[tick(BTC_PERP,60_000_000_000),tick(SOL_PERP,60_000_000_000)])
+        run_ticks(e,[tick(BTC_PERP,60_000_000_001),tick(SOL_PERP,60_000_000_001)])
+        run_ticks(e,[tick(BTC_PERP,120_000_000_000),tick(SOL_PERP,120_000_000_000)])
         for inst,side in ((BTC_PERP,OrderSide.SELL),(SOL_PERP,OrderSide.BUY)):
             s.submit_order(s.order_factory.market(inst.id,side,inst.make_qty(D(10)),time_in_force=TimeInForce.IOC,reduce_only=True))
-        run_ticks(e,[tick(BTC_PERP,60_000_000_001),tick(SOL_PERP,60_000_000_001),tick(BTC_PERP,120_000_000_000),tick(SOL_PERP,120_000_000_000)])
+        run_ticks(e,[tick(BTC_PERP,120_000_000_001),tick(SOL_PERP,120_000_000_001),tick(BTC_PERP,180_000_000_000),tick(SOL_PERP,180_000_000_000)])
         e.end()
-        report=observer.finish_after_engine_end(120_000_000_000) if observer else None
+        report=observer.finish_after_engine_end(180_000_000_000) if observer else None
         actual=str(e.cache.account_for_venue(SIM).balance_total().as_decimal())
         return dict(report=report,cash=actual,funding=journal.funding_cash_audit(),
             fills=[r for r in s.receipts if r['kind']=='FILL'])
@@ -60,8 +58,7 @@ def test_stock_postfill_account_position_epochs_funding_and_on_off_parity(tmp_pa
     assert on['report']['native_unique_fills']==4
     assert on['report']['native_funding_transitions']==2,on['report']
     assert on['report']['terminal_actual_cash']==on['cash']
-    # Missing a completed mark is never repaired with the later60s mark.
-    assert 'MISSING_COMPLETED_PAIRED_MARK_SOURCE' in on['report']['unknown']
+    assert on['report']['status']=='PASS',on['report']
     rows=[json.loads(x) for x in gzip.open(ondir/'events.jsonl.gz','rt')]
     post=[r for r in rows if r['kind']=='POST_FILL_COMMITTED_NATIVE']
     assert len(post)==4
