@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-24",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "previous_HEAD": "afd481cb5cdc1eba77cd16301dfbd844524746a6",
+  "published_evidence_checkpoint": "5b921dec11848a3b7f7f08445d3943517b1c8e4a",
+  "actual_remote_ref_readback": "5b921dec11848a3b7f7f08445d3943517b1c8e4a",
+  "exact_remote_match": true,
+  "project": "133Done/CLOSED/archived; actualRESTandGraphQLreadbacksaved",
+  "economic_goal": "70/50and90/50NOT_MET; no nativecandidateadmitted",
+  "checks": "frozennewsignalPASSarith/STOPeconomics;3pathandrequirementsFractionPASS; packageintegrityPASS",
+  "scope": "researchdocs/analyticalcashflows/scalarrequirements; notproductdeployment",
+  "new_physical_native_full_short_training_simulator_attempts": 0,
+  "source": "ec2a958defaultOFFunchanged/notdeployed",
+  "agents": "bothcurrentexecutorscompleted",
+  "pilot_production_services_orders_transfers": "noactions",
+  "root_mirrors": "fourupdatedsmallguideshashequal",
+  "VPS_mirror": "UNKNOWNfrompriorSSHtimeouts,unchanged",
+  "receipt_semantics": "Verifiedpublicationofparentevidencecheckpoint;receiptpublishedasseparatechild,finalchildremoteequalitycheckedafterpushwithoutrecursiveselfhash."
+}
