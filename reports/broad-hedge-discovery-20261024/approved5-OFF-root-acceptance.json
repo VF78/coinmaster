@@ -1,0 +1,16 @@
+{
+  "status": "MATCHED_OFF_ACCEPTED_FOR_CANDIDATE_COMPARISON",
+  "accepted_utc": "2026-10-24T23:15:52.192300+00:00",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "report_sha256": "5209bd0e31d74db7e4bf7089d7c924e87465fe1d4d75857dfe1df68495b0967b",
+  "total": "19544.07357286",
+  "settled_DD_percent": "53.96990120879290570928286879",
+  "event_DD_percent": "53.96990120879290570928286879",
+  "daily_ES20": "0.06139919645585031701059233535899818341171053741175",
+  "parent_ES20": "0.19886195774363261708356686016959968013675180250900",
+  "money_checks": 17,
+  "independent_risk_funding_coverage": "PASS/136commondates/19provenparents/zero_streamgaps/zero_money_bridge_mismatch",
+  "process_exit_status": "OS_RC_UNKNOWN; durable wrapper COMPLETED, complete report/export/accounting and process absence independently verified; no exit0 claim",
+  "comparison_only": "OFF53.97DD exceeds candidate risk target; no economiccandidatePASS",
+  "B2_next": "physical4only, same frozen source/approval/policy"
+}

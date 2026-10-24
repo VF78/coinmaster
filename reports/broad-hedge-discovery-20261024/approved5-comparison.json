@@ -1,0 +1,73 @@
+{
+  "status": "NO_GO_SOURCE_PAIRING_CONTRACT",
+  "created_utc": "2026-10-24T23:35:15.015035+00:00",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "prefix_calendar": "[2024-09-01,2025-01-15)",
+  "variants": {
+    "OFF": {
+      "terminal_total": "19544.07357286",
+      "settled_DD_percent": "53.96990120879290570928286879",
+      "event_DD_percent": "53.96990120879290570928286879",
+      "daily_ES20": "0.06139919645585031701059233535899818341171053741175",
+      "parent_ES20": "0.19886195774363261708356686016959968013675180250900",
+      "native_fills": 82,
+      "fees": "1135.02982656",
+      "signed_funding": "-633.29250058",
+      "daily_count": 136,
+      "parent_count": 19,
+      "parent_proven_count": 19,
+      "observer_status": "PASS",
+      "terminal_flat_orders0": true,
+      "liquidations": 0
+    },
+    "B2": {
+      "terminal_total": "20472.41817762",
+      "settled_DD_percent": "44.02687381755497984319077761",
+      "event_DD_percent": "44.02687381755497984319077761",
+      "daily_ES20": "0.053267293003529479024359660945814709058246096345463",
+      "parent_ES20": "0.16216983712258016944645884137720481538773840849245",
+      "native_fills": 2081,
+      "fees": "1396.65821598",
+      "signed_funding": "-536.61880690",
+      "daily_count": 136,
+      "parent_count": 19,
+      "parent_proven_count": 19,
+      "observer_status": "PASS",
+      "terminal_flat_orders0": true,
+      "liquidations": 0
+    }
+  },
+  "B2_gates": {
+    "total_at_least_2x_OFF": false,
+    "incremental_gain_exceeds_twice_pair_fees": true,
+    "settled_DD_le50_and_improves5pp": true,
+    "event_DD_le50": true,
+    "daily_parent_ES20_notworse": true,
+    "native_account_funding_coverage_terminal": true,
+    "nonrecursive_pairing": false,
+    "overall": "NO_GO"
+  },
+  "B2_actual_churn": {
+    "BTC_DEBT_fills": 990,
+    "SOL_CAP_fills": 985,
+    "selected_activations": 9,
+    "SOL_TP_fills": 7
+  },
+  "combined": "NOT_RUN_HOLD_SHARED_SOURCE_CONTRACT",
+  "budget": {
+    "max": 5,
+    "started": 4,
+    "completed": 2,
+    "failed": 2,
+    "active": 0,
+    "remaining": 1,
+    "remaining_state": "HOLD_UNSPENT_SAME_SOURCE_INELIGIBLE",
+    "fullmax": 0
+  },
+  "next_proposal": "LOT_CORRIDOR_REPAIR_PROTOCOL_PROPOSED_RU.md",
+  "next_protocol_sha256": "0e7bca174c0268f0dc2769a4918d7017d88e98f84115ee52ad22dd59c97ca7be",
+  "next_approval": "PENDING/directhumanreplyrequired for sourcefix+total7",
+  "source_edits_after_cap5": false,
+  "full_goal": "70/50 and90/50 NOT_MET; prefixnotfull",
+  "limits": "Historical1m/L1 native model; no actualintraminutepricepathproven; DD44 partlynoncontractualerosion cannotqualifycorrecthedge; OFF OSrcUNKNOWN/noexit0claim"
+}

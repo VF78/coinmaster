@@ -1,0 +1,24 @@
+{
+  "status": "PENDING_OWNER_APPROVAL",
+  "requested_utc": "2026-10-24T23:30:08.703046+00:00",
+  "base_source": "3323f08c57ede411058f93d96acee88928c93481",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/LOT_CORRIDOR_REPAIR_PROTOCOL_PROPOSED_RU.md",
+  "protocol_sha256": "0e7bca174c0268f0dc2769a4918d7017d88e98f84115ee52ad22dd59c97ca7be",
+  "paper_review": "PASS/openP0P1=0;lot-corridor-protocol-review.md",
+  "math_checks": 25088,
+  "current_cap": 5,
+  "physical_started": 4,
+  "active": 0,
+  "requested_cap": 7,
+  "additional_over_current_cap": 2,
+  "fresh_runs_if_approved": [
+    "physical5correctedOFF",
+    "physical6correctedB2",
+    "physical7correctedcombined"
+  ],
+  "reserve": 0,
+  "full_max": 0,
+  "money_change": "exact native integer BTCcoveragefloor plus SOLcapceil; no SOL adds; surplus<oneSOLlot",
+  "pilot_production": "excluded",
+  "source_changes_performed": false
+}

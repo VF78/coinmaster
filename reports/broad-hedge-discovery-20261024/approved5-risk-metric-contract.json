@@ -1,0 +1,37 @@
+{
+  "task": "CM-PAIRED-PREFIX-CAP5-20261025",
+  "frozen_at_utc": "2026-10-24T23:12:03.482167+00:00",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "authority": "metric definition frozen before candidate outcomes; no strategy/threshold changes",
+  "scope": "completed actual native prefix artifacts only; no launches, ledger/freeze/product edits, reconstruction or shadow PnL",
+  "expected_shortfall20": {
+    "loss": "1 - end_TOTAL/start_TOTAL",
+    "tail": "Sort losses descending; let q=0.2*n. Sum floor(q) largest losses plus fractional remainder times next loss, divide by q. No rounding, clipping, or outcome-selected tail membership.",
+    "numeric": "Decimal from serialized actual values; UNKNOWN for unavailable/nonpositive required start equity"
+  },
+  "daily": {
+    "calendar": "136 common UTC dates 2024-09-01 through 2025-01-14 inclusive; initial seed 10000",
+    "endpoint": "Actual coherent native TOTAL at last complete source-minute each UTC day using source_ns, never lagged receipt_ns; include flat days.",
+    "terminal_exception": "Last day may use validated direct terminal native cash only if last source watermark absent AND actual both legs flat/orders zero; otherwise UNKNOWN.",
+    "no_reconstruction": true
+  },
+  "parent": {
+    "population": "All actual closed nonoverlapping BTC parent cycles per variant, with changed calendars reported; no shared-survivor selection or forced archived83 alignment.",
+    "endpoints": "Actual native TOTAL immediately before actual first BTC fill through actual both legs flat and associated orders quiescent after parent, including actual fees and funding.",
+    "insufficient_proof": "UNKNOWN; never rollback later marks or replay fills"
+  },
+  "gates": {
+    "matched_OFF": "same frozen source/liquidity policy; positive fully reconciled TOTAL",
+    "accounting": "cash/orders/signed funding/continuous settled plus coherent event coverage/terminal all PASS; no liquidation, stranded inventory, unauthorized increase, unprotected dust or overdue trim debt",
+    "combined_capital": "combined terminal TOTAL >= 2 * OFF terminal TOTAL",
+    "incremental_gain": "combined TOTAL - OFF TOTAL > 2 * combined actual SOL plus paired-BTC-trim fees",
+    "settled_DD": "candidate <= 50% and OFF - candidate >= 5 percentage points",
+    "event_DD": "candidate <= 50%, coherent pre-fill/pre-open/event endpoints complete",
+    "tails": "Both DAILY and PARENT ES20 <= respective OFF ES20; conservative reading of frozen daily/nonoverlapping-parent requirement",
+    "activations": "at least 3 completed, at least one actual SOL TP fill and one non-TP risk/expiry path; natural missing sample INCONCLUSIVE",
+    "selection": "B2 attribution only; combined failure stops, no post-outcome B2 promotion",
+    "advance": "any missing required proof UNKNOWN blocks PASS; full budget remains zero"
+  },
+  "failed_runs": "physical1 and physical2 diagnostic raw only; never passing controls",
+  "processing": "One streaming analysis pass per completed variant after root/executor completion notice; partial streams never final."
+}

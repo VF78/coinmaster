@@ -1,0 +1,69 @@
+{
+  "variant": "B2",
+  "status": "NO_GO_STRUCTURAL_RECURSIVE_LOT_EROSION",
+  "prefix_only": true,
+  "report_sha256": "2368406ca61ef8ae4971f4ecaa88dbf22ee99a453df2e88038253e0e92852bb0",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "source_file_sha256": "64ffdb1d2a6570510c6ae37ed6541af688bd7c8d81cc7894547e36d8d136cc76",
+  "terminal_ratio_vs_OFF": "1.047500056797225300127640465",
+  "incremental_gain": "928.34460476",
+  "actual_SOL_plus_paired_BTC_trim_fees": "391.48732860",
+  "twice_cost": "782.97465720",
+  "B2_descriptive_gate_vector": {
+    "capital_2x": false,
+    "incremental_gt_2x_fees": true,
+    "settled_DD_le50_improve5pp": true,
+    "event_DD_le50": true,
+    "daily_ES_no_worse": true,
+    "parent_ES_no_worse": true,
+    "completed_atleast3": true,
+    "TP_and_nonTP_paths": true,
+    "nonrecursive_pairing": false
+  },
+  "native_activity": {
+    "BTC_ENTRY": 34,
+    "BTC_REDUCE": 40,
+    "PAIRED_ENTRY": 9,
+    "PAIRED_TP": 7,
+    "PAIRED_BTC_DEBT": 990,
+    "PAIRED_SOL_CAP": 985,
+    "PAIRED_SOL_CLOSE": 9,
+    "FORCED_CLOSE": 7
+  },
+  "first_recursive_debt_steps": [
+    {
+      "actual_btc": "1.037",
+      "bmax": "0.777",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434480000000000"
+    },
+    {
+      "actual_btc": "0.777",
+      "bmax": "0.776",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "actual_btc": "0.776",
+      "bmax": "0.775",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434600000000000"
+    }
+  ],
+  "structural_evidence": {
+    "file": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/source-3323f08c57ede411058f93d96acee88928c93481/runtime/coinmaster/strategy/paired_prefix.py",
+    "lines": [
+      76,
+      77,
+      78,
+      79,
+      80,
+      84,
+      85,
+      354,
+      355
+    ],
+    "mechanism": "SOL_CAP reduction after BTC debt is fed as sol_reduced into active-risk floor(actual_sol/k); solmax is floor(k*bmax). Alternating unequal lot-grid floors lower BTC again without another independent TP/risk action. Actual bmax0.777\u21920.776\u21920.775 on successive minutes after first TP."
+  },
+  "decision_limit": "B2 is attribution only, never alternate winner. Combined not run by this analyst; root decides budget/hold; no source fixes or extra run authorized."
+}

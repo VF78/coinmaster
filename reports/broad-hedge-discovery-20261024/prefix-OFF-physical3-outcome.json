@@ -1,0 +1,231 @@
+{
+  "status": "OFF_COMPLETED_ROOT_ACCEPTANCE_REQUIRED",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "physical_index": 3,
+  "logical_slot": 5,
+  "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_APPROVED5/result/paired-prefix-OFF.json",
+  "report_sha256": "5209bd0e31d74db7e4bf7089d7c924e87465fe1d4d75857dfe1df68495b0967b",
+  "checks": {
+    "report_matches_ledger_hash": true,
+    "native_observer_pass": true,
+    "observer_unknown_empty": true,
+    "paired_failures_empty": true,
+    "terminal_positions_flat": true,
+    "zero_liquidations": true,
+    "terminal_orders_zero": true,
+    "fill_fees_native_reconciled": true,
+    "no_unknown_fee_classification": true,
+    "funding_native_deltas_reconcile": true,
+    "funding_sum_native_reconciled": true,
+    "funding_rows_reconcile": true,
+    "settled_receipts_match_report": true,
+    "all_source_minutes_processed": true,
+    "archived_82_fill_audit_exact": true,
+    "archived_money_exact": true,
+    "wrapper_completion_record_present": true
+  },
+  "checks_passed": 17,
+  "terminal_total": "19544.07357286",
+  "reserve": "0",
+  "native_fees": "1135.02982656",
+  "fee_attribution": {
+    "audited_total": "1135.02982656",
+    "maker": {
+      "count": 56,
+      "fees": "326.75708798",
+      "notional": "1633785.4399"
+    },
+    "native_total": "1135.02982656",
+    "reconciled": true,
+    "taker": {
+      "count": 26,
+      "fees": "808.27273858",
+      "notional": "1469586.7974"
+    },
+    "unknown": {
+      "count": 0,
+      "fees": "0",
+      "notional": "0"
+    }
+  },
+  "funding_by_asset": {
+    "BTCUSDT-PERP.P1SIM": "-633.29250058"
+  },
+  "funding_count": 133,
+  "terminal_open_positions": 0,
+  "terminal_open_orders": 0,
+  "terminal_order_statuses": {
+    "FILLED": 82,
+    "CANCELED": 68
+  },
+  "model_liquidations": 0,
+  "observer": {
+    "actual_intraminute_price_path_proven": false,
+    "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+    "event_drawdown": {
+      "maximum_loss_below_seed_amount": "2575.32239454",
+      "maximum_loss_below_seed_percent": "25.753223945400",
+      "minimum": {
+        "equity": "7424.67760546",
+        "timestamp_ns": "9050"
+      },
+      "samples": 392112,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "18407.36772042",
+          "drawdown_peak_percent": "53.96990120879290570928286879",
+          "peak": {
+            "equity": "34106.72858045",
+            "timestamp_ns": "481244"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "15699.36086003",
+            "timestamp_ns": "521017"
+          }
+        },
+        {
+          "drawdown_amount": "4574.15757194",
+          "drawdown_peak_percent": "32.07871239258120019133932755",
+          "peak": {
+            "equity": "14259.16824828",
+            "timestamp_ns": "141413"
+          },
+          "recovery": {
+            "equity": "14350.25851453",
+            "timestamp_ns": "236049"
+          },
+          "trough": {
+            "equity": "9685.01067634",
+            "timestamp_ns": "170793"
+          }
+        },
+        {
+          "drawdown_amount": "2876.80894018",
+          "drawdown_peak_percent": "27.92615344818928381109280557",
+          "peak": {
+            "equity": "10301.48654564",
+            "timestamp_ns": "4482"
+          },
+          "recovery": {
+            "equity": "10364.5788837",
+            "timestamp_ns": "13154"
+          },
+          "trough": {
+            "equity": "7424.67760546",
+            "timestamp_ns": "9050"
+          }
+        }
+      ]
+    },
+    "mutation_epochs": 215,
+    "native_account_publications": 408,
+    "native_funding_transitions": 133,
+    "native_unique_fills": 82,
+    "sequence_count": 587950,
+    "settled_drawdown": {
+      "maximum_loss_below_seed_amount": "2575.32239454",
+      "maximum_loss_below_seed_percent": "25.753223945400",
+      "minimum": {
+        "equity": "7424.67760546",
+        "timestamp_ns": "1725329640000000000"
+      },
+      "samples": 195840,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "18407.36772042",
+          "drawdown_peak_percent": "53.96990120879290570928286879",
+          "peak": {
+            "equity": "34106.72858045",
+            "timestamp_ns": "1734767220000000000"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "15699.36086003",
+            "timestamp_ns": "1735561620000000000"
+          }
+        },
+        {
+          "drawdown_amount": "4574.15757194",
+          "drawdown_peak_percent": "32.07871239258120019133932755",
+          "peak": {
+            "equity": "14259.16824828",
+            "timestamp_ns": "1727975040000000000"
+          },
+          "recovery": {
+            "equity": "14350.25851453",
+            "timestamp_ns": "1729866180000000000"
+          },
+          "trough": {
+            "equity": "9685.01067634",
+            "timestamp_ns": "1728561780000000000"
+          }
+        },
+        {
+          "drawdown_amount": "2876.80894018",
+          "drawdown_peak_percent": "27.92615344818928381109280557",
+          "peak": {
+            "equity": "10301.48654564",
+            "timestamp_ns": "1725238380000000000"
+          },
+          "recovery": {
+            "equity": "10364.5788837",
+            "timestamp_ns": "1725411600000000000"
+          },
+          "trough": {
+            "equity": "7424.67760546",
+            "timestamp_ns": "1725329640000000000"
+          }
+        }
+      ]
+    },
+    "settled_receipts": 195839,
+    "status": "PASS",
+    "terminal_actual_cash": "19544.07357286",
+    "unknown": []
+  },
+  "settled_receipt_count": 195839,
+  "settled_receipt_fields": [
+    "source_quote_ns",
+    "receipt_ns",
+    "fill_epoch",
+    "cash",
+    "paired_close_equity",
+    "native_positions_and_mark_ohlc_json"
+  ],
+  "settled_first": {
+    "source_quote_ns": "1725148860000000000",
+    "receipt_ns": "1725148920000000000",
+    "fill_epoch": "0",
+    "cash": "10000",
+    "paired_close_equity": "10000",
+    "native_positions_and_mark_ohlc_json": "[]"
+  },
+  "settled_last": {
+    "source_quote_ns": "1736899140000000000",
+    "receipt_ns": "1736899200000000000",
+    "fill_epoch": "82",
+    "cash": "19544.07357286",
+    "paired_close_equity": "19544.07357286",
+    "native_positions_and_mark_ohlc_json": "[]"
+  },
+  "cash_report_dd_fraction": "0.4884585588045581256632216230",
+  "archive_comparison": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_CORRECTION1/result/paired-prefix-OFF-raw-native.json",
+    "sha256": "44e1257c22972f50c9158d150ae0b4df100ad87520432039e1e6deefc4c2afa3",
+    "fills": 82,
+    "fill_audit_identical": true,
+    "fill_timestamps_identical": true,
+    "money_identical": true,
+    "first_financial_divergence": null,
+    "prior_failed_status_unchanged": true
+  },
+  "process_completion": {
+    "normal_wrapper_completion_observed": true,
+    "process_absence_confirmed": true,
+    "exit_code": null,
+    "exit_code_reason": "Popen launch parent exited after recording PID; waitpid return code was not retained. Wrapper durable COMPLETED and final completion record observed; process absent. No restart."
+  },
+  "economic_claim": "Control only; coherent settled/event DD53.9699012088% exceeds50; no candidate pass; historical intraminute path unproven",
+  "next": "B2 held pending root acceptance"
+}

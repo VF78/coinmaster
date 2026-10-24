@@ -1,0 +1,13 @@
+{
+  "status": "GO_B2_PHYSICAL4_ONLY",
+  "issued_utc": "2026-10-24T23:15:52.192300+00:00",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "physical_index": 4,
+  "logical_slot": 2,
+  "physical_cap": 5,
+  "full_cap": 0,
+  "approved_freeze_sha256": "dfce80bbc106614b154a4a321f7f131a16f2fc2e94bc9628992cfcdba7397051",
+  "matched_OFF_report_sha256": "5209bd0e31d74db7e4bf7089d7c924e87465fe1d4d75857dfe1df68495b0967b",
+  "scope": "one B2 attributionprefix only; no autorestart/sourceedits; combined held for root checkpoint",
+  "process_supervision": "parent must stay alive through Popen.wait and persist actual returncode; no fire-and-forget supervisor"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "GO_OFF_PHYSICAL3_ONLY",
+  "issued_utc": "2026-10-24T23:12:05.862626+00:00",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "physical_index": 3,
+  "logical_slot": 5,
+  "physical_cap": 5,
+  "full_cap": 0,
+  "approval_sha256": "4cb061410f40ef5d51977cd5d3f8f8a8d9ba9d21529b25eb278421137a71b4ae",
+  "pre_go_freeze_sha256": "bee6976826af5065cc50e723abeae07bbf41148c30bb046e0be05b12fb496b85",
+  "approved_freeze_sha256": "7eb1c49ec3f6309c7615eb17d6e1d2330a17727f83b4812cadf2b61941b65210",
+  "gates": "184source27dataengine4standardpins+ownerapprovalverified;bothindependentreviewhashesverified;105priorPASS;engine-freepreflight3/3",
+  "scope": "exactlyoneOFFattempt;noautorestart;B2/B2_F0helduntilrootOFFacceptance",
+  "environment": "explicit scrubbedcommands;HOME/CODEX_HOMEnotrepurposed"
+}

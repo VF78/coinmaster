@@ -1,0 +1,311 @@
+{
+  "status": "ACTUAL_NATIVE_TRACE_CONFIRMS_RECURSIVE_LOT_EROSION",
+  "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_PAIRED_APPROVED5/result/paired-prefix-B2.json",
+  "report_sha256": "2368406ca61ef8ae4971f4ecaa88dbf22ee99a453df2e88038253e0e92852bb0",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "activation_ordinal": 1,
+  "k": "175.2169720347155255544840887",
+  "qref": "1.037",
+  "intended_initial_SOL": "181.7",
+  "BTC_lot": ".001",
+  "SOL_lot": ".1",
+  "lot_evidence": "frozen runtime/coinmaster/research/native_baseline.py lines818-819",
+  "source_cap_evidence": "frozen runtime/coinmaster/strategy/paired_prefix.py PairedCaps.reconcile()/solmax lines76-85",
+  "trace": [
+    {
+      "audit_event_ordinal": 14,
+      "actual_btc": "1.037",
+      "bmax": "0.777",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434480000000000"
+    },
+    {
+      "ordinal": 1,
+      "audit_event_ordinal": 15,
+      "utc": "2024-09-15T21:08:00+00:00",
+      "minute_from_first_TP": 0,
+      "kind": "TP",
+      "qty": "45.4",
+      "price": "132.22",
+      "bmax": "0.777",
+      "native_order_id": "O-20240915-200100-001-000-23",
+      "native_trade_id": "T-968d5abb740a179d-002",
+      "native_side": "BUY",
+      "native_fee": "['1.20055760 USDT']",
+      "intent": {
+        "event": "SUBMIT",
+        "generation": 1,
+        "kind": "TP",
+        "level": 0,
+        "order_id": "O-20240915-200100-001-000-23",
+        "price": "132.22",
+        "quantity": "45.4",
+        "stop": null,
+        "timestamp_ns": "1726430460000000000"
+      }
+    },
+    {
+      "audit_event_ordinal": 16,
+      "bmax": "0.777",
+      "btc": "1.037",
+      "event": "CACHE_POSITION",
+      "sol": "136.3",
+      "solmax": "136.1",
+      "timestamp_ns": "1726434480000000000"
+    },
+    {
+      "ordinal": 2,
+      "audit_event_ordinal": 24,
+      "utc": "2024-09-15T21:09:00+00:00",
+      "minute_from_first_TP": 1,
+      "kind": "BTC_DEBT",
+      "qty": "0.26",
+      "price": "59588",
+      "bmax": "0.777",
+      "native_order_id": "O-20240915-210900-001-000-30",
+      "native_trade_id": "T-a2d0adcab6026b4e-012",
+      "native_side": "SELL",
+      "native_fee": "['8.52108400 USDT']",
+      "intent": {
+        "event": "SUBMIT",
+        "generation": 2,
+        "kind": "BTC_DEBT",
+        "level": null,
+        "order_id": "O-20240915-210900-001-000-30",
+        "price": null,
+        "quantity": "0.260",
+        "stop": null,
+        "timestamp_ns": "1726434540000000000"
+      }
+    },
+    {
+      "audit_event_ordinal": 25,
+      "bmax": "0.777",
+      "btc": "0.777",
+      "event": "CACHE_POSITION",
+      "sol": "136.3",
+      "solmax": "136.1",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "audit_event_ordinal": 27,
+      "actual_btc": "0.777",
+      "bmax": "0.776",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "ordinal": 3,
+      "audit_event_ordinal": 28,
+      "utc": "2024-09-15T21:09:00+00:00",
+      "minute_from_first_TP": 1,
+      "kind": "SOL_CAP",
+      "qty": "0.2",
+      "price": "132.42",
+      "bmax": "0.776",
+      "native_order_id": "O-20240915-210900-001-000-34",
+      "native_trade_id": "T-83089ff190f7ec7f-003",
+      "native_side": "BUY",
+      "native_fee": "['0.01456620 USDT']",
+      "intent": {
+        "event": "SUBMIT",
+        "generation": 2,
+        "kind": "SOL_CAP",
+        "level": null,
+        "order_id": "O-20240915-210900-001-000-34",
+        "price": null,
+        "quantity": "0.2",
+        "stop": null,
+        "timestamp_ns": "1726434540000000000"
+      }
+    },
+    {
+      "audit_event_ordinal": 29,
+      "bmax": "0.776",
+      "btc": "0.777",
+      "event": "CACHE_POSITION",
+      "sol": "136.1",
+      "solmax": "135.9",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "ordinal": 4,
+      "audit_event_ordinal": 37,
+      "utc": "2024-09-15T21:10:00+00:00",
+      "minute_from_first_TP": 2,
+      "kind": "BTC_DEBT",
+      "qty": "0.001",
+      "price": "59582.8",
+      "bmax": "0.776",
+      "native_order_id": "O-20240915-211000-001-000-38",
+      "native_trade_id": "T-9a9ce280129b666b-013",
+      "native_side": "SELL",
+      "native_fee": "['0.03277054 USDT']",
+      "intent": {
+        "event": "SUBMIT",
+        "generation": 3,
+        "kind": "BTC_DEBT",
+        "level": null,
+        "order_id": "O-20240915-211000-001-000-38",
+        "price": null,
+        "quantity": "0.001",
+        "stop": null,
+        "timestamp_ns": "1726434600000000000"
+      }
+    },
+    {
+      "audit_event_ordinal": 38,
+      "bmax": "0.776",
+      "btc": "0.776",
+      "event": "CACHE_POSITION",
+      "sol": "136.1",
+      "solmax": "135.9",
+      "timestamp_ns": "1726434600000000000"
+    },
+    {
+      "audit_event_ordinal": 40,
+      "actual_btc": "0.776",
+      "bmax": "0.775",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434600000000000"
+    },
+    {
+      "ordinal": 5,
+      "audit_event_ordinal": 41,
+      "utc": "2024-09-15T21:10:00+00:00",
+      "minute_from_first_TP": 2,
+      "kind": "SOL_CAP",
+      "qty": "0.2",
+      "price": "132.37",
+      "bmax": "0.775",
+      "native_order_id": "O-20240915-211000-001-000-42",
+      "native_trade_id": "T-56f560429c954602-004",
+      "native_side": "BUY",
+      "native_fee": "['0.01456070 USDT']",
+      "intent": {
+        "event": "SUBMIT",
+        "generation": 3,
+        "kind": "SOL_CAP",
+        "level": null,
+        "order_id": "O-20240915-211000-001-000-42",
+        "price": null,
+        "quantity": "0.2",
+        "stop": null,
+        "timestamp_ns": "1726434600000000000"
+      }
+    },
+    {
+      "audit_event_ordinal": 42,
+      "bmax": "0.775",
+      "btc": "0.776",
+      "event": "CACHE_POSITION",
+      "sol": "135.9",
+      "solmax": "135.7",
+      "timestamp_ns": "1726434600000000000"
+    },
+    {
+      "ordinal": 6,
+      "audit_event_ordinal": 50,
+      "utc": "2024-09-15T21:11:00+00:00",
+      "minute_from_first_TP": 3,
+      "kind": "BTC_DEBT",
+      "qty": "0.001",
+      "price": "59571.1",
+      "bmax": "0.775",
+      "native_order_id": "O-20240915-211100-001-000-46",
+      "native_trade_id": "T-90e4ea198a7efd3b-014",
+      "native_side": "SELL",
+      "native_fee": "['0.03276411 USDT']",
+      "intent": {
+        "event": "SUBMIT",
+        "generation": 4,
+        "kind": "BTC_DEBT",
+        "level": null,
+        "order_id": "O-20240915-211100-001-000-46",
+        "price": null,
+        "quantity": "0.001",
+        "stop": null,
+        "timestamp_ns": "1726434660000000000"
+      }
+    },
+    {
+      "audit_event_ordinal": 51,
+      "bmax": "0.775",
+      "btc": "0.775",
+      "event": "CACHE_POSITION",
+      "sol": "135.9",
+      "solmax": "135.7",
+      "timestamp_ns": "1726434660000000000"
+    },
+    {
+      "audit_event_ordinal": 53,
+      "actual_btc": "0.775",
+      "bmax": "0.774",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434660000000000"
+    },
+    {
+      "ordinal": 7,
+      "audit_event_ordinal": 54,
+      "utc": "2024-09-15T21:11:00+00:00",
+      "minute_from_first_TP": 3,
+      "kind": "SOL_CAP",
+      "qty": "0.2",
+      "price": "132.25",
+      "bmax": "0.774",
+      "native_order_id": "O-20240915-211100-001-000-50",
+      "native_trade_id": "T-6d8e44348698815e-005",
+      "native_side": "BUY",
+      "native_fee": "['0.01454750 USDT']",
+      "intent": {
+        "event": "SUBMIT",
+        "generation": 4,
+        "kind": "SOL_CAP",
+        "level": null,
+        "order_id": "O-20240915-211100-001-000-50",
+        "price": null,
+        "quantity": "0.2",
+        "stop": null,
+        "timestamp_ns": "1726434660000000000"
+      }
+    },
+    {
+      "audit_event_ordinal": 55,
+      "bmax": "0.774",
+      "btc": "0.775",
+      "event": "CACHE_POSITION",
+      "sol": "135.7",
+      "solmax": "135.6",
+      "timestamp_ns": "1726434660000000000"
+    }
+  ],
+  "arithmetic": [
+    {
+      "actual_SOL": "136.3",
+      "Bmax_floor_SOL_div_k": "0.777",
+      "SOLmax_floor_k_times_Bmax": "136.1",
+      "new_SOL_excess": "0.2"
+    },
+    {
+      "actual_SOL": "136.1",
+      "Bmax_floor_SOL_div_k": "0.776",
+      "SOLmax_floor_k_times_Bmax": "135.9",
+      "new_SOL_excess": "0.2"
+    },
+    {
+      "actual_SOL": "135.9",
+      "Bmax_floor_SOL_div_k": "0.775",
+      "SOLmax_floor_k_times_Bmax": "135.7",
+      "new_SOL_excess": "0.2"
+    },
+    {
+      "actual_SOL": "135.7",
+      "Bmax_floor_SOL_div_k": "0.774",
+      "SOLmax_floor_k_times_Bmax": "135.6",
+      "new_SOL_excess": "0.1"
+    }
+  ],
+  "diagnosis": "TP reducesSOL136.3 -> flooredBTCcap.777. Its safetySOLcap floorsk*.777 to136.1. ActualSOLCAP.2 then is treated as new activeSOLreduction and floors136.1/k toBTCcap.776. Recurs every minute with BTC.001/SOL.1or.2 lots. This violates approved nonrecursive absolute capacity contract.",
+  "root_decision": "ARCHITECTURE_NO_GO;B2run remains COMPLETED;combined physical5 not launched;no source edits/tests/runs",
+  "remaining_attempt": "HOLD_UNSPENT_SAME_SOURCE_INELIGIBLE"
+}

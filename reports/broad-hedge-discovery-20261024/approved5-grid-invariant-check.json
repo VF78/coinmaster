@@ -1,0 +1,164 @@
+{
+  "status": "PASS_PURE_INTEGER_INVARIANTS_ONLY",
+  "economic_engine_runs": 0,
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "report_sha256": "2368406ca61ef8ae4971f4ecaa88dbf22ee99a453df2e88038253e0e92852bb0",
+  "frozen_choices": {
+    "u_range": [
+      1,
+      16
+    ],
+    "v_range": [
+      1,
+      16
+    ],
+    "btc_lots_range": [
+      0,
+      32
+    ],
+    "independent_sol_lots_range": [
+      0,
+      64
+    ],
+    "proposal": "BTC floor(v*s/u), monotone bmax; BTC-caused SOL cap ceil(u*b/v); exact integer cross-products"
+  },
+  "checks": 25088,
+  "old_floor_strict_decrease_states": 5359,
+  "actual_first": {
+    "u": 1817,
+    "v": 1037,
+    "gcd": 1,
+    "btc_step": ".001",
+    "sol_step": ".1",
+    "post_tp_sol_lots": 1363,
+    "old_btc_lots": [
+      777,
+      776,
+      775
+    ],
+    "old_sol_caps": [
+      1361,
+      1359
+    ],
+    "proposed_sol_cap_lots": 1362,
+    "proposed_covered_btc_lots": 777,
+    "extra_one_sol_lot_reduction_covered_btc": 776
+  },
+  "first_trace": [
+    {
+      "actual_btc": "1.037",
+      "bmax": "0.777",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434480000000000"
+    },
+    {
+      "bmax": "0.777",
+      "event": "ACTUAL_FILL",
+      "kind": "TP",
+      "level": 0,
+      "order_id": "O-20240915-200100-001-000-23",
+      "price": "132.22",
+      "qty": "45.4",
+      "risk": "ACTIVE_RISK",
+      "timestamp_ns": "1726434480000000000"
+    },
+    {
+      "bmax": "0.777",
+      "btc": "1.037",
+      "event": "CACHE_POSITION",
+      "sol": "136.3",
+      "solmax": "136.1",
+      "timestamp_ns": "1726434480000000000"
+    },
+    {
+      "bmax": "0.777",
+      "event": "ACTUAL_FILL",
+      "kind": "BTC_DEBT",
+      "level": null,
+      "order_id": "O-20240915-210900-001-000-30",
+      "price": "59588",
+      "qty": "0.26",
+      "risk": "ACTIVE_RISK",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "bmax": "0.777",
+      "btc": "0.777",
+      "event": "CACHE_POSITION",
+      "sol": "136.3",
+      "solmax": "136.1",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "actual_btc": "0.777",
+      "bmax": "0.776",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "bmax": "0.776",
+      "event": "ACTUAL_FILL",
+      "kind": "SOL_CAP",
+      "level": null,
+      "order_id": "O-20240915-210900-001-000-34",
+      "price": "132.42",
+      "qty": "0.2",
+      "risk": "ACTIVE_RISK",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "bmax": "0.776",
+      "btc": "0.777",
+      "event": "CACHE_POSITION",
+      "sol": "136.1",
+      "solmax": "135.9",
+      "timestamp_ns": "1726434540000000000"
+    },
+    {
+      "bmax": "0.776",
+      "event": "ACTUAL_FILL",
+      "kind": "BTC_DEBT",
+      "level": null,
+      "order_id": "O-20240915-211000-001-000-38",
+      "price": "59582.8",
+      "qty": "0.001",
+      "risk": "ACTIVE_RISK",
+      "timestamp_ns": "1726434600000000000"
+    },
+    {
+      "bmax": "0.776",
+      "btc": "0.776",
+      "event": "CACHE_POSITION",
+      "sol": "136.1",
+      "solmax": "135.9",
+      "timestamp_ns": "1726434600000000000"
+    },
+    {
+      "actual_btc": "0.776",
+      "bmax": "0.775",
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "1726434600000000000"
+    },
+    {
+      "bmax": "0.775",
+      "event": "ACTUAL_FILL",
+      "kind": "SOL_CAP",
+      "level": null,
+      "order_id": "O-20240915-211000-001-000-42",
+      "price": "132.37",
+      "qty": "0.2",
+      "risk": "ACTIVE_RISK",
+      "timestamp_ns": "1726434600000000000"
+    },
+    {
+      "bmax": "0.775",
+      "btc": "0.776",
+      "event": "CACHE_POSITION",
+      "sol": "135.9",
+      "solmax": "135.7",
+      "timestamp_ns": "1726434600000000000"
+    }
+  ],
+  "script_sha256": "9f8daea7e486750a2921ac6312d10265d921f927a33e6644ceb9f6587b4cf706",
+  "limit": "Not an execution, PnL, economic, live safety or approval proof; no product patch or new native run authorized."
+}

@@ -1,0 +1,41 @@
+{
+  "status": "APPROVED_BY_OWNER",
+  "approved_utc": "2026-10-24T23:09:19.713941+00:00",
+  "client_date": "2026-10-25",
+  "client_timezone": "Europe/Moscow",
+  "protocol_sha256": "9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1",
+  "amendment_protocol_sha256": "a3015fbf665f416ba6cffb4b520cc2a9c674ff9d42204f28355b64273e46d1bd",
+  "authorized_native_prefix_max": 5,
+  "authorized_full_max": 0,
+  "previous_native_prefix_max": 4,
+  "additional_attempts": 1,
+  "physical_started_before_approval": 2,
+  "previous_failed_attempts_preserved": true,
+  "owner_exact_response": "Разрешаю +1, общий лимит 5",
+  "approval_source": "direct human reply to request_user_input_async call_4f5a8068e68740a78b6851a11584c743 in current manager chat",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "prefix_calendar": "[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)",
+  "seed": "10000",
+  "reserve": "0",
+  "remaining_sequence": [
+    {
+      "logical_slot": 5,
+      "physical_index": 3,
+      "variant": "OFF"
+    },
+    {
+      "logical_slot": 2,
+      "physical_index": 4,
+      "variant": "B2"
+    },
+    {
+      "logical_slot": 3,
+      "physical_index": 5,
+      "variant": "B2_F0"
+    }
+  ],
+  "failed_attempts_count": true,
+  "new_reserve": 0,
+  "pilot_production_services_credentials_real_orders_transfers": "excluded",
+  "source_changes_after_approval": "not authorized by this fixed-source prefix amendment"
+}

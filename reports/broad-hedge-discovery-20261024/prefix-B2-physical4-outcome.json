@@ -1,0 +1,439 @@
+{
+  "status": "B2_COMPLETED_ACCEPTANCE_REVIEW_REQUIRED",
+  "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_PAIRED_APPROVED5/result/paired-prefix-B2.json",
+  "report_sha256": "2368406ca61ef8ae4971f4ecaa88dbf22ee99a453df2e88038253e0e92852bb0",
+  "physical_index": 4,
+  "logical_slot": 2,
+  "actual_exit_code": 0,
+  "checks": {
+    "actual_process_exit_zero": true,
+    "durable_completed": true,
+    "report_hash_matches_ledger": true,
+    "observer_pass": true,
+    "observer_unknown_empty": true,
+    "paired_failures_empty": true,
+    "terminal_no_open_owner": true,
+    "terminal_positions_flat": true,
+    "zero_model_liquidations": true,
+    "terminal_orders_zero": true,
+    "native_fees_exact": true,
+    "fee_classification_known": true,
+    "funding_row_exact": true,
+    "funding_total_exact": true,
+    "funding_count_exact": true,
+    "settled_receipt_count_exact": true,
+    "all_source_minutes_processed": true
+  },
+  "checks_passed": 17,
+  "terminal_total": "20472.41817762",
+  "increment_vs_OFF": "928.34460476",
+  "two_times_OFF_threshold": "39088.14714572",
+  "two_times_OFF_pass": false,
+  "native_fees": "1396.65821598",
+  "fee_attribution": {
+    "audited_total": "1396.65821598",
+    "maker": {
+      "count": 59,
+      "fees": "300.72163282",
+      "notional": "1503608.1641"
+    },
+    "native_total": "1396.65821598",
+    "reconciled": true,
+    "taker": {
+      "count": 2022,
+      "fees": "1095.93658316",
+      "notional": "1992611.9657"
+    },
+    "unknown": {
+      "count": 0,
+      "fees": "0",
+      "notional": "0"
+    }
+  },
+  "funding_by_asset": {
+    "BTCUSDT-PERP.P1SIM": "-536.26115893",
+    "SOLUSDT-PERP.P1SIM": "-0.35764797"
+  },
+  "funding_count": 137,
+  "fills": 2081,
+  "fill_reason_costs": {
+    "BTC_ENTRY": {
+      "count": 34,
+      "fees": "586.82278537",
+      "notional": "1479720.4755"
+    },
+    "BTC_TP1": {
+      "count": 15,
+      "fees": "43.21005206",
+      "notional": "216050.2603"
+    },
+    "BTC_TP2": {
+      "count": 13,
+      "fees": "35.49643456",
+      "notional": "177482.1728"
+    },
+    "BTC_TP3": {
+      "count": 12,
+      "fees": "86.41697674",
+      "notional": "432084.8837"
+    },
+    "PAIRED_ENTRY": {
+      "count": 9,
+      "fees": "143.62678385",
+      "notional": "261139.607"
+    },
+    "PAIRED_TP": {
+      "count": 7,
+      "fees": "13.84751645",
+      "notional": "43856.067"
+    },
+    "PAIRED_BTC_DEBT": {
+      "count": 990,
+      "fees": "115.40131420",
+      "notional": "209820.5676"
+    },
+    "PAIRED_SOL_CAP": {
+      "count": 985,
+      "fees": "15.14994690",
+      "notional": "27545.358"
+    },
+    "PAIRED_SOL_CLOSE": {
+      "count": 9,
+      "fees": "103.46176720",
+      "notional": "188112.304"
+    },
+    "REGIME": {
+      "count": 6,
+      "fees": "225.57309715",
+      "notional": "410132.9039"
+    },
+    "TRAIL": {
+      "count": 1,
+      "fees": "27.6515415",
+      "notional": "50275.530"
+    }
+  },
+  "actual_SOL_and_BTC_trim_fees": "391.48732860",
+  "twice_actual_SOL_trim_fees": "782.97465720",
+  "increment_exceeds_twice_actual_SOL_trim_fees": true,
+  "terminal_open_positions": 0,
+  "terminal_open_orders": 0,
+  "terminal_orders_status": {
+    "FILLED": 2081,
+    "CANCELED": 5967
+  },
+  "model_liquidations": 0,
+  "settled_receipts": 195839,
+  "observer": {
+    "actual_intraminute_price_path_proven": false,
+    "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+    "event_drawdown": {
+      "maximum_loss_below_seed_amount": "2575.32239454",
+      "maximum_loss_below_seed_percent": "25.753223945400",
+      "minimum": {
+        "equity": "7424.67760546",
+        "timestamp_ns": "9050"
+      },
+      "samples": 396118,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "12931.38720627",
+          "drawdown_peak_percent": "44.02687381755497984319077761",
+          "peak": {
+            "equity": "29371.57714140",
+            "timestamp_ns": "483344"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "16440.18993513",
+            "timestamp_ns": "525023"
+          }
+        },
+        {
+          "drawdown_amount": "4806.14618662",
+          "drawdown_peak_percent": "30.78605501197197764214947787",
+          "peak": {
+            "equity": "15611.43896076",
+            "timestamp_ns": "142119"
+          },
+          "recovery": {
+            "equity": "15637.33993763",
+            "timestamp_ns": "252700"
+          },
+          "trough": {
+            "equity": "10805.29277414",
+            "timestamp_ns": "171569"
+          }
+        },
+        {
+          "drawdown_amount": "2876.80894018",
+          "drawdown_peak_percent": "27.92615344818928381109280557",
+          "peak": {
+            "equity": "10301.48654564",
+            "timestamp_ns": "4482"
+          },
+          "recovery": {
+            "equity": "10364.5788837",
+            "timestamp_ns": "13154"
+          },
+          "trough": {
+            "equity": "7424.67760546",
+            "timestamp_ns": "9050"
+          }
+        }
+      ]
+    },
+    "mutation_epochs": 2218,
+    "native_account_publications": 14215,
+    "native_funding_transitions": 137,
+    "native_unique_fills": 2081,
+    "sequence_count": 591956,
+    "settled_drawdown": {
+      "maximum_loss_below_seed_amount": "2575.32239454",
+      "maximum_loss_below_seed_percent": "25.753223945400",
+      "minimum": {
+        "equity": "7424.67760546",
+        "timestamp_ns": "1725329640000000000"
+      },
+      "samples": 195840,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "12931.38720627",
+          "drawdown_peak_percent": "44.02687381755497984319077761",
+          "peak": {
+            "equity": "29371.57714140",
+            "timestamp_ns": "1734767220000000000"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "16440.18993513",
+            "timestamp_ns": "1735561620000000000"
+          }
+        },
+        {
+          "drawdown_amount": "4806.14618662",
+          "drawdown_peak_percent": "30.78605501197197764214947787",
+          "peak": {
+            "equity": "15611.43896076",
+            "timestamp_ns": "1727975040000000000"
+          },
+          "recovery": {
+            "equity": "15637.33993763",
+            "timestamp_ns": "1730168520000000000"
+          },
+          "trough": {
+            "equity": "10805.29277414",
+            "timestamp_ns": "1728561780000000000"
+          }
+        },
+        {
+          "drawdown_amount": "2876.80894018",
+          "drawdown_peak_percent": "27.92615344818928381109280557",
+          "peak": {
+            "equity": "10301.48654564",
+            "timestamp_ns": "1725238380000000000"
+          },
+          "recovery": {
+            "equity": "10364.5788837",
+            "timestamp_ns": "1725411600000000000"
+          },
+          "trough": {
+            "equity": "7424.67760546",
+            "timestamp_ns": "1725329640000000000"
+          }
+        }
+      ]
+    },
+    "settled_receipts": 195839,
+    "status": "PASS",
+    "terminal_actual_cash": "20472.41817762",
+    "unknown": []
+  },
+  "paired_event_counts": {
+    "ACTIVATION_SELECTED": 9,
+    "SUBMIT": 5137,
+    "ACTUAL_FILL": 2000,
+    "ENTRY_TERMINAL_P0_FROZEN": 9,
+    "CACHE_POSITION": 2017,
+    "ACCEPTED": 3144,
+    "ACTUAL_BTC_DEBT_OPEN": 990,
+    "RISK_INVALID_OR_EXPIRED": 9,
+    "PARENT_NATIVE_TERMINAL_FLAT": 9
+  },
+  "activation_windows": [
+    {
+      "parent": "11ec7d5b-fd20-4efb-a653-2155203ba2a8",
+      "start_ns": "1726430400000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {
+        "0": 1,
+        "1": 1
+      },
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "TP": 2,
+        "BTC_DEBT": 173,
+        "SOL_CAP": 172,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1726531200000000000"
+    },
+    {
+      "parent": "efc77a54-6ab4-4ca6-ae82-1873c0a42770",
+      "start_ns": "1727841600000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {},
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1728086400000000000"
+    },
+    {
+      "parent": "a96a5a5a-7d6c-4dab-8ba7-739c2ff51e9c",
+      "start_ns": "1728532800000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {},
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "SOL_CAP": 17,
+        "BTC_DEBT": 17,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1728583740000000000"
+    },
+    {
+      "parent": "4250cc7b-d995-4864-b48d-ec9ef49c7ab1",
+      "start_ns": "1730088000000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {
+        "0": 1
+      },
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "BTC_DEBT": 182,
+        "SOL_CAP": 181,
+        "TP": 1,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1730210520000000000"
+    },
+    {
+      "parent": "364f113d-c4ec-45fc-956f-118ac628797f",
+      "start_ns": "1730836800000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {},
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1730861940000000000"
+    },
+    {
+      "parent": "31e4e894-6a93-44eb-a7a2-07dc6b64c3ec",
+      "start_ns": "1731931200000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {
+        "0": 1
+      },
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "TP": 1,
+        "BTC_DEBT": 146,
+        "SOL_CAP": 145,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1732161180000000000"
+    },
+    {
+      "parent": "dfa3b072-ea2a-4487-9203-77e4c84733ef",
+      "start_ns": "1734782400000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {
+        "0": 1,
+        "1": 1
+      },
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "TP": 2,
+        "BTC_DEBT": 206,
+        "SOL_CAP": 205,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1734912000000000000"
+    },
+    {
+      "parent": "17076319-1407-4202-9605-bf5da9db060f",
+      "start_ns": "1734998400000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {},
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "SOL_CAP": 239,
+        "BTC_DEBT": 239,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1735084800000000000"
+    },
+    {
+      "parent": "9b9c632a-6bd5-49ee-a7e3-266fa4e97bc3",
+      "start_ns": "1735185600000000000",
+      "branch": "B2",
+      "tp_fills_by_level": {
+        "0": 1
+      },
+      "actual_fill_kinds": {
+        "ENTRY": 1,
+        "TP": 1,
+        "BTC_DEBT": 27,
+        "SOL_CAP": 26,
+        "SOL_CLOSE": 1
+      },
+      "selected": true,
+      "parent_terminal_flat": true,
+      "end_ns": "1735257600000000000"
+    }
+  ],
+  "activation_selected_count": 9,
+  "activations_with_TP": 5,
+  "activations_without_TP": 4,
+  "actual_stop_fill_count": 0,
+  "recursive_lot_erosion_concern": {
+    "status": "REQUIRES_SOURCE_OWNER_QUALIFICATION",
+    "btc_debt_fill_count": 990,
+    "sol_cap_fill_count": 985,
+    "first_two_debt_events": [
+      {
+        "actual_btc": "1.037",
+        "bmax": "0.777",
+        "event": "ACTUAL_BTC_DEBT_OPEN",
+        "timestamp_ns": "1726434480000000000"
+      },
+      {
+        "actual_btc": "0.777",
+        "bmax": "0.776",
+        "event": "ACTUAL_BTC_DEBT_OPEN",
+        "timestamp_ns": "1726434540000000000"
+      }
+    ],
+    "interpretation": "Repeated next-minute BTC lot reductions after initial TP may represent recursive floor erosion; paired_failures empty does not resolve this concern."
+  },
+  "economic_status": "NOT_PREFIX_CAPITAL_PASS;B2 attribution only; combined remains held",
+  "source_unchanged": true
+}

@@ -1,0 +1,32 @@
+{
+  "status": "READY_AWAITING_ROOT_GO",
+  "utc": "2026-10-24T23:10:41.583611+00:00",
+  "physical_started": 2,
+  "cap": 5,
+  "full_max": 0,
+  "preflight": [
+    {
+      "variant": "OFF",
+      "source_pins": 184,
+      "data_engine_pins": 27,
+      "additional_pins": 5,
+      "freeze_sha256": "bee6976826af5065cc50e723abeae07bbf41148c30bb046e0be05b12fb496b85"
+    },
+    {
+      "variant": "B2",
+      "source_pins": 184,
+      "data_engine_pins": 27,
+      "additional_pins": 5,
+      "freeze_sha256": "f6a87c85bb291974eefe112aba0c47359dfd7df22099673748f21c15eb352cf1"
+    },
+    {
+      "variant": "B2_F0",
+      "source_pins": 184,
+      "data_engine_pins": 27,
+      "additional_pins": 5,
+      "freeze_sha256": "484eb472e0c965911eed38d9fa8d589f79da38bad94493f4fc54fc8344542daf"
+    }
+  ],
+  "commands_sha256": "a043eef71abd4386bd1e5ecbd5acf4a054a804431bf13e1eef8ac7ed28ef1c3e",
+  "ledger_sha256": "e0c0c5626c4920708b5059009c7a118dd7c1ba6857f0fbff9edd2cd1a2c3b44e"
+}
