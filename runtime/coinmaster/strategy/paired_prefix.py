@@ -225,9 +225,10 @@ class PairedPrefixResearch:
 
     def _pair_accept(self, event):
         o = self._pair_orders.get(str(event.client_order_id))
-        if o:
+        if o and not o["accepted"]:
             o["accepted"] = True
             self._pair_log("ACCEPTED", event.ts_event, order_id=str(event.client_order_id), kind=o["kind"], level=o["level"])
+            self._pair_protect(event.ts_event)
 
     def _pair_terminal(self, oid, ns, rejected=False):
         owner = self._pair_orders.get(oid)
@@ -266,7 +267,11 @@ class PairedPrefixResearch:
             for level, lots in added.items():
                 p["tp_lots"][level] = p["tp_lots"].get(level, 0) + lots
             p["entry_qty"] += qty; p["entry_notional"] += qty * px
-            p["p0"] = p["entry_notional"] / p["entry_qty"]
+            if p["entry_terminal"]:
+                p["close_sol"] = True
+                self._pair_log("LATE_ENTRY_FILL_NO_REANCHOR", event.ts_event, frozen_p0=p["p0"])
+            else:
+                p["p0"] = p["entry_notional"] / p["entry_qty"]
             if p["first_fill_ns"] is None:
                 p["first_fill_ns"] = event.ts_event
                 p["deadline_ns"] = event.ts_event + (4 if p["branch"] == "B2" else 8) * 60 * MINUTE
