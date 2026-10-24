@@ -1,0 +1,14 @@
+{
+  "status": "COMPLETE",
+  "memory_checkpoint": "540458d20e42764558c19b572bcdc284fbe96ffc",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "github_published_memory_checkpoint": true,
+  "canonical_documentation_checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/manager-handoff-20261024",
+  "same_bootstrap_files_on_Mac_and_VPS": 17,
+  "source_hash_guards": "PASS",
+  "validation": "252/252 PASS; startup 155835 -> 7802 bytes",
+  "project_readback_file": "project-final-readback.json",
+  "next_chat_prompt": "NEW_MANAGER_PROMPT.md",
+  "scope": "docs/memory/Project only; no product code or service action",
+  "receipt_note": "This receipt follows the frozen memory checkpoint; publishing receipts does not change startup content."
+}
