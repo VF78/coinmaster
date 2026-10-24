@@ -1,0 +1,40 @@
+{
+  "owner_clarification": "No ZIP exists; exactly these five loose files accompany the TXT. No ZIP pending.",
+  "files": [
+    {
+      "source": "/Users/vf/Downloads/COINMASTER_NEW_SYSTEM_CODEX_20261024.txt",
+      "copy": "inputs/COINMASTER_NEW_SYSTEM_CODEX_20261024.txt",
+      "bytes": 35214,
+      "sha256": "b0805341f3f10a26d10887b6bb0e605ef47f368e451d061dbac72cafcb5fcc3b",
+      "role": "source material, recommendations and claims; not standalone run authorization"
+    },
+    {
+      "source": "/Users/vf/Downloads/RESULTS_AND_DECISION.txt",
+      "copy": "inputs/RESULTS_AND_DECISION.txt",
+      "bytes": 20396,
+      "sha256": "f930dc31262808006c5fec8aa5920391b437767a547e8db12fe78bef232b714c",
+      "role": "source material, recommendations and claims; not standalone run authorization"
+    },
+    {
+      "source": "/Users/vf/Downloads/ROI_GAP_DIAGNOSIS.txt",
+      "copy": "inputs/ROI_GAP_DIAGNOSIS.txt",
+      "bytes": 20123,
+      "sha256": "c6898a4894556d93b7ab879bd042843b935d1c3bedd63091380d7aed69419fe8",
+      "role": "source material, recommendations and claims; not standalone run authorization"
+    },
+    {
+      "source": "/Users/vf/Downloads/old_S0_BTC_only_native_receipt.json",
+      "copy": "inputs/old_S0_BTC_only_native_receipt.json",
+      "bytes": 15333,
+      "sha256": "5ca94dd2d4bbf1349096c4938915a8477d059cf7603419b2d1ba25c0fd9b7cb7",
+      "role": "source material, recommendations and claims; not standalone run authorization"
+    },
+    {
+      "source": "/Users/vf/Downloads/b-50-90-next-20261023_comparison.json",
+      "copy": "inputs/b-50-90-next-20261023_comparison.json",
+      "bytes": 16526,
+      "sha256": "c66824b8cb43c014ed5f37f413ca435aca655925a16efd2f140b618babe8684c",
+      "role": "source material, recommendations and claims; not standalone run authorization"
+    }
+  ]
+}

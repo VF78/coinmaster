@@ -1,0 +1,123 @@
+{
+  "status": "A_NO_GO_NO_NEW_SUPPORTED_PARTICIPATION_MECHANISM",
+  "H_PAIR_EXIT_admitted": false,
+  "engine_attempts": 0,
+  "simulator_reruns": 0,
+  "training": 0,
+  "trace_passes": 4,
+  "metadata_correction_before_first_trace_pass": "29 H4 reentries per variant lack EPISODE_ENTRY_SIZING audit; requested gross/multiplier remain UNKNOWN, q0 from actual entry audit; no invented exact request",
+  "physical_attempt_budget": 0,
+  "matched_parents_each": 83,
+  "decision_equity_known": 332,
+  "R2_R3_d3_equal_count": 83,
+  "native_history": "730 feature-only days2022-09-02..2024-09-01,1460dailyrows, wavehistory730/min8/q60; no demonstrated short warmup",
+  "native_TP_anchor": "first-child actual VWAP frozen at firstterminal, later second-child blended VWAP not TP anchor; no demonstrated substitution",
+  "pending_timeline": "UNKNOWN_NOT_EXPORTED; initial planned second and terminal cancelled quantities actual metadata",
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/full-freeze.json": "2d2a8754d2b72809afcb6b2c25112208626f7711ff18d098ecfe4c31e67ce490",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-receipt.json": "0068ffcc78013cdfeffbc84d68fe5222863a7045d87584639a69d1b47df1477a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "095beffa398c39e97a53965db5d374a7ae7b91f5f3da11a1b4ab568b7cb46535",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-fills.csv": "4d43e5b54b208f0f4c728e21bd16e22960d72f40e04ab98fb4084862f097b8c3",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R1.json": "408ae96fb04f68d338482e3b67fd51389325dedea3fcd49ee7ac4060bc2a58f2",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "9b996975466407359da89d3f9d896bf225381b6c9e2555a62ff2bb5f9f16f77a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "4915bf674adcf3c143a9854edecd8b22a7f794cdc2cbe30972217b968de808bb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/minute-native-settled-receipts.csv.gz": "fb0b407840f290db5df6b5d7b71ce8a5b3160c9e22e3c7d55801dfae41010d98",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R1-cycles.csv": "2ea94d7a3dfc5cabb1632b13f954af5ed686cc5b1d4f9fb44f0fc07f5bf7b9a3",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R2.json": "1ba88e10583d08b5ec0afcbb12ad1d89d9fd8efa2dd7fa0f2294d3dab82a6a47",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "9c259c4d3557c93dcffe42e6b91c1636eb7e2088ff3d3d9d908cb947de317b45",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "44a5ed185c67bc9fe2cd37ad1fb91bbd3cd1e548d04a5928b2dd21daab9a6e4a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/minute-native-settled-receipts.csv.gz": "d5dcee4290ff937ea61ae8a35a5d6212c50b375ffb75c5d409cf01d1425d70ab",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R2-cycles.csv": "d89ab748e3907767a5628b03c9093cedd9c1a12c5f708ffdd7dc7279bb6f05d4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R3.json": "5ccb4c67e47dddeed8bd71769381cd20f1605b39ca6757887b6fb5f4d646d9e4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "038e6fb63c5f38e6a7b22d6c2529f9e089a96c76ed575542f5bd5af3b06dccd6",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "3c85e4d8b8e017394fe81d80c320febb1cdefb113a22f372b42b8e968835fa2c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/minute-native-settled-receipts.csv.gz": "58f965242de9e0d25e35262a4abcc47e95bfb17c93cc83e9910f3d9b816582d1",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R3-cycles.csv": "e2ae632991b74f35c9ca666dc08e79e42b2b937fa7d74a2b6748eab6520ba22b",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/market_redesign.py": "50cc7a74e032f2ccd29ec0406c320bbc32b3db30eccee31570da3ee4174b5aa1",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_baseline.py": "c223198e1fa8d904fb659abade749576e9ab1d8b3dbcaebcbc46f11a0cdba522",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/domain/wave_overlay.py": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/minute-native-settled-receipts.csv.gz": "1342832a43e4b1f86c8e8e011361e9131975a641d574d1d43fa99ecddf2cce11"
+  },
+  "pinned_source_sha256": {
+    "bd04c9b3858bcda40060a08eff488849c69af5d8:runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "bd04c9b3858bcda40060a08eff488849c69af5d8:runtime/coinmaster/strategy/wave_overlay.py": "1f4b8b986476b594f15bb90ad6a979b7342ccda6b6f74f89485dfd1a00d29739",
+    "ec2a958e383a53133f8a8d03ef0e312810881265:runtime/coinmaster/domain/wave_overlay.py": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239",
+    "ec2a958e383a53133f8a8d03ef0e312810881265:runtime/coinmaster/strategy/wave_overlay.py": "c0f72d139c9e0f357a6e1abe8bac4ca01b0749d0282bc63a59a28a15e80e641d"
+  },
+  "verdict": "No new supported restoration source. Reverting native warmup/P0 or restoring zeroTP gross-Q selector is not a new admissible hypothesis. Strict-hedge early capital restoration remains unproven.",
+  "limitations": [
+    "Own decision equity is coherent settled source quote, not presumed exact callback-instant sizing equity; uncapped requested/M is independently recorded, cap-bound exact sizing equity UNKNOWN.",
+    "Peak leverage/notional uses observed raw minute markclose and native equity, not intraminute/native-price-rounded guarantee. E4 portfolio gross peak here only while BTCheld.",
+    "No pending-order timeline reconstructed from terminal snapshots.",
+    "E4 perasset signed funding UNKNOWN; do not infer from cash residual.",
+    "Winner/loser matching only ex-post outcome diagnostics; no old qty/equity imported or counterfactual TOTAL constructed."
+  ],
+  "arithmetic_file_verification": "PASS",
+  "native_cash_residual_checks": {
+    "R1": {
+      "native_minus_sum_cash_rounding_residual": "-2E-8"
+    },
+    "R2": {
+      "native_minus_sum_cash_rounding_residual": "-4E-8"
+    },
+    "R3": {
+      "native_minus_sum_cash_rounding_residual": "0E-8"
+    }
+  },
+  "actual_firstP0_verification": {
+    "R2": {
+      "plans": 83,
+      "frozen_firstP0": 83,
+      "all_actual_target_reprices_keep_firstP0": true,
+      "parents_blended_VWAP_differs_from_firstP0": 67
+    },
+    "R3": {
+      "plans": 83,
+      "frozen_firstP0": 83,
+      "all_actual_target_reprices_keep_firstP0": true,
+      "parents_blended_VWAP_differs_from_firstP0": 67
+    }
+  },
+  "matched_outcomes_diagnostics_only": {
+    "R1": {
+      "WIN": {
+        "parents": 51,
+        "mean_own_equity_ratio_to_E4": "0.210882768021293275639236322593263461146293644408945851795386",
+        "mean_actual_qty_ratio_to_E4": "0.217675938993802525691991731126335250360706328208859836062110"
+      },
+      "LOSS": {
+        "parents": 32,
+        "mean_own_equity_ratio_to_E4": "0.186380471505135912309264019324614674241653671520533529551132",
+        "mean_actual_qty_ratio_to_E4": "0.204618691629703245317829670640677463533965760946473519146191"
+      }
+    },
+    "R2": {
+      "WIN": {
+        "parents": 51,
+        "mean_own_equity_ratio_to_E4": "0.186101624208387828072602036634435383927828399855653301386657",
+        "mean_actual_qty_ratio_to_E4": "0.167977208569194693962401786299980531380235984198970247490077"
+      },
+      "LOSS": {
+        "parents": 32,
+        "mean_own_equity_ratio_to_E4": "0.160138166689115053024315797643038445893127218290594389052057",
+        "mean_actual_qty_ratio_to_E4": "0.173912899570862787088715080825247185126908573074041209956469"
+      }
+    },
+    "R3": {
+      "WIN": {
+        "parents": 51,
+        "mean_own_equity_ratio_to_E4": "0.184120546852421702674858479670993376042906784047507761944633",
+        "mean_actual_qty_ratio_to_E4": "0.177348257477427857432078546945449005712282466048348811788876"
+      },
+      "LOSS": {
+        "parents": 32,
+        "mean_own_equity_ratio_to_E4": "0.153040976841126418334799718983786734775863955103401538881767",
+        "mean_actual_qty_ratio_to_E4": "0.173728320893412562071834498211242192948968470921547719261629"
+      }
+    }
+  },
+  "analysis_passes": 1,
+  "arithmetic_verification_passes": 1
+}

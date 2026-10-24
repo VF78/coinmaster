@@ -1,0 +1,142 @@
+{
+  "task": "CM-NEW-SYSTEM-PLAN-20261024",
+  "date": "2026-10-24",
+  "scope": "LOCAL_SAVED_EVIDENCE_AUDIT_ONLY",
+  "physical_engine_attempts": 0,
+  "simulator_reruns": 0,
+  "training": 0,
+  "runtime_or_VPS_writes": 0,
+  "product_changes": 0,
+  "publication": false,
+  "manager_HEAD_at_start": "0dd0f16092868f2457da248d49dde2b6bc11b8fd",
+  "proposal_path": "/Users/vf/Downloads/COINMASTER_NEW_SYSTEM_CODEX_20261024.txt",
+  "proposal_sha256": "b0805341f3f10a26d10887b6bb0e605ef47f368e451d061dbac72cafcb5fcc3b",
+  "ZIP_status": "OWNER_CONFIRMED_NO_ZIP_FIVE_LOOSE_FILES_ONLY",
+  "numeric_floors_file": "evidence-numeric-floors.json",
+  "archived_BTC_only": {
+    "git_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+    "receipt_source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "control": "SELECTED6077107_SOURCE759",
+    "native_candidate_delta": {
+      "sol_overlay_enabled": [
+        true,
+        false
+      ]
+    },
+    "receipt_sha256": "85519cd3e241cb8f474b5d83c9c3d7f6b72d3a535fbd92381435ddb9870c67eb",
+    "four_receipt_cross_hash_checks": "PASS",
+    "config_hash": "289c6b6eee7ba3c772458ade47348d5c0261499b6aab4d33d12a8bd5c1b4d6b6",
+    "selected_config_sha256": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "winning_config_copy_sha256": "7d8903417bf781559a881eca39594065ce7864094e83d3de59a4923b6dbfe53c",
+    "frozen_manifest_sha256": "d2ddddb6b15256ec36c95896283b04a2ecbc2b8394af3e7068d22f18e990dae0",
+    "source_pins_attested_identical_to_winner": 85,
+    "actual_exit": 0,
+    "TOTAL": "280748.52263020",
+    "DD_percent": "64.07394986310021402940985169",
+    "DD_sampling": "all_native_close_samples3153599 (paired_close1051200 has same reported max); not settled1051199",
+    "funding_signed_cash_component": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "same_calendar_days": 105,
+    "absolute_Q_changed_count": 99,
+    "raw_output_sha256": "f7381d848fe1f26b762576921c0f06af02a226b096164a1827df651a986aedd1",
+    "local_wrapper_inspection": "selected config copied; only candidate.sol_overlay_enabled=False; funding=True; own seed10000; fresh result directory guard"
+  },
+  "E4_R1_control_reuse": {
+    "file": "reports/market-redesign-20261024/comparison.json",
+    "TOTAL": "304372.03028516",
+    "DD_percent": "66.9203964274313113040274377061695299005253528651376464456666",
+    "parents": 83,
+    "extra_full_required": false
+  },
+  "coverage_saved_data_calculation": {
+    "label": "ONE_CHEAP_SAVED_FEATURE_CALCULATION_NO_EXECUTION_MODEL",
+    "input": "reports/market-redesign-20261024/native-analysis-sol-R3-features.csv",
+    "input_sha256": "598591a2543088181ec003baf0a2d1e696e04c792c3a76c568e44d93441edbe7",
+    "observations": 1529,
+    "actual_R3_cycle_blocks": 77,
+    "formula": "estimated BTC factor relief = beta * (NS_HALF_MV / 5) / NB = 0.1*rho^2 before lot rounding",
+    "core_relief_fraction": {
+      "n": 1529,
+      "min": "0.034762774368934959913734781923768936203021796801155947217074208498839198261510214",
+      "median": "0.063547643585547381976612930253765611240073497695022612003281344401666092438331015",
+      "mean": "0.061765716865923938096966111950472979275352721241731327253394546273784684740215144",
+      "max": "0.079028132064677065982784350421116682958266373462959263219403016211535494591040118"
+    },
+    "full_halfMV_relief_fraction": {
+      "n": 1529,
+      "min": "0.17381387184467479956867390961884468101510898400577973608537104249419599130755107",
+      "median": "0.31773821792773690988306465126882805620036748847511306001640672200833046219165507",
+      "mean": "0.30882858432961969048483055975236489637676360620865663626697273136892342370107584",
+      "max": "0.39514066032338532991392175210558341479133186731479631609701508105767747295520059"
+    },
+    "core_relief_fraction_by_year": {
+      "first_year": {
+        "n": 698,
+        "min": "0.034762774368934959913734781923768936203021796801155947217074208498839198261510214",
+        "median": "0.060346603677930044780218530243922177693513173153678436354805911080068183718787345",
+        "mean": "0.056114414314901321274872782498834782628815499689743052133642845533935454723480754",
+        "max": "0.072115462523823844005334420284678986321240790436034856243440749780021291433875504"
+      },
+      "second_year": {
+        "n": 831,
+        "min": "0.046818898008041947962262216345004570531706736562213481020355042818915504954048976",
+        "median": "0.06815060142409378803777381321058246767895032568410491467190817010098497888570039",
+        "mean": "0.066512538984592754633453649805158251548858113110910407919563844849494386968470992",
+        "max": "0.079028132064677065982784350421116682958266373462959263219403016211535494591040118"
+      }
+    },
+    "equal_cycle_mean_core_relief_fraction": "0.062340443414798126189170487895648039019389413592939578602199738885701254662109491",
+    "maximum_identity_residual": "4.2343555283686289875717264538378736188093202356021306900332172774E-17",
+    "limitations": [
+      "Observed R3 H4 states, not proposed B5 activation states.",
+      "No f>=0.5 screen; no activation, fill, lot rounding, latency, funding, TP or hedge lifecycle simulated.",
+      "Descriptive dependence; H4 rows overlap. Values are estimated factor relief, not actual loss guarantee or measured portfolio DD.",
+      "Computation cannot establish a SOL gate or portfolio TOTAL."
+    ]
+  },
+  "unknowns": [
+    "Owner confirms no ZIP exists. Five loose files supplied; external H1 results documented in text notes but no raw sim configs/equity and no independent reproduction/raw verification.",
+    "Archived raw BTC-only output/frozen 85-source manifest and selected winning-config file were not re-fetched from VPS. Receipt/preparation/wrapper/calendar hashes cross-match locally.",
+    "SOURCE759 frozen winner is not byte-identical to current source75ffc anchor; preparation attests selected original6.077m winner. No later-source equivalence asserted.",
+    "No full historical funding calendar verified; proposal says reference_funding.sqlite is an old position-event journal only. Missing events never equal zero.",
+    "No valid pure-hedge policy demonstrated meeting70/90 profit floors and DD<=50; preserving former SOL alpha is incompatible with claiming a pure hedge."
+  ],
+  "decision": "NO_GO_FOR_NEW_NATIVE_OR_B5_IMPLEMENTATION; unify contract and inspect saved data first",
+  "next_step": "Coordinator freezes preserve-BTC/true-hedge contract and economics gates; no new execution engine or full run. Existing coverage calculation shows first H5 core only weak estimated factor relief.",
+  "loose_files": {
+    "COINMASTER_NEW_SYSTEM_CODEX_20261024.txt": {
+      "sha256": "b0805341f3f10a26d10887b6bb0e605ef47f368e451d061dbac72cafcb5fcc3b",
+      "exists": true
+    },
+    "RESULTS_AND_DECISION.txt": {
+      "sha256": "f930dc31262808006c5fec8aa5920391b437767a547e8db12fe78bef232b714c",
+      "exists": true
+    },
+    "ROI_GAP_DIAGNOSIS.txt": {
+      "sha256": "c6898a4894556d93b7ab879bd042843b935d1c3bedd63091380d7aed69419fe8",
+      "exists": true
+    },
+    "old_S0_BTC_only_native_receipt.json": {
+      "sha256": "5ca94dd2d4bbf1349096c4938915a8477d059cf7603419b2d1ba25c0fd9b7cb7",
+      "exists": true,
+      "byte_identical_to_local_reference": false,
+      "parsed_JSON_semantically_equal_to_local_reference": true
+    },
+    "b-50-90-next-20261023_comparison.json": {
+      "sha256": "c66824b8cb43c014ed5f37f413ca435aca655925a16efd2f140b618babe8684c",
+      "exists": true,
+      "byte_identical_to_local_reference": false,
+      "parsed_JSON_semantically_equal_to_local_reference": true
+    }
+  },
+  "completed_additional_authorized_saved_data_step": {
+    "report": "sol-attribution-report.md",
+    "verification": "sol-attribution-verification.json",
+    "engine_attempts": 0,
+    "SOL_cycles": 25,
+    "SOL_fill_net_ex_funding": "713702.32329125",
+    "BTCflat_SOL_held_minutes": 110777,
+    "total_SOL_held_minutes": 194630,
+    "BTCflat_held_price_PNL": "426629.8025",
+    "counterfactual_hedge_profit": "UNKNOWN"
+  }
+}

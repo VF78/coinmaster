@@ -1,0 +1,63 @@
+{
+  "status": "STOP_CARRY_NO_STABLE_FEE_COVER_OR_CYCLE_PAIRED_EDGE",
+  "source_rows": 21371,
+  "feature_states": 1529,
+  "cycle_blocks": 77,
+  "coverage": {
+    "BTC": {
+      "funding_rows": 4380,
+      "mark_rows": 1051200,
+      "funding_first_ms": 1662076800000,
+      "funding_last_ms": 1788192000000,
+      "observed_interval_hours_counts": {
+        "8.0": 4379
+      },
+      "relevant_events": 2096,
+      "relevant_prior_marks_missing": 0,
+      "max_gap_hours": 8.0
+    },
+    "SOL": {
+      "funding_rows": 4740,
+      "mark_rows": 1051200,
+      "funding_first_ms": 1662076800000,
+      "funding_last_ms": 1788192000000,
+      "observed_interval_hours_counts": {
+        "2.0": 480,
+        "8.0": 4259
+      },
+      "relevant_events": 2096,
+      "relevant_prior_marks_missing": 0,
+      "max_gap_hours": 8.0
+    }
+  },
+  "verification": {
+    "original_price_fee_columns_unchanged": true,
+    "strictly_lagged_features": true,
+    "no_hedge_zero": true,
+    "independent_direct_sum_checks": 276
+  },
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/new-system-plan-20261024/carry-screen-design.json": "04a20daee8cd901ebbe07e4d6d9dfaa89895a00e2f160fdd04be8a197bee6a29",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/new-system-plan-20261024/carry-screen-calculate.py": "46fca281acc7e5fb54da747be11756d8a7295ffd1a6d7d4e76b684c3cbc82ca4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-sol-R3-features.csv": "598591a2543088181ec003baf0a2d1e696e04c792c3a76c568e44d93441edbe7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-sol-R3-outcomes.csv": "221b27de6ddcff868c2dffd55bad1d3bdcdd6797ea91270baef3ffd868f315cd",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-sol-R3-summary.csv": "1ce88af63c399afacf37a34336d133ff9a5c14db44db9f014183ac4ae45e204e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+  },
+  "engine_launches": 0,
+  "full_attempts": 0,
+  "training_attempts": 0,
+  "limitations": [
+    "Frozen hypothetical quantity for horizon, not candidate lifecycle; crosses native flat retained and flagged.",
+    "Prior-minute raw mark matches native fixture convention but is not exact venue settlement mark/native tick-rounded mark.",
+    "Four entry/exit settlement tie scenarios are alternatives; no favorable timing assumed.",
+    "Observed funding gaps max8h; full normalized market calendar used rather than old held-position SQLite. Exact historical venue interval schedule completeness not independently proven.",
+    "Past settled rate is not advertised/predicted next rate; no assumption future rate was known.",
+    "Funding-added endpoint only; original H1close tail score unchanged, no funding-adjusted tail/DD recomputation.",
+    "Overlapping decisions/cycle means descriptive; viewed history is not fresh OOS."
+  ],
+  "result": "Lag-recipient actual future funding is small versus roundtrip fees; negative net outcomes both years for all three sizes and boundary scenarios, cycle-weighted paired advantage unstable."
+}

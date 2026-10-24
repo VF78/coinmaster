@@ -1,0 +1,270 @@
+ROI GAP DIAGNOSIS — 2026-10-24
+Scope: archived S0/E4 evidence and the INITIAL custom B5_nohedge_OLHC run.
+This file does not promote the custom simulator to a native Nautilus result.
+The initial custom run excludes funding and is undergoing independent audit.
+
+1. Главный вывод
+
+Разрыв 6.08 млн → 16.7 тыс. объясняется несколькими реальными изменениями
+политики, а не обнаруженной ошибкой единиц qty/notional:
+
+(a) SOL старой системы обеспечивал значительную часть раннего роста общего
+капитала. После его удаления нельзя сохранить прежние BTC quantities и назвать
+получившийся PnL результатом BTC-only. Уже существующий настоящий native S0
+BTC-only backtest заканчивается 280 748.52, DD 64.07395%, а не миллионами.
+
+(b) Новая лестница набирает намного меньше объёма именно в прибыльных старых
+циклах. Чистое усреднение против движения усиливает объём в неблагоприятных
+циклах, тогда как хорошие тренды часто уходят с первоначальными 20%.
+
+(c) Короткий доступный warmup заметно уменьшил TP3 в первом году, а новые
+реальные TP1/TP2 дополнительно изменили распределение выходов. Это отдельное
+изменение системы, которое нельзя приписывать одной лестнице.
+
+Верная диагностическая последовательность: сравнить одинаковые causal TP3 и
+одинаковое расписание сигналов; затем отделить размеры входа, правила добора,
+выходы и SOL. Нельзя требовать от новой BTC-only ветки сохранить итог старой
+совместной стратегии, не восстановив или не заменив ранний источник роста.
+
+2. Настоящий старый S0 BTC-only: первичный источник
+
+Источник:
+coinmaster_audit_20261020/reports/immediate-sol-insurance-113/
+btc-only-native-receipt.json
+Копия включена в stats/old_S0_BTC_only_native_receipt.json.
+
+variant.native_candidate_delta: только sol_overlay_enabled: true -> false.
+selected BTC flags: direction sizing, split50, discount 0.0025,
+PLANREF_V1 и TP_IOC сохранены.
+terminal_total = 280748.52263020
+native_fees = 76260.55004660
+native fills = 416
+split_parent_count = 105
+terminal_open_positions = 0
+liquidation_count = 0
+all_native_close_samples maximum DD = 64.07394986310021%
+source_commit = 759823d69a74e72b123add5ae775dd8c3aed4ac5
+
+Это native replay с собственным изменившимся капиталом, а не вычитание SOL
+из первоначального ledger. Его цель — проверить самостоятельный результат
+старой BTC-политики. Это S0, не E4; нельзя объявлять числа тождественными.
+
+S0 BTC+SOL TOTAL = 6077107.23887483.
+Сохранение чистой прибыли BTC-only:
+(280748.52263020 - 10000)/(6077107.23887483 - 10000) = 4.4625636563%.
+Отношение конечного капитала combined/BTC-only = 21.6460880433.
+ln(TOTAL/10000): combined 6.409698986, BTC-only 3.334874238.
+Разница log growth = 3.074824747.
+Эта разница включает совместное влияние SOL, последующего капитала и обратной
+связи через размеры/календарь. Она не является независимой доходностью SOL.
+
+3. Где SOL дал ранний капитал
+
+Расчёт из фактических native fills, после комиссий, без signed funding.
+На 2025-09-01T00:00Z и в конце периода BTC и SOL flat у обеих старых систем.
+Поэтому годовые суммы не зависят от предположения о цене открытой позиции.
+
+                  BTC net fills       SOL net fills     Доля SOL в net года
+S0 год 1            464464.14             367940.28              44.20%
+S0 год 2           4881230.35             310720.93               5.98%
+S0 весь период     5345694.49             678661.21              11.27%
+E4 год 1            520630.39             301475.92              36.67%
+E4 год 2           4337821.45             412226.41               8.68%
+E4 весь период     4858451.84             713702.32              12.81%
+
+Все точные числа: old_asset_growth_by_year.csv, old_closed_cycles_by_year.csv.
+Первая годовая граница: ex-funding portfolio wealth S0 = 842404.419315,
+E4 = 832106.301736. Это accounting marks фактически записанного портфеля,
+не counterfactual run без funding с пересчитанными количествами.
+
+Для проверки масштаба раннего вклада также рассчитано точное аддитивное
+распределение log growth по часовым изменениям фактического портфеля:
+E_t = 10000 + PnL_BTC,t + PnL_SOL,t, funding исключён.
+L_asset,t = ΔPnL_asset,t * ln(E_t/E_prev)/(E_t-E_prev).
+Если ΔE=0, используется непрерывный предел ΔPnL_asset/E_prev.
+Сумма L_BTC+L_SOL точно равна ln(E_end/10000).
+
+S0: за год 1 BTC 1.943407, SOL 2.490269; год 2 BTC 1.561117,
+SOL 0.407847. Всего BTC 3.504524, SOL 2.898116 из 6.402639.
+E4: всего BTC 3.692671, SOL 2.632074 из 6.324745.
+
+Это accounting attribution с заданной часовой частотой; оно не является
+causal asset ablation и не доказывает самостоятельное alpha SOL. Оно показывает,
+почему доля SOL в окончательном долларовом PnL плохо описывает его роль в росте.
+Временное распределение прибыли принципиально важно при compounding.
+
+Итог ex-funding S0 = 6034355.696482, E4 = 5582154.158622.
+Разницы с native TOTAL не распределены по активам: signed funding из receipt
+не был доступен в данном ledger-аудите. Не объявлять эти разницы автоматически
+доказанным per-asset funding. Все суммы fills сверены с независимыми closed-cycle
+ledgers с абсолютной погрешностью менее 0.000001.
+
+4. Совпадает ли масштаб бюджета BTC старого E4 и новой ветки?
+
+Для каждого старого цикла:
+G_old = reference_btc_qty * reference_wire_price (gross planned notional).
+F_old = сумма фактических ENTRY qty*price / G_old.
+R_old = фактический BTC net cycle PnL / сумма ENTRY qty*price.
+C_old = F_old*R_old = BTC net cycle PnL / G_old.
+
+Номинальный бюджет до rounding: min(M*own_equity, 30 млн),
+M_long=5.5, M_short=7.875. Это плечо номинала, не доля собственных средств.
+Новая B5 ветка использует такой же gross scale. Проверенные фактические
+G_new/E_new: long 5.4916..5.4998, short 7.8667..7.8750.
+Отклонение от M вызвано округлением количества к 0.001 BTC.
+
+У E4 reference gross не всегда равен реально разрешённому BTC inventory.
+38/83 циклов пропускают нулевые исходные TP allocations:
+  28 циклов omitted_zero_levels=[0,1]; retained gross fraction около 0.575;
+  10 циклов omitted_zero_levels=[0]; retained fraction около 0.7875;
+  45 циклов без пропуска; retained fraction около 1.
+Старая split50 делила этот retained объём пополам; это НЕ новый initial=20%
+от общего gross. Цена исполнения и rounding слегка меняют notional fractions.
+У старой системы 165 BTC_ENTRY rows на 83 циклах; второй вход был очень частым.
+
+22/83 старых цикла достигали cap30m. G_old/M в этих случаях — только нижняя
+граница equity, а не восстановленный полный капитал. Нельзя вычислять из
+него фактическое плечо старого capped portfolio. Этот flag сохранён в CSV.
+
+5. Главная проблема лестницы: распределение объёма
+
+Сравнение 83 matched циклов E4 и initial B5_nohedge_OLHC:
+
+                                    Старый E4       Новый B5
+Количество положительных циклов       51/83           61/83
+Mean net/entered notional              +0.8067%        +0.8046%
+Mean фактический notional/gross         82.78%          35.19%
+То же в старых прибыльных циклах        86.29%          27.46%
+То же в старых убыточных циклах          77.19%          47.52%
+Net/entered notional old winners        +2.8078%        +1.8281%
+Net/entered notional old losers         -2.3825%        -0.8266%
+
+Все 51 старые прибыльные цикла остаются положительными. Ещё 10 старых
+убыточных становятся положительными. Поэтому win rate улучшился, но ROI
+обрушился: прибыльные циклы идут существенно меньшим объёмом.
+
+Первый год: средний заполненный gross old 82.73%, new 29.81%.
+Второй год: old 82.84%, new 40.98%.
+Системное следствие: нельзя оставлять единственный способ увеличения позиции
+в виде движения ПРОТИВ BTC. Нужно отдельно проверить causal favorable add /
+retest continuation, сохраняя ограничение максимального риска. Ни один такой
+вариант здесь ещё не объявлен прибыльным торговым алгоритмом.
+
+6. Формула диагностических 310248: что именно она означает
+
+Взять C_old выше для каждого из 83 записанных E4 циклов. Последовательно:
+E_0 = 10000;
+E_(i+1) = E_i + min(M_i*E_i, 30000000)*C_old,i.
+Получится E_83 = 310248.23046405823.
+
+Уже учтена ФАКТИЧЕСКИ набранная доля F_old, а не предположение о полном
+использовании gross. Если применять R_old непосредственно к M*equity,
+пропустив F_old, получится другая, неправильная для этой цели проекция.
+Cap в данной диагностической траектории не срабатывает.
+
+Это арифметическая closed-cycle projection записанных коэффициентов. Она
+сохраняет старые фактические timestamps, relative execution, последствия
+старых exits и выбранные 83 E4 цикла. Она не пересчитывает intracycle equity,
+margin, quantities, funding, order state, stop triggers и новый календарь.
+Следовательно, 310248 — НЕ native E4 BTC-only backtest.
+
+Проверка формулы на новой записанной ветке:
+E_83 с C_new = 16693.827998 против фактических custom 16690.606511.
+Разница 3.22 объяснима изменённым absolute lot rounding в проекции; эта близость
+проверяет арифметический scale, но не доказывает faithful simulator semantics.
+
+По итогам года 1 старые C_old дают 87627.20, новые C_new 12526.81.
+Именно ранний разрыв далее компаундируется.
+
+7. Факторная арифметика размера и исхода
+
+Для диагностики умножены F из одной записанной политики и R из другой:
+
+F source     R source      Projection TOTAL        ln(TOTAL/10000)
+old          old              310248.23                 3.434788
+new          old                7187.90                -0.330186
+old          new              360726.57                 3.585535
+new          new               16693.83                 0.512454
+
+Shapley decomposition изменения log growth:
+  allocation F: -3.4190274563;
+  normalized return R: +0.4966938060;
+  всего: -2.9223336503.
+
+Это дескриптивная факторизация, НЕ реализуемые counterfactual стратегии:
+в реальном торговом процессе размер, средняя цена, target и return зависимы.
+Она подтверждает локализацию арифметической потери: распределение объёма
+между исходами намного важнее, чем агрегированный win rate.
+
+8. TP3 и календарь — отдельные изменения
+
+У 83 matched циклов совпадают направления и порядок entry; новый начальный
+timestamp на 60 секунд раньше old actual fill в 51 случае и на 120 секунд
+раньше в 32 случаях. 32 old q0 receipts задержаны на 60 секунд; это отделено
+от времени доступности закрытых D1 features. Новый shadow-cycle end и old
+last actual position exit не всегда означают одно событие; сравнивать их
+как новые entry-signal calendars без проверки нельзя.
+
+Median TP3 raw distance первого года old 4.380699% -> new 2.136205%.
+В циклах 9–10: old 5.3671%, new 0.9107%.
+В циклах 11–13: old 5.1989%, new 0.9107%.
+Это material target change из-за короткой восстановленной калибровочной
+истории. Одновременно новая политика всегда делает три положительных TP
+от average entry, а старая могла пропускать нулевые allocations и использовала
+PLANREF первого входа. Поэтому difference не является тестом одного spacing.
+
+Для matched control создан causal_tp3_snapshots.csv. Qualification:
+actual_wave_levels — causal source reconstruction оригинальной функцией
+completed_wave_levels из owner-precheck.py, НЕ прямой online array snapshot.
+Независимо проверено: завершённые волны end < decision_index; levels заданы
+до BTC_ENTRY и не меняются; feature_available <= matched decision <= q0 < fill.
+В карту импортирован только известный на entry scalar TP3; не импортированы
+future exit, qty, capital или outcome. Это exact matched control, не общая
+производственная модель для будущих календарей. Запрещён future forward-fill.
+
+Полной same-venue Bybit D1 истории до июня 2024 среди проверенных локальных
+источников не найдено. Legacy data-hl BTC JSON не равен проверенным Bybit OHLC.
+Подмена venue не нужна для этого control: причинно известный raw TP3 доступен.
+
+9. Что реально следует проверять дальше
+
+1) Один контроль B5 без SOL с восстановленным old causal TP3, прочие правила
+без изменения; это отделит warmup/targets от лестницы. Затем то же с funding.
+2) Лестница с одинаковым initial20% для K=3/5/7. Сравнение equal weights без
+matched initial ошибочно смешивает количество ступеней и стартовый риск.
+3) Если initial20% adverse-only системно недогружает тренд, проверять один
+заранее заданный favorable-confirmation/retest add, а не увеличивать плечо
+для компенсации отсутствующего alpha. Статистика next-H1 after +0.5ATR:
+40 eligible наблюдений, 29 positive remaining markouts, mean +0.5701% после
+двух taker fees, worst -7.0121%; это условный diagnostic с old final exit,
+НЕ доказанная deployable strategy и НЕ 37/43 entry-time prediction.
+4) SOL проверить отдельно как risk overlay. Старый SOL не является только
+страховой стоимостью; он обеспечивал существенный ранний доход. Настоящий
+ограниченный hedge может снизить риск, но автоматически заменить этот доход
+не обязан. Его оценивать совместно с собственным капиталом и event ordering.
+5) Не подгонять depth/size по второму году: он уже многократно просмотрен,
+поэтому это validation on previously seen history, не untouched OOS.
+
+Критерий проекта: DD <=50% и сохранение >=90% исходной NET прибыли.
+При S0 TOTAL6077107.23887483 и seed10000 требуется новый TOTAL >=5470396.514987.
+Initial custom B5 TOTAL16690.61 этот критерий не выполняет. Хороший DD сам
+по себе не доказывает достижение цели. Обещать comparable ROI до native
+проверки исправленной системы оснований нет.
+
+10. Воспроизведение и файлы
+
+python new_system_20261024/stats/roi_gap_diagnosis.py
+python new_system_20261024/stats/old_sol_growth_attribution.py
+python new_system_20261024/stats/build_old_tp3_snapshots.py
+
+roi_gap_cycle_comparison.csv — 83 exact matched rows, all formulas and cap flag.
+roi_gap_group_summary.csv — cohorts, effective entered fractions, returns, TP3.
+roi_gap_closed_cycle_projections.csv — diagnostic equity projection.
+roi_gap_weight_return_factor_projections.csv — four crossed factors by cycle.
+roi_gap_factor_summary.csv — final four diagnostic projections.
+old_asset_growth_by_year.csv — per-asset exact annual net + log accounting.
+old_closed_cycles_by_year.csv — native ledger counts/positive cycles.
+old_asset_growth_attribution.json — source, reconciliation, native BTC-only.
+old_S0_BTC_only_native_receipt.json — copied PRIMARY archived ablation receipt.
+causal_tp3_snapshots.csv — causal source reconstruction exact matched control.
+causal_tp3_snapshot_validation.json — as-of verification and receipt delay counts.

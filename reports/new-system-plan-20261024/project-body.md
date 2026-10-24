@@ -1,0 +1,11 @@
+Согласовать единый план CoinMaster после нового запроса владельца: сохранить прибыльное BTC-ядро, переработать SOL в настоящий hedge и обязательные реальные3TP обеих ног. Исследовательский порог —70% исходной S0 net profit; финальный —90%; primary global DD<=50%, предпочтительно30–50%. Абсолютные TOTALfloors4256975.067212381/5470396.514987347, seed10000.
+
+Пять loose-файлов Downloads проверены; ZIP не существует по уточнению владельца. B5/H5≈40k сохраняет≈0.5% net profit и не допускается к обязательному native-переносу. Старый SOURCE759 BTC-only receipt и E4R1 уже существуют; повторный full не требуется.
+
+Выполнены25SOLcycle/198fill/1051200mark attribution и новый bounded carry screen без engine. SOLheld56.9167%времени BTCflat; fill-net713702.32329125USDT ex-funding; влияния на последующий BTC compounding нельзя заменить вычитанием старых SOLдолларов. Carry STOP_CARRY: funding оплачивает лишь≈14%/7% fees в двух годах, устойчивого преимущества перед BTCtrim нет.
+
+Завершён BTCparticipation/history audit332parent rows: A_NO_GO. E4/R1 нормализованное участие83.869%/83.867%, exfund netbp80.673/80.680; основная потеря связана с собственным капиталом/compounding. Native730warmup/firstP0 уже корректны; нового поддержанного источника возврата раннего капитала stricthedge не найдено. H_PAIR_EXIT NOT_ADMITTED.
+
+Артефакты: reports/new-system-plan-20261024/PLAN.md, DECISION.md, evidence-audit.*, sol-attribution-*, carry-screen-*, btc-participation-*, sources-*, input-manifest.json. План прошёл narrow independent review. Этот ограниченный пакет завершён, цель50/90 NOT_MET. Next: новый конкретный admission memo с market-risk сигналом при heldBTC, earlycapital mechanism без BTCflat/excessSOLalpha и одним заранее фиксированным cheapstopgate против equal-factor BTCtrim. Ни повторA, ни новое full не следуют автоматически.
+
+Acceptance этого пакета: источник/пороги/отрицательные ветви reconciled; unified plan проходит narrow review; saved-data arithmetic/source verification; Project readback и compact handoff опубликованы. Экономическая цель остаётся NOT_MET. Новый engine/product протокол и бюджет не открыты; предыдущая #131 закрыта3/3full/8/8short и не возобновляется. Никаких pilot/production/services/keys/orders/transfers, нового симулятора/SDK/ML/grid.

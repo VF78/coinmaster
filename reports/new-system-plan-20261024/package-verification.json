@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "input_copies_hash_verified": 5,
+  "absolute_floors_Decimal80": "PASS",
+  "JSON_files_valid": 15,
+  "Python_files_AST_valid": 5,
+  "CSV_files_consistent_columns": 12,
+  "active_lines": 28,
+  "root_mirrors_equal": [
+    ".ops/PROJECT_TRUTH.md",
+    ".ops/ACTIVE_TASK.md",
+    "NEW_MANAGER_PROMPT.md",
+    ".ops/RESEARCH_INDEX.md"
+  ],
+  "new_engine_attempts": 0,
+  "new_product_changes": 0,
+  "subagents": "all3completed per collaboration actualreadback",
+  "scope": "file/arithmetic integrity; does not certify trading economics, all-event DD or production"
+}

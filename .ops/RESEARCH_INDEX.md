@@ -3,6 +3,7 @@
 ## Fixed controls, not approximate reimplementations
 - Legacy S0 source `75ffc9c69e9d79c4da4cd0614634a3eeba48d716`; configSHA `22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc`.
 - S0: TOTAL6077107.23887483; global settled DD66.25691486468686414439256686%; seed10000, original SOL-overlay. Its90% net-profit floor is5470396.514987347. Never rerun it without a necessary comparability reason and explicit budget.
+- Owner24Oct new plan allows experimental70% net-profit floor TOTAL4256975.067212381; final90% remains5470396.514987347. DD<=50% primary;30–50% preferred, below30 allowed. Neither floor is rebased to BTC-only/B5.
 - Exact E4 source `bd04c9b3858bcda40060a08eff488849c69af5d8`; config `ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6`.
 - Legacy E4: TOTAL5631617.35953723/DD57.5854104596/retention92.6573%; adds wait4h and regime reentry0.5WilderATR14.
 - Original S0 parameter anchor: BTC long5.5x/short7.875x, parentcap30mUSDT, EMA34; split50/50 with25bp discount, completed first-child PLANREF, selective zeroTP lifecycle and profitable positive-TP nativeIOC fallback. TP fractions21.25/21.25/57.5%; wave quantiles.1/.3/.6; history730/min8. SOL beta270/relative65/z180days; entryz1.25/2.5/3.75, exithalf.375/all.125, maxhold14d; H multipliers1.75/2.625/3.5, persistent rights, no timeout-preempts-add. These explain the version; restore exact config/source, do not rebuild from this prose.
@@ -32,7 +33,7 @@ Read only required evidence:
 - Historical BBO helper displays1000 units.96/98E4SOL_ADD filled1000 and canceled remainder; not a venue liquidity/size limit. Pinned L1 reuses depth independently for each IOC; two can each fill1000.
 - Explicit child1000 preserves original rights and genuine D1 batch/attempt frequency, but cap-before-admission admits a formerly locally denied queued add. First money divergence23Dec2024,16:47UTC, extra1000SOL@183.81/fee101.0955. Exact old denied subcomponent/level UNKNOWN. Hence archived controls are not comparable to the new execution model. Native FILLED is not forged CANCELED.
 - TP1zero83/83 and TP2zero58/83 in E4; -1bp q1 perturbation changes6parents, +1bp changes10. Zero-TP size branch is execution/strategy-sensitive; positive profitable fallback must not be deleted with instant zeroTPs.
-- SOL is selective alpha, not continuous insurance:56.9167%SOL-active time BTCflat;13/25cycles start BTCflat; H references grossBTC, budgets add. Effects on later BTC capital/size/admission are essential.
+- SOL is selective alpha, not continuous insurance:56.9167%SOL-active time BTCflat. New actual-fill timestamp audit qualifies cycle starts as9provenBTCflat/3held/13UNKNOWNties; old brief13/25flat-start claim is not a verified ordering result. H references grossBTC, budgets add. Later BTCcapital/size/admission effects are essential; see new-system-plan attribution.
 - H_SOL cuts OctDD57.5854->18.7753 but JanDD42.5023->65.6948: capital210575.71->109846.69, SOL4000->3225.2; smaller absolute loss, much larger relative loss. OneATR ADD budget does not repair held risk or guarantee multi-day DD.
 - H_BTC reduces19/33repeat parents, mink.66056; only fromMay25. TOTAL loses670301.59 vs explicitE4; SOLfillnet unchanged. Potential remaining-wave MAE is not proof that cutting this entry improves action PnL.
 
@@ -79,3 +80,18 @@ Native cycles/year/worst9 and all7DD>=30/22fixedwindows pervariant saved in nati
 ActualR3SOLsamefixedactionscreen:1529H4/77cycles, actualQtracechecked;24new/55old-onlyvsE4calendar. Three50%meanings distinct; bothyearsnetSOLactionsnegative/tailprotectionpositive butweakerthan equalfactorBTCtrim andcostadvantageunstable. STOP_SOL/INCONCLUSIVE; no newgate/fullSOL. NextH4counter-swing pendingsecondcancel cheapgate5/83,4filledlegs aggregatefrozenfillnet+1160.23; only1of11globalDDparentsdirectlyaffected. NOT_ELIGIBLEfornewfull, P+floor notadmitted; no extraexperiment/grid/repeat.
 
 Source rawlegacyIOCflag overriddenOFFforeffectiveRealU andmetadataqualified. Synthetic minutecloseL1/depth1000 notvenueL2/capacity; intraminuteDD/crashopeninventoryresumeUNPROVEN. Stablemanualreconciliationboundary preserved; no pilot/production/services/credentials/orders/transfer work. Anynextfull requires new supportedhypothesis/protocol/budget, not priorapprovalreuse.
+
+
+## Unified plan / causal feasibility — 2026-10-24
+
+Project#132 Done/CLOSED/archived; reports/new-system-plan-20261024/{PLAN.md,DECISION.md}; narrowindependentreviewPASS. Owner70%experimental/90%final and DD50% anchored to originalS0 above. No product/runtime/engine changes/newbudget. Five looseDownloadsattachments copied/pinned; noZIPexists. H1B5/H5≈40k/DD45 onlyexternalunreproducedsummary,≈0.5%S0netprofit; NO_NATIVE_ADMISSION, corewithoutTPconflictsall3TP.
+
+ArchivedS0BTC-only SOURCE759759823d69a74e72b123add5ae775dd8c3aed4ac5:TOTAL280748.52263020/DD64.0739498631/105parents/416fills; receipt/preparation/calendar/wrapper4hashesverifiedgitf7587cd8, nofreshVPSrun/rawcheck. Different sourceidentity from75ffcanchor and E4R1; no unnecessaryrepeat.
+
+SOLattribution25actualE4cycles/198fills/1051200pairedmarks:factor270376562.111754+residual356176.035746−basis1616.8925−fees17418.931709=713702.32329125fillnetexfunding,exactcash0residual. Secondary720H1beta changesparts notmoney. BTCflat110777/194630SOLheldminutes56.9167%,heldPNL426629.8025; first5SOLcycles+105055.25329125exfunding. Cycle-startqualification9flat/3held/13timestampUNKNOWN replaces unqualifiedold13/25. Residual/excesscapsdescriptive, notcausalalpha/counterfactualTOTAL. OldsignedassetfundingUNKNOWN.
+
+Fundingaddition toexistingR3fixedstates:1529H4/77cycles/21371outcomes,3sizes/4h24h/2predeclaredlagbins/4settlementscenarios; fullmarketcalendar/prior1m marks0missing;276directchecksPASS. HALF_MVrecipient24hnet−7.7866/−12.7651bpNBfirst/secondyear,fundingcovers13.8%/7.2%fees; no stablecycle-weightededgevsBTCtrim. STOP_CARRY, notfundingDD/newlifecycle/nativeequity.
+
+BTCparticipationA332parents,83matchedcalendar/sides each; ownquantities/equity. Meanentered/requestedgross54known E4/R1/R2/R3=83.869/83.867/76.738/75.313%;29H4requestsUNKNOWN. Equalparentexfundnetbp80.673/80.680/94.833/94.818 (differentfromolderfundinginclusivebp). Owncapitalgap mainreason, notQdivisor:parent20equityE4160437.86/R125578.64. Full730daynativewarmup and83R2/R3firstP0audited,83d3equal; no native shortwarmup/dynamicVWAPbug. A_NO_GO; no supportedearlycapitalrestoration, H_PAIR_EXIT NOT_ADMITTED. No automaticnewgate/full or negativefamilyreopening. Exactsource/inputhashes and limitations in respectiveverificationJSON.
+
+Nextrequiresnewcausallysupported heldBTCmarket-risk/earlycapitaladmissionmemo, actual3TP/hedgedeficitcontract and predeclaredcostgatevsBTCtrim. H_PAIR_EXIT jointreductions/no readd is architecturalproposal only; no nativebudgetopen, proposed4short/2fullNOTAUTHORIZED. Productec2a958defaultOFF unchanged, prior3/3full8/8shortCLOSED. True coherenteventDD and comparable settledDD both<=50 required forfinalPASS, missingeventdataUNKNOWN; noinventedintraminute/venuecapacityguarantee.

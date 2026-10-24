@@ -1,0 +1,15 @@
+{
+  "source": "gh api graphql actual readback2026-10-24",
+  "project_number": 2,
+  "project_item_id": "PVTI_lAHOBIUvJs4BPJNjzhDN1U4",
+  "isArchived": true,
+  "status": "Done",
+  "status_option_id": "98236657",
+  "issue": {
+    "number": 132,
+    "state": "CLOSED",
+    "url": "https://github.com/VF78/coinmaster/issues/132"
+  },
+  "economic_goal": "NOT_MET",
+  "bounded_checkpoint": "PLAN_AND_SAVED_DATA_FEASIBILITY_COMPLETE"
+}

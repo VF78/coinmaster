@@ -1,0 +1,78 @@
+{
+  "accessed": "2026-10-24",
+  "authority": "Primary sources for methodology and code; all transfer to CoinMaster remains a hypothesis. Source notes preserve original observation times.",
+  "git_revision_readback": [
+    {
+      "repo": "hummingbot/hummingbot",
+      "branch": "master",
+      "sha": "9af100d6822da7d2d0291a906c730ef172284ee2",
+      "path": "hummingbot/strategy_v2/executors/grid_executor/grid_executor.py",
+      "verification": "gh API branch SHA plus immutable raw source read",
+      "adoption": "lifecycle questions only; do not copy grid strategy or exclude open PnL"
+    },
+    {
+      "repo": "colachenkc/Dynamic-Grid-Trading",
+      "branch": "main",
+      "sha": "1cbfed11f398e797a6aeebe6cade0f0970f2096c",
+      "verification": "gh API branch SHA; original paper/repository read in mechanisms note",
+      "adoption": "not admitted; spot grid results do not prove leveraged BTC/SOL economics"
+    },
+    {
+      "repo": "pst-group/pysystemtrade",
+      "branch": "develop",
+      "sha": "164328bd76d2937d3dd61491377704c488283bc2",
+      "path": "systems/provided/dynamic_small_system_optimise/buffering.py",
+      "verification": "gh API branch SHA plus immutable raw source read",
+      "adoption": "partial target adjustment only above required hedge floor"
+    }
+  ],
+  "additional_primary_sources": [
+    {
+      "url": "https://web.stanford.edu/~boyd/papers/kelly.html",
+      "title": "Risk-Constrained Kelly Gambling",
+      "date": "2016",
+      "read": "paper and author page",
+      "limit": "probabilistic wealth-floor bound is not path maxDD guarantee; no new optimizer infrastructure"
+    },
+    {
+      "url": "https://www.bis.org/publications/working-paper-1087-crypto-carry",
+      "title": "Crypto carry",
+      "date": "2023-04-04",
+      "read": "original paper findings and abstract",
+      "limit": "BTC/ETH futures basis, not evidence of profitable SOLperp hedge; own carry screen STOP_CARRY"
+    },
+    {
+      "url": "https://www.bis.org/publications/qr-202603/markets-recalibrate-amid-shifting-currents",
+      "title": "Markets recalibrate amid shifting currents",
+      "date": "2026-03",
+      "read": "original BIS review including crypto liquidation paragraph",
+      "limit": "stress-case motivation only; already viewed historical period, not a signal or OOS"
+    },
+    {
+      "url": "https://www.cis.upenn.edu/~mkearns/finread/drawdown.pdf",
+      "note": "original manuscript; see sources-methods.md"
+    },
+    {
+      "url": "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+      "note": "original paper; see sources-methods.md"
+    },
+    {
+      "url": "https://arxiv.org/html/1411.5062v3",
+      "note": "v3 original; see sources-methods.md"
+    },
+    {
+      "url": "https://nbgarleanu.github.io/DynTrad.pdf",
+      "note": "original paper; see sources-methods.md"
+    },
+    {
+      "url": "https://investresolve.com/podcasts/rob-carver-uncertainty-principles/",
+      "note": "original transcript, date unknown; see both source notes"
+    }
+  ],
+  "exclusions": [
+    "ISDA page HTTP403; not treated as full-read evidence",
+    "Reddit/forum statements anecdotal; no calibration or economic proof",
+    "Mechanisms M2 deadline market/IOC is not accepted as timeout chase; PLAN.md forbids it",
+    "No external return/DD imported as expected CoinMaster outcome"
+  ]
+}

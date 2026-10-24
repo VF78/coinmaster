@@ -1,0 +1,17 @@
+{
+ "task":"CM-NEW-SYSTEM-PLAN-20261024",
+ "status":"PREDECLARED_BEFORE_CALCULATION",
+ "addition":"Actual future funding outcome on existing frozen R3 action rows only",
+ "features":"Last settled SOL funding rate timestamp strictly less than decision; recipient iff BTCside*lagSOLrate>0, payer_or_zero otherwise. No future rate feature.",
+ "actions":"Unchanged NO_HEDGE, three SOL sizes, their three equal-factor BTC trims",
+ "horizons_hours":[4,24],
+ "funding_cash":"SOL increment = BTCside*SOLquantity*priorMinuteSOLmark*SOLrate; BTCtrim increment = BTCside*removedBTCquantity*priorMinuteBTCmark*BTCrate",
+ "marks":"Raw mark close at settlement_ms-60000, matching frozen native fixture prior-minute convention, not exact venue settlement mark/native tick rounding",
+ "boundary_scenarios":["exclude_entry_exclude_exit","include_entry_exclude_exit","exclude_entry_include_exit","include_entry_include_exit"],
+ "primary":"Strict interior settlements; report all boundary scenarios, no favorable-order choice",
+ "views":["overall","lag_SOLcarry_bin","endpoint_BTCdownside_upside"],
+ "grouping":"Existing first/second year and cycle blocks; overlapping H4 outcomes, no independent-sample inference",
+ "stop":"STOP_CARRY if past-known receiving carry does not stably offset fees and establish paired after-cost advantage both years; no strategy gate selection",
+ "budget":{"engines":0,"full":0,"short":0,"training":0},
+ "forbidden":"No new simulator, state matching, lifecycle, TOTAL/DD claim, product change or funding-driven permission to omit required hedge"
+}

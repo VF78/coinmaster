@@ -1,0 +1,96 @@
+{
+  "seed": "10000",
+  "legacy_S0_TOTAL": "6077107.23887483",
+  "legacy_S0_net_profit": "6067107.23887483",
+  "net_profit_retention_formula": "(candidate_TOTAL - 10000) / (6077107.23887483 - 10000)",
+  "research_70_TOTAL_floor": "4256975.0672123810",
+  "final_90_TOTAL_floor": "5470396.5149873470",
+  "primary_DD_upper_bound_percent": "50",
+  "preferred_DD_range_percent": [
+    "30",
+    "50"
+  ],
+  "DD_below_30_allowed": true,
+  "candidate_rows": [
+    {
+      "label": "S0 BTC-only archived native SOURCE759",
+      "total": "280748.52263020",
+      "evidence": "ARCHIVED_NATIVE_RECEIPT_VERIFIED_LOCAL_GIT",
+      "DD_percent": "64.07394986310021402940985169",
+      "parents": 105,
+      "fills": 416,
+      "net_profit": "270748.52263020",
+      "S0_net_profit_retention_percent": "4.4625636562905294466409357579571943888667272692745703834913042279425591261106717",
+      "gap_to_research_floor": "3976226.5445821810",
+      "gap_to_final_floor": "5189647.9923571470",
+      "net_profit_multiple_needed_for_70": "15.686050752761013467730063223157739552742572437243557141372355449117249829220893",
+      "passes_research_numeric_floor": false
+    },
+    {
+      "label": "R1",
+      "total": "304372.03028516",
+      "evidence": "VALIDATED_FULL_NATIVE_SAVED_COMPARISON",
+      "DD_percent": "66.9203964274313113040274377061695299005253528651376464456666",
+      "parents": 83,
+      "fills": 337,
+      "net_profit": "294372.03028516",
+      "S0_net_profit_retention_percent": "4.8519338573575716816047278124246888361752259282298888386990871822201468001113893",
+      "gap_to_research_floor": "3952603.0369272210",
+      "gap_to_final_floor": "5166024.4847021870",
+      "net_profit_multiple_needed_for_70": "14.427237068339373403078900805820514422556457239717376183879266679667182760624731",
+      "passes_research_numeric_floor": false
+    },
+    {
+      "label": "R2",
+      "total": "225919.51131228",
+      "evidence": "VALIDATED_FULL_NATIVE_SAVED_COMPARISON",
+      "DD_percent": "66.8014965825988940501356298120806585229481015518869629205355",
+      "parents": 83,
+      "fills": 354,
+      "net_profit": "215919.51131228",
+      "S0_net_profit_retention_percent": "3.5588543734447516004956640849370756068008201813990152650581350208316841588231406",
+      "gap_to_research_floor": "4031055.5559001010",
+      "gap_to_final_floor": "5244477.0036750670",
+      "net_profit_multiple_needed_for_70": "19.669251015810550315588114440700746226022950600965157735701802984793907596004877",
+      "passes_research_numeric_floor": false
+    },
+    {
+      "label": "R3",
+      "total": "120718.40416503",
+      "evidence": "VALIDATED_FULL_NATIVE_SAVED_COMPARISON",
+      "DD_percent": "68.6033754263482863768423778493842458647999693621015333671923",
+      "parents": 83,
+      "fills": 354,
+      "net_profit": "110718.40416503",
+      "S0_net_profit_retention_percent": "1.8248961128559709386811749879462980550822662206044858840236272767986980073613452",
+      "gap_to_research_floor": "4136256.6630473510",
+      "gap_to_final_floor": "5349678.1108223170",
+      "net_profit_multiple_needed_for_70": "38.358347911898213815468634952805237092638652220834426262102681989212871884607366",
+      "passes_research_numeric_floor": false
+    },
+    {
+      "label": "B5_front30_oldTP3_H5_OLHC",
+      "total": "40017.226518",
+      "evidence": "DOCUMENTED_EXTERNAL_H1_SUMMARY_NOT_INDEPENDENTLY_REPRODUCED_OR_RAW_VERIFIED",
+      "DD_percent": "44.848566",
+      "net_profit": "30017.226518",
+      "S0_net_profit_retention_percent": "0.49475351821153598334716001202291654741343009649078975925082575488087987292924784",
+      "gap_to_research_floor": "4216957.8406943810",
+      "gap_to_final_floor": "5430379.2884693470",
+      "net_profit_multiple_needed_for_70": "141.48459267766321887873491777072646868713615375596240486750755311736958922195385",
+      "passes_research_numeric_floor": false
+    },
+    {
+      "label": "B5_front30_oldTP3_H5_OHLC",
+      "total": "40247.855958",
+      "evidence": "DOCUMENTED_EXTERNAL_H1_SUMMARY_NOT_INDEPENDENTLY_REPRODUCED_OR_RAW_VERIFIED",
+      "DD_percent": "44.872878",
+      "net_profit": "30247.855958",
+      "S0_net_profit_retention_percent": "0.49855482632955057737552376330595700377944261323828445220251628799043697994008096",
+      "gap_to_research_floor": "4216727.2112543810",
+      "gap_to_final_floor": "5430148.6590293470",
+      "net_profit_multiple_needed_for_70": "140.40582159308830043721805004503982371152760697763700981189392107987900647751425",
+      "passes_research_numeric_floor": false
+    }
+  ]
+}

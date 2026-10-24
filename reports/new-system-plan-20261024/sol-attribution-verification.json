@@ -1,0 +1,58 @@
+{
+  "status": "PASS_OBSERVED_CASH_TELESCOPE_NOT_COUNTERFACTUAL",
+  "native_fill_rows": 535,
+  "SOL_actual_fill_rows": 198,
+  "SOL_cycles": 25,
+  "minute_marks_paired": 1051200,
+  "consumed_actual_fill_rows": 535,
+  "primary_beta_known_cycles": 25,
+  "secondary_beta_known_cycles": 25,
+  "maximum_cycle_cash_telescope_residual": "0.0000",
+  "terminal_inventory": {
+    "BTC": "0.000",
+    "SOL": "0.0"
+  },
+  "sources_sha256": {
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/wave_overlay.py": "1f4b8b986476b594f15bb90ad6a979b7342ccda6b6f74f89485dfd1a00d29739"
+  },
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-receipt.json": "0068ffcc78013cdfeffbc84d68fe5222863a7045d87584639a69d1b47df1477a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "095beffa398c39e97a53965db5d374a7ae7b91f5f3da11a1b4ab568b7cb46535",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/new-system-plan-20261024/sol-attribution-protocol.json": "ec49049becb110ad92896434713c6231118791adf6ade9506287c89a13a2df15",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-fills.csv": "4d43e5b54b208f0f4c728e21bd16e22960d72f40e04ab98fb4084862f097b8c3",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-orders.csv": "88de5adde5c709673bd97fd01371e99f23630bc0640aacfba7f0800d5acbbaac",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-fill-audit.csv": "c7ecd1c0a05455569ca34d8de27b60b1061acdde283fab38e5430c96b9eb7291",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-order-events.csv": "55883b35b903c04edaebffeaeb6822cd21e1f8818d826d0a93ba58393d3f2dc0",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/split-parent-audit.csv": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-closed-bars.csv": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+  },
+  "funding": "UNKNOWN_SIGNED_OLD_PERASSET_COMPONENT_NO_ALLOCATION",
+  "scope": {
+    "engine_attempts": 0,
+    "training": 0,
+    "simulator_reruns": 0,
+    "product_changes": 0,
+    "runtime_writes": 0
+  },
+  "limitations": [
+    "Factor uses causal frozen parent270D logreturn beta with simple minute returns: descriptive approximation, not orthogonal causal alpha.",
+    "Parent linkage unique timestamp interval + native both-flat lifecycle + cycle-before-next-parent checked. No durable order-to-episode field in fill export.",
+    "Raw observed minute marks, not native instrument-rounding marks; executionbasis includes rawmark/fill basis. Algebraic cash identity exact within Decimal60 residual.",
+    "BTCstate for markinterval uses actual pre-current-fill inventory. Same-timestamp BTC/SOL executionbasis and fees assigned explicit tie UNKNOWN. Intratimestamp mark/callback path not inferred.",
+    "Cap excess PNL is proportional observed held mark PNL only, excludes execution/fees/funding; not PNL of a capped hedge or obtainable saved cash.",
+    "Calendar buckets use interval ending at year boundary as prior year; execution at boundary would require separate event qualification.",
+    "Old signed perasset funding UNKNOWN, residual is not executable alpha, counterfactual BTC compounding/cashdelta/TOTAL unidentifiable."
+  ],
+  "independent_file_accounting_verification": "PASS",
+  "SOL_cycle_start_states": {
+    "BTC_HELD": 3,
+    "BTC_FLAT": 9,
+    "UNKNOWN_TIMESTAMP_TIE": 13
+  },
+  "observed_SOL_fill_cash": "731121.2550",
+  "observed_SOL_native_fees": "17418.93170875",
+  "observed_SOL_fill_net_ex_funding": "713702.32329125"
+}

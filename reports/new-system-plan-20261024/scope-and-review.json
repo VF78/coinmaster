@@ -1,0 +1,35 @@
+{
+  "task": "CM-NEW-SYSTEM-PLAN-20261024",
+  "initial_manager_HEAD": "0dd0f16092868f2457da248d49dde2b6bc11b8fd",
+  "owner_request": "Unify supplied conclusions with verified evidence; preserve BTC core; redesign SOL as hedge; experimental >=70% and final >=90% original net profit; primary DD<=50%, preferred30-50; research external originals and start bounded investigation.",
+  "authorization": {
+    "saved_data_analysis": true,
+    "docs_and_project": true,
+    "product_trading_logic_changes_current_protocol": false,
+    "new_native_full_attempts": 0,
+    "new_native_short_attempts": 0,
+    "training_attempts": 0,
+    "pilot_or_production": false
+  },
+  "old_budgets": "CLOSED; earlier owner approval for3full was consumed3/3, shorts8/8. No carryover.",
+  "new_engine_budget_proposal_only": {
+    "short_max": 4,
+    "full_max": 2,
+    "includes_failed_attempts_and_controls": true,
+    "status": "NOT_AUTHORIZED_NOT_RESERVED; candidate/protocol must first pass admission"
+  },
+  "independent_plan_review": {
+    "agent": "new_plan_methods",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "scope": "single focused plan review, no product code",
+    "result": "PASS; no hidden engine budget, fake OOS/equity or acceptance of H_PAIR_EXIT as proven",
+    "subsequent_manager_clarifications": [
+      "Native730daywarmup and first-childP0 are already verified; not a new ROI fix",
+      "TP coverage requires acknowledged working orders, not commands",
+      "Final <=50%DD gate on both comparable settled and coherent event-level scales; incomplete coherent event data UNKNOWN blocks PASS"
+    ]
+  },
+  "product_changes": 0,
+  "new_matching_or_simulator": false
+}

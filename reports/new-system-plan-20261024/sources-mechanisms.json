@@ -1,0 +1,209 @@
+{
+  "task": "CM-NEW-SYSTEM-PLAN-20261024",
+  "as_of": "2026-10-24",
+  "status": "RESEARCH_ONLY_NO_ECONOMIC_PASS",
+  "budgets": {
+    "full": 0,
+    "short": 0,
+    "training": 0
+  },
+  "scope": "Original-source internet review and installed API read-only inspection; no implementation, economics, services, orders or commits",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Hummingbot Grid Strike / grid_executor",
+      "urls": [
+        "https://hummingbot.org/blog/strategy-guide-grid-strike/",
+        "https://github.com/hummingbot/hummingbot/blob/master/hummingbot/strategy_v2/executors/grid_executor/grid_executor.py"
+      ],
+      "version_date": "Guide published 2025-10-07; page footer 2026-10-23; master observed 2026-10-24, commit UNKNOWN",
+      "grade": "A: inspectable implementation; C: economic transfer",
+      "finding": "Finite levels, bounded outstanding orders, filled-level state, shutdown/held inventory. POSITION_HOLD get_net_pnl_quote excludes position_pnl_quote: executor report is not full marked portfolio equity.",
+      "reuse": "Finite child inventory lifecycle and batch caps only. Do not import grid alpha, POSITION_HOLD economics, framework or automatic level recycling."
+    },
+    {
+      "id": "S2",
+      "title": "Chen/Chen/Jang Dynamic Grid Trading paper and original implementation",
+      "urls": [
+        "https://arxiv.org/html/2506.11921v1",
+        "https://github.com/colachenkc/Dynamic-Grid-Trading",
+        "https://github.com/colachenkc/Dynamic-Grid-Trading/blob/main/src/grid_logic.py"
+      ],
+      "version_date": "arXiv v1 2025-06-13; repo main observed 2026-10-24, commit UNKNOWN",
+      "grade": "B: paper/backtest; C: leverage/hedge transfer",
+      "finding": "Explicit wallet/input-money/grid-boundary resets; BTC/ETH spot experiments 2021-01 to 2024-07. Paper attributes strong returns partly to crypto price appreciation. Zero-expectation claim is conditional on its model.",
+      "reuse": "Treat reset as an auditable cash/inventory transition. Reject spot IRR as proof for leveraged BTC/SOL and reject another adverse-grid sweep."
+    },
+    {
+      "id": "S3",
+      "title": "pysystemtrade dynamic optimisation buffering",
+      "urls": [
+        "https://github.com/pst-group/pysystemtrade/blob/develop/systems/provided/dynamic_small_system_optimise/buffering.py",
+        "https://github.com/pst-group/pysystemtrade/discussions/529"
+      ],
+      "version_date": "develop observed 2026-10-24, commit UNKNOWN; Carver discussion reply 2022-02-09",
+      "grade": "A: original code and author clarification; C: CoinMaster economics",
+      "finding": "calculate_adjustment_factor uses max((tracking_error-buffer)/tracking_error,0); rounds proposed trades in contract space. Author says production uses actual live positions rather than prior simulated positions.",
+      "reuse": "Trade small target deviations only when costs warrant, using actual native inventory plus pending leaves. Never buffer away mandatory hedge or retain excess SOL after BTC reduction."
+    },
+    {
+      "id": "S4",
+      "title": "Rob Carver: Uncertainty Principles — original ReSolve interview transcript",
+      "urls": [
+        "https://investresolve.com/podcasts/rob-carver-uncertainty-principles/"
+      ],
+      "version_date": "Publication date not exposed in inspected page; accessed 2026-10-24",
+      "grade": "B: primary expert transcript, not strategy validation",
+      "finding": "At 08:41/09:51 conditional regime performance estimates have wide uncertainty; at 20:44 estimating Sharpe is difficult. At 1:29:56 he distinguishes execution mean reversion from medium-term trend and stresses costs.",
+      "reuse": "Preserve original EMA signal; investigate execution costs/participation without asserting a new regime predictor. No probability sizing from a tiny conditional set."
+    },
+    {
+      "id": "S5",
+      "title": "Better System Trader episode 012 — Ernest Chan",
+      "urls": [
+        "https://bettersystemtrader.com/012-ernest-chan/"
+      ],
+      "version_date": "2015-06-22; publisher page accessed 2026-10-24",
+      "grade": "B-/C: original interview publisher, inspected text is editorial breakdown, not verbatim transcript",
+      "finding": "Distinguishes momentum and mean reversion and strategy-level dependence; finite system failure control matters. These are research principles, not evidence that SOL is profitable as a hedge.",
+      "reuse": "Require separate economic justification for a tactical mean-reversion overlay. Do not rebrand old standalone SOL alpha as mandatory insurance or revive performance-based BTC cuts already tested."
+    },
+    {
+      "id": "S6",
+      "title": "Freqtrade original position-adjustment documentation",
+      "urls": [
+        "https://www.freqtrade.io/en/stable/strategy-callbacks/"
+      ],
+      "version_date": "stable moving documentation observed 2026-10-24; release UNKNOWN",
+      "grade": "A: documented callback semantics; no economic evidence",
+      "finding": "Loose entry/exit conditions can retrigger each live throttle interval; backtest callback frequency differs. Docs advise checking last filled order and outstanding orders.",
+      "reuse": "Event-key idempotence, pending-order accounting, no re-add on every mark. No migration and no use of Freqtrade sizing semantics in native Nautilus."
+    },
+    {
+      "id": "S7",
+      "title": "r/algotrading original Draw-down calculation discussion",
+      "urls": [
+        "https://www.reddit.com/r/algotrading/comments/1igaynw/drawdown_calculation/"
+      ],
+      "version_date": "Exact publication timestamp not exposed; page shows relative age only; accessed 2026-10-24",
+      "grade": "D: anecdote with conflicting comments",
+      "finding": "Participants disagree about realized versus unrealized DD and discuss minute/hour/day sampling. The disagreement illustrates why metric definitions must be explicit; it proves no alpha.",
+      "reuse": "Keep native marked-equity high-watermark DD and disclose sampling limits; never use closed-balance grid profit as acceptance."
+    },
+    {
+      "id": "S8",
+      "title": "Installed NautilusTrader source, local authoritative API check",
+      "urls": [
+        "https://github.com/nautechsystems/nautilus_trader"
+      ],
+      "version_date": "Installed distribution 1.231.0, METADATA verified 2026-10-24; latest web API not adopted",
+      "grade": "A: installed source semantics; venue behavior still requires acceptance",
+      "finding": "OrderFactory limit supports post_only/reduce_only and time_in_force; bracket has one TP and one SL, default OUO. Strategy.modify_order creates a command and can suppress it for closed/PENDING_CANCEL orders; cancel_order dispatches a command, not proof of completion.",
+      "reuse": "Native cache/events are truth; explicitly allocate three TP leaves and reconcile partial fills/cancel rejects. No assumption one OUO bracket solves unequal 3TP+SL."
+    }
+  ],
+  "local_native_source_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader-1.231.0.dist-info/METADATA",
+      "sha256": "fbf75753dc1ff4497d9bf70ea09a2480b031ece17ad75766ab4807852eaf48f2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/factories.pyx",
+      "sha256": "bcaf9dbfb381e299d90590efafdd052f1b7f4dae5d916c95341e8b2c252b03eb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/base.pyx",
+      "sha256": "e90375c623b13a7c1fa35e35ef756eb00c9a0b38994d3125dcf616557c20a953"
+    }
+  ],
+  "mechanisms": [
+    {
+      "rank": 1,
+      "id": "M1",
+      "decision": "ACCEPT_FOR_CONTRACT_ONLY",
+      "name": "Actual-fill hedge deficit controller",
+      "sources": [
+        "S1",
+        "S3",
+        "S6",
+        "S8"
+      ],
+      "idea": "One native reducer maps actual BTC/SOL inventory and outstanding leaves to required hedge floor and upper cap. Cancel excess pending adds first; never infer filled hedge from submitted order. Freeze valid closed-hour hMV/beta at activation; no BTC means no SOL.",
+      "novelty": "Accounting/lifecycle prerequisite, not revived H_SOL ADD cap or a claim to cure DD. Old cuts/insurance do not establish this exact order contract or its profit.",
+      "rejection": "Reject any duplicate add, double reservation, naked BTC increment after mandatory hedge denial, SOL above cap after reduction, zero-BTC SOL, or hidden missing-hedge interval.",
+      "acceptance": "Future native deterministic partial/reject/cancel race scenarios; measure activation latency and undercoverage duration; if hedge cannot be acquired, block/undo incremental BTC risk. No tests run in this task."
+    },
+    {
+      "rank": 2,
+      "id": "M2",
+      "decision": "HYPOTHESIS_ONLY_NO_RUN",
+      "name": "Bounded market participation at unchanged E4 parent decisions",
+      "sources": [
+        "S1",
+        "S4",
+        "S8"
+      ],
+      "idea": "Keep 83 EMA34/E4 signal times/sides and original quantity anchor. Compare finite market/marketable-IOC participation child with fixed spread/slippage ceiling, one reserved residual, frozen completion deadline and no indefinite chase. Retain intended original BTC TP3; keep three real reduce-only TPs under settled contract.",
+      "novelty": "Targets lost participation rather than deeper adverse grids or doubling exposure. R2/R3 improved equal-notional bp but destroyed terminal compounding; higher fill rate alone is not benefit.",
+      "rejection": "Reject if improved fills chiefly add losing exposure, cost exceeds incremental native cycle benefit, actual margin/capacity fails, or screen retention <70% S0 net profit. No source proves available alpha.",
+      "acceptance": "Future event scenarios and native execution acceptance with spread/slip/fees/funding; compare entry fill fraction, time exposed, winner/loser participation, implementation shortfall and own-capital TOTAL/DD against fixed matched controls. Historical synthetic depth1000 cannot establish capacity."
+    },
+    {
+      "rank": 3,
+      "id": "M3",
+      "decision": "CONDITIONAL_HYPOTHESIS_ONLY",
+      "name": "Cost buffer for optional hedge target changes",
+      "sources": [
+        "S3",
+        "S4",
+        "S6"
+      ],
+      "idea": "Mandatory floor repair and upper-cap reduction bypass all buffers. Only excess discretionary hedge adjustment uses a frozen no-trade band, actual positions and pending orders; round to native lots; finite rehedge count/turnover budget per BTC parent.",
+      "novelty": "Avoids 607 rapid re-adds and corridor churn without removing required cover. This is execution economy, not another corridor alpha hypothesis.",
+      "rejection": "Reject if saving fees increases required undercoverage, hedge miss, worst marked DD, or residual SOL exposure. Reject if economically worse than equivalent-factor BTC trim.",
+      "acceptance": "Future native trace test for repeated marks, partials and beta refresh; account turnover, hedge cost, BTC-factor contribution and SOL residual; full economics requires new budget."
+    },
+    {
+      "rank": 4,
+      "id": "M4",
+      "decision": "ACCEPT_AS_DIAGNOSTIC_ONLY",
+      "name": "Factor-matched hedge versus BTC-trim control",
+      "sources": [
+        "S4",
+        "S5"
+      ],
+      "idea": "Compare signed SOL factor compensation and specific residual after costs with reducing the same BTC factor exposure. Use causal beta known before entry and actual evolving inventory; descriptive attribution cannot establish standalone residual alpha.",
+      "novelty": "Avoids assuming SOL fill profits survive cap/compounding; existing R3 screen already found weaker/unstable benefits, so new implementation needs a concrete reason that changes this result.",
+      "rejection": "STOP_SOL if after-cost protection is consistently inferior to equal-factor BTC trim or profit requires SOL while BTC flat/above cap.",
+      "acceptance": "First use existing receipts only; eventual causal native replay with own capital required for an economic claim."
+    },
+    {
+      "rank": 5,
+      "id": "M5",
+      "decision": "REJECT_AS_NEXT_STRATEGY",
+      "name": "B5front30/H5, dynamic adverse-grid/reset or unconstrained tactical recycling",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "idea": "Do not admit the attachment architecture as a new native candidate just because H1 DD is around45%.",
+      "novelty": "None: known own-capital profit around40k and massive participation losses already fail the objective; reset/recycling does not supply missing alpha.",
+      "rejection": "Already rejected by profit gate; no doubling exposure or parameter sweep to compensate.",
+      "acceptance": "No new run. Only reconsider a specific semantic defect supported by receipts or genuinely different causal source of profit."
+    }
+  ],
+  "source_pin_limit": "GitHub gh API read-only network failed; moving branch commit dates/hashes are UNKNOWN. Freeze exact external revisions before implementation; no API migration inferred.",
+  "thresholds": {
+    "screen_net_profit_retention": 0.7,
+    "screen_total": "4256975.067212381",
+    "final_net_profit_retention": 0.9,
+    "final_total": "5470396.514987347",
+    "max_marked_equity_dd": 0.5,
+    "preferred_dd": "30–50%; DD<30 is not a failure",
+    "zero_model_liquidations": true
+  }
+}

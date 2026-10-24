@@ -1,0 +1,18 @@
+{
+  "task": "CM-NEW-SYSTEM-PLAN-20261024-SOL-ATTRIBUTION",
+  "frozen_before_analysis": true,
+  "scope": "one saved-data arithmetic pass, no engine, training, strategy or counterfactual portfolio",
+  "primary_beta": "OLD270D_PARENT_LOG_RETURN_COV_SOL_BTC_OVER_VAR_BTC, planref_v1_beta frozen before first actual SOL fill; require unique latest-parent linkage and no next parent before cycle flat",
+  "secondary_beta": "720 closed H1 simple returns strictly before first actual SOL fill; require721 valid paired closes, otherwise UNKNOWN; do not substitute primary",
+  "cycle": "actual SOL signed inventory flat->nonzero->flat; actual fill side and quantity; reversal cannot be silently merged",
+  "mark": "raw Bybit mark1m close available at open_time_ms+60000; paired BTC/SOL same minute; no synthetic intrabar path",
+  "held_price_PNL": "qSOL_before_fill*(PS_t-PS_prev)",
+  "factor": "qSOL_before_fill*PS_prev*beta_cycle*(PB_t/PB_prev-1)",
+  "residual": "held_price_PNL-factor",
+  "execution_basis": "sum(signed_actual_fill_qty*(PS_t-actual_fill_px))",
+  "fees": "actual native USDT commission, separate from funding",
+  "identities": ["flat-cycle held_price_PNL+execution_basis=negative signed actual fill cash", "factor+residual+execution_basis-fees=actual flat fill-net"],
+  "breakdowns": ["whole-period", "calendar-mark first/second year", "cycle-entry cohort first/second year", "pre-interval actual BTC flat/opposite/same side", "full-factor100pct and half-factor50pct hedge caps as descriptive current-notional excess held-PNL only"],
+  "ties": "Minute held quantities are post previous timestamp and pre current fills. Execution-basis/fee BTCstate UNKNOWN when BTC also fills at same timestamp. Native intratimestamp order not inferred.",
+  "unknowns": ["old signed perasset funding", "causal tradeable residual alpha", "counterfactual BTC size/compounding/TOTAL", "native mark rounding versus raw mark closes", "future risk or independent OOS"]
+}
