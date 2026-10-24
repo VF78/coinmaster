@@ -362,13 +362,14 @@ def test_native_raw_risk_unavailable_feature_is_unhedgeable_no_go_not_valid_acti
 
 
 @pytest.mark.parametrize("side", [1, -1])
-def test_native_coprime_actual_1037_1817_single_tp_stable_corridor(side):
+@pytest.mark.parametrize("oversize", [False, True])
+def test_native_coprime_actual_1037_1817_single_tp_stable_corridor(side, oversize):
     # Native cache entry and fills, with the actual production integer ratio.
     from decimal import localcontext
     with localcontext() as ctx:
         ctx.prec = 80
         a = str(D("181.70000001") / D("1.037"))
-        s,e,ep = native_setup(side=side, a=a, btc_quantity=2.074)
+        s,e,ep = native_setup(side=side, a=a, btc_quantity=2.074, probe=OversizeCapProbe if oversize else Probe)
     try:
         t=covered(s,e)
         p=s._pair
@@ -380,11 +381,11 @@ def test_native_coprime_actual_1037_1817_single_tp_stable_corridor(side):
         assert s._pair_qty(SOL_PERP.id)==D("136.3")
         for dt in range(1,12):
             run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,price)])
-        assert s._pair_qty(BTC_PERP.id)==D(".777"),json.dumps(s._pair_report())
-        assert s._pair_qty(SOL_PERP.id)==D("136.2"),json.dumps(s._pair_report())
+        assert s._pair_qty(BTC_PERP.id)==D(".776" if oversize else ".777"),json.dumps(s._pair_report())
+        assert s._pair_qty(SOL_PERP.id)==D("136.0" if oversize else "136.2"),json.dumps(s._pair_report())
         fills=[x for x in s.paired_prefix_audit if x['event']=='ACTUAL_FILL']
-        assert sum(x['kind']=='BTC_DEBT' for x in fills)==1
-        assert sum(x['kind']=='SOL_CAP' for x in fills)==1
+        assert sum(x['kind']=='BTC_DEBT' for x in fills)==(2 if oversize else 1)
+        assert sum(x['kind']=='SOL_CAP' for x in fills)==(2 if oversize else 1)
         assert p['consumed']=={0} and p['debt_since'] is None
         assert not s._pair_failures,json.dumps(s._pair_report())
         cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
