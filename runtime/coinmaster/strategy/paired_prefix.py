@@ -152,15 +152,24 @@ class PairedPrefixResearch:
                 self.cancel_order(order)
 
     def _pair_start(self, signal, ns):
+        signal = signal.owner_row() if hasattr(signal, "owner_row") else signal
         ep = self._domain.episode
         position = self._pair_position(self.config.btc_id)
         if not ep or not position or ep.id in self._pair_used:
             return
         side = 1 if position.is_long else -1
         branch = "B2" if signal.get("B2_" + str(side)) else "F0" if self.config.research_paired_prefix == "B2_F0" and signal.get("F0_" + str(side)) else None
-        if branch is None or not signal.get("valid"):
+        if branch is None:
             return
         self._pair_used.add(ep.id)
+        if not signal.get("valid"):
+            self._pair_fail("UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE", ns)
+            self._begin_forced_close("PAIRED_UNHEDGEABLE_CAUSAL_FEATURE")
+            return
+        if self._pair_qty(self.config.sol_id) or any(o.instrument_id == self.config.sol_id for o in self.cache.orders_open() + self.cache.orders_inflight()):
+            self._pair_fail("UNKNOWN_UNRELATED_SOL_OWNERSHIP", ns)
+            self._begin_forced_close("PAIRED_UNKNOWN_SOL_OWNERSHIP")
+            return
         btc = self.cache.instrument(self.config.btc_id); sol = self.cache.instrument(self.config.sol_id)
         qref = position.quantity.as_decimal()
         quantity = floor_lot(D(str(signal["a"])) * qref * D(str(signal["PB"])) / D(str(signal["PS"])), sol.size_increment.as_decimal())
@@ -302,9 +311,9 @@ class PairedPrefixResearch:
             p["tp_lots"].pop(owner["level"], None)
         # Fill callbacks use pre-event risk, before completed quote invalidation.
         if owner["instrument"] == self.config.sol_id and owner["kind"] != "ENTRY" and p["caps"].initialized and p["risk"] != "INACTIVE_RISK":
-            # Native position cache applies after fill callback: derive only this
-            # actual confirmed delta, then reconcile against cache on position event.
-            after = max(D(0), p["last_sol"] - qty)
+            # Stock execution engine commits cache/account before strategy
+            # fill delivery. Read that same actual native state, never pending relief.
+            after = self._pair_qty(self.config.sol_id)
             p["caps"].reconcile(p["last_btc"], after, sol_reduced=True,
                                 btc_reduced=False, active_risk=True)
         self._pair_log("ACTUAL_FILL", event.ts_event, order_id=oid, kind=owner["kind"],
@@ -364,14 +373,18 @@ class PairedPrefixResearch:
         if tick.instrument_id == self.config.btc_id:
             # Native matching/fill delivery precedes strategy quote callback.
             p = self._pair
+            if p and not p["entry_sent"] and ns > p["signal_ns"] and p["side"] * (tick.bid_price.as_decimal() - p["boundary"]) >= 0:
+                p["risk"] = "INACTIVE_RISK"; p["close_sol"] = True
+                p["entry_sent"] = True; p["entry_terminal"] = True
+                self._pair_log("ADMISSION_CANCELLED_ALREADY_INACTIVE", ns)
             if p and p["first_fill_ns"] is not None and ns > p["first_fill_ns"]:
                 if p["side"] * (tick.bid_price.as_decimal() - p["boundary"]) >= 0 or ns >= p["deadline_ns"]:
                     p["risk"] = "INACTIVE_RISK"; p["close_sol"] = True
                     self._pair_log("RISK_INVALID_OR_EXPIRED", ns, btc_close=tick.bid_price.as_decimal())
             feed = self.config.research_paired_signal_rows
-            while self._pair_feed_index < len(feed) and int(feed[self._pair_feed_index]["t"]) <= ns:
+            while self._pair_feed_index < len(feed) and feed[self._pair_feed_index].decision_ns <= ns:
                 signal = feed[self._pair_feed_index]; self._pair_feed_index += 1
-                if int(signal["t"]) == ns and self._pair is None:
+                if signal.decision_ns == ns and self._pair is None:
                     self._pair_start(signal, ns)
         p = self._pair
         if p is None:

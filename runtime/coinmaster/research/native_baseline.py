@@ -690,7 +690,7 @@ def run_native_diagnostic(
     research_h1_b1: str | None = None,
     research_paired_policy: bool = False,
     research_paired_prefix: str | None = None,
-    research_paired_signal_rows: tuple[dict, ...] = (),
+    research_paired_signal_rows: tuple = (),
     research_btc_real_u: bool = False,
     research_btc_q_mode: str | None = None,
     research_sol_off: bool = False,
@@ -805,6 +805,13 @@ def run_native_diagnostic(
     modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
+    coherent_observer = None
+    coherent_observer_report = None
+    if research_paired_policy:
+        from coinmaster.research.paired_observer import CommittedNativeObserver
+        coherent_observer = CommittedNativeObserver(artifacts_root / "coherent-native-events.jsonl.gz",
+            initial_active_seed,(btc_instrument,sol_instrument),journal)
+        modules.append(coherent_observer)  # After native funding and tier modules.
     def kind(instrument, price_type):
         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
     next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
@@ -923,6 +930,8 @@ def run_native_diagnostic(
         for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), archival_batch_minutes):
             if risk_recorder is not None:
                 risk_recorder.set_week(week)
+            if coherent_observer is not None:
+                coherent_observer.set_week(week)
             marks, signals, quotes, source_bars, next_bars = [], [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
@@ -996,6 +1005,8 @@ def run_native_diagnostic(
                 early_liquidation_cutoff = True
                 break
         engine.end()
+        if coherent_observer is not None:
+            coherent_observer_report = coherent_observer.finish_after_engine_end(trading_end_ms * 1_000_000)
         # Retain only one native report DataFrame at a time; native history
         # remains authoritative and report-derived monetary formulas are unchanged.
         if audit_archive is not None:
@@ -1138,9 +1149,11 @@ def run_native_diagnostic(
         result["config"].update(research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
         result["market_redesign_audit"]=strategy._md_report()
         result["paired_prefix_audit"] = strategy._pair_report()
+        result["coherent_native_observer"] = coherent_observer_report
+        from coinmaster.research.paired_signal_feed import paired_feed_json_rows
         result["config"].update(research_paired_policy=research_paired_policy,
             research_paired_prefix=research_paired_prefix, liquidity_consumption=research_paired_policy,
-            paired_signal_sha256=hashlib.sha256(json.dumps(research_paired_signal_rows,sort_keys=True,separators=(",",":")).encode()).hexdigest(),
+            paired_signal_sha256=hashlib.sha256(json.dumps(paired_feed_json_rows(research_paired_signal_rows),sort_keys=True,separators=(",",":")).encode()).hexdigest(),
             paired_m1_risk_close_basis="COMPLETED_EXECUTION_M1_CLOSE_NATIVE_ZERO_SPREAD_BTC_PRICE",
             paired_stop_type="NATIVE_STOP_MARKET_IOC_NO_SYNTHETIC_L1_REMAINDER")
 
@@ -1239,6 +1252,8 @@ def run_native_diagnostic(
             audit_archive.close()
         if risk_recorder is not None:
             risk_recorder.file.close()
+        if coherent_observer is not None:
+            coherent_observer.close()
         engine.dispose()
         if journal:
             if successful_run:

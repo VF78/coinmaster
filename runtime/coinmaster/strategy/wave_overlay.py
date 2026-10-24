@@ -5,6 +5,7 @@ or funding.  It is deliberately not declared a research baseline until a
 finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
+from coinmaster.research.paired_signal_feed import PairedSignal
 from coinmaster.strategy.paired_prefix import PairedPrefixResearch
 from coinmaster.strategy.market_redesign import MarketRedesignResearch, PHI, legacy_net_lots
 from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
@@ -66,7 +67,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
     research_paired_prefix: str | None = None
-    research_paired_signal_rows: tuple[dict, ...] = ()
+    research_paired_signal_rows: tuple[PairedSignal, ...] = ()
     research_btc_real_u: bool = False
     research_btc_q_mode: str | None = None
     research_sol_off: bool = False

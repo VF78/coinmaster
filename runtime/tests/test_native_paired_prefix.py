@@ -148,10 +148,11 @@ def test_native_zero_ioc_terminal_forces_full_btc_risk_close():
     s,e,ep=native_setup(a=".2")
     try:
         t=s._pair["eligible_ns"]
-        for dt in range(5):
+        for dt in (0,60_000_000_000,60_000_000_001,60_000_000_002,60_000_000_003):
             run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,size="0")])
         assert s._pair_qty(SOL_PERP.id)==0
         assert s._pair_qty(BTC_PERP.id)==0,json.dumps(s._pair_report())
-        assert any(r["event"]=="ENTRY_TERMINAL_P0_FROZEN" and r["bmax"]=="0" for r in s.paired_prefix_audit)
+        assert "ENTRY_TERMINAL_TIMEOUT" in s._pair_failures
+        assert s._pair is not None  # Unconfirmed native cancel remains NO_GO, never hidden.
     finally:
         e.end();e.dispose()
