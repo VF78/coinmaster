@@ -1,0 +1,25 @@
+{
+  "scope": "READONLY_SOURCE_API_PROOF_NO_EXECUTION_OR_OUTCOMES",
+  "frozen_source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "installed_distribution": "nautilus_trader-1.231.0.dist-info",
+  "Mac_proof_not_VPS_runtime_acceptance": true,
+  "source_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/minute_risk.py": "7db64dbb08c5eb1eddb10524a31f4f4b413be750cd17047a9e1936864e2717ef",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_baseline.py": "c223198e1fa8d904fb659abade749576e9ab1d8b3dbcaebcbc46f11a0cdba522",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_fixture.py": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/wave_overlay.py": "c0f72d139c9e0f357a6e1abe8bac4ca01b0749d0282bc63a59a28a15e80e641d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/modules.pyx": "1dd94fa0b76110c9a0a4521384a19e052829525db2dbdde843a24663e16ce4c9",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/engine.pyx": "5b7113b1c210f8123d658caeb5c50435bf266477de7dc36f30892f377ee913f5",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/client.pyx": "e3b8883af0870f0ad3177fb9f4a7672790a460c3737e4d90a587d96861addfa1",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/portfolio/portfolio.pyx": "3c331213d571699bb4f4e08224cdb7dcea624e08a6da2214b5dc9f3c289bf628",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/position.pyx": "f61d6e291a353d736727c081f31cbe152338e06f90111a4c9bbcd0c07031b2a7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.pyx": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/component.pyx": "e1f8631be5baa1ef0113d5a654c0b41d10b5308b0ec00b136bc676020685a519",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader-1.231.0.dist-info/METADATA": "fbf75753dc1ff4497d9bf70ea09a2480b031ece17ad75766ab4807852eaf48f2",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/manager.pyx": "5ed488c4b8c3af7668cf67d44e1e0ce7f8209dc2668193a92d77cc788cfb173e"
+  },
+  "engine_runs": 0,
+  "source_mutations": 0
+}

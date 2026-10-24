@@ -1,0 +1,21 @@
+{
+  "status": "PASS_INDEPENDENT_PREFIX_EVENT_ALGEBRA",
+  "stage": "stageI",
+  "checks": {
+    "independent_all_cash_endpoints": 6528,
+    "independent_all_three_local_losses": 19584,
+    "all_cost_funding_components": 58752,
+    "baseline_identical_across_scenarios": 6528,
+    "cohort_mean_CVaR_recomputed": 336,
+    "raw_lane_gates_all3x4": 32,
+    "IUT_Bonferroni_component_aggregation": 4
+  },
+  "rows": 6528,
+  "max_cash_residual_USDT": 2.3283064365386963e-10,
+  "max_local_loss_residual_bp": 5.4285465012071654e-12,
+  "baseline_terminal_exact": "120718.40416503",
+  "new_native_runs": 0,
+  "label_script_not_imported": true,
+  "bootstrap_verification": "B=8192 and stored component IUT/2route arithmetic checked; random draws not rerun",
+  "verifier_sha256": "71e4f964466aa481bb379affe13ed86dd9c6b962b34db69cdb2e9e3fe148266f"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS_POST_SELECTION_SCALE_ONLY",
+  "checks": {
+    "exact_cache_sum_mean_deltaA_tables": 32,
+    "independent_Fraction_fixed_transfer_products": 8,
+    "oracle_Fraction_products_gaps_logcoverage": 3
+  },
+  "independent_method": "Exact Fraction cache sums/products/retentions/gaps; independent float log1p coverage vs Decimal ln",
+  "original_discovery_and_phase_hashes_unchanged": true,
+  "new_trade_outcomes": 0,
+  "new_configurations": 0,
+  "native_engine_runs": 0,
+  "schema_note": "cached-delta CSV latest_hypothetical_action_endpoint_utc field contains original integer nanoseconds; treat as endpoint_ns, not formatted UTC. Original output preserved, no money effect.",
+  "verifier_sha256": "97b97264b89f9a1d4e43b4e184a24d3eaaaeae6846d885aa77a55a1eb45f1c85"
+}

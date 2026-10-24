@@ -1,0 +1,53 @@
+{
+  "status": "COMPLETE_DISCOVERY_RAW_POSITIVES_NOT_CONFIRMED",
+  "configurations": 36,
+  "stageI_configurations": 32,
+  "stageII_configurations": 4,
+  "scenario_episode_rows": 7352,
+  "qualified_raw_capital": [
+    "B2/4",
+    "B2/12"
+  ],
+  "qualified_raw_protection": [
+    "B2/4",
+    "P1/4",
+    "F0/4",
+    "B2/8",
+    "B2/12",
+    "F0/8"
+  ],
+  "qualified_raw_families": [
+    "break",
+    "funding",
+    "position_initial"
+  ],
+  "confirmed_configurations": [],
+  "sparse_configurations": [
+    "C2/4",
+    "C2/24",
+    "M1/4",
+    "M1/24",
+    "L1/4",
+    "L1/24"
+  ],
+  "known_control_raw_positive": [
+    "A0/4"
+  ],
+  "entry_attempt_status_counts": {
+    "UNKNOWN_T_OR_E_FILL_POSITION_OR_FEATURE": 9
+  },
+  "actual_cycles": 83,
+  "cycles_with_H4": 81,
+  "no_H4_cycles": [
+    23,
+    26
+  ],
+  "first4Septembercycles_not_H1filtered": true,
+  "all12freeze_pins_intact": true,
+  "physical_native_full_short_training_simulator_runs": 0,
+  "financial_corrections": 0,
+  "financial_failures": 0,
+  "further_config_budget": 0,
+  "report_sha256": "7396fc2e30ec957885dbcf5fe423d64c184e73f8424f3069f7246cbb9f724053",
+  "combined_sha256": "220543808868f2a74d678201504a59c1d6fced0fd7a8de336ac9f83aac8d7924"
+}

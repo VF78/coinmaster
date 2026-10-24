@@ -1,0 +1,59 @@
+{
+  "status": "COMPLETE_POST_RESULT_CAPITAL_ALIGNMENT_VERIFIED",
+  "start_utc": "2026-10-24T17:06:35.609534+00:00",
+  "cache_pass_started": 1,
+  "cache_pass_completed": 1,
+  "independent_verification_budget": 1,
+  "input_sha256": {
+    "protocol": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/CAPITAL_ALIGNMENT_PROTOCOL.md",
+      "sha256": "659a7e93c34416e205d4efd0237ea9a51c0bdb4125fc931dcab1ebefeb638e7e"
+    },
+    "growth": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/growth-envelope-results.json",
+      "sha256": "ba7019d61ed0a9e69b7ce1878afb26eb4299aff72c7ee3598ac3a84075fbc461"
+    },
+    "stageI_cache": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageI-episodes.csv",
+      "sha256": "b7dbeb04f50b3c6ca590332e533d15440a7e3b17bd70c18f0bef70a7eb69310b"
+    },
+    "stageII_cache": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageII-episodes.csv",
+      "sha256": "b831bccb92f71dfadb577a8373c42603a8ff879233dd2504d2c43e21617e5427"
+    },
+    "stageI_receipt": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageI-result.json",
+      "sha256": "223a5605abb7db84ccdb3b124da0ec51a41aef49ed08b34b88ecb56684472d45"
+    },
+    "stageII_receipt": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageII-result.json",
+      "sha256": "a897131b77d0d60251269d88e65c89f9ca7f6b6440fc52be24a8eb55a88df2e7"
+    },
+    "combined": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-combined-configurations.csv",
+      "sha256": "220543808868f2a74d678201504a59c1d6fced0fd7a8de336ac9f83aac8d7924"
+    },
+    "phase_immutable": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/phase-ledger.json",
+      "sha256": "7c20c8268630a3333942672663ef67c4dea6b79f623e73d2576b0053cf3eadd1"
+    },
+    "scale_immutable": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/scale-admission-results.json",
+      "sha256": "60d72c966e8267ce6c53784d3d61d884fb6a8186dec0bcfe1c064b3010f14765"
+    },
+    "script": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/capital-alignment-calculate.py",
+      "sha256": "659eccaab03583e441b61e399297b115193ccb88a6d0dc9ed6761247fbc4d051"
+    }
+  },
+  "new_trade_outcomes": 0,
+  "new_configurations": 0,
+  "native_engine_runs": 0,
+  "completed_utc": "2026-10-24T17:06:36.580422+00:00",
+  "results_sha256": "fe247f1a6d35e447632cecc7025d88e128a7b9a86e2f3d87eee7b5e4ae5d5d01",
+  "verification_started": 1,
+  "verification_start_utc": "2026-10-24T17:07:42.559854+00:00",
+  "verification_completed": 1,
+  "verification_sha256": "a176550204324f047da0309d9f29b9f226235efb2b0e5b08ff12a7a6801be069",
+  "report_sha256": "1659aec59682ba7c355b1041451f51dda0c16ebf21607ee19c96058d8c529ce7"
+}

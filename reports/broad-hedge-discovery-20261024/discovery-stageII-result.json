@@ -1,0 +1,39 @@
+{
+  "status": "STAGE_II_COMPLETE_PENDING_VERIFICATION",
+  "selected_rules": [
+    "B2",
+    "F0"
+  ],
+  "new_configurations": 4,
+  "all_configurations": 36,
+  "rows": 824,
+  "raw_capital_positive": [
+    "B2:12"
+  ],
+  "raw_protection_positive": [
+    "B2:8",
+    "B2:12",
+    "F0:8"
+  ],
+  "qualified_raw_capital": [
+    "B2:12"
+  ],
+  "qualified_raw_protection": [
+    "B2:8",
+    "B2:12",
+    "F0:8"
+  ],
+  "confirmed_capital": [],
+  "confirmed_protection": [],
+  "physical_engine_runs": 0,
+  "no_further_refinement_budget": true,
+  "script_sha256": "2f421f7fa01ddf42581842df102d1da78066fe8ee9a3d0a7790bf97333614537",
+  "stageI_library_sha256": "b09144b4be384a89c94390ba1efea377ecd37e87bc14ba8ffb4450156c797fc8",
+  "output_sha256": {
+    "discovery-stageII-configurations.csv": "23c71947f192de84990bcf8684520b14a2ca504aaa727ea14f1ee3ab1085097f",
+    "discovery-stageII-statistics.csv": "a0df8ff67918fe097b8159091c1e2354e8417cbc3dffb44929909fe9a82058c4",
+    "discovery-stageII-episodes.csv": "b831bccb92f71dfadb577a8373c42603a8ff879233dd2504d2c43e21617e5427",
+    "discovery-stageII-cohorts.csv": "745cfe674dbfced59a6d8260bd87b7215385ebe11c306b32c3cdb510aece33c0"
+  },
+  "combined_summary_sha256": "220543808868f2a74d678201504a59c1d6fced0fd7a8de336ac9f83aac8d7924"
+}

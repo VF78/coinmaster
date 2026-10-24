@@ -1,0 +1,24 @@
+{
+  "requested_utc": "2026-10-24T17:42:59.611819+00:00",
+  "status": "APPROVED_BY_OWNER",
+  "scope": "isolatedresearchimplementation+oneconnectedtest/reviewpass+up_to4nativeprefixattempts2024-09-01..2025-01-15",
+  "proposed_native_prefix_max": 4,
+  "proposed_current_full_max": 0,
+  "failed_prefix_attempts_count": true,
+  "old_budgets": "CLOSED3/3full8/8short; nocarryover",
+  "strong_BTC_delta": "actualSOLactiveexits canpermanentlyreduce/closeBTC;monotoneparentceiling/cancelincreases/no restoration;calendarcanchange",
+  "production_pilot_realorders_services_transfers": "excluded",
+  "sha256": {
+    "candidate-native-probe-proposed.md": "9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1",
+    "NATIVE_PROBE_APPROVAL_RU.md": "c403f8904b7d6b7ea8595ef4decfa435c61b841fd1f75bad8ae82ebded4cc0b2",
+    "native-probe-review.md": "3218adbd669ede02ac9b4ec989bea7dc4768c65b96baecfb725723b822528155"
+  },
+  "review": "independenttargetedmoney/orderpacketreviewPASS, nativeAPI/tests stilllaunchgates",
+  "permission_origin": "NEW_MANAGER_PROMPT.md:13 newtradingcode/engineonlyafterconcreteprotocol/explicitbudget",
+  "approved_utc": "2026-10-24T17:47:22.642255+00:00",
+  "owner_exact_response": "Утверждаю реализацию и до 4 prefix-прогонов",
+  "approval_source": "direct human reply to request_user_input_async call_84e66a3c27104003863d2e783c85421a",
+  "authorized_native_prefix_max": 4,
+  "authorized_full_max": 0,
+  "implementation_authorized": true
+}

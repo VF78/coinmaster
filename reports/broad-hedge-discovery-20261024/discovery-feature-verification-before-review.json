@@ -1,0 +1,37 @@
+{
+  "status": "PASS_FEATURE_BASELINE_ONLY_NO_NEW_OUTCOMES",
+  "checks": {
+    "causal_daily_windows": 1618,
+    "independent_D1beta_HALFVOL": 1618,
+    "actual_episode_membership": 1618
+  },
+  "all_actual_episodes": 83,
+  "episodes_with_H4": 81,
+  "no_action_coverage": [
+    {
+      "cycle": 23,
+      "first_fill_ns": 1738540860000000000,
+      "actual_flat_ns": 1738546560000000000,
+      "next_H4close_ns": 1738555200000000000,
+      "reason": "NO_HELD_H4_DECISION"
+    },
+    {
+      "cycle": 26,
+      "first_fill_ns": 1741046460000000000,
+      "actual_flat_ns": 1741052520000000000,
+      "next_H4close_ns": 1741060800000000000,
+      "reason": "NO_HELD_H4_DECISION"
+    }
+  ],
+  "terminal_reconciliation": "EXACT Decimal, zero native residual",
+  "funding_source": "READONLY immutable SQLite == raw-native signed cash delta multiset",
+  "J_clock_size_status": "PENDING_ROOT_FREEZE; raw pending fields not final signals",
+  "initial_preexecution_failure": "discovery-build-initial-syntax-failed.py preserved; one extra closing parenthesis fixed before data build",
+  "verification_tie_assertion_correction": "Initial verifier wrongly required t<flat for all raw states. Kept t==flat raw states must be common_valid=False and fills_t_or_e=True; verified. No feature or money correction. Initial verifier preserved.",
+  "build_script_sha256": "b836094c6437c4930d1dcb50a191f7859661b9ce2e6fe346f9c0c9d612d3e0bd",
+  "feature_sha256": "8dc7db730f1c3f6b33d08ef18339dd5c74e327716c94cd24dca7d421d90b9b8f",
+  "verifier_sha256": "fd92931b9aa5e3eb692c7b6f60d49b5d923c08f2895a74f29c94e3d15088e744",
+  "candidate_outcomes_read": 0,
+  "candidate_labels_computed": 0,
+  "engine_runs": 0
+}

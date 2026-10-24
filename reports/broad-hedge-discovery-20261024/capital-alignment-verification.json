@@ -1,0 +1,17 @@
+{
+  "status": "PASS_POST_RESULT_CAPITAL_ALIGNMENT",
+  "checks": {
+    "exact_cycle_factors": 23904,
+    "Fraction_terminal_gap_retention_cycleDD_paths": 288,
+    "all_cycle_prefix_money": 23904,
+    "independent_cohort_money_loglifts": 864,
+    "strict_completed_boundary_values": 864,
+    "all_config_scale_and_paired_predicates": 36
+  },
+  "method": "Independent exact Fraction all83-cycle products/prefixes/gaps/retentions/cycle-boundaryDD; independent float log comparisons/cohort grouping/ranking",
+  "source_cache_discovery_phase_scale_unchanged": true,
+  "new_trade_outcomes": 0,
+  "new_configurations": 0,
+  "native_engine_runs": 0,
+  "verifier_sha256": "5d57925b68d49d591eb8321547237e9b8c3e60534afab3cb0d21988a45f267cc"
+}

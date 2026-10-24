@@ -1,0 +1,47 @@
+{
+  "status": "STAGE_I_COMPLETE_PENDING_CONNECTED_VERIFICATION",
+  "configurations": 32,
+  "rows": 6528,
+  "raw_capital_positive": [
+    "B2:4"
+  ],
+  "raw_protection_positive": [
+    "A0:4",
+    "B2:4",
+    "M1:4",
+    "M1:24",
+    "P1:4",
+    "F0:4"
+  ],
+  "qualified_raw_capital": [
+    "B2:4"
+  ],
+  "qualified_raw_protection": [
+    "B2:4",
+    "P1:4",
+    "F0:4"
+  ],
+  "confirmed_capital": [],
+  "confirmed_protection": [],
+  "stage_II_selection": "PENDING_ROOT_REVIEW_OF_FROZEN_RANKING",
+  "baseline_terminal": "120718.40416503",
+  "baseline_funding": "4063.32156049",
+  "funding_entry_anchor": "Fixed actual baseline after all actual flows at e; hypothetical BEFORE/AFTER exposure only; entry funding tie UNKNOWN",
+  "entry_funding_calendar_tied_states": 0,
+  "limitations": [
+    "Observed-fill raw-mark local attribution only, not candidate capital/native wallet/global DD/retention.",
+    "Ideal synchronous reduction pairing is optimistic; native latency/3TP/margin/capacity/pending risk UNKNOWN.",
+    "Same-time baseline native fill audit order retained; funding before/after ALL are coherent fixed alternatives, not all mixed orders.",
+    "Already viewed history; monthly cluster statistics approximate, not OOS."
+  ],
+  "physical_engine_runs": 0,
+  "script_sha256": "b09144b4be384a89c94390ba1efea377ecd37e87bc14ba8ffb4450156c797fc8",
+  "output_sha256": {
+    "discovery-stageI-configurations.csv": "3e86fb8ac7242b100e31bd92fe5e5e7ad93baa2f035b375d98a8ab9edaf0640f",
+    "discovery-stageI-selected.csv": "01692de7f1ffecc035d4f5077d86553439b11c6479d702f106a57d070e317b12",
+    "discovery-stageI-episodes.csv": "b7dbeb04f50b3c6ca590332e533d15440a7e3b17bd70c18f0bef70a7eb69310b",
+    "discovery-stageI-entry-attempts.csv": "6c768ec706ed424ff299ebd5cc5b63205b0bd07e71aa461bd843a704942bb996",
+    "discovery-stageI-statistics.csv": "b1bda1562f4c18f5a9ecb34f2586f470ecf196f65b04778b3fdb0e93df4ac5de",
+    "discovery-stageI-cohorts.csv": "dee4b7ed11cb4651a648d151ef4fdb022f6f8c1909c461d1921fe4b24aadaf2e"
+  }
+}

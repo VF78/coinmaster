@@ -1,0 +1,25 @@
+{
+  "status": "PASS_INDEPENDENT_PREFIX_EVENT_ALGEBRA",
+  "stage": "stageII",
+  "checks": {
+    "independent_all_cash_endpoints": 824,
+    "independent_all_three_local_losses": 2472,
+    "all_cost_funding_components": 7416,
+    "baseline_identical_across_scenarios": 824,
+    "cohort_mean_CVaR_recomputed": 48,
+    "raw_lane_gates_all3x4": 4,
+    "IUT_Bonferroni_component_aggregation": 3
+  },
+  "rows": 824,
+  "max_cash_residual_USDT": 1.1641532182693481e-10,
+  "max_local_loss_residual_bp": 4.860112312599085e-12,
+  "baseline_terminal_exact": "120718.40416503",
+  "new_native_runs": 0,
+  "label_script_not_imported": true,
+  "bootstrap_verification": "Independent replay of all StageII B8192 monthly block samples, means, within-resample CVaR, centered one-sided p and percentile CIs PASS",
+  "verifier_sha256": "71e4f964466aa481bb379affe13ed86dd9c6b962b34db69cdb2e9e3fe148266f",
+  "combined_Holm128_recomputed": true,
+  "independent_bootstrap_cells": 36,
+  "independent_bootstrap_contrasts": 144,
+  "wrapper_sha256": "9399106e56f7aa5c98a40a7e68658b02f4cb802fb94e012044067a32bd886bc7"
+}

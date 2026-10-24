@@ -1,0 +1,87 @@
+{
+  "status": "POST_RESULT_CAPITAL_ALIGNMENT_PENDING_VERIFICATION",
+  "configurations": 36,
+  "coherent_cases": 4,
+  "H_T_paths": 288,
+  "cycle_factors": 23904,
+  "original_observed_product": "120718.40416502999999999999999999999999999999999999999999999999999999999999999997",
+  "cohort_cycle_counts": {
+    "year1": 43,
+    "year2": 40,
+    "early": 19
+  },
+  "cohort_basis": "Original R3 cycle first actual fill start; includes noactioncycles delta0; distinct from discovery action-entry NB cohort",
+  "capital_scale_positive": [
+    "B2/12",
+    "B2/4",
+    "B2/8",
+    "A0/4"
+  ],
+  "paired_positive": [
+    "B2/12",
+    "B2/4",
+    "B2/8",
+    "A0/4",
+    "P1/4",
+    "F0/12"
+  ],
+  "both_positive": [
+    "B2/12",
+    "B2/4",
+    "B2/8",
+    "A0/4"
+  ],
+  "infeasible_path_count": 0,
+  "new_trade_outcomes": 0,
+  "new_configurations": 0,
+  "native_engine_runs": 0,
+  "input_sha256": {
+    "protocol": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/CAPITAL_ALIGNMENT_PROTOCOL.md",
+      "sha256": "659a7e93c34416e205d4efd0237ea9a51c0bdb4125fc931dcab1ebefeb638e7e"
+    },
+    "growth": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/growth-envelope-results.json",
+      "sha256": "ba7019d61ed0a9e69b7ce1878afb26eb4299aff72c7ee3598ac3a84075fbc461"
+    },
+    "stageI_cache": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageI-episodes.csv",
+      "sha256": "b7dbeb04f50b3c6ca590332e533d15440a7e3b17bd70c18f0bef70a7eb69310b"
+    },
+    "stageII_cache": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageII-episodes.csv",
+      "sha256": "b831bccb92f71dfadb577a8373c42603a8ff879233dd2504d2c43e21617e5427"
+    },
+    "stageI_receipt": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageI-result.json",
+      "sha256": "223a5605abb7db84ccdb3b124da0ec51a41aef49ed08b34b88ecb56684472d45"
+    },
+    "stageII_receipt": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-stageII-result.json",
+      "sha256": "a897131b77d0d60251269d88e65c89f9ca7f6b6440fc52be24a8eb55a88df2e7"
+    },
+    "combined": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/discovery-combined-configurations.csv",
+      "sha256": "220543808868f2a74d678201504a59c1d6fced0fd7a8de336ac9f83aac8d7924"
+    },
+    "phase_immutable": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/phase-ledger.json",
+      "sha256": "7c20c8268630a3333942672663ef67c4dea6b79f623e73d2576b0053cf3eadd1"
+    },
+    "scale_immutable": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/scale-admission-results.json",
+      "sha256": "60d72c966e8267ce6c53784d3d61d884fb6a8186dec0bcfe1c064b3010f14765"
+    },
+    "script": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/capital-alignment-calculate.py",
+      "sha256": "659eccaab03583e441b61e399297b115193ccb88a6d0dc9ed6761247fbc4d051"
+    }
+  },
+  "output_sha256": {
+    "capital-alignment-paths.csv": "b41966a9781646eb56baa5e011ff5f697cc1dc1d7deda634e4e1f34da61b5b20",
+    "capital-alignment-factors.csv": "87357c8b6ebf20ea8d7f7afed40d909647529835a8e469b6212a0490559c2512",
+    "capital-alignment-summary.csv": "325406a202ead08be81a92c54f4eff63fcfdfcb9378d98807f62d53bb4e7352b",
+    "capital-alignment-boundaries.csv": "df44af5fc0eead16d8c00232550204b3121315c0013fcaf4b49bad3ec66b7c3e",
+    "capital-alignment-cohorts.csv": "84cd3a3b1e966f878bbf78f3f8c3d4917dc81a56dfb79e04fe967fd3453badc0"
+  }
+}

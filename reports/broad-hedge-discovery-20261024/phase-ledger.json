@@ -1,0 +1,93 @@
+{
+  "task": "CM-BROAD-HEDGE-20261024",
+  "owner_scope": "Latest explicit request for broad hypothesis discovery and optimization of positive directions; pilotproductionexcluded",
+  "freeze_utc": "2026-10-24T16:41:14.604469+00:00",
+  "status": "COMPLETE_DISCOVERY_RAW_POSITIVES_NOT_CONFIRMED",
+  "protocol_authority": "DISCOVERY_PROTOCOL.md supersedes alternatives in design/data proposals",
+  "sha256": {
+    "DISCOVERY_PROTOCOL.md": "bac699cdedff0bc0ab67f56c1139f4411c3483316127e8d03216d234a02b65e0",
+    "discovery-build.py": "2f4000a4ad7ed9a7b9e04e315302ecff71a73d0129af7d2438dbcd308b9f7393",
+    "discovery-features.csv": "b9bef31195417c49d9446740f7a71f2cd4c189cc9b4d68668ee157f94123d1b8",
+    "discovery-registry.csv": "a2fdf3aada86866651f7d710a1d52a9c8ae7ea43f6ab43d69db1b78a11813acb",
+    "discovery-verify-features.py": "8b5392d99c3f18d569d3c3533bd92d5f6613d5233bad3cbec207fcac5954d8cf",
+    "discovery-build.json": "5ffb2c706330d60bcbea20eb49fe6bcf2f00f3a7d2e8367b177dd5bd40d64b04",
+    "discovery-feature-verification.json": "63a5987e05ca1ec295fcbb29c8f951c8bed6e92ffaf632b5e8cd16d4be5fa87c",
+    "data-inspection.json": "e0958e1e90f3ae7dbd274c8f82d4b2529446b132fd203d998793990143383c45",
+    "data-clock-contract.md": "48ec187e5fdf1166586167cafa1968e8b5ddde740b6173c79dd847a868ac4c8f",
+    "discovery-baseline.npz": "6250b7c2889492f9014441b21a7e249b859b4adc8b8b220d9ce2461138ad316a",
+    "discovery-baseline-events.csv": "a466389da3a3b6acfd7f0b74b2ff8ade845602955ef9b9cd4485e8cc3cc11fac",
+    "discovery-actual-cycles.csv": "f4aa3504201ad0c9505b2c5111e06f3dc0b4c8995987921a4fdec3a80bee54df"
+  },
+  "independent_contract_review": "broad_hypothesis_design GPT6.1Sol/medium RESOLVED_PASS after preoutcomeclarifications",
+  "feature_verification": "PASS;1618states/83cycles;zero newlabels",
+  "stage_I": {
+    "max_configurations": 32,
+    "outcome_pass_budget": 1,
+    "started": 1,
+    "completed": 1,
+    "verification_budget": 1,
+    "verification_used": 1,
+    "substantial_correction_max": 1,
+    "start_utc": "2026-10-24T16:45:57.012983+00:00",
+    "label_script_sha256": "b09144b4be384a89c94390ba1efea377ecd37e87bc14ba8ffb4450156c797fc8",
+    "completed_utc": "2026-10-24T16:47:01.281805+00:00",
+    "configurations_evaluated": 32,
+    "result_sha256": "223a5605abb7db84ccdb3b124da0ec51a41aef49ed08b34b88ecb56684472d45",
+    "verification_start_utc": "2026-10-24T16:50:38.253504+00:00",
+    "verification_status": "PASS",
+    "verification_result_sha256": "3be53f9dc33164c9b7f94408957a704c715e1f710c7dab0235c6a79e8738edb2"
+  },
+  "stage_II": {
+    "max_positive_families": 2,
+    "new_horizons_hours": [
+      8,
+      12
+    ],
+    "max_extra_configurations": 4,
+    "conditional_on_frozen_positive_gates": true,
+    "started": 1,
+    "completed": 1,
+    "verification_budget": 1,
+    "start_utc": "2026-10-24T16:52:31.162550+00:00",
+    "selected_rules": [
+      "B2",
+      "F0"
+    ],
+    "selection_formula": "Prefer one per lane: highest min-main paired mean capital B2/4; highest min-main CVaR_N-H times episodes among different families protection F0/4.",
+    "selection_facts": {
+      "B2_capital_min_paired_bp": 6.39289131186343,
+      "F0_protection_score": 2709.6749556831323
+    },
+    "script_sha256": "2f421f7fa01ddf42581842df102d1da78066fe8ee9a3d0a7790bf97333614537",
+    "frozen_stageI_library_sha256": "b09144b4be384a89c94390ba1efea377ecd37e87bc14ba8ffb4450156c797fc8",
+    "completed_utc": "2026-10-24T16:52:43.664325+00:00",
+    "configurations_evaluated": 4,
+    "result_sha256": "a897131b77d0d60251269d88e65c89f9ca7f6b6440fc52be24a8eb55a88df2e7",
+    "verification_used": 1,
+    "verification_start_utc": "2026-10-24T16:53:46.474345+00:00",
+    "verification_status": "PASS",
+    "verification_result_sha256": "da6eb84711622f69143d3f890d794a805817687d21de9f9e17c559446019e921"
+  },
+  "statistical_universe": {
+    "potential_configurations": 64,
+    "lanes": 2,
+    "holm_tests": 128,
+    "bootstrap_B": 8192,
+    "seed": 20261024,
+    "nominal_alpha": 0.05,
+    "unused_or_raw_fail_p": 1,
+    "already_viewed_history_not_OOS": true
+  },
+  "new_physical_native_full_short_training_simulator_attempts": 0,
+  "product_changes": 0,
+  "old_engine_budgets": "CLOSED no carryover",
+  "writer": "broad_data_clock solewriter discovery-*/phase-ledger afterGO; rootsharedstate/Project/docs",
+  "candidate_outcomes": "AUTHORIZED_AFTER_VERIFIED_FREEZE",
+  "completed_utc": "2026-10-24T16:56:27.845629+00:00",
+  "total_configurations_evaluated": 36,
+  "final_summary_sha256": "8b41191b600f6c25645c20e694fc547323a9fa7015a268a2b3cac4e6ee31268b",
+  "financial_corrections": 0,
+  "new_engine_runs": 0,
+  "next_native_admission": "NONE; requires separate concrete protocol/review/budget",
+  "next_config_evaluations_authorized": 0
+}

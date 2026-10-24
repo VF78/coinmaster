@@ -1,0 +1,38 @@
+{
+  "status": "PASS_FEATURE_BASELINE_ONLY_NO_NEW_OUTCOMES",
+  "checks": {
+    "final_t_clock_sizes_J_masks": 1618,
+    "causal_daily_windows": 1618,
+    "independent_D1beta_HALFVOL": 1618,
+    "actual_episode_membership": 1618
+  },
+  "all_actual_episodes": 83,
+  "episodes_with_H4": 81,
+  "no_action_coverage": [
+    {
+      "cycle": 23,
+      "first_fill_ns": 1738540860000000000,
+      "actual_flat_ns": 1738546560000000000,
+      "next_H4close_ns": 1738555200000000000,
+      "reason": "NO_HELD_H4_DECISION"
+    },
+    {
+      "cycle": 26,
+      "first_fill_ns": 1741046460000000000,
+      "actual_flat_ns": 1741052520000000000,
+      "next_H4close_ns": 1741060800000000000,
+      "reason": "NO_HELD_H4_DECISION"
+    }
+  ],
+  "terminal_reconciliation": "EXACT Decimal, zero native residual",
+  "funding_source": "READONLY immutable SQLite == raw-native signed cash delta multiset",
+  "J_clock_size_status": "FINAL_T_CLOCK_VERIFIED; comparator cap deferred to outcomes; waiting root SHA freeze",
+  "initial_preexecution_failure": "discovery-build-initial-syntax-failed.py preserved; one extra closing parenthesis fixed before data build",
+  "verification_tie_assertion_correction": "Initial verifier wrongly required t<flat for all raw states. Kept t==flat raw states must be common_valid=False and fills_t_or_e=True; verified. No feature or money correction. Initial verifier preserved.",
+  "build_script_sha256": "2f4000a4ad7ed9a7b9e04e315302ecff71a73d0129af7d2438dbcd308b9f7393",
+  "feature_sha256": "b9bef31195417c49d9446740f7a71f2cd4c189cc9b4d68668ee157f94123d1b8",
+  "verifier_sha256": "8b5392d99c3f18d569d3c3533bd92d5f6613d5233bad3cbec207fcac5954d8cf",
+  "candidate_outcomes_read": 0,
+  "candidate_labels_computed": 0,
+  "engine_runs": 0
+}

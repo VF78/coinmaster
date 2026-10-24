@@ -1,0 +1,36 @@
+{
+  "schema": "cm.paired_prefix.market_signal.v1",
+  "role": "immutable research market data only; native runtime owner selects actual parents/side/quantity",
+  "universe": "all completed UTC H4 bars from normalized execution-minute history, no archived parent/position/equity/outcome filtering",
+  "first_market_open_utc": "2024-09-01T00:00:00Z",
+  "last_completed_close_utc": "2026-09-01T00:00:00Z",
+  "row_order": "decision_ns increasing unique; runner filters decision_ns < actual prefix_end",
+  "timestamp_units": "int64 UTC nanoseconds",
+  "decimal_fields": "UTF-8 decimal strings; unavailable empty with corresponding validity0, never zero-fill missing features",
+  "bool_fields": "0/1",
+  "columns": [
+    "decision_ns", "available_ns", "not_before_ns",
+    "btc_close", "sol_close", "btc_h4_open", "btc_previous_h4_close",
+    "beta_d1_30", "rho_d1_30", "sigma_btc_d1_30", "sigma_sol_d1_30", "risk_coefficients_valid",
+    "d1_last_return_end_ns", "d1_first_return_end_ns",
+    "sol_atr_h4_14", "sol_atr_valid", "atr_last_h4_end_ns",
+    "b2_pattern_valid", "b2_long", "b2_short", "b2_long_k", "b2_short_k",
+    "f0_pattern_valid", "f0_long", "f0_short", "f0_open_o",
+    "btc_funding_last_ns", "btc_funding_previous_ns", "sol_funding_last_ns", "sol_funding_previous_ns",
+    "funding_differential_per_hour"
+  ],
+  "causality": {
+    "available_ns": "decision_ns=t after completed-bar data only; actual native callback ordering determined by runtime owner",
+    "not_before_ns": "t+60000000000; no same-close entry claim",
+    "D1": "30 paired SIMPLE returns, ending latest paired dailyclose c<=t-24h; sample covariance/variance ddof1; finite beta/rho/sigmas positive for risk_coefficients_valid",
+    "ATR": "SOL H4 true ranges; firstTR=high-low; subsequent max(high-low,abs(high-prevclose),abs(low-prevclose)); seed first14TR arithmetic mean thenWilder1/14; no prebenchmarkH4 fabricated fromdaily",
+    "B2": "At t-4h favorable close beyond its preceding6H4range; current close back inside SAME boundary and adverse currentH4return. Long uses preceding-high K, short preceding-low K. Raw pattern flags independent of ATR availability; do not suppress unhedgeable risk by invalid ATR.",
+    "F0": "A_side using BTCclose(t)/BTCclose(t-4h)-1; s*(gS-beta*gB)>0, g=laststrictlypriorpublishedrate/hoursbetweenlasttwo; last timestamps<t; requires valid coefficient/funding history. Record actual current H4 rawopen as O, not substitute previousclose for it.",
+    "invalid_features": "retain validity flags separately; runtime must handle unknown/unhedgeable according approved failclosed contract, not classify absent data safe",
+    "no_execution_fields": "No Qref, BTCparentIDs, archived calendars, capital, futureflat, futurefunding or candidateoutcomes allowed"
+  },
+  "required_outputs": ["implementation-signal-feed.csv", "implementation-signal-feed-metadata.json", "implementation-signal-feed-build.py", "implementation-signal-feed-verification.json"],
+  "verification": "allH4 rows/order/price aggregates/source hashes; direct sample or independent full D1/beta/ATR/B2/F0 clock checks; compare overlapping discovery feature flags without importing its native baseline/parents; prefix-invariance on truncated inputs; future rows not features",
+  "ownership": "broad_data_clock writes research data/builder only; native_paired_owner alone writes VPS runtime/dataclass/consumer/domain/engine/journal",
+  "limits": "No economic replay/engine/training/strategy simulation; no source mutation; native API and event scheduling remain runtime-owner launch proof"
+}
