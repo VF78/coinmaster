@@ -168,6 +168,8 @@ class MarketRedesignResearch:
             self._split_child_submit=False
 
     def _md_reconcile(self,ts):
+        if self._pair_btc_tp_paused():
+            return
         if not self._md_enabled():
             return
         ep=self._domain.episode

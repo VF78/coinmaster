@@ -5,6 +5,7 @@ or funding.  It is deliberately not declared a research baseline until a
 finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
+from coinmaster.strategy.paired_prefix import PairedPrefixResearch
 from coinmaster.strategy.market_redesign import MarketRedesignResearch, PHI, legacy_net_lots
 from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
 
@@ -64,6 +65,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
+    research_paired_prefix: str | None = None
+    research_paired_signal_rows: tuple[dict, ...] = ()
     research_btc_real_u: bool = False
     research_btc_q_mode: str | None = None
     research_sol_off: bool = False
@@ -189,12 +192,13 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
         self._split_cover_init()
         self._md_init()
+        self._pair_init()
         self._risk_first_init()
         self._conditional_init()
         self._insurance_init()
@@ -1364,6 +1368,7 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        self._pair_quote(tick)
         if self.config.research_h1_b1 == "h1" and tick.instrument_id == self.config.sol_id:
             self._h1_sol_quote_sequence += 1
         if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
@@ -1807,6 +1812,9 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
         self._domain.on_parent_terminal(intent.id)
 
     def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None, entry_override_qty: Decimal | None = None) -> None:
+        if intent.action == "BTC_ENTRY" and self._pair_no_increase():
+            self._deny_local_entry(intent, "PAIRED_MONOTONE_PARENT_CEILING", ts_now)
+            return
         if self._carry_busy() and not self._carry_physical and intent.action != "CLOSE_ALL":
             self._domain.on_parent_terminal(intent.id)
             return
@@ -2387,6 +2395,8 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
             self._rf_fill_epoch+=1
             self._rf_last_fill_ns=event.ts_event
         self._record_fill_audit(event)
+        if self._pair_fill(event):
+            return
         self._carry_native_fill(event)
         if str(event.client_order_id) in self._v3_orders:
             self._v3_reduction_fill(event)
@@ -2592,6 +2602,8 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
     def on_order_canceled(self, event: OrderCanceled) -> None:
         self._terminal_submission(str(event.client_order_id))
         client_order_id = str(event.client_order_id)
+        if self._pair_terminal(client_order_id, event.ts_event):
+            return
         if client_order_id in self._v3_orders:
             self._v3_reduction_terminal(client_order_id, event.ts_event)
             return
@@ -2656,6 +2668,7 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
             context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
         self._md_accept(event)
+        self._pair_accept(event)
         if self.config.research_sol_risk_first=="split-atr":
             owned=self._rf_sol_orders.get(str(event.client_order_id))
             if owned and owned[0]["stopped"]:
@@ -2675,6 +2688,7 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
         self._terminal_without_fill(str(event.client_order_id),event.ts_event)
 
     def on_position_event(self, event) -> None:
+        self._pair_position_event(event.ts_event)
         self._hedge_refresh(event.ts_event)
         self._insurance_position(event)
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
@@ -2691,7 +2705,7 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
 
     def _reconcile_group_flat(self) -> None:
         """Clear a completed close group after the native cache is actually flat."""
-        if not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
+        if self._pair_work() or not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
             return
         if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and (self._queued_intents or self.cache.orders_inflight())):
             return  # An opening order awaiting terminal native receipt may still fill.
@@ -2762,6 +2776,8 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
 
     def _terminal_without_fill(self, client_order_id: str, ts_event: int | None = None) -> None:
         terminal_ns=self.clock.timestamp_ns() if ts_event is None else ts_event
+        if self._pair_terminal(client_order_id, terminal_ns, rejected=True):
+            return
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
         self._md_reject(failed_intent,terminal_ns)
@@ -3004,6 +3020,8 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
         return self.deposit_projection()
 
     def _entries_enabled(self, *, ignore_research_protection: bool = False) -> bool:
+        if self._pair_no_increase():
+            return False
         if self._research_protect_latch is not None and not ignore_research_protection:
             return False
         if self.config.research_v0_selective_lifecycle_repairs and self.terminal_lifecycle.get("lockout"):
