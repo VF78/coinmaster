@@ -40,8 +40,8 @@ def test_absolute_caps_actual_partial_zero_unknown_inactive_and_no_recursion():
         assert partial.bmax == expected
 
 
-def selected(s, ns=10, a="2", side=1):
-    row={"t":ns,"valid":True,"B2_1":side==1,"B2_-1":side==-1,
+def selected(s, ns=10, a="2", side=1, valid=True):
+    row={"t":ns,"valid":valid,"B2_1":side==1,"B2_-1":side==-1,
          "F0_1":True,"F0_-1":True,"K_1":"110","K_-1":"90","O":"110",
          "ATR_SOL":"2","PB":"100","PS":"100","a":a}
     s._pair_start(row,ns)
@@ -62,7 +62,7 @@ class Probe(NativeProbe):
         return super().on_order_canceled(event)
 
 
-def native_setup(side=1, a="2", probe=Probe, modules=()):
+def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True):
     config=cfg(True,research_btc_real_u=True,research_btc_q_mode="CLEAN_Q", research_sol_off=True,
         research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_btc_split_discount=D(".005"))
     config=config.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)))
@@ -82,7 +82,7 @@ def native_setup(side=1, a="2", probe=Probe, modules=()):
     intent=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=100)
     s._submit_intent(intent,100,100,.01,0,ts_now=2)
     run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(SOL_PERP,5)])
-    selected(s,a=a,side=side)
+    selected(s,a=a,side=side,valid=valid)
     return s,e,ep
 
 
@@ -343,5 +343,19 @@ def test_native_rejected_or_missing_protection_ack_fails_closed_without_fake_rec
         assert reason in s._pair_failures,json.dumps(s._pair_report())
         assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0
         assert s._pair is None and not s._pair_work()
+        assert not e.cache.orders_open() and not e.cache.orders_inflight()
+    finally:e.end();e.dispose()
+
+
+def test_native_raw_risk_unavailable_feature_is_unhedgeable_no_go_not_valid_activation():
+    s,e,ep=native_setup(a=".2",valid=False)
+    try:
+        for ns in (11,12,13):
+            run_ticks(e,[tick(BTC_PERP,ns),tick(SOL_PERP,ns)])
+        assert "UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE" in s._pair_failures
+        assert ep.id in s._pair_used and s._pair is None
+        assert not any(r["event"]=="ACTIVATION_SELECTED" for r in s.paired_prefix_audit)
+        assert not any(o["kind"]=="ENTRY" for o in s._pair_orders.values())
+        assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0
         assert not e.cache.orders_open() and not e.cache.orders_inflight()
     finally:e.end();e.dispose()
