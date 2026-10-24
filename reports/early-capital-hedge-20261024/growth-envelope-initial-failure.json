@@ -1,0 +1,16 @@
+{
+  "stage": "pre-product chronology check",
+  "failure": "strict previous_exit < next_decision assertion",
+  "cause": "7 equal timestamps, next first fills +60s",
+  "affected_next_cycles": [
+    7,
+    16,
+    23,
+    34,
+    46,
+    56,
+    74
+  ],
+  "correction": "allow previous_exit <= decision; retain previous_exit < first_entry and cash reconciliation; no callback ordering inferred",
+  "initial_products_computed": 0
+}

@@ -1,0 +1,91 @@
+{
+  "task": "CM-EARLY-HEDGE-20261024",
+  "frozen_utc": "2026-10-24T15:30:12.832971+00:00",
+  "status": "COMPLETE_STOP_CAPITAL_STOP_TRIM_PROTECTION_UNKNOWN",
+  "hypothesis": "H_RESIDUAL_CONTINUATION",
+  "definition_authority": "PROTOCOL_PREDECLARED.md supersedes alternative proposal in source memo",
+  "prereview": {
+    "reviewer": "hedge_mechanism_novelty",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "result": "PASS",
+    "outcomes_read": false
+  },
+  "sha256": {
+    "PROTOCOL_PREDECLARED.md": "878eeeec8383996a0081703e253d1a1b2c994786a8c1715cc88473668d3a1d06",
+    "feature-contract-features.csv": "52ba57f3bf757a7932a935066efcc7c7911188e4030a6c5799bd151ca0c7b034",
+    "feature-contract-availability.json": "533605ad428651e963c31702a9c8e597e394e4664fc8e8bc327c7045cfd20c84",
+    "feature-contract-check.py": "ce80b4dff5afe1c1b135a6de5cee8f939d4d88a6c0ca4bce368e9e7baa5ea982",
+    "mechanism-novelty-admission.md": "93e6d3e9a10817ba5fc994779d7a5051c3ee4000f898788ee90f01beec8d2c11"
+  },
+  "logical_outcome_screen_budget": 1,
+  "logical_outcome_screens_started": 1,
+  "logical_outcome_screens_completed": 1,
+  "arithmetic_verification_budget": 1,
+  "substantial_correction_max": 1,
+  "new_physical_native_full_short_training_simulator_attempts": 0,
+  "old_budgets": "CLOSED; no carryover",
+  "outcomes": "AUTHORIZED_NEW_LOCAL_LABELS_ONLY",
+  "owner": "hedge_feature_contract only after delegated execution; root owns sharedstate/Project",
+  "outcome_pass_started_utc": "2026-10-24T15:31:03.582271+00:00",
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R3.json": "5ccb4c67e47dddeed8bd71769381cd20f1605b39ca6757887b6fb5f4d646d9e4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-sol-R3-features.csv": "598591a2543088181ec003baf0a2d1e696e04c792c3a76c568e44d93441edbe7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-closed-bars.csv": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/feature-contract-check.py": "ce80b4dff5afe1c1b135a6de5cee8f939d4d88a6c0ca4bce368e9e7baa5ea982",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-precheck.py": "4f05c65b3a8cfa1eda2ad18452c2310e8b17b2b398d932ff018b3539382b9c99",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-sol-R3-calculate.py": "d1ca449378e8804d8b597f1bb44013fa6abeee4f44c0600bfe62d69f9abdaf23",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "038e6fb63c5f38e6a7b22d6c2529f9e089a96c76ed575542f5bd5af3b06dccd6",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "3c85e4d8b8e017394fe81d80c320febb1cdefb113a22f372b42b8e968835fa2c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/minute-native-settled-receipts.csv.gz": "58f965242de9e0d25e35262a4abcc47e95bfb17c93cc83e9910f3d9b816582d1",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/feature-contract-features.csv": "52ba57f3bf757a7932a935066efcc7c7911188e4030a6c5799bd151ca0c7b034"
+  },
+  "calculation_script_sha256": "6046c2af710ebe82a76a46aaf6be26fefe45ec9f0eabb46d4195b0d7cf9ccb05",
+  "initial_failure": {
+    "stage": "before_resultcashflow_computation",
+    "error": "assert len(equities)==len(needed) and qcheck==len(actions)",
+    "initial_script_sha256": "0bdafdc8af4ca71c1a7d97f5fe76fc62dc746d819e76986902ef44d7d15bac36",
+    "issue": "source-quote indexing is invalid for causal wall-clock native settled reference; source inspection needed",
+    "result_outputs_written": false
+  },
+  "observer_source_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/minute_risk.py": "7db64dbb08c5eb1eddb10524a31f4f4b413be750cd17047a9e1936864e2717ef"
+  },
+  "clock_decision": "Root: frozen protection gate remains UNKNOWN_DATA_CLOCK_TERMINAL_ENDPOINT; complete only cash/funding necessary gates for all62 episodes, no constructed equity/minimum",
+  "substantial_corrections_used": 1,
+  "clock_decision_utc": "2026-10-24T15:37:02.570010+00:00",
+  "outcome_pass_completed_utc": "2026-10-24T15:37:04.089936+00:00",
+  "result": "STOP_WITH_PROTECTION_UNKNOWN",
+  "output_sha256": {
+    "reports/early-capital-hedge-20261024/screen-verification.json": "22dba8a1780891221bc5813034cc0b226427145d4ccbb18fe32d21173d7caaaf",
+    "reports/early-capital-hedge-20261024/screen-actions.csv": "8138555d091e4dabaf165cbdf15be769e6a1ea54ea05e0d71fd477b2e8b3f905",
+    "reports/early-capital-hedge-20261024/screen-side-signs.csv": "73568a00b6e71310155e7439054b0284e7efd636afcafda39c297acd4fcc9459",
+    "reports/early-capital-hedge-20261024/screen-calculate-initial-clock-failed.py": "0bdafdc8af4ca71c1a7d97f5fe76fc62dc746d819e76986902ef44d7d15bac36",
+    "reports/early-capital-hedge-20261024/screen-start.py": "180cbf28b385332c91f7edc163b44587f3ea3611674faa0c65da396843b260ff",
+    "reports/early-capital-hedge-20261024/screen-cohorts.csv": "290e23f0cf903686f73258defc3d51e5144e93ade2d1966f2b1284ae2ef3e531",
+    "reports/early-capital-hedge-20261024/screen-report.md": "7275963a8515c8dd2939d780c1980034b723841bd54cb00e68fd9403fac8a9a5",
+    "reports/early-capital-hedge-20261024/screen-calculate.py": "6046c2af710ebe82a76a46aaf6be26fefe45ec9f0eabb46d4195b0d7cf9ccb05",
+    "reports/early-capital-hedge-20261024/screen-finalize.py": "fe0e44e706a0656990578065036149db0e9e1846c8da7ad71e56c67faf36f34f",
+    "reports/early-capital-hedge-20261024/screen-entry-attempts.csv": "ff0abe5ddb239d23165a1cbfe749aa41edd61df83e44b6db94d2f70fc5e79404",
+    "reports/early-capital-hedge-20261024/screen-cashflows.csv": "498f25eeec30662d556686191b1211c22cad586dddd4f8583b5755b068e06679",
+    "reports/early-capital-hedge-20261024/screen-result.json": "15caeb0c15aa37144919dff5e95f407897c45897c4c6134ca1405a8078ec8813",
+    "reports/early-capital-hedge-20261024/screen-verify.py": "1d40eb198dfc9dbe1b1d9c32ec07833e03ddbdef5b5dc88a2862f1a0ec0c39dd"
+  },
+  "arithmetic_verifications_started": 1,
+  "verification_script_sha256": "1d40eb198dfc9dbe1b1d9c32ec07833e03ddbdef5b5dc88a2862f1a0ec0c39dd",
+  "arithmetic_verifications_completed": 1,
+  "metadata_only_correction": {
+    "issue": "defaultdict evmap[t] inserted empty minute keys, inflating reported tie counts in later scenarios; cashflow and funding calculations unaffected",
+    "previous_script_sha256": "225d8953d94f86362cf72b67171dd69d857533e8e53ebfb49a27f6c00bbe6c0e",
+    "episodes_with_reported_ties_before": 60,
+    "episodes_with_actual_reduction_funding_ties_after": 5,
+    "all_existing_cash_fee_slip_funding_columns_unchanged": true,
+    "no_additional_outcome_pass": true
+  }
+}

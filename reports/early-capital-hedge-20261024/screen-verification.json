@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "method": "Independent Decimal direct cashflows and direct funding integration; actualnative avoidedexit/fee and equal-episode means",
+  "checks": {
+    "cashflow_quantity_events": 636,
+    "independent_funding_events": 1344,
+    "independent_endpoint_cash_fee_slip_scenarios": 248,
+    "actual_native_exit_price_and_avoided_fee": 196,
+    "avoided_native_exit_not_restored": 196,
+    "cohort_equal_episode_means": 36,
+    "direct_actual_reduction_funding_tie_counts": 62
+  },
+  "actions_scenarios": 248,
+  "distinct_episodes": 62,
+  "sourcepins_unchanged": true,
+  "verification_script_sha256": "1d40eb198dfc9dbe1b1d9c32ec07833e03ddbdef5b5dc88a2862f1a0ec0c39dd",
+  "protection_clock_qualification": "See screen-result.json; arithmetic PASS does not establish missing coherent protection samples",
+  "engine_runs": 0,
+  "nonfinancial_metadata_corrected_cash_columns_unchanged": true
+}

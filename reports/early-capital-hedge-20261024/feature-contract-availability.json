@@ -1,0 +1,155 @@
+{
+  "scope": "FEATURE_AVAILABILITY_ONLY_NO_OUTCOMES_READ",
+  "states": 1529,
+  "cycles": 77,
+  "sign_counts": [
+    {
+      "period": "first_year",
+      "residual_sign": "simple_nonpositive",
+      "H4_sign": "H4_adverse",
+      "n": 183
+    },
+    {
+      "period": "first_year",
+      "residual_sign": "simple_nonpositive",
+      "H4_sign": "H4_nonadverse",
+      "n": 215
+    },
+    {
+      "period": "first_year",
+      "residual_sign": "simple_positive",
+      "H4_sign": "H4_adverse",
+      "n": 147
+    },
+    {
+      "period": "first_year",
+      "residual_sign": "simple_positive",
+      "H4_sign": "H4_nonadverse",
+      "n": 153
+    },
+    {
+      "period": "second_year",
+      "residual_sign": "simple_nonpositive",
+      "H4_sign": "H4_adverse",
+      "n": 208
+    },
+    {
+      "period": "second_year",
+      "residual_sign": "simple_nonpositive",
+      "H4_sign": "H4_nonadverse",
+      "n": 203
+    },
+    {
+      "period": "second_year",
+      "residual_sign": "simple_positive",
+      "H4_sign": "H4_adverse",
+      "n": 220
+    },
+    {
+      "period": "second_year",
+      "residual_sign": "simple_positive",
+      "H4_sign": "H4_nonadverse",
+      "n": 200
+    }
+  ],
+  "simple_log_sign_disagreements": 2,
+  "coverage": {
+    "BTC_execution-1m": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "resolved_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "schema": "open_time_ms: int64\nopen: string\nhigh: string\nlow: string\nclose: string\nvolume: string\nturnover: string",
+      "rows": 1051200,
+      "first_ms": 1725148800000,
+      "last_ms": 1788220740000,
+      "max_gap_ms": 60000,
+      "gap_counts": {
+        "60000": 1051199
+      },
+      "all_1529_next_minute_and_prior_mark_rows_available": true
+    },
+    "BTC_mark-1m": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "resolved_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "schema": "open_time_ms: int64\nopen: string\nhigh: string\nlow: string\nclose: string",
+      "rows": 1051200,
+      "first_ms": 1725148800000,
+      "last_ms": 1788220740000,
+      "max_gap_ms": 60000,
+      "gap_counts": {
+        "60000": 1051199
+      },
+      "all_1529_next_minute_and_prior_mark_rows_available": true
+    },
+    "BTC_funding": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-funding.parquet",
+      "resolved_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-funding.parquet",
+      "schema": "funding_time_ms: int64\nfunding_rate: string",
+      "rows": 4380,
+      "first_ms": 1662076800000,
+      "last_ms": 1788192000000,
+      "max_gap_ms": 28800000,
+      "gap_counts": {
+        "28800000": 4379
+      },
+      "all_1529_strictly_lagged_funding_available": true,
+      "decision_funding_boundary_ties": 743
+    },
+    "SOL_execution-1m": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "resolved_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "schema": "open_time_ms: int64\nopen: string\nhigh: string\nlow: string\nclose: string\nvolume: string\nturnover: string",
+      "rows": 1051200,
+      "first_ms": 1725148800000,
+      "last_ms": 1788220740000,
+      "max_gap_ms": 60000,
+      "gap_counts": {
+        "60000": 1051199
+      },
+      "all_1529_next_minute_and_prior_mark_rows_available": true
+    },
+    "SOL_mark-1m": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-mark-1m.parquet",
+      "resolved_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-mark-1m.parquet",
+      "schema": "open_time_ms: int64\nopen: string\nhigh: string\nlow: string\nclose: string",
+      "rows": 1051200,
+      "first_ms": 1725148800000,
+      "last_ms": 1788220740000,
+      "max_gap_ms": 60000,
+      "gap_counts": {
+        "60000": 1051199
+      },
+      "all_1529_next_minute_and_prior_mark_rows_available": true
+    },
+    "SOL_funding": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-funding.parquet",
+      "resolved_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-funding.parquet",
+      "schema": "funding_time_ms: int64\nfunding_rate: string",
+      "rows": 4740,
+      "first_ms": 1662076800000,
+      "last_ms": 1788192000000,
+      "max_gap_ms": 28800000,
+      "gap_counts": {
+        "7200000": 480,
+        "28800000": 4259
+      },
+      "all_1529_strictly_lagged_funding_available": true,
+      "decision_funding_boundary_ties": 743
+    }
+  },
+  "source_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-sol-R3-features.csv": "598591a2543088181ec003baf0a2d1e696e04c792c3a76c568e44d93441edbe7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-closed-bars.csv": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/feature-contract-check.py": "ce80b4dff5afe1c1b135a6de5cee8f939d4d88a6c0ca4bce368e9e7baa5ea982",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-precheck.py": "4f05c65b3a8cfa1eda2ad18452c2310e8b17b2b398d932ff018b3539382b9c99",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-sol-R3-calculate.py": "d1ca449378e8804d8b597f1bb44013fa6abeee4f44c0600bfe62d69f9abdaf23",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d"
+  },
+  "output_sha256": "52ba57f3bf757a7932a935066efcc7c7911188e4030a6c5799bd151ca0c7b034",
+  "engine_runs": 0,
+  "outcome_files_read": 0
+}

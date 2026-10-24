@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "zero_product_decimal_minus_exact_residual": "-1.652113500704178387236E-72",
+  "monotonicity": "strictly decreasing on[0,1]: each negative r has positive factor1+alpha*r and negative derivative; positive factors constant;29negative terms",
+  "root_checks": {
+    "70": {
+      "exact_bracket_signs": "PASS",
+      "exact_mid_money_residual": "-5.531567861547638352047347955375931160142415341658541486791155863755793254816136865794374237880307894E-64",
+      "bracket_width": "7.244543263E-71"
+    },
+    "90": {
+      "exact_bracket_signs": "PASS",
+      "exact_mid_money_residual": "-6.928221751479766414550216088861230225340885258627615284669949556830128959084795270284740503033806211E-64",
+      "bracket_width": "7.2445432635E-71"
+    }
+  },
+  "script_sha256": {
+    "growth-requirements-calculate.py": "a9ebbd9e4fa20810d3da4ad2ad2e070237603d186b9c26ff955e2d400939bd62",
+    "growth-requirements-verify.py": "3a93c627057ea2b16c8f6eb90de38d05f04a19227e6f16266e1519ec0feaa508"
+  }
+}

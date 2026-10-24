@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "method": "exact Fraction products from independently loaded parent ex-funding net + signed funding; Decimal100 only converts for comparison",
+  "scenario_checks": {
+    "observed": {
+      "exact_rational_total_difference": "3E-74",
+      "exact_rational_boundary_DD_difference": "3.02529466959931761885E-78"
+    },
+    "uniformhalf": {
+      "exact_rational_total_difference": "-3.79771862299666785272E-75",
+      "exact_rational_boundary_DD_difference": "6.5660859106137221148E-79"
+    },
+    "oraclelosshalving": {
+      "exact_rational_total_difference": "2.34572309265512814220E-73",
+      "exact_rational_boundary_DD_difference": "-1.08770943463530742257E-78"
+    }
+  },
+  "cohort_checks": "PASS",
+  "code_sha256": {
+    "growth-envelope-calculate.py": "6843038c1a9d957e0cb0a43b446e1d0668aaf9aefd5017d1e07557ed181cd427",
+    "growth-envelope-verify.py": "9e8e0591e97f898b5d73276ed41212339f28990cbeec0efeeacb8eddf7dfc278"
+  }
+}
