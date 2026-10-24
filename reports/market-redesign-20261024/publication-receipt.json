@@ -1,0 +1,49 @@
+{
+  "status": "PUBLISHED_BOUNDED_STUDY_NO_GO",
+  "timestamp_utc": "2026-10-24T11:22:21.377102+00:00",
+  "timezone": "Europe/Moscow",
+  "results_report_commit": "6f94bf7d9b62eacc089d83c0c277f82d946ea7fb",
+  "results_remote_ref_verified": "6f94bf7d9b62eacc089d83c0c277f82d946ea7fb",
+  "manager_branch": "codex/btc-pattern-pilot-m2-20261021",
+  "source_commit_remote_verified": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "source_branch": "codex/market-redesign-btc-20261024",
+  "project_issue": {
+    "closedAt": "2026-10-24T11:14:06Z",
+    "number": 131,
+    "state": "CLOSED",
+    "title": "[Research] Market BTC real 3TP / CLEAN_Q and SOL screen — NO_GO (3/3 native)",
+    "url": "https://github.com/VF78/coinmaster/issues/131"
+  },
+  "project_item": {
+    "id": "PVTI_lAHOBIUvJs4BPJNjzhDLrgA",
+    "number": 131,
+    "status": "Done",
+    "title": "[Research] Market BTC real 3TP / CLEAN_Q and SOL screen — NO_GO (3/3 native)",
+    "url": "https://github.com/VF78/coinmaster/issues/131"
+  },
+  "economic_goal": "NOT_MET",
+  "winner": "NONE_R3_CLEAN_NONPASSING",
+  "budgets": "3of3full_8of8short_CLOSED_0active_0reserved",
+  "agents": "ALL_COMPLETED",
+  "mac_startup_mirrors_verified_sha256": {
+    "AGENTS.md": "db67deb1ca74c96f389940422083afd3dff718aeac836b146da3278ddefd9134",
+    "SOUL.md": "4e94dd96124b400fe777ac409790f17f7f3a09f112fc2f6f8f9b372a87b19bdc",
+    "USER.md": "4e1650686df87c35ff06885b98be6b4fa77f9e4929662267fb1d228ed4384522",
+    ".ops/PROJECT_TRUTH.md": "02a57d65c0155c16fefd9e99a0d010ca35d7ac5e2e0c2b63a393f16bb2a33c92",
+    ".ops/ACTIVE_TASK.md": "158174e3226984b7d371e1d3deaff29a1f7345ab97b835f6b3be234beb35f173",
+    ".ops/RESEARCH_INDEX.md": "c0648eb75f1442ef9ac3ef67af7fcbeafe7a3ec19fa7dad648d7bac5d9aa619e",
+    "NEW_MANAGER_PROMPT.md": "178a6cacf7c59f99434ef90d9411c7ebda79ca713d53b4b5afccff1e4c6ba8c8"
+  },
+  "secondary_VPS_guide_mirror": {
+    "status": "UNVERIFIED_NOT_SYNCED_BY_THIS_TASK",
+    "reason": "Repeated bounded SSH banner-exchange timeouts; latest read-only attempt20seconds failed before authentication/commands",
+    "writes_performed": false,
+    "authority": "Macmanagercheckout_and_published_managerbranch",
+    "not_a_runtime_or_account_readiness_claim": true
+  },
+  "pilot_production_deployment_services_keys_realorders_transfers": "UNCHANGED_BY_TASK",
+  "source_CI_actual_check_runs": 0,
+  "no_green_CI_claim": true,
+  "preservation": "Dirtyprimaryusercode, failedreview/initialshortreceipts andallunique rawnative journals/traces preserved",
+  "receipt_scope": "This receipt records verified results/source refs; its own publication commit is later and verified by gitls-remote externally"
+}

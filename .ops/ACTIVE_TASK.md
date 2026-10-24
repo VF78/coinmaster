@@ -24,3 +24,4 @@ Executors: all completed; no active agent/native process. Preserve all originals
 Primary VPS dirty historical user code preserved (180paths at taskstart); Mac root pre-existing dirty code preserved; no reset/clean.
 Permissions: no pilot/production/services/deployment/keys/realorders/transfers; no /opt edits. No runtime/account readiness claim.
 Realism blockers: synthetic M1L1/depth1000; actualL2/queue/capacity/intraminuteDD/crashresumeUNPROVEN; historicalrisk-tier applicabilityUNKNOWN.
+VPS startup-guide mirror: sync/currenthashUNKNOWN after bounded SSH banner timeouts; no mirror writes. AuthoritativeMac+GitHub report6f94bf7 current.
