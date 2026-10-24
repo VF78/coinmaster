@@ -688,6 +688,9 @@ def run_native_diagnostic(
     research_btc_drawdown_sizing: bool = False,
     research_v3_risk: str | None = None,
     research_h1_b1: str | None = None,
+    research_paired_policy: bool = False,
+    research_paired_prefix: str | None = None,
+    research_paired_signal_rows: tuple[dict, ...] = (),
     research_btc_real_u: bool = False,
     research_btc_q_mode: str | None = None,
     research_sol_off: bool = False,
@@ -746,11 +749,19 @@ def run_native_diagnostic(
                     research_btc_split_planref_v1, research_btc_split_tp_ioc,
                     research_btc_direction_sizing, observe_minute_risk)):
             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
+    if research_paired_prefix and not research_paired_policy:
+        raise ValueError("PAIRED_REQUIRES_STOCK_SHARED_LIQUIDITY_POLICY")
+    if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == "CLEAN_Q" and research_sol_off and observe_minute_risk and include_funding):
+        raise ValueError("PAIRED_POLICY_REQUIRES_EXACT_R3_FUNDED_OBSERVER")
+    if research_paired_prefix and not research_paired_signal_rows:
+        raise ValueError("PAIRED_REQUIRES_FROZEN_CAUSAL_ALL_H4_FEED")
     candidate = candidate or Candidate()
     if research_sol_off or research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
     policy = execution_policy or ExecutionPolicy()
     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
+    if research_paired_policy and Decimal(policy.symmetric_adverse_spread_bps) != 0:
+        raise ValueError("PAIRED_M1_CLOSE_REPRESENTATION_REQUIRES_FROZEN_ZERO_SPREAD")
     if fee_policy.venue != "bybit":
         raise ValueError("HYPERLIQUID_HISTORICAL_EXECUTION_BLOCKED")
     if trading_end_ms <= trading_start_ms or trading_start_ms - warmup_start_ms < 730 * DAY_MS:
@@ -821,7 +832,7 @@ def run_native_diagnostic(
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
         run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first=="alpha-corridor-v1"),
         **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), liquidity_consumption=research_paired_policy, bar_execution=not bool(research_paired_policy or research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
@@ -860,6 +871,7 @@ def run_native_diagnostic(
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
+        research_paired_prefix=research_paired_prefix, research_paired_signal_rows=research_paired_signal_rows,
         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
@@ -1125,6 +1137,13 @@ def run_native_diagnostic(
         # Preserve native facts before any boundary/metadata packaging assertion.
         result["config"].update(research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
         result["market_redesign_audit"]=strategy._md_report()
+        result["paired_prefix_audit"] = strategy._pair_report()
+        result["config"].update(research_paired_policy=research_paired_policy,
+            research_paired_prefix=research_paired_prefix, liquidity_consumption=research_paired_policy,
+            paired_signal_sha256=hashlib.sha256(json.dumps(research_paired_signal_rows,sort_keys=True,separators=(",",":")).encode()).hexdigest(),
+            paired_m1_risk_close_basis="COMPLETED_EXECUTION_M1_CLOSE_NATIVE_ZERO_SPREAD_BTC_PRICE",
+            paired_stop_type="NATIVE_STOP_MARKET_IOC_NO_SYNTHETIC_L1_REMAINDER")
+
         result.setdefault("source_hashes",{}).update({name:sha256_file(Path(__file__).resolve().parents[1]/relative) for name,relative in (
             ("market_redesign","strategy/market_redesign.py"),("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
         result["funding"]["signed_native_cash_deltas"]=journal.funding_cash_audit() if journal else []

@@ -4,7 +4,16 @@ import json
 import pytest
 from coinmaster.strategy.paired_prefix import PairedCaps, sol_prices, sol_allocations
 from coinmaster.research.native_fixture import BTC_PERP, SOL_PERP
-from test_native_market_redesign import setup
+from test_native_split_cover import cfg
+from test_native_btc_sizing import prepare_day
+from test_native_episode_risk import marks
+from coinmaster.domain.wave_overlay import Candidate, Episode
+from coinmaster.research.native_fixture import SIM, perpetual
+from nautilus_trader.backtest.engine import BacktestEngine
+from nautilus_trader.backtest.config import BacktestEngineConfig
+from nautilus_trader.config import LoggingConfig
+from nautilus_trader.model.enums import AccountType, OmsType
+from nautilus_trader.model.objects import Money
 from test_native_episode_risk import tick, run_ticks, NativeProbe
 
 
@@ -44,7 +53,24 @@ class Probe(NativeProbe):
 
 
 def native_setup(side=1, a="2"):
-    s,e,ep=setup(side=side, probe=Probe)
+    config=cfg(True,research_btc_real_u=True,research_btc_q_mode="CLEAN_Q", research_sol_off=True,
+        research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_btc_split_discount=D(".005"))
+    config=config.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)))
+    s=Probe(config)
+    e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
+    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
+        starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,
+        default_leverage=D(1),liquidity_consumption=True,bar_execution=False)
+    for inst in (BTC_PERP,SOL_PERP):
+        e.add_instrument(perpetual(inst.raw_symbol.value,inst.base_currency,
+            str(inst.price_increment),str(inst.size_increment),str(inst.margin_init),
+            maker_fee=D(".00020"),taker_fee=D(".00055")))
+    e.add_strategy(s)
+    run_ticks(e,[tick(BTC_PERP,1)])
+    prepare_day(s,2);marks(s,2)
+    ep=s._domain.episode=Episode("paired",side,10000,1,wave_levels=(0,0,.03),h=10000)
+    intent=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=100)
+    s._submit_intent(intent,100,100,.01,0,ts_now=2)
     run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(SOL_PERP,5)])
     selected(s,a=a,side=side)
     return s,e,ep
@@ -60,7 +86,7 @@ def test_native_partial_ioc_entry_capacity_debt_real_tp_stop_and_no_increase():
         run_ticks(e,[tick(BTC_PERP,eligible+1),tick(SOL_PERP,eligible+1,size="10")])
         p=s._pair
         assert p["entry_terminal"] and p["entry_qty"] == D(10), json.dumps(s._pair_report())
-        assert p["caps"].bmax == D(5)
+        assert p["caps"].bmax == D(5), json.dumps(s._pair_report())
         assert p["p0"] == D(100)
         assert not any(o.instrument_id == BTC_PERP.id and not o.is_reduce_only for o in e.cache.orders_open())
         for dt in (2,3,4):
@@ -73,5 +99,59 @@ def test_native_partial_ioc_entry_capacity_debt_real_tp_stop_and_no_increase():
         assert len([o for o in native if o.order_type.name=="STOP_MARKET" and o.time_in_force.name=="IOC"])==1
         assert not s._pair_failures, json.dumps(s._pair_report())
         json.loads(json.dumps(s._pair_report()))
+    finally:
+        e.end();e.dispose()
+
+
+def covered(s,e,size="1000"):
+    t=s._pair["eligible_ns"]
+    for dt in range(5):
+        run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,size=size)])
+    return t+5
+
+
+@pytest.mark.parametrize("side",[1,-1])
+def test_native_tp_permanent_btc_trim_no_recursive_sol_cut_and_consumed_right(side):
+    s,e,ep=native_setup(side=side,a=".2")
+    try:
+        t=covered(s,e)
+        p=s._pair; assert p["entry_qty"]==D(10)
+        solprice="99" if side==1 else "101"
+        for dt in range(4):
+            run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,solprice,size="2.5")])
+        assert p["caps"].bmax==D("37.5"),json.dumps(s._pair_report())
+        assert s._pair_qty(BTC_PERP.id)==D("37.5"),json.dumps(s._pair_report())
+        assert s._pair_qty(SOL_PERP.id)==D("7.5"),json.dumps(s._pair_report())
+        assert p["consumed"]=={0}
+        assert not any(o["kind"]=="TP" and o["level"]==0 for _,o,_ in s._pair_work())
+        assert not s._pair_failures,json.dumps(s._pair_report())
+    finally:
+        e.end();e.dispose()
+
+
+def test_native_invalidation_closes_sol_without_new_btc_debt_and_no_rearm():
+    s,e,ep=native_setup(a=".2")
+    try:
+        t=covered(s,e);p=s._pair;p["boundary"]=D("100.2")
+        for dt in range(4):
+            run_ticks(e,[tick(BTC_PERP,t+dt,"100.2"),tick(SOL_PERP,t+dt)])
+        assert p["risk"]=="INACTIVE_RISK"
+        assert s._pair_qty(BTC_PERP.id)==D(50),json.dumps(s._pair_report())
+        assert s._pair_qty(SOL_PERP.id)==0
+        assert p["caps"].bmax==D(50)
+        assert p["parent"] in s._pair_used and s._pair_no_increase()
+    finally:
+        e.end();e.dispose()
+
+
+def test_native_zero_ioc_terminal_forces_full_btc_risk_close():
+    s,e,ep=native_setup(a=".2")
+    try:
+        t=s._pair["eligible_ns"]
+        for dt in range(5):
+            run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,size="0")])
+        assert s._pair_qty(SOL_PERP.id)==0
+        assert s._pair_qty(BTC_PERP.id)==0,json.dumps(s._pair_report())
+        assert any(r["event"]=="ENTRY_TERMINAL_P0_FROZEN" and r["bmax"]=="0" for r in s.paired_prefix_audit)
     finally:
         e.end();e.dispose()
