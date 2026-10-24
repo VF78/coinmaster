@@ -54,7 +54,25 @@ def main():
             def on_quote_tick(self,tick):
                 if tick.instrument_id==self.config.btc_id and tick.ts_event>=late_ns and not self._bounded_late_started:
                     self._bounded_late_started=True
-                    self._advance_current_day()
+                    # The regular wrapper activates D1 decisions only after
+                    # the first in-window D1 close. This fixture deliberately
+                    # exercises a late entry from the already closed seed.
+                    if any(int(b.close_time.timestamp()*1_000_000_000)>tick.ts_event for b in self._bars):
+                        raise ValueError("SHORT81_FUTURE_SEED_BAR")
+                    equity=self._active_marked(self._latest_marks[self.config.btc_id],self._latest_marks[self.config.sol_id])
+                    feature=self._current_signals[-1]
+                    intents=self._domain.decide(self._bars,self._current_signals,len(self._bars)-1,equity,
+                        btc_notional_multiplier=self._research_btc_entry_multiplier())
+                    entries=[i for i in intents if i.action=="BTC_ENTRY"]
+                    if len(entries)!=1:
+                        raise ValueError("SHORT81_CLOSED_SEED_NO_VALID_CAUSAL_ENTRY")
+                    for entry in entries:
+                        self._queued_intents.append((entry,feature.sigma,len(self._bars)-1))
+                        self._queued_intent_ready_ns[entry.id]=tick.ts_event+1
+                    self._md_log("BOUNDED81_CAUSAL_SEED_ENTRY",tick.ts_event,
+                        feature_close_ns=str(int(self._bars[-1].close_time.timestamp()*1_000_000_000)),
+                        native_equity=str(equity),side=feature.side,
+                        qualification="FRESH_NATIVE_EQUITY_CLOSED_FEATURE_DOMAIN_INTENT_NO_ARCHIVED_FILLS")
                 if tick.instrument_id==self.config.btc_id and tick.ts_event>=midnight_ns and not self._bounded_midnight_recorded:
                     self._bounded_midnight_recorded=True
                     parent=self._split_parent
