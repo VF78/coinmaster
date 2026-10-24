@@ -17,8 +17,8 @@ from test_native_episode_risk import tick,run_ticks
 
 def run_observed(tmp_path, enabled=True):
     journal=NativeEventJournal(str(tmp_path/'funding.sqlite'))
-    funds=(FundingInstruction('btc-pay',BTC_PERP.id,D('.001'),120_000_000_000,D(100),'test'),
-           FundingInstruction('sol-receive',SOL_PERP.id,D('.002'),120_000_000_000,D(100),'test'))
+    funds=(FundingInstruction('btc-pay',BTC_PERP.id,D('.001'),120_000_000_000,D(100),'venue_mark'),
+           FundingInstruction('sol-receive',SOL_PERP.id,D('.002'),120_000_000_000,D(100),'venue_mark'))
     modules=[PerpetualFundingModule(funds,journal)]
     observer=CommittedNativeObserver(tmp_path/'events.jsonl.gz',D(1000000),(BTC_PERP,SOL_PERP),journal) if enabled else None
     if observer:modules.append(observer)
