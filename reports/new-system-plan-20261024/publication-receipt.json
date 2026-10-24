@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-24",
+  "scope": "Unified plan132 and bounded saved-data feasibility; no product/deployment",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "previous_HEAD": "0dd0f16092868f2457da248d49dde2b6bc11b8fd",
+  "published_evidence_checkpoint": "b63945d0ea31858198920a838c67c9f777e169a5",
+  "actual_remote_ref_readback": "b63945d0ea31858198920a838c67c9f777e169a5",
+  "remote_exact_match": true,
+  "manager_clean_at_evidence_checkpoint": true,
+  "project": "132Done/CLOSED/archived; actual readback in project-readback.json",
+  "economic_goal": "NOT_MET; H_PAIR_EXIT_NOT_ADMITTED",
+  "new_native_full_short_training_attempts": 0,
+  "old_engine_budgets": "CLOSED3/3full8/8short; no carryover",
+  "agents": "All3completed; no active delegated computation",
+  "package_checks": "PASS; see package-verification.json and individual arithmetic/source receipts",
+  "source_changes": "No product changes; prior ec2a958 defaultOFF unchanged/notdeployed",
+  "production_pilot_services_orders_transfers": "No actions",
+  "root_startup_mirrors": "4updated files hash-equal; AGENTS/SOUL/USER already equal and unchanged",
+  "VPS_startup_mirror": "UNKNOWN from prior SSHtimeouts; not retried or modified in this scope",
+  "receipt_semantics": "Records verified publication of its parent evidence checkpoint. Receipt is published as a separate child commit; final child remote equality is checked after push, without recursive self-hash claims."
+}
