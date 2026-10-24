@@ -1,0 +1,15 @@
+{
+  "python_version": "3.12.13",
+  "executable": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "packages": {
+    "nautilus_trader": "1.231.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1"
+  },
+  "environment_policy": "Per-run explicit scrubbed env; no inherited trader credentials; directPopen no time-l wrapper",
+  "input_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+  "qualification": "CURRENT_READ_ONLY_PREFLIGHT; historical complete dependency lock UNKNOWN; no engine launched",
+  "owner_approved_protocol_sha256": "c671c060cc9e55435f1905ac410ac262bea9f13811ce26bddd00cc37c0266d4e"
+}

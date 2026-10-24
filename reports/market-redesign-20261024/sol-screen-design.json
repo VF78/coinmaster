@@ -1,0 +1,16 @@
+{
+  "task":"CM-MARKET-REDESIGN-20261024-SOL-PAIRED-SCREEN",
+  "status":"PREDECLARED_DESCRIPTIVE_SCREEN_ONLY",
+  "native_full_run_budget":0,
+  "decision":"closed BTC H4 timestamps; observed BTC signed inventory from native fills strictly before decision; exclude exact-t BTC-fill ties",
+  "returns":"simple synchronized H1 close returns;720 observations ending strictly before decision (last H1 return end t-1h)",
+  "ER24":"abs(BTCH4close(t)-BTCH4close(t-96h))/sum(abs(H4 close changes),24 closed H4 increments); close(t) is already closed",
+  "strata":{"H4":["adverse:side*H4return<0","nonadverse:side*H4return>=0"],"ER24":["low:<=0.25","middle:>0.25 and<=0.5","high:>0.5"],"lag_correlation":["low:(0,0.3)","middle:[0.3,0.7)","high:[0.7,1]"]},
+  "hedge_actions":["OWNER_VOL=.5*NB*sigmaBTC/sigmaSOL","HALF_MV=.5*NB*covBTC_SOL/varSOL","HALF_FACTOR=.5*NB/betaSOLgivenBTC"],
+  "trim_actions":"for each SOL action, BTCtrim=SOLnotional*betaSOLgivenBTC (equal estimated BTC factor relief); NO_HEDGE reference",
+  "gates":"nonflat observed BTC, full causal720H1 history, positive covariance/correlation/variances/beta; no selected risk gate or optimized thresholds",
+  "outcomes":"fixed4h/24h, frozen initial observedBTCqty and observed prices only; endpoint action benefit and H1-close-grid worst combined change vs NO_HEDGE; future actual lifecycle ignored and crossing-native-flat labels flagged",
+  "fees":"conditional roundtrip each action both legs taker .00055 of entry/exit notional for both BTC and SOL; NO_HEDGE incremental fees0; no originalBTCentry fees charged again",
+  "aggregation":"means in bp of observedBTCnotional; year and descriptive strata; equalBTCcycle block means for stability, H4 rows not independent; no gate fitted from outcomes",
+  "prohibitions":"no simulator/nativeengine/candidatePNL/DD/ROI/SOL3TP/SL/ML/grid/slippage/funding/L2claim"
+}

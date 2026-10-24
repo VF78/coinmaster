@@ -23,6 +23,10 @@
 
 SOL: работоспособный riskgate не найден; не повторять отрицательные gates и не ставить хедж при BTCflat. Пользовательские50%voladjusted, .5minimumvariance и .5BTCfactor различаются; определить их явно и оценивать цену защиты противNO_HEDGE/BTCtrim на одинаковых причинных решениях4h/24h. До устойчивой conditionalactionbenefit нет права объявлять новую SOLлогику полезной. Отрицательный PNLхеджа сам по себе не отказ, отсутствие защиты хвостов — существенный отказ.
 
+## SOL: дешёвый допуск
+
+[sol-screen-report.md](sol-screen-report.md):1560 закрытых H4состояний/78BTCциклов, фактический inventory из337nativefills сверён сaudit. Три определения50%размера исследованы раздельно, слагом720H1, ER24=24закрытыхH4баров, горизонтами4h/24h и равным поfactorrelief BTCtrim. Все3средние SOLactionbenefit отрицательны в обоих годах, защита close-gridtails положительна. На24h BTCtrim дешевле и защищает лучше, на4h SOLдешевле, но защищает слабее. СтатусINCONCLUSIVE: riskgate не найден; это arithmetic на замороженном E4inventory, без3TP/SL/lifecycle/собственногоequity и без R3PNL/DD. Перекрывающиеся окна не складываются в прибыль; будущиеoutcomes не используются как признаки. Полных запусков0. Новое SOLправило допустимо обсуждать только по причинной attribution фактического R3.
+
 ## Проверка и воспроизводимость
 
 `/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python reports/market-redesign-20261024/geometry-screen.py` — арифметический анализ сохранённых CSV, безengine. Результаты/пины в geometry-summary.json. Один предварительный Decimalroundtripassert исправлен прямой интерполяцией сохранённогоTP3; финальный проход успешен. Это технический расчёт, не физическийfullattempt.
