@@ -222,8 +222,14 @@ class PairedPrefixResearch:
             self._pair_fail("UNHEDGEABLE_ZERO_INTENDED", ns)
             self._begin_forced_close("PAIRED_UNHEDGEABLE_ZERO_INTENDED")
             return
+        try:
+            caps = PairedCaps(qref, k, btc.size_increment.as_decimal(), sol.size_increment.as_decimal(), quantity)
+        except ValueError as error:
+            self._pair_fail(str(error), ns)
+            self._begin_forced_close("PAIRED_UNKNOWN_NATIVE_LOTS")
+            return
         self._pair = dict(parent=ep.id, side=side, branch=branch, signal_ns=ns,
-            eligible_ns=ns + MINUTE, quantity=quantity, caps=PairedCaps(qref, k, btc.size_increment.as_decimal(), sol.size_increment.as_decimal(), quantity),
+            eligible_ns=ns + MINUTE, quantity=quantity, caps=caps,
             boundary=D(str(signal[("K_" + str(side)) if branch == "B2" else "O"])), atr=D(str(signal["ATR_SOL"])),
             risk="ACTIVE_RISK", first_fill_ns=None, deadline_ns=None, entry_terminal=False,
             entry_qty=D(0), entry_notional=D(0), p0=None, consumed=set(), signature=None,

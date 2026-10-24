@@ -410,3 +410,18 @@ def test_exact_integer_caps_boundary_undershoot_and_nonintegral_unknown():
     assert c.solmax==0
     for value in (D('.0001'),float('.001')):
         with pytest.raises(ValueError,match='UNKNOWN'):exact_lots(value,D('.001'))
+
+
+def test_native_unknown_lattice_at_activation_forces_actual_parent_close(monkeypatch):
+    import coinmaster.strategy.paired_prefix as module
+    def unsupported(*args, **kwargs):
+        raise ValueError("PAIRED_UNKNOWN_NONINTEGRAL_NATIVE_LOTS")
+    monkeypatch.setattr(module, "PairedCaps", unsupported)
+    s,e,ep=native_setup(a=".2")
+    try:
+        assert "PAIRED_UNKNOWN_NONINTEGRAL_NATIVE_LOTS" in s._pair_failures
+        for ns in (11,12,13):run_ticks(e,[tick(BTC_PERP,ns),tick(SOL_PERP,ns)])
+        assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0
+        assert not s._pair_orders and not e.cache.orders_open() and not e.cache.orders_inflight()
+        assert not any(x['event']=='ACTIVATION_SELECTED' for x in s.paired_prefix_audit)
+    finally:e.end();e.dispose()
