@@ -1,0 +1,14 @@
+{
+  "task": "CM-MARKET-REDESIGN-20261024",
+  "status": "OWNER_APPROVED_IMPLEMENTATION_NO_FULL_GO_YET",
+  "owner_approved_new_full_attempt_cap": 3,
+  "proposed_first_checkpoint_full_attempt_cap": 3,
+  "physical_full_attempts": [],
+  "short_native_episode_checks": [],
+  "active_runs": 0,
+  "reserved_runs": 0,
+  "old_unused_slots": "CLOSED_NOT_REUSABLE",
+  "pilot_production_changed": false,
+  "product_code_changed": "EXECUTOR_ACTIVE_CHECKPOINT_PENDING",
+  "economic_goal": "NOT_MET"
+}

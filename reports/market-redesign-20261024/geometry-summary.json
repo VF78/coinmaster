@@ -1,0 +1,337 @@
+{
+  "kind": "FROZEN_ARCHIVED_ROW_DIAGNOSTIC_NOT_CANDIDATE_ECONOMICS",
+  "method": {
+    "sizing": "floor_to_0.001(phi_side * archived_reference_btc_qty); archived q0 already quantity-rounded; exact native-equity N_plan unavailable",
+    "price_geometry": "side*(first archived TP3 LIMIT price / archived first-child VWAP - 1); TP3 submitted later than entry; raw d3 NOT_EXPORTED; this is rounded native-price proxy, not exact causal-d3 reconstruction",
+    "fees": "hypothetical first-entry taker .00055, TP maker .0002; positive-side tick rounding .1; no funding/slippage/queue/admission proof",
+    "year_split": "[2024-09-01,2025-09-01), [2025-09-01,2026-09-01), by first entry timestamp"
+  },
+  "n": 83,
+  "groups": [
+    {
+      "period": "all",
+      "side": "ALL",
+      "n": 83,
+      "full_fallback": 45,
+      "omit_01": 28,
+      "omit_0": 10,
+      "mean_old_net_fraction": "0.8310420386651791763155496367",
+      "mean_clean_old_ratio_pre_lot": "1.056503275840866927011958259",
+      "min_clean_old_ratio_lot": "0.7975863122517567980446073938",
+      "max_clean_old_ratio_lot": "1.487216565880017044578826644",
+      "old_plan_notional_sum_q0_wire": "844929849.0897",
+      "clean_plan_notional_proxy_sum_q0_wire": "814843486.9246",
+      "clean_old_sum_notional_ratio": "0.9643918815301482481142001910",
+      "proxy_tp3_available": 82,
+      "U_proxy_ordered": 82,
+      "U_proxy_fee_positive": 82
+    },
+    {
+      "period": "all",
+      "side": "LONG",
+      "n": 38,
+      "full_fallback": 21,
+      "omit_01": 14,
+      "omit_0": 3,
+      "mean_old_net_fraction": "0.8266318172005354026133840416",
+      "mean_clean_old_ratio_pre_lot": "1.106213778110261218771319346",
+      "min_clean_old_ratio_lot": "0.8544698544698544698544698545",
+      "max_clean_old_ratio_lot": "1.487216565880017044578826644",
+      "old_plan_notional_sum_q0_wire": "319700460.1236",
+      "clean_plan_notional_proxy_sum_q0_wire": "335382215.4925",
+      "clean_old_sum_notional_ratio": "1.049051400685620680293225990",
+      "proxy_tp3_available": 38,
+      "U_proxy_ordered": 38,
+      "U_proxy_fee_positive": 38
+    },
+    {
+      "period": "all",
+      "side": "SHORT",
+      "n": 45,
+      "full_fallback": 24,
+      "omit_01": 14,
+      "omit_0": 7,
+      "mean_old_net_fraction": "0.8347662256797672518862672507",
+      "mean_clean_old_ratio_pre_lot": "1.014525518368933969526275563",
+      "min_clean_old_ratio_lot": "0.7975863122517567980446073938",
+      "max_clean_old_ratio_lot": "1.387320582008461204901814313",
+      "old_plan_notional_sum_q0_wire": "525229388.9661",
+      "clean_plan_notional_proxy_sum_q0_wire": "479461271.4321",
+      "clean_old_sum_notional_ratio": "0.9128607071586505948026420417",
+      "proxy_tp3_available": 44,
+      "U_proxy_ordered": 44,
+      "U_proxy_fee_positive": 44
+    },
+    {
+      "period": "first_year",
+      "side": "ALL",
+      "n": 43,
+      "full_fallback": 22,
+      "omit_01": 14,
+      "omit_0": 7,
+      "mean_old_net_fraction": "0.8271002659229023384792352393",
+      "mean_clean_old_ratio_pre_lot": "1.060960278483812981489125956",
+      "min_clean_old_ratio_lot": "0.7975863122517567980446073938",
+      "max_clean_old_ratio_lot": "1.487146211840316400939315289",
+      "old_plan_notional_sum_q0_wire": "60252316.1782",
+      "clean_plan_notional_proxy_sum_q0_wire": "59972525.9169",
+      "clean_old_sum_notional_ratio": "0.9953563567502948306102866019",
+      "proxy_tp3_available": 43,
+      "U_proxy_ordered": 43,
+      "U_proxy_fee_positive": 43
+    },
+    {
+      "period": "first_year",
+      "side": "LONG",
+      "n": 22,
+      "full_fallback": 13,
+      "omit_01": 6,
+      "omit_0": 3,
+      "mean_old_net_fraction": "0.8551535379805834686666182268",
+      "mean_clean_old_ratio_pre_lot": "1.058911034576471964864919272",
+      "min_clean_old_ratio_lot": "0.8544698544698544698544698545",
+      "max_clean_old_ratio_lot": "1.487146211840316400939315289",
+      "old_plan_notional_sum_q0_wire": "18593133.4155",
+      "clean_plan_notional_proxy_sum_q0_wire": "20944871.3016",
+      "clean_old_sum_notional_ratio": "1.126484215088753930315172916",
+      "proxy_tp3_available": 22,
+      "U_proxy_ordered": 22,
+      "U_proxy_fee_positive": 22
+    },
+    {
+      "period": "first_year",
+      "side": "SHORT",
+      "n": 21,
+      "full_fallback": 9,
+      "omit_01": 8,
+      "omit_0": 4,
+      "mean_old_net_fraction": "0.7977111237672363925686435381",
+      "mean_clean_old_ratio_pre_lot": "1.063107105434360713190675815",
+      "min_clean_old_ratio_lot": "0.7975863122517567980446073938",
+      "max_clean_old_ratio_lot": "1.387257755967728520336022623",
+      "old_plan_notional_sum_q0_wire": "41659182.7627",
+      "clean_plan_notional_proxy_sum_q0_wire": "39027654.6153",
+      "clean_old_sum_notional_ratio": "0.9368319786206615844262474851",
+      "proxy_tp3_available": 21,
+      "U_proxy_ordered": 21,
+      "U_proxy_fee_positive": 21
+    },
+    {
+      "period": "second_year",
+      "side": "ALL",
+      "n": 40,
+      "full_fallback": 23,
+      "omit_01": 14,
+      "omit_0": 3,
+      "mean_old_net_fraction": "0.835279444363126776989587614",
+      "mean_clean_old_ratio_pre_lot": "1.051711997999699918449002985",
+      "min_clean_old_ratio_lot": "0.7977039453074612563804890633",
+      "max_clean_old_ratio_lot": "1.487216565880017044578826644",
+      "old_plan_notional_sum_q0_wire": "784677532.9115",
+      "clean_plan_notional_proxy_sum_q0_wire": "754870961.0077",
+      "clean_old_sum_notional_ratio": "0.9620142406866111461620822097",
+      "proxy_tp3_available": 39,
+      "U_proxy_ordered": 39,
+      "U_proxy_fee_positive": 39
+    },
+    {
+      "period": "second_year",
+      "side": "LONG",
+      "n": 16,
+      "full_fallback": 8,
+      "omit_01": 8,
+      "omit_0": 0,
+      "mean_old_net_fraction": "0.7874144511279693117901870375",
+      "mean_clean_old_ratio_pre_lot": "1.171255050469221442892619448",
+      "min_clean_old_ratio_lot": "0.8551477475943115047262198757",
+      "max_clean_old_ratio_lot": "1.487216565880017044578826644",
+      "old_plan_notional_sum_q0_wire": "301107326.7081",
+      "clean_plan_notional_proxy_sum_q0_wire": "314437344.1909",
+      "clean_old_sum_notional_ratio": "1.044269987145554944426136426",
+      "proxy_tp3_available": 16,
+      "U_proxy_ordered": 16,
+      "U_proxy_fee_positive": 16
+    },
+    {
+      "period": "second_year",
+      "side": "SHORT",
+      "n": 24,
+      "full_fallback": 15,
+      "omit_01": 6,
+      "omit_0": 3,
+      "mean_old_net_fraction": "0.8671894398532317537891879988",
+      "mean_clean_old_ratio_pre_lot": "0.9720166296866855688199253425",
+      "min_clean_old_ratio_lot": "0.7977039453074612563804890633",
+      "max_clean_old_ratio_lot": "1.387320582008461204901814313",
+      "old_plan_notional_sum_q0_wire": "483570206.2034",
+      "clean_plan_notional_proxy_sum_q0_wire": "440433616.8168",
+      "clean_old_sum_notional_ratio": "0.9107956014799310747010373493",
+      "proxy_tp3_available": 23,
+      "U_proxy_ordered": 23,
+      "U_proxy_fee_positive": 23
+    }
+  ],
+  "branch_groups": [
+    {
+      "side": "LONG",
+      "omitted_zero_levels": "[]",
+      "n": 21,
+      "min_change_pct": "-14.55301455301455301455301455",
+      "max_change_pct": "-14.43002026347571667517294700"
+    },
+    {
+      "side": "LONG",
+      "omitted_zero_levels": "[0]",
+      "n": 3,
+      "min_change_pct": "8.550879062333510921683537600",
+      "max_change_pct": "8.587650816181689141234918400"
+    },
+    {
+      "side": "LONG",
+      "omitted_zero_levels": "[0,1]",
+      "n": 14,
+      "min_change_pct": "48.58490566037735849056603770",
+      "max_change_pct": "48.72165658800170445788266440"
+    },
+    {
+      "side": "SHORT",
+      "omitted_zero_levels": "[]",
+      "n": 24,
+      "min_change_pct": "-20.24136877482432019553926062",
+      "max_change_pct": "-20.22892402910019620728064166"
+    },
+    {
+      "side": "SHORT",
+      "omitted_zero_levels": "[0]",
+      "n": 7,
+      "min_change_pct": "1.290084776999631404349428700",
+      "max_change_pct": "1.296470307116540248702722400"
+    },
+    {
+      "side": "SHORT",
+      "omitted_zero_levels": "[0,1]",
+      "n": 14,
+      "min_change_pct": "38.41463414634146341463414630",
+      "max_change_pct": "38.73205820084612049018143130"
+    }
+  ],
+  "native_tp3_proxy_n": 82,
+  "missing_native_tp3_cycles": [
+    81
+  ],
+  "U_proxy_min_d3": "0.011745333781479437186053611",
+  "U_proxy_max_d3": "0.0556032441392375088799431684",
+  "U_proxy_min_fee_surplus_USDT_per_BTC": "205.304350",
+  "U_proxy_fee_positive_n": 82,
+  "U_proxy_ordered_n": 82,
+  "source_pins": {
+    "reports_commit_requested": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+    "E4_source_requested": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+    "E4_config_requested": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+    "bars_blob_requested": "f2aafb8c784177e2606ed13cb11c409164f9aa9b"
+  },
+  "inputs": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/entry-sizing-audit.csv",
+      "sha256": "0aafeb512b9aa191d4d12410cd290425b3aa7660f598a3b55ee953508742fce5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/split-parent-audit.csv",
+      "sha256": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-fills.csv",
+      "sha256": "4d43e5b54b208f0f4c728e21bd16e22960d72f40e04ab98fb4084862f097b8c3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-orders.csv",
+      "sha256": "88de5adde5c709673bd97fd01371e99f23630bc0640aacfba7f0800d5acbbaac"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/native-order-events.csv",
+      "sha256": "55883b35b903c04edaebffeaeb6822cd21e1f8818d826d0a93ba58393d3f2dc0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/next-band-audit.csv",
+      "sha256": "af44e0597fc7924d8b6f3f8ef6c115001ce2b205a4ead03d7a0fbf60ae84216e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-closed-bars.csv",
+      "sha256": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/task-source.txt",
+      "sha256": "e6d0d910262146ecb96175b394fc97c991d82b8ed54fe7005b8b8c18ee2e6b59"
+    }
+  ],
+  "physical_full_runs": 0,
+  "missing_precheck_zip": "NOT_PRESENT_PER_PARENT; its stated metrics are unverified specification, not reproduced evidence",
+  "limitations": [
+    "No candidate TOTAL, PnL, DD or ROI computed. No native engine instantiated.",
+    "Clean quantity is proxy on archived gross Q and quotes: not a candidate replay, no endogenous equity/margin/admission, no exact pre-round N_plan.",
+    "Raw entry d3 is absent. 82 accepted TP3 LIMIT prices are used only as a proxy; 81 absent, no invented geometry.",
+    "Outward tick rounding assumption specified here is conservative for fees but execution implications untested.",
+    "No source/data/quote pins modified. No H1/M1 replay or target-crossing undertaken.",
+    "Archived full fallback does not alone imply nonzero raw TP1/TP2; branch count is distinct from old zero-target-distance count."
+  ],
+  "manager_HEAD_at_analysis": "81378471c87ec96519422732cb5bd3e06c90f6b7",
+  "bars_current_git_blob": "f2aafb8c784177e2606ed13cb11c409164f9aa9b",
+  "pin_comparison": [
+    {
+      "path": "reports/b-50-90-next-20261023/owner-E4-events/entry-sizing-audit.csv",
+      "archive_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+      "exists_in_archive_commit": true,
+      "current_sha256": "0aafeb512b9aa191d4d12410cd290425b3aa7660f598a3b55ee953508742fce5",
+      "archive_sha256": "0aafeb512b9aa191d4d12410cd290425b3aa7660f598a3b55ee953508742fce5",
+      "equal_to_requested_report_pin": true
+    },
+    {
+      "path": "reports/b-50-90-next-20261023/owner-E4-events/split-parent-audit.csv",
+      "archive_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+      "exists_in_archive_commit": true,
+      "current_sha256": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb",
+      "archive_sha256": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb",
+      "equal_to_requested_report_pin": true
+    },
+    {
+      "path": "reports/b-50-90-next-20261023/owner-E4-events/native-fills.csv",
+      "archive_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+      "exists_in_archive_commit": true,
+      "current_sha256": "4d43e5b54b208f0f4c728e21bd16e22960d72f40e04ab98fb4084862f097b8c3",
+      "archive_sha256": "4d43e5b54b208f0f4c728e21bd16e22960d72f40e04ab98fb4084862f097b8c3",
+      "equal_to_requested_report_pin": true
+    },
+    {
+      "path": "reports/b-50-90-next-20261023/owner-E4-events/native-orders.csv",
+      "archive_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+      "exists_in_archive_commit": true,
+      "current_sha256": "88de5adde5c709673bd97fd01371e99f23630bc0640aacfba7f0800d5acbbaac",
+      "archive_sha256": "88de5adde5c709673bd97fd01371e99f23630bc0640aacfba7f0800d5acbbaac",
+      "equal_to_requested_report_pin": true
+    },
+    {
+      "path": "reports/b-50-90-next-20261023/owner-E4-events/native-order-events.csv",
+      "archive_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+      "exists_in_archive_commit": true,
+      "current_sha256": "55883b35b903c04edaebffeaeb6822cd21e1f8818d826d0a93ba58393d3f2dc0",
+      "archive_sha256": "55883b35b903c04edaebffeaeb6822cd21e1f8818d826d0a93ba58393d3f2dc0",
+      "equal_to_requested_report_pin": true
+    },
+    {
+      "path": "reports/b-50-90-next-20261023/owner-E4-events/next-band-audit.csv",
+      "archive_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+      "exists_in_archive_commit": true,
+      "current_sha256": "af44e0597fc7924d8b6f3f8ef6c115001ce2b205a4ead03d7a0fbf60ae84216e",
+      "archive_sha256": "af44e0597fc7924d8b6f3f8ef6c115001ce2b205a4ead03d7a0fbf60ae84216e",
+      "equal_to_requested_report_pin": true
+    },
+    {
+      "path": "reports/b-50-90-next-20261023/owner-closed-bars.csv",
+      "archive_commit": "f7587cd8e70609f71d95c38934dee490f4497cb4",
+      "exists_in_archive_commit": true,
+      "current_sha256": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+      "archive_sha256": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+      "equal_to_requested_report_pin": true
+    }
+  ]
+}

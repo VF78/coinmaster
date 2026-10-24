@@ -1,0 +1,21 @@
+{
+  "task": "CM-MARKET-REDESIGN-20261024",
+  "status": "OWNER_APPROVED",
+  "owner_approval_date": "2026-10-24",
+  "timezone": "Europe/Moscow",
+  "owner_reply": "Утверждаю реализацию и до 3 запусков",
+  "protocol_file": "PROTOCOL_PROPOSED.md",
+  "protocol_sha256": "c671c060cc9e55435f1905ac410ac262bea9f13811ce26bddd00cc37c0266d4e",
+  "task_source_sha256": "e6d0d910262146ecb96175b394fc97c991d82b8ed54fe7005b8b8c18ee2e6b59",
+  "full_attempt_cap": 3,
+  "ordered_variants": [
+    "R1_E4_BTC_SOL_OFF",
+    "R2_REAL_U3TP_LIMIT005_LEGACY_Q",
+    "R3_REAL_U3TP_LIMIT005_CLEAN_Q"
+  ],
+  "failed_repeated_full_attempts_count": true,
+  "full_launch_go": "ROOT_AFTER_FROZEN_SOURCE_CONFIG_COMMANDS_MECHANICAL_ACCEPTANCE_AND_REVIEW",
+  "pilot_production_services_keys_orders_transfers": "EXCLUDED",
+  "old_budget_slots": "CLOSED",
+  "additional_BTC_SOL_full_stress_repeat_ML": "NOT_AUTHORIZED"
+}

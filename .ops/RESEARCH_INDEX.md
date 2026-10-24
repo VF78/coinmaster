@@ -60,4 +60,8 @@ Use explicit Mac runtime `.venv/bin/python` (3.12.13/nautilus1.231.0), frozen so
 Known report-only fix `6061446164cc32c27b3ea0e13e86c9cc56d955ac`: local Decimal80/original1e-24guard. Never relax tests or manufacture missing JSON/terminal money. Actual native JSON serialization tested before engines.
 Full artifact catalog: `reports/manager-handoff-20261024/research-catalog.json` (paths/hashes, not instructions). No full manifest/log dumps at startup.
 
-Next work: use saved actual decision states to propose one precisely causal action and cheap preliminary calculation, then obtain a new frozen protocol/budget before implementation/full runs. Do not lower the goal or spend old unused slots to keep trying.
+## Current market redesign checkpoint — 2026-10-24
+
+Project#131; reports/market-redesign-20261024/REPORT.md. Exact archivedE4 pins verified, four M1windows31/48/65/81 complete. Cycle81 source/lifecycle scheduling hole diagnosed: unfinishedsplit suppresses targets; dayendstop does not requeue. Cheap83row CLEAN_Q sizing and82nativeTP3proxy geometry checks are not candidate economics. Native3TP/livequeue realism remains unproven.
+
+Owner explicitly approved implementation +<=3newfull physicalattempts R1BTCnoSOL→R2U3TP/.5%limit-only LEGACY_Q→R3CLEAN_Q, including failures/repeats. Effective protocol PROTOCOL_PROPOSED.md +approval.json; current spend/active state only run-ledger.json/ACTIVE_TASK. Closed prior budgets remain closed. One isolatedVPSwriter, frozenMacexecution, shortlifecyclechecks and independent money/orderreview before rootfullGO. No additionalBTC/SOLfull/stress/repeat/ML authorization. Economic50/90goal remainsNOT_MET.

@@ -1,0 +1,282 @@
+{
+  "task": "CM-MARKET-REDESIGN-PRECHECK-20261024",
+  "physical_runs": 0,
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "manager_head": "81378471c87ec96519422732cb5bd3e06c90f6b7",
+  "checks": {
+    "receipt_artifact_sha": true,
+    "raw_sha": true,
+    "config_sha": true,
+    "data_manifest_sha": true,
+    "policy_sha": true,
+    "all_export_sha": true,
+    "bars_blob": "f2aafb8c784177e2606ed13cb11c409164f9aa9b",
+    "source_files": {
+      "hedge_band": true,
+      "native_baseline": true,
+      "next_band": true,
+      "split_cover": true,
+      "wave_domain": true,
+      "wave_strategy": true
+    }
+  },
+  "cycles": [
+    {
+      "cycle": 31,
+      "episode_id": "c3d8b66b-bb9b-4fc3-9c1f-a899d4681717",
+      "entry_ns": 1744329660000000000,
+      "entry_utc": "2025-04-11T00:01:00+00:00",
+      "exit_ns": 1744502400000000000,
+      "exit_utc": "2025-04-13T00:00:00+00:00",
+      "first_qty": "23.613",
+      "total_filled_qty": "47.227",
+      "end_action": "FORCED_CLOSE",
+      "end_reason": "REGIME"
+    },
+    {
+      "cycle": 48,
+      "episode_id": "6662c0c0-7d92-4a40-a90c-bd97eae1ba75",
+      "entry_ns": 1760140920000000000,
+      "entry_utc": "2025-10-11T00:02:00+00:00",
+      "exit_ns": 1760629620000000000,
+      "exit_utc": "2025-10-16T15:47:00+00:00",
+      "first_qty": "52.495",
+      "total_filled_qty": "104.991",
+      "end_action": "BTC_REDUCE",
+      "end_reason": "BTC_TP3"
+    },
+    {
+      "cycle": 65,
+      "episode_id": "75b69ddc-e523-4731-836c-239f11ad1bae",
+      "entry_ns": 1775088060000000000,
+      "entry_utc": "2026-04-02T00:01:00+00:00",
+      "exit_ns": 1775174400000000000,
+      "exit_utc": "2026-04-03T00:00:00+00:00",
+      "first_qty": "220.309",
+      "total_filled_qty": "440.619",
+      "end_action": "BTC_REDUCE",
+      "end_reason": "BTC_REDUCE"
+    },
+    {
+      "cycle": 81,
+      "episode_id": "1ef87856-3e22-4856-95ae-a8eb974d6120",
+      "entry_ns": 1786478520000000000,
+      "entry_utc": "2026-08-11T20:02:00+00:00",
+      "exit_ns": 1787011200000000000,
+      "exit_utc": "2026-08-18T00:00:00+00:00",
+      "first_qty": "135.648",
+      "total_filled_qty": "135.648",
+      "end_action": "FORCED_CLOSE",
+      "end_reason": "REGIME"
+    }
+  ],
+  "streams": [
+    {
+      "file": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+      "manifest_sha_match": true,
+      "rows": 1051200,
+      "first_open_utc": "2024-09-01T00:00:00+00:00",
+      "last_open_utc": "2026-08-31T23:59:00+00:00",
+      "global_gap_count": 0,
+      "coverage": [
+        {
+          "cycle": 31,
+          "rows": 2880,
+          "expected": 2880,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 48,
+          "rows": 8146,
+          "expected": 8146,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 65,
+          "rows": 1440,
+          "expected": 1440,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 81,
+          "rows": 8879,
+          "expected": 8879,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        }
+      ]
+    },
+    {
+      "file": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "sha256": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+      "manifest_sha_match": true,
+      "rows": 1051200,
+      "first_open_utc": "2024-09-01T00:00:00+00:00",
+      "last_open_utc": "2026-08-31T23:59:00+00:00",
+      "global_gap_count": 0,
+      "coverage": [
+        {
+          "cycle": 31,
+          "rows": 2880,
+          "expected": 2880,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 48,
+          "rows": 8146,
+          "expected": 8146,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 65,
+          "rows": 1440,
+          "expected": 1440,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 81,
+          "rows": 8879,
+          "expected": 8879,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        }
+      ]
+    },
+    {
+      "file": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+      "manifest_sha_match": true,
+      "rows": 1051200,
+      "first_open_utc": "2024-09-01T00:00:00+00:00",
+      "last_open_utc": "2026-08-31T23:59:00+00:00",
+      "global_gap_count": 0,
+      "coverage": [
+        {
+          "cycle": 31,
+          "rows": 2880,
+          "expected": 2880,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 48,
+          "rows": 8146,
+          "expected": 8146,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 65,
+          "rows": 1440,
+          "expected": 1440,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 81,
+          "rows": 8879,
+          "expected": 8879,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        }
+      ]
+    },
+    {
+      "file": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-mark-1m.parquet",
+      "sha256": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+      "manifest_sha_match": true,
+      "rows": 1051200,
+      "first_open_utc": "2024-09-01T00:00:00+00:00",
+      "last_open_utc": "2026-08-31T23:59:00+00:00",
+      "global_gap_count": 0,
+      "coverage": [
+        {
+          "cycle": 31,
+          "rows": 2880,
+          "expected": 2880,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 48,
+          "rows": 8146,
+          "expected": 8146,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 65,
+          "rows": 1440,
+          "expected": 1440,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        },
+        {
+          "cycle": 81,
+          "rows": 8879,
+          "expected": 8879,
+          "missing": 0,
+          "duplicates": 0,
+          "gap_count": 0
+        }
+      ]
+    }
+  ],
+  "cycle81": {
+    "entry_order": "O-20260811-200200-001-000-587",
+    "discount_order": "O-20260811-200300-001-000-588",
+    "discount_cancel_utc": "2026-08-11T23:59:00+00:00",
+    "parent": {
+      "cancelled": "135.648",
+      "closed": "True",
+      "completion_reason": "DEADLINE",
+      "deadline_ns": "1786492740000000000",
+      "decision_index": "1438",
+      "episode_id": "1ef87856-3e22-4856-95ae-a8eb974d6120",
+      "fallback": "True",
+      "filled": "135.648",
+      "first_filled": "135.648",
+      "first_notional": "8627077.152",
+      "first_quantity": "135.648",
+      "first_vwap": "63599",
+      "management_reference_frozen_ns": "1786478520000000000",
+      "management_reference_v1": "63599",
+      "planref_v1_actual_blended_vwap": "63599",
+      "planref_v1_beta": "1.220615879304098",
+      "planref_v1_gross_reference_qty": "471.818",
+      "planref_v1_h_actual": "24583616.7550989",
+      "planref_v1_p0": "63599",
+      "positive_tp_ioc_catchups": "",
+      "quantity": "271.296",
+      "side": "-1",
+      "sigma": "0.11559460577230729",
+      "single_lot_immediate": "False",
+      "start_ns": "1786478520000000000",
+      "step": "0.001",
+      "stop_reason": "UTC_DAY_COMPLETION_FAILED"
+    },
+    "qualified_cause": "Confirmed target queuing suppressed while split unfinished; deadline cancellation23:59 leaves parent unfinished; next minute crosses UTC day and closes split without target requeue. No additional entry fill/cancel terminal occurs to trigger target creation. Exact ephemeral queued state was not exported; static code and final native orders establish scheduling hole."
+  }
+}
