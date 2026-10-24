@@ -9,6 +9,8 @@ import gzip
 import hashlib
 import json
 import pickle
+from dataclasses import dataclass
+from types import MappingProxyType
 from decimal import Decimal as D
 from pathlib import Path
 from nautilus_trader.backtest.config import SimulationModuleConfig
@@ -17,6 +19,15 @@ from nautilus_trader.model.data import QuoteTick
 from coinmaster.research.minute_risk import DrawdownTracker
 
 MINUTE=60_000_000_000
+
+
+@dataclass(frozen=True)
+class _RetainedPriorSource:
+    source_ns: int
+    state_epoch: int
+    signature: tuple
+    first_new_mutation_ns: int
+    state: object
 
 
 class CommittedNativeObserver(SimulationModule):
@@ -32,6 +43,7 @@ class CommittedNativeObserver(SimulationModule):
         self.events=DrawdownTracker(seed);self.settled=DrawdownTracker(seed)
         self.events.add(0,D(seed));self.settled.add(0,D(seed))
         self.final=None;self.account_count=0
+        self.retained_prior=None;self.retained_prior_invalid=False
 
     def register_venue(self, exchange):
         super().register_venue(exchange)
@@ -92,17 +104,43 @@ class CommittedNativeObserver(SimulationModule):
                 raw_mark=str(prices[position.instrument_id]),native_price=str(price),native_upnl=str(upnl)))
         return equity,source,details
 
-    def _emit(self,kind,ns,state,*,identity=None,track=True,receipt_ns=None):
+    def _emit(self,kind,ns,state,*,identity=None,track=True,receipt_ns=None,state_epoch=None,retention=None):
         equity,source,positions=self._value(state,ns)
         self.sequence+=1
-        row=dict(sequence=self.sequence,epoch=self.epoch,kind=kind,event_ns=str(ns),
+        row=dict(sequence=self.sequence,epoch=self.epoch,state_epoch=self.epoch if state_epoch is None else state_epoch,kind=kind,event_ns=str(ns),
             receipt_ns=str(receipt_ns if receipt_ns is not None else ns),native_id=identity,
             mark_available_ns=str(source) if source is not None else None,
             cash=str(state["cash"]),native_positions_sha256=state["position_hash"],
             equity=str(equity) if equity is not None else None,positions=positions)
+        if retention is not None:
+            row["prior_source_retention"]=dict(source_ns=str(retention.source_ns),state_epoch=retention.state_epoch,
+                signature=list(retention.signature),first_new_mutation_ns=str(retention.first_new_mutation_ns))
         self.file.write(json.dumps(row,separators=(",",":"))+"\n")
         if track and equity is not None:self.events.add(self.sequence,equity)
         return equity
+
+    def _retain_before_new_mutation(self,ns):
+        """Keep the first actual old-source state, never roll cash/positions back.
+
+        Native engine drains timestamps <T before first data T. Funding can
+        commit on CustomData T before the first quote T; preserve the already
+        complete actual native copy before that first newer mutation.
+        """
+        retained=self.retained_prior
+        if retained is not None:
+            if ns<=retained.source_ns:
+                self.retained_prior_invalid=True
+                self._problem("OLD_SOURCE_MUTATION_AFTER_IMMUTABLE_RETENTION")
+            return
+        if self.minute_source is None or ns<=self.minute_source:return
+        if self.last is None or (self.last_mutation_ns is not None and self.last_mutation_ns>self.minute_source):
+            self.retained_prior_invalid=True
+            self._problem("PRIOR_SOURCE_NATIVE_SNAPSHOT_NOT_COMPLETE_AT_RETENTION")
+            return
+        # Every member is immutable: native cash Decimal, native Position
+        # pickle bytes tuple, strings and signature tuple. No mutable cache refs.
+        self.retained_prior=_RetainedPriorSource(self.minute_source,self.epoch,self.last["signature"],
+            ns,MappingProxyType(dict(self.last)))
 
     def on_committed_account(self,event):
         state=self._snapshot()
@@ -118,6 +156,7 @@ class CommittedNativeObserver(SimulationModule):
         if self.last is None or state is None:
             self._problem("FILL_WITHOUT_COMPLETE_PRE_NATIVE_SNAPSHOT")
         else:
+            self._retain_before_new_mutation(event.ts_event)
             self._emit("PRE_FILL_LAST_COMMITTED_NATIVE_COPY",event.ts_event,self.last,identity=identity)
             self.epoch+=1
             self._emit("POST_FILL_COMMITTED_NATIVE",event.ts_event,state,identity=identity)
@@ -138,6 +177,7 @@ class CommittedNativeObserver(SimulationModule):
                 self._problem("FUNDING_MUTATION_EPOCH_NOT_EXACTLY_COVERED")
                 continue
             index,(event_id,received,state)=match
+            self._retain_before_new_mutation(int(row[2]))
             self._emit("PRE_FUNDING_COMMITTED_NATIVE_COPY",int(row[2]),self.last,identity=row[0])
             self.epoch+=1;self.funding_count+=1
             self._emit("POST_FUNDING_ACCOUNT_NATIVE",int(row[2]),state,identity=row[0],receipt_ns=received)
@@ -160,15 +200,24 @@ class CommittedNativeObserver(SimulationModule):
         if current is None:
             self._problem("PREQUOTE_NATIVE_STATE_MISSING");return
         if self.last is None:self.last=current
-        if current["signature"]!=self.last["signature"]:
-            self._problem("PREQUOTE_NATIVE_STATE_EPOCH_MISMATCH")
+        consistent=current["signature"]==self.last["signature"]
+        if not consistent:self._problem("PREQUOTE_NATIVE_STATE_EPOCH_MISMATCH")
         if self.minute_source is not None and ns>self.minute_source:
-            if self.last_mutation_ns is not None and self.last_mutation_ns>self.minute_source:
+            retained=self.retained_prior
+            state=self.last;state_epoch=self.epoch
+            valid=consistent and not self.retained_prior_invalid
+            if retained is not None:
+                valid=valid and retained.source_ns==self.minute_source and retained.first_new_mutation_ns>self.minute_source and retained.state["signature"]==retained.signature
+                state=retained.state;state_epoch=retained.state_epoch
+            elif self.last_mutation_ns is not None and self.last_mutation_ns>self.minute_source:
+                valid=False
+            if not valid:
                 self._problem("NO_EXACT_PRIOR_SOURCE_SETTLED_WATERMARK")
             else:
-                equity=self._emit("SETTLED_PRE_NEXT_SOURCE_WATERMARK",self.minute_source,self.last,
-                                  track=False,receipt_ns=ns)
+                equity=self._emit("SETTLED_PRE_NEXT_SOURCE_WATERMARK",self.minute_source,state,
+                    track=False,receipt_ns=ns,state_epoch=state_epoch,retention=retained)
                 if equity is not None:self.settled.add(self.minute_source,equity);self.settled_count+=1
+            self.retained_prior=None;self.retained_prior_invalid=False
         if self.minute_source is None or ns>self.minute_source:self.minute_source=ns
         self._emit("PREQUOTE_DIRECT_NATIVE",ns,current)
         self.last=current
@@ -179,6 +228,8 @@ class CommittedNativeObserver(SimulationModule):
     def finish_after_engine_end(self,ns):
         self._resolve_funding(ns)
         current=self._snapshot()
+        if self.retained_prior is not None:
+            self._problem("PRIOR_SOURCE_WATERMARK_PENDING_AT_TERMINAL")
         if current is None:
             self._problem("TERMINAL_NATIVE_ACCOUNT_MISSING")
         else:

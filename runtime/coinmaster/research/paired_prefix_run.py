@@ -17,7 +17,7 @@ import uuid
 PROTOCOL_SHA="9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1"
 START_MS=1725148800000
 END_MS=1736899200000
-SLOTS={1:"MATCHED_OFF_CONTROL",2:"B2_PAIRED",3:"B2_F0_PAIRED",4:"ONE_CONCRETE_CORRECTION_OR_RESERVE"}
+SLOTS={1:"MATCHED_OFF_CONTROL",2:"B2_PAIRED",3:"B2_F0_PAIRED",4:"ONE_CONCRETE_CORRECTION_OR_RESERVE",5:"VALID_OFF_AFTER_NONTRADING_BOUNDARY_REPAIR"}
 VARIANTS={"OFF":None,"B2":"B2","B2_F0":"B2_F0"}
 
 
@@ -37,6 +37,24 @@ def ledger_transaction(path):
         os.replace(temporary,path)
 
 
+def effective_prefix_cap(freeze,ledger):
+    """Default4; ceiling5 is inert without separately pinned owner amendment."""
+    frozen=freeze.get("physical_prefix_max",4);recorded=ledger["physical_prefix_max"]
+    if any(type(value) is not int or value not in (4,5) for value in (frozen,recorded)):
+        raise ValueError("INVALID_PREFIX_CAP_OR_CEILING")
+    cap=min(frozen,recorded)
+    if cap==5:
+        evidence=freeze.get("owner_budget_amendment")
+        if not isinstance(evidence,dict) or not evidence.get("path") or not evidence.get("sha256"):
+            raise ValueError("EXPLICIT_OWNER_BUDGET_AMENDMENT_REQUIRED")
+        path=Path(evidence["path"])
+        if sha(path)!=evidence["sha256"]:raise ValueError("OWNER_BUDGET_AMENDMENT_PIN_MISMATCH")
+        approval=json.loads(path.read_text())
+        if approval.get("status")!="APPROVED_BY_OWNER" or approval.get("authorized_native_prefix_max")!=5 or approval.get("authorized_full_max")!=0 or approval.get("protocol_sha256")!=PROTOCOL_SHA or not str(approval.get("owner_exact_response","")).strip():
+            raise ValueError("EXPLICIT_OWNER_BUDGET_AMENDMENT_REQUIRED")
+    return cap
+
+
 def claim_attempt(path,freeze,variant,artifact_dir):
     if freeze.get("internal_go") is not True or freeze.get("independent_review")!="PASS" or freeze.get("launch_gates")!="PASS":
         raise ValueError("ROOT_INTERNAL_GO_AND_REVIEWED_LAUNCH_GATES_REQUIRED")
@@ -44,18 +62,23 @@ def claim_attempt(path,freeze,variant,artifact_dir):
         raise ValueError("FROZEN_APPROVED_PREFIX_SCOPE_REQUIRED")
     if variant not in VARIANTS:raise ValueError("UNAPPROVED_VARIANT")
     with ledger_transaction(path) as ledger:
-        if ledger["physical_prefix_max"]!=4 or ledger["full_max"]!=0 or ledger["protocol_sha256"]!=PROTOCOL_SHA:
+        if ledger["full_max"]!=0 or ledger["protocol_sha256"]!=PROTOCOL_SHA:
             raise ValueError("INVALID_CANONICAL_LEDGER")
-        if ledger["physical_started"]>=4:raise ValueError("PHYSICAL_PREFIX_BUDGET_EXHAUSTED")
+        cap=effective_prefix_cap(freeze,ledger)
+        if ledger["physical_started"]>=cap:raise ValueError("PHYSICAL_PREFIX_BUDGET_EXHAUSTED")
         if any(s["status"]=="STARTED" for s in ledger["slots"]):raise ValueError("NATIVE_PREFIX_OWNER_ALREADY_RUNNING")
         physical=ledger["physical_started"]+1
         number=int(freeze["logical_slot"])
         if number not in SLOTS:raise ValueError("INVALID_LOGICAL_SLOT")
-        slot=ledger["slots"][number-1]
-        required={1:"OFF",2:"B2",3:"B2_F0"}.get(number)
+        if number==5 and cap<5:raise ValueError("LOGICAL_SLOT5_REQUIRES_OWNER_AMENDMENT")
+        slot=next((item for item in ledger["slots"] if item["slot"]==number),None)
+        if slot is None:raise ValueError("LOGICAL_SLOT_NOT_AUTHORIZED_IN_LEDGER")
+        required={1:"OFF",2:"B2",3:"B2_F0",5:"OFF"}.get(number)
         if required is not None and variant!=required:raise ValueError("FROZEN_SLOT_ORDER_REQUIRED")
         if number==4 and not freeze.get("concrete_correction_reserve_reason"):
             raise ValueError("RESERVE_REQUIRES_ONE_CONCRETE_CORRECTION_REASON")
+        if number==5 and not freeze.get("non_trading_repair_reason"):
+            raise ValueError("EXTRA_OFF_REQUIRES_REVIEWED_NONTRADING_REPAIR_REASON")
         if slot["status"]!="NOT_STARTED":raise ValueError("LOGICAL_SLOT_CANNOT_BE_REUSED")
         identity=freeze["monetary_source_identity"]
         if variant!="OFF":

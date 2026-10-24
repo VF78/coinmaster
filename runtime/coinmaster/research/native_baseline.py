@@ -315,16 +315,32 @@ def _reporting_checkpoints(start: datetime, end: datetime) -> tuple[int, ...]:
     return tuple(result)
 
 
+def _interval_month_labels(start: datetime, end: datetime) -> list[str]:
+    """UTC calendar months intersecting the declared half-open interval."""
+    if start.tzinfo is not None:start=start.astimezone(timezone.utc)
+    if end.tzinfo is not None:end=end.astimezone(timezone.utc)
+    if end<=start:raise ValueError("INVALID_REPORT_INTERVAL")
+    cursor=start.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+    labels=[]
+    while cursor<end:
+        labels.append(cursor.strftime("%Y-%m"))
+        cursor=cursor.replace(year=cursor.year+(cursor.month==12),month=1 if cursor.month==12 else cursor.month+1)
+    return labels
+
+
 def assert_report_boundaries(report: dict) -> None:
     """Reject report shapes that cannot reconcile to their declared interval."""
     summary = report["summary"]
     months = summary["monthly_returns"]
     start = datetime.fromisoformat(report["run_interval"]["start"])
     end = datetime.fromisoformat(report["run_interval"]["end_exclusive"])
-    expected_months = max(1, (end.year - start.year) * 12 + end.month - start.month)
+    expected_labels = _interval_month_labels(start,end)
+    expected_months = len(expected_labels)
     liquidated_early_lockout = bool(report.get("liquidation_count")) and bool(report.get("liquidation_lockout"))
     if (not liquidated_early_lockout and len(months) != expected_months) or not months:
         raise ValueError(f"MONTHLY_ROW_COUNT:{len(months)}")
+    if [month.get("month") for month in months] != expected_labels[:len(months)]:
+        raise ValueError("MONTHLY_ORDERED_INTERVAL_LABELS_MISMATCH")
     interval_terminal = Decimal(summary["interval_cash_terminal_total"])
     if Decimal(months[-1]["total"]) != interval_terminal:
         raise ValueError("MONTHLY_INTERVAL_CASH_MISMATCH")
