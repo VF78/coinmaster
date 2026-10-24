@@ -48,18 +48,28 @@ def claim_attempt(path,freeze,variant,artifact_dir):
             raise ValueError("INVALID_CANONICAL_LEDGER")
         if ledger["physical_started"]>=4:raise ValueError("PHYSICAL_PREFIX_BUDGET_EXHAUSTED")
         if any(s["status"]=="STARTED" for s in ledger["slots"]):raise ValueError("NATIVE_PREFIX_OWNER_ALREADY_RUNNING")
-        number=ledger["physical_started"]+1;slot=ledger["slots"][number-1]
+        physical=ledger["physical_started"]+1
+        number=int(freeze["logical_slot"])
+        if number not in SLOTS:raise ValueError("INVALID_LOGICAL_SLOT")
+        slot=ledger["slots"][number-1]
         required={1:"OFF",2:"B2",3:"B2_F0"}.get(number)
         if required is not None and variant!=required:raise ValueError("FROZEN_SLOT_ORDER_REQUIRED")
         if number==4 and not freeze.get("concrete_correction_reserve_reason"):
             raise ValueError("RESERVE_REQUIRES_ONE_CONCRETE_CORRECTION_REASON")
-        if slot["status"]!="NOT_STARTED":raise ValueError("SLOT_CANNOT_BE_REUSED")
+        if slot["status"]!="NOT_STARTED":raise ValueError("LOGICAL_SLOT_CANNOT_BE_REUSED")
+        identity=freeze["monetary_source_identity"]
+        if variant!="OFF":
+            matched=any(a["variant"]=="OFF" and a["status"]=="COMPLETED" and a.get("monetary_source_identity")==identity for a in ledger.get("attempts",[]))
+            if not matched:raise ValueError("MATCHED_COMPLETED_OFF_MONETARY_SOURCE_REQUIRED")
+        if variant=="B2_F0":
+            matched_b2=any(a["variant"]=="B2" and a["status"]=="COMPLETED" and a.get("monetary_source_identity")==identity for a in ledger.get("attempts",[]))
+            if not matched_b2:raise ValueError("MATCHED_B2_ATTRIBUTION_SOURCE_REQUIRED")
         attempt=str(uuid.uuid4())
         slot.update(status="STARTED",attempt_id=attempt,variant=variant,started_utc=utc(),
-            source_commit=freeze["source_commit"],artifact_dir=str(artifact_dir))
-        ledger["physical_started"]=number;ledger["status"]="PREFIX_ATTEMPT_RUNNING"
-        ledger.setdefault("attempts",[]).append(dict(slot=number,attempt_id=attempt,variant=variant,
-            started_utc=slot["started_utc"],source_commit=freeze["source_commit"],status="STARTED"))
+            source_commit=freeze["source_commit"],monetary_source_identity=identity,physical_index=physical,artifact_dir=str(artifact_dir))
+        ledger["physical_started"]=physical;ledger["status"]="PREFIX_ATTEMPT_RUNNING"
+        ledger.setdefault("attempts",[]).append(dict(logical_slot=number,physical_index=physical,attempt_id=attempt,variant=variant,
+            started_utc=slot["started_utc"],source_commit=freeze["source_commit"],monetary_source_identity=identity,status="STARTED"))
         return attempt
 
 

@@ -135,6 +135,7 @@ class PairedPrefixResearch:
             self._pair["risk"] = "UNKNOWN_RISK"
             self._pair["close_sol"] = True
             self._pair["caps"].bmax = D(0)
+            self._pair_arm_btc_debt(ns)
 
     def _pair_no_increase(self):
         return bool(self.config.research_paired_prefix and self._pair)
@@ -403,7 +404,7 @@ class PairedPrefixResearch:
                 p["risk"] = "INACTIVE_RISK"; p["close_sol"] = True
                 p["entry_sent"] = True; p["entry_terminal"] = True
                 self._pair_log("ADMISSION_CANCELLED_ALREADY_INACTIVE", ns)
-            if p and p["first_fill_ns"] is not None and ns > p["first_fill_ns"]:
+            if p and p["risk"] != "INACTIVE_RISK" and p["first_fill_ns"] is not None and ns > p["first_fill_ns"]:
                 if p["side"] * (tick.bid_price.as_decimal() - p["boundary"]) >= 0 or ns >= p["deadline_ns"]:
                     p["risk"] = "INACTIVE_RISK"; p["close_sol"] = True
                     self._pair_log("RISK_INVALID_OR_EXPIRED", ns, btc_close=tick.bid_price.as_decimal())

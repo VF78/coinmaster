@@ -50,11 +50,16 @@ def selected(s, ns=10, a="2", side=1):
 class Probe(NativeProbe):
     def __init__(self, config):
         self.native_fill_events=[]
+        self.native_cancel_events=[]
         super().__init__(config.__replace__(research_paired_prefix="B2_F0", research_btc_q_mode="CLEAN_Q"))
 
     def on_order_filled(self,event):
         self.native_fill_events.append(event)
         return super().on_order_filled(event)
+
+    def on_order_canceled(self,event):
+        self.native_cancel_events.append(event)
+        return super().on_order_canceled(event)
 
 
 def native_setup(side=1, a="2", probe=Probe, modules=()):
@@ -251,10 +256,11 @@ def test_native_late_entry_after_btc_flat_cancel_request_never_recreates_btc():
         t=s._pair["eligible_ns"]
         run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t)])
         assert hasattr(s,"held_entry") and s._pair_qty(SOL_PERP.id)==0
-        run_ticks(e,[tick(BTC_PERP,t+1,"103")])
+        for dt in (1,2,3):
+            run_ticks(e,[tick(BTC_PERP,t+dt,"103")])
         assert s._pair_qty(BTC_PERP.id)==0 and s._pair is not None
         s.release_native_entry_transport()
-        for dt in range(2,6):
+        for dt in range(4,8):
             run_ticks(e,[tick(BTC_PERP,t+dt,"103"),tick(SOL_PERP,t+dt)])
         assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0,json.dumps(s._pair_report())
         assert s._pair is None and not s._pair_work() and not e.cache.orders_inflight()
@@ -287,6 +293,52 @@ def test_native_late_oversize_btc_caused_cap_actual_deficit_is_not_deduplicated_
         # native engine/cache is not modified; duplicate callbacks earn no credit.
         for event in reversed(list(s.native_fill_events)):
             s.on_order_filled(event)
+        for event in reversed(list(s.native_cancel_events)):
+            s.on_order_canceled(event)
         assert json.dumps(s._pair_report(),sort_keys=True)==before
         assert e.cache.account_for_venue(SIM).balance_total().as_decimal()==cash
+    finally:e.end();e.dispose()
+
+
+@pytest.mark.parametrize("sol_first",[False,True])
+def test_native_same_timestamp_fill_invalidation_replay_priority_audit(sol_first):
+    s,e,ep=native_setup(a=".2")
+    try:
+        t=covered(s,e);p=s._pair;p["boundary"]=D("100.2")
+        btc=tick(BTC_PERP,t,"100.2");sol=tick(SOL_PERP,t,"99")
+        run_ticks(e,[sol,btc] if sol_first else [btc,sol])
+        fills=[r for r in s.paired_prefix_audit if r["event"]=="ACTUAL_FILL" and r["kind"]=="TP" and int(r["timestamp_ns"])==t]
+        assert fills
+        assert fills[0]["risk"]==("ACTIVE_RISK" if sol_first else "INACTIVE_RISK")
+        expected=D("37.5") if sol_first else D(50)
+        for dt in (1,2,3):
+            run_ticks(e,[tick(BTC_PERP,t+dt,"100.2"),tick(SOL_PERP,t+dt,"99")])
+        assert s._pair_qty(BTC_PERP.id)==expected,json.dumps(s._pair_report())
+        assert p["caps"].bmax==expected
+    finally:e.end();e.dispose()
+
+
+class RejectedStopProbe(Probe):
+    def _pair_submit(self,instrument,side,qty,kind,ns,**kwargs):
+        if kind=="STOP":kwargs["stop"]=D(99)  # Actual native rejection: BUY stop below current ask.
+        return super()._pair_submit(instrument,side,qty,kind,ns,**kwargs)
+
+
+class LostProtectionAckProbe(Probe):
+    def _pair_accept(self,event):
+        return  # Real native working order, deliberately lost owner ACK callback.
+
+
+@pytest.mark.parametrize("probe,reason",[(RejectedStopProbe,"NATIVE_STOP_REJECTED"),
+    (LostProtectionAckProbe,"PROTECTION_OVERDUE_NEXT_QUOTE")])
+def test_native_rejected_or_missing_protection_ack_fails_closed_without_fake_receipt(probe,reason):
+    s,e,ep=native_setup(a=".2",probe=probe)
+    try:
+        t=s._pair["eligible_ns"]
+        for dt in range(6):
+            run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt)])
+        assert reason in s._pair_failures,json.dumps(s._pair_report())
+        assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0
+        assert s._pair is None and not s._pair_work()
+        assert not e.cache.orders_open() and not e.cache.orders_inflight()
     finally:e.end();e.dispose()
