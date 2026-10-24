@@ -308,8 +308,11 @@ def test_native_same_timestamp_fill_invalidation_replay_priority_audit(sol_first
         btc=tick(BTC_PERP,t,"100.2");sol=tick(SOL_PERP,t,"99")
         run_ticks(e,[sol,btc] if sol_first else [btc,sol])
         fills=[r for r in s.paired_prefix_audit if r["event"]=="ACTUAL_FILL" and r["kind"]=="TP" and int(r["timestamp_ns"])==t]
-        assert fills
-        assert fills[0]["risk"]==("ACTIVE_RISK" if sol_first else "INACTIVE_RISK")
+        if sol_first:
+            assert fills and fills[0]["risk"]=="ACTIVE_RISK"
+        else:
+            assert not fills  # BTC invalidation cancel ACK precedes later same-ts SOL matching.
+            assert any(r["event"]=="ACTUAL_FILL" and r["kind"]=="SOL_CLOSE" and r["risk"]=="INACTIVE_RISK" and int(r["timestamp_ns"])==t for r in s.paired_prefix_audit)
         expected=D("37.5") if sol_first else D(50)
         for dt in (1,2,3):
             run_ticks(e,[tick(BTC_PERP,t+dt,"100.2"),tick(SOL_PERP,t+dt,"99")])
