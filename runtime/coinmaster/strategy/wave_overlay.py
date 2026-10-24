@@ -2734,6 +2734,9 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
         if self.config.research_v0_selective_lifecycle_repairs and self._pending_by_order:
             return
         self.terminal_lifecycle["status"] = "FLAT"
+        if self._md_enabled():
+            ep = self._domain.episode
+            self._md_coverage(self.clock.timestamp_ns(), True, ep.id if ep else None, "NATIVE_TERMINAL_FLAT")
 
     def reporting_state(self) -> dict[str, object]:
         """Authoritative native adapter state for diagnostic-only exports."""
