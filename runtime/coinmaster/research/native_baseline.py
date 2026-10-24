@@ -13,7 +13,7 @@ import os
 import platform
 import resource
 from dataclasses import asdict, dataclass, replace
-from decimal import Decimal
+from decimal import Decimal, localcontext
 from pathlib import Path
 from typing import Iterator
 from uuid import uuid4
@@ -328,12 +328,16 @@ def assert_report_boundaries(report: dict) -> None:
     interval_terminal = Decimal(summary["interval_cash_terminal_total"])
     if Decimal(months[-1]["total"]) != interval_terminal:
         raise ValueError("MONTHLY_INTERVAL_CASH_MISMATCH")
-    compounded = Decimal("1")
-    for month in months:
-        compounded *= Decimal("1") + Decimal(month["return"])
-    ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
-    if abs(compounded - ratio) > Decimal("1e-24"):
-        raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
+    # Validation must not amplify context-28 multiplication roundoff across
+    # 24 exported monthly ratios. Inputs and tolerance remain unchanged.
+    with localcontext() as context:
+        context.prec = 80
+        compounded = Decimal("1")
+        for month in months:
+            compounded *= Decimal("1") + Decimal(month["return"])
+        ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
+        if abs(compounded - ratio) > Decimal("1e-24"):
+            raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
     for timestamp in (summary["drawdown_start"], summary["drawdown_trough"]):
         point = datetime.fromisoformat(timestamp)
         if not start <= point < end:
@@ -684,6 +688,9 @@ def run_native_diagnostic(
     research_btc_drawdown_sizing: bool = False,
     research_v3_risk: str | None = None,
     research_h1_b1: str | None = None,
+    research_btc_real_u: bool = False,
+    research_btc_q_mode: str | None = None,
+    research_sol_off: bool = False,
     research_btc_split50: bool = False,
     research_btc_split_planref_v1: bool = False,
     research_btc_split_tp_ioc: bool = False,
@@ -740,7 +747,7 @@ def run_native_diagnostic(
                     research_btc_direction_sizing, observe_minute_risk)):
             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
     candidate = candidate or Candidate()
-    if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
+    if research_sol_off or research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
     policy = execution_policy or ExecutionPolicy()
     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
@@ -853,6 +860,7 @@ def run_native_diagnostic(
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
+        research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
         research_btc_split_tp_ioc=research_btc_split_tp_ioc,
@@ -1115,6 +1123,14 @@ def run_native_diagnostic(
                 )
             }
         # Preserve native facts before any boundary/metadata packaging assertion.
+        result["config"].update(research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
+        result["market_redesign_audit"]=strategy._md_report()
+        result.setdefault("source_hashes",{}).update({name:sha256_file(Path(__file__).resolve().parents[1]/relative) for name,relative in (
+            ("market_redesign","strategy/market_redesign.py"),("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
+        result["funding"]["signed_native_cash_deltas"]=journal.funding_cash_audit() if journal else []
+        result["funding"]["signed_amount"]=str(sum((Decimal(row[5]) for row in result["funding"]["signed_native_cash_deltas"]),Decimal(0)))
+        result["funding"]["signed_amount_basis"]="NATIVE_BALANCE_AFTER_MINUS_BEFORE_EACH_FUNDING_MUTATION"
+        result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         raw_native={**result,'native_strategy_events':strategy.reporting_state(),'native_order_events':strategy._order_audit,
             'native_risk_first_audit':strategy.risk_first_sol_audit,
             'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
@@ -1196,6 +1212,7 @@ def run_native_diagnostic(
         if audit_archive is not None:
             from coinmaster.research.native_audit import audit_json_default
             result = json.loads(json.dumps(result, default=audit_json_default))
+        result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         successful_run = True
         return result
     finally:
@@ -1344,7 +1361,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_real_u: bool = False, research_btc_q_mode: str | None = None, research_sol_off: bool = False, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1445,6 +1462,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
+        research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
         research_btc_split_tp_ioc=research_btc_split_tp_ioc,
@@ -1473,6 +1491,9 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--research-btc-real-u",action="store_true")
+    parser.add_argument("--research-btc-q-mode",choices=("LEGACY_Q_CONTROL","CLEAN_Q"))
+    parser.add_argument("--research-sol-off",action="store_true")
     parser.add_argument("--research-btc-split50", action="store_true")
     parser.add_argument("--research-btc-split-planref-v1", action="store_true")
     parser.add_argument("--research-btc-split-tp-ioc", action="store_true")
@@ -1543,6 +1564,7 @@ def main() -> None:
             research_btc_drawdown_sizing=args.research_btc_drawdown_sizing,
             research_v3_risk=args.research_v3_risk,
             research_h1_b1=args.research_h1_b1,
+            research_btc_real_u=args.research_btc_real_u, research_btc_q_mode=args.research_btc_q_mode, research_sol_off=args.research_sol_off,
             research_btc_split50=args.research_btc_split50,
             research_btc_split_planref_v1=args.research_btc_split_planref_v1,
             research_btc_split_tp_ioc=args.research_btc_split_tp_ioc,

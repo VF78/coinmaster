@@ -383,6 +383,9 @@ class WaveOverlayState:
             self._last_entry_attempt = (index, feature.side)
             self.last_decision_reason = "BTC_ENTRY_INTENT"
             return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min((self.config.btc_notional_multiplier if btc_notional_multiplier is None else btc_notional_multiplier) * active_marked, self.config.max_parent_notional))]
+        if getattr(self,"research_real_u",False) and episode.btc_entry_vwap is None and feature.side != episode.side:
+            episode.close_reason = "REGIME"
+            return [self._intent(episode,"CLOSE_ALL",-episode.side,None,reason="REGIME")]
         if episode.btc_entry_vwap is None or episode.h is None:
             self.last_decision_reason = "PENDING_NATIVE_ENTRY_OUTCOME"
             return []
@@ -405,6 +408,8 @@ class WaveOverlayState:
         if any(intent_id not in episode.resting_reductions for intent_id in episode.pending):
             return []
         intents: list[Intent] = []
+        if getattr(self,"research_real_u",False):
+            return []
         for level, threshold in enumerate(episode.wave_levels or ()):
             # v3 installs known targets as genuine resting post-only orders on
             # the confirmed initial fill.  A target that was not installed
@@ -640,7 +645,8 @@ class WaveOverlayState:
             and self.episode.sol_qty == 0
             and not self.episode.pending
         ):
-            self.episode = None
+            if not getattr(self,"research_real_u",False):
+                self.episode = None
 
     def on_parent_terminal(self, intent_id: str) -> None:
         """Called only after a native terminal order state, never an ACK."""

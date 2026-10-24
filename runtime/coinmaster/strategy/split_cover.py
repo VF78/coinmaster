@@ -110,6 +110,9 @@ class SplitCoverResearch:
         p=self._split_parent
         if intent.action != "BTC_ENTRY" or not p or p["episode_id"]!=intent.episode_id:
             return
+        if self._md_enabled():
+            self._md_split_fill(intent,event)
+            return
         qty=event.last_qty.as_decimal()
         if p["filled"]+qty > p["quantity"]:
             raise ValueError("SPLIT_PARENT_OVERFILL")
@@ -144,6 +147,8 @@ class SplitCoverResearch:
                 self.cancel_order(order)
 
     def _split_check(self,tick):
+        if self._md_enabled():
+            return
         if not self._split_unfinished() or tick.instrument_id!=self.config.btc_id:
             return
         p=self._split_parent
@@ -184,7 +189,7 @@ class SplitCoverResearch:
             self._split_child_submit=False
 
     def _split_tp_ioc_eligible(self,intent):
-        if not self.config.research_btc_split_tp_ioc or intent.action!="BTC_REDUCE":
+        if self._md_enabled() or not self.config.research_btc_split_tp_ioc or intent.action!="BTC_REDUCE":
             return False
         p=self._split_parent
         ep=self._domain.episode
@@ -195,7 +200,7 @@ class SplitCoverResearch:
 
     def _split_limit(self,intent,instrument,quantity):
         p=self._split_parent
-        if not p or not self._split_child_submit or p["fallback"] or p["filled"]<p["first_quantity"]:
+        if not p or not self._split_child_submit or p["fallback"] or (not self._md_plans[intent.episode_id]["first_done"] if self._md_enabled() else p["filled"]<p["first_quantity"]):
             return None
         from coinmaster.strategy.wave_overlay import _native_limit_price
         raw=p["first_vwap"]*(1-self.config.research_btc_split_discount*p["side"])

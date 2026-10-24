@@ -287,8 +287,10 @@ class PerpetualFundingModule(SimulationModule):
                 notional = position.quantity.as_decimal() * mark
                 # Positive funding: longs pay and shorts receive; negative reverses it.
                 sign = Decimal("-1") if position.is_long else Decimal("1")
+                account_before = self.exchange.get_account().balance_total(USDT).as_decimal()
                 self.exchange.adjust_account(Money(sign * notional * event.rate, instrument.quote_currency))
                 account_total = self.exchange.get_account().balance_total(USDT).as_decimal()
+                self._journal.record_funding_cash(event.event_id,str(event.instrument_id),event.ts_event,account_before,account_total)
                 self._journal.record_funding(
                     event.event_id,
                     str(event.instrument_id),

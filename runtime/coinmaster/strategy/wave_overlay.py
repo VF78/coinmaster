@@ -5,6 +5,7 @@ or funding.  It is deliberately not declared a research baseline until a
 finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
+from coinmaster.strategy.market_redesign import MarketRedesignResearch, PHI, legacy_net_lots
 from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
 
 from dataclasses import replace
@@ -63,6 +64,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
+    research_btc_real_u: bool = False
+    research_btc_q_mode: str | None = None
+    research_sol_off: bool = False
     research_btc_split50: bool = False
     research_btc_split_planref_v1: bool = False
     research_btc_split_tp_ioc: bool = False
@@ -185,11 +189,12 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
         self._split_cover_init()
+        self._md_init()
         self._risk_first_init()
         self._conditional_init()
         self._insurance_init()
@@ -208,7 +213,11 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             raise ValueError("CONDITIONAL_REQUIRES_SELECTED_BTC_ORIGINAL_SOL_AND_NATIVE_BARS")
         if config.research_btc_split_tp_ioc and (not config.research_btc_split_planref_v1 or config.tp_fee_floor_v1):
             raise ValueError("TP_IOC_REQUIRES_PLANREF_V3")
-        if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != Decimal("0.0025")):
+        if config.research_btc_real_u and (config.research_btc_q_mode not in {"LEGACY_Q_CONTROL","CLEAN_Q"} or not config.research_sol_off or config.candidate.sol_overlay_enabled or not config.research_btc_split50 or not config.research_btc_split_planref_v1 or config.research_btc_split_discount != Decimal(".005")):
+            raise ValueError("REAL_U_REQUIRES_SOL_OFF_SPLIT_PLANREF_005_AND_EXPLICIT_Q")
+        if not config.research_btc_real_u and config.research_btc_q_mode is not None:
+            raise ValueError("Q_MODE_REQUIRES_REAL_U")
+        if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != (Decimal(".005") if config.research_btc_real_u else Decimal("0.0025"))):
             raise ValueError("PLANREF_V1_REQUIRES_BTC025_SPLIT")
         if config.research_btc_split_discount not in (Decimal("0.0025"),Decimal("0.005")):
             raise ValueError("SPLIT_DISCOUNT_NOT_AUTHORIZED_CANDIDATE")
@@ -290,6 +299,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         self.sol_cap_admission_audit: list[dict[str, str]] = []
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
         self._domain = WaveOverlayState(self._candidate)
+        self._domain.research_real_u = config.research_btc_real_u
         self._domain.research_sol_cover = config.research_sol_cover is not None
         self._domain.research_h4_owned = config.research_h4_ema is not None
         self._bars: list[DailyBar] = list(config.seed_bars)
@@ -1428,6 +1438,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                     self._b1_candidate = None
         if tick.instrument_id == self.config.sol_id:
             self._h1_check(tick.ts_event)
+        self._md_check(tick)
         self._split_check(tick)
         self._cover_check(tick)
         self._conditional_check(tick)
@@ -1436,7 +1447,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             intent, sigma, index = item
             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
                 continue
-            if self._split_unfinished() and intent.action == "BTC_REDUCE":
+            if self._split_unfinished() and intent.action == "BTC_REDUCE" and not self._md_enabled():
                 continue
             if self._split_tp_ioc_eligible(intent) and any(self._reduction_key(owned)==self._reduction_key(intent) for owned in self._pending_by_order.values()):
                 continue
@@ -1522,6 +1533,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 target_lots[level] = lots
                 assigned += lots
             self._deferred_selective_entries[intent.id] = {
+                "q0_price": price,
                 "q0_ns": tick.ts_event,
                 "session_ns": self._last_accepted_session,
                 "gross_lots": gross_lots,
@@ -1546,7 +1558,10 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         # This is a prediction about the old q0-reference target at q1, not
         # an oracle for a new entry's later q2 target.
         omitted = plan["zero_levels"] if passive else set()
-        net_lots = sum(lots for level, lots in plan["target_lots"].items() if level not in omitted)
+        net_lots = legacy_net_lots(plan["gross_lots"], plan["target_lots"], plan["zero_levels"], passive)
+        if self._md_enabled() and self.config.research_btc_q_mode == "CLEAN_Q":
+            # Phi outside the capped requested notional, before lot rounding.
+            net_lots = int(PHI[episode.side]*Decimal(str(intent.requested_notional))/plan["q0_price"]/plan["step"])
         episode.btc_reference_qty = float(Decimal(plan["gross_lots"]) * plan["step"])
         episode.btc_reference_target_lots = dict(plan["target_lots"]) if passive else {}
         episode.btc_omitted_zero_levels = set(omitted)
@@ -1878,7 +1893,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             rounded = self._research_sol_cap_quantity(rounded, executable_price, ts_now or 0)
         if intent.action == "SOL_ADD" and self.config.research_sol_remaining_btc_hedge:
             rounded = self._research_sol_hedge_quantity(rounded, executable_price, ts_now or 0)
-        if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0 and not self._split_child_submit:
+        if not self._md_enabled() and self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0 and not self._split_child_submit:
             episode = self._domain.episode
             if episode is None or episode.wave_levels is None:
                 raise ValueError("BTC_ENTRY_WAVE_LEVELS_MISSING")
@@ -1947,6 +1962,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 return
         if intent.action == "SOL_ADD":
             rounded = self._risk_first_sol_prepare(intent,rounded,step,ts_now or 0,sigma,decision_index)
+        if intent.action == "BTC_ENTRY" and self._md_enabled() and not self._split_child_submit:
+            self._md_prepare(intent,rounded,instrument,executable_price,ts_now or 0)
         if intent.action == "BTC_ENTRY":
             rounded = self._split_prepare(intent, rounded, step, ts_now or 0, sigma, decision_index)
         # Control A makes every planned SOL exit a native taker IOC.  Resting
@@ -1986,7 +2003,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 if (episode.side == 1 and limit_price.as_decimal() < floor.as_decimal()) or (episode.side == -1 and limit_price.as_decimal() > floor.as_decimal()):
                     limit_price = floor
             quote_tick = self.cache.quote_tick(instrument_id)
-            if quote_tick is not None:
+            if quote_tick is not None and not self._md_enabled():
                 # Check the exact wire-equivalent native price.  A five-sig
                 # rounding step may otherwise turn a passive quote marketable.
                 canonical = limit_price.as_decimal()
@@ -1996,7 +2013,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             order = self.order_factory.limit(
                 instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded),
                 price=limit_price, time_in_force=TimeInForce.GTC,
-                post_only=True, reduce_only=True,
+                post_only=not self._md_enabled(), reduce_only=True,
             )
         elif intent.action == "BTC_REDUCE" and self.config.tp_fee_floor_v1:
             episode = self._domain.episode
@@ -2068,7 +2085,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
 
     def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:
-        if self._carry_busy():
+        if self._carry_busy() or self._md_enabled():
             return
         key = self._reduction_key(intent)
         owner = self._accepted_reductions.get(key)
@@ -2146,6 +2163,10 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
         self._risk_first_sol_stop(reason)
+        if self._md_enabled():
+            ep=self._domain.episode
+            self._md_log("SIGNAL_CYCLE_CLOSE_REQUEST",self.clock.timestamp_ns(),
+                episode_id=ep.id if ep else None,reason=reason,actual_btc_open=str(ep.btc_open_qty) if ep else None)
         self._split_stop(reason)
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
@@ -2434,6 +2455,9 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         )
         self._after_domain_fill(event)
         if closed:
+            self._md_first_terminal(intent,event.ts_event)
+        self._md_after_fill(intent,event)
+        if closed:
             self._terminal_submission(str(event.client_order_id))
             if self._forced_close_reason is not None:
                 self._group_close_reconciliation_pending = True
@@ -2536,6 +2560,9 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
+        if self._md_enabled():
+            self._md_reconcile(ready_ns)
+            return
         if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
             return
         if self.config.deposit_runtime is not None and self._deposit.latched:
@@ -2574,6 +2601,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
+        self._md_cancel_terminal(intent,event.ts_event)
         self._next_terminal(intent,event.ts_event)
         self._hedge_terminal(intent, event.ts_event, "CANCELED")
         if self._conditional_enabled():
@@ -2585,6 +2613,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
             )
         sigma = self._sigma_by_order.pop(str(event.client_order_id), None)
         decision_index = self._decision_index_by_order.pop(str(event.client_order_id), 0)
+        self._md_first_terminal(intent,event.ts_event)
         if intent is not None:
             self._domain.on_parent_cancelled(intent.id)
             if self._has_confirmed_btc_remainder(intent):
@@ -2597,6 +2626,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         if intent is not None:
             self._requeue_accepted_reduction(intent, sigma, decision_index, event.ts_event)
         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,event.ts_event,"CANCELED")
+        if self._md_enabled():
+            self._md_reconcile(event.ts_event)
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(event.ts_event)
@@ -2624,6 +2655,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         if context is not None and context.get("accept_ns") is None:
             context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
+        self._md_accept(event)
         if self.config.research_sol_risk_first=="split-atr":
             owned=self._rf_sol_orders.get(str(event.client_order_id))
             if owned and owned[0]["stopped"]:
@@ -2667,6 +2699,10 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         if self._insurance_enabled() and self._insurance_cycle:
             self._insurance_cycle.update(closed=True,target=Decimal(0))
         self._carry_flat()
+        if self._md_enabled():
+            ep=self._domain.episode
+            self._md_log("NATIVE_FLAT_SIGNAL_CYCLE_END",self.clock.timestamp_ns(),
+                episode_id=ep.id if ep else None,reason=ep.close_reason if ep else None)
         reason = self._domain.on_group_flat()
         if self._forced_close_reason not in {"LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}:
             self._forced_close_reason = None
@@ -2723,6 +2759,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
     def _terminal_without_fill(self, client_order_id: str) -> None:
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
+        self._md_reject(failed_intent,self.clock.timestamp_ns())
         self._hedge_terminal(failed_intent, self.clock.timestamp_ns(), "DENIED_REJECTED_EXPIRED")
         if self._conditional_enabled():
             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
@@ -2761,6 +2798,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
         if intent is not None and self._reduction_key(intent) in self._accepted_reductions:
             self._requeue_accepted_reduction(intent, sigma, decision_index, self.clock.timestamp_ns())
         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,self.clock.timestamp_ns(),"DENIED_REJECTED_EXPIRED")
+        if self._md_enabled():
+            self._md_reconcile(event.ts_event)
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
