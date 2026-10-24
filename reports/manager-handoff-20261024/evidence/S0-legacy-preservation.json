@@ -1,0 +1,10 @@
+{
+  "source_temporary_path": "/private/tmp/btc-audit-exact-s0-direction.json",
+  "durable_file": "reports/manager-handoff-20261024/evidence/S0-legacy-native-report.json.gz",
+  "uncompressed_sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa",
+  "compressed_sha256": "c00d8b55b8c4b6d3c354b26c2b408afdb63b89f92a1b8f26fc401960da1a7a35",
+  "TOTAL": "6077107.23887483",
+  "config_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+  "new_engine_run": false,
+  "source_and_payload_unchanged": true
+}

@@ -1,0 +1,158 @@
+[
+  {
+    "copy": "Mac-entry",
+    "path": "AGENTS.md",
+    "bytes": 518,
+    "sha256": "3916f0fe651e548214713111e9979061e64699c03af0789e5bab7f7640e61c17"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": "SOUL.md",
+    "bytes": 401,
+    "sha256": "e62dafe0a541f422c9e084572c6588c2bca9e1e530766371feb2ff60ece8ef1b"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": "USER.md",
+    "bytes": 248,
+    "sha256": "cb55a519eb5dd2dc20dbb19e8e7730d07c433ec3199e36d61957ac038a17287b"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": "IDENTITY.md",
+    "bytes": 275,
+    "sha256": "98272945116ec0e758c3d4222af9a9ce1f9456bd266ce7e3b6b5cea4dc48552f"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": "MEMORY.md",
+    "bytes": 814,
+    "sha256": "e85b38457a21ed24d2adb2468766be5bd8f92516b24e9ea0683e4cd4305a5faf"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": "PROJECT_TRUTH.md",
+    "bytes": 250,
+    "sha256": "f406f4bf3360680ec39a3d68afb892038d625b1c89b108b2396622860bf4d209"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": "TASK_STATE.md",
+    "bytes": 52689,
+    "sha256": "83388b38be8ca9479a1c949e129e34f17ae2792f6819b16b83371d234a66f6d0"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": ".ops/ACTIVE_TASK.md",
+    "bytes": 156924,
+    "sha256": "69563c8ebc848e83ebe5be4b8f6692dcb8fa47d6de28cb5ea81f7eafd5d712e1"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": ".ops/PROJECT_TRUTH.md",
+    "bytes": 56681,
+    "sha256": "14df0118f4a08230d08cf7af77301e38c6b6fdc16a7c655428317a8928a2ecb5"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": ".ops/MODEL_ROUTING.md",
+    "bytes": 2503,
+    "sha256": "f65011fdca359c2130128490eb95f8c2b9cd6ae16288b4d983d53a9ee78b5571"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": ".ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md",
+    "bytes": 3467,
+    "sha256": "d4402dd18e93d7ce6d00934297ee4491d7c0437b5eced46bff9655ed092fd4be"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": ".ops/TASK_STATE_PROTOCOL.md",
+    "bytes": 2570,
+    "sha256": "361ba351c1bb9a5157721915e849897f4bbb154434644f7b5f6d2ac9e4073683"
+  },
+  {
+    "copy": "Mac-entry",
+    "path": ".ops/RESET_PREP_PROTOCOL.md",
+    "bytes": 2123,
+    "sha256": "29676c7b7cd6caaca1f5b679704b5e8407e8c114ef56ed7a993989504a5a80db"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": "AGENTS.md",
+    "bytes": 518,
+    "sha256": "3916f0fe651e548214713111e9979061e64699c03af0789e5bab7f7640e61c17"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": "SOUL.md",
+    "bytes": 401,
+    "sha256": "e62dafe0a541f422c9e084572c6588c2bca9e1e530766371feb2ff60ece8ef1b"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": "USER.md",
+    "bytes": 248,
+    "sha256": "cb55a519eb5dd2dc20dbb19e8e7730d07c433ec3199e36d61957ac038a17287b"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": "IDENTITY.md",
+    "bytes": 275,
+    "sha256": "98272945116ec0e758c3d4222af9a9ce1f9456bd266ce7e3b6b5cea4dc48552f"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": "MEMORY.md",
+    "bytes": 814,
+    "sha256": "e85b38457a21ed24d2adb2468766be5bd8f92516b24e9ea0683e4cd4305a5faf"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": "PROJECT_TRUTH.md",
+    "bytes": 250,
+    "sha256": "f406f4bf3360680ec39a3d68afb892038d625b1c89b108b2396622860bf4d209"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": "TASK_STATE.md",
+    "bytes": 52689,
+    "sha256": "83388b38be8ca9479a1c949e129e34f17ae2792f6819b16b83371d234a66f6d0"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": ".ops/ACTIVE_TASK.md",
+    "bytes": 27137,
+    "sha256": "538aec1244e549477e2e1b1b41440e9154877ec7681767db41bd000f14ef4f1e"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": ".ops/PROJECT_TRUTH.md",
+    "bytes": 127531,
+    "sha256": "088ed24a1450cc3d11fd20d91bfcb89ca61982eeca143e47f189ed565a0d9f77"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": ".ops/MODEL_ROUTING.md",
+    "bytes": 2969,
+    "sha256": "94d08f2cd2775a97e2fb908ea42490bffbbffe94803b74d8adf069c0de9149f8"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": ".ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md",
+    "bytes": 3467,
+    "sha256": "d4402dd18e93d7ce6d00934297ee4491d7c0437b5eced46bff9655ed092fd4be"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": ".ops/TASK_STATE_PROTOCOL.md",
+    "bytes": 2570,
+    "sha256": "361ba351c1bb9a5157721915e849897f4bbb154434644f7b5f6d2ac9e4073683"
+  },
+  {
+    "copy": "Mac-manager",
+    "path": ".ops/RESET_PREP_PROTOCOL.md",
+    "bytes": 2123,
+    "sha256": "29676c7b7cd6caaca1f5b679704b5e8407e8c114ef56ed7a993989504a5a80db"
+  }
+]

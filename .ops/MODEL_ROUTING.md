@@ -1,19 +1,19 @@
-# Current owner override — 2026-10-09
+# Model and delegation policy
 
-All newly launched executor tasks use **GPT-6.1 Sol (`gpt-6.1-sol`)**, not GPT-5.6 or GPT-6 models. Choose the minimum sufficient reasoning effort for the task; native trading/money reviews normally use medium. Do not interrupt or restart already running/passing tasks to change their model. This explicit owner instruction overrides the older routing table below, which is retained as historical role/quality-gate context.
+Owner preference: all NEW CoinMaster executors use GPT-6.1 Sol, not5.5/5.6/6.0. This supersedes old routing tables.
 
-# CoinMaster model routing
+| Work | Default | Limit |
+|---|---|---|
+| Manager: scope, Project, compact evidence review | GPT-6.1 Sol / medium | Do not implement product changes in manager chat; docs/orchestration are fine. UI selection must be verified, not claimed changed by a file. |
+| Focused implementation / ordinary analysis | GPT-6.1 Sol / medium | One owner of engine/domain/journal; one focused pass. |
+| Money/orders/recovery or genuinely hard debugging | GPT-6.1 Sol / medium, high only when needed | Raise effort for the narrow hard part, not the whole program. |
+| Independent acceptance/review | GPT-6.1 Sol / medium | Specific diff/contract/assertions; no repeat total audit. |
+| Astra / medium | Only a separately owner-approved critical architecture decision | Never automatic routine implementation or repeated final audits. |
 
-Updated: 2026-09-23. Applies to new work; do not restart a passing implementation solely to change models.
-
-| Work | Model / effort | Handoff and quality gate |
-| --- | --- | --- |
-| Routine coordination, Project status, concise summaries | GPT-6 Luna / high | Give only issue, current HEAD, constraints, and a compact result contract. Escalate if competing architectural interpretations appear. |
-| Bounded code/UI change with settled contract | GPT-6 Luna / high | One focused development pass and one full relevant verification pass. Escalate on failing integration tests or unclear ownership. |
-| Ordinary multi-file implementation | GPT-6 Sol / low | Use when interfaces and acceptance criteria are explicit; escalate to Sol / medium if native state or money semantics are involved. |
-| Native Nautilus integration, execution/accounting lifecycle, hard debugging | GPT-6 Sol / medium | One sequential executor, concise inputs, review diff/checks/CI only. Avoid overlapping edits. |
-| Critical architecture, irreversible boundary, final audit | GPT-6 Astra / medium | Narrow, decision-oriented review; no routine implementation. |
-
-The current coordinator task remains GPT-6 Sol / medium as selected in its UI. Its role is to maintain scope and Project state, dispatch one executor, inspect concise results, diff, tests and CI, and request at most one material correction. Implementation belongs in the executor task. The previously used GPT-5.6 Terra / medium (high for integration) remains a fallback for an existing task; GPT-6 routing above is preferred for new passes.
-
-This is a routing hypothesis, not a measured CoinMaster benchmark. OpenAI describes Luna as efficient for scoped work, Sol / medium for everyday coding needing judgment, and Astra / medium for ambitious multi-context work. Higher reasoning effort generally spends more reasoning tokens. Public forum reports on GPT-6 Codex quality and usage are mixed, so evaluate against our actual completed-task cost and correction rate before lowering a safety-critical task's model. Sources: [OpenAI model selection](https://developers.openai.com/api/docs/guides/model-selection), [reasoning effort](https://developers.openai.com/api/docs/guides/reasoning), [developer forum discussion](https://community.openai.com/t/sol-is-expensive-but-luna-terra-retries-can-cost-even-more/1394943), [Codex user discussion](https://www.reddit.com/r/codex/comments/1wnlfbf/gpt6sol_high_vs_xhigh_where_is_the_sweet_spot/).
+Use supported actual tool model IDs (e.g. `gpt-6.1-sol`); do not invent availability or silently substitute an older model.
+Delegate only authorized scoped work; this project permits nontrivial implementation delegation. Do not spawn agents for simple documentation/status changes.
+Default: one sequential engine owner; independent GUI/API or data work only after contracts and disjoint files are fixed. A narrow reviewer joins when needed; no standing swarm.
+New executor: no full chat history (`fork_turns=none`). Give TaskID, objective, source/config/data refs, relevant sections/files, constraints, acceptance tests, physical-run budget and output contract.
+Return root cause, commit/diff, tests/CI, artifact paths and blocker. Never return full transcript/logs/manifests or all TASK_STATE.
+One focused development pass, one full relevant verification, at most one substantial concrete correction; preserve failed evidence and every physical attempt in the ledger.
+Optimize total cost including rework. Narrow/split first when a contract is unclear; do not upgrade every task or restart passing work to change models.

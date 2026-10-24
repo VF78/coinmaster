@@ -1,6 +1,6 @@
-# USER.md
+# Owner
 
-- **Name:** Владимир
-- **Timezone:** Europe/Madrid
-- **Focus:** Системная торговля (Hyperliquid, бэктесты, SL/TP, risk management)
-- **Style:** Практичный, экспертный, без воды
+- Vladimir; communicate in Russian, plainly and without filler.
+- Timezone: Europe/Moscow (current owner/client context).
+- Goal: improve terminal ACTIVE+RESERVE after actual expenses with the agreed DD/profit constraints.
+- Prefers simple native Nautilus solutions, minimal layers, minimal total model cost and rework.

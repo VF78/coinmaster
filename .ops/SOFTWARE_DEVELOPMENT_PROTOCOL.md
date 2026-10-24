@@ -1,78 +1,16 @@
-# Coinmaster Software Development Protocol
+# Working protocol
 
-Purpose: canonical rules for Coinmaster software work with minimum restart token burn.
-
-## 1) Sources of truth
-
-- Canonical repo: `/root/.openclaw/workspace/coinmaster/coinmaster`
-- Deploy mirror: `/opt/coinmaster` — never edit manually.
-- Backlog/status: GitHub Project #2 `https://github.com/users/VF78/projects/2`
-- Current task snapshot: `.ops/ACTIVE_TASK.md`
-- One active implementation task at a time; do not create duplicates if an existing Project item covers the work.
-
-## 2) Default execution model
-
-- Default model for **all Coinmaster tasks**: `openai-codex/gpt-5.5`.
-- Main chat orchestrates, reviews, reports, and handles trivial doc/one-line changes directly.
-- Non-trivial coding uses a subagent/coding-agent with `openai-codex/gpt-5.5` unless Vladimir explicitly asks otherwise.
-- Use another executor/model only when Codex 5.5 is unavailable, rate-limited, clearly ineffective, or explicitly requested.
-
-## 3) Development rules
-
-- Build inside the current architecture and deliberate evolution; do not create parallel engines or bypass paths.
-- Prefer the smallest complete clean change; no refactor-for-refactor.
-- No hacks, duplicate execution paths, hidden sidecars, or “temporary” complexity that can become permanent.
-- Protect live paths first: Daily Drawdown, entry/confirmation/auto-open, TP/SL, persistence, replay, recovery.
-- Runtime settings truth is the persisted DB snapshot unless code explicitly says otherwise; env vars are not assumed authoritative.
-- Before calling something a rollback/regression, verify `main`, `origin/main`, deployed commit, and semantic surface.
-
-## 4) Preflight before implementation
-
-From canonical repo:
-
-```bash
-git branch --show-current        # default must be main unless user requested otherwise
-git status --short
-git rev-parse HEAD
-git rev-list --left-right --count origin/main...HEAD
-cat /opt/coinmaster/.deploy-source-commit 2>/dev/null || true
-```
-
-Then set/confirm the GitHub Project item state and update `.ops/ACTIVE_TASK.md`.
-
-## 5) Workspace hygiene
-
-- Work only in the canonical repo.
-- Scratch files go to `/tmp` or another non-repo path.
-- Before commit/reset, `git status --short` must contain only intentional changes; document intentional untracked/dirty state in `.ops/ACTIVE_TASK.md`.
-
-## 6) Verification standard
-
-Use the smallest meaningful gate set:
-
-- task-specific invariant/smoke script(s),
-- `npm run check`,
-- `npm run build` when UI/server wiring changed,
-- direct runtime/API evidence when behavior changed.
-
-Do not claim completion without evidence or a named blocker.
-
-## 7) Commit/deploy
-
-- Review diff before commit.
-- Default branch target: `main`; avoid feature branches unless requested.
-- Deploy only through `scripts/deploy-prod-safe.sh` or the active post-commit hook flow.
-- After deploy verify: deployed commit = workspace `HEAD`, `coinmaster.service` active, health endpoint ok, and task-specific surface ok.
-- If push/deploy is deferred or blocked, record exact reason in `.ops/ACTIVE_TASK.md`.
-
-## 8) Restart protocol
-
-Before reset/restart/handoff, follow `.ops/RESET_PREP_PROTOCOL.md`: update GitHub Project, compress `.ops/ACTIVE_TASK.md`, record repo/deploy state, exact next step, blockers, and key files only.
-
-## 9) Minimal doc map
-
-Read in this order after restart:
-
-1. `.ops/PROJECT_TRUTH.md`
-2. `.ops/ACTIVE_TASK.md`
-3. Only then open this file, reset/task-state protocols, or deep docs if needed.
+1. Read AGENTS + current state; verify actual HEAD, dirty paths, selected Project item and (only for runtime work) installed release. Never assume main/origin/main exists or equals production.
+2. Reuse existing issues and fixed work. Create only missing scope. Record dependencies/acceptance and read Project changes back.
+3. Manager does docs/coordination; product changes belong to a scoped executor under MODEL_ROUTING. Preserve user edits; no hard reset/clean/force-push. Develop in isolated canonical VPS worktrees, never live release paths. Keep Mac source snapshots immutable.
+4. Native Nautilus/account lifecycle only. Prefer stock connectors/cache/reconciliation/market_exit. No duplicate OMS/PnL engine, hidden SDK, new service or architecture churn.
+5. Settle exact behavior/interfaces before edits. One writer of shared engine/domain/journal files; GUI/API may run independently only with a settled contract and no shared-file race.
+6. Use local host gh/git/ssh with saved credentials. No secrets in prompts, manifests, console output or git. Research receives no trader environment/keys.
+7. Start with focused meaningful tests; one connected relevant acceptance pass per checkpoint. Money/order changes get one narrow independent review. Do not rerun 24m economics after docs/UI/non-economic changes.
+8. For economic experiments: frozen source/config/data/engine/fees/settlement, causal features, genuine native fills/money and fresh engine/funding journal per attempt. Define comparison/stop/combination gates before outcomes. Count all physical full attempts, including failures/repeats; unused slots do not authorize a new family.
+9. No automatic restart because a long run is quiet. Check process/resource/progress evidence first; never kill another task/pilot. Failed/OOM output is not a valid final TOTAL. Preserve original failures; no manual money/export fabrication or widened checks.
+10. Use native Price/Quantity strings and actual enum meaning; first-fill label reference is distinct from completed first-child trading PLANREF. Default OFF new research flags. JSON-roundtrip actual new native payloads before full runs; reuse606 report precision fix with unchanged tolerance.
+11. Read diffs and test summaries/artifacts, not transcripts. Reports separate implemented/tested/hypothetical, matched versus legacy controls, UNKNOWN attribution and not-run reasons. History used repeatedly is not fresh OOS; repeat proves reproducibility only.
+12. Commit checkpoints to existing codex branch, review explicit files (not git add-all), push with hooks disabled when only publishing research/docs; verify exact remote ref. Push never means deployment. CI green is claimed only from actual checks.
+13. Deployment only within current explicit authorization via current qualified scripts and immutable releases. Real orders/transfers/live/account increases require separate owner approval. No production action in research/cleanup/handoff scope.
+14. Update Project and overwrite ACTIVE_TASK at package completion/reset. Closed negative study can be Done while economic goal remains NOT_MET. Never reopen it or spend leftover attempts automatically.

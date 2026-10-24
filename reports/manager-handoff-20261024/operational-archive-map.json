@@ -1,0 +1,152 @@
+[
+  {
+    "from": ".ops/CM03_NATIVE_ACCOUNT_PROJECTION.md",
+    "to": "docs/archive/operations/CM03_NATIVE_ACCOUNT_PROJECTION.md",
+    "sha256": "b91d7af2b4da1fd49b08908adcb1c399b32fb634d4394238cb26c91078b0ac53"
+  },
+  {
+    "from": ".ops/CM04_NATIVE_REPLAY.md",
+    "to": "docs/archive/operations/CM04_NATIVE_REPLAY.md",
+    "sha256": "f3beee977edd872051f7cb21f76651b25ce5d63731e7deec8d809f58f0adfd82"
+  },
+  {
+    "from": ".ops/CM05_LIVE_MODE_SEAM.md",
+    "to": "docs/archive/operations/CM05_LIVE_MODE_SEAM.md",
+    "sha256": "d19c315bac31e7fd0f35c90c679430c95d6f47e48873340e01d9403f2e723dd3"
+  },
+  {
+    "from": ".ops/CM05_NATIVE_EVENT_RECONSTRUCTION_PROOF.md",
+    "to": "docs/archive/operations/CM05_NATIVE_EVENT_RECONSTRUCTION_PROOF.md",
+    "sha256": "45077f3311684f5637971907e4b9c7c5ca0360f1261a102827fa8651cbd97a42"
+  },
+  {
+    "from": ".ops/CM05_PINNED_REPORT_BLOCKER.md",
+    "to": "docs/archive/operations/CM05_PINNED_REPORT_BLOCKER.md",
+    "sha256": "1cd7f150101a4a10eb103dcccbd0339e826ec274a1c74e4cf28e211c983a866b"
+  },
+  {
+    "from": ".ops/CM05_RC5_BOUNDED_QUALIFICATION.md",
+    "to": "docs/archive/operations/CM05_RC5_BOUNDED_QUALIFICATION.md",
+    "sha256": "cf9252077c6650dd0a8818b31d8711da2164b536301273e83fec0c80fd540305"
+  },
+  {
+    "from": ".ops/CM05_READONLY_ACCOUNT_OBSERVER.md",
+    "to": "docs/archive/operations/CM05_READONLY_ACCOUNT_OBSERVER.md",
+    "sha256": "f3f70d0deeda55a4b909bf4f8394cdd697e97eb7eb654012ee3d9f1a44ef21e3"
+  },
+  {
+    "from": ".ops/CM05_SANDBOX_CUTOVER_20260926.md",
+    "to": "docs/archive/operations/CM05_SANDBOX_CUTOVER_20260926.md",
+    "sha256": "afe13b02831432398fa5f7f85021906115280b60118a1d24efcaf8b96c06eeab"
+  },
+  {
+    "from": ".ops/CM05_SANDBOX_REPLAY_FEASIBILITY.md",
+    "to": "docs/archive/operations/CM05_SANDBOX_REPLAY_FEASIBILITY.md",
+    "sha256": "8aa46d7f8b971532ae42a5816ec4f36d1a5fad46804000d771aeac3691591a7c"
+  },
+  {
+    "from": ".ops/CM101_LIVE_PORT_STAGE_20261007.json",
+    "to": "docs/archive/operations/CM101_LIVE_PORT_STAGE_20261007.json",
+    "sha256": "eec610ac7d716f15c964e06a74b6bb0057971e462a944b3aba53b3ac4e9718b6"
+  },
+  {
+    "from": ".ops/CM101_LIVE_WALLET_REPIN_20261005.json",
+    "to": "docs/archive/operations/CM101_LIVE_WALLET_REPIN_20261005.json",
+    "sha256": "abb5d4cf29397537f7018080405c2c3792f79c7ee9afca17cd4f99414c540e22"
+  },
+  {
+    "from": ".ops/CM101_LIVE_WORKER_STAGE_20261005.md",
+    "to": "docs/archive/operations/CM101_LIVE_WORKER_STAGE_20261005.md",
+    "sha256": "658c253ff7f655b6af02626a5ed9ef45cdc4c03dbc40a1a3a5f8c3abd8b47c40"
+  },
+  {
+    "from": ".ops/CM99_SANDBOX_CUTOVER_20260928.md",
+    "to": "docs/archive/operations/CM99_SANDBOX_CUTOVER_20260928.md",
+    "sha256": "0d302908bcf0b215a213b5d492e16ece6259ff1a5375895b65d7c0ee6f130290"
+  },
+  {
+    "from": ".ops/CoinMaster_BTC_Split_SOL_Hedge_Research_Plan.md",
+    "to": "docs/archive/operations/CoinMaster_BTC_Split_SOL_Hedge_Research_Plan.md",
+    "sha256": "361081ee8bf836e0f17cab5a2160c987cb599828b704c3c6b51f4039308518a9"
+  },
+  {
+    "from": ".ops/GUI_NATIVE_7DAY_ACCEPTANCE_20261007.json",
+    "to": "docs/archive/operations/GUI_NATIVE_7DAY_ACCEPTANCE_20261007.json",
+    "sha256": "5e87de4b58eb7e0144bc5c621cdb44ba9aea9ce1b45bb22d2961c5315f0db3fa"
+  },
+  {
+    "from": ".ops/GUI_PROJECT_ACCEPTANCE_20261007.json",
+    "to": "docs/archive/operations/GUI_PROJECT_ACCEPTANCE_20261007.json",
+    "sha256": "6e605a8f7109c1e0b116f686994df82f323510f643b4cc385da3c1484d2b1638"
+  },
+  {
+    "from": ".ops/GUI_TRADER_AUDIT_20261007.md",
+    "to": "docs/archive/operations/GUI_TRADER_AUDIT_20261007.md",
+    "sha256": "4ea1b56a52438112d9f1457bc03864ae009af8e23700fcfddfdaaafa2da08719"
+  },
+  {
+    "from": ".ops/GUI_TRADER_RELEASE_20261007.json",
+    "to": "docs/archive/operations/GUI_TRADER_RELEASE_20261007.json",
+    "sha256": "e5b007e49d30df6bccb35e078e0cf3f19de6671075f14eb511369ca67e813192"
+  },
+  {
+    "from": ".ops/TP_ZERO_AUDIT_20261009.md",
+    "to": "docs/archive/operations/TP_ZERO_AUDIT_20261009.md",
+    "sha256": "62de23e9a7fed2c89e3af0117582ac8681846ade189374265797a6681d773367"
+  },
+  {
+    "from": ".ops/TRADING_GAP_AUDIT_20261007.csv",
+    "to": "docs/archive/operations/TRADING_GAP_AUDIT_20261007.csv",
+    "sha256": "8a029e3d6f36a266bab014261da837746ebe971465bebb1eaf6443527c61f162"
+  },
+  {
+    "from": ".ops/TRADING_GAP_AUDIT_20261007.json",
+    "to": "docs/archive/operations/TRADING_GAP_AUDIT_20261007.json",
+    "sha256": "7cded0afdff906a2e374ab6617c562a209ee6977043f315b2a72dd2fd1d0f1e3"
+  },
+  {
+    "from": ".ops/TRADING_GAP_AUDIT_20261007.md",
+    "to": "docs/archive/operations/TRADING_GAP_AUDIT_20261007.md",
+    "sha256": "920e60330429a540b451243283f14dbb6de9906ceb47f8cf369bc3ea19433ba3"
+  },
+  {
+    "from": ".ops/VPS_CLEANUP_20260930.md",
+    "to": "docs/archive/operations/VPS_CLEANUP_20260930.md",
+    "sha256": "87211fc63076d9f3b6f55c8855a893828403f72a3708e82308263046dc75407b"
+  },
+  {
+    "from": ".ops/VPS_CLEANUP_20261007.json",
+    "to": "docs/archive/operations/VPS_CLEANUP_20261007.json",
+    "sha256": "55c43491d1f02b4cb3b1768c1db8f320ba8e8fe6b781ec33ab09a4611a651112"
+  },
+  {
+    "from": ".ops/VPS_CLEANUP_20261007.md",
+    "to": "docs/archive/operations/VPS_CLEANUP_20261007.md",
+    "sha256": "91e4d087e03ade94ef04c80957a86834d221f169090ab540d7e90cbfc673c183"
+  },
+  {
+    "from": ".ops/VPS_CLEANUP_RELEASE_MANIFEST_20260930.json",
+    "to": "docs/archive/operations/VPS_CLEANUP_RELEASE_MANIFEST_20260930.json",
+    "sha256": "c877772f00a5ff12393af8985c8ef01eff28c31e78da657899926834764e605c"
+  },
+  {
+    "from": ".ops/artifacts",
+    "to": "docs/archive/operations/artifacts",
+    "kind": "historical artifact directory"
+  },
+  {
+    "from": ".ops/sol-risk-first-project-final-readback-20261018.json",
+    "to": "docs/archive/operations/sol-risk-first-project-final-readback-20261018.json",
+    "sha256": "c9b9e10a9ea6b01455792afdaa6bec0885a93d83b7b1564b08443c316884ce86"
+  },
+  {
+    "from": ".ops/sol-risk-first-project-readback-20261018.json",
+    "to": "docs/archive/operations/sol-risk-first-project-readback-20261018.json",
+    "sha256": "e76bc6ccfb49c524e9d2da91d09603f060c9c21519923bb24a8db1535556d8fb"
+  },
+  {
+    "from": ".ops/split-cover-project-readback-20261018.json",
+    "to": "docs/archive/operations/split-cover-project-readback-20261018.json",
+    "sha256": "a62939382abc74582fba948d08f7af0e859f1fda0b2a306a5e0c080db6e52933"
+  }
+]

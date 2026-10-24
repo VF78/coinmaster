@@ -1,0 +1,26 @@
+{
+  "core_files": [
+    "AGENTS.md",
+    "SOUL.md",
+    "USER.md",
+    "IDENTITY.md",
+    "MEMORY.md",
+    "PROJECT_TRUTH.md",
+    "TASK_STATE.md",
+    ".ops/PROJECT_TRUTH.md",
+    ".ops/MODEL_ROUTING.md",
+    ".ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md",
+    ".ops/TASK_STATE_PROTOCOL.md",
+    ".ops/RESET_PREP_PROTOCOL.md"
+  ],
+  "boot_files": [
+    "AGENTS.md",
+    "SOUL.md",
+    "USER.md",
+    ".ops/PROJECT_TRUTH.md",
+    ".ops/ACTIVE_TASK.md"
+  ],
+  "historical_operations_moved": 30,
+  "global_codex_memories": "directory empty; no account/global memory changes",
+  "global_agents": "no CoinMaster directives found; unchanged"
+}

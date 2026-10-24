@@ -1,0 +1,26 @@
+{
+  "report_base": "c619ad1c6e438c2c221b8d466a4daea42531434c",
+  "runtime_source": "8f2f78005325776d1f600297a0c2d39e29c48bdd",
+  "primary_VPS_HEAD": "0bd7351897a9854c144817fdfca6c548e7984673",
+  "origin_main": "ABSENT; divergenceUNKNOWN",
+  "services_readonly": {
+    "sandbox": {
+      "unit": "coinmaster-hl-stageg-testnet.service",
+      "working_directory": "/srv/coinmaster/runtime",
+      "release_file": "81e6318646b51280497806a1c0492591654b5fe6",
+      "active": "active/running",
+      "NRestarts": 0
+    },
+    "gui": {
+      "unit": "coinmaster-runtime.service",
+      "active": "active/running",
+      "NRestarts": 0,
+      "current_symlink_commit": "be2f71daac848a20b183ee0167194e5cfa65a5b8"
+    }
+  },
+  "installed_nautilus": "1.231.0",
+  "runtime_account_gate_positions": "NOT_CHECKED",
+  "no_service_action": true,
+  "dirty_user_code": "PRESERVED; detail snapshot on canonical host /tmp/cm-handoff-20261024-status-before.txt",
+  "global_memory": "Codex memories directory empty; no global CoinMaster instructions; project MEMORY.md rewritten"
+}

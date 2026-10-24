@@ -1,0 +1,432 @@
+[
+  {
+    "family": "ai-cycle-20261021-01",
+    "entry_points": [
+      {
+        "path": "reports/ai-cycle-20261021-01/protocol.json",
+        "bytes": 12098,
+        "sha256": "d04e005b934cd5c3eda5c07bcde8c1ba3b29ee5f132bc479e774919d8a06f586"
+      }
+    ]
+  },
+  {
+    "family": "ai-signal-methods-20261021",
+    "entry_points": [
+      {
+        "path": "reports/ai-signal-methods-20261021/README.md",
+        "bytes": 35635,
+        "sha256": "21fe33cae49f27d0cbfe5fe726127ee4bfd9391be052babe76566a44063660d1"
+      }
+    ]
+  },
+  {
+    "family": "b-50-90-next-20261023",
+    "entry_points": [
+      {
+        "path": "reports/b-50-90-next-20261023/REPORT.md",
+        "bytes": 27072,
+        "sha256": "1e1849f578be826fade6adf27e5dc592cda129b7a96574017dbdd8120c3f7b86"
+      },
+      {
+        "path": "reports/b-50-90-next-20261023/comparison.json",
+        "bytes": 16525,
+        "sha256": "158fcacd8df9be304fbf9d9d4a670f9bd0a48e3b2589c9e84e20259b956f3441"
+      },
+      {
+        "path": "reports/b-50-90-next-20261023/selection.json",
+        "bytes": 599,
+        "sha256": "ed399c77dc348889b79a6dd271519b8b8de43de3e8ca6887091e1fcbdc890a60"
+      },
+      {
+        "path": "reports/b-50-90-next-20261023/protocol.json",
+        "bytes": 2098,
+        "sha256": "f34b0033c80201f018b8d709f7e056984c3ebefed00ec7a917f3d39630865f9c"
+      }
+    ]
+  },
+  {
+    "family": "b-band-postmortem-20261023",
+    "entry_points": [
+      {
+        "path": "reports/b-band-postmortem-20261023/REPORT.md",
+        "bytes": 31362,
+        "sha256": "8c9935d0a4fe93da553ab55e201ae648dd27f633ef9a9efc888c7e64d3417d31"
+      }
+    ]
+  },
+  {
+    "family": "btc-lifecycle-audit-20261022",
+    "entry_points": [
+      {
+        "path": "reports/btc-lifecycle-audit-20261022/REPORT.md",
+        "bytes": 23360,
+        "sha256": "6821de0625944a9c7b8b7106d94f8649edda861eeb7c9e837e1879a18304439d"
+      }
+    ]
+  },
+  {
+    "family": "btc-pattern-pilot-m2-20261021",
+    "entry_points": [
+      {
+        "path": "reports/btc-pattern-pilot-m2-20261021/README.md",
+        "bytes": 3265,
+        "sha256": "1bddf2df81b19bdd5253c38738f23ef70f59a53f1d4802669dcfc5581c299d77"
+      },
+      {
+        "path": "reports/btc-pattern-pilot-m2-20261021/protocol.json",
+        "bytes": 6985,
+        "sha256": "52deb5b1ae03b0a225364ed70d38ac478dc39c9868a0e308cc32e98f579cbf2c"
+      }
+    ]
+  },
+  {
+    "family": "btc-sol-causal-modules-20261022",
+    "entry_points": [
+      {
+        "path": "reports/btc-sol-causal-modules-20261022/REPORT.md",
+        "bytes": 14593,
+        "sha256": "26ed7b81a5080c9a2ea20acfbab546b4e984e299b3ba2f5d81eacdc8b3fb052f"
+      }
+    ]
+  },
+  {
+    "family": "btc-sol-event-risk-20261021",
+    "entry_points": [
+      {
+        "path": "reports/btc-sol-event-risk-20261021/README.md",
+        "bytes": 4318,
+        "sha256": "1419aa42419f48529c118df6f97826461bd0cb7f504a82478a6f0d2b4169cb67"
+      }
+    ]
+  },
+  {
+    "family": "btc-split-sol-cover-20261018",
+    "entry_points": [
+      {
+        "path": "reports/btc-split-sol-cover-20261018/README.md",
+        "bytes": 30641,
+        "sha256": "136ab98e4b5e96001ebf8e28c8c95cb48875c275e3b899f78fe4c433a106b18b"
+      }
+    ]
+  },
+  {
+    "family": "carry-pair-113",
+    "entry_points": [
+      {
+        "path": "reports/carry-pair-113/README.md",
+        "bytes": 938,
+        "sha256": "54706819d9d050382605b988a899e4a7cc5e6ac4267dad7f7d9dc1f2eb702935"
+      }
+    ]
+  },
+  {
+    "family": "carry-pair-run-113",
+    "entry_points": [
+      {
+        "path": "reports/carry-pair-run-113/comparison.json",
+        "bytes": 1979,
+        "sha256": "de519c88734c8e8b9e24f5cb74b168f11a729061c5c800b0c7af822d64c1dc3c"
+      }
+    ]
+  },
+  {
+    "family": "conditional-sol-2-1-50-113",
+    "entry_points": [
+      {
+        "path": "reports/conditional-sol-2-1-50-113/README.md",
+        "bytes": 11328,
+        "sha256": "15ccc21c3019e6bba1c81098ac5ef3aaef29511bddd88e0285ddff39fe203551"
+      }
+    ]
+  },
+  {
+    "family": "current-hedge-20261013",
+    "entry_points": [
+      {
+        "path": "reports/current-hedge-20261013/README.md",
+        "bytes": 6886,
+        "sha256": "529b4e3f9fe125b8688c32113845710bb25efc6d1fb3d317eb1adf9ae72194dc"
+      }
+    ]
+  },
+  {
+    "family": "e4-budget-tp3-20261023",
+    "entry_points": [
+      {
+        "path": "reports/e4-budget-tp3-20261023/REPORT.md",
+        "bytes": 16657,
+        "sha256": "8a1e2dbc8171d4b57c41f168e1f744e00718dd1e7317575a553158944ccd088d"
+      },
+      {
+        "path": "reports/e4-budget-tp3-20261023/comparison.json",
+        "bytes": 5702,
+        "sha256": "dc3cb041c74dbc2f0ba256f4cbb5572722372de5d9481c200ed2cf817d057881"
+      },
+      {
+        "path": "reports/e4-budget-tp3-20261023/selection.json",
+        "bytes": 804,
+        "sha256": "f42463bae6a39b64d16f38dd22dbefc5a243f1af7ca366d6d5faa003a5446a83"
+      }
+    ]
+  },
+  {
+    "family": "e4-postmortem-20261023",
+    "entry_points": [
+      {
+        "path": "reports/e4-postmortem-20261023/REPORT.md",
+        "bytes": 30023,
+        "sha256": "7b21bbe8480bdb95426f60654b35d1ee0ea12628b88f6270ee9d58049f46cdd8"
+      }
+    ]
+  },
+  {
+    "family": "e4-sol-residual-20261023",
+    "entry_points": [
+      {
+        "path": "reports/e4-sol-residual-20261023/REPORT.md",
+        "bytes": 16479,
+        "sha256": "68bedcb0075f67ea00103da568e36f7c2dbbc41361cf7d31bbbf8d6e48a2d69b"
+      },
+      {
+        "path": "reports/e4-sol-residual-20261023/comparison.json",
+        "bytes": 12671,
+        "sha256": "f9d48734b000f3b0610b63ce2aa9ab103330be7f3cf19804876c4d47d060065e"
+      },
+      {
+        "path": "reports/e4-sol-residual-20261023/selection.json",
+        "bytes": 734,
+        "sha256": "57b1393e94ebb618411ab97ec24aad02abbbd1c12d8af7740b58bf52501c022c"
+      },
+      {
+        "path": "reports/e4-sol-residual-20261023/protocol.json",
+        "bytes": 1210,
+        "sha256": "bd37d3b6c76a4c0b425e6644fa5aa07ad6a29043440c3cdddd9e048c4fdec38b"
+      }
+    ]
+  },
+  {
+    "family": "fast-rnd-20261020",
+    "entry_points": [
+      {
+        "path": "reports/fast-rnd-20261020/README.md",
+        "bytes": 9711,
+        "sha256": "b86ab689a2d324f9194c4f94333b4b12d6463cf8fda0adfc499da54d8e08638c"
+      }
+    ]
+  },
+  {
+    "family": "forecast-independent-20261021",
+    "entry_points": [
+      {
+        "path": "reports/forecast-independent-20261021/README.md",
+        "bytes": 5631,
+        "sha256": "c0de00dbe793c533f27fd3386e0d0d12b231b2da2daeca27353e1b6c8eef59b4"
+      },
+      {
+        "path": "reports/forecast-independent-20261021/protocol.json",
+        "bytes": 10550,
+        "sha256": "121942c4eaa70e831fc46e8ac07cdfa1fdbd458760cd200b2c90e4895736f626"
+      }
+    ]
+  },
+  {
+    "family": "residual-recovery-20261023",
+    "entry_points": [
+      {
+        "path": "reports/residual-recovery-20261023/REPORT.md",
+        "bytes": 15651,
+        "sha256": "ef44ecd91c5f34a602c81293b88e62f8015e8fa9df120d189a281247c2ded7a8"
+      },
+      {
+        "path": "reports/residual-recovery-20261023/comparison.json",
+        "bytes": 3468,
+        "sha256": "0016c33fc83165aab5a09f5b82e73748928d55606aa0f0239b01309e02477b6e"
+      },
+      {
+        "path": "reports/residual-recovery-20261023/selection.json",
+        "bytes": 837,
+        "sha256": "8735d84a09fc3fa05108b3427635f9ba793da8400b44306143b333fe5ebbf703"
+      }
+    ]
+  },
+  {
+    "family": "s0-management-20261022",
+    "entry_points": [
+      {
+        "path": "reports/s0-management-20261022/REPORT.md",
+        "bytes": 7960,
+        "sha256": "9414cddec5b2b2edbad404f622fca265aa29f53ac49ed21eb41ebdf92adc4a20"
+      },
+      {
+        "path": "reports/s0-management-20261022/comparison.json",
+        "bytes": 5450,
+        "sha256": "cecd9a4de855dc8e6771b62fdc8f5b9c0e1e75d626b34d0928244e28f7d71ee3"
+      }
+    ]
+  },
+  {
+    "family": "s0-optimization-plan-20261022",
+    "entry_points": [
+      {
+        "path": "reports/s0-optimization-plan-20261022/README.md",
+        "bytes": 5799,
+        "sha256": "0f8bc9f47293121b1e111587460efcbdea40e82e2bc2097cc964730154964e2e"
+      }
+    ]
+  },
+  {
+    "family": "s0-system-audit-20261023",
+    "entry_points": [
+      {
+        "path": "reports/s0-system-audit-20261023/REPORT.md",
+        "bytes": 41722,
+        "sha256": "258e86b6b9ed124e611d3d85fc83b4705f1a24767fab019d603951ac441e181c"
+      }
+    ]
+  },
+  {
+    "family": "s0-weekly-postmortem-20261022",
+    "entry_points": [
+      {
+        "path": "reports/s0-weekly-postmortem-20261022/REPORT.md",
+        "bytes": 21856,
+        "sha256": "41a5349e018a2f6d1b7ff91fe1d5a73f78e5ebc5c7991b8ddc77f737cb4eb4d3"
+      }
+    ]
+  },
+  {
+    "family": "selective-lifecycle-cap30m-113",
+    "entry_points": [
+      {
+        "path": "reports/selective-lifecycle-cap30m-113/README.md",
+        "bytes": 13213,
+        "sha256": "f49d443a9c0af5f5831e2f40922ae5baf9901ba8b02680fd10aa9288faa2f732"
+      },
+      {
+        "path": "reports/selective-lifecycle-cap30m-113/comparison.json",
+        "bytes": 8030,
+        "sha256": "1676ede095a80b3d63b9ec53bb6bb6be26dd6eb649a0af8738947a261b95f008"
+      }
+    ]
+  },
+  {
+    "family": "selective-zero-tp-113",
+    "entry_points": [
+      {
+        "path": "reports/selective-zero-tp-113/README.md",
+        "bytes": 3867,
+        "sha256": "e00a236413db93dea1ce0d025e849675fd1bfc6bc5186bae9bce326cb997f145"
+      },
+      {
+        "path": "reports/selective-zero-tp-113/comparison.json",
+        "bytes": 10022,
+        "sha256": "8076b2a63e80a4e53eb0c2013cd29dbd09e13edd65841e25d77ac72bc8681d32"
+      }
+    ]
+  },
+  {
+    "family": "sol-conditional-hedge-btc-band-20261023",
+    "entry_points": [
+      {
+        "path": "reports/sol-conditional-hedge-btc-band-20261023/REPORT.md",
+        "bytes": 9480,
+        "sha256": "d9774a55e9f3d975a00860f1db8e9da48d95aab038682262533151e204388b54"
+      },
+      {
+        "path": "reports/sol-conditional-hedge-btc-band-20261023/comparison.json",
+        "bytes": 16381,
+        "sha256": "c14761ebad7e83010b398ef01d156d4fc5865bfced31a125cfc531c0357ae35b"
+      },
+      {
+        "path": "reports/sol-conditional-hedge-btc-band-20261023/selection.json",
+        "bytes": 852,
+        "sha256": "6424d4ac773fcdfc45f6b060b01d419e10616962d9358432b65bbd93de9796f7"
+      }
+    ]
+  },
+  {
+    "family": "sol-corridor-113",
+    "entry_points": [
+      {
+        "path": "reports/sol-corridor-113/README.md",
+        "bytes": 14005,
+        "sha256": "42923259764c76c8c9d19ca744c31821c6264739d84a5bf7897225d567f629df"
+      }
+    ]
+  },
+  {
+    "family": "sol-risk-first-20261018",
+    "entry_points": [
+      {
+        "path": "reports/sol-risk-first-20261018/README.md",
+        "bytes": 7806,
+        "sha256": "7e412d9c0546d66b12c535d4756dd4746ae4cc997ee05be16885e07bdfa0aac5"
+      }
+    ]
+  },
+  {
+    "family": "system-contract-repair-20261023",
+    "entry_points": [
+      {
+        "path": "reports/system-contract-repair-20261023/REPORT.md",
+        "bytes": 15799,
+        "sha256": "1ee8740f4e32a7852e5ee9d7ff6e3548cf66f878b5d6d8162cb42030e78d5920"
+      },
+      {
+        "path": "reports/system-contract-repair-20261023/comparison.json",
+        "bytes": 8770,
+        "sha256": "19cd7ad694b8aface8480f5ed640945f2cafbc2f51cfcc2e660d910e32bf72cf"
+      },
+      {
+        "path": "reports/system-contract-repair-20261023/selection.json",
+        "bytes": 725,
+        "sha256": "21d0fb7e71a70d15c865b18384efac77b73ba77aeecb739499126b8067211066"
+      },
+      {
+        "path": "reports/system-contract-repair-20261023/run-ledger.json",
+        "bytes": 9746,
+        "sha256": "cd5ac127c47b91002dea55809e6bd56a99dd01b53940a8959b77937b77a60034"
+      },
+      {
+        "path": "reports/system-contract-repair-20261023/protocol.json",
+        "bytes": 7347,
+        "sha256": "8e0ed8e3d8a41d72ee44997dac958babdfabe626a0564d22b57794515ab77500"
+      },
+      {
+        "path": "reports/system-contract-repair-20261023/protocol-final-index.json",
+        "bytes": 1029,
+        "sha256": "d6359453a1fab8508b0a1886761fee75f00a730dcd2ac2a04b34b0c417f77b7a"
+      }
+    ]
+  },
+  {
+    "family": "tp-fee-floor-113",
+    "entry_points": [
+      {
+        "path": "reports/tp-fee-floor-113/comparison.json",
+        "bytes": 8238,
+        "sha256": "c97ab0c6b76ba7da88b59753fada923aff247e503dc4d557fe0bb2782e97cae0"
+      }
+    ]
+  },
+  {
+    "family": "v0-execution-repairs-113",
+    "entry_points": [
+      {
+        "path": "reports/v0-execution-repairs-113/comparison.json",
+        "bytes": 14848,
+        "sha256": "6ded07d63ef044707cfaa22b908bc0701f2636e371a4c688b51b22f31a49e4f4"
+      }
+    ]
+  },
+  {
+    "family": "winner-6077107-stats",
+    "entry_points": [
+      {
+        "path": "reports/winner-6077107-stats/README.md",
+        "bytes": 16525,
+        "sha256": "0e1562c21a45510aec8ff9ef2cecb14446b793d3515bc5153d65ff446f5838f7"
+      }
+    ]
+  }
+]

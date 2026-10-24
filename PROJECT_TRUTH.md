@@ -1,12 +1,4 @@
-# PROJECT_TRUTH.md
+# Compatibility pointer
 
-Canonical project truth lives in `.ops/PROJECT_TRUTH.md`.
-
-Read after restart:
-
-1. `SOUL.md`
-2. `USER.md`
-3. `.ops/PROJECT_TRUTH.md`
-4. `.ops/ACTIVE_TASK.md`
-
-Do not maintain rules here; this file is only a compatibility pointer.
+Only `.ops/PROJECT_TRUTH.md` defines stable project truth; `.ops/ACTIVE_TASK.md` defines current work.
+Do not maintain another project summary here.
