@@ -98,6 +98,85 @@ def verify_freeze(freeze):
         raise ValueError("FIXED_PREFIX_CALENDAR_AND_SEED_REQUIRED")
 
 
+BOOL_REPORT_FLAGS = (
+    "research_v0_execution_repairs", "research_v0_zero_tp_netting",
+    "research_v0_deferred_selective_zero_tp", "research_v0_selective_lifecycle_repairs",
+    "research_btc_split50", "research_btc_split_planref_v1", "research_btc_split_tp_ioc",
+    "research_btc_real_u", "research_sol_off",
+)
+DIRECTION_DESCRIPTOR = {"freeze":"GENUINE_EPISODE_CREATION", "long":"5.5", "short":"7.875"}
+
+
+def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
+    """Decode the frozen report schema to the existing native CALL schema.
+
+    A report descriptor is not a truthy flag. Every bool is checked strictly;
+    only the exact archived direction descriptor maps to the old R3 True flag.
+    No engine is constructed here; constructors validate native input objects.
+    """
+    from decimal import Decimal as D
+    from inspect import signature
+    from coinmaster.domain.wave_overlay import Candidate
+    from coinmaster.research.native_baseline import run_native_diagnostic,ExecutionPolicy,FixedBaseFeePolicy
+    if variant not in VARIANTS:raise ValueError("UNAPPROVED_VARIANT")
+    flags={}
+    for key in BOOL_REPORT_FLAGS:
+        value=config[key]
+        if type(value) is not bool:raise ValueError("R3_REPORT_FLAG_NOT_BOOL:"+key)
+        flags[key]=value
+    if config["research_btc_direction_sizing"] != DIRECTION_DESCRIPTOR:
+        raise ValueError("EXACT_R3_DIRECTION_DESCRIPTOR_REQUIRED")
+    if config["research_btc_q_mode"]!="CLEAN_Q" or config["research_btc_split_discount"]!="0.005" or not flags["research_btc_real_u"]:
+        raise ValueError("EXACT_APPROVED_R3_SOURCE_CONFIG_REQUIRED")
+    wait=config["next_band_research"]["wait_4h"]
+    if type(wait) is not bool:raise ValueError("R3_REPORT_FLAG_NOT_BOOL:wait_4h")
+    kwargs=dict(data_root=Path(data_root),include_funding=True,
+        candidate=Candidate(**config["candidate"]),execution_policy=ExecutionPolicy(**config["execution_policy"]),
+        fixed_base_fee_policy=FixedBaseFeePolicy(**config["fixed_base_fee_policy"]),
+        trading_start_ms=START_MS,trading_end_ms=END_MS,initial_active_seed=D(10000),
+        artifact_dir=Path(artifact_dir),artifact_label="paired-prefix-"+variant,
+        **flags,observe_minute_risk=True,research_btc_direction_sizing=True,
+        research_btc_split_discount=config["research_btc_split_discount"],
+        research_btc_q_mode=config["research_btc_q_mode"],research_wait_4h=wait,
+        research_regime_reentry_band=config["hedge_band_research"]["regime_reentry_band"],
+        research_paired_policy=True,research_paired_prefix=VARIANTS[variant],research_paired_signal_rows=feed)
+    # Bind the COMPLETE call against the actual installed source entrypoint,
+    # including every omitted default; no partial hand-maintained signature.
+    actual=signature(run_native_diagnostic)
+    bound=actual.bind(**kwargs);bound.apply_defaults()
+    scalar_types={"bool":bool,"int":int,"str":str,"Path":Path,"Decimal":D,"tuple":tuple,
+        "ExecutionPolicy":ExecutionPolicy,"FixedBaseFeePolicy":FixedBaseFeePolicy}
+    for key,parameter in actual.parameters.items():
+        annotation=parameter.annotation
+        if annotation is parameter.empty:continue  # candidate is validated by its actual constructor.
+        name=annotation if isinstance(annotation,str) else annotation.__name__
+        optional=name.endswith(" | None")
+        if optional:name=name[:-7]
+        value=bound.arguments[key]
+        if value is None and optional:continue
+        expected=scalar_types[name]
+        valid=type(value) is expected if expected in (bool,int,str,tuple) else isinstance(value,expected)
+        if not valid:raise ValueError("NATIVE_CALL_ARGUMENT_TYPE:"+key+":"+name)
+    if kwargs["fixed_base_fee_policy"].hash!=config["fee_policy_hash"]:
+        raise ValueError("EXACT_R3_NATIVE_FEE_POLICY_HASH_REQUIRED")
+    return kwargs
+
+
+def prepare_native_call(freeze, variant, artifact_dir):
+    from coinmaster.research.paired_signal_feed import load_paired_signal_feed
+    config=json.loads(Path(freeze["expected_r3_config"]).read_text())
+    feed=load_paired_signal_feed(Path(freeze["signal_feed"]),freeze["signal_feed_sha256"],START_MS*1000000,END_MS*1000000)
+    return build_native_kwargs(config,freeze["data_root"],artifact_dir,variant,feed)
+
+
+def execute_prepared_call(kwargs, native_runner=None):
+    """Single dispatch seam, captured by engine-free contract regression."""
+    if native_runner is None:
+        from coinmaster.research.native_baseline import run_native_diagnostic
+        native_runner=run_native_diagnostic
+    return native_runner(**kwargs)
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--freeze",type=Path,required=True)
@@ -108,7 +187,9 @@ def main():
     args=parser.parse_args();freeze=json.loads(args.freeze.read_text())
     if not args.launch:
         verify_freeze(freeze)
-        print(json.dumps(dict(status="PREPARED_ENGINE_NOT_IMPORTED",variant=args.variant,
+        prepared=prepare_native_call(freeze,args.variant,args.artifact_dir)
+        print(json.dumps(dict(status="PREPARED_COMPLETE_NATIVE_CALL_VALIDATED_ENGINE_NOT_CONSTRUCTED",variant=args.variant,
+            validated_kwargs=sorted(prepared),direction_sizing_native_bool=prepared["research_btc_direction_sizing"],
             calendar=freeze["calendar"],seed="10000",source_commit=freeze["source_commit"],
             native_launch_requires="--launch AND durable physical ledger claim AND root internal GO")))
         return
@@ -117,32 +198,12 @@ def main():
         verify_freeze(freeze)
         if args.artifact_dir.exists():raise ValueError("ATTEMPT_ARTIFACT_DIR_MUST_BE_NEW")
         args.artifact_dir.mkdir(parents=True)
-        from decimal import Decimal as D
         import nautilus_trader
         if nautilus_trader.__version__!="1.231.0":raise ValueError("PINNED_NATIVE_ENGINE_VERSION_REQUIRED")
-        from coinmaster.domain.wave_overlay import Candidate
-        from coinmaster.research.paired_signal_feed import load_paired_signal_feed
-        from coinmaster.research.native_baseline import run_native_diagnostic,ExecutionPolicy,FixedBaseFeePolicy,save_diagnostic_report
+        from coinmaster.research.native_baseline import save_diagnostic_report
         from coinmaster.research.native_audit import audit_json_default
-        c=json.loads(Path(freeze["expected_r3_config"]).read_text())
-        if c["research_btc_q_mode"]!="CLEAN_Q" or c["research_btc_split_discount"]!="0.005" or not c["research_btc_real_u"]:
-            raise ValueError("EXACT_APPROVED_R3_SOURCE_CONFIG_REQUIRED")
-        feed=load_paired_signal_feed(Path(freeze["signal_feed"]),freeze["signal_feed_sha256"],START_MS*1000000,END_MS*1000000)
-        result=run_native_diagnostic(Path(freeze["data_root"]),include_funding=True,
-            candidate=Candidate(**c["candidate"]),execution_policy=ExecutionPolicy(**c["execution_policy"]),
-            fixed_base_fee_policy=FixedBaseFeePolicy(**c["fixed_base_fee_policy"]),
-            trading_start_ms=START_MS,trading_end_ms=END_MS,initial_active_seed=D(10000),
-            artifact_dir=args.artifact_dir,artifact_label="paired-prefix-"+args.variant,
-            research_v0_execution_repairs=c["research_v0_execution_repairs"],research_v0_zero_tp_netting=c["research_v0_zero_tp_netting"],
-            research_v0_deferred_selective_zero_tp=c["research_v0_deferred_selective_zero_tp"],
-            research_v0_selective_lifecycle_repairs=c["research_v0_selective_lifecycle_repairs"],
-            observe_minute_risk=True,research_btc_direction_sizing=c["research_btc_direction_sizing"],
-            research_btc_split50=c["research_btc_split50"],research_btc_split_planref_v1=c["research_btc_split_planref_v1"],
-            research_btc_split_tp_ioc=c["research_btc_split_tp_ioc"],research_btc_split_discount=c["research_btc_split_discount"],
-            research_btc_real_u=c["research_btc_real_u"],research_btc_q_mode=c["research_btc_q_mode"],
-            research_sol_off=c["research_sol_off"],research_wait_4h=c["next_band_research"]["wait_4h"],
-            research_regime_reentry_band=c["hedge_band_research"]["regime_reentry_band"],
-            research_paired_policy=True,research_paired_prefix=VARIANTS[args.variant],research_paired_signal_rows=feed)
+        prepared=prepare_native_call(freeze,args.variant,args.artifact_dir)
+        result=execute_prepared_call(prepared)
         result=json.loads(json.dumps(result,default=audit_json_default))
         result["physical_prefix_attempt"]={"attempt_id":attempt,"variant":args.variant,"ledger":str(args.ledger),"source_commit":freeze["source_commit"]}
         path=save_diagnostic_report(Path(freeze["data_root"]),result,"paired-prefix-"+args.variant,args.artifact_dir)
