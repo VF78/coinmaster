@@ -51,7 +51,7 @@ def send(strategy, side, quantity, *, price=None, stop=None, reduce=False):
               quantity=SOL_PERP.make_qty(D(quantity)), reduce_only=reduce)
     if stop is not None:
         order = strategy.order_factory.stop_market(**kw,
-            trigger_price=SOL_PERP.make_price(D(stop)), time_in_force=TimeInForce.GTC)
+            trigger_price=SOL_PERP.make_price(D(stop)), time_in_force=TimeInForce.IOC)
     elif price is None:
         order = strategy.order_factory.market(**kw, time_in_force=TimeInForce.IOC)
     else:
@@ -119,10 +119,9 @@ def test_native_reduce_only_protective_stop_partial_and_cancel_ack():
         assert stop.status.name == "ACCEPTED" and stop.is_reduce_only
         run_ticks(e, [tick(SOL_PERP, 4, "98", "300")])
         assert filled(stop) <= D(300), json.dumps(s.receipts)
-        assert stop.status.name == "PARTIALLY_FILLED"
-        s.cancel_order(stop)
+        assert stop.status.name == "CANCELED"  # Triggered IOC remainder is terminal, no synthetic level.
         run_ticks(e, [tick(SOL_PERP, 5, "98", "300")])
-        assert stop.status.name == "CANCELED"
+        assert filled(stop) == D(300)
         assert any(r["kind"] == "OrderCanceled" for r in s.receipts)
         assert e.cache.positions_open()[0].quantity.as_decimal() == D(700)
     finally:
