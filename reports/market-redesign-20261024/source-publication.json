@@ -1,0 +1,11 @@
+{
+  "source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "branch": "codex/market-redesign-btc-20261024",
+  "url": "https://github.com/VF78/coinmaster/tree/ec2a958e383a53133f8a8d03ef0e312810881265",
+  "remote_ref_verified": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "local_fetch_verified": true,
+  "github_check_runs_actual": 0,
+  "ci_qualification": "NO_CHECK_JOBS_NO_GREEN_CI_CLAIM",
+  "default_research_flags": "OFF",
+  "deployment": "NONE"
+}

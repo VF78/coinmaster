@@ -60,8 +60,22 @@ Use explicit Mac runtime `.venv/bin/python` (3.12.13/nautilus1.231.0), frozen so
 Known report-only fix `6061446164cc32c27b3ea0e13e86c9cc56d955ac`: local Decimal80/original1e-24guard. Never relax tests or manufacture missing JSON/terminal money. Actual native JSON serialization tested before engines.
 Full artifact catalog: `reports/manager-handoff-20261024/research-catalog.json` (paths/hashes, not instructions). No full manifest/log dumps at startup.
 
-## Current market redesign checkpoint — 2026-10-24
+## Latest market redesign — 2026-10-24: NO_GO
 
-Project#131; reports/market-redesign-20261024/REPORT.md. Exact archivedE4 pins verified, four M1windows31/48/65/81 complete. Cycle81 source/lifecycle scheduling hole diagnosed: unfinishedsplit suppresses targets; dayendstop does not requeue. Cheap83row CLEAN_Q sizing and82nativeTP3proxy geometry checks are not candidate economics. Native3TP/livequeue realism remains unproven.
+Project#131; reports/market-redesign-20261024/REPORT.md, comparison.json/csv and artifact-index.json. Source ec2a958e383a53133f8a8d03ef0e312810881265 (branch codex/market-redesign-btc-20261024) from exactE4bd04c9b. DefaultOFF, remote ref verified, no deployment. Real U3TP actualinventory, .5%limit-only/no chase, LEGACY_Qpurecontrol and fixedphiCLEAN_Q. All83firstentrytimes/sides match archivedE4.
 
-Owner explicitly approved implementation +<=3newfull physicalattempts R1BTCnoSOL→R2U3TP/.5%limit-only LEGACY_Q→R3CLEAN_Q, including failures/repeats. Effective protocol PROTOCOL_PROPOSED.md +approval.json; current spend/active state only run-ledger.json/ACTIVE_TASK. Closed prior budgets remain closed. One isolatedVPSwriter, frozenMacexecution, shortlifecyclechecks and independent money/orderreview before rootfullGO. No additionalBTC/SOLfull/stress/repeat/ML authorization. Economic50/90goal remainsNOT_MET. Saved E4SOLscreen:1560H4/78cycles,4h/24h,three size meanings+equalfactorBTCtrim; INCONCLUSIVE/no riskgate; not lifecycle/R3/economicDD. See sol-screen-report.md in current reportdir.
+| New native variant, original archive policy except declared BTC/SOL changes | TOTAL | Global settled DD | Legacy S0 netprofit retention |
+|---|---:|---:|---:|
+| R1 E4 BTC, SOLoff |304372.03028516|66.9203964274%|4.8519338574%|
+| R2 U3TP/.5%limit-only, LEGACY_Q |225919.51131228|66.8014965826%|3.5588543734%|
+| R3 U3TP/.5%limit-only, CLEAN_Q |120718.40416503|68.6033754263%|1.8248961129%|
+
+Legacyfloor5470396.514987347 unchanged; explicitchildS0floor5835101.440491649 not used. GoalNOT_MET; R3cleanNONPASSING, no winner. Removing originalSOL changes BTCcapital/compounding; do not equate archivedBTCfillnet to BTC-aloneROI. Equal-notionalnetbp R1/R2/R3 79.570/93.837/93.822, butterminalTOTALdeclines. GlobalmaxDDnewall Jul6,2026 13:40UTC→Aug19 06:14UTC; oneApril31geometryfix is not demonstratedglobalDDsolution.
+
+Budget CLOSED3/3full,8/8short,0active/reserved/remaining; no nextautomaticGO. All3exit0;39/41/41nativeaccountchecks,1051199continuous settledreceipts each,0modelLiq/terminalflat/orders0. R2/R3TPmissingns0/openNone/noTPIOC. Freshsigned perassetfundingcash audited againstSQLite; residual native-minusderived −2e−8/−4e−8/0 retained asrounding, notfunding. Tests135relevantqualified/18native+oneobserverPASS;2independentP1closed inonefinancialcorrection, +3observer-onlyterminalFLATlines. CIactual0jobs/no greenclaim.
+
+Native cycles/year/worst9 and all7DD>=30/22fixedwindows pervariant saved in native-analysis-attribution-*; nativecash/UPNL/eventcounts in native-analysis-window-nativepnl-*. Endpointfundingordering and rawmark/nativeprice-rounding residuals explicitUNKNOWN/notexact; noinventedcounterfactual$decomposition. Full source/config/13inputprovenance/242sourcefilepins frozenbeforeoutcomes in full-freeze.json. Preserveoriginalshort1failure andalluniquejournals/traces.
+
+ActualR3SOLsamefixedactionscreen:1529H4/77cycles, actualQtracechecked;24new/55old-onlyvsE4calendar. Three50%meanings distinct; bothyearsnetSOLactionsnegative/tailprotectionpositive butweakerthan equalfactorBTCtrim andcostadvantageunstable. STOP_SOL/INCONCLUSIVE; no newgate/fullSOL. NextH4counter-swing pendingsecondcancel cheapgate5/83,4filledlegs aggregatefrozenfillnet+1160.23; only1of11globalDDparentsdirectlyaffected. NOT_ELIGIBLEfornewfull, P+floor notadmitted; no extraexperiment/grid/repeat.
+
+Source rawlegacyIOCflag overriddenOFFforeffectiveRealU andmetadataqualified. Synthetic minutecloseL1/depth1000 notvenueL2/capacity; intraminuteDD/crashopeninventoryresumeUNPROVEN. Stablemanualreconciliationboundary preserved; no pilot/production/services/credentials/orders/transfer work. Anynextfull requires new supportedhypothesis/protocol/budget, not priorapprovalreuse.

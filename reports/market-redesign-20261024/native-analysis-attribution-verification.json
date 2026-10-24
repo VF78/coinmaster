@@ -1,0 +1,16 @@
+{
+  "status": "PASS_ACTUAL_R1_CONNECTED_ATTRIBUTION_VERIFICATION",
+  "cycles": 83,
+  "fills": 337,
+  "receipts": 1051199,
+  "actual_DD_ge30": 7,
+  "windows": 22,
+  "cycle_and_full_window_native_minus_derived_residual": "-2e-8USDT explicitly retained",
+  "endpoint_attribution_qualifications": {
+    "RECONCILED_WITH_EXPLICIT_NATIVE_ROUNDING": 12,
+    "ENDPOINT_FUNDING_ORDER_UNKNOWN_STRICT_LT_CONVENTION": 4,
+    "CONSISTENT_WITH_UNEXPORTED_NATIVE_MARK_ROUNDING_NOT_EXACTLY_RECONCILED": 13
+  },
+  "R2_R3_invocation": "ROOT_AFTER_ACTUAL_ACCEPTANCE",
+  "engine_launches": 0
+}

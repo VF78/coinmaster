@@ -1,0 +1,19 @@
+{
+  "status": "PASS_ACTUAL_R3_SAME_PREDECLARED_ACTION_ARITHMETIC",
+  "gate_verdict": "STOP_SOL_INCONCLUSIVE",
+  "actual_native_fills": 354,
+  "actual_parents": 83,
+  "eligible_decisions": 1529,
+  "native_trace_inventory_equal_decisions": 1529,
+  "eligible_actual_cycle_blocks": 77,
+  "same_definition_sha256": "552e2b227407c89ee41473ebe08fd45869124ddc8ad60a2a233bda7ad1e16d4c",
+  "new_vs_E4_timestamps": 24,
+  "E4_only_timestamps": 55,
+  "common_timestamps_actual_qty_different": 1505,
+  "BTCflat_decisions_excluded": 2761,
+  "actual_result_hash": "98cfbdfddb33ea9aaeb1fe91274d2a441f73a6e13f96fcafbf02854c025dd59e",
+  "all_SOLsizes_negative_mean_net_both_years": true,
+  "additional_engine_attempts": 0,
+  "new_gates_hypotheses": 0,
+  "E4outputs": "UNMODIFIED"
+}

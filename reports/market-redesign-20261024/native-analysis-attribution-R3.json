@@ -1,0 +1,49 @@
+{
+  "variant": "R3",
+  "status": "ACTUAL_NATIVE_FACTS_WITH_EXPLICIT_RESIDUALS_NO_COUNTERFACTUAL_DECOMPOSITION",
+  "actual_parent_cycles": 83,
+  "cycle_boundary_flat_no_overlap": true,
+  "actual_fill_events": 354,
+  "maximum_trace_fill_epoch": 353,
+  "actual_terminal_fill_epoch": 354,
+  "fill_epoch_verified_each_receipt": "equals count(actual_fill_audit timestamps<=source_quote_ns),monotonic,bounded; endpoint inventory exact",
+  "cycle_net_sum": "110718.40416503",
+  "native_TOTAL_minus_seed": "110718.40416503",
+  "native_minus_cycle_sum_rounding_residual": "0E-8",
+  "reconciliation_tolerance_USDT": "0.00000355",
+  "full_window_residual": "0E-8",
+  "settled_receipts": 1051199,
+  "actual_DDge30_excursions": 7,
+  "fixed_reporting_windows": 22,
+  "window_attribution_status_counts": {
+    "RECONCILED_WITH_EXPLICIT_NATIVE_ROUNDING": 11,
+    "ENDPOINT_FUNDING_ORDER_UNKNOWN_STRICT_LT_CONVENTION": 4,
+    "CONSISTENT_WITH_UNEXPORTED_NATIVE_MARK_ROUNDING_NOT_EXACTLY_RECONCILED": 14
+  },
+  "archived_E4_common_parent_start_side": 83,
+  "reference_observed_matches": {
+    "COMMON_START_SIDE": 83
+  },
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "98cfbdfddb33ea9aaeb1fe91274d2a441f73a6e13f96fcafbf02854c025dd59e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "038e6fb63c5f38e6a7b22d6c2529f9e089a96c76ed575542f5bd5af3b06dccd6",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-orders.csv": "15e7fa15302d28ab182203541c9ce45b87d60cfb3482d80628000c919cc574e7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite": "544e466544d6b947c1aadcbdbb67d96c28f35d47d3475e14afbe2f04fbe9773c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/verifier-E4-DD-ge30-episodes.csv": "f3098eb3c57efd49d235d5fcaa72265b660b039e79fd5f6130788e6e12a842bd",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/minute-native-settled-receipts.csv.gz": "58f965242de9e0d25e35262a4abcc47e95bfb17c93cc83e9910f3d9b816582d1",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R2-cycles.csv": "d89ab748e3907767a5628b03c9093cedd9c1a12c5f708ffdd7dc7279bb6f05d4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/split-parent-audit.csv": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb"
+  },
+  "engine_launches": 0,
+  "funding_endpoint_convention": "Actual terminal includes all persisted actual cash deltas; interior snapshots include funding events timestamp strictly<actualreceipt_ns, exact ties explicit UNKNOWNtiming; never residual-assigned",
+  "bounds": "As-of actual receipt<=requested UTC boundary, source_quote_ns retained; window fillflow exact observed fill_epoch prefix difference",
+  "limitations": [
+    "No counterfactual PNL or causal decomposition of compounding/TP/second entry/size; common timing deltas are observed comparisons only.",
+    "Year marked returns and entry-year cycle cohorts are different measurements; cycles spanning year are not force-split into trade cohorts.",
+    "Actual DD excursions use complete settled-grid highwater/maximumtrough/untilrecovery; intraminute and L2 unknown.",
+    "All reported prices/quantities/nativecash/funding are actual archived outputs; no new simulator.",
+    "Nonzero reserve path not supported without actual per-receipt reserve; script stops.",
+    "E4 timing/size reference only; old signed funding remains UNKNOWN, no rerun or optional invented attribution.",
+    "Interior asset marked pricePNL uses exported raw markclose; native observer uses instrument.make_price(close). Unexported native-rounded close can leave a bounded explicitly retained attribution residual, not funding/cash bridge; BTCtick0.1/SOLtick0.01 from frozen native_fixture.py."
+  ]
+}

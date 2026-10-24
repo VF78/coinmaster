@@ -1,0 +1,1303 @@
+diff --git a/runtime/coinmaster/domain/wave_overlay.py b/runtime/coinmaster/domain/wave_overlay.py
+index 682016a..44f931d 100644
+--- a/runtime/coinmaster/domain/wave_overlay.py
++++ b/runtime/coinmaster/domain/wave_overlay.py
+@@ -383,6 +383,9 @@ class WaveOverlayState:
+             self._last_entry_attempt = (index, feature.side)
+             self.last_decision_reason = "BTC_ENTRY_INTENT"
+             return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min((self.config.btc_notional_multiplier if btc_notional_multiplier is None else btc_notional_multiplier) * active_marked, self.config.max_parent_notional))]
++        if getattr(self,"research_real_u",False) and episode.btc_entry_vwap is None and feature.side != episode.side:
++            episode.close_reason = "REGIME"
++            return [self._intent(episode,"CLOSE_ALL",-episode.side,None,reason="REGIME")]
+         if episode.btc_entry_vwap is None or episode.h is None:
+             self.last_decision_reason = "PENDING_NATIVE_ENTRY_OUTCOME"
+             return []
+@@ -405,6 +408,8 @@ class WaveOverlayState:
+         if any(intent_id not in episode.resting_reductions for intent_id in episode.pending):
+             return []
+         intents: list[Intent] = []
++        if getattr(self,"research_real_u",False):
++            return []
+         for level, threshold in enumerate(episode.wave_levels or ()):
+             # v3 installs known targets as genuine resting post-only orders on
+             # the confirmed initial fill.  A target that was not installed
+@@ -640,7 +645,8 @@ class WaveOverlayState:
+             and self.episode.sol_qty == 0
+             and not self.episode.pending
+         ):
+-            self.episode = None
++            if not getattr(self,"research_real_u",False):
++                self.episode = None
+ 
+     def on_parent_terminal(self, intent_id: str) -> None:
+         """Called only after a native terminal order state, never an ACK."""
+diff --git a/runtime/coinmaster/ledger/journal.py b/runtime/coinmaster/ledger/journal.py
+index df24cdf..5d22e8d 100644
+--- a/runtime/coinmaster/ledger/journal.py
++++ b/runtime/coinmaster/ledger/journal.py
+@@ -19,6 +19,7 @@ class NativeEventJournal:
+             "event_id TEXT PRIMARY KEY, instrument_id TEXT NOT NULL, ts_event INTEGER NOT NULL, "
+             "rate TEXT NOT NULL, settlement_mark TEXT NOT NULL, account_total_after TEXT NOT NULL)"
+         )
++        self.db.execute("CREATE TABLE IF NOT EXISTS funding_cash (event_id TEXT NOT NULL,instrument_id TEXT NOT NULL,ts_event INTEGER NOT NULL,before_total TEXT NOT NULL,after_total TEXT NOT NULL,signed_delta TEXT NOT NULL,PRIMARY KEY(event_id,instrument_id))")
+         self.db.execute("CREATE TABLE IF NOT EXISTS transfers (event_id TEXT PRIMARY KEY, active_before TEXT NOT NULL, active_after TEXT NOT NULL, reserve_before TEXT NOT NULL, reserve_after TEXT NOT NULL)")
+         self.db.execute(
+             "CREATE TABLE IF NOT EXISTS native_parent_order_audit ("
+@@ -69,6 +70,14 @@ class NativeEventJournal:
+             "FROM funding_events ORDER BY ts_event, event_id",
+         ).fetchall()
+ 
++    def record_funding_cash(self,event_id,instrument_id,ts_event,before,after):
++        self.db.execute("INSERT OR IGNORE INTO funding_cash VALUES (?,?,?,?,?,?)",
++            (event_id,instrument_id,ts_event,str(before),str(after),str(after-before)))
++        self.db.commit()
++
++    def funding_cash_audit(self):
++        return self.db.execute("SELECT event_id,instrument_id,ts_event,before_total,after_total,signed_delta FROM funding_cash ORDER BY ts_event,event_id,instrument_id").fetchall()
++
+     def checkpoint(self) -> None:
+         """Flush durable evidence before an artifact DB is atomically published."""
+         self.db.commit()
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 5c904db..700f340 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -13,7 +13,7 @@ import os
+ import platform
+ import resource
+ from dataclasses import asdict, dataclass, replace
+-from decimal import Decimal
++from decimal import Decimal, localcontext
+ from pathlib import Path
+ from typing import Iterator
+ from uuid import uuid4
+@@ -328,12 +328,16 @@ def assert_report_boundaries(report: dict) -> None:
+     interval_terminal = Decimal(summary["interval_cash_terminal_total"])
+     if Decimal(months[-1]["total"]) != interval_terminal:
+         raise ValueError("MONTHLY_INTERVAL_CASH_MISMATCH")
+-    compounded = Decimal("1")
+-    for month in months:
+-        compounded *= Decimal("1") + Decimal(month["return"])
+-    ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
+-    if abs(compounded - ratio) > Decimal("1e-24"):
+-        raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
++    # Validation must not amplify context-28 multiplication roundoff across
++    # 24 exported monthly ratios. Inputs and tolerance remain unchanged.
++    with localcontext() as context:
++        context.prec = 80
++        compounded = Decimal("1")
++        for month in months:
++            compounded *= Decimal("1") + Decimal(month["return"])
++        ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
++        if abs(compounded - ratio) > Decimal("1e-24"):
++            raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
+     for timestamp in (summary["drawdown_start"], summary["drawdown_trough"]):
+         point = datetime.fromisoformat(timestamp)
+         if not start <= point < end:
+@@ -684,6 +688,9 @@ def run_native_diagnostic(
+     research_btc_drawdown_sizing: bool = False,
+     research_v3_risk: str | None = None,
+     research_h1_b1: str | None = None,
++    research_btc_real_u: bool = False,
++    research_btc_q_mode: str | None = None,
++    research_sol_off: bool = False,
+     research_btc_split50: bool = False,
+     research_btc_split_planref_v1: bool = False,
+     research_btc_split_tp_ioc: bool = False,
+@@ -740,7 +747,7 @@ def run_native_diagnostic(
+                     research_btc_direction_sizing, observe_minute_risk)):
+             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
+     candidate = candidate or Candidate()
+-    if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
++    if research_sol_off or research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
+         candidate = replace(candidate, sol_overlay_enabled=False)
+     policy = execution_policy or ExecutionPolicy()
+     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
+@@ -853,6 +860,7 @@ def run_native_diagnostic(
+         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
+         research_v3_risk=research_v3_risk,
+         research_h1_b1=research_h1_b1,
++        research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
+         research_btc_split50=research_btc_split50,
+         research_btc_split_planref_v1=research_btc_split_planref_v1,
+         research_btc_split_tp_ioc=research_btc_split_tp_ioc,
+@@ -1115,6 +1123,14 @@ def run_native_diagnostic(
+                 )
+             }
+         # Preserve native facts before any boundary/metadata packaging assertion.
++        result["config"].update(research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
++        result["market_redesign_audit"]=strategy._md_report()
++        result.setdefault("source_hashes",{}).update({name:sha256_file(Path(__file__).resolve().parents[1]/relative) for name,relative in (
++            ("market_redesign","strategy/market_redesign.py"),("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
++        result["funding"]["signed_native_cash_deltas"]=journal.funding_cash_audit() if journal else []
++        result["funding"]["signed_amount"]=str(sum((Decimal(row[5]) for row in result["funding"]["signed_native_cash_deltas"]),Decimal(0)))
++        result["funding"]["signed_amount_basis"]="NATIVE_BALANCE_AFTER_MINUS_BEFORE_EACH_FUNDING_MUTATION"
++        result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
+         raw_native={**result,'native_strategy_events':strategy.reporting_state(),'native_order_events':strategy._order_audit,
+             'native_risk_first_audit':strategy.risk_first_sol_audit,
+             'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
+@@ -1196,6 +1212,7 @@ def run_native_diagnostic(
+         if audit_archive is not None:
+             from coinmaster.research.native_audit import audit_json_default
+             result = json.loads(json.dumps(result, default=audit_json_default))
++        result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
+         successful_run = True
+         return result
+     finally:
+@@ -1344,7 +1361,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_real_u: bool = False, research_btc_q_mode: str | None = None, research_sol_off: bool = False, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1445,6 +1462,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
+         research_v3_risk=research_v3_risk,
+         research_h1_b1=research_h1_b1,
++        research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
+         research_btc_split50=research_btc_split50,
+         research_btc_split_planref_v1=research_btc_split_planref_v1,
+         research_btc_split_tp_ioc=research_btc_split_tp_ioc,
+@@ -1473,6 +1491,9 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+ 
+ def main() -> None:
+     parser = argparse.ArgumentParser()
++    parser.add_argument("--research-btc-real-u",action="store_true")
++    parser.add_argument("--research-btc-q-mode",choices=("LEGACY_Q_CONTROL","CLEAN_Q"))
++    parser.add_argument("--research-sol-off",action="store_true")
+     parser.add_argument("--research-btc-split50", action="store_true")
+     parser.add_argument("--research-btc-split-planref-v1", action="store_true")
+     parser.add_argument("--research-btc-split-tp-ioc", action="store_true")
+@@ -1543,6 +1564,7 @@ def main() -> None:
+             research_btc_drawdown_sizing=args.research_btc_drawdown_sizing,
+             research_v3_risk=args.research_v3_risk,
+             research_h1_b1=args.research_h1_b1,
++            research_btc_real_u=args.research_btc_real_u, research_btc_q_mode=args.research_btc_q_mode, research_sol_off=args.research_sol_off,
+             research_btc_split50=args.research_btc_split50,
+             research_btc_split_planref_v1=args.research_btc_split_planref_v1,
+             research_btc_split_tp_ioc=args.research_btc_split_tp_ioc,
+diff --git a/runtime/coinmaster/research/native_fixture.py b/runtime/coinmaster/research/native_fixture.py
+index 25b3b6f..7b354d1 100644
+--- a/runtime/coinmaster/research/native_fixture.py
++++ b/runtime/coinmaster/research/native_fixture.py
+@@ -287,8 +287,10 @@ class PerpetualFundingModule(SimulationModule):
+                 notional = position.quantity.as_decimal() * mark
+                 # Positive funding: longs pay and shorts receive; negative reverses it.
+                 sign = Decimal("-1") if position.is_long else Decimal("1")
++                account_before = self.exchange.get_account().balance_total(USDT).as_decimal()
+                 self.exchange.adjust_account(Money(sign * notional * event.rate, instrument.quote_currency))
+                 account_total = self.exchange.get_account().balance_total(USDT).as_decimal()
++                self._journal.record_funding_cash(event.event_id,str(event.instrument_id),event.ts_event,account_before,account_total)
+                 self._journal.record_funding(
+                     event.event_id,
+                     str(event.instrument_id),
+diff --git a/runtime/coinmaster/strategy/market_redesign.py b/runtime/coinmaster/strategy/market_redesign.py
+new file mode 100644
+index 0000000..bfd6c00
+--- /dev/null
++++ b/runtime/coinmaster/strategy/market_redesign.py
+@@ -0,0 +1,331 @@
++"""Default-off BTC U execution using the existing native order owner.
++
++No matching or cash model: cache, fills, pending map and native ACKs are authority.
++"""
++from decimal import Decimal as D, ROUND_FLOOR, ROUND_CEILING
++from nautilus_trader.model.identifiers import ClientOrderId
++
++FRACTIONS = (D(".2125"), D(".2125"), D(".575"))
++PHI = {1: D(".8551535379805835"), -1: D(".7977111237672364")}
++
++
++def legacy_net_lots(gross_lots, target_lots, zero_levels, passive):
++    """Pure q0/q1 control; creates neither fills nor rights."""
++    omitted = set(zero_levels) if passive else set()
++    return sum(lots for level, lots in target_lots.items() if level not in omitted)
++
++
++def u_prices(p0, d3, side, tick, entry_fee, exit_fee):
++    if not p0.is_finite() or not d3.is_finite() or p0 <= 0 or d3 <= 0:
++        raise ValueError("REAL_U_INVALID_CAUSAL_D3")
++    rounding = ROUND_CEILING if side == 1 else ROUND_FLOOR
++    prices = tuple((p0*(1+side*d3*D(i)/3)/tick).to_integral_value(rounding=rounding)*tick for i in (1,2,3))
++    if any(px <= 0 for px in prices) or not all(side*(b-a)>0 for a,b in zip((p0,)+prices,prices)):
++        raise ValueError("REAL_U_UNORDERED_ROUNDED_PRICES")
++    if any(side*(px-p0)-entry_fee*p0-exit_fee*px <= 0 for px in prices):
++        raise ValueError("REAL_U_NONPOSITIVE_NET_TARGET")
++    return prices
++
++
++def target_lots(held_lots, consumed):
++    levels = [i for i in range(3) if i not in consumed]
++    if not levels:
++        if held_lots:
++            raise ValueError("REAL_U_INVENTORY_AFTER_ALL_TARGETS")
++        return {}
++    denominator = sum(FRACTIONS[i] for i in levels)
++    assigned, result = 0, {}
++    for i in levels:
++        lots = held_lots-assigned if i == levels[-1] else int(D(held_lots)*FRACTIONS[i]/denominator)
++        result[i] = lots
++        assigned += lots
++    return result
++
++
++class MarketRedesignResearch:
++    def _md_enabled(self):
++        return bool(self.config.research_btc_real_u)
++
++    def _md_init(self):
++        self.market_redesign_audit = []
++        self._md_plans = {}
++        self._md_accepted_ids=set()
++        self._md_missing_since = None
++        self._md_missing_reason = None
++        self._md_missing_total_ns = 0
++
++    def _md_log(self, event, ts, **values):
++        self.market_redesign_audit.append(dict(event=event, timestamp_ns=str(ts),
++            **{k: str(v) if isinstance(v,D) else v for k,v in values.items()}))
++
++    def _md_prepare(self, intent, quantity, instrument, price, ts):
++        ep = self._domain.episode
++        if ep is None or ep.wave_levels is None:
++            raise ValueError("REAL_U_MISSING_WAVE_LEVELS")
++        d3 = D(str(ep.wave_levels[2]))
++        # First entry is IOC; a real limit may execute as taker on arrival.
++        # Validate both classifications conservatively, without modifying d3.
++        prices = u_prices(price,d3,ep.side,instrument.price_increment.as_decimal(),
++            D(str(instrument.taker_fee)),max(D(str(instrument.maker_fee)),D(str(instrument.taker_fee))))
++        first_lots = int(quantity/instrument.size_increment.as_decimal())//2
++        allocations = target_lots(first_lots,set())
++        for i,lots in allocations.items():
++            qty=D(lots)*instrument.size_increment.as_decimal()
++            if qty <= 0 or (instrument.min_quantity and qty<instrument.min_quantity.as_decimal()) or (instrument.min_notional and qty*prices[i]<instrument.min_notional.as_decimal()):
++                raise ValueError("REAL_U_PLANNED_FIRST_HALF_CANNOT_PROTECT")
++        self._md_plans[ep.id] = dict(raw_levels=ep.wave_levels,d3=d3,p0=None,
++            prices=None,consumed=set(),touched=set(),accepted=set(),quantity=quantity,first_done=False,
++            first_filled=D(0),first_notional=D(0),second_filled=D(0),first_order=None,
++            generation=-1,generations={},intent_generation={},order_generation={})
++        ep.wave_levels = tuple(float(d3*D(i)/3) for i in (1,2,3))
++        ep.btc_omitted_zero_levels.clear()
++        ep.btc_zero_resting_suppressed.clear()
++        ep.btc_reference_target_lots.clear()
++        ep.btc_deferred_right_reference_price=None
++        ep.sol_rights.clear()
++        ep.sol_right_fraction.clear()
++        self._md_log("PLAN",ts,episode_id=ep.id,raw_causal_d3=d3,raw_levels=list(self._md_plans[ep.id]["raw_levels"]),
++            sizing_mode=self.config.research_btc_q_mode,quantity=quantity)
++
++    def _md_split_fill(self,intent,event):
++        p=self._split_parent
++        m=self._md_plans[intent.episode_id]
++        qty,px=event.last_qty.as_decimal(),event.last_px.as_decimal()
++        if p["filled"]+qty>p["quantity"]:
++            raise ValueError("REAL_U_PARENT_OVERFILL")
++        p["filled"]+=qty
++        if not m["first_done"]:
++            m["first_filled"]+=qty
++            m["first_notional"]+=qty*px
++            m["p0"]=m["first_notional"]/m["first_filled"]
++            p["first_filled"]=m["first_filled"]
++            p["first_notional"]=m["first_notional"]
++            p["first_vwap"]=m["p0"]
++        else:
++            m["second_filled"]+=qty
++        if p.get("stop_reason"):
++            p["cancelled"]=p["quantity"]-p["filled"]
++        if p["filled"]==p["quantity"]:
++            p["closed"]=True
++
++    def _md_first_terminal(self,intent,ts):
++        if not self._md_enabled() or intent is None or intent.action!="BTC_ENTRY":
++            return
++        m=self._md_plans.get(intent.episode_id)
++        if not m:
++            return
++        if m["first_done"]:
++            if m.get("second_submitted"):
++                self._split_parent["closed"]=True
++                self._split_parent["cancelled"]=self._split_parent["quantity"]-self._split_parent["filled"]
++                self._md_log("SECOND_TERMINAL",ts,episode_id=intent.episode_id,
++                    actual_filled=self._split_parent["filled"],cancelled=self._split_parent["cancelled"])
++            return
++        m["first_done"]=True
++        p=self._split_parent
++        p["cancelled"]=p["first_quantity"]-m["first_filled"]
++        ep=self._domain.episode
++        if ep and m["p0"] is not None:
++            ep.btc_planref_vwap=m["p0"]
++            p["management_reference_frozen_ns"]=ts
++            self._md_log("P0_FROZEN_FIRST_TERMINAL",ts,episode_id=ep.id,p0=m["p0"],first_filled=m["first_filled"])
++        if not m["first_filled"]:
++            self._split_stop("FIRST_TERMINAL_ZERO_FILL")
++
++    def _md_check(self,tick):
++        if not self._md_enabled() or tick.instrument_id!=self.config.btc_id:
++            return
++        self._md_reconcile(tick.ts_event)
++        p=self._split_parent
++        ep=self._domain.episode
++        if not p or p["closed"]:
++            return
++        m=self._md_plans[p["episode_id"]]
++        if not ep or ep.id!=p["episode_id"] or self._forced_close_reason or self._liquidating or not self._entries_enabled():
++            self._split_stop("CLOSE_OR_PAUSE_OR_DP")
++            return
++        if m["touched"]:
++            self._split_stop("FIRST_POSITIVE_TP_FILL")
++            return
++        if not m["first_done"] or m["p0"] is None:
++            return
++        # Existing/unknown native ACK owns this child. Never issue a third.
++        owned=[i for i in self._pending_by_order.values() if i.action=="BTC_ENTRY" and i.episode_id==ep.id]
++        if owned or m.get("second_submitted"):
++            return
++        if not m["accepted"]=={0,1,2}:
++            return
++        qty=p["quantity"]-p["first_quantity"]
++        m["second_submitted"]=True
++        if qty<=0:
++            self._split_stop("NO_SECOND_LOTS")
++            return
++        ep.pending[p["intent"].id]=p["intent"]
++        self._split_child_submit=True
++        try:
++            self._submit_intent(p["intent"],float(tick.bid_price),float(tick.ask_price),p["sigma"],p["decision_index"],ts_now=tick.ts_event,entry_override_qty=qty)
++        finally:
++            self._split_child_submit=False
++
++    def _md_reconcile(self,ts):
++        if not self._md_enabled():
++            return
++        ep=self._domain.episode
++        if not ep or ep.id not in self._md_plans:
++            return
++        m=self._md_plans[ep.id]
++        if m["p0"] is None or self._forced_close_reason or self._liquidating:
++            return
++        inst=self.cache.instrument(self.config.btc_id)
++        step=inst.size_increment.as_decimal()
++        positions=[p for p in self.cache.positions_open() if p.instrument_id==self.config.btc_id]
++        held=positions[0].quantity.as_decimal() if positions else D(0)
++        if positions and positions[0].is_long != (ep.side==1):
++            raise ValueError("REAL_U_NATIVE_WRONG_SIDE")
++        if not held:
++            self._split_stop("BTC_FLAT")
++        prices=u_prices(m["p0"],m["d3"],ep.side,inst.price_increment.as_decimal(),
++            D(str(inst.taker_fee)),max(D(str(inst.maker_fee)),D(str(inst.taker_fee))))
++        if m.get("allocated_entry") != ep.btc_entry_qty_exact:
++            allocations=target_lots(int(held/step),m["consumed"])
++            for i,lots in allocations.items():
++                ep.btc_tp_target_lots[i]=ep.btc_tp_filled_lots.get(i,0)+lots
++                ep.btc_tp_target_qty[i]=float(D(ep.btc_tp_target_lots[i])*step)
++            m["allocated_entry"]=ep.btc_entry_qty_exact
++        desired={i:ep.btc_tp_target_lots.get(i,0)-ep.btc_tp_filled_lots.get(i,0) for i in range(3) if i not in m["consumed"]}
++        if sum(desired.values()) != int(held/step):
++            raise ValueError("REAL_U_TARGET_INVENTORY_MISMATCH")
++        signature=(m["p0"],ep.btc_entry_qty_exact)
++        work=[(oid,i) for oid,i in self._pending_by_order.items() if i.action=="BTC_REDUCE" and i.episode_id==ep.id]
++        # Cancel/ACK barrier: never overlap old and replacement leaves.
++        if m.get("signature")!=signature and work:
++            m["accepted"].clear()
++            for oid,i in work:
++                order=self.cache.order(ClientOrderId(oid))
++                if order is not None and not order.is_closed and not order.is_pending_cancel:
++                    self.cancel_order(order)
++            self._md_coverage(ts,False,ep.id,"REPLACE_ACK_PENDING")
++            return
++        owned_levels={i.level for _,i in work}
++        desired_to_submit={i:lots for i,lots in desired.items() if i not in owned_levels}
++        if work and not desired_to_submit:
++            return
++        if not held:
++            self._md_coverage(ts,True,ep.id,"FLAT")
++            return
++        if any(lots<=0 or (inst.min_quantity and D(lots)*step<inst.min_quantity.as_decimal()) or (inst.min_notional and D(lots)*step*prices[i]<inst.min_notional.as_decimal()) for i,lots in desired.items()):
++            self._md_coverage(ts,False,ep.id,"PARTIAL_BELOW_THREE_VALID_LOTS")
++            if m["first_done"]:
++                self._md_log("UNDERSIZED_TERMINAL_FIRST_FAILCLOSED",ts,episode_id=ep.id,actual_inventory=held)
++                self._begin_forced_close("REAL_U_INSUFFICIENT_PARTIAL_PROTECTION")
++            return
++        if m.get("signature")!=signature:
++            m["generation"]+=1
++            m["generations"][m["generation"]]=dict(required=set(desired),accepted=set(),authorized=False)
++        m["signature"]=signature
++        m["prices"]=prices
++        self._bind_native_lots()
++        self._md_coverage(ts,False,ep.id,"AWAITING_TARGET_ACCEPTANCE")
++        for i,lots in desired_to_submit.items():
++            # Domain quantities agree with native inventory; consumed levels
++            # never receive new leaves, including late entry cancel-race fills.
++            ep.btc_tp_target_lots[i]=ep.btc_tp_filled_lots.get(i,0)+lots
++            ep.btc_tp_target_qty[i]=float(D(ep.btc_tp_target_lots[i])*step)
++            ep.btc_tps.add(i)
++            intent=self._domain._intent(ep,"BTC_REDUCE",-ep.side,i,
++                quantity=float(D(lots)*step),reason=f"BTC_TP{i+1}",limit_price=float(prices[i]))
++            ep.resting_reductions.add(intent.id)
++            m["intent_generation"][intent.id]=m["generation"]
++            self._submit_intent(intent,float(m["p0"]),float(m["p0"]),None,len(self._bars)-1,ts_now=ts)
++        self._md_log("TARGETS_SUBMITTED",ts,episode_id=ep.id,p0=m["p0"],
++            raw_causal_d3=m["d3"],prices=[str(x) for x in prices],
++            actual_inventory=held,level_lots=desired)
++
++    def _md_coverage(self,ts,complete,episode,reason):
++        if complete and self._md_missing_since is not None:
++            duration=max(0,ts-self._md_missing_since)
++            self._md_missing_total_ns+=duration
++            self._md_log("PROTECTION_RESTORED",ts,episode_id=episode,duration_ns=str(duration),reason=reason)
++            self._md_missing_since=None
++            self._md_missing_reason=None
++        elif not complete and self._md_missing_since is None:
++            self._md_missing_since=ts
++            self._md_missing_reason=reason
++            self._md_log("PROTECTION_EXCEPTION",ts,episode_id=episode,reason=reason)
++        elif not complete and self._md_missing_reason!=reason:
++            self._md_missing_reason=reason
++            self._md_log("PROTECTION_EXCEPTION",ts,episode_id=episode,reason=reason,continuing_interval=True)
++
++    def _md_cancel_terminal(self,intent,ts):
++        if not self._md_enabled() or not intent or intent.action!="BTC_REDUCE":
++            return
++        m=self._md_plans.get(intent.episode_id)
++        if m and intent.level not in m["consumed"]:
++            m["accepted"].discard(intent.level)
++            self._md_coverage(ts,False,intent.episode_id,"TARGET_CANCEL_ACK")
++
++    def _md_reject(self,intent,ts):
++        if self._md_enabled() and intent and intent.action=="BTC_REDUCE":
++            self._md_log("TARGET_REJECT_STOP",ts,episode_id=intent.episode_id,level=intent.level)
++            raise ValueError("REAL_U_NATIVE_TARGET_REJECT_STOP")
++
++    def _md_accept(self,event):
++        if not self._md_enabled():
++            return
++        intent=self._pending_by_order.get(str(event.client_order_id))
++        if not intent or intent.action!="BTC_REDUCE":
++            return
++        m=self._md_plans.get(intent.episode_id)
++        if not m:
++            return
++        oid=str(event.client_order_id)
++        if oid in self._md_accepted_ids:
++            return
++        self._md_accepted_ids.add(oid)
++        generation=m["intent_generation"][intent.id]
++        m["order_generation"][oid]=generation
++        historic=m["generations"][generation]
++        historic["accepted"].add(intent.level)
++        if historic["accepted"]>=historic["required"]:
++            historic["authorized"]=True
++        if generation==m["generation"]:
++            m["accepted"].add(intent.level)
++        audit=self._order_audit.get(str(event.client_order_id),{})
++        submit=int(audit.get("submit_ns") or event.ts_event)
++        self._md_log("TARGET_ACCEPTED",event.ts_event,episode_id=intent.episode_id,
++            level=intent.level,generation=generation,order_id=str(event.client_order_id),ack_latency_ns=str(event.ts_event-submit))
++        if m["accepted"]==set(range(3))-m["consumed"]:
++            self._md_coverage(event.ts_event,True,intent.episode_id,"ALL_REMAINING_ACCEPTED")
++
++    def _md_after_fill(self,intent,event):
++        if not self._md_enabled() or not intent or not intent.action.startswith("BTC"):
++            return
++        m=self._md_plans.get(intent.episode_id)
++        if not m:
++            return
++        if intent.action=="BTC_REDUCE":
++            generation=m["order_generation"].get(str(event.client_order_id))
++            historic=m["generations"].get(generation)
++            if not historic or not historic["authorized"]:
++                raise ValueError("REAL_U_TP_FILLED_BEFORE_THREE_ACCEPTED")
++            m["touched"].add(intent.level)
++            order=self.cache.order(event.client_order_id)
++            if self._domain.episode and (intent.level in self._domain.episode.btc_filled_tps or (order is not None and order.status.name=="FILLED")):
++                m["consumed"].add(intent.level)
++                self._domain.episode.btc_filled_tps.add(intent.level)
++                # A terminal old target during replacement cannot be restored
++                # merely because the newer inventory allocation is larger.
++                m["allocated_entry"]=None
++            self._split_stop("FIRST_POSITIVE_TP_FILL")
++            ep=self._domain.episode
++            if ep:
++                ep.sol_rights.clear()
++                ep.sol_right_fraction.clear()
++        if intent.action=="BTC_ENTRY":
++            if m["accepted"]!=set(range(3))-m["consumed"]:
++                self._md_coverage(event.ts_event,False,intent.episode_id,"ENTRY_FILL_REQUIRES_PROTECTION")
++        self._md_reconcile(event.ts_event)
++
++    def _md_report(self):
++        return dict(events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
++            open_protection_exception_since_ns=str(self._md_missing_since) if self._md_missing_since is not None else None)
+diff --git a/runtime/coinmaster/strategy/split_cover.py b/runtime/coinmaster/strategy/split_cover.py
+index 583bc1b..ce40188 100644
+--- a/runtime/coinmaster/strategy/split_cover.py
++++ b/runtime/coinmaster/strategy/split_cover.py
+@@ -110,6 +110,9 @@ class SplitCoverResearch:
+         p=self._split_parent
+         if intent.action != "BTC_ENTRY" or not p or p["episode_id"]!=intent.episode_id:
+             return
++        if self._md_enabled():
++            self._md_split_fill(intent,event)
++            return
+         qty=event.last_qty.as_decimal()
+         if p["filled"]+qty > p["quantity"]:
+             raise ValueError("SPLIT_PARENT_OVERFILL")
+@@ -144,6 +147,8 @@ class SplitCoverResearch:
+                 self.cancel_order(order)
+ 
+     def _split_check(self,tick):
++        if self._md_enabled():
++            return
+         if not self._split_unfinished() or tick.instrument_id!=self.config.btc_id:
+             return
+         p=self._split_parent
+@@ -184,7 +189,7 @@ class SplitCoverResearch:
+             self._split_child_submit=False
+ 
+     def _split_tp_ioc_eligible(self,intent):
+-        if not self.config.research_btc_split_tp_ioc or intent.action!="BTC_REDUCE":
++        if self._md_enabled() or not self.config.research_btc_split_tp_ioc or intent.action!="BTC_REDUCE":
+             return False
+         p=self._split_parent
+         ep=self._domain.episode
+@@ -195,7 +200,7 @@ class SplitCoverResearch:
+ 
+     def _split_limit(self,intent,instrument,quantity):
+         p=self._split_parent
+-        if not p or not self._split_child_submit or p["fallback"] or p["filled"]<p["first_quantity"]:
++        if not p or not self._split_child_submit or p["fallback"] or (not self._md_plans[intent.episode_id]["first_done"] if self._md_enabled() else p["filled"]<p["first_quantity"]):
+             return None
+         from coinmaster.strategy.wave_overlay import _native_limit_price
+         raw=p["first_vwap"]*(1-self.config.research_btc_split_discount*p["side"])
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 07c4e30..f72daf7 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -5,6 +5,7 @@ or funding.  It is deliberately not declared a research baseline until a
+ finer execution/settlement-mark dataset and liquidation validation exist.
+ """
+ from __future__ import annotations
++from coinmaster.strategy.market_redesign import MarketRedesignResearch, PHI, legacy_net_lots
+ from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
+ 
+ from dataclasses import replace
+@@ -63,6 +64,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_v0_deferred_selective_zero_tp: bool = False
+     research_v0_selective_lifecycle_repairs: bool = False
+     research_v3_risk: str | None = None
++    research_btc_real_u: bool = False
++    research_btc_q_mode: str | None = None
++    research_sol_off: bool = False
+     research_btc_split50: bool = False
+     research_btc_split_planref_v1: bool = False
+     research_btc_split_tp_ioc: bool = False
+@@ -185,11 +189,12 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
+     return result
+ 
+ 
+-class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
++class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+     """Turns completed native daily bars into later native market orders."""
+     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+         super().__init__(config)
+         self._split_cover_init()
++        self._md_init()
+         self._risk_first_init()
+         self._conditional_init()
+         self._insurance_init()
+@@ -208,7 +213,11 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             raise ValueError("CONDITIONAL_REQUIRES_SELECTED_BTC_ORIGINAL_SOL_AND_NATIVE_BARS")
+         if config.research_btc_split_tp_ioc and (not config.research_btc_split_planref_v1 or config.tp_fee_floor_v1):
+             raise ValueError("TP_IOC_REQUIRES_PLANREF_V3")
+-        if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != Decimal("0.0025")):
++        if config.research_btc_real_u and (config.research_btc_q_mode not in {"LEGACY_Q_CONTROL","CLEAN_Q"} or not config.research_sol_off or config.candidate.sol_overlay_enabled or not config.research_btc_split50 or not config.research_btc_split_planref_v1 or config.research_btc_split_discount != Decimal(".005")):
++            raise ValueError("REAL_U_REQUIRES_SOL_OFF_SPLIT_PLANREF_005_AND_EXPLICIT_Q")
++        if not config.research_btc_real_u and config.research_btc_q_mode is not None:
++            raise ValueError("Q_MODE_REQUIRES_REAL_U")
++        if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != (Decimal(".005") if config.research_btc_real_u else Decimal("0.0025"))):
+             raise ValueError("PLANREF_V1_REQUIRES_BTC025_SPLIT")
+         if config.research_btc_split_discount not in (Decimal("0.0025"),Decimal("0.005")):
+             raise ValueError("SPLIT_DISCOUNT_NOT_AUTHORIZED_CANDIDATE")
+@@ -290,6 +299,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         self.sol_cap_admission_audit: list[dict[str, str]] = []
+         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
+         self._domain = WaveOverlayState(self._candidate)
++        self._domain.research_real_u = config.research_btc_real_u
+         self._domain.research_sol_cover = config.research_sol_cover is not None
+         self._domain.research_h4_owned = config.research_h4_ema is not None
+         self._bars: list[DailyBar] = list(config.seed_bars)
+@@ -1428,6 +1438,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+                     self._b1_candidate = None
+         if tick.instrument_id == self.config.sol_id:
+             self._h1_check(tick.ts_event)
++        self._md_check(tick)
+         self._split_check(tick)
+         self._cover_check(tick)
+         self._conditional_check(tick)
+@@ -1436,7 +1447,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             intent, sigma, index = item
+             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
+                 continue
+-            if self._split_unfinished() and intent.action == "BTC_REDUCE":
++            if self._split_unfinished() and intent.action == "BTC_REDUCE" and not self._md_enabled():
+                 continue
+             if self._split_tp_ioc_eligible(intent) and any(self._reduction_key(owned)==self._reduction_key(intent) for owned in self._pending_by_order.values()):
+                 continue
+@@ -1522,6 +1533,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+                 target_lots[level] = lots
+                 assigned += lots
+             self._deferred_selective_entries[intent.id] = {
++                "q0_price": price,
+                 "q0_ns": tick.ts_event,
+                 "session_ns": self._last_accepted_session,
+                 "gross_lots": gross_lots,
+@@ -1546,7 +1558,10 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         # This is a prediction about the old q0-reference target at q1, not
+         # an oracle for a new entry's later q2 target.
+         omitted = plan["zero_levels"] if passive else set()
+-        net_lots = sum(lots for level, lots in plan["target_lots"].items() if level not in omitted)
++        net_lots = legacy_net_lots(plan["gross_lots"], plan["target_lots"], plan["zero_levels"], passive)
++        if self._md_enabled() and self.config.research_btc_q_mode == "CLEAN_Q":
++            # Phi outside the capped requested notional, before lot rounding.
++            net_lots = int(PHI[episode.side]*Decimal(str(intent.requested_notional))/plan["q0_price"]/plan["step"])
+         episode.btc_reference_qty = float(Decimal(plan["gross_lots"]) * plan["step"])
+         episode.btc_reference_target_lots = dict(plan["target_lots"]) if passive else {}
+         episode.btc_omitted_zero_levels = set(omitted)
+@@ -1878,7 +1893,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             rounded = self._research_sol_cap_quantity(rounded, executable_price, ts_now or 0)
+         if intent.action == "SOL_ADD" and self.config.research_sol_remaining_btc_hedge:
+             rounded = self._research_sol_hedge_quantity(rounded, executable_price, ts_now or 0)
+-        if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0 and not self._split_child_submit:
++        if not self._md_enabled() and self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0 and not self._split_child_submit:
+             episode = self._domain.episode
+             if episode is None or episode.wave_levels is None:
+                 raise ValueError("BTC_ENTRY_WAVE_LEVELS_MISSING")
+@@ -1947,6 +1962,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+                 return
+         if intent.action == "SOL_ADD":
+             rounded = self._risk_first_sol_prepare(intent,rounded,step,ts_now or 0,sigma,decision_index)
++        if intent.action == "BTC_ENTRY" and self._md_enabled() and not self._split_child_submit:
++            self._md_prepare(intent,rounded,instrument,executable_price,ts_now or 0)
+         if intent.action == "BTC_ENTRY":
+             rounded = self._split_prepare(intent, rounded, step, ts_now or 0, sigma, decision_index)
+         # Control A makes every planned SOL exit a native taker IOC.  Resting
+@@ -1986,7 +2003,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+                 if (episode.side == 1 and limit_price.as_decimal() < floor.as_decimal()) or (episode.side == -1 and limit_price.as_decimal() > floor.as_decimal()):
+                     limit_price = floor
+             quote_tick = self.cache.quote_tick(instrument_id)
+-            if quote_tick is not None:
++            if quote_tick is not None and not self._md_enabled():
+                 # Check the exact wire-equivalent native price.  A five-sig
+                 # rounding step may otherwise turn a passive quote marketable.
+                 canonical = limit_price.as_decimal()
+@@ -1996,7 +2013,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             order = self.order_factory.limit(
+                 instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded),
+                 price=limit_price, time_in_force=TimeInForce.GTC,
+-                post_only=True, reduce_only=True,
++                post_only=not self._md_enabled(), reduce_only=True,
+             )
+         elif intent.action == "BTC_REDUCE" and self.config.tp_fee_floor_v1:
+             episode = self._domain.episode
+@@ -2068,7 +2085,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
+ 
+     def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:
+-        if self._carry_busy():
++        if self._carry_busy() or self._md_enabled():
+             return
+         key = self._reduction_key(intent)
+         owner = self._accepted_reductions.get(key)
+@@ -2146,6 +2163,10 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+ 
+     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+         self._risk_first_sol_stop(reason)
++        if self._md_enabled():
++            ep=self._domain.episode
++            self._md_log("SIGNAL_CYCLE_CLOSE_REQUEST",self.clock.timestamp_ns(),
++                episode_id=ep.id if ep else None,reason=reason,actual_btc_open=str(ep.btc_open_qty) if ep else None)
+         self._split_stop(reason)
+         if self.config.deposit_runtime is not None and self._deposit.latched:
+             return
+@@ -2433,6 +2454,9 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             entry_price=event.last_px.as_decimal() if intent.action == "BTC_ENTRY" else None,
+         )
+         self._after_domain_fill(event)
++        if closed:
++            self._md_first_terminal(intent,event.ts_event)
++        self._md_after_fill(intent,event)
+         if closed:
+             self._terminal_submission(str(event.client_order_id))
+             if self._forced_close_reason is not None:
+@@ -2536,6 +2560,9 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+ 
+     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
+         """Queue every remaining confirmed-entry target for the next quote."""
++        if self._md_enabled():
++            self._md_reconcile(ready_ns)
++            return
+         if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
+             return
+         if self.config.deposit_runtime is not None and self._deposit.latched:
+@@ -2574,6 +2601,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+                 self._forced_close_submitted.discard(order.instrument_id)
+             self._forced_close_orders.discard(client_order_id)
+         intent = self._pending_by_order.pop(str(event.client_order_id), None)
++        self._md_cancel_terminal(intent,event.ts_event)
+         self._next_terminal(intent,event.ts_event)
+         self._hedge_terminal(intent, event.ts_event, "CANCELED")
+         if self._conditional_enabled():
+@@ -2585,6 +2613,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+             )
+         sigma = self._sigma_by_order.pop(str(event.client_order_id), None)
+         decision_index = self._decision_index_by_order.pop(str(event.client_order_id), 0)
++        self._md_first_terminal(intent,event.ts_event)
+         if intent is not None:
+             self._domain.on_parent_cancelled(intent.id)
+             if self._has_confirmed_btc_remainder(intent):
+@@ -2597,6 +2626,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         if intent is not None:
+             self._requeue_accepted_reduction(intent, sigma, decision_index, event.ts_event)
+         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,event.ts_event,"CANCELED")
++        if self._md_enabled():
++            self._md_reconcile(event.ts_event)
+         self._reconcile_terminal_flat()
+         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+             self._rearm_mandatory_sol_exit(event.ts_event)
+@@ -2624,6 +2655,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         if context is not None and context.get("accept_ns") is None:
+             context["accept_ns"] = str(event.ts_event)
+         self._acknowledge_submission(str(event.client_order_id))
++        self._md_accept(event)
+         if self.config.research_sol_risk_first=="split-atr":
+             owned=self._rf_sol_orders.get(str(event.client_order_id))
+             if owned and owned[0]["stopped"]:
+@@ -2640,7 +2672,7 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+ 
+ 
+     def on_order_denied(self, event: OrderDenied) -> None:
+-        self._terminal_without_fill(str(event.client_order_id))
++        self._terminal_without_fill(str(event.client_order_id),event.ts_event)
+ 
+     def on_position_event(self, event) -> None:
+         self._hedge_refresh(event.ts_event)
+@@ -2667,6 +2699,11 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         if self._insurance_enabled() and self._insurance_cycle:
+             self._insurance_cycle.update(closed=True,target=Decimal(0))
+         self._carry_flat()
++        if self._md_enabled():
++            ep=self._domain.episode
++            self._md_log("NATIVE_FLAT_SIGNAL_CYCLE_END",self.clock.timestamp_ns(),
++                episode_id=ep.id if ep else None,reason=ep.close_reason if ep else None)
++            self._md_coverage(self.clock.timestamp_ns(),True,ep.id if ep else None,"NATIVE_FLAT")
+         reason = self._domain.on_group_flat()
+         if self._forced_close_reason not in {"LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}:
+             self._forced_close_reason = None
+@@ -2715,14 +2752,17 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         }
+ 
+     def on_order_rejected(self, event: OrderRejected) -> None:
+-        self._terminal_without_fill(str(event.client_order_id))
++        self._terminal_without_fill(str(event.client_order_id),event.ts_event)
+ 
+     def on_order_expired(self, event: OrderExpired) -> None:
+-        self._terminal_without_fill(str(event.client_order_id))
++        self._terminal_without_fill(str(event.client_order_id),event.ts_event)
+ 
+-    def _terminal_without_fill(self, client_order_id: str) -> None:
++    def _terminal_without_fill(self, client_order_id: str, ts_event: int | None = None) -> None:
++        terminal_ns=self.clock.timestamp_ns() if ts_event is None else ts_event
+         forced_close_terminal = client_order_id in self._forced_close_orders
+         failed_intent = self._pending_by_order.get(client_order_id)
++        self._md_reject(failed_intent,terminal_ns)
++        self._md_first_terminal(failed_intent,terminal_ns)
+         self._hedge_terminal(failed_intent, self.clock.timestamp_ns(), "DENIED_REJECTED_EXPIRED")
+         if self._conditional_enabled():
+             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
+@@ -2761,6 +2801,8 @@ class WaveOverlayStrategy(NextBandResearch, HedgeBandResearch, CarryPairResearch
+         if intent is not None and self._reduction_key(intent) in self._accepted_reductions:
+             self._requeue_accepted_reduction(intent, sigma, decision_index, self.clock.timestamp_ns())
+         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,self.clock.timestamp_ns(),"DENIED_REJECTED_EXPIRED")
++        if self._md_enabled():
++            self._md_reconcile(terminal_ns)
+         self._reconcile_terminal_flat()
+         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
+diff --git a/runtime/tests/test_native_baseline.py b/runtime/tests/test_native_baseline.py
+index 77be34a..e17d150 100644
+--- a/runtime/tests/test_native_baseline.py
++++ b/runtime/tests/test_native_baseline.py
+@@ -255,7 +255,10 @@ def test_streamed_native_smoke_matches_one_shot_and_keeps_callbacks_subscribed(t
+     assert streamed["episodes"] == "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED"
+     assert streamed["realized_unrealized"] == "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY"
+     assert streamed["transfers"] == "0" and streamed["liquidation_value"] == "0"
+-    assert set(streamed["funding"]) == {"count", "by_instrument_count", "signed_amount"}
++    assert set(streamed["funding"]) == {"count", "by_instrument_count", "signed_amount", "signed_native_cash_deltas", "signed_amount_basis"}
++    assert streamed["funding"]["signed_native_cash_deltas"] == []
++    assert streamed["funding"]["signed_amount"] == "0"
++    assert streamed["funding"]["signed_amount_basis"] == "NATIVE_BALANCE_AFTER_MINUS_BEFORE_EACH_FUNDING_MUTATION"
+     for timestamp in ((start + DAY_MS) * 1_000_000, end * 1_000_000):
+         ordered = [kind for kind, event_time in seen if event_time == timestamp]
+         assert ordered == ["mark", "mark", "signal", "signal", "quote", "quote"] * 2
+diff --git a/runtime/tests/test_native_market_redesign.py b/runtime/tests/test_native_market_redesign.py
+new file mode 100644
+index 0000000..9b4112d
+--- /dev/null
++++ b/runtime/tests/test_native_market_redesign.py
+@@ -0,0 +1,291 @@
++"""Focused genuine native fills/ACKs, independent of archived calendars."""
++from decimal import Decimal as D
++import json
++import pytest
++from coinmaster.domain.wave_overlay import Episode, Candidate
++from coinmaster.strategy.market_redesign import u_prices, target_lots, legacy_net_lots, PHI
++from coinmaster.research.native_fixture import BTC_PERP
++from test_native_split_cover import cfg
++from test_native_episode_risk import NativeProbe, tick, run_ticks, marks
++from test_native_btc_sizing import prepare_day
++from test_wave_native_integration import native_engine
++
++
++def setup(side=1,qty=100,probe=NativeProbe):
++    conf=cfg(True,research_btc_real_u=True,research_btc_q_mode="LEGACY_Q_CONTROL",
++        research_sol_off=True,research_btc_split_planref_v1=True,
++        research_btc_split_tp_ioc=True,research_btc_split_discount=D(".005"))
++    conf=conf.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)))
++    s=probe(conf)
++    e=native_engine(s)
++    run_ticks(e,[tick(BTC_PERP,1)])
++    prepare_day(s,2);marks(s,2)
++    ep=s._domain.episode=Episode("real-u",side,10000,1,wave_levels=(0,0,.03),h=10000)
++    i=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=qty)
++    s._submit_intent(i,100,100,.01,0,ts_now=2)
++    return s,e,ep
++
++
++@pytest.mark.parametrize("side",[1,-1])
++def test_three_actual_accepted_tp_before_second_and_no_deadline_chase(side):
++    s,e,ep=setup(side)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4)])
++        targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
++        second=[o for o in e.cache.orders_open() if not o.is_reduce_only]
++        assert len(targets)==3
++        assert all(o.status.name=="ACCEPTED" for o in targets)
++        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(50)
++        assert len(second)==1 and second[0].order_type.name=="LIMIT"
++        assert second[0].price.as_decimal()==(D("99.5") if side==1 else D("100.5"))
++        run_ticks(e,[tick(BTC_PERP,24*3600*10**9+5)])
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++        assert s._split_parent["filled"]==D(50)
++        assert not s._split_parent["fallback"]
++        report=json.loads(json.dumps(s._md_report()))
++        assert any(r["event"]=="PLAN" and r["raw_causal_d3"]=="0.03" for r in report["events"])
++        assert len([r for r in report["events"] if r["event"]=="TARGET_ACCEPTED"])==3
++    finally:
++        e.end();e.dispose()
++
++
++def test_second_fill_resizes_three_actual_targets_at_original_p0():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99"),tick(BTC_PERP,6,"99")])
++        assert ep.btc_initial_qty==100
++        assert ep.btc_planref_vwap==D(100)
++        targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
++        assert len(targets)==3
++        assert [o.price.as_decimal() for o in sorted(targets,key=lambda o:o.price)]==[D(101),D(102),D(103)]
++        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(100)
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++    finally:
++        e.end();e.dispose()
++
++
++def test_tp_cancels_second_and_filled_target_never_resurrects():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"101"),tick(BTC_PERP,6,"99")])
++        assert s._split_parent["stop_reason"]=="FIRST_POSITIVE_TP_FILL"
++        assert ep.btc_initial_qty==50
++        assert 0 in ep.btc_filled_tps
++        assert not ep.sol_rights
++        targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
++        assert len(targets)==2 and all(o.price.as_decimal()>101 for o in targets)
++        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(str(ep.btc_open_qty))
++    finally:
++        e.end();e.dispose()
++
++
++def test_partial_first_child_terminal_freezes_actual_vwap_and_protects():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(BTC_PERP,3,size="10"),tick(BTC_PERP,4)])
++        assert ep.btc_initial_qty==10
++        assert ep.btc_planref_vwap==D(100)
++        assert s._md_plans[ep.id]["first_done"]
++        targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
++        assert len(targets)==3
++        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==10
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++    finally:
++        e.end();e.dispose()
++
++
++def test_geometry_and_sizing_are_pure_and_reject_invalid_net_prices():
++    assert legacy_net_lots(10000,{0:2125,1:2125,2:5750},{0,1},True)==5750
++    assert legacy_net_lots(10000,{0:2125,1:2125,2:5750},{0,1},False)==10000
++    assert PHI[1]*min(D(6)*D(10_000_000),D(30_000_000))==D("25654606.1394175050000000")
++    assert sum(target_lots(10000,{0}).values())==10000
++    with pytest.raises(ValueError,match="NONPOSITIVE_NET"):
++        u_prices(D(100),D(".0001"),1,D(".00001"),D(".00055"),D(".00055"))
++    with pytest.raises(ValueError,match="INVALID_CAUSAL_D3"):
++        u_prices(D(100),D(0),1,D(".1"),D(".00055"),D(".00055"))
++
++
++def test_cancel_request_is_not_ack_late_second_fill_protected_without_tp_resurrection():
++    class DelayedCancel(NativeProbe):
++        def cancel_order(self,order,*args,**kwargs):
++            if not order.is_reduce_only:
++                return  # Explicit transport fixture: no cancel ACK delivered.
++            return super().cancel_order(order,*args,**kwargs)
++    s,e,ep=setup(probe=DelayedCancel)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"101")])
++        assert 0 in ep.btc_filled_tps
++        run_ticks(e,[tick(BTC_PERP,6,"99"),tick(BTC_PERP,7,"99")])
++        assert ep.btc_initial_qty==100
++        assert not ep.sol_rights
++        targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
++        assert len(targets)==2
++        assert all(o.price.as_decimal()>101 for o in targets)
++        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(str(ep.btc_open_qty))
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++        payload={"adapter":s.reporting_state(),"split":s._split_cover_report(),"u":s._md_report(),"native_orders":s._order_audit}
++        from coinmaster.research.native_audit import audit_json_default
++        roundtrip=json.loads(json.dumps(payload,default=audit_json_default))
++        assert len(roundtrip["adapter"]["fill_audit"])>=3
++    finally:
++        e.end();e.dispose()
++
++
++def test_full_tp_keeps_empty_signal_episode_and_closed_d1_trail_or_regime():
++    from dataclasses import replace
++    from types import SimpleNamespace
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"103"),tick(BTC_PERP,6,"103")])
++        assert not e.cache.positions_open()
++        assert s._domain.episode is ep
++        assert ep.btc_open_qty==0
++        features=[SimpleNamespace(side=1,beta=1)]*3
++        assert s._domain.decide(s._bars,features,2,10000)==[]
++        assert s._domain.episode is ep
++        bars=list(s._bars);bars[2]=replace(bars[2],btc_close=105)
++        assert s._domain.decide(bars,features,2,10000)==[]
++        bars[2]=replace(bars[2],btc_close=101)
++        assert s._domain.decide(bars,features,2,10000)[0].reason=="TRAIL"
++        features[2]=SimpleNamespace(side=-1,beta=1)
++        assert s._domain.decide(bars,features,2,10000)[0].reason=="REGIME"
++    finally:
++        e.end();e.dispose()
++
++
++def test_clean_q_outside_cap_and_legacy_q0_q1_selector_are_separate():
++    s,e,ep=setup()
++    try:
++        # Native quotes, pure sizing observation; no extra engine order.
++        i=s._domain._intent(ep,"BTC_ENTRY",1,None,requested_notional=30_000_000)
++        ep.wave_levels=(0,0,.03)
++        assert s._select_deferred_btc_entry(i,tick(BTC_PERP,10,"100")) is None
++        legacy=s._select_deferred_btc_entry(i,tick(BTC_PERP,11,"99"))
++        assert legacy==D("172500")
++        assert s._selected_entry_audits[i.id]["branch"]=="PASSIVE_NET_ZERO_LEVELS"
++        # The pure CLEAN_Q formula uses capped own-equity notional first.
++        assert int(PHI[1]*D(30_000_000)/D(100)/D(".001"))==256546061
++    finally:
++        e.end();e.dispose()
++
++
++def test_signed_funding_receipts_are_actual_native_before_after_cash(tmp_path):
++    from coinmaster.research.native_fixture import FundingInstruction,BTC_PERP,SOL_PERP
++    from coinmaster.ledger.journal import NativeEventJournal
++    from test_native_fixture import build_engine,fixture_quotes
++    events=(
++        FundingInstruction("btc-positive",BTC_PERP.id,D(".01"),6,D("80999.5"),"synthetic_mid",True),
++        FundingInstruction("sol-negative",SOL_PERP.id,D("-.01"),6,D("159.95"),"synthetic_mid",True),
++    )
++    journal=NativeEventJournal(str(tmp_path/"signed-native.sqlite"))
++    e=build_engine(events,funding_journal=journal)
++    e.add_data(fixture_quotes());e.run()
++    try:
++        rows=journal.funding_cash_audit()
++        assert [r[1] for r in rows]==[str(BTC_PERP.id),str(SOL_PERP.id)]
++        assert [D(r[5]) for r in rows]==[D("-485.997"),D("-799.75")]
++        assert all(D(r[4])-D(r[3])==D(r[5]) for r in rows)
++        json.loads(json.dumps(rows))
++    finally:
++        e.dispose();journal.close()
++
++
++def test_tiny_native_partial_records_protection_exception_and_blocks_second():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(BTC_PERP,3,size=".001"),tick(BTC_PERP,4)])
++        assert ep.btc_initial_qty==.001
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==1
++        assert not [o for o in e.cache.orders_open() if o.is_reduce_only]
++        events=s._md_report()["events"]
++        assert any(r["event"]=="PROTECTION_EXCEPTION" and r["reason"]=="PARTIAL_BELOW_THREE_VALID_LOTS" for r in events)
++        assert any(r["event"]=="UNDERSIZED_TERMINAL_FIRST_FAILCLOSED" for r in events)
++        assert not e.cache.positions_open()
++        assert not e.cache.orders_open()
++        assert s._md_report()["open_protection_exception_since_ns"] is None
++    finally:
++        e.end();e.dispose()
++
++
++def test_old_target_generation_can_fill_during_second_partial_replacement_cancel_race():
++    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++    class DelayedTargets(NativeProbe):
++        def cancel_order(self,order,*args,**kwargs):
++            if order.is_reduce_only:
++                return  # Native order stays live until explicit transport ACK below.
++            return super().cancel_order(order,*args,**kwargs)
++    s,e,ep=setup(probe=DelayedTargets)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99.5",size="10")])
++        assert ep.btc_initial_qty==60
++        assert s._md_plans[ep.id]["accepted"]==set()
++        run_ticks(e,[tick(BTC_PERP,6,"101",size="1")])
++        assert 0<ep.btc_tp_filled_lots[0]<10625
++        assert ep.btc_planref_vwap==D(100)
++        old=[o for o in e.cache.orders_open() if o.is_reduce_only]
++        assert len(old)==3
++        assert sum((o.leaves_qty.as_decimal() for o in old),D(0))<=D(str(ep.btc_open_qty))
++        # ACK one old cancellation; another historically authorized old order
++        # is still allowed to fill before its own ACK.
++        old1=next(o for o in old if o.price.as_decimal()==102)
++        WaveOverlayStrategy.cancel_order(s,old1)
++        run_ticks(e,[tick(BTC_PERP,7,"101")])
++        assert 0 in ep.btc_filled_tps
++        for o in list(e.cache.orders_open()):
++            if o.is_reduce_only:
++                WaveOverlayStrategy.cancel_order(s,o)
++        run_ticks(e,[tick(BTC_PERP,8,"100")])
++        current=[o for o in e.cache.orders_open() if o.is_reduce_only]
++        assert all(o.price.as_decimal()>101 for o in current)
++        assert sum((o.leaves_qty.as_decimal() for o in current),D(0))==D(str(ep.btc_open_qty))
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++        assert ep.btc_planref_vwap==D(100)
++    finally:
++        e.end();e.dispose()
++
++
++@pytest.mark.parametrize("phase",["first","second"])
++@pytest.mark.parametrize("mode",["denied","rejected","expired"])
++def test_genuine_native_entry_terminal_callbacks_cleanup_without_implicit_retry(phase,mode):
++    from datetime import datetime,timezone
++    from nautilus_trader.model.enums import TimeInForce
++    from nautilus_trader.model.objects import Quantity
++    class NativeTerminalFixture(NativeProbe):
++        seen=[]
++        def submit_order(self,order,*args,**kwargs):
++            intent=self._pending_by_order.get(str(order.client_order_id))
++            is_second=bool(self._split_child_submit)
++            if intent and intent.action=="BTC_ENTRY" and is_second==(phase=="second"):
++                common=dict(instrument_id=order.instrument_id,order_side=order.side,
++                    client_order_id=order.client_order_id)
++                if mode=="denied":
++                    order=self.order_factory.market(quantity=Quantity.from_str("50.0001"),time_in_force=TimeInForce.IOC,**common)
++                elif mode=="rejected":
++                    order=self.order_factory.limit(quantity=order.quantity,price=BTC_PERP.make_price(D(101)),
++                        time_in_force=TimeInForce.GTC,post_only=True,**common)
++                else:
++                    order=self.order_factory.limit(quantity=order.quantity,price=BTC_PERP.make_price(D("99.5")),
++                        time_in_force=TimeInForce.GTD,expire_time=datetime.fromtimestamp(1,tz=timezone.utc),**common)
++            return super().submit_order(order,*args,**kwargs)
++        def on_order_denied(self,event):
++            self.seen.append("denied");return super().on_order_denied(event)
++        def on_order_rejected(self,event):
++            self.seen.append("rejected");return super().on_order_rejected(event)
++        def on_order_expired(self,event):
++            self.seen.append("expired");return super().on_order_expired(event)
++    s,e,ep=setup(probe=NativeTerminalFixture)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,1_000_000_001)])
++        assert mode in s.seen
++        assert not [i for i in s._pending_by_order.values() if i.action=="BTC_ENTRY"]
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==(1 if phase=="first" else 2)
++        assert s._split_parent["closed"]
++        if phase=="first":
++            assert not e.cache.positions_open()
++        else:
++            assert ep.btc_planref_vwap==D(100)
++            targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
++            assert len(targets)==3
++            assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(50)
++    finally:
++        e.end();e.dispose()
+diff --git a/runtime/tests/test_native_report_precision.py b/runtime/tests/test_native_report_precision.py
+new file mode 100644
+index 0000000..2006810
+--- /dev/null
++++ b/runtime/tests/test_native_report_precision.py
+@@ -0,0 +1,24 @@
++from decimal import Decimal as D,localcontext,getcontext
++import copy,json
++import pytest
++from coinmaster.research.native_baseline import assert_report_boundaries
++
++REPORT=json.loads('{"run_interval":{"end_exclusive":"2026-09-01T00:00:00+00:00","initial_active_seed":"10000","start":"2024-09-01T00:00:00+00:00"},"summary":{"monthly_returns":[{"month":"2024-09","return":"0.173330144133","total":"11733.30144133"},{"month":"2024-10","return":"1.290009886376386052442491970","total":"26869.37630048"},{"month":"2024-11","return":"1.608089488083432626819847409","total":"70077.73788064"},{"month":"2024-12","return":"0.132828874790799533156019281","total":"79386.08495121"},{"month":"2025-01","return":"1.308932702728983631906613248","total":"183297.12768547"},{"month":"2025-02","return":"0.336063170941183263690472946","total":"244896.54163986"},{"month":"2025-03","return":"0.758766035967351471190973202","total":"430715.71976205"},{"month":"2025-04","return":"-0.0830212963708520261843339259","total":"394957.14234010"},{"month":"2025-05","return":"0.021004194516215314939247690","total":"403252.89898338"},{"month":"2025-06","return":"-0.0332097906878580102191210785","total":"389860.95461387"},{"month":"2025-07","return":"0.126038033510965636144786956","total":"438998.26267611"},{"month":"2025-08","return":"0.582521321531772964739329608","total":"694724.11080035"},{"month":"2025-09","return":"0.549132101899777340741079513","total":"1076219.42200460"},{"month":"2025-10","return":"0.268800979297308681626108379","total":"1365508.25657822"},{"month":"2025-11","return":"0.224807038826319680640470206","total":"1672484.12423246"},{"month":"2025-12","return":"0.137682403004313569554467871","total":"1902755.75744335"},{"month":"2026-01","return":"0.102966577572672543401562615","total":"2098676.00574399"},{"month":"2026-02","return":"0.520357732776002768656032592","total":"3190738.29392433"},{"month":"2026-03","return":"0.545109957187779459564915126","total":"4930041.50872283"},{"month":"2026-04","return":"0.413172941094904104606246748","total":"6967001.25860180"},{"month":"2026-05","return":"-0.0432304387200548316562785673","total":"6665814.73762927"},{"month":"2026-06","return":"0.071795796435374447337736131","total":"7144392.21560802"},{"month":"2026-07","return":"-0.3151638724393750353863251881","total":"4892737.89871127"},{"month":"2026-08","return":"-0.1682836976326429113748594420","total":"4069369.87356877"}],"interval_cash_terminal_total":"4069369.87356877","drawdown_start":"2026-05-03 20:37:00+00:00","drawdown_trough":"2026-08-19 08:00:00+00:00"},"fill_timestamps_ns":[],"post_boundary_settlement":{"convention":"TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS","fill_count":0}}')
++
++def test_native_24month_compounding_avoids_context28_false_rejection():
++    report=copy.deepcopy(REPORT)
++    with localcontext() as ctx:
++        ctx.prec=28
++        compound=D(1)
++        for row in report['summary']['monthly_returns']:compound*=1+D(row['return'])
++        ratio=D(report['summary']['interval_cash_terminal_total'])/D(report['run_interval']['initial_active_seed'])
++        assert abs(compound-ratio)==D('1.2e-24')
++    before=copy.deepcopy(report);precision=getcontext().prec
++    assert_report_boundaries(report)
++    assert report==before and getcontext().prec==precision
++
++def test_compounding_precision_keeps_original_threshold_and_detects_real_error():
++    report=copy.deepcopy(REPORT)
++    report['summary']['monthly_returns'][-1]['return']=str(D(report['summary']['monthly_returns'][-1]['return'])+D('.00001'))
++    with pytest.raises(ValueError,match='MONTHLY_COMPOUNDING_MISMATCH'):
++        assert_report_boundaries(report)
+diff --git a/scripts/market_redesign_episode.py b/scripts/market_redesign_episode.py
+new file mode 100644
+index 0000000..4e3dbeb
+--- /dev/null
++++ b/scripts/market_redesign_episode.py
+@@ -0,0 +1,126 @@
++"""Bounded M1 native lifecycle window. No archived fills or prefix replay.
++
++Fresh seed/cold episode at window start is deliberate: this checks mechanics
++on the named market windows, not archive cycle identity or economic attribution.
++Root must ledger each invocation before launching it.
++"""
++from pathlib import Path
++from datetime import datetime, timezone
++from decimal import Decimal
++import argparse
++import json
++
++WINDOWS={
++    "31":("2025-04-11","2025-04-14"),
++    "48":("2025-10-11","2025-10-17"),
++    "65":("2026-04-02","2026-04-04"),
++    "81":("2026-08-11","2026-08-19"),
++}
++
++
++def main():
++    parser=argparse.ArgumentParser()
++    parser.add_argument("--episode",choices=tuple(WINDOWS),required=True)
++    parser.add_argument("--variant",choices=("R2","R3"),default="R2")
++    parser.add_argument("--expected-e4-config",type=Path,required=True)
++    parser.add_argument("--data-root",type=Path,required=True)
++    parser.add_argument("--artifact-dir",type=Path,required=True)
++    args=parser.parse_args()
++    if args.artifact_dir.exists():
++        raise ValueError("SHORT_CHECK_ARTIFACT_DIR_MUST_BE_NEW")
++    from coinmaster.domain.wave_overlay import Candidate
++    from coinmaster.research.native_baseline import run_native_diagnostic,ExecutionPolicy,FixedBaseFeePolicy,save_diagnostic_report
++    from coinmaster.research.native_audit import audit_json_default
++    c=json.loads(args.expected_e4_config.read_text())
++    if c["candidate"]["ema_period"]!=34 or c["candidate"]["beta_days"]!=270 or c["research_btc_split_discount"]!="0.0025":
++        raise ValueError("EXPECTED_EXACT_E4_CONFIG_REQUIRED")
++    start,end=WINDOWS[args.episode]
++    ms=lambda day:int(datetime.fromisoformat(day).replace(tzinfo=timezone.utc).timestamp()*1000)
++    if args.episode=="81":
++        # Explicit bounded admission fixture: all input D1 bars remain closed.
++        # Delay the first causal decision to 20:00, then native q0/q1/fills.
++        # Never seed archived orders, fills, equity, d3 or execution outcomes.
++        import coinmaster.strategy.wave_overlay as strategy_module
++        original_strategy=strategy_module.WaveOverlayStrategy
++        late_ns=ms(start)*1_000_000+20*3_600_000_000_000
++        midnight_ns=(ms(start)+86_400_000)*1_000_000
++        class LateBoundary81(original_strategy):
++            _bounded_late_started=False
++            _bounded_midnight_recorded=False
++            def _advance_current_day(self):
++                if self.clock.timestamp_ns()<late_ns:
++                    return
++                return super()._advance_current_day()
++            def on_quote_tick(self,tick):
++                if tick.instrument_id==self.config.btc_id and tick.ts_event>=late_ns and not self._bounded_late_started:
++                    self._bounded_late_started=True
++                    # The regular wrapper activates D1 decisions only after
++                    # the first in-window D1 close. This fixture deliberately
++                    # exercises a late entry from the already closed seed.
++                    if any(int(b.close_time.timestamp()*1_000_000_000)>tick.ts_event for b in self._bars):
++                        raise ValueError("SHORT81_FUTURE_SEED_BAR")
++                    equity=self._active_marked(self._latest_marks[self.config.btc_id],self._latest_marks[self.config.sol_id])
++                    feature=self._current_signals[-1]
++                    intents=self._domain.decide(self._bars,self._current_signals,len(self._bars)-1,equity,
++                        btc_notional_multiplier=self._research_btc_entry_multiplier())
++                    entries=[i for i in intents if i.action=="BTC_ENTRY"]
++                    if len(entries)!=1:
++                        raise ValueError("SHORT81_CLOSED_SEED_NO_VALID_CAUSAL_ENTRY")
++                    for entry in entries:
++                        self._queued_intents.append((entry,feature.sigma,len(self._bars)-1))
++                        self._queued_intent_ready_ns[entry.id]=tick.ts_event+1
++                    self._md_log("BOUNDED81_CAUSAL_SEED_ENTRY",tick.ts_event,
++                        feature_close_ns=str(int(self._bars[-1].close_time.timestamp()*1_000_000_000)),
++                        native_equity=str(equity),side=feature.side,
++                        qualification="FRESH_NATIVE_EQUITY_CLOSED_FEATURE_DOMAIN_INTENT_NO_ARCHIVED_FILLS")
++                if tick.instrument_id==self.config.btc_id and tick.ts_event>=midnight_ns and not self._bounded_midnight_recorded:
++                    self._bounded_midnight_recorded=True
++                    parent=self._split_parent
++                    owned=[o for o in self.cache.orders_open() if o.instrument_id==self.config.btc_id and not o.is_reduce_only and o.order_type.name=="LIMIT"]
++                    if parent and late_ns<=parent["start_ns"]<midnight_ns and owned and not parent["fallback"]:
++                        self._md_log("BOUNDED81_MIDNIGHT_PENDING_SECOND",tick.ts_event,
++                            actual_inventory=next((p.quantity.as_decimal() for p in self.cache.positions_open() if p.instrument_id==self.config.btc_id),Decimal(0)),
++                            second_limit=str(owned[0].price),parent_start_ns=str(parent["start_ns"]),
++                            qualification="EXPLICIT_LATE_CAUSAL_DECISION_FIXTURE_NATIVE_FILL")
++                return super().on_quote_tick(tick)
++        strategy_module.WaveOverlayStrategy=LateBoundary81
++    result=run_native_diagnostic(args.data_root,include_funding=True,
++        candidate=Candidate(**c["candidate"]),execution_policy=ExecutionPolicy(**c["execution_policy"]),
++        fixed_base_fee_policy=FixedBaseFeePolicy(**c["fixed_base_fee_policy"]),
++        trading_start_ms=ms(start),trading_end_ms=ms(end),
++        initial_active_seed=Decimal("10000"),artifact_dir=args.artifact_dir,
++        artifact_label="bounded-"+args.episode+"-"+args.variant,
++        research_v0_execution_repairs=True,research_v0_zero_tp_netting=False,
++        research_v0_deferred_selective_zero_tp=True,research_v0_selective_lifecycle_repairs=True,
++        observe_minute_risk=True,research_btc_direction_sizing=True,research_btc_split50=True,
++        research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,
++        research_btc_split_discount="0.005",research_btc_real_u=True,
++        research_btc_q_mode="LEGACY_Q_CONTROL" if args.variant=="R2" else "CLEAN_Q",
++        research_sol_off=True,research_wait_4h=True,research_regime_reentry_band="0.5")
++    result=json.loads(json.dumps(result,default=audit_json_default))
++    result["short_check_qualification"]={
++        "archive_window":args.episode,"window_start":start,"window_end_exclusive":end,
++        "state":"COLD_START_NATIVE_LIFECYCLE_ONLY_NOT_ARCHIVED_EQUITY_OR_ENTRY_CALENDAR",
++        "prewarm":"CLOSED_DAILY_FEATURES_ONLY_NO_EXECUTABLE_PREFIX",
++        "matching":"GENUINE_EXISTING_NATIVE_M1_CLOSE_QUOTES",
++        "not_economic_acceptance":True}
++    events=result["market_redesign_audit"]["events"]
++    plans=[r for r in events if r["event"]=="PLAN"]
++    accepted=[r for r in events if r["event"]=="TARGET_ACCEPTED"]
++    if args.episode=="81" and not any(r["event"]=="BOUNDED81_MIDNIGHT_PENDING_SECOND" for r in events):
++        raise ValueError("SHORT81_DID_NOT_EXERCISE_NATIVE_LATE_ENTRY_PENDING_SECOND_ACROSS_MIDNIGHT")
++    if not plans or any(Decimal(r["raw_causal_d3"])<=0 for r in plans) or len(accepted)<3:
++        raise ValueError("SHORT_CHECK_DID_NOT_EXERCISE_VALID_ENTRY_AND_THREE_NATIVE_TARGET_ACCEPTANCES")
++    if result["terminal_open_positions"] or result["terminal_lifecycle"]["status"]!="FLAT" or result["liquidation_count"]:
++        raise ValueError("SHORT_CHECK_NOT_FLAT_OR_LIQUIDATED")
++    if any(r["instrument"].startswith("SOL") for r in result["fill_audit"]):
++        raise ValueError("SHORT_CHECK_SOL_FILL")
++    path=save_diagnostic_report(args.data_root,result,"bounded-"+args.episode+"-"+args.variant,args.artifact_dir)
++    print(json.dumps({"status":"BOUNDED_NATIVE_LIFECYCLE_COMPLETED","result":str(path),
++        "plans":len(plans),"accepted_native_targets":len(accepted),
++        "missing_three_tp_ns":result["market_redesign_audit"]["missing_three_tp_ns"],
++        "qualification":result["short_check_qualification"]}))
++
++
++if __name__=="__main__":
++    main()

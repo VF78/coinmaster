@@ -1,0 +1,87 @@
+{
+  "source": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "runs": {
+    "R1": {
+      "execution_receipt": "root-R1-execution-receipt.json",
+      "files": {
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "1179eab9683eeba379c98daa114019b4a4d5b1008130e23ad17015f95097c3b1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "9b996975466407359da89d3f9d896bf225381b6c9e2555a62ff2bb5f9f16f77a",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/next_band.py": "dda8233f9f31f530869a20580e2e798c013b99b7bdb15deb57414be27b55b5e2",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_fixture.py": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/market_redesign.py": "50cc7a74e032f2ccd29ec0406c320bbc32b3db30eccee31570da3ee4174b5aa1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_baseline.py": "c223198e1fa8d904fb659abade749576e9ab1d8b3dbcaebcbc46f11a0cdba522",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/split_cover.py": "d285fd426c125cf908194ec2183e33dcdbbe1fca1660bc0dac14ddf6ea2510f1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/domain/wave_overlay.py": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/wave_overlay.py": "c0f72d139c9e0f357a6e1abe8bac4ca01b0749d0282bc63a59a28a15e80e641d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "4915bf674adcf3c143a9854edecd8b22a7f794cdc2cbe30972217b968de808bb",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-orders.csv": "260596b6c81bd74c2b73638d302bf264937323315d468507b6b78c8cdd7db8e7",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite": "924513d813e4c916619543aba4b566e8b9775d869aa17e1dddef3ccef3d61da0",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/minute-native-settled-receipts.csv.gz": "fb0b407840f290db5df6b5d7b71ce8a5b3160c9e22e3c7d55801dfae41010d98",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/verifier-E4-DD-ge30-episodes.csv": "f3098eb3c57efd49d235d5fcaa72265b660b039e79fd5f6130788e6e12a842bd",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/split-parent-audit.csv": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/native.log": "13e14cde45af2295642eb57d8a1eb37d72167050bea652ef3423f554318a90ec"
+      },
+      "native_funding_journal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite",
+      "settled_receipts": 1051199,
+      "mechanical_checks_PASS": 39
+    },
+    "R2": {
+      "execution_receipt": "root-R2-execution-receipt.json",
+      "files": {
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "7e657ea8d5558d19fa7096407b082e639fecf6d2138c9b5c0852297cd48c9161",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "9c259c4d3557c93dcffe42e6b91c1636eb7e2088ff3d3d9d908cb947de317b45",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/next_band.py": "dda8233f9f31f530869a20580e2e798c013b99b7bdb15deb57414be27b55b5e2",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_fixture.py": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/market_redesign.py": "50cc7a74e032f2ccd29ec0406c320bbc32b3db30eccee31570da3ee4174b5aa1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_baseline.py": "c223198e1fa8d904fb659abade749576e9ab1d8b3dbcaebcbc46f11a0cdba522",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/split_cover.py": "d285fd426c125cf908194ec2183e33dcdbbe1fca1660bc0dac14ddf6ea2510f1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/domain/wave_overlay.py": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/wave_overlay.py": "c0f72d139c9e0f357a6e1abe8bac4ca01b0749d0282bc63a59a28a15e80e641d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "44a5ed185c67bc9fe2cd37ad1fb91bbd3cd1e548d04a5928b2dd21daab9a6e4a",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-orders.csv": "cf12d296fb09b63088d5d1683d1a431cda69f734665b3835587367b8e7e18291",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite": "b10985dff6f9ce975f1e81de86fa67c2328d994ca8139adf7d059d4dab7b7a8b",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/minute-native-settled-receipts.csv.gz": "d5dcee4290ff937ea61ae8a35a5d6212c50b375ffb75c5d409cf01d1425d70ab",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/verifier-E4-DD-ge30-episodes.csv": "f3098eb3c57efd49d235d5fcaa72265b660b039e79fd5f6130788e6e12a842bd",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R1-cycles.csv": "2ea94d7a3dfc5cabb1632b13f954af5ed686cc5b1d4f9fb44f0fc07f5bf7b9a3",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/split-parent-audit.csv": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/native.log": "6605a8cbeac459bb30837136036d2070ada8756c379ce8a2c869e5471c741671"
+      },
+      "native_funding_journal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite",
+      "settled_receipts": 1051199,
+      "mechanical_checks_PASS": 41
+    },
+    "R3": {
+      "execution_receipt": "root-R3-execution-receipt.json",
+      "files": {
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "98cfbdfddb33ea9aaeb1fe91274d2a441f73a6e13f96fcafbf02854c025dd59e",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "038e6fb63c5f38e6a7b22d6c2529f9e089a96c76ed575542f5bd5af3b06dccd6",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/next_band.py": "dda8233f9f31f530869a20580e2e798c013b99b7bdb15deb57414be27b55b5e2",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_fixture.py": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/market_redesign.py": "50cc7a74e032f2ccd29ec0406c320bbc32b3db30eccee31570da3ee4174b5aa1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_baseline.py": "c223198e1fa8d904fb659abade749576e9ab1d8b3dbcaebcbc46f11a0cdba522",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/split_cover.py": "d285fd426c125cf908194ec2183e33dcdbbe1fca1660bc0dac14ddf6ea2510f1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/domain/wave_overlay.py": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/wave_overlay.py": "c0f72d139c9e0f357a6e1abe8bac4ca01b0749d0282bc63a59a28a15e80e641d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "3c85e4d8b8e017394fe81d80c320febb1cdefb113a22f372b42b8e968835fa2c",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-orders.csv": "15e7fa15302d28ab182203541c9ce45b87d60cfb3482d80628000c919cc574e7",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite": "544e466544d6b947c1aadcbdbb67d96c28f35d47d3475e14afbe2f04fbe9773c",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/minute-native-settled-receipts.csv.gz": "58f965242de9e0d25e35262a4abcc47e95bfb17c93cc83e9910f3d9b816582d1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/verifier-E4-DD-ge30-episodes.csv": "f3098eb3c57efd49d235d5fcaa72265b660b039e79fd5f6130788e6e12a842bd",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R2-cycles.csv": "d89ab748e3907767a5628b03c9093cedd9c1a12c5f708ffdd7dc7279bb6f05d4",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-E4-events/split-parent-audit.csv": "f543b5e6357598dd5895ff0da3248e4de7820c4455fa27f7e6ff898704150acb",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/native.log": "9f20adce6d3600d1ca78c90d5b57e0661f54787e168613619cd375426b9ec978"
+      },
+      "native_funding_journal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite",
+      "settled_receipts": 1051199,
+      "mechanical_checks_PASS": 41
+    }
+  },
+  "unique_raw_results": "PRESERVED_IN_ORIGINAL_RUNTIME_NAMESPACES",
+  "no_new_runs": true
+}

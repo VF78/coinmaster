@@ -1,0 +1,39 @@
+{
+  "status": "FINAL_REPORT_CONSISTENCY_PASS",
+  "source_ref_verified": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "full_results_valid": 3,
+  "full_economic_pass": 0,
+  "native_receipts_each": 1051199,
+  "root_account_checks": [
+    39,
+    41,
+    41
+  ],
+  "model_liquidations": [
+    0,
+    0,
+    0
+  ],
+  "realU_missingTP_ns": [
+    "0",
+    "0"
+  ],
+  "realU_open_protection": [
+    null,
+    null
+  ],
+  "native_budget": "3/3closed",
+  "short_budget": "8/8closed",
+  "active_reserved": [
+    0,
+    0
+  ],
+  "initial_failed_review_and_observer_reports_preserved": true,
+  "native_final_TOTAL_never_replaced_by_derived_cash": true,
+  "L2_crash_intraminute": "UNPROVEN",
+  "publication": "SOURCE_REMOTE_VERIFIED_MANAGER_REPORT_PUSH_PENDING",
+  "actual_R3_SOL_gate": "STOP_SOL_INCONCLUSIVE_VERIFIED",
+  "window_cash_UPNL_decomposition": "87identitiesPASS_4funding_orderUNKNOWN_pervariant",
+  "project_issue": "CLOSED",
+  "project_status": "Done"
+}

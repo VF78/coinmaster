@@ -1,0 +1,34 @@
+# Native result extractor — prepared, not a full candidate result
+
+`native-analysis-extract.py` reads completed saved JSON/CSV/gzip/SQLite exports only. It imports no CoinMaster/Nautilus engine and launches no process/order. Root alone owns launch/ledger/approval. Outputs are confined to this directory with `native-analysis-*` prefixes. No full candidate result has been evaluated by this task.
+
+For each completed R1/R2/R3, root supplies actual final artifact and root execution receipt:
+
+```sh
+python3 reports/market-redesign-20261024/native-analysis-extract.py \
+  --artifact /ABSOLUTE/ACTUAL/RESULT.json \
+  --variant R1 \
+  --expected-config reports/market-redesign-20261024/owner-R1-expected-config.json \
+  --execution-receipt /ABSOLUTE/ROOT-EXECUTION-RECEIPT.json \
+  --output-prefix native-analysis-R1
+```
+
+`--raw` may explicitly select its raw JSON; otherwise `<artifact stem>-raw-native.json` is used. The command above does not launch research. Run it after root confirms the native process has exited and JSON, exports and journal are final. A nonempty SQLite WAL blocks journal validation; extractor never checkpoints/mutates/copies the DB. Immutable read-only SQLite is used for a completed archived DB.
+
+Root receipt contract is documented in `native-analysis-execution-receipt-template.json`. It is a template, not evidence. Actual values required: native_process_exit_code, source_commit, artifact_sha256, native_version1.231.0; `artifact_dir_existed_before_launch=false` and `journal_files_before_launch=[]` (or explicit verified fresh_funding_journal_verified); actual external_cash_flows_USDT; mechanical_acceptance_pass and source_review_pass. Preserve root PID/argv/env/configSHA/walltime alongside them. UNKNOWN values must remain absent/unknown, never filled to make PASS. `external_cash_flows_USDT` is actual independent run-contract evidence; it must not be set to the cash reconciliation residual. Reserve transfers are internal and not external flows.
+
+Checks and calculations:
+
+- Canonical config hash/self-consistency and exact frozen owner config/command hash; expected E4 data/policy pins; observed source hashes against frozen snapshot/receipt; root process exit/source/artifact hash. Current command/source receipt are reread for each extraction, so a newly frozen observer source is not hardcoded into the tool.
+- Raw/wrapped financial metadata, actual export hashes/row counts, terminal native position/order/parent states, zero model liquidations. Flat inventory is independently checked from actual audit fill quantities and native order side.
+- Native filled-order exports may contain terminal partial orders. Fill audit groups match native order events by `(submit_ns,instrument,reason,level)`. Group side must be unique and summed actual quantities must match. Exact per-fill audit `px*qty` computes signed price cashflow; independent aggregate native `avg_px*filled_qty` cross-check is kept at its actual precision. Multi-fill VWAP is **never** rounded to one tick. Ambiguous/missing sides/groups block acceptance. For the full terminal-flat period, summed fill price cashflow is actual price PNL; monthly cashflow is not monthly realized PNL when positions span months.
+- Fees reconcile actual audit commissions, native filled-order commissions, and reported native fees. Analysis-only monetary tolerance is `max(0.000001 USDT, (actual_fill_audit_events+1)*0.00000001 USDT)`, explicitly recorded. This bounds downstream eight-decimal account/report rounding; it changes no source/native test tolerance.
+- Signed funding is strictly raw `funding.signed_native_cash_deltas[*][5]`; each equals after-before and matches persisted `funding_cash` rows/IDs/counts/instrument/timestamp, plus corresponding funding_events. Per-asset funding is exported. Missing journal/deltas stay UNKNOWN. No unallocated cash bridge is treated as funding.
+- Independent terminal cash uses seed + signed actual flat fill cashflow − actual fees + signed persisted funding + independently evidenced external flows. No reported realized/unrealized estimate is substituted; the original UNKNOWN report field is preserved. Without independent inputs this check is UNKNOWN, not tautological PASS.
+- Global marked DD streams **actual settled native close receipts**; checks every source minute, interval endpoints, receipt count and unavailable-mutation count. Full benchmark requires exactly **1,051,199** receipts for [2024-09-01,2026-09-01), plus initial seed and actual terminal cash in the independent DD curve. Summary cash-account DD is not used. Native account and TOTAL DD are separate; with identically zero reserve they coincide. If nonzero reserve lacks per-receipt reserve data, TOTAL DD is UNKNOWN. No intraminute claim.
+- Native gross/net close exposure and turnover are actual observations. Parent counts are measured, never forced to83. Rejections/terminal partials/cancellations, observer missing-three-TP duration/open exception and raw IOC flag versus effective real-U/actual non-LIMIT positive TP orders are exported. Existing independent lifecycle review still governs ACK/race/min-lot acceptance; this financial extractor is not a new order simulator.
+- Retention uses **legacy S0 6077107.23887483**, seed10000 and immutable floor **5470396.514987347**. No6482334 denominator. Numerical50/90 is separate from qualified mechanical/cash acceptance. Synthetic minute-close fills remain qualified; L2, actual queue/slippage, intraminute DD and crash-resume are UNPROVEN.
+
+Outputs: JSON validator report with check statuses/details/inputSHA; one compact comparison CSV; monthly marked-endpoint attribution CSV with native fill cashflow/fees/signed funding. Monthly rows are diagnostic attribution, not summed trade profits. Specified historical DD-window decomposition is deferred to root follow-up after real full traces; no extra engine is needed. R0 reuses existing `reports/b-50-90-next-20261023/owner-E4-receipt.json`: TOTAL5631617.35953723/DD57.58541045962226379114466259. Its signed funding is historically UNKNOWN; extractor does not fabricate a retroactive PASS or request a rerun.
+
+Connected verification used only saved first cold short batch31/48/65/81. **23 meaningful saved-export checks PASS per case** (92), including audit/native fill quantity+side groups, flat sum, actual fees, signed persisted funding, continuous actual settled receipts. Outputs `native-analysis-short*.json/csv`, `native-analysis-verification.json`. Expected full config/period and old observer source mismatches are visible, execution/fresh-journal/externalflow evidence absent; every case remains `SHORT_DIAGNOSTIC_NOT_FULL_ACCEPTANCE`, qualified50/90false. Independent full cash identity remains UNKNOWN without root externalflow evidence. No historical engine run or full candidate launch occurred.

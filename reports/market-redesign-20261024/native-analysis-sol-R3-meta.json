@@ -1,0 +1,51 @@
+{
+  "status": "STOP_SOL_INCONCLUSIVE_NO_OPERATING_GATE_SELECTED",
+  "actual_inventory_source": "ACCEPTED_R3_NATIVE_FILLS_NOT_E4_CALENDAR",
+  "R3_parent_count": 83,
+  "observed_native_trace_state_checks": 1529,
+  "predeclared_definition_sha256": "552e2b227407c89ee41473ebe08fd45869124ddc8ad60a2a233bda7ad1e16d4c",
+  "counts": {
+    "H4_total": 4380,
+    "excluded_BTCflat": 2761,
+    "excluded_missing_lag720": 56,
+    "excluded_fill_at_exact_decision": 34,
+    "eligible_decisions": 1529,
+    "labels_missing_24h": 5
+  },
+  "actual_BTC_native_fills": 354,
+  "verified_one_to_one_fill_audit": true,
+  "fill_price_check": "native avg_px normalized to archivedBTCtick0.1 for floating representation; filltimestamp+quantity exact",
+  "observed_BTCcycles": 83,
+  "terminal_BTCqty": "0.000",
+  "eligible_cycles": 77,
+  "outputs": {
+    "features": 1529,
+    "action_horizon_rows": 21371,
+    "aggregate_rows": 420,
+    "cycle_blocks": 16744
+  },
+  "lag_correlation_range": [
+    0.5895996469549059,
+    0.8889776828732938
+  ],
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/b-50-90-next-20261023/owner-closed-bars.csv": "550b0825a713169713a6077fa52e5206ef349665ebc369e246daafe551d013fc",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "3c85e4d8b8e017394fe81d80c320febb1cdefb113a22f372b42b8e968835fa2c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "98cfbdfddb33ea9aaeb1fe91274d2a441f73a6e13f96fcafbf02854c025dd59e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "038e6fb63c5f38e6a7b22d6c2529f9e089a96c76ed575542f5bd5af3b06dccd6",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/sol-screen-design.json": "552e2b227407c89ee41473ebe08fd45869124ddc8ad60a2a233bda7ad1e16d4c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R3.json": "5ccb4c67e47dddeed8bd71769381cd20f1605b39ca6757887b6fb5f4d646d9e4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/minute-native-settled-receipts.csv.gz": "58f965242de9e0d25e35262a4abcc47e95bfb17c93cc83e9910f3d9b816582d1"
+  },
+  "full_native_attempts": 0,
+  "verification": "PASS actualR3 filled orders all singlefullfill, matched nativeaudit; nativeinventory terminal0 and actualparent starts match; all eligibledecision nativeQ match settledtrace; lag availability, NO_HEDGEzero, relief identities, additive comparisons pass",
+  "limitations": [
+    "Observed actualR3 inventory only; action outcomes are frozen conditional arithmetic, not a SOL candidate lifecycle or ROI.",
+    "Fixed observed initial BTC quantity is held hypothetically for outcome horizon; crosses-native-flat labels flagged. No lifecycle, equity, margin or cap admission.",
+    "H1 close-grid excursions omit intrahour extrema, order sequence, fees beyond declared hypothetical action roundtrip, slippage/funding/L2/queue.",
+    "H4 observations overlap; cycle block means are descriptive and not independent inference. History already viewed, not fresh OOS.",
+    "No 3TP/SL or chosen risk gate, no candidate strategy PnL/TOTAL/DD/ROI.",
+    "Positive covariance required; very small covariance may inflate factor hedge; no invented leverage/margin cap.",
+    "ER24 defined before outcomes here as24closedH4 increments(96h); no claim this matches missing precheck ZIP definition."
+  ]
+}

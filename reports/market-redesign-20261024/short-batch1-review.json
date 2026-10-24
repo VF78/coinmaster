@@ -1,0 +1,79 @@
+{
+  "status": "OBSERVER_METRIC_GATE_FAILED_BEFORE_FULL_GO",
+  "rows": [
+    {
+      "case": "31",
+      "result": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch1/31/bounded-31-R2.json",
+      "sha256": "f656e2a125b38681403a24ffa55800d2201ae3d063f4b21bd20c8a81d0173175",
+      "process_exit_code": 0,
+      "terminal_status": "FLAT",
+      "positions": 0,
+      "model_liquidations": 0,
+      "raw_missing_ns": "0",
+      "raw_open_exception_ns": null,
+      "native_terminal_close_ns": [],
+      "same_timestamp_if_open": null,
+      "plans": 1,
+      "target_acks": 6,
+      "native_midnight_pending_second": 0
+    },
+    {
+      "case": "48",
+      "result": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch1/48/bounded-48-R2.json",
+      "sha256": "d36c51e31363d44939ef02d9d0f2ab686ae12da719a02b1aca3f314261482e16",
+      "process_exit_code": 0,
+      "terminal_status": "FLAT",
+      "positions": 0,
+      "model_liquidations": 0,
+      "raw_missing_ns": "0",
+      "raw_open_exception_ns": "1760659200000000000",
+      "native_terminal_close_ns": [
+        "1760659200000000000"
+      ],
+      "same_timestamp_if_open": true,
+      "plans": 1,
+      "target_acks": 6,
+      "native_midnight_pending_second": 0
+    },
+    {
+      "case": "65",
+      "result": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch1/65/bounded-65-R2.json",
+      "sha256": "bd9abdd170c230c4bf38309fa3ad0f95f1a8a6821ca109e37d3ab96d7101c833",
+      "process_exit_code": 0,
+      "terminal_status": "FLAT",
+      "positions": 0,
+      "model_liquidations": 0,
+      "raw_missing_ns": "0",
+      "raw_open_exception_ns": "1775260800000000000",
+      "native_terminal_close_ns": [
+        "1775260800000000000"
+      ],
+      "same_timestamp_if_open": true,
+      "plans": 1,
+      "target_acks": 6,
+      "native_midnight_pending_second": 0
+    },
+    {
+      "case": "81",
+      "result": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch1/81/bounded-81-R2.json",
+      "sha256": "865f7ccb74274f022c7eca1c838a34f4c6d4350cb4316043b7eeab7a38518917",
+      "process_exit_code": 0,
+      "terminal_status": "FLAT",
+      "positions": 0,
+      "model_liquidations": 0,
+      "raw_missing_ns": "0",
+      "raw_open_exception_ns": "1787097600000000000",
+      "native_terminal_close_ns": [
+        "1787097600000000000"
+      ],
+      "same_timestamp_if_open": true,
+      "plans": 2,
+      "target_acks": 12,
+      "native_midnight_pending_second": 1
+    }
+  ],
+  "classification": "terminal-flat observer bookkeeping; same-ns actual native terminalfill; no demonstrated positive-duration held-risk interval",
+  "correction_scope": "OBSERVER_ONLY after existing allflat guards; no trade/money/ordering changes",
+  "original_artifacts": "PRESERVED_UNCHANGED",
+  "next": "one alreadyallowed corrective4shortbatch;fullGOstillfalse"
+}

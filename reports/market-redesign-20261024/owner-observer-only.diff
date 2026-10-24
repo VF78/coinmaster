@@ -1,0 +1,57 @@
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index f72daf7..3e25b6c 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -2734,6 +2734,9 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
+         if self.config.research_v0_selective_lifecycle_repairs and self._pending_by_order:
+             return
+         self.terminal_lifecycle["status"] = "FLAT"
++        if self._md_enabled():
++            ep = self._domain.episode
++            self._md_coverage(self.clock.timestamp_ns(), True, ep.id if ep else None, "NATIVE_TERMINAL_FLAT")
+ 
+     def reporting_state(self) -> dict[str, object]:
+         """Authoritative native adapter state for diagnostic-only exports."""
+diff --git a/runtime/tests/test_native_market_redesign.py b/runtime/tests/test_native_market_redesign.py
+index 9b4112d..8efc1a0 100644
+--- a/runtime/tests/test_native_market_redesign.py
++++ b/runtime/tests/test_native_market_redesign.py
+@@ -289,3 +289,38 @@ def test_genuine_native_entry_terminal_callbacks_cleanup_without_implicit_retry(
+             assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(50)
+     finally:
+         e.end();e.dispose()
++
++
++def test_native_terminal_boundary_closes_only_observer_interval_after_actual_flat():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4)])
++        entry_fills=[dict(r) for r in s.fill_audit]
++        before_orders=len(e.cache.orders())
++        held=next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==BTC_PERP.id)
++        assert held==D(50)
++        s._begin_forced_close("TERMINAL_BOUNDARY_SETTLEMENT")
++        # Native cancel callbacks can be delivered at the next engine tick;
++        # inspect the actual callback sequence after native settlement.
++        run_ticks(e,[tick(BTC_PERP,5)])
++        assert not e.cache.positions_open() and not e.cache.orders_open()
++        assert s.terminal_lifecycle["status"]=="FLAT"
++        terminal=[r for r in s.fill_audit if r["action"]=="TERMINAL_CLOSE"]
++        assert len(terminal)==1 and D(terminal[0]["qty"])==held
++        assert len(e.cache.orders())==before_orders+1
++        assert s.fill_audit[:len(entry_fills)]==entry_fills
++        native_terminal=next(o for o in e.cache.orders() if str(o.client_order_id) in s._terminal_order_ids)
++        assert native_terminal.status.name=="FILLED"
++        assert native_terminal.filled_qty.as_decimal()==held
++        report=s._md_report()
++        assert report["open_protection_exception_since_ns"] is None
++        canceled=[r for r in report["events"] if r["event"]=="PROTECTION_EXCEPTION" and r["reason"]=="TARGET_CANCEL_ACK"]
++        assert canceled and int(canceled[-1]["timestamp_ns"])<=int(terminal[0]["fill_ns"])
++        restored=[r for r in report["events"] if r["event"]=="PROTECTION_RESTORED" and r["reason"]=="NATIVE_TERMINAL_FLAT"]
++        assert len(restored)==1
++        assert restored[0]["timestamp_ns"]==terminal[0]["fill_ns"]
++        # Repeated reporting/flat callbacks are observer-idempotent.
++        s._reconcile_terminal_flat();s.reporting_state()
++        assert len([r for r in s._md_report()["events"] if r["event"]=="PROTECTION_RESTORED" and r["reason"]=="NATIVE_TERMINAL_FLAT"])==1
++    finally:
++        e.end();e.dispose()

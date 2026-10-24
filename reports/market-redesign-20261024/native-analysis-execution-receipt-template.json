@@ -1,0 +1,13 @@
+{
+  "template_only": true,
+  "native_process_exit_code": "ROOT_ACTUAL_EXIT_CODE",
+  "source_commit": "EXACT_OWNER_COMMANDS_SOURCE_COMMIT",
+  "artifact_sha256": "SHA256_ACTUAL_FINAL_JSON",
+  "artifact_dir_existed_before_launch": false,
+  "journal_files_before_launch": [],
+  "native_version": "1.231.0",
+  "external_cash_flows_USDT": "ROOT_VERIFIED_ACTUAL_VALUE_NOT_A_CASH_BRIDGE",
+  "mechanical_acceptance_pass": "ROOT_TRUE_ONLY_AFTER_BOUNDED_ACCEPTANCE",
+  "source_review_pass": "ROOT_TRUE_ONLY_AFTER_INDEPENDENT_ORDER_MONEY_REVIEW",
+  "note": "Template is not evidence. Preserve actual PID argv env config hashes walltime and prelaunch observations in root receipt. Unknown fields block acceptance."
+}

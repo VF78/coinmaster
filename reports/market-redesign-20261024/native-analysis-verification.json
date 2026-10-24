@@ -1,0 +1,44 @@
+{
+  "status": "PASS_READ_ONLY_SAVED_SHORT_DIAGNOSTIC",
+  "cases": [
+    {
+      "episode": "31",
+      "saved_short_checks_PASS": 23,
+      "receipts": 4319,
+      "signedfunding": "5.53046984",
+      "DD_diagnostic_only": "18.6831911392321805203259702334687399095379693473306564685923",
+      "independent_cash": "UNKNOWN_WITHOUT_EXTERNAL_FLOW_EXECUTION_EVIDENCE",
+      "full_candidate_acceptance": false
+    },
+    {
+      "episode": "48",
+      "saved_short_checks_PASS": 23,
+      "receipts": 8639,
+      "signedfunding": "32.71625424",
+      "DD_diagnostic_only": "37.9187331986443108127524235843368438384810019783839384714900",
+      "independent_cash": "UNKNOWN_WITHOUT_EXTERNAL_FLOW_EXECUTION_EVIDENCE",
+      "full_candidate_acceptance": false
+    },
+    {
+      "episode": "65",
+      "saved_short_checks_PASS": 23,
+      "receipts": 2879,
+      "signedfunding": "0.23420498",
+      "DD_diagnostic_only": "3.60810715955006821022427573667724670212170375174652647434325",
+      "independent_cash": "UNKNOWN_WITHOUT_EXTERNAL_FLOW_EXECUTION_EVIDENCE",
+      "full_candidate_acceptance": false
+    },
+    {
+      "episode": "81",
+      "saved_short_checks_PASS": 23,
+      "receipts": 11519,
+      "signedfunding": "25.95402701",
+      "DD_diagnostic_only": "11.1652658390982662797466469266984767744030167563932862356646",
+      "independent_cash": "UNKNOWN_WITHOUT_EXTERNAL_FLOW_EXECUTION_EVIDENCE",
+      "full_candidate_acceptance": false
+    }
+  ],
+  "engine_launches": 0,
+  "ledger_writes": 0,
+  "verification_scope": "actual native exports/fees/signed journal/trace integrity; no full candidate results evaluated"
+}

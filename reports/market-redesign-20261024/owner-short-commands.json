@@ -1,0 +1,138 @@
+{
+  "31": {
+    "argv": [
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/scripts/market_redesign_episode.py",
+      "--episode",
+      "31",
+      "--variant",
+      "R2",
+      "--expected-e4-config",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/expected-config.json",
+      "--data-root",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+      "--artifact-dir",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch2/31"
+    ],
+    "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TMPDIR": "/private/tmp",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "NUMEXPR_MAX_THREADS": "1",
+      "ARROW_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "qualification": "CLOSED_CAUSAL_SEED_FRESH_NATIVE_EQUITY_M1_LIFECYCLE_ONLY;81_LATE20H_DOMAIN_INTENT_FIXTURE",
+    "launched": false,
+    "authority": "ROOT_CORRECTIVE_BATCH2_LEDGER_AND_GO_ONLY",
+    "source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265"
+  },
+  "48": {
+    "argv": [
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/scripts/market_redesign_episode.py",
+      "--episode",
+      "48",
+      "--variant",
+      "R2",
+      "--expected-e4-config",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/expected-config.json",
+      "--data-root",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+      "--artifact-dir",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch2/48"
+    ],
+    "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TMPDIR": "/private/tmp",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "NUMEXPR_MAX_THREADS": "1",
+      "ARROW_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "qualification": "CLOSED_CAUSAL_SEED_FRESH_NATIVE_EQUITY_M1_LIFECYCLE_ONLY;81_LATE20H_DOMAIN_INTENT_FIXTURE",
+    "launched": false,
+    "authority": "ROOT_CORRECTIVE_BATCH2_LEDGER_AND_GO_ONLY",
+    "source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265"
+  },
+  "65": {
+    "argv": [
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/scripts/market_redesign_episode.py",
+      "--episode",
+      "65",
+      "--variant",
+      "R2",
+      "--expected-e4-config",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/expected-config.json",
+      "--data-root",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+      "--artifact-dir",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch2/65"
+    ],
+    "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TMPDIR": "/private/tmp",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "NUMEXPR_MAX_THREADS": "1",
+      "ARROW_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "qualification": "CLOSED_CAUSAL_SEED_FRESH_NATIVE_EQUITY_M1_LIFECYCLE_ONLY;81_LATE20H_DOMAIN_INTENT_FIXTURE",
+    "launched": false,
+    "authority": "ROOT_CORRECTIVE_BATCH2_LEDGER_AND_GO_ONLY",
+    "source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265"
+  },
+  "81": {
+    "argv": [
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/scripts/market_redesign_episode.py",
+      "--episode",
+      "81",
+      "--variant",
+      "R2",
+      "--expected-e4-config",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/expected-config.json",
+      "--data-root",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+      "--artifact-dir",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/short-batch2/81"
+    ],
+    "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TMPDIR": "/private/tmp",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "NUMEXPR_MAX_THREADS": "1",
+      "ARROW_NUM_THREADS": "2",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "qualification": "CLOSED_CAUSAL_SEED_FRESH_NATIVE_EQUITY_M1_LIFECYCLE_ONLY;81_LATE20H_DOMAIN_INTENT_FIXTURE",
+    "launched": false,
+    "authority": "ROOT_CORRECTIVE_BATCH2_LEDGER_AND_GO_ONLY",
+    "source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265"
+  }
+}

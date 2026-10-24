@@ -1,0 +1,76 @@
+{
+  "status": "PASS_OBSERVED_NATIVE_WINDOW_DECOMPOSITION_ONLY",
+  "variants": [
+    {
+      "variant": "R1",
+      "output": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-window-nativepnl-R1.csv",
+      "rows": 29,
+      "required_unique_endpoints": 40,
+      "native_endpoint_lookup_complete": true,
+      "streamed_trace_rows": 1051199,
+      "equity_delta_cash_delta_plus_UPNL_delta_exact_checks": 29,
+      "realized_PRICE_PNL_known_rows": 25,
+      "realized_PRICE_PNL_UNKNOWN_endpoint_tie_rows": 4,
+      "all_original_window_fields_unchanged": true,
+      "stable_input_hashes_unchanged": {
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R1.json": "408ae96fb04f68d338482e3b67fd51389325dedea3fcd49ee7ac4060bc2a58f2",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "1179eab9683eeba379c98daa114019b4a4d5b1008130e23ad17015f95097c3b1",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "9b996975466407359da89d3f9d896bf225381b6c9e2555a62ff2bb5f9f16f77a",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/root-R1-execution-receipt.json": "782881a5cf2bb0eee24cbbd26b54e9cbde38e166064c976aabe0fd36da6e2ad3",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R1-windows.csv": "53884ea8f3fc0969aa0837596ab96272eb503582831255d2b345102c4fdf50b0",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R1-DDge30.csv": "e9dcb442ecac847a7e53dffcfce48273efb4052a3f5573c91687a10280acee02",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R1/result/minute-native-settled-receipts.csv.gz": "fb0b407840f290db5df6b5d7b71ce8a5b3160c9e22e3c7d55801dfae41010d98"
+      },
+      "observed_no_SOL": true,
+      "engine_launches": 0
+    },
+    {
+      "variant": "R2",
+      "output": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-window-nativepnl-R2.csv",
+      "rows": 29,
+      "required_unique_endpoints": 42,
+      "native_endpoint_lookup_complete": true,
+      "streamed_trace_rows": 1051199,
+      "equity_delta_cash_delta_plus_UPNL_delta_exact_checks": 29,
+      "realized_PRICE_PNL_known_rows": 25,
+      "realized_PRICE_PNL_UNKNOWN_endpoint_tie_rows": 4,
+      "all_original_window_fields_unchanged": true,
+      "stable_input_hashes_unchanged": {
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R2.json": "1ba88e10583d08b5ec0afcbb12ad1d89d9fd8efa2dd7fa0f2294d3dab82a6a47",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "7e657ea8d5558d19fa7096407b082e639fecf6d2138c9b5c0852297cd48c9161",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "9c259c4d3557c93dcffe42e6b91c1636eb7e2088ff3d3d9d908cb947de317b45",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/root-R2-execution-receipt.json": "48cb955a3aed490b6b8e3efa7651ffbe3672d3bcb7dfcd2775f8fbee7ae24cef",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R2-windows.csv": "b3990aabaf0fa40bab88d41fe4fa4e2247aac63a8554e1d2275a3c5ef94cc095",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R2-DDge30.csv": "6a8800fb0ab87b65fc04734f613d67382099c560068e5c95251d30b637f055dd",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R2/result/minute-native-settled-receipts.csv.gz": "d5dcee4290ff937ea61ae8a35a5d6212c50b375ffb75c5d409cf01d1425d70ab"
+      },
+      "observed_no_SOL": true,
+      "engine_launches": 0
+    },
+    {
+      "variant": "R3",
+      "output": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-window-nativepnl-R3.csv",
+      "rows": 29,
+      "required_unique_endpoints": 43,
+      "native_endpoint_lookup_complete": true,
+      "streamed_trace_rows": 1051199,
+      "equity_delta_cash_delta_plus_UPNL_delta_exact_checks": 29,
+      "realized_PRICE_PNL_known_rows": 25,
+      "realized_PRICE_PNL_UNKNOWN_endpoint_tie_rows": 4,
+      "all_original_window_fields_unchanged": true,
+      "stable_input_hashes_unchanged": {
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R3.json": "5ccb4c67e47dddeed8bd71769381cd20f1605b39ca6757887b6fb5f4d646d9e4",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "98cfbdfddb33ea9aaeb1fe91274d2a441f73a6e13f96fcafbf02854c025dd59e",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "038e6fb63c5f38e6a7b22d6c2529f9e089a96c76ed575542f5bd5af3b06dccd6",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/root-R3-execution-receipt.json": "07d8ae098362dff1f4c56602b0cae956289774de8c9ed9f390217a1c7009fd50",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R3-windows.csv": "a9bd932e2d28c73f147619d96ffc81fd91452502bd1c2d31d547070b9f8e986e",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-attribution-R3-DDge30.csv": "36252d3c8f6f663626ad7bccf0875fa5d61522ed390ff29c631892c6fff7689d",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/minute-native-settled-receipts.csv.gz": "58f965242de9e0d25e35262a4abcc47e95bfb17c93cc83e9910f3d9b816582d1"
+      },
+      "observed_no_SOL": true,
+      "engine_launches": 0
+    }
+  ],
+  "qualification": "Realized PRICE PNL derived from observed nativecash when signedfunding orderingknown; NOT independent price-PNL proof. Original independent fill/rawmark residual and funding timing statuses retained unchanged.",
+  "engine_launches": 0
+}

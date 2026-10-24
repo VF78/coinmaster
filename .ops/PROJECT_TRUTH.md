@@ -18,7 +18,7 @@ VPS development root: `/root/.openclaw/workspace/coinmaster/coinmaster` on `root
 - Frozen benchmark: [2024-09-01,2026-09-01), UTC, seed10000USDT, RESERVE0.
 - Current optimization objective: global settled marked-equity DD<=50%, >=90% net profit of comparable S0, zero model liquidations and complete accounting; then maximize terminal TOTAL=ACTIVE+RESERVE. DD30% is secondary.
 - Legacy S0 and explicit SOL-child S0 are DIFFERENT execution/admission models. Exact results/hashes and their separate90% floors live only in RESEARCH_INDEX. Never silently mix controls or lower the original absolute goal.
-- Latest bounded H_SOL/H_BTC study completed NO_GO; goal remains NOT_MET. All detailed identities/results and failed experiments are indexed in RESEARCH_INDEX.
+- Latest bounded market BTC3TP/CLEAN_Q and conditional SOL screen completed NO_GO; goal remains NOT_MET. All3newfull/8short budgets spent and CLOSED; no active work/automatic GO. Exact identities/results and earlier negative studies live in RESEARCH_INDEX.
 - Historical Bybit1m data are real; synthetic L1 CLOSE execution/depth and current risk tiers are diagnostic assumptions, not historical L2/tick/live guarantees. Settled DD is not an intraminute bound.
 - Signed asset funding may be UNKNOWN; unallocated cash bridge is not funding. Never substitute zero, mock results, another venue or favorable OHLC order.
 - BASE fees only: Bybit maker0.020%/taker0.055%; HL maker0.015%/taker0.045%. Native fill classification; market/IOC is not relabeled maker. No0.1% fixture fee in economics.

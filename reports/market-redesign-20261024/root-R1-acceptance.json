@@ -1,0 +1,14 @@
+{
+  "variant": "R1",
+  "mechanical_accounting_acceptance": true,
+  "economic_50_90_pass": false,
+  "analysis_artifact": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R1.json",
+  "analysis_sha256": "408ae96fb04f68d338482e3b67fd51389325dedea3fcd49ee7ac4060bc2a58f2",
+  "native_TOTAL": "304372.03028516",
+  "native_settled_DD_percent": "66.9203964274313113040274377061695299005253528651376464456666",
+  "legacy_netprofit_retention_percent": "4.85193385735757168160472781242468883617522592822988883869909",
+  "independent_cash_residual_native_minus_derived": "-2E-8",
+  "cash_residual_qualification": "2e-8USDT native per-update monetary rounding; retained explicitly, never reassigned to funding or TOTAL",
+  "checks_PASS": 39,
+  "next": "R2_AS_FROZEN; no code/config retuning"
+}

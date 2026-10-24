@@ -1,26 +1,26 @@
 Updated: 2026-10-24, Europe/Moscow.
-Status: BTC_IMPLEMENTATION_ACTIVE; economic goal NOT_MET; no full native run active.
-Project: #131 In Progress market BTC3TP/limit-only + conditionalSOL; #123/#130 Done; #101 Todo futureHL/live.
+Status: MARKET_REDESIGN_CHECKPOINT_COMPLETE_NO_GO; economic goal NOT_MET.
+Project: #131 Done/CLOSED bounded research NO_GO (actual readback saved); #123/#130 Done; #101 futureHL/live unchanged.
 Manager: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021
-Manager branch: codex/btc-pattern-pilot-m2-20261021; initial HEAD81378471c87ec96519422732cb5bd3e06c90f6b7.
-Product base: exact E4bd04c9b3858bcda40060a08eff488849c69af5d8; never managerHEAD or dirty VPSprimary.
-Product writer: btc_native_owner GPT-6.1Sol/medium, narrow context; sole engine/domain/journal owner.
+Manager branch: codex/btc-pattern-pilot-m2-20261021; final publication checkpoint recorded in current report receipt.
 Canonical product worktree: /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/market-redesign-btc-20261024
-Product branch: codex/market-redesign-btc-20261024; actual source commit pending executor checkpoint.
-Scope: preserve E4signals; real U3TP on confirmed inventory +0.5%limit-only secondentry; LEGACY_Q_CONTROL then CLEAN_Q; SOLoff for R1–R3.
-Owner approval: explicit reply2026-10-24 authorizes implementation and<=3new full native physical attempts R1→R2→R3, including failures/repeats.
-Approved protocol/receipt/ledger: reports/market-redesign-20261024/{PROTOCOL_PROPOSED.md,approval.json,run-ledger.json}.
-Full budget:3approved,0spent,0active,0reserved. Old research leftovers remain CLOSED/unavailable.
-Short budget: at most4episodechecks31/48/65/81 +one4check corrective batch;0spent. Root owns launch ledger.
-Done: archiveE4/source/config/data/exportpins verified; four M1windows complete;81missingTP causal-chain diagnosed.
-Cheap screen:83sizes;82orderedfee-positive nativeTP3priceproxies; rawcausald3notexported/81excluded. No newcandidatePNL/DD.
-CLEAN_Q proxy changes summedplanN−3.5608%, LONG+4.9051/SHORT−8.7139; not equity/turnover/ROI.
-Next: writer implements/tests in isolatedVPSworktree; root freezes exactsource/config/commands, independent money/orderreview, shortchecks before fullGO.
-Gate: no full launch before mechanical acceptance/review/freeze; every physicalattempt counts; no free failed-export rerun.
-Inputs: runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data; immutable E4preparation under b-50-90-next-20261023/E4.
-Runtime: MacPython3.12.13/Nautilus1.231.0 verified; execute committed read-only snapshots, scrubbedenv, directPopen/freshjournal.
-No additionalBTCvariant/SOLfull/stress/repeat/ML budget. SOLgate stillUNKNOWN; saved-state cheapactiontables allowed, no promiseofhedgebenefit.
-Permissions: no pilot/production/service/deployment/key/realorder/transfer changes. No /opt edits or dirtyprimary cleanup.
-Usercode/rawresults preserved; rootMac dirty paths pre-existing. No current runtimeaccount/readiness claim.
-Evidence: reports/market-redesign-20261024/{REPORT.md,precheck-executor*,geometry-*}; task-source.txt from ownerattachment.
-Blockers: no50/90passingcandidate; implementation/acceptance pending; actualL2/BBOliquidityUNKNOWN; signedfunding export must be qualified.
+Product source: ec2a958e383a53133f8a8d03ef0e312810881265, codex/market-redesign-btc-20261024; remote ref verified; flagsOFF; not deployed.
+Frozen Mac: runtime/var/research-jobs/market-redesign-20261024/source-ec2a958; all source/config/data pins in full-freeze.json.
+Scope done: realU3TP/0.5%limit-only second; LEGACY_Q purecontrol/CLEAN_Q; exact E4signal/calendar preserved83parents.
+Results: R1TOTAL304372.03028516/DD66.9204/ret4.8519%; R2=225919.51131228/66.8015/3.5589%; R3=120718.40416503/68.6034/1.8249%.
+Benchmark: legacyS0TOTAL6077107.23887483; immutablefloor5470396.514987347; explicitSOLchildS0 is a different model.
+Physical budget CLOSED:3/3full,8/8short;0active,0reserved,0remaining. No next automaticGO/restart/repeat. Old budgets alsoCLOSED.
+All3exit0,39/41/41checks;1051199settledreceipts each; modelLiq0/nativeflat/orders0. R2/R3missingTPduration0/openexceptionsNone.
+Tests:135relevantqualified,18nativePASS+oneobserverregressionPASS; independent2P1closed inonefinancialcorrection; observer-only3linefix.
+Source CI: actual0checkruns; local/native evidence only, no greenCI claim. Source push is not deployment.
+Accounting: signed perasset native funding persisted; cashresidual native-minusderived R1−2e−8/R2−4e−8/R30 retained, notfunding.
+Attribution:83cycles each; same83entrytimes/sides;7DD>=30 and22fixedwindows each; nativecash/UPNL tables, timing/roundingUNKNOWNexplicit.
+SOL: actualR3screen1529H4/77cycles, STOP_SOL/INCONCLUSIVE; no stablegate/no newSOLengine/run.
+Next-candidate screen: H4counter-swing cancel pendingsecond5/83,4filledlegs aggregate+1160.23frozennet; NOT_ELIGIBLEfornewfull.
+Selection: cleanR3NONPASSING; no winner. No hiddenfakeTP/market chase/SOLalpha restoration; no leverageboost.
+Next exact step: owner reviews report; any further implementation/fullrun requires one new supported hypothesis/protocol/budget. None admitted now.
+Report: reports/market-redesign-20261024/REPORT.md; comparison, artifact-index, approval, full-freeze, run-ledger and publication receipt alongside.
+Executors: all completed; no active agent/native process. Preserve all originalshort1 failures and unique raw/native journals/traces.
+Primary VPS dirty historical user code preserved (180paths at taskstart); Mac root pre-existing dirty code preserved; no reset/clean.
+Permissions: no pilot/production/services/deployment/keys/realorders/transfers; no /opt edits. No runtime/account readiness claim.
+Realism blockers: synthetic M1L1/depth1000; actualL2/queue/capacity/intraminuteDD/crashresumeUNPROVEN; historicalrisk-tier applicabilityUNKNOWN.
