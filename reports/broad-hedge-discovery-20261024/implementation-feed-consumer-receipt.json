@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "engine_instances": 0,
+  "prefix_rows": 815,
+  "first_decision_ns": 1725163200000000000,
+  "last_decision_ns": 1736884800000000000,
+  "valid_rows": 802,
+  "file_sha256": "2fcd030c495f15a28ff4ff2ef6d931a018e5a2dd9cf142a56ac6582f941734e1",
+  "typed_payload_json_sha256": "252e8bab0ecf5f4aeb02194f285dfbc25fcec20ba303d28d55a0e5ee0e84c25f",
+  "actual_payload_json_roundtrip": true
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "source": "3323f08c57ede411058f93d96acee88928c93481",
+  "sourcepins": 184,
+  "inputpins": 27,
+  "additionalpins": 4,
+  "bad": [],
+  "engine_instances": 0,
+  "physical_attempts": 0,
+  "internal_go": false,
+  "cap": 4,
+  "logical_slot": 5
+}

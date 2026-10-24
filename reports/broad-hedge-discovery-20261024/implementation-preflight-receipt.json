@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "variant": "OFF",
+      "returncode": 0,
+      "stdout": "{\"status\": \"PREPARED_ENGINE_NOT_IMPORTED\", \"variant\": \"OFF\", \"calendar\": \"[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)\", \"seed\": \"10000\", \"source_commit\": \"ddd7d72a965ff1fcc943f3239832ae5310c05535\", \"native_launch_requires\": \"--launch AND durable physical ledger claim AND root internal GO\"}",
+      "stderr": "",
+      "engine_instances": 0,
+      "prefix_attempts": 0
+    },
+    {
+      "variant": "B2",
+      "returncode": 0,
+      "stdout": "{\"status\": \"PREPARED_ENGINE_NOT_IMPORTED\", \"variant\": \"B2\", \"calendar\": \"[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)\", \"seed\": \"10000\", \"source_commit\": \"ddd7d72a965ff1fcc943f3239832ae5310c05535\", \"native_launch_requires\": \"--launch AND durable physical ledger claim AND root internal GO\"}",
+      "stderr": "",
+      "engine_instances": 0,
+      "prefix_attempts": 0
+    },
+    {
+      "variant": "B2_F0",
+      "returncode": 0,
+      "stdout": "{\"status\": \"PREPARED_ENGINE_NOT_IMPORTED\", \"variant\": \"B2_F0\", \"calendar\": \"[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)\", \"seed\": \"10000\", \"source_commit\": \"ddd7d72a965ff1fcc943f3239832ae5310c05535\", \"native_launch_requires\": \"--launch AND durable physical ledger claim AND root internal GO\"}",
+      "stderr": "",
+      "engine_instances": 0,
+      "prefix_attempts": 0
+    }
+  ],
+  "root_go": false,
+  "engine_imported": false,
+  "physical_prefix_started": 0
+}

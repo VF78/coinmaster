@@ -1,0 +1,36 @@
+{
+  "source_commit_pin": "3323f08c57ede411058f93d96acee88928c93481",
+  "final_approval_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-owner-prefix-budget-amendment.json",
+  "required_guard_fields": {
+    "status": "APPROVED_BY_OWNER",
+    "protocol_sha256": "9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1",
+    "authorized_native_prefix_max": 5,
+    "authorized_full_max": 0,
+    "owner_exact_response": "NONEMPTY_EXACT_DIRECT_HUMAN_REPLY"
+  },
+  "required_freeze_fields": {
+    "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+    "physical_prefix_max": 5,
+    "full_max": 0,
+    "owner_budget_amendment": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-owner-prefix-budget-amendment.json",
+      "sha256": "SHA256_OF_FINAL_APPROVED_JSON"
+    },
+    "internal_go": true,
+    "independent_review": "PASS",
+    "launch_gates": "PASS"
+  },
+  "root_source_pin_requirement": "source_commit in final amendment/freezes stays3323f08; no source edits after human answer. Guard pins amendment bytes; root verifies exact source/command/file pins.",
+  "required_ledger_update_after_owner_reply_only": {
+    "physical_prefix_max": 5,
+    "append_logical_slot": {
+      "slot": 5,
+      "name": "VALID_OFF_AFTER_NONTRADING_BOUNDARY_REPAIR",
+      "status": "NOT_STARTED"
+    },
+    "preserve_physical_started": 2,
+    "preserve_both_failed_attempts": true
+  },
+  "effective_cap": "min(frozen physical_prefix_max, ledger physical_prefix_max), allowed4or5/ceiling5/default4; fifth requires explicit hash-pinned owner record.",
+  "current_authorization": "NO_AMENDMENT/currentcap4/spent2; no newlaunch authorized"
+}

@@ -1,0 +1,185 @@
+{
+  "status": "FINAL_CONNECTED_PASS",
+  "final_source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+  "final_cases": 73,
+  "final_passed": 73,
+  "final_failed": 0,
+  "final_native_engine_instances": 66,
+  "final_engine_instances_without_engine_run": 4,
+  "final_groups": [
+    {
+      "test_module": "test_native_paired_observer",
+      "cases": 2,
+      "native_engine_instances": 4,
+      "failed": 0
+    },
+    {
+      "test_module": "test_native_paired_prefix",
+      "cases": 20,
+      "native_engine_instances": 17,
+      "failed": 0
+    },
+    {
+      "test_module": "test_native_paired_prerequisites",
+      "cases": 3,
+      "native_engine_instances": 3,
+      "failed": 0
+    },
+    {
+      "test_module": "test_paired_prefix_ledger",
+      "cases": 2,
+      "native_engine_instances": 0,
+      "failed": 0
+    },
+    {
+      "test_module": "test_paired_signal_payload",
+      "cases": 1,
+      "native_engine_instances": 0,
+      "failed": 0
+    },
+    {
+      "test_module": "test_native_market_redesign",
+      "cases": 19,
+      "native_engine_instances": 18,
+      "failed": 0
+    },
+    {
+      "test_module": "test_native_report_precision",
+      "cases": 2,
+      "native_engine_instances": 0,
+      "failed": 0
+    },
+    {
+      "test_module": "test_native_episode_risk",
+      "cases": 24,
+      "native_engine_instances": 24,
+      "failed": 0
+    }
+  ],
+  "all_named_test_instances": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-capability-b091e2e.log",
+      "sha256": "e37f41a3f9d4677bbf499ddae40d6b7fb4ef94b6702f61d9b75aefbf09484ca5",
+      "cases": 3,
+      "passed": 0,
+      "failed": 3,
+      "native_engine_instances": 3,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-capability-37f3e21.log",
+      "sha256": "3409076881223af257c48da3ce8035001b316e67dadd638874d3efa1fc0fd726",
+      "cases": 3,
+      "passed": 2,
+      "failed": 1,
+      "native_engine_instances": 3,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-capability-05c4545.log",
+      "sha256": "213a0c4acb7356d7cb5870d076f6d257cae9930eed961907976f855a2d1eb69f",
+      "cases": 3,
+      "passed": 3,
+      "failed": 0,
+      "native_engine_instances": 3,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-acceptance-initial-0018260.log",
+      "sha256": "d3632724402785132fc418fec7976450a5556cfa607a6e77fc9232c83fd109f1",
+      "cases": 26,
+      "passed": 25,
+      "failed": 1,
+      "native_engine_instances": 22,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-debug-initial-0018260.json",
+      "sha256": "ccdd5a9d90475891622a3c153e26fe13724f36b5d9a7410fad6affe0b43ff3ef",
+      "cases": 1,
+      "passed": null,
+      "failed": null,
+      "native_engine_instances": 1,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-acceptance-correction-20dbcdd.log",
+      "sha256": "d24e9c38f95e5e4af4223cacd45594ff93cb82302ade07abff43a1364bb59f2d",
+      "cases": 4,
+      "passed": 4,
+      "failed": 0,
+      "native_engine_instances": 1,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-acceptance-expanded-cb33088.log",
+      "sha256": "23dbe1579eb381b6729110139a7d4ff12801d8183d933961b848fc877fc91e6b",
+      "cases": 8,
+      "passed": 7,
+      "failed": 1,
+      "native_engine_instances": 5,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-connected-0e63ab8.log",
+      "sha256": "7672fb1ba1b5588548ebb043d415d333a4730be76f00257edc6fd3404178e8a2",
+      "cases": 12,
+      "passed": 11,
+      "failed": 1,
+      "native_engine_instances": 8,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-observer-bf64d20.log",
+      "sha256": "fdbb809e758c05f0f2a2d3896e3a1f618412ccef756fae41f4dcd7844268e746",
+      "cases": 1,
+      "passed": 1,
+      "failed": 0,
+      "native_engine_instances": 2,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-owner-d20a8ca.log",
+      "sha256": "80af1048e5acdf9512e49bf196dc48f576bed28ab9a6673d1c577e7fd8edb0bb",
+      "cases": 15,
+      "passed": 14,
+      "failed": 1,
+      "native_engine_instances": 12,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-connected-aaa80fa.log",
+      "sha256": "a3b96f5e583cc846f5061c023334167294424b70b862673ad0b031539cc6bb6e",
+      "cases": 71,
+      "passed": 70,
+      "failed": 1,
+      "native_engine_instances": 65,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-connected-1925e18.log",
+      "sha256": "9f6cccdbc5d3092cf9cebe82ec0e8fba69594d6a250038c4fd3771b30be008e9",
+      "cases": 72,
+      "passed": 72,
+      "failed": 0,
+      "native_engine_instances": 65,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/native-connected-ddd7d72.log",
+      "sha256": "07d3cf22ee991874b4f7d674e3c26e698a7fe40396a7770785cd8eac0f7340a3",
+      "cases": 73,
+      "passed": 73,
+      "failed": 0,
+      "native_engine_instances": 66,
+      "economic_prefix_attempts": 0
+    }
+  ],
+  "total_constructed_native_engine_instances": 256,
+  "constructed_without_engine_run": 12,
+  "engine_instances_ever_run": 244,
+  "count_basis": "Fresh stock engine/account instances per named test fixture; repeated streaming engine.run within same instance is one account. Four beta-invalid legacy cases construct but do not run an engine in each final 3 broader suites. All are unit/acceptance fixtures, not the benchmark prefix. One debug instance is explicitly retained.",
+  "economic_prefix_attempts": 0,
+  "economic_full_attempts": 0,
+  "initial_failures_preserved": true
+}

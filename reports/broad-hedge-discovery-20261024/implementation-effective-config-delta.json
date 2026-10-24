@@ -1,0 +1,126 @@
+{
+  "status": "FROZEN_NOT_RUN",
+  "base_exact_R3_config": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/inputs/expected-R3-config.json",
+  "base_exact_R3_config_sha256": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80",
+  "resolved_common_native_arguments": {
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 30000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": false,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "execution_policy": {
+      "execution_delay_minutes": 1,
+      "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+      "fee_historical_applicability": "UNKNOWN",
+      "fee_multiplier": "1",
+      "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+      "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+      "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+      "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+      "nonmatching_daily_signals": true,
+      "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+      "symmetric_adverse_spread_bps": "0",
+      "version": "bybit-native-resting-reductions-v2"
+    },
+    "fixed_base_fee_policy": {
+      "bybit_maker": "0.00020",
+      "bybit_taker": "0.00055",
+      "hyperliquid_maker": "0.00015",
+      "hyperliquid_taker": "0.00045",
+      "venue": "bybit",
+      "version": "fixed-base-native-maker-taker-execution-v3"
+    },
+    "research_v0_execution_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "research_btc_direction_sizing": {
+      "freeze": "GENUINE_EPISODE_CREATION",
+      "long": "5.5",
+      "short": "7.875"
+    },
+    "research_btc_split50": true,
+    "research_btc_split_planref_v1": true,
+    "research_btc_split_tp_ioc": true,
+    "research_btc_split_discount": "0.005",
+    "research_btc_real_u": true,
+    "research_btc_q_mode": "CLEAN_Q",
+    "research_sol_off": true,
+    "include_funding": true,
+    "observe_minute_risk": true,
+    "research_wait_4h": true,
+    "research_regime_reentry_band": "0.5",
+    "trading_start_ms": 1725148800000,
+    "trading_end_ms": 1736899200000,
+    "initial_active_seed": "10000",
+    "warmup_start_ms": 1662076800000,
+    "weekly_batch_minutes": 10080,
+    "cursor_batch_rows": 10080,
+    "research_paired_policy": true,
+    "liquidity_consumption": true,
+    "bar_execution": false
+  },
+  "resolved_variants": {
+    "OFF": {
+      "research_paired_prefix": null,
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL/result",
+      "artifact_label": "paired-prefix-OFF",
+      "canonical_funding_db": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL/result/paired-prefix-OFF-funding.sqlite",
+      "funding_attempt_policy": "fresh stock UUID attempt journal then successful atomic canonical checkpoint; failed attempt quarantined",
+      "coherent_event_journal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL/result/coherent-native-events.jsonl.gz"
+    },
+    "B2": {
+      "research_paired_prefix": "B2",
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_PAIRED/result",
+      "artifact_label": "paired-prefix-B2",
+      "canonical_funding_db": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_PAIRED/result/paired-prefix-B2-funding.sqlite",
+      "funding_attempt_policy": "fresh stock UUID attempt journal then successful atomic canonical checkpoint; failed attempt quarantined",
+      "coherent_event_journal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_PAIRED/result/coherent-native-events.jsonl.gz"
+    },
+    "B2_F0": {
+      "research_paired_prefix": "B2_F0",
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_F0_PAIRED/result",
+      "artifact_label": "paired-prefix-B2_F0",
+      "canonical_funding_db": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_F0_PAIRED/result/paired-prefix-B2_F0-funding.sqlite",
+      "funding_attempt_policy": "fresh stock UUID attempt journal then successful atomic canonical checkpoint; failed attempt quarantined",
+      "coherent_event_journal": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_F0_PAIRED/result/coherent-native-events.jsonl.gz"
+    }
+  },
+  "preserved": "All underlying candidate/direction/wave/price/split/730day warmup/E4 rules forwarded from exact frozen R3 config; new paired exits and monotone admission ceiling explicit only when feature ON.",
+  "observer": "same read-only committed-native observer all three; no new CustomData clock events",
+  "settled_and_event_basis": "Keep legacy settled projection; separate coherent sequence at common completed paired marks, nativeUPNL; missing coverage UNKNOWN. Native final cash after engine.end RETURNED.",
+  "report_serialization": "actual native audit_json_default JSON roundtrip, existing report precision guard unchanged"
+}

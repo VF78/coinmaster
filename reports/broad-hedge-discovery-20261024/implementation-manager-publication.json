@@ -1,0 +1,18 @@
+{
+  "manager_checkpoint": "0fa4348428a54d6b8f791388cd0ac05a1c8510f6",
+  "remote_ref": "refs/heads/codex/btc-pattern-pilot-m2-20261021",
+  "remote_exact_sha_verified": true,
+  "scope": "stable discovery, signal feed, observer contract, approval and manager guidance; active executor ledger excluded",
+  "project_issue": "https://github.com/VF78/coinmaster/issues/134",
+  "project_last_readback": "2026-10-24T19:21Z GraphQL Project2/itemPVTI_lAHOBIUvJs4BPJNjzhDPBiw: OPEN/In Progress/isArchived=false; title Paired prefix repair ready; +1 attempt awaiting owner confirmed",
+  "current_project_update": "UPDATED_AND_READ_BACK",
+  "local_gh_api_attempts": "3 TLS handshake timeouts",
+  "github_connector_fallback": "403 Resource not accessible by integration; no mutation",
+  "transport_resolution": "local gh succeeded with process-only GODEBUG=tlsmlkem=0,netdns=go,http2client=0; no persistent configuration changes",
+  "runtime_deployment": "none",
+  "source_implementation": "3323f08c57ede411058f93d96acee88928c93481;105/105 connected PASS;2focusedrepairreviewsPASS;failedphysical2of4preserved/noqualifiedcontrol;newbudgetPENDING",
+  "source_publication": "PUSHED_AND_EXACT_REMOTE_READ_BACK_BY_ROOT",
+  "source_push_auto_review": "two pre-execution rejections: private research source code egress to unverified remote; insufficient trusted ownership or explicit human publication authorization",
+  "source_destination_verified_by_owner": "authenticated loginVF78; ownerVF78; github.com/VF78/coinmaster.git; admin/maintain/push=true; private=false PUBLIC",
+  "source_push_next": "completed after explicit owner public publication approval; root remote refs/heads/codex/b2-f0-paired-prefix-20261024 exact3323f08c57ede411058f93d96acee88928c93481; no deployment"
+}

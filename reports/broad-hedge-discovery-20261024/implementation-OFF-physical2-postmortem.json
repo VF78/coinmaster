@@ -1,0 +1,71 @@
+{
+  "status": "FAILED_PHYSICAL2_DIAGNOSTIC_ONLY_NOT_VALID_FINAL_TOTAL_OR_MATCHED_CONTROL",
+  "physical_index": 2,
+  "ledger_status": "FAILED_UNCHANGED",
+  "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_CORRECTION1/result/paired-prefix-OFF-raw-native.json",
+  "raw_sha256": "44e1257c22972f50c9158d150ae0b4df100ad87520432039e1e6deefc4c2afa3",
+  "raw_audit_state": "NATIVE_COMPLETE_PACKAGING_NOT_VALIDATED",
+  "failure": "MONTHLY_ROW_COUNT:5",
+  "root_cause": "Guard month-number difference expects4 and omits partialJan in [2024-09-01,2025-01-15); actual native exported labels contain5. Full24month guard count is unchanged/correct.",
+  "actual_native_terminal_cash_observed": "19544.07357286",
+  "terminal_status_observed": "FLAT",
+  "native_open_positions": 0,
+  "native_open_orders": 0,
+  "model_liquidations": 0,
+  "native_order_rejections": 0,
+  "native_fills": 82,
+  "native_fees": "1135.02982656",
+  "funding_actual": {
+    "count": 133,
+    "signed_amount": "-633.29250058",
+    "by_instrument": {
+      "BTCUSDT-PERP.P1SIM": 133
+    },
+    "quarantined_DB": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_CORRECTION1/result/.paired-prefix-OFF-funding.sqlite.attempt-64ec22aec47b479fb72116eec275f6d5.aborted-aea42a7dd7ad48fabed22990650b95b0",
+    "quarantined_DB_sha256": "90524bd1a0e67056c67e51670327fa57b3d8afbfe15ce6b42bc2ce397689107a",
+    "sqlite_integrity": "ok",
+    "raw_rows_exact_DB_match": true
+  },
+  "archived_fill_delta": {
+    "archive_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-archived-prefix-nativefills.csv",
+    "archive_sha256": "83f7516a4788818ffe1aad692aeea3316b6495c82388494011d4b9ecbef81ea0",
+    "new_csv_sha256": "b3d32439d28d035cfc53c7944233eb9cbfbcafb65825e975120558da6ea210bd",
+    "rows": 82,
+    "all_non_init_uuid_fields_exact_match": true,
+    "differing_field_counts": {
+      "init_id": 82
+    },
+    "headline_cash_fees_funding_exact_match": true
+  },
+  "observer_diagnostic": {
+    "status": "UNKNOWN",
+    "unknown": [
+      "NO_EXACT_PRIOR_SOURCE_SETTLED_WATERMARK"
+    ],
+    "sequence_rows": 587817,
+    "unique_native_fill_ids": 82,
+    "actual_funding_transitions": 133,
+    "native_mutation_epochs": 215,
+    "quote_sources": 195840,
+    "settled_receipts": 195706,
+    "missing_nonterminal_watermarks": 133,
+    "missing_set_exactly_postfunding_time_minus_60s": true,
+    "future_mark_rows": 0,
+    "last_direct_after_end_cash_matches_raw": true,
+    "observed_event_DD_percent": "53.96990120879290570928286879",
+    "qualification": "UNKNOWN_NOT_PASS"
+  },
+  "not_reconstructed": [
+    "No report promoted or fabricated",
+    "No failedledgerstatus changed",
+    "No cash/positions/PnL replayed",
+    "No new native engine/prefix started"
+  ],
+  "physical_budget": {
+    "maximum": 4,
+    "spent": 2,
+    "remaining": 2,
+    "minimum_remaining_valid_OFF_B2_combined": 3,
+    "new_budget_authorized": false
+  }
+}

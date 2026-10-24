@@ -1,0 +1,138 @@
+{
+  "status": "IMPLEMENTED_TESTED_REVIEW_PASS_ROOT_GO_PENDING",
+  "task": "CM-NATIVE-PAIRED-PREFIX-20261024",
+  "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+  "base_commit": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "canonical_vps_worktree": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/b2-f0-paired-prefix-20261024",
+  "branch": "codex/b2-f0-paired-prefix-20261024",
+  "source_remote_verified": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+  "dirty_paths": 0,
+  "runtime_default": "OFF",
+  "runtime_identical_to_reviewed1925": true,
+  "tests": {
+    "passed": 73,
+    "failed": 0,
+    "native_instances_final": 66,
+    "native_instances_total": 256
+  },
+  "observer_joined_parity": {
+    "status": "PASS",
+    "native_economic_trace_sha256": "149c5f79361d53e2eb3e7e2dffbf7aa8b9cb12cb3f459945eb38cbafdc9897cf",
+    "native_orders": 19,
+    "native_fills": 6,
+    "observer": {
+      "status": "PASS",
+      "unknown": [],
+      "sequence_count": 59,
+      "mutation_epochs": 6,
+      "native_unique_fills": 6,
+      "native_funding_transitions": 0,
+      "native_account_publications": 34,
+      "settled_receipts": 16,
+      "event_drawdown": {
+        "samples": 44,
+        "minimum": {
+          "timestamp_ns": "43",
+          "equity": "9996.4005"
+        },
+        "maximum_loss_below_seed_amount": "3.5995",
+        "maximum_loss_below_seed_percent": "0.03599500",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "4",
+              "equity": "10000"
+            },
+            "trough": {
+              "timestamp_ns": "43",
+              "equity": "9996.4005"
+            },
+            "recovery": {
+              "timestamp_ns": "45",
+              "equity": "10003.492125"
+            },
+            "drawdown_amount": "3.5995",
+            "drawdown_peak_percent": "0.03599500"
+          }
+        ]
+      },
+      "settled_drawdown": {
+        "samples": 17,
+        "minimum": {
+          "timestamp_ns": "60000000010",
+          "equity": "9996.7"
+        },
+        "maximum_loss_below_seed_amount": "3.3",
+        "maximum_loss_below_seed_percent": "0.03300",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1",
+              "equity": "10000"
+            },
+            "trough": {
+              "timestamp_ns": "60000000010",
+              "equity": "9996.7"
+            },
+            "recovery": {
+              "timestamp_ns": "60000000018",
+              "equity": "10003.492125"
+            },
+            "drawdown_amount": "3.3",
+            "drawdown_peak_percent": "0.03300"
+          }
+        ]
+      },
+      "terminal_actual_cash": "10003.492125",
+      "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+      "actual_intraminute_price_path_proven": false
+    },
+    "parity": "EXACT_NATIVE_PARENT_DOMAIN_ORDERS_FILLS_COMMISSIONS_TERMINAL_CASH"
+  },
+  "feed_consumer": {
+    "status": "PASS",
+    "engine_instances": 0,
+    "prefix_rows": 815,
+    "first_decision_ns": 1725163200000000000,
+    "last_decision_ns": 1736884800000000000,
+    "valid_rows": 802,
+    "file_sha256": "2fcd030c495f15a28ff4ff2ef6d931a018e5a2dd9cf142a56ac6582f941734e1",
+    "typed_payload_json_sha256": "252e8bab0ecf5f4aeb02194f285dfbc25fcec20ba303d28d55a0e5ee0e84c25f",
+    "actual_payload_json_roundtrip": true
+  },
+  "freeze": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-freeze-OFF.json",
+  "freeze_sha256": "f0ffc26441bd217b80b2ad4a33396fe717248e16bc59e9ebede6ed0267ec20f2",
+  "launch_commands": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-launch-commands.json",
+  "native_launch_blockers": [
+    "ROOT_INTERNAL_GO_NOT_YET_SET"
+  ],
+  "economic_prefix_started": 0,
+  "economic_full_started": 0,
+  "historical_failed_prerequisite": "GTC STOP1000 against L1quote300 produced native300@98+700@97.99; retainedfailure37f3e21. Supported nativeIOCstop verified300fill+700cancel instead.",
+  "cap_semantics": "Absolute min Bmax/SOLmax; actual partial entry10 SOL with k2 permanently trims BTC50 to5; 100\u219275 does not recurse; oversize BTC_CAUSED actual fill creates fresh actual deficit.",
+  "tie_semantics": "Native already-delivered fills use pre-event risk; BTC-first completed-close invalidation may native-cancel/ACK SOL TPs before later same-ts SOL matching, producing INACTIVE close with no new BTC debt. SOL-first actual TP precedes invalidation, creates permanent BTC debt. Replay convention, not exchange atomicity.",
+  "unavailable_features": "Raw required risk + invalid ATR/coefficients is failed UNHEDGEABLE_NO_GO, consumed activation attempt with real BTC fail-close; never valid activation count.",
+  "publication_rejections_preserved": [
+    {
+      "reason": "private research source to unverified remote; no destination/egress authorization",
+      "result": "PUSH_NOT_EXECUTED",
+      "exact_reason": "The command pushes private research source code to an unverified remote repository; the user authorized isolated local/VPS research, but not this specific destination or code egress."
+    },
+    {
+      "reason": "remote known but no trusted private/user-owned or explicit public source export permission",
+      "result": "PUSH_NOT_EXECUTED",
+      "exact_reason": "Although the remote is identified as github.com/VF78/coinmaster.git, the transcript does not provide trusted proof that this repository is private and user-owned or explicit user authorization to export the private source there."
+    }
+  ],
+  "verified_repository": {
+    "login": "VF78",
+    "owner": "VF78",
+    "private": false,
+    "admin": true,
+    "push": true
+  },
+  "subsequent_human_publication_approval": "\u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0430\u0439 \u043d\u0435 \u043e\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0439\u0441\u044f, \u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0446\u0438\u044f \u0432 \u043f\u0443\u0431\u043b\u0438\u0447\u043d\u044b\u0439 \u0440\u0435\u043f\u043e\u0437\u0438\u0442\u043e\u0440\u0438\u0439 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043d\u0430",
+  "subsequent_push_result": "SUCCESS_REMOTE_SHA_READ_BACK_NO_DEPLOYMENT",
+  "CI": "NOT_CLAIMED",
+  "diffstat": "12 files changed, 1634 insertions(+), 4 deletions(-)"
+}

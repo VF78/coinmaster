@@ -1,0 +1,16 @@
+{
+  "status": "GO_OFF_ONLY",
+  "issued_utc": "2026-10-24T18:43:11.631166+00:00",
+  "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+  "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-freeze-OFF.json",
+  "pre_go_freeze_sha256": "f0ffc26441bd217b80b2ad4a33396fe717248e16bc59e9ebede6ed0267ec20f2",
+  "approved_freeze_sha256": "ed64bee7a918d3c39b320d4eb5946d06a76161c30bde3a4a58c02a13675ae857",
+  "physical_started_before": 0,
+  "physical_prefix_max": 4,
+  "full_max": 0,
+  "scope": "one matched OFF prefix only; root acceptance before B2/combined; no automatic restart",
+  "basis": "owner approval;73/73actualJUnit;independentmoneyreviewPASS;rootverified180source27data_engine4additionalpins;engine-freepreflightsPASS",
+  "environment": "scrubbed env from implementation-launch-commands.json; removed HOME key; no repurposed HOME/CODEX_HOME",
+  "source_publication": "explicit owner approved, exact source remote readback PASS",
+  "next_gate": "completed OFF money/account/funding/observer/terminal+archivefilldelta before candidate GO"
+}

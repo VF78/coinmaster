@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "native_economic_trace_sha256": "149c5f79361d53e2eb3e7e2dffbf7aa8b9cb12cb3f459945eb38cbafdc9897cf",
+  "native_orders": 19,
+  "native_fills": 6,
+  "observer": {
+    "status": "PASS",
+    "unknown": [],
+    "sequence_count": 59,
+    "mutation_epochs": 6,
+    "native_unique_fills": 6,
+    "native_funding_transitions": 0,
+    "native_account_publications": 34,
+    "settled_receipts": 16,
+    "event_drawdown": {
+      "samples": 44,
+      "minimum": {
+        "timestamp_ns": "43",
+        "equity": "9996.4005"
+      },
+      "maximum_loss_below_seed_amount": "3.5995",
+      "maximum_loss_below_seed_percent": "0.03599500",
+      "top3_distinct_excursions": [
+        {
+          "peak": {
+            "timestamp_ns": "4",
+            "equity": "10000"
+          },
+          "trough": {
+            "timestamp_ns": "43",
+            "equity": "9996.4005"
+          },
+          "recovery": {
+            "timestamp_ns": "45",
+            "equity": "10003.492125"
+          },
+          "drawdown_amount": "3.5995",
+          "drawdown_peak_percent": "0.03599500"
+        }
+      ]
+    },
+    "settled_drawdown": {
+      "samples": 17,
+      "minimum": {
+        "timestamp_ns": "60000000010",
+        "equity": "9996.7"
+      },
+      "maximum_loss_below_seed_amount": "3.3",
+      "maximum_loss_below_seed_percent": "0.03300",
+      "top3_distinct_excursions": [
+        {
+          "peak": {
+            "timestamp_ns": "1",
+            "equity": "10000"
+          },
+          "trough": {
+            "timestamp_ns": "60000000010",
+            "equity": "9996.7"
+          },
+          "recovery": {
+            "timestamp_ns": "60000000018",
+            "equity": "10003.492125"
+          },
+          "drawdown_amount": "3.3",
+          "drawdown_peak_percent": "0.03300"
+        }
+      ]
+    },
+    "terminal_actual_cash": "10003.492125",
+    "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+    "actual_intraminute_price_path_proven": false
+  },
+  "parity": "EXACT_NATIVE_PARENT_DOMAIN_ORDERS_FILLS_COMMISSIONS_TERMINAL_CASH"
+}

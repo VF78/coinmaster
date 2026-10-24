@@ -1,0 +1,110 @@
+{
+  "task": "CM-NATIVE-PAIRED-PREFIX-20261024",
+  "status": "PREFIX_CHECKPOINT_REVIEW_REQUIRED",
+  "protocol_sha256": "9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1",
+  "approval_ref": "approval.json",
+  "physical_prefix_max": 4,
+  "full_max": 0,
+  "prefix_calendar": "[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)",
+  "seed": "10000",
+  "slots": [
+    {
+      "slot": 1,
+      "name": "MATCHED_OFF_CONTROL",
+      "status": "FAILED",
+      "attempt_id": "52e2c39a-bf00-47e7-aec6-970702825080",
+      "variant": "OFF",
+      "started_utc": "2026-10-24T18:43:50.673799+00:00",
+      "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+      "monetary_source_identity": "02fa86cec0f1dc43d230fa9f1f07e2866b370bd1d682d61714167d2c306f9f80",
+      "physical_index": 1,
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL/result",
+      "finished_utc": "2026-10-24T18:43:52.575066+00:00",
+      "detail": {
+        "error_type": "TypeError",
+        "error": "unsupported operand type(s) for +: 'int' and 'dict'"
+      }
+    },
+    {
+      "slot": 2,
+      "name": "B2_PAIRED",
+      "status": "NOT_STARTED"
+    },
+    {
+      "slot": 3,
+      "name": "B2_F0_PAIRED",
+      "status": "NOT_STARTED"
+    },
+    {
+      "slot": 4,
+      "name": "ONE_CONCRETE_CORRECTION_OR_RESERVE",
+      "status": "FAILED",
+      "attempt_id": "f4719549-3666-409c-b75d-aa5f3ce59cd0",
+      "variant": "OFF",
+      "started_utc": "2026-10-24T18:54:11.306966+00:00",
+      "source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733",
+      "monetary_source_identity": "f9f4995e6f81c17e1578bf1231f29444760488a6829743242143fc57b1b94b63",
+      "physical_index": 2,
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_CORRECTION1/result",
+      "finished_utc": "2026-10-24T18:55:10.310734+00:00",
+      "detail": {
+        "error_type": "ValueError",
+        "error": "MONTHLY_ROW_COUNT:5"
+      }
+    }
+  ],
+  "physical_started": 2,
+  "physical_completed": 0,
+  "failed_attempts_count": true,
+  "test_suite_instances": {
+    "receipt": "implementation-test-instances.json",
+    "constructed_native_engine_instances": 256,
+    "final_connected_cases": 73,
+    "economic_prefix_attempts": 0
+  },
+  "old_budgets": "CLOSED/no carryover",
+  "native_launch_requires": "immutable source/config/data/engine freeze; independentmoneyreview; native API/order/funding/observer and connectedacceptancePASS",
+  "single_source_writer": "native_paired_owner",
+  "pilot_production_orders_transfers": "excluded",
+  "implementation_source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733",
+  "implementation_receipt": "implementation-wrapper-correction-receipt.json",
+  "source_remote_verified": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+  "attempts": [
+    {
+      "logical_slot": 1,
+      "physical_index": 1,
+      "attempt_id": "52e2c39a-bf00-47e7-aec6-970702825080",
+      "variant": "OFF",
+      "started_utc": "2026-10-24T18:43:50.673799+00:00",
+      "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+      "monetary_source_identity": "02fa86cec0f1dc43d230fa9f1f07e2866b370bd1d682d61714167d2c306f9f80",
+      "status": "FAILED",
+      "finished_utc": "2026-10-24T18:43:52.575066+00:00",
+      "detail": {
+        "error_type": "TypeError",
+        "error": "unsupported operand type(s) for +: 'int' and 'dict'"
+      }
+    },
+    {
+      "logical_slot": 4,
+      "physical_index": 2,
+      "attempt_id": "f4719549-3666-409c-b75d-aa5f3ce59cd0",
+      "variant": "OFF",
+      "started_utc": "2026-10-24T18:54:11.306966+00:00",
+      "source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733",
+      "monetary_source_identity": "f9f4995e6f81c17e1578bf1231f29444760488a6829743242143fc57b1b94b63",
+      "status": "FAILED",
+      "finished_utc": "2026-10-24T18:55:10.310734+00:00",
+      "detail": {
+        "error_type": "ValueError",
+        "error": "MONTHLY_ROW_COUNT:5"
+      }
+    }
+  ],
+  "correction_candidate": {
+    "source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733",
+    "logical_slot": 4,
+    "next_physical_index": 2,
+    "status": "NOT_STARTED_ROOT_GO_REQUIRED"
+  }
+}

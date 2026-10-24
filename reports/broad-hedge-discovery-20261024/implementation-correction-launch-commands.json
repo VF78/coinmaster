@@ -1,0 +1,105 @@
+{
+  "source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733",
+  "commands": {
+    "OFF": {
+      "logical_slot": 4,
+      "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-correction-freeze-OFF.json",
+      "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/source-6f7cd9881b928dcd8b905d63d3ab7892f9e6b733/runtime",
+      "env": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/source-6f7cd9881b928dcd8b905d63d3ab7892f9e6b733/runtime",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "TMPDIR": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/tmp",
+        "OPENBLAS_NUM_THREADS": "1",
+        "OMP_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "NUMEXPR_NUM_THREADS": "1",
+        "ARROW_NUM_THREADS": "2",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "argv": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "-m",
+        "coinmaster.research.paired_prefix_run",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-correction-freeze-OFF.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/native-run-ledger.json",
+        "--variant",
+        "OFF",
+        "--artifact-dir",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_CORRECTION1/result",
+        "--launch"
+      ],
+      "state": "NOT_LAUNCHED_ROOT_GO_REQUIRED",
+      "physical_index_if_next": 2
+    },
+    "B2": {
+      "logical_slot": 2,
+      "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-correction-freeze-B2.json",
+      "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/source-6f7cd9881b928dcd8b905d63d3ab7892f9e6b733/runtime",
+      "env": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/source-6f7cd9881b928dcd8b905d63d3ab7892f9e6b733/runtime",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "TMPDIR": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/tmp",
+        "OPENBLAS_NUM_THREADS": "1",
+        "OMP_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "NUMEXPR_NUM_THREADS": "1",
+        "ARROW_NUM_THREADS": "2",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "argv": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "-m",
+        "coinmaster.research.paired_prefix_run",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-correction-freeze-B2.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/native-run-ledger.json",
+        "--variant",
+        "B2",
+        "--artifact-dir",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_PAIRED_CORRECTION1/result",
+        "--launch"
+      ],
+      "state": "NOT_LAUNCHED_ROOT_GO_REQUIRED",
+      "physical_index_if_next": null
+    },
+    "B2_F0": {
+      "logical_slot": 3,
+      "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-correction-freeze-B2_F0.json",
+      "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/source-6f7cd9881b928dcd8b905d63d3ab7892f9e6b733/runtime",
+      "env": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/source-6f7cd9881b928dcd8b905d63d3ab7892f9e6b733/runtime",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "TMPDIR": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/tmp",
+        "OPENBLAS_NUM_THREADS": "1",
+        "OMP_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "NUMEXPR_NUM_THREADS": "1",
+        "ARROW_NUM_THREADS": "2",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "argv": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "-m",
+        "coinmaster.research.paired_prefix_run",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-correction-freeze-B2_F0.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/native-run-ledger.json",
+        "--variant",
+        "B2_F0",
+        "--artifact-dir",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/B2_F0_PAIRED_CORRECTION1/result",
+        "--launch"
+      ],
+      "state": "NOT_LAUNCHED_ROOT_GO_REQUIRED",
+      "physical_index_if_next": null
+    }
+  },
+  "policy": "No retry until root GO; failedphysical1/namespace/freeze remain untouched. Corrected OFF uses logicalreserve4/physical2; B2/combined physical3/4 only matched new source."
+}

@@ -1,0 +1,312 @@
+{
+  "status": "ARCHIVED_R3_PREFIX_REFERENCE_ONLY_NOT_NEW_MATCHED_POLICY_CONTROL",
+  "interval": "[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)",
+  "cutoff_ns": 1736899200000000000,
+  "archived_source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "archived_liquidity_consumption": "False by stock add_venue default; frozen runner does not enable flag",
+  "upcoming_new_liquidity_policy": "True; requires its own matched OFF physical control, this archive cannot replace it",
+  "settled_interval_basis": "actual receipt_ns in [start,cutoff), source_quote_ns retained; actual native Money cash+native PositionUPNL at native-rounded retained completed paired marks; fixed RESERVE0 research contract",
+  "strict_interval_last_receipt": {
+    "status": "ACTUAL_NATIVE_SETTLED_RECEIPT_WITH_RETAINED_SOURCE_PRICES",
+    "receipt_ns": "1736899140000000000",
+    "receipt_utc": "2025-01-14T23:59:00+00:00",
+    "source_quote_ns": "1736899080000000000",
+    "source_quote_utc": "2025-01-14T23:58:00+00:00",
+    "source_to_receipt_lag_ns": "60000000000",
+    "fill_epoch": 82,
+    "currency": "USDT",
+    "native_cash": "19544.07357286",
+    "native_account_marked_equity": "19544.07357286",
+    "native_UPNL_total_from_observer_equity_minus_cash": "0E-8",
+    "ACTIVE_marked_under_archived_research_contract": "19544.07357286",
+    "RESERVE_fixed_research_contract": "0",
+    "TOTAL_marked_under_fixed_zero_reserve_contract": "19544.07357286",
+    "reserve_separate_native_stream": false,
+    "actual_native_positions": [],
+    "native_flat": true,
+    "native_price_conversion": "instrument.make_price(Decimal(raw_mark_close)); native-rounded numeric Price itself not exported; raw mark OHLC retained below",
+    "UPNL_source": "Observer used actual native Position.unrealized_pnl(native Price).as_decimal(); reported aggregate difference, not reconstructed fill PNL"
+  },
+  "actual_receipt_at_cutoff_excluded_from_strict_interval": {
+    "status": "ACTUAL_NATIVE_SETTLED_RECEIPT_WITH_RETAINED_SOURCE_PRICES",
+    "receipt_ns": "1736899200000000000",
+    "receipt_utc": "2025-01-15T00:00:00+00:00",
+    "source_quote_ns": "1736899140000000000",
+    "source_quote_utc": "2025-01-14T23:59:00+00:00",
+    "source_to_receipt_lag_ns": "60000000000",
+    "fill_epoch": 82,
+    "currency": "USDT",
+    "native_cash": "19544.07357286",
+    "native_account_marked_equity": "19544.07357286",
+    "native_UPNL_total_from_observer_equity_minus_cash": "0E-8",
+    "ACTIVE_marked_under_archived_research_contract": "19544.07357286",
+    "RESERVE_fixed_research_contract": "0",
+    "TOTAL_marked_under_fixed_zero_reserve_contract": "19544.07357286",
+    "reserve_separate_native_stream": false,
+    "actual_native_positions": [],
+    "native_flat": true,
+    "native_price_conversion": "instrument.make_price(Decimal(raw_mark_close)); native-rounded numeric Price itself not exported; raw mark OHLC retained below",
+    "UPNL_source": "Observer used actual native Position.unrealized_pnl(native Price).as_decimal(); reported aggregate difference, not reconstructed fill PNL"
+  },
+  "first_later_receipt_outside_interval_DIAGNOSTIC_ONLY": {
+    "status": "ACTUAL_NATIVE_SETTLED_RECEIPT_WITH_RETAINED_SOURCE_PRICES",
+    "receipt_ns": "1736899260000000000",
+    "receipt_utc": "2025-01-15T00:01:00+00:00",
+    "source_quote_ns": "1736899200000000000",
+    "source_quote_utc": "2025-01-15T00:00:00+00:00",
+    "source_to_receipt_lag_ns": "60000000000",
+    "fill_epoch": 82,
+    "currency": "USDT",
+    "native_cash": "19544.07357286",
+    "native_account_marked_equity": "19544.07357286",
+    "native_UPNL_total_from_observer_equity_minus_cash": "0E-8",
+    "ACTIVE_marked_under_archived_research_contract": "19544.07357286",
+    "RESERVE_fixed_research_contract": "0",
+    "TOTAL_marked_under_fixed_zero_reserve_contract": "19544.07357286",
+    "reserve_separate_native_stream": false,
+    "actual_native_positions": [],
+    "native_flat": true,
+    "native_price_conversion": "instrument.make_price(Decimal(raw_mark_close)); native-rounded numeric Price itself not exported; raw mark OHLC retained below",
+    "UPNL_source": "Observer used actual native Position.unrealized_pnl(native Price).as_decimal(); reported aggregate difference, not reconstructed fill PNL"
+  },
+  "same_source_price_endpoint_at_cutoff_with_receipt_before_cutoff": "UNKNOWN: old recorder receipts lag source; no coherent same-source/receipt cutoff endpoint proved",
+  "strict_prefix_settled_DD": {
+    "DD_percent": "53.969901208792905709282868794882898412601220979204492515985477091095628477570245",
+    "peak_equity": "34106.72858045",
+    "trough_equity": "15699.36086003",
+    "peak_receipt_ns": "1734767280000000000",
+    "peak_source_quote_ns": "1734767220000000000",
+    "trough_receipt_ns": "1735561680000000000",
+    "trough_source_quote_ns": "1735561620000000000",
+    "peak_receipt_utc": "2024-12-21T07:48:00+00:00",
+    "trough_receipt_utc": "2024-12-30T12:28:00+00:00"
+  },
+  "receipt_coverage": {
+    "count_excluding_seed": 195838,
+    "seed": {
+      "source_quote_ns": "1725148800000000000",
+      "receipt_ns": "1725148800000000000",
+      "fill_epoch": "0",
+      "cash": "10000",
+      "paired_close_equity": "10000",
+      "native_positions_and_mark_ohlc_json": "[]",
+      "endpoint_kind": "ACTUAL_FROM_GENESIS_NATIVE_SEED_CONFIG"
+    },
+    "first_receipt_ns": "1725148920000000000",
+    "first_source_quote_ns": "1725148860000000000",
+    "receipt_gap_histogram_ns": {
+      "60000000000": 195837
+    },
+    "source_to_receipt_lag_histogram_ns": {
+      "60000000000": 195838
+    },
+    "all_native_cash_equity_observed_finite": true,
+    "fill_epoch_matches_native_audit_prefix_every_receipt": true,
+    "max_fill_epoch": 82,
+    "start_to_first_receipt_no_native_fills": true,
+    "start_to_first_receipt_no_signed_funding_cash": true
+  },
+  "native_fills_strict_interval": {
+    "csv_rows": 82,
+    "native_audit_events": 82,
+    "per_asset_fill_counts": {
+      "BTCUSDT-PERP.P1SIM": 82,
+      "SOLUSDT-PERP.P1SIM": 0
+    },
+    "native_fees_per_asset_USDT": {
+      "BTCUSDT-PERP.P1SIM": "1135.02982656",
+      "SOLUSDT-PERP.P1SIM": "0"
+    },
+    "native_fees_total_USDT": "1135.02982656",
+    "fills_exactly_at_cutoff_excluded": 0,
+    "output_csv": "implementation-archived-prefix-nativefills.csv",
+    "output_csv_sha256": "83f7516a4788818ffe1aad692aeea3316b6495c82388494011d4b9ecbef81ea0"
+  },
+  "signed_actual_native_funding_strict_interval": {
+    "events": 133,
+    "per_asset_USDT": {
+      "BTCUSDT-PERP.P1SIM": "-633.29250058",
+      "SOLUSDT-PERP.P1SIM": "0"
+    },
+    "total_USDT": "-633.29250058",
+    "cash_delta_source": "Readonly immutable SQLite funding_cash signed_delta; exact prefix multiset equals raw-native audit",
+    "cutoff_timestamp_events_excluded": [],
+    "zero_SOL_basis": "No SOL native funding_cash events/fills in prefix; archived R3 SOLoff. Zero is observed absence of signed cash events, not invented rate funding."
+  },
+  "actual_parents_strict_interval": {
+    "started_count": 19,
+    "actual_flat_completed_before_cutoff": 19,
+    "still_held_count_at_prefix": 0,
+    "parents": [
+      {
+        "episode_id": "55aae7b1-114a-4685-981d-449423c55676",
+        "start_ns": 1725235260000000000,
+        "start_utc": "2024-09-02T00:01:00+00:00",
+        "side": -1,
+        "decision_index": 730
+      },
+      {
+        "episode_id": "6ade0221-e83b-484c-ac4a-48efdabd1d8e",
+        "start_ns": 1726012860000000000,
+        "start_utc": "2024-09-11T00:01:00+00:00",
+        "side": -1,
+        "decision_index": 739
+      },
+      {
+        "episode_id": "acba7218-2d36-42d1-a3a3-19a7947e1d93",
+        "start_ns": 1726272120000000000,
+        "start_utc": "2024-09-14T00:02:00+00:00",
+        "side": 1,
+        "decision_index": 742
+      },
+      {
+        "episode_id": "d8a73dc8-6acb-411e-b9e9-e8639334390e",
+        "start_ns": 1726617660000000000,
+        "start_utc": "2024-09-18T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 746
+      },
+      {
+        "episode_id": "b306a6c7-1d64-40af-a17a-4eb9265fbeda",
+        "start_ns": 1727827260000000000,
+        "start_utc": "2024-10-02T00:01:00+00:00",
+        "side": -1,
+        "decision_index": 760
+      },
+      {
+        "episode_id": "2fd216f1-1839-4498-ae72-39e61e38bbf9",
+        "start_ns": 1728230520000000000,
+        "start_utc": "2024-10-06T16:02:00+00:00",
+        "side": 1,
+        "decision_index": 764
+      },
+      {
+        "episode_id": "03c72d37-0afe-4422-8f1f-399e6510d916",
+        "start_ns": 1728518460000000000,
+        "start_utc": "2024-10-10T00:01:00+00:00",
+        "side": -1,
+        "decision_index": 768
+      },
+      {
+        "episode_id": "741e5db0-30b7-42be-bd00-a89431a2848b",
+        "start_ns": 1728720120000000000,
+        "start_utc": "2024-10-12T08:02:00+00:00",
+        "side": 1,
+        "decision_index": 770
+      },
+      {
+        "episode_id": "c13c271a-7736-4d20-add5-4f12f273a287",
+        "start_ns": 1729814460000000000,
+        "start_utc": "2024-10-25T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 783
+      },
+      {
+        "episode_id": "6bf665a8-911e-452e-8976-8b0ff02b0819",
+        "start_ns": 1730505660000000000,
+        "start_utc": "2024-11-02T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 791
+      },
+      {
+        "episode_id": "42da02a2-340e-47f0-9a32-3b5a6b785ab0",
+        "start_ns": 1731715260000000000,
+        "start_utc": "2024-11-16T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 805
+      },
+      {
+        "episode_id": "816ddfe7-ecb8-41d3-aeab-7c2ef9594e42",
+        "start_ns": 1732665660000000000,
+        "start_utc": "2024-11-27T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 816
+      },
+      {
+        "episode_id": "959242be-5d1d-46c4-a7ae-970baefa2d8c",
+        "start_ns": 1733875260000000000,
+        "start_utc": "2024-12-11T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 830
+      },
+      {
+        "episode_id": "e38a75f0-c161-4aa2-85a8-e3b86c635d56",
+        "start_ns": 1734652860000000000,
+        "start_utc": "2024-12-20T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 839
+      },
+      {
+        "episode_id": "a0b68a07-dd34-4d99-b293-f5cd1ed8d295",
+        "start_ns": 1734969720000000000,
+        "start_utc": "2024-12-23T16:02:00+00:00",
+        "side": -1,
+        "decision_index": 842
+      },
+      {
+        "episode_id": "f0b2ec1a-d46c-4b59-9001-d1e651ede8df",
+        "start_ns": 1735084860000000000,
+        "start_utc": "2024-12-25T00:01:00+00:00",
+        "side": 1,
+        "decision_index": 844
+      },
+      {
+        "episode_id": "6c73d20d-c352-4986-acc7-1ffdea6f4b18",
+        "start_ns": 1735502520000000000,
+        "start_utc": "2024-12-29T20:02:00+00:00",
+        "side": -1,
+        "decision_index": 848
+      },
+      {
+        "episode_id": "47a6f05e-d918-40d1-87bc-a86e4c72c360",
+        "start_ns": 1735934520000000000,
+        "start_utc": "2025-01-03T20:02:00+00:00",
+        "side": 1,
+        "decision_index": 853
+      },
+      {
+        "episode_id": "812a2732-b83f-4fb4-8b55-4b1f87d9f755",
+        "start_ns": 1736380860000000000,
+        "start_utc": "2025-01-09T00:01:00+00:00",
+        "side": -1,
+        "decision_index": 859
+      }
+    ],
+    "future_full_archive_parent_closed_flags_not_used": true
+  },
+  "native_liquidation_audit": {
+    "full_archived_audit_count": 0,
+    "basis": "Actual archived native audit, not inferred from PNL/finite cash; model fixture only, no venue liquidation safety proof"
+  },
+  "pending_orders_at_cutoff": "UNKNOWN_NOT_RECONSTRUCTED_FROM_FULL_PERIOD_TERMINAL_ORDER_STATUS",
+  "proof_source_refs": [
+    "minute_risk.py:_snapshot lines132-165; finalize_receipt171-199; source/receipt semantics retained",
+    "native_baseline.py:available_ns916, paired marks938, synthetic completed close quotes944; add_venue824 omits liquidity_consumption; reserve0 report and deposit_protection disabled",
+    "stock backtest/engine.pyx:add_venue liquidity_consumption defaultFalse530"
+  ],
+  "limitations": [
+    "Archived original policy, not the new liquidity_consumption=True matched OFF control.",
+    "At Jan15 the exported actual native inventory happens to be flat and UPNL0; this is NOT a newly executed terminalflat prefix/forced boundary liquidation or new cash settlement.",
+    "Strict receipt DD is settled sampling only; not prefill/event/intraminuteDD, and missing coherent source-cutoff endpoint stays UNKNOWN.",
+    "Boundary receipt at cutoff and first later receipt are separately excluded; current-timestamp funding/native actions may differ from a newly forced-flat short replay.",
+    "ACTIVE marked uses native account cash+UPNL with fixed research RESERVE0; no independent external reserve stream.",
+    "Native-rounded close Price not separately exported; do not substitute raw OHLC mark into hand PNL.",
+    "No new engine, product changes, permission, full/short budget or originalS0floor rebase."
+  ],
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/screen-ledger.json": "297d6e22991f2f9d99e935d2408aa384b3717768ce1aff326c4ad3f0ec5dd3de",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/native-analysis-R3.json": "5ccb4c67e47dddeed8bd71769381cd20f1605b39ca6757887b6fb5f4d646d9e4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/full-freeze.json": "2d2a8754d2b72809afcb6b2c25112208626f7711ff18d098ecfe4c31e67ce490",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/minute-native-settled-receipts.csv.gz": "58f965242de9e0d25e35262a4abcc47e95bfb17c93cc83e9910f3d9b816582d1",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-raw-native.json": "038e6fb63c5f38e6a7b22d6c2529f9e089a96c76ed575542f5bd5af3b06dccd6",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-fills.csv": "3c85e4d8b8e017394fe81d80c320febb1cdefb113a22f372b42b8e968835fa2c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json": "98cfbdfddb33ea9aaeb1fe91274d2a441f73a6e13f96fcafbf02854c025dd59e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/R3/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction-funding.sqlite": "544e466544d6b947c1aadcbdbb67d96c28f35d47d3475e14afbe2f04fbe9773c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/minute_risk.py": "7db64dbb08c5eb1eddb10524a31f4f4b413be750cd17047a9e1936864e2717ef",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_baseline.py": "c223198e1fa8d904fb659abade749576e9ab1d8b3dbcaebcbc46f11a0cdba522",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/research/native_fixture.py": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/wave_overlay.py": "c0f72d139c9e0f357a6e1abe8bac4ca01b0749d0282bc63a59a28a15e80e641d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+  },
+  "cutoff_native_cash_reference": "Last strict, actual cutoff and first later receipts all publish identical native cash19544.07357286/inventory[]; no fills or funding cash exactly at cutoff. Direct archived observations, not sum-PNL-derived cash."
+}

@@ -1,0 +1,38 @@
+{
+  "status": "PASS_COMPLETE_NATIVE_CALL_VALIDATED_BEFORE_ENGINE",
+  "variants": [
+    {
+      "variant": "OFF",
+      "returncode": 0,
+      "stdout": "{\"status\": \"PREPARED_COMPLETE_NATIVE_CALL_VALIDATED_ENGINE_NOT_CONSTRUCTED\", \"variant\": \"OFF\", \"validated_kwargs\": [\"artifact_dir\", \"artifact_label\", \"candidate\", \"data_root\", \"execution_policy\", \"fixed_base_fee_policy\", \"include_funding\", \"initial_active_seed\", \"observe_minute_risk\", \"research_btc_direction_sizing\", \"research_btc_q_mode\", \"research_btc_real_u\", \"research_btc_split50\", \"research_btc_split_discount\", \"research_btc_split_planref_v1\", \"research_btc_split_tp_ioc\", \"research_paired_policy\", \"research_paired_prefix\", \"research_paired_signal_rows\", \"research_regime_reentry_band\", \"research_sol_off\", \"research_v0_deferred_selective_zero_tp\", \"research_v0_execution_repairs\", \"research_v0_selective_lifecycle_repairs\", \"research_v0_zero_tp_netting\", \"research_wait_4h\", \"trading_end_ms\", \"trading_start_ms\"], \"direction_sizing_native_bool\": true, \"calendar\": \"[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)\", \"seed\": \"10000\", \"source_commit\": \"6f7cd9881b928dcd8b905d63d3ab7892f9e6b733\", \"native_launch_requires\": \"--launch AND durable physical ledger claim AND root internal GO\"}",
+      "stderr": "",
+      "native_engine_instances": 0,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "variant": "B2",
+      "returncode": 0,
+      "stdout": "{\"status\": \"PREPARED_COMPLETE_NATIVE_CALL_VALIDATED_ENGINE_NOT_CONSTRUCTED\", \"variant\": \"B2\", \"validated_kwargs\": [\"artifact_dir\", \"artifact_label\", \"candidate\", \"data_root\", \"execution_policy\", \"fixed_base_fee_policy\", \"include_funding\", \"initial_active_seed\", \"observe_minute_risk\", \"research_btc_direction_sizing\", \"research_btc_q_mode\", \"research_btc_real_u\", \"research_btc_split50\", \"research_btc_split_discount\", \"research_btc_split_planref_v1\", \"research_btc_split_tp_ioc\", \"research_paired_policy\", \"research_paired_prefix\", \"research_paired_signal_rows\", \"research_regime_reentry_band\", \"research_sol_off\", \"research_v0_deferred_selective_zero_tp\", \"research_v0_execution_repairs\", \"research_v0_selective_lifecycle_repairs\", \"research_v0_zero_tp_netting\", \"research_wait_4h\", \"trading_end_ms\", \"trading_start_ms\"], \"direction_sizing_native_bool\": true, \"calendar\": \"[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)\", \"seed\": \"10000\", \"source_commit\": \"6f7cd9881b928dcd8b905d63d3ab7892f9e6b733\", \"native_launch_requires\": \"--launch AND durable physical ledger claim AND root internal GO\"}",
+      "stderr": "",
+      "native_engine_instances": 0,
+      "economic_prefix_attempts": 0
+    },
+    {
+      "variant": "B2_F0",
+      "returncode": 0,
+      "stdout": "{\"status\": \"PREPARED_COMPLETE_NATIVE_CALL_VALIDATED_ENGINE_NOT_CONSTRUCTED\", \"variant\": \"B2_F0\", \"validated_kwargs\": [\"artifact_dir\", \"artifact_label\", \"candidate\", \"data_root\", \"execution_policy\", \"fixed_base_fee_policy\", \"include_funding\", \"initial_active_seed\", \"observe_minute_risk\", \"research_btc_direction_sizing\", \"research_btc_q_mode\", \"research_btc_real_u\", \"research_btc_split50\", \"research_btc_split_discount\", \"research_btc_split_planref_v1\", \"research_btc_split_tp_ioc\", \"research_paired_policy\", \"research_paired_prefix\", \"research_paired_signal_rows\", \"research_regime_reentry_band\", \"research_sol_off\", \"research_v0_deferred_selective_zero_tp\", \"research_v0_execution_repairs\", \"research_v0_selective_lifecycle_repairs\", \"research_v0_zero_tp_netting\", \"research_wait_4h\", \"trading_end_ms\", \"trading_start_ms\"], \"direction_sizing_native_bool\": true, \"calendar\": \"[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)\", \"seed\": \"10000\", \"source_commit\": \"6f7cd9881b928dcd8b905d63d3ab7892f9e6b733\", \"native_launch_requires\": \"--launch AND durable physical ledger claim AND root internal GO\"}",
+      "stderr": "",
+      "native_engine_instances": 0,
+      "economic_prefix_attempts": 0
+    }
+  ],
+  "strict_native_bool_direction_sizing": true,
+  "exact_report_descriptor": {
+    "freeze": "GENUINE_EPISODE_CREATION",
+    "long": "5.5",
+    "short": "7.875"
+  },
+  "constructors_feehash_signature_all_scalar_types": "PASS",
+  "engine_instances": 0,
+  "physical_started_after": 1
+}

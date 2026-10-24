@@ -1,0 +1,12 @@
+{
+  "status": "EXITED",
+  "variant": "OFF",
+  "pid": 46485,
+  "started_utc": "2026-10-24T18:43:50.595751+00:00",
+  "approved_freeze_sha256": "ed64bee7a918d3c39b320d4eb5946d06a76161c30bde3a4a58c02a13675ae857",
+  "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+  "log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/OFF-wrapper.log",
+  "root_go": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-root-go-OFF.json",
+  "returncode": 1,
+  "finished_utc": "2026-10-24T18:43:52.636815+00:00"
+}

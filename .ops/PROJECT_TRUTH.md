@@ -11,6 +11,7 @@ VPS development root: `/root/.openclaw/workspace/coinmaster/coinmaster` on `root
 - Dry-run uses native Sandbox with public HL data; it is not exchange testnet. Live uses native HL execution; virtual positions are never imported into live.
 - Native account/cache/orders/fills and persisted controls are authority. Unknown state blocks increases pending manual reconciliation; automatic open-position crash recovery remains deferred, not proven.
 - A source push is not deployment. Isolate research from running trader and secrets. Preserve running Sandbox; no pilot/production/release/credentials/orders change in the current handoff.
+- Owner explicitly approved publication of current CoinMaster research source to the PUBLIC VF78/coinmaster repository on2026-10-24. This does not expand economic run budgets or authorize deployment; exact source/branch and approval receipts remain in ACTIVE_TASK/research packet.
 - No new real orders, transfers, funding/deposit increase or live activation without separate explicit owner approval. Preserve existing deployment boundaries; do not infer new permission from historical prompts.
 - Hermes, f-ai.studio, app.f-ai.studio and VPN are outside CoinMaster cleanup scope.
 

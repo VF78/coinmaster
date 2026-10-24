@@ -1,0 +1,29 @@
+{
+  "status": "FAILED_COUNTED_NO_RESTART",
+  "attempt": {
+    "logical_slot": 1,
+    "physical_index": 1,
+    "attempt_id": "52e2c39a-bf00-47e7-aec6-970702825080",
+    "variant": "OFF",
+    "started_utc": "2026-10-24T18:43:50.673799+00:00",
+    "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+    "monetary_source_identity": "02fa86cec0f1dc43d230fa9f1f07e2866b370bd1d682d61714167d2c306f9f80",
+    "status": "FAILED",
+    "finished_utc": "2026-10-24T18:43:52.575066+00:00",
+    "detail": {
+      "error_type": "TypeError",
+      "error": "unsupported operand type(s) for +: 'int' and 'dict'"
+    }
+  },
+  "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535",
+  "approved_freeze_sha256": "ed64bee7a918d3c39b320d4eb5946d06a76161c30bde3a4a58c02a13675ae857",
+  "log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/OFF-wrapper.log",
+  "log_sha256": "146c3fa31eca2a3e93649b6411635f83a208e0b306b658138049a866c7e200b6",
+  "root_cause": "R3 report research_btc_direction_sizing is exact descriptor dict, native call API requires bool; wrapper forwarded dict and sum() raised TypeError before engine construction.",
+  "engine_constructed": false,
+  "actual_native_financial_receipts": "UNAVAILABLE_NOT_CREATED",
+  "report_total": "UNKNOWN_NOT_RUN",
+  "funding_journal": "NOT_CREATED",
+  "economic_attempt_consumed": true,
+  "reserve_requires_new_root_go": true
+}

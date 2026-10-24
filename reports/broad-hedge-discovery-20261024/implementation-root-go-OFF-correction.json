@@ -1,0 +1,16 @@
+{
+  "status": "GO_CORRECTED_OFF_ONLY",
+  "issued_utc": "2026-10-24T18:53:36.926448+00:00",
+  "source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733",
+  "logical_slot": 4,
+  "physical_index_if_next": 2,
+  "physical_max": 4,
+  "full_max": 0,
+  "pre_go_sha256": "2b58c979450d06cf7e2ee0127852c176c4439c60de7be643fd6a7e6a03634016",
+  "approved_freeze_sha256": "8386567023755a9fcff48ddc4c72ec7ff28e1939fa6b02912f6d6a9d74bfee95",
+  "review": "implementation-boundary-correction-review.md PASS/P1closed; actual87/87JUnit",
+  "pin_check": "182source/27data_engine/4additional PASS, root independent verification",
+  "scope": "one corrected OFF only; no automatic restart; B2/combined held until complete OFF acceptance",
+  "failed_physical1": "preserved; counts against4; reserve consumed by this launch",
+  "launch_commands": "implementation-correction-launch-commands.json; HOME absent"
+}

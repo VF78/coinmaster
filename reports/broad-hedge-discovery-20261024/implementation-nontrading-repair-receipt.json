@@ -1,0 +1,85 @@
+{
+  "status": "NONTRADING_REPAIR_REVIEW_PASS_HOLD_FOR_OWNER_AMENDMENT_AND_ROOT_GO",
+  "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "source_remote_verified": "3323f08c57ede411058f93d96acee88928c93481",
+  "source_dirty_paths": 0,
+  "source_pin_count": 184,
+  "verified_data_engine_pins": 27,
+  "tests": {
+    "passed": 105,
+    "failed": 0,
+    "native_engine_instances": 68,
+    "new_genuine_funding_fixture_instances": 2,
+    "new_economic_prefix_attempts": 0,
+    "junit": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/nontrading-repair-3323f08.xml",
+    "junit_sha256": "519770e943269a7b7b95e63f918605538c04b27e9ede3c976cc8353f65620246",
+    "log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/nontrading-repair-3323f08.log",
+    "log_sha256": "2a41a5bcfdfa9720b2bad0e25fb91f9998b98695efdb2fcc29c91430560ab536"
+  },
+  "actual_raw_guard_validation": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_CORRECTION1/result/paired-prefix-OFF-raw-native.json",
+    "sha256": "44e1257c22972f50c9158d150ae0b4df100ad87520432039e1e6deefc4c2afa3",
+    "status": "GUARDS_VALIDATED_WITHOUT_EDITING_ACTUAL_MONEY",
+    "raw_remains_unvalidated_FAILED_diagnostic": true,
+    "ledger_reclassified": false
+  },
+  "native_watermark_parity_proof": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-repair-native-watermark-proof.json",
+    "sha256": "66dcbccd972bccddec622077a770ef45a2ec3ccd28a068305682573bc952e407"
+  },
+  "unchanged_semantics_proof": {
+    "trading_domain_strategy_ledger_venues_funding_files_exact": true,
+    "file_count": 28,
+    "native_baseline_AST_except_report_guard_helper_exact": true,
+    "nativebaseline_remaining_AST_sha256": "efa2a710e12d32267675897293124ec96856ef24a048103df7427e521ba2a246",
+    "no_financial_formula_parameter_change": true
+  },
+  "reviews": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-prefix-export-repair-review.md",
+      "sha256": "ae171c96384b42924ff1317c7e6314893dc4e64d2e1886f3edfb1cd6b9e269a9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-observer-funding-repair-review.md",
+      "sha256": "1b08fb7b81f6141652082d283d930940225e6b93091bcb4971734016e28e15c5"
+    }
+  ],
+  "failure_reasons": [
+    {
+      "physical1": "Wrapper forwarded a report descriptor dict to native bool sizing argument; failed before native engine.",
+      "physical2": "Calendar guard omitted partial terminal month; after complete native execution export failed. Observer also lost133prior-source watermarks when newer timestamp funding committed before first quote.",
+      "responsibility": "Both boundary contracts were insufficiently checked before physical launch; failures remain counted and preserved."
+    }
+  ],
+  "current_budget": {
+    "maximum": 4,
+    "spent": 2,
+    "remaining": 2,
+    "valid_OFF_B2_combined_required": 3,
+    "extra_attempt_authorized": false
+  },
+  "proposal": {
+    "maximum": 5,
+    "additional": 1,
+    "remaining_sequence": [
+      {
+        "slot": 5,
+        "physical3": "OFF"
+      },
+      {
+        "slot": 2,
+        "physical4": "B2"
+      },
+      {
+        "slot": 3,
+        "physical5": "B2_F0"
+      }
+    ],
+    "full_max": 0,
+    "reserve_remaining": 0
+  },
+  "preflight_receipt": "implementation-repair-preflight.json",
+  "amendment_schema": "implementation-owner-amendment-schema.json",
+  "commands": "implementation-repair-launch-commands.json",
+  "freeze_OFF_sha256": "bb9f33daaeb59812d7c3214755872ac3f1e7af0ae9b17b51766a8ccaa1fb794d"
+}

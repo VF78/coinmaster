@@ -1,0 +1,172 @@
+{
+  "status": "PASS",
+  "clock": "TRUE_M1_CUSTOM_MARK_FUNDING_BEFORE_FIRST_QUOTE_AND_SAME_T_NATIVE_FILL",
+  "retained_actual_snapshot": {
+    "prior_source_ns": "420000000000",
+    "actual_prior_cash": "9996.7",
+    "actual_prior_position_sha256": "70a2f3241e0cb900a160b8a79d62f2e344e11359c92447f0dabd376b0be77d84",
+    "actual_prior_epoch": 2,
+    "actual_post_funding_cash": "9993.7",
+    "first_new_mutation_ns": "480000000000"
+  },
+  "late_receipt": {
+    "sequence": 29,
+    "epoch": 4,
+    "state_epoch": 2,
+    "kind": "SETTLED_PRE_NEXT_SOURCE_WATERMARK",
+    "event_ns": "420000000000",
+    "receipt_ns": "480000000000",
+    "native_id": null,
+    "mark_available_ns": "420000000000",
+    "cash": "9996.7",
+    "native_positions_sha256": "70a2f3241e0cb900a160b8a79d62f2e344e11359c92447f0dabd376b0be77d84",
+    "equity": "9996.7",
+    "positions": [
+      {
+        "position_id": "BTCUSDT-PERP.P1SIM-Probe-000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "quantity": "50.000",
+        "side": "LONG",
+        "raw_mark": "100",
+        "native_price": "100.0",
+        "native_upnl": "0"
+      },
+      {
+        "position_id": "SOLUSDT-PERP.P1SIM-Probe-000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "quantity": "10.0",
+        "side": "SHORT",
+        "raw_mark": "100",
+        "native_price": "100.00",
+        "native_upnl": "0"
+      }
+    ],
+    "prior_source_retention": {
+      "source_ns": "420000000000",
+      "state_epoch": 2,
+      "signature": [
+        "9996.7",
+        "70a2f3241e0cb900a160b8a79d62f2e344e11359c92447f0dabd376b0be77d84"
+      ],
+      "first_new_mutation_ns": "480000000000"
+    }
+  },
+  "native_orders": 20,
+  "native_fills": 7,
+  "native_funding": [
+    [
+      "btc-long-pay",
+      "BTCUSDT-PERP.P1SIM",
+      480000000000,
+      "9996.7",
+      "9991.7",
+      "-5.0"
+    ],
+    [
+      "sol-short-receive",
+      "SOLUSDT-PERP.P1SIM",
+      480000000000,
+      "9991.7",
+      "9993.7",
+      "2.0"
+    ]
+  ],
+  "native_trace_sha256": "7b9fd1072786fcd6b4fc0f835467d5dda07c2f44dbeb27983aaa207ab92cc5ba",
+  "observer": {
+    "status": "PASS",
+    "unknown": [],
+    "sequence_count": 54,
+    "mutation_epochs": 9,
+    "native_unique_fills": 7,
+    "native_funding_transitions": 2,
+    "native_account_publications": 37,
+    "settled_receipts": 11,
+    "event_drawdown": {
+      "samples": 44,
+      "minimum": {
+        "timestamp_ns": "26",
+        "equity": "9991.7"
+      },
+      "maximum_loss_below_seed_amount": "8.3",
+      "maximum_loss_below_seed_percent": "0.08300",
+      "top3_distinct_excursions": [
+        {
+          "peak": {
+            "timestamp_ns": "8",
+            "equity": "10000"
+          },
+          "trough": {
+            "timestamp_ns": "26",
+            "equity": "9991.7"
+          },
+          "recovery": {
+            "timestamp_ns": "32",
+            "equity": "10004.110375"
+          },
+          "drawdown_amount": "8.3",
+          "drawdown_peak_percent": "0.08300"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "48",
+            "equity": "10041.17709375"
+          },
+          "trough": {
+            "timestamp_ns": "49",
+            "equity": "10040.74809375"
+          },
+          "recovery": null,
+          "drawdown_amount": "0.42900000",
+          "drawdown_peak_percent": "0.004272407467716364316811748792"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "34",
+            "equity": "10004.110375"
+          },
+          "trough": {
+            "timestamp_ns": "35",
+            "equity": "10003.989375"
+          },
+          "recovery": {
+            "timestamp_ns": "39",
+            "equity": "10004.34354375"
+          },
+          "drawdown_amount": "0.121000",
+          "drawdown_peak_percent": "0.001209502848972715377503019603"
+        }
+      ]
+    },
+    "settled_drawdown": {
+      "samples": 12,
+      "minimum": {
+        "timestamp_ns": "360000000000",
+        "equity": "9996.7"
+      },
+      "maximum_loss_below_seed_amount": "3.3",
+      "maximum_loss_below_seed_percent": "0.03300",
+      "top3_distinct_excursions": [
+        {
+          "peak": {
+            "timestamp_ns": "120000000000",
+            "equity": "10000"
+          },
+          "trough": {
+            "timestamp_ns": "360000000000",
+            "equity": "9996.7"
+          },
+          "recovery": {
+            "timestamp_ns": "480000000000",
+            "equity": "10003.989375"
+          },
+          "drawdown_amount": "3.3",
+          "drawdown_peak_percent": "0.03300"
+        }
+      ]
+    },
+    "terminal_actual_cash": "10040.74809375",
+    "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+    "actual_intraminute_price_path_proven": false
+  },
+  "parity": "EXACT_PARENT_DOMAIN_NATIVE_ORDERS_FILLS_FEES_FUNDING_TERMINAL_CASH"
+}

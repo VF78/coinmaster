@@ -1,0 +1,35 @@
+{
+  "status": "CORRECTION_REVIEW_PASS_AWAITING_ROOT_GO",
+  "source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733",
+  "failed_physical1_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-OFF-physical1-failure.json",
+  "corrected_freeze": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-correction-freeze-OFF.json",
+  "corrected_freeze_sha256": "2b58c979450d06cf7e2ee0127852c176c4439c60de7be643fd6a7e6a03634016",
+  "correction_scope": "WRAPPER_CONFIG_BOUNDARY_ONLY",
+  "changed_runtime_files": [
+    "runtime/coinmaster/research/paired_prefix_run.py"
+  ],
+  "domain_strategy_funding_observer_unchanged": true,
+  "actual_R3_descriptor_to_bool": "exact expected descriptor maps to True, never bool(dict)",
+  "complete_original_R3_call_parity": "PASS; only declared endcalendar/artifactnamespace/sharedpolicy differ after native SOL-OFF normalization",
+  "tests": {
+    "passed": 87,
+    "failed": 0,
+    "native_engine_instances": 66,
+    "new_engine_free_boundary_cases": 14,
+    "junit": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/reserve-correction-6f7cd98.xml",
+    "junit_sha256": "693a6288bd55d8863b0401d689f07da3563852fd0e653c24350830d96cf0863b",
+    "log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/reserve-correction-6f7cd98.log",
+    "log_sha256": "109253c5c8c4adaa2bb4e57fd8ce2c607c346277edc12abb9aca5e3fb375cd1f"
+  },
+  "fixture_exact_R3_config_sha256": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80",
+  "source_pin_count": 182,
+  "reverified_original_data_and_engine_pins": 27,
+  "preflight": "implementation-correction-preflight.json",
+  "physical_started": 1,
+  "full_started": 0,
+  "automatic_restart": false,
+  "reserve_consumed": false,
+  "correction_review": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-boundary-correction-review.md",
+  "correction_review_sha256": "e0ad3ff3a57f5ab90770d3df2e3847ea26264fbbd17986e19ae04609404892d4",
+  "source_remote_verified": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733"
+}

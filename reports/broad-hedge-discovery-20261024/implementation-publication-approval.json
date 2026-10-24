@@ -1,0 +1,13 @@
+{
+  "status": "EXPLICIT_OWNER_APPROVED",
+  "approval_source": "direct human message in current CoinMaster manager chat, 2026-10-24",
+  "owner_exact_response": "продолжай не останавливайся, публикация в публичный репозиторий разрешена",
+  "destination": "https://github.com/VF78/coinmaster",
+  "visibility": "PUBLIC",
+  "source_branch": "codex/b2-f0-paired-prefix-20261024",
+  "reviewed_source": "1925e1881b338ce56fa0ff992ba29c250e85f707",
+  "scope": "publish current isolated reviewed research source and test clarification commits; source push is not deployment",
+  "economic_budget": "unchanged: max4 prefix attempts including failures, full0",
+  "pilot_production_realorders_transfers": "excluded",
+  "secrets": "not authorized for publication"
+}
