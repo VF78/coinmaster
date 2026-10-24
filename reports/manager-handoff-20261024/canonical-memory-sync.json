@@ -1,0 +1,102 @@
+{
+  "status": "PASS",
+  "sparse_manager_checkout": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/manager-handoff-20261024",
+  "branch": "codex/manager-handoff-20261024",
+  "snapshot_commit": "de5fbfd809e5582499ab27e296878437901d0ffb",
+  "primary_branch_unchanged": "codex/ai-cycle-20261021",
+  "primary_HEAD_unchanged": "0bd7351897a9854c144817fdfca6c548e7984673",
+  "same_memory_hashes": {
+    "AGENTS.md": "db67deb1ca74c96f389940422083afd3dff718aeac836b146da3278ddefd9134",
+    "SOUL.md": "4e94dd96124b400fe777ac409790f17f7f3a09f112fc2f6f8f9b372a87b19bdc",
+    "USER.md": "4e1650686df87c35ff06885b98be6b4fa77f9e4929662267fb1d228ed4384522",
+    "IDENTITY.md": "960b53e8224dcf52f0f6c8f09d7e2ee6b400828ef517b3e814bbc28ebf553f66",
+    "MEMORY.md": "0099258a7a728edca6410311ccedf0c8bac62e305435b1e5a78654e217db0483",
+    "PROJECT_TRUTH.md": "a2485f4ffcb3ce44ca7cc52e8e67dd793e4706282bfc843dae74318186b4975d",
+    "TASK_STATE.md": "afcae0cf3fcdbe3dff2d297ce05321ab214aa5ab2ec628102f28b1dee89c2d38",
+    "NEW_MANAGER_PROMPT.md": "364714ac12e959bf939ace6b9b4330a2f507944c8c638e4fc62496bfcabd0c6e",
+    ".ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md": "82e0a949f3185de113386791a50f351020313e16117f800f68aecbe96038d0bf",
+    ".ops/ACTIVE_TASK.md": "0b566098358111657e92afb5bbf924c4218c3a44fc43cf943add6ce0a5259006",
+    ".ops/RESET_PREP_PROTOCOL.md": "3bfb26abbff634609b72c4a3228e6d4ae915dee7e25f4c42978777d958a60372",
+    ".ops/MODEL_ROUTING.md": "457154bdbdcafd661ad986ca077cc02c4a1da6198f5b0ac4864b414dc8de05da",
+    ".ops/OPERATIONS.md": "57335358cdce3ab1a0b16f0b3d010b75133328cdd96275374bdf37aa5cb81769",
+    ".ops/TASK_STATE_PROTOCOL.md": "fbc246fbaaaf1abd7cb64bd09bb7ebdc393832a590c81e76f369b86ca269dd15",
+    ".ops/PROJECT_TRUTH.md": "f4cf468b58cc7e233151ca3ff4c45ba780595d55e5b3a9fbe019e1903ac38823",
+    ".ops/RESEARCH_INDEX.md": "fcbd7881a3028c286848751c2c648d02ddb7dfb96190456980c933cb68dd5635"
+  },
+  "dirty_user_source_unchanged": {
+    "runtime/coinmaster/research/minute_risk.py": true,
+    "runtime/coinmaster/research/native_baseline.py": true,
+    "runtime/coinmaster/strategy/wave_overlay.py": true,
+    "runtime/coinmaster/strategy/s0_management.py": true,
+    "runtime/tests/test_native_s0_management.py": true
+  },
+  "retired_historical_primary_ops": [
+    "CM99_SANDBOX_CUTOVER_20260928.md",
+    "VPS_CLEANUP_20261007.md",
+    "CM05_PINNED_REPORT_BLOCKER.md",
+    "sol-risk-first-project-readback-20261018.json",
+    "CM05_RC5_BOUNDED_QUALIFICATION.md",
+    "TP_ZERO_AUDIT_20261009.md",
+    "GUI_TRADER_RELEASE_20261007.json",
+    "CM101_LIVE_WORKER_STAGE_20261005.md",
+    "artifacts",
+    "CM05_SANDBOX_REPLAY_FEASIBILITY.md",
+    "TRADING_GAP_AUDIT_20261007.csv",
+    "CM05_LIVE_MODE_SEAM.md",
+    "CM04_NATIVE_REPLAY.md",
+    "VPS_CLEANUP_20261007.json",
+    "CM05_NATIVE_EVENT_RECONSTRUCTION_PROOF.md",
+    "VPS_CLEANUP_20260930.md",
+    "split-cover-project-readback-20261018.json",
+    "GUI_NATIVE_7DAY_ACCEPTANCE_20261007.json",
+    "TRADING_GAP_AUDIT_20261007.md",
+    "CM101_LIVE_WALLET_REPIN_20261005.json",
+    "CM03_NATIVE_ACCOUNT_PROJECTION.md",
+    "CM05_READONLY_ACCOUNT_OBSERVER.md",
+    "sol-risk-first-project-final-readback-20261018.json",
+    "GUI_PROJECT_ACCEPTANCE_20261007.json",
+    "TRADING_GAP_AUDIT_20261007.json",
+    "CM05_SANDBOX_CUTOVER_20260926.md",
+    "CoinMaster_BTC_Split_SOL_Hedge_Research_Plan.md",
+    "CM101_LIVE_PORT_STAGE_20261007.json",
+    "GUI_TRADER_AUDIT_20261007.md",
+    "VPS_CLEANUP_RELEASE_MANIFEST_20260930.json"
+  ],
+  "source_backup": "/root/.openclaw/workspace/coinmaster/coinmaster/research-artifact-archive/manager-handoff-20261024",
+  "legacy_S0_VPS_dir_exists": true,
+  "legacy_S0_files": [
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-orders.csv",
+      "bytes": 265856
+    },
+    {
+      "name": "minute-native-risk.csv.gz",
+      "bytes": 75715744
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite",
+      "bytes": 237568
+    },
+    {
+      "name": "minute-native-settled-receipts.csv.gz",
+      "bytes": 37417891
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-raw-native.json",
+      "bytes": 2119302
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv",
+      "bytes": 245967
+    },
+    {
+      "name": "minute-risk-summary.json",
+      "bytes": 14961
+    },
+    {
+      "name": "v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "bytes": 1396782
+    }
+  ],
+  "no_service_action": true
+}

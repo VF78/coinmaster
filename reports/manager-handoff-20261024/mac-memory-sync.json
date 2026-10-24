@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "authoritative": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021",
+  "entry_mirror": "/Users/vf/Documents/ChatGPT/Coinmaster",
+  "same_hashes": {
+    "AGENTS.md": true,
+    "SOUL.md": true,
+    "USER.md": true,
+    "IDENTITY.md": true,
+    "MEMORY.md": true,
+    "PROJECT_TRUTH.md": true,
+    "TASK_STATE.md": true,
+    "NEW_MANAGER_PROMPT.md": true,
+    ".ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md": true,
+    ".ops/OPERATIONS.md": true,
+    ".ops/RESEARCH_INDEX.md": true,
+    ".ops/MODEL_ROUTING.md": true,
+    ".ops/TASK_STATE_PROTOCOL.md": true,
+    ".ops/RESET_PREP_PROTOCOL.md": true,
+    ".ops/ACTIVE_TASK.md": true,
+    ".ops/PROJECT_TRUTH.md": true
+  },
+  "historical_retirements": [
+    {
+      "path": ".ops/CM03_NATIVE_ACCOUNT_PROJECTION.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM03_NATIVE_ACCOUNT_PROJECTION.md"
+    },
+    {
+      "path": ".ops/CM04_NATIVE_REPLAY.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM04_NATIVE_REPLAY.md"
+    },
+    {
+      "path": ".ops/CM05_LIVE_MODE_SEAM.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM05_LIVE_MODE_SEAM.md"
+    },
+    {
+      "path": ".ops/CM05_NATIVE_EVENT_RECONSTRUCTION_PROOF.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM05_NATIVE_EVENT_RECONSTRUCTION_PROOF.md"
+    },
+    {
+      "path": ".ops/CM05_PINNED_REPORT_BLOCKER.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM05_PINNED_REPORT_BLOCKER.md"
+    },
+    {
+      "path": ".ops/CM05_RC5_BOUNDED_QUALIFICATION.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM05_RC5_BOUNDED_QUALIFICATION.md"
+    },
+    {
+      "path": ".ops/CM05_READONLY_ACCOUNT_OBSERVER.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM05_READONLY_ACCOUNT_OBSERVER.md"
+    },
+    {
+      "path": ".ops/CM05_SANDBOX_CUTOVER_20260926.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM05_SANDBOX_CUTOVER_20260926.md"
+    },
+    {
+      "path": ".ops/CM05_SANDBOX_REPLAY_FEASIBILITY.md",
+      "action": "MOVE_HISTORICAL_UNCHANGED",
+      "to": "docs/archive/operations/CM05_SANDBOX_REPLAY_FEASIBILITY.md"
+    }
+  ],
+  "code_changes": false,
+  "root_branch_unchanged": "codex/nautilus-btc-sol-mvp; docs are intentional mirror changes, not source baseline"
+}

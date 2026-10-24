@@ -54,6 +54,7 @@ Read only required evidence:
 ## Exact data / execution reuse
 Mac inputs: `/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data`.
 Mac latest results: `.../runtime/var/research-jobs/system-contract-repair-20261023/{E4_EXPLICIT_CONTROL,S0_EXPLICIT_CONTROL,H_SOL,H_BTC}/result`.
+Legacy S0 full native folder verified present on VPS (8artifacts): `/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result`.
 Datahash `7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc`; policyhash `c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834`. Individual files/engine/source/config pins in saved preparations/protocols. Preserve all unique native streams, journals and report receipts.
 Use explicit Mac runtime `.venv/bin/python` (3.12.13/nautilus1.231.0), frozen source+scrubbed environment, direct Python Popen, fresh journal/namespace. Do not use macOS `time -l` wrapper as native exit authority.
 Known report-only fix `6061446164cc32c27b3ea0e13e86c9cc56d955ac`: local Decimal80/original1e-24guard. Never relax tests or manufacture missing JSON/terminal money. Actual native JSON serialization tested before engines.

@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "issue130": {
+    "url": "https://github.com/VF78/coinmaster/issues/130",
+    "state": "closed",
+    "body_readback": true
+  },
+  "current_items": [
+    {
+      "number": 101,
+      "status": "Todo",
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXeo"
+    },
+    {
+      "number": 123,
+      "status": "Done",
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhCw1CE"
+    },
+    {
+      "number": 130,
+      "status": "Done",
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhDLXrg"
+    }
+  ],
+  "project_metadata": {
+    "id": "PVT_kwHOBIUvJs4BPJNj",
+    "title": "Coinmaster project",
+    "shortDescription": "Native Nautilus BTC/SOL: compact coordination, preserved research evidence, explicit live gates",
+    "readme": "Current coordination index (2026-10-24)\n\n- Authoritative compact startup: AGENTS.md -> SOUL.md, USER.md, .ops/PROJECT_TRUTH.md, .ops/ACTIVE_TASK.md. Research details are on demand in .ops/RESEARCH_INDEX.md.\n- Manager/report branch: codex/btc-pattern-pilot-m2-20261021. New-manager entry: NEW_MANAGER_PROMPT.md. Primary dirty VPS checkout is preserved and is not a deployment baseline.\n- Research goal: DD <=50%, >=90% comparable S0 net profit, then maximum ACTIVE+RESERVE. #123 finished NO_GO; closed budgets do not authorize more runs.\n- #101 is future genuine Hyperliquid qualification/guarded live work, not current live readiness. No pilot changes or real orders from this handoff.\n- Completed historical board items are archived, not deleted; native issue dependencies remain. #130 records compact handoff completion.\n"
+  },
+  "archive_proof_file": "project-archive-readback.json",
+  "no_product_or_runtime_mutation": true
+}

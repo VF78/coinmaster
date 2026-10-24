@@ -1,6 +1,7 @@
 # CoinMaster — stable truth
 
 Repository: https://github.com/VF78/coinmaster ; backlog: https://github.com/users/VF78/projects/2 .
+Manager/report checkout is NOT algorithm source or production.
 Manager/report branch: `codex/btc-pattern-pilot-m2-20261021`; current work is in ACTIVE_TASK, not this file.
 Mac manager: `/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021`.
 VPS development root: `/root/.openclaw/workspace/coinmaster/coinmaster` on `root@46.225.163.123`; use isolated child worktrees. Primary checkout is dirty historical work, not deployment truth.

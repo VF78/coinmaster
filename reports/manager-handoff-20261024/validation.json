@@ -4,10 +4,10 @@
   "checks_passed": 252,
   "failed": [],
   "boot_bytes_before": 155835,
-  "boot_bytes_after": 7568,
-  "boot_reduction_percent": 95.14,
+  "boot_bytes_after": 7802,
+  "boot_reduction_percent": 94.99,
   "old_active_plus_truth_bytes": 154668,
-  "active_snapshot_lines": 20,
+  "active_snapshot_lines": 21,
   "code_tests": "NOT_RUN_DOCS_ONLY_NO_TRADING_CHANGE",
   "checks": {
     "active_snapshot_cap40": true,
