@@ -2672,7 +2672,7 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
 
 
     def on_order_denied(self, event: OrderDenied) -> None:
-        self._terminal_without_fill(str(event.client_order_id))
+        self._terminal_without_fill(str(event.client_order_id),event.ts_event)
 
     def on_position_event(self, event) -> None:
         self._hedge_refresh(event.ts_event)
@@ -2703,6 +2703,7 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
             ep=self._domain.episode
             self._md_log("NATIVE_FLAT_SIGNAL_CYCLE_END",self.clock.timestamp_ns(),
                 episode_id=ep.id if ep else None,reason=ep.close_reason if ep else None)
+            self._md_coverage(self.clock.timestamp_ns(),True,ep.id if ep else None,"NATIVE_FLAT")
         reason = self._domain.on_group_flat()
         if self._forced_close_reason not in {"LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}:
             self._forced_close_reason = None
@@ -2751,15 +2752,17 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
         }
 
     def on_order_rejected(self, event: OrderRejected) -> None:
-        self._terminal_without_fill(str(event.client_order_id))
+        self._terminal_without_fill(str(event.client_order_id),event.ts_event)
 
     def on_order_expired(self, event: OrderExpired) -> None:
-        self._terminal_without_fill(str(event.client_order_id))
+        self._terminal_without_fill(str(event.client_order_id),event.ts_event)
 
-    def _terminal_without_fill(self, client_order_id: str) -> None:
+    def _terminal_without_fill(self, client_order_id: str, ts_event: int | None = None) -> None:
+        terminal_ns=self.clock.timestamp_ns() if ts_event is None else ts_event
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
-        self._md_reject(failed_intent,self.clock.timestamp_ns())
+        self._md_reject(failed_intent,terminal_ns)
+        self._md_first_terminal(failed_intent,terminal_ns)
         self._hedge_terminal(failed_intent, self.clock.timestamp_ns(), "DENIED_REJECTED_EXPIRED")
         if self._conditional_enabled():
             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
@@ -2799,7 +2802,7 @@ class WaveOverlayStrategy(MarketRedesignResearch, NextBandResearch, HedgeBandRes
             self._requeue_accepted_reduction(intent, sigma, decision_index, self.clock.timestamp_ns())
         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,self.clock.timestamp_ns(),"DENIED_REJECTED_EXPIRED")
         if self._md_enabled():
-            self._md_reconcile(event.ts_event)
+            self._md_reconcile(terminal_ns)
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())

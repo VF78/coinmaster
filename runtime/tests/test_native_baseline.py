@@ -255,7 +255,10 @@ def test_streamed_native_smoke_matches_one_shot_and_keeps_callbacks_subscribed(t
     assert streamed["episodes"] == "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED"
     assert streamed["realized_unrealized"] == "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY"
     assert streamed["transfers"] == "0" and streamed["liquidation_value"] == "0"
-    assert set(streamed["funding"]) == {"count", "by_instrument_count", "signed_amount"}
+    assert set(streamed["funding"]) == {"count", "by_instrument_count", "signed_amount", "signed_native_cash_deltas", "signed_amount_basis"}
+    assert streamed["funding"]["signed_native_cash_deltas"] == []
+    assert streamed["funding"]["signed_amount"] == "0"
+    assert streamed["funding"]["signed_amount_basis"] == "NATIVE_BALANCE_AFTER_MINUS_BEFORE_EACH_FUNDING_MUTATION"
     for timestamp in ((start + DAY_MS) * 1_000_000, end * 1_000_000):
         ordered = [kind for kind, event_time in seen if event_time == timestamp]
         assert ordered == ["mark", "mark", "signal", "signal", "quote", "quote"] * 2

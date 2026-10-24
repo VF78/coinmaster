@@ -51,6 +51,7 @@ class MarketRedesignResearch:
         self._md_plans = {}
         self._md_accepted_ids=set()
         self._md_missing_since = None
+        self._md_missing_reason = None
         self._md_missing_total_ns = 0
 
     def _md_log(self, event, ts, **values):
@@ -74,7 +75,8 @@ class MarketRedesignResearch:
                 raise ValueError("REAL_U_PLANNED_FIRST_HALF_CANNOT_PROTECT")
         self._md_plans[ep.id] = dict(raw_levels=ep.wave_levels,d3=d3,p0=None,
             prices=None,consumed=set(),touched=set(),accepted=set(),quantity=quantity,first_done=False,
-            first_filled=D(0),first_notional=D(0),second_filled=D(0),first_order=None)
+            first_filled=D(0),first_notional=D(0),second_filled=D(0),first_order=None,
+            generation=-1,generations={},intent_generation={},order_generation={})
         ep.wave_levels = tuple(float(d3*D(i)/3) for i in (1,2,3))
         ep.btc_omitted_zero_levels.clear()
         ep.btc_zero_resting_suppressed.clear()
@@ -213,7 +215,13 @@ class MarketRedesignResearch:
             return
         if any(lots<=0 or (inst.min_quantity and D(lots)*step<inst.min_quantity.as_decimal()) or (inst.min_notional and D(lots)*step*prices[i]<inst.min_notional.as_decimal()) for i,lots in desired.items()):
             self._md_coverage(ts,False,ep.id,"PARTIAL_BELOW_THREE_VALID_LOTS")
+            if m["first_done"]:
+                self._md_log("UNDERSIZED_TERMINAL_FIRST_FAILCLOSED",ts,episode_id=ep.id,actual_inventory=held)
+                self._begin_forced_close("REAL_U_INSUFFICIENT_PARTIAL_PROTECTION")
             return
+        if m.get("signature")!=signature:
+            m["generation"]+=1
+            m["generations"][m["generation"]]=dict(required=set(desired),accepted=set(),authorized=False)
         m["signature"]=signature
         m["prices"]=prices
         self._bind_native_lots()
@@ -227,6 +235,7 @@ class MarketRedesignResearch:
             intent=self._domain._intent(ep,"BTC_REDUCE",-ep.side,i,
                 quantity=float(D(lots)*step),reason=f"BTC_TP{i+1}",limit_price=float(prices[i]))
             ep.resting_reductions.add(intent.id)
+            m["intent_generation"][intent.id]=m["generation"]
             self._submit_intent(intent,float(m["p0"]),float(m["p0"]),None,len(self._bars)-1,ts_now=ts)
         self._md_log("TARGETS_SUBMITTED",ts,episode_id=ep.id,p0=m["p0"],
             raw_causal_d3=m["d3"],prices=[str(x) for x in prices],
@@ -238,9 +247,14 @@ class MarketRedesignResearch:
             self._md_missing_total_ns+=duration
             self._md_log("PROTECTION_RESTORED",ts,episode_id=episode,duration_ns=str(duration),reason=reason)
             self._md_missing_since=None
+            self._md_missing_reason=None
         elif not complete and self._md_missing_since is None:
             self._md_missing_since=ts
+            self._md_missing_reason=reason
             self._md_log("PROTECTION_EXCEPTION",ts,episode_id=episode,reason=reason)
+        elif not complete and self._md_missing_reason!=reason:
+            self._md_missing_reason=reason
+            self._md_log("PROTECTION_EXCEPTION",ts,episode_id=episode,reason=reason,continuing_interval=True)
 
     def _md_cancel_terminal(self,intent,ts):
         if not self._md_enabled() or not intent or intent.action!="BTC_REDUCE":
@@ -268,11 +282,18 @@ class MarketRedesignResearch:
         if oid in self._md_accepted_ids:
             return
         self._md_accepted_ids.add(oid)
-        m["accepted"].add(intent.level)
+        generation=m["intent_generation"][intent.id]
+        m["order_generation"][oid]=generation
+        historic=m["generations"][generation]
+        historic["accepted"].add(intent.level)
+        if historic["accepted"]>=historic["required"]:
+            historic["authorized"]=True
+        if generation==m["generation"]:
+            m["accepted"].add(intent.level)
         audit=self._order_audit.get(str(event.client_order_id),{})
         submit=int(audit.get("submit_ns") or event.ts_event)
         self._md_log("TARGET_ACCEPTED",event.ts_event,episode_id=intent.episode_id,
-            level=intent.level,order_id=str(event.client_order_id),ack_latency_ns=str(event.ts_event-submit))
+            level=intent.level,generation=generation,order_id=str(event.client_order_id),ack_latency_ns=str(event.ts_event-submit))
         if m["accepted"]==set(range(3))-m["consumed"]:
             self._md_coverage(event.ts_event,True,intent.episode_id,"ALL_REMAINING_ACCEPTED")
 
@@ -283,11 +304,18 @@ class MarketRedesignResearch:
         if not m:
             return
         if intent.action=="BTC_REDUCE":
-            if not m["touched"] and m["accepted"]!={0,1,2}:
+            generation=m["order_generation"].get(str(event.client_order_id))
+            historic=m["generations"].get(generation)
+            if not historic or not historic["authorized"]:
                 raise ValueError("REAL_U_TP_FILLED_BEFORE_THREE_ACCEPTED")
             m["touched"].add(intent.level)
-            if self._domain.episode and intent.level in self._domain.episode.btc_filled_tps:
+            order=self.cache.order(event.client_order_id)
+            if self._domain.episode and (intent.level in self._domain.episode.btc_filled_tps or (order is not None and order.status.name=="FILLED")):
                 m["consumed"].add(intent.level)
+                self._domain.episode.btc_filled_tps.add(intent.level)
+                # A terminal old target during replacement cannot be restored
+                # merely because the newer inventory allocation is larger.
+                m["allocated_entry"]=None
             self._split_stop("FIRST_POSITIVE_TP_FILL")
             ep=self._domain.episode
             if ep:
