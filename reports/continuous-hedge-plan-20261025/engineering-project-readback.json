@@ -1,0 +1,11 @@
+{
+  "issue": 135,
+  "state": "OPEN",
+  "Status": "In Progress",
+  "isArchived": false,
+  "approved_body_readback": true,
+  "approval": "engineering-owner-approval.json",
+  "native_fixture_cap": 12,
+  "economic_prefix_max": 0,
+  "full_max": 0
+}

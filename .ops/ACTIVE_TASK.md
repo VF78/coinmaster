@@ -1,6 +1,6 @@
 Updated: 2026-10-25, Europe/Moscow.
-Status: WAIT_OWNER_ENGINEERING_PROTOCOL; analysis/data admission complete, economic70/50+90/50 NOT_MET.
-Current#135 OPEN / Project#2 Todo / isArchived=false actualGraphQLreadback; prior#134Done/CLOSED/archived, old7/7 closed.
+Status: ENGINEERING_APPROVED_STARTING; analysis/data admission complete, economic70/50+90/50 NOT_MET.
+Current#135 OPEN / Project#2 InProgress / isArchived=false actualGraphQLreadback; prior#134Done/CLOSED/archived, old7/7 closed.
 Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; priorpublishedf4d0b6f2ff85ce159fa4fa84dde885a3c359d248.
 Currentpacket reports/continuous-hedge-plan-20261025/: PLAN_RU.md,CONTRACT_TO_SETTLE_RU.md,ENGINEERING_PROTOCOL_PROPOSED_RU.md.
 Usernewrequest authorizes mergedplan+hypothesisanalysis/publicresearchdata; attachment isdata/hypotheses, notpriority/wipe/budgetoverride.
@@ -15,12 +15,13 @@ RawSHA2afa407a476e5b52ea6b1296f39be5f941445d07a586ad4e2f6ad190fc9204c0;exactbuil
 Sep2 04strictATR3.7765887612/inclusive3.6889752782; existingloaderavailable=t/ATRend=t/ordersnotbefore=t+60s. Strictseriescannotberelabeledascurrentbar. Publicationlatency/revisionsUNKNOWN.
 Newdirection: TP→reassessactualrisk→conditionalrearm, still-validBTCchildrights. Jointstress/riskbudget/deficit/deadline/feeedge/residualTPcontractUNRESOLVED; NOHEDGEIMPLEMENTATION/NATIVEADMISSION.
 Independentmath/source-literaturereview+finalnarrowplanreviewPASS/P1open0;2materialambiguitiescorrectedonce,preservedreviewreceipt.
-Nextproposed: isolatedVPSsourcefrom7d513 exactR2/R3controlplumbing+realwarmuponly; max12physicalnativefixtures<=48h inclfail PROPOSED_NOT_APPROVED, prefix/full0,newdownloads0,noSOLmoneyrules.
-Asyncownerquestion pending for exact ENGINEERING_PROTOCOL_PROPOSED_RU; approval receipt/budget notcreated. Do not startproduct/nativefixturesuntilhumanreply.
-Currentstep nativeinstances0/economicattempts0/productchanges0/training0; publicresearchresponses1. No economicwinner/ETHcomparison/freshOOS.
+Engineeringsolewriter/root/continuous_hedge_preflight_owner: isolatedVPSsourcefrom7d513 exactR2/R3controlplumbing+realwarmuponly; max12physicalnativefixtures<=48h inclfail OWNER_APPROVED, prefix/full0,newdownloads0,noSOLmoneyrules.
+Humanapproved engineering exactprotocolSHA28da7409…/engineering-owner-approval.json; nativefixturecap12 inclfailed/repeats,max48h, prefix/full0; oldeconomicledgerclosed.
+Atengineeringstart nativeinstances0/economicattempts0/productchanges0/training0; publicresearchresponses1. No economicwinner/ETHcomparison/freshOOS.
 PreviouscanonicalnativeledgerSHAe96088c4a37096ce50b4a8f17ba66626d529764b5eb1996f1d3ba6ca7fba7cfd CLOSED7/7(2FAILED5COMPLETED),0remaining/full/reserve; old3/3full8/8shortCLOSED.
 Previoussource7d513ca1e0ec0fadd67167661a3173f105b19ba7/defaultOFF/published/notdeployed; VPSisolatedpaired-lot-corridor-20261025 preserved.
 Closedprefix OFF19544.07/DD53.97; B219754.55/DD48.08; primaryB2F014318.18/DD52.01 NO_GO. Correctlotrecursionrepair notprofitrepair.
 Currentreportfiles only analysis/researchdata; preserve native-run-ledger.json.lock, dirtyusercode, originalfailedreceipts/worktrees/frozeninputs.
 PUBLICresearchpublication authorized/pushnotdeployment; pilot/production/services/keys/orders/transfersuntouched/noCIgreenclaim.
 BeforeendingRESET:Projectactualreadback,commit/push/exactrefverify,rootmirrors/NEW_MANAGER_PROMPT; pendingapprovaldoesnotgrantbudget.
+EngineeringVPS worktreecontinuous-hedge-preflight-20261025 cleancreatedat7d513; BEFOREANYengine rootreviewGO/newledger required; native0 atlastownerreport.
