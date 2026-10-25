@@ -141,3 +141,21 @@ def test_ordinary_stop_immediate_cancels_replacement_despite_historical_closed(s
     assert a['dead']=='FIRST_POSITIVE_TP_FILL' and o._split_parent['closed'] and orders['old'].is_closed
     assert o.cancelled==([release] if status in ('ACCEPTED','SUBMITTED') else [])
     o._a0_check(q);assert a['attempted'] and a['locked_cap'] is None
+
+
+@pytest.mark.parametrize('case',['A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE'])
+def test_fixture_actual_stock_daily_open_and_causal_seed_precondition(case):
+    import ast,inspect,textwrap
+    from run_a0_engineering import fixture_configuration,StockProbe,assert_daily_fixture_preconditions
+    from run_continuous_hedge_preflight import prepare_completed_day
+    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+    s=StockProbe(fixture_configuration(case));prepare_completed_day(s,2)
+    assert s.config.trading_start_open_ns==-86_400_000_000_000
+    assert s.config.terminal_close_at_ns==3600_000_000_000
+    assert_daily_fixture_preconditions(s)
+    # Evaluate the actual stock source guard expression, engine-free. It
+    # returned True in failed340f; revised fixture must make it False.
+    tree=ast.parse(textwrap.dedent(inspect.getsource(WaveOverlayStrategy._advance_current_day)))
+    guard=next(n.test for n in ast.walk(tree) if isinstance(n,ast.If) and 'trading_start_open_ns' in ast.unparse(n.test))
+    assert eval(compile(ast.Expression(guard),'actual-stock-daily-guard','eval'),{'self':s}) is False
+    assert s._current_btc.ts_event==2 and max(int(b.available_at.timestamp()*10**9) for b in s._bars)==0

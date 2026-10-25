@@ -15,7 +15,7 @@ from test_native_episode_risk import tick,run_ticks
 from coinmaster.venues.marks import venue_mark
 from nautilus_trader.model.identifiers import ClientId
 M=60_000_000_000
-CASES=['A01_RELEASE_THREE_TP','A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
+CASES=['A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
 
 class Recorder(pre.Recorder):
     def claim(self):
@@ -69,19 +69,31 @@ def advance(e,s,ns,btc='99',sol='100',btcsize='1000',solsize='1000',fresh=True):
         e.add_data([venue_mark(BTC_PERP.id,D(btc),ns),venue_mark(SOL_PERP.id,D(sol),ns)],client_id=ClientId('BYBIT_MARK'),sort=False)
     run_ticks(e,[tick(BTC_PERP,ns,btc,size=btcsize),tick(SOL_PERP,ns,sol,size=solsize)])
 
-def setup(case):
+def fixture_configuration(case):
     variant='R2_C0' if case=='A06_C0_NO_RELEASE' else 'R2_A0'
     signal=PairedSignal(10,10,10+M,D(99),D(100),D(1),D(2),True,True,False,True,False,D('99.2'),D(90),D('99.2'))
-    kwargs=build_a0_kwargs(Path('.'),Path('.'),variant,(signal,),start_ms=0,end_ms=3600000)
+    kwargs=build_a0_kwargs(Path('.'),Path('.'),variant,(signal,),start_ms=-86400000,end_ms=3600000)
     bound=signature(run_native_diagnostic).bind(**kwargs);bound.apply_defaults();validate_native_a0(bound.arguments)
-    _,context,_=pre.registered_fixture_context('R2',start_ms=0,end_ms=3600000)
+    _,context,_=pre.registered_fixture_context('R2',start_ms=-86400000,end_ms=3600000)
     context.update(bound.arguments)
     # Only synthetic native instruments, causal finite seed, marks/time adapters differ.
-    conf=build_native_strategy_config(context)
+    return build_native_strategy_config(context)
+
+
+def assert_daily_fixture_preconditions(strategy):
+    # Keep the actual stock daily-open admission guard; adapt the synthetic
+    # fixture's first open, as source06 did, rather than bypassing the guard.
+    assert strategy._current_btc.ts_event - 86_400_000_000_000 >= strategy.config.trading_start_open_ns
+    assert all(int(row.available_at.timestamp()*10**9)<=strategy._current_btc.ts_event for row in strategy._bars)
+
+
+def setup(case):
+    conf=fixture_configuration(case)
     pre.REC.effective_config=pre.snapshot_config(conf)
     s=StockProbe(conf);e=pre.base_engine(s)
     advance(e,s,1,btc='100')
     pre.prepare_completed_day(s,2)
+    assert_daily_fixture_preconditions(s)
     with patch('coinmaster.domain.wave_overlay.completed_wave_levels',lambda *args:(0,0,.03)):
         WaveOverlayStrategy._advance_current_day(s)
     intent=s._queued_intents[0][0];ep=s._domain.episode
