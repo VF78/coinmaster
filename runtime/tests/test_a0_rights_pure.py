@@ -223,3 +223,47 @@ def test_actual_generic_and_typed_accept_callbacks_both_hold_unknown_until_direc
     WaveOverlayStrategy._accept_native_order(s,s.held_target_acks[0])
     assert m['accepted']=={0,1,2} and m['generations'][0]['authorized']
     assert s._order_audit[oid]['accept_ns']=='2' and oid in s._md_accepted_ids
+
+
+def test_real_tier_policy_immutable_static_marks_missing_stale_and_fresh_public_update():
+    from coinmaster.research.native_fixture import TierMarginPolicy,BTC_PERP,SOL_PERP
+    from coinmaster.venues.marks import VenueMark
+    from run_a0_engineering import fixture_configuration,StockProbe
+    M=60_000_000_000;last=2*M+15;stale=5*M+16;fresh=5*M+25
+    static=();policy=TierMarginPolicy(static,{BTC_PERP.id:D(40),SOL_PERP.id:D(20)},2*M)
+    assert policy._marks is static and isinstance(policy._marks,tuple)
+    with pytest.raises(ValueError,match='missing explicit mark'):policy.margin_for(BTC_PERP.id,D(1),last)
+    # Actual supported public update accepts the real VenueMark payload.
+    policy.update_mark(VenueMark(BTC_PERP.id,D('98.4'),last))
+    initial,maint,price=policy.margin_for(BTC_PERP.id,D(1),last)
+    assert initial>0 and maint>=0 and price==D('98.4')
+    with pytest.raises(ValueError,match='stale explicit mark'):policy.margin_for(BTC_PERP.id,D(1),stale)
+    policy.update_mark(VenueMark(BTC_PERP.id,D('99.3'),fresh))
+    initial,maint,price=policy.margin_for(BTC_PERP.id,D(1),fresh)
+    assert initial>0 and maint>=0 and price==D('99.3') and policy._marks is static
+    # Same actual fixture config policy/neutral strategy hook, no config
+    # replacement/private mark mutation, native account/engine not created.
+    strategy=StockProbe(fixture_configuration('A05_CROSS_MARGIN_UNKNOWN'))
+    actual=strategy.config.margin_policy;assert isinstance(actual,TierMarginPolicy) and isinstance(actual._marks,tuple)
+    strategy._update_margin_mark(BTC_PERP.id,D('98.4'),last)
+    with pytest.raises(ValueError,match='stale explicit mark'):actual.margin_for(BTC_PERP.id,D(1),stale)
+    strategy._update_margin_mark(BTC_PERP.id,D('99.3'),fresh)
+    assert actual.margin_for(BTC_PERP.id,D(1),fresh)[2]==D('99.3')
+    assert strategy.config.margin_policy is actual
+
+
+def test_real_tier_policy_static_and_dynamic_fallback_both_stale_without_mutation():
+    from coinmaster.research.native_fixture import TierMarginPolicy,MarkPriceUpdate,BTC_PERP,SOL_PERP
+    from coinmaster.venues.marks import VenueMark
+    M=60_000_000_000;last=2*M+15;later=5*M+16
+    static=(MarkPriceUpdate(BTC_PERP.id,D('97'),last-1),MarkPriceUpdate(SOL_PERP.id,D(100),last-1))
+    policy=TierMarginPolicy(static,{BTC_PERP.id:D(40),SOL_PERP.id:D(20)},2*M)
+    policy.update_mark(VenueMark(BTC_PERP.id,D('98.4'),last));policy.update_mark(VenueMark(SOL_PERP.id,D(100),last))
+    dynamic_before=dict(policy._dynamic_marks);profile_before=policy._profile
+    assert policy.margin_for(BTC_PERP.id,D(1),last)[2]==D('98.4')
+    for instrument in (BTC_PERP.id,SOL_PERP.id):
+        with pytest.raises(ValueError,match='stale explicit mark'):policy.margin_for(instrument,D(1),later)
+    assert policy._marks is static and policy._dynamic_marks==dynamic_before and policy._profile is profile_before
+    policy.update_mark(VenueMark(BTC_PERP.id,D('99.3'),later+1));policy.update_mark(VenueMark(SOL_PERP.id,D(100),later+1))
+    assert policy.margin_for(BTC_PERP.id,D(1),later+1)[2]==D('99.3')
+    assert policy.margin_for(SOL_PERP.id,D(1),later+1)[2]==D(100) and policy._marks is static and policy._profile is profile_before

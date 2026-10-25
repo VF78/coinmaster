@@ -171,12 +171,15 @@ def run_case(case):
             advance(e,s,2*M+15,btc='98.4')
             assert not rights['submitted'] and rights['denial_counts']['POST_ONLY_CROSS']
             frozen=rights['locked_cap']
-            s.config.margin_policy._marks.clear()
-            advance(e,s,2*M+16,btc='99.3',fresh=False)
+            # Keep the real immutable policy/config intact. Genuine lack of
+            # new venue marks for >its2-minute age bound makes the stock gate
+            # deny; later advance(fresh=True) delivers actual VenueMark data.
+            advance(e,s,5*M+16,btc='99.3',fresh=False)
             assert not rights['submitted'] and rights['denial_counts']['NATIVE_MARGIN']
-            for _ in range(2):s._a0_check(tick(BTC_PERP,2*M+16,price='99.3'))
+            for _ in range(2):s._a0_check(tick(BTC_PERP,5*M+16,price='99.3'))
             assert rights['locked_cap']==frozen and not rights['submitted']
-        advance(e,s,2*M+25,btc='99.3')
+        tail_base=5*M if case=='A05_CROSS_MARGIN_UNKNOWN' else 2*M
+        advance(e,s,tail_base+25,btc='99.3')
         if case=='A06_C0_NO_RELEASE':
             assert not rights
         else:
@@ -184,11 +187,11 @@ def run_case(case):
             assert old.status.name=='CANCELED' and rights['order_id']!=str(old.client_order_id)
             assert rights['granted_cap']<=rights['locked_cap']+rights['original_second']
             release=e.cache.order(__import__('nautilus_trader.model.identifiers',fromlist=['ClientOrderId']).ClientOrderId(rights['order_id']))
-            advance(e,s,2*M+26,btc='98',btcsize=COMBINED_DEPTHS['release_partial'] if case=='A03_A04_COMBINED_CANCEL_RACES' else '1')
+            advance(e,s,tail_base+26,btc='98',btcsize=COMBINED_DEPTHS['release_partial'] if case=='A03_A04_COMBINED_CANCEL_RACES' else '1')
             if case=='A03_A04_COMBINED_CANCEL_RACES':
                 assert not release.is_closed and release.filled_qty.as_decimal()>0
                 s.delay_cancel=True
-                advance(e,s,2*M+27,btc='100')
+                advance(e,s,tail_base+27,btc='100')
                 assert rights['dead'] and any(c['order_id']==rights['order_id'] and c['inside_tp_fill'] for c in s.cancel_calls)
                 assert s._split_parent['closed'] and old.status.name=='CANCELED'
                 tp_cap=s._pair['caps'].bmax
@@ -196,21 +199,21 @@ def run_case(case):
                 # Delayed venue transport can still fill; actual excess owns
                 # corrective BTC debt and cannot reopen the spent right.
                 before=release.filled_qty.as_decimal()
-                advance(e,s,2*M+28,btc='98',btcsize=COMBINED_DEPTHS['release_late'])
+                advance(e,s,tail_base+28,btc='98',btcsize=COMBINED_DEPTHS['release_late'])
                 assert release.filled_qty.as_decimal()>before
                 s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,release)
-                for ns in range(2*M+29,2*M+40):advance(e,s,ns,btc='99.3')
+                for ns in range(tail_base+29,tail_base+40):advance(e,s,ns,btc='99.3')
                 assert release.is_closed and s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
                 assert s._pair['caps'].bmax<=tp_cap
                 assert rights['dead'] and rights['attempted']
                 e.capture('LATE_FILL_CORRECTED_NO_CAP_REANCHOR')
             else:
-                advance(e,s,2*M+27,btc='98')
-                advance(e,s,2*M+28,btc='99')
+                advance(e,s,tail_base+27,btc='98')
+                advance(e,s,tail_base+28,btc='99')
                 assert s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
             assert len([x for x in s._md_report()['events'] if x['event']=='A0_SUBMIT'])==1
             assert s._md_plans[ep.id]['second_filled']<=rights['original_second']
-            for ns in range(2*M+41,2*M+55):
+            for ns in range(tail_base+41,tail_base+55):
                 advance(e,s,ns,btc='103',btcsize=str(1000+ns%100))
                 if not e.cache.positions_open():break
             assert {0,1,2}<=ep.btc_filled_tps
@@ -218,7 +221,7 @@ def run_case(case):
         natural=not e.cache.positions_open()
         if not natural:
             s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT')
-            for ns in range(3*M,3*M+10):advance(e,s,ns,btc='99',sol='100')
+            for ns in range(tail_base+M,tail_base+M+10):advance(e,s,ns,btc='99',sol='100')
         result=pre.settled_identity(s,e,'NATURAL_TP_FLAT' if natural else 'FORCED_TERMINAL_FLAT')
         result.update(case=case,stock_margin_calls=s.stock_margin_calls,a0=s._md_report()['a0_rights'],cancel_calls=s.cancel_calls)
         return result
