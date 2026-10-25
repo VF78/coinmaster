@@ -1,0 +1,108 @@
+{
+  "schema": "CM_QUEUED_STANDING_F3_PLAN_V1",
+  "fixture_id": "F3_DEFAULT_QUEUE_STANDING_TP",
+  "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0",
+  "physical_index": 3,
+  "engineering_max": 4,
+  "engineering_already_started": 2,
+  "engine_constructors_planned": 1,
+  "engine_constructors_this_preparation": 0,
+  "prefix_started": 0,
+  "product_patch_allowed": false,
+  "native_version": "1.231.0",
+  "transport": {
+    "use_message_queue": true,
+    "latency_model": null,
+    "use_reduce_only": "unchangedTrue",
+    "support_contingent_orders": "unchangedTrue",
+    "explicit_position_id": false,
+    "liquidity_consumption": true,
+    "bar_execution": false
+  },
+  "config_window_ns": [
+    -86400000000000,
+    3600000000000
+  ],
+  "actual_fixture_data_window_ns": [
+    1000000000,
+    20000000000
+  ],
+  "clock_scope": "One1h-configquote allowance/config25h withknowncompletedseed/start-minus-day. ActualsyntheticQuote/CustomDatastream1→20s; nohistorydownload/seeddataenginewarmup.",
+  "matching_authority": "ExistingBybitTierMarginModule subclass exposes readonlypublicSimulationModule.exchange.get_book; quotesauditedviaactualnativepre_process andnativeBookts/BBO/tickobject/epoch. No privateengine/cachewrite orstrategyquotecacheasbookauthority.",
+  "schedule": [
+    {
+      "seconds": 1,
+      "operation": "FreshVenueMarkBTC/SOL, thenBTC/SOLQuote; actualaccount/kernelstart, completedcausalseedguard."
+    },
+    {
+      "seconds": [
+        3,
+        4
+      ],
+      "operation": "ActualstockguardedBTCBUY1/SOLSELL10; nativefills/ownaccount/margin."
+    },
+    {
+      "seconds": 5,
+      "operation": "Unlinkedpublicsubmit3TP101/102/103,212/212/576lots; actualACKs beforecoverageactive."
+    },
+    {
+      "seconds": 10,
+      "BTC": "101",
+      "depth": ".050",
+      "operation": "ActualpartialTP0.050; cachepositionassociationarisesfromrealnativefill."
+    },
+    {
+      "seconds": 11,
+      "BTC": "101",
+      "depth": ".010",
+      "operation": "ActualSOLrelief2.5→APIcap.752, additionalrealTP0partial.010→held.940. MarketablenativeTPblocksDEBT; outstanding.188/durationvisible."
+    },
+    {
+      "seconds": [
+        12,
+        13
+      ],
+      "BTC": "100",
+      "operation": "ActualmatchingBBOidentity/nointerposedepoch verifiedonDEBTsubmitandfill. DEBT.188→held.752. Actualtarget_lots159/159/434 andTP0filled.060+leaves.159=total.219. Stockauto naturallylinkedpartialTP0 emitsUpdated; correctivequeuedACKmustfollowpublicreturn."
+    },
+    {
+      "seconds": 14,
+      "operation": "Genuineinvalidtotal.001<actualfilled.060 ModifyRejected; keepcorrectworkingprotection. DiagnosticnegativeAPIprobe distinctfromprotectivemodificationfailure."
+    },
+    {
+      "seconds": 15,
+      "BTC": "101",
+      "depth": ".159",
+      "operation": "NativeTP0remaining159full→held593; nativeotherstanding159/434 retained, never160/433renorm."
+    },
+    {
+      "seconds": [
+        17,
+        18
+      ],
+      "BTC": "104",
+      "depths": [
+        "1",
+        "2"
+      ],
+      "operation": "Allremainingnativelevelsfillwithinownstandingentitlements; no ordinaryconsumptionresize/extraquantity."
+    },
+    {
+      "seconds": 20,
+      "operation": "NativeSOLclose, BTC/SOLflat/orders0/inflight0;5actualSTOPPED→DISPOSED withpreENDsnapshots."
+    }
+  ],
+  "required_evidence": [
+    "Actualstockmargin+entries-enabled gates, ownnativeaccount/cash; API-onlymanualquantitydeclared/notfinancialsizingproof.",
+    "ActualBBOreadfrommatchingbook/currentnativeinputreference; nointerposedBTCinputbetweensubmit/debtfill.",
+    "Initial/debtallocactualsource; ordinaryfillonlyownright; nativeFILLEDORreal-domainconsumption, no genericcloseconsumption.",
+    "PerOIDprotectivecommandseq/allocationgeneration/latestnativeACKUUID; oldACK/oldgeneration doesnotauthorizecurrentstate. Singlependingrequestcoalescedwithoutretry; no unresolvedprotectivemodify/cancelbeforenextANYmatchinginput.",
+    "Rawcallbacks/NativeOrderUpdated/ModifyRejected typed+genericUUIDonce, nativeTradeIDunique, totalqtyincludesactualfilledoffset.",
+    "Wrongqtynonexecwindows requireactualbook+sourceproof; potentiallymarketablemismatch/unknown/rejectofprotectivevalidmod=>STOP. Finalconvergencealone insufficient.",
+    "Beforeterminal/end/dispose raworders/positions/fills/cash/commands/sourceepoch; failurepreserved actualOSrc."
+  ],
+  "admission": "NoAPI/engineeringPASSbeforeactualoneengine androotacceptance. No automaticretry; failurecounts, prefix/productstillblocked.",
+  "F4": "Conditionaladaptationrecordonly; exactproductproof later, no readinesspromise."
+}

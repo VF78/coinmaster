@@ -1,0 +1,382 @@
+diff --git a/runtime/tests/run_queued_standing_tp.py b/runtime/tests/run_queued_standing_tp.py
+new file mode 100644
+index 0000000..9aa730c
+--- /dev/null
++++ b/runtime/tests/run_queued_standing_tp.py
+@@ -0,0 +1,376 @@
++"""Approved queued-standing F3 native API fixture; product money source stays763.
++
++One counted BacktestEngine, only after exact owner/pins/rootGO. No pytest/native
++suites, queueFalse, position-ID injection, fake ACK/cache write or second OMS.
++The verification oracle consumes ONLY genuine native fills. Matching BBO is read
++through public SimulationModule.exchange.get_book; no stale cache substitution.
++"""
++from pathlib import Path
++from decimal import Decimal as D
++from datetime import datetime,timezone
++import argparse,ast,copy,hashlib,inspect,json,os,traceback,uuid
++from nautilus_trader.backtest.engine import BacktestEngine,SimulatedExchange
++from nautilus_trader.backtest.config import BacktestEngineConfig
++from nautilus_trader.config import LoggingConfig
++from nautilus_trader.model.enums import AccountType,OmsType,OrderSide,TimeInForce,BookType
++from nautilus_trader.model.identifiers import ClientId
++from nautilus_trader.model.objects import Money,Quantity
++from nautilus_trader.model.book import OrderBook
++from nautilus_trader.model.data import QuoteTick
++from nautilus_trader.backtest.modules import SimulationModule
++from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP,SIM,perpetual,BybitTierMarginModule,MarkPriceUpdate
++from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++from coinmaster.strategy.market_redesign import target_lots
++from coinmaster.domain.wave_overlay import WaveOverlayState,Episode
++from coinmaster.venues.marks import venue_mark
++from run_continuous_hedge_preflight import registered_fixture_context,prepare_completed_day,snapshot_config
++from test_native_episode_risk import tick
++
++BASE='763d985617abd7a7afef5eec13912303983d8837'
++PROTOCOL='7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0'
++BUDGET_PROTOCOL='6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda'
++PARENT_SHA='d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94'
++BEFORE_SHA='741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800'
++CASE='F3_DEFAULT_QUEUE_STANDING_TP'
++S=1_000_000_000;END=3600*S;STEP=D('.001');PRICES={0:D(101),1:D(102),2:D(103)}
++
++def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
++def canonical(value):return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
++def now():return datetime.now(timezone.utc).isoformat()
++def write(path,data):
++    path=Path(path);tmp=path.with_suffix(path.suffix+'.tmp')
++    with tmp.open('w')as stream:json.dump(data,stream,indent=2,ensure_ascii=False);stream.write('\n');stream.flush();os.fsync(stream.fileno())
++    os.replace(tmp,path)
++def raw_rows(text):
++    dec=json.JSONDecoder();i=text.index('[',text.index('"attempts"'))+1;rows=[]
++    while True:
++        while text[i].isspace()or text[i]==',':i+=1
++        if text[i]==']':return rows
++        _,end=dec.raw_decode(text,i);rows.append(text[i:end]);i=end
++
++def fixture_config():return registered_fixture_context('R2',start_ms=-86400000,end_ms=3600000)[0]
++def is_current_ack(command_seq,generation,ack_seq,ack_generation):return command_seq==ack_seq and generation==ack_generation
++
++def resume_state(gate,ledger,raw):
++    assert type(gate.get('expected_before'))is int and gate['expected_before']==2
++    assert ledger['physical_max']==4 and ledger['physical_started']==2 and len(ledger['attempts'])==2 and ledger['active']==0
++    pins=gate['preserved_failed_attempts'];assert len(pins)==2
++    for i,(row,pin,rawrow)in enumerate(zip(ledger['attempts'],pins,raw_rows(raw))):
++        assert row['physical_index']==i+1 and row['status']=='FAILED'and row['actual_process_exit_code']==1
++        assert canonical(row)==pin['canonical_entry_sha256'] and hashlib.sha256(rawrow.encode()).hexdigest()==pin['raw_entry_sha256']
++
++def verify(gate_path,ledger_path,go=False):
++    gate=json.loads(Path(gate_path).read_text());raw=Path(ledger_path).read_text();ledger=json.loads(raw)
++    assert gate['protocol_sha256']==PROTOCOL and gate['source_base']==BASE and gate['fixture_id']==CASE
++    assert gate['engineering_physical_max']==4 and gate['native_engine']=='1.231.0' and gate['fixture_window_ns']==[S,20*S]
++    assert gate['product_patch_allowed']is False and gate['use_message_queue']is True and gate['latency_model']is None and gate['explicit_position_id']is False
++    approval=gate['owner_approval'];assert digest(approval['path'])==approval['sha256']
++    a=json.loads(Path(approval['path']).read_text());reply=a.get('exact_human_answer')
++    assert type(reply)is str and reply.strip() and a['status']=='APPROVED_BY_OWNER'and a['protocol_sha256']==PROTOCOL
++    assert a['engineering_total_max']==4 and a['engineering_already_started']==2 and a['additional_budget']==0 and a['prefix_max']==3 and a['prefix_already_started']==0
++    assert a['current_ledger_sha256']==BEFORE_SHA and digest(ledger_path)==BEFORE_SHA
++    resume_state(gate,ledger,raw)
++    parent=gate['preserved_failed_ledger'];assert parent['sha256']==PARENT_SHA and digest(parent['path'])==PARENT_SHA
++    assert json.loads(Path(parent['path']).read_text())['attempts']==ledger['attempts']
++    assert ledger['protocol_sha256']==BUDGET_PROTOCOL and ledger['source_base']==BASE
++    for pin in gate['immutable_pins']:assert digest(pin['path'])==pin['sha256'],pin['path']
++    assert not Path(gate['namespace']).exists(),'FRESH_NAMESPACE_REQUIRED'
++    if go:assert gate['root_go']is True,'ROOT_GO_REQUIRED'
++    return gate,ledger
++
++class MatchingTierObserver(BybitTierMarginModule):
++    """Existing native margin module + read-only public matching/input audit."""
++    def __init__(self,*args):
++        super().__init__(*args);self.probe=None;self.btc_epoch=0;self.current_btc_tick=None;self.inputs=[]
++    def pre_process(self,data):
++        super().pre_process(data)
++        if isinstance(data,QuoteTick):
++            if self.probe is not None:self.probe.before_matching(data)
++            if data.instrument_id==BTC_PERP.id:self.btc_epoch+=1;self.current_btc_tick=data
++            self.inputs.append(dict(sequence=len(self.inputs)+1,instrument=str(data.instrument_id),event_ns=data.ts_event,init_ns=data.ts_init,btc_epoch=self.btc_epoch,bid=str(data.bid_price),ask=str(data.ask_price),bid_size=str(data.bid_size),ask_size=str(data.ask_size)))
++    def process(self,ts_now):
++        super().process(ts_now)
++        if self.probe is not None and self.probe.tp_active:self.probe.quiescence('NATIVE_MODULE_AFTER_SETTLE',ts_now)
++    def matching(self):
++        book=self.exchange.get_book(BTC_PERP.id);q=self.current_btc_tick
++        if book is None or q is None:return None
++        bid=book.best_bid_price();ask=book.best_ask_price()
++        if bid is None or ask is None:return None
++        assert book.ts_last==q.ts_event and bid==q.bid_price and ask==q.ask_price,'MATCHING_BBO_TICK_IDENTITY_UNKNOWN'
++        return dict(btc_epoch=self.btc_epoch,tick_object_id=id(q),tick_ns=q.ts_event,tick_init_ns=q.ts_init,book_ts_last=book.ts_last,book_sequence=book.sequence,bid=str(bid),ask=str(ask),bid_size=str(book.best_bid_size()),ask_size=str(book.best_ask_size()))
++
++class QueuedStandingProbe(WaveOverlayStrategy):
++    def __init__(self,cfg):
++        super().__init__(cfg);self.observer=None;self.stage='BOOT';self.events=[];self.fills=[];self.trade_ids=set();self.targets={};self.kinds={};self.expected={};self.consumed=set();self.tp_active=False
++        self.oracle=WaveOverlayState(self._domain.config);self.oracle.set_execution_lots(btc=STEP,sol=D('.1'));self.oracle_intents={}
++        self.generation=0;self.commands=[];self.pending={};self.latest={};self.acked={};self.active_public=[];self.auto_updates=[];self.routes={};self.guard_calls=[];self.rejections=[];self.diagnostic_pending={};self.quiescent=[];self.debt_cap=None;self.debt_since=None;self.debt_blocks=[];self.debt_dispatch={};self.reallocation_windows=[];self.terminal_consumption=[]
++    def held(self,inst=BTC_PERP):
++        pos=[p for p in self.cache.positions_open()if p.instrument_id==inst.id]
++        if not pos:return D(0)
++        assert len(pos)==1;return pos[0].quantity.as_decimal()*(1 if pos[0].is_long else -1)
++    def orders(self):
++        return [dict(id=str(o.client_order_id),instrument=str(o.instrument_id),kind=self.kinds.get(str(o.client_order_id)),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),price=str(getattr(o,'price',None)),side=o.side.name,reduce_only=o.is_reduce_only,native_position_id=None if o.position_id is None else str(o.position_id),cache_position_id=None if self.cache.position_id(o.client_order_id)is None else str(self.cache.position_id(o.client_order_id)))for o in self.cache.orders()]
++    def positions(self):return [dict(id=str(p.id),instrument=str(p.instrument_id),quantity=str(p.quantity),side='LONG'if p.is_long else'SHORT',indexed_order_ids=[str(o.client_order_id)for o in self.cache.orders_for_position(p.id)])for p in self.cache.positions_open()]
++    def record(self,event,**extra):
++        account=self.cache.account_for_venue(SIM)
++        row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,event_ns=self.clock.timestamp_ns(),btc=str(self.held()),sol=str(self.held(SOL_PERP)),cash=str(account.balance_total())if account else None,generation=self.generation,expected_leaves={str(k):str(v)for k,v in self.expected.items()},consumed=sorted(self.consumed),matching=None if self.observer is None else self.observer.matching(),pending_commands={k:v['sequence']for k,v in self.pending.items()},active_public=list(self.active_public),orders=self.orders(),positions=self.positions(),**extra);self.events.append(row);return row
++    def route(self,event,route):
++        eid=str(event.id);self.routes.setdefault(eid,[]).append(route)
++        return self.record('CALLBACK_ENTRY',native_event_id=eid,native_event_type=type(event).__name__,order_id=str(event.client_order_id),route=route)
++    def live_required(self):
++        required={k:v for k,v in self.expected.items()if v>0};actual={}
++        for level,wanted in required.items():
++            o=self.cache.order(self.targets[level]);domain_done=self.oracle.episode and level in self.oracle.episode.btc_filled_tps
++            if o.status.name=='FILLED'or domain_done:continue  # Raw post-native-fill entry; actor oracle may still be stale.
++            assert not o.is_closed and o.leaves_qty.as_decimal()>0 and o.is_reduce_only and o.price.as_decimal()==PRICES[level],'NATIVE_REQUIRED_TP_GAP'
++            actual[level]=o.leaves_qty.as_decimal()
++        return required,actual
++    def boundary(self,label,preapply=False):
++        if not self.tp_active or self.held()==0:return
++        required,actual=self.live_required();book=self.observer.matching();assert book is not None
++        for level in self.consumed:
++            order=self.cache.order(self.targets[level]);assert order.is_closed or order.leaves_qty.as_decimal()==0,'CONSUMED_TP_REMAINS_LIVE'
++        # Only a source-proven PendingUpdate callback before command dispatch
++        # is nonmatching independently of price; never credit new allocation.
++        mismatch=[k for k in set(required)|set(actual)if required.get(k,D(0))!=actual.get(k,D(0))]
++        marketable=[k for k in mismatch if actual.get(k,D(0))>0 and D(book['bid'])>=PRICES[k]]
++        self.record('BOUNDARY',label=label,preapply=preapply,mismatch=mismatch,marketable_mismatch=marketable,classification='PRE_APPLY_PENDING'if preapply else'NONMARKETABLE_TRANSIENT'if mismatch and not marketable else'EXACT'if not mismatch else'UNSAFE_MARKETABLE')
++        assert preapply or not marketable,'MARKETABLE_WRONG_ALLOCATION'
++        assert sum(required.values(),D(0))==self.held(),'ORACLE_NATIVE_INVENTORY_MISMATCH'
++    def quiescence(self,label,ts_now):
++        if not self.tp_active:return
++        self.boundary(label)
++        assert not self.pending and not self.diagnostic_pending,'UNRESOLVED_OWNED_MODIFY_BEFORE_NEXT_MATCH'
++        for o in self.cache.orders_open()+self.cache.orders_inflight():
++            if str(o.client_order_id)in {str(v)for v in self.targets.values()}:assert not o.is_pending_cancel and o.status.name!='PENDING_UPDATE','UNRESOLVED_NATIVE_PROTECTION_COMMAND'
++        if self.held()>0:
++            for level,wanted in self.expected.items():
++                oid=str(self.targets[level]);o=self.cache.order(self.targets[level]);assert o.leaves_qty.as_decimal()==wanted,'QUIESCENT_WRONG_STANDING_ALLOCATION'
++                if oid in self.latest:
++                    seq,gen=self.latest[oid];assert oid in self.acked and is_current_ack(seq,gen,*self.acked[oid]),'LATEST_NATIVE_ACK_REQUIRED'
++        self.quiescent.append(dict(label=label,event_ns=ts_now,generation=self.generation,matching=self.observer.matching(),pending=0))
++    def before_matching(self,tick):
++        if self.tp_active:self.quiescence('BEFORE_MATCHING_'+str(tick.instrument_id),tick.ts_event)
++    def market(self,inst,side,qty,kind,reduce=False):
++        qty=D(qty)
++        if not reduce:
++            enabled=WaveOverlayStrategy._entries_enabled(self);admitted=enabled and WaveOverlayStrategy._tier_allows_increase(self,inst.id,side,qty,self.clock.timestamp_ns())
++            self.guard_calls.append(dict(instrument=str(inst.id),quantity=str(qty),entries_enabled=enabled,allowed=admitted));assert admitted,'STOCK_MARGIN_OR_ENTRIES_DENIED'
++        o=self.order_factory.market(inst.id,side,inst.make_qty(qty),time_in_force=TimeInForce.IOC,reduce_only=reduce);self.kinds[str(o.client_order_id)]=kind
++        if kind=='DEBT':self.debt_dispatch[str(o.client_order_id)]=self.observer.matching();self.record('DEBT_DISPATCH',order_id=str(o.client_order_id),quantity=str(qty),cap=str(self.debt_cap))
++        self.submit_order(o);return o  # Unlinked source763 route, no position_id injection.
++    def install_targets(self):
++        assert self.held()==1;self.expected={k:D(v)*STEP for k,v in target_lots(1000,set()).items()}
++        self.oracle.episode=Episode(CASE,1,10000.,1.,btc_initial_qty=1.,btc_open_qty=1.);self.sync_oracle()
++        for level,leaves in self.expected.items():
++            o=self.order_factory.limit(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(leaves),BTC_PERP.make_price(PRICES[level]),time_in_force=TimeInForce.GTC,post_only=False,reduce_only=True)
++            self.targets[level]=o.client_order_id;self.kinds[str(o.client_order_id)]='TP'+str(level);self.oracle_intents[str(o.client_order_id)]=self.oracle._intent(self.oracle.episode,'BTC_REDUCE',-1,level,quantity=float(leaves)).id;self.submit_order(o)
++    def sync_oracle(self):
++        ep=self.oracle.episode
++        for level,leaves in self.expected.items():ep.btc_tp_target_lots[level]=ep.btc_tp_filled_lots.get(level,0)+int(leaves/STEP);ep.btc_tp_target_qty[level]=float(D(ep.btc_tp_target_lots[level])*STEP)
++    def request_correction(self,order):
++        oid=str(order.client_order_id);level=next((i for i,x in self.targets.items()if str(x)==oid),None)
++        if level is None or level in self.consumed or order.is_closed:return
++        wanted=order.filled_qty.as_decimal()+self.expected[level]
++        pending=self.pending.get(oid)
++        if pending:
++            assert pending['generation']==self.generation and D(pending['requested_total'])==wanted,'NEW_DESIRED_STATE_WHILE_PROTECTIVE_MODIFY_UNRESOLVED'
++            self.record('LATEST_ALREADY_QUEUED',order_id=oid,command_sequence=pending['sequence']);return
++        if order.quantity.as_decimal()==wanted:return
++        seq=len(self.commands)+1;assert seq<=12,'NONCONVERGENT_COMMAND_LOOP'
++        c=dict(sequence=seq,order_id=oid,generation=self.generation,requested_total=str(wanted),old_total=str(order.quantity),filled_at_submit=str(order.filled_qty),price=str(order.price),submit_matching=self.observer.matching(),terminal_ack=None)
++        self.commands.append(c);self.pending[oid]=c;self.latest[oid]=(seq,self.generation);self.active_public.append(seq)
++        c['submit_event_sequence']=self.record('PROTECTIVE_MODIFY_SUBMIT',order_id=oid,command_sequence=seq,requested_total=str(wanted))['sequence']
++        try:self.modify_order(order,quantity=BTC_PERP.make_qty(wanted),price=order.price)
++        finally:
++            c['public_return_event_sequence']=self.record('PUBLIC_MODIFY_RETURN',order_id=oid,command_sequence=seq)['sequence'];assert self.active_public.pop()==seq
++        self.boundary('PUBLIC_MODIFY_RETURN')
++    def diagnostic_reject(self):
++        o=self.cache.order(self.targets[0]);oid=str(o.client_order_id);assert o.filled_qty.as_decimal()==D('.060')and o.quantity.as_decimal()==D('.219')
++        assert oid not in self.pending;self.diagnostic_pending[oid]=dict(requested_total='.001',prior_total=str(o.quantity),generation=self.generation,public_return=None)
++        self.record('EXPECTED_INVALID_TOTAL_SUBMIT',order_id=oid)
++        self.modify_order(o,quantity=BTC_PERP.make_qty(D('.001')),price=o.price)
++        self.diagnostic_pending[oid]['public_return']=self.record('EXPECTED_INVALID_TOTAL_PUBLIC_RETURN',order_id=oid)['sequence']
++    def on_quote_tick(self,tick):
++        if tick.instrument_id==BTC_PERP.id:
++            assert self.observer.current_btc_tick is tick,'ACTUAL_BTC_TICK_OBJECT_IDENTITY_REQUIRED'
++            book=self.observer.matching();assert book['tick_ns']==tick.ts_event and D(book['bid'])==tick.bid_price.as_decimal() and D(book['ask'])==tick.ask_price.as_decimal()
++            self.boundary('STRATEGY_QUOTE_CURRENT_NATIVE_BOOK')
++            if self.debt_cap is not None and self.held()>self.debt_cap:
++                debt=self.held()-self.debt_cap;self.debt_since=self.debt_since or tick.ts_event
++                marketable=[level for level,qty in self.expected.items()if qty>0 and not self.cache.order(self.targets[level]).is_closed and D(book['bid'])>=PRICES[level]]
++                if marketable:
++                    self.debt_blocks.append(dict(event_ns=tick.ts_event,actual_held=str(self.held()),debt=str(debt),cap=str(self.debt_cap),marketable_levels=marketable,matching=book));self.record('DEBT_DEFERRED_MARKETABLE_TP',debt=str(debt),duration_ns=tick.ts_event-self.debt_since);return
++                assert not self.pending and not self.diagnostic_pending
++                if not any(self.kinds.get(str(o.client_order_id))=='DEBT'for o in self.cache.orders_open()+self.cache.orders_inflight()):self.market(BTC_PERP,OrderSide.SELL,debt,'DEBT',True)
++    def on_position_event(self,event):self.record(type(event).__name__,native_position_id=str(event.position_id))
++    def on_order_event(self,event):
++        self.route(event,'generic');oid=str(event.client_order_id)
++        pending=self.pending.get(oid);diagnostic=self.diagnostic_pending.get(oid)
++        preapply=type(event).__name__=='OrderPendingUpdate'and((pending is not None and pending['sequence']in self.active_public)or(diagnostic is not None and diagnostic['public_return']is None))
++        self.boundary('GENERIC_'+type(event).__name__,preapply=preapply)
++    def on_order_updated(self,event):
++        row=self.route(event,'typed_updated');oid=str(event.client_order_id);pending=self.pending.get(oid)
++        if pending and event.quantity.as_decimal()==D(pending['requested_total']):
++            assert 'public_return_event_sequence'in pending and row['sequence']>pending['public_return_event_sequence'],'QUEUED_ACK_MUST_FOLLOW_PUBLIC_RETURN'
++            assert is_current_ack(*self.latest[oid],pending['sequence'],pending['generation'])and pending['generation']==self.generation,'STALE_ACK_CANNOT_AUTHORIZE_NEWER_GENERATION'
++            assert self.cache.order(event.client_order_id).quantity.as_decimal()==D(pending['requested_total']),'ACTOR_UPDATED_CACHE_NOT_APPLIED'
++            pending['terminal_ack']=dict(event_id=str(event.id),event_sequence=row['sequence'],matching=self.observer.matching());self.acked[oid]=(pending['sequence'],pending['generation']);del self.pending[oid]
++        else:
++            # No explicit position link: only genuinely partially filled TP0
++            # is naturally indexed here. Unexpected/matching auto ambiguity STOP.
++            assert oid in {str(o)for o in self.targets.values()},'UNOWNED_NATIVE_UPDATED'
++            native_held=self.held();assert event.quantity.as_decimal()==native_held,'UNCLASSIFIED_NATIVE_UPDATED'
++            self.auto_updates.append(dict(event_id=str(event.id),order_id=oid,quantity=str(event.quantity),event_sequence=row['sequence'],matching=self.observer.matching()))
++        order=self.cache.order(event.client_order_id);self.request_correction(order);self.boundary('TYPED_UPDATED_RETURN')
++    def on_order_modify_rejected(self,event):
++        row=self.route(event,'typed_modify_rejected');oid=str(event.client_order_id);assert oid in self.diagnostic_pending,'PROTECTIVE_MODIFY_REJECTED_STOP'
++        d=self.diagnostic_pending.pop(oid);o=self.cache.order(event.client_order_id)
++        assert d['public_return']is not None and row['sequence']>d['public_return']and o.quantity.as_decimal()==D(d['prior_total']),'INVALID_TOTAL_REJECT_NOT_NATIVE_SAFE'
++        self.rejections.append(dict(order_id=oid,native_event_id=str(event.id),reason=event.reason,sequence=row['sequence'],public_return=d['public_return']));self.boundary('EXPECTED_DIAGNOSTIC_REJECT')
++    def on_order_filled(self,event):
++        self.route(event,'typed_filled');oid=str(event.client_order_id);kind=self.kinds.get(oid);q=event.last_qty.as_decimal();trade=str(event.trade_id)
++        self.fills.append(dict(order_id=oid,trade_id=trade,kind=kind,instrument=str(event.instrument_id),quantity=str(q),price=str(event.last_px),commission=str(event.commission),event_ns=event.ts_event));assert trade not in self.trade_ids,'DUPLICATE_NATIVE_TRADE_ID';self.trade_ids.add(trade)
++        if kind and kind.startswith('TP'):
++            level=int(kind[2:]);allowance=self.expected.get(level,D(0));assert 0<q<=allowance,'NATIVE_TP_EXCEEDS_PRE_FILL_ENTITLEMENT'
++            self.record('PRE_FILL_ENTITLEMENT',native_trade_id=trade,level=level,actual_quantity=str(q),standing_before=str(allowance))
++            self.oracle.on_fill(self.oracle_intents[oid],float(q),float(event.last_px.as_decimal()),datetime.fromtimestamp(event.ts_event/1e9,timezone.utc));self.expected[level]-=q
++            order=self.cache.order(event.client_order_id)
++            if level in self.oracle.episode.btc_filled_tps or order.status.name=='FILLED':
++                before=dict(self.expected);self.consumed.add(level);self.expected.pop(level,None)
++                self.terminal_consumption.append(dict(level=level,native_trade_id=trade,held=str(self.held()),other_standing_after={str(k):str(v)for k,v in self.expected.items()},native_status=order.status.name,domain_consumed=level in self.oracle.episode.btc_filled_tps))
++                assert all(self.expected[k]==before[k]for k in self.expected),'ORDINARY_FILL_RENORMALIZED_OTHER_RIGHT'
++        if kind=='SOL_RELIEF':self.debt_cap=D('.752');self.debt_since=event.ts_event
++        if kind=='DEBT':
++            submitted=self.debt_dispatch[oid];actual=self.observer.matching();assert actual==submitted,'BTC_MATCHING_INPUT_INTERPOSED_DURING_DEBT_DISPATCH'
++            assert self.held()==D('.752')and q==D('.188')
++            self.record('DEBT_NATIVE_SETTLED',native_trade_id=trade,actual_quantity=str(q),debt_duration_ns=event.ts_event-self.debt_since,cap=str(self.debt_cap))
++            self.oracle.episode.btc_open_qty-=float(q);self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()};self.generation+=1;self.sync_oracle()
++            self.reallocation_windows.append(dict(native_trade_id=trade,matching=actual,generation=self.generation,held=str(self.held())))
++            for level,oid2 in self.targets.items():
++                if level in self.expected:self.request_correction(self.cache.order(oid2))
++        self.record('TYPED_FILL_RETURN',native_trade_id=trade,order_id=oid);self.boundary('TYPED_FILL_RETURN')
++    def on_order_canceled(self,event):
++        self.route(event,'typed_canceled')
++        if self.tp_active and self.held()>0 and str(event.client_order_id)in {str(v)for v in self.targets.values()}:raise AssertionError('REQUIRED_TP_CANCELED')
++    def on_order_denied(self,event):self.route(event,'typed_denied');raise AssertionError('NATIVE_ORDER_DENIED:'+event.reason)
++    def on_order_rejected(self,event):self.route(event,'typed_rejected');raise AssertionError('NATIVE_ORDER_REJECTED:'+event.reason)
++
++def lifecycle(engine):return {n:dict(state=getattr(engine.kernel,n).state.name,running=bool(getattr(engine.kernel,n).is_running),disposed=bool(getattr(engine.kernel,n).is_disposed))for n in('trader','data_engine','risk_engine','exec_engine','emulator')}
++
++def run_fixture(engine,s,capture):
++    def advance(second,btc='100',btcsize='1000'):
++        ns=second*S;assert S<=ns<=20*S
++        engine.add_data([venue_mark(BTC_PERP.id,D(btc),ns),venue_mark(SOL_PERP.id,D(100),ns)],client_id=ClientId('BYBIT_MARK'),sort=False)
++        engine.add_data([tick(BTC_PERP,ns,btc,btcsize),tick(SOL_PERP,ns,'100','1000')],sort=True)
++        engine.run(streaming=True);engine.clear_data();s.quiescence('AFTER_STREAM',ns);capture('AT_'+str(second))
++    advance(1);prepare_completed_day(s,S)
++    assert s._current_btc.ts_event-86400*S>=s.config.trading_start_open_ns and all(int(b.available_at.timestamp()*1e9)<=S for b in s._bars)
++    s.stage='ACTUAL_ENTRIES';s.market(BTC_PERP,OrderSide.BUY,'1.000','ENTRY_BTC');s.market(SOL_PERP,OrderSide.SELL,'10.0','ENTRY_SOL');advance(3);advance(4)
++    assert s.held()==1 and s.held(SOL_PERP)==-10
++    s.stage='INSTALL_UNLINKED_TP';s.install_targets();advance(5)
++    assert all(s.cache.order(oid).status.name=='ACCEPTED'for oid in s.targets.values());s.tp_active=True;capture('INITIAL_THREE_ACCEPTED')
++    s.stage='ORDINARY_PARTIAL';advance(10,'101','.050');assert s.held()==D('.950')and s.expected[0]==D('.162')
++    assert s.cache.position_id(s.targets[0])is not None,'PARTIAL_TP_MUST_NATURALLY_LINK_POSITION'
++    s.stage='SOL_RELIEF';s.market(SOL_PERP,OrderSide.BUY,'2.5','SOL_RELIEF',True)
++    s.stage='MARKETABLE_DEBT_DEFER';advance(11,'101','.010')
++    assert s.held()==D('.940')and s.debt_cap==D('.752')and s.debt_blocks and s.debt_blocks[-1]['debt']=='0.188'
++    assert not any(f['kind']=='DEBT'for f in s.fills)and not any(k=='DEBT'for k in s.kinds.values()),'MARKETABLE_GUARD_SUBMITTED_DEBT'
++    capture('DEBT_BLOCKED_MARKETABLE_NATIVE_BBO')
++    s.stage='SAFE_DEBT_REBALANCE';advance(12);advance(13)
++    assert s.held()==D('.752')and s.expected=={0:D('.159'),1:D('.159'),2:D('.434')}
++    assert s.cache.order(s.targets[0]).filled_qty.as_decimal()==D('.060')and s.cache.order(s.targets[0]).quantity.as_decimal()==D('.219')
++    assert s.auto_updates and len(s.commands)>=3 and all(c['terminal_ack']and c['terminal_ack']['event_sequence']>c['public_return_event_sequence']for c in s.commands)
++    assert not s.pending;capture('LATEST_QUEUED_ACKS_BEFORE_NEXT_MATCH')
++    s.stage='GENUINE_INVALID_TOTAL_REJECT';s.diagnostic_reject();advance(14);assert s.rejections
++    s.stage='STANDING_FULL_TP0';advance(15,'101','.159');assert s.held()==D('.593')and s.expected=={1:D('.159'),2:D('.434')}
++    assert {k:s.cache.order(s.targets[k]).leaves_qty.as_decimal()for k in(1,2)}==s.expected
++    assert target_lots(593,{0})=={1:160,2:433};capture('STANDING159_434_NOT160_433')
++    s.stage='MARKETABLE_REMAINING_TP';advance(17,'104','1');advance(18,'104','2');assert s.held()==0
++    s.tp_active=False;s.debt_cap=None;s.stage='SOL_TERMINAL';s.market(SOL_PERP,OrderSide.BUY,-s.held(SOL_PERP),'SOL_TERMINAL',True);advance(20)
++    assert not engine.cache.positions_open()and not engine.cache.orders_open()and not engine.cache.orders_inflight()
++    assert {int(f['kind'][2:])for f in s.fills if f['kind']and f['kind'].startswith('TP')}=={0,1,2}
++    assert sum(D(f['quantity'])for f in s.fills if f['kind']=='DEBT')==D('.188')
++    assert len(s.guard_calls)==2 and all(g['allowed']and g['entries_enabled']for g in s.guard_calls)
++    for eid,routes in s.routes.items():
++        if 'typed_updated'in routes:assert routes.count('typed_updated')==1 and routes.count('generic')==1
++        if 'typed_modify_rejected'in routes:assert routes.count('typed_modify_rejected')==1 and routes.count('generic')==1
++    assert s.reallocation_windows and s.quiescent and len(s.trade_ids)==len(s.fills)
++    return dict(status='F3_PASS_REQUIRES_ROOT_NATIVE_ACCEPTANCE',actual_auto_updates=len(s.auto_updates),queued_commands=len(s.commands),actual_acks_after_public_return=len([c for c in s.commands if c['terminal_ack']['event_sequence']>c['public_return_event_sequence']]),debt_block=s.debt_blocks,standing={1:'0.159',2:'0.434'},native_flat=True,native_orders_open=0,native_orders_inflight=0,scope='APIfixtureonly, no financial/control/PnL/venueadmission',product_patch_allowed=False)
++
++def pure_preconditions():
++    import nautilus_trader
++    assert nautilus_trader.__version__=='1.231.0'
++    cfg=fixture_config();policy=cfg.margin_policy;policy.update_mark(MarkPriceUpdate(BTC_PERP.id,D(100),S));im,mm,mark=policy.margin_for(BTC_PERP.id,D(1),S);assert im>0 and mm>0 and mark==100
++    assert cfg.trading_start_open_ns==-86400*S and cfg.terminal_close_at_ns==END
++    assert QueuedStandingProbe._tier_allows_increase is WaveOverlayStrategy._tier_allows_increase and QueuedStandingProbe._entries_enabled is WaveOverlayStrategy._entries_enabled
++    assert all(c.__name__!='NativeProbe'for c in QueuedStandingProbe.__mro__)
++    assert 'exchange'in SimulationModule.__dict__ and callable(SimulatedExchange.get_book)
++    assert inspect.signature(BacktestEngine.add_venue).parameters['use_message_queue'].default is True
++    assert inspect.signature(BacktestEngine.add_venue).parameters['latency_model'].default is None
++    assert inspect.signature(BacktestEngine.add_venue).parameters['use_reduce_only'].default is True
++    assert inspect.signature(BacktestEngine.add_venue).parameters['support_contingent_orders'].default is True
++    b=OrderBook(BTC_PERP.id,BookType.L1_MBP);q=tick(BTC_PERP,S,'101','.010');b.update_quote_tick(q)
++    assert b.best_bid_price()==q.bid_price and b.best_ask_price()==q.ask_price and b.ts_last==q.ts_event
++    assert target_lots(1000,set())=={0:212,1:212,2:576}and target_lots(752,set())=={0:159,1:159,2:434}and target_lots(593,{0})=={1:160,2:433}
++    assert D('.940')-D('.752')==D('.188')and D('.060')+D('.159')==D('.219')
++    assert is_current_ack(2,1,2,1)and not is_current_ack(2,1,1,1)and not is_current_ack(2,2,2,1)
++    raw_obj={'physical_max':4,'physical_started':2,'active':0,'attempts':[{'physical_index':i,'status':'FAILED','actual_process_exit_code':1,'error':'PRESERVED'}for i in(1,2)]};raw=json.dumps(raw_obj,indent=2)
++    gate={'expected_before':2,'preserved_failed_attempts':[{'canonical_entry_sha256':canonical(r),'raw_entry_sha256':hashlib.sha256(t.encode()).hexdigest()}for r,t in zip(raw_obj['attempts'],raw_rows(raw))]};resume_state(gate,raw_obj,raw)
++    for idx in(0,1):
++        bad=copy.deepcopy(raw_obj);bad['attempts'][idx]['error']='MUTATED'
++        try:resume_state(gate,bad,json.dumps(bad,indent=2))
++        except AssertionError:pass
++        else:raise AssertionError('FAILED_HISTORY_GUARD_DID_NOT_REJECT')
++    tree=ast.parse(Path(__file__).read_text());assert sum(isinstance(n,ast.Call)and isinstance(n.func,ast.Name)and n.func.id=='BacktestEngine'for n in ast.walk(tree))==1
++    assert not any(isinstance(n,ast.ImportFrom)and n.module in('run_tp_continuity_feasibility','run_tp_continuity_stress')for n in ast.walk(tree))
++    assert Path(inspect.getfile(registered_fixture_context)).parent==Path(__file__).parent and Path(inspect.getfile(tick)).parent==Path(__file__).parent
++    calls=[n for n in ast.walk(tree)if isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=='submit_order'];assert all(not any(k.arg=='position_id'for k in n.keywords)for n in calls)
++    advance=next(n for n in ast.walk(tree)if isinstance(n,ast.FunctionDef)and n.name=='advance');adds=sorted([n for n in ast.walk(advance)if isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=='add_data'],key=lambda n:n.lineno);assert len(adds)==2 and next(k.value.value for k in adds[0].keywords if k.arg=='sort')is False and next(k.value.value for k in adds[1].keywords if k.arg=='sort')is True
++    return dict(status='ENGINE_FREE_PRECONDITIONS_PASS',engine_constructors=0,python=__import__('sys').version.split()[0],native_version=nautilus_trader.__version__,config=snapshot_config(cfg),guard_MRO_stock=True,public_matching_API='SimulationModule.exchange.get_book, nativeOrderBookBBO/ts_last',test_order_book_only=True,queue_default=True,latency_default=None,explicit_position_link=False,source_dependencies=[dict(path=inspect.getfile(f),sha256=digest(inspect.getfile(f)))for f in(registered_fixture_context,tick)],scenario_arithmetic={'afterpartial':'0.940','cap':'0.752','debt':'0.188','TP0_native_total':'0.219','standing_after_full_TP0':['0.159','0.434']},latest_ACK_rejects_old_sequence_and_generation=True)
++
++def launch(gate_path,ledger_path):
++    gate,ledger=verify(gate_path,ledger_path,True);namespace=Path(gate['namespace']);namespace.mkdir(parents=True);number=ledger['physical_started']+1;attempt=str(uuid.uuid4())
++    entry=dict(attempt_id=attempt,physical_index=number,fixture_id=CASE,status='STARTED',started_utc=now(),source_commit=gate['source_commit'],protocol_sha256=PROTOCOL,gate_sha256=digest(gate_path),namespace=str(namespace),window_ns=[S,20*S]);ledger['attempts'].append(entry);ledger.update(physical_started=number,active=1,authorized_remaining=4-number,status='RUNNING');write(ledger_path,ledger)
++    engine=s=module=None;rc=1;result=None;errors=[]
++    def capture(label):
++        if engine is None:return
++        write(namespace/(label+'.json'),dict(label=label,attempt_id=attempt,physical_index=number,lifecycle=lifecycle(engine),events=[]if s is None else s.events,fills=[]if s is None else s.fills,orders=[]if s is None else s.orders(),positions=[]if s is None else s.positions(),commands=[]if s is None else s.commands,pending={}if s is None else s.pending,latest={}if s is None else s.latest,acked={}if s is None else s.acked,auto_updates=[]if s is None else s.auto_updates,quiescent=[]if s is None else s.quiescent,native_inputs=[]if module is None else module.inputs,guard_calls=[]if s is None else s.guard_calls,consumption=[]if s is None else s.terminal_consumption))
++    try:
++        # Durable claim above, sole constructor; zero-default native transport.
++        engine=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
++        selected=((BTC_PERP.id,D(40)),(SOL_PERP.id,D(20)));module=MatchingTierObserver(tuple(MarkPriceUpdate(i.id,D(100),S)for i in(BTC_PERP,SOL_PERP)),selected,120*S)
++        engine.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1),liquidity_consumption=True,bar_execution=False,use_message_queue=True,latency_model=None,modules=[module])
++        for inst in(BTC_PERP,SOL_PERP):engine.add_instrument(perpetual(inst.raw_symbol.value,inst.base_currency,str(inst.price_increment),str(inst.size_increment),str(inst.margin_init),maker_fee=D('.00020'),taker_fee=D('.00055')))
++        s=QueuedStandingProbe(fixture_config());s.observer=module;module.probe=s;engine.add_strategy(s)
++        result=run_fixture(engine,s,capture);capture('BEFORE_TERMINAL');rc=0
++    except BaseException as error:
++        errors.append(dict(stage='FIXTURE',type=type(error).__name__,error=str(error),traceback=traceback.format_exc()));capture('FAILURE_BEFORE_END')
++    finally:
++        if engine is not None:
++            capture('BEFORE_END');started=any(x['running']for x in lifecycle(engine).values())
++            if started:
++                try:engine.end()
++                except BaseException as error:errors.append(dict(stage='END',error=repr(error)));rc=1
++                capture('AFTER_END')
++                if not all(x['state']=='STOPPED'and not x['running']for x in lifecycle(engine).values()):rc=1;errors.append(dict(stage='END',error='NATIVE_FIVE_COMPONENTS_NOT_STOPPED'))
++            else:
++                capture('END_NOT_APPLICABLE')
++                if rc==0:rc=1;errors.append(dict(stage='END',error='PASS_REQUIRES_ACTUAL_STARTED_THEN_STOPPED'))
++            capture('BEFORE_DISPOSE')
++            try:engine.dispose()
++            except BaseException as error:errors.append(dict(stage='DISPOSE',error=repr(error)));rc=1
++            write(namespace/'AFTER_DISPOSE.json',dict(lifecycle=lifecycle(engine)))
++            if not all(x['disposed']for x in lifecycle(engine).values()):rc=1
++        write(namespace/'result.json',dict(actual_process_exit_code=rc,result=result,errors=errors,attempt_id=attempt,fixture_id=CASE))
++        ledger=json.loads(Path(ledger_path).read_text());row=next(a for a in ledger['attempts']if a['physical_index']==number);row.update(status='COMPLETED'if rc==0 else'FAILED',finished_utc=now(),actual_process_exit_code=rc,result_path=str(namespace/'result.json'),result_sha256=digest(namespace/'result.json'));ledger.update(active=0,authorized_remaining=4-ledger['physical_started'],status='F3_COMPLETE_ROOT_REVIEW_REQUIRED'if rc==0 else'STOP_FIRST_FAILURE');write(ledger_path,ledger)
++    return rc
++
++def main():
++    p=argparse.ArgumentParser();p.add_argument('--pure-proof');p.add_argument('--gate');p.add_argument('--ledger');p.add_argument('--prepare',action='store_true');p.add_argument('--launch',action='store_true');a=p.parse_args()
++    if a.pure_proof:write(a.pure_proof,pure_preconditions());return 0
++    if a.prepare:
++        g,l=verify(a.gate,a.ledger);print(json.dumps(dict(status='PREPARED_NO_ENGINE',physical_started=l['physical_started'],root_go=g['root_go'],proof=pure_preconditions())));return 0
++    if a.launch:return launch(a.gate,a.ledger)
++    p.error('Choose --pure-proof, --prepare or --launch')
++if __name__=='__main__':raise SystemExit(main())

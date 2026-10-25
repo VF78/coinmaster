@@ -1,0 +1,21 @@
+{
+  "status": "PUBLISHED_EXACT_REMOTE_VERIFIED",
+  "recorded_utc": "2026-10-25T21:43:32.653584+00:00",
+  "repository": "https://github.com/VF78/coinmaster",
+  "visibility": "PUBLIC",
+  "branch": "codex/hedge-rights-unlock-20261025",
+  "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "remote_actual_ref": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "push_actual_exit_code": 0,
+  "core_hooks_path": "/dev/null",
+  "preflight_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/publication-source-aaa31-preflight.json",
+  "preflight_sha256": "8b77310e020f8aceb376675ea3337ed750d421879c322daf780587b694391e46",
+  "committed_files": [
+    "runtime/tests/run_queued_standing_tp.py"
+  ],
+  "dirty_old_draft_excluded": true,
+  "native_F3_status": "FAILED_UNCHANGED",
+  "monetary_source_changes": 0,
+  "deployment": false,
+  "new_native_engines": 0
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "CM_F3_QUEUED_ROOT_GO_V1",
+  "status": "GO_ONE_F3_ENGINE_ONLY",
+  "recorded_utc": "2026-10-25T21:29:41.176013+00:00",
+  "root": "/root",
+  "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "script_sha256": "5be3e9a6a2fe04fa20eeb2958908e8c8effbfc2a2014b61dc1fdb1d64e130827",
+  "protocol_sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0",
+  "owner_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/owner-approval-queued-standing.json",
+    "sha256": "6998c5d7785f1290b1ec563024c6d35fa55f97070a9db3f31a75b7b5643c107a"
+  },
+  "gate_before_GO_sha256": "6f4b6d7b41d27220489a6ef39beca7dc4da4d4711a1e2c7cde4502bd3b6a50e6",
+  "plan_sha256": "c6afc3ac2872b7b36451d06bd9cf4f28d188b0cfaa2de2ddcf90b5253920f6d1",
+  "independent_review_sha256": "56ee2ac802c21752aaaee7edf767826eeea56b7970d48ec89b3da06356ebbc7b",
+  "ledger_before_sha256": "741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800",
+  "expected_before": 2,
+  "physical_index": 3,
+  "overall_engineering_max": 4,
+  "all_immutable_pins_verified": 239,
+  "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3",
+  "child_environment_rule": "Pass exact gate.environment as COMPLETE Popen environment; do not overlay inherited trader environment.",
+  "authority": "Exactlyoneengine now, durable attempt claim BEFORE constructor. Preserve both FAILED. Stop/report actual native result/OSrc; no auto retry/productpatch/physical4/economicGO. Product patch only after accepted actualF3PASS.",
+  "product_patch_allowed": false,
+  "prefix_go": false,
+  "full_pilot_production": 0
+}

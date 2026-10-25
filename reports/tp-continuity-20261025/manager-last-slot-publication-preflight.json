@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "scanned_files": 141,
+  "high_confidence_secret_findings": [],
+  "proposal_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "engineering": "3FAILED/max4/active0/remaining1BLOCKED",
+  "prefix": "0/3",
+  "physical3_actual_OS_returncode": 1,
+  "source_commit_public_verified": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "product_money_files_changed": 0,
+  "native_engine_changed": false,
+  "old_failed_rows": "Firsttwo remain byte/canonical unchanged, currentthirdFAILEDretained",
+  "authority": "Publicresearchsource/tests/reports previouslyexplicitlyapproved; pendinglast-slot exception notinferred",
+  "deployment": false,
+  "workflow": "Currentbranchesnonmatching solehl-epoch-wheel push trigger; no nativeCIbudget consumed bypublication."
+}

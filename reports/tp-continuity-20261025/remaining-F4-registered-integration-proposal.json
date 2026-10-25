@@ -1,0 +1,177 @@
+{
+  "schema": "CM_REMAINING_F4_REGISTERED_INTEGRATION_PROPOSAL_V1",
+  "status": "FOR_NEW_OWNER_CONSENT_ONLY_NO_CODE_NO_ENGINE",
+  "implemented": 0,
+  "new_native": 0,
+  "current_budget": {
+    "engineering_started": 3,
+    "engineering_max": 4,
+    "active": 0,
+    "prefix_started": 0,
+    "prefix_max": 3
+  },
+  "required_explicit_exception": "Owner must expressly permit narrowisolateddefaultOFF productpatch BEFOREpriorF3APIPASS, and one remainingphysical4 ascombinedregisteredintegration/API qualification. FAILED3 remainsFAILED; no extraengineeringbudget/reserve/retry.",
+  "registered_route_source_facts": {
+    "money_source": "83runtimefilesbyte-identical763",
+    "TP_factory_line": 2024,
+    "submit_line": 2083,
+    "TP_exec_algorithm_argument_absent": true,
+    "TP_parent_or_explicit_position_argument_absent": true,
+    "factory_exec_algorithm_default": "None; exec_spawn_id None whennoexecalgo(common/factories.pyx326,413)",
+    "runtime_OMS": "NETTING inactualregisteredproducer native_baseline.py984",
+    "actual_R2_C0_orderCSV_evidence": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-orders.csv",
+      "sha256": "1186c170f62683d943010842b8413b6fb520095043db3ce7c31533f4b3ef304f",
+      "BTC_limit_reduce_rows": 113,
+      "all_exec_algorithm_id_empty": true,
+      "all_parent_order_id_empty": true
+    },
+    "retained_F3_fact": "RawOrder.position_id populatedafterrealTPpartial, butcacheassociationNone/indexexcludesTP: actualexpectedunlinkedrouteinvariant, notfalseownership.",
+    "invariant_limits": "For thisordinaryNETTING/nonexecalgo/noexplicitpositionlink route, Cacheindex notautomaticallycreatedonreducefill. Unexpectedassociation/execalgo/configchange=>UNKNOWN/STOP; doNOTforgeassociation/autoUpdated."
+  },
+  "ownership_contract": "RealclientOID/strategyID/registeredintent+level/currentgeneration, nativeactualfills/TradeIDs/rawfillposition andactualheld areauthority. CachepositionNone isrecordedtruthfully, nottreatedasmissingownershiporpositiveauto proof. Explicitwrong/ambiguousownership=>STOP.",
+  "static_public_transport": {
+    "model": "Actual installedLatencyModel constructor checked (noengine)",
+    "base_latency_nanos": 0,
+    "insert_latency_nanos": 0,
+    "update_latency_nanos": 0,
+    "cancel_latency_nanos": 2000000000,
+    "queue": true,
+    "model_changes_midrun": false,
+    "accounts": 1,
+    "venues": 1,
+    "claim_scope": "NormalDEBT/protectivemodify duecurrenttime, quiescentdrainbeforefuturematching; cancellationalonegenuinelydelayed. Publicmodelobject differsfromfinancialLatencyNone onlydeclaredcancel fault; financialproducerdefault unchanged.",
+    "source_order_limit": "WithnonNonezerolatencymodel, correctionscreatedduring_draining mayenterinflightcurrenttime andapplynextsettlepass aftermatching_engine.iterate. HenceactualcurrentbookmustremainnonmarketablethroughEVERYpass andlatestACK/quiescencemustbeproven; notatomicresize.",
+    "source_excluded_oldcase": "A not-yet-filledDEBT delayedpastanotherBTCinput requirespositiveinsertlatency, absenthere. DoNOTforce it; replacebyexplicitsourceproof+actualordinaryTP/nativeheld0→NOdebt submit. This coverage/gate substitution requiresnewownerapproval."
+  },
+  "standing_and_debt_rules": "Previouslyapproved6998 rules unchanged: ordinaryfillonlyownstandingentitlement; actualentry/debt target_lots; deferdebtwhileanyworkingTPmarketable; actualnativebook/tick/nointerposed identity, unknownSTOP.",
+  "one_engine_map": [
+    {
+      "parent": "P1",
+      "observation": "RegisteredR2 native sizing/partialentry/trueownership",
+      "trigger": "ActualregisteredR2-generated firstIOC/nativequantity usingfrozencommonkwargs/currentnativecash anddeclaredsyntheticquote/depth. No manualquantity/episode/cap override toobtain752. Anyactualpartialentry quantity isretainedasobserved.",
+      "positive": "Nativeorder/requestedquantity/actualfill matchregisteredsource sizing. AllnativeTP initialallocations deriveactualheld; ownershiprealOID/strategy/intent/rawnativeposition; cacheassociationNone truthful. No magicN assertion."
+    },
+    {
+      "parent": "P1",
+      "observation": "Actualstandingconservation afterordinaryFULLTP",
+      "trigger": "NativeordinaryFULLTP0 atitsactualsourceUprice onactuallyobtainedposition",
+      "positive": "For eachunconsumedlevel, nativeleavesafterordinaryfill equalpreviousstandingentitlement; onlyfilledleveldecrements/consumes. NOrenormcall orother-levelquantumtransfer. Nativeheld andsumstanding reconcileonactualquantities, notN752/held593."
+    },
+    {
+      "parent": "P1",
+      "observation": "Genuine normaldebt/reallocation/queuedACK",
+      "trigger": "ActualSOLTP relief atBTCbook100 withremainingTPsnonmarketable; originalcapfromactualSOL cuts; actualheldresidualDEBT",
+      "positive": "Insert/update offsets0; dispatch/fill matchingBBOepoch unchanged; nativeDEBTpositivefill; actualtarget_lots(held,consumed) andnativefilled+desiredleaves total; latestseq/genACKAFTERpublicreturn; no unresolvedprotectionbeforefuturematching."
+    },
+    {
+      "parent": "P1",
+      "observation": "Marketabledebtdeferral thenflat/no-submit",
+      "trigger": "LaterrealSOLTP opensdebt; BTC105.2/limitedfreshdepth leavesworkingTP3marketable, actualordinaryTPpartial/full reducesheld; guarddefersdebt. Subsequentfreshdepth fillsremainingTP3tozero beforeallowedsafedebtsubmit.",
+      "positive": "Outstandingdebtqty/time openlyrecorded; actualnativeBTCflat; noDEBTsubmitinthatdebtwindow, no staleIOCquantity. Fullflat-beforeLATEDEBT is SOURCE-EXCLUDED byinsert0 andquiescencedrain, notclaimedactualrace."
+    },
+    {
+      "parent": "P1",
+      "observation": "Actualpartial/invalidtotal/pendingbarrier/terminal",
+      "trigger": "NativepartialTP; directexpectedinvalidtotalbelowfilled realModifyRejected; realPendingUpdate inpubliccommand callback while normalreallocation; actualallorders/positionsflatbeforeDAY",
+      "positive": "Noassertbypass/nativecachemutation; expectednegativeAPIprobe distinctfrom protectivevalidresizeRejectSTOP; actualpendingcurrentcache barrierFalse. MissingcacheUNKNOWNonlypurepredicate, actorACKlagnotnativeUNKNOWN."
+    },
+    {
+      "parent": "P2",
+      "observation": "NaturalregisterednewSHORTparent",
+      "trigger": "ActualD1CustomData atDAY usingfixed729seed+2observeddays sourceproof329; P1nativeflatmandatory; same strategy/config/account",
+      "positive": "Sourcefeatures/waves LONGthenSHORT/source5.5/7.875; actualQfromcurrentnativecash, no reset/manualnewdomain."
+    },
+    {
+      "parent": "P2",
+      "observation": "OriginalA0right admission/oneactualrelease",
+      "trigger": "Realpairedlock/originalsecondcancelACK; firstpartialremainderexcluded; nativeSOLcut/debtpermanentcap; actualOFF+60/currentremaining3ACK/realnativePendingbarrier/cross/stale-marginDENYthenfreshPASS",
+      "positive": "OriginalGTCprice/postOnly/oneattempt; releaseactualpositivepartial; unchangedinitialsizing/SOLrules/fees, no refund/reanchor/extraentry."
+    },
+    {
+      "parent": "P2",
+      "observation": "GenuineA0PENDING_CANCEL latefill",
+      "trigger": "OrdinaryTP immediatelycallsnativecancel ofworkingA0release; STATIC publiccancel offset2s holdsactualPENDING_CANCEL whileexistingexchangeorder canmatch realfreshquote beforecancelterminal",
+      "positive": "ActualsameOIDfillTradeIDduringnativependingcancel; cancelACKterminal later and no afterACKfill; nativeheld/deadrightcap reconciliation/correctiveDEBTonlywhenactualmatchingTPsnonmarketable; insert/update0 nointerposedBTC; no closedBTCrefund."
+    },
+    {
+      "parent": "P2",
+      "observation": "Finalsafety",
+      "trigger": "Repeatedquotes/consumedlevels/actualexistingordinarytargetfills thennativeSOL/BTCflat",
+      "positive": "Onegrant/oneactualsubmission/no retry/extraBTCcut/reverse/duplicateTradeID; final orders0/nativecash/actual5STOPPED→DISPOSED. Anyunreachedcriticalcase=>STOP/no prefix."
+    }
+  ],
+  "clock": "Existingfixedseed proof329b02... unchanged:729seedending−DAY; actualDailySignal0/DAY; DATA0→25h10<=48h; config−24h→25h10=49h10 approveddata-windowinterpretation. No streamedwarmup/reset.",
+  "positive_exclusions": [
+    "StockautoUpdated isSOURCE-NOT-APPLICABLE tocurrentunlinkedcacheindex route; neverfabricateorcreditit. GenuinequeuedactorUpdated/currentgenerationACK stillmandatory.",
+    "SynchronousfillBEFOREpublicmodifyreturn notclaimed; defaultqueue contractrequiresACKAFTERreturn andbeforeNEXTmatching, plusnonexec currentwindow.",
+    "LateDEBT-flat race unavailablewithinsert0; actualmarketabledeferral→ordinaryTPflat→NOdebt isnewexplicitcoverage instead, notlateIOCclaim."
+  ],
+  "potential_blockers": [
+    "Oneactualregisteredengine must reachallmapstages; exactprospectivepatch/sourcekwargs/signals/nativeqty/ACK/cancelrecovery mayfail, no unconditionalPASSpromise.",
+    "CurrentMatcher unsafequantitywindow orpositionindexunexpectedauto remainsSTOP; neverrepairviafakecache/queueFalse/ROorcontingenttoggle.",
+    "Staticcancel2s canproduceadditionalnativecancelrequests/rejects; ownership/cancelterminalaccounting mustbeexact, unknownorlateunreconciledincreaseblocksqualification.",
+    "F3failedbeforedebt/ACKmechanism, so publicsourceproposaldoesNOTsubstituteactualintegrationevidence. Onlynewconsent+source/moneyreview+rootGO mayusephysical4.",
+    "Exactdeclaredexecutiondepth/nativepartialinput mustbe frozen andcheckedagainstactualregisteredentryplan beforeF4GO; cannotmanuallychange nativeqty/cap/episode toforce a desiredintegercounterexample."
+  ],
+  "source_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "c8e827db17a2a7a6ffafc8295e644dbaec1d3db46f879c6c7600a3074046bb7b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime/coinmaster/research/native_baseline.py",
+      "sha256": "5d3a5825a9535ab3af1b7b9a91c374f6e0e1a56a59dba5d505d9880c63041cdc"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/factories.pyx",
+      "sha256": "bcaf9dbfb381e299d90590efafdd052f1b7f4dae5d916c95341e8b2c252b03eb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/engine.pyx",
+      "sha256": "5b7113b1c210f8123d658caeb5c50435bf266477de7dc36f30892f377ee913f5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.pyx",
+      "sha256": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/models/latency.pyx",
+      "sha256": "ad4d16dde0e7cf72683e9bcafa102ba785b14ba768a6055aa97e8d39dfc98ff1"
+    }
+  ],
+  "failed3_preserved": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F3-queued-physical3-cause.json",
+    "sha256": "2656ea6984ef97b8203ec64d83193a4eb1742f8447350d0e988c4c30ba629044"
+  },
+  "current_ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a"
+  },
+  "publication": "Committedaaa31test-only publication separatelyauthorized; olddirtydraft excluded. No productpatch/deployment.",
+  "pure_only_regression": {
+    "N": 752,
+    "initial_source_target_lots": [
+      159,
+      159,
+      434
+    ],
+    "after_full_TP0_standing": [
+      159,
+      434
+    ],
+    "old_frozen_renorm": [
+      160,
+      433
+    ],
+    "scope": "ENGINE_FREE regressionvectoronly, neverforceactualregisteredF4toN752/593. Existingactualsourceintegerproof retained; nativeF4assertsconservationonitsownactualsizing/cap."
+  }
+}

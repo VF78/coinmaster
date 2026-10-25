@@ -1,0 +1,24 @@
+{
+  "status": "READY_AUTHORIZED_COMMITTED_ONLY",
+  "repository": "https://github.com/VF78/coinmaster",
+  "visibility": "PUBLIC",
+  "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "branch": "codex/hedge-rights-unlock-20261025",
+  "payload_files": [
+    "runtime/tests/run_queued_standing_tp.py"
+  ],
+  "diff_sha256": "10ca888f01e1e06206ea96426a4a193808ba83fe6b72f8664da129a179e5dc21",
+  "secret_pattern_counts": {
+    "private_key": 0,
+    "github_token": 0,
+    "aws_access_key": 0,
+    "literal_secret": 0
+  },
+  "workflow_push_branch": "codex/nautilus-btc-sol-mvp",
+  "workflow_trigger_on_current_branch": false,
+  "dirty_old_draft_excluded": true,
+  "dirty_old_patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+  "native_F3_status": "FAILED_NOT_RECLASSIFIED",
+  "product_monetary_changes": 0,
+  "deployment": false
+}

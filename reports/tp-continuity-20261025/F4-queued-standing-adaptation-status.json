@@ -1,0 +1,18 @@
+{
+  "status": "CONDITIONAL_AFTER_ACTUAL_F3_ACCEPTANCE_NOT_IMPLEMENTED_NOT_READY_FOR_F4_GO",
+  "protocol_sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0",
+  "base_plan": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/physical4-provisional-coverage-plan.json",
+    "sha256": "28d3173c26d2c32dd403fa87423534e64986d14ce396ef8abc7383337aa6fd20"
+  },
+  "seed_and_clock_source_proof": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/physical4-seed-latency-source-proof.json",
+    "sha256": "329b02bebe5d47355f9820ad94b0b1c22e2070966f54f632e8713fa3ff867594"
+  },
+  "two_rule_updates": [
+    "OrdinaryTP changesonlyownstanding entitlement/consumesonlyactuallycompletedlevel; removequantumrenormalizationonordinaryconsumption. Initial/actualentry/debt target_lots unchanged.",
+    "NormalDEBT guard actualmatchingBTCBBO/tickidentity; marketableTP=>deferdebt/blockincreases/recordoutstanding; recomputeactualresidualnextBTC. Dispatch+nativeexecution mustestablish0-default/nointerposedBTCinput."
+  ],
+  "fault_scope": "PriorpositiveLatencyModel flat-before-lateROIOC isboundedfaultcomponentonly, NOTnormaldebttransportPASS; exactfaultintegration/currentpending barriers requireproductmoneyreview beforeF4. No dynamicneworders/capchange/workaroundintroducedhere.",
+  "budget": "Oneconditionalphysical4onlyafteractualF3PASS+rootacceptance/sourcepatchreview; missingessentialcoverage=>STOP. Prefix0/3HOLD; nofinancialclaim."
+}

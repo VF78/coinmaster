@@ -1,9 +1,9 @@
 {
   "task": "CM-TP-CONTINUITY-20261025",
-  "status": "AMEND4_APPROVED_AWAITING_F1_STRESS_REVIEW_ROOT_GO",
+  "status": "STOP_FIRST_FAILURE",
   "kind": "NATIVE_ENGINE_CONSTRUCTOR",
   "physical_max": 4,
-  "physical_started": 2,
+  "physical_started": 3,
   "active": 0,
   "attempts": [
     {
@@ -41,6 +41,25 @@
       "actual_process_exit_code": 1,
       "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical2/result.json",
       "result_sha256": "e7f98be9f540035ff159dc7a5b6a655b29b27523fce71c234ec850c80e69d124"
+    },
+    {
+      "attempt_id": "c78ffd9a-1621-4d08-bd49-f21f5d1356be",
+      "physical_index": 3,
+      "fixture_id": "F3_DEFAULT_QUEUE_STANDING_TP",
+      "status": "FAILED",
+      "started_utc": "2026-10-25T21:30:08.168524+00:00",
+      "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+      "protocol_sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0",
+      "gate_sha256": "7346843db53e97fde3731d5291b650633ac74408992c6ec04256db65b5973d56",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3",
+      "window_ns": [
+        1000000000,
+        20000000000
+      ],
+      "finished_utc": "2026-10-25T21:30:08.252177+00:00",
+      "actual_process_exit_code": 1,
+      "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/result.json",
+      "result_sha256": "4cee5a69474d7a23bfc9d4d713fa1fdbb31c5b908f80d4b905674cdc6bcf761a"
     }
   ],
   "protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
@@ -57,7 +76,7 @@
     "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/owner-approval-amendment4.json",
     "sha256": "958ffe15351412b3bafa73e62626b843af42296c218ab270f24163a0bbde4dae"
   },
-  "authorized_remaining": 2,
+  "authorized_remaining": 1,
   "prefix_physical_max_unchanged": 3,
   "prefix_physical_started_unchanged": 0
 }

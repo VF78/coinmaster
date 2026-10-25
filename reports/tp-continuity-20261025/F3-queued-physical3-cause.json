@@ -1,0 +1,243 @@
+{
+  "schema": "CM_QUEUED_STANDING_F3_PHYSICAL3_FAILURE_V1",
+  "status": "FAILED_CONTRACT_FIXTURE_LINKAGE_PREMISE_FALSE",
+  "actual_process_exit_code": 1,
+  "actual_pid": 96543,
+  "attempt_id": "c78ffd9a-1621-4d08-bd49-f21f5d1356be",
+  "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "stage": "ORDINARY_PARTIAL",
+  "physical_started": 3,
+  "physical_max": 4,
+  "active": 0,
+  "prefix_started": 0,
+  "product_patch_allowed": false,
+  "automatic_retry": false,
+  "actual": {
+    "native_fills": [
+      {
+        "order_id": "O-19700101-000001-001-000-1",
+        "trade_id": "T-9790cc8daf941f78-001",
+        "kind": "ENTRY_BTC",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "quantity": "1",
+        "price": "100.0",
+        "commission": "0.05500000 USDT",
+        "event_ns": 3000000000
+      },
+      {
+        "order_id": "O-19700101-000001-001-000-2",
+        "trade_id": "T-e96870e65b81bc51-001",
+        "kind": "ENTRY_SOL",
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "quantity": "10",
+        "price": "100.00",
+        "commission": "0.55000000 USDT",
+        "event_ns": 3000000000
+      },
+      {
+        "order_id": "O-19700101-000004-001-000-3",
+        "trade_id": "T-c302bc0156c545cd-002",
+        "kind": "TP0",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "quantity": "0.05",
+        "price": "101.0",
+        "commission": "0.00101000 USDT",
+        "event_ns": 10000000000
+      }
+    ],
+    "native_BTC_held": "0.95",
+    "native_SOL_held": "-10",
+    "native_cash": "9999.44399000 USDT",
+    "TP0_native_order": {
+      "id": "O-19700101-000004-001-000-3",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "kind": "TP0",
+      "status": "PARTIALLY_FILLED",
+      "quantity": "0.212",
+      "filled": "0.050",
+      "leaves": "0.162",
+      "price": "101.0",
+      "side": "SELL",
+      "reduce_only": true,
+      "native_position_id": "BTCUSDT-PERP.P1SIM-QueuedStandingProbe-000",
+      "cache_position_id": null
+    },
+    "BTC_native_position_and_index": {
+      "id": "BTCUSDT-PERP.P1SIM-QueuedStandingProbe-000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "quantity": "0.950",
+      "side": "LONG",
+      "indexed_order_ids": [
+        "O-19700101-000001-001-000-1"
+      ]
+    },
+    "commands": 0,
+    "auto_updates": 0,
+    "native_quiescence_checkpoints": 8,
+    "actual_matching_BBO_at_failure": {
+      "btc_epoch": 5,
+      "tick_object_id": 4992199408,
+      "tick_ns": 10000000000,
+      "tick_init_ns": 10000000000,
+      "book_ts_last": 10000000000,
+      "book_sequence": 5,
+      "bid": "101.0",
+      "ask": "101.0",
+      "bid_size": "0.050",
+      "ask_size": "0.050"
+    }
+  },
+  "root_cause": "The assertion assumed a genuine ordinary NETTING TP partial fill would populate cache.position_id/orders_for_position. RetainedactualnativeOrder.position_id DIDbecomeBTCpositionID, but cache.position_id(TP0) stayedNone and cache.orders_for_position containedONLYtheopeningentry. These aredifferentnativefields/indexes, not interchangeable.",
+  "source_mechanism": [
+    {
+      "source": "execution/engine.pyx1478-1500",
+      "fact": "NETTING fill getsdeterminedpositionID; fill.position_id assigned. For ordinary non-exec-algo order path returns without add_position_id."
+    },
+    {
+      "source": "model/orders/base.pyx1177",
+      "fact": "NativeOrder fill application assigns raworder.position_id=fill.position_id; doesnot itself createcachepositionindex."
+    },
+    {
+      "source": "cache/cache.pyx2375-2387",
+      "fact": "Addingnativeposition indexes opening_order_id."
+    },
+    {
+      "source": "cache/cache.pyx4850-4872",
+      "fact": "orders_for_position reads _index_position_orders, not scan of rawOrder.position_id."
+    },
+    {
+      "source": "backtest/engine.pyx7994-8004",
+      "fact": "Stockauto-resize iterates cache.orders_for_position. CurrentretainedTP0partial is absent fromthatindex."
+    }
+  ],
+  "limitations": [
+    "No stockauto resize wasobserved; debtmarketabilityblock/debt.188/queuedACK/standing593/ModifyRejected stagesNOT_REACHED.",
+    "ActualpublicmatchingBBO/tickidentity and initial/partialworkingcoverage were exercised; these componentsdoNOTmakefailedprocessPASS.",
+    "No conclusion of genericNautilus unsupported; wrong fixture/contract linkage premise specificallyconfirmed.",
+    "Removingassert, injectingpositionlink/cachemutation orwaivingmandatoryauto wouldchangefrozenproof; no such action taken.",
+    "Onlyoneapprovedconstructor remains; productpatch stillrequiresacceptedactualF3PASS. No automaticreuse/combinedimplementation qualification inferred."
+  ],
+  "cleanup": {
+    "after_end": {
+      "trader": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "data_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "risk_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "exec_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "emulator": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      }
+    },
+    "after_dispose": {
+      "trader": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "data_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "risk_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "exec_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "emulator": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      }
+    },
+    "five_STOPPED_then_DISPOSED": true,
+    "native_positions_flat_before_dispose": false
+  },
+  "previous_two_rows_raw_byte_unchanged": true,
+  "previous_rows_canonical_sha256": [
+    "8acb1eaed5838f92cfb2f7f14b29b670cf3057cabfcf5f7553c190b108afb9da",
+    "500630228c3ee42c8db52d67017bb7d324d744b69ba46925596b2ef7d0ab7d95"
+  ],
+  "original_errors": [
+    {
+      "stage": "FIXTURE",
+      "type": "AssertionError",
+      "error": "PARTIAL_TP_MUST_NATURALLY_LINK_POSITION",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime/tests/run_queued_standing_tp.py\", line 346, in launch\n    result=run_fixture(engine,s,capture);capture('BEFORE_TERMINAL');rc=0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime/tests/run_queued_standing_tp.py\", line 274, in run_fixture\n    assert s.cache.position_id(s.targets[0])is not None,'PARTIAL_TP_MUST_NATURALLY_LINK_POSITION'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: PARTIAL_TP_MUST_NATURALLY_LINK_POSITION\n"
+    }
+  ],
+  "native_source_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/engine.pyx",
+      "sha256": "5b7113b1c210f8123d658caeb5c50435bf266477de7dc36f30892f377ee913f5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/base.pyx",
+      "sha256": "e90375c623b13a7c1fa35e35ef756eb00c9a0b38994d3125dcf616557c20a953"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.pyx",
+      "sha256": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+      "sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F3-queued-actual-process.json",
+      "sha256": "d95930446a2c5f9967cfd0b1f7f77b74541b3cd5cb51b09f22195a2c7aff093d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/result.json",
+      "sha256": "4cee5a69474d7a23bfc9d4d713fa1fdbb31c5b908f80d4b905674cdc6bcf761a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/FAILURE_BEFORE_END.json",
+      "sha256": "281e3142c533923bccc475bb1b80a4bc6780f321502e69d2b8a0b1e478dec5bf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/BEFORE_END.json",
+      "sha256": "1b4312f28c5150d14192b015fcbf1674c5a9f07ad60716e8dc8d8367fd627058"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/AFTER_END.json",
+      "sha256": "499d242879b9441ad24634bac80b5204c834d294e0817f0648fee522dd3e8159"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/BEFORE_DISPOSE.json",
+      "sha256": "4c1360f8ea6dd1f5dcb5e797100eaf16c32b569dcd3d28c6332c4c4953e6c685"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/AFTER_DISPOSE.json",
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575"
+    }
+  ]
+}

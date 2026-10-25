@@ -1,0 +1,39 @@
+{
+  "schema": "CM_LAST_SLOT_REGISTERED_PROTOCOL_REVIEW_V1",
+  "decision": "FOR_OWNER_CONSENT_ONLY",
+  "initial_protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "p0": [],
+  "bounded_viability": {
+    "sequence_exception": "Explicit freshownerconsent required to allow isolateddefaultOFF patch before fullseparateAPIpass and combine firstrealDEBT/publicmodify APIproof with remainingregisteredR2 integratedengine. FAILED3 staysFAILED; priorreceipt doesnotgrantnewsequence.",
+    "route_exception": "Replace missingauto-positive by actual NETTING/nonexec/noexplicitposition/no parentlink invariant, actualOID/strategy/instrument/side/intent-parent-generation ownership and separatelyrawposition/cacheindex truth. Unexpectedassociation/route/quantitychangeSTOP, no forgedlinks/cache/enginechanges.",
+    "transport": "One static publicLatencyModel base0/insert0/update0/cancel2s/queueTrue is declaredengineering faultstress, no midrun swap. NonNonemodel currenttimeupdates maysettle a laterpass aftersamebookiterate; proposal explicitlyrequires currentbooknonmarketable throughEVERYpass pluslatestACK/quiescence. Noatomicresizepromise. Financialdefaulttransport remainsunchanged.",
+    "coverage_exception": "Insert0 excludes outstandingDEBT traversing anotherBTCinput. Protocol expresslyreplaces oldpositive late-DEBT-flat faultcase with pinnedsettlementproof plusactualmarketableguard/ordinaryTP→flat→NOdebt. Cancelpendinglatefill remains actualpositive mandatory. This is a newownerexception, not retroactivecoveredcase or globalasync/liveguarantee.",
+    "registered_money": "Actual quantities/cap from registeredR2 sizing/cash/fills/SOLcuts only; N752 purevector is notnativefixture target. Standing conservation/nativeheld reconciliation mustholdon actualsizing.",
+    "STOP": "Beforeengine exactadaptedoneenginecoverage/source/kwargs/config/nativebook/env/data freeze +meaningfulenginefreechecks+independentmoneyreview+rootGO. AllAPI/currentownership/prefillentitlement/workingremainingTP/latestACK/marketcross/stockmargin/A0oneattempt/race/cap/flat/Liq/lifecycle eventsmustactuallyoccur; missingunsafeUNKNOWN STOP/noprefix. No resultguarantee."
+  },
+  "budget_and_admission": {
+    "engineering_max": 4,
+    "already_failed": 3,
+    "remaining": 1,
+    "prefix_max": 3,
+    "prefix_started": 0,
+    "additional_budget": 0,
+    "failures_preserved": true,
+    "prefix": "OnlyafteractualintegratedF4independentadmission, thenfreshOFF→C0_FIXED→A0_FIXED/eachrootGO/fullfinancialqualification; no control skipped or oldresultreused. C0actualfinancialPASSbeforeA0.",
+    "authority": "FORNEWOWNERCONSENTONLY oncewordingclosed. Reviewdoesnotpermitproductcode/native/ledger/gatechanges. No extra slot/live/pilot/production."
+  },
+  "proposal_sha256": "4d737709c5d484c246e13c3afd55989857b84ddc9d7c14af7a01e4c4ef3c6394",
+  "limits": "One focused proposedcontract review; sourceproposal only, no actualfutureoutcome proof. No engines/tests/Popen/source/ledger/gate edits. WroteonlyreviewJSON/MD.",
+  "closed_findings": [
+    {
+      "id": "LAST-SLOT-01",
+      "section": "Financialgates",
+      "finding": "A0gain>C0 and>2max(...) conflates absoluteTOTAL and incrementalgain. It could incorrectly compare fullA0TOTAL to incrementalcost hurdle rather than A0minusC0 improvement.",
+      "minimal_correction": "Spell unchanged formulas TOTAL_A0>TOTAL_C0 and ΔTOTAL=TOTAL_A0−TOTAL_C0>2*max(0,fees_A0−fees_C0), preserving existing feeaccounting convention/allotherfinancialgates. No new hurdle or budget.",
+      "status": "CLOSED_EXACT_FORMULA_CLARIFICATION_VERIFIED"
+    }
+  ],
+  "p1": [],
+  "closure": "Existing absoluteTOTAL and incrementalTOTAL/fee hurdles now stated separately and exactly. Initialfinding/SHA preserved; no newmetric/budget/source/nativeauthority."
+}

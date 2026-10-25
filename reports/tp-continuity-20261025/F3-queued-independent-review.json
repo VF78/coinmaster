@@ -1,0 +1,74 @@
+{
+  "schema": "CM_F3_QUEUED_INDEPENDENT_SOURCE_REVIEW_V1",
+  "status": "SOURCE_AND_FINAL_BINDING_PASS",
+  "decision": "LIMITED_FIXTURE_REVIEW_PASS_NOT_ROOT_GO",
+  "p0": [],
+  "p1": [],
+  "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "script_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime/tests/run_queued_standing_tp.py",
+  "script_sha256": "5be3e9a6a2fe04fa20eeb2958908e8c8effbfc2a2014b61dc1fdb1d64e130827",
+  "scope": "Only new self-contained F3 fixture and focused installed source APIs. Future productpatch not reviewed.",
+  "reviewed_paths": {
+    "public_observer": "MatchingTierObserver reads SimulationModule.exchange.get_book BBO/sequence/timestamp; asserts current QuoteTick identity after exchange matching and before debt dispatch. It does not mutate nativebook/cache. Before module advances to new matching tick, prior settled allocation/latest ACK state is checked.",
+    "standing": "Actual genuine TPfills decrement only own expected entitlement; consumed levels removed, no renormalization. Frozen target_lots used initial1000 and actualdebt752 only. Verification-only domain on_fill fed real unique native TradeIDs; prefill allowance checked before source clamp.",
+    "debt": "At quote101 .050+.010 partial held.940, cap.752 debt.188 recorded/blocked by working marketableTP; quote100 debt submit uses matching snapshot; actualdebtfill asserts full same snapshot identity/epoch, hence no interposedBTCinput, exact .188 and held.752. TP0actualfilled.060+desired.159 yields .219; no positionID injection.",
+    "queued_ACK": "Proactive corrections tracked perOID/sequence/generation, pending desiredquantity cannot silentlychange. Actual matchingUpdated ACK must follow publicreturn/currentgeneration/cachequantity; autoUpdated distinct and only wholeheld quantity accepted. Native quiescence demands no actor/nativepending/diagnosticpending, latestsequenceACK and exact leaves; callback PendingUpdate exemption does not credit allocation. Currentmatcher mismatches allowed only actuallynonmarketable book.",
+    "positive_coverage": "Mandatory realstockautoUpdated, >=3actual commands/nativeACKafterreturn, genuine invalidtotalreject, actual standing159/434 versus old160/433, allthree positiveTPlevels, uniqueTradeIDs and typed/generic sameEvent dedup. Diagnostic expectedreject is separate from any protectivemodifyreject, which STOPs.",
+    "margin_and_lifecycle": "Inherited actual _entries_enabled/_tier_allows_increase before real entries; no NativeProbe/True override. Native defaultqueueTrue/latencyNone/useRO+contingentdefaults; real margin module retained. Native terminalflat/orders0 and actualstarted5STOPPED→DISPOSED required.",
+    "counting": "verify binds direct approval/currentmax4/before2 and exact currentledgerSHA, oldFAILED raw+canonical rows and parentledger; freshnamespace/rootGO before durableSTARTED claim and sole BacktestEngine constructor. No retry/auto-next/reset. Imports/pure/prepare contain no explicit engineconstruction."
+  },
+  "reported_proof": "Owner engine-free preconditions PASS; reviewer did not run pure tests/prepare/nativeengine. Report alone is not actual nativeproof.",
+  "proof_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime/tests/run_queued_standing_tp.py",
+      "sha256": "5be3e9a6a2fe04fa20eeb2958908e8c8effbfc2a2014b61dc1fdb1d64e130827"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F3-queued-pure-preconditions.json",
+      "sha256": "5ff7d953af41222f852c69ecb8cf019baab7fe5699cddd8cfe8bd460b120bc68"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/QUEUED_STANDING_TP_PROTOCOL_PROPOSED_RU.md",
+      "sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/owner-approval-queued-standing.json",
+      "sha256": "6998c5d7785f1290b1ec563024c6d35fa55f97070a9db3f31a75b7b5643c107a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F3-queued-fixture-plan.json",
+      "sha256": "c6afc3ac2872b7b36451d06bd9cf4f28d188b0cfaa2de2ddcf90b5253920f6d1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F3-queued-gate.json",
+      "sha256": "6f4b6d7b41d27220489a6ef39beca7dc4da4d4711a1e2c7cde4502bd3b6a50e6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F3-queued-engine-free-preflight.json",
+      "sha256": "f5e0b3087325f59fcb51171d8526a3179cfc1674fa60e11afd3e0a210f65d053"
+    }
+  ],
+  "limits": "No engines/tests/Popen/source/gate/ledger edits. Reviewer0physical. Current2FAILED/max4, F3oneconstructor thenconditionalF4; prefix0/3. Source review doesnot promise actualF3PASS/product/economicadmission.",
+  "final_binding": {
+    "pins_verified": 239,
+    "pin_categories_reported": {
+      "committed_runtime": 223,
+      "native_API": 8,
+      "controls": 8
+    },
+    "mismatches": 0,
+    "source_and_helpers": "Reviewed script exact5be3…; immutable runtime paths for actual helpers/PYTHONPATH; source verification bindsaaa31/83financialfiles unchanged763. No mutable VPS draft/import path selected.",
+    "argv": "Both prepare and launch use absolute installedvenvPython, immutable reviewedscript, exactcurrent gate/ledger, and onlytheir respective modeflag.",
+    "environment": {
+      "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-aaa31f8/runtime",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "environment_condition": "Complete child environment must be this exact explicitmap, not inherited traderenv overlay. Gate declares only immutablePYTHONPATH/PYTHONDONTWRITEBYTECODE; fixture itself doesnot scrub environment. Rootlaunch responsible for exactenv application.",
+    "parent_and_current_budget": "Current741164… ledger max4/started2/active0/twoFAILED; original d160… twoFAILED parent raw+canonical hash preserved. One constructor physical3, no hiddenretry/F4autostart.",
+    "fresh_namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3",
+    "namespace_absent_at_review": true,
+    "root_go": false,
+    "preflight": "Saved actualimmutable --prepare receipt PREPARED_NO_ENGINE/pureengine_constructors0, reportedrc0 byroot. Reviewer didnotexecute.",
+    "future_result": "No actualF3PASS proven, no productpatch/F4/prefix permission granted."
+  }
+}
