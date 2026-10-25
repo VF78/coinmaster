@@ -267,3 +267,26 @@ def test_real_tier_policy_static_and_dynamic_fallback_both_stale_without_mutatio
     policy.update_mark(VenueMark(BTC_PERP.id,D('99.3'),later+1));policy.update_mark(VenueMark(SOL_PERP.id,D(100),later+1))
     assert policy.margin_for(BTC_PERP.id,D(1),later+1)[2]==D('99.3')
     assert policy.margin_for(SOL_PERP.id,D(1),later+1)[2]==D(100) and policy._marks is static and policy._profile is profile_before
+
+
+def test_additional_fixture_is_inert_without_human_pin_root_go_and_preserved_parent(tmp_path,monkeypatch):
+    import json,hashlib,copy
+    import run_a0_engineering as fixture
+    sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+    rows=[{'physical_index':i,'status':'COMPLETED' if i in (2,4) else 'FAILED'} for i in range(1,7)]
+    parent={'physical_started':6,'physical_max':6,'status':'CLOSED_ENGINEERING_FAILED','attempts':rows}
+    path=tmp_path/'closed-parent.json';path.write_text(json.dumps(parent));digest=sha(path)
+    monkeypatch.setattr(fixture,'CLOSED_SIX_LEDGER_SHA',digest)
+    gate={'engineering_physical_max':7,'root_go':True,'fixture_ids':['A05_CROSS_MARGIN_UNKNOWN'],'source_commit':'unit-test-source','protocol_sha256':'unit-test-protocol','parent_closed_engineering_ledger':{'path':str(path),'sha256':digest}}
+    ledger={'physical_max':7,'physical_started':6,'parent_closed_engineering_ledger_sha256':digest,'attempts':copy.deepcopy(rows)}
+    with pytest.raises(ValueError,match='APPROVAL_PIN'):fixture.reviewed_fixture_cap(gate,ledger)
+    approval={'status':'APPROVED_BY_OWNER','source_commit':gate['source_commit'],'protocol_sha256':gate['protocol_sha256'],'prior_closed_engineering_ledger_sha256':digest,'authorized_engineering_total':7,'additional_engineering_instances':1,'fixture_ids':['A05_CROSS_MARGIN_UNKNOWN'],'full':0,'unchanged_prefix_max':3,'exact_owner_reply':'UNIT TEST ONLY, NO REAL APPROVAL'}
+    approved=tmp_path/'unit-approval.json';approved.write_text(json.dumps(approval));gate['additional_engineering_approval']={'path':str(approved),'sha256':sha(approved)}
+    assert fixture.reviewed_fixture_cap(gate,ledger)==7
+    for field,value in [('root_go',False),('fixture_ids',['A06_C0_NO_RELEASE'])]:
+        bad=copy.deepcopy(gate);bad[field]=value
+        with pytest.raises(ValueError):fixture.reviewed_fixture_cap(bad,ledger)
+    for field,value in [('physical_started',0),('physical_max',8),('attempts',rows[:-1])]:
+        bad=copy.deepcopy(ledger);bad[field]=value
+        with pytest.raises(ValueError,match='PRESERVE_ALL_SIX'):fixture.reviewed_fixture_cap(gate,bad)
+    assert fixture.reviewed_fixture_cap({},parent)==6 and parent['attempts']==rows

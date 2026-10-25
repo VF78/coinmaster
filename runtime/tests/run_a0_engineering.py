@@ -18,11 +18,40 @@ M=60_000_000_000
 CASES=['A05_CROSS_MARGIN_UNKNOWN']
 COMBINED_DEPTHS={'old_late':'1','release_partial':'2','release_late':'3'}
 
+CLOSED_SIX_LEDGER_SHA='c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424'
+
+
+def reviewed_fixture_cap(gate,ledger):
+    """Six remains closed. A seventh is inert without separate human+root GO."""
+    cap=gate.get('engineering_physical_max',6)
+    if type(cap) is not int or cap not in (6,7):raise ValueError('INVALID_A0_FIXTURE_CEILING')
+    if cap==6:return cap
+    parent_ref=gate.get('parent_closed_engineering_ledger',{})
+    approval_ref=gate.get('additional_engineering_approval',{})
+    digest=lambda path:hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    if not gate.get('root_go') or gate.get('fixture_ids')!=['A05_CROSS_MARGIN_UNKNOWN']:
+        raise ValueError('EXACT_ADDITIONAL_A05_ROOT_GO_REQUIRED')
+    if parent_ref.get('sha256')!=CLOSED_SIX_LEDGER_SHA or not parent_ref.get('path') or digest(parent_ref['path'])!=CLOSED_SIX_LEDGER_SHA:
+        raise ValueError('IMMUTABLE_CLOSED_SIX_PARENT_REQUIRED')
+    parent=json.loads(Path(parent_ref['path']).read_text())
+    if parent.get('physical_started')!=6 or parent.get('physical_max')!=6 or not parent.get('status','').startswith('CLOSED') or len(parent.get('attempts',[]))!=6 or any(a['status'] not in ('FAILED','COMPLETED') for a in parent['attempts']):
+        raise ValueError('CLOSED_SIX_PARENT_STATE_REQUIRED')
+    if not approval_ref.get('path') or not approval_ref.get('sha256') or digest(approval_ref['path'])!=approval_ref['sha256']:
+        raise ValueError('DIRECT_OWNER_ADDITIONAL_APPROVAL_PIN_REQUIRED')
+    approval=json.loads(Path(approval_ref['path']).read_text())
+    required=dict(status='APPROVED_BY_OWNER',source_commit=gate['source_commit'],protocol_sha256=gate['protocol_sha256'],prior_closed_engineering_ledger_sha256=CLOSED_SIX_LEDGER_SHA,authorized_engineering_total=7,additional_engineering_instances=1,fixture_ids=['A05_CROSS_MARGIN_UNKNOWN'],full=0,unchanged_prefix_max=3)
+    if any(type(approval.get(k)) is not type(v) or approval[k]!=v for k,v in required.items()) or not str(approval.get('exact_owner_reply','')).strip():
+        raise ValueError('EXACT_DIRECT_OWNER_ADDITIONAL_APPROVAL_REQUIRED')
+    if ledger.get('parent_closed_engineering_ledger_sha256')!=CLOSED_SIX_LEDGER_SHA or ledger.get('physical_max')!=7 or ledger.get('physical_started')!=6 or ledger.get('attempts')!=parent['attempts']:
+        raise ValueError('DERIVED_LEDGER_MUST_PRESERVE_ALL_SIX_ROWS')
+    return 7
+
+
 class Recorder(pre.Recorder):
     def claim(self):
         data=json.loads(self.path.read_text())
-        if not self.gate.get('root_go') or data['physical_started']>=6:
-            raise ValueError('A0_GATE_OR_SIX_ENGINE_CAP')
+        if not self.gate.get('root_go') or data['physical_started']>=reviewed_fixture_cap(self.gate,data):
+            raise ValueError('A0_GATE_OR_APPROVED_ENGINE_CAP')
         return super().claim()
 
 class CountedEngine(pre.CountedEngine):
