@@ -1,0 +1,48 @@
+{
+  "schema": "CM_TP_PHYSICAL3_TABLE_REVIEW_V1",
+  "decision": "HOLD_CONSOLIDATED_F4_COVERAGE_CORRECTION_REQUIRED",
+  "p0": [],
+  "p1": [
+    {
+      "id": "TP-TABLE-01",
+      "target": "physical4-provisional-coverage-plan.json: phases P2 natural daily parent / critical_pre_GO_obligations / P1 debt phase",
+      "finding": "The required convincing one-instance product coverage plan is not yet concrete before physical3. P2 natural daily eligibility is explicitly deferred to source-only proof before physical4, and the mandatory debtIOC fill race has no specific native trigger/order/event sequence. Child cancel-inflight latefill does not cover outstanding protective debtIOC plus ordinary TP/actualheld race.",
+      "minimal_consolidated_correction": [
+        "Bind the exact deterministic causal daily seed/signal/config/quote timing for both natural parents; show with existing source/real-class engine-free predicates that P1 becomes flat and P2 is eligible within the declared data24h/config48h, without account/domain reset, altered signal/cap or hidden engine. Include P2 OFF+60/mark-stale/fresh/ACK and terminal timing so the one-instance budget is credible.",
+        "Specify the actual debtIOC submitted/outstanding event boundary, genuine ordinary TP/native fill ordering and any real delayed debt fill; name exact order/transport route and assertions for currentheld residual, cap, no reverse/extra cut and no stale debt reuse. Preserve native cache and event identities. Do not substitute the separate A0 childcancel race.",
+        "Make these concrete coverage/source preconditions prerequisites to physical3 GO, as approved amendment step1 requires. If no source-valid schedule fits, STOP without spending either constructor. No extra budget or assertion relaxation.",
+        "Distinguish actor-delivery lag from actual native UNKNOWN/pending. Holding Accepted/Updated at actor routes while current nativecache is accepted proves only actor registration lag; it cannot override native currentcache authority or count as genuine native pending. Name the source-required barrier, actual native state/command timing and positive denial proof; label any real-class engine-free UNKNOWN predicate as such, separately from critical actual native evidence.",
+        "For latefill/cancel/debt transport, pin an actual installed public latency/transparent fixture transport route and its command/event ordering beforephysical3. No cache/native-engine monkeypatch, fabricated pending state or newOMS. If the existing approved fixture transport cannot create the genuine required state, mark that coverage unresolved and STOP."
+      ]
+    }
+  ],
+  "physical3_table_assessment": {
+    "status": "CONTRACT_CONTENT_ACCEPTABLE_NOT_EXECUTED",
+    "detail": "Table includes genuine stock-gated entries and position/index ownership; real-position public stress route; debt autoUpdated distinguished from actorUpdated; actual partial/reject; same-OID positive native TradeID strictly after validUpdated/before active MODIFY_RETURN with marketable unchangedprice, quantitydelta, freshdepth and prefillentitlement. It refuses ordinary/zero/unmatched fills, assumes no cache iteration order, retains typed/generic uniqueness and unsafeUNKNOWN/loop/coverage STOP.",
+    "reachability_limit": "Linked remaining TP auto-resize at bid104 is source-plausible but ordering/convergence/freshdepth execution require the actual future frozen harness evidence. Table labels are not native proof."
+  },
+  "budget_scope": {
+    "approved_engineering_max": 4,
+    "already_failed": 2,
+    "physical3_planned": 1,
+    "physical4_planned": 1,
+    "additional_constructor_authorized_by_review": 0,
+    "prefix_max": 3,
+    "prefix_started": 0,
+    "product_patch": "Only after actualF1PASS and independent native evidence acceptance. Product linkage unchanged763.",
+    "duration_arithmetic": "Data [4.2e12,90.6e12] spans86.4e12ns=24h; config[-82.2e12,90.6e12] spans172.8e12ns=48h. Arithmetic fits; actual signal/parent eligibility is not established by duration alone."
+  },
+  "proof_pins": [
+    {
+      "file": "F1-physical3-observation-table.json",
+      "sha256": "1583309ba0157f6b9bce63ac4ba5b26395aefcca183751d61de88826aa79eb8b"
+    },
+    {
+      "file": "physical4-provisional-coverage-plan.json",
+      "sha256": "ff8af5ce1346a660a200a68626b48f064dfe201a601fd0d8545c920df9dbb892"
+    }
+  ],
+  "protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
+  "owner_approval_sha256": "958ffe15351412b3bafa73e62626b843af42296c218ab270f24163a0bbde4dae",
+  "review_limits": "Only the two frozen tables and approved protocol/previous focused source facts reviewed. No in-progress fixture code, native/test/Popen, source/ledger/gate mutation or coverage guarantee. Only this review JSON/MD written."
+}

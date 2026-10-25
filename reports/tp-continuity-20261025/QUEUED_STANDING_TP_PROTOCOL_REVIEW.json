@@ -1,0 +1,44 @@
+{
+  "schema": "CM_QUEUED_STANDING_TP_PROTOCOL_REVIEW_V1",
+  "decision": "FOR_OWNER_CONSENT_ONLY",
+  "initial_protocol_sha256": "ff5e288e79af7f04644b4c78d22dc3e31ee97d99252c698d24ee5aac9f11deaa",
+  "protocol_sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0",
+  "p0": [],
+  "bounded_viability": {
+    "standing_rule": "Explicitly changes frozen renormalization after ordinary consumption; original entry/debt target_lots, prices/initialweights/lotrounding/cap/A0rights remain. Consumed levels never restored; ordinaryfill reduces only own standing entitlement. Requires fresh human consent, not audit-only reinterpretation.",
+    "guard": "Deferring debt whenever any owned working TP is currently marketable avoids intentionally entering stock wholeheld auto-update while that target is executable. Uses bid>=SELLlimit/ask<=BUYlimit, not guessed consumed liquidity. Above-cap held/outstanding debt is logged honestly; no DD/capPASS implied.",
+    "fixture": "Current unlinked native route naturally indexes partialTP0. After .050+.010 fills held.940, residual.188 to cap.752, allocation159/159/434 and TP0total.219 are internally consistent. Nonmarketable100 allows queued correction afterreturn and beforefuturematching; ordinaryTP0completion leaves native159/434 rather than renormalized160/433. Source-supported candidate, actualcache/ordering/freshdepth and outcomes stillunproved.",
+    "current_matcher": "Queue quiescence before nextdatum is insufficient inside currently running matcher. Proposal correctly requires current unsafe window proven nonexecutable and exact allocation at every potentially executable boundary. No synchronously applied queuedcommand is assumed.",
+    "async": "Positive-latency partial/nonflat case remains UNKNOWN and gives no live/pilot/global safety admission. F4 public faultstress must remain explicitly bounded and separately reviewed; cannot waive zero-default production/prefix premises."
+  },
+  "scope_budget": {
+    "engineering_max": 4,
+    "already_failed": 2,
+    "remaining": 2,
+    "prefix_max": 3,
+    "prefix_started": 0,
+    "additional_budget": 0,
+    "authority": "Proposed new money rules need direct consent. No code/native authorization by this review. Product defaultOFF patch onlyafteractualF3acceptance, then independentmoneyreview/F4 and freshfinancialcontrols. All failedrows retained."
+  },
+  "evidence": {
+    "source_feasibility_sha256": "900699be70c202cfe2e7d8809c6d0d714a13eb019fed7807485c526e7e4c5613",
+    "prior_queue_review_sha256": "cab2ee0a4d7d3b5830477d161bdff79cec50a4f3d0d193b5d577616ee73d253d",
+    "claims_limit": "7996integerstates/1699quantumtransfers are reported engine-free source arithmetic, not native economic results or universal runtime proof."
+  },
+  "limits": "Focused proposed-contract review only. No engine/tests/Popen/product/source/ledger/gate edits. Only this review JSON/MD written.",
+  "closed_findings": [
+    {
+      "id": "TP-QSTAND-01",
+      "lines": [
+        14,
+        23,
+        27
+      ],
+      "finding": "Three observed same-OID ACKs/current quantities alone do not exclude an older or additional outstanding queued modify overwriting them after the snapshot. The safe debt dispatch/settlement premise also needs exact matching-book authority rather than a stale strategy/DataEngine cache.",
+      "minimal_correction": "Require per-owned-OID command sequence/latest authorized quantity generation and terminal native ACK status, no unresolved relevant owned modify/cancel commands at verified queue quiescence before ANY next potential matching boundary. ACK counts are not sufficient; reject/missing/unknown/unbounded queue meansSTOP. Bind debt submission to the actual native matching BBO plus quote/book identity/ordering and zero-default-latency dispatch→DEBT processing with no interposed BTC input/book change; stale actor/DataEngine lastquote alone is not proof. If these premises cannot be established, STOP rather than accept final convergence.",
+      "status": "CLOSED_VERIFIED_EXACT_GUARD_WORDING"
+    }
+  ],
+  "p1": [],
+  "closure": "Final lines14/23 explicitly require matching-native BBO/tick identity and no interposed BTCbook/input between zero-default dispatch and debtprocessing; perOIDsequence/currentgeneration/latestterminalACK, exact quantities and no unresolved protective modify/cancel before nextmatching; staleACK/reject/unknownSTOP. Verified mechanically, no new source/native claims."
+}

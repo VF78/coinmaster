@@ -1,0 +1,169 @@
+{
+  "schema": "CM_TP_PHYSICAL4_PROVISIONAL_COVERAGE_V1",
+  "status": "PROVISIONAL_NO_PROOF_PROMISE_NO_PRODUCTPATCH_YET",
+  "instances": 1,
+  "physical_index": 4,
+  "route": "Actual registered financial R2_A0 on prospective reviewedrepair; productsubmit/linkage remains763. C0 exactkwargs/defaultOFF pure; actualC0 financialprefix control required before A0, no separate hiddenengine.",
+  "data_window_ns": [
+    0,
+    90600000000000
+  ],
+  "config_window_ns": [
+    -86400000000000,
+    90600000000000
+  ],
+  "duration": "All streamedquote+CustomData events0→25h10<=48h DATA; config−24h→25h10=49h10 neededprecedingdayguard; exactrootadjudicationf954a126 pinned.",
+  "phases": [
+    {
+      "parent": "P1",
+      "phase": "Actual registered R2_A0 native sizing/lock",
+      "actions": "Real nativeconfig builder/LEGACY_Q/stock margin; deterministic causal completed seed creates genuine firstIOC+originalsecondGTC; actual pairedACTIVE cancels old ENTRY only, preserves protective TPs.",
+      "assertions": "Original native lots/firstpartial distinction/three current accepted targets/ownership; no test tierTrue."
+    },
+    {
+      "parent": "P1",
+      "phase": "OrdinaryTP before genuine SOL debt",
+      "actions": "Actual partial ordinaryBTC TP first permanentlykills thisparent A0right. Then actualSOL TP relief, nativeheld-derived residualBTCdebt; repeatSOLTP debt once with actualheld protection.",
+      "assertions": "No closedBTCrefund; correct frozen remaining allocations and sameprices; zero requiredTPgap throughdebt; qtymodify/nativeACK and realpartial/reject stages; requiredA0deadright denial here."
+    },
+    {
+      "parent": "P1",
+      "phase": "Consumed targets/TP3/flat",
+      "actions": "Nativefill first2targets then actualremainingTP3; actualSOL closure via existing lifecycle.",
+      "assertions": "Only realunconsumed levels required, never recreateconsumed; audit agrees with currentnativeorders at everyevent; nativeP1flat/orders0 before nextday; nativeaccount notreset."
+    },
+    {
+      "parent": "P2",
+      "phase": "New natural daily parent using same engine/strategy/config/account",
+      "actions": "Advance causal quotes+actual dailyCustomData to next UTCdaily decision; source domain generates freshentry from actualcash/registered sizing, not a manually replaced domain/strategy/account.",
+      "assertions": "New genuine domainparent ID and actualnativeentry, no SOLrearm withinoldparent. Source-only/pure inputprecondition must prove nextdailyeligibility BEFORE physical4 GO; if not feasible STOP."
+    },
+    {
+      "parent": "P2",
+      "phase": "A0 original right/real margin and UNKNOWN/cross barriers",
+      "actions": "PartialfirstIOC with fresh displayeddepth; pairedlock cancels originalsecond. Actual SOL relief/debt while firstheldpermanentcap; then realriskOFF+60s. Hold genuine targetACK/Updated actor delivery at BOTHcommonroutes without rewriting nativecache, feed crossingquote/staleactualmarks, then flush real events/freshVenueMark.",
+      "assertions": "FirstIOCunfilledremainder excluded; all actualsecondgenerationfills counted; nativecache true states recorded; UNKNOWN/cross/stale stockmarginDENY blockA0; actualfreshPASS/currentgeneration3ACK required. No substitute nativeACK/fill."
+    },
+    {
+      "parent": "P2",
+      "phase": "One release/ordinaryTP immediatecancel/cancel-inflight fill",
+      "actions": "One real original-pricepostOnlyGTC release; actualpartialfill. Then ordinaryTP must immediatelyrequestcancel evenhistoricalsplit.closed. Delay only actualcancel commandtransport and let realremainingorder match once before sending nativecancel; after nativecancelACK assert no furtherfill.",
+      "assertions": "Actualoneattempt inclreject/cancel; IDs/historyunchanged, oldCANCELEDneverreopened. Real late/inflight fill reducesrights/cap, nativeactualexcesscorrectivedebt if any; no reanchor/extra restoredBTC/retry."
+    },
+    {
+      "parent": "P2",
+      "phase": "Terminalintegratedcheck",
+      "actions": "Repeatquotes/fill remaining requiredtargetlevels; existing native exit if plannedordinaryterminalcondition; settle realSOL/BTC flat.",
+      "assertions": "Same-source correctedmoney/audit; actualrealTP3+currentownership, actualcap/freecap/nativecash/fillTradeIDs; terminalorders0/flat/Liq0 and5STOPPED→DISPOSED."
+    }
+  ],
+  "no_resets": "One strategy/config/account/engine. P2 only after nativeP1flat and next real dailydecision. No multiplex/reset/patchwhileenginealive.",
+  "critical_pre_GO_obligations": [
+    "Beforephysical3GO reviewer accepts thisconcreteconditionaloneenginecoverage map andactualsourceproof/pinnedpublictransport; no nativeoutcomes claimed.",
+    "Beforephysical4GO prospectivecorrectedmoneycode+exactconfig/feed/script/nativewindows and oneengine fullassertionmap independentmoneyreview.",
+    "All critical nativeobservations mustactuallyoccur; failed/NOT_REACHED/notpending states cannotbeconvertedtoPASS.",
+    "NativeP1allflat+orders0 beforeDAY mandatory; otherwise STOPnoP2reset. Native seedcalendar andtwo dailydecisions mustfollow actualpublicCustomData adapters.",
+    "Strongerpartial-inflightdebt cap/liveasyncglobalguarantee notestablished; thisboundedflat-before-lateIOC claim requiresroot/reviewerexplicitdisposition underapprovedmandatedracecoverage."
+  ],
+  "admission": "PROVISIONAL_SOURCE_SUPPORTED_QUALIFICATION_REQUIRED. Physical4onlyafteractualF1PASS+rootacceptance; realnativeproductresultmayFAIL. Missingessentialcoverage=>STOP/noeconomicprefix.",
+  "prefix_status": "0/3/HOLD; no economicPopen until integratednativeadmission and separateeachrootGO.",
+  "seed_source_proof": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/physical4-seed-latency-source-proof.json",
+    "sha256": "329b02bebe5d47355f9820ad94b0b1c22e2070966f54f632e8713fa3ff867594"
+  },
+  "data_config_adjudication": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/physical4-data-config-window-root-adjudication.json",
+    "sha256": "f954a126fef4a8e8bf853e6782eb2df3b229af869e0c8e7e2a52937a71bd92eb"
+  },
+  "native_fixture_latency": {
+    "class": "nautilus_trader.backtest.models.LatencyModel",
+    "base_latency_nanos": 0,
+    "insert_latency_nanos": 2000000000,
+    "update_latency_nanos": 1000000000,
+    "cancel_latency_nanos": 2000000000,
+    "use_message_queue": true,
+    "scope": "Engineeringfault-transport only. Futurefinancialprefixes retain unchangedzero-default producer; no dynamicmodel/configswap."
+  },
+  "actual_daily_schedule": {
+    "seed": "729realDailyBarobjects ending−DAY, all available_at<=−DAY; sourcefeatures_for/completed_wave_levels withoutmonkeypatch; no streamedwarmup.",
+    "stream_T0": "VenueMarkBTC/SOL then actualDailySignalBTC/SOL at0 ->730throw/index729LONGbeta1.199666/source5.5; firstquote1ns, economicentryexecutionnotbefore60s.",
+    "stream_T1": "SameCustomData order atDAY ->731throw/index730SHORTbeta1.2/source7.875; next actualdomainparent onlyif nativeP1flat, no account/domain reset; executionnotbeforeDAY+60s.",
+    "CustomData_event_ns": [
+      0,
+      86400000000000
+    ],
+    "funding_events": "None in shortsyntheticengineeringfixture; nativefees/cash/account real, fundingNOT_TESTEDhere. Signedassetfunding remainsmandatory futureprefixgate, not assumedzero financialpass.",
+    "terminal_data_ns": 90600000000000
+  },
+  "native_transport_and_race": {
+    "P1_fixed_clock_ns": {
+      "entry_eligible": 60000000000,
+      "paired_signal_decision": 70000000000,
+      "paired_SOL_entry_not_before": 130000000000,
+      "ordinary_TP0": 200000000000,
+      "ordinary_TP1": 240000000000,
+      "SOL_TP_relief": 400000000000,
+      "first_debt_quote_D": 400500000000,
+      "TP3_nativeflat": 401000000000,
+      "late_debt_delivery": 402500000000,
+      "P1_allterminal_assert_by": 500000000000
+    },
+    "P1_sequence": [
+      "Actualregisterednativeentry; realpairedsignalavailable70s/notbefore130s, B2LONGK120 keepsriskactive whileexistingBTCtargetprices<=~105.2. No signal/caprule altered; fixtureinputsdeclaredsynthetic.",
+      "NativeordinaryBTC0/1 fills atitsactualfrozenlimit levels, freshdepth; no crossingBTCthird. NativeSOL trim/ACKs settle before400s. A0rightP1deadfromordinaryTP.",
+      "At400s actualSOLTP0quote atthatactualnativelevel opensBmaxdebt. AtD400.5s BTCquote100 submitsrealreduce-onlyDEBTIOC. PublicLatencyModel insert2s leavesactualSUBMITTED/inflight untilD+2s.",
+      "AtD+0.5s usefreshBTCquoteatworkingTP3price/nativeheld-sizedfreshdepth; nativeTP3fullyflattensBTC BEFOREDEBTdelivery. AssertrealBTCflat andactualpendingDEBTOIDstillunfilled.",
+      "AtD+2s sameoldDEBT reachesnativeexchange. StockmarketRO+positionNone guard(engine.pyx6255-6267) mustcancel/nofill; assertthatOIDpositivefills0, no reverse/extracut, actualterminalevent. ExistingSOLclose settles; P1nativeflat/orders0 by500s."
+    ],
+    "bounded_claim": "Genuine outstandingDEBT_IOC plus ordinaryTP3/nativeFLAT-before-lateIOC is required. Earlier ordinaryTP-before-submit demonstratesactualheld residualrecompute. Partial-TP whiledebt alreadyinflight leavingnonflatposition is strongerasyncpartialcap case UNKNOWN/NOTCLAIMED; no guarantee staleIOC cannotcutbelowcap in that differentcase.",
+    "P2_clock_offsets_ns": {
+      "native_entry_eligible": 60000000000,
+      "paired_signal": 70000000000,
+      "SOL_entry_not_before": 130000000000,
+      "SOL_relief_for_cap": 200000000000,
+      "risk_OFF_quote": 300000000000,
+      "OFF_plus60_ready": 360000000000,
+      "post_only_cross_denial": 360000000000,
+      "stale_margin_denial": 480000000000,
+      "fresh_margin_recovery_submit": 481000000000,
+      "release_native_accept_after": 483000000000,
+      "release_partial_fill": 484000000000,
+      "targets_settled": 486000000000,
+      "ordinaryTP_immediatecancel": 487000000000,
+      "actual_release_fill_pending_cancel": 487500000000,
+      "cancel_delivery": 489000000000,
+      "corrective_debt_terminal_by": 495000000000,
+      "finalnativeflat_by": 900000000000
+    },
+    "P2_sequence": [
+      "P2naturalSHORTdailyparent atDAY, partialfirstIOC freshdepth1; nativefirstremainder neverearnsrights; originalsecondSELLpostOnlyGTC unaffectedprice, realpairedlock/cancelACK. SyntheticB2SHORTboundary99.2 keepsriskACTIVE atBTC100 untilOFFquote99 atDAY+300s;99 remainsaboveinitialshortTP1~98.4 so noordinaryTPconsumption.",
+      "ActualSOLrelief/debt beforeOFFpermanentcap, nativeTPqtyupdates. ActualPENDING_UPDATE callback recordscache pending and callsunchanged_a0_targets_ready againstrealcurrentcache; expectFalse/no actorACK fabrication. This is actualnativebarriercomponent, notclaimallotherA0preconditionssatisfied then.",
+      "AfterriskOFF+60, bid101.6crossesoriginalSELLsecondlimit~101.5 ->deny without ordinaryBUYTPfill. VenueMarkstale>120s by+480 whilequotesfresh ->realstockmargindeny atvalidpostOnlybid100; +481freshVenueMark ->actualoneoriginalrelease submit, insert2s, partialSELLfillat+484/freshbid102depth1.",
+      "WaitnativeqtyUpdatedsettled. At+487 useordinaryBUYTP0price/freshpartialdepth ->sourceimmediatecancelrelease; publiccancel_latency2s createsrealnativePENDING_CANCEL, not merelyactorlag. At+487.5bid102 freshdisplay2 providesactualreleasefillduringnativependingcancel; quantityobservedfromactualfills, no fake latefillafterACK.",
+      "NativecancelACK by+489; afterACK nofurtherreleasefills. Lateincreaseexcess computedfromactualheld/deadrightcap; genuinecorrectiveDEBTIOC throughsameinsertlatencysettlesbynative+495 whileBTC100 nonmarketableforprotectiveBUYTPs. Repeatedquotes/caps mustnotrefund/reanchor/resubmit.",
+      "Finalexistingoriginaltargetquotes/nativeflat withinDAY+900s, no extraengine/parent/reset. Stopanyrealinvariantfailure; no product coverage inferredfromthisplan."
+    ]
+  },
+  "UNKNOWN_classification": {
+    "native_actual": "PENDING_UPDATE is created/applied/cacheupdated anddelivered bypublicStrategy._create_modify_order beforeModifyOrder reachesexchange (strategy.pyx1615-1634 then1073-1091). In thatactualcallback recordnativeorderstatus and evaluate actualcurrent_a0_targets_ready: cache.status!=ACCEPTED=>False(a0_rights.py91-109).",
+    "actor_lag": "Holding typed/generic Accepted/Updated aftercacheACK is actorlagONLY, not nativeUNKNOWN; notcountedasnativepending.",
+    "missing_cache_UNKNOWN": "Any missingcache purepredicate tests labeledengine-freeonly; do not fabricate/deletecache toclaimnativeUNKNOWN.",
+    "safety": "Actualpendingbarriercomponent proof plusseparate realstock margin/cross/current3ACK predicates; no claim of an attemptedincrease duringeverypendingphase."
+  },
+  "native_U_price_selectivity": {
+    "actual_source": "market_redesign.u_prices usesrawCausalD3 only, thenP0*(1+side*d3*i/3)nativefloor/ceil; raw3wavequantiles areNOTdirecttargetprices",
+    "P1_LONG_prices": [
+      "101.8",
+      "103.5",
+      "105.2"
+    ],
+    "P2_SHORT_prices": [
+      "98.3",
+      "96.7",
+      "95.1"
+    ],
+    "P1_selective_quotes": "At200s BTC101.8 freshdepth>=actualnativeTP0leaves; at240sBTC103.5 freshdepth>=actualTP1leaves. Assertthird105.2FILLEDqty0/live/currentowner. No FIFO assumption or price/weight change. TPlatequote105.2 at401s nativeheld-sizedfreshdepth closesTP3.",
+    "P2_riskoff_and_cross": "BTC99 at+300 remainsabove98.3firstBUYtarget. BTC101.6postOnlycrossagainstoriginalsecondSELL101.5 movesAWAYfromallBUYtargets.",
+    "native_P0_scope": "TheseexactpricesconditionalonactualnativeP0=100 asdeclaredexecutionquote; physical4 mustfreeze actualsharedconfig/nativequantization andassertactualP0/prices beforebranch. If P0 differs do not silently substitute; STOP."
+  }
+}

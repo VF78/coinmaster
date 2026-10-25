@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "scanned_files": 113,
+  "high_confidence_secret_findings": [],
+  "proposal_sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0",
+  "engine_new_this_turn": 0,
+  "engineering_physical": "2FAILED/max4/active0/remaining2HOLD",
+  "prefix": "0/3",
+  "source_committed": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "source_product_files_changed": 0,
+  "unqualified_drafts": "report-only20630446 preserved; canonical0a2e uncommittedpreserved; neitherclaimednativequalified",
+  "workflow": "Existing solehl-epoch-wheel push onlycodex/nautilus-btc-sol-mvp+sensitiveworkflowpaths; manager/sourcepublicationbranchesnonmatching. No deployment.",
+  "tests": "JSON/ledger/protocolSHA integrity checked; no newengine/backtest or CIgreen claim."
+}

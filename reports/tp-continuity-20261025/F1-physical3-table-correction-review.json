@@ -1,0 +1,48 @@
+{
+  "schema": "CM_TP_PHYSICAL3_TABLE_CORRECTION_REVIEW_V1",
+  "decision": "LIMITED_TABLE_CONTRACT_PASS_NOT_ROOT_GO",
+  "p0": [],
+  "p1": [],
+  "closed_finding": "TP-TABLE-01",
+  "initial_review_preserved": "F1-physical3-table-review.json/.md and table-review-initial/",
+  "closure": {
+    "daily_parent": "Concrete fixed731bar formula,729causal preloaded rows through-DAY, actual source features/waves/decide and two daily decisions0/DAY support conditional LONG5.5 thenSHORT7.875 eligibility. P1 nativeflat/orders0 by500s remains actual prerequisite. No reset or source-signal monkeypatch; future native money/adapter proof still required.",
+    "window": "Actual event data0..90.6e12ns=25h10<=48h. Config-DAY..90.6e12=49h10 separately disclosed as necessary preceding-day guard under exact root adjudication; no extra streamed warmup/engine.",
+    "debt_race": "Specific D400.5s submitted debtIOC, genuine TP3 flat atD+.5s, late deliveryD+2s. Installed publicLatencyModel queue source supports2s submit/2s cancel/1s modify. NETTING _get_position_id8055–8076 searches openpositions and returnsNone afterflat; fill_market_order6255–6267 cancelsRO withNone. This is source-supported actual-race plan, not a native result.",
+    "pending": "PublicStrategy1615–1634 applies/cacheupdates/emits genuinePENDING_UPDATE before forwardingmodify. Current_a0_targets_ready91–109 requiresACCEPTED and thereforeFalse; component proof is distinct from attempting A0 with all other conditions satisfied. ActorACKlag afternativeACK explicitlynotnativeUNKNOWN.",
+    "transport": "Engineering-only fixedpublicLatencyModel, no cache/engine patch/newOMS/dynamicswap; financial prefixes retain defaulttransport.",
+    "F3": "Actual cache.position_id/orders_for_position must associate genuine position; raw unfilledOrder.position_id may legitimatelyNone. Mandatory valid marketable correctedsameOID TradeID afterUpdated/beforemodifyreturn/freshdepth/preentitlement checks retained."
+  },
+  "bounded_disposition": {
+    "accepted_scope": "Concrete flat-before-late-debt-IOC race is acceptable for the named mandatory race component with separate earlier actualheld residual recomputation. It does not prove every asynchronous debt/cap interleaving.",
+    "not_proven": "Partial TP after debtIOC alreadyinflight while position remainsnonflat/stale-debt cap behavior remains UNKNOWN/NOT_CLAIMED. No globalasync safety guarantee, completefinancialqualification or automatic prefix admission inferred.",
+    "future_gate": "Beforephysical4 sourcefreeze/independentmoneyreview must validate the actual repaired code, registeredadapter/config/feed and full assertion map; actual missing/unsafe outcomes STOP. If later code depends on the explicitly unproved partialnonflat race safety, it cannot be admitted by this table receipt.",
+    "budget": "Max4=twoFAILED+F3+F4, no hiddenreserve. Prefix0/3 conditional. Productpatch onlyafteractualF1PASS and independentacceptance. No native/rootGO or source edit authority granted.",
+    "native_price_clarification": "The actual registered research_btc_real_u route uses u_prices(P0,D3,i/3). Final actual-function proof gives distinct native P1 prices101.8/103.5/105.2 and P2SHORT98.3/96.7/95.1. ActualOID/quantity/freshdepth and positive remainingTP3 assertions are explicitly required. No equal-price/FIFO claim or new wave/grid. Final updated proof pins verified."
+  },
+  "proof_pins": [
+    {
+      "file": "F1-physical3-observation-table.json",
+      "sha256": "ffe5f20a93cff51b0d95ca9ff35d4e98c3bf4206494f7f9af1a1d66a74e7aac4"
+    },
+    {
+      "file": "physical4-provisional-coverage-plan.json",
+      "sha256": "28d3173c26d2c32dd403fa87423534e64986d14ce396ef8abc7383337aa6fd20"
+    },
+    {
+      "file": "physical4-seed-latency-source-proof.json",
+      "sha256": "329b02bebe5d47355f9820ad94b0b1c22e2070966f54f632e8713fa3ff867594"
+    },
+    {
+      "file": "physical4-native-transport-source-proof.json",
+      "sha256": "fc67464256af44b4b8679ac6b66c1ef5ba239eb0ff764d4fe2ae1575b74df73c"
+    },
+    {
+      "file": "physical4-data-config-window-root-adjudication.json",
+      "sha256": "f954a126fef4a8e8bf853e6782eb2df3b229af869e0c8e7e2a52937a71bd92eb"
+    }
+  ],
+  "protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
+  "review_limits": "Focused correction closure only; source snippets for publictransport/nativepending/NETTINGflat guard inspected. No engine/tests/Popen, in-progress fixture code, source/gate/ledger mutation. Saved only this correction review pair.",
+  "final_repin": "Final correction artifacts SHA verified by reading bytes only; P0/P1 remain0. No native feasibility/result/admission promised."
+}

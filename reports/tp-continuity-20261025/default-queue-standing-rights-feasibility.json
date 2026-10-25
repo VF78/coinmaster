@@ -1,0 +1,319 @@
+{
+  "schema": "CM_DEFAULT_QUEUE_STANDING_RIGHTS_FEASIBILITY_V1",
+  "status": "READ_ONLY_NEXT_CONTRACT_FEASIBILITY_NOT_IMPLEMENTED",
+  "implemented": 0,
+  "new_native": 0,
+  "economic_runs": 0,
+  "engineering": {
+    "physical_started": 2,
+    "physical_max": 4,
+    "active": 0,
+    "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "ledger_sha256": "741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800"
+  },
+  "prefix": {
+    "physical_started": 0,
+    "physical_max": 3
+  },
+  "integer_check": {
+    "actual_source": "coinmaster.strategy.market_redesign.target_lots",
+    "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+    "weights_exact": [
+      "17/80",
+      "17/80",
+      "46/80"
+    ],
+    "initial_lots_range_inclusive": [
+      5,
+      8000
+    ],
+    "states_checked": 7996,
+    "changed_states": 1699,
+    "changed_N_mod80": [
+      4,
+      9,
+      14,
+      18,
+      23,
+      28,
+      32,
+      37,
+      42,
+      47,
+      51,
+      56,
+      61,
+      65,
+      70,
+      75,
+      79
+    ],
+    "formula": "After FULLTP0, let a=floor(17N/80),r=17N mod80. NewTP1=a+floor(r/63); thus r>=63 transfers1lot fromTP2 toTP1. Verified with actualfrozenfunction inall7996states.",
+    "minimal": {
+      "initial_lots": 9,
+      "original": {
+        "0": 1,
+        "1": 1,
+        "2": 7
+      },
+      "actual_full_TP0_lots": 1,
+      "native_remaining_lots": 8,
+      "standing_other_entitlements": {
+        "1": 1,
+        "2": 7
+      },
+      "frozen_after_consumption": {
+        "1": 2,
+        "2": 6
+      },
+      "delta": {
+        "1": 1,
+        "2": -1
+      }
+    },
+    "near750": [
+      {
+        "N": 748,
+        "before": {
+          "0": 158,
+          "1": 158,
+          "2": 432
+        },
+        "after_full_TP0_held": 590,
+        "standing": {
+          "1": 158,
+          "2": 432
+        },
+        "frozen_after": {
+          "1": 159,
+          "2": 431
+        },
+        "changes": true
+      },
+      {
+        "N": 749,
+        "before": {
+          "0": 159,
+          "1": 159,
+          "2": 431
+        },
+        "after_full_TP0_held": 590,
+        "standing": {
+          "1": 159,
+          "2": 431
+        },
+        "frozen_after": {
+          "1": 159,
+          "2": 431
+        },
+        "changes": false
+      },
+      {
+        "N": 750,
+        "before": {
+          "0": 159,
+          "1": 159,
+          "2": 432
+        },
+        "after_full_TP0_held": 591,
+        "standing": {
+          "1": 159,
+          "2": 432
+        },
+        "frozen_after": {
+          "1": 159,
+          "2": 432
+        },
+        "changes": false
+      },
+      {
+        "N": 751,
+        "before": {
+          "0": 159,
+          "1": 159,
+          "2": 433
+        },
+        "after_full_TP0_held": 592,
+        "standing": {
+          "1": 159,
+          "2": 433
+        },
+        "frozen_after": {
+          "1": 159,
+          "2": 433
+        },
+        "changes": false
+      },
+      {
+        "N": 752,
+        "before": {
+          "0": 159,
+          "1": 159,
+          "2": 434
+        },
+        "after_full_TP0_held": 593,
+        "standing": {
+          "1": 159,
+          "2": 434
+        },
+        "frozen_after": {
+          "1": 160,
+          "2": 433
+        },
+        "changes": true
+      },
+      {
+        "N": 753,
+        "before": {
+          "0": 160,
+          "1": 160,
+          "2": 433
+        },
+        "after_full_TP0_held": 593,
+        "standing": {
+          "1": 160,
+          "2": 433
+        },
+        "frozen_after": {
+          "1": 160,
+          "2": 433
+        },
+        "changes": false
+      },
+      {
+        "N": 754,
+        "before": {
+          "0": 160,
+          "1": 160,
+          "2": 434
+        },
+        "after_full_TP0_held": 594,
+        "standing": {
+          "1": 160,
+          "2": 434
+        },
+        "frozen_after": {
+          "1": 160,
+          "2": 434
+        },
+        "changes": false
+      },
+      {
+        "N": 755,
+        "before": {
+          "0": 160,
+          "1": 160,
+          "2": 435
+        },
+        "after_full_TP0_held": 595,
+        "standing": {
+          "1": 160,
+          "2": 435
+        },
+        "frozen_after": {
+          "1": 160,
+          "2": 435
+        },
+        "changes": false
+      }
+    ],
+    "N752": {
+      "initial_lots": 752,
+      "original": {
+        "0": 159,
+        "1": 159,
+        "2": 434
+      },
+      "actual_full_TP0_lots": 159,
+      "native_remaining_lots": 593,
+      "standing_other_entitlements": {
+        "1": 159,
+        "2": 434
+      },
+      "frozen_after_consumption": {
+        "1": 160,
+        "2": 433
+      },
+      "delta": {
+        "1": 1,
+        "2": -1
+      }
+    },
+    "scope": "Pureintegerentitlementcheck only. No nativeorder/fill/PNL/venue-min-notional admission claimed."
+  },
+  "frozen_source_semantics": {
+    "consumption": "market_redesign.py308-333 requires authorizedgeneration then nativeFILLED OR actualdomain.btc_filled_tps; it setsconsumedlevel and allocated_entry=None. GenericCANCELED/closed alone isNOTconsumption.",
+    "reallocation": "_md_reconcile196-202 target_lots(actualheld,consumed) resets target_lots to filled+newleaves. OrdinaryTPchangedbtc_entry_qty_exact? NO, but allocated_entry=None forcesreallocation.",
+    "actual_current_763": "Existingremainingnativeorders can stay159/434 atN752 because signature(entryqty/P0)unchanged and work/notdesired_to_submit causesearlyreturn210-221. Domainnewentitlements160/433 differ despite correcttotal593. No queuedenforcement isalreadyimplemented here.",
+    "proposed_frozen_rule_enforcement": "A repair that requestsqueuedmods to160/433 cannot apply them beforecurrentquote matcher resumesafterTP0callback. This is actualsourceallocation-window proof, NOTclaim an actualoverfill wasobserved. NativeFILLED maylaterconsume anunderfilleddomainlevel; thatdoesnoterase theearlierwrongallocationwindow."
+  },
+  "queue_drain_before_future_input": {
+    "source_supported": true,
+    "conditions": "Actualbacktest/defaultuse_message_queue=True, latency_model=None, source producerzero-default. Successfullyhandledcommands orreject/terminalevents, notpromiseallrequestsaccepted.",
+    "ordering": [
+      "engine._run1692-1726 processesexchange matching fordatum, thenDataEngine/strategy, then_process_and_settle_venues BEFOREdata_iterator.next/future matchingdatum.",
+      "_process_and_settle_venues1888-1931 drainsallpendingvenues, thenmatching_engine.iterate, repeats untilquiescent; zero-latencycommands generatedbyACK/fills aredrained beforeleavingthissettlepoint.",
+      "_drain_commands3644-3660 popsqueue and_process_trading_command; nativeUpdated/ModifyRejected occur duringprocessing.",
+      "Timehandlers maysettleprevious/currenttimestamp batches (advance_time1765+/rawhandlers1999+), not atomicpreemptionof current matcher."
+    ],
+    "limits": [
+      "DoesNOT interruptmatching alreadyrunninginsideCURRENTexchangequote/stockauto callback.",
+      "Immediate marketablefill insidea_modify command canoccur beforeOTHERqueuedupdates; settlementisnotatomicportfolioresize.",
+      "Future-dueLatencyModelcommands remaininflight; no before-next-input guarantee withpositiveinsert/update/cancellatency.",
+      "If unsafe/nonconvergentcallbacks continuallyenqueue, no quiescenceproof; guardsmustSTOP.",
+      "NativeACKreject/unknown/missingcache cannotbeconvertedtoacceptedallocation."
+    ]
+  },
+  "standing_entitlements_candidate": {
+    "status": "PROPOSAL_REQUIRES_NEW_DIRECT_PROTOCOL_CONSENT",
+    "rule": "AfterordinaryTPfill subtractonlyactualquantity fromthatlevel; onFULL/domainentitlementcomplete markthatlevel consumed. KeepalreadyallocatedUNCONSUMEDlevelquantitiesunchanged; no renormalization/quantumtransfer solelybecauselevelconsumed. ReallocateonlyonactualENTRY orBTC_DEBTinventorychange, usingactualheld/fills andfrozenlotrounding.",
+    "unchanged": "BTCentry/LEGACY_Q, TPprices/initialweights, originalA0right/noclosedBTCrefund/caps/fees/funding/data.",
+    "explicit_change": "ThisCHANGESfrozen source allocated_entry=None-on-full-consumption behavior and laterTPlevel quantum entitlement/PnL possibility. Notan audit-onlyfix/defaultassumption.",
+    "source_plausibility": "Standingotherleaves preserve sumactualheld afterownordinaryfills, so currentmatcher maycontinuewithalreadycorrectremainingnativequantities; no ordinaryconsumptionresizecommand required. Zero-latencyqueuedinventory-triggerupdates cansettlebeforenextinput providedCURRENTbook is safe."
+  },
+  "unresolved_hazards_and_STOP": [
+    "ActualENTRY/DEBTreallocation whenanyremainingnativeTPis marketable stillrequiresstrictcurrent-boundaryproof; drain-beforefutureinput isinsufficient.",
+    "A previouslypartialfilledTP becomesactuallypositionindexed evenwithout explicitproductlink. A laterDEBTfill canthenstockauto-resize thatopenlinkedchild. Atmarketableprice queuedcorrectioncanbelate; standingordinaryrights alone doesnotfixthis.",
+    "liquidity_consumption=True andIOC cancellation bounds matter but cannotbehand-waved into blanketnooverfill. Stockapply_fills has IOCcancel-before-slip7440+ butmarketableLIMITremainderhasseparateslippath7560+; actualstatus/remainingdepth andnativeauto/cachedfillordering requireexplicit source/nativequalification.",
+    "OriginalpostOnlysecondfill geometry ordinarilymovespriceAWAYfromoppositeprofitTPs, makingentry-triggerresize plausiblynonmarketable; latefill/flip/unknown stillstrictSTOP, notglobalguarantee.",
+    "Positive-latencypartialdebt/ordinaryTPnonflatcap race remainsUNKNOWN; boundednativeflat-beforelateROIOC isaseparatetestonly.",
+    "No liveexchange/asyncglobalguarantee orfuturefinancialPASS fromthisreport."
+  ],
+  "authority": "CurrentF3engine/queueFalse/productpatch/economicsHOLD. Max4/2spentunchanged; anynewstanding-rightsprotocolrequiresdirectownerconsent, notmorebudgetinferred.",
+  "source_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-258f6ba/runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-258f6ba/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-258f6ba/runtime/coinmaster/research/native_baseline.py",
+      "sha256": "5d3a5825a9535ab3af1b7b9a91c374f6e0e1a56a59dba5d505d9880c63041cdc"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/execution_client.pyx",
+      "sha256": "d85d6afa4b75be98a1208ffdc992dec6e21918ec027285f14fffe9c0e8c52840"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    }
+  ],
+  "drafts_preserved": {
+    "new_stress": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical3-stress-draft-queue-HOLD.py",
+      "sha256": "20630446ec24a6e7fac89b8a1612f093ff214e723fcfe4b1f9d2601a7c1e5252"
+    },
+    "old_patch": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical3-uncommitted-pre-schedule.patch",
+      "sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182"
+    }
+  }
+}

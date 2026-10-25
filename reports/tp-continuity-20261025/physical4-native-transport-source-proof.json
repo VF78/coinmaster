@@ -1,0 +1,41 @@
+{
+  "schema": "CM_TP_F4_TRANSPORT_SOURCE_PROOF_V1",
+  "status": "SOURCE_SUPPORTED_NOT_NATIVE_PROOF",
+  "engine_constructors": 0,
+  "actual_public_latency_class_verified": {
+    "type": "actual public LatencyModel",
+    "base_latency_nanos": 0,
+    "insert_latency_nanos": 2000000000,
+    "update_latency_nanos": 1000000000,
+    "cancel_latency_nanos": 2000000000,
+    "use_message_queue": "unchangeddefaultTrue",
+    "native_pending_update_class": "OrderPendingUpdate"
+  },
+  "sources": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/models/latency.pyx",
+      "sha256": "ad4d16dde0e7cf72683e9bcafa102ba785b14ba768a6055aa97e8d39dfc98ff1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-258f6ba/runtime/coinmaster/strategy/a0_rights.py",
+      "sha256": "ed7b688cf4eac1ab1cd3427c42ccaa7d2bf5fcfdd4850c300feef3d8b26ca243"
+    }
+  ],
+  "source_lines": {
+    "commandqueue": "engine.pyx3376-3398: publicLatencyModel schedulesSubmit atinit+insert,Modify+update,Cancel+cancel withdefaultuse_message_queueTrue",
+    "flat_late_RO": "engine.pyx6255-6267: nativecurrentpositionNone cancelsreduce-onlymarket beforefill",
+    "native_pending": "strategy.pyx1615-1634 applies/caches/publishesrealPendingUpdate beforepublicModify forward; typed+generic callback actualnativecachePENDING_UPDATE",
+    "A0_barrier": "a0_rights.py91-109 requirescurrent3ordersnativeACCEPTED; realPENDING_UPDATE returnsFalse"
+  },
+  "bounded_scope": "P1fullnativeflatbeforelateDEBTdelivery; partialnonflatasyncinflightcap UNKNOWN/notclaimed. Actualnativeevents andstrictsourcebarrierresult stillrequired inphysical4.",
+  "plan_sha256": "28d3173c26d2c32dd403fa87423534e64986d14ce396ef8abc7383337aa6fd20",
+  "seed_proof_sha256": "329b02bebe5d47355f9820ad94b0b1c22e2070966f54f632e8713fa3ff867594"
+}

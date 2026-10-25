@@ -1,0 +1,113 @@
+{
+  "schema": "CM_TP_F3_QUEUE_CONTRACT_SOURCE_BLOCKER_V1",
+  "decision": "HOLD_F3_COMMIT_ENGINE_QUEUE_CHANGE",
+  "scope": "READ_ONLY_SOURCE_FINDING_ZERO_NEW_NATIVE",
+  "source_commit_base": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "native_version": "1.231.0",
+  "actual_additional_engines": 0,
+  "actual_stress_fills": 0,
+  "native_unsupported": "NOT_ESTABLISHED_NO_STRESS_ENGINE_RUN",
+  "required_synchronous_witness": "Actor-valid-Updated then SAME_OID nativeTradeIDfill strictly BEFORE that public Strategy.modify_order returns",
+  "default_transport": {
+    "use_message_queue": true,
+    "latency_model": null,
+    "prefix_and_current_fixture_default": true
+  },
+  "call_sequence": [
+    {
+      "step": 1,
+      "source": "trading/strategy.pyx1011-1091,1615-1634",
+      "fact": "Publicmodify creates/applies/caches/publishes PendingUpdate, then sends ModifyOrder throughrisk/execution. PendingUpdate changes status, not actual requestedquantity; it is NOT actorvalidUpdated/fill."
+    },
+    {
+      "step": 2,
+      "source": "backtest/execution_client.pyx130-133",
+      "fact": "BacktestExecutionClient.modify_order calls only self._exchange.send(command)."
+    },
+    {
+      "step": 3,
+      "source": "backtest/engine.pyx3376-3381",
+      "fact": "Withuse_message_queueTrue/noLatency send appendsleft to_message_queue and returns. WithLatency it enqueuesinflight. OnlyFalse directlycalls_process_trading_command."
+    },
+    {
+      "step": 4,
+      "source": "backtest/engine.pyx3644-3660",
+      "fact": "Queuedcommands executedlater by_drain_commands loop. Therefore ordinarypublicmodify returnsbeforeitsnativeactorUpdated andfill in thisroute."
+    },
+    {
+      "step": 5,
+      "source": "backtest/engine.pyx7978-8044,8159-8205,5597-5635",
+      "fact": "Stockauto onopenindexedreduce-only target calls update_order(total=currentheld), generatesautoUpdated thencalls fill_limit_order synchronously whenmarketable. Actorcorrect fromautoUpdated queuesitsown validmodify and returnsbeforethatcorrectionapplies."
+    }
+  ],
+  "conditional_counterexample": {
+    "status": "SOURCE_SUPPORTED_POSSIBLE_NOT_ACTUAL_NATIVE_OUTCOME",
+    "example": "After TP0 atfreshbid104 leavesnativeheld.591, stockauto maysetTP1total.591 (planned.159) orTP2total.591(planned.432). Actorpubliccorrectionqueues. Outerauto resumesmarketablefill BEFOREqueuedcorrectionexecution. NativeROclampswholeposition, notper-level plannedallowance. Unsafeoversizedfill is thereforepossible; no nativefill/overfill observation manufactured.",
+    "iteration": "No cacheiterationorder assumption; whicheverremainingtarget is visited first is conditional.",
+    "why_required_witness_fails": "Evenifsafetyhappensbyanotherstockguard, requested actor-validUpdated/fill BEFOREreturn is not suppliedbyqueuedpublicroute."
+  },
+  "options_not_authorized": [
+    {
+      "option": "Publicuse_message_queueFalse",
+      "source": "Supportedpublicadd_venue parameter engine.pyx524-525 andsend directbranch3376-3377",
+      "limit": "Differentfixturetransport/returnsemantics fromdefaultTrue F4/prefix; MUSTNOTsilentlyswitch andclaimdefault/productfeasibilityPASS. Rootindependentdispositionpending; no codeflag/enginechange."
+    },
+    {
+      "option": "KeepdefaultTrue andstudyactualqueuedoutcomes",
+      "limit": "Wouldneedexplicitcontractdisposition for observation/acceptance condition; no waiver ofunsafeallocation/requiredTP/weights. No automaticthirdrun."
+    }
+  ],
+  "current_budget": {
+    "engineering_started": 2,
+    "engineering_max": 4,
+    "active": 0,
+    "both_previous_rows": "FAILED_UNCHANGED",
+    "physical3_started": 0,
+    "physical4_started": 0,
+    "prefix_started": 0,
+    "prefix_max": 3,
+    "product_patch_allowed": false
+  },
+  "source_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/execution_client.pyx",
+      "sha256": "d85d6afa4b75be98a1208ffdc992dec6e21918ec027285f14fffe9c0e8c52840"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.pyx",
+      "sha256": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf"
+    }
+  ],
+  "ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "sha256": "741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800"
+  },
+  "parent_ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-ledger.json",
+    "sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94"
+  },
+  "new_stress_draft": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical3-stress-draft-queue-HOLD.py",
+    "sha256": "20630446ec24a6e7fac89b8a1612f093ff214e723fcfe4b1f9d2601a7c1e5252",
+    "status": "LOCAL_REPORT_ONLY_UNCOMMITTED_UNQUALIFIED_NOT_FROZEN_NOT_RUN",
+    "canonical_installed": false,
+    "queueFalse_switched": false
+  },
+  "canonical_old_draft": {
+    "path": "runtime/tests/run_tp_continuity_feasibility.py",
+    "HEAD": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+    "state": "Existingpreviousuncommittedminimaldraftpreserved",
+    "patch_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical3-uncommitted-pre-schedule.patch",
+    "patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182"
+  },
+  "monetary_runtime_83_files": "BYTE_IDENTICAL763",
+  "publication": "Committed258alreadyPUBLIC/exactremoteverified; newstressdraftnotpublished; no deployment."
+}

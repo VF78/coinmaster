@@ -1,0 +1,56 @@
+{
+  "schema": "CM_TP_STRESS_OBSERVATION_TABLE_V1",
+  "status": "PRE_ENGINE_TABLE_FOR_REVIEW_NOT_NATIVE_PROOF",
+  "protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
+  "owner_approval_sha256": "958ffe15351412b3bafa73e62626b843af42296c218ab270f24163a0bbde4dae",
+  "physical_index": 3,
+  "rows": [
+    {
+      "observation": "Native entry/margin/position ownership",
+      "trigger": "Actual stock-gated BTC BUY1 and SOL SELL10 after valid finite completed seed/start-minus-day",
+      "API": "Inherited real _tier_allows_increase/native own account/current marks; cache actual BTC position.id",
+      "events": "Native entries/fills/PositionOpened",
+      "positive": "Real margin admissions recorded; actual heldBTC1/SOLshort10; no manual position/cache/cash."
+    },
+    {
+      "observation": "Public real-position stress route",
+      "trigger": "Three ordinary TP submissions212/212/576lots at101/102/103",
+      "API": "submit_order(order,position_id=actual cached BTCposition.id), no parent/OCO/link injection into product",
+      "events": "3realAccepted; strict cache.position_id/order_for_position association matches ACTUALposition. RawUNFILLEDOrder.position_id maylegitimatelyNone untilfill, exportedseparately.",
+      "positive": "Actualrealcacheassociation/indexstrict; rawOrder.position_id isNOTrequirednonNonebeforefill. No fakeposition,parentorcachemutation."
+    },
+    {
+      "observation": "Debt continuity/real auto-resize",
+      "trigger": "Actual SOL relief2.5, nextBTCquote100 native residual debt.250 to same cap.750",
+      "API": "Actual reallocation invokes existing bounded sameOIDcorrect; actual stock postfillauto loop",
+      "events": "Debt TradeID plus unsolicited autoUpdated distinctfrom actor Updated",
+      "positive": "Held.750, frozen159/159/432 leaves, prices unchanged, zero actual requiredTPgap; exact allocations at realpotentialmatch boundaries."
+    },
+    {
+      "observation": "Partial/real rejection",
+      "trigger": "FreshBTC101 depth.050 then public total.001 below actualfilled.050",
+      "API": "Native matching then actual modify/ModifyRejected sameOID",
+      "events": "TP0TradeID partial.050; realModifyRejected typed+generic sameevent ID",
+      "positive": "Qty<=pre-fill frozen entitlement BEFORE observer/clamp; remaining.109/.159/.432; reject is not validmodify or filled-levelconsumption."
+    },
+    {
+      "observation": "Genuine valid MARKETABLE modify and nested fill",
+      "trigger": "FreshBTC104 depth1 after partial; TP0remaining.109 fills; actual stockauto mayresize a different indexed openTP while alllevels marketable",
+      "API": "Unsolicited Updated ->sameOID bounded PUBLIC modify(actualfilled+desiredleaves,unchangedprice) ->stock immediate fill before publiccall returns",
+      "events": "Actor Updated and positive native TradeID fill on sameOID strictly after that Updated and strictly before MODIFY_RETURN of the same active command",
+      "positive": "Require command context: actual bid>=limit; correct quantitydelta; fresh displayed depth minus all native same-side fills remains>=nestedfill; sameOID/nativeTradeID unique; typed+generic route once. Ordinary TPfill/unmatchedtime/unsupportedcacheorder/zero nestedfill=>NOT_PROVEN."
+    },
+    {
+      "observation": "Safety and terminal lifecycle",
+      "trigger": "Continue existing same quotes only if all real invariants safe; close remaining SOL via actual nativeorder",
+      "API": "Native account/cache/orders/fills; end onlyrunning; no toggle/enginepatch/account reset",
+      "events": "Nativeflat/orders0;5components actualSTOPPED thenDISPOSED",
+      "positive": "No reverse/extraBTCcut/doublefill/sameOIDloop; exact frozenquantization; finite boundedcrossOID nesting; preEND raw evidence. Unknown unsafewindow=>STOP."
+    }
+  ],
+  "constructor_planned": 1,
+  "constructor_started_this_preparation": 0,
+  "product_patch_allowed": false,
+  "known_hazard": "Outer auto_update_limit_order may resume fill_limit_order after nested sameOID fill closed target. Actual cachedfill/closed guards must prevent duplicate/excess; never infer from final convergence.",
+  "cache_iteration": "No predicted target/cache iteration order; missingpositive nestedfill path=>NOT_PROVEN."
+}

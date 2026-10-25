@@ -1,0 +1,19 @@
+{
+  "status": "DERIVED_MAX4_PRESERVES_BOTH_FAILED",
+  "recorded_utc": "2026-10-25T18:31:47.092495+00:00",
+  "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+  "ledger_sha256": "741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800",
+  "parent_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-ledger.json",
+  "parent_sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94",
+  "raw_attempt_array_sha256": "4fc958a94e10b98390187c3dbdf37a69494ab64c02f724432b0bff561b35e05e",
+  "canonical_entry_sha256": [
+    "8acb1eaed5838f92cfb2f7f14b29b670cf3057cabfcf5f7553c190b108afb9da",
+    "500630228c3ee42c8db52d67017bb7d324d744b69ba46925596b2ef7d0ab7d95"
+  ],
+  "physical_started": 2,
+  "physical_max": 4,
+  "active": 0,
+  "authorized_remaining": 2,
+  "prefix_ledger_sha256": "2ca6975cee1f5b661880131da06740fb5e43908ae95273d662a52b151cd3de46",
+  "new_engine_constructors": 0
+}

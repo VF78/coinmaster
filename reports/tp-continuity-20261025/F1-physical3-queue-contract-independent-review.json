@@ -1,0 +1,89 @@
+{
+  "schema": "CM_TP_F3_QUEUE_CONTRACT_INDEPENDENT_REVIEW_V1",
+  "decision": "HOLD_STOP_BEFORE_PHYSICAL3_CONTRACT_TRANSPORT_CONTRADICTION",
+  "p0": [],
+  "p1": [
+    {
+      "id": "TP-QUEUE-01",
+      "finding": "Approved positive same-correction-OID Updated→TradeIDfill strictly before public modify returns cannot occur through the default queuedTrue public modify route. Proposed linked scenario may instead expose an executable inflated-entitlement window before queued correction, so synchronous nesting cannot be assumed.",
+      "resolution": "Keep physical3/4 unused while explicitly adjudicating protocol/transport/acceptance scope. No silent queueFalse switch, timing-condition weakening or productadmission from different transport."
+    }
+  ],
+  "installed_source_facts": [
+    {
+      "function": "BacktestEngine.add_venue / SimulatedExchange.__init__",
+      "lines": "engine.pyx525,2844",
+      "fact": "use_message_queue defaultsTrue. Frozen source258 fixture add_venue361 does not override it."
+    },
+    {
+      "function": "Strategy.modify_order",
+      "lines": "strategy.pyx1073–1091,1615–1634",
+      "fact": "Creates genuine cached/publishedPendingUpdate, then forwards public modify through risk route; this is not quantityUpdated ACK."
+    },
+    {
+      "function": "BacktestExecutionClient.modify_order",
+      "lines": "execution_client.pyx130–133",
+      "fact": "Calls exchange.send and returns."
+    },
+    {
+      "function": "SimulatedExchange.send",
+      "lines": "engine.pyx3376–3381",
+      "fact": "queuedTrue/noLatency appends command; withLatency puts it in inflightqueue; neither executes command in this call. False directly processes it."
+    },
+    {
+      "function": "SimulatedExchange.process",
+      "lines": "engine.pyx3645–3660",
+      "fact": "Later drains due inflight and messagequeue and processes commands."
+    },
+    {
+      "function": "OrderMatchingEngine._update_limit_order",
+      "lines": "engine.pyx5597–5630",
+      "fact": "A valid marketable update emitsUpdated then immediately fill_limit_order; this independent native stack can resume before callback-enqueued correction is processed."
+    },
+    {
+      "function": "OrderMatchingEngine postfill RO synchronization",
+      "lines": "engine.pyx7994–8039",
+      "fact": "Eligible linked remaining RO order is resized to whole actualheld, currentfilledOID skipped. Wholeheld total can exceed that level frozen entitlement."
+    }
+  ],
+  "source_inference": {
+    "logical_scope": "For the future candidate correction command on current standard queuedTrue path, there is no installed same-call processing step producing its Updated/fill before public return. A deliberately reentrant exchange.process/run from callback would be a different unsupported test route, not a solution assumed here.",
+    "counterexample_window": "Atbid104 after initiatingTP0 fill, a remaining linked level can be auto-resized from its smaller frozen entitlement to wholeheld. Its Updated callback enqueues smaller same-OID correction and returns. Outer native update then callsfill_limit_order before queue drain. Freshdepth can permit per-level excess even if reduce-only prevents account reversal. Conservative callback boundary assertions may STOP before excessfill; they cannot turn that path intoPASS. Exact target/cache order/actualfill remains unobserved.",
+    "native_result": "No engine run for this candidate. This is a source-supported contradiction/hazard, not actual native stockUNSUPPORTED, financialFAIL, or evidence that unlinked763 product has the same linked auto behavior."
+  },
+  "queueFalse_disposition": {
+    "api": "Public add_venue(use_message_queue=False) is an ordinary installed configuration API; it is not by itself a nativeenginepatch or reduce_only/contingent-off switch.",
+    "scope": "Its synchronous command processing is precisely the changed causal assumption. Therefore it is material to this acceptance condition, not a routine equivalent implementation choice. Any use requires explicit frozen config-specific stress-discovery disposition/contract revision before running; this review does not authorize it.",
+    "qualification": "Even synchronousFalsePASS could establish only that distinct linked/config-specific API path. It cannot qualify queuedTrue unchangedproduct/F4/financialprefix or justify overriding the queuedTrue unsafe window. Required actual integrated evidence and moneyreview stay mandatory."
+  },
+  "recommended_action": [
+    "STOP before spending physical3 on the currently contradictory positive requirement. Preserve twoFAILED rows, max4/remaining2 and prefix0/3; no productpatch.",
+    "Use this installed-source receipt to decide feasibilitySTOP for the present linked queued contract without another engine; actualUNSUPPORTED must not be claimed.",
+    "If further discovery is worthwhile, first make an explicit bounded proposal separating defaultqueuedTrue behavior/safety evidence from any optional synchronousFalse stress experiment, defining acceptance and product relevance honestly. Do not relabel queued delayed execution as before-return or use unrelated nativeUpdated for causal proof.",
+    "Retain F4 only as conditional unused budget. Any narrower experiment that does not establish relevantsafe feasibility cannot unlock productpatch/economics; no extra reserve/retry automatically follows."
+  ],
+  "prior_review_correction": "Earlier table/source reachability assessment considered native update→immediatefill but omitted the intervening public command queue boundary. Its plausibility statement does not establish synchronous correction on defaultTrue. This focused receipt supersedes that assumption; prior reports remain preserved.",
+  "proof_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/execution_client.pyx",
+      "sha256": "d85d6afa4b75be98a1208ffdc992dec6e21918ec027285f14fffe9c0e8c52840"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/AMENDMENT_STOCK_STRESS_PROPOSED_RU.md",
+      "sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical3-observation-table.json",
+      "sha256": "ffe5f20a93cff51b0d95ca9ff35d4e98c3bf4206494f7f9af1a1d66a74e7aac4"
+    }
+  ],
+  "review_limits": "Focused installed functions/source only; no engine/tests/Popen, source/gate/ledger changes. Only this review JSON/MD written."
+}

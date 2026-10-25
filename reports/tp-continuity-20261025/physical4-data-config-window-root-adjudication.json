@@ -1,0 +1,16 @@
+{
+  "schema": "CM_TP_ENGINEERING_WINDOW_ROOT_ADJUDICATION_V1",
+  "status": "WITHIN_APPROVED_DATA_CAP_NOT_BUDGET_EXTENSION",
+  "utc": "2026-10-25T18:38:22.361016+00:00",
+  "approved_protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
+  "exact_protocol_bound": "Каждый ≤48ч данных, failed/setup/repeat тоже считаются.",
+  "interpretation": "48h bounds actually processed fixture quote/event-data span. A separately documented configuration trading-start warmup guard of up to one preceding day may extend configuration window; it is not permission to process more than48h data or run another engine. The provisional owner-authored config48h maximum was not an owner-imposed additional cap.",
+  "required_before_GO": [
+    "Exact UTC/ns first/last actual input timestamps and delta<=48h, including every processed quote/custom/funding event; preloaded causal completed seed history distinguished explicitly from streamed event timestamps.",
+    "Configuration start/end separately pinned; only necessary preceding-day trading-start guard, no new streamed warmup/day/training/full replay.",
+    "Two natural parent/session eligibility source proof including lastaccepted+DAY, actual decision times and adequate terminaltail before declared end; no seed/session mismatch/reset.",
+    "No change to registered source risk parameters, source sizing/dayguards, engine/fee/funding/nativeoptions or money.",
+    "Every actual engine/Popen remains counted; totalmax4/started2, no reserve/retry; rootGO stillfalse."
+  ],
+  "authority": "Coordinator interpretation of already approved data-unit cap, no new human consent inferred/required for routine separate configwindow selection."
+}

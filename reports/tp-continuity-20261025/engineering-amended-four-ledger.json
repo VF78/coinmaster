@@ -1,0 +1,63 @@
+{
+  "task": "CM-TP-CONTINUITY-20261025",
+  "status": "AMEND4_APPROVED_AWAITING_F1_STRESS_REVIEW_ROOT_GO",
+  "kind": "NATIVE_ENGINE_CONSTRUCTOR",
+  "physical_max": 4,
+  "physical_started": 2,
+  "active": 0,
+  "attempts": [
+    {
+      "attempt_id": "2e684986-b92d-4f43-b991-a24c4cde41fd",
+      "physical_index": 1,
+      "fixture_id": "F1_STOCK_NATIVE_API_FEASIBILITY",
+      "status": "FAILED",
+      "started_utc": "2026-10-25T16:19:00.084852+00:00",
+      "source_commit": "14735dd15415b80f3ea4a49120c707f0927878bf",
+      "gate_sha256": "f4a565a302c1ccc62e067ce2af792b51ffe0594c3b408f48ffb89355b641e0a0",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1",
+      "window_ns": [
+        1,
+        3600000000000
+      ],
+      "finished_utc": "2026-10-25T16:19:00.129999+00:00",
+      "actual_process_exit_code": 1,
+      "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1/result.json",
+      "result_sha256": "c6b73117ffd38cbcaa9744e1fab74c8876f929c5f45c962c259e5cd9733803e4"
+    },
+    {
+      "attempt_id": "86fbc698-ccb5-474b-9090-1164a745e070",
+      "physical_index": 2,
+      "fixture_id": "F1_STOCK_NATIVE_API_FEASIBILITY",
+      "status": "FAILED",
+      "started_utc": "2026-10-25T16:32:22.623042+00:00",
+      "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+      "gate_sha256": "03c3c7d05bdbd6e8c9fdda1ccbf30e285929e3e3b5b37ed2bae9adb4876fdac4",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical2",
+      "window_ns": [
+        1,
+        3600000000000
+      ],
+      "finished_utc": "2026-10-25T16:32:22.722212+00:00",
+      "actual_process_exit_code": 1,
+      "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical2/result.json",
+      "result_sha256": "e7f98be9f540035ff159dc7a5b6a655b29b27523fce71c234ec850c80e69d124"
+    }
+  ],
+  "protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "parent_engineering_closed_ledger_sha256": "e92957f167e0331380f9f809cf891123c99e33e9d33e974d4516424158f4784f",
+  "parent_prefix_closed_ledger_sha256": "f893aafc7c5b65acbc55a2069af1c8738ed798a72e50816f6ab5ed5108b0d7f3",
+  "full_training_downloads_pilot_production": 0,
+  "initial_protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "before_amendment_ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-ledger.json",
+    "sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94"
+  },
+  "owner_amendment4": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/owner-approval-amendment4.json",
+    "sha256": "958ffe15351412b3bafa73e62626b843af42296c218ab270f24163a0bbde4dae"
+  },
+  "authorized_remaining": 2,
+  "prefix_physical_max_unchanged": 3,
+  "prefix_physical_started_unchanged": 0
+}

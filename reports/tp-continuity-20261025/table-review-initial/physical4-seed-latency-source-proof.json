@@ -1,0 +1,78 @@
+{
+  "status": "ENGINE_FREE_CONDITIONAL_SOURCE_ELIGIBILITY_PASS",
+  "engine_constructors": 0,
+  "native_fills": 0,
+  "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "source_domain_sha256": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239",
+  "formula": "Fixed731bars; btc=100*exp(.05*sin(2*pi*i/20)+.0001*i); sol=100*(btc/100)^1.2*exp(.002*sin(2*pi*i/7)); no grid/search/selection.",
+  "seed_daily_bars": 730,
+  "observed_next_daily_rows": 1,
+  "actual_source_functions": [
+    "features_for",
+    "completed_wave_levels",
+    "WaveOverlayState.decide",
+    "WaveOverlayState.on_group_flat"
+  ],
+  "parents": [
+    {
+      "index": 729,
+      "side": 1,
+      "beta": 1.1996660808741368,
+      "sigma": 0.002198494400421218,
+      "levels": [
+        0.051796863355003,
+        0.05179686335500322,
+        0.05179686335500344
+      ],
+      "requested_notional": 78750.0,
+      "close_time": "1970-01-01T00:00:00+00:00",
+      "available_at": "1970-01-01T00:00:00+00:00",
+      "last_entry_attempt": [
+        729,
+        1
+      ]
+    },
+    {
+      "index": 730,
+      "side": -1,
+      "beta": 1.1999999999999997,
+      "sigma": 0.0022103289491115564,
+      "levels": [
+        0.04829484186353766,
+        0.04829484186353783,
+        0.04829484186353816
+      ],
+      "requested_notional": 78750.0,
+      "close_time": "1970-01-02T00:00:00+00:00",
+      "available_at": "1970-01-02T00:00:00+00:00",
+      "last_entry_attempt": [
+        730,
+        -1
+      ]
+    }
+  ],
+  "clock": {
+    "first_session_ns": 0,
+    "second_session_ns": 86400000000000,
+    "first_quote_ns": 1,
+    "data_end_ns": 90600000000000,
+    "data_duration_hours": 25.166666666666668,
+    "trading_start_ns": -86400000000000,
+    "config_duration_hours": 49.166666666666664
+  },
+  "latency_fixture": {
+    "type": "actual public LatencyModel",
+    "base_latency_nanos": 0,
+    "insert_latency_nanos": 2000000000,
+    "update_latency_nanos": 1000000000,
+    "cancel_latency_nanos": 0,
+    "use_message_queue": "unchangeddefaultTrue",
+    "native_pending_update_class": "OrderPendingUpdate"
+  },
+  "limits": [
+    "Pure domain entry eligibility conditional on real P1nativeflat; no cash/financial/nativefill proof.",
+    "All731bars use real source feature/wave calculations without features/wave monkeypatch.",
+    "Actualregisteredadapter next-session path and nativeP1closure must still satisfy native fixture; no domain/account reset.",
+    "Root adjudication f954a126 bounds actualprocessed DATA<=48h; config49h10 precedingday guard separately disclosed; no streamedwarmup."
+  ]
+}
