@@ -1,0 +1,19 @@
+{
+  "decision": "ROOT_GO_AMEND4_R2_C0_PHYSICAL3_ONLY",
+  "recorded_utc": "2026-10-25T13:49:17.825034+00:00",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "variant": "R2_C0",
+  "physical_index": 3,
+  "pre_go_freeze_sha256": "9d8667295f0b6d7742e29d949e7188b70850d2380245f3e1212c4bb71614523e",
+  "parent_phase_OFF_financial_receipt_sha256": "23ac8f62cbee58bd6d377676791369b37f351c384f9fd22f5f6fffcd77801b6a",
+  "prior_actual_financial_guard": "PASS_VERIFIED_BY_ROOT",
+  "allsource_input_scriptpins": "PASS",
+  "native_stock_input_preflight": "PASS",
+  "prefix_global_spent": 2,
+  "prefix_max": 4,
+  "remaining_including_this": 2,
+  "C0_policy": "B2_F0_A0_FLAG_FALSE_SAME_R2_CORE",
+  "C0_native_fixture": "NOT_RUN_THIS_IS_FIRST_MONETARY_CONTROL",
+  "full_training_download_pilot_production": 0,
+  "stop": "Onephysicalworker only/no retry/no automaticA0; actualC0fullfinancialPASSrequired beforeA0; no quietkillwithoutresourceprogress"
+}

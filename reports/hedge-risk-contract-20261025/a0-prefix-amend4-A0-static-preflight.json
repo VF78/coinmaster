@@ -1,0 +1,29 @@
+{
+  "status": "A0_STATIC_PREFLIGHT_PASS_ACTUAL_C0_FINANCIAL_RECEIPT_PENDING",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "A0_root_go": false,
+  "A0_namespace_fresh": true,
+  "C0_to_A0_changed_kwargs": [
+    "artifact_dir",
+    "artifact_label",
+    "research_a0_original_second"
+  ],
+  "C0_A0_same_policy": "B2_F0",
+  "C0_flag": false,
+  "A0_flag": true,
+  "other_R2_core_data_feed_fees_window_seed_unchanged": true,
+  "source_pins_verified": 222,
+  "input_pins_verified": 31,
+  "script_pins_verified": 3,
+  "actual_kwargs_jsonroundtrip": "PASS815rows",
+  "OFF_completed_entry_sha256": "75cc9c767940bb35f68883d2132e5a204f44b773da20b58a9c63840691411dd4",
+  "C0_completed_entry_sha256": "0eb509a37479dcf9590307fb010cc750276cf4529bf3a6616dae47e70b146188",
+  "global_physical_started": 3,
+  "max": 4,
+  "remaining": 1,
+  "prior_financial_control": "OFFactualaccepted23ac; C0actualreceiptWAIT_ROOT",
+  "full_prepare": "NOT_RUNuntilactualC0financialreceipt",
+  "new_Popen": 0,
+  "new_engines": 0,
+  "no_freeze_or_script_mutation": true
+}

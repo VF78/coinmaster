@@ -1,0 +1,28 @@
+{
+  "status": "C0_STATIC_ENGINE_FREE_PREFLIGHT_PASS_FINANCIAL_RECEIPT_PENDING",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "C0_root_go": false,
+  "C0_fresh_namespace": true,
+  "actual_OFF_COMPLETED_attempt": "77b7a5cc-0e2a-43a3-a17e-56868728a7d5",
+  "actual_OFF_entry_sha256": "75cc9c767940bb35f68883d2132e5a204f44b773da20b58a9c63840691411dd4",
+  "OFF_to_C0_changed_kwargs": [
+    "artifact_dir",
+    "artifact_label",
+    "research_paired_prefix"
+  ],
+  "C0_to_A0_changed_kwargs": [
+    "artifact_dir",
+    "artifact_label",
+    "research_a0_original_second"
+  ],
+  "C0_policy": "B2_F0",
+  "C0_A0_flag": false,
+  "all_other_R2_qdata_feed_fees_native_config_identical": true,
+  "source_pins": 222,
+  "input_pins": 31,
+  "script_pins": 3,
+  "financial_prior_receipt": "WAIT_ROOT_ACTUAL_OFF_FINANCIAL_ACCEPTANCE",
+  "no_freeze_or_script_changes": true,
+  "new_engines": 0,
+  "new_Popen": 0
+}

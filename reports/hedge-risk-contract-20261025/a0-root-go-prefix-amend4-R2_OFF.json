@@ -1,0 +1,28 @@
+{
+  "decision": "ROOT_GO_AMEND4_R2_OFF_PHYSICAL2_ONLY",
+  "recorded_utc": "2026-10-25T13:38:50.842045+00:00",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "variant": "R2_OFF",
+  "physical_index": 2,
+  "prefix_phase": "AMEND4",
+  "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+  "pre_go_freeze_sha256": "81fdf9eb69407badbb6343cc9e071326e688263626678bb10cdd77035aefd3b7",
+  "amendment_owner_reply": "Утверждаю +1 prefix, общий лимит 4",
+  "amendment_protocol_sha256": "7c6268f8806e3dc4ffc427cdde5b52e7f37e75165fcb3a778c71676385802b74",
+  "ledger_before_sha256": "0cc6b1d6ebbbec11fabb4a6feffcf95d86410173e6d27e8f68ebe00c5854ebe4",
+  "parent_failed1_exact": true,
+  "review_sha256": "2a662b136c69de7083ff57ac8f938d8ad023d25ad85d2cef79ebb9e85978fc96",
+  "consumer_binding_sha256": "ea3522a05828f46c0e482f23d6960a3462599ee05129eabad12df3f3a9ffa98b",
+  "input_preflight": "REAL_STOCK_LOADERS_PASS_195840_ALIGNED_MINUTES_814_FUNDING_730_SOURCE_SEED_ROWS",
+  "root_pins": {
+    "source": 222,
+    "input": 31,
+    "script": 3,
+    "mismatches": 0
+  },
+  "prefix_max_total": 4,
+  "already_spent": 1,
+  "remaining_including_this": 3,
+  "full_training_downloads_pilot_production": 0,
+  "stop": "OneexactOFFworkerPopen inclpreenginefailure; noquietkill withoutresource-progress; no retry/nextphase; actualfinancialPASSneededbeforeC0"
+}

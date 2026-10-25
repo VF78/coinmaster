@@ -1,0 +1,92 @@
+{
+  "status": "NATIVE_3TP_GATE_FAILED",
+  "report_sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb",
+  "missing_three_tp_ns": "57120000000000",
+  "duration_seconds": "57120",
+  "positive_missing_coverage_intervals": [
+    {
+      "duration_ns": "60000000000",
+      "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+      "event": "PROTECTION_RESTORED",
+      "reason": "ALL_REMAINING_ACCEPTED",
+      "timestamp_ns": "1725272580000000000",
+      "start_ns": "1725272520000000000",
+      "start_utc": "2024-09-02T10:22:00+00:00",
+      "end_utc": "2024-09-02T10:23:00+00:00"
+    },
+    {
+      "duration_ns": "60000000000",
+      "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "event": "PROTECTION_RESTORED",
+      "reason": "ALL_REMAINING_ACCEPTED",
+      "timestamp_ns": "1726293540000000000",
+      "start_ns": "1726293480000000000",
+      "start_utc": "2024-09-14T05:58:00+00:00",
+      "end_utc": "2024-09-14T05:59:00+00:00"
+    },
+    {
+      "duration_ns": "60000000000",
+      "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "event": "PROTECTION_RESTORED",
+      "reason": "ALL_REMAINING_ACCEPTED",
+      "timestamp_ns": "1726303560000000000",
+      "start_ns": "1726303500000000000",
+      "start_utc": "2024-09-14T08:45:00+00:00",
+      "end_utc": "2024-09-14T08:46:00+00:00"
+    },
+    {
+      "duration_ns": "60000000000",
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "event": "PROTECTION_RESTORED",
+      "reason": "ALL_REMAINING_ACCEPTED",
+      "timestamp_ns": "1729876980000000000",
+      "start_ns": "1729876920000000000",
+      "start_utc": "2024-10-25T17:22:00+00:00",
+      "end_utc": "2024-10-25T17:23:00+00:00"
+    },
+    {
+      "duration_ns": "60000000000",
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "event": "PROTECTION_RESTORED",
+      "reason": "ALL_REMAINING_ACCEPTED",
+      "timestamp_ns": "1729879080000000000",
+      "start_ns": "1729879020000000000",
+      "start_utc": "2024-10-25T17:57:00+00:00",
+      "end_utc": "2024-10-25T17:58:00+00:00"
+    },
+    {
+      "duration_ns": "60000000000",
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "event": "PROTECTION_RESTORED",
+      "reason": "FLAT",
+      "timestamp_ns": "1729897080000000000",
+      "start_ns": "1729897020000000000",
+      "start_utc": "2024-10-25T22:57:00+00:00",
+      "end_utc": "2024-10-25T22:58:00+00:00"
+    },
+    {
+      "duration_ns": "60000000000",
+      "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+      "event": "PROTECTION_RESTORED",
+      "reason": "ALL_REMAINING_ACCEPTED",
+      "timestamp_ns": "1735198500000000000",
+      "start_ns": "1735198440000000000",
+      "start_utc": "2024-12-26T07:34:00+00:00",
+      "end_utc": "2024-12-26T07:35:00+00:00"
+    },
+    {
+      "duration_ns": "56700000000000",
+      "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+      "event": "PROTECTION_RESTORED",
+      "reason": "NATIVE_FLAT",
+      "timestamp_ns": "1736294400000000000",
+      "start_ns": "1736237700000000000",
+      "start_utc": "2025-01-07T08:15:00+00:00",
+      "end_utc": "2025-01-08T00:00:00+00:00"
+    }
+  ],
+  "target_accepted": 113,
+  "target_submitted_generations": 39,
+  "counts_limit": "Target accepted count need not equal 3*generation count after consumed levels. Blocker is actual positive missing coverage, not simple count subtraction.",
+  "automatic_A0_admission": "BLOCKED; no waiver/fix/source/run implied"
+}

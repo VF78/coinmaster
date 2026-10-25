@@ -1,0 +1,293 @@
+{
+  "task": "CM-A0-C0-NATIVE3TP-ADJUDICATION-20261025",
+  "decision": "C0_NATIVE_3TP_BLOCKER_CONFIRMED_BUT_REPORTED_DURATION_OVERSTATED_A0_HOLD",
+  "P0": 0,
+  "P1": 2,
+  "findings": [
+    {
+      "id": "C0-MD01",
+      "priority": "P1_AUDIT_DEFECT",
+      "status": "UNFIXED_READ_ONLY",
+      "issue": "LongJan7 audit interval is sticky after consumedTP0/1, not continuously missing all required targets. _md_after_fill adds consumed but does not remove from current accepted; _md_cancel_terminal discards only cancelled unconsumedTP2; _md_reconcile new generation initializes historic accepted but leaves current m.accepted stale. _md_accept then yields accepted{0,1,2} vs required{2} and fails equality restoration untilflat. This set reconstruction is source-based inference supported by actual filled/accepted/cancel events.",
+      "actual_proof": "Native0/1 order257/258 fullyFILLED. Currentgeneration2order269 SELLGTC0.263@103732.6 accepted08:16/cancel11:46; generation3order273 SELLGTC0.175@103732.6 accepted11:47/cancelJan8t0. Nativeheld0.263/0.175 matches. These are legitimate remaining-level protections; consumed0/1 must not be recreated."
+    },
+    {
+      "id": "C0-TP02",
+      "priority": "P1_ACTUAL_CONTRACT_BLOCKER",
+      "status": "CONFIRMED_NO_WAIVER",
+      "issue": "Seven60s reported intervals plus Jan7 08:15-08:16 and11:46-11:47 have actualBTCheld and NO accepted live current/remaining nativeTP. Paired SOL TP opens BTCdebt, cancels ordinary BTCtargets; _pair_btc_tp_paused blocks replacement untilnextBTCquote debtfill. Native accepted events have0ACKlatency afterthatfill: gap is protective debt serialization, not merely unconsumed target-count mismatch or lateACK/dust.",
+      "consequence": "At least540s of real required-TP absence within reported intervals remains; under unchanged native3TP financialgate C0 doesnotqualify. No A0 receipt/rootGO/lastslot execution. Source/protocol changes would need separate decision, not metricwaiver."
+    }
+  ],
+  "reported_interval_partition_only": {
+    "native_report_missing_ns": "57120000000000",
+    "reported_seconds": 57120,
+    "actual_no_required_TP_seconds": 540,
+    "audit_false_positive_covered_seconds": 56580,
+    "scope": "Partition of8reportedpositiveintervals only; not a new whole-period protection audit. 540s realgap is sufficientblocker regardless of unreviewedperiod. Original metric/report notmodified."
+  },
+  "targeted_order_interval_evidence": [
+    {
+      "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+      "reported_start": "2024-09-02T10:22:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2024-09-02T10:22:00+00:00",
+          "end_utc": "2024-09-02T10:23:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [],
+          "required_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        }
+      ]
+    },
+    {
+      "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "reported_start": "2024-09-14T05:58:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2024-09-14T05:58:00+00:00",
+          "end_utc": "2024-09-14T05:59:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [],
+          "required_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        }
+      ]
+    },
+    {
+      "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "reported_start": "2024-09-14T08:45:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2024-09-14T08:45:00+00:00",
+          "end_utc": "2024-09-14T08:46:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [],
+          "required_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        }
+      ]
+    },
+    {
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "reported_start": "2024-10-25T17:22:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2024-10-25T17:22:00+00:00",
+          "end_utc": "2024-10-25T17:23:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [],
+          "required_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        }
+      ]
+    },
+    {
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "reported_start": "2024-10-25T17:57:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2024-10-25T17:57:00+00:00",
+          "end_utc": "2024-10-25T17:58:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [],
+          "required_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        }
+      ]
+    },
+    {
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "reported_start": "2024-10-25T22:57:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2024-10-25T22:57:00+00:00",
+          "end_utc": "2024-10-25T22:58:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [],
+          "required_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        }
+      ]
+    },
+    {
+      "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+      "reported_start": "2024-12-26T07:34:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2024-12-26T07:34:00+00:00",
+          "end_utc": "2024-12-26T07:35:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [],
+          "required_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        }
+      ]
+    },
+    {
+      "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+      "reported_start": "2025-01-07T08:15:00+00:00",
+      "segments": [
+        {
+          "start_utc": "2025-01-07T08:15:00+00:00",
+          "end_utc": "2025-01-07T08:16:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [
+            0,
+            1
+          ],
+          "required_levels": [
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        },
+        {
+          "start_utc": "2025-01-07T08:16:00+00:00",
+          "end_utc": "2025-01-07T11:46:00+00:00",
+          "seconds": 12600,
+          "consumed_filled_levels": [
+            0,
+            1
+          ],
+          "required_levels": [
+            2
+          ],
+          "accepted_live_TP": [
+            {
+              "level": 2,
+              "generation": 2,
+              "order_id": "O-20250107-081600-001-000-269",
+              "quantity": "0.263",
+              "native_type": "LIMIT",
+              "TIF": "GTC",
+              "reduce_only": "True",
+              "price": "103732.6"
+            }
+          ],
+          "adjudication": "LEGITIMATE_REMAINING_TP_COVERS_HELD"
+        },
+        {
+          "start_utc": "2025-01-07T11:46:00+00:00",
+          "end_utc": "2025-01-07T11:47:00+00:00",
+          "seconds": 60,
+          "consumed_filled_levels": [
+            0,
+            1
+          ],
+          "required_levels": [
+            2
+          ],
+          "accepted_live_TP": [],
+          "adjudication": "ACTUAL_NO_REQUIRED_NATIVE_TP"
+        },
+        {
+          "start_utc": "2025-01-07T11:47:00+00:00",
+          "end_utc": "2025-01-08T00:00:00+00:00",
+          "seconds": 43980,
+          "consumed_filled_levels": [
+            0,
+            1
+          ],
+          "required_levels": [
+            2
+          ],
+          "accepted_live_TP": [
+            {
+              "level": 2,
+              "generation": 3,
+              "order_id": "O-20250107-114700-001-000-273",
+              "quantity": "0.175",
+              "native_type": "LIMIT",
+              "TIF": "GTC",
+              "reduce_only": "True",
+              "price": "103732.6"
+            }
+          ],
+          "adjudication": "LEGITIMATE_REMAINING_TP_COVERS_HELD"
+        }
+      ]
+    }
+  ],
+  "count_warning": "113accepted vs117=3*39 is NOT validgate; requiredremaininglevels shrink afterrealconsumption. Neither nativeBTCheld alone nor auditmissing flag alone proves nativeTPmissing.",
+  "prior_consumed_order_proof": [
+    {
+      "order_id": "O-20250104-003700-001-000-257",
+      "level": 0,
+      "native_status": "FILLED",
+      "qty": "0.128",
+      "filled_qty": "0.128",
+      "fill_utc": "2025-01-06T14:49:00+00:00"
+    },
+    {
+      "order_id": "O-20250104-003700-001-000-258",
+      "level": 1,
+      "native_status": "FILLED",
+      "qty": "0.128",
+      "filled_qty": "0.128",
+      "fill_utc": "2025-01-06T15:46:00+00:00"
+    }
+  ],
+  "source_refs": {
+    "market_redesign.py": [
+      "175-178: pairedTPpause earlyreturn",
+      "201-225: cancelACK/replacement/currentdesiredgeneration",
+      "255-268: cancel onlyunconsumed level removal",
+      "288-307: acceptedcurrent vs requiredremaining equality",
+      "309-329: consumed update without currentacceptednormalization"
+    ],
+    "paired_prefix.py": [
+      "170-173: pause whileactualBTC>absolute cap orpairedBTCwork",
+      "485-493: cancelordinaryBTCorders beforedebt; nextquoteactualdebtfill"
+    ]
+  },
+  "reviewed_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0.json": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-orders.csv": "1186c170f62683d943010842b8413b6fb520095043db3ce7c31533f4b3ef304f",
+    "reports/hedge-risk-contract-20261025/acceptance/R2_C0-native3TP-blocker.json": "2a9490385538483cb68a927132e541a2551f97b0719a0d0c01785e9f5ffc9e0a",
+    "reports/hedge-risk-contract-20261025/acceptance/R2_C0-native3TP-native-hold-intersection.json": "a91460eb4a0a30eec9c0f96665c295d03f23ad06db1a830bd83b5b6797777719",
+    "reports/hedge-risk-contract-20261025/acceptance/R2_C0-native3TP-native-snapshot-context.json": "0e83c1cb8f8c34227a46ccc123c293774ee8d8eb97b2d52bab39748b3acdbb61",
+    "reports/hedge-risk-contract-20261025/acceptance/R2_C0-financial-qualification-receipt-fields.json": "a2fbee3562233816775da4748fa674dad97673d76f17f3cbe35cab1b1530a536",
+    "reports/hedge-risk-contract-20261025/acceptance/R2_C0-amend4-risk.json": "a562c28ff5d8a178b94da39b2188ab4f5b41d14172f20c1f50536701cb1ec7a2",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/market_redesign.py": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/paired_prefix.py": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f"
+  },
+  "limits": "No native/Popen/code/metric/report/receipt edits, no fullfinancial/coherentstream replay; only frozen source and targetedreportevents/orders/savednativehold evidence. C0OS0/cash/funding/flatothergates do not waive actualprotectiongate.",
+  "authority": "A0HOLD, prefixphysical3/4 and lastslotunused attaskcontext; no newpermission or sourcefix given. Engineering7closed. Previousfailed evidence and financialreject receipt remainunchanged."
+}

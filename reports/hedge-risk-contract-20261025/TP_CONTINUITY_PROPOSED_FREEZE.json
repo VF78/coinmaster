@@ -1,0 +1,20 @@
+{
+  "status": "PROPOSED_REVIEWED_REQUIRES_DIRECT_OWNER_CONSENT",
+  "recorded_utc": "2026-10-25T14:27:12.791778+00:00",
+  "sourcebase": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "review_sha256": "d0344f2a05986feb94ef557587c8ccb23baae0be6625fc23cbac87b5610487af",
+  "proposed_engineering_max": 3,
+  "feasibility_first": true,
+  "proposed_prefix_max": 3,
+  "old_engineering": "CLOSED7/7",
+  "old_prefix": "CLOSED3/4_UNUSED1CLOSED",
+  "old_closed_prefix_sha256": "f893aafc7c5b65acbc55a2069af1c8738ed798a72e50816f6ab5ed5108b0d7f3",
+  "true_C0_TP_gap_seconds": 540,
+  "false_audit_seconds": 56580,
+  "A0": "NOT_RUN",
+  "stock_native_auto_resize_safe_allocation": "NOT_PROVEN_MUST_PASS_FIRST_FIXTURE_BEFORE_PRODUCT_PATCH",
+  "source_code_changed_since763": false,
+  "root_go": false,
+  "full_training_download_pilot_production": 0
+}

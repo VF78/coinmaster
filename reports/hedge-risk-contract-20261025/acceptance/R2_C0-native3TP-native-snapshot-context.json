@@ -1,0 +1,1375 @@
+[
+  {
+    "start": "2024-09-02T10:22:00+00:00",
+    "end": "2024-09-02T10:23:00+00:00",
+    "duration_ns": "60000000000",
+    "prior_native_snapshot": {
+      "sequence": 6197,
+      "event_ns": "1725272520000000000",
+      "native_id": "T-7925982ccfe5ba9e-002",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.791",
+          "side": "SHORT",
+          "raw_mark": "58443.68",
+          "native_price": "58443.7",
+          "native_upnl": "-780.8901"
+        },
+        {
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "quantity": "99.1",
+          "side": "LONG",
+          "raw_mark": "132.16",
+          "native_price": "132.16",
+          "native_upnl": "197.209"
+        }
+      ],
+      "cash": "10034.76059419",
+      "equity": "9451.07949419"
+    },
+    "mutations_within": [
+      {
+        "sequence": 6196,
+        "event_ns": "1725272520000000000",
+        "native_id": "T-7925982ccfe5ba9e-002",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.791",
+            "side": "SHORT",
+            "raw_mark": "58443.68",
+            "native_price": "58443.7",
+            "native_upnl": "-780.8901"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "132.1",
+            "side": "LONG",
+            "raw_mark": "132.16",
+            "native_price": "132.16",
+            "native_upnl": "262.879"
+          }
+        ],
+        "cash": "9974.58192619",
+        "equity": "9456.57082619"
+      },
+      {
+        "sequence": 6197,
+        "event_ns": "1725272520000000000",
+        "native_id": "T-7925982ccfe5ba9e-002",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.791",
+            "side": "SHORT",
+            "raw_mark": "58443.68",
+            "native_price": "58443.7",
+            "native_upnl": "-780.8901"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "99.1",
+            "side": "LONG",
+            "raw_mark": "132.16",
+            "native_price": "132.16",
+            "native_upnl": "197.209"
+          }
+        ],
+        "cash": "10034.76059419",
+        "equity": "9451.07949419"
+      },
+      {
+        "sequence": 6200,
+        "event_ns": "1725272580000000000",
+        "native_id": "T-cc0f83f67c8799ad-003",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.791",
+            "side": "SHORT",
+            "raw_mark": "58475.9",
+            "native_price": "58475.9",
+            "native_upnl": "-806.3603"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "99.1",
+            "side": "LONG",
+            "raw_mark": "132.15",
+            "native_price": "132.15",
+            "native_upnl": "196.218"
+          }
+        ],
+        "cash": "10034.76059419",
+        "equity": "9424.61829419"
+      },
+      {
+        "sequence": 6201,
+        "event_ns": "1725272580000000000",
+        "native_id": "T-cc0f83f67c8799ad-003",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.593",
+            "side": "SHORT",
+            "raw_mark": "58475.9",
+            "native_price": "58475.9",
+            "native_upnl": "-604.51537029"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "99.1",
+            "side": "LONG",
+            "raw_mark": "132.15",
+            "native_price": "132.15",
+            "native_upnl": "196.218"
+          }
+        ],
+        "cash": "9826.54763897",
+        "equity": "9418.25026868"
+      }
+    ]
+  },
+  {
+    "start": "2024-09-14T05:58:00+00:00",
+    "end": "2024-09-14T05:59:00+00:00",
+    "duration_ns": "60000000000",
+    "prior_native_snapshot": {
+      "sequence": 57299,
+      "event_ns": "1726293480000000000",
+      "native_id": "T-c6af6f0a2fffe7cf-007",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.540",
+          "side": "LONG",
+          "raw_mark": "59939.6",
+          "native_price": "59939.6",
+          "native_upnl": "-308.07"
+        },
+        {
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "quantity": "67.5",
+          "side": "SHORT",
+          "raw_mark": "138.07",
+          "native_price": "138.07",
+          "native_upnl": "87.075"
+        }
+      ],
+      "cash": "11893.47215547",
+      "equity": "11672.47715547"
+    },
+    "mutations_within": [
+      {
+        "sequence": 57298,
+        "event_ns": "1726293480000000000",
+        "native_id": "T-c6af6f0a2fffe7cf-007",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.540",
+            "side": "LONG",
+            "raw_mark": "59939.6",
+            "native_price": "59939.6",
+            "native_upnl": "-308.07"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "89.9",
+            "side": "SHORT",
+            "raw_mark": "138.07",
+            "native_price": "138.07",
+            "native_upnl": "115.971"
+          }
+        ],
+        "cash": "11865.19470907",
+        "equity": "11673.09570907"
+      },
+      {
+        "sequence": 57299,
+        "event_ns": "1726293480000000000",
+        "native_id": "T-c6af6f0a2fffe7cf-007",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.540",
+            "side": "LONG",
+            "raw_mark": "59939.6",
+            "native_price": "59939.6",
+            "native_upnl": "-308.07"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "67.5",
+            "side": "SHORT",
+            "raw_mark": "138.07",
+            "native_price": "138.07",
+            "native_upnl": "87.075"
+          }
+        ],
+        "cash": "11893.47215547",
+        "equity": "11672.47715547"
+      },
+      {
+        "sequence": 57302,
+        "event_ns": "1726293540000000000",
+        "native_id": "T-575e672753115d89-012",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.540",
+            "side": "LONG",
+            "raw_mark": "59918.93",
+            "native_price": "59918.9",
+            "native_upnl": "-319.248"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "67.5",
+            "side": "SHORT",
+            "raw_mark": "138.04",
+            "native_price": "138.04",
+            "native_upnl": "89.1"
+          }
+        ],
+        "cash": "11893.47215547",
+        "equity": "11663.32415547"
+      },
+      {
+        "sequence": 57303,
+        "event_ns": "1726293540000000000",
+        "native_id": "T-575e672753115d89-012",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.405",
+            "side": "LONG",
+            "raw_mark": "59918.93",
+            "native_price": "59918.9",
+            "native_upnl": "-239.436"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "67.5",
+            "side": "SHORT",
+            "raw_mark": "138.04",
+            "native_price": "138.04",
+            "native_upnl": "89.1"
+          }
+        ],
+        "cash": "11809.07625139",
+        "equity": "11658.74025139"
+      }
+    ]
+  },
+  {
+    "start": "2024-09-14T08:45:00+00:00",
+    "end": "2024-09-14T08:46:00+00:00",
+    "duration_ns": "60000000000",
+    "prior_native_snapshot": {
+      "sequence": 57808,
+      "event_ns": "1726303500000000000",
+      "native_id": "T-ffeaa039c0090d24-008",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.405",
+          "side": "LONG",
+          "raw_mark": "59979.5",
+          "native_price": "59979.5",
+          "native_upnl": "-214.893"
+        },
+        {
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "quantity": "45.1",
+          "side": "SHORT",
+          "raw_mark": "136.787",
+          "native_price": "136.79",
+          "native_upnl": "115.907"
+        }
+      ],
+      "cash": "11866.17014852",
+      "equity": "11767.18414852"
+    },
+    "mutations_within": [
+      {
+        "sequence": 57807,
+        "event_ns": "1726303500000000000",
+        "native_id": "T-ffeaa039c0090d24-008",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.405",
+            "side": "LONG",
+            "raw_mark": "59979.5",
+            "native_price": "59979.5",
+            "native_upnl": "-214.893"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "67.5",
+            "side": "SHORT",
+            "raw_mark": "136.787",
+            "native_price": "136.79",
+            "native_upnl": "173.475"
+          }
+        ],
+        "cash": "11809.21496772",
+        "equity": "11767.79696772"
+      },
+      {
+        "sequence": 57808,
+        "event_ns": "1726303500000000000",
+        "native_id": "T-ffeaa039c0090d24-008",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.405",
+            "side": "LONG",
+            "raw_mark": "59979.5",
+            "native_price": "59979.5",
+            "native_upnl": "-214.893"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "45.1",
+            "side": "SHORT",
+            "raw_mark": "136.787",
+            "native_price": "136.79",
+            "native_upnl": "115.907"
+          }
+        ],
+        "cash": "11866.17014852",
+        "equity": "11767.18414852"
+      },
+      {
+        "sequence": 57811,
+        "event_ns": "1726303560000000000",
+        "native_id": "T-7122994db523ab66-013",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.405",
+            "side": "LONG",
+            "raw_mark": "59968.77",
+            "native_price": "59968.8",
+            "native_upnl": "-219.2265"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "45.1",
+            "side": "SHORT",
+            "raw_mark": "136.746",
+            "native_price": "136.75",
+            "native_upnl": "117.711"
+          }
+        ],
+        "cash": "11866.17014852",
+        "equity": "11764.65464852"
+      },
+      {
+        "sequence": 57812,
+        "event_ns": "1726303560000000000",
+        "native_id": "T-7122994db523ab66-013",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.270",
+            "side": "LONG",
+            "raw_mark": "59968.77",
+            "native_price": "59968.8",
+            "native_upnl": "-146.151"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "45.1",
+            "side": "SHORT",
+            "raw_mark": "136.746",
+            "native_price": "136.75",
+            "native_upnl": "117.711"
+          }
+        ],
+        "cash": "11787.85939577",
+        "equity": "11759.41939577"
+      },
+      {
+        "sequence": 57814,
+        "event_ns": "1726303560000000000",
+        "native_id": "T-8eea94f4d55c2817-009",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.270",
+            "side": "LONG",
+            "raw_mark": "59968.77",
+            "native_price": "59968.8",
+            "native_upnl": "-146.151"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "45.1",
+            "side": "SHORT",
+            "raw_mark": "136.746",
+            "native_price": "136.75",
+            "native_upnl": "117.711"
+          }
+        ],
+        "cash": "11787.85939577",
+        "equity": "11759.41939577"
+      },
+      {
+        "sequence": 57815,
+        "event_ns": "1726303560000000000",
+        "native_id": "T-8eea94f4d55c2817-009",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.270",
+            "side": "LONG",
+            "raw_mark": "59968.77",
+            "native_price": "59968.8",
+            "native_upnl": "-146.151"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "45.0",
+            "side": "SHORT",
+            "raw_mark": "136.746",
+            "native_price": "136.75",
+            "native_upnl": "117.45"
+          }
+        ],
+        "cash": "11788.11487562",
+        "equity": "11759.41387562"
+      }
+    ]
+  },
+  {
+    "start": "2024-10-25T17:22:00+00:00",
+    "end": "2024-10-25T17:23:00+00:00",
+    "duration_ns": "60000000000",
+    "prior_native_snapshot": {
+      "sequence": 236635,
+      "event_ns": "1729876920000000000",
+      "native_id": "T-7b3f67169709583f-020",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.963",
+          "side": "LONG",
+          "raw_mark": "67387.1",
+          "native_price": "67387.1",
+          "native_upnl": "-639.9355"
+        },
+        {
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "quantity": "89.4",
+          "side": "SHORT",
+          "raw_mark": "170.072",
+          "native_price": "170.07",
+          "native_upnl": "174.33"
+        }
+      ],
+      "cash": "11955.27945763",
+      "equity": "11489.67395763"
+    },
+    "mutations_within": [
+      {
+        "sequence": 236634,
+        "event_ns": "1729876920000000000",
+        "native_id": "T-7b3f67169709583f-020",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.963",
+            "side": "LONG",
+            "raw_mark": "67387.1",
+            "native_price": "67387.1",
+            "native_upnl": "-639.9355"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "119.2",
+            "side": "SHORT",
+            "raw_mark": "170.072",
+            "native_price": "170.07",
+            "native_upnl": "232.44"
+          }
+        ],
+        "cash": "11898.77919403",
+        "equity": "11491.28369403"
+      },
+      {
+        "sequence": 236635,
+        "event_ns": "1729876920000000000",
+        "native_id": "T-7b3f67169709583f-020",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.963",
+            "side": "LONG",
+            "raw_mark": "67387.1",
+            "native_price": "67387.1",
+            "native_upnl": "-639.9355"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "89.4",
+            "side": "SHORT",
+            "raw_mark": "170.072",
+            "native_price": "170.07",
+            "native_upnl": "174.33"
+          }
+        ],
+        "cash": "11955.27945763",
+        "equity": "11489.67395763"
+      },
+      {
+        "sequence": 236638,
+        "event_ns": "1729876980000000000",
+        "native_id": "T-e6caf43d371dfbf8-037",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.963",
+            "side": "LONG",
+            "raw_mark": "67437.6",
+            "native_price": "67437.6",
+            "native_upnl": "-591.304"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "89.4",
+            "side": "SHORT",
+            "raw_mark": "170.21",
+            "native_price": "170.21",
+            "native_upnl": "161.814"
+          }
+        ],
+        "cash": "11955.27945763",
+        "equity": "11525.78945763"
+      },
+      {
+        "sequence": 236639,
+        "event_ns": "1729876980000000000",
+        "native_id": "T-e6caf43d371dfbf8-037",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.722",
+            "side": "LONG",
+            "raw_mark": "67437.6",
+            "native_price": "67437.6",
+            "native_upnl": "-443.32449429"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "89.4",
+            "side": "SHORT",
+            "raw_mark": "170.21",
+            "native_price": "170.21",
+            "native_upnl": "161.814"
+          }
+        ],
+        "cash": "11798.36109804",
+        "equity": "11516.85060375"
+      }
+    ]
+  },
+  {
+    "start": "2024-10-25T17:57:00+00:00",
+    "end": "2024-10-25T17:58:00+00:00",
+    "duration_ns": "60000000000",
+    "prior_native_snapshot": {
+      "sequence": 236744,
+      "event_ns": "1729879020000000000",
+      "native_id": "T-30dfe3d0c0e67ec1-021",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.722",
+          "side": "LONG",
+          "raw_mark": "66919.79",
+          "native_price": "66919.8",
+          "native_upnl": "-817.17609429"
+        },
+        {
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "quantity": "59.6",
+          "side": "SHORT",
+          "raw_mark": "167.945",
+          "native_price": "167.94",
+          "native_upnl": "243.168"
+        }
+      ],
+      "cash": "11912.38686444",
+      "equity": "11338.37877015"
+    },
+    "mutations_within": [
+      {
+        "sequence": 236743,
+        "event_ns": "1729879020000000000",
+        "native_id": "T-30dfe3d0c0e67ec1-021",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.722",
+            "side": "LONG",
+            "raw_mark": "66919.79",
+            "native_price": "66919.8",
+            "native_upnl": "-817.17609429"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "89.4",
+            "side": "SHORT",
+            "raw_mark": "167.945",
+            "native_price": "167.94",
+            "native_upnl": "364.752"
+          }
+        ],
+        "cash": "11798.36109804",
+        "equity": "11345.93700375"
+      },
+      {
+        "sequence": 236744,
+        "event_ns": "1729879020000000000",
+        "native_id": "T-30dfe3d0c0e67ec1-021",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.722",
+            "side": "LONG",
+            "raw_mark": "66919.79",
+            "native_price": "66919.8",
+            "native_upnl": "-817.17609429"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "59.6",
+            "side": "SHORT",
+            "raw_mark": "167.945",
+            "native_price": "167.94",
+            "native_upnl": "243.168"
+          }
+        ],
+        "cash": "11912.38686444",
+        "equity": "11338.37877015"
+      },
+      {
+        "sequence": 236747,
+        "event_ns": "1729879080000000000",
+        "native_id": "T-b466df52e52316bd-038",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.722",
+            "side": "LONG",
+            "raw_mark": "66780.68",
+            "native_price": "66780.7",
+            "native_upnl": "-917.60629429"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "59.6",
+            "side": "SHORT",
+            "raw_mark": "167.2",
+            "native_price": "167.20",
+            "native_upnl": "287.272"
+          }
+        ],
+        "cash": "11912.38686444",
+        "equity": "11282.05257015"
+      },
+      {
+        "sequence": 236748,
+        "event_ns": "1729879080000000000",
+        "native_id": "T-b466df52e52316bd-038",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.481",
+            "side": "LONG",
+            "raw_mark": "66780.68",
+            "native_price": "66780.7",
+            "native_upnl": "-611.31388858"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "59.6",
+            "side": "SHORT",
+            "raw_mark": "167.2",
+            "native_price": "167.20",
+            "native_upnl": "287.272"
+          }
+        ],
+        "cash": "11594.18366033",
+        "equity": "11270.14177175"
+      }
+    ]
+  },
+  {
+    "start": "2024-10-25T22:57:00+00:00",
+    "end": "2024-10-25T22:58:00+00:00",
+    "duration_ns": "60000000000",
+    "prior_native_snapshot": {
+      "sequence": 237648,
+      "event_ns": "1729897020000000000",
+      "native_id": "T-81e4bafdb6fd902e-022",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.481",
+          "side": "LONG",
+          "raw_mark": "66636.96",
+          "native_price": "66637.0",
+          "native_upnl": "-680.43358858"
+        }
+      ],
+      "cash": "12051.74108513",
+      "equity": "11371.30749655"
+    },
+    "mutations_within": [
+      {
+        "sequence": 237647,
+        "event_ns": "1729897020000000000",
+        "native_id": "T-81e4bafdb6fd902e-022",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.481",
+            "side": "LONG",
+            "raw_mark": "66636.96",
+            "native_price": "66637.0",
+            "native_upnl": "-680.43358858"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "59.6",
+            "side": "SHORT",
+            "raw_mark": "164.172",
+            "native_price": "164.17",
+            "native_upnl": "467.86"
+          }
+        ],
+        "cash": "11594.18366033",
+        "equity": "11381.61007175"
+      },
+      {
+        "sequence": 237648,
+        "event_ns": "1729897020000000000",
+        "native_id": "T-81e4bafdb6fd902e-022",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.481",
+            "side": "LONG",
+            "raw_mark": "66636.96",
+            "native_price": "66637.0",
+            "native_upnl": "-680.43358858"
+          }
+        ],
+        "cash": "12051.74108513",
+        "equity": "11371.30749655"
+      },
+      {
+        "sequence": 237651,
+        "event_ns": "1729897080000000000",
+        "native_id": "T-bd658bb2292d6d50-039",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.481",
+            "side": "LONG",
+            "raw_mark": "66685.44",
+            "native_price": "66685.4",
+            "native_upnl": "-657.15318858"
+          }
+        ],
+        "cash": "12051.74108513",
+        "equity": "11394.58789655"
+      },
+      {
+        "sequence": 237652,
+        "event_ns": "1729897080000000000",
+        "native_id": "T-bd658bb2292d6d50-039",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [],
+        "cash": "11376.94627398",
+        "equity": "11376.94627398"
+      }
+    ]
+  },
+  {
+    "start": "2024-12-26T07:34:00+00:00",
+    "end": "2024-12-26T07:35:00+00:00",
+    "duration_ns": "60000000000",
+    "prior_native_snapshot": {
+      "sequence": 502893,
+      "event_ns": "1735198440000000000",
+      "native_id": "T-6894734c50ac628d-034",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.754",
+          "side": "LONG",
+          "raw_mark": "97757.66",
+          "native_price": "97757.7",
+          "native_upnl": "-505.3308"
+        },
+        {
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "quantity": "90.6",
+          "side": "SHORT",
+          "raw_mark": "193.301",
+          "native_price": "193.30",
+          "native_upnl": "256.398"
+        }
+      ],
+      "cash": "13544.37058439",
+      "equity": "13295.43778439"
+    },
+    "mutations_within": [
+      {
+        "sequence": 502892,
+        "event_ns": "1735198440000000000",
+        "native_id": "T-6894734c50ac628d-034",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.754",
+            "side": "LONG",
+            "raw_mark": "97757.66",
+            "native_price": "97757.7",
+            "native_upnl": "-505.3308"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "120.8",
+            "side": "SHORT",
+            "raw_mark": "193.301",
+            "native_price": "193.30",
+            "native_upnl": "341.864"
+          }
+        ],
+        "cash": "13462.48859959",
+        "equity": "13299.02179959"
+      },
+      {
+        "sequence": 502893,
+        "event_ns": "1735198440000000000",
+        "native_id": "T-6894734c50ac628d-034",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.754",
+            "side": "LONG",
+            "raw_mark": "97757.66",
+            "native_price": "97757.7",
+            "native_upnl": "-505.3308"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "90.6",
+            "side": "SHORT",
+            "raw_mark": "193.301",
+            "native_price": "193.30",
+            "native_upnl": "256.398"
+          }
+        ],
+        "cash": "13544.37058439",
+        "equity": "13295.43778439"
+      },
+      {
+        "sequence": 502896,
+        "event_ns": "1735198500000000000",
+        "native_id": "T-e4db8a31d69f7907-067",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.754",
+            "side": "LONG",
+            "raw_mark": "97820.49",
+            "native_price": "97820.5",
+            "native_upnl": "-457.9796"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "90.6",
+            "side": "SHORT",
+            "raw_mark": "193.45",
+            "native_price": "193.45",
+            "native_upnl": "242.808"
+          }
+        ],
+        "cash": "13544.37058439",
+        "equity": "13329.19898439"
+      },
+      {
+        "sequence": 502897,
+        "event_ns": "1735198500000000000",
+        "native_id": "T-e4db8a31d69f7907-067",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.565",
+            "side": "LONG",
+            "raw_mark": "97820.49",
+            "native_price": "97820.5",
+            "native_upnl": "-343.181"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "90.6",
+            "side": "SHORT",
+            "raw_mark": "193.45",
+            "native_price": "193.45",
+            "native_upnl": "242.808"
+          }
+        ],
+        "cash": "13418.74240724",
+        "equity": "13318.36940724"
+      }
+    ]
+  },
+  {
+    "start": "2025-01-07T08:15:00+00:00",
+    "end": "2025-01-08T00:00:00+00:00",
+    "duration_ns": "56700000000000",
+    "prior_native_snapshot": {
+      "sequence": 554920,
+      "event_ns": "1736237700000000000",
+      "native_id": "T-6a292928ba3cfd78-037",
+      "kind": "POST_FILL_COMMITTED_NATIVE",
+      "positions": [
+        {
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "0.351",
+          "side": "LONG",
+          "raw_mark": "101599.13",
+          "native_price": "101599.1",
+          "native_upnl": "1192.33138715"
+        },
+        {
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "quantity": "33.6",
+          "side": "SHORT",
+          "raw_mark": "215.421",
+          "native_price": "215.42",
+          "native_upnl": "63.504"
+        }
+      ],
+      "cash": "14481.20450362",
+      "equity": "15737.03989077"
+    },
+    "mutations_within": [
+      {
+        "sequence": 554919,
+        "event_ns": "1736237700000000000",
+        "native_id": "T-6a292928ba3cfd78-037",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.351",
+            "side": "LONG",
+            "raw_mark": "101599.13",
+            "native_price": "101599.1",
+            "native_upnl": "1192.33138715"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "44.8",
+            "side": "SHORT",
+            "raw_mark": "215.421",
+            "native_price": "215.42",
+            "native_upnl": "84.672"
+          }
+        ],
+        "cash": "14460.29499962",
+        "equity": "15737.29838677"
+      },
+      {
+        "sequence": 554920,
+        "event_ns": "1736237700000000000",
+        "native_id": "T-6a292928ba3cfd78-037",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.351",
+            "side": "LONG",
+            "raw_mark": "101599.13",
+            "native_price": "101599.1",
+            "native_upnl": "1192.33138715"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "33.6",
+            "side": "SHORT",
+            "raw_mark": "215.421",
+            "native_price": "215.42",
+            "native_upnl": "63.504"
+          }
+        ],
+        "cash": "14481.20450362",
+        "equity": "15737.03989077"
+      },
+      {
+        "sequence": 554923,
+        "event_ns": "1736237760000000000",
+        "native_id": "T-e12b23a554c2fa8b-078",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.351",
+            "side": "LONG",
+            "raw_mark": "101629.7",
+            "native_price": "101629.7",
+            "native_upnl": "1203.07198715"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "33.6",
+            "side": "SHORT",
+            "raw_mark": "215.422",
+            "native_price": "215.42",
+            "native_upnl": "63.504"
+          }
+        ],
+        "cash": "14481.20450362",
+        "equity": "15747.78049077"
+      },
+      {
+        "sequence": 554924,
+        "event_ns": "1736237760000000000",
+        "native_id": "T-e12b23a554c2fa8b-078",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.263",
+            "side": "LONG",
+            "raw_mark": "101629.7",
+            "native_price": "101629.7",
+            "native_upnl": "901.44710148"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "33.6",
+            "side": "SHORT",
+            "raw_mark": "215.422",
+            "native_price": "215.42",
+            "native_upnl": "63.504"
+          }
+        ],
+        "cash": "14777.91051181",
+        "equity": "15742.86161329"
+      },
+      {
+        "sequence": 555556,
+        "event_ns": "1736250360000000000",
+        "native_id": "T-7a830e1f7de3516a-038",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.263",
+            "side": "LONG",
+            "raw_mark": "100561.82",
+            "native_price": "100561.8",
+            "native_upnl": "620.58940148"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "33.6",
+            "side": "SHORT",
+            "raw_mark": "213.428",
+            "native_price": "213.43",
+            "native_upnl": "130.368"
+          }
+        ],
+        "cash": "14777.91051181",
+        "equity": "15528.86791329"
+      },
+      {
+        "sequence": 555557,
+        "event_ns": "1736250360000000000",
+        "native_id": "T-7a830e1f7de3516a-038",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.263",
+            "side": "LONG",
+            "raw_mark": "100561.82",
+            "native_price": "100561.8",
+            "native_upnl": "620.58940148"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "22.4",
+            "side": "SHORT",
+            "raw_mark": "213.428",
+            "native_price": "213.43",
+            "native_upnl": "86.912"
+          }
+        ],
+        "cash": "14820.10427181",
+        "equity": "15527.60567329"
+      },
+      {
+        "sequence": 555560,
+        "event_ns": "1736250420000000000",
+        "native_id": "T-98ac8365a0584f6a-079",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.263",
+            "side": "LONG",
+            "raw_mark": "100463.7",
+            "native_price": "100463.7",
+            "native_upnl": "594.78910148"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "22.4",
+            "side": "SHORT",
+            "raw_mark": "213.08",
+            "native_price": "213.08",
+            "native_upnl": "94.752"
+          }
+        ],
+        "cash": "14820.10427181",
+        "equity": "15509.64537329"
+      },
+      {
+        "sequence": 555561,
+        "event_ns": "1736250420000000000",
+        "native_id": "T-98ac8365a0584f6a-079",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.175",
+            "side": "LONG",
+            "raw_mark": "100463.7",
+            "native_price": "100463.7",
+            "native_upnl": "395.77221582"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "22.4",
+            "side": "SHORT",
+            "raw_mark": "213.08",
+            "native_price": "213.08",
+            "native_upnl": "94.752"
+          }
+        ],
+        "cash": "15014.2587144",
+        "equity": "15504.78293022"
+      },
+      {
+        "sequence": 555605,
+        "event_ns": "1736251260000000000",
+        "native_id": "T-145cb9c8985d95c6-039",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.175",
+            "side": "LONG",
+            "raw_mark": "100792.3",
+            "native_price": "100792.3",
+            "native_upnl": "453.27721582"
+          },
+          {
+            "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "quantity": "22.4",
+            "side": "SHORT",
+            "raw_mark": "213.85",
+            "native_price": "213.85",
+            "native_upnl": "77.504"
+          }
+        ],
+        "cash": "15014.2587144",
+        "equity": "15545.03993022"
+      },
+      {
+        "sequence": 555606,
+        "event_ns": "1736251260000000000",
+        "native_id": "T-145cb9c8985d95c6-039",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.175",
+            "side": "LONG",
+            "raw_mark": "100792.3",
+            "native_price": "100792.3",
+            "native_upnl": "453.27721582"
+          }
+        ],
+        "cash": "15089.3522056",
+        "equity": "15542.62942142"
+      },
+      {
+        "sequence": 557765,
+        "event_ns": "1736294400000000000",
+        "native_id": "T-7952904fbebea087-080",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "0.175",
+            "side": "LONG",
+            "raw_mark": "96908.1",
+            "native_price": "96908.1",
+            "native_upnl": "-226.45778418"
+          }
+        ],
+        "cash": "15086.1828416",
+        "equity": "14859.72505742"
+      },
+      {
+        "sequence": 557766,
+        "event_ns": "1736294400000000000",
+        "native_id": "T-7952904fbebea087-080",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [],
+        "cash": "14843.73381992",
+        "equity": "14843.73381992"
+      }
+    ]
+  }
+]

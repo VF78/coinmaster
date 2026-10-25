@@ -1,0 +1,2897 @@
+{
+  "schema": "CM_A0_C0_NATIVE_TP_CAUSAL_DIAGNOSIS_V1",
+  "read_only": true,
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "attempt_id": "fe2ffed5-6f7d-4e51-bb83-9b7f93ba227c",
+  "inputs": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0.json",
+      "sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-orders.csv",
+      "sha256": "1186c170f62683d943010842b8413b6fb520095043db3ce7c31533f4b3ef304f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/coherent-native-events.jsonl.gz",
+      "sha256": "75b71ac6032e0a87e849d91d60bbe37f31bbeb504b6b2a2475397a55f4df14ee"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_C0-native3TP-native-snapshot-context.json",
+      "sha256": "0e83c1cb8f8c34227a46ccc123c293774ee8d8eb97b2d52bab39748b3acdbb61"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f"
+    }
+  ],
+  "reported_missing_seconds": 57120,
+  "native_required_target_absence_seconds": 540,
+  "reported_missing_but_required_native_target_present_seconds": 56580,
+  "intervals": [
+    {
+      "interval": 1,
+      "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+      "start_ns": 1725272520000000000,
+      "end_ns": 1725272580000000000,
+      "start_utc": "2024-09-02T10:22:00+00:00",
+      "end_utc": "2024-09-02T10:23:00+00:00",
+      "reported_missing_seconds": 60,
+      "native_required_target_absence_seconds": 60,
+      "reported_missing_but_required_native_target_present_seconds": 0,
+      "restore": {
+        "duration_ns": "60000000000",
+        "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+        "event": "PROTECTION_RESTORED",
+        "reason": "ALL_REMAINING_ACCEPTED",
+        "timestamp_ns": "1725272580000000000"
+      },
+      "already_consumed_native_targets": [],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20240902-003500-001-000-6",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "0.168",
+          "price": "56447.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1725237300000000000",
+          "ts_last": "1725272520000000000",
+          "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+          "generation": 1,
+          "level": 0,
+          "timestamp_ns": "1725237300000000000"
+        },
+        {
+          "client_order_id": "O-20240902-003500-001-000-7",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "0.168",
+          "price": "55581.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1725237300000000000",
+          "ts_last": "1725272520000000000",
+          "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+          "generation": 1,
+          "level": 1,
+          "timestamp_ns": "1725237300000000000"
+        },
+        {
+          "client_order_id": "O-20240902-003500-001-000-8",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "0.455",
+          "price": "54715.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1725237300000000000",
+          "ts_last": "1725272520000000000",
+          "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+          "generation": 1,
+          "level": 2,
+          "timestamp_ns": "1725237300000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [
+        {
+          "client_order_id": "O-20240902-102300-001-000-18",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "0.126",
+          "price": "56447.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "0.126",
+          "avg_px": "56447.0",
+          "last_trade_id": "T-a1d305b7673578e7-004",
+          "ts_init": "1725272580000000000",
+          "ts_last": "1725411720000000000",
+          "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+          "generation": 2,
+          "level": 0,
+          "timestamp_ns": "1725272580000000000"
+        },
+        {
+          "client_order_id": "O-20240902-102300-001-000-19",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "0.126",
+          "price": "55581.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "0.126",
+          "avg_px": "55581.0",
+          "last_trade_id": "T-bb5dbd36c521afa6-005",
+          "ts_init": "1725272580000000000",
+          "ts_last": "1725411900000000000",
+          "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+          "generation": 2,
+          "level": 1,
+          "timestamp_ns": "1725272580000000000"
+        },
+        {
+          "client_order_id": "O-20240902-102300-001-000-20",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "0.341",
+          "price": "54715.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "0.341",
+          "avg_px": "54715.0",
+          "last_trade_id": "T-4741630b1ff58084-006",
+          "ts_init": "1725272580000000000",
+          "ts_last": "1725634080000000000",
+          "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+          "generation": 2,
+          "level": 2,
+          "timestamp_ns": "1725272580000000000"
+        }
+      ],
+      "target_submissions": [
+        {
+          "actual_inventory": "0.593",
+          "episode_id": "3a332a11-8732-4866-acf9-5335e6797eae",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "0": 126,
+            "1": 126,
+            "2": 341
+          },
+          "p0": "57313",
+          "prices": [
+            "56447.0",
+            "55581.0",
+            "54715.0"
+          ],
+          "raw_causal_d3": "0.04532954024460979",
+          "timestamp_ns": "1725272580000000000"
+        }
+      ],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.791",
+          "bmax": "0.593",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1725272520000000000"
+        },
+        {
+          "bmax": "0.593",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 0,
+          "order_id": "O-20240902-040100-001-000-10",
+          "price": "132.02",
+          "qty": "33",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1725272520000000000"
+        },
+        {
+          "bmax": "0.593",
+          "btc": "0.791",
+          "event": "CACHE_POSITION",
+          "sol": "99.1",
+          "solmax": "99.1",
+          "timestamp_ns": "1725272520000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20240902-102200-001-000-14",
+          "price": "133.86",
+          "quantity": "33.0",
+          "stop": null,
+          "timestamp_ns": "1725272520000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20240902-102200-001-000-15",
+          "price": "137.55",
+          "quantity": "66.1",
+          "stop": null,
+          "timestamp_ns": "1725272520000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20240902-102300-001-000-17",
+          "price": null,
+          "quantity": "0.198",
+          "stop": null,
+          "timestamp_ns": "1725272580000000000"
+        },
+        {
+          "bmax": "0.593",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20240902-102300-001-000-17",
+          "price": "58475.9",
+          "qty": "0.198",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1725272580000000000"
+        },
+        {
+          "bmax": "0.593",
+          "btc": "0.593",
+          "event": "CACHE_POSITION",
+          "sol": "99.1",
+          "solmax": "99.1",
+          "timestamp_ns": "1725272580000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20240902-040100-001-000-10",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "33.0",
+          "price": "132.02",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "33.0",
+          "avg_px": "132.02",
+          "last_trade_id": "T-7925982ccfe5ba9e-002",
+          "ts_init": "1725249660000000000",
+          "ts_last": "1725272520000000000"
+        },
+        {
+          "client_order_id": "O-20240902-102200-001-000-14",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "33.0",
+          "price": "133.86",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1725272520000000000",
+          "ts_last": "1725278460000000000"
+        },
+        {
+          "client_order_id": "O-20240902-102200-001-000-15",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "66.1",
+          "price": "137.55",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1725272520000000000",
+          "ts_last": "1725278460000000000"
+        },
+        {
+          "client_order_id": "O-20240902-102300-001-000-17",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "BUY",
+          "quantity": "0.198",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.198",
+          "avg_px": "58475.9",
+          "last_trade_id": "T-cc0f83f67c8799ad-003",
+          "ts_init": "1725272580000000000",
+          "ts_last": "1725272580000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1725272520000000000,
+          "end_ns": 1725272580000000000,
+          "start_utc": "2024-09-02T10:22:00+00:00",
+          "end_utc": "2024-09-02T10:23:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 6197,
+            "event_ns": "1725272520000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.791",
+                "side": "SHORT",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "interval": 2,
+      "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "start_ns": 1726293480000000000,
+      "end_ns": 1726293540000000000,
+      "start_utc": "2024-09-14T05:58:00+00:00",
+      "end_utc": "2024-09-14T05:59:00+00:00",
+      "reported_missing_seconds": 60,
+      "native_required_target_absence_seconds": 60,
+      "reported_missing_but_required_native_target_present_seconds": 0,
+      "restore": {
+        "duration_ns": "60000000000",
+        "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+        "event": "PROTECTION_RESTORED",
+        "reason": "ALL_REMAINING_ACCEPTED",
+        "timestamp_ns": "1726293540000000000"
+      },
+      "already_consumed_native_targets": [],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20240914-000200-001-000-34",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.114",
+          "price": "61393.7",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726272120000000000",
+          "ts_last": "1726293480000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 0,
+          "level": 0,
+          "timestamp_ns": "1726272120000000000"
+        },
+        {
+          "client_order_id": "O-20240914-000200-001-000-35",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.114",
+          "price": "62277.3",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726272120000000000",
+          "ts_last": "1726293480000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 0,
+          "level": 1,
+          "timestamp_ns": "1726272120000000000"
+        },
+        {
+          "client_order_id": "O-20240914-000200-001-000-36",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.312",
+          "price": "63160.9",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726272120000000000",
+          "ts_last": "1726293480000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 0,
+          "level": 2,
+          "timestamp_ns": "1726272120000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [
+        {
+          "client_order_id": "O-20240914-055900-001-000-47",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.086",
+          "price": "61393.7",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726293540000000000",
+          "ts_last": "1726303500000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 1,
+          "level": 0,
+          "timestamp_ns": "1726293540000000000"
+        },
+        {
+          "client_order_id": "O-20240914-055900-001-000-48",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.086",
+          "price": "62277.3",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726293540000000000",
+          "ts_last": "1726303500000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 1,
+          "level": 1,
+          "timestamp_ns": "1726293540000000000"
+        },
+        {
+          "client_order_id": "O-20240914-055900-001-000-49",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.233",
+          "price": "63160.9",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726293540000000000",
+          "ts_last": "1726303500000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 1,
+          "level": 2,
+          "timestamp_ns": "1726293540000000000"
+        }
+      ],
+      "target_submissions": [
+        {
+          "actual_inventory": "0.405",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "0": 86,
+            "1": 86,
+            "2": 233
+          },
+          "p0": "60510.1",
+          "prices": [
+            "61393.7",
+            "62277.3",
+            "63160.9"
+          ],
+          "raw_causal_d3": "0.04380699029282055",
+          "timestamp_ns": "1726293540000000000"
+        }
+      ],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.54",
+          "bmax": "0.405",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1726293480000000000"
+        },
+        {
+          "bmax": "0.405",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 0,
+          "order_id": "O-20240914-040100-001-000-39",
+          "price": "138.07",
+          "qty": "22.4",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1726293480000000000"
+        },
+        {
+          "bmax": "0.405",
+          "btc": "0.54",
+          "event": "CACHE_POSITION",
+          "sol": "67.5",
+          "solmax": "67.5",
+          "timestamp_ns": "1726293480000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20240914-055800-001-000-43",
+          "price": "136.79",
+          "quantity": "22.4",
+          "stop": null,
+          "timestamp_ns": "1726293480000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20240914-055800-001-000-44",
+          "price": "134.23",
+          "quantity": "45.1",
+          "stop": null,
+          "timestamp_ns": "1726293480000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20240914-055900-001-000-46",
+          "price": null,
+          "quantity": "0.135",
+          "stop": null,
+          "timestamp_ns": "1726293540000000000"
+        },
+        {
+          "bmax": "0.405",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20240914-055900-001-000-46",
+          "price": "59917.9",
+          "qty": "0.135",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1726293540000000000"
+        },
+        {
+          "bmax": "0.405",
+          "btc": "0.405",
+          "event": "CACHE_POSITION",
+          "sol": "67.5",
+          "solmax": "67.5",
+          "timestamp_ns": "1726293540000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20240914-040100-001-000-39",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "22.4",
+          "price": "138.07",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "22.4",
+          "avg_px": "138.07",
+          "last_trade_id": "T-c6af6f0a2fffe7cf-007",
+          "ts_init": "1726286460000000000",
+          "ts_last": "1726293480000000000"
+        },
+        {
+          "client_order_id": "O-20240914-055800-001-000-43",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "22.4",
+          "price": "136.79",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "22.4",
+          "avg_px": "136.79",
+          "last_trade_id": "T-ffeaa039c0090d24-008",
+          "ts_init": "1726293480000000000",
+          "ts_last": "1726303500000000000"
+        },
+        {
+          "client_order_id": "O-20240914-055800-001-000-44",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "45.1",
+          "price": "134.23",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726293480000000000",
+          "ts_last": "1726303500000000000"
+        },
+        {
+          "client_order_id": "O-20240914-055900-001-000-46",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.135",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.135",
+          "avg_px": "59917.9",
+          "last_trade_id": "T-575e672753115d89-012",
+          "ts_init": "1726293540000000000",
+          "ts_last": "1726293540000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1726293480000000000,
+          "end_ns": 1726293540000000000,
+          "start_utc": "2024-09-14T05:58:00+00:00",
+          "end_utc": "2024-09-14T05:59:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 57299,
+            "event_ns": "1726293480000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.540",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "interval": 3,
+      "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "start_ns": 1726303500000000000,
+      "end_ns": 1726303560000000000,
+      "start_utc": "2024-09-14T08:45:00+00:00",
+      "end_utc": "2024-09-14T08:46:00+00:00",
+      "reported_missing_seconds": 60,
+      "native_required_target_absence_seconds": 60,
+      "reported_missing_but_required_native_target_present_seconds": 0,
+      "restore": {
+        "duration_ns": "60000000000",
+        "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+        "event": "PROTECTION_RESTORED",
+        "reason": "ALL_REMAINING_ACCEPTED",
+        "timestamp_ns": "1726303560000000000"
+      },
+      "already_consumed_native_targets": [],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20240914-055900-001-000-47",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.086",
+          "price": "61393.7",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726293540000000000",
+          "ts_last": "1726303500000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 1,
+          "level": 0,
+          "timestamp_ns": "1726293540000000000"
+        },
+        {
+          "client_order_id": "O-20240914-055900-001-000-48",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.086",
+          "price": "62277.3",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726293540000000000",
+          "ts_last": "1726303500000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 1,
+          "level": 1,
+          "timestamp_ns": "1726293540000000000"
+        },
+        {
+          "client_order_id": "O-20240914-055900-001-000-49",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.233",
+          "price": "63160.9",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726293540000000000",
+          "ts_last": "1726303500000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 1,
+          "level": 2,
+          "timestamp_ns": "1726293540000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [
+        {
+          "client_order_id": "O-20240914-084600-001-000-53",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.057",
+          "price": "61393.7",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726303560000000000",
+          "ts_last": "1726531200000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 2,
+          "level": 0,
+          "timestamp_ns": "1726303560000000000"
+        },
+        {
+          "client_order_id": "O-20240914-084600-001-000-54",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.057",
+          "price": "62277.3",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726303560000000000",
+          "ts_last": "1726531200000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 2,
+          "level": 1,
+          "timestamp_ns": "1726303560000000000"
+        },
+        {
+          "client_order_id": "O-20240914-084600-001-000-55",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.156",
+          "price": "63160.9",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726303560000000000",
+          "ts_last": "1726531200000000000",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "generation": 2,
+          "level": 2,
+          "timestamp_ns": "1726303560000000000"
+        }
+      ],
+      "target_submissions": [
+        {
+          "actual_inventory": "0.27",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "0": 57,
+            "1": 57,
+            "2": 156
+          },
+          "p0": "60510.1",
+          "prices": [
+            "61393.7",
+            "62277.3",
+            "63160.9"
+          ],
+          "raw_causal_d3": "0.04380699029282055",
+          "timestamp_ns": "1726303560000000000"
+        }
+      ],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.405",
+          "bmax": "0.270",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1726303500000000000"
+        },
+        {
+          "bmax": "0.270",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20240914-055800-001-000-43",
+          "price": "136.79",
+          "qty": "22.4",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1726303500000000000"
+        },
+        {
+          "bmax": "0.270",
+          "btc": "0.405",
+          "event": "CACHE_POSITION",
+          "sol": "45.1",
+          "solmax": "45.0",
+          "timestamp_ns": "1726303500000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 3,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20240914-084500-001-000-50",
+          "price": "134.23",
+          "quantity": "45.1",
+          "stop": null,
+          "timestamp_ns": "1726303500000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 3,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20240914-084600-001-000-52",
+          "price": null,
+          "quantity": "0.135",
+          "stop": null,
+          "timestamp_ns": "1726303560000000000"
+        },
+        {
+          "bmax": "0.270",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20240914-084600-001-000-52",
+          "price": "59963",
+          "qty": "0.135",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1726303560000000000"
+        },
+        {
+          "bmax": "0.270",
+          "btc": "0.27",
+          "event": "CACHE_POSITION",
+          "sol": "45.1",
+          "solmax": "45.0",
+          "timestamp_ns": "1726303560000000000"
+        },
+        {
+          "bmax": "0.270",
+          "btc": "0.27",
+          "event": "CACHE_POSITION",
+          "sol": "45",
+          "solmax": "45.0",
+          "timestamp_ns": "1726303560000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 4,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20240914-084600-001-000-57",
+          "price": "134.23",
+          "quantity": "45.0",
+          "stop": null,
+          "timestamp_ns": "1726303560000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20240914-055800-001-000-43",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "22.4",
+          "price": "136.79",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "22.4",
+          "avg_px": "136.79",
+          "last_trade_id": "T-ffeaa039c0090d24-008",
+          "ts_init": "1726293480000000000",
+          "ts_last": "1726303500000000000"
+        },
+        {
+          "client_order_id": "O-20240914-084500-001-000-50",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "45.1",
+          "price": "134.23",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726303500000000000",
+          "ts_last": "1726303560000000000"
+        },
+        {
+          "client_order_id": "O-20240914-084600-001-000-52",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.135",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.135",
+          "avg_px": "59963.00000000001",
+          "last_trade_id": "T-7122994db523ab66-013",
+          "ts_init": "1726303560000000000",
+          "ts_last": "1726303560000000000"
+        },
+        {
+          "client_order_id": "O-20240914-084600-001-000-57",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "45.0",
+          "price": "134.23",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1726303560000000000",
+          "ts_last": "1726315260000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1726303500000000000,
+          "end_ns": 1726303560000000000,
+          "start_utc": "2024-09-14T08:45:00+00:00",
+          "end_utc": "2024-09-14T08:46:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 57808,
+            "event_ns": "1726303500000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.405",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "interval": 4,
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "start_ns": 1729876920000000000,
+      "end_ns": 1729876980000000000,
+      "start_utc": "2024-10-25T17:22:00+00:00",
+      "end_utc": "2024-10-25T17:23:00+00:00",
+      "reported_missing_seconds": 60,
+      "native_required_target_absence_seconds": 60,
+      "reported_missing_but_required_native_target_present_seconds": 0,
+      "restore": {
+        "duration_ns": "60000000000",
+        "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+        "event": "PROTECTION_RESTORED",
+        "reason": "ALL_REMAINING_ACCEPTED",
+        "timestamp_ns": "1729876980000000000"
+      },
+      "already_consumed_native_targets": [],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20241025-010900-001-000-126",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.204",
+          "price": "69443.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729818540000000000",
+          "ts_last": "1729876920000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 1,
+          "level": 0,
+          "timestamp_ns": "1729818540000000000"
+        },
+        {
+          "client_order_id": "O-20241025-010900-001-000-127",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.204",
+          "price": "70663.5",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729818540000000000",
+          "ts_last": "1729876920000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 1,
+          "level": 1,
+          "timestamp_ns": "1729818540000000000"
+        },
+        {
+          "client_order_id": "O-20241025-010900-001-000-128",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.555",
+          "price": "71884.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729818540000000000",
+          "ts_last": "1729876920000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 1,
+          "level": 2,
+          "timestamp_ns": "1729818540000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [
+        {
+          "client_order_id": "O-20241025-172300-001-000-138",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.153",
+          "price": "69443.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729876980000000000",
+          "ts_last": "1729879020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 2,
+          "level": 0,
+          "timestamp_ns": "1729876980000000000"
+        },
+        {
+          "client_order_id": "O-20241025-172300-001-000-139",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.153",
+          "price": "70663.5",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729876980000000000",
+          "ts_last": "1729879020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 2,
+          "level": 1,
+          "timestamp_ns": "1729876980000000000"
+        },
+        {
+          "client_order_id": "O-20241025-172300-001-000-140",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.416",
+          "price": "71884.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729876980000000000",
+          "ts_last": "1729879020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 2,
+          "level": 2,
+          "timestamp_ns": "1729876980000000000"
+        }
+      ],
+      "target_submissions": [
+        {
+          "actual_inventory": "0.722",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "0": 153,
+            "1": 153,
+            "2": 416
+          },
+          "p0": "68222.4",
+          "prices": [
+            "69443.0",
+            "70663.5",
+            "71884.0"
+          ],
+          "raw_causal_d3": "0.053670653730680626",
+          "timestamp_ns": "1729876980000000000"
+        }
+      ],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.963",
+          "bmax": "0.722",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1729876920000000000"
+        },
+        {
+          "bmax": "0.722",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 0,
+          "order_id": "O-20241025-160100-001-000-130",
+          "price": "170.09",
+          "qty": "29.8",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1729876920000000000"
+        },
+        {
+          "bmax": "0.722",
+          "btc": "0.963",
+          "event": "CACHE_POSITION",
+          "sol": "89.4",
+          "solmax": "89.4",
+          "timestamp_ns": "1729876920000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20241025-172200-001-000-134",
+          "price": "168.16",
+          "quantity": "29.8",
+          "stop": null,
+          "timestamp_ns": "1729876920000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20241025-172200-001-000-135",
+          "price": "164.31",
+          "quantity": "59.6",
+          "stop": null,
+          "timestamp_ns": "1729876920000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241025-172300-001-000-137",
+          "price": null,
+          "quantity": "0.241",
+          "stop": null,
+          "timestamp_ns": "1729876980000000000"
+        },
+        {
+          "bmax": "0.722",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241025-172300-001-000-137",
+          "price": "67437.6",
+          "qty": "0.241",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1729876980000000000"
+        },
+        {
+          "bmax": "0.722",
+          "btc": "0.722",
+          "event": "CACHE_POSITION",
+          "sol": "89.4",
+          "solmax": "89.4",
+          "timestamp_ns": "1729876980000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20241025-160100-001-000-130",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "29.8",
+          "price": "170.09",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "29.8",
+          "avg_px": "170.09",
+          "last_trade_id": "T-7b3f67169709583f-020",
+          "ts_init": "1729872060000000000",
+          "ts_last": "1729876920000000000"
+        },
+        {
+          "client_order_id": "O-20241025-172200-001-000-134",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "29.8",
+          "price": "168.16",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "29.8",
+          "avg_px": "168.16",
+          "last_trade_id": "T-30dfe3d0c0e67ec1-021",
+          "ts_init": "1729876920000000000",
+          "ts_last": "1729879020000000000"
+        },
+        {
+          "client_order_id": "O-20241025-172200-001-000-135",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "59.6",
+          "price": "164.31",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729876920000000000",
+          "ts_last": "1729879020000000000"
+        },
+        {
+          "client_order_id": "O-20241025-172300-001-000-137",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.241",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.241",
+          "avg_px": "67437.6",
+          "last_trade_id": "T-e6caf43d371dfbf8-037",
+          "ts_init": "1729876980000000000",
+          "ts_last": "1729876980000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1729876920000000000,
+          "end_ns": 1729876980000000000,
+          "start_utc": "2024-10-25T17:22:00+00:00",
+          "end_utc": "2024-10-25T17:23:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 236635,
+            "event_ns": "1729876920000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.963",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "interval": 5,
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "start_ns": 1729879020000000000,
+      "end_ns": 1729879080000000000,
+      "start_utc": "2024-10-25T17:57:00+00:00",
+      "end_utc": "2024-10-25T17:58:00+00:00",
+      "reported_missing_seconds": 60,
+      "native_required_target_absence_seconds": 60,
+      "reported_missing_but_required_native_target_present_seconds": 0,
+      "restore": {
+        "duration_ns": "60000000000",
+        "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+        "event": "PROTECTION_RESTORED",
+        "reason": "ALL_REMAINING_ACCEPTED",
+        "timestamp_ns": "1729879080000000000"
+      },
+      "already_consumed_native_targets": [],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20241025-172300-001-000-138",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.153",
+          "price": "69443.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729876980000000000",
+          "ts_last": "1729879020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 2,
+          "level": 0,
+          "timestamp_ns": "1729876980000000000"
+        },
+        {
+          "client_order_id": "O-20241025-172300-001-000-139",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.153",
+          "price": "70663.5",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729876980000000000",
+          "ts_last": "1729879020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 2,
+          "level": 1,
+          "timestamp_ns": "1729876980000000000"
+        },
+        {
+          "client_order_id": "O-20241025-172300-001-000-140",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.416",
+          "price": "71884.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729876980000000000",
+          "ts_last": "1729879020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 2,
+          "level": 2,
+          "timestamp_ns": "1729876980000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [
+        {
+          "client_order_id": "O-20241025-175800-001-000-144",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.102",
+          "price": "69443.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729879080000000000",
+          "ts_last": "1729897020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 3,
+          "level": 0,
+          "timestamp_ns": "1729879080000000000"
+        },
+        {
+          "client_order_id": "O-20241025-175800-001-000-145",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.102",
+          "price": "70663.5",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729879080000000000",
+          "ts_last": "1729897020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 3,
+          "level": 1,
+          "timestamp_ns": "1729879080000000000"
+        },
+        {
+          "client_order_id": "O-20241025-175800-001-000-146",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.277",
+          "price": "71884.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729879080000000000",
+          "ts_last": "1729897020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 3,
+          "level": 2,
+          "timestamp_ns": "1729879080000000000"
+        }
+      ],
+      "target_submissions": [
+        {
+          "actual_inventory": "0.481",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "0": 102,
+            "1": 102,
+            "2": 277
+          },
+          "p0": "68222.4",
+          "prices": [
+            "69443.0",
+            "70663.5",
+            "71884.0"
+          ],
+          "raw_causal_d3": "0.053670653730680626",
+          "timestamp_ns": "1729879080000000000"
+        }
+      ],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.722",
+          "bmax": "0.481",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1729879020000000000"
+        },
+        {
+          "bmax": "0.481",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20241025-172200-001-000-134",
+          "price": "168.16",
+          "qty": "29.8",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1729879020000000000"
+        },
+        {
+          "bmax": "0.481",
+          "btc": "0.722",
+          "event": "CACHE_POSITION",
+          "sol": "59.6",
+          "solmax": "59.6",
+          "timestamp_ns": "1729879020000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 3,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20241025-175700-001-000-141",
+          "price": "164.31",
+          "quantity": "59.6",
+          "stop": null,
+          "timestamp_ns": "1729879020000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 3,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241025-175800-001-000-143",
+          "price": null,
+          "quantity": "0.241",
+          "stop": null,
+          "timestamp_ns": "1729879080000000000"
+        },
+        {
+          "bmax": "0.481",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241025-175800-001-000-143",
+          "price": "66768",
+          "qty": "0.241",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1729879080000000000"
+        },
+        {
+          "bmax": "0.481",
+          "btc": "0.481",
+          "event": "CACHE_POSITION",
+          "sol": "59.6",
+          "solmax": "59.6",
+          "timestamp_ns": "1729879080000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20241025-172200-001-000-134",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "29.8",
+          "price": "168.16",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "29.8",
+          "avg_px": "168.16",
+          "last_trade_id": "T-30dfe3d0c0e67ec1-021",
+          "ts_init": "1729876920000000000",
+          "ts_last": "1729879020000000000"
+        },
+        {
+          "client_order_id": "O-20241025-175700-001-000-141",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "59.6",
+          "price": "164.31",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "59.6",
+          "avg_px": "164.31",
+          "last_trade_id": "T-81e4bafdb6fd902e-022",
+          "ts_init": "1729879020000000000",
+          "ts_last": "1729897020000000000"
+        },
+        {
+          "client_order_id": "O-20241025-175800-001-000-143",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.241",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.241",
+          "avg_px": "66768.0",
+          "last_trade_id": "T-b466df52e52316bd-038",
+          "ts_init": "1729879080000000000",
+          "ts_last": "1729879080000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1729879020000000000,
+          "end_ns": 1729879080000000000,
+          "start_utc": "2024-10-25T17:57:00+00:00",
+          "end_utc": "2024-10-25T17:58:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 236744,
+            "event_ns": "1729879020000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.722",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "interval": 6,
+      "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+      "start_ns": 1729897020000000000,
+      "end_ns": 1729897080000000000,
+      "start_utc": "2024-10-25T22:57:00+00:00",
+      "end_utc": "2024-10-25T22:58:00+00:00",
+      "reported_missing_seconds": 60,
+      "native_required_target_absence_seconds": 60,
+      "reported_missing_but_required_native_target_present_seconds": 0,
+      "restore": {
+        "duration_ns": "60000000000",
+        "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+        "event": "PROTECTION_RESTORED",
+        "reason": "FLAT",
+        "timestamp_ns": "1729897080000000000"
+      },
+      "already_consumed_native_targets": [],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20241025-175800-001-000-144",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.102",
+          "price": "69443.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729879080000000000",
+          "ts_last": "1729897020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 3,
+          "level": 0,
+          "timestamp_ns": "1729879080000000000"
+        },
+        {
+          "client_order_id": "O-20241025-175800-001-000-145",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.102",
+          "price": "70663.5",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729879080000000000",
+          "ts_last": "1729897020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 3,
+          "level": 1,
+          "timestamp_ns": "1729879080000000000"
+        },
+        {
+          "client_order_id": "O-20241025-175800-001-000-146",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.277",
+          "price": "71884.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1729879080000000000",
+          "ts_last": "1729897020000000000",
+          "episode_id": "67ea8598-9570-43e2-a0dc-2ef077a137a7",
+          "generation": 3,
+          "level": 2,
+          "timestamp_ns": "1729879080000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [],
+      "target_submissions": [],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.481",
+          "bmax": "0.000",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1729897020000000000"
+        },
+        {
+          "bmax": "0.000",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20241025-175700-001-000-141",
+          "price": "164.31",
+          "qty": "59.6",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1729897020000000000"
+        },
+        {
+          "bmax": "0.000",
+          "btc": "0.481",
+          "event": "CACHE_POSITION",
+          "sol": "0",
+          "solmax": "0.0",
+          "timestamp_ns": "1729897020000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 3,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241025-225800-001-000-147",
+          "price": null,
+          "quantity": "0.481",
+          "stop": null,
+          "timestamp_ns": "1729897080000000000"
+        },
+        {
+          "bmax": "0.000",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241025-225800-001-000-147",
+          "price": "66685.4",
+          "qty": "0.481",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1729897080000000000"
+        },
+        {
+          "bmax": "0.000",
+          "btc": "0",
+          "event": "CACHE_POSITION",
+          "sol": "0",
+          "solmax": "0.0",
+          "timestamp_ns": "1729897080000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20241025-175700-001-000-141",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "59.6",
+          "price": "164.31",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "59.6",
+          "avg_px": "164.31",
+          "last_trade_id": "T-81e4bafdb6fd902e-022",
+          "ts_init": "1729879020000000000",
+          "ts_last": "1729897020000000000"
+        },
+        {
+          "client_order_id": "O-20241025-225800-001-000-147",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.481",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.481",
+          "avg_px": "66685.40000000001",
+          "last_trade_id": "T-bd658bb2292d6d50-039",
+          "ts_init": "1729897080000000000",
+          "ts_last": "1729897080000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1729897020000000000,
+          "end_ns": 1729897080000000000,
+          "start_utc": "2024-10-25T22:57:00+00:00",
+          "end_utc": "2024-10-25T22:58:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 237648,
+            "event_ns": "1729897020000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.481",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "interval": 7,
+      "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+      "start_ns": 1735198440000000000,
+      "end_ns": 1735198500000000000,
+      "start_utc": "2024-12-26T07:34:00+00:00",
+      "end_utc": "2024-12-26T07:35:00+00:00",
+      "reported_missing_seconds": 60,
+      "native_required_target_absence_seconds": 60,
+      "reported_missing_but_required_native_target_present_seconds": 0,
+      "restore": {
+        "duration_ns": "60000000000",
+        "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+        "event": "PROTECTION_RESTORED",
+        "reason": "ALL_REMAINING_ACCEPTED",
+        "timestamp_ns": "1735198500000000000"
+      },
+      "already_consumed_native_targets": [],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20241225-012900-001-000-227",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.160",
+          "price": "100476.8",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735090140000000000",
+          "ts_last": "1735198440000000000",
+          "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+          "generation": 1,
+          "level": 0,
+          "timestamp_ns": "1735090140000000000"
+        },
+        {
+          "client_order_id": "O-20241225-012900-001-000-228",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.160",
+          "price": "102279.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735090140000000000",
+          "ts_last": "1735198440000000000",
+          "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+          "generation": 1,
+          "level": 1,
+          "timestamp_ns": "1735090140000000000"
+        },
+        {
+          "client_order_id": "O-20241225-012900-001-000-229",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.434",
+          "price": "104081.2",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735090140000000000",
+          "ts_last": "1735198440000000000",
+          "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+          "generation": 1,
+          "level": 2,
+          "timestamp_ns": "1735090140000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [
+        {
+          "client_order_id": "O-20241226-073500-001-000-239",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.120",
+          "price": "100476.8",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735198500000000000",
+          "ts_last": "1735257600000000000",
+          "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+          "generation": 2,
+          "level": 0,
+          "timestamp_ns": "1735198500000000000"
+        },
+        {
+          "client_order_id": "O-20241226-073500-001-000-240",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.120",
+          "price": "102279.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735198500000000000",
+          "ts_last": "1735257600000000000",
+          "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+          "generation": 2,
+          "level": 1,
+          "timestamp_ns": "1735198500000000000"
+        },
+        {
+          "client_order_id": "O-20241226-073500-001-000-241",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.325",
+          "price": "104081.2",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735198500000000000",
+          "ts_last": "1735257600000000000",
+          "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+          "generation": 2,
+          "level": 2,
+          "timestamp_ns": "1735198500000000000"
+        }
+      ],
+      "target_submissions": [
+        {
+          "actual_inventory": "0.565",
+          "episode_id": "f15ae334-8c1b-4a9c-8285-64007d0afc75",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "0": 120,
+            "1": 120,
+            "2": 325
+          },
+          "p0": "98674.6",
+          "prices": [
+            "100476.8",
+            "102279.0",
+            "104081.2"
+          ],
+          "raw_causal_d3": "0.05479155621436216",
+          "timestamp_ns": "1735198500000000000"
+        }
+      ],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.754",
+          "bmax": "0.565",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1735198440000000000"
+        },
+        {
+          "bmax": "0.565",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 0,
+          "order_id": "O-20241226-040100-001-000-231",
+          "price": "193.38",
+          "qty": "30.2",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1735198440000000000"
+        },
+        {
+          "bmax": "0.565",
+          "btc": "0.754",
+          "event": "CACHE_POSITION",
+          "sol": "90.6",
+          "solmax": "90.6",
+          "timestamp_ns": "1735198440000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20241226-073400-001-000-235",
+          "price": "190.64",
+          "quantity": "30.2",
+          "stop": null,
+          "timestamp_ns": "1735198440000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20241226-073400-001-000-236",
+          "price": "185.16",
+          "quantity": "60.4",
+          "stop": null,
+          "timestamp_ns": "1735198440000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241226-073500-001-000-238",
+          "price": null,
+          "quantity": "0.189",
+          "stop": null,
+          "timestamp_ns": "1735198500000000000"
+        },
+        {
+          "bmax": "0.565",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20241226-073500-001-000-238",
+          "price": "97817",
+          "qty": "0.189",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1735198500000000000"
+        },
+        {
+          "bmax": "0.565",
+          "btc": "0.565",
+          "event": "CACHE_POSITION",
+          "sol": "90.6",
+          "solmax": "90.6",
+          "timestamp_ns": "1735198500000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20241226-040100-001-000-231",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "30.2",
+          "price": "193.38",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "30.2",
+          "avg_px": "193.38",
+          "last_trade_id": "T-6894734c50ac628d-034",
+          "ts_init": "1735185660000000000",
+          "ts_last": "1735198440000000000"
+        },
+        {
+          "client_order_id": "O-20241226-073400-001-000-235",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "30.2",
+          "price": "190.64",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735198440000000000",
+          "ts_last": "1735200060000000000"
+        },
+        {
+          "client_order_id": "O-20241226-073400-001-000-236",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "60.4",
+          "price": "185.16",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735198440000000000",
+          "ts_last": "1735200060000000000"
+        },
+        {
+          "client_order_id": "O-20241226-073500-001-000-238",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.189",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.189",
+          "avg_px": "97817.0",
+          "last_trade_id": "T-e4db8a31d69f7907-067",
+          "ts_init": "1735198500000000000",
+          "ts_last": "1735198500000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1735198440000000000,
+          "end_ns": 1735198500000000000,
+          "start_utc": "2024-12-26T07:34:00+00:00",
+          "end_utc": "2024-12-26T07:35:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            0,
+            1,
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 502893,
+            "event_ns": "1735198440000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.754",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "interval": 8,
+      "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+      "start_ns": 1736237700000000000,
+      "end_ns": 1736294400000000000,
+      "start_utc": "2025-01-07T08:15:00+00:00",
+      "end_utc": "2025-01-08T00:00:00+00:00",
+      "reported_missing_seconds": 56700,
+      "native_required_target_absence_seconds": 120,
+      "reported_missing_but_required_native_target_present_seconds": 56580,
+      "restore": {
+        "duration_ns": "56700000000000",
+        "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+        "event": "PROTECTION_RESTORED",
+        "reason": "NATIVE_FLAT",
+        "timestamp_ns": "1736294400000000000"
+      },
+      "already_consumed_native_targets": [
+        {
+          "client_order_id": "O-20250104-003700-001-000-257",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.128",
+          "price": "100210.0",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "0.128",
+          "avg_px": "100210.0",
+          "last_trade_id": "T-6e624d9e626f1edf-076",
+          "ts_init": "1735951020000000000",
+          "ts_last": "1736174940000000000",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "generation": 1,
+          "level": 0,
+          "timestamp_ns": "1735951020000000000"
+        },
+        {
+          "client_order_id": "O-20250104-003700-001-000-258",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.128",
+          "price": "101971.3",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "0.128",
+          "avg_px": "101971.3",
+          "last_trade_id": "T-7cd5df6dd1aa8099-077",
+          "ts_init": "1735951020000000000",
+          "ts_last": "1736178360000000000",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "generation": 1,
+          "level": 1,
+          "timestamp_ns": "1735951020000000000"
+        }
+      ],
+      "canceled_targets": [
+        {
+          "client_order_id": "O-20250104-003700-001-000-259",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.351",
+          "price": "103732.6",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1735951020000000000",
+          "ts_last": "1736237700000000000",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "generation": 1,
+          "level": 2,
+          "timestamp_ns": "1735951020000000000"
+        },
+        {
+          "client_order_id": "O-20250107-081600-001-000-269",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.263",
+          "price": "103732.6",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1736237760000000000",
+          "ts_last": "1736250360000000000",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "generation": 2,
+          "level": 2,
+          "timestamp_ns": "1736237760000000000"
+        }
+      ],
+      "recovery_native_target_acceptances": [
+        {
+          "client_order_id": "O-20250107-081600-001-000-269",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.263",
+          "price": "103732.6",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1736237760000000000",
+          "ts_last": "1736250360000000000",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "generation": 2,
+          "level": 2,
+          "timestamp_ns": "1736237760000000000"
+        },
+        {
+          "client_order_id": "O-20250107-114700-001-000-273",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "SELL",
+          "quantity": "0.175",
+          "price": "103732.6",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.000",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1736250420000000000",
+          "ts_last": "1736294400000000000",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "generation": 3,
+          "level": 2,
+          "timestamp_ns": "1736250420000000000"
+        }
+      ],
+      "target_submissions": [
+        {
+          "actual_inventory": "0.263",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "2": 263
+          },
+          "p0": "98448.7",
+          "prices": [
+            "100210.0",
+            "101971.3",
+            "103732.6"
+          ],
+          "raw_causal_d3": "0.053670653730680626",
+          "timestamp_ns": "1736237760000000000"
+        },
+        {
+          "actual_inventory": "0.175",
+          "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+          "event": "TARGETS_SUBMITTED",
+          "level_lots": {
+            "2": 175
+          },
+          "p0": "98448.7",
+          "prices": [
+            "100210.0",
+            "101971.3",
+            "103732.6"
+          ],
+          "raw_causal_d3": "0.053670653730680626",
+          "timestamp_ns": "1736250420000000000"
+        }
+      ],
+      "paired_causal_events": [
+        {
+          "actual_btc": "0.351",
+          "bmax": "0.263",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1736237700000000000"
+        },
+        {
+          "bmax": "0.263",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 0,
+          "order_id": "O-20250107-040100-001-000-261",
+          "price": "215.4",
+          "qty": "11.2",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1736237700000000000"
+        },
+        {
+          "bmax": "0.263",
+          "btc": "0.351",
+          "event": "CACHE_POSITION",
+          "sol": "33.6",
+          "solmax": "33.6",
+          "timestamp_ns": "1736237700000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20250107-081500-001-000-265",
+          "price": "213.50",
+          "quantity": "11.2",
+          "stop": null,
+          "timestamp_ns": "1736237700000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20250107-081500-001-000-266",
+          "price": "209.70",
+          "quantity": "22.4",
+          "stop": null,
+          "timestamp_ns": "1736237700000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 2,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20250107-081600-001-000-268",
+          "price": null,
+          "quantity": "0.088",
+          "stop": null,
+          "timestamp_ns": "1736237760000000000"
+        },
+        {
+          "bmax": "0.263",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20250107-081600-001-000-268",
+          "price": "101629.7",
+          "qty": "0.088",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1736237760000000000"
+        },
+        {
+          "bmax": "0.263",
+          "btc": "0.263",
+          "event": "CACHE_POSITION",
+          "sol": "33.6",
+          "solmax": "33.6",
+          "timestamp_ns": "1736237760000000000"
+        },
+        {
+          "actual_btc": "0.263",
+          "bmax": "0.175",
+          "event": "ACTUAL_BTC_DEBT_OPEN",
+          "timestamp_ns": "1736250360000000000"
+        },
+        {
+          "bmax": "0.175",
+          "event": "ACTUAL_FILL",
+          "kind": "TP",
+          "level": 1,
+          "order_id": "O-20250107-081500-001-000-265",
+          "price": "213.5",
+          "qty": "11.2",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1736250360000000000"
+        },
+        {
+          "bmax": "0.175",
+          "btc": "0.263",
+          "event": "CACHE_POSITION",
+          "sol": "22.4",
+          "solmax": "22.4",
+          "timestamp_ns": "1736250360000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 3,
+          "kind": "TP",
+          "level": 2,
+          "order_id": "O-20250107-114600-001-000-270",
+          "price": "209.70",
+          "quantity": "22.4",
+          "stop": null,
+          "timestamp_ns": "1736250360000000000"
+        },
+        {
+          "event": "SUBMIT",
+          "generation": 3,
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20250107-114700-001-000-272",
+          "price": null,
+          "quantity": "0.088",
+          "stop": null,
+          "timestamp_ns": "1736250420000000000"
+        },
+        {
+          "bmax": "0.175",
+          "event": "ACTUAL_FILL",
+          "kind": "BTC_DEBT",
+          "level": null,
+          "order_id": "O-20250107-114700-001-000-272",
+          "price": "100463.7",
+          "qty": "0.088",
+          "risk": "ACTIVE_RISK",
+          "timestamp_ns": "1736250420000000000"
+        },
+        {
+          "bmax": "0.175",
+          "btc": "0.175",
+          "event": "CACHE_POSITION",
+          "sol": "22.4",
+          "solmax": "22.4",
+          "timestamp_ns": "1736250420000000000"
+        },
+        {
+          "bmax": "0.175",
+          "btc": "0.175",
+          "event": "CACHE_POSITION",
+          "sol": "0",
+          "solmax": "22.4",
+          "timestamp_ns": "1736251260000000000"
+        },
+        {
+          "bmax": "0",
+          "btc": "0",
+          "event": "CACHE_POSITION",
+          "sol": "0",
+          "solmax": "0.0",
+          "timestamp_ns": "1736294400000000000"
+        }
+      ],
+      "paired_native_orders": [
+        {
+          "client_order_id": "O-20250107-040100-001-000-261",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "11.2",
+          "price": "215.40",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "11.2",
+          "avg_px": "215.4",
+          "last_trade_id": "T-6a292928ba3cfd78-037",
+          "ts_init": "1736222460000000000",
+          "ts_last": "1736237700000000000"
+        },
+        {
+          "client_order_id": "O-20250107-081500-001-000-265",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "11.2",
+          "price": "213.50",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "FILLED",
+          "filled_qty": "11.2",
+          "avg_px": "213.5",
+          "last_trade_id": "T-7a830e1f7de3516a-038",
+          "ts_init": "1736237700000000000",
+          "ts_last": "1736250360000000000"
+        },
+        {
+          "client_order_id": "O-20250107-081500-001-000-266",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "22.4",
+          "price": "209.70",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1736237700000000000",
+          "ts_last": "1736250360000000000"
+        },
+        {
+          "client_order_id": "O-20250107-081600-001-000-268",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.088",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.088",
+          "avg_px": "101629.7",
+          "last_trade_id": "T-e12b23a554c2fa8b-078",
+          "ts_init": "1736237760000000000",
+          "ts_last": "1736237760000000000"
+        },
+        {
+          "client_order_id": "O-20250107-114600-001-000-270",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "type": "LIMIT",
+          "side": "BUY",
+          "quantity": "22.4",
+          "price": "209.70",
+          "is_reduce_only": "True",
+          "is_post_only": "False",
+          "time_in_force": "GTC",
+          "status": "CANCELED",
+          "filled_qty": "0.0",
+          "avg_px": "",
+          "last_trade_id": "",
+          "ts_init": "1736250360000000000",
+          "ts_last": "1736251260000000000"
+        },
+        {
+          "client_order_id": "O-20250107-114700-001-000-272",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "type": "MARKET",
+          "side": "SELL",
+          "quantity": "0.088",
+          "price": "",
+          "is_reduce_only": "True",
+          "is_post_only": "",
+          "time_in_force": "IOC",
+          "status": "FILLED",
+          "filled_qty": "0.088",
+          "avg_px": "100463.7",
+          "last_trade_id": "T-98ac8365a0584f6a-079",
+          "ts_init": "1736250420000000000",
+          "ts_last": "1736250420000000000"
+        }
+      ],
+      "segments": [
+        {
+          "start_ns": 1736237700000000000,
+          "end_ns": 1736237760000000000,
+          "start_utc": "2025-01-07T08:15:00+00:00",
+          "end_utc": "2025-01-07T08:16:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 554920,
+            "event_ns": "1736237700000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.351",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        },
+        {
+          "start_ns": 1736237760000000000,
+          "end_ns": 1736250360000000000,
+          "start_utc": "2025-01-07T08:16:00+00:00",
+          "end_utc": "2025-01-07T11:46:00+00:00",
+          "duration_seconds": 12600,
+          "required_unconsumed_levels": [
+            2
+          ],
+          "accepted_live_targets": [
+            {
+              "client_order_id": "O-20250107-081600-001-000-269",
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "type": "LIMIT",
+              "side": "SELL",
+              "quantity": "0.263",
+              "price": "103732.6",
+              "is_reduce_only": "True",
+              "is_post_only": "False",
+              "time_in_force": "GTC",
+              "status": "CANCELED",
+              "filled_qty": "0.000",
+              "avg_px": "",
+              "last_trade_id": "",
+              "ts_init": "1736237760000000000",
+              "ts_last": "1736250360000000000",
+              "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+              "generation": 2,
+              "level": 2,
+              "timestamp_ns": "1736237760000000000"
+            }
+          ],
+          "required_native_targets_present": true,
+          "native_held_snapshot": {
+            "sequence": 554924,
+            "event_ns": "1736237760000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.263",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        },
+        {
+          "start_ns": 1736250360000000000,
+          "end_ns": 1736250420000000000,
+          "start_utc": "2025-01-07T11:46:00+00:00",
+          "end_utc": "2025-01-07T11:47:00+00:00",
+          "duration_seconds": 60,
+          "required_unconsumed_levels": [
+            2
+          ],
+          "accepted_live_targets": [],
+          "required_native_targets_present": false,
+          "native_held_snapshot": {
+            "sequence": 555557,
+            "event_ns": "1736250360000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.263",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        },
+        {
+          "start_ns": 1736250420000000000,
+          "end_ns": 1736294400000000000,
+          "start_utc": "2025-01-07T11:47:00+00:00",
+          "end_utc": "2025-01-08T00:00:00+00:00",
+          "duration_seconds": 43980,
+          "required_unconsumed_levels": [
+            2
+          ],
+          "accepted_live_targets": [
+            {
+              "client_order_id": "O-20250107-114700-001-000-273",
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "type": "LIMIT",
+              "side": "SELL",
+              "quantity": "0.175",
+              "price": "103732.6",
+              "is_reduce_only": "True",
+              "is_post_only": "False",
+              "time_in_force": "GTC",
+              "status": "CANCELED",
+              "filled_qty": "0.000",
+              "avg_px": "",
+              "last_trade_id": "",
+              "ts_init": "1736250420000000000",
+              "ts_last": "1736294400000000000",
+              "episode_id": "7ba08649-5a6e-4171-9934-1599aa4808af",
+              "generation": 3,
+              "level": 2,
+              "timestamp_ns": "1736250420000000000"
+            }
+          ],
+          "required_native_targets_present": true,
+          "native_held_snapshot": {
+            "sequence": 555561,
+            "event_ns": "1736250420000000000",
+            "kind": "POST_FILL_COMMITTED_NATIVE",
+            "positions": [
+              {
+                "quantity": "0.175",
+                "side": "LONG",
+                "instrument_id": "BTCUSDT-PERP.P1SIM"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "disposition": "C0_NATIVE_3TP_GATE_FAIL_A0_BLOCKED_METRICS_UNCHANGED",
+  "limitations": [
+    "Absence is reconstructed only within eight reported intervals from native acceptance acknowledgements and native terminal order states, not a new whole-stream gate certification.",
+    "Immediate order cancel execution and generation acceptance at shared timestamps are ordered by causal events; half-open segments are timestamp coverage, not claim of atomic execution.",
+    "Not a monetary outcome recomputation or permission to reuse last prefix slot."
+  ]
+}

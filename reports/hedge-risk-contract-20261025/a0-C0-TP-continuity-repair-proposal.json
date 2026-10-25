@@ -1,0 +1,198 @@
+{
+  "schema": "CM_A0_C0_TP_CONTINUITY_REPAIR_PROPOSAL_V1",
+  "status": "PROPOSAL_ONLY_NOT_AUTHORIZED",
+  "read_only_diagnosis": true,
+  "current_source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "causal_evidence": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-C0-nativeTP-causal-diagnosis.json",
+    "sha256": "d2b428047ecf0e4ed0aaa6d6ffc960533eb2193a0e6122350b765f160f237cdb"
+  },
+  "observed": {
+    "reported_missing_seconds": 57120,
+    "real_absence_seconds_with_native_BTC_held": 540,
+    "real_intervals": 9,
+    "accepted_required_target_present_but_audit_flagged_seconds": 56580,
+    "native_rejections": 0,
+    "post_only_cross_rejection_cause_supported": false,
+    "dust_or_quantization_loss_cause_supported": false,
+    "C0_remains_financially_rejected": true,
+    "A0_blocked": true
+  },
+  "causal_source": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f",
+      "lines": [
+        170,
+        194
+      ],
+      "statement": "SOL reduction under active risk lowers cap from actual cache. _pair_arm_btc_debt cancels all pending BTC intents, including accepted BTC_REDUCE targets; it does not distinguish increase from protective reduction."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f",
+      "lines": [
+        375,
+        406
+      ],
+      "statement": "Actual SOL fill reconciles cap, arms BTC debt, logs actual fill; position callback arms debt again and calls MD reconcile."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f",
+      "lines": [
+        176,
+        178
+      ],
+      "statement": "MD reconcile returns while actual BTC exceeds cap or paired BTC native work exists; cancel callback therefore cannot restore TP during debt."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f",
+      "lines": [
+        489,
+        497
+      ],
+      "statement": "Debt submit is inside _pair_quote, only on BTC tick with no paired BTC work, after ordinary BTC cancels known terminal. Cancellation callbacks do not directly execute debt."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/research/native_baseline.py",
+      "sha256": "5d3a5825a9535ab3af1b7b9a91c374f6e0e1a56a59dba5d505d9880c63041cdc",
+      "lines": [
+        1056,
+        1062
+      ],
+      "statement": "Frozen minute producer emits BTC quote then SOL quote at each timestamp. SOL matching fill thus opens debt after that minute BTC quote; next BTC quote is +60 seconds."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f",
+      "lines": [
+        280,
+        335
+      ],
+      "statement": "TP fill adds consumed level without removing it from accepted. New remaining generation adds level2 but coverage-restored equality compares stale {0,1,2} with required {2}; native order269/273 protect 56580 seconds incorrectly marked missing."
+    }
+  ],
+  "native_API_facts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246",
+      "lines": [
+        1011,
+        1091
+      ],
+      "statement": "Public Strategy.modify_order accepts native Order, total Quantity, optional unchanged Price; routes ModifyOrder through native risk/engine. Closed or PENDING_CANCEL yields no command. Other adapters may implement cancel/replace: this is not a universal atomic-venue promise."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246",
+      "lines": [
+        1954,
+        1969
+      ],
+      "statement": "OrderPendingUpdate, OrderModifyRejected and OrderUpdated have distinct typed callbacks before generic on_order_event. Existing WaveOverlayStrategy does not implement typed update/modify-rejected handlers."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "lines": [
+        8159,
+        8205
+      ],
+      "statement": "Stock update rejects total quantity below cached filled quantity, enforces precision, routes LIMIT to update_limit_order. New requested total must equal actual native filled quantity plus intended remaining leaves, not desired leaves alone."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "lines": [
+        5597,
+        5639
+      ],
+      "statement": "Stock limit update emits OrderUpdated, may immediately fill at existing limit if marketable. TP in C0 is post_only=False; changing quantity at unchanged price is not proof of no fill during callback."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "lines": [
+        8436,
+        8460
+      ],
+      "statement": "OrderUpdated uses same client/venue ownership IDs and native quantity/price through ExecEngine.process; coverage must be based on resulting cache order status/leaves, never on command sent."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "lines": [
+        7893,
+        8044
+      ],
+      "statement": "After fill event generation and contingent processing, stock engine auto-resizes each open passive reduce-only order linked to the native position. Without parent_order_id each independently falls back to entire current position quantity. This occurs after fill callback path in source; keep-plus-modify could be overwritten. Native callback/reentrancy and exact per-level leaves must be proven, not assumed."
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/research/native_baseline.py",
+      "sha256": "5d3a5825a9535ab3af1b7b9a91c374f6e0e1a56a59dba5d505d9880c63041cdc",
+      "lines": [
+        984,
+        984
+      ],
+      "statement": "Current venue NETTING/MARGIN, shared liquidity_consumption, default use_reduce_only=True/support_contingent_orders=True. No proposal to change these defaults, patch native engine, invent parent orders or use shadow position accounting."
+    }
+  ],
+  "preferred_design": [
+    "Separate increase cancellation from accepted protective BTC_REDUCE ownership. Debt arming must preserve genuinely live remaining-level TPs while blocking entries/A0 increases. Preserve original P0 target prices, planned weights and consumed-level permanence.",
+    "Continue debt at existing next executable BTC quote. Compute residual debt from actual native BTC versus unchanged monotone cap at each submit, after any intervening TP fills. Same planned SOL relief/BTC-cap rule; an ordinary TP reduction may satisfy some/all debt without extra cut. No cached fixed debt quantity after intervening native fill.",
+    "After actual BTC_DEBT/TP fills, compute remaining-level allocation from exact native lots/current held and existing original target allocation rules. Resize same owned native orders by public modify_order(total=actual_native_filled+desired_leaves), preserve order IDs and LIMIT prices. Required target owner may not be duplicated to simulate atomic cancel/replace.",
+    "Treat modify command, pending update, ACK, reject, fill, cancel as distinct states. Keep old acknowledged leaves as actual coverage while modify is unresolved. Reconcile native auto-generated OrderUpdated as well as requested updates and assert actual per-level quantities after stock post-fill processing. No accepted-generation credit until every required native target is known live with correct leaves.",
+    "Audit protection from unconsumed positive required levels of actual current native generation. Track consumed levels separately; never recreate filled TP levels. Update/cancel/late fill must invalidate the appropriate order generation, not all unrelated accepted protection.",
+    "Native auto-resize behavior is a DESIGN BLOCKER to simple keep-plus-modify. Before implementation approval, reviewer must settle whether existing native OrderUpdated callbacks can converge to exact per-level leaves after stock fill processing without reentrant update loops or an executable misallocated window. If not, stop and revise protocol; no native-engine patch, support_contingent toggle, fake parent ownership, new OMS, price reweighting or gate relaxation implicitly permitted."
+  ],
+  "alternatives": [
+    {
+      "name": "Cancel targets then submit debt sooner",
+      "assessment": "May reduce observed one-minute gap but retains actual cancel-to-reaccept vacuum, depends on cached quote freshness/liquidity and changes execution timing. Does not prove continuous always-required-TP coverage. Not recommended as standalone fix."
+    },
+    {
+      "name": "Preserve targets unchanged through debt",
+      "assessment": "Avoids intentional vacuum, but stock auto-resize/per-level quantity drift, ordinary fill during debt, and remaining target allocation must be proven. Native reduce-only prevents reversal only with actual engine semantics; it does not preserve planned weights by itself."
+    },
+    {
+      "name": "Audit-only consumed-set correction",
+      "assessment": "Removes 56580-second false positive but leaves nine real minute gaps. Cannot admit C0/A0."
+    }
+  ],
+  "required_failure_behaviors": {
+    "TP_before_debt": "Account actual fill once by native trade ID; mark consumed only on actual terminal/full/domain rule; recompute actual residual debt; shrink/cancel pending debt with native ACK as needed. Never restore closed BTC or shift consumed TP rights.",
+    "partial_TP_during_modify": "Use current native filled+leaves, reject stale update ACK as allocation authority; serialize same OID update intents, never submit replacement under live/inflight owner. Snapshot before/after every actual native event.",
+    "modify_rejected_or_unknown": "Keep existing acknowledged protection truth; reject is not successful resize. Block all increases. If correct level/quantity protection cannot be maintained, fail research guard and preserve raw state; do not silently retry/reprice/close BTC or claim coverage.",
+    "TP_reduces_debt_while_IOC_inflight": "Native reduce-only plus actual fill-order reconciliation required; no reverse position, no extra debt versus actual cap, no double reduction accounting; no new entry to refund over-cut.",
+    "BTC_flat": "All increase rights dead; cancel outstanding debt/remaining protective children through native terminal ACK, do not treat absent targets while flat as held-position gaps.",
+    "old_generation_late_fill": "Native trade/order identity permanently retained; account actual BTC and consumed rights/cap once; no historical CANCELED-to-OPEN rewrite or automatic new child."
+  },
+  "future_verification_proposal": {
+    "authority": "Requires new direct owner implementation/native-budget approval; present engineering7 closed, original prefix ledger3/4 with last A0 blocked. No transfer of unused slot.",
+    "engineering_limit_proposed": 3,
+    "each_engine_max_hours": 48,
+    "fixture_scope": [
+      {
+        "case": "C0_THREE_REMAINING_TARGETS_DEBT_CONTINUITY",
+        "coverage": "Actual stock account with 3 accepted BTC TPs, SOL TP relief then next BTC quote debt; include ordinary BTC TP before debt/at same match epoch and shared displayed-liquidity consumption. Every coherent native mutation must prove no missing required level, correct per-level leaves and no reverse/extra cap cut. Stock auto-update ordering is first admission condition."
+      },
+      {
+        "case": "A0_PARTIAL_UPDATE_UNKNOWN_REJECT_FLAT",
+        "coverage": "Actual registered A0/native margin and existing one-right behavior; live TP partial while quantity modification outstanding, real ACK hold/flush and ModifyRejected, late fill/cancel; native flat stops all child rights. No fake financial fills; unknown native cache blocks increase."
+      },
+      {
+        "case": "C0_CONSUMED_TARGETS_REPEAT_DEBT",
+        "coverage": "Two actual consumed TP levels, one remaining TP; two actual SOL debt reductions, original same target price, partial fill/update/terminal; account event/audit must agree at every transition and repeated quote must not reanchor/refund cap."
+      }
+    ],
+    "prefix_proposal": "Only after engineering/review acceptance: three fresh matched OFF→C0→A0 prefixes on one repaired frozen source, same R2 LEGACY_Q/BASE fees/data/feed/window. Actual OFF financial acceptance before C0, actual C0 always-required-native-TP financial acceptance before A0; each separate root GO and physical process claim. Actual A0 positive release fill required for mechanism tested. Existing input preflight and corrected inputs/data path retained.",
+    "forbidden": "No native construction now, full/training/download/pilot/production, SDK/OMS/engine patch, new TP prices/weights, SOL TP/cut/rearm policy or additional A0 rights."
+  },
+  "unknowns": [
+    "Native same-stack update callback reentrancy and stock auto-resize convergence are source-informed but untested. No engine was constructed to establish feasibility.",
+    "No claim of live Bybit atomic modification or margin/venue admission from installed backtest API source.",
+    "Detailed future repair implementation is not authorized by this proposal."
+  ]
+}

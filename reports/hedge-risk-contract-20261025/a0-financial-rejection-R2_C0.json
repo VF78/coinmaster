@@ -1,0 +1,26 @@
+{
+  "decision": "ROOT_REJECT_C0_FINANCIAL_ADMISSION_NATIVE_3TP_FAIL",
+  "recorded_utc": "2026-10-25T14:07:02.697770+00:00",
+  "label": "R2_C0",
+  "attempt_id": "fe2ffed5-6f7d-4e51-bb83-9b7f93ba227c",
+  "report_sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb",
+  "risk_analysis_sha256": "a562c28ff5d8a178b94da39b2188ab4f5b41d14172f20c1f50536701cb1ec7a2",
+  "root_gate": "A0_HOLD_NO_ROOT_GO",
+  "financial_qualified": false,
+  "accounting_other_checks": "PASS",
+  "native_3TP": "FAIL",
+  "raw_reported_missing_seconds": 57120,
+  "adjudicated_true_missing_seconds": 540,
+  "falsepositive_covered_seconds": 56580,
+  "actual_gap_count": 9,
+  "review_path": "reports/hedge-risk-contract-20261025/a0-C0-three-TP-blocker-review.json",
+  "review_sha256": "4974200a7881a2b84b7991f09e054bb1a5e1496dab4ce3884d69923d42738a52",
+  "native_model_liquidations": 0,
+  "terminal_positions_orders": [
+    0,
+    0
+  ],
+  "source_code_or_metrics_changed": false,
+  "existing_unused_A0_slot": "HOLD_PENDING_FINAL_BOUNDED_DECISION_NO_NEW_SOURCE_REUSE",
+  "next": "Read-only causalownerproof; minimalTP-lifecycle/auditrepair protocol beforeanynewmonetarysource/nativebudget"
+}

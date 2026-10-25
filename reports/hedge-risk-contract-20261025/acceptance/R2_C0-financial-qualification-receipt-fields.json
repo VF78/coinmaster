@@ -1,0 +1,54 @@
+{
+  "schema": "CM_A0_FINANCIAL_QUALIFICATION_V1",
+  "status": "BLOCKED_ROOT_REVIEW_REQUIRED",
+  "proposed_root_decision": "FINANCIAL_QUALIFICATION_REJECTED",
+  "qualification": "NOT_FINANCIALLY_QUALIFIED",
+  "attempt_id": "fe2ffed5-6f7d-4e51-bb83-9b7f93ba227c",
+  "label": "R2_C0",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "report_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0.json",
+  "report_sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb",
+  "native_ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+  "completed_attempt_sha256": "0eb509a37479dcf9590307fb010cc750276cf4529bf3a6616dae47e70b146188",
+  "completion_manifest_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/completion-manifest.json",
+  "completion_manifest_sha256": "51048eca0c6c6e44954dde9c78d3060bd9ffc9c7bc7dc7af2390c9548a978891",
+  "supervisor_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/supervisor-receipt.json",
+  "supervisor_sha256": "d7ec15f07dbf38359c2f45c58cc35e4ae3d02e4c927718588fab9da895fb4d91",
+  "native_ledger_sha256_at_qualification": "e957a7068b0aeaacf3441afee3019f70290113497c48ab30229b636996d41378",
+  "ledger_snapshot": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_C0-amend4-completed-ledger-snapshot.json",
+    "sha256": "e957a7068b0aeaacf3441afee3019f70290113497c48ab30229b636996d41378"
+  },
+  "risk_analysis_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_C0-amend4-risk.json",
+  "risk_analysis_sha256": "a562c28ff5d8a178b94da39b2188ab4f5b41d14172f20c1f50536701cb1ec7a2",
+  "actual_returncode": 0,
+  "accounting_qualified": false,
+  "financial_gates": {
+    "actual_os_exit0": "PASS",
+    "complete_cash_reconciliation": "PASS",
+    "signed_asset_funding_reconciliation": "PASS",
+    "native_3TP": "FAIL",
+    "ownership": "PASS",
+    "continuous_settled_coverage": "PASS",
+    "coherent_prefill_preopen_event_coverage": "PASS",
+    "source_config_data_comparable": "PASS",
+    "rights_audit_complete": "PASS",
+    "terminal_positions0_orders0": "PASS",
+    "zero_model_liquidations": "PASS"
+  },
+  "terminal_open_positions": 0,
+  "terminal_open_orders": 0,
+  "model_liquidations": 0,
+  "metric_contract_sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+  "blocking_reason": "Native real3TP coverage missing57120000000000ns while actual native BTC held. No FINANCIAL_ACCEPTED_CONTROL receipt/no A0 admission. Other native accounting checks pass, not a performance-only rejection.",
+  "blocker_artifacts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_C0-native3TP-blocker.json",
+      "sha256": "2a9490385538483cb68a927132e541a2551f97b0719a0d0c01785e9f5ffc9e0a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_C0-native3TP-native-hold-intersection.json",
+      "sha256": "a91460eb4a0a30eec9c0f96665c295d03f23ad06db1a830bd83b5b6797777719"
+    }
+  ]
+}

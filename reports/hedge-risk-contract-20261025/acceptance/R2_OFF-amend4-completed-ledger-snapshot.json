@@ -1,0 +1,79 @@
+{
+  "active": 0,
+  "attempts": [
+    {
+      "attempt_id": "861c8fbb-24f3-4627-9332-ee2288e32b1d",
+      "physical_index": 1,
+      "variant": "R2_OFF",
+      "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+      "status": "FAILED",
+      "started_utc": "2026-10-25T13:01:07.320425+00:00",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/R2_OFF",
+      "freeze_sha256": "632dff23ad10f820440c05c5a6c0fe73541d54eee300dfe27b91bf15ac666684",
+      "finished_utc": "2026-10-25T13:01:09.134035+00:00",
+      "detail": {
+        "actual_returncode": 1,
+        "error_type": "RuntimeError",
+        "error": "NATIVE_WORKER_NONZERO_EXIT:1",
+        "where": "SUPERVISOR_POPen_WORKER_OR_EXPORT"
+      }
+    },
+    {
+      "attempt_id": "77b7a5cc-0e2a-43a3-a17e-56868728a7d5",
+      "physical_index": 2,
+      "prefix_phase": "AMEND4",
+      "phase_index": 1,
+      "variant": "R2_OFF",
+      "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+      "status": "COMPLETED",
+      "started_utc": "2026-10-25T13:39:18.574606+00:00",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF",
+      "freeze_sha256": "cc3ad9ae48abe6e814c23f109addd585e05a97dca5ddf5c31d929087bfa4e430",
+      "finished_utc": "2026-10-25T13:40:22.362401+00:00",
+      "detail": {
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF/result/R2_OFF.json",
+        "report_sha256": "fe1245220d6efc96b01d677caebb4e39b5a3590b3451ee9f04a5fdf8ecbeaad1",
+        "actual_returncode": 0,
+        "completion_manifest": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF/completion-manifest.json",
+        "completion_manifest_sha256": "f3eed4c3551202e44c3872bf81f8fe991d0d330c0c7b0a444e00865ddf805648"
+      }
+    }
+  ],
+  "calendar": "[2024-09-01,2025-01-15)UTC",
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "counting": "Claim EACH physical Popen incl pre-engine failures before launch; no automatic next variant",
+  "engine": "1.231.0",
+  "full": 0,
+  "new_downloads": 0,
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "order": [
+    "R2_OFF",
+    "R2_C0",
+    "R2_A0"
+  ],
+  "physical_max": 4,
+  "physical_started": 2,
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "status": "PREFIX_CHECKPOINT_ROOT_REVIEW_REQUIRED",
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "training": 0,
+  "root_go": false,
+  "engineering_admission_receipt": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-root-engineering-admission.json",
+    "sha256": "87f1358bd56e5a42ac8c15c756a51344594fcc160a380b57ba943da9a0faa02b"
+  },
+  "prefix_phase": "AMEND4",
+  "parent_prefix_ledger_sha256": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+  "parent_prefix_ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-ledger-failed-one.json",
+  "prefix_budget_amendment": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-owner-approval.json",
+    "sha256": "bd1eccca625f589803b707ad115f67ad4d68ab398f15887636b974cb7e7cbd73",
+    "status": "APPROVED_BY_OWNER"
+  },
+  "authorized_remaining": 3,
+  "phase_physical_started": 0
+}

@@ -130,6 +130,8 @@ checks={
  'exit_complete':supervisor['actual_returncode']==0 and supervisor['ledger_status']=='COMPLETED',
  'native_observer':o['status']=='PASS' and not o['unknown'],
  'stream_integrity':not bad and settled_source_gaps==0,
+ 'complete_source_minute_range':first_settled_ns==1725148860000000000 and last_settled_ns==1736899140000000000 and out['settled_receipts']==195839 and a['streaming']['processed_rows_per_source']==195840 and a['streaming']['expected_rows_per_source']==195840,
+ 'complete_native_epoch_rows':n==o['sequence_count'] and last_epoch==o['mutation_epochs'] and o['mutation_epochs']==a['fills']+a['funding']['count'],
  'cash_upnl_native_bridge':not any(x=='cash_upnl_bridge' for x in bad),
  'fees_match':out['fee_match'], 'signed_funding':fproof and out['funding_report_match'],
  'terminal_flat_orders0':out['terminal_flat_orders0'] and evidence.get('terminal_open_orders')==0,

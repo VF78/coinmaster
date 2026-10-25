@@ -1,0 +1,32 @@
+{
+  "status": "FINANCIALLY_QUALIFIED_CONTROL_ROOT_REVIEW_REQUIRED",
+  "attempt_id": "77b7a5cc-0e2a-43a3-a17e-56868728a7d5",
+  "global_physical_index": 2,
+  "prefix_phase": "AMEND4",
+  "terminal_total": "20911.13611487",
+  "settled_DD_percent": "50.13014281400943598272557789",
+  "event_DD_percent": "50.13014281400943598272557789",
+  "fees": "1072.65091609",
+  "signed_funding": "-695.36036902",
+  "daily_count": 136,
+  "daily_ES20_percent": "5.8899433101068996401033491697380331305483706876438",
+  "parent_count": 19,
+  "parent_ES20_percent": "18.796333957720837909854362565708995361672402054073",
+  "native_fills": 82,
+  "settled_receipts": 195839,
+  "stream_rows": 587950,
+  "terminal_positions": 0,
+  "terminal_orders": 0,
+  "model_liquidations": 0,
+  "native_3TP_missing_ns": "0",
+  "all_financial_checks": "PASS",
+  "performance": "OFFDD50FAIL; accepted baseline comparison may have poor performance",
+  "engine_instances_created_by_analyst": 0,
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "artifacts": {
+    "R2_OFF-amend4-evidence.json": "9e169b2d9c6ab0eaef51f43f54e342503d60396cd8136e6b092a9369cabee079",
+    "R2_OFF-amend4-risk.json": "a23623cb08f3bf77276f5eccd7a118fe66bbf0bfad00cf122f4585fbb376a79b",
+    "R2_OFF-financial-qualification-receipt-fields.json": "8528c0a5c284761d77c058ec1c288a46c17916bfee5479b24c8528481cb2801d",
+    "R2_OFF-amend4-completed-ledger-snapshot.json": "5c0e6dc2a95ba033cd9615e993566edb785fe0c471713643e2e4ea0406e37b6b"
+  }
+}

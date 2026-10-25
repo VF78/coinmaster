@@ -1,0 +1,22 @@
+{
+  "status": "C0_ENGINE_FREE_PREFLIGHT_PASS_AWAITING_ROOT_GO_PHYSICAL3",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "actualOFF_financial_receipt": {
+    "label": "R2_OFF",
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-financial-qualification-R2_OFF.json",
+    "sha256": "23ac8f62cbee58bd6d377676791369b37f351c384f9fd22f5f6fffcd77801b6a"
+  },
+  "actualOFF_uuid": "77b7a5cc-0e2a-43a3-a17e-56868728a7d5",
+  "OFF_completed_entry_sha256": "75cc9c767940bb35f68883d2132e5a204f44b773da20b58a9c63840691411dd4",
+  "C0_freeze_sha256": "9d8667295f0b6d7742e29d949e7188b70850d2380245f3e1212c4bb71614523e",
+  "C0_root_go": false,
+  "C0_actual_prepare": "PASS pinnedactualOFF financialchain/all11gates/risk+snapshot+currententry+manifest+report/supervisor/actualstockcoverage/daily730/funding814/195840minutes",
+  "C0_fresh_namespace_absent": true,
+  "global_physical_started": 2,
+  "max": 4,
+  "remaining": 2,
+  "new_Popen": 0,
+  "new_engines": 0,
+  "code_changes": false,
+  "OFF_report_snapshot_receipt_unmodified": true
+}

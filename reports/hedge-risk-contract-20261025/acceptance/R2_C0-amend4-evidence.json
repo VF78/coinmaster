@@ -1,0 +1,75 @@
+{
+  "label": "R2_C0",
+  "report_sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb",
+  "proof_artifacts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0.json",
+      "sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-orders.csv",
+      "sha256": "1186c170f62683d943010842b8413b6fb520095043db3ce7c31533f4b3ef304f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-fills.csv",
+      "sha256": "8efd302525bfb0cb83082774a604e37a3864763836a4899cd60ff37b13463029"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-funding.sqlite",
+      "sha256": "b7200878f033eea63e95a6ad80def3fef219c4562d52f6ff00c28dfa85d8e646"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/completion-manifest.json",
+      "sha256": "51048eca0c6c6e44954dde9c78d3060bd9ffc9c7bc7dc7af2390c9548a978891"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/supervisor-receipt.json",
+      "sha256": "d7ec15f07dbf38359c2f45c58cc35e4ae3d02e4c927718588fab9da895fb4d91"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_C0-approved.json",
+      "sha256": "7a9b675f57bdc64b053a349dfde80d35e8f83ca7b2355bfd3f2f46a68bb40724"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-kwargs-R2_C0.json",
+      "sha256": "01053136a1b6a00dd36fdabfec8759d85808c7fc6d2c30b029c0eb60dd9e0224"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_C0-native3TP-blocker.json",
+      "sha256": "2a9490385538483cb68a927132e541a2551f97b0719a0d0c01785e9f5ffc9e0a"
+    }
+  ],
+  "gates": {
+    "complete_cash_reconciliation": "PASS",
+    "signed_asset_funding_reconciliation": "PASS",
+    "native_3TP": "FAIL",
+    "ownership": "PASS",
+    "continuous_settled_coverage": "PASS",
+    "coherent_prefill_preopen_event_coverage": "PASS",
+    "source_config_data_comparable": "PASS",
+    "rights_audit_complete": "PASS"
+  },
+  "terminal_open_orders": 0,
+  "details": {
+    "native_account_publications": 633,
+    "native_cash_series_rows": 633,
+    "native_epoch_expected": 252,
+    "native_epoch_observed": 252,
+    "native_3TP_target_acceptances": 113,
+    "native_3TP_generation_submissions": 39,
+    "missing_three_tp_ns": "57120000000000",
+    "ownership_strategy": "WaveOverlayStrategy-000",
+    "ownership_trader": "BACKTESTER-001",
+    "ownership_account": "P1SIM-001",
+    "terminal_lifecycle": "FLAT",
+    "terminal_open_positions": 0,
+    "model_liquidations": 0,
+    "funding_rows": 127,
+    "signed_funding": "-328.12354229",
+    "funding_by_asset": {
+      "BTCUSDT-PERP.P1SIM": "-331.85877564",
+      "SOLUSDT-PERP.P1SIM": "3.73523335"
+    },
+    "scope": "Actual native receipts. Native3TPFAIL blocks final financial qualification even if remaining native accounting checks pass; no synthesized money or gate waiver."
+  }
+}

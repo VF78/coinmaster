@@ -1,0 +1,286 @@
+{
+  "status": "CLOSED_DIAGNOSTIC_COMPARISON_NOT_CANDIDATE_ADMISSION",
+  "window": "[2024-09-01,2025-01-15)UTC;136dates;seed10000/reserve0",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "metrics": {
+    "R2_OFF": {
+      "qualification": "FINANCIALLY_QUALIFIED_CONTROL",
+      "terminal_native_cash": "20911.13611487",
+      "prefix_net_profit": "10911.13611487",
+      "settled_DD_percent": "50.13014281400943598272557789",
+      "event_DD_percent": "50.13014281400943598272557789",
+      "daily_ES20_percent": "5.8899433101068996401033491697380331305483706876438",
+      "daily_count": 136,
+      "parent_ES20_percent": "18.796333957720837909854362565708995361672402054073",
+      "own_parent_count": 19,
+      "native_fees": "1072.65091609",
+      "signed_native_funding": "-695.36036902",
+      "funding_by_asset": {
+        "BTCUSDT-PERP.P1SIM": "-695.36036902"
+      },
+      "native_fills": 82,
+      "native_fee_by_asset": {
+        "BTCUSDT-PERP.P1SIM": "1072.65091609"
+      },
+      "native_fill_notional_by_asset": {
+        "BTCUSDT-PERP.P1SIM": "2946650.5170"
+      }
+    },
+    "R2_C0": {
+      "qualification": "DIAGNOSTIC_ONLY_NATIVE_3TP_REJECTED",
+      "terminal_native_cash": "16046.38189782",
+      "prefix_net_profit": "6046.38189782",
+      "settled_DD_percent": "47.47440184596622156805898510",
+      "event_DD_percent": "47.47440184596622156805898510",
+      "daily_ES20_percent": "4.5296871861303700099899113180760288575385643635662",
+      "daily_count": 136,
+      "parent_ES20_percent": "14.814488013881032322064712790650630438049673354621",
+      "own_parent_count": 19,
+      "native_fees": "1139.22895990",
+      "signed_native_funding": "-328.12354229",
+      "funding_by_asset": {
+        "BTCUSDT-PERP.P1SIM": "-331.85877564",
+        "SOLUSDT-PERP.P1SIM": "3.73523335"
+      },
+      "native_fills": 125,
+      "native_fee_by_asset": {
+        "BTCUSDT-PERP.P1SIM": "850.67098460",
+        "SOLUSDT-PERP.P1SIM": "288.55797530"
+      },
+      "native_fill_notional_by_asset": {
+        "BTCUSDT-PERP.P1SIM": "2204444.6746",
+        "SOLUSDT-PERP.P1SIM": "550760.868"
+      }
+    }
+  },
+  "diagnostic_delta_C0_vs_OFF": {
+    "C0_minus_OFF_native_terminal_cash": "-4864.75421705",
+    "C0_to_OFF_terminal_cash_ratio": "0.76736059722787361702559619966460763033278160993613",
+    "C0_to_OFF_prefix_net_profit_ratio": "0.55414778389390839451609279931406043722614011738405",
+    "C0_minus_OFF_fees": "66.57804381",
+    "C0_minus_OFF_signed_funding": "367.23682673"
+  },
+  "native_3TP_adjudication": {
+    "reported_missing_seconds": 57120,
+    "real_missing_seconds": 540,
+    "false_positive_seconds": 56580,
+    "real_gap_count": 9,
+    "decision": "ROOT_REJECT_C0_FINANCIAL_ADMISSION_NATIVE_3TP_FAIL",
+    "limit": "540 seconds real9x60;56580 seconds covered false audit. Actual BTC held alone never proves missing TP; earlier acceptance duration is superseded by native-order adjudication. Raw artifacts/receipts unchanged."
+  },
+  "SOL_direct_native_economics": {
+    "realized_PnL": "UNKNOWN_NOT_DIRECTLY_EXPORTED",
+    "native_fees": "288.55797530",
+    "signed_native_funding": "3.73523335",
+    "net_SOL_PnL": "UNKNOWN; no new fill-PnL engine/reconstruction",
+    "causal_BTC_dollar_effect": "UNKNOWN; own paths/capital/admission differ; cannot subtract a SOL scalar from TOTAL gap"
+  },
+  "actual_second_rights_cancellations": [
+    {
+      "episode_id": "ef3e39e5-8ded-42cd-9f4e-bf6d2778371e",
+      "parent_first_fill_utc": "2024-09-11T00:01:00+00:00",
+      "original_second_cancelled_quantity": "0.443",
+      "second_terminal_ACK_utc": "2024-09-11T01:33:00+00:00",
+      "actual_cancelled_second_orders": [
+        {
+          "order_id": "O-20240911-000200-001-000-26",
+          "quantity": "0.443",
+          "filled_qty": "0.000",
+          "price": "57930.7",
+          "cancel_ACK_utc": "2024-09-11T01:33:00+00:00"
+        }
+      ],
+      "first_risk_OFF_after_ACK_utc": "2024-09-11T12:05:00+00:00",
+      "OFF_plus60s_clock_utc": "2024-09-11T12:06:00+00:00",
+      "ordinary_first_TP_native_fill_utc": "2024-09-11T01:33:00+00:00",
+      "ordinary_exit_request_utc": "2024-09-14T00:00:00+00:00",
+      "same_actual_parent_interval_at_clock": true,
+      "BTC_held_native_quantity_at_clock": "0.256",
+      "ordinary_TP_or_exit_already_at_clock": true,
+      "actual_A0_release": "NONE; C0 flagfalse",
+      "prospective_A0_eligibility": "UNKNOWN: no prospective stock margin/current quote/postOnly/cap/ACKrace execution proof; this clock is not admission"
+    },
+    {
+      "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "parent_first_fill_utc": "2024-09-14T00:02:00+00:00",
+      "original_second_cancelled_quantity": "0.541",
+      "second_terminal_ACK_utc": "2024-09-14T04:00:00+00:00",
+      "actual_cancelled_second_orders": [
+        {
+          "order_id": "O-20240914-000300-001-000-37",
+          "quantity": "0.541",
+          "filled_qty": "0.000",
+          "price": "60207.5",
+          "cancel_ACK_utc": "2024-09-14T04:00:00+00:00"
+        }
+      ],
+      "first_risk_OFF_after_ACK_utc": "2024-09-14T12:01:00+00:00",
+      "OFF_plus60s_clock_utc": "2024-09-14T12:02:00+00:00",
+      "ordinary_first_TP_native_fill_utc": null,
+      "ordinary_exit_request_utc": "2024-09-17T00:00:00+00:00",
+      "same_actual_parent_interval_at_clock": true,
+      "BTC_held_native_quantity_at_clock": "0.270",
+      "ordinary_TP_or_exit_already_at_clock": false,
+      "actual_A0_release": "NONE; C0 flagfalse",
+      "prospective_A0_eligibility": "UNKNOWN: no prospective stock margin/current quote/postOnly/cap/ACKrace execution proof; this clock is not admission"
+    },
+    {
+      "episode_id": "eef71500-8453-419a-8e03-c77f96bcffc9",
+      "parent_first_fill_utc": "2024-10-10T00:01:00+00:00",
+      "original_second_cancelled_quantity": "0.405",
+      "second_terminal_ACK_utc": "2024-10-10T04:00:00+00:00",
+      "actual_cancelled_second_orders": [
+        {
+          "order_id": "O-20241010-000200-001-000-103",
+          "quantity": "0.405",
+          "filled_qty": "0.000",
+          "price": "60959.8",
+          "cancel_ACK_utc": "2024-10-10T04:00:00+00:00"
+        }
+      ],
+      "first_risk_OFF_after_ACK_utc": "2024-10-10T04:19:00+00:00",
+      "OFF_plus60s_clock_utc": "2024-10-10T04:20:00+00:00",
+      "ordinary_first_TP_native_fill_utc": "2024-10-10T17:07:00+00:00",
+      "ordinary_exit_request_utc": "2024-10-12T00:00:00+00:00",
+      "same_actual_parent_interval_at_clock": true,
+      "BTC_held_native_quantity_at_clock": "0.404",
+      "ordinary_TP_or_exit_already_at_clock": false,
+      "actual_A0_release": "NONE; C0 flagfalse",
+      "prospective_A0_eligibility": "UNKNOWN: no prospective stock margin/current quote/postOnly/cap/ACKrace execution proof; this clock is not admission"
+    },
+    {
+      "episode_id": "582f5154-3950-4d44-9b5e-74d81177fc16",
+      "parent_first_fill_utc": "2024-10-12T08:02:00+00:00",
+      "original_second_cancelled_quantity": "0.285",
+      "second_terminal_ACK_utc": "2024-10-12T20:00:00+00:00",
+      "actual_cancelled_second_orders": [
+        {
+          "order_id": "O-20241012-080300-001-000-114",
+          "quantity": "0.285",
+          "filled_qty": "0.000",
+          "price": "62413.6",
+          "cancel_ACK_utc": "2024-10-12T20:00:00+00:00"
+        }
+      ],
+      "first_risk_OFF_after_ACK_utc": "2024-10-12T21:26:00+00:00",
+      "OFF_plus60s_clock_utc": "2024-10-12T21:27:00+00:00",
+      "ordinary_first_TP_native_fill_utc": "2024-10-14T03:38:00+00:00",
+      "ordinary_exit_request_utc": "2024-10-24T00:00:00+00:00",
+      "same_actual_parent_interval_at_clock": true,
+      "BTC_held_native_quantity_at_clock": "0.284",
+      "ordinary_TP_or_exit_already_at_clock": false,
+      "actual_A0_release": "NONE; C0 flagfalse",
+      "prospective_A0_eligibility": "UNKNOWN: no prospective stock margin/current quote/postOnly/cap/ACKrace execution proof; this clock is not admission"
+    },
+    {
+      "episode_id": "772794ea-7dd9-4788-9af2-bf4c5c84e3d4",
+      "parent_first_fill_utc": "2024-11-16T00:01:00+00:00",
+      "original_second_cancelled_quantity": "0.418",
+      "second_terminal_ACK_utc": "2024-11-16T08:00:00+00:00",
+      "actual_cancelled_second_orders": [
+        {
+          "order_id": "O-20241116-000200-001-000-166",
+          "quantity": "0.418",
+          "filled_qty": "0.000",
+          "price": "90744.4",
+          "cancel_ACK_utc": "2024-11-16T08:00:00+00:00"
+        }
+      ],
+      "first_risk_OFF_after_ACK_utc": "2024-11-16T08:04:00+00:00",
+      "OFF_plus60s_clock_utc": "2024-11-16T08:05:00+00:00",
+      "ordinary_first_TP_native_fill_utc": "2024-11-19T13:11:00+00:00",
+      "ordinary_exit_request_utc": "2024-11-26T00:00:00+00:00",
+      "same_actual_parent_interval_at_clock": true,
+      "BTC_held_native_quantity_at_clock": "0.418",
+      "ordinary_TP_or_exit_already_at_clock": false,
+      "actual_A0_release": "NONE; C0 flagfalse",
+      "prospective_A0_eligibility": "UNKNOWN: no prospective stock margin/current quote/postOnly/cap/ACKrace execution proof; this clock is not admission"
+    },
+    {
+      "episode_id": "15579dbf-e5c8-4480-b845-3e1a24b6036e",
+      "parent_first_fill_utc": "2024-11-27T00:01:00+00:00",
+      "original_second_cancelled_quantity": "0.455",
+      "second_terminal_ACK_utc": "2024-11-27T07:51:00+00:00",
+      "actual_cancelled_second_orders": [
+        {
+          "order_id": "O-20241127-000200-001-000-177",
+          "quantity": "0.455",
+          "filled_qty": "0.000",
+          "price": "91652.4",
+          "cancel_ACK_utc": "2024-11-27T07:51:00+00:00"
+        }
+      ],
+      "first_risk_OFF_after_ACK_utc": null,
+      "OFF_plus60s_clock_utc": null,
+      "ordinary_first_TP_native_fill_utc": "2024-11-27T07:51:00+00:00",
+      "ordinary_exit_request_utc": "2024-12-10T00:00:00+00:00",
+      "same_actual_parent_interval_at_clock": false,
+      "BTC_held_native_quantity_at_clock": "UNKNOWN",
+      "ordinary_TP_or_exit_already_at_clock": null,
+      "actual_A0_release": "NONE; C0 flagfalse",
+      "prospective_A0_eligibility": "UNKNOWN: no prospective stock margin/current quote/postOnly/cap/ACKrace execution proof; this clock is not admission"
+    },
+    {
+      "episode_id": "3cbffec5-9d62-441b-812f-042fab9e57a9",
+      "parent_first_fill_utc": "2025-01-09T00:01:00+00:00",
+      "original_second_cancelled_quantity": "0.615",
+      "second_terminal_ACK_utc": "2025-01-09T02:08:00+00:00",
+      "actual_cancelled_second_orders": [
+        {
+          "order_id": "O-20250109-000200-001-000-280",
+          "quantity": "0.615",
+          "filled_qty": "0.000",
+          "price": "95449.3",
+          "cancel_ACK_utc": "2025-01-09T02:08:00+00:00"
+        }
+      ],
+      "first_risk_OFF_after_ACK_utc": "2025-01-09T13:11:00+00:00",
+      "OFF_plus60s_clock_utc": "2025-01-09T13:12:00+00:00",
+      "ordinary_first_TP_native_fill_utc": "2025-01-09T02:08:00+00:00",
+      "ordinary_exit_request_utc": null,
+      "same_actual_parent_interval_at_clock": true,
+      "BTC_held_native_quantity_at_clock": "0.355",
+      "ordinary_TP_or_exit_already_at_clock": true,
+      "actual_A0_release": "NONE; C0 flagfalse",
+      "prospective_A0_eligibility": "UNKNOWN: no prospective stock margin/current quote/postOnly/cap/ACKrace execution proof; this clock is not admission"
+    }
+  ],
+  "A0_hypothesis": "NOT_TESTED; A0 physicalNOT_RUN, no released orders/fills; unfilled cancellations and OFF+60 clocks do not establish restored capital/economic benefit",
+  "next_priority": [
+    "Native remaining-TP continuity and truthful current-generation/consumed-level audit FIRST; protect native held inventory through debt/ACK transitions",
+    "Only after separate reviewed source/protocol/budget: fresh matched OFF/C0/A0 on same corrected source, C0 financialPASS before A0; original rights only, no closedBTC restore",
+    "No automatic full/training/download/pilot/prod or new run. Current prefix CLOSED3/4 unused1closed, engineering7closed."
+  ],
+  "limits": [
+    "Repeated research prefix, not full/freshOOS/70or90 goal proof; floors4256975.067212381/5470396.514987347 unchanged",
+    "C0 cash/risk observations are diagnostic, rejected as valid candidate/control due mandatory native3TPFAIL",
+    "Own19parent populations per label; no forced matching, no causal dollar decomposition",
+    "No stream rerun, engines0, new financial model0, source/input/metrics/receipts unchanged"
+  ],
+  "provenance": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF/result/R2_OFF.json",
+      "sha256": "fe1245220d6efc96b01d677caebb4e39b5a3590b3451ee9f04a5fdf8ecbeaad1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0.json",
+      "sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_OFF-amend4-risk.json",
+      "sha256": "a23623cb08f3bf77276f5eccd7a118fe66bbf0bfad00cf122f4585fbb376a79b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_C0-amend4-risk.json",
+      "sha256": "a562c28ff5d8a178b94da39b2188ab4f5b41d14172f20c1f50536701cb1ec7a2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-financial-rejection-R2_C0.json",
+      "sha256": "220b41f65e6c1146ebfa56ee8510778b6acd0fde83e4cced4316fc5e06aee612"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-C0-three-TP-blocker-review.json",
+      "sha256": "4974200a7881a2b84b7991f09e054bb1a5e1496dab4ce3884d69923d42738a52"
+    }
+  ]
+}

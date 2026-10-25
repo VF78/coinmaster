@@ -1,0 +1,12 @@
+{
+  "status": "KNOWN_CREDENTIAL_SIGNATURE_SCAN_ZERO_MATCH",
+  "files_checked": 51,
+  "matches": 0,
+  "repository": "https://github.com/VF78/coinmaster",
+  "branch": "codex/btc-pattern-pilot-m2-20261021",
+  "publication_consent": "a0-exact-publication-owner-approval.json",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "native_or_code_authority_granted": false,
+  "no_full_security_guarantee": true,
+  "deployment": 0
+}
