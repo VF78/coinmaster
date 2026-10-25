@@ -40,3 +40,14 @@ def test_fixture_seed_days_are_completed_before_q0_without_engine():
     prepare_completed_day(strategy,2)
     assert max(int(row.available_at.timestamp()*10**9) for row in strategy._bars)==0
     assert all(row.open_time<row.close_time==row.available_at for row in strategy._bars)
+
+
+@pytest.mark.parametrize('kind,status,fills',[
+ ('FORCED_TERMINAL_FLAT','FLAT',[{'native':'actual'}]),
+ ('NATURAL_TP_FLAT','NOT_TRIGGERED',[]),
+ ('CAUSAL_FAIL_CLOSED_FLAT','NOT_TRIGGERED',[]),
+])
+def test_explicit_terminal_labels_are_path_specific_engine_free(kind,status,fills):
+    from run_continuous_hedge_preflight import assert_terminal_kind
+    assert_terminal_kind({'status':status,'close_fills':fills},kind)
+    with pytest.raises(AssertionError):assert_terminal_kind({'status':'FLAT' if status=='NOT_TRIGGERED' else 'NOT_TRIGGERED','close_fills':fills},kind)

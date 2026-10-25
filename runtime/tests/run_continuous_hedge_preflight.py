@@ -181,15 +181,33 @@ def control_setup(family,partial):
     receipt['sizing']=dict(seed_available_ns=[int(b.available_at.timestamp()*10**9) for b in s._bars],q0_ns=3,requested_notional=str(intent.requested_notional),gross_lots=q0['gross_lots'],net_planned_quantity=str(planned),q0_price=str(q0['q0_price']),direction_multiplier=str(ep.btc_sizing_multiplier))
     return s,e,ep,receipt
 
-def settled_identity(s,e):
+CASE_TERMINAL_CONTRACTS={
+ 'F01_R2_PARTIAL_NOCHASE_TERMINAL':'FORCED_TERMINAL_FLAT',
+ 'F02_R3_PARTIAL_NOCHASE_TERMINAL':'FORCED_TERMINAL_FLAT',
+ 'F03_R2_SECOND_FILL_THREE_TP':'NATURAL_TP_FLAT',
+ 'F04_R3_SECOND_FILL_THREE_TP':'NATURAL_TP_FLAT',
+ 'F05_QUALIFIED_CLOCK_ALL_PATHS':'FORCED_TERMINAL_FLAT',
+ 'F06_MISSING_FEATURE_FAIL_CLOSED':'CAUSAL_FAIL_CLOSED_FLAT',
+ 'F07_COPRIME_CORRIDOR_REGRESSION':'OPEN_STABLE_CORRIDOR_SEMANTICS',
+ 'F08_LATE_NATIVE_ENTRY_OWNERSHIP':'LATE_OWNER_NATIVE_FLAT',
+}
+
+def assert_terminal_kind(lifecycle,kind):
+    if kind=='FORCED_TERMINAL_FLAT':
+        assert lifecycle['status']=='FLAT' and lifecycle['close_fills']
+    elif kind in ('NATURAL_TP_FLAT','CAUSAL_FAIL_CLOSED_FLAT'):
+        assert lifecycle['status']=='NOT_TRIGGERED' and lifecycle['close_fills']==[]
+    else:raise ValueError('UNREGISTERED_TERMINAL_ASSERTION_KIND')
+
+def settled_identity(s,e,terminal_kind):
     assert not e.cache.positions_open() and not e.cache.orders_open() and not e.cache.orders_inflight()
     assert all(event.commission.currency==BTC_PERP.quote_currency for event in s.native_fills)
     fees=sum((x.commission.as_decimal() for x in s.native_fills),D(0))
     signed=sum(((-1 if x.order_side.name=='BUY' else 1)*x.last_qty.as_decimal()*x.last_px.as_decimal() for x in s.native_fills),D(0))
     cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
     assert abs(cash-(D(10000)+signed-fees))<=D('.00000002')
-    assert s.terminal_lifecycle['status']=='FLAT'
-    return dict(native_terminal_cash=str(cash),native_commissions=str(fees),signed_execution_cash=str(signed),native_fill_count=len(s.native_fills),orders_open=0,inflight=0,positions_open=0,account_identity='PASS')
+    assert_terminal_kind(s.terminal_lifecycle,terminal_kind)
+    return dict(native_terminal_cash=str(cash),native_commissions=str(fees),signed_execution_cash=str(signed),native_fill_count=len(s.native_fills),orders_open=0,inflight=0,positions_open=0,account_identity='PASS',terminal_kind=terminal_kind,actual_terminal_state=s.terminal_lifecycle['status'])
 
 def control_case(family,partial):
     s,e,ep,effective=control_setup(family,partial)
@@ -224,7 +242,7 @@ def control_case(family,partial):
             effective['fresh_quote_steps']=last-8
             end=last+1
         s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT');run_ticks(e,[tick(BTC_PERP,end)])
-        result=settled_identity(s,e);result.update(real_three_tp=True,second_limit_only=True,partial_first=partial,effective_fixture_config=effective)
+        result=settled_identity(s,e,'FORCED_TERMINAL_FLAT' if partial else 'NATURAL_TP_FLAT');result.update(real_three_tp=True,second_limit_only=True,partial_first=partial,effective_fixture_config=effective)
         return result
     finally:e.end();e.dispose()
 
@@ -249,7 +267,9 @@ def qualified_case(feed,missing=False):
             assert 'UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE' in s._pair_failures
             assert not any(x['kind']=='ENTRY' for x in s._pair_orders.values())
             assert not e.cache.positions_open() and not e.cache.orders_open() and not e.cache.orders_inflight()
-            return dict(missing_feature='NO_ADMISSION_NATIVE_FLAT',hedge_entries=0)
+            result=settled_identity(s,e,'CAUSAL_FAIL_CLOSED_FLAT')
+            result.update(missing_feature='NO_ADMISSION_NATIVE_FLAT',hedge_entries=0)
+            return result
         assert s._pair is not None and s._pair['atr']==row.atr_sol
         run_ticks(e,[tick(BTC_PERP,t+M-1,bp),tick(SOL_PERP,t+M-1,sp)])
         assert not any(x['event']=='SUBMIT' for x in s.paired_prefix_audit)
@@ -261,7 +281,7 @@ def qualified_case(feed,missing=False):
         assert not s._pair_failures,s._pair_report()
         s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT')
         for dt in range(6,12):run_ticks(e,[tick(BTC_PERP,t+M+dt,bp),tick(SOL_PERP,t+M+dt,sp)])
-        result=settled_identity(s,e);result.update(qualified_atr=str(row.atr_sol),all_hedge_submissions_not_before_ns=t+M,hedge_order_kinds=sorted(set(x['kind'] for x in submissions)))
+        result=settled_identity(s,e,'FORCED_TERMINAL_FLAT');result.update(qualified_atr=str(row.atr_sol),all_hedge_submissions_not_before_ns=t+M,hedge_order_kinds=sorted(set(x['kind'] for x in submissions)))
         return result
     finally:e.end();e.dispose()
 
@@ -278,8 +298,11 @@ def main():
         _,restored=native_kwargs_json_roundtrip(kw)
         assert restored==kw
     REC=Recorder(args.ledger,gate)
+    selected=gate.get('fixture_ids',[x[0] for x in CASES])
+    if type(selected) is not list or len(selected)!=len(set(selected)) or not set(selected)<={x[0] for x in CASES}:raise ValueError('EXACT_REVIEWED_FIXTURE_SUBSET_REQUIRED')
     actions=[lambda:control_case('R2',False),lambda:control_case('R2',True),lambda:control_case('R3',True),lambda:control_case('R3',False),lambda:qualified_case(feed),lambda:qualified_case(feed,True),lambda:pair.test_native_coprime_actual_1037_1817_single_tp_stable_corridor(1,False),pair.test_native_late_entry_after_btc_flat_cancel_request_never_recreates_btc]
     for case,action in zip(CASES,actions):
+        if case[0] not in selected:continue
         REC.current=case;REC.effective_config=None;before=len(REC.engines)
         data=json.loads(Path(args.ledger).read_text())
         if any(a['fixture_id']==case[0] and a['status']=='COMPLETED' and a['source_commit']==gate['source_commit'] for a in data['attempts']):continue
