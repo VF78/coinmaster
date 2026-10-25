@@ -1,0 +1,94 @@
+{
+  "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+  "physical_started": 3,
+  "completed": 2,
+  "failed": 1,
+  "active": 0,
+  "process_exit_code": 1,
+  "stopped_first_failure": true,
+  "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-2eb080a.log",
+  "log_sha256": "b6cbb053da522b5a2a725ded92fdc12c613673e4bdab075d68de73f30db50117",
+  "attempts": [
+    {
+      "fixture_id": "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+      "physical_index": 1,
+      "status": "COMPLETED",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "native_terminal_cash": "10008.979875",
+      "native_commissions": "1.020125",
+      "native_fill_count": 3,
+      "sizing": {
+        "requested_notional": "55000.0",
+        "gross_lots": 550000,
+        "net_planned_quantity": "316.25",
+        "q0_price": "100",
+        "direction_multiplier": "5.5"
+      },
+      "failure": null
+    },
+    {
+      "fixture_id": "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+      "physical_index": 2,
+      "status": "COMPLETED",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "native_terminal_cash": "10008.979875",
+      "native_commissions": "1.020125",
+      "native_fill_count": 3,
+      "sizing": {
+        "requested_notional": "55000.0",
+        "gross_lots": 550000,
+        "net_planned_quantity": "470.334",
+        "q0_price": "100",
+        "direction_multiplier": "5.5"
+      },
+      "failure": null
+    },
+    {
+      "fixture_id": "F03_R2_SECOND_FILL_THREE_TP",
+      "physical_index": 3,
+      "status": "FAILED",
+      "cleanup": "DISPOSE_CONFIRMED",
+      "native_terminal_cash": null,
+      "native_commissions": null,
+      "native_fill_count": null,
+      "sizing": null,
+      "failure": "AssertionError: "
+    }
+  ],
+  "further_native_go": false,
+  "failed_cache_snapshot": "NOT_CAPTURED_BEFORE_DISPOSAL; no order/fill details invented",
+  "causal_seed_scope": "Initial future-dated generic daily seed fixture defect identified before launch; late revocation crossed prior explicit GO; all first3 results remain bounded synthetic semantic evidence, not accepted causal fixture proof",
+  "read_only_F03_diagnosis": {
+    "preceding_passed_assertions": [
+      "actual registered direction requested55000/gross550000/netR2quantity316.25",
+      "second-fill actual initial quantity316.25 and first-child frozen actual VWAP99",
+      "three native open replacement targets total leaves316.25"
+    ],
+    "static_geometry": {
+      "raw_completed_d3": "0.03",
+      "first_child_actual_vwap": "99",
+      "price_increment": "0.1",
+      "unchanged_u_prices": [
+        "100.0",
+        "101.0",
+        "102.0"
+      ],
+      "fixture_cross_quote": "103",
+      "geometry_conclusion": "103 crosses all three prices; hardcoded price insufficiency is not supported"
+    },
+    "missing_actual_evidence": [
+      "post-cross native remaining quantity",
+      "per-order status/leaves after103",
+      "per-fill prices/commissions/native account cash after failed assertion"
+    ],
+    "root_cause": "UNKNOWN_NATIVE_CALLBACK_OR_CAPACITY_OR_STRATEGY; original failed cache not serialized before disposal; no unsupported monetary diagnosis",
+    "log_data_client_errors": "Fixture did not seed/register BYBIT_SIGNAL/BYBIT_MARK clients required by full shared config; this is an explicit fixture deficiency, not proof of TP failure cause",
+    "proposed_fixture_only_changes": [
+      "rebase deterministic seed bars to completed days ending<=q0",
+      "seed/register existing native public data client streams using same client IDs",
+      "serialize native fill events/cache order states/positions/cash/md/split before end/dispose on success and failure",
+      "assert native actual replacement target prices/status/qty; bound fresh later quotes with distinct real size updates, preserving all failure snapshots"
+    ],
+    "no_new_native_instances_during_diagnosis": true
+  }
+}

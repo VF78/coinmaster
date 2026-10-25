@@ -1,0 +1,178 @@
+diff --git a/runtime/tests/run_continuous_hedge_preflight.py b/runtime/tests/run_continuous_hedge_preflight.py
+index 20053ca..0a9dab0 100644
+--- a/runtime/tests/run_continuous_hedge_preflight.py
++++ b/runtime/tests/run_continuous_hedge_preflight.py
+@@ -29,7 +29,7 @@ from nautilus_trader.config import LoggingConfig
+ from nautilus_trader.model.enums import AccountType,OmsType
+ from nautilus_trader.model.objects import Money
+ M=60000000000
+-CASES=[('F01_R2_PARTIAL_NOCHASE_TERMINAL','R2',1,86400*10**9+10),('F02_R3_PARTIAL_NOCHASE_TERMINAL','R3',1,86400*10**9+10),('F03_R2_SECOND_FILL_THREE_TP','R2',1,20),('F04_R3_SECOND_FILL_THREE_TP','R3',1,20),('F05_QUALIFIED_CLOCK_ALL_PATHS','R3',1725249599999999990,1725249720000000100),('F06_MISSING_FEATURE_FAIL_CLOSED','R3',1725249599999999990,1725249720000000100),('F07_COPRIME_CORRIDOR_REGRESSION','R3',1,2*M),('F08_LATE_NATIVE_ENTRY_OWNERSHIP','R3',1,2*M)]
++CASES=[('F03_R2_SECOND_FILL_THREE_TP','R2',1,20),('F01_R2_PARTIAL_NOCHASE_TERMINAL','R2',1,86400*10**9+10),('F02_R3_PARTIAL_NOCHASE_TERMINAL','R3',1,86400*10**9+10),('F04_R3_SECOND_FILL_THREE_TP','R3',1,20),('F05_QUALIFIED_CLOCK_ALL_PATHS','R3',1725249599999999990,1725249720000000100),('F06_MISSING_FEATURE_FAIL_CLOSED','R3',1725249599999999990,1725249720000000100),('F07_COPRIME_CORRIDOR_REGRESSION','R3',1,2*M),('F08_LATE_NATIVE_ENTRY_OWNERSHIP','R3',1,2*M)]
+ 
+ class Recorder:
+     def __init__(self,path,gate):self.path=Path(path);self.gate=gate;self.current=None;self.engines=[]
+@@ -60,8 +60,32 @@ class CountedEngine:
+             if not REC.current[2]<=t<=REC.current[3]:raise ValueError('FIXTURE_WINDOW_EXCEEDED')
+             self.times.append(t)
+         return self.native.add_data(data,*args,**kwargs)
++    def add_strategy(self,strategy):
++        self.strategy=strategy
++        if REC.effective_config is None:
++            receipt=snapshot_config(strategy.config)
++            receipt['scope']='Existing legacy R3 lifecycle helper; actual config differs from registered OFF control; no exact-control parity claim'
++            data=json.loads(REC.path.read_text());entry=next(x for x in data['attempts'] if x['physical_index']==self.number);entry['effective_fixture_config']=receipt;REC.write(data)
++        return self.native.add_strategy(strategy)
++    def capture(self,label):
++        if not hasattr(self,'strategy'):return
++        strategy=self.strategy
++        def order_row(order):
++            return dict(order_id=str(order.client_order_id),instrument=str(order.instrument_id),status=order.status.name,side=order.side.name,order_type=order.order_type.name,quantity=str(order.quantity),filled_qty=str(order.filled_qty),leaves_qty=str(order.leaves_qty),price=str(getattr(order,'price',None)),reduce_only=order.is_reduce_only)
++        fills=getattr(strategy,'native_fills',getattr(strategy,'native_fill_events',[]))
++        fill_rows=[dict(order_id=str(x.client_order_id),ts_event=x.ts_event,side=x.order_side.name,instrument=str(x.instrument_id),quantity=str(x.last_qty),price=str(x.last_px),commission=str(x.commission),liquidity=x.liquidity_side.name) for x in fills]
++        account=self.native.cache.account_for_venue(SIM)
++        positions=[dict(instrument=str(x.instrument_id),quantity=str(x.quantity),side='LONG' if x.is_long else 'SHORT',realized_pnl=str(x.realized_pnl)) for x in self.native.cache.positions_open()]
++        payload=dict(physical_index=self.number,fixture=REC.current[0],stage=label,native_cash=str(account.balance_total()) if account else None,orders=[order_row(x) for x in self.native.cache.orders()],open_positions=positions,orders_open=len(self.native.cache.orders_open()),orders_inflight=len(self.native.cache.orders_inflight()),fills=fill_rows,last_quotes=[dict(instrument=str(inst.id),bid=str(q.bid_price),ask=str(q.ask_price),bid_size=str(q.bid_size),ask_size=str(q.ask_size),ts_event=q.ts_event) for inst in (BTC_PERP,SOL_PERP) if (q:=self.native.cache.quote_tick(inst.id)) is not None],market_redesign=strategy._md_report(),split=strategy._split_cover_report(),paired=strategy._pair_report(),terminal=strategy.terminal_lifecycle,completed_seed_bars=[dict(open_time=str(b.open_time),close_time=str(b.close_time),available_at=str(b.available_at),btc_close=b.btc_close,sol_close=b.sol_close) for b in strategy._bars])
++        # Explicit recursive serializer handles domain dataclasses and native IDs.
++        serialized=json.dumps(snapshot_config(payload)['payload'],sort_keys=True,indent=2)
++        artifact=REC.path.parent/f'engineering-native-{self.number:02d}-{label}.json';artifact.write_text(serialized+'\n')
++        data=json.loads(REC.path.read_text());entry=next(x for x in data['attempts'] if x['physical_index']==self.number)
++        entry.setdefault('native_snapshots',[]).append(dict(path=str(artifact),sha256=hashlib.sha256(artifact.read_bytes()).hexdigest(),stage=label));REC.write(data)
++    def end(self):
++        self.capture('BEFORE_END');return self.native.end()
+     def dispose(self):
+-        self.native.dispose();self.disposed=True
++        self.capture('BEFORE_DISPOSE');self.native.dispose();self.disposed=True
+ 
+ # Every helper engine constructor used by the explicit cases routes here.
+ pair.BacktestEngine=CountedEngine
+@@ -78,6 +102,12 @@ def base_engine(strategy):
+     for inst in (BTC_PERP,SOL_PERP):
+         actual=e.cache.instrument(inst.id)
+         assert actual.maker_fee==D('.00020') and actual.taker_fee==D('.00055')
++    from nautilus_trader.model.identifiers import ClientId
++    from coinmaster.venues.marks import venue_mark
++    from coinmaster.venues.signals import daily_signal
++    timestamp=REC.current[2]
++    e.add_data([venue_mark(inst.id,price,timestamp) for inst,price in zip((BTC_PERP,SOL_PERP),prices)],client_id=ClientId('BYBIT_MARK'),sort=False)
++    e.add_data([daily_signal(inst.id,price,price,price,price,timestamp) for inst,price in zip((BTC_PERP,SOL_PERP),prices)],client_id=ClientId('BYBIT_SIGNAL'),sort=False)
+     e.add_strategy(strategy);return e
+ md.native_engine=base_engine
+ 
+@@ -87,6 +117,7 @@ def snapshot_config(config):
+         if is_dataclass(value):return {k:plain(v) for k,v in asdict(value).items()}
+         if hasattr(value,'__struct_fields__'):return {k:plain(getattr(value,k)) for k in value.__struct_fields__}
+         if isinstance(value,dict):return {str(k):plain(v) for k,v in value.items()}
++        if isinstance(value,(set,frozenset)):return sorted([plain(v) for v in value],key=str)
+         if isinstance(value,(list,tuple)):return [plain(v) for v in value]
+         if value is None or type(value) in (str,int,float,bool):return value
+         return {'type':type(value).__name__,'value':str(value)}
+@@ -118,12 +149,20 @@ class ControlProbe(NativeProbe):
+     def __init__(self,config):self.native_fills=[];super().__init__(config)
+     def on_order_filled(self,event):self.native_fills.append(event);return super().on_order_filled(event)
+ 
++def prepare_completed_day(strategy,timestamp=2,side=1):
++    from dataclasses import replace
++    from datetime import timedelta
++    prepare_day(strategy,timestamp,side)
++    day=datetime.fromtimestamp((timestamp//(86400*10**9))*86400,timezone.utc)
++    strategy._bars=[replace(row,open_time=day-timedelta(days=3-i),close_time=day-timedelta(days=2-i),available_at=day-timedelta(days=2-i)) for i,row in enumerate(strategy._bars)]
++    assert all(int(row.available_at.timestamp()*10**9)<=timestamp and row.close_time<=row.available_at for row in strategy._bars)
++
+ def control_setup(family,partial):
+     conf,context,receipt=registered_fixture_context(family)
+     REC.effective_config=receipt
+     s=ControlProbe(conf);e=base_engine(s)
+     run_ticks(e,[tick(BTC_PERP,1)])
+-    prepare_day(s,2)
++    prepare_completed_day(s,2)
+     # Deterministic causal domain fixture inputs; actual domain generates the
+     # directional requested notional, q0/q1 selector computes all quantities.
+     with patch('coinmaster.domain.wave_overlay.completed_wave_levels',lambda *args:(0,0,.03)):
+@@ -139,7 +178,7 @@ def control_setup(family,partial):
+     else:
+         from coinmaster.strategy.market_redesign import PHI
+         assert planned==D(int(PHI[1]*D(55000)/D(100)/D('.001')))*D('.001')
+-    receipt['sizing']=dict(requested_notional=str(intent.requested_notional),gross_lots=q0['gross_lots'],net_planned_quantity=str(planned),q0_price=str(q0['q0_price']),direction_multiplier=str(ep.btc_sizing_multiplier))
++    receipt['sizing']=dict(seed_available_ns=[int(b.available_at.timestamp()*10**9) for b in s._bars],q0_ns=3,requested_notional=str(intent.requested_notional),gross_lots=q0['gross_lots'],net_planned_quantity=str(planned),q0_price=str(q0['q0_price']),direction_multiplier=str(ep.btc_sizing_multiplier))
+     return s,e,ep,receipt
+ 
+ def settled_identity(s,e):
+@@ -169,9 +208,21 @@ def control_case(family,partial):
+             assert D(str(ep.btc_initial_qty))==D(effective['sizing']['net_planned_quantity']) and ep.btc_planref_vwap==D(99)
+             targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
+             assert len(targets)==3 and sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(str(ep.btc_initial_qty))
+-            run_ticks(e,[tick(BTC_PERP,9,'103'),tick(BTC_PERP,10,'103')])
++            assert all(o.status.name=='ACCEPTED' for o in targets)
++            actual_prices=sorted(o.price.as_decimal() for o in targets)
++            assert actual_prices==[D(100),D(101),D(102)]
++            cross=actual_prices[-1]+e.cache.instrument(BTC_PERP.id).price_increment.as_decimal()
++            # Fresh later stock quotes vary actual displayed size, not timestamp
++            # alone; each callback/cache snapshot is retained before proceeding.
++            last=8
++            for timestamp in range(9,17):
++                run_ticks(e,[tick(BTC_PERP,timestamp,str(cross),size=str(1000+timestamp))])
++                e.capture('TP_STEP_'+str(timestamp));last=timestamp
++                if not e.cache.positions_open():break
+             assert not e.cache.positions_open();assert {0,1,2}<=ep.btc_filled_tps
+-            end=11
++            effective['actual_tp_prices']=[str(x) for x in actual_prices]
++            effective['fresh_quote_steps']=last-8
++            end=last+1
+         s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT');run_ticks(e,[tick(BTC_PERP,end)])
+         result=settled_identity(s,e);result.update(real_three_tp=True,second_limit_only=True,partial_first=partial,effective_fixture_config=effective)
+         return result
+@@ -188,7 +239,7 @@ def qualified_case(feed,missing=False):
+     bp=str(row.btc_close);sp=str(row.sol_close)
+     try:
+         run_ticks(e,[tick(BTC_PERP,t-10,bp),tick(SOL_PERP,t-10,sp)])
+-        prepare_day(s,t-9);marks(s,t-9,btc=bp,sol=sp)
++        prepare_completed_day(s,t-9);marks(s,t-9,btc=bp,sol=sp)
+         ep=s._domain.episode=Episode('qualified-clock',-1,10000,1,wave_levels=(0,0,.03),h=10000)
+         intent=s._domain._intent(ep,'BTC_ENTRY',-1,None,quantity=.02)
+         s._submit_intent(intent,float(bp),float(sp),.01,0,ts_now=t-9)
+@@ -227,21 +278,24 @@ def main():
+         _,restored=native_kwargs_json_roundtrip(kw)
+         assert restored==kw
+     REC=Recorder(args.ledger,gate)
+-    actions=[lambda:control_case('R2',True),lambda:control_case('R3',True),lambda:control_case('R2',False),lambda:control_case('R3',False),lambda:qualified_case(feed),lambda:qualified_case(feed,True),lambda:pair.test_native_coprime_actual_1037_1817_single_tp_stable_corridor(1,False),pair.test_native_late_entry_after_btc_flat_cancel_request_never_recreates_btc]
++    actions=[lambda:control_case('R2',False),lambda:control_case('R2',True),lambda:control_case('R3',True),lambda:control_case('R3',False),lambda:qualified_case(feed),lambda:qualified_case(feed,True),lambda:pair.test_native_coprime_actual_1037_1817_single_tp_stable_corridor(1,False),pair.test_native_late_entry_after_btc_flat_cancel_request_never_recreates_btc]
+     for case,action in zip(CASES,actions):
+         REC.current=case;REC.effective_config=None;before=len(REC.engines)
+         data=json.loads(Path(args.ledger).read_text())
+-        if any(a['fixture_id']==case[0] and a['status']=='COMPLETED' for a in data['attempts']):continue
++        if any(a['fixture_id']==case[0] and a['status']=='COMPLETED' and a['source_commit']==gate['source_commit'] for a in data['attempts']):continue
+         try:
+             result=action();created=REC.engines[before:]
+             assert len(created)==1 and created[0].disposed
+             e=created[0]
+-            REC.finish(e.number,'COMPLETED',dict(process_rc=0,result=result or {'assertions':'PASS'},cleanup='END_AND_DISPOSE_CONFIRMED',actual_tick_start_ns=min(e.times),actual_tick_end_ns=max(e.times)))
++            REC.finish(e.number,'COMPLETED',dict(fixture_rc=0,process_rc='PENDING_PROCESS_EXIT',result=result or {'assertions':'PASS'},cleanup='END_AND_DISPOSE_CONFIRMED',actual_tick_start_ns=min(e.times),actual_tick_end_ns=max(e.times)))
+             print(json.dumps(dict(fixture=case[0],status='PASS',physical_index=e.number)),flush=True)
+         except BaseException as error:
+             for e in REC.engines[before:]:
++                if hasattr(e,'native') and not e.disposed:
++                    try:e.end();e.dispose()
++                    except BaseException as cleanup_error:print('CLEANUP_FAILED:'+str(cleanup_error),flush=True)
+                 data=json.loads(Path(args.ledger).read_text());entry=next(x for x in data['attempts'] if x['physical_index']==e.number)
+-                if entry['status']=='STARTED':REC.finish(e.number,'FAILED',dict(process_rc=1,result=type(error).__name__+': '+str(error),cleanup='DISPOSE_CONFIRMED' if e.disposed else 'UNKNOWN'))
++                if entry['status']=='STARTED':REC.finish(e.number,'FAILED',dict(fixture_rc=1,process_rc='PENDING_PROCESS_EXIT',result=type(error).__name__+': '+str(error),cleanup='DISPOSE_CONFIRMED' if e.disposed else 'UNKNOWN'))
+             traceback.print_exc();raise
+     data=json.loads(Path(args.ledger).read_text());data['status']='CONNECTED_PASS_REVIEW_REQUIRED';REC.write(data)
+ if __name__=='__main__':main()
+diff --git a/runtime/tests/test_registered_strategy_config.py b/runtime/tests/test_registered_strategy_config.py
+index b5ab6ad..80049dd 100644
+--- a/runtime/tests/test_registered_strategy_config.py
++++ b/runtime/tests/test_registered_strategy_config.py
+@@ -31,3 +31,12 @@ def test_shared_constructor_is_frozen_original_expression_and_actual_config(fami
+     with pytest.raises(ValueError,match='R2_PAIRED_NOT_ADMITTED'):
+         registered_fixture_context('R2',paired=True)
+     if family=='R3':WaveOverlayStrategy(registered_fixture_context('R3',paired=True)[0])
++
++
++def test_fixture_seed_days_are_completed_before_q0_without_engine():
++    from run_continuous_hedge_preflight import ControlProbe,prepare_completed_day
++    config,_,_=registered_fixture_context('R2')
++    strategy=ControlProbe(config)
++    prepare_completed_day(strategy,2)
++    assert max(int(row.available_at.timestamp()*10**9) for row in strategy._bars)==0
++    assert all(row.open_time<row.close_time==row.available_at for row in strategy._bars)

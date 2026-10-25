@@ -1,0 +1,140 @@
+{
+  "status": "ACTUAL_PROCESS_EXIT_AND_DISPOSE_EVIDENCE",
+  "processes": [
+    {
+      "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+      "physical_indices": [
+        1,
+        2,
+        3
+      ],
+      "actual_os_exit_code": 1,
+      "exit_code_evidence": "Direct tools.exec_command completed result, not inferred from fixture PASS or log text",
+      "tool_chunk_id": "6f705a",
+      "native_process_log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-2eb080a.log",
+      "native_process_log_sha256": "b6cbb053da522b5a2a725ded92fdc12c613673e4bdab075d68de73f30db50117"
+    },
+    {
+      "source_commit": "596922493d3e831f43ec333eec974702b6e0ff2f",
+      "physical_indices": [
+        4
+      ],
+      "actual_os_exit_code": 1,
+      "exit_code_evidence": "Direct tools.exec_command completed result, not inferred from fixture PASS or log text",
+      "tool_chunk_id": "df6daa",
+      "native_process_log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-5969224.log",
+      "native_process_log_sha256": "24e6ac6f9993012cea389c9df4aea57d8c0a746c9ef2c2b715bba53369445d9d"
+    },
+    {
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_indices": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "actual_os_exit_code": 0,
+      "exit_code_evidence": "Direct tools.exec_command completed result, not inferred from fixture PASS or log text",
+      "tool_chunk_id": "55a732",
+      "native_process_log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-06f7577.log",
+      "native_process_log_sha256": "8999be96354108ffc3c58c32d22b1c9e0cd089e1f3514f83bbee968ea1fb8bfa"
+    }
+  ],
+  "last_actual_os_exit_code": 0,
+  "total_actual_physical_engines": 11,
+  "active": 0,
+  "cleanup": [
+    {
+      "physical_index": 1,
+      "fixture_id": "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+      "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 2,
+      "fixture_id": "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+      "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 3,
+      "fixture_id": "F03_R2_SECOND_FILL_THREE_TP",
+      "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+      "observed_cleanup": "DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 4,
+      "fixture_id": "F03_R2_SECOND_FILL_THREE_TP",
+      "source_commit": "596922493d3e831f43ec333eec974702b6e0ff2f",
+      "observed_cleanup": "DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 5,
+      "fixture_id": "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 6,
+      "fixture_id": "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 7,
+      "fixture_id": "F04_R3_SECOND_FILL_THREE_TP",
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 8,
+      "fixture_id": "F05_QUALIFIED_CLOCK_ALL_PATHS",
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 9,
+      "fixture_id": "F06_MISSING_FEATURE_FAIL_CLOSED",
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 10,
+      "fixture_id": "F07_COPRIME_CORRIDOR_REGRESSION",
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    },
+    {
+      "physical_index": 11,
+      "fixture_id": "F08_LATE_NATIVE_ENTRY_OWNERSHIP",
+      "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "observed_cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "disposed_confirmed": true,
+      "evidence": "CountedEngine.disposed flag set only after actual native dispose() returns; constructor/test wrapper persisted this flag outcome before process completion"
+    }
+  ],
+  "no_further_native_launch_authority": true
+}

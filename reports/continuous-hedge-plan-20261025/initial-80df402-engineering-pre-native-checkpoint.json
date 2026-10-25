@@ -1,0 +1,90 @@
+{
+  "source_commit": "80df4029da73fa1a13aeda099c7f5fb8f5795d1e",
+  "fixture_count": 8,
+  "reserve_unused": 4,
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "fixtures": [
+    {
+      "id": "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+      "family": "R2",
+      "window_start_ns": 1,
+      "window_end_ns": 86400000000010,
+      "synthetic_native_quote_fixture": true
+    },
+    {
+      "id": "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+      "family": "R3",
+      "window_start_ns": 1,
+      "window_end_ns": 86400000000010,
+      "synthetic_native_quote_fixture": true
+    },
+    {
+      "id": "F03_R2_SECOND_FILL_THREE_TP",
+      "family": "R2",
+      "window_start_ns": 1,
+      "window_end_ns": 20,
+      "synthetic_native_quote_fixture": true
+    },
+    {
+      "id": "F04_R3_SECOND_FILL_THREE_TP",
+      "family": "R3",
+      "window_start_ns": 1,
+      "window_end_ns": 20,
+      "synthetic_native_quote_fixture": true
+    },
+    {
+      "id": "F05_QUALIFIED_CLOCK_ALL_PATHS",
+      "family": "R2",
+      "window_start_ns": 1725249599999999990,
+      "window_end_ns": 1725249720000000100,
+      "synthetic_native_quote_fixture": true
+    },
+    {
+      "id": "F06_MISSING_FEATURE_FAIL_CLOSED",
+      "family": "R2",
+      "window_start_ns": 1725249599999999990,
+      "window_end_ns": 1725249720000000100,
+      "synthetic_native_quote_fixture": true
+    },
+    {
+      "id": "F07_COPRIME_CORRIDOR_REGRESSION",
+      "family": "R3",
+      "window_start_ns": 1,
+      "window_end_ns": 120000000000,
+      "synthetic_native_quote_fixture": true
+    },
+    {
+      "id": "F08_LATE_NATIVE_ENTRY_OWNERSHIP",
+      "family": "R3",
+      "window_start_ns": 1,
+      "window_end_ns": 120000000000,
+      "synthetic_native_quote_fixture": true
+    }
+  ],
+  "native_engines_started": 0,
+  "pure_tests": "26 PASS engine-free",
+  "initial_failures_preserved": [
+    {
+      "stage": "pytest_collection",
+      "reason": "PYTHONPATH omitted",
+      "engine_instances": 0
+    },
+    {
+      "stage": "pure_kwargs_roundtrip",
+      "reason": "audit_json_default excludes Path; explicit typed serializer added",
+      "result": "2 FAILED 24 PASS",
+      "engine_instances": 0
+    },
+    {
+      "stage": "warmup_builder_prerequisite",
+      "reason": "pointed to preserved empty first DNS attempt, SHA guard correctly rejected; corrected input to approved attempt2 raw file",
+      "engine_instances": 0
+    }
+  ],
+  "money_source_change": false,
+  "engine_instances": 0
+}

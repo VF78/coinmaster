@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "fixture_plan_sha256": "7a967784fb4ccb3d00f01fa128b11739d68c3b1270779981ce7c029f5f0de88e",
+  "fixture_plan_sha256_definition": "SHA256 of UTF-8 json.dumps(checkpoint.fixtures,sort_keys=True,separators=(comma,colon))",
+  "checkpoint_sha256": "fff3ba25e3cbf77c24be66830c45eb1835af46e64d28d0051d994faa65c689e6",
+  "scope": "Focused closure of original two P1 findings and correction mapping/fees/sizing; static read and AST inspection only",
+  "original_review_preserved": true,
+  "original_findings": [
+    {
+      "id": "P1_R2_PAIRED_CLOCK_FIXTURE_REJECTED_BEFORE_ENGINE",
+      "status": "CLOSED",
+      "evidence": "CASES F05/F06 now R3; qualified_case uses registered_fixture_context R3 paired=True; explicit R2 paired denial retained and strategy old guard unchanged."
+    },
+    {
+      "id": "P1_REGISTERED_CONFIG_NOT_CONNECTED_TO_NATIVE_FIXTURES",
+      "status": "CLOSED",
+      "evidence": "registered_fixture_context builds/roundtrips full registry kwargs, binds defaults and validates full call before shared config mapping. Native baseline and fixtures use same helper. F01-F04 call actual domain _advance_current_day, requested directional notional, deferred q0 and q1 lots then native fills/TP assertions. Effective fixture config snapshots/hashes are separate from registry refs."
+    }
+  ],
+  "independently_checked_without_importing_product": {
+    "shared_constructor_return_AST_equals_original_frozen_7d_constructor": true,
+    "baseline_uses_shared_helper": true,
+    "actual_fixtures_use_shared_helper": true,
+    "fixture_context_differences_explicit": true,
+    "R2_R3_requested_notional_and_q0q1_assertions_present": true,
+    "native_instrument_BASE_fee_assertions_present": true,
+    "selected_margin_BTC40_SOL20_default1": true,
+    "clock_and_missing_feature_use_R3": true,
+    "planned_fixtures": 8,
+    "claimed_before_engine_construction": true,
+    "ledger_physical_started": 0,
+    "root_go_at_review": false,
+    "new_P0": 0,
+    "new_P1": 0
+  },
+  "reported_executor_enginefree_evidence": "28 PASS/native0; not rerun by reviewer",
+  "limits": "PASS is source-review acceptance only, not root GO, economic admission, native fixture success/full parity/OOS/profit proof. Synthetic fixture context remains declared. No change to SOL money rules authorized.",
+  "engines_created": 0,
+  "tests_run": 0,
+  "public_requests": 0,
+  "reviewed_hashes": {
+    "runtime/coinmaster/research/native_baseline.py": "ad145aefa45183bd0347af75dccf6c2b629f4ef5a731d0ae5e8cf0c581373c4d",
+    "runtime/tests/run_continuous_hedge_preflight.py": "67e6aeb30c1f34669df63b8cb187681b4b7ad619f3776d106fbb7930433ef434",
+    "runtime/coinmaster/research/registered_control.py": "401248eb028725ecafc3965781f2a50e40439989692a55d7597997d501d30e59"
+  },
+  "fixture_probe_limitations": {
+    "identity": "ControlProbe(NativeProbe(WaveOverlayStrategy)); runtime/tests/test_native_episode_risk.py30-35",
+    "overrides": {
+      "_advance_current_day": "No-op override prevents automatic daily lifecycle advancement; F01-F04 explicitly call WaveOverlayStrategy._advance_current_day(s) at harness130 for central actual domain sizing acceptance.",
+      "_tier_allows_increase": "Returns True: strategy-level tier admission is bypassed in fixture probe. Stock native engine/cache/instrument fees/BybitTierMarginModule/fills remain actual, but this is not proof of ordinary strategy tier-admission path."
+    },
+    "other_deterministic_context": "completed_wave_levels patched to fixed completed levels; finite prepared daily signals/seed, synthetic quotes/static marks. Actual domain requested notional and q0/q1 functions are invoked rather than replaced by manual quantity in F01-F04.",
+    "allowed_claim": "Bounded engineering lifecycle/config/sizing integration only; no actual venue admission, historical native full-baseline parity or economic validity claim.",
+    "recorded_in_this_independent_review": true
+  }
+}

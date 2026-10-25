@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "checkpoint_sha256": "e33b2ff1e3e062f7e49ed3cd340f0dae2550825a578aa1749c3394994db00447",
+  "seven_fixture_plan_sha256": "a5c1730ee5f14c220ba4041eab2c5f94125caa615283d215ad16b5d79dc1cad7",
+  "seven_fixture_plan_sha256_definition": "SHA256 UTF8 json.dumps(checkpoint.fixtures,sort_keys=True,separators=(comma,colon))",
+  "qualified_F03_evidence_sha256": "f309d6d0501ee22d7fb63fead90f098130b34e41e6c5accd27317d59e902c995",
+  "qualified_F03_native_snapshot_sha256": "d36579e97ebbc7d758e415a6c7c04c1be0bad9e5cbf88482b26187636c85a77e",
+  "assertion_only_diff_sha256": "513de42d0cc4714251fb81a95185bbf3b59f698ce2b16e62002c459a9e370f39",
+  "scope": "Narrow assertion-only delta/immutable native04 observer qualification/remaining7plan; no rerun of tests/native engines",
+  "boundary_verification": {
+    "only_two_testfiles_changed": true,
+    "money_helper_config_quotes_dataset_sources_unchanged": true,
+    "natural_forced_terminal_contracts_separate": true,
+    "settled_identity_still_requires_actual_cache_flat_and_cash_identity": true,
+    "forced_contract_requires_FLAT_and_actual_close_fills": true,
+    "natural_contract_requires_NOT_TRIGGERED_and_no_forced_fills": true,
+    "F06_cash_identity_added_no_money_change": true,
+    "F03_component_evidence_matches_independently_audited_snapshot": true,
+    "physical4_FAILED_OS1_unchanged": true,
+    "original_attempt3_cause_UNKNOWN_preserved": true,
+    "gate_exact7_ids_match_checkpoint": true,
+    "F03_excluded_from_new_engines": true,
+    "all_windows_le48hours": true,
+    "ledger4_used_remaining8_fresh7_total11_hard12": true,
+    "root_go_current": false
+  },
+  "F03_component_status": "QUALIFIED_ENGINE_FREE_OBSERVER_ASSERTION_ON_IMMUTABLE_NATIVE_FACTS; not whole-process PASS and not physical-attempt reclassification",
+  "terminal_scope": {
+    "F01_F02_F05": "FORCED_TERMINAL_FLAT plus cacheflat/accountidentity; pending native verification",
+    "F04": "NATURAL_TP_FLAT NOT_TRIGGERED plus cacheflat/accountidentity; pending native verification",
+    "F06": "CAUSAL_FAIL_CLOSED_FLAT NOT_TRIGGERED plus cacheflat/accountidentity; pending native verification",
+    "F07": "OPEN_STABLE_CORRIDOR_SEMANTICS; intentionally held inventory, no terminalcash/flat claim",
+    "F08": "LATE_OWNER_NATIVE_FLAT; ownership/cache invariants, not general terminalcash proof"
+  },
+  "limitations": "No all-cases terminal-flat claim, no whole-process success, no full baseline parity, venue admission or economics. Existing NativeProbe tier-admission override/deterministic fixture limitations remain. Executor32PASS reported, not rerun by reviewer. Old source attempts1-4 retained; no rootGO/newbudget granted.",
+  "engines_created": 0,
+  "tests_run": 0,
+  "public_requests": 0,
+  "new_P0": 0,
+  "new_P1": 0
+}

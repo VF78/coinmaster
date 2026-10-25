@@ -1,0 +1,329 @@
+{
+  "status": "CLOSED_ENGINEERING_ACCEPTED_COMPONENT_LIMITS",
+  "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "base_source": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "source_publication": {
+    "status": "PUBLISHED_NOT_DEPLOYED",
+    "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+    "branch": "codex/continuous-hedge-preflight-20261025",
+    "repository": "https://github.com/VF78/coinmaster",
+    "remote_exact_ref_verified": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+    "ci_status": "NOT_RUN_NO_GREEN_CLAIM",
+    "worktree": "CLEAN",
+    "services_or_deployment_actions": 0
+  },
+  "physical_total": 11,
+  "physical_completed": 9,
+  "physical_failed": 2,
+  "physical_active": 0,
+  "physical_disposed": 11,
+  "hard_cap": 12,
+  "unused_unstarted": 1,
+  "unused_slot_authority": "CLOSED",
+  "fresh_process_06f7577": {
+    "exit_code": 0,
+    "physical_engines": 7,
+    "passed": 7
+  },
+  "qualified_case_components": 8,
+  "component_coverage": [
+    {
+      "fixture": "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+      "physical_index": 5,
+      "native_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_status": "COMPLETED",
+      "process_rc": 0,
+      "acceptance": "FRESH_FIXTURE_PASS",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        1,
+        86400000000006
+      ],
+      "native_snapshot_count": 2,
+      "result": {
+        "native_terminal_cash": "10008.979875",
+        "native_commissions": "1.020125",
+        "signed_execution_cash": "10.000",
+        "native_fill_count": 3,
+        "orders_open": 0,
+        "inflight": 0,
+        "positions_open": 0,
+        "account_identity": "PASS",
+        "terminal_kind": "FORCED_TERMINAL_FLAT",
+        "actual_terminal_state": "FLAT",
+        "real_three_tp": true,
+        "second_limit_only": true,
+        "partial_first": true
+      }
+    },
+    {
+      "fixture": "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+      "physical_index": 6,
+      "native_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_status": "COMPLETED",
+      "process_rc": 0,
+      "acceptance": "FRESH_FIXTURE_PASS",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        1,
+        86400000000006
+      ],
+      "native_snapshot_count": 2,
+      "result": {
+        "native_terminal_cash": "10008.979875",
+        "native_commissions": "1.020125",
+        "signed_execution_cash": "10.000",
+        "native_fill_count": 3,
+        "orders_open": 0,
+        "inflight": 0,
+        "positions_open": 0,
+        "account_identity": "PASS",
+        "terminal_kind": "FORCED_TERMINAL_FLAT",
+        "actual_terminal_state": "FLAT",
+        "real_three_tp": true,
+        "second_limit_only": true,
+        "partial_first": true
+      }
+    },
+    {
+      "fixture": "F03_R2_SECOND_FILL_THREE_TP",
+      "physical_index": 4,
+      "native_source": "596922493d3e831f43ec333eec974702b6e0ff2f",
+      "physical_status": "FAILED",
+      "process_rc": 1,
+      "acceptance": "INDEPENDENT_IMMUTABLE_NATIVE_COMPONENT_PROOF_PROCESS_REMAINS_FAILED",
+      "cleanup": "DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        null,
+        null
+      ],
+      "native_snapshot_count": 5,
+      "result": {}
+    },
+    {
+      "fixture": "F04_R3_SECOND_FILL_THREE_TP",
+      "physical_index": 7,
+      "native_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_status": "COMPLETED",
+      "process_rc": 0,
+      "acceptance": "FRESH_FIXTURE_PASS",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        1,
+        12
+      ],
+      "native_snapshot_count": 5,
+      "result": {
+        "native_terminal_cash": "11201.77802035",
+        "native_commissions": "26.97247965",
+        "signed_execution_cash": "1228.7505",
+        "native_fill_count": 5,
+        "orders_open": 0,
+        "inflight": 0,
+        "positions_open": 0,
+        "account_identity": "PASS",
+        "terminal_kind": "NATURAL_TP_FLAT",
+        "actual_terminal_state": "NOT_TRIGGERED",
+        "real_three_tp": true,
+        "second_limit_only": true,
+        "partial_first": false
+      }
+    },
+    {
+      "fixture": "F05_QUALIFIED_CLOCK_ALL_PATHS",
+      "physical_index": 8,
+      "native_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_status": "COMPLETED",
+      "process_rc": 0,
+      "acceptance": "FRESH_FIXTURE_PASS",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        1725249599999999990,
+        1725249660000000011
+      ],
+      "native_snapshot_count": 2,
+      "result": {
+        "native_terminal_cash": "9999.1360897",
+        "native_commissions": "0.86391030",
+        "signed_execution_cash": "0.000",
+        "native_fill_count": 4,
+        "orders_open": 0,
+        "inflight": 0,
+        "positions_open": 0,
+        "account_identity": "PASS",
+        "terminal_kind": "FORCED_TERMINAL_FLAT",
+        "actual_terminal_state": "FLAT",
+        "qualified_atr": "3.6889752782254411326488158384814894977173533826523",
+        "all_hedge_submissions_not_before_ns": 1725249660000000000,
+        "hedge_order_kinds": [
+          "ENTRY",
+          "STOP",
+          "TP"
+        ]
+      }
+    },
+    {
+      "fixture": "F06_MISSING_FEATURE_FAIL_CLOSED",
+      "physical_index": 9,
+      "native_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_status": "COMPLETED",
+      "process_rc": 0,
+      "acceptance": "FRESH_FIXTURE_PASS",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        1725249599999999990,
+        1725249600000000003
+      ],
+      "native_snapshot_count": 2,
+      "result": {
+        "native_terminal_cash": "9999.3650657",
+        "native_commissions": "0.63493430",
+        "signed_execution_cash": "0.000",
+        "native_fill_count": 2,
+        "orders_open": 0,
+        "inflight": 0,
+        "positions_open": 0,
+        "account_identity": "PASS",
+        "terminal_kind": "CAUSAL_FAIL_CLOSED_FLAT",
+        "actual_terminal_state": "NOT_TRIGGERED",
+        "missing_feature": "NO_ADMISSION_NATIVE_FLAT",
+        "hedge_entries": 0
+      }
+    },
+    {
+      "fixture": "F07_COPRIME_CORRIDOR_REGRESSION",
+      "physical_index": 10,
+      "native_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_status": "COMPLETED",
+      "process_rc": 0,
+      "acceptance": "FRESH_FIXTURE_PASS",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        1,
+        60000000026
+      ],
+      "native_snapshot_count": 2,
+      "result": {
+        "assertions": "PASS"
+      }
+    },
+    {
+      "fixture": "F08_LATE_NATIVE_ENTRY_OWNERSHIP",
+      "physical_index": 11,
+      "native_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+      "physical_status": "COMPLETED",
+      "process_rc": 0,
+      "acceptance": "FRESH_FIXTURE_PASS",
+      "cleanup": "END_AND_DISPOSE_CONFIRMED",
+      "actual_window_ns": [
+        1,
+        60000000017
+      ],
+      "native_snapshot_count": 2,
+      "result": {
+        "assertions": "PASS"
+      }
+    }
+  ],
+  "pure_pytest": "32 PASS engine-free",
+  "additional_pure_feed_checks": "7 mutation NO_ADMISSION cases and all4380 non-ATR columns unchanged; pinned408H1/102H4/109stitch/Decimal50/fullSOLM1SHA verified",
+  "failed_attempts_preserved": [
+    {
+      "physical": 3,
+      "source": "2eb080a",
+      "status": "FAILED",
+      "cause": "UNKNOWN post-two-quote residual, native cache not serialized beforedispose"
+    },
+    {
+      "physical": 4,
+      "source": "5969224",
+      "status": "FAILED",
+      "cause": "Fixture wrongly demanded forced-terminal FLAT label after actual naturalTPflat; five native snapshots retained; independently qualified component proof only"
+    }
+  ],
+  "process_receipts": [
+    {
+      "source_prefix": "2eb080a",
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-2eb080a.log",
+      "sha256": "b6cbb053da522b5a2a725ded92fdc12c613673e4bdab075d68de73f30db50117",
+      "process_exit_code": 1,
+      "physical_engines": 3
+    },
+    {
+      "source_prefix": "5969224",
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-5969224.log",
+      "sha256": "24e6ac6f9993012cea389c9df4aea57d8c0a746c9ef2c2b715bba53369445d9d",
+      "process_exit_code": 1,
+      "physical_engines": 1
+    },
+    {
+      "source_prefix": "06f7577",
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-06f7577.log",
+      "sha256": "8999be96354108ffc3c58c32d22b1c9e0cd089e1f3514f83bbee968ea1fb8bfa",
+      "process_exit_code": 0,
+      "physical_engines": 7
+    }
+  ],
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "qualified_sep2_04_atr": "3.6889752782254411326488158384814894977173533826523",
+  "qualified_order_not_before_ns": 1725249660000000000,
+  "money_strategy_files_changed": [],
+  "economic_prefixes": 0,
+  "full_runs": 0,
+  "training": 0,
+  "new_downloads": 0,
+  "production_or_pilot_actions": 0,
+  "limitations": [
+    "Engineering synthetic quote/native cache semantics, not historical economic ROI, full financial baseline parity, fresh OOS or actual venue admission. R2 remains investigated OFF control; R2 paired strategy remains NOT_ADMITTED.",
+    "Existing NativeProbe strategy tier-admission bypass/direct daily advancement and deterministic completed-wave fixture inputs explicit; stock native account/cache/BASE fees/captured tier module/fills remain actual.",
+    "F03 native facts qualified across5969224 engine source and06f7577 assertion-only proof; original physical attempt4FAILED/process1 never relabeled.",
+    "Physical1/2 passed with original generic future-dated daily fixture seeds; retained as limited observations, superseded by fresh causal-seed fixtures5/6.",
+    "F07 deliberately ends held stable coprime corridor; does not prove terminalflat. Its raw fill-callback list contains intentional genuine-event replays and is not a deduplicated monetary journal. F08 and terminal cases separately prove native ownership/flat.",
+    "Historical publication latency/revisions, venue L2 capacity, funding economics and new continuous hedge profit/DD remain UNKNOWN/NOT_TESTED.",
+    "New continuous hedge money rules jointstress/riskbudget/deficitdeadline/conditionalrearm/causalfeeedge remain NOT_ADMITTED. Old economic ledger CLOSED7/7 unchanged."
+  ],
+  "unused_closed": 1,
+  "remaining_authorized": 0,
+  "final_engineering_ledger_sha256": "858b453f502c3994ca563cec931544d0a7235e6f5c751ebfbe8c3aa9aed66b7f",
+  "generic_regression_probe_limits": [
+    {
+      "physical_index": 10,
+      "fixture": "F07_COPRIME_CORRIDOR_REGRESSION",
+      "actual_effective_config_sha256": "8439ea6f8dfaf5853d1ccf51701292a5f2674ac3a4aad92f596f182937b3fc50",
+      "actual_probe_fields": {
+        "research_btc_q_mode": "CLEAN_Q",
+        "research_btc_direction_sizing": false,
+        "research_wait_4h": false,
+        "research_regime_reentry_band": null,
+        "research_paired_prefix": "B2_F0",
+        "research_btc_real_u": true,
+        "research_sol_off": true,
+        "margin_policy": null,
+        "max_mark_age_ns": 36000000000000
+      },
+      "scope": "Existing generic NativeProbe regression fixture with manually injected held episode/quantity, not registered OFF control or full baseline parity",
+      "native_venue_context": "Stock shared liquidity, explicit Bybit BASE maker0.00020/taker0.00055 instruments, default leverage1; generic helper lacks registered tier-margin strategy context",
+      "terminal_claim": "OPEN_STABLE_CORRIDOR, intentionally not flat"
+    },
+    {
+      "physical_index": 11,
+      "fixture": "F08_LATE_NATIVE_ENTRY_OWNERSHIP",
+      "actual_effective_config_sha256": "8439ea6f8dfaf5853d1ccf51701292a5f2674ac3a4aad92f596f182937b3fc50",
+      "actual_probe_fields": {
+        "research_btc_q_mode": "CLEAN_Q",
+        "research_btc_direction_sizing": false,
+        "research_wait_4h": false,
+        "research_regime_reentry_band": null,
+        "research_paired_prefix": "B2_F0",
+        "research_btc_real_u": true,
+        "research_sol_off": true,
+        "margin_policy": null,
+        "max_mark_age_ns": 36000000000000
+      },
+      "scope": "Existing generic NativeProbe regression fixture with manually injected held episode/quantity, not registered OFF control or full baseline parity",
+      "native_venue_context": "Stock shared liquidity, explicit Bybit BASE maker0.00020/taker0.00055 instruments, default leverage1; generic helper lacks registered tier-margin strategy context",
+      "terminal_claim": "actual late-entry ownership cleanup cache flat; not registered q-sizing validation"
+    }
+  ],
+  "root_acceptance_sha256": "84a3b47e5d5a71c50db85d4aa1b3392eff5856f0a9cb105454662711b21d1145"
+}

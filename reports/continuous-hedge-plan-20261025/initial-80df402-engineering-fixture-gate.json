@@ -1,0 +1,12 @@
+{
+  "root_go": false,
+  "independent_review": "PENDING",
+  "source_commit": "80df4029da73fa1a13aeda099c7f5fb8f5795d1e",
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "new_feed_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/qualified-warmup-feed.csv",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs"
+}

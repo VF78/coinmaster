@@ -1,0 +1,40 @@
+{
+  "task": "CM-CONTINUOUS-HEDGE-ENGINEERING-20261025",
+  "root_go": true,
+  "issued_utc": "2026-10-25T08:04:08.128268+00:00",
+  "scope": "Execute only8 pinned engineering fixtures using correctedsource; stop firstfailure and preserve; no auto rerun passedcases",
+  "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+  "independent_review_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/engineering-independent-correction-review.json",
+  "independent_review_sha256": "c30e48388ace896a1a5c29ce0aaa2f9bc52c62f11205bd5221ebea6d420cb0f3",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "fixture_plan_sha256": "7a967784fb4ccb3d00f01fa128b11739d68c3b1270779981ce7c029f5f0de88e",
+  "checkpoint_sha256": "fff3ba25e3cbf77c24be66830c45eb1835af46e64d28d0051d994faa65c689e6",
+  "fixture_ids": [
+    "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+    "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+    "F03_R2_SECOND_FILL_THREE_TP",
+    "F04_R3_SECOND_FILL_THREE_TP",
+    "F05_QUALIFIED_CLOCK_ALL_PATHS",
+    "F06_MISSING_FEATURE_FAIL_CLOSED",
+    "F07_COPRIME_CORRIDOR_REGRESSION",
+    "F08_LATE_NATIVE_ENTRY_OWNERSHIP"
+  ],
+  "max_total_physical_fixture_attempts": 12,
+  "all_failed_and_repeats_count": true,
+  "max_fixture_hours": 48,
+  "economic_prefix_max": 0,
+  "full_max": 0,
+  "new_downloads": 0,
+  "cash_result_claim": "Engineering only; not ROI/fullparity/venueadmission",
+  "limitations": {
+    "identity": "ControlProbe(NativeProbe(WaveOverlayStrategy)); runtime/tests/test_native_episode_risk.py30-35",
+    "overrides": {
+      "_advance_current_day": "No-op override prevents automatic daily lifecycle advancement; F01-F04 explicitly call WaveOverlayStrategy._advance_current_day(s) at harness130 for central actual domain sizing acceptance.",
+      "_tier_allows_increase": "Returns True: strategy-level tier admission is bypassed in fixture probe. Stock native engine/cache/instrument fees/BybitTierMarginModule/fills remain actual, but this is not proof of ordinary strategy tier-admission path."
+    },
+    "other_deterministic_context": "completed_wave_levels patched to fixed completed levels; finite prepared daily signals/seed, synthetic quotes/static marks. Actual domain requested notional and q0/q1 functions are invoked rather than replaced by manual quantity in F01-F04.",
+    "allowed_claim": "Bounded engineering lifecycle/config/sizing integration only; no actual venue admission, historical native full-baseline parity or economic validity claim.",
+    "recorded_in_this_independent_review": true
+  },
+  "old_economic_budget": "CLOSED7/7 unchanged"
+}

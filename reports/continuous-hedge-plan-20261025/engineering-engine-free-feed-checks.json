@@ -1,0 +1,43 @@
+{
+  "engine_instances": 0,
+  "full_market_rows_checked": 4380,
+  "unchanged_non_ATR_columns": true,
+  "mutation_checks": [
+    {
+      "case": "future_availability",
+      "status": "PASS_NO_ADMISSION",
+      "reason": "PAIRED_FEED_CLOCK_INVALID"
+    },
+    {
+      "case": "future_atr",
+      "status": "PASS_NO_ADMISSION",
+      "reason": "PAIRED_ATR_CLOCK_INVALID"
+    },
+    {
+      "case": "nonfinite_atr",
+      "status": "PASS_NO_ADMISSION",
+      "reason": "QUALIFIED_FEED_NO_ADMISSION_INVALID_OR_MISSING_DATA"
+    },
+    {
+      "case": "missing_atr",
+      "status": "PASS_NO_ADMISSION",
+      "reason": "QUALIFIED_FEED_NO_ADMISSION_INVALID_OR_MISSING_DATA"
+    },
+    {
+      "case": "nonfinite_price",
+      "status": "PASS_NO_ADMISSION",
+      "reason": "QUALIFIED_FEED_NO_ADMISSION_INVALID_OR_MISSING_DATA"
+    },
+    {
+      "case": "duplicate_h4",
+      "status": "PASS_NO_ADMISSION",
+      "reason": "PAIRED_FEED_INCOMPLETE_OR_UNORDERED_H4"
+    },
+    {
+      "case": "missing_boundary_h4",
+      "status": "PASS_NO_ADMISSION",
+      "reason": "QUALIFIED_FEED_MISSING_BOUNDARY_H4"
+    }
+  ],
+  "publication_latency": "UNKNOWN"
+}

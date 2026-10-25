@@ -1,0 +1,11 @@
+{
+  "status": "PASS_SCOPED_FORMAT_CHECK",
+  "git_whitespace": "blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol",
+  "preserved_exception_files": "byte-identical user attachment markdown hardbreaks; immutable captured unified *.diff context whitespace",
+  "csv": "CRLF preserved as valid line endings",
+  "economic_or_accounting_checks_relaxed": false,
+  "all_json_parsed": true,
+  "closed_engineering_ledger_sha256": "858b453f502c3994ca563cec931544d0a7235e6f5c751ebfbe8c3aa9aed66b7f",
+  "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "noCIgreenclaim": true
+}

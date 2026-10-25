@@ -1,0 +1,561 @@
+{
+  "completed_seed_bars": [
+    {
+      "available_at": "2024-08-31 00:00:00+00:00",
+      "btc_close": 100,
+      "close_time": "2024-08-31 00:00:00+00:00",
+      "open_time": "2024-08-30 00:00:00+00:00",
+      "sol_close": 100
+    },
+    {
+      "available_at": "2024-09-01 00:00:00+00:00",
+      "btc_close": 100,
+      "close_time": "2024-09-01 00:00:00+00:00",
+      "open_time": "2024-08-31 00:00:00+00:00",
+      "sol_close": 100
+    },
+    {
+      "available_at": "2024-09-02 00:00:00+00:00",
+      "btc_close": 100,
+      "close_time": "2024-09-02 00:00:00+00:00",
+      "open_time": "2024-09-01 00:00:00+00:00",
+      "sol_close": 100
+    }
+  ],
+  "fills": [
+    {
+      "commission": "0.31746715 USDT",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "liquidity": "TAKER",
+      "order_id": "O-20240902-035959-001-000-1",
+      "price": "57721.3",
+      "quantity": "0.010",
+      "side": "SELL",
+      "ts_event": 1725249599999999992
+    },
+    {
+      "commission": "0.11448800 USDT",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "liquidity": "TAKER",
+      "order_id": "O-20240902-040100-001-000-6",
+      "price": "130.10",
+      "quantity": "1.6",
+      "side": "BUY",
+      "ts_event": 1725249660000000000
+    },
+    {
+      "commission": "0.11448800 USDT",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "liquidity": "TAKER",
+      "order_id": "O-20240902-040100-001-000-11",
+      "price": "130.10",
+      "quantity": "1.6",
+      "side": "SELL",
+      "ts_event": 1725249660000000006
+    },
+    {
+      "commission": "0.31746715 USDT",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "liquidity": "TAKER",
+      "order_id": "O-20240902-040100-001-000-12",
+      "price": "57721.3",
+      "quantity": "0.010",
+      "side": "BUY",
+      "ts_event": 1725249660000000007
+    }
+  ],
+  "fixture": "F05_QUALIFIED_CLOCK_ALL_PATHS",
+  "last_quotes": [
+    {
+      "ask": "57721.3",
+      "ask_size": "1000.000",
+      "bid": "57721.3",
+      "bid_size": "1000.000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "ts_event": 1725249660000000011
+    },
+    {
+      "ask": "130.10",
+      "ask_size": "1000.0",
+      "bid": "130.10",
+      "bid_size": "1000.0",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "ts_event": 1725249660000000011
+    }
+  ],
+  "market_redesign": {
+    "events": [
+      {
+        "episode_id": "qualified-clock",
+        "event": "PLAN",
+        "quantity": "0.020",
+        "raw_causal_d3": "0.03",
+        "raw_levels": [
+          0,
+          0,
+          0.03
+        ],
+        "sizing_mode": "CLEAN_Q",
+        "timestamp_ns": "1725249599999999991"
+      },
+      {
+        "episode_id": "qualified-clock",
+        "event": "PROTECTION_EXCEPTION",
+        "reason": "AWAITING_TARGET_ACCEPTANCE",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "actual_inventory": "0.01",
+        "episode_id": "qualified-clock",
+        "event": "TARGETS_SUBMITTED",
+        "level_lots": {
+          "0": 2,
+          "1": 2,
+          "2": 6
+        },
+        "p0": "57721.3",
+        "prices": [
+          "57144.0",
+          "56566.8",
+          "55989.6"
+        ],
+        "raw_causal_d3": "0.03",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "episode_id": "qualified-clock",
+        "event": "P0_FROZEN_FIRST_TERMINAL",
+        "first_filled": "0.01",
+        "p0": "57721.3",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "continuing_interval": true,
+        "episode_id": "qualified-clock",
+        "event": "PROTECTION_EXCEPTION",
+        "reason": "ENTRY_FILL_REQUIRES_PROTECTION",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "ack_latency_ns": "0",
+        "episode_id": "qualified-clock",
+        "event": "TARGET_ACCEPTED",
+        "generation": 0,
+        "level": 0,
+        "order_id": "O-20240902-035959-001-000-2",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "ack_latency_ns": "0",
+        "episode_id": "qualified-clock",
+        "event": "TARGET_ACCEPTED",
+        "generation": 0,
+        "level": 1,
+        "order_id": "O-20240902-035959-001-000-3",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "ack_latency_ns": "0",
+        "episode_id": "qualified-clock",
+        "event": "TARGET_ACCEPTED",
+        "generation": 0,
+        "level": 2,
+        "order_id": "O-20240902-035959-001-000-4",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "duration_ns": "0",
+        "episode_id": "qualified-clock",
+        "event": "PROTECTION_RESTORED",
+        "reason": "ALL_REMAINING_ACCEPTED",
+        "timestamp_ns": "1725249599999999992"
+      },
+      {
+        "actual_filled": "0.01",
+        "cancelled": "0.010",
+        "episode_id": "qualified-clock",
+        "event": "SECOND_TERMINAL",
+        "timestamp_ns": "1725249600000000000"
+      },
+      {
+        "actual_btc_open": "0.01",
+        "episode_id": "qualified-clock",
+        "event": "SIGNAL_CYCLE_CLOSE_REQUEST",
+        "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+        "timestamp_ns": "1725249660000000005"
+      },
+      {
+        "episode_id": "qualified-clock",
+        "event": "PROTECTION_EXCEPTION",
+        "reason": "TARGET_CANCEL_ACK",
+        "timestamp_ns": "1725249660000000006"
+      },
+      {
+        "duration_ns": "1",
+        "episode_id": "qualified-clock",
+        "event": "PROTECTION_RESTORED",
+        "reason": "NATIVE_TERMINAL_FLAT",
+        "timestamp_ns": "1725249660000000007"
+      }
+    ],
+    "missing_three_tp_ns": "1",
+    "open_protection_exception_since_ns": null
+  },
+  "native_cash": "9999.13608970 USDT",
+  "open_positions": [],
+  "orders": [
+    {
+      "filled_qty": "0.010",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "leaves_qty": "0.000",
+      "order_id": "O-20240902-035959-001-000-1",
+      "order_type": "MARKET",
+      "price": "None",
+      "quantity": "0.010",
+      "reduce_only": false,
+      "side": "SELL",
+      "status": "FILLED"
+    },
+    {
+      "filled_qty": "0.000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "leaves_qty": "0.002",
+      "order_id": "O-20240902-035959-001-000-2",
+      "order_type": "LIMIT",
+      "price": "57144.0",
+      "quantity": "0.002",
+      "reduce_only": true,
+      "side": "BUY",
+      "status": "CANCELED"
+    },
+    {
+      "filled_qty": "0.000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "leaves_qty": "0.002",
+      "order_id": "O-20240902-035959-001-000-3",
+      "order_type": "LIMIT",
+      "price": "56566.8",
+      "quantity": "0.002",
+      "reduce_only": true,
+      "side": "BUY",
+      "status": "CANCELED"
+    },
+    {
+      "filled_qty": "0.000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "leaves_qty": "0.006",
+      "order_id": "O-20240902-035959-001-000-4",
+      "order_type": "LIMIT",
+      "price": "55989.6",
+      "quantity": "0.006",
+      "reduce_only": true,
+      "side": "BUY",
+      "status": "CANCELED"
+    },
+    {
+      "filled_qty": "0.000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "leaves_qty": "0.010",
+      "order_id": "O-20240902-035959-001-000-5",
+      "order_type": "LIMIT",
+      "price": "58010.0",
+      "quantity": "0.010",
+      "reduce_only": false,
+      "side": "SELL",
+      "status": "CANCELED"
+    },
+    {
+      "filled_qty": "0.0",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "leaves_qty": "1.6",
+      "order_id": "O-20240902-040100-001-000-10",
+      "order_type": "STOP_MARKET",
+      "price": "None",
+      "quantity": "1.6",
+      "reduce_only": true,
+      "side": "SELL",
+      "status": "CANCELED"
+    },
+    {
+      "filled_qty": "1.6",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "leaves_qty": "0.0",
+      "order_id": "O-20240902-040100-001-000-11",
+      "order_type": "MARKET",
+      "price": "None",
+      "quantity": "1.6",
+      "reduce_only": true,
+      "side": "SELL",
+      "status": "FILLED"
+    },
+    {
+      "filled_qty": "0.010",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "leaves_qty": "0.000",
+      "order_id": "O-20240902-040100-001-000-12",
+      "order_type": "MARKET",
+      "price": "None",
+      "quantity": "0.010",
+      "reduce_only": true,
+      "side": "BUY",
+      "status": "FILLED"
+    },
+    {
+      "filled_qty": "1.6",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "leaves_qty": "0.0",
+      "order_id": "O-20240902-040100-001-000-6",
+      "order_type": "MARKET",
+      "price": "None",
+      "quantity": "1.6",
+      "reduce_only": false,
+      "side": "BUY",
+      "status": "FILLED"
+    },
+    {
+      "filled_qty": "0.0",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "leaves_qty": "0.4",
+      "order_id": "O-20240902-040100-001-000-7",
+      "order_type": "LIMIT",
+      "price": "131.95",
+      "quantity": "0.4",
+      "reduce_only": true,
+      "side": "SELL",
+      "status": "CANCELED"
+    },
+    {
+      "filled_qty": "0.0",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "leaves_qty": "0.4",
+      "order_id": "O-20240902-040100-001-000-8",
+      "order_type": "LIMIT",
+      "price": "133.79",
+      "quantity": "0.4",
+      "reduce_only": true,
+      "side": "SELL",
+      "status": "CANCELED"
+    },
+    {
+      "filled_qty": "0.0",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "leaves_qty": "0.8",
+      "order_id": "O-20240902-040100-001-000-9",
+      "order_type": "LIMIT",
+      "price": "137.48",
+      "quantity": "0.8",
+      "reduce_only": true,
+      "side": "SELL",
+      "status": "CANCELED"
+    }
+  ],
+  "orders_inflight": 0,
+  "orders_open": 0,
+  "paired": {
+    "events": [
+      {
+        "atr": "3.6889752782254411326488158384814894977173533826523",
+        "boundary": "57266.1",
+        "branch": "F0",
+        "event": "ACTIVATION_SELECTED",
+        "intended_sol": "1.6",
+        "k": "1.6E+2",
+        "parent": "qualified-clock",
+        "qref": "0.01",
+        "timestamp_ns": "1725249600000000000"
+      },
+      {
+        "event": "SUBMIT",
+        "generation": 0,
+        "kind": "ENTRY",
+        "level": null,
+        "order_id": "O-20240902-040100-001-000-6",
+        "price": null,
+        "quantity": "1.6",
+        "stop": null,
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "bmax": "0.01",
+        "event": "ACTUAL_FILL",
+        "kind": "ENTRY",
+        "level": null,
+        "order_id": "O-20240902-040100-001-000-6",
+        "price": "130.1",
+        "qty": "1.6",
+        "risk": "ACTIVE_RISK",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "actual_sol": "1.6",
+        "bmax": "0.01",
+        "event": "ENTRY_TERMINAL_P0_FROZEN",
+        "p0": "130.1",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "bmax": "0.01",
+        "btc": "0.01",
+        "event": "CACHE_POSITION",
+        "sol": "1.6",
+        "solmax": "1.6",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "SUBMIT",
+        "generation": 1,
+        "kind": "TP",
+        "level": 0,
+        "order_id": "O-20240902-040100-001-000-7",
+        "price": "131.95",
+        "quantity": "0.4",
+        "stop": null,
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "SUBMIT",
+        "generation": 1,
+        "kind": "TP",
+        "level": 1,
+        "order_id": "O-20240902-040100-001-000-8",
+        "price": "133.79",
+        "quantity": "0.4",
+        "stop": null,
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "SUBMIT",
+        "generation": 1,
+        "kind": "TP",
+        "level": 2,
+        "order_id": "O-20240902-040100-001-000-9",
+        "price": "137.48",
+        "quantity": "0.8",
+        "stop": null,
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "SUBMIT",
+        "generation": 1,
+        "kind": "STOP",
+        "level": null,
+        "order_id": "O-20240902-040100-001-000-10",
+        "price": null,
+        "quantity": "1.6",
+        "stop": "126.41",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "ACCEPTED",
+        "kind": "TP",
+        "level": 0,
+        "order_id": "O-20240902-040100-001-000-7",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "ACCEPTED",
+        "kind": "TP",
+        "level": 1,
+        "order_id": "O-20240902-040100-001-000-8",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "ACCEPTED",
+        "kind": "TP",
+        "level": 2,
+        "order_id": "O-20240902-040100-001-000-9",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "event": "ACCEPTED",
+        "kind": "STOP",
+        "level": null,
+        "order_id": "O-20240902-040100-001-000-10",
+        "timestamp_ns": "1725249660000000000"
+      },
+      {
+        "bmax": "0.000",
+        "btc": "0.01",
+        "event": "CACHE_POSITION",
+        "sol": "0",
+        "solmax": "0.0",
+        "timestamp_ns": "1725249660000000006"
+      },
+      {
+        "actual_btc": "0.01",
+        "bmax": "0.000",
+        "event": "ACTUAL_BTC_DEBT_OPEN",
+        "timestamp_ns": "1725249660000000006"
+      },
+      {
+        "bmax": "0.000",
+        "btc": "0",
+        "event": "CACHE_POSITION",
+        "sol": "0",
+        "solmax": "0.0",
+        "timestamp_ns": "1725249660000000007"
+      },
+      {
+        "event": "PARENT_NATIVE_TERMINAL_FLAT",
+        "parent": "qualified-clock",
+        "timestamp_ns": "1725249660000000007"
+      }
+    ],
+    "failures": [],
+    "open_owner": false,
+    "physical_budget_authority": "EXTERNAL_SINGLE_SOURCE_RUN_LEDGER"
+  },
+  "physical_index": 8,
+  "split": {
+    "beta_method": "720_COMPLETED_1H_SIMPLE_RETURNS_SOL_ON_BTC_FROZEN_PER_BTC_EPISODE",
+    "cover": [],
+    "coverage_basis": "ACTUAL_NATIVE_BTC_SOL_QUANTITIES_AND_CURRENT_MARKS",
+    "parents": [
+      {
+        "cancelled": "0.010",
+        "closed": true,
+        "deadline_ns": 1725263999999999991,
+        "decision_index": 0,
+        "episode_id": "qualified-clock",
+        "fallback": false,
+        "filled": "0.01",
+        "first_filled": "0.01",
+        "first_notional": "577.213",
+        "first_quantity": "0.010",
+        "first_vwap": "57721.3",
+        "management_reference_frozen_ns": 1725249599999999992,
+        "planref_v1_actual_blended_vwap": "57721.3",
+        "planref_v1_beta": 1,
+        "planref_v1_gross_reference_qty": 0.01,
+        "planref_v1_h_actual": 577.213,
+        "planref_v1_p0": null,
+        "quantity": "0.020",
+        "side": -1,
+        "sigma": 0.01,
+        "single_lot_immediate": false,
+        "start_ns": 1725249599999999991,
+        "step": "0.001",
+        "stop_reason": "PAIRED_MONOTONE_PARENT_CEILING"
+      }
+    ]
+  },
+  "stage": "BEFORE_END",
+  "terminal": {
+    "close_fills": [
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "timestamp": "1725249660000000006",
+        "value": "208.16"
+      },
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1725249660000000007",
+        "value": "577.213"
+      }
+    ],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "FLAT",
+    "trigger_ts": null
+  }
+}

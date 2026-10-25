@@ -1,0 +1,17 @@
+{
+  "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+  "physical_started": 3,
+  "reported_PASS": 2,
+  "reported_FAILED": 1,
+  "active": 0,
+  "remaining_under_owner_cap12": 9,
+  "OS_exit_code": 1,
+  "firstfailedfixture": "F03_R2_SECOND_FILL_THREE_TP",
+  "initial_PASS_qualification": "Engineering observations only; future-dated deterministic seedbars prevent final causalclock acceptance",
+  "failed_final_TP_status_and_cash": "UNKNOWN_NOT_SERIALIZED_BEFORE_DISPOSE; do not invent",
+  "old_GO": "Issued then revoked; process had started under prior validGO before HOLD arrival and selfstoppedfirstfailure",
+  "next_scope": "Fixture-only completedseed/clientregistration/statecapture/freshboundedquotes; fresh8 startF03 first, afternewpins/review/GO only",
+  "economic_prefix_max": 0,
+  "full_max": 0,
+  "ledger_preserved_sha256": "a46d31b23eed6d53cb7bfe85584756066b4ede8eb3e5f6321c266718b148ec56"
+}

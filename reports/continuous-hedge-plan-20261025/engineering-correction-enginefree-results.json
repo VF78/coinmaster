@@ -1,0 +1,56 @@
+{
+  "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+  "engine_instances": 0,
+  "status": "PASS_ENGINE_FREE_CORRECTION_READY_FOR_REVIEW",
+  "tests": 28,
+  "failed_engine_free_checks_preserved": [
+    {
+      "source": "c957926b2532c2cbc9f4e86aa575a236ff481a7c",
+      "result": "26 PASS 2 FAIL",
+      "root_cause": "fixture context omitted local derived max_mark_age_ns; supplied unchanged native2minute value; no engine"
+    }
+  ],
+  "constructor_proof": "Helper return AST equals frozen7d full constructor; both constructors produce identical effective config snapshots for R2 and R3; actual WaveOverlayStrategy constructors pass with OFF; R2 paired denied.",
+  "fixture_context_proofs": {
+    "R2": {
+      "sha256": "292849ef173b71c5f7bc21efdefca1fdd5478b92db0559d8a68409357f9b9885",
+      "archived_registry_config_sha256": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+      "registered_kwargs_sha256": "b9b41c6d352a648decc8dcfc4e847f9c450624f379399f3657a5bba18e0fa9d0",
+      "fixture_context_deltas": [
+        "synthetic instrument identities and quote prices",
+        "finite deterministic seed bars/daily observations instead of historical warmup",
+        "fixture trading/terminal/reporting timestamps",
+        "static native margin marks; same existing BTC40/SOL20 selected leverage, default1",
+        "OFF control"
+      ],
+      "margin_policy": "existing BTC40/SOL20/default1",
+      "maker_fee": "0.00020",
+      "taker_fee": "0.00055"
+    },
+    "R3": {
+      "sha256": "32717ca12a589e455c46aa89ebcf39d4b95a028803dd5568f8e2722b77cfd44d",
+      "archived_registry_config_sha256": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80",
+      "registered_kwargs_sha256": "3696bbd20421b8952926c632bb339a6b5c0942e6d54033762b07457f319827c4",
+      "fixture_context_deltas": [
+        "synthetic instrument identities and quote prices",
+        "finite deterministic seed bars/daily observations instead of historical warmup",
+        "fixture trading/terminal/reporting timestamps",
+        "static native margin marks; same existing BTC40/SOL20 selected leverage, default1",
+        "OFF control"
+      ],
+      "margin_policy": "existing BTC40/SOL20/default1",
+      "maker_fee": "0.00020",
+      "taker_fee": "0.00055"
+    }
+  },
+  "physical_engines_started": 0,
+  "planned_physical_engines": 8,
+  "economic_runs": 0,
+  "full_runs": 0,
+  "native_fixture_limits": [
+    "Existing NativeProbe suppresses automatic daily advancement; F01-F04 call actual WaveOverlayStrategy._advance_current_day directly on deterministic causal daily observations and frozen completed-wave fixture outputs.",
+    "Existing NativeProbe strategy tier-admission override retained to isolate native order lifecycle; stock native engine account, instrument BASE fees, captured tier-margin module, fills and cash remain actual. No venue admission or economic baseline parity claim.",
+    "Static fixture marks and quote prices are declared fixture inputs; no funding identity is synthesized.",
+    "F05/F06 use an injected small held BTC episode for clock/missing-feature semantics; only F01-F04 establish connected domain/q sizing."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "status": "QUALIFIED_SEPARATE_FEED",
+  "rows": 4380,
+  "warmup_h1": 408,
+  "warmup_h4": 102,
+  "stitch_h4": 109,
+  "input_pins": {
+    "raw": "2afa407a476e5b52ea6b1296f39be5f941445d07a586ad4e2f6ad190fc9204c0",
+    "h1": "fea6a295447c317f2e665cbe77aba135ba99daefc5fb05957cf44821edaa1b72",
+    "h4": "8c414684e54bb834b43e187c7acd5332df50b21835749d6e5e17220ccfc9f991",
+    "stitch": "1ff950b6d0a34377ec4efca19d24db6854a36d8b58c5ab4181a7d3c27fb78fc2",
+    "builder": "47704f6ca1a998ef464ba7b0237d5e32d2330f92702d3c05d00df426a0b34cf3",
+    "m1": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+    "old_feed": "2fcd030c495f15a28ff4ff2ef6d931a018e5a2dd9cf142a56ac6582f941734e1"
+  },
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "old_feed_unchanged": true,
+  "changed_columns": [
+    "sol_atr_h4_14",
+    "sol_atr_valid",
+    "atr_last_h4_end_ns"
+  ],
+  "sep2_04_atr": "3.6889752782254411326488158384814894977173533826523",
+  "clock": "available=t/ATRend=t/ordernotbefore=t+60s",
+  "publication_latency": "UNKNOWN",
+  "engines_created": 0,
+  "source_commit": "80df4029da73fa1a13aeda099c7f5fb8f5795d1e",
+  "new_feed_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/qualified-warmup-feed.csv"
+}

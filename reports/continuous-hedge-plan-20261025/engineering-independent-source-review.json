@@ -1,0 +1,78 @@
+{
+  "status": "P1_CORRECTION_REQUIRED",
+  "source_commit": "80df4029da73fa1a13aeda099c7f5fb8f5795d1e",
+  "review_scope": "Independent static source/config/provenance/physical-instance accounting review; no tests/imports/native construction",
+  "findings": [
+    {
+      "id": "P1_R2_PAIRED_CLOCK_FIXTURE_REJECTED_BEFORE_ENGINE",
+      "priority": 1,
+      "file": "runtime/tests/run_continuous_hedge_preflight.py",
+      "line": 121,
+      "related_lines": [
+        74,
+        119,
+        120
+      ],
+      "reason": "F05/F06 build LEGACY_Q_CONTROL with research_paired_prefix=B2_F0, but unchanged runtime/coinmaster/strategy/paired_prefix.py122-123 permits paired strategy only with CLEAN_Q. Strategy initialization fails before base_engine, so neither fixture can establish intended clock/missing-feature semantics.",
+      "minimal_correction": "Run paired clock/missing-feature fixtures as registered R3, update CASES/checkpoint/ledger family pins accordingly. Preserve R2 as OFF control. Do not broadly relax existing paired-money guard."
+    },
+    {
+      "id": "P1_REGISTERED_CONFIG_NOT_CONNECTED_TO_NATIVE_FIXTURES",
+      "priority": 1,
+      "file": "runtime/tests/run_continuous_hedge_preflight.py",
+      "line": 159,
+      "related_lines": [
+        160,
+        161,
+        162,
+        74,
+        89,
+        119,
+        126,
+        127
+      ],
+      "reason": "Registered full kwargs are roundtripped then discarded. Actual native strategies use generic test cfg/md.setup, omit registered direction-sizing/wait/reentry parameters, replace Candidate, and inject fixed BTC_ENTRY quantities. Ledger labels these engines with exact archived R2/R3 config hashes even though these are not the configurations consumed. No connected native case exercises preserved entry sizing function, central R2-vs-R3 purpose.",
+      "minimal_correction": "Within one correction batch, connect actual fixture strategy parameters to validated registered control mapping (assert complete registered research/domain fields; explicitly list fixture-only identity/clock overrides), use computed causal entry sizing in at least one existing R2/R3 fixture without adding budget, and record actual effective fixture config/kwargs hashes separately from archived registry references. Preserve native run guard and lifecycle semantics."
+    }
+  ],
+  "verified": {
+    "feed_rows": 4380,
+    "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+    "old_feed_sha256": "2fcd030c495f15a28ff4ff2ef6d931a018e5a2dd9cf142a56ac6582f941734e1",
+    "only_changed_columns": [
+      "atr_last_h4_end_ns",
+      "sol_atr_h4_14",
+      "sol_atr_valid"
+    ],
+    "configs_sha256": {
+      "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+      "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+    }
+  },
+  "count_review": {
+    "constructor_claim_before_native": true,
+    "explicit_helper_routes_counted": [
+      "base_engine",
+      "pair.BacktestEngine"
+    ],
+    "planned_engines": 8,
+    "max12_including_failures": true,
+    "max48h_windows_static": true,
+    "fresh_engine_each_case": true,
+    "old_test_collection_or_hidden_engine_calls_seen": false,
+    "ledger_started_at_review": 0,
+    "caveat": "Current two P1 findings block GO; no claim of actual runtime counts/cleanup."
+  },
+  "scope_preserved": "No diff to SOL TP/BTC cuts/rearm or fees. Old unregistered R3 q guard remains. Registered full-bound-argument validator includes omitted defaults and rejects unequal parameters outside documented data/artifact/window/feed context.",
+  "provenance_limits": "Raw/H1/H4/stitch/formula pins match previously independently qualified packet; builder verifies all prerequisite file hashes and recomputes full feed; whole-feed row diff independently checked here. M1 is referenced by existing immutable freeze pin, not rescanned in this review. Historical publication latency remains UNKNOWN.",
+  "minimal_correction_batches": 1,
+  "engines_created": 0,
+  "tests_run": 0,
+  "public_requests": 0,
+  "native_go_granted": false,
+  "concrete_single_batch": [
+    "F05/F06 use R3; update CASES/checkpoint/family pins. Do not change paired R3-only strategy guard.",
+    "Reuse single existing native-baseline WaveOverlayStrategyConfig construction mapping (native_baseline.py890 onward): no shared helper exists yet, so extract current mapping without semantics change and call it from both baseline and fixture bridge. Validate full registered native kwargs first; fixture-only identity/clock/seed/margin context explicit. Do not duplicate a second hand-maintained config list.",
+    "In existing F01\u2013F04 invoke genuine causal entry sizing path instead of fixed quantity intents; assert requested/gross lots and resulting native fills/three TPs. Record effective fixture config/kwargs hash separately from archived registry hash; no extra planned engines."
+  ]
+}

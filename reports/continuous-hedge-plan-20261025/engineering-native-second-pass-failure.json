@@ -1,0 +1,65 @@
+{
+  "source_commit": "596922493d3e831f43ec333eec974702b6e0ff2f",
+  "physical_started": 4,
+  "physical_this_process": 1,
+  "completed_this_process": 0,
+  "failed_this_process": 1,
+  "process_exit_code": 1,
+  "stopped_first_failure": true,
+  "active": 0,
+  "cleanup": "DISPOSE_CONFIRMED",
+  "fixture": "F03_R2_SECOND_FILL_THREE_TP",
+  "failure": "Assertion only: terminal_lifecycle NOT_TRIGGERED after natural full TP flat; incorrectly demanded forced-close FLAT label",
+  "native_account_identity": {
+    "cash": "10808.06735305",
+    "commissions": "18.13614695",
+    "signed_execution_cash": "826.2035",
+    "residual": "0E-8"
+  },
+  "three_actual_tp_fills": [
+    {
+      "commission": "1.34406000 USDT",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "liquidity": "MAKER",
+      "order_id": "O-19700101-000000-001-000-6",
+      "price": "100.0",
+      "quantity": "67.203",
+      "side": "SELL",
+      "ts_event": 9
+    },
+    {
+      "commission": "1.35750060 USDT",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "liquidity": "MAKER",
+      "order_id": "O-19700101-000000-001-000-7",
+      "price": "101.0",
+      "quantity": "67.203",
+      "side": "SELL",
+      "ts_event": 10
+    },
+    {
+      "commission": "3.70961760 USDT",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "liquidity": "MAKER",
+      "order_id": "O-19700101-000000-001-000-8",
+      "price": "102.0",
+      "quantity": "181.844",
+      "side": "SELL",
+      "ts_event": 11
+    }
+  ],
+  "actual_positions_open": 0,
+  "actual_orders_open": 0,
+  "actual_orders_inflight": 0,
+  "actual_terminal": {
+    "close_fills": [],
+    "lockout": false,
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null
+  },
+  "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/native-connected-5969224.log",
+  "log_sha256": "24e6ac6f9993012cea389c9df4aea57d8c0a746c9ef2c2b715bba53369445d9d",
+  "no_further_native_go": true,
+  "original_F03_attempt3_cause": "UNKNOWN; old cache not available and not reclassified"
+}

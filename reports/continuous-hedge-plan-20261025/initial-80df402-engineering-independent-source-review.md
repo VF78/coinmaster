@@ -1,0 +1,10 @@
+# Independent engineering source review — P1 correction required
+
+Reviewed frozen source80df402 and explicit new files/fixtures only. Engines/tests/public requests=0. No root GO granted.
+
+1. **P1: F05/F06 reject their own R2 paired configuration.** `runtime/tests/run_continuous_hedge_preflight.py:119–121` creates LEGACY_Q_CONTROL+B2_F0; unchanged `runtime/coinmaster/strategy/paired_prefix.py:122–123` rejects it before native construction. Keep clock/missing-feature paired fixtures on R3, with aligned CASES/checkpoint/pins; leave R2 OFF control. Do not relax paired-money guard broadly.
+2. **P1: archived config is not the config consumed by fixtures.** `run_continuous_hedge_preflight.py:159–162` constructs and roundtrips registered kwargs, then discards them. Actual probes at74/89/119 use generic cfg, replace Candidate and inject qty100/.02. Direction sizing/wait/reentry are not connected. Ledger configSHA therefore names an archival reference, not effective config. Connect registered field mapping to actual fixture strategy, exercise causal sizing in an existing case, and record effective fixture config/kwargs hash separately. Fixture-only identity/clock differences must be explicit.
+
+One focused correction batch suffices; no additional native budget is proposed. Old R3 default guard and fees unchanged; no SOL TP/cut/rearm diff. Whole-feed4380 rows independently compared: only sol_atr_h4_14/sol_atr_valid/atr_last_h4_end_ns differ; new/old SHA match packet. Ledger claims before NativeEngine, eight explicit fresh constructions and windows fit12×48h; no old native test collection observed. These static positives do not resolve the two blockers or prove runtime completion.
+
+Concrete shared bridge: current baseline config mapping is inline at native_baseline.py890 onward. Extract that existing mapping once without changed semantics; reuse in baseline and fixtures after full registered-kwargs validation. Keep fixture-only IDs/clocks/seeds/margin context explicit, avoiding a second manual config builder. Exercise real sizing within existing F01–F04, not additional engine cases.

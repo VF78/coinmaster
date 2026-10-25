@@ -1,0 +1,29 @@
+{
+  "status": "PRE_NATIVE_REVIEW_CHECKPOINT",
+  "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+  "base_source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "native_instances": 0,
+  "economic_prefixes": 0,
+  "full_runs": 0,
+  "money_strategy_files_changed": [],
+  "unchanged_from_base_strategy_sha256": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "8d5589c555f32dffb75414d54e83bb0ed9afcb33f337aaf855d526bc54344b7a",
+    "runtime/coinmaster/strategy/market_redesign.py": "9059502f44ceeeda72fc09fdcbb09253d25db1c5c8ef4483c01ea423938a5806",
+    "runtime/coinmaster/strategy/paired_prefix.py": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67"
+  },
+  "registered_controls": "Exact pinned byte files plus canonical JSON equality; R2/R3 differ only research_btc_q_mode. Legacy economic launcher without registered_control still requires CLEAN_Q. Registered native full call/defaults checked before engine; <=48h enforced.",
+  "warmup": "Pinned H1 aggregates independently match qualified H4; state continues through full pinned M1; first 109 H4 match independent stitch exactly. UTC time join replaces exactly three ATR columns in separate 4380-row feed; all BTC/D1/funding/pattern values unchanged.",
+  "clock_source_audit": [
+    "Reader enforces available=t, ATRend=t, not_before=t+60s; strategy feed ingestion requires decision_ns==actual BTC quote timestamp.",
+    "_pair_start sets signal_ns=actual decision and eligible_ns=decision+MINUTE; _pair_quote sends SOL ENTRY only on SOL quote with ns>=eligible_ns.",
+    "TP/STOP protection requires actual held SOL and actual terminal entry/VWAP; these depend on eligible actual ENTRY fills. Replacement targets inherit already-held inventory, not pending credit.",
+    "SOL_CAP/SOL_CLOSE require actual held SOL; BTC_DEBT is a risk reduction based on actual native inventory/terminal entry or observed fills. Existing missing-feature/unknown-risk emergency BTC closure is retained unchanged.",
+    "All hedge submission receipts in focused qualified native fixture must have timestamp>=t+60s. Existing BTC core targets/terminal risk reductions retain their existing clocks. No strategy clock code or ATR metadata is relabeled."
+  ],
+  "limitations": [
+    "Synthetic quote fixtures exercise native engine/cache/fills/account semantics, not economic replay, full baseline parity or venue L2 capacity.",
+    "R2 is investigated control, not selected winner.",
+    "Publication latency and historical revisions UNKNOWN.",
+    "Continuous hedge new money rules remain NOT_ADMITTED: joint stress/risk budget, pending deficit/deadline, causal fee edge, residual TP rights and conditional rearm require separate contract."
+  ]
+}

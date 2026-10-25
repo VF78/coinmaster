@@ -1,0 +1,28 @@
+{
+  "root_go": false,
+  "independent_review": "PASS",
+  "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "new_feed_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/continuous-hedge-preflight-20261025/qualified-warmup-feed.csv",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs",
+  "root_go_receipt_sha256": "ed31b19161e6ccbb47b29c860dff4aada5d339d01556776eeb95a3328d15e649",
+  "independent_review_sha256": "446e8e68fb74501d87ba6d71628996c4c4b125515be37d3dd4bbb13f086c4705",
+  "hold_reason": "STOP_FIRST_FAILURE_TERMINAL_ASSERTION",
+  "fixture_ids": [
+    "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+    "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+    "F04_R3_SECOND_FILL_THREE_TP",
+    "F05_QUALIFIED_CLOCK_ALL_PATHS",
+    "F06_MISSING_FEATURE_FAIL_CLOSED",
+    "F07_COPRIME_CORRIDOR_REGRESSION",
+    "F08_LATE_NATIVE_ENTRY_OWNERSHIP"
+  ],
+  "prior_f03_native_component_proof_sha256": "f309d6d0501ee22d7fb63fead90f098130b34e41e6c5accd27317d59e902c995",
+  "status": "CLOSED_NO_FURTHER_NATIVE_AUTHORITY",
+  "authorized_remaining": 0,
+  "root_acceptance_sha256": "84a3b47e5d5a71c50db85d4aa1b3392eff5856f0a9cb105454662711b21d1145"
+}

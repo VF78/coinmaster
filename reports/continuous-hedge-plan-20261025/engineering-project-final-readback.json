@@ -1,0 +1,14 @@
+{
+  "issue": 135,
+  "url": "https://github.com/VF78/coinmaster/issues/135",
+  "title": "[Research] Continuous hedge preflight completed: controls/warmup qualified; economics not run",
+  "state": "CLOSED",
+  "Status": "Done",
+  "isArchived": true,
+  "actual_graphql_readback": true,
+  "engineering_ledger_sha256": "858b453f502c3994ca563cec931544d0a7235e6f5c751ebfbe8c3aa9aed66b7f",
+  "remaining_authorized": 0,
+  "economic_goal": "NOT_MET",
+  "readback_utc": "2026-10-25T08:41:28.648432+00:00",
+  "network_note": "CLI Done TLS timeout; repaired via sequentialunarchive/update/archive GraphQL and finalactualreadback"
+}

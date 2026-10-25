@@ -1,0 +1,14 @@
+{
+  "source_commit": "80df4029da73fa1a13aeda099c7f5fb8f5795d1e",
+  "native_instances": 0,
+  "root_GO": false,
+  "purpose": "Preserve pre-correction source/plan/gate/independent P1 review unchanged",
+  "files": {
+    "initial-80df402-implementation.diff": "50425d416903eeef84b6b2003ef0231afd6647294408c9dd45b37521e3ba3d07",
+    "initial-80df402-engineering-pre-native-checkpoint.json": "28950cebc38faba3c43706d1593fb6eaaffa1ee1a2f3651054c19343b030bddb",
+    "initial-80df402-engineering-fixture-gate.json": "db7333c3de02e354ed25ac2126e4b845b5b3a036dd1b3fc33fb86d2c964cd682",
+    "initial-80df402-engineering-run-ledger.json": "a6ba32643629a329de4ffc66a59eaf896f7468e07b0227369a8a9603c4762d36",
+    "initial-80df402-engineering-independent-source-review.json": "71da9844a61270b4bd2d441bf0d999e2212afa229dfcca496fcca4ccd84d4453",
+    "initial-80df402-engineering-independent-source-review.md": "54b6f65108ed3731a0e7a1e44b25c35b190ca24f9b78c08853dd7f8c983da17b"
+  }
+}

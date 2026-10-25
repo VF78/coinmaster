@@ -1,0 +1,11 @@
+{
+  "root_go": false,
+  "revokes_go_sha256": "c844ab1b8f1df3dcc22aeb38d72cdfb235ba253bebe1db49f457301920bb3ff6",
+  "revoked_source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0",
+  "revoked_at_utc": "2026-10-25T08:05:02.346442+00:00",
+  "reason": "Owner identified fixture daily seed bars later than synthetic q0; rebase deterministicfixture seedclock tocompleted bars before q0, no moneylogic change",
+  "native_count_at_last_owner_report": 0,
+  "authority": "Root hold message sent before any new GO; fresh correctedsourcepin/reviewer confirmation required",
+  "economic_prefix_max": 0,
+  "full_max": 0
+}

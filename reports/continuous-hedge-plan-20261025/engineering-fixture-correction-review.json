@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "source_commit": "596922493d3e831f43ec333eec974702b6e0ff2f",
+  "checkpoint_sha256": "7232f5de80d951951e41cdc528db7e713466c98d736ca5437428c9301edbf27a",
+  "fixture_plan_sha256": "4958b48bd8f5b3793dd8c36969284719fd20f7946478786dedd2b5d6716230f6",
+  "fixture_plan_sha256_definition": "SHA256 of UTF-8 canonical fixtures JSON sorted keys/no spaces",
+  "fixture_only_diff_sha256": "9d7258358f0a388e84bd500702d6882ea7e60c98c07b77b94f468259031b0ad0",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "scope": "Only fixture clock/client/snapshot/assert/count/window delta from2eb080a; no tests/engines or new strategy audit",
+  "source_boundary_verified": "Only runtime/tests/run_continuous_hedge_preflight.py and runtime/tests/test_registered_strategy_config.py changed; production/domain/config helper files byte-identical",
+  "closure_checks": {
+    "seed_bars_rebased_to_completed_days_ending_epoch0_before_q0": true,
+    "same_seed_values_unchanged": true,
+    "F01_F04_real_base_sizing_path_preserved": true,
+    "synthetic_BYBIT_MARK_SIGNAL_clients_added_before_engine_run": true,
+    "snapshots_capture_orders_positions_fills_cash_quotes_domain_reports_seed_clock": true,
+    "per_TP_step_snapshot_and_BEFORE_END_BEFORE_DISPOSE_present": true,
+    "exception_path_attempts_capture_end_dispose_before_failed_receipt": true,
+    "actual_TP_prices_100_101_102_asserted": true,
+    "bounded_cross_price_102_1_with_at_most8_distinct_displayed_size_quotes": true,
+    "F03_first_and_all_fresh_cases_skip_only_same_source_completed": true,
+    "count_claim_before_native_constructor_preserved": true,
+    "windows_all_le48hours": true
+  },
+  "accounting_at_review": {
+    "old_physical": 3,
+    "old_completed_seed_limited": 2,
+    "old_failed": 1,
+    "remaining_hard12": 9,
+    "fresh_plan": 8,
+    "maximum_total_if_plan_completes": 11,
+    "root_go": false,
+    "corrected_source_instances": 0
+  },
+  "nonblocking_note": "checkpoint reserve_unused=4 is stale initial-plan arithmetic; current remaining_hard_budget9/fresh8/max_total11 and ledger12 hard cap are explicit. Post-fresh unspent cap would be1. Does not increase allowed count.",
+  "original_F03_cause": "UNKNOWN; no post-cross original native snapshot. New client/quote/seed instrumentation is not causal proof of original failure.",
+  "limitations": "Prior probe overrides and synthetic context limits remain; no venue admission/full baseline parity/ROI claim. Recorded executor29PASS is not rerun by reviewer. No extrapublication, permission or rootGO granted.",
+  "new_P0": 0,
+  "new_P1": 0,
+  "engines_created": 0,
+  "tests_run": 0,
+  "public_requests": 0
+}

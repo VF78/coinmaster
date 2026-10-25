@@ -1,0 +1,14 @@
+{
+  "task": "CM-CONTINUOUS-HEDGE-ENGINEERING-20261025",
+  "protocol_sha256": "28da74095f65c4ee4f2fca0ef9cfa26a999abcb2613881e2ffd8e44d89084c46",
+  "max_physical_native_fixture_attempts": 12,
+  "max_fixture_historical_hours": 48,
+  "failures_and_repeats_count": true,
+  "economic_prefix_max": 0,
+  "full_max": 0,
+  "training": 0,
+  "new_downloads": 0,
+  "physical_started": 0,
+  "status": "AWAITING_INDEPENDENT_REVIEW_ROOT_GO",
+  "attempts": []
+}

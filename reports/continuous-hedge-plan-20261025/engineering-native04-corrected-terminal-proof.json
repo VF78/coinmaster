@@ -1,0 +1,22 @@
+{
+  "status": "PASS_ENGINE_FREE_F03_NATIVE_COMPONENT_ASSERTIONS",
+  "assertion_source": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "native_source": "596922493d3e831f43ec333eec974702b6e0ff2f",
+  "native_physical_attempt": 4,
+  "native_process_rc": 1,
+  "native_physical_status": "FAILED_RETAINED",
+  "native_artifact_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/engineering-native-04-BEFORE_END.json",
+  "native_artifact_sha256": "d36579e97ebbc7d758e415a6c7c04c1be0bad9e5cbf88482b26187636c85a77e",
+  "terminal_assertion": "NATURAL_TP_FLAT",
+  "actual_native_positions_orders_inflight": [
+    0,
+    0,
+    0
+  ],
+  "actual_native_cash": "10808.06735305",
+  "actual_commissions": "18.13614695",
+  "account_identity_residual": "0E-8",
+  "seed_latest_available_ns": 0,
+  "new_engines": 0,
+  "scope": "F03 components qualified from immutable native evidence; failed process not relabeled"
+}

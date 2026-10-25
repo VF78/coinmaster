@@ -1,0 +1,68 @@
+{
+  "status": "COMPONENT_FACTS_QUALIFIED_PENDING_ASSERTION_ONLY_DIFF_REVIEW",
+  "physical_index": 4,
+  "source_commit": "596922493d3e831f43ec333eec974702b6e0ff2f",
+  "fixture": "F03_R2_SECOND_FILL_THREE_TP",
+  "physical_status_preserved": "FAILED",
+  "process_exit_preserved": 1,
+  "whole_process_pass": false,
+  "component_qualification": {
+    "two_native_entries": "158.125@99 TAKER;158.125@98.5 MAKER LIMIT",
+    "genuine_three_TP_native_reduce_only_LIMIT_fills": [
+      {
+        "price": "100.0",
+        "quantity": "67.203",
+        "ts_event": 9,
+        "liquidity": "MAKER"
+      },
+      {
+        "price": "101.0",
+        "quantity": "67.203",
+        "ts_event": 10,
+        "liquidity": "MAKER"
+      },
+      {
+        "price": "102.0",
+        "quantity": "181.844",
+        "ts_event": 11,
+        "liquidity": "MAKER"
+      }
+    ],
+    "entry_exit_quantity": "316.250",
+    "native_cash": "10808.06735305",
+    "native_commissions": "18.13614695",
+    "signed_execution_cash": "826.2035",
+    "cash_identity_residual": "0E-8",
+    "each_native_commission_exact_BASE_rate": true,
+    "positions_open": 0,
+    "orders_open": 0,
+    "orders_inflight": 0,
+    "flat_confirmed_at": [
+      "TP_STEP_11",
+      "BEFORE_END",
+      "BEFORE_DISPOSE"
+    ],
+    "all_native_orders_terminal": true,
+    "natural_terminal_status": "NOT_TRIGGERED",
+    "forced_close_fills": 0,
+    "completed_seed_all_available_by_epoch0": true,
+    "effective_fixture_config_sha256": "292849ef173b71c5f7bc21efdefca1fdd5478b92db0559d8a68409357f9b9885",
+    "archived_registry_config_sha256": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea"
+  },
+  "known_failure_category": "Fixture assertion demanded forced-terminal FLAT after natural three-TP flat; traceback identifies this assertion. It ran after earlier native cache/fee/cash checks. Native submit-forced-close sees no position and adds no forced fills; NOT_TRIGGERED alone is not a native-flat failure.",
+  "reuse_decision": "F03 component facts can qualify using immutable hashed native snapshots plus engine-free corrected expected-terminal assertion, conditional on independent verification that the forthcoming source delta changes only fixture assertion/classification and keeps money/helper/config/quote/sizing semantics unchanged. No fresh F03 engine required for these already-observed component facts. Physical4 stays FAILED and process1. A separate component-evidence record must carry reused-source5969224/snapshot hashes; do not skip it by marking wholefixture physical completion.",
+  "remaining_plan": "After assertion-only diff qualification, remaining seven once =>11total of12; current ledger4/remaining8. Any unproven extra claim requires fresh case and stays within12, no hidden reserve.",
+  "original_attempt3_F03_cause": "UNKNOWN; unchanged and unrelated to current proved assertion-category defect.",
+  "snapshot_hashes": {
+    "TP_STEP_9": "a9f628b4357e7de56a3eb1c4e286a4eda64d2abf576f3780dc4e92578d5e772c",
+    "TP_STEP_10": "8a701335338aa43f1d1087d4a6eec3c8687a249b0a0ebf53c9af4030607528f3",
+    "TP_STEP_11": "3f8ecf8484833f10e15cacbd74ee36c1e66685d03dea35d0470a6abe8064eb34",
+    "BEFORE_END": "d36579e97ebbc7d758e415a6c7c04c1be0bad9e5cbf88482b26187636c85a77e",
+    "BEFORE_DISPOSE": "06d7bbb5f68bc70fb3b0eb3080804b17b5f081758b02d75ad724eee45edb28ed"
+  },
+  "native_log_sha256": "24e6ac6f9993012cea389c9df4aea57d8c0a746c9ef2c2b715bba53369445d9d",
+  "limits": "Synthetic engineering component evidence only; probe tier override and deterministic wave/seed limitations retained; no economic ROI, full baseline parity, venue admission or rootGO. No tests or engines run by reviewer; only exact Decimal audit of retained facts.",
+  "engines_created": 0,
+  "tests_run": 0,
+  "public_requests": 0
+}

@@ -1,0 +1,786 @@
+diff --git a/runtime/coinmaster/research/control_configs/R2.json b/runtime/coinmaster/research/control_configs/R2.json
+new file mode 100644
+index 0000000..b14228a
+--- /dev/null
++++ b/runtime/coinmaster/research/control_configs/R2.json
+@@ -0,0 +1,131 @@
++{
++  "account": "SIM_MARGIN_USDT_10000",
++  "btc_close_stop_fraction": null,
++  "btc_management_reference_policy": "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1",
++  "candidate": {
++    "beta_days": 270,
++    "btc_close_trail_fraction": 0.03,
++    "btc_notional_multiplier": 7.875,
++    "btc_tp_fractions_initial_qty": [
++      0.2125,
++      0.2125,
++      0.575
++    ],
++    "ema_period": 34,
++    "episode_fixed_beta": false,
++    "max_parent_notional": 30000000.0,
++    "relative_days": 65,
++    "sol_entry_z": [
++      1.25,
++      2.5,
++      3.75
++    ],
++    "sol_exit_all_z": 0.125,
++    "sol_exit_half_z": 0.375,
++    "sol_late_entry_after_tp": true,
++    "sol_max_holding_days": 14,
++    "sol_overlay_enabled": false,
++    "sol_size_multipliers_h": [
++      1.75,
++      2.625,
++      3.5
++    ],
++    "sol_timeout_preempts_add": false,
++    "wave_history_days": 730,
++    "wave_min_count": 8,
++    "wave_quantiles": [
++      0.1,
++      0.3,
++      0.6
++    ],
++    "z_history_days": 180
++  },
++  "cover_hour_warmup_sha256": {},
++  "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
++  "execution_policy": {
++    "execution_delay_minutes": 1,
++    "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
++    "fee_historical_applicability": "UNKNOWN",
++    "fee_multiplier": "1",
++    "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
++    "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
++    "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
++    "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
++    "nonmatching_daily_signals": true,
++    "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
++    "symmetric_adverse_spread_bps": "0",
++    "version": "bybit-native-resting-reductions-v2"
++  },
++  "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
++  "fixed_base_fee_policy": {
++    "bybit_maker": "0.00020",
++    "bybit_taker": "0.00055",
++    "hyperliquid_maker": "0.00015",
++    "hyperliquid_taker": "0.00045",
++    "venue": "bybit",
++    "version": "fixed-base-native-maker-taker-execution-v3"
++  },
++  "freeze_sigma_on_first_sol_fill": true,
++  "future_sol_margin_fraction": "0",
++  "hedge_band_research": {
++    "atr": "WILDER14_ORIGINAL_DAILY_OHLC_SEED",
++    "beta": "LATEST_ACCEPTED_DAILY_LOG_RETURN_270_FREEZE_AT_ACTIVATION",
++    "c0": false,
++    "execution": "EXISTING_NATIVE_ONLY",
++    "h4_ema": null,
++    "h4_gamma": "0.5",
++    "h4_warmup_sha256": null,
++    "regime_reentry_band": "0.5",
++    "ttl_ns": 14400000000000
++  },
++  "include_zero_waves": true,
++  "initial_active_fraction": "1.0",
++  "initial_total_usdt": "10000",
++  "insufficient_margin": "reject",
++  "live_enabled": false,
++  "mode": "paper",
++  "portfolio_loss_limit_fraction": null,
++  "positive_tp_ioc_policy": "COMPLETED_PARENT_CROSSED_POSITIVE_TARGET_NATIVE_IOC_ACTUAL_TAKER",
++  "post_liquidation": "restart_from_reserve_else_pause",
++  "research_btc_direction_sizing": {
++    "freeze": "GENUINE_EPISODE_CREATION",
++    "long": "5.5",
++    "short": "7.875"
++  },
++  "research_btc_split50": true,
++  "research_btc_split_discount": "0.005",
++  "research_btc_split_planref_v1": true,
++  "research_btc_split_tp_ioc": true,
++  "research_conditional_sol": false,
++  "research_sol_cover": null,
++  "research_v0_deferred_selective_zero_tp": true,
++  "research_v0_execution_repairs": true,
++  "research_v0_selective_lifecycle_repairs": true,
++  "research_v0_zero_tp_netting": false,
++  "reserve_transfer_fraction": "0",
++  "reserve_trigger_multiple": "4",
++  "restart_target": "initial_active_seed",
++  "run_interval": {
++    "end_exclusive": "2026-09-01T00:00:00+00:00",
++    "initial_active_seed": "10000",
++    "start": "2024-09-01T00:00:00+00:00"
++  },
++  "signal_timeframe": "1D",
++  "sol_direction": "opposite_btc",
++  "sol_entry_eligibility": "persistent_after_btc_level",
++  "sol_z_stop": null,
++  "strategy_id": "btc_sol_wave_overlay_v1",
++  "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
++  "tp_fee_floor_v1": false,
++  "venue": "bybit",
++  "next_band_research": {
++    "wait_4h": true,
++    "wait_persist": false,
++    "zero_retrace": false,
++    "sol_dominant": false,
++    "bar_contract": "PINNED_CLOSED_OHLC_D1_BEFORE_INTRADAY_QUOTE"
++  },
++  "research_sol_off": true,
++  "research_btc_real_u": true,
++  "research_btc_q_mode": "LEGACY_Q_CONTROL"
++}
+diff --git a/runtime/coinmaster/research/control_configs/R3.json b/runtime/coinmaster/research/control_configs/R3.json
+new file mode 100644
+index 0000000..6de6b85
+--- /dev/null
++++ b/runtime/coinmaster/research/control_configs/R3.json
+@@ -0,0 +1,131 @@
++{
++  "account": "SIM_MARGIN_USDT_10000",
++  "btc_close_stop_fraction": null,
++  "btc_management_reference_policy": "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1",
++  "candidate": {
++    "beta_days": 270,
++    "btc_close_trail_fraction": 0.03,
++    "btc_notional_multiplier": 7.875,
++    "btc_tp_fractions_initial_qty": [
++      0.2125,
++      0.2125,
++      0.575
++    ],
++    "ema_period": 34,
++    "episode_fixed_beta": false,
++    "max_parent_notional": 30000000.0,
++    "relative_days": 65,
++    "sol_entry_z": [
++      1.25,
++      2.5,
++      3.75
++    ],
++    "sol_exit_all_z": 0.125,
++    "sol_exit_half_z": 0.375,
++    "sol_late_entry_after_tp": true,
++    "sol_max_holding_days": 14,
++    "sol_overlay_enabled": false,
++    "sol_size_multipliers_h": [
++      1.75,
++      2.625,
++      3.5
++    ],
++    "sol_timeout_preempts_add": false,
++    "wave_history_days": 730,
++    "wave_min_count": 8,
++    "wave_quantiles": [
++      0.1,
++      0.3,
++      0.6
++    ],
++    "z_history_days": 180
++  },
++  "cover_hour_warmup_sha256": {},
++  "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
++  "execution_policy": {
++    "execution_delay_minutes": 1,
++    "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
++    "fee_historical_applicability": "UNKNOWN",
++    "fee_multiplier": "1",
++    "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
++    "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
++    "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
++    "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
++    "nonmatching_daily_signals": true,
++    "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
++    "symmetric_adverse_spread_bps": "0",
++    "version": "bybit-native-resting-reductions-v2"
++  },
++  "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
++  "fixed_base_fee_policy": {
++    "bybit_maker": "0.00020",
++    "bybit_taker": "0.00055",
++    "hyperliquid_maker": "0.00015",
++    "hyperliquid_taker": "0.00045",
++    "venue": "bybit",
++    "version": "fixed-base-native-maker-taker-execution-v3"
++  },
++  "freeze_sigma_on_first_sol_fill": true,
++  "future_sol_margin_fraction": "0",
++  "hedge_band_research": {
++    "atr": "WILDER14_ORIGINAL_DAILY_OHLC_SEED",
++    "beta": "LATEST_ACCEPTED_DAILY_LOG_RETURN_270_FREEZE_AT_ACTIVATION",
++    "c0": false,
++    "execution": "EXISTING_NATIVE_ONLY",
++    "h4_ema": null,
++    "h4_gamma": "0.5",
++    "h4_warmup_sha256": null,
++    "regime_reentry_band": "0.5",
++    "ttl_ns": 14400000000000
++  },
++  "include_zero_waves": true,
++  "initial_active_fraction": "1.0",
++  "initial_total_usdt": "10000",
++  "insufficient_margin": "reject",
++  "live_enabled": false,
++  "mode": "paper",
++  "portfolio_loss_limit_fraction": null,
++  "positive_tp_ioc_policy": "COMPLETED_PARENT_CROSSED_POSITIVE_TARGET_NATIVE_IOC_ACTUAL_TAKER",
++  "post_liquidation": "restart_from_reserve_else_pause",
++  "research_btc_direction_sizing": {
++    "freeze": "GENUINE_EPISODE_CREATION",
++    "long": "5.5",
++    "short": "7.875"
++  },
++  "research_btc_split50": true,
++  "research_btc_split_discount": "0.005",
++  "research_btc_split_planref_v1": true,
++  "research_btc_split_tp_ioc": true,
++  "research_conditional_sol": false,
++  "research_sol_cover": null,
++  "research_v0_deferred_selective_zero_tp": true,
++  "research_v0_execution_repairs": true,
++  "research_v0_selective_lifecycle_repairs": true,
++  "research_v0_zero_tp_netting": false,
++  "reserve_transfer_fraction": "0",
++  "reserve_trigger_multiple": "4",
++  "restart_target": "initial_active_seed",
++  "run_interval": {
++    "end_exclusive": "2026-09-01T00:00:00+00:00",
++    "initial_active_seed": "10000",
++    "start": "2024-09-01T00:00:00+00:00"
++  },
++  "signal_timeframe": "1D",
++  "sol_direction": "opposite_btc",
++  "sol_entry_eligibility": "persistent_after_btc_level",
++  "sol_z_stop": null,
++  "strategy_id": "btc_sol_wave_overlay_v1",
++  "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
++  "tp_fee_floor_v1": false,
++  "venue": "bybit",
++  "next_band_research": {
++    "wait_4h": true,
++    "wait_persist": false,
++    "zero_retrace": false,
++    "sol_dominant": false,
++    "bar_contract": "PINNED_CLOSED_OHLC_D1_BEFORE_INTRADAY_QUOTE"
++  },
++  "research_sol_off": true,
++  "research_btc_real_u": true,
++  "research_btc_q_mode": "CLEAN_Q"
++}
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index a127018..187ccca 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -705,6 +705,7 @@ def run_native_diagnostic(
+     research_v3_risk: str | None = None,
+     research_h1_b1: str | None = None,
+     research_paired_policy: bool = False,
++    research_registered_control: str | None = None,
+     research_paired_prefix: str | None = None,
+     research_paired_signal_rows: tuple = (),
+     research_btc_real_u: bool = False,
+@@ -767,7 +768,11 @@ def run_native_diagnostic(
+             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
+     if research_paired_prefix and not research_paired_policy:
+         raise ValueError("PAIRED_REQUIRES_STOCK_SHARED_LIQUIDITY_POLICY")
+-    if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == "CLEAN_Q" and research_sol_off and observe_minute_risk and include_funding):
++    if research_registered_control is not None:
++        from coinmaster.research.registered_control import validate_native_control
++        validate_native_control(locals())
++    approved_q = "LEGACY_Q_CONTROL" if research_registered_control == "R2" else "CLEAN_Q"
++    if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == approved_q and research_sol_off and observe_minute_risk and include_funding):
+         raise ValueError("PAIRED_POLICY_REQUIRES_EXACT_R3_FUNDED_OBSERVER")
+     if research_paired_prefix and not research_paired_signal_rows:
+         raise ValueError("PAIRED_REQUIRES_FROZEN_CAUSAL_ALL_H4_FEED")
+diff --git a/runtime/coinmaster/research/paired_prefix_run.py b/runtime/coinmaster/research/paired_prefix_run.py
+index 0a1dcbc..2d42520 100644
+--- a/runtime/coinmaster/research/paired_prefix_run.py
++++ b/runtime/coinmaster/research/paired_prefix_run.py
+@@ -148,7 +148,7 @@ BOOL_REPORT_FLAGS = (
+ DIRECTION_DESCRIPTOR = {"freeze":"GENUINE_EPISODE_CREATION", "long":"5.5", "short":"7.875"}
+ 
+ 
+-def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
++def build_native_kwargs(config, data_root, artifact_dir, variant, feed, *, registered_control=None):
+     """Decode the frozen report schema to the existing native CALL schema.
+ 
+     A report descriptor is not a truthy flag. Every bool is checked strictly;
+@@ -160,6 +160,9 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
+     from coinmaster.domain.wave_overlay import Candidate
+     from coinmaster.research.native_baseline import run_native_diagnostic,ExecutionPolicy,FixedBaseFeePolicy
+     if variant not in VARIANTS:raise ValueError("UNAPPROVED_VARIANT")
++    if registered_control is not None:
++        from coinmaster.research.registered_control import validate_config
++        validate_config(config, registered_control)
+     flags={}
+     for key in BOOL_REPORT_FLAGS:
+         value=config[key]
+@@ -167,7 +170,8 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
+         flags[key]=value
+     if config["research_btc_direction_sizing"] != DIRECTION_DESCRIPTOR:
+         raise ValueError("EXACT_R3_DIRECTION_DESCRIPTOR_REQUIRED")
+-    if config["research_btc_q_mode"]!="CLEAN_Q" or config["research_btc_split_discount"]!="0.005" or not flags["research_btc_real_u"]:
++    expected_q = "LEGACY_Q_CONTROL" if registered_control == "R2" else "CLEAN_Q"
++    if config["research_btc_q_mode"]!=expected_q or config["research_btc_split_discount"]!="0.005" or not flags["research_btc_real_u"]:
+         raise ValueError("EXACT_APPROVED_R3_SOURCE_CONFIG_REQUIRED")
+     wait=config["next_band_research"]["wait_4h"]
+     if type(wait) is not bool:raise ValueError("R3_REPORT_FLAG_NOT_BOOL:wait_4h")
+@@ -181,6 +185,8 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
+         research_btc_q_mode=config["research_btc_q_mode"],research_wait_4h=wait,
+         research_regime_reentry_band=config["hedge_band_research"]["regime_reentry_band"],
+         research_paired_policy=True,research_paired_prefix=VARIANTS[variant],research_paired_signal_rows=feed)
++    if registered_control is not None:
++        kwargs["research_registered_control"] = registered_control
+     # Bind the COMPLETE call against the actual installed source entrypoint,
+     # including every omitted default; no partial hand-maintained signature.
+     actual=signature(run_native_diagnostic)
+diff --git a/runtime/coinmaster/research/qualified_warmup.py b/runtime/coinmaster/research/qualified_warmup.py
+new file mode 100644
+index 0000000..4e6de4d
+--- /dev/null
++++ b/runtime/coinmaster/research/qualified_warmup.py
+@@ -0,0 +1,106 @@
++"""Separate causal ATR feed from pinned genuine H1 warmup and frozen M1.
++
++Only three ATR columns change. No BTC signals, sizing, funding or old inputs mutate.
++Nominal close timestamps do not establish historical publication latency.
++"""
++from pathlib import Path
++from decimal import Decimal as D, localcontext
++import csv
++import hashlib
++import json
++
++PINS={
++ "raw":"2afa407a476e5b52ea6b1296f39be5f941445d07a586ad4e2f6ad190fc9204c0",
++ "h1":"fea6a295447c317f2e665cbe77aba135ba99daefc5fb05957cf44821edaa1b72",
++ "h4":"8c414684e54bb834b43e187c7acd5332df50b21835749d6e5e17220ccfc9f991",
++ "stitch":"1ff950b6d0a34377ec4efca19d24db6854a36d8b58c5ab4181a7d3c27fb78fc2",
++ "builder":"47704f6ca1a998ef464ba7b0237d5e32d2330f92702d3c05d00df426a0b34cf3",
++ "m1":"fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
++ "old_feed":"2fcd030c495f15a28ff4ff2ef6d931a018e5a2dd9cf142a56ac6582f941734e1",
++}
++HOUR_MS=3600000
++H4_MS=4*HOUR_MS
++MINUTE_NS=60000000000
++
++def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
++def rows(path):
++    with Path(path).open(newline="") as f: return list(csv.DictReader(f))
++
++def check_bar(row):
++    values={k:D(str(row[k])) for k in ("open","high","low","close")}
++    if not all(x.is_finite() and x>0 for x in values.values()) or not values['low']<=min(values['open'],values['close'])<=max(values['open'],values['close'])<=values['high']:
++        raise ValueError("WARMUP_NONFINITE_OR_INVALID_OHLC")
++    return values
++
++def aggregate(source, step_ms, count):
++    if len(source)%count: raise ValueError("WARMUP_INCOMPLETE_BAR")
++    previous=None; result=[]
++    for row in source:
++        t=int(row['open_time_ms']);check_bar(row)
++        if t%step_ms or previous is not None and t!=previous+step_ms:
++            raise ValueError("WARMUP_GAP_DUPLICATE_OR_ALIGNMENT")
++        previous=t
++    for i in range(0,len(source),count):
++        group=source[i:i+count];t=int(group[0]['open_time_ms'])
++        if t%H4_MS: raise ValueError("WARMUP_H4_ALIGNMENT")
++        result.append(dict(start_ms=t,closed_at_ms=t+H4_MS,open=D(str(group[0]['open'])),high=max(D(str(r['high'])) for r in group),low=min(D(str(r['low'])) for r in group),close=D(str(group[-1]['close']))))
++    return result
++
++def atr_rows(bars):
++    result=[];trs=[];previous=None;atr=None;last=None
++    with localcontext() as ctx:
++        ctx.prec=50
++        for bar in bars:
++            v=check_bar(bar);end=int(bar['closed_at_ms'])
++            if end%H4_MS or last is not None and end!=last+H4_MS:
++                raise ValueError("WARMUP_H4_GAP_DUPLICATE_OR_FUTURE")
++            tr=v['high']-v['low'] if previous is None else max(v['high']-v['low'],abs(v['high']-previous),abs(v['low']-previous))
++            trs.append(tr)
++            if len(trs)==14: atr=sum(trs,D(0))/D(14)
++            elif len(trs)>14: atr=(13*atr+tr)/14
++            result.append({**bar,'true_range':tr,'atr14':atr});previous=v['close'];last=end
++    return result
++
++def build_qualified_feed(paths, output):
++    """paths includes every pinned prerequisite; never downloads or runs an engine."""
++    pins={k:sha(paths[k]) for k in PINS}
++    if pins!=PINS: raise ValueError("QUALIFIED_WARMUP_INPUT_PIN_MISMATCH")
++    h1=rows(paths['h1'])
++    if len(h1)!=408: raise ValueError("EXACT_408_H1_REQUIRED")
++    warm=aggregate([dict(open_time_ms=r['start_ms'],**{k:r[k] for k in ('open','high','low','close')}) for r in h1],HOUR_MS,4)
++    qualified=rows(paths['h4'])
++    fields=('start_ms','closed_at_ms','open','high','low','close')
++    if len(warm)!=102 or any(any(D(str(a[k]))!=D(b[k]) for k in fields) for a,b in zip(warm,qualified)):
++        raise ValueError("H1_TO_QUALIFIED_H4_MISMATCH")
++    import pyarrow.parquet as pq
++    m1=pq.read_table(paths['m1'],columns=['open_time_ms','open','high','low','close']).to_pylist()
++    continuation=aggregate(m1,60000,240)
++    stitched=atr_rows(warm+continuation)
++    proof=rows(paths['stitch'])
++    if len(proof)!=109 or any(any(D(str(a[k]))!=D(b[k]) for k in fields+('true_range',) if b[k]) or (a['atr14'] is None)!=(not b['atr14']) or b['atr14'] and a['atr14']!=D(b['atr14']) for a,b in zip(stitched,proof)):
++        raise ValueError("QUALIFIED_109_H4_STITCH_MISMATCH")
++    old=rows(paths['old_feed']);updated=[]
++    lookup={int(r['closed_at_ms'])*1000000:r for r in stitched}
++    if len(old)!=len(continuation): raise ValueError("FEED_H4_COVERAGE_MISMATCH")
++    for row,bar in zip(old,continuation):
++        t=int(row['decision_ns'])
++        if t!=int(bar['closed_at_ms'])*1000000 or D(row['sol_close'])!=bar['close']:
++            raise ValueError("FEED_M1_H4_CLOCK_OR_CLOSE_MISMATCH")
++        atr=lookup[t]['atr14']
++        updated.append({**row,'sol_atr_h4_14':str(atr),'sol_atr_valid':'1','atr_last_h4_end_ns':str(t)})
++    output=Path(output)
++    if output.exists(): raise ValueError("NEW_QUALIFIED_FEED_PATH_REQUIRED")
++    with output.open('w',newline='') as f:
++        writer=csv.DictWriter(f,fieldnames=list(old[0]),lineterminator='\n');writer.writeheader();writer.writerows(updated)
++    return dict(status='QUALIFIED_SEPARATE_FEED',rows=len(updated),warmup_h1=408,warmup_h4=102,stitch_h4=109,input_pins=pins,new_feed_sha256=sha(output),old_feed_unchanged=sha(paths['old_feed'])==PINS['old_feed'],changed_columns=['sol_atr_h4_14','sol_atr_valid','atr_last_h4_end_ns'],sep2_04_atr=str(lookup[1725249600000000000]['atr14']),clock='available=t/ATRend=t/ordernotbefore=t+60s',publication_latency='UNKNOWN',engines_created=0)
++
++def load_qualified_feed(path,digest,start_ns,end_ns):
++    from coinmaster.research.paired_signal_feed import load_paired_signal_feed,H4
++    selected=load_paired_signal_feed(Path(path),digest,start_ns,end_ns)
++    expected=((start_ns+H4-1)//H4)*H4
++    if selected[0].decision_ns!=expected or selected[-1].decision_ns!=((end_ns-1)//H4)*H4:
++        raise ValueError("QUALIFIED_FEED_MISSING_BOUNDARY_H4")
++    for row in selected:
++        if not all(x.is_finite() and x>0 for x in (row.btc_close,row.sol_close)) or not row.valid:
++            raise ValueError("QUALIFIED_FEED_NO_ADMISSION_INVALID_OR_MISSING_DATA")
++    return selected
+diff --git a/runtime/coinmaster/research/registered_control.py b/runtime/coinmaster/research/registered_control.py
+new file mode 100644
+index 0000000..77792fb
+--- /dev/null
++++ b/runtime/coinmaster/research/registered_control.py
+@@ -0,0 +1,83 @@
++"""Explicit engineering-only R2/R3 family; legacy economic launcher is unchanged."""
++from pathlib import Path
++from inspect import signature
++import hashlib
++import json
++
++CONFIG_PINS = {
++    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
++    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80",
++}
++
++def config_for(family):
++    if type(family) is not str or family not in CONFIG_PINS:
++        raise ValueError("UNREGISTERED_ENGINEERING_CONTROL")
++    path = Path(__file__).parent / "control_configs" / (family + ".json")
++    if hashlib.sha256(path.read_bytes()).hexdigest() != CONFIG_PINS[family]:
++        raise ValueError("REGISTERED_CONTROL_CONFIG_PIN_MISMATCH")
++    return json.loads(path.read_text())
++
++def validate_config(config, family):
++    expected = config_for(family)
++    # Canonical JSON preserves boolean/number distinction (True != 1 here).
++    canonical = lambda value: json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
++    if canonical(config) != canonical(expected):
++        raise ValueError("EXACT_REGISTERED_CONTROL_CONFIG_REQUIRED")
++
++def build_registered_control_kwargs(config, family, data_root, artifact_dir, feed, start_ms, end_ms):
++    if any(type(t) is not int for t in (start_ms, end_ms)) or not 0 < end_ms-start_ms <= 48*3600*1000:
++        raise ValueError("ENGINEERING_FIXTURE_MAX_48_HOURS")
++    from coinmaster.research.paired_prefix_run import build_native_kwargs
++    kwargs = build_native_kwargs(config, data_root, artifact_dir, "OFF", feed, registered_control=family)
++    kwargs.update(trading_start_ms=start_ms, trading_end_ms=end_ms, artifact_label="registered-control-"+family)
++    return kwargs
++
++def validate_native_control(actual):
++    """Check the complete real call, including defaults, before engine creation."""
++    from coinmaster.research.paired_prefix_run import build_native_kwargs
++    from coinmaster.research.native_baseline import run_native_diagnostic
++    family=actual["research_registered_control"]
++    expected=build_native_kwargs(config_for(family), actual["data_root"], actual["artifact_dir"], "OFF", actual["research_paired_signal_rows"], registered_control=family)
++    bound=signature(run_native_diagnostic).bind(**expected);bound.apply_defaults()
++    context={"data_root", "artifact_dir", "artifact_label", "trading_start_ms", "trading_end_ms", "research_paired_signal_rows"}
++    for key, value in bound.arguments.items():
++        if key not in context and (type(actual[key]) is not type(value) or actual[key] != value):
++            raise ValueError("REGISTERED_NATIVE_ARGUMENT_MISMATCH:"+key)
++    start,end=actual["trading_start_ms"],actual["trading_end_ms"]
++    if any(type(t) is not int for t in (start,end)) or not 0 < end-start <= 48*3600*1000:
++        raise ValueError("ENGINEERING_FIXTURE_MAX_48_HOURS")
++
++
++def native_kwargs_json_roundtrip(kwargs):
++    """Roundtrip actual Path/Decimal/native dataclass kwargs with explicit tags."""
++    from dataclasses import fields, is_dataclass
++    from decimal import Decimal
++    from coinmaster.domain.wave_overlay import Candidate
++    from coinmaster.research.native_baseline import ExecutionPolicy, FixedBaseFeePolicy
++    from coinmaster.research.paired_signal_feed import PairedSignal
++    classes={c.__name__:c for c in (Candidate,ExecutionPolicy,FixedBaseFeePolicy,PairedSignal)}
++    def encode(value):
++        if isinstance(value,Path):return {"__native_type":"Path","value":str(value)}
++        if isinstance(value,Decimal):
++            if not value.is_finite():raise ValueError("NONFINITE_NATIVE_DECIMAL")
++            return {"__native_type":"Decimal","value":str(value)}
++        if is_dataclass(value):
++            name=type(value).__name__
++            if name not in classes:raise ValueError("UNREGISTERED_NATIVE_PAYLOAD_TYPE")
++            return {"__native_type":name,"value":{f.name:encode(getattr(value,f.name)) for f in fields(value)}}
++        if type(value) is tuple:return {"__native_type":"tuple","value":[encode(x) for x in value]}
++        if type(value) is list:return [encode(x) for x in value]
++        if type(value) is dict:return {k:encode(v) for k,v in value.items()}
++        if value is None or type(value) in (str,int,float,bool):return value
++        raise ValueError("UNREGISTERED_NATIVE_PAYLOAD_TYPE")
++    def decode(value):
++        name=value.get("__native_type")
++        if name is None:return value
++        content=value["value"]
++        if name=="Path":return Path(content)
++        if name=="Decimal":return Decimal(content)
++        if name=="tuple":return tuple(content)
++        if name in classes:return classes[name](**content)
++        raise ValueError("UNREGISTERED_NATIVE_PAYLOAD_TYPE")
++    payload=json.dumps(encode(kwargs),sort_keys=True,allow_nan=False)
++    return payload,json.loads(payload,object_hook=decode)
+diff --git a/runtime/tests/run_continuous_hedge_preflight.py b/runtime/tests/run_continuous_hedge_preflight.py
+new file mode 100644
+index 0000000..dcdfbe8
+--- /dev/null
++++ b/runtime/tests/run_continuous_hedge_preflight.py
+@@ -0,0 +1,179 @@
++"""One counted connected engineering pass. NEVER collect an old native suite.
++
++Each BacktestEngine construction claims its ledger entry before construction.
++Explicitly synthetic native quote fixtures; no candidate ROI or economic replay.
++"""
++from pathlib import Path
++from decimal import Decimal as D
++from datetime import datetime,timezone
++import argparse,json,hashlib,os,sys,traceback
++sys.path.insert(0,str(Path(__file__).resolve().parent))
++import test_native_market_redesign as md
++import test_native_paired_prefix as pair
++from test_native_episode_risk import NativeProbe,tick,run_ticks,marks
++from test_native_split_cover import cfg
++from test_native_btc_sizing import prepare_day
++from coinmaster.domain.wave_overlay import Candidate,Episode
++from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP,SIM,perpetual
++from coinmaster.research.qualified_warmup import load_qualified_feed
++from coinmaster.research.registered_control import config_for,build_registered_control_kwargs,native_kwargs_json_roundtrip
++from nautilus_trader.backtest.engine import BacktestEngine as NativeEngine
++from nautilus_trader.backtest.config import BacktestEngineConfig
++from nautilus_trader.config import LoggingConfig
++from nautilus_trader.model.enums import AccountType,OmsType
++from nautilus_trader.model.objects import Money
++M=60000000000
++CASES=[('F01_R2_PARTIAL_NOCHASE_TERMINAL','R2',1,86400*10**9+10),('F02_R3_PARTIAL_NOCHASE_TERMINAL','R3',1,86400*10**9+10),('F03_R2_SECOND_FILL_THREE_TP','R2',1,20),('F04_R3_SECOND_FILL_THREE_TP','R3',1,20),('F05_QUALIFIED_CLOCK_ALL_PATHS','R2',1725249599999999990,1725249720000000100),('F06_MISSING_FEATURE_FAIL_CLOSED','R2',1725249599999999990,1725249720000000100),('F07_COPRIME_CORRIDOR_REGRESSION','R3',1,2*M),('F08_LATE_NATIVE_ENTRY_OWNERSHIP','R3',1,2*M)]
++
++class Recorder:
++    def __init__(self,path,gate):self.path=Path(path);self.gate=gate;self.current=None;self.engines=[]
++    def write(self,data):
++        p=self.path.with_suffix('.json.tmp');p.write_text(json.dumps(data,indent=2)+'\n');os.replace(p,self.path)
++    def claim(self):
++        data=json.loads(self.path.read_text())
++        if data['physical_started']>=12 or data['status'] not in ('READY_REVIEWED','RUNNING') or self.current is None:raise ValueError('ENGINE_BUDGET_OR_GATE_INVALID')
++        if any(x['status']=='STARTED' for x in data['attempts']):raise ValueError('CONCURRENT_ENGINE_FORBIDDEN')
++        case=self.current
++        entry=dict(fixture_id=case[0],family=case[1],window_start_ns=case[2],window_end_ns=case[3],physical_index=data['physical_started']+1,status='STARTED',started_utc=datetime.now(timezone.utc).isoformat(),source_commit=self.gate['source_commit'],config_sha256=self.gate['config_pins'][case[1]],new_feed_sha256=self.gate['new_feed_sha256'],engine='1.231.0',cleanup='PENDING')
++        data['attempts'].append(entry);data['physical_started']+=1;data['status']='RUNNING';self.write(data)
++        return entry['physical_index']
++    def finish(self,number,status,detail):
++        data=json.loads(self.path.read_text());entry=next(a for a in data['attempts'] if a['physical_index']==number)
++        entry.update(status=status,finished_utc=datetime.now(timezone.utc).isoformat(),**detail);self.write(data)
++REC=None
++class CountedEngine:
++    def __init__(self,*args,**kwargs):
++        self.number=REC.claim();self.disposed=False;self.times=[];REC.engines.append(self)
++        try:self.native=NativeEngine(*args,**kwargs)
++        except BaseException as error:
++            REC.finish(self.number,'FAILED',dict(process_rc=1,result=str(error),cleanup='CONSTRUCTOR_FAILED'));raise
++    def __getattr__(self,name):return getattr(self.native,name)
++    def add_data(self,data,*args,**kwargs):
++        for row in data:
++            t=row.ts_event
++            if not REC.current[2]<=t<=REC.current[3]:raise ValueError('FIXTURE_WINDOW_EXCEEDED')
++            self.times.append(t)
++        return self.native.add_data(data,*args,**kwargs)
++    def dispose(self):
++        self.native.dispose();self.disposed=True
++
++# Every helper engine constructor used by the explicit cases routes here.
++pair.BacktestEngine=CountedEngine
++
++def base_engine(strategy):
++    e=CountedEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
++    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1),liquidity_consumption=True,bar_execution=False)
++    for inst in (BTC_PERP,SOL_PERP):e.add_instrument(perpetual(inst.raw_symbol.value,inst.base_currency,str(inst.price_increment),str(inst.size_increment),str(inst.margin_init),maker_fee=D('.00020'),taker_fee=D('.00055')))
++    e.add_strategy(strategy);return e
++md.native_engine=base_engine
++
++def probe(family,paired=False):
++    class ControlProbe(NativeProbe):
++        def __init__(self,config):
++            self.native_fills=[]
++            super().__init__(config.__replace__(research_btc_q_mode='LEGACY_Q_CONTROL' if family=='R2' else 'CLEAN_Q',research_paired_prefix='B2_F0' if paired else None))
++        def on_order_filled(self,event):self.native_fills.append(event);return super().on_order_filled(event)
++    return ControlProbe
++
++def settled_identity(s,e):
++    assert not e.cache.positions_open() and not e.cache.orders_open() and not e.cache.orders_inflight()
++    assert all(event.commission.currency==BTC_PERP.quote_currency for event in s.native_fills)
++    fees=sum((x.commission.as_decimal() for x in s.native_fills),D(0))
++    signed=sum(((-1 if x.order_side.name=='BUY' else 1)*x.last_qty.as_decimal()*x.last_px.as_decimal() for x in s.native_fills),D(0))
++    cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
++    assert abs(cash-(D(10000)+signed-fees))<=D('.00000002')
++    assert s.terminal_lifecycle['status']=='FLAT'
++    return dict(native_terminal_cash=str(cash),native_commissions=str(fees),signed_execution_cash=str(signed),native_fill_count=len(s.native_fills),orders_open=0,inflight=0,positions_open=0,account_identity='PASS')
++
++def control_case(family,partial):
++    s,e,ep=md.setup(probe=probe(family))
++    try:
++        run_ticks(e,[tick(BTC_PERP,3,size='10' if partial else '1000'),tick(BTC_PERP,4)])
++        targets=[o for o in e.cache.orders_open() if o.is_reduce_only];second=[o for o in e.cache.orders_open() if not o.is_reduce_only]
++        assert len(targets)==3 and all(o.status.name=='ACCEPTED' for o in targets)
++        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(10 if partial else 50)
++        assert len(second)==1 and second[0].order_type.name=='LIMIT' and second[0].price.as_decimal()==D('99.5')
++        if partial:
++            run_ticks(e,[tick(BTC_PERP,86400*10**9+5)])
++            assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++            assert not s._split_parent['fallback'] and s._split_parent['filled']==D(10)
++            end=86400*10**9+6
++        else:
++            run_ticks(e,[tick(BTC_PERP,5,'99'),tick(BTC_PERP,6,'99')])
++            assert ep.btc_initial_qty==100 and ep.btc_planref_vwap==D(100)
++            targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
++            assert len(targets)==3 and sum((o.leaves_qty.as_decimal() for o in targets),D(0))==100
++            run_ticks(e,[tick(BTC_PERP,7,'103'),tick(BTC_PERP,8,'103')])
++            assert not e.cache.positions_open();assert {0,1,2}<=ep.btc_filled_tps
++            end=9
++        s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT');run_ticks(e,[tick(BTC_PERP,end)])
++        result=settled_identity(s,e);result.update(real_three_tp=True,second_limit_only=True,partial_first=partial)
++        return result
++    finally:e.end();e.dispose()
++
++def qualified_case(feed,missing=False):
++    from dataclasses import replace
++    row=feed[0];t=row.decision_ns
++    assert t==1725249600000000000 and row.atr_sol==D('3.6889752782254411326488158384814894977173533826523')
++    selected=replace(row,valid=False) if missing else row
++    config=cfg(True,research_btc_real_u=True,research_btc_q_mode='LEGACY_Q_CONTROL',research_sol_off=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_btc_split_discount=D('.005'))
++    config=config.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)),research_paired_signal_rows=(selected,))
++    s=probe('R2',paired=True)(config);e=base_engine(s)
++    bp=str(row.btc_close);sp=str(row.sol_close)
++    try:
++        run_ticks(e,[tick(BTC_PERP,t-10,bp),tick(SOL_PERP,t-10,sp)])
++        prepare_day(s,t-9);marks(s,t-9,btc=bp,sol=sp)
++        ep=s._domain.episode=Episode('qualified-clock',-1,10000,1,wave_levels=(0,0,.03),h=10000)
++        intent=s._domain._intent(ep,'BTC_ENTRY',-1,None,quantity=.02)
++        s._submit_intent(intent,float(bp),float(sp),.01,0,ts_now=t-9)
++        run_ticks(e,[tick(BTC_PERP,t-8,bp),tick(BTC_PERP,t-7,bp),tick(SOL_PERP,t-6,sp),tick(BTC_PERP,t,bp),tick(SOL_PERP,t,sp)])
++        if missing:
++            for dt in (1,2,3):run_ticks(e,[tick(BTC_PERP,t+dt,bp),tick(SOL_PERP,t+dt,sp)])
++            assert 'UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE' in s._pair_failures
++            assert not any(x['kind']=='ENTRY' for x in s._pair_orders.values())
++            assert not e.cache.positions_open() and not e.cache.orders_open() and not e.cache.orders_inflight()
++            return dict(missing_feature='NO_ADMISSION_NATIVE_FLAT',hedge_entries=0)
++        assert s._pair is not None and s._pair['atr']==row.atr_sol
++        run_ticks(e,[tick(BTC_PERP,t+M-1,bp),tick(SOL_PERP,t+M-1,sp)])
++        assert not any(x['event']=='SUBMIT' for x in s.paired_prefix_audit)
++        for dt in range(6):run_ticks(e,[tick(BTC_PERP,t+M+dt,bp),tick(SOL_PERP,t+M+dt,sp)])
++        submissions=[x for x in s.paired_prefix_audit if x['event']=='SUBMIT']
++        assert any(x['kind']=='ENTRY' for x in submissions)
++        assert any(x['kind']=='TP' for x in submissions) and any(x['kind']=='STOP' for x in submissions)
++        assert all(int(x['timestamp_ns'])>=t+M for x in submissions)
++        assert not s._pair_failures,s._pair_report()
++        s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT')
++        for dt in range(6,12):run_ticks(e,[tick(BTC_PERP,t+M+dt,bp),tick(SOL_PERP,t+M+dt,sp)])
++        result=settled_identity(s,e);result.update(qualified_atr=str(row.atr_sol),all_hedge_submissions_not_before_ns=t+M,hedge_order_kinds=sorted(set(x['kind'] for x in submissions)))
++        return result
++    finally:e.end();e.dispose()
++
++def main():
++    global REC
++    parser=argparse.ArgumentParser();parser.add_argument('--ledger',required=True);parser.add_argument('--gate',required=True)
++    args=parser.parse_args();gate=json.loads(Path(args.gate).read_text())
++    if gate.get('independent_review')!='PASS' or gate.get('root_go') is not True:raise ValueError('INDEPENDENT_REVIEW_AND_ROOT_GO_REQUIRED')
++    import nautilus_trader
++    if nautilus_trader.__version__!='1.231.0':raise ValueError('EXACT_NATIVE_VERSION_REQUIRED')
++    feed=load_qualified_feed(gate['new_feed_path'],gate['new_feed_sha256'],1725249600000000000,1725264000000000000)
++    for family in ('R2','R3'):
++        kw=build_registered_control_kwargs(config_for(family),family,Path(gate['data_root']),Path(args.ledger).parent,feed,1725249600000,1725264000000)
++        _,restored=native_kwargs_json_roundtrip(kw)
++        assert restored==kw
++    REC=Recorder(args.ledger,gate)
++    actions=[lambda:control_case('R2',True),lambda:control_case('R3',True),lambda:control_case('R2',False),lambda:control_case('R3',False),lambda:qualified_case(feed),lambda:qualified_case(feed,True),lambda:pair.test_native_coprime_actual_1037_1817_single_tp_stable_corridor(1,False),pair.test_native_late_entry_after_btc_flat_cancel_request_never_recreates_btc]
++    for case,action in zip(CASES,actions):
++        REC.current=case;before=len(REC.engines)
++        try:
++            result=action();created=REC.engines[before:]
++            assert len(created)==1 and created[0].disposed
++            e=created[0]
++            REC.finish(e.number,'COMPLETED',dict(process_rc=0,result=result or {'assertions':'PASS'},cleanup='END_AND_DISPOSE_CONFIRMED',actual_tick_start_ns=min(e.times),actual_tick_end_ns=max(e.times)))
++            print(json.dumps(dict(fixture=case[0],status='PASS',physical_index=e.number)),flush=True)
++        except BaseException as error:
++            for e in REC.engines[before:]:
++                data=json.loads(Path(args.ledger).read_text());entry=next(x for x in data['attempts'] if x['physical_index']==e.number)
++                if entry['status']=='STARTED':REC.finish(e.number,'FAILED',dict(process_rc=1,result=type(error).__name__+': '+str(error),cleanup='DISPOSE_CONFIRMED' if e.disposed else 'UNKNOWN'))
++            traceback.print_exc();raise
++    data=json.loads(Path(args.ledger).read_text());data['status']='CONNECTED_PASS_REVIEW_REQUIRED';REC.write(data)
++if __name__=='__main__':main()
+diff --git a/runtime/tests/test_registered_control.py b/runtime/tests/test_registered_control.py
+new file mode 100644
+index 0000000..c6deb8d
+--- /dev/null
++++ b/runtime/tests/test_registered_control.py
+@@ -0,0 +1,53 @@
++"""Engine-free admission tests; native instances are counted by separate harness."""
++from copy import deepcopy
++from dataclasses import asdict
++from decimal import Decimal as D
++from inspect import signature
++import json
++from pathlib import Path
++import pytest
++from coinmaster.research.registered_control import config_for, validate_config, build_registered_control_kwargs, validate_native_control
++from coinmaster.research.paired_prefix_run import build_native_kwargs
++from coinmaster.research.native_baseline import run_native_diagnostic
++from coinmaster.research.paired_signal_feed import PairedSignal
++from coinmaster.research.qualified_warmup import atr_rows,aggregate,H4_MS
++
++@pytest.mark.parametrize('family',['R2','R3'])
++def test_exact_actual_kwargs_json_roundtrip_and_native_call_validation(family,tmp_path):
++    config=json.loads(json.dumps(config_for(family)))
++    kwargs=build_registered_control_kwargs(config,family,tmp_path,tmp_path/'out',(),1725249600000,1725336000000)
++    assert kwargs['research_btc_q_mode']==('LEGACY_Q_CONTROL' if family=='R2' else 'CLEAN_Q')
++    assert kwargs['research_btc_direction_sizing'] is True
++    assert kwargs['fixed_base_fee_policy'].rates()==(D('.00020'),D('.00055'))
++    # Serialize the actual constructed native payload, not a descriptor schema.
++    from coinmaster.research.registered_control import native_kwargs_json_roundtrip
++    serialized,restored=native_kwargs_json_roundtrip(kwargs)
++    assert restored==kwargs
++    payload=json.loads(serialized)
++    assert payload['research_btc_direction_sizing'] is True
++    bound=signature(run_native_diagnostic).bind(**kwargs);bound.apply_defaults()
++    validate_native_control(bound.arguments)
++    changed=dict(bound.arguments);changed['research_btc_split_discount']='0.006'
++    with pytest.raises(ValueError,match='ARGUMENT_MISMATCH'):validate_native_control(changed)
++    changed=dict(bound.arguments);changed['research_sol_off']=1
++    with pytest.raises(ValueError,match='ARGUMENT_MISMATCH'):validate_native_control(changed)
++
++@pytest.mark.parametrize('family',['R2','R3'])
++@pytest.mark.parametrize('key,value',[('research_btc_real_u',1),('research_btc_direction_sizing',True),('research_btc_q_mode','ARBITRARY'),('research_btc_split_discount','0.006')])
++def test_unregistered_config_changes_rejected(family,key,value,tmp_path):
++    config=deepcopy(config_for(family));config[key]=value
++    with pytest.raises(ValueError,match='EXACT_REGISTERED'):build_registered_control_kwargs(config,family,tmp_path,tmp_path,(),1,2)
++
++def test_only_q_mode_differs_and_old_wrapper_still_r3_only(tmp_path):
++    r2=config_for('R2');r3=config_for('R3')
++    assert [k for k in r2 if r2[k]!=r3[k]]==['research_btc_q_mode']
++    with pytest.raises(ValueError,match='EXACT_APPROVED_R3'):build_native_kwargs(r2,tmp_path,tmp_path,'OFF',())
++    assert 'research_registered_control' not in build_native_kwargs(r3,tmp_path,tmp_path,'OFF',())
++    with pytest.raises(ValueError):validate_config(r3,'R4')
++    with pytest.raises(ValueError,match='48_HOURS'):build_registered_control_kwargs(r3,'R3',tmp_path,tmp_path,(),0,48*3600000+1)
++
++def test_atr_nonfinite_duplicate_gap_and_missing_h4_rejected():
++    bar=dict(start_ms=0,closed_at_ms=H4_MS,open='100',high='102',low='99',close='101')
++    for bad in ([bar,bar],[bar,{**bar,'closed_at_ms':3*H4_MS}],[{**bar,'high':'NaN'}]):
++        with pytest.raises(ValueError):atr_rows(bad)
++    with pytest.raises(ValueError):aggregate([dict(open_time_ms=0,open=100,high=101,low=99,close=100)],60000,240)
