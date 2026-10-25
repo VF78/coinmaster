@@ -1,0 +1,22 @@
+{
+  "recorded_utc": "2026-10-25T14:36:35.500395+00:00",
+  "status": "PUBLISHED_RESEARCH_NOT_DEPLOYED_WAITING_NEXT_PROTOCOL_CONSENT",
+  "manager_published_checkpoint": "39c80dc8761be7c93621701cb52292166d3949b0",
+  "source_remote_exact": "763d985617abd7a7afef5eec13912303983d8837",
+  "repository": "https://github.com/VF78/coinmaster",
+  "manager_branch": "codex/btc-pattern-pilot-m2-20261021",
+  "source_branch": "codex/hedge-rights-unlock-20261025",
+  "remote_refs": "BOTH_LS_REMOTE_EXACT_VERIFIED",
+  "Project": "136_OPEN_Todo_ACTUAL_FINAL_PROJECT_READBACK",
+  "engineering": "CLOSED7/7_3COMPLETED4FAILED_remaining0",
+  "prefix": "CLOSED3/4_UNUSED1CLOSED_remaining0_A0NOT_RUN",
+  "closed_prefix_sha256": "f893aafc7c5b65acbc55a2069af1c8738ed798a72e50816f6ab5ed5108b0d7f3",
+  "next_protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "next_protocol_authority": "PENDING_DIRECT_OWNER_CONSENT_NO_CODE_NATIVE_BUDGET",
+  "pilot_production_deployment_orders_transfers": 0,
+  "intentional_untracked": [
+    "reports/broad-hedge-discovery-20261024/native-run-ledger.json.lock",
+    "reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json.lock",
+    "reports/hedge-risk-contract-20261025/a0-prefix-ledger.json.lock"
+  ]
+}
