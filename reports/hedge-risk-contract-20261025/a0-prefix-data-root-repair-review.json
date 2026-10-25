@@ -1,0 +1,50 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "decision": "PASS_FOR_HUMAN_CONSENT_ONLY_PREFIX_AMEND4_PROPOSAL",
+  "P0": 0,
+  "P1": 0,
+  "source_money": "763d985617abd7a7afef5eec13912303983d8837",
+  "review_scope": "One focused data-root/native-input-preflight/conditionalphase budget review; no monetarysource/consumer total audit",
+  "cause_closure": "Originalwrongdata_root inputs failednativecoverage beforeengine; repairedkwargs for all3controls use existinginputs/data aligned to unchangedpinfiles. No source/data/fees/policy/guard change. Earlier --prepare hash/kwargs blindspot recorded in previous failure review.",
+  "native_preflight_review": {
+    "actual_helpers": "Unchangedsource coverage_blockers,_load_daily_seed,funding_with_prior_minute_marks,iter_minute_bundles; samehelpers in --prepare, afterdurableclaim beforePopen and worker beforenativecall",
+    "pins": "9actualconsumedmanifest/daily/execution/mark/funding paths must resolve to existing frozeninputpins; verify_freeze hashes allpins first",
+    "executor_evidence": "All3actualcontrols []blockers/730seedROWS/814fundingevents with priorM1basis/195840alignedbundles fromSep1 00:00 toJan14 23:59; no engine/strategy/account/journal/PnL inpreflight. ActualOFFprepare additionallypassed; C0/A0 financialqualification stillpending actualpriorresults.",
+    "temporal_limit": "730 is countof actualdailyseed rows, not a newlyproven730prebenchmarkwarmupdays claim. LastavailableSep1t0; unchangedsource choosesfeaturestate. Preflight diagnostics do not enterkwargs/strategy features or simulate economics."
+  },
+  "conditional_phase_guard_review": {
+    "current_actual": "Parent699020 oneFAILEDphysical1/max3 unchanged; oldR2_OFFnamespacepreserved, no report/TOTAL, engineering7closed",
+    "proposed_only": "Total4(+1) preservespinnedhistoricalFAILED1 exactly and creates newphaseOFF/C0/A0physical2..4 underJOB/prefix-amend4/{variant}; noreserve or automaticretry",
+    "approval": "require_phase_approval pinsdirectownerAPPROVED_BY_OWNER receipt with exactsource/protocol/parent/total4/additional1/full0 and nonblank exactSTRINGreply plus exactrootGO; schemaPROPOSED/null doesnotauthorize",
+    "phase_failure": "Only exacthistoricalparentrow is excluded; everycurrentphaseSTARTED/FAILED blocksclaim/next; hardmax4 and3phasecontrols",
+    "freshness": "Explicitphase_namespace_root and workerphase/physicalindex rechecks preventoldnamespace reuse/reset; amendedledgerABSENT atreview",
+    "financial_binding": "COMPLETED lookup uses exactUUID and newphase namespace; oldfailedR2_OFF label cannotqualify. Pinnedcurrententry/immutablesnapshot/reportSHA/risk/manifest/supervisor/fourartifact/parsedfreeze links preserved. C0needsnewOFFfinancialPASS; A0needsOFF+C0; baselineDD neednot<=50, all unchangedaccounting/coveragegates remain."
+  },
+  "metadata_finding_closed": "Consumerfound proposedbinding argv stillusedoldledger/namespace whilephasefreeze correct. Refreshedmetadata now derivescommands fromactual3phasefreezes; finalOFFargv equalsfreeze and separatesactualpreconsent readonlyparent-ledgerprepare proof from futureamendedlaunch. Oldmetadata references preserved byowner; no script/executionchange inthis refresh.",
+  "evidence_limits": {
+    "executor_phase_guard_checks": 14,
+    "executor_prior_financial_freeze_checks": 18,
+    "actual_new_prefix_Popen": 0,
+    "actual_new_native": 0,
+    "reviewer_tests": 0,
+    "reviewer_prepare_orhelpers": 0,
+    "reviewer_Popen_orengine": 0,
+    "reviewer_product_orledger_edits": 0
+  },
+  "reviewed_sha256": {
+    "a0-prefix-common.py": "de7064187d8c814e26ae247fd5a6144fd9f3f47fe25e953c4ab6f3526f984558",
+    "a0-prefix-worker.py": "5ec57c28c41b3f33822014f4159e1bcadccfdc08cc0aed88f78c08a2bcaa1988",
+    "a0-prefix-supervisor.py": "d629285c22bfeab8b04c33605f47f74ad39bb938533b4a081213e53ca108c938",
+    "a0-prefix-data-root-amend4-orchestration.diff": "302ba4d03192b1cc99342f0b095b12bdd6b63b600ae1f3d1fdacc2cc12d6996b",
+    "a0-prefix-amend4-plan-proposed.json": "44436061f5b9790a9cbb1bdadcc9a4efad4fbb6b5d3f2d89772c6a6d51a4ec60",
+    "a0-prefix-amend4-binding-proposed.json": "7df81b29073a869234390a9b87a65a3a616cf9306b1e83eaebf009c724306d7a",
+    "a0-prefix-amend4-freeze-R2_OFF-proposed.json": "7ccec861524abc641d104444205d0624c69a5bedab01354a269bc4ca622ec7b7",
+    "a0-prefix-data-root-all-inputs-preflight.json": "32a48c6aceaa8571610714d6ccb8a551d0cb7cbcd10481ade3d2081e759047ec",
+    "a0-prefix-data-root-repair-verification.json": "53ca4716c28cb018ede882fa5a9ba627f25abc009d3b0c3bc9e1c3b6218ec360",
+    "a0-prefix-amend4-guard-verification.json": "bf8321604637b8e7860c03fb68172dcefddf3eac3fc6fe36059f9eebccfc658c",
+    "a0-prefix-amend4-owner-approval-schema.json": "5aa6ffac20dc098c53972e89210d41afb43ae388cf02a48e01277317b54f5859",
+    "a0-prefix-ledger.json": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+    "PREFIX_PATH_REPAIR_PLUS_ONE_PROTOCOL_PROPOSED_RU.md": "26fad1e30d29369bde6f0260a32b556d253ce0655f9ebda41f1b8c742f5a6166"
+  },
+  "authority": "Ready only for directhuman +1prefix consent question aftercoordinator freezes finalprotocol refs. Max4 notauthorized, amendedledgerabsent, proposedrootGOfalse. CurrentprefixHOLD; no newPopen/native/full/deployment/order permission granted. Failure1/allpreviousreviews preserved."
+}

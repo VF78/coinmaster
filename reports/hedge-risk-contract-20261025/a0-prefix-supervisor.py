@@ -8,13 +8,16 @@ def main():
     if a.prepare:
         common.verify_financial_qualifications(g,json.loads(a.ledger.read_text()),a.ledger,a.variant)
         common.verify_freeze(g,a.variant,a.namespace);sys.path.insert(0,str(Path(g['source_root'])/'runtime'));common.prepared_kwargs(g,a.variant,a.namespace/'result')
-        print(json.dumps(dict(status='ENGINE_FREE_PREFIX_PREPARATION_PASS',variant=a.variant,root_go=g.get('root_go'),physical_attempts_claimed=0,engines_created=0)));return
+        print(json.dumps(dict(status='ENGINE_FREE_PREFIX_PREPARATION_PASS',variant=a.variant,root_go=g.get('root_go'),physical_attempts_claimed=0,engines_created=0,stock_input_preflight=g['_stock_input_preflight'])));return
     aid=common.claim(a.ledger,g,a.variant,a.namespace)
-    receipt=dict(attempt_id=aid,variant=a.variant,source_commit=common.SOURCE,freeze=str(a.freeze.resolve()),freeze_sha256=common.sha(a.freeze),actual_returncode=None,ledger_status='STARTED',supervisor_pid=os.getpid(),started_utc=common.utc())
+    receipt=dict(attempt_id=aid,variant=a.variant,source_commit=common.SOURCE,prefix_phase=g.get('prefix_phase','INITIAL'),freeze=str(a.freeze.resolve()),freeze_sha256=common.sha(a.freeze),actual_returncode=None,ledger_status='STARTED',supervisor_pid=os.getpid(),started_utc=common.utc())
     receipt_path=a.namespace/'supervisor-receipt.json';rc=None
     try:
         if a.namespace.exists():raise ValueError('FRESH_PREFIX_NAMESPACE_REQUIRED')
         a.namespace.mkdir(parents=True);common.write(receipt_path,receipt)
+        common.verify_freeze(g,a.variant,a.namespace);sys.path.insert(0,str(Path(g['source_root'])/'runtime'))
+        common.prepared_kwargs(g,a.variant,a.namespace/'result')
+        receipt['stock_input_preflight']=g['_stock_input_preflight'];common.write(receipt_path,receipt)
         command=[g['python'],str(Path(g['worker']).resolve()),'--freeze',str(a.freeze.resolve()),'--ledger',str(a.ledger.resolve()),'--variant',a.variant,'--namespace',str(a.namespace.resolve()),'--worker-attempt',aid]
         env={'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','PYTHONPATH':str(Path(g['source_root'])/'runtime'),'OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','PYTHONUNBUFFERED':'1','PYTHONDONTWRITEBYTECODE':'1','LANG':'en_US.UTF-8'}
         receipt['command']=command;receipt['environment']=env
@@ -26,7 +29,7 @@ def main():
         proposal=json.loads((a.namespace/'native-completion-proposal.json').read_text())
         if proposal['attempt_id']!=aid or proposal['variant']!=a.variant or proposal['source_commit']!=common.SOURCE:raise ValueError('COMPLETION_IDENTITY_MISMATCH')
         artifacts=common.verify_rows(proposal['artifacts'],a.namespace,a.variant)
-        manifest=dict(status='NATIVE_PROCESS_EXPORTED_ACTUAL_OS_ZERO',attempt_id=aid,variant=a.variant,source_commit=common.SOURCE,actual_returncode=rc,freeze_sha256=receipt['freeze_sha256'],artifacts=artifacts,financial_acceptance='ROOT_REVIEW_REQUIRED')
+        manifest=dict(status='NATIVE_PROCESS_EXPORTED_ACTUAL_OS_ZERO',attempt_id=aid,variant=a.variant,source_commit=common.SOURCE,prefix_phase=g.get('prefix_phase','INITIAL'),actual_returncode=rc,freeze_sha256=receipt['freeze_sha256'],artifacts=artifacts,financial_acceptance='ROOT_REVIEW_REQUIRED')
         mp=a.namespace/'completion-manifest.json';common.write(mp,manifest)
         report=next(x for x in artifacts if x['role']=='report')
         common.finish(a.ledger,aid,'COMPLETED',dict(report=report['path'],report_sha256=report['sha256'],actual_returncode=rc,completion_manifest=str(mp),completion_manifest_sha256=common.sha(mp)))

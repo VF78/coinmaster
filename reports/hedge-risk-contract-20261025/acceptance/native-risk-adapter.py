@@ -31,7 +31,7 @@ report_digest=hashlib.sha256(rp.read_bytes()).hexdigest()
 linked=[]
 for candidate in ledger['attempts']:
  detail=candidate.get('detail',{})
- if detail.get('report_sha256')==report_digest:
+ if candidate.get('attempt_id')==a['physical_prefix_attempt']['attempt_id'] and candidate.get('status')=='COMPLETED' and detail.get('report_sha256')==report_digest:
   linked.append(candidate)
 assert len(linked)==1, 'UNIQUE_PHYSICAL_LEDGER_REPORT_BINDING_REQUIRED'
 entry=linked[0]

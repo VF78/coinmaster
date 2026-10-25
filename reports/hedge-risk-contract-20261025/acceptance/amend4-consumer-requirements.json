@@ -1,0 +1,20 @@
+{
+  "status": "PROPOSED_AMEND4_CONSUMER_REQUIREMENTS_NOT_LAUNCH_APPROVAL",
+  "context": "Reported first OFF physical attempt FAILED OS1 before engine/report, MISSING_1M_MANIFEST; no TOTAL, no financial qualification fabricated. No failed raw artifacts read by analyst.",
+  "proposed_namespace": "JOB/prefix-amend4/{R2_OFF,R2_C0,R2_A0}/result",
+  "adapter_compatibility": "Existing report filename/stem checks allow phase prefix. Explicit report and ledger paths plus namespace binding select actual phase; final argv/binding update waits for real wrapper checkpoint.",
+  "completed_attempt_selection": "Exact report physical attempt UUID + statusCOMPLETED + reportSHA, then label/source/reportpath/namespace/OS/completion/supervisor/freeze checks. Duplicate OFF labels and historical FAILED1 are allowed in cumulative ledger; FAILED1 cannot qualify.",
+  "entry_snapshot": "Same immutable completed-entry canonical SHA; old failed entry preserved. Snapshot includes cumulative ledger; later append changes whole ledger SHA only.",
+  "root_kwargs_consumption": "Stock economic data_root must point to actual existing /inputs/data containing expected 1m manifest; frozen pinned file paths alone do not establish consumed root. Require engine-free real stock loader/coverage preflight and actual kwargs roundtrip at exact corrected root.",
+  "owner_checkpoint_required": [
+    "Final amended wrapper/common/worker/supervisor and freeze hashes",
+    "Actual authorized phase namespace and cumulative ledger sequence/budget scope",
+    "RootGO remains false pending direct human amended budget approval and root review",
+    "Exact previous financial receipts use current phase completed UUID/report/namespace; OFFnone/C0newOFF/A0newOFF+newC0"
+  ],
+  "metric_contract_unchanged": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+  "financial_schema_unchanged": "b02b624a4e60e166f033a3daa184b7ea03e10390fb472bc3e1acdf591c5425c2",
+  "outcome_reads": 0,
+  "engines_created": 0,
+  "syntax": "PASS"
+}

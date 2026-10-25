@@ -1,0 +1,27 @@
+{
+  "status": "PASS_ENGINE_FREE_ONLY_NO_REAL_AMENDMENT",
+  "checks": [
+    "Noowneramendmentblocksphase4",
+    "OwneralonewithoutROOTGOblocks",
+    "Invalidtypedownerreply:None",
+    "Invalidtypedownerreply:False",
+    "Invalidtypedownerreply:4",
+    "Invalidtypedownerreply:' '",
+    "Originalfailednamespacecannotbereused",
+    "Newphasephysical2preservesfailedrow1exact",
+    "Workerrechecksimmutableparentandphysicalphaseindex",
+    "Parenttamperbetweenclaimandworkerblocks",
+    "NEWphaseFAILEDcannotretryorreset",
+    "NEWphaseFAILEDcannotadvanceC0",
+    "Oldfailedrowcannotbereclassified",
+    "HardTOTAL4ceilingblocksanyfifth"
+  ],
+  "check_count": 14,
+  "actual_prefix_spent": 1,
+  "actual_prefix_max": 3,
+  "actual_budget_changed": false,
+  "actual_engines": 0,
+  "actual_Popen": 0,
+  "actual_parent_sha256": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+  "temporary_fake_approval_only": true
+}

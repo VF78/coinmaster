@@ -26,21 +26,21 @@ def main():
             risk=Path(q['risk_analysis_path']);c.write(risk,dict(qualification='VALID_ACCOUNTED_PREFIX',accounting_qualified=True,actual_returncode=0,metric_contract_sha256=c.METRIC_CONTRACT,physical_binding=binding,UNIT_TEST_ONLY=True));q['risk_analysis_sha256']=c.sha(risk)
             receipt=t/(label+'-UNIT_FINANCIAL_RECEIPT.json');c.write(receipt,q)
             return dict(label=label,path=str(receipt),sha256=c.sha(receipt)),q
-        off,qoff=control('R2_OFF');g={'previous_financial_qualifications':[off]}
+        off,qoff=control('R2_OFF');g={'physical_prefix_max':3,'previous_financial_qualifications':[off]}
         c.verify_financial_qualifications(g,ledger,lp,'R2_C0');checks.append('C0 exactOFF financialPASS chain accepted inUNITONLYdata')
         must_deny(lambda:c.verify_financial_qualifications({},ledger,lp,'R2_C0'),'MissingfinancialreceiptblocksC0')
         def changed_receipt(field,value,tag):
             bad=copy.deepcopy(qoff);bad[field]=value;file=t/('UNIT_BAD_'+tag+'.json');c.write(file,bad);ref={'label':'R2_OFF','path':str(file),'sha256':c.sha(file)}
-            must_deny(lambda:c.verify_financial_qualifications({'previous_financial_qualifications':[ref]},ledger,lp,'R2_C0'),tag)
+            must_deny(lambda:c.verify_financial_qualifications({'physical_prefix_max':3,'previous_financial_qualifications':[ref]},ledger,lp,'R2_C0'),tag)
         for field,value,tag in [('qualification','UNKNOWN','UNKNOWNqualification'),('label','R2_C0','Wrongreceiptlabel'),('report_sha256','wrong','WrongreportSHA'),('attempt_id','wrong','WrongattemptUUID'),('accounting_qualified',False,'Accountingfalse'),('actual_returncode',True,'BoolisnotactualOS0')]:changed_receipt(field,value,tag)
         badgates=copy.deepcopy(qoff['financial_gates']);badgates['native_3TP']='UNKNOWN';changed_receipt('financial_gates',badgates,'UNKNOWNfinancialgate')
         badgates=copy.deepcopy(qoff['financial_gates']);badgates.pop('ownership');changed_receipt('financial_gates',badgates,'Missingfinancialgate')
-        bad=copy.deepcopy(off);bad['sha256']='wrong';must_deny(lambda:c.verify_financial_qualifications({'previous_financial_qualifications':[bad]},ledger,lp,'R2_C0'),'WrongreceiptSHA')
+        bad=copy.deepcopy(off);bad['sha256']='wrong';must_deny(lambda:c.verify_financial_qualifications({'physical_prefix_max':3,'previous_financial_qualifications':[bad]},ledger,lp,'R2_C0'),'WrongreceiptSHA')
         mutated=copy.deepcopy(ledger);mutated['attempts'][0]['extra']='mutation';must_deny(lambda:c.verify_financial_qualifications(g,mutated,lp,'R2_C0'),'Currententrydiffersfromimmutablesnapshot')
         c0,qc0=control('R2_C0');assert qoff['native_ledger_sha256_at_qualification']!=c.sha(lp)
-        c.verify_financial_qualifications({'previous_financial_qualifications':[off,c0]},ledger,lp,'R2_A0');checks.append('A0OFFplusC0financialPASS surviveappendmutatedledger/exactimmutableentries')
-        must_deny(lambda:c.verify_financial_qualifications({'previous_financial_qualifications':[off]},ledger,lp,'R2_A0'),'A0missingC0receipt')
-        must_deny(lambda:c.verify_financial_qualifications({'previous_financial_qualifications':[off,off]},ledger,lp,'R2_A0'),'Duplicatepriorreceiptlabels')
+        c.verify_financial_qualifications({'physical_prefix_max':3,'previous_financial_qualifications':[off,c0]},ledger,lp,'R2_A0');checks.append('A0OFFplusC0financialPASS surviveappendmutatedledger/exactimmutableentries')
+        must_deny(lambda:c.verify_financial_qualifications({'physical_prefix_max':3,'previous_financial_qualifications':[off]},ledger,lp,'R2_A0'),'A0missingC0receipt')
+        must_deny(lambda:c.verify_financial_qualifications({'physical_prefix_max':3,'previous_financial_qualifications':[off,off]},ledger,lp,'R2_A0'),'Duplicatepriorreceiptlabels')
         root=t/'UNIT_ROOT_RECEIPT.json';c.write(root,{'UNIT_TEST_ONLY':True});freeze=t/'UNIT_WORKER_FREEZE.json'
         fg=dict(source_commit=c.SOURCE,protocol_sha256=c.PROTOCOL,variant='R2_OFF',physical_prefix_max=3,full=0,training=0,downloads=0,calendar='[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)',seed='10000',reserve='0',root_go=True,independent_review='PASS',engineering_acceptance='LIMITED_PASS',launch_gates='PASS',root_go_receipt=dict(path=str(root),sha256=c.sha(root)),engineering_acceptance_receipt=dict(path=str(root),sha256=c.sha(root)),previous_financial_qualifications=[])
         c.write(freeze,fg);loaded=c.load_freeze(freeze);wl=t/'UNIT_STARTED_LEDGER.json';ns=c.JOB/'R2_OFF'
@@ -48,9 +48,9 @@ def main():
         c.verify_worker_claim(wl,loaded,'R2_OFF',ns,'UNIT_STARTED');checks.append('WorkerbindsactualexactreadfreezeSHAtoSTARTEDclaim')
         fg['UNIT_TAMPER_AFTER_CLAIM']=True;c.write(freeze,fg)
         must_deny(lambda:c.verify_worker_claim(wl,c.load_freeze(freeze),'R2_OFF',ns,'UNIT_STARTED'),'Freezeeditedafterclaimblocksworkerbeforeengine')
-        c.verify_financial_qualifications({'previous_financial_qualifications':[]},{'attempts':[]},lp,'R2_OFF');checks.append('OFFrequiresnoinventedfinancialreceipt')
+        c.verify_financial_qualifications({'physical_prefix_max':3,'previous_financial_qualifications':[]},{'attempts':[]},lp,'R2_OFF');checks.append('OFFrequiresnoinventedfinancialreceipt')
     c.JOB=original_job
-    actual=json.loads((P/'a0-prefix-ledger.json').read_text());assert actual['physical_started']==0 and actual['attempts']==[]
-    proof=dict(status='PASS_ENGINE_FREE_CONSOLIDATED_GUARD_BATCH',checks=checks,test_check_count=len(checks),UNIT_TEST_ONLY_temporary_receipts=True,actual_financial_receipts_created=0,actual_prefix_attempts=0,actual_Popen=0,actual_engines=0,source_money=c.SOURCE,script_pins=[dict(path=str(P/name),sha256=c.sha(P/name)) for name in ('a0-prefix-common.py','a0-prefix-worker.py','a0-prefix-supervisor.py')])
+    actual=json.loads((P/'a0-prefix-ledger.json').read_text());assert actual['physical_started']==1 and len(actual['attempts'])==1 and actual['attempts'][0]['status']=='FAILED'
+    proof=dict(status='PASS_ENGINE_FREE_CONSOLIDATED_GUARD_BATCH',checks=checks,test_check_count=len(checks),UNIT_TEST_ONLY_temporary_receipts=True,actual_financial_receipts_created=0,actual_prefix_attempts=1,actual_Popen=0,actual_engines=0,source_money=c.SOURCE,script_pins=[dict(path=str(P/name),sha256=c.sha(P/name)) for name in ('a0-prefix-common.py','a0-prefix-worker.py','a0-prefix-supervisor.py')])
     c.write(P/'a0-prefix-guard-verification.json',proof);print(json.dumps(proof))
 if __name__=='__main__':main()

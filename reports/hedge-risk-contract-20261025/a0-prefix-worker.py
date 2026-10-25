@@ -20,7 +20,7 @@ def main():
         kwargs=common.prepared_kwargs(g,a.variant,result)
         native=run_native_diagnostic(**kwargs)
         native=json.loads(json.dumps(native,default=audit_json_default))
-        native['physical_prefix_attempt']=dict(attempt_id=a.worker_attempt,variant=a.variant,ledger=str(a.ledger.resolve()),source_commit=common.SOURCE)
+        native['physical_prefix_attempt']=dict(attempt_id=a.worker_attempt,variant=a.variant,ledger=str(a.ledger.resolve()),source_commit=common.SOURCE,prefix_phase=g.get('prefix_phase','INITIAL'))
         path=save_diagnostic_report(Path(g['data_root']),native,a.variant,result)
         manifest=dict(status='NATIVE_RETURNED_AND_EXPORTED_PENDING_ACTUAL_OS_RC',attempt_id=a.worker_attempt,variant=a.variant,source_commit=common.SOURCE,artifacts=common.artifact_rows(a.namespace,a.variant),report=str(path),report_sha256=common.sha(path),financial_acceptance='ROOT_REVIEW_REQUIRED')
         common.write(a.namespace/'native-completion-proposal.json',manifest)

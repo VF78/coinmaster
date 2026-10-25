@@ -1,0 +1,273 @@
+{
+  "status": "PROPOSED_AMEND4_BINDING_ARGV_METADATA_CORRECTED_NO_AUTHORITY",
+  "worker": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-worker.py",
+  "supervisor": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+  "common": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-common.py",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "script_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-common.py",
+      "sha256": "de7064187d8c814e26ae247fd5a6144fd9f3f47fe25e953c4ab6f3526f984558"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-worker.py",
+      "sha256": "5ec57c28c41b3f33822014f4159e1bcadccfdc08cc0aed88f78c08a2bcaa1988"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+      "sha256": "d629285c22bfeab8b04c33605f47f74ad39bb938533b4a081213e53ca108c938"
+    }
+  ],
+  "OFF_freeze": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_OFF-proposed.json",
+  "OFF_freeze_sha256": "7ccec861524abc641d104444205d0624c69a5bedab01354a269bc4ca622ec7b7",
+  "OFF_prepare_command": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+    "--freeze",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_OFF-proposed.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+    "--variant",
+    "R2_OFF",
+    "--namespace",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF",
+    "--prepare"
+  ],
+  "OFF_launch_command": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+    "--freeze",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_OFF-proposed.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+    "--variant",
+    "R2_OFF",
+    "--namespace",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF",
+    "--launch"
+  ],
+  "namespace_template": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/{variant}",
+  "result_template": "{namespace}/result",
+  "report_template": "{namespace}/result/{variant}.json",
+  "report_attempt": {
+    "json_path": "$.physical_prefix_attempt",
+    "fields": [
+      "attempt_id",
+      "variant",
+      "ledger",
+      "source_commit"
+    ]
+  },
+  "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+  "ledger_attempt": {
+    "id": "$.attempts[].attempt_id",
+    "status": "$.attempts[].status",
+    "completed_value": "COMPLETED",
+    "report": "$.attempts[].detail.report",
+    "report_sha256": "$.attempts[].detail.report_sha256",
+    "actual_worker_OS_rc": "$.attempts[].detail.actual_returncode",
+    "completion_manifest_sha256": "$.attempts[].detail.completion_manifest_sha256"
+  },
+  "supervisor_receipt_template": "{namespace}/supervisor-receipt.json",
+  "supervisor_fields": [
+    "attempt_id",
+    "variant",
+    "source_commit",
+    "freeze_sha256",
+    "pid",
+    "actual_returncode",
+    "ledger_status",
+    "completion_manifest",
+    "completion_manifest_sha256"
+  ],
+  "completion_manifest_template": "{namespace}/completion-manifest.json",
+  "completion_schema": {
+    "status": "NATIVE_PROCESS_EXPORTED_ACTUAL_OS_ZERO",
+    "attempt_id": "UUID",
+    "variant": "R2_OFF/R2_C0/R2_A0",
+    "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+    "actual_returncode": 0,
+    "freeze_sha256": "SHA256",
+    "artifacts": [
+      {
+        "role": "report",
+        "path": "{namespace}/result/{variant}.json",
+        "sha256": "SHA256"
+      },
+      {
+        "role": "orders",
+        "path": "{namespace}/result/{variant}-orders.csv",
+        "sha256": "SHA256"
+      },
+      {
+        "role": "funding",
+        "path": "{namespace}/result/{variant}-funding.sqlite",
+        "sha256": "SHA256"
+      },
+      {
+        "role": "coherent",
+        "path": "{namespace}/result/coherent-native-events.jsonl.gz",
+        "sha256": "SHA256"
+      }
+    ],
+    "financial_acceptance": "ROOT_REVIEW_REQUIRED"
+  },
+  "worker_intermediate": "{namespace}/native-completion-proposal.json is NOT supervisorcompletion/not validOSproof",
+  "completion_rule": "Supervisor durablyclaims physicalPopen beforelaunch inclpreenginefailures; worker unchangednativeengineexports; supervisor requiresactualchildOS0+all4hashes thenCOMPLETED; no automatic nextvariant/retry",
+  "preflight": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-wrapper-preflight.json",
+  "prefix_physical_started": 1,
+  "root_go": false,
+  "A0_json_path": "$.market_redesign_audit.a0_release_audit",
+  "C0_native_fixture": "NOT_RUN/actualC0prefix mustPASS beforeA0",
+  "wrapper_tests": "Engine-free temporaryledgers/artifacts and actualOFF --prepare only; no Popen/nativeengine",
+  "previous_financial_qualifications_field": "previous_financial_qualifications:list[{label,path,sha256}] exactOFFnone/C0OFF/A0OFF+C0",
+  "financial_qualification_schema": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/financial-qualification-receipt-schema.json",
+    "sha256": "b02b624a4e60e166f033a3daa184b7ea03e10390fb472bc3e1acdf591c5425c2"
+  },
+  "worker_claim_guard": "ExactSHAofsamefreezeBytesParsedByWorker == STARTEDentry.freeze_sha256 before anynativeengine",
+  "prior_financial_gate": "All11explicitPASS/FINANCIAL_ACCEPTED_CONTROL/FINANCIALLY_QUALIFIED/accountingTrue/reportUUID+source+hash+OS0/riskphysicalbinding+4artifactmanifest/supervisor/immutablesnapshot+canonicalentry; currentwholeledgerhash notcompared afterappend",
+  "prior_completed_export_alone": "NOT_SUFFICIENT",
+  "guard_verification": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-guard-verification.json",
+  "proposed_phase": "AMEND4",
+  "current_prefix_spent": 1,
+  "current_prefix_max": 3,
+  "amended_prefix_max": "PROPOSED4_NOT_APPROVED",
+  "parent_prefix_ledger_sha256": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+  "guard_functions": "common.require_phase_approval +phase_entries bindexacttypedhumanamendment,parentfailedrow,strictnewphaseOFF-C0-A0/noNEWphasefailretry",
+  "stock_input_preflight": "Actualstockcoverage/daily730seed/fundingpriorM1/full4streamminuteconsumer in--prepare ANDafterdurableclaim BEFOREPopen; no nativeengine inpreflight",
+  "initial_failed_namespace": "PRESERVED/runtimejob/R2_OFF",
+  "amended_ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+  "derived_ledger_created": false,
+  "current_parent_ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-ledger.json",
+  "current_parent_ledger_sha256": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+  "current_prefix_status": "FAILED/HOLD",
+  "proposed_total_prefix_max": 4,
+  "proposed_phase_physical_indices": [
+    2,
+    3,
+    4
+  ],
+  "commands_by_variant": {
+    "R2_OFF": {
+      "prepare": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_OFF-proposed.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+        "--variant",
+        "R2_OFF",
+        "--namespace",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF",
+        "--prepare"
+      ],
+      "launch": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_OFF-proposed.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+        "--variant",
+        "R2_OFF",
+        "--namespace",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF",
+        "--launch"
+      ],
+      "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF",
+      "root_go": false
+    },
+    "R2_C0": {
+      "prepare": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_C0-proposed.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+        "--variant",
+        "R2_C0",
+        "--namespace",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0",
+        "--prepare"
+      ],
+      "launch": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_C0-proposed.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+        "--variant",
+        "R2_C0",
+        "--namespace",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0",
+        "--launch"
+      ],
+      "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0",
+      "root_go": false
+    },
+    "R2_A0": {
+      "prepare": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_A0-proposed.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+        "--variant",
+        "R2_A0",
+        "--namespace",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_A0",
+        "--prepare"
+      ],
+      "launch": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+        "--freeze",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_A0-proposed.json",
+        "--ledger",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+        "--variant",
+        "R2_A0",
+        "--namespace",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_A0",
+        "--launch"
+      ],
+      "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger.json",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_A0",
+      "root_go": false
+    }
+  },
+  "freeze_refs": {
+    "R2_OFF": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_OFF-proposed.json",
+      "sha256": "7ccec861524abc641d104444205d0624c69a5bedab01354a269bc4ca622ec7b7",
+      "kwargs": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-kwargs-R2_OFF.json",
+        "sha256": "8e5dad2c67ede717a9265215e5f62ea4eb22e79f0a29e64ba02723a98ab09312"
+      }
+    },
+    "R2_C0": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_C0-proposed.json",
+      "sha256": "e7ea4384457e4a7c1fa373aee06db3141f74844e7064ffe31b70c83e503069c3",
+      "kwargs": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-kwargs-R2_C0.json",
+        "sha256": "01053136a1b6a00dd36fdabfec8759d85808c7fc6d2c30b029c0eb60dd9e0224"
+      }
+    },
+    "R2_A0": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_A0-proposed.json",
+      "sha256": "bf045a34fffea25ef07ad53c47ac29464b3c67661de9302b2888507c8ef49ba1",
+      "kwargs": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-kwargs-R2_A0.json",
+        "sha256": "a8e23e268c20e32c82bfaf5891479e38b83776dca44ffbe5cc9d86d572a2e2f7"
+      }
+    }
+  },
+  "command_scope": "Future exactcommands require actualhumanamendment+derivedledger+rootGO; no command executed. EarlierpreconsentOFFinputproof used readonlyparentledger only toverifyactualhelpers; notofficialfutureargv."
+}

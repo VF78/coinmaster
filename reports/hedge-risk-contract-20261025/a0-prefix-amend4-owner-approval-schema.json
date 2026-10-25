@@ -1,0 +1,19 @@
+{
+  "status": "PROPOSED_NOT_APPROVED",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "parent_prefix_ledger_sha256": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+  "authorized_prefix_total": 4,
+  "additional_prefix_attempts": 1,
+  "prefix_phase": "AMEND4",
+  "new_phase_variants": [
+    "R2_OFF",
+    "R2_C0",
+    "R2_A0"
+  ],
+  "full": 0,
+  "training": 0,
+  "downloads": 0,
+  "exact_owner_reply": null,
+  "notice": "Root fills APPROVED_BY_OWNER +nonemptySTRINGonly after directhumanconsent. Additional1countsallfailures; threefreshphaseattempts2..4; initialfailed1immutable; noreserve/noautoGO."
+}

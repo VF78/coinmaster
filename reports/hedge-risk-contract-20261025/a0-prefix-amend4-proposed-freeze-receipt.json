@@ -1,0 +1,70 @@
+{
+  "status": "REVIEWED_PROPOSED_NOT_APPROVED_NO_ROOT_GO",
+  "recorded_utc": "2026-10-25T13:27:56.844912+00:00",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "current_prefix_max": 3,
+  "physical_started": 1,
+  "physical_failed": 1,
+  "active": 0,
+  "proposed_total": 4,
+  "additional_attempts": 1,
+  "new_phase_controls": [
+    "R2_OFF",
+    "R2_C0",
+    "R2_A0"
+  ],
+  "parent_sha256": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+  "review_P0": 0,
+  "review_P1": 0,
+  "root_pin_mismatches": 0,
+  "protocol": {
+    "path": "PREFIX_PATH_REPAIR_PLUS_ONE_PROTOCOL_PROPOSED_RU.md",
+    "sha256": "7c6268f8806e3dc4ffc427cdde5b52e7f37e75165fcb3a778c71676385802b74"
+  },
+  "artifacts": [
+    {
+      "path": "a0-prefix-data-root-amend4-orchestration.diff",
+      "sha256": "302ba4d03192b1cc99342f0b095b12bdd6b63b600ae1f3d1fdacc2cc12d6996b"
+    },
+    {
+      "path": "a0-prefix-amend4-plan-proposed.json",
+      "sha256": "44436061f5b9790a9cbb1bdadcc9a4efad4fbb6b5d3f2d89772c6a6d51a4ec60"
+    },
+    {
+      "path": "a0-prefix-amend4-binding-proposed.json",
+      "sha256": "7df81b29073a869234390a9b87a65a3a616cf9306b1e83eaebf009c724306d7a"
+    },
+    {
+      "path": "a0-prefix-amend4-freeze-R2_OFF-proposed.json",
+      "sha256": "7ccec861524abc641d104444205d0624c69a5bedab01354a269bc4ca622ec7b7"
+    },
+    {
+      "path": "a0-prefix-amend4-freeze-R2_C0-proposed.json",
+      "sha256": "e7ea4384457e4a7c1fa373aee06db3141f74844e7064ffe31b70c83e503069c3"
+    },
+    {
+      "path": "a0-prefix-amend4-freeze-R2_A0-proposed.json",
+      "sha256": "bf045a34fffea25ef07ad53c47ac29464b3c67661de9302b2888507c8ef49ba1"
+    },
+    {
+      "path": "a0-prefix-data-root-repair-verification.json",
+      "sha256": "53ca4716c28cb018ede882fa5a9ba627f25abc009d3b0c3bc9e1c3b6218ec360"
+    },
+    {
+      "path": "a0-prefix-data-root-all-inputs-preflight.json",
+      "sha256": "32a48c6aceaa8571610714d6ccb8a551d0cb7cbcd10481ade3d2081e759047ec"
+    },
+    {
+      "path": "a0-prefix-amend4-owner-approval-schema.json",
+      "sha256": "5aa6ffac20dc098c53972e89210d41afb43ae388cf02a48e01277317b54f5859"
+    },
+    {
+      "path": "a0-prefix-data-root-repair-review.json",
+      "sha256": "2a662b136c69de7083ff57ac8f938d8ad023d25ad85d2cef79ebb9e85978fc96"
+    },
+    {
+      "path": "acceptance/amend4-proposed-prelaunch-binding.json",
+      "sha256": "ea3522a05828f46c0e482f23d6960a3462599ee05129eabad12df3f3a9ffa98b"
+    }
+  ]
+}

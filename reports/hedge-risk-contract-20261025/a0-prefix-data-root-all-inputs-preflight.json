@@ -1,0 +1,115 @@
+{
+  "status": "PASS_ALL3_ACTUAL_STOCK_INPUTS_ENGINE_FREE_ONLY",
+  "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+  "incorrect_parent_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs",
+  "proofs": {
+    "R2_OFF": {
+      "input_proof": {
+        "status": "PASS_ACTUAL_STOCK_READERS_ENGINE_FREE",
+        "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+        "coverage_blockers": [],
+        "consumed_files_pinned": 9,
+        "daily_seed_rows": 730,
+        "daily_rows": {
+          "BTCUSDT": 1460,
+          "SOLUSDT": 1460
+        },
+        "feature_seed_last_available": "2024-09-01 00:00:00+00:00",
+        "funding_events": 814,
+        "funding_by_asset": {
+          "BTCUSDT-PERP.P1SIM": 407,
+          "SOLUSDT-PERP.P1SIM": 407
+        },
+        "funding_prior_marks_basis": [
+          "venue_mark_prior_minute"
+        ],
+        "minute_bundles": 195840,
+        "first_minute_ms": 1725148800000,
+        "last_minute_ms": 1736899140000,
+        "engines_created": 0
+      },
+      "elapsed_seconds": 2.639,
+      "freeze_sha256": "7ccec861524abc641d104444205d0624c69a5bedab01354a269bc4ca622ec7b7",
+      "kwargs_sha256": "8e5dad2c67ede717a9265215e5f62ea4eb22e79f0a29e64ba02723a98ab09312",
+      "financial_qualifications": "NO_PRIOR_CONTROL_REQUIRED",
+      "Popen": 0,
+      "engines": 0
+    },
+    "R2_C0": {
+      "input_proof": {
+        "status": "PASS_ACTUAL_STOCK_READERS_ENGINE_FREE",
+        "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+        "coverage_blockers": [],
+        "consumed_files_pinned": 9,
+        "daily_seed_rows": 730,
+        "daily_rows": {
+          "BTCUSDT": 1460,
+          "SOLUSDT": 1460
+        },
+        "feature_seed_last_available": "2024-09-01 00:00:00+00:00",
+        "funding_events": 814,
+        "funding_by_asset": {
+          "BTCUSDT-PERP.P1SIM": 407,
+          "SOLUSDT-PERP.P1SIM": 407
+        },
+        "funding_prior_marks_basis": [
+          "venue_mark_prior_minute"
+        ],
+        "minute_bundles": 195840,
+        "first_minute_ms": 1725148800000,
+        "last_minute_ms": 1736899140000,
+        "engines_created": 0
+      },
+      "elapsed_seconds": 1.05,
+      "freeze_sha256": "e7ea4384457e4a7c1fa373aee06db3141f74844e7064ffe31b70c83e503069c3",
+      "kwargs_sha256": "01053136a1b6a00dd36fdabfec8759d85808c7fc6d2c30b029c0eb60dd9e0224",
+      "financial_qualifications": "PENDING_ACTUAL_NEWPHASE_PRIOR_RESULTS",
+      "Popen": 0,
+      "engines": 0
+    },
+    "R2_A0": {
+      "input_proof": {
+        "status": "PASS_ACTUAL_STOCK_READERS_ENGINE_FREE",
+        "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+        "coverage_blockers": [],
+        "consumed_files_pinned": 9,
+        "daily_seed_rows": 730,
+        "daily_rows": {
+          "BTCUSDT": 1460,
+          "SOLUSDT": 1460
+        },
+        "feature_seed_last_available": "2024-09-01 00:00:00+00:00",
+        "funding_events": 814,
+        "funding_by_asset": {
+          "BTCUSDT-PERP.P1SIM": 407,
+          "SOLUSDT-PERP.P1SIM": 407
+        },
+        "funding_prior_marks_basis": [
+          "venue_mark_prior_minute"
+        ],
+        "minute_bundles": 195840,
+        "first_minute_ms": 1725148800000,
+        "last_minute_ms": 1736899140000,
+        "engines_created": 0
+      },
+      "elapsed_seconds": 1.313,
+      "freeze_sha256": "bf045a34fffea25ef07ad53c47ac29464b3c67661de9302b2888507c8ef49ba1",
+      "kwargs_sha256": "a8e23e268c20e32c82bfaf5891479e38b83776dca44ffbe5cc9d86d572a2e2f7",
+      "financial_qualifications": "PENDING_ACTUAL_NEWPHASE_PRIOR_RESULTS",
+      "Popen": 0,
+      "engines": 0
+    }
+  },
+  "source_money": "763d985617abd7a7afef5eec13912303983d8837",
+  "actual_source_changed": false,
+  "actual_datafiles_changed": false,
+  "actual_prefix_spent": 1,
+  "actual_prefix_max": 3,
+  "actual_amended4_ledger_created": false,
+  "actual_Popen": 0,
+  "actual_engines": 0,
+  "current_failed_parent_sha256": "699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e",
+  "financial_readiness": "OFFfutureROOTGO/owneramendmentrequired; C0/A0alsoactualpriorfinancialPASS required; no inventedreceipts",
+  "native_helper_source_sha256": "5d3a5825a9535ab3af1b7b9a91c374f6e0e1a56a59dba5d505d9880c63041cdc",
+  "metadata_only_freeze_rebinding": "Only futureprepareargv ledgerpathnormalized; actualstockinputs/data/source/helper/pins unchanged; no repeatedreader run/Popen."
+}

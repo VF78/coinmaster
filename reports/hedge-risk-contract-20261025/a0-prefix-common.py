@@ -23,14 +23,36 @@ def transaction(path):
     path=Path(path)
     with path.with_suffix(path.suffix+'.lock').open('a+') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX);data=json.loads(path.read_text());yield data;write(path,data)
+FAILED_INITIAL_PARENT_SHA='699020d51179394b2684f161a4216bfd2c6cccce69d89d019d180f849df5cf0e'
+def namespace_root(g):
+    if g.get('physical_prefix_max')==3 and g.get('prefix_phase','INITIAL')=='INITIAL':return JOB
+    if g.get('physical_prefix_max')==4 and g.get('prefix_phase')=='AMEND4' and g.get('phase_namespace_root')==str(JOB/'prefix-amend4'):return JOB/'prefix-amend4'
+    raise ValueError('EXACT_PREFIX_PHASE_NAMESPACE_REQUIRED')
+def phase_entries(g,ledger):
+    if g.get('physical_prefix_max')==3:return ledger['attempts']
+    ref=g.get('parent_prefix_ledger',{})
+    if ref.get('sha256')!=FAILED_INITIAL_PARENT_SHA or not ref.get('path') or sha(ref['path'])!=FAILED_INITIAL_PARENT_SHA:raise ValueError('IMMUTABLE_FAILED_INITIAL_PREFIX_PARENT_REQUIRED')
+    parent=json.loads(Path(ref['path']).read_text())
+    if parent.get('physical_max')!=3 or parent.get('physical_started')!=1 or len(parent.get('attempts',[]))!=1 or parent['attempts'][0]['status']!='FAILED':raise ValueError('EXACT_ONE_FAILED_INITIAL_PARENT_REQUIRED')
+    if ledger.get('physical_max')!=4 or ledger.get('parent_prefix_ledger_sha256')!=FAILED_INITIAL_PARENT_SHA or ledger['attempts'][:1]!=parent['attempts'] or ledger.get('physical_started')!=len(ledger['attempts']):raise ValueError('AMENDED_PREFIX_MUST_PRESERVE_FAILED_PARENT_ROW')
+    rest=ledger['attempts'][1:]
+    if any(e.get('prefix_phase')!='AMEND4' for e in rest):raise ValueError('MIXED_PREFIX_PHASE_HISTORY')
+    return rest
+def require_phase_approval(g):
+    if g.get('physical_prefix_max')==3:return
+    q=pinned_json(g.get('prefix_budget_amendment',{}))
+    required=dict(status='APPROVED_BY_OWNER',source_commit=SOURCE,protocol_sha256=PROTOCOL,parent_prefix_ledger_sha256=FAILED_INITIAL_PARENT_SHA,authorized_prefix_total=4,additional_prefix_attempts=1,prefix_phase='AMEND4',new_phase_variants=list(ORDER),full=0,training=0,downloads=0)
+    reply=q.get('exact_owner_reply')
+    if any(type(q.get(k)) is not type(v) or q[k]!=v for k,v in required.items()) or type(reply) is not str or not reply.strip():raise ValueError('EXACT_DIRECT_OWNER_PREFIX_AMENDMENT_REQUIRED')
 def verify_scope(g,variant,namespace,require_go=False):
     if g.get('source_commit')!=SOURCE or g.get('protocol_sha256')!=PROTOCOL or g.get('variant')!=variant or variant not in ORDER:
         raise ValueError('EXACT_A0_PREFIX_SOURCE_SCOPE_REQUIRED')
-    if Path(namespace).resolve()!=JOB/variant or g.get('physical_prefix_max')!=3 or g.get('full')!=0 or g.get('training')!=0 or g.get('downloads')!=0:
+    if Path(namespace).resolve()!=namespace_root(g)/variant or g.get('physical_prefix_max') not in (3,4) or g.get('full')!=0 or g.get('training')!=0 or g.get('downloads')!=0:
         raise ValueError('EXACT_PREFIX_NAMESPACE_BUDGET_REQUIRED')
     if g.get('calendar')!='[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)' or g.get('seed')!='10000' or g.get('reserve')!='0':
         raise ValueError('EXACT_PREFIX_WINDOW_SEED_REQUIRED')
     if require_go:
+        require_phase_approval(g)
         if g.get('root_go') is not True or g.get('independent_review')!='PASS' or g.get('engineering_acceptance')!='LIMITED_PASS' or g.get('launch_gates')!='PASS':
             raise ValueError('SEPARATE_EXACT_VARIANT_ROOT_GO_REQUIRED')
         for key in ('root_go_receipt','engineering_acceptance_receipt'):
@@ -48,6 +70,24 @@ def verify_freeze(g,variant,namespace):
         if sha(pin['path'])!=pin['sha256']:raise ValueError('PREFIX_SCRIPT_PIN_MISMATCH')
     if sha(g['kwargs_payload']['path'])!=g['kwargs_payload']['sha256']:raise ValueError('KWARGS_PAYLOAD_PIN_MISMATCH')
     pinned_json(g['financial_qualification_schema'])
+def stock_input_preflight(g,kwargs):
+    # Invoke the actual stock consumer helpers, with no run_native_diagnostic
+    # call, engine, journal, strategy/account, matching or PnL calculation.
+    from coinmaster.research.native_baseline import coverage_blockers,_load_daily_seed,funding_with_prior_minute_marks,iter_minute_bundles,run_native_diagnostic
+    from inspect import signature
+    b=signature(run_native_diagnostic).bind(**kwargs);b.apply_defaults();a=b.arguments;root=Path(a['data_root']);start=a['trading_start_ms'];end=a['trading_end_ms']
+    blockers=coverage_blockers(root)
+    if blockers:raise ValueError('ACTUAL_STOCK_INPUT_BLOCKERS:'+','.join(blockers))
+    consumed=[root/'bybit-1m/manifest.json']+[root/'normalized'/('bybit-'+asset+'-'+kind+'.parquet') for asset in ('BTCUSDT','SOLUSDT') for kind in ('daily','execution-1m','mark-1m','funding')]
+    pins={Path(x['path']).resolve() for x in g['input_files']}
+    if any(path.resolve() not in pins for path in consumed):raise ValueError('ACTUAL_NATIVE_INPUT_ROOT_NOT_BOUND_TO_PINNED_FILES')
+    seed,daily=_load_daily_seed(root,a['warmup_start_ms'],start,end)
+    events=funding_with_prior_minute_marks(root,start,end) if a['include_funding'] else ()
+    count=0;first=last=None
+    for bundle in iter_minute_bundles(root,start,end):
+        count+=1;last=bundle.open_time_ms
+        if first is None:first=last
+    return dict(status='PASS_ACTUAL_STOCK_READERS_ENGINE_FREE',data_root=str(root),coverage_blockers=blockers,consumed_files_pinned=len(consumed),daily_seed_rows=len(seed),daily_rows={key:len(rows) for key,rows in daily.items()},feature_seed_last_available=str(seed[-1].available_at),funding_events=len(events),funding_by_asset={str(i):sum(e.instrument_id==i for e in events) for i in {e.instrument_id for e in events}},funding_prior_marks_basis=sorted({e.basis for e in events}),minute_bundles=count,first_minute_ms=first,last_minute_ms=last,engines_created=0)
 def prepared_kwargs(g,variant,result):
     from coinmaster.research.a0_family import build_a0_kwargs,validate_native_a0,START_MS,END_MS
     from coinmaster.research.paired_signal_feed import load_paired_signal_feed
@@ -59,6 +99,7 @@ def prepared_kwargs(g,variant,result):
     payload,restored=native_kwargs_json_roundtrip(kwargs)
     if restored!=kwargs or payload+'\n'!=Path(g['kwargs_payload']['path']).read_text():raise ValueError('ACTUAL_PREFIX_KWARGS_DIFFER_FROM_FREEZE')
     bound=signature(run_native_diagnostic).bind(**restored);bound.apply_defaults();validate_native_a0(bound.arguments)
+    g['_stock_input_preflight']=stock_input_preflight(g,restored)
     return restored
 FINANCIAL_GATES=('actual_os_exit0','complete_cash_reconciliation','signed_asset_funding_reconciliation','native_3TP','ownership','continuous_settled_coverage','coherent_prefill_preopen_event_coverage','source_config_data_comparable','rights_audit_complete','terminal_positions0_orders0','zero_model_liquidations')
 METRIC_CONTRACT='ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102'
@@ -82,7 +123,7 @@ def verify_financial_qualifications(g,ledger,ledger_path,variant):
         if Path(q['native_ledger_path']).resolve()!=Path(ledger_path).resolve():raise ValueError('PRIOR_FINANCIAL_LEDGER_PATH_MISMATCH')
         entries=[a for a in ledger['attempts'] if a['attempt_id']==q['attempt_id']]
         if len(entries)!=1:raise ValueError('UNIQUE_PRIOR_COMPLETED_ATTEMPT_REQUIRED')
-        e=entries[0];detail=e.get('detail',{});report=Path(q['report_path']);namespace=JOB/label
+        e=entries[0];detail=e.get('detail',{});report=Path(q['report_path']);namespace=namespace_root(g)/label
         if e['status']!='COMPLETED' or e['variant']!=label or e['source_commit']!=SOURCE or Path(e['namespace']).resolve()!=namespace or report.resolve()!=namespace/'result'/(label+'.json') or Path(detail.get('report','')).resolve()!=report.resolve() or detail.get('report_sha256')!=q['report_sha256'] or sha(report)!=q['report_sha256'] or type(detail.get('actual_returncode')) is not int or detail['actual_returncode']!=0:raise ValueError('PRIOR_COMPLETED_REPORT_BINDING_MISMATCH')
         digest=attempt_digest(e)
         if digest!=q['completed_attempt_sha256']:raise ValueError('CURRENT_PRIOR_ATTEMPT_CHANGED')
@@ -106,21 +147,23 @@ def verify_worker_claim(path,g,variant,namespace,attempt_id):
     verify_scope(g,variant,namespace,require_go=True);ledger=json.loads(Path(path).read_text());entries=[e for e in ledger['attempts'] if e['attempt_id']==attempt_id]
     if len(entries)!=1:raise ValueError('UNIQUE_ACTUAL_WORKER_CLAIM_REQUIRED')
     e=entries[0]
-    if e['status']!='STARTED' or e['source_commit']!=SOURCE or e['variant']!=variant or e['namespace']!=str(namespace) or e.get('freeze_sha256')!=g['_freeze_sha256']:raise ValueError('ACTUAL_WORKER_CLAIM_FREEZE_IDENTITY_MISMATCH')
+    if e['status']!='STARTED' or e['source_commit']!=SOURCE or e['variant']!=variant or e['namespace']!=str(namespace) or e.get('freeze_sha256')!=g['_freeze_sha256'] or e.get('prefix_phase','INITIAL')!=g.get('prefix_phase','INITIAL'):raise ValueError('ACTUAL_WORKER_CLAIM_FREEZE_IDENTITY_MISMATCH')
+    phase_entries(g,ledger)
+    if g.get('physical_prefix_max')==4 and (e.get('phase_index')!=ORDER.index(variant)+1 or e.get('physical_index')!=ORDER.index(variant)+2):raise ValueError('WORKER_EXACT_AMEND4_PHASE_INDEX_REQUIRED')
     verify_financial_qualifications(g,ledger,path,variant)
     return e
 def claim(path,g,variant,namespace):
     verify_scope(g,variant,namespace,require_go=True)
     with transaction(path) as ledger:
-        if ledger.get('physical_max')!=3 or ledger.get('protocol_sha256')!=PROTOCOL or ledger.get('physical_started',0)>=3:
-            raise ValueError('PREFIX_BUDGET_EXHAUSTED_OR_DIFFERENT')
-        prior=ledger.get('attempts',[]);n=ledger['physical_started']
-        if len(prior)!=n or any(a['status']!='COMPLETED' for a in prior) or variant!=ORDER[n]:raise ValueError('STRICT_OFF_C0_A0_STOP_AFTER_FAILURE')
-        if g.get('previous_accepted_attempt_ids')!=[a['attempt_id'] for a in prior]:raise ValueError('ROOT_PREVIOUS_ACCEPTANCE_LINK_REQUIRED')
-        if any(a['source_commit']!=SOURCE for a in prior):raise ValueError('SAME_MATCHED_SOURCE_REQUIRED')
+        cap=g['physical_prefix_max']
+        if ledger.get('physical_max')!=cap or ledger.get('protocol_sha256')!=PROTOCOL or ledger.get('physical_started',0)>=cap:raise ValueError('PREFIX_BUDGET_EXHAUSTED_OR_DIFFERENT')
+        prior=phase_entries(g,ledger);n=len(prior)
+        if ledger['physical_started']!=len(ledger['attempts']) or n>=3 or any(e['status']!='COMPLETED' for e in prior) or variant!=ORDER[n]:raise ValueError('STRICT_PHASE_OFF_C0_A0_STOP_AFTER_FAILURE')
+        if g.get('previous_accepted_attempt_ids')!=[e['attempt_id'] for e in prior]:raise ValueError('ROOT_PREVIOUS_PHASE_ACCEPTANCE_LINK_REQUIRED')
+        if any(e['source_commit']!=SOURCE for e in prior):raise ValueError('SAME_MATCHED_SOURCE_REQUIRED')
         verify_financial_qualifications(g,ledger,path,variant)
-        aid=str(uuid.uuid4());ledger['physical_started']=n+1;ledger['active']=1;ledger['status']='PREFIX_PROCESS_ATTEMPT_RUNNING'
-        ledger['attempts'].append(dict(attempt_id=aid,physical_index=n+1,variant=variant,source_commit=SOURCE,status='STARTED',started_utc=utc(),namespace=str(namespace),freeze_sha256=g['_freeze_sha256']))
+        aid=str(uuid.uuid4());physical=ledger['physical_started']+1;ledger['physical_started']=physical;ledger['active']=1;ledger['status']='PREFIX_PROCESS_ATTEMPT_RUNNING'
+        ledger['attempts'].append(dict(attempt_id=aid,physical_index=physical,prefix_phase=g.get('prefix_phase','INITIAL'),phase_index=n+1,variant=variant,source_commit=SOURCE,status='STARTED',started_utc=utc(),namespace=str(namespace),freeze_sha256=g['_freeze_sha256']))
         return aid
 def finish(path,aid,status,detail):
     with transaction(path) as ledger:
