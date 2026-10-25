@@ -283,6 +283,15 @@ def test_additional_fixture_is_inert_without_human_pin_root_go_and_preserved_par
     approval={'status':'APPROVED_BY_OWNER','source_commit':gate['source_commit'],'protocol_sha256':gate['protocol_sha256'],'prior_closed_engineering_ledger_sha256':digest,'authorized_engineering_total':7,'additional_engineering_instances':1,'fixture_ids':['A05_CROSS_MARGIN_UNKNOWN'],'full':0,'unchanged_prefix_max':3,'exact_owner_reply':'UNIT TEST ONLY, NO REAL APPROVAL'}
     approved=tmp_path/'unit-approval.json';approved.write_text(json.dumps(approval));gate['additional_engineering_approval']={'path':str(approved),'sha256':sha(approved)}
     assert fixture.reviewed_fixture_cap(gate,ledger)==7
+    for invalid in (None,'','   ',True,False,0,7,1.5):
+        bad_approval=dict(approval);bad_approval['exact_owner_reply']=invalid
+        approved.write_text(json.dumps(bad_approval));gate['additional_engineering_approval']['sha256']=sha(approved)
+        with pytest.raises(ValueError,match='EXACT_DIRECT_OWNER'):fixture.reviewed_fixture_cap(gate,ledger)
+    bad_approval=dict(approval);bad_approval.pop('exact_owner_reply')
+    approved.write_text(json.dumps(bad_approval));gate['additional_engineering_approval']['sha256']=sha(approved)
+    with pytest.raises(ValueError,match='EXACT_DIRECT_OWNER'):fixture.reviewed_fixture_cap(gate,ledger)
+    approved.write_text(json.dumps(approval));gate['additional_engineering_approval']['sha256']=sha(approved)
+    assert fixture.reviewed_fixture_cap(gate,ledger)==7
     for field,value in [('root_go',False),('fixture_ids',['A06_C0_NO_RELEASE'])]:
         bad=copy.deepcopy(gate);bad[field]=value
         with pytest.raises(ValueError):fixture.reviewed_fixture_cap(bad,ledger)

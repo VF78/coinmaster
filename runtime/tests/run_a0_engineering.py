@@ -40,7 +40,8 @@ def reviewed_fixture_cap(gate,ledger):
         raise ValueError('DIRECT_OWNER_ADDITIONAL_APPROVAL_PIN_REQUIRED')
     approval=json.loads(Path(approval_ref['path']).read_text())
     required=dict(status='APPROVED_BY_OWNER',source_commit=gate['source_commit'],protocol_sha256=gate['protocol_sha256'],prior_closed_engineering_ledger_sha256=CLOSED_SIX_LEDGER_SHA,authorized_engineering_total=7,additional_engineering_instances=1,fixture_ids=['A05_CROSS_MARGIN_UNKNOWN'],full=0,unchanged_prefix_max=3)
-    if any(type(approval.get(k)) is not type(v) or approval[k]!=v for k,v in required.items()) or not str(approval.get('exact_owner_reply','')).strip():
+    reply=approval.get('exact_owner_reply')
+    if any(type(approval.get(k)) is not type(v) or approval[k]!=v for k,v in required.items()) or type(reply) is not str or not reply.strip():
         raise ValueError('EXACT_DIRECT_OWNER_ADDITIONAL_APPROVAL_REQUIRED')
     if ledger.get('parent_closed_engineering_ledger_sha256')!=CLOSED_SIX_LEDGER_SHA or ledger.get('physical_max')!=7 or ledger.get('physical_started')!=6 or ledger.get('attempts')!=parent['attempts']:
         raise ValueError('DERIVED_LEDGER_MUST_PRESERVE_ALL_SIX_ROWS')
