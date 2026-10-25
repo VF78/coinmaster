@@ -1,0 +1,40 @@
+{
+  "schema": "CM_TP_CONTINUITY_ROOT_DISPOSITION_V1",
+  "status": "HOLD_LAST_SLOT_AWAIT_EXPLICIT_PROTOCOL_AMENDMENT",
+  "utc": "2026-10-25T16:49:24.828174+00:00",
+  "engineering": {
+    "approved_max": 3,
+    "physical_started": 2,
+    "failed": 2,
+    "active": 0,
+    "remaining": 1,
+    "remaining_status": "HOLD_NOT_CLOSED_NOT_SPENT_NOT_TRANSFERABLE"
+  },
+  "prefix": {
+    "approved_max": 3,
+    "physical_started": 0,
+    "status": "BLOCKED_BY_ENGINEERING_NO_ROOT_GO"
+  },
+  "product_patch_allowed": false,
+  "stock_api": "NOT_PROVEN_NEITHER_PASS_NOR_UNSUPPORTED",
+  "reason": "Current fixture lacks mandatory valid marketable modify path. No knowingly incomplete third run. New explicit linked-position API stress route and max4 are proposed only. No source/economic/pilot/production permission is inferred.",
+  "new_proposal": "AMENDMENT_STOCK_STRESS_PROPOSED_RU.md",
+  "proofs": [
+    {
+      "path": "engineering-ledger.json",
+      "sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94"
+    },
+    {
+      "path": "prefix-ledger.json",
+      "sha256": "2ca6975cee1f5b661880131da06740fb5e43908ae95273d662a52b151cd3de46"
+    },
+    {
+      "path": "F1-physical2-cause.json",
+      "sha256": "ccc63c6d81de1115093f0aa2d1d65966cbc6b5f3dbaa05b6d1d9e8f0ea3ed135"
+    },
+    {
+      "path": "F1-final-slot-reachability-review.json",
+      "sha256": "44daecaedd3d67cef80daa9d0fbbd2ec0638dcd37aa24cd27529714d6c18a9ff"
+    }
+  ]
+}

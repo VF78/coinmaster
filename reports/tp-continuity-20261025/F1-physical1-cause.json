@@ -1,0 +1,147 @@
+{
+  "schema": "CM_TP_F1_PHYSICAL1_FAILURE_CAUSE_V1",
+  "source_commit": "14735dd15415b80f3ea4a49120c707f0927878bf",
+  "fixture_status": "FAILED",
+  "actual_worker_returncode": 1,
+  "attempt_id": "2e684986-b92d-4f43-b991-a24c4cde41fd",
+  "physical_started": 1,
+  "physical_max": 3,
+  "active": 0,
+  "prefix_started": 0,
+  "api_feasibility": "NOT_TESTED",
+  "monetary_product_patch_allowed": false,
+  "root_cause": "Harness advance added marks and quotes both sort=False, then run. Actual stockengine rejects unsorted nonempty buffer before data/engine components start.",
+  "source_lines": {
+    "harness": [
+      245,
+      247
+    ],
+    "native_run_guard": [
+      1540,
+      1545
+    ],
+    "native_add_data_sort": [
+      899,
+      907
+    ],
+    "native_public_sort_data": [
+      1253,
+      1261
+    ]
+  },
+  "native_guard_source_sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+  "actual_native_fills": 0,
+  "actual_native_auto_updates": 0,
+  "native_cash": "UNKNOWN_ACCOUNT_NOT_INITIALIZED",
+  "cleanup": {
+    "after_end": {
+      "trader": {
+        "state": "READY",
+        "running": false,
+        "disposed": false
+      },
+      "data_engine": {
+        "state": "READY",
+        "running": false,
+        "disposed": false
+      },
+      "risk_engine": {
+        "state": "READY",
+        "running": false,
+        "disposed": false
+      },
+      "exec_engine": {
+        "state": "READY",
+        "running": false,
+        "disposed": false
+      },
+      "emulator": {
+        "state": "READY",
+        "running": false,
+        "disposed": false
+      }
+    },
+    "after_dispose": {
+      "trader": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "data_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "risk_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "exec_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "emulator": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      }
+    },
+    "clean_stopped_then_disposed": false,
+    "original_errors": [
+      {
+        "stage": "FIXTURE",
+        "type": "RuntimeError",
+        "error": "Data has been added but not sorted, call `engine.sort_data()` or use `engine.add_data(..., sort=True)` before running",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-14735dd/runtime/tests/run_tp_continuity_feasibility.py\", line 318, in launch\n    result=run_fixture(engine,s,snapshot);snapshot('BEFORE_TERMINAL');rc=0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-14735dd/runtime/tests/run_tp_continuity_feasibility.py\", line 248, in run_fixture\n    advance(1)\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-14735dd/runtime/tests/run_tp_continuity_feasibility.py\", line 247, in advance\n    engine.run(streaming=True);engine.clear_data();s.settled_book=D(btc);s.book=(s.settled_book,);s.record('STREAM_COMPLETED_SETTLED_BOOK',settled_bid=btc);s.boundary('AFTER_NATIVE_STREAM_'+str(ns));snapshot('AT_'+str(ns))\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"nautilus_trader/backtest/engine.pyx\", line 1374, in nautilus_trader.backtest.engine.BacktestEngine.run\n  File \"nautilus_trader/backtest/engine.pyx\", line 1541, in nautilus_trader.backtest.engine.BacktestEngine._run\nRuntimeError: Data has been added but not sorted, call `engine.sort_data()` or use `engine.add_data(..., sort=True)` before running\n"
+      },
+      {
+        "stage": "END",
+        "error": "AttributeError(\"'NoneType' object has no attribute 'clear_margin_init'\")"
+      },
+      {
+        "stage": "END",
+        "error": "ACTUAL_FIVE_NATIVE_COMPONENTS_NOT_STOPPED"
+      }
+    ]
+  },
+  "engine_free_minimal_repair_proposal": "Only final quote add_data(...,sort=True), or public sort_data() before run; installed add_data uses stable sorted(ts_init), retaining equal-timestamp marksBTC,marksSOL,quoteBTC,quoteSOL insertion order. Requires independent review/root disposition and no automatic rerun.",
+  "remaining_instances": "2 HOLD; intended conditional semantic fixtures, not automatic retry authority",
+  "artifacts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-actual-process.json",
+      "sha256": "47f87c896f0997bd8f44774e76c758f3f7b11c72e9bd3c86016ecf6c0f4df4a2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-ledger.json",
+      "sha256": "1ddc6e81bd3a6b3821b748a68c299dd57622a26170b8b7325e57be092ddd8e24"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1/result.json",
+      "sha256": "c6b73117ffd38cbcaa9744e1fab74c8876f929c5f45c962c259e5cd9733803e4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1/FAILURE_BEFORE_END.json",
+      "sha256": "accc02bcb4cfe992551c848376c8e136858930c5a33ec855f816d8761e840ed1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1/BEFORE_END.json",
+      "sha256": "2ba1493cff4e8fcf02b6c1731bb9985acadb52ce4cb84ea4c9a0240d09f596fd"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1/AFTER_END.json",
+      "sha256": "24abfc824120aafc1a0536946349ebab9379564d3d27bcfe058675fcf168bf61"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1/BEFORE_DISPOSE.json",
+      "sha256": "ec0a0c06bc4bceaa0dca84fe8304be33ac19c3f72009e5210b9929d5555f6593"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical1/AFTER_DISPOSE.json",
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575"
+    }
+  ],
+  "fixture_observer_records": 1,
+  "actual_native_callback_events": 0
+}

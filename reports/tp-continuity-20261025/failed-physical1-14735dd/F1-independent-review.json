@@ -1,0 +1,47 @@
+{
+  "task": "CM-TP-CONTINUITY-F1-SOURCE-REVIEW-20261025",
+  "decision": "REQUEST_ONE_FIXTURE_ONLY_CORRECTION_BATCH_BEFORE_F1",
+  "source_commit": "47e4fe2ca4b1a5c6ff6589246902abc5a8fda825",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "P0": 0,
+  "P1": 2,
+  "findings": [
+    {
+      "id": "F1-01",
+      "priority": "P1_FALSE_UNSUPPORTED_ORACLE_BOUNDARY_CLASSIFICATION",
+      "issue": "Current probe combines rawcache with staleactororacle and treats every callback/modifyreturn as executable. route(OrderFilled) records closednativeTP before consumed/expected update, falselycounting justconsumedlegitimateTP asgap. DEBTfilled return compares old1.000leaves with newheld.750 before stockpostfillresize at nonmarketablebid100<allTPprices. GenericPendingUpdate inside nestedmodify similarly canflag before commandapplies. max_depth<=1 equates safe finite distinctOID nesting with unsafe loop. These can force fixturefailure without proving intendedstockAPI unsupported.",
+      "correction": "Preserve rawentrytrace but classify with exactfrozen consumed=domain entitlementcomplete OR nativeFILLED/currentcoherentderivedstate; never count staleoracle lag asgap. Mark transient NONEXECUTABLE only with sourcecallorder+quote/matchability proof; UNKNOWN staysnotPASS. Assert exactallocation at genuinepotentialmatchboundaries including immediatefills afterUpdated, not merely finalquote. Allow declared finite safe nested distinctOIDupdates with perOIDoutstanding/countbounds; actualloop/nonconvergence remainsFAIL. No stronger/newpartial-entitlementrules."
+    },
+    {
+      "id": "F1-02",
+      "priority": "P1_MISSING_DECISIVE_NATIVE_ASSERTIONS",
+      "issue": "TPfill sets expected=max(0,expected-qty) and mayreallocate afterclosed without checking actualqty<=PREfill frozenentitlement, potentially hiding executableoverfill. Returned actualTPlevels is not asserted{0,1,2}; positive genuineOrderUpdated/auto-resize/two-routeupdate evidence is recorded but not required. CleanupcapturesAFTER_END but only asserts postdispose.disposed, not actualSTOPPED.",
+      "correction": "Before consuming/reallocation retain prefillallowance and fail/UNSUPPORTED on anyactualperleveloverfill; use exactsource domain/nativeFILLEDconsumption. Require actualnativepositive3TPlevels, realauto/update/correction/typed+genericroute coverage, realModifyRejected and actualAFTER_END5componentsSTOPPED/notrunning beforeDISPOSED. No warning/localexception-as-nativeevent/finalflat-as-override."
+    }
+  ],
+  "positive_findings": [
+    "F1script only with immutablemonetaryruntime763; no nativeengine/fee/funding/OMS/defaulttoggle/sourcepatch. WaveOverlaysubclass callsactualinheritedmargin gate for2actualentries, syntheticAPIprices labelednotregisteredcontrol.",
+    "ExactlyoneBacktestEngineconstructor aftergate/ownerapproval/freshnamespace/durableledgerclaim, max3engineeringcurrent0; onefinite1h datawindow/25h config and enginefree --prepare/pureclassproof path.",
+    "OriginalnativeIDs/sameprice/publicmodify(totalfilled+desiredleaves), realpartial.050/freshdepth/nativeModifyRejectednegativecase and actualrawcash/fill/event snapshots included.",
+    "Sourcecode ordering frominstalled1.231 is correctly treated asunknownfeasibility: no productionpatch/economics admitted. Finalprocess0 itself stillrequiresindependentwindowadmission."
+  ],
+  "contract_clarification": "F1_ACCEPTANCE_CONTRACT.json/.md now states existingdomainentitlementcomplete OR nativeFILLED consumption and rawpostfill/pre-derivedcoherence. It doesnot impose a newallocationpolicy; ordinarypartialleafdecrement yields to exactexistingreallocation/consumptiontriggers.",
+  "reviewed_script_sha256": "0f75a02b4bfa547543f1a5ee0b06659eea7df96ba02dba2e47e65d841b4416c0",
+  "reviewed_packet_sha256": {
+    "F1-fixture-plan.json": "2e3d68bf4a8f2c01262c03c504fe0fd6152eb88ccb7d9f24552f4c35beb1eaec",
+    "F1-gate.json": "cc7a409bf1bd57f61abd3c481656cff4a46a1b4528c3bed6c1cd8e97c2209610",
+    "F1-pure-API-preconditions.json": "1773dd0961f39ee596bd756be246bd9c64295e8454b5d5397898d7945a63a65e",
+    "F1-engine-free-preflight.json": "12e008c8c85d3f3c29620cfab92c4ab7dd9f3b7e96ffa56095f211c2d49bb321",
+    "F1_ACCEPTANCE_CONTRACT.json": "d5c8b9e72f5622738caef71964a15b97f5bed12d1754d983d842fee227c013dd",
+    "F1_ACCEPTANCE_CONTRACT.md": "417725efd45ee687aca7a2a8461ed33f1faac69630f97429428f9e45b98456f8"
+  },
+  "reviewer_actions": {
+    "engines": 0,
+    "tests": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "ledger_or_gate_changes": 0
+  },
+  "authority": "One consolidated harness/assertion correction batch beforeanyF1engine. RootGO remainsfalse, ledgers0. No product/native/budget authority fromreview; initial47 findings and actualAPIpreconditions remain evidence."
+}

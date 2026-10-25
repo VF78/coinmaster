@@ -1,0 +1,53 @@
+{
+  "schema": "CM_TP_F1_LAST_SLOT_DISCOVERY_PROPOSAL_V1",
+  "status": "PROPOSED_NO_CODE_OR_ENGINE_AUTHORITY",
+  "physical_started": 2,
+  "physical_max": 3,
+  "prefix_started": 0,
+  "source_head": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "source_clean": true,
+  "monetary_83_files_byte_identical_763": true,
+  "public_origin": "https://github.com/VF78/coinmaster.git",
+  "actual_public_source_branch_ref": "763d985617abd7a7afef5eec13912303983d8837",
+  "publication": "HOLD_NO_PUSH_PER_ROOT",
+  "objective": "One remaining stock API discovery only, same unlinked position submit route as763; not full F1 qualification/product engineering/economic admission.",
+  "minimal_harness_changes": [
+    {
+      "location": "on_order_filled after genuine DEBT or full-consumption reallocation",
+      "proposal": "Initialize reallocated=False; setTrue only in existing actualDEBT/full-domain-or-nativeFILLED branches. After sync_oracle_allocation, for existing self.targets live IDs with positive expected and notconsumed call existing correct(cache.order(oid)). Do not call it on ordinary partial except existing unsolicited Updated handler. No new TP owner or order ID/price/qty rule.",
+      "pseudo_diff": "+ reallocated = False\n  # existing actual TP complete branch: target_lots + sync\n+     reallocated = True\n  # existing actual DEBT branch: target_lots + sync\n+     reallocated = True\n+ if reallocated:\n+     for level, oid in self.targets.items():\n+         order = self.cache.order(oid)\n+         if level in self.expected and self.expected[level] > 0 and level not in self.consumed and order is not None and not order.is_closed:\n+             self.correct(order)  # existing bounded public modify; no new owner\n"
+    },
+    {
+      "location": "order_rows/native snapshots",
+      "proposal": "Export native order.position_id, public cache.position_id(order.client_order_id), plus actual BTC native position.id and public cache.orders_for_position(position.id) IDs. Read only; NEVER add_position_id/cache.update_order/submit with new position link."
+    },
+    {
+      "location": "assert s.auto_updates and result status",
+      "proposal": "For DISCOVERY ONLY retain actual native_auto_update count/status OBSERVED or NOT_EXERCISED. Preserve required positive genuine typed+generic OrderUpdated/ModifyRejected, prefillentitlements/partial/all3TPlevels and finalflat/5STOPPED→DISPOSED. Missing auto-update cannot become F1qualified/PASS; output DISCOVERY_COMPLETED_F1_NOT_QUALIFIED, productpatch_allowed=False, prefix_allowed=False. Existing original F1 admission unmet and original2FAILED unchanged."
+    },
+    {
+      "location": "claim/resume/freeze metadata",
+      "proposal": "expected_before=2, physicalindex3/freshF1-physical3; exact immutable parent2FAILED rows with raw+canonical digests, max3 unchanged. Claim beforeconstructor, stopfirstfailure, no more attempts. Requires focused review/rootGO, no automatic execution."
+    }
+  ],
+  "decisive_stages_possible": [
+    "Actual same-ID public quantity modify after native BTC debt .250, original159/159/432lot allocation before next marketable quote; zero actual protection gap.",
+    "Real native OrderUpdated through typed+generic SAMEeventID, unchanged nativeprices/ownerIDs, snapshot real cache leaves/position index.",
+    "Actual .050partial TP0, entitlement-before-clamp, real below-filled ModifyRejected, oldACK working order remains authority.",
+    "Actual remaining TP0/1/2 fills with fresh shared depth, native event TradeID dedup, no extra .250capcut/reversal/refund, terminalBTC+SOLflat/nativecash, all5STOPPED→DISPOSED.",
+    "Observe whether stock unsolicitedautoResize ever occurs naturally on unchanged unlinked763 route. If absent NOT_EXERCISED; no explicit position link to force it."
+  ],
+  "safety": [
+    "Use only existing correct(): perOID guard set beforepublicmodify, <=8updates perstage/OID, no unresolvedsameOID overlap; bounded crossOID nesting permitted only with exact potentiallyexecutable allocations.",
+    "Same frozen quantity oracle; proactive calls only existing reallocationtrigger, not broad renormalization on partial. Nativecache+actualfills remain authority; observer is not OMS/PnL.",
+    "Book prior+incoming envelope, unknown/possiblymarketable unsafe mismatch STOP. No price/order/quote reorder, no fakeparent/contingenttoggle/reduce_onlyoff/moneycode.",
+    "Intermediate nonmarketable old leaves are working protection, not correctweights; no final-only convergencecredit."
+  ],
+  "limits": [
+    "Third discovery consumes last approved constructor, leaving0 for separate product engineering after actualF1PASS. No productpatch exists and none may be installed mid-engine or same failed engine reused.",
+    "Therefore this cannot complete full repairedsource integration+freshprefix admission within current3. Even success leaves F1autoResize requirement NOT_PROVEN if absent and product/nativeintegration unqualified.",
+    "Useful only if root chooses bounded API discovery value before closing phase; otherwise STOP without spending third. No new human budget inferred and no prefixes permitted."
+  ],
+  "recommendation": "Conditional useful discovery, not route to current economic admission. ROOT may choose last native API test after exact fixture-only review; otherwise preserve lastslot/HOLD. Productpatch/prefix stayblocked either way until concrete new qualifying authority.",
+  "ledger_sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94"
+}

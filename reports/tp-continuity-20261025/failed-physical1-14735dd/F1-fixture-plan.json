@@ -1,0 +1,65 @@
+{
+  "schema": "CM_TP_F1_FIXTURE_PLAN_V1",
+  "fixture_id": "F1_STOCK_NATIVE_API_FEASIBILITY",
+  "source_commit": "14735dd15415b80f3ea4a49120c707f0927878bf",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "money_runtime_byte_unchanged": true,
+  "engine_instances_planned": 1,
+  "engine_instances_started": 0,
+  "window_ns": [
+    1,
+    3600000000000
+  ],
+  "config_window_ns": [
+    -86400000000000,
+    3600000000000
+  ],
+  "native_version": "1.231.0",
+  "scope": "Direct WaveOverlay subclass with real inherited margin gate; fixture API proof only, not registered financial control/sizing/parity.",
+  "oracle": "Source763 target_lots only at initial/debt-fill/full-consumption trigger; ordinary partial fill decrements its own entitlement. Total update=actual native filled+desired leaves; same owned OID/unchanged prices.",
+  "stages": [
+    "Initial actual native BTC BUY1/SOL SELL10 using unchanged stock margin gate and own native account. Causal completed seed/start-minus-day precondition; no True override.",
+    "Three actual accepted reduce-only BTC targets at101/102/103 and212/212/576 lots.",
+    "Actual native SOL reduction2.5 creates synthetic declared cap.750; retain working BTC TPs until next executable BTC quote, residual debt from actual held.",
+    "Native BTC debt fill; observe stock auto-resize and attempt finite same-OID modify correction from real current filled+expected leaves.",
+    "Actual partial TP0 using fresh displayed depth .050. Actual modification below native filled triggers rejection; no fake ACK/reject.",
+    "Actual matching of remaining original targets with increasing fresh depth; close SOL, assert native flat/orders0, record BEFORE_END/AFTER_END/BEFORE_DISPOSE/AFTER_DISPOSE."
+  ],
+  "admission": [
+    "Zero native remaining required-target absence while BTC held. Old ACKed working protection is separate from correct allocation.",
+    "Exact frozen per-level leaves at every potential match boundary including typed+generic callback returns and modify return; any drift blocks PASS. Final convergence alone is insufficient.",
+    "Typed+generic native event.id route evidence, native TradeID dedup; snapshot callback entry+command before/return and actual cache statuses/filled/leaves/positions/cash.",
+    "No native reverse, duplicate target owner, extra debt cut, replayed fake fills or reentrant correction loop; no native defaults changed.",
+    "All partial/modifyReject/three target fill stages must be actual native events, no omitted assertions.",
+    "Even process0 requires independent source/API ordering review; unobservable unsafe matching window=>UNSUPPORTED/STOP before product patch."
+  ],
+  "stop": "FIRST_FAILURE. Preserve actual error/snapshots; no retry, no product patch/economics if unsupported.",
+  "known_risk": "Stock post-fill auto-resize may overwrite standalone children. Callback/modify boundaries can expose unavoidable allocation drift: failure is valid feasibility result, not permission to relax weights.",
+  "further_fixtures": "2 conditional reserved only after actual F1 PASS/root acceptance and narrow monetary patch review; no current launch authority.",
+  "prefix_started": 0,
+  "full": 0,
+  "product_patch_allowed": false,
+  "correction_batch": {
+    "classification": "Coverage presence separate from allocation. Known bid<unchanged SELL TP price is nonmarketable transient. Nested own OrderPendingUpdate is pre-apply/no native match by installed Strategy._create_modify_order source1615-1634 then modify_order1073-1091. Unknown book/marketable allocation mismatch blocks PASS; no final-convergence-only admission.",
+    "quote_trace": "During streaming use candidate bids=(settledprior,incoming), not incoming-as-current. Timehandlers/marks may use prior; exchange quote matching precedes DataEngine and strategy callbacks. NONMARKETABLE only if every known candidate bid is below each mismatched live SELL target price; any unknown candidate/possibly marketable state blocks PASS. After stream completed, settledincoming is authoritative singleton. Record prior+incoming candidacy/source order and native event snapshots; no private book reads or quote reordering.",
+    "consumption": "Verification-only existing WaveOverlayState/Episode consumes only genuine native TP events using native lot steps. Native FILLED or existing btc_filled_tps is consumed; CANCELED/DENIED/REJECTED never generic-close-consumed. Raw callback entry expected retained; coverage derives post-fill native/domain truth.",
+    "pre_fill_entitlement": "Assert qty>0 and qty<=pre-fill frozen allowance BEFORE observer.on_fill, subtraction, min/clamp or reallocation.",
+    "decisive_assertions": [
+      "actual TPfilledlevels exactly0,1,2",
+      "positive actual native auto OrderUpdated",
+      "same native event.id typed+generic once for Updated and ModifyRejected",
+      "positive actual partial fill/native ModifyRejected",
+      "perOID guard set before modify; finite8updates perstage/OID; no sameOID unresolved overlap; bounded crossOID nesting not rejected solely depth2",
+      "all5native components STOPPED/notrunning AFTER_END before actual DISPOSED"
+    ],
+    "pure_actual_checks": [
+      "classification nonmarketable bid100/TP101; bothprior100/incoming100.5 noncross; prior104/incoming100 andprior100/incoming104 bothblock; unknownprior+incoming100 blocks",
+      "marketable bid101 mismatch=>NOT_PROVEN",
+      "unknownbook=>NOT_PROVEN",
+      "nestedPendingUpdate=>source-proven preapply",
+      "actual domain partial50of159lots notconsumed then109remaining consumed",
+      "actual installed policy/Quantity/event/modify APIs"
+    ],
+    "prior_source_preserved": "initial-47e4fe2/ and initial-102c12a/ plus both immutable source snapshots; old errors/review facts not overwritten"
+  }
+}

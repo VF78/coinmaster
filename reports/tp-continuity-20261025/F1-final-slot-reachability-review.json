@@ -1,0 +1,90 @@
+{
+  "schema": "CM_TP_F1_FINAL_SLOT_REACHABILITY_REVIEW_V1",
+  "decision": "HOLD_STOP_BEFORE_LAST_SLOT_FOR_PROPOSED_REORDER",
+  "scope": "Read-only source proof limited to existing source258 fixture, proposed partial/reject-before-relief reorder, unchanged unlinked763 route and frozen quantities/prices/cap. Not a global impossibility claim.",
+  "p0": [],
+  "p1": [
+    {
+      "id": "F1-REACH-01",
+      "finding": "Proposed reorder may reach genuine auto-resize but does not reach a valid marketable quantity modify with available fresh depth; positive coverage of native Updated→immediate fill remains missing. OS0 would not establish full F1 acceptance.",
+      "required_resolution": "Provide a source-grounded exact scenario and positive event/command/fresh-depth assertion within approved route before using the final constructor; otherwise STOP and seek a concrete scope/budget amendment."
+    }
+  ],
+  "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "actual_state": {
+    "failed_physical": 2,
+    "maximum": 3,
+    "remaining": 1,
+    "product_patch_allowed": false,
+    "new_engines_this_review": 0
+  },
+  "proof": [
+    {
+      "point": "Natural linkage",
+      "detail": "A genuine .050 TP0 partial fill can naturally associate TP0 with the native BTC position before later debt. This is source-supported, not actual-run proof. No explicit position link or fake parent is needed for that candidate."
+    },
+    {
+      "point": "Debt resize remains nonmarketable",
+      "detail": "BTC .950 minus same cap .750 requires .200 debt. At unchanged debt quote bid100, all TPprices101/102/103 are nonmarketable. Frozen desired leaves159/159/432 and actual TP0 filled50 imply valid TP0 total209lots. Native auto can target whole position750, then bounded correction209, but both use bid100 and cannot exercise the marketable branch."
+    },
+    {
+      "point": "Full-consumption correction is no-op",
+      "detail": "After TP0 remaining159 is genuinely consumed, held591; target_lots(591,{0}) gives TP1=159 and TP2=432. These are already their frozen leaves. After TP1 consumption remaining432 belongs entirely to TP2. No nontrivial valid quantity correction is created by the scheduled terminal fills."
+    },
+    {
+      "point": "Fresh-crossed quote is insufficient",
+      "detail": "MatchingCore sorts SELL limits ascending price and matches before strategy quote. A previously partial/indexed lower TP remains first: while partial it consumes the available shared fresh bid depth; if enough depth remains it closes before the higher TP fills. Post-fill auto skips the current filled OID and closed orders. Thus merely crossing101/102/103 with fresh size does not produce the required live previously-linked lower target plus fresh executable depth at the quantity-update boundary in this candidate."
+    },
+    {
+      "point": "Reject is different coverage",
+      "detail": "The .001 total below actual .050 filled is a genuine rejection, not a valid quantity update entering _update_limit_order5597–5635. Ordinary marketable TP fill is likewise not proof of Updated→immediate-fill nesting."
+    }
+  ],
+  "native_source_refs": [
+    "backtest/engine.pyx5597–5635: valid marketable update emitsUpdated then fill_limit_order immediately",
+    "backtest/engine.pyx6518–6540: shared consumed depth/fresh displayed-size reset",
+    "backtest/engine.pyx7994–8039: position-index enumeration, skip current fill, require open passiveRO, resize whole position",
+    "execution/matching_core.pyx234–243,259–276,481–486: ascending SELL order matching",
+    "execution/engine.pyx1328/1452 onward: position determination on real fill"
+  ],
+  "recommendation": {
+    "now": "Do not spend physical3 on the proposed reorder while this decisive coverage is known missing. Preserve source258, both failed rows, uncommitted fixture correction and unused slot; no gate/ledger change here.",
+    "read_only_option": "Prepare one exact causal trace showing a genuine valid marketable modify, native remaining liquidity, pre/post quantity and expected entitlement at each nested boundary, with a positive mandatory assertion. Source-only proof must explain how it evades the ordering/depth obstacle; final-state convergence is insufficient.",
+    "amendment_options": [
+      "Explicitly approve a separate real-native-position-link API probe (existing genuine position only, no fakeparent/nativepatch), with precise representativeness limits and independent acceptance review; this changes the candidate route and is not current763 parity.",
+      "Alternatively approve a distinct API hazard-discovery scenario whose changed setup is disclosed and whose observations are separated from current-route qualification.",
+      "For any continued product path, approve enough newly counted instances after actual feasibilityPASS for the mandatory frozen post-patch connected coverage. Current last slot alone cannot complete that sequence. No old slot transfer, hidden reserve or assertion waiver."
+    ]
+  },
+  "limits": "This review neither declares stock UNSUPPORTED nor F1PASS. Source-supported natural-link and safety-path possibilities require actual native evidence. No tests, engines, Popen, code edits, budget/gate/ledger mutations were performed.",
+  "proof_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-258f6ba/runtime/tests/run_tp_continuity_feasibility.py",
+      "sha256": "08e28c132ecf01f5be80c7c5f56cb191dad27b2dc4b40960d8da617d1ca89b43"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-258f6ba/runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/matching_core.pyx",
+      "sha256": "b653bb8a8097f3dbe9f85fb4a1a8ad3ffe3b79c6064cc3a294c40f1d12d96b2f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/engine.pyx",
+      "sha256": "5b7113b1c210f8123d658caeb5c50435bf266477de7dc36f30892f377ee913f5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical2-cause.json",
+      "sha256": "ccc63c6d81de1115093f0aa2d1d65966cbc6b5f3dbaa05b6d1d9e8f0ea3ed135"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-ledger.json",
+      "sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94"
+    }
+  ]
+}

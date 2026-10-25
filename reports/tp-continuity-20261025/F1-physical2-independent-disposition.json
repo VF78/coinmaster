@@ -1,0 +1,109 @@
+{
+  "schema": "CM_TP_F1_PHYSICAL2_INDEPENDENT_DISPOSITION_V1",
+  "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "decision": "HOLD_API_FEASIBILITY_NOT_PROVEN",
+  "physical_process": "FAILED_OS1",
+  "stock_api_disposition": "NEITHER_PASS_NOR_UNSUPPORTED",
+  "p0": [],
+  "p1": [
+    {
+      "id": "F1-P2-01",
+      "finding": "Harness never initiates correction when actual debt/full consumption changes the frozen desired allocation. correct() is reached only from OrderUpdated; with zero unsolicited Updated the public modify API is never exercised.",
+      "source_lines": [
+        225,
+        253,
+        274,
+        276,
+        311
+      ],
+      "correction_scope": "Fixture-only existing correct() invocation for current live owned targets on the existing actual debt/full-consumption trigger, preserving exact oracle, quantity/prices, boundary checks, same-OID limits and callback deduplication."
+    }
+  ],
+  "facts": {
+    "attempt_id": "86fbc698-ccb5-474b-9090-1164a745e070",
+    "real_native_fills": [
+      "BTC entry 1",
+      "SOL entry short10",
+      "SOL relief2.5",
+      "BTC debt0.25"
+    ],
+    "btc_held": "0.75",
+    "live_tp_leaves": [
+      "0.212",
+      "0.212",
+      "0.576"
+    ],
+    "frozen_expected_leaves": [
+      "0.159",
+      "0.159",
+      "0.432"
+    ],
+    "native_updated": 0,
+    "modify_commands": 0,
+    "tp_fills": 0,
+    "recorded_actual_coverage_gaps": 0,
+    "recorded_marketable_allocation_violations": 0,
+    "claim_limit": "Zero gaps/violations describes the short nonmarketable failed prefix of this fixture, not feasibility or financial qualification.",
+    "cleanup": "All five actual components STOPPED then DISPOSED; terminal account was not flat."
+  },
+  "source_inference": {
+    "native_auto_resize": "Installed engine.pyx7994 enumerates cache.orders_for_position(position.id); eligible standalone RO orders are resized to whole position quantity, not frozen per-level weights, so linked auto-resize itself requires bounded correction/unsafe-window proof.",
+    "current_route": "Harness submit_order at206/216 and unchanged monetary producers wave_overlay2083/paired_prefix288 omit position_id. Native Strategy.submit_order adds order with optional position_id; Cache.add_order2257 indexes supplied nonNone position_id.",
+    "unknown": "Actual TP position_id/cache.position_id/order-position membership was not exported. No post-disposal reconstruction or factual claim of missing linkage is valid.",
+    "position_link_api": "A real existing native position.id can be passed through the public API, without fabricated parent/OCO. This is a different submitted linkage route and must not silently replace the current763 route or be treated as proved production parity. Not required just to exercise proactive public modify on existing orders."
+  },
+  "remaining_slot_disposition": {
+    "started": 2,
+    "maximum": 3,
+    "remaining": 1,
+    "meaningful_use": "One narrowly reviewed corrected F1 API discovery run can be useful within the existing cap, subject to separate frozen checkpoint/rootGO. No automatic launch is authorized by this review.",
+    "recommended_path": "First prepare engine-free correction and observability on unchanged unlinked submit route; proactively invoke existing correct() on genuine allocation triggers and export native positions, cache.position_id for each TP, orders_for_position membership, command/callback identities and matching-window states. Preserve all mandatory acceptance checks.",
+    "auto_update_rule": "Proactive modify ACK/Updated must not be mislabeled unsolicited native auto-resize. If the required auto-resize observation is absent, keep that coverage NOT_TESTED and do not declare full F1PASS. Any separately proposed real-position-link probe needs explicit source/contract review before running, not a hidden in-run alternate setup.",
+    "pipeline_limit": "A feasibility run consuming physical3 leaves zero post-patch constructors. Approved sequence requires feasibilityPASS before productpatch and later actual integrated product coverage; current remaining budget cannot qualify that whole pipeline. It may produce useful API evidence only. Further product/native/economic admission would need an explicit concrete revised protocol/budget; no hot patch, reused engine or retroactive failed-PASS coverage."
+  },
+  "next_readonly_steps": [
+    "Freeze minimal proactive-trigger diff and source-only checks against unchanged acceptance contract; no production linkage change.",
+    "Prepare public read-only position/index snapshots before debt, on fill entry/return, before/after modify and at matching boundaries; include explicit absence and immutable identity.",
+    "Verify source callback ordering for initiating modify during actual on_fill, same-OID reentrancy and rejection; retain conservative UNKNOWN/executable-mismatch STOP.",
+    "State final-slot evidence objective separately from product-stage admission and obtain root disposition before any engine."
+  ],
+  "authority": "Read-only review only. No engine/tests/Popen, product edits, ledger/gate mutation, budget extension or economic permission. All previous failed rows remain failed.",
+  "proof_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-258f6ba/runtime/tests/run_tp_continuity_feasibility.py",
+      "sha256": "08e28c132ecf01f5be80c7c5f56cb191dad27b2dc4b40960d8da617d1ca89b43"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical2-cause.json",
+      "sha256": "ccc63c6d81de1115093f0aa2d1d65966cbc6b5f3dbaa05b6d1d9e8f0ea3ed135"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-ledger.json",
+      "sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical2-actual-process.json",
+      "sha256": "157db74d804cc962f69a18e2c5678e46a708c7c90faa08371c053ce47e847e9e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical2/result.json",
+      "sha256": "e7f98be9f540035ff159dc7a5b6a655b29b27523fce71c234ec850c80e69d124"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F1-physical2/FAILURE_BEFORE_END.json",
+      "sha256": "9741a88cc779c71a24c67305b6c88393cd95b2bce90611d07e8d7fa38726dd5c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.pyx",
+      "sha256": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    }
+  ]
+}

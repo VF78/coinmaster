@@ -1,0 +1,12 @@
+{
+  "scanned_files": 85,
+  "high_confidence_secret_findings": [],
+  "result": "PASS",
+  "scope": "Exact proposed manager publication paths; pattern scan only, no values emitted",
+  "source_ref_verified": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "deployment": false,
+  "whitespace_check": "PASS excluding immutable raw .patch context-space lines22/46, preserved byte-exact bysha",
+  "workflow": "push trigger onlycodex/nautilus-btc-sol-mvp with specific nonmatchingpaths; currentmanagerpublication notdeployment",
+  "proposal_sha_verified": true,
+  "ledger_verified": "2FAILED/max3/active0;prefix0;noamendmentapplied"
+}

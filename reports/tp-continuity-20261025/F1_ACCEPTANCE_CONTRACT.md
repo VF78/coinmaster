@@ -1,0 +1,21 @@
+# F1 stock-native feasibility acceptance
+
+Утверждённый protocolSHA34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4. Этот contract задаёт PASS/UNSUPPORTED для FIRSTfixture до productpatch; engine не создаёт и rootGO не даёт. PlainnativeStrategy/probe допустим только как APIfeasibility, не как registeredR2 financialcontrol.
+
+Разделять **workingprotection** и **exactallocation**. Старые ACKedleaves при pendingmodify можно считать реальной работающей защитой лишь если cache/events+source подтверждают, что тот же nativeorder ещё работает по прежней цене/стороне. Ни requestedqty, ни command не ACK. Но staleoldleaves не доказывают исходные weights: presencePASS/allocationFAIL означает UNSUPPORTED.
+
+Нормативна frozen763 allocation/quantization/consumedrights. OrdinarypartialTP уменьшает свой entitlement; нельзя renormalize target_lots после каждогоpartial. Reallocation только по существующим триггерам source: entrychange/BTC_DEBT/fullconsumedTP; totalmodifyqty=actualfilled+desiredleaves. Nativeauto-resize каждогоchild до всейposition — наблюдаемый механизм, не oracle. ConsumedTP не возвращается, duplicateowner/extraBTCcut/caprefund/reverse запрещены. Непредставимая nativequantization —UNSUPPORTED, не повод изменитьweights.
+
+Точное распределение требуется **до каждой возможности matching**, а не только в конце quote. Проверять inputquote boundaries, commandentry/return, exits обоихtyped/generic callbackroutes и вложенныеmodify paths. Stock _update_limit_order способен послеUpdated сразу исполнить limit какTaker при той же marketableцене; это обязательная опаснаяграница. CallbackENTRY может фиксировать временный cacheoversize только при доказанном NONEXECUTABLE состоянии до точнойcorrection: нужны installedsource ordering и actualnestedtrace. Если окно может исполниться/не наблюдаемо —UNSUPPORTED/UNKNOWN. Eventualcorrectqty/flat не оправдывает промежуточный misallocatedfill.
+
+Минимальные actualнаблюдения F1:3accepted standaloneROtargets; настоящий position/debtfill→nativeauto-updates; exactperlevelcache после publicsameOIDmodify; freshdepth/marketableupdate adversary; partialfilledqty+leaves; реальные typed/genericUpdated иModifyRejected. Warning/localexception/no command не nativeModifyRejected. Если rejectpath фактически не получен —NOT_EXERCISED, не claim полногоengineeringcoverage. ПоследующиеF2/F3 могут закрыть остальные approvedсемантики только внутри общегоcap3; решающая allocation/matchsafety F1 должна быть доказана до productpatch.
+
+Trace: monotonicobservationsequence+nativeeventns/ID/TradeID, typed/genericentry+exit, callbackdepth, commandbegin/return, perOIDactualqty/filled/leaves/status/price/RO/TIF, actualposition, cap/residualdebt, отдельная expectedallocation. Nativeevent применяется один раз; повторныеupdates того жеOID не отбрасываются. Fillcallback может видеть уже committedcache: не маркировать его как свежийpre-fillread. Boundedcorrection/никаких reentrantloops/hiddenretry. BEFORE_END rawproof до end/STOPPED/dispose/DISPOSED; cleanup не переписывает провал вPASS.
+
+PASS_STOCK_API_FEASIBLE: actualOS0/одинcountedengine/полнаяtrace, исходныеleaves и continuousprotection на всех потенциальныхmatchboundaries, ни одного extra/reverse/misallocatedfill. Это только допуск к узкомуproductpatch послеrootreview, не economics.
+
+UNSUPPORTED_STOCK_API: реальныйgap, исполнимое неверноераспределение/неверныйfill, lossownership, extraBTCcut, loop или необходимость enginepatch/toggle/newOMS/fakeownership. STOPproductpatch/prefix даже приRC0 иterminalflat. UNKNOWN/fixturefailure —неPASS, actualRC/ledgerstatus сохранить, никакогоautomaticretry.
+
+Полные JSONassertions/sourcehashes —вF1_ACCEPTANCE_CONTRACT.json. Contract author engine/tests/Popen/product/ledger/gate edits0; F1rootGO остаётсяfalse.
+
+Oracle clarification (unchanged frozen semantics): after an actual authorizedTPfill, consumed means domain btc_filled_tps OR native statusFILLED, not arbitrary is_closed. Nativepartial can reach domainentitlement-complete. RawcallbackENTRY mayshow postfillcache beforeactororacle update; do not call legitimatejust-consumedTP a gap from stale expectedmap. Label raw/derivedstates separately and apply predicates coherently. This clarifies the approvedrules and adds no price/allocation change.

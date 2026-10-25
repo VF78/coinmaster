@@ -1,0 +1,24 @@
+{
+  "task": "CM-TP-CONTINUITY-F1-PHYSICAL1-CAUSE-REVIEW",
+  "decision": "HARNESS_INPUT_SCHEDULE_FAILED_STOCK_API_FEASIBILITY_NOT_TESTED",
+  "actual_source": "14735dd15415b80f3ea4a49120c707f0927878bf",
+  "physical_index": 1,
+  "actual_OS_rc": 1,
+  "native_data_processed": 0,
+  "native_fills": 0,
+  "native_auto_updates": 0,
+  "stock_api_feasibility": "NOT_TESTED_NOT_UNSUPPORTED",
+  "cause": "Both marks and finalquoteadd_data usedsort=False. Installednativeadd_data sets_sorted=False; engine._run rejectsnonemptyunsortedbuffer before processingdata. Firstpure/API review omittedactualsortedbuffer/runprecondition.",
+  "installed_API_proof": "engine.pyx899-907 finalsort=True performs stable sorted(ts_init), re-adds iteratorpresorted andsets_sorted=True. Equalts_init order preserves marksBTC/marksSOL/quoteBTC/quoteSOL. Correct only finalsort flag, no newquote policy/price/fee/engine modification.",
+  "cleanup_adjudication": "Callingendbeforeaccount/componentsinitialization producedNone.clear_margin_init error. ActualafterENDcomponentsREADY/notrunning, thenDISPOSED. NoSTOPPED/cleanstart-stopclaim and nofinancial/accountvalue invented. Originalerror+cleanupfailure mustremain.",
+  "authorized_next_review_only": "Minimaltestharnesssort/schedule/APIflagproof and conservativeactualstartedcleanup. Freshphysical2namespace/expected_before1/max3/immutablefirstFAILEDrow. Nooracle/money/architecturechange orengineuntilnewfocusedrootGO.",
+  "preserve_initial_review": "F1-independent-review andF1-independent-correction-review retained; theirharnessPASS didnot proveactualnativeexecution. Actualphysical1failure/missedAPIconstraint recordedhere.",
+  "reviewed_sha256": {
+    "reports/tp-continuity-20261025/F1-physical1-cause.json": "f9ebcd5a123388872d5a9292faf99b72506b133d03b1eda2772a8dd958328341",
+    "reports/tp-continuity-20261025/engineering-ledger.json": "1ddc6e81bd3a6b3821b748a68c299dd57622a26170b8b7325e57be092ddd8e24",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+    "reports/tp-continuity-20261025/F1-actual-process.json": "47f87c896f0997bd8f44774e76c758f3f7b11c72e9bd3c86016ecf6c0f4df4a2"
+  },
+  "reviewer_actions": "Read-onlycause/sourceAPI; engines/tests/Popen/source/ledger/gate edits0.",
+  "authority": "Remaining2of3engineering onHOLD, noautomaticretry; productpatch/prefixblockeduntilactualF1PASS. NoUnsupportedstockconclusion fromunexecutedcase."
+}

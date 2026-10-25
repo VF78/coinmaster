@@ -1,0 +1,114 @@
+diff --git a/runtime/tests/run_tp_continuity_feasibility.py b/runtime/tests/run_tp_continuity_feasibility.py
+index f8b5f52..7444cf8 100644
+--- a/runtime/tests/run_tp_continuity_feasibility.py
++++ b/runtime/tests/run_tp_continuity_feasibility.py
+@@ -96,7 +96,18 @@ def pure_preconditions():
+     intent=domain._intent(ep,'BTC_REDUCE',-1,0,quantity=.159)
+     domain.on_fill(intent.id,.05,101.,datetime.fromtimestamp(1,timezone.utc));assert 0 not in ep.btc_filled_tps
+     domain.on_fill(intent.id,.109,101.,datetime.fromtimestamp(2,timezone.utc));assert 0 in ep.btc_filled_tps
+-    return dict(engine_constructors=0,actual_add_data_signature=str(add_signature),real_data_schedule=[dict(type=type(x).__name__,instrument=str((getattr(x,'data',x)).instrument_id),ts_init=x.ts_init)for x in schedule],AST_final_batch_sorted=True,failed_row_resume_rejections=4,native_version=nautilus_trader.__version__,config=snapshot_config(cfg),actual_policy_type=type(policy).__name__,positive_initial=str(initial),positive_maintenance=str(maintenance),native_event_classes=[OrderUpdated.__name__,OrderModifyRejected.__name__],native_modify_signature=str(inspect.signature(WaveOverlayStrategy.modify_order)),data_window_ns=[1,END],config_window_ns=[-86400_000_000_000,END],contract='synthetic L1 API feasibility, not financial/parity/venue admission')
++    dummy2=copy.deepcopy(dummy);dummy2['physical_started']=2;dummy2['attempts'].append({'physical_index':2,'status':'FAILED','actual_process_exit_code':1,'error':'PRESERVED2'})
++    raw2=json.dumps(dummy2,indent=2);resume2={'expected_before':2,'preserved_failed_attempts':[{'canonical_entry_sha256':canonical(row),'raw_entry_sha256':hashlib.sha256(rawrow.encode()).hexdigest()}for row,rawrow in zip(dummy2['attempts'],raw_attempt_rows(raw2))]}
++    assert resume_state(resume2,dummy2,raw2)==2
++    for index in (0,1):
++        changed=copy.deepcopy(dummy2);changed['attempts'][index]['error']='MUTATED'
++        try:resume_state(resume2,changed,json.dumps(changed,indent=2))
++        except AssertionError:pass
++        else:raise AssertionError('TWO_PRIOR_FAILED_ROWS_NOT_PRESERVED')
++    assert callable(BacktestEngine.add_data)
++    from nautilus_trader.cache.cache import Cache
++    assert callable(Cache.position_id)and callable(Cache.orders_for_position)
++    return dict(engine_constructors=0,actual_add_data_signature=str(add_signature),real_data_schedule=[dict(type=type(x).__name__,instrument=str((getattr(x,'data',x)).instrument_id),ts_init=x.ts_init)for x in schedule],AST_final_batch_sorted=True,failed_row_resume_rejections=6,native_version=nautilus_trader.__version__,config=snapshot_config(cfg),actual_policy_type=type(policy).__name__,positive_initial=str(initial),positive_maintenance=str(maintenance),native_event_classes=[OrderUpdated.__name__,OrderModifyRejected.__name__],native_modify_signature=str(inspect.signature(WaveOverlayStrategy.modify_order)),data_window_ns=[1,END],config_window_ns=[-86400_000_000_000,END],contract='synthetic L1 API feasibility, not financial/parity/venue admission')
+ 
+ def canonical(value):return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+ def raw_attempt_rows(text):
+@@ -107,14 +118,17 @@ def raw_attempt_rows(text):
+         _,end=decoder.raw_decode(text,i);rows.append(text[i:end]);i=end
+ def resume_state(gate,ledger,raw):
+     before=gate.get('expected_before',0)
+-    assert type(before)is int and before in(0,1),'EXACT_F1_EXPECTED_BEFORE_REQUIRED'
++    assert type(before)is int and before in(0,1,2),'EXACT_F1_EXPECTED_BEFORE_REQUIRED'
+     assert ledger['physical_max']==3 and ledger['physical_started']==before and len(ledger['attempts'])==before and ledger['active']==0,'F1_RESUME_COUNT_MISMATCH'
+     if before==0:assert ledger['attempts']==[]
+     else:
+-        expected=gate['preserved_failed_attempt'];row=ledger['attempts'][0]
+-        assert row['physical_index']==1 and row['status']=='FAILED'and row['actual_process_exit_code']==1,'F1_FIRST_FAILURE_MUST_REMAIN_FAILED'
+-        assert canonical(row)==expected['canonical_entry_sha256'],'F1_FAILED_ROW_CHANGED'
+-        assert hashlib.sha256(raw_attempt_rows(raw)[0].encode()).hexdigest()==expected['raw_entry_sha256'],'F1_FAILED_ROW_RAW_CHANGED'
++        expected_rows=gate['preserved_failed_attempts']if before==2 else[gate['preserved_failed_attempt']]
++        assert len(expected_rows)==before,'F1_ALL_FAILED_ROWS_REQUIRED'
++        rawrows=raw_attempt_rows(raw)
++        for i,(row,expected)in enumerate(zip(ledger['attempts'],expected_rows)):
++            assert row['physical_index']==i+1 and row['status']=='FAILED'and row['actual_process_exit_code']==1,'F1_PRIOR_FAILURES_MUST_REMAIN_FAILED'
++            assert canonical(row)==expected['canonical_entry_sha256'],'F1_FAILED_ROW_CHANGED'
++            assert hashlib.sha256(rawrows[i].encode()).hexdigest()==expected['raw_entry_sha256'],'F1_FAILED_ROW_RAW_CHANGED'
+     return before
+ 
+ def verify(gate_path,ledger_path,require_go=False):
+@@ -129,7 +143,7 @@ def verify(gate_path,ledger_path,require_go=False):
+     assert owner['protocol_sha256']==PROTOCOL and owner['engineering_max']==3 and owner['feasibility_first_before_product_patch'] is True
+     before=resume_state(gate,ledger,raw_ledger)
+     if before:
+-        parent=gate['preserved_failed_attempt'];assert digest(parent['ledger_path'])==parent['ledger_sha256']
++        parent=gate['preserved_failed_ledger']if before==2 else gate['preserved_failed_attempt'];assert digest(parent['ledger_path'])==parent['ledger_sha256']
+         assert json.loads(Path(parent['ledger_path']).read_text())['attempts']==ledger['attempts']
+     assert ledger['protocol_sha256']==PROTOCOL and ledger['source_base']==BASE
+     for item in gate['immutable_pins']:assert digest(item['path'])==item['sha256'],item['path']
+@@ -168,10 +182,12 @@ class FeasibilityProbe(WaveOverlayStrategy):
+         assert len(positions)==1
+         return positions[0].quantity.as_decimal()*(1 if positions[0].is_long else -1)
+     def order_rows(self):
+-        return [dict(id=str(o.client_order_id),instrument=str(o.instrument_id),kind=self.kinds.get(str(o.client_order_id)),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),side=o.side.name,reduce_only=o.is_reduce_only,price=str(getattr(o,'price',None))) for o in self.cache.orders()]
++        return [dict(id=str(o.client_order_id),instrument=str(o.instrument_id),kind=self.kinds.get(str(o.client_order_id)),native_position_id=None if o.position_id is None else str(o.position_id),cache_position_id=None if self.cache.position_id(o.client_order_id)is None else str(self.cache.position_id(o.client_order_id)),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),side=o.side.name,reduce_only=o.is_reduce_only,price=str(getattr(o,'price',None))) for o in self.cache.orders()]
++    def native_position_index(self):
++        return [dict(position_id=str(p.id),instrument=str(p.instrument_id),quantity=str(p.quantity),side='LONG'if p.is_long else'SHORT',indexed_order_ids=[str(o.client_order_id)for o in self.cache.orders_for_position(p.id)])for p in self.cache.positions_open()]
+     def record(self,event,**extra):
+         account=self.cache.account_for_venue(SIM)
+-        row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,ts_ns=self.clock.timestamp_ns(),btc=str(self.held()),sol=str(self.held(SOL_PERP)),cash=str(account.balance_total())if account else None,expected_leaves={str(k):str(v)for k,v in self.expected.items()},consumed=sorted(self.consumed),domain_consumed=[]if self.oracle_domain.episode is None else sorted(self.oracle_domain.episode.btc_filled_tps),book_bid_candidates=[None if b is None else str(b)for b in self.book],command_stack=sorted(self.correcting),orders=self.order_rows(),**extra)
++        row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,ts_ns=self.clock.timestamp_ns(),btc=str(self.held()),sol=str(self.held(SOL_PERP)),cash=str(account.balance_total())if account else None,expected_leaves={str(k):str(v)for k,v in self.expected.items()},consumed=sorted(self.consumed),domain_consumed=[]if self.oracle_domain.episode is None else sorted(self.oracle_domain.episode.btc_filled_tps),book_bid_candidates=[None if b is None else str(b)for b in self.book],command_stack=sorted(self.correcting),orders=self.order_rows(),native_position_index=self.native_position_index(),**extra)
+         self.events.append(row)
+         if self.tp_active and self.held()>0:
+             missing=[]
+@@ -260,7 +276,7 @@ class FeasibilityProbe(WaveOverlayStrategy):
+     def on_order_modify_rejected(self,event):
+         self.route(event,'typed_modify_rejected');self.rejections.append(dict(order_id=str(event.client_order_id),reason=event.reason,ts_ns=event.ts_event));self.record('TYPED_OrderModifyRejected',order_id=str(event.client_order_id),reason=event.reason);self.boundary('MODIFY_REJECT_RETURN')
+     def on_order_filled(self,event):
+-        self.route(event,'typed_filled')
++        self.route(event,'typed_filled');reallocated=False
+         oid=str(event.client_order_id);kind=self.kinds.get(oid);qty=event.last_qty.as_decimal()
+         self.fills.append(dict(order_id=oid,trade_id=str(event.trade_id),kind=kind,instrument=str(event.instrument_id),qty=str(qty),price=str(event.last_px),ts_ns=event.ts_event,commission=str(event.commission)))
+         if kind and kind.startswith('TP'):
+@@ -271,9 +287,13 @@ class FeasibilityProbe(WaveOverlayStrategy):
+             self.expected[level]-=qty
+             order=self.cache.order(event.client_order_id)
+             if level in self.oracle_domain.episode.btc_filled_tps or order.status.name=='FILLED':
+-                self.consumed.add(level);self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()};self.sync_oracle_allocation()
++                self.consumed.add(level);self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()};self.sync_oracle_allocation();reallocated=True
+         if kind=='DEBT':
+-            self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()};self.sync_oracle_allocation()
++            self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()};self.sync_oracle_allocation();reallocated=True
++        if reallocated:
++            for level,target_id in self.targets.items():
++                target=self.cache.order(target_id)
++                if level in self.expected and self.expected[level]>0 and level not in self.consumed and target is not None and not target.is_closed:self.correct(target)
+         if kind=='SOL_RELIEF':self.debt_cap=D('.750')
+         self.record('TYPED_OrderFilled',order_id=oid,kind_owned=kind,trade_id=str(event.trade_id))
+         self.boundary('TYPED_FILLED_RETURN_'+oid)
+@@ -333,7 +353,7 @@ def run_fixture(engine,s,snapshot):
+     assert not s.same_oid_overlap,'SAME_OID_NONCONVERGENT_OR_UNPROVEN_UPDATE'
+     assert all(n<=8 for n in s.modify_count.values()),'UNBOUNDED_UPDATE_COUNT'
+     assert {int(f['kind'][2:])for f in s.fills if f['kind']and f['kind'].startswith('TP')}=={0,1,2},'ACTUAL_THREE_TP_LEVEL_FILLS_REQUIRED'
+-    assert s.auto_updates,'REAL_NATIVE_AUTO_UPDATE_REQUIRED'
++    assert s.auto_updates,'NATIVE_AUTO_UPDATE_NOT_EXERCISED_FEASIBILITY_NOT_PROVEN'
+     update_routes=[v for v in s.event_routes.values() if 'typed_updated'in v]
+     reject_routes=[v for v in s.event_routes.values() if 'typed_modify_rejected'in v]
+     assert update_routes and reject_routes
+@@ -351,7 +371,7 @@ def launch(gate_path,ledger_path):
+     engine=s=None;rc=1;result=None;errors=[]
+     def snapshot(stage,**facts):
+         if engine is None:return
+-        payload=dict(stage=stage,attempt_id=attempt,physical_index=number,**facts,lifecycle=lifecycle(engine),events=[]if s is None else s.events,orders=[]if s is None else s.order_rows(),fills=[]if s is None else s.fills,transient_allocation_drift=[]if s is None else s.transient_allocation_drift,book_trace=[]if s is None else s.book_trace,nonexecutable_transients=[]if s is None else s.nonexecutable_transients,auto_updates=[]if s is None else s.auto_updates,pre_fill_checks=[]if s is None else s.pre_fill_checks,event_routes={}if s is None else s.event_routes,boundary_violations=[]if s is None else s.boundary_violations,native_coverage_gaps=[]if s is None else s.native_coverage_gaps)
++        payload=dict(stage=stage,attempt_id=attempt,physical_index=number,**facts,lifecycle=lifecycle(engine),events=[]if s is None else s.events,orders=[]if s is None else s.order_rows(),native_position_index=[]if s is None else s.native_position_index(),stock_margin_calls=[]if s is None else s.guard_calls,fills=[]if s is None else s.fills,transient_allocation_drift=[]if s is None else s.transient_allocation_drift,book_trace=[]if s is None else s.book_trace,nonexecutable_transients=[]if s is None else s.nonexecutable_transients,auto_updates=[]if s is None else s.auto_updates,pre_fill_checks=[]if s is None else s.pre_fill_checks,event_routes={}if s is None else s.event_routes,boundary_violations=[]if s is None else s.boundary_violations,native_coverage_gaps=[]if s is None else s.native_coverage_gaps)
+         write(namespace/(stage+'.json'),payload)
+     try:
+         # The ONLY physical native constructor in this file; durable claim above.

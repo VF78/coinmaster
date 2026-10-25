@@ -1,0 +1,53 @@
+{
+  "task": "CM-TP-CONTINUITY-F1-SORT-REPAIR-REVIEW",
+  "decision": "PASS_MINIMAL_SORT_RESUME_CLEANUP_REPAIR_FOR_ROOT_REVIEW_ONLY",
+  "P0": 0,
+  "P1": 0,
+  "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "source_money": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "scope": "Minimaldiff vs147: finalsort flag/actualschedulepureproof/preservedfailedrowresume/startedcleanup only; priororacle/API/boundarycontract unchanged; no broadreaudit",
+  "sort_API_resolution": "Final quoteadd_data sort=True stablysorts accumulated marks+quotes byts_init, synchronizesdataiterator andsets_sorted=True perinstalledengine899-907. Equalts_init keepsBTCmark/SOLmark/BTCquote/SOLquote insertionorder. Runtimewindows unchanged [1,1h], config[-1day,+1h]25h. RealMark/QuoteTick schedule, actualadd_datasignature/default andAST twoaddsFalse/True-before_run checked engine-free byowner. No clock/price/fee/liquidity/APIsemantic change.",
+  "failed_attempt_resume": "Currentphysical1FAILED/OS1/source147/API_NOT_TESTED remains exact. expected_before mustbeint0or1; currentgate1 requiresmax3/started1/len1/active0, failedrowindex1/OS1 pluscanonical andrawrowdigests andpinnedparentledger snapshot. Nextphysicalindex derives+1=2 before soleconstructor; finalupdater selectsrow2, notrow1. Freshphysical2namespace; no oldnamespace/delete/reuse/reset. Anyalreadyadvancedstate blocks.",
+  "cleanup_resolution": "Ifactualcomponentsrunning, nativeend then all5STOPPED/notrunning required beforedispose. Ifneverstarted/READY, captureEND_NOT_APPLICABLE anddispose withoutpreinitend; cannotclaimcleanSTOPPED orPASSevenifdisposed. OriginalfailureRC/errors stayFAILED. AnytruePASS still requires actualstartedthenSTOPPED/DISPOSED.",
+  "metadata_closure": "Old further_fixtures2-afterPASS wording wasstale afterspentfailure. Rootmechanicallyclarifiedremaining2INCLUDESthisphysical2retry, leavingatmost1laterconditionalinstance; combineapprovedcoverageorSTOP/nohiddenreserve. Initiald300plan/a5b87gate preserved; no source/ledger/newpermission changes.",
+  "current_state": {
+    "physical_started": 1,
+    "physical_max": 3,
+    "remaining_total_including_retry": 2,
+    "planned_next_physical": 2,
+    "max_remaining_after_retry_PASS": 1,
+    "active": 0,
+    "current_ledger_sha256": "1ddc6e81bd3a6b3821b748a68c299dd57622a26170b8b7325e57be092ddd8e24",
+    "root_go": false,
+    "stock_API_feasibility": "NOT_TESTED",
+    "product_patch_allowed": false,
+    "prefix_started": 0
+  },
+  "reviewed_script_sha256": "08e28c132ecf01f5be80c7c5f56cb191dad27b2dc4b40960d8da617d1ca89b43",
+  "reviewed_packet_sha256": {
+    "F1-fixture-plan.json": "bb45eecd1df2afd37b1b2bb430a40c5b877446717e85d330a245e5cef6be5e87",
+    "F1-gate.json": "2efc44bf13acde154275f809cf6174756489406c0d40203dabf4edac652cc56f",
+    "F1-pure-API-preconditions.json": "85f6584be1daea7912e04098c9925646fefe5cdcc0bd8ab1e01a9163377320d2",
+    "F1-engine-free-preflight.json": "1ff9ead58f4d887948c56fcb62f4021069b3fc3d60be1912a39b6dd35cc31d5e",
+    "F1-root-budget-clarification-preflight.json": "ded4aa66c30f55e84d5d5eb1132b419b9219712e5605c36f270b63a1d1f846f4",
+    "F1-physical1-cause.json": "f9ebcd5a123388872d5a9292faf99b72506b133d03b1eda2772a8dd958328341",
+    "F1-physical1-independent-cause-review.json": "11af380037f699b48bc2cb83f0bdfbf080f03b12b1aa7c76200eced1dfcb3e29",
+    "engineering-ledger.json": "1ddc6e81bd3a6b3821b748a68c299dd57622a26170b8b7325e57be092ddd8e24",
+    "F1_ACCEPTANCE_CONTRACT.json": "d5c8b9e72f5622738caef71964a15b97f5bed12d1754d983d842fee227c013dd"
+  },
+  "initial_metadata_sha256": {
+    "F1plan_beforeclarification": "d3000c714d1b7d114850c360d3fd812dff2ff9db3383d3a781aad54c8011a211",
+    "F1gate_beforeclarification": "a5b87c8b1db58e824a58476f6fd8336d6a53b35fb036842f6cd4b0851bafc1a9"
+  },
+  "limitations": "RealAPI schedulepreflight isengine-free, not proof actualrun/convergence/workingTP safety. Initialnativeattemptfailedbeforedata; NOT_TESTEDmustnotberebrandedUNSUPPORTED. Monetaryruntime83byteidentity isfrozenownerproof andunchangedharnessdiff, notanothermoney audit.",
+  "reviewer_actions": {
+    "engines": 0,
+    "tests": 0,
+    "prepare": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "ledger_or_gate_edits": 0
+  },
+  "authority": "No rootGO/productpatch/economiclaunch/extra-budget authority granted. Rootmayconsiderapprovedphysical2 onlyafterownpins/GO. ActualF1safeAPIproof remainsrequired, unsupported/unknown=>STOP; F1 doesnotqualifyF2/F3/orprefixbyitself."
+}

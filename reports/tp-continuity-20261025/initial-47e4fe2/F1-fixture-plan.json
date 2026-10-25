@@ -1,0 +1,42 @@
+{
+  "schema": "CM_TP_F1_FIXTURE_PLAN_V1",
+  "fixture_id": "F1_STOCK_NATIVE_API_FEASIBILITY",
+  "source_commit": "47e4fe2ca4b1a5c6ff6589246902abc5a8fda825",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "money_runtime_byte_unchanged": true,
+  "engine_instances_planned": 1,
+  "engine_instances_started": 0,
+  "window_ns": [
+    1,
+    3600000000000
+  ],
+  "config_window_ns": [
+    -86400000000000,
+    3600000000000
+  ],
+  "native_version": "1.231.0",
+  "scope": "Direct WaveOverlay subclass with real inherited margin gate; fixture API proof only, not registered financial control/sizing/parity.",
+  "oracle": "Source763 target_lots only at initial/debt-fill/full-consumption trigger; ordinary partial fill decrements its own entitlement. Total update=actual native filled+desired leaves; same owned OID/unchanged prices.",
+  "stages": [
+    "Initial actual native BTC BUY1/SOL SELL10 using unchanged stock margin gate and own native account. Causal completed seed/start-minus-day precondition; no True override.",
+    "Three actual accepted reduce-only BTC targets at101/102/103 and212/212/576 lots.",
+    "Actual native SOL reduction2.5 creates synthetic declared cap.750; retain working BTC TPs until next executable BTC quote, residual debt from actual held.",
+    "Native BTC debt fill; observe stock auto-resize and attempt finite same-OID modify correction from real current filled+expected leaves.",
+    "Actual partial TP0 using fresh displayed depth .050. Actual modification below native filled triggers rejection; no fake ACK/reject.",
+    "Actual matching of remaining original targets with increasing fresh depth; close SOL, assert native flat/orders0, record BEFORE_END/AFTER_END/BEFORE_DISPOSE/AFTER_DISPOSE."
+  ],
+  "admission": [
+    "Zero native remaining required-target absence while BTC held. Old ACKed working protection is separate from correct allocation.",
+    "Exact frozen per-level leaves at every potential match boundary including typed+generic callback returns and modify return; any drift blocks PASS. Final convergence alone is insufficient.",
+    "Typed+generic native event.id route evidence, native TradeID dedup; snapshot callback entry+command before/return and actual cache statuses/filled/leaves/positions/cash.",
+    "No native reverse, duplicate target owner, extra debt cut, replayed fake fills or reentrant correction loop; no native defaults changed.",
+    "All partial/modifyReject/three target fill stages must be actual native events, no omitted assertions.",
+    "Even process0 requires independent source/API ordering review; unobservable unsafe matching window=>UNSUPPORTED/STOP before product patch."
+  ],
+  "stop": "FIRST_FAILURE. Preserve actual error/snapshots; no retry, no product patch/economics if unsupported.",
+  "known_risk": "Stock post-fill auto-resize may overwrite standalone children. Callback/modify boundaries can expose unavoidable allocation drift: failure is valid feasibility result, not permission to relax weights.",
+  "further_fixtures": "2 conditional reserved only after actual F1 PASS/root acceptance and narrow monetary patch review; no current launch authority.",
+  "prefix_started": 0,
+  "full": 0,
+  "product_patch_allowed": false
+}

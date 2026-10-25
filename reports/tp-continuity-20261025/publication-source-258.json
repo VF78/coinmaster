@@ -1,0 +1,22 @@
+{
+  "status": "PUBLISHED_EXACT_REMOTE_VERIFIED",
+  "recorded_utc": "2026-10-25T16:47:37.589979+00:00",
+  "repository": "https://github.com/VF78/coinmaster",
+  "visibility": "PUBLIC",
+  "branch": "codex/hedge-rights-unlock-20261025",
+  "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "remote_actual_ref": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "push_actual_exit_code": 0,
+  "core_hooks_path": "/dev/null",
+  "preflight_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/publication-source-258-preflight.json",
+  "preflight_sha256": "ad805997179a7b28d7216effc7e6a216747ac0d2ee891a3c85d42d1402e644da",
+  "changed_committed_files": [
+    "runtime/tests/run_tp_continuity_feasibility.py"
+  ],
+  "uncommitted_draft_excluded": true,
+  "uncommitted_patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+  "native_engines_started_by_publication": 0,
+  "product_runtime_changes": 0,
+  "deployment": false,
+  "authority": "Persisting exact humanPUBLIC VF78/coinmaster sourcebranch approval +root PublicationGO for committed258 only"
+}

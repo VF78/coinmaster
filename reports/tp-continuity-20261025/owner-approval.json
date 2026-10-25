@@ -1,0 +1,26 @@
+{
+  "status": "APPROVED_BY_OWNER",
+  "task": "CM-TP-CONTINUITY-20261025",
+  "recorded_utc": "2026-10-25T15:40:58.217485+00:00",
+  "approval_source": "Direct human reply call_3e074beceba6483981f090e4d55724c9 item0",
+  "exact_owner_reply": "Утверждаю TP continuity: до 3 fixtures и 3 prefix",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/TP_CONTINUITY_PROTOCOL_PROPOSED_RU.md",
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "engineering_max": 3,
+  "engineering_max_hours_each": 48,
+  "feasibility_first_before_product_patch": true,
+  "prefix_max": 3,
+  "prefix_order": [
+    "R2_OFF",
+    "C0_FIXED",
+    "A0_FIXED"
+  ],
+  "prefix_calendar": "[2024-09-01,2025-01-15)UTC",
+  "seed": "10000",
+  "reserve": "0",
+  "failures_preengine_repeats_count": true,
+  "no_old_unused_transfer": true,
+  "full_training_newdownloads_pilot_production_orders_transfers": 0,
+  "stop": "Unsupportedstockresize/allocation/TPcontinuity=>no productpatch/economics; eachphysicalrequiresrootGO."
+}

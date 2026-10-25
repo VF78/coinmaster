@@ -1,0 +1,42 @@
+{
+  "schema": "CM_TP_STOCK_STRESS_AMENDMENT_REVIEW_V1",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/AMENDMENT_STOCK_STRESS_PROPOSED_RU.md",
+  "protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
+  "decision": "FOR_OWNER_CONSENT_ONLY",
+  "p0": [],
+  "source_only_reachability": {
+    "status": "PLAUSIBLE_NOT_PROVEN",
+    "proof": "Explicit public submission against the actual existing BTC position indexes all three genuine TP orders. After a TP fill at bid104, native auto loop can visit a remaining open linked TP and change its total to whole held position. Existing same-OID correction can then submit the smaller frozen total at unchanged marketable limit. Installed _update_limit_order5597–5635 emitsUpdated and calls fill_limit_order before returning. Sufficient fresh displayed depth can leave executable liquidity after the initiating TP fill. This removes the old unlinked-route obstacle.",
+    "limits": "Native cache iteration and nested fill/correction ordering are not predicted. No guarantee all assertions converge. Wrong entitlement/executable mismatches, unobservable windows, duplicate route handling or same-OID recursion must STOP. No engine was run."
+  },
+  "scope_and_budget": {
+    "lines": [
+      15,
+      16,
+      20,
+      21,
+      22,
+      26,
+      27,
+      28,
+      29
+    ],
+    "assessment": "Consistent: proposed API-only position linkage is expressly separate from unchanged production linkage. Two FAILED rows retained; max3→4 adds exactly one instance, physical3 feasibility precedes any productpatch; only one physical4 remains for connected product coverage. Predeclared exact coverage must fit or STOP. Prefix3 unchanged and separately conditional; no prior slot reuse or hidden reserves.",
+    "authority": "Not approved by this review. Existing max3 and last-slot HOLD remain; no native/product/publication permission created."
+  },
+  "correction_batch": "TP-STRESS-01 closed: line19 now requires actual same-OID TradeID fill afterUpdated/beforemodifyreturn with entitlement/freshdepth proof; absent means NOT_PROVEN. Final SHA pinned.",
+  "review_limits": "Read-only proposed-protocol/source reachability review. No code edit, engine, test, Popen, ledger/gate change, financial PASS or coverage promise.",
+  "initial_protocol_sha256": "7109246a0451d08ae3e4e475bd8fdedd0ef2277aaff484af3cab117408e283b0",
+  "closed_findings": [
+    {
+      "id": "TP-STRESS-01",
+      "lines": [
+        19
+      ],
+      "finding": "Possible immediate native execution is weaker than positive evidence of the decisive valid marketable-update/immediate-fill boundary. A zero-execution modify must not close this required coverage.",
+      "minimal_correction": "Require actual positive native fill/TradeID of the same OID after valid quantity Updated and before that public modify returns, with immutable unchanged price, native available fresh depth and pre-fill frozen entitlement. Distinguish all causally nested events from ordinary matching and unsolicited auto-resize. No observed nested execution => NOT_PROVEN/STOP, never PASS.",
+      "status": "CLOSED_EXACT_WORDING_CORRECTION"
+    }
+  ],
+  "p1": []
+}

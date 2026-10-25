@@ -1,0 +1,20 @@
+{
+  "decision": "ROOT_GO_ONE_F1_STOCK_NATIVE_API_FEASIBILITY_ONLY",
+  "recorded_utc": "2026-10-25T16:18:21.607928+00:00",
+  "source_commit": "14735dd15415b80f3ea4a49120c707f0927878bf",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "pre_go_gate_sha256": "e1a10a61c6c78d18b06c82d1d3f302a11cf541b9de31fc646ce16959244c0cce",
+  "plan_sha256": "e3b06bd3c25bc054efced324bcbcba4c290671f97b60b9a6371b201d1c58fea4",
+  "review_sha256": "78d835a4aa54aa99316c8ce4060140b9b6c6a45fb40ba7a24bb0b7d48678bc8d",
+  "acceptance_contract_sha256": "d5c8b9e72f5622738caef71964a15b97f5bed12d1754d983d842fee227c013dd",
+  "root_verified_pins": 228,
+  "mismatches": 0,
+  "fixture_max_total": 3,
+  "fixture_spent_before": 0,
+  "instances_allowed_now": 1,
+  "product_patch_allowed": false,
+  "prefix_go": false,
+  "full_training_downloads_pilot_production": 0,
+  "stop": "Oneconstructorinclfailure/setup; unsupported orNOT_PROVENallocation/coverage=>STOP/no productpatch/economics. Preserveactualnativecash/orders/fills/typed+generic/tradeIDs/preEND/STOPPED/DISPOSED proof; no hiddenretry."
+}

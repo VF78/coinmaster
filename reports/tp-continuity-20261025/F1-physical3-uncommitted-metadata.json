@@ -1,0 +1,12 @@
+{
+  "status": "PRESERVED_UNCOMMITTED_UNQUALIFIED_NOT_FROZEN_NOT_RUN",
+  "canonical_HEAD": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "dirty_paths": [
+    "runtime/tests/run_tp_continuity_feasibility.py"
+  ],
+  "patch_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F1-physical3-uncommitted-pre-schedule.patch",
+  "patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+  "publication_excluded": true,
+  "product_code_changes": 0,
+  "new_native_engines": 0
+}

@@ -1,0 +1,49 @@
+{
+  "status": "SOURCE_ONLY_NEW_OWNER_CONSENT_REQUIRED_NO_CODE_OR_ENGINE",
+  "current": "2FAILED/3,active0,prefix0; original third-slot schedule STOP. HEAD258f6ba5655de6d2c9c3fb4d081e16e576f12767;83 monetaryfiles byte-identical763.",
+  "new_route": "Fixture-only PUBLIC submit_order(order,position_id=ACTUAL existingnativeBTCposition.id) onprotectiveTPs. No fakeparent/OCO/cachemutation/nativepatch/toggle; product763 submitroute unchanged.",
+  "scenario_table": [
+    {
+      "observation": "3realindexedTPs",
+      "trigger": "ActualBTCentry1, then212/212/576lotTPs@101/102/103 linked toexistingnativepositionID",
+      "api": "Strategy.submit_order805-883; Cache.add_order2257-2265",
+      "event": "3nativeACKs andpublicorders_for_position includesall3IDs",
+      "assert": "Persist actualpositionID/orderpositionIDs/index list, unchangedprices/weights; no inventedowner."
+    },
+    {
+      "observation": "Debtallocation",
+      "trigger": "ExistingactualSOLrelief2.5/debt.250 atBTCbid100; held.750",
+      "api": "Existingboundedcorrect at genuineallocationchange plusstockpostfillauto loop",
+      "event": "RealunsolicitedautoUpdated andsameOIDpublicresize to159/159/432leaves",
+      "assert": "Actualtyped+genericsameeventIDs; exactqty/prefillentitlement/zeroTPgap. AllTPprices>bid100, so nonmarketable."
+    },
+    {
+      "observation": "Partial/reject",
+      "trigger": "ExistingfreshBTC101/depth.050 theninvalidtotal.001<actualfilled.050",
+      "api": "Nativepartial +publicmodify/ModifyRejected",
+      "event": "TP0partial.050/leaves.109, held.700; realreject retains workingprotection",
+      "assert": "RealTradeID, qty<=preallowance, actualrejecttyped/generic; notcountedasvalidmarketablemodify."
+    },
+    {
+      "observation": "MissingpositivevalidMARKETABLEupdate",
+      "trigger": "ExistingfreshBTC104/depth1 fillsTP0remaining.109 =>held.591/consumed0; TP1/TP2 alreadyindexed",
+      "api": "Stockauto skipscurrentfilledTP0; expandsopenTP1total toheld.591 via_update_limit_order at102<=bid104. Updatedcallback existingcorrect PUBLICmodifies sameTP1total.159, unchangedprice102: a genuinevalidmarketablequantityupdate that mayfillimmediately.",
+      "event": "ActualautoUpdatedTP1.591 ->publicUpdatedTP1.159 ->nativeTP1fill<=.159 withfreshremainingdepth, thenTP2.432/nativeflat",
+      "assert": "RecordnativeeventIDs/bookenvelope/nestedcommandreturns/nativeTradeIDs. Exactexecutableallocation; no sameOIDloop/overfill/reverse/duplicate outerfill. Distinguish realvalidmodify fromnormalTPfill/invalidreject."
+    }
+  ],
+  "source_feasibility": "Source-supported route to missingpositive because everytarget is genuinelyindexed and a NONCURRENT openorder entersautosize whilebook104marketable. NEWfixture route, not establishedbyunlinkedphysical2 and not coveredbyoldconsent. Safeexecution remainsUNPROVEN.",
+  "critical_unknown": "Nestedpublicmodify mayimmediatelyfill/closeTP1 beforeouterstockauto_update_limit_order resumesandcallsfill_limit_order again. Nativeclosed/cachedfilledguards mustpreventduplicate/extrafill. Actualnativeproof required; unsafe/unobservablewindow=>STOP/NOT_PROVEN.",
+  "budget": "Proposedtotal4 requires directowneramendment: physical3explicitAPIstress; physical4integratedproductfixture onlyAFTERactualF1PASS+productpatchreview. Onefourthfixturecoverage notguaranteed; freeze finiteall-semanticcoverageplan first orSTOP. Prefix3 remainsconditional/full0/pilotprod0.",
+  "publication": {
+    "receipt": "publication-source-258.json",
+    "sha256": "05be73c1547e47c277938680e52056ee8949bf5fd4ec24f0ad65a7d94930c639",
+    "exact_remote_258_verified": true,
+    "uncommitted_draft_excluded": true
+  },
+  "preserved_draft": {
+    "path": "F1-physical3-uncommitted-pre-schedule.patch",
+    "sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+    "state": "UNCOMMITTED_UNQUALIFIED_NOT_FROZEN_NOT_RUN"
+  }
+}

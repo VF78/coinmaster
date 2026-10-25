@@ -1,0 +1,22 @@
+{
+  "decision": "ROOT_GO_F1_PHYSICAL2_ONE_ENGINE_ONLY",
+  "recorded_utc": "2026-10-25T16:31:57.890394+00:00",
+  "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "pre_go_gate_sha256": "2efc44bf13acde154275f809cf6174756489406c0d40203dabf4edac652cc56f",
+  "review_sha256": "53a753ead7af47247edf4ada49bb2425d84e0f954fa6c7c80a2e78b1b8a806c7",
+  "plan_sha256": "bb45eecd1df2afd37b1b2bb430a40c5b877446717e85d330a245e5cef6be5e87",
+  "parent_failed_ledger_sha256": "1ddc6e81bd3a6b3821b748a68c299dd57622a26170b8b7325e57be092ddd8e24",
+  "raw_and_canonical_failed1_preserved": true,
+  "root_verified_pins": 229,
+  "pin_mismatches": 0,
+  "engineering_spent_before": 1,
+  "engineering_total_max": 3,
+  "instances_allowed_now": 1,
+  "after_current_remaining_ceiling": 1,
+  "product_patch_allowed": false,
+  "prefix_go": false,
+  "full_training_download_pilot_production": 0,
+  "stop": "No automaticretry. Actualfeasibility unsupported/NOT_PROVEN=>no productpatch/economics. Constructor/setupdurableclaim; actualevents/coverage/allocation/fillallowance/3levels/nativeAPI/cleanup required."
+}

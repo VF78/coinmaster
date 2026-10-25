@@ -1,0 +1,15 @@
+# F1 physical2 — independent disposition
+
+**HOLD — API feasibility NOT_PROVEN. P0: 0; P1: 1 fixture defect.** Physical2 remains FAILED OS1, neither stock UNSUPPORTED nor PASS.
+
+Actual native fills opened BTC1/SOLshort10, relieved SOL2.5 and reduced BTC0.25. Held BTC0.75; acknowledged TP leaves stayed .212/.212/.576 versus frozen .159/.159/.432. There were zero Updated, zero modify commands and zero TP fills. The short observed nonmarketable interval had no recorded coverage gap or executable allocation violation; this proves neither the remaining fixture nor the product. Cleanup was actual STOPPED→DISPOSED; account was not flat.
+
+**F1-P2-01:** source258 changes expected allocation on debt/full consumption (lines274–276), but calls existing `correct()` only from Updated (253–259). The first exact-leaves assertion fails at311 without ever trying public modify. A minimal fixture correction can proactively call the existing bounded same-OID correction at these genuine allocation triggers. Preserve prices, frozen rounding/consumption, matching-window checks, callback deduplication and rejection handling.
+
+Installed native loop7994 uses `cache.orders_for_position(position.id)`. Harness submits206/216 and unchanged producers wave_overlay2083/paired_prefix288 omit explicit position_id; Strategy.submit_order/cache.add_order index a supplied nonNone position. This supports a missing-link hypothesis, not a finding about actual physical2 membership: no position-index snapshot was retained. Public submission against a real existing position is legitimate API, but changes the linkage route; it cannot silently prove current763 equivalence. Linked standalone auto-resize targets the whole position, so correct per-level allocation still needs proof. Proactive modify does not require inventing a parent or changing linkage.
+
+One remaining constructor can meaningfully investigate the existing route after a frozen minimal fixture review: proactive correction plus actual native positions, each TP cache.position_id, orders_for_position membership and command/callback/matching-window snapshots. No source/runtime mutation is authorized here. Distinguish ordinary modify Updated from unsolicited auto-resize; absent required auto-resize coverage remains NOT_TESTED, with no acceptance waiver.
+
+Consuming physical3 for feasibility leaves zero constructors for post-patch integrated coverage. The approved feasibility-before-productpatch sequence therefore cannot reach product/economic admission within the current cap after that run. Useful final-slot discovery is possible; whole-stage completion is not. No hot patch, hidden retry, engine reuse or failed→PASS relabeling. A later continuation would require a concrete revised protocol/budget.
+
+Exact source: `258f6ba5655de6d2c9c3fb4d081e16e576f12767`; ledger SHA `d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94`; raw result SHA `e7f98be9f540035ff159dc7a5b6a655b29b27523fce71c234ec850c80e69d124`. Full reviewed file hashes are in the companion JSON. Review used only focused saved evidence/source, with no engine, test, Popen or ledger/product edits.

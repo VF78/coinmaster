@@ -1,0 +1,112 @@
+{
+  "schema": "CM_TP_CONTINUITY_F1_ACCEPTANCE_V1",
+  "task": "CM-TP-CONTINUITY-20261025",
+  "status": "F1_ACCEPTANCE_CONTRACT_BEFORE_CODE_AND_ROOT_GO",
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "purpose": "Decide whether installed stock1.231 public modify/callback semantics can preserve exact frozen TP allocation and uninterrupted genuine remaining TP protection, before any product patch. Plain native Strategy/probe is allowed but is API feasibility only, not exact R2 money/control qualification.",
+  "physical_limit": "FIRST counted engine only after rootF1GO; max3engineeringtotal inclthis/fail/setup/repeats; no extra baselineengine/accountreset. Existing ledgers0/rootgofalse. This contract creates no engine/run authority.",
+  "frozen_oracle": {
+    "prices_and_rights": "Unchanged original P0/targetprices, levels, frozen quantization and actual-consumed permanence. Never restore consumedTPs or use new price/weights/parent/OCO representation.",
+    "allocation": "Use existing763 target_lots and existing entitlement/reallocation triggers. At initialplan/newentry or actualBTC_DEBT/fullconsumption reallocation use frozen rule/currentnativeheld. Ordinary partialTP decrements its own remaining entitlement; do NOT renormalize everypartial fill. Existing _pair_fillBTC_DEBT setsallocated_entry/signatureNone; fullconsumedTP setsallocated_entryNone. Nativeauto-resize-to-position is an observation, never the expected oracle.",
+    "totalqty": "Every actor valid quantity modification is totalNativeFilled+desiredRemainingLeaves in exact native lots, sameOID/side/price/TIF/reduceonly. Capture planned expected map before APIcommand, separately from observedcache.",
+    "inventory": "At executable boundary sum correctly allocated leaves equals actual native BTCheld; consumed levels have no newleaves. If frozen allocation/minlot/minnotional cannot be represented, UNSUPPORTED; do not define away rights, reweight, create duplicateowners, or closeBTC to manufacturePASS.",
+    "debt": "ResidualBTCdebt=max(0,actualnativeheld-unchangedabsoluteCap) at actualsubmit afterinterveningfills; ordinaryTP can satisfy it. No fixed stale debtquantity, overcut, reverse, doubleappliedTradeID, closedBTCrefund or new A0grant.",
+    "consumed_exact": "After actual authorized TPfill, frozen763 consumes a level when domain btc_filled_tps contains it OR its native order status is FILLED. A partial nativeorder may still meet domainentitlement-complete; generic is_closed (including CANCELED) is not equivalent. Ordinarypartial own-entitlement clause doesnot supersede these exact existing rules. Raw callbackentry cansee postfillcache beforeactororacle updates; this ordering alone is NOT a missingrequiredTP."
+  },
+  "two_separate_observations": {
+    "working_protection_presence": "Old acknowledged leaves may count while modify pending ONLY if actualstockcache/events and installedsource establish same nativeorder remains working at originalprice/side with knownpositiveleaves. Native pendingupdate is not automatically a gap; a command/newrequestedqty is not acceptedcoverage. Unknown/terminal/unowned/replacedstate earns no inferredcredit.",
+    "exact_allocation": "Workingoldleaves can preserve presence but still be WRONG afterheld/rights changed. They never qualify exact allocation merely because reduce_only avoids reversal. Require each remaininglevel same actualOID and exact frozen desiredleaves, no missing/duplicatedlevel, at every potentially executable boundary. CoveragePASS and allocationFAIL means overallUNSUPPORTED."
+  },
+  "potential_match_boundary_contract": {
+    "mandatory_checks": [
+      "Beforeandafter each inputexecutablequote batch and before nextquote canmatch",
+      "Before every public submit/modify/debtcommand that may synchronously execute, and on its return",
+      "At exit of BOTH typed andgeneric OrderUpdated/OrderFilled/OrderModifyRejected/OrderPendingUpdate callbacks where nativeexecution may resume; record entry too",
+      "Before immediate fill reachable after stock _update_limit_order calls _generate_order_updated; nestedmodify/callbackpath is included",
+      "After stockpostfillauto-resize has finished and before any next matching opportunity; eventual quiescence is additional not sufficient"
+    ],
+    "transient_rule": "CallbackENTRY cache inflation from stock auto-resize may be recorded as transient only if it is proven NONEXECUTABLE until exact correction. Need installedsource call-order justification plus actual nested event/command trace. If matching could occur before exact correction, if proof is missing, or any nativefill uses misallocatedleaves, UNSUPPORTED/STOP. Do not accept end-ofquote/finalquantity convergence as evidence of safety.",
+    "strong_counterexample": "Use genuine fresh displayeddepth and a quote/unchangedlimit that makes quantity updates marketable; stock update may emitUpdated then immediatelyfill even whenpriceunchanged. Check actual perOID filllots against frozen allowance at that boundary and nativepositions/cap. No changedTPprice/weights, syntheticfill or enginepatch.",
+    "observability_limit": "Public callbacktrace alone need not expose every internal matcher instruction. Any unobservable potentially executable window is UNKNOWN/NOT_ADMITTED, not assumedatomic. No livevenue atomicity claim.",
+    "coherent_predicate_note": "Keep raw callbackENTRY unchanged but label actor-derivedstate as before/after its nativeevent application. Evaluate requiredTPpresence with exact current native/domain consumed semantics. Never count a just-FILLED legitimatelyconsumed target as a gap because actor expectedmap hasnot yet applied callback. Exactallocation checks at true executableboundaries remain strict; unresolved observability is notPASS."
+  },
+  "minimum_F1_observations": [
+    "Actualnativeentry and three distinct acceptedstandalone reduceonlyTPs at fixedprices with a representative nontrivial native lotallocation; later actualposition reduction triggers stockautoresize",
+    "Capture actualauto-generatedOrderUpdated and actor modify OrderUpdated on same nativeIDs, including after fill callback and typed->generic dispatch order",
+    "At least one dangerous marketable-update/fresh-depth boundary: no oversized/misallocated actualfill before correction, no extraBTCcut/reversal; exactallocation and coverage established whenmatcher canresume",
+    "Actual partialfilled child: valid total=filled+desiredleaves; no mistaken total=desiredleaves. Any negativeinvalidtotal/rejectprobe must remain explicit negativeinput and use realnativeAPI",
+    "Observe genuine native/risk OrderModifyRejected if claiming rejectcoverage; warning/localValueError/no command is NOT nativeModifyRejected. Oldworkingstate must be checked independently afterreject. If notexercised, markNOT_EXERCISED and do not claim that requiredengineeringcoverage complete",
+    "Bothtyped+generic update/reject/fill routes recorded; same nativeevent applies observational/rights state once; repeatedlegitimate updates on sameOID must not be dropped by orderIDdedup",
+    "No unbounded modify recursion or queued retry that outlives causal event. Declare boundedactor correction/one actoroutstandingmodify perOID, record actual counts; auto-generated updates remain genuine",
+    "Actual terminalcash/orders/positions/commissions/fills captured beforecleanup; nativeend thenSTOPPED thenDISPOSED verified. Forcedcleanup cannot turn an unsupported earlierpath intoPASS"
+  ],
+  "native_trace_schema": {
+    "sequence": "Strict increasing local observationsequence plus event_ns; same timestamps require event/callback/command sequence, no fabricatedtieorder.",
+    "event_identity": [
+      "nativeeventtype",
+      "event.id ifavailable",
+      "client_order_id",
+      "venue_order_id",
+      "nativeTradeID forfills",
+      "typed_or_generic route",
+      "callbackentry_or_exit",
+      "nestedcallbackdepth",
+      "activecommandcontext/originUNKNOWNwhenunproven"
+    ],
+    "native_cache": [
+      "positionID/side/nativeheldlots",
+      "perorderOID/status/totalqty/filledqty/leaves/price/TIF/reduceonly",
+      "allopen/inflight ownednativeorders",
+      "cash+nativecommissions/fillreceipts",
+      "pendingactorcommands and their unchangedsource inputs"
+    ],
+    "derived_separate": [
+      "frozenexpectedallocationbyrequiredlevel",
+      "consumedlevels+nativefillproof",
+      "workingpresence vs exactallocation",
+      "absoluteCap and actual residualdebt",
+      "potentialmatchboundaryflag and nonexecutabilityevidence"
+    ],
+    "pre_fill_note": "Strategy fill callbacks may already see committedcache. Label snapshot as actualCALLBACK_ENTRY_NATIVE_CACHE; any priorstate is explicit lastcommittedcopy, never claimed freshpre-fillread.",
+    "stages": [
+      "BEFORE_INPUT",
+      "CALLBACK_ENTRY",
+      "COMMAND_BEGIN",
+      "NESTED_EVENT_ENTRY_EXIT",
+      "COMMAND_RETURN",
+      "CALLBACK_EXIT",
+      "AFTER_INPUT",
+      "BEFORE_END",
+      "AFTER_END",
+      "BEFORE_DISPOSE"
+    ]
+  },
+  "decisions": {
+    "PASS_STOCK_API_FEASIBLE": "ActualOS0, singlecountedengine, completegenuine trace and all safety predicates hold at every evidencedpotentialmatchboundary; no executablemisallocation/reversal/extracut/gap/hiddenretry. May support rootapproval of narrowproductpatch ONLY; remaining F2/F3/independentreview andallprefix gates still required.",
+    "UNSUPPORTED_STOCK_API": "Any actualrequiredTPgap, executablemisallocation, wrongperlevelnativefill, extra/reversecut, duplicateownership, reentrantnonconvergence, or stockbehavior requiringforbiddentoggles/enginepatch. Preserve native evidence and STOPproductpatch/economics. ProcessRC0/flat/finalcorrectqty cannot override this.",
+    "UNKNOWN_OR_FIXTURE_FAILED": "Insufficientboundaryobservability, missingnativecallback/rejectevidence, badpreflight/config/cleanup, or actualnonzeroOS. NotPASS; exact physicalattempt status/RC preserved. No automatic retry/newengine/budget; rootdisposition withinapprovedcap only.",
+    "coverage_pending": "Any requiredscenario notactuallyexercised is NOT_EXERCISED; cannot say allengineeringPASS. F1 feasibility may be narrow only if decisive stockallocation/match-safety proof is complete; remaining protocolcoverage must fit F2/F3 without additionalinstances."
+  },
+  "forbidden": [
+    "Nativeengine/fee/funding/model patch, use_reduce_onlyoff, contingenttoggle, newOMS/simulator, fakeparent/OCO/nativeposition/cash/fill/ACK",
+    "Newprices/weights/quantization/SOLrearm/capreset/extraBTCcuts/closedBTCrefund/A0rights",
+    "Dedupupdates byOID instead ofactualevent identity; delayedtypedcallback whilegenericstillappliesit; command-as-ACK/coverage",
+    "Silentaccountreset/secondengine/extraunrecordedquoteexperiment; evaluateprofit orfullhistoricalparity from thisfixture"
+  ],
+  "reviewed_sources": {
+    "reports/tp-continuity-20261025/owner-approval.json": "205dd0a08d37bcfa344606327f7ac542e48898064289793d715d62a6a6fdf1d1",
+    "reports/hedge-risk-contract-20261025/TP_CONTINUITY_PROTOCOL_PROPOSED_RU.md": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/market_redesign.py": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/paired_prefix.py": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f"
+  },
+  "source_facts": [
+    "Stock _fill_order calls generateFilled then laterauto-resizes other passiveopenreduceonly standalonechildren tocurrentposition (subjectcachedfilled clamp); no safeallocationassumption.",
+    "Stock _update_limit_order emitsOrderUpdated and mayimmediatelyfillTaker when existinglimitmarketable; callbackreturn is thereforepotentialmatchboundary.",
+    "Strategy dispatches typedPendingUpdate/Updated/ModifyRejected/Filled then genericOrderEvent; actor mustobservebothwithoutdoubleapply.",
+    "Public modify_order usesnativeQuantity andsameorder; closed/PENDING_CANCEL maynotcreatecommand. No universal/liveatomicmodify promise."
+  ],
+  "reviewer_actions": "Contract authoring/read-onlyinstalledAPI only. No engine/test/Popen/product/ledger/gate modification. Existing rootF1GO remainsfalse."
+}

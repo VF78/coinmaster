@@ -1,0 +1,69 @@
+{
+  "schema": "CM_TP_F1_SCENARIO_REACHABILITY_V1",
+  "status": "READ_ONLY_NO_ENGINE_OR_CODE_AUTHORITY",
+  "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767",
+  "uncommitted_patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+  "rows": [
+    {
+      "observation": "Initial3liveTPs",
+      "trigger": "ActualBTCentry1, ACCEPTED212/212/576lots@101/102/103",
+      "api_position": "Same763 submit_order(order) with no position_id; read cache.position_id/orders_for_position only",
+      "expected_event": "3actualACKs; unfilledTP index may beempty",
+      "positive_assert": "Allnativeownedworking3levels/qty/prices, no positionlink injection",
+      "reachability": "Observedphysical2; indexwasnotcaptured"
+    },
+    {
+      "observation": "Reorderexisting.050partialbeforeSOLrelief",
+      "trigger": "FreshBTC101 quote/depth.050 actualpartialTP0",
+      "api_position": "ExecutionEngine indexes genuinelyfilledTP0 to existingnativeBTCposition; otherunfilledTPs remainunlinked",
+      "expected_event": "TP0OrderFilled .050; domainnotconsumed (initialallowance.212); nativeBTC.950",
+      "positive_assert": "Prefillqty.050<=.212; nativefillTradeID; actualcachepositionindexTP0; remainingentitlements162/212/576lots",
+      "reachability": "Source-supported proposalonly, notrun"
+    },
+    {
+      "observation": "ExistingrealModifyRejected",
+      "trigger": "Afteractualpartial requesttotal.001<actualfilled.050, then BTCquote100",
+      "api_position": "Publicmodify sameOID/same101price; rejectedquantity notvalidresize",
+      "expected_event": "OrderModifyRejected typed+generic sameevent.id; priorworkingpartialtarget retained",
+      "positive_assert": "Actualrejection>0, oldACKleaves remaintruth; this is NOT marketable-validmodify proof",
+      "reachability": "Source/API-admissible, notobservedphysical2"
+    },
+    {
+      "observation": "SOLrelief/debtunchangedcap",
+      "trigger": "ActualSOLrelief2.5; nextBTCquote100 causesresidualnativeDEBT.950-.750=.200",
+      "api_position": "Existingboundedcorrect afteractualdebt changesexpected viafrozen target_lots; nativeTP0total=.050filled+.159leaves=.209",
+      "expected_event": "3genuine publicquantityUpdated to209total/159/432lots, allatunchangedprices/bid100",
+      "positive_assert": "Desiredleaves159/159/432; actualheld.750; no gap/extracut; perOIDnativeACK/genericroute",
+      "reachability": "Nonmarketablevalidmodify only; proactivecorrect draftnotrun"
+    },
+    {
+      "observation": "NaturalstockautoUpdate",
+      "trigger": "Debtfill when genuinelypartialTP0stillopen/indexed",
+      "api_position": "Stockorders_for_position loop cannowincludeTP0; no explicitpositionlink added",
+      "expected_event": "NativeunsolicitedUpdated ofTP0 towardpositiontotal.750 then boundedcorrectionto.209total",
+      "positive_assert": "PositiveactualautoUpdated mandatory; ifabsent NOT_EXERCISED=>NOT_PROVEN",
+      "reachability": "Source-supported expectedcounterexample; notrun, remainsmandatory"
+    },
+    {
+      "observation": "Remaining3actualTPfills",
+      "trigger": "ExistingfreshBTC104depth1then2",
+      "api_position": "Stockmatching; ordinaryfullconsumption reallocation usesexistingdomainrule",
+      "expected_event": "TP0remaining.159 thenTP1.159 thenTP2.432 nativefills/nativeflat",
+      "positive_assert": "All3nativeTPlevels/preentitlements/dedupTradeIDs/flat/5STOPPED→DISPOSED",
+      "reachability": "Potentiallyreachable API-discovery, notproof of validmarketablemodify"
+    },
+    {
+      "observation": "RequiredgenuinevalidMARKETABLEquantitymodify",
+      "trigger": "Needs actualquantitydelta onliveTPwhilevalidmatchingbid>=unchangedTPprice andfreshavailabledepth",
+      "api_position": "Publicmodify mayimmediatelyfill; sameOID/entitlements/exactexecutionboundary required",
+      "expected_event": "RealvalidUpdated plusmarketableimmediate-fillpath, notnormalTPfill/invalidreject",
+      "positive_assert": "Atleastone explicitlyclassifiedgenuinevalidmarketablemodification withfreshdepth andprefillentitlement; UNKNOWN blocksqualification",
+      "reachability": "NOT_DEMONSTRATED_BY_CURRENT_DECLARED_SCHEDULE: debtresizebid100nonmarketable; afterTP0consumption591lots allocate159/432 unchanged, then432singlelevel unchanged so correct()no-op. Reorderalone doesnotprovidepositivemarketableresize."
+    }
+  ],
+  "arithmetic": "Initial1000->{212,212,576}; partialTP0.050=>held950/entitlements162,212,576. Actualdebt200=>held750/newleaves159,159,432; TP0native total50+159=209. Consume remaining159=>held591; floor(591*17/63)=159, remainder432; consumeTP1=>432soleTP2. Nolegitimatequantitydelta atcurrentmarketableconsumptionstages.",
+  "conclusion": "Reorder is sound for naturalpartial-positionlink/auto-update reachability but does not settle requiredvalidmarketablemodify. Do not freeze/GO knownpartialcoverage or declare stock globallyunsupported. Publicunlinkedmodify sourceadmissible; decisivepositivecurrentschedule UNKNOWN/NOT_EXERCISED. Root/reviewer decide STOP or newconcretescenario/protocol; no thirdengine automatically.",
+  "budget": "2FAILEDof3/active0/prefix0; lastslot remainsHOLD. Evenfeasibilitysuccess wouldleave0postpatchengineeringbudget; productpatch/economics remainblocked.",
+  "code_action": "No further edits sincehold; uncommitteddraftpreserved; no commit/freeze/native/publicationofdraft.",
+  "publication_source_258_sha256": "05be73c1547e47c277938680e52056ee8949bf5fd4ec24f0ad65a7d94930c639"
+}
