@@ -1,0 +1,16 @@
+{
+  "decision": "ROOT_ACCEPT_LIMITED_ENGINEERING_FOR_EXISTING_PREFIX_GATES",
+  "recorded_utc": "2026-10-25T12:44:25.483242+00:00",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "review_sha256": "590d7403ade6ad8938b1c26dd73aabbc5ddb98072cc06fd8a12ee89edd731aa0",
+  "amended_closed_ledger_sha256": "e92957f167e0331380f9f809cf891123c99e33e9d33e974d4516424158f4784f",
+  "engineering_total": 7,
+  "remaining_engineering": 0,
+  "C0_NATIVE_FIXTURE": "NOT_RUN",
+  "full_parity": "NOT_PROVEN",
+  "prefix_max_approved": 3,
+  "prefix_started": 0,
+  "prefix_go": false,
+  "next": "Freeze concrete wrapper/supervisor+reader binding, source/config/input/command pins, then separate rootGO_OFF; actualC0financialPASSbeforeA0",
+  "full_training_downloads_pilot_production": 0
+}

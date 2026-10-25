@@ -1,0 +1,18 @@
+{
+  "status": "APPROVED_BY_OWNER",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "prior_closed_engineering_ledger_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "authorized_engineering_total": 7,
+  "additional_engineering_instances": 1,
+  "fixture_ids": [
+    "A05_CROSS_MARGIN_UNKNOWN"
+  ],
+  "full": 0,
+  "unchanged_prefix_max": 3,
+  "exact_owner_reply": "Утверждаю +1, общий лимит 7",
+  "notice": "Direct human approval; max7 total including all6 previous attempts, exactly1 additional A05; original prefix cap3 unchanged; native rootGO still required.",
+  "approval_source": "Direct human response to request_user_input_async call_e8d1506b89384ff09a1e8bde32e6ae56 item0",
+  "recorded_utc": "2026-10-25T12:36:29.508266+00:00",
+  "amendment_protocol_sha256": "22e0e44335d8811b177e6ca7bc71398768f2b3a8b25bca341ad951c475602c63"
+}

@@ -1,0 +1,44 @@
+{
+  "status": "PASS_ENGINE_FREE_CONSOLIDATED_GUARD_BATCH",
+  "checks": [
+    "C0 exactOFF financialPASS chain accepted inUNITONLYdata",
+    "MissingfinancialreceiptblocksC0",
+    "UNKNOWNqualification",
+    "Wrongreceiptlabel",
+    "WrongreportSHA",
+    "WrongattemptUUID",
+    "Accountingfalse",
+    "BoolisnotactualOS0",
+    "UNKNOWNfinancialgate",
+    "Missingfinancialgate",
+    "WrongreceiptSHA",
+    "Currententrydiffersfromimmutablesnapshot",
+    "A0OFFplusC0financialPASS surviveappendmutatedledger/exactimmutableentries",
+    "A0missingC0receipt",
+    "Duplicatepriorreceiptlabels",
+    "WorkerbindsactualexactreadfreezeSHAtoSTARTEDclaim",
+    "Freezeeditedafterclaimblocksworkerbeforeengine",
+    "OFFrequiresnoinventedfinancialreceipt"
+  ],
+  "test_check_count": 18,
+  "UNIT_TEST_ONLY_temporary_receipts": true,
+  "actual_financial_receipts_created": 0,
+  "actual_prefix_attempts": 0,
+  "actual_Popen": 0,
+  "actual_engines": 0,
+  "source_money": "763d985617abd7a7afef5eec13912303983d8837",
+  "script_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-common.py",
+      "sha256": "87ec9171bbd2466bd874c1d2c3d9ac034342754e86e8b4b522a5ca9b64260404"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-worker.py",
+      "sha256": "e68439ec3902604c2fbb217fb419f28625690181ff741c701216be16dccdda50"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+      "sha256": "51a33b5a6c86ee43ac7d073e164ef7c7edae19fb775f4b8f6ffec8d872563ab8"
+    }
+  ]
+}

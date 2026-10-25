@@ -1,0 +1,439 @@
+{
+  "status": "ENGINEERING_COMPONENT_COVERAGE_FOR_ROOT_LIMITED_ACCEPTANCE",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "product_monetary_source": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+  "approved_physical_max": 7,
+  "physical_started": 7,
+  "physical_completed": 3,
+  "physical_failed": 4,
+  "physical_active": 0,
+  "authorized_remaining": 0,
+  "completed_components": [
+    {
+      "physical_index": 2,
+      "fixture": "A02_PARTIAL_FIRST_CLOSED_CAP",
+      "source": "541e0c564a2bb79411809186113c78a4d3a80a5a",
+      "account_identity": "PASS",
+      "positions_open": 0,
+      "orders_open": 0,
+      "inflight": 0,
+      "terminal_kind": "NATURAL_TP_FLAT",
+      "actual_terminal_state": "NOT_TRIGGERED",
+      "cash": "10464.77422284",
+      "fees": "8.15527715",
+      "native_fills": 10,
+      "rights": [
+        {
+          "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+          "original_second": "158.125",
+          "first_terminal": "10",
+          "price": "98.5",
+          "old_orders": [
+            "O-19700101-000000-001-000-1",
+            "O-19700101-000000-001-000-5"
+          ],
+          "off_ns": 60000000014,
+          "locked_cap": "7.575",
+          "granted_cap": "165.700",
+          "submitted": true,
+          "attempted": true,
+          "dead": "BTC_FLAT",
+          "order_id": "O-19700101-000200-001-000-19",
+          "submit_qty": "158.125",
+          "denial_counts": {},
+          "last_denial": null,
+          "second_filled_ever": "158.125"
+        }
+      ],
+      "cleanup_clean": null,
+      "raw_snapshots": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-02-BEFORE_TERMINAL.json",
+          "sha256": "1b10dc329ae9410413e3e991d1b0290f276ce504a578e58aaf3efd2b4c5f16f7",
+          "stage": "BEFORE_TERMINAL"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-02-BEFORE_DISPOSE.json",
+          "sha256": "096095635df675f808a50d942a4257fbc6b41e50e4cf94096e8d1ef6e1bcd625",
+          "stage": "BEFORE_DISPOSE"
+        }
+      ]
+    },
+    {
+      "physical_index": 4,
+      "fixture": "A03_A04_COMBINED_CANCEL_RACES",
+      "source": "d357f593f3a2551f373b01dae29e0d2919623426",
+      "account_identity": "PASS",
+      "positions_open": 0,
+      "orders_open": 0,
+      "inflight": 0,
+      "terminal_kind": "NATURAL_TP_FLAT",
+      "actual_terminal_state": "NOT_TRIGGERED",
+      "cash": "10353.08929935",
+      "fees": "29.40770065",
+      "native_fills": 11,
+      "rights": [
+        {
+          "episode_id": "fef53c7b-f5d5-4fd9-ab8a-2be59208cecf",
+          "original_second": "158.125",
+          "first_terminal": "158.125",
+          "price": "98.5",
+          "old_orders": [
+            "O-19700101-000000-001-000-1",
+            "O-19700101-000000-001-000-5"
+          ],
+          "off_ns": 60000000014,
+          "locked_cap": "158.125",
+          "granted_cap": "315.250",
+          "submitted": true,
+          "attempted": true,
+          "dead": "BTC_FLAT",
+          "order_id": "O-19700101-000200-001-000-16",
+          "submit_qty": "157.125",
+          "denial_counts": {},
+          "last_denial": null,
+          "second_filled_ever": "6"
+        }
+      ],
+      "cleanup_clean": true,
+      "raw_snapshots": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-04-ORDINARY_TP_IMMEDIATE_CANCEL_REQUEST.json",
+          "sha256": "3f7b55d9336fa1e69b15a56c211a49456ec0e9d98cd1f5b425d81115b1225db6",
+          "stage": "ORDINARY_TP_IMMEDIATE_CANCEL_REQUEST"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-04-LATE_FILL_CORRECTED_NO_CAP_REANCHOR.json",
+          "sha256": "d3e8004eeb4f7ecbc14334ef711bafe85aa7e15c0fd6f152429cb46a648a74b9",
+          "stage": "LATE_FILL_CORRECTED_NO_CAP_REANCHOR"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-04-BEFORE_TERMINAL.json",
+          "sha256": "bd3765c98bfc0c97a037cfd85ab8fec30431063895b5cd0fa2be1de8aaa6ca14",
+          "stage": "BEFORE_TERMINAL"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-04-BEFORE_END.json",
+          "sha256": "30b5cc4eb666364bf7e70b4d067bcbd583ca5ddb44d3c61624871f6ff0fbd93b",
+          "stage": "BEFORE_END"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-04-AFTER_END.json",
+          "sha256": "72f9d1ad8338fa804e18be8a01a78ee0a1d6d7438dd3552f70b316258f285ebd",
+          "stage": "AFTER_END"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-04-BEFORE_DISPOSE.json",
+          "sha256": "1dad676f68ab72b0a481f2dd7ba9ae9c37175eae755fe54bd013508295b51edb",
+          "stage": "BEFORE_DISPOSE"
+        }
+      ]
+    },
+    {
+      "physical_index": 7,
+      "fixture": "A05_CROSS_MARGIN_UNKNOWN",
+      "source": "763d985617abd7a7afef5eec13912303983d8837",
+      "account_identity": "PASS",
+      "positions_open": 0,
+      "orders_open": 0,
+      "inflight": 0,
+      "terminal_kind": "NATURAL_TP_FLAT",
+      "actual_terminal_state": "NOT_TRIGGERED",
+      "cash": "10790.85235305",
+      "fees": "35.35114695",
+      "native_fills": 8,
+      "rights": [
+        {
+          "episode_id": "b427b9a1-729c-49f2-8771-c43dc6b68634",
+          "original_second": "158.125",
+          "first_terminal": "158.125",
+          "price": "98.5",
+          "old_orders": [
+            "O-19700101-000000-001-000-1",
+            "O-19700101-000000-001-000-5"
+          ],
+          "off_ns": 60000000014,
+          "locked_cap": "158.125",
+          "granted_cap": "316.250",
+          "submitted": true,
+          "attempted": true,
+          "dead": "BTC_FLAT",
+          "order_id": "O-19700101-000500-001-000-13",
+          "submit_qty": "158.125",
+          "denial_counts": {
+            "CURRENT_THREE_TP_ACK_UNKNOWN": 1,
+            "POST_ONLY_CROSS": 1,
+            "NATIVE_MARGIN": 3
+          },
+          "last_denial": "NATIVE_MARGIN",
+          "second_filled_ever": "158.125"
+        }
+      ],
+      "cleanup_clean": true,
+      "raw_snapshots": [
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-07-CURRENT_TARGET_ACK_HELD.json",
+          "sha256": "6b87af6016e8b25d252883229bbc420168cdeefcb688a4052b7a4b848b2820a9",
+          "stage": "CURRENT_TARGET_ACK_HELD"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-07-BEFORE_TERMINAL.json",
+          "sha256": "fde9121e64e20f53f4bb24c4414776ca828d21099f34c52a33421935cc2f6285",
+          "stage": "BEFORE_TERMINAL"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-07-BEFORE_END.json",
+          "sha256": "fed5754bc6f98035b50c315069631a9f6c4ff786750831b71d4c3d2072ce909f",
+          "stage": "BEFORE_END"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-07-AFTER_END.json",
+          "sha256": "b066725d415cd06a40e7f41659f300028fdb242a28ebbe5537e6a7e81c369f0e",
+          "stage": "AFTER_END"
+        },
+        {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-07-BEFORE_DISPOSE.json",
+          "sha256": "1166594d7ab7a0c984e7e1dd61166ccd436ab301357d048c20eab5fd67e3b238",
+          "stage": "BEFORE_DISPOSE"
+        }
+      ]
+    }
+  ],
+  "failed_physical_indices": [
+    1,
+    3,
+    5,
+    6
+  ],
+  "no_failed_process_reclassified": true,
+  "old_closed_six_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "amended_seven_sha256": "e92957f167e0331380f9f809cf891123c99e33e9d33e974d4516424158f4784f",
+  "all_six_old_rows_exact": true,
+  "final_actual_OS_rc": 0,
+  "actual_stock_margin_calls": [
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "316.250",
+      "timestamp": 4,
+      "allowed": true
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 5,
+      "allowed": true
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "side": "-1",
+      "quantity": "156.5",
+      "timestamp": 60000000010,
+      "allowed": true
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 300000000016,
+      "allowed": false
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 300000000016,
+      "allowed": false
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 300000000016,
+      "allowed": false
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 300000000025,
+      "allowed": true
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 300000000025,
+      "allowed": true
+    }
+  ],
+  "actual_release_audit": {
+    "grants": [
+      {
+        "event": "A0_GRANT_ONCE",
+        "timestamp_ns": "300000000025",
+        "episode_id": "b427b9a1-729c-49f2-8771-c43dc6b68634",
+        "locked_cap": "158.125",
+        "cap": "316.250",
+        "remaining": "158.125",
+        "submitted": true
+      }
+    ],
+    "submits": [
+      {
+        "event": "A0_SUBMIT",
+        "timestamp_ns": "300000000025",
+        "episode_id": "b427b9a1-729c-49f2-8771-c43dc6b68634",
+        "order_id": "O-19700101-000500-001-000-13",
+        "generation": 1,
+        "price": "98.5",
+        "quantity": "158.125"
+      }
+    ],
+    "accepted": [
+      "O-19700101-000500-001-000-13"
+    ],
+    "denials": [
+      {
+        "event": "A0_DENY",
+        "timestamp_ns": "120000000014",
+        "reason": "CURRENT_THREE_TP_ACK_UNKNOWN",
+        "episode_id": "b427b9a1-729c-49f2-8771-c43dc6b68634"
+      },
+      {
+        "event": "A0_DENY",
+        "timestamp_ns": "120000000015",
+        "reason": "POST_ONLY_CROSS",
+        "episode_id": "b427b9a1-729c-49f2-8771-c43dc6b68634",
+        "price": "98.5",
+        "locked_cap": "158.125"
+      },
+      {
+        "event": "A0_DENY",
+        "timestamp_ns": "300000000016",
+        "reason": "NATIVE_MARGIN",
+        "episode_id": "b427b9a1-729c-49f2-8771-c43dc6b68634",
+        "quantity": "158.125"
+      }
+    ],
+    "native_fill_coverage_complete": true,
+    "native_release_fills": [
+      {
+        "native_trade_id": "T-a1462476e2ab6fa0-002",
+        "client_order_id": "O-19700101-000500-001-000-13",
+        "BTCinstrument_id": "BTCUSDT-PERP.P1SIM",
+        "quantity": "1",
+        "release_order": true
+      },
+      {
+        "native_trade_id": "T-317524596ee03665-003",
+        "client_order_id": "O-19700101-000500-001-000-13",
+        "BTCinstrument_id": "BTCUSDT-PERP.P1SIM",
+        "quantity": "157.125",
+        "release_order": true
+      }
+    ],
+    "actual_releases": 1
+  },
+  "final_clean_lifecycle": {
+    "before_end": {
+      "trader": {
+        "state": "RUNNING",
+        "running": true,
+        "disposed": false
+      },
+      "data_engine": {
+        "state": "RUNNING",
+        "running": true,
+        "disposed": false
+      },
+      "risk_engine": {
+        "state": "RUNNING",
+        "running": true,
+        "disposed": false
+      },
+      "exec_engine": {
+        "state": "RUNNING",
+        "running": true,
+        "disposed": false
+      },
+      "emulator": {
+        "state": "RUNNING",
+        "running": true,
+        "disposed": false
+      }
+    },
+    "errors": [],
+    "after_end": {
+      "trader": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "data_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "risk_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "exec_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "emulator": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      }
+    },
+    "after_dispose": {
+      "trader": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "data_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "risk_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "exec_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "emulator": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      }
+    },
+    "clean": true
+  },
+  "limitations": [
+    "Finite syntheticnativefixtures/diagnosticL1depth; not historicalvenue capacity",
+    "C0 standalone nativefixtureNOT_RUN; exactC0kwargs/defaultOFF purePASS; actualC0economiccontrolmustPASS beforeA0",
+    "No economicprefix/full/OOS/ROI/DD50 proof",
+    "OldFAILED1/3/5/6preserved; earlydisposewarnings1/2/3notreclassifiedclean",
+    "Stockmargin missing/staleDENY/FRESHpass shown on ownnativeaccount; noIM/MM0freecredit"
+  ],
+  "prefix_attempts": 0,
+  "prefix_admission": "ROOT_REVIEW_AND_EACH_VARIANT_GO_REQUIRED",
+  "full": 0,
+  "training": 0,
+  "downloads": 0,
+  "pilot": 0,
+  "production": 0,
+  "publication": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-source-publication-receipt.json"
+}

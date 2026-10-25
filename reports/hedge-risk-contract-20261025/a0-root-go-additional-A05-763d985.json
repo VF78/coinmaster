@@ -1,0 +1,21 @@
+{
+  "decision": "ROOT_GO_EXACTLY_ONE_A05_PHYSICAL7",
+  "recorded_utc": "2026-10-25T12:39:02.807469+00:00",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "direct_owner_reply": "Утверждаю +1, общий лимит 7",
+  "owner_approval_sha256": "d2c0c9cb7f10b8b2ab87e3434169df95d13701c2c40099167eac2b242348e9bd",
+  "amendment_protocol_sha256": "22e0e44335d8811b177e6ca7bc71398768f2b3a8b25bca341ad951c475602c63",
+  "source_review_P0": 0,
+  "source_review_P1": 0,
+  "source_input_pins_mismatches": 0,
+  "closed_six_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "amended_before_run_sha256": "4d05dd09c747dd323c7f5206ffb3644a4dc0d96cfbe3333056e55465cf334e71",
+  "prior_six_rows_exact": true,
+  "engineering_total_max": 7,
+  "additional_instances": 1,
+  "fixture": "A05_CROSS_MARGIN_UNKNOWN",
+  "prefix_go": false,
+  "prefix_max_unchanged": 3,
+  "full_training_downloads_pilot_production": 0,
+  "stop": "Oneengineonly; anyfailurestop/noautomaticretry; preserveactualOSrc+snapshots+all6historicalrows"
+}

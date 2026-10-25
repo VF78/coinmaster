@@ -15,3 +15,7 @@ Accounting-qualified baseline допускает плохой DD/performance. UN
 Неизвестны новые source freeze, actual receipt schema, exit/artifacts/rights и outcomes; они не предсказаны. Full/OOS/70%/90% proof из prefix не выводится; floors4256975.067212381/5470396.514987347 прежние. Реальных wallet/pilot/production действий0. Следующий шаг только по root completion; ожидание без standing polling.
 
 Pre-outcome clarification: producer MD.a0_rights и A0_* events; exact nested path ожидается до prefix freeze. Чистый rights-proof.py нормализует проверенные actual fills, не запускает engine.
+
+Prelaunch interface binding PASS (engine-free): actual supervisor/worker/common inspected; final source763d985; report LABEL.json and four immutable roles, actual OS rc, completion/ledger/source/freeze identities now bound in adapter. Exact argv per label and script hashes: prelaunch-binding.json. Это не economic PASS и не rootGO; C0 financial PASS обязателен до A0. Frozen contract ca815…31102 не изменён.
+
+Guard-batch rebind PASS: worker exact loaded-freeze SHA→STARTED entry; pinned prior financial receipts (C0: OFF; A0: OFF+C0), immutable snapshot/canonical entry, actual risk physical_binding checked. Common87ec917…, workere68439e…, supervisor51a33b5…; OFF freeze5b5acd5… reviewed root_go=false. No launch/outcome acceptance. Updated prelaunch-binding.json; initial-interface snapshot preserved.

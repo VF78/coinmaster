@@ -1,0 +1,70 @@
+{
+  "schema": "CM_A0_FINANCIAL_QUALIFICATION_V1",
+  "purpose": "PRE_OUTCOME_SCHEMA_ONLY_NOT_AN_ACCEPTANCE_RECEIPT",
+  "receipt_path": "acceptance/{LABEL}-financial-qualification.json",
+  "root_written_only_after_actual_analysis": true,
+  "required_receipt_fields": {
+    "schema": "CM_A0_FINANCIAL_QUALIFICATION_V1",
+    "decision": "FINANCIAL_ACCEPTED_CONTROL",
+    "qualification": "FINANCIALLY_QUALIFIED",
+    "label": "R2_OFF | R2_C0",
+    "attempt_id": "actual UUID of unique COMPLETED attempt",
+    "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+    "report_path": "absolute actual report path",
+    "report_sha256": "actual report SHA256",
+    "native_ledger_path": "absolute a0-prefix-ledger.json path",
+    "native_ledger_sha256_at_qualification": "actual ledger SHA at receipt creation; diagnostic only across later appends",
+    "ledger_snapshot": {
+      "path": "absolute immutable saved ledger snapshot",
+      "sha256": "snapshot SHA256"
+    },
+    "completed_attempt_sha256": "SHA256 UTF8 json.dumps(actual COMPLETED attempt,sort_keys=True,separators=(comma,colon),ensure_ascii=False)",
+    "risk_analysis_path": "absolute acceptance/LABEL-risk.json",
+    "risk_analysis_sha256": "actual risk analysis SHA256",
+    "completion_manifest_path": "absolute actual manifest",
+    "completion_manifest_sha256": "actual manifest SHA256",
+    "supervisor_path": "absolute actual supervisor receipt",
+    "supervisor_sha256": "actual supervisor receipt SHA256",
+    "actual_returncode": 0,
+    "accounting_qualified": true,
+    "financial_gates": {
+      "actual_os_exit0": "PASS",
+      "complete_cash_reconciliation": "PASS",
+      "signed_asset_funding_reconciliation": "PASS",
+      "native_3TP": "PASS",
+      "ownership": "PASS",
+      "continuous_settled_coverage": "PASS",
+      "coherent_prefill_preopen_event_coverage": "PASS",
+      "source_config_data_comparable": "PASS",
+      "rights_audit_complete": "PASS",
+      "terminal_positions0_orders0": "PASS",
+      "zero_model_liquidations": "PASS"
+    },
+    "terminal_open_positions": 0,
+    "terminal_open_orders": 0,
+    "model_liquidations": 0,
+    "metric_contract_sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+    "performance_scope": "Accounting qualification only: poor DD/TOTAL/ES20 may remain financially qualified; no candidate/performance/full approval"
+  },
+  "admission": {
+    "R2_OFF": [],
+    "R2_C0": [
+      "R2_OFF"
+    ],
+    "R2_A0": [
+      "R2_OFF",
+      "R2_C0"
+    ]
+  },
+  "freeze_field": "previous_financial_qualifications: list[{label,path,sha256}] exactly prior required labels, no extras/duplicates",
+  "verifier": [
+    "Pin each exact financial receipt file SHA from freeze; schema/decision/qualification/accounting_qualified and all mandatory financial_gates must be exact passing values; unknown or missing rejects.",
+    "Hash risk_analysis, completion_manifest, supervisor, ledger_snapshot against receipt. risk analysis must have accounting_qualified=true and qualification=VALID_ACCOUNTED_PREFIX; physical_binding fields must agree with receipt.",
+    "Find exactly one current ledger attempt by receipt UUID; require statusCOMPLETED, exact label/source, detail.report path+SHA and actual_returncode0; actual report file SHA must agree. Receipt native_ledger_path equals actual ledger path.",
+    "Find same exact COMPLETED attempt in immutable snapshot. Canonical completed_attempt_sha256 must agree with both current entry and snapshot entry. The ledger whole-file SHA at qualification is not required to match a later append-mutated ledger.",
+    "Actual report physical_prefix_attempt must agree UUID/label/source/ledger path; manifest and supervisor attempt/source/rc/COMPLETED bindings remain exact.",
+    "OFF no prior receipt; C0 OFF; A0 OFF+C0. Receipt filenames or COMPLETED alone never replace financial PASS. Root receipt created only after actual reader/evidence PASS."
+  ],
+  "status": "PROPOSED_EXACT_ADMISSION_SCHEMA_NO_OUTCOMES",
+  "engines_created": 0
+}

@@ -1,0 +1,21 @@
+{
+  "status": "EXACT_DESTINATION_AND_PAYLOAD_APPROVED_BY_OWNER",
+  "approval_source": "Direct human response to request_user_input_async call_e8d1506b89384ff09a1e8bde32e6ae56 item1",
+  "recorded_utc": "2026-10-25T12:36:29.508266+00:00",
+  "exact_owner_reply": "Разрешаю указанную публикацию в VF78/coinmaster",
+  "question_scope": "Publish current CoinMaster research runtime code, tests and manager research reports WITHOUT secrets to PUBLIC https://github.com/VF78/coinmaster; branches codex/hedge-rights-unlock-20261025 and codex/btc-pattern-pilot-m2-20261021; deployment excluded.",
+  "repository": "https://github.com/VF78/coinmaster",
+  "visibility": "PUBLIC",
+  "source_branch": "codex/hedge-rights-unlock-20261025",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "manager_branch": "codex/btc-pattern-pilot-m2-20261021",
+  "payload": [
+    "current research runtime source",
+    "tests",
+    "manager research reports and handoff docs"
+  ],
+  "secrets_authorized": false,
+  "deployment": false,
+  "pilot": false,
+  "production": false
+}

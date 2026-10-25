@@ -1,0 +1,27 @@
+{
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "command": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/tests/run_a0_engineering.py",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-engineering-amended-seven-ledger.json",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-additional-A05-gate-approved.json"
+  ],
+  "environment": {
+    "LANG": "en_US.UTF-8",
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime:/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/tests",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "gate_sha256": "368d1856280c16640d79d228c5a3fabafa33bec04f803a3bbe76a7f1597e33f8",
+  "actual_returncode": 0,
+  "started_utc": "2026-10-25T12:40:31.324843+00:00",
+  "log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/a0-additional-A05-763d985.log",
+  "already_spent": 6,
+  "additional_constructor_cap": 1,
+  "prefix_processes": 0,
+  "pid": 79732,
+  "finished_utc": "2026-10-25T12:40:33.271077+00:00"
+}

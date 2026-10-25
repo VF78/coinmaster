@@ -1,0 +1,21 @@
+{
+  "status": "OWNER_APPROVED_DERIVED_LEDGER_PREFLIGHT_PASS_ROOT_GO_PENDING",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "actual_root_go": false,
+  "actual_gate_blocks": "EXACT_ADDITIONAL_A05_ROOT_GO_REQUIRED",
+  "approval_and_parent_helper_validation": "PASS with in-memory hypotheticalroot_go=True only; no filegatechange/no engine",
+  "conditional_cap": 7,
+  "amended_ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-engineering-amended-seven-ledger.json",
+  "amended_ledger_sha256": "4d05dd09c747dd323c7f5206ffb3644a4dc0d96cfbe3333056e55465cf334e71",
+  "physical_started": 6,
+  "prior_rows_exactly_preserved": 6,
+  "remaining_owner_approved": 1,
+  "actual_closed_six_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "source_pins_verified": 222,
+  "input_pins_verified": 31,
+  "feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "approval_sha256": "d2c0c9cb7f10b8b2ab87e3434169df95d13701c2c40099167eac2b242348e9bd",
+  "approved_gate_sha256": "3a5e2428a2bd8c88ee536764c16d3ab0b1ca3c6d852f856846033ee507342a06",
+  "engines_created": 0,
+  "prefix_processes": 0
+}

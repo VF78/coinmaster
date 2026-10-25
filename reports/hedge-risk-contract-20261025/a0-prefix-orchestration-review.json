@@ -1,0 +1,39 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "review_scope": "One prefix orchestration/budget/source-call pass, no reader economics duplication",
+  "decision": "REQUEST_ONE_LINKAGE_CORRECTION_BATCH_BEFORE_PREFIX",
+  "P0": 0,
+  "P1": 2,
+  "findings": [
+    {
+      "id": "A0-PFX-01",
+      "priority": "P1",
+      "file": "a0-prefix-worker.py",
+      "issue": "Worker validates STARTED attempt identity but does not compare exact bytes of loaded freeze with durable claim freeze_sha256. A changed freeze can therefore pass its own pins while supervisor/ledger completion attributes outputs to a different freeze.",
+      "minimal_correction": "Before native call require SHA(freeze)==entry.freeze_sha256 (and loaded freeze identity), and use that immutable claimed digest consistently in worker proposal/supervisor manifest; fail/count attempt on mismatch."
+    },
+    {
+      "id": "A0-PFX-02",
+      "priority": "P1",
+      "file": "a0-prefix-common.py:claim",
+      "issue": "Prior statusCOMPLETED means only OS0+exports; it explicitly has financial ROOT_REVIEW_REQUIRED. Strict order/previousIDs and generic launch_gatesPASS do not bind actual prior financial acceptance, notably C0 financialPASS before A0.",
+      "minimal_correction": "For each prior accepted ID require pinned root financial acceptance receipt tied to that same prior attempt/reportSHA/completionmanifestSHA and final PASS under unchanged gates. In particular A0 must require C0 accepted; UNKNOWN/failure blocks claim. OFF has no prior requirement. Keep independent consumer responsible for producing acceptance, no finance logic in wrappers."
+    }
+  ],
+  "positive_findings": [
+    "Atomic flock claim before namespace/setup/Popen; any claimed setup/Popen/worker/export failure consumes slot and blocks automatic next; max3 fixed order OFF/C0/A0, no supervisor loop/retry.",
+    "One Popen scrubbed env with exact source763/PYTHONPATH and no inherited trader secrets; worker fresh namespace/result prevents funding/coherent journal reuse.",
+    "prepared_kwargs uses real frozen build_a0_kwargs and validate_native_a0, exact LEGACY_Q/R2OFFNone/C0A0B2_F0/onlyA0flag; native producer/fees/funding/reportguards unchanged.",
+    "--prepare hashes and constructs kwargs only, imports no engine constructor call; no reviewer execution.",
+    "Actual OSreturn0 required; worker proposal not final authority; supervisor rehashes report/orders/funding/coherent and links report/manifest hashes to durable ledger.",
+    "Current OFFfreeze rootGO=false, engineerLIMITEDreceipt pinned, ledger0; no economic admission inferred."
+  ],
+  "reviewed_sha256": {
+    "a0-prefix-common.py": "c77be3ea249e7b4f59a4fb50d8deb1e7549adc48e2da896fc684e85486697ab2",
+    "a0-prefix-supervisor.py": "3456a045cab348b43928327efa4c2ca5458b560939d6c8954223fdc3d427d7b0",
+    "a0-prefix-worker.py": "1f4edafa904cd2fd16012c22ce1517aaf9971b5bdf3f95ed2a58177c577c4fc0",
+    "a0-prefix-freeze-R2_OFF.json": "e9d97565b8aead6129bec7f869d841910f5730062f4943a67c526c0537fb5c65"
+  },
+  "limitations": "No supervisor/worker/prepare execution, tests, Popen, native, prefix or outcome reads by reviewer. Separate acceptance consumer review not duplicated.",
+  "authority": "No prefix/rootGO granted. One linkage-only correction batch requested; refreeze scripts/OFF gate and review closure required. Existingprefix3/full0 remains unchanged."
+}

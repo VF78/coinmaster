@@ -1,0 +1,26 @@
+{
+  "decision": "ROOT_GO_EXACTLY_ONE_PREFIX_R2_OFF",
+  "recorded_utc": "2026-10-25T13:00:20.262454+00:00",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "variant": "R2_OFF",
+  "pre_go_freeze_sha256": "5b5acd5d5495cace008479afe0a0b214a28745587deeb2ff39e0a91795b17ad4",
+  "orchestration_review_sha256": "7594465bb6b2a1c7a7d627116ed4305f22efb73a754ccd9b90e283dc3c053b6e",
+  "consumer_binding_sha256": "2b385520c41a4ab486cf9c91b8ed0fc7bd161fd6712ba9c3de26c0bf4eedc027",
+  "engineering_admission_sha256": "87f1358bd56e5a42ac8c15c756a51344594fcc160a380b57ba943da9a0faa02b",
+  "verified_pins": {
+    "source": 222,
+    "input": 31,
+    "scripts": 3,
+    "mismatches": 0
+  },
+  "prefix_physical_spent": 0,
+  "prefix_physical_max": 3,
+  "calendar": "[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)",
+  "seed": "10000",
+  "reserve": "0",
+  "fresh_namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/R2_OFF",
+  "prior_financial_receipts_required": [],
+  "engineering_remaining": 0,
+  "full_training_download_pilot_production": 0,
+  "stop": "ONE physical worker only incl preenginefail/no automaticnext/retry; actualOS0+completefinancialqualification required beforeC0; no quietprocesskill withoutprogress/resourceaudit"
+}

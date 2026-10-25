@@ -38,7 +38,22 @@ entry=linked[0]
 assert entry['status']=='COMPLETED', 'LEDGER_ATTEMPT_NOT_COMPLETED'
 if a.get('physical_prefix_attempt'):
  assert entry['attempt_id']==a['physical_prefix_attempt']['attempt_id'], 'REPORT_ATTEMPT_MISMATCH'
-assert entry.get('variant',entry.get('label')) in [variant,{'R2_OFF':'OFF','R2_C0':'B2_F0','R2_A0':'B2_F0'}[variant]], 'LEDGER_VARIANT_MISMATCH'
+assert entry['variant']==variant, 'LEDGER_VARIANT_MISMATCH'
+assert len(completion['artifacts'])==4 and {x['role'] for x in completion['artifacts']}=={'report','orders','funding','coherent'}, 'EXACT_FOUR_ARTIFACT_ROLES_REQUIRED'
+expected_paths={'report':rp,'orders':p/f'{stem}-orders.csv','funding':p/f'{stem}-funding.sqlite','coherent':p/'coherent-native-events.jsonl.gz'}
+assert all(Path(x['path']).resolve()==expected_paths[x['role']] for x in completion['artifacts']), 'ARTIFACT_ROLE_PATH_MISMATCH'
+assert rp.name==variant+'.json' and p.name=='result' and p.parent.name==variant, 'FROZEN_RESULT_LAYOUT_REQUIRED'
+assert completion['status']=='NATIVE_PROCESS_EXPORTED_ACTUAL_OS_ZERO' and completion['actual_returncode']==0, 'ACTUAL_OS_ZERO_COMPLETION_REQUIRED'
+assert entry['detail']['actual_returncode']==0, 'LEDGER_ACTUAL_OS_ZERO_REQUIRED'
+assert a['physical_prefix_attempt']['variant']==variant and Path(a['physical_prefix_attempt']['ledger']).resolve()==args.ledger.resolve(), 'REPORT_LEDGER_IDENTITY_MISMATCH'
+assert all(x['attempt_id']==entry['attempt_id'] and x['variant']==variant for x in [supervisor,completion]), 'RECEIPT_ATTEMPT_IDENTITY_MISMATCH'
+source='763d985617abd7a7afef5eec13912303983d8837'
+assert all(x['source_commit']==source for x in [entry,supervisor,completion,a['physical_prefix_attempt']]), 'SAME_FROZEN_SOURCE_REQUIRED'
+assert entry['freeze_sha256']==supervisor['freeze_sha256']==completion['freeze_sha256'], 'FREEZE_BINDING_MISMATCH'
+assert Path(entry['namespace']).resolve()==p.parent, 'LEDGER_NAMESPACE_MISMATCH'
+assert Path(entry['detail']['report']).resolve()==rp, 'LEDGER_REPORT_PATH_MISMATCH'
+completion_digest=hashlib.sha256(args.completion.read_bytes()).hexdigest()
+assert all(x['completion_manifest_sha256']==completion_digest and Path(x['completion_manifest']).resolve()==args.completion.resolve() for x in [entry['detail'],supervisor]), 'COMPLETION_RECEIPT_LEDGER_HASH_BINDING_MISMATCH'
 orders=list(csv.DictReader((p/f'{stem}-orders.csv').open()))
 terminal={'FILLED','CANCELED','EXPIRED','REJECTED','DENIED'}
 parents=sorted(a['split_cover_audit']['parents'],key=lambda x:int(x['start_ns']))
@@ -147,6 +162,13 @@ if out['rights']['status']!='PASS':
  out['accounting_qualified']=False
  out['qualification']='UNKNOWN_OR_FAILED_BLOCKS_ACCEPTANCE'
 out['metric_contract_sha256']=hashlib.sha256((Path(__file__).parent/'metric-contract.json').read_bytes()).hexdigest()
+out['physical_binding']={
+ 'attempt_id':entry['attempt_id'],'label':variant,'source_commit':source,'report_path':str(rp),'report_sha256':report_digest,
+ 'native_ledger_path':str(args.ledger.resolve()),'native_ledger_sha256_at_analysis':hashlib.sha256(args.ledger.read_bytes()).hexdigest(),
+ 'completed_attempt_sha256':hashlib.sha256(json.dumps(entry,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode('utf-8')).hexdigest(),
+ 'completion_manifest_path':str(args.completion.resolve()),'completion_manifest_sha256':completion_digest,
+ 'supervisor_path':str(args.supervisor.resolve()),'supervisor_sha256':hashlib.sha256(args.supervisor.read_bytes()).hexdigest()}
+out['prelaunch_binding_sha256']=hashlib.sha256((Path(__file__).parent/'prelaunch-binding.json').read_bytes()).hexdigest()
 out['evidence_sha256']=hashlib.sha256(args.evidence.read_bytes()).hexdigest()
 out['reader_reused_from_sha256']='a357f9a4b22ccb221610166d23aaa6e01c0770f801e04e1335e25bc3b4cc78a1'
 out['engine_instances_created']=0

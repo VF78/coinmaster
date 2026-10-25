@@ -1,0 +1,55 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "decision": "PASS_PREFIX_ORCHESTRATION_CORRECTION_PENDING_ROOT_GO",
+  "P0": 0,
+  "P1": 0,
+  "source_money": "763d985617abd7a7afef5eec13912303983d8837",
+  "scope": "Focused closure of initialPFX01/PFX02 only; previous review preserved unchanged; no acceptance-reader reaudit",
+  "closures": [
+    {
+      "id": "A0-PFX-01",
+      "status": "CLOSED",
+      "evidence": "load_freeze parses and hashes same read_bytes. verify_worker_claim requires exact loaded freeze_sha256 == durable STARTED entry.freeze_sha256 before verify_freeze/native call, plus unique attempt/source/variant/namespace/rootGO. Postclaim editedfreeze fails before engine and supervisor records counted failure."
+    },
+    {
+      "id": "A0-PFX-02",
+      "status": "CLOSED",
+      "evidence": "verify_financial_qualifications called before claim and again in worker. OFF requires emptyrefs, C0 exactOFF, A0 exactOFF+C0. Pinned receipt requires FINANCIAL_ACCEPTED_CONTROL/FINANCIALLY_QUALIFIED/accountingtrue/all11explicitfinancialPASS/actualintOS0+terminalzeros, source763/metriccontract; same reportSHA/completedattempt digest/immutableledger snapshot/riskphysicalbinding/manifest+supervisor+fourartifact hashes. ExportCOMPLETED alone no longer qualifies."
+    }
+  ],
+  "retained_invariants": [
+    "Claim before namespace/setup/Popen; max3 strictOFF/C0/A0; allclaimed failures stop and consume slot; no automatic next/retry.",
+    "Scrubbed environment, one supervisorPopen/native call, fresh namespace/result/funding/coherent journals and actualOS0/four-artifact provenance.",
+    "Exact build_a0_kwargs/validate_native_a0 on frozen763; R2LEGACY_Q/OFFNone/C0A0B2_F0/onlyflag; native fees/funding/3TP/cash/report producers unchanged.",
+    "Prepare hashes/kwargs/qualification checks remain engine-free; owner reports815rows/allpins actualOFFprepare; reviewer did not run prepare.",
+    "Qualification is native accounting/coverage/ownership/zeroLiq comparability, without requiring baselineOFF/C0 DD<=50 or profitableperformance. A0 comparativeDD/cost/ES goals remain separate unchanged."
+  ],
+  "verification_limits": {
+    "owner_reported_engine_free_checks": 18,
+    "unit_receipts": "UNITONLY temporary data, no actual qualification created",
+    "reviewer_tests": 0,
+    "reviewer_prepare": 0,
+    "reviewer_Popen": 0,
+    "reviewer_engines": 0,
+    "reviewer_prefix_or_outcome_reads": 0,
+    "actual_prefix_ledger": {
+      "physical_started": 0,
+      "active": 0,
+      "status": "FROZEN_PREFIX_AWAITING_EXACT_ROOT_GO"
+    },
+    "OFF_root_go": false,
+    "consumer_review": "Separate acceptance reader binding review remains independent; not duplicated."
+  },
+  "reviewed_sha256": {
+    "a0-prefix-common.py": "87ec9171bbd2466bd874c1d2c3d9ac034342754e86e8b4b522a5ca9b64260404",
+    "a0-prefix-worker.py": "e68439ec3902604c2fbb217fb419f28625690181ff741c701216be16dccdda50",
+    "a0-prefix-supervisor.py": "51a33b5a6c86ee43ac7d073e164ef7c7edae19fb775f4b8f6ffec8d872563ab8",
+    "a0-prefix-freeze-R2_OFF.json": "5b5acd5d5495cace008479afe0a0b214a28745587deeb2ff39e0a91795b17ad4",
+    "a0-prefix-binding-plan.json": "2a3bdc6fc60d818c4b98d7ff3dbf21fbfa14dce9d43d0abde16ed2f5edc01a1f",
+    "a0-prefix-orchestration-guard-correction.diff": "e7d46c4b95c2ae3bdfd0a5bc0f6a44422d0a2c3e04f3ca59c7a7802c1e58bd12",
+    "a0-prefix-guard-verification.json": "e4e95d17c40cc93ef3f964a3e79412642057c4fbad0b4aa2654227234742dc36",
+    "acceptance/financial-qualification-receipt-schema.json": "b02b624a4e60e166f033a3daa184b7ea03e10390fb472bc3e1acdf591c5425c2",
+    "a0-prefix-ledger.json": "6348e622b7be24e4fea293708c10c03a92c275a6bb2f28d58b0e812723639d43"
+  },
+  "authority": "Ready for coordinator root review only; no rootGO/prefix launch/extra budget/full/trade/deployment granted. Every variant still needs exact own rootGO and prior actual financialPASS receipts; C0 must pass all financial gates beforeA0. Source product unchanged, initialfindings/failures preserved."
+}

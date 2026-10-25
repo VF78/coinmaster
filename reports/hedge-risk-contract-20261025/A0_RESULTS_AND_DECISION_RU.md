@@ -1,30 +1,21 @@
-# A0: инженерный результат и следующий gate
+# A0: текущий результат и экономический gate
 
-Статус: ENGINEERING_INCOMPLETE / ECONOMIC_PREFIX_HOLD. Цели ≥70% прибыли исходного победителя при DD≤50%, затем ≥90%, пока NOT_MET. Новых экономических результатов нет: prefix0/3, full0. Пилот и production не менялись.
+Статус: LIMITED_PASS инженерных компонентов R2 paired; экономические prefix0/3 ожидают frozen wrapper/binding/rootGO. Цели исходного победителя ≥70%net при DD≤50%, затем ≥90%, пока NOT_MET. Full/training/download/pilot/production0.
 
-Утверждённые шесть native-fixture instances израсходованы: 2 COMPLETED, 4 FAILED, active0, remaining0. Это четыре запуска connected-runner, каждый с фактическим OS rc1; завершённые экземпляры внутри них — доказательства отдельных компонентов, а не успешные процессы. FAILED1/3/5/6 сохранены. Ledger SHA c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424.
+Engineering закрыт **7/7:3COMPLETED,4FAILED,active0,remaining0**. Прямое согласование +1 и exactPUBLIC destination сохранено отдельными receipts. Исходный closed6 ledger SHA c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424 и все шесть старых строк неизменны; amended-seven ledger содержит единственный новый instance7. Все прежние четыре connected processes OSrc1 и FAILED1/3/5/6 сохранены. Actual7 процесс завершился OSrc0.
 
-Что подтверждено native-состоянием:
+Подтверждённые native-компоненты:
 
-- A02: штатный допуск по марже, частичный первый IOC, право только на исходный second-child, сохранение уже сокращённого BTC, реальный GTC-добор, три исполненных TP, native flat и cash identity. Ранний dispose warning сохранён; чистый lifecycle задним числом не приписывается.
-- Combined A03/A04: позднее исполнение исходной заявки, новый частичный добор, немедленная отмена при обычном BTC TP, позднее исполнение новой заявки и сокращение избытка. Повторного права/восстановления закрытого BTC нет. Реальные три TP, flat/cash identity и штатный STOPPED→DISPOSED подтверждены.
-- В FAILED6 до ошибки: UNKNOWN текущего TP ACK блокирует добор; настоящий ACK снимает блокировку; пересекающая postOnly цена даёт WAIT без submit/grant. Это компонентные факты, не PASS процесса.
+- Instance2: stock marginPASS, partialFIRST, право только на исходный second-child, permanentlyclosedBTCcap, originalGTC, actual3TP/nativeflat/cashidentity. Ранний dispose warning не превращён в clean lifecycle.
+- Instance4 combined: old latefill1→newpartial2→ordinaryBTC TP/immediatecancel→newlatefill3→actualexcessdebt/capcorrection. Нет повторного права, reanchor или возврата закрытого BTC. Actual3TP/flat/cash и 5компонентов STOPPED→DISPOSED.
+- Instance7: UNKNOWN текущих TP ACK блокирует A0; настоящий ACK снимает блокировку; postOnlycross WAIT без grant. Реальная штатная margin policy трижды отказывает при устаревших marks и разрешает исходный добор после свежих VenueMark. Один originalGTC158.125 исполнен native1+157.125, real3TP/NATURAL_TP_FLAT, positions0/orders0/inflight0, cashidentity и clean lifecycle подтверждены. Это synthetic diagnostic fixture, его прибыль не является экономическим результатом рынка.
 
-Что не подтверждено: фактический native отказ по марже при неизвестных/устаревших marks и восстановление допуска после свежих VenueMark. Последний тест оборвался на `.clear()` у tuple до этой проверки. Отдельный native C0 fixture не выполнен. Экономического допуска нет.
+Независимое финальное ревью: LIMITED_PASS/P0=0/P1=0; root admission receipt a0-root-engineering-admission.json. StandaloneC0 nativefixture NOT_RUN, fullfinancial parity/venue/fullROI не доказаны. Критический UNKNOWN marginDENY/recovery теперь снят фактическим instance7, а не report repair или fake money.
 
-Причины ошибок тестов и меры против повторения:
+Что не сработало в harness и исправлено без изменения денежного package340f: instance1 synthetic start не оставил completed day;3 повторён consumed native depth;5 задержан только один из двух acceptance callbacks;6 mutable.clear вызван у tuple. Новые проверки используют stock guard/свежие displayeddepths1→2→3/sharedaccepthelper/naturalstaleclock→actualVenueMark. Все исходные ошибки сохранены.57 engine-free tests PASS; reviewer tests/engines0.
 
-| Instance | Сбой harness | Исправление / статус |
-|---|---|---|
-| 1 | Синтетический start не оставил завершённый день; stock guard не создал intent | Fixture start−1day, прежний guard сохранён; subsequent A02 прошёл |
-| 3 | Повторён уже израсходованный уровень native book98/size1 | Явные новые displayed sizes1→2→3; combined instance4 прошёл |
-| 5 | Задержан только один из двух callback; настоящий ACK уже известен | Interception общего `_accept_native_order`; UNKNOWN доказан в instance6 |
-| 6 | `_marks` имеет tuple API, вызван неподдерживаемый `.clear()` | Нужны конкретное fixture-only исправление и новый явный physical budget |
+Источник763d985617abd7a7afef5eec13912303983d8837 опубликован в PUBLIC VF78/coinmaster branchcodex/hedge-rights-unlock-20261025, exactremoteSHA проверен; deployment0. Старые publication-block receipts исторические, новое точное human approval получено и успешно применено.
 
-Торговый package после money-review340f не менялся в последующих fixture-коммитах. Первая source-review выявила два P1: допуск до трёх текущих TP ACK и позднюю отмену нового child после BTC TP. Оба исправлены и независимо проверены; их исходные замечания/исправления сохранены.
+Дальше только ранее утверждённые **до3 prefix** OFF→C0→A0 [2024-09-01,2025-01-15)UTC, seed10000/reserve0; failed/preengineattempts входят. Wrapper/supervisor/consumer binding и exactsource/config/inputs/env/commands frozen до первойPopen. RootGO длякаждого отдельно. ActualC0 completefinancial/accounting/coverage/ownership/zeroLiq/terminalflat PASS обязателен передA0. При UNKNOWN нет автоматической следующей попытки.
 
-Следующий шаг — один исправленный A05 с реальным immutable API, после engine-free проверки и отдельного согласования увеличения engineering cap6→7. До него ни одного нового engine/prefix. Неиспользованные три prefix-попытки сохраняются на HOLD, новый резерв не добавляется. Если A05 завершится и review подтвердит компонентное покрытие, возможен только LIMITED_PASS с явным C0_NATIVE_FIXTURE=NOT_RUN, затем отдельные root gates OFF→C0→A0. C0 должен пройти полный прежний финансовый gate до A0. Префикс не доказывает full/OOS/70%/90%.
-
-Исходные доказательства: `a0-engineering-closed-results.json`, неизменённый `a0-engineering-ledger.json`, снимки `a0-fixture-*`, реальные process receipts и независимые source/fixture/component reviews. Исправление, публикация и точное предложение +1 фиксируются отдельными receipts; этот отчёт не разрешает дополнительные запуски.
-
-Prepared fixture-only repair 763d985617abd7a7afef5eec13912303983d8837: natural stale clock→fresh VenueMark,57purePASS, unchanged financial package, proposed extra-one gatefalse. Public source publication blocked by automatic approval review before dispatch; source remains committed locally. Exact +1 proposal: A05_ONE_EXTRA_FIXTURE_PROTOCOL_PROPOSED_RU.md.
+A0 growthgate: gain>C0 и2max(0,incrementalfees), settled+coherenteventDD≤50% и≤C0, dailyES20 по всем136UTCдням≤C0; нужен настоящий additionalBTCfill, иначе NOT_TESTED. Prefix неfull/OOS/70/90proof; основной BTC entrycore и SOL TP/cuts/rearm/fees/funding/data сохранены.

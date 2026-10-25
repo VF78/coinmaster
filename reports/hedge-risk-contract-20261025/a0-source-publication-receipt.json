@@ -1,0 +1,21 @@
+{
+  "status": "PUBLISHED_NOT_DEPLOYED",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "branch": "codex/hedge-rights-unlock-20261025",
+  "repository": "https://github.com/VF78/coinmaster",
+  "visibility": "PUBLIC",
+  "remote_exact_ref_verified": "763d985617abd7a7afef5eec13912303983d8837",
+  "approval": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-exact-publication-owner-approval.json",
+  "approval_sha256": "07317ecadadb1588cc84884f3fff5a32f9eb012964eeb0e97f27d3e4f613aeba",
+  "working_tree": "CLEAN",
+  "preflight": {
+    "new_commits_scanned": 10,
+    "changed_text_files_every_commit": 10,
+    "secret_hits": 0,
+    "exactorigin": true,
+    "hooks_disabled": true
+  },
+  "previous_two_predispatch_rejections_preserved": true,
+  "CI": "NOT_RUN_NO_GREEN_CLAIM",
+  "services_or_deployment_actions": 0
+}

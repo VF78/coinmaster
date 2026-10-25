@@ -1,0 +1,26 @@
+{
+  "status": "PASS_ENGINE_FREE_WRAPPER_PREFLIGHT",
+  "checks": [
+    "RootGO false blocks beforeclaim",
+    "Durable physicalclaim occurs independently before anylaunch",
+    "Failedattempt retains spentslot and blocksautomaticadvance/retry",
+    "Strict3attemptOFF-C0-A0sequence/hardcap on temporaryledger",
+    "Exactly4nativeartifactrole/path/hashverification rejects tamper",
+    "Supervisor actualAST claimbeforePopen; workerneverPopen"
+  ],
+  "temporary_only_ledgers": true,
+  "actual_prefix_attempts": 0,
+  "actual_Popen_calls": 0,
+  "actual_engines": 0,
+  "actual_OFF_prepare": "PASS actual815rowkwargs/fullsourceinputscriptpins",
+  "script_sha256": {
+    "a0-prefix-common.py": "c77be3ea249e7b4f59a4fb50d8deb1e7549adc48e2da896fc684e85486697ab2",
+    "a0-prefix-worker.py": "1f4edafa904cd2fd16012c22ce1517aaf9971b5bdf3f95ed2a58177c577c4fc0",
+    "a0-prefix-supervisor.py": "3456a045cab348b43928327efa4c2ca5458b560939d6c8954223fdc3d427d7b0"
+  },
+  "OFF_freeze_sha256": "e9d97565b8aead6129bec7f869d841910f5730062f4943a67c526c0537fb5c65",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "engineering": "LIMITED_PASS/C0fixtureNOT_RUN",
+  "runtime_money_producer": "UNCHANGED frozen native_baseline.run_native_diagnostic",
+  "native_completion_is_not_financial_acceptance": true
+}
