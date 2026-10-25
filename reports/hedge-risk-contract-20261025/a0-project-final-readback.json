@@ -1,0 +1,20 @@
+{
+  "recorded_utc": "2026-10-25T11:32:26.128666+00:00",
+  "actual": {
+    "id": "PVTI_lAHOBIUvJs4BPJNjzhDV8C0",
+    "isArchived": false,
+    "project": {
+      "number": 2
+    },
+    "fieldValueByName": {
+      "name": "Todo",
+      "optionId": "f75ad846"
+    },
+    "content": {
+      "number": 136,
+      "state": "OPEN",
+      "title": "[Research] A0 original BTC child rights: causal admission and bounded probe proposal",
+      "url": "https://github.com/VF78/coinmaster/issues/136"
+    }
+  }
+}

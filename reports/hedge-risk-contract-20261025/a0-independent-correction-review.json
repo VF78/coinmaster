@@ -1,0 +1,61 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "review_scope": "Focused correction-only review, no engine/test/source mutation",
+  "decision": "PASS_SOURCE_CORRECTION_PENDING_ROOT_GO_AND_NATIVE_EVIDENCE",
+  "source_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+  "P0": 0,
+  "P1": 0,
+  "closures": [
+    {
+      "id": "A0-S01",
+      "status": "CLOSED_SOURCE_AND_PLANNED_NATIVE_ASSERTION",
+      "evidence": "_a0_targets_ready requires current generation authorized/required/accepted={0,1,2}, three same-parent BTC_REDUCE levels, actual cache ACCEPTED reduce-only orders in current order_generation and sum leaves==held. _a0_check denies CURRENT_THREE_TP_ACK_UNKNOWN before cap/grant. A05 now holds actual native acceptance callbacks after target cancel/replacement, proves denial, then delivers original ACK events; native execution not yet run."
+    },
+    {
+      "id": "A0-S02",
+      "status": "CLOSED_SOURCE_AND_PLANNED_NATIVE_ASSERTION",
+      "evidence": "_a0_stop cancels known live/inflight A0-owned order in same ordinary stop callback before historical closed-parent return; pending-cancel/terminal are idempotent. A03 now partial release -> actual TP -> inside_tp_fill cancellation request -> intentionally delayed transport latefill -> actual debt reconciliation; held<=cap, cap<=tp_cap, dead/attempted and one submit asserted. Native execution not yet run."
+    }
+  ],
+  "fixture_review": {
+    "same_six_case_ids": true,
+    "planned_constructor_count": 6,
+    "new_constructors_added_by_correction": 0,
+    "data_window_ns": [
+      0,
+      3600000000000
+    ],
+    "max_hours_per_engine": 1,
+    "stock_margin": "StockProbe still calls WaveOverlayStrategy._tier_allows_increase; A05 stale/missing marks denial retained; no NativeProbe True override",
+    "root_go": false,
+    "native_evidence": "NOT_RUN"
+  },
+  "pure_evidence": {
+    "owner_reported_tests": 45,
+    "reviewer_tests_run": 0,
+    "owner_reported_input_pins": 31,
+    "owner_reported_source_pins": 222,
+    "owner_reported_feed_rows": 815,
+    "targeted_three_corrected_source_pin_matches": true,
+    "full_old_input_or_suite_reaudit": false
+  },
+  "unchanged_scope": "Correction diff confined to A0 rights and its existing six-case runner/pure tests. Previous economic family/core/fee/shared-liquidity/margin model untouched by this diff. Old review retained unmodified.",
+  "reviewed_packet_sha256": {
+    "a0-correction.diff": "adfe09ddfaba4ef71711493455e8f338fa65f92ad7730271fce6e14b06023836",
+    "a0-fixture-plan.json": "abae88c5c185fae8302141a205bd8a31efb6b5952937aa2721fb77379ad6fbc4",
+    "a0-engineering-fixture-gate.json": "848c38fc1c15219998a89cd3601393b3a1949ee3233dbeaac2788e8d78b4b36c",
+    "a0-pure-verification.json": "8df6663dcc5854216effe55f5e8a62833e98469cd1bf384728f49cb4dd759764"
+  },
+  "reviewed_source_sha256": {
+    "runtime/coinmaster/strategy/a0_rights.py": "ed7b688cf4eac1ab1cd3427c42ccaa7d2bf5fcfdd4850c300feef3d8b26ca243",
+    "runtime/tests/run_a0_engineering.py": "ffd7a6c340361da2efd3e0f02720c90d8480a93b084888ce026f3bc2b893f41d",
+    "runtime/tests/test_a0_rights_pure.py": "a7d935ab965cbf2717cebb30cee573c28e09dae1f7f0b385da010c6e1132fa13"
+  },
+  "authority": "No rootGO, engine/prefix/full/deployment or trading permission granted by review. Six-case actual outcomes and stock margin/account/TP/latefill proof remain pending root-controlled execution.",
+  "reviewer_actions": {
+    "engines": 0,
+    "tests": 0,
+    "product_edits": 0,
+    "ledger_or_gate_changes": 0
+  }
+}

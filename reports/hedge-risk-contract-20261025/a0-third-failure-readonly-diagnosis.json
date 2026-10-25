@@ -1,0 +1,97 @@
+{
+  "status": "READ_ONLY_HARNESS_CAUSE_CONFIRMED_NOT_PRODUCT_ACK_BYPASS",
+  "source_commit": "d357f593f3a2551f373b01dae29e0d2919623426",
+  "physical_index": 5,
+  "process_rc": 1,
+  "error": "Assertion CURRENT_THREE_TP_ACK_UNKNOWN/no submit failed",
+  "actual": "Fixture held only on_order_accepted. Generic on_order_event independently called same _accept_native_order, so actualeconomicACK known before OFF60 and A0submit was correctly admitted with all3 nativeaccepted targets.",
+  "source_lines": {
+    "on_order_event": 2659,
+    "on_order_accepted": 2669,
+    "common_accept": 2672
+  },
+  "actual_target_events": [
+    {
+      "event": "TARGET_ACCEPTED",
+      "timestamp_ns": "4",
+      "episode_id": "ebb582d7-0a69-44f0-b1fc-561fde98e043",
+      "level": 0,
+      "generation": 0,
+      "order_id": "O-19700101-000000-001-000-2",
+      "ack_latency_ns": "0"
+    },
+    {
+      "event": "TARGET_ACCEPTED",
+      "timestamp_ns": "4",
+      "episode_id": "ebb582d7-0a69-44f0-b1fc-561fde98e043",
+      "level": 1,
+      "generation": 0,
+      "order_id": "O-19700101-000000-001-000-3",
+      "ack_latency_ns": "0"
+    },
+    {
+      "event": "TARGET_ACCEPTED",
+      "timestamp_ns": "4",
+      "episode_id": "ebb582d7-0a69-44f0-b1fc-561fde98e043",
+      "level": 2,
+      "generation": 0,
+      "order_id": "O-19700101-000000-001-000-4",
+      "ack_latency_ns": "0"
+    },
+    {
+      "event": "PROTECTION_RESTORED",
+      "timestamp_ns": "4",
+      "episode_id": "ebb582d7-0a69-44f0-b1fc-561fde98e043",
+      "duration_ns": "0",
+      "reason": "ALL_REMAINING_ACCEPTED"
+    },
+    {
+      "event": "TARGET_ACCEPTED",
+      "timestamp_ns": "60000000015",
+      "episode_id": "ebb582d7-0a69-44f0-b1fc-561fde98e043",
+      "level": 0,
+      "generation": 0,
+      "order_id": "O-19700101-000100-001-000-12",
+      "ack_latency_ns": "0"
+    },
+    {
+      "event": "PROTECTION_RESTORED",
+      "timestamp_ns": "60000000015",
+      "episode_id": "ebb582d7-0a69-44f0-b1fc-561fde98e043",
+      "duration_ns": "0",
+      "reason": "ALL_REMAINING_ACCEPTED"
+    },
+    {
+      "event": "A0_SUBMIT",
+      "timestamp_ns": "120000000014",
+      "episode_id": "ebb582d7-0a69-44f0-b1fc-561fde98e043",
+      "order_id": "O-19700101-000200-001-000-13",
+      "generation": 1,
+      "price": "98.5",
+      "quantity": "158.125"
+    }
+  ],
+  "actual_new_release": {
+    "order_id": "O-19700101-000200-001-000-13",
+    "submitted": true,
+    "second_filled_ever": "0",
+    "cap": "316.250",
+    "held": [
+      {
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "quantity": "158.125",
+        "side": "LONG"
+      }
+    ]
+  },
+  "minimal_proposal": "Delay common _accept_native_order for BTC_REDUCE, dedup held OrderAccepted by orderID, later deliver unchanged actualevent through WaveOverlayStrategy._accept_native_order. No product money changes.",
+  "actual_constructor_count": 5,
+  "completed": 2,
+  "failed": 3,
+  "remaining_max": 1,
+  "prefix": 0,
+  "coverage_limit": "Critical native unknownACK/cross/stock marginDENY still NOT_PROVEN. C0native NOT_RUN. No automatic final slot disposition or two-engine multiplex.",
+  "cleanup": "Physical4 and5 actualall5 STOPPEDafterend/DISPOSEDafterdispose/errors0. Earlier warnings preserved.",
+  "no_new_engine": true,
+  "no_source_edits": true
+}

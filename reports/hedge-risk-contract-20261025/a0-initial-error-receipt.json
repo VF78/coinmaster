@@ -1,0 +1,19 @@
+{
+  "engines": 0,
+  "errors": [
+    {
+      "cause": "hook initially selected nested CLOSE_ALL submit site",
+      "correction": "restored CLOSE_ALL and hooked final native BTC submission; subsequent24PASS/final25PASS",
+      "error": "IndentationError at wave_overlay.py1861; initial test result1FAILED23PASS",
+      "stage": "ENGINE_FREE_FIRST_TEST_COLLECTION"
+    },
+    {
+      "cause": "fixture-only qualified reader expects t0H4; original economic prefix reader correctly starts first completed H4 Sep1 04",
+      "correction": "use unchanged original economic load_paired_signal_feed; verify first+4H and lastend-4H explicitly",
+      "error": "QUALIFIED_FEED_MISSING_BOUNDARY_H4",
+      "stage": "ENGINE_FREE_ACTUAL_FEED_JSON_FREEZE"
+    }
+  ],
+  "prefix_processes": 0,
+  "self_review_correction": "Pre-release stock entries check excludes only old paired lock, retaining ordinary entries/pause/deposit/terminal gates. RegressionPASS."
+}

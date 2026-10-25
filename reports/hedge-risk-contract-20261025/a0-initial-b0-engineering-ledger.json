@@ -1,0 +1,20 @@
+{
+  "active": 0,
+  "attempts": [],
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "counting": "Claim EACH native constructor including failed/repeated/setup before NativeEngine call. Old ledgers CLOSED untouched.",
+  "engine": "1.231.0",
+  "full": 0,
+  "new_downloads": 0,
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "physical_max": 6,
+  "physical_started": 0,
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "source_commit": "b0a06e1b419b7a0342d5b31df14255f002bf88d0",
+  "status": "AWAITING_ROOT_REVIEW",
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "training": 0
+}

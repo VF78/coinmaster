@@ -1,0 +1,27 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "approval_source": "Direct human reply to call_0e53b25589214a4cb68cb797e078baf3",
+  "exact_owner_reply": "Утверждаю A0, до 6 fixtures и 3 prefix",
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "contract_sha256": "8432e4decdf249ba2b80bb4eeac7e8773a1d24d39eb57b5d9026a3cdd516a2c0",
+  "source_base": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "fixture_cap": 6,
+  "fixture_max_historical_hours": 48,
+  "prefix_cap": 3,
+  "prefix_order": [
+    "R2_OFF",
+    "R2_C0_B2_F0",
+    "R2_A0_B2_F0"
+  ],
+  "prefix_window": "[2024-09-01,2025-01-15)UTC",
+  "failures_and_repeats_count": true,
+  "prefix_pre_engine_failures_count": true,
+  "full": 0,
+  "training": 0,
+  "new_market_downloads": 0,
+  "pilot": 0,
+  "production": 0,
+  "old_budgets": "CLOSED_NO_REUSE",
+  "scope": "One original-unfilled BTC second-child resubmission after SOL riskOFF; no closed BTC restoration or SOL TP/cuts/rearm changes; exact registered R2 family; stock margin guard",
+  "recorded_utc": "2026-10-25T10:08:53.343619+00:00"
+}

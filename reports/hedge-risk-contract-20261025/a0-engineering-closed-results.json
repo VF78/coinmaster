@@ -1,0 +1,78 @@
+{
+  "status": "CLOSED_ENGINEERING_INCOMPLETE_NO_PREFIX_ADMISSION",
+  "source_commit": "b294879ca0e778b33a02b6fe4018e234d29cfa51",
+  "product_money_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+  "physical_max": 6,
+  "physical_started": 6,
+  "physical_completed": 2,
+  "physical_failed": 4,
+  "physical_active": 0,
+  "authorized_remaining": 0,
+  "prefix_processes": 0,
+  "final_actual_process_rc": 1,
+  "final_failure": {
+    "physical_index": 6,
+    "exception": "AttributeError: 'tuple' object has no attribute 'clear'",
+    "source": "run_a0_engineering.py174: s.config.margin_policy._marks.clear()",
+    "scope": "Fixture state fault injection attempted unsupported mutable representation. Existing monetaryproduct gate not changed or bypassed; stock native DENY not reached.",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-b294879/runtime/tests/run_a0_engineering.py\", line 240, in main\n    result=run_case(case)\n           ^^^^^^^^^^^^^^\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-b294879/runtime/tests/run_a0_engineering.py\", line 174, in run_case\n    s.config.margin_policy._marks.clear()\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'tuple' object has no attribute 'clear'\n"
+  },
+  "components_proven": [
+    "A02actualregistered stockmarginPASS/partialFIRST/originalsecondbudget/permanentlyclosedBTCcap/originalGTC/nativefills/genuine3TP/nativeflat/cashidentity",
+    "A04fullFIRST/oldENTRYUNKNOWNACK/OFF60/oldlate1/debt/newpartial2/ordinaryTPimmediatecancel/newlate3/correctivecap/no reanchor/no retry/3TP/nativeflat/clean5componentlifecycle",
+    "Within FAILEDphysical6: currenttarget nativeACKUNKNOWN blocked; directactualACKflush; postOnly crossingWAIT. Not a passing process."
+  ],
+  "missing": [
+    "Actual stock native marginDENY and freshmark recovery afterdenial",
+    "Standalone exactC0 native fixture NOT_RUN"
+  ],
+  "all_actual_failed_rows_retained": [
+    1,
+    3,
+    5,
+    6
+  ],
+  "clean_lifecycle_actual_indices": [
+    4,
+    5,
+    6
+  ],
+  "early_dispose_warnings": "Physical1/2/3 wrapperreportedDISPOSED but RUNNING->DISPOSE warnings remain; no retrospective cleanstate assertion",
+  "final_snapshots": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-06-CURRENT_TARGET_ACK_HELD.json",
+      "sha256": "a8fd6fd6369e885d0ca7af64ec2872bc18c0231d12c72f2d7b878a7db313b797",
+      "stage": "CURRENT_TARGET_ACK_HELD"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-06-BEFORE_TERMINAL.json",
+      "sha256": "73e35dd2c22296c353760eea95b48ec438d8c964c8ff4a6cf351ea2a2f51aa92",
+      "stage": "BEFORE_TERMINAL"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-06-BEFORE_END.json",
+      "sha256": "8ec171923e512cc52f5d8ef919d1802f7be4f3b34f77a84113221ff23e425b6c",
+      "stage": "BEFORE_END"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-06-AFTER_END.json",
+      "sha256": "f67ace44aa7318b040e5b85faccc76ca144a75aec93ffff5fba63ea0024795dd",
+      "stage": "AFTER_END"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-fixture-06-BEFORE_DISPOSE.json",
+      "sha256": "fbd5660ca87719d0f437bcdb9b98f12d7317c07815a5c907472270957b6322e6",
+      "stage": "BEFORE_DISPOSE"
+    }
+  ],
+  "ledger_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "final_process_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-engineering-process-receipt-b294879.json",
+  "final_process_receipt_sha256": "6e0b6dc00a40a54dc24231d8da3d0f1e9b714490c74c7ae16fef6978c2c78a29",
+  "next": "No additional engine, automaticrepair, prefixprocess, publication/deployment claimed. Root disposition required; physicalenginebudgetclosed.",
+  "publication": "Source committed on canonicalVPS; not pushed by this executor",
+  "full": 0,
+  "training": 0,
+  "downloads": 0,
+  "pilot": 0,
+  "production": 0
+}

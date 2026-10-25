@@ -1,0 +1,46 @@
+{
+  "status": "PROPOSED_REVIEWED_NOT_APPROVED_NO_NATIVE_GO",
+  "recorded_utc": "2026-10-25T11:29:50.796356+00:00",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "engineering_total_current": 6,
+  "engineering_total_proposed": 7,
+  "additional_instances_proposed": 1,
+  "unchanged_prefix_max": 3,
+  "prefix_started": 0,
+  "closed_ledger_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "root_go": false,
+  "review_P0": 0,
+  "review_P1": 0,
+  "pin_mismatches": 0,
+  "publication": "AUTO_REVIEW_REJECTED_BEFORE_DISPATCH_TWICE",
+  "files": [
+    {
+      "path": "A05_ONE_EXTRA_FIXTURE_PROTOCOL_PROPOSED_RU.md",
+      "sha256": "22e0e44335d8811b177e6ca7bc71398768f2b3a8b25bca341ad951c475602c63"
+    },
+    {
+      "path": "a0-margin-fixture-repair-review.json",
+      "sha256": "44b1dd87e348b77be6c7bbaeca7ed11f9d508a8100168d5fcd1a54f1b731ddb0"
+    },
+    {
+      "path": "a0-margin-fixture-verification.json",
+      "sha256": "9a8ae371d99f0f8640d73fe90c6b977e0b5becf1e034a89f9617ec076d954fa2"
+    },
+    {
+      "path": "a0-margin-fixture-repair.diff",
+      "sha256": "38cb04cee8603b6a28c9d7015074576d273ab97d816362ad079fc460644132c1"
+    },
+    {
+      "path": "a0-additional-A05-plan.json",
+      "sha256": "73505b764d4740536ec2ec505c5c43b54027a881b111722b3623bb6fe28a6204"
+    },
+    {
+      "path": "a0-additional-A05-gate-proposed.json",
+      "sha256": "ca01ebbc43f432f4594a38beeeb73ec399b15edcbcf47872c6e1307a91056d07"
+    },
+    {
+      "path": "a0-additional-A05-owner-approval-schema.json",
+      "sha256": "06f10daa5d0dc291ec7a79968254865ec65db79e713a728290626b379477c8f0"
+    }
+  ]
+}

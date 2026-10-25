@@ -1,0 +1,18 @@
+{
+  "source_commit": "b294879ca0e778b33a02b6fe4018e234d29cfa51",
+  "product_bytes_unchanged_from_reviewed340f": true,
+  "pure_pass": 54,
+  "actual_callback_route_proof": "Genuine nativeOrderAccepted passed through BOTH actual WaveOverlay.on_order_event and on_order_accepted methods; shared fixturehookdedupOID; m.accepted{1,2}/accept_nsNone/generationauthorizedFalse until unchangedactualevent directbasehelperflush restoresall3",
+  "C0_exact_kwargs_pure": "PASS; standaloneC0 nativeNOT_RUN",
+  "physical_started": 5,
+  "completed": 2,
+  "failed": 3,
+  "remaining_max": 1,
+  "prefix": 0,
+  "root_go": false,
+  "gate_sha256": "2e15974b7f57e000967ded38f172462863e644fc766663f53713c75d95ae7536",
+  "plan_sha256": "5d881fb0c35f8e6f2ace69be07fa8687ef8f49e10a134c6b937be44c16b6906b",
+  "diff_sha256": "6a5aafb65171ccbf1b9117e27fc7198551121f61fa3155d763768ca9fc25d507",
+  "all_old_rows_preserved": true,
+  "conditional_disposition": "If finalA05 nativePASS, rootmayacceptLIMITEDfamilyengineering with explicitC0gap; all3prefixper-variantGO/accounting gates unchanged, C0actualcontrolmustPASS beforeA0; no budgetextension"
+}

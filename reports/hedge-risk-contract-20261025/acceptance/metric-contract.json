@@ -1,0 +1,110 @@
+{
+  "task": "CM-A0-ECONOMIC-ACCEPTANCE-20261025",
+  "status": "PREDECLARED_BEFORE_NEW_PREFIX_OUTCOMES",
+  "engine_instances_created": 0,
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "source_base": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "engine": "NautilusTrader 1.231.0",
+  "labels": [
+    "R2_OFF",
+    "R2_C0",
+    "R2_A0"
+  ],
+  "result_root": "runtime/var/research-jobs/hedge-rights-unlock-20261025/{label}/result",
+  "window": "[2024-09-01,2025-01-15) UTC",
+  "seed": "10000",
+  "reserve": "0",
+  "comparability": "Same R2 LEGACY_Q real-U core/feed/fees/liquidity; C0 and A0 both B2_F0, differing only A0 reversible-lock flag; compare to newly matched R2_OFF, never old R3 OFF.",
+  "expected_shortfall20": {
+    "loss": "1 - native_end_TOTAL/native_start_TOTAL",
+    "tail": "q=n/5; sort losses descending; (sum first floor(q) + fractional(q)*next)/q; Decimal50, no clipping/rounding/outcome selection",
+    "daily": "All 136 UTC dates Sep1-Jan14 inclusive, including flat days. Source clock last complete minute, seed10000. Only missing final day may use validated direct native terminal flat cash/orders0. Missing earlier day => UNKNOWN.",
+    "parent": "All own actual BTC parents, pre-first-fill native TOTAL to both legs flat/orders quiescent, before next parent. Changed calendar/count explicit, no forced matching; diagnostic only."
+  },
+  "drawdown": "Native cash + native Position UPNL; settled and coherent event DD separate. Require pre-fill/pre-open historical peaks. No report cash-only DD, no shadow wealth/PnL engine.",
+  "accounting_gates": [
+    "actual OS returncode0 and completed report/hash/physical-ledger binding",
+    "complete native cash reconciliation",
+    "signed funding per instrument/event exact native bridge",
+    "actual native3TP and ownership",
+    "continuous settled and coherent pre-fill/pre-open event coverage",
+    "terminal both positions0 and orders0",
+    "zero model liquidations",
+    "complete rights audit"
+  ],
+  "candidate_gates": {
+    "capital": "TOTAL_A0 > TOTAL_C0",
+    "cost": "TOTAL_A0 - TOTAL_C0 > 2*max(0,fees_A0-fees_C0)",
+    "settled_DD": "A0 <=50% and <= C0",
+    "event_DD": "A0 <=50% and <= C0",
+    "daily_ES20": "A0 <= C0 on all136 days",
+    "rights": "Economic mechanism tested only with positive actual native BTC release fills. Show grants/submits/accepted separately. Zero positive release fill => ECONOMICALLY_NOT_TESTED, regardless of grants/submits; differing TOTAL with zero fills is unexplained, never free benefit."
+  },
+  "control_qualification": "Accounting-valid baseline may fail DD/performance and remain a comparison; accounting-failed outputs never valid TOTAL.",
+  "unknown_policy": "Missing/unknown coverage, funding, account, ACK, ownership or proof => UNKNOWN_BLOCKS. Never synthesize zero, force-correct CSV, reconstruct money, or promote raw failed report.",
+  "global_floors": {
+    "intermediate70": "4256975.067212381",
+    "final90": "5470396.514987347",
+    "claims": "Prefix is reused research, not full/OOS or proof of either goal. Full/training/download/realwallet/pilot/production authority remains0."
+  },
+  "reuse": {
+    "reader": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-risk-build.py",
+    "reader_sha256": "a357f9a4b22ccb221610166d23aaa6e01c0770f801e04e1335e25bc3b4cc78a1",
+    "changes": "Explicit label/path inputs and new A0 gates; daily fractional-tail/parent endpoint/native funding and observer computations reused unchanged. No old whole analysis rerun."
+  },
+  "evidence_interface": {
+    "label": "exact R2 label",
+    "report_sha256": "exact report binding",
+    "proof_artifacts": [
+      {
+        "path": "actual immutable proof file",
+        "sha256": "exact sha256"
+      }
+    ],
+    "gates": {
+      "complete_cash_reconciliation": "PASS | FAIL | UNKNOWN, derived from linked real proof",
+      "signed_asset_funding_reconciliation": "PASS | FAIL | UNKNOWN, derived from linked real proof",
+      "native_3TP": "PASS | FAIL | UNKNOWN, derived from linked real proof",
+      "ownership": "PASS | FAIL | UNKNOWN, derived from linked real proof",
+      "continuous_settled_coverage": "PASS | FAIL | UNKNOWN, derived from linked real proof",
+      "coherent_prefill_preopen_event_coverage": "PASS | FAIL | UNKNOWN, derived from linked real proof",
+      "source_config_data_comparable": "PASS | FAIL | UNKNOWN, derived from linked real proof",
+      "rights_audit_complete": "PASS | FAIL | UNKNOWN, derived from linked real proof"
+    },
+    "terminal_open_orders": "actual integer; required0",
+    "rights": {
+      "status": "PASS|FAIL|UNKNOWN",
+      "source_json_path": "exact observed path; pending producer freeze",
+      "grants": "actual integer or UNKNOWN; never treated as fills",
+      "submits": "actual integer or UNKNOWN",
+      "accepted": "actual integer or UNKNOWN; not inferred from submit",
+      "denials": "actual integer or UNKNOWN; reasons/order IDs retained in proof",
+      "native_fill_coverage_complete": "true only with complete actual native rights/fill audit",
+      "native_release_fills": [
+        {
+          "native_trade_id": "unique native TradeID",
+          "client_order_id": "actual native release order ID",
+          "instrument_id": "actual BTC instrument",
+          "quantity": "positive serialized native BTC fill quantity",
+          "release_order": true
+        }
+      ],
+      "actual_releases": "optional int alias: distinct positive-filled release orders, exact equality required; absent => derive"
+    }
+  },
+  "processing": "Only explicit root completion notice; one immutable stream pass per result. Script reads files only, uses SQLite immutable=1. No watcher, subprocess, import native engine or launch authority. Structural absence fails closed; no result fabricated.",
+  "rights_semantics": {
+    "producer": "MD.a0_rights; exact nested report path pending before prefix freeze",
+    "events": [
+      "A0_RIGHT_LOCKED",
+      "A0_DENY",
+      "A0_GRANT_ONCE",
+      "A0_SUBMIT",
+      "A0_SECOND_ACTUAL_FILL"
+    ],
+    "actual_releases_alias": "Number of distinct client_order_ids with positive actual native BTC fills and release_order=true, deduplicated by native_trade_id. Alias absent => derive; alias present must exactly agree. Bool forbidden. This counter never means grants/submits/accepted.",
+    "proof": "Root evidence normalizes actual native producer/fill evidence, preserves raw artifact hashes and source JSON path. Complete native fill coverage required; missing proof => UNKNOWN. Empty fills list is known zero only when completeness PASS. Duplicate identical trade IDs deduplicate; conflicting IDs => UNKNOWN.",
+    "positive_fill_gate": "positive_filled_release_orders > 0; grants, submits, accepted, denials, rejects and unfilled orders alone never prove restored capital",
+    "zero_fill_total_difference": "ECONOMICALLY_NOT_TESTED plus UNEXPLAINED_DIFFERENCE_BLOCKS_BENEFIT_CLAIM if TOTAL_A0 differs from C0"
+  }
+}

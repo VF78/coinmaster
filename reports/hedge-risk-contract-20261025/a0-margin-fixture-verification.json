@@ -1,0 +1,73 @@
+{
+  "status": "PASS_ENGINE_FREE_ONLY_REQUIRES_OWNER_PLUS_ONE_APPROVAL",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "financial_runtime_bytes_identical_to_reviewed340f": true,
+  "pure_tests": 57,
+  "engines_created": 0,
+  "actual_engineering_spent": 6,
+  "actual_engineering_authorized_remaining": 0,
+  "actual_closed_ledger_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "static_marks_type": "tuple",
+  "supported_api": "TierMarginPolicy.update_mark(actualVenueMark), margin_for; natural staleclock; no private stores/config mutation",
+  "static_and_dynamic_stale_errors": {
+    "BTCUSDT-PERP.P1SIM": "stale explicit mark",
+    "SOLUSDT-PERP.P1SIM": "stale explicit mark"
+  },
+  "policy_recovery_actual_IM_MM_mark": {
+    "BTCUSDT-PERP.P1SIM": [
+      "2.4825",
+      "0.32769",
+      "99.3"
+    ],
+    "SOLUSDT-PERP.P1SIM": [
+      "5.00",
+      "0.500",
+      "100"
+    ]
+  },
+  "marks_store_identity_preserved": true,
+  "proposed_gate_blocked": "EXACT_ADDITIONAL_A05_ROOT_GO_REQUIRED",
+  "kwargs": {
+    "R2_OFF": {
+      "roundtrip": "PASS",
+      "sha256": "473cda0e9c8b344d6cd4854ef5e57fe34256c6152e3311aa37dd40b508a69e5b",
+      "feed_rows": 815
+    },
+    "R2_C0": {
+      "roundtrip": "PASS",
+      "sha256": "650f2fae7c2af7e56950a6248719ae67224afcd75cc57312ff73c911f98f321c",
+      "feed_rows": 815
+    },
+    "R2_A0": {
+      "roundtrip": "PASS",
+      "sha256": "a4a74be1c0922f566a7f093741c25c1066d5dec61f4cb7a846a25e1e1930cc83",
+      "feed_rows": 815
+    }
+  },
+  "input_pins_verified": 31,
+  "source_files_pinned": 222,
+  "repair_diff_sha256": "38cb04cee8603b6a28c9d7015074576d273ab97d816362ad079fc460644132c1",
+  "proposed_plan_sha256": "73505b764d4740536ec2ec505c5c43b54027a881b111722b3623bb6fe28a6204",
+  "proposed_gate_sha256": "ca01ebbc43f432f4594a38beeeb73ec399b15edcbcf47872c6e1307a91056d07",
+  "native_margin_DENY_proof": "NOT_RUN/NOT_PROVEN until separatelyhumanapprovedfixture",
+  "C0_native": "NOT_RUN",
+  "prefix": 0,
+  "owner_reply_type_regression": {
+    "required": "type(reply) is str and reply.strip()",
+    "rejected": [
+      "null",
+      "absent",
+      "empty",
+      "whitespace",
+      "boolTrue",
+      "boolFalse",
+      "int0",
+      "int7",
+      "float1.5"
+    ],
+    "valid_nonempty_string": "PASS"
+  },
+  "typefix_diff_sha256": "4c9e144438545d34f93f78a2231764ef4c96818cc661c2bb469a4d919da517a2",
+  "pins_validation": "Only2 changed testfiles rehashed; other220source/31input/3kwargs prior-e54proof retained under exact financial package identity",
+  "publication": "BLOCKED_AUTO_REVIEW/no thirdpush; earlier e54blockedreceipt preserved; latest763notpublished"
+}

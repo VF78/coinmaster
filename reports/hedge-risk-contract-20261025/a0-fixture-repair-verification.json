@@ -1,0 +1,26 @@
+{
+  "status": "FIXTURE_ONLY_REPAIR_READY_FOR_REVIEW",
+  "source_commit": "541e0c564a2bb79411809186113c78a4d3a80a5a",
+  "product_package_bytes_identical_to_reviewed340f": true,
+  "changed_files": [
+    "runtime/tests/run_a0_engineering.py",
+    "runtime/tests/test_a0_rights_pure.py"
+  ],
+  "pure_tests": 50,
+  "proof": "All5 actual fixtureconfigs/sharedkwargs: tradingstart-86400000ms; terminal3600000ms; actual stockguard expressionFalse atcurrentdailyclose2ns; completedseedmaxavailable0<=2ns",
+  "native_physical_started": 1,
+  "native_failed": 1,
+  "native_disposed": 1,
+  "remaining_max": 5,
+  "prefix_physical_started": 0,
+  "failed_cash": "10000.00000000USDT",
+  "failed_orders": 0,
+  "failed_positions": 0,
+  "failed_margin_calls": 0,
+  "same_budget_total": 6,
+  "plan_sha256": "05165207eecbdd11ac47397051bad4e9819ec0d6fc8a8a91e63881127fec9e3a",
+  "gate_sha256": "9e86f41c307153fa905a1b06ca017a5c8cd1cb9f62b7db55bb64ee87e975f04c",
+  "minimal_diff_sha256": "cf78b76b1fd1d60d330f6679e97aa406267aaa871bfbcb3f5e46e5ab21ab7e03",
+  "first_failure_preserved": true,
+  "root_go": false
+}

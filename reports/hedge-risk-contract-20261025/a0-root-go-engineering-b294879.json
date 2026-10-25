@@ -1,0 +1,30 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "root": "/root",
+  "decision": "GO_FINAL_PHYSICAL_SIX_A05_ONLY",
+  "recorded_utc": "2026-10-25T11:12:00.550069+00:00",
+  "source_commit": "b294879ca0e778b33a02b6fe4018e234d29cfa51",
+  "review": "reports/hedge-risk-contract-20261025/a0-final-A05-fixture-review.json",
+  "review_sha256": "898681e138a08b68912bdc80b502dcf05ada9e69aefc0542b77354dabce31362",
+  "gate_before_go_sha256": "2e15974b7f57e000967ded38f172462863e644fc766663f53713c75d95ae7536",
+  "fixture_plan_sha256": "5d881fb0c35f8e6f2ace69be07fa8687ef8f49e10a134c6b937be44c16b6906b",
+  "pin_verification": {
+    "inputs": 31,
+    "source_files": 222,
+    "kwargs": 3,
+    "mismatches": 0
+  },
+  "physical_already_spent": 5,
+  "remaining_native_max": 1,
+  "total_native_max": 6,
+  "fixture": "A05_CROSS_MARGIN_UNKNOWN",
+  "C0_NATIVE_FIXTURE": "NOT_RUN",
+  "conditional_engineering_admission": "Only LIMITED_PASS after actual A05PASS plus existing A02/A04 and source/config/data/semantic review; no all-cases pass claim",
+  "prefix_go": false,
+  "full": 0,
+  "training": 0,
+  "new_downloads": 0,
+  "pilot": 0,
+  "production": 0,
+  "stop": "FIRST_FAILURE; finalslot no retry; every historical FAILED preserved; actual pre-end/cap/fills/account/lifecycle snapshots"
+}

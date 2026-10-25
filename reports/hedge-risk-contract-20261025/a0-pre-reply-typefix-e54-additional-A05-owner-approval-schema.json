@@ -1,0 +1,15 @@
+{
+  "status": "PROPOSED_NOT_APPROVED",
+  "source_commit": "e54f81a5898246b9925020d63d9fa50eb394db18",
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "prior_closed_engineering_ledger_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "authorized_engineering_total": 7,
+  "additional_engineering_instances": 1,
+  "fixture_ids": [
+    "A05_CROSS_MARGIN_UNKNOWN"
+  ],
+  "full": 0,
+  "unchanged_prefix_max": 3,
+  "exact_owner_reply": null,
+  "notice": "Template only. Root records directhuman reply/statusAPPROVED_BY_OWNER only afteractualapproval; proposedgate remainsfalse pending review/rootGO."
+}

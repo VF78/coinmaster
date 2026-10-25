@@ -1,0 +1,192 @@
+diff --git a/runtime/tests/run_a0_engineering.py b/runtime/tests/run_a0_engineering.py
+index 9a152dc..adfec73 100644
+--- a/runtime/tests/run_a0_engineering.py
++++ b/runtime/tests/run_a0_engineering.py
+@@ -18,11 +18,40 @@ M=60_000_000_000
+ CASES=['A05_CROSS_MARGIN_UNKNOWN']
+ COMBINED_DEPTHS={'old_late':'1','release_partial':'2','release_late':'3'}
+ 
++CLOSED_SIX_LEDGER_SHA='c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424'
++
++
++def reviewed_fixture_cap(gate,ledger):
++    """Six remains closed. A seventh is inert without separate human+root GO."""
++    cap=gate.get('engineering_physical_max',6)
++    if type(cap) is not int or cap not in (6,7):raise ValueError('INVALID_A0_FIXTURE_CEILING')
++    if cap==6:return cap
++    parent_ref=gate.get('parent_closed_engineering_ledger',{})
++    approval_ref=gate.get('additional_engineering_approval',{})
++    digest=lambda path:hashlib.sha256(Path(path).read_bytes()).hexdigest()
++    if not gate.get('root_go') or gate.get('fixture_ids')!=['A05_CROSS_MARGIN_UNKNOWN']:
++        raise ValueError('EXACT_ADDITIONAL_A05_ROOT_GO_REQUIRED')
++    if parent_ref.get('sha256')!=CLOSED_SIX_LEDGER_SHA or not parent_ref.get('path') or digest(parent_ref['path'])!=CLOSED_SIX_LEDGER_SHA:
++        raise ValueError('IMMUTABLE_CLOSED_SIX_PARENT_REQUIRED')
++    parent=json.loads(Path(parent_ref['path']).read_text())
++    if parent.get('physical_started')!=6 or parent.get('physical_max')!=6 or not parent.get('status','').startswith('CLOSED') or len(parent.get('attempts',[]))!=6 or any(a['status'] not in ('FAILED','COMPLETED') for a in parent['attempts']):
++        raise ValueError('CLOSED_SIX_PARENT_STATE_REQUIRED')
++    if not approval_ref.get('path') or not approval_ref.get('sha256') or digest(approval_ref['path'])!=approval_ref['sha256']:
++        raise ValueError('DIRECT_OWNER_ADDITIONAL_APPROVAL_PIN_REQUIRED')
++    approval=json.loads(Path(approval_ref['path']).read_text())
++    required=dict(status='APPROVED_BY_OWNER',source_commit=gate['source_commit'],protocol_sha256=gate['protocol_sha256'],prior_closed_engineering_ledger_sha256=CLOSED_SIX_LEDGER_SHA,authorized_engineering_total=7,additional_engineering_instances=1,fixture_ids=['A05_CROSS_MARGIN_UNKNOWN'],full=0,unchanged_prefix_max=3)
++    if any(type(approval.get(k)) is not type(v) or approval[k]!=v for k,v in required.items()) or not str(approval.get('exact_owner_reply','')).strip():
++        raise ValueError('EXACT_DIRECT_OWNER_ADDITIONAL_APPROVAL_REQUIRED')
++    if ledger.get('parent_closed_engineering_ledger_sha256')!=CLOSED_SIX_LEDGER_SHA or ledger.get('physical_max')!=7 or ledger.get('physical_started')!=6 or ledger.get('attempts')!=parent['attempts']:
++        raise ValueError('DERIVED_LEDGER_MUST_PRESERVE_ALL_SIX_ROWS')
++    return 7
++
++
+ class Recorder(pre.Recorder):
+     def claim(self):
+         data=json.loads(self.path.read_text())
+-        if not self.gate.get('root_go') or data['physical_started']>=6:
+-            raise ValueError('A0_GATE_OR_SIX_ENGINE_CAP')
++        if not self.gate.get('root_go') or data['physical_started']>=reviewed_fixture_cap(self.gate,data):
++            raise ValueError('A0_GATE_OR_APPROVED_ENGINE_CAP')
+         return super().claim()
+ 
+ class CountedEngine(pre.CountedEngine):
+@@ -171,12 +200,15 @@ def run_case(case):
+             advance(e,s,2*M+15,btc='98.4')
+             assert not rights['submitted'] and rights['denial_counts']['POST_ONLY_CROSS']
+             frozen=rights['locked_cap']
+-            s.config.margin_policy._marks.clear()
+-            advance(e,s,2*M+16,btc='99.3',fresh=False)
++            # Keep the real immutable policy/config intact. Genuine lack of
++            # new venue marks for >its2-minute age bound makes the stock gate
++            # deny; later advance(fresh=True) delivers actual VenueMark data.
++            advance(e,s,5*M+16,btc='99.3',fresh=False)
+             assert not rights['submitted'] and rights['denial_counts']['NATIVE_MARGIN']
+-            for _ in range(2):s._a0_check(tick(BTC_PERP,2*M+16,price='99.3'))
++            for _ in range(2):s._a0_check(tick(BTC_PERP,5*M+16,price='99.3'))
+             assert rights['locked_cap']==frozen and not rights['submitted']
+-        advance(e,s,2*M+25,btc='99.3')
++        tail_base=5*M if case=='A05_CROSS_MARGIN_UNKNOWN' else 2*M
++        advance(e,s,tail_base+25,btc='99.3')
+         if case=='A06_C0_NO_RELEASE':
+             assert not rights
+         else:
+@@ -184,11 +216,11 @@ def run_case(case):
+             assert old.status.name=='CANCELED' and rights['order_id']!=str(old.client_order_id)
+             assert rights['granted_cap']<=rights['locked_cap']+rights['original_second']
+             release=e.cache.order(__import__('nautilus_trader.model.identifiers',fromlist=['ClientOrderId']).ClientOrderId(rights['order_id']))
+-            advance(e,s,2*M+26,btc='98',btcsize=COMBINED_DEPTHS['release_partial'] if case=='A03_A04_COMBINED_CANCEL_RACES' else '1')
++            advance(e,s,tail_base+26,btc='98',btcsize=COMBINED_DEPTHS['release_partial'] if case=='A03_A04_COMBINED_CANCEL_RACES' else '1')
+             if case=='A03_A04_COMBINED_CANCEL_RACES':
+                 assert not release.is_closed and release.filled_qty.as_decimal()>0
+                 s.delay_cancel=True
+-                advance(e,s,2*M+27,btc='100')
++                advance(e,s,tail_base+27,btc='100')
+                 assert rights['dead'] and any(c['order_id']==rights['order_id'] and c['inside_tp_fill'] for c in s.cancel_calls)
+                 assert s._split_parent['closed'] and old.status.name=='CANCELED'
+                 tp_cap=s._pair['caps'].bmax
+@@ -196,21 +228,21 @@ def run_case(case):
+                 # Delayed venue transport can still fill; actual excess owns
+                 # corrective BTC debt and cannot reopen the spent right.
+                 before=release.filled_qty.as_decimal()
+-                advance(e,s,2*M+28,btc='98',btcsize=COMBINED_DEPTHS['release_late'])
++                advance(e,s,tail_base+28,btc='98',btcsize=COMBINED_DEPTHS['release_late'])
+                 assert release.filled_qty.as_decimal()>before
+                 s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,release)
+-                for ns in range(2*M+29,2*M+40):advance(e,s,ns,btc='99.3')
++                for ns in range(tail_base+29,tail_base+40):advance(e,s,ns,btc='99.3')
+                 assert release.is_closed and s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
+                 assert s._pair['caps'].bmax<=tp_cap
+                 assert rights['dead'] and rights['attempted']
+                 e.capture('LATE_FILL_CORRECTED_NO_CAP_REANCHOR')
+             else:
+-                advance(e,s,2*M+27,btc='98')
+-                advance(e,s,2*M+28,btc='99')
++                advance(e,s,tail_base+27,btc='98')
++                advance(e,s,tail_base+28,btc='99')
+                 assert s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
+             assert len([x for x in s._md_report()['events'] if x['event']=='A0_SUBMIT'])==1
+             assert s._md_plans[ep.id]['second_filled']<=rights['original_second']
+-            for ns in range(2*M+41,2*M+55):
++            for ns in range(tail_base+41,tail_base+55):
+                 advance(e,s,ns,btc='103',btcsize=str(1000+ns%100))
+                 if not e.cache.positions_open():break
+             assert {0,1,2}<=ep.btc_filled_tps
+@@ -218,7 +250,7 @@ def run_case(case):
+         natural=not e.cache.positions_open()
+         if not natural:
+             s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT')
+-            for ns in range(3*M,3*M+10):advance(e,s,ns,btc='99',sol='100')
++            for ns in range(tail_base+M,tail_base+M+10):advance(e,s,ns,btc='99',sol='100')
+         result=pre.settled_identity(s,e,'NATURAL_TP_FLAT' if natural else 'FORCED_TERMINAL_FLAT')
+         result.update(case=case,stock_margin_calls=s.stock_margin_calls,a0=s._md_report()['a0_rights'],cancel_calls=s.cancel_calls)
+         return result
+diff --git a/runtime/tests/test_a0_rights_pure.py b/runtime/tests/test_a0_rights_pure.py
+index 884a526..978912c 100644
+--- a/runtime/tests/test_a0_rights_pure.py
++++ b/runtime/tests/test_a0_rights_pure.py
+@@ -223,3 +223,70 @@ def test_actual_generic_and_typed_accept_callbacks_both_hold_unknown_until_direc
+     WaveOverlayStrategy._accept_native_order(s,s.held_target_acks[0])
+     assert m['accepted']=={0,1,2} and m['generations'][0]['authorized']
+     assert s._order_audit[oid]['accept_ns']=='2' and oid in s._md_accepted_ids
++
++
++def test_real_tier_policy_immutable_static_marks_missing_stale_and_fresh_public_update():
++    from coinmaster.research.native_fixture import TierMarginPolicy,BTC_PERP,SOL_PERP
++    from coinmaster.venues.marks import VenueMark
++    from run_a0_engineering import fixture_configuration,StockProbe
++    M=60_000_000_000;last=2*M+15;stale=5*M+16;fresh=5*M+25
++    static=();policy=TierMarginPolicy(static,{BTC_PERP.id:D(40),SOL_PERP.id:D(20)},2*M)
++    assert policy._marks is static and isinstance(policy._marks,tuple)
++    with pytest.raises(ValueError,match='missing explicit mark'):policy.margin_for(BTC_PERP.id,D(1),last)
++    # Actual supported public update accepts the real VenueMark payload.
++    policy.update_mark(VenueMark(BTC_PERP.id,D('98.4'),last))
++    initial,maint,price=policy.margin_for(BTC_PERP.id,D(1),last)
++    assert initial>0 and maint>=0 and price==D('98.4')
++    with pytest.raises(ValueError,match='stale explicit mark'):policy.margin_for(BTC_PERP.id,D(1),stale)
++    policy.update_mark(VenueMark(BTC_PERP.id,D('99.3'),fresh))
++    initial,maint,price=policy.margin_for(BTC_PERP.id,D(1),fresh)
++    assert initial>0 and maint>=0 and price==D('99.3') and policy._marks is static
++    # Same actual fixture config policy/neutral strategy hook, no config
++    # replacement/private mark mutation, native account/engine not created.
++    strategy=StockProbe(fixture_configuration('A05_CROSS_MARGIN_UNKNOWN'))
++    actual=strategy.config.margin_policy;assert isinstance(actual,TierMarginPolicy) and isinstance(actual._marks,tuple)
++    strategy._update_margin_mark(BTC_PERP.id,D('98.4'),last)
++    with pytest.raises(ValueError,match='stale explicit mark'):actual.margin_for(BTC_PERP.id,D(1),stale)
++    strategy._update_margin_mark(BTC_PERP.id,D('99.3'),fresh)
++    assert actual.margin_for(BTC_PERP.id,D(1),fresh)[2]==D('99.3')
++    assert strategy.config.margin_policy is actual
++
++
++def test_real_tier_policy_static_and_dynamic_fallback_both_stale_without_mutation():
++    from coinmaster.research.native_fixture import TierMarginPolicy,MarkPriceUpdate,BTC_PERP,SOL_PERP
++    from coinmaster.venues.marks import VenueMark
++    M=60_000_000_000;last=2*M+15;later=5*M+16
++    static=(MarkPriceUpdate(BTC_PERP.id,D('97'),last-1),MarkPriceUpdate(SOL_PERP.id,D(100),last-1))
++    policy=TierMarginPolicy(static,{BTC_PERP.id:D(40),SOL_PERP.id:D(20)},2*M)
++    policy.update_mark(VenueMark(BTC_PERP.id,D('98.4'),last));policy.update_mark(VenueMark(SOL_PERP.id,D(100),last))
++    dynamic_before=dict(policy._dynamic_marks);profile_before=policy._profile
++    assert policy.margin_for(BTC_PERP.id,D(1),last)[2]==D('98.4')
++    for instrument in (BTC_PERP.id,SOL_PERP.id):
++        with pytest.raises(ValueError,match='stale explicit mark'):policy.margin_for(instrument,D(1),later)
++    assert policy._marks is static and policy._dynamic_marks==dynamic_before and policy._profile is profile_before
++    policy.update_mark(VenueMark(BTC_PERP.id,D('99.3'),later+1));policy.update_mark(VenueMark(SOL_PERP.id,D(100),later+1))
++    assert policy.margin_for(BTC_PERP.id,D(1),later+1)[2]==D('99.3')
++    assert policy.margin_for(SOL_PERP.id,D(1),later+1)[2]==D(100) and policy._marks is static and policy._profile is profile_before
++
++
++def test_additional_fixture_is_inert_without_human_pin_root_go_and_preserved_parent(tmp_path,monkeypatch):
++    import json,hashlib,copy
++    import run_a0_engineering as fixture
++    sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
++    rows=[{'physical_index':i,'status':'COMPLETED' if i in (2,4) else 'FAILED'} for i in range(1,7)]
++    parent={'physical_started':6,'physical_max':6,'status':'CLOSED_ENGINEERING_FAILED','attempts':rows}
++    path=tmp_path/'closed-parent.json';path.write_text(json.dumps(parent));digest=sha(path)
++    monkeypatch.setattr(fixture,'CLOSED_SIX_LEDGER_SHA',digest)
++    gate={'engineering_physical_max':7,'root_go':True,'fixture_ids':['A05_CROSS_MARGIN_UNKNOWN'],'source_commit':'unit-test-source','protocol_sha256':'unit-test-protocol','parent_closed_engineering_ledger':{'path':str(path),'sha256':digest}}
++    ledger={'physical_max':7,'physical_started':6,'parent_closed_engineering_ledger_sha256':digest,'attempts':copy.deepcopy(rows)}
++    with pytest.raises(ValueError,match='APPROVAL_PIN'):fixture.reviewed_fixture_cap(gate,ledger)
++    approval={'status':'APPROVED_BY_OWNER','source_commit':gate['source_commit'],'protocol_sha256':gate['protocol_sha256'],'prior_closed_engineering_ledger_sha256':digest,'authorized_engineering_total':7,'additional_engineering_instances':1,'fixture_ids':['A05_CROSS_MARGIN_UNKNOWN'],'full':0,'unchanged_prefix_max':3,'exact_owner_reply':'UNIT TEST ONLY, NO REAL APPROVAL'}
++    approved=tmp_path/'unit-approval.json';approved.write_text(json.dumps(approval));gate['additional_engineering_approval']={'path':str(approved),'sha256':sha(approved)}
++    assert fixture.reviewed_fixture_cap(gate,ledger)==7
++    for field,value in [('root_go',False),('fixture_ids',['A06_C0_NO_RELEASE'])]:
++        bad=copy.deepcopy(gate);bad[field]=value
++        with pytest.raises(ValueError):fixture.reviewed_fixture_cap(bad,ledger)
++    for field,value in [('physical_started',0),('physical_max',8),('attempts',rows[:-1])]:
++        bad=copy.deepcopy(ledger);bad[field]=value
++        with pytest.raises(ValueError,match='PRESERVE_ALL_SIX'):fixture.reviewed_fixture_cap(gate,bad)
++    assert fixture.reviewed_fixture_cap({},parent)==6 and parent['attempts']==rows

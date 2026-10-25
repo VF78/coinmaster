@@ -1,0 +1,26 @@
+{
+  "source_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+  "parent_checkpoint": "b0a06e1b419b7a0342d5b31df14255f002bf88d0",
+  "correction_batches": 1,
+  "addressed": [
+    "A0-S01: actual current-generation three-native-target ACK/ownership/leaves=held barrier",
+    "A0-S02: ordinary stop immediately cancels owned A0 live/inflight order despite historical p.closed"
+  ],
+  "verification": {
+    "pure_pass": 45,
+    "engines": 0,
+    "prefix": 0,
+    "diff_check": "PASS",
+    "runner_compile": "PASS",
+    "actual_feed_kwargs_roundtrip": "PASS815rows/all3variants"
+  },
+  "native": "NOT_RUN/rootGO=false",
+  "preserved_error": {
+    "stage": "ENGINE_FREE_CORRECTION_HARNESS",
+    "initial": "1FAILED44PASS",
+    "error": "TypeError float(SimpleNamespace) in fake quote; harness used non-native Price substitute",
+    "correction": "Use native Price.from_str objects in engine-free guard context",
+    "subsequent": "45PASS/no native constructor"
+  },
+  "unchanged": "Same6fixtureIDs/oneengine each/<=1h; same actual stock margin; original source/error/review evidence preserved"
+}

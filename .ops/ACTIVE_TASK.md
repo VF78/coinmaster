@@ -1,25 +1,29 @@
-Updated: 2026-10-25, Europe/Moscow.
-Status: A0_CAUSAL_ADMISSION_COMPLETE_WAIT_OWNER_PROTOCOL; financial70/50+90/50 NOT_MET.
-Current#136 OPEN/Project#2 Todo/isArchivedfalse actualGraphQLreadback; title "[Research] A0 original BTC child rights: causal admission and bounded probe proposal".
-Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021, priorpublished3d7df5c2bfc31af8d8219e6fddebc3f76f785e29.
-Packet reports/hedge-risk-contract-20261025/: DECISION_RU.md, A0_CONTRACT_PROPOSED_RU.md, NATIVE_PROTOCOL_PROPOSED_RU.md, analysis/ andindependent-a0-contract-review.
-Usercurrentrequest authorizes systematiccontinuation/analysis; currentstep native0/product0/training0/download0. AllpriorphysicalbudgetsCLOSED, no reuse.
-Analyzedall16actualactivations(11F0/5B2),15invalidations,8SOLTP/4firstTP; primary90D1simplepastreturns,t-1D/30sensitivity,nooutcomeselection/wealthsimulation.
-Stress90/headroom firstTP Sep14=1618.36/6067.17 PASS,Oct25=3431.56/4554.01 PASS,Dec26=2359.90/828.87 FAIL,Jan7=1516.08/3046.48 PASS: prerequisitesonly,nativefuturemargin/uncutwealthUNKNOWN.
-Fouroriginalchildpotentials afterriskOFF: Sep14.488,Oct10.575,Oct12.440,Nov16.375; actualcancelACKknown4 andquoteavailable4.
-AtOFF+60s sameheldparent/noordinaryBTC TP/exit/oldENTRYterminalknownall4;3noncrossingpostOnly,Sep14crosses BUY60207.5 vsask59638.9 =>WAIT/deny,no takerconversion.
-All4firstchildrenfullyfilled; originalsecondS0 is origquantity-origfirstquantity, NOT missingfirstIOC. PartialfirstcannotincreaseS0. ProtectiveSep14closedBTC.243 notrefunded.
-EffectiveMD _split_check returnsbeforegenericdeadline/daystop; thosefieldsnotrealUexpiry. Supersededwronganalysis/errorpreserved. Currentpermanentstopstillforbidsrestore; A0 needsnewexplicitcontract.
-Oct25market-only481quotes no68084.6boundarycross; OFFexpiryOct26 00:01 laterfirstTPnextH4+60deadline20:01 =>oneH4waitdoesnotfixexhaustion. No continuingcandidateE/B/PnLinvented.
-ProposedA0: one nativeGTCresubmitoriginalsecondremaining afterknownriskOFF+60s,actualstockmargin/ACK/currentquote/ordinaryTP/parent/heldguards;originalprice/postOnly,immutablepre-releasecap, no closedBTCrestore/newparent/TP/cuts/rearm changes.
-ProposedBTCanchorR2LEGACY_QrealU; core/controlrebaseexplicit. R2pairedcurrentlyNOT_ADMITTED; newexactfamilyengineeringgatefirst. C0/A0 B2_F0 only/differA0flag, OFFprefixNone/SOLnone; oldR3guardunchanged.
-ProtocolSHA5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0; contractSHA8432e4decdf249ba2b80bb4eeac7e8773a1d24d39eb57b5d9026a3cdd516a2c0.
-Independentreview PASS_FOR_OWNER_CONSENT_REQUEST_ONLY/P0P1open0; explicitB2_F0selectorclarificationclosed, reviewedhashesmatch. No budgetgrantedbyreview.
-Asyncownerquestion PENDING: approveisolatedA0 +max6nativeengineeringinstances<=48h +max3prefixphysicalattemptsR2OFF->C0->A0 [2024-09-01,2025-01-15) inclfail;full/training/download0. No monetarycode/nativeuntilactualhumanapproval.
-Sourcebase06f75778dbc3cdb9894ffed4f4e7621261e94d3e published/notdeployed; preservedVPSworktreecontinuous-hedge-preflight-20261025 andMacsource-06f7577; futureisolatedcodex/hedge-rights-unlock-20261025 onlyafterapproval.
-Samepreparedfeed5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698, native1.231, BybitBASEmaker.020%/taker.055%,signedfunding,stockliquidity/observer; no reportchecksrelaxed.
-Prior#13511/12CLOSED(9COMPLETED2FAILED),unused1CLOSED/rem0,ledger858b453f502c3994ca563cec931544d0a7235e6f5c751ebfbe8c3aa9aed66b7f; limitedfixtures/fullparity/venueadmissionnotproved; allfailedproofspreserved.
-Prior#1347/7CLOSED/e96088c4a37096ce50b4a8f17ba66626d529764b5eb1996f1d3ba6ca7fba7cfd,old3/3full8/8shortCLOSED; noautomaticfull.
-Goals seed10000/S0TOTAL6077107.23887483;70netfloorTOTAL4256975.067212381 then90floor5470396.514987347,settled+eventDD<=50/zeroLiq/real3TP/BTCentrycore; prefixnotfull/OOS,norebase.
-PUBLICresearchpublicationauthorized/pushnotdeployment; pilot/production/services/keys/orders/transfersuntouched. Preserve dirtyusercode/oldledger.lock/frozenraw/initialmistakes.
-Currentanalysis/reviewagentscomplete, noactiveengine. EndRESET:actualProjectreadback,commit/push/exactrefs,smallrootmirrors/NEW_MANAGER_PROMPT; pendingapprovalneverinferredfromelapsedtime.
+Updated: 2026-10-25, Europe/Moscow. Status: WAITING_OWNER_EXTRA1_AND_EXACT_PUBLIC_DESTINATION; global70/50+90/50 NOT_MET.
+Project#2 #136 OPEN/Todo/isArchivedfalse actualreadback a0-project-final-readback.json; title "[Research] A0 original BTC child rights: causal admission and bounded probe proposal".
+Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021; publication checkpoint in local git HEAD.
+Packet reports/hedge-risk-contract-20261025/; current result A0_RESULTS_AND_DECISION_RU.md; old DECISION_RU/proposal headers are historical.
+Direct owner approval owner-approval.json max6 nativefixture instances<=48h inclfail/repeats/setup +max3 prefix Popen inclpreenginefail, original protocolSHA5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0.
+Engineering CLOSED6/6=2COMPLETED4FAILED/active0/authorizedremaining0; ledgerSHAc0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424 IMMUTABLE.
+Four connected runner processes actualOSrc1; completed engine2/4 are nativecomponentproof, never passing processes. FAILED1/3/5/6 and allfrozen sources/logs/errors retained.
+Native2: stockmarginPASS/partialFIRST/originalS0/permanentlyclosedBTCcap/originalGTC/actual3TP/flat/cash. Early1/2/3disposewarnings preserved, not clean lifecycleproof.
+Native4combined: oldlate1/newpartial2/ordinaryTPimmediatecancel/newlate3/correctivecap/no retry/reanchor/actual3TP/flat/cash/5componentsSTOPPED-DISPOSED PASS.
+FAILED6 beforetuple._marks.clear error: nativeCURRENT_TP_ACK_UNKNOWN→realACK→postOnlycrossWAIT, grants/submits0. ActualmarginDENY/freshrecovery NOT_PROVEN; C0_NATIVE_FIXTURE=NOT_RUN.
+Overall a0-native-component-review HOLD/no prefixadmission. No additional native has run after6; no amendedledger created.
+Corrected fixture candidate763d985617abd7a7afef5eec13912303983d8837, canonicalVPS isolatedresearch-worktrees/hedge-rights-unlock-20261025; branchcodex/hedge-rights-unlock-20261025; localcommittedCLEAN/notpublished.
+Mac frozen runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985; monetary runtime/coinmaster byteidentical to reviewed340f90f; two initial moneyP1 closed/preserved.
+Candidate uses naturalstaleclock+3min>unchanged120s→realVenueMark, no policy/config/storemutation; bothactualACKcallbacks held atsharedhelper. 57purePASS; independentrepairP0=0/P1=0 FOR_CONSENT_ONLY.
+Root verified all31input/222source pins mismatch0. Native1.231/Python3.12.13/BASEfees/funding/stockliquidity unchanged; feed5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698.
+PROPOSED extra1 engineering TOTAL6→7 ONLYA05/noreserve/noC0fixture; A05_ONE_EXTRA_FIXTURE_PROTOCOL_PROPOSED_RU.md SHA22e0e44335d8811b177e6ca7bc71398768f2b3a8b25bca341ad951c475602c63; notapproved.
+Proposedplan73505b764d4740536ec2ec505c5c43b54027a881b111722b3623bb6fe28a6204/gateca01ebbc43f432f4594a38beeeb73ec399b15edcbcf47872c6e1307a91056d07 ROOT_GO=false; freeze receipt a0-proposed-amendment-freeze.json.
+Only after directhuman+1: save exactnonblankSTRING reply/schema fields, derive amendedledger preserving6rows+parenthash, independentpins/rootGO, ONEengine7; failedattempt counts/no automaticretry.
+IfactualA05PASS +source/config/data/componentreview: engineeringLIMITED_PASS only/C0fixtureNOT_RUN explicit. IfnotPASS stop/no economicPopen.
+Existing prefix0/3 HOLD (notexpanded): R2OFF→R2C0→R2A0 [2024-09-01,2025-01-15)UTC,seed10000/reserve0,freshnamespace/journal everyattempt; EVERYattemptseparaterootGO. Full/training/download0.
+R2LEGACY_Q realU exactfamily; C0/A0 sameB2_F0 differonlyA0flag/OFFNoneSOLnone. NoBTCentrycore/SOLTP-cuts-rearm changes/closedBTCrefund/firstpartialreallocation/leverageboost.
+BeforeA0 actualC0 mustcomplete nativeOS0/cash+signedfunding/settled+coherenteventcoverage/real3TPownership/zeroLiq/terminalpositions0/orders0; UNKNOWNblocksnext. No fake validTOTAL fromfailedprocess.
+A0gain>C0and2incrementalfees,settled+eventDD<=50andC0,dailyES20all136UTCdates<=C0; actualfilledadditionalright needed, elseNOT_TESTED. Prefixnotfull/OOS/global70/90proof; oldS0absolute targets unchanged.
+Report-only acceptance/ prepared adapter/comparator/rightsproof; metriccontractSHAca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102; actualwrapperbindingPENDING/no economicwrapperlaunch.
+Sourceproof $.market_redesign_audit.a0_release_audit separategrants/submits/accepted/denials/actualTradeIDfills; nofillNOT_TESTED/missingUNKNOWN; no simulatorreplacement.
+PUBLIC publication generally ownerauthorized but automaticreview rejectedtwo sourcepushes predispatch: need explicittrusted destination/payload. SourcebranchABSENT remotely; a0-source-publication-blocked-receipt.json.
+Requested exact PUBLIC https://github.com/VF78/coinmaster sourcebranchcodex/hedge-rights-unlock-20261025 runtime/tests + managerbranchcodex/btc-pattern-pilot-m2-20261021 researchreports/docs, withoutsecrets. No thirdretry/alternate upload/no deployment.
+Old#13511/12unused1CLOSED/#1347/7/old3full8shortCLOSED; no reuse. Allservices/pilot/production/keys/externalorders/transfers untouched; dirtyusercode/oldnative-run-ledger.json.lock preserved.
+No active child/native jobs at handoff; nextmanager minimalstartup/routing Sol6.1medium/forknone and RESET; handle twoowneranswers separately, no budget/publication implied by templates.

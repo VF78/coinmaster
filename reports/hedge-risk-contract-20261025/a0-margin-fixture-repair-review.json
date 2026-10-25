@@ -1,0 +1,50 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "decision": "PASS_PROPOSED_ONE_EXTRA_FIXTURE_READY_FOR_DIRECT_OWNER_CONSENT",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "P0": 0,
+  "P1": 0,
+  "findings": [
+    {
+      "id": "A0-EXTRA-01",
+      "priority": "P1",
+      "file": "runtime/tests/run_a0_engineering.py",
+      "function": "reviewed_fixture_cap",
+      "issue": "not str(approval.get(exact_owner_reply,empty)).strip accepts JSON null as nonempty None and accepts numbers/bools. Exact owner-reply schema default null could pass this intended direct-human-reply guard if its other status/pins are populated.",
+      "minimal_correction": "Require type(reply) is str and reply.strip() nonempty; engine-free rejection cases missing/null/blank/nonstring. No product or engine scope change.",
+      "status": "CLOSED_BY_763_EXACT_STRING_NONBLANK_AND_ENGINE_FREE_REJECTIONS"
+    }
+  ],
+  "verified_positive": [
+    "Natural latestmark=2M+15 to stale=5M+16 yields180000000001ns age >unchanged120000000000ns; real static and dynamic fallback both stale. No stores/policy/config mutation. Fresh marks at5M+25 restore via real update_mark.",
+    "All subsequent quotes shifted to monotonic tail_base5M; original one-hour engine window and25hour config remain within48. RiskOFF stays inactive, no new increase before stock gate.",
+    "Both native ACK routes/shared helper fix retained; original postOnly/caps/oneattempt/real3TP/cash/clean lifecycle checks retained.",
+    "One proposedA05/physical7 only. Parent hash enforces actual closed6 and identical first6 attempts; max7 requires pinned source/protocol/humanapproval/rootGO. Old6 ledger stillhashc0b84, no amended ledger or new authority created.",
+    "Nonbytecode financial package runtime/coinmaster byte-identical to340; only fixture runner/puretests changed.57purePASS are executor evidence, reviewer tests/engines0.",
+    "Proposal keeps existing3prefix onHOLD, conditionalLIMITEDengineering only afteractualcriticalA05PASS; explicitC0fixtureNOT_RUN and fullfinancial gates beforeA0. Full/deployment/trades0."
+  ],
+  "authority": "Ready only for direct human +1 consent request after coordinator freezes final explanatory document references. Proposed cap7 is NOT approved; closed6 remains authoritative/authorizedremaining0; no amended ledger exists. RootGO remains false. Actual marginDENY/recovery and conditional engineering admission still unproven. No tests/engines/source/publication/ledger/gate edits by reviewer.",
+  "initial_source_commit": "e54f81a5898246b9925020d63d9fa50eb394db18",
+  "initial_decision_preserved": "REQUEST_ONE_NARROW_APPROVAL_GUARD_CORRECTION",
+  "initial_reviewed_sha256": {
+    "a0-margin-fixture-repair.diff": "ffd623ca6b4972d3d47752bb3714271483954a9d9deaadc9e7966eebdb4412fe",
+    "a0-margin-fixture-verification.json": "9d016a34fcc6306ab5647e26731b91ecfe07962097d93e1a4933431ba1eeda11",
+    "a0-additional-A05-plan.json": "cbb29c6910f38bd591381d7cbdc9041878ee23f95a5bfa00587f630c38f3ca38",
+    "a0-additional-A05-gate-proposed.json": "07361e4eb6ac611101ea3162f5844bd1647860a86e44a2e64e50956307a437f5",
+    "A05_ONE_EXTRA_FIXTURE_PROTOCOL_PROPOSED_RU.md": "518fab6a14e6926cc194913519181ebff1c995b884685447f9b4c7cc1ec3dca4",
+    "a0-additional-A05-owner-approval-schema.json": "a618451d5f03338cab23f9772c9dabacde36ac6b84c442bbf0b58d2ef5527693"
+  },
+  "closure": "Exact reply now requires type(str) and nonblank strip. Existing actual guard test rejects missing/null/blank/whitespace/bool/int/float and restores nonempty unit receipt; source read only. Parent closed6 hash unchanged, amended ledger absent, proposedgate false.",
+  "reviewed_sha256": {
+    "a0-owner-reply-type-fix.diff": "4c9e144438545d34f93f78a2231764ef4c96818cc661c2bb469a4d919da517a2",
+    "a0-additional-A05-plan.json": "73505b764d4740536ec2ec505c5c43b54027a881b111722b3623bb6fe28a6204",
+    "a0-additional-A05-gate-proposed.json": "ca01ebbc43f432f4594a38beeeb73ec399b15edcbcf47872c6e1307a91056d07",
+    "a0-additional-A05-owner-approval-schema.json": "06f10daa5d0dc291ec7a79968254865ec65db79e713a728290626b379477c8f0",
+    "a0-margin-fixture-verification.json": "9a8ae371d99f0f8640d73fe90c6b977e0b5becf1e034a89f9617ec076d954fa2",
+    "A05_ONE_EXTRA_FIXTURE_PROTOCOL_PROPOSED_RU.md": "56ecf496233d6d3f1422e4cb55e9f5a35f6e61f1ef574bf4e71bca7a8e32a98a"
+  },
+  "reviewed_corrected_source_sha256": {
+    "runtime/tests/run_a0_engineering.py": "9d9512ea6e1dd350d4e4238aecc9aef5157038e0c7b47ceaa49de16c195098c8",
+    "runtime/tests/test_a0_rights_pure.py": "a21ed6657818b9cc4050a0751cf2a0c0d0339f43433b446ab58567d860d75dea"
+  }
+}

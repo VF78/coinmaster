@@ -1,0 +1,60 @@
+{
+  "status": "PASS_ENGINE_FREE_INSTALLED_CLASS_DESCRIPTOR_INSPECTION",
+  "native_constructors": 0,
+  "engine": {
+    "kernel": "getset_descriptor",
+    "trader": "getset_descriptor",
+    "end": "cython_function_or_method",
+    "dispose": "cython_function_or_method"
+  },
+  "kernel": {
+    "trader": "property",
+    "data_engine": "property",
+    "risk_engine": "property",
+    "exec_engine": "property",
+    "emulator": "property"
+  },
+  "components": {
+    "Trader": {
+      "state": "getset_descriptor",
+      "is_running": "getset_descriptor",
+      "is_disposed": "getset_descriptor"
+    },
+    "DataEngine": {
+      "state": "getset_descriptor",
+      "is_running": "getset_descriptor",
+      "is_disposed": "getset_descriptor"
+    },
+    "RiskEngine": {
+      "state": "getset_descriptor",
+      "is_running": "getset_descriptor",
+      "is_disposed": "getset_descriptor"
+    },
+    "ExecutionEngine": {
+      "state": "getset_descriptor",
+      "is_running": "getset_descriptor",
+      "is_disposed": "getset_descriptor"
+    },
+    "OrderEmulator": {
+      "state": "getset_descriptor",
+      "is_running": "getset_descriptor",
+      "is_disposed": "getset_descriptor"
+    }
+  },
+  "enum_running_name": "RUNNING",
+  "pinned_sources": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/system/kernel.py",
+      "sha256": "d1e634827ecb32c52ee4960c7c55c5f79d22b4ede11195320c4cf86d6b4b6cc9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/component.pyx",
+      "sha256": "e1f8631be5baa1ef0113d5a654c0b41d10b5308b0ec00b136bc676020685a519"
+    }
+  ],
+  "preserved_engine_free_preflight_error": "First introspection script imported ComponentState from rust.model instead of actual rust.common; corrected per pinned component.pyx33. No constructor/source change."
+}

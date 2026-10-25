@@ -1,0 +1,45 @@
+{
+  "physical_index": 1,
+  "fixture": "A01_RELEASE_THREE_TP",
+  "stage": "BEFORE_DISPOSE",
+  "native_cash": "10000.00000000 USDT",
+  "orders": [],
+  "positions": [],
+  "fills": [],
+  "md": {
+    "a0_release_audit": {
+      "grants": [],
+      "submits": [],
+      "accepted": [],
+      "denials": [],
+      "native_fill_coverage_complete": true,
+      "native_release_fills": [],
+      "actual_releases": 0
+    },
+    "a0_rights": [],
+    "events": [],
+    "missing_three_tp_ns": "0",
+    "open_protection_exception_since_ns": null
+  },
+  "pair": {
+    "events": [],
+    "failures": [],
+    "open_owner": false,
+    "physical_budget_authority": "EXTERNAL_SINGLE_SOURCE_RUN_LEDGER"
+  },
+  "split": {
+    "parents": [],
+    "cover": [],
+    "beta_method": "720_COMPLETED_1H_SIMPLE_RETURNS_SOL_ON_BTC_FROZEN_PER_BTC_EPISODE",
+    "coverage_basis": "ACTUAL_NATIVE_BTC_SOL_QUANTITIES_AND_CURRENT_MARKS"
+  },
+  "stock_margin_calls": [],
+  "terminal": {
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null,
+    "close_fills": [],
+    "lockout": false
+  },
+  "cap": null
+}

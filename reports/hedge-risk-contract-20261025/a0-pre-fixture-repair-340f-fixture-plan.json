@@ -1,0 +1,91 @@
+{
+  "actual_engine_instances": 0,
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "engine": "1.231.0",
+  "engine_instances_planned": 6,
+  "fixture_deltas": [
+    "finite synthetic completed seed and deterministic causal d3",
+    "synthetic quotes + genuine native marks/account",
+    "explicit delayed venue cancel transport and target acceptance-delivery faults",
+    "stock missing/stale marks denial; no gate bypass"
+  ],
+  "fixtures": [
+    {
+      "assertions": "Registered actual sizing/stock margin PASS; actual cancelACK->boundary riskOFF+60->original new GTC partial/full->3TP; one submit",
+      "family": "R2",
+      "fixture_id": "A01_RELEASE_THREE_TP",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "Actual partialfirst; S0 excludes missingfirst; SOLTP actual BTC debt/cut stays permanently closed; actual3TP",
+      "family": "R2",
+      "fixture_id": "A02_PARTIAL_FIRST_CLOSED_CAP",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "Actual released child partial/resting -> ordinary native TP -> immediate cancel within fillcallback despite historical parentclosed -> delayed-transport latefill -> actual excess BTCdebt correction; cap never reanchors/right never retries",
+      "family": "R2",
+      "fixture_id": "A03_ORDINARY_TP_KILLS",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "Delayed native cancel; OFF+60 oldorder nonterminal blocks; actual oldsecond late partial opens debt; actual ACK/debt correction then current3TP accepted barrier and bounded release",
+      "family": "R2",
+      "fixture_id": "A04_CANCEL_RACE_LATE_FILL",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "Actual target nativecancel/replacement ACK held -> current-generation UNKNOWN blocks; then real ACK delivery -> PostOnly crossingWAIT; immutable oldcap; stock stale-mark marginDENY then native freshmarkPASS",
+      "family": "R2",
+      "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "Exact C0 oldlock defaultfalse; same R2 B2_F0/stock admission/fees, no new release",
+      "family": "R2",
+      "fixture_id": "A06_C0_NO_RELEASE",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    }
+  ],
+  "limits": "full0/prefix0/training0/download0/pilot0/production0",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "pending_native_coverage": "NOT_RUN; no full financial parity/venue/economics assertion",
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "report_path": "$.market_redesign_audit.a0_release_audit",
+  "source_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+  "stop": "First failure stops connected pass; no automatic retry; preserve failure snapshot before dispose",
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025"
+}

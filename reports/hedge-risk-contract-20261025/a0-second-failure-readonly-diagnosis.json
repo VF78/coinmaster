@@ -1,0 +1,73 @@
+{
+  "status": "FAILED_PROCESS_PRESERVED_READ_ONLY_CAUSE",
+  "source_commit": "541e0c564a2bb79411809186113c78a4d3a80a5a",
+  "physical_index": 3,
+  "process_returncode": 1,
+  "failing_assertion": "run_a0_engineering.py174 release.filled_qty > before",
+  "actual_release_order_id": "O-19700101-000200-001-000-12",
+  "before_release": [
+    {
+      "id": "O-19700101-000200-001-000-12",
+      "status": "PARTIALLY_FILLED",
+      "quantity": "158.125",
+      "filled": "1.000",
+      "leaves": "157.125",
+      "side": "BUY",
+      "price": "98.5",
+      "reduce_only": false
+    }
+  ],
+  "after_release": [
+    {
+      "id": "O-19700101-000200-001-000-12",
+      "status": "PARTIALLY_FILLED",
+      "quantity": "158.125",
+      "filled": "1.000",
+      "leaves": "157.125",
+      "side": "BUY",
+      "price": "98.5",
+      "reduce_only": false
+    }
+  ],
+  "before_filled_ever": "1",
+  "after_filled_ever": "1",
+  "actualheld": [
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "quantity": "125.311",
+      "side": "LONG"
+    }
+  ],
+  "actualcap": "125.311",
+  "immediate_callback_component": "PASSED before later assertion; A0_ORDINARY_STOP_CANCEL timestamp120000000027 and native order remains PARTIALLY_FILLED because fixture delay_cancel transport intentionally suppresses cancel",
+  "not_effective_cancellation": true,
+  "stock_liquidity_reason": "Quote120000000026 price98 size1 consumed1 unit. Quote120000000028 price98 size1 revisits same exhausted book price/size. Stock native L1 consumption persists per price and resets only if level_size changes; timestamp or intervening quote at100 does not replenish98. Thus no actual second fill, correctly.",
+  "stock_source": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+    "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+    "lines": "6452-6540, specifically6518-6540"
+  },
+  "minimal_transport_fixture_proposal": "For the specifically intended second race-fill event use a genuinely fresh displayed BTC size2 (previous exhausted level size1), retain native stockliquidity=True and all money gates. Never fabricate a native fill or turn failed process intoPASS.",
+  "remaining_plan_proposal": [
+    {
+      "index": 4,
+      "case": "A03_A04_COMBINED_NATIVE_CANCEL_RACES",
+      "scope": "One native engine: hold original cancelACK untilriskOFF+60 -> actual oldgeneration latepartial with fresh depth -> ACK+actualdebt correction -> originalreleasepartial/resting -> actualordinaryTP -> immediatecancel callback -> fresh-depth actual releasegeneration latefill -> ACK+excess correction/no capreanchor/deadright/threeTP/nativeflat"
+    },
+    {
+      "index": 5,
+      "case": "A05_CROSS_MARGIN_UNKNOWN",
+      "scope": "Current native TP ACK held/unknown; actualACK; originalpostOnlycross; stock stale-mark marginDENY and freshmarkPASS; no capreanchor; native3TP"
+    },
+    {
+      "index": 6,
+      "case": "A06_C0_NO_RELEASE",
+      "scope": "Exact registeredC0 flagfalse/native sizing+margin/permanentlock/no newchild/cashidentity/nativeflat"
+    }
+  ],
+  "no_source_edits": true,
+  "no_new_engine": true,
+  "remaining_constructor_max": 3,
+  "prefix": 0,
+  "disposal_caveat": "Original logs also contain InvalidStateTrigger RUNNING->DISPOSE/->DISPOSE_COMPLETED warnings; native dispose returned and ledgerrecordsDISPOSED, worker process exited. No clean engine lifecycle transition claim from wrapperflag alone. Preserve warnings; lifecycle end-before-dispose can be reviewed as fixture-only cleanup separately."
+}

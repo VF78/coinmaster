@@ -1,0 +1,51 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "decision": "PASS_FINAL_A05_HARNESS_PENDING_ROOT_GO_AND_ACTUAL_NATIVE_RESULT",
+  "source_commit": "b294879ca0e778b33a02b6fe4018e234d29cfa51",
+  "P0": 0,
+  "P1": 0,
+  "route_fix": "StockProbe intercepts shared _accept_native_order, reached by both actual generic and typed native acceptance callbacks; stores unchanged actual event once per target OID, leaves economic generation/ACK unknown, direct WaveOverlayStrategy base-helper flush delivers real event once and clears held IDs. No native cache/status fabrication or production ACK change.",
+  "critical_coverage": "One A05 engine requires replacement target ACK UNKNOWN blocks grant, genuine base-helper ACK restores current3TP, original postOnly crossing WAIT, actual stock missing/stale margin DENY/immutablecap, fresh marks PASS, original GTC nativefill/3TP/accountidentity/flat and actual clean end/dispose lifecycle. Assertions and genuine OrderAccepted two-route pure adversary fit expected stock callbacks; actual critical outcome still pending.",
+  "constructor_budget": {
+    "physical_already_spent": 5,
+    "completed": 2,
+    "failed": 3,
+    "remaining": 1,
+    "next_physical_index": 6,
+    "cases": [
+      "A05_CROSS_MARGIN_UNKNOWN"
+    ],
+    "total_max": 6,
+    "config_hours": 25,
+    "engine_data_hours": 1,
+    "C0_standalone_native_fixture": "NOT_RUN",
+    "full": 0,
+    "prefix_current": 0
+  },
+  "financial_source_change": "Nonbytecode runtime/coinmaster files byte-identical to source340; diff only fixture runner and pure tests. Stock margin/liquidity/TP/cash model unchanged.",
+  "contract_disposition": {
+    "basis": "Exact approved protocol5c5e says up to6 fixtures and preliminary semantic set; allows combining assertions, does not mandate standalone C0 native fixture.",
+    "conditional_acceptance": "ONLY after actual finalA05PASS plus existing A02/combinedA04 evidence and source/config/data/semantic review may root accept LIMITED_PASS engineering components with C0_NATIVE_FIXTURE=NOT_RUN. No all6PASS, full family parity, or native C0 claim.",
+    "prefix_boundary": "Approved OFF->C0->A0 prefixes retain separate rootGO before each. C0 prefix is first actual C0 monetary control and must satisfy unchanged exit0/cash/funding/continuous settled+event/TPownership/flatorders0/zeroLiq gates before A0; UNKNOWN/failure blocks automatic continuation.",
+    "failure_boundary": "Any final A05 failure exhausts engineering6; no retries, added constructor or old budget reuse."
+  },
+  "pure_evidence": {
+    "owner_reported_pass": 54,
+    "owner_reported_engines": 0,
+    "reviewer_tests": 0,
+    "reviewer_engines": 0,
+    "limit": "Pure actual two-callback acceptance adversary is route evidence, not native engine PASS."
+  },
+  "reviewed_packet_sha256": {
+    "a0-final-A05-fixture-repair.diff": "6a5aafb65171ccbf1b9117e27fc7198551121f61fa3155d763768ca9fc25d507",
+    "a0-fixture-plan.json": "5d881fb0c35f8e6f2ace69be07fa8687ef8f49e10a134c6b937be44c16b6906b",
+    "a0-engineering-fixture-gate.json": "2e15974b7f57e000967ded38f172462863e644fc766663f53713c75d95ae7536",
+    "a0-pure-verification.json": "abea459fd86d8b554580ac1a4dd516d0feed4242edc08a23b0cfcd0cce9144cc",
+    "owner-approval.json": "b1fd3a5a265fd55ca9f5e8438a88374b5bd599bb9d1076b93673075b697736bf"
+  },
+  "reviewed_test_source_sha256": {
+    "runtime/tests/run_a0_engineering.py": "38b0985de7325b055ace42e1e4742c857dbe9c1719f59456b139c5cba05e2b15",
+    "runtime/tests/test_a0_rights_pure.py": "818e22d2afadac5f34b44f41ec20434d44a81344ff230a36c359d9f2bf5dab9b"
+  },
+  "authority": "RootGO remains false; review grants no run/extra budget/order/deployment authority. Previous failures/reviews unchanged; reviewer wrote only these two final-A05 review files."
+}

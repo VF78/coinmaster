@@ -1,0 +1,35 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "review_scope": "Narrow final three-instance harness depth/combined-coverage/cleanup review",
+  "decision": "PASS_HARNESS_PENDING_ROOT_GO_AND_ACTUAL_NATIVE_OUTCOMES",
+  "source_commit": "d357f593f3a2551f373b01dae29e0d2919623426",
+  "P0": 0,
+  "P1": 0,
+  "findings": [],
+  "verified": [
+    "Combined CASES exactly A03_A04_COMBINED_CANCEL_RACES, A05_CROSS_MARGIN_UNKNOWN, A06_C0_NO_RELEASE; one counted constructor each, total cap6 and remaining3.",
+    "Pinned stock engine6518-6540 resets per-price consumption when displayed size changes. Combined old98/1 -> releasepartial98/2 -> release-late98/3 supplies fresh displayed depth for each intended native fill; no timestamp-only replenishment, policy bypass or fabricated fill.",
+    "Separate old native order and release order IDs remain checked. Old order nonterminal blocks grant, genuine old partial precedes ACK, debt correction precedes grant through production guards. New release partial/resting precedes ordinary TP immediate callback cancellation, intentionally delayed transport allows fresh-depth actual late fill, then release terminal/held<=cap/cap<=tp_cap/dead+attempted/one submit asserted.",
+    "A05 retains current target-ACK UNKNOWN barrier/real ACK delivery/postOnly crossing/stale stockmargin DENY/fresh marks path. C0 keeps exact flagfalse family and permanent lock.",
+    "Cleanup snapshots BEFORE_TERMINAL and BEFORE_END preserve original financial/failure state, then native.end stops streaming components, AFTER_END/BEFORE_DISPOSE are additional evidence, native.dispose follows. Actual public kernel/component lifecycle descriptors were preflighted engine-free; main now requires actual clean stopped/disposed lifecycle, not wrapper disposed alone.",
+    "Nonbytecode runtime/coinmaster source byte-identical to340 checkpoint; fixture-only test/cleanup diff, same stock margin and liquidity policies.",
+    "Plan preserves physical1FAILED and physical3FAILED, credits physical2COMPLETED A02 only, and marks full combined/A05/C0 acceptance pending. No failed process promoted toPASS."
+  ],
+  "limitations": [
+    "Static source/installed engine code read only; reviewer engines/tests/source edits/ledger mutations0.",
+    "53purePASS and class-descriptor preflight are executor evidence, not actual native cleanup/lifecycle results. Fresh native run still must demonstrate positive fills, stock margin, true TP/cash/caps and clean lifecycle.",
+    "Old RUNNING->DISPOSE warnings remain preserved; no retrospective clean-lifecycle claim.",
+    "Native end can settle pending messages; pre-end snapshots are authoritative path evidence and post-end state does not retroactively qualify economics."
+  ],
+  "reviewed_packet_sha256": {
+    "a0-combined-fixture-repair.diff": "b13ff1b12186269d9a6fe40d5c331569b576b3f66ac331934d27210edb96022c",
+    "a0-fixture-plan.json": "b198d361da700341d6578e658a3972cfde1dca92c0736d621b29f59384b90fb9",
+    "a0-engineering-fixture-gate.json": "295fe36082125fb169a787712344955c731c0de20444bf9b0928baa26660b0f8",
+    "a0-cleanup-installed-api-preflight.json": "5d53247bb51ff52337e6800d7eaba30dc599e00c039e2ef49415a5652db1893d",
+    "a0-combined-fixture-preconditions.json": "09c3339c843e93085e0ac7a2e800ca5185c909d82277740f753735d68299f7f9",
+    "a0-pure-verification.json": "b39b48e196762899f36ad81db89952b3a9885706cb5e35e15009dac7c592193d",
+    "a0-second-failure-readonly-diagnosis.json": "717d15b428757b98d8e219bb8583b3899a535f9e457b63a0635dd71456083395"
+  },
+  "reviewed_runner_sha256": "efa31597e00f3a6ae54666595ed76137c5c66adb3e5058b5fbd53448fa4c9eb9",
+  "authority": "RootGO remains false. No native/prefix/full/order/deployment permission or additional budget granted. Only existing final3 engineering slots may be considered by root after its own gate."
+}

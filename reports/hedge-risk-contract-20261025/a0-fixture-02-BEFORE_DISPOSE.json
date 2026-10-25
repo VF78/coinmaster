@@ -1,0 +1,1237 @@
+{
+  "physical_index": 2,
+  "fixture": "A02_PARTIAL_FIRST_CLOSED_CAP",
+  "stage": "BEFORE_DISPOSE",
+  "native_cash": "10464.77422284 USDT",
+  "orders": [
+    {
+      "id": "O-19700101-000000-001-000-1",
+      "status": "CANCELED",
+      "quantity": "158.125",
+      "filled": "10.000",
+      "leaves": "148.125",
+      "side": "BUY",
+      "price": "None",
+      "reduce_only": false
+    },
+    {
+      "id": "O-19700101-000000-001-000-2",
+      "status": "CANCELED",
+      "quantity": "2.125",
+      "filled": "0.000",
+      "leaves": "2.125",
+      "side": "SELL",
+      "price": "100.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000000-001-000-3",
+      "status": "CANCELED",
+      "quantity": "2.125",
+      "filled": "0.000",
+      "leaves": "2.125",
+      "side": "SELL",
+      "price": "101.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000000-001-000-4",
+      "status": "CANCELED",
+      "quantity": "5.750",
+      "filled": "0.000",
+      "leaves": "5.750",
+      "side": "SELL",
+      "price": "102.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000000-001-000-5",
+      "status": "CANCELED",
+      "quantity": "158.125",
+      "filled": "0.000",
+      "leaves": "158.125",
+      "side": "BUY",
+      "price": "98.5",
+      "reduce_only": false
+    },
+    {
+      "id": "O-19700101-000100-001-000-10",
+      "status": "CANCELED",
+      "quantity": "9.9",
+      "filled": "0.0",
+      "leaves": "9.9",
+      "side": "BUY",
+      "price": "None",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-11",
+      "status": "CANCELED",
+      "quantity": "2.4",
+      "filled": "0.0",
+      "leaves": "2.4",
+      "side": "BUY",
+      "price": "98.00",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-12",
+      "status": "CANCELED",
+      "quantity": "5.1",
+      "filled": "0.0",
+      "leaves": "5.1",
+      "side": "BUY",
+      "price": "96.00",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-13",
+      "status": "CANCELED",
+      "quantity": "7.5",
+      "filled": "0.0",
+      "leaves": "7.5",
+      "side": "BUY",
+      "price": "None",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-14",
+      "status": "FILLED",
+      "quantity": "2.425",
+      "filled": "2.425",
+      "leaves": "0.000",
+      "side": "SELL",
+      "price": "None",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-15",
+      "status": "CANCELED",
+      "quantity": "1.609",
+      "filled": "0.000",
+      "leaves": "1.609",
+      "side": "SELL",
+      "price": "100.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-16",
+      "status": "CANCELED",
+      "quantity": "1.609",
+      "filled": "0.000",
+      "leaves": "1.609",
+      "side": "SELL",
+      "price": "101.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-17",
+      "status": "CANCELED",
+      "quantity": "4.357",
+      "filled": "0.000",
+      "leaves": "4.357",
+      "side": "SELL",
+      "price": "102.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-18",
+      "status": "FILLED",
+      "quantity": "7.5",
+      "filled": "7.5",
+      "leaves": "0.0",
+      "side": "BUY",
+      "price": "None",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-6",
+      "status": "FILLED",
+      "quantity": "9.9",
+      "filled": "9.9",
+      "leaves": "0.0",
+      "side": "SELL",
+      "price": "None",
+      "reduce_only": false
+    },
+    {
+      "id": "O-19700101-000100-001-000-7",
+      "status": "FILLED",
+      "quantity": "2.4",
+      "filled": "2.4",
+      "leaves": "0.0",
+      "side": "BUY",
+      "price": "99.00",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-8",
+      "status": "CANCELED",
+      "quantity": "2.4",
+      "filled": "0.0",
+      "leaves": "2.4",
+      "side": "BUY",
+      "price": "98.00",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000100-001-000-9",
+      "status": "CANCELED",
+      "quantity": "5.1",
+      "filled": "0.0",
+      "leaves": "5.1",
+      "side": "BUY",
+      "price": "96.00",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000200-001-000-19",
+      "status": "FILLED",
+      "quantity": "158.125",
+      "filled": "158.125",
+      "leaves": "0.000",
+      "side": "BUY",
+      "price": "98.5",
+      "reduce_only": false
+    },
+    {
+      "id": "O-19700101-000200-001-000-20",
+      "status": "CANCELED",
+      "quantity": "1.822",
+      "filled": "0.000",
+      "leaves": "1.822",
+      "side": "SELL",
+      "price": "100.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000200-001-000-21",
+      "status": "CANCELED",
+      "quantity": "1.822",
+      "filled": "0.000",
+      "leaves": "1.822",
+      "side": "SELL",
+      "price": "101.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000200-001-000-22",
+      "status": "CANCELED",
+      "quantity": "4.931",
+      "filled": "0.000",
+      "leaves": "4.931",
+      "side": "SELL",
+      "price": "102.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000200-001-000-23",
+      "status": "FILLED",
+      "quantity": "35.211",
+      "filled": "35.211",
+      "leaves": "0.000",
+      "side": "SELL",
+      "price": "100.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000200-001-000-24",
+      "status": "FILLED",
+      "quantity": "35.211",
+      "filled": "35.211",
+      "leaves": "0.000",
+      "side": "SELL",
+      "price": "101.0",
+      "reduce_only": true
+    },
+    {
+      "id": "O-19700101-000200-001-000-25",
+      "status": "FILLED",
+      "quantity": "95.278",
+      "filled": "95.278",
+      "leaves": "0.000",
+      "side": "SELL",
+      "price": "102.0",
+      "reduce_only": true
+    }
+  ],
+  "positions": [],
+  "fills": [
+    {
+      "order_id": "O-19700101-000000-001-000-1",
+      "trade_id": "T-e6ddb4a56983e0a8-001",
+      "quantity": "10.000",
+      "price": "99.0",
+      "commission": "0.54450000 USDT",
+      "ts": 4
+    },
+    {
+      "order_id": "O-19700101-000100-001-000-6",
+      "trade_id": "T-757f3381293c187d-001",
+      "quantity": "9.9",
+      "price": "100.00",
+      "commission": "0.54450000 USDT",
+      "ts": 60000000010
+    },
+    {
+      "order_id": "O-19700101-000100-001-000-7",
+      "trade_id": "T-1b640e62aa7d263c-002",
+      "quantity": "2.4",
+      "price": "99.00",
+      "commission": "0.04752000 USDT",
+      "ts": 60000000011
+    },
+    {
+      "order_id": "O-19700101-000100-001-000-14",
+      "trade_id": "T-10c0b5a5cc4f2132-002",
+      "quantity": "2.425",
+      "price": "99.0",
+      "commission": "0.13204125 USDT",
+      "ts": 60000000012
+    },
+    {
+      "order_id": "O-19700101-000100-001-000-18",
+      "trade_id": "T-5549fed5c3a9a399-003",
+      "quantity": "7.5",
+      "price": "100.00",
+      "commission": "0.41250000 USDT",
+      "ts": 60000000014
+    },
+    {
+      "order_id": "O-19700101-000200-001-000-19",
+      "trade_id": "T-2ec6cf2da47f6943-003",
+      "quantity": "1.000",
+      "price": "98.5",
+      "commission": "0.01970000 USDT",
+      "ts": 120000000026
+    },
+    {
+      "order_id": "O-19700101-000200-001-000-19",
+      "trade_id": "T-c74352274cca50d2-004",
+      "quantity": "157.125",
+      "price": "98.5",
+      "commission": "3.09536250 USDT",
+      "ts": 120000000027
+    },
+    {
+      "order_id": "O-19700101-000200-001-000-23",
+      "trade_id": "T-87fdc71f658b66a0-005",
+      "quantity": "35.211",
+      "price": "100.0",
+      "commission": "0.70422000 USDT",
+      "ts": 120000000041
+    },
+    {
+      "order_id": "O-19700101-000200-001-000-24",
+      "trade_id": "T-2808e36df3251a73-006",
+      "quantity": "35.211",
+      "price": "101.0",
+      "commission": "0.71126220 USDT",
+      "ts": 120000000042
+    },
+    {
+      "order_id": "O-19700101-000200-001-000-25",
+      "trade_id": "T-c972e2c8ebce8982-007",
+      "quantity": "95.278",
+      "price": "102.0",
+      "commission": "1.94367120 USDT",
+      "ts": 120000000043
+    }
+  ],
+  "md": {
+    "a0_release_audit": {
+      "grants": [
+        {
+          "event": "A0_GRANT_ONCE",
+          "timestamp_ns": "120000000025",
+          "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+          "locked_cap": "7.575",
+          "cap": "165.700",
+          "remaining": "158.125",
+          "submitted": true
+        }
+      ],
+      "submits": [
+        {
+          "event": "A0_SUBMIT",
+          "timestamp_ns": "120000000025",
+          "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+          "order_id": "O-19700101-000200-001-000-19",
+          "generation": 1,
+          "price": "98.5",
+          "quantity": "158.125"
+        }
+      ],
+      "accepted": [
+        "O-19700101-000200-001-000-19"
+      ],
+      "denials": [],
+      "native_fill_coverage_complete": true,
+      "native_release_fills": [
+        {
+          "native_trade_id": "T-2ec6cf2da47f6943-003",
+          "client_order_id": "O-19700101-000200-001-000-19",
+          "BTCinstrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "1",
+          "release_order": true
+        },
+        {
+          "native_trade_id": "T-c74352274cca50d2-004",
+          "client_order_id": "O-19700101-000200-001-000-19",
+          "BTCinstrument_id": "BTCUSDT-PERP.P1SIM",
+          "quantity": "157.125",
+          "release_order": true
+        }
+      ],
+      "actual_releases": 1
+    },
+    "a0_rights": [
+      {
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "original_second": "158.125",
+        "first_terminal": "10",
+        "price": "98.5",
+        "old_orders": [
+          "O-19700101-000000-001-000-1",
+          "O-19700101-000000-001-000-5"
+        ],
+        "off_ns": 60000000014,
+        "locked_cap": "7.575",
+        "granted_cap": "165.700",
+        "submitted": true,
+        "attempted": true,
+        "dead": "BTC_FLAT",
+        "order_id": "O-19700101-000200-001-000-19",
+        "submit_qty": "158.125",
+        "denial_counts": {},
+        "last_denial": null,
+        "second_filled_ever": "158.125"
+      }
+    ],
+    "events": [
+      {
+        "event": "PLAN",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "raw_causal_d3": "0.03",
+        "raw_levels": [
+          0,
+          0,
+          0.03
+        ],
+        "sizing_mode": "LEGACY_Q_CONTROL",
+        "quantity": "316.250"
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "ENTRY_FILL_REQUIRES_PROTECTION"
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "AWAITING_TARGET_ACCEPTANCE",
+        "continuing_interval": true
+      },
+      {
+        "event": "TARGETS_SUBMITTED",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "p0": "99",
+        "raw_causal_d3": "0.03",
+        "prices": [
+          "100.0",
+          "101.0",
+          "102.0"
+        ],
+        "actual_inventory": "10",
+        "level_lots": {
+          "0": 2125,
+          "1": 2125,
+          "2": 5750
+        }
+      },
+      {
+        "event": "P0_FROZEN_FIRST_TERMINAL",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "p0": "99",
+        "first_filled": "10"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 0,
+        "generation": 0,
+        "order_id": "O-19700101-000000-001-000-2",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 1,
+        "generation": 0,
+        "order_id": "O-19700101-000000-001-000-3",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 2,
+        "generation": 0,
+        "order_id": "O-19700101-000000-001-000-4",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "PROTECTION_RESTORED",
+        "timestamp_ns": "4",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "duration_ns": "0",
+        "reason": "ALL_REMAINING_ACCEPTED"
+      },
+      {
+        "event": "A0_RIGHT_LOCKED",
+        "timestamp_ns": "10",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "original_second": "158.125",
+        "price": "98.5",
+        "old_orders": [
+          "O-19700101-000000-001-000-1",
+          "O-19700101-000000-001-000-5"
+        ]
+      },
+      {
+        "event": "SECOND_TERMINAL",
+        "timestamp_ns": "10",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "actual_filled": "10",
+        "cancelled": "306.250"
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "60000000011",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "TARGET_CANCEL_ACK"
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "60000000012",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "AWAITING_TARGET_ACCEPTANCE",
+        "continuing_interval": true
+      },
+      {
+        "event": "TARGETS_SUBMITTED",
+        "timestamp_ns": "60000000012",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "p0": "99",
+        "raw_causal_d3": "0.03",
+        "prices": [
+          "100.0",
+          "101.0",
+          "102.0"
+        ],
+        "actual_inventory": "7.575",
+        "level_lots": {
+          "0": 1609,
+          "1": 1609,
+          "2": 4357
+        }
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "60000000012",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 0,
+        "generation": 1,
+        "order_id": "O-19700101-000100-001-000-15",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "60000000012",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 1,
+        "generation": 1,
+        "order_id": "O-19700101-000100-001-000-16",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "60000000012",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 2,
+        "generation": 1,
+        "order_id": "O-19700101-000100-001-000-17",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "PROTECTION_RESTORED",
+        "timestamp_ns": "60000000012",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "duration_ns": "1",
+        "reason": "ALL_REMAINING_ACCEPTED"
+      },
+      {
+        "event": "A0_SUBMIT",
+        "timestamp_ns": "120000000025",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "order_id": "O-19700101-000200-001-000-19",
+        "generation": 1,
+        "price": "98.5",
+        "quantity": "158.125"
+      },
+      {
+        "event": "A0_GRANT_ONCE",
+        "timestamp_ns": "120000000025",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "locked_cap": "7.575",
+        "cap": "165.700",
+        "remaining": "158.125",
+        "submitted": true
+      },
+      {
+        "event": "A0_SECOND_ACTUAL_FILL",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "order_id": "O-19700101-000200-001-000-19",
+        "native_trade_id": "T-2ec6cf2da47f6943-003",
+        "quantity": "1",
+        "second_filled_ever": "1",
+        "release_order": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "REPLACE_ACK_PENDING"
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "TARGET_CANCEL_ACK",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "REPLACE_ACK_PENDING",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "TARGET_CANCEL_ACK",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "REPLACE_ACK_PENDING",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "TARGET_CANCEL_ACK",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "AWAITING_TARGET_ACCEPTANCE",
+        "continuing_interval": true
+      },
+      {
+        "event": "TARGETS_SUBMITTED",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "p0": "99",
+        "raw_causal_d3": "0.03",
+        "prices": [
+          "100.0",
+          "101.0",
+          "102.0"
+        ],
+        "actual_inventory": "8.575",
+        "level_lots": {
+          "0": 1822,
+          "1": 1822,
+          "2": 4931
+        }
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 0,
+        "generation": 2,
+        "order_id": "O-19700101-000200-001-000-20",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 1,
+        "generation": 2,
+        "order_id": "O-19700101-000200-001-000-21",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 2,
+        "generation": 2,
+        "order_id": "O-19700101-000200-001-000-22",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "PROTECTION_RESTORED",
+        "timestamp_ns": "120000000026",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "duration_ns": "0",
+        "reason": "ALL_REMAINING_ACCEPTED"
+      },
+      {
+        "event": "A0_SECOND_ACTUAL_FILL",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "order_id": "O-19700101-000200-001-000-19",
+        "native_trade_id": "T-c74352274cca50d2-004",
+        "quantity": "157.125",
+        "second_filled_ever": "158.125",
+        "release_order": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "REPLACE_ACK_PENDING"
+      },
+      {
+        "event": "SECOND_TERMINAL",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "actual_filled": "168.125",
+        "cancelled": "148.125"
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "ENTRY_FILL_REQUIRES_PROTECTION",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "REPLACE_ACK_PENDING",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "TARGET_CANCEL_ACK",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "REPLACE_ACK_PENDING",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "TARGET_CANCEL_ACK",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "REPLACE_ACK_PENDING",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "TARGET_CANCEL_ACK",
+        "continuing_interval": true
+      },
+      {
+        "event": "PROTECTION_EXCEPTION",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "reason": "AWAITING_TARGET_ACCEPTANCE",
+        "continuing_interval": true
+      },
+      {
+        "event": "TARGETS_SUBMITTED",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "p0": "99",
+        "raw_causal_d3": "0.03",
+        "prices": [
+          "100.0",
+          "101.0",
+          "102.0"
+        ],
+        "actual_inventory": "165.7",
+        "level_lots": {
+          "0": 35211,
+          "1": 35211,
+          "2": 95278
+        }
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 0,
+        "generation": 3,
+        "order_id": "O-19700101-000200-001-000-23",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 1,
+        "generation": 3,
+        "order_id": "O-19700101-000200-001-000-24",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "TARGET_ACCEPTED",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "level": 2,
+        "generation": 3,
+        "order_id": "O-19700101-000200-001-000-25",
+        "ack_latency_ns": "0"
+      },
+      {
+        "event": "PROTECTION_RESTORED",
+        "timestamp_ns": "120000000027",
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "duration_ns": "0",
+        "reason": "ALL_REMAINING_ACCEPTED"
+      }
+    ],
+    "missing_three_tp_ns": "1",
+    "open_protection_exception_since_ns": null
+  },
+  "pair": {
+    "events": [
+      {
+        "event": "ACTIVATION_SELECTED",
+        "timestamp_ns": "10",
+        "parent": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "branch": "B2",
+        "qref": "10",
+        "intended_sol": "9.9",
+        "k": "0.99",
+        "boundary": "99.2",
+        "atr": "2"
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-6",
+        "kind": "ENTRY",
+        "level": null,
+        "quantity": "9.9",
+        "price": null,
+        "stop": null,
+        "generation": 0
+      },
+      {
+        "event": "ACTUAL_FILL",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-6",
+        "kind": "ENTRY",
+        "level": null,
+        "qty": "9.9",
+        "price": "100",
+        "risk": "ACTIVE_RISK",
+        "bmax": "10"
+      },
+      {
+        "event": "ENTRY_TERMINAL_P0_FROZEN",
+        "timestamp_ns": "60000000010",
+        "actual_sol": "9.9",
+        "p0": "100",
+        "bmax": "10"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "60000000010",
+        "btc": "10",
+        "sol": "9.9",
+        "bmax": "10",
+        "solmax": "9.9"
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-7",
+        "kind": "TP",
+        "level": 0,
+        "quantity": "2.4",
+        "price": "99.0",
+        "stop": null,
+        "generation": 1
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-8",
+        "kind": "TP",
+        "level": 1,
+        "quantity": "2.4",
+        "price": "98",
+        "stop": null,
+        "generation": 1
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-9",
+        "kind": "TP",
+        "level": 2,
+        "quantity": "5.1",
+        "price": "96",
+        "stop": null,
+        "generation": 1
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-10",
+        "kind": "STOP",
+        "level": null,
+        "quantity": "9.9",
+        "price": null,
+        "stop": "102",
+        "generation": 1
+      },
+      {
+        "event": "ACCEPTED",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-7",
+        "kind": "TP",
+        "level": 0
+      },
+      {
+        "event": "ACCEPTED",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-8",
+        "kind": "TP",
+        "level": 1
+      },
+      {
+        "event": "ACCEPTED",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-9",
+        "kind": "TP",
+        "level": 2
+      },
+      {
+        "event": "ACCEPTED",
+        "timestamp_ns": "60000000010",
+        "order_id": "O-19700101-000100-001-000-10",
+        "kind": "STOP",
+        "level": null
+      },
+      {
+        "event": "ACTUAL_BTC_DEBT_OPEN",
+        "timestamp_ns": "60000000011",
+        "actual_btc": "10",
+        "bmax": "7.575"
+      },
+      {
+        "event": "ACTUAL_FILL",
+        "timestamp_ns": "60000000011",
+        "order_id": "O-19700101-000100-001-000-7",
+        "kind": "TP",
+        "level": 0,
+        "qty": "2.4",
+        "price": "99",
+        "risk": "ACTIVE_RISK",
+        "bmax": "7.575"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "60000000011",
+        "btc": "10",
+        "sol": "7.5",
+        "bmax": "7.575",
+        "solmax": "7.5"
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000011",
+        "order_id": "O-19700101-000100-001-000-11",
+        "kind": "TP",
+        "level": 1,
+        "quantity": "2.4",
+        "price": "98",
+        "stop": null,
+        "generation": 2
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000011",
+        "order_id": "O-19700101-000100-001-000-12",
+        "kind": "TP",
+        "level": 2,
+        "quantity": "5.1",
+        "price": "96",
+        "stop": null,
+        "generation": 2
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000011",
+        "order_id": "O-19700101-000100-001-000-13",
+        "kind": "STOP",
+        "level": null,
+        "quantity": "7.5",
+        "price": null,
+        "stop": "102",
+        "generation": 2
+      },
+      {
+        "event": "ACCEPTED",
+        "timestamp_ns": "60000000011",
+        "order_id": "O-19700101-000100-001-000-11",
+        "kind": "TP",
+        "level": 1
+      },
+      {
+        "event": "ACCEPTED",
+        "timestamp_ns": "60000000011",
+        "order_id": "O-19700101-000100-001-000-12",
+        "kind": "TP",
+        "level": 2
+      },
+      {
+        "event": "ACCEPTED",
+        "timestamp_ns": "60000000011",
+        "order_id": "O-19700101-000100-001-000-13",
+        "kind": "STOP",
+        "level": null
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000012",
+        "order_id": "O-19700101-000100-001-000-14",
+        "kind": "BTC_DEBT",
+        "level": null,
+        "quantity": "2.425",
+        "price": null,
+        "stop": null,
+        "generation": 2
+      },
+      {
+        "event": "ACTUAL_FILL",
+        "timestamp_ns": "60000000012",
+        "order_id": "O-19700101-000100-001-000-14",
+        "kind": "BTC_DEBT",
+        "level": null,
+        "qty": "2.425",
+        "price": "99",
+        "risk": "ACTIVE_RISK",
+        "bmax": "7.575"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "60000000012",
+        "btc": "7.575",
+        "sol": "7.5",
+        "bmax": "7.575",
+        "solmax": "7.5"
+      },
+      {
+        "event": "RISK_INVALID_OR_EXPIRED",
+        "timestamp_ns": "60000000014",
+        "btc_close": "99.3"
+      },
+      {
+        "event": "SUBMIT",
+        "timestamp_ns": "60000000014",
+        "order_id": "O-19700101-000100-001-000-18",
+        "kind": "SOL_CLOSE",
+        "level": null,
+        "quantity": "7.5",
+        "price": null,
+        "stop": null,
+        "generation": 2
+      },
+      {
+        "event": "ACTUAL_FILL",
+        "timestamp_ns": "60000000014",
+        "order_id": "O-19700101-000100-001-000-18",
+        "kind": "SOL_CLOSE",
+        "level": null,
+        "qty": "7.5",
+        "price": "100",
+        "risk": "INACTIVE_RISK",
+        "bmax": "7.575"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "60000000014",
+        "btc": "7.575",
+        "sol": "0",
+        "bmax": "7.575",
+        "solmax": "7.5"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "120000000026",
+        "btc": "8.575",
+        "sol": "0",
+        "bmax": "165.700",
+        "solmax": "164.1"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "120000000027",
+        "btc": "165.7",
+        "sol": "0",
+        "bmax": "165.700",
+        "solmax": "164.1"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "120000000041",
+        "btc": "130.489",
+        "sol": "0",
+        "bmax": "130.489",
+        "solmax": "129.2"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "120000000042",
+        "btc": "95.278",
+        "sol": "0",
+        "bmax": "95.278",
+        "solmax": "94.4"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "120000000043",
+        "btc": "0",
+        "sol": "0",
+        "bmax": "0",
+        "solmax": "0.0"
+      },
+      {
+        "event": "PARENT_NATIVE_TERMINAL_FLAT",
+        "timestamp_ns": "120000000043",
+        "parent": "5b2384d2-4b65-417b-bf14-9a5a61b80086"
+      }
+    ],
+    "failures": [],
+    "open_owner": false,
+    "physical_budget_authority": "EXTERNAL_SINGLE_SOURCE_RUN_LEDGER"
+  },
+  "split": {
+    "parents": [
+      {
+        "episode_id": "5b2384d2-4b65-417b-bf14-9a5a61b80086",
+        "quantity": "316.250",
+        "first_quantity": "158.125",
+        "filled": "168.125",
+        "first_notional": "990",
+        "first_filled": "10",
+        "first_vwap": "99",
+        "start_ns": 4,
+        "deadline_ns": 14400000000004,
+        "sigma": 0.01,
+        "decision_index": 2,
+        "fallback": false,
+        "closed": true,
+        "cancelled": "148.125",
+        "step": "0.001",
+        "side": 1,
+        "single_lot_immediate": false,
+        "planref_v1_p0": "99",
+        "planref_v1_actual_blended_vwap": "98.52973977695167286245353160",
+        "planref_v1_h_actual": 54191.35687732342,
+        "planref_v1_gross_reference_qty": 550.0,
+        "planref_v1_beta": 1.0,
+        "management_reference_frozen_ns": 4,
+        "stop_reason": "PAIRED_MONOTONE_PARENT_CEILING"
+      }
+    ],
+    "cover": [],
+    "beta_method": "720_COMPLETED_1H_SIMPLE_RETURNS_SOL_ON_BTC_FROZEN_PER_BTC_EPISODE",
+    "coverage_basis": "ACTUAL_NATIVE_BTC_SOL_QUANTITIES_AND_CURRENT_MARKS"
+  },
+  "stock_margin_calls": [
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "316.250",
+      "timestamp": 4,
+      "allowed": true
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 5,
+      "allowed": true
+    },
+    {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "side": "-1",
+      "quantity": "9.9",
+      "timestamp": 60000000010,
+      "allowed": true
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 120000000025,
+      "allowed": true
+    },
+    {
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "side": "1",
+      "quantity": "158.125",
+      "timestamp": 120000000025,
+      "allowed": true
+    }
+  ],
+  "terminal": {
+    "reason": "NOT_TRIGGERED",
+    "status": "NOT_TRIGGERED",
+    "trigger_ts": null,
+    "close_fills": [],
+    "lockout": false
+  },
+  "cap": null
+}

@@ -1,0 +1,55 @@
+{
+  "status": "PASS_ENGINE_FREE_ONLY_REQUIRES_OWNER_PLUS_ONE_APPROVAL",
+  "source_commit": "e54f81a5898246b9925020d63d9fa50eb394db18",
+  "financial_runtime_bytes_identical_to_reviewed340f": true,
+  "pure_tests": 57,
+  "engines_created": 0,
+  "actual_engineering_spent": 6,
+  "actual_engineering_authorized_remaining": 0,
+  "actual_closed_ledger_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "static_marks_type": "tuple",
+  "supported_api": "TierMarginPolicy.update_mark(actualVenueMark), margin_for; natural staleclock; no private stores/config mutation",
+  "static_and_dynamic_stale_errors": {
+    "BTCUSDT-PERP.P1SIM": "stale explicit mark",
+    "SOLUSDT-PERP.P1SIM": "stale explicit mark"
+  },
+  "policy_recovery_actual_IM_MM_mark": {
+    "BTCUSDT-PERP.P1SIM": [
+      "2.4825",
+      "0.32769",
+      "99.3"
+    ],
+    "SOLUSDT-PERP.P1SIM": [
+      "5.00",
+      "0.500",
+      "100"
+    ]
+  },
+  "marks_store_identity_preserved": true,
+  "proposed_gate_blocked": "EXACT_ADDITIONAL_A05_ROOT_GO_REQUIRED",
+  "kwargs": {
+    "R2_OFF": {
+      "roundtrip": "PASS",
+      "sha256": "473cda0e9c8b344d6cd4854ef5e57fe34256c6152e3311aa37dd40b508a69e5b",
+      "feed_rows": 815
+    },
+    "R2_C0": {
+      "roundtrip": "PASS",
+      "sha256": "650f2fae7c2af7e56950a6248719ae67224afcd75cc57312ff73c911f98f321c",
+      "feed_rows": 815
+    },
+    "R2_A0": {
+      "roundtrip": "PASS",
+      "sha256": "a4a74be1c0922f566a7f093741c25c1066d5dec61f4cb7a846a25e1e1930cc83",
+      "feed_rows": 815
+    }
+  },
+  "input_pins_verified": 31,
+  "source_files_pinned": 222,
+  "repair_diff_sha256": "ffd623ca6b4972d3d47752bb3714271483954a9d9deaadc9e7966eebdb4412fe",
+  "proposed_plan_sha256": "cbb29c6910f38bd591381d7cbdc9041878ee23f95a5bfa00587f630c38f3ca38",
+  "proposed_gate_sha256": "07361e4eb6ac611101ea3162f5844bd1647860a86e44a2e64e50956307a437f5",
+  "native_margin_DENY_proof": "NOT_RUN/NOT_PROVEN until separatelyhumanapprovedfixture",
+  "C0_native": "NOT_RUN",
+  "prefix": 0
+}

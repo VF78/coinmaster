@@ -1,0 +1,42 @@
+{
+  "actual_feed_rows": 815,
+  "actual_kwargs": {
+    "R2_A0": {
+      "exact_validation": "PASS",
+      "feed_rows": 815,
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-kwargs-R2_A0.json",
+      "sha256": "00deac62db1706a0e7a84a80f43aa6d7762435f3c0d4911293a7a05c7d9f8bc4"
+    },
+    "R2_C0": {
+      "exact_validation": "PASS",
+      "feed_rows": 815,
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-kwargs-R2_C0.json",
+      "sha256": "e083b14bc5985efb30aa9d3a8ecd12eea2afc01e0274f87ad2a5efecdc0bae2e"
+    },
+    "R2_OFF": {
+      "exact_validation": "PASS",
+      "feed_rows": 815,
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-kwargs-R2_OFF.json",
+      "sha256": "8782bb23c7c85fe9dc3025cd95cb05b523b49358a4b42b813b5fb66ab428e4b9"
+    }
+  },
+  "command": "PYTHONPATH=runtime:runtime/tests runtime/.venv/bin/python -m pytest -q runtime/tests/test_a0_rights_pure.py runtime/tests/test_registered_control.py",
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "engine": "1.231.0",
+  "engines_created": 0,
+  "feed_reader": "Unchanged original economic load_paired_signal_feed; first completed H4 Sep1 04, last Jan14 20; no invented t0 bar; available=t/notbefore=t+60s",
+  "git_diff_check": "PASS",
+  "input_pins_verified": 31,
+  "native_runner_compile": "PASS",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "prefix_processes": 0,
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "source_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+  "source_files_pinned": 222,
+  "status": "PASS",
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "tests": 45
+}

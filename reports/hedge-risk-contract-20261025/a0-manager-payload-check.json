@@ -1,0 +1,10 @@
+{
+  "status": "NO_MATCHES_KNOWN_CREDENTIAL_SIGNATURES_NO_PUSH",
+  "files_checked": 130,
+  "bytes_checked": 6492051,
+  "matches": [],
+  "not_full_security_guarantee": true,
+  "intended_public_destination": "https://github.com/VF78/coinmaster",
+  "manager_branch": "codex/btc-pattern-pilot-m2-20261021",
+  "publication_still_requires_exact_destination_confirmation": true
+}

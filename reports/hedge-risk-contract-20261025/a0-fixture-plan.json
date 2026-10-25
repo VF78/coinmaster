@@ -1,0 +1,86 @@
+{
+  "C0_standalone_native_fixture": "NOT_RUN",
+  "actual_engine_instances": 5,
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "coverage": {
+    "C0pure": "exactkwargs/defaultOFF/oldguard validated; nativecontrolNOT_RUN until separatelyapprovedprefixC0",
+    "completedA02": "actualstockregisteredR2/partialFIRST/originalS0/no closedBTCrefund/originalnewGTC/3TP/nativeflat/cashidentity",
+    "completedA04": "fullFIRST/oldENTRYUNKNOWNACK/OFF60/oldlate1/debt/newpartial2/ordinaryTPimmediatecancel/newlate3/correctivecap/no retry/3TP/nativeflat/cleanlifecycle",
+    "pendingA05": "actualsharedcurrentTPACKUNKNOWN/cross/stockmarginDENY+PASS"
+  },
+  "engine": "1.231.0",
+  "engine_instances_planned": 1,
+  "fixture_deltas": [
+    "finite synthetic completed seed and deterministic causal d3",
+    "synthetic quotes + genuine native marks/account",
+    "explicit delayed venue cancel transport and target acceptance-delivery faults",
+    "stock missing/stale marks denial; no gate bypass"
+  ],
+  "fixtures": [
+    {
+      "assertions": "ONLY A05: actual nativeTP replacementOrderAccepted delayed at shared _accept_native_order from BOTH callbacks/dedupOID -> economiccurrentgeneration UNKNOWN blocks A0; direct delivery of unchangedactualACK -> current3TPready; originalprice postOnly crossingWAIT; actual stockmissing/stale marks marginDENY retains immutablecap; freshnative markPASS/originalGTC/nativefills/native3TP/flat/cashidentity; stockliquidityTrue; cleanactual lifecycle after pinnedend/dispose",
+      "config_span_hours": 25,
+      "config_trading_end_ms": 3600000,
+      "config_trading_start_ms": -86400000,
+      "engine_data_window_hours": 1,
+      "family": "R2",
+      "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "physical_index": 6,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    }
+  ],
+  "limits": "full0/prefix0/training0/download0/pilot0/production0",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "pending_native_coverage": "NOT_RUN; no full financial parity/venue/economics assertion",
+  "physical_already_completed": 2,
+  "physical_already_failed": 3,
+  "physical_already_spent": 5,
+  "physical_total_max": 6,
+  "prior_rows": [
+    {
+      "fixture_id": "A01_RELEASE_THREE_TP",
+      "physical_index": 1,
+      "source_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+      "status": "FAILED"
+    },
+    {
+      "fixture_id": "A02_PARTIAL_FIRST_CLOSED_CAP",
+      "physical_index": 2,
+      "source_commit": "541e0c564a2bb79411809186113c78a4d3a80a5a",
+      "status": "COMPLETED"
+    },
+    {
+      "fixture_id": "A03_ORDINARY_TP_KILLS",
+      "physical_index": 3,
+      "source_commit": "541e0c564a2bb79411809186113c78a4d3a80a5a",
+      "status": "FAILED"
+    },
+    {
+      "fixture_id": "A03_A04_COMBINED_CANCEL_RACES",
+      "physical_index": 4,
+      "source_commit": "d357f593f3a2551f373b01dae29e0d2919623426",
+      "status": "COMPLETED"
+    },
+    {
+      "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+      "physical_index": 5,
+      "source_commit": "d357f593f3a2551f373b01dae29e0d2919623426",
+      "status": "FAILED"
+    }
+  ],
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "remaining_constructor_max": 1,
+  "report_path": "$.market_redesign_audit.a0_release_audit",
+  "scope_disposition": "Coordinator reports independent contract assessment conditionalLIMITEDfamilyadmission afterA05actualPASS+A02/A04proof+source/config/datareview. No nativeC0/fullparityclaim; prefixOFF->C0->A0 still separatelyGO/accountinggated.",
+  "source_commit": "b294879ca0e778b33a02b6fe4018e234d29cfa51",
+  "stop": "Singleconstructor only; prior3FAILED never reclassify; no retry/reserve/multiplex/accountreset; firstfailurestops; no6of6PASSclaim",
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025"
+}

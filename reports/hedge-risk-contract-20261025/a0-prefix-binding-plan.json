@@ -1,0 +1,114 @@
+{
+  "status": "BOUND_INTERFACE_ENGINE_FREE_ONLY_IMPLEMENTATION_PENDING_ENGINEERING_ACCEPTANCE",
+  "worker": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-worker.py",
+  "supervisor": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+  "supervisor_cli": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-supervisor.py",
+    "--freeze",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-freeze-{variant}.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-ledger.json",
+    "--variant",
+    "{R2_OFF|R2_C0|R2_A0}",
+    "--namespace",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/{variant}",
+    "--launch"
+  ],
+  "worker_cli": [
+    "python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-worker.py",
+    "--freeze",
+    "samefreeze",
+    "--ledger",
+    "sameledger",
+    "--variant",
+    "samevariant",
+    "--namespace",
+    "samenamespace",
+    "--worker-attempt",
+    "{durably_claimed_UUID}"
+  ],
+  "source": "frozen340f90f/native_baseline.run_native_diagnostic(**build_a0_kwargs(...))",
+  "root_go": "Separate exact variant GO each launch, engineering GO grants no prefix",
+  "output": {
+    "result": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/{variant}/result",
+    "report": "{variant}.json",
+    "orders": "{variant}-orders.csv",
+    "funding": "{variant}-funding.sqlite",
+    "coherent": "coherent-native-events.jsonl.gz",
+    "supervisor": "../supervisor-receipt.json",
+    "completion": "../completion-manifest.json",
+    "log": "../native.log"
+  },
+  "ledger_schema": {
+    "physical_max": 3,
+    "physical_started": "incremented durably BEFORE physical worker Popen incl failure/pre-engine",
+    "attempts": [
+      {
+        "attempt_id": "UUID",
+        "physical_index": "1..3",
+        "variant": "R2_OFF/R2_C0/R2_A0 strict ordered",
+        "status": "STARTED|FAILED|COMPLETED",
+        "source_commit": "340f90f...",
+        "namespace": "fresh variant namespace",
+        "freeze_sha256": "exact per-variant freeze",
+        "detail": {
+          "report": "absolute report path",
+          "report_sha256": "sha256",
+          "actual_returncode": "actual worker OS rc",
+          "completion_manifest": "absolute path",
+          "completion_manifest_sha256": "sha256"
+        }
+      }
+    ]
+  },
+  "report_attempt": {
+    "json_path": "$.physical_prefix_attempt",
+    "fields": [
+      "attempt_id",
+      "variant",
+      "ledger",
+      "source_commit"
+    ]
+  },
+  "supervisor_schema": {
+    "attempt_id": "UUID",
+    "pid": "actual worker PID",
+    "actual_returncode": "actual OS rc; COMPLETED requires0",
+    "ledger_status": "FAILED|COMPLETED",
+    "freeze_sha256": "sha256",
+    "source_commit": "340f90f..."
+  },
+  "completion_schema": {
+    "attempt_id": "UUID",
+    "source_commit": "340f90f...",
+    "actual_returncode": 0,
+    "artifacts": [
+      {
+        "role": "report",
+        "path": "absolute",
+        "sha256": "actual artifact bytes"
+      },
+      {
+        "role": "orders",
+        "path": "absolute",
+        "sha256": "actual artifact bytes"
+      },
+      {
+        "role": "funding",
+        "path": "absolute",
+        "sha256": "actual artifact bytes"
+      },
+      {
+        "role": "coherent",
+        "path": "absolute",
+        "sha256": "actual artifact bytes"
+      }
+    ]
+  },
+  "completion_rule": "Worker writes proposed report/hash receipt; supervisor alone marks COMPLETED after actual OS0 and verifies 4 hashes; report errors never converted to valid TOTAL",
+  "accounting": "Existing native outputs and report-only acceptance adapter; no new PnL/funding math",
+  "a0_json_path": "$.market_redesign_audit.a0_release_audit",
+  "no_prefix_started": true
+}

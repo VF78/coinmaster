@@ -1,0 +1,41 @@
+{
+  "status": "PASS_ENGINE_FREE_ALL3_ACTUAL_CONFIGS",
+  "engines_created": 0,
+  "config_receipts": [
+    {
+      "case": "A03_A04_COMBINED_CANCEL_RACES",
+      "config_sha256": "db871b71fd6f3dac6089a4c56f1665484a088a7d55b05d472e146106b4c00ce9",
+      "stock_daily_guard_blocks": false,
+      "trading_open_ns": -86400000000000,
+      "terminal_ns": 3600000000000,
+      "prefix": "B2_F0",
+      "A0": true,
+      "seed_available_max_ns": 0
+    },
+    {
+      "case": "A05_CROSS_MARGIN_UNKNOWN",
+      "config_sha256": "db871b71fd6f3dac6089a4c56f1665484a088a7d55b05d472e146106b4c00ce9",
+      "stock_daily_guard_blocks": false,
+      "trading_open_ns": -86400000000000,
+      "terminal_ns": 3600000000000,
+      "prefix": "B2_F0",
+      "A0": true,
+      "seed_available_max_ns": 0
+    },
+    {
+      "case": "A06_C0_NO_RELEASE",
+      "config_sha256": "71ac883a39b4a62f28c39a1e3b51ff24fdd4176f6aad32f4e6d335218c431bf6",
+      "stock_daily_guard_blocks": false,
+      "trading_open_ns": -86400000000000,
+      "terminal_ns": 3600000000000,
+      "prefix": "B2_F0",
+      "A0": false,
+      "seed_available_max_ns": 0
+    }
+  ],
+  "depths": {
+    "old_late": "1",
+    "release_partial": "2",
+    "release_late": "3"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "status": "PROPOSED_NOT_APPROVED_NO_RUN",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "current_authorized_engineering_total": 6,
+  "closed_engineering_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "current_spent": 6,
+  "current_completed": 2,
+  "current_failed": 4,
+  "proposed_engineering_total": 7,
+  "additional_instances_requested": 1,
+  "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+  "proposed_physical_index": 7,
+  "case_ids": [
+    "A05_CROSS_MARGIN_UNKNOWN"
+  ],
+  "window_start_ns": 0,
+  "window_end_ns": 3600000000000,
+  "engine_data_max_hours": 1,
+  "synthetic_config_span_hours": 25,
+  "semantic_path": [
+    "Both actual target acceptance callbacks delayed atsharedhelper/OIDdedup -> nativeUNKNOWNdenial",
+    "Direct unchanged actualACKflush -> originalpostOnlycrossWAIT",
+    "No private mark/config mutation; actualquotes+3minutes without freshVenueMark -> stockmarginDENY",
+    "ActualfreshVenueMark -> stockmarginPASS -> one original GTC/actualpartial-full/native3TP/nativeflat/accountidentity",
+    "PreEND/nativeend/afterEND/predispose actualcomponentstates"
+  ],
+  "stale_clock": {
+    "last_mark_ns": 120000000015,
+    "max_mark_age_ns": 120000000000,
+    "denial_quote_ns": 300000000016,
+    "age_ns": 180000000001,
+    "recovery_venue_mark_ns": 300000000025,
+    "monotonic_cleanup_quote_ns": 360000000000
+  },
+  "C0_native_fixture": "NOT_RUN; no request to add",
+  "prefix_max_unchanged": 3,
+  "prefix_attempts": 0,
+  "prefix_go": false,
+  "full": 0,
+  "training": 0,
+  "downloads": 0,
+  "pilot": 0,
+  "production": 0,
+  "reserve": 0,
+  "requirement": "Direct human approval of precise +1/total7 protocol, separate independentreview/rootGO and derived amendedledger preservingall6parentrows. No current7permission.",
+  "approval_reply_type": "Exact JSONstr/nonemptyafterstrip; absent/null/bool/number/blank all deny"
+}

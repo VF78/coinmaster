@@ -1,0 +1,818 @@
+diff --git a/runtime/coinmaster/research/a0_family.py b/runtime/coinmaster/research/a0_family.py
+new file mode 100644
+index 0000000..9ac62ab
+--- /dev/null
++++ b/runtime/coinmaster/research/a0_family.py
+@@ -0,0 +1,39 @@
++"""Exact registered R2 OFF/C0/A0 calls; source06 families remain unchanged."""
++from inspect import signature
++from coinmaster.research.registered_control import config_for, native_kwargs_json_roundtrip
++
++FAMILY = "R2_A0_V1"
++VARIANTS = {"R2_OFF": (None, False), "R2_C0": ("B2_F0", False), "R2_A0": ("B2_F0", True)}
++START_MS, END_MS = 1725148800000, 1736899200000
++
++
++def build_a0_kwargs(data_root, artifact_dir, variant, feed, *, start_ms=START_MS, end_ms=END_MS):
++    if variant not in VARIANTS:
++        raise ValueError("A0_EXACT_VARIANT_REQUIRED")
++    if not ((start_ms, end_ms) == (START_MS, END_MS) or 0 < end_ms - start_ms <= 48 * 3600000):
++        raise ValueError("A0_APPROVED_WINDOW_REQUIRED")
++    from coinmaster.research.paired_prefix_run import build_native_kwargs
++    kwargs = build_native_kwargs(config_for("R2"), data_root, artifact_dir, "OFF", feed, registered_control="R2")
++    kwargs["research_registered_control"] = None
++    kwargs["research_a0_family"] = FAMILY
++    kwargs["research_paired_prefix"], kwargs["research_a0_original_second"] = VARIANTS[variant]
++    kwargs.update(trading_start_ms=start_ms, trading_end_ms=end_ms, artifact_label=variant)
++    _, restored = native_kwargs_json_roundtrip(kwargs)
++    if restored != kwargs:
++        raise ValueError("A0_KWARGS_ROUNDTRIP_FAILED")
++    return restored
++
++
++def validate_native_a0(actual):
++    from coinmaster.research.native_baseline import run_native_diagnostic
++    selectors = (actual["research_paired_prefix"], actual["research_a0_original_second"])
++    variant = next((k for k, v in VARIANTS.items() if v == selectors), None)
++    if actual["research_a0_family"] != FAMILY or variant is None:
++        raise ValueError("A0_EXACT_FAMILY_REQUIRED")
++    expected = build_a0_kwargs(actual["data_root"], actual["artifact_dir"], variant,
++        actual["research_paired_signal_rows"], start_ms=actual["trading_start_ms"], end_ms=actual["trading_end_ms"])
++    bound = signature(run_native_diagnostic).bind(**expected)
++    bound.apply_defaults()
++    for key, value in bound.arguments.items():
++        if type(actual[key]) is not type(value) or actual[key] != value:
++            raise ValueError("A0_EXACT_NATIVE_ARGUMENT_REQUIRED:" + key)
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index b55b480..331105e 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -757,6 +757,7 @@ def build_native_strategy_config(context):
+         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
+         research_v3_risk=research_v3_risk,
+         research_h1_b1=research_h1_b1,
++        research_a0_family=context["research_a0_family"], research_a0_original_second=context["research_a0_original_second"],
+         research_paired_prefix=research_paired_prefix, research_paired_signal_rows=research_paired_signal_rows,
+         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
+         research_btc_split50=research_btc_split50,
+@@ -820,6 +821,8 @@ def run_native_diagnostic(
+     research_v3_risk: str | None = None,
+     research_h1_b1: str | None = None,
+     research_paired_policy: bool = False,
++    research_a0_family: str | None = None,
++    research_a0_original_second: bool = False,
+     research_registered_control: str | None = None,
+     research_paired_prefix: str | None = None,
+     research_paired_signal_rows: tuple = (),
+@@ -883,10 +886,13 @@ def run_native_diagnostic(
+             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
+     if research_paired_prefix and not research_paired_policy:
+         raise ValueError("PAIRED_REQUIRES_STOCK_SHARED_LIQUIDITY_POLICY")
++    if research_a0_family is not None or research_a0_original_second:
++        from coinmaster.research.a0_family import validate_native_a0
++        validate_native_a0(locals())
+     if research_registered_control is not None:
+         from coinmaster.research.registered_control import validate_native_control
+         validate_native_control(locals())
+-    approved_q = "LEGACY_Q_CONTROL" if research_registered_control == "R2" else "CLEAN_Q"
++    approved_q = "LEGACY_Q_CONTROL" if research_registered_control == "R2" or research_a0_family == "R2_A0_V1" else "CLEAN_Q"
+     if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == approved_q and research_sol_off and observe_minute_risk and include_funding):
+         raise ValueError("PAIRED_POLICY_REQUIRES_EXACT_R3_FUNDED_OBSERVER")
+     if research_paired_prefix and not research_paired_signal_rows:
+diff --git a/runtime/coinmaster/research/paired_prefix_run.py b/runtime/coinmaster/research/paired_prefix_run.py
+index 2d42520..b7ff928 100644
+--- a/runtime/coinmaster/research/paired_prefix_run.py
++++ b/runtime/coinmaster/research/paired_prefix_run.py
+@@ -170,7 +170,7 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed, *, regis
+         flags[key]=value
+     if config["research_btc_direction_sizing"] != DIRECTION_DESCRIPTOR:
+         raise ValueError("EXACT_R3_DIRECTION_DESCRIPTOR_REQUIRED")
+-    expected_q = "LEGACY_Q_CONTROL" if registered_control == "R2" else "CLEAN_Q"
++    expected_q = "LEGACY_Q_CONTROL" if registered_control in ("R2", "R2_A0_V1") else "CLEAN_Q"
+     if config["research_btc_q_mode"]!=expected_q or config["research_btc_split_discount"]!="0.005" or not flags["research_btc_real_u"]:
+         raise ValueError("EXACT_APPROVED_R3_SOURCE_CONFIG_REQUIRED")
+     wait=config["next_band_research"]["wait_4h"]
+diff --git a/runtime/coinmaster/strategy/a0_rights.py b/runtime/coinmaster/strategy/a0_rights.py
+new file mode 100644
+index 0000000..3736dcf
+--- /dev/null
++++ b/runtime/coinmaster/strategy/a0_rights.py
+@@ -0,0 +1,174 @@
++"""One original-second right; existing native order owner and margin gates only."""
++from decimal import Decimal as D, ROUND_FLOOR, ROUND_CEILING
++from nautilus_trader.model.identifiers import ClientOrderId
++from nautilus_trader.model.enums import OrderSide
++
++MINUTE = 60_000_000_000
++
++
++def release_cap(first_terminal, original_second, locked_cap, remaining):
++    if any(not x.is_finite() or x < 0 for x in (first_terminal, original_second, locked_cap, remaining)) or remaining > original_second:
++        raise ValueError("A0_UNKNOWN_CAP")
++    return min(first_terminal + original_second, locked_cap + remaining)
++
++
++class A0RightsResearch:
++    def _a0_enabled(self):
++        return bool(self.config.research_a0_original_second)
++
++    def _a0_bind_entry(self, oid, intent):
++        m = self._md_plans.get(intent.episode_id)
++        if not m:
++            return
++        role = "SECOND" if m["first_done"] else "FIRST"
++        m.setdefault("entry_orders", {})[oid] = role
++
++    def _a0_note_submit(self, oid, ts):
++        if not getattr(self, "_a0_submitting", False):
++            return
++        p = self._split_parent
++        a = self._md_plans[p["episode_id"]]["a0"]
++        a["submitted"], a["order_id"] = True, oid
++        self._md_log("A0_SUBMIT", ts, episode_id=p["episode_id"], order_id=oid,
++                     generation=1, price=a["price"], quantity=a["submit_qty"])
++
++    def _a0_deny(self, a, reason, ns, **values):
++        a["denial_counts"][reason] = a["denial_counts"].get(reason, 0) + 1
++        if a.get("last_denial") != reason:
++            self._md_log("A0_DENY", ns, reason=reason, **values)
++            a["last_denial"] = reason
++
++    def _a0_stop(self, reason):
++        if not self._a0_enabled() or not self._split_parent:
++            return
++        m = self._md_plans.get(self._split_parent["episode_id"], {})
++        a = m.get("a0")
++        if a and reason != "PAIRED_MONOTONE_PARENT_CEILING":
++            a["dead"] = reason
++            # The historical split stays closed. Its replacement still has a
++            # live native owner and must be cancelled in this fill/stop callback,
++            # before the next quote can match (including inflight submission).
++            if a["order_id"] is not None:
++                order = self.cache.order(ClientOrderId(a["order_id"]))
++                if order is not None and not order.is_closed and not order.is_pending_cancel:
++                    self._md_log("A0_ORDINARY_STOP_CANCEL", self.clock.timestamp_ns(),
++                        episode_id=self._split_parent["episode_id"], order_id=a["order_id"], reason=reason)
++                    self.cancel_order(order)
++
++    def _a0_lock(self, ns):
++        if not self._a0_enabled():
++            return
++        p, pair = self._split_parent, self._pair
++        if not p or not pair or p["episode_id"] != pair["parent"]:
++            return
++        m = self._md_plans[p["episode_id"]]
++        # A normal closed second child, missing P0 or ordinary TP never creates rights.
++        if "a0" in m or p.get("stop_reason") not in (None, "PAIRED_MONOTONE_PARENT_CEILING") or m["touched"] or not m["first_done"] or m["p0"] is None:
++            return
++        old = m.get("entry_orders", {})
++        second = [oid for oid, role in old.items() if role == "SECOND"]
++        work = [self.cache.order(ClientOrderId(oid)) for oid in second]
++        if not work or not any(o is None or not o.is_closed for o in work):
++            return  # Only a risk-cancelled actual old child owns an A0 right.
++        inst = self.cache.instrument(self.config.btc_id)
++        tick = inst.price_increment.as_decimal()
++        raw = m["p0"] * (1 - self.config.research_btc_split_discount * p["side"])
++        px = (raw / tick).to_integral_value(rounding=ROUND_FLOOR if p["side"] == 1 else ROUND_CEILING) * tick
++        m["a0"] = dict(original_second=p["quantity"] - p["first_quantity"],
++            first_terminal=m["first_filled"], price=px, old_orders=tuple(old),
++            off_ns=None, locked_cap=None, granted_cap=None, submitted=False, attempted=False,
++            dead=None, order_id=None, submit_qty=D(0), denial_counts={}, last_denial=None)
++        self._md_log("A0_RIGHT_LOCKED", ns, episode_id=p["episode_id"],
++                     original_second=m["a0"]["original_second"], price=px, old_orders=list(old))
++
++    def _a0_keep_order(self, order):
++        if not self._a0_enabled() or not self._pair or self._pair["risk"] != "INACTIVE_RISK":
++            return False
++        m = self._md_plans.get(self._pair["parent"], {})
++        a = m.get("a0")
++        return bool(a and a["submitted"] and not a["dead"] and a["order_id"] == str(order.client_order_id))
++
++    def _a0_targets_ready(self, ep, m, held):
++        # Reuse realU's current accepted generation and native ACK/quantity
++        # ownership. Live reduce-only TP orders are protection, not trim debt.
++        levels = {0, 1, 2}
++        generation = m["generation"]
++        historic = m["generations"].get(generation)
++        if m["accepted"] != levels or not historic or not historic["authorized"] or historic["required"] != levels or historic["accepted"] != levels:
++            return False
++        work = [(oid, intent) for oid, intent in self._pending_by_order.items()
++                if intent.action == "BTC_REDUCE" and intent.episode_id == ep.id]
++        if len(work) != 3 or {intent.level for _, intent in work} != levels:
++            return False
++        total = D(0)
++        for oid, intent in work:
++            order = self.cache.order(ClientOrderId(oid))
++            if order is None or order.status.name != "ACCEPTED" or not order.is_reduce_only or m["order_generation"].get(oid) != generation:
++                return False
++            total += order.leaves_qty.as_decimal()
++        return total == held
++
++    def _a0_check(self, tick):
++        if not self._a0_enabled() or tick.instrument_id != self.config.btc_id:
++            return
++        p, pair, ep = self._split_parent, self._pair, self._domain.episode
++        if not p:
++            return
++        m = self._md_plans.get(p["episode_id"], {})
++        a = m.get("a0")
++        if not a or a["dead"] or a["attempted"]:
++            return
++        ns = tick.ts_event
++        if not ep or ep.id != p["episode_id"] or ep.side != p["side"] or (self._pair_position(self.config.btc_id) is not None and self._pair_position(self.config.btc_id).is_long != (p["side"] == 1)) or not self._pair_qty(self.config.btc_id) or m["touched"] or self._forced_close_reason or self._liquidating or not self._entries_enabled(ignore_paired_lock=True):
++            a["dead"] = "PARENT_TP_FLAT_CLOSE_OR_PAUSE"
++            return
++        if not pair or pair["parent"] != ep.id or pair["risk"] != "INACTIVE_RISK" or pair["failed"] or not pair["entry_terminal"]:
++            return
++        if a["off_ns"] is None:
++            a["off_ns"] = ns
++        if ns < a["off_ns"] + MINUTE:
++            return
++        # Cache absence and owned unknown ACK both block. Never infer terminal from no open list.
++        if any((o := self.cache.order(ClientOrderId(oid))) is None or not o.is_closed for oid in a["old_orders"]):
++            return
++        increases = [o for o in self.cache.orders_open() + self.cache.orders_inflight()
++                     if o.instrument_id in (self.config.btc_id, self.config.sol_id) and not o.is_reduce_only]
++        owned = [i for i in self._pending_by_order.values() if i.action in ("BTC_ENTRY", "SOL_ADD")]
++        held = self._pair_qty(self.config.btc_id)
++        if increases or owned or self._pair_work(kinds={"ENTRY"}) or pair["debt_since"] is not None or self._pair_work(instrument=self.config.btc_id) or held > pair["caps"].bmax:
++            return
++        if not self._a0_targets_ready(ep, m, held):
++            self._a0_deny(a, "CURRENT_THREE_TP_ACK_UNKNOWN", ns, episode_id=ep.id)
++            return
++        step = self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
++        from coinmaster.strategy.paired_prefix import exact_lots
++        remaining = D(max(0, exact_lots(a["original_second"], step) - exact_lots(m["second_filled"], step))) * step
++        if not remaining:
++            a["dead"] = "SECOND_BUDGET_EXHAUSTED"
++            return
++        # Freeze the reconciled old absolute ceiling before any WAIT or release.
++        if a["locked_cap"] is None:
++            a["locked_cap"] = pair["caps"].bmax
++        cap = min(release_cap(a["first_terminal"], a["original_second"], a["locked_cap"], remaining), pair["caps"].bmax + remaining)
++        qty = min(remaining, max(D(0), cap - held))
++        if qty <= 0:
++            return
++        if not (a["price"] < tick.ask_price.as_decimal() if ep.side == 1 else a["price"] > tick.bid_price.as_decimal()):
++            self._a0_deny(a, "POST_ONLY_CROSS", ns, episode_id=ep.id, price=a["price"], locked_cap=a["locked_cap"])
++            return
++        side = OrderSide.BUY if ep.side == 1 else OrderSide.SELL
++        # Actual stock strategy/account/tier/free-funds gate, no fixture override.
++        if not self._tier_allows_increase(self.config.btc_id, side, qty, ns):
++            self._a0_deny(a, "NATIVE_MARGIN", ns, episode_id=ep.id, quantity=qty)
++            return
++        a["attempted"] = True
++        a["granted_cap"], a["submit_qty"] = cap, qty
++        pair["caps"].bmax = cap
++        ep.pending[p["intent"].id] = p["intent"]
++        self._split_child_submit = self._a0_submitting = True
++        try:
++            self._submit_intent(p["intent"], float(tick.bid_price), float(tick.ask_price), p["sigma"], p["decision_index"], ts_now=ns, entry_override_qty=qty)
++        finally:
++            self._split_child_submit = self._a0_submitting = False
++        self._md_log("A0_GRANT_ONCE", ns, episode_id=ep.id, locked_cap=a["locked_cap"],
++                     cap=cap, remaining=remaining, submitted=a["submitted"])
+diff --git a/runtime/coinmaster/strategy/market_redesign.py b/runtime/coinmaster/strategy/market_redesign.py
+index 40cd44d..0ab15a6 100644
+--- a/runtime/coinmaster/strategy/market_redesign.py
++++ b/runtime/coinmaster/strategy/market_redesign.py
+@@ -4,6 +4,7 @@ No matching or cash model: cache, fills, pending map and native ACKs are authori
+ """
+ from decimal import Decimal as D, ROUND_FLOOR, ROUND_CEILING
+ from nautilus_trader.model.identifiers import ClientOrderId
++from coinmaster.strategy.a0_rights import A0RightsResearch
+ 
+ FRACTIONS = (D(".2125"), D(".2125"), D(".575"))
+ PHI = {1: D(".8551535379805835"), -1: D(".7977111237672364")}
+@@ -42,7 +43,7 @@ def target_lots(held_lots, consumed):
+     return result
+ 
+ 
+-class MarketRedesignResearch:
++class MarketRedesignResearch(A0RightsResearch):
+     def _md_enabled(self):
+         return bool(self.config.research_btc_real_u)
+ 
+@@ -94,7 +95,7 @@ class MarketRedesignResearch:
+         if p["filled"]+qty>p["quantity"]:
+             raise ValueError("REAL_U_PARENT_OVERFILL")
+         p["filled"]+=qty
+-        if not m["first_done"]:
++        if m.get("entry_orders", {}).get(str(event.client_order_id), "SECOND" if m["first_done"] else "FIRST") == "FIRST":
+             m["first_filled"]+=qty
+             m["first_notional"]+=qty*px
+             m["p0"]=m["first_notional"]/m["first_filled"]
+@@ -103,6 +104,10 @@ class MarketRedesignResearch:
+             p["first_vwap"]=m["p0"]
+         else:
+             m["second_filled"]+=qty
++            if m.get("a0"):
++                self._md_log("A0_SECOND_ACTUAL_FILL", event.ts_event, episode_id=intent.episode_id,
++                    order_id=str(event.client_order_id), native_trade_id=str(event.trade_id), quantity=qty, second_filled_ever=m["second_filled"],
++                    release_order=str(event.client_order_id)==m["a0"]["order_id"])
+         if p.get("stop_reason"):
+             p["cancelled"]=p["quantity"]-p["filled"]
+         if p["filled"]==p["quantity"]:
+@@ -136,6 +141,7 @@ class MarketRedesignResearch:
+         if not self._md_enabled() or tick.instrument_id!=self.config.btc_id:
+             return
+         self._md_reconcile(tick.ts_event)
++        self._a0_check(tick)
+         p=self._split_parent
+         ep=self._domain.episode
+         if not p or p["closed"]:
+@@ -329,5 +335,22 @@ class MarketRedesignResearch:
+         self._md_reconcile(event.ts_event)
+ 
+     def _md_report(self):
+-        return dict(events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
++        rights = [{"episode_id": eid, **{k:str(v) if isinstance(v,D) else v for k,v in m["a0"].items()},
++                   "second_filled_ever":str(m["second_filled"])} for eid,m in self._md_plans.items() if "a0" in m]
++        fills = [dict(native_trade_id=e["native_trade_id"], client_order_id=e["order_id"],
++                      BTCinstrument_id=str(self.config.btc_id), quantity=e["quantity"], release_order=True)
++                 for e in self.market_redesign_audit if e["event"]=="A0_SECOND_ACTUAL_FILL" and e["release_order"] and D(e["quantity"])>0]
++        submits = [e for e in self.market_redesign_audit if e["event"]=="A0_SUBMIT"]
++        complete = len({e["native_trade_id"] for e in fills})==len(fills)
++        accepted = []
++        for submit in submits:
++            oid=submit["order_id"];order=self.cache.order(ClientOrderId(oid))
++            complete = complete and order is not None and sum((D(f["quantity"]) for f in fills if f["client_order_id"]==oid),D(0))==order.filled_qty.as_decimal()
++            if self._order_audit.get(oid,{}).get("accept_ns") is not None:
++                accepted.append(oid)
++        release_audit = dict(grants=[e for e in self.market_redesign_audit if e["event"]=="A0_GRANT_ONCE"],
++            submits=submits,accepted=accepted,denials=[e for e in self.market_redesign_audit if e["event"]=="A0_DENY"],
++            native_fill_coverage_complete=bool(complete),native_release_fills=fills,
++            actual_releases=len({f["client_order_id"] for f in fills}))
++        return dict(a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
+             open_protection_exception_since_ns=str(self._md_missing_since) if self._md_missing_since is not None else None)
+diff --git a/runtime/coinmaster/strategy/paired_prefix.py b/runtime/coinmaster/strategy/paired_prefix.py
+index 50d4180..b7501a8 100644
+--- a/runtime/coinmaster/strategy/paired_prefix.py
++++ b/runtime/coinmaster/strategy/paired_prefix.py
+@@ -119,7 +119,12 @@ class PairedPrefixResearch:
+         self._pair_failures = []
+         if self.config.research_paired_prefix not in (None, "B2", "B2_F0"):
+             raise ValueError("PAIRED_INVALID_VARIANT")
+-        if self.config.research_paired_prefix and not (self.config.research_btc_real_u and self.config.research_btc_q_mode == "CLEAN_Q" and self.config.research_sol_off):
++        exact_a0 = self.config.research_a0_family == "R2_A0_V1" and self.config.research_paired_prefix in (None, "B2_F0") and self.config.research_btc_real_u and self.config.research_btc_q_mode == "LEGACY_Q_CONTROL" and self.config.research_sol_off
++        if self.config.research_a0_family is not None and not exact_a0:
++            raise ValueError("A0_EXACT_R2_FAMILY_REQUIRED")
++        if self.config.research_a0_original_second and (not exact_a0 or self.config.research_paired_prefix != "B2_F0"):
++            raise ValueError("A0_EXACT_R2_FAMILY_REQUIRED")
++        if self.config.research_paired_prefix and not exact_a0 and not (self.config.research_btc_real_u and self.config.research_btc_q_mode == "CLEAN_Q" and self.config.research_sol_off):
+             raise ValueError("PAIRED_REQUIRES_R3_CLEAN_Q_SOL_OFF")
+ 
+     def _pair_log(self, event, ns, **values):
+@@ -160,7 +165,7 @@ class PairedPrefixResearch:
+             self._pair_arm_btc_debt(ns)
+ 
+     def _pair_no_increase(self):
+-        return bool(self.config.research_paired_prefix and self._pair)
++        return bool(self.config.research_paired_prefix and self._pair and not getattr(self, "_a0_submitting", False))
+ 
+     def _pair_btc_tp_paused(self):
+         p = self._pair
+@@ -168,10 +173,11 @@ class PairedPrefixResearch:
+                            self._pair_work(instrument=self.config.btc_id)))
+ 
+     def _pair_cancel_btc_increases(self, ns):
++        self._a0_lock(ns)
+         self._discard_queued_intents(lambda i: i.action == "BTC_ENTRY")
+         self._split_stop("PAIRED_MONOTONE_PARENT_CEILING")
+         for order in self.cache.orders_open() + self.cache.orders_inflight():
+-            if order.instrument_id == self.config.btc_id and not order.is_reduce_only and not order.is_closed and not order.is_pending_cancel:
++            if order.instrument_id == self.config.btc_id and not order.is_reduce_only and not order.is_closed and not order.is_pending_cancel and not self._a0_keep_order(order):
+                 self.cancel_order(order)
+ 
+     def _pair_arm_btc_debt(self, ns):
+diff --git a/runtime/coinmaster/strategy/split_cover.py b/runtime/coinmaster/strategy/split_cover.py
+index ce40188..403071c 100644
+--- a/runtime/coinmaster/strategy/split_cover.py
++++ b/runtime/coinmaster/strategy/split_cover.py
+@@ -135,6 +135,7 @@ class SplitCoverResearch:
+             p["closed"]=True
+ 
+     def _split_stop(self,reason):
++        self._a0_stop(reason)
+         p=self._split_parent
+         if not p or p["closed"]:
+             return
+@@ -203,7 +204,7 @@ class SplitCoverResearch:
+         if not p or not self._split_child_submit or p["fallback"] or (not self._md_plans[intent.episode_id]["first_done"] if self._md_enabled() else p["filled"]<p["first_quantity"]):
+             return None
+         from coinmaster.strategy.wave_overlay import _native_limit_price
+-        raw=p["first_vwap"]*(1-self.config.research_btc_split_discount*p["side"])
++        raw=self._md_plans[intent.episode_id]["a0"]["price"] if getattr(self,"_a0_submitting",False) else p["first_vwap"]*(1-self.config.research_btc_split_discount*p["side"])
+         rounding=ROUND_FLOOR if p["side"]==1 else ROUND_CEILING
+         step=instrument.price_increment.as_decimal()
+         price=_native_limit_price(instrument,(raw/step).to_integral_value(rounding=rounding)*step)
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 7e63e95..9cdbfb4 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -66,6 +66,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_v0_deferred_selective_zero_tp: bool = False
+     research_v0_selective_lifecycle_repairs: bool = False
+     research_v3_risk: str | None = None
++    research_a0_family: str | None = None
++    research_a0_original_second: bool = False
+     research_paired_prefix: str | None = None
+     research_paired_signal_rows: tuple[PairedSignal, ...] = ()
+     research_btc_real_u: bool = False
+@@ -2043,6 +2045,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+         client_order_id = str(order.client_order_id)
+         self._risk_first_sol_bind(intent,order)
+         self._pending_by_order[client_order_id] = intent
++        if intent.action == "BTC_ENTRY" and self._md_enabled():
++            self._a0_bind_entry(client_order_id, intent)
+         # A pre-submit durable checkpoint must see the exact order-to-episode
+         # mapping before native transport can accept or fill this order.
+         self._sigma_by_order[client_order_id] = sigma
+@@ -2074,6 +2078,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+                     "omitted_zero_levels": sorted(episode.btc_omitted_zero_levels),
+                     "reference_target_lots": dict(episode.btc_reference_target_lots),
+                 })
++        if intent.action == "BTC_ENTRY" and self._md_enabled():
++            self._a0_note_submit(client_order_id, ts_now or 0)
+         self.submit_order(order)
+ 
+     @staticmethod
+@@ -3020,8 +3026,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+             raise RuntimeError("DEPOSIT_CONTROL_PERSISTENCE_FAILED")
+         return self.deposit_projection()
+ 
+-    def _entries_enabled(self, *, ignore_research_protection: bool = False) -> bool:
+-        if self._pair_no_increase():
++    def _entries_enabled(self, *, ignore_research_protection: bool = False, ignore_paired_lock: bool = False) -> bool:
++        if not ignore_paired_lock and self._pair_no_increase():
+             return False
+         if self._research_protect_latch is not None and not ignore_research_protection:
+             return False
+diff --git a/runtime/tests/run_a0_engineering.py b/runtime/tests/run_a0_engineering.py
+new file mode 100644
+index 0000000..82ce888
+--- /dev/null
++++ b/runtime/tests/run_a0_engineering.py
+@@ -0,0 +1,213 @@
++"""Finite six-instance A0 connected pass. Requires external root GO before any engine."""
++from pathlib import Path
++from decimal import Decimal as D
++from datetime import datetime,timezone
++from inspect import signature
++import argparse,hashlib,json,subprocess,traceback
++from unittest.mock import patch
++import run_continuous_hedge_preflight as pre
++from coinmaster.research.a0_family import build_a0_kwargs,validate_native_a0
++from coinmaster.research.native_baseline import build_native_strategy_config,run_native_diagnostic
++from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP,SIM
++from coinmaster.research.paired_signal_feed import PairedSignal
++from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++from test_native_episode_risk import tick,run_ticks
++from coinmaster.venues.marks import venue_mark
++from nautilus_trader.model.identifiers import ClientId
++M=60_000_000_000
++CASES=['A01_RELEASE_THREE_TP','A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
++
++class Recorder(pre.Recorder):
++    def claim(self):
++        data=json.loads(self.path.read_text())
++        if not self.gate.get('root_go') or data['physical_started']>=6:
++            raise ValueError('A0_GATE_OR_SIX_ENGINE_CAP')
++        return super().claim()
++
++class CountedEngine(pre.CountedEngine):
++    def capture(self,label):
++        if not hasattr(self,'strategy'):return
++        s=self.strategy;a=self.native.cache.account_for_venue(SIM)
++        payload=dict(physical_index=self.number,fixture=pre.REC.current[0],stage=label,
++            native_cash=str(a.balance_total()) if a else None,
++            orders=[dict(id=str(o.client_order_id),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),side=o.side.name,price=str(getattr(o,'price',None)),reduce_only=o.is_reduce_only) for o in self.native.cache.orders()],
++            positions=[dict(instrument=str(p.instrument_id),quantity=str(p.quantity),side='LONG' if p.is_long else 'SHORT') for p in self.native.cache.positions_open()],
++            fills=[dict(order_id=str(e.client_order_id),trade_id=str(e.trade_id),quantity=str(e.last_qty),price=str(e.last_px),commission=str(e.commission),ts=e.ts_event) for e in s.native_fills],
++            md=s._md_report(),pair=s._pair_report(),split=s._split_cover_report(),stock_margin_calls=s.stock_margin_calls,terminal=s.terminal_lifecycle,
++            cap=str(s._pair['caps'].bmax) if s._pair else None)
++        artifact=pre.REC.path.parent/f'a0-fixture-{self.number:02d}-{label}.json'
++        artifact.write_text(json.dumps(pre.snapshot_config(payload)['payload'],indent=2)+'\n')
++        data=json.loads(pre.REC.path.read_text());entry=data['attempts'][self.number-1]
++        entry.setdefault('native_snapshots',[]).append(dict(path=str(artifact),sha256=hashlib.sha256(artifact.read_bytes()).hexdigest(),stage=label));pre.REC.write(data)
++
++class StockProbe(pre.ControlProbe):
++    def __init__(self,cfg):
++        self.stock_margin_calls=[];self.cancel_calls=[];self.delay_cancel=False;self.delay_target_ack=False;self.held_target_acks=[];self.inside_tp_fill=False;super().__init__(cfg)
++    def _tier_allows_increase(self,*args):
++        result=WaveOverlayStrategy._tier_allows_increase(self,*args)
++        self.stock_margin_calls.append(dict(instrument=str(args[0]),side=str(args[1]),quantity=str(args[2]),timestamp=args[3],allowed=result))
++        return result
++    def cancel_order(self,order,*args,**kwargs):
++        self.cancel_calls.append(dict(order_id=str(order.client_order_id),inside_tp_fill=self.inside_tp_fill,ts=self.clock.timestamp_ns()))
++        if self.delay_cancel and not order.is_reduce_only:return
++        return super().cancel_order(order,*args,**kwargs)
++    def on_order_accepted(self,event):
++        intent=self._pending_by_order.get(str(event.client_order_id))
++        if self.delay_target_ack and intent and intent.action=='BTC_REDUCE':
++            self.held_target_acks.append(event);return
++        return super().on_order_accepted(event)
++    def on_order_filled(self,event):
++        intent=self._pending_by_order.get(str(event.client_order_id))
++        self.inside_tp_fill=bool(intent and intent.action=='BTC_REDUCE')
++        try:return super().on_order_filled(event)
++        finally:self.inside_tp_fill=False
++
++pre.CountedEngine=CountedEngine
++
++def advance(e,s,ns,btc='99',sol='100',btcsize='1000',solsize='1000',fresh=True):
++    if fresh:
++        e.add_data([venue_mark(BTC_PERP.id,D(btc),ns),venue_mark(SOL_PERP.id,D(sol),ns)],client_id=ClientId('BYBIT_MARK'),sort=False)
++    run_ticks(e,[tick(BTC_PERP,ns,btc,size=btcsize),tick(SOL_PERP,ns,sol,size=solsize)])
++
++def setup(case):
++    variant='R2_C0' if case=='A06_C0_NO_RELEASE' else 'R2_A0'
++    signal=PairedSignal(10,10,10+M,D(99),D(100),D(1),D(2),True,True,False,True,False,D('99.2'),D(90),D('99.2'))
++    kwargs=build_a0_kwargs(Path('.'),Path('.'),variant,(signal,),start_ms=0,end_ms=3600000)
++    bound=signature(run_native_diagnostic).bind(**kwargs);bound.apply_defaults();validate_native_a0(bound.arguments)
++    _,context,_=pre.registered_fixture_context('R2',start_ms=0,end_ms=3600000)
++    context.update(bound.arguments)
++    # Only synthetic native instruments, causal finite seed, marks/time adapters differ.
++    conf=build_native_strategy_config(context)
++    pre.REC.effective_config=pre.snapshot_config(conf)
++    s=StockProbe(conf);e=pre.base_engine(s)
++    advance(e,s,1,btc='100')
++    pre.prepare_completed_day(s,2)
++    with patch('coinmaster.domain.wave_overlay.completed_wave_levels',lambda *args:(0,0,.03)):
++        WaveOverlayStrategy._advance_current_day(s)
++    intent=s._queued_intents[0][0];ep=s._domain.episode
++    assert D(str(intent.requested_notional))==D('5.5')*D(str(ep.active_entry))
++    advance(e,s,3,btc='100')
++    advance(e,s,4,btcsize='10' if case=='A02_PARTIAL_FIRST_CLOSED_CAP' else '1000')
++    advance(e,s,5);advance(e,s,6)
++    assert s.stock_margin_calls and all(x['allowed'] for x in s.stock_margin_calls)
++    second=[o for o in e.cache.orders_open() if not o.is_reduce_only]
++    assert len(second)==1 and second[0].price.as_decimal()==D('98.5')
++    if case=='A04_CANCEL_RACE_LATE_FILL':s.delay_cancel=True
++    advance(e,s,10)
++    assert s._pair and s._pair['risk']=='ACTIVE_RISK'
++    return s,e,ep,second[0]
++
++def run_case(case):
++    s=e=None
++    try:
++        s,e,ep,old=setup(case)
++        rights=s._md_plans[ep.id].get('a0')
++        if case!='A06_C0_NO_RELEASE':
++            assert rights and rights['original_second']==s._split_parent['quantity']-s._split_parent['first_quantity']
++        advance(e,s,M+10)
++        if case=='A02_PARTIAL_FIRST_CLOSED_CAP':
++            # Genuine SOL TP -> actual BTC debt/cut, no closed BTC refund.
++            for ns in (M+11,M+12,M+13):advance(e,s,ns,sol='98.9')
++        advance(e,s,M+14,btc='99.3')
++        assert s._pair['risk']=='INACTIVE_RISK'
++        if case=='A04_CANCEL_RACE_LATE_FILL':
++            advance(e,s,2*M+14,btc='99.3')
++            assert not rights['submitted'] and not old.is_closed
++            # Actual venue cancel-race fill opens debt; no ACK fiction.
++            advance(e,s,2*M+15,btc='98',btcsize='1')
++            assert old.filled_qty.as_decimal()>0 and not rights['submitted']
++            s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,old)
++            for ns in range(2*M+16,2*M+24):advance(e,s,ns,btc='99.3')
++        if case=='A05_CROSS_MARGIN_UNKNOWN':
++            s.delay_target_ack=True
++            target=next(o for o in e.cache.orders_open() if o.instrument_id==BTC_PERP.id and o.is_reduce_only)
++            s.cancel_order(target)
++            advance(e,s,M+15,btc='99.3')
++            assert s.held_target_acks
++            advance(e,s,2*M+14,btc='99.3')
++            assert not rights['submitted'] and rights['denial_counts']['CURRENT_THREE_TP_ACK_UNKNOWN']
++            e.capture('CURRENT_TARGET_ACK_HELD')
++            s.delay_target_ack=False
++            for event in s.held_target_acks:WaveOverlayStrategy.on_order_accepted(s,event)
++            s.held_target_acks=[]
++            advance(e,s,2*M+15,btc='98.4')
++            assert not rights['submitted'] and rights['denial_counts']['POST_ONLY_CROSS']
++            frozen=rights['locked_cap']
++            s.config.margin_policy._marks.clear()
++            advance(e,s,2*M+16,btc='99.3',fresh=False)
++            assert not rights['submitted'] and rights['denial_counts']['NATIVE_MARGIN']
++            for _ in range(2):s._a0_check(tick(BTC_PERP,2*M+16,price='99.3'))
++            assert rights['locked_cap']==frozen and not rights['submitted']
++        advance(e,s,2*M+25,btc='99.3')
++        if case=='A06_C0_NO_RELEASE':
++            assert not rights
++        else:
++            assert rights['submitted'] and rights['attempted']
++            assert old.status.name=='CANCELED' and rights['order_id']!=str(old.client_order_id)
++            assert rights['granted_cap']<=rights['locked_cap']+rights['original_second']
++            release=e.cache.order(__import__('nautilus_trader.model.identifiers',fromlist=['ClientOrderId']).ClientOrderId(rights['order_id']))
++            advance(e,s,2*M+26,btc='98',btcsize='1')
++            if case=='A03_ORDINARY_TP_KILLS':
++                assert not release.is_closed and release.filled_qty.as_decimal()>0
++                s.delay_cancel=True
++                advance(e,s,2*M+27,btc='100')
++                assert rights['dead'] and any(c['order_id']==rights['order_id'] and c['inside_tp_fill'] for c in s.cancel_calls)
++                assert s._split_parent['closed'] and old.status.name=='CANCELED'
++                tp_cap=s._pair['caps'].bmax
++                e.capture('ORDINARY_TP_IMMEDIATE_CANCEL_REQUEST')
++                # Delayed venue transport can still fill; actual excess owns
++                # corrective BTC debt and cannot reopen the spent right.
++                before=release.filled_qty.as_decimal()
++                advance(e,s,2*M+28,btc='98',btcsize='1')
++                assert release.filled_qty.as_decimal()>before
++                s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,release)
++                for ns in range(2*M+29,2*M+40):advance(e,s,ns,btc='99.3')
++                assert release.is_closed and s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
++                assert s._pair['caps'].bmax<=tp_cap
++                assert rights['dead'] and rights['attempted']
++                e.capture('LATE_FILL_CORRECTED_NO_CAP_REANCHOR')
++            else:
++                advance(e,s,2*M+27,btc='98')
++                advance(e,s,2*M+28,btc='99')
++                assert s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
++            assert len([x for x in s._md_report()['events'] if x['event']=='A0_SUBMIT'])==1
++            assert s._md_plans[ep.id]['second_filled']<=rights['original_second']
++            for ns in range(2*M+41,2*M+55):
++                advance(e,s,ns,btc='103',btcsize=str(1000+ns%100))
++                if not e.cache.positions_open():break
++            assert {0,1,2}<=ep.btc_filled_tps
++        e.capture('BEFORE_TERMINAL')
++        natural=not e.cache.positions_open()
++        if not natural:
++            s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT')
++            for ns in range(3*M,3*M+10):advance(e,s,ns,btc='99',sol='100')
++        result=pre.settled_identity(s,e,'NATURAL_TP_FLAT' if natural else 'FORCED_TERMINAL_FLAT')
++        result.update(case=case,stock_margin_calls=s.stock_margin_calls,a0=s._md_report()['a0_rights'],cancel_calls=s.cancel_calls)
++        return result
++    finally:
++        if e is not None:e.dispose()
++
++def main():
++    ap=argparse.ArgumentParser();ap.add_argument('--ledger',required=True);ap.add_argument('--gate',required=True);args=ap.parse_args()
++    gate=json.loads(Path(args.gate).read_text())
++    source_root=Path(__file__).resolve().parents[2]
++    pin=source_root/'.source-commit'
++    head=pin.read_text().strip() if pin.is_file() else subprocess.check_output(['git','rev-parse','HEAD'],cwd=source_root,text=True).strip()
++    if gate.get('source_commit')!=head or not gate.get('root_go'):raise ValueError('ROOT_REVIEW_SOURCE_GO_REQUIRED')
++    global_rec=Recorder(args.ledger,gate);pre.REC=global_rec
++    for case in CASES:
++        global_rec.current=(case,'R2',0,3600*10**9);global_rec.effective_config=None
++        before=len(global_rec.engines)
++        try:
++            result=run_case(case)
++            e=global_rec.engines[-1];global_rec.finish(e.number,'COMPLETED',dict(process_rc=0,result=result,cleanup='DISPOSED'))
++        except BaseException as error:
++            if len(global_rec.engines)>before:
++                e=global_rec.engines[-1]
++                if not e.disposed:
++                    try:e.dispose()
++                    except BaseException:pass
++                global_rec.finish(e.number,'FAILED',dict(process_rc=1,error=str(error),traceback=traceback.format_exc(),cleanup='DISPOSED' if e.disposed else 'FAILED'))
++            raise
++    print(json.dumps({'status':'PASS','physical_started':len(global_rec.engines)}))
++if __name__=='__main__':main()
+diff --git a/runtime/tests/test_a0_rights_pure.py b/runtime/tests/test_a0_rights_pure.py
+new file mode 100644
+index 0000000..3d92b94
+--- /dev/null
++++ b/runtime/tests/test_a0_rights_pure.py
+@@ -0,0 +1,143 @@
++"""No BacktestEngine: exact family plus immutable original-second arithmetic."""
++from decimal import Decimal as D
++from inspect import signature
++from pathlib import Path
++import pytest
++from coinmaster.research.a0_family import build_a0_kwargs, validate_native_a0
++from coinmaster.research.native_baseline import run_native_diagnostic
++from coinmaster.research.registered_control import native_kwargs_json_roundtrip
++from coinmaster.strategy.a0_rights import release_cap
++
++@pytest.mark.parametrize('variant',['R2_OFF','R2_C0','R2_A0'])
++def test_actual_kwargs_exact_roundtrip(variant):
++    kwargs=build_a0_kwargs(Path('.'),Path('out'),variant,())
++    payload,restored=native_kwargs_json_roundtrip(kwargs)
++    assert restored==kwargs
++    bound=signature(run_native_diagnostic).bind(**restored);bound.apply_defaults()
++    validate_native_a0(bound.arguments)
++    for name,value in [('research_btc_q_mode','CLEAN_Q'),('research_paired_prefix','B2'),('research_btc_split_discount','0.006'),('research_paired_policy',False),('research_registered_control','R2')]:
++        bad=dict(bound.arguments);bad[name]=value
++        with pytest.raises(ValueError):validate_native_a0(bad)
++
++
++def test_c0_a0_differ_only_flag_and_artifact_label():
++    c=build_a0_kwargs(Path('.'),Path('out'),'R2_C0',())
++    a=build_a0_kwargs(Path('.'),Path('out'),'R2_A0',())
++    assert {k for k in c if c[k]!=a[k]}=={'research_a0_original_second','artifact_label'}
++
++@pytest.mark.parametrize('first,second,locked,remaining,expected',[
++ ('0.5','0.5','0.257','0.5','0.757'),
++ ('0.1','0.5','0.1','0.5','0.6'),  # partial first never creates .9 second
++ ('0.5','0.5','0.257','0.4','0.657'),
++ ('0.5','0.5','0.257','0','0.257'),
++])
++def test_original_budget_and_closed_btc_never_refunded(first,second,locked,remaining,expected):
++    args=tuple(map(D,(first,second,locked,remaining)))
++    assert release_cap(*args)==D(expected)
++    # Repeated WAIT quotes use original locked cap; never pass raised result back.
++    assert [release_cap(*args) for _ in range(10)]==[D(expected)]*10
++
++@pytest.mark.parametrize('remaining',['-1','0.501','NaN'])
++def test_unknown_cap_blocks(remaining):
++    with pytest.raises(ValueError):release_cap(D('.5'),D('.5'),D('.257'),D(remaining))
++
++
++def test_old_r3_guard_unchanged_new_r2_only_exact_selector():
++    from run_continuous_hedge_preflight import registered_fixture_context
++    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++    cfg,_,_=registered_fixture_context('R2')
++    with pytest.raises(ValueError,match='R3_CLEAN'):WaveOverlayStrategy(cfg.__replace__(research_paired_prefix='B2_F0'))
++    for prefix in ('B2',):
++        with pytest.raises(ValueError,match='EXACT_R2'):WaveOverlayStrategy(cfg.__replace__(research_a0_family='R2_A0_V1',research_paired_prefix=prefix))
++    WaveOverlayStrategy(cfg.__replace__(research_a0_family='R2_A0_V1',research_paired_prefix='B2_F0',research_a0_original_second=True))
++    assert cfg.research_a0_family is None and cfg.research_a0_original_second is False
++
++
++def test_a0_preflight_excludes_only_paired_lock_and_preserves_native_pause():
++    from run_continuous_hedge_preflight import registered_fixture_context
++    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++    cfg,_,_=registered_fixture_context('R2')
++    s=WaveOverlayStrategy(cfg.__replace__(research_a0_family='R2_A0_V1',research_paired_prefix='B2_F0',research_a0_original_second=True))
++    s._pair={'native':'held-owner'}
++    assert not s._entries_enabled()
++    assert s._entries_enabled(ignore_paired_lock=True)
++    s._research_protect_latch='PAUSE'
++    assert not s._entries_enabled(ignore_paired_lock=True)
++
++
++def guarded_owner():
++    """Engine-free state/ACK adversaries; stock monetary proof is native-only."""
++    from types import SimpleNamespace as S
++    from coinmaster.strategy.a0_rights import A0RightsResearch
++    owner=A0RightsResearch();owner.config=S(research_a0_original_second=True,btc_id='BTC',sol_id='SOL')
++    ep=S(id='p',side=1,pending={});owner._domain=S(episode=ep)
++    owner._split_parent=dict(episode_id='p',side=1,closed=True,intent=S(id='i'),sigma=None,decision_index=0)
++    a=dict(dead=None,attempted=False,submitted=False,off_ns=0,old_orders=('old',),original_second=D(5),first_terminal=D(5),locked_cap=None,granted_cap=None,submit_qty=D(0),price=D('98.5'),order_id=None,denial_counts={},last_denial=None)
++    m=dict(a0=a,touched=set(),accepted={0,1,2},generation=0,generations={0:dict(authorized=True,required={0,1,2},accepted={0,1,2})},order_generation={f'tp{i}':0 for i in range(3)},second_filled=D(0))
++    owner._md_plans={'p':m};owner._pair=dict(parent='p',risk='INACTIVE_RISK',failed=False,entry_terminal=True,debt_since=None,caps=S(bmax=D(5)))
++    owner._pending_by_order={f'tp{i}':S(action='BTC_REDUCE',episode_id='p',level=i) for i in range(3)}
++    def order(status,qty=0,reduce=True):return S(status=S(name=status),is_closed=status=='CANCELED',is_pending_cancel=status=='PENDING_CANCEL',is_reduce_only=reduce,leaves_qty=S(as_decimal=lambda:D(qty)))
++    orders={'old':order('CANCELED'),**{f'tp{i}':order('ACCEPTED',qty) for i,qty in enumerate((1,1,3))}}
++    owner.cache=S(order=lambda oid:orders.get(str(oid)),orders_open=lambda:[],orders_inflight=lambda:[],instrument=lambda _:S(size_increment=S(as_decimal=lambda:D(1))))
++    owner._forced_close_reason=None;owner._liquidating=False;owner._entries_enabled=lambda **kw:True
++    owner._pair_position=lambda _:S(is_long=True);owner._pair_qty=lambda _:D(5);owner._pair_work=lambda **kw:[]
++    owner._tier_allows_increase=lambda *args:True
++    owner.events=[];owner._md_log=lambda event,ts,**kw:owner.events.append((event,kw));owner.cancelled=[];owner.cancel_order=lambda o:owner.cancelled.append(o)
++    owner._submit_intent=lambda *args,**kw:owner._a0_note_submit('new',kw['ts_now'])
++    owner.clock=S(timestamp_ns=lambda:60_000_000_000)
++    from nautilus_trader.model.objects import Price
++    quote=S(instrument_id='BTC',ts_event=60_000_000_000,bid_price=Price.from_str('100'),ask_price=Price.from_str('100'))
++    return owner,ep,m,a,orders,quote
++
++
++@pytest.mark.parametrize('fault',['accepted','generation','authorization','missing_native','pending_cancel','wrong_generation','leaves'])
++def test_current_generation_native_three_target_ack_blocks(fault):
++    from types import SimpleNamespace as S
++    o,ep,m,a,orders,q=guarded_owner()
++    if fault=='accepted':m['accepted']={0,1}
++    elif fault=='generation':m['generation']=1
++    elif fault=='authorization':m['generations'][0]['authorized']=False
++    elif fault=='missing_native':orders.pop('tp1')
++    elif fault=='pending_cancel':orders['tp1'].status=S(name='PENDING_CANCEL')
++    elif fault=='wrong_generation':m['order_generation']['tp1']=-1
++    elif fault=='leaves':orders['tp1'].leaves_qty=S(as_decimal=lambda:D(0))
++    o._a0_check(q)
++    assert not a['attempted'] and not a['submitted'] and o._pair['caps'].bmax==D(5)
++    assert a['denial_counts']['CURRENT_THREE_TP_ACK_UNKNOWN']==1
++
++
++def test_current_native_live_tp_are_protection_not_debt_and_one_grant():
++    o,ep,m,a,orders,q=guarded_owner();o._a0_check(q)
++    assert a['submitted'] and a['attempted'] and a['granted_cap']==D(10)
++    assert a['locked_cap']==D(5) and a['submit_qty']==D(5)
++    o._a0_check(q)
++    assert len([e for e in o.events if e[0]=='A0_SUBMIT'])==1 and a['locked_cap']==D(5)
++
++
++@pytest.mark.parametrize('fault',['pause','parent_flip','held_flip','flat','ordinary_tp','unknown_entry','owned_increase','debt'])
++def test_pause_flip_flat_unknown_and_debt_never_increase(fault):
++    from types import SimpleNamespace as S
++    o,ep,m,a,orders,q=guarded_owner()
++    if fault=='pause':o._entries_enabled=lambda **kw:False
++    elif fault=='parent_flip':ep.side=-1
++    elif fault=='held_flip':o._pair_position=lambda _:S(is_long=False)
++    elif fault=='flat':o._pair_qty=lambda _:D(0)
++    elif fault=='ordinary_tp':m['touched']={0}
++    elif fault=='unknown_entry':orders.pop('old')
++    elif fault=='owned_increase':o._pending_by_order['x']=S(action='BTC_ENTRY')
++    elif fault=='debt':o._pair['debt_since']=1
++    o._a0_check(q)
++    assert not a['attempted'] and not a['submitted'] and o._pair['caps'].bmax==D(5)
++
++
++@pytest.mark.parametrize('status',['ACCEPTED','SUBMITTED','PENDING_CANCEL','CANCELED'])
++def test_ordinary_stop_immediate_cancels_replacement_despite_historical_closed(status):
++    from types import SimpleNamespace as S
++    o,ep,m,a,orders,q=guarded_owner()
++    a.update(attempted=True,submitted=True,order_id='new')
++    release=S(is_closed=status=='CANCELED',is_pending_cancel=status=='PENDING_CANCEL')
++    orders['new']=release
++    o._a0_stop('FIRST_POSITIVE_TP_FILL')
++    assert a['dead']=='FIRST_POSITIVE_TP_FILL' and o._split_parent['closed'] and orders['old'].is_closed
++    assert o.cancelled==([release] if status in ('ACCEPTED','SUBMITTED') else [])
++    o._a0_check(q);assert a['attempted'] and a['locked_cap'] is None

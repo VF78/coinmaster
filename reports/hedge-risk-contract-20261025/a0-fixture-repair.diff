@@ -1,0 +1,75 @@
+diff --git a/runtime/tests/run_a0_engineering.py b/runtime/tests/run_a0_engineering.py
+index 82ce888..21bdc76 100644
+--- a/runtime/tests/run_a0_engineering.py
++++ b/runtime/tests/run_a0_engineering.py
+@@ -15,7 +15,7 @@ from test_native_episode_risk import tick,run_ticks
+ from coinmaster.venues.marks import venue_mark
+ from nautilus_trader.model.identifiers import ClientId
+ M=60_000_000_000
+-CASES=['A01_RELEASE_THREE_TP','A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
++CASES=['A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
+ 
+ class Recorder(pre.Recorder):
+     def claim(self):
+@@ -69,19 +69,31 @@ def advance(e,s,ns,btc='99',sol='100',btcsize='1000',solsize='1000',fresh=True):
+         e.add_data([venue_mark(BTC_PERP.id,D(btc),ns),venue_mark(SOL_PERP.id,D(sol),ns)],client_id=ClientId('BYBIT_MARK'),sort=False)
+     run_ticks(e,[tick(BTC_PERP,ns,btc,size=btcsize),tick(SOL_PERP,ns,sol,size=solsize)])
+ 
+-def setup(case):
++def fixture_configuration(case):
+     variant='R2_C0' if case=='A06_C0_NO_RELEASE' else 'R2_A0'
+     signal=PairedSignal(10,10,10+M,D(99),D(100),D(1),D(2),True,True,False,True,False,D('99.2'),D(90),D('99.2'))
+-    kwargs=build_a0_kwargs(Path('.'),Path('.'),variant,(signal,),start_ms=0,end_ms=3600000)
++    kwargs=build_a0_kwargs(Path('.'),Path('.'),variant,(signal,),start_ms=-86400000,end_ms=3600000)
+     bound=signature(run_native_diagnostic).bind(**kwargs);bound.apply_defaults();validate_native_a0(bound.arguments)
+-    _,context,_=pre.registered_fixture_context('R2',start_ms=0,end_ms=3600000)
++    _,context,_=pre.registered_fixture_context('R2',start_ms=-86400000,end_ms=3600000)
+     context.update(bound.arguments)
+     # Only synthetic native instruments, causal finite seed, marks/time adapters differ.
+-    conf=build_native_strategy_config(context)
++    return build_native_strategy_config(context)
++
++
++def assert_daily_fixture_preconditions(strategy):
++    # Keep the actual stock daily-open admission guard; adapt the synthetic
++    # fixture's first open, as source06 did, rather than bypassing the guard.
++    assert strategy._current_btc.ts_event - 86_400_000_000_000 >= strategy.config.trading_start_open_ns
++    assert all(int(row.available_at.timestamp()*10**9)<=strategy._current_btc.ts_event for row in strategy._bars)
++
++
++def setup(case):
++    conf=fixture_configuration(case)
+     pre.REC.effective_config=pre.snapshot_config(conf)
+     s=StockProbe(conf);e=pre.base_engine(s)
+     advance(e,s,1,btc='100')
+     pre.prepare_completed_day(s,2)
++    assert_daily_fixture_preconditions(s)
+     with patch('coinmaster.domain.wave_overlay.completed_wave_levels',lambda *args:(0,0,.03)):
+         WaveOverlayStrategy._advance_current_day(s)
+     intent=s._queued_intents[0][0];ep=s._domain.episode
+diff --git a/runtime/tests/test_a0_rights_pure.py b/runtime/tests/test_a0_rights_pure.py
+index 3d92b94..fdeedc3 100644
+--- a/runtime/tests/test_a0_rights_pure.py
++++ b/runtime/tests/test_a0_rights_pure.py
+@@ -141,3 +141,21 @@ def test_ordinary_stop_immediate_cancels_replacement_despite_historical_closed(s
+     assert a['dead']=='FIRST_POSITIVE_TP_FILL' and o._split_parent['closed'] and orders['old'].is_closed
+     assert o.cancelled==([release] if status in ('ACCEPTED','SUBMITTED') else [])
+     o._a0_check(q);assert a['attempted'] and a['locked_cap'] is None
++
++
++@pytest.mark.parametrize('case',['A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE'])
++def test_fixture_actual_stock_daily_open_and_causal_seed_precondition(case):
++    import ast,inspect,textwrap
++    from run_a0_engineering import fixture_configuration,StockProbe,assert_daily_fixture_preconditions
++    from run_continuous_hedge_preflight import prepare_completed_day
++    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++    s=StockProbe(fixture_configuration(case));prepare_completed_day(s,2)
++    assert s.config.trading_start_open_ns==-86_400_000_000_000
++    assert s.config.terminal_close_at_ns==3600_000_000_000
++    assert_daily_fixture_preconditions(s)
++    # Evaluate the actual stock source guard expression, engine-free. It
++    # returned True in failed340f; revised fixture must make it False.
++    tree=ast.parse(textwrap.dedent(inspect.getsource(WaveOverlayStrategy._advance_current_day)))
++    guard=next(n.test for n in ast.walk(tree) if isinstance(n,ast.If) and 'trading_start_open_ns' in ast.unparse(n.test))
++    assert eval(compile(ast.Expression(guard),'actual-stock-daily-guard','eval'),{'self':s}) is False
++    assert s._current_btc.ts_event==2 and max(int(b.available_at.timestamp()*10**9) for b in s._bars)==0

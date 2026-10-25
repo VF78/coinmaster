@@ -1,0 +1,56 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "decision": "COMPONENT_PASSES_OVERALL_HOLD_NO_PREFIX_ADMISSION",
+  "physical": {
+    "max": 6,
+    "started": 6,
+    "completed": 2,
+    "failed": 4,
+    "active": 0,
+    "authorized_remaining": 0,
+    "status": "CLOSED_ENGINEERING_FAILED_CRITICAL_MARGIN_DENY_UNPROVEN"
+  },
+  "prefix": "0/3 HOLD; no admission until critical native marginDENY/recovery is proved and root accepts new evidence",
+  "component_assessments": [
+    {
+      "physical": 2,
+      "process": "COMPLETED_RC0",
+      "component": "PASS actual registered stockmargin positive admission/partialfirst10/originalS0158.125/closedBTC7.575cap+S0=165.700/neworiginal98.5GTC/fullsecond158.125/native3TP/accountidentity/naturalflat orders0",
+      "limitation": "Old RUNNING->DISPOSE warnings preserved; no clean state proof for this process."
+    },
+    {
+      "physical": 4,
+      "process": "COMPLETED_RC0",
+      "component": "PASS oldlate1/newrelease2+3/nativeTradeIDs; remaining157.125/newcap315.250; ordinaryTP immediatecancel; corrective held126.099==cap126.099/deadright/no reanchor/one submit/native3TP/accountidentity/naturalflat; actual STOPPED then DISPOSED lifecycle clean."
+    },
+    {
+      "physical": 6,
+      "process": "FAILED_RC1_UNCHANGED",
+      "component": "PASS restricted evidence only: current native TP_ACK_UNKNOWN denial1; unchanged realACKflush then POST_ONLY_CROSS denial1; grants0/submits0/releases0/lockedcap158.125",
+      "limitation": "tuple.clear AttributeError in fixture before stockmarginDENY. Native marginDENY/freshrecovery NOT_PROVEN; neither process nor engineering is PASS."
+    }
+  ],
+  "raw_checks": "Read selected saved snapshots only; mapped actual positive native fill orderIDs to TARGET_ACCEPTED levels {0,1,2} for physical2/4 and confirmed no open orders/positions at preterminal snapshots. No stream rerun or new test/engine.",
+  "missing_critical": [
+    "Actual stock native margin DENY and subsequent recovery via fresh native marks",
+    "Standalone C0 native fixture remains NOT_RUN; conditional treatment from earlier contract review does not waive critical margin evidence"
+  ],
+  "historical_summary_note": "a0-engineering-component-results.json is an earlier5-physical snapshot; current closure authority is6-row closed ledger and a0-engineering-closed-results.json, not its old remaining1 field.",
+  "repair_preparation": "Real TierMarginPolicy stores static _marks tuple and dynamic _dynamic_marks dict; margin_for may use either. Any proposed missing-mark fault must remove/expire both eligible sources or use natural stale clock, preserve actual policy/profile/leverage/maxage and recover via real update_mark. Must be proved engine-free with actual class before proposing separately approved+1; no policy mock or gate=True. Exact repair checkpoint review still pending.",
+  "reviewed_sha256": {
+    "a0-engineering-ledger.json": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+    "a0-engineering-closed-results.json": "7676d4b94007e38ca095d87fb87a8918ce4ee3d6dc36cb06a35ec6e144dc9f10",
+    "a0-fixture-02-BEFORE_TERMINAL.json": "1b10dc329ae9410413e3e991d1b0290f276ce504a578e58aaf3efd2b4c5f16f7",
+    "a0-fixture-04-LATE_FILL_CORRECTED_NO_CAP_REANCHOR.json": "d3e8004eeb4f7ecbc14334ef711bafe85aa7e15c0fd6f152429cb46a648a74b9",
+    "a0-fixture-04-BEFORE_TERMINAL.json": "bd3765c98bfc0c97a037cfd85ab8fec30431063895b5cd0fa2be1de8aaa6ca14",
+    "a0-fixture-06-CURRENT_TARGET_ACK_HELD.json": "a8fd6fd6369e885d0ca7af64ec2872bc18c0231d12c72f2d7b878a7db313b797",
+    "a0-fixture-06-BEFORE_TERMINAL.json": "73e35dd2c22296c353760eea95b48ec438d8c964c8ff4a6cf351ea2a2f51aa92"
+  },
+  "authority": "All6 engineering slots CLOSED. No new engine until explicit human +1 approval; no engineering admission/rootGO/prefix/full/order/deployment granted. All four FAILED rows and prior reviews preserved.",
+  "reviewer_actions": {
+    "engines": 0,
+    "tests": 0,
+    "product_edits": 0,
+    "ledger_gate_changes": 0
+  }
+}

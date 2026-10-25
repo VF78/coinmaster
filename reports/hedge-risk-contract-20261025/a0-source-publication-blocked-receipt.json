@@ -1,0 +1,36 @@
+{
+  "status": "PUBLICATION_BLOCKED_AUTO_REVIEW_NO_PUSH_EXECUTED",
+  "source_commit": "e54f81a5898246b9925020d63d9fa50eb394db18",
+  "local_branch": "codex/hedge-rights-unlock-20261025",
+  "destination": "https://github.com/VF78/coinmaster",
+  "visibility_verified": "PUBLIC",
+  "attempted_publication_commands_dispatched": 0,
+  "approval_review_rejections": 2,
+  "first_rejection": "Publication external transfer ofruntime diff; trustedhuman exactdestination and fullpayload sensitivity checks insufficient",
+  "second_rejection": "Хотя пользователь разрешил публикацию в публичный репозиторий, trusted-инструкции не указывают конкретный destination VF78/coinmaster; push передаёт приватный runtime-код наружу, поэтому общего разрешения недостаточно.",
+  "historical_explicit_receipt": {
+    "path": "reports/broad-hedge-discovery-20261024/implementation-publication-approval.json",
+    "sha256": "00451f111049365d021a5be0edbed60300dc2e651ca56722a78f3dfe4a75fe18",
+    "exact_destination": "https://github.com/VF78/coinmaster",
+    "human_reply": "продолжай не останавливайся, публикация в публичный репозиторий разрешена"
+  },
+  "concrete_checks": {
+    "clean_worktree": true,
+    "exact_origin_verified": true,
+    "gh_repository_visibility": "PUBLIC",
+    "new_commits_scanned": 9,
+    "changed_text_files_at_every_new_commit": 10,
+    "secret_pattern_hits": 0,
+    "pure_tests_pass": 57,
+    "monetary_runtime_unchanged_from_reviewed340f": true,
+    "currentbranch_not_matching_workflowpushfilter": true
+  },
+  "workflow": "Only hl-epoch-wheel push oncodex/nautilus-btc-sol-mvp withwheelpaths; no thisbranch deploymenttrigger",
+  "next": "No additional publication attempts/workarounds. Coordinator may request directhuman explicitdestination+payload publication authorization before another retry.",
+  "physical_engineering_spent": 6,
+  "actual_ledger_unchanged_sha256": "c0b84b39c5199671a258a8dcda6301ef3fd641f64be357e8c165be3aa0ffa424",
+  "authorized_engineering_remaining": 0,
+  "actual_amended_seven_ledger_created": false,
+  "prefix_attempts": 0,
+  "services_or_deployments": 0
+}

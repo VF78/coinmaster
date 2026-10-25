@@ -1,0 +1,34 @@
+diff --git a/runtime/tests/run_a0_engineering.py b/runtime/tests/run_a0_engineering.py
+index adfec73..4838eb3 100644
+--- a/runtime/tests/run_a0_engineering.py
++++ b/runtime/tests/run_a0_engineering.py
+@@ -40,7 +40,8 @@ def reviewed_fixture_cap(gate,ledger):
+         raise ValueError('DIRECT_OWNER_ADDITIONAL_APPROVAL_PIN_REQUIRED')
+     approval=json.loads(Path(approval_ref['path']).read_text())
+     required=dict(status='APPROVED_BY_OWNER',source_commit=gate['source_commit'],protocol_sha256=gate['protocol_sha256'],prior_closed_engineering_ledger_sha256=CLOSED_SIX_LEDGER_SHA,authorized_engineering_total=7,additional_engineering_instances=1,fixture_ids=['A05_CROSS_MARGIN_UNKNOWN'],full=0,unchanged_prefix_max=3)
+-    if any(type(approval.get(k)) is not type(v) or approval[k]!=v for k,v in required.items()) or not str(approval.get('exact_owner_reply','')).strip():
++    reply=approval.get('exact_owner_reply')
++    if any(type(approval.get(k)) is not type(v) or approval[k]!=v for k,v in required.items()) or type(reply) is not str or not reply.strip():
+         raise ValueError('EXACT_DIRECT_OWNER_ADDITIONAL_APPROVAL_REQUIRED')
+     if ledger.get('parent_closed_engineering_ledger_sha256')!=CLOSED_SIX_LEDGER_SHA or ledger.get('physical_max')!=7 or ledger.get('physical_started')!=6 or ledger.get('attempts')!=parent['attempts']:
+         raise ValueError('DERIVED_LEDGER_MUST_PRESERVE_ALL_SIX_ROWS')
+diff --git a/runtime/tests/test_a0_rights_pure.py b/runtime/tests/test_a0_rights_pure.py
+index 978912c..1b81d2b 100644
+--- a/runtime/tests/test_a0_rights_pure.py
++++ b/runtime/tests/test_a0_rights_pure.py
+@@ -283,6 +283,15 @@ def test_additional_fixture_is_inert_without_human_pin_root_go_and_preserved_par
+     approval={'status':'APPROVED_BY_OWNER','source_commit':gate['source_commit'],'protocol_sha256':gate['protocol_sha256'],'prior_closed_engineering_ledger_sha256':digest,'authorized_engineering_total':7,'additional_engineering_instances':1,'fixture_ids':['A05_CROSS_MARGIN_UNKNOWN'],'full':0,'unchanged_prefix_max':3,'exact_owner_reply':'UNIT TEST ONLY, NO REAL APPROVAL'}
+     approved=tmp_path/'unit-approval.json';approved.write_text(json.dumps(approval));gate['additional_engineering_approval']={'path':str(approved),'sha256':sha(approved)}
+     assert fixture.reviewed_fixture_cap(gate,ledger)==7
++    for invalid in (None,'','   ',True,False,0,7,1.5):
++        bad_approval=dict(approval);bad_approval['exact_owner_reply']=invalid
++        approved.write_text(json.dumps(bad_approval));gate['additional_engineering_approval']['sha256']=sha(approved)
++        with pytest.raises(ValueError,match='EXACT_DIRECT_OWNER'):fixture.reviewed_fixture_cap(gate,ledger)
++    bad_approval=dict(approval);bad_approval.pop('exact_owner_reply')
++    approved.write_text(json.dumps(bad_approval));gate['additional_engineering_approval']['sha256']=sha(approved)
++    with pytest.raises(ValueError,match='EXACT_DIRECT_OWNER'):fixture.reviewed_fixture_cap(gate,ledger)
++    approved.write_text(json.dumps(approval));gate['additional_engineering_approval']['sha256']=sha(approved)
++    assert fixture.reviewed_fixture_cap(gate,ledger)==7
+     for field,value in [('root_go',False),('fixture_ids',['A06_C0_NO_RELEASE'])]:
+         bad=copy.deepcopy(gate);bad[field]=value
+         with pytest.raises(ValueError):fixture.reviewed_fixture_cap(bad,ledger)

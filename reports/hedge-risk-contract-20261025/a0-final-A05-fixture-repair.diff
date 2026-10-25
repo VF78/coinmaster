@@ -1,0 +1,90 @@
+diff --git a/runtime/tests/run_a0_engineering.py b/runtime/tests/run_a0_engineering.py
+index ac97fc6..9a152dc 100644
+--- a/runtime/tests/run_a0_engineering.py
++++ b/runtime/tests/run_a0_engineering.py
+@@ -15,7 +15,7 @@ from test_native_episode_risk import tick,run_ticks
+ from coinmaster.venues.marks import venue_mark
+ from nautilus_trader.model.identifiers import ClientId
+ M=60_000_000_000
+-CASES=['A03_A04_COMBINED_CANCEL_RACES','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
++CASES=['A05_CROSS_MARGIN_UNKNOWN']
+ COMBINED_DEPTHS={'old_late':'1','release_partial':'2','release_late':'3'}
+ 
+ class Recorder(pre.Recorder):
+@@ -64,7 +64,7 @@ class CountedEngine(pre.CountedEngine):
+ 
+ class StockProbe(pre.ControlProbe):
+     def __init__(self,cfg):
+-        self.stock_margin_calls=[];self.cancel_calls=[];self.delay_cancel=False;self.delay_target_ack=False;self.held_target_acks=[];self.inside_tp_fill=False;super().__init__(cfg)
++        self.stock_margin_calls=[];self.cancel_calls=[];self.delay_cancel=False;self.delay_target_ack=False;self.held_target_acks=[];self.held_target_ack_ids=set();self.inside_tp_fill=False;super().__init__(cfg)
+     def _tier_allows_increase(self,*args):
+         result=WaveOverlayStrategy._tier_allows_increase(self,*args)
+         self.stock_margin_calls.append(dict(instrument=str(args[0]),side=str(args[1]),quantity=str(args[2]),timestamp=args[3],allowed=result))
+@@ -73,11 +73,15 @@ class StockProbe(pre.ControlProbe):
+         self.cancel_calls.append(dict(order_id=str(order.client_order_id),inside_tp_fill=self.inside_tp_fill,ts=self.clock.timestamp_ns()))
+         if self.delay_cancel and not order.is_reduce_only:return
+         return super().cancel_order(order,*args,**kwargs)
+-    def on_order_accepted(self,event):
+-        intent=self._pending_by_order.get(str(event.client_order_id))
++    def _accept_native_order(self,event):
++        # Both native callback routes converge here. Delaying only the typed
++        # callback leaves the generic callback's real economic ACK visible.
++        oid=str(event.client_order_id);intent=self._pending_by_order.get(oid)
+         if self.delay_target_ack and intent and intent.action=='BTC_REDUCE':
+-            self.held_target_acks.append(event);return
+-        return super().on_order_accepted(event)
++            if oid not in self.held_target_ack_ids:
++                self.held_target_ack_ids.add(oid);self.held_target_acks.append(event)
++            return
++        return super()._accept_native_order(event)
+     def on_order_filled(self,event):
+         intent=self._pending_by_order.get(str(event.client_order_id))
+         self.inside_tp_fill=bool(intent and intent.action=='BTC_REDUCE')
+@@ -162,8 +166,8 @@ def run_case(case):
+             assert not rights['submitted'] and rights['denial_counts']['CURRENT_THREE_TP_ACK_UNKNOWN']
+             e.capture('CURRENT_TARGET_ACK_HELD')
+             s.delay_target_ack=False
+-            for event in s.held_target_acks:WaveOverlayStrategy.on_order_accepted(s,event)
+-            s.held_target_acks=[]
++            for event in s.held_target_acks:WaveOverlayStrategy._accept_native_order(s,event)
++            s.held_target_acks=[];s.held_target_ack_ids.clear()
+             advance(e,s,2*M+15,btc='98.4')
+             assert not rights['submitted'] and rights['denial_counts']['POST_ONLY_CROSS']
+             frozen=rights['locked_cap']
+diff --git a/runtime/tests/test_a0_rights_pure.py b/runtime/tests/test_a0_rights_pure.py
+index bcbabed..884a526 100644
+--- a/runtime/tests/test_a0_rights_pure.py
++++ b/runtime/tests/test_a0_rights_pure.py
+@@ -195,6 +195,31 @@ def test_combined_fixture_three_distinct_real_depths_qualify_fresh_l1_consumptio
+     from coinmaster.research.native_fixture import BTC_PERP
+     depths=[BTC_PERP.make_qty(D(COMBINED_DEPTHS[k])).as_decimal() for k in ('old_late','release_partial','release_late')]
+     assert depths==[D(1),D(2),D(3)] and all(a!=b for a,b in zip(depths,depths[1:]))
+-    assert CASES==['A03_A04_COMBINED_CANCEL_RACES','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
++    assert CASES==['A05_CROSS_MARGIN_UNKNOWN']
+     # Each distinct displayed size is fresh per the pinned stock size-change
+     # condition; no timestamp-only replenishment or generated fill is asserted.
++
++
++def test_actual_generic_and_typed_accept_callbacks_both_hold_unknown_until_direct_flush():
++    from types import SimpleNamespace as S
++    from run_a0_engineering import StockProbe,fixture_configuration
++    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++    from coinmaster.research.native_fixture import BTC_PERP
++    from nautilus_trader.model.events import OrderAccepted
++    from nautilus_trader.model.identifiers import TraderId,StrategyId,ClientOrderId,VenueOrderId,AccountId
++    from nautilus_trader.core.uuid import UUID4
++    s=StockProbe(fixture_configuration('A05_CROSS_MARGIN_UNKNOWN'));oid='delayed-target'
++    intent=S(id='tpintent',action='BTC_REDUCE',episode_id='p',level=0)
++    s._pending_by_order[oid]=intent;s._order_audit[oid]=dict(submit_ns='1',accept_ns=None)
++    m=dict(accepted={1,2},consumed=set(),generation=0,order_generation={},intent_generation={'tpintent':0},generations={0:dict(required={0,1,2},accepted={1,2},authorized=False)})
++    s._md_plans['p']=m;s.delay_target_ack=True
++    event=OrderAccepted(TraderId('BACKTESTER-001'),StrategyId('WaveOverlayStrategy-000'),BTC_PERP.id,ClientOrderId(oid),VenueOrderId('venue-target'),AccountId('P1SIM-001'),UUID4(),2,2)
++    WaveOverlayStrategy.on_order_event(s,event)
++    WaveOverlayStrategy.on_order_accepted(s,event)
++    assert len(s.held_target_acks)==1 and s.held_target_ack_ids=={oid}
++    assert m['accepted']=={1,2} and s._order_audit[oid]['accept_ns'] is None and oid not in s._md_accepted_ids
++    assert not m['generations'][0]['authorized']
++    s.delay_target_ack=False
++    WaveOverlayStrategy._accept_native_order(s,s.held_target_acks[0])
++    assert m['accepted']=={0,1,2} and m['generations'][0]['authorized']
++    assert s._order_audit[oid]['accept_ns']=='2' and oid in s._md_accepted_ids

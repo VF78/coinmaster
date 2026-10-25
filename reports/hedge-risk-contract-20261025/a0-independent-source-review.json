@@ -1,0 +1,62 @@
+{
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025",
+  "review_status": "REQUEST_ONE_CORRECTION_BATCH_BEFORE_NATIVE",
+  "source_commit": "b0a06e1b419b7a0342d5b31df14255f002bf88d0",
+  "P0": 0,
+  "P1": 2,
+  "tests_run_by_reviewer": 0,
+  "engines_created_by_reviewer": 0,
+  "source_edits_by_reviewer": 0,
+  "findings": [
+    {
+      "id": "A0-S01",
+      "priority": "P1",
+      "file": "runtime/coinmaster/strategy/a0_rights.py",
+      "lines": "102-138",
+      "issue": "A0 grants without the effective realU accepted-three-target barrier. _md_reconcile may clear accepted during target cancellation/replacement and create targets awaiting native ACK, but _a0_check proceeds. Original _md_check lines162-163 explicitly requires all three accepted. Existing BTC_REDUCE targets are correctly not treated as debt, but their current accepted generation still must be authoritative.",
+      "correction": "Require known current accepted target generation and actual complete remaining native TP protection before A0 grant/submit; UNKNOWN or cancel/replacement ACK blocks. Reuse existing realU semantics, no new protection model. Add delayed/cancelled target-ACK assertion within an existing fixture and prove no grant until all accepted."
+    },
+    {
+      "id": "A0-S02",
+      "priority": "P1",
+      "file": "runtime/coinmaster/strategy/a0_rights.py",
+      "lines": "41-47; split_cover.py137-148",
+      "issue": "After risk cancel the split parent remains closed. Ordinary TP invokes _split_stop, _a0_stop only marks dead, then _split_stop returns immediately for closed parent. A live released child therefore is not cancelled in the TP fill callback; next _pair_quote cancels only after native matching/fill delivery, allowing a preventable post-TP increase. Current A03 covers TP before release and other release cases fill the entire child before TP, so none expose this ordering.",
+      "correction": "On ordinary stop, cancel any live/inflight A0-owned release immediately even when historical split parent is already closed; keep old native history closed, preserve one attempt, reconcile actual cancel-race fills/caps. Strengthen one existing instance to cover release resting/partial -> actual ordinary TP -> immediate cancel -> terminal ACK/late fill handling without an additional engine."
+    }
+  ],
+  "correction_batch_scope": "One source/runner correction batch for the two causal guards. Within approved six constructors add explicit current-target ACK and post-release ordinaryTP cancel-race coverage. Also assert final held/pending cap and closed-BTC permanence after corrective/late fills; do not just assert submitted quantity. No new engines in this review.",
+  "positive_findings": [
+    "Original second allocation uses quantity-first_quantity; first IOC missing quantity is not refunded. Native order role mapping retains all second generations; stock callback deduplicates TradeIDs.",
+    "ACK absence blocks; owned non-reduce increases and paired debt block without incorrectly treating ordinary live three BTC_REDUCE TP targets as debt. Protective paired cuts bypass ordinary TP path.",
+    "Cap snapshot is immutable across WAIT, one attempted/granted release, bounded remaining quantity, original postOnly GTC and >=OFF+60s; core TP/BASE fees/stock liquidity helper retained.",
+    "Exact family validator builds R2 OFF/C0/A0 from shared registered kwargs, validates actual defaults/types at native entry, and enforces B2_F0/only lock flag change; old R3 guard and default OFF retained.",
+    "StockProbe calls WaveOverlayStrategy._tier_allows_increase, not inherited NativeProbe True. Existing free-funds, mark/tier, pause/deposit gates remain; cached zero IM/MM is not free credit.",
+    "Export separates grants/submits/accepted/denials from positive actual release fills with native order/TradeIDs, per-order quantity completeness and duplicate detection.",
+    "Six explicitly named cases each construct one counted engine with [0,3600e9]ns enforced data window; root source GO is false and separate six-slot engineering ledger required. Reported 25 pure PASS are prior owner evidence, not reviewer reruns."
+  ],
+  "limitations": [
+    "Static focused review only, no tests, engine, stream scan, publication, or ledger change. Native lifecycle/margin/3TP outcomes remain NOT_RUN.",
+    "Review does not grant rootGO or prefix permission; first source must be corrected/reviewed and existing root gates remain authoritative.",
+    "Initial source IndentationError/feed loader diagnostics remain preserved; review did not alter them."
+  ],
+  "reviewed_source_sha256": {
+    "runtime/coinmaster/strategy/a0_rights.py": "17bae07b46803d7af2d25225a59d33c84af340bda83c7185a01a87418c1f0065",
+    "runtime/coinmaster/strategy/market_redesign.py": "0b7c54591de6cdb820679764b3a96f5c75db9682d11e1b25125d8b38dec65f2f",
+    "runtime/coinmaster/strategy/split_cover.py": "f7587c67a7be12dbfc5bab6f035eb3141630ea5578f2e6a5ca255bca849e5178",
+    "runtime/coinmaster/strategy/paired_prefix.py": "7c066c1f63f9d5d5c77a5de95e988103635f3fedd96d8519ebdf2f51e3cb745f",
+    "runtime/coinmaster/strategy/wave_overlay.py": "c8e827db17a2a7a6ffafc8295e644dbaec1d3db46f879c6c7600a3074046bb7b",
+    "runtime/coinmaster/research/a0_family.py": "cf47050470d8aeb88415305b6463027ba1979ece05c30d072ead88f6a6047623",
+    "runtime/coinmaster/research/native_baseline.py": "5d3a5825a9535ab3af1b7b9a91c374f6e0e1a56a59dba5d505d9880c63041cdc",
+    "runtime/tests/run_a0_engineering.py": "69683dfad0a88a94f2280d31c626c50db3d36d93a9cd9c3e5217cc3baff58b84",
+    "runtime/tests/run_continuous_hedge_preflight.py": "c4689243908cef380266982059ad3a068a2fd196ebb059972aae49515e640a68"
+  },
+  "reviewed_packet_sha256": {
+    "A0_CONTRACT_PROPOSED_RU.md": "8432e4decdf249ba2b80bb4eeac7e8773a1d24d39eb57b5d9026a3cdd516a2c0",
+    "NATIVE_PROTOCOL_PROPOSED_RU.md": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+    "a0-fixture-plan.json": "645e0bd5388922c0bca98da1bed24830d549025515fa10a200dbed72479662a8",
+    "a0-engineering-fixture-gate.json": "6fac98335865decaac075b25a1606c67aa93a098a29ab9eeca59127839bc6e75",
+    "a0-pure-verification.json": "9cf06c58b9e5302bb54fbeeb6e93c1d240d9fdb81a2fe4a429aeef8e0cc8eaae",
+    "a0-source.diff": "59499c0fca45de44abf98bf052ec50e6c762f93b1c74c1459664c4dd4960ff99"
+  }
+}

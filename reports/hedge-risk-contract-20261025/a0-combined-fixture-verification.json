@@ -1,0 +1,24 @@
+{
+  "source_commit": "d357f593f3a2551f373b01dae29e0d2919623426",
+  "financial_package_bytes_identical_to_reviewed340f": true,
+  "changed_files": [
+    "runtime/tests/run_a0_engineering.py",
+    "runtime/tests/test_a0_rights_pure.py"
+  ],
+  "pure_pass": 53,
+  "constructor_free_cleanup_api": "PASS/a0-cleanup-installed-api-preflight.json",
+  "cleanup_harness_sequence": "PASS normalend/errors preserved whenendfails; no native constructor",
+  "native_depths": "Approved actualquote1->2->3, same98 andstocksharedliquidityTrue, each nativefill separately required",
+  "physical_started": 3,
+  "completed": 1,
+  "failed": 2,
+  "remaining_max": 3,
+  "prefix": 0,
+  "root_go": false,
+  "gate_sha256": "295fe36082125fb169a787712344955c731c0de20444bf9b0928baa26660b0f8",
+  "plan_sha256": "b198d361da700341d6578e658a3972cfde1dca92c0736d621b29f59384b90fb9",
+  "diff_sha256": "b13ff1b12186269d9a6fe40d5c331569b576b3f66ac331934d27210edb96022c",
+  "initial_compile_error": "SyntaxError extra parenthesis in snapshot dict caught by py_compile before any constructor; fixed in samefixturebatch",
+  "failed_processes_preserved": true,
+  "cleanup_economic_boundary": "Economic/native accounting assertions use pre-END state; END cleanup mayflush existingtimers/messages, all snapshots retained, cleanupneverconvertsfailedprocessPASS"
+}

@@ -1,0 +1,126 @@
+{
+  "actual_engine_instances": 1,
+  "config_pins": {
+    "R2": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "R3": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "engine": "1.231.0",
+  "engine_instances_planned": 5,
+  "fixture_deltas": [
+    "finite synthetic completed seed and deterministic causal d3",
+    "synthetic quotes + genuine native marks/account",
+    "explicit delayed venue cancel transport and target acceptance-delivery faults",
+    "stock missing/stale marks denial; no gate bypass"
+  ],
+  "fixtures": [
+    {
+      "assertions": "A01 shared registered R2 sizing+stock native margin PASS/cancelACK/riskOFF+60/original postOnly GTC partial+full/genuine3TP; plus partialFIRST/S0 no missingfirst/refund; genuineSOLTP protectiveBTC debtcut remains closed and finalheld<=cap",
+      "config_span_hours": 25,
+      "config_trading_end_ms": 3600000,
+      "config_trading_start_ms": -86400000,
+      "engine_data_window_hours": 1,
+      "family": "R2",
+      "fixture_id": "A02_PARTIAL_FIRST_CLOSED_CAP",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "physical_index": 2,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "A01 fullFIRST registered sizing+stockmargin/originalGTC/3TP; released childpartial/resting -> actualordinaryTP -> immediatecancelinsidefillcallback despite oldp.closed -> transportlatefill -> actualexcessBTCdebt correction/held<=cap/no reanchor/no retry",
+      "config_span_hours": 25,
+      "config_trading_end_ms": 3600000,
+      "config_trading_start_ms": -86400000,
+      "engine_data_window_hours": 1,
+      "family": "R2",
+      "fixture_id": "A03_ORDINARY_TP_KILLS",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "physical_index": 3,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "A01 fullFIRST stockmargin/originalGTC/3TP; OFF+60 with old ENTRY nonterminal blocks; nativeoldsecond latepartial -> actualACK/debtcorrection -> current3TP ACK -> boundednewrelease",
+      "config_span_hours": 25,
+      "config_trading_end_ms": 3600000,
+      "config_trading_start_ms": -86400000,
+      "engine_data_window_hours": 1,
+      "family": "R2",
+      "fixture_id": "A04_CANCEL_RACE_LATE_FILL",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "physical_index": 4,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "A01 fullFIRST stockmargin/originalGTC/3TP; nativeTP cancel/replacement ACKheld/currentgeneration UNKNOWN blocks; actualACK -> postOnlycrossWAIT; immutablecap across WAIT/repeatedstockmarginDENY -> freshnative marksPASS",
+      "config_span_hours": 25,
+      "config_trading_end_ms": 3600000,
+      "config_trading_start_ms": -86400000,
+      "engine_data_window_hours": 1,
+      "family": "R2",
+      "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "physical_index": 5,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    },
+    {
+      "assertions": "Exact registered C0 R2+B2_F0 flagfalse retains permanent oldcancel/no newA0; stock sizing/margin same; path-specific native terminal/cashidentity",
+      "config_span_hours": 25,
+      "config_trading_end_ms": 3600000,
+      "config_trading_start_ms": -86400000,
+      "engine_data_window_hours": 1,
+      "family": "R2",
+      "fixture_id": "A06_C0_NO_RELEASE",
+      "journal": "fresh per-instance BEFORE_TERMINAL/BEFORE_DISPOSE JSON snapshot sequence with actual orders/fills/cash/rights/caps",
+      "max_hours": 1,
+      "namespace": "a0-fixture-{physical_index:02d}",
+      "native_instances": 1,
+      "physical_index": 6,
+      "window_end_ns": 3600000000000,
+      "window_start_ns": 0
+    }
+  ],
+  "limits": "full0/prefix0/training0/download0/pilot0/production0",
+  "new_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "pending_native_coverage": "NOT_RUN; no full financial parity/venue/economics assertion",
+  "physical_already_spent": 1,
+  "physical_failed_preserved": [
+    {
+      "fixture_id": "A01_RELEASE_THREE_TP",
+      "physical_index": 1,
+      "root_cause": "stockdailyopen guard correctly blocked syntheticfirstopen0; noentry/cashchange",
+      "source_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc",
+      "status": "FAILED"
+    }
+  ],
+  "physical_total_max": 6,
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "remaining_constructor_max": 5,
+  "report_path": "$.market_redesign_audit.a0_release_audit",
+  "required_semantics_mapping": {
+    "A01_registered_sizing_stock_margin_cancelACK_OFF60_original_GTC_partial_full_real3TP": [
+      "A02(shared generic path)",
+      "A03(fullFIRST)",
+      "A04(fullFIRST)",
+      "A05(fullFIRST)"
+    ],
+    "all_original_other_cases": "A02..A06 unchanged IDs"
+  },
+  "source_commit": "541e0c564a2bb79411809186113c78a4d3a80a5a",
+  "stop": "First failure stops remaining pass; no independent A01 retry; never claim6/6PASS; oldfailure remainsFAILED",
+  "task": "CM-A0-RIGHTS-UNLOCK-20261025"
+}

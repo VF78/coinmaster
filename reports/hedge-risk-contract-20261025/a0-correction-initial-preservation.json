@@ -1,0 +1,57 @@
+{
+  "source": "b0a06e1b419b7a0342d5b31df14255f002bf88d0",
+  "native": 0,
+  "prefix": 0,
+  "preserved": [
+    {
+      "original": "a0-source.diff",
+      "preserved": "a0-initial-b0-source.diff",
+      "sha256": "59499c0fca45de44abf98bf052ec50e6c762f93b1c74c1459664c4dd4960ff99"
+    },
+    {
+      "original": "a0-fixture-plan.json",
+      "preserved": "a0-initial-b0-fixture-plan.json",
+      "sha256": "645e0bd5388922c0bca98da1bed24830d549025515fa10a200dbed72479662a8"
+    },
+    {
+      "original": "a0-engineering-fixture-gate.json",
+      "preserved": "a0-initial-b0-engineering-fixture-gate.json",
+      "sha256": "6fac98335865decaac075b25a1606c67aa93a098a29ab9eeca59127839bc6e75"
+    },
+    {
+      "original": "a0-pure-verification.json",
+      "preserved": "a0-initial-b0-pure-verification.json",
+      "sha256": "9cf06c58b9e5302bb54fbeeb6e93c1d240d9fdb81a2fe4a429aeef8e0cc8eaae"
+    },
+    {
+      "original": "a0-engineering-ledger.json",
+      "preserved": "a0-initial-b0-engineering-ledger.json",
+      "sha256": "7f80dc6dd760884a5c69d7ae565ba2e9192cb35995aaa52c5e260ab0eb339721"
+    },
+    {
+      "original": "a0-prefix-ledger.json",
+      "preserved": "a0-initial-b0-prefix-ledger.json",
+      "sha256": "9033bcf949ee4335679550614a27219abf5859fd44cda9abdbcb8d0296fea2f0"
+    },
+    {
+      "original": "a0-kwargs-R2_OFF.json",
+      "preserved": "a0-initial-b0-kwargs-R2_OFF.json",
+      "sha256": "8782bb23c7c85fe9dc3025cd95cb05b523b49358a4b42b813b5fb66ab428e4b9"
+    },
+    {
+      "original": "a0-kwargs-R2_C0.json",
+      "preserved": "a0-initial-b0-kwargs-R2_C0.json",
+      "sha256": "e083b14bc5985efb30aa9d3a8ecd12eea2afc01e0274f87ad2a5efecdc0bae2e"
+    },
+    {
+      "original": "a0-kwargs-R2_A0.json",
+      "preserved": "a0-initial-b0-kwargs-R2_A0.json",
+      "sha256": "00deac62db1706a0e7a84a80f43aa6d7762435f3c0d4911293a7a05c7d9f8bc4"
+    }
+  ],
+  "review_untouched": [
+    "a0-independent-source-review.json",
+    "a0-independent-source-review.md"
+  ],
+  "immutable_source_untouched": "runtimejob/source-b0a06e1"
+}
