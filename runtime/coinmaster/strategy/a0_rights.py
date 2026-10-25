@@ -45,6 +45,15 @@ class A0RightsResearch:
         a = m.get("a0")
         if a and reason != "PAIRED_MONOTONE_PARENT_CEILING":
             a["dead"] = reason
+            # The historical split stays closed. Its replacement still has a
+            # live native owner and must be cancelled in this fill/stop callback,
+            # before the next quote can match (including inflight submission).
+            if a["order_id"] is not None:
+                order = self.cache.order(ClientOrderId(a["order_id"]))
+                if order is not None and not order.is_closed and not order.is_pending_cancel:
+                    self._md_log("A0_ORDINARY_STOP_CANCEL", self.clock.timestamp_ns(),
+                        episode_id=self._split_parent["episode_id"], order_id=a["order_id"], reason=reason)
+                    self.cancel_order(order)
 
     def _a0_lock(self, ns):
         if not self._a0_enabled():
@@ -79,6 +88,26 @@ class A0RightsResearch:
         a = m.get("a0")
         return bool(a and a["submitted"] and not a["dead"] and a["order_id"] == str(order.client_order_id))
 
+    def _a0_targets_ready(self, ep, m, held):
+        # Reuse realU's current accepted generation and native ACK/quantity
+        # ownership. Live reduce-only TP orders are protection, not trim debt.
+        levels = {0, 1, 2}
+        generation = m["generation"]
+        historic = m["generations"].get(generation)
+        if m["accepted"] != levels or not historic or not historic["authorized"] or historic["required"] != levels or historic["accepted"] != levels:
+            return False
+        work = [(oid, intent) for oid, intent in self._pending_by_order.items()
+                if intent.action == "BTC_REDUCE" and intent.episode_id == ep.id]
+        if len(work) != 3 or {intent.level for _, intent in work} != levels:
+            return False
+        total = D(0)
+        for oid, intent in work:
+            order = self.cache.order(ClientOrderId(oid))
+            if order is None or order.status.name != "ACCEPTED" or not order.is_reduce_only or m["order_generation"].get(oid) != generation:
+                return False
+            total += order.leaves_qty.as_decimal()
+        return total == held
+
     def _a0_check(self, tick):
         if not self._a0_enabled() or tick.instrument_id != self.config.btc_id:
             return
@@ -107,6 +136,9 @@ class A0RightsResearch:
         owned = [i for i in self._pending_by_order.values() if i.action in ("BTC_ENTRY", "SOL_ADD")]
         held = self._pair_qty(self.config.btc_id)
         if increases or owned or self._pair_work(kinds={"ENTRY"}) or pair["debt_since"] is not None or self._pair_work(instrument=self.config.btc_id) or held > pair["caps"].bmax:
+            return
+        if not self._a0_targets_ready(ep, m, held):
+            self._a0_deny(a, "CURRENT_THREE_TP_ACK_UNKNOWN", ns, episode_id=ep.id)
             return
         step = self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
         from coinmaster.strategy.paired_prefix import exact_lots

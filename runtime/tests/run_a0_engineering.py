@@ -42,14 +42,25 @@ class CountedEngine(pre.CountedEngine):
 
 class StockProbe(pre.ControlProbe):
     def __init__(self,cfg):
-        self.stock_margin_calls=[];self.delay_cancel=False;super().__init__(cfg)
+        self.stock_margin_calls=[];self.cancel_calls=[];self.delay_cancel=False;self.delay_target_ack=False;self.held_target_acks=[];self.inside_tp_fill=False;super().__init__(cfg)
     def _tier_allows_increase(self,*args):
         result=WaveOverlayStrategy._tier_allows_increase(self,*args)
         self.stock_margin_calls.append(dict(instrument=str(args[0]),side=str(args[1]),quantity=str(args[2]),timestamp=args[3],allowed=result))
         return result
     def cancel_order(self,order,*args,**kwargs):
+        self.cancel_calls.append(dict(order_id=str(order.client_order_id),inside_tp_fill=self.inside_tp_fill,ts=self.clock.timestamp_ns()))
         if self.delay_cancel and not order.is_reduce_only:return
         return super().cancel_order(order,*args,**kwargs)
+    def on_order_accepted(self,event):
+        intent=self._pending_by_order.get(str(event.client_order_id))
+        if self.delay_target_ack and intent and intent.action=='BTC_REDUCE':
+            self.held_target_acks.append(event);return
+        return super().on_order_accepted(event)
+    def on_order_filled(self,event):
+        intent=self._pending_by_order.get(str(event.client_order_id))
+        self.inside_tp_fill=bool(intent and intent.action=='BTC_REDUCE')
+        try:return super().on_order_filled(event)
+        finally:self.inside_tp_fill=False
 
 pre.CountedEngine=CountedEngine
 
@@ -93,63 +104,85 @@ def run_case(case):
         rights=s._md_plans[ep.id].get('a0')
         if case!='A06_C0_NO_RELEASE':
             assert rights and rights['original_second']==s._split_parent['quantity']-s._split_parent['first_quantity']
-        if case=='A04_CANCEL_RACE_LATE_FILL':
-            advance(e,s,11,btc='98',btcsize='1')
-            assert old.filled_qty.as_decimal()>0
-            assert not rights['submitted']
         advance(e,s,M+10)
         if case=='A02_PARTIAL_FIRST_CLOSED_CAP':
-            # Genuine SOL TP -> actual BTC debt; protective closed BTC is permanent.
-            advance(e,s,M+11,sol='98.9')
-            advance(e,s,M+12,sol='98.9')
-            advance(e,s,M+13,sol='98.9')
-        if case=='A03_ORDINARY_TP_KILLS':
-            advance(e,s,M+14,btc='100')
-            assert rights['dead']
-        else:
-            advance(e,s,M+14,btc='99.3') # Actual boundary event riskOFF.
+            # Genuine SOL TP -> actual BTC debt/cut, no closed BTC refund.
+            for ns in (M+11,M+12,M+13):advance(e,s,ns,sol='98.9')
+        advance(e,s,M+14,btc='99.3')
         assert s._pair['risk']=='INACTIVE_RISK'
         if case=='A04_CANCEL_RACE_LATE_FILL':
             advance(e,s,2*M+14,btc='99.3')
             assert not rights['submitted'] and not old.is_closed
+            # Actual venue cancel-race fill opens debt; no ACK fiction.
+            advance(e,s,2*M+15,btc='98',btcsize='1')
+            assert old.filled_qty.as_decimal()>0 and not rights['submitted']
             s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,old)
-            advance(e,s,2*M+15,btc='99.3')
+            for ns in range(2*M+16,2*M+24):advance(e,s,ns,btc='99.3')
         if case=='A05_CROSS_MARGIN_UNKNOWN':
-            advance(e,s,2*M+14,btc='98.4')
+            s.delay_target_ack=True
+            target=next(o for o in e.cache.orders_open() if o.instrument_id==BTC_PERP.id and o.is_reduce_only)
+            s.cancel_order(target)
+            advance(e,s,M+15,btc='99.3')
+            assert s.held_target_acks
+            advance(e,s,2*M+14,btc='99.3')
+            assert not rights['submitted'] and rights['denial_counts']['CURRENT_THREE_TP_ACK_UNKNOWN']
+            e.capture('CURRENT_TARGET_ACK_HELD')
+            s.delay_target_ack=False
+            for event in s.held_target_acks:WaveOverlayStrategy.on_order_accepted(s,event)
+            s.held_target_acks=[]
+            advance(e,s,2*M+15,btc='98.4')
             assert not rights['submitted'] and rights['denial_counts']['POST_ONLY_CROSS']
             frozen=rights['locked_cap']
-            # Actual stock gate denies missing/stale marks, without hand free credit.
             s.config.margin_policy._marks.clear()
-            advance(e,s,2*M+15,btc='99.3',fresh=False)
+            advance(e,s,2*M+16,btc='99.3',fresh=False)
             assert not rights['submitted'] and rights['denial_counts']['NATIVE_MARGIN']
-            assert rights['locked_cap']==frozen
-            for offset in range(2):
-                s._a0_check(tick(BTC_PERP,2*M+15,price='99.3'))
+            for _ in range(2):s._a0_check(tick(BTC_PERP,2*M+16,price='99.3'))
             assert rights['locked_cap']==frozen and not rights['submitted']
-        advance(e,s,2*M+16,btc='99.3')
-        if case in ('A03_ORDINARY_TP_KILLS','A06_C0_NO_RELEASE'):
-            assert not rights or not rights['submitted']
+        advance(e,s,2*M+25,btc='99.3')
+        if case=='A06_C0_NO_RELEASE':
+            assert not rights
         else:
             assert rights['submitted'] and rights['attempted']
             assert old.status.name=='CANCELED' and rights['order_id']!=str(old.client_order_id)
-            assert rights['granted_cap']<=rights['locked_cap']+rights['original_second']-s._md_plans[ep.id]['second_filled']
-            advance(e,s,2*M+17,btc='98',btcsize='1')
-            advance(e,s,2*M+18,btc='98')
+            assert rights['granted_cap']<=rights['locked_cap']+rights['original_second']
+            release=e.cache.order(__import__('nautilus_trader.model.identifiers',fromlist=['ClientOrderId']).ClientOrderId(rights['order_id']))
+            advance(e,s,2*M+26,btc='98',btcsize='1')
+            if case=='A03_ORDINARY_TP_KILLS':
+                assert not release.is_closed and release.filled_qty.as_decimal()>0
+                s.delay_cancel=True
+                advance(e,s,2*M+27,btc='100')
+                assert rights['dead'] and any(c['order_id']==rights['order_id'] and c['inside_tp_fill'] for c in s.cancel_calls)
+                assert s._split_parent['closed'] and old.status.name=='CANCELED'
+                tp_cap=s._pair['caps'].bmax
+                e.capture('ORDINARY_TP_IMMEDIATE_CANCEL_REQUEST')
+                # Delayed venue transport can still fill; actual excess owns
+                # corrective BTC debt and cannot reopen the spent right.
+                before=release.filled_qty.as_decimal()
+                advance(e,s,2*M+28,btc='98',btcsize='1')
+                assert release.filled_qty.as_decimal()>before
+                s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,release)
+                for ns in range(2*M+29,2*M+40):advance(e,s,ns,btc='99.3')
+                assert release.is_closed and s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
+                assert s._pair['caps'].bmax<=tp_cap
+                assert rights['dead'] and rights['attempted']
+                e.capture('LATE_FILL_CORRECTED_NO_CAP_REANCHOR')
+            else:
+                advance(e,s,2*M+27,btc='98')
+                advance(e,s,2*M+28,btc='99')
+                assert s._pair_qty(BTC_PERP.id)<=s._pair['caps'].bmax
             assert len([x for x in s._md_report()['events'] if x['event']=='A0_SUBMIT'])==1
             assert s._md_plans[ep.id]['second_filled']<=rights['original_second']
-            advance(e,s,2*M+19,btc='99')
-            for ns in range(2*M+20,2*M+32):
+            for ns in range(2*M+41,2*M+55):
                 advance(e,s,ns,btc='103',btcsize=str(1000+ns%100))
                 if not e.cache.positions_open():break
             assert {0,1,2}<=ep.btc_filled_tps
         e.capture('BEFORE_TERMINAL')
-        # The fixture records path-specific terminal state before forced cleanup.
         natural=not e.cache.positions_open()
         if not natural:
             s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT')
             for ns in range(3*M,3*M+10):advance(e,s,ns,btc='99',sol='100')
         result=pre.settled_identity(s,e,'NATURAL_TP_FLAT' if natural else 'FORCED_TERMINAL_FLAT')
-        result.update(case=case,stock_margin_calls=s.stock_margin_calls,a0=s._md_report()['a0_rights'])
+        result.update(case=case,stock_margin_calls=s.stock_margin_calls,a0=s._md_report()['a0_rights'],cancel_calls=s.cancel_calls)
         return result
     finally:
         if e is not None:e.dispose()

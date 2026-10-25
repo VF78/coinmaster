@@ -63,3 +63,81 @@ def test_a0_preflight_excludes_only_paired_lock_and_preserves_native_pause():
     assert s._entries_enabled(ignore_paired_lock=True)
     s._research_protect_latch='PAUSE'
     assert not s._entries_enabled(ignore_paired_lock=True)
+
+
+def guarded_owner():
+    """Engine-free state/ACK adversaries; stock monetary proof is native-only."""
+    from types import SimpleNamespace as S
+    from coinmaster.strategy.a0_rights import A0RightsResearch
+    owner=A0RightsResearch();owner.config=S(research_a0_original_second=True,btc_id='BTC',sol_id='SOL')
+    ep=S(id='p',side=1,pending={});owner._domain=S(episode=ep)
+    owner._split_parent=dict(episode_id='p',side=1,closed=True,intent=S(id='i'),sigma=None,decision_index=0)
+    a=dict(dead=None,attempted=False,submitted=False,off_ns=0,old_orders=('old',),original_second=D(5),first_terminal=D(5),locked_cap=None,granted_cap=None,submit_qty=D(0),price=D('98.5'),order_id=None,denial_counts={},last_denial=None)
+    m=dict(a0=a,touched=set(),accepted={0,1,2},generation=0,generations={0:dict(authorized=True,required={0,1,2},accepted={0,1,2})},order_generation={f'tp{i}':0 for i in range(3)},second_filled=D(0))
+    owner._md_plans={'p':m};owner._pair=dict(parent='p',risk='INACTIVE_RISK',failed=False,entry_terminal=True,debt_since=None,caps=S(bmax=D(5)))
+    owner._pending_by_order={f'tp{i}':S(action='BTC_REDUCE',episode_id='p',level=i) for i in range(3)}
+    def order(status,qty=0,reduce=True):return S(status=S(name=status),is_closed=status=='CANCELED',is_pending_cancel=status=='PENDING_CANCEL',is_reduce_only=reduce,leaves_qty=S(as_decimal=lambda:D(qty)))
+    orders={'old':order('CANCELED'),**{f'tp{i}':order('ACCEPTED',qty) for i,qty in enumerate((1,1,3))}}
+    owner.cache=S(order=lambda oid:orders.get(str(oid)),orders_open=lambda:[],orders_inflight=lambda:[],instrument=lambda _:S(size_increment=S(as_decimal=lambda:D(1))))
+    owner._forced_close_reason=None;owner._liquidating=False;owner._entries_enabled=lambda **kw:True
+    owner._pair_position=lambda _:S(is_long=True);owner._pair_qty=lambda _:D(5);owner._pair_work=lambda **kw:[]
+    owner._tier_allows_increase=lambda *args:True
+    owner.events=[];owner._md_log=lambda event,ts,**kw:owner.events.append((event,kw));owner.cancelled=[];owner.cancel_order=lambda o:owner.cancelled.append(o)
+    owner._submit_intent=lambda *args,**kw:owner._a0_note_submit('new',kw['ts_now'])
+    owner.clock=S(timestamp_ns=lambda:60_000_000_000)
+    from nautilus_trader.model.objects import Price
+    quote=S(instrument_id='BTC',ts_event=60_000_000_000,bid_price=Price.from_str('100'),ask_price=Price.from_str('100'))
+    return owner,ep,m,a,orders,quote
+
+
+@pytest.mark.parametrize('fault',['accepted','generation','authorization','missing_native','pending_cancel','wrong_generation','leaves'])
+def test_current_generation_native_three_target_ack_blocks(fault):
+    from types import SimpleNamespace as S
+    o,ep,m,a,orders,q=guarded_owner()
+    if fault=='accepted':m['accepted']={0,1}
+    elif fault=='generation':m['generation']=1
+    elif fault=='authorization':m['generations'][0]['authorized']=False
+    elif fault=='missing_native':orders.pop('tp1')
+    elif fault=='pending_cancel':orders['tp1'].status=S(name='PENDING_CANCEL')
+    elif fault=='wrong_generation':m['order_generation']['tp1']=-1
+    elif fault=='leaves':orders['tp1'].leaves_qty=S(as_decimal=lambda:D(0))
+    o._a0_check(q)
+    assert not a['attempted'] and not a['submitted'] and o._pair['caps'].bmax==D(5)
+    assert a['denial_counts']['CURRENT_THREE_TP_ACK_UNKNOWN']==1
+
+
+def test_current_native_live_tp_are_protection_not_debt_and_one_grant():
+    o,ep,m,a,orders,q=guarded_owner();o._a0_check(q)
+    assert a['submitted'] and a['attempted'] and a['granted_cap']==D(10)
+    assert a['locked_cap']==D(5) and a['submit_qty']==D(5)
+    o._a0_check(q)
+    assert len([e for e in o.events if e[0]=='A0_SUBMIT'])==1 and a['locked_cap']==D(5)
+
+
+@pytest.mark.parametrize('fault',['pause','parent_flip','held_flip','flat','ordinary_tp','unknown_entry','owned_increase','debt'])
+def test_pause_flip_flat_unknown_and_debt_never_increase(fault):
+    from types import SimpleNamespace as S
+    o,ep,m,a,orders,q=guarded_owner()
+    if fault=='pause':o._entries_enabled=lambda **kw:False
+    elif fault=='parent_flip':ep.side=-1
+    elif fault=='held_flip':o._pair_position=lambda _:S(is_long=False)
+    elif fault=='flat':o._pair_qty=lambda _:D(0)
+    elif fault=='ordinary_tp':m['touched']={0}
+    elif fault=='unknown_entry':orders.pop('old')
+    elif fault=='owned_increase':o._pending_by_order['x']=S(action='BTC_ENTRY')
+    elif fault=='debt':o._pair['debt_since']=1
+    o._a0_check(q)
+    assert not a['attempted'] and not a['submitted'] and o._pair['caps'].bmax==D(5)
+
+
+@pytest.mark.parametrize('status',['ACCEPTED','SUBMITTED','PENDING_CANCEL','CANCELED'])
+def test_ordinary_stop_immediate_cancels_replacement_despite_historical_closed(status):
+    from types import SimpleNamespace as S
+    o,ep,m,a,orders,q=guarded_owner()
+    a.update(attempted=True,submitted=True,order_id='new')
+    release=S(is_closed=status=='CANCELED',is_pending_cancel=status=='PENDING_CANCEL')
+    orders['new']=release
+    o._a0_stop('FIRST_POSITIVE_TP_FILL')
+    assert a['dead']=='FIRST_POSITIVE_TP_FILL' and o._split_parent['closed'] and orders['old'].is_closed
+    assert o.cancelled==([release] if status in ('ACCEPTED','SUBMITTED') else [])
+    o._a0_check(q);assert a['attempted'] and a['locked_cap'] is None
