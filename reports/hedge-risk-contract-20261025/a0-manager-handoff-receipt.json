@@ -1,0 +1,22 @@
+{
+  "recorded_utc": "2026-10-25T11:36:03.136892+00:00",
+  "status": "FROZEN_WAITING_TWO_OWNER_ANSWERS",
+  "manager_checkpoint": "2f05c1423ef52acc3be4155d0073e59fc3b62d77",
+  "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+  "engineering": "CLOSED6/6_2COMPLETED_4FAILED_0ACTIVE_0REMAINING",
+  "prefix": "0/3_HOLD_NO_ADMISSION",
+  "extra1": "PROPOSED_REVIEWED_NOT_APPROVED",
+  "publication": "AUTO_APPROVAL_REVIEW_REJECTED_BEFORE_DISPATCH_TWICE_NO_PUSH",
+  "source_remote_branch": "ABSENT_AT_ACTOR_READBACK",
+  "manager_remote_latest": "UNVERIFIED_TLS_HANDSHAKE_TIMEOUT_TWO_READONLY_CALLS",
+  "manager_remote_last_verified_before_this_package": "0a67c193902b5f2933cdcd1613093f0475bc24df",
+  "project": "136_OPEN_Todo_isArchivedfalse_ACTUAL_READBACK",
+  "all_child_agents": "COMPLETED",
+  "root_mirrors": "SYNCED",
+  "intentional_untracked": [
+    "reports/broad-hedge-discovery-20261024/native-run-ledger.json.lock"
+  ],
+  "pilot_production_external_orders_transfers_services": 0,
+  "full_training_downloads": 0,
+  "next": "Handle explicit owner +1 and exact PUBLIC destination confirmations independently; no implicit budget or publication from templates."
+}
