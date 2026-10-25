@@ -63,6 +63,10 @@ def pure_preconditions():
     assert allocation_window({0:D('.212')},{0:D('.159')},D(101))[0]=='MARKETABLE_ALLOCATION_NOT_PROVEN'
     assert allocation_window({0:D('.212')},{0:D('.159')},None)[0]=='UNKNOWN_BOOK_NOT_PROVEN'
     assert allocation_window({0:D('.212')},{0:D('.159')},D(101),True)[0]=='NONMATCHING_PENDING_UPDATE_PRE_APPLY'
+    assert allocation_window({0:D('.212')},{0:D('.159')},(D(100),D('100.5')))[0]=='NONMARKETABLE_TRANSIENT'
+    assert allocation_window({0:D('.212')},{0:D('.159')},(D(104),D(100)))[0]=='MARKETABLE_ALLOCATION_NOT_PROVEN'
+    assert allocation_window({0:D('.212')},{0:D('.159')},(D(100),D(104)))[0]=='MARKETABLE_ALLOCATION_NOT_PROVEN'
+    assert allocation_window({0:D('.212')},{0:D('.159')},(None,D(100)))[0]=='UNKNOWN_BOOK_NOT_PROVEN'
     domain=WaveOverlayState(cfg.candidate);domain.set_execution_lots(btc=STEP,sol=D('.1'));ep=Episode('PURE_ENTITLEMENT',1,10000.,1.,btc_initial_qty=1.,btc_open_qty=1.)
     domain.episode=ep;ep.btc_tp_target_lots={0:159,1:159,2:432};ep.btc_tp_target_qty={0:.159,1:.159,2:.432}
     intent=domain._intent(ep,'BTC_REDUCE',-1,0,quantity=.159)
@@ -91,8 +95,9 @@ def allocation_window(actual,wanted,book,pre_apply_pending=False):
     mismatch=sorted(k for k in set(actual)|set(wanted) if actual.get(k,D(0))!=wanted.get(k,D(0)))
     if not mismatch:return 'EXACT',[]
     if pre_apply_pending:return 'NONMATCHING_PENDING_UPDATE_PRE_APPLY',mismatch
-    if book is None:return 'UNKNOWN_BOOK_NOT_PROVEN',mismatch
-    marketable=[k for k in mismatch if actual.get(k,D(0))>0 and PRICES[k]<=book]
+    candidates=book if isinstance(book,tuple) else (book,)
+    if not candidates or any(b is None for b in candidates):return 'UNKNOWN_BOOK_NOT_PROVEN',mismatch
+    marketable=[k for k in mismatch if actual.get(k,D(0))>0 and any(PRICES[k]<=b for b in candidates)]
     return ('MARKETABLE_ALLOCATION_NOT_PROVEN' if marketable else 'NONMARKETABLE_TRANSIENT'),mismatch
 
 
@@ -109,7 +114,7 @@ class FeasibilityProbe(WaveOverlayStrategy):
         self.consumed=set();self.guard_calls=[];self.debt_cap=None;self.tp_active=False
         self.correcting=set();self.modify_count={};self.max_depth=0;self.depth=0
         self.rejections=[];self.boundary_violations=[];self.transient_allocation_drift=[]
-        self.native_coverage_gaps=[];self.stage='BOOT';self.suppress_correction=False;self.event_routes={};self.book=None;self.book_trace=[];self.nonexecutable_transients=[];self.auto_updates=[];self.pre_fill_checks=[];self.same_oid_overlap=[]
+        self.native_coverage_gaps=[];self.stage='BOOT';self.suppress_correction=False;self.event_routes={};self.book=(None,);self.settled_book=None;self.book_trace=[];self.nonexecutable_transients=[];self.auto_updates=[];self.pre_fill_checks=[];self.same_oid_overlap=[]
         self.oracle_domain=WaveOverlayState(self._domain.config);self.oracle_domain.set_execution_lots(btc=STEP,sol=D('.1'));self.oracle_intents={}
     def held(self,inst=BTC_PERP):
         positions=[p for p in self.cache.positions_open() if p.instrument_id==inst.id]
@@ -120,7 +125,7 @@ class FeasibilityProbe(WaveOverlayStrategy):
         return [dict(id=str(o.client_order_id),instrument=str(o.instrument_id),kind=self.kinds.get(str(o.client_order_id)),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),side=o.side.name,reduce_only=o.is_reduce_only,price=str(getattr(o,'price',None))) for o in self.cache.orders()]
     def record(self,event,**extra):
         account=self.cache.account_for_venue(SIM)
-        row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,ts_ns=self.clock.timestamp_ns(),btc=str(self.held()),sol=str(self.held(SOL_PERP)),cash=str(account.balance_total())if account else None,expected_leaves={str(k):str(v)for k,v in self.expected.items()},consumed=sorted(self.consumed),domain_consumed=[]if self.oracle_domain.episode is None else sorted(self.oracle_domain.episode.btc_filled_tps),book_bid=None if self.book is None else str(self.book),command_stack=sorted(self.correcting),orders=self.order_rows(),**extra)
+        row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,ts_ns=self.clock.timestamp_ns(),btc=str(self.held()),sol=str(self.held(SOL_PERP)),cash=str(account.balance_total())if account else None,expected_leaves={str(k):str(v)for k,v in self.expected.items()},consumed=sorted(self.consumed),domain_consumed=[]if self.oracle_domain.episode is None else sorted(self.oracle_domain.episode.btc_filled_tps),book_bid_candidates=[None if b is None else str(b)for b in self.book],command_stack=sorted(self.correcting),orders=self.order_rows(),**extra)
         self.events.append(row)
         if self.tp_active and self.held()>0:
             missing=[]
@@ -140,7 +145,7 @@ class FeasibilityProbe(WaveOverlayStrategy):
             actual={level:self.cache.order(oid).leaves_qty.as_decimal() for level,oid in self.targets.items() if level not in self.consumed and not self.cache.order(oid).is_closed}
             wanted={k:v for k,v in self.expected.items() if v>0}
             classification,mismatch=allocation_window(actual,wanted,self.book,pre_apply_pending)
-            row=dict(label=label,classification=classification,mismatch=mismatch,book_bid=None if self.book is None else str(self.book),actual={str(k):str(v)for k,v in actual.items()},wanted={str(k):str(v)for k,v in wanted.items()},held=str(self.held()))
+            row=dict(label=label,classification=classification,mismatch=mismatch,book_bid_candidates=[None if b is None else str(b)for b in self.book],actual={str(k):str(v)for k,v in actual.items()},wanted={str(k):str(v)for k,v in wanted.items()},held=str(self.held()))
             if classification in ('MARKETABLE_ALLOCATION_NOT_PROVEN','UNKNOWN_BOOK_NOT_PROVEN'):self.boundary_violations.append(row)
             elif classification!='EXACT':self.nonexecutable_transients.append(row)
             if sum(wanted.values(),D(0))!=self.held():self.boundary_violations.append(dict(label=label,classification='ORACLE_NATIVE_INVENTORY_MISMATCH',wanted_sum=str(sum(wanted.values(),D(0))),held=str(self.held())))
@@ -236,10 +241,10 @@ def lifecycle(engine):
 def run_fixture(engine,s,snapshot):
     def advance(ns,btc='100',sol='100',btcsize='1000',solsize='1000'):
         assert 1<=ns<=END
-        s.book=D(btc);s.book_trace.append(dict(ts_ns=ns,btc_bid=btc,btc_ask=btc,btc_depth=btcsize,source='DECLARED_FRESH_NATIVE_QUOTE_BTC_THEN_SOL',order='marks->BTCquote_match/callbacks->SOLquote_match/callbacks'));s.record('BEFORE_NATIVE_STREAM',incoming_btc_quote=btc)
+        s.book=(s.settled_book,D(btc));s.book_trace.append(dict(ts_ns=ns,prior_settled_bid=None if s.settled_book is None else str(s.settled_book),incoming_bid=btc,candidate_bids=[None if b is None else str(b)for b in s.book],btc_depth=btcsize,source='PRIOR_OR_INCOMING_NATIVE_MATCHING_BOOK_ENVELOPE',order='time-handlers/marks may use settledprior; exchange BTCquote_match before DataEngine/strategyquote; SOLquote afterBTC'));s.record('BEFORE_NATIVE_STREAM',incoming_btc_quote=btc)
         engine.add_data([venue_mark(BTC_PERP.id,D(btc),ns),venue_mark(SOL_PERP.id,D(sol),ns)],client_id=ClientId('BYBIT_MARK'),sort=False)
         engine.add_data([tick(BTC_PERP,ns,btc,btcsize),tick(SOL_PERP,ns,sol,solsize)],sort=False)
-        engine.run(streaming=True);engine.clear_data();s.boundary('AFTER_NATIVE_STREAM_'+str(ns));snapshot('AT_'+str(ns))
+        engine.run(streaming=True);engine.clear_data();s.settled_book=D(btc);s.book=(s.settled_book,);s.record('STREAM_COMPLETED_SETTLED_BOOK',settled_bid=btc);s.boundary('AFTER_NATIVE_STREAM_'+str(ns));snapshot('AT_'+str(ns))
     advance(1)
     prepare_completed_day(s,2)
     assert s._current_btc.ts_event-86400_000_000_000>=s.config.trading_start_open_ns
