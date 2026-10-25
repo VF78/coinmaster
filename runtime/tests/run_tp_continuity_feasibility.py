@@ -16,6 +16,7 @@ from nautilus_trader.model.identifiers import ClientId
 from nautilus_trader.model.objects import Money, Quantity
 from coinmaster.research.native_fixture import BTC_PERP, SOL_PERP, SIM, perpetual, BybitTierMarginModule, MarkPriceUpdate
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+from coinmaster.domain.wave_overlay import WaveOverlayState, Episode
 from coinmaster.strategy.market_redesign import target_lots
 from coinmaster.venues.marks import venue_mark
 from run_continuous_hedge_preflight import registered_fixture_context, prepare_completed_day, snapshot_config
@@ -58,6 +59,15 @@ def pure_preconditions():
     assert target_lots(750,set())=={0:159,1:159,2:432}
     assert target_lots(175,{0,1})=={2:175}
     assert Quantity.from_str('0.159').as_decimal()==159*STEP
+    assert allocation_window({0:D('.212')},{0:D('.159')},D(100))[0]=='NONMARKETABLE_TRANSIENT'
+    assert allocation_window({0:D('.212')},{0:D('.159')},D(101))[0]=='MARKETABLE_ALLOCATION_NOT_PROVEN'
+    assert allocation_window({0:D('.212')},{0:D('.159')},None)[0]=='UNKNOWN_BOOK_NOT_PROVEN'
+    assert allocation_window({0:D('.212')},{0:D('.159')},D(101),True)[0]=='NONMATCHING_PENDING_UPDATE_PRE_APPLY'
+    domain=WaveOverlayState(cfg.candidate);domain.set_execution_lots(btc=STEP,sol=D('.1'));ep=Episode('PURE_ENTITLEMENT',1,10000.,1.,btc_initial_qty=1.,btc_open_qty=1.)
+    domain.episode=ep;ep.btc_tp_target_lots={0:159,1:159,2:432};ep.btc_tp_target_qty={0:.159,1:.159,2:.432}
+    intent=domain._intent(ep,'BTC_REDUCE',-1,0,quantity=.159)
+    domain.on_fill(intent.id,.05,101.,datetime.fromtimestamp(1,timezone.utc));assert 0 not in ep.btc_filled_tps
+    domain.on_fill(intent.id,.109,101.,datetime.fromtimestamp(2,timezone.utc));assert 0 in ep.btc_filled_tps
     return dict(engine_constructors=0,native_version=nautilus_trader.__version__,config=snapshot_config(cfg),actual_policy_type=type(policy).__name__,positive_initial=str(initial),positive_maintenance=str(maintenance),native_event_classes=[OrderUpdated.__name__,OrderModifyRejected.__name__],native_modify_signature=str(inspect.signature(WaveOverlayStrategy.modify_order)),data_window_ns=[1,END],config_window_ns=[-86400_000_000_000,END],contract='synthetic L1 API feasibility, not financial/parity/venue admission')
 
 def verify(gate_path,ledger_path,require_go=False):
@@ -77,6 +87,15 @@ def verify(gate_path,ledger_path,require_go=False):
     if require_go:assert gate['root_go'] is True,'ROOT_GO_REQUIRED'
     return gate,ledger
 
+def allocation_window(actual,wanted,book,pre_apply_pending=False):
+    mismatch=sorted(k for k in set(actual)|set(wanted) if actual.get(k,D(0))!=wanted.get(k,D(0)))
+    if not mismatch:return 'EXACT',[]
+    if pre_apply_pending:return 'NONMATCHING_PENDING_UPDATE_PRE_APPLY',mismatch
+    if book is None:return 'UNKNOWN_BOOK_NOT_PROVEN',mismatch
+    marketable=[k for k in mismatch if actual.get(k,D(0))>0 and PRICES[k]<=book]
+    return ('MARKETABLE_ALLOCATION_NOT_PROVEN' if marketable else 'NONMARKETABLE_TRANSIENT'),mismatch
+
+
 class FeasibilityProbe(WaveOverlayStrategy):
     """Fixture transport; no change to production money/order functions.
 
@@ -90,7 +109,8 @@ class FeasibilityProbe(WaveOverlayStrategy):
         self.consumed=set();self.guard_calls=[];self.debt_cap=None;self.tp_active=False
         self.correcting=set();self.modify_count={};self.max_depth=0;self.depth=0
         self.rejections=[];self.boundary_violations=[];self.transient_allocation_drift=[]
-        self.native_coverage_gaps=[];self.stage='BOOT';self.suppress_correction=False;self.event_routes={}
+        self.native_coverage_gaps=[];self.stage='BOOT';self.suppress_correction=False;self.event_routes={};self.book=None;self.book_trace=[];self.nonexecutable_transients=[];self.auto_updates=[];self.pre_fill_checks=[];self.same_oid_overlap=[]
+        self.oracle_domain=WaveOverlayState(self._domain.config);self.oracle_domain.set_execution_lots(btc=STEP,sol=D('.1'));self.oracle_intents={}
     def held(self,inst=BTC_PERP):
         positions=[p for p in self.cache.positions_open() if p.instrument_id==inst.id]
         if not positions:return D(0)
@@ -100,23 +120,30 @@ class FeasibilityProbe(WaveOverlayStrategy):
         return [dict(id=str(o.client_order_id),instrument=str(o.instrument_id),kind=self.kinds.get(str(o.client_order_id)),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),side=o.side.name,reduce_only=o.is_reduce_only,price=str(getattr(o,'price',None))) for o in self.cache.orders()]
     def record(self,event,**extra):
         account=self.cache.account_for_venue(SIM)
-        row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,ts_ns=self.clock.timestamp_ns(),btc=str(self.held()),sol=str(self.held(SOL_PERP)),cash=str(account.balance_total())if account else None,expected_leaves={str(k):str(v)for k,v in self.expected.items()},consumed=sorted(self.consumed),orders=self.order_rows(),**extra)
+        row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,ts_ns=self.clock.timestamp_ns(),btc=str(self.held()),sol=str(self.held(SOL_PERP)),cash=str(account.balance_total())if account else None,expected_leaves={str(k):str(v)for k,v in self.expected.items()},consumed=sorted(self.consumed),domain_consumed=[]if self.oracle_domain.episode is None else sorted(self.oracle_domain.episode.btc_filled_tps),book_bid=None if self.book is None else str(self.book),command_stack=sorted(self.correcting),orders=self.order_rows(),**extra)
         self.events.append(row)
         if self.tp_active and self.held()>0:
             missing=[]
             for level,leaves in self.expected.items():
                 if leaves<=0:continue
                 oid=self.targets.get(level);order=self.cache.order(oid) if oid else None
+                # Raw entry snapshots remain, but native FILLED/domain-consumed
+                # targets are not required merely because actor expected is stale.
+                domain_consumed=self.oracle_domain.episode and level in self.oracle_domain.episode.btc_filled_tps
+                if domain_consumed or (order is not None and order.status.name=='FILLED'):continue
                 if order is None or order.is_closed or order.leaves_qty.as_decimal()<=0 or not order.is_reduce_only or order.price.as_decimal()!=PRICES[level]:missing.append(level)
             if missing:self.native_coverage_gaps.append(dict(sequence=row['sequence'],event=event,missing=missing,ts_ns=row['ts_ns']))
         return row
-    def boundary(self,label):
-        self.record('EXECUTABLE_BOUNDARY',label=label)
+    def boundary(self,label,pre_apply_pending=False):
+        self.record('BOUNDARY_OBSERVATION',label=label,pre_apply_pending=pre_apply_pending)
         if self.tp_active and self.held()>0:
             actual={level:self.cache.order(oid).leaves_qty.as_decimal() for level,oid in self.targets.items() if level not in self.consumed and not self.cache.order(oid).is_closed}
             wanted={k:v for k,v in self.expected.items() if v>0}
-            if actual!=wanted or sum(actual.values(),D(0))!=self.held():
-                self.boundary_violations.append(dict(label=label,actual={str(k):str(v)for k,v in actual.items()},wanted={str(k):str(v)for k,v in wanted.items()},held=str(self.held())))
+            classification,mismatch=allocation_window(actual,wanted,self.book,pre_apply_pending)
+            row=dict(label=label,classification=classification,mismatch=mismatch,book_bid=None if self.book is None else str(self.book),actual={str(k):str(v)for k,v in actual.items()},wanted={str(k):str(v)for k,v in wanted.items()},held=str(self.held()))
+            if classification in ('MARKETABLE_ALLOCATION_NOT_PROVEN','UNKNOWN_BOOK_NOT_PROVEN'):self.boundary_violations.append(row)
+            elif classification!='EXACT':self.nonexecutable_transients.append(row)
+            if sum(wanted.values(),D(0))!=self.held():self.boundary_violations.append(dict(label=label,classification='ORACLE_NATIVE_INVENTORY_MISMATCH',wanted_sum=str(sum(wanted.values(),D(0))),held=str(self.held())))
         assert self.held()>=0,'NATIVE_BTC_REVERSED'
     def market(self,inst,side,qty,kind,reduce=False):
         qty=D(qty)
@@ -129,16 +156,29 @@ class FeasibilityProbe(WaveOverlayStrategy):
     def install_targets(self):
         assert self.held()==D('1')
         self.expected={k:D(v)*STEP for k,v in target_lots(1000,set()).items()}
+        self.oracle_domain.episode=Episode(CASE,1,10000.,1.,btc_initial_qty=1.,btc_open_qty=1.,btc_entry_qty_exact=D('1'))
+        self.sync_oracle_allocation()
         for level,leaves in self.expected.items():
             o=self.order_factory.limit(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(leaves),BTC_PERP.make_price(PRICES[level]),time_in_force=TimeInForce.GTC,post_only=False,reduce_only=True)
-            self.targets[level]=o.client_order_id;self.kinds[str(o.client_order_id)]='TP'+str(level);self.submit_order(o)
+            self.targets[level]=o.client_order_id;self.kinds[str(o.client_order_id)]='TP'+str(level)
+            self.oracle_intents[str(o.client_order_id)]=self.oracle_domain._intent(self.oracle_domain.episode,'BTC_REDUCE',-1,level,quantity=float(leaves)).id
+            self.submit_order(o)
+    def sync_oracle_allocation(self):
+        ep=self.oracle_domain.episode
+        for level,leaves in self.expected.items():
+            ep.btc_tp_target_lots[level]=ep.btc_tp_filled_lots.get(level,0)+int(leaves/STEP)
+            ep.btc_tp_target_qty[level]=float(D(ep.btc_tp_target_lots[level])*STEP)
+    def effective_consumed(self):
+        ep=self.oracle_domain.episode
+        return set(ep.btc_filled_tps if ep else ())|{level for level,oid in self.targets.items() if self.cache.order(oid).status.name=='FILLED'}
     def correct(self,order):
         oid=str(order.client_order_id);level=next((i for i,x in self.targets.items() if str(x)==oid),None)
         if level is None or level in self.consumed or order.is_closed or self.suppress_correction:return
         wanted=order.filled_qty.as_decimal()+self.expected[level]
         if order.quantity.as_decimal()==wanted:return
         self.transient_allocation_drift.append(dict(order_id=oid,actual_total=str(order.quantity),wanted_total=str(wanted),ts_ns=self.clock.timestamp_ns()))
-        if oid in self.correcting:return
+        if oid in self.correcting:
+            self.same_oid_overlap.append(dict(order_id=oid,ts_ns=self.clock.timestamp_ns(),wanted_total=str(wanted)));return
         n=self.modify_count.get((self.stage,oid),0)+1;self.modify_count[(self.stage,oid)]=n
         assert n<=8,'NONCONVERGENT_NATIVE_QUANTITY_UPDATE'
         self.correcting.add(oid);self.depth+=1;self.max_depth=max(self.max_depth,self.depth)
@@ -158,11 +198,13 @@ class FeasibilityProbe(WaveOverlayStrategy):
         eid=str(event.id);self.event_routes.setdefault(eid,[]).append(route)
         self.record('CALLBACK_ENTRY',route=route,native_event_id=eid,native_event_type=type(event).__name__,order_id=str(event.client_order_id))
     def on_order_event(self,event):
-        self.route(event,'generic');self.boundary('GENERIC_RETURN_'+type(event).__name__)
+        self.route(event,'generic');self.boundary('GENERIC_RETURN_'+type(event).__name__,pre_apply_pending=type(event).__name__=='OrderPendingUpdate' and str(event.client_order_id)in self.correcting)
     def on_order_updated(self,event):
         self.route(event,'typed_updated');self.record('TYPED_OrderUpdated',order_id=str(event.client_order_id),native_event_id=str(event.id),event_quantity=str(event.quantity))
         order=self.cache.order(event.client_order_id)
-        if order is not None:self.correct(order)
+        if order is not None:
+            if str(event.client_order_id)not in self.correcting and any(str(x)==str(event.client_order_id)for x in self.targets.values()):self.auto_updates.append(dict(event_id=str(event.id),order_id=str(event.client_order_id),quantity=str(event.quantity),ts_ns=event.ts_event))
+            self.correct(order)
         self.boundary('TYPED_UPDATED_RETURN_'+str(event.client_order_id))
     def on_order_modify_rejected(self,event):
         self.route(event,'typed_modify_rejected');self.rejections.append(dict(order_id=str(event.client_order_id),reason=event.reason,ts_ns=event.ts_event));self.record('TYPED_OrderModifyRejected',order_id=str(event.client_order_id),reason=event.reason);self.boundary('MODIFY_REJECT_RETURN')
@@ -171,12 +213,16 @@ class FeasibilityProbe(WaveOverlayStrategy):
         oid=str(event.client_order_id);kind=self.kinds.get(oid);qty=event.last_qty.as_decimal()
         self.fills.append(dict(order_id=oid,trade_id=str(event.trade_id),kind=kind,instrument=str(event.instrument_id),qty=str(qty),price=str(event.last_px),ts_ns=event.ts_event,commission=str(event.commission)))
         if kind and kind.startswith('TP'):
-            level=int(kind[2:]);self.expected[level]=max(D(0),self.expected[level]-qty)
+            level=int(kind[2:]);allowance=self.expected.get(level,D(0))
+            self.pre_fill_checks.append(dict(native_trade_id=str(event.trade_id),level=level,quantity=str(qty),pre_fill_frozen_entitlement=str(allowance),within_entitlement=qty<=allowance))
+            assert qty>0 and qty<=allowance,'ACTUAL_TP_OVERFILL_PRE_FILL_ENTITLEMENT'
+            self.oracle_domain.on_fill(self.oracle_intents[oid],float(qty),float(event.last_px.as_decimal()),datetime.fromtimestamp(event.ts_event/1e9,timezone.utc))
+            self.expected[level]-=qty
             order=self.cache.order(event.client_order_id)
-            if order.is_closed:
-                self.consumed.add(level);self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()}
+            if level in self.oracle_domain.episode.btc_filled_tps or order.status.name=='FILLED':
+                self.consumed.add(level);self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()};self.sync_oracle_allocation()
         if kind=='DEBT':
-            self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()}
+            self.expected={k:D(v)*STEP for k,v in target_lots(int(self.held()/STEP),self.consumed).items()};self.sync_oracle_allocation()
         if kind=='SOL_RELIEF':self.debt_cap=D('.750')
         self.record('TYPED_OrderFilled',order_id=oid,kind_owned=kind,trade_id=str(event.trade_id))
         self.boundary('TYPED_FILLED_RETURN_'+oid)
@@ -190,6 +236,7 @@ def lifecycle(engine):
 def run_fixture(engine,s,snapshot):
     def advance(ns,btc='100',sol='100',btcsize='1000',solsize='1000'):
         assert 1<=ns<=END
+        s.book=D(btc);s.book_trace.append(dict(ts_ns=ns,btc_bid=btc,btc_ask=btc,btc_depth=btcsize,source='DECLARED_FRESH_NATIVE_QUOTE_BTC_THEN_SOL',order='marks->BTCquote_match/callbacks->SOLquote_match/callbacks'));s.record('BEFORE_NATIVE_STREAM',incoming_btc_quote=btc)
         engine.add_data([venue_mark(BTC_PERP.id,D(btc),ns),venue_mark(SOL_PERP.id,D(sol),ns)],client_id=ClientId('BYBIT_MARK'),sort=False)
         engine.add_data([tick(BTC_PERP,ns,btc,btcsize),tick(SOL_PERP,ns,sol,solsize)],sort=False)
         engine.run(streaming=True);engine.clear_data();s.boundary('AFTER_NATIVE_STREAM_'+str(ns));snapshot('AT_'+str(ns))
@@ -232,7 +279,16 @@ def run_fixture(engine,s,snapshot):
     assert all(s.guard_calls) and len(s.guard_calls)==2 and all(x['allowed']for x in s.guard_calls)
     assert not s.native_coverage_gaps,'ACTUAL_REQUIRED_TARGET_GAP'
     assert not s.boundary_violations,'PLANNED_ALLOCATION_DRIFT_AT_EXECUTABLE_BOUNDARY'
-    assert s.max_depth<=1,'REENTRANT_MODIFY_LOOP'
+    assert not s.same_oid_overlap,'SAME_OID_NONCONVERGENT_OR_UNPROVEN_UPDATE'
+    assert all(n<=8 for n in s.modify_count.values()),'UNBOUNDED_UPDATE_COUNT'
+    assert {int(f['kind'][2:])for f in s.fills if f['kind']and f['kind'].startswith('TP')}=={0,1,2},'ACTUAL_THREE_TP_LEVEL_FILLS_REQUIRED'
+    assert s.auto_updates,'REAL_NATIVE_AUTO_UPDATE_REQUIRED'
+    update_routes=[v for v in s.event_routes.values() if 'typed_updated'in v]
+    reject_routes=[v for v in s.event_routes.values() if 'typed_modify_rejected'in v]
+    assert update_routes and reject_routes
+    assert all(v.count('typed_updated')==1 and v.count('generic')==1 for v in update_routes),'UPDATED_TYPED_GENERIC_SAME_ID_REQUIRED'
+    assert all(v.count('typed_modify_rejected')==1 and v.count('generic')==1 for v in reject_routes),'REJECT_TYPED_GENERIC_SAME_ID_REQUIRED'
+    assert all(x['within_entitlement']for x in s.pre_fill_checks)
     assert len({f['trade_id']for f in s.fills})==len(s.fills)
     assert all(sum(D(f['qty']) for f in s.fills if f['kind']=='DEBT')<=D('.250') for _ in (0,))
     return dict(status='PASS_REQUIRES_INDEPENDENT_NATIVE_WINDOW_ADMISSION',native_coverage_gaps=0,boundary_allocation_violations=0,transient_auto_resize_events=len(s.transient_allocation_drift),max_correction_call_depth=s.max_depth,stock_margin_calls=s.guard_calls,real_modify_rejections=s.rejections,actual_native_TP_fill_levels=sorted({int(f['kind'][2:])for f in s.fills if f['kind']and f['kind'].startswith('TP')}),limitation='API feasibility only; same-stack auto-resize mutations retained and require independent admission review, not silently treated as valid per-level allocation')
@@ -244,7 +300,7 @@ def launch(gate_path,ledger_path):
     engine=s=None;rc=1;result=None;errors=[]
     def snapshot(stage):
         if engine is None:return
-        payload=dict(stage=stage,attempt_id=attempt,lifecycle=lifecycle(engine),events=[]if s is None else s.events,orders=[]if s is None else s.order_rows(),fills=[]if s is None else s.fills,transient_allocation_drift=[]if s is None else s.transient_allocation_drift,event_routes={}if s is None else s.event_routes,boundary_violations=[]if s is None else s.boundary_violations,native_coverage_gaps=[]if s is None else s.native_coverage_gaps)
+        payload=dict(stage=stage,attempt_id=attempt,lifecycle=lifecycle(engine),events=[]if s is None else s.events,orders=[]if s is None else s.order_rows(),fills=[]if s is None else s.fills,transient_allocation_drift=[]if s is None else s.transient_allocation_drift,book_trace=[]if s is None else s.book_trace,nonexecutable_transients=[]if s is None else s.nonexecutable_transients,auto_updates=[]if s is None else s.auto_updates,pre_fill_checks=[]if s is None else s.pre_fill_checks,event_routes={}if s is None else s.event_routes,boundary_violations=[]if s is None else s.boundary_violations,native_coverage_gaps=[]if s is None else s.native_coverage_gaps)
         write(namespace/(stage+'.json'),payload)
     try:
         # The ONLY physical native constructor in this file; durable claim above.
@@ -262,7 +318,9 @@ def launch(gate_path,ledger_path):
             snapshot('BEFORE_END')
             try:engine.end()
             except BaseException as error:errors.append(dict(stage='END',error=repr(error)));rc=1
-            snapshot('AFTER_END');snapshot('BEFORE_DISPOSE')
+            snapshot('AFTER_END')
+            if not all(x['state']=='STOPPED'and not x['running']for x in lifecycle(engine).values()):rc=1;errors.append(dict(stage='END',error='ACTUAL_FIVE_NATIVE_COMPONENTS_NOT_STOPPED'))
+            snapshot('BEFORE_DISPOSE')
             try:engine.dispose()
             except BaseException as error:errors.append(dict(stage='DISPOSE',error=repr(error)));rc=1
             write(namespace/'AFTER_DISPOSE.json',dict(lifecycle=lifecycle(engine)))
