@@ -1,0 +1,33 @@
+{
+  "task": "CM-CONTINUOUS-HEDGE-PLAN-20261025",
+  "status": "RESEARCH_DATA_ONLY_NOT_ADMITTED_FOR_NATIVE",
+  "request_url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1723680000000&end=1725148799999&limit=1000",
+  "query": {
+    "category": "linear",
+    "symbol": "SOLUSDT",
+    "interval": "60",
+    "start": 1723680000000,
+    "end": 1725148799999,
+    "limit": 1000
+  },
+  "official_docs": [
+    "https://bybit-exchange.github.io/docs/v5/market/kline",
+    "https://bybit-exchange.github.io/docs/v5/guide"
+  ],
+  "attempted_endpoint_requests": 1,
+  "engines_created": 0,
+  "economic_ROI_simulations": 0,
+  "native_inputs_changed": false,
+  "formula_source": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/research/paired_signal_feed.py",
+  "formula_source_sha256": "7bdeb177b6b555fedbecd105f890daf100352fab8ccc41d45899d2554e9d7e4f",
+  "atr_computation": "NOT_COMPUTED: specified file only validates precomputed ATR; no exact Wilder seed/TR formula present",
+  "retrieval_utc": "2026-10-25T07:16:06.538097+00:00",
+  "blocker": "URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
+  "raw_bytes": 0,
+  "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "downloaded_responses": 0,
+  "validation": "NOT_POSSIBLE",
+  "benchmark_sep1": "UNKNOWN_ENDPOINT_UNAVAILABLE",
+  "failing_sep2_04": "UNKNOWN_ENDPOINT_UNAVAILABLE",
+  "pnl_fix": "NOT_TESTED_NOT_CLAIMED"
+}

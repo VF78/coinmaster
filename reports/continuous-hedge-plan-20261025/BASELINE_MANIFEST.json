@@ -1,0 +1,56 @@
+{
+  "scope": "Fresh hash verification of archived receipts, NOT fresh baseline replay",
+  "legacy_S0": {
+    "source_anchor": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+    "TOTAL": "6077107.23887483",
+    "report": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/manager-handoff-20261024/evidence/S0-legacy-native-report.json.gz",
+    "report_gzip_sha256": "c00d8b55b8c4b6d3c354b26c2b408afdb63b89f92a1b8f26fc401960da1a7a35",
+    "report_payload_sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa",
+    "config_sha256": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc",
+    "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "verification": "ARCHIVED_PAYLOAD_INTEGRITY_PASS"
+  },
+  "legacy_BTC_only": {
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "TOTAL": "280748.52263020",
+    "receipt_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/new-system-plan-20261024/inputs/old_S0_BTC_only_native_receipt.json",
+    "receipt_sha256": "5ca94dd2d4bbf1349096c4938915a8477d059cf7603419b2d1ba25c0fd9b7cb7",
+    "native_report_sha256_as_archived": "f7381d848fe1f26b762576921c0f06af02a226b096164a1827df651a986aedd1",
+    "verification": "ARCHIVED_RECEIPT_ONLY_NOT_FRESH_NATIVE_RAW_REPLAY"
+  },
+  "corrected_R3_prefix": {
+    "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+    "comparison_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-comparison.json",
+    "comparison_sha256": "84136ab1d590e4341000f2475c6b8c7d130fc1b8379cf963e6137cf11871f54e",
+    "TOTAL_OFF": "19544.07357286",
+    "verification": "REUSE_COMPLETED_NATIVE_PARITY_FROM_CLOSED_PHYSICAL5_NOT_NEW_REPLAY"
+  },
+  "BTC_TP_constraint": "Legacy zero TP controls are attribution only. Real3TP R3 is separately pinned; never call its TP unchanged legacy winner.",
+  "fresh_baseline_engines_created": 0,
+  "inputs_used_here": {
+    "BTC": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-daily.parquet",
+      "sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+      "rows": 1460,
+      "first_open_utc": "2022-09-02 00:00:00+00:00",
+      "last_open_utc": "2026-08-31 00:00:00+00:00",
+      "missing_days": 0,
+      "duplicate_timestamps": 0
+    },
+    "SOL": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-daily.parquet",
+      "sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+      "rows": 1460,
+      "first_open_utc": "2022-09-02 00:00:00+00:00",
+      "last_open_utc": "2026-08-31 00:00:00+00:00",
+      "missing_days": 0,
+      "duplicate_timestamps": 0
+    }
+  },
+  "engine_authority": "Only native Nautilus1.231.0 for future economics; none instantiated here",
+  "benchmark": "[2024-09-01,2026-09-01) UTC",
+  "seed_USDT": "10000",
+  "reserve": "0",
+  "fee_policy": "Existing frozen Bybit BASE maker0.020%/taker0.055%; future HL separate qualification only"
+}

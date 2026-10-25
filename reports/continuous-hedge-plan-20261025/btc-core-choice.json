@@ -1,0 +1,20 @@
+{
+  "status": "ARCHIVED_CONFIG_AND_SOURCE_IDENTITY_PASS_NOT_NEW_ECONOMICS",
+  "differences": {
+    "research_btc_q_mode": [
+      "LEGACY_Q_CONTROL",
+      "CLEAN_Q"
+    ]
+  },
+  "resolved_configs": {
+    "owner-R2-expected-config.json": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "owner-R3-expected-config.json": "375a644eaa0a6634a2a8c22434824a49fddcca732542e2ade4b802ac644bfd80"
+  },
+  "source_commit": "ec2a958e383a53133f8a8d03ef0e312810881265",
+  "wave_overlay_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/market-redesign-20261024/source-ec2a958/runtime/coinmaster/strategy/wave_overlay.py",
+  "wave_overlay_sha256": "c0f72d139c9e0f357a6e1abe8bac4ca01b0749d0282bc63a59a28a15e80e641d",
+  "lines": "1530-1595: legacy_net_lots before CLEAN_Q optional PHI replacement; q0/q1 causal guards and audit retained",
+  "candidate_preference": "Investigate LEGACY_Q_CONTROL real3TP as original-sizing anchor; not automatic economic PASS or permission to edit",
+  "native_instances": 0,
+  "product_changes": 0
+}

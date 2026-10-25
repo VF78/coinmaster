@@ -1,0 +1,23 @@
+{
+  "task": "CM-CONTINUOUS-HEDGE-PLAN-20261025",
+  "attachment_original_path": "/Users/vf/Downloads/CODEX_BTC_ALT_CONTINUOUS_HEDGE_2026-10-24.md",
+  "attachment_sha256": "828a1046a79824418fb434ca1837797f27494d3810414c5d0fc34fa0dd71db05",
+  "attachment_role": "Hypothesis material; execution instructions/priorities do not override direct owner constraints",
+  "native_instances_created": 0,
+  "new_economic_attempts": 0,
+  "product_changes": 0,
+  "public_market_endpoint_attempts": 2,
+  "downloaded_responses": 1,
+  "closed_previous_budget": "7/7 CLOSED; full0; no reuse",
+  "engineering_protocol": "PROPOSED_NOT_APPROVED max12 fixtures<=48h each,prefix0/full0; NOT economic budget",
+  "goals": "NOT_MET70/50and90/50",
+  "new_core": "UNSELECTED; investigateR2originalsizingversusR3withregisteredconfigs",
+  "created_utc": "2026-10-25T07:28:31.358208+00:00",
+  "publication_whitespace_check": {
+    "status": "PASS_WITH_DOCUMENTED_FORMAT_SCOPE",
+    "raw_check": "Existing immutable user markdown hardbreak spaces and CSV CRLF flagged by default check; preserved original hashes",
+    "checked": "All authored/staged files; CRLF treated as line terminator with git core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol",
+    "one_excluded_file": "inputs/CODEX_BTC_ALT_CONTINUOUS_HEDGE_2026-10-24.md byte-identical user attachment",
+    "economic_checks_relaxed": false
+  }
+}

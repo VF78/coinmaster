@@ -1,0 +1,16 @@
+{
+  "issue": 135,
+  "url": "https://github.com/VF78/coinmaster/issues/135",
+  "title": "[Research] Continuous hedge admission: real SOL warmup and BTC control preflight",
+  "state": "OPEN",
+  "project_number": 2,
+  "project_item_id": "PVTI_lAHOBIUvJs4BPJNjzhDU9mY",
+  "Status": "Todo",
+  "isArchived": false,
+  "actual_graphql_readback": true,
+  "owner_protocol_question": "PENDING; no reply recorded",
+  "engineering_protocol_sha256": "28da74095f65c4ee4f2fca0ef9cfa26a999abcb2613881e2ffd8e44d89084c46",
+  "new_native_budget": 0,
+  "proposed_only_fixture_budget": 12,
+  "old_closed_ledger_sha256": "e96088c4a37096ce50b4a8f17ba66626d529764b5eb1996f1d3ba6ca7fba7cfd"
+}

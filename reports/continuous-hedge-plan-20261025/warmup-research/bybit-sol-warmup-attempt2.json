@@ -1,0 +1,15 @@
+{
+  "attempt": 2,
+  "scope": "Single public market-data retrieval after sandbox DNS failure; research only, not native admission",
+  "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1723680000000&end=1725148799999&limit=1000",
+  "timestamp_utc": "2026-10-25T07:17:07.700197+00:00",
+  "native_instances": 0,
+  "old_inputs_changed": false,
+  "http_status": 200,
+  "raw_bytes": 32545,
+  "raw_sha256": "2afa407a476e5b52ea6b1296f39be5f941445d07a586ad4e2f6ad190fc9204c0",
+  "retCode": 0,
+  "retMsg": "OK",
+  "rows": 408,
+  "status": "RETRIEVED_NOT_YET_QUALIFIED"
+}

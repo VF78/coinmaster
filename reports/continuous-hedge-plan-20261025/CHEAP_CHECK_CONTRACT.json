@@ -1,0 +1,18 @@
+{
+  "task": "CM-CONTINUOUS-HEDGE-PLAN-20261025",
+  "scope": "Read-only provenance, causal coefficient and rule-contract admission; no economic strategy simulation",
+  "frozen_before_calculation": true,
+  "benchmark": "[2024-09-01,2026-09-01) UTC",
+  "returns": "synchronized Bybit D1 close log returns; descriptive covariance only, not fill PnL",
+  "feature_ready_at": "open_time + 1 day; at UTC day decision t use only ready_at <= t - 1 day",
+  "windows_days": [30, 90, 180, 270],
+  "variants": ["minimum variance", "inverse beta"],
+  "reported": ["coverage", "correlation", "volatility ratio", "unclipped hedge coefficients", "same-window theoretical variance"],
+  "selection": "No window/threshold/model selection and no claim of achieved economic risk or return",
+  "controls": "Preserve archive S0 and BTC-only identities separately; corrected prefix OFF is R3 and is not original winner",
+  "native_instances": 0,
+  "physical_attempt_budget": 0,
+  "downloads": 0,
+  "product_changes": 0,
+  "no_holdout_claim": "Existing two-year history has already informed research; no fresh OOS designation"
+}

@@ -1,0 +1,43 @@
+{
+  "task": "CM-CONTINUOUS-HEDGE-PLAN-20261025",
+  "review_scope": "Only three requested documents; material consistency and authorization boundaries; not source/test/full audit",
+  "result": "PASS",
+  "unresolved_P1": 0,
+  "reviewed_files": {
+    "PLAN_RU.md": "a7f2b1d11d352e8a38f3af17d760b2dfb6592fb5478b008ffeb801f38d4982b4",
+    "CONTRACT_TO_SETTLE_RU.md": "c578c2c1891910f2a56b970cf59227755a8f020154e12bc130027b6c1ade5d32",
+    "ENGINEERING_PROTOCOL_PROPOSED_RU.md": "28da74095f65c4ee4f2fca0ef9cfa26a999abcb2613881e2ffd8e44d89084c46"
+  },
+  "original_findings_preserved": [
+    {
+      "id": "CORE_SELECTION_AND_CONTROL_REBASE",
+      "original": "A0 legacy/R2 anchor was settled before compatibility proof; R3-to-R2 changes core/control as well as lifecycle.",
+      "correction_verified": true,
+      "evidence": "PLAN and CONTRACT now explicitly mark R2 investigated, core unselected, compatibility proof and fresh matched OFF required; engineering proposal registers exact R2/R3 configs without winner/full-parity claim."
+    },
+    {
+      "id": "STRICT_ATR_CLOCK_VS_EXISTING_LOADER",
+      "original": "Strict prior-H4 ATR cannot be inserted into existing valid-feed end=t contract by relabeling.",
+      "correction_verified": true,
+      "evidence": "All three distinguish strict diagnostic from existing available=t/H4end=t/not_before=t+60s; proposal preserves clock and prohibits metadata-only ATR relabeling; historical publication latency remains UNKNOWN."
+    }
+  ],
+  "boundary_checks": {
+    "proposal_not_approved": true,
+    "execution_requires_explicit_protocol_and_budget_approval": true,
+    "engineering_fixture_limit_proposed": 12,
+    "failed_attempts_and_retries_counted": true,
+    "max_fixture_historical_hours": 48,
+    "prefix_budget": 0,
+    "full_budget": 0,
+    "new_download_budget": 0,
+    "old_7_of_7_stays_closed": true,
+    "sol_money_rules_excluded_from_engineering_scope": true,
+    "isolated_7d513_source_and_preserve_frozen_inputs": true,
+    "no_economic_or_profit_claim": true
+  },
+  "review_engines_created": 0,
+  "review_tests_run": 0,
+  "review_public_requests": 0,
+  "limits": "PASS concerns document consistency only. It grants no execution permission and proves no implementation, native parity, economic efficacy or historical publication timing."
+}

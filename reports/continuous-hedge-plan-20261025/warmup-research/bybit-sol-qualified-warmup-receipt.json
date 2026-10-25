@@ -1,0 +1,65 @@
+{
+  "task": "CM-CONTINUOUS-HEDGE-PLAN-20261025",
+  "status": "RESEARCH_DATA_ONLY_NOT_ADMITTED_FOR_NATIVE",
+  "validation": "PASS_H1_H4_ATR_FORMULA_RESEARCH_ONLY",
+  "total_endpoint_attempts": 2,
+  "downloaded_responses": 1,
+  "additional_endpoint_requests_by_this_qualification": 0,
+  "engines_created": 0,
+  "economic_ROI_simulations": 0,
+  "native_inputs_changed": false,
+  "first_failed_receipt_preserved": true,
+  "attempt2_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/warmup-research/bybit-sol-warmup-attempt2.json",
+  "raw_sha256": "2afa407a476e5b52ea6b1296f39be5f941445d07a586ad4e2f6ad190fc9204c0",
+  "raw_rows_reverse_chronological": true,
+  "h1_count": 408,
+  "h4_closed_count": 102,
+  "duplicates": 0,
+  "gaps": 0,
+  "ohlc_checks": "ALL_PASS_FINITE_POSITIVE_OHLC_HIGH_LOW_BOUNDS_NONNEGATIVE_VOLUME_TURNOVER",
+  "utc_alignment": "ALL_H1_ON_HOUR_ALL_H4_ON_00_04_08_12_16_20_UTC",
+  "first_h1_start_utc": "2024-08-15T00:00:00+00:00",
+  "last_h1_close_ready_utc": "2024-09-01T00:00:00+00:00",
+  "first_valid_atr_utc": "2024-08-17T08:00:00+00:00",
+  "valid_atr_count": 89,
+  "last_atr": "3.3114942158253501311949807353221088411314361687883",
+  "formula_source": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-signal-feed-build.py",
+  "formula_source_sha256": "47704f6ca1a998ef464ba7b0237d5e32d2330f92702d3c05d00df426a0b34cf3",
+  "formula_contract": "Decimal precision50; first TR=high-low, later TR=max(high-low,abs(high-prevclose),abs(low-prevclose)); first14TR arithmetic mean at k13; then (13*ATR+TR)/14",
+  "artifacts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/warmup-research/bybit-sol-h1-qualified.csv",
+      "sha256": "fea6a295447c317f2e665cbe77aba135ba99daefc5fb05957cf44821edaa1b72",
+      "rows": 408
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/warmup-research/bybit-sol-h4-qualified.csv",
+      "sha256": "8c414684e54bb834b43e187c7acd5332df50b21835749d6e5e17220ccfc9f991",
+      "rows": 102
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/warmup-research/bybit-sol-h4-atr14-research.csv",
+      "sha256": "f9372ccfd5f283d08bea1891c4eb27a0319413b5abff00c76ee0bfe25df53c29",
+      "rows": 102
+    }
+  ],
+  "sep1_benchmark_readiness": {
+    "completed_h4": 102,
+    "latest_h4_end_utc": "2024-09-01T00:00:00+00:00",
+    "atr14_finite_positive": true,
+    "atr14": "3.3114942158253501311949807353221088411314361687883",
+    "availability_basis": "Historical candle close/end timestamps per Bybit OHLC query; data retrieved now, historical publication latency/revisions not established"
+  },
+  "sep2_04_prior_availability": {
+    "first_valid_atr_before_decision": true,
+    "history_end_before_decision": true,
+    "exact_atr_at_sep2_04": "NOT_RECOMPUTED_NO_POSTBENCHMARK_DATA_JOIN"
+  },
+  "limitations": [
+    "H1 trade klines, not mark/index/L2 and not signed funding",
+    "No agreement check against old M1 source at overlap; requested interval has no overlap",
+    "Seed starts Aug15 and is not proof of infinite-history ATR convergence",
+    "Timestamp close-ready is not proof of historical API publication or revision timing",
+    "No old frozen feed modification/native admission/OOS/ROI/benefit proof"
+  ]
+}

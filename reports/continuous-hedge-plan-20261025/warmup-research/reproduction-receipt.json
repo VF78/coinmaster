@@ -1,0 +1,35 @@
+{
+  "result": "PASS",
+  "script_sha256": "10234f8ba2a9c6d5ab6ed8a71841464d918b1eca272e04a4875bdc6336690cf7",
+  "raw_sha256": "2afa407a476e5b52ea6b1296f39be5f941445d07a586ad4e2f6ad190fc9204c0",
+  "output_directory": "/private/tmp/cm-warmup-reproduce-20261025",
+  "comparisons": [
+    {
+      "file": "bybit-sol-h1-qualified.csv",
+      "rows": 408,
+      "semantic_decimal_equal": true,
+      "byte_identical": true,
+      "original_sha256": "fea6a295447c317f2e665cbe77aba135ba99daefc5fb05957cf44821edaa1b72",
+      "reproduced_sha256": "fea6a295447c317f2e665cbe77aba135ba99daefc5fb05957cf44821edaa1b72"
+    },
+    {
+      "file": "bybit-sol-h4-qualified.csv",
+      "rows": 102,
+      "semantic_decimal_equal": true,
+      "byte_identical": true,
+      "original_sha256": "8c414684e54bb834b43e187c7acd5332df50b21835749d6e5e17220ccfc9f991",
+      "reproduced_sha256": "8c414684e54bb834b43e187c7acd5332df50b21835749d6e5e17220ccfc9f991"
+    },
+    {
+      "file": "bybit-sol-h4-atr14-research.csv",
+      "rows": 102,
+      "semantic_decimal_equal": true,
+      "byte_identical": true,
+      "original_sha256": "f9372ccfd5f283d08bea1891c4eb27a0319413b5abff00c76ee0bfe25df53c29",
+      "reproduced_sha256": "f9372ccfd5f283d08bea1891c4eb27a0319413b5abff00c76ee0bfe25df53c29"
+    }
+  ],
+  "original_evidence_written": false,
+  "new_fetches": 0,
+  "engines_created": 0
+}

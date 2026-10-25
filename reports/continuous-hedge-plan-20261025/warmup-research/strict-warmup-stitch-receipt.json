@@ -1,0 +1,86 @@
+{
+  "status": "RESEARCH_DATA_ONLY_NOT_ADMITTED_FOR_NATIVE",
+  "checks": "PASS_1680_M1_7_H4_AND_109_H4_STITCH",
+  "new_public_requests": 0,
+  "aggregate_endpoint_attempts": 2,
+  "aggregate_downloaded_responses": 1,
+  "engines_created": 0,
+  "economic_ROI_simulations": 0,
+  "old_input_writes": 0,
+  "m1_columns": [
+    "open_time_ms",
+    "open",
+    "high",
+    "low",
+    "close"
+  ],
+  "m1_filter": {
+    "gte_ms": 1725148800000,
+    "lt_ms": 1725249600000
+  },
+  "m1_rows": 1680,
+  "new_h4_rows": 7,
+  "combined_h4_rows": 109,
+  "duplicates": 0,
+  "gaps": 0,
+  "ohlc_checks": "PASS",
+  "existing_m1_pin_from_full_freeze": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+    "sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+    "role": "DATA_INPUT"
+  },
+  "full_freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/market-redesign-20261024/full-freeze.json",
+  "full_freeze_sha256": "2d2a8754d2b72809afcb6b2c25112208626f7711ff18d098ecfe4c31e67ce490",
+  "m1_full_hash_recomputed": false,
+  "m1_pin_limitation": "Existing immutable full-freeze SHA reference used; no full-file rescan performed in this step",
+  "warmup_h4_sha256": "8c414684e54bb834b43e187c7acd5332df50b21835749d6e5e17220ccfc9f991",
+  "formula_source_sha256": "47704f6ca1a998ef464ba7b0237d5e32d2330f92702d3c05d00df426a0b34cf3",
+  "arithmetic": "Decimal50 firstTR high-low, mean first14TR at k13, then (13*ATR+TR)/14",
+  "benchmark_sep1_strict": {
+    "cut_utc": "2024-09-01T00:00:00+00:00",
+    "operator": "<",
+    "last_bar_end_utc": "2024-08-31T20:00:00+00:00",
+    "atr14": "3.4208399247349924489792100226545787519877004894643",
+    "nominal_bar_close_eligible": true
+  },
+  "benchmark_sep1_inclusive": {
+    "cut_utc": "2024-09-01T00:00:00+00:00",
+    "operator": "<=",
+    "last_bar_end_utc": "2024-09-01T00:00:00+00:00",
+    "atr14": "3.3114942158253501311949807353221088411314361687883",
+    "nominal_bar_close_eligible": true
+  },
+  "first_post00_decision_sep1_04_strict": {
+    "cut_utc": "2024-09-01T04:00:00+00:00",
+    "operator": "<",
+    "last_bar_end_utc": "2024-09-01T00:00:00+00:00",
+    "atr14": "3.3114942158253501311949807353221088411314361687883",
+    "nominal_bar_close_eligible": true
+  },
+  "missing_sep2_04_strict": {
+    "cut_utc": "2024-09-02T04:00:00+00:00",
+    "operator": "<",
+    "last_bar_end_utc": "2024-09-02T00:00:00+00:00",
+    "atr14": "3.7765887611658596813141093645185271513879190274717",
+    "nominal_bar_close_eligible": true
+  },
+  "missing_sep2_04_inclusive": {
+    "cut_utc": "2024-09-02T04:00:00+00:00",
+    "operator": "<=",
+    "last_bar_end_utc": "2024-09-02T04:00:00+00:00",
+    "atr14": "3.6889752782254411326488158384814894977173533826523",
+    "nominal_bar_close_eligible": true
+  },
+  "artifacts": {
+    "code_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/warmup-research/strict_warmup_stitch.py",
+    "code_sha256": "3d1edea15902c025c49fff1a484228a6e4f833db9e40721ccdeb46ea98ec46a7",
+    "csv_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/continuous-hedge-plan-20261025/warmup-research/strict-warmup-stitch-atr.csv",
+    "csv_sha256": "1ff950b6d0a34377ec4efca19d24db6854a36d8b58c5ab4181a7d3c27fb78fc2"
+  },
+  "limitations": [
+    "Nominal close/end is not proven historical publication/availability time; publication latency/revisions UNKNOWN",
+    "H1 warmup and M1 continuation are trade-price series; no overlapping interval to prove vendor equality across resolutions",
+    "Aug15 seed is specified finite warmup, not proof of converged infinite-history ATR",
+    "No strategy-signal regeneration, native input modification, native admission, benefit/PnL or OOS claim"
+  ]
+}
