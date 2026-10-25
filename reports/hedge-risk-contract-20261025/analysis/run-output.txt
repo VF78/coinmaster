@@ -1,0 +1,25 @@
+{
+  "activations": 16,
+  "invalidations": 15,
+  "branches": {
+    "F0": 11,
+    "B2": 5
+  },
+  "right_cohorts": {
+    "NO_UNFILLED_RIGHT": 9,
+    "FORBIDDEN_ORDINARY_BTC_EXIT": 2,
+    "POTENTIAL_UNFILLED_RIGHT_REQUIRES_NEW_EXPLICIT_REVERSIBLE_LOCK_CONTRACT": 4,
+    "UNKNOWN_NO_ACTUAL_RISK_OFF_BEFORE_OWNER_RELEASE": 1
+  },
+  "all_TPs": 8,
+  "primary_first_TPs": 4,
+  "stress_primary_admission": {
+    "PASS_PREREQUISITE_ONLY": 3,
+    "NOT_ADMITTED": 1
+  },
+  "C_primary_release": {
+    "ACTUAL_RISK_OFF_AFTER_DEADLINE": 1,
+    "UNKNOWN_OWNER_RELEASED_WITHOUT_RISK_OFF": 1,
+    "ACTUAL_RISK_OFF_BY_DEADLINE": 2
+  }
+}

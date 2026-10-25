@@ -1,0 +1,46 @@
+{
+  "task": "CM-A0-CONTRACT-REVIEW-20261025",
+  "review_status": "PASS_FOR_OWNER_CONSENT_REQUEST_ONLY",
+  "scope": "One focused contract/source review; no product edits, engines, analyst rerun, downloads or stream rescan",
+  "source_base": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "P0": 0,
+  "P1": 0,
+  "findings": [
+    {
+      "id": "A0-01",
+      "priority": "P1_CONTRACT_AMBIGUITY",
+      "file": "NATIVE_PROTOCOL_PROPOSED_RU.md",
+      "issue": "R2 paired family and old lock C0 do not explicitly select research_paired_prefix=B2_F0. Source also admits B2. This monetary branch must not be left to executor interpretation.",
+      "minimal_correction": "Explicitly freeze research_paired_prefix=B2_F0 for both C0 and A0, research_paired_prefix=None for R2OFF, and pin all other resolved family knobs before engines; C0/A0 differ only in reversible-lock flag. If another variant is intended, settle it explicitly before approval.",
+      "status": "CLOSED_BY_DOCUMENT_CORRECTION"
+    }
+  ],
+  "verified": [
+    "16 activations, four structural original-child opportunities; four second-child cancel ACK proofs, three noncrossing original quotes; prospective stock margin remains UNKNOWN",
+    "Effective realU skips generic split deadline/day-end branch; original second allocation is quantity minus first allocation, not quantity minus actual first fills",
+    "Original-second budget, all-generation fills, no closed-BTC restoration, bounded absolute-cap release and corrective-overfill nonrecursion are specified",
+    "Generation/ACK/ordinary TP/flat/one-attempt/original-price postOnly/causal60s and stock margin gates are specified",
+    "R2 is proposed core/control rebase, not selected winner; present source rejects paired LEGACY_Q and requires exact new family engineering admission",
+    "Proposed budget six engineering native instances <=48h each and three matched prefix attempts [2024-09-01,2025-01-15), failures counted; full zero and no old-budget reuse",
+    "Reported four primary headrooms and eight primary/sensitivity stress component sums checked from saved JSON; 90-day primary three prerequisites pass, one fail; no counterfactual wealth/DD guarantee",
+    "Cost/DD/ES/accounting/stop gates retain original 70/90 goals without claiming prefix achievement"
+  ],
+  "arithmetic_verification": {
+    "method": "Saved JSON Decimal60 recombination only; absolute stress-sum tolerance 1e-34 for reported Decimal40 output rounding; no scenario recomputation",
+    "primary_headrooms": {
+      "3": "6067.166927730",
+      "8": "4554.014872970",
+      "14": "828.870838655",
+      "15": "3046.480144205"
+    },
+    "reviewer_attempt_note": "Initial exact equality used default Decimal28 and failed on long stored values. Repeated with Decimal60 and explicit report-rounding tolerance; this was review arithmetic precision, not evidence or product mutation."
+  },
+  "nonblocking_implementation_precision": "Snapshot lockedAbsoluteCap before any release and apply the release once per parent; do not recursively reanchor from a previously raised cap. Verify in closed-BTC/late-overfill fixture.",
+  "authority": "Review may support requesting explicit owner consent for proposed engineering/prefix budget after correction. It grants no code, engine, economic, full, deployment or order authority. Old budgets remain closed.",
+  "reviewed_document_sha256": {
+    "A0_CONTRACT_PROPOSED_RU.md": "8432e4decdf249ba2b80bb4eeac7e8773a1d24d39eb57b5d9026a3cdd516a2c0",
+    "NATIVE_PROTOCOL_PROPOSED_RU.md": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+    "METHOD_NOTES_RU.md": "1e51a0ff6553b0dc080275c3dce3d9646ecfc0663c4434a9cd75b9d0b076ce6b"
+  },
+  "closure": "Re-read both explicit selectors after coordinator correction: C0/A0 B2_F0, OFF None/SOL absent, same family/policy and only A0 flag differs. A0-01 closed; unresolved P0/P1 zero."
+}

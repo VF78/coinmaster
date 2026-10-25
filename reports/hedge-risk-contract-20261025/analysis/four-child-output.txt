@@ -1,0 +1,79 @@
+{
+  "cases": [
+    {
+      "activation": 3,
+      "original_Q0": "0.975",
+      "F_ever": "0.487",
+      "D_permanent": "0.243",
+      "B_current": "0.244",
+      "remaining_original_unfilled": "0.488",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      }
+    },
+    {
+      "activation": 6,
+      "original_Q0": "1.149",
+      "F_ever": "0.574",
+      "D_permanent": "0",
+      "B_current": "0.574",
+      "remaining_original_unfilled": "0.575",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      }
+    },
+    {
+      "activation": 7,
+      "original_Q0": "0.880",
+      "F_ever": "0.44",
+      "D_permanent": "0",
+      "B_current": "0.44",
+      "remaining_original_unfilled": "0.440",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      }
+    },
+    {
+      "activation": 10,
+      "original_Q0": "0.750",
+      "F_ever": "0.375",
+      "D_permanent": "0",
+      "B_current": "0.375",
+      "remaining_original_unfilled": "0.375",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      }
+    }
+  ],
+  "Oct25": {
+    "scope": "MARKET_ONLY_RECONSTRUCTION_NOT_ACTUAL_OWNER_EVENT_OR_CANDIDATE_WEALTH",
+    "boundary": "68084.6",
+    "BTC_side": 1,
+    "first_entry_utc": "2024-10-25T16:01:00+00:00",
+    "actual_owner_flat_utc": "2024-10-25T22:58:00+00:00",
+    "branch_expiry_utc": "2024-10-26T00:01:00+00:00",
+    "first_boundary_cross_quote": null,
+    "market_risk_OFF_utc": "2024-10-26T00:01:00+00:00",
+    "OFF_reason": "FIXED_F0_8H_EXPIRY",
+    "firstTP_nextH4_plus60_utc": "2024-10-25T20:01:00+00:00",
+    "market_OFF_before_firstTP_deadline": false,
+    "source_quote_rows": 481,
+    "critical_limit": "No continuing uncut equity/BTC/margin/ROI inferred; original rule market state only"
+  }
+}

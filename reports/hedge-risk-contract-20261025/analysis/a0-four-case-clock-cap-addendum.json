@@ -1,0 +1,159 @@
+{
+  "preserved_hashes": {
+    "causal-admission-results.json": "8c73956feb44ae1786d7ffdb043a2fbdc8996f57d65f5a8247568d8a74890174",
+    "four-child-admission-details.json": "8c26a65d6b69fdca2817f269ad377340b71ef54361125f96ad898ef1ed9c7270"
+  },
+  "source_raw_sha256": "55a1cc2b7619574a65d338fe6d1c0dfbeaf251c4107b69953aa4c4cac52f3fcd",
+  "source_fields": [
+    "split_cover_audit.parents.quantity/first_quantity",
+    "market_redesign_audit.events.P0_FROZEN_FIRST_TERMINAL.first_filled",
+    "fill_audit actual BTC_ENTRY and reductions at <=riskOFF+60s",
+    "four-child-admission-details original_native_ENTRY_orders/ordinary_BTC_exit_timing/quotes_at_OFF_and_next_minute/native_parent_terminal"
+  ],
+  "effective_source_guard": "market_redesign.py155 qty=originalquantity-originalfirstquantity; partial first remainder is never reallocated; allowable add <=min(S0-second_filled_ever,Qeff-D-B), Qeff=firstterminalfilled+S0",
+  "cases": [
+    {
+      "activation": 3,
+      "parent": "de39a013-8c05-4cb7-bd22-4dd50cd17bf9",
+      "original_Q0": "0.975",
+      "original_first_allocation": "0.487",
+      "original_second_S0": "0.488",
+      "first_terminal_actual_filled": "0.487",
+      "first_terminal_actual_audit": {
+        "episode_id": "de39a013-8c05-4cb7-bd22-4dd50cd17bf9",
+        "event": "P0_FROZEN_FIRST_TERMINAL",
+        "first_filled": "0.487",
+        "p0": "60510.1",
+        "timestamp_ns": "1726272120000000000"
+      },
+      "first_partial_cancelled_never_added_to_second": "0",
+      "second_filled_ever_at_OFF": "0.000",
+      "remaining_original_second_Srem": "0.488",
+      "Qeff": "0.975",
+      "riskOFF_plus60_ns": 1726315320000000000,
+      "quote_plus60": {
+        "available_ns": 1726315320000000000,
+        "bid": "59638.9",
+        "ask": "59638.9"
+      },
+      "postonly_original_limit_noncrossing_plus60": false,
+      "all_original_ENTRY_terminal_known_plus60": true,
+      "ordinary_BTC_TP_or_exit_by_plus60": [],
+      "B_actual_plus60": "0.244",
+      "D_permanent_plus60": "0.243",
+      "same_parent_still_held_plus60": true,
+      "quantity_cap_plus60": "0.488",
+      "conditional_A0_clock_structural_quote_prerequisites": "FAIL_POST_ONLY_CROSSING",
+      "native_margin_plus60": "UNKNOWN_NOT_REPLAYED; prior captured account is at riskOFF not plus60",
+      "current_permission": "NO_CURRENT_RESTORE; new contract/code/budget separate"
+    },
+    {
+      "activation": 6,
+      "parent": "7b85cc06-55d1-4770-8b7f-9cb7061a3028",
+      "original_Q0": "1.149",
+      "original_first_allocation": "0.574",
+      "original_second_S0": "0.575",
+      "first_terminal_actual_filled": "0.574",
+      "first_terminal_actual_audit": {
+        "episode_id": "7b85cc06-55d1-4770-8b7f-9cb7061a3028",
+        "event": "P0_FROZEN_FIRST_TERMINAL",
+        "first_filled": "0.574",
+        "p0": "60656.5",
+        "timestamp_ns": "1728518460000000000"
+      },
+      "first_partial_cancelled_never_added_to_second": "0",
+      "second_filled_ever_at_OFF": "0.000",
+      "remaining_original_second_Srem": "0.575",
+      "Qeff": "1.149",
+      "riskOFF_plus60_ns": 1728534000000000000,
+      "quote_plus60": {
+        "available_ns": 1728534000000000000,
+        "bid": "60799.3",
+        "ask": "60799.3"
+      },
+      "postonly_original_limit_noncrossing_plus60": true,
+      "all_original_ENTRY_terminal_known_plus60": true,
+      "ordinary_BTC_TP_or_exit_by_plus60": [],
+      "B_actual_plus60": "0.574",
+      "D_permanent_plus60": "0",
+      "same_parent_still_held_plus60": true,
+      "quantity_cap_plus60": "0.575",
+      "conditional_A0_clock_structural_quote_prerequisites": "PASS_PREREQUISITES_ONLY",
+      "native_margin_plus60": "UNKNOWN_NOT_REPLAYED; prior captured account is at riskOFF not plus60",
+      "current_permission": "NO_CURRENT_RESTORE; new contract/code/budget separate"
+    },
+    {
+      "activation": 7,
+      "parent": "9476ea1b-e55e-420a-9cb1-d14ae675b2b0",
+      "original_Q0": "0.880",
+      "original_first_allocation": "0.440",
+      "original_second_S0": "0.440",
+      "first_terminal_actual_filled": "0.44",
+      "first_terminal_actual_audit": {
+        "episode_id": "9476ea1b-e55e-420a-9cb1-d14ae675b2b0",
+        "event": "P0_FROZEN_FIRST_TERMINAL",
+        "first_filled": "0.44",
+        "p0": "62727.3",
+        "timestamp_ns": "1728720120000000000"
+      },
+      "first_partial_cancelled_never_added_to_second": "0",
+      "second_filled_ever_at_OFF": "0.00",
+      "remaining_original_second_Srem": "0.440",
+      "Qeff": "0.880",
+      "riskOFF_plus60_ns": 1728768420000000000,
+      "quote_plus60": {
+        "available_ns": 1728768420000000000,
+        "bid": "63139.0",
+        "ask": "63139.0"
+      },
+      "postonly_original_limit_noncrossing_plus60": true,
+      "all_original_ENTRY_terminal_known_plus60": true,
+      "ordinary_BTC_TP_or_exit_by_plus60": [],
+      "B_actual_plus60": "0.44",
+      "D_permanent_plus60": "0",
+      "same_parent_still_held_plus60": true,
+      "quantity_cap_plus60": "0.440",
+      "conditional_A0_clock_structural_quote_prerequisites": "PASS_PREREQUISITES_ONLY",
+      "native_margin_plus60": "UNKNOWN_NOT_REPLAYED; prior captured account is at riskOFF not plus60",
+      "current_permission": "NO_CURRENT_RESTORE; new contract/code/budget separate"
+    },
+    {
+      "activation": 10,
+      "parent": "7ea00283-046d-4f9f-b648-b767798d47b5",
+      "original_Q0": "0.750",
+      "original_first_allocation": "0.375",
+      "original_second_S0": "0.375",
+      "first_terminal_actual_filled": "0.375",
+      "first_terminal_actual_audit": {
+        "episode_id": "7ea00283-046d-4f9f-b648-b767798d47b5",
+        "event": "P0_FROZEN_FIRST_TERMINAL",
+        "first_filled": "0.375",
+        "p0": "91200.5",
+        "timestamp_ns": "1731715260000000000"
+      },
+      "first_partial_cancelled_never_added_to_second": "0",
+      "second_filled_ever_at_OFF": "0.000",
+      "remaining_original_second_Srem": "0.375",
+      "Qeff": "0.750",
+      "riskOFF_plus60_ns": 1731744300000000000,
+      "quote_plus60": {
+        "available_ns": 1731744300000000000,
+        "bid": "91297.6",
+        "ask": "91297.6"
+      },
+      "postonly_original_limit_noncrossing_plus60": true,
+      "all_original_ENTRY_terminal_known_plus60": true,
+      "ordinary_BTC_TP_or_exit_by_plus60": [],
+      "B_actual_plus60": "0.375",
+      "D_permanent_plus60": "0",
+      "same_parent_still_held_plus60": true,
+      "quantity_cap_plus60": "0.375",
+      "conditional_A0_clock_structural_quote_prerequisites": "PASS_PREREQUISITES_ONLY",
+      "native_margin_plus60": "UNKNOWN_NOT_REPLAYED; prior captured account is at riskOFF not plus60",
+      "current_permission": "NO_CURRENT_RESTORE; new contract/code/budget separate"
+    }
+  ],
+  "native": 0,
+  "product_edits": 0,
+  "downloads": 0
+}

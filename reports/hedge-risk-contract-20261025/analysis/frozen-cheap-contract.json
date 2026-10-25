@@ -1,0 +1,13 @@
+{
+  "task": "CM-HEDGE-CONTRACT-ADMISSION-20261025",
+  "scope": "One engine-free saved-artifact causal pass. All actual 16 selected B2/F0 activations, all invalidations and genuine TP fills; first TP per activation primary. No outcome-based selection.",
+  "source_current": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e",
+  "actual_prefix_source": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "budgets": {"native":0,"product_edits":0,"training":0,"downloads":0,"window_search":0},
+  "A": {"release": "Only original same-parent unfilled rights before original expiry, without prior actual BTC TP/trim/ordinary exit; quote/ACK/original limit/native margin eligibility must independently be known. Expired/permanently canceled rights not recreated. No control future fills as feature."},
+  "B": {"equity": "Coherent actual post-SOL-TP/pre-BTC-debt marked equity only", "peak": "prior coherent event peak including pre-fill/pre-open", "headroom":"max(0,Eactual-0.5*Pprior)", "primary_scenarios": "90 most recent completed Bybit D1 paired SIMPLE returns with return end <= UTC(t)-1day", "sensitivity": "30 days separately, never selects primary", "loss":"max(0,max_s[-N_B_signed*rB_s-N_S_signed*rS_s])+0.00055*(abs(N_B)+abs(N_S))+conservative known-past daily funding charge allowance", "funding": "fixed current notionals; sum absolute per-leg known-past funding rates for each completed UTC day, maximum over prior90 completed days; stress assumption, not realized cash", "critical_unknown":"UNKNOWN => NOT_ADMITTED; never zero; native margin separate"},
+  "C": {"deadline":"next H4 evaluation plus60s, wait <=4h+60s", "release":"actual market-risk OFF by deadline only; no pending rehedge credit; absent causal state UNKNOWN", "counterfactual_limit":"After first actual BTC debt cut later market path is observation, not candidate continuing state"},
+  "state_rules": ["TP/riskOFF: reconcile actual exposure, no automatic increase", "riskON+budgetPASS: market risk retention prerequisite only through deadline", "riskON+FAIL/UNKNOWN: retain not admitted; current reduce obligation remains", "partial/reject/latefill/cancelUNKNOWN: reconcile, increases blocked", "expired/TP/trim/ordinary exit/flip/flat: no restoration of closed rights", "small lot/fill race: integer lot and actual fills authoritative", "oscillation: no rearm admission absent edge/hysteresis/turnover contract"],
+  "goal": {"seed":10000,"TOTAL70":"4256975.067212381","TOTAL90":"5470396.514987347","settled_and_coherent_event_DD_max_percent":50,"zero_liquidations":true},
+  "no_claims": ["No candidate wealth/equity simulation", "No winner or ROI or DD guarantee", "No full/native authorization"]
+}

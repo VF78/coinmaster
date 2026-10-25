@@ -1,0 +1,27 @@
+{
+  "checks": {
+    "universe16_unique": true,
+    "all8TP4primary": true,
+    "post_fill_native_cash_identity": true,
+    "no_child_restore_admitted": true,
+    "no_retention_admitted": true,
+    "source_data_pins_unchanged": true,
+    "critical_inputs_present_for_known_math": true,
+    "riskheadroom_formula": true,
+    "no_native": true,
+    "run_errors_empty": true
+  },
+  "status": "PASS",
+  "files_sha256": {
+    "contract-amendment-precalculation.json": "84e83d776d2fd7a741a773e531880d8d6378a6e2a65e296ca8cf795c0ec942ab",
+    "correction-receipt.json": "1049963bd027b5dcdfd6f9e6879013cca5befc48b28a452c8c72d63470e13bcb",
+    "run-errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "RESULTS_RU.md": "50ddc66635665b5c959448a27f7cb45f449eedfc41ebfbe37ea5d66ec8c0e35b",
+    "causal-admission-results.json": "8c73956feb44ae1786d7ffdb043a2fbdc8996f57d65f5a8247568d8a74890174",
+    "frozen-cheap-contract.json": "5cf29dae53698777f2a18c8772a9846dbbd54a60a592c6ff306a07898b4e2a7b",
+    "attempt1-superseded-results.json": "b00715e9761c27efbfd5ec3a2b834c4aeeccb77918d5cf694609fd9ae4ce7a66",
+    "causal_admission.py": "f12703d5728c13590810d372868bebf69f60204244d5a5209fe1cf3945a8d930",
+    "attempt1-output.txt": "89762c7b165a34c04899b8cdc78d7f891a4612a346ee66c4bc72b341dad23d88",
+    "run-output.txt": "89762c7b165a34c04899b8cdc78d7f891a4612a346ee66c4bc72b341dad23d88"
+  }
+}

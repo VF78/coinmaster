@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "activation": 3,
+      "original_second_S0": "0.488",
+      "first_terminal_actual_filled": "0.487",
+      "second_filled_ever_at_OFF": "0.000",
+      "postonly_original_limit_noncrossing_plus60": false,
+      "same_parent_still_held_plus60": true,
+      "conditional_A0_clock_structural_quote_prerequisites": "FAIL_POST_ONLY_CROSSING"
+    },
+    {
+      "activation": 6,
+      "original_second_S0": "0.575",
+      "first_terminal_actual_filled": "0.574",
+      "second_filled_ever_at_OFF": "0.000",
+      "postonly_original_limit_noncrossing_plus60": true,
+      "same_parent_still_held_plus60": true,
+      "conditional_A0_clock_structural_quote_prerequisites": "PASS_PREREQUISITES_ONLY"
+    },
+    {
+      "activation": 7,
+      "original_second_S0": "0.440",
+      "first_terminal_actual_filled": "0.44",
+      "second_filled_ever_at_OFF": "0.00",
+      "postonly_original_limit_noncrossing_plus60": true,
+      "same_parent_still_held_plus60": true,
+      "conditional_A0_clock_structural_quote_prerequisites": "PASS_PREREQUISITES_ONLY"
+    },
+    {
+      "activation": 10,
+      "original_second_S0": "0.375",
+      "first_terminal_actual_filled": "0.375",
+      "second_filled_ever_at_OFF": "0.000",
+      "postonly_original_limit_noncrossing_plus60": true,
+      "same_parent_still_held_plus60": true,
+      "conditional_A0_clock_structural_quote_prerequisites": "PASS_PREREQUISITES_ONLY"
+    }
+  ],
+  "preserved_hashes": {
+    "causal-admission-results.json": "8c73956feb44ae1786d7ffdb043a2fbdc8996f57d65f5a8247568d8a74890174",
+    "four-child-admission-details.json": "8c26a65d6b69fdca2817f269ad377340b71ef54361125f96ad898ef1ed9c7270"
+  }
+}

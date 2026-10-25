@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "first_results_hash_unchanged": true,
+    "four_cases_only": true,
+    "cancel_ACK_proven4": true,
+    "account_capture4": true,
+    "quote_logged_bid_match4": true,
+    "pins_unchanged": true,
+    "errors_empty": true,
+    "native0": true
+  },
+  "status": "PASS",
+  "files_sha256": {
+    "extract_four_children.py": "84b730ef667ed6a27632c30de622b4b4a657f6e57a91f117718baa83988d32b2",
+    "four-child-admission-details.json": "8c26a65d6b69fdca2817f269ad377340b71ef54361125f96ad898ef1ed9c7270",
+    "FOUR_CHILD_NOTE_RU.md": "8b035031191d5b8f40c228bb09217ff445ceb4d8558b3e31007260cffd96a330",
+    "four-child-output.txt": "2927fb1525e988b5541f178a1e38d33fafedcca47c05f0a2a93512d5e7a6d8e1",
+    "four-child-errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

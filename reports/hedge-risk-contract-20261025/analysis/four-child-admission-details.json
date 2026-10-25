@@ -1,0 +1,559 @@
+{
+  "first_results_sha256_preserved": "8c73956feb44ae1786d7ffdb043a2fbdc8996f57d65f5a8247568d8a74890174",
+  "four_cases": [
+    {
+      "activation": 3,
+      "parent": "de39a013-8c05-4cb7-bd22-4dd50cd17bf9",
+      "decision_ns": 1726315260000000000,
+      "decision_utc": "2024-09-14T12:01:00+00:00",
+      "original_Q0": "0.975",
+      "F_ever": "0.487",
+      "D_permanent": "0.243",
+      "B_current": "0.244",
+      "remaining_original_unfilled": "0.488",
+      "original_cap_less_closed_and_held": "0.488",
+      "prior_paired_protective_reductions": 2,
+      "original_native_ENTRY_orders": [
+        {
+          "order_id": "O-20240914-000200-001-000-35",
+          "type": "MARKET",
+          "side": "BUY",
+          "price": "",
+          "quantity": "0.487",
+          "filled_qty": "0.487",
+          "TIF": "IOC",
+          "status": "FILLED",
+          "submit_ns": "1726272120000000000",
+          "accept_ns": null,
+          "terminal_record_ts_last": "1726272120000000000",
+          "terminal_utc": "2024-09-14T00:02:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [],
+          "cancel_ACK_known_before_OFF": false
+        },
+        {
+          "order_id": "O-20240914-000300-001-000-39",
+          "type": "LIMIT",
+          "side": "BUY",
+          "price": "60207.5",
+          "quantity": "0.488",
+          "filled_qty": "0.000",
+          "TIF": "GTC",
+          "status": "CANCELED",
+          "submit_ns": "1726272180000000000",
+          "accept_ns": "1726272180000000000",
+          "terminal_record_ts_last": "1726286400000000000",
+          "terminal_utc": "2024-09-14T04:00:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [
+            {
+              "actual_filled": "0.487",
+              "cancelled": "0.488",
+              "episode_id": "de39a013-8c05-4cb7-bd22-4dd50cd17bf9",
+              "event": "SECOND_TERMINAL",
+              "timestamp_ns": "1726286400000000000"
+            }
+          ],
+          "cancel_ACK_known_before_OFF": true
+        }
+      ],
+      "ordinary_BTC_exit_timing": [
+        {
+          "reason": "REGIME",
+          "ns": "1726531200000000000",
+          "utc": "2024-09-17T00:00:00+00:00",
+          "quantity": "0.244"
+        }
+      ],
+      "native_parent_terminal": {
+        "event": "PARENT_NATIVE_TERMINAL_FLAT",
+        "parent": "de39a013-8c05-4cb7-bd22-4dd50cd17bf9",
+        "timestamp_ns": "1726531200000000000"
+      },
+      "effective_TIF": "GTC, no generic 4h/day-end expiry in realU",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      },
+      "captured_native_account_at_riskOFF": {
+        "close_available_ns": "1726315260000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "12450.45774119",
+        "free_cash": "12450.45774119",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "12355.11834119"
+      },
+      "account_input_limit": "Captured native free_cash/margins are actual values, not hand-derived. Per-instrument reserved/open-order-credit marks/state and _entries_enabled snapshot not fully exported; prospective _tier_allows_increase UNKNOWN until native gate.",
+      "actual_quote_source_evidence": {
+        "method": "Exact saved native_baseline.py938-940 synthetic L1 CLOSE quote mapping, saved spread0; validated against actual logged riskOFF BTC bid",
+        "quotes_at_OFF_and_next_minute": [
+          {
+            "available_ns": 1726315260000000000,
+            "bid": "59674.0",
+            "ask": "59674.0"
+          },
+          {
+            "available_ns": 1726315320000000000,
+            "bid": "59638.9",
+            "ask": "59638.9"
+          }
+        ],
+        "riskOFF_logged_btc_bid": "59674",
+        "original_limit_postonly_not_crossing_at_OFF": false,
+        "immediate_fill_required": false,
+        "scope": "Same saved research execution assumptions; historical L2/latency UNKNOWN"
+      }
+    },
+    {
+      "activation": 6,
+      "parent": "7b85cc06-55d1-4770-8b7f-9cb7061a3028",
+      "decision_ns": 1728533940000000000,
+      "decision_utc": "2024-10-10T04:19:00+00:00",
+      "original_Q0": "1.149",
+      "F_ever": "0.574",
+      "D_permanent": "0",
+      "B_current": "0.574",
+      "remaining_original_unfilled": "0.575",
+      "original_cap_less_closed_and_held": "0.575",
+      "prior_paired_protective_reductions": 0,
+      "original_native_ENTRY_orders": [
+        {
+          "order_id": "O-20241010-000100-001-000-102",
+          "type": "MARKET",
+          "side": "SELL",
+          "price": "",
+          "quantity": "0.574",
+          "filled_qty": "0.574",
+          "TIF": "IOC",
+          "status": "FILLED",
+          "submit_ns": "1728518460000000000",
+          "accept_ns": null,
+          "terminal_record_ts_last": "1728518460000000000",
+          "terminal_utc": "2024-10-10T00:01:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [],
+          "cancel_ACK_known_before_OFF": false
+        },
+        {
+          "order_id": "O-20241010-000200-001-000-106",
+          "type": "LIMIT",
+          "side": "SELL",
+          "price": "60959.8",
+          "quantity": "0.575",
+          "filled_qty": "0.000",
+          "TIF": "GTC",
+          "status": "CANCELED",
+          "submit_ns": "1728518520000000000",
+          "accept_ns": "1728518520000000000",
+          "terminal_record_ts_last": "1728532800000000000",
+          "terminal_utc": "2024-10-10T04:00:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [
+            {
+              "actual_filled": "0.574",
+              "cancelled": "0.575",
+              "episode_id": "7b85cc06-55d1-4770-8b7f-9cb7061a3028",
+              "event": "SECOND_TERMINAL",
+              "timestamp_ns": "1728532800000000000"
+            }
+          ],
+          "cancel_ACK_known_before_OFF": true
+        }
+      ],
+      "ordinary_BTC_exit_timing": [
+        {
+          "reason": "BTC_TP1",
+          "ns": "1728580020000000000",
+          "utc": "2024-10-10T17:07:00+00:00",
+          "quantity": "0.121"
+        },
+        {
+          "reason": "BTC_TP2",
+          "ns": "1728582900000000000",
+          "utc": "2024-10-10T17:55:00+00:00",
+          "quantity": "0.121"
+        },
+        {
+          "reason": "BTC_TP3",
+          "ns": "1728583740000000000",
+          "utc": "2024-10-10T18:09:00+00:00",
+          "quantity": "0.332"
+        }
+      ],
+      "native_parent_terminal": {
+        "event": "PARENT_NATIVE_TERMINAL_FLAT",
+        "parent": "7b85cc06-55d1-4770-8b7f-9cb7061a3028",
+        "timestamp_ns": "1728583740000000000"
+      },
+      "effective_TIF": "GTC, no generic 4h/day-end expiry in realU",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      },
+      "captured_native_account_at_riskOFF": {
+        "close_available_ns": "1728533940000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "11062.03336402",
+        "free_cash": "11062.03336402",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "10988.53836402"
+      },
+      "account_input_limit": "Captured native free_cash/margins are actual values, not hand-derived. Per-instrument reserved/open-order-credit marks/state and _entries_enabled snapshot not fully exported; prospective _tier_allows_increase UNKNOWN until native gate.",
+      "actual_quote_source_evidence": {
+        "method": "Exact saved native_baseline.py938-940 synthetic L1 CLOSE quote mapping, saved spread0; validated against actual logged riskOFF BTC bid",
+        "quotes_at_OFF_and_next_minute": [
+          {
+            "available_ns": 1728533940000000000,
+            "bid": "60799.0",
+            "ask": "60799.0"
+          },
+          {
+            "available_ns": 1728534000000000000,
+            "bid": "60799.3",
+            "ask": "60799.3"
+          }
+        ],
+        "riskOFF_logged_btc_bid": "60799",
+        "original_limit_postonly_not_crossing_at_OFF": true,
+        "immediate_fill_required": false,
+        "scope": "Same saved research execution assumptions; historical L2/latency UNKNOWN"
+      }
+    },
+    {
+      "activation": 7,
+      "parent": "9476ea1b-e55e-420a-9cb1-d14ae675b2b0",
+      "decision_ns": 1728768360000000000,
+      "decision_utc": "2024-10-12T21:26:00+00:00",
+      "original_Q0": "0.880",
+      "F_ever": "0.44",
+      "D_permanent": "0",
+      "B_current": "0.44",
+      "remaining_original_unfilled": "0.440",
+      "original_cap_less_closed_and_held": "0.440",
+      "prior_paired_protective_reductions": 0,
+      "original_native_ENTRY_orders": [
+        {
+          "order_id": "O-20241012-080200-001-000-113",
+          "type": "MARKET",
+          "side": "BUY",
+          "price": "",
+          "quantity": "0.440",
+          "filled_qty": "0.440",
+          "TIF": "IOC",
+          "status": "FILLED",
+          "submit_ns": "1728720120000000000",
+          "accept_ns": null,
+          "terminal_record_ts_last": "1728720120000000000",
+          "terminal_utc": "2024-10-12T08:02:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [],
+          "cancel_ACK_known_before_OFF": false
+        },
+        {
+          "order_id": "O-20241012-080300-001-000-117",
+          "type": "LIMIT",
+          "side": "BUY",
+          "price": "62413.6",
+          "quantity": "0.440",
+          "filled_qty": "0.000",
+          "TIF": "GTC",
+          "status": "CANCELED",
+          "submit_ns": "1728720180000000000",
+          "accept_ns": "1728720180000000000",
+          "terminal_record_ts_last": "1728763200000000000",
+          "terminal_utc": "2024-10-12T20:00:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [
+            {
+              "actual_filled": "0.44",
+              "cancelled": "0.440",
+              "episode_id": "9476ea1b-e55e-420a-9cb1-d14ae675b2b0",
+              "event": "SECOND_TERMINAL",
+              "timestamp_ns": "1728763200000000000"
+            }
+          ],
+          "cancel_ACK_known_before_OFF": true
+        }
+      ],
+      "ordinary_BTC_exit_timing": [
+        {
+          "reason": "BTC_TP1",
+          "ns": "1728877080000000000",
+          "utc": "2024-10-14T03:38:00+00:00",
+          "quantity": "0.093"
+        },
+        {
+          "reason": "BTC_TP2",
+          "ns": "1728892920000000000",
+          "utc": "2024-10-14T08:02:00+00:00",
+          "quantity": "0.093"
+        },
+        {
+          "reason": "BTC_TP3",
+          "ns": "1728916020000000000",
+          "utc": "2024-10-14T14:27:00+00:00",
+          "quantity": "0.254"
+        }
+      ],
+      "native_parent_terminal": {
+        "event": "PARENT_NATIVE_TERMINAL_FLAT",
+        "parent": "9476ea1b-e55e-420a-9cb1-d14ae675b2b0",
+        "timestamp_ns": "1728916020000000000"
+      },
+      "effective_TIF": "GTC, no generic 4h/day-end expiry in realU",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      },
+      "captured_native_account_at_riskOFF": {
+        "close_available_ns": "1728768360000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "11719.89456831",
+        "free_cash": "11719.89456831",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "11885.70256831"
+      },
+      "account_input_limit": "Captured native free_cash/margins are actual values, not hand-derived. Per-instrument reserved/open-order-credit marks/state and _entries_enabled snapshot not fully exported; prospective _tier_allows_increase UNKNOWN until native gate.",
+      "actual_quote_source_evidence": {
+        "method": "Exact saved native_baseline.py938-940 synthetic L1 CLOSE quote mapping, saved spread0; validated against actual logged riskOFF BTC bid",
+        "quotes_at_OFF_and_next_minute": [
+          {
+            "available_ns": 1728768360000000000,
+            "bid": "63135.8",
+            "ask": "63135.8"
+          },
+          {
+            "available_ns": 1728768420000000000,
+            "bid": "63139.0",
+            "ask": "63139.0"
+          }
+        ],
+        "riskOFF_logged_btc_bid": "63135.8",
+        "original_limit_postonly_not_crossing_at_OFF": true,
+        "immediate_fill_required": false,
+        "scope": "Same saved research execution assumptions; historical L2/latency UNKNOWN"
+      }
+    },
+    {
+      "activation": 10,
+      "parent": "7ea00283-046d-4f9f-b648-b767798d47b5",
+      "decision_ns": 1731744240000000000,
+      "decision_utc": "2024-11-16T08:04:00+00:00",
+      "original_Q0": "0.750",
+      "F_ever": "0.375",
+      "D_permanent": "0",
+      "B_current": "0.375",
+      "remaining_original_unfilled": "0.375",
+      "original_cap_less_closed_and_held": "0.375",
+      "prior_paired_protective_reductions": 0,
+      "original_native_ENTRY_orders": [
+        {
+          "order_id": "O-20241116-000100-001-000-165",
+          "type": "MARKET",
+          "side": "BUY",
+          "price": "",
+          "quantity": "0.375",
+          "filled_qty": "0.375",
+          "TIF": "IOC",
+          "status": "FILLED",
+          "submit_ns": "1731715260000000000",
+          "accept_ns": null,
+          "terminal_record_ts_last": "1731715260000000000",
+          "terminal_utc": "2024-11-16T00:01:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [],
+          "cancel_ACK_known_before_OFF": false
+        },
+        {
+          "order_id": "O-20241116-000200-001-000-169",
+          "type": "LIMIT",
+          "side": "BUY",
+          "price": "90744.4",
+          "quantity": "0.375",
+          "filled_qty": "0.000",
+          "TIF": "GTC",
+          "status": "CANCELED",
+          "submit_ns": "1731715320000000000",
+          "accept_ns": "1731715320000000000",
+          "terminal_record_ts_last": "1731744000000000000",
+          "terminal_utc": "2024-11-16T08:00:00+00:00",
+          "terminal_before_riskOFF": true,
+          "SECOND_TERMINAL_same_timestamp_proof": [
+            {
+              "actual_filled": "0.375",
+              "cancelled": "0.375",
+              "episode_id": "7ea00283-046d-4f9f-b648-b767798d47b5",
+              "event": "SECOND_TERMINAL",
+              "timestamp_ns": "1731744000000000000"
+            }
+          ],
+          "cancel_ACK_known_before_OFF": true
+        }
+      ],
+      "ordinary_BTC_exit_timing": [
+        {
+          "reason": "BTC_TP1",
+          "ns": "1732021860000000000",
+          "utc": "2024-11-19T13:11:00+00:00",
+          "quantity": "0.079"
+        },
+        {
+          "reason": "BTC_TP2",
+          "ns": "1732108740000000000",
+          "utc": "2024-11-20T13:19:00+00:00",
+          "quantity": "0.079"
+        },
+        {
+          "reason": "BTC_TP3",
+          "ns": "1732161180000000000",
+          "utc": "2024-11-21T03:53:00+00:00",
+          "quantity": "0.217"
+        }
+      ],
+      "native_parent_terminal": {
+        "event": "PARENT_NATIVE_TERMINAL_FLAT",
+        "parent": "7ea00283-046d-4f9f-b648-b767798d47b5",
+        "timestamp_ns": "1732161180000000000"
+      },
+      "effective_TIF": "GTC, no generic 4h/day-end expiry in realU",
+      "eligibility_factors": {
+        "structural_original_right_potential": "YES_BEFORE_ORDINARY_TP_OR_FLAT_UNDER_NEW_LOCK_CONTRACT",
+        "old_child_cancel_ACK": "KNOWN",
+        "actual_quote": "AVAILABLE_RECONSTRUCTED_EXACT_EXISTING_CLOSE_MODEL",
+        "margin_model_availability": "CAPTURED_STOCK_POLICY_AND_NATIVE_ACCOUNT_FIELDS_PRESENT; exact prospective gate not replayed",
+        "current_legal_permission": "NO_CURRENT_PERMANENT_STOP; new reversible lock contract and explicit code budget required"
+      },
+      "captured_native_account_at_riskOFF": {
+        "close_available_ns": "1731744240000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "14492.27139409",
+        "free_cash": "14492.27139409",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "14537.51139409"
+      },
+      "account_input_limit": "Captured native free_cash/margins are actual values, not hand-derived. Per-instrument reserved/open-order-credit marks/state and _entries_enabled snapshot not fully exported; prospective _tier_allows_increase UNKNOWN until native gate.",
+      "actual_quote_source_evidence": {
+        "method": "Exact saved native_baseline.py938-940 synthetic L1 CLOSE quote mapping, saved spread0; validated against actual logged riskOFF BTC bid",
+        "quotes_at_OFF_and_next_minute": [
+          {
+            "available_ns": 1731744240000000000,
+            "bid": "91327.7",
+            "ask": "91327.7"
+          },
+          {
+            "available_ns": 1731744300000000000,
+            "bid": "91297.6",
+            "ask": "91297.6"
+          }
+        ],
+        "riskOFF_logged_btc_bid": "91327.7",
+        "original_limit_postonly_not_crossing_at_OFF": true,
+        "immediate_fill_required": false,
+        "scope": "Same saved research execution assumptions; historical L2/latency UNKNOWN"
+      }
+    }
+  ],
+  "Oct25_market_only": {
+    "scope": "MARKET_ONLY_RECONSTRUCTION_NOT_ACTUAL_OWNER_EVENT_OR_CANDIDATE_WEALTH",
+    "boundary": "68084.6",
+    "BTC_side": 1,
+    "first_entry_utc": "2024-10-25T16:01:00+00:00",
+    "actual_owner_flat_utc": "2024-10-25T22:58:00+00:00",
+    "branch_expiry_utc": "2024-10-26T00:01:00+00:00",
+    "first_boundary_cross_quote": null,
+    "market_risk_OFF_utc": "2024-10-26T00:01:00+00:00",
+    "OFF_reason": "FIXED_F0_8H_EXPIRY",
+    "firstTP_nextH4_plus60_utc": "2024-10-25T20:01:00+00:00",
+    "market_OFF_before_firstTP_deadline": false,
+    "source_quote_rows": 481,
+    "closed_H4_feed_rows": [
+      {
+        "a": "0.3154506204743265243185675772",
+        "atr_sol": "3.8502620623375473683243682137298062939387248218268",
+        "available_ns": 1729872000000000000,
+        "b2_long": false,
+        "b2_short": false,
+        "btc_close": "67653.2",
+        "decision_ns": 1729872000000000000,
+        "f0_long": true,
+        "f0_short": false,
+        "k_long": "68847.2",
+        "k_short": "66721.5",
+        "not_before_ns": 1729872060000000000,
+        "open_o": "68084.6",
+        "sol_close": "172.36",
+        "valid": true
+      },
+      {
+        "a": "0.3154506204743265243185675772",
+        "atr_sol": "4.1395290578848654134440561984633915586573873345534",
+        "available_ns": 1729886400000000000,
+        "b2_long": false,
+        "b2_short": false,
+        "btc_close": "66825.4",
+        "decision_ns": 1729886400000000000,
+        "f0_long": false,
+        "f0_short": false,
+        "k_long": "68847.2",
+        "k_short": "67215.1",
+        "not_before_ns": 1729886460000000000,
+        "open_o": "67653.2",
+        "sol_close": "167.93",
+        "valid": true
+      },
+      {
+        "a": "0.3279468007891378891378599230",
+        "atr_sol": "4.5709912680359464553409093271445778758961453820853",
+        "available_ns": 1729900800000000000,
+        "b2_long": false,
+        "b2_short": false,
+        "btc_close": "66666.8",
+        "decision_ns": 1729900800000000000,
+        "f0_long": false,
+        "f0_short": false,
+        "k_long": "68847.2",
+        "k_short": "67215.1",
+        "not_before_ns": 1729900860000000000,
+        "open_o": "66825.4",
+        "sol_close": "164.79",
+        "valid": true
+      }
+    ],
+    "critical_limit": "No continuing uncut equity/BTC/margin/ROI inferred; original rule market state only"
+  },
+  "new_native_conditional_gate": "If separately authorized: one native lifecycle fixture for reversible original-unfilled GTC lock; require cancel ACK and no other owned increase, original first-positiveTP/flat/parent terminal guard, exact original price/TIF/remaining cap, fresh quote+marks+entries-enabled+stock native margin gate, partial/late fill reconciliation. No candidate ROI or full run needed for this gate.",
+  "engines": 0,
+  "product_edits": 0,
+  "downloads": 0,
+  "pins": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/analysis/causal-admission-results.json": "8c73956feb44ae1786d7ffdb043a2fbdc8996f57d65f5a8247568d8a74890174",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/result/paired-prefix-B2_F0-raw-native.json": "55a1cc2b7619574a65d338fe6d1c0dfbeaf251c4107b69953aa4c4cac52f3fcd",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/result/paired-prefix-B2_F0-orders.csv": "f0396eafe857880a540fb043844b9ec498e735693ae9794c7a5dc7727feedf87",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/strategy/market_redesign.py": "9059502f44ceeeda72fc09fdcbb09253d25db1c5c8ef4483c01ea423938a5806",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/strategy/split_cover.py": "d285fd426c125cf908194ec2183e33dcdbbe1fca1660bc0dac14ddf6ea2510f1",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/strategy/wave_overlay.py": "8d5589c555f32dffb75414d54e83bb0ed9afcb33f337aaf855d526bc54344b7a",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/strategy/paired_prefix.py": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/research/native_baseline.py": "628609e52b9c5bef77d2e85b75eb32562a9830e3030237ee1fc95d5e88d100ec",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/research/native_fixture.py": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/coinmaster/venues/bybit_profile.py": "9a26ffc79aa7f4e80d14fb1bb42a91846e153378e83d0b9a79695e46195088e7",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/source-7d513ca1e0ec0fadd67167661a3173f105b19ba7/runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/result/minute-native-risk.csv.gz": "e3ab6c9e88d6da40ae5f21e4e1a72d5b25e9cb3191feb50425c91f4dba8dd49f",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/lot-corridor-kwargs-B2_F0.json": "447ccfbcb02cfaaa03a7544ba860a0d625cee1bca42987594da6e9ae5603bd94"
+  },
+  "preserved_inspection_error": "Initial narrow schema inspection treated market_redesign_audit as list; TypeError/KeyError slice corrected to events key; no source mutation or calculation affected."
+}

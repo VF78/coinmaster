@@ -1,0 +1,28 @@
+{
+  "task": "CM-HEDGE-CONTRACT-ADMISSION-20261025",
+  "current_issue": 136,
+  "status": "WAIT_OWNER_NEW_PROTOCOL_BUDGET",
+  "native_engines": 0,
+  "product_changes": 0,
+  "downloads": 0,
+  "protocol_sha256": "5c5e2b41555ee4e5c1970c5c5dadd173cd10599e00158224b706cb0083f477a0",
+  "contract_sha256": "8432e4decdf249ba2b80bb4eeac7e8773a1d24d39eb57b5d9026a3cdd516a2c0",
+  "proposed_only": {
+    "native_fixture_max": 6,
+    "fixture_hours_max": 48,
+    "prefix_max": 3,
+    "window": "[2024-09-01,2025-01-15)UTC",
+    "order": [
+      "R2_OFF",
+      "R2_C0_B2_F0",
+      "R2_A0_B2_F0"
+    ],
+    "full": 0,
+    "training": 0,
+    "newdownloads": 0
+  },
+  "old_budgets": "7/7and11/12CLOSED; no reuse",
+  "owner_question": "pending direct human reply; elapsed time not authorization",
+  "publication": "prior explicit PUBLIC research approval persists; not deployment",
+  "economic_goals": "70/50and90/50NOT_MET"
+}
