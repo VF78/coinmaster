@@ -105,7 +105,7 @@ def registered_fixture_context(family,start_ms=-86400000,end_ms=86400001,paired=
     bound=signature(run_native_diagnostic).bind(**kwargs);bound.apply_defaults();validate_native_control(bound.arguments)
     context=dict(bound.arguments)
     def kind(instrument,price_type):return BarType(instrument,BarSpecification(1,BarAggregation.DAY,price_type),AggregationSource.EXTERNAL)
-    context.update(btc_instrument=BTC_PERP,sol_instrument=SOL_PERP,kind=kind,mark_client=ClientId('BYBIT_MARK'),signal_client=ClientId('BYBIT_SIGNAL'),selected_leverage=((BTC_PERP.id,D(40)),(SOL_PERP.id,D(20))),policy=kwargs['execution_policy'],seed_bars=(),daily={'BTCUSDT':{}},next_bar_types=(next_bar_type(BTC_PERP.id,4),next_bar_type(SOL_PERP.id,1)),confirmation_bars=(),h4_bar_type=None,h4_seed=(),cover_hour_seed=(),trading_start_ms=start_ms,trading_end_ms=end_ms,start_at=datetime.fromtimestamp(start_ms/1000,timezone.utc),end_at=datetime.fromtimestamp(end_ms/1000,timezone.utc))
+    context.update(max_mark_age_ns=2*M,btc_instrument=BTC_PERP,sol_instrument=SOL_PERP,kind=kind,mark_client=ClientId('BYBIT_MARK'),signal_client=ClientId('BYBIT_SIGNAL'),selected_leverage=((BTC_PERP.id,D(40)),(SOL_PERP.id,D(20))),policy=kwargs['execution_policy'],seed_bars=(),daily={'BTCUSDT':{}},next_bar_types=(next_bar_type(BTC_PERP.id,4),next_bar_type(SOL_PERP.id,1)),confirmation_bars=(),h4_bar_type=None,h4_seed=(),cover_hour_seed=(),trading_start_ms=start_ms,trading_end_ms=end_ms,start_at=datetime.fromtimestamp(start_ms/1000,timezone.utc),end_at=datetime.fromtimestamp(end_ms/1000,timezone.utc))
     if paired:
         if family!='R3':raise ValueError('R2_PAIRED_NOT_ADMITTED')
         context['research_paired_prefix']='B2_F0'

@@ -21,7 +21,8 @@ def test_shared_constructor_is_frozen_original_expression_and_actual_config(fami
     env={**vars(native),**context,'WaveOverlayStrategyConfig':WaveOverlayStrategyConfig,'TierMarginPolicy':TierMarginPolicy,'PriceType':PriceType,'venue_mark_data_type':venue_mark_data_type,'daily_signal_data_type':daily_signal_data_type}
     original=eval(compile(expr,str(frozen),'eval'),env)
     assert snapshot_config(config)==snapshot_config(original)
-    assert config.candidate==__import__('coinmaster.research.registered_control',fromlist=['config_for']).config_for(family)['candidate'] if False else config.candidate is context['candidate']
+    assert config.candidate is context['candidate']
+    assert config.research_paired_prefix is None
     assert config.research_btc_direction_sizing is True
     assert config.research_wait_4h is True
     assert str(config.research_regime_reentry_band)=='0.5'
