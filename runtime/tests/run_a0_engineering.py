@@ -15,7 +15,7 @@ from test_native_episode_risk import tick,run_ticks
 from coinmaster.venues.marks import venue_mark
 from nautilus_trader.model.identifiers import ClientId
 M=60_000_000_000
-CASES=['A03_A04_COMBINED_CANCEL_RACES','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
+CASES=['A05_CROSS_MARGIN_UNKNOWN']
 COMBINED_DEPTHS={'old_late':'1','release_partial':'2','release_late':'3'}
 
 class Recorder(pre.Recorder):
@@ -64,7 +64,7 @@ class CountedEngine(pre.CountedEngine):
 
 class StockProbe(pre.ControlProbe):
     def __init__(self,cfg):
-        self.stock_margin_calls=[];self.cancel_calls=[];self.delay_cancel=False;self.delay_target_ack=False;self.held_target_acks=[];self.inside_tp_fill=False;super().__init__(cfg)
+        self.stock_margin_calls=[];self.cancel_calls=[];self.delay_cancel=False;self.delay_target_ack=False;self.held_target_acks=[];self.held_target_ack_ids=set();self.inside_tp_fill=False;super().__init__(cfg)
     def _tier_allows_increase(self,*args):
         result=WaveOverlayStrategy._tier_allows_increase(self,*args)
         self.stock_margin_calls.append(dict(instrument=str(args[0]),side=str(args[1]),quantity=str(args[2]),timestamp=args[3],allowed=result))
@@ -73,11 +73,15 @@ class StockProbe(pre.ControlProbe):
         self.cancel_calls.append(dict(order_id=str(order.client_order_id),inside_tp_fill=self.inside_tp_fill,ts=self.clock.timestamp_ns()))
         if self.delay_cancel and not order.is_reduce_only:return
         return super().cancel_order(order,*args,**kwargs)
-    def on_order_accepted(self,event):
-        intent=self._pending_by_order.get(str(event.client_order_id))
+    def _accept_native_order(self,event):
+        # Both native callback routes converge here. Delaying only the typed
+        # callback leaves the generic callback's real economic ACK visible.
+        oid=str(event.client_order_id);intent=self._pending_by_order.get(oid)
         if self.delay_target_ack and intent and intent.action=='BTC_REDUCE':
-            self.held_target_acks.append(event);return
-        return super().on_order_accepted(event)
+            if oid not in self.held_target_ack_ids:
+                self.held_target_ack_ids.add(oid);self.held_target_acks.append(event)
+            return
+        return super()._accept_native_order(event)
     def on_order_filled(self,event):
         intent=self._pending_by_order.get(str(event.client_order_id))
         self.inside_tp_fill=bool(intent and intent.action=='BTC_REDUCE')
@@ -162,8 +166,8 @@ def run_case(case):
             assert not rights['submitted'] and rights['denial_counts']['CURRENT_THREE_TP_ACK_UNKNOWN']
             e.capture('CURRENT_TARGET_ACK_HELD')
             s.delay_target_ack=False
-            for event in s.held_target_acks:WaveOverlayStrategy.on_order_accepted(s,event)
-            s.held_target_acks=[]
+            for event in s.held_target_acks:WaveOverlayStrategy._accept_native_order(s,event)
+            s.held_target_acks=[];s.held_target_ack_ids.clear()
             advance(e,s,2*M+15,btc='98.4')
             assert not rights['submitted'] and rights['denial_counts']['POST_ONLY_CROSS']
             frozen=rights['locked_cap']

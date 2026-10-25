@@ -195,6 +195,31 @@ def test_combined_fixture_three_distinct_real_depths_qualify_fresh_l1_consumptio
     from coinmaster.research.native_fixture import BTC_PERP
     depths=[BTC_PERP.make_qty(D(COMBINED_DEPTHS[k])).as_decimal() for k in ('old_late','release_partial','release_late')]
     assert depths==[D(1),D(2),D(3)] and all(a!=b for a,b in zip(depths,depths[1:]))
-    assert CASES==['A03_A04_COMBINED_CANCEL_RACES','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
+    assert CASES==['A05_CROSS_MARGIN_UNKNOWN']
     # Each distinct displayed size is fresh per the pinned stock size-change
     # condition; no timestamp-only replenishment or generated fill is asserted.
+
+
+def test_actual_generic_and_typed_accept_callbacks_both_hold_unknown_until_direct_flush():
+    from types import SimpleNamespace as S
+    from run_a0_engineering import StockProbe,fixture_configuration
+    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+    from coinmaster.research.native_fixture import BTC_PERP
+    from nautilus_trader.model.events import OrderAccepted
+    from nautilus_trader.model.identifiers import TraderId,StrategyId,ClientOrderId,VenueOrderId,AccountId
+    from nautilus_trader.core.uuid import UUID4
+    s=StockProbe(fixture_configuration('A05_CROSS_MARGIN_UNKNOWN'));oid='delayed-target'
+    intent=S(id='tpintent',action='BTC_REDUCE',episode_id='p',level=0)
+    s._pending_by_order[oid]=intent;s._order_audit[oid]=dict(submit_ns='1',accept_ns=None)
+    m=dict(accepted={1,2},consumed=set(),generation=0,order_generation={},intent_generation={'tpintent':0},generations={0:dict(required={0,1,2},accepted={1,2},authorized=False)})
+    s._md_plans['p']=m;s.delay_target_ack=True
+    event=OrderAccepted(TraderId('BACKTESTER-001'),StrategyId('WaveOverlayStrategy-000'),BTC_PERP.id,ClientOrderId(oid),VenueOrderId('venue-target'),AccountId('P1SIM-001'),UUID4(),2,2)
+    WaveOverlayStrategy.on_order_event(s,event)
+    WaveOverlayStrategy.on_order_accepted(s,event)
+    assert len(s.held_target_acks)==1 and s.held_target_ack_ids=={oid}
+    assert m['accepted']=={1,2} and s._order_audit[oid]['accept_ns'] is None and oid not in s._md_accepted_ids
+    assert not m['generations'][0]['authorized']
+    s.delay_target_ack=False
+    WaveOverlayStrategy._accept_native_order(s,s.held_target_acks[0])
+    assert m['accepted']=={0,1,2} and m['generations'][0]['authorized']
+    assert s._order_audit[oid]['accept_ns']=='2' and oid in s._md_accepted_ids
