@@ -705,6 +705,7 @@ def run_native_diagnostic(
     research_v3_risk: str | None = None,
     research_h1_b1: str | None = None,
     research_paired_policy: bool = False,
+    research_registered_control: str | None = None,
     research_paired_prefix: str | None = None,
     research_paired_signal_rows: tuple = (),
     research_btc_real_u: bool = False,
@@ -767,7 +768,11 @@ def run_native_diagnostic(
             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
     if research_paired_prefix and not research_paired_policy:
         raise ValueError("PAIRED_REQUIRES_STOCK_SHARED_LIQUIDITY_POLICY")
-    if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == "CLEAN_Q" and research_sol_off and observe_minute_risk and include_funding):
+    if research_registered_control is not None:
+        from coinmaster.research.registered_control import validate_native_control
+        validate_native_control(locals())
+    approved_q = "LEGACY_Q_CONTROL" if research_registered_control == "R2" else "CLEAN_Q"
+    if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == approved_q and research_sol_off and observe_minute_risk and include_funding):
         raise ValueError("PAIRED_POLICY_REQUIRES_EXACT_R3_FUNDED_OBSERVER")
     if research_paired_prefix and not research_paired_signal_rows:
         raise ValueError("PAIRED_REQUIRES_FROZEN_CAUSAL_ALL_H4_FEED")

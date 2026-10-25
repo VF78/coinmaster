@@ -148,7 +148,7 @@ BOOL_REPORT_FLAGS = (
 DIRECTION_DESCRIPTOR = {"freeze":"GENUINE_EPISODE_CREATION", "long":"5.5", "short":"7.875"}
 
 
-def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
+def build_native_kwargs(config, data_root, artifact_dir, variant, feed, *, registered_control=None):
     """Decode the frozen report schema to the existing native CALL schema.
 
     A report descriptor is not a truthy flag. Every bool is checked strictly;
@@ -160,6 +160,9 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
     from coinmaster.domain.wave_overlay import Candidate
     from coinmaster.research.native_baseline import run_native_diagnostic,ExecutionPolicy,FixedBaseFeePolicy
     if variant not in VARIANTS:raise ValueError("UNAPPROVED_VARIANT")
+    if registered_control is not None:
+        from coinmaster.research.registered_control import validate_config
+        validate_config(config, registered_control)
     flags={}
     for key in BOOL_REPORT_FLAGS:
         value=config[key]
@@ -167,7 +170,8 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
         flags[key]=value
     if config["research_btc_direction_sizing"] != DIRECTION_DESCRIPTOR:
         raise ValueError("EXACT_R3_DIRECTION_DESCRIPTOR_REQUIRED")
-    if config["research_btc_q_mode"]!="CLEAN_Q" or config["research_btc_split_discount"]!="0.005" or not flags["research_btc_real_u"]:
+    expected_q = "LEGACY_Q_CONTROL" if registered_control == "R2" else "CLEAN_Q"
+    if config["research_btc_q_mode"]!=expected_q or config["research_btc_split_discount"]!="0.005" or not flags["research_btc_real_u"]:
         raise ValueError("EXACT_APPROVED_R3_SOURCE_CONFIG_REQUIRED")
     wait=config["next_band_research"]["wait_4h"]
     if type(wait) is not bool:raise ValueError("R3_REPORT_FLAG_NOT_BOOL:wait_4h")
@@ -181,6 +185,8 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed):
         research_btc_q_mode=config["research_btc_q_mode"],research_wait_4h=wait,
         research_regime_reentry_band=config["hedge_band_research"]["regime_reentry_band"],
         research_paired_policy=True,research_paired_prefix=VARIANTS[variant],research_paired_signal_rows=feed)
+    if registered_control is not None:
+        kwargs["research_registered_control"] = registered_control
     # Bind the COMPLETE call against the actual installed source entrypoint,
     # including every omitted default; no partial hand-maintained signature.
     actual=signature(run_native_diagnostic)
