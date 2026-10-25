@@ -156,7 +156,10 @@ def run_case(case):
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--ledger',required=True);ap.add_argument('--gate',required=True);args=ap.parse_args()
-    gate=json.loads(Path(args.gate).read_text());head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+    gate=json.loads(Path(args.gate).read_text())
+    source_root=Path(__file__).resolve().parents[2]
+    pin=source_root/'.source-commit'
+    head=pin.read_text().strip() if pin.is_file() else subprocess.check_output(['git','rev-parse','HEAD'],cwd=source_root,text=True).strip()
     if gate.get('source_commit')!=head or not gate.get('root_go'):raise ValueError('ROOT_REVIEW_SOURCE_GO_REQUIRED')
     global_rec=Recorder(args.ledger,gate);pre.REC=global_rec
     for case in CASES:
