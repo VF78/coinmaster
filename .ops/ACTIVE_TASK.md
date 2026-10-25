@@ -1,18 +1,18 @@
-Updated:2026-10-25 Europe/Moscow. Status:TP_CONTINUITY_HOLD_FOR_EXPLICIT_AMENDMENT; original70/50+90/50 goalsNOT_MET.
-Project#2 #136 OPEN/Todo/isArchivedfalse actualFINAL_PROJECT_READBACK.json; Title "[Research] A0 original BTC child rights: causal admission and bounded probe proposal".
+Updated:2026-10-25 Europe/Moscow. Status:TP_CONTINUITY_AMENDMENT4_APPROVED_PREPARATION; original70/50+90/50 goalsNOT_MET.
+Project#2 #136 OPEN/InProgress updateACK; actualAMEND4readback beforeend; Title "[Research] A0 original BTC child rights: causal admission and bounded probe proposal".
 Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021 branchcodex/btc-pattern-pilot-m2-20261021; checkpoint/exactremote in git/receipt.
 CURRENT packet reports/tp-continuity-20261025; RESULTS_AND_NEXT_STEP_RU.md +ROOT_CURRENT_DISPOSITION.json authoritative result/nextstep; oldproposals/gates historical.
-OwnerdirectlyAPPROVED originalTPcontinuity max3fixtures+3conditionalprefix; owner-approval.json. Protocol34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4 remainscurrentauthority.
-Engineering2/3=2FAILED/active0; remaining1HOLD/notclosed/notspent. Prefix0/3BLOCKED. Noautomaticretry/rootGO/productpatch/economics; originaloldbudgetsnotreused.
+OwnerdirectlyAPPROVED originalTPcontinuity max3fixtures+3conditionalprefix; owner-approval.json. Originalprotocol34d1fbd... +DIRECTAPPROVEDamendment6f89de51... definecurrentconditionalauthority.
+Engineering2FAILED/active0; approvedAMENDmax4/remaining2conditional, soleownerledgeramendpending. Prefix0/3BLOCKED. Noautomaticretry/rootGO/productpatch/economics; originaloldbudgetsnotreused.
 Physical1source147OS1 beforedata: finaladd_data sortFalse leftstockbufferunsorted. Fixed in source258; noAPIevidencefrom1.
 Physical2source258OS1 actualBTC1/SOLshort10/SOLrelief2.5/BTCdebt.25; heldBTC.750/SOLshort7.5/TPleaves212/212/576 vsfrozen159/159/432. Updated0/modify0/TPfills0.
 CausefixturechangesexpectedondebtbutonlycorrectsfromUpdated; noAPIcommand=>NOT_PROVEN, notstockUNSUPPORTED. Coverage0gaps describesonlyreachednonmarketablestages; notterminalflat. Actual5STOPPEDthenDISPOSED.
 BothFAILEDrows/actualprocessRC/rawsnapshots/sourcecopies preserved; currentledgerSHAd160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94. Physical1unchangedcanonical8acb1eaed5838f92cfb2f7f14b29b670cf3057cabfcf5f7553c190b108afb9da.
 F1-final-slot-reachability-review.json SHA44daecaedd3d67cef80daa9d0fbbd2ec0638dcd37aa24cd27529714d6c18a9ff: reorderingpartialbeforedebtcantriggerautoResizebutnotvalidmarketablemodify/freshdepth. DoNOTburnlastslotonknownincompletecase.
-PROPOSED ONLY AMENDMENT_STOCK_STRESS_PROPOSED_RU.md SHA6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda; reviewFOR_OWNER_CONSENT_ONLY/P0P1open0. Newhumanquestionpending, noapprovalinferredfromproposal.
+PROPOSED ONLY AMENDMENT_STOCK_STRESS_PROPOSED_RU.md SHA6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda; reviewFOR_OWNER_CONSENT_ONLY/P0P1open0. DIRECTOWNERAPPROVED «Утверждаю уточнение и общий лимит4»; owner-approval-amendment4.json, no repeatedconsentneeded.
 Proposesoverallengineering3→4(+1): spent2FAILED+existingphysical3linkedpositionAPIstress+newphysical4integratedproductproof onlyafteractualF1PASS. Prefixmax3unchangedconditional; noreserve/failscount.
 NewAPIstress usesPUBLICsubmit_order withACTUALnativepositionID, nofakeparent/OCO/cachemutation. Fixture-onlynewroute; productlinkage stays763. MandatorysameOIDnativeTradeIDfillafterUpdatedBEFOREmodifyreturn/freshdepth/entitlement/all3TPs/cleanlifecycle; safetyUNKNOWNSTOP.
-BEFOREanynewcode/engine readactualhumananswer. Ifapproved recordexactconsent/amendledgerpreserving2rows; soleownerpreparesonefocusedfixturepass/sourcecommit→immutableMac/review/rootGO; no automaticlaunch merelyfromyes.
+Actualhumananswerreceived/receiptwritten; amendledgerpreserving2rows; soleownerpreparesonefocusedfixturepass/sourcecommit→immutableMac/review/rootGO; no automaticlaunch merelyfromyes.
 ProductpatchconditionalactualF1PASSonly: protectiveTPvsincreases/debtactualheld/nativeACK/currentremaininglevels; BTCcore/R2LEGACY_Q/TPpricesweightsquantization/SOLsignals-cuts-rearm/A0originalrightsunchanged. Noenginepatch/disableRO/newOMS.
 Source258f6ba5655de6d2c9c3fb4d081e16e576f12767 PUBLICexactremoteverified, branchcodex/hedge-rights-unlock-20261025; onlyfixturefilechanged,83productfilesbyteidentical763d985617abd7a7afef5eec13912303983d8837; sourcepushnotdeploy.
 CanonicalVPS isolated /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/hedge-rights-unlock-20261025 root@46.225.163.123. Preserveuncommittedfixture-onlydraft; metadata+patch0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182 exported/notfrozen/notrun/excludedsourcepush.

@@ -1,0 +1,19 @@
+{
+  "schema": "CM_TP_STOCK_STRESS_OWNER_APPROVAL_V1",
+  "status": "APPROVED_BY_OWNER",
+  "recorded_utc": "2026-10-25T18:25:14.586193+00:00",
+  "exact_human_answer": "Утверждаю уточнение и общий лимит 4",
+  "question_item_id": "[\"request_user_input_async\",\"call_0b97bb40bce7492b99c006169f66f2cf\",0]",
+  "approved_protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/AMENDMENT_STOCK_STRESS_PROPOSED_RU.md",
+  "approved_protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
+  "engineering_total_max": 4,
+  "engineering_already_started": 2,
+  "additional_instances_vs_original": 1,
+  "remaining_instances": 2,
+  "prefix_max_unchanged": 3,
+  "prefix_already_started": 0,
+  "scope": "Physical3 stock API stress using PUBLIC submit_order with ACTUAL existing native position ID; no product linkage change. Only after actual F1PASS + independent acceptance narrow product patch and physical4 integrated proof. No hidden constructors/reserve/auto-retry. Individual rootGO still required.",
+  "full_training_downloads_pilot_production_externalorders_transfers": 0,
+  "before_amendment_ledger_sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94",
+  "publication": "Earlier exact PUBLIC VF78/coinmaster source/tests/reports permission persists; no deployment."
+}

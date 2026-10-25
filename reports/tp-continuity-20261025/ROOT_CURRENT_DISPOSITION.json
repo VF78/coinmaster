@@ -1,14 +1,15 @@
 {
   "schema": "CM_TP_CONTINUITY_ROOT_DISPOSITION_V1",
-  "status": "HOLD_LAST_SLOT_AWAIT_EXPLICIT_PROTOCOL_AMENDMENT",
+  "status": "OWNER_APPROVED_AMEND4_F1_STRESS_PREPARATION",
   "utc": "2026-10-25T16:49:24.828174+00:00",
   "engineering": {
-    "approved_max": 3,
+    "approved_max": 4,
     "physical_started": 2,
     "failed": 2,
     "active": 0,
-    "remaining": 1,
-    "remaining_status": "HOLD_NOT_CLOSED_NOT_SPENT_NOT_TRANSFERABLE"
+    "remaining": 2,
+    "remaining_status": "CONDITIONAL_F1_STRESS_THEN_INTEGRATED_PRODUCT_NO_RESERVE",
+    "ledger_amendment": "SOLE_OWNER_PENDING_PRESERVE_TWO_FAILED"
   },
   "prefix": {
     "approved_max": 3,
@@ -17,7 +18,7 @@
   },
   "product_patch_allowed": false,
   "stock_api": "NOT_PROVEN_NEITHER_PASS_NOR_UNSUPPORTED",
-  "reason": "Current fixture lacks mandatory valid marketable modify path. No knowingly incomplete third run. New explicit linked-position API stress route and max4 are proposed only. No source/economic/pilot/production permission is inferred.",
+  "reason": "Direct exact human AMEND4 approval recorded. Prepare explicit actual-position API stress, immutable source and independent review before rootGO. No product/economic admission until actual gates.",
   "new_proposal": "AMENDMENT_STOCK_STRESS_PROPOSED_RU.md",
   "proofs": [
     {
@@ -36,5 +37,6 @@
       "path": "F1-final-slot-reachability-review.json",
       "sha256": "44daecaedd3d67cef80daa9d0fbbd2ec0638dcd37aa24cd27529714d6c18a9ff"
     }
-  ]
+  ],
+  "amendment_owner_receipt": "owner-approval-amendment4.json"
 }

@@ -1,8 +1,8 @@
 # TP continuity: текущий результат
 
-Статус: **F1 NOT_PROVEN; product patch и экономика заблокированы**. Это не доказательство несовместимости stock Nautilus. Ядро BTC и торговый runtime не менялись; пилот и production не затрагивались.
+Статус: **AMEND4 утверждён владельцем; F1 stress готовится, feasibility пока NOT_PROVEN; product patch и экономика заблокированы**. Это не доказательство несовместимости stock Nautilus. Ядро BTC и торговый runtime не менялись; пилот и production не затрагивались.
 
-Прямое согласование владельца: до 3 коротких физических native fixtures и затем до 3 свежих prefix при успешных gates. Израсходованы 2 fixture, обе FAILED; активных процессов нет. Один слот остаётся HOLD до отдельного решения координатора внутри этого лимита. Prefix: 0/3, full: 0. Старые бюджеты закрыты и не используются.
+Прямое новое согласование владельца: «Утверждаю уточнение и общий лимит 4», receipt `owner-approval-amendment4.json`. Общий engineering max4 включает уже потраченные 2 FAILED; оставшиеся physical3 stress и physical4 integrated строго условны. Активных процессов нет; подготовка разрешена, отдельный root GO перед engine обязателен. Prefix: 0/3, full: 0. Старые бюджеты закрыты и не используются.
 
 | Физическая попытка | Что действительно проверено | Причина остановки |
 |---|---|---|
@@ -15,7 +15,7 @@
 
 Итоговое решение координатора: **HOLD последнего слота, без нового engine**. Независимый `F1-final-slot-reachability-review.json` подтвердил, что перестановка partial TP0 перед debt может дать реальный auto-resize, но не обязательный valid marketable modify с непосредственным исполнением: все resize остаются при bid100; позднее remaining159/432 уже совпадает с frozen allocation. Нельзя расходовать третий слот, заранее зная об отсутствии решающей проверки. Это ограниченный вывод о данном fixture, а не доказательство глобальной невозможности stock API.
 
-Подготовлен отдельный **НЕ СОГЛАСОВАННЫЙ** `AMENDMENT_STOCK_STRESS_PROPOSED_RU.md`: явный тестовый public API маршрут с реальным native position ID для трёх TP, чтобы stock auto-resize действительно вызвал marketable modify; положительное фактическое nested исполнение той же заявки обязательно. Fake parents/позиции, engine patch и изменения product linkage исключены. Предлагается ровно +1 constructor: общий max3→4, то есть существующий physical3 для feasibility и новый physical4 для обязательного integrated product proof после PASS. Prefix max3 сохраняется. До прямого согласования действуют прежние max3 и HOLD/STOP product/economics.
+Подготовлен отдельный **НЕ СОГЛАСОВАННЫЙ** `AMENDMENT_STOCK_STRESS_PROPOSED_RU.md`: явный тестовый public API маршрут с реальным native position ID для трёх TP, чтобы stock auto-resize действительно вызвал marketable modify; положительное фактическое nested исполнение той же заявки обязательно. Fake parents/позиции, engine patch и изменения product linkage исключены. Предлагается ровно +1 constructor: общий max3→4, то есть существующий physical3 для feasibility и новый physical4 для обязательного integrated product proof после PASS. Prefix max3 сохраняется. Прямое согласование получено; предложенный маршрут/max4 теперь разрешены условно по AMEND4. До actual F1 PASS по-прежнему STOP product/economics.
 
 Даже успешная третья API fixture сама по себе не квалифицирует будущий product patch: после feasibility требуется отдельное настоящее connected native доказательство исправленного продукта. Эти проверки нельзя заменить бумажным review или выполнить скрытым четвёртым engine. Решение о последнем слоте и дальнейший протокол фиксируются после независимого review.
 
