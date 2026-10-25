@@ -66,6 +66,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
+    research_a0_family: str | None = None
+    research_a0_original_second: bool = False
     research_paired_prefix: str | None = None
     research_paired_signal_rows: tuple[PairedSignal, ...] = ()
     research_btc_real_u: bool = False
@@ -2043,6 +2045,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
         client_order_id = str(order.client_order_id)
         self._risk_first_sol_bind(intent,order)
         self._pending_by_order[client_order_id] = intent
+        if intent.action == "BTC_ENTRY" and self._md_enabled():
+            self._a0_bind_entry(client_order_id, intent)
         # A pre-submit durable checkpoint must see the exact order-to-episode
         # mapping before native transport can accept or fill this order.
         self._sigma_by_order[client_order_id] = sigma
@@ -2074,6 +2078,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
                     "omitted_zero_levels": sorted(episode.btc_omitted_zero_levels),
                     "reference_target_lots": dict(episode.btc_reference_target_lots),
                 })
+        if intent.action == "BTC_ENTRY" and self._md_enabled():
+            self._a0_note_submit(client_order_id, ts_now or 0)
         self.submit_order(order)
 
     @staticmethod
@@ -3020,8 +3026,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
             raise RuntimeError("DEPOSIT_CONTROL_PERSISTENCE_FAILED")
         return self.deposit_projection()
 
-    def _entries_enabled(self, *, ignore_research_protection: bool = False) -> bool:
-        if self._pair_no_increase():
+    def _entries_enabled(self, *, ignore_research_protection: bool = False, ignore_paired_lock: bool = False) -> bool:
+        if not ignore_paired_lock and self._pair_no_increase():
             return False
         if self._research_protect_latch is not None and not ignore_research_protection:
             return False

@@ -135,6 +135,7 @@ class SplitCoverResearch:
             p["closed"]=True
 
     def _split_stop(self,reason):
+        self._a0_stop(reason)
         p=self._split_parent
         if not p or p["closed"]:
             return
@@ -203,7 +204,7 @@ class SplitCoverResearch:
         if not p or not self._split_child_submit or p["fallback"] or (not self._md_plans[intent.episode_id]["first_done"] if self._md_enabled() else p["filled"]<p["first_quantity"]):
             return None
         from coinmaster.strategy.wave_overlay import _native_limit_price
-        raw=p["first_vwap"]*(1-self.config.research_btc_split_discount*p["side"])
+        raw=self._md_plans[intent.episode_id]["a0"]["price"] if getattr(self,"_a0_submitting",False) else p["first_vwap"]*(1-self.config.research_btc_split_discount*p["side"])
         rounding=ROUND_FLOOR if p["side"]==1 else ROUND_CEILING
         step=instrument.price_increment.as_decimal()
         price=_native_limit_price(instrument,(raw/step).to_integral_value(rounding=rounding)*step)

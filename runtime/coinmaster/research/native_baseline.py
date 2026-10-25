@@ -757,6 +757,7 @@ def build_native_strategy_config(context):
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
+        research_a0_family=context["research_a0_family"], research_a0_original_second=context["research_a0_original_second"],
         research_paired_prefix=research_paired_prefix, research_paired_signal_rows=research_paired_signal_rows,
         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
@@ -820,6 +821,8 @@ def run_native_diagnostic(
     research_v3_risk: str | None = None,
     research_h1_b1: str | None = None,
     research_paired_policy: bool = False,
+    research_a0_family: str | None = None,
+    research_a0_original_second: bool = False,
     research_registered_control: str | None = None,
     research_paired_prefix: str | None = None,
     research_paired_signal_rows: tuple = (),
@@ -883,10 +886,13 @@ def run_native_diagnostic(
             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
     if research_paired_prefix and not research_paired_policy:
         raise ValueError("PAIRED_REQUIRES_STOCK_SHARED_LIQUIDITY_POLICY")
+    if research_a0_family is not None or research_a0_original_second:
+        from coinmaster.research.a0_family import validate_native_a0
+        validate_native_a0(locals())
     if research_registered_control is not None:
         from coinmaster.research.registered_control import validate_native_control
         validate_native_control(locals())
-    approved_q = "LEGACY_Q_CONTROL" if research_registered_control == "R2" else "CLEAN_Q"
+    approved_q = "LEGACY_Q_CONTROL" if research_registered_control == "R2" or research_a0_family == "R2_A0_V1" else "CLEAN_Q"
     if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == approved_q and research_sol_off and observe_minute_risk and include_funding):
         raise ValueError("PAIRED_POLICY_REQUIRES_EXACT_R3_FUNDED_OBSERVER")
     if research_paired_prefix and not research_paired_signal_rows:

@@ -170,7 +170,7 @@ def build_native_kwargs(config, data_root, artifact_dir, variant, feed, *, regis
         flags[key]=value
     if config["research_btc_direction_sizing"] != DIRECTION_DESCRIPTOR:
         raise ValueError("EXACT_R3_DIRECTION_DESCRIPTOR_REQUIRED")
-    expected_q = "LEGACY_Q_CONTROL" if registered_control == "R2" else "CLEAN_Q"
+    expected_q = "LEGACY_Q_CONTROL" if registered_control in ("R2", "R2_A0_V1") else "CLEAN_Q"
     if config["research_btc_q_mode"]!=expected_q or config["research_btc_split_discount"]!="0.005" or not flags["research_btc_real_u"]:
         raise ValueError("EXACT_APPROVED_R3_SOURCE_CONFIG_REQUIRED")
     wait=config["next_band_research"]["wait_4h"]

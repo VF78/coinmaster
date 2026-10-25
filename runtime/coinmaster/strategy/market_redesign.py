@@ -4,6 +4,7 @@ No matching or cash model: cache, fills, pending map and native ACKs are authori
 """
 from decimal import Decimal as D, ROUND_FLOOR, ROUND_CEILING
 from nautilus_trader.model.identifiers import ClientOrderId
+from coinmaster.strategy.a0_rights import A0RightsResearch
 
 FRACTIONS = (D(".2125"), D(".2125"), D(".575"))
 PHI = {1: D(".8551535379805835"), -1: D(".7977111237672364")}
@@ -42,7 +43,7 @@ def target_lots(held_lots, consumed):
     return result
 
 
-class MarketRedesignResearch:
+class MarketRedesignResearch(A0RightsResearch):
     def _md_enabled(self):
         return bool(self.config.research_btc_real_u)
 
@@ -94,7 +95,7 @@ class MarketRedesignResearch:
         if p["filled"]+qty>p["quantity"]:
             raise ValueError("REAL_U_PARENT_OVERFILL")
         p["filled"]+=qty
-        if not m["first_done"]:
+        if m.get("entry_orders", {}).get(str(event.client_order_id), "SECOND" if m["first_done"] else "FIRST") == "FIRST":
             m["first_filled"]+=qty
             m["first_notional"]+=qty*px
             m["p0"]=m["first_notional"]/m["first_filled"]
@@ -103,6 +104,10 @@ class MarketRedesignResearch:
             p["first_vwap"]=m["p0"]
         else:
             m["second_filled"]+=qty
+            if m.get("a0"):
+                self._md_log("A0_SECOND_ACTUAL_FILL", event.ts_event, episode_id=intent.episode_id,
+                    order_id=str(event.client_order_id), quantity=qty, second_filled_ever=m["second_filled"],
+                    release_order=str(event.client_order_id)==m["a0"]["order_id"])
         if p.get("stop_reason"):
             p["cancelled"]=p["quantity"]-p["filled"]
         if p["filled"]==p["quantity"]:
@@ -136,6 +141,7 @@ class MarketRedesignResearch:
         if not self._md_enabled() or tick.instrument_id!=self.config.btc_id:
             return
         self._md_reconcile(tick.ts_event)
+        self._a0_check(tick)
         p=self._split_parent
         ep=self._domain.episode
         if not p or p["closed"]:
@@ -329,5 +335,7 @@ class MarketRedesignResearch:
         self._md_reconcile(event.ts_event)
 
     def _md_report(self):
-        return dict(events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
+        rights = [{"episode_id": eid, **{k:str(v) if isinstance(v,D) else v for k,v in m["a0"].items()},
+                   "second_filled_ever":str(m["second_filled"])} for eid,m in self._md_plans.items() if "a0" in m]
+        return dict(a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
             open_protection_exception_since_ns=str(self._md_missing_since) if self._md_missing_since is not None else None)

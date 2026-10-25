@@ -119,7 +119,12 @@ class PairedPrefixResearch:
         self._pair_failures = []
         if self.config.research_paired_prefix not in (None, "B2", "B2_F0"):
             raise ValueError("PAIRED_INVALID_VARIANT")
-        if self.config.research_paired_prefix and not (self.config.research_btc_real_u and self.config.research_btc_q_mode == "CLEAN_Q" and self.config.research_sol_off):
+        exact_a0 = self.config.research_a0_family == "R2_A0_V1" and self.config.research_paired_prefix in (None, "B2_F0") and self.config.research_btc_real_u and self.config.research_btc_q_mode == "LEGACY_Q_CONTROL" and self.config.research_sol_off
+        if self.config.research_a0_family is not None and not exact_a0:
+            raise ValueError("A0_EXACT_R2_FAMILY_REQUIRED")
+        if self.config.research_a0_original_second and (not exact_a0 or self.config.research_paired_prefix != "B2_F0"):
+            raise ValueError("A0_EXACT_R2_FAMILY_REQUIRED")
+        if self.config.research_paired_prefix and not exact_a0 and not (self.config.research_btc_real_u and self.config.research_btc_q_mode == "CLEAN_Q" and self.config.research_sol_off):
             raise ValueError("PAIRED_REQUIRES_R3_CLEAN_Q_SOL_OFF")
 
     def _pair_log(self, event, ns, **values):
@@ -160,7 +165,7 @@ class PairedPrefixResearch:
             self._pair_arm_btc_debt(ns)
 
     def _pair_no_increase(self):
-        return bool(self.config.research_paired_prefix and self._pair)
+        return bool(self.config.research_paired_prefix and self._pair and not getattr(self, "_a0_submitting", False))
 
     def _pair_btc_tp_paused(self):
         p = self._pair
@@ -168,10 +173,11 @@ class PairedPrefixResearch:
                            self._pair_work(instrument=self.config.btc_id)))
 
     def _pair_cancel_btc_increases(self, ns):
+        self._a0_lock(ns)
         self._discard_queued_intents(lambda i: i.action == "BTC_ENTRY")
         self._split_stop("PAIRED_MONOTONE_PARENT_CEILING")
         for order in self.cache.orders_open() + self.cache.orders_inflight():
-            if order.instrument_id == self.config.btc_id and not order.is_reduce_only and not order.is_closed and not order.is_pending_cancel:
+            if order.instrument_id == self.config.btc_id and not order.is_reduce_only and not order.is_closed and not order.is_pending_cancel and not self._a0_keep_order(order):
                 self.cancel_order(order)
 
     def _pair_arm_btc_debt(self, ns):
