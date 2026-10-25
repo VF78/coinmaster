@@ -1,29 +1,28 @@
 Updated: 2026-10-25, Europe/Moscow.
-Status: NATIVE_B2_NO_GO_LOT_REPAIR_PROTOCOL_PENDING; economic70/50 and90/50 NOT_MET.
-Project #2 current #134 OPEN/InProgress; currentbody/readback in publicationreceipt; prior #133/#132/#131 CLOSED/#101unchanged.
-Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; previouspublishedcf58c06a468e6de30b0e9917a9e31a87e525e98f.
-Owner approved total5prefix inclfailures/full0; implementation-owner-prefix-budget-amendment.json SHA4cb061410f40ef5d51977cd5d3f8f8a8d9ba9d21529b25eb278421137a71b4ae.
-Physicalledger4/5started:2FAILED+2COMPLETED/0active; remainingcombinedHOLD_UNSPENT_SAME_SOURCE_INELIGIBLE, noautoreuse/carryover.
-Source3323f08c57ede411058f93d96acee88928c93481 clean/published/frozen; no productedits aftercap5approval; defaultOFF/notdeployed.
-VPSisolated /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/b2-f0-paired-prefix-20261024; Maconlyimmutable source-3323 snapshot.
-Goals originalS0net>=70%then>=90%, settled+coherenteventDD<=50(prefer30-50), BTCentrycore/real3TP/trueSOLhedge.
-TOTAL70floor4256975.067212381/90floor5470396.514987347 fromS0TOTAL6077107.23887483/seed10000; norebase/prefixnotfullgoal.
-Currentwindow[2024-09-01,2025-01-15),sameengine/data/fees/funding; full0 andold3/3full8/8shortCLOSED.
-OFFphysical3COMPLETED/rootaccepted TOTAL19544.07357286/DD53.9699012088%;82fills/fees1135.02982656/funding-633.29250058 exactarchive.
-OFFobserverPASS/195839receipts/flatpositions0/orders0/noLiq; durablecomplete butOSrcUNKNOWN/noexit0claim.
-B2physical4COMPLETED/actualexit0 TOTAL20472.41817762/DD44.02687381755%;allmoney/funding/coverage/terminalPASS.
-B2delta928.34460476/ratio1.0475000568 FAIL2x; riskimproves9.943pp; pairedfees391.48732860/costgatePASS insufficient.
-DailyES20 OFF6.1399196456%/B25.32672930035%;parentES20 OFF19.8861957744%/B216.21698371226%;136days/19actualparentsproven.
-ArchitectureNO_GO:9activations/7SOLTPfills but990BTC_DEBT+985SOL_CAPfills; double-floorlotfeedback violatesnonrecursivecontract.
-ActualQref1.037BTC/intended181.7SOL, lotsBTC.001/SOL.1; u1817/v1037coprime. TP leaves136.3SOL->Bmax.777->SOLcap136.1->newBmax.776/.775.
-NativeB2cashobservationsvalid; DD44 cannotqualifycorrecthedge. Combinednotrunonknowninvalidsharedsource; no sourcefix/newnativeunderoldapproval.
-Evidence reports/broad-hedge-discovery-20261024/APPROVED5_RESULTS_RU.md + approved5-risk-* /prefix-*-outcome /executor-frozen /grid-recursion-review.
-Read-onlyintegerproof25088statesPASS/5359oldfloorerosions; noPNLsimulator/nativeengine. Alloriginalfailedlogs/raw/journals/sourcepins preserved.
-NewPROPOSEDprotocol LOT_CORRIDOR_REPAIR_PROTOCOL_PROPOSED_RU.md SHA0e7bca174c0268f0dc2769a4918d7017d88e98f84115ee52ad22dd59c97ca7be; paperreviewPASS/P0P1open0.
-Proposal exactfrozenintegeru/v/BTCcoveragefloor+SOLcapceil,postactualreconciliationcorridor/<1SOLlotextra/noadds/noreanchor/trueoversizedebt/ACK/dustguard.
-QuestionPENDING: approveimplementation+3freshprefix OFFphys5/B2phys6/combinedphys7, totalcap7(+2), remainingold1reassignonlyafterapproval; noreserve/full0.
-lot-corridor-approval-request.json isPENDING; CURRENTledgermax5unchanged/source3323unchanged. No permission inferredfrompaper/tests/cap5reply.
-Allcurrentexecutor/risk/reviewagentsCOMPLETED/frozen,0activephysicalprocesses. Afternewreplyrecordactualapproval; no repeatedhumanquestion.
-NewimplementationonlyGPT6.1Sol/medium solewriter/isolatedVPS; onefocusedreview/nativegridfixtures/connectedpass/freeze beforeprefixGO. Macfrozencopiesonly.
-SourcePUBLICVF78/coinmaster publicationexplicitAPPROVED, pushnotdeployment/CIgreenunclaimed. Pilot/production/services/keys/realorders/transfersuntouched.
-Preservedirtyusercode; no/opt edits/newSDK/service/ML/Optuna/fillengine/fakeTP/leverageboost. RESET_PREP beforeend; rootsmallguidesmirrorauthoritative.
+Status: CLOSED_LOT_CORRIDOR_PRIMARY_NO_GO; full70/50 and90/50 NOT_MET, noqualifiedwinner.
+Project#2/#134 Done/CLOSED actualreadback; archive/readback in publicationreceipt; prior#133/#132/#131CLOSED, #101unchanged.
+Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; previouspublishede234450a18a7d9a65815a14056a5cdb503bd1642.
+Authoritativeledger native-run-ledger.json CLOSED_PRIMARY_NO_GO_BUDGET_EXHAUSTED SHAe96088c4a37096ce50b4a8f17ba66626d529764b5eb1996f1d3ba6ca7fba7cfd.
+ALL7/7physicalslotsclosed:5COMPLETED+2FAILED,0active/remaining/reserve/full; old3/3full8/8shortCLOSED. Noautomaticnewbudget/source/dataforrun/training/full.
+Source7d513ca1e0ec0fadd67167661a3173f105b19ba7 clean/pushed/defaultOFF/notdeployed; branchcodex/paired-lot-corridor-20261025.
+VPSisolated /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/paired-lot-corridor-20261025; Macimmutable source-7d513/runtimejobpaired-lot-corridor-20261025.
+Goals BTCentrycore/real3TP/trueSOLhedge, originalS0net>=70%then>=90%,settled+coherenteventDD<=50/prefer30-50; prefixNOTfullretention.
+S0TOTAL6077107.23887483/seed10000;TOTAL70floor4256975.067212381/90floor5470396.514987347; norebase.
+Currentclosedprefix[2024-09-01,2025-01-15),sameNativeNautilus1.231/data/fees/funding/newstockconsumptionTrue; originalfullperiodunchanged.
+NewOFFphysical5TOTAL19544.07357286/DD53.9699012088%;actualrc0/nativecash+funding+continuousrisk/terminalPASS;exactoldOFFeconomicparity.
+NewB2physical6TOTAL19754.54867403/DD48.0795680585%;actualrc0/moneyriskPASS/corridorPASS7trueBTCdebt2stableSOLcap/0recursion.
+PrimaryB2F0physical7TOTAL14318.18376985/DD52.0135683404%;actualrc0/moneyriskPASS/corridorPASS8trueBTCdebt2stablecaps; economicNO_GO.
+B2ratio1.01076925444/gain210.47510117 FAIL2x/cost; primaryratio.7326100015/gain-5225.88980301 FAILcapital/cost/DD50/improve5pp.
+ES20daily OFF6.13991965/B25.58425441/combined4.51509433%;parents19.88619577/17.51622162/16.70977617%;136commonUTCdays/19,19,20actualparents.
+Allnew3flatpositions0/orders0/noLiq,195839continuoussourcewatermarks each; no fake cash/PnL/risk endpoints. RealintraminuteL2pathunproven.
+Lotfixexactfrozenintegeru/v/BTCfloor/SOLceil iscorrect;112distinctPASS+4nativecoprimeproof/source+supervisorreviewPASS;allinitialfailedtestevidencepreserved.
+PrimaryalsoNO_GO_UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE atSep2 04UTC:ONLYSOLH4ATR14missing; nativeBTCshort1.096forcedclosed/flat9651.178546.
+Frozenexecutiondata startsbenchmark/noearlierM1;firstvalidATR Sep3 08UTC; targetH1/H4cachewarmupNOT_FOUND(notglobalnonexistence).
+Coldstartnotprovedmaincapitalcause: bySep30combined14007.95>OFF12854.19/B213830.17; persistentgapbeginsOct13.
+ReadonlyOctaudit: earlyF0invalid/noBTCtrim leftsecondchildpermanentlycancelled(.440of.880); Oct25allSOLTPsexhaustedBTCbeforecontrolgrowthtoOct29.
+ObservedcontractgrowthlossmechanismsNOTcounterfactual$effects/profitablefix; noB2alternatewinner/posthocwindow/retune/OOSclaim.
+Mainreports LOT_CORRIDOR_RESULTS_RU.md,lot-corridor-comparison.json,risk-final-decision,capital-diagnosis,next-admission-memo in reports/broad-hedge-discovery-20261024/.
+Nextonlycheapdata/causal-admissionmemo; realwarmupqualification andtwomoneyoverrides need newconcreteprotocolbeforeproductchange/physicalbudget. No newadmissionestablished.
+Allagents/runsCOMPLETED/frozen; finalindexlot-corridor-executor-frozen.json. RootRESET/publicationreceipt inruntimejob; source/worktrees/evidencepreserved.
+PUBLICVF78/coinmastersourcepublication explicitlyapproved/pushnotdeployment/noCIgreenclaim. Pilot/production/services/keys/realorders/transfersuntouched.
+Preserve dirtyusercode;no/opt edits/newSDK/service/ML/Optuna/customfillengine/fakeTP/leverageboost. Rootguidesmirrorcanonical; NEW_MANAGER_PROMPTforfreshchat/nohistoryfork.

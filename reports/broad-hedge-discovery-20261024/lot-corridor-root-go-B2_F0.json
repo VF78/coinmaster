@@ -1,0 +1,14 @@
+{
+  "status": "GO_COMBINED_PHYSICAL7_LAST_ATTEMPT",
+  "issued_utc": "2026-10-25T00:18:09.835361+00:00",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "physical": 7,
+  "logical": 8,
+  "max": 7,
+  "fullmax": 0,
+  "freeze_sha256": "b9ec7d4439dffa37343fb60e4cb3984a71178d30f72c5674d42f240ecfcc481b",
+  "scope": "oneB2_F0primaryprefixonly; noreserve/noautorestart/noextraexperiment/no parameterchange",
+  "technical_gate": "newmatchedOFF5andB2contractmoneyriskaccepted",
+  "economic_gate": "combinedsoleprimary;alloriginalthresholdsunchanged",
+  "supervisor_sha256": "02fca63be2cfbf1baab6217df39ed0eafaba2095beaa5935dd1779bc85ca7401"
+}

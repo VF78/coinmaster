@@ -1,0 +1,14 @@
+{
+  "status": "MATCHED_OFF_PHYSICAL5_ACCEPTED",
+  "accepted_utc": "2026-10-25T00:13:38.207775+00:00",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "report_sha256": "2443ee7d285cfaf7a6d734cb5e76f06c0e999139345474a26f2cdff5c1e7b49f",
+  "terminal_total": "19544.07357286",
+  "settled_DD_percent": "53.96990120879290570928286879",
+  "event_DD_percent": "53.96990120879290570928286879",
+  "actual_returncode": 0,
+  "native_cash_funding_coverage_terminal_risk": "PASS/instrumentedindependentqualification",
+  "old_OFF_economic_parity": "exacttotalfeesfundingfill/risk/settledstream",
+  "cross_run_position_hashes": "notbyteidentical; actualeconomicstatesexact/currentwithinrunproofPASS; serializedmetadata cause notdecoded, no byteidentityclaim",
+  "full_goal": "NOT_MET/controlonly"
+}

@@ -1,0 +1,39 @@
+{
+  "variant": "B2",
+  "qualification": "PASS_NATIVE_ACCOUNTING_RISK_AND_CORRIDOR; ATTRIBUTION_ECONOMIC_GATES_FAIL",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "report_sha256": "4caeee14ff0190751d4f2cf51deba00f63461b0693fe9cda8eb8e4d96d5f51d4",
+  "result_sha256": "7e8c6a04407232019601d0907154c9e303248ce44e4b821ea582802841646dcf",
+  "causal_sha256": "4aab1fbcf268fee1b94ee42d80c54026ae6e60498fd785f2cef9c28590d71c90",
+  "actual_returncode": 0,
+  "terminal_total": "19754.54867403",
+  "settled_DD_percent": "48.07956805853365875585386342",
+  "event_DD_percent": "48.07956805853365875585386342",
+  "daily_ES20_percent": "5.584254414342872034969066417",
+  "parent_ES20_percent": "17.51622161927941575805626862",
+  "continuous_source_watermarks": 195839,
+  "mutation_epochs": 252,
+  "native_fills": 115,
+  "funding_by_asset": {
+    "BTCUSDT-PERP.P1SIM": "-557.31103714",
+    "SOLUSDT-PERP.P1SIM": "0.12404504"
+  },
+  "fees": "1386.31813389",
+  "causal_status": "PASS",
+  "economic_attribution": {
+    "ratio_to_matched_OFF": "1.010769254443570943449502534",
+    "incremental_gain": "210.47510117",
+    "actual_SOL_plus_BTC_paired_trim_fees": "349.24185523",
+    "cost_gate": false,
+    "capital_2x_gate": false,
+    "settled_DD_gate": true,
+    "event_DD_gate": true,
+    "daily_tail_gate": true,
+    "parent_tail_gate": true
+  },
+  "capital_role": "B2 attribution only; combined remains sole primary and B2 money failure alone does not cancel it.",
+  "metadata": "Initial strict avg_px equality UNKNOWN retained; one CSV order average floats \u22121e\u221211 from exact native fill audit 96750.6. Corrected reader uses actual native fill price, order tradeID/qty and observer snapshots; no financial threshold relaxed.",
+  "engines_created": 0,
+  "stream_passes": 1,
+  "budget": "unchanged7/full0; no launches"
+}

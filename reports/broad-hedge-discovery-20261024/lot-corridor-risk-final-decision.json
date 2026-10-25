@@ -1,0 +1,37 @@
+{
+  "decision": "NO_GO_PRIMARY_B2_F0",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "metric_contract": "lot-corridor-risk-metric-contract.json",
+  "engine_instances_created": 0,
+  "physical_budget": {
+    "used": 7,
+    "max": 7,
+    "failed": 2,
+    "completed": 5,
+    "full_max": 0,
+    "reserve": 0
+  },
+  "variants": {
+    "OFF": {
+      "qualification": "PASS_MATCHED_CONTROL",
+      "path": "lot-corridor-risk-OFF-qualification.json",
+      "sha256": "06dd528d389b4bca2c902bd1aa36894af8e6b61edbeca3e36fed2f8457ed9f88"
+    },
+    "B2": {
+      "qualification": "PASS_NATIVE_ACCOUNTING_RISK_AND_CORRIDOR; ATTRIBUTION_ECONOMIC_GATES_FAIL",
+      "path": "lot-corridor-risk-B2-qualification.json",
+      "sha256": "d29f3c568bed54c3e73dc9d4479e8c87f706e05620bac4e66f94576db2827491"
+    },
+    "B2_F0": {
+      "qualification": "NO_GO_PRIMARY",
+      "path": "lot-corridor-risk-B2_F0-qualification.json",
+      "sha256": "ee7c9f206caf93815dcd6b4fed5150cdaed8da551c3c685897540374786c8697"
+    }
+  },
+  "analysis_failures_preserved": [
+    "lot-corridor-risk-analysis-fail-1.json",
+    "lot-corridor-risk-analysis-fail-2.json",
+    "lot-corridor-risk-B2-causal-initial-UNKNOWN.json"
+  ],
+  "no_further_authorization": "No rerun, source retune, full backtest, alternate B2 winner, deployment, pilot, service, order or transfer work."
+}

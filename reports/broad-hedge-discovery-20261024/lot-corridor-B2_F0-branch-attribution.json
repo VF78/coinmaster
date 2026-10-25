@@ -1,0 +1,297 @@
+{
+  "status": "DESCRIPTIVE_NATIVE_BRANCH_COUNTS_COSTS_NOT_COUNTERFACTUAL_PNL",
+  "source": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "native_qualification_failures": [
+    {
+      "event": "QUALIFICATION_NO_GO",
+      "reason": "UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE",
+      "timestamp_ns": "1725249600000000000",
+      "utc": "2024-09-02T04:00:00+00:00"
+    }
+  ],
+  "branches": {
+    "B2": {
+      "selected_activations": 5,
+      "native_tp_paths": 1,
+      "native_non_tp_paths": 4,
+      "native_full_tp_exhaustions": 0,
+      "actual_fill_counts": {
+        "ENTRY": 5,
+        "SOL_CLOSE": 5,
+        "TP": 1,
+        "BTC_DEBT": 1,
+        "SOL_CAP": 1
+      },
+      "actual_native_fees_by_kind": {
+        "ENTRY": "64.72414135",
+        "SOL_CLOSE": "62.22951075",
+        "TP": "0.90501840",
+        "BTC_DEBT": "7.90850445",
+        "SOL_CAP": "0.01063975"
+      },
+      "actual_SOL_plus_BTC_debt_fees": "135.77781470",
+      "details": [
+        {
+          "parent": "3851d5be-575f-4e88-8101-70a6ab6589a2",
+          "branch": "B2",
+          "selected_ns": "1727841600000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "7b85cc06-55d1-4770-8b7f-9cb7061a3028",
+          "branch": "B2",
+          "selected_ns": "1728532800000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "a53b4898-b80e-41cf-9c76-2029f1d841cb",
+          "branch": "B2",
+          "selected_ns": "1730836800000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "e0d924f2-6abd-4636-9e52-2c73821bd1c9",
+          "branch": "B2",
+          "selected_ns": "1734998400000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "644eed6d-5d5a-4a80-9c05-30150d6f6c8c",
+          "branch": "B2",
+          "selected_ns": "1735185600000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": true,
+          "non_tp_sol_close": false,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "TP": 1,
+            "BTC_DEBT": 1,
+            "SOL_CAP": 1,
+            "SOL_CLOSE": 1
+          }
+        }
+      ]
+    },
+    "F0": {
+      "selected_activations": 11,
+      "native_tp_paths": 3,
+      "native_non_tp_paths": 8,
+      "native_full_tp_exhaustions": 1,
+      "actual_fill_counts": {
+        "ENTRY": 11,
+        "SOL_CLOSE": 10,
+        "TP": 7,
+        "BTC_DEBT": 7,
+        "SOL_CAP": 1
+      },
+      "actual_native_fees_by_kind": {
+        "ENTRY": "93.70780980",
+        "SOL_CLOSE": "77.53144465",
+        "TP": "5.66846780",
+        "BTC_DEBT": "49.87231657",
+        "SOL_CAP": "0.00759220"
+      },
+      "actual_SOL_plus_BTC_debt_fees": "226.78763102",
+      "details": [
+        {
+          "parent": "69254f20-1fb3-426e-bbe5-6f895be1323a",
+          "branch": "F0",
+          "selected_ns": "1725393600000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "d0182aed-09dd-432c-9409-787791b7d463",
+          "branch": "F0",
+          "selected_ns": "1726056000000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "de39a013-8c05-4cb7-bd22-4dd50cd17bf9",
+          "branch": "F0",
+          "selected_ns": "1726286400000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": true,
+          "non_tp_sol_close": false,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "TP": 2,
+            "BTC_DEBT": 2,
+            "SOL_CAP": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "dff369ef-1e3a-44f8-a39e-aed8d33c59bf",
+          "branch": "F0",
+          "selected_ns": "1728302400000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "9476ea1b-e55e-420a-9cb1-d14ae675b2b0",
+          "branch": "F0",
+          "selected_ns": "1728763200000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "b618af1c-04a8-406a-ae01-f2176d74609a",
+          "branch": "F0",
+          "selected_ns": "1729872000000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": true,
+          "non_tp_sol_close": false,
+          "full_tp_exhaustion": true,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "TP": 3,
+            "BTC_DEBT": 3
+          }
+        },
+        {
+          "parent": "7ea00283-046d-4f9f-b648-b767798d47b5",
+          "branch": "F0",
+          "selected_ns": "1731744000000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "3e998fcd-39c0-45e3-bde8-21fb45552201",
+          "branch": "F0",
+          "selected_ns": "1733904000000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "066cbd8d-7bad-4417-a527-865ae805b891",
+          "branch": "F0",
+          "selected_ns": "1734667200000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "3fe04abb-e9d1-44a7-8b08-1ef255bed602",
+          "branch": "F0",
+          "selected_ns": "1736222400000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": true,
+          "non_tp_sol_close": false,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "TP": 2,
+            "BTC_DEBT": 2,
+            "SOL_CLOSE": 1
+          }
+        },
+        {
+          "parent": "6325801d-1676-4313-b1e1-6fec58af9178",
+          "branch": "F0",
+          "selected_ns": "1736424000000000000",
+          "native_entry_terminal": true,
+          "native_parent_flat": true,
+          "tp_path": false,
+          "non_tp_sol_close": true,
+          "full_tp_exhaustion": false,
+          "realized_fill_counts": {
+            "ENTRY": 1,
+            "SOL_CLOSE": 1
+          }
+        }
+      ]
+    }
+  },
+  "combined_terminal": "14318.18376985",
+  "global_qualification": "NO_GO_UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE_PRESERVED",
+  "budget": "7/7 EXHAUSTED;full0;noreserve",
+  "new_attempts_authorized": false
+}

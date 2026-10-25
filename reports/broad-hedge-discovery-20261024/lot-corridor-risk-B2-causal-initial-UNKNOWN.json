@@ -1,0 +1,159 @@
+{
+  "variant": "B2",
+  "status": "UNKNOWN",
+  "checks": {
+    "actual_audit_fill_matches_native_order_trade_snapshot": false,
+    "all_debt_obligations_and_full_real_fills": true,
+    "all_sol_caps_exact_ceil_stable": true,
+    "no_spurious_debt_after_sol_cap": true,
+    "all_actual_activations_closed": true,
+    "no_failures_or_open_owner": true
+  },
+  "actual_paired_fill_counts": {
+    "ENTRY": 9,
+    "TP": 7,
+    "BTC_DEBT": 7,
+    "SOL_CAP": 2,
+    "SOL_CLOSE": 9
+  },
+  "actual_debt_obligations": 7,
+  "debts": [
+    {
+      "order_id": "O-20240915-210900-001-000-30",
+      "trade_id": "T-a2d0adcab6026b4e-012",
+      "cause_order_id": "O-20240915-200100-001-000-23",
+      "cause_kind": "TP",
+      "native_pre_btc": "1.037",
+      "native_post_btc": "0.777",
+      "actual_fill_qty": "0.26",
+      "bmax": "0.777",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20240915-231200-001-000-40",
+      "trade_id": "T-604783b9a32713bf-013",
+      "cause_order_id": "O-20240915-210900-001-000-35",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.777",
+      "native_post_btc": "0.518",
+      "actual_fill_qty": "0.259",
+      "bmax": "0.518",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241028-052700-001-000-116",
+      "trade_id": "T-e0aabc426ddb6bf6-038",
+      "cause_order_id": "O-20241028-040100-001-000-109",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.960",
+      "native_post_btc": "0.720",
+      "actual_fill_qty": "0.24",
+      "bmax": "0.720",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241118-131500-001-000-151",
+      "trade_id": "T-3ed5a09d1e3bbd91-049",
+      "cause_order_id": "O-20241118-120100-001-000-144",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.979",
+      "native_post_btc": "0.734",
+      "actual_fill_qty": "0.245",
+      "bmax": "0.734",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241221-123600-001-000-185",
+      "trade_id": "T-aff5e67e19aa042c-065",
+      "cause_order_id": "O-20241221-120100-001-000-178",
+      "cause_kind": "TP",
+      "native_pre_btc": "1.059",
+      "native_post_btc": "0.794",
+      "actual_fill_qty": "0.265",
+      "bmax": "0.794",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241221-132300-001-000-190",
+      "trade_id": "T-74fb5b1642b8ee44-066",
+      "cause_order_id": "O-20241221-123500-001-000-182",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.794",
+      "native_post_btc": "0.529",
+      "actual_fill_qty": "0.265",
+      "bmax": "0.529",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241226-073500-001-000-226",
+      "trade_id": "T-e4db8a31d69f7907-073",
+      "cause_order_id": "O-20241226-040100-001-000-219",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.859",
+      "native_post_btc": "0.644",
+      "actual_fill_qty": "0.215",
+      "bmax": "0.644",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    }
+  ],
+  "caps": [
+    {
+      "order_id": "O-20240915-210900-001-000-34",
+      "trade_id": "T-83089ff190f7ec7f-003",
+      "u": 1817,
+      "v": 1037,
+      "native_pre_sol": "136.3",
+      "native_post_sol": "136.2",
+      "native_btc": "0.777",
+      "bmax": "0.777",
+      "sol_cap_ceil": "136.2",
+      "btc_coverage_floor_after": "0.777",
+      "actual_fill_qty": "0.1",
+      "correct_full_excess_fill": true,
+      "no_new_btc_debt_from_filled_cap": true
+    },
+    {
+      "order_id": "O-20240915-231200-001-000-44",
+      "trade_id": "T-6c6381cc2195006e-005",
+      "u": 1817,
+      "v": 1037,
+      "native_pre_sol": "90.9",
+      "native_post_sol": "90.8",
+      "native_btc": "0.518",
+      "bmax": "0.518",
+      "sol_cap_ceil": "90.8",
+      "btc_coverage_floor_after": "0.518",
+      "actual_fill_qty": "0.1",
+      "correct_full_excess_fill": true,
+      "no_new_btc_debt_from_filled_cap": true
+    }
+  ],
+  "economic_attribution": {
+    "ratio_to_matched_OFF": "1.010769254443570943449502534",
+    "incremental_gain": "210.47510117",
+    "actual_SOL_plus_BTC_paired_trim_fees": "349.24185523",
+    "cost_gate": false,
+    "capital_2x_gate": false,
+    "settled_DD_gate": true,
+    "event_DD_gate": true,
+    "daily_tail_gate": true,
+    "parent_tail_gate": true
+  },
+  "engine_instances_created": 0,
+  "additional_stream_reads": 0,
+  "basis": "Actual native cache snapshots linked by order last_trade_id/native_id; quantities never replayed/reconstructed. Single-fill order totals checked against actual audit fill. Partial/late fills would require separate native fill proof and cannot be blanket ignored."
+}

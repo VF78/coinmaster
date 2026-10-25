@@ -1,0 +1,53 @@
+{
+  "status": "MONEY_SETTLED_RISK_EXACT_COHERENT_POSITION_HASH_DIFF_REVIEW_REQUIRED",
+  "field_identity": {
+    "terminal_active": true,
+    "terminal_reserve": true,
+    "terminal_total": true,
+    "native_fees": true,
+    "funding": true,
+    "fills": true,
+    "cash_account_series": true,
+    "marked_equity_series": true,
+    "interval_cash_account_series": true,
+    "terminal_open_positions": true,
+    "terminal_lifecycle": true,
+    "liquidation_count": true,
+    "summary": true,
+    "paired_prefix_audit": true,
+    "fill_audit": true
+  },
+  "streams": [
+    {
+      "file": "coherent-native-events.jsonl.gz",
+      "new_uncompressed_sha256": "0d8c62a30228ac5cbf7c360f5dd00f789abf9762f1cfba700b2b16bafb7dfe12",
+      "old_uncompressed_sha256": "0bb21dd28abc3d7dcfc0e046c13bc509d4e422d90916e6e112b16092047917bd",
+      "exact_uncompressed_bytes_equal": false
+    },
+    {
+      "file": "minute-native-risk.csv.gz",
+      "new_uncompressed_sha256": "357209a668216b4cf336faa68dc7f6866c21b7fcf7f251fce74ca7c2d01ef493",
+      "old_uncompressed_sha256": "357209a668216b4cf336faa68dc7f6866c21b7fcf7f251fce74ca7c2d01ef493",
+      "exact_uncompressed_bytes_equal": true
+    },
+    {
+      "file": "minute-native-settled-receipts.csv.gz",
+      "new_uncompressed_sha256": "71d126f43859e3a5b31400182c553d17e0dfed5b8de4e3af21a6ee8d91b8f0cc",
+      "old_uncompressed_sha256": "71d126f43859e3a5b31400182c553d17e0dfed5b8de4e3af21a6ee8d91b8f0cc",
+      "exact_uncompressed_bytes_equal": true
+    }
+  ],
+  "all_uncompressed_streams_equal": false,
+  "new_report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/paired-prefix-OFF.json",
+  "old_report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b2-f0-paired-prefix-20261024/MATCHED_OFF_CONTROL_APPROVED5/result/paired-prefix-OFF.json",
+  "not_independent_acceptance": true,
+  "coherent_stream_difference": {
+    "differing_lines": 201217,
+    "changed_top_level_keys": [
+      "native_positions_sha256",
+      "prior_source_retention"
+    ],
+    "first_different_line": 4323,
+    "reason": "NOT_YET_QUALIFIED_BY_INDEPENDENT_REVIEW"
+  }
+}

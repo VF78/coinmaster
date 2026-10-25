@@ -1,0 +1,12 @@
+{
+  "status": "B2_CONTRACT_ACCEPTED_ATTRIBUTION_ECONOMIC_GATE_FAIL",
+  "accepted_utc": "2026-10-25T00:18:09.835361+00:00",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "report_sha256": "4caeee14ff0190751d4f2cf51deba00f63461b0693fe9cda8eb8e4d96d5f51d4",
+  "actual_returncode": 0,
+  "native_money_risk_causal": "independentPASS/7genuinedebt2stableceilcaps0recursion",
+  "economic_result": "TOTAL19754.54867403/DD48.07956805853366; capital2xFAIL/costFAIL; riskandtailsPASS",
+  "B2_is_not_alternate_winner": true,
+  "primary_next": "combinedsamefixedsource/no parameterchange",
+  "causal_proof_sha256": "52c3e43d3d2076b091ddbec1daa56e2db62e2fa5baed03e8a2c933aeff2f39fe"
+}

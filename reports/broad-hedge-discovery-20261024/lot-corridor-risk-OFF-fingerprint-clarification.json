@@ -1,0 +1,10 @@
+{
+  "status": "PASS_ECONOMIC_PARITY_NO_UNEXPLAINED_ECONOMIC_DIFFERENCE",
+  "new_stream_reads": 0,
+  "engine_instances_created": 0,
+  "cross_run_raw_byte_identity_claimed": false,
+  "within_run_proof": "All actual cash+native UPNL bridges exact, observer PASS, source-minute continuity and retained source_ns/state_epoch/first_new_mutation boundaries checked independently.",
+  "cross_run_fingerprint": "Serialized full native Position snapshots may vary between fresh engines. Owner bounded diff reports only native_positions_sha256/prior_source_retention fields differed; no specific UUID/serialization cause independently decoded or asserted.",
+  "remaining_uncertainty": "Exact differing Position metadata bytes are not decoded; no unexplained economic amount or native quantity/UPNL difference is established.",
+  "matched_control": "Cross-run raw Position serialization identity is not required when current coherent native authority, within-run immutable state proof and exact matched economics pass."
+}

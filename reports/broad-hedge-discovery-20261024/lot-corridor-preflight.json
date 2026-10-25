@@ -1,0 +1,43 @@
+{
+  "status": "PASS_3_OF_3",
+  "engine_instances": 0,
+  "economic_attempts": 0,
+  "results": [
+    {
+      "variant": "OFF",
+      "status": "PASS_ENGINE_FREE_COMPLETE_NATIVE_KWARGS_JSON",
+      "kwargs": 55,
+      "feed_rows": 815,
+      "payload": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/lot-corridor-kwargs-OFF.json",
+      "sha256": "2c3edf5846bc914ac8f6eab16ab5c18a4169e5c3487e097b94279ce1cc5e057f",
+      "verified_source_pins": 184,
+      "verified_data_engine_pins": 27,
+      "freeze": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-freeze-OFF-pre-go.json",
+      "freeze_sha256": "2e484747b213f8f2de493a8966a8b2aa129d8f5d3f499815045e37a289016158"
+    },
+    {
+      "variant": "B2",
+      "status": "PASS_ENGINE_FREE_COMPLETE_NATIVE_KWARGS_JSON",
+      "kwargs": 55,
+      "feed_rows": 815,
+      "payload": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/lot-corridor-kwargs-B2.json",
+      "sha256": "cf6e2882fafc3f284691c701fe686e6d9bcefabb6619a0f45ed86649371f4128",
+      "verified_source_pins": 184,
+      "verified_data_engine_pins": 27,
+      "freeze": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-freeze-B2-pre-go.json",
+      "freeze_sha256": "a0b2915fdd094e5e10168428385f47239e99d7ebe869085746b7c602c7d15ef2"
+    },
+    {
+      "variant": "B2_F0",
+      "status": "PASS_ENGINE_FREE_COMPLETE_NATIVE_KWARGS_JSON",
+      "kwargs": 55,
+      "feed_rows": 815,
+      "payload": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/lot-corridor-kwargs-B2_F0.json",
+      "sha256": "447ccfbcb02cfaaa03a7544ba860a0d625cee1bca42987594da6e9ae5603bd94",
+      "verified_source_pins": 184,
+      "verified_data_engine_pins": 27,
+      "freeze": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-freeze-B2_F0-pre-go.json",
+      "freeze_sha256": "53b73ac73b2b3739011ee6c0e07555411f846ef8329be0d0ffd3fe553747991a"
+    }
+  ]
+}

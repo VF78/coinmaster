@@ -1,0 +1,37 @@
+{
+  "status": "COMPLETED_ACTUAL_EXIT0_AWAIT_ROOT_ACCEPTANCE",
+  "variant": "OFF",
+  "physical": 5,
+  "logical": 6,
+  "source": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "artifacts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/supervisor-receipt.json",
+      "sha256": "3d6b190b70d331aae28925e5b42bed774c952d8ff69d804d73a86d2d6bd81ab5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/paired-prefix-OFF.json",
+      "sha256": "2443ee7d285cfaf7a6d734cb5e76f06c0e999139345474a26f2cdff5c1e7b49f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/paired-prefix-OFF-funding.sqlite",
+      "sha256": "90524bd1a0e67056c67e51670327fa57b3d8afbfe15ce6b42bc2ce397689107a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/coherent-native-events.jsonl.gz",
+      "sha256": "e4bf95d34a3d7f95500ec70672f53119629a0c893b0576139b8551f81135efb7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/minute-native-settled-receipts.csv.gz",
+      "sha256": "aa66b21f316db5ea1449f2b745753096a9cafbb1cd6a5814c61990aaa3cb1fe1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/minute-native-risk.csv.gz",
+      "sha256": "ee2bda0301f8736bd61925711343410f0dce112d982eaa857b1b82d2ff3ffe7e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/minute-risk-summary.json",
+      "sha256": "4b5ba375f4c9fd440ee1ad82ffa4ebbb9930a5ea3ee697f85368e291772ce3f8"
+    }
+  ]
+}

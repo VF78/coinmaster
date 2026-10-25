@@ -1,0 +1,455 @@
+{
+  "task": "CM-LOT-CORRIDOR-CAPITAL-DIAGNOSIS-20261025",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "scope": "One bounded actual-saved-endpoint/feed/footer postmortem, no new native stream pass or backtest.",
+  "monthly_actual_native_equity": [
+    {
+      "date": "2024-09-30",
+      "actual_native_TOTAL": {
+        "OFF": "12854.18847717",
+        "B2": "13830.17243792",
+        "B2_F0": "14007.94879633"
+      },
+      "wealth_multiple_seed": {
+        "OFF": "1.285418847717",
+        "B2": "1.383017243792",
+        "B2_F0": "1.400794879633"
+      },
+      "B2_to_OFF": "1.0759273105792264132834008942112559197994469000530",
+      "combined_to_OFF": "1.0897575386582486018131611792836607089623723804588",
+      "combined_to_B2": "1.0128542401917251018454248725071199282034989182437"
+    },
+    {
+      "date": "2024-10-31",
+      "actual_native_TOTAL": {
+        "OFF": "16605.95022235",
+        "B2": "15995.20491341",
+        "B2_F0": "12251.88988464"
+      },
+      "wealth_multiple_seed": {
+        "OFF": "1.660595022235",
+        "B2": "1.599520491341",
+        "B2_F0": "1.225188988464"
+      },
+      "B2_to_OFF": "0.96322129713974476503769742133801308359309710453632",
+      "combined_to_OFF": "0.73780119298142561796103287354016726344134535957394",
+      "combined_to_B2": "0.76597267437119898580869205372326549937294080261572"
+    },
+    {
+      "date": "2024-11-30",
+      "actual_native_TOTAL": {
+        "OFF": "25870.26926938",
+        "B2": "23176.99595003",
+        "B2_F0": "17235.24144565"
+      },
+      "wealth_multiple_seed": {
+        "OFF": "2.587026926938",
+        "B2": "2.317699595003",
+        "B2_F0": "1.723524144565"
+      },
+      "B2_to_OFF": "0.89589310836676319323008705505455506123279806658017",
+      "combined_to_OFF": "0.66621809252096181283245670383994898234705418545708",
+      "combined_to_B2": "0.74363569302982472710011002345569278572947799200992"
+    },
+    {
+      "date": "2024-12-31",
+      "actual_native_TOTAL": {
+        "OFF": "18030.57474865",
+        "B2": "18224.05362425",
+        "B2_F0": "12428.98001804"
+      },
+      "wealth_multiple_seed": {
+        "OFF": "1.803057474865",
+        "B2": "1.822405362425",
+        "B2_F0": "1.242898001804"
+      },
+      "B2_to_OFF": "1.0107305994565972617853685614436804105730999259618",
+      "combined_to_OFF": "0.68932799931796920667097749776422515993183766734380",
+      "combined_to_B2": "0.68200962718312387650183634198872575236353565735695"
+    },
+    {
+      "date": "2025-01-14",
+      "actual_native_TOTAL": {
+        "OFF": "19544.07357286",
+        "B2": "19754.54867403",
+        "B2_F0": "14318.18376985"
+      },
+      "wealth_multiple_seed": {
+        "OFF": "1.954407357286",
+        "B2": "1.975454867403",
+        "B2_F0": "1.431818376985"
+      },
+      "B2_to_OFF": "1.0107692544435709434495025338637436756819214678974",
+      "combined_to_OFF": "0.73261000151642058087397166601539972790820582129964",
+      "combined_to_B2": "0.72480439852686537099896864183200579157635681179788"
+    }
+  ],
+  "first_five_own_actual_parents": {
+    "OFF": [
+      {
+        "own_ordinal": 1,
+        "episode_id": "40e45ff1-fdec-44d6-a7ca-be4df0e36e7e",
+        "first_fill_utc": "2024-09-02T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-06T14:48:00+00:00",
+        "actual_pre_first_fill_TOTAL": "10000",
+        "actual_flat_TOTAL": "12372.52058008",
+        "return": "0.237252058008",
+        "return_percent": "23.725205800800",
+        "next_actual_parent_first_fill_utc": "2024-09-11T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 2,
+        "episode_id": "c05f5080-9214-44d1-8748-eb09edb15b50",
+        "first_fill_utc": "2024-09-11T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-11T14:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "12372.52058008",
+        "actual_flat_TOTAL": "13341.76407772",
+        "return": "0.0783384025402633783937321953299593076428411368533",
+        "return_percent": "7.8338402540263378393732195329959307642841136853300",
+        "next_actual_parent_first_fill_utc": "2024-09-14T00:02:00+00:00"
+      },
+      {
+        "own_ordinal": 3,
+        "episode_id": "bdea637d-10b6-46d9-b754-f1f72d756e14",
+        "first_fill_utc": "2024-09-14T00:02:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-17T00:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "13341.76407772",
+        "actual_flat_TOTAL": "10985.38812436",
+        "return": "-0.17661652084637113951498730129652922531336550463981",
+        "return_percent": "-17.661652084637113951498730129652922531336550463981",
+        "next_actual_parent_first_fill_utc": "2024-09-18T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 4,
+        "episode_id": "fa824617-400a-4c50-9674-dca8a7c5a906",
+        "first_fill_utc": "2024-09-18T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-19T12:07:00+00:00",
+        "actual_pre_first_fill_TOTAL": "10985.38812436",
+        "actual_flat_TOTAL": "12854.18847717",
+        "return": "0.1701169163669285309366194341721937510396524110672",
+        "return_percent": "17.011691636692853093661943417219375103965241106720",
+        "next_actual_parent_first_fill_utc": "2024-10-02T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 5,
+        "episode_id": "d9bc5beb-a535-4652-b174-41f511f8a6fd",
+        "first_fill_utc": "2024-10-02T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-10-05T00:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "12854.18847717",
+        "actual_flat_TOTAL": "11377.22417408",
+        "return": "-0.11490140398308295019431088574250467242653098416113",
+        "return_percent": "-11.490140398308295019431088574250467242653098416113",
+        "next_actual_parent_first_fill_utc": "2024-10-06T16:02:00+00:00"
+      }
+    ],
+    "B2": [
+      {
+        "own_ordinal": 1,
+        "episode_id": "91eda459-b5bf-4485-9bbc-70fc8d8a635f",
+        "first_fill_utc": "2024-09-02T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-06T14:48:00+00:00",
+        "actual_pre_first_fill_TOTAL": "10000",
+        "actual_flat_TOTAL": "12372.52058008",
+        "return": "0.237252058008",
+        "return_percent": "23.725205800800",
+        "next_actual_parent_first_fill_utc": "2024-09-11T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 2,
+        "episode_id": "ad3d9ce4-51ad-4821-8ce6-b0d35ab78462",
+        "first_fill_utc": "2024-09-11T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-11T14:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "12372.52058008",
+        "actual_flat_TOTAL": "13341.76407772",
+        "return": "0.0783384025402633783937321953299593076428411368533",
+        "return_percent": "7.8338402540263378393732195329959307642841136853300",
+        "next_actual_parent_first_fill_utc": "2024-09-14T00:02:00+00:00"
+      },
+      {
+        "own_ordinal": 3,
+        "episode_id": "66ce710a-534f-4a83-80e6-1953a2c40a6c",
+        "first_fill_utc": "2024-09-14T00:02:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-17T00:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "13341.76407772",
+        "actual_flat_TOTAL": "11817.69302102",
+        "return": "-0.11423309899813874281276875446092528718817741639972",
+        "return_percent": "-11.423309899813874281276875446092528718817741639972",
+        "next_actual_parent_first_fill_utc": "2024-09-18T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 4,
+        "episode_id": "7131c790-d5a1-4f0b-a5a6-d7cb24c22233",
+        "first_fill_utc": "2024-09-18T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-19T12:07:00+00:00",
+        "actual_pre_first_fill_TOTAL": "11817.69302102",
+        "actual_flat_TOTAL": "13830.17243792",
+        "return": "0.1702937632006877397747211498839377050528922556871",
+        "return_percent": "17.029376320068773977472114988393770505289225568710",
+        "next_actual_parent_first_fill_utc": "2024-10-02T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 5,
+        "episode_id": "ac2da532-9893-4377-b3dd-8f3204944ae6",
+        "first_fill_utc": "2024-10-02T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-10-05T00:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "13830.17243792",
+        "actual_flat_TOTAL": "12303.44934186",
+        "return": "-0.11039074913295967249679181287151955212879187126230",
+        "return_percent": "-11.039074913295967249679181287151955212879187126230",
+        "next_actual_parent_first_fill_utc": "2024-10-06T16:02:00+00:00"
+      }
+    ],
+    "B2_F0": [
+      {
+        "own_ordinal": 1,
+        "episode_id": "bb00640c-c8b4-4bb1-b822-9d7523635427",
+        "first_fill_utc": "2024-09-02T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-02T04:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "10000",
+        "actual_flat_TOTAL": "9651.178546",
+        "return": "-0.0348821454",
+        "return_percent": "-3.4882145400",
+        "next_actual_parent_first_fill_utc": "2024-09-03T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 2,
+        "episode_id": "69254f20-1fb3-426e-bbe5-6f895be1323a",
+        "first_fill_utc": "2024-09-03T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-04T01:02:00+00:00",
+        "actual_pre_first_fill_TOTAL": "9651.178546",
+        "actual_flat_TOTAL": "11641.03760951",
+        "return": "0.2061778314457472477061352254046259357224826954310",
+        "return_percent": "20.617783144574724770613522540462593572248269543100",
+        "next_actual_parent_first_fill_utc": "2024-09-11T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 3,
+        "episode_id": "d0182aed-09dd-432c-9409-787791b7d463",
+        "first_fill_utc": "2024-09-11T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-11T14:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "11641.03760951",
+        "actual_flat_TOTAL": "12542.4833008",
+        "return": "0.0774368850551238854452090979773196057914709036695",
+        "return_percent": "7.7436885055123885445209097977319605791470903669500",
+        "next_actual_parent_first_fill_utc": "2024-09-14T00:02:00+00:00"
+      },
+      {
+        "own_ordinal": 4,
+        "episode_id": "de39a013-8c05-4cb7-bd22-4dd50cd17bf9",
+        "first_fill_utc": "2024-09-14T00:02:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-17T00:00:00+00:00",
+        "actual_pre_first_fill_TOTAL": "12542.4833008",
+        "actual_flat_TOTAL": "11970.49015076",
+        "return": "-0.04560445777141408940786620210000255996513847875946",
+        "return_percent": "-4.5604457771414089407866202100002559965138478759460",
+        "next_actual_parent_first_fill_utc": "2024-09-18T00:01:00+00:00"
+      },
+      {
+        "own_ordinal": 5,
+        "episode_id": "47e4b2d5-8d87-4247-a2c5-5df247e9ccf2",
+        "first_fill_utc": "2024-09-18T00:01:00+00:00",
+        "actual_flat_orders_terminal_utc": "2024-09-19T12:07:00+00:00",
+        "actual_pre_first_fill_TOTAL": "11970.49015076",
+        "actual_flat_TOTAL": "14007.94879633",
+        "return": "0.1702067851783531890934684555326219431202829504211",
+        "return_percent": "17.020678517835318909346845553262194312028295042110",
+        "next_actual_parent_first_fill_utc": "2024-10-02T00:01:00+00:00"
+      }
+    ]
+  },
+  "populations": {
+    "OFF": 19,
+    "B2": 19,
+    "B2_F0": 20
+  },
+  "calendar_rule": "Own actual nonoverlapping parents, no forced ordinal/calendar equivalence across variants. Combined extra parent follows actual first forced close/reentry.",
+  "first_feature_failure": {
+    "utc": "2024-09-02T04:00:00+00:00",
+    "audit_event": {
+      "event": "QUALIFICATION_NO_GO",
+      "reason": "UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE",
+      "timestamp_ns": "1725249600000000000"
+    },
+    "feed_exact_row": {
+      "decision_ns": "1725249600000000000",
+      "available_ns": "1725249600000000000",
+      "not_before_ns": "1725249660000000000",
+      "btc_close": "57721.3",
+      "sol_close": "130.1",
+      "btc_h4_open": "57266.1",
+      "btc_previous_h4_close": "57266.1",
+      "beta_d1_30": "1.0968680311171242",
+      "rho_d1_30": "0.82614700173683775",
+      "sigma_btc_d1_30": "0.036907353584465084",
+      "sigma_sol_d1_30": "0.049001565308386986",
+      "risk_coefficients_valid": "1",
+      "d1_last_return_end_ns": "1725148800000000000",
+      "d1_first_return_end_ns": "1722643200000000000",
+      "sol_atr_h4_14": "",
+      "sol_atr_valid": "0",
+      "atr_last_h4_end_ns": "",
+      "b2_pattern_valid": "0",
+      "b2_long": "0",
+      "b2_short": "0",
+      "b2_long_k": "",
+      "b2_short_k": "",
+      "f0_pattern_valid": "1",
+      "f0_long": "0",
+      "f0_short": "1",
+      "f0_open_o": "57266.1",
+      "btc_funding_last_ns": "1725235200000000000",
+      "btc_funding_previous_ns": "1725206400000000000",
+      "sol_funding_last_ns": "1725235200000000000",
+      "sol_funding_previous_ns": "1725206400000000000",
+      "funding_differential_per_hour": "-1.9655994616942163e-05"
+    },
+    "branch": "F0_SHORT while actual BTC SHORT",
+    "missing": "SOL H4 ATR14 only: sol_atr_valid=0, value and last_H4_end empty. D1 coefficient flag=1 and causal historical return endpoints present; two prior funding timestamps present per asset, F0 pattern valid=1/short=1. B2 pattern flag=0 is not missing D1/funding.",
+    "actual_native_pre_post_fill_snapshots": [
+      {
+        "sequence": 5043,
+        "event_ns": "1725249600000000000",
+        "native_id": "T-9e53820bd145e26f-003",
+        "kind": "PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
+        "positions": [
+          {
+            "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "quantity": "1.096",
+            "side": "SHORT",
+            "raw_mark": "57721.5",
+            "native_price": "57721.5",
+            "native_upnl": "-290.6592"
+          }
+        ],
+        "cash": "9976.41294564",
+        "equity": "9685.75374564"
+      },
+      {
+        "sequence": 5044,
+        "event_ns": "1725249600000000000",
+        "native_id": "T-9e53820bd145e26f-003",
+        "kind": "POST_FILL_COMMITTED_NATIVE",
+        "positions": [],
+        "cash": "9651.178546",
+        "equity": "9651.178546"
+      }
+    ],
+    "actual_native_forced_close_fill": [
+      {
+        "accept_ns": "1725249600000000000",
+        "action": "FORCED_CLOSE",
+        "commission": "34.79439964",
+        "commission_currency": "USDT",
+        "fill_ns": "1725249600000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "63262.5448",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "57721.3",
+        "qty": "1.096",
+        "reason": "PAIRED_UNHEDGEABLE_CAUSAL_FEATURE",
+        "submit_ns": "1725249600000000000",
+        "venue": "P1SIM"
+      }
+    ],
+    "first_parent_endpoint": {
+      "own_ordinal": 1,
+      "episode_id": "bb00640c-c8b4-4bb1-b822-9d7523635427",
+      "first_fill_utc": "2024-09-02T00:01:00+00:00",
+      "actual_flat_orders_terminal_utc": "2024-09-02T04:00:00+00:00",
+      "actual_pre_first_fill_TOTAL": "10000",
+      "actual_flat_TOTAL": "9651.178546",
+      "return": "-0.0348821454",
+      "return_percent": "-3.4882145400",
+      "next_actual_parent_first_fill_utc": "2024-09-03T00:01:00+00:00"
+    },
+    "next_parent_endpoint": {
+      "own_ordinal": 2,
+      "episode_id": "69254f20-1fb3-426e-bbe5-6f895be1323a",
+      "first_fill_utc": "2024-09-03T00:01:00+00:00",
+      "actual_flat_orders_terminal_utc": "2024-09-04T01:02:00+00:00",
+      "actual_pre_first_fill_TOTAL": "9651.178546",
+      "actual_flat_TOTAL": "11641.03760951",
+      "return": "0.2061778314457472477061352254046259357224826954310",
+      "return_percent": "20.617783144574724770613522540462593572248269543100",
+      "next_actual_parent_first_fill_utc": "2024-09-11T00:01:00+00:00"
+    },
+    "failed_attempt_counts_as_valid_activation": false
+  },
+  "execution_parquet_metadata": [
+    {
+      "asset": "BTC",
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "footer_only": true,
+      "rows": 1051200,
+      "row_groups": 2,
+      "timestamp_column": "open_time_ms",
+      "statistics_min": 1725148800000,
+      "statistics_max": 1788220740000,
+      "first_open_utc": "2024-09-01T00:00:00+00:00",
+      "last_open_utc": "2026-08-31T23:59:00+00:00",
+      "prebenchmark_execution_minutes_available": false,
+      "full_data_scan_performed": false
+    },
+    {
+      "asset": "SOL",
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "footer_only": true,
+      "rows": 1051200,
+      "row_groups": 2,
+      "timestamp_column": "open_time_ms",
+      "statistics_min": 1725148800000,
+      "statistics_max": 1788220740000,
+      "first_open_utc": "2024-09-01T00:00:00+00:00",
+      "last_open_utc": "2026-08-31T23:59:00+00:00",
+      "prebenchmark_execution_minutes_available": false,
+      "full_data_scan_performed": false
+    }
+  ],
+  "warmup_facts": {
+    "benchmark_start_utc": "2024-09-01T00:00:00+00:00",
+    "report_general_warmup_claim": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+    "ATR_builder": "implementation-signal-feed-build.py aggregates execution-1m into contiguous 240-minute bars; first14 true ranges seed ATR at k=13 then Wilder1/14. General daily/other feature warmup does not provide unavailable prebenchmark execution H4 bars.",
+    "first_feed_decision_utc": "2024-09-01T04:00:00+00:00",
+    "first_feed_valid_ATR_utc": "2024-09-03T08:00:00+00:00",
+    "prebenchmark_real_execution_H4_ATR_warmup_available_in_current_frozen_parquets": false,
+    "required_validity_direction": "Before any later native research, specify genuine prebenchmark H4/M1 data availability and causal ATR seeding; current frozen data cannot prove such warmup. No new data acquisition or parameter/window change performed."
+  },
+  "daily_gap_observation": {
+    "OFF": {
+      "last_day_combined_ge_reference": "2024-10-12",
+      "first_day_thereafter_always_below_through_prefix_end": "2024-10-13"
+    },
+    "B2": {
+      "last_day_combined_ge_reference": "2024-10-12",
+      "first_day_thereafter_always_below_through_prefix_end": "2024-10-13"
+    }
+  },
+  "interpretation": {
+    "early": "Actual first combined parent lost3.48821454%, then genuine separate reentry. This early capital divergence is real, but combined Sep30 exceeds OFF by8.9757538658% and B2 by1.2854240192%; persistent capital underperformance begins only after Oct12.",
+    "causality_limit": "Cannot attribute final capital shortfall solely to initial missing ATR; observed September recovery disproves a simple permanent early-gap description. No causal PnL split/counterfactual ATR replay. Owner branch attribution is observed fills/fees, not an incremental F0 counterfactual.",
+    "next_cheap_direction": "Qualify real prebenchmark execution/H4 warmup and missing-feature admission contract first; use existing October actual-parent/branch observations to locate capital decay. This justifies data/contract diagnosis, not another backtest or claim of profitable repair.",
+    "not_established": "ATR availability repair restores profit, meets2x/DD50, or reverses F0 negative capital contribution. No alternate B2 winner established."
+  },
+  "pins": {
+    "feed_sha256": "2fcd030c495f15a28ff4ff2ef6d931a018e5a2dd9cf142a56ac6582f941734e1",
+    "ATR_feed_builder_sha256": "47704f6ca1a998ef464ba7b0237d5e32d2330f92702d3c05d00df426a0b34cf3",
+    "native_feed_loader_sha256": "7bdeb177b6b555fedbecd105f890daf100352fab8ccc41d45899d2554e9d7e4f",
+    "risk_results": {
+      "OFF": "dc2fa7a2b0693599eb292b50abd331078af5fc4d7528c70b3581159b92290e3a",
+      "B2": "7e8c6a04407232019601d0907154c9e303248ce44e4b821ea582802841646dcf",
+      "B2_F0": "582ed7a869cc6d0df4ddf5e873f9e41c7a4d7a7360a6e9b3d035923abcb9133d"
+    },
+    "combined_report_sha256": "8c3b3f04cf180783558a81d53d61f010aacfc2affecac4ba71d005bbf77d2e0a",
+    "parquet_integrity": "Existing approved freeze/input pins remain authority; footer-only timestamp check did not hash/rescan whole data."
+  },
+  "budget": "CLOSED7/7physical/full0/reserve0",
+  "new_native_stream_reads": 0,
+  "engine_instances_created": 0,
+  "product_changes": 0,
+  "analysis_failures": "Previously preserved reader failures remain unchanged; none during this bounded diagnosis."
+}

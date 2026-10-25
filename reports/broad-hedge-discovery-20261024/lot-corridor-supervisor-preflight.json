@@ -1,0 +1,10 @@
+{
+  "status": "PASS_ENGINE_FREE_SUPERVISOR",
+  "root_go_false_blocks_before_count": true,
+  "durable_physical_claim_observed_inside_popen_before_failure": true,
+  "failed_popen_counts": true,
+  "canonical_ledger_unchanged": true,
+  "native_engine_instances": 0,
+  "economic_attempts": 0,
+  "fixture_directory": "/private/tmp/lot-supervisor-test-caguctpe"
+}

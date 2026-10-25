@@ -1,0 +1,188 @@
+{
+  "variant": "B2_F0",
+  "status": "NO_GO_ACTUAL_QUALIFICATION_FAILURE",
+  "checks": {
+    "actual_audit_fill_matches_native_order_trade_snapshot": true,
+    "all_debt_obligations_and_full_real_fills": true,
+    "all_sol_caps_exact_ceil_stable": true,
+    "no_spurious_debt_after_sol_cap": true,
+    "all_actual_activations_closed": true,
+    "no_failures_or_open_owner": false
+  },
+  "csv_order_avg_px_metadata_residuals": [
+    {
+      "order_id": "O-20240914-084600-001-000-58",
+      "native_fill_px": "59963",
+      "csv_order_avg_px": "59963.00000000001",
+      "difference": "1E-11",
+      "actual_fill_audit_exact_match_count": 1
+    },
+    {
+      "order_id": "O-20241025-225800-001-000-150",
+      "native_fill_px": "66685.4",
+      "csv_order_avg_px": "66685.40000000001",
+      "difference": "1E-11",
+      "actual_fill_audit_exact_match_count": 1
+    }
+  ],
+  "actual_paired_fill_counts": {
+    "ENTRY": 16,
+    "SOL_CLOSE": 15,
+    "TP": 8,
+    "BTC_DEBT": 8,
+    "SOL_CAP": 2
+  },
+  "actual_debt_obligations": 8,
+  "debts": [
+    {
+      "order_id": "O-20240914-055900-001-000-48",
+      "trade_id": "T-575e672753115d89-014",
+      "cause_order_id": "O-20240914-040100-001-000-41",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.487",
+      "native_post_btc": "0.365",
+      "actual_fill_qty": "0.122",
+      "bmax": "0.365",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20240914-084600-001-000-58",
+      "trade_id": "T-7122994db523ab66-015",
+      "cause_order_id": "O-20240914-055900-001-000-53",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.365",
+      "native_post_btc": "0.244",
+      "actual_fill_qty": "0.121",
+      "bmax": "0.244",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241025-172300-001-000-140",
+      "trade_id": "T-e6caf43d371dfbf8-039",
+      "cause_order_id": "O-20241025-160100-001-000-133",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.881",
+      "native_post_btc": "0.661",
+      "actual_fill_qty": "0.22",
+      "bmax": "0.661",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241025-175800-001-000-146",
+      "trade_id": "T-b466df52e52316bd-040",
+      "cause_order_id": "O-20241025-172200-001-000-137",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.661",
+      "native_post_btc": "0.441",
+      "actual_fill_qty": "0.22",
+      "bmax": "0.441",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241025-225800-001-000-150",
+      "trade_id": "T-bd658bb2292d6d50-041",
+      "cause_order_id": "O-20241025-175700-001-000-144",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.441",
+      "native_post_btc": "0",
+      "actual_fill_qty": "0.441",
+      "bmax": "0.000",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20241226-073500-001-000-241",
+      "trade_id": "T-e4db8a31d69f7907-069",
+      "cause_order_id": "O-20241226-040100-001-000-234",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.585",
+      "native_post_btc": "0.438",
+      "actual_fill_qty": "0.147",
+      "bmax": "0.438",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20250107-081600-001-000-275",
+      "trade_id": "T-e12b23a554c2fa8b-080",
+      "cause_order_id": "O-20250107-040100-001-000-268",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.341",
+      "native_post_btc": "0.256",
+      "actual_fill_qty": "0.085",
+      "bmax": "0.256",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    },
+    {
+      "order_id": "O-20250107-114700-001-000-279",
+      "trade_id": "T-98ac8365a0584f6a-081",
+      "cause_order_id": "O-20250107-081500-001-000-272",
+      "cause_kind": "TP",
+      "native_pre_btc": "0.256",
+      "native_post_btc": "0.171",
+      "actual_fill_qty": "0.085",
+      "bmax": "0.171",
+      "matches_true_debt": true,
+      "debt_obligation_logged": true,
+      "latency_ns": 60000000000
+    }
+  ],
+  "caps": [
+    {
+      "order_id": "O-20240914-055900-001-000-52",
+      "trade_id": "T-2edd71841cb1d928-007",
+      "u": 811,
+      "v": 487,
+      "native_pre_sol": "60.9",
+      "native_post_sol": "60.8",
+      "native_btc": "0.365",
+      "bmax": "0.365",
+      "sol_cap_ceil": "60.8",
+      "btc_coverage_floor_after": "0.365",
+      "actual_fill_qty": "0.1",
+      "correct_full_excess_fill": true,
+      "no_new_btc_debt_from_filled_cap": true
+    },
+    {
+      "order_id": "O-20241226-073500-001-000-245",
+      "trade_id": "T-054f01a4e08905d2-034",
+      "u": 937,
+      "v": 585,
+      "native_pre_sol": "70.3",
+      "native_post_sol": "70.2",
+      "native_btc": "0.438",
+      "bmax": "0.438",
+      "sol_cap_ceil": "70.2",
+      "btc_coverage_floor_after": "0.438",
+      "actual_fill_qty": "0.1",
+      "correct_full_excess_fill": true,
+      "no_new_btc_debt_from_filled_cap": true
+    }
+  ],
+  "economic_attribution": {
+    "ratio_to_matched_OFF": "0.7326100015164205808739716660",
+    "incremental_gain": "-5225.88980301",
+    "actual_SOL_plus_BTC_paired_trim_fees": "362.56544572",
+    "cost_gate": false,
+    "capital_2x_gate": false,
+    "settled_DD_gate": false,
+    "event_DD_gate": false,
+    "daily_tail_gate": true,
+    "parent_tail_gate": true
+  },
+  "engine_instances_created": 0,
+  "additional_stream_reads": 0,
+  "basis": "Actual native cache snapshots linked by order last_trade_id/native_id; quantities never replayed/reconstructed. Single-fill order totals checked against actual audit fill. Partial/late fills would require separate native fill proof and cannot be blanket ignored."
+}

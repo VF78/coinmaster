@@ -1,0 +1,21 @@
+{
+  "status": "GO_OFF_PHYSICAL5_ONLY",
+  "issued_utc": "2026-10-25T00:07:59.872127+00:00",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "logical_slot": 6,
+  "physical_index": 5,
+  "physical_prefix_max": 7,
+  "full_max": 0,
+  "owner_approval_sha256": "8da53003133e9d9781545975a37d929239834bbbbe141b3db84c6fd21d63ab8f",
+  "freeze_files_sha256": {
+    "OFF": "195a45524b568dbb780b34631ed3580bd1268587efb7ac88cc2e83734d59dab8",
+    "B2": "77f187ec87ddbc0e98f02bf459049d803ffe3ce3c3a7ebd3f19b3a5d288949f4",
+    "B2_F0": "0a2cb5e45651a537daa71f161003d687a9befba3fd44dcf48d7d28c9f88b13a4"
+  },
+  "source_review_sha256": "c2b8dee907618861cde67efe211caf045ebb8307f9aafdb72833c197b4c05c8d",
+  "supervisor_sha256": "02fca63be2cfbf1baab6217df39ed0eafaba2095beaa5935dd1779bc85ca7401",
+  "qualified_distinct_tests": 112,
+  "unresolved_skips": 0,
+  "gates": "source184/input27/owner+review+all8receiptartifacthashes verified; supervisor narrowPASS;3enginefreepreflightsPASS",
+  "scope": "exactlyone freshOFF physical5; noautorestart;B2/combinedhelduntilrootnativeeconomicacceptance"
+}

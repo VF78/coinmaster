@@ -1,0 +1,63 @@
+{
+  "variant": "B2_F0",
+  "qualification": "NO_GO_PRIMARY",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "report_sha256": "8c3b3f04cf180783558a81d53d61f010aacfc2affecac4ba71d005bbf77d2e0a",
+  "result_sha256": "582ed7a869cc6d0df4ddf5e873f9e41c7a4d7a7360a6e9b3d035923abcb9133d",
+  "causal_sha256": "1d691824561fb6d883e19d00c312164b0bdf1f0876b68f2e3d7533faa5d80349",
+  "native_accounting_coverage_terminal": "PASS",
+  "corridor_rounding_causality": "PASS_ALL_8_TRUE_DEBT_OBLIGATIONS_8_FULL_FILLS_2_CEIL_CAP_FILLS_NO_RECURSION",
+  "actual_qualification_failure": [
+    "UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE"
+  ],
+  "failure_event_ns": "1725249600000000000",
+  "failure_is_valid_activation_credit": false,
+  "terminal_total": "14318.18376985",
+  "settled_DD_percent": "52.01356834035751645296309217",
+  "event_DD_percent": "52.01356834035751645296309217",
+  "DD_improvement_pp": "1.95633286843538925631977662",
+  "daily_ES20_percent": "4.515094333198124973602447579",
+  "parent_ES20_percent": "16.70977617173883585696979561",
+  "daily_population": 136,
+  "actual_nonoverlapping_parent_population": 20,
+  "all_parent_endpoints_proven": true,
+  "economic_gates": {
+    "ratio_to_matched_OFF": "0.7326100015164205808739716660",
+    "incremental_gain": "-5225.88980301",
+    "actual_SOL_plus_BTC_paired_trim_fees": "362.56544572",
+    "cost_gate": false,
+    "capital_2x_gate": false,
+    "settled_DD_gate": false,
+    "event_DD_gate": false,
+    "daily_tail_gate": true,
+    "parent_tail_gate": true
+  },
+  "funding_by_asset": {
+    "BTCUSDT-PERP.P1SIM": "-269.50507118",
+    "SOLUSDT-PERP.P1SIM": "-0.51919588"
+  },
+  "coverage": {
+    "watermarks": 195839,
+    "mutation_epochs": 243,
+    "native_fills": 127,
+    "funding_transitions": 116,
+    "all_source_lag_ns": 60000000000,
+    "sequence_rows": 588006,
+    "cash_plus_native_UPNL_exact": true
+  },
+  "activations": {
+    "selected": 16,
+    "closed": 16,
+    "entry_fills": 16,
+    "TP_fills": 8,
+    "nonTP_SOL_close_fills": 15,
+    "unavailable_feature_failed_attempts": 1
+  },
+  "fees": "1224.18736309",
+  "actual_returncode": 0,
+  "engine_instances_created": 0,
+  "stream_passes": 1,
+  "budget": "EXHAUSTED7/7physical including2FAILED+5COMPLETED; full0; noreserve/noautorerun",
+  "target": "PrefixNO_GO only; original70/50 and90/50 notmet, noalternateB2promotion",
+  "metadata": "Two CSV avg_px metadata residues +1e\u221211 retained; actual native fill audit exact via order/trade/snapshot proof."
+}

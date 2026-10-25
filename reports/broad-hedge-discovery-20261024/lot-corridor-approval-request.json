@@ -1,5 +1,5 @@
 {
-  "status": "PENDING_OWNER_APPROVAL",
+  "status": "APPROVED_BY_OWNER",
   "requested_utc": "2026-10-24T23:30:08.703046+00:00",
   "base_source": "3323f08c57ede411058f93d96acee88928c93481",
   "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/LOT_CORRIDOR_REPAIR_PROTOCOL_PROPOSED_RU.md",
@@ -20,5 +20,9 @@
   "full_max": 0,
   "money_change": "exact native integer BTCcoveragefloor plus SOLcapceil; no SOL adds; surplus<oneSOLlot",
   "pilot_production": "excluded",
-  "source_changes_performed": false
+  "source_changes_performed": false,
+  "approved_utc": "2026-10-24T23:54:02.400471+00:00",
+  "owner_exact_response": "Утверждаю исправление и общий лимит 7",
+  "approval_file": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-owner-approval.json",
+  "approval_sha256": "8da53003133e9d9781545975a37d929239834bbbbe141b3db84c6fd21d63ab8f"
 }

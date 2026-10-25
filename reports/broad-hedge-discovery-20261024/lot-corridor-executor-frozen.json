@@ -1,0 +1,21 @@
+{
+  "status": "CLOSED_PRIMARY_NO_GO_BUDGET_EXHAUSTED",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/native-run-ledger.json",
+    "sha256": "e96088c4a37096ce50b4a8f17ba66626d529764b5eb1996f1d3ba6ca7fba7cfd"
+  },
+  "final_decision": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-risk-final-decision.json",
+    "sha256": "f657e9e4f1eff97c4e170b7d19932b2a9a19e5c3372ed728ac8eddb000c9937a",
+    "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7"
+  },
+  "physical_started": 7,
+  "physical_completed": 5,
+  "physical_failed": 2,
+  "physical_active": 0,
+  "remaining": 0,
+  "full_max": 0,
+  "all_attempt_and_slot_records_preserved": true,
+  "processes": "ALL3_NEW_SUPERVISORS_WAITED_ACTUAL_EXIT0;NO_ACTIVE_ATTEMPT"
+}

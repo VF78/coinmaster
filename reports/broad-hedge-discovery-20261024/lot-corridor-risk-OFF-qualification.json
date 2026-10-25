@@ -1,0 +1,43 @@
+{
+  "variant": "OFF",
+  "qualification": "PASS_MATCHED_CONTROL",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "report_sha256": "2443ee7d285cfaf7a6d734cb5e76f06c0e999139345474a26f2cdff5c1e7b49f",
+  "reader_sha256": "74849e3bff2ab349e44352ecae72a1d2af186ea329c24628cf57d8e77d0f17a6",
+  "result_sha256": "dc2fa7a2b0693599eb292b50abd331078af5fc4d7528c70b3581159b92290e3a",
+  "old_economic_parity": {
+    "terminal_total": true,
+    "settled_DD_percent": true,
+    "event_DD_percent": true,
+    "native_fills": true,
+    "fees": true,
+    "signed_funding": true,
+    "daily_ES20": true,
+    "parent_ES20": true,
+    "daily_count": true,
+    "parent_count": true
+  },
+  "status": "PASS",
+  "terminal_total": "19544.07357286",
+  "settled_DD_percent": "53.96990120879290570928286879",
+  "event_DD_percent": "53.96990120879290570928286879",
+  "daily_ES20_percent": "6.139919645585031701059233536",
+  "parent_ES20_percent": "19.88619577436326170835668602",
+  "coverage": {
+    "rows": 587950,
+    "settled": 195839,
+    "epochs": 215,
+    "first_source_ns": 1725148860000000000,
+    "last_source_ns": 1736899140000000000,
+    "source_clock": true,
+    "settled_lag_ns": {
+      "60000000000": 195839
+    },
+    "cash_native_upnl_bridge_exact": true
+  },
+  "cash_report_DD_percent_NOT_USED": "48.84585588045581256632216230",
+  "engine_instances_created": 0,
+  "analysis_recovery": "Preserved failures 1 ledger schema before streams; 2 SQLite mode=ro after stream before export. Recovered once using immutable=1 final SQLite; no monetary or threshold change.",
+  "budget": "unchanged max7/full0; no launch authority",
+  "limits": "Prefix control only; DD exceeds 50% and does not qualify economic target. Native position pickle hashes need not equal prior run; actual economic endpoint parity is exact."
+}

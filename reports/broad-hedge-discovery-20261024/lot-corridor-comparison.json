@@ -1,0 +1,64 @@
+{
+  "status": "CLOSED_PRIMARY_NO_GO_NO_QUALIFIED_WINNER",
+  "recorded_utc": "2026-10-25T00:28:57.119074+00:00",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "prefix_calendar": "[2024-09-01,2025-01-15)",
+  "seed": "10000",
+  "variants": {
+    "OFF": {
+      "qualification": "PASS_MATCHED_CONTROL",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "report_sha256": "2443ee7d285cfaf7a6d734cb5e76f06c0e999139345474a26f2cdff5c1e7b49f",
+      "terminal_total": "19544.07357286",
+      "settled_DD_percent": "53.96990120879290570928286879",
+      "event_DD_percent": "53.96990120879290570928286879",
+      "daily_ES20_percent": "6.139919645585031701059233536",
+      "parent_ES20_percent": "19.88619577436326170835668602"
+    },
+    "B2": {
+      "qualification": "PASS_NATIVE_ACCOUNTING_RISK_AND_CORRIDOR; ATTRIBUTION_ECONOMIC_GATES_FAIL",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "report_sha256": "4caeee14ff0190751d4f2cf51deba00f63461b0693fe9cda8eb8e4d96d5f51d4",
+      "terminal_total": "19754.54867403",
+      "settled_DD_percent": "48.07956805853365875585386342",
+      "event_DD_percent": "48.07956805853365875585386342",
+      "daily_ES20_percent": "5.584254414342872034969066417",
+      "parent_ES20_percent": "17.51622161927941575805626862"
+    },
+    "B2_F0": {
+      "qualification": "NO_GO_PRIMARY",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "report_sha256": "8c3b3f04cf180783558a81d53d61f010aacfc2affecac4ba71d005bbf77d2e0a",
+      "terminal_total": "14318.18376985",
+      "settled_DD_percent": "52.01356834035751645296309217",
+      "event_DD_percent": "52.01356834035751645296309217",
+      "daily_ES20_percent": "4.515094333198124973602447579",
+      "parent_ES20_percent": "16.70977617173883585696979561"
+    }
+  },
+  "required_combined_total": "39088.14714572",
+  "combined_total_gap": "24769.96337587",
+  "mechanical_repair": "PASS exactintegerfloorBTC/ceilSOL realnativecausalproof/no recursivecapdebt",
+  "primary_NO_GO": [
+    "TOTALbelow2xOFF",
+    "incrementalnetbelowtwicepairedfees",
+    "settledandeventDDabove50",
+    "DDimprovementbelow5pp",
+    "UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE_2024-09-02T04:00Z"
+  ],
+  "data_quality": "actualfirstrequiredSOLH4ATR14 unavailable; this qualifiesNO_GO, notfunding/accountinggap; no claimF0intrinsicallybad/coldstartfixwouldrestoreROI",
+  "native_money_funding_coverage_terminal": "PASS all3newruns/rc0/noLiq/flatorders0",
+  "budget": {
+    "max": 7,
+    "started": 7,
+    "completed": 5,
+    "failed": 2,
+    "active": 0,
+    "remaining": 0,
+    "fullmax": 0,
+    "status": "CLOSED/noautomaticextension"
+  },
+  "full_goal": "70/50and90/50NOT_MET/prefixcannotprovefullperiod",
+  "further_authority": "no new source/training/physical/full budget; cheapreadonlyadmissionmemo only",
+  "pilot_production": "untouched"
+}

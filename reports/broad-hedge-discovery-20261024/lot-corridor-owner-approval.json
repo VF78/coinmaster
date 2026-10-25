@@ -1,0 +1,30 @@
+{
+  "status": "APPROVED_BY_OWNER",
+  "approved_utc": "2026-10-24T23:54:02.400471+00:00",
+  "client_date": "2026-10-25",
+  "client_timezone": "Europe/Moscow",
+  "protocol_sha256": "0e7bca174c0268f0dc2769a4918d7017d88e98f84115ee52ad22dd59c97ca7be",
+  "base_source_commit": "3323f08c57ede411058f93d96acee88928c93481",
+  "authorized_native_prefix_max": 7,
+  "authorized_full_max": 0,
+  "previous_max": 5,
+  "physical_started_before": 4,
+  "additional_over_previous_cap": 2,
+  "new_prefix_runs": 3,
+  "remaining_sequence": [
+    "physical5matchedOFF",
+    "physical6B2",
+    "physical7combinedB2_F0"
+  ],
+  "no_reserve": true,
+  "failed_attempts_count": true,
+  "scope": "isolated exactinteger BTCcoveragefloor/SOLcapceil repair; meaningful nativefixtures+connectedtests+independentreview;freeze before3prefixes onone newsource/config",
+  "owner_exact_response": "Утверждаю исправление и общий лимит 7",
+  "approval_source": "direct human reply to request_user_input_async call_499e3353379e4aefa96a1c7659d60f70 in current manager chat",
+  "prefix_calendar": "[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)",
+  "seed": "10000",
+  "reserve": "0",
+  "new_source": "to be implemented from pinnedbase, committed, reviewed and frozen before first prefix; no retune after outcomes",
+  "pilot_production_services_credentials_real_orders_transfers": "excluded",
+  "public_source_publication": "separately explicitly approved earlier; push is not deployment"
+}

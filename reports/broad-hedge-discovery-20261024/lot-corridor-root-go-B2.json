@@ -1,0 +1,13 @@
+{
+  "status": "GO_B2_PHYSICAL6_ONLY",
+  "issued_utc": "2026-10-25T00:13:38.207775+00:00",
+  "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "physical": 6,
+  "logical": 7,
+  "max": 7,
+  "fullmax": 0,
+  "freeze_sha256": "7fde01acf8e863f4b545f297ed6f22fc7ab45f354f7358249f5c15dc3751a943",
+  "matched_OFF_sha256": "2443ee7d285cfaf7a6d734cb5e76f06c0e999139345474a26f2cdff5c1e7b49f",
+  "scope": "exactlyoneB2prefix/noautorestart/no sourcechanges;combinedhelduntilrootcheckpoint",
+  "reviewed_supervisor_sha256": "02fca63be2cfbf1baab6217df39ed0eafaba2095beaa5935dd1779bc85ca7401"
+}

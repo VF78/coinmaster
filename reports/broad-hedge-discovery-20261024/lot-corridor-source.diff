@@ -1,0 +1,363 @@
+diff --git a/runtime/coinmaster/research/paired_prefix_run.py b/runtime/coinmaster/research/paired_prefix_run.py
+index 503484c..0a1dcbc 100644
+--- a/runtime/coinmaster/research/paired_prefix_run.py
++++ b/runtime/coinmaster/research/paired_prefix_run.py
+@@ -15,9 +15,12 @@ import tempfile
+ import uuid
+ 
+ PROTOCOL_SHA="9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1"
++LOT_PROTOCOL_SHA="0e7bca174c0268f0dc2769a4918d7017d88e98f84115ee52ad22dd59c97ca7be"
++LOT_APPROVAL_SHA="8da53003133e9d9781545975a37d929239834bbbbe141b3db84c6fd21d63ab8f"
++LOT_BASE_SOURCE="3323f08c57ede411058f93d96acee88928c93481"
+ START_MS=1725148800000
+ END_MS=1736899200000
+-SLOTS={1:"MATCHED_OFF_CONTROL",2:"B2_PAIRED",3:"B2_F0_PAIRED",4:"ONE_CONCRETE_CORRECTION_OR_RESERVE",5:"VALID_OFF_AFTER_NONTRADING_BOUNDARY_REPAIR"}
++SLOTS={1:"MATCHED_OFF_CONTROL",2:"B2_PAIRED",3:"B2_F0_PAIRED",4:"ONE_CONCRETE_CORRECTION_OR_RESERVE",5:"VALID_OFF_AFTER_NONTRADING_BOUNDARY_REPAIR",6:"LOT_CORRIDOR_MATCHED_OFF",7:"LOT_CORRIDOR_B2",8:"LOT_CORRIDOR_COMBINED"}
+ VARIANTS={"OFF":None,"B2":"B2","B2_F0":"B2_F0"}
+ 
+ 
+@@ -40,9 +43,19 @@ def ledger_transaction(path):
+ def effective_prefix_cap(freeze,ledger):
+     """Default4; ceiling5 is inert without separately pinned owner amendment."""
+     frozen=freeze.get("physical_prefix_max",4);recorded=ledger["physical_prefix_max"]
+-    if any(type(value) is not int or value not in (4,5) for value in (frozen,recorded)):
++    if any(type(value) is not int or value not in (4,5,7) for value in (frozen,recorded)):
+         raise ValueError("INVALID_PREFIX_CAP_OR_CEILING")
+     cap=min(frozen,recorded)
++    if cap==7:
++        evidence=freeze.get("owner_budget_amendment",{})
++        if evidence.get("sha256")!=LOT_APPROVAL_SHA or not evidence.get("path") or sha(evidence["path"])!=LOT_APPROVAL_SHA:
++            raise ValueError("LOT_CORRIDOR_OWNER_APPROVAL_PIN_REQUIRED")
++        approval=json.loads(Path(evidence["path"]).read_text())
++        if (approval.get("status")!="APPROVED_BY_OWNER" or approval.get("authorized_native_prefix_max")!=7
++            or approval.get("authorized_full_max")!=0 or approval.get("protocol_sha256")!=LOT_PROTOCOL_SHA
++            or approval.get("base_source_commit")!=LOT_BASE_SOURCE or not approval.get("no_reserve")
++            or freeze.get("protocol_sha256")!=LOT_PROTOCOL_SHA or ledger.get("protocol_sha256")!=LOT_PROTOCOL_SHA):
++            raise ValueError("LOT_CORRIDOR_APPROVED_SCOPE_REQUIRED")
+     if cap==5:
+         evidence=freeze.get("owner_budget_amendment")
+         if not isinstance(evidence,dict) or not evidence.get("path") or not evidence.get("sha256"):
+@@ -58,11 +71,11 @@ def effective_prefix_cap(freeze,ledger):
+ def claim_attempt(path,freeze,variant,artifact_dir):
+     if freeze.get("internal_go") is not True or freeze.get("independent_review")!="PASS" or freeze.get("launch_gates")!="PASS":
+         raise ValueError("ROOT_INTERNAL_GO_AND_REVIEWED_LAUNCH_GATES_REQUIRED")
+-    if freeze.get("protocol_sha256")!=PROTOCOL_SHA or freeze.get("full_max")!=0:
++    if freeze.get("protocol_sha256") not in (PROTOCOL_SHA,LOT_PROTOCOL_SHA) or freeze.get("full_max")!=0:
+         raise ValueError("FROZEN_APPROVED_PREFIX_SCOPE_REQUIRED")
+     if variant not in VARIANTS:raise ValueError("UNAPPROVED_VARIANT")
+     with ledger_transaction(path) as ledger:
+-        if ledger["full_max"]!=0 or ledger["protocol_sha256"]!=PROTOCOL_SHA:
++        if ledger["full_max"]!=0 or ledger["protocol_sha256"]!=freeze["protocol_sha256"]:
+             raise ValueError("INVALID_CANONICAL_LEDGER")
+         cap=effective_prefix_cap(freeze,ledger)
+         if ledger["physical_started"]>=cap:raise ValueError("PHYSICAL_PREFIX_BUDGET_EXHAUSTED")
+@@ -70,10 +83,15 @@ def claim_attempt(path,freeze,variant,artifact_dir):
+         physical=ledger["physical_started"]+1
+         number=int(freeze["logical_slot"])
+         if number not in SLOTS:raise ValueError("INVALID_LOGICAL_SLOT")
++        if number in (6,7,8):
++            if cap!=7 or physical!={6:5,7:6,8:7}[number]:
++                raise ValueError("LOT_CORRIDOR_PHYSICAL_SEQUENCE_REQUIRED")
++        elif cap==7:
++            raise ValueError("LOT_CORRIDOR_RETIRED_LOGICAL_SLOT")
+         if number==5 and cap<5:raise ValueError("LOGICAL_SLOT5_REQUIRES_OWNER_AMENDMENT")
+         slot=next((item for item in ledger["slots"] if item["slot"]==number),None)
+         if slot is None:raise ValueError("LOGICAL_SLOT_NOT_AUTHORIZED_IN_LEDGER")
+-        required={1:"OFF",2:"B2",3:"B2_F0",5:"OFF"}.get(number)
++        required={1:"OFF",2:"B2",3:"B2_F0",5:"OFF",6:"OFF",7:"B2",8:"B2_F0"}.get(number)
+         if required is not None and variant!=required:raise ValueError("FROZEN_SLOT_ORDER_REQUIRED")
+         if number==4 and not freeze.get("concrete_correction_reserve_reason"):
+             raise ValueError("RESERVE_REQUIRES_ONE_CONCRETE_CORRECTION_REASON")
+diff --git a/runtime/coinmaster/strategy/paired_prefix.py b/runtime/coinmaster/strategy/paired_prefix.py
+index c709cb2..50d4180 100644
+--- a/runtime/coinmaster/strategy/paired_prefix.py
++++ b/runtime/coinmaster/strategy/paired_prefix.py
+@@ -55,34 +55,56 @@ def sol_allocations(held_lots, consumed):
+     return result
+ 
+ 
++def exact_lots(value, lot):
++    """Exact native Decimal lattice membership, independent of Decimal context."""
++    if not isinstance(value, D) or not isinstance(lot, D) or not value.is_finite() or not lot.is_finite() or value < 0 or lot <= 0:
++        raise ValueError("PAIRED_UNKNOWN_NATIVE_LOTS")
++    vn, vd = value.as_integer_ratio(); ln, ld = lot.as_integer_ratio()
++    count, remainder = divmod(vn * ld, vd * ln)
++    if remainder:
++        raise ValueError("PAIRED_UNKNOWN_NONINTEGRAL_NATIVE_LOTS")
++    return count
++
++
+ @dataclass
+ class PairedCaps:
+     qref: D
+-    k: D
++    k: D  # Display only; never an input to cap arithmetic.
+     btc_lot: D
+     sol_lot: D
++    intended_sol: D
+     bmax: D = field(init=False)
++    u: int = field(init=False)
++    v: int = field(init=False)
+     initialized: bool = False
+ 
+     def __post_init__(self):
+-        if self.qref <= 0 or self.k <= 0:
++        self.u = exact_lots(self.intended_sol, self.sol_lot)
++        self.v = exact_lots(self.qref, self.btc_lot)
++        if not self.u or not self.v:
+             raise ValueError("PAIRED_INVALID_RATIO")
+         self.bmax = self.qref
+ 
++    def coverage(self, actual_sol):
++        return D(self.v * exact_lots(actual_sol, self.sol_lot) // self.u) * self.btc_lot
++
+     def entry_terminal(self, actual_sol):
+-        self.bmax = min(self.bmax, floor_lot(actual_sol / self.k, self.btc_lot))
++        self.bmax = min(self.bmax, self.coverage(actual_sol))
+         self.initialized = True
+ 
+     def reconcile(self, actual_btc, actual_sol, *, sol_reduced, btc_reduced, active_risk):
++        exact_lots(actual_btc, self.btc_lot)
++        exact_lots(actual_sol, self.sol_lot)
+         if self.initialized and sol_reduced and active_risk:
+-            self.bmax = min(self.bmax, floor_lot(actual_sol / self.k, self.btc_lot))
++            self.bmax = min(self.bmax, self.coverage(actual_sol))
+         if btc_reduced:
+             self.bmax = min(self.bmax, actual_btc)
+         return max(D(0), actual_btc - self.bmax), max(D(0), actual_sol - self.solmax)
+ 
+     @property
+     def solmax(self):
+-        return floor_lot(self.k * self.bmax, self.sol_lot)
++        numerator = self.u * exact_lots(self.bmax, self.btc_lot)
++        return D((numerator + self.v - 1) // self.v) * self.sol_lot
+ 
+ 
+ class PairedPrefixResearch:
+@@ -200,8 +222,14 @@ class PairedPrefixResearch:
+             self._pair_fail("UNHEDGEABLE_ZERO_INTENDED", ns)
+             self._begin_forced_close("PAIRED_UNHEDGEABLE_ZERO_INTENDED")
+             return
++        try:
++            caps = PairedCaps(qref, k, btc.size_increment.as_decimal(), sol.size_increment.as_decimal(), quantity)
++        except ValueError as error:
++            self._pair_fail(str(error), ns)
++            self._begin_forced_close("PAIRED_UNKNOWN_NATIVE_LOTS")
++            return
+         self._pair = dict(parent=ep.id, side=side, branch=branch, signal_ns=ns,
+-            eligible_ns=ns + MINUTE, quantity=quantity, caps=PairedCaps(qref, k, btc.size_increment.as_decimal(), sol.size_increment.as_decimal()),
++            eligible_ns=ns + MINUTE, quantity=quantity, caps=caps,
+             boundary=D(str(signal[("K_" + str(side)) if branch == "B2" else "O"])), atr=D(str(signal["ATR_SOL"])),
+             risk="ACTIVE_RISK", first_fill_ns=None, deadline_ns=None, entry_terminal=False,
+             entry_qty=D(0), entry_notional=D(0), p0=None, consumed=set(), signature=None,
+@@ -268,7 +296,10 @@ class PairedPrefixResearch:
+         self._terminal_submission(oid)
+         if p and owner["kind"] == "ENTRY" and not p["entry_terminal"]:
+             p["entry_terminal"] = True
+-            p["caps"].entry_terminal(p["entry_qty"])
++            try:
++                p["caps"].entry_terminal(p["entry_qty"])
++            except ValueError as error:
++                self._pair_fail(str(error), ns)
+             self._pair_log("ENTRY_TERMINAL_P0_FROZEN", ns, actual_sol=p["entry_qty"], p0=p["p0"], bmax=p["caps"].bmax)
+             self._pair_arm_btc_debt(ns)
+         if p and owner["kind"] == "STOP":
+@@ -337,8 +368,11 @@ class PairedPrefixResearch:
+             # Stock execution engine commits cache/account before strategy
+             # fill delivery. Read that same actual native state, never pending relief.
+             after = self._pair_qty(self.config.sol_id)
+-            p["caps"].reconcile(p["last_btc"], after, sol_reduced=True,
+-                                btc_reduced=False, active_risk=True)
++            try:
++                p["caps"].reconcile(p["last_btc"], after, sol_reduced=True,
++                                    btc_reduced=False, active_risk=True)
++            except ValueError as error:
++                self._pair_fail(str(error), event.ts_event)
+         self._pair_arm_btc_debt(event.ts_event)
+         self._pair_log("ACTUAL_FILL", event.ts_event, order_id=oid, kind=owner["kind"],
+                        level=owner["level"], qty=qty, price=px, risk=p["risk"], bmax=p["caps"].bmax)
+@@ -351,8 +385,11 @@ class PairedPrefixResearch:
+             return
+         p = self._pair
+         btc = self._pair_qty(self.config.btc_id); sol = self._pair_qty(self.config.sol_id)
+-        p["caps"].reconcile(btc, sol, sol_reduced=sol < p["last_sol"],
+-            btc_reduced=btc < p["last_btc"], active_risk=p["risk"] != "INACTIVE_RISK")
++        try:
++            p["caps"].reconcile(btc, sol, sol_reduced=sol < p["last_sol"],
++                btc_reduced=btc < p["last_btc"], active_risk=p["risk"] != "INACTIVE_RISK")
++        except ValueError as error:
++            self._pair_fail(str(error), ns)
+         p["last_btc"], p["last_sol"] = btc, sol
+         if not btc:
+             p["close_sol"] = True
+diff --git a/runtime/tests/test_native_paired_prefix.py b/runtime/tests/test_native_paired_prefix.py
+index 6ebcc96..1a04eb0 100644
+--- a/runtime/tests/test_native_paired_prefix.py
++++ b/runtime/tests/test_native_paired_prefix.py
+@@ -28,7 +28,7 @@ def test_price_fee_floor_stop_and_exact_lot_rights(side):
+ 
+ 
+ def test_absolute_caps_actual_partial_zero_unknown_inactive_and_no_recursion():
+-    c = PairedCaps(D(100), D(1), D(1), D(1)); c.entry_terminal(D(100))
++    c = PairedCaps(D(100), D(1), D(1), D(1), D(100)); c.entry_terminal(D(100))
+     assert c.reconcile(D(100), D(75), sol_reduced=True, btc_reduced=False, active_risk=True) == (D(25), D(0))
+     assert c.reconcile(D(75), D(75), sol_reduced=False, btc_reduced=True, active_risk=True) == (D(0), D(0))
+     assert c.bmax == D(75) and c.solmax == D(75)
+@@ -36,7 +36,7 @@ def test_absolute_caps_actual_partial_zero_unknown_inactive_and_no_recursion():
+     assert c.reconcile(D(70), D(0), sol_reduced=True, btc_reduced=True, active_risk=False) == (D(0), D(0))
+     assert c.bmax == D(70)  # Inactive close cannot forgive earlier debt or restore.
+     for actual, expected in ((D(20), D(10)), (D(0), D(0))):
+-        partial = PairedCaps(D(100), D(2), D(1), D(1)); partial.entry_terminal(actual)
++        partial = PairedCaps(D(100), D(2), D(1), D(1), D(200)); partial.entry_terminal(actual)
+         assert partial.bmax == expected
+ 
+ 
+@@ -62,7 +62,7 @@ class Probe(NativeProbe):
+         return super().on_order_canceled(event)
+ 
+ 
+-def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True):
++def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True, btc_quantity=100):
+     config=cfg(True,research_btc_real_u=True,research_btc_q_mode="CLEAN_Q", research_sol_off=True,
+         research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_btc_split_discount=D(".005"))
+     config=config.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)))
+@@ -79,7 +79,7 @@ def native_setup(side=1, a="2", probe=Probe, modules=(), valid=True):
+     run_ticks(e,[tick(BTC_PERP,1)])
+     prepare_day(s,2);marks(s,2)
+     ep=s._domain.episode=Episode("paired",side,10000,1,wave_levels=(0,0,.03),h=10000)
+-    intent=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=100)
++    intent=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=btc_quantity)
+     s._submit_intent(intent,100,100,.01,0,ts_now=2)
+     run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(SOL_PERP,5)])
+     selected(s,a=a,side=side,valid=valid)
+@@ -217,9 +217,9 @@ def test_native_btc_tp_cap_trim_creates_only_absolute_rounding_deficit():
+         for dt in range(5):
+             run_ticks(e,[tick(BTC_PERP,t+dt,"101"),tick(SOL_PERP,t+dt)])
+         p=s._pair
+-        assert s._pair_qty(BTC_PERP.id)==D(39),json.dumps(s._pair_report())
+-        assert s._pair_qty(SOL_PERP.id)==D("7.8"),json.dumps(s._pair_report())
+-        assert p["caps"].bmax==D(39) and p["caps"].solmax==D("7.8")
++        assert s._pair_qty(BTC_PERP.id)==D("39.375"),json.dumps(s._pair_report())
++        assert s._pair_qty(SOL_PERP.id)==D("7.9"),json.dumps(s._pair_report())
++        assert p["caps"].bmax==D("39.375") and p["caps"].solmax==D("7.9")
+         assert not s._pair_failures,json.dumps(s._pair_report())
+     finally:e.end();e.dispose()
+ 
+@@ -284,9 +284,9 @@ def test_native_late_oversize_btc_caused_cap_actual_deficit_is_not_deduplicated_
+         for dt in range(6):
+             run_ticks(e,[tick(BTC_PERP,t+dt,"101"),tick(SOL_PERP,t+dt)])
+         assert s.injected_oversize
+-        assert s._pair_qty(SOL_PERP.id)==D("5.6"),json.dumps(s._pair_report())
+-        assert s._pair_qty(BTC_PERP.id)==D(28),json.dumps(s._pair_report())
+-        assert s._pair["caps"].bmax==D(28)
++        assert s._pair_qty(SOL_PERP.id)==D("5.8"),json.dumps(s._pair_report())
++        assert s._pair_qty(BTC_PERP.id)==D(29),json.dumps(s._pair_report())
++        assert s._pair["caps"].bmax==D(29)
+         assert not s._pair_failures,json.dumps(s._pair_report())
+         before=json.dumps(s._pair_report(),sort_keys=True);cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
+         # Replay only genuine already-applied callbacks in reverse order. The
+@@ -359,3 +359,69 @@ def test_native_raw_risk_unavailable_feature_is_unhedgeable_no_go_not_valid_acti
+         assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0
+         assert not e.cache.orders_open() and not e.cache.orders_inflight()
+     finally:e.end();e.dispose()
++
++
++@pytest.mark.parametrize("side", [1, -1])
++@pytest.mark.parametrize("oversize", [False, True])
++def test_native_coprime_actual_1037_1817_single_tp_stable_corridor(side, oversize):
++    # Native cache entry and fills, with the actual production integer ratio.
++    from decimal import localcontext
++    with localcontext() as ctx:
++        ctx.prec = 80
++        a = str(D("181.70000001") / D("1.037"))
++        s,e,ep = native_setup(side=side, a=a, btc_quantity=2.074, probe=OversizeCapProbe if oversize else Probe)
++    try:
++        t=covered(s,e)
++        p=s._pair
++        assert p["caps"].u==1817 and p["caps"].v==1037
++        assert s._pair_qty(BTC_PERP.id)==D("1.037")
++        assert s._pair_qty(SOL_PERP.id)==D("181.7")
++        price="99" if side==1 else "101"
++        run_ticks(e,[tick(BTC_PERP,t),tick(SOL_PERP,t,price,size="45.4")])
++        assert s._pair_qty(SOL_PERP.id)==D("136.3")
++        for dt in range(1,12):
++            run_ticks(e,[tick(BTC_PERP,t+dt),tick(SOL_PERP,t+dt,price)])
++        assert s._pair_qty(BTC_PERP.id)==D(".776" if oversize else ".777"),json.dumps(s._pair_report())
++        assert s._pair_qty(SOL_PERP.id)==D("136.0" if oversize else "136.2"),json.dumps(s._pair_report())
++        fills=[x for x in s.paired_prefix_audit if x['event']=='ACTUAL_FILL']
++        assert sum(x['kind']=='BTC_DEBT' for x in fills)==(2 if oversize else 1)
++        assert sum(x['kind']=='SOL_CAP' for x in fills)==(2 if oversize else 1)
++        assert p['consumed']=={0} and p['debt_since'] is None
++        assert not s._pair_failures,json.dumps(s._pair_report())
++        cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
++        before=json.dumps(s._pair_report(),sort_keys=True)
++        for event in reversed(list(s.native_fill_events)):s.on_order_filled(event)
++        assert json.dumps(s._pair_report(),sort_keys=True)==before
++        assert e.cache.account_for_venue(SIM).balance_total().as_decimal()==cash
++    finally:e.end();e.dispose()
++
++
++def test_exact_integer_caps_boundary_undershoot_and_nonintegral_unknown():
++    from coinmaster.strategy.paired_prefix import exact_lots
++    c=PairedCaps(D('1.037'),D('0.00001'),D('.001'),D('.1'),D('181.7'))
++    c.entry_terminal(D('181.7'))
++    assert c.solmax==D('181.7')  # k is deliberately wrong: caps use frozen lots.
++    c.reconcile(D('1.037'),D('136.3'),sol_reduced=True,btc_reduced=False,active_risk=True)
++    assert c.bmax==D('.777') and c.solmax==D('136.2')
++    c.reconcile(D('.777'),D('136.1'),sol_reduced=True,btc_reduced=True,active_risk=True)
++    assert c.bmax==D('.776') and c.solmax==D('136.0')
++    assert c.reconcile(D('.776'),D('136.0'),sol_reduced=True,btc_reduced=True,active_risk=True)==(D(0),D(0))
++    c.reconcile(D(0),D('136.0'),sol_reduced=False,btc_reduced=True,active_risk=True)
++    assert c.solmax==0
++    for value in (D('.0001'),float('.001')):
++        with pytest.raises(ValueError,match='UNKNOWN'):exact_lots(value,D('.001'))
++
++
++def test_native_unknown_lattice_at_activation_forces_actual_parent_close(monkeypatch):
++    import coinmaster.strategy.paired_prefix as module
++    def unsupported(*args, **kwargs):
++        raise ValueError("PAIRED_UNKNOWN_NONINTEGRAL_NATIVE_LOTS")
++    monkeypatch.setattr(module, "PairedCaps", unsupported)
++    s,e,ep=native_setup(a=".2")
++    try:
++        assert "PAIRED_UNKNOWN_NONINTEGRAL_NATIVE_LOTS" in s._pair_failures
++        for ns in (11,12,13):run_ticks(e,[tick(BTC_PERP,ns),tick(SOL_PERP,ns)])
++        assert s._pair_qty(BTC_PERP.id)==0 and s._pair_qty(SOL_PERP.id)==0
++        assert not s._pair_orders and not e.cache.orders_open() and not e.cache.orders_inflight()
++        assert not any(x['event']=='ACTIVATION_SELECTED' for x in s.paired_prefix_audit)
++    finally:e.end();e.dispose()
+diff --git a/runtime/tests/test_paired_prefix_ledger.py b/runtime/tests/test_paired_prefix_ledger.py
+index bf197ec..1354269 100644
+--- a/runtime/tests/test_paired_prefix_ledger.py
++++ b/runtime/tests/test_paired_prefix_ledger.py
+@@ -87,3 +87,30 @@ def test_cap5_requires_hash_pinned_explicit_owner_amendment_and_only_extra_off(t
+     assert r['physical_started']==5 and [a['logical_slot'] for a in r['attempts']]==[1,4,5,2,3]
+     assert [a['status'] for a in r['attempts'][:2]]==['FAILED','FAILED']
+     with pytest.raises(ValueError,match='BUDGET_EXHAUSTED'):claim_attempt(p,f,'OFF',tmp_path/'sixth')
++
++
++def test_lot_corridor_logical_eight_fits_physical_seven_and_preserves_failures(tmp_path,monkeypatch):
++    import coinmaster.research.paired_prefix_run as runner
++    p=new_ledger(tmp_path)
++    r=json.loads(p.read_text())
++    old=[dict(attempt_id="old-"+str(i),physical_index=i,logical_slot=i,variant='OFF',status='FAILED',detail={'original':i}) for i in range(1,5)]
++    r.update(physical_prefix_max=7,physical_started=4,protocol_sha256=runner.LOT_PROTOCOL_SHA,attempts=old)
++    for slot in r['slots']:
++        if slot['slot']<=5:slot['status']='NOT_RUN_SUPERSEDED'
++    p.write_text(json.dumps(r))
++    approval=tmp_path/'TEST_ONLY_APPROVAL.json'
++    approval.write_text(json.dumps(dict(status='APPROVED_BY_OWNER',authorized_native_prefix_max=7,
++        authorized_full_max=0,protocol_sha256=runner.LOT_PROTOCOL_SHA,base_source_commit=runner.LOT_BASE_SOURCE,no_reserve=True)))
++    # Test-only digest injection; production constant pins the actual human receipt.
++    monkeypatch.setattr(runner,'LOT_APPROVAL_SHA',runner.sha(approval))
++    for logical,variant in ((6,'OFF'),(7,'B2'),(8,'B2_F0')):
++        f=freeze(logical,'lot-source');f.update(protocol_sha256=runner.LOT_PROTOCOL_SHA,physical_prefix_max=7,
++            owner_budget_amendment=dict(path=str(approval),sha256=runner.sha(approval)))
++        a=claim_attempt(p,f,variant,tmp_path/variant);finish_attempt(p,a,'COMPLETED',{})
++    actual=json.loads(p.read_text())
++    assert actual['attempts'][:4]==old
++    assert actual['physical_started']==7
++    assert [a['logical_slot'] for a in actual['attempts'][4:]]==[6,7,8]
++    with pytest.raises(ValueError,match='BUDGET_EXHAUSTED'):claim_attempt(p,f,'B2_F0',tmp_path/'extra')
++    f['owner_budget_amendment']['sha256']='bad'
++    with pytest.raises(ValueError,match='APPROVAL_PIN'):runner.effective_prefix_cap(f,actual)

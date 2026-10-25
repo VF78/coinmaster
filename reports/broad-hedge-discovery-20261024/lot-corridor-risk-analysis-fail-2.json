@@ -1,0 +1,1 @@
+{"stage": "after_stream_before_export", "error": "SQLite mode=ro unable to open database file; use immutable=1 read-only", "result": "no metric exported or qualified", "engine_instances_created": 0}

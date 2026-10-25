@@ -1,9 +1,9 @@
 {
   "task": "CM-NATIVE-PAIRED-PREFIX-20261024",
-  "status": "HOLD_UNSPENT_SAME_SOURCE_INELIGIBLE",
-  "protocol_sha256": "9de474042ab5c2757b043a0272f4a5869f4c4d2c968d6adb7aebbdf28efc19a1",
-  "approval_ref": "approval.json",
-  "physical_prefix_max": 5,
+  "status": "CLOSED_PRIMARY_NO_GO_BUDGET_EXHAUSTED",
+  "protocol_sha256": "0e7bca174c0268f0dc2769a4918d7017d88e98f84115ee52ad22dd59c97ca7be",
+  "approval_ref": "lot-corridor-owner-approval.json",
+  "physical_prefix_max": 7,
   "full_max": 0,
   "prefix_calendar": "[2024-09-01T00:00:00Z,2025-01-15T00:00:00Z)",
   "seed": "10000",
@@ -47,7 +47,9 @@
     {
       "slot": 3,
       "name": "B2_F0_PAIRED",
-      "status": "NOT_STARTED"
+      "status": "NOT_RUN",
+      "eligibility": "SUPERSEDED_OLD_SOURCE_INELIGIBLE",
+      "reason": "Old floor/floor source rejected; explicit owner repair approval creates fresh logical slots6/7/8"
     },
     {
       "slot": 4,
@@ -84,10 +86,78 @@
         "coherent_observer": "PASS",
         "paired_failures": []
       }
+    },
+    {
+      "slot": 6,
+      "name": "LOT_CORRIDOR_MATCHED_OFF",
+      "status": "COMPLETED",
+      "attempt_id": "d8d64962-c7a5-4333-b2d3-f05fad74d632",
+      "variant": "OFF",
+      "started_utc": "2026-10-25T00:08:31.630241+00:00",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "monetary_source_identity": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67",
+      "physical_index": 5,
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result",
+      "finished_utc": "2026-10-25T00:09:31.235530+00:00",
+      "detail": {
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/paired-prefix-OFF.json",
+        "report_sha256": "2443ee7d285cfaf7a6d734cb5e76f06c0e999139345474a26f2cdff5c1e7b49f",
+        "coherent_observer": "PASS",
+        "paired_failures": [],
+        "actual_returncode": 0,
+        "supervisor_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/supervisor-receipt.json",
+        "supervisor_receipt_sha256": "3d6b190b70d331aae28925e5b42bed774c952d8ff69d804d73a86d2d6bd81ab5"
+      }
+    },
+    {
+      "slot": 7,
+      "name": "LOT_CORRIDOR_B2",
+      "status": "COMPLETED",
+      "attempt_id": "449edca9-de1e-4f8a-8238-5765b4d6c538",
+      "variant": "B2",
+      "started_utc": "2026-10-25T00:13:59.782883+00:00",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "monetary_source_identity": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67",
+      "physical_index": 6,
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_PHYSICAL6/result",
+      "finished_utc": "2026-10-25T00:15:05.970797+00:00",
+      "detail": {
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_PHYSICAL6/result/paired-prefix-B2.json",
+        "report_sha256": "4caeee14ff0190751d4f2cf51deba00f63461b0693fe9cda8eb8e4d96d5f51d4",
+        "coherent_observer": "PASS",
+        "paired_failures": [],
+        "actual_returncode": 0,
+        "supervisor_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_PHYSICAL6/supervisor-receipt.json",
+        "supervisor_receipt_sha256": "aa491ba4faa7e3b6f89ca1d4ea05718dc4592c24356bde048c24f752a729b070"
+      }
+    },
+    {
+      "slot": 8,
+      "name": "LOT_CORRIDOR_COMBINED",
+      "status": "COMPLETED",
+      "attempt_id": "fa5c87f8-63c1-4ef4-9402-af9a4d69d260",
+      "variant": "B2_F0",
+      "started_utc": "2026-10-25T00:18:32.576630+00:00",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "monetary_source_identity": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67",
+      "physical_index": 7,
+      "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/result",
+      "finished_utc": "2026-10-25T00:19:30.276545+00:00",
+      "detail": {
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/result/paired-prefix-B2_F0.json",
+        "report_sha256": "8c3b3f04cf180783558a81d53d61f010aacfc2affecac4ba71d005bbf77d2e0a",
+        "coherent_observer": "PASS",
+        "paired_failures": [
+          "UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE"
+        ],
+        "actual_returncode": 0,
+        "supervisor_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/supervisor-receipt.json",
+        "supervisor_receipt_sha256": "1dac5d77d0944c58a0a78290ce127e1b8c6f438d6f4a83f25a74615240e58c06"
+      }
     }
   ],
-  "physical_started": 4,
-  "physical_completed": 2,
+  "physical_started": 7,
+  "physical_completed": 5,
   "failed_attempts_count": true,
   "test_suite_instances": {
     "receipt": "implementation-test-instances.json",
@@ -97,11 +167,11 @@
   },
   "old_budgets": "CLOSED/no carryover",
   "native_launch_requires": "immutable source/config/data/engine freeze; independentmoneyreview; native API/order/funding/observer and connectedacceptancePASS",
-  "single_source_writer": "native_paired_owner",
+  "single_source_writer": "lot_corridor_owner",
   "pilot_production_orders_transfers": "excluded",
-  "implementation_source_commit": "3323f08c57ede411058f93d96acee88928c93481",
-  "implementation_receipt": "implementation-nontrading-repair-receipt.json",
-  "source_remote_verified": "3323f08c57ede411058f93d96acee88928c93481",
+  "implementation_source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+  "implementation_receipt": "lot-corridor-implementation-receipt.json",
+  "source_remote_verified": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
   "attempts": [
     {
       "logical_slot": 1,
@@ -166,30 +236,104 @@
         "coherent_observer": "PASS",
         "paired_failures": []
       }
+    },
+    {
+      "logical_slot": 6,
+      "physical_index": 5,
+      "attempt_id": "d8d64962-c7a5-4333-b2d3-f05fad74d632",
+      "variant": "OFF",
+      "started_utc": "2026-10-25T00:08:31.630241+00:00",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "monetary_source_identity": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67",
+      "status": "COMPLETED",
+      "finished_utc": "2026-10-25T00:09:31.235530+00:00",
+      "detail": {
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/result/paired-prefix-OFF.json",
+        "report_sha256": "2443ee7d285cfaf7a6d734cb5e76f06c0e999139345474a26f2cdff5c1e7b49f",
+        "coherent_observer": "PASS",
+        "paired_failures": [],
+        "actual_returncode": 0,
+        "supervisor_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/MATCHED_OFF_PHYSICAL5/supervisor-receipt.json",
+        "supervisor_receipt_sha256": "3d6b190b70d331aae28925e5b42bed774c952d8ff69d804d73a86d2d6bd81ab5"
+      }
+    },
+    {
+      "logical_slot": 7,
+      "physical_index": 6,
+      "attempt_id": "449edca9-de1e-4f8a-8238-5765b4d6c538",
+      "variant": "B2",
+      "started_utc": "2026-10-25T00:13:59.782883+00:00",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "monetary_source_identity": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67",
+      "status": "COMPLETED",
+      "finished_utc": "2026-10-25T00:15:05.970797+00:00",
+      "detail": {
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_PHYSICAL6/result/paired-prefix-B2.json",
+        "report_sha256": "4caeee14ff0190751d4f2cf51deba00f63461b0693fe9cda8eb8e4d96d5f51d4",
+        "coherent_observer": "PASS",
+        "paired_failures": [],
+        "actual_returncode": 0,
+        "supervisor_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_PHYSICAL6/supervisor-receipt.json",
+        "supervisor_receipt_sha256": "aa491ba4faa7e3b6f89ca1d4ea05718dc4592c24356bde048c24f752a729b070"
+      }
+    },
+    {
+      "logical_slot": 8,
+      "physical_index": 7,
+      "attempt_id": "fa5c87f8-63c1-4ef4-9402-af9a4d69d260",
+      "variant": "B2_F0",
+      "started_utc": "2026-10-25T00:18:32.576630+00:00",
+      "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+      "monetary_source_identity": "15b0f5e9fc71aeb380251b4b56e3955729969379f85e6dc3049bd0e5a57b0b67",
+      "status": "COMPLETED",
+      "finished_utc": "2026-10-25T00:19:30.276545+00:00",
+      "detail": {
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/result/paired-prefix-B2_F0.json",
+        "report_sha256": "8c3b3f04cf180783558a81d53d61f010aacfc2affecac4ba71d005bbf77d2e0a",
+        "coherent_observer": "PASS",
+        "paired_failures": [
+          "UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE"
+        ],
+        "actual_returncode": 0,
+        "supervisor_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-lot-corridor-20261025/B2_F0_PHYSICAL7/supervisor-receipt.json",
+        "supervisor_receipt_sha256": "1dac5d77d0944c58a0a78290ce127e1b8c6f438d6f4a83f25a74615240e58c06"
+      }
     }
   ],
   "correction_candidate": {
-    "source_commit": "3323f08c57ede411058f93d96acee88928c93481",
-    "logical_slot": 5,
-    "next_physical_index": 3,
-    "status": "NOT_STARTED_ROOT_GO_REQUIRED"
+    "status": "IMPLEMENTED_REVIEWED_FROZEN_ALL3_EXECUTED",
+    "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+    "native_risk_acceptance": "FINAL_PRIMARY_NO_GO_CORRECT_SOURCE_NO_RECURSION_ECONOMICS_AND_INITIAL_ATR_ADMISSION_FAILED",
+    "combined_observed_qualification": "NO_GO_UNHEDGEABLE_UNAVAILABLE_CAUSAL_FEATURE",
+    "no_more_attempts": true
   },
   "owner_budget_amendment": {
-    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/implementation-owner-prefix-budget-amendment.json",
-    "sha256": "4cb061410f40ef5d51977cd5d3f8f8a8d9ba9d21529b25eb278421137a71b4ae"
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-owner-approval.json",
+    "sha256": "8da53003133e9d9781545975a37d929239834bbbbe141b3db84c6fd21d63ab8f"
   },
-  "remaining_physical_attempts": 1,
+  "remaining_physical_attempts": 0,
   "remaining_attempt_hold": {
-    "status": "HOLD_UNSPENT_SAME_SOURCE_INELIGIBLE",
-    "physical_index": 5,
-    "logical_slot": 3,
-    "variant": "B2_F0",
-    "reason": "Actual B2 recursive lot erosion violates approved nonrecursive absolute capacity contract",
-    "carryover_or_new_family_authorized": false
+    "status": "PHYSICAL_BUDGET_EXHAUSTED",
+    "remaining": 0,
+    "full_max": 0,
+    "no_reserve": true,
+    "next_automatic_launch_authorized": false
   },
   "architecture_acceptance": {
     "B2": "NO_GO_RECURSIVE_LOT_EROSION",
     "economic_run_status": "COMPLETED",
     "evidence": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/approved5-B2-recursive-lot-trace.json"
+  },
+  "lot_corridor_provenance": {
+    "before_ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-ledger-before-approval.json",
+    "before_sha256": "3411d1b8c1b8246e931dc6eeec7906de18a25d30575b76082d420f1e29c5b31b",
+    "old_attempt_records_unchanged": true
+  },
+  "physical_active": 0,
+  "physical_failed": 2,
+  "final_decision": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-risk-final-decision.json",
+    "sha256": "f657e9e4f1eff97c4e170b7d19932b2a9a19e5c3372ed728ac8eddb000c9937a",
+    "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7"
   }
 }
