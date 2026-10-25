@@ -1,0 +1,24 @@
+{
+  "schema": "CM_QUEUED_STANDING_TP_OWNER_APPROVAL_V1",
+  "status": "APPROVED_BY_OWNER",
+  "recorded_utc": "2026-10-25T21:03:22.683511+00:00",
+  "client_date": "2026-10-26 Europe/Moscow",
+  "exact_human_answer": "Утверждаю queued standing TP, лимит 4",
+  "question_item_id": "[\"request_user_input_async\",\"call_33f7a94c2e424e3caffa70dc75098bb0\",0]",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/QUEUED_STANDING_TP_PROTOCOL_PROPOSED_RU.md",
+  "protocol_sha256": "7292a446766100119abef8bb8c0b885c9c8de6581e59be2e7ee69148c12f2ed0",
+  "engineering_total_max": 4,
+  "engineering_already_started": 2,
+  "remaining_instances": 2,
+  "additional_budget": 0,
+  "prefix_max": 3,
+  "prefix_already_started": 0,
+  "approved_money_rule_changes": [
+    "Ordinary TP fill preserves all other unconsumed standing entitlements; no quantum renormalization. Initial/entry/debt target_lots and prices/weights unchanged.",
+    "Defer BTC debt while any working TP is marketable; preserve debt, block increases and recompute residual next native BTC quote. Actual matching BBO/tick/no-interposed-input safety premises mandatory."
+  ],
+  "transport": "Unchanged default queueTrue/zero-default latency for API proof and economics; no queueFalse workaround. Actual latest generation ACK and quiescence BEFORE next possiblematching mandatory.",
+  "stage_authority": "Focused fixture-only preparation authorized now; physical3 exactone engine only after frozen source/preflight/independentreview/rootGO. Monetary productpatch only after accepted actualF3PASS; physical4integrated proof then conditional freshprefixfamily. No reserve or autoretry.",
+  "current_ledger_sha256": "741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800",
+  "full_training_downloads_pilot_production_orders_transfers": 0
+}
