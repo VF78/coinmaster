@@ -159,3 +159,42 @@ def test_fixture_actual_stock_daily_open_and_causal_seed_precondition(case):
     guard=next(n.test for n in ast.walk(tree) if isinstance(n,ast.If) and 'trading_start_open_ns' in ast.unparse(n.test))
     assert eval(compile(ast.Expression(guard),'actual-stock-daily-guard','eval'),{'self':s}) is False
     assert s._current_btc.ts_event==2 and max(int(b.available_at.timestamp()*10**9) for b in s._bars)==0
+
+
+@pytest.mark.parametrize('end_error',[False,True])
+def test_fixture_streaming_cleanup_sequence_records_actual_component_lifecycle(tmp_path,monkeypatch,end_error):
+    """No native engine: exercise only the wrapper's public API sequencing."""
+    from types import SimpleNamespace as S
+    import json
+    import run_a0_engineering as fixture
+    components={name:S(state=S(name='RUNNING'),is_running=True,is_disposed=False) for name in ('trader','data_engine','risk_engine','exec_engine','emulator')}
+    calls=[]
+    def end():
+        calls.append('native.end')
+        if end_error:raise RuntimeError('original-end-error')
+        for c in components.values():c.state=S(name='STOPPED');c.is_running=False
+    def dispose():
+        calls.append('native.dispose')
+        for c in components.values():c.state=S(name='DISPOSED');c.is_running=False;c.is_disposed=True
+    path=tmp_path/'ledger.json';path.write_text(json.dumps({'attempts':[{}]}))
+    rec=S(path=path,write=lambda d:path.write_text(json.dumps(d)))
+    monkeypatch.setattr(fixture.pre,'REC',rec)
+    engine=object.__new__(fixture.CountedEngine);engine.native=S(kernel=S(**components),end=end,dispose=dispose)
+    engine.number=1;engine.disposed=False
+    engine.capture=lambda stage:calls.append(stage)
+    engine.dispose()
+    assert calls==['BEFORE_TERMINAL','BEFORE_END','native.end','AFTER_END','BEFORE_DISPOSE','native.dispose']
+    actual=json.loads(path.read_text())['attempts'][0]['cleanup_lifecycle']
+    assert actual['clean'] is (not end_error) and all(c['disposed'] for c in actual['after_dispose'].values())
+    if end_error:assert 'original-end-error' in actual['errors'][0]['error']
+    else:assert all(not c['running'] for c in actual['after_end'].values())
+
+
+def test_combined_fixture_three_distinct_real_depths_qualify_fresh_l1_consumption():
+    from run_a0_engineering import COMBINED_DEPTHS,CASES
+    from coinmaster.research.native_fixture import BTC_PERP
+    depths=[BTC_PERP.make_qty(D(COMBINED_DEPTHS[k])).as_decimal() for k in ('old_late','release_partial','release_late')]
+    assert depths==[D(1),D(2),D(3)] and all(a!=b for a,b in zip(depths,depths[1:]))
+    assert CASES==['A03_A04_COMBINED_CANCEL_RACES','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
+    # Each distinct displayed size is fresh per the pinned stock size-change
+    # condition; no timestamp-only replenishment or generated fill is asserted.

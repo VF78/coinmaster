@@ -15,7 +15,8 @@ from test_native_episode_risk import tick,run_ticks
 from coinmaster.venues.marks import venue_mark
 from nautilus_trader.model.identifiers import ClientId
 M=60_000_000_000
-CASES=['A02_PARTIAL_FIRST_CLOSED_CAP','A03_ORDINARY_TP_KILLS','A04_CANCEL_RACE_LATE_FILL','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
+CASES=['A03_A04_COMBINED_CANCEL_RACES','A05_CROSS_MARGIN_UNKNOWN','A06_C0_NO_RELEASE']
+COMBINED_DEPTHS={'old_late':'1','release_partial':'2','release_late':'3'}
 
 class Recorder(pre.Recorder):
     def claim(self):
@@ -25,10 +26,31 @@ class Recorder(pre.Recorder):
         return super().claim()
 
 class CountedEngine(pre.CountedEngine):
+    def lifecycle(self):
+        return {name:dict(state=getattr(getattr(self.native.kernel,name).state,'name',str(getattr(self.native.kernel,name).state)),
+                         running=bool(getattr(self.native.kernel,name).is_running),
+                         disposed=bool(getattr(self.native.kernel,name).is_disposed))
+                for name in ('trader','data_engine','risk_engine','exec_engine','emulator')}
+    def dispose(self):
+        # Streaming end flushes timers/messages and stops components; preserve
+        # the pre-end trading state, never use cleanup as passing economics.
+        self.cleanup_lifecycle=dict(before_end=self.lifecycle(),errors=[])
+        if 'BEFORE_TERMINAL' not in getattr(self,'captured_stages',set()):self.capture('BEFORE_TERMINAL')
+        self.capture('BEFORE_END')
+        try:self.native.end()
+        except BaseException as error:self.cleanup_lifecycle['errors'].append(dict(stage='END',error=repr(error)))
+        self.cleanup_lifecycle['after_end']=self.lifecycle();self.capture('AFTER_END')
+        self.capture('BEFORE_DISPOSE')
+        try:self.native.dispose();self.disposed=True
+        except BaseException as error:self.cleanup_lifecycle['errors'].append(dict(stage='DISPOSE',error=repr(error)))
+        self.cleanup_lifecycle['after_dispose']=self.lifecycle()
+        self.cleanup_lifecycle['clean']=not self.cleanup_lifecycle['errors'] and all(not x['running'] for x in self.cleanup_lifecycle['after_end'].values()) and all(x['disposed'] for x in self.cleanup_lifecycle['after_dispose'].values())
+        data=json.loads(pre.REC.path.read_text());data['attempts'][self.number-1]['cleanup_lifecycle']=self.cleanup_lifecycle;pre.REC.write(data)
     def capture(self,label):
         if not hasattr(self,'strategy'):return
+        self.captured_stages=getattr(self,'captured_stages',set());self.captured_stages.add(label)
         s=self.strategy;a=self.native.cache.account_for_venue(SIM)
-        payload=dict(physical_index=self.number,fixture=pre.REC.current[0],stage=label,
+        payload=dict(lifecycle=self.lifecycle(),physical_index=self.number,fixture=pre.REC.current[0],stage=label,
             native_cash=str(a.balance_total()) if a else None,
             orders=[dict(id=str(o.client_order_id),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),side=o.side.name,price=str(getattr(o,'price',None)),reduce_only=o.is_reduce_only) for o in self.native.cache.orders()],
             positions=[dict(instrument=str(p.instrument_id),quantity=str(p.quantity),side='LONG' if p.is_long else 'SHORT') for p in self.native.cache.positions_open()],
@@ -104,7 +126,7 @@ def setup(case):
     assert s.stock_margin_calls and all(x['allowed'] for x in s.stock_margin_calls)
     second=[o for o in e.cache.orders_open() if not o.is_reduce_only]
     assert len(second)==1 and second[0].price.as_decimal()==D('98.5')
-    if case=='A04_CANCEL_RACE_LATE_FILL':s.delay_cancel=True
+    if case=='A03_A04_COMBINED_CANCEL_RACES':s.delay_cancel=True
     advance(e,s,10)
     assert s._pair and s._pair['risk']=='ACTIVE_RISK'
     return s,e,ep,second[0]
@@ -122,11 +144,11 @@ def run_case(case):
             for ns in (M+11,M+12,M+13):advance(e,s,ns,sol='98.9')
         advance(e,s,M+14,btc='99.3')
         assert s._pair['risk']=='INACTIVE_RISK'
-        if case=='A04_CANCEL_RACE_LATE_FILL':
+        if case=='A03_A04_COMBINED_CANCEL_RACES':
             advance(e,s,2*M+14,btc='99.3')
             assert not rights['submitted'] and not old.is_closed
             # Actual venue cancel-race fill opens debt; no ACK fiction.
-            advance(e,s,2*M+15,btc='98',btcsize='1')
+            advance(e,s,2*M+15,btc='98',btcsize=COMBINED_DEPTHS['old_late'])
             assert old.filled_qty.as_decimal()>0 and not rights['submitted']
             s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,old)
             for ns in range(2*M+16,2*M+24):advance(e,s,ns,btc='99.3')
@@ -158,8 +180,8 @@ def run_case(case):
             assert old.status.name=='CANCELED' and rights['order_id']!=str(old.client_order_id)
             assert rights['granted_cap']<=rights['locked_cap']+rights['original_second']
             release=e.cache.order(__import__('nautilus_trader.model.identifiers',fromlist=['ClientOrderId']).ClientOrderId(rights['order_id']))
-            advance(e,s,2*M+26,btc='98',btcsize='1')
-            if case=='A03_ORDINARY_TP_KILLS':
+            advance(e,s,2*M+26,btc='98',btcsize=COMBINED_DEPTHS['release_partial'] if case=='A03_A04_COMBINED_CANCEL_RACES' else '1')
+            if case=='A03_A04_COMBINED_CANCEL_RACES':
                 assert not release.is_closed and release.filled_qty.as_decimal()>0
                 s.delay_cancel=True
                 advance(e,s,2*M+27,btc='100')
@@ -170,7 +192,7 @@ def run_case(case):
                 # Delayed venue transport can still fill; actual excess owns
                 # corrective BTC debt and cannot reopen the spent right.
                 before=release.filled_qty.as_decimal()
-                advance(e,s,2*M+28,btc='98',btcsize='1')
+                advance(e,s,2*M+28,btc='98',btcsize=COMBINED_DEPTHS['release_late'])
                 assert release.filled_qty.as_decimal()>before
                 s.delay_cancel=False;WaveOverlayStrategy.cancel_order(s,release)
                 for ns in range(2*M+29,2*M+40):advance(e,s,ns,btc='99.3')
@@ -212,7 +234,8 @@ def main():
         before=len(global_rec.engines)
         try:
             result=run_case(case)
-            e=global_rec.engines[-1];global_rec.finish(e.number,'COMPLETED',dict(process_rc=0,result=result,cleanup='DISPOSED'))
+            e=global_rec.engines[-1];assert e.cleanup_lifecycle['clean'],e.cleanup_lifecycle
+            global_rec.finish(e.number,'COMPLETED',dict(process_rc=0,result=result,cleanup='DISPOSED'))
         except BaseException as error:
             if len(global_rec.engines)>before:
                 e=global_rec.engines[-1]
