@@ -676,6 +676,121 @@ def _quarantine_funding_attempt(attempt_path: Path) -> None:
     _move_sqlite_family(attempt_path, "aborted")
 
 
+
+def build_native_strategy_config(context):
+    """Single unchanged native CALL-to-strategy mapping, shared with fixtures.
+
+    context is the original baseline construction locals. No engine is created.
+    """
+    from nautilus_trader.model.enums import PriceType
+    from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
+    from coinmaster.research.native_fixture import TierMarginPolicy
+    from coinmaster.venues.marks import venue_mark_data_type
+    from coinmaster.venues.signals import daily_signal_data_type
+    btc_instrument = context['btc_instrument']
+    candidate = context['candidate']
+    confirmation_bars = context['confirmation_bars']
+    cover_hour_seed = context['cover_hour_seed']
+    daily = context['daily']
+    end_at = context['end_at']
+    h4_bar_type = context['h4_bar_type']
+    h4_seed = context['h4_seed']
+    initial_active_seed = context['initial_active_seed']
+    kind = context['kind']
+    mark_client = context['mark_client']
+    max_mark_age_ns = context['max_mark_age_ns']
+    next_bar_types = context['next_bar_types']
+    policy = context['policy']
+    research_alpha_cushion = context['research_alpha_cushion']
+    research_btc_direction_sizing = context['research_btc_direction_sizing']
+    research_btc_drawdown_sizing = context['research_btc_drawdown_sizing']
+    research_btc_episode_loss_20 = context['research_btc_episode_loss_20']
+    research_btc_q_mode = context['research_btc_q_mode']
+    research_btc_real_u = context['research_btc_real_u']
+    research_btc_split50 = context['research_btc_split50']
+    research_btc_split_discount = context['research_btc_split_discount']
+    research_btc_split_planref_v1 = context['research_btc_split_planref_v1']
+    research_btc_split_tp_ioc = context['research_btc_split_tp_ioc']
+    research_chop_pair = context['research_chop_pair']
+    research_conditional_sol = context['research_conditional_sol']
+    research_h1_b1 = context['research_h1_b1']
+    research_h4_ema = context['research_h4_ema']
+    research_h4_gamma = context['research_h4_gamma']
+    research_immediate_lookback = context['research_immediate_lookback']
+    research_immediate_sol = context['research_immediate_sol']
+    research_paired_prefix = context['research_paired_prefix']
+    research_paired_signal_rows = context['research_paired_signal_rows']
+    research_portfolio_protect_45 = context['research_portfolio_protect_45']
+    research_regime_reentry_band = context['research_regime_reentry_band']
+    research_sol_btc_open_only = context['research_sol_btc_open_only']
+    research_sol_cover = context['research_sol_cover']
+    research_sol_dominant = context['research_sol_dominant']
+    research_sol_notional_cap_6x = context['research_sol_notional_cap_6x']
+    research_sol_off = context['research_sol_off']
+    research_sol_remaining_btc_hedge = context['research_sol_remaining_btc_hedge']
+    research_sol_risk_first = context['research_sol_risk_first']
+    research_v0_deferred_selective_zero_tp = context['research_v0_deferred_selective_zero_tp']
+    research_v0_execution_repairs = context['research_v0_execution_repairs']
+    research_v0_selective_lifecycle_repairs = context['research_v0_selective_lifecycle_repairs']
+    research_v0_zero_tp_netting = context['research_v0_zero_tp_netting']
+    research_v3_risk = context['research_v3_risk']
+    research_wait_4h = context['research_wait_4h']
+    research_wait_persist = context['research_wait_persist']
+    research_zero_retrace = context['research_zero_retrace']
+    seed_bars = context['seed_bars']
+    selected_leverage = context['selected_leverage']
+    signal_client = context['signal_client']
+    sol_instrument = context['sol_instrument']
+    start_at = context['start_at']
+    tp_fee_floor_v1 = context['tp_fee_floor_v1']
+    trading_end_ms = context['trading_end_ms']
+    trading_start_ms = context['trading_start_ms']
+    return WaveOverlayStrategyConfig(
+        btc_id=btc_instrument.id, sol_id=sol_instrument.id,
+        btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
+        btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id),
+        mark_client_id=mark_client, active_seed=initial_active_seed,
+        margin_policy=TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
+        terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
+        research_portfolio_protect_45=research_portfolio_protect_45,
+        research_btc_direction_sizing=research_btc_direction_sizing,
+        research_btc_drawdown_sizing=research_btc_drawdown_sizing,
+        research_v3_risk=research_v3_risk,
+        research_h1_b1=research_h1_b1,
+        research_paired_prefix=research_paired_prefix, research_paired_signal_rows=research_paired_signal_rows,
+        research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
+        research_btc_split50=research_btc_split50,
+        research_btc_split_planref_v1=research_btc_split_planref_v1,
+        research_btc_split_tp_ioc=research_btc_split_tp_ioc,
+        research_btc_split_discount=Decimal(research_btc_split_discount),
+        research_sol_btc_open_only=research_sol_btc_open_only,
+        research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
+        research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
+        research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+        research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
+        research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
+        research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
+        research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+        research_conditional_sol=research_conditional_sol,
+        research_sol_risk_first=research_sol_risk_first,
+        research_immediate_sol=research_immediate_sol,
+        research_immediate_lookback=research_immediate_lookback,
+        research_alpha_cushion=research_alpha_cushion,
+        research_chop_pair=research_chop_pair,
+        research_carry_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_chop_pair else (),
+        research_cover_hour_seed=cover_hour_seed,
+        research_confirmation_bars=confirmation_bars,
+        research_btc_episode_loss_20=research_btc_episode_loss_20,
+        research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
+        research_sol_notional_cap_multiple=Decimal("6") if research_sol_notional_cap_6x else None,
+        tp_fee_floor_v1=tp_fee_floor_v1, research_v0_execution_repairs=research_v0_execution_repairs, research_v0_zero_tp_netting=research_v0_zero_tp_netting, research_v0_deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp, research_v0_selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs, max_mark_age_ns=max_mark_age_ns,
+        btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
+        reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
+        execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
+        execution_policy_hash=policy.hash,
+        execution_policy_version=policy.version,
+    )
+
 def run_native_diagnostic(
     data_root: Path,
     include_funding: bool = False,
@@ -887,51 +1002,7 @@ def run_native_diagnostic(
         if len(timestamps) != 721 or any(b-a != 3_600_000 for a,b in zip(timestamps,timestamps[1:])) or timestamps[-1] != trading_start_ms:
             raise ValueError("COVER_EXACT_720_HOURLY_RETURNS_REQUIRED")
         cover_hour_seed = tuple((t*1_000_000,paired["BTCUSDT"][t],paired["SOLUSDT"][t]) for t in timestamps)
-    strategy = strategy_type(WaveOverlayStrategyConfig(
-        btc_id=btc_instrument.id, sol_id=sol_instrument.id,
-        btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
-        btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id),
-        mark_client_id=mark_client, active_seed=initial_active_seed,
-        margin_policy=TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
-        terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
-        research_portfolio_protect_45=research_portfolio_protect_45,
-        research_btc_direction_sizing=research_btc_direction_sizing,
-        research_btc_drawdown_sizing=research_btc_drawdown_sizing,
-        research_v3_risk=research_v3_risk,
-        research_h1_b1=research_h1_b1,
-        research_paired_prefix=research_paired_prefix, research_paired_signal_rows=research_paired_signal_rows,
-        research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
-        research_btc_split50=research_btc_split50,
-        research_btc_split_planref_v1=research_btc_split_planref_v1,
-        research_btc_split_tp_ioc=research_btc_split_tp_ioc,
-        research_btc_split_discount=Decimal(research_btc_split_discount),
-        research_sol_btc_open_only=research_sol_btc_open_only,
-        research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
-        research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
-        research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
-        research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
-        research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
-        research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
-        research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
-        research_conditional_sol=research_conditional_sol,
-        research_sol_risk_first=research_sol_risk_first,
-        research_immediate_sol=research_immediate_sol,
-        research_immediate_lookback=research_immediate_lookback,
-        research_alpha_cushion=research_alpha_cushion,
-        research_chop_pair=research_chop_pair,
-        research_carry_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_chop_pair else (),
-        research_cover_hour_seed=cover_hour_seed,
-        research_confirmation_bars=confirmation_bars,
-        research_btc_episode_loss_20=research_btc_episode_loss_20,
-        research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
-        research_sol_notional_cap_multiple=Decimal("6") if research_sol_notional_cap_6x else None,
-        tp_fee_floor_v1=tp_fee_floor_v1, research_v0_execution_repairs=research_v0_execution_repairs, research_v0_zero_tp_netting=research_v0_zero_tp_netting, research_v0_deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp, research_v0_selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs, max_mark_age_ns=max_mark_age_ns,
-        btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
-        reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
-        execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
-        execution_policy_hash=policy.hash,
-        execution_policy_version=policy.version,
-    ))
+    strategy = strategy_type(build_native_strategy_config(locals()))
     engine.add_strategy(strategy)
     audit_archive = None
     if research_sol_risk_first == "alpha-corridor-v1":

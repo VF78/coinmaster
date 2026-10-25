@@ -30,7 +30,9 @@ def build_registered_control_kwargs(config, family, data_root, artifact_dir, fee
     from coinmaster.research.paired_prefix_run import build_native_kwargs
     kwargs = build_native_kwargs(config, data_root, artifact_dir, "OFF", feed, registered_control=family)
     kwargs.update(trading_start_ms=start_ms, trading_end_ms=end_ms, artifact_label="registered-control-"+family)
-    return kwargs
+    _,restored=native_kwargs_json_roundtrip(kwargs)
+    if restored!=kwargs:raise ValueError("NATIVE_KWARGS_ROUNDTRIP_MISMATCH")
+    return restored
 
 def validate_native_control(actual):
     """Check the complete real call, including defaults, before engine creation."""

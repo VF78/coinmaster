@@ -16,14 +16,20 @@ from test_native_btc_sizing import prepare_day
 from coinmaster.domain.wave_overlay import Candidate,Episode
 from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP,SIM,perpetual
 from coinmaster.research.qualified_warmup import load_qualified_feed
-from coinmaster.research.registered_control import config_for,build_registered_control_kwargs,native_kwargs_json_roundtrip
+from coinmaster.research.registered_control import config_for,build_registered_control_kwargs,native_kwargs_json_roundtrip,validate_native_control
+from coinmaster.research.native_baseline import build_native_strategy_config,run_native_diagnostic,ExecutionPolicy
+from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+from coinmaster.research.native_fixture import BybitTierMarginModule,MarkPriceUpdate
+from inspect import signature
+from dataclasses import asdict,is_dataclass
+from unittest.mock import patch
 from nautilus_trader.backtest.engine import BacktestEngine as NativeEngine
 from nautilus_trader.backtest.config import BacktestEngineConfig
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.model.enums import AccountType,OmsType
 from nautilus_trader.model.objects import Money
 M=60000000000
-CASES=[('F01_R2_PARTIAL_NOCHASE_TERMINAL','R2',1,86400*10**9+10),('F02_R3_PARTIAL_NOCHASE_TERMINAL','R3',1,86400*10**9+10),('F03_R2_SECOND_FILL_THREE_TP','R2',1,20),('F04_R3_SECOND_FILL_THREE_TP','R3',1,20),('F05_QUALIFIED_CLOCK_ALL_PATHS','R2',1725249599999999990,1725249720000000100),('F06_MISSING_FEATURE_FAIL_CLOSED','R2',1725249599999999990,1725249720000000100),('F07_COPRIME_CORRIDOR_REGRESSION','R3',1,2*M),('F08_LATE_NATIVE_ENTRY_OWNERSHIP','R3',1,2*M)]
+CASES=[('F01_R2_PARTIAL_NOCHASE_TERMINAL','R2',1,86400*10**9+10),('F02_R3_PARTIAL_NOCHASE_TERMINAL','R3',1,86400*10**9+10),('F03_R2_SECOND_FILL_THREE_TP','R2',1,20),('F04_R3_SECOND_FILL_THREE_TP','R3',1,20),('F05_QUALIFIED_CLOCK_ALL_PATHS','R3',1725249599999999990,1725249720000000100),('F06_MISSING_FEATURE_FAIL_CLOSED','R3',1725249599999999990,1725249720000000100),('F07_COPRIME_CORRIDOR_REGRESSION','R3',1,2*M),('F08_LATE_NATIVE_ENTRY_OWNERSHIP','R3',1,2*M)]
 
 class Recorder:
     def __init__(self,path,gate):self.path=Path(path);self.gate=gate;self.current=None;self.engines=[]
@@ -34,7 +40,7 @@ class Recorder:
         if data['physical_started']>=12 or data['status'] not in ('READY_REVIEWED','RUNNING') or self.current is None:raise ValueError('ENGINE_BUDGET_OR_GATE_INVALID')
         if any(x['status']=='STARTED' for x in data['attempts']):raise ValueError('CONCURRENT_ENGINE_FORBIDDEN')
         case=self.current
-        entry=dict(fixture_id=case[0],family=case[1],window_start_ns=case[2],window_end_ns=case[3],physical_index=data['physical_started']+1,status='STARTED',started_utc=datetime.now(timezone.utc).isoformat(),source_commit=self.gate['source_commit'],config_sha256=self.gate['config_pins'][case[1]],new_feed_sha256=self.gate['new_feed_sha256'],engine='1.231.0',cleanup='PENDING')
+        entry=dict(fixture_id=case[0],family=case[1],window_start_ns=case[2],window_end_ns=case[3],physical_index=data['physical_started']+1,status='STARTED',started_utc=datetime.now(timezone.utc).isoformat(),source_commit=self.gate['source_commit'],archived_registry_config_sha256=self.gate['config_pins'][case[1]],effective_fixture_config=getattr(self,"effective_config",None),new_feed_sha256=self.gate['new_feed_sha256'],engine='1.231.0',cleanup='PENDING')
         data['attempts'].append(entry);data['physical_started']+=1;data['status']='RUNNING';self.write(data)
         return entry['physical_index']
     def finish(self,number,status,detail):
@@ -62,18 +68,79 @@ pair.BacktestEngine=CountedEngine
 
 def base_engine(strategy):
     e=CountedEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
-    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1),liquidity_consumption=True,bar_execution=False)
+    selected=((BTC_PERP.id,D(40)),(SOL_PERP.id,D(20)))
+    feed=strategy.config.research_paired_signal_rows
+    prices=(feed[0].btc_close,feed[0].sol_close) if feed else (D(100),D(100))
+    static=tuple(MarkPriceUpdate(inst.id,price,REC.current[2]) for inst,price in zip((BTC_PERP,SOL_PERP),prices))
+    module=BybitTierMarginModule(static,selected,10**20)
+    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1),liquidity_consumption=True,bar_execution=False,modules=[module])
     for inst in (BTC_PERP,SOL_PERP):e.add_instrument(perpetual(inst.raw_symbol.value,inst.base_currency,str(inst.price_increment),str(inst.size_increment),str(inst.margin_init),maker_fee=D('.00020'),taker_fee=D('.00055')))
+    for inst in (BTC_PERP,SOL_PERP):
+        actual=e.cache.instrument(inst.id)
+        assert actual.maker_fee==D('.00020') and actual.taker_fee==D('.00055')
     e.add_strategy(strategy);return e
 md.native_engine=base_engine
 
-def probe(family,paired=False):
-    class ControlProbe(NativeProbe):
-        def __init__(self,config):
-            self.native_fills=[]
-            super().__init__(config.__replace__(research_btc_q_mode='LEGACY_Q_CONTROL' if family=='R2' else 'CLEAN_Q',research_paired_prefix='B2_F0' if paired else None))
-        def on_order_filled(self,event):self.native_fills.append(event);return super().on_order_filled(event)
-    return ControlProbe
+def snapshot_config(config):
+    def plain(value):
+        if type(value).__name__=='TierMarginPolicy':return {'type':'TierMarginPolicy','marks':plain(value._marks),'selected_leverage':plain(value._selected_leverage),'max_mark_age_ns':value._max_mark_age_ns,'profile':plain(value._profile)}
+        if is_dataclass(value):return {k:plain(v) for k,v in asdict(value).items()}
+        if hasattr(value,'__struct_fields__'):return {k:plain(getattr(value,k)) for k in value.__struct_fields__}
+        if isinstance(value,dict):return {str(k):plain(v) for k,v in value.items()}
+        if isinstance(value,(list,tuple)):return [plain(v) for v in value]
+        if value is None or type(value) in (str,int,float,bool):return value
+        return {'type':type(value).__name__,'value':str(value)}
+    payload=plain(config);serialized=json.dumps(payload,sort_keys=True,allow_nan=False)
+    return dict(sha256=hashlib.sha256(serialized.encode()).hexdigest(),payload=payload)
+
+def registered_fixture_context(family,start_ms=-86400000,end_ms=86400001,paired=False,feed=()):
+    from datetime import timedelta
+    from nautilus_trader.model.data import BarType,BarSpecification
+    from nautilus_trader.model.enums import BarAggregation,PriceType,AggregationSource
+    from nautilus_trader.model.identifiers import ClientId
+    from coinmaster.strategy.next_band import next_bar_type
+    config=config_for(family)
+    kwargs=build_registered_control_kwargs(config,family,Path('.'),Path('.'),feed,1725249600000,1725264000000)
+    _,restored=native_kwargs_json_roundtrip(kwargs);assert restored==kwargs
+    bound=signature(run_native_diagnostic).bind(**kwargs);bound.apply_defaults();validate_native_control(bound.arguments)
+    context=dict(bound.arguments)
+    def kind(instrument,price_type):return BarType(instrument,BarSpecification(1,BarAggregation.DAY,price_type),AggregationSource.EXTERNAL)
+    context.update(btc_instrument=BTC_PERP,sol_instrument=SOL_PERP,kind=kind,mark_client=ClientId('BYBIT_MARK'),signal_client=ClientId('BYBIT_SIGNAL'),selected_leverage=((BTC_PERP.id,D(40)),(SOL_PERP.id,D(20))),policy=kwargs['execution_policy'],seed_bars=(),daily={'BTCUSDT':{}},next_bar_types=(next_bar_type(BTC_PERP.id,4),next_bar_type(SOL_PERP.id,1)),confirmation_bars=(),h4_bar_type=None,h4_seed=(),cover_hour_seed=(),trading_start_ms=start_ms,trading_end_ms=end_ms,start_at=datetime.fromtimestamp(start_ms/1000,timezone.utc),end_at=datetime.fromtimestamp(end_ms/1000,timezone.utc))
+    if paired:
+        if family!='R3':raise ValueError('R2_PAIRED_NOT_ADMITTED')
+        context['research_paired_prefix']='B2_F0'
+    strategy_config=build_native_strategy_config(context)
+    receipt=snapshot_config(strategy_config)
+    receipt.update(archived_registry_config_sha256=__import__('coinmaster.research.registered_control',fromlist=['CONFIG_PINS']).CONFIG_PINS[family],registered_kwargs_sha256=hashlib.sha256(native_kwargs_json_roundtrip(kwargs)[0].encode()).hexdigest(),fixture_context_deltas=['synthetic instrument identities and quote prices','finite deterministic seed bars/daily observations instead of historical warmup','fixture trading/terminal/reporting timestamps','static native margin marks; same existing BTC40/SOL20 selected leverage, default1','B2_F0 existing paired policy on R3 only' if paired else 'OFF control'],margin_policy='existing BTC40/SOL20/default1',maker_fee='0.00020',taker_fee='0.00055')
+    return strategy_config,context,receipt
+
+class ControlProbe(NativeProbe):
+    def __init__(self,config):self.native_fills=[];super().__init__(config)
+    def on_order_filled(self,event):self.native_fills.append(event);return super().on_order_filled(event)
+
+def control_setup(family,partial):
+    conf,context,receipt=registered_fixture_context(family)
+    REC.effective_config=receipt
+    s=ControlProbe(conf);e=base_engine(s)
+    run_ticks(e,[tick(BTC_PERP,1)])
+    prepare_day(s,2)
+    # Deterministic causal domain fixture inputs; actual domain generates the
+    # directional requested notional, q0/q1 selector computes all quantities.
+    with patch('coinmaster.domain.wave_overlay.completed_wave_levels',lambda *args:(0,0,.03)):
+        WaveOverlayStrategy._advance_current_day(s)
+    intent=s._queued_intents[0][0];ep=s._domain.episode
+    assert D(str(intent.requested_notional))==D('5.5')*D(str(ep.active_entry))
+    assert ep.btc_sizing_multiplier==5.5
+    run_ticks(e,[tick(BTC_PERP,3)])
+    q0=dict(s._deferred_selective_entries[intent.id]);assert q0['gross_lots']==550000
+    run_ticks(e,[tick(BTC_PERP,4,'99',size='10' if partial else '1000'),tick(BTC_PERP,5,'99'),tick(BTC_PERP,6,'99')])
+    planned=D(str(ep.btc_net_planned_qty))
+    if family=='R2':assert planned==D('316.250')
+    else:
+        from coinmaster.strategy.market_redesign import PHI
+        assert planned==D(int(PHI[1]*D(55000)/D(100)/D('.001')))*D('.001')
+    receipt['sizing']=dict(requested_notional=str(intent.requested_notional),gross_lots=q0['gross_lots'],net_planned_quantity=str(planned),q0_price=str(q0['q0_price']),direction_multiplier=str(ep.btc_sizing_multiplier))
+    return s,e,ep,receipt
 
 def settled_identity(s,e):
     assert not e.cache.positions_open() and not e.cache.orders_open() and not e.cache.orders_inflight()
@@ -86,28 +153,27 @@ def settled_identity(s,e):
     return dict(native_terminal_cash=str(cash),native_commissions=str(fees),signed_execution_cash=str(signed),native_fill_count=len(s.native_fills),orders_open=0,inflight=0,positions_open=0,account_identity='PASS')
 
 def control_case(family,partial):
-    s,e,ep=md.setup(probe=probe(family))
+    s,e,ep,effective=control_setup(family,partial)
     try:
-        run_ticks(e,[tick(BTC_PERP,3,size='10' if partial else '1000'),tick(BTC_PERP,4)])
         targets=[o for o in e.cache.orders_open() if o.is_reduce_only];second=[o for o in e.cache.orders_open() if not o.is_reduce_only]
         assert len(targets)==3 and all(o.status.name=='ACCEPTED' for o in targets)
-        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(10 if partial else 50)
-        assert len(second)==1 and second[0].order_type.name=='LIMIT' and second[0].price.as_decimal()==D('99.5')
+        assert sum((o.leaves_qty.as_decimal() for o in targets),D(0))==(D(10) if partial else D(str(ep.btc_initial_qty)))
+        assert len(second)==1 and second[0].order_type.name=='LIMIT' and second[0].price.as_decimal()==D('98.5')
         if partial:
-            run_ticks(e,[tick(BTC_PERP,86400*10**9+5)])
+            run_ticks(e,[tick(BTC_PERP,86400*10**9+5,'99')])
             assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
             assert not s._split_parent['fallback'] and s._split_parent['filled']==D(10)
             end=86400*10**9+6
         else:
-            run_ticks(e,[tick(BTC_PERP,5,'99'),tick(BTC_PERP,6,'99')])
-            assert ep.btc_initial_qty==100 and ep.btc_planref_vwap==D(100)
+            run_ticks(e,[tick(BTC_PERP,7,'98'),tick(BTC_PERP,8,'98')])
+            assert D(str(ep.btc_initial_qty))==D(effective['sizing']['net_planned_quantity']) and ep.btc_planref_vwap==D(99)
             targets=[o for o in e.cache.orders_open() if o.is_reduce_only]
-            assert len(targets)==3 and sum((o.leaves_qty.as_decimal() for o in targets),D(0))==100
-            run_ticks(e,[tick(BTC_PERP,7,'103'),tick(BTC_PERP,8,'103')])
+            assert len(targets)==3 and sum((o.leaves_qty.as_decimal() for o in targets),D(0))==D(str(ep.btc_initial_qty))
+            run_ticks(e,[tick(BTC_PERP,9,'103'),tick(BTC_PERP,10,'103')])
             assert not e.cache.positions_open();assert {0,1,2}<=ep.btc_filled_tps
-            end=9
+            end=11
         s._begin_forced_close('TERMINAL_BOUNDARY_SETTLEMENT');run_ticks(e,[tick(BTC_PERP,end)])
-        result=settled_identity(s,e);result.update(real_three_tp=True,second_limit_only=True,partial_first=partial)
+        result=settled_identity(s,e);result.update(real_three_tp=True,second_limit_only=True,partial_first=partial,effective_fixture_config=effective)
         return result
     finally:e.end();e.dispose()
 
@@ -116,9 +182,9 @@ def qualified_case(feed,missing=False):
     row=feed[0];t=row.decision_ns
     assert t==1725249600000000000 and row.atr_sol==D('3.6889752782254411326488158384814894977173533826523')
     selected=replace(row,valid=False) if missing else row
-    config=cfg(True,research_btc_real_u=True,research_btc_q_mode='LEGACY_Q_CONTROL',research_sol_off=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_btc_split_discount=D('.005'))
-    config=config.__replace__(candidate=Candidate(sol_overlay_enabled=False,btc_tp_fractions_initial_qty=(.2125,.2125,.575)),research_paired_signal_rows=(selected,))
-    s=probe('R2',paired=True)(config);e=base_engine(s)
+    config,context,receipt=registered_fixture_context('R3',start_ms=t//1000000-86400000,end_ms=t//1000000+600000,paired=True,feed=(selected,))
+    REC.effective_config=receipt
+    s=ControlProbe(config);e=base_engine(s)
     bp=str(row.btc_close);sp=str(row.sol_close)
     try:
         run_ticks(e,[tick(BTC_PERP,t-10,bp),tick(SOL_PERP,t-10,sp)])
@@ -163,7 +229,9 @@ def main():
     REC=Recorder(args.ledger,gate)
     actions=[lambda:control_case('R2',True),lambda:control_case('R3',True),lambda:control_case('R2',False),lambda:control_case('R3',False),lambda:qualified_case(feed),lambda:qualified_case(feed,True),lambda:pair.test_native_coprime_actual_1037_1817_single_tp_stable_corridor(1,False),pair.test_native_late_entry_after_btc_flat_cancel_request_never_recreates_btc]
     for case,action in zip(CASES,actions):
-        REC.current=case;before=len(REC.engines)
+        REC.current=case;REC.effective_config=None;before=len(REC.engines)
+        data=json.loads(Path(args.ledger).read_text())
+        if any(a['fixture_id']==case[0] and a['status']=='COMPLETED' for a in data['attempts']):continue
         try:
             result=action();created=REC.engines[before:]
             assert len(created)==1 and created[0].disposed
