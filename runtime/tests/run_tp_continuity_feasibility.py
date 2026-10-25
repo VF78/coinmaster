@@ -7,7 +7,7 @@ The probe owns real native orders; expected leaves are assertions, not fills.
 from pathlib import Path
 from decimal import Decimal as D
 from datetime import datetime, timezone
-import argparse, hashlib, inspect, json, os, subprocess, traceback, uuid
+import argparse, ast, copy, hashlib, inspect, json, os, subprocess, traceback, uuid
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.config import BacktestEngineConfig
 from nautilus_trader.config import LoggingConfig
@@ -44,6 +44,30 @@ def pure_preconditions():
     import nautilus_trader
     from nautilus_trader.model.events import OrderUpdated, OrderModifyRejected
     cfg=config(); policy=cfg.margin_policy
+    add_signature=inspect.signature(BacktestEngine.add_data)
+    assert add_signature.parameters['sort'].default is True
+    first_batch=[venue_mark(BTC_PERP.id,D(100),1),venue_mark(SOL_PERP.id,D(100),1)]
+    second_batch=[tick(BTC_PERP,1),tick(SOL_PERP,1)]
+    schedule=first_batch+second_batch
+    assert all(x.ts_init==1 and x.ts_event==1 for x in schedule)
+    assert sorted(schedule,key=lambda x:x.ts_init)==schedule
+    assert [str((getattr(x,'data',x)).instrument_id)for x in schedule]==[str(BTC_PERP.id),str(SOL_PERP.id),str(BTC_PERP.id),str(SOL_PERP.id)]
+    tree=ast.parse(Path(__file__).read_text());advance=next(n for n in ast.walk(tree)if isinstance(n,ast.FunctionDef)and n.name=='advance')
+    adds=sorted([n for n in ast.walk(advance)if isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=='add_data'],key=lambda n:n.lineno)
+    assert len(adds)==2 and next(k.value.value for k in adds[0].keywords if k.arg=='sort')is False and next(k.value.value for k in adds[-1].keywords if k.arg=='sort')is True
+    run=next(n for n in ast.walk(advance)if isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=='run');assert adds[-1].lineno<run.lineno
+    dummy={'physical_max':3,'physical_started':1,'active':0,'attempts':[{'physical_index':1,'status':'FAILED','actual_process_exit_code':1,'error':'PRESERVED'}]}
+    raw=json.dumps(dummy,indent=2);resume_gate={'expected_before':1,'preserved_failed_attempt':{'canonical_entry_sha256':canonical(dummy['attempts'][0]),'raw_entry_sha256':hashlib.sha256(raw_attempt_rows(raw)[0].encode()).hexdigest()}}
+    assert resume_state(resume_gate,dummy,raw)==1
+    for key,value in [('physical_started',0),('physical_max',4),('active',1)]:
+        changed=copy.deepcopy(dummy);changed[key]=value
+        try:resume_state(resume_gate,changed,json.dumps(changed,indent=2))
+        except AssertionError:pass
+        else:raise AssertionError('RESUME_GUARD_DID_NOT_REJECT_'+key)
+    changed=copy.deepcopy(dummy);changed['attempts'][0]['error']='MUTATED'
+    try:resume_state(resume_gate,changed,json.dumps(changed,indent=2))
+    except AssertionError:pass
+    else:raise AssertionError('RESUME_GUARD_DID_NOT_PRESERVE_FAILED_ROW')
     assert type(policy).__name__=='TierMarginPolicy'
     assert cfg.trading_start_open_ns==-86400_000_000_000
     assert cfg.terminal_close_at_ns==END
@@ -72,10 +96,29 @@ def pure_preconditions():
     intent=domain._intent(ep,'BTC_REDUCE',-1,0,quantity=.159)
     domain.on_fill(intent.id,.05,101.,datetime.fromtimestamp(1,timezone.utc));assert 0 not in ep.btc_filled_tps
     domain.on_fill(intent.id,.109,101.,datetime.fromtimestamp(2,timezone.utc));assert 0 in ep.btc_filled_tps
-    return dict(engine_constructors=0,native_version=nautilus_trader.__version__,config=snapshot_config(cfg),actual_policy_type=type(policy).__name__,positive_initial=str(initial),positive_maintenance=str(maintenance),native_event_classes=[OrderUpdated.__name__,OrderModifyRejected.__name__],native_modify_signature=str(inspect.signature(WaveOverlayStrategy.modify_order)),data_window_ns=[1,END],config_window_ns=[-86400_000_000_000,END],contract='synthetic L1 API feasibility, not financial/parity/venue admission')
+    return dict(engine_constructors=0,actual_add_data_signature=str(add_signature),real_data_schedule=[dict(type=type(x).__name__,instrument=str((getattr(x,'data',x)).instrument_id),ts_init=x.ts_init)for x in schedule],AST_final_batch_sorted=True,failed_row_resume_rejections=4,native_version=nautilus_trader.__version__,config=snapshot_config(cfg),actual_policy_type=type(policy).__name__,positive_initial=str(initial),positive_maintenance=str(maintenance),native_event_classes=[OrderUpdated.__name__,OrderModifyRejected.__name__],native_modify_signature=str(inspect.signature(WaveOverlayStrategy.modify_order)),data_window_ns=[1,END],config_window_ns=[-86400_000_000_000,END],contract='synthetic L1 API feasibility, not financial/parity/venue admission')
+
+def canonical(value):return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+def raw_attempt_rows(text):
+    decoder=json.JSONDecoder();i=text.index('[',text.index('"attempts"'))+1;rows=[]
+    while True:
+        while text[i].isspace()or text[i]==',':i+=1
+        if text[i]==']':return rows
+        _,end=decoder.raw_decode(text,i);rows.append(text[i:end]);i=end
+def resume_state(gate,ledger,raw):
+    before=gate.get('expected_before',0)
+    assert type(before)is int and before in(0,1),'EXACT_F1_EXPECTED_BEFORE_REQUIRED'
+    assert ledger['physical_max']==3 and ledger['physical_started']==before and len(ledger['attempts'])==before and ledger['active']==0,'F1_RESUME_COUNT_MISMATCH'
+    if before==0:assert ledger['attempts']==[]
+    else:
+        expected=gate['preserved_failed_attempt'];row=ledger['attempts'][0]
+        assert row['physical_index']==1 and row['status']=='FAILED'and row['actual_process_exit_code']==1,'F1_FIRST_FAILURE_MUST_REMAIN_FAILED'
+        assert canonical(row)==expected['canonical_entry_sha256'],'F1_FAILED_ROW_CHANGED'
+        assert hashlib.sha256(raw_attempt_rows(raw)[0].encode()).hexdigest()==expected['raw_entry_sha256'],'F1_FAILED_ROW_RAW_CHANGED'
+    return before
 
 def verify(gate_path,ledger_path,require_go=False):
-    gate=json.loads(Path(gate_path).read_text());ledger=json.loads(Path(ledger_path).read_text())
+    gate=json.loads(Path(gate_path).read_text());raw_ledger=Path(ledger_path).read_text();ledger=json.loads(raw_ledger)
     assert gate['protocol_sha256']==PROTOCOL and gate['fixture_id']==CASE
     assert gate['source_base']==BASE and gate['engineering_physical_max']==3
     assert gate['native_engine']=='1.231.0' and gate['fixture_window_ns']==[1,END]
@@ -84,7 +127,10 @@ def verify(gate_path,ledger_path,require_go=False):
     owner=json.loads(Path(approval['path']).read_text());reply=owner.get('exact_owner_reply')
     assert type(reply) is str and reply.strip() and owner['status']=='APPROVED_BY_OWNER'
     assert owner['protocol_sha256']==PROTOCOL and owner['engineering_max']==3 and owner['feasibility_first_before_product_patch'] is True
-    assert ledger['physical_max']==3 and ledger['physical_started']==0 and ledger['attempts']==[] and ledger['active']==0
+    before=resume_state(gate,ledger,raw_ledger)
+    if before:
+        parent=gate['preserved_failed_attempt'];assert digest(parent['ledger_path'])==parent['ledger_sha256']
+        assert json.loads(Path(parent['ledger_path']).read_text())['attempts']==ledger['attempts']
     assert ledger['protocol_sha256']==PROTOCOL and ledger['source_base']==BASE
     for item in gate['immutable_pins']:assert digest(item['path'])==item['sha256'],item['path']
     assert not Path(gate['namespace']).exists(),'FRESH_NAMESPACE_REQUIRED'
@@ -243,7 +289,7 @@ def run_fixture(engine,s,snapshot):
         assert 1<=ns<=END
         s.book=(s.settled_book,D(btc));s.book_trace.append(dict(ts_ns=ns,prior_settled_bid=None if s.settled_book is None else str(s.settled_book),incoming_bid=btc,candidate_bids=[None if b is None else str(b)for b in s.book],btc_depth=btcsize,source='PRIOR_OR_INCOMING_NATIVE_MATCHING_BOOK_ENVELOPE',order='time-handlers/marks may use settledprior; exchange BTCquote_match before DataEngine/strategyquote; SOLquote afterBTC'));s.record('BEFORE_NATIVE_STREAM',incoming_btc_quote=btc)
         engine.add_data([venue_mark(BTC_PERP.id,D(btc),ns),venue_mark(SOL_PERP.id,D(sol),ns)],client_id=ClientId('BYBIT_MARK'),sort=False)
-        engine.add_data([tick(BTC_PERP,ns,btc,btcsize),tick(SOL_PERP,ns,sol,solsize)],sort=False)
+        engine.add_data([tick(BTC_PERP,ns,btc,btcsize),tick(SOL_PERP,ns,sol,solsize)],sort=True)
         engine.run(streaming=True);engine.clear_data();s.settled_book=D(btc);s.book=(s.settled_book,);s.record('STREAM_COMPLETED_SETTLED_BOOK',settled_bid=btc);s.boundary('AFTER_NATIVE_STREAM_'+str(ns));snapshot('AT_'+str(ns))
     advance(1)
     prepare_completed_day(s,2)
@@ -300,12 +346,12 @@ def run_fixture(engine,s,snapshot):
 
 def launch(gate_path,ledger_path):
     gate,ledger=verify(gate_path,ledger_path,True);namespace=Path(gate['namespace']);namespace.mkdir(parents=True)
-    attempt=str(uuid.uuid4());entry=dict(attempt_id=attempt,physical_index=1,fixture_id=CASE,status='STARTED',started_utc=now(),source_commit=gate['source_commit'],gate_sha256=digest(gate_path),namespace=str(namespace),window_ns=[1,END])
-    ledger['attempts'].append(entry);ledger.update(physical_started=1,active=1,status='RUNNING');write(ledger_path,ledger)
+    attempt=str(uuid.uuid4());number=ledger['physical_started']+1;entry=dict(attempt_id=attempt,physical_index=number,fixture_id=CASE,status='STARTED',started_utc=now(),source_commit=gate['source_commit'],gate_sha256=digest(gate_path),namespace=str(namespace),window_ns=[1,END])
+    ledger['attempts'].append(entry);ledger.update(physical_started=number,active=1,status='RUNNING');write(ledger_path,ledger)
     engine=s=None;rc=1;result=None;errors=[]
-    def snapshot(stage):
+    def snapshot(stage,**facts):
         if engine is None:return
-        payload=dict(stage=stage,attempt_id=attempt,lifecycle=lifecycle(engine),events=[]if s is None else s.events,orders=[]if s is None else s.order_rows(),fills=[]if s is None else s.fills,transient_allocation_drift=[]if s is None else s.transient_allocation_drift,book_trace=[]if s is None else s.book_trace,nonexecutable_transients=[]if s is None else s.nonexecutable_transients,auto_updates=[]if s is None else s.auto_updates,pre_fill_checks=[]if s is None else s.pre_fill_checks,event_routes={}if s is None else s.event_routes,boundary_violations=[]if s is None else s.boundary_violations,native_coverage_gaps=[]if s is None else s.native_coverage_gaps)
+        payload=dict(stage=stage,attempt_id=attempt,physical_index=number,**facts,lifecycle=lifecycle(engine),events=[]if s is None else s.events,orders=[]if s is None else s.order_rows(),fills=[]if s is None else s.fills,transient_allocation_drift=[]if s is None else s.transient_allocation_drift,book_trace=[]if s is None else s.book_trace,nonexecutable_transients=[]if s is None else s.nonexecutable_transients,auto_updates=[]if s is None else s.auto_updates,pre_fill_checks=[]if s is None else s.pre_fill_checks,event_routes={}if s is None else s.event_routes,boundary_violations=[]if s is None else s.boundary_violations,native_coverage_gaps=[]if s is None else s.native_coverage_gaps)
         write(namespace/(stage+'.json'),payload)
     try:
         # The ONLY physical native constructor in this file; durable claim above.
@@ -321,17 +367,22 @@ def launch(gate_path,ledger_path):
     finally:
         if engine is not None:
             snapshot('BEFORE_END')
-            try:engine.end()
-            except BaseException as error:errors.append(dict(stage='END',error=repr(error)));rc=1
-            snapshot('AFTER_END')
-            if not all(x['state']=='STOPPED'and not x['running']for x in lifecycle(engine).values()):rc=1;errors.append(dict(stage='END',error='ACTUAL_FIVE_NATIVE_COMPONENTS_NOT_STOPPED'))
+            started=any(x['running']for x in lifecycle(engine).values())
+            if started:
+                try:engine.end()
+                except BaseException as error:errors.append(dict(stage='END',error=repr(error)));rc=1
+                snapshot('AFTER_END',end_applicable=True)
+                if not all(x['state']=='STOPPED'and not x['running']for x in lifecycle(engine).values()):rc=1;errors.append(dict(stage='END',error='ACTUAL_FIVE_NATIVE_COMPONENTS_NOT_STOPPED'))
+            else:
+                snapshot('END_NOT_APPLICABLE',end_applicable=False,reason='NO_NATIVE_COMPONENT_RUNNING_READY_PREINIT_IS_NOT_STOPPED')
+                if rc==0:rc=1;errors.append(dict(stage='END',error='F1_PASS_REQUIRES_ACTUAL_STARTED_THEN_FIVE_STOPPED'))
             snapshot('BEFORE_DISPOSE')
             try:engine.dispose()
             except BaseException as error:errors.append(dict(stage='DISPOSE',error=repr(error)));rc=1
             write(namespace/'AFTER_DISPOSE.json',dict(lifecycle=lifecycle(engine)))
             if not all(x['disposed']for x in lifecycle(engine).values()):rc=1;errors.append(dict(stage='DISPOSE',error='NATIVE_COMPONENT_NOT_DISPOSED'))
         write(namespace/'result.json',dict(actual_process_exit_code=rc,result=result,errors=errors,fixture=CASE,attempt_id=attempt))
-        ledger=json.loads(Path(ledger_path).read_text());row=ledger['attempts'][0];row.update(status='COMPLETED'if rc==0 else'FAILED',finished_utc=now(),actual_process_exit_code=rc,result_path=str(namespace/'result.json'),result_sha256=digest(namespace/'result.json'));ledger.update(active=0,status='F1_COMPLETE_ROOT_REVIEW_REQUIRED'if rc==0 else'STOP_FIRST_FAILURE');write(ledger_path,ledger)
+        ledger=json.loads(Path(ledger_path).read_text());row=next(a for a in ledger['attempts']if a['physical_index']==number);row.update(status='COMPLETED'if rc==0 else'FAILED',finished_utc=now(),actual_process_exit_code=rc,result_path=str(namespace/'result.json'),result_sha256=digest(namespace/'result.json'));ledger.update(active=0,status='F1_COMPLETE_ROOT_REVIEW_REQUIRED'if rc==0 else'STOP_FIRST_FAILURE');write(ledger_path,ledger)
     return rc
 
 def main():
