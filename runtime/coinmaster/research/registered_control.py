@@ -46,3 +46,38 @@ def validate_native_control(actual):
     start,end=actual["trading_start_ms"],actual["trading_end_ms"]
     if any(type(t) is not int for t in (start,end)) or not 0 < end-start <= 48*3600*1000:
         raise ValueError("ENGINEERING_FIXTURE_MAX_48_HOURS")
+
+
+def native_kwargs_json_roundtrip(kwargs):
+    """Roundtrip actual Path/Decimal/native dataclass kwargs with explicit tags."""
+    from dataclasses import fields, is_dataclass
+    from decimal import Decimal
+    from coinmaster.domain.wave_overlay import Candidate
+    from coinmaster.research.native_baseline import ExecutionPolicy, FixedBaseFeePolicy
+    from coinmaster.research.paired_signal_feed import PairedSignal
+    classes={c.__name__:c for c in (Candidate,ExecutionPolicy,FixedBaseFeePolicy,PairedSignal)}
+    def encode(value):
+        if isinstance(value,Path):return {"__native_type":"Path","value":str(value)}
+        if isinstance(value,Decimal):
+            if not value.is_finite():raise ValueError("NONFINITE_NATIVE_DECIMAL")
+            return {"__native_type":"Decimal","value":str(value)}
+        if is_dataclass(value):
+            name=type(value).__name__
+            if name not in classes:raise ValueError("UNREGISTERED_NATIVE_PAYLOAD_TYPE")
+            return {"__native_type":name,"value":{f.name:encode(getattr(value,f.name)) for f in fields(value)}}
+        if type(value) is tuple:return {"__native_type":"tuple","value":[encode(x) for x in value]}
+        if type(value) is list:return [encode(x) for x in value]
+        if type(value) is dict:return {k:encode(v) for k,v in value.items()}
+        if value is None or type(value) in (str,int,float,bool):return value
+        raise ValueError("UNREGISTERED_NATIVE_PAYLOAD_TYPE")
+    def decode(value):
+        name=value.get("__native_type")
+        if name is None:return value
+        content=value["value"]
+        if name=="Path":return Path(content)
+        if name=="Decimal":return Decimal(content)
+        if name=="tuple":return tuple(content)
+        if name in classes:return classes[name](**content)
+        raise ValueError("UNREGISTERED_NATIVE_PAYLOAD_TYPE")
+    payload=json.dumps(encode(kwargs),sort_keys=True,allow_nan=False)
+    return payload,json.loads(payload,object_hook=decode)

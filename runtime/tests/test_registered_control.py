@@ -20,9 +20,10 @@ def test_exact_actual_kwargs_json_roundtrip_and_native_call_validation(family,tm
     assert kwargs['research_btc_direction_sizing'] is True
     assert kwargs['fixed_base_fee_policy'].rates()==(D('.00020'),D('.00055'))
     # Serialize the actual constructed native payload, not a descriptor schema.
-    from coinmaster.research.native_audit import audit_json_default
-    payload=json.loads(json.dumps(kwargs,default=audit_json_default))
-    assert payload['candidate']==asdict(kwargs['candidate'])
+    from coinmaster.research.registered_control import native_kwargs_json_roundtrip
+    serialized,restored=native_kwargs_json_roundtrip(kwargs)
+    assert restored==kwargs
+    payload=json.loads(serialized)
     assert payload['research_btc_direction_sizing'] is True
     bound=signature(run_native_diagnostic).bind(**kwargs);bound.apply_defaults()
     validate_native_control(bound.arguments)
