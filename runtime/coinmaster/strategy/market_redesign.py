@@ -106,7 +106,7 @@ class MarketRedesignResearch(A0RightsResearch):
             m["second_filled"]+=qty
             if m.get("a0"):
                 self._md_log("A0_SECOND_ACTUAL_FILL", event.ts_event, episode_id=intent.episode_id,
-                    order_id=str(event.client_order_id), quantity=qty, second_filled_ever=m["second_filled"],
+                    order_id=str(event.client_order_id), native_trade_id=str(event.trade_id), quantity=qty, second_filled_ever=m["second_filled"],
                     release_order=str(event.client_order_id)==m["a0"]["order_id"])
         if p.get("stop_reason"):
             p["cancelled"]=p["quantity"]-p["filled"]
@@ -337,5 +337,20 @@ class MarketRedesignResearch(A0RightsResearch):
     def _md_report(self):
         rights = [{"episode_id": eid, **{k:str(v) if isinstance(v,D) else v for k,v in m["a0"].items()},
                    "second_filled_ever":str(m["second_filled"])} for eid,m in self._md_plans.items() if "a0" in m]
-        return dict(a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
+        fills = [dict(native_trade_id=e["native_trade_id"], client_order_id=e["order_id"],
+                      BTCinstrument_id=str(self.config.btc_id), quantity=e["quantity"], release_order=True)
+                 for e in self.market_redesign_audit if e["event"]=="A0_SECOND_ACTUAL_FILL" and e["release_order"] and D(e["quantity"])>0]
+        submits = [e for e in self.market_redesign_audit if e["event"]=="A0_SUBMIT"]
+        complete = len({e["native_trade_id"] for e in fills})==len(fills)
+        accepted = []
+        for submit in submits:
+            oid=submit["order_id"];order=self.cache.order(ClientOrderId(oid))
+            complete = complete and order is not None and sum((D(f["quantity"]) for f in fills if f["client_order_id"]==oid),D(0))==order.filled_qty.as_decimal()
+            if self._order_audit.get(oid,{}).get("accept_ns") is not None:
+                accepted.append(oid)
+        release_audit = dict(grants=[e for e in self.market_redesign_audit if e["event"]=="A0_GRANT_ONCE"],
+            submits=submits,accepted=accepted,denials=[e for e in self.market_redesign_audit if e["event"]=="A0_DENY"],
+            native_fill_coverage_complete=bool(complete),native_release_fills=fills,
+            actual_releases=len({f["client_order_id"] for f in fills}))
+        return dict(a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
             open_protection_exception_since_ns=str(self._md_missing_since) if self._md_missing_since is not None else None)
