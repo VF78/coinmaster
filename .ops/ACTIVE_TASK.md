@@ -1,6 +1,6 @@
 2026-10-26 Europe/Moscow. CURRENT #137: ENGINEERING HOLD; two FAILED, reserve used. Goals70/50 and90/50 NOT_MET.
-Project #2 issue137 OPEN/In Progress/notArchived; issue136 remains CLOSED/Done/archived. Update/readback current E6 disposition before end.
-Manager: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021; published preservation998c223609dbcaf58ab9791d00b5d0a4ba3f64cc.
+Project #2 issue137 OPEN/In Progress/notArchived; issue136 remains CLOSED/Done/archived. Actual E6 readback PROJECT137_E6_FAILED_READBACK.json; issue OPEN/In Progress/notArchived.
+Manager: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021; published cd3ca7933b2802d4700782596d7aa8a56a0d2b78; closingreceipt in Macjob/FINAL_PUBLICATION.json.
 Four-week review/plan/P1 DONE: reports/four-week-review-20261026/README.md -> REVIEW_RU.md / UNIFIED_PLAN_RU.md / CURRENT_DECISION_RU.md. No qualified70/50 or90/50 strategy; prefix is not full/OOS.
 Original S0 TOTAL6077107.23887483/DD66.2569%; experimental70% TOTAL4256975.067212381; final90%5470396.514987347. No goal rebase to BTC-only or explicit-child S0.
 Current packet: reports/sol-standing-protection-20261026. Direct owner approval6fixtures+conditional4prefix: owner-approval.json SHA6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1.
@@ -13,7 +13,7 @@ E6 observed SOL remainingTP preservation/multiplefills, sameSTOP3UpdatedACK/full
 Cause source-supported: inherited _tp_reconcile held0 returns NATIVE_FLAT before ownedBTCstandingTP cancellation/drain. No fixture assertion waiver or manual-order cleanup.
 Engineering2/6 FAILED, active0; unused4 HOLD/noGO, reserved repeat consumed. Prefix0/4 conditional, full0. Another E1 plus E2-E5 needs5 slots, cannot finish original coverage under cap6.
 Final ledger SHA42af6234b3847f25a9de552e04bdf06c3484a78845e873ca55c206bc2207bb32; E6_FAILED_LEDGER_BEFORE_DISPOSITION snapshot, raw failed namespaces/sourcecopies immutable. Native/economic rootGO FALSE; old consumed gates cannot authorize next attempt.
-NEXT: amendment max7 proposal and nonapplieddiff ready; BTC_FLAT_DRAIN_AMEND7_DESIGN_REVIEW0P0/P1. Ask exact owner scope/budget amendment after publication. No new code/native now; no automatic repeat or use of unspent slots.
+NEXT: amendment max7 proposal and nonapplieddiff ready; BTC_FLAT_DRAIN_AMEND7_DESIGN_REVIEW0P0/P1. Exact owner amendment question submitted; awaiting direct answer, no approval inferred. No new code/native now; no automatic repeat or use of unspent slots.
 Conditional economics after complete engineering PASS: OFF -> C0_FIXED strict financialTP/state -> BTC_TRIM -> lawful A0. ExpectedOFF20911.13611487, frozenmetricca815cbe/schema b02b624a; future actual A0 margin/fill/profit not preproved.
 Preserve BTCcore/LEGACY_Q/TPpricesweights/SOLsignals/caps/A0rights/clocks. G2newriskcontract/rearm excluded. PUBLIC VF78/coinmaster researchsource/tests/reports already approved; publication is not deployment/CI qualification.
 Full/training/download/pilot/production/deploy/services/credentials/externalorders/transfers0. Preserve user dirty code/rawfailures/immutabledata and intentional locks. Follow RESET before end; never delete unique evidence.

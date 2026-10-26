@@ -16,6 +16,12 @@
   "positions_flat": true,
   "terminal_orders_zero": false,
   "native_full_STOP_component": "REACHED_NOT_FULL_FIXTURE_PASS",
-  "next": "Read-only cause and concrete narrow terminalBTCorderdrain amendment proposal; no code/newengine until separately adjudicated",
-  "full_pilot_production": 0
+  "next": "AWAIT_EXPLICIT_OWNER_DECISION_ON_REVIEWED_AMEND7_PROPOSAL_NO_CODE_NATIVE_GO",
+  "full_pilot_production": 0,
+  "amendment_status": "PROPOSED_NOT_APPROVED",
+  "amendment_protocol_sha256": "53f6d79a2c1be4164e9f298b9f8c58d5246d74f0e064708b2942d8914a189b37",
+  "amendment_design_review_sha256": "813df4c214f1c1d23aa4df3c8b744489e90695434c9129455c98b9226d7785f1",
+  "proposed_engineering_max": 7,
+  "current_authorized_engineering_max": 6,
+  "source_publication": "97db965_exact_remote_verified"
 }
