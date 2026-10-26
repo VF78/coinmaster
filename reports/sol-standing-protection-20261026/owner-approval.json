@@ -1,0 +1,26 @@
+{
+  "schema": "CM_SOL_STANDING_OWNER_APPROVAL_V1",
+  "status": "APPROVED_BY_OWNER",
+  "utc_recorded": "2026-10-26T14:31:19.095402+00:00",
+  "question_item_id": "[\"request_user_input_async\",\"call_a73f52e51fba4f8a974a1b1a16f7d885\",0]",
+  "exact_human_answer": "Утверждаю 6 fixtures и условные 4 prefix",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/NEXT_PROTOCOL_PROPOSED_RU.md",
+  "protocol_sha256": "faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea",
+  "public_protocol_commit": "181c86da1650d05959ea250518c66e37f15d96f1",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "engineering_physical_max": 6,
+  "engineering_data_hours_max_each": 48,
+  "economic_prefix_physical_max": 4,
+  "full": 0,
+  "all_failures_and_matching_constructors_counted": true,
+  "economic_conditional_on_full_engineering_and_each_root_go": true,
+  "economic_order": [
+    "OFF",
+    "C0_FIXED",
+    "BTC_TRIM",
+    "A0_FIXED_CONDITIONAL"
+  ],
+  "old_budgets_transferable": false,
+  "scope": "isolateddefaultOFFSOLlifecycle+predecisionrecord;separatelydeclaredcausalriskmatchedBTC_TRIM;originalA0rightsunchanged",
+  "excluded": "G2newriskcontract/signals/alpha/model/training/download/pilot/production/deploy/services/credentials/realorders/transfers"
+}

@@ -1,0 +1,315 @@
+{
+  "schema": "CM_SOL_STANDING_FINANCIAL_GATE_CONTRACT_V1",
+  "status": "READ_ONLY_PREPARATION_NOT_GO",
+  "task": "CM-SOL-STANDING-PROTECTION-20261026/FINANCIAL_READER",
+  "authority": {
+    "approval_sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1",
+    "protocol_sha256": "faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea",
+    "approved_caps": {
+      "engineering": 6,
+      "prefix_conditional": 4,
+      "full": 0
+    },
+    "spent_at_root_dispatch": {
+      "engineering": 0,
+      "prefix": 0
+    },
+    "current_counts_authority": "Soleproduct/ledgerwriter actualcanonicalledger; thisreaderdoesnotwriteorcertifycurrentremainingcounts.",
+    "each_root_GO_required": true,
+    "old_budget_transferable": false
+  },
+  "metric": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/metric-contract.json",
+    "sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+    "change_allowed": false,
+    "exact_candidate_gates": {
+      "capital": "TOTAL_A0 > TOTAL_C0",
+      "cost": "TOTAL_A0 - TOTAL_C0 > 2*max(0,fees_A0-fees_C0)",
+      "settled_DD": "A0 <=50% and <= C0",
+      "event_DD": "A0 <=50% and <= C0",
+      "daily_ES20": "A0 <= C0 on all136 days",
+      "rights": "Economic mechanism tested only with positive actual native BTC release fills. Show grants/submits/accepted separately. Zero positive release fill => ECONOMICALLY_NOT_TESTED, regardless of grants/submits; differing TOTAL with zero fills is unexplained, never free benefit."
+    },
+    "expected_shortfall20": {
+      "loss": "1 - native_end_TOTAL/native_start_TOTAL",
+      "tail": "q=n/5; sort losses descending; (sum first floor(q) + fractional(q)*next)/q; Decimal50, no clipping/rounding/outcome selection",
+      "daily": "All 136 UTC dates Sep1-Jan14 inclusive, including flat days. Source clock last complete minute, seed10000. Only missing final day may use validated direct native terminal flat cash/orders0. Missing earlier day => UNKNOWN.",
+      "parent": "All own actual BTC parents, pre-first-fill native TOTAL to both legs flat/orders quiescent, before next parent. Changed calendar/count explicit, no forced matching; diagnostic only."
+    },
+    "drawdown": "Native cash + native Position UPNL; settled and coherent event DD separate. Require pre-fill/pre-open historical peaks. No report cash-only DD, no shadow wealth/PnL engine.",
+    "unknown_policy": "Missing/unknown coverage, funding, account, ACK, ownership or proof => UNKNOWN_BLOCKS. Never synthesize zero, force-correct CSV, reconstruct money, or promote raw failed report.",
+    "global_floors": {
+      "intermediate70": "4256975.067212381",
+      "final90": "5470396.514987347",
+      "claims": "Prefix is reused research, not full/OOS or proof of either goal. Full/training/download/realwallet/pilot/production authority remains0."
+    }
+  },
+  "old_schema": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/financial-qualification-receipt-schema.json",
+    "sha256": "b02b624a4e60e166f033a3daa184b7ea03e10390fb472bc3e1acdf591c5425c2",
+    "rebind_required": "Labels/source/config/namespace/newTRIM/prioradmissionmatrixonly; frozenmetricmustnotchange. Allnewbinderspure-reviewedbeforeGO."
+  },
+  "old_accepted_OFF": {
+    "summary": {
+      "terminal_total": "20911.13611487",
+      "settled_DD_percent": "50.13014281400943598272557789",
+      "event_DD_percent": "50.13014281400943598272557789",
+      "fees": "1072.65091609",
+      "signed_funding": "-695.36036902",
+      "daily_count": 136,
+      "daily_ES20_percent": "5.8899433101068996401033491697380331305483706876438",
+      "parent_count": 19,
+      "parent_ES20_percent": "18.796333957720837909854362565708995361672402054073",
+      "native_fills": 82,
+      "settled_receipts": 195839,
+      "stream_rows": 587950,
+      "terminal_positions": 0,
+      "terminal_orders": 0,
+      "model_liquidations": 0,
+      "native_3TP_missing_ns": "0",
+      "native_fee_classification": {
+        "MAKER": {
+          "fills": 56,
+          "fees": "313.14678188"
+        },
+        "TAKER": {
+          "fills": 26,
+          "fees": "759.50413421"
+        }
+      },
+      "funding_by_asset": {
+        "BTCUSDT-PERP.P1SIM": "-695.36036902"
+      },
+      "performance": "OFFDD50FAIL butvalidfinancialbaseline; expectedfreshsameeconomicOFFparity, notcandidatewinner."
+    },
+    "immutable_receipt": {
+      "attempt_id": "77b7a5cc-0e2a-43a3-a17e-56868728a7d5",
+      "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+      "report_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF/result/R2_OFF.json",
+      "report_sha256": "fe1245220d6efc96b01d677caebb4e39b5a3590b3451ee9f04a5fdf8ecbeaad1",
+      "completed_attempt_sha256": "75cc9c767940bb35f68883d2132e5a204f44b773da20b58a9c63840691411dd4",
+      "completion_manifest_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF/completion-manifest.json",
+      "completion_manifest_sha256": "f3eed4c3551202e44c3872bf81f8fe991d0d330c0c7b0a444e00865ddf805648",
+      "supervisor_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_OFF/supervisor-receipt.json",
+      "supervisor_sha256": "b1f8bb49a1d4dad168e6b9914c1cdbc36c284d93aab0d0f26dcc1a83c8170f94",
+      "ledger_snapshot": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_OFF-amend4-completed-ledger-snapshot.json",
+        "sha256": "5c0e6dc2a95ba033cd9615e993566edb785fe0c471713643e2e4ea0406e37b6b"
+      },
+      "risk_analysis_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_OFF-amend4-risk.json",
+      "risk_analysis_sha256": "a23623cb08f3bf77276f5eccd7a118fe66bbf0bfad00cf122f4585fbb376a79b",
+      "metric_contract_sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+      "decision": "FINANCIAL_ACCEPTED_CONTROL",
+      "qualification": "FINANCIALLY_QUALIFIED"
+    },
+    "root_receipt_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-financial-qualification-R2_OFF.json",
+    "root_receipt_sha256": "23ac8f62cbee58bd6d377676791369b37f351c384f9fd22f5f6fffcd77801b6a",
+    "reuse_limit": "Historicalparityreferenceonly; oldreceipt cannotstandin fornewfreshOFF ornewphasepriorfinancialqualification."
+  },
+  "comparability": {
+    "core": "R2LEGACY_QrealU3TP; sameexactnativeconfighelper/actualrequestednotional/lotrounding; native1.231.0",
+    "R2_config_sha256": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "warmup_feed_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+    "data_root": "Actualstock/inputs/data withmanifest+UTCcoverage; filenames/pinsaloneinsufficient",
+    "window": "[2024-09-01,2025-01-15) UTC",
+    "seed": "10000",
+    "RESERVE": "0",
+    "economic_transport": "zero; fixedbeforeengine; stresscancel2sfixtureseparate",
+    "new_source": "Actualnewcheckpointmustbefrozen;7f38278isbase,763d985historicalfinancialreference. Noenginefromoldmutablecheckout.",
+    "scope": "SOLlifecycle+observer; TRIMseparatelydeclared; A0originalrightsonly; G2/rearm/signals/core/weightsnotchanged"
+  },
+  "order": [
+    {
+      "variant": "OFF",
+      "prior_new_phase_financial_receipts": [],
+      "exit": "freshOFFparity+strictfinancialqualification; unexplainedmoneydifferenceSTOP"
+    },
+    {
+      "variant": "C0_FIXED",
+      "prior_new_phase_financial_receipts": [
+        "OFF"
+      ],
+      "exit": "StrictTP/accounting/observerqualification+predecisionstate; C0invalid/noadmissiblerightsSTOPunusedslots; notgrowthPASS"
+    },
+    {
+      "variant": "BTC_TRIM",
+      "prior_new_phase_financial_receipts": [
+        "OFF",
+        "C0_FIXED"
+      ],
+      "exit": "Exanteformulafrozen/reviewed; ownfinancialqualification; comparefrontier"
+    },
+    {
+      "variant": "A0_FIXED",
+      "prior_new_phase_financial_receipts": [
+        "OFF",
+        "C0_FIXED",
+        "BTC_TRIM"
+      ],
+      "exit": "Onlyifcontrolmatrix/causaloriginalrights eligible; ownruntimeguardadmission; actualfills/profitareoutcomesnotpreproof; applyexactfrozengates"
+    }
+  ],
+  "prior_receipt_binding": {
+    "immutable_key": "UniqueattemptUUID+statusCOMPLETED+reportSHA; notfilename/labelalone",
+    "entry_hash": "SHA256 UTF8 json.dumps(actualCOMPLETEDentry,sort_keys=True,separators=(comma,colon),ensure_ascii=False)",
+    "whole_ledger_SHA": "Diagnosticatqualificationonly; laterappendallowed. Samecurrententry mustequalimmutableentrysnapshotcanonicalSHA.",
+    "prior_freeze": "Pinexactnewphasepriorreceiptpath+sha; priorrequiredlabelsetfrozennoextras/duplicates; requireallgatesPASS/riskVALID_ACCOUNTED_PREFIX/actualOSrc0; oldfailedduplicate-labelentriespreserved.",
+    "new_TRIM_dependency": "Newfourstepcontrolmatrixneedsinterfacebinding; notretroactiveeditoffrozenoldschema."
+  },
+  "acceptance_checklist": [
+    {
+      "id": "F01",
+      "gate": "authorization_and_phase",
+      "require": "Actualownerapproval6b862… andimmutableprotocolfaa392…; fullengineeringE1-E5accepted/essentialcoverage beforeanyprefix; eachattemptrootGO; noautomaticlaunch",
+      "failure": "STOP. ThisfinancialcontractisnotGO."
+    },
+    {
+      "id": "F02",
+      "gate": "frozen_interface",
+      "require": "Newexactsource/config/kwargs/data/feed/engine/cost/clock/variant/namespace/freeze pin; readerinterface-onlyrebind awayfromold763/oldlabels/path. SameR2LEGACY_Qreal3TP,qualifiedwarmup,zeroeconomictransport. No metricformula/tolerance/gateschange.",
+      "failure": "UNKNOWN_BLOCKS; no staleoldsourceassertionsorhardcodedPASS."
+    },
+    {
+      "id": "F03",
+      "gate": "physical_binding",
+      "require": "UniqueactualattemptUUID+statusCOMPLETED+reportSHA; actualOSrc0; report/supervisor/completion/currentledger/immutableentrysnapshot/source/variant/namespace/freeze agree. CurrententryandcanonicalimmutablecompletedentrySHA agree.",
+      "failure": "FAILED/ambiguous/missing cannotqualify evenmoneyreportexists."
+    },
+    {
+      "id": "F04",
+      "gate": "artifact_manifest",
+      "require": "Fourmandatoryimmutablefinancialrolesreport/orders/funding/coherent withabsoluteactualpath+SHA; completedmanifest/supervisor/risk/evidence/qualificationreceipt hashes. Addedpredecision/margin/rightsproofs separatepinnedartifacts; no inventedfourth/fifthrolethatbreaksoldreader withoutreviewedinterfacebinding.",
+      "failure": "StructuralUNKNOWN; do notcomputezeromoney."
+    },
+    {
+      "id": "F05",
+      "gate": "native_cash_fees_funding",
+      "require": "Nativecash+PositionUPNL bridge eachcoherentreceipt; completeactualfills/liquidity/commission(BASEBybitmaker.020%taker.055%); actualfundingpre/postcash vsimmutableSQLitefunding_cash[event_id,instrument_id,ts_event,before_total,after_total,signed_delta], amount/count/identity/reportexact. Externalflows0.",
+      "failure": "Anyunexplainedresidual/missingasset/eventUNKNOWN; nevercashbridgeasfunding/zero."
+    },
+    {
+      "id": "F06",
+      "gate": "continuousDD",
+      "require": "195840processed/expectedminutespersource;195839continuoussettledreceipts; sourcewatermarkretention/eventsequence/epochcomplete; nativeequitycash+UPNL; seed+terminal included; distinctsettled/eventHWM; PRE_FILL_LAST_COMMITTED_NATIVE_COPY/POST_FILL_COMMITTED_NATIVEpaireduniqueIDs and pre-openhistoricalpeak; observerUNKNOWNempty.",
+      "failure": "No cashonly/closedtrade/dailyDD substitution; missingpre-open/coherentcoverageUNKNOWN."
+    },
+    {
+      "id": "F07",
+      "gate": "dailyES20",
+      "require": "All136UTCdates2024-09-01…2025-01-14 includingflat; dailyendlastcompleteminutewithseed10000; onlylastdayvalidateddirectnativeflatcash/orders0fallback; loss=1-end/start; descendingfractionaltailq=n/5,Decimal50,noclip/noround; percentageoutput×100.",
+      "failure": "MissingearlierdayorinvalidendpointUNKNOWN; no favorabledayselection."
+    },
+    {
+      "id": "F08",
+      "gate": "nativeTPownership_margin",
+      "require": "PositiveunconsumedremainingTPentitlementswithactualOID/strategy/instrument/parent/generation,exactleaves=total-actualfilled; consumedtargetsnotresurrected; nativeACKvsqueue; gapduration/matchingboundaries; STOPpendingdrain; actualnative margin/reservation/held/pending/debt/caps/riskclock snapshotsbeforeincreases. Readmodelpendingdoesnotgivehedgecredit.",
+      "failure": "UNKNOWN/debt/cross/ordinaryTP/deadline/insufficientmarginblocksindividualincrease; realTPgapblocksfinancialadmission. OldC0cashcannotqualify."
+    },
+    {
+      "id": "F09",
+      "gate": "terminal",
+      "require": "NativeBTC/SOLpositions0,openorders0,inflight/pendingcommands0,zero modelLiq; actualterminalcash; componentSTOPPED→DISPOSEDonlyadditionalproof.",
+      "failure": "SOLflatpendingSTOPorBTCopennotterminalflat."
+    },
+    {
+      "id": "F10",
+      "gate": "rights_and_predecision",
+      "require": "SideeffectfreepredecisionrecordsindependentA0flag; originalsecondbudget-originalsecondfilled-ever only, noFIRSTexpansion/closedBTCrestore; cause/riskOFF/+60/quote/cross/cap/TP/margin/reservations/pending/ACK/debt/nativeaccounttime. CompleteactualreleasefillauditdedupTradeID; grants/submits/accepted/denialsseparate.",
+      "failure": "FlagOFFemptyarraynotzeroopportunity; absentfieldsUNKNOWN. A0positiveactualreleasefills0→ECONOMICALLY_NOT_TESTED; differingTOTALwithoutfillsunexplained."
+    },
+    {
+      "id": "F11",
+      "gate": "TRIM_exante_comparability",
+      "require": "SourceownerdeclaresformulaandnarrowreviewbeforeeconomicGO: commoncausalriskclock/ex-antefactorrelief/notional+volnorm/correlationbasis,rounding,minlot/partial/latefill/pendingpolicy; ownnativeaccount/fills/expenses; no futureC0actualSOLfills asonlineclock/sizeinput. C0mayestablishobservationalcoverage,notposthocoutcomeselectsignal.",
+      "failure": "No supportedfaircomparison→STOPbeforeTRIM; do notspendslotonnewsizinggrid."
+    },
+    {
+      "id": "F12",
+      "gate": "A0_incremental_and_SOLfrontier",
+      "require": "A0sameC0exceptonceoriginalsecondflag; actualadditionalreleasefills>0; TOTALA0>TOTALC0; gain>2*max(0,feesA0-feesC0); bothsettled/eventDDA0<=50%and<=C0; dailyES20A0<=C0. C0vsTRIM:TRIMno-worseTOTAL/DD/ESwithatleastonebetter⇒SOLdominatedSTOP.",
+      "failure": "No performancePASSfromfinancialPASS; nogrowthclaim/noautomaticfull."
+    }
+  ],
+  "upstream_needed": [
+    "Newsourcecheckpoint/diff+purepreflightandindependentreview; exactfreeze/common/worker/supervisor/readerinterfacebinding hashes.",
+    "ActualE1-E5coverage+rootfullengineeringacceptance includingSOLmodifyACK/repeatedfill/latecancel/nativeprotectiveboundaries/BTCcleanDEFER/A0rights/integratedflat; NOT_REACHEDessentialblocks economics.",
+    "TRIMformula/clock/exantefactorcoverage/quantity-costcontract sourceowner proposal+narrowreview beforeeconomicGO.",
+    "Freshphaseledgersnapshot+canonicalUUIDentry+rootGOreceipt perattempt; exactfourrolecompletion+actualOSreceipt.",
+    "Report/orders/fundingSQLite/coherentstream pluspinnedpredecision/rights/margin/ownershipproof; exactreportproducerJSONpaths beforefreeze.",
+    "Percompletedresult explicitrootcompletionnotice; oneread-onlyfinancialpass; separatefinancialreceiptandperformancecomparison; no watcher/autorepeat."
+  ],
+  "method": {
+    "engines": 0,
+    "tests": 0,
+    "new_money_calculation": 0,
+    "product_edits": 0,
+    "ledger_edits": 0,
+    "broad_history_audit": 0,
+    "owned_files": [
+      "FINANCIAL_GATE_CONTRACT.md",
+      "FINANCIAL_GATE_CONTRACT.json"
+    ]
+  },
+  "evidence": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/metric-contract.json",
+      "sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/financial-qualification-receipt-schema.json",
+      "sha256": "b02b624a4e60e166f033a3daa184b7ea03e10390fb472bc3e1acdf591c5425c2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/PREPARATION_RU.md",
+      "sha256": "89aa3b0494bae828f95c0f6d3498366c378a1ba299830f961f2fc743c8f701b0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/prelaunch-binding.json",
+      "sha256": "2b385520c41a4ab486cf9c91b8ed0fc7bd161fd6712ba9c3de26c0bf4eedc027"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/amend4-consumer-requirements.json",
+      "sha256": "b85da7a91482ceca7aa93b3d52760763268b7f1ffc7a8b0e0ce1e93ad7b7f035"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/native-risk-adapter.py",
+      "sha256": "83691ed4dabd890b86d2160d692b123d30e1a5d328e55acc8dc392ae684490b2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/compare-prefixes.py",
+      "sha256": "d038d90403ed54fa2d6031481d53b263958ca9b86178dd6085fc372bb2a6675f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/rights-proof.py",
+      "sha256": "98dbdf12f7fdd24be13244d3c7be1e8d6148faac75caf6bf1569528a278908c7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_OFF-financial-summary.json",
+      "sha256": "cdf6f22d354248382b9dcd3004e7dace8b7b2136ccee90b0ba13eba87f78fd78"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_OFF-amend4-risk.json",
+      "sha256": "a23623cb08f3bf77276f5eccd7a118fe66bbf0bfad00cf122f4585fbb376a79b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/R2_OFF-amend4-evidence.json",
+      "sha256": "9e169b2d9c6ab0eaef51f43f54e342503d60396cd8136e6b092a9369cabee079"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-financial-qualification-R2_OFF.json",
+      "sha256": "23ac8f62cbee58bd6d377676791369b37f351c384f9fd22f5f6fffcd77801b6a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-financial-rejection-R2_C0.json",
+      "sha256": "220b41f65e6c1146ebfa56ee8510778b6acd0fde83e4cced4316fc5e06aee612"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-approval.json",
+      "sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/NEXT_PROTOCOL_PROPOSED_RU.md",
+      "sha256": "faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea"
+    }
+  ]
+}

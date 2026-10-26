@@ -1,0 +1,15 @@
+{
+  "status": "OWNER_APPROVED_IMPLEMENTATION_AND_PREPARATION_ACTIVE",
+  "utc": "2026-10-26T14:31:19.095402+00:00",
+  "issue": 137,
+  "owner_approval_sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "engineering_started": 0,
+  "engineering_max": 6,
+  "prefix_started": 0,
+  "prefix_max": 4,
+  "native_root_go": false,
+  "economic_root_go": false,
+  "next": "onefocusedisolatedproductpass+enginefreepreflight;independentreview/freeze/rootGObeforefirstengine",
+  "full_pilot_production": 0
+}

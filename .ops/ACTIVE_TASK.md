@@ -1,5 +1,5 @@
-2026-10-26 Europe/Moscow. CURRENT #137 four-weekreview/unifiedplan + read-onlyP1 COMPLETE; AWAIT_OWNER_PROTOCOL_BUDGET. Goals70/50+90/50NOT_MET.
-Project2 issue137OPEN/Todo/notArchived actualreports/four-week-review-20261026/PROJECT137_FINAL_READBACK.json;136remainsCLOSED/Done/archived.
+2026-10-26 Europe/Moscow. CURRENT #137 four-weekreview/P1 COMPLETE; OWNER_APPROVED_SOL_STANDING_IMPLEMENTATION_ACTIVE. Goals70/50+90/50NOT_MET.
+Project2 issue137OPEN/InProgress/notArchived actualreports/sol-standing-protection-20261026/PROJECT137_APPROVED_READBACK.json;136remainsCLOSED/Done/archived.
 Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; previouspublicacb4553.
 Packetreports/four-week-review-20261026/README.md→REVIEW_RU.md /UNIFIED_PLAN_RU.md /CURRENT_DECISION_RU.md. 51reportdirs/35issues;family/row/processcountsnotadditive/globaltimecostUNKNOWN.
 P0review0P0/0P1+2docP2corrected;P0_ROOT_ACCEPTANCE +P0_REVIEWED_PLAN_SNAPSHOT proveanalysis/planBEFOREreadonlyP1. PLAN_REVISION_AFTER_P1currentplanhash.
@@ -9,10 +9,10 @@ P1a sourcefeasiblecandidate:preserveSOLremainingTP OIDs/rights;selectivepublicmo
 P1b+P1_R2_COVERAGE_CHECK: actualR2source763reportSHA46a4256e...16riskselections/15OFF/19parents;4canceledsecond .541/.405/.285/.418. EmptyflagOFFa0_rights≠zeroopportunities;joined+60predecisionstate missing.
 Conditionalorder:minimalSOLlifecycle+sideeffectfreepredecisionrecord→nativequalification→OFF→C0_FIXEDobservationalstrictPASS→BTC_TRIM→conditionalA0→parameters. P1_DECISION_REVIEWblockers0.
 Futurefill/profit/A0ownmarginnotpreprovedbeforeexperiment;actualadmissiononownaccount. UnsafeC0/nolawfulrights/incomparableTRIM→STOPunusedslots. G2newresidualrisk/rearmseparate/notinpatch.
-NEXT_PROTOCOL_PROPOSED_RU.md SHA faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea: proposed≤6fixtures≤48hdataeach+≤4prefix/full0 includingfailed/nativeconstructors. OWNER_BUDGET_PROPOSAL permission_receivedFALSE.
-No newmoneycode/native/training/download/pilot/production/services/orders/transfers authorized. Allold#131–136budgetsCLOSED/nontransferable; newprotocol+explicitownerbudgetrequired.
+NEXT_PROTOCOL_PROPOSED_RU.md SHA faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea: proposed≤6fixtures≤48hdataeach+≤4prefix/full0 includingfailed/nativeconstructors. OwnerNEWreceipt reports/sol-standing-protection-20261026/owner-approval.json SHA6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1 APPROVED6/4. Historicalproposalbytesunchanged.
+Newapprovedscope:isolateddefaultOFFSOLlifecycle+predecisionrecord+causalTRIM;engineering0/6,prefix0/4,rootGOfalseuntilreview/freeze. OldbudgetsCLOSED/nontransferable; nofull/training/download/pilot/production/services/orders/transfers.
 Source7f38278257624b321c9d88d9df962505b6f5bab0 PUBLIC/unchanged; frozenMacpaired-tp-continuity-20261025/source-7f38278;canonicalVPShedge-rights-unlockworktree retained.
 F4actualOS1/PID7164/f3962d0c...SOLPROTECTION_OVERDUE_NEXT_QUOTE153/BTC1.006open/SOLSTOPpending;5STOPPED→DISPOSEDnotflat. TPengineering4FAILED/max4/prefix0unused3CLOSED.
-Preserveuserdirtycode/0a2draft/206draft/rawfailednative/immutabledata;3untrackedlocksintentionaloutsidepacket. All3agentscompleted/noactiveengine. No cleanup/currentruntimehealthclaim.
+Preserveuserdirtycode/0a2draft/206draft/rawfailednative/immutabledata;3untrackedlocksintentionaloutsidepacket. Analysisagentscompleted;sol_standing_owner solecode/ledgerwriteractive;newengineering0/6,prefix0/4,rootGOFALSE. No cleanup/currentruntimehealthclaim.
 PUBLICVF78/coinmasterresearchreportsauthorized;closurecommitcontainscurrentstate. Exactreceipt runtime/var/research-jobs/four-week-review-20261026/FINAL_PUBLICATION.json afterpush;pushnotdeployment/CIUNKNOWN.
-Next:ownerreplyforconcrete6/4/full0protocol;recordactualconsentbeforecode,neverinferfromproposal/review/oldbudget. Do notrepeatfullAIgrid/oldnegativefamilies.
+NEXT:owneronefocusedcanonicalVPSproduct+fixturepass→purechecks→independentreview→immutableMacfreeze→individualrootGO; noautonext/prefix. No repeatapprovalquestion.
