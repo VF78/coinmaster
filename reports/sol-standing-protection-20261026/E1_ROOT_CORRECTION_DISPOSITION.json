@@ -1,0 +1,36 @@
+{
+  "status": "AUTHORIZE_TARGETED_SNAPSHOT_AND_LOGICAL_RESERVE_CORRECTION_ONLY_NO_NATIVE_GO",
+  "utc": "2026-10-26T16:25:32.162564+00:00",
+  "actual_E1_review_sha256": "4af85e98e772671501c7a2f7a789bad2a540f2673f93eb330900e9e5aa99c5aa",
+  "failed_attempt": "2413619e-c67c-433f-851c-dce075595aee",
+  "failed_ledger_snapshot_sha256": "93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c",
+  "failed_canonical_entry_sha256": "d325f056cc06dc913a85ce7e60d8e33e5ed088f3e15316b6699c4fdbc966397e",
+  "source_before": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "allowed_changes": [
+    "readonlymarginobserverpublicbalances_margins_leveragesprimitives_strIDs_noAccount_to_dict",
+    "realpopulatedNativeMarginAccountJSONregression_noEngine",
+    "observererrorsrecordUNKNOWNexplicit_no_trading_exception;financialcoverageincompleteblocksadmission",
+    "E6logicalreservedrepeatmayphysical2_onlyFAILED_UUID_scenarioE1_once_only_max6;freshnamespace_rootGOreviewrequired"
+  ],
+  "unchanged": [
+    "tradingmath",
+    "BTCcore",
+    "SOLsignal_TPpricesweights_stopTIF",
+    "caps_A0rights_clocks",
+    "native_library",
+    "oldrawFAILEDrow"
+  ],
+  "schedule_if_reviewed": [
+    "physical2_E6scenarioE1",
+    "physical3_E2",
+    "physical4_E3",
+    "physical5_E4",
+    "physical6_E5"
+  ],
+  "budget_increase": 0,
+  "engineering_spent": 1,
+  "engineering_max": 6,
+  "prefix_spent": 0,
+  "prefix_max": 4,
+  "native_root_go": false
+}

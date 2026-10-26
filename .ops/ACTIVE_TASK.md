@@ -1,4 +1,4 @@
-2026-10-26 Europe/Moscow. CURRENT #137 four-weekreview/P1 COMPLETE; OWNER_APPROVED_SOL_STANDING_IMPLEMENTATION_ACTIVE. Goals70/50+90/50NOT_MET.
+2026-10-26 Europe/Moscow. CURRENT #137 four-weekreview/P1 COMPLETE; E1_FAILED_TARGETED_OBSERVER_CORRECTION_ACTIVE. Goals70/50+90/50NOT_MET.
 Project2 issue137OPEN/InProgress/notArchived actualreports/sol-standing-protection-20261026/PROJECT137_APPROVED_READBACK.json;136remainsCLOSED/Done/archived.
 Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; previouspublicacb4553.
 Packetreports/four-week-review-20261026/README.md→REVIEW_RU.md /UNIFIED_PLAN_RU.md /CURRENT_DECISION_RU.md. 51reportdirs/35issues;family/row/processcountsnotadditive/globaltimecostUNKNOWN.
@@ -10,9 +10,11 @@ P1b+P1_R2_COVERAGE_CHECK: actualR2source763reportSHA46a4256e...16riskselections/
 Conditionalorder:minimalSOLlifecycle+sideeffectfreepredecisionrecord→nativequalification→OFF→C0_FIXEDobservationalstrictPASS→BTC_TRIM→conditionalA0→parameters. P1_DECISION_REVIEWblockers0.
 Futurefill/profit/A0ownmarginnotpreprovedbeforeexperiment;actualadmissiononownaccount. UnsafeC0/nolawfulrights/incomparableTRIM→STOPunusedslots. G2newresidualrisk/rearmseparate/notinpatch.
 NEXT_PROTOCOL_PROPOSED_RU.md SHA faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea: proposed≤6fixtures≤48hdataeach+≤4prefix/full0 includingfailed/nativeconstructors. OwnerNEWreceipt reports/sol-standing-protection-20261026/owner-approval.json SHA6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1 APPROVED6/4. Historicalproposalbytesunchanged.
-Newapprovedscope:isolateddefaultOFFSOLlifecycle+predecisionrecord+causalTRIM;engineering0/6,prefix0/4,rootGOfalseuntilreview/freeze. OldbudgetsCLOSED/nontransferable; nofull/training/download/pilot/production/services/orders/transfers.
+Newapprovedscope:isolateddefaultOFFSOLlifecycle+predecisionrecord+causalTRIM;engineering1/6FAILED,active0,remaining5HOLD,prefix0/4,rootGOfalseuntilreview/freeze. OldbudgetsCLOSED/nontransferable; nofull/training/download/pilot/production/services/orders/transfers.
 Source7f38278257624b321c9d88d9df962505b6f5bab0 PUBLIC/unchanged; frozenMacpaired-tp-continuity-20261025/source-7f38278;canonicalVPShedge-rights-unlockworktree retained.
 F4actualOS1/PID7164/f3962d0c...SOLPROTECTION_OVERDUE_NEXT_QUOTE153/BTC1.006open/SOLSTOPpending;5STOPPED→DISPOSEDnotflat. TPengineering4FAILED/max4/prefix0unused3CLOSED.
-Preserveuserdirtycode/0a2draft/206draft/rawfailednative/immutabledata;3untrackedlocksintentionaloutsidepacket. Analysisagentscompleted;sol_standing_owner solecode/ledgerwriteractive;newengineering0/6,prefix0/4,rootGOFALSE. No cleanup/currentruntimehealthclaim.
+Preserveuserdirtycode/0a2draft/206draft/rawfailednative/immutabledata;3untrackedlocksintentionaloutsidepacket. Analysisagentscompleted;sol_standing_owner solecode/ledgerwriteractive;newengineering1/6FAILED,active0,remaining5HOLD,prefix0/4,rootGOFALSE. No cleanup/currentruntimehealthclaim.
 PUBLICVF78/coinmasterresearchreportsauthorized;closurecommitcontainscurrentstate. Exactreceipt runtime/var/research-jobs/four-week-review-20261026/FINAL_PUBLICATION.json afterpush;pushnotdeployment/CIUNKNOWN.
-NEXT:owneronefocusedcanonicalVPSproduct+fixturepass→purechecks→independentreview→immutableMacfreeze→individualrootGO; noautonext/prefix. No repeatapprovalquestion.
+NEXT:targetedpublicaccountsnapshot+logicalE6scenarioE1bindingcorrection→purechecks→independentreview→immutableMacfreeze→individualrootGO; noautonext/prefix. No repeatapprovalquestion.
+Currentfailedsource3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff; attempt2413619e-c67c-433f-851c-dce075595aee OS1 beforeSOLentry: populatedMarginAccount.to_dict InstrumentId.to_str error. BTC2open; cleanupNOTflat; SOLgatesNOT_REACHED.
+Correctionauthority E1_ROOT_CORRECTION_DISPOSITION.json/46a1feba; safe public getters+populatedaccountJSONregression+nonthrowUNKNOWN; reserveE6 may physical2/scenarioE1, uniqueFAILED_UUID, freshnamespace, independentreview/freeze/rootGO. No budgetincrease/autoretry; failedrowSHA d325f056 preserved.

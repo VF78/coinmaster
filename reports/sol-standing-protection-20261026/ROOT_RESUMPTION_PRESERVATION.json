@@ -1,0 +1,12 @@
+{
+  "status": "PRESERVATION_VERIFIED_NO_ENGINE",
+  "engineering_started": 1,
+  "active": 0,
+  "engineering_ledger_sha256": "93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c",
+  "failed_snapshot_identical": true,
+  "owner_approval_unchanged": true,
+  "protocol_unchanged": true,
+  "prefix_started": 0,
+  "prefix_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "engine_constructors": 0
+}

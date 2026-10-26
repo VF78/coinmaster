@@ -1,0 +1,42 @@
+{
+  "schema": "CM137_EXTERNAL_NATIVE_DISPATCH_RECEIPT_V1",
+  "status": "SUPERVISOR_EXIT_OBSERVED",
+  "fixture_id": "E1",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "external_dispatcher_pid": 26339,
+  "started_utc": "2026-10-26T16:15:39.808845+00:00",
+  "argv": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-3c1bf95/runtime/tests/sol_standing_supervisor.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1-root-false-gate-correction.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "--launch"
+  ],
+  "environment": {
+    "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-3c1bf95/runtime:/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-3c1bf95/runtime/tests",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "environment_mode": "FULL_REPLACEMENT_NOT_OVERLAY",
+  "root_go_receipt_sha256": "af38f7ce1f0fb13d2182dd8537672c225b4b57d57da02b00eb7b920bc2b48d35",
+  "gate_at_dispatch_sha256": "9e64045d73ccf53fdade21b0139dee9ff807f37db14d5acd0e4f82465e55aece",
+  "supervisor_pid": 26341,
+  "actual_supervisor_os_exit_code": 1,
+  "ledger_before_sha256": "29217b9acbe0fd41495edfd77c08d1ad3c43f049856946a746bd7f02412e1511",
+  "prefix_before_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO",
+  "native_retries": 0,
+  "automatic_next": false,
+  "finished_utc": "2026-10-26T16:15:41.953634+00:00",
+  "supervisor_stdout_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-3c1bf95/E1_SUPERVISOR.stdout",
+  "supervisor_stderr_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-3c1bf95/E1_SUPERVISOR.stderr",
+  "ledger_after_supervisor_sha256": "1b25b20d17101a1a7e5211053f46b8853a3f3ca46c4ebe59ca45dde4b47113ee",
+  "prefix_after_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "attempt_id": "2413619e-c67c-433f-851c-dce075595aee",
+  "native_child_pid": 26342,
+  "actual_native_child_os_exit_code": 1,
+  "engine_constructor_claimed": true,
+  "ledger_status": "FAILED",
+  "active": 0
+}

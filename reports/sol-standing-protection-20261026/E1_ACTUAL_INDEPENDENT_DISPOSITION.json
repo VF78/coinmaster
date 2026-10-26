@@ -1,0 +1,162 @@
+{
+  "schema": "CM137_E1_ACTUAL_INDEPENDENT_DISPOSITION_V1",
+  "status": "FAILED_OBSERVER_SERIALIZATION_DEFECT",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "attempt_id": "2413619e-c67c-433f-851c-dce075595aee",
+  "native_constructors": 1,
+  "virtual_failure_s": 70,
+  "cause": {
+    "classification": "READ_ONLY_OBSERVER_INTEGRATION_SNAPSHOT_BUG",
+    "product_call": "paired_prefix.py:827 type(account).to_dict(account)",
+    "installed_failure": "accounting/accounts/margin.pyx:99 InstrumentId leveragekey.to_str unavailable",
+    "monetary_formula_failure": false,
+    "STOP_public_API_failure_proven": false
+  },
+  "actual_native_state": {
+    "BTC_long": "2.000",
+    "SOL": "0",
+    "native_BTC_TP_leaves": [
+      ".425",
+      ".425",
+      "1.150"
+    ],
+    "original_second_quantity": "275.000",
+    "original_second_status": "ACCEPTED",
+    "cash_at_failure": "9999.89000000 USDT",
+    "financial_flat": false,
+    "financial_TOTAL": "NOT_QUALIFIED"
+  },
+  "actual_OS": {
+    "external_dispatcher_pid": 26339,
+    "external_dispatcher_rc": 1,
+    "supervisor_pid": 26341,
+    "supervisor_rc": 1,
+    "native_child_pid": 26342,
+    "native_child_rc": 1
+  },
+  "cleanup": {
+    "five_components_STOPPED": true,
+    "five_components_DISPOSED": true,
+    "before_dispose_BTC_open": "2.000",
+    "cleanup_is_financial_flat": false
+  },
+  "coverage": {
+    "BTC_entry_and_three_TP": "COMPONENT_OBSERVED_IN_FAILED_PROCESS",
+    "SOL_entry_STOP_ACK_fullfill": "NOT_REACHED",
+    "remaining_TP_partial_multiple_fills": "NOT_REACHED",
+    "healthy_DEFER_A0_TRIM": "NOT_REACHED",
+    "integrated_flat": "NOT_PROVEN"
+  },
+  "public_snapshot_feasibility": {
+    "status": "SOURCE_ONLY_NOT_TESTED",
+    "base_queries": [
+      "balances_total",
+      "balances_free",
+      "balances_locked",
+      "commissions",
+      "balance_total(currency)",
+      "balance_free(currency)"
+    ],
+    "margin_queries": [
+      "margin_init(instrument_id)",
+      "margin_maint(instrument_id)",
+      "margins_init",
+      "margins_maint",
+      "leverage(instrument_id)"
+    ],
+    "serialization": "bounded primitive fields, str keys, Money amount+currency, explicitUNKNOWN; noMarginAccount.to_dict/_leverages/monkeypatch"
+  },
+  "budget": {
+    "engineering_started": 1,
+    "FAILED": 1,
+    "active": 0,
+    "remaining": 5,
+    "max": 6,
+    "prefix_started": 0,
+    "prefix_max": 4,
+    "full": 0,
+    "root_go": false
+  },
+  "preclaim_ledger_bytes_equal": true,
+  "preclaim_ledger_sha256": "29217b9acbe0fd41495edfd77c08d1ad3c43f049856946a746bd7f02412e1511",
+  "repeat_gating": {
+    "within_existing_conditional_E6_reserve": true,
+    "physical_second_before_E2_permissible_by_root": true,
+    "not_literal_sixth_required": true,
+    "existing_supervisor_E6_index5_guard_requires_targeted_correction": true,
+    "required": [
+      "preservedfailedrow",
+      "oneusedreserveonly",
+      "freshsource_namespace",
+      "targetedfixreview",
+      "exactrootGO",
+      "totalphysical<=6"
+    ],
+    "GO_issued": false
+  },
+  "evidence": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/result.json",
+      "sha256": "70d51776ee307c7ac17fd83768bf1e4ce75a1aa99667784632c2324249807f0e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/PROCESS_EXIT.json",
+      "sha256": "491d9b06b38120235c4b08eeba94533bf4ce504dc86e777f2b3d0c7c296fe447"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/ENGINE_INTENT.json",
+      "sha256": "dc24df2d7125a97bfc2c40b83a3b3b9db273ed67e86e76673e1fe906a02f1e13"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/FAILURE_BEFORE_END.json",
+      "sha256": "daf3b6007fdcd10d7f22c198857cccdee62c92375adaac06a57f62c195869763"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/BEFORE_END.json",
+      "sha256": "5344079db913f54a172362e83c225019ed11b10385079d6f75a3bfbbe5a28b45"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/AFTER_END.json",
+      "sha256": "36de7be6895b88c249efeb37bd9664d3e9f73e3a81266572f27662100e851113"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/BEFORE_DISPOSE.json",
+      "sha256": "ab0b5941555620931637b8e630c15aaeabbd38f6957d6d963b4b60d8fbba2ed8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/AFTER_DISPOSE.json",
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/LEDGER_BEFORE_CLAIM.json",
+      "sha256": "29217b9acbe0fd41495edfd77c08d1ad3c43f049856946a746bd7f02412e1511"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/engineering-ledger.json",
+      "sha256": "93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/prefix-ledger.json",
+      "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/E1_EXTERNAL_OS_RECEIPT_3C1.json",
+      "sha256": "a0e18b98d74050ca50e0b96261985c9c3b685c7e41fd9ade2b14f6900baaf99e"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/E1_LEDGER_BEFORE_EXTERNAL_DISPATCH_3C1.json",
+      "sha256": "29217b9acbe0fd41495edfd77c08d1ad3c43f049856946a746bd7f02412e1511"
+    }
+  ],
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "ledger_edits": 0,
+    "gate_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/E1_ACTUAL_INDEPENDENT_DISPOSITION.md",
+  "report_sha256": "441721f602706c7d105b5653e44b0c525f62d46502674d66096e6209adce2cb3"
+}

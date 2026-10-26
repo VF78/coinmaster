@@ -1,0 +1,39 @@
+{
+  "schema": "CM137_ROOT_ENGINEERING_GO_V1",
+  "status": "GO_EXACTLY_ONE_E1_ATTEMPT_NO_AUTONEXT",
+  "utc": "2026-10-26T16:12:52.321386+00:00",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "fixture_id": "E1",
+  "authorized_new_attempts": 1,
+  "physical_before": 0,
+  "engineering_max": 6,
+  "prefix_started": 0,
+  "economic_go": false,
+  "gate_before_go_sha256": "0a7a71b25cedbbb32cbdb4c9d7a1a6482aa906880215811f01744c3eca3bba13",
+  "review_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOURCE_3C1BF95_CORRECTION_REVIEW.json",
+  "review_sha256": "5d5aeee48b401d4da85935390ec4bc394e42b4e4d234cc7ced16e3580bdfc03a",
+  "root_prepare_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1_ROOT_PREPARE_3C1.json",
+  "root_prepare_sha256": "71ddebc1ea43a44ac930a62edba830615cced2d7c4ca5582e9421add6e64e3eb",
+  "owner_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-approval.json",
+    "sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1"
+  },
+  "protocol_sha256": "faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea",
+  "pins_verified": 632,
+  "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO",
+  "argv": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-3c1bf95/runtime/tests/sol_standing_supervisor.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1-root-false-gate-correction.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "--launch"
+  ],
+  "environment": {
+    "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-3c1bf95/runtime:/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-3c1bf95/runtime/tests",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "environment_mode": "FULL_REPLACEMENT_NOT_OVERLAY",
+  "stop": "Anyfailure/unsafe/unknown/unreachedessential\u2192STOPnoretry/noE2untilrootactualdisposition;allattemptscounted. No full/pilot/production."
+}

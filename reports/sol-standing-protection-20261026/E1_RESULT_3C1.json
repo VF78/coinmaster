@@ -1,0 +1,244 @@
+{
+  "schema": "CM137_E1_NATIVE_ATTEMPT_RESULT_V1",
+  "status": "FAILED_STOP_NO_AUTORETRY",
+  "fixture_id": "E1",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "attempt_id": "2413619e-c67c-433f-851c-dce075595aee",
+  "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO",
+  "PIDs": {
+    "external_dispatcher": 26339,
+    "supervisor": 26341,
+    "native_child": 26342
+  },
+  "actual_OS_exit_codes": {
+    "external_dispatcher": 1,
+    "supervisor": 1,
+    "native_child": 1
+  },
+  "native_constructors": 1,
+  "failure": {
+    "stage": "predecision observer at first paired activation before SOL entry",
+    "virtual_ns": "70000000000",
+    "exception": "AttributeError",
+    "message": "'nautilus_trader.model.identifiers.InstrumentId' object has no attribute 'to_str'",
+    "source": "paired_prefix.py:_pair_predecision native_account=type(account).to_dict(account)",
+    "installed_api": "nautilus_trader/accounting/accounts/margin.pyx:105/99",
+    "classification": "OBSERVER_POPULATED_MARGIN_ACCOUNT_SERIALIZATION_API_FAILURE",
+    "causal_note": "Installed MarginAccount.to_dict_c serializes its populated per-instrument _leverages map with k.to_str(); actual native keys are InstrumentId without to_str. Pure observer preflight used no account, so this populated-native-account export path was untested. No source patch/retest after failure."
+  },
+  "actual_precleanup": {
+    "cash": "9999.89000000 USDT",
+    "positions": [
+      {
+        "id": "BTCUSDT-PERP.P1SIM-RegisteredProbe-000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "quantity": "2.000",
+        "side": "LONG",
+        "indexed": [
+          "O-19700101-000001-001-000-1"
+        ]
+      }
+    ],
+    "accepted_orders": [
+      {
+        "id": "O-19700101-000001-001-000-2",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "status": "ACCEPTED",
+        "quantity": "0.425",
+        "filled": "0.000",
+        "leaves": "0.425",
+        "price": "101.8",
+        "reduce_only": true,
+        "strategy": "RegisteredProbe-000",
+        "exec_algorithm_id": null,
+        "raw_position_id": null,
+        "cache_position_id": null
+      },
+      {
+        "id": "O-19700101-000001-001-000-3",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "status": "ACCEPTED",
+        "quantity": "0.425",
+        "filled": "0.000",
+        "leaves": "0.425",
+        "price": "103.5",
+        "reduce_only": true,
+        "strategy": "RegisteredProbe-000",
+        "exec_algorithm_id": null,
+        "raw_position_id": null,
+        "cache_position_id": null
+      },
+      {
+        "id": "O-19700101-000001-001-000-4",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "status": "ACCEPTED",
+        "quantity": "1.150",
+        "filled": "0.000",
+        "leaves": "1.150",
+        "price": "105.2",
+        "reduce_only": true,
+        "strategy": "RegisteredProbe-000",
+        "exec_algorithm_id": null,
+        "raw_position_id": null,
+        "cache_position_id": null
+      },
+      {
+        "id": "O-19700101-000002-001-000-5",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "side": "BUY",
+        "status": "ACCEPTED",
+        "quantity": "275.000",
+        "filled": "0.000",
+        "leaves": "275.000",
+        "price": "99.5",
+        "reduce_only": false,
+        "strategy": "RegisteredProbe-000",
+        "exec_algorithm_id": null,
+        "raw_position_id": null,
+        "cache_position_id": null
+      }
+    ],
+    "source_pair_failures": [],
+    "inflight_count": "UNKNOWN_NOT_EXPLICITLY_EXPORTED",
+    "native_flat": false
+  },
+  "lifecycle": {
+    "five_running_captured_before_end": true,
+    "five_stopped_after_end": true,
+    "five_disposed": true,
+    "stopped_disposed_is_not_flat": true
+  },
+  "gates": {
+    "natural_registered_BTC_partial_entry": "REACHED_COMPONENT_ONLY",
+    "BTC_initial_three_native_TP": "REACHED_COMPONENT_ONLY",
+    "SOL_entry": "NOT_REACHED",
+    "ordinary_SOL_TP_continuity": "NOT_REACHED",
+    "original_STOP_quantity_ACK": "NOT_REACHED",
+    "full_native_STOP_trigger_fill": "NOT_REACHED",
+    "terminal_flat_orders0_inflight0": "FAILED_NOT_FLAT",
+    "financial_candidate": "NOT_QUALIFIED"
+  },
+  "budget": {
+    "engineering_started": 1,
+    "engineering_max": 6,
+    "engineering_failed": 1,
+    "active": 0,
+    "unspent": 5,
+    "unspent_status": "HOLD_REQUIRES_NEW_ROOT_DISPOSITION",
+    "prefix_started": 0,
+    "prefix_max": 4,
+    "full": 0,
+    "root_go": false
+  },
+  "ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c"
+  },
+  "prefix_ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/prefix-ledger.json",
+    "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+  },
+  "raw_artifacts": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/AFTER_DISPOSE.json",
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575",
+      "bytes": 526
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/AFTER_END.json",
+      "sha256": "36de7be6895b88c249efeb37bd9664d3e9f73e3a81266572f27662100e851113",
+      "bytes": 43040
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/AT_0.json",
+      "sha256": "54ebaaaa1e55d6970c58e7602cb1b28c27fd64929bcf8c3c5935dbef2c89ae24",
+      "bytes": 1694
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/AT_1.json",
+      "sha256": "0449a2f84a3c4817aa5058afc659fe98f056eab9ebe9d8b52b4c5a404be8efe4",
+      "bytes": 29906
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/AT_2.json",
+      "sha256": "29218e05384371e22c5f6a1920a697f8ae0bc9785ef87d6ebd9d96263bd4a8ee",
+      "bytes": 38761
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/BEFORE_DISPOSE.json",
+      "sha256": "ab0b5941555620931637b8e630c15aaeabbd38f6957d6d963b4b60d8fbba2ed8",
+      "bytes": 43045
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/BEFORE_END.json",
+      "sha256": "5344079db913f54a172362e83c225019ed11b10385079d6f75a3bfbbe5a28b45",
+      "bytes": 41707
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/CLAIM.json",
+      "sha256": "80305139a17e35ca54aa1adb84d701fe095e2a066e5c242b44d405a729348c9a",
+      "bytes": 850
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/ENGINE_INTENT.json",
+      "sha256": "dc24df2d7125a97bfc2c40b83a3b3b9db273ed67e86e76673e1fe906a02f1e13",
+      "bytes": 164
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/FAILURE_BEFORE_END.json",
+      "sha256": "daf3b6007fdcd10d7f22c198857cccdee62c92375adaac06a57f62c195869763",
+      "bytes": 41715
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/LEDGER_BEFORE_CLAIM.json",
+      "sha256": "29217b9acbe0fd41495edfd77c08d1ad3c43f049856946a746bd7f02412e1511",
+      "bytes": 861
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/PROCESS_EXIT.json",
+      "sha256": "491d9b06b38120235c4b08eeba94533bf4ce504dc86e777f2b3d0c7c296fe447",
+      "bytes": 402
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/PROCESS_STARTED.json",
+      "sha256": "8bbf2d0efb736ff4a118fad08a4294e047c81540d0aaf9640dfb3d37eed3bc69",
+      "bytes": 138
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/config.json",
+      "sha256": "b78c57fa79bf444ca5898682450cf9d865f75a0d5eb9a0ebed129d6472e653d6",
+      "bytes": 430538
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/native-events.jsonl",
+      "sha256": "5c16a23db0834023928eadbfebe0defb445622ce304ea3b410b3bdd16ab5663f",
+      "bytes": 4228
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/result.json",
+      "sha256": "70d51776ee307c7ac17fd83768bf1e4ce75a1aa99667784632c2324249807f0e",
+      "bytes": 4453
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/stderr.log",
+      "sha256": "cfb2457e9b6fbfdceb1acf04f38f00f139daf798fa99d90dfd15e6e979eb13ad",
+      "bytes": 3092
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E1_3c1bf95_ORDINARY_SOL_ZERO/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "external_OS_receipt": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1_EXTERNAL_OS_RECEIPT_3C1.json",
+    "sha256": "a0e18b98d74050ca50e0b96261985c9c3b685c7e41fd9ade2b14f6900baaf99e"
+  },
+  "economic_go": false,
+  "source_edits_after_attempt": false,
+  "native_retries": 0,
+  "automatic_next": false
+}

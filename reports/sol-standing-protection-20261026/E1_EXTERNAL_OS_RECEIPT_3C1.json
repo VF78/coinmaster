@@ -1,0 +1,16 @@
+{
+  "schema": "CM137_EXTERNAL_DISPATCH_OS_EXIT_V1",
+  "observed_utc": "2026-10-26T16:20:57.939793+00:00",
+  "observed_by": "Codex exec_command completion followed by write_stdin session26264 completion",
+  "actual_external_dispatcher_os_exit_code": 1,
+  "external_dispatcher_pid": 26339,
+  "supervisor_pid": 26341,
+  "actual_supervisor_os_exit_code": 1,
+  "native_child_pid": 26342,
+  "actual_native_child_os_exit_code": 1,
+  "attempt_id": "2413619e-c67c-433f-851c-dce075595aee",
+  "external_dispatch_receipt": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1_EXTERNAL_DISPATCH_3C1.json",
+    "sha256": "65c245470dc4013dd7b2fc807b9645cf5dd5ccf01d2a1e5b1db0a3625c4b284a"
+  }
+}
