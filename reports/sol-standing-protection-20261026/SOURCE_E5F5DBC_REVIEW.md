@@ -1,0 +1,44 @@
+# e5f5dbc — единый focused source/driver/supervisor review
+
+**HOLD / P0=0, P1=3. До исправления одной consolidatedbatch первый nativeGO не рекомендован.** Проверен frozenMacsource `e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd` от7f38278:12 заявленных файлов, необходимые callers и новая целая fixture/supervisorцепочка. Source/тесты/engine/ledger/gate не изменялись; тесты/BacktestEngineimports/Popen/constructors0. Этотreview не являетсяnativePASS.
+
+Checkpointattestation: `SOURCE_CHECKPOINT.json` сообщает exactparent/clean/only12ownedfiles. Mac `E1-root-false-gate.json` связывает source/archive/seal/preflight/config/transport/approval/ledger/freshnamespace; root_go=false. Независимое чтение631 immutablepin подтвердило631/631 SHAсовпадений. Seal21db2f0f.../archive798c8999... и prepare0ae3ac6f... совпадают с gate; prepare engine_constructors0, sourcee5f5dbc, configsE1–E5, native_reachabilityNOT_RUN_UNKNOWN. Owner97purePASS не пересчитывалисьreviewer.
+
+## P1-1 — устаревший обязательный rejectassert гарантирует отказ E4/E5
+
+Файл `runtime/tests/run_sol_standing_fixture.py:88,119–137,242` (`integration_fixture`, casesE4/E5). `diag` инициализированNone и нигденеприсваивается; nativefixtureневызываетdeliberateinvalidmodify. `rejected` пополняетсятолькопри`self.diag`; финал требует nonemptytyped_modify_rejected, аreturnрепортируетactual_modify_rejections. НаисправномновомконтроллеренетпричиныспонтанногоnativeReject, поэтомуlegacyassertнеподдержанреальнымсценарием ирасходуетslotбезновойполезнойпроверки.
+
+**Минимальнаякоррекция:** ретаргетироватьтолькоустаревшийфинальныйrejectassert/diagnosticreport подактуальныйfaa39247coverage: E4/E5 actualACK/pending/margin/latefill/flat. Не объявлять новыйnativeModifyRejectedPASS; явноNOT_EXERCISEDвэтойветке. StockAPIinvalidtotalreject ужеимеетсохранённоеactualF4evidence1.231; нынешнийSOLcontrollerrejectfailclosed доказыватьobject/eventметодами, любойunexpectedactualreject→NO_GO. Не вставлятьunsafeexternalinvalidmodify, fakependingintent илиhandlerbypassрадиobsoleteassert. ОбязательныеE1STOPACK/fullfill,E2negativepartialSTOPиBTCdebt/healthyDEFER,E4A0actualmargin/cancelrace,E5integrationсохраняются.
+
+## P1-2 — TRIM молча reanchors qref между selection иeligible
+
+Файл `runtime/coinmaster/strategy/paired_prefix.py:927–969`. `_pair_trim_start` сохраняет selectionqref вBTCTrimCap. Наeligible `_pair_trim_quote` проверяеттольконаличие/side, читаетновуюposition.quantity иперезаписываетcaps.qref; comparison сfrozenqrefотсутствует. ОбычныйBTC TP илиlatechildfillмеждуsignal/eligibleменяетcontrolreference. C0втомже`_pair_quote` требуетheld==caps.qrefприadmission, поэтомуTRIMстановитсянесопоставимымподругомудопуску.
+
+**Коррекция:** доформулы/перезаписи подтвердитьactualparent/episode/side иactualheld==frozenselectionqref, какC0; приотличии durableTRIM_INCOMPARABLE/qualificationSTOPбезновогоtarget/переякоривания. Не перезаписыватьqref. Nativeorderroute/actualdebt/cancelACKbarrier приэтомсохраняются. Нужнаmeaningfulpureпроверкаlateincreaseиordinarydecreaseдоeligible:нетTRIMactivation/order/freshqref, сохраняетсяNO_GO иисходныйreference. Это не новыеsignal/G2rules.
+
+## P1-3 — supervisor может объявить active0/exit1 при ещё работающемchild
+
+Файл `runtime/tests/sol_standing_supervisor.py:79–98`. `rc=1` выставлендозапуска. ЛюбоеBaseExceptionвокругеPopen/processreceipt/p.wait ловится, после чегоfinallyбезпроверкиchildpoll/wait пишетFAILED/actual_process_exit_code=1/active0. ЕслиPopenуспелсоздатьchild, ошибказаписиPROCESS_STARTED или KeyboardInterruptвоp.wait оставляетchildработающим, ноledgerснимаетactiveблокировку. ЕслиPopenнебыл, ОСexit1такжененаблюдался. Это нарушаетреальныйOSauthority/одинnativeprocess и делает возможнымследующийGOприживомстаромchild.
+
+**Коррекция:** отдельнохранитьdispatcherror иnullableobservedOSrc. Positivelyknownnotspawned→FAILED_PRESPAWN/OSrcUNKNOWN(null), слотостаётсяspent; spawned→доterminalreceiptобязательныйpoll/wait иобъявленныйsafechildshutdown/reap наexception, либосохранитьactive/UNKNOWN_NEEDS_RECONCILIATIONсPIDбезразрешенияследующегоlaunch. Не писатьactive0иPROCESS_EXITдоactualexitproof. stdlibmock supervisor tests могутпокрытьPopenfailure/receiptwritefailure/interruptedwaitбезнастоящегоPopen/engine; reviewerихнезапускал.
+
+## Что приемлемо по source, безnativeclaim
+
+- DefaultOFFflags false, exactfamilyguard; BTCcore/domain/initialprices/weights/SOLsignals/corridor/A0policy не переписаны. Legacyprotection сохранён отдельнымbody; selectedSOLstandingвключаетсятолькоexplicitfamily. Feedдобавляетimmutablecoefficients/stamps кпрежнимa/flags/rowclock; C0aformulaнеизменена.
+- SOLordinaryTP уменьшаетсвоёexistingentitlement,remainingTP OIDsсохраняются; STOPquantity publicmodify сtotal=actualfilled+desiredleaves. Pendingrecordставитсядоpubliccall; UUID/nativehistory/strategy/instrument/parent/sideverified; latestACKисверкапayloadотделеныотreturn. Unconsumed0rightsневыставляютсянулевымордером; historicalterminalprotectiveOIDнеresurrect. AnySTOPfill ставитclose_solбарьердальнейшихmodifyдоIOCterminalcallback. Same-stackheld-versusrights mismatchнеfabricatesquantity, ждётреальныйcallback; strictnextmatchingboundaryостанавливаетunknowncoverage.
+- `NativeBookWitness.pre_process` вызываетread-onlySOL/BTCboundarychecksпередизменениемincomingbook. SOLboundaryизменяеттолькоauditcounters/signature/logиraiseприunknown, неpump/orders/cache. Closing/drainingотдельноотnormalexactprotection; поэтомуnegativeE2нуженnativecleanup/flat, неauditPASSпоclosingflag.
+- PredecisionafterMD/beforeA0 вызваннезависимоA0tradingflag; shadowrightsнесоздают`m[a0]`, actualmarginresultobserverUNKNOWN_NOT_EXECUTED, нетвызоваactualincreaseguardрадиобзора. Fingerprintнеиспользуетrawprice/fullnativeaccountJSON; meaningfulstatechanges+firstoff60eventсохраняются; hardcap10000failclosed, нетsilenttruncation. A0SOLpendinggateв`_a0_targets_ready` располагаетсяпослепрежнегоoff_ns/+60 вcaller, неоткладываетинициализациюclock.
+- TRIMсобственныйBTCTrimCap, explicitlySOLroutingoff/credit0; exactFractionvariance+integerisqrtfloorреализованыбезPnLengine. Nominaleligible+4/8hявноотличаетсяотнеизменённогоC0actualfirstSOLfillclock. Parentfreezeдефектвышеисключаетпокаcontrolacceptance.
+- Driverодинconstructorнаattempt, statictransport0/2sbeforeconstructor; actualprocessed0→90600s<48h, previousconfigdayguard−86400явноотмечен. E3wholeconstructorTRIM,E2fixedC0,E4/E5fixedA0; никто непререгистрируетvariant/account/domain/cacheвнутриengine. E5 A0immutablewholeconstructor, это допустимыйregisteredintegrationсsameC0lifecycle+unchangedA0rights; C0actualcausaldebt/healthyDEFER остаётсяE2P1.
+- E1содержитgenuineSTOPfullfillпослереальныхpartial/multipleTP. E2доfaultпроходитhealthyDEFER, затемnaturalP2pendingcancelTPfill/partialSTOP86540.5; разрешёntолькоPARTIAL_NATIVE_STOP, capturedunsafeBEFORErecovery, nativepublicquoteconservativeclose/flatдоend; no manualcleanup/cachewipe. Guardsневыключаются. Эти assertsестьвsource, **reachability/nativeoutcomeUNKNOWN**.
+- Supervisorправильнопроверяетчисловойcap6/approval/protocol/source/preflight/config/transport/namespace доSTARTED/Popen; durableclaimдоchildnativeimports; workerENGINE_INTENTдоединственногоconstructor. Полностьюзаменённыйscrubbedenv, no oldbudgethelpers. ОшибкаterminalaccountingизP1-3остаётсяблокером.
+
+## Два неблокирующих уточнения
+
+P2: `wave_overlay.py:2327–2332` логируетstock_margin_invoked=Trueпослевызоваexistingguardwrapperдажеприегоearlyreturnдоpolicy.margin_for. Это честноописываетвызванныйguard, ноназваниеполя/событиялегкопрочитатькакpolicy/calculationinvoked. Назватьguard_invokedлиборазделитьpolicycallsunknown/actual, не менятьmoney. ObserverполеFalse/UNKNOWNужеотделено.
+
+P2: E1assert`SOL_LATEST_MODIFY_ACK`любойSOLorderпоследовательностилогическиожидаетSTOP, ноauditgateлучшеявносвязатьACK сoriginalSTOPoid, actualnativeUpdatedeventиdesiredquantityдоfullfill. ЭтоуточнитобязательныйA STOPcoverageбезновогосценария/engine.
+
+## Единственная correctionbatch и приемка
+
+ИсправитьP1-1driverretarget,P1-2no-reanchor,P1-3actualOS/activeauthorityоднойconsolidatedbatch; P2можно включитьнерасширяяденежныйscope. Сохранитьe5checkpoint/failed-draftнеисправленными. Затем узкийdiffreviewисвязанныеpure/stdlibmockchecksисполнителя, новыйimmutableMacsource/seal/config/preflight/gatepins; никакихengineдоrootdisposition. Nativeessentialcasesнеослаблять инеобъявлять97pureдоказательствомmatching. Все6slotsещёнеиспользованывэтомreview; reviewневыдаётGO.

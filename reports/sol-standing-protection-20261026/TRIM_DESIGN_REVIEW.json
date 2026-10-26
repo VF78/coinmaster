@@ -1,0 +1,63 @@
+{
+  "schema": "CM_TRIM_DESIGN_INDEPENDENT_REVIEW_V1",
+  "status": "CONDITIONAL_DESIGN_ACCEPTANCE_TWO_PREFREEZE_CONDITIONS",
+  "P0": 0,
+  "P1": 2,
+  "scope": "Design only; no source/ledger/engine edits",
+  "math": "ACCEPT_DIMENSIONALLY_VALID_ONE_STEP_TOTAL_VARIANCE_MATCH",
+  "formula": {
+    "a": ".5*sigmaBTC/sigmaSOL",
+    "intended_SOL": "floor_SOLlot(a*qref*PB/PS)",
+    "c": "intended_SOL*PS*sigmaSOL/(qref*PB*sigmaBTC)",
+    "ratio": "sqrt(1+c*c-2*rho*c)",
+    "BTC_target": "floor_BTClot(qref*ratio)",
+    "hedge_factor_residual": "1-rho*c",
+    "orthogonal_SOL_component": "c*sqrt(1-rho*rho)"
+  },
+  "conditions": [
+    {
+      "priority": 1,
+      "id": "TRIM_CLOCK_MUST_BE_FROZEN",
+      "problem": "C0 maxhold starts actual firstSOLfill; SOL-disabled TRIM cannot copy that event without fake/future credit",
+      "recommended": "Own nominalclock=eligible_ns; deadline eligible+(B2:4h/F0:8h), boundaryriskOFF on causal BTCquote; no restore/rearm; label proxy and disclose actualpathdifference",
+      "alternative": "If exact C0 actualfillclock is mandatory, TRIM INCOMPARABLE/STOP"
+    },
+    {
+      "priority": 1,
+      "id": "E3_TRIM_MUST_PRESERVE_C0_COVERAGE",
+      "problem": "Immutable E3 TRIM proves shared BTCroute but not causal SOLrelief-to-BTCdebt or SOLprotectionintegration",
+      "recommended": "Freeze E3 TRIMmode whole constructor; E1/E2/E5 immutable C0 prove SOLcausaldebt/standingTP/healthyDEFER/flatpendingSTOP; E4 own A0rights; no midengine swap/newconstructor",
+      "stop": "If essential coverage unreached within approved map, no financialGO"
+    }
+  ],
+  "required_labels": [
+    "Ex-ante ONE-STEP TOTAL-variance matched, factorresidual separately",
+    "Intended initialSOLrisk only; not actual filled/pathriskmatch",
+    "No equality of DD/profit or causal SOL-only dollar effect"
+  ],
+  "control_constraints": [
+    "Immutable mode at strategy construction",
+    "Own absoluteBTCcap; no fakeSOLpositions/credit/PairedCapscoverage",
+    "SOL routing explicitlydisabled",
+    "NativeBTC_DEBT route and actualpositiondebt",
+    "OriginalsecondcancelACKbarrier and latefillresidual",
+    "No restore/rearm/A0release",
+    "C0money/signals/caps unchanged",
+    "INCOMPARABLE for missing/nonfinite/illegalrho/r>1; no clamp/fallback/increase"
+  ],
+  "feed_augmentation": "Immutable rho/sigmaB/sigmaS/provenance from alreadyfrozenCSV; preserve existing a/flags/rows/hash/clock; no newdata/futureC0fills",
+  "price_clock": "FrozenPB/PS at causaldecision; ownactualnativeqref snapshot; changedparent/heldbeforeeligible incomparable, no reanchor",
+  "rounding": "Use quantizedintendedSOL in c and exactrational bracket for BTCfloor; report residual from both lotroundings",
+  "native_proof": "NOT_RUN_NOT_REVIEWED",
+  "source_implementation": "NOT_REVIEWED_NOT_FROZEN",
+  "authority": "ownerreceipt6b8625d8/protocolfaa39247:6fixtures/conditional4prefix; review adds0constructors",
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "source_edits": 0,
+    "ledger_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/TRIM_DESIGN_REVIEW.md",
+  "report_sha256": "e045d582a0dcd270f4e88993f1a51f3aef7f9082baa1a75860cada683dc56238"
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "CM_STOP_PRE_GO_COVERAGE_REVIEW_V1",
+  "status": "PRE_GO_CONDITIONS_NO_NATIVE_PASS",
+  "A": {
+    "classification": "ESSENTIAL_ACTUAL_NATIVE",
+    "minimum": [
+      "Same OID STOP_MARKET quantity Updated with unchangedtrigger/IOC/reduceOnly",
+      "Actual trigger crossing and full STOP fill using real STOP OID/tradeIDs",
+      "RemainingTP and actualBTCdebt/flat integration"
+    ],
+    "fixture": "Existing E1/E2; no new constructor",
+    "current_proof": "NOT_PROVEN_BY_SOURCE_OR_95PURE"
+  },
+  "B": {
+    "classification": "CONDITIONAL_SOURCE_EXCLUSION",
+    "critical_caveat": "STOP partialfill callbacks can occur before IOCterminalcancel; match-beforequote alone does not prove unreachability",
+    "required_invariants": [
+      "Fixed trigger",
+      "Static update0",
+      "No interposed SOLmatchinginput",
+      "Any actualSTOPfill sets closing/failclosed barrier before protectionreconcile across all callback routes",
+      "No modify on triggered/partial/full/closing/cancelpending/terminalSTOP"
+    ],
+    "if_proven": "NOT_APPLICABLE_UNDER_PINNED_INVARIANTS_NOT_NATIVE_PASS",
+    "otherwise": "UNRESOLVED_CONDITIONALLY_REACHABLE_BLOCK_FIRST_GO_UNTIL_SOURCE_OR_MAP_FIXED"
+  },
+  "C": {
+    "classification": "ESSENTIAL_NEGATIVE_ACTUAL_UNLESS_COMPLETE_BOUND_PROVEN_BEFORE_GO",
+    "preferred": "Actual partial IOC STOP negativepath in existing E2 last stage, with genuine partialtrade/IOCterminal, durableNO_GO/blockedincreases and nativeconservativecleanup",
+    "alternative": "Independent complete sourcebound of all nativeheld/availableliquidity/ordering/latefill paths under pinned economic envelope",
+    "insufficient_bound": "Displayeddepth1000 and intendedsingleIOC<=1000 alone do not prove available unconsumed depth on all trigger paths",
+    "current_complete_bound": "NOT_ESTABLISHED",
+    "manual_cleanup_or_guard_waiver_allowed": false,
+    "audit": "Any observedpartialSTOP failclosed; no continuedfinancialadmission"
+  },
+  "first_GO": "BLOCK_IF_A_NOT_FROZEN_OR_B_UNRESOLVED_OR_C_UNCOVERED",
+  "native_qualification": "NONE",
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "source_edits": 0,
+    "ledger_edits": 0
+  },
+  "budget_change": 0,
+  "source_refs": [
+    "nautilus_trader/backtest/engine.pyx:5636-5659",
+    "nautilus_trader/backtest/engine.pyx:7335-7440",
+    "nautilus_trader/backtest/engine.pyx:8159-8210",
+    "nautilus_trader/trading/strategy.pyx:1568-1645",
+    "7f38278/runtime/coinmaster/strategy/paired_prefix.py:298-319"
+  ],
+  "report_path": "reports/sol-standing-protection-20261026/STOP_COVERAGE_REVIEW.md",
+  "report_sha256": "536b2e9dc09ecfa17ad70ff5fb92db10796a1e80d1bdfbbc9bd7e220baee8d8c"
+}

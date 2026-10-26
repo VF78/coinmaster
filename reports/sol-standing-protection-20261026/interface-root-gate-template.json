@@ -1,0 +1,162 @@
+{
+  "schema": "CM_SOL_STANDING_FINANCIAL_ROOT_GATE_V1",
+  "decision": "TEMPLATE_NOT_APPROVED_DO_NOT_RUN",
+  "approved_by": null,
+  "completed_result_only": true,
+  "approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-approval.json",
+    "sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1"
+  },
+  "protocol": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/NEXT_PROTOCOL_PROPOSED_RU.md",
+    "sha256": "faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea"
+  },
+  "metric": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/metric-contract.json",
+    "sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102"
+  },
+  "financial_schema": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/acceptance/financial-qualification-receipt-schema.json",
+    "sha256": "b02b624a4e60e166f033a3daa184b7ea03e10390fb472bc3e1acdf591c5425c2"
+  },
+  "variant_kind": null,
+  "label": null,
+  "source_commit": null,
+  "attempt_id": null,
+  "freeze": {
+    "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+    "sha256": null
+  },
+  "freeze_fields": {
+    "source_commit": [
+      "source_commit"
+    ],
+    "label": [
+      "variant"
+    ]
+  },
+  "identity_pins": {
+    "config": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "kwargs": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "data": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "engine": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "clock": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "source_review": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "engineering_acceptance": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    }
+  },
+  "reader_pins": {
+    "financial_reader.py": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader.py",
+      "sha256": "53767502d749d75e624a8e9ec1c8957c6444b399f288530c9ab66821e6c995e2"
+    },
+    "financial_reader_binding.py": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader_binding.py",
+      "sha256": "a68d00e0730388974bb3c52f9d2ba0a9c0a886e31440a5e2d2db14d28265b757"
+    },
+    "financial_reader_rights.py": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader_rights.py",
+      "sha256": "98dbdf12f7fdd24be13244d3c7be1e8d6148faac75caf6bf1569528a278908c7"
+    }
+  },
+  "roles": {
+    "report": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "orders": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "funding": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "coherent": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    }
+  },
+  "completion": {
+    "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+    "sha256": null
+  },
+  "supervisor": {
+    "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+    "sha256": null
+  },
+  "evidence": {
+    "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+    "sha256": null
+  },
+  "ledger_snapshot": {
+    "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+    "sha256": null
+  },
+  "current_ledger_path": null,
+  "completed_attempt_sha256": null,
+  "previous_financial_qualifications": [],
+  "trim_provenance": {
+    "status": null,
+    "future_C0_SOL_fills_online": null,
+    "frozen_formula": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "source_review": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "actual_clock_quantity_proof": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    }
+  },
+  "output_path": null,
+  "instructions": "Root copies/fills/pins a completed result only, then independently approves exact file SHA. Template carries no native or financial qualification authority.",
+  "phase": null,
+  "predecision": {
+    "proof": {
+      "path": "REQUIRED_ACTUAL_ABSOLUTE_PATH",
+      "sha256": null
+    },
+    "producer_json_path": [
+      "paired_prefix_audit",
+      "predecision_records"
+    ],
+    "record_stage": "after_md_reconcile_before_a0_check",
+    "field_map": {
+      "original_second_budget": null,
+      "actual_second_filled_ever": null,
+      "original_second_remaining": null,
+      "risk_off_plus_60_clock": null,
+      "actual_quote_and_cross": null,
+      "native_debt": null,
+      "native_cap": null,
+      "remaining_TP_and_ordinary_exit": null,
+      "pending_ACK_and_reservations": null,
+      "native_current_margin": null
+    },
+    "scope": "Required C0_FIXED/A0_FIXED; exact producer field paths remain UNFROZEN until source checkpoint. Root evidence must pin same proof and predecision_coverage=PASS. Honest uninvoked margin UNKNOWN is not incomplete coverage."
+  }
+}

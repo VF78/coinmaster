@@ -26,6 +26,6 @@ VPS development root: `/root/.openclaw/workspace/coinmaster/coinmaster` on `root
 - Signed asset funding may be UNKNOWN; unallocated cash bridge is not funding. Never substitute zero, mock results, another venue or favorable OHLC order.
 - BASE fees only: Bybit maker0.020%/taker0.055%; HL maker0.015%/taker0.045%. Native fill classification; market/IOC is not relabeled maker. No0.1% fixture fee in economics.
 
-- #137 four-weekreview/plan/P1 complete. NEW directownerapproval6fixtures+conditional4prefix under protocolfaa39247; actualreceipt6b8625d8 in reports/sol-standing-protection-20261026. OneisolateddefaultOFFSOLlifecycle+predecisionrecord+causalTRIMimplementationactive; nativeonlyafterpure/review/freeze/rootGO, economicsafterfullengineering+eachfinancialGO. Old#131-136budgetsclosed;G2/full/pilot/productionexcluded. Currentcounts/source/authorityonlyACTIVE/actualreceipt.
+- #137 four-weekreview/plan/P1 complete. NEW directownerapproval6fixtures+conditional4prefix under protocolfaa39247; actualreceipt6b8625d8 in reports/sol-standing-protection-20261026. CurrentpacketHOLDaftertwoengineeringfailures;max7amendmentonlyPROPOSED; nativeonlyafterpure/review/freeze/rootGO, economicsafterfullengineering+eachfinancialGO. Old#131-136budgetsclosed;G2/full/pilot/productionexcluded. Currentcounts/source/authorityonlyACTIVE/actualreceipt.
 
 Historical dated documents/reports are evidence only; their old queues, runtime claims and permissions do not override these files.

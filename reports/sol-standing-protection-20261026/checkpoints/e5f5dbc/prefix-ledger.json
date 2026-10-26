@@ -1,0 +1,20 @@
+{
+  "schema": "CM_SOL_STANDING_BUDGET_LEDGER_V1",
+  "task": "CM-SOL-STANDING-20261026",
+  "status": "OWNER_APPROVED_AWAITING_FROZEN_REVIEW_ROOT_GO",
+  "kind": "PHYSICAL_PREFIX_POPEN_INCLUDING_PREENGINE_FAILURES",
+  "physical_max": 4,
+  "physical_started": 0,
+  "active": 0,
+  "authorized_remaining": 4,
+  "attempts": [],
+  "owner_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-approval.json",
+    "sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1"
+  },
+  "protocol_sha256": "faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "old_slots_transferred": 0,
+  "full_training_downloads_pilot_production": 0,
+  "root_go": false
+}

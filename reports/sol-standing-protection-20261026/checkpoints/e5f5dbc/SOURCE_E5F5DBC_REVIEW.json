@@ -1,0 +1,81 @@
+{
+  "schema": "CM137_E5F5DBC_FOCUSED_SOURCE_DRIVER_SUPERVISOR_REVIEW_V1",
+  "status": "HOLD_ONE_CONSOLIDATED_CORRECTION_BATCH",
+  "source_commit": "e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "P0": 0,
+  "P1": 3,
+  "P2": 2,
+  "findings": [
+    {
+      "priority": 1,
+      "id": "OBSOLETE_REJECT_GATE_UNREACHABLE",
+      "file": "runtime/tests/run_sol_standing_fixture.py",
+      "lines": "88,119-137,242",
+      "cause": "diag never assigned; no diagnosticmodify; clean E4/E5 cannot satisfy mandatorynativeReject assert",
+      "correction": "Retarget obsoleteassert/report to approvednewcoverage; oldstockAPIactualF4receipt reused explicitly; no unsafeexternalmodify/fakepending/corebypass; new nativeRejectNOT_EXERCISED"
+    },
+    {
+      "priority": 1,
+      "id": "TRIM_REFERENCE_REANCHORED_AT_ELIGIBLE",
+      "file": "runtime/coinmaster/strategy/paired_prefix.py",
+      "lines": "927-969",
+      "cause": "Reads eligibleposition qref and overwritescaps.qref without checking frozen selectionquantity; unlike C0admission",
+      "correction": "Check parent/side/quantity equal frozen selectionqref; changedinventory INCOMPARABLE/NO_GO without target/order/reanchor"
+    },
+    {
+      "priority": 1,
+      "id": "SUPERVISOR_FALSE_TERMINAL_AUTHORITY_ON_EXCEPTION",
+      "file": "runtime/tests/sol_standing_supervisor.py",
+      "lines": "79-98",
+      "cause": "Default rc1 finalized as actualexit and active0 after Popen/write/wait exception although child may stillrun or neverexisted",
+      "correction": "Nullable observedOSrc; positivelynotspawned separate; startedchild poll/wait/shutdownreap or activeUNKNOWNreconciliation; neveractive0beforeactualexitproof"
+    },
+    {
+      "priority": 2,
+      "id": "GUARD_VERSUS_POLICY_MARGIN_INVOCATION_LABEL",
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "lines": "2327-2332",
+      "correction": "Clarify invokedexistingguard versus actuallycalledpolicymargin_for; observerUNKNOWN stays independent"
+    },
+    {
+      "priority": 2,
+      "id": "E1_ACK_LINK_TO_ORIGINAL_STOP_OID",
+      "file": "runtime/tests/run_sol_standing_fixture.py",
+      "lines": "292-302",
+      "correction": "Assert actualACK/eventpayload specificallyoriginalSTOPoid beforefullfill"
+    }
+  ],
+  "reviewed_scope": [
+    "12 checkpointownedfiles/diffs",
+    "Necessary A0rights/standingTPcallers",
+    "Whole newdriver/supervisor",
+    "E1rootfalse/sourcepreflight/configbindings"
+  ],
+  "bindings": {
+    "gate_path": "reports/sol-standing-protection-20261026/E1-root-false-gate.json",
+    "gate_sha256": "4b96b178fb3dc5c3c23b1dcf5ec263147feebd0e0b8f1a6c0834b4fa2ddcba74",
+    "root_go": false,
+    "immutable_pins_read": 631,
+    "pin_hash_matches": 631,
+    "source_seal_sha256": "21db2f0fc6554c6a2027fcdf9972e61dcb6f0e4d788e1c8d420d7f2f415b2029",
+    "archive_sha256": "798c89997315233b955a63663d20a604c14d99dde503cde0ed98778461ffd9a0",
+    "preflight_sha256": "0ae3ac6f9b080992bb8d6226b7d9736fd5328b87273873cd5905b2fa32f8f271",
+    "preflight_engine_constructors": 0,
+    "native_reachability": "NOT_RUN_UNKNOWN"
+  },
+  "native_coverage_status": "SOURCE_ASSERTIONS_PRESENT_NOT_ACTUAL_PROOF",
+  "root_go_recommended": false,
+  "changes_authorized_by_review": "None; root dispositions one correctionbatch",
+  "actions": {
+    "tests_run": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "ledger_edits": 0,
+    "gate_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/SOURCE_E5F5DBC_REVIEW.md",
+  "report_sha256": "f0554c435f0557303863c97231c82532e5afa316a63e3ca6939a6eae3f02b45b"
+}

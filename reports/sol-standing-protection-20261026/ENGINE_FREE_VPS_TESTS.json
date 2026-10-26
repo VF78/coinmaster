@@ -1,0 +1,9 @@
+{
+  "source_commit": "97db9659199d9d4655336826d007cccf1883982e",
+  "actual_exit_code": 0,
+  "stdout": "122 passed in 4.45s",
+  "py_compile": "PASS",
+  "engine_constructors_added": 0,
+  "native_attempts_added": 0,
+  "populated_real_native_account_and_E6_identity": true
+}

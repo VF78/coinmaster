@@ -1,0 +1,20 @@
+{
+  "status": "ACTUAL_GITHUB_READBACK",
+  "utc": "2026-10-26T17:18:05Z",
+  "issue": 137,
+  "issue_state": "OPEN",
+  "project": 2,
+  "project_item": "PVTI_lAHOBIUvJs4BPJNjzhDm9GA",
+  "project_status": "In Progress",
+  "isArchived": false,
+  "engineering_started": 2,
+  "engineering_failed": 2,
+  "active": 0,
+  "engineering_max": 6,
+  "unspent_hold": 4,
+  "prefix_started": 0,
+  "prefix_max": 4,
+  "native_root_go": false,
+  "body_update_process_exit_code": 0,
+  "project_readback_process_exit_code": 0
+}

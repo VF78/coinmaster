@@ -1,0 +1,11 @@
+{
+  "status": "READONLY_FIXED_COEFFICIENT_FEASIBILITY_DIAGNOSTIC_NOT_NATIVE_OR_RETURN",
+  "data_sha256": "5a02a0bc2555404261780cb4979e398494c70194e99317d8db1020fb026b8698",
+  "prefix_rows": 815,
+  "finite_positive_sigma_legal_rho": 815,
+  "invalid_coefficient_rows": [],
+  "rho_min": "0.57793696014653273",
+  "rho_max": "0.84559182245311848",
+  "rho_below_quarter_rows": [],
+  "inference": "WithUNROUNDEDc=.5 totalvariance<=BTC iff rho>=.25; intendedSOLfloor c<=.5 but actualqref/rounding andcausaleligiblemap mustbevalidated. Not nativeadmission/profit/controlPASS. No windowselection/newdata."
+}

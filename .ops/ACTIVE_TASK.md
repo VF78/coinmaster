@@ -1,20 +1,19 @@
-2026-10-26 Europe/Moscow. CURRENT #137 four-weekreview/P1 COMPLETE; E1_FAILED_TARGETED_OBSERVER_CORRECTION_ACTIVE. Goals70/50+90/50NOT_MET.
-Project2 issue137OPEN/InProgress/notArchived actualreports/sol-standing-protection-20261026/PROJECT137_APPROVED_READBACK.json;136remainsCLOSED/Done/archived.
-Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; previouspublicacb4553.
-Packetreports/four-week-review-20261026/README.md→REVIEW_RU.md /UNIFIED_PLAN_RU.md /CURRENT_DECISION_RU.md. 51reportdirs/35issues;family/row/processcountsnotadditive/globaltimecostUNKNOWN.
-P0review0P0/0P1+2docP2corrected;P0_ROOT_ACCEPTANCE +P0_REVIEWED_PLAN_SNAPSHOT proveanalysis/planBEFOREreadonlyP1. PLAN_REVISION_AFTER_P1currentplanhash.
-OriginalS0TOTAL6077107.23887483/DD66.2569%;70%floor4256975.067212381/90%5470396.514987347. ExplicitS06482334.93differentexecutioncontrol, no goalrebase.
-E4ret92.6573/DD57.5854;C1ret72.1697/DD51.8032historicalonly/notcurrentreal3TPtruehedgequalified;C1childexitUNKNOWN/wrapper1. AI0economiclift/KronosBunassessed.
-P1a sourcefeasiblecandidate:preserveSOLremainingTP OIDs/rights;selectivepublicmodifySTOPqty/noblanketcancel. NativeACK/racesUNKNOWN. P1_SOL_LIFECYCLE_CONTRACT/.json.
-P1b+P1_R2_COVERAGE_CHECK: actualR2source763reportSHA46a4256e...16riskselections/15OFF/19parents;4canceledsecond .541/.405/.285/.418. EmptyflagOFFa0_rights≠zeroopportunities;joined+60predecisionstate missing.
-Conditionalorder:minimalSOLlifecycle+sideeffectfreepredecisionrecord→nativequalification→OFF→C0_FIXEDobservationalstrictPASS→BTC_TRIM→conditionalA0→parameters. P1_DECISION_REVIEWblockers0.
-Futurefill/profit/A0ownmarginnotpreprovedbeforeexperiment;actualadmissiononownaccount. UnsafeC0/nolawfulrights/incomparableTRIM→STOPunusedslots. G2newresidualrisk/rearmseparate/notinpatch.
-NEXT_PROTOCOL_PROPOSED_RU.md SHA faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea: proposed≤6fixtures≤48hdataeach+≤4prefix/full0 includingfailed/nativeconstructors. OwnerNEWreceipt reports/sol-standing-protection-20261026/owner-approval.json SHA6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1 APPROVED6/4. Historicalproposalbytesunchanged.
-Newapprovedscope:isolateddefaultOFFSOLlifecycle+predecisionrecord+causalTRIM;engineering1/6FAILED,active0,remaining5HOLD,prefix0/4,rootGOfalseuntilreview/freeze. OldbudgetsCLOSED/nontransferable; nofull/training/download/pilot/production/services/orders/transfers.
-Source7f38278257624b321c9d88d9df962505b6f5bab0 PUBLIC/unchanged; frozenMacpaired-tp-continuity-20261025/source-7f38278;canonicalVPShedge-rights-unlockworktree retained.
-F4actualOS1/PID7164/f3962d0c...SOLPROTECTION_OVERDUE_NEXT_QUOTE153/BTC1.006open/SOLSTOPpending;5STOPPED→DISPOSEDnotflat. TPengineering4FAILED/max4/prefix0unused3CLOSED.
-Preserveuserdirtycode/0a2draft/206draft/rawfailednative/immutabledata;3untrackedlocksintentionaloutsidepacket. Analysisagentscompleted;sol_standing_owner solecode/ledgerwriteractive;newengineering1/6FAILED,active0,remaining5HOLD,prefix0/4,rootGOFALSE. No cleanup/currentruntimehealthclaim.
-PUBLICVF78/coinmasterresearchreportsauthorized;closurecommitcontainscurrentstate. Exactreceipt runtime/var/research-jobs/four-week-review-20261026/FINAL_PUBLICATION.json afterpush;pushnotdeployment/CIUNKNOWN.
-NEXT:targetedpublicaccountsnapshot+logicalE6scenarioE1bindingcorrection→purechecks→independentreview→immutableMacfreeze→individualrootGO; noautonext/prefix. No repeatapprovalquestion.
-Currentfailedsource3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff; attempt2413619e-c67c-433f-851c-dce075595aee OS1 beforeSOLentry: populatedMarginAccount.to_dict InstrumentId.to_str error. BTC2open; cleanupNOTflat; SOLgatesNOT_REACHED.
-Correctionauthority E1_ROOT_CORRECTION_DISPOSITION.json/46a1feba; safe public getters+populatedaccountJSONregression+nonthrowUNKNOWN; reserveE6 may physical2/scenarioE1, uniqueFAILED_UUID, freshnamespace, independentreview/freeze/rootGO. No budgetincrease/autoretry; failedrowSHA d325f056 preserved.
+2026-10-26 Europe/Moscow. CURRENT #137: ENGINEERING HOLD; two FAILED, reserve used. Goals70/50 and90/50 NOT_MET.
+Project #2 issue137 OPEN/In Progress/notArchived; issue136 remains CLOSED/Done/archived. Update/readback current E6 disposition before end.
+Manager: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021; published preservation998c223609dbcaf58ab9791d00b5d0a4ba3f64cc.
+Four-week review/plan/P1 DONE: reports/four-week-review-20261026/README.md -> REVIEW_RU.md / UNIFIED_PLAN_RU.md / CURRENT_DECISION_RU.md. No qualified70/50 or90/50 strategy; prefix is not full/OOS.
+Original S0 TOTAL6077107.23887483/DD66.2569%; experimental70% TOTAL4256975.067212381; final90%5470396.514987347. No goal rebase to BTC-only or explicit-child S0.
+Current packet: reports/sol-standing-protection-20261026. Direct owner approval6fixtures+conditional4prefix: owner-approval.json SHA6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1.
+Approved protocol: reports/four-week-review-20261026/NEXT_PROTOCOL_PROPOSED_RU.md SHAfaa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea. Preserve bytes; old budgets closed/nontransferable.
+Current source97db9659199d9d4655336826d007cccf1883982e, parent3c1bf95, base7f382782; isolated canonical VPS sol-standing-protection-20261026 CLEAN/defaultOFF/published97db965; old dirty0a2/206 drafts preserved.
+Mac runtime/var/research-jobs/sol-standing-protection-20261026/source-97db965/runtime immutable. VPS+Mac122 purePASS; independent narrowreview0P0/P1;637pins verified; real populated MarginAccount JSON fixed without trading changes.
+Physical1 E1 UUID2413619e-c67c-433f-851c-dce075595aee FAILED/source3c1/OS1 beforeSOLentry: Account.to_dict InstrumentId.to_str. BTC2 open; SOLgatesNOT_REACHED. Firstrowcanonicald325f056 unchanged.
+Physical2 E6 scenarioE1 UUIDda9ba9ec-72aa-4961-8f6e-c7bf2b41d985 FAILED/source97db/child30706 supervisor30705 external30704 allOS1. E6_ACTUAL_INDEPENDENT_DISPOSITION.json/.md.
+E6 observed SOL remainingTP preservation/multiplefills, sameSTOP3UpdatedACK/full1.1@102, BTCdebt.2/.7/1.1; positions0 but3BTC TPs ACCEPTED .233/.233/.634 and pairedowner notterminal. Actual terminalorders0 FAIL; cleanup5STOPPED->DISPOSED is not ordersflat.
+Cause source-supported: inherited _tp_reconcile held0 returns NATIVE_FLAT before ownedBTCstandingTP cancellation/drain. No fixture assertion waiver or manual-order cleanup.
+Engineering2/6 FAILED, active0; unused4 HOLD/noGO, reserved repeat consumed. Prefix0/4 conditional, full0. Another E1 plus E2-E5 needs5 slots, cannot finish original coverage under cap6.
+Final ledger SHA42af6234b3847f25a9de552e04bdf06c3484a78845e873ca55c206bc2207bb32; E6_FAILED_LEDGER_BEFORE_DISPOSITION snapshot, raw failed namespaces/sourcecopies immutable. Native/economic rootGO FALSE; old consumed gates cannot authorize next attempt.
+NEXT: amendment max7 proposal and nonapplieddiff ready; BTC_FLAT_DRAIN_AMEND7_DESIGN_REVIEW0P0/P1. Ask exact owner scope/budget amendment after publication. No new code/native now; no automatic repeat or use of unspent slots.
+Conditional economics after complete engineering PASS: OFF -> C0_FIXED strict financialTP/state -> BTC_TRIM -> lawful A0. ExpectedOFF20911.13611487, frozenmetricca815cbe/schema b02b624a; future actual A0 margin/fill/profit not preproved.
+Preserve BTCcore/LEGACY_Q/TPpricesweights/SOLsignals/caps/A0rights/clocks. G2newriskcontract/rearm excluded. PUBLIC VF78/coinmaster researchsource/tests/reports already approved; publication is not deployment/CI qualification.
+Full/training/download/pilot/production/deploy/services/credentials/externalorders/transfers0. Preserve user dirty code/rawfailures/immutabledata and intentional locks. Follow RESET before end; never delete unique evidence.

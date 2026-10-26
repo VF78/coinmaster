@@ -1,0 +1,40 @@
+# E6/scenarioE1 actual — независимое решение physical2
+
+**FAILED / PRODUCT_INTEGRATION_TERMINAL_ORDER_DRAIN / NO_ENGINEERING_PASS.** Source97db9659199d9d4655336826d007cccf1883982e; UUIDda9ba9ec-72aa-4961-8f6e-c7bf2b41d985; logicalE6/scenarioE1/repeat_of2413619e-c67c-433f-851c-dce075595aee. Одинconstructor. Engine/tests/imports/Popen/source/ledger/gateизмененияreviewer0.
+
+## Actualcause
+
+`result.json` показываетAssertionError `run_sol_standing_fixture.py:321`: обязательныйфинальныйpositions0/orders0/inflight0/pairNone. Неупалsnapshot: completeaccountcapture=True, captureerrorsнеотмечены. НеупалSOLprotectionguard:paired.failuresпуст, strictSOLboundaryunknown0. Наvirtual140 **positions_open=[]**, но3BTCstandingTPосталисьACCEPTED сleaves.233/.233/.634; openpairedowner=True. Следовательноorders0/pairreleaseнепройдены, иfixtureкорректноотклонилпроцесс. Это не поводснятьassert/признатьflatчерезdispose.
+
+Source-supportedmechanism внеизменённомstandingBTCroute: `market_redesign._md_reconcile:177–179` сразуdelegateв`standing_tp._tp_reconcile`; егоheld0ветвь `standing_tp.py:153–154` вызываетsplitstop/coverageNATIVE_FLAT ивозвращается **безcancelstandingBTCorders**. ПослеactualBTC_DEBTзакрытиядо0 этотrouteнедренируеттриTP. NativecacheassociationsуэтихstandaloneNETTINGTPнет; ожидатьauto-cancel черезrawpositionfieldнельзя. Parentreleaseправильнотребуетorders0ипоэтомуостаётсязаблокирован. Этоinheritedproduct/integrationterminalownershipgap, неошибкаAPI STOPquantity иненеправильноеfixtureожидание. Полныйпроектновогоfixвэтотnarrowreviewневходит; нельзяисправитьручнымcachelink/fixturecancelчтобызамаскироватьproductgap.
+
+## Достигнутыеactualкомпоненты, неfullPASS
+
+- ActualSOLentry2@100, первоначальные3TP+IOCSTOP. PartialTP0.2@99 затемsameadvanceTP0.3@99+TP1.4@98; оставшиесяSOLTP OIDsсохранилисьдоотменыпослеSTOP.
+- SameoriginalSTOPoid `O-19700101-000210-001-000-10`:3actuallatestmodifyACKна135/136/136s, lastactualUpdatedUUID1197b81d-a9b7-4818-8869-730707320008. DriverдоSTOPfillпрошёлassertoriginalOID/nativehistory/typed+generic/payload=filled+actualheld.
+- ActualSTOPfullfill1.1@102s137/TAKERfee.06171000USDT. STOPfullyFILLED,remainingSOLTPcanceled; noSOLresurrectionvisible. ЭтоactualSTOPAPIcomponent, неE1terminalPASS.
+- ActualBTC_DEBTfills.200@100(t136),.700@100(t137),1.100@100(t138) закрылиBTC2до0. OriginalSECOND275canceled. ПриclosingвсёещёстоялиBTC TP.233/.233/.634; сумма1.100 — snapshotпоследнегоположительногоBTCresidual, которыйполностьюзакрылпоследнийdebtfill.
+- AccountpredecisioncapturecompleteTrue,8records/10checks/2coalesced. SOLboundary63checks/17strict/0unknown. ЭтикомпонентынепокрываютE2partialSTOPnegative/healthyDEFER,E3TRIM,E4A0/E5registeredfullintegration.
+
+Cash9998.69055000USDTнаобрывепроцесса — неqualifiedterminalTOTAL/ROI. Всеtradesnative, ноfullaccounting/flatqualificationнепройдены.
+
+## Flat иcleanup
+
+FAILURE_BEFORE_END/BEFORE_END и BEFORE_DISPOSE: ниBTCниSOLpositionнет, **но3nativeBTCordersACCEPTED** иpairowneropen. Поэтомувернаяформулировка **positionsflat, ordersNOTflat**, финансовыйterminalflatгейтFAIL. AFTER_END5STOPPED, AFTER_DISPOSE5DISPOSED; cleanupнеустраняеттотфактинеявляетсяterminalorderproof. Pairfailures=[] неозначаетcandidatePASS: harnessпоймалнезавершённыйnativeorderdrain.
+
+Nativechild30706actualOS1/supervisor30705actualOS1подтвержденыPROCESS_EXIT/externaldispatchreceipt; externaldispatcher30704OS1сообщёнrootизactualtoolcompletion (отдельногоexternalOSreceiptприэтомчтениинебыло). СохраненыточныеlogicalE6/scenarioE1/repeatidentityвworker/config/result/receipt; никакихvariantсвапов.
+
+## Бюджет/план: reserveиспользован
+
+Canonicalledger: **2started/2FAILED/0active/remaining4/max6/rootfalse**; E1rowсохранён, E6rowreserved_repeat=True. Prefix0/4,full0. СтарыйE1canonicalSHA d325f056cc06dc913a85ce7e60d8e33e5ed088f3e15316b6699c4fdbc966397eнеизменён; E6LEDGER_BEFORE_CLAIM SHA93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c, совпадаетсfailedsnapshotbeforecorrection.
+
+E6conditionalreserve**исчерпан**, неновыйнеиспользованныйслот. E1обязательныйполныйactualPASSнет. ПрипрежнейкартеосталисьE2–E5(четыресценария) иодновременнотребуетсяисправленныйполныйE1: это **пятьattemptпотребностейприfourremaining**, бездополнительногорезерва. НельзяавтоматическипереименоватьfailedE6вPASS, потратитьE2slotнаретрай, сжатьобязательныегейтыпослефактаилиполучитьещё+1иззакрытыхбюджетов.
+
+СледующийGO **HOLDдоrootadjudication**: narrowreadonlyrootcause/fixproposalможноподготовить, но новыйproductfix/map/nativeшагтребуетконкретногорешениявграницахвладельца. Еслиrootрассматриваетновуюкартусlegitimateintegrationcoverage, еёнадозафиксироватьдозапуска; данныйreviewнесчитаетеёутверждённойинеувеличиваетbudget. EconomicsблокируетсяполнымengineeringFAIL. Остаток4неразрешаетавтоматическипродолжать.
+
+## Прочитанныеevidence
+
+Namespace `runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT`:result,PROCESS_EXIT,ENGINE_INTENT,FAILURE_BEFORE_END,BEFORE_END,AFTER_END,BEFORE_DISPOSE,AFTER_DISPOSE,LEDGER_BEFORE_CLAIM; толькокороткийstderr-tail. Packet:E6_EXTERNAL_DISPATCH_97D.json,currentengineering/prefixledgers. Не читалисьполныестарыеstreams/архивы; никакойновыйengine/тестневызывался. EvidenceSHA—впарномJSON.
+
+
+Факт-binding дополнен после rootreceipt: E6_EXTERNAL_OS_RECEIPT_97D.json SHAef9d04833bd0bb39e1f9169db1a3ca5f314618125972bdbe43f390f245faf8e3 теперь подтверждает toolsession61703/external30704OS1, supervisor30705OS1, child30706OS1 длятого жеUUID/logicalE6/scenarioE1. FinalengineeringledgerSHA42af6234b3847f25a9de552e04bdf06c3484a78845e873ca55c206bc2207bb32. Это только дополнение сохранённого actualOSфакта; FAILED/coverage/budgetdisposition не меняются.

@@ -1,0 +1,31 @@
+# BTC flat drain / cap7 — узкий design review
+
+**DESIGN_READY_FOR_OWNER_DECISION / P0=0,P1=0.** Только дизайн, не implementation/nativePASS. Рассмотрены proposalSHA53f6d79a2c1be4164e9f298b9f8c58d5246d74f0e064708b2942d8914a189b37 и non-appliedpseudodiffSHAa252494c314445d34e9475c4cd877f8b7c9d3404659a26d535a7fd3a9bcc2f75 относительноустановленнойactual97/E6причины. Никакого повторногоfullsourceaudit, code/tests/engine/Popen/source/gate/ledgeredits.
+
+## Дизайн соответствует actualgap
+
+ActualBTC/SOLpositions0, но3ownedBTC TPACCEPTED. Standingheld0earlyreturnобходитcancellation; pairreleaseправильнонепройден. Предложениеисправляетименноterminalownedorderdrain, аневыдаётcleanupDISPOSEDзаflat. DefaultOFF/exactpairedR2_A0_V1/B2_F0/standinggateсохраняетscope. Внеэтойветкисуществующийflatbehaviorнерасширяется; standingTRIMвexactapprovedfamilyвходитвdrain, безSOLcredit.
+
+- Сначала actualnativeBTC0, затем проверкасобственныхBTCENTRY/inflight иimmutableparentbindings. Нетерминальный/unknownincreaseнепозволяетосвободитьparent илисчитатьlatestTPgenerationокончательной. Helperнеотменяетentries; существующийcore `_split_stop('BTC_FLAT')` остаётсявсвоёмпрежнемместе. Егоentrycancelbehaviorнепереноситьвновыйhelper.
+- Nativeownershipstrategy/instrument/side/reduceOnly/parent/intent/historyдолжныбытьподтвержденыдокоманды. Missing/foreign/ambiguousнеразрешаетcancelчужогоOIDилиflatPASS. ТолькоliveownedstandingTP, publiccancelодинраз; PENDING_CANCELждётреальныйterminalACK, pendingmodifyсериализуетсябезподдельногоACK. Globalforeignopenorderтакжеблокируетorders0.
+- Bindings/generation/actualfilledиremainingrightsсохраняютсядореальныхnativecallbacks. CanceledTPнеconsumedfill; FIRST/SECONDbudgetневозвращается; replacement/нулевыеTP/ручнойclose/cachelinksзапрещены.
+- LateENTRYfillдоACKможетвосстановитьactualBTC; этоотменяетflatclaim ивозвращаетсуществующийprotection/debtowner. Из-заотменённых/отменяемыхстарыхTPтребуемаяcoverageможетоказатьсяневосстановимой: proposalчестносохраняетстарыйNO_GO, непредлагаетwaiver/grace/reanchor/newrights. Genericпослеtypedterminalидётпореальнойimmutablehistory, анепоудалённомуintent.
+- Releaseтолькоприactualpositions/orders/inflight/commands/debt0 иknownterminalACK; temporaryheld0/отправленныйcancelнедостаточны. Existingboundary/deadline/latencyнеизменны. ПоэтомуstageDRAINING — realpendingstate, неослаблениеgate.
+
+Exactresearchgate должен опираться на existingresearch_btc_standing_tp + qualifiedresearch_a0_family=R2_A0_V1/research_paired_prefix=B2_F0/currentownedparent, **не** на research_a0_original_second=True и **не** на research_sol_standing_protection=True. Поэтому C0(А0false), TRIM(SOLstandingfalse/A0false) и A0 все входят в одну standingBTCdrainветку. FreshOFF имеетstandingfalse/pairedNone и сохраняет прежнийpath. Новаяпроверка не переносит `_split_stop` и не добавляет отменуoriginalENTRY. Это согласуется с proposal qualifiedpairedfamily; иныхmanager/OMS/subsystem не требуется.
+
+Это минимальный lawfulproductscope безновогоOMS/core/signal/TPpricesweights/TIF/G2. Rootможетпредставитьегонаконкретноесогласование; reviewнеутверждаетбудущийpatch.
+
+## Приёмка и E7identity
+
+Engine-freemapсодержитобязательныеobjects/events:positiveownedcancelonce, pendingcancelwait, missing/foreignownerblock, pendingENTRY/latefill, lateUpdated/reject/typed-genericUUID иoldparenthistory. Этиtestsневыполненыreviewer; read-onlyproposalнеравенcoveragePASS. Вреализациипроверить,чтоheld0неочищаетbindingsдоactualACK, аstatepositiveпослеlatefillнепопадаетвterminalbranch. Wholecaseassertorders/inflight/commands/debt0остаётся.
+
+Нативнаяmapрешаетточныйдефицит:2FAILEDужеspent; послеproposed+1total7 остаётся5attempts дляE7scenarioE1retry иE2–E5. E7толькопервыйphysical3 сrepeat_ofFAILED_E6 UUIDda9ba9ec-72aa-4961-8f6e-c7bf2b41d985, expected_before2; E6остаётсяиспользованным. ДалееE2/E3/E4/E5physical4–7, каждыйсвойrootGO, statictransport/frozenconfig≤48h. НельзясделатьещёE7/E6/reserveилискрытыйmatchingconstructor. Любойновыйfailure/unreachedessential→STOP;5компонентовнеподменяютwholecasePASS.
+
+ДоSTARTED/Popenнуженновыйdirectowneramendmentreceipt, связывающийold6b8625/faa392 иproposalSHA, totalmax7, обаFAILED UUID иimmutablecanonicalrows. Supervisor/worker/config/result/ledger/externalOSreceiptдолжнысохранятьE7+E1+repeatUUID иразличатьphysicalindex/logicalfixture/scenario. Нельзяпростоизменитьhardcoded6на7илипереписатьoldapproval. Нужныtargetedimplementationreview/newsourcefreeze/pins/actualprepare, анеавтоматическоеGOизэтогодизайна.
+
+Conditionalprefix4/full0остаютсяпрежними; economicsтолькопослеполнойengineeringsafety/financialqualification. Публикацияилиowneramendmentнеозначаютdeploy/pilot/livepermission.
+
+## Решение
+
+НовыхP0/P1в**этомдизайне**необнаружено; concrete+1/max7proposalможнопередатьвладельцу. **Доегоявногосогласияcurrentmax6/spent2/active0/reserveconsumed/rootfalse, код/nativeSTOP.** РезультатнеобещаетпроходимостьpendingENTRYlatefill/ACKdrainиреальногоE7; этообязательныебудущиегейты, любыеUNKNOWNнеобъявляютсяPASS.

@@ -1,0 +1,136 @@
+{
+  "status": "PREPARED_NOT_ROOT_APPROVED_NOT_RUN_ON_ECONOMIC_STREAM",
+  "old_adapter_sha256": "83691ed4dabd890b86d2160d692b123d30e1a5d328e55acc8dc392ae684490b2",
+  "new_adapter_sha256": "53767502d749d75e624a8e9ec1c8957c6444b399f288530c9ab66821e6c995e2",
+  "old_metric_sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+  "old_schema_sha256": "b02b624a4e60e166f033a3daa184b7ea03e10390fb472bc3e1acdf591c5425c2",
+  "rights_module_byte_identical": true,
+  "blocks": [
+    {
+      "block": "parent_endpoints",
+      "byte_equivalent": true,
+      "old_sha256": "7841e5379c75279c11e01299e16a4818a9d0c89c0b4143ec3733f9208e960ba8",
+      "new_sha256": "7841e5379c75279c11e01299e16a4818a9d0c89c0b4143ec3733f9208e960ba8",
+      "bytes": 518
+    },
+    {
+      "block": "fractional_tail",
+      "byte_equivalent": true,
+      "old_sha256": "d44b0ab3fc9b706f6452380666e9adf03de74a0fc0e6e1ce8ae6213a83ea4eb3",
+      "new_sha256": "d44b0ab3fc9b706f6452380666e9adf03de74a0fc0e6e1ce8ae6213a83ea4eb3",
+      "bytes": 160
+    },
+    {
+      "block": "daily_and_parent_returns",
+      "byte_equivalent": true,
+      "old_sha256": "d4599f476c538bc4c415a08538b89335e28d11b9d4b5c5ca62f61879288fdcfd",
+      "new_sha256": "d4599f476c538bc4c415a08538b89335e28d11b9d4b5c5ca62f61879288fdcfd",
+      "bytes": 536
+    },
+    {
+      "block": "funding_rows_and_reconciliation",
+      "byte_equivalent": true,
+      "old_sha256": "524d90038dd178788e8b92ed77224bd8461ff4b059f0014a8c25b5827ab3a256",
+      "new_sha256": "524d90038dd178788e8b92ed77224bd8461ff4b059f0014a8c25b5827ab3a256",
+      "bytes": 428
+    },
+    {
+      "block": "financial_output",
+      "byte_equivalent": true,
+      "old_sha256": "6ed68abc75a9b4027edef30a60bf24a6c66d9d3f1054defa7d17b3b5f9d5b92f",
+      "new_sha256": "6ed68abc75a9b4027edef30a60bf24a6c66d9d3f1054defa7d17b3b5f9d5b92f",
+      "bytes": 2627
+    },
+    {
+      "block": "mandatory_accounting_checks",
+      "byte_equivalent": true,
+      "old_sha256": "4b237fa6e8957cfbddbff07cf493ffcb9a649ae11c2684feeea39419298e6287",
+      "new_sha256": "4b237fa6e8957cfbddbff07cf493ffcb9a649ae11c2684feeea39419298e6287",
+      "bytes": 1954
+    },
+    {
+      "block": "coherent_stream_cash_DD_epochs",
+      "equivalence": "EXACT except explicit frozen input path expression",
+      "old_sha256": "c86f23170cabf5ebe8f61d9566bbe929d087dbcb3d789300398af197d012246f",
+      "new_sha256": "6c693f0bbeb65b36a655474fe289535f28036dca8d36af705847bca5e400c498"
+    }
+  ],
+  "semantic_changes": [
+    "CLI accepts only root gate path+hash, no arbitrary expected source/label/path options",
+    "Explicit root-pinned four role map replaces sibling layout assumptions",
+    "Newsource/labels/freeze/priorUUID receipt immutable entry bindings; fixedapproval/protocol/metric/schema pins",
+    "BTC_TRIM commonaccounting unchanged plus root-pinned causal comparator provenance; no new formula/performance math",
+    "No financial stream processed and no engine imported or created"
+  ],
+  "required_producer_fields": [
+    "Old JSON monetary/observer/streaming/fill_audit/orders/funding/rights fields unchanged",
+    "physical_prefix_attempt: attempt_id/variant/source_commit/ledger; same keys in supervisor+completion+ledger entry",
+    "Completion exact four roles paths+sha; coherent raw stream and funding_cash SQLite same schema",
+    "Root gate source/label/kind/freezemapping/identitypins/config/kwargs/data/engine/clock/source review/engineering receipt",
+    "Predecision+margin+rights proof exact paths pinned in root evidence",
+    "TRIM exante formula/source review/actual causal clock-quantity proof before qualification"
+  ],
+  "missing_final_bindings": [
+    "Newsourcecommit,actualexactlabels,rolepaths and producerfreeze unknown untilsourceownercheckpoint",
+    "Rootfinancial-read gate notissued; interfaceblueprint is not authority",
+    "TRIMformula/provenance pendingowner; schema changes requiring new funding math\u2192STOP/root clarification"
+  ],
+  "tool_files": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader.py",
+      "sha256": "53767502d749d75e624a8e9ec1c8957c6444b399f288530c9ab66821e6c995e2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader_binding.py",
+      "sha256": "a68d00e0730388974bb3c52f9d2ba0a9c0a886e31440a5e2d2db14d28265b757"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader_rights.py",
+      "sha256": "98dbdf12f7fdd24be13244d3c7be1e8d6148faac75caf6bf1569528a278908c7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader_test_bindings.py",
+      "sha256": "33162d20fafe87a7dcb12dc1be8a5a3a5d02ae7f7149cad41870071ff7f34670"
+    }
+  ],
+  "metadata_tests": {
+    "status": "PASS",
+    "count": 13,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 reports/sol-standing-protection-20261026/financial_reader_test_bindings.py",
+    "scope": "Pure metadata/pins/AST only. OldOFF accepted metadata/C0TPFAILreceipt; no rawstream/simulatedmoney/resultfabrication. Added predecision completeness/identity, independent flagOFF, honest marginFalseUNKNOWN, complete0opportunity vs missing coverage.",
+    "native_engine_imports": 0,
+    "new_financial_calculations": 0
+  },
+  "frozen_core_asserts_active": "Binding rejects optimizedPython; inherited assertions retained.",
+  "funding_interface": {
+    "schema_preserved": "funding_cash(event_id,instrument_id,ts_event,before_total,after_total,signed_delta)",
+    "open_mode": "SQLite mode=ro&immutable=1",
+    "new_math": false,
+    "if_new_layout_or_math_required": "STOP; ask root for interface/gate review before any qualification. No invented columns/funding/rounding."
+  },
+  "predecision_scope_gate": {
+    "kinds": [
+      "C0_FIXED",
+      "A0_FIXED"
+    ],
+    "status": "INTERFACE_ONLY_ADDITION_CORE_MONEY_UNCHANGED",
+    "root_pinned_proof_schema": "CM_SOL_STANDING_PREDECISION_COVERAGE_V1",
+    "required_root_status": "ROOT_ACCEPTED_COMPLETE_OBSERVATIONAL_COVERAGE",
+    "required_root_evidence": [
+      "predecision_coverage=PASS",
+      "predecision_proof exact same path+SHA as gate.predecision.proof",
+      "Proof included in proof_artifacts"
+    ],
+    "identity": [
+      "exact reportSHA/source/attemptUUID/label/phase",
+      "producerJSONpath/recordstage frozen explicitly",
+      "complete expected/observed causal IDs for riskselections/OFF/candidateparents",
+      "actual timestamps/counts/missingreasons and capturedfactmap"
+    ],
+    "producer": "paired_prefix_audit.predecision_records; after_md_reconcile_before_a0_check expected, actualfieldmapnotfrozenuntilcheckpoint",
+    "independent_A0_flag": true,
+    "margin": "stock_margin_invokedFalse/resultUNKNOWN recordedhonestly doesnotreject. CandidateownA0guardsatdispatch; nofuturefill/margin/profitpreproof.",
+    "zero_opportunity": "Completecoverage acceptsknown0structuralrights\u2192NO_STRUCTURAL_OPPORTUNITY; meaningfulriskselections0\u2192NOT_TESTED; missing/UNKNOWNcoverage rejects. NoautomaticA0slotreuse.",
+    "output_scope": "Commonfinancialmetricoutput unchanged; rootgate hash pins observationalproof/measurementstatus. Thisgate never promotes candidateperformance/meaningfulopportunity."
+  }
+}

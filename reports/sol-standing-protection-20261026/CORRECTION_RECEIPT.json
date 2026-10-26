@@ -1,0 +1,51 @@
+{
+  "schema": "CM137_ONE_CONSOLIDATED_CORRECTION_RECEIPT_V1",
+  "status": "READY_FOR_NARROW_CORRECTION_REVIEW_NOT_NATIVE_GO",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "parent": "e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "review_input": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOURCE_E5F5DBC_REVIEW.json",
+    "sha256": "16b6480b604f3c68a50e4f9755fdc9e6443d14cb1a1b6a8794257a87a2390e54"
+  },
+  "addressed": [
+    "OBSOLETE_REJECT_GATE_UNREACHABLE",
+    "TRIM_REFERENCE_REANCHORED_AT_ELIGIBLE",
+    "SUPERVISOR_FALSE_TERMINAL_AUTHORITY_ON_EXCEPTION",
+    "GUARD_VERSUS_POLICY_MARGIN_INVOCATION_LABEL",
+    "E1_ACK_LINK_TO_ORIGINAL_STOP_OID"
+  ],
+  "details": {
+    "reject": "Removed dead diagnostic/mandatory rejected assertion. E4/E5 currentnativeRejectNOT_EXERCISED; explicitly pinned historical actualF4 negativecomponent only.",
+    "trim": "Actual eligible parent/side/quantity must equal own frozen selectioncaps.qref. No reassignment; mismatch raisesINCOMPARABLE before sizing/target/cap/nativeorder.",
+    "supervisor": "Durable budget claim precedes namespace/Popen. Nullable observedchildOSrc; failedexecpositivelyNOT_SPAWNED. Started ownchild shutdown+reap on supervisor fault; unknownobservation retainsactive1/no finishedUTC. Supervisor return distinct from observed child exit.",
+    "supervisor_actual_exit": "actual_supervisor_exit_code remains null until external dispatcher/tool observes OS exit; record that external receipt before root accepts run. Code does not invent own post-exit OS authority.",
+    "labels": "Actual guard event stock_guard_invoked=true, policy_margin_for_invoked=UNKNOWN_NOT_INSTRUMENTED. Predecision prospective guardfalse; read-only current-fact margin_for attempts separately explicit.",
+    "E1": "Actual latestACK UUID/payload must identify originalSTOPOID, current totalfilled+held and timestamp before fullSTOPfill."
+  },
+  "verification": {
+    "VPS": "110/110 PASS,5.35s,py_compilePASS",
+    "Mac": "110/110 PASS,2.71s,originalstanding10groups/config/API PASS",
+    "native_version": "1.231.0",
+    "native_engine_constructors": 0,
+    "matching_tests": 0,
+    "stdlib_only_child_exception_tests": true,
+    "real_native_ledgers_untouched": true
+  },
+  "preserved": {
+    "e5_snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc",
+    "e5_archive": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-e5f5dbc.tar.gz",
+    "e5_old_gate_pins_verified": 631,
+    "e5_source_readonly": true
+  },
+  "gate": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1-root-false-gate-correction.json",
+    "sha256": "0a7a71b25cedbbb32cbdb4c9d7a1a6482aa906880215811f01744c3eca3bba13",
+    "immutable_pins": 632,
+    "root_go": false
+  },
+  "root_go": false,
+  "engineering": "0/6",
+  "prefix": "0/4",
+  "full": 0
+}

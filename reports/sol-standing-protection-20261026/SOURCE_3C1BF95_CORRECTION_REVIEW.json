@@ -1,0 +1,70 @@
+{
+  "schema": "CM137_3C1BF95_TARGETED_CORRECTION_REVIEW_V1",
+  "status": "LIMITED_SOURCE_AND_PREGO_BINDINGS_PASS",
+  "P0": 0,
+  "P1": 0,
+  "P2": 0,
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "correction_parent": "e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd",
+  "research_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "prior_findings_closed": [
+    "OBSOLETE_REJECT_GATE_UNREACHABLE",
+    "TRIM_REFERENCE_REANCHORED_AT_ELIGIBLE",
+    "SUPERVISOR_FALSE_TERMINAL_AUTHORITY_ON_EXCEPTION",
+    "GUARD_VERSUS_POLICY_MARGIN_INVOCATION_LABEL",
+    "E1_ACK_LINK_TO_ORIGINAL_STOP_OID"
+  ],
+  "closure_scope": "Targeted seven-file correctiondiff only; previous focusedreview reused, no broadreaudit",
+  "bindings": {
+    "gate_path": "reports/sol-standing-protection-20261026/E1-root-false-gate-correction.json",
+    "gate_sha256": "0a7a71b25cedbbb32cbdb4c9d7a1a6482aa906880215811f01744c3eca3bba13",
+    "root_go": false,
+    "fixture_id": "E1",
+    "expected_before": 0,
+    "namespace_fresh": true,
+    "immutable_pin_count": 632,
+    "immutable_pin_matches": 632,
+    "source_seal_sha256": "49dea703863c08f5a332758a596d1de8ecd849b447e83741f2cf329f2ec8d0fa",
+    "preflight_sha256": "1c1532831fec33a886dc47048cc210c9909d16bd725a52c4b1b0fd7b19f7898c",
+    "archive_sha256": "c01ee558f6cdc5f24e3b205048fd93a53edbd830f29c13a5734d99f32a0dbe2f",
+    "owner_approval_sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1",
+    "E1_config_kwargs_transport": "ALL_MATCH",
+    "transport": {
+      "base": 0,
+      "insert": 0,
+      "update": 0,
+      "cancel": 0
+    }
+  },
+  "saved_engine_free_tests": {
+    "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+    "actual_process_exit_code": 0,
+    "passed": 110,
+    "seconds": 2.71,
+    "engine_constructors": 0,
+    "reviewer_reran": false
+  },
+  "historical_reject_reuse": {
+    "status": "PRIOR_STOCK_API_COMPONENT_ONLY_NOT_CURRENT_NATIVE_PASS",
+    "path": "reports/tp-continuity-20261025/F4-physical4-cause.json",
+    "sha256": "9b761ca0dc58e83bdbf356b903682451e031b4ac7477aa9a67b0812867fe5ad0",
+    "verified": true
+  },
+  "prepare_receipt_limit": "PacketPREPARE_RECEIPT.json remains e5 snapshot; reviewer does not claim it as new3c1prepareproof. RootreportednewprepareOS0mustretainitsownexactreceiptbeforeGO. Newpinnedpreflight/configbindingsverified.",
+  "engineering_physical": 0,
+  "prefix_physical": 0,
+  "full": 0,
+  "native_coverage": "NOT_RUN_UNKNOWN",
+  "next_step_authority": "EXACT_ONE_E1_REQUIRES_SEPARATE_ROOT_GO; noautoE2/economics",
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/SOURCE_3C1BF95_CORRECTION_REVIEW.md",
+  "report_sha256": "43d5c2bc1382250dc08544e52f7f9efcea0a44362a8dae39423d54c2f3e4a6d5"
+}

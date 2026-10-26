@@ -1,0 +1,22 @@
+{
+  "status": "PRE_GO_CONCEPT_ACCEPTED_SOURCE_AND_MAP_REVIEW_STILL_REQUIRED",
+  "utc": "2026-10-26T15:16:00.249707+00:00",
+  "review_sha256": "091ac911c9d43a1d474c9a34378912c1ae0536101e43822c4ad69d06fe8f70ee",
+  "A": "ActualsameOIDSTOPqtyUpdated+realtrigger/fullSTOPfillrequiredE1",
+  "B": "SourceexclusiononlywithANYStopfillclosingbarrier_fixedtrigger_update0_nointerposedSOLbook;notuniversalnativePASS",
+  "C": "E2lastnaturalP2negativecase:OFF86540_cancel2s_TPpendingfill86540.25_partialSTOP86540.5_IOCterminalcancel_actualnativeconservativeclosure_flatorders0beforeend",
+  "expected_fault_only": [
+    "PARTIAL_NATIVE_STOP"
+  ],
+  "all_other_faults": "FAIL",
+  "requirements": [
+    "durablepre_recoveryfaultsnapshot",
+    "noincreases_noSTOPresurrection_nomodifyafterANYStopfill",
+    "noManualFixtureClose_noTIFclockmodelguardwaiver",
+    "actualnativeBTC_DEBT_SOL_CLOSEonly_existingconservativeroute",
+    "pairfinancialqualificationneverderivedfromnegativefixture",
+    "anysuchfaultduringeconomicC0_A0_NO_GO"
+  ],
+  "native_go": false,
+  "budget_increase": 0
+}

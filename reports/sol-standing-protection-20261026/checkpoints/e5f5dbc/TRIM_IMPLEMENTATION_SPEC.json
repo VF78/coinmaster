@@ -1,0 +1,16 @@
+{
+  "schema":"CM137_TRIM_PREREGISTERED_DESIGN_V1",
+  "status":"ROOT_CONDITIONAL_DESIGN_ACCEPTANCE_BEFORE_TRIM_CODE",
+  "task":"CM-SOL-STANDING-20261026",
+  "scope":"One default-off causal BTC-only comparator, no SOL order, no synthetic exposure credit, no second matcher/PnL engine",
+  "source_base":"7f38278257624b321c9d88d9df962505b6f5bab0",
+  "causal_inputs":{"qref":"actual native BTC held at first eligible BTC quote, original parent/side required","coefficient_row":"unchanged frozen PairedSignal row; available_ns <= signal/eligible; d1_last_return_end_ns <= decision_ns - day","prices":"PB/PS are frozen causal decision closes, same existing intendedSOL formula; actual eligible BBO/mark facts reported separately","sigma_btc":"existing sigma_btc_d1_30 CSV value","sigma_sol":"existing sigma_sol_d1_30 CSV value","rho":"existing rho_d1_30 CSV value"},
+  "formula":{"intended_sol":"floor_SOLlot((.5*sigmaB/sigmaS)*qref*PB/PS)","c":"intended_sol*PS*sigmaS/(qref*PB*sigmaB)","factor_loading":"1-rho*c","orthogonal_risk":"c*sqrt(1-rho^2)","total_risk_ratio":"sqrt(1+c^2-2*rho*c)","target_btc":"floor_BTC_lot(qref*total_risk_ratio), exact Fraction square and integer isqrt lattice floor","native_reduction":"qref-target_btc through existing BTC_DEBT stock public route"},
+  "comparability":"Matches modeled one-step total variance of INTENDED activation hedge, not future actual C0 partial SOL fills, full path variance/DD or clock equality. Native lot downward rounding may only reduce modeled TRIM exposure; report rounding residual.",
+  "clock_table":{"B2":{"existing_source":"paired_prefix._pair_fill deadline","hours":4,"C0_anchor_unchanged":"first actual SOL fill","TRIM_anchor":"eligible_ns"},"F0":{"existing_source":"paired_prefix._pair_fill deadline","hours":8,"C0_anchor_unchanged":"first actual SOL fill","TRIM_anchor":"eligible_ns"}},
+  "state":"Own absolute BTC cap, never fake SOL held/credit or PairedCaps hedge capacity. Freeze target once eligible; native partial reduction leaves actual debt, no capacity from submission. Keep original second cancellation barrier. RiskOFF nominal deadline/causal boundary never restores cap. Ordinary BTC reductions can only lower cap. No restore/rearm/new child/A0 or SOL orders in TRIM.",
+  "invalid":"Missing/nonfinite/nonpositive sigma/price, rho outside[0,1], future coefficients, target risk ratio>1 or invalid lattice => INCOMPARABLE/STOP; no increase/negative trim/search.",
+  "coverage":{"E1":"fixed C0 zero; actual SOL ordinary partial/multiple TP and native BTC debt","E2":"fixed C0 stress; P1 BTC standing/debt/healthyDEFER/flat pending STOP, natural P2 actual SOL cancelpending latefill+drain","E3":"fixed TRIM entire constructor; original natural registered parent, own absolute cap, same-OID BTC3TP, real BTC_DEBT, ordinary partial/terminal flat","E4":"fixed A0 stress; original right, native cancelpending latefill, own-account stale/fresh stock guard, once-only release","E5":"fixed A0 zero entire constructor; registered two-parent integration, core C0 path, own-account A0 release, final flat/accounting/lifecycle"},
+  "native_status":"NOT_RUN, constructors0; no variant swap within engine, no extra constructor",
+  "root_go":false
+}

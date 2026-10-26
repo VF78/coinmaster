@@ -1,0 +1,12 @@
+{
+  "schema": "CM137_MAC_ENGINE_FREE_TESTS_V1",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "actual_process_exit_code": 0,
+  "stdout": "........................................................................ [ 65%]\n......................................                                   [100%]\n110 passed in 2.71s\n",
+  "stderr": "",
+  "plugin_autoload": false,
+  "source_readonly": true,
+  "stdlib_child_exception_tests": true,
+  "engine_constructors": 0,
+  "root_go": false
+}

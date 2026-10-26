@@ -1,0 +1,158 @@
+{
+  "schema": "CM137_E6_ACTUAL_INDEPENDENT_DISPOSITION_V1",
+  "status": "FAILED_PRODUCT_INTEGRATION_TERMINAL_ORDER_DRAIN",
+  "source_commit": "97db9659199d9d4655336826d007cccf1883982e",
+  "attempt_id": "da9ba9ec-72aa-4961-8f6e-c7bf2b41d985",
+  "fixture_id": "E6",
+  "scenario": "E1",
+  "repeat_of": "2413619e-c67c-433f-851c-dce075595aee",
+  "native_constructors": 1,
+  "actual_failure": {
+    "where": "run_sol_standing_fixture.py:321 terminalpositions/orders/inflight/pairassert",
+    "virtual_s": 140,
+    "positions_open": 0,
+    "BTC_TP_orders_open": 3,
+    "leaves": [
+      ".233",
+      ".233",
+      ".634"
+    ],
+    "order_status": "ACCEPTED",
+    "paired_owner_open": true,
+    "paired_failures": [],
+    "cause_source": "standing_tp._tp_reconcile held0 branch returns NATIVE_FLAT without cancelingstandingBTCorders; pairedBTC_DEBTactualflat hits this inheritedintegrationpath",
+    "observer_snapshot_bug_repeated": false,
+    "fixture_guard_waiver_allowed": false
+  },
+  "coverage_components": {
+    "SOL_entry": "ACTUAL2",
+    "ordinary_partial_multipleTP": "ACTUAL .2/.3/.4",
+    "sameOID_STOP_latest_ACKs": 3,
+    "STOP_fullfill": "ACTUAL1.1@102",
+    "BTC_debt_fills": [
+      ".2",
+      ".7",
+      "1.1"
+    ],
+    "snapshot_capture_complete": true,
+    "SOL_boundary_checks": 63,
+    "SOL_strict_checks": 17,
+    "SOL_unknown": 0,
+    "full_E1PASS": false,
+    "E2_E3_E4_E5": "NOT_REACHED"
+  },
+  "flat": {
+    "BTC_SOL_positions": true,
+    "orders_zero": false,
+    "paired_terminal": false,
+    "five_STOPPED": true,
+    "five_DISPOSED": true,
+    "financial_terminal_flat": false,
+    "cash_snapshot": "9998.69055000 USDT",
+    "TOTAL": "NOT_QUALIFIED"
+  },
+  "actual_OS": {
+    "child_pid": 30706,
+    "child_rc_saved": 1,
+    "supervisor_pid": 30705,
+    "supervisor_rc_saved": 1,
+    "external_pid": 30704,
+    "external_rc_root_observed": 1,
+    "external_separate_OSreceipt_seen": true,
+    "external_rc_saved": 1
+  },
+  "budget": {
+    "started": 2,
+    "FAILED": 2,
+    "active": 0,
+    "remaining": 4,
+    "max": 6,
+    "reserve_E6_consumed": true,
+    "prefix_started": 0,
+    "prefix_max": 4,
+    "full": 0,
+    "root_go": false,
+    "unchanged_map_remaining_scenarios": [
+      "E2",
+      "E3",
+      "E4",
+      "E5"
+    ],
+    "E1_full_actual_PASS_still_required": true,
+    "another_E1_plus_remaining_needs": 5,
+    "unchanged_plan_completion_with_remaining4": "NOT_FEASIBLE_WITHOUT_ROOT_OWNER_SCOPE_ADJUDICATION",
+    "new_budget_issued": false
+  },
+  "preservation": {
+    "old_E1_canonical_sha256": "d325f056cc06dc913a85ce7e60d8e33e5ed088f3e15316b6699c4fdbc966397e",
+    "E6_preclaim_ledger_sha256": "93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c"
+  },
+  "next": "HOLD_NO_FURTHER_GO_UNTIL_ROOT_ADJUDICATION; nofailure relabel/automaticretry/oldslottransfer",
+  "evidence": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/result.json",
+      "sha256": "14dc8c0abb315eaa94b36910dfcd40449c40be682be80798d12bf6e21199b062"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/PROCESS_EXIT.json",
+      "sha256": "f3f334a7f20e7520bbd09b2d7146e5473dc3a22372a87dc70327b4b760b7277d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/ENGINE_INTENT.json",
+      "sha256": "718fa6461da43250cf648491fb50061134662befd773067a46f571974224ce92"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/FAILURE_BEFORE_END.json",
+      "sha256": "1d22b172834f996f1a103af4032e746bc32bf48013c67b66ac87b7c6f30a393d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/BEFORE_END.json",
+      "sha256": "e1cfe4b2b80eefa6148553eb9532ed928b0cdc8e75917155fa3794959710abfd"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/AFTER_END.json",
+      "sha256": "9ba0623ec8ded3f5dab9a4a8a63dd2691e407d45bb8697b1eb7705f4c248062d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/BEFORE_DISPOSE.json",
+      "sha256": "1fdf5fb4dcded89e06005797da0de04b9f894e3dd6ad9f3d903442afb55cf2b9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/AFTER_DISPOSE.json",
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/LEDGER_BEFORE_CLAIM.json",
+      "sha256": "93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/engineering-ledger.json",
+      "sha256": "42af6234b3847f25a9de552e04bdf06c3484a78845e873ca55c206bc2207bb32"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/prefix-ledger.json",
+      "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/E6_EXTERNAL_DISPATCH_97D.json",
+      "sha256": "0b56670db688ddc17e262fb99c3b9015695086c7707e004033084477a43f7699"
+    }
+  ],
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "ledger_edits": 0,
+    "gate_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/E6_ACTUAL_INDEPENDENT_DISPOSITION.md",
+  "report_sha256": "f6a5444daceeb9c7ddfd9c2633d41656bf2a4af85cf518e560d6fe7ab57fa75a",
+  "external_receipt_binding": {
+    "path": "reports/sol-standing-protection-20261026/E6_EXTERNAL_OS_RECEIPT_97D.json",
+    "sha256": "ef9d04833bd0bb39e1f9169db1a3ca5f314618125972bdbe43f390f245faf8e3",
+    "tool_session": 61703,
+    "final_ledger_sha256": "42af6234b3847f25a9de552e04bdf06c3484a78845e873ca55c206bc2207bb32"
+  }
+}

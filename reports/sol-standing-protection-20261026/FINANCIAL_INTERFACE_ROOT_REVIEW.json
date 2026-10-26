@@ -1,0 +1,22 @@
+{
+  "status": "LIMITED_INTERFACE_REVIEW_CORE_EQUIVALENT_FINAL_BINDINGS_PENDING",
+  "utc": "2026-10-26T15:33:14.134217+00:00",
+  "proof_sha256": "b752811d54d54deed56e52ddd1052e9f0f5d6ddf4777ddab785b3514b21cb3e4",
+  "reader_sha256": "53767502d749d75e624a8e9ec1c8957c6444b399f288530c9ab66821e6c995e2",
+  "binding_sha256": "a68d00e0730388974bb3c52f9d2ba0a9c0a886e31440a5e2d2db14d28265b757",
+  "rights_sha256": "98dbdf12f7fdd24be13244d3c7be1e8d6148faac75caf6bf1569528a278908c7",
+  "scope": "CLI_source_role_path_rootgate_rebind_only;6moneyblocksbyteidentical;coherentloopfilepathonly",
+  "frozen_metric": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+  "native_or_economic_run": 0,
+  "required_before_use": [
+    "finalsource_exactlabels_rolemanifest_freeze_actualCOMPLETEDUUIDartifactpins",
+    "rootapprovedfinancialreadgatewithsource_config_data_engine_clock_engineeringreceipt",
+    "TRIMcausalformula_designreview_actualclockquantityproof",
+    "noaccounting_or_funding_schema_change"
+  ],
+  "not_accepted_yet": "NoactualnewfinancialresultorrootreadGO;templatesreject;prospectiveownA0marginnotC0observerPASS",
+  "additional_review": "C0/A0rootpinnedpredecisionproof mandatory; exactphase/report/source/UUID/factmap/universes/timestamps;marginUNKNOWNnotcounterfactualPASS; nofutureprofitpreproof; originalmoneycoreunchanged",
+  "metadata_tests_reported": 13,
+  "reader_source_changed": false,
+  "future_root_task": "Generatepredecisioncoverageproofbyreadingactualboundproducerrecords+causalselection/OFFuniverses;notmetadataassertionsalone"
+}

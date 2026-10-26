@@ -1,0 +1,15 @@
+{
+  "status": "SOURCE_PUSH_EXACT_REMOTE_VERIFIED",
+  "repository": "https://github.com/VF78/coinmaster",
+  "public": true,
+  "source_commit": "97db9659199d9d4655336826d007cccf1883982e",
+  "remote_branch": "codex/hedge-rights-unlock-20261025",
+  "previous_remote": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "fast_forward": true,
+  "push_os_exit": 0,
+  "api_ref_readback_exit": 0,
+  "bundle_sha256": "d0cfa73514c35d50b12a19f677a4c746e2909717fdbf43ec57ba6f4d03d3a525",
+  "deployment": false,
+  "economic_qualification": false,
+  "ci": "UNKNOWN"
+}

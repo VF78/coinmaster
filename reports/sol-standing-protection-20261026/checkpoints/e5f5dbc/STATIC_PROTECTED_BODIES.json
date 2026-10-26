@@ -1,0 +1,31 @@
+{
+  "schema": "CM137_FINAL_FROZEN_STATIC_PROOF_V1",
+  "source_commit": "e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "protected_bodies": {
+    "sol_prices": true,
+    "sol_allocations": true,
+    "PairedCaps": true,
+    "legacy_SOL_protect": true,
+    "native_stock_margin_guard": true,
+    "native_financial_runner_body": true
+  },
+  "unchanged_files": {
+    "coinmaster/strategy/a0_rights.py": {
+      "byte_identical": true,
+      "sha256": "ed7b688cf4eac1ab1cd3427c42ccaa7d2bf5fcfdd4850c300feef3d8b26ca243"
+    },
+    "coinmaster/strategy/standing_tp.py": {
+      "byte_identical": true,
+      "sha256": "2ccac380fb3b319719165be5178a91ab658dae26834eda55c1d5099e0f04a3c4"
+    },
+    "coinmaster/domain/wave_overlay.py": {
+      "byte_identical": true,
+      "sha256": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239"
+    }
+  },
+  "only12allowed_changed": true,
+  "whole_unrelated_tree_identical": "SOURCE_CHECKPOINT.json git diff exact path proof",
+  "engine_constructors": 0,
+  "root_go": false
+}

@@ -1,0 +1,19 @@
+{
+  "status": "DESIGN_CONDITIONAL_ACCEPTANCE_NOT_NATIVE_GO",
+  "utc": "2026-10-26T14:53:01.359916+00:00",
+  "review": "TRIM_DESIGN_REVIEW.json",
+  "review_sha256": "5a0150370ab06f76858fd729c1ebe730cba7795883f4544c5dbcf7a424a00cf6",
+  "math": "one_step_intended_total_variance_only",
+  "conditions_before_code_or_freeze": [
+    "own_nominaldeadline_eligible_plus_existing_H_kind_explicitmap;C0firstSOLfillunchanged",
+    "recordfactor_orthogonal_totalrisk_andintended_vsactualcoverage",
+    "immutablevariantwholeconstructor_E1C0_E2C0_E3TRIM_E4A0_E5A0integration;no_variant_swap",
+    "C0SOLcausaldebt_healthyDEFER_flatpendingSTOPcoverageexplicitE1E2E5",
+    "TRIMownabsoluteBTCcap_noSOLpositionscredit;existingstockBTCdebtorderroute",
+    "frozenfeedcoefsavailablecausally_existinga_andclocksunchanged",
+    "invalid_or_ratio_above1_INCOMPARABLE_STOP"
+  ],
+  "E6": "oneconditionalcorrectedrepeat_only_not_newvariant",
+  "scope": "Ownerapprovedprotocolfaa39247 causalriskmatchedTRIMcontrol;G2C0riskcontractunchanged",
+  "native_go": false
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "CM137_ENGINE_FREE_VPS_TESTS_V1",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "actual_exit_code": 0,
+  "stdout": "110 passed in 5.35s",
+  "py_compile": "PASS",
+  "engine_constructors": 0,
+  "native_dispatches": 0,
+  "real_ledgers_untouched": true,
+  "root_go": false,
+  "pure_preflight_setup_failures_preserved": [
+    "Initial source SSH patch timed out; new tests ran against unpatched e5 and failed12/110 before actual batch applied",
+    "One fault-injection unit cleanup used intentionally patched poll; cleanup corrected to OS kill of own stdlib PID; 109/110 before final110 PASS"
+  ]
+}

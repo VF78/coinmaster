@@ -1,0 +1,46 @@
+PSEUDODIFF / DESIGN REPORT ONLY — NOT APPLIED, NOT EXECUTED, NOT A FINAL PATCH
+Base:97db9659199d9d4655336826d007cccf1883982e
+
+--- standing_tp.py:_tp_reconcile held==0 research-only branch
++++ PROPOSED
+ if not held:
+     self._split_stop('BTC_FLAT')          # existing core action/location
+-    self._md_coverage(ts, True, ep.id, 'NATIVE_FLAT'); return
++    self._tp_flat_owned_drain(ep.id, ts)   # adds only owned standing-TP drain
++    return
+
++ _tp_flat_owned_drain(parent, ts):
++     REQUIRE exact approved researchpaired/standing gate
++     READ actual ownedBTC position; do not infer from domain scalar
++     IF held>0: retain owner; route actualstate back to existing owner; no flatPASS
++     IF any ownedBTC ENTRY/inflight not native-terminal:
++         retain bindings/rights/parent/increase barrier; audit WAIT; return
++     FOR immutable standingTP owner of this parent:
++         REQUIRE native strategy/instrument/side/reduceOnly/intent/history
++         unknown/missing/foreign => UNKNOWN/NO_GO
++         IF native closed: require actual terminalhistory; keep binding
++         ELSE IF native PENDING_CANCEL: wait, no duplicate command
++         ELSE IF owned modify pending: serialize actual ACK before drain/recheck
++         ELSE: existing public self.cancel_order(order) once
++     audit DRAINING until actual terminalACKs and all owned work quiescent
++     actual latefills/lateACKs => existing native event owner, UUID/trade dedup
++     DO NOT add SOL/ENTRY cancellation, cancel-all, close, replacement or cachelink
++     pair/cycle release ONLY existing strict actualzero positions/orders/inflight,
++         plus pendingcommands/debt0 and ownership/ACK known
+
+--- callbacks/boundary audit
++++ PROPOSED
++ Re-enter same idempotent drain on actual position and owned terminal callbacks.
++ Closed old-parent event uses immutable native history after intent cleanup.
++ held0 with live ownedorders => DRAINING, never terminalflat.
++ held reappears => re-read/reconcile actual state; never refund/rearm rights.
++ Existing protection/debt boundary failures remain NO_GO; no timing waiver.
+
+--- supervisor identity/budget
++++ PROPOSED AFTER NEW OWNER AMENDMENT ONLY
++ Retain original approval/protocol and both failed raw/canonical entries.
++ Verify linked amendmentreceipt authorizes totalmax7 before claim/Popen.
++ Add one logicalE7/scenarioE1/repeat_of=FAILED_E6_UUID, physical3 only.
++ E6 remains consumed; no second E6 or second E7.
++ Keep E7/E1/repeat identity through CLI/config/worker/result/ledger/external OS.
++ E2-E5 physical4-7; no uncharged or hidden constructors; no reserve/autonext.

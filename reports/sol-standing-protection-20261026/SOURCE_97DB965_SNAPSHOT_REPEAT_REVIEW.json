@@ -1,0 +1,106 @@
+{
+  "schema": "CM137_97DB965_TARGETED_SNAPSHOT_REPEAT_REVIEW_V1",
+  "status": "LIMITED_SOURCE_AND_IDENTITY_BINDINGS_PASS",
+  "source_commit": "97db9659199d9d4655336826d007cccf1883982e",
+  "correction_parent": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "P0": 0,
+  "P1": 0,
+  "scope": "Six-file snapshot/identity delta only; no repeatedfullaudit",
+  "snapshot": {
+    "production_to_dict_removed": true,
+    "public_getters_only": true,
+    "nonthrow_explicit_UNKNOWN": true,
+    "populated_real_MarginAccount_regression": true,
+    "no_account_mutation_or_guard_calls": true,
+    "capture_errors_mark_financial_coverage_incomplete": true,
+    "financial_gate_must_reject_incomplete": true
+  },
+  "repeat_identity": {
+    "fixture_id": "E6",
+    "scenario": "E1",
+    "repeat_of": "2413619e-c67c-433f-851c-dce075595aee",
+    "expected_physical_index": 2,
+    "whole_constructor_E1_config": true,
+    "same_ids_in": [
+      "gate",
+      "supervisorclaim",
+      "workerbinding",
+      "config",
+      "ENGINE_INTENT",
+      "capture",
+      "result",
+      "supervisorOSreceipt",
+      "externalargv_metadata"
+    ],
+    "actual_external_OS_identity": "FUTURE_NOT_RUN",
+    "reserve_once_only": true,
+    "review_required_for_launch": true
+  },
+  "bindings": {
+    "gate_path": "reports/sol-standing-protection-20261026/E6-root-false-gate-97db965.json",
+    "gate_sha256": "8293a4ff6c93947cc8efb5524ce0bbb7a71c98e7a1913ca2bd737bd07ef02095",
+    "root_go": false,
+    "correction_reviewed": false,
+    "pins": 637,
+    "pin_hash_matches": 637,
+    "source_seal_sha256": "43e80b63518179b1afeed685df05796b6aba617667aebe6c1e55e11339be1a3e",
+    "preflight_sha256": "0c8817d99e21ff2745877d79a7991ad3dda9766672cfbffa1011092cce8bbdd9",
+    "archive_sha256": "72a4ff9c29d26f8de59c58957982f9f1e625cd64ff159e2419540ec34ab7fa30",
+    "config_unchanged_E1": true,
+    "kwargs_unchanged_E1": true,
+    "transport": {
+      "base": 0,
+      "insert": 0,
+      "update": 0,
+      "cancel": 0
+    },
+    "namespace_fresh": true,
+    "failed_ledger_sha256": "93e70343a69c2186e5275c2313b94b87e7e9e149ff319ce0b4d4ecdf3fe85a5c",
+    "failed_entry_canonical_sha256": "d325f056cc06dc913a85ce7e60d8e33e5ed088f3e15316b6699c4fdbc966397e",
+    "prefix_ledger_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+  },
+  "saved_Mac_tests": {
+    "passed": 122,
+    "seconds": 2.7,
+    "actual_process_exit_code": 0,
+    "reviewer_reran": false
+  },
+  "budget": {
+    "engineering_spent": 1,
+    "engineering_max": 6,
+    "active": 0,
+    "remaining": 5,
+    "prefix_spent": 0,
+    "prefix_max": 4,
+    "full": 0,
+    "increase": 0
+  },
+  "native_coverage": "NOT_RUN_AFTER_FIX; priorE1FAILED preserved",
+  "GO_issued": false,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/SOURCE_97DB965_SNAPSHOT_REPEAT_REVIEW.md",
+  "report_sha256": "7aac6b7be693d4750e7d40ef85ff94c05441ea7097e4c30d484544d67ef8d89e",
+  "actual_saved_prepare": {
+    "path": "reports/sol-standing-protection-20261026/E6_PREPARE_RECEIPT_97DB965.json",
+    "sha256": "c91ff8b20073a93b7710962393e09642e2c3333dd9e20b0fcc8c0d363c3cfb2e",
+    "actual_process_exit_code": 0,
+    "source_commit": "97db9659199d9d4655336826d007cccf1883982e",
+    "engine_constructors": 0,
+    "fixture_id": "E6",
+    "scenario": "E1",
+    "physical_started": 1,
+    "root_go": false,
+    "correction_reviewed": false,
+    "prepare_pid": "UNKNOWN_NOT_CAPTURED",
+    "reviewer_reran": false
+  },
+  "root_final_prepare_required": "After pinning review/correction_reviewed=true and while rootfalse; exactoneGOremainsseparate"
+}

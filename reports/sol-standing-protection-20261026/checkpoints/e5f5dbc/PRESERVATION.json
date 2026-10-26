@@ -1,0 +1,91 @@
+{
+  "source_commit": "e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd",
+  "files": [
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOURCE_CHECKPOINT.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/SOURCE_CHECKPOINT.json",
+      "sha256": "cf865295360fbba4695716d34d334864783c955b999ba74e2c2d60c0302a8b5c"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/ENGINE_FREE_VPS_TESTS.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/ENGINE_FREE_VPS_TESTS.json",
+      "sha256": "c7d2bbb3aef17cdd248821984e6463c0bf4ef9ec47675ed89828b007df6ce9ed"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/STATIC_PROTECTED_BODIES.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/STATIC_PROTECTED_BODIES.json",
+      "sha256": "91a40e9a2f98bbc9c54f44e5580457dcdd0e85fd2390ab9b42e5c94c636087f0"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/MAC_SOURCE_SEAL.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/MAC_SOURCE_SEAL.json",
+      "sha256": "21db2f0fc6554c6a2027fcdf9972e61dcb6f0e4d788e1c8d420d7f2f415b2029"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/MAC_PREFLIGHT.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/MAC_PREFLIGHT.json",
+      "sha256": "0ae3ac6f9b080992bb8d6226b7d9736fd5328b87273873cd5905b2fa32f8f271"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/MAC_PURE_TESTS.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/MAC_PURE_TESTS.json",
+      "sha256": "1d9b36a2825b260d723da7c47e61025635ef72dc01a6602edfbc5c248b6f31b0"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1-root-false-gate.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/E1-root-false-gate.json",
+      "sha256": "4b96b178fb3dc5c3c23b1dcf5ec263147feebd0e0b8f1a6c0834b4fa2ddcba74"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/PREPARE_RECEIPT.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/PREPARE_RECEIPT.json",
+      "sha256": "181bd6de7fb486a116a6a3c41fc1bc0b86797d84c503d14b217b4cf819b3c516"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/FIXTURE_MAP.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/FIXTURE_MAP.json",
+      "sha256": "77f84fd839570fa963cb3e160d69e8aa4c3273db7073bcc9598f064d7ea03331"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E1-argv.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/E1-argv.json",
+      "sha256": "aba78134bdbd9d7c7990e31f58be9f014a2fc207c0b4e7b99cb46e9e27e20834"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/TRIM_IMPLEMENTATION_SPEC.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/TRIM_IMPLEMENTATION_SPEC.json",
+      "sha256": "0699843f46272739a63be9d62bbcab5cb945c4b9b0e8b2dc2cf5485bb7f2de61"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/engineering-ledger.json",
+      "sha256": "29217b9acbe0fd41495edfd77c08d1ad3c43f049856946a746bd7f02412e1511"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/prefix-ledger.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/prefix-ledger.json",
+      "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/CHECKPOINT_INDEX.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/CHECKPOINT_INDEX.json",
+      "sha256": "f0bc1e105d0c0c67f4d45df789aa259e9871699bf101ff58d26f995ebb783556"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/CHECKPOINT_REVIEW_RU.md",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/CHECKPOINT_REVIEW_RU.md",
+      "sha256": "80a625d463c5c97715f64981fcd32f40214d55fbfb8e5acf25495a1369b913d9"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOURCE_E5F5DBC_REVIEW.json",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/SOURCE_E5F5DBC_REVIEW.json",
+      "sha256": "16b6480b604f3c68a50e4f9755fdc9e6443d14cb1a1b6a8794257a87a2390e54"
+    },
+    {
+      "original": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOURCE_E5F5DBC_REVIEW.md",
+      "snapshot": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/checkpoints/e5f5dbc/SOURCE_E5F5DBC_REVIEW.md",
+      "sha256": "f0554c435f0557303863c97231c82532e5afa316a63e3ca6939a6eae3f02b45b"
+    }
+  ],
+  "immutable_mac_source_and_job_receipts_unchanged": true
+}

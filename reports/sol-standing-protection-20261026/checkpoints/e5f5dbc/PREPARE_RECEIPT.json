@@ -1,0 +1,26 @@
+{
+  "schema": "CM137_PREPARE_RECEIPT_V1",
+  "source_commit": "e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd",
+  "actual_process_exit_code": 0,
+  "stdout": {
+    "status": "PREPARED_ENGINE0_NO_ATTEMPT",
+    "root_go": false,
+    "physical_started": 0,
+    "engine_constructors": 0
+  },
+  "gate_sha256": "4b96b178fb3dc5c3c23b1dcf5ec263147feebd0e0b8f1a6c0834b4fa2ddcba74",
+  "preflight_sha256": "0ae3ac6f9b080992bb8d6226b7d9736fd5328b87273873cd5905b2fa32f8f271",
+  "engineering_ledger_sha256": "29217b9acbe0fd41495edfd77c08d1ad3c43f049856946a746bd7f02412e1511",
+  "prefix_ledger_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "engineering": {
+    "physical_started": 0,
+    "active": 0,
+    "maximum": 6
+  },
+  "prefix": {
+    "physical_started": 0,
+    "active": 0,
+    "maximum": 4
+  },
+  "root_go": false
+}

@@ -1,0 +1,161 @@
+{
+  "schema": "CM137_FROZEN_FIXTURE_MAP_V1",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "root_go": false,
+  "actual_native_constructors": 0,
+  "transport_units": "nanoseconds; fixed before STARTED/Popen/constructor; no in-engine changes",
+  "data_max": {
+    "processed_ns": [
+      0,
+      90600000000000
+    ],
+    "hours_max": "25h10m declared; <=48h",
+    "config_guard_ns": [
+      -86400000000000,
+      90600000000000
+    ],
+    "guard": "Previous config day only; no additional streamed history"
+  },
+  "cases": [
+    {
+      "id": "E1",
+      "role": "C0_FIXED",
+      "a0_flag": false,
+      "transport": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 0
+      },
+      "schedule": "Natural parent0/1/2; selection70; nonquote72.01; entry130/131; SOL99 depth.2@135; SOL98 depth.7@136; STOP triggerSOL102 depth10@137; drain138-140",
+      "gates": [
+        "actual partial/multiple SOL TP fills",
+        "unaffected OID/leaves/prices preserved",
+        "sameOID STOP real latest OrderUpdated before trigger",
+        "actual full native STOP_MARKET IOC fill",
+        "actual shared BTC debt reductions",
+        "native flat/orders0/inflight0/noLiq",
+        "tradeID/eventUUID dedup",
+        "latest real OrderUpdated UUID/payload belongs specifically to original STOP OID and precedes actual fullfill"
+      ],
+      "reachability": "SOURCE_SUPPORTED_NATIVE_UNKNOWN"
+    },
+    {
+      "id": "E2",
+      "role": "C0_FIXED",
+      "a0_flag": false,
+      "transport": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "schedule": "P1 ordinaryBTCpartial135/SOLrelief137/safe debt140-141/BTC TP143/145/marketable debt150->nonquote152.01->153/TP3flat154/drain160. Natural P2 at86400; SOLentry86530; riskOFF86540 BTC99 SOL100; pendingTPfill86540.25 SOL101 depth.2; partialSTOP86540.5 SOL98 depth.1; unsafe snapshot; fresh books86541.5; cancelACK86542.01; native recovery86543/86545.01/86546",
+      "gates": [
+        "healthy marketable DEFER before any fault and actual residual/duration",
+        "first safe quote services native debt",
+        "allSOLTP consumption and flat-with-pendingSTOP drain",
+        "real cancelpendingTP fill before Canceled",
+        "partial native IOC STOP fill then terminalcancel",
+        "ONLY expected PARTIAL_NATIVE_STOP fault after declared trigger",
+        "no increases/STOPresurrection/modify after ANY STOP fill",
+        "only existing native BTC_DEBT/SOL_CLOSE recovery; no fixture cleanup",
+        "actualflat/orders0/inflight0 before end"
+      ],
+      "expected_negative": {
+        "allowed_faults": [
+          "PARTIAL_NATIVE_STOP"
+        ],
+        "result_label": "E2_EXPECTED_NEGATIVE_TEST_PASS_REQUIRES_ROOT_REVIEW",
+        "fault_free_financial_pass": false,
+        "economic_fault_is_NO_GO": true
+      },
+      "reachability": "SOURCE_SUPPORTED_NATIVE_UNKNOWN"
+    },
+    {
+      "id": "E3",
+      "role": "BTC_TRIM",
+      "a0_flag": false,
+      "transport": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "schedule": "Natural registered BTC first0/1/2; select70; cancelACK72.01; actualheld eligible130/131 => own cap/native BTC_DEBT; ordinary partial135; nominalB2 deadline14530 no restore; BTC TPs14540/14542/14544; flat14551",
+      "gates": [
+        "fixed TRIM mode entire constructor",
+        "actual qref/current native side at eligible clock",
+        "declared exact Fraction variance/native-lot target",
+        "noSOL orders/fills/credits",
+        "sameOID current BTC3TP ACK after actual debt",
+        "partial ordinaryTP preserves other rights",
+        "nominal horizon no caprestore",
+        "nativeflat/orders0/inflight0/noLiq",
+        "eligible actual parent/side/quantity equals own frozen selection reference; mismatch NO_GO before sizing/cap/order/reanchor"
+      ],
+      "reachability": "SOURCE_SUPPORTED_NATIVE_UNKNOWN"
+    },
+    {
+      "id": "E4",
+      "role": "A0_FIXED",
+      "a0_flag": true,
+      "transport": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "schedule": "P1 as E2 healthy pre-fault path; P2 naturalshort86400; SOLrelief86540; riskOFF86700; postOnlycross86760; stale actualmark margin86881; freshguard86882; originalsecond partial86885; ordinaryTPcancel86887; native pendingcancel latefill86887.5; cancelACK86889.01; actualdebt86890/91; flat86900",
+      "gates": [
+        "one originalsecond, no FIRST refund",
+        "original off_ns/+60 preserved",
+        "real pendingupdate/unknown currentACK and current required TP set",
+        "actual own-account postOnly/stale/fresh stock guard",
+        "typed/generic sameUUID dedup",
+        "native cancelpending fill and no afterACK fill/retry",
+        "actual native flat/account/fees/noLiq"
+      ],
+      "reachability": "SOURCE_SUPPORTED_NATIVE_UNKNOWN",
+      "new_native_modify_reject": "NOT_EXERCISED_THIS_CHECKPOINT",
+      "historical_negative_component": "Prior actual F4 stockAPI1.231 component only, receiptSHA9b761ca0...; not current native qualification"
+    },
+    {
+      "id": "E5",
+      "role": "A0_FIXED",
+      "a0_flag": true,
+      "transport": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 0
+      },
+      "schedule": "Same registered two-parent integration with zero route; no delayed-cancel latefill claim; E4 owns that stress proof; complete before86900",
+      "gates": [
+        "fixed A0 mode entire constructor; core C0 path P1",
+        "two actual natural parents and original native sizing",
+        "full current-generation BTC/SOL coverage",
+        "actual conditional original-second fill",
+        "native cash/fees/account facts",
+        "allpositions/orders/inflight/commands0 and zeroLiq",
+        "five STOPPED then DISPOSED"
+      ],
+      "reachability": "SOURCE_SUPPORTED_NATIVE_UNKNOWN",
+      "new_native_modify_reject": "NOT_EXERCISED_THIS_CHECKPOINT",
+      "historical_negative_component": "Prior actual F4 stockAPI1.231 component only, receiptSHA9b761ca0...; not current native qualification"
+    },
+    {
+      "id": "E6",
+      "role": "CONDITIONAL_CORRECTED_REPEAT_ONLY",
+      "schedule": "Only one consolidated correction and exact named failed case repeat after root disposition",
+      "gates": [
+        "newsource/review/freeze/each rootGO",
+        "all failed attempts preserved and spent",
+        "no alternate hypothesis/autoretry/extra constructor"
+      ],
+      "reachability": "NO_GO_UNLESS_SEPARATELY_RELEASED_BY_ROOT_WITHIN_CAP"
+    }
+  ],
+  "stop_source_exclusion": "In-market STOP modify is source-excluded only on frozen update0 route with unchanged trigger and no interposed SOL book: any STOP fill immediately sets closing barrier before _pair_protect. Closing/terminal/pendingcancel never modified. Partial IOC cancel remains explicit NO_GO, not supported protection. Broader latency/venue route UNKNOWN.",
+  "actual_native_status": "NONE_RUN; every gate remains unproven until individually GO and observed."
+}

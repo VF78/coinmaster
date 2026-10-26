@@ -1,0 +1,39 @@
+{
+  "schema": "CM137_FINAL_FROZEN_STATIC_PROOF_V1",
+  "source_commit": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "protected_bodies": {
+    "sol_prices": true,
+    "sol_allocations": true,
+    "PairedCaps": true,
+    "legacy_SOL_protect": true,
+    "native_stock_margin_guard": true,
+    "native_financial_runner_body": true
+  },
+  "unchanged_files": {
+    "coinmaster/strategy/a0_rights.py": {
+      "byte_identical": true,
+      "sha256": "ed7b688cf4eac1ab1cd3427c42ccaa7d2bf5fcfdd4850c300feef3d8b26ca243"
+    },
+    "coinmaster/strategy/standing_tp.py": {
+      "byte_identical": true,
+      "sha256": "2ccac380fb3b319719165be5178a91ab658dae26834eda55c1d5099e0f04a3c4"
+    },
+    "coinmaster/domain/wave_overlay.py": {
+      "byte_identical": true,
+      "sha256": "e8cf17c473de858ba7c06395b1ae170c233c0d6dff2c6288b775ab26e5407239"
+    }
+  },
+  "only13allowed_changed": true,
+  "correction_files": [
+    "runtime/coinmaster/strategy/paired_prefix.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/tests/run_sol_standing_fixture.py",
+    "runtime/tests/sol_standing_supervisor.py",
+    "runtime/tests/test_btc_trim_pure.py",
+    "runtime/tests/test_sol_standing_pure.py",
+    "runtime/tests/test_sol_standing_supervisor_pure.py"
+  ],
+  "engine_constructors": 0,
+  "root_go": false
+}

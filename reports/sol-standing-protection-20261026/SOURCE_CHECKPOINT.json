@@ -1,0 +1,97 @@
+{
+  "source_commit": "97db9659199d9d4655336826d007cccf1883982e",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "checkpoint_parent": "3c1bf95cb2ee82cbaf22843e5154861dbf94c5ff",
+  "branch": "refs/heads/codex/sol-standing-protection-20261026",
+  "clean": true,
+  "published": false,
+  "root_go": false,
+  "only_allowed_files_changed": true,
+  "unrelated_tree_identical_by_git_diff": true,
+  "correction_files": [
+    "runtime/coinmaster/strategy/native_account_snapshot.py",
+    "runtime/coinmaster/strategy/paired_prefix.py",
+    "runtime/tests/run_sol_standing_fixture.py",
+    "runtime/tests/sol_standing_supervisor.py",
+    "runtime/tests/test_native_account_snapshot_pure.py",
+    "runtime/tests/test_sol_standing_supervisor_pure.py"
+  ],
+  "stat": "97db965 Capture public native account facts safely and bind one logical E1 reserve repeat\n .../coinmaster/strategy/native_account_snapshot.py | 39 +++++++++++\n runtime/coinmaster/strategy/paired_prefix.py       | 26 +++++---\n runtime/tests/run_sol_standing_fixture.py          | 18 ++++--\n runtime/tests/sol_standing_supervisor.py           | 48 ++++++++++++--\n runtime/tests/test_native_account_snapshot_pure.py | 75 ++++++++++++++++++++++\n runtime/tests/test_sol_standing_supervisor_pure.py | 51 +++++++++++++++\n 6 files changed, 237 insertions(+), 20 deletions(-)",
+  "files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/a0_family.py",
+      "relative": "runtime/coinmaster/research/a0_family.py",
+      "sha256": "2d6f73313b6636c93f9a3b9c6f8f4110ceb94945543d6d3d85d79a0ba9cfb4f0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/native_baseline.py",
+      "relative": "runtime/coinmaster/research/native_baseline.py",
+      "sha256": "b8287fdfb4432bba332ef0a8e4d16318209d5b859f087f1d29c4f73690d17abf"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/native_book.py",
+      "relative": "runtime/coinmaster/research/native_book.py",
+      "sha256": "7ba67d9ed3e584c62b1d2f742a48416146728baa11cf422db0c063a3ff714532"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/paired_signal_feed.py",
+      "relative": "runtime/coinmaster/research/paired_signal_feed.py",
+      "sha256": "b98577e4b512f501e6faf377cedd9d2e381b7ab71cafd6426c379a695614bd04"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/btc_trim.py",
+      "relative": "runtime/coinmaster/strategy/btc_trim.py",
+      "sha256": "b34bedcf1f5526399da1af404e6572042b9d3480060085f91b8a756da3b415a0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/market_redesign.py",
+      "relative": "runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b1aeb01a85b2d4af9748fcbd7c84cd6648ebeb61605abea87924e09778972a0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/native_account_snapshot.py",
+      "relative": "runtime/coinmaster/strategy/native_account_snapshot.py",
+      "sha256": "5ad6abee1ed0d285b23bb9d7eea6787843c00c8afeffc2cb855c49b462c14892"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/paired_prefix.py",
+      "relative": "runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "0aa36ccab1df7ca46a2c89819d19e237b0907a65405d5990252c6b9712f17020"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/wave_overlay.py",
+      "relative": "runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "3a912cca184362cdc194fcaf2d24ae4a151a2b683e9fdd7782390c32132d9e70"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/run_sol_standing_fixture.py",
+      "relative": "runtime/tests/run_sol_standing_fixture.py",
+      "sha256": "46a9a515ee2817956722dbdc84ca5e90f12e0115d4f8c2b917960f7ebef93399"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/sol_standing_supervisor.py",
+      "relative": "runtime/tests/sol_standing_supervisor.py",
+      "sha256": "60643153127bdfb05e7187c24a3c777e70e8837ab230b3c869c79fa99c101bd7"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_btc_trim_pure.py",
+      "relative": "runtime/tests/test_btc_trim_pure.py",
+      "sha256": "f0931b10956e2caca2bcad7c75a2f7c6d0103d989c812a385823063e9f6921d9"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_native_account_snapshot_pure.py",
+      "relative": "runtime/tests/test_native_account_snapshot_pure.py",
+      "sha256": "765a5b62dafd6db5d672ba41d8607e97de83ee5e3f3715f30e7599886bb5590e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_sol_standing_pure.py",
+      "relative": "runtime/tests/test_sol_standing_pure.py",
+      "sha256": "bae43a6f87116de6b370c45aa8caa852d24973a8da695d326283c0f721481c78"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_sol_standing_supervisor_pure.py",
+      "relative": "runtime/tests/test_sol_standing_supervisor_pure.py",
+      "sha256": "98a9db8cfbf1342359caeafae352a46eb67bbab56a6c37eb12bc4e24da5e9286"
+    }
+  ]
+}

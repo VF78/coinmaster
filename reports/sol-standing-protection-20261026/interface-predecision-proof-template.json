@@ -1,0 +1,65 @@
+{
+  "schema": "CM_SOL_STANDING_PREDECISION_COVERAGE_V1",
+  "status": "TEMPLATE_NOT_ACCEPTED",
+  "attempt_id": null,
+  "source_commit": null,
+  "label": null,
+  "phase": null,
+  "report_sha256": null,
+  "producer_json_path": [
+    "paired_prefix_audit",
+    "predecision_records"
+  ],
+  "record_stage": "after_md_reconcile_before_a0_check",
+  "independent_of_A0_trading_flag": null,
+  "coverage_complete": null,
+  "facts_capture_complete": null,
+  "frozen_field_map": {
+    "original_second_budget": null,
+    "actual_second_filled_ever": null,
+    "original_second_remaining": null,
+    "risk_off_plus_60_clock": null,
+    "actual_quote_and_cross": null,
+    "native_debt": null,
+    "native_cap": null,
+    "remaining_TP_and_ordinary_exit": null,
+    "pending_ACK_and_reservations": null,
+    "native_current_margin": null
+  },
+  "captured_fact_names": null,
+  "universes": {
+    "risk_selections": {
+      "status": null,
+      "expected_ids": null,
+      "observed_ids": null,
+      "missing_ids": null,
+      "extra_ids": null
+    },
+    "risk_OFF": {
+      "status": null,
+      "expected_ids": null,
+      "observed_ids": null,
+      "missing_ids": null,
+      "extra_ids": null
+    },
+    "candidate_parents": {
+      "status": null,
+      "expected_ids": null,
+      "observed_ids": null,
+      "missing_ids": null,
+      "extra_ids": null
+    }
+  },
+  "timestamp_coverage": {
+    "status": null,
+    "missing_or_unbound_records": null,
+    "records": null,
+    "first_event_ns": null,
+    "last_event_ns": null
+  },
+  "missing_fact_reason_capture": null,
+  "margin_observation_policy": "RECORDED_UNKNOWN_ALLOWED_OWN_A0_GUARDS_AT_DISPATCH",
+  "structurally_admissible_original_rights": null,
+  "measurement_status": null,
+  "instructions": "Root produce only from actual bound records and coverage counters; no guessed margin/futurefills. Values remain UNKNOWN until producer freeze and actual result. This is not a receipt."
+}

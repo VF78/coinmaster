@@ -1,0 +1,14 @@
+{
+  "status": "CURRENT_PACKET_METADATA_QA_NO_ENGINE",
+  "json_parsed": 85,
+  "text_files_checked": 104,
+  "credential_pattern_matches": 0,
+  "failed_ledger_preserved": true,
+  "prefix_unchanged": true,
+  "engineering_spent": 2,
+  "active": 0,
+  "native_go": false,
+  "economic_go": false,
+  "amendment_status": "PROPOSED_NOT_APPROVED",
+  "source": "97db9659199d9d4655336826d007cccf1883982e"
+}

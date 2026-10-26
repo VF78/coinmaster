@@ -1,0 +1,26 @@
+{
+  "schema": "CM137_ENGINE_FREE_VPS_TEST_RECEIPT_V1",
+  "source_commit": "e5f5dbc9278a08e4245e3ee7ddc9f2b7bf349acd",
+  "status": "PASS",
+  "engine_constructors": 0,
+  "command": "PYTHONPATH=.:tests /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q tests/test_sol_standing_pure.py tests/test_btc_trim_pure.py tests/test_a0_rights_pure.py tests/test_standing_tp_pure.py",
+  "actual_exit_code": 0,
+  "stdout": "97 passed in 3.25s",
+  "driver_supervisor_py_compile": "PASS",
+  "limits": "Native object/method and exact algebra checks only; no matching/fills/ROI evidence.",
+  "preserved_engine_free_setup_failures": [
+    {
+      "kind": "test stub setup",
+      "error": "TestExecStubs.stop_market_order absent; replaced by native StopMarketOrder",
+      "engine_constructors": 0
+    },
+    {
+      "kind": "STOP event setup",
+      "error": "OrderTriggered not valid for STOP_MARKET; direct native fill event used",
+      "engine_constructors": 0
+    }
+  ],
+  "physical_engineering": 0,
+  "physical_prefix": 0,
+  "root_go": false
+}
