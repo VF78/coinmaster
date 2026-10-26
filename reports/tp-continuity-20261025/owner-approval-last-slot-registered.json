@@ -1,0 +1,27 @@
+{
+  "schema": "CM_LAST_SLOT_REGISTERED_OWNER_APPROVAL_V1",
+  "status": "APPROVED_BY_OWNER",
+  "recorded_utc": "2026-10-26T05:35:07.267812+00:00",
+  "client_date": "2026-10-26 Europe/Moscow",
+  "exact_human_answer": "Утверждаю единый physical4, лимит 4",
+  "question_item_id": "[\"request_user_input_async\",\"call_8027c998758b46efa271f8c5ea522ca1\",0]",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/LAST_SLOT_REGISTERED_PROTOCOL_PROPOSED_RU.md",
+  "protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "engineering_total_max": 4,
+  "engineering_already_started": 3,
+  "remaining_instances": 1,
+  "additional_budget": 0,
+  "prefix_max": 3,
+  "prefix_already_started": 0,
+  "exceptions_explicitly_approved": [
+    "Isolated default-OFF research product patch may precede complete separate API PASS; FAILED3 staysFAILED.",
+    "One remainingphysical4 combines missingAPI and registeredR2 integration proof, subject to puretests/independentmoneyreview/freeze/rootGO.",
+    "Auto-positive replaced by actualNETTING/unlinked/noexecalgo route and ownership conformance; no cachelink injection.",
+    "StaticpublicLatencyModel base0/insert0/update0/cancel2s: normalDEBT/updatezero, actualA0pendingcancel latefill. LateDEBTinsert0 source-excluded; pinnedsource+actualflat→NOdebt instead."
+  ],
+  "unchanged_money_rules": "QueuedstandingTP/marketableDEBTguard approved6998 remain; BTCcore/R2LEGACY_Q/TPprices/initialweights/SOLlogic/caps/A0rights unchanged.",
+  "constructor_authority": "No immediate engineGO; exactlyonephysical4 only after committedsource/immutableMac/purepreflight/independentreview and separate rootGO. No retry/reserve/fifthinstance. Any missingessential/unsafe/UNKNOWN→STOP/no prefix.",
+  "ledger_before_sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a",
+  "full_training_downloads_pilot_production_externalorders_transfers": 0,
+  "publication": "Earlier explicitPUBLICVF78/coinmaster code/tests/reports permission persists; sourcepush is not deployment."
+}

@@ -1,6 +1,6 @@
 {
   "schema": "CM_TP_CONTINUITY_ROOT_DISPOSITION_V1",
-  "status": "HOLD_PENDING_LAST_SLOT_REGISTERED_EXCEPTION_CONSENT",
+  "status": "OWNER_APPROVED_LAST_SLOT_PRODUCT_AND_F4_PREPARATION",
   "utc": "2026-10-25T16:49:24.828174+00:00",
   "engineering": {
     "approved_max": 4,
@@ -8,7 +8,7 @@
     "failed": 3,
     "active": 0,
     "remaining": 1,
-    "remaining_status": "BLOCKED_NO_RETRY_PRODUCT_OR_F4_WITHOUT_NEW_DISPOSITION",
+    "remaining_status": "ONE_CONDITIONAL_INTEGRATED_F4_AFTER_REVIEW_FREEZE_ROOT_GO_NO_RESERVE",
     "ledger_amendment": "engineering-amended-four-ledger.json; original max3 ledger preserved byte-exact",
     "current_ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
     "pre_run_ledger_sha256": "741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800",
@@ -19,9 +19,9 @@
     "physical_started": 0,
     "status": "BLOCKED_BY_ENGINEERING_NO_ROOT_GO"
   },
-  "product_patch_allowed": false,
-  "stock_api": "DEFAULT_QUEUE_TRUE_CANNOT_SATISFY_BEFORE_PUBLIC_RETURN_POSITIVE; NO_NATIVE_UNSUPPORTED_PROOF",
-  "reason": "ActualF3FAILEDcacheindexassumption; no fullAPIpass. Propose explicitisolatedcode-before-separateAPI and onecombinedregisteredphysical4, max4unchanged. No sourcepatch/newengine authority untildirectnewreceipt.",
+  "product_patch_allowed": true,
+  "stock_api": "NOT_PROVEN: actualF3failed cache-indexassert beforedebt/modify; missingAPI tobeprovedwithinphysical4 undernewexplicitexception.",
+  "reason": "Directnewsequence/coverageexception received. IsolateddefaultOFFproduct+registeredF4preparationauthorizednow; FAILED3 remainsFAILED; no native/economicGO until gates.",
   "new_proposal": "LAST_SLOT_REGISTERED_PROTOCOL_PROPOSED_RU.md",
   "proofs": [
     {
@@ -63,7 +63,7 @@
   },
   "new_proposal_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
   "new_proposal_review": "LAST_SLOT_REGISTERED_PROTOCOL_REVIEW.json",
-  "new_human_answer": "PENDING_FOR_API_BEFORE_PRODUCT_AND_COVERAGE_EXCEPTION",
+  "new_human_answer": "Утверждаю единый physical4, лимит 4",
   "budget_increase": 0,
   "queued_standing_owner_receipt": "owner-approval-queued-standing.json",
   "actual_F3": {
@@ -76,5 +76,7 @@
     "cleanup": "5actualSTOPPED→DISPOSED, nativeflatNOTclaimed"
   },
   "prefix_go": false,
-  "source_publication": "aaa31f83f2fa900cad00506ccf70e4243c3bac11 exactremote; testonly/83moneyunchanged"
+  "source_publication": "aaa31f83f2fa900cad00506ccf70e4243c3bac11 exactremote; testonly/83moneyunchanged",
+  "last_slot_owner_receipt": "owner-approval-last-slot-registered.json",
+  "native_go": false
 }
