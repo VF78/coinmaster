@@ -1,5 +1,5 @@
 {
-  "status": "AWAIT_OWNER_ZERO_ENGINE_IMPLEMENTATION_APPROVAL",
+  "status": "OWNER_APPROVED_V2_ZERO_ENGINE_IMPLEMENTATION_ACTIVE",
   "utc": "2026-10-26T18:19:45.120091+00:00",
   "issue": 137,
   "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
@@ -16,11 +16,16 @@
   "economic_root_go": false,
   "expected_negative_stage": "NOT_REACHED",
   "cause_observed": "SOL_BEFORE_MATCHING_EXACT_COVERAGE_UNKNOWN at143 P1_FULL_TP0",
-  "next": "ReviewedV2R1R2closed; proposedimplementation+realCacheOrderreplay ONLY/Native0, futurecompletecasemapandbudgetafteractualsource; no newcode/native now",
+  "next": "Soleowner approvedV2code+realCacheOrderreplay withBacktestEngine0; commit/freeze/pure/focusedreview thencompletefuturecasemap beforeseparatenativebudget",
   "full_pilot_production": 0,
   "ledger_sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
   "v2_contract_sha256": "353d0e01218148ebaf1ef4c7172552ee000d8ff0b6efc563402794ae016503d6",
   "zeroengine_protocol_sha256": "ae2ec46f2b26c7f8f5dc147e656580094d63a1231f292e81aa085a08537663d3",
   "v2_design_review_sha256": "38da36665f8391cc7b731db45d90088bb2feea2a0405920694e00b4622ca1c53",
-  "new_implementation_approval": "NOT_GRANTED"
+  "new_implementation_approval": "APPROVED_BY_OWNER",
+  "new_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-v2-zero-engine-approval.json",
+    "sha256": "fb263ef1cdfb6267c76cc60c8b4340e23468f78a2e5dbbf2eeecb7d64d0fbfc1"
+  },
+  "new_native_attempts_authorized": 0
 }

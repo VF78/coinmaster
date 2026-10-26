@@ -1,0 +1,13 @@
+{
+  "status": "ACTUAL_ISSUE_APPROVAL_UPDATE_EXIT0",
+  "issue": 137,
+  "state": "open",
+  "title": "[Research] Four-week review and staged BTC/SOL recovery plan",
+  "updated_at": "2026-10-26T21:21:05Z",
+  "approval_sha256": "fb263ef1cdfb6267c76cc60c8b4340e23468f78a2e5dbbf2eeecb7d64d0fbfc1",
+  "new_native_authorized": 0,
+  "new_prefix_authorized": 0,
+  "engineering_ledger_unchanged": true,
+  "board_status": "LAST_VERIFIED_IN_PROGRESS_NO_BOARD_MUTATION",
+  "fresh_board_readback": "NOT_YET_RETRIED"
+}

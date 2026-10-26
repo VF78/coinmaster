@@ -1,0 +1,40 @@
+{
+  "schema": "CM137_OWNER_ZERO_ENGINE_IMPLEMENTATION_APPROVAL_V1",
+  "status": "APPROVED_BY_OWNER",
+  "phase": "CM137_SOL_REDUCTION_V2_ENGINE_FREE_20261027",
+  "utc_recorded": "2026-10-26T21:19:01Z",
+  "owner_local_date": "2026-10-27",
+  "authority": "DIRECT_HUMAN_REPLY_IN_THIS_CHAT",
+  "question_id": "[\"request_user_input_async\",\"call_17399afda1754ee2be4fafb2abb1f51e\",0]",
+  "exact_answer": "Утверждаю реализацию и engine-free, native0",
+  "source_before": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "protocol": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/ZERO_ENGINE_IMPLEMENTATION_PROTOCOL_PROPOSED_RU.md",
+    "sha256": "ae2ec46f2b26c7f8f5dc147e656580094d63a1231f292e81aa085a08537663d3"
+  },
+  "contract": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_V2_PROPOSED_RU.md",
+    "sha256": "353d0e01218148ebaf1ef4c7172552ee000d8ff0b6efc563402794ae016503d6"
+  },
+  "allowed": "Isolated default-OFF research implementation of V2 and meaningful real Cache/Order/event replay without BacktestEngine; committed source, immutable Mac copy, focused independent review, then complete future native case map and numerical budget proposal.",
+  "new_native_fixture_attempts": 0,
+  "backtest_engine_constructors": 0,
+  "new_prefix_attempts": 0,
+  "new_full_attempts": 0,
+  "old_native_ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
+    "spent": 4,
+    "max": 7,
+    "unspent": 3,
+    "unspent_status": "HOLD_NOT_REASSIGNED"
+  },
+  "old_prefix_ledger_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "ledger_rows_immutable": true,
+  "native_supervisor_hard_stop_bypass_allowed": false,
+  "old_approvals_protocols_immutable": true,
+  "native_root_go": false,
+  "economic_root_go": false,
+  "full_training_download_pilot_production_deploy_external_orders_transfers": 0,
+  "next_native_authorization": "Separate explicit owner approval after actual source/pure/review and complete frozen case map; fresh E1 required."
+}
