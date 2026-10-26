@@ -75,6 +75,30 @@ def amendment7_identity(g,l,a,launch=False):
         matches=[row for row in l["attempts"]if row["attempt_id"]==saved["attempt_id"]]
         assert len(matches)==1 and matches[0]["status"]=="FAILED"
         assert canonical(matches[0])==saved["canonical_sha256"],"PRESERVED_FAILED_ROW_CHANGED"
+    assert len(l["attempts"])==l["physical_started"]
+    assert [row["attempt_id"]for row in l["attempts"][:2]]==[row["attempt_id"]for row in a["preserved_failed_rows"]]
+    for index,row in enumerate(l["attempts"][2:],3):
+        # The two preserved failures are the ONLY exceptions. A new failure,
+        # unknown OS exit, or unqualified completion cannot spend a next slot.
+        expected=next(x for x in a["physical_schedule"]if x["physical_index"]==index)
+        assert row["physical_index"]==index and row["fixture_id"]==expected["fixture_id"]and row["scenario"]==expected["scenario"]
+        assert row.get("repeat_of")==expected.get("repeat_of")
+        assert row["status"]=="COMPLETED","ANY_NEW_FAILURE_STOP"
+        for key in("actual_process_exit_code","actual_supervisor_exit_code","actual_external_dispatcher_exit_code"):
+            assert type(row.get(key))is int and row[key]==0,"OBSERVED_ZERO_OS_EXITS_REQUIRED"
+        assert row["supervisor_exit_authority"]=="EXTERNAL_DISPATCHER_AFTER_EXIT"
+        pin=row["external_dispatcher_exit_receipt"]
+        assert sha(pin["path"])==pin["sha256"],"EXTERNAL_OS_RECEIPT_PIN_CHANGED"
+        receipt=json.loads(Path(pin["path"]).read_text())
+        assert receipt["schema"]=="CM137_ROOT_ACTUAL_EXTERNAL_OS_EXIT_V1"
+        assert receipt["authority"]=="OBSERVED_EXEC_SESSION_COMPLETION_NOT_WRAPPER_GUESS"
+        assert receipt["attempt_id"]==row["attempt_id"]and receipt["fixture_id"]==row["fixture_id"]and receipt["scenario"]==row["scenario"]
+        assert receipt.get("repeat_of")==row.get("repeat_of")
+        for key in("external_dispatcher_pid","actual_supervisor_pid","actual_native_child_pid"):
+            assert type(receipt.get(key))is int and receipt[key]>0,"OBSERVED_PID_REQUIRED"
+        assert receipt["actual_supervisor_pid"]==row["supervisor_pid"]and receipt["actual_native_child_pid"]==row["child_pid"]
+        for key in("actual_native_child_os_exit_code","actual_supervisor_os_exit_code","actual_external_dispatcher_os_exit_code"):
+            assert type(receipt.get(key))is int and receipt[key]==0,"EXTERNAL_OBSERVED_ZERO_REQUIRED"
     identity=case_identity(g)
     schedule=next(row for row in a["physical_schedule"]if row["physical_index"]==l["physical_started"]+1)
     assert identity["fixture_id"]==schedule["fixture_id"]and identity["scenario"]==schedule["scenario"]

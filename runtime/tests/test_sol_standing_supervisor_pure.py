@@ -158,10 +158,54 @@ def test_amend7_rejects_identity_budget_or_failed_history_changes(fault):
     else:g["source_commit"]="OLD"
     with pytest.raises((AssertionError,StopIteration,KeyError)):sup.amendment7_identity(g,l,a)
 
-def test_amend7_remaining_e2_to_e5_schedule_no_extra_slot():
+
+def completed_metadata(tmp_path,l,a):
+    """Explicit stdlib-only metadata fixture, never native completion evidence."""
+    index=len(l["attempts"])+1;entry=next(x for x in a["physical_schedule"]if x["physical_index"]==index)
+    row=dict(entry,attempt_id="UNIT-COMPLETED-"+str(index),status="COMPLETED",child_pid=3100+index,supervisor_pid=2100+index,actual_process_exit_code=0,actual_supervisor_exit_code=0,actual_external_dispatcher_exit_code=0,supervisor_exit_authority="EXTERNAL_DISPATCHER_AFTER_EXIT")
+    receipt=dict(schema="CM137_ROOT_ACTUAL_EXTERNAL_OS_EXIT_V1",external_dispatcher_pid=1100+index,actual_supervisor_pid=row["supervisor_pid"],actual_native_child_pid=row["child_pid"],authority="OBSERVED_EXEC_SESSION_COMPLETION_NOT_WRAPPER_GUESS",attempt_id=row["attempt_id"],fixture_id=row["fixture_id"],scenario=row["scenario"],repeat_of=row.get("repeat_of"),actual_native_child_os_exit_code=0,actual_supervisor_os_exit_code=0,actual_external_dispatcher_os_exit_code=0)
+    p=tmp_path/("UNIT-NOT-NATIVE-OS-"+str(index)+".json");p.write_text(json.dumps(receipt));row["external_dispatcher_exit_receipt"]=dict(path=str(p),sha256=sup.sha(p))
+    l["attempts"].append(row);l["physical_started"]=len(l["attempts"])
+    return row
+
+def test_amend7_remaining_e2_to_e5_schedule_no_extra_slot(tmp_path):
     g,l,a=amend_state()
     for physical in range(4,8):
-        case="E"+str(physical-2);l["physical_started"]=physical-1;g.update(fixture_id=case,scenario=case,repeat_of=None)
+        completed_metadata(tmp_path,l,a)
+        case="E"+str(physical-2);g.update(fixture_id=case,scenario=case,repeat_of=None)
         sup.amendment7_identity(g,l,a)
-    l["physical_started"]=7
+    completed_metadata(tmp_path,l,a)
+    with pytest.raises(AssertionError):sup.amendment7_identity(g,l,a)
+
+@pytest.mark.parametrize("failed_physical",[3,4])
+def test_any_new_failed_e7_to_e2_or_e2_to_e3_stops_before_claim_and_preserves_ledger(tmp_path,failed_physical):
+    g,l,a=amend_state()
+    for _ in range(3,failed_physical+1):row=completed_metadata(tmp_path,l,a)
+    row["status"]="FAILED";row["actual_process_exit_code"]=1
+    next_case="E"+str(failed_physical-1);g.update(fixture_id=next_case,scenario=next_case,repeat_of=None)
+    path=tmp_path/"UNIT-ledger.json";path.write_text(json.dumps(l));before=path.read_bytes();memory=json.dumps(l,sort_keys=True)
+    with pytest.raises(AssertionError,match="ANY_NEW_FAILURE_STOP"):sup.amendment7_identity(g,l,a)
+    assert path.read_bytes()==before and json.dumps(l,sort_keys=True)==memory
+
+@pytest.mark.parametrize("field",["actual_process_exit_code","actual_supervisor_exit_code","actual_external_dispatcher_exit_code"])
+@pytest.mark.parametrize("value",[None,False,True,1,-1,"0"])
+def test_completed_label_without_observed_integer_zero_is_blocked(tmp_path,field,value):
+    g,l,a=amend_state();row=completed_metadata(tmp_path,l,a);row[field]=value
+    g.update(fixture_id="E2",scenario="E2",repeat_of=None)
+    with pytest.raises(AssertionError,match="OBSERVED_ZERO_OS_EXITS_REQUIRED"):sup.amendment7_identity(g,l,a)
+
+@pytest.mark.parametrize("fault",["UNKNOWN","missing_child","wrong_schedule","unknown_authority","receipt_nonzero","receipt_pin","receipt_pid","receipt_schema","receipt_repeat"])
+def test_unknown_incomplete_or_forged_post_amendment_history_blocks(tmp_path,fault):
+    g,l,a=amend_state();row=completed_metadata(tmp_path,l,a);g.update(fixture_id="E2",scenario="E2",repeat_of=None)
+    if fault=="UNKNOWN":row["status"]="UNKNOWN_REQUIRES_RECONCILIATION"
+    elif fault=="missing_child":del row["actual_process_exit_code"]
+    elif fault=="wrong_schedule":row["fixture_id"]="E4"
+    elif fault=="unknown_authority":row["supervisor_exit_authority"]="GUESSED"
+    else:
+        p=Path(row["external_dispatcher_exit_receipt"]["path"]);receipt=json.loads(p.read_text());receipt["actual_native_child_os_exit_code"]=1
+        if fault=="receipt_pid":receipt["actual_native_child_os_exit_code"]=0;receipt["actual_native_child_pid"]+=1
+        if fault=="receipt_schema":receipt["actual_native_child_os_exit_code"]=0;receipt["schema"]="UNKNOWN"
+        if fault=="receipt_repeat":receipt["actual_native_child_os_exit_code"]=0;receipt["repeat_of"]="OTHER"
+        p.write_text(json.dumps(receipt))
+        if fault!="receipt_pin":row["external_dispatcher_exit_receipt"]["sha256"]=sup.sha(p)
     with pytest.raises(AssertionError):sup.amendment7_identity(g,l,a)
