@@ -31,7 +31,7 @@ Gate A PASS: каждое изменение связано с измеримы�
 
 ## B. Минимальное изменение BTC и инженерия нового SOL-контракта
 
-Будущая фаза после протокола/согласия. Только isolated VPS worktree; Mac — frozen research copy. Включаемые флаги defaultOFF. BTC entry/core по умолчанию сохранён. Реальные TP меняются отдельно от second-entry/sizing; несовместимость фиксируется явно. Не возвращать фиктивные нулевые TP ради денежных результатов.
+Будущая фаза после протокола/согласия. Только isolated VPS worktree; Mac — frozen research copy. Включаемые флаги defaultOFF. BTC entry/core по умолчанию сохранён. Реальные TP меняются отдельно от second-entry/sizing; несовместимость фиксируется явно. Не возвращать synthetic zero-target fills вместо реальных TP ради денежных результатов.
 
 До native: реальные public API/types, stock loaders/paths/serialization, registered kwargs, data clock/UTC/warmup, достижимость fixture order book depth, действительные callbacks/callers. Engine-free constructor tripwire. Повторять весь209 suite только если затронут соответствующий контракт, а не при каждой правке отчёта.
 
