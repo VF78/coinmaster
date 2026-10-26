@@ -115,6 +115,12 @@ class PairedPrefixResearch:
         self.paired_prefix_audit = []
         self._pair_last_quote = {}
         self._pair_seen_fills = set()
+        self._pair_sol_events = set()
+        self._pair_predecisions = []
+        self._pair_observed_rights = {}
+        self._pair_observed_marks = {}
+        self._pair_predecision_counts = dict(checks=0,records=0,coalesced=0)
+        self._pair_sol_boundary_counts = dict(checks=0,strict=0,unknown=0)
         self._pair_feed_index = 0
         self._pair_failures = []
         if self.config.research_paired_prefix not in (None, "B2", "B2_F0"):
@@ -173,6 +179,7 @@ class PairedPrefixResearch:
                            self._pair_work(instrument=self.config.btc_id)))
 
     def _pair_cancel_btc_increases(self, ns):
+        self._pair_observe_lock(ns)
         self._a0_lock(ns)
         self._discard_queued_intents(lambda i: i.action == "BTC_ENTRY")
         self._split_stop("PAIRED_MONOTONE_PARENT_CEILING")
@@ -195,7 +202,8 @@ class PairedPrefixResearch:
 
     def _pair_release_if_terminal(self, ns):
         p = self._pair
-        if p and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight():
+        if p and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight() and not (getattr(self.config, "research_sol_standing_protection", False) and any(o.get("pending") is not None and o.get("parent") == p["parent"] for o in self._pair_orders.values())):
+            self._pair_predecision(ns,"PARENT_NATIVE_TERMINAL")
             self._pair_log("PARENT_NATIVE_TERMINAL_FLAT", ns, parent=p["parent"])
             self._pair = None
 
@@ -219,6 +227,9 @@ class PairedPrefixResearch:
         if self._pair_qty(self.config.sol_id) or any(o.instrument_id == self.config.sol_id for o in self.cache.orders_open() + self.cache.orders_inflight()):
             self._pair_fail("UNKNOWN_UNRELATED_SOL_OWNERSHIP", ns)
             self._begin_forced_close("PAIRED_UNKNOWN_SOL_OWNERSHIP")
+            return
+        if getattr(self.config,"research_btc_trim_control",False):
+            self._pair_trim_start(signal,ep,position,branch,ns)
             return
         btc = self.cache.instrument(self.config.btc_id); sol = self.cache.instrument(self.config.sol_id)
         qref = position.quantity.as_decimal()
@@ -280,7 +291,8 @@ class PairedPrefixResearch:
             order = self.order_factory.market(**kw, time_in_force=TimeInForce.IOC)
         oid = str(order.client_order_id)
         self._pair_orders[oid] = dict(instrument=instrument, kind=kind, level=level, accepted=False,
-            generation=self._pair["generation"], submit_ns=ns)
+            generation=self._pair["generation"], submit_ns=ns, parent=self._pair["parent"],
+            initial_oid=oid, initialized_event_id=str(order.init_event.id), pending=None, ack=None, command_sequence=0)
         if not self._record_submission(order, "paired:" + oid, self._pair["parent"],
                                        "PAIRED_" + kind, "PAIRED_" + kind, level):
             self._pair_fail("DURABLE_SUBMIT_DENIED", ns); return
@@ -331,6 +343,11 @@ class PairedPrefixResearch:
         if p is None:
             raise ValueError("PAIRED_LATE_FILL_WITHOUT_OWNER")
         qty = event.last_qty.as_decimal(); px = event.last_px.as_decimal()
+        if owner["kind"]=="STOP" and getattr(self.config,"research_sol_standing_protection",False):
+            # A partial STOP callback can precede IOC terminal cancellation.
+            # Any genuine STOP fill closes protection ownership immediately.
+            p["close_sol"]=True
+            self._pair_log("SOL_STOP_FILL_CLOSING_BARRIER",event.ts_event,order_id=oid,trade_id=str(event.trade_id),qty=qty)
         if owner["kind"] == "ENTRY":
             step = self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
             added = sol_allocations(int(qty / step), p["consumed"])
@@ -390,6 +407,8 @@ class PairedPrefixResearch:
                        level=owner["level"], qty=qty, price=px, risk=p["risk"], bmax=p["caps"].bmax)
         if order is not None and order.is_closed:
             self._pair_terminal(oid, event.ts_event)
+        elif getattr(self.config, "research_sol_standing_protection", False):
+            self._pair_protect(event.ts_event)
         return True
 
     def _pair_position_event(self, ns):
@@ -413,6 +432,11 @@ class PairedPrefixResearch:
         self._pair_release_if_terminal(ns)
 
     def _pair_protect(self, ns):
+        if getattr(self.config, "research_sol_standing_protection", False):
+            return self._pair_sol_protect(ns)
+        return self._pair_legacy_protect(ns)
+
+    def _pair_legacy_protect(self, ns):
         p = self._pair
         if p is None or p["p0"] is None:
             return
@@ -457,6 +481,8 @@ class PairedPrefixResearch:
                 if p["side"] * (tick.bid_price.as_decimal() - p["boundary"]) >= 0 or ns >= p["deadline_ns"]:
                     p["risk"] = "INACTIVE_RISK"; p["close_sol"] = True
                     self._pair_log("RISK_INVALID_OR_EXPIRED", ns, btc_close=tick.bid_price.as_decimal())
+            if p and p.get("role")=="BTC_TRIM":
+                self._pair_trim_quote(tick)
             feed = self.config.research_paired_signal_rows
             while self._pair_feed_index < len(feed) and feed[self._pair_feed_index].decision_ns <= ns:
                 signal = feed[self._pair_feed_index]; self._pair_feed_index += 1
@@ -521,5 +547,423 @@ class PairedPrefixResearch:
         self._pair_release_if_terminal(ns)
 
     def _pair_report(self):
-        return dict(events=self.paired_prefix_audit, failures=list(self._pair_failures),
+        return dict(control_role="BTC_TRIM"if getattr(self.config,"research_btc_trim_control",False)else"A0_FIXED"if getattr(self.config,"research_sol_standing_protection",False)and self._a0_enabled()else"C0_FIXED"if getattr(self.config,"research_sol_standing_protection",False)else"LEGACY_OR_OFF",
+                    events=self.paired_prefix_audit, predecision_records=self._pair_predecisions,
+                    predecision_coverage=dict(parent_count=len(self._pair_observed_rights),
+                        parents=[dict(parent=k,risk_off_ns=v["off_ns"],first_off60_quote_observed=v.get("off60_recorded",False),
+                            original_right_lock_eligible=v["lock_eligible"],original_second_orders=list(v.get("original_second_orders",())))
+                            for k,v in self._pair_observed_rights.items()],
+                        counts=self._pair_predecision_counts,truncated=False),
+                    sol_boundary_counts=self._pair_sol_boundary_counts, failures=list(self._pair_failures),
                     open_owner=self._pair is not None, physical_budget_authority="EXTERNAL_SINGLE_SOURCE_RUN_LEDGER")
+
+
+    def _pair_sol_native_event(self, event, route):
+        """Typed/generic routes share actual UUID dedup; public return is no ACK."""
+        if not getattr(self.config, "research_sol_standing_protection", False):
+            return
+        oid = str(event.client_order_id)
+        owner = self._pair_orders.get(oid)
+        if not owner or owner["instrument"] != self.config.sol_id or owner["kind"] not in {"TP", "STOP"}:
+            return
+        event_id = getattr(event, "id", None)
+        if event_id is None:
+            self._pair_fail("SOL_UNKNOWN_NATIVE_EVENT_ID", event.ts_event)
+            return
+        key = str(event_id)
+        if key in self._pair_sol_events:
+            return
+        self._pair_sol_events.add(key)
+        name = type(event).__name__
+        order = self.cache.order(event.client_order_id)
+        if name == "OrderInitialized":
+            if key != owner["initialized_event_id"] or event.strategy_id != self.id or event.instrument_id != self.config.sol_id:
+                self._pair_fail("SOL_UNKNOWN_PRE_CACHE_INITIALIZATION", event.ts_event)
+            return
+        if (order is None or event.strategy_id != self.id or event.instrument_id != self.config.sol_id
+                or not any(str(item.id) == key for item in order.events)):
+            self._pair_fail("SOL_NATIVE_EVENT_OWNERSHIP_OR_HISTORY_UNKNOWN", event.ts_event)
+            return
+        self._pair_log("SOL_NATIVE_EVENT", event.ts_event, order_id=oid,
+            native_event_id=key, event_type=name, route=route,
+            observed_ns=self.clock.timestamp_ns(), status=None if order is None else order.status.name)
+        if name not in {"OrderUpdated", "OrderModifyRejected"}:
+            return
+        pending = owner.get("pending")
+        if pending is None:
+            self._pair_fail("SOL_UNOWNED_MODIFY_ACK", event.ts_event)
+            return
+        owner["pending"] = None
+        if name == "OrderModifyRejected":
+            owner["ack"] = None
+            owner["rejected_desired"] = pending["desired"]
+            self._pair_log("SOL_MODIFY_REJECTED", event.ts_event, order_id=oid,
+                sequence=pending["sequence"], reason=str(event.reason))
+        elif order is None or not self._pair_sol_payload_matches(order, pending["payload"]):
+            owner["ack"] = None
+            self._pair_fail("SOL_MODIFY_ACK_PAYLOAD_UNKNOWN", event.ts_event)
+        else:
+            owner["ack"] = pending["payload"]
+            owner.pop("rejected_desired", None)
+            self._pair_log("SOL_LATEST_MODIFY_ACK", event.ts_event, order_id=oid,
+                sequence=pending["sequence"], native_event_id=key, generation=pending["generation"])
+        self._pair_protect(event.ts_event)
+
+    @staticmethod
+    def _pair_sol_payload_matches(order, payload):
+        total, price, trigger = payload
+        return (order.quantity.as_decimal() == total
+            and (price is None or order.price.as_decimal() == price)
+            and (trigger is None or order.trigger_price.as_decimal() == trigger))
+
+    def _pair_sol_protect(self, ns):
+        p = self._pair
+        if p is None or p["p0"] is None or p.get("sol_reconciling"):
+            return
+        held = self._pair_qty(self.config.sol_id)
+        if not held or p["close_sol"]:
+            # Keep owner registries until native cancellation/terminal is observed.
+            if not held:
+                p["protection_since"] = None
+                self._pair_cancel(self._pair_work(instrument=self.config.sol_id, kinds={"TP", "STOP"}))
+            return
+        p["sol_reconciling"] = True
+        try:
+            inst = self.cache.instrument(self.config.sol_id)
+            step = inst.size_increment.as_decimal()
+            prices, stop = sol_prices(p["p0"], p["atr"], -p["side"], inst.price_increment.as_decimal())
+            lots = dict(p["tp_lots"])
+            if sum(lots.values())*step != held:
+                # Native cache can already contain the next same-stack fill.
+                # No fabricated entitlement/quantity; wait for its real callback.
+                p["protection_since"] = p["protection_since"] if p["protection_since"] is not None else ns
+                return
+            if not any(lots.values()):
+                raise ValueError("PAIRED_INVENTORY_WITHOUT_TP_RIGHTS")
+            for level, count in lots.items():
+                q = D(count)*step
+                if q < 0 or (q and ((inst.min_quantity and q < inst.min_quantity.as_decimal())
+                    or (inst.min_notional and q*min(prices[level], stop) < inst.min_notional.as_decimal()))):
+                    raise ValueError("PAIRED_INVALID_NATIVE_TP_OR_STOP_ALLOCATION")
+            prior_protection=any(o.get("parent")==p["parent"]and o["kind"]in {"TP","STOP"}for o in self._pair_orders.values())
+            if not prior_protection and not p["consumed"]and {level for level,count in lots.items()if count>0}!={0,1,2}:
+                raise ValueError("PAIRED_INVALID_NATIVE_TP_OR_STOP_ALLOCATION")
+            desired = {("TP", level): (D(count)*step, prices[level], None)
+                       for level, count in lots.items() if count > 0}
+            desired[("STOP", None)] = (held, None, stop)
+            signature = (p["p0"], held, tuple(sorted(p["tp_lots"].items())))
+            if signature != p["signature"]:
+                p["generation"] += 1
+                p["signature"] = signature
+                p["protection_since"] = p["protection_since"] if p["protection_since"] is not None else ns
+            work = self._pair_work(instrument=self.config.sol_id, kinds={"TP", "STOP"})
+            indexed = {}
+            for oid, owner, order in work:
+                key = owner["kind"], owner["level"]
+                if key in indexed or owner.get("parent") != p["parent"] or order is None or order.strategy_id != self.id or order.instrument_id != self.config.sol_id or not order.is_reduce_only or order.side != (OrderSide.BUY if p["side"]==1 else OrderSide.SELL):
+                    raise ValueError("SOL_UNKNOWN_NATIVE_ORDER_OWNERSHIP")
+                indexed[key] = oid, owner, order
+                if key not in desired:
+                    self._pair_cancel([(oid, owner, order)])
+            for key, target in desired.items():
+                leaves, price, trigger = target
+                if key not in indexed:
+                    # A consumed/terminal TP cannot be resurrected from stale rights.
+                    history = [(oid, owner) for oid, owner in self._pair_orders.items()
+                        if owner.get("parent") == p["parent"] and (owner["kind"], owner["level"]) == key]
+                    if history:
+                        raise ValueError("SOL_TERMINAL_PROTECTION_WITH_POSITIVE_RIGHT")
+                    self._pair_submit(self.config.sol_id, p["side"], leaves, key[0], ns,
+                        price=price, stop=trigger, level=key[1])
+                    continue
+                oid, owner, order = indexed[key]
+                total = order.filled_qty.as_decimal() + leaves
+                payload = total, price, trigger
+                owner["desired"] = leaves, price, trigger
+                if owner.get("pending") is not None or order.is_pending_cancel or order.is_closed:
+                    continue
+                if self._pair_sol_payload_matches(order, payload):
+                    if owner["accepted"] and order.status.name in {"ACCEPTED", "PARTIALLY_FILLED", "TRIGGERED"}:
+                        owner["ack"] = payload
+                    continue
+                if owner.get("rejected_desired") == owner["desired"]:
+                    continue  # No retry storm; original protection clock remains open.
+                if not owner["accepted"] or order.status.name not in {"ACCEPTED", "PARTIALLY_FILLED", "TRIGGERED"}:
+                    continue
+                owner["command_sequence"] += 1
+                pending = dict(sequence=owner["command_sequence"], generation=p["generation"],
+                    desired=owner["desired"], payload=payload, sent_ns=self.clock.timestamp_ns())
+                owner["pending"] = pending  # Install before reentrant native callback.
+                owner["ack"] = None
+                self._pair_log("SOL_MODIFY_SUBMIT", ns, order_id=oid, kind=key[0], level=key[1],
+                    sequence=pending["sequence"], generation=p["generation"], total=total,
+                    filled=order.filled_qty.as_decimal(), desired_leaves=leaves)
+                kwargs = dict(quantity=inst.make_qty(total))
+                if price is not None and order.price.as_decimal() != price:
+                    kwargs["price"] = inst.make_price(price)
+                if trigger is not None and order.trigger_price.as_decimal() != trigger:
+                    kwargs["trigger_price"] = inst.make_price(trigger)
+                self.modify_order(order, **kwargs)
+                self._pair_log("SOL_PUBLIC_MODIFY_RETURN", ns, order_id=oid, sequence=pending["sequence"],
+                    status=order.status.name, pending=owner.get("pending") is not None)
+            work = self._pair_work(instrument=self.config.sol_id, kinds={"TP", "STOP"})
+            exact = len(work) == len(desired)
+            for oid, owner, order in work:
+                target = desired.get((owner["kind"], owner["level"]))
+                exact = exact and target is not None and order is not None
+                if target is None or order is None:
+                    continue
+                leaves, price, trigger = target
+                payload = order.filled_qty.as_decimal() + leaves, price, trigger
+                exact = (exact and owner["accepted"] and owner.get("pending") is None
+                    and order.status.name in {"ACCEPTED", "PARTIALLY_FILLED", "TRIGGERED"}
+                    and order.leaves_qty.as_decimal() == leaves and self._pair_sol_payload_matches(order, payload))
+            if exact:
+                p["protection_since"] = None
+            elif p["protection_since"] is None:
+                p["protection_since"] = ns
+        except ValueError as error:
+            self._pair_fail(str(error), ns)
+        finally:
+            p["sol_reconciling"] = False
+
+    def _pair_observe_lock(self, ns):
+        """Independent shadow record only: never create m[a0] or grant a right."""
+        if not self.config.research_paired_prefix or not self._pair or not self._split_parent:
+            return
+        p, pair = self._split_parent, self._pair
+        if p["episode_id"] != pair["parent"] or p["episode_id"] in self._pair_observed_rights:
+            return
+        m = self._md_plans.get(p["episode_id"], {})
+        second = [oid for oid, role in m.get("entry_orders", {}).items() if role == "SECOND"]
+        inst = self.cache.instrument(self.config.btc_id)
+        tick = inst.price_increment.as_decimal()
+        if m.get("p0") is None:
+            price = None
+        else:
+            raw = m["p0"] * (1 - self.config.research_btc_split_discount * p["side"])
+            price = (raw / tick).to_integral_value(rounding=ROUND_FLOOR if p["side"] == 1 else ROUND_CEILING) * tick
+        self._pair_observed_rights[p["episode_id"]] = dict(lock_ns=ns,
+            original_second=p["quantity"]-p["first_quantity"], first_terminal=m.get("first_filled"),
+            price=price, old_orders=tuple(m.get("entry_orders", {})), off_ns=None, last_record=None,
+            lock_eligible=(p.get("stop_reason") in (None,"PAIRED_MONOTONE_PARENT_CEILING")
+                and not m.get("touched") and m.get("first_done",False) and m.get("p0")is not None
+                and any((o:=self.cache.order(ClientOrderId(oid)))is None or not o.is_closed for oid in second)),
+            locked_cap=None,off60_recorded=False,original_second_orders=tuple(second))
+        self._pair_predecision(ns, "RISK_CANCEL")
+
+    def _pair_predecision(self, ns, reason, tick=None):
+        if not self.config.research_paired_prefix or not self._pair:
+            return
+        pair = self._pair
+        a = self._pair_observed_rights.get(pair["parent"])
+        if a is None:
+            return
+        m = self._md_plans.get(pair["parent"], {})
+        if pair["risk"] == "INACTIVE_RISK" and a["off_ns"] is None:
+            a["off_ns"] = ns
+            reason = "RISK_OFF"
+        if tick is not None and tick.instrument_id != self.config.btc_id:
+            return
+        counts=getattr(self,"_pair_predecision_counts",None)
+        if counts is None:self._pair_predecision_counts=counts=dict(checks=0,records=0,coalesced=0)
+        counts["checks"]+=1
+        first_ready=(tick is not None and a["off_ns"]is not None and ns>=a["off_ns"]+MINUTE and not a.get("off60_recorded",False))
+        if first_ready:
+            reason="FIRST_BTC_QUOTE_AFTER_RISK_OFF_PLUS60";a["off60_recorded"]=True
+        def order_row(oid):
+            o = self.cache.order(ClientOrderId(oid))
+            return dict(order_id=oid, status="UNKNOWN" if o is None else o.status.name,
+                filled="UNKNOWN" if o is None else str(o.filled_qty),
+                leaves="UNKNOWN" if o is None else str(o.leaves_qty),
+                generation=m.get("order_generation", {}).get(oid, "UNKNOWN"))
+        account = self.cache.account_for_venue(self.config.btc_id.venue)
+        native_margin = {}
+        for instrument in (self.config.btc_id, self.config.sol_id):
+            native_margin[str(instrument)] = {name: "UNKNOWN" if account is None or (v := getattr(account, name)(instrument)) is None else str(v)
+                for name in ("margin_init", "margin_maint")}
+        quote = self._pair_last_quote.get(self.config.btc_id) if tick is None else tick
+        marks = {}
+        policy = self.config.margin_policy
+        # Public margin_for gives current policy validity; no hypothetical order/credit.
+        for instrument in (self.config.btc_id, self.config.sol_id):
+            try:
+                _, _, mark = policy.margin_for(instrument, self._pair_qty(instrument), ns)
+                observed = self._pair_observed_marks.get(instrument)
+                marks[str(instrument)] = dict(price=str(mark),
+                    age_ns="UNKNOWN" if observed is None else str(ns-observed[1]),
+                    mark_ns="UNKNOWN" if observed is None else str(observed[1]), policy_current=True)
+            except (ValueError, AttributeError):
+                marks[str(instrument)] = dict(price="UNKNOWN", age_ns="UNKNOWN", policy_current=False)
+        held = self._pair_qty(self.config.btc_id)
+        remaining = None if m.get("second_filled") is None else max(D(0), a["original_second"]-m["second_filled"])
+        book="UNKNOWN"
+        if tick is not None and self.config.research_native_book is not None:
+            try:book=self.config.research_native_book.matching(tick.instrument_id)
+            except ValueError:pass
+        row = dict(reason=reason, phase="CAUSE_"+reason if tick is None else"AFTER_PAIR_RISK_AND_MD_RECONCILE_BEFORE_A0_CHECK",
+            native_input_identity="UNKNOWN"if tick is None else str(id(tick)),
+            native_event_uuid="UNKNOWN_NO_EVENT_UUID_IN_CAUSE"if tick is None else"NOT_PROVIDED_BY_NATIVE_QUOTE_TICK",
+            instrument="UNKNOWN"if tick is None else str(tick.instrument_id),book=book,
+            parent=pair["parent"], timestamp_ns=str(ns), side=pair["side"],
+            a0_trading_enabled=self._a0_enabled(), original_second=str(a["original_second"]),
+            original_first_allocation="UNKNOWN"if self._split_parent is None else str(self._split_parent["first_quantity"]),
+            first_filled_ever=str(m.get("first_filled","UNKNOWN")),
+            first_terminal=str(a["first_terminal"]), second_filled_ever=str(m.get("second_filled", "UNKNOWN")),
+            remaining="UNKNOWN" if remaining is None else str(remaining), original_price=str(a["price"]),
+            original_second_orders=list(a.get("original_second_orders",())),
+            original_tif="GTC_POST_ONLY", lock_ns=str(a["lock_ns"]), off_ns=None if a["off_ns"] is None else str(a["off_ns"]),
+            off_plus60_ready=a["off_ns"] is not None and ns >= a["off_ns"]+MINUTE,
+            held=str(held), sol_held=str(self._pair_qty(self.config.sol_id)), cap=str(pair["caps"].bmax),
+            debt_since=pair["debt_since"], risk=pair["risk"], entry_terminal=pair["entry_terminal"],
+            ordinary_tp_touched=bool(m.get("touched")), entries_enabled=self._entries_enabled(ignore_paired_lock=True),
+            old_orders=[order_row(oid) for oid in a["old_orders"]],
+            open_inflight=[order_row(str(o.client_order_id)) for o in self.cache.orders_open()+self.cache.orders_inflight()
+                if o.instrument_id in (self.config.btc_id, self.config.sol_id)],
+            current_btc_tp=[order_row(oid) for oid, intent in self._pending_by_order.items()
+                if intent.action == "BTC_REDUCE" and intent.episode_id == pair["parent"]],
+            sol_protection_gap=pair["protection_since"], marks=marks, native_margin=native_margin,
+            native_account="UNKNOWN" if account is None else type(account).to_dict(account),
+            stock_margin_invoked=False, stock_margin_result="UNKNOWN_NOT_EXECUTED_OBSERVER", admission="UNKNOWN_OBSERVATION_ONLY",
+            bid="UNKNOWN" if quote is None else str(quote.bid_price), ask="UNKNOWN" if quote is None else str(quote.ask_price),
+            quote_ns="UNKNOWN" if quote is None else str(quote.ts_event),
+            post_only_cross="UNKNOWN" if quote is None or a["price"] is None else not (a["price"] < quote.ask_price.as_decimal() if pair["side"] == 1 else a["price"] > quote.bid_price.as_decimal()))
+        old_unknown=any(o["status"]=="UNKNOWN"for o in row["old_orders"])
+        old_live=any(o["status"]not in {"CANCELED","FILLED","EXPIRED","REJECTED","DENIED"}for o in row["old_orders"])
+        pending_increase=any(not o.is_reduce_only for o in self.cache.orders_open()+self.cache.orders_inflight()
+            if o.instrument_id in (self.config.btc_id,self.config.sol_id))
+        if not a["lock_eligible"]:wait="ORIGINAL_RIGHT_NOT_ESTABLISHED"
+        elif not held or not self._domain.episode or self._domain.episode.id!=pair["parent"]or row["ordinary_tp_touched"]or not row["entries_enabled"]:wait="PARENT_TP_FLAT_CLOSE_OR_PAUSE"
+        elif pair["risk"]!="INACTIVE_RISK"or pair["failed"]or not pair["entry_terminal"]:wait="WAIT_RISK_OFF"
+        elif not row["off_plus60_ready"]:wait="WAIT_60_SECONDS"
+        elif old_unknown or old_live:wait="WAIT_OLD_NATIVE_TERMINAL"
+        elif pending_increase or self._pair_work(kinds={"ENTRY"})or self._pair_work(instrument=self.config.btc_id):wait="WAIT_PENDING"
+        elif pair["debt_since"]is not None or held>pair["caps"].bmax:wait="WAIT_DEBT"
+        elif not self._a0_targets_ready(self._domain.episode,m,held):wait="CURRENT_THREE_TP_ACK_UNKNOWN"
+        elif remaining is None:wait="SECOND_BUDGET_UNKNOWN"
+        elif not remaining:wait="SECOND_BUDGET_EXHAUSTED"
+        elif row["post_only_cross"]is True:wait="POST_ONLY_CROSS"
+        elif row["post_only_cross"]=="UNKNOWN":wait="QUOTE_UNKNOWN"
+        else:wait="READY_FOR_ACTUAL_STOCK_GUARD"
+        declared="UNKNOWN"
+        if wait in {"POST_ONLY_CROSS","QUOTE_UNKNOWN","READY_FOR_ACTUAL_STOCK_GUARD"}:
+            from coinmaster.strategy.a0_rights import release_cap
+            if a["locked_cap"]is None:a["locked_cap"]=pair["caps"].bmax
+            cap=min(release_cap(a["first_terminal"],a["original_second"],a["locked_cap"],remaining),pair["caps"].bmax+remaining)
+            declared=str(min(remaining,max(D(0),cap-held)))
+        row.update(observer_reason=wait,original_right_lock_eligible=a["lock_eligible"],
+            declared_quantity=declared,observer_locked_cap="UNKNOWN"if a["locked_cap"]is None else str(a["locked_cap"]))
+        # Snapshot native values only on causal stage/WAIT-state changes. Price
+        # movement without changed eligibility cannot manufacture opportunities.
+        signature=repr((wait,held,row["sol_held"],row["cap"],remaining,
+            row["old_orders"],row["open_inflight"],row["current_btc_tp"],
+            row["sol_protection_gap"],[(k,v["policy_current"])for k,v in marks.items()]))
+        if reason in {"RISK_CANCEL", "RISK_OFF","FIRST_BTC_QUOTE_AFTER_RISK_OFF_PLUS60"} or signature != a["last_record"]:
+            if len(self._pair_predecisions)>=10000:raise ValueError("PREDECISION_OBSERVER_CAPACITY_EXCEEDED_NO_TRUNCATION")
+            self._pair_predecisions.append(row);counts["records"]+=1
+            a["last_record"] = signature
+        else:counts["coalesced"]+=1
+
+
+    def _a0_targets_ready(self, ep, m, held):
+        # Runs after the original off_ns/+60 initialization, preserving clocks.
+        # Same original right/clock; unknown SOL ACK or a draining STOP blocks
+        # increases until actual terminal state, never grants synthetic coverage.
+        if getattr(self.config, "research_sol_standing_protection", False) and self._pair:
+            if self._pair["protection_since"] is not None or any(
+                order is None or order.is_pending_cancel or owner.get("pending") is not None
+                for _, owner, order in self._pair_work(instrument=self.config.sol_id)):
+                return
+        return super()._a0_targets_ready(ep,m,held)
+
+
+    def _pair_sol_boundary(self, label, ns, strict=False):
+        """Read-only observation at native matching barriers, no pumping/mutation."""
+        if not getattr(self.config, "research_sol_standing_protection", False) or not self._pair:
+            return
+        p=self._pair;held=self._pair_qty(self.config.sol_id)
+        rows=[];exact=True;expected={}
+        if held and p["p0"] is not None:
+            inst=self.cache.instrument(self.config.sol_id)
+            prices,stop=sol_prices(p["p0"],p["atr"],-p["side"],inst.price_increment.as_decimal())
+            expected={("TP",level):(D(count)*inst.size_increment.as_decimal(),prices[level],None)
+                for level,count in p["tp_lots"].items()if count>0}
+            expected[("STOP",None)]=(held,None,stop)
+        work=self._pair_work(instrument=self.config.sol_id,kinds={"TP","STOP"})
+        for oid,owner,order in work:
+            target=expected.get((owner["kind"],owner["level"]))
+            matches=(order is not None and target is not None and owner.get("parent")==p["parent"]
+                and order.strategy_id==self.id and order.instrument_id==self.config.sol_id and order.is_reduce_only
+                and order.side==(OrderSide.BUY if p["side"]==1 else OrderSide.SELL)and owner["accepted"] and owner.get("pending")is None
+                and order.status.name in {"ACCEPTED","PARTIALLY_FILLED","TRIGGERED"}
+                and order.leaves_qty.as_decimal()==target[0]
+                and self._pair_sol_payload_matches(order,(order.filled_qty.as_decimal()+target[0],target[1],target[2])))
+            exact=exact and matches
+            rows.append(dict(order_id=oid,kind=owner["kind"],level=owner["level"],exact=matches,
+                status="UNKNOWN"if order is None else order.status.name,
+                leaves="UNKNOWN"if order is None else str(order.leaves_qty),
+                total="UNKNOWN"if order is None else str(order.quantity),
+                filled="UNKNOWN"if order is None else str(order.filled_qty),
+                price="UNKNOWN"if order is None else str(getattr(order,"price",None)),
+                trigger="UNKNOWN"if order is None else str(getattr(order,"trigger_price",None)),
+                desired="UNKNOWN"if target is None else [str(v)for v in target],
+                desired_generation=p["generation"],pending=owner.get("pending")is not None))
+        exact=exact and len(work)==len(expected)and sum(p["tp_lots"].values())*self.cache.instrument(self.config.sol_id).size_increment.as_decimal()==held
+        pending_commands=any(o.get("pending")is not None and o.get("parent")==p["parent"]for o in self._pair_orders.values())
+        state="CLOSING"if p["close_sol"]else"DRAINING"if not held and (work or pending_commands) else"FLAT"if not held else"PROTECTED"if exact else"UNKNOWN"
+        counts=getattr(self,"_pair_sol_boundary_counts",None)
+        if counts is None:self._pair_sol_boundary_counts=counts=dict(checks=0,strict=0,unknown=0)
+        counts["checks"]+=1;counts["strict"]+=int(strict);counts["unknown"]+=int(held and not p["close_sol"]and not exact)
+        signature=repr((held,state,exact,rows,p["protection_since"]))
+        detailed=bool(getattr(getattr(self.config,"research_native_book",None),"detailed",False))
+        if detailed or signature!=p.get("sol_boundary_signature"):
+            self._pair_log("SOL_NATIVE_BOUNDARY",ns,label=label,parent=p["parent"],actual_sol=held,
+                state=state,exact=exact,orders=rows,protection_since=p["protection_since"])
+            p["sol_boundary_signature"]=signature
+        if strict and held and not p["close_sol"] and not exact:
+            raise ValueError("SOL_BEFORE_MATCHING_EXACT_COVERAGE_UNKNOWN")
+
+
+    def _pair_trim_start(self,signal,ep,position,branch,ns):
+        from coinmaster.strategy.btc_trim import BTCTrimCap
+        qref=position.quantity.as_decimal()
+        self._pair=dict(role="BTC_TRIM",parent=ep.id,side=ep.side,branch=branch,signal_ns=ns,
+            eligible_ns=ns+MINUTE,nominal_deadline_ns=ns+MINUTE+(4 if branch=="B2"else 8)*60*MINUTE,
+            boundary=D(str(signal[("K_"+str(ep.side))if branch=="B2"else"O"])),
+            signal=dict(signal),caps=BTCTrimCap(qref,qref),risk="ACTIVE_RISK",trim_activated=False,
+            first_fill_ns=None,deadline_ns=None,entry_terminal=True,entry_sent=True,p0=None,
+            entry_qty=D(0),entry_notional=D(0),quantity=D(0),atr=None,consumed=set(),tp_lots={},
+            signature=None,protection_since=None,debt_since=None,close_sol=False,failed=False,
+            last_btc=qref,last_sol=D(0),generation=0)
+        self._pair_cancel_btc_increases(ns)
+        self._pair_log("TRIM_CAUSAL_SELECTED",ns,parent=ep.id,branch=branch,eligible_ns=ns+MINUTE,
+            nominal_deadline_ns=self._pair["nominal_deadline_ns"],C0_clock="UNCHANGED_FIRST_ACTUAL_SOL_FILL")
+
+    def _pair_trim_quote(self,tick):
+        from coinmaster.strategy.btc_trim import variance_target
+        p=self._pair;ns=tick.ts_event
+        if p["risk"]!="ACTIVE_RISK":return
+        if p["side"]*(tick.bid_price.as_decimal()-p["boundary"])>=0 or ns>=p["nominal_deadline_ns"]:
+            p["risk"]="INACTIVE_RISK";p["close_sol"]=True
+            self._pair_log("TRIM_RISK_OFF_NO_RESTORE",ns,nominal_deadline_ns=p["nominal_deadline_ns"])
+            return
+        if p["trim_activated"]or ns<p["eligible_ns"]:return
+        signal=p["signal"];last=signal.get("coefficient_last_ns");available=signal.get("coefficient_available_ns")
+        if last is None or available is None or last>p["signal_ns"]-1440*MINUTE or available>p["signal_ns"]:
+            self._pair_fail("TRIM_INCOMPARABLE_CAUSAL_COEFFICIENTS",ns);return
+        position=self._pair_position(self.config.btc_id)
+        if position is None or position.is_long!=(p["side"]==1):
+            self._pair_fail("TRIM_UNKNOWN_NATIVE_ACTIVATION_POSITION",ns);return
+        qref=position.quantity.as_decimal();btc=self.cache.instrument(self.config.btc_id);sol=self.cache.instrument(self.config.sol_id)
+        try:
+            result=variance_target(qref,btc.size_increment.as_decimal(),sol.size_increment.as_decimal(),
+                D(str(signal["PB"])),D(str(signal["PS"])),signal.get("sigma_btc"),signal.get("sigma_sol"),signal.get("rho"),D(str(signal["a"])))
+        except ValueError as error:
+            self._pair_fail(str(error),ns);return
+        p["trim_activated"]=True;p["caps"].qref=qref;p["caps"].bmax=min(p["caps"].bmax,result["target_btc"])
+        self._pair_log("TRIM_NATIVE_ABSOLUTE_CAP",ns,**result,coefficient_last_ns=last,
+            coefficient_available_ns=available,eligible_ns=p["eligible_ns"],nominal_deadline_ns=p["nominal_deadline_ns"],
+            bid=tick.bid_price.as_decimal(),ask=tick.ask_price.as_decimal(),PB=signal["PB"],PS=signal["PS"],
+            sigma_btc=signal["sigma_btc"],sigma_sol=signal["sigma_sol"],rho=signal["rho"],
+            actual_C0_SOL_fills="NOT_USED",native_SOL_credit="ZERO_NO_SOL_ORDERS")
+        self._pair_arm_btc_debt(ns)

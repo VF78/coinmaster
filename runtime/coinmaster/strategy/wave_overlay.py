@@ -70,6 +70,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_a0_original_second: bool = False
     research_paired_prefix: str | None = None
     research_paired_signal_rows: tuple[PairedSignal, ...] = ()
+    research_btc_trim_control: bool = False
+    research_sol_standing_protection: bool = False
     research_btc_standing_tp: bool = False
     research_native_book: object = None
     research_btc_real_u: bool = False
@@ -312,6 +314,10 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         self.sol_cap_admission_audit: list[dict[str, str]] = []
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
         self._domain = WaveOverlayState(self._candidate)
+        if config.research_btc_trim_control and (not config.research_btc_standing_tp or config.research_sol_standing_protection or config.research_a0_original_second or config.research_paired_prefix != "B2_F0"):
+            raise ValueError("TRIM_EXACT_BTC_ONLY_CONTROL_REQUIRED")
+        if config.research_sol_standing_protection and (not config.research_btc_standing_tp or config.research_paired_prefix != "B2_F0"):
+            raise ValueError("SOL_STANDING_REQUIRES_QUALIFIED_PAIRED_STANDING_FAMILY")
         if config.research_btc_standing_tp and (not config.research_btc_real_u or config.research_btc_q_mode != "LEGACY_Q_CONTROL" or config.research_native_book is None or config.research_a0_family != "R2_A0_V1" or config.research_paired_prefix != "B2_F0"):
             raise ValueError("STANDING_TP_EXACT_REAL_U_NATIVE_PROVIDER_REQUIRED")
         self._domain.research_real_u = config.research_btc_real_u
@@ -2319,6 +2325,14 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         self._begin_forced_close("TERMINAL_BOUNDARY_SETTLEMENT")
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
+        allowed=self._tier_allows_increase_impl(instrument_id,side,quantity,ts_now)
+        if self.config.research_paired_prefix:
+            self._pair_log("ACTUAL_NATIVE_STOCK_MARGIN_RESULT",ts_now,instrument=str(instrument_id),
+                side=side.name if hasattr(side,"name")else str(side),quantity=quantity,allowed=allowed,
+                stock_margin_invoked=True,phase="ACTUAL_EXISTING_GUARD_RETURN_BEFORE_DISPATCH")
+        return allowed
+
+    def _tier_allows_increase_impl(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         if self.config.deposit_runtime is not None and not self._deposit_check():
             return False
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
@@ -2397,6 +2411,10 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         update = getattr(policy, "update_mark", None) if policy is not None else None
         if callable(update):
             update(MarginMark(instrument_id, price, ts_event))
+        if self.config.research_paired_prefix:
+            previous = self._pair_observed_marks.get(instrument_id)
+            if previous is None or ts_event >= previous[1]:
+                self._pair_observed_marks[instrument_id] = (price, ts_event)
 
     def on_order_filled(self, event: OrderFilled) -> None:
         trade_id = str(event.trade_id)
@@ -2667,13 +2685,16 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
             self._reconcile_group_flat()
 
     def on_order_updated(self, event) -> None:
+        self._pair_sol_native_event(event, "typed")
         self._tp_native_event(event, "typed")
         self._tp_refresh(event.ts_event) if self._tp_enabled() else None
 
     def on_order_modify_rejected(self, event) -> None:
+        self._pair_sol_native_event(event, "typed")
         self._tp_native_event(event, "typed")
 
     def on_order_event(self, event) -> None:
+        self._pair_sol_native_event(event, "generic")
         self._tp_native_event(event, "generic")
         # Event identity, not client order identity, preserves the sequence
         # Submitted -> Accepted -> terminal without manufacturing an ACK.

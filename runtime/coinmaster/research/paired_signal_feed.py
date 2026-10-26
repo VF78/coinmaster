@@ -27,12 +27,19 @@ class PairedSignal:
     k_long: D | None
     k_short: D | None
     open_o: D
+    sigma_btc: D | None = None
+    sigma_sol: D | None = None
+    rho: D | None = None
+    coefficient_last_ns: int | None = None
+    coefficient_available_ns: int | None = None
 
     def owner_row(self):
         return {"t":self.decision_ns,"valid":self.valid,"a":self.a,"PB":self.btc_close,
             "PS":self.sol_close,"ATR_SOL":self.atr_sol,"B2_1":self.b2_long,
             "B2_-1":self.b2_short,"F0_1":self.f0_long,"F0_-1":self.f0_short,
-            "K_1":self.k_long,"K_-1":self.k_short,"O":self.open_o}
+            "K_1":self.k_long,"K_-1":self.k_short,"O":self.open_o,
+            "sigma_btc":self.sigma_btc,"sigma_sol":self.sigma_sol,"rho":self.rho,
+            "coefficient_last_ns":self.coefficient_last_ns,"coefficient_available_ns":self.coefficient_available_ns}
 
 
 def load_paired_signal_feed(path: Path, expected_sha256: str, start_ns: int, end_ns: int):
@@ -67,7 +74,7 @@ def load_paired_signal_feed(path: Path, expected_sha256: str, start_ns: int, end
                 D(".5")*sb/ss if coeff else None,atr,valid,
                 bit("b2_pattern_valid") and bit("b2_long"),bit("b2_pattern_valid") and bit("b2_short"),
                 bit("f0_pattern_valid") and bit("f0_long"),bit("f0_pattern_valid") and bit("f0_short"),
-                optional("b2_long_k"),optional("b2_short_k"),D(row["f0_open_o"])))
+                optional("b2_long_k"),optional("b2_short_k"),D(row["f0_open_o"]),sb,ss,rho,int(row["d1_last_return_end_ns"]),t))
     if not result:
         raise ValueError("PAIRED_EMPTY_PREFIX_FEED")
     return tuple(result)

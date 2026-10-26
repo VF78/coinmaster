@@ -24,7 +24,9 @@ class NativeBookWitness(SimulationModule):
 
     def pre_process(self,data):
         if isinstance(data,QuoteTick):
-            if self.strategy is not None:self.strategy._tp_settled('BEFORE_NATIVE_MATCHING_INPUT',data.ts_event)
+            if self.strategy is not None:
+                self.strategy._pair_sol_boundary('BEFORE_NATIVE_MATCHING_INPUT',data.ts_event,strict=True)
+                self.strategy._tp_settled('BEFORE_NATIVE_MATCHING_INPUT',data.ts_event)
             key=data.instrument_id;self.current[key]=data;self.epochs[key]=self.epochs.get(key,0)+1
 
     def process(self,ts_now):
@@ -32,6 +34,7 @@ class NativeBookWitness(SimulationModule):
         # zero-latency modify enqueued by the current drain can still be waiting
         # for the next stock drain pass. Before-input is the strict barrier.
         if self.strategy is not None:
+            self.strategy._pair_sol_boundary('NATIVE_SETTLEMENT_PASS',ts_now)
             self.strategy._tp_transient_boundary('NATIVE_SETTLEMENT_PASS',ts_now)
 
     def log_diagnostics(self,logger):

@@ -141,6 +141,7 @@ class MarketRedesignResearch(A0RightsResearch):
         if not self._md_enabled() or tick.instrument_id!=self.config.btc_id:
             return
         self._md_reconcile(tick.ts_event)
+        self._pair_predecision(tick.ts_event, "AFTER_MD_RECONCILE_BEFORE_A0", tick)
         self._a0_check(tick)
         p=self._split_parent
         ep=self._domain.episode
