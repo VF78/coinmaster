@@ -85,7 +85,7 @@ def fixture_config(witness, case="E5"):
 
 class RegisteredProbe(WaveOverlayStrategy):
     def __init__(self,config):
-        super().__init__(config);self.stage='BOOT';self.events=[];self.fills=[];self.routes={};self.actual_pending=[];self.margin_checks=[];self.diag=None;self.rejected=[];self.parents=[];self.journal_path=None
+        super().__init__(config);self.stage='BOOT';self.events=[];self.fills=[];self.routes={};self.actual_pending=[];self.margin_checks=[];self.parents=[];self.journal_path=None
 
     def trace(self,event,**data):
         row=dict(sequence=len(self.events)+1,event=event,stage=self.stage,timestamp_ns=self.clock.timestamp_ns(),**data);self.events.append(row)
@@ -116,8 +116,6 @@ class RegisteredProbe(WaveOverlayStrategy):
     def on_order_pending_update(self,event):
         self.route(event,'typed_pending_update')
         order=self.cache.order(event.client_order_id);assert order.status.name=='PENDING_UPDATE'
-        if self.diag and str(event.client_order_id)==self.diag['order_id']:
-            self.diag['actual_pending_update_event_id']=str(event.id)
         ep,m=self._tp_plan()
         if str(event.client_order_id)in self._tp_owners and ep and m:
             ready=self._a0_targets_ready(ep,m,self.quantity(self.config.btc_id));assert ready is False
@@ -129,11 +127,6 @@ class RegisteredProbe(WaveOverlayStrategy):
 
     def on_order_modify_rejected(self,event):
         self.route(event,'typed_modify_rejected')
-        if self.diag and str(event.client_order_id)==self.diag['order_id']:
-            order=self.cache.order(event.client_order_id)
-            assert not order.is_closed and order.leaves_qty.as_decimal()>0 and order.quantity.as_decimal()==D(self.diag['quantity']) and order.filled_qty.as_decimal()==D(self.diag['filled'])
-            assert 'below filled quantity'in str(event.reason)and self.diag.get('actual_pending_update_event_id')
-            self.rejected.append(dict(event_id=str(event.id),order_id=str(event.client_order_id),status=order.status.name,quantity=str(order.quantity),filled=str(order.filled_qty),leaves=str(order.leaves_qty),reason=str(event.reason),old_working_protection=True))
         return super().on_order_modify_rejected(event)
 
     def _tier_allows_increase(self,*args,**kwargs):
@@ -239,7 +232,7 @@ def integration_fixture(e,s,capture,case):
     assert len({f['trade_id']for f in s.fills})==len(s.fills)
     assert not s.liquidation_audit
     updated=[eid for eid,routes in s.routes.items()if 'typed_updated'in routes];assert updated and all('generic'in s.routes[eid]for eid in updated)
-    rejected=[eid for eid,routes in s.routes.items()if 'typed_modify_rejected'in routes];assert rejected and all('generic'in s.routes[eid]for eid in rejected)
+    rejected=[eid for eid,routes in s.routes.items()if 'typed_modify_rejected'in routes];assert not rejected,'UNEXPECTED_NEW_NATIVE_MODIFY_REJECTION'
     for parent in s.parents:
         assert s._md_plans[parent]['consumed']=={0,1,2}
     commands=[(i,x)for i,x in enumerate(s.standing_tp_audit)if x['event']=='MODIFY_SUBMIT']
@@ -252,7 +245,7 @@ def integration_fixture(e,s,capture,case):
     assert any(f['raw_position_id']is not None and f['cache_position_id']is None for f in s.fills if f['order_id']in s._tp_owners)
     assert any(x['event']=='ACTUAL_DEBT_RESOLVED'for x in s.standing_tp_audit)
     assert not s._tp_commands and all(s.cache.order(ClientOrderId(oid)).status.name=='CANCELED'for oid in a['old_orders'])
-    return dict(status=case+'_NATIVE_REQUIRES_ROOT_ACCEPTANCE',native_flat=True,native_open_orders=0,native_inflight_orders=0,parents=s.parents,actual_modify_rejections=len(s.rejected),native_pending_proofs=len(s.actual_pending),a0_actual_releases=s._md_report()['a0_release_audit']['actual_releases'],stock_auto='NOT_EXPECTED_UNLINKED_NETTING_NO_EXEC_ALGO',N752='PURE_ONLY',late_debt='SOURCE_EXCLUDED_INSERT0_ACTUAL_FLAT_NO_SUBMIT',prefix_authority=False)
+    return dict(status=case+'_NATIVE_REQUIRES_ROOT_ACCEPTANCE',native_flat=True,native_open_orders=0,native_inflight_orders=0,parents=s.parents,actual_modify_rejections=len(rejected),native_modify_reject='NOT_EXERCISED_THIS_CHECKPOINT',historical_native_reject_component=dict(source='7f38278257624b321c9d88d9df962505b6f5bab0',native='1.231.0',receipt='reports/tp-continuity-20261025/F4-physical4-cause.json',sha256='9b761ca0dc58e83bdbf356b903682451e031b4ac7477aa9a67b0812867fe5ad0',scope='Prior actual stock API negative component only; not current fixture/native PASS'),native_pending_proofs=len(s.actual_pending),a0_actual_releases=s._md_report()['a0_release_audit']['actual_releases'],stock_auto='NOT_EXPECTED_UNLINKED_NETTING_NO_EXEC_ALGO',N752='PURE_ONLY',late_debt='SOURCE_EXCLUDED_INSERT0_ACTUAL_FLAT_NO_SUBMIT',prefix_authority=False)
 
 
 def lifecycle(engine):
@@ -295,7 +288,19 @@ def ordinary_fixture(e,s,capture,case):
         assert protection()==original and s.quantity(SOL_PERP.id)==D('1.8')
         s.stage='E1_MULTIPLE';advance(136,sol='98',ssize='.7')
         assert all(oid==original[key]for key,oid in protection().items())
+        original_stop_oid=original[('STOP',None)]
+        stop_before=s.cache.order(ClientOrderId(original_stop_oid))
+        stop_acks=[x for x in s.paired_prefix_audit if x['event']=='SOL_LATEST_MODIFY_ACK'and x['order_id']==original_stop_oid]
+        assert stop_acks and s._pair_orders[original_stop_oid]['pending']is None
+        latest=stop_acks[-1]
+        assert int(latest['timestamp_ns'])<=136*S
+        assert latest['native_event_id']in s.routes and 'typed_updated'in s.routes[latest['native_event_id']]and 'generic'in s.routes[latest['native_event_id']]
+        echoed=[ev for ev in stop_before.events if str(ev.id)==latest['native_event_id']]
+        assert len(echoed)==1 and type(echoed[0]).__name__=='OrderUpdated'
+        assert str(echoed[0].client_order_id)==original_stop_oid and echoed[0].quantity.as_decimal()==stop_before.quantity.as_decimal()
+        assert stop_before.quantity.as_decimal()==stop_before.filled_qty.as_decimal()+s.quantity(SOL_PERP.id)
         s.stage='E1_ACTUAL_FULL_NATIVE_STOP';advance(137,sol='102',ssize='10');advance(138);advance(139);advance(140)
+        assert any(type(ev).__name__=='OrderFilled'and ev.ts_event>int(latest['timestamp_ns'])for ev in stop_before.events)
         assert any(f['pair_kind']=='STOP'for f in s.fills)
         stops=[s.cache.order(ClientOrderId(oid))for oid,o in s._pair_orders.items()if o['kind']=='STOP']
         assert stops and all(o.is_closed and o.filled_qty==o.quantity for o in stops)

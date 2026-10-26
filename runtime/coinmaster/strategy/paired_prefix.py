@@ -783,10 +783,11 @@ class PairedPrefixResearch:
             native_margin[str(instrument)] = {name: "UNKNOWN" if account is None or (v := getattr(account, name)(instrument)) is None else str(v)
                 for name in ("margin_init", "margin_maint")}
         quote = self._pair_last_quote.get(self.config.btc_id) if tick is None else tick
-        marks = {}
+        marks = {};margin_fact_reads={}
         policy = self.config.margin_policy
         # Public margin_for gives current policy validity; no hypothetical order/credit.
         for instrument in (self.config.btc_id, self.config.sol_id):
+            margin_fact_reads[str(instrument)]=callable(getattr(policy,"margin_for",None))
             try:
                 _, _, mark = policy.margin_for(instrument, self._pair_qty(instrument), ns)
                 observed = self._pair_observed_marks.get(instrument)
@@ -824,7 +825,8 @@ class PairedPrefixResearch:
                 if intent.action == "BTC_REDUCE" and intent.episode_id == pair["parent"]],
             sol_protection_gap=pair["protection_since"], marks=marks, native_margin=native_margin,
             native_account="UNKNOWN" if account is None else type(account).to_dict(account),
-            stock_margin_invoked=False, stock_margin_result="UNKNOWN_NOT_EXECUTED_OBSERVER", admission="UNKNOWN_OBSERVATION_ONLY",
+            stock_guard_invoked=False,stock_margin_invoked=False,stock_margin_invocation_scope="PROSPECTIVE_STRATEGY_GUARD_ONLY",
+            read_only_current_fact_margin_for_attempts=margin_fact_reads,stock_margin_result="UNKNOWN_NOT_EXECUTED_OBSERVER", admission="UNKNOWN_OBSERVATION_ONLY",
             bid="UNKNOWN" if quote is None else str(quote.bid_price), ask="UNKNOWN" if quote is None else str(quote.ask_price),
             quote_ns="UNKNOWN" if quote is None else str(quote.ts_event),
             post_only_cross="UNKNOWN" if quote is None or a["price"] is None else not (a["price"] < quote.ask_price.as_decimal() if pair["side"] == 1 else a["price"] > quote.bid_price.as_decimal()))
@@ -948,19 +950,29 @@ class PairedPrefixResearch:
             self._pair_log("TRIM_RISK_OFF_NO_RESTORE",ns,nominal_deadline_ns=p["nominal_deadline_ns"])
             return
         if p["trim_activated"]or ns<p["eligible_ns"]:return
+        position=self._pair_position(self.config.btc_id);ep=self._domain.episode
+        actual=position.quantity.as_decimal()if position is not None else None
+        if (not ep or ep.id!=p["parent"]or ep.side!=p["side"]or position is None
+                or position.is_long!=(p["side"]==1)or actual!=p["caps"].qref):
+            reason="TRIM_INCOMPARABLE_CHANGED_NATIVE_PARENT_SIDE_OR_QUANTITY"
+            if reason not in self._pair_failures:self._pair_failures.append(reason)
+            p["failed"]=True;p["risk"]="UNKNOWN_RISK";p["close_sol"]=True
+            self._pair_log("QUALIFICATION_NO_GO",ns,reason=reason,parent=p["parent"],
+                actual_parent=None if not ep else ep.id,selected_qref=p["caps"].qref,actual_btc=actual)
+            # Stop before sizing/cap mutation/native trim command. Actual leaves
+            # are captured by the caller before native end/dispose.
+            raise ValueError(reason)
+        qref=p["caps"].qref
         signal=p["signal"];last=signal.get("coefficient_last_ns");available=signal.get("coefficient_available_ns")
         if last is None or available is None or last>p["signal_ns"]-1440*MINUTE or available>p["signal_ns"]:
             self._pair_fail("TRIM_INCOMPARABLE_CAUSAL_COEFFICIENTS",ns);return
-        position=self._pair_position(self.config.btc_id)
-        if position is None or position.is_long!=(p["side"]==1):
-            self._pair_fail("TRIM_UNKNOWN_NATIVE_ACTIVATION_POSITION",ns);return
-        qref=position.quantity.as_decimal();btc=self.cache.instrument(self.config.btc_id);sol=self.cache.instrument(self.config.sol_id)
+        btc=self.cache.instrument(self.config.btc_id);sol=self.cache.instrument(self.config.sol_id)
         try:
             result=variance_target(qref,btc.size_increment.as_decimal(),sol.size_increment.as_decimal(),
                 D(str(signal["PB"])),D(str(signal["PS"])),signal.get("sigma_btc"),signal.get("sigma_sol"),signal.get("rho"),D(str(signal["a"])))
         except ValueError as error:
             self._pair_fail(str(error),ns);return
-        p["trim_activated"]=True;p["caps"].qref=qref;p["caps"].bmax=min(p["caps"].bmax,result["target_btc"])
+        p["trim_activated"]=True;p["caps"].bmax=min(p["caps"].bmax,result["target_btc"])
         self._pair_log("TRIM_NATIVE_ABSOLUTE_CAP",ns,**result,coefficient_last_ns=last,
             coefficient_available_ns=available,eligible_ns=p["eligible_ns"],nominal_deadline_ns=p["nominal_deadline_ns"],
             bid=tick.bid_price.as_decimal(),ask=tick.ask_price.as_decimal(),PB=signal["PB"],PS=signal["PS"],

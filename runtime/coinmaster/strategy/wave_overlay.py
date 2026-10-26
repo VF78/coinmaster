@@ -2329,7 +2329,8 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         if self.config.research_paired_prefix:
             self._pair_log("ACTUAL_NATIVE_STOCK_MARGIN_RESULT",ts_now,instrument=str(instrument_id),
                 side=side.name if hasattr(side,"name")else str(side),quantity=quantity,allowed=allowed,
-                stock_margin_invoked=True,phase="ACTUAL_EXISTING_GUARD_RETURN_BEFORE_DISPATCH")
+                stock_guard_invoked=True,policy_margin_for_invoked="UNKNOWN_NOT_INSTRUMENTED",
+                invocation_scope="EXISTING_STRATEGY_GUARD_RETURN_ONLY",phase="ACTUAL_EXISTING_GUARD_RETURN_BEFORE_DISPATCH")
         return allowed
 
     def _tier_allows_increase_impl(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:

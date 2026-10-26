@@ -241,3 +241,18 @@ def test_any_stop_fill_closes_before_partial_ioc_terminal_callback():
     assert h._pair['close_sol']and not h.commands and not h.cancels
     h._pair_sol_protect(4);assert not h.commands and not h.cancels
     assert h.paired_prefix_audit[-1]['event']=='ACTUAL_FILL'
+
+
+def test_real_class_modify_reject_keeps_gap_and_does_not_retry_or_credit_ack():
+    from nautilus_trader.model.events import OrderModifyRejected
+    h=owner();unit_fill(h,0,'.2');h._pair_sol_protect(2)
+    o=h.cache.order(ClientOrderId('UNIT-STOP'))
+    event=OrderModifyRejected(o.trader_id,o.strategy_id,o.instrument_id,o.client_order_id,
+        o.venue_order_id,o.account_id,'UNIT_REJECTION',UUID4(),11,11)
+    o.apply(event);h.cache.update_order(o)
+    h._pair_sol_native_event(event,'typed');h._pair_sol_native_event(event,'generic')
+    assert h._pair_orders['UNIT-STOP']['pending']is None and h._pair_orders['UNIT-STOP']['ack']is None
+    assert len(h.commands)==1 and h._pair['protection_since']==2
+    import pytest
+    with pytest.raises(ValueError,match='EXACT_COVERAGE_UNKNOWN'):
+        h._pair_sol_boundary('UNIT_BEFORE_MATCH',12,strict=True)

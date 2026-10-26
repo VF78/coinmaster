@@ -5,7 +5,7 @@ child Popen/imports. Each signed root GO permits one fresh namespace only.
 """
 from pathlib import Path
 from datetime import datetime, timezone
-import argparse, fcntl, hashlib, json, os, subprocess, sys, uuid
+import argparse, errno, fcntl, hashlib, json, os, subprocess, sys, uuid
 
 PROTOCOL='faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea'
 APPROVAL='6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1'
@@ -61,42 +61,104 @@ def verify(gate_path,ledger_path,launch=False):
     return g,l,driver
 
 
+def dispatch_once(command,*,cwd,env,namespace,before_spawn=None,on_started=None,shutdown_timeout=5):
+    """One owned OS child, nullable observed exit; never guess exit authority."""
+    p=None;attempted=False;observed_rc=None;errors=[];not_spawned=False
+    try:
+        if before_spawn is not None:before_spawn()
+        with (Path(namespace)/'stdout.log').open('wb')as out,(Path(namespace)/'stderr.log').open('wb')as err:
+            attempted=True
+            try:p=subprocess.Popen(command,cwd=cwd,env=env,stdout=out,stderr=err)
+            except OSError as exc:
+                # Popen's documented exec/fork failure has no returned child;
+                # these errors are positively failed execs, not unknown signals.
+                not_spawned=exc.errno in {errno.ENOENT,errno.EACCES,errno.ENOEXEC,errno.ENOTDIR}
+                raise
+            if on_started is not None:on_started(p)
+            observed_rc=p.wait()
+    except BaseException as exc:
+        errors.append(dict(stage='DISPATCH',type=type(exc).__name__,error=repr(exc)))
+        if p is None:
+            not_spawned=not_spawned or not attempted
+        else:
+            try:observed_rc=p.poll()
+            except BaseException as exc:errors.append(dict(stage='POLL',error=repr(exc)))
+            if type(observed_rc)is not int:
+                try:p.terminate()
+                except ProcessLookupError:pass
+                except BaseException as exc:errors.append(dict(stage='TERMINATE_OWN_CHILD',error=repr(exc)))
+                try:observed_rc=p.wait(timeout=shutdown_timeout)
+                except subprocess.TimeoutExpired:
+                    try:p.kill()
+                    except ProcessLookupError:pass
+                    except BaseException as exc:errors.append(dict(stage='KILL_OWN_CHILD',error=repr(exc)))
+                    try:observed_rc=p.wait(timeout=shutdown_timeout)
+                    except BaseException as exc:errors.append(dict(stage='REAP_OWN_CHILD',error=repr(exc)))
+                except BaseException as exc:errors.append(dict(stage='WAIT_OWN_CHILD',error=repr(exc)))
+    observed_rc=observed_rc if type(observed_rc)is int else None
+    terminal=not_spawned or observed_rc is not None
+    state='NOT_SPAWNED'if not_spawned else'EXIT_OBSERVED'if observed_rc is not None else'SPAWN_OR_EXIT_UNKNOWN'
+    return dict(child_pid=None if p is None else p.pid,spawn_attempted=attempted,
+        child_state=state,child_not_spawned_confirmed=not_spawned,
+        child_actual_process_exit_code=observed_rc,terminal_confirmed=terminal,errors=errors,
+        supervisor_return_code=0 if observed_rc==0 and not errors else 1,
+        actual_supervisor_exit_code=None,supervisor_exit_authority='EXTERNAL_DISPATCHER_AFTER_EXIT')
+
+
+def outcome_state(result):
+    terminal=result['terminal_confirmed']
+    if not terminal:return dict(status='UNKNOWN_REQUIRES_RECONCILIATION',active=1,ledger_status='ACTIVE_UNKNOWN_RECONCILIATION_REQUIRED')
+    status='FAILED_NOT_SPAWNED'if result['child_not_spawned_confirmed']else'COMPLETED'if result['child_actual_process_exit_code']==0 and result['supervisor_return_code']==0 else'FAILED'
+    return dict(status=status,active=0,ledger_status='AWAITING_ROOT_DISPOSITION_NO_AUTONEXT')
+
+
 def launch(gate_path,ledger_path):
     with Path(str(ledger_path)+'.lock').open('a')as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         g,l,driver=verify(gate_path,ledger_path,True)
-        ns=Path(g['namespace']);ns.mkdir(parents=True,exist_ok=False)
-        before=Path(ledger_path).read_bytes();(ns/'LEDGER_BEFORE_CLAIM.json').write_bytes(before)
-        with (ns/'LEDGER_BEFORE_CLAIM.json').open('rb')as f:os.fsync(f.fileno())
+        ns=Path(g['namespace']);before=Path(ledger_path).read_bytes()
         attempt=str(uuid.uuid4());row=dict(attempt_id=attempt,physical_index=l['physical_started']+1,
             fixture_id=g['fixture_id'],scenario=g.get('scenario',g['fixture_id']),status='STARTED',
             started_utc=now(),supervisor_pid=os.getpid(),source_commit=g['source_commit'],
             gate_sha256=sha(gate_path),namespace=str(ns),protocol_sha256=PROTOCOL,
-            engine_constructor_claimed=False,child_pid=None,actual_process_exit_code=None)
+            ledger_before_sha256=hashlib.sha256(before).hexdigest(),
+            engine_constructor_claimed=False,child_pid=None,actual_process_exit_code=None,
+            actual_supervisor_exit_code=None)
+        # Every valid dispatch is spent before namespace creation/Popen/import.
         l['attempts'].append(row);l.update(physical_started=len(l['attempts']),active=1,
             authorized_remaining=6-len(l['attempts']),status='RUNNING',root_go=False)
-        write(ledger_path,l);write(ns/'CLAIM.json',row)
-        rc=1;error=None
-        try:
-            env=dict(PATH='/usr/bin:/bin',LANG='en_US.UTF-8',PYTHONNOUSERSITE='1',
-                PYTHONPATH=str(g['source_root'])+os.pathsep+str(driver.parent),OPENBLAS_NUM_THREADS='1')
-            with (ns/'stdout.log').open('wb')as out,(ns/'stderr.log').open('wb')as err:
-                p=subprocess.Popen([g['python'],str(driver),'--gate',str(gate_path),'--ledger',str(ledger_path),
-                    '--attempt',attempt],cwd=g['source_root'],env=env,stdout=out,stderr=err)
-                row['child_pid']=p.pid
-                write(ns/'PROCESS_STARTED.json',dict(attempt_id=attempt,pid=p.pid,source_commit=g['source_commit']))
-                rc=p.wait()
-        except BaseException as exc:error=repr(exc)
-        finally:
-            actual=json.loads(Path(ledger_path).read_text());entry=actual['attempts'][-1]
-            assert entry['attempt_id']==attempt
-            entry.update(status='COMPLETED'if rc==0 else'FAILED',finished_utc=now(),
-                actual_process_exit_code=rc,dispatch_error=error,child_pid=row['child_pid'])
-            if (ns/'result.json').exists():entry.update(result_path=str(ns/'result.json'),result_sha256=sha(ns/'result.json'))
-            actual.update(active=0,status='AWAITING_ROOT_DISPOSITION_NO_AUTONEXT',root_go=False)
-            write(ns/'PROCESS_EXIT.json',dict(attempt_id=attempt,pid=row['child_pid'],actual_process_exit_code=rc,error=error))
-            write(ledger_path,actual)
-        return rc
+        write(ledger_path,l)
+        def before_spawn():
+            ns.mkdir(parents=True,exist_ok=False)
+            (ns/'LEDGER_BEFORE_CLAIM.json').write_bytes(before)
+            with (ns/'LEDGER_BEFORE_CLAIM.json').open('rb')as f:os.fsync(f.fileno())
+            write(ns/'CLAIM.json',row)
+        def started(p):
+            write(ns/'PROCESS_STARTED.json',dict(attempt_id=attempt,pid=p.pid,source_commit=g['source_commit']))
+        env=dict(PATH='/usr/bin:/bin',LANG='en_US.UTF-8',PYTHONNOUSERSITE='1',
+            PYTHONDONTWRITEBYTECODE='1',PYTHONPATH=str(g['source_root'])+os.pathsep+str(driver.parent),OPENBLAS_NUM_THREADS='1')
+        result=dispatch_once([g['python'],str(driver),'--gate',str(gate_path),'--ledger',str(ledger_path),
+            '--attempt',attempt],cwd=g['source_root'],env=env,namespace=ns,before_spawn=before_spawn,on_started=started)
+        state=outcome_state(result)
+        actual=json.loads(Path(ledger_path).read_text());entry=actual['attempts'][-1]
+        assert entry['attempt_id']==attempt
+        entry.update(status=state['status'],last_observed_utc=now(),
+            actual_process_exit_code=result['child_actual_process_exit_code'],
+            child_pid=result['child_pid'],child_state=result['child_state'],
+            child_not_spawned_confirmed=result['child_not_spawned_confirmed'],
+            supervisor_return_code=result['supervisor_return_code'],
+            actual_supervisor_exit_code=None,supervisor_exit_authority=result['supervisor_exit_authority'],
+            supervision_errors=result['errors'])
+        if result['terminal_confirmed']:entry['finished_utc']=now()
+        if (ns/'result.json').exists():entry.update(result_path=str(ns/'result.json'),result_sha256=sha(ns/'result.json'))
+        file='PROCESS_EXIT.json'if result['child_actual_process_exit_code']is not None else'NOT_SPAWNED.json'if result['child_not_spawned_confirmed']else'PROCESS_STATE_UNKNOWN.json'
+        try:write(ns/file,dict(attempt_id=attempt,**result))
+        except BaseException as exc:
+            entry['terminal_receipt_write_error']=repr(exc);entry['supervisor_return_code']=1
+            if state['status']=='COMPLETED':entry['status']='FAILED'
+        actual.update(active=state['active'],status=state['ledger_status'],root_go=False)
+        write(ledger_path,actual)
+        return entry['supervisor_return_code']
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--gate',required=True);p.add_argument('--ledger',required=True)

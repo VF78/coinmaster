@@ -38,3 +38,25 @@ def test_own_btc_cap_does_not_invent_sol_credit_or_restore():
     assert cap.bmax==1
     with pytest.raises(ValueError,match='UNRELATED_SOL'):
         cap.reconcile(D(1),D('.1'),sol_reduced=False,btc_reduced=False,active_risk=False)
+
+
+@pytest.mark.parametrize('changed',['quantity','parent','side','position_side'])
+def test_changed_eligible_state_refuses_without_target_order_or_reanchor(changed):
+    from types import SimpleNamespace as N
+    from coinmaster.strategy.paired_prefix import PairedPrefixResearch
+    h=PairedPrefixResearch();h.config=N(btc_id='BTC')
+    cap=BTCTrimCap(D(2),D(2));p=dict(role='BTC_TRIM',parent='p',side=1,risk='ACTIVE_RISK',
+        eligible_ns=130,signal_ns=70,nominal_deadline_ns=1000,boundary=D(120),
+        trim_activated=False,caps=cap,failed=False,close_sol=False)
+    h._pair=p;h._pair_failures=[];h.paired_prefix_audit=[]
+    ep=N(id='p',side=1);position=N(quantity=N(as_decimal=lambda:D(2)),is_long=True)
+    if changed=='quantity':position.quantity=N(as_decimal=lambda:D('1.999'))
+    if changed=='parent':ep.id='other'
+    if changed=='side':ep.side=-1
+    if changed=='position_side':position.is_long=False
+    h._domain=N(episode=ep);h._pair_position=lambda _:position
+    with pytest.raises(ValueError,match='TRIM_INCOMPARABLE_CHANGED_NATIVE_PARENT_SIDE_OR_QUANTITY'):
+        h._pair_trim_quote(N(ts_event=130,bid_price=N(as_decimal=lambda:D(100))))
+    assert cap.qref==cap.bmax==2 and not p['trim_activated']
+    assert p['failed']and p['risk']=='UNKNOWN_RISK'
+    assert not any(x['event']in('TRIM_NATIVE_ABSOLUTE_CAP','SUBMIT')for x in h.paired_prefix_audit)
