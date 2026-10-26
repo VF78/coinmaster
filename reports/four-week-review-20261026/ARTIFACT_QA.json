@@ -1,0 +1,12 @@
+{
+  "status": "REPORT_ARTIFACT_QA_PASS",
+  "utc": "2026-10-26T14:24:26.630081+00:00",
+  "json_files_parsed": 19,
+  "broken_relative_links": [],
+  "secret_pattern_matches": [],
+  "source_or_native_actions": 0,
+  "old_native_ledgers_unchanged": true,
+  "P0snapshot_and_currentplan_hashes_match": true,
+  "plot": "ReportLabSVG renderedwithbundledSharp/PNG visuallyinspected; savedmetrics_only;R1legacyTPmarker,R2R3real3TP",
+  "report_files": 38
+}

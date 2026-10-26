@@ -1,0 +1,418 @@
+{
+  "task": "CM-FOURWEEK-REVIEW-20261026",
+  "scope": "Read-only current family evidence Oct24-26 #132-136; no engine/source/runtime changes",
+  "counting": "One row per canonical family/physical_index; attempts only, not duplicated slots/snapshots/amendment parents. Budgeted process claims include pre-engine failures. Native fixture constructors in older implementation test suites are outside these bounded ledgers and not inferred into total.",
+  "ledgers": {
+    "134_prefix": {
+      "path": "reports/broad-hedge-discovery-20261024/native-run-ledger.json",
+      "sha256": "e96088c4a37096ce50b4a8f17ba66626d529764b5eb1996f1d3ba6ca7fba7cfd",
+      "status": "CLOSED_PRIMARY_NO_GO_BUDGET_EXHAUSTED",
+      "physical_started": 7,
+      "completed": 5,
+      "failed": 2,
+      "authorized_remaining": 0,
+      "attempts": [
+        {
+          "physical_index": 1,
+          "attempt_id": "52e2c39a-bf00-47e7-aec6-970702825080",
+          "variant": "OFF",
+          "status": "FAILED",
+          "source_commit": "ddd7d72a965ff1fcc943f3239832ae5310c05535"
+        },
+        {
+          "physical_index": 2,
+          "attempt_id": "f4719549-3666-409c-b75d-aa5f3ce59cd0",
+          "variant": "OFF",
+          "status": "FAILED",
+          "source_commit": "6f7cd9881b928dcd8b905d63d3ab7892f9e6b733"
+        },
+        {
+          "physical_index": 3,
+          "attempt_id": "519645e4-b947-49f1-9f43-daa120289f86",
+          "variant": "OFF",
+          "status": "COMPLETED",
+          "source_commit": "3323f08c57ede411058f93d96acee88928c93481"
+        },
+        {
+          "physical_index": 4,
+          "attempt_id": "417f66af-1ab3-4bd9-a965-e6e78df4f9fd",
+          "variant": "B2",
+          "status": "COMPLETED",
+          "source_commit": "3323f08c57ede411058f93d96acee88928c93481"
+        },
+        {
+          "physical_index": 5,
+          "attempt_id": "d8d64962-c7a5-4333-b2d3-f05fad74d632",
+          "variant": "OFF",
+          "status": "COMPLETED",
+          "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7"
+        },
+        {
+          "physical_index": 6,
+          "attempt_id": "449edca9-de1e-4f8a-8238-5765b4d6c538",
+          "variant": "B2",
+          "status": "COMPLETED",
+          "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7"
+        },
+        {
+          "physical_index": 7,
+          "attempt_id": "fa5c87f8-63c1-4ef4-9402-af9a4d69d260",
+          "variant": "B2_F0",
+          "status": "COMPLETED",
+          "source_commit": "7d513ca1e0ec0fadd67167661a3173f105b19ba7"
+        }
+      ]
+    },
+    "135_engineering": {
+      "path": "reports/continuous-hedge-plan-20261025/engineering-run-ledger.json",
+      "sha256": "858b453f502c3994ca563cec931544d0a7235e6f5c751ebfbe8c3aa9aed66b7f",
+      "status": "CLOSED_ENGINEERING_ACCEPTED_COMPONENT_LIMITS",
+      "physical_started": 11,
+      "completed": 9,
+      "failed": 2,
+      "authorized_remaining": 0,
+      "attempts": [
+        {
+          "physical_index": 1,
+          "fixture_id": "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+          "status": "COMPLETED",
+          "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0"
+        },
+        {
+          "physical_index": 2,
+          "fixture_id": "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+          "status": "COMPLETED",
+          "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0"
+        },
+        {
+          "physical_index": 3,
+          "fixture_id": "F03_R2_SECOND_FILL_THREE_TP",
+          "status": "FAILED",
+          "source_commit": "2eb080a14237770d14aa20c05c290f328b2768e0"
+        },
+        {
+          "physical_index": 4,
+          "fixture_id": "F03_R2_SECOND_FILL_THREE_TP",
+          "status": "FAILED",
+          "source_commit": "596922493d3e831f43ec333eec974702b6e0ff2f"
+        },
+        {
+          "physical_index": 5,
+          "fixture_id": "F01_R2_PARTIAL_NOCHASE_TERMINAL",
+          "status": "COMPLETED",
+          "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e"
+        },
+        {
+          "physical_index": 6,
+          "fixture_id": "F02_R3_PARTIAL_NOCHASE_TERMINAL",
+          "status": "COMPLETED",
+          "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e"
+        },
+        {
+          "physical_index": 7,
+          "fixture_id": "F04_R3_SECOND_FILL_THREE_TP",
+          "status": "COMPLETED",
+          "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e"
+        },
+        {
+          "physical_index": 8,
+          "fixture_id": "F05_QUALIFIED_CLOCK_ALL_PATHS",
+          "status": "COMPLETED",
+          "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e"
+        },
+        {
+          "physical_index": 9,
+          "fixture_id": "F06_MISSING_FEATURE_FAIL_CLOSED",
+          "status": "COMPLETED",
+          "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e"
+        },
+        {
+          "physical_index": 10,
+          "fixture_id": "F07_COPRIME_CORRIDOR_REGRESSION",
+          "status": "COMPLETED",
+          "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e"
+        },
+        {
+          "physical_index": 11,
+          "fixture_id": "F08_LATE_NATIVE_ENTRY_OWNERSHIP",
+          "status": "COMPLETED",
+          "source_commit": "06f75778dbc3cdb9894ffed4f4e7621261e94d3e"
+        }
+      ]
+    },
+    "136_A0_engineering": {
+      "path": "reports/hedge-risk-contract-20261025/a0-engineering-amended-seven-ledger.json",
+      "sha256": "e92957f167e0331380f9f809cf891123c99e33e9d33e974d4516424158f4784f",
+      "status": "CLOSED_ENGINEERING_COMPONENT_COVERAGE_PASS_LIMITS",
+      "physical_started": 7,
+      "completed": 3,
+      "failed": 4,
+      "authorized_remaining": 0,
+      "attempts": [
+        {
+          "physical_index": 1,
+          "fixture_id": "A01_RELEASE_THREE_TP",
+          "status": "FAILED",
+          "source_commit": "340f90f6d0c9c46963f5dcc6f8c96bf015539fdc"
+        },
+        {
+          "physical_index": 2,
+          "fixture_id": "A02_PARTIAL_FIRST_CLOSED_CAP",
+          "status": "COMPLETED",
+          "source_commit": "541e0c564a2bb79411809186113c78a4d3a80a5a"
+        },
+        {
+          "physical_index": 3,
+          "fixture_id": "A03_ORDINARY_TP_KILLS",
+          "status": "FAILED",
+          "source_commit": "541e0c564a2bb79411809186113c78a4d3a80a5a"
+        },
+        {
+          "physical_index": 4,
+          "fixture_id": "A03_A04_COMBINED_CANCEL_RACES",
+          "status": "COMPLETED",
+          "source_commit": "d357f593f3a2551f373b01dae29e0d2919623426"
+        },
+        {
+          "physical_index": 5,
+          "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+          "status": "FAILED",
+          "source_commit": "d357f593f3a2551f373b01dae29e0d2919623426"
+        },
+        {
+          "physical_index": 6,
+          "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+          "status": "FAILED",
+          "source_commit": "b294879ca0e778b33a02b6fe4018e234d29cfa51"
+        },
+        {
+          "physical_index": 7,
+          "fixture_id": "A05_CROSS_MARGIN_UNKNOWN",
+          "status": "COMPLETED",
+          "source_commit": "763d985617abd7a7afef5eec13912303983d8837"
+        }
+      ]
+    },
+    "136_A0_prefix": {
+      "path": "reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger-closed.json",
+      "sha256": "f893aafc7c5b65acbc55a2069af1c8738ed798a72e50816f6ab5ed5108b0d7f3",
+      "status": "CLOSED_C0_FINANCIAL_REJECTION_A0_NOT_RUN",
+      "physical_started": 3,
+      "completed": 2,
+      "failed": 1,
+      "authorized_remaining": 0,
+      "attempts": [
+        {
+          "physical_index": 1,
+          "attempt_id": "861c8fbb-24f3-4627-9332-ee2288e32b1d",
+          "variant": "R2_OFF",
+          "status": "FAILED",
+          "source_commit": "763d985617abd7a7afef5eec13912303983d8837"
+        },
+        {
+          "physical_index": 2,
+          "attempt_id": "77b7a5cc-0e2a-43a3-a17e-56868728a7d5",
+          "variant": "R2_OFF",
+          "status": "COMPLETED",
+          "source_commit": "763d985617abd7a7afef5eec13912303983d8837"
+        },
+        {
+          "physical_index": 3,
+          "attempt_id": "fe2ffed5-6f7d-4e51-bb83-9b7f93ba227c",
+          "variant": "R2_C0",
+          "status": "COMPLETED",
+          "source_commit": "763d985617abd7a7afef5eec13912303983d8837"
+        }
+      ]
+    },
+    "136_TP_engineering": {
+      "path": "reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+      "sha256": "cc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45",
+      "status": "CLOSED_4_OF_4_NO_MORE_ENGINE",
+      "physical_started": 4,
+      "completed": 0,
+      "failed": 4,
+      "authorized_remaining": 0,
+      "attempts": [
+        {
+          "physical_index": 1,
+          "attempt_id": "2e684986-b92d-4f43-b991-a24c4cde41fd",
+          "fixture_id": "F1_STOCK_NATIVE_API_FEASIBILITY",
+          "status": "FAILED",
+          "source_commit": "14735dd15415b80f3ea4a49120c707f0927878bf"
+        },
+        {
+          "physical_index": 2,
+          "attempt_id": "86fbc698-ccb5-474b-9090-1164a745e070",
+          "fixture_id": "F1_STOCK_NATIVE_API_FEASIBILITY",
+          "status": "FAILED",
+          "source_commit": "258f6ba5655de6d2c9c3fb4d081e16e576f12767"
+        },
+        {
+          "physical_index": 3,
+          "attempt_id": "c78ffd9a-1621-4d08-bd49-f21f5d1356be",
+          "fixture_id": "F3_DEFAULT_QUEUE_STANDING_TP",
+          "status": "FAILED",
+          "source_commit": "aaa31f83f2fa900cad00506ccf70e4243c3bac11"
+        },
+        {
+          "physical_index": 4,
+          "attempt_id": "f3962d0c-612d-43b2-9aa0-f3535dd67743",
+          "fixture_id": "F4_REGISTERED_R2_QUEUED_STANDING_TP",
+          "status": "FAILED",
+          "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0"
+        }
+      ]
+    },
+    "136_TP_prefix": {
+      "path": "reports/tp-continuity-20261025/prefix-ledger.json",
+      "sha256": "899052b1f63861c6c44bb3109964413e156e30f01685fa853efdc05ae1f57db8",
+      "status": "CLOSED_UNUSED_AFTER_ENGINEERING_NO_GO",
+      "physical_started": 0,
+      "completed": 0,
+      "failed": 0,
+      "authorized_remaining": 0,
+      "attempts": []
+    }
+  },
+  "failures": [
+    {
+      "family": "134_prefix",
+      "physical_index": 1,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Report descriptor/API bool TypeError before engine",
+      "ledger": "reports/broad-hedge-discovery-20261024/native-run-ledger.json"
+    },
+    {
+      "family": "134_prefix",
+      "physical_index": 2,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Partial January month export count and funding prior-M1 observer boundary qualification",
+      "ledger": "reports/broad-hedge-discovery-20261024/native-run-ledger.json"
+    },
+    {
+      "family": "135_engineering",
+      "physical_index": 3,
+      "class": "UNKNOWN",
+      "cause": "Failed F03; native cache lost before diagnosis",
+      "ledger": "reports/continuous-hedge-plan-20261025/engineering-run-ledger.json"
+    },
+    {
+      "family": "135_engineering",
+      "physical_index": 4,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Expected forced FLAT after natural TP flat; actual component later independently accepted",
+      "ledger": "reports/continuous-hedge-plan-20261025/engineering-run-ledger.json"
+    },
+    {
+      "family": "136_A0_engineering",
+      "physical_index": 1,
+      "class": "HARNESS_SETUP_PARTIAL_CAUSE",
+      "cause": "IndexError reading empty queued intents; setup assumption failed, underlying admission reason not established in bounded current evidence",
+      "ledger": "reports/hedge-risk-contract-20261025/a0-engineering-amended-seven-ledger.json"
+    },
+    {
+      "family": "136_A0_engineering",
+      "physical_index": 3,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Repeated exhausted identical L1 book did not replenish size; expected additional fill absent",
+      "ledger": "reports/hedge-risk-contract-20261025/a0-engineering-amended-seven-ledger.json"
+    },
+    {
+      "family": "136_A0_engineering",
+      "physical_index": 5,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "ACK held on typed callback only; generic callback correctly delivered real economic ACK",
+      "ledger": "reports/hedge-risk-contract-20261025/a0-engineering-amended-seven-ledger.json"
+    },
+    {
+      "family": "136_A0_engineering",
+      "physical_index": 6,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Margin fault injection called clear on static tuple instead of respecting static and dynamic mark stores",
+      "ledger": "reports/hedge-risk-contract-20261025/a0-engineering-amended-seven-ledger.json"
+    },
+    {
+      "family": "136_A0_prefix",
+      "physical_index": 1,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Wrong orchestration data_root /inputs versus /inputs/data; prepare omitted real stock reader/coverage check",
+      "ledger": "reports/hedge-risk-contract-20261025/a0-prefix-amended-four-ledger-closed.json"
+    },
+    {
+      "family": "136_TP_engineering",
+      "physical_index": 1,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Native data buffer added unsorted; no public sort before run",
+      "ledger": "reports/tp-continuity-20261025/engineering-amended-four-ledger.json"
+    },
+    {
+      "family": "136_TP_engineering",
+      "physical_index": 2,
+      "class": "HARNESS_PREVENTABLE",
+      "cause": "Harness recalculated expected TP quantities without invoking public modify; waiting for unsolicited Updated",
+      "ledger": "reports/tp-continuity-20261025/engineering-amended-four-ledger.json"
+    },
+    {
+      "family": "136_TP_engineering",
+      "physical_index": 3,
+      "class": "NATIVE_CONTRACT_PREMISE",
+      "cause": "Partial fill gives order.position_id but not cache position association; auto-resize premise false on actual route",
+      "ledger": "reports/tp-continuity-20261025/engineering-amended-four-ledger.json"
+    },
+    {
+      "family": "136_TP_engineering",
+      "physical_index": 4,
+      "class": "PRODUCT_NATIVE_LIFECYCLE",
+      "cause": "SOL replacement marketable fills create second cancel protection window crossing next quote; guard correctly refuses",
+      "ledger": "reports/tp-continuity-20261025/engineering-amended-four-ledger.json"
+    }
+  ],
+  "totals": {
+    "budgeted_physical_attempts": 32,
+    "completed": 19,
+    "failed": 13,
+    "economic_prefix_attempts": 10,
+    "economic_prefix_completed": 7,
+    "economic_prefix_failed": 3,
+    "engineering_fixture_attempts": 22,
+    "engineering_fixture_completed": 12,
+    "engineering_fixture_failed": 10,
+    "full_runs_in_scope": 0,
+    "all_remaining_authority": 0,
+    "harness_preventable_confirmed": 9,
+    "harness_setup_partial_cause": 1,
+    "native_contract_premise": 1,
+    "product_native_lifecycle": 1,
+    "unknown": 1
+  },
+  "classification_caveat": "Preventability is review inference from diagnosed setup/API/expectation mistakes, not a measured counterfactual guarantee; no cost-hours or wasted-dollar estimate. A01 underlying admission cause and #135 physical3 remain UNKNOWN. Completed process is not accepted candidate.",
+  "economic_observations": [
+    {
+      "family": "134_old_floor_floor",
+      "OFF": "19544.07357286",
+      "B2": "20472.41817762",
+      "B2_DD_pct": "44.02687381755",
+      "qualification": "B2 invalid recursive erosion 990 BTCdebt/985 SOLcap fills; cash observations preserved"
+    },
+    {
+      "family": "134_lot_safe",
+      "OFF": "19544.07357286",
+      "OFF_DD_pct": "53.9699012088",
+      "B2": "19754.54867403",
+      "B2_DD_pct": "48.0795680585",
+      "combined": "14318.18376985",
+      "combined_DD_pct": "52.0135683404",
+      "qualification": "Matched source7d513ca, B2 capital/costFAIL; primary combined capital/cost/DDFAIL and early ATR NO_GO"
+    },
+    {
+      "family": "136_R2_warm",
+      "OFF": "20911.13611487",
+      "OFF_DD_pct": "50.1301428140",
+      "C0_diagnostic": "16046.38189782",
+      "C0_DD_pct": "47.474401846",
+      "A0": "NOT_RUN",
+      "qualification": "OFF financially accepted; C0 nativeTPFAIL; directSOLnetPnL/causalBTC dollars UNKNOWN"
+    }
+  ]
+}

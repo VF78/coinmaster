@@ -1,0 +1,19 @@
+# P1: независимая проверка следующего решения
+
+**CONDITIONAL_PLAN_PASS, blockers0; A0 economics сейчас HOLD. Code/native GO отсутствует.** Предложенный ограниченный observationalcontrol лучше бесконечного ожидания отсутствующих исторических полей. Условие приёмки решения — согласовать сохранённые P1b/единыйплан с новой R2квитанцией и порядком ниже; P0snapshot не переписывать.
+
+Данные actualR2(16riskselections/15OFF/19parents и четыреcancelledsecond .541/.405/.285/.418) приняты из прямого handoffroot без новогоrawaudit. Они меняют старый вывод «R2universe не изучен», но не доказывают A0admission. a0_rights=[] при flagOFF/earlyreturn не доказательство zeroopportunities.
+
+Нельзя требовать заранее знать futurefill, ownA0margin и прибыль — это результаты опыта. Нужно заранее определить originalright, причинныеguards, наблюдаемость и stopcriteria. C0 может собрать отсутствующие predecisionstates после отдельного разрешения, при неизменённойэкономике и строгом nativeTP/financialPASS. Его запуск — control/qualification, не обещаниеgrowth.
+
+Конкретная формулировка для P1b/плана:
+
+A0 economics остаётся HOLD сейчас. Это не NO_GO гипотезы и не требование заранее доказать будущие fills, prospective margin или прибыль. Сохранённый R2 C0 показывает16 riskselections,15 OFF и19 staticparents; четыре старые даты имеют отменённые second quantities .541/.405/.285/.418. Пустой a0_rights при выключенном флаге и earlyreturn не доказывает отсутствие возможностей. Эти количества лишь кандидаты на исходное право, а не автоматически допустимые лоты к восстановлению.
+
+После отдельного одобрения scope/budget и полного lifecycle/integrationPASS предлагается условный порядок максимум4prefixattempts: freshOFF → C0_FIXED observationalcontrol → BTC_TRIM → A0_FIXED. C0_FIXED сохраняет causalpredecision states на riskOFF/+60 и каждом последующем допустимом quote: originalrights/actualsecondfilled-ever, quote/cross, debt, actualcap, TPstage/ordinaryexit, pending/ACK/reservations/native margin иclock. Source/config/data/gates и правило извлечения/оценки состояний freeze до результатов. C0 обязан пройти nativeTPownership/continuousrequiredTP, cash/signedfunding, settled+coherentevent accounting, zeroLiq/terminalflat. C0invalid или отсутствие структурно допустимого права → STOP, unusedslotsclosed, не новыйcandidate.
+
+До A0 нужны наблюдаемый originalunfilledright и причинно вычислимая releasepolicy с проверяемыми guards; будущий actualfill/достаточность margin на изменённом A0пути и profit не доказываются по C0заранее. Они проверяются во время отдельно разрешённого A0run на его ownnativeaccount. UNKNOWN не допускает увеличение; crossing/debt/pending/ordinaryTP/deadline блокируют именно соответствующее решение по замороженному контракту. A0actualadditionalfills0 → NOT_TESTED, не прибыльныйPASS и не разрешение повторить. Получение допустимого права не означает экономическую достаточность: frozenincrementalTOTAL/cost/DD/ES иoriginalfullfloors неизменны.
+
+BTC_TRIM использует объявленный causalriskclock/factor-risk target и собственные nativefills/затраты; фактические будущие C0SOLfills не становятся его onlineinput. Если честный comparator или admission нельзя freeze, STOPдоGO; никакого переименованияunusedslot. C0 здесь control/qualification, не заявка на восстановление исходногоgrowth. G2/riskcontract, rearm, BTCcore/TP/sizing изменения отдельно от lifecycle и A0. Proposed≤6fixtures/≤4prefix/full0 не утверждены; oldbudgetsclosed, новый code/nativeGO отсутствует.
+
+Проверка ограничена решением и согласованностью gates; lifecyclecandidate остаётся SOURCE_FEASIBLE/NATIVE_NOT_PROVEN. Сохранённые сейчас P1b/plan ещё отражают старый порядок/oldR3-onlyограничение; их требуется согласованно исправить до protocolfreeze. Новых sourceaudit/tests/engine/code/budgetGO нет. Подробности и hashes проверенных версий — P1_DECISION_REVIEW.json.

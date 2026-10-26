@@ -1,0 +1,407 @@
+{
+  "schema": "CM_P1_GROWTH_ADMISSION_V1",
+  "task": "CM-FOURWEEK-REVIEW-20261026/P1b",
+  "date": "2026-10-26",
+  "authorization": "Read-only P1b after P0 acceptance; no new monetary code or physical budget",
+  "decision": {
+    "G1_structural": "CONDITIONAL",
+    "A0_economic_now": "NO_GO_HOLD",
+    "G2": "ARCHITECTURE_ONLY_SEPARATE_CONTRACT",
+    "growth_sufficiency": "NOT_PROVEN",
+    "A0_economics": "NOT_RUN_NOT_TESTED",
+    "fixed_C0_profitability": "NOT_PROVEN",
+    "new_budget": 0,
+    "automatic_6fixtures_4prefix_request": false
+  },
+  "goals": {
+    "seed": "10000",
+    "legacy_S0_TOTAL": "6077107.23887483",
+    "intermediate_70pct_net_TOTAL_floor": "4256975.067212381",
+    "final_90pct_net_TOTAL_floor": "5470396.514987347",
+    "settled_DD_max_percent": "50",
+    "coherent_event_DD_max_percent": "50",
+    "model_liquidations_max": 0,
+    "cash_signed_funding_TP_ownership_flat_required": true
+  },
+  "control_identities": [
+    {
+      "id": "ORIGINAL_S0",
+      "source": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+      "TOTAL": "6077107.23887483",
+      "settled_DD_percent": "66.25691486468686414439256686",
+      "role": "Fixed absolute profit objective; legacy selective SOL and execution. Not current R2."
+    },
+    {
+      "id": "R2_LEGACY_Q_FULL",
+      "TOTAL": "225919.51131228",
+      "settled_DD_percent": "66.8014965825988940501356298120806585229481015518869629205355",
+      "role": "Real3TP technical reference, not selected profitable core"
+    },
+    {
+      "id": "R3_CLEAN_Q_FULL",
+      "TOTAL": "120718.40416503",
+      "settled_DD_percent": "68.6033754263482863768423778493842458647999693621015333671923",
+      "role": "Different core quantity model; old paired evidence cannot be transferred silently"
+    },
+    {
+      "id": "R2_OFF_WARMED_PREFIX",
+      "source": "763d985617abd7a7afef5eec13912303983d8837",
+      "window": "[2024-09-01,2025-01-15) UTC",
+      "TOTAL": "20911.13611487",
+      "settled_event_DD_percent": "50.1301428140",
+      "qualification": "Accepted financial control, not DD50 candidate"
+    },
+    {
+      "id": "R2_C0_WARMED_PREFIX",
+      "source": "763d985617abd7a7afef5eec13912303983d8837",
+      "TOTAL_diagnostic": "16046.38189782",
+      "settled_event_DD_percent": "47.474401846",
+      "net_profit_retention_vs_prefix_OFF_percent": "55.41477839",
+      "qualification": "Native3TPFAIL; accounting components not economic admission"
+    }
+  ],
+  "causal_decision_table": [
+    {
+      "cause": "Lost BTC-flat SOL alpha",
+      "observations": "E4 SOL fill-net ex-funding713702.32329125; BTC-flat held time56.9167%; held PnL426629.8025; first five cycles+105055.25329125 ex-funding",
+      "G1_addresses": false,
+      "G2_addresses": "Not automatically; strict BTC-owned hedge excludes standalone SOL",
+      "causal_dollar_effect": "UNKNOWN",
+      "sources": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "cause": "Cancelled still-valid original BTC second child",
+      "observations": "Oct12 F0 cancel .440 of .880 BTC; risk invalidated85min later without TP/debt; own OFF/B2 later filled .434/.438@62413.6",
+      "G1_addresses": true,
+      "qualification": "One actual observed mechanism; fill/profit/scale UNKNOWN",
+      "causal_dollar_effect": "UNKNOWN",
+      "sources": [
+        "S3",
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "cause": "Permanently closed BTC on SOL TP",
+      "observations": "Oct25 SOL109 TP170.09/168.16/164.31; BTC cuts .220/.220/.441 flatten .881 by22:58",
+      "G1_addresses": false,
+      "G2_addresses": "Required if BTC must survive full SOL TP with risk still ACTIVE",
+      "causal_dollar_effect": "UNKNOWN; separate own parent cash paths not counterfactual effects",
+      "sources": [
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "cause": "Changed real TP/core Q/execution",
+      "observations": "R2/R3 real3TP preserve83 first times/sides and83/83d3;16 parents no second fill vs1 E4/R1;730D native warmup and frozen first P0 correct",
+      "G1_addresses": "Only risk-cancel subset, not all missing second fills",
+      "causal_dollar_effect": "UNKNOWN",
+      "sources": [
+        "S1"
+      ]
+    }
+  ],
+  "G1_saved_coverage": {
+    "actual_source": "7d513ca1e0ec0fadd67167661a3173f105b19ba7",
+    "model": "Old R3 combined paired prefix",
+    "actual_activations": 16,
+    "F0": 11,
+    "B2": 5,
+    "invalidations": 15,
+    "SOL_TPs": 8,
+    "first_SOL_TPs": 4,
+    "potential_original_second_cases": 4,
+    "first_lawful_clock_noncrossing_cases": 3,
+    "native_cancel_ACK_known_cases": 4,
+    "prospective_native_margin_at_plus60": "UNKNOWN",
+    "actual_R2_C0_transfer_coverage": "UNKNOWN_NOT_MEASURED",
+    "full_two_year_coverage": "NOT_ESTABLISHED",
+    "cases": [
+      {
+        "case": "2024-09-14",
+        "original_remaining_BTC": ".488",
+        "already_debt_closed_BTC": ".243",
+        "limit": "BUY60207.5",
+        "quote_at_riskOFF_plus60": "59638.9",
+        "post_only": "CROSSING_WAIT",
+        "later_lawful_quote_before_exit": "UNKNOWN",
+        "relative_to_first_original_S0_trough_Oct3": "BEFORE"
+      },
+      {
+        "case": "2024-10-10",
+        "original_remaining_BTC": ".575",
+        "limit": "SELL60959.8",
+        "quote_at_riskOFF_plus60": "60799.3",
+        "post_only": "NONCROSSING_PREREQUISITE",
+        "relative_to_first_original_S0_trough_Oct3": "AFTER"
+      },
+      {
+        "case": "2024-10-12",
+        "original_remaining_BTC": ".440",
+        "limit": "BUY62413.6",
+        "quote_at_riskOFF_plus60": "63139.0",
+        "post_only": "NONCROSSING_PREREQUISITE",
+        "relative_to_first_original_S0_trough_Oct3": "AFTER"
+      },
+      {
+        "case": "2024-11-16",
+        "original_remaining_BTC": ".375",
+        "limit": "BUY90744.4",
+        "quote_at_riskOFF_plus60": "91297.6",
+        "post_only": "NONCROSSING_PREREQUISITE",
+        "relative_to_first_original_S0_trough_Oct3": "AFTER"
+      }
+    ],
+    "chronology_inference": "Three direct noncrossing opportunities occur after original S0 Sep11-Oct3 worst decline. Only earlier Sep14 is crossing at first lawful quote. No demonstrated G1 repair of that early drawdown; later Sep14 admission not excluded but unknown. Own R2 OFF early curve is a separate control.",
+    "sources": [
+      "S4",
+      "S5",
+      "S6"
+    ]
+  },
+  "G1_right_invariants": [
+    "Original second budget is original total minus original first allocation, never partial-FIRST refund",
+    "Actual second-filled-ever includes late fills; one native resubmission at original price/GTC/post-only",
+    "Closed BTC never restored; ordinary TP/flat/pause/unknown ownership extinguishes or blocks right",
+    "Actual risk OFF plus60s; known terminal ACK; no inflight increase/debt; stock native current margin required",
+    "Real remaining3TP and integer lot conservation; no synthetic fill or retrospective native OPEN"
+  ],
+  "G2_contract": {
+    "fixed_coverage_algebra": "H>=kB with k>0 and H->0 implies B->0 while risk remains ACTIVE",
+    "necessary_if": "Retain BTC after all SOL TP despite still-active risk",
+    "not_necessary_if": "Full paired flat explicitly accepted as protection tradeoff, subject to growth and fair trim comparison",
+    "Oct25_one_H4_wait_falsifier": "481 market-only quotes no boundary crossing; expiry risk OFF after first-TP deadline; actual owner flat22:58",
+    "market_stress_first_TP_prerequisites": "3PASS/1FAIL; prospective margin and continuing uncut candidate state UNKNOWN",
+    "missing": [
+      "Causal ACTIVE/OFF and horizon",
+      "Both-leg basis stress and current held risk",
+      "Finite deficit/deadline/residual and native margin",
+      "Pending/cancel/late fill obligations and real TP ownership",
+      "Ordinary increases/rearm net edge after costs"
+    ],
+    "sizing_units": "BTC notional x, oppositeSOL notional y; market-factor residual x-beta*y. Half-vol y=.5*x*sigmaB/sigmaS implies factor coverage .5*rho, not50%DD. hMV=rho*sigmaB/sigmaS; inversebeta=hMV/rho^2. No window selected.",
+    "sources": [
+      "S4",
+      "S8",
+      "S9"
+    ]
+  },
+  "minimal_shortlist": [
+    {
+      "id": "G1",
+      "hypothesis": "Release one still-valid original second-child after risk OFF improves participation enough to justify a bounded incremental test",
+      "cheap_closure": "Target existing exact R2 C0 saved decision snapshots only; preserve UNKNOWN if reservation/ACK/margin/clock fields absent; no new raw sweep or PnL reconstruction",
+      "falsifiers": [
+        "No lawful additional original rights on actual R2 core",
+        "Only crossing/after ordinary TP/unknown margin opportunities",
+        "Actual additional native BTC fills zero means NOT_TESTED",
+        "Fails frozen incremental cost/DD/ES gates"
+      ],
+      "economic_status": "NOT_RUN"
+    },
+    {
+      "id": "G2",
+      "hypothesis": "Explicit causal risk deactivation or bounded joint risk allows lawful BTC residual after SOL TP",
+      "cheap_closure": "One fixed transition/input availability table, novelty check against C1/H_SOL before any code or screen",
+      "falsifiers": [
+        "Pending SOL hedge credit",
+        "Future-known OFF or missing finite risk deadline",
+        "BTC trim leaves excessSOL",
+        "Same old selected-loser halfcut or ADD cap renamed"
+      ],
+      "economic_status": "ARCHITECTURE_ONLY"
+    },
+    {
+      "id": "TRIM_COMPARATOR",
+      "hypothesis": "SOL protection is not dominated by causal factor-equivalent BTC reduction after all costs and lost upside",
+      "cheap_closure": "Freeze common risk clock, causal size target, own native fill semantics, costs and capital checkpoints without guessed required capital",
+      "falsifiers": [
+        "Comparator uses future SOL actual fills as online signal",
+        "Cannot freeze fair comparison",
+        "TRIM dominates C0 on TOTAL/DD/ES"
+      ],
+      "economic_status": "NOT_RUN"
+    }
+  ],
+  "control_matrix": [
+    "Fresh matched R2 OFF",
+    "Causal factor-equivalent BTC_TRIM with own fills and expenses",
+    "C0_FIXED only after full lifecycle/TP/accounting PASS",
+    "A0_FIXED differs only once-original-second flag and requires actual additional BTC fill",
+    "Any G2 separately declared new variant, not hidden in lifecycle/A0"
+  ],
+  "future_A0_gates": [
+    "Mandatory accepted C0 and complete integration first",
+    "Fresh matched OFF parity20911.13611487 or explain declared source delta before continuing",
+    "TOTAL_A0>TOTAL_C0 and gain>2*max(0,incremental fees)",
+    "Settled and coherent event DD<=50 and<=C0; dailyES20 all136UTCdays<=C0",
+    "Cash/signedfunding/TPownership/zeroLiq/flat; actual additional BTC fills",
+    "Prefix is not full original70/90 proof or freshOOS; no automatic full authorization"
+  ],
+  "C1_lessons": {
+    "TOTAL": "4388613.38225343",
+    "retention_percent": "72.16970476799190164204208923",
+    "settled_DD_percent": "51.80315157406654834417870238",
+    "cuts": 9,
+    "restores": 3,
+    "extinguished_rights": 6,
+    "restore_cashflow_cost_before_fees": "385696.0245",
+    "intervention_fees_already_in_TOTAL": "30498.04072762",
+    "January_SOL_requested": "2000",
+    "January_SOL_actual_filled": "1000",
+    "August": "Five parent rearms within same ongoing global drawdown; removing all is not proven beneficial",
+    "first_October_DD_percent": "50.6142",
+    "real3TP_and_coherent_eventDD": "NOT_ATTESTED",
+    "transfer": "No promised72.17% under changed real3TP/strict hedge",
+    "sources": [
+      "S11"
+    ]
+  },
+  "oracle_limits": "#133 half-losers and zero-losers scalar products; #134 union oracle are future-knowing fixed-return diagnostics, not upper bounds for every BTC/SOL strategy, no exact necessary Jan15 capital or live feature. No new calculations here.",
+  "recommendation": "Complete P1a and narrow exact R2 opportunity/growth admission table. Lifecycle fix worthwhile as correctness requirement; fix+unchangedC0 unsupported as autonomous growth experiment. Conditional A0 only as bounded incremental comparison after missing gates and explicit new budget. If keeping BTC after fullSOLTP under active risk is mandatory, settle G2 separately before monetary implementation. No automatic6/4 budget request.",
+  "method": {
+    "new_engines": 0,
+    "training": 0,
+    "downloads": 0,
+    "product_source_edits": 0,
+    "VPS_runtime_access": 0,
+    "new_raw_stream_sweeps": 0,
+    "new_counterfactual_PnL": 0,
+    "new_oracle_or_required_capital_calculations": 0,
+    "owned_files": [
+      "P1_GROWTH_ADMISSION.md",
+      "P1_GROWTH_ADMISSION.json"
+    ]
+  },
+  "sources": {
+    "S1": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/new-system-plan-20261024/btc-participation-report.md",
+        "sha256": "9ca45ca264c7e374477fbd21ad463db94c908e426af697a861db9d8f89ee1157"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/new-system-plan-20261024/DECISION.md",
+        "sha256": "32a14ad4f93bf807a6e5adaff66aacfbaed4183f8bc396c585d41babc8b9403e"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/ECONOMIC_EVIDENCE.md",
+        "sha256": "36f980fc6d91d2380dce2cdc78da35532a55d5ffd61ab65d8398fe300f1fbfdb"
+      }
+    ],
+    "S2": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/DECISION.md",
+        "sha256": "33970e875bdacb85be0abfeb79128f8d099770b2929b440dea14ac89e4cc17d6"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/RECENT_EVIDENCE.md",
+        "sha256": "af85c3ad9497567b809e6fbda10de855a0fb4c099bd0e38d1755dea5d81faddc"
+      }
+    ],
+    "S3": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-next-admission-memo.json",
+        "sha256": "0902d3650210e1ff9aed7dd610ab7d7934ae29c6a395aa15f25c440e9ce8d7f5"
+      }
+    ],
+    "S4": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/analysis/RESULTS_RU.md",
+        "sha256": "50ddc66635665b5c959448a27f7cb45f449eedfc41ebfbe37ea5d66ec8c0e35b"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/analysis/FOUR_CHILD_NOTE_RU.md",
+        "sha256": "8b035031191d5b8f40c228bb09217ff445ceb4d8558b3e31007260cffd96a330"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/analysis/a0-four-case-clock-cap-addendum.md",
+        "sha256": "b55565a1d10f959c8dbfc6959f029465f4961c47687739c4f58fe02814702fb4"
+      }
+    ],
+    "S5": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/A0_CONTRACT_PROPOSED_RU.md",
+        "sha256": "8432e4decdf249ba2b80bb4eeac7e8773a1d24d39eb57b5d9026a3cdd516a2c0"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/A0_RESULTS_AND_DECISION_RU.md",
+        "sha256": "197a550a7651bbe4e3871f8756cd303ff2f7f27e3ed171ed4fb77f3b84961a24"
+      }
+    ],
+    "S6": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/FINAL_RESULTS_AND_NEXT_PLAN_RU.md",
+        "sha256": "f078796dcd5fba732e3ec8f2bd31c44b8ce90c8e6509de44bb2ba49d568fd63f"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/RECENT_EVIDENCE.md",
+        "sha256": "af85c3ad9497567b809e6fbda10de855a0fb4c099bd0e38d1755dea5d81faddc"
+      }
+    ],
+    "S7": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/RECENT_EVIDENCE.md",
+        "sha256": "af85c3ad9497567b809e6fbda10de855a0fb4c099bd0e38d1755dea5d81faddc"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/lot-corridor-next-admission-memo.json",
+        "sha256": "0902d3650210e1ff9aed7dd610ab7d7934ae29c6a395aa15f25c440e9ce8d7f5"
+      }
+    ],
+    "S8": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/growth-budget-admission.md",
+        "sha256": "2612ddde82a4ae53d98feaeae0d17f2870e317183dd9f12f215c6e7513656bef"
+      }
+    ],
+    "S9": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/RECENT_EVIDENCE.md",
+        "sha256": "af85c3ad9497567b809e6fbda10de855a0fb4c099bd0e38d1755dea5d81faddc"
+      }
+    ],
+    "S10": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/broad-hedge-discovery-20261024/scale-admission-report.md",
+        "sha256": "c007596165db0ed6e1fc35401fb81f9123920f9420c9abe84b79438749e0325d"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/early-capital-hedge-20261024/DECISION.md",
+        "sha256": "33970e875bdacb85be0abfeb79128f8d099770b2929b440dea14ac89e4cc17d6"
+      }
+    ],
+    "S11": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/REPORT.md",
+        "sha256": "ef44ecd91c5f34a602c81293b88e62f8015e8fa9df120d189a281247c2ded7a8"
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/four-week-review-20261026/ECONOMIC_EVIDENCE.md",
+        "sha256": "36f980fc6d91d2380dce2cdc78da35532a55d5ffd61ab65d8398fe300f1fbfdb"
+      }
+    ]
+  },
+  "post_readonly_R2_closure": {
+    "artifact": "P1_R2_COVERAGE_CHECK.json",
+    "sha256": "8d3ad2bf204f1a700f7678f861df0090a4c99138cbf703bd8dd58ecb61919fc9",
+    "actualR2_report_SHA_verified": true,
+    "riskselections": 16,
+    "riskOFF": 15,
+    "staticparents": 19,
+    "four_canceled_second_quantities": [
+      ".541",
+      ".405",
+      ".285",
+      ".418"
+    ],
+    "empty_disabled_audit_is_not_zero_opportunity": true,
+    "next": "sideeffectfree_predecisionrecord_independent_of_tradingflag;nextapprovedC0observationalcontrol",
+    "no_impossible_preproof": "FutureA0fill/profit/counterfactualownmarginaretestedatnativeadmission,notprerequisitespredictedinadvance",
+    "conditional_order": "OFF_C0_FIXED_TRIM_A0",
+    "new_budget": 0
+  }
+}

@@ -1,0 +1,415 @@
+{
+  "window": "2026-09-28→2026-10-26",
+  "interpretation": "lastfourweeksendingcurrentdate; eventsbeforestartonlybaselinecontext",
+  "scope": "All 51 preexisting report directories catalogued; researchfamilies plus historicaloperationalcontext. Family review is complete to available summaries, not every rawconstructor/tick or unknown lostexperiment.",
+  "directories": [
+    {
+      "directory": "reports/ai-cycle-20261021-01",
+      "first_saved_commit": "2026-10-21|6f76d8af",
+      "last_saved_commit": "2026-10-22|66dacb1",
+      "review_owner": "root_ai",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/ai-signal-methods-20261021",
+      "first_saved_commit": "2026-10-21|31dc0a6b",
+      "last_saved_commit": "2026-10-21|31dc0a6",
+      "review_owner": "root_ai",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/alpha-cushion-113",
+      "first_saved_commit": "2026-10-19|2b3cd5ff",
+      "last_saved_commit": "2026-10-19|b1650aa2",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/b-50-90-next-20261023",
+      "first_saved_commit": "2026-10-23|a1d782fc",
+      "last_saved_commit": "2026-10-23|071dfa5",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/b-band-postmortem-20261023",
+      "first_saved_commit": "2026-10-23|a1d782fc",
+      "last_saved_commit": "2026-10-23|a1d782f",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/broad-hedge-discovery-20261024",
+      "first_saved_commit": "2026-10-24|0fa43484",
+      "last_saved_commit": "2026-10-25|f4d0b6f",
+      "review_owner": "recent",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/btc-lifecycle-audit-20261022",
+      "first_saved_commit": "2026-10-22|accae1fd",
+      "last_saved_commit": "2026-10-22|dc6fd37",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/btc-pattern-pilot-m2-20261021",
+      "first_saved_commit": "2026-10-21|e3376bce",
+      "last_saved_commit": "2026-10-22|5432f35",
+      "review_owner": "root_ai",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/btc-sizing-113",
+      "first_saved_commit": "2026-10-11|d402a7ae",
+      "last_saved_commit": "2026-10-11|d402a7ae",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/btc-sol-causal-modules-20261022",
+      "first_saved_commit": "2026-10-23|126d6d02",
+      "last_saved_commit": "2026-10-23|7140899",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/btc-sol-event-risk-20261021",
+      "first_saved_commit": "2026-10-21|b8078a69",
+      "last_saved_commit": "2026-10-21|cf83b99",
+      "review_owner": "root_ai",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/btc-split-sol-cover-20261018",
+      "first_saved_commit": "2026-10-18|e3680b61",
+      "last_saved_commit": "2026-10-18|25222687",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/carry-pair-113",
+      "first_saved_commit": "2026-10-20|abb481ea",
+      "last_saved_commit": "2026-10-20|abb481ea",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/carry-pair-run-113",
+      "first_saved_commit": "2026-10-20|fdcefd63",
+      "last_saved_commit": "2026-10-20|5b45a7cf",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/chop-pair-113",
+      "first_saved_commit": "2026-10-19|e560dfef",
+      "last_saved_commit": "2026-10-19|91ec919d",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/conditional-sol-2-1-50-113",
+      "first_saved_commit": "2026-10-18|2a3f830c",
+      "last_saved_commit": "2026-10-18|e62afaac",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/continuous-hedge-plan-20261025",
+      "first_saved_commit": "2026-10-25|3c936146",
+      "last_saved_commit": "2026-10-25|3d7df5c",
+      "review_owner": "recent",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/current-hedge-20261013",
+      "first_saved_commit": "2026-10-13|8a488b49",
+      "last_saved_commit": "2026-10-13|6abe8d51",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/e4-budget-tp3-20261023",
+      "first_saved_commit": "2026-10-23|f7587cd8",
+      "last_saved_commit": "2026-10-23|895b552",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/e4-postmortem-20261023",
+      "first_saved_commit": "2026-10-23|99161394",
+      "last_saved_commit": "2026-10-23|9916139",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/e4-sol-residual-20261023",
+      "first_saved_commit": "2026-10-23|d9c075ee",
+      "last_saved_commit": "2026-10-23|fddef54",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/early-capital-hedge-20261024",
+      "first_saved_commit": "2026-10-24|5b921dec",
+      "last_saved_commit": "2026-10-24|7ef680f",
+      "review_owner": "recent",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/fast-rnd-20261020",
+      "first_saved_commit": "2026-10-20|db26e69d",
+      "last_saved_commit": "2026-10-21|1b887b8c",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/forecast-independent-20261021",
+      "first_saved_commit": "2026-10-21|c6291cd7",
+      "last_saved_commit": "2026-10-21|85fdd78",
+      "review_owner": "root_ai",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/h1-b1-113",
+      "first_saved_commit": "2026-10-13|578af998",
+      "last_saved_commit": "2026-10-13|abfc74aa",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/hedge-risk-contract-20261025",
+      "first_saved_commit": "2026-10-25|0a67c193",
+      "last_saved_commit": "2026-10-25|18da065",
+      "review_owner": "recent",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/immediate-sol-insurance-113",
+      "first_saved_commit": "2026-10-19|262bf2c3",
+      "last_saved_commit": "2026-10-19|2b3cd5ff",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/live82-gui",
+      "first_saved_commit": "2026-10-15|68118763",
+      "last_saved_commit": "2026-10-15|099e974f",
+      "review_owner": "operational_context",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/live82-implementation-20261015",
+      "first_saved_commit": "2026-10-15|68118763",
+      "last_saved_commit": "2026-10-15|099e974f",
+      "review_owner": "operational_context",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/live95-readiness-20261014",
+      "first_saved_commit": "2026-10-14|32ad3573",
+      "last_saved_commit": "2026-10-14|32ad3573",
+      "review_owner": "operational_context",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/manager-handoff-20261024",
+      "first_saved_commit": "2026-10-24|de5fbfd8",
+      "last_saved_commit": "2026-10-24|8137847",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/market-redesign-20261024",
+      "first_saved_commit": "2026-10-24|0c209971",
+      "last_saved_commit": "2026-10-24|0dd0f16",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/new-system-plan-20261024",
+      "first_saved_commit": "2026-10-24|b63945d0",
+      "last_saved_commit": "2026-10-24|afd481c",
+      "review_owner": "recent",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/residual-recovery-20261023",
+      "first_saved_commit": "2026-10-23|b55c9fe5",
+      "last_saved_commit": "2026-10-23|d56fcdf",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/s0-management-20261022",
+      "first_saved_commit": "2026-10-22|efa7c723",
+      "last_saved_commit": "2026-10-22|a8d6a55",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/s0-optimization-plan-20261022",
+      "first_saved_commit": "2026-10-22|66dacb18",
+      "last_saved_commit": "2026-10-22|d1b541c",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/s0-system-audit-20261023",
+      "first_saved_commit": "2026-10-23|ff3886ba",
+      "last_saved_commit": "2026-10-23|984482a",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/s0-weekly-postmortem-20261022",
+      "first_saved_commit": "2026-10-22|779358de",
+      "last_saved_commit": "2026-10-22|ebf5faf",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/selective-lifecycle-cap30m-113",
+      "first_saved_commit": "2026-10-09|9f892974",
+      "last_saved_commit": "2026-10-11|35236653",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/selective-zero-tp-113",
+      "first_saved_commit": "2026-10-09|1c1fb82c",
+      "last_saved_commit": "2026-10-09|3b9b9c13",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/sol-conditional-hedge-btc-band-20261023",
+      "first_saved_commit": "2026-10-23|15b6cf74",
+      "last_saved_commit": "2026-10-23|7fa5800",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/sol-corridor-113",
+      "first_saved_commit": "2026-10-20|9df1ade6",
+      "last_saved_commit": "2026-10-20|db26e69d",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/sol-risk-first-20261018",
+      "first_saved_commit": "2026-10-18|157258fb",
+      "last_saved_commit": "2026-10-19|742c7bd9",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/system-contract-repair-20261023",
+      "first_saved_commit": "2026-10-23|91569bac",
+      "last_saved_commit": "2026-10-23|c619ad1",
+      "review_owner": "economic",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/tp-continuity-20261025",
+      "first_saved_commit": "2026-10-25|93c6c7ec",
+      "last_saved_commit": "2026-10-26|acb4553",
+      "review_owner": "recent",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/tp-fee-floor-113",
+      "first_saved_commit": "2026-09-29|b079d1a0",
+      "last_saved_commit": "2026-09-29|b079d1a0",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/v0-execution-repairs-113",
+      "first_saved_commit": "2026-10-09|7ea18932",
+      "last_saved_commit": "2026-10-09|004587e9",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/v3-risk-four-113",
+      "first_saved_commit": "2026-10-11|72b7c677",
+      "last_saved_commit": "2026-10-11|2dabe9f9",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/vps-cleanup-20261011",
+      "first_saved_commit": "2026-10-11|02d095fc",
+      "last_saved_commit": "2026-10-11|02d095fc",
+      "review_owner": "operational_context",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/vps-cleanup-20261015",
+      "first_saved_commit": "2026-10-15|948af1b1",
+      "last_saved_commit": "2026-10-15|c5f05f65",
+      "review_owner": "operational_context",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    },
+    {
+      "directory": "reports/winner-6077107-stats",
+      "first_saved_commit": "2026-10-20|9df1ade6",
+      "last_saved_commit": "2026-10-20|9df1ade6",
+      "review_owner": "early",
+      "coverage": "FAMILY_SUMMARIES_AND_NARROW_RECEIPTS_NOT_EVERY_RAW_TICK",
+      "notes": "DatesareGitreportpersistence,not necessarilyexecutiondate."
+    }
+  ]
+}

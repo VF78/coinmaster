@@ -1,0 +1,90 @@
+{
+  "task": "CM-FOURWEEK-REVIEW-20261026/P1_DECISION",
+  "status": "CONDITIONAL_PLAN_PASS_NO_NATIVE_GO",
+  "blockers": 0,
+  "decision": "Bounded observationalC0→conditionalA0 approach is preferable to indefiniteP1deadlock. Accept decision after explicitly incorporating revisedorder/guardwording intoP1b+unifiedplan; not an economicapproval.",
+  "A0_economics_now": "HOLD_NOT_RUN_NOT_REJECTED",
+  "reviewed_proposal": "Rootdirecthandoff: newactualR2savedreport andconditionalOFF→C0_FIXED→BTC_TRIM→A0, replacing staleoldR3-only/noR2evidence narrative.",
+  "checks": [
+    {
+      "id": "NewR2evidence",
+      "status": "PASS_WITH_SCOPE_LIMIT",
+      "finding": "16risk/15OFF/19parents и4cancelledsecondquantities даныrootпоactualsavedR2report; не пересчитывались и не аудировалисьraw. EmptyflagOFFa0_rights неzero-opportunityproof."
+    },
+    {
+      "id": "NoindefiniteP1deadlock",
+      "status": "PASS",
+      "finding": "Missing joinedstates can be collected in bounded freshlyqualifiedC0control after separateapproval; oldmissingfield is not reason to demand impossiblefuturePnLproof."
+    },
+    {
+      "id": "Lawfulbeforeincrease",
+      "status": "PASS",
+      "finding": "Originalunfilledrights and causalguards must be defined/observable; ownA0margin/actualfills/outcome determined inexperiment, no syntheticrestorationofclosedBTC."
+    },
+    {
+      "id": "Conditionalorder",
+      "status": "PASS",
+      "finding": "OFFparity→C0strictTPfinancialqualification+states→TRIM→A0conditional. C0invalid/noadmission STOP preservesunusedslots."
+    },
+    {
+      "id": "C0notgrowthclaim",
+      "status": "PASS",
+      "finding": "Lifecycle correctness/control accepted independently ofunsupportedgrowth. No importlegacyalpha/candidatecapital intoC0."
+    },
+    {
+      "id": "Fairtrim",
+      "status": "PASS_CONDITION",
+      "finding": "Freezefactor-riskclock/target and ownfills; nofutureC0SOLfills as onlinefeatures. OtherwiseSTOPbeforeapproval."
+    },
+    {
+      "id": "A0incrementalgate",
+      "status": "PASS",
+      "finding": "Positiveadditionalfills needed forTESTED; no suchfillsNOT_TESTED. Profit notpreproved, butfrozenincrementalTOTAL/cost/DD/ES/fullfloors stillrequired."
+    },
+    {
+      "id": "SeparateG2",
+      "status": "PASS",
+      "finding": "Fixedcoverage residual/rearmriskcontract cannotbe silentlychanged inlifecycle/A0."
+    },
+    {
+      "id": "Authorization",
+      "status": "PASS",
+      "finding": "Proposed6fixtures/4prefixmax/full0; closedoldbudgets nontransferable; nocode/nativebudgetGO."
+    }
+  ],
+  "concrete_replacement_wording_RU": "A0 economics остаётся HOLD сейчас. Это не NO_GO гипотезы и не требование заранее доказать будущие fills, prospective margin или прибыль. Сохранённый R2 C0 показывает16 riskselections,15 OFF и19 staticparents; четыре старые даты имеют отменённые second quantities .541/.405/.285/.418. Пустой a0_rights при выключенном флаге и earlyreturn не доказывает отсутствие возможностей. Эти количества лишь кандидаты на исходное право, а не автоматически допустимые лоты к восстановлению.\n\nПосле отдельного одобрения scope/budget и полного lifecycle/integrationPASS предлагается условный порядок максимум4prefixattempts: freshOFF → C0_FIXED observationalcontrol → BTC_TRIM → A0_FIXED. C0_FIXED сохраняет causalpredecision states на riskOFF/+60 и каждом последующем допустимом quote: originalrights/actualsecondfilled-ever, quote/cross, debt, actualcap, TPstage/ordinaryexit, pending/ACK/reservations/native margin иclock. Source/config/data/gates и правило извлечения/оценки состояний freeze до результатов. C0 обязан пройти nativeTPownership/continuousrequiredTP, cash/signedfunding, settled+coherentevent accounting, zeroLiq/terminalflat. C0invalid или отсутствие структурно допустимого права → STOP, unusedslotsclosed, не новыйcandidate.\n\nДо A0 нужны наблюдаемый originalunfilledright и причинно вычислимая releasepolicy с проверяемыми guards; будущий actualfill/достаточность margin на изменённом A0пути и profit не доказываются по C0заранее. Они проверяются во время отдельно разрешённого A0run на его ownnativeaccount. UNKNOWN не допускает увеличение; crossing/debt/pending/ordinaryTP/deadline блокируют именно соответствующее решение по замороженному контракту. A0actualadditionalfills0 → NOT_TESTED, не прибыльныйPASS и не разрешение повторить. Получение допустимого права не означает экономическую достаточность: frozenincrementalTOTAL/cost/DD/ES иoriginalfullfloors неизменны.\n\nBTC_TRIM использует объявленный causalriskclock/factor-risk target и собственные nativefills/затраты; фактические будущие C0SOLfills не становятся его onlineinput. Если честный comparator или admission нельзя freeze, STOPдоGO; никакого переименованияunusedslot. C0 здесь control/qualification, не заявка на восстановление исходногоgrowth. G2/riskcontract, rearm, BTCcore/TP/sizing изменения отдельно от lifecycle и A0. Proposed≤6fixtures/≤4prefix/full0 не утверждены; oldbudgetsclosed, новый code/nativeGO отсутствует.",
+  "necessary_doc_alignment": [
+    "P1_GROWTH_ADMISSION.md/json: distinguisholdR3fourcase table vsnewR2quantities/stateavailability; no zeroopportunity inferencefromflagOFFemptyarray.",
+    "UNIFIED_PLAN_RU P3/controlmatrix: replaceOFF→TRIM→C0→A0 with conditionalOFF→C0→TRIM→A0; explicitstatecollection/qualificationSTOP.",
+    "KeepP0snapshotunchanged; recordP1delta withactualsavedreportpath/hash/rootreceipt.",
+    "P1_SOL_LIFECYCLE sourcecandidate remainsNATIVE_NOT_PROVEN; fixture/sourceproof noteconomicPASS."
+  ],
+  "checked_file_hashes": [
+    {
+      "path": "reports/four-week-review-20261026/P1_SOL_LIFECYCLE_CONTRACT.md",
+      "sha256": "9a5d3459c7a234d70604d39b26b338652ad8e66c8b82bb83865e80cbda408f99"
+    },
+    {
+      "path": "reports/four-week-review-20261026/P1_SOL_LIFECYCLE_FEASIBILITY.json",
+      "sha256": "15e22a2292739ee983188a0f61d7a70cdb8eb12f73769d253e24744dd6f7ee3f"
+    },
+    {
+      "path": "reports/four-week-review-20261026/P1_GROWTH_ADMISSION.md",
+      "sha256": "d9ff38150602c6e094df4e26815b06b64f428e31cfe0ff7c75f321c84e24eaa7"
+    },
+    {
+      "path": "reports/four-week-review-20261026/P1_GROWTH_ADMISSION.json",
+      "sha256": "91fecf6b733cdfe22dccca98cd05acb177db8ae115e820c94fd3cd63af487179"
+    },
+    {
+      "path": "reports/four-week-review-20261026/UNIFIED_PLAN_RU.md",
+      "sha256": "55698c21dff04e155cb8bd19ca337afcb7d9b7f697f4c7ea0c4b737e7939bc2e"
+    }
+  ],
+  "limits": [
+    "Narrowdecisionreview, no newsourceaudit/tests/engine/code.",
+    "ActualnewR2report numericalfacts acceptedfromrootdirecthandoff, notindependentlyrawverified.",
+    "CurrentP1b/unifiedsavedbytes stillcontainolderR3-only/ordertext; acceptance appliesproposedrevision andrequiresdocconsistency beforefutureprotocolfreeze.",
+    "No numericalfixture/prefixbudget approved bythisreview."
+  ]
+}

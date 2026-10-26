@@ -1,0 +1,17 @@
+{
+  "status": "PLAN_RECONCILED_AFTER_READONLY_P1_NO_NATIVE_GO",
+  "utc": "2026-10-26T14:12:15.756237+00:00",
+  "P0_snapshot": "P0_REVIEWED_PLAN_SNAPSHOT.md",
+  "P0_plan_sha256": "55698c21dff04e155cb8bd19ca337afcb7d9b7f697f4c7ea0c4b737e7939bc2e",
+  "current_plan_sha256": "7423eba6fd2a67b2c2f96e19d3523402c2dbadddaad1829ae02d306537c8e1f2",
+  "P1_decision_review_sha256": "76694c392d11e50f41110a452746477a158709a3d4d687fe04831f126e0fbef7",
+  "changes": [
+    "P1sourcefeasible/nativeunproveddesign",
+    "R2coveragegap_notzeroopportunities",
+    "conditionalOFF_C0observation_TRIM_A0order",
+    "futurefill_profit_not_prerequisite_for_test",
+    "G2separate_proposed6_4notownerapproved"
+  ],
+  "new_native_runs": 0,
+  "new_monetary_code": 0
+}

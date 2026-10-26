@@ -1,0 +1,52 @@
+{
+  "status": "ACTUAL_GITHUB_READBACK_METADATA_ONLY",
+  "body_content_preserved_local_not_published": true,
+  "full_response_sha256": "794eb4de76ed55b1233234570ebaca6c3686a1b2b07f46e5c7cb4703db05312f",
+  "issues": [
+    {
+      "number": 75,
+      "title": "[Nautilus P0] Данные, биржи и проверка окружения",
+      "state": "OPEN",
+      "url": "https://github.com/VF78/coinmaster/issues/75",
+      "createdAt": "2026-09-19T18:12:56Z",
+      "updatedAt": "2026-09-28T09:10:25Z",
+      "body_sha256": "a02f63b6a3eda961bea5af75b9d08ac345ac21254a1185e71aede861454134e3"
+    },
+    {
+      "number": 77,
+      "title": "[R0] Canonical entry-day statistics and real Hyperliquid data coverage",
+      "state": "CLOSED",
+      "url": "https://github.com/VF78/coinmaster/issues/77",
+      "createdAt": "2026-09-19T18:13:03Z",
+      "updatedAt": "2026-10-18T10:55:42Z",
+      "body_sha256": "12f1b628bd8dfd989aff596267d5c1e41f24eb4beabaf7b9aa85fbaa1b7dd9aa"
+    },
+    {
+      "number": 101,
+      "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout",
+      "state": "OPEN",
+      "url": "https://github.com/VF78/coinmaster/issues/101",
+      "createdAt": "2026-09-21T22:43:27Z",
+      "updatedAt": "2026-10-24T09:17:02Z",
+      "body_sha256": "6930f3e343bb1d62c7588fa23f1403d2e5c3172e0da348338607906b2becba50"
+    },
+    {
+      "number": 104,
+      "title": "[HL GUI-3] Native backtest and optimizer for traders",
+      "state": "CLOSED",
+      "url": "https://github.com/VF78/coinmaster/issues/104",
+      "createdAt": "2026-09-23T08:05:47Z",
+      "updatedAt": "2026-10-07T12:12:54Z",
+      "body_sha256": "f0c1daf6289b4cb6ab41e9a50238a5902d1c8d259fa489c063a5c30340c0c7b2"
+    },
+    {
+      "number": 114,
+      "title": "[HL GUI-5] Secure exchange connections and account selection",
+      "state": "CLOSED",
+      "url": "https://github.com/VF78/coinmaster/issues/114",
+      "createdAt": "2026-09-28T09:52:15Z",
+      "updatedAt": "2026-09-28T19:16:10Z",
+      "body_sha256": "c913a397701da0cdfe1154b5c16c4e92a32ac3571756e8a771502c831cd84345"
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "schema": "CM_P1_SOL_LIFECYCLE_SOURCE_FEASIBILITY_V1",
+  "task": "CM-FOURWEEK-REVIEW-20261026/P1a",
+  "status": "SOURCE_FEASIBLE_CANDIDATE_NATIVE_NOT_PROVEN",
+  "authorization": "Read-only P1a after P0_ROOT_ACCEPTANCE; no code/native authority",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "product_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime",
+  "native_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader",
+  "recommended_design": {
+    "name": "Standing SOL protection with selective public modify",
+    "ordinary_TP_fill": "Decrease only filled-level entitlement; preserve all unaffected TP OIDs/leaves/prices; update necessary STOP quantity on same OID",
+    "STOP": "Keep existing reduce-only STOP_MARKET IOC; public quantity-only modify; same trigger; no blanket cancel",
+    "quantity": "native_total = actual_filled + desired_leaves; integer native lattice and minimum constraints; no zero native orders",
+    "generation": "Desired allocation generation distinct from native acknowledged generation; one in-flight modify per OID and latest-desired coalescing; immutable event UUID and trade-ID dedup",
+    "clock": "First unrestored causal gap retained; unchanged PROTECTION_OVERDUE_NEXT_QUOTE; no quote/latency/guard workaround",
+    "terminal": "SOL flat plus pending STOP is DRAINING; pair flat requires BTC/SOL0 and open/inflight/commands0",
+    "preserve": [
+      "BTC core and LEGACY_Q reference",
+      "initial target prices/formulas/weights",
+      "SOL signals and IOC STOP semantics",
+      "integer lot corridor and caps",
+      "paired BTC reductions",
+      "A0 original rights and clocks"
+    ]
+  },
+  "actual_F4_cause": {
+    "failure": "PROTECTION_OVERDUE_NEXT_QUOTE",
+    "time_s": 153,
+    "replacement_fills_at_s": 152.01,
+    "book_SOL": "96",
+    "native_fills": [
+      "0.3",
+      "0.5"
+    ],
+    "second_cancel_completes_at_s": 154.01,
+    "BTC_held": "1.006",
+    "BTC_TP3_leaves": "1.006",
+    "SOL_held": "0",
+    "pending_SOL_STOP": true,
+    "terminal_flat": "NOT_PROVEN",
+    "transport": "base/insert/update0;cancel2s fixed before constructor"
+  },
+  "source_evidence": [
+    {
+      "file": "coinmaster/strategy/paired_prefix.py",
+      "lines": "415-442,480-481",
+      "finding": "Changed signature blanket-cancels all SOL TP/STOP; current nextquote guard refuses unresolved protection"
+    },
+    {
+      "file": "coinmaster/strategy/paired_prefix.py",
+      "lines": "43-56,253-289,323-379",
+      "finding": "Existing lot entitlements/TP formula/IOC STOP and reduction rules to preserve"
+    },
+    {
+      "file": "trading/strategy.pyx",
+      "lines": "1011-1091,1568-1645",
+      "finding": "Public modify creates queued command/PENDING_UPDATE; no command for unchanged values/closed/pendingcancel"
+    },
+    {
+      "file": "backtest/engine.pyx",
+      "lines": "5597-5659,8159-8210",
+      "finding": "Limit and STOP_MARKET updates supported; marketable limit may fill; STOP trigger already in market rejects; total below cachedfilled rejects"
+    },
+    {
+      "file": "model/orders/stop_market.pyx",
+      "lines": "213-220",
+      "finding": "OrderUpdated applies quantity and optional trigger"
+    },
+    {
+      "file": "risk/engine.pyx",
+      "lines": "496-582",
+      "finding": "Native modify state/quantity/trigger validation"
+    },
+    {
+      "file": "backtest/engine.pyx",
+      "lines": "3369-3392,3779-3793,5238-5259",
+      "finding": "Stock queue/latency and matching process_modify route"
+    },
+    {
+      "file": "backtest/engine.pyx",
+      "lines": "7978-8044",
+      "finding": "Auto-resize depends on separate cache association; raw position_id not sufficient"
+    },
+    {
+      "file": "coinmaster/strategy/wave_overlay.py",
+      "lines": "2669-2698",
+      "finding": "Minimal additional SOL routing needed for Updated/ModifyRejected alongside preserved BTC handlers"
+    }
+  ],
+  "public_API_limits": [
+    "Closed/PENDING_CANCEL orders cannot be modified",
+    "STOP_MARKET quantity update rejected if unchanged trigger already in market",
+    "Triggered/terminal IOC STOP cannot be resurrected; partial native STOP remains NO_GO",
+    "Limit quantity change may immediately fill against existing book, including same-stack multiple fills",
+    "Native cachedfilled may lead public orderfilled during matching; reject/mismatch must not be hidden",
+    "Public modify return does not establish actual latest ACK",
+    "ReduceOnly prevents modeled reversal but does not establish exact allocation or safe latest generation",
+    "No manual cachelinks/native event injection/matching calls/engine patch/use_reduce_only disable"
+  ],
+  "fixture_map": [
+    {
+      "id": "E1",
+      "route": "Registered ordinary SOL lifecycle; zero transport",
+      "gates": [
+        "Actual partial/multiple fills",
+        "Remaining OID preservation",
+        "STOP same-OID actual Updated",
+        "Correct per-level rights and consumed levels",
+        "Exact matching boundaries"
+      ],
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "E2",
+      "route": "Static cancel2s/update0; unchanged F4 150/152.01/153 sequence; real closing pendingcancel latefill",
+      "gates": [
+        "No ordinary-fill blanket replacement",
+        "Actual pendingcancel-fill-Canceled sequence",
+        "Idempotent second reconciliation",
+        "No reversal",
+        "No guard waiver",
+        "Flat with pending STOP drains"
+      ],
+      "status": "NOT_RUN_SOURCE_SCHEDULE_MUST_BE_FROZEN_BEFORE_APPROVAL"
+    },
+    {
+      "id": "E3",
+      "route": "Existing BTC standing/debt and healthy marketable DEFER",
+      "gates": [
+        "Same OID latest ACK",
+        "Actual residual/debt duration",
+        "Clean DEFER before UNKNOWN risk",
+        "First clean quote services residual",
+        "Flat creates no new debt"
+      ],
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "E4",
+      "route": "Registered second parent and original A0 rights; static public transport",
+      "gates": [
+        "Natural partial FIRST",
+        "Once original second",
+        "RiskOFF+60/cross/margin",
+        "Actual pendingcancel latefill before Canceled",
+        "No afterACK fill/refund/retry"
+      ],
+      "status": "NOT_RUN_AND_GROWTH_HOLD"
+    },
+    {
+      "id": "E5",
+      "route": "One registered account/strategy; zero transport full integration",
+      "gates": [
+        "Natural parents and exact native sizing",
+        "SOL/BTC exact protection",
+        "Cash/fees identity",
+        "Zero model liquidation",
+        "All positions/orders/inflight0",
+        "Five STOPPED then DISPOSED"
+      ],
+      "status": "NOT_RUN_AND_SCOPE_DEPENDS_ON_P1B"
+    },
+    {
+      "id": "E6",
+      "route": "Only predeclared corrected repeat after one consolidated correction and root disposition",
+      "gates": [
+        "Every failure spent",
+        "No automatic sixth attempt or new hypothesis"
+      ],
+      "status": "RESERVE_PROPOSAL_NOT_AUTHORIZED"
+    }
+  ],
+  "remaining_unknowns": [
+    "Actual queued SOL STOP modification and latest ACK before next matching boundary",
+    "Same-stack partial/multiple SOL fills preserve exact rights and desired-generation correctness",
+    "In-market STOP reject/IOC terminal partial pathway integration",
+    "Real delayed cancel/fill/reject chronology and flat pending STOP cleanup",
+    "Integrated registered E1-E5 coverage and full family acceptance",
+    "Native economic improvement; A0 growth sufficiency; venue execution equivalence"
+  ],
+  "future_patch_scope_only": [
+    "coinmaster/strategy/paired_prefix.py",
+    "coinmaster/strategy/wave_overlay.py callback routing only",
+    "Existing probe/tests/audit files after explicit scope approval"
+  ],
+  "growth_admission": "P1b HOLD; no ordinary A0 economics admitted",
+  "budget": {
+    "new_authorized_native": 0,
+    "proposed_max_fixtures": 6,
+    "proposed_prefixes": 4,
+    "proposal_is_owner_approval": false,
+    "old_closed_slots_transferable": false
+  },
+  "actions_this_P1a": {
+    "product_edits": 0,
+    "tests_run": 0,
+    "engine_imports": 0,
+    "native_constructors": 0,
+    "training": 0,
+    "downloads": 0,
+    "VPS_runtime": 0
+  },
+  "contract_path": "reports/four-week-review-20261026/P1_SOL_LIFECYCLE_CONTRACT.md",
+  "contract_sha256": "9a5d3459c7a234d70604d39b26b338652ad8e66c8b82bb83865e80cbda408f99"
+}

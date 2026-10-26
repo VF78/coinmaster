@@ -1,0 +1,134 @@
+{
+  "task": "CM-FOURWEEK-REVIEW-20261026",
+  "status": "LIMITED_PASS",
+  "scope": "Narrow independent integrationreview only REVIEW_RU,UNIFIED_PLAN_RU,AI_REGISTER against existingcompactevidence andforecast-independentREADME/findings. No newfullaudit.",
+  "P0": 0,
+  "P1": 0,
+  "P2": 2,
+  "acceptance": "P0 review packet and plan may close after nonblockingprecision edits. Authorizes no native/code/budget; P1 read-only continuation only within owner/root scope.",
+  "checks": [
+    {
+      "id": "C01",
+      "status": "PASS",
+      "finding": "Original70/90 absoluteTOTALfloors and netprofitformula correct; originalS0 distinct fromexplicit-child control."
+    },
+    {
+      "id": "C02",
+      "status": "PASS",
+      "finding": "No qualified70/50 or90/50winner; fixture/componentPASS not economicPASS; prefixes not full."
+    },
+    {
+      "id": "C03",
+      "status": "PASS",
+      "finding": "C1TOTAL4.389m/72.17%/DD51.8032 preserved; historicalzeroTP/IOC/SOLalpha and current3TP/hedge/eventDDUNKNOWN correctly exclude admission."
+    },
+    {
+      "id": "C04",
+      "status": "PASS",
+      "finding": "C1nativechildexitUNKNOWN/wrapper1 explicitly retained; no falseexit0claim. Cause wording has nonblocking precision issue O1."
+    },
+    {
+      "id": "C05",
+      "status": "PASS",
+      "finding": "ExplicitH_SOL/H_BTC retention usesmatchedexplicitS0; exactE4/S0 archived reused controls remain distinct."
+    },
+    {
+      "id": "C06",
+      "status": "PASS",
+      "finding": "AI02 sourceREADME/findings confirm4848scored/asset,9696scored/method,48censored/method;4872beforecensor/asset implies24censored/asset."
+    },
+    {
+      "id": "C07",
+      "status": "PASS",
+      "finding": "AI forecasts not converted toROI; resourceSTOPKronosB remainsqualityunassessed; reusedhistory notfreshOOS."
+    },
+    {
+      "id": "C08",
+      "status": "PASS",
+      "finding": "Fourpriorsteps retained:P1aSOLcontract→P2minimalfix→P3freshOFF/C0/A0→P4parameters; additionalP1bgrowth/rights/G2 explicit."
+    },
+    {
+      "id": "C09",
+      "status": "PASS",
+      "finding": "Trimcontrol and riskclock/cost comparison required; no causal$claim from differentowncapital paths; scalaroracle notgeneralupperbound."
+    },
+    {
+      "id": "C10",
+      "status": "PASS",
+      "finding": "P1G1NO_GO skipsA0; G2 separatehypothesis notlifecyclepatch; no supportedgrowth mechanism→NO_GO."
+    },
+    {
+      "id": "C11",
+      "status": "PASS",
+      "finding": "Nativepreflight/types/readers/serialization/namespace, pre-disposecapture, actualOSrc and onecanonicalledger required; hiddennative testconstructors prohibited."
+    },
+    {
+      "id": "C12",
+      "status": "PASS",
+      "finding": "Proposed≤6fixtures includesfailures/reserve,≤48h each, oneengine/attempt; E2/E4/E5 reachabilityproof beforeapproval; budgetexhaustionSTOP."
+    },
+    {
+      "id": "C13",
+      "status": "PASS",
+      "finding": "Proposed≤4prefix includespreengine/Popenfailures, OFFparity thenTRIM/C0/A0, guardfailureblocksA0; noreslot/newalgorithmreuse."
+    },
+    {
+      "id": "C14",
+      "status": "PASS",
+      "finding": "C0mustfinancialqualify, A0mustshowactualadditionalfills; growthgate notprefix70% or2xsubstitution fororiginalfullfloor."
+    },
+    {
+      "id": "C15",
+      "status": "PASS",
+      "finding": "P4requiresP3/non-dominance; shortlistnativebudget separatelyapproved; full0 and freshvalidation separatefutureprotocols."
+    },
+    {
+      "id": "C16",
+      "status": "PASS",
+      "finding": "Closed#131–136budgets notrevived; currentread-onlyP1onlyafterP0; no code/nativeGO or newbudgetaskednow; no pilot/runtime/training/download/orders authority."
+    },
+    {
+      "id": "C17",
+      "status": "PASS",
+      "finding": "Rootlasttwoadditions checked: E4zeroTP1 83/83,TP2 58/83 and−1bp6/+1bp10parents sensitivity matchRESEARCH_INDEX; predecisioncompactstate snapshots are read-onlyaudit requirement, no new hiddenenginebudget."
+    }
+  ],
+  "observations": [
+    {
+      "id": "O1",
+      "priority": "P2",
+      "file": "REVIEW_RU.md",
+      "line": 108,
+      "finding": "Wrapperexit1 назван «из-за отчётного пути». По C1REPORT/rootledger причиной был macOS /usr/bin/time -l → sysctl kern.clockrate metadata failure; это не повторный финансовый exportfailure. Перваяattemptимела отдельную Decimalexportошибку.",
+      "requested_change": "Заменить причину на «из-за macOS time/sysctl metadata-wrapper»; nativechildexitUNKNOWN оставить."
+    },
+    {
+      "id": "O2",
+      "priority": "P2",
+      "file": "REVIEW_RU.md",
+      "line": 133,
+      "finding": "H_SOL January42.50→65.69 помещён рядом с globalDD без явного localwindowbasis; последующее «тот же абсолютный убыток» читается как равный observedcashloss. Evidence говорит меньший absolute loss и намного меньший капитал; E4 Jancontinuousglobal≈51.4147% — другойbasis.",
+      "requested_change": "Явно указать matchedexplicit/localfixedwindow42.5023→65.6948 и «даже меньший абсолютный убыток при меньшем капитале»; не смешивать с legacycontinuousglobalJan51.4147."
+    }
+  ],
+  "reviewed_files": [
+    {
+      "path": "reports/four-week-review-20261026/REVIEW_RU.md",
+      "sha256": "a91690972ad4af4ddb4a1bc337e3dcff0eb1b197cdbc268f23020005a71c8444"
+    },
+    {
+      "path": "reports/four-week-review-20261026/UNIFIED_PLAN_RU.md",
+      "sha256": "55698c21dff04e155cb8bd19ca337afcb7d9b7f697f4c7ea0c4b737e7939bc2e"
+    },
+    {
+      "path": "reports/four-week-review-20261026/AI_REGISTER.json",
+      "sha256": "76f964470448ce1e24dab2c4423508a72d223f2ce7e922bbb1f718205aa1f8ad"
+    }
+  ],
+  "limits": [
+    "Notsourceimplementationreview or nativefixturefeasibilityPASS. E2/E4/E5 reachability remains P1 task.",
+    "No rawfinancialstream rerun, no engines/tests/sourceedits.",
+    "Sixfixture/fourprefixlimits remain proposed, separatelyapproved; full0.",
+    "Generalinventorycompleteness relies on root/EARLY/RECENT inventories; narrowreview does not re-countallarchives."
+  ]
+}

@@ -1,0 +1,462 @@
+{
+  "schema": "CM_P1_R2_COVERAGE_BOUNDED_CHECK_V1",
+  "task": "CM-FOURWEEK-REVIEW-20261026/P1b closure",
+  "date": "2026-10-26",
+  "decision": "BOUNDED_CHECK_COMPLETE_PARTIAL_STATIC_TRANSFER_ONLY_A0_ECONOMIC_HOLD",
+  "method": "One existing1.50MB R2 report schema and small decision arrays; selected freeze/kwargs/receipt fields; two pinned a0_rights.py source slices/hashes; orders header only. No million-row stream, new engine, PnL calculation or product edits.",
+  "actual_report": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0.json",
+    "bytes": 1498186,
+    "sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb",
+    "expected_receipt_sha256": "46a4256e7a3710cb4105c8cc5848c6c71b202e4c4aea05b99b4e1d33a3d4a3fb",
+    "hash_match": true,
+    "source_commit": "763d985617abd7a7afef5eec13912303983d8837",
+    "attempt_id": "fe2ffed5-6f7d-4e51-bb83-9b7f93ba227c",
+    "actual_worker_OS_rc": 0,
+    "qualification": "C0 rejected native3TP; report remains diagnostic",
+    "config_hash": "f90a0af728aafd2c0d4ac08a2461ce87b3aa42258564b38b87b27b20f9d1b734",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834"
+  },
+  "frozen_config": {
+    "kwargs_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-kwargs-R2_C0.json",
+    "kwargs_sha256": "01053136a1b6a00dd36fdabfec8759d85808c7fc6d2c30b029c0eb60dd9e0224",
+    "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/hedge-risk-contract-20261025/a0-prefix-amend4-freeze-R2_C0-approved.json",
+    "R2_config_pin": "d9ea9c51260941c58cd483ea25a5ad80b85bbdccc7754fe092ad964ed08247ea",
+    "values": {
+      "research_a0_family": "R2_A0_V1",
+      "research_a0_original_second": false,
+      "research_btc_q_mode": "LEGACY_Q_CONTROL",
+      "research_btc_real_u": true,
+      "research_paired_policy": true,
+      "research_paired_prefix": "B2_F0"
+    },
+    "7f_status": "No new R2 economic report on7f inspected or inferred; same A0 mixin hash only proves the flag gating persists"
+  },
+  "artifact_keys_and_counts": {
+    "market_redesign_audit.events": {
+      "count": 460,
+      "event_counts": {
+        "PLAN": 19,
+        "PROTECTION_EXCEPTION": 170,
+        "TARGETS_SUBMITTED": 39,
+        "P0_FROZEN_FIRST_TERMINAL": 19,
+        "TARGET_ACCEPTED": 113,
+        "PROTECTION_RESTORED": 45,
+        "SECOND_TERMINAL": 19,
+        "SIGNAL_CYCLE_CLOSE_REQUEST": 18,
+        "NATIVE_FLAT_SIGNAL_CYCLE_END": 18
+      },
+      "keys": [
+        "ack_latency_ns",
+        "actual_btc_open",
+        "actual_filled",
+        "actual_inventory",
+        "cancelled",
+        "continuing_interval",
+        "duration_ns",
+        "episode_id",
+        "event",
+        "first_filled",
+        "generation",
+        "level",
+        "level_lots",
+        "order_id",
+        "p0",
+        "prices",
+        "quantity",
+        "raw_causal_d3",
+        "raw_levels",
+        "reason",
+        "sizing_mode",
+        "timestamp_ns"
+      ]
+    },
+    "market_redesign_audit.a0_rights": {
+      "count": 0
+    },
+    "market_redesign_audit.a0_release_audit": {
+      "accepted": [],
+      "actual_releases": 0,
+      "denials": [],
+      "grants": [],
+      "native_fill_coverage_complete": true,
+      "native_release_fills": [],
+      "submits": []
+    },
+    "paired_prefix_audit.events": {
+      "count": 415,
+      "event_counts": {
+        "ACTIVATION_SELECTED": 16,
+        "SUBMIT": 128,
+        "ACTUAL_FILL": 50,
+        "ENTRY_TERMINAL_P0_FROZEN": 16,
+        "CACHE_POSITION": 78,
+        "ACCEPTED": 87,
+        "ACTUAL_BTC_DEBT_OPEN": 9,
+        "RISK_INVALID_OR_EXPIRED": 15,
+        "PARENT_NATIVE_TERMINAL_FLAT": 16
+      },
+      "keys": [
+        "actual_btc",
+        "actual_sol",
+        "atr",
+        "bmax",
+        "boundary",
+        "branch",
+        "btc",
+        "btc_close",
+        "event",
+        "generation",
+        "intended_sol",
+        "k",
+        "kind",
+        "level",
+        "order_id",
+        "p0",
+        "parent",
+        "price",
+        "qref",
+        "qty",
+        "quantity",
+        "risk",
+        "sol",
+        "solmax",
+        "stop",
+        "timestamp_ns"
+      ]
+    },
+    "split_cover_audit.parents": {
+      "count": 19,
+      "keys": [
+        "cancelled",
+        "closed",
+        "deadline_ns",
+        "decision_index",
+        "episode_id",
+        "fallback",
+        "filled",
+        "first_filled",
+        "first_notional",
+        "first_quantity",
+        "first_vwap",
+        "management_reference_frozen_ns",
+        "planref_v1_actual_blended_vwap",
+        "planref_v1_beta",
+        "planref_v1_gross_reference_qty",
+        "planref_v1_h_actual",
+        "planref_v1_p0",
+        "quantity",
+        "side",
+        "sigma",
+        "single_lot_immediate",
+        "start_ns",
+        "step",
+        "stop_reason"
+      ]
+    },
+    "entry_sizing_audit": {
+      "count": 19,
+      "keys": [
+        "admitted_net_quantity",
+        "branch",
+        "confirmed_native_entry_qty",
+        "episode_id",
+        "intent_id",
+        "net_submitted_btc_qty",
+        "omitted_zero_levels",
+        "parent_notional_cap",
+        "q0_ns",
+        "q1_ask",
+        "q1_bid",
+        "q1_ns",
+        "reference_btc_qty",
+        "reference_target_lots",
+        "reference_wire_price",
+        "sol_right_activations"
+      ]
+    },
+    "pre_submit_tier_margin_gate_blocks": {
+      "count": 0
+    },
+    "execution_artifacts": {
+      "fills": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-fills.csv",
+        "rows": 125,
+        "sha256": "8efd302525bfb0cb83082774a604e37a3864763836a4899cd60ff37b13463029"
+      },
+      "orders": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/prefix-amend4/R2_C0/result/R2_C0-orders.csv",
+        "rows": 286,
+        "sha256": "1186c170f62683d943010842b8413b6fb520095043db3ce7c31533f4b3ef304f"
+      }
+    },
+    "coherent_native_observer_summary_only": {
+      "sequence_count": 588024,
+      "settled_receipts": 195839,
+      "stream_read": false
+    }
+  },
+  "actual_risk_off_events": [
+    {
+      "btc_close": "58370.1",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1725278460000000000",
+      "utc": "2024-09-02T12:01:00+00:00"
+    },
+    {
+      "btc_close": "56674.9",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1726056300000000000",
+      "utc": "2024-09-11T12:05:00+00:00"
+    },
+    {
+      "btc_close": "59674",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1726315260000000000",
+      "utc": "2024-09-14T12:01:00+00:00"
+    },
+    {
+      "btc_close": "61697.4",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1727856060000000000",
+      "utc": "2024-10-02T08:01:00+00:00"
+    },
+    {
+      "btc_close": "63507.1",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1728309060000000000",
+      "utc": "2024-10-07T13:51:00+00:00"
+    },
+    {
+      "btc_close": "60799",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1728533940000000000",
+      "utc": "2024-10-10T04:19:00+00:00"
+    },
+    {
+      "btc_close": "63135.8",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1728768360000000000",
+      "utc": "2024-10-12T21:26:00+00:00"
+    },
+    {
+      "btc_close": "69284",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1730837100000000000",
+      "utc": "2024-11-05T20:05:00+00:00"
+    },
+    {
+      "btc_close": "91327.7",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1731744240000000000",
+      "utc": "2024-11-16T08:04:00+00:00"
+    },
+    {
+      "btc_close": "97377.9",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1733904120000000000",
+      "utc": "2024-12-11T08:02:00+00:00"
+    },
+    {
+      "btc_close": "97491.2",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1734668700000000000",
+      "utc": "2024-12-20T04:25:00+00:00"
+    },
+    {
+      "btc_close": "94257.3",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1735012860000000000",
+      "utc": "2024-12-24T04:01:00+00:00"
+    },
+    {
+      "btc_close": "97694.9",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1735200060000000000",
+      "utc": "2024-12-26T08:01:00+00:00"
+    },
+    {
+      "btc_close": "100790.2",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1736251260000000000",
+      "utc": "2025-01-07T12:01:00+00:00"
+    },
+    {
+      "btc_close": "93170.4",
+      "event": "RISK_INVALID_OR_EXPIRED",
+      "timestamp_ns": "1736428260000000000",
+      "utc": "2025-01-09T13:11:00+00:00"
+    }
+  ],
+  "four_prior_calendar_correspondences_not_eligibility": [
+    {
+      "activation_utc": "2024-09-14T04:00:00+00:00",
+      "parent": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+      "static_parent_fields": {
+        "quantity": "1.081",
+        "first_quantity": "0.540",
+        "first_filled": "0.54",
+        "filled": "0.54",
+        "cancelled": "0.541",
+        "closed": true,
+        "stop_reason": "PAIRED_MONOTONE_PARENT_CEILING",
+        "start_ns": 1726272120000000000
+      },
+      "second_terminal_events": [
+        {
+          "actual_filled": "0.54",
+          "cancelled": "0.541",
+          "episode_id": "2dc17c11-4962-4d8e-82fc-61e3b499ea6f",
+          "event": "SECOND_TERMINAL",
+          "timestamp_ns": "1726286400000000000"
+        }
+      ],
+      "eligibility": "NOT_EVALUATED; corresponding prior R3 calendar date is not a new R2 G1 admission"
+    },
+    {
+      "activation_utc": "2024-10-10T04:00:00+00:00",
+      "parent": "eef71500-8453-419a-8e03-c77f96bcffc9",
+      "static_parent_fields": {
+        "quantity": "0.809",
+        "first_quantity": "0.404",
+        "first_filled": "0.404",
+        "filled": "0.404",
+        "cancelled": "0.405",
+        "closed": true,
+        "stop_reason": "PAIRED_MONOTONE_PARENT_CEILING",
+        "start_ns": 1728518460000000000
+      },
+      "second_terminal_events": [
+        {
+          "actual_filled": "0.404",
+          "cancelled": "0.405",
+          "episode_id": "eef71500-8453-419a-8e03-c77f96bcffc9",
+          "event": "SECOND_TERMINAL",
+          "timestamp_ns": "1728532800000000000"
+        }
+      ],
+      "eligibility": "NOT_EVALUATED; corresponding prior R3 calendar date is not a new R2 G1 admission"
+    },
+    {
+      "activation_utc": "2024-10-12T20:00:00+00:00",
+      "parent": "582f5154-3950-4d44-9b5e-74d81177fc16",
+      "static_parent_fields": {
+        "quantity": "0.569",
+        "first_quantity": "0.284",
+        "first_filled": "0.284",
+        "filled": "0.284",
+        "cancelled": "0.285",
+        "closed": true,
+        "stop_reason": "PAIRED_MONOTONE_PARENT_CEILING",
+        "start_ns": 1728720120000000000
+      },
+      "second_terminal_events": [
+        {
+          "actual_filled": "0.284",
+          "cancelled": "0.285",
+          "episode_id": "582f5154-3950-4d44-9b5e-74d81177fc16",
+          "event": "SECOND_TERMINAL",
+          "timestamp_ns": "1728763200000000000"
+        }
+      ],
+      "eligibility": "NOT_EVALUATED; corresponding prior R3 calendar date is not a new R2 G1 admission"
+    },
+    {
+      "activation_utc": "2024-11-16T08:00:00+00:00",
+      "parent": "772794ea-7dd9-4788-9af2-bf4c5c84e3d4",
+      "static_parent_fields": {
+        "quantity": "0.836",
+        "first_quantity": "0.418",
+        "first_filled": "0.418",
+        "filled": "0.418",
+        "cancelled": "0.418",
+        "closed": true,
+        "stop_reason": "PAIRED_MONOTONE_PARENT_CEILING",
+        "start_ns": 1731715260000000000
+      },
+      "second_terminal_events": [
+        {
+          "actual_filled": "0.418",
+          "cancelled": "0.418",
+          "episode_id": "772794ea-7dd9-4788-9af2-bf4c5c84e3d4",
+          "event": "SECOND_TERMINAL",
+          "timestamp_ns": "1731744000000000000"
+        }
+      ],
+      "eligibility": "NOT_EVALUATED; corresponding prior R3 calendar date is not a new R2 G1 admission"
+    }
+  ],
+  "C0_flag_OFF_semantics": {
+    "zero_A0_audit_means": "Disabled branch, not zero opportunities or proved uselessness",
+    "source_proof": [
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/hedge-rights-unlock-20261025/source-763d985/runtime/coinmaster/strategy/a0_rights.py",
+        "sha256": "ed7b688cf4eac1ab1cd3427c42ccaa7d2bf5fcfdd4850c300feef3d8b26ca243",
+        "locations": [
+          "_a0_enabled lines16-17",
+          "_a0_lock lines58-60",
+          "_a0_check lines111-113",
+          "_a0_check lines127-163",
+          "_a0_deny lines35-38"
+        ]
+      },
+      {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/coinmaster/strategy/a0_rights.py",
+        "sha256": "ed7b688cf4eac1ab1cd3427c42ccaa7d2bf5fcfdd4850c300feef3d8b26ca243",
+        "same_A0_source_bytes": true
+      }
+    ],
+    "report_builder": "market_redesign.py lines337-355 only serializes existing m[a0] and actual A0 events; empty branch yields empty lists and vacuous native_fill_coverage_complete=True"
+  },
+  "missing_fields": [
+    {
+      "field": "Original second remaining at each actual riskOFF+60 decision",
+      "available": "Original parent quantity/first allocation and final filled/cancelled; entry/fill events",
+      "missing": "No exported per-decision second-filled-ever across order generations and ordinary TP/dead-right status",
+      "why": "Static final cancellation is not the residual right at a causal release clock"
+    },
+    {
+      "field": "Risk OFF bound to parent and exact A0 off_ns+60 clock",
+      "available": "15 RISK_INVALID_OR_EXPIRED rows: timestamp_ns, btc_close, event",
+      "missing": "Those rows omit parent ID; no A0 off_ns under C0 flagfalse; no complete decision snapshot at first later BTC quote",
+      "why": "A0 check stores its first eligible BTC quote clock only when enabled; signal timestamp alone is not the complete release state"
+    },
+    {
+      "field": "Original post-only price and noncrossing current quote",
+      "available": "PLAN P0/prices, static split allocations, entry q1_bid/q1_ask; orders CSV schema includes price/postOnly",
+      "missing": "No G1 original-price versus actual BTC bid/ask snapshot at riskOFF+60/later WAIT decisions",
+      "why": "Entry q1 is not later release quote; old R3 prices/quotes cannot be imported as R2 admission"
+    },
+    {
+      "field": "Held/debt/absolute cap and pending/ACK ownership at release",
+      "available": "Paired sparse fill/cache/debt events, static terminal parent rows, final orders metadata",
+      "missing": "No simultaneous owned open/inflight entry set, old cancel ACK generations, pair entry_terminal/debt_since/caps.bmax, current remaining TP ACK set at each G1 decision",
+      "why": "Final CLOSED orders and sparse monetary events do not certify no pending increase/debt at that instant"
+    },
+    {
+      "field": "Prospective stock native margin/tier/freefunds/marks/entries-enabled",
+      "available": "pre_submit_tier_margin_gate_blocks=[]; native money observer summary; earlier q0/q1 sizing audit",
+      "missing": "No A0 prospective quantity/current reservation and mark state or actual gate result at release clock",
+      "why": "C0 skips A0 check, so no margin call for hypothetical restored child; empty block list is not PASS"
+    }
+  ],
+  "what_is_now_closed": [
+    "Actual R2 C0 has16 selected activations and15 risk invalidation/expiry events,19 parent snapshots; not merely an assumed transfer of old16",
+    "Four old calendar correspondences exist but actual R2 quantities differ: canceled.541/.405/.285/.418 versus old R3 .488/.575/.440/.375",
+    "No new G1 eligibility count was inferred; prospective native margin and full causal state unresolved because A0 check disabled"
+  ],
+  "next_task_precise": "Do not extend this review into a stream sweep. For a separately approved future observation/engineering design, record one side-effect-free predecision snapshot at risk cancel, actual risk OFF, first eligible BTC quote+60 and each changed denial: parent/side/original first allocation/first terminal fills/original second price+budget/second-filled-ever; held/debt/absolute caps; ordinary TP/flat/entries-enabled; old order generation and known ACK; owned open/inflight leaves and remaining TP ACK; current quote/marks/native reservations and stock margin result for declared qty. Observation must run independently of A0 trading flag. If source/API cannot expose a field, mark UNKNOWN and block economic admission. This is a proposed data contract, not code/run permission.",
+  "not_claimed": [
+    "No classified R2 G1 opportunity count",
+    "No actual hypothetical A0 margin PASS",
+    "No later noncrossing quote/fill inferred from old R3",
+    "No claim unopened coherent stream contains or lacks all needed fields",
+    "No growth/ROI/DD counterfactual or required capital calculation",
+    "No budget request or restart of closed slots"
+  ],
+  "outputs_owned": [
+    "P1_R2_COVERAGE_CHECK.md",
+    "P1_R2_COVERAGE_CHECK.json"
+  ]
+}

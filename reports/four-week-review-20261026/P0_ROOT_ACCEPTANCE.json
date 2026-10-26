@@ -1,0 +1,14 @@
+{
+  "schema": "CM_FOUR_WEEK_ROOT_PLAN_ACCEPTANCE_V1",
+  "status": "P0_COMPLETE_RECONCILED_PLAN_ACCEPTED_FOR_READONLY_P1",
+  "utc": "2026-10-26T13:55:44.528698+00:00",
+  "review_sha256": "173580f0d9c5ece9653a8cc5f7a98bc532e99021453e42b16c3c2232de103775",
+  "review_p0": 0,
+  "review_p1": 0,
+  "correction_receipt_sha256": "110af3e569e4c437cf5aa58ebb252efc2b719b0b1ef4a357a1603f465bce13e5",
+  "review_sha256_after_correction": "9110f376aec6f95a85d9568253f14107db79ec0e8145beb8ccee3a7195a83e46",
+  "plan_sha256": "55698c21dff04e155cb8bd19ca337afcb7d9b7f697f4c7ea0c4b737e7939bc2e",
+  "owner_request": "Полныйанализ4недель→единыйсогласованныйпланвключая4предыдущиезадачи→толькопослеэтогоприступать.",
+  "authorized_next": "P1a/P1bread-onlysource/API/savedevidenceanalysis only, AFTERthisP0acceptance.",
+  "not_authorized": "Newmonetarycode/nativefixtures/prefix/full/training/download/pilot/production/services/orders/transfers. Proposed6/4budgetnotownerapproved."
+}

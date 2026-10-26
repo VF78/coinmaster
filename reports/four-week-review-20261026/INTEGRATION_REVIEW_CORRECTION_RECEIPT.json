@@ -1,0 +1,17 @@
+{
+  "status": "TWO_NONBLOCKING_REVIEW_OBSERVATIONS_CORRECTED_DOCS_ONLY",
+  "review_sha256": "173580f0d9c5ece9653a8cc5f7a98bc532e99021453e42b16c3c2232de103775",
+  "reviewed_source_before_sha256": "a91690972ad4af4ddb4a1bc337e3dcff0eb1b197cdbc268f23020005a71c8444",
+  "corrected_source_after_sha256": "9110f376aec6f95a85d9568253f14107db79ec0e8145beb8ccee3a7195a83e46",
+  "edits": [
+    {
+      "old": "wrapper exit1 из-за отчётного пути",
+      "new": "wrapper exit1 из-за time-l/sysctl metadata; первый отдельный failedattempt был связан с Decimal-export"
+    },
+    {
+      "old": "H_SOL снизил OctoberDD57,59→18,78%, но January42,50→65,69%. Из-за меньшего раннего капитала тот же абсолютный убыток становится большей относительной просадкой.",
+      "new": "В fixed локальных окнах matched explicit-контроля H_SOL снизил OctoberDD57,59→18,78%, но JanuaryDD выросла42,50→65,69%. Даже меньший абсолютный убыток при меньшем раннем капитале даёт большую относительную просадку."
+    }
+  ],
+  "no_runtime_or_native_change": true
+}

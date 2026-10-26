@@ -1,0 +1,208 @@
+{
+  "schema": "CM_FOUR_WEEK_AI_REGISTER_V1",
+  "native_economic_benefit_admitted": false,
+  "entries": [
+    {
+      "id": "AI01",
+      "family": "Event risk BTC/SOL",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "BTCNO_ADDED_INFORMATION;SOLsupportFAIL",
+      "native_economic_runs": 0,
+      "details": "Fixedrule/smallnumeric/STUMPYfailconstantprior;SOLclasssupportinsufficient;4economicbudgetslotsunusedclosed.",
+      "evidence_paths": [
+        "reports/btc-sol-event-risk-20261021/README.md",
+        "reports/btc-sol-event-risk-20261021/ev03-result.md"
+      ],
+      "statistical_samples": {
+        "events": 248,
+        "labels": 141,
+        "BTC_train": 50,
+        "BTC_check": 80,
+        "SOL_train": 5,
+        "SOL_check": 6
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI02",
+      "family": "IndependentH24 forecasts STUMPY/MiniRocket/RDST/CNN+rawcontrol",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "NO_ADMITTED_MODEL",
+      "native_economic_runs": 0,
+      "details": "Allcalibratedaggregateforecastloss/directionworseprior;CNN0actionableselected, pairedCIvsrawcontrolcrosses0; fivefits/onefrozenevaluation, notROItest.",
+      "evidence_paths": [
+        "reports/forecast-independent-20261021/README.md",
+        "reports/forecast-independent-20261021/findings.md"
+      ],
+      "statistical_samples": {
+        "scored_per_asset": 4848,
+        "total_scored_per_method": 9696,
+        "censored_per_method": 48,
+        "clock_origins_before_censor_perasset": 4872
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI03",
+      "family": "AI-cycle A causalnumeric / B Kronos / C TS2Vec",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "AandC_NO_SKILL;B_RESOURCE_UNASSESSED",
+      "native_economic_runs": 0,
+      "details": "OriginalA102fitstzcausequarantined;UTCfixedA6headsallfailpriorCI. B619.7minsamplingprojection/823.97completeprojectionresourceSTOPqualityunopened. Cresumedboundedrecipeall6failpriorCI. ACTION_VALUE_UNIDENTIFIED.",
+      "evidence_paths": [
+        "reports/ai-cycle-20261021-01/findings.md",
+        "reports/ai-cycle-20261021-01/diagnostics.md"
+      ],
+      "statistical_samples": {
+        "Avaliddevelopmentfits": 102,
+        "Aheads": 6,
+        "Cheads": 6,
+        "Cencoderfits": 6,
+        "C_CatBoostfits": 36
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI04",
+      "family": "BTCM2 TCN/Kronosprojection/CNN +METRIC_OFF/Q_PRIOR_INIT",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "NO_RECIPE_PASSED",
+      "native_economic_runs": 0,
+      "details": "CNNQlongdelta-.001978 CI[-.004953,.001021];priorinitpassesknowntoybutnotmarketanddirectionworsens. Savedgradient/driftzero-fitdiagnosticsdoNOTjustifynewQ-only/epoch/reweightsearch. CHECK/SOL/nativeblocked.",
+      "evidence_paths": [
+        "reports/btc-pattern-pilot-m2-20261021/findings.md",
+        "reports/btc-pattern-pilot-m2-20261021/README.md"
+      ],
+      "statistical_samples": {
+        "OOF_origins": 8496,
+        "market_neural_jointfits": 36,
+        "CatBoostheadfits_includingcontrols": 36,
+        "syntheticfits_separate": 4
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI05",
+      "family": "FORMcontext/flat/spatialablation",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "NO_FULL_GATE_PASS",
+      "native_economic_runs": 0,
+      "details": "B1-B4/R1fixed;CNNshortQbetterContextonecomparisonbutnotconfirmedprior;capacityvsinputeffectunidentified.",
+      "evidence_paths": [
+        "reports/btc-pattern-pilot-m2-20261021/ai-decision-20261022/evidence.md",
+        "reports/btc-pattern-pilot-m2-20261021/form-signal-20261022/form-findings.md"
+      ],
+      "statistical_samples": {
+        "OOF_origins": 8496,
+        "invalid_pairs_removed": 710
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI06",
+      "family": "DirectinappSolforecast",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "FEASIBILITY_PASS_NO_SIGNAL_NO_WINDOW_INCREMENT",
+      "native_economic_runs": 0,
+      "details": "PTP.292367vsprior.295488;SL.195349vs.187769;all4primary14dCIcross0;28dsensitivityaloneinsufficient.",
+      "evidence_paths": [
+        "reports/btc-pattern-pilot-m2-20261021/inapp-chatgpt-protocol-20261022/REPORT.md"
+      ],
+      "statistical_samples": {
+        "windows": 24,
+        "evaluations": 48
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI07",
+      "family": "E1phasealignedevents",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "NO_DEFINED_IMPROVEMENT_E2_E3_SKIPPED",
+      "native_economic_runs": 0,
+      "details": "TP+1.18%/SL+0.77%errorsworseprior;6primaryCIcross0. Latercommoncausalitycorrectionmeansnotfinaltestofcorrectedpool.",
+      "evidence_paths": [
+        "reports/btc-pattern-pilot-m2-20261021/event-e1-20261022/REPORT.md"
+      ],
+      "statistical_samples": {
+        "scored_common_events": 198,
+        "catalogue_events": 372
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI08",
+      "family": "D90daily-stateconditionalprior",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "FAIL_NO_DEFINED_IMPROVEMENT",
+      "native_economic_runs": 0,
+      "details": "Bothprimaryerrorsworseprior0/3foldimprovement. Correctedcommonpool/phasecompareseparatefromoldE1. Retrospectivehypothesisnotindependentconfirm.",
+      "evidence_paths": [
+        "reports/btc-pattern-pilot-m2-20261021/event-d90-20261022/REPORT.md"
+      ],
+      "statistical_samples": {
+        "scored_events": 198
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI09",
+      "family": "FullwaveStageAcatalogue",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "CATALOGUE_ONLY_FORECAST_BLOCKED",
+      "native_economic_runs": 0,
+      "details": "Insufficientcycles/maturity;3cycles100–200d inearlierreview;StageBunapproved. Countwavesnotindependentforecastsample.",
+      "evidence_paths": [
+        "reports/btc-pattern-pilot-m2-20261021/fullwave-stage-a-20261022/run/REPORT.md",
+        "reports/btc-pattern-pilot-m2-20261021/d90-postmortem-wave-proposal-20261022/REPORT.md"
+      ],
+      "statistical_samples": {
+        "daily_dates": 699,
+        "full_inperiodwaves": 27,
+        "nonoverlap_support_upperbound": 9
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI10",
+      "family": "Astraranking",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "WEAK_EXPLORATORY_NO_TRADE_ADMISSION",
+      "native_economic_runs": 0,
+      "details": "ErrorsTP/SL-3.67%/-6.88%vsNUMERIC8,butTPnearlyequalD1control/SL-2.14%;primaryCIcross0.4abstentionsdriveapparentgain;notreadyfilter.",
+      "evidence_paths": [
+        "reports/btc-pattern-pilot-m2-20261021/astra-rank-20261022/RESULTS.json",
+        "reports/btc-pattern-pilot-m2-20261021/ai-decision-20261022/decision.md"
+      ],
+      "statistical_samples": {
+        "matched_cases": 20
+      },
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    },
+    {
+      "id": "AI11",
+      "family": "AI methods/literature/causaltooling",
+      "executed_or_reported": "2026-10-21/22",
+      "test_window": "Historicalforecastdevelopment/CHECK,notfullnativeeconomiccomparison",
+      "outcome": "METHODS_REVIEW_NOT_EXPERIMENT",
+      "native_economic_runs": 0,
+      "details": "Tools/sourcemethodsreviewdoesnotestablishCoinMasterprofit. RecommendedholdwideAIsearchafteractualnegativegates. Forecasttargetsnotvalueofhedge/cut/reentry.",
+      "evidence_paths": [
+        "reports/ai-signal-methods-20261021/README.md",
+        "reports/btc-pattern-pilot-m2-20261021/ai-decision-20261022/decision.md"
+      ],
+      "statistical_samples": {},
+      "scope_limit": "No newrawrerun,forecastquality!=actionvalue; reusedhistorynotfreshOOS."
+    }
+  ]
+}
