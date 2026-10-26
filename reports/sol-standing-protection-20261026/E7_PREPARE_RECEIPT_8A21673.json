@@ -1,0 +1,46 @@
+{
+  "status": "PREPARED_ENGINE0_NO_ATTEMPT",
+  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "argv": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/tests/sol_standing_supervisor.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E7-root-false-gate-8a21673.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "--prepare"
+  ],
+  "environment_replaced": true,
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "en_US.UTF-8",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime",
+  "supervisor_pid": 35538,
+  "actual_process_exit_code": 0,
+  "engine_constructors": 0,
+  "attempts_spent": 0,
+  "gate": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E7-root-false-gate-8a21673.json",
+    "sha256": "a3094b15147c94fd0a3233a67f657c88b824cb4fefe37ad810f64aff44fcf29f"
+  },
+  "ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "abd08d45c25f8ceb6d9c15e95c3f12afaaa4353853a2ac0718b6c50422fb73ea"
+  },
+  "stdout": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-8a21673/E7_PREPARE.stdout",
+    "sha256": "02ffedc624acf432653b55a837f73f5b9dd22ede9c2b46a1eeefc719e625f7e0"
+  },
+  "stderr": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-8a21673/E7_PREPARE.stderr",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "namespace_absent": true,
+  "root_go": false,
+  "immutable_pin_count": 643
+}

@@ -1,0 +1,32 @@
+{
+  "status": "ROOT_ACCEPTED_E1_ORDINARY_NATIVE_CASE_ONLY",
+  "utc": "2026-10-26T18:15:43.492338+00:00",
+  "fixture_id": "E7",
+  "scenario": "E1",
+  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "attempt_id": "d5c84cb8-d837-4129-9b52-f4bf8734643e",
+  "actual_result": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E7_E1_8A21673_AMENDED_REPEAT/result.json",
+    "sha256": "4c68f31c99bf13361dc1af83f18240b2f0c0827d00a234505055a72617ebfd37"
+  },
+  "independent_review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E7_ACTUAL_INDEPENDENT_DISPOSITION.json",
+    "sha256": "b7c15f0788a8879204bce90f691a4d0fab7ae2e4c9d9b6b8cc0022053769032b"
+  },
+  "external_actual_OS_receipt": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E7_EXTERNAL_OS_RECEIPT_8A2.json",
+    "sha256": "9ad290b688dc6a7403f41e9b9eae238d5c02aeaf86391fb4072f93c6607c4678"
+  },
+  "actual_BTC_cancel_ACKs": 3,
+  "native_flat_before_cleanup": true,
+  "pending_cases": [
+    "E2",
+    "E3",
+    "E4",
+    "E5"
+  ],
+  "engineering_spent": 3,
+  "engineering_max": 7,
+  "economic_go": false,
+  "next": "Prepare exactE2rootfalse; sourceunchanged; individualrootGO required"
+}

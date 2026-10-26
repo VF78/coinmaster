@@ -1,0 +1,25 @@
+{
+  "status": "AUTHORIZE_ONE_TARGETED_BEFORE_ENGINE_SUPERVISOR_CORRECTION",
+  "utc": "2026-10-26T18:02:24.242542+00:00",
+  "approved_owner_amendment_sha256": "c4ee6b54366edc880b7c42a98dff094f8e757f4bda7e412b8493fb5441004ab6",
+  "source_before": "6303fdc968c4dfb7027c44d5fc1822302da5e05b",
+  "finding": "amendment7_identity lacks hard rejection of new post-amendment FAILED or UNKNOWN rows before later claim",
+  "allowed_changes": [
+    "supervisor before-claim gate for all post-amendment prior rows: actualCOMPLETED and observedint0 native/supervisor exit; reject FAILED/UNKNOWN/None/nonzero/bool",
+    "focused engine-free metadata regression of failedE7 then E2 rejection before claim with no ledger mutation"
+  ],
+  "unchanged": [
+    "product flat drain",
+    "BTC core",
+    "SOL logic",
+    "data configs",
+    "first two immutable FAILED rows",
+    "max7 prefixmax4",
+    "noreserve anynewfailureSTOP"
+  ],
+  "engineering_spent": 2,
+  "engineering_max": 7,
+  "prefix_spent": 0,
+  "engine_go": false,
+  "after": "New commit immutable Mac freeze pure/preflight/prepare and targeted delta review before exactlyoneE7 rootGO"
+}

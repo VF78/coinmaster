@@ -1,0 +1,71 @@
+{
+  "status": "READY_NARROW_STOP_GATE_REVIEW_NATIVE_GO_FALSE",
+  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "source_parent": "6303fdc968c4dfb7027c44d5fc1822302da5e05b",
+  "source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime",
+  "checkpoint": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-8a21673",
+  "allowed_changed_files": [
+    "tests/sol_standing_supervisor.py",
+    "tests/test_sol_standing_supervisor_pure.py"
+  ],
+  "all_other_frozen_source_files_byte_identical": true,
+  "drain_product_data_config_unchanged": true,
+  "pure": {
+    "VPS": "53 passed in 2.89s",
+    "Mac": "53 passed in 1.91s",
+    "scope": "Only supervisor pure suite; prior630 140pass retained",
+    "standing_groups": 10,
+    "engine_constructors": 0
+  },
+  "pins": 643,
+  "gate": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E7-root-false-gate-8a21673.json",
+    "sha256": "a3094b15147c94fd0a3233a67f657c88b824cb4fefe37ad810f64aff44fcf29f"
+  },
+  "prepare": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-8a21673/E7_PREPARE_RECEIPT.json",
+    "sha256": "cd0192f211bf11be4ef1a48523ab055de700078eedfb99d7eeb37c0e22a7346b"
+  },
+  "source_seal": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-8a21673/SOURCE_SEAL.json",
+    "sha256": "7ab247247a5045e5c8388284be19bc5f58f42d4a0edd9e86b636caefee767e6f"
+  },
+  "preflight": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-8a21673/MAC_PREFLIGHT.json",
+    "sha256": "9eb02d212005da295964d0448dcca726d6dd67309daeda4b7ac03012e4fdffc7"
+  },
+  "ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "abd08d45c25f8ceb6d9c15e95c3f12afaaa4353853a2ac0718b6c50422fb73ea"
+  },
+  "prefix": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/prefix-ledger.json",
+    "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+  },
+  "external_os_contract": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-8a21673/EXTERNAL_OS_RECEIPT_CONTRACT.json",
+    "sha256": "418d0baaff97f08f85ffd9abc2d69c4e48a71a8efaf15797089797b6b883e207"
+  },
+  "budget": {
+    "spent": 2,
+    "max": 7,
+    "active": 0,
+    "remaining": 5,
+    "prefix_spent": 0,
+    "prefix_max": 4
+  },
+  "actual_prepare_pid": 35538,
+  "actual_prepare_OS_rc": 0,
+  "namespace_absent": true,
+  "root_go": false,
+  "launch_argv_for_future_root_GO": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/tests/sol_standing_supervisor.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/E7-root-false-gate-8a21673.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "--launch"
+  ],
+  "unsealed_test_metadata": "Pytest generated .pytest_cache retained; excluded from git/source-seal275. Every sealed source file exact and nonwritable."
+}

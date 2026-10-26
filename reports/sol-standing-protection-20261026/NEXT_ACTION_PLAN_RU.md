@@ -1,0 +1,18 @@
+# Согласованный по выводам план после E1 PASS / E2 STOP
+
+Основа — [обзор четырёх недель](../four-week-review-20261026/REVIEW_RU.md) и [исходный единый план](../four-week-review-20261026/UNIFIED_PLAN_RU.md). Этот документ уточняет инженерную последовательность по фактическим E7/E2. Он не выдаёт нового разрешения на код или native.
+
+Цели неизменны: сохранить BTC core/LEGACY_Q и реально выставленные TP, сделать SOL настоящим хеджем; сначала ≥70% прибыли оригинального S0 при DD≤50%, затем ≥90% (желательно DD30–50%). Абсолютные full-period TOTAL floors4256975.067212381 и5470396.514987347 не пересчитываются от BTC-only или короткого prefix. Новых экономических результатов нет.
+
+## Системный вывод
+
+Исправления обычного SOL TP и BTC flat-drain сработали в E1. E2 обнаружил независимый старый blanket-cancel путь после BTC TP→SOL_CAP. Аудит13групп показал, что исправлять только эту строку недостаточно: нужны определённые правила zero-entitlement retirement и genuine global closing. Положительная защита, retiring liability и fault recovery должны проверяться раздельно; planned close/stop components не означают actualflat или финансовый PASS.
+
+## Четыре задачи
+
+1. **Зафиксировать полный lifecycle-контракт — DONE на уровне проекта решения.** [V2](SOL_REDUCTION_CONTRACT_V2_PROPOSED_RU.md), [independent review](SOL_REDUCTION_CONTRACT_V2_DESIGN_REVIEW.md),0P0/P1. Nonterminal CAP сохраняет positive TP/STOP; zero-right TP отменяется publiccancel с immutable liability/history/latefill; один pairSOL_CLOSE владеет SOL-выходом, защита до actualflat. Общий retiringdeadline60s от первой cancel не reset и не заменяет строгую positivecoverage/debt clocks. Fault/partialSTOP — NO_GO/recovery, не qualifiedclosing.
+2. **Изолированная реализация и engine-free replay — AWAIT OWNER.** [Протокол native0](ZERO_ENGINE_IMPLEMENTATION_PROTOCOL_PROPOSED_RU.md). Одна focused implementation в canonicalVPS от8a, реальные Cache/Order/events, все переходы/latefills/ACK/reject/deadline, сохранение oldrights/financial fill labels, OFF/core/data/цены неизменны. NativeEngine constructors0/prefix0/full0; старые remaining3HOLD не использовать, supervisor STOP/ledger не обходить. Цель — reviewableкод и доказанные state invariants, не matching или ROI.
+3. **Зафиксировать полный native case map и отдельный бюджет — ПОСЛЕ задачи2.** По actualcommittedsource/pure/review определить заранее все normal/fault/integrated cases, ≤48hdata/attempt, failurescount/no hiddenconstructors. Свежая E1 для нового source обязательна; старыйE7 сохраняется исторически. CAP/retiringlatefill/protectedglobalclose/partialSTOP/BTC_TRIM/A0rights/margin/accounting должны быть покрыты явно. Новый числовой лимит здесь не выбран; никаких очередных автоматических «+1». Native только после отдельного ownerapproval и individualrootGO.
+4. **Экономическая оптимизация — УСЛОВНО после полной инженерной квалификации.** Сохранён порядок freshOFF→C0_FIXED→BTC_TRIM→lawfulA0. OFFparity20911.13611487 на прежнем prefix; полные nativecash/fees/signedfunding/TP/settled+coherentDD/ES/actualpredecisioncoverage обязательны. Не сравнивать финансово невалидную C0 и не обещать futureA0margin/fill/profit. После валидного результата оптимизировать только подтверждённые направления; full/OOS требует отдельного бюджета. Прежние4prefix не активированы этим планом.
+
+Текущее разрешение: max7engineering, spent4 (3FAILED/1COMPLETED E1), active0, rem3HOLD/noreserve; prefix0/4/full0. Пилот/production/deploy/services/внешниеorders/transfers/training/downloads0. Source8a/всеraw/ledger/старыеapprovals сохранены; публичныйpush не deployment. Новая задача2 пока не утверждена.

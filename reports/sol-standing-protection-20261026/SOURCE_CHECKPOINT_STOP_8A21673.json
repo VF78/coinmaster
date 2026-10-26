@@ -1,0 +1,103 @@
+{
+  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "checkpoint_parent": "6303fdc968c4dfb7027c44d5fc1822302da5e05b",
+  "branch": "refs/heads/codex/sol-standing-protection-20261026",
+  "clean": true,
+  "published": false,
+  "root_go": false,
+  "only_allowed_files_changed": true,
+  "unrelated_tree_identical_by_git_diff": true,
+  "correction_files": [
+    "runtime/tests/sol_standing_supervisor.py",
+    "runtime/tests/test_sol_standing_supervisor_pure.py"
+  ],
+  "stat": "8a21673 Stop amended fixture schedule after any new failed or unknown exit\n runtime/tests/sol_standing_supervisor.py           | 24 +++++++++++\n runtime/tests/test_sol_standing_supervisor_pure.py | 50 ++++++++++++++++++++--\n 2 files changed, 71 insertions(+), 3 deletions(-)",
+  "files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/a0_family.py",
+      "relative": "runtime/coinmaster/research/a0_family.py",
+      "sha256": "2d6f73313b6636c93f9a3b9c6f8f4110ceb94945543d6d3d85d79a0ba9cfb4f0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/native_baseline.py",
+      "relative": "runtime/coinmaster/research/native_baseline.py",
+      "sha256": "b8287fdfb4432bba332ef0a8e4d16318209d5b859f087f1d29c4f73690d17abf"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/native_book.py",
+      "relative": "runtime/coinmaster/research/native_book.py",
+      "sha256": "7ba67d9ed3e584c62b1d2f742a48416146728baa11cf422db0c063a3ff714532"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/research/paired_signal_feed.py",
+      "relative": "runtime/coinmaster/research/paired_signal_feed.py",
+      "sha256": "b98577e4b512f501e6faf377cedd9d2e381b7ab71cafd6426c379a695614bd04"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/btc_trim.py",
+      "relative": "runtime/coinmaster/strategy/btc_trim.py",
+      "sha256": "b34bedcf1f5526399da1af404e6572042b9d3480060085f91b8a756da3b415a0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/market_redesign.py",
+      "relative": "runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b1aeb01a85b2d4af9748fcbd7c84cd6648ebeb61605abea87924e09778972a0"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/native_account_snapshot.py",
+      "relative": "runtime/coinmaster/strategy/native_account_snapshot.py",
+      "sha256": "5ad6abee1ed0d285b23bb9d7eea6787843c00c8afeffc2cb855c49b462c14892"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/paired_prefix.py",
+      "relative": "runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "d470b1ef0ab066cb227744f33d28f5da84e41052a007fc7eedd7f54ac13c2667"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/standing_tp.py",
+      "relative": "runtime/coinmaster/strategy/standing_tp.py",
+      "sha256": "cedf63b16c9172199ae823c829fb06308b780abfa7f8c2970052077c552ab529"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/coinmaster/strategy/wave_overlay.py",
+      "relative": "runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "3a912cca184362cdc194fcaf2d24ae4a151a2b683e9fdd7782390c32132d9e70"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/run_sol_standing_fixture.py",
+      "relative": "runtime/tests/run_sol_standing_fixture.py",
+      "sha256": "f0a2e5038a2e341e16521fb663560d5ec8dff36a7389c155b4605dd609c505fe"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/sol_standing_supervisor.py",
+      "relative": "runtime/tests/sol_standing_supervisor.py",
+      "sha256": "d70fccb14864107d94c3a6ff4d20a7947332aa83e171e71a3bcc484eef4698ce"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_btc_flat_drain_pure.py",
+      "relative": "runtime/tests/test_btc_flat_drain_pure.py",
+      "sha256": "5607087f604fb62e2d5036bc31821dc7d0bb9de11247139a731890f4f2c32782"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_btc_trim_pure.py",
+      "relative": "runtime/tests/test_btc_trim_pure.py",
+      "sha256": "f0931b10956e2caca2bcad7c75a2f7c6d0103d989c812a385823063e9f6921d9"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_native_account_snapshot_pure.py",
+      "relative": "runtime/tests/test_native_account_snapshot_pure.py",
+      "sha256": "765a5b62dafd6db5d672ba41d8607e97de83ee5e3f3715f30e7599886bb5590e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_sol_standing_pure.py",
+      "relative": "runtime/tests/test_sol_standing_pure.py",
+      "sha256": "bae43a6f87116de6b370c45aa8caa852d24973a8da695d326283c0f721481c78"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/sol-standing-protection-20261026/runtime/tests/test_sol_standing_supervisor_pure.py",
+      "relative": "runtime/tests/test_sol_standing_supervisor_pure.py",
+      "sha256": "2c9596b95d1e3be2eda5a4c567c5691e1e2f22d5df82e889cde8b70aa4f84d2c"
+    }
+  ]
+}

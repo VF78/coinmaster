@@ -1,0 +1,93 @@
+{
+  "schema": "CM137_SOL_REDUCTION_CONTRACT_DESIGN_REVIEW_V1",
+  "status": "NOT_IMPLEMENTATION_READY_TWO_CONTRACT_DECISIONS_OPEN",
+  "P0": 0,
+  "P1_contract_decisions": 2,
+  "scope": "Boundednewaudit/proposedcontractreview;nofullprojectreaudit",
+  "inputs": [
+    {
+      "path": "reports/sol-standing-protection-20261026/SOL_PROTECTION_CANCEL_PATH_AUDIT.json",
+      "sha256": "6a1a74af06794cc4969527a830147441bb7b08b99b6f44aa786ba9c6a66ba221"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/SOL_PROTECTION_CANCEL_PATH_AUDIT.md",
+      "sha256": "9c1e8bc3d3ed857aa7dd3f6202a22074073be1843149659f805bf876e1a09bba"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_PROPOSED_RU.md",
+      "sha256": "e9fe4cf8c209979c3fe19c9ea9e010798997a9a26e8cf157b198494961059eaa"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_PROPOSED_RU.json",
+      "sha256": "5933a60b5dbc775fca593c29804e969dd0f0984907399e68726641ab56b1a526"
+    }
+  ],
+  "supported": [
+    "NonterminalCAPpreservespositiveTP_STOP",
+    "ActualeveryCAPfillincludingterminalreconcilesexistingrights_caps_debt",
+    "ValidatedretiringlateTPfillneedsliabilitydebitplusproportionalpositiveallocation;nativefinancialidentityunchanged",
+    "CLOSING_PROTECTEDdistinctfromFAULT_UNPROTECTED",
+    "Publicclose_position_allnoimplicitcancel;market_exitcancelallincompatible"
+  ],
+  "blockers": [
+    {
+      "id": "R1_SINGLE_GLOBAL_SOL_EXIT_OWNER_UNCHOSEN",
+      "priority": 1,
+      "decision_needed": "FreezeexactexistingSOLexitowner/priority/handoff/genericwaitsetbeforecode;pair-ownedSOL_CLOSEpreferredbutnotyetadopted",
+      "must_preserve": [
+        "Foreign_ENTRY_unknown_reductionworkblockers",
+        "Exactlyoneexitowner",
+        "PositiveTP_STOPcoverageuntilactualflat",
+        "FaultisNO_GO"
+      ]
+    },
+    {
+      "id": "R2_RETIRING_FINITE_COMMAND_AND_ACK_STATE_MACHINE_INCOMPLETE",
+      "priority": 1,
+      "decision_needed": "Freezependingmodify-to-retiringcancelorder/liabilitysnapshot;CancelRejected_expiry_missingACKterminalrules;exacttimelinesscriterionwithoutnewgrace;multiplelatefill_coalescing_history",
+      "risk": "FinitequantityliabilityaloneisnotboundedlifetimeorprooflatestACK;noindefiniteexception"
+    }
+  ],
+  "documentation_alignment": "Newstandardcancel_retiringchoice must explicitlysupersede auditoldzero-leavesmodifycandidate; noimplicitdualimplementationchoice",
+  "next_tasks_order": [
+    "FreezeR1_R2andowneracceptretiringinvariant",
+    "BoundedexistingpublicAPI/callbackstateproof_andtesttable",
+    "Separatelyauthorizednarrowcode_andrealobjectpuretests_plusdiffreview",
+    "Completecausalnativecase_mapbeforeanybudgetproposal",
+    "Explicitnewsourcequalification_oldE7componentreuseonlyifnoninterferenceproved"
+  ],
+  "future_test_scope": [
+    "OrdinaryTP_STOP",
+    "CAPfull_partial_IOCcancel_reject",
+    "Zero-rightretiringactualPendingCancel_latefill_ACK_BTCdebt",
+    "Globalprotectedpartialexitwithoneowner",
+    "STOPpositiveACK_andpartialSTOPfaultrecovery",
+    "Strictmatchingboundaries_increasesblocked_precleanupflat"
+  ],
+  "native_proof": "NOT_RUN_NEW_CONTRACT",
+  "E7_reuse": "OLD_SOURCE_COMPONENT_CONDITIONAL_ONLY_NOT_NEW_SOURCE_PASS",
+  "budget": {
+    "engineering_spent": 4,
+    "max": 7,
+    "remaining": 3,
+    "status": "HARD_STOP_HOLD",
+    "reserve": 0,
+    "prefix_spent": 0,
+    "prefix_max": 4,
+    "full": 0,
+    "new_numeric_budget_recommendation": null
+  },
+  "GO_issued": false,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0,
+    "budget_changes": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_DESIGN_REVIEW.md",
+  "report_sha256": "364c91f253d85ab3d9283340f5231d9e4ecff44e6a4c509857aee57f459c53af"
+}

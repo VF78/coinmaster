@@ -1,0 +1,16 @@
+{
+  "status": "PRESERVED_E1_ACCEPTED_E2_FAILED_READONLY_CONTRACT_PROPOSAL",
+  "json_parsed": 133,
+  "text_files_scanned": 162,
+  "credential_pattern_matches": 0,
+  "engineering_ledger_sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
+  "prefix_ledger_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "engineering_started": 4,
+  "max": 7,
+  "active": 0,
+  "new_native_attempts": 0,
+  "source_afterE2": "UNCHANGED8a21673",
+  "v2_contract_sha256": "353d0e01218148ebaf1ef4c7172552ee000d8ff0b6efc563402794ae016503d6",
+  "zeroengine_protocol_sha256": "ae2ec46f2b26c7f8f5dc147e656580094d63a1231f292e81aa085a08537663d3",
+  "new_implementation_approval": "NOT_GRANTED"
+}

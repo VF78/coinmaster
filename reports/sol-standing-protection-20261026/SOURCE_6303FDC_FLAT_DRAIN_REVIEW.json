@@ -1,0 +1,73 @@
+{
+  "schema": "CM137_6303FDC_TARGETED_FLAT_DRAIN_REVIEW_V1",
+  "status": "HOLD_ONE_SUPERVISOR_AMENDMENT_STOP_GUARD_CORRECTION",
+  "source_commit": "6303fdc968c4dfb7027c44d5fc1822302da5e05b",
+  "delta_parent": "97db9659199d9d4655336826d007cccf1883982e",
+  "P0": 0,
+  "P1": 1,
+  "findings": [
+    {
+      "priority": 1,
+      "id": "ANY_NEW_FAILURE_STOP_NOT_ENFORCED",
+      "file": "runtime/tests/sol_standing_supervisor.py",
+      "function": "amendment7_identity",
+      "trigger": "E7failedphysical3 +active0 thenE2physical4 gate satisfies currentschedule/oldrowchecks",
+      "violation": "OwneramendmentanynewfailureSTOP/noreserve",
+      "correction": "Beforeclaim reject every postpreserved2 row unless COMPLETED+observedchildOSint0+observedsupervisorOSint0;UNKNOWN/missing/FAILEDblocked;externalOSauthorityexplicitwhereused;individualrootqualificationstillrequired",
+      "pure_acceptance": [
+        "failedE7_toE2blocked",
+        "failedE2_toE3blocked",
+        "UNKNOWN_or_missingOSblocked",
+        "COMPLETED0historyallowed"
+      ],
+      "new_native_tests_required": false
+    }
+  ],
+  "other_delta_scope": "GatedC0/TRIM/A0ownedflatTPpubliccancel/actualACK/entrywait/latehistory/drainingbarriers andwholeE1configasserts supported bysource, NOT nativeproof",
+  "bindings": {
+    "gate_path": "reports/sol-standing-protection-20261026/E7-root-false-gate-6303fdc.json",
+    "gate_sha256": "cb2c0d88fffd2385ee9447bb149dd0f4e4934054e36fbeeb24bf2235df2e544d",
+    "root_go": false,
+    "reviewed": false,
+    "immutable_pins": 643,
+    "pin_hash_matches": 643,
+    "source_seal_sha256": "914600c336eddb1551e1f864a53049391eb5d0f2321a346e123f6abbfea28906",
+    "preflight_sha256": "0a94fa90a2cd455fc19ea8b26c0bcd47302701023efa56a9c7bbe7d390a4816b",
+    "amendment_approval_sha256": "c4ee6b54366edc880b7c42a98dff094f8e757f4bda7e412b8493fb5441004ab6",
+    "amendment_protocol_sha256": "53f6d79a2c1be4164e9f298b9f8c58d5246d74f0e064708b2942d8914a189b37",
+    "prepare_sha256": "ee22e5449b9df6eb5cb01ef0d0f584b75f48c0bbdb0ca42a68e81f24c2de4b8e",
+    "prepare_OS0_ENGINE0": true,
+    "E1_config_kwargs_unchanged": true,
+    "namespace_fresh": true,
+    "ledger_sha256": "abd08d45c25f8ceb6d9c15e95c3f12afaaa4353853a2ac0718b6c50422fb73ea",
+    "oldcanonicalrows_unchanged": true
+  },
+  "saved_Mac_pure": {
+    "passed": 140,
+    "seconds": 2.69,
+    "reviewer_reran": false
+  },
+  "native_coverage": "NOT_RUN_AFTER_FLAT_FIX",
+  "budget": {
+    "max": 7,
+    "spent": 2,
+    "active": 0,
+    "remaining": 5,
+    "newreserve": 0,
+    "prefix_spent": 0,
+    "prefix_max": 4,
+    "full": 0
+  },
+  "GO_issued": false,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/SOURCE_6303FDC_FLAT_DRAIN_REVIEW.md",
+  "report_sha256": "34f33625c9400fb074635039c67fa0f3cadb549d895baf07938011bf30db0b66"
+}

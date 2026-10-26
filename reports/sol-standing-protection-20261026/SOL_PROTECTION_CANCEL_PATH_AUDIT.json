@@ -1,0 +1,397 @@
+{
+  "schema": "CM137_SOL_PROTECTION_CANCEL_PATH_AUDIT_V1",
+  "status": "READ_ONLY_DESIGN_HOLD_NO_NEW_AUTHORITY",
+  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime",
+  "source_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "d470b1ef0ab066cb227744f33d28f5da84e41052a007fc7eedd7f54ac13c2667"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "3a912cca184362cdc194fcaf2d24ae4a151a2b683e9fdd7782390c32132d9e70"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/strategy/risk_first_sol.py",
+      "sha256": "6475dd2df2987abfc8fc1e0c8200b9049bb9a15b6e4eba76a857f9c4aa4c1278"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/strategy/hedge_band.py",
+      "sha256": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/strategy/split_cover.py",
+      "sha256": "f7587c67a7be12dbfc5bab6f035eb3141630ea5578f2e6a5ca255bca849e5178"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/research/native_book.py",
+      "sha256": "7ba67d9ed3e584c62b1d2f742a48416146728baa11cf422db0c063a3ff714532"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/research/native_fixture.py",
+      "sha256": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/coinmaster/research/a0_family.py",
+      "sha256": "2d6f73313b6636c93f9a3b9c6f8f4110ceb94945543d6d3d85d79a0ba9cfb4f0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-8a21673/runtime/tests/run_sol_standing_fixture.py",
+      "sha256": "f0a2e5038a2e341e16521fb663560d5ec8dff36a7389c155b4605dd609c505fe"
+    }
+  ],
+  "native_source_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/risk/engine.pyx",
+      "sha256": "bf51d0d886d98c4e95c1ef1aa74e4dd24a236a9fc149fb646a1f038d7dfb8d84"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/base.pyx",
+      "sha256": "e90375c623b13a7c1fa35e35ef756eb00c9a0b38994d3125dcf616557c20a953"
+    }
+  ],
+  "scope": "All paired protective SOL TP/STOP public-cancel callers plus reachable generic native closure and feature exclusions; no total-project audit.",
+  "paths": [
+    {
+      "id": "P1",
+      "source": "paired_prefix.py:157-161",
+      "classification": "PUBLIC_CANCEL_SINK",
+      "trigger": "Called with work list; each nonterminal/not-already-pending-cancel order gets Strategy.cancel_order",
+      "ownership": "Registry-filtered caller; sink itself does not independently revalidate SID/parent/instrument",
+      "barrier_state": "Public PendingCancel now, actual Cancel ACK after fixed cancel latency",
+      "protective_oids_retained": "Depends on caller",
+      "evidence": "E2 seq63-70 real callbacks",
+      "known_limit": "Never reuse a broad group work list as a normal cap reduction"
+    },
+    {
+      "id": "P2",
+      "source": "paired_prefix.py:201,526,536",
+      "classification": "ENTRY_OR_BTC_ONLY",
+      "trigger": "BTC debt/opening cancellation and SOL entry timeout",
+      "ownership": "201/536 BTC ordinary mapping;526 ENTRY kind",
+      "barrier_state": "Keep entry ownership until actual terminal; no TP/STOP authority here",
+      "protective_oids_retained": true,
+      "evidence": "Source exclusion for SOL TP/STOP",
+      "known_limit": ""
+    },
+    {
+      "id": "P3",
+      "source": "paired_prefix.py:428",
+      "classification": "ACTUAL_TERMINAL_CLOSURE",
+      "trigger": "Actual BTC inventory becomes zero",
+      "ownership": "Current pair SOL ENTRY/TP/STOP",
+      "barrier_state": "close_sol=True BEFORE cancellation; late fills stay owned; no increases",
+      "protective_oids_retained": false,
+      "evidence": "E7 reaches actual-flat cleanup; stress drain not qualified",
+      "known_limit": "Final release still actual flat/orders/inflight/pending0"
+    },
+    {
+      "id": "P4",
+      "source": "paired_prefix.py:451",
+      "classification": "LEGACY_NORMAL_SIGNATURE_REPLACE_EXCLUDED",
+      "trigger": "Legacy protection signature changes",
+      "ownership": "Legacy SOL TP/STOP registry",
+      "barrier_state": "Cancel then rearm",
+      "protective_oids_retained": "No, but unreachable with SOL standing flag true",
+      "evidence": "C0/A0 dispatch _pair_sol_protect; TRIM SOL route disabled",
+      "known_limit": ""
+    },
+    {
+      "id": "P5",
+      "source": "paired_prefix.py:501",
+      "classification": "HIGHER_TERMINAL_CLOSURE",
+      "trigger": "forced_close/liquidating/terminal lockout observed in _pair_quote",
+      "ownership": "All pair-owned work, including protective orders",
+      "barrier_state": "close_sol=True before this call; existing higher native close serializes reduction",
+      "protective_oids_retained": false,
+      "evidence": "Source reachable, no permission to alter global close",
+      "known_limit": "Earlier wave_overlay._begin_forced_close may already have canceled before pair flag sync; see W2"
+    },
+    {
+      "id": "P6",
+      "source": "paired_prefix.py:542-545",
+      "classification": "NORMAL_SOL_CAP_BUG_AND_TERMINAL_SHARED_BRANCH",
+      "trigger": "excess=actualSOL-solmax>0 with active nonterminal pair OR close_sol actual closure",
+      "ownership": "Current SOL ENTRY/TP/STOP all canceled before IOC allowed",
+      "barrier_state": "Nonterminal SOL_CAP has close_sol=False; strict boundary becomes UNKNOWN. Terminal SOL_CLOSE has close_sol=True",
+      "protective_oids_retained": "No: all TP/STOP canceled in both cases",
+      "evidence": "E2 ACTUAL failure143 ordinary BTC TP.382 -> BTC1.418/solmax1.5 vsSOL1.8; SOL_CAP IOC not submitted",
+      "known_limit": "Primary normal cancel path; fixing only cancel call is insufficient: current not _pair_work(SOL) also blocks IOC while protection lives"
+    },
+    {
+      "id": "P7",
+      "source": "paired_prefix.py:630",
+      "classification": "ACTUAL_SOL_FLAT_DRAIN",
+      "trigger": "Actual heldSOL==0",
+      "ownership": "Current SOL TP/STOP registry",
+      "barrier_state": "No inventory to protect; preserve owner mappings and real terminal ACK",
+      "protective_oids_retained": false,
+      "evidence": "E7 after actual full STOP",
+      "known_limit": "Do not retire pair or resurrect consumed TP while native work/pending remains"
+    },
+    {
+      "id": "P8",
+      "source": "paired_prefix.py:669",
+      "classification": "NORMAL_ZERO_ENTITLEMENT_EDGE",
+      "trigger": "Live TP key disappears from desired after proportional actual non-TP SOL reduction; e.g. a cap fill rounds a former positive TP right to zero",
+      "ownership": "Validated current-parent owned TP/STOP; in held>0 path STOP key remains",
+      "barrier_state": "Current public cancel2s makes extra zero-entitlement live/pending order fail exact len/status test",
+      "protective_oids_retained": false,
+      "evidence": "Source-reachable after SOL_CAP; not reached by actualE2 before IOC",
+      "known_limit": "Full ordinary TP already terminal leaves work naturally; this is a different normal zero-right edge. No frozen-feed bound excludes it"
+    },
+    {
+      "id": "W1",
+      "source": "wave_overlay.py:2176",
+      "classification": "MANDATORY_SOL_TIMEOUT_CLOSURE_FAMILY_EXCLUDED",
+      "trigger": "SOL_HARD_TIMEOUT native domain intent",
+      "ownership": "All SOL cache-open orders, existing mandatory exit authority",
+      "barrier_state": "_mandatory_sol_exit set after cancel; paired close_sol not set here",
+      "protective_oids_retained": false,
+      "evidence": "Current candidate.sol_overlay_enabled=False/research_sol_off=True means legacy SOL timeout intent not generated",
+      "known_limit": "Do not claim compatible observer closing priority for a hypothetical enabled legacy SOL pipeline"
+    },
+    {
+      "id": "W2",
+      "source": "wave_overlay.py:2229; paired_prefix.py:501",
+      "classification": "GLOBAL_TERMINAL_GROUP_CLOSE",
+      "trigger": "Existing CLOSE_ALL/regime/trail, liquidation, terminal boundary, failed admission forced close",
+      "ownership": "Existing full strategy cache group-close authority, not normal cap ownership",
+      "barrier_state": "_forced_close_reason set BEFORE cancel; paired.close_sol synced only on later _pair_quote, whereas pure pre-input observer reads paired flag only",
+      "protective_oids_retained": false,
+      "evidence": "Source reachable; terminal_close_at_ns=90600s; native generic close can originate before next paired quote",
+      "known_limit": "Potential observer-priority gap: genuine global closing intent must be joined before cancellation, not hide UNKNOWN or add grace. Not observed in E7/E2"
+    },
+    {
+      "id": "W3",
+      "source": "wave_overlay.py:599,889,899,911,2725,2729,2733",
+      "classification": "NONPROTECTIVE_OR_FEATURE_EXCLUDED",
+      "trigger": "599 H1 nonreduce adds;889/899/911/2729 V3 reduction;2725 split-ATR;2733 forced opener acceptance",
+      "ownership": "599/2733 explicitly nonreduce; V3/split owners absent in exact config",
+      "barrier_state": "H1/V3/split disabled; group opener cancel cannot touch reduce-only TP/STOP",
+      "protective_oids_retained": true,
+      "evidence": "Exact frozen E2 config flags None/False; no SOL protective path here",
+      "known_limit": ""
+    },
+    {
+      "id": "N1",
+      "source": "risk_first_sol.py:285-317; inherited opener-only controllers",
+      "classification": "FEATURE_EXCLUDED",
+      "trigger": "risk_first split-ATR stop/check; conditional/cover/carry optional owners",
+      "ownership": "Separate optional registries; exact flags disabled",
+      "barrier_state": "research_sol_risk_first=None; cover=None; conditional=False; carry/chop=False; H4 SOL route None",
+      "protective_oids_retained": "No effect on paired TP/STOP",
+      "evidence": "Source guard and exact frozen config; split_stop and hedge_cancel_openers only BTC_ENTRY or nonreduce SOL_ADD",
+      "known_limit": ""
+    },
+    {
+      "id": "N2",
+      "source": "native engine.pyx:7950-8030,8250; paired_prefix.py:287",
+      "classification": "NATIVE_TERMINAL_OR_CONTINGENCY",
+      "trigger": "IOC remainder cancel, explicit zero-leaves update auto-cancel, OCO/OUO or indexed-position RO sync",
+      "ownership": "Native actual Order/position/index; this route has no algorithm/OCO/OUO/cache position link for protections",
+      "barrier_state": "STOP any fill immediately sets close_sol; partial IOC remainder -> declared fault; no STOP modify after fill",
+      "protective_oids_retained": "Unconsumed positive OIDs retained unless actual native terminal",
+      "evidence": "E7 full STOP actual; partial STOP essential E2 P2 NOT_REACHED; zero-leaves update source-only",
+      "known_limit": "No claim stock auto-sync fixes unindexed standalone protection quantities"
+    }
+  ],
+  "normal_path_coverage_complete_at_source_level": true,
+  "native_normal_cap_coverage": false,
+  "proposal": {
+    "status": "REPORT_ONLY_NOT_APPROVED_NOT_IMPLEMENTED",
+    "scope": "Exact standing research family only; C0/A0. TRIM remains no-SOL. OFF/core/prices/weights/u-v/caps/clocks unchanged.",
+    "normal_cap": [
+      "Split terminal SOL_CLOSE from nonterminal SOL_CAP; do not share blanket-cancel branch.",
+      "For nonterminal cap, cancel/wait only owned ENTRY as existing; keep positive-right TP/STOP OIDs and accepted protection; wait actual entry terminal, earlier SOL_CAP/SOL_CLOSE owner, pending protection commands/cancels, and existing native actual state before one IOC.",
+      "Do not use not _pair_work(SOL) as IOC barrier once protection retained. Explicitly distinguish protection from reduction/entry work; current parent/SID/instrument/side/reduce-only/order history must conform; no foreign cancellation.",
+      "Compute current excess from actual current native inventory and existing solmax, floor unchanged. Submit existing public reduce-only market IOC only on causal SOL quote; no future credit, synthetic position, new matching, fake caps, or TIF/latency change.",
+      "On EVERY actual SOL_CAP fill, including full-fill terminal path, apply existing proportional tp_lots/caps/debt math then reconcile protection immediately from actual held. Current _pair_terminal only calls protect for TP/STOP, so full SOL_CAP needs explicit guarded reconciliation.",
+      "For retained positive TP leaves modify total=actual_filled+desired_leaves; STOP total=actual_held. Never change TP prices/STOP trigger. Credit only latest native Updated; no repeated command while pending; reject/unknown = NO_GO.",
+      "Partial IOC terminal cancel is not rejection: keep accepted exact protection, recompute actual residual excess next ordinary eligible quote, one reduction at a time. Rejected/expired/denied cap remains existing failclosed fault (UNKNOWN_RISK/close_sol/bmax0), no retry masking. Late cap/TP/entry fills remain bound to original pair and actual debt; do not release rights early."
+    ],
+    "zero_right_contract_decision": [
+      "Current669 cancel2s cannot satisfy unchanged before-next-input exact order count/status for a live TP whose desired right becomes0 while SOL remains.",
+      "Pinned stock update_order8250 auto-cancels after public quantity update yields zero leaves; Strategy.modify_order exposes quantity, native _check_quantity checks min_quantity. Exact research instruments have min_quantity=None; source suggests total=actual_filled (possibly0) route, but public end-to-end/native event behavior is NOT_PROVEN here. It is a separate explicit zero-entitlement terminalization decision, not silently added magic.",
+      "If zero-leaves public update is invalid, rejected, marketable/in-market unsafe, or cannot get actual terminal ACK before next input, STOP. No cancel2s grace, no observer weakening, no changed min-size/guard bypass, and no promise generic feasibility without a different explicit contract."
+    ],
+    "terminal": [
+      "Leave actual riskOFF/expiry, BTCflat/SOLflat, any STOP fill and declared fault closures distinct; once terminal intent is actual, no protection resurrection/increase, retain late ownership and wait actual flat/orders/inflight/pending/debt0.",
+      "Join existing global forced/terminal/mandatory intent to paired closing priority before any cancel; source observer currently only tests paired.close_sol. Genuine closure state synchronization needs review; do not relabel ordinary SOL_CAP as closing to bypass exact protection."
+    ],
+    "async_source_proof": "Pinned BacktestEngine _process_and_settle_venues1892-1930 drains current zero-latency command/fill callbacks until quiescent before next data item. This supports a source hypothesis for immediate cap-fill public modifications; no atomic multi-order API exists and no native PASS is inferred. Triggered STOP, partial cap IOC, zero-right and callback reentrancy remain actual qualification gates.",
+    "stop_conditions": [
+      "Any actual STOP fill enters closing and forbids modify; partial STOP remains expected-negative-only engineering / economicNO_GO.",
+      "Any new matching input without current exact latest-ACK protection outside true closing remains strict failure.",
+      "No complete frozen-liquidity or zero-right admission bound is available; do not replace native proof with depth1000 or nominal order quantities."
+    ]
+  },
+  "existing_stage_coverage": [
+    {
+      "case": "E1/E7",
+      "actual": "PASS source8a only: ordinary SOLTP partial/multiple, originalSTOP modify/full trigger, BTCdebt+flatdrain; no SOL_CAP",
+      "future": "Conditional component reuse criteria above"
+    },
+    {
+      "case": "E2",
+      "actual": "FAILED143 before SOL_CAPIOC and P2; only original positive STOP ACK137 observed",
+      "future": "Must prove normal cap positive/zero-right coverage first, then healthyDEFER/riskOFF/pendingTPfill/partialSTOPfault+nativeflat without manual cleanup"
+    },
+    {
+      "case": "E3",
+      "actual": "NOT_RUN; fixedTRIM noSOLroute by construction",
+      "future": "Native BTC absolute cap/threeTP/debt; not SOL protective evidence"
+    },
+    {
+      "case": "E4",
+      "actual": "NOT_RUN; same P1 integration143 would enter same normal cap bug",
+      "future": "Newsourcecap lifecycle + A0 rights/pendingcancel/nativeguard; no variantswap"
+    },
+    {
+      "case": "E5",
+      "actual": "NOT_RUN; same P1 cap path; fixedA0 registeredtwo-parent",
+      "future": "Newsource integrated proof required; source8a E7 is never relabeled E5. Partial/rejected/zero-right cap cases are not already proved by current stage map."
+    }
+  ],
+  "E7_qualification_impact": {
+    "status": "CONDITIONAL_COMPONENT_REUSE_ONLY_NOT_NEW_SOURCE_PASS",
+    "actual_E7_source": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+    "actual_E7_pin": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E7_E1_8A21673_AMENDED_REPEAT/BEFORE_TERMINAL.json",
+      "sha256": "b582eb043f89a4eee5a0da6aebca850c9d79e456bf00dd1db905462109a4d5d7"
+    },
+    "actual_submit_counts": {
+      "ENTRY": 1,
+      "TP": 3,
+      "STOP": 1,
+      "BTC_DEBT": 3
+    },
+    "actual_ordinary_BTC_TP_fills": 0,
+    "actual_positive_SOL_cap_excess_in_all_CACHE_POSITION_records": false,
+    "actual_positions_caps": [
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "130000000000",
+        "btc": "2",
+        "sol": "2",
+        "bmax": "2",
+        "solmax": "2.0"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "135000000000",
+        "btc": "2",
+        "sol": "1.8",
+        "bmax": "1.800",
+        "solmax": "1.8"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "136000000000",
+        "btc": "1.8",
+        "sol": "1.8",
+        "bmax": "1.800",
+        "solmax": "1.8"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "136000000000",
+        "btc": "1.8",
+        "sol": "1.5",
+        "bmax": "1.500",
+        "solmax": "1.5"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "136000000000",
+        "btc": "1.8",
+        "sol": "1.1",
+        "bmax": "1.100",
+        "solmax": "1.1"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "137000000000",
+        "btc": "1.1",
+        "sol": "1.1",
+        "bmax": "1.100",
+        "solmax": "1.1"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "137000000000",
+        "btc": "1.1",
+        "sol": "0",
+        "bmax": "0.000",
+        "solmax": "0.0"
+      },
+      {
+        "event": "CACHE_POSITION",
+        "timestamp_ns": "138000000000",
+        "btc": "0",
+        "sol": "0",
+        "bmax": "0.000",
+        "solmax": "0.0"
+      }
+    ],
+    "conditions": [
+      "Future diff restricted to nonterminal SOL_CAP branch and SOL_CAP-specific callbacks/zero-entitlement path; E7 never enters these branches.",
+      "Demonstrate AST/source equivalence of E1 fixture/config/feed/advance, all E7 visited paths including ordinary SOLTP/STOP modify/ACK/full trigger and flat drain. Actual trace alone is not proof of whole-program noninterference.",
+      "If generic protection/native observer/global closing/ACK behavior changes on an E7 visited path, or branch exclusion cannot be proven, fresh E1 required.",
+      "Any reused artifact stays labeled actual E7/source8a component evidence. New integrated E5 must execute new source, cover new cap route and all mandatory unchanged paths; root independent qualification contract must explicitly admit component reuse."
+    ],
+    "remaining_required_if_reuse_accepted": [
+      "E2",
+      "E3",
+      "E4",
+      "E5"
+    ],
+    "if_reuse_unprovable": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5"
+    ],
+    "budget_recommendation": null
+  },
+  "cheapest_next_decision": "Resolve/review complete nonterminal cap + zero-entitlement native terminalization + global closure-priority contract at source level before any implementation/run/budget decision. If exact public API route cannot meet strict next-input contract, STOP. No extra attempt recommendation.",
+  "budget": {
+    "max": 7,
+    "spent": 4,
+    "failed": 3,
+    "completed": 1,
+    "active": 0,
+    "remaining": 3,
+    "status": "HARD_STOP",
+    "prefix_spent": 0,
+    "prefix_max": 4
+  },
+  "ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f"
+  },
+  "prefix": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/prefix-ledger.json",
+    "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+  },
+  "actions": {
+    "product_edits": 0,
+    "tests": 0,
+    "native": 0,
+    "budget_extension": 0
+  },
+  "markdown": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_PROTECTION_CANCEL_PATH_AUDIT.md",
+    "sha256": "9c1e8bc3d3ed857aa7dd3f6202a22074073be1843149659f805bf876e1a09bba"
+  }
+}

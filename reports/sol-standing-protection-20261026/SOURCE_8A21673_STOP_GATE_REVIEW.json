@@ -1,0 +1,68 @@
+{
+  "schema": "CM137_8A21673_TARGETED_STOP_GATE_REVIEW_V1",
+  "status": "LIMITED_CORRECTION_SOURCE_AND_BINDINGS_PASS",
+  "P0": 0,
+  "P1": 0,
+  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "correction_parent": "6303fdc968c4dfb7027c44d5fc1822302da5e05b",
+  "closed_finding": "ANY_NEW_FAILURE_STOP_NOT_ENFORCED",
+  "scope": "Supervisor+puretestonly; product/drain/math/data/driverbytesunchanged, generatedpytestcacheexcluded",
+  "guard": {
+    "postpreserved_rows_require_COMPLETED": true,
+    "three_ledger_OS_strict_int0": true,
+    "pinned_external_OS_receipt_required": true,
+    "schema_authority_identity_PID_and_three_OS_verified": true,
+    "FAILED_UNKNOWN_missing_bool_None_nonzero_blocked_before_claim": true,
+    "original_two_FAILED_only_exceptions": true,
+    "root_qualification_separate": true
+  },
+  "saved_tests": {
+    "Mac_supervisor_pure_passed": 53,
+    "Mac_seconds": 1.91,
+    "VPS_supervisor_pure_passed": 53,
+    "prior630_140coverage_reused": true,
+    "reviewer_reran": false
+  },
+  "bindings": {
+    "gate_path": "reports/sol-standing-protection-20261026/E7-root-false-gate-8a21673.json",
+    "gate_sha256": "a3094b15147c94fd0a3233a67f657c88b824cb4fefe37ad810f64aff44fcf29f",
+    "root_go": false,
+    "reviewed": false,
+    "pin_count": 643,
+    "pin_hash_matches": 643,
+    "source_seal_sha256": "7ab247247a5045e5c8388284be19bc5f58f42d4a0edd9e86b636caefee767e6f",
+    "preflight_sha256": "9eb02d212005da295964d0448dcca726d6dd67309daeda4b7ac03012e4fdffc7",
+    "prepare_sha256": "cd0192f211bf11be4ef1a48523ab055de700078eedfb99d7eeb37c0e22a7346b",
+    "prepare_actual_OS0_ENGINE0": true,
+    "external_contract_sha256": "418d0baaff97f08f85ffd9abc2d69c4e48a71a8efaf15797089797b6b883e207",
+    "E1config_kwargs_transport_unchanged": true,
+    "namespace_fresh": true,
+    "ledger_sha256": "abd08d45c25f8ceb6d9c15e95c3f12afaaa4353853a2ac0718b6c50422fb73ea",
+    "old_rows_canonical_preserved": true,
+    "prefix_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+  },
+  "budget": {
+    "max": 7,
+    "spent": 2,
+    "active": 0,
+    "remaining": 5,
+    "reserve": 0,
+    "prefix_spent": 0,
+    "prefix_max": 4,
+    "full": 0
+  },
+  "native_coverage": "NOT_RUN_AFTER_FLAT_FIX",
+  "GO_issued": false,
+  "next": "RootfinalprepareafterreviewpinthenEXACTONEE7GOifaccepted;nofailureoverride/autonext",
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/SOURCE_8A21673_STOP_GATE_REVIEW.md",
+  "report_sha256": "3df532268b7f3ffed939ef6c26569bb57878901c4b349818e022d003522c51bc"
+}

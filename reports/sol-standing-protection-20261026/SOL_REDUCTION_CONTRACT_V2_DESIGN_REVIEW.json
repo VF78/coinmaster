@@ -1,0 +1,94 @@
+{
+  "schema": "CM137_SOL_REDUCTION_CONTRACT_V2_DESIGN_REVIEW_V1",
+  "status": "DESIGN_READY_FOR_OWNER_APPROVAL_ENGINE_FREE_IMPLEMENTATION_ONLY",
+  "P0": 0,
+  "P1": 0,
+  "R1": "CLOSED_PAIR_SOL_CLOSE_ONLY_BOTH_GLOBAL_DISPATCHERS_DEFINED",
+  "R2": "CLOSED_LATEST_ACK_STANDARD_CANCEL_FIXED_PARENT_DEADLINE_EXPLICIT_TERMINAL_FAULT_RULES",
+  "inputs": [
+    {
+      "path": "reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_V2_PROPOSED_RU.md",
+      "sha256": "353d0e01218148ebaf1ef4c7172552ee000d8ff0b6efc563402794ae016503d6"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_V2_PROPOSED_RU.json",
+      "sha256": "6570f5bec26dd06f2efd08b590f3eec13b94994022f30bad1028852e5919ed29"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/ZERO_ENGINE_IMPLEMENTATION_PROTOCOL_PROPOSED_RU.md",
+      "sha256": "ae2ec46f2b26c7f8f5dc147e656580094d63a1231f292e81aa085a08537663d3"
+    }
+  ],
+  "approved_for_presentation_only": {
+    "contract": "V2",
+    "phase": "Existing researchownerimplementation plus realCache_Ordereventreplay only",
+    "engine_constructors": 0,
+    "new_native_fixtures": 0,
+    "prefix_runs": 0,
+    "full_runs": 0,
+    "requires_direct_owner_consent": true
+  },
+  "R1_constraints": [
+    "OnlyexistingpairSOL_CLOSE",
+    "beginclose_quote_cache_pairpriorityhandoff",
+    "OnlyexactpositiveownedSOLprotectionexcludedfromgenericwaitset",
+    "Otherblockersremain",
+    "Positiveprotectionuntilactualflat",
+    "Faultnotclosingbypass",
+    "BTCcoreunchanged"
+  ],
+  "R2_constraints": [
+    "Onlyzero-desiredTPfromknownlatestACK",
+    "Standardpubliccancel_nozeroquantitymodify",
+    "Immutableparentepisodefirstcancelplus60s_deadlineneverreset",
+    "Firstactualevent_at_or_afterdeadline_no_future_same_tsACKborrowing",
+    "Retiringactualfilldebitsliability_thenexistingproportionalpositiveallocation",
+    "BenignCancelRejectonlyverifiedterminalhistory_completefills_liability",
+    "LiveunknownReject_expiry_unsolicitedUpdate_missingACK_NO_GO",
+    "Noexistingpositiveprotection_debtgracechange"
+  ],
+  "meaningful_future_pure_scope": [
+    "pendingmodify_ACK_cancel",
+    "multiplelatefills_dedup_proportionalrights_debt",
+    "deadline_boundaries_noreset",
+    "redundantterminalreject_vs_liveunknownfault",
+    "bothglobaldispatchers_oneSOLexit_withblockers",
+    "CAPpartial_full_terminal_reject_STOPnoremodify"
+  ],
+  "unknowns_not_zeroengine_blockers": [
+    "ActualmatchingpartialIOC_andreentrantACKcorrectness",
+    "Before-next-inputnativepositiveprotection",
+    "Venueatomicity"
+  ],
+  "exit_requirements": [
+    "Committedsource_diff_puretests_immutableMac",
+    "Onefocusedindependentreview_atmostonesubstantialcorrection",
+    "Completefreshsource_nativecasemapbeforeanynumericnativebudgetproposal",
+    "FreshE1required_oldE7historicalonly"
+  ],
+  "hard_stop_preserved": {
+    "engineering_spent": 4,
+    "max": 7,
+    "remaining": 3,
+    "remaining_status": "HOLD_NOT_REASSIGNED",
+    "reserve": 0,
+    "prefix_spent": 0,
+    "prefix_old_conditional_max": 4,
+    "full": 0,
+    "supervisor_ledger_approval_bypass_allowed": false
+  },
+  "code_GO_issued": false,
+  "native_GO_issued": false,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0,
+    "budget_changes": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_V2_DESIGN_REVIEW.md",
+  "report_sha256": "b8ec8e458097a7b743c208de8a30fd8b105bd9d54346735c76eed82951d3e565"
+}

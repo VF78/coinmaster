@@ -1,0 +1,38 @@
+# E2 physical4 — независимое actualрешение
+
+**FAILED / REAL_SOL_CANCEL_PENDING_CONTRACT_FAILURE / STOP.** Source8a21673ca5c678120bf0498c97ebe9b562fe3c31; UUIDfeb8e64d-98df-476c-a6e2-01fa9a2bce7d; scenarioE2/staticcancel2s. Одинnativeconstructor. Прочитаныboundedresult/failure/pre-end/orders/actualevents/lifecycle/OS/ledger, толькосоответствующийexistingexcessSOLsourcebranch. Tests/engineimports/Popen/source/gate/ledgerизменения0.
+
+## Причиннаяпоследовательность
+
+1. До143s C0actualBTC1.8/SOLshort1.8послеSOLpartialTP.2(t137) иactualBTC_DEBT.150(t140). STOPquantity1.8получилrealUpdatedACK137s. ExistingBTCstandinglatestACK3сtotalдляTP0 `.050filled+.382leaves=.432`;остальныеleaves.382/1.036.
+2. NativeBTCquote143завершилBTC TP0дополнительнымfill.382@101.8; BTC1.8→1.418. ActualCACHE_POSITIONauditпоказываетabsolutebmax1.418/SOLmax1.5/actualSOL1.8:требуетсяSOLexcesscut.3.
+3. Existing `_pair_quote` excessbranch (`paired_prefix.py:541–547`) передSOLCAPсначалаpubliccancelвсехSOLENTRY/TP/STOP. НаэтомBTCcallback143сделаны4genuineOrderPendingCancel:SOL TP7/8/9иSTOP10. Cancel2sещёнезавершён; SOL_CAPorder/fillещёнет.
+4. ПередследующимSOLmatchinginputтого же143s `NativeBookWitness.pre_process` вызываетstrict `_pair_sol_boundary`. Все4orders **PENDING_CANCEL**, exactFalse; guardвыбрасываетSOL_BEFORE_MATCHING_EXACT_COVERAGE_UNKNOWN. ЭтоresultValueError, неожидаемыйPARTIAL_NATIVE_STOP.
+
+ActualpendingcancelUUID:TP7 07964617-3b2d-4096-b935-3175e3418048;TP8 cc4b82d4-af2b-40fd-abc6-d6a1f2136b79;TP9 2fb6b5c0-3a61-4cca-ac19-f6b5ad3109cd;STOP10 de49e838-e517-4d46-8a3a-bad84f05e000. Nativegeneric+typedroutesподтверждаюткоманды/статусы, анеполомкуJSON/observer.
+
+## Protectiongap versus exactness
+
+НаостановкеTPleaves.3+.5+1.0=actualSOL1.8 иSTOPleaves1.8; цены99/98/96,trigger102сохранены. Ownerpendingmodify=Falseукаждого; предыдущийSTOPUpdatedACKзавершён. Поэтому **pendingupdate/ошибкаquantityallocationнепричина**. Нельзяутверждать,чтов143ужефизическинетниодногоnativeprotectiveorder:pendingcancelordersещёliveдоACK.
+
+Но4реальныхcancelcommandsделаютrequiredacceptedprotectiontransitionнеурегулированнымпередmatching; послеcancelACKкомплектможетисчезнутьдофактическогосокращенияexcess. ОбъявленнаяexactcontinuityисключаетPENDING_CANCEL. GuardправильноотказываетсяприниматьэтосостояниекакnormalPASS. Этонеfalseobserveraudit, которыйможноисправитьигнорированиемstatus, инеpropertyserializerbug. Доказанное: **cancel-pending continuitycontractFAIL**. Длительностьполногоотсутствиязащиты/будущий145sbook/успешностьSOLCAP **UNKNOWN/NOT_REACHED**, посколькуengineостановленпередSOLmatching143. Никакихwaiver/новогоgrace/quoteorder/latencyизмененийдляобходаотказа.
+
+`protection_since=None` иpaired.failures=[]вsnapshotнеPASS:excesscancelbranchнепоставилновыйобычныйprotectionclock, ноstrictbeforematchingguardнезависимопоймалactualpendingcancel. Нельзяопиратьсянапустойfailureslistвместоresult/processqualification.
+
+## Actualcoverage инепройденныеэтапы
+
+Достигнутыnaturalparent/actualentry,initialSOL3TP+STOP,ordinaryBTCpartialTP,SOLpartialTP.2,STOPsameOIDqtyACK, actualBTCdebt.150+3BTCsameOIDlatestACK, затемordinaryBTC TP0full. AccountcapturecompleteTrue. BTCremainingTP1.382+TP3 1.036=actualBTC1.418:BTCprotectionquantityправильна.
+
+**NOT_REACHED:** P1TP1full/healthyMARKETABLE_DEBT_DEFERstage150, дальнейшийP1terminalflat; naturalP2/riskOFF/partialIOCSTOPnegative86540.5/recovery; E3/E4/E5. E2whitelistразрешаеттолькоPARTIAL_NATIVE_STOPвявномnegativeP2stage; текущийValueErrorнепопадаетвwhitelist. ПоэтомунеexpectednegativePASSипереклассификациянедопустима.
+
+## Flat,cleanup,OS
+
+FAILURE_BEFORE_END/BEFORE_END/BEFORE_DISPOSEсохраняютBTC1.418long/SOL1.8short,liveBTC2TPи4SOLpendingcancel. Financialflat/terminalorders0 **FAIL**. Snapshotcash10000.73659448USDTнеterminalTOTAL/ROI. AFTER_END5STOPPED/AFTER_DISPOSE5DISPOSEDподтверждаютcleanup, неflat/executedexit.
+
+Child36300/supervisor36299/external36298 — actualOS1. PinnedE2_EXTERNAL_OS_RECEIPT_8A2.json SHAe6b6c11a161ed86597d44edc13cccbc010ff571c88beb393363b1c4267f87cab, authorityOBSERVED_EXEC_SESSION_COMPLETION_NOT_WRAPPER_GUESS/tool76089 совпадаютсUUID/scenario/PIDs/OS. Результатнеопределёнпоожидаемомуwrapperrc.
+
+## БезследующегоGO
+
+LedgerSHAe277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f:4started/3FAILED/1COMPLETED/active0/max7/remaining3/rootfalse. Original2FAILEDcanonicald325f056.../2170f587...сохранены; E7ordinarycasePASSсохраняетсябезпревращениявfullfamilyPASS. Prefix0/4/full0.
+
+Approvedamendment **anynewfailure→STOP/noreserve** сработалпооснованию:никакогодальнейшегоE3GO/economics. Underunchangedmap E2actualPASS+E3–E5требует4case,числовойостаток3иE2failed; остатокнеauthorityдляпродолжения. Этотreviewнерекомендуетувеличениеbudget/новыеоптимизации/ретрай. Concreteobservedmechanismзафиксирован:BTCactualTP→SOLcapexcess→cancel-all-protection; любоеfuturecontractрешениеотдельноотactualFAILEDdisposition.

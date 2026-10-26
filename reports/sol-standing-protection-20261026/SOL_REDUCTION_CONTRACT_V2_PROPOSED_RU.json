@@ -1,0 +1,106 @@
+{
+  "schema": "CM137_SOL_REDUCTION_CONTRACT_PROPOSAL_V2",
+  "status": "PROPOSED_REPORT_ONLY_NOT_IMPLEMENTED_NO_GO",
+  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "markdown": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_V2_PROPOSED_RU.md",
+    "sha256": "353d0e01218148ebaf1ef4c7172552ee000d8ff0b6efc563402794ae016503d6"
+  },
+  "immutable_V1": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_PROPOSED_RU.md",
+      "sha256": "e9fe4cf8c209979c3fe19c9ea9e010798997a9a26e8cf157b198494961059eaa"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_PROPOSED_RU.json",
+      "sha256": "5933a60b5dbc775fca593c29804e969dd0f0984907399e68726641ab56b1a526"
+    }
+  ],
+  "review_to_close": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_DESIGN_REVIEW.json",
+    "sha256": "2ba6144c9ba3b35a776904ec83d71a85b5b6d1b2c6debfa954a731881ea5a0a4"
+  },
+  "R1": {
+    "decision": "Existing pair-owned SOL_CLOSE sole exitowner for validated researchpairedSOL",
+    "dispatchers": [
+      "_begin_forced_close",
+      "_submit_forced_close_on_quote",
+      "_submit_forced_closes_from_cache",
+      "_pair_quote higherclose route"
+    ],
+    "filter": "ONLYexactownedpositiveSOLprotection excluded from genericwaitset; foreign/ENTRY/unknown/pending/reduction blockers remain",
+    "closing": "Actual closingintent before cancel, positiveprotection untilactualflat, actualACKdrain, globalcompletionnotfabricated",
+    "no_second_SOL_close": true,
+    "no_closeflag_coverage_bypass": true,
+    "OFF_TRIM_BTCcore_unchanged": true
+  },
+  "R2": {
+    "decision": "Standard publiccancel for zero desiredTP only from knownlatestACK; no zero-totalmodify",
+    "pendingmodify": "Wait actual resolution; no retiring exception before latestACK",
+    "episode_scope": "One immutable parent-owned retirementepisode persists untilparentterminal; cannot restart under sameparent",
+    "deadline": "first_retirement_cancel_ns + MINUTE",
+    "MINUTE_ns": 60000000000,
+    "reset_by_more_retire_or_latefill": false,
+    "deadline_observation": "First actual event/input ns>=deadline after applying only that already-native event; missing terminalACK/unreconciledliability NO_GO, no future same-ts ACK borrowing",
+    "not_protection_or_debt_grace": true,
+    "liability": "Immutable native unconsumed right perOID; actualtrades debit once; remainingpositive rights use existingproportional actualreduction algorithm, originalnativeTPfinancialidentity unchanged",
+    "CancelRejected": "Benign only genuinepriornative terminal+completefills/liability+sameOIDownerhistory; live/unknown/missingtrade NO_GO",
+    "expiry_unsolicitedUpdate_missingACK": "NO_GO retain liability/history; no retry",
+    "increases_newCAP_release": "BLOCK untilactualACK/fullreconciliation"
+  },
+  "source_compatibility": {
+    "status": "No source-level contradiction found; realization/nativeproof pending",
+    "native_engine": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    "native_strategy": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    },
+    "native_order": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/base.pyx",
+      "sha256": "e90375c623b13a7c1fa35e35ef756eb00c9a0b38994d3125dcf616557c20a953"
+    },
+    "facts": [
+      "process_cancel5260 notfound -> actualCancelRejected, never proofofterminal",
+      "Order.apply1058 CancelRejected restores only PENDING_CANCEL previousstate; terminal itself notreopened",
+      "engine1892-1930 quiescent commanddrain before nextinput",
+      "close_position/all noimplicitcancel; market_exitcancelall notused"
+    ],
+    "unknown": "Actual protected partialIOC/retiringreentrant callbacks correctness not proven; exactnextinputfailureSTOP"
+  },
+  "minimal_engine_free_realization": [
+    "Existing owner states/rights reconciliation/strictpositivepartition+fixedACKdeadline inpaired_prefix",
+    "GuardedresearchSOL delegation/filter around beginclose+bothglobaldispatchers; noBTCmath/newOMS",
+    "Only relevant realCache/Orderevent replay table, constructednotmatching"
+  ],
+  "replay_table": [
+    "pendingmodify\u2192ACK\u2192onecancel",
+    "multiple retiringlatefills+dedup/proportionalrights/actualdebt/terminalACK",
+    "exactdeadline event/cascade noreset",
+    "terminalredundantCancelRejected vs live/unknown/missingtrade Reject; expiry/unsolicitedUpdate",
+    "singlepairSOL_CLOSE throughquote+cache dispatch withENTRY/foreign/pendingblockers/protectedpartialexit",
+    "full/partialCAP terminal/reject, anySTOPfillnoremodify, faultNO_GO"
+  ],
+  "qualification": {
+    "fresh_E1_required_for_newsource": true,
+    "old_E7": "Historical source8a componentPASS only; not reusedasnewsourcequalification",
+    "new_integrated_E5_required": true,
+    "future_native_case_map": "Only after actualsource/pure/source-review",
+    "numeric_budget_recommendation": null
+  },
+  "current_ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f"
+  },
+  "actions": {
+    "source_edits": 0,
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "native": 0,
+    "ledger_edits": 0,
+    "budget_changes": 0
+  }
+}
