@@ -1,6 +1,6 @@
 # Текущее решение: native STOP после E2
 
-Source `8a21673ca5c678120bf0498c97ebe9b562fe3c31` сохранён на VPS, в неизменяемой Mac-копии и публичной исследовательской ветке. Это не deployment и не финансово квалифицированный алгоритм.
+Текущий V2 source `a50af5433a0bbe00aecd6fec26e8d5c0321ced80` принят по коду/event replay: VPS209 и Mac209 PASS, review0P0/P1, BacktestEngine0. Он сохранён на VPS, в immutable Mac-копии и публичной research-ветке. Matching/экономика не квалифицированы; deployment не выполнялся. Native E1/E2 результаты ниже относятся к прежнему source8a.
 
 **Бюджет: 4/7 fixtures — три FAILED, один COMPLETED; active0.** Три неиспользованные попытки — HOLD: протокол требует STOP после новой неудачи. Prefix0/4 условно после полного инженерного PASS; full0. Пилот и production исключены.
 
@@ -20,6 +20,6 @@ E2 (физическая №4, cancel2s) FAILED@143s до предусмотре
 
 [Аудит 13 групп вызовов отмены](SOL_PROTECTION_CANCEL_PATH_AUDIT.md) выявил SOL_CAP, TP с нулевым остаточным правом и порядок глобального закрытия. [Контракт V2](SOL_REDUCTION_CONTRACT_V2_PROPOSED_RU.md) прошёл независимое review0P0/P1: один SOL_CLOSE owner, сохранение положительной защиты, реальные ACK и ограниченная retiring liability/late fill. Удалить один cancel или ослабить observer недостаточно.
 
-[Следующий план из четырёх задач](NEXT_ACTION_PLAN_RU.md): контракт → isolatedкод+Cache/Orderreplay с native0 → source-review/полный native case map/отдельный бюджет → условная экономика. Владелец 27 октября утвердил реализацию и engine-free/native0; actual receipt `owner-v2-zero-engine-approval.json`, SHA `fb263ef1cdfb6267c76cc60c8b4340e23468f78a2e5dbbf2eeecb7d64d0fbfc1`. Реализация идёт в изолированном VPS-worktree. Новых native-запусков и нового native-лимита нет; supervisor STOP, четыре строки ledger, три слота HOLD и raw сохраняются.
+[План из четырёх задач](NEXT_ACTION_PLAN_RU.md): V2code+enginefree этап выполнен; [результаты](V2_IMPLEMENTATION_RESULTS_RU.md). Подготовлены [полная native карта V2](NATIVE_CASE_MAP_V2_PROPOSED_RU.md) и [новый протокол](NEXT_NATIVE_QUALIFICATION_PROTOCOL_PROPOSED_RU.md), оба reviewed0P0/P1: 6planned+максимум1harness-onlyreserve, до7 НОВЫХ attempts/cumulative11. Это ещё не согласие владельца. Старые supervisor STOP/четыре строки/триHOLD/raw сохраняются, новых native запусков нет. Prefix/full0; следующий бюджет требует отдельного прямого согласия.
 
 Цели прежние: сначала ≥70% прибыли оригинального победителя при DD≤50%, затем ≥90%. Новых экономических результатов нет; prefix не полный период/OOS. [Обзор четырёх недель](../four-week-review-20261026/REVIEW_RU.md) и [единый план](../four-week-review-20261026/UNIFIED_PLAN_RU.md) сохраняются.

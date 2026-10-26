@@ -1,0 +1,98 @@
+{
+  "schema": "CM137_NATIVE_CASE_MAP_DESIGN_REVIEW_V1",
+  "status": "HOLD_ONE_PRE_ADMISSION_MAP_P1",
+  "P0": 0,
+  "P1": 1,
+  "scope": "Future case coverage, source feasibility and separate admission/budget design only; prior a50 CODE0 review reused, no product full reaudit.",
+  "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "inputs": {
+    "markdown": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_PROPOSED_RU.md",
+      "sha256": "d302a8e11fb711ee0acbe86de795da463ebe549c0ae67ae9ff9ec0a6d080ab5e"
+    },
+    "json": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_PROPOSED_RU.json",
+      "sha256": "ea68cab7be2ad4196add7044b8bb14469519dbec6e4b89d22ac64c096a67a701"
+    },
+    "reused_code0_review": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/V2_ZERO_ENGINE_CORRECTION_REVIEW.json",
+      "sha256": "474a03a45b98e31cc5d6abec28fe225cfd369fd0d561dd2aad6354335c8e154a"
+    },
+    "native_consumption_source": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "relevant_lines": "6525-6540"
+    }
+  },
+  "findings": [
+    {
+      "id": "VT2_IDENTICAL_L1_DEPTH_CANNOT_SUPPLY_SECOND_RETIRING_FILL",
+      "priority": "P1",
+      "affected": [
+        "VT2 retiring positive phase",
+        "VT4 reused VT2 P1"
+      ],
+      "evidence": "VT2 ordered_events: SOL99/depth.1 at140.25 and140.50; native engine.pyx6525-6540 resets consumption only when original_size != level_size_raw. After first.1 is consumed, same-price/same-size second quote has available0. No intervening SOL size update is declared.",
+      "consequence": "Required second native oldTP0 fill/full terminal, benign queued CancelRejected and cascadeTP1 retirement are not reachable as written. This is a known input contradiction before permission, not an unknown matching result.",
+      "minimal_required_revision": "Before owner presentation/freeze, make genuine second L1 liquidity refresh explicit in BOTH md/json and inherited VT4. Example candidate: second SOL99 displayed depth.2, with oldTP0 remaining.1; TP1 at98 is not marketable at99. Source-only quantity/orderbook preflight must verify this candidate and downstream assertions; no matching required now. Do not use cache mutation, reset consumption, change engine/model, or relax required gates.",
+      "execution_reserve": "This known pre-admission map correction must be settled before traces/configs are pinned; it cannot later be relabeled as harness-only reserve permission to change a frozen trace."
+    }
+  ],
+  "coverage_assessment": {
+    "VT1": "Fresh source qualification: original TP OIDs, latest same STOP ACK/full trigger fill, debt, BTC three cancel ACKs and real pre-cleanup flat. Historical E7 is not new-source PASS.",
+    "VT2": "CAP full/partial/residual, positive protectors, retiring/multiple fills/benign native CancelRejected, DEFER/debt and precisely whitelisted partialSTOP fault/recovery are appropriate mandatory native gates; positive input sequence needs P1 correction.",
+    "VT3": "One fixed TRIM constructor; frozen own reference/causal coefficients, absolute BTC cap/native debt, no SOL credit; nominal clock limitations explicit.",
+    "VT4": "Two natural registered parents, original A0 rights, actual cross/stale/fresh guard, pending-cancel fill/debt/account audit. No separate known rights/caps/closing contradiction identified; inherits VT2 P1 input defect. Native allowance remains UNKNOWN until actual invoked stock guard.",
+    "VT5": "Genuine D1 TERMINAL with stale cache then fresh quote, one partial/residual SOL_CLOSE, protect-until-flat, ACK drain and existing domain/terminal completion. Source-coordinator route is feasible; native command order/fills remain UNKNOWN.",
+    "VT6": "Separate genuine terminal constructor, fresh cached book and actual last-BTC-cancel callback, no subsequent SOL quote, predeclared later BTC quote if needed. Matches accepted caller/handoff design; native closing queue/completion remain UNKNOWN.",
+    "pure_only_reuse": "209 pure/40 real-object replays are explicitly not matching proof. Foreign/invalid events, missing/duplicate/unsolicited ACK, expiry/deadline and live CancelRejected fail-closed reuse is justified as source/event proof; benign actual terminal CancelRejected remains native VT2. No new nativeReject PASS inferred."
+  },
+  "A0_constraints": {
+    "rights": "Original SECOND unconsumed authority only; no FIRST refund, reconstructed rights, closed-BTC refund or guard True override.",
+    "risk_off": "A0 waits original risk-off ordering and SOL flat/ACK drain; inactive-risk SOL closing does not itself force BTC cap down as active hedge reduction would. Ordinary BTC TP is delayed until after A0 gate/release.",
+    "account": "NETTING MARGIN seed10000/native leverage and actual BASE fees; stale/fresh outcome must come from invoked stock margin path, UNKNOWN cannot be admitted. Source feasibility is not a guarantee of margin ALLOW.",
+    "remaining_unknown": "Actual registration, native quantity/min-size, original release size, account allowance, exact event ordering and pre-cleanup flat require future native proof."
+  },
+  "common_requirements": {
+    "static": "One fixed variant/constructor/static transport; cancel0 or2s as declared, max48h streams and explicit config previous-DAY guard; no variant/latency/model swap.",
+    "money": "Native account/public API, BASE maker.00020/taker.00055; no private state-driving/cache links, virtual credits or fabricated fills.",
+    "completion": "Native positions/open/inflight/commands/debt0 and actual ACK/domain/terminal completion before cleanup; five STOPPED/DISPOSED is separate lifecycle evidence, not flatness.",
+    "expected_negative": "Only final VT2 PARTIAL_NATIVE_STOP predeclared engineering negative with actual conservative recovery/flat; no financial PASS or retroactive whitelist."
+  },
+  "budget_review": {
+    "design_arithmetic": "Six distinct fixed constructors cover the declared mandatory native routes; separate optional one harness-only reserve gives additional7/cumulative11 with old4. Alternative6/noreserve gives cumulative10. No extra constructor is identified solely for pure/source negative reuse.",
+    "proposal_not_approval": true,
+    "planned": 6,
+    "optional_harness_only_reserve": 1,
+    "additional_cap_proposed": 7,
+    "cumulative_old4_plus_newmax": 11,
+    "old_remaining3": "HOLD_NOT_TRANSFERRED",
+    "new_native_authorized_now": 0,
+    "prefix_full_now": 0,
+    "reserve_conditions": "At most one independently classified harness/preimport/infrastructure/serialization failure; exact a50 product/AST, same pinned scenario/variant/static transport/trace, fresh namespace/repeat failed UUID, reconciled actual OS and root individual GO. No unsafe-product retry, price/volume/seed/guard/parameter relaxation or unknown-alive child. Every failed dispatch/constructor counts.",
+    "admission": "Separate linked owner approval/protocol/new ledger and immutable source/config/data/API pins, durable claim before Popen or any matching; actual external/supervisor/worker OS evidence; old ledger/supervisor STOP unchanged. No automatic next or retry.",
+    "unready_prerequisites": "Harness/admission commit, frozen per-case data/config hashes, source-only schedule/orderbook preflight and new owner permission are explicitly not yet ready. That is honest staged preparation, not a demand for matching before permission."
+  },
+  "preserved_state": {
+    "old_engineering_ledger_sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
+    "old_prefix_ledger_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+    "old_started": 4,
+    "old_failed": 3,
+    "old_completed": 1,
+    "old_active": 0
+  },
+  "next": "One report-only correction batch for the known VT2/VT4 L1 refresh contradiction; focused source-only input preflight and synchronized revised md/json. Then root can present the complete corrected map and numeric alternatives for separate OWNER decision. Approved implementation/admission preparation and individual root GO remain later gates.",
+  "native_GO": false,
+  "matching_PASS": false,
+  "economic_admission": false,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0,
+    "report_files_written": 2
+  }
+}

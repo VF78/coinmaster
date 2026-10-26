@@ -1,0 +1,47 @@
+{
+  "schema": "CM137_NEXT_NATIVE_PROTOCOL_CONSISTENCY_REVIEW_V1",
+  "status": "READY_FOR_OWNER_PRESENTATION_ONLY",
+  "P0": 0,
+  "P1": 0,
+  "scope": "Final protocol consistency only; accepted V2 map and source reviews reused, no new map/product audit.",
+  "protocol": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NEXT_NATIVE_QUALIFICATION_PROTOCOL_PROPOSED_RU.md",
+    "sha256": "1baac0028a926d4624345945f16ab55230c59fa98c58b593306df0e3a61c2c56"
+  },
+  "accepted_map": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_V2_PROPOSED_RU.md",
+    "sha256": "af3432f63b35435c9b866780fddc2c5ead65fbfe3b84a050a939127ee0120ee1"
+  },
+  "accepted_map_json": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_V2_PROPOSED_RU.json",
+    "sha256": "601e4b5c0357e5005556a22010625c4777776025f239837bbf1a08a335ae647c"
+  },
+  "immutable_prior_review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_V2_DESIGN_REVIEW.json",
+    "sha256": "3f684eb6c83f01d5864d2f61a5dd15f7c5252c0cc482f3b151196914cd5a6096"
+  },
+  "checks": {
+    "six_cases": "Same VT1 C0normal/VT2 C0stress-retiring-partialSTOP/VT3 fixedTRIM/VT4 registeredA0/VT5 genuineTERMINALQUOTE/VT6 genuineTERMINALCACHE. V2 shared retiring second-depth.2 remains linked.",
+    "budget": "Same K6+at most1 independently proven harness-only same-product/spec/trace reserve, new additionalcap7/cumulativeold4+7=11; alternative6/10. Old4of7 and remaining3HOLD not transferred, legacy supervisorSTOP untouched.",
+    "admission": "Separate OWNER receipt/protocol/newledger/namespace; committed harness-only revision, actual constructor0 preflight/JSON/environment/config/API pins and focused review before first physicalclaim; durable attempt protocol and individual rootGO still required.",
+    "product_transport_data": "Producta50/AST unchanged; one fixedvariant/staticlatency percase, stock1.231/nativeaccount/BASEfees; <=48h, mapseed/previous-dayguard; no private matching or forcedstate.",
+    "negative": "Only predeclared finalVT2 PARTIAL_NATIVE_STOP expected-negative engineering PASS, actual recoveryflat mandatory, financialqualificationfalse. Unknown/unreached/unexpectedfault STOP.",
+    "lifecycle": "Actual pre-cleanup flat/orders/inflight/commands/debt0 and pair/global completion required. Honest lifecycle/PID/UUID/OS/raw evidence; no fictional Strategy RUNNING immediately before end if genuine TERMINAL stopped earlier. STOPPED/DISPOSED is not flat proof.",
+    "economic_scope": "No prefix/full/training/download/pilot/production/deployment/externalorders/transfers; old conditionalprefix remainsinactive. Actual matching/economicqualification UNKNOWN, later separate economicadmission.",
+    "input_identity": "Frozen staticinputs/causalrecipe beforeconstructor; actual realizedstream/source-eventbindings onlyafterrun, no inventedfutureSHA."
+  },
+  "divergences": [],
+  "owner_approval_issued": false,
+  "native_GO": false,
+  "budget_authorized_now": 0,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "code_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0,
+    "report_files_written": 1
+  }
+}

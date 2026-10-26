@@ -1,0 +1,21 @@
+{
+  "status": "AUTHORIZE_ONE_CONSOLIDATED_V2_ENGINE_FREE_CORRECTION",
+  "utc": "2026-10-26T21:51:42.627163+00:00",
+  "source_before": "0eab5020fe32762f9fdf3a446b6ca34131419970",
+  "owner_approval_sha256": "fb263ef1cdfb6267c76cc60c8b4340e23468f78a2e5dbbf2eeecb7d64d0fbfc1",
+  "source_review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/V2_ZERO_ENGINE_SOURCE_REVIEW.json",
+    "sha256": "1d6a77744be70ee5989f9c10cb8698a0b690edcab35f6f9c306b48218c673b87"
+  },
+  "consolidated_P1": [
+    "Real on_order_canceled/_terminal_without_fill callers must reach validatedfiltered cache dispatcher whilepositiveSOLprotectionopen",
+    "Actual pairedSOLfill/terminalACKdrain must hand off toexistingglobal/domain/terminal completion aftergenuinequiescence withoutfakefill/submittedflags"
+  ],
+  "correction_batch": 1,
+  "max_substantive_correction_batches": 1,
+  "scope": "Only approvedR1 integration and realcallback-route replay; R2/math/marketinputs/supervisor/oldledgers unchanged",
+  "new_backtest_engine_constructors": 0,
+  "new_native_attempts": 0,
+  "new_prefix_full": 0,
+  "next": "Committed correction, finalenginefreeproof, immutableMac and targetedcorrectionreview; fullfuturecasemap afteracceptance"
+}

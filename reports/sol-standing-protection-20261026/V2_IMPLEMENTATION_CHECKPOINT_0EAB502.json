@@ -1,0 +1,115 @@
+{
+  "schema": "CM137_V2_IMPLEMENTATION_CHECKPOINT_V1",
+  "status": "READY_FOCUSED_SOURCE_REVIEW_NATIVE0",
+  "source_commit": "0eab5020fe32762f9fdf3a446b6ca34131419970",
+  "parent": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "canonical_clean_readback": true,
+  "source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-0eab502/runtime",
+  "checkpoint": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-0eab502",
+  "allowed_files": [
+    "runtime/coinmaster/strategy/paired_prefix.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/tests/test_sol_reduction_v2_pure.py",
+    "runtime/tests/run_sol_reduction_pure.py"
+  ],
+  "all_other_source_byte_identical": true,
+  "diff": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-0eab502/SOURCE_DIFF_PROOF.json",
+    "sha256": "17374785fad0aa736abaf96245a7d35edb46bea674a1ebdf69bc537e0d3edae7"
+  },
+  "source_seal": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-0eab502/SOURCE_SEAL.json",
+    "sha256": "ac5453f925ec7c9ee2d63aef8f11c7109a805257b837525bb00309b65301977b"
+  },
+  "archive": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-0eab502.tar.gz",
+    "sha256": "cecbfc3a4e62497d98a2b99adacf864d314a1e291b204c24d42ebb69d0c24bd3"
+  },
+  "pure": {
+    "VPS_full": "199 passed in3.21s BEFORE last2 guards; retainedstdout/receipt",
+    "VPS_final_affected": "32 passed in0.91s after guards; focusedonly/tripwire0",
+    "Mac_final_full": "201 passed in1.22s actual OS0/PID45312",
+    "VPS": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-0eab502/VPS_PURE_RECEIPTS.json",
+      "sha256": "68c7e8d09a95813a93b2afeb31bce545cc31b88e1af72ea8e1c83b7d9ba00b2f"
+    },
+    "Mac": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-0eab502/MAC_ENGINE_FREE_RECEIPT.json",
+      "sha256": "3c95bd2051faa96dc0c9e9c60575db98cbf29afb8d3108e31aa8b374ecb10be7"
+    },
+    "actual_engine_constructors": 0,
+    "forbidden_constructor_attempts": 0,
+    "matching": 0
+  },
+  "native_API": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-0eab502/NATIVE_API_PINS.json",
+    "sha256": "646706b47eef6f73ac1b0c1c99c7181b1753839c9c05340fa4abd3b34c033cc8"
+  },
+  "source_pins": 277,
+  "native_pins": 354,
+  "protected_AST_functions": [
+    "floor_lot",
+    "sol_prices",
+    "sol_allocations",
+    "exact_lots",
+    "PairedCaps",
+    "_pair_arm_btc_debt",
+    "_pair_valid_allocations",
+    "_pair_submit",
+    "_pair_trim_start",
+    "_pair_trim_quote"
+  ],
+  "invariants": [
+    "PositiveTP/STOP latestnativeACK atstrictinput; no genuinecloseflagbypass",
+    "NonterminalCAP ENTRY-onlycancel/currentIOCowner, actualpartial/fullfillrightsreconciliation",
+    "Retiring onlyknownACK/immutableliability/multipleactualfillsdedup/proportionalremainingrights/fixedparentdeadline",
+    "NativePartialFill statusmayleavePENDING_CANCEL; originalcancelhistory retained andnotretried",
+    "RetiringACKstatecommits onlyactualcallbacks; pre-matchingobserverchecks/logsonly",
+    "PairSOL_CLOSE soleSOLexit acrossbothgenericdispatchers; exactpositiveownedfilter/foreignENTRYpendingblockers",
+    "ExplicitfaultNO_GO/conservativedrain/noSTOPmodifyafterfill",
+    "ActualflatthenCancelACKdrain/noearlyrelease; OFF/otherfamily noV2dispatch"
+  ],
+  "authority": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-v2-zero-engine-approval.json",
+      "sha256": "fb263ef1cdfb6267c76cc60c8b4340e23468f78a2e5dbbf2eeecb7d64d0fbfc1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/ZERO_ENGINE_IMPLEMENTATION_PROTOCOL_PROPOSED_RU.md",
+      "sha256": "ae2ec46f2b26c7f8f5dc147e656580094d63a1231f292e81aa085a08537663d3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_V2_PROPOSED_RU.md",
+      "sha256": "353d0e01218148ebaf1ef4c7172552ee000d8ff0b6efc563402794ae016503d6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/SOL_REDUCTION_CONTRACT_V2_DESIGN_REVIEW.json",
+      "sha256": "38da36665f8391cc7b731db45d90088bb2feea2a0405920694e00b4622ca1c53"
+    }
+  ],
+  "ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f"
+  },
+  "four_rows_canonical": [
+    "d325f056cc06dc913a85ce7e60d8e33e5ed088f3e15316b6699c4fdbc966397e",
+    "2170f5873bc6f1eae715a091a44a6bfc0d6305b4699c0f18b29893271a5f5f10",
+    "6b8c11c4e1c8baee8e5f512d0387d78705805544b1a0307496e90d82fb7628dd",
+    "958aeef0bd5a8bf00220cb39acf9a1d4c4217e9ad20544998b1ee3d77882f784"
+  ],
+  "prefix": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/prefix-ledger.json",
+    "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+  },
+  "legacy_supervisor_unchanged": true,
+  "legacy_prepare_or_launch_called": false,
+  "native_go": false,
+  "economic_go": false,
+  "old_budget": "4/7 HARD_STOP; remaining3 HOLD; prefix0/4 untouched",
+  "unknowns": [
+    "Actual native matching/reentrant partialIOC, inter-order command ordering and next-input latestACK remain unproven",
+    "Native global protected close completion/late-event integration requires freshsourcecase qualification",
+    "Native cache-link/trigger/unsolicitedACK conformance failclosed; no SDK or guard waiver"
+  ],
+  "next": "One focused independent review; at most one substantive concrete correction, then fullfuturecase map withfreshE1/newE5 before any numericbudgetproposal. OldE7 historicalonly."
+}

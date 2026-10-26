@@ -1,0 +1,543 @@
+{
+  "schema": "CM137_V2_NATIVE_CASE_MAP_PROPOSAL_V2",
+  "status": "PROPOSED_NOT_IMPLEMENTED_NO_NATIVE_GO",
+  "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "CODE0_review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/V2_ZERO_ENGINE_CORRECTION_REVIEW.json",
+    "sha256": "474a03a45b98e31cc5d6abec28fe225cfd369fd0d561dd2aad6354335c8e154a"
+  },
+  "markdown": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_V2_PROPOSED_RU.md",
+    "sha256": "af3432f63b35435c9b866780fddc2c5ead65fbfe3b84a050a939127ee0120ee1"
+  },
+  "common": {
+    "engine": "NautilusTrader1.231.0 sole",
+    "one_constructor_fixedvariant_latency": true,
+    "account": "NETTING/MARGIN10000USDT BTC40SOL20default1",
+    "maker_fee": "0.00020 BASE",
+    "taker_fee": "0.00055 BASE",
+    "fixture_default_0_001_allowed": false,
+    "no_external_orders": true,
+    "max_processed_hours": 48,
+    "no_private_behavior_calls_or_cachelinks": true,
+    "public_reduction_APIs": [
+      "Strategy.submit_order",
+      "Strategy.modify_order",
+      "Strategy.cancel_order"
+    ],
+    "recording": "PublicCache/Order/events +observationalsupercallbacks/audits; no private state-driving calls"
+  },
+  "cases": [
+    {
+      "id": "VT1",
+      "role": "Fresh E1 normal source qualification",
+      "fixed_variant": "R2_C0 standingBTC+SOL",
+      "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+      "static_transport_ns": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 0
+      },
+      "processed_data_seconds": [
+        0,
+        140
+      ],
+      "config": {
+        "registered": "build_a0_kwargs/validate_native_a0 + build_native_strategy_config, R2 registration unchanged",
+        "guard_start_seconds": -86400,
+        "terminal_seconds": 90600,
+        "seed_bars": 729,
+        "streamed_previous_day": false
+      },
+      "ordered_events": [
+        "0:D1seed729/pairedmarks/BTCquote100 depth2;1:quote100 depth2;2:ordinarybooks",
+        "70:causal original paired selection;72.01:marks-only real originalENTRY cancelACK;130/131:actualSOLentry2 and threeTP+STOP Accepted",
+        "135:SOL99 depth.2 partialTP0;136:SOL98 depth.7 multipleTP fills; BTC100 maintained",
+        "137:SOL102 depth10 triggers originalSTOP fullIOC;138/139/140 ordinaryBTC/SOLbooks, actual debt fills and postflat real cancelACK drain"
+      ],
+      "MUST_NATIVE_gates": [
+        "Unchanged remainingSOLTP OIDs/entitlements afterordinarySOLTP",
+        "OriginalSTOPoid actual OrderUpdated latestACK, total=filled+actualheld, typed/generic UUIDagreement",
+        "SameSTOPoid actualfulltriggerfill afterACK",
+        "ActualBTCdebt, originalBTCstanding3 actualOrderCanceled beforecleanup",
+        "positions/open/inflight/commands/debt0,pairterminal;cash/fee/eventconservation;fiveSTOPPED\u2192DISPOSED"
+      ],
+      "new_harness_events": false,
+      "feasibility": "Exact oldE1 ordered inputs may be reused, but actual PASS must be fresh on new frozen admission source. OldE7/source8a historical only.",
+      "readiness": {
+        "product_reviewed": true,
+        "realobject_pure_209": true,
+        "json_roundtrip": true,
+        "harness_implemented": false,
+        "config_data_hashes_frozen": false,
+        "domain_data_preflight": false,
+        "root_GO": false
+      },
+      "unknown_or_failure": "STOP/HOLD; actual gate absence is NOT PASS; no forcefill/re-anchor/retry/parameter search"
+    },
+    {
+      "id": "VT2",
+      "role": "C0 stress normal CAP/retiring then predeclared partialSTOP negative",
+      "fixed_variant": "R2_C0 standingBTC+SOL",
+      "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+      "static_transport_ns": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "processed_data_seconds": [
+        0,
+        86546
+      ],
+      "config": {
+        "registered": "build_a0_kwargs/validate_native_a0 + build_native_strategy_config, R2 registration unchanged",
+        "guard_start_seconds": -86400,
+        "terminal_seconds": 90600,
+        "seed_bars": 729,
+        "streamed_previous_day": false
+      },
+      "ordered_events": [
+        "P1 0/1/2/70/72.01/130/131:registered naturalBTC2 andSOL2 asVT1; pending entries cancel beforeCAP",
+        "135:SOL99 depth.3 ->TP0 filled.3/leaves.2;136:BTC100 deepbook ->actualBTC_DEBT .3, BTC1.7; freeze actualBTCstanding prices/leaves",
+        "140:BTC105.2 depth=sum(actualTP0leaves+actualTP1leaves)+.300 (anticipated1.022), thenSOL100 depth10 ->actualBTC .678/solmax.7, fullCAP1.0; TP0 retires with nativeR0 .2, positiveTP1/2+STOP latestACK",
+        "140.25:SOL99 depth.1 ->retiringlatefill1/nativePARTIALLY_FILLED;140.50:SOL99 depth.2 ->latefill2/fulloldTP0, cascadeTP1retire; nocancelretry/noSTOPchangeafterSTOPfill",
+        "140.75:BTC105.2 depth.001 ->healthy marketableDEFER;141:BTC100 deepbook ->actual conservativeBTCdebt;142.01/142.51:marks-only drain originalcancelTP0\u2192nativeCancelRejected alreadyFILLED, TP1\u2192actualCanceled; firstdeadline remains200s",
+        "143:BTC105.2 depth.300 ->actualBTC .2/solmax.2; thenSOL100 depth.1 ->CAP.3 partialIOC .1/terminalCancel;144:SOL100 depth10 ->one residualCAP.2 full",
+        "145:remainingBTCpositiveTP full via actualnativeprice/depth;SOL100 depth10 ->genuine BTCflat SOL_CLOSE, protectionpreserveduntilactualflat;147.01 marks-only drain; NOmanualcleanup",
+        "P2 86400/86401/86402 natural shortparent;86470 selection/86472.01 ENTRYACK/86530/86531 SOLlong2 protected",
+        "86540:BTC-only quote99 freshmarks triggers actualriskOFF, NO SOLquote/NOpositiveTPcancel;86540.5:SOL98 depth.1 triggers partialIOC STOP BEFORE a SOL_CLOSE dispatch",
+        "86541 freshBTC100;86542.51 marks-only actualprotectionCancelACK;86543 SOL100 depth10 existing conservativeSOL_CLOSE;86545.01marks/86546normalend: actualbothlegsflat/orders0"
+      ],
+      "MUST_NATIVE_gates": [
+        "NormalCAPfull/partialIOCcancel/residual uses samepositiveTP/STOPoids, actualinventoryrights+latestACK, neverblanketcancel",
+        "Retiring nativeR0 .2/multiplevalidatedlatefills/debitonce/nativePartialFilled doesnotrestartcancel; actualparentdeadlineimmutable",
+        "Real nativeCancelRejected benignONLYalreadyFILLED+allfills/history; secondretiringOID ACK; no newCAP/increase/releasewhilebusy",
+        "HealthyDEFER\u2192safeactualBTCdebt without clock reset",
+        "P2 originalSTOP actualpartialfill+IOCterminalCancel ->exactpredeclared PARTIAL_NATIVE_STOP fault, noincreases/noSTOPmodify/resurrection",
+        "Faultnativeconservativeclose toactualflat/orders/inflight/commands/debt0 BEFOREend; label EXPECTED_NEGATIVE_ENGINEERING_PASS, financialPASS=false"
+      ],
+      "new_harness_events": true,
+      "feasibility": "Prices/depthprograms use only current public nativeOrder values. Expected .678/.7/.2 are assertions, never position setters. If actual book sharing/min-size differs, STOP. OldE2 riskOFF\u2192blanketpositiveTPcancel stage is explicitly INVALID underV2 and replaced; pendingTPfill proof now retiringP1. This is a new ordered-event harness, NOT oldE2 automatically validated.",
+      "readiness": {
+        "product_reviewed": true,
+        "realobject_pure_209": true,
+        "json_roundtrip": true,
+        "harness_implemented": false,
+        "config_data_hashes_frozen": false,
+        "domain_data_preflight": false,
+        "root_GO": false
+      },
+      "unknown_or_failure": "STOP/HOLD; actual gate absence is NOT PASS; no forcefill/re-anchor/retry/parameter search",
+      "V2_liquidity_preflight": {
+        "first_quote": "140.25 SOL99 displayeddepth.1",
+        "second_quote": "140.50 SOL99 displayeddepth.2",
+        "stock_reset": "original_size!=level_size_raw resetsconsumed0",
+        "TP0_remaining_before_second": ".1",
+        "only_required_TP0_fill": ".1",
+        "TP1_BUY98_not_marketable_at99": true,
+        "downstream": "TP0 filled .4\u2192.5, liability .1\u21920, held .6\u2192.5, TP1remaining.1\u2192retiring, deadline200 unchanged",
+        "proof": {
+          "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/CASE_MAP_V2_L1_PREFLIGHT.json",
+          "sha256": "a5f4ca18358f8b8ea6c0b82858edb06515d3349b730eb9b6644191cf3db0c700"
+        }
+      }
+    },
+    {
+      "id": "VT3",
+      "role": "Fixed BTC_TRIM native control",
+      "fixed_variant": "R2_C0 + BTC_TRIM entireconstructor; SOLrouteOFF",
+      "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+      "static_transport_ns": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "processed_data_seconds": [
+        0,
+        14551
+      ],
+      "config": {
+        "registered": "build_a0_kwargs/validate_native_a0 + build_native_strategy_config, R2 registration unchanged",
+        "guard_start_seconds": -86400,
+        "terminal_seconds": 90600,
+        "seed_bars": 729,
+        "streamed_previous_day": false
+      },
+      "ordered_events": [
+        "0/1/2 naturalBTCparent/threeTP;70 causalselection;72.01 actualENTRYcancelACK",
+        "130/131 native TRIM activation: actualeligibleqref==ownfrozenreference, rho/sigma causal timestamps, coefficient c=.5 unchanged, absoluteBTCcap/debt; noSOLorders",
+        "135 actualpartialBTC TP;14530 nominalB2horizon (eligible130+4h) riskOFF without restoringcap;14540/14542/14544 actualremainingTPs;14547/14550/14551 realflatdrain"
+      ],
+      "MUST_NATIVE_gates": [
+        "Ownactualqref match frozen ownref; factorresidual/orthogonal/totalr legal andcausal",
+        "NativeabsoluteBTCcap/registeredBTC_DEBT sameengine; initialthreeTPoidspreserved/ordinaryrightsnotrenormalized",
+        "Nativepartial/full TP/lateACK/debt/flat; noSOLpositions/orders/fills/credits",
+        "No midenginevariant/latencyswap; expose actualnominalclock versus C0firstSOLfillclock"
+      ],
+      "new_harness_events": false,
+      "feasibility": "Current trim_fixture is a source starting point; config/staticdata proof must be frozen anew. Its results are never SOL protection evidence.",
+      "readiness": {
+        "product_reviewed": true,
+        "realobject_pure_209": true,
+        "json_roundtrip": true,
+        "harness_implemented": false,
+        "config_data_hashes_frozen": false,
+        "domain_data_preflight": false,
+        "root_GO": false
+      },
+      "unknown_or_failure": "STOP/HOLD; actual gate absence is NOT PASS; no forcefill/re-anchor/retry/parameter search"
+    },
+    {
+      "id": "VT4",
+      "role": "New integrated E5/A0 actual original-rights and stock margin",
+      "fixed_variant": "R2_A0 standingBTC+SOL entireconstructor",
+      "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+      "static_transport_ns": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "processed_data_seconds": [
+        0,
+        86900
+      ],
+      "config": {
+        "registered": "build_a0_kwargs/validate_native_a0 + build_native_strategy_config, R2 registration unchanged",
+        "guard_start_seconds": -86400,
+        "terminal_seconds": 90600,
+        "seed_bars": 729,
+        "streamed_previous_day": false
+      },
+      "ordered_events": [
+        "P1 execute validated new VT2 positiveCAP/retiring phases then actualflat by147.01 (omit its expectedfaultP2)",
+        "86400/86401/86402 naturalregistered secondshortparent;86470 originalpairedselection;86472.01 actualoldENTRYcancelACK;86530/86531 SOLlongentry;86540 SOL101 depth.2;86542.01 ACK/86543/86544 actualdebt and exactcoverage",
+        "86700 BTC99 riskOFF withdeclaredSOL100 deepbook ->protectedSOL_CLOSE untilactualflat, then cancelACK/drain86702.01/86703",
+        "86760 BTCcross quote derivedfrom originalA0frozenlimit (same-side equalitycross), real POST_ONLY_CROSS denial; no fabricatedright",
+        "86881 lawfulnoncrossBTC quote, NO freshmarks since86700 ->actualexisting stockmarginDENY stale>120s;86882 freshpublicmarks/samelegalquote ->actualstockguard dispatch onlyifallowed",
+        "86885 releasepartial via native public order limit and causaldepth=floor(nativeleaves/2), require>=2BTC lots;86887 actualordinaryBTC TP.050 ->canceloldrelease;86887.5 originalreleaseprice/liquidityfillsnativependingcancel leaves, no refund/reanchor",
+        "86889.01 realcancelACK;86890/86891 safeBTCbook ->actualexcessdebt/positiveTPACK;86892/86893/86894 currentnativeTPprices/depth ->flat;86900 finaldiagnostics"
+      ],
+      "MUST_NATIVE_gates": [
+        "Two naturalregisteredparents, samefamily/coreC0 path and account, no enginevariantchange",
+        "Actual originalFIRSTallocation/filled/ever/originalSECONDrights; onegrant/oneattempt/noFIRSTrefund; held/remaining/caps causal",
+        "Actual cross/stale/fresh guard outcomes on A0 ownaccount, invokedFlag truth; UNKNOWNneveradmitted",
+        "Actualpostonlynativeorder/pendingcancel latefill\u2192currentdebt; no nativeModifyReject assertion withoutvalidcommand",
+        "New-source native fill/cash/fees/reserve/markedaccount audit, predecisionphase coverage independentdisabledflag whereapplicable",
+        "Allactualpositions/orders/inflight/commands/debt0 beforecleanup; registered core preserved"
+      ],
+      "new_harness_events": true,
+      "feasibility": "Existing E5 exact oldP1 stress assertions are not presumedvalid; positiveP1 must use V2map. NativeA0size/guard outcome is actual; partialdepth derivedafter lawfulAccepted, no forcedqty orguardoverride. Accountguard DENY/unknown whenexpectedlegal is STOP, not syntheticprofit/capital.",
+      "readiness": {
+        "product_reviewed": true,
+        "realobject_pure_209": true,
+        "json_roundtrip": true,
+        "harness_implemented": false,
+        "config_data_hashes_frozen": false,
+        "domain_data_preflight": false,
+        "root_GO": false
+      },
+      "unknown_or_failure": "STOP/HOLD; actual gate absence is NOT PASS; no forcefill/re-anchor/retry/parameter search",
+      "shared_positive_P1_recipe": "VT2 in NATIVE_CASE_MAP_V2_PROPOSED_RU; secondSOL140.50 depth.2, no V1depth.1 reuse"
+    },
+    {
+      "id": "VT5",
+      "role": "Genuine protected global TERMINAL via QUOTE; partialexit",
+      "fixed_variant": "R2_C0 standingBTC+SOL",
+      "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+      "static_transport_ns": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "processed_data_seconds": [
+        0,
+        86407
+      ],
+      "config": {
+        "registered": "build_a0_kwargs/validate_native_a0 + build_native_strategy_config, R2 registration unchanged",
+        "guard_start_seconds": -86400,
+        "terminal_seconds": 86400,
+        "seed_bars": 729,
+        "streamed_previous_day": false,
+        "delta": "Public boundedwindow -DAY\u2192DAY plus delayedpairedfeed; actualdata0\u2192DAY+drain, no extra streamedhistory; requires new exact kwargs/config roundtrip"
+      },
+      "ordered_events": [
+        "0/1/2 ordinaryregisteredBTC2/standingTP, noTPmarketablequotes; delaypairedselection to86240/eligible86300, p0/prices/weights unchanged; actualSOL2entry at86300",
+        "No laterSOLquote until86403: SOLcache olderthan60s. Fresh venue marks and paired contiguousD1seed730 at86400 trigger actual _submit_terminal_closes via _try_advance_session; globalintent beforeBTCcancellations",
+        "86400.1 BTC100 deepbook;86402.01 marks-only lastBTCactualCancelACK routes REALon_order_canceled\u2192filteredcachedispatch, butstaleSOLcache blocksSOLclose; nativeBTCclosemayfinish through existinggenericroute",
+        "86403 freshSOL100 depth.1 ->QUOTEdispatcher sends solepairSOL_CLOSE; actualpartialIOC .1, native terminalcancel; positiveTP/STOP resized/latestACK, no blanket cancel",
+        "86404 freshSOL100 depth10 ->one actualresidualSOL_CLOSE, fullactualflat;86406.01marks-only cancelACKdrain;86406.1 BTC100 onlyifBTClegstillactualopen;86407final, no additionalrescueinputs"
+      ],
+      "MUST_NATIVE_gates": [
+        "Real D1terminal authority, no private close/forced reason injection; bothglobalquote andpairpriority paths delegateoneSOL_CLOSE",
+        "StaleSOLcache blockscachedpath; first SOL_CLOSE submit causallybelongs to86403 quote",
+        "Actualpartialexit positiveprotection survives/latestACK, solelivecloseowner throughquote+cache callbacks",
+        "ActualSOLflat then realTPSTOPCancelACK; actualremainingBTCclose unchanged",
+        "Native group/domaincompletion once andterminal_lifecycleFLAT afterbothlegsquiescent, without syntheticcompletioncalls"
+      ],
+      "new_harness_events": true,
+      "feasibility": "24h+7s actualstream (<48h); configpreviousdayguard explicit, no negative-timehistory. Livepair firstfill86300 keeps4h deadline past86400. D1 terminal guard runs before ordinarydomain decision, so no speculative regime-reentry needed. New per-instrument input scheduler mandatory.",
+      "readiness": {
+        "product_reviewed": true,
+        "realobject_pure_209": true,
+        "json_roundtrip": true,
+        "harness_implemented": false,
+        "config_data_hashes_frozen": false,
+        "domain_data_preflight": false,
+        "root_GO": false
+      },
+      "unknown_or_failure": "STOP/HOLD; actual gate absence is NOT PASS; no forcefill/re-anchor/retry/parameter search"
+    },
+    {
+      "id": "VT6",
+      "role": "Genuine protected global TERMINAL via lastBTC callback CACHE; no nextSOLquote",
+      "fixed_variant": "R2_C0 standingBTC+SOL",
+      "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+      "static_transport_ns": {
+        "base": 0,
+        "insert": 0,
+        "update": 0,
+        "cancel": 2000000000
+      },
+      "processed_data_seconds": [
+        0,
+        86405
+      ],
+      "config": {
+        "registered": "build_a0_kwargs/validate_native_a0 + build_native_strategy_config, R2 registration unchanged",
+        "guard_start_seconds": -86400,
+        "terminal_seconds": 86400,
+        "seed_bars": 729,
+        "streamed_previous_day": false,
+        "delta": "Public boundedwindow -DAY\u2192DAY plus delayedpairedfeed; actualdata0\u2192DAY+drain, no extra streamedhistory; requires new exact kwargs/config roundtrip"
+      },
+      "ordered_events": [
+        "0/1/2 registeredBTC2; pairedselection86330/eligible86390; actualSOL2entry andall4protectors ACK at86390/86391",
+        "86399 SOL100 depth10 refreshbook afterentry. 86400 freshpublicpairedmarks+D1seed730 trigger actualterminalintent;86400.1 BTC100 depth10, NO furtherSOLquote",
+        "86402.01 marks-only drainslastBTCnativeCancelACK ->REALcallback filteredcachegate ->solepairSOL_CLOSE on fresh86399SOLbook, actualfullmarketfill; no nextSOLquote or directdispatcher invocation",
+        "86404.01 marks-only actualSOLTPSTOPcancelACKdrain;86404.1 predeclaredBTC100 quote onlyifnativeBTClegstillopen (SOLquote neveradded);86405 finalcaptures"
+      ],
+      "MUST_NATIVE_gates": [
+        "Actualon_order_canceled outergate reachesfilteredcache dispatcher whilepositiveprotectorsopen; notdirecthelper-only",
+        "CachedSOLbook age~3s/freshliquidity, actualSOL_CLOSEsubmit/fill withoutlaterSOLquote",
+        "No secondSOLclose/foreign-entry-unknown-reduction bypass; actualBTCnativeclose unchanged",
+        "Actualpairflat+ACKdrain requests existingdomain/group/terminal reconciliation once, nofakefill/submittedflags",
+        "positions/open/inflight/commands/debt0 andterminalFLAT BEFOREend/dispose; no nextSOLquote"
+      ],
+      "new_harness_events": true,
+      "feasibility": "Separate terminal constructor necessary: terminal lockout/parentcompletion is not reset to obtain the other globalroute. Cache-first sendsSOLclose beforeBTC leg mayclose; predeclared laterBTCquote canfinishBTC, never a fabricatedSOLquote. Callback rejection/expiry outerroute remains realobjectpure since naturalpublicterminalBTC cancellation supplies requiredmatching path.",
+      "readiness": {
+        "product_reviewed": true,
+        "realobject_pure_209": true,
+        "json_roundtrip": true,
+        "harness_implemented": false,
+        "config_data_hashes_frozen": false,
+        "domain_data_preflight": false,
+        "root_GO": false
+      },
+      "unknown_or_failure": "STOP/HOLD; actual gate absence is NOT PASS; no forcefill/re-anchor/retry/parameter search"
+    }
+  ],
+  "enginefree_or_source_reused_gates": [
+    {
+      "gate": "Retiring pendingmodify\u2192latestACK\u2192onecancel; foreignSID/side/parent; duplicateevents/trades; missingtrade/unsolicitedACK/expiry; liveCancelRejected",
+      "class_": "PURE_SOURCE_REUSED_NOT_NATIVE",
+      "proof": "209selectedpure / 40V2realobjectreplays +a50review",
+      "reason": "Native API cannot honestly create these invalid events on valid frozen ownedorders without alteringcache/commands. Any occurrence inpositivecase/economics is NO_GO."
+    },
+    {
+      "gate": "Immutable60s boundary, unrelatedfirstevent, noreset/cascade",
+      "class_": "PURE_SOURCE_REUSED_NOT_NATIVE",
+      "proof": "test_finite_deadline_first_observed_input_no_reset; test_real_final_ack_at_deadline...; test_first_unrelated_native_event_at_deadline...; source nativecancel2s/quiescentdrain",
+      "reason": "No droppedACK/latencyswap; legalcancel2s shouldterminal before60s. Deliberately holding/deleting ACK to hitdeadline would fake transport. Broader realvenue latency UNKNOWN."
+    },
+    {
+      "gate": "CAPreject/deny/expiry failclosed",
+      "class_": "PURE_HANDLER_SOURCE_REUSED_NOT_NATIVE",
+      "proof": "test_cap_rejected_uses_existing_fault_no_protection_resurrection; _pair_terminal kind/rejected; stock1.231 publicIOC no-market reject source",
+      "reason": "Full/partial nativeCAP ownership/actualfills testedVT2; rejected terminal handler has no separatematching-dependent branch. Do not spend anextraengine torepeat constructedterminalnegative. Any unplanned actualCAPreject inVT2 isFAILSTOP, notretroexpectednegative; economicsrejectNO_GO."
+    },
+    {
+      "gate": "Benign terminalCancelRejected afternativefullretiringfill",
+      "class_": "MUST_NATIVE_VT2",
+      "proof": "VT2T140.25/.5 fills andT142cancel; sourceprocess_cancel5260 notfound",
+      "reason": "Depends on actual matching/queued cancellation race; pure proof alone insufficient."
+    },
+    {
+      "gate": "R1 _terminal_without_fill outergate / foreignblocker / once-onlydomainhandoff",
+      "class_": "PURE_CALLBACK_REUSED_PLUS_NATIVE_VALID_CANCEL_AND_FILL_ROUTE",
+      "proof": "8newrealWavecallback cases in209suite; VT5/VT6 actualcancel/fill/ACK route",
+      "reason": "No unsafe external invalidmodify/reject command; natural native cancelcase plusrealobjectnegativecallback suffices; no false native rejection claim."
+    }
+  ],
+  "readiness": {
+    "product_CODE0_review_pass": true,
+    "immutable_product_pin_a50": true,
+    "old_four_rows_preserved": true,
+    "metadata_JSON_roundtrip_PASS": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/CASE_MAP_JSON_PREFLIGHT.json",
+      "sha256": "e492c7a0303974b375d0937736ec47da630017554a69cf5d2a7dbd4801be0033"
+    },
+    "new_harness_implemented": false,
+    "whole_admission_commit_known": false,
+    "per_case_configs_data_hashes_frozen": false,
+    "source_only_domain_terminal_schedule_preflight": false,
+    "public_orderbook_quantity_preflight": false,
+    "new_stage_owner_approval": false,
+    "new_stage_ledger_exists": false,
+    "root_individual_GO": false
+  },
+  "numeric_proposal": {
+    "planned_cases": 6,
+    "reserve_slots": 1,
+    "new_additional_uppercap": 7,
+    "cumulative_old4_plus_newmax": 11,
+    "old_slots_transferred": 0,
+    "alternative_noreserve": {
+      "new_additional_cap": 6,
+      "cumulative": 10,
+      "consequence": "Any counted infrastructure/harness dispatch failure ends stage; no repeat authority"
+    },
+    "reserve": {
+      "scope": "At most ONE independentlyproven harness-only/preimport/infrastructure/serialization correction repeat; product files/AST remain exacta50; no unsafeproductfailure retry",
+      "identity": "Physicalslot may be next afterfailedUUID; same logicalscenario/fixedvariant/statictransport, freshnamespace; repeat_of exactFAILED UUID; originalrowimmutable; no priorreserve",
+      "not_allowed": [
+        "Productpatch/unsafeprotection/guard failure",
+        "Selectingdifferentquoteprices/volumes/seeds/horizon/coefficients toturnunsafe ornegativeoutcomeintoPASS",
+        "Unknownalivechild/rc unobserved",
+        "Extra hiddenconstructor or economicrun"
+      ],
+      "conditions": "RootwrittenoneshotGO afterindependentreview/classification+actualOSreconciliation; allfailurescount; capneverautomaticallyincreased",
+      "justification": "Six new ordered-input/admission wrappers are notyetimplemented; one bounded infrastructure/harness-only failure can be corrected without repeatedowner+1requests. It does NOT insure product behavior."
+    },
+    "new_native_permission_now": 0,
+    "new_prefix_full": 0,
+    "old_conditional_prefix": "0/4 inactive; no activation bynewengineeringproposal",
+    "stage_status": "PROPOSED_ONLY_NO_GO"
+  },
+  "admission": {
+    "new_stage_owner_protocol_and_ledger_required": true,
+    "old_ledger": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+      "sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f"
+    },
+    "old_prefix": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/prefix-ledger.json",
+      "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+    },
+    "all_four_rows_immutable": true,
+    "legacy_supervisor_remains_STOP": true,
+    "claim_before_Popen": true,
+    "all_failures_and_nativeconstructors_count": true,
+    "nullable_actualchild_OS_no_guesses": true,
+    "externalOSreceipt_required": true,
+    "individual_root_GO": true,
+    "automatic_next": false,
+    "automatic_retry": false,
+    "unexpected_failure": "STOP preservebeforecleanupstate; no newbudgetautomatic"
+  },
+  "source_proof": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-a50af54/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "fb6c5d21482f27619c536461a67b64dcd24bb55e0c4839a4fdbcbe77b86fe41f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-a50af54/runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "865231f4083c3f3b5d9b185b56b17468d28052a96c97e45091aef79d39b37a40"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-a50af54/runtime/coinmaster/research/a0_family.py",
+      "sha256": "2d6f73313b6636c93f9a3b9c6f8f4110ceb94945543d6d3d85d79a0ba9cfb4f0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-a50af54/runtime/coinmaster/research/native_book.py",
+      "sha256": "7ba67d9ed3e584c62b1d2f742a48416146728baa11cf422db0c063a3ff714532"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-a50af54/runtime/tests/run_sol_standing_fixture.py",
+      "sha256": "f0a2e5038a2e341e16521fb663560d5ec8dff36a7389c155b4605dd609c505fe"
+    }
+  ],
+  "json_preflight": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/CASE_MAP_JSON_PREFLIGHT.json",
+    "sha256": "e492c7a0303974b375d0937736ec47da630017554a69cf5d2a7dbd4801be0033"
+  },
+  "actions": {
+    "product_edits": 0,
+    "harness_edits": 0,
+    "ledger_edits": 0,
+    "new_native": 0,
+    "new_prefix": 0,
+    "new_full": 0,
+    "source_quote_object_preflight": 1
+  },
+  "immutable_V1": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_PROPOSED_RU.md",
+      "sha256": "d302a8e11fb711ee0acbe86de795da463ebe549c0ae67ae9ff9ec0a6d080ab5e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_PROPOSED_RU.json",
+      "sha256": "ea68cab7be2ad4196add7044b8bb14469519dbec6e4b89d22ac64c096a67a701"
+    }
+  ],
+  "immutable_V1_HOLD_review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_DESIGN_REVIEW.json",
+    "sha256": "18be93d710653f5f7b733cc57c67cf006db4195c73553f0e8394887470cb6a97"
+  },
+  "P1_correction": {
+    "id": "VT2_IDENTICAL_L1_DEPTH_CANNOT_SUPPLY_SECOND_RETIRING_FILL",
+    "only_market_delta": "140.50 SOL99 displayeddepth.1\u2192.2",
+    "affected": [
+      "VT2positiveP1",
+      "VT4sharedpositiveP1"
+    ],
+    "all_other_case_market_events_unchanged": true,
+    "config_seeds_variant_latency_budget_unchanged": true,
+    "source_quote_preflight": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/CASE_MAP_V2_L1_PREFLIGHT.json",
+      "sha256": "a5f4ca18358f8b8ea6c0b82858edb06515d3349b730eb9b6644191cf3db0c700"
+    },
+    "exact_case_and_markdown_diff": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/CASE_MAP_V1_TO_V2.diff",
+      "sha256": "88b65519458e393b0e36691826b75971a73ecef5b1f04ccc026a553ed93ba26d"
+    }
+  },
+  "input_identity": {
+    "before_constructor": {
+      "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+      "static_quote_change": [
+        "SOL99@140.50 size.2"
+      ],
+      "bind": [
+        "staticconstant-inputSHA",
+        "causalrecipe/codeSHA",
+        "source/config/API/variant/statictransportSHA"
+      ],
+      "realized_stream_sha256": null,
+      "realized_source_event_bindings_sha256": null,
+      "hash_state": "NOT_REALIZED"
+    },
+    "N2_depth140_recipe": {
+      "expected_constant": "1.022",
+      "assertion": "actualTP0leaves+actualTP1leaves+.300==1.022 before emitting140; mismatch STOP, noadaptation"
+    },
+    "native_order_dependent_A0_recipe": {
+      "before": "Frozen formula floor(nativeleaves/2), lotprecision, source OID/asof allowedfields; no inventedactualdataSHA",
+      "after": "Actual outputquote tuple+priornativeOrder/event binding"
+    },
+    "after_run_final_receipt_required": [
+      "actual_emitted_stream_sha256",
+      "causal_source_event_bindings_sha256",
+      "staticrecipe_sha256 bindingunchanged",
+      "source/config/APIpins",
+      "actualOS/PID/UUID/rootGO andphysicalclaim"
+    ],
+    "matching_now": 0
+  }
+}

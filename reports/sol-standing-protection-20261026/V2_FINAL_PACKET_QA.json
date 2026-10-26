@@ -1,0 +1,21 @@
+{
+  "status": "CODE0_AND_NATIVE_PROPOSAL_FINAL_METADATA_QA",
+  "new_text_files_checked": 21,
+  "new_json_parsed": 12,
+  "secrets_pattern_matches": 0,
+  "native_ledger_unchanged": true,
+  "prefix_ledger_unchanged": true,
+  "old_native_spent": 4,
+  "new_native_executed": 0,
+  "code_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "final_pure_VPS": 209,
+  "final_pure_Mac": 209,
+  "source_and_map_and_protocol_review_P0_P1": [
+    0,
+    0
+  ],
+  "proposed_new_cap": 7,
+  "new_owner_native_approval": "NOT_GRANTED",
+  "native_go": false,
+  "economic_go": false
+}

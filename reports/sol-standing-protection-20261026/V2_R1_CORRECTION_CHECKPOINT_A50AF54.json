@@ -1,0 +1,95 @@
+{
+  "schema": "CM137_V2_R1_CORRECTION_CHECKPOINT_V1",
+  "status": "READY_TARGETED_CORRECTION_REVIEW_NATIVE0",
+  "source_commit": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "parent": "0eab5020fe32762f9fdf3a446b6ca34131419970",
+  "source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-a50af54/runtime",
+  "checkpoint": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54",
+  "clean": true,
+  "files": [
+    "runtime/coinmaster/strategy/paired_prefix.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/tests/test_sol_reduction_v2_pure.py"
+  ],
+  "product_AST_proof": {
+    "runtime/coinmaster/strategy/paired_prefix.py": {
+      "changed_functions": [
+        "_pair_release_if_terminal"
+      ],
+      "all_other_functions_AST_identical": true
+    },
+    "runtime/coinmaster/strategy/wave_overlay.py": {
+      "changed_functions": [
+        "_terminal_without_fill",
+        "on_order_canceled"
+      ],
+      "all_other_functions_AST_identical": true
+    }
+  },
+  "R2_math_data_supervisor_fixtures_unchanged": true,
+  "one_substantive_correction_batch": 1,
+  "previous_0e_snapshot_review_preserved": true,
+  "source_seal": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/SOURCE_SEAL.json",
+    "sha256": "7b971e4edf0ef5cdaba65f5d90eef1f16339cd9ff888da5163eb9c6fd12c1105"
+  },
+  "source_diff": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/SOURCE_DIFF_PROOF.json",
+    "sha256": "c3da7c4a15d2d238953fd2ec94eb8b0c66e6cfa97f8205e6c9054a223d3ad126"
+  },
+  "Mac": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/MAC_ENGINE_FREE_RECEIPT.json",
+    "sha256": "c046bfd7b02fa4dccd146713487b153e8655031ecb2fe47c73226354b782724e"
+  },
+  "VPS": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/VPS_PURE_RECEIPTS.json",
+    "sha256": "35b44491b7a1e934bb22ffad5f8a85b6cc1aa80e0140990b5b4342fbdafef5bb"
+  },
+  "native_API": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/NATIVE_API_PINS.json",
+    "sha256": "646706b47eef6f73ac1b0c1c99c7181b1753839c9c05340fa4abd3b34c033cc8"
+  },
+  "tests": {
+    "VPS_final_full": "209 passed in3.25s ONcorrectedcommit",
+    "Mac_final_full": "209 passed in1.28s",
+    "Mac_actual_PID": 46122,
+    "Mac_actual_OS": 0,
+    "selected_replay_cases": 40,
+    "constructors": 0,
+    "matching": 0,
+    "tripwire_forbidden_attempts": []
+  },
+  "source_pins": 277,
+  "native_pins": 354,
+  "correction_authority": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/V2_ROOT_CORRECTION_DISPOSITION.json",
+    "sha256": "ef728f5f0bfb4d7419d54789d5572d433f1ff8b7309cbaf8797b5fcc95f513cb"
+  },
+  "focused_review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/V2_ZERO_ENGINE_SOURCE_REVIEW.json",
+    "sha256": "1d6a77744be70ee5989f9c10cb8698a0b690edcab35f6f9c306b48218c673b87"
+  },
+  "old_ledger": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/engineering-ledger.json",
+    "sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f"
+  },
+  "four_old_rows": [
+    "d325f056cc06dc913a85ce7e60d8e33e5ed088f3e15316b6699c4fdbc966397e",
+    "2170f5873bc6f1eae715a091a44a6bfc0d6305b4699c0f18b29893271a5f5f10",
+    "6b8c11c4e1c8baee8e5f512d0387d78705805544b1a0307496e90d82fb7628dd",
+    "958aeef0bd5a8bf00220cb39acf9a1d4c4217e9ad20544998b1ee3d77882f784"
+  ],
+  "prefix": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/prefix-ledger.json",
+    "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+  },
+  "legacy_prepare_launch": false,
+  "native_go": false,
+  "economic_go": false,
+  "coverage": "Real Wave cancel/commonterminal/fill callback routes with real Cache/Order/event history; foreign blockers/dedup/singleSOLowner/protectedpartialexit/globalgroupdomainonce/actualflatCancelACKdrain andterminalFLAT withoutsyntheticquote. Method-unit quantity inputs anddomainspies are NOTnative position/matching/financial evidence.",
+  "unknowns": [
+    "Actualmatching/nativepartialIOC/reentrantACK/globaltransport correctness stillUNPROVEN",
+    "Future qualification requires freshE1 andnewintegratedE5; oldE7 historicalonly"
+  ],
+  "next": "Targeted0e\u2192a50review only; afteracceptance fullfuturecase map before anynumericbudgetproposal."
+}

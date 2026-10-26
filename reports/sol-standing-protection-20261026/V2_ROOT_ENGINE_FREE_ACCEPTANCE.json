@@ -1,0 +1,30 @@
+{
+  "schema": "CM137_ROOT_V2_ENGINE_FREE_ACCEPTANCE_V1",
+  "status": "ROOT_ACCEPTED_IMPLEMENTATION_AND_ENGINE_FREE_ONLY",
+  "utc": "2026-10-26T22:08:37.943738+00:00",
+  "source_commit": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "checkpoint": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/V2_R1_CORRECTION_CHECKPOINT_A50AF54.json",
+    "sha256": "e432a3f50d6ccd2941411f98ff41e556e1f3ce5cbe5963d2666f12ff4dc013d2"
+  },
+  "review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/V2_ZERO_ENGINE_CORRECTION_REVIEW.json",
+    "sha256": "474a03a45b98e31cc5d6abec28fe225cfd369fd0d561dd2aad6354335c8e154a"
+  },
+  "owner_approval_sha256": "fb263ef1cdfb6267c76cc60c8b4340e23468f78a2e5dbbf2eeecb7d64d0fbfc1",
+  "final_pure_VPS": 209,
+  "final_pure_Mac": 209,
+  "realclass_callback_replay_cases": 40,
+  "actual_BacktestEngine_constructors": 0,
+  "new_native_attempts": 0,
+  "native_matching_qualified": false,
+  "financial_qualified": false,
+  "old_ledger_sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
+  "old_prefix_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "old_native_spent": 4,
+  "old_native_max": 7,
+  "old_remaining3": "HOLD_NOT_REASSIGNED",
+  "next": "FullactualsourceNativeCaseMap andunifiednumericproposal; separateownerapproval beforenative; freshE1/newE5 mandatory",
+  "native_root_go": false,
+  "economic_root_go": false
+}

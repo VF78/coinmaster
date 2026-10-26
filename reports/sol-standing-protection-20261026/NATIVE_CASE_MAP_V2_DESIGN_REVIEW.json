@@ -1,0 +1,99 @@
+{
+  "schema": "CM137_NATIVE_CASE_MAP_V2_DESIGN_REVIEW_V1",
+  "status": "READY_FOR_OWNER_PRESENTATION_ONLY",
+  "P0": 0,
+  "P1": 0,
+  "scope": "Targeted closure of sole V1 map P1 and pre/post input-identity clarification; all other coverage/source-feasibility/admission review reused.",
+  "product_source": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "closed_finding": "VT2_IDENTICAL_L1_DEPTH_CANNOT_SUPPLY_SECOND_RETIRING_FILL",
+  "evidence": {
+    "map_md": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_V2_PROPOSED_RU.md",
+      "sha256": "af3432f63b35435c9b866780fddc2c5ead65fbfe3b84a050a939127ee0120ee1"
+    },
+    "map_json": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_V2_PROPOSED_RU.json",
+      "sha256": "601e4b5c0357e5005556a22010625c4777776025f239837bbf1a08a335ae647c"
+    },
+    "source_object_preflight": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/CASE_MAP_V2_L1_PREFLIGHT.json",
+      "sha256": "a5f4ca18358f8b8ea6c0b82858edb06515d3349b730eb9b6644191cf3db0c700",
+      "recorded_actual_pid": 47778,
+      "constructor_tripwire": true,
+      "forbidden_attempts": [],
+      "constructors": 0,
+      "matching": 0,
+      "classification": "SOURCE_QUOTE_OBJECT_PASS_NOT_MATCHING; receipt read/hash verified, reviewer did not rerun"
+    },
+    "diff": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/checkpoint-a50af54/CASE_MAP_V1_TO_V2.diff",
+      "sha256": "88b65519458e393b0e36691826b75971a73ecef5b1f04ccc026a553ed93ba26d"
+    },
+    "native_source": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "reset_lines": "6525-6540"
+    },
+    "prior_whole_map_review": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/NATIVE_CASE_MAP_DESIGN_REVIEW.json",
+      "sha256": "18be93d710653f5f7b733cc57c67cf006db4195c73553f0e8394887470cb6a97"
+    }
+  },
+  "closure": {
+    "only_market_delta": "VT2 SOL99 at140.50 depth.1→.2; VT4 explicitly inherits V2 positive P1. First140.25 depth.1 unchanged.",
+    "native_source_feasibility": "Size change resets stock level consumption to0; available.2, oldTP0 leaves.1 caps required fill at.1. BUY98/BUY96 are nonmarketable at ask99, so extra displayed.1 does not imply extra protector fills. This removes the known source-input contradiction.",
+    "arithmetic": "TP0 filled.3→.4→.5, native original liability.2→.1→0; heldSOL.7→.6→.5; positive-right lots{0:0,1:2,2:5}→{0:0,1:1,2:5}→{0:0,1:0,2:5}; TP1 latestACKleaves.1 retires. Parent firstdeadline200 and originalcancel142 do not reset.",
+    "matching_unknown": [
+      "Actual first/second retiring fills and native terminal statuses",
+      "Native queued CancelRejected and full actual trade/history validation",
+      "Callback cascade/latestACK and actual latefill liability conservation",
+      "All remaining MUST_NATIVE gates, account allowance and pre-cleanup flat"
+    ],
+    "claim_limit": "Source/real QuoteTick+OrderBook object preflight permits the intended sequence; it does not prove matching/callback execution."
+  },
+  "input_identity": {
+    "before": "Pin static constants, deterministic causal recipe/code/config/source/API/variant/static transport; realized stream/bindings SHA=NULL/NOT_REALIZED.",
+    "fixed_depth140": "Native TP leaves sum+.300 must equal predetermined1.022; mismatch STOP, no favorable adaptation.",
+    "native_dependent_formula": "A0 floor(nativeleaves/2) precision/allowed fields/source OID/asof formula frozen before constructor; actual output absent until native order exists.",
+    "after": "Final actual emitted stream SHA plus causal source-event bindings (prior OID/eventUUID/asof/price/size) tied to unchanged pre-run recipe; never replace frozen recipe with favorable post-run inputs.",
+    "assessment": "Clarification accepted; no pretend future realized hash."
+  },
+  "invariants_verified": {
+    "cases": "Direct parsed comparison: all six case payloads unchanged after removing only declared V2 metadata and replacing second-depth.2 with V1.1.",
+    "common_numeric_admission_reused_gates": "Exact equality versus V1.",
+    "V1_sha256": [
+      "d302a8e11fb711ee0acbe86de795da463ebe549c0ae67ae9ff9ec0a6d080ab5e",
+      "ea68cab7be2ad4196add7044b8bb14469519dbec6e4b89d22ac64c096a67a701"
+    ],
+    "old_ledger_sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
+    "old_prefix_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+    "no_product_harness_changes_by_review": true
+  },
+  "budget": {
+    "proposal_planned": 6,
+    "conditional_harness_only_reserve": 1,
+    "proposed_additional_uppercap": 7,
+    "cumulative_old4_plus_newmax": 11,
+    "alternative_noreserve": "6 additional/cumulative10",
+    "old_remaining3": "HOLD_NOT_TRANSFERRED",
+    "new_native_authorized_now": 0,
+    "prefix_full_authorized_now": 0,
+    "scope": "Budget design unchanged, suitable for separate OWNER presentation; no budget receipt issued by this review."
+  },
+  "admission": "Separate linked OWNER approval/protocol/new ledger and frozen harness/config/data/source/API admission pins; durable claim before Popen/any matching; actual OS reconciliation and individual root GO. Legacy supervisor/ledger HARD STOP remains.",
+  "next": "Root may present corrected complete map and numeric alternatives for OWNER decision. Future approved harness/admission preparation and source-only preflights precede any individual native GO.",
+  "native_GO": false,
+  "matching_PASS": false,
+  "economic_admission": false,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "harness_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0,
+    "report_files_written": 2
+  }
+}

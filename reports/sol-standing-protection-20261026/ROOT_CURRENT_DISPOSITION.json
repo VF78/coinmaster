@@ -1,8 +1,8 @@
 {
-  "status": "OWNER_APPROVED_V2_ZERO_ENGINE_IMPLEMENTATION_ACTIVE",
+  "status": "CODE0_COMPLETE_NATIVE_CASEMAP_V2_AND_BUDGET_READY_AWAIT_OWNER",
   "utc": "2026-10-26T18:19:45.120091+00:00",
   "issue": 137,
-  "source_commit": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "source_commit": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
   "engineering_started": 4,
   "engineering_max": 7,
   "engineering_failed": 3,
@@ -16,7 +16,7 @@
   "economic_root_go": false,
   "expected_negative_stage": "NOT_REACHED",
   "cause_observed": "SOL_BEFORE_MATCHING_EXACT_COVERAGE_UNKNOWN at143 P1_FULL_TP0",
-  "next": "Soleowner approvedV2code+realCacheOrderreplay withBacktestEngine0; commit/freeze/pure/focusedreview thencompletefuturecasemap beforeseparatenativebudget",
+  "next": "Ownerdecision onnewnativequalification protocol1baac002: harness/admission+6planned/1harness-onlyreserve=7NEWattempts,cumulative11; no actualnewnativeGO",
   "full_pilot_production": 0,
   "ledger_sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
   "v2_contract_sha256": "353d0e01218148ebaf1ef4c7172552ee000d8ff0b6efc563402794ae016503d6",
@@ -27,5 +27,20 @@
     "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-v2-zero-engine-approval.json",
     "sha256": "fb263ef1cdfb6267c76cc60c8b4340e23468f78a2e5dbbf2eeecb7d64d0fbfc1"
   },
-  "new_native_attempts_authorized": 0
+  "new_native_attempts_authorized": 0,
+  "source_checkpoint": "0eab5020fe32762f9fdf3a446b6ca34131419970",
+  "Mac_final_pure_pass": 201,
+  "constructor_tripwire": 0,
+  "source_review_open_P1": 0,
+  "substantive_correction_batch": 1,
+  "final_VPS_pure_pass": 209,
+  "final_Mac_pure_pass": 209,
+  "new_native_authorized": 0,
+  "new_stage_proposed_cap": 7,
+  "new_stage_planned_cases": 6,
+  "new_stage_harness_only_reserve": 1,
+  "proposed_cumulative_packet_max": 11,
+  "native_case_map_sha256": "af3432f63b35435c9b866780fddc2c5ead65fbfe3b84a050a939127ee0120ee1",
+  "next_native_protocol_sha256": "1baac0028a926d4624345945f16ab55230c59fa98c58b593306df0e3a61c2c56",
+  "next_native_owner_approval": "NOT_GRANTED"
 }

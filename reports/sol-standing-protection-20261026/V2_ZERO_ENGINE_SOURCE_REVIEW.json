@@ -1,0 +1,86 @@
+{
+  "schema": "CM137_V2_ZERO_ENGINE_IMPLEMENTATION_REVIEW_V1",
+  "status": "HOLD_ONE_CONSOLIDATED_R1_CALLBACK_COMPLETION_CORRECTION",
+  "source_commit": "0eab5020fe32762f9fdf3a446b6ca34131419970",
+  "parent": "8a21673ca5c678120bf0498c97ebe9b562fe3c31",
+  "P0": 0,
+  "P1": 2,
+  "scope": "Fullfourfilediff+necessaryreachableglobalcallers;engine-freephaseonly",
+  "findings": [
+    {
+      "id": "R1_CACHED_DISPATCH_CALLER_STILL_WAITS_ALL_OPEN",
+      "priority": 1,
+      "file": "coinmaster/strategy/wave_overlay.py",
+      "functions": [
+        "on_order_canceled",
+        "_terminal_without_fill"
+      ],
+      "lines": "~2686,~2885",
+      "problem": "Outer notcache.orders_open gate prevents reaching filteredcachedispatch whileknownpositiveSOLprotection intentionallyopen",
+      "fix_scope": "Research-gatedcallerhandofftosameexistingcachedispatcher;preserveallotherblockers/OFF",
+      "required_pure": "RealWaveon_order_canceled andterminal_without_fill callbackroute withlastBTCterminal+freshSOLbook/protection;foreignblocker/dedup;notdirectdispatcheronly"
+    },
+    {
+      "id": "R1_PAIR_SOL_EXIT_MISSING_GLOBAL_COMPLETION_HANDOFF",
+      "priority": 1,
+      "file": "coinmaster/strategy/paired_prefix.py +wave_overlay.py",
+      "functions": [
+        "_pair_fill",
+        "_pair_terminal",
+        "_pair_release_if_terminal",
+        "_reconcile_group_flat",
+        "_reconcile_terminal_flat"
+      ],
+      "problem": "Pairedfill/terminalearlyreturns bypassgenericglobalcompletion;pairNone/orders0doesnotset/servicerealgroup/domain/terminalcompletion",
+      "fix_scope": "Onehonestexistingglobalcompletionhandoffafteractualflat_and_ACKdrain;nofakefill/submittedflags",
+      "required_pure": "RealcallbacksSOL-onlyglobalclose,BTCplusSOLgroup,terminalreason,partialexit/ACKdrain;actualdomain/globalcompletiononcewithoutnewsyntheticquote"
+    }
+  ],
+  "supported_source_scope": [
+    "CAPpositiveprotection_oneIOC_everyactualfillreconcile",
+    "RetiringlatestACK_liability_dedup_proportionalrights_parent60deadline",
+    "Strictpureobserver_noownerACKcommit",
+    "STOPfaultdistinction",
+    "OFFandTRIMguarding",
+    "ProtectedmathAST10identical"
+  ],
+  "verified_bindings": {
+    "source_seal_sha256": "ac5453f925ec7c9ee2d63aef8f11c7109a805257b837525bb00309b65301977b",
+    "Mac_enginefree_receipt_sha256": "3c95bd2051faa96dc0c9e9c60575db98cbf29afb8d3108e31aa8b374ecb10be7",
+    "API_index_sha256": "646706b47eef6f73ac1b0c1c99c7181b1753839c9c05340fa4abd3b34c033cc8",
+    "source_files_verified": 277,
+    "native_API_pins_verified": 354,
+    "archive_verified": true,
+    "Mac_actual_PID": 45312,
+    "Mac_actual_OS": 0,
+    "Mac_final_full_passed": 201,
+    "Mac_seconds": 1.22,
+    "constructors": 0,
+    "matching": 0,
+    "tripwire_forbidden_attempts": [],
+    "VPS_coverage": "199fullpre-final2guards+32finalaffected;notclaimed201full",
+    "supervisor_and_oldledgers_unchanged": true
+  },
+  "budget": {
+    "new_native": 0,
+    "new_prefix": 0,
+    "full": 0,
+    "oldspent": 4,
+    "oldmax": 7,
+    "remaining3": "HOLD_NOT_REASSIGNED"
+  },
+  "one_correction_batch_only": true,
+  "native_GO_issued": false,
+  "numeric_native_budget_recommended": null,
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/V2_ZERO_ENGINE_SOURCE_REVIEW.md",
+  "report_sha256": "80516fb287381bfdd114fa093d056af94c8d62549d0d67b43de217a1635670ce"
+}

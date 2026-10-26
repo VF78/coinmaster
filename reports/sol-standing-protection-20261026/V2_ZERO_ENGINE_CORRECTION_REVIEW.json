@@ -1,0 +1,72 @@
+{
+  "schema": "CM137_V2_ZERO_ENGINE_R1_CORRECTION_REVIEW_V1",
+  "status": "PASS_CODE_AND_ENGINE_FREE_PHASE_ONLY",
+  "P0": 0,
+  "P1": 0,
+  "source_commit": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "parent": "0eab5020fe32762f9fdf3a446b6ca34131419970",
+  "closed_findings": [
+    "R1_CACHED_DISPATCH_CALLER_STILL_WAITS_ALL_OPEN",
+    "R1_PAIR_SOL_EXIT_MISSING_GLOBAL_COMPLETION_HANDOFF"
+  ],
+  "scope": "Targetedthree-productmethodcorrection+realcallbackreplays;priorR2_normalCAP_auditreused",
+  "verified_product_AST_changed_only": [
+    "_pair_release_if_terminal",
+    "on_order_canceled",
+    "_terminal_without_fill"
+  ],
+  "callback_coverage": [
+    "RealWaveon_order_canceled_andterminal_without_fillreachfilteredcachedispatch",
+    "PositiveSOLprotectorsretained_foreignblocker_dedup",
+    "RealWavepairedfill_thenactualclassCancelACKdrain",
+    "Existinggroup_domain_terminalreconcileonce_noquote",
+    "Noearlyrelease_nofakefill_noforcedsubmittedflag"
+  ],
+  "pure_context": "RealCache_Order_eventmethodreplay;explicitinventoryinputs_domainspies_NOTmatchingproof",
+  "bindings": {
+    "checkpoint_sha256": "e432a3f50d6ccd2941411f98ff41e556e1f3ce5cbe5963d2666f12ff4dc013d2",
+    "source_files_verified": 277,
+    "native_API_files_verified": 354,
+    "source_seal_sha256": "7b971e4edf0ef5cdaba65f5d90eef1f16339cd9ff888da5163eb9c6fd12c1105",
+    "Mac_receipt_sha256": "c046bfd7b02fa4dccd146713487b153e8655031ecb2fe47c73226354b782724e",
+    "archive_verified": true,
+    "actual_Mac_PID": 46122,
+    "actual_Mac_OS": 0,
+    "Mac_FULL_passed": 209,
+    "Mac_seconds": 1.28,
+    "VPS_FULL_passed": 209,
+    "VPS_seconds": 3.25,
+    "constructor_tripwire_before_imports": true,
+    "forbidden_attempts": [],
+    "constructors": 0,
+    "matching": 0,
+    "supervisor_unchanged": true,
+    "old_ledger_and_prefix_unchanged": true,
+    "four_canonical_rows_preserved": true
+  },
+  "phase_acceptance": "Ownerapprovedimplementation_objectreplayonly;rootacceptanceseparate",
+  "next": "CompleteactualsourceNativeCaseMap_freshE1_thenunifiednumericproposal_beforeseparateownernativeconsent",
+  "native_GO_issued": false,
+  "native_qualification": false,
+  "economic_qualification": false,
+  "budget": {
+    "new_native": 0,
+    "new_prefix": 0,
+    "full": 0,
+    "old_spent": 4,
+    "old_max": 7,
+    "remaining3": "HOLD_NOT_REASSIGNED",
+    "reserve": 0
+  },
+  "actions": {
+    "tests": 0,
+    "engine_imports": 0,
+    "constructors": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0
+  },
+  "report_path": "reports/sol-standing-protection-20261026/V2_ZERO_ENGINE_CORRECTION_REVIEW.md",
+  "report_sha256": "1d85f6e82495e6820ffe62b273b5656a101917f9ca2486571843ef3cbcef91e1"
+}
