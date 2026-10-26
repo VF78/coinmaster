@@ -356,5 +356,5 @@ class MarketRedesignResearch(A0RightsResearch):
             submits=submits,accepted=accepted,denials=[e for e in self.market_redesign_audit if e["event"]=="A0_DENY"],
             native_fill_coverage_complete=bool(complete),native_release_fills=fills,
             actual_releases=len({f["client_order_id"] for f in fills}))
-        return dict(standing_tp_audit=self.standing_tp_audit if self._tp_enabled() else None,a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
+        return dict(standing_tp_audit=self.standing_tp_audit if self._tp_enabled() else None,standing_tp_audit_counts=self._tp_audit_counts if self._tp_enabled() else None,a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
             open_protection_exception_since_ns=str(self._md_missing_since) if self._md_missing_since is not None else None)

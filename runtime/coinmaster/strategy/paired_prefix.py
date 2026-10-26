@@ -191,6 +191,7 @@ class PairedPrefixResearch:
             work = [(oid, {}, self.cache.order(ClientOrderId(oid))) for oid, intent in self._pending_by_order.items()
                     if intent.action == "BTC_ENTRY" or (not self._tp_enabled() and intent.action.startswith("BTC"))]
             self._pair_cancel(work)
+        if self._tp_enabled(): self._tp_debt_observe(ns, "NATIVE_INVENTORY_OR_TERMINAL")
 
     def _pair_release_if_terminal(self, ns):
         p = self._pair
@@ -357,6 +358,7 @@ class PairedPrefixResearch:
                         witness=self._tp_book()
                         if witness != getattr(self,"_tp_debt_witness",None): raise ValueError("STANDING_INTERPOSED_BTC_INPUT_BEFORE_DEBT_FILL")
                         m["standing_inventory_dirty"]=True
+                        self._tp_debt_observe(event.ts_event, "BTC_DEBT_ACTUAL_FILL")
         if owner["instrument"] == self.config.sol_id and owner["kind"] != "ENTRY":
             step = self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
             removed = int(qty / step)
@@ -477,7 +479,12 @@ class PairedPrefixResearch:
         btc = self._pair_qty(self.config.btc_id); sol = self._pair_qty(self.config.sol_id)
         if p["protection_since"] is not None and ns > p["protection_since"]:
             self._pair_fail("PROTECTION_OVERDUE_NEXT_QUOTE", ns)
-        if p["debt_since"] is not None and ns > p["debt_since"] + MINUTE and not (self._tp_enabled() and p.get("standing_debt_deferred")):
+        standing_safe = None
+        debt_deadline_since = p.get("standing_safe_since") if self._tp_enabled() else p["debt_since"]
+        if self._tp_enabled() and p["debt_since"] is not None and tick.instrument_id == self.config.btc_id:
+            standing_safe = self._tp_debt_safe(ns)
+            debt_deadline_since = self._tp_debt_clock(ns, standing_safe)
+        if debt_deadline_since is not None and ns > debt_deadline_since + MINUTE and not (self._tp_enabled() and p.get("standing_debt_deferred")):
             self._pair_fail("TRIM_DEBT_OVERDUE", ns)
         if not p["entry_sent"] and ns >= p["eligible_ns"] and tick.instrument_id == self.config.sol_id:
             ep = self._domain.episode; pos = self._pair_position(self.config.btc_id)
@@ -497,13 +504,14 @@ class PairedPrefixResearch:
             p["debt_since"] = p["debt_since"] or ns
             if tick.instrument_id == self.config.btc_id and not self._pair_work(instrument=self.config.btc_id):
                 ordinary = [(oid, {}, self.cache.order(ClientOrderId(oid))) for oid, intent in self._pending_by_order.items() if intent.action == "BTC_ENTRY" or (not self._tp_enabled() and intent.action.startswith("BTC"))]
-                safe = not self._tp_enabled() or self._tp_debt_safe(ns)
+                safe = not self._tp_enabled() or standing_safe is True
                 p["standing_debt_deferred"] = not safe
                 if safe and not self._pair_cancel(ordinary):
                     self._pair_submit(self.config.btc_id, -p["side"], debt, "BTC_DEBT", ns)
         else:
             p["debt_since"] = None
             p["standing_debt_deferred"] = False
+            p["standing_safe_since"] = None
         excess = sol if p["close_sol"] else max(D(0), sol - p["caps"].solmax) if p["caps"].initialized else D(0)
         if excess:
             if not self._pair_cancel(self._pair_work(instrument=self.config.sol_id, kinds={"ENTRY", "TP", "STOP"})) and tick.instrument_id == self.config.sol_id and not self._pair_work(instrument=self.config.sol_id):

@@ -8,8 +8,8 @@ from nautilus_trader.model.data import QuoteTick
 
 
 class NativeBookWitness(SimulationModule):
-    def __init__(self):
-        super().__init__(SimulationModuleConfig()); self.strategy=None; self.current={}; self.epochs={}; self.audit=[]
+    def __init__(self, *, detailed=False):
+        super().__init__(SimulationModuleConfig()); self.strategy=None; self.current={}; self.epochs={}; self.audit=[]; self.detailed=detailed
 
     def __repr__(self): return 'NativeBookWitness(stock-public-read-only)'
 

@@ -2,7 +2,7 @@
 from decimal import Decimal as D
 from pathlib import Path
 from inspect import signature
-import ast,copy,json
+import ast,copy,json,hashlib
 from coinmaster.strategy.standing_tp import standing_after_fill,marketable,StandingTPResearch
 from coinmaster.strategy.market_redesign import target_lots
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy,WaveOverlayStrategyConfig
@@ -44,6 +44,10 @@ def proof():
     rejected(lambda:marketable(-1,D(101),D(102),D(101)));passed('both_sides_actual_BBO_guard')
     kwargs={v:build_a0_kwargs(Path('.'),Path('.'),v,(),start_ms=0,end_ms=3600000)for v in ('R2_OFF','R2_C0','R2_A0')}
     assert all('research_btc_standing_tp'not in v for v in kwargs.values())
+    from coinmaster.research.registered_control import native_kwargs_json_roundtrip
+    # Exact outputs independently read from immutable source aaa31f8 before patch.
+    old={'R2_OFF':'41041899264ed87ed66306077efe204098dd3c01d553be543a2cf6bf6a0b7b92','R2_C0':'ffde01ea59894e294f05cb832ec90b1741e28c0e4b2dd57974749fe625a7d4af','R2_A0':'55387e5febae189d19afca3fd96edc8a22fb071cc5f667f166722822eba783ad'}
+    assert {v:hashlib.sha256(native_kwargs_json_roundtrip(k)[0].encode()).hexdigest()for v,k in kwargs.items()}==old
     for variant in ('R2_C0','R2_A0'):
         new=build_a0_kwargs(Path('.'),Path('.'),variant,(),start_ms=-86400000,end_ms=90600000,standing_tp=True)
         bound=signature(run_native_diagnostic).bind(**new);bound.apply_defaults();validate_native_a0(bound.arguments)
@@ -78,6 +82,8 @@ def proof():
         tree=ast.parse(path.read_text());assert not any(isinstance(n,ast.ImportFrom) and n.module and (any(c.startswith('test_') for c in n.module.split('.')) or n.module.startswith('run_'))for n in ast.walk(tree))
         assert not any(isinstance(n,ast.Call)and isinstance(n.func,ast.Name)and n.func.id=='BacktestEngine'for n in ast.walk(tree))
     passed('product_dependency_closure_no_test_or_engine_constructor')
-    return dict(status='ENGINE_FREE_PASS',checks=checks,check_groups=len(checks),engine_constructors=0,native_fills=0,limits='Pure/API proof only; physical4 essential native assertions remain mandatory.')
+    from standing_tp_event_replay import replay_proof
+    event_replay=replay_proof();passed('REAL_Cache_Order_event_product_method_replay_not_matching')
+    return dict(event_replay=event_replay,status='ENGINE_FREE_PASS',checks=checks,check_groups=len(checks),engine_constructors=0,native_fills=0,limits='Pure/API proof only; physical4 essential native assertions remain mandatory.')
 
 if __name__=='__main__':print(json.dumps(proof(),indent=2))

@@ -28,8 +28,17 @@ class StandingTPResearch:
     def _tp_init(self):
         self._tp_owners = {}; self._tp_commands = {}; self._tp_seq = 0
         self._tp_seen_events = set(); self._tp_seen_trades = set(); self.standing_tp_audit = []
+        self._tp_audit_counts = {}; self._tp_audit_state = {}
 
     def _tp_log(self, event, ts, **data):
+        self._tp_audit_counts[event]=self._tp_audit_counts.get(event,0)+1
+        if event in {'SETTLED','NATIVE_BOUNDARY'} and not getattr(self.config.research_native_book,'detailed',False):
+            # Runtime guards still execute on EVERY boundary. Long prefixes keep
+            # state changes/counters; the bounded engineering witness logs all.
+            state={k:v for k,v in data.items() if k!='book'}
+            key=(event,data.get('label'));fingerprint=repr(state)
+            if self._tp_audit_state.get(key)==fingerprint:return
+            self._tp_audit_state[key]=fingerprint
         self.standing_tp_audit.append(dict(event=event, timestamp_ns=str(ts), **data))
 
     def _tp_plan(self):
@@ -70,7 +79,8 @@ class StandingTPResearch:
         if not self._tp_enabled() or intent.action != 'BTC_REDUCE': return
         m = self._md_plans[intent.episode_id]; oid = str(order.client_order_id)
         self._tp_owners[oid] = dict(parent=intent.episode_id, level=intent.level, intent_id=intent.id,
-            generation=m['generation'], side=order.side.name, ack_generation=None, ack_sequence=None)
+            generation=m['generation'], side=order.side.name, ack_generation=None, ack_sequence=None,
+            initialized_event_id=str(order.init_event.id), strategy_id=str(order.strategy_id))
         m['order_generation'][oid] = m['generation']
 
     def _tp_native_event(self, event, route):
@@ -81,6 +91,28 @@ class StandingTPResearch:
         self._tp_log('NATIVE_ROUTE', event.ts_event, event_id=eid, event_type=name, order_id=oid, route=route)
         if eid in self._tp_seen_events: return
         self._tp_seen_events.add(eid)
+        if event.instrument_id != self.config.btc_id or str(event.strategy_id) != owner['strategy_id']:
+            raise ValueError('STANDING_FOREIGN_EVENT_OWNER')
+        if name == 'OrderInitialized':
+            # Public submit publishes this exact bound initialization BEFORE
+            # cache.add_order. It earns neither ACK nor protection.
+            if eid != owner['initialized_event_id'] or event.side.name != owner['side']:
+                raise ValueError('STANDING_PRE_CACHE_INITIALIZATION_UNKNOWN')
+            return
+        order = self.cache.order(ClientOrderId(oid))
+        if name in {'OrderFilled','OrderCanceled','OrderExpired','OrderRejected','OrderDenied'}:
+            # Generic delivery can follow typed terminal ownership cleanup and
+            # even a current-parent rollover. Only actual cache event history is
+            # credited; immutable old history never restores an intent/right.
+            if order is None or order.strategy_id != self.id or order.instrument_id != self.config.btc_id or order.side.name != owner['side'] or not order.is_reduce_only:
+                raise ValueError('STANDING_TERMINAL_NATIVE_HISTORY_UNKNOWN')
+            if not any(str(e.id)==eid for e in order.events):
+                raise ValueError('STANDING_TERMINAL_EVENT_NOT_IN_NATIVE_HISTORY')
+            if not order.is_closed:
+                self._tp_owned_order(oid,owner)
+            if order.exec_algorithm_id is not None or self.cache.position_id(order.client_order_id) is not None:
+                raise ValueError('STANDING_UNEXPECTED_HISTORICAL_PROTECTIVE_LINK')
+            return
         order = self._tp_owned_order(oid, owner)
         if name == 'OrderModifyRejected':
             raise ValueError('STANDING_VALID_MODIFY_REJECTED')
@@ -91,7 +123,7 @@ class StandingTPResearch:
                 raise ValueError('STANDING_ACK_QUANTITY_OR_GENERATION_UNKNOWN')
             owner['ack_generation'] = command['generation']; owner['ack_sequence'] = command['sequence']
             del self._tp_commands[oid]
-            self._tp_log('LATEST_MODIFY_ACK', event.ts_event, order_id=oid, generation=owner['generation'], sequence=owner['ack_sequence'], total=str(order.quantity), filled=str(order.filled_qty), leaves=str(order.leaves_qty))
+            self._tp_log('LATEST_MODIFY_ACK', event.ts_event, order_id=oid, generation=owner['generation'], sequence=owner['ack_sequence'], native_event_id=eid, total=str(order.quantity), filled=str(order.filled_qty), leaves=str(order.leaves_qty))
         if name == 'OrderAccepted':
             owner['ack_generation'] = owner['generation']; owner['ack_sequence'] = 0
         if name != 'OrderFilled': self._tp_transient_boundary('NATIVE_'+name,event.ts_event)
@@ -111,6 +143,7 @@ class StandingTPResearch:
         if raw != raw.to_integral_value(): raise ValueError('STANDING_FILL_LOTS_UNKNOWN')
         pre = dict(m['standing']); m['standing'] = standing_after_fill(pre, owner['level'], int(raw))
         if oid in self._tp_commands: raise ValueError('STANDING_FILL_BEFORE_REQUIRED_MODIFY_ACK')
+        self._tp_debt_observe(event.ts_event,'ORDINARY_TP_NATIVE_FILL')
         self._tp_log('ACTUAL_TP_FILL', event.ts_event, parent=ep.id, order_id=oid, native_trade_id=trade, level=owner['level'], quantity=str(event.last_qty), pre_fill_lots=pre, remaining_lots=dict(m['standing']), raw_position_id=None if order.position_id is None else str(order.position_id), cache_position_id=None)
 
     def _tp_reconcile(self, ts):
@@ -216,17 +249,50 @@ class StandingTPResearch:
         if actual!=desired or sum(actual.values())!=held:raise ValueError('STANDING_REQUIRED_NATIVE_COVERAGE_OR_ALLOCATION')
         self._tp_log('SETTLED',ts,label=label,parent=ep.id,generation=m['generation'],held_lots=held,leaves=actual)
 
+    def _tp_debt_clock(self, ts, safe):
+        p=self._pair
+        if not p or p['debt_since'] is None:return None
+        if not safe:
+            p['standing_debt_deferred']=True;p['standing_safe_since']=None
+            return None
+        if p.get('standing_debt_deferred'):
+            p['standing_safe_since']=ts
+        elif p.get('standing_safe_since') is None:
+            p['standing_safe_since']=p['debt_since']
+        p['standing_debt_deferred']=False
+        # This is the executable-residual service clock only. Absolute debt_since
+        # and elapsed exposure stay unchanged in every debt audit record.
+        return p['standing_safe_since']
+
+    def _tp_debt_observe(self, ts, cause):
+        if not self._tp_enabled() or not self._pair:return None
+        p=self._pair;held=self._pair_qty(self.config.btc_id);cap=p['caps'].bmax
+        debt=max(D(0),held-cap);since=p['debt_since']
+        state=dict(actual_held=str(held),absolute_cap=str(cap),residual_debt=str(debt),
+            debt_since_ns=None if since is None else str(since),duration_ns=str(max(0,ts-since)) if since is not None else '0')
+        previous=p.get('standing_debt_observed')
+        if debt:
+            if previous is None or any(previous[k]!=state[k] for k in ('actual_held','absolute_cap','residual_debt')):
+                self._tp_log('ACTUAL_DEBT_RESIDUAL',ts,parent=p['parent'],cause=cause,**state)
+            p['standing_debt_observed']=state
+        elif previous is not None:
+            self._tp_log('ACTUAL_DEBT_RESOLVED',ts,parent=p['parent'],cause=cause,
+                previous_residual_debt=previous['residual_debt'],native_flat=held==0,**state)
+            p['standing_debt_observed']=None
+        return state
+
     def _tp_debt_safe(self, ts):
         ep,m=self._tp_plan()
         if not m:return False
         self._tp_settled('DEBT_DISPATCH_BARRIER',ts)
+        state=self._tp_debt_observe(ts,'MATCHING_BTC_DECISION')
         book=self._tp_book()
         for oid,owner in self._tp_owners.items():
             if owner['parent']!=ep.id:continue
             order=self.cache.order(ClientOrderId(oid))
             if order is not None and not order.is_closed and marketable(-ep.side,order.price.as_decimal(),D(book['bid']),D(book['ask'])):
-                self._tp_log('MARKETABLE_DEBT_DEFER',ts,parent=ep.id,order_id=oid,book=book)
+                self._tp_log('MARKETABLE_DEBT_DEFER',ts,parent=ep.id,order_id=oid,book=book,**state)
                 return False
-        self._tp_log('DEBT_DISPATCH_SAFE',ts,parent=ep.id,book=book)
+        self._tp_log('DEBT_DISPATCH_SAFE',ts,parent=ep.id,book=book,**state)
         self._tp_debt_witness=book
         return True
