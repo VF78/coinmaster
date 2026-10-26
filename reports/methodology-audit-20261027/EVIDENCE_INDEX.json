@@ -1,0 +1,89 @@
+{
+  "task": "CM-METHODOLOGY-AUDIT-20261027",
+  "status": "READ_ONLY_COMPLETE_PROPOSED_PLAN_NOT_APPROVED",
+  "source_unchanged": "a50af5433a0bbe00aecd6fec26e8d5c0321ced80",
+  "new_product_edits": 0,
+  "new_native_matching": 0,
+  "new_prefix_full_training": 0,
+  "pilot_production_changes": 0,
+  "current_goals_met": false,
+  "past_total_tokens_dollars_hours": "UNKNOWN",
+  "recent_scope": {
+    "canonical_ledgers_134_136": {
+      "attempts": 32,
+      "completed": 19,
+      "failed": 13
+    },
+    "canonical_137": {
+      "attempts": 4,
+      "completed": 1,
+      "failed": 3
+    },
+    "union": {
+      "attempts": 36,
+      "completed": 20,
+      "failed": 16,
+      "engineering": 26,
+      "economic_prefix": 10
+    },
+    "not_global_month_total": true
+  },
+  "evidence": [
+    {
+      "path": "reports/four-week-review-20261026/REVIEW_RU.md",
+      "sha256": "9110f376aec6f95a85d9568253f14107db79ec0e8145beb8ccee3a7195a83e46"
+    },
+    {
+      "path": "reports/four-week-review-20261026/ECONOMIC_REGISTER.json",
+      "sha256": "9f49dc03dd3b1556676753bbcc5d397c2e134bc3fd37813fe73038caa7ae5226"
+    },
+    {
+      "path": "reports/four-week-review-20261026/RECENT_REGISTER.json",
+      "sha256": "bf4e504d67ab27417b2421e1df50321418c8844a5dc5d8e5906ccbf4ab5f719b"
+    },
+    {
+      "path": "reports/four-week-review-20261026/AI_REGISTER.json",
+      "sha256": "76f964470448ce1e24dab2c4423508a72d223f2ce7e922bbb1f718205aa1f8ad"
+    },
+    {
+      "path": "reports/market-redesign-20261024/REPORT.md",
+      "sha256": "125ea033c968da9482bf6e4b90490c3f074d348d75590de76280f8bad74d9a21"
+    },
+    {
+      "path": "reports/broad-hedge-discovery-20261024/LOT_CORRIDOR_RESULTS_RU.md",
+      "sha256": "3842e75f829ba877523b19d8ac245df352f49c3cc10f28971306e9ee0eabab21"
+    },
+    {
+      "path": "reports/hedge-risk-contract-20261025/FINAL_RESULTS_AND_NEXT_PLAN_RU.md",
+      "sha256": "f078796dcd5fba732e3ec8f2bd31c44b8ce90c8e6509de44bb2ba49d568fd63f"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/V2_IMPLEMENTATION_RESULTS_RU.md",
+      "sha256": "233bee11540c897aa207a923d4ff74c3493da5872cb0eb34978b0b93c957bed0"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/engineering-ledger.json",
+      "sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f"
+    },
+    {
+      "path": "reports/sol-standing-protection-20261026/prefix-ledger.json",
+      "sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf"
+    }
+  ],
+  "independent_review": {
+    "reviewer": "audit_economics_reset",
+    "blocking_findings": 0,
+    "corrections_applied": [
+      "q1_minus1bp_6parents_plus1bp_10parents_not_6of10",
+      "P1_single_policy_delta_or_relabel_bundle",
+      "GateA_finite_falsifiable_mechanism_not_new_financial_proof"
+    ]
+  },
+  "first_proposed_package": {
+    "scope": "one zero-engine causal specification and exact future protocol, <=2h active-work timebox",
+    "native_prefix_full": 0,
+    "product_edits": 0,
+    "authorization": "NOT_GRANTED"
+  },
+  "old_native7_proposal": "NOT_APPROVED_NOT_AUTOMATICALLY_CONTINUED"
+}
