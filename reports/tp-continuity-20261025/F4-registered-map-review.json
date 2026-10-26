@@ -1,0 +1,29 @@
+{
+  "schema": "CM_F4_REGISTERED_MAP_REVIEW_V1",
+  "decision": "ONE_CONSOLIDATED_MAP_CORRECTION_REQUIRED",
+  "initial_map_sha256": "1655b80b5b94958a1b1eeb988c18c22d40493c45fde21550f6337ccd750a31d7",
+  "map_sha256": "1655b80b5b94958a1b1eeb988c18c22d40493c45fde21550f6337ccd750a31d7",
+  "p0": [],
+  "p1": [
+    {
+      "id": "F4-MAP-01",
+      "finding": "Map omits positive actual native expectednegativeModifyRejected coverage, and nonquoteSOLsettle safety is stated without explicit currentmatcher/queuedcommand proof. Generic R2/defaultOFF labels also need exactcontrolselection binding before immutablecode review.",
+      "minimal_correction": [
+        "Add a genuine native invalid-total diagnostic after a positive partialfill: attemptedtotal belowactualfilled, sameOIDtyped+genericModifyRejected identity, unchangedcorrectworkingquantity/ownership; separate from validprotectivemodify rejection whichSTOPs. Pure rejecttransition tests cannot replace thisnativecase.",
+        "Mark EVERY native nonquote/timer/mark settle as potentiallyexecutable: record actualcurrentmatchingbook/epoch, allgeneratedcallbacks/commands, duequeue-drain and matching.iterate passes; wrongqty allowed only when actuallynonmarketable/sourceproven. Require latestterminalACK/no unresolvedprotectivemodify/cancel before each nextpotentialmatch; unknownunsafeSTOP. No Quote is not a nonexecution proof.",
+        "Pin exactcontrol semantics: defaultOFF preservesoldproducer/kwargs; OFF pairedNone/noSOL; C0/A0 exact registeredB2_F0 withidenticalTPfix/core/source/policy and onlyA0flag differing. Actual F4 uses registeredR2_A0 builder/sizing/cap; no manualquantity/cap/N752forcing. CheckC0/OFFparity enginefree now and actualfinancialcontrols later."
+      ]
+    }
+  ],
+  "accepted_scope": {
+    "defaultOFF": "Map describes flag-gated originalbranch preservation and nativeprovideronly; no sizing/core/prices/SOL/cap/A0right redesign. Actualcodebranch equivalence remains futureindependentreview.",
+    "one_engine": "Oneaccount/strategy/config, two naturalparents/day withoutreset; actualregisteredquantities/caps, N752pureonly. Budget4/3FAILED/remaining1 unchanged.",
+    "route": "Current unlinkedNETTING/nativeOID-strategy-intent-parent-generation ownership; no positiveauto/cacheindexneeded; rawfilledpositionrecordedseparately. Unexpectedroute/index/quantityUNKNOWN STOP.",
+    "transport": "One staticpublicbase0/insert0/update0/cancel2s queueTrue; sourceexcludedlateDEBT notmanufactured; genuineA0PENDING_CANCEL latefill remainspositiveactualcase.",
+    "coverage_present": "Realstockmargin/firstIOCpartial/current3TP/nativepending, nonmarketableactualDEBT/queuedlatestACK, standing/consumedTP3, marketableDEFER/flatnodebt, secondnaturalparent/A0OFF60/cross/stalemark/fresh recovery, oneoriginalrelease and no caprefund/reanchor/retry, terminalflat/orders0/Liq0/5STOPPED→DISPOSED. Outcomes unknown; mapnotimplementationproof."
+  },
+  "authority": "Approved54ecd/ownerreceipt1629 authorizes oneboundedproductpass per itsgates, but thisreview grants noengine/rootGO. Immutablecode/feed/kwargs/env/pins/independentmoneyreview stillrequired before solephysical4. Prefix0/3blockeduntilactualfulladmission.",
+  "protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "approval_sha256": "1629dc8e5c7044c1a3751d4e8f5a98847ccd7585a5241a5e6b8a644370d318d9",
+  "limits": "Read only frozenmap/approvedcontract facts; no mutableproductcode read, architectureaudit, tests/engine/Popen/source/gate/ledger edits. WroteonlymapreviewJSON/MD."
+}

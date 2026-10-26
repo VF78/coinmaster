@@ -1,0 +1,4 @@
+/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py:187: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+  e.run(streaming=True);e.clear_data();s._tp_settled('AFTER_COMPLETE_NATIVE_STREAM',ns);capture('AT_'+str(second).replace('.','_'))
+/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py:300: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+  try:e.end()

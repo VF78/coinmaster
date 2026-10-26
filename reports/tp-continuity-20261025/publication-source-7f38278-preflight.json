@@ -1,0 +1,39 @@
+{
+  "status": "READY_AUTHORIZED_COMMITTED_ONLY",
+  "repository": "https://github.com/VF78/coinmaster",
+  "visibility_verified_by_local_gh": "PUBLIC",
+  "branch": "codex/hedge-rights-unlock-20261025",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "remote_before": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "commit_count": 3,
+  "payload_files": [
+    "runtime/coinmaster/research/a0_family.py",
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/coinmaster/research/native_book.py",
+    "runtime/coinmaster/strategy/market_redesign.py",
+    "runtime/coinmaster/strategy/paired_prefix.py",
+    "runtime/coinmaster/strategy/standing_tp.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/tests/run_registered_standing_tp.py",
+    "runtime/tests/standing_tp_event_replay.py",
+    "runtime/tests/test_standing_tp_pure.py"
+  ],
+  "unique_commit_history_blobs_scanned": 17,
+  "secret_pattern_counts": {
+    "private_key": 0,
+    "github_token": 0,
+    "aws_access_key": 0,
+    "literal_secret": 0
+  },
+  "range_diff_sha256": "38a6cc50cd1e017f2d037f7d052af1ce88d86a30a86c738d327c23f8b8315776",
+  "workflow_tree_unchanged_since_successful_publication_aaa31": true,
+  "workflow_current_branch_trigger": false,
+  "prior_workflow_push_branch": "codex/nautilus-btc-sol-mvp",
+  "dirty_old_draft_excluded": true,
+  "dirty_patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+  "native_F4_status": "FAILED_NOT_RECLASSIFIED",
+  "engine_budget": "CLOSED_4_OF_4",
+  "prefix_budget": "CLOSED_UNUSED_0_STARTED",
+  "hooks": "/dev/null",
+  "deployment": false
+}

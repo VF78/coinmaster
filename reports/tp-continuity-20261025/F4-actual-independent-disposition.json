@@ -1,0 +1,155 @@
+{
+  "schema": "CM_F4_ACTUAL_INDEPENDENT_DISPOSITION_V1",
+  "decision": "FAILED_ENGINEERING_CLOSED_PREFIX_NO_GO",
+  "p0": [],
+  "p1": [
+    {
+      "id": "F4-ACTUAL-01",
+      "classification": "ACTUAL_QUALIFICATION_GUARD_FAILURE_NOT_GENERIC_API_UNSUPPORTED",
+      "finding": "At153s driveradvance completednativeprocessing thenassertedno_pair_failures; actualpairedfailure isPROTECTION_OVERDUE_NEXT_QUOTE. BTCstandingqty matchednativeheld, but newSOLreplacement/fill/cancel lifecycle remainedunsettled whennextquote arrived. Do not waiveguard/relabelprocessPASS orretry."
+    }
+  ],
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "attempt_id": "f3962d0c-612d-43b2-9aa0-f3535dd67743",
+  "physical_index": 4,
+  "actual_process_exit_code": 1,
+  "actual_failure": {
+    "stage": "P1_MARKETABLE_DEBT",
+    "driver_lines": "run_registered_standing_tp.py215→advance188",
+    "underlying_gate": [
+      "PROTECTION_OVERDUE_NEXT_QUOTE"
+    ],
+    "native_facts": [
+      "At152.01 nonquote settle submittedSOLTP1 .3@98 andTP2 .7@96 plusSTOP1.0 after oldcancels. CurrentnativeSOLbook was96, so submittedTPs genuinelyfilled .3 and.5 respectively inthisnonquote settle.",
+      "Those realfills createdanother requiredSOLreplacement/cancel2s window; subsequentBTCquote153 precededitscompletion. LegacyPROTECTION_OVERDUE_NEXT_QUOTE triggeredNO_GO/UNKNOWN_RISK.",
+      "CurrentSOLquote153 thenfilledremaining.2 ofTP2; SOLnativeflat butBTC1.006 andrequiredBTC TP3leaves1.006 remained. PendingSOLSTOPstillpresent."
+    ],
+    "bounded_cause_inference": "Retainedevent/order times plusknownstaticcancel2s support fixture schedule deliveringnextquotebeforethenewly-generatedpostsettle protectionwindow quiesced. This doesnot establishaBTCcontrollerqty/ownershipfailure or genericstockAPIUNSUPPORTED. Nonquote absence isnotnonexecution; actualfillsdemonstrateit.",
+    "cash": "10006.23449588 USDT nativecash snapshot only; notfinancialTOTAL/ROI becauseBTCpositionremainsopen."
+  },
+  "reached_components": {
+    "registered_entry": "ActualregisteredP1 request550/firstIOC275, positivefirstpartial2, nativeSOLshort2 andthreecurrentTP. Realstockincrease gatesalladmitted. No manualqty/cap override.",
+    "native_ownership": "RawfilledTPpositionpopulated; cacheassociationNone/protectiveTPnotinpositionindex, consistentwithunlinkedroute.",
+    "native_negative_reject": [
+      {
+        "event_id": "153345a3-6098-4223-9d1e-c4d9fe875a29",
+        "order_id": "O-19700101-000210-001-000-7",
+        "status": "PENDING_CANCEL",
+        "quantity": "0.5",
+        "filled": "0.2",
+        "leaves": "0.3",
+        "reason": "Cannot reduce order quantity 0.1 below filled quantity 0.2",
+        "old_working_protection": true
+      }
+    ],
+    "positive_debt": "ActualBTC_DEBT .150@100 withcommission.00825; nativeheld2−.050−.150=1.800.",
+    "queued_modifies": "Threepositivepublicmodify/terminalnativeACKs afterpublicreturn inactualstandingaudit. TP0total.432=filled.050+leaves.382; TP1.382/TP3 1.036. seqproofindicesretained.",
+    "ACK_sequence_proof": [
+      {
+        "sequence": 1,
+        "MODIFY_SUBMIT": 93,
+        "PUBLIC_MODIFY_RETURN": 96,
+        "LATEST_MODIFY_ACK": 109
+      },
+      {
+        "sequence": 2,
+        "MODIFY_SUBMIT": 98,
+        "PUBLIC_MODIFY_RETURN": 101,
+        "LATEST_MODIFY_ACK": 113
+      },
+      {
+        "sequence": 3,
+        "MODIFY_SUBMIT": 103,
+        "PUBLIC_MODIFY_RETURN": 106,
+        "LATEST_MODIFY_ACK": 117
+      }
+    ],
+    "pending_barrier": "ThreeactualnativePENDING_UPDATE orders/current_a0_targets_readyFalse; thiscomponentdoesnotprovefullA0admission.",
+    "standing": "NativeTP0laterfullremaining.382 andTP1full.382; otherstandingentitlements preserved andonlyTP3 remains. mdmissingBTCcoverage0 onthispartialrun.",
+    "marketable_deferral": "A MARKETABLE_DEBT_DEFER event wasobserved153 AFTER qualificationNO_GO andcapreset0/residual1.006. ThisisnotacceptedcleanACTIVE_RISKdeferralcoverage; intendedpostadvanceassertionwasNOT_REACHED."
+  },
+  "not_reached": [
+    "P1fullconsumedTP3/nativeBTCflat/no-laterDEBTpostcondition",
+    "P1allflat/orders0 andnaturalP2 SHORTparent",
+    "P2cross/stale120s-marginDENY/fresh recovery",
+    "P2originalsecondGTC A0grant/submission/positivepartial",
+    "P2actualPENDING_CANCEL sameOIDlatefill/cancelACK/no-afterACKfill",
+    "P2cap/excessDEBT/no-refund/no-retry integratedproof",
+    "Finalbothparentsconsumed0/1/2/nativeflat/orders0/Liq qualification/nativecashfinancialadmission"
+  ],
+  "terminal": {
+    "BTC_open": "1.006 LONG",
+    "SOL_open": "0",
+    "BTC_TP3": "PARTIALLY_FILLED quantity1.036/filled.030/leaves1.006@105.2",
+    "SOL_STOP": "PENDING_CANCEL quantity1.0",
+    "five_STOPPED_then_DISPOSED": true,
+    "flat_or_orders0": false,
+    "limitation": "Successfulcleanupstates doNOTerasefailedgate/openinventory orqualifyfinancialflat."
+  },
+  "budget": {
+    "engineering_max": 4,
+    "physical_started": 4,
+    "active": 0,
+    "remaining": 0,
+    "statuses": [
+      "FAILED",
+      "FAILED",
+      "FAILED",
+      "FAILED"
+    ],
+    "ledger_sha256": "cc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45",
+    "prior_three_raw_unchanged": true,
+    "prior_three_raw_sha256": [
+      "3352261fb1c664e157bb149cf42275bdc6efeacd441109a82f76fd13cfcec2ba",
+      "112233bc25870279b2b235a8d0d2b9e9e37920f7c4ea7d31865149a22420f8b2",
+      "8336a3774a26c0212ad18acedf1fb1d89adc48004a524936b022220cb8f1ac48"
+    ],
+    "prefix_started": 0,
+    "prefix_max": 3,
+    "prefix_decision": "NO_GO_PRECONDITIONS_NOT_MET",
+    "retry_or_assertion_waiver": false
+  },
+  "proof_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/result.json",
+      "sha256": "21b82c6bda8a07be2b22478b2d9f60b50f59e525bf4786ad2f419f9c63af9b37"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/FAILURE_BEFORE_END.json",
+      "sha256": "7bd6aa66460bd39bd8d90daa08b442e80256eca79d7b2219da65752557efe2f6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/BEFORE_END.json",
+      "sha256": "65acbbd196aa447c0b1d1a5a0cdecd2e331a318023e2087c85d1193e63c89acb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AFTER_END.json",
+      "sha256": "4cc748cb0d013f54b488299f6ed8dd2ac6a5f0985ae371ed179ec07ad172164e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/BEFORE_DISPOSE.json",
+      "sha256": "1266fa75618b6bf3178e63577dea7769cc10ccafc3293c1a0d54b50c0c983929"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AFTER_DISPOSE.json",
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/LEDGER_BEFORE_CLAIM.json",
+      "sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/native-events.jsonl",
+      "sha256": "9d067c1cbd0b3d890769e098a84237451836d0ecf53f4d39d7791984889803e9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+      "sha256": "cc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/prefix-ledger.json",
+      "sha256": "899052b1f63861c6c44bb3109964413e156e30f01685fa853efdc05ae1f57db8"
+    }
+  ],
+  "authority": "Read-only actualacceptance/cause disposition. No native/tests/Popen/source/gate/ledger mutations; wroteonlythisreviewpair. No furtherengine authority; no prefix/product/pilotdeployment qualification. Ownerseparatecause canadddetailwithoutchangingthisFAILED4/4 outcome."
+}

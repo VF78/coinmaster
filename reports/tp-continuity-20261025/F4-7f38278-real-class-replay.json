@@ -1,0 +1,20 @@
+{
+  "status": "REAL_NATIVE_CLASS_METHOD_UNIT_PASS",
+  "engine_constructors": 0,
+  "native_matching_fills": 0,
+  "simulated_cash": false,
+  "constructed_event_replay_not_native_evidence": true,
+  "checks": [
+    "bound_initialized_before_real_cache_add_no_ACK",
+    "real_submitted_accepted_dedup",
+    "real_order_partial_right_precheck",
+    "actual_native_class_pending_update_total_offset_latest_ACK_dedup",
+    "foreign_owner_and_valid_modify_rejection_STOP",
+    "state_change_audit_counts_every_guard",
+    "typed_full_terminal_then_generic_after_intent_loss_and_parent_rollover",
+    "real_cache_terminal_history_not_recreated",
+    "unknown_history_and_lost_live_owner_reject",
+    "actual_controller_debt_quantity_duration_resolution_method",
+    "marketable_defer_over60_then_safe_dispatch_clock_preserves_absolute_debt_age"
+  ]
+}

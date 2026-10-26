@@ -1,82 +1,98 @@
 {
-  "schema": "CM_TP_CONTINUITY_ROOT_DISPOSITION_V1",
-  "status": "OWNER_APPROVED_LAST_SLOT_PRODUCT_AND_F4_PREPARATION",
-  "utc": "2026-10-25T16:49:24.828174+00:00",
+  "schema": "CM_TP_CONTINUITY_ROOT_DISPOSITION_V2",
+  "utc": "2026-10-26T07:25:26.985970+00:00",
+  "status": "CLOSED_ENGINEERING_NO_GO_4_OF_4_PREFIX_NOT_RUN",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
   "engineering": {
     "approved_max": 4,
-    "physical_started": 3,
-    "failed": 3,
+    "physical_started": 4,
+    "failed": 4,
     "active": 0,
-    "remaining": 1,
-    "remaining_status": "ONE_CONDITIONAL_INTEGRATED_F4_AFTER_REVIEW_FREEZE_ROOT_GO_NO_RESERVE",
-    "ledger_amendment": "engineering-amended-four-ledger.json; original max3 ledger preserved byte-exact",
-    "current_ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
-    "pre_run_ledger_sha256": "741164b19542d12aec994e6ea8aacfb83f273d9551c6fc2c31c18352d98ca800",
-    "current_ledger_sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a"
+    "authorized_remaining": 0,
+    "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "ledger_sha256": "cc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45"
+  },
+  "physical4": {
+    "attempt_id": "f3962d0c-612d-43b2-9aa0-f3535dd67743",
+    "pid": 7164,
+    "actual_process_exit_code": 1,
+    "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/result.json",
+    "result_sha256": "21b82c6bda8a07be2b22478b2d9f60b50f59e525bf4786ad2f419f9c63af9b37",
+    "failure": "PROTECTION_OVERDUE_NEXT_QUOTE",
+    "failure_at_ns": "153000000000",
+    "native_positions_at_failure": [
+      {
+        "id": "BTCUSDT-PERP.P1SIM-RegisteredProbe-000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "quantity": "1.006",
+        "side": "LONG",
+        "indexed": [
+          "O-19700101-000001-001-000-1"
+        ]
+      }
+    ],
+    "five_components_stopped_then_disposed": true,
+    "terminal_flat": false
   },
   "prefix": {
     "approved_max": 3,
     "physical_started": 0,
-    "status": "BLOCKED_BY_ENGINEERING_NO_ROOT_GO"
+    "authorized_remaining": 0,
+    "status": "CLOSED_UNUSED_AFTER_ENGINEERING_NO_GO_NONTRANSFERABLE",
+    "ledger_sha256": "899052b1f63861c6c44bb3109964413e156e30f01685fa853efdc05ae1f57db8"
   },
-  "product_patch_allowed": true,
-  "stock_api": "NOT_PROVEN: actualF3failed cache-indexassert beforedebt/modify; missingAPI tobeprovedwithinphysical4 undernewexplicitexception.",
-  "reason": "Directnewsequence/coverageexception received. IsolateddefaultOFFproduct+registeredF4preparationauthorizednow; FAILED3 remainsFAILED; no native/economicGO until gates.",
-  "new_proposal": "LAST_SLOT_REGISTERED_PROTOCOL_PROPOSED_RU.md",
-  "proofs": [
+  "native_go": false,
+  "prefix_go": false,
+  "product_qualification": "DEFAULT_OFF_RESEARCH_ONLY_NOT_ACCEPTED",
+  "reached": [
+    "real_registered_parent1_entries",
+    "positive_BTC_DEBT_.150",
+    "three_same_OID_queued_modifies_latest_ACK_after_publicreturn",
+    "actual_SOL_invalid_total_native_ModifyRejected",
+    "standing_TP0_TP1_consumption_remaining_TP3",
+    "marketable_DEBT_DEFER_BRANCH_ONLY_AFTER_NO_GO_UNKNOWN_RISK_NOT_ACCEPTED_SCENARIO"
+  ],
+  "not_reached": [
+    "ordinary_TP_flat_then_no_DEBT",
+    "second_natural_parent",
+    "A0_admission_and_additionalfills",
+    "actual_A0_pendingcancel_latefill",
+    "stale_to_fresh_margin_gate",
+    "financialqualification",
+    "clean_normalrisk_marketable_DEFER_scenario"
+  ],
+  "cause": "SOLcancel/replace re-armedTPs matchedcurrentSOLbook at152.01, producednewreplacement/cancel2swindow; nextquote153precededsettlement. Legacyprotectionguard rejected; notBTCstandingquantity mismatch.",
+  "next_scope": "Read-onlycause andcontract before anynewcode/nativebudget. SOLprotection lifecycle must beaddressed withoutweakeningguard/waivingmissingcases; preserveBTCcore/initialTPpricesweights/A0rights. No newpermissioninthishandoff.",
+  "original_goals": "70%intermediate/90%finaloriginalS0netprofit andDD<=50 NOT_MET; prefix/fullOOSnotproven",
+  "boundaries": "No engine retry/fifthrun/prefix/full/training/download/pilot/production/service/key/externalorder/transfer. Publicsourcepush authorized/notdeployment.",
+  "evidence": [
     {
-      "path": "engineering-ledger.json",
-      "sha256": "d160413ad3dec803e3023438c827fd46029e92c42598d58bb969aa3f4f708d94"
+      "path": "F4-physical4-cause.json",
+      "sha256": "9b761ca0dc58e83bdbf356b903682451e031b4ac7477aa9a67b0812867fe5ad0"
     },
     {
-      "path": "prefix-ledger.json",
-      "sha256": "2ca6975cee1f5b661880131da06740fb5e43908ae95273d662a52b151cd3de46"
+      "path": "F4-actual-independent-disposition.json",
+      "sha256": "4c278d64f000e43aa8c88eda4a2af8ce47a5dbae78d3bc5bc501b57af765b4db"
     },
     {
-      "path": "F1-physical2-cause.json",
-      "sha256": "ccc63c6d81de1115093f0aa2d1d65966cbc6b5f3dbaa05b6d1d9e8f0ea3ed135"
+      "path": "F4-closed-budgets-receipt.json",
+      "sha256": "1cddb6ac6dcccfcae363ee4a2594244fc9287d0884cefd77050654bf25300c6b"
     },
     {
-      "path": "F1-final-slot-reachability-review.json",
-      "sha256": "44daecaedd3d67cef80daa9d0fbbd2ec0638dcd37aa24cd27529714d6c18a9ff"
+      "path": "F4_CLOSED_PROJECT_READBACK.json",
+      "sha256": "8a11df7f81f5f03b2976790f118d58622b05c6a8ec31fc9892e65d218c3a8630"
+    },
+    {
+      "path": "F4-actual-process.json",
+      "sha256": "6e7d102ad2f69f172081cb7ef88d0c0a4061f7e12518aff0813a9be996197e78"
     }
   ],
-  "amendment_owner_receipt": "owner-approval-amendment4.json",
-  "fixture_scope_interpretations": {
-    "data_window": "Approved <=48h processed event-data span; separately pinned necessary one-day configuration guard allowed per physical4-data-config-window-root-adjudication.json. No extra streamed history/training/constructor.",
-    "transport": "Public installed stock LatencyModel may be explicitly configured/frozen for required engineering in-flight/late-fill stress; no native/cache patch or fabricated ACK, no economic prefix transport change. Scope is bounded native fixture, not live async guarantee.",
-    "unknown": "Actor ACK delivery lag over ACKed native cache is not native UNKNOWN. Native cache remains authority; genuine pending state or separately labeled real-class predicate proof needed.",
-    "race": "Debt IOC race and A0-child cancel race are distinct. Concrete source-supported schedule and native critical coverage required. Full-flat late-IOC safety is not proof of stronger arbitrary partial-latency cap invariance."
-  },
-  "table_contract": {
-    "status": "LIMITED_TABLE_CONTRACT_PASS_NO_NATIVE_PROOF",
-    "review_path": "F1-physical3-table-correction-review.json",
-    "review_sha256": "e87c9912345b36f677365b9cfd1b02a35f9d259c5c493552fe97f6dfe2b04d85",
-    "physical4_plan_sha256": "28d3173c26d2c32dd403fa87423534e64986d14ce396ef8abc7383337aa6fd20",
-    "physical4_seed_source_proof_sha256": "329b02bebe5d47355f9820ad94b0b1c22e2070966f54f632e8713fa3ff867594",
-    "physical4_transport_source_proof_sha256": "fc67464256af44b4b8679ac6b66c1ef5ba239eb0ff764d4fe2ae1575b74df73c",
-    "superseded_for_F3_admission": "Old source-plausible before-public-return path invalidated by queue reviewcab2ee0a. F4 provisional coverage facts remain limited, not nativeproof."
-  },
-  "queue_review": {
-    "path": "F1-physical3-queue-contract-independent-review.json",
-    "sha256": "cab2ee0a4d7d3b5830477d161bdff79cec50a4f3d0d193b5d577616ee73d253d"
-  },
-  "new_proposal_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
-  "new_proposal_review": "LAST_SLOT_REGISTERED_PROTOCOL_REVIEW.json",
-  "new_human_answer": "Утверждаю единый physical4, лимит 4",
-  "budget_increase": 0,
-  "queued_standing_owner_receipt": "owner-approval-queued-standing.json",
-  "actual_F3": {
-    "status": "FAILED_OS1",
-    "attempt_id": "c78ffd9a-1621-4d08-bd49-f21f5d1356be",
-    "PID": 96543,
-    "cause_path": "F3-queued-physical3-cause.json",
-    "cause_sha256": "2656ea6984ef97b8203ec64d83193a4eb1742f8447350d0e988c4c30ba629044",
-    "observed": "nativeTP0partial.050 setsrawOrder.position_id; nativecacheassociationNone/indexabsent. Do not claim unsupportedmodifyAPI: debt/modify not reached.",
-    "cleanup": "5actualSTOPPED→DISPOSED, nativeflatNOTclaimed"
-  },
-  "prefix_go": false,
-  "source_publication": "aaa31f83f2fa900cad00506ccf70e4243c3bac11 exactremote; testonly/83moneyunchanged",
-  "last_slot_owner_receipt": "owner-approval-last-slot-registered.json",
-  "native_go": false
+  "project": "Issue136CLOSED/Project2Done/archived actualreadback",
+  "source_publication": {
+    "receipt": "publication-source-7f38278.json",
+    "sha256": "ac13c33f401f77df8bf5a4f341208cfa49c9fd50e3e5d80e6d425578e49ac83c",
+    "public": true,
+    "remote_exact_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+    "deployment": false
+  }
 }

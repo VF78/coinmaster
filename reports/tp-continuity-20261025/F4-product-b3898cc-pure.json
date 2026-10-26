@@ -1,0 +1,18 @@
+{
+  "status": "ENGINE_FREE_PASS",
+  "checks": [
+    "N752_PURE_ONLY_standing_not_renormalized",
+    "7996_integer_standing_conservation_vectors",
+    "pre_fill_overfill_and_unknown_level_reject",
+    "both_sides_actual_BBO_guard",
+    "defaultOFF_exact_family_and_same_C0_A0_fix_roundtrip",
+    "REAL_TierMarginPolicy_stale_DENY_fresh_recovery",
+    "REAL_config_provider_required_no_engine",
+    "REAL_public_native_book_latency_and_default_RO_descriptors",
+    "product_dependency_closure_no_test_or_engine_constructor"
+  ],
+  "check_groups": 9,
+  "engine_constructors": 0,
+  "native_fills": 0,
+  "limits": "Pure/API proof only; physical4 essential native assertions remain mandatory."
+}

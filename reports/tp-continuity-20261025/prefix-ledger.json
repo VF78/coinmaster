@@ -1,6 +1,6 @@
 {
   "task": "CM-TP-CONTINUITY-20261025",
-  "status": "OWNER_APPROVED_AWAITING_FROZEN_PREPARATION_ROOT_GO",
+  "status": "CLOSED_UNUSED_AFTER_ENGINEERING_NO_GO",
   "kind": "PHYSICAL_PREFIX_POPEN_INCL_PREENGINEFAIL",
   "physical_max": 3,
   "physical_started": 0,
@@ -10,5 +10,10 @@
   "source_base": "763d985617abd7a7afef5eec13912303983d8837",
   "parent_engineering_closed_ledger_sha256": "e92957f167e0331380f9f809cf891123c99e33e9d33e974d4516424158f4784f",
   "parent_prefix_closed_ledger_sha256": "f893aafc7c5b65acbc55a2069af1c8738ed798a72e50816f6ab5ed5108b0d7f3",
-  "full_training_downloads_pilot_production": 0
+  "full_training_downloads_pilot_production": 0,
+  "authorized_remaining": 0,
+  "closed_unused": 3,
+  "nontransferable": true,
+  "closure_reason": "F4 actualOS1 / engineering4of4exhausted / no native admission",
+  "closure_engineering_ledger_sha256": "cc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45"
 }

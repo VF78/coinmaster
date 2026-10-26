@@ -1,0 +1,141 @@
+{
+  "status": "COMPLETE_FINISHED_F4_NATIVE_EVIDENCE_NO_ENGINE",
+  "archive": "F4-physical4-native-evidence.tar.gz",
+  "archive_sha256": "9a3eb2a0e7205e1719a786835c46588a05c230502f629f5befcc5f4bab2bc8c6",
+  "archive_bytes": 181016,
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "files": [
+    {
+      "name": "AFTER_DISPOSE.json",
+      "bytes": 526,
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575"
+    },
+    {
+      "name": "AFTER_END.json",
+      "bytes": 245026,
+      "sha256": "4cc748cb0d013f54b488299f6ed8dd2ac6a5f0985ae371ed179ec07ad172164e"
+    },
+    {
+      "name": "AT_0.json",
+      "bytes": 1395,
+      "sha256": "04def9ee6ec4e2360b3433de33473cf27af7351d8acc92208cc5963092c74612"
+    },
+    {
+      "name": "AT_1.json",
+      "bytes": 29138,
+      "sha256": "65c85956e7e2a0888bbfe6e4f3e3d45e15d230e0dfea85cac8622719976921d7"
+    },
+    {
+      "name": "AT_130.json",
+      "bytes": 68186,
+      "sha256": "fc517cfab1d350bfa8b40a345f750d040ed2cca687669974cbb018123c62ce00"
+    },
+    {
+      "name": "AT_131.json",
+      "bytes": 75152,
+      "sha256": "547f90a205df651b6e81b13f499c4837e86b0e9d39bc0e5ba32488b4834b1fa5"
+    },
+    {
+      "name": "AT_135.json",
+      "bytes": 85169,
+      "sha256": "96ac3eec87aae9fa9a56a821f5cc10a9ed0e876edeee049e18a4a15fbc7be2fb"
+    },
+    {
+      "name": "AT_137.json",
+      "bytes": 98832,
+      "sha256": "fbe068783fa73ffd79ff753758218d9f2f1917206ee90959c284bbe912c9fb47"
+    },
+    {
+      "name": "AT_139_01.json",
+      "bytes": 110854,
+      "sha256": "8a4641b2bf97705b5435edc8df7e7891f81d421cef411675f694c89b01f80eb1"
+    },
+    {
+      "name": "AT_140.json",
+      "bytes": 156796,
+      "sha256": "a0d844259a7f39b935c5eb595b5681e22f6b8caada0ce07c54d504c938792e64"
+    },
+    {
+      "name": "AT_141.json",
+      "bytes": 163774,
+      "sha256": "16910fb7068c25f43939cc58a10148cf9057d3654fb66d8142b1debe51f06684"
+    },
+    {
+      "name": "AT_143.json",
+      "bytes": 176174,
+      "sha256": "3b420d9f5906e333967884abad5ae238de666897ccfcfeff3198591c952d7023"
+    },
+    {
+      "name": "AT_145.json",
+      "bytes": 197198,
+      "sha256": "3c52a5d4dba18d81fcdcc77668b9e450aac36a3439627f0372f6b58fbbb96b4b"
+    },
+    {
+      "name": "AT_150.json",
+      "bytes": 211423,
+      "sha256": "428d97753c735e5d8001b7d0d9ea1efed5ee47847c69d0c1c3e3fb3cbb8823fe"
+    },
+    {
+      "name": "AT_152_01.json",
+      "bytes": 229367,
+      "sha256": "d50124ab6880288c392b0b7331f4fc385c85474571e1f2794b75a5a1063eefde"
+    },
+    {
+      "name": "AT_153.json",
+      "bytes": 244018,
+      "sha256": "4005de05ea1c56f454b1aad89580a082d3753c6b60756d8370dccf0f89a07149"
+    },
+    {
+      "name": "AT_2.json",
+      "bytes": 37528,
+      "sha256": "0cdbfad9559b24c33e0f1e0a398fdff53253ed72dbe4375eb73a1f6fb290c787"
+    },
+    {
+      "name": "AT_70.json",
+      "bytes": 46320,
+      "sha256": "b821c9c8fdc35dcc85b5f40d3c986c545122ad39bfdd6eb429834f2ce6badbc2"
+    },
+    {
+      "name": "AT_72_01.json",
+      "bytes": 50486,
+      "sha256": "0bc1c46c8e5a1a16849743613baac7e9731bc83fc3b9f0684b1b2071ba72eae5"
+    },
+    {
+      "name": "BEFORE_DISPOSE.json",
+      "bytes": 245031,
+      "sha256": "1266fa75618b6bf3178e63577dea7769cc10ccafc3293c1a0d54b50c0c983929"
+    },
+    {
+      "name": "BEFORE_END.json",
+      "bytes": 244022,
+      "sha256": "65acbbd196aa447c0b1d1a5a0cdecd2e331a318023e2087c85d1193e63c89acb"
+    },
+    {
+      "name": "FAILURE_BEFORE_END.json",
+      "bytes": 244030,
+      "sha256": "7bd6aa66460bd39bd8d90daa08b442e80256eca79d7b2219da65752557efe2f6"
+    },
+    {
+      "name": "LEDGER_BEFORE_CLAIM.json",
+      "bytes": 4249,
+      "sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a"
+    },
+    {
+      "name": "P1_REGISTERED_SIZING_AND_THREE_TP.json",
+      "bytes": 37557,
+      "sha256": "20097c7bc9e934675b99cc8c54333900f87c1bd4407a00966957e50a399577c8"
+    },
+    {
+      "name": "native-events.jsonl",
+      "bytes": 39484,
+      "sha256": "9d067c1cbd0b3d890769e098a84237451836d0ecf53f4d39d7791984889803e9"
+    },
+    {
+      "name": "result.json",
+      "bytes": 1378,
+      "sha256": "21b82c6bda8a07be2b22478b2d9f60b50f59e525bf4786ad2f419f9c63af9b37"
+    }
+  ],
+  "secret_pattern_matches": 0,
+  "limits": "Syntheticengineeringonly; failurepreserved; nofinancialPASS/no newnativeexecution."
+}

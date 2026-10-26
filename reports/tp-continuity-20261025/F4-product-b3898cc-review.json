@@ -1,0 +1,85 @@
+{
+  "schema": "CM_F4_PRODUCT_B3898CC_INDEPENDENT_REVIEW_V1",
+  "source_commit": "b3898cc3f478b29b8872565bc2318f3b044a6411",
+  "decision": "HOLD_ONE_CONSOLIDATED_PRODUCT_CORRECTION_REQUIRED",
+  "p0": [],
+  "p1": [
+    {
+      "id": "F4-PROD-01",
+      "files": [
+        "standing_tp.py55–67,76–97",
+        "wave_overlay.py2056,2569,2678",
+        "installedstrategy.pyx854–871,1925–1972"
+      ],
+      "finding": "Unconditional live-cache/live-intent ownership lookup in _tp_native_event fails valid lifecycle boundaries. New owner is bound before submit; installedpublicsubmit synchronously publishesOrderInitialized BEFOREcache.add_order, so firstprotectiveTP raisesSTANDING_CURRENT_OWNER_UNKNOWN. Separately typedfullFill removes _pending_by_order2569 before nativegenericOrderFilled; same unconditional lookup thenfails consumedterminalTP/cleanup delivery.",
+      "minimal_action": "Distinguish pre-cacheInitialized and post-terminal generic/typed nativeevents with immutable boundowner/actualevent/cacheterminaltruth. Initialized is notnativeACK/protection; terminalhistory cannot recreate rights/ACK or loosen livecurrentOID-parent-generation ownership. Keep strictlive checks for working/modify/fill transitions and unknown/orderconformanceSTOP. Ensure terminalevent dedup/currentparent rollover works without fabricatedcache/intentreinsertion.",
+      "verification": "Add meaningful engine-free actual-order/event lifecycle checks for Initialized-beforecache, nativeSubmitted/Accepted, partialFill, typedfullFill→intentterminal→genericFill, expectedcancel/terminalcleanup and stale/foreignliveowner rejection. Exercise real event classes/source callbackordering and productmethods, not just pure standalone arithmetic."
+    },
+    {
+      "id": "F4-PROD-02",
+      "files": [
+        "standing_tp.py219–232",
+        "paired_prefix.py130–132,496–507"
+      ],
+      "finding": "Marketable debt waiting is permitted and overduefailsuppressed, but MARKETABLE_DEBT_DEFER audit only storesparent/OID/book. It doesnot explicitlyrecordactualheld/cap/residualdebt/since/duration, although approved7292 requires exposedoutstandingdebt amount and duration. Generic_pair_log adds no fields.",
+      "minimal_action": "Log actualnativeheld, unchangedcap, exactpositive residual, debt_since and elapsedns on everymarketableDEFER; explicitlylog resolution byordinaryTP/flat or actualDEBTsettlement. Do not labelheld>cap as capPASS or altercaps/SOL/debtquantity.",
+      "verification": "Engine-free realcontroller transition checks forDEFER quantity/time persistence and resolution; actualF4 later must assertnativevalues/durations, not syntheticpass."
+    }
+  ],
+  "consolidated_batch": "Exactlyone scope-preserving correction batch for the twofindings; no driver/sourcearchitecture expansion or monetaryrule changes. Freeze correctedproduct/pureproof before focusedclosure; driver reviewedonlywhenimmutable separately.",
+  "reviewed_invariants": {
+    "defaultOFF": "Original_md_reconcile andpaircancelbranches retained behind optin; newflagdefaultFalse. Builder omitsflag bydefault, deniesstandingOFF, sameC0/A0 B2_F0 kwargs exceptA0bool/label. ExistingR3guard remains. This sourcefinding doesnotpromiseactualOFFfinancialparity.",
+    "standing_and_inventory": "BeforeactualTPfill pre-right integerlattice/TradeID checks; onlyownlevelsubtract; ordinaryfull no allocated_entry reset. Initial/entry/debt usesactualnativeheld target_lots/consumed, totalmodifyactualfilled+desiredleaves; no N752nativeforcing. No input size/price/initialweight/SOL policy/fee/funding/A0 right changes found inthisdiff.",
+    "protection_and_increases": "Enabledpairdebt cancelsENTRYonly, keepsnativeTP. Marketableguard usespubliccurrentnativebook, sourcezero-insert/update witness validation anddebtfillwitness comparison; pairlock/A0debt checks keepincreasesblocked.",
+    "ACK_and_safety": "SinglependingperOID/generation andnativecachedquantityvalidation; unexpectedUpdated/validModifyRejected/overlap/unknown STOP. ReadonlySimulationModule provider wired intonormalnative producer; no tests/BacktestEngine insideprovider/controller, cachemutations or positionlinkinjection. Nonquote/currentmatching safety remainsfutureintegrationtraceobligation.",
+    "diagnostic_reject": "ProductrejectSTOP remainsappropriate. Futurefixture must discriminate explicitlyauthorized invalid-total nativeprobe with actualunchangedcache/eventproof atbothroutes; it mustnever globallysuppress validprotectiveModifyRejected. Driver not reviewedhere."
+  },
+  "reported_proof": "SavedMacpure ENGINE_FREE_PASS/9groups/7996vectors/engine0 inspected only. It doesnotexercise the failing native lifecycle order; no reviewer tests run.",
+  "proof_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-product-b3898cc.diff",
+      "sha256": "1041245fba78877281df9016105c26788172cbbd08953501503f01ad89d113aa"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-product-b3898cc-pure.json",
+      "sha256": "b94266685e50897bbef83e9e58cac347b347621cca32d05dfb505c317e115f1a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/coinmaster/strategy/standing_tp.py",
+      "sha256": "3511226ae3d75f957664bb4941ed0443742366009e544b93759b4dc47f095af8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/coinmaster/research/native_book.py",
+      "sha256": "5095258f65740d0326f9ae4f9d70a416b9c402fdd00b2ba07158e890814616b7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "509da2b7fcd42db708f64b78ddf8262c8d27b00c50e89363bc47f0f8cccf3bb0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "db69c6b6cd848cbe8cc643ab5bf6a0cdbca1c993fdf026c57758f33f416ac637"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "9b50085ed49fe0c97e1e05b308339ce31273801987bb3d0ec4eb0043abbd19da"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/coinmaster/research/a0_family.py",
+      "sha256": "29cc027ff3d1e0bc936b038e19468b933161f5b406e11cfa6ff3045881ca3338"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/coinmaster/research/native_baseline.py",
+      "sha256": "805cc7bf98443223016889dbb6a1361e07a6e8a36a9b31deffb5a27c02b68109"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-b3898cc/runtime/tests/test_standing_tp_pure.py",
+      "sha256": "4c4232df3ee683493013e3e376bbadd43dbcbd32b8ec9955a5b97885fa5ee100"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    }
+  ],
+  "authority": "No native/rootGO/productadmission byreview. Existingmax4/3FAILED/remaining1 andprefix0/3 unchanged. F4driver/plan/actualnativeproof notqualified. Reviewer0tests/engines/Popen; onlyreviewpairwritten."
+}

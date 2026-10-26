@@ -1,0 +1,126 @@
+{
+  "schema": "CM_LAST_SLOT_IMPLEMENTATION_MAP_V1",
+  "status": "COMMITTED_IMMUTABLE_ENGINE_FREE_PASS_REVIEW_REQUIRED",
+  "native_started": 0,
+  "product_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "source_head": "aaa31f83f2fa900cad00506ccf70e4243c3bac11",
+  "approval_sha256": "1629dc8e5c7044c1a3751d4e8f5a98847ccd7585a5241a5e6b8a644370d318d9",
+  "protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "budget": {
+    "max": 4,
+    "started": 3,
+    "active": 0,
+    "remaining": 1,
+    "prefix_started": 0
+  },
+  "code_map": [
+    {
+      "file": "coinmaster/strategy/standing_tp.py",
+      "change": "Default-off native lifecycle controller: preserve ordinary-fill standing leaves; allocate only initial/entry/debt; same-OID total=actualFilled+desiredLeaves; command generation and latest native ACK; stop ambiguous/rejected/unsafe state."
+    },
+    {
+      "file": "coinmaster/research/native_book.py",
+      "change": "Read-only stock SimulationModule exchange/book witness: actual matching quote identity/epoch; pre-input settled protective commands; no test import, matcher modification or cache mutation."
+    },
+    {
+      "file": "coinmaster/strategy/market_redesign.py",
+      "change": "Flag branch delegates reconciliation; preserve original default branch; current remaining-level generation/audit and native consumption."
+    },
+    {
+      "file": "coinmaster/strategy/paired_prefix.py",
+      "change": "Flag branch cancels ENTRY only while debt pending; actual native marketable TP DEFER and residual recomputation; preserve all SOL policy/caps."
+    },
+    {
+      "file": "coinmaster/strategy/wave_overlay.py",
+      "change": "Default-off config/provider, native submit/event/fill hooks; no sizing/core/TP price changes."
+    },
+    {
+      "file": "coinmaster/research/a0_family.py + native_baseline.py",
+      "change": "Exact registered opt-in kwargs and normal runtime provider wiring; old kwargs/defaultOFF unchanged; narrow approved data/config window exception."
+    }
+  ],
+  "fixture_map": [
+    {
+      "stage": "P1 natural parent",
+      "trigger": "729 real completed daily signal, actual registered sizing/first IOC partial",
+      "assert": "real stock margin, R2 exact kwargs, unlinked NETTING/no execalgo, actual 3 TP ownership and pending-native barrier"
+    },
+    {
+      "stage": "P1 safe debt",
+      "trigger": "genuine SOL relief with BTC below every working SELL TP",
+      "assert": "real BTC_DEBT fill, preserved TP OIDs, total includes actual partial fills, latest queued native ACK before next input"
+    },
+    {
+      "stage": "P1 standing",
+      "trigger": "ordinary TP0 then TP1 actual fills at own native prices",
+      "assert": "unconsumed own standing leaves invariant; consumed levels not required; N752 vector pure-only"
+    },
+    {
+      "stage": "P1 marketable debt",
+      "trigger": "SOL relief with working TP3 marketable, bounded fresh depth; then TP3 to native flat",
+      "assert": "visible debt DEFER blocks increases; actual residual recomputation; flat means no later debt submit; genuine consumed TP3"
+    },
+    {
+      "stage": "P2 natural parent",
+      "trigger": "next daily actual eligible signal, no account/domain reset",
+      "assert": "real sizing/caps, native pending/cross/stale-margin denials then fresh recovery"
+    },
+    {
+      "stage": "P2 A0",
+      "trigger": "old second child cancel ACK, OFF60s, one original-price release GTC partial; ordinary TP triggers cancel2s, fresh depth causes genuine pending-cancel late fill",
+      "assert": "one grant/submit, integer original second right, no cap reanchor/refund/retry; late fill debt and native protection reconciled"
+    },
+    {
+      "stage": "terminal",
+      "trigger": "actual remaining TP/SOL closes and stock lifecycle end/dispose",
+      "assert": "native flat, orders0, zero liquidation, five actual STOPPED then DISPOSED"
+    }
+  ],
+  "safety_notes": [
+    "No positive auto-update or cache position-association assertion on unlinked NETTING route. Raw fill position separately recorded.",
+    "Static public LatencyModel insert0/update0/cancel2s and queueTrue throughout. No late debt input race manufactured.",
+    "SOL cancel/replace commands settle using native non-quote data at due time before next quote; original SOL next-quote protection guard unchanged.",
+    "Any essential NOT_REACHED/UNKNOWN or valid modify rejection stops; no prefix admission promise.",
+    "Physical4 plan data25h10/config49h10 guard; actual all event timestamps must remain within48h."
+  ],
+  "pure_checks": [
+    "actual native public API descriptors/classes, no BacktestEngine construction",
+    "JSON/defaultOFF exact kwargs and flag behavior",
+    "real target_lots initial/debt and standing ordinary conservation integer vectors",
+    "command pending/latestACK/unknown/reject state transitions",
+    "actual quote witness marketability/identity classifiers",
+    "ledger old raw rows and parent hash, approval exact string, max4 physical4 claim preconditions",
+    "all checks rerun on immutable committed Mac archive"
+  ],
+  "review_closure": {
+    "native_modify_rejected": "Real public invalid total below a genuine filled quantity; unchanged working order/cache proof; separately fail any controller valid modify rejection.",
+    "non_quote_settlement": "Every due-time stream and settlement pass remains a potential matching boundary: actual public book/quote epoch and command sequence traced; nonexecutable drift only with exact matching book evidence; unknown/executable drift STOP. NoQuote alone provides no safety credit.",
+    "control_binding": "OFF has no paired branch/A0 and standing flag default false. New financial C0/A0 both exact B2_F0 and same standing fix; differ only original A0 boolean. No R3 guard relaxation."
+  },
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "actual_native_engines_after_last_slot_approval": 0,
+  "root_go": false,
+  "engine_ledger": {
+    "sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a",
+    "physical_started": 3,
+    "physical_max": 4,
+    "active": 0,
+    "remaining": 1
+  },
+  "final_plan": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-plan.json",
+    "sha256": "8a0868ee16b0eae58ee7c5f2bd9fc995fcc778065f4dfeeb2d3a7702acf7e4b5"
+  },
+  "final_gate": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-gate.json",
+    "sha256": "b7251392d18c7a01f9a4642818155e129b541bc7f0eeff42ddb142ce12104c9f"
+  },
+  "consolidated_correction": [
+    "Bound pre-cache Initialized validates actual immutable owner/event only, no ACK. Working events retain strict native cache/current intent; postterminal generic only exact actual cache event history, no reinserted rights.",
+    "Real native Cache/Order/event-class replay tests are UNIT ONLY: zero matching/engine/cash proof.",
+    "DEFER exports actualheld/cap/residual/since/duration; nativeTP/debt/flat resolution; absolute debt age retained. Separate executable service clock resumes on firstsafe quote afterlongDEFER.",
+    "Every settlement/command transition checks public current book; bounded engineering logs every boundary, longproducer keeps stable-state changes+finite guard counts.",
+    "Actual SOL invalid-total modify created on PARTIALLY_FILLED before legacy cancel, actualPENDING_UPDATE proves no localnoop; actualModifiedRejected+unchanged live quantity required; controllerBTCvalidrejectSTOP.",
+    "Normal read-only SimulationModule implements all four stock hooks, actualdirect native-class API calls tested."
+  ]
+}

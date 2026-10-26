@@ -1,0 +1,14 @@
+{
+  "task": "CM-TP-CONTINUITY-20261025",
+  "status": "OWNER_APPROVED_AWAITING_FROZEN_PREPARATION_ROOT_GO",
+  "kind": "PHYSICAL_PREFIX_POPEN_INCL_PREENGINEFAIL",
+  "physical_max": 3,
+  "physical_started": 0,
+  "active": 0,
+  "attempts": [],
+  "protocol_sha256": "34d1fbd05160102dca08ac25a55c6e2e22d8584f04171899384bba2729f7fff4",
+  "source_base": "763d985617abd7a7afef5eec13912303983d8837",
+  "parent_engineering_closed_ledger_sha256": "e92957f167e0331380f9f809cf891123c99e33e9d33e974d4516424158f4784f",
+  "parent_prefix_closed_ledger_sha256": "f893aafc7c5b65acbc55a2069af1c8738ed798a72e50816f6ab5ed5108b0d7f3",
+  "full_training_downloads_pilot_production": 0
+}

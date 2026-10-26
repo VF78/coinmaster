@@ -1,9 +1,9 @@
 {
   "task": "CM-TP-CONTINUITY-20261025",
-  "status": "STOP_FIRST_FAILURE",
+  "status": "CLOSED_4_OF_4_NO_MORE_ENGINE",
   "kind": "NATIVE_ENGINE_CONSTRUCTOR",
   "physical_max": 4,
-  "physical_started": 3,
+  "physical_started": 4,
   "active": 0,
   "attempts": [
     {
@@ -60,6 +60,22 @@
       "actual_process_exit_code": 1,
       "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F3-queued-standing-physical3/result.json",
       "result_sha256": "4cee5a69474d7a23bfc9d4d713fa1fdbb31c5b908f80d4b905674cdc6bcf761a"
+    },
+    {
+      "attempt_id": "f3962d0c-612d-43b2-9aa0-f3535dd67743",
+      "physical_index": 4,
+      "fixture_id": "F4_REGISTERED_R2_QUEUED_STANDING_TP",
+      "status": "FAILED",
+      "started_utc": "2026-10-26T07:22:04.975992+00:00",
+      "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+      "gate_sha256": "c35b732a1a7871d95407945d34ddfe8d86d43f675d19300652138c36a1a2d06a",
+      "protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4",
+      "ledger_before_sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a",
+      "finished_utc": "2026-10-26T07:22:05.192113+00:00",
+      "actual_process_exit_code": 1,
+      "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/result.json",
+      "result_sha256": "21b82c6bda8a07be2b22478b2d9f60b50f59e525bf4786ad2f419f9c63af9b37"
     }
   ],
   "protocol_sha256": "6f89de510dc9550bdd998dfd9d8b2889d590969d1307ddb2bc920ae4546acdda",
@@ -76,7 +92,7 @@
     "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/owner-approval-amendment4.json",
     "sha256": "958ffe15351412b3bafa73e62626b843af42296c218ab270f24163a0bbde4dae"
   },
-  "authorized_remaining": 1,
+  "authorized_remaining": 0,
   "prefix_physical_max_unchanged": 3,
   "prefix_physical_started_unchanged": 0
 }

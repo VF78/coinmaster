@@ -1,0 +1,42 @@
+{
+  "status": "PUBLISHED_EXACT_REMOTE_VERIFIED",
+  "recorded_utc": "2026-10-26T07:30:29.029268+00:00",
+  "repository": "https://github.com/VF78/coinmaster",
+  "visibility": "PUBLIC",
+  "branch": "codex/hedge-rights-unlock-20261025",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "remote_actual_ref": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "push_actual_exit_code": 0,
+  "remote_verification_exit_code": 0,
+  "core_hooks_path": "/dev/null",
+  "preflight_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/publication-source-7f38278-preflight.json",
+  "preflight_sha256": "df2e5b98d5d06a6c8834b23c7d6c7ada14ce69d1acfcea046df756226d6888e6",
+  "commit_count": 3,
+  "committed_files": [
+    "runtime/coinmaster/research/a0_family.py",
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/coinmaster/research/native_book.py",
+    "runtime/coinmaster/strategy/market_redesign.py",
+    "runtime/coinmaster/strategy/paired_prefix.py",
+    "runtime/coinmaster/strategy/standing_tp.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/tests/run_registered_standing_tp.py",
+    "runtime/tests/standing_tp_event_replay.py",
+    "runtime/tests/test_standing_tp_pure.py"
+  ],
+  "historical_blobs_scanned": 17,
+  "secret_pattern_counts": {
+    "private_key": 0,
+    "github_token": 0,
+    "aws_access_key": 0,
+    "literal_secret": 0
+  },
+  "workflow_trigger_on_current_branch": false,
+  "dirty_old_draft_excluded": true,
+  "dirty_patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+  "F4_status": "FAILED_UNCHANGED",
+  "engineering": "CLOSED4/4",
+  "prefix": "CLOSED_UNUSED3/started0",
+  "deployment": false,
+  "new_native_engines": 0
+}

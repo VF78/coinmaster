@@ -1,0 +1,619 @@
+diff --git a/runtime/coinmaster/research/a0_family.py b/runtime/coinmaster/research/a0_family.py
+index 9ac62ab..28eb2e0 100644
+--- a/runtime/coinmaster/research/a0_family.py
++++ b/runtime/coinmaster/research/a0_family.py
+@@ -7,13 +7,16 @@ VARIANTS = {"R2_OFF": (None, False), "R2_C0": ("B2_F0", False), "R2_A0": ("B2_F0
+ START_MS, END_MS = 1725148800000, 1736899200000
+ 
+ 
+-def build_a0_kwargs(data_root, artifact_dir, variant, feed, *, start_ms=START_MS, end_ms=END_MS):
++def build_a0_kwargs(data_root, artifact_dir, variant, feed, *, start_ms=START_MS, end_ms=END_MS, standing_tp=False):
+     if variant not in VARIANTS:
+         raise ValueError("A0_EXACT_VARIANT_REQUIRED")
+-    if not ((start_ms, end_ms) == (START_MS, END_MS) or 0 < end_ms - start_ms <= 48 * 3600000):
++    if not ((start_ms, end_ms) == (START_MS, END_MS) or 0 < end_ms - start_ms <= 48 * 3600000 or (standing_tp is True and (start_ms,end_ms)==(-86400000,90600000))):
+         raise ValueError("A0_APPROVED_WINDOW_REQUIRED")
+     from coinmaster.research.paired_prefix_run import build_native_kwargs
+     kwargs = build_native_kwargs(config_for("R2"), data_root, artifact_dir, "OFF", feed, registered_control="R2")
++    if type(standing_tp) is not bool: raise ValueError("STANDING_FLAG_MUST_BE_BOOL")
++    if standing_tp and variant == "R2_OFF": raise ValueError("STANDING_OFF_CONTROL_MUST_USE_DEFAULT_FALSE")
++    if standing_tp: kwargs["research_btc_standing_tp"] = True
+     kwargs["research_registered_control"] = None
+     kwargs["research_a0_family"] = FAMILY
+     kwargs["research_paired_prefix"], kwargs["research_a0_original_second"] = VARIANTS[variant]
+@@ -31,7 +34,7 @@ def validate_native_a0(actual):
+     if actual["research_a0_family"] != FAMILY or variant is None:
+         raise ValueError("A0_EXACT_FAMILY_REQUIRED")
+     expected = build_a0_kwargs(actual["data_root"], actual["artifact_dir"], variant,
+-        actual["research_paired_signal_rows"], start_ms=actual["trading_start_ms"], end_ms=actual["trading_end_ms"])
++        actual["research_paired_signal_rows"], start_ms=actual["trading_start_ms"], end_ms=actual["trading_end_ms"], standing_tp=actual["research_btc_standing_tp"])
+     bound = signature(run_native_diagnostic).bind(**expected)
+     bound.apply_defaults()
+     for key, value in bound.arguments.items():
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 331105e..c1685d0 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -759,6 +759,7 @@ def build_native_strategy_config(context):
+         research_h1_b1=research_h1_b1,
+         research_a0_family=context["research_a0_family"], research_a0_original_second=context["research_a0_original_second"],
+         research_paired_prefix=research_paired_prefix, research_paired_signal_rows=research_paired_signal_rows,
++        research_btc_standing_tp=context.get("research_btc_standing_tp", False), research_native_book=context.get("research_native_book"),
+         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
+         research_btc_split50=research_btc_split50,
+         research_btc_split_planref_v1=research_btc_split_planref_v1,
+@@ -826,6 +827,7 @@ def run_native_diagnostic(
+     research_registered_control: str | None = None,
+     research_paired_prefix: str | None = None,
+     research_paired_signal_rows: tuple = (),
++    research_btc_standing_tp: bool = False,
+     research_btc_real_u: bool = False,
+     research_btc_q_mode: str | None = None,
+     research_sol_off: bool = False,
+@@ -981,6 +983,11 @@ def run_native_diagnostic(
+     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+         run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first=="alpha-corridor-v1"),
+         **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
++    research_native_book = None
++    if research_btc_standing_tp:
++        from coinmaster.research.native_book import NativeBookWitness
++        research_native_book = NativeBookWitness()
++        modules.append(research_native_book)
+     engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), liquidity_consumption=research_paired_policy, bar_execution=not bool(research_paired_policy or research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
+     engine.add_instrument(btc_instrument)
+     engine.add_instrument(sol_instrument)
+@@ -1009,6 +1016,7 @@ def run_native_diagnostic(
+             raise ValueError("COVER_EXACT_720_HOURLY_RETURNS_REQUIRED")
+         cover_hour_seed = tuple((t*1_000_000,paired["BTCUSDT"][t],paired["SOLUSDT"][t]) for t in timestamps)
+     strategy = strategy_type(build_native_strategy_config(locals()))
++    if research_native_book is not None: research_native_book.bind(strategy)
+     engine.add_strategy(strategy)
+     audit_archive = None
+     if research_sol_risk_first == "alpha-corridor-v1":
+diff --git a/runtime/coinmaster/research/native_book.py b/runtime/coinmaster/research/native_book.py
+new file mode 100644
+index 0000000..8bf19c7
+--- /dev/null
++++ b/runtime/coinmaster/research/native_book.py
+@@ -0,0 +1,44 @@
++"""Read-only public native matching-book witness for standing-TP research.
++
++No order/cache mutation, matching override, synthetic ACK or economic model.
++"""
++from nautilus_trader.backtest.modules import SimulationModule
++from nautilus_trader.backtest.config import SimulationModuleConfig
++from nautilus_trader.model.data import QuoteTick
++
++
++class NativeBookWitness(SimulationModule):
++    def __init__(self):
++        super().__init__(SimulationModuleConfig()); self.strategy=None; self.current={}; self.epochs={}; self.audit=[]
++
++    def __repr__(self): return 'NativeBookWitness(stock-public-read-only)'
++
++    def bind(self, strategy):
++        if self.strategy is not None: raise ValueError('NATIVE_BOOK_WITNESS_ALREADY_BOUND')
++        if self.exchange is None or self.exchange.oms_type.name != 'NETTING' or not self.exchange.use_message_queue:
++            raise ValueError('STANDING_NATIVE_TRANSPORT_OR_OMS_UNKNOWN')
++        latency=self.exchange.latency_model
++        if latency is not None and (latency.base_latency_nanos or latency.insert_latency_nanos or latency.update_latency_nanos):
++            raise ValueError('STANDING_NATIVE_INSERT_UPDATE_MUST_BE_ZERO')
++        self.strategy=strategy
++
++    def pre_process(self,data):
++        if isinstance(data,QuoteTick):
++            if self.strategy is not None:self.strategy._tp_settled('BEFORE_NATIVE_MATCHING_INPUT',data.ts_event)
++            key=data.instrument_id;self.current[key]=data;self.epochs[key]=self.epochs.get(key,0)+1
++
++    def process(self,ts_now):
++        # process() is a settlement observation, not a new matching input. A
++        # zero-latency modify enqueued by the current drain can still be waiting
++        # for the next stock drain pass. Before-input is the strict barrier.
++        if self.strategy is not None:
++            self.strategy._tp_transient_boundary('NATIVE_SETTLEMENT_PASS',ts_now)
++
++    def matching(self,instrument_id):
++        quote=self.current.get(instrument_id);book=self.exchange.get_book(instrument_id)
++        if quote is None or book is None:raise ValueError('NATIVE_MATCHING_BOOK_UNKNOWN')
++        bid=book.best_bid_price();ask=book.best_ask_price()
++        if bid is None or ask is None or book.ts_last!=quote.ts_event or bid!=quote.bid_price or ask!=quote.ask_price:
++            raise ValueError('NATIVE_MATCHING_BOOK_TICK_IDENTITY_UNKNOWN')
++        return dict(epoch=self.epochs[instrument_id],tick_identity=id(quote),timestamp_ns=quote.ts_event,
++            book_timestamp_ns=book.ts_last,sequence=book.sequence,bid=str(bid),ask=str(ask),bid_size=str(book.best_bid_size()),ask_size=str(book.best_ask_size()))
+diff --git a/runtime/coinmaster/strategy/market_redesign.py b/runtime/coinmaster/strategy/market_redesign.py
+index 0ab15a6..d6a3c20 100644
+--- a/runtime/coinmaster/strategy/market_redesign.py
++++ b/runtime/coinmaster/strategy/market_redesign.py
+@@ -174,6 +174,8 @@ class MarketRedesignResearch(A0RightsResearch):
+             self._split_child_submit=False
+ 
+     def _md_reconcile(self,ts):
++        if self._tp_enabled():
++            return self._tp_reconcile(ts)
+         if self._pair_btc_tp_paused():
+             return
+         if not self._md_enabled():
+@@ -269,6 +271,8 @@ class MarketRedesignResearch(A0RightsResearch):
+             return
+         m=self._md_plans.get(intent.episode_id)
+         if m and intent.level not in m["consumed"]:
++            if self._tp_enabled() and self._tp_held_lots() and not self._forced_close_reason and not self._liquidating:
++                raise ValueError("STANDING_UNEXPECTED_REQUIRED_TARGET_CANCEL")
+             m["accepted"].discard(intent.level)
+             self._md_coverage(ts,False,intent.episode_id,"TARGET_CANCEL_ACK")
+ 
+@@ -323,7 +327,7 @@ class MarketRedesignResearch(A0RightsResearch):
+                 self._domain.episode.btc_filled_tps.add(intent.level)
+                 # A terminal old target during replacement cannot be restored
+                 # merely because the newer inventory allocation is larger.
+-                m["allocated_entry"]=None
++                if not self._tp_enabled(): m["allocated_entry"]=None
+             self._split_stop("FIRST_POSITIVE_TP_FILL")
+             ep=self._domain.episode
+             if ep:
+@@ -352,5 +356,5 @@ class MarketRedesignResearch(A0RightsResearch):
+             submits=submits,accepted=accepted,denials=[e for e in self.market_redesign_audit if e["event"]=="A0_DENY"],
+             native_fill_coverage_complete=bool(complete),native_release_fills=fills,
+             actual_releases=len({f["client_order_id"] for f in fills}))
+-        return dict(a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
++        return dict(standing_tp_audit=self.standing_tp_audit if self._tp_enabled() else None,a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
+             open_protection_exception_since_ns=str(self._md_missing_since) if self._md_missing_since is not None else None)
+diff --git a/runtime/coinmaster/strategy/paired_prefix.py b/runtime/coinmaster/strategy/paired_prefix.py
+index b7501a8..6684883 100644
+--- a/runtime/coinmaster/strategy/paired_prefix.py
++++ b/runtime/coinmaster/strategy/paired_prefix.py
+@@ -189,7 +189,7 @@ class PairedPrefixResearch:
+             # Cancel at the actual causal fill/terminal timestamp, so ACK can
+             # precede the next distinct executable BTC quote, not one quote later.
+             work = [(oid, {}, self.cache.order(ClientOrderId(oid))) for oid, intent in self._pending_by_order.items()
+-                    if intent.action.startswith("BTC")]
++                    if intent.action == "BTC_ENTRY" or (not self._tp_enabled() and intent.action.startswith("BTC"))]
+             self._pair_cancel(work)
+ 
+     def _pair_release_if_terminal(self, ns):
+@@ -353,6 +353,10 @@ class PairedPrefixResearch:
+                 m = self._md_plans.get(ep.id)
+                 if m:
+                     m["allocated_entry"] = None; m["signature"] = None
++                    if self._tp_enabled():
++                        witness=self._tp_book()
++                        if witness != getattr(self,"_tp_debt_witness",None): raise ValueError("STANDING_INTERPOSED_BTC_INPUT_BEFORE_DEBT_FILL")
++                        m["standing_inventory_dirty"]=True
+         if owner["instrument"] == self.config.sol_id and owner["kind"] != "ENTRY":
+             step = self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
+             removed = int(qty / step)
+@@ -473,7 +477,7 @@ class PairedPrefixResearch:
+         btc = self._pair_qty(self.config.btc_id); sol = self._pair_qty(self.config.sol_id)
+         if p["protection_since"] is not None and ns > p["protection_since"]:
+             self._pair_fail("PROTECTION_OVERDUE_NEXT_QUOTE", ns)
+-        if p["debt_since"] is not None and ns > p["debt_since"] + MINUTE:
++        if p["debt_since"] is not None and ns > p["debt_since"] + MINUTE and not (self._tp_enabled() and p.get("standing_debt_deferred")):
+             self._pair_fail("TRIM_DEBT_OVERDUE", ns)
+         if not p["entry_sent"] and ns >= p["eligible_ns"] and tick.instrument_id == self.config.sol_id:
+             ep = self._domain.episode; pos = self._pair_position(self.config.btc_id)
+@@ -492,11 +496,14 @@ class PairedPrefixResearch:
+         if debt:
+             p["debt_since"] = p["debt_since"] or ns
+             if tick.instrument_id == self.config.btc_id and not self._pair_work(instrument=self.config.btc_id):
+-                ordinary = [(oid, {}, self.cache.order(ClientOrderId(oid))) for oid, intent in self._pending_by_order.items() if intent.action.startswith("BTC")]
+-                if not self._pair_cancel(ordinary):
++                ordinary = [(oid, {}, self.cache.order(ClientOrderId(oid))) for oid, intent in self._pending_by_order.items() if intent.action == "BTC_ENTRY" or (not self._tp_enabled() and intent.action.startswith("BTC"))]
++                safe = not self._tp_enabled() or self._tp_debt_safe(ns)
++                p["standing_debt_deferred"] = not safe
++                if safe and not self._pair_cancel(ordinary):
+                     self._pair_submit(self.config.btc_id, -p["side"], debt, "BTC_DEBT", ns)
+         else:
+             p["debt_since"] = None
++            p["standing_debt_deferred"] = False
+         excess = sol if p["close_sol"] else max(D(0), sol - p["caps"].solmax) if p["caps"].initialized else D(0)
+         if excess:
+             if not self._pair_cancel(self._pair_work(instrument=self.config.sol_id, kinds={"ENTRY", "TP", "STOP"})) and tick.instrument_id == self.config.sol_id and not self._pair_work(instrument=self.config.sol_id):
+diff --git a/runtime/coinmaster/strategy/standing_tp.py b/runtime/coinmaster/strategy/standing_tp.py
+new file mode 100644
+index 0000000..83bb63e
+--- /dev/null
++++ b/runtime/coinmaster/strategy/standing_tp.py
+@@ -0,0 +1,232 @@
++"""Opt-in standing BTC protection using stock orders/cache and queued commands.
++
++This owns no position/cash model. Integer rights are derived from genuine fills
++and existing target_lots only at inventory-changing entry/debt transitions.
++"""
++from decimal import Decimal as D
++from nautilus_trader.model.identifiers import ClientOrderId
++from coinmaster.strategy.market_redesign import target_lots, u_prices
++
++
++def standing_after_fill(rights, level, lots):
++    if type(lots) is not int or lots <= 0 or level not in rights or lots > rights[level]:
++        raise ValueError('STANDING_TP_FILL_EXCEEDS_PRE_FILL_RIGHT')
++    result = dict(rights); result[level] -= lots
++    return result
++
++
++def marketable(side, price, bid, ask):
++    if side not in (-1, 1) or any(not v.is_finite() or v <= 0 for v in (price, bid, ask)) or bid > ask:
++        raise ValueError('STANDING_UNKNOWN_MATCHING_BBO')
++    return price <= bid if side == -1 else price >= ask
++
++
++class StandingTPResearch:
++    def _tp_enabled(self):
++        return bool(self.config.research_btc_standing_tp)
++
++    def _tp_init(self):
++        self._tp_owners = {}; self._tp_commands = {}; self._tp_seq = 0
++        self._tp_seen_events = set(); self._tp_seen_trades = set(); self.standing_tp_audit = []
++
++    def _tp_log(self, event, ts, **data):
++        self.standing_tp_audit.append(dict(event=event, timestamp_ns=str(ts), **data))
++
++    def _tp_plan(self):
++        ep = self._domain.episode
++        return (ep, self._md_plans.get(ep.id)) if ep else (None, None)
++
++    def _tp_held_lots(self):
++        positions = [p for p in self.cache.positions_open() if p.instrument_id == self.config.btc_id]
++        ep = self._domain.episode
++        if len(positions) > 1 or (positions and (not ep or positions[0].is_long != (ep.side == 1))):
++            raise ValueError('STANDING_NATIVE_POSITION_UNKNOWN')
++        step = self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
++        quantity = positions[0].quantity.as_decimal() if positions else D(0)
++        lots = quantity / step
++        if lots != lots.to_integral_value(): raise ValueError('STANDING_NONINTEGRAL_NATIVE_POSITION')
++        return int(lots)
++
++    def _tp_book(self):
++        provider = self.config.research_native_book
++        if provider is None: raise ValueError('STANDING_NATIVE_BOOK_PROVIDER_REQUIRED')
++        return provider.matching(self.config.btc_id)
++
++    def _tp_owned_order(self, oid, owner):
++        order = self.cache.order(ClientOrderId(oid))
++        intent = self._pending_by_order.get(oid)
++        if order is None or intent is None or intent.id != owner['intent_id'] or intent.episode_id != owner['parent'] or intent.level != owner['level']:
++            raise ValueError('STANDING_CURRENT_OWNER_UNKNOWN')
++        if order.strategy_id != self.id or order.instrument_id != self.config.btc_id or not order.is_reduce_only or order.side.name != owner['side'] or order.exec_algorithm_id is not None:
++            raise ValueError('STANDING_NATIVE_ORDER_CONFORMANCE')
++        # NETTING may put a position ID on an actual fill without indexing the
++        # order. Explicitly linked/cache-associated protective orders are outside
++        # this registered route; never equate the two native properties.
++        if self.cache.position_id(order.client_order_id) is not None:
++            raise ValueError('STANDING_UNEXPECTED_PROTECTIVE_POSITION_LINK')
++        return order
++
++    def _tp_bind_order(self, order, intent):
++        if not self._tp_enabled() or intent.action != 'BTC_REDUCE': return
++        m = self._md_plans[intent.episode_id]; oid = str(order.client_order_id)
++        self._tp_owners[oid] = dict(parent=intent.episode_id, level=intent.level, intent_id=intent.id,
++            generation=m['generation'], side=order.side.name, ack_generation=None, ack_sequence=None)
++        m['order_generation'][oid] = m['generation']
++
++    def _tp_native_event(self, event, route):
++        if not self._tp_enabled(): return
++        oid = str(event.client_order_id); owner = self._tp_owners.get(oid)
++        if owner is None: return
++        eid = str(event.id); name = type(event).__name__
++        self._tp_log('NATIVE_ROUTE', event.ts_event, event_id=eid, event_type=name, order_id=oid, route=route)
++        if eid in self._tp_seen_events: return
++        self._tp_seen_events.add(eid)
++        order = self._tp_owned_order(oid, owner)
++        if name == 'OrderModifyRejected':
++            raise ValueError('STANDING_VALID_MODIFY_REJECTED')
++        if name == 'OrderUpdated':
++            command = self._tp_commands.get(oid)
++            if command is None: raise ValueError('STANDING_UNEXPECTED_NATIVE_UPDATE')
++            if order.quantity.as_decimal() != command['total'] or command['generation'] != owner['generation']:
++                raise ValueError('STANDING_ACK_QUANTITY_OR_GENERATION_UNKNOWN')
++            owner['ack_generation'] = command['generation']; owner['ack_sequence'] = command['sequence']
++            del self._tp_commands[oid]
++            self._tp_log('LATEST_MODIFY_ACK', event.ts_event, order_id=oid, generation=owner['generation'], sequence=owner['ack_sequence'], total=str(order.quantity), filled=str(order.filled_qty), leaves=str(order.leaves_qty))
++        if name == 'OrderAccepted':
++            owner['ack_generation'] = owner['generation']; owner['ack_sequence'] = 0
++        if name != 'OrderFilled': self._tp_transient_boundary('NATIVE_'+name,event.ts_event)
++
++    def _tp_before_fill(self, event):
++        if not self._tp_enabled(): return
++        oid = str(event.client_order_id); owner = self._tp_owners.get(oid)
++        if owner is None: return
++        trade = str(event.trade_id)
++        if trade in self._tp_seen_trades: raise ValueError('STANDING_DUPLICATE_NATIVE_FILL_DELIVERY')
++        self._tp_seen_trades.add(trade)
++        order = self._tp_owned_order(oid, owner); ep, m = self._tp_plan()
++        if ep is None or ep.id != owner['parent'] or 'standing' not in m:
++            raise ValueError('STANDING_FILL_PARENT_UNKNOWN')
++        step = self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
++        raw = event.last_qty.as_decimal() / step
++        if raw != raw.to_integral_value(): raise ValueError('STANDING_FILL_LOTS_UNKNOWN')
++        pre = dict(m['standing']); m['standing'] = standing_after_fill(pre, owner['level'], int(raw))
++        if oid in self._tp_commands: raise ValueError('STANDING_FILL_BEFORE_REQUIRED_MODIFY_ACK')
++        self._tp_log('ACTUAL_TP_FILL', event.ts_event, parent=ep.id, order_id=oid, native_trade_id=trade, level=owner['level'], quantity=str(event.last_qty), pre_fill_lots=pre, remaining_lots=dict(m['standing']), raw_position_id=None if order.position_id is None else str(order.position_id), cache_position_id=None)
++
++    def _tp_reconcile(self, ts):
++        ep, m = self._tp_plan()
++        if not m or m['p0'] is None or self._forced_close_reason or self._liquidating: return
++        inst = self.cache.instrument(self.config.btc_id); step = inst.size_increment.as_decimal(); held = self._tp_held_lots()
++        if not held:
++            self._split_stop('BTC_FLAT'); self._md_coverage(ts, True, ep.id, 'NATIVE_FLAT'); return
++        if 'standing' not in m or m.get('standing_inventory_dirty') or m.get('standing_entry') != ep.btc_entry_qty_exact:
++            if self._tp_commands: raise ValueError('STANDING_INVENTORY_CHANGE_WITH_MODIFY_INFLIGHT')
++            m['standing'] = target_lots(held, m['consumed']); m['standing_inventory_dirty'] = False
++            m['standing_entry'] = ep.btc_entry_qty_exact
++            m['generation'] += 1
++            m['generations'][m['generation']] = dict(required=set(m['standing']), accepted=set(), authorized=False)
++            self._tp_log('INVENTORY_ALLOCATION', ts, parent=ep.id, held_lots=held, generation=m['generation'], desired=dict(m['standing']))
++        desired = {k:v for k,v in m['standing'].items() if k not in m['consumed']}
++        if sum(desired.values()) != held or any(v <= 0 for v in desired.values()): raise ValueError('STANDING_INVENTORY_RIGHTS_MISMATCH')
++        prices = u_prices(m['p0'],m['d3'],ep.side,inst.price_increment.as_decimal(),D(str(inst.taker_fee)),max(D(str(inst.maker_fee)),D(str(inst.taker_fee))))
++        m['prices'] = prices; self._bind_native_lots()
++        live = {owner['level']:(oid,owner) for oid,owner in self._tp_owners.items() if owner['parent']==ep.id and not self.cache.order(ClientOrderId(oid)).is_closed}
++        if set(live)-set(desired): raise ValueError('STANDING_LIVE_CONSUMED_TARGET')
++        for level,lots in desired.items():
++            ep.btc_tp_target_lots[level] = ep.btc_tp_filled_lots.get(level,0)+lots
++            ep.btc_tp_target_qty[level] = float(D(ep.btc_tp_target_lots[level])*step)
++            if level not in live:
++                ep.btc_tp_target_lots[level] = ep.btc_tp_filled_lots.get(level,0)+lots
++                ep.btc_tp_target_qty[level] = float(D(ep.btc_tp_target_lots[level])*step); ep.btc_tps.add(level)
++                intent = self._domain._intent(ep,'BTC_REDUCE',-ep.side,level,quantity=float(D(lots)*step),reason=f'BTC_TP{level+1}',limit_price=float(prices[level]))
++                ep.resting_reductions.add(intent.id); m['intent_generation'][intent.id]=m['generation']
++                self._submit_intent(intent,float(m['p0']),float(m['p0']),None,len(self._bars)-1,ts_now=ts)
++                continue
++            oid,owner=live[level]; order=self._tp_owned_order(oid,owner)
++            if order.price.as_decimal()!=prices[level] or order.is_pending_cancel: raise ValueError('STANDING_TARGET_PRICE_OR_CANCEL_UNKNOWN')
++            if order.leaves_qty.as_decimal()==D(lots)*step and oid not in self._tp_commands:
++                owner['generation']=m['generation']; m['order_generation'][oid]=m['generation']
++                if order.status.name in {'ACCEPTED','PARTIALLY_FILLED'} and owner['ack_generation'] is not None:
++                    owner['ack_generation']=m['generation']
++                continue
++            if oid in self._tp_commands:
++                if self._tp_commands[oid]['desired_lots']!=lots: raise ValueError('STANDING_OVERLAPPING_MODIFY_INTENT')
++                continue
++            book=self._tp_book()
++            if marketable(-ep.side,prices[level],D(book['bid']),D(book['ask'])):
++                raise ValueError('STANDING_EXECUTABLE_ALLOCATION_DRIFT')
++            self._tp_seq+=1; owner['generation']=m['generation'];m['order_generation'][oid]=m['generation']
++            total=order.filled_qty.as_decimal()+D(lots)*step
++            command=dict(sequence=self._tp_seq,generation=m['generation'],total=total,desired_lots=lots)
++            self._tp_commands[oid]=command
++            self._tp_log('MODIFY_SUBMIT',ts,order_id=oid,generation=m['generation'],sequence=self._tp_seq,total=str(total),filled=str(order.filled_qty),desired_leaves=str(D(lots)*step),book=book)
++            self.modify_order(order,quantity=inst.make_qty(total))
++            self._tp_log('PUBLIC_MODIFY_RETURN',ts,order_id=oid,sequence=command['sequence'],ack_received=oid not in self._tp_commands)
++            self._tp_transient_boundary('PUBLIC_MODIFY_RETURN',ts)
++        self._tp_refresh(ts)
++
++    def _tp_refresh(self, ts):
++        ep,m=self._tp_plan()
++        if not m or 'standing' not in m:return
++        required={k for k,v in m['standing'].items() if v>0 and k not in m['consumed']}
++        accepted=set()
++        for oid,owner in self._tp_owners.items():
++            if owner['parent']!=ep.id or owner['level'] not in required:continue
++            order=self.cache.order(ClientOrderId(oid))
++            if order is not None and order.status.name in {'ACCEPTED','PARTIALLY_FILLED'} and oid not in self._tp_commands and owner['ack_generation']==m['generation']:
++                accepted.add(owner['level'])
++        m['accepted']=accepted
++        hist=m['generations'][m['generation']];hist['accepted']=set(accepted);hist['required']=required;hist['authorized']=accepted==required
++        self._md_coverage(ts,accepted==required,ep.id,'STANDING_CURRENT_NATIVE_ACK' if accepted==required else 'STANDING_NATIVE_ACK_PENDING')
++
++    def _tp_transient_boundary(self, label, ts):
++        if not self._tp_enabled():return
++        ep,m=self._tp_plan()
++        if not m or 'standing' not in m or self._forced_close_reason or self._liquidating:return
++        book=self._tp_book();drift=[]
++        for oid,owner in self._tp_owners.items():
++            if owner['parent']!=ep.id:continue
++            order=self.cache.order(ClientOrderId(oid))
++            if order is None:raise ValueError('STANDING_NATIVE_BOUNDARY_ORDER_UNKNOWN')
++            wanted=m['standing'].get(owner['level'],0)
++            if order.status.name=='FILLED':continue # genuine cache-post-fill consumed state
++            actual=order.leaves_qty.as_decimal()/self.cache.instrument(self.config.btc_id).size_increment.as_decimal()
++            if actual!=wanted:
++                if marketable(-ep.side,order.price.as_decimal(),D(book['bid']),D(book['ask'])):
++                    raise ValueError('STANDING_EXECUTABLE_BOUNDARY_MISALLOCATION')
++                drift.append(dict(order_id=oid,actual_lots=str(actual),desired_lots=wanted))
++        self._tp_log('NATIVE_BOUNDARY',ts,label=label,book=book,nonexecutable_drift=drift,pending_sequences={k:v['sequence'] for k,v in self._tp_commands.items()})
++
++    def _tp_settled(self, label, ts):
++        if not self._tp_enabled():return
++        ep,m=self._tp_plan()
++        if not m or 'standing' not in m or self._forced_close_reason or self._liquidating:return
++        if self._tp_commands:raise ValueError('STANDING_UNRESOLVED_COMMAND_BEFORE_MATCH')
++        self._tp_refresh(ts)
++        held=self._tp_held_lots()
++        if not held:return
++        desired={k:v for k,v in m['standing'].items() if v>0 and k not in m['consumed']}
++        actual={}
++        for oid,owner in self._tp_owners.items():
++            if owner['parent']!=ep.id or owner['level'] not in desired:continue
++            order=self._tp_owned_order(oid,owner)
++            if order.is_closed:continue
++            if order.status.name not in {'ACCEPTED','PARTIALLY_FILLED'}:raise ValueError('STANDING_NATIVE_PENDING_BEFORE_MATCH')
++            actual[owner['level']]=int(order.leaves_qty.as_decimal()/self.cache.instrument(self.config.btc_id).size_increment.as_decimal())
++        if actual!=desired or sum(actual.values())!=held:raise ValueError('STANDING_REQUIRED_NATIVE_COVERAGE_OR_ALLOCATION')
++        self._tp_log('SETTLED',ts,label=label,parent=ep.id,generation=m['generation'],held_lots=held,leaves=actual)
++
++    def _tp_debt_safe(self, ts):
++        ep,m=self._tp_plan()
++        if not m:return False
++        self._tp_settled('DEBT_DISPATCH_BARRIER',ts)
++        book=self._tp_book()
++        for oid,owner in self._tp_owners.items():
++            if owner['parent']!=ep.id:continue
++            order=self.cache.order(ClientOrderId(oid))
++            if order is not None and not order.is_closed and marketable(-ep.side,order.price.as_decimal(),D(book['bid']),D(book['ask'])):
++                self._tp_log('MARKETABLE_DEBT_DEFER',ts,parent=ep.id,order_id=oid,book=book)
++                return False
++        self._tp_log('DEBT_DISPATCH_SAFE',ts,parent=ep.id,book=book)
++        self._tp_debt_witness=book
++        return True
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 9cdbfb4..5239930 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -70,6 +70,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_a0_original_second: bool = False
+     research_paired_prefix: str | None = None
+     research_paired_signal_rows: tuple[PairedSignal, ...] = ()
++    research_btc_standing_tp: bool = False
++    research_native_book: object = None
+     research_btc_real_u: bool = False
+     research_btc_q_mode: str | None = None
+     research_sol_off: bool = False
+@@ -195,12 +197,16 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
+     return result
+ 
+ 
+-class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
++from coinmaster.strategy.standing_tp import StandingTPResearch
++
++
++class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+     """Turns completed native daily bars into later native market orders."""
+     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+         super().__init__(config)
+         self._split_cover_init()
+         self._md_init()
++        self._tp_init()
+         self._pair_init()
+         self._risk_first_init()
+         self._conditional_init()
+@@ -306,6 +312,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+         self.sol_cap_admission_audit: list[dict[str, str]] = []
+         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
+         self._domain = WaveOverlayState(self._candidate)
++        if config.research_btc_standing_tp and (not config.research_btc_real_u or config.research_btc_q_mode != "LEGACY_Q_CONTROL" or config.research_native_book is None or config.research_a0_family != "R2_A0_V1" or config.research_paired_prefix != "B2_F0"):
++            raise ValueError("STANDING_TP_EXACT_REAL_U_NATIVE_PROVIDER_REQUIRED")
+         self._domain.research_real_u = config.research_btc_real_u
+         self._domain.research_sol_cover = config.research_sol_cover is not None
+         self._domain.research_h4_owned = config.research_h4_ema is not None
+@@ -2045,6 +2053,7 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+         client_order_id = str(order.client_order_id)
+         self._risk_first_sol_bind(intent,order)
+         self._pending_by_order[client_order_id] = intent
++        self._tp_bind_order(order, intent)
+         if intent.action == "BTC_ENTRY" and self._md_enabled():
+             self._a0_bind_entry(client_order_id, intent)
+         # A pre-submit durable checkpoint must see the exact order-to-episode
+@@ -2402,6 +2411,7 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+             self._rf_fill_epoch+=1
+             self._rf_last_fill_ns=event.ts_event
+         self._record_fill_audit(event)
++        self._tp_before_fill(event)
+         if self._pair_fill(event):
+             return
+         self._carry_native_fill(event)
+@@ -2656,7 +2666,15 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+             self._group_close_reconciliation_pending = True
+             self._reconcile_group_flat()
+ 
++    def on_order_updated(self, event) -> None:
++        self._tp_native_event(event, "typed")
++        self._tp_refresh(event.ts_event) if self._tp_enabled() else None
++
++    def on_order_modify_rejected(self, event) -> None:
++        self._tp_native_event(event, "typed")
++
+     def on_order_event(self, event) -> None:
++        self._tp_native_event(event, "generic")
+         # Event identity, not client order identity, preserves the sequence
+         # Submitted -> Accepted -> terminal without manufacturing an ACK.
+         event_id = getattr(event, "id", None)
+@@ -2674,7 +2692,9 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
+         if context is not None and context.get("accept_ns") is None:
+             context["accept_ns"] = str(event.ts_event)
+         self._acknowledge_submission(str(event.client_order_id))
++        self._tp_native_event(event, "typed_accepted")
+         self._md_accept(event)
++        if self._tp_enabled(): self._tp_refresh(event.ts_event)
+         self._pair_accept(event)
+         if self.config.research_sol_risk_first=="split-atr":
+             owned=self._rf_sol_orders.get(str(event.client_order_id))
+diff --git a/runtime/tests/test_standing_tp_pure.py b/runtime/tests/test_standing_tp_pure.py
+new file mode 100644
+index 0000000..b05ccb5
+--- /dev/null
++++ b/runtime/tests/test_standing_tp_pure.py
+@@ -0,0 +1,83 @@
++"""Engine-free checks for the exact opt-in registered standing-TP patch."""
++from decimal import Decimal as D
++from pathlib import Path
++from inspect import signature
++import ast,copy,json
++from coinmaster.strategy.standing_tp import standing_after_fill,marketable,StandingTPResearch
++from coinmaster.strategy.market_redesign import target_lots
++from coinmaster.strategy.wave_overlay import WaveOverlayStrategy,WaveOverlayStrategyConfig
++from coinmaster.research.a0_family import build_a0_kwargs,validate_native_a0
++from coinmaster.research.native_baseline import run_native_diagnostic,build_native_strategy_config
++from coinmaster.research.native_book import NativeBookWitness
++from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP,MarkPriceUpdate
++from nautilus_trader.backtest.models import LatencyModel
++from nautilus_trader.backtest.modules import SimulationModule
++from nautilus_trader.backtest.engine import SimulatedExchange,BacktestEngine
++from nautilus_trader.model.book import OrderBook
++from nautilus_trader.model.enums import BookType
++from nautilus_trader.model.data import QuoteTick
++from run_continuous_hedge_preflight import registered_fixture_context
++
++
++def rejected(fn):
++    try:fn()
++    except (ValueError,AssertionError):return
++    raise AssertionError('EXPECTED_REJECTION')
++
++
++def proof():
++    checks=[]
++    def passed(name):checks.append(name)
++    assert target_lots(752,set())=={0:159,1:159,2:434}
++    assert standing_after_fill({0:159,1:159,2:434},0,159)=={0:0,1:159,2:434}
++    assert target_lots(593,{0})=={1:160,2:433};passed('N752_PURE_ONLY_standing_not_renormalized')
++    for held in range(5,8001):
++        rights=target_lots(held,set())
++        if rights[0]:
++            after=standing_after_fill(rights,0,rights[0]);assert after[1]==rights[1] and after[2]==rights[2]
++            assert sum(after.values())==held-rights[0]
++    passed('7996_integer_standing_conservation_vectors')
++    for qty in (-1,0,160):rejected(lambda:standing_after_fill({0:159},0,qty))
++    rejected(lambda:standing_after_fill({0:159},1,1));passed('pre_fill_overfill_and_unknown_level_reject')
++    assert marketable(-1,D(101),D(101),D(101)) and not marketable(-1,D(101),D(100),D(100))
++    assert marketable(1,D(99),D(98),D(99)) and not marketable(1,D(99),D(100),D(100))
++    rejected(lambda:marketable(-1,D(101),D(102),D(101)));passed('both_sides_actual_BBO_guard')
++    kwargs={v:build_a0_kwargs(Path('.'),Path('.'),v,(),start_ms=0,end_ms=3600000)for v in ('R2_OFF','R2_C0','R2_A0')}
++    assert all('research_btc_standing_tp'not in v for v in kwargs.values())
++    for variant in ('R2_C0','R2_A0'):
++        new=build_a0_kwargs(Path('.'),Path('.'),variant,(),start_ms=-86400000,end_ms=90600000,standing_tp=True)
++        bound=signature(run_native_diagnostic).bind(**new);bound.apply_defaults();validate_native_a0(bound.arguments)
++        assert new['research_paired_prefix']=='B2_F0' and new['research_btc_standing_tp']is True
++        if variant=='R2_C0':control=new
++        else:assert {k for k in new if new[k]!=control[k]}=={'research_a0_original_second','artifact_label'}
++    rejected(lambda:build_a0_kwargs(Path('.'),Path('.'),'R2_OFF',(),standing_tp=True))
++    rejected(lambda:build_a0_kwargs(Path('.'),Path('.'),'R2_A0',(),start_ms=-86400000,end_ms=90600000))
++    rejected(lambda:build_a0_kwargs(Path('.'),Path('.'),'R2_A0',(),start_ms=-86400001,end_ms=90600000,standing_tp=True))
++    passed('defaultOFF_exact_family_and_same_C0_A0_fix_roundtrip')
++    cfg,context,_=registered_fixture_context('R2',start_ms=-86400000,end_ms=90600000)
++    policy=cfg.margin_policy;policy.update_mark(MarkPriceUpdate(BTC_PERP.id,D(100),1));assert policy.margin_for(BTC_PERP.id,D(1),1)[0]>0
++    rejected(lambda:policy.margin_for(BTC_PERP.id,D(1),121_000_000_002));policy.update_mark(MarkPriceUpdate(BTC_PERP.id,D(100),122_000_000_000));assert policy.margin_for(BTC_PERP.id,D(1),122_000_000_000)[0]>0
++    passed('REAL_TierMarginPolicy_stale_DENY_fresh_recovery')
++    context.update(signature(run_native_diagnostic).bind(**new).arguments)
++    context.update(research_btc_standing_tp=True,research_native_book=NativeBookWitness())
++    config=build_native_strategy_config(context);strategy=WaveOverlayStrategy(config)
++    assert strategy._tier_allows_increase is not None and strategy.__class__._tier_allows_increase is WaveOverlayStrategy._tier_allows_increase
++    assert config.research_btc_standing_tp and config.research_native_book is context['research_native_book']
++    rejected(lambda:context['research_native_book'].bind(strategy));passed('REAL_config_provider_required_no_engine')
++    latency=LatencyModel(base_latency_nanos=0,insert_latency_nanos=0,update_latency_nanos=0,cancel_latency_nanos=2_000_000_000)
++    assert latency.base_latency_nanos==latency.insert_latency_nanos==latency.update_latency_nanos==0 and latency.cancel_latency_nanos==2_000_000_000
++    assert signature(BacktestEngine.add_venue).parameters['use_message_queue'].default is True
++    assert signature(BacktestEngine.add_venue).parameters['use_reduce_only'].default is True
++    assert all(k in SimulatedExchange.__dict__ for k in ('get_book','latency_model','use_message_queue','oms_type')) and 'exchange'in SimulationModule.__dict__
++    book=OrderBook(BTC_PERP.id,BookType.L1_MBP);q=QuoteTick(BTC_PERP.id,BTC_PERP.make_price(D(100)),BTC_PERP.make_price(D(100)),BTC_PERP.make_qty(D(1)),BTC_PERP.make_qty(D(1)),1,1);book.update_quote_tick(q)
++    assert book.best_bid_price()==q.bid_price and book.best_ask_price()==q.ask_price and book.ts_last==q.ts_event
++    passed('REAL_public_native_book_latency_and_default_RO_descriptors')
++    src=Path(__file__).resolve().parents[1]/'coinmaster'
++    # Product import closure must not import any test helper.
++    for path in (src/'strategy/standing_tp.py',src/'research/native_book.py'):
++        tree=ast.parse(path.read_text());assert not any(isinstance(n,ast.ImportFrom) and n.module and (any(c.startswith('test_') for c in n.module.split('.')) or n.module.startswith('run_'))for n in ast.walk(tree))
++        assert not any(isinstance(n,ast.Call)and isinstance(n.func,ast.Name)and n.func.id=='BacktestEngine'for n in ast.walk(tree))
++    passed('product_dependency_closure_no_test_or_engine_constructor')
++    return dict(status='ENGINE_FREE_PASS',checks=checks,check_groups=len(checks),engine_constructors=0,native_fills=0,limits='Pure/API proof only; physical4 essential native assertions remain mandatory.')
++
++if __name__=='__main__':print(json.dumps(proof(),indent=2))

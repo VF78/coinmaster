@@ -1,0 +1,605 @@
+{
+  "schema": "CM_STANDING_CONTROL_BINDING_V1",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "financial_launch_authority": false,
+  "controls": {
+    "R2_OFF": {
+      "standing_tp": false,
+      "kwargs": {
+        "artifact_dir": {
+          "__native_type": "Path",
+          "value": "/FRESH_RESULT"
+        },
+        "artifact_label": "R2_OFF",
+        "candidate": {
+          "__native_type": "Candidate",
+          "value": {
+            "beta_days": 270,
+            "btc_close_trail_fraction": 0.03,
+            "btc_notional_multiplier": 7.875,
+            "btc_tp_fractions_initial_qty": [
+              0.2125,
+              0.2125,
+              0.575
+            ],
+            "ema_period": 34,
+            "episode_fixed_beta": false,
+            "max_parent_notional": 30000000.0,
+            "relative_days": 65,
+            "sol_entry_z": [
+              1.25,
+              2.5,
+              3.75
+            ],
+            "sol_exit_all_z": 0.125,
+            "sol_exit_half_z": 0.375,
+            "sol_late_entry_after_tp": true,
+            "sol_max_holding_days": 14,
+            "sol_overlay_enabled": false,
+            "sol_size_multipliers_h": [
+              1.75,
+              2.625,
+              3.5
+            ],
+            "sol_timeout_preempts_add": false,
+            "wave_history_days": 730,
+            "wave_min_count": 8,
+            "wave_quantiles": [
+              0.1,
+              0.3,
+              0.6
+            ],
+            "z_history_days": 180
+          }
+        },
+        "data_root": {
+          "__native_type": "Path",
+          "value": "/PINNED_INPUTS/data"
+        },
+        "execution_policy": {
+          "__native_type": "ExecutionPolicy",
+          "value": {
+            "execution_delay_minutes": 1,
+            "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+            "fee_historical_applicability": "UNKNOWN",
+            "fee_multiplier": "1",
+            "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+            "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+            "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+            "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+            "nonmatching_daily_signals": true,
+            "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+            "symmetric_adverse_spread_bps": "0",
+            "version": "bybit-native-resting-reductions-v2"
+          }
+        },
+        "fixed_base_fee_policy": {
+          "__native_type": "FixedBaseFeePolicy",
+          "value": {
+            "bybit_maker": "0.00020",
+            "bybit_taker": "0.00055",
+            "hyperliquid_maker": "0.00015",
+            "hyperliquid_taker": "0.00045",
+            "venue": "bybit",
+            "version": "fixed-base-native-maker-taker-execution-v3"
+          }
+        },
+        "include_funding": true,
+        "initial_active_seed": {
+          "__native_type": "Decimal",
+          "value": "10000"
+        },
+        "observe_minute_risk": true,
+        "research_a0_family": "R2_A0_V1",
+        "research_a0_original_second": false,
+        "research_btc_direction_sizing": true,
+        "research_btc_q_mode": "LEGACY_Q_CONTROL",
+        "research_btc_real_u": true,
+        "research_btc_split50": true,
+        "research_btc_split_discount": "0.005",
+        "research_btc_split_planref_v1": true,
+        "research_btc_split_tp_ioc": true,
+        "research_paired_policy": true,
+        "research_paired_prefix": null,
+        "research_paired_signal_rows": {
+          "__native_type": "tuple",
+          "value": [
+            {
+              "__native_type": "PairedSignal",
+              "value": {
+                "a": {
+                  "__native_type": "Decimal",
+                  "value": "1"
+                },
+                "atr_sol": {
+                  "__native_type": "Decimal",
+                  "value": "2"
+                },
+                "available_ns": 70000000000,
+                "b2_long": true,
+                "b2_short": false,
+                "btc_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "decision_ns": 70000000000,
+                "f0_long": false,
+                "f0_short": false,
+                "k_long": {
+                  "__native_type": "Decimal",
+                  "value": "120"
+                },
+                "k_short": {
+                  "__native_type": "Decimal",
+                  "value": "99.2"
+                },
+                "not_before_ns": 130000000000,
+                "open_o": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "sol_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "valid": true
+              }
+            },
+            {
+              "__native_type": "PairedSignal",
+              "value": {
+                "a": {
+                  "__native_type": "Decimal",
+                  "value": "1"
+                },
+                "atr_sol": {
+                  "__native_type": "Decimal",
+                  "value": "2"
+                },
+                "available_ns": 86470000000000,
+                "b2_long": false,
+                "b2_short": true,
+                "btc_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "decision_ns": 86470000000000,
+                "f0_long": false,
+                "f0_short": false,
+                "k_long": {
+                  "__native_type": "Decimal",
+                  "value": "120"
+                },
+                "k_short": {
+                  "__native_type": "Decimal",
+                  "value": "99.2"
+                },
+                "not_before_ns": 86530000000000,
+                "open_o": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "sol_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "valid": true
+              }
+            }
+          ]
+        },
+        "research_regime_reentry_band": "0.5",
+        "research_registered_control": null,
+        "research_sol_off": true,
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "research_wait_4h": true,
+        "trading_end_ms": 1736899200000,
+        "trading_start_ms": 1725148800000
+      },
+      "kwargs_sha256": "946eecbc7d52fad2bec020526ca124d60b3bc3ccf6db74d5dc73a23d050be32c"
+    },
+    "R2_C0": {
+      "standing_tp": true,
+      "kwargs": {
+        "artifact_dir": {
+          "__native_type": "Path",
+          "value": "/FRESH_RESULT"
+        },
+        "artifact_label": "R2_C0",
+        "candidate": {
+          "__native_type": "Candidate",
+          "value": {
+            "beta_days": 270,
+            "btc_close_trail_fraction": 0.03,
+            "btc_notional_multiplier": 7.875,
+            "btc_tp_fractions_initial_qty": [
+              0.2125,
+              0.2125,
+              0.575
+            ],
+            "ema_period": 34,
+            "episode_fixed_beta": false,
+            "max_parent_notional": 30000000.0,
+            "relative_days": 65,
+            "sol_entry_z": [
+              1.25,
+              2.5,
+              3.75
+            ],
+            "sol_exit_all_z": 0.125,
+            "sol_exit_half_z": 0.375,
+            "sol_late_entry_after_tp": true,
+            "sol_max_holding_days": 14,
+            "sol_overlay_enabled": false,
+            "sol_size_multipliers_h": [
+              1.75,
+              2.625,
+              3.5
+            ],
+            "sol_timeout_preempts_add": false,
+            "wave_history_days": 730,
+            "wave_min_count": 8,
+            "wave_quantiles": [
+              0.1,
+              0.3,
+              0.6
+            ],
+            "z_history_days": 180
+          }
+        },
+        "data_root": {
+          "__native_type": "Path",
+          "value": "/PINNED_INPUTS/data"
+        },
+        "execution_policy": {
+          "__native_type": "ExecutionPolicy",
+          "value": {
+            "execution_delay_minutes": 1,
+            "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+            "fee_historical_applicability": "UNKNOWN",
+            "fee_multiplier": "1",
+            "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+            "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+            "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+            "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+            "nonmatching_daily_signals": true,
+            "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+            "symmetric_adverse_spread_bps": "0",
+            "version": "bybit-native-resting-reductions-v2"
+          }
+        },
+        "fixed_base_fee_policy": {
+          "__native_type": "FixedBaseFeePolicy",
+          "value": {
+            "bybit_maker": "0.00020",
+            "bybit_taker": "0.00055",
+            "hyperliquid_maker": "0.00015",
+            "hyperliquid_taker": "0.00045",
+            "venue": "bybit",
+            "version": "fixed-base-native-maker-taker-execution-v3"
+          }
+        },
+        "include_funding": true,
+        "initial_active_seed": {
+          "__native_type": "Decimal",
+          "value": "10000"
+        },
+        "observe_minute_risk": true,
+        "research_a0_family": "R2_A0_V1",
+        "research_a0_original_second": false,
+        "research_btc_direction_sizing": true,
+        "research_btc_q_mode": "LEGACY_Q_CONTROL",
+        "research_btc_real_u": true,
+        "research_btc_split50": true,
+        "research_btc_split_discount": "0.005",
+        "research_btc_split_planref_v1": true,
+        "research_btc_split_tp_ioc": true,
+        "research_btc_standing_tp": true,
+        "research_paired_policy": true,
+        "research_paired_prefix": "B2_F0",
+        "research_paired_signal_rows": {
+          "__native_type": "tuple",
+          "value": [
+            {
+              "__native_type": "PairedSignal",
+              "value": {
+                "a": {
+                  "__native_type": "Decimal",
+                  "value": "1"
+                },
+                "atr_sol": {
+                  "__native_type": "Decimal",
+                  "value": "2"
+                },
+                "available_ns": 70000000000,
+                "b2_long": true,
+                "b2_short": false,
+                "btc_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "decision_ns": 70000000000,
+                "f0_long": false,
+                "f0_short": false,
+                "k_long": {
+                  "__native_type": "Decimal",
+                  "value": "120"
+                },
+                "k_short": {
+                  "__native_type": "Decimal",
+                  "value": "99.2"
+                },
+                "not_before_ns": 130000000000,
+                "open_o": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "sol_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "valid": true
+              }
+            },
+            {
+              "__native_type": "PairedSignal",
+              "value": {
+                "a": {
+                  "__native_type": "Decimal",
+                  "value": "1"
+                },
+                "atr_sol": {
+                  "__native_type": "Decimal",
+                  "value": "2"
+                },
+                "available_ns": 86470000000000,
+                "b2_long": false,
+                "b2_short": true,
+                "btc_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "decision_ns": 86470000000000,
+                "f0_long": false,
+                "f0_short": false,
+                "k_long": {
+                  "__native_type": "Decimal",
+                  "value": "120"
+                },
+                "k_short": {
+                  "__native_type": "Decimal",
+                  "value": "99.2"
+                },
+                "not_before_ns": 86530000000000,
+                "open_o": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "sol_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "valid": true
+              }
+            }
+          ]
+        },
+        "research_regime_reentry_band": "0.5",
+        "research_registered_control": null,
+        "research_sol_off": true,
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "research_wait_4h": true,
+        "trading_end_ms": 1736899200000,
+        "trading_start_ms": 1725148800000
+      },
+      "kwargs_sha256": "08cc1c61aa64e43af15f51ff75be6f97a0fa706884d9236d3d5787a2192b02c3"
+    },
+    "R2_A0": {
+      "standing_tp": true,
+      "kwargs": {
+        "artifact_dir": {
+          "__native_type": "Path",
+          "value": "/FRESH_RESULT"
+        },
+        "artifact_label": "R2_A0",
+        "candidate": {
+          "__native_type": "Candidate",
+          "value": {
+            "beta_days": 270,
+            "btc_close_trail_fraction": 0.03,
+            "btc_notional_multiplier": 7.875,
+            "btc_tp_fractions_initial_qty": [
+              0.2125,
+              0.2125,
+              0.575
+            ],
+            "ema_period": 34,
+            "episode_fixed_beta": false,
+            "max_parent_notional": 30000000.0,
+            "relative_days": 65,
+            "sol_entry_z": [
+              1.25,
+              2.5,
+              3.75
+            ],
+            "sol_exit_all_z": 0.125,
+            "sol_exit_half_z": 0.375,
+            "sol_late_entry_after_tp": true,
+            "sol_max_holding_days": 14,
+            "sol_overlay_enabled": false,
+            "sol_size_multipliers_h": [
+              1.75,
+              2.625,
+              3.5
+            ],
+            "sol_timeout_preempts_add": false,
+            "wave_history_days": 730,
+            "wave_min_count": 8,
+            "wave_quantiles": [
+              0.1,
+              0.3,
+              0.6
+            ],
+            "z_history_days": 180
+          }
+        },
+        "data_root": {
+          "__native_type": "Path",
+          "value": "/PINNED_INPUTS/data"
+        },
+        "execution_policy": {
+          "__native_type": "ExecutionPolicy",
+          "value": {
+            "execution_delay_minutes": 1,
+            "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+            "fee_historical_applicability": "UNKNOWN",
+            "fee_multiplier": "1",
+            "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+            "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+            "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+            "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+            "nonmatching_daily_signals": true,
+            "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+            "symmetric_adverse_spread_bps": "0",
+            "version": "bybit-native-resting-reductions-v2"
+          }
+        },
+        "fixed_base_fee_policy": {
+          "__native_type": "FixedBaseFeePolicy",
+          "value": {
+            "bybit_maker": "0.00020",
+            "bybit_taker": "0.00055",
+            "hyperliquid_maker": "0.00015",
+            "hyperliquid_taker": "0.00045",
+            "venue": "bybit",
+            "version": "fixed-base-native-maker-taker-execution-v3"
+          }
+        },
+        "include_funding": true,
+        "initial_active_seed": {
+          "__native_type": "Decimal",
+          "value": "10000"
+        },
+        "observe_minute_risk": true,
+        "research_a0_family": "R2_A0_V1",
+        "research_a0_original_second": true,
+        "research_btc_direction_sizing": true,
+        "research_btc_q_mode": "LEGACY_Q_CONTROL",
+        "research_btc_real_u": true,
+        "research_btc_split50": true,
+        "research_btc_split_discount": "0.005",
+        "research_btc_split_planref_v1": true,
+        "research_btc_split_tp_ioc": true,
+        "research_btc_standing_tp": true,
+        "research_paired_policy": true,
+        "research_paired_prefix": "B2_F0",
+        "research_paired_signal_rows": {
+          "__native_type": "tuple",
+          "value": [
+            {
+              "__native_type": "PairedSignal",
+              "value": {
+                "a": {
+                  "__native_type": "Decimal",
+                  "value": "1"
+                },
+                "atr_sol": {
+                  "__native_type": "Decimal",
+                  "value": "2"
+                },
+                "available_ns": 70000000000,
+                "b2_long": true,
+                "b2_short": false,
+                "btc_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "decision_ns": 70000000000,
+                "f0_long": false,
+                "f0_short": false,
+                "k_long": {
+                  "__native_type": "Decimal",
+                  "value": "120"
+                },
+                "k_short": {
+                  "__native_type": "Decimal",
+                  "value": "99.2"
+                },
+                "not_before_ns": 130000000000,
+                "open_o": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "sol_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "valid": true
+              }
+            },
+            {
+              "__native_type": "PairedSignal",
+              "value": {
+                "a": {
+                  "__native_type": "Decimal",
+                  "value": "1"
+                },
+                "atr_sol": {
+                  "__native_type": "Decimal",
+                  "value": "2"
+                },
+                "available_ns": 86470000000000,
+                "b2_long": false,
+                "b2_short": true,
+                "btc_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "decision_ns": 86470000000000,
+                "f0_long": false,
+                "f0_short": false,
+                "k_long": {
+                  "__native_type": "Decimal",
+                  "value": "120"
+                },
+                "k_short": {
+                  "__native_type": "Decimal",
+                  "value": "99.2"
+                },
+                "not_before_ns": 86530000000000,
+                "open_o": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "sol_close": {
+                  "__native_type": "Decimal",
+                  "value": "100"
+                },
+                "valid": true
+              }
+            }
+          ]
+        },
+        "research_regime_reentry_band": "0.5",
+        "research_registered_control": null,
+        "research_sol_off": true,
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "research_wait_4h": true,
+        "trading_end_ms": 1736899200000,
+        "trading_start_ms": 1725148800000
+      },
+      "kwargs_sha256": "2f764165bb8f7b732747f0c031b3e33b2d2a5c2ebc10a6fb5dae6324782c1b4f"
+    }
+  },
+  "rule": "OFF defaultfalse/pairedNone; fixed C0/A0 sameB2_F0+standingTrue, differ onlyA0bool/artifactlabel",
+  "old_R3_guard": "UNCHANGED"
+}

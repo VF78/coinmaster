@@ -1,0 +1,113 @@
+{
+  "schema": "CM_F4_ACTUAL_STOCK_API_PREFLIGHT_V1",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "status": "ENGINE_FREE_PASS",
+  "native_constructors": 0,
+  "python": "3.12.13",
+  "native": "1.231.0",
+  "matching": "PUBLIC SimulationModule.exchange.get_book; exact BBO/tick timestamp+epoch; every settle process is a potential matching observation",
+  "module_hooks": [
+    "pre_process",
+    "process",
+    "log_diagnostics",
+    "reset"
+  ],
+  "module_hooks_actual_direct_unit_pass": true,
+  "diagnostic": {
+    "precondition": "actual native SOL TP PARTIALLY_FILLED >=.2, not pendingcancel; public invalidtotal.1 before legacy super fill handler",
+    "created": "actual PENDING_UPDATE event before public return, no local no-op credit",
+    "stock_route": "engine.pyx3779..3792 process_modify ->5238..5256 update_order ->8190..8201 actual below-filled ModifyRejected; cancel command has2s delay",
+    "required": "real rejection UUID typed+generic, old total/filled unchanged and live leaves>0; BTC controller valid modify rejection stillSTOP"
+  },
+  "settlement": {
+    "engine": "backtest engine quote exchange->DataEngine->processAndSettle before nextinput",
+    "cancel_due_customdata": "NoQuote provides no safety credit; every process/command update checks actual current book and epoch; exact executable allocation/latest ACK before anynextquote",
+    "debt": "zero insert/update public model; dispatch witness must equal actual fill witness; no interposed BTC input"
+  },
+  "source_pins": [
+    {
+      "path": "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/bin/python3.12",
+      "sha256": "7b05d803bbc1bbfc81644af4faf2b88f0a37b8de96b9f42c1e08033e2cd0848a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/__init__.py",
+      "sha256": "1142b07afc3c55eed4c543785b4380d122939d03ed8b408718e37ccd239ef573"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.cpython-312-darwin.so",
+      "sha256": "fad4155bd5e94d58f95928cfc0b83be78897bd1dfe154bc7de637394e3a4f81a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/models/__init__.py",
+      "sha256": "47897649cf2f934786d37091be2fad5592f4e372de09bf128c285f0e6e257cf4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/modules.cpython-312-darwin.so",
+      "sha256": "934f3c25e70cebc2d00103168ff212746ac860f6f0157912d2a452c974a49b0d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/modules.pyx",
+      "sha256": "1dd94fa0b76110c9a0a4521384a19e052829525db2dbdde843a24663e16ce4c9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.cpython-312-darwin.so",
+      "sha256": "e133277bb8e671dd63fb87943f3cb0b292725c7edf917c7700c4641c518665ed"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.pyx",
+      "sha256": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/engine.cpython-312-darwin.so",
+      "sha256": "95edb6bd821630cf712fd7fa4827bde5cbc622eb61b2f618f60cc00f3a4c9005"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/engine.pyx",
+      "sha256": "5b7113b1c210f8123d658caeb5c50435bf266477de7dc36f30892f377ee913f5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/book.cpython-312-darwin.so",
+      "sha256": "39fc7ca27153f0917c60bdd4a0901e37bf28f5798a7d96fc11a3b61d845f5d13"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/book.pyx",
+      "sha256": "3bca15a51925936c740a6c1461c1c41e4f352cec43da5555c53b05650780c40a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/events/order.cpython-312-darwin.so",
+      "sha256": "c300feec692d4cd8a2210c69e39667a71e7ebabb93bab202f2237ca8b22f1dae"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/events/order.pyx",
+      "sha256": "76c80b96879439906f8fcfe9eac87612d7fd1b4c5a8c9a503212e4b112f67a01"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/base.cpython-312-darwin.so",
+      "sha256": "2079043164b2b9b4a3812c5ffbc5ceab26be8ef277191423aa7a330486f8a523"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/base.pyx",
+      "sha256": "e90375c623b13a7c1fa35e35ef756eb00c9a0b38994d3125dcf616557c20a953"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/position.cpython-312-darwin.so",
+      "sha256": "d2c5e346efec53f123614b14a15d3bbb6c54868d7dcc20e0c7cf6b05b262a31f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/position.pyx",
+      "sha256": "f61d6e291a353d736727c081f31cbe152338e06f90111a4c9bbcd0c07031b2a7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.cpython-312-darwin.so",
+      "sha256": "516afc720996683c5ad9f8cfa9328288e3fcdb94740b1f0b76799161b71e21c9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.pyx",
+      "sha256": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246"
+    }
+  ]
+}

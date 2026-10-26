@@ -1,0 +1,615 @@
+{
+  "schema": "CM_F4_ACTUAL_FAILURE_CAUSE_V1",
+  "status": "FAILED_NO_ENGINEERING_OR_PREFIX_ADMISSION",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "attempt_id": "f3962d0c-612d-43b2-9aa0-f3535dd67743",
+  "pid": 7164,
+  "actual_process_exit_code": 1,
+  "elapsed_seconds": 2.347322940826416,
+  "failure": {
+    "reason": [
+      "PROTECTION_OVERDUE_NEXT_QUOTE"
+    ],
+    "source": "coinmaster/strategy/paired_prefix.py _pair_protect signature/cancel-replace lines415..440; _pair_quote PROTECTION_OVERDUE_NEXT_QUOTE lines480..481; fixture run_registered_standing_tp.py215",
+    "actual_time_ns": 153000000000,
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py\", line 293, in launch\n    result=run_fixture(e,s,capture);capture('BEFORE_TERMINAL');rc=0\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py\", line 215, in run_fixture\n    prior=len(debt_fills());advance(153,btc=str(targets()[2].price),bsize='.020',sol='96')\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py\", line 188, in advance\n    assert not s._pair_failures and not s._forced_close_reason and not s._liquidating\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+  },
+  "causal_facts": [
+    "At145s actual BTC TP1 consumption also caused unchanged paired SOL_CAP .7, leaving SOL1.1 and smaller native SOL protection allocations .1/.3/.7.",
+    "At150s BTC TP3 partial.010 leftBTC1.026. Native SOL TP0 .1 completed; remaining SOL protection entered real pending cancellation until152s.",
+    "At152.01s CustomData settlement canceled old generation, submitted new native SOL TP1 .3@98, TP2 .7@96 and STOP1@102 while ACTUAL existing matching SOL book remained96.",
+    "Those new limits matched immediately on acceptance: actual .3 and .5 fills at96; SOL inventory became.2. These genuine fills triggered another legacy cancel/replace cycle at152.01s, with pendingcancel until154.01s under staticcancel2s.",
+    "At153s BTC quote arrived before that second cancel cycle could terminate. Legacy PROTECTION_OVERDUE_NEXT_QUOTE guard fired; pairfail set UNKNOWN_RISK/closeSOL/cap0. The subsequent SOL quote filled final.2, but did not undo the failed process."
+  ],
+  "source_inference": "The fixture schedule assumed one due-time settle completed SOL protection. Actual reentrant native replacement fills created a second2s cancel cycle. The retained legacy next-quote protection guard correctly refused the153s quote. No retry or repair is authorized; this does not establish complete standing/A0 safety.",
+  "critical_native_pair_events": [
+    {
+      "event": "CACHE_POSITION",
+      "timestamp_ns": "150000000000",
+      "btc": "1.026",
+      "sol": "1.1",
+      "bmax": "1.026",
+      "solmax": "1.1"
+    },
+    {
+      "event": "ACTUAL_BTC_DEBT_OPEN",
+      "timestamp_ns": "150000000000",
+      "actual_btc": "1.026",
+      "bmax": "1.000"
+    },
+    {
+      "event": "ACTUAL_FILL",
+      "timestamp_ns": "150000000000",
+      "order_id": "O-19700101-000225-001-000-17",
+      "kind": "TP",
+      "level": 0,
+      "qty": "0.1",
+      "price": "99",
+      "risk": "ACTIVE_RISK",
+      "bmax": "1.000"
+    },
+    {
+      "event": "CACHE_POSITION",
+      "timestamp_ns": "150000000000",
+      "btc": "1.026",
+      "sol": "1",
+      "bmax": "1.000",
+      "solmax": "1.0"
+    },
+    {
+      "event": "SUBMIT",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-21",
+      "kind": "TP",
+      "level": 1,
+      "quantity": "0.3",
+      "price": "98",
+      "stop": null,
+      "generation": 4
+    },
+    {
+      "event": "SUBMIT",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-22",
+      "kind": "TP",
+      "level": 2,
+      "quantity": "0.7",
+      "price": "96",
+      "stop": null,
+      "generation": 4
+    },
+    {
+      "event": "SUBMIT",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-23",
+      "kind": "STOP",
+      "level": null,
+      "quantity": "1",
+      "price": null,
+      "stop": "102",
+      "generation": 4
+    },
+    {
+      "event": "ACCEPTED",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-21",
+      "kind": "TP",
+      "level": 1
+    },
+    {
+      "event": "ACTUAL_FILL",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-21",
+      "kind": "TP",
+      "level": 1,
+      "qty": "0.3",
+      "price": "96",
+      "risk": "ACTIVE_RISK",
+      "bmax": "0.700"
+    },
+    {
+      "event": "CACHE_POSITION",
+      "timestamp_ns": "152010000000",
+      "btc": "1.026",
+      "sol": "0.7",
+      "bmax": "0.700",
+      "solmax": "0.7"
+    },
+    {
+      "event": "ACCEPTED",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-22",
+      "kind": "TP",
+      "level": 2
+    },
+    {
+      "event": "ACTUAL_FILL",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-22",
+      "kind": "TP",
+      "level": 2,
+      "qty": "0.5",
+      "price": "96",
+      "risk": "ACTIVE_RISK",
+      "bmax": "0.200"
+    },
+    {
+      "event": "CACHE_POSITION",
+      "timestamp_ns": "152010000000",
+      "btc": "1.026",
+      "sol": "0.2",
+      "bmax": "0.200",
+      "solmax": "0.2"
+    },
+    {
+      "event": "ACCEPTED",
+      "timestamp_ns": "152010000000",
+      "order_id": "O-19700101-000232-001-000-23",
+      "kind": "STOP",
+      "level": null
+    },
+    {
+      "event": "CACHE_POSITION",
+      "timestamp_ns": "153000000000",
+      "btc": "1.006",
+      "sol": "0.2",
+      "bmax": "0.200",
+      "solmax": "0.2"
+    },
+    {
+      "event": "QUALIFICATION_NO_GO",
+      "timestamp_ns": "153000000000",
+      "reason": "PROTECTION_OVERDUE_NEXT_QUOTE"
+    },
+    {
+      "event": "ACTUAL_FILL",
+      "timestamp_ns": "153000000000",
+      "order_id": "O-19700101-000232-001-000-22",
+      "kind": "TP",
+      "level": 2,
+      "qty": "0.2",
+      "price": "96",
+      "risk": "UNKNOWN_RISK",
+      "bmax": "0"
+    },
+    {
+      "event": "CACHE_POSITION",
+      "timestamp_ns": "153000000000",
+      "btc": "1.006",
+      "sol": "0",
+      "bmax": "0",
+      "solmax": "0.0"
+    }
+  ],
+  "actual_SOL_pending_orders_at152_01": [
+    {
+      "id": "O-19700101-000232-001-000-22",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "side": "BUY",
+      "status": "PENDING_CANCEL",
+      "quantity": "0.7",
+      "filled": "0.5",
+      "leaves": "0.2",
+      "price": "96.00",
+      "reduce_only": true,
+      "strategy": "RegisteredProbe-000",
+      "exec_algorithm_id": null,
+      "raw_position_id": "SOLUSDT-PERP.P1SIM-RegisteredProbe-000",
+      "cache_position_id": null
+    },
+    {
+      "id": "O-19700101-000232-001-000-23",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "side": "BUY",
+      "status": "PENDING_CANCEL",
+      "quantity": "1.0",
+      "filled": "0.0",
+      "leaves": "1.0",
+      "price": "None",
+      "reduce_only": true,
+      "strategy": "RegisteredProbe-000",
+      "exec_algorithm_id": null,
+      "raw_position_id": null,
+      "cache_position_id": null
+    }
+  ],
+  "components_observed_in_FAILED_process": {
+    "registered_natural_parents": 1,
+    "first_native_BTC_quantity": "2.000",
+    "stock_margin_results": [
+      {
+        "stage": "P1_NATURAL_ENTRY",
+        "args": [
+          "BTCUSDT-PERP.P1SIM",
+          "1",
+          "550.000",
+          "1000000000"
+        ],
+        "allowed": true
+      },
+      {
+        "stage": "P1_NATURAL_ENTRY",
+        "args": [
+          "BTCUSDT-PERP.P1SIM",
+          "1",
+          "275.000",
+          "2000000000"
+        ],
+        "allowed": true
+      },
+      {
+        "stage": "P1_NATURAL_ENTRY",
+        "args": [
+          "SOLUSDT-PERP.P1SIM",
+          "-1",
+          "2",
+          "130000000000"
+        ],
+        "allowed": true
+      }
+    ],
+    "first_IOC_partial_and_three_owned_BTC_TP": true,
+    "real_nonmarketable_BTC_debt": [
+      {
+        "trade_id": "T-92598931f79472ca-003",
+        "order_id": "O-19700101-000220-001-000-15",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "quantity": "0.150",
+        "price": "100.0",
+        "commission": "0.00825000 USDT",
+        "liquidity": "TAKER",
+        "stage": "P1_SAFE_DEBT",
+        "pair_kind": "BTC_DEBT",
+        "pair_level": null,
+        "pending_cancel": false,
+        "native_status": "FILLED",
+        "raw_position_id": "BTCUSDT-PERP.P1SIM-RegisteredProbe-000",
+        "cache_position_id": null
+      }
+    ],
+    "same_OID_native_modify_submits": [
+      {
+        "event": "MODIFY_SUBMIT",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-2",
+        "generation": 1,
+        "sequence": 1,
+        "total": "0.432",
+        "filled": "0.050",
+        "desired_leaves": "0.382",
+        "book": {
+          "epoch": 9,
+          "tick_identity": 5026291248,
+          "timestamp_ns": 140000000000,
+          "book_timestamp_ns": 140000000000,
+          "sequence": 9,
+          "bid": "100.0",
+          "ask": "100.0",
+          "bid_size": "1000.000",
+          "ask_size": "1000.000"
+        }
+      },
+      {
+        "event": "MODIFY_SUBMIT",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-3",
+        "generation": 1,
+        "sequence": 2,
+        "total": "0.382",
+        "filled": "0.000",
+        "desired_leaves": "0.382",
+        "book": {
+          "epoch": 9,
+          "tick_identity": 5026291248,
+          "timestamp_ns": 140000000000,
+          "book_timestamp_ns": 140000000000,
+          "sequence": 9,
+          "bid": "100.0",
+          "ask": "100.0",
+          "bid_size": "1000.000",
+          "ask_size": "1000.000"
+        }
+      },
+      {
+        "event": "MODIFY_SUBMIT",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-4",
+        "generation": 1,
+        "sequence": 3,
+        "total": "1.036",
+        "filled": "0.000",
+        "desired_leaves": "1.036",
+        "book": {
+          "epoch": 9,
+          "tick_identity": 5026291248,
+          "timestamp_ns": 140000000000,
+          "book_timestamp_ns": 140000000000,
+          "sequence": 9,
+          "bid": "100.0",
+          "ask": "100.0",
+          "bid_size": "1000.000",
+          "ask_size": "1000.000"
+        }
+      }
+    ],
+    "latest_native_ACKs": [
+      {
+        "event": "LATEST_MODIFY_ACK",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-2",
+        "generation": 1,
+        "sequence": 1,
+        "native_event_id": "3032a34d-18dd-4e88-b99d-68e67a5f6283",
+        "total": "0.432",
+        "filled": "0.050",
+        "leaves": "0.382"
+      },
+      {
+        "event": "LATEST_MODIFY_ACK",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-3",
+        "generation": 1,
+        "sequence": 2,
+        "native_event_id": "96809dad-6429-4775-9348-c24758937f0e",
+        "total": "0.382",
+        "filled": "0.000",
+        "leaves": "0.382"
+      },
+      {
+        "event": "LATEST_MODIFY_ACK",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-4",
+        "generation": 1,
+        "sequence": 3,
+        "native_event_id": "3519d86c-a89e-4ab7-ad57-cb1e37b5526d",
+        "total": "1.036",
+        "filled": "0.000",
+        "leaves": "1.036"
+      }
+    ],
+    "public_modify_returns": [
+      {
+        "event": "PUBLIC_MODIFY_RETURN",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-2",
+        "sequence": 1,
+        "ack_received": false
+      },
+      {
+        "event": "PUBLIC_MODIFY_RETURN",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-3",
+        "sequence": 2,
+        "ack_received": false
+      },
+      {
+        "event": "PUBLIC_MODIFY_RETURN",
+        "timestamp_ns": "140000000000",
+        "order_id": "O-19700101-000001-001-000-4",
+        "sequence": 3,
+        "ack_received": false
+      }
+    ],
+    "actual_native_pending_cache_proofs": [
+      {
+        "event_id": "1f835ab7-9794-436a-8e84-f9a55a9ca591",
+        "order_id": "O-19700101-000001-001-000-2",
+        "status": "PENDING_UPDATE",
+        "a0_ready": false
+      },
+      {
+        "event_id": "3ba39dab-b43e-40c7-9c73-4f7ce8f631ca",
+        "order_id": "O-19700101-000001-001-000-3",
+        "status": "PENDING_UPDATE",
+        "a0_ready": false
+      },
+      {
+        "event_id": "70b46b99-ced7-4132-aabe-5ee570086b4a",
+        "order_id": "O-19700101-000001-001-000-4",
+        "status": "PENDING_UPDATE",
+        "a0_ready": false
+      }
+    ],
+    "actual_SOL_invalid_total_modify_rejected": [
+      {
+        "event_id": "153345a3-6098-4223-9d1e-c4d9fe875a29",
+        "order_id": "O-19700101-000210-001-000-7",
+        "status": "PENDING_CANCEL",
+        "quantity": "0.5",
+        "filled": "0.2",
+        "leaves": "0.3",
+        "reason": "Cannot reduce order quantity 0.1 below filled quantity 0.2",
+        "old_working_protection": true
+      }
+    ],
+    "ordinary_TP0_TP1_standing": "AT143/AT145 assertions executed; native remainingTP3=1.036 unchanged; initial/debt generation1 retained",
+    "stock_unlinked_route": "Raw filled position IDs real, cache position IDsNone; actual first opener is sole BTC index owner",
+    "marketable_defer": "Observed only AFTER pair qualification failure/cap0 at153; does not satisfy healthy ACTIVE_RISK block",
+    "native_UUID_dedup": "Partial raw route evidence retained; final all-routes assertion not reached"
+  },
+  "not_reached": [
+    "P1 TP3 complete/flat/no-new-debt qualification",
+    "second natural parent",
+    "A0 cross and stale-margin denial/fresh recovery",
+    "A0 actual original GTC release/partial/nativePendingCancel→Fill→Canceled race/caps",
+    "final all-TradeID/UUID aggregate assertions",
+    "terminal BTC/SOLflat/orders0/inflight0/zeroLiq complete qualification"
+  ],
+  "native_before_END": {
+    "cash": "10006.23449588 USDT",
+    "positions": [
+      {
+        "id": "BTCUSDT-PERP.P1SIM-RegisteredProbe-000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "quantity": "1.006",
+        "side": "LONG",
+        "indexed": [
+          "O-19700101-000001-001-000-1"
+        ]
+      }
+    ],
+    "live_orders": [
+      {
+        "id": "O-19700101-000001-001-000-4",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "status": "PARTIALLY_FILLED",
+        "quantity": "1.036",
+        "filled": "0.030",
+        "leaves": "1.006",
+        "price": "105.2",
+        "reduce_only": true,
+        "strategy": "RegisteredProbe-000",
+        "exec_algorithm_id": null,
+        "raw_position_id": "BTCUSDT-PERP.P1SIM-RegisteredProbe-000",
+        "cache_position_id": null
+      },
+      {
+        "id": "O-19700101-000232-001-000-23",
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "side": "BUY",
+        "status": "PENDING_CANCEL",
+        "quantity": "1.0",
+        "filled": "0.0",
+        "leaves": "1.0",
+        "price": "None",
+        "reduce_only": true,
+        "strategy": "RegisteredProbe-000",
+        "exec_algorithm_id": null,
+        "raw_position_id": null,
+        "cache_position_id": null
+      }
+    ],
+    "flat": false
+  },
+  "cleanup": {
+    "after_END": {
+      "trader": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "data_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "risk_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "exec_engine": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      },
+      "emulator": {
+        "state": "STOPPED",
+        "running": false,
+        "disposed": false
+      }
+    },
+    "after_DISPOSE": {
+      "trader": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "data_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "risk_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "exec_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "emulator": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      }
+    },
+    "note": "AllfiveSTOPPED thenDISPOSED observed; cleanup does not imply nativeflat or pass."
+  },
+  "budget": {
+    "physical_started": 4,
+    "physical_max": 4,
+    "active": 0,
+    "authorized_remaining": 0,
+    "prefix_started": 0,
+    "failed_previous_raw_rows_exact": true,
+    "old_row_canonical_sha256": [
+      "8acb1eaed5838f92cfb2f7f14b29b670cf3057cabfcf5f7553c190b108afb9da",
+      "500630228c3ee42c8db52d67017bb7d324d744b69ba46925596b2ef7d0ab7d95",
+      "3f17baf5ee2171830d6026d5bd0f7529c832e19dd313bc616b19fc91890d7b8a"
+    ],
+    "ledger_sha256": "cc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45"
+  },
+  "evidence": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/LEDGER_BEFORE_CLAIM.json",
+      "sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AT_145.json",
+      "sha256": "3c52a5d4dba18d81fcdcc77668b9e450aac36a3439627f0372f6b58fbbb96b4b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AT_150.json",
+      "sha256": "428d97753c735e5d8001b7d0d9ea1efed5ee47847c69d0c1c3e3fb3cbb8823fe"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AT_152_01.json",
+      "sha256": "d50124ab6880288c392b0b7331f4fc385c85474571e1f2794b75a5a1063eefde"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AT_153.json",
+      "sha256": "4005de05ea1c56f454b1aad89580a082d3753c6b60756d8370dccf0f89a07149"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/FAILURE_BEFORE_END.json",
+      "sha256": "7bd6aa66460bd39bd8d90daa08b442e80256eca79d7b2219da65752557efe2f6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/BEFORE_END.json",
+      "sha256": "65acbbd196aa447c0b1d1a5a0cdecd2e331a318023e2087c85d1193e63c89acb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AFTER_END.json",
+      "sha256": "4cc748cb0d013f54b488299f6ed8dd2ac6a5f0985ae371ed179ec07ad172164e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/BEFORE_DISPOSE.json",
+      "sha256": "1266fa75618b6bf3178e63577dea7769cc10ccafc3293c1a0d54b50c0c983929"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/AFTER_DISPOSE.json",
+      "sha256": "ec9235eb479d94bb19411a344d8e7b303259f13f7b98c600d951c79069d27575"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/native-events.jsonl",
+      "sha256": "9d067c1cbd0b3d890769e098a84237451836d0ecf53f4d39d7791984889803e9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4/result.json",
+      "sha256": "21b82c6bda8a07be2b22478b2d9f60b50f59e525bf4786ad2f419f9c63af9b37"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-actual-process.json",
+      "sha256": "6e7d102ad2f69f172081cb7ef88d0c0a4061f7e12518aff0813a9be996197e78"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+      "sha256": "cc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45"
+    }
+  ],
+  "next_authority": "STOP. No code/engine/retry/prefix. Public unchanged source publication separately authorized."
+}

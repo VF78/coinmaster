@@ -1,0 +1,11 @@
+{
+  "status": "ENGINE_FREE_PASS",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "engine_constructors": 0,
+  "actual_validator": "validate_native_control",
+  "R3_default_PASS": true,
+  "mutation_rejections": {
+    "research_paired_prefix": "REGISTERED_NATIVE_ARGUMENT_MISMATCH:research_paired_prefix",
+    "research_btc_standing_tp": "REGISTERED_NATIVE_ARGUMENT_MISMATCH:research_btc_standing_tp"
+  }
+}

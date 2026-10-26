@@ -1,0 +1,12 @@
+{
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "canonical_worktree": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/hedge-rights-unlock-20261025",
+  "branch": "codex/hedge-rights-unlock-20261025",
+  "dirty_paths": [
+    "runtime/tests/run_tp_continuity_feasibility.py"
+  ],
+  "dirty_patch_sha256": "0a2e646138d3e4a95a98998c89b69b551945df5afd78d1e8446c007c9eb89182",
+  "old_dirty_preserved": true,
+  "pushed_new_source": false,
+  "native_engines_after_approval": 0
+}

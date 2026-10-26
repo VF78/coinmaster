@@ -1,28 +1,21 @@
-2026-10-26 Europe/Moscow. #136: LAST_SLOT_REGISTERED APPROVED / code preparation; FAILED3 preserved; цели original70/50 и90/50 NOT_MET.
-Project #2 / issue136 OPEN/In Progress/notArchived; actual LAST_SLOT_APPROVED_ACTIVE_READBACK.json.
-Authoritative manager: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branch codex/btc-pattern-pilot-m2-20261021.
-Packet: reports/tp-continuity-20261025. CURRENT: RESULTS_AND_NEXT_STEP_RU.md и ROOT_CURRENT_DISPOSITION.json; старые gate/review не являются новым GO.
-Владелец утвердил standing/debt правила7292a446... и max4: owner-approval-queued-standing.json6998c5d7...; это согласие сохраняется.
-Engineering:3FAILED/max4/active0, remaining1 CONDITIONAL_F4; prefix0/3. engineering-amended-four-ledger.json SHA1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a.
-FAILED1/2 и их raw bytes сохранены; старый max3 ledger SHA d160413a... неизменён. Никаких reserve/retry/переноса старых закрытых слотов.
-Physical3: sourceaaa31f8, PID96543, OS1, attemptc78ffd9a-1621-4d08-bd49-f21f5d1356be. F3-queued-physical3-cause.json2656ea69..., independent dispositionf2df7fbc... .
-Настоящие BTC1/SOLshort10/partialTP0.050; raw Order.position_id установлен, cache.position_id(TP0)=None/index не содержит TP0. Assertion self-link был неверным.
-Debt/modify/queuedACK/reject/standing этапы NOT_REACHED; API NOT_PROVEN, не stock UNSUPPORTED. BTC.950/SOL−10 перед cleanup; actual5STOPPED→DISPOSED, не financialflat.
-NETTING/no-exec-algo route: fill заполняет rawOrder field, но не reduce-order cache-index. RegisteredR2 submit также безposition_id/execalgo; source+oldCSVroute proof, не новый nativePASS.
-Новый DIRECTOWNERAPPROVED: LAST_SLOT_REGISTERED_PROTOCOL_PROPOSED_RU.md SHA54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6; reviewFOR_OWNER_CONSENT_ONLY/P0P1=0.
-НОВОЕ прямое согласие ПОЛУЧЕНО: «Утверждаю единый physical4, лимит4»; owner-approval-last-slot-registered.json. Разрешено: разрешить isolated defaultOFF product patch ДО отдельного API-PASS; объединить недостающий API и registeredR2 proof в existing physical4. Max4 НЕ увеличивается; FAILED3 не превращается вPASS.
-Начать один focused defaultOFF product+fixture pass; не спрашивать согласие повторно. Engine/F4 только после purechecks/independentreview/freeze/rootGO; prefix после actualfullPASS.
-Новая coverage exception: auto-positive заменить реальной route/index conformance; publicstaticLatency base0/insert0/update0/cancel2s. Normaldebt/update нулевые, actual A0pendingcancel latefill.
-LateDEBTafterflat приinsert0 source-excluded: требуются queue-sourceproof и actualordinaryTP→flat→NOdebt. Никакого live/globalpartialasync safetyPASS; неизвестное/непокрытое=STOP.
-Physical4: один strategy/account/engine,2естественныхparent0/DAY, actualregisteredqty/cap; N752→593 ТОЛЬКО pure vector, не ручнойnativeqty. Actualstanding conservation/latestACK/currentnativeBBO/freshdepth/ownership обязательны.
-Data25h10≤48h/config49h10 с отдельным дневным guard; безreset/venue/model swaps. Один focused codepass + relevantpuretests + independentmoneyreview + максимум одна consolidatedcorrection, затем immutableMac/rootGO.
-Source aaa31f83f2fa900cad00506ccf70e4243c3bac11 PUBLIC exactremote verified;1newtestfile,83moneyfiles byte763d985617abd7a7afef5eec13912303983d8837. Product patch пока0, nativeengine не менялся.
-Canonical VPS: root@46.225.163.123 /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/hedge-rights-unlock-20261025; branch codex/hedge-rights-unlock-20261025.
-Preserve dirty oldtestdraft0a2e646...; report-only draft206...; первичный userdirtycode не трогать. Mac job paired-tp-continuity-20261025 хранит immutable147/258/aaa31 и raw3failures.
-Owner запускает product+F4 preparation, reviewer idle до frozen checkpoint; active native0. Делегирование GPT6.1Solmedium/forknone поMODEL_ROUTING; один sourceowner, узкий independentmoneyreview. Mac только frozen research execution.
-Если actualphysical4 полностью принят: freshsame-source OFF→C0_FIXED→A0_FIXED, каждый rootGO/actualstockpreflight/fullfinancialreceipt. OFFexpected20911.13611487; unexplaineddifference блокируетC0; C0financialPASS нуженA0.
-Financialca815cbe... неизменён: cash/signedfunding/coherentDD/requiredTP/zeroLiq/flat; TOTAL_A0>TOTAL_C0 и delta>2max(0,fees_A0−fees_C0), DD≤50% и≤C0, ES20≤C0/actualadditionalBTCfills.
-Inputs /inputs/data/9files/730SOURCErows/814fundpriorM1/195840minutes/feed5a02a0... . Prefix не full/OOS/70/90proof; originalS0 profitfloors не снижать.
-OldA0 engineering7/7 CLOSED,prefix3/4 CLOSED unusedA0slotclosed; OFF20911.1361 qualified, C0diagnostic16046.3819 rejected540srealTPgap; A0NOT_RUN. Old cash/receipts не переписывать.
-Full/training/downloads/pilot/production/services/keys/externalorders/transfers0. PUBLICVF78/coinmaster currentresearchsource/tests/reports уже разрешены; push не deployment.
-Передend RESET: actualProject/readback, ACTIVE≤40/mirrors, explicitcommit-push/exactref. Сохранить locks/drafts/allrawfailures. Proposal не создаёт новых полномочий.
+2026-10-26 Europe/Moscow. #136 CLOSED_ENGINEERING_NO_GO. Original70/50intermediate+90/50final goalsNOT_MET.
+Project#2: issue136 CLOSED / Done / archived; actual reports/tp-continuity-20261025/F4_CLOSED_PROJECT_READBACK.json.
+Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021.
+Packet reports/tp-continuity-20261025; CURRENT RESULTS_AND_NEXT_STEP_RU.md / ROOT_CURRENT_DISPOSITION.json.
+Directownerlastslotapproval1629dc8e/protocol54ecd880 preserved; exactlyonephysical4 executed; no additionalapproval inferred.
+Finalsource7f38278257624b321c9d88d9df962505b6f5bab0; canonicalVPS root@46.225.163.123 /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/hedge-rights-unlock-20261025; branchcodex/hedge-rights-unlock-20261025.
+Mac immutable runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278; finalpure/prepareengine0PASS, independentreviewc8f0f627P0P1=0/296pins; notnativePASS.
+ActualF4 attemptf3962d0c-612d-43b2-9aa0-f3535dd67743/PID7164/OS1; F4-actual-process.json. Cause9b761ca0/independentactual4c278d64.
+PROTECTION_OVERDUE_NEXT_QUOTE at153: nonquote152.01SOLreplacementTPmatches96/.3+.5fills→SECONDcancel2swindow; nextquote153beforecompletion. Guardnotwaived.
+AtfailureBTC1.006/TP3leaves1.006/SOL0/pendingSOLSTOP; notterminalflat. Actual5STOPPED→DISPOSED, notfinancialqualification.
+CleanreachedBTCDEBT.150/3sameOIDqueuedlatestACK/realSOLinvalidtotalNativeReject/TP0TP1standing. DEFERbranchafterNO_GO notacceptednormalrisk.
+P2/A0/pendingcancelrace/marginstalefresh/ordinaryTPflatnodebtNOT_REACHED. ProductdefaultOFFresearchonly/NOeconomicadmission.
+Finalengineering4FAILED/max4/active0/remaining0 ledgercc73a630c04b06e3a6805cd25becdc74eee2d0b10b8880db62b66bc102dacf45. Old3raw/canonicalrowsunchanged.
+Prefix0/3unused3CLOSEDnontransferable ledger899052b1f63861c6c44bb3109964413e156e30f01685fa853efdc05ae1f57db8; closure1cddb6ac. Noengine5/retry/prefix/full.
+NEXT noactivework: read-onlySOLprotectioncancelreplacecontract; do notweakenguard/bypassviaclock/latencychanges. Newtradingcode/nativeonlynewconcreteprotocol+explicitbudget; no authorityhere.
+FutureeconomicprotocolwouldneedfreshOFF→C0_FIXED→A0_FIXED/eachrootGO/fullcash+signedfunding+coherentDD+TPownership+zeroLiq+flat. OFFexpected20911.13611487; metricca815cbe unchanged.
+Prefixnotfull/OOS/original70/90proof; BTCcore/TPpricesinitialweights/SOLsignals/A0rights/caps notretuned. OldA0budgets7/7engineering/3/4prefixCLOSED, oldunusedslotsnottransferable.
+Frozeninputs /inputs/data/9files/730SOURCErows/814fundpriorM1/195840minutes/feed5a02... retained; no downloads.
+Preservecanonicaldirtyoldtest0a2e646.../reportdraft206.../primaryuserdirtycode; raw4FAILED/immutable147/258/aaa31/b389/3ee9/7f retained. Locks3outsidepacketintentionaluntracked.
+PUBLICVF78/coinmasterresearchsource/tests/reportsauthorized; source7fPUBLIC/exactremoteverified receiptpublication-source-7f38278.json SHAac13c33f...; managerclosurecommitpublishescurrentdocs, exactrefafterpush in runtimejob/FINAL_MANAGER_PUBLICATION.json. Pushnotdeployment/CIUNKNOWN.
+Full/training/downloads/pilot/production/services/keys/externalorders/transfers0. Noactiveagents/engineafterfinalacceptance; finalpublicationcheckbeforeend.

@@ -1,0 +1,44 @@
+{
+  "schema": "CM_F4_REGISTERED_ROOT_GO_V1",
+  "status": "GO_EXACTLY_ONE_PHYSICAL4_NO_RETRY",
+  "utc": "2026-10-26T07:21:18.432214+00:00",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "review": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-7f38278-independent-review.json",
+    "sha256": "c8f0f6271151ec500e02a1a1d2813d96d7ceffc18d7ffea12b43ef446fd6096c",
+    "p0": 0,
+    "p1": 0
+  },
+  "gate_before_go_sha256": "b7251392d18c7a01f9a4642818155e129b541bc7f0eeff42ddb142ce12104c9f",
+  "protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "owner_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/owner-approval-last-slot-registered.json",
+    "sha256": "1629dc8e5c7044c1a3751d4e8f5a98847ccd7585a5241a5e6b8a644370d318d9"
+  },
+  "ledger_before": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a"
+  },
+  "pins_verified": 296,
+  "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4",
+  "argv": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-gate.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "--launch"
+  ],
+  "environment": {
+    "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime:/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "environment_mode": "FULL_REPLACEMENT_NOT_OS_ENV_OVERLAY",
+  "engineering_max": 4,
+  "expected_before": 3,
+  "authorized_engine_instances": 1,
+  "prefix_root_go": false,
+  "actual_acceptance_required": "Every essential API/TP/A0/terminal gate; pending-cancel native PendingCancel→sameOID Fill→Canceled sequence plus actual pre-input pending/2s window; never boolean alone. Missing/unsafe/UNKNOWN STOP_NO_PREFIX.",
+  "boundaries": "No retry/fifth engine/full/training/download/pilot/production/services/externalorders/transfers. Process0 does not itself qualify engineering or economics."
+}

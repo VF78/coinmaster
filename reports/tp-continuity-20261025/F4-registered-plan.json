@@ -1,0 +1,194 @@
+{
+  "schema": "CM_F4_REGISTERED_FINAL_PLAN_V1",
+  "status": "FROZEN_REVIEW_REQUIRED_NO_NATIVE",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "fixture_id": "F4_REGISTERED_R2_QUEUED_STANDING_TP",
+  "protocol_sha256": "54ecd880f4e072dc55624735222f9c789e1e355f53ae0656e92f47b7e0c4d4c6",
+  "engineering": {
+    "max": 4,
+    "expected_before": 3,
+    "physical_index": 4,
+    "constructors": 1,
+    "no_retry": true,
+    "preserved": [
+      {
+        "physical_index": 1,
+        "canonical_entry_sha256": "8acb1eaed5838f92cfb2f7f14b29b670cf3057cabfcf5f7553c190b108afb9da",
+        "raw_entry_sha256": "3352261fb1c664e157bb149cf42275bdc6efeacd441109a82f76fd13cfcec2ba"
+      },
+      {
+        "physical_index": 2,
+        "canonical_entry_sha256": "500630228c3ee42c8db52d67017bb7d324d744b69ba46925596b2ef7d0ab7d95",
+        "raw_entry_sha256": "112233bc25870279b2b235a8d0d2b9e9e37920f7c4ea7d31865149a22420f8b2"
+      },
+      {
+        "physical_index": 3,
+        "canonical_entry_sha256": "3f17baf5ee2171830d6026d5bd0f7529c832e19dd313bc616b19fc91890d7b8a",
+        "raw_entry_sha256": "8336a3774a26c0212ad18acedf1fb1d89adc48004a524936b022220cb8f1ac48"
+      }
+    ]
+  },
+  "prefix": {
+    "started": 0,
+    "max": 3,
+    "root_go": false
+  },
+  "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/F4-registered-physical4",
+  "native_config_sha256": "11b64beddf1d23ff659fa5f97d4c71f3887014887e2c1837d3f3bdc549480b7b",
+  "registered_kwargs_sha256": "1ca5156e923d1abcc19fd73e364eb07628bc860c3750b252cb214ad5e61f599d",
+  "transport": {
+    "use_message_queue": true,
+    "base_latency_ns": 0,
+    "insert_latency_ns": 0,
+    "update_latency_ns": 0,
+    "cancel_latency_ns": 2000000000,
+    "reduce_only": true,
+    "NETTING": true,
+    "explicit_position_id": false,
+    "exec_algorithm_id": null
+  },
+  "clock": {
+    "first_stream_ns": 0,
+    "last_stream_ns": 86900000000000,
+    "approved_data_envelope_ns": [
+      0,
+      90600000000000
+    ],
+    "actual_stream_hours": 24.13888888888889,
+    "config_ns": [
+      -86400000000000,
+      90600000000000
+    ],
+    "config_hours": 49.166666666666664,
+    "seed_completed_daily": 729,
+    "stream_daily_sessions_ns": [
+      0,
+      86400000000000
+    ],
+    "seed_is_init_only_not_streamed": true
+  },
+  "native_quantity": "Only actual registered LEGACY_Q first and second order sizing/fills/caps; BTC first displayed depth2 is market fixture, never qty override; N752 pure-only.",
+  "phases": [
+    {
+      "stage": "P1",
+      "entry_seconds": [
+        0,
+        1,
+        2
+      ],
+      "paired_seconds": [
+        70,
+        72.01,
+        130,
+        131
+      ],
+      "ordinary_partial135": ".050 at actual TP0 price",
+      "SOL_partial137": ".2 at99 -> actualNativeModifyRejected .1 total",
+      "settle139_01": "actual custom VenueMarks+stock full settle",
+      "debt_seconds": [
+        140,
+        141
+      ],
+      "ordinary_full_targets": [
+        143,
+        145
+      ],
+      "marketable_debt_seconds": [
+        150,
+        152.01,
+        153
+      ],
+      "TP3_flat_and_no_debt": [
+        154,
+        156.01,
+        157,
+        160
+      ]
+    },
+    {
+      "stage": "P2",
+      "natural_daily": 86400,
+      "entry_seconds": [
+        86400,
+        86401,
+        86402
+      ],
+      "paired": [
+        86470,
+        86472.01,
+        86530,
+        86531
+      ],
+      "SOLrelief_and_debt": [
+        86540,
+        86542.01,
+        86543,
+        86544
+      ],
+      "OFF_and_SOLflat": [
+        86700,
+        86702.01,
+        86703
+      ],
+      "cross": 86760,
+      "stale_margin": 86881,
+      "fresh_recovery": 86882,
+      "release_partial": 86885,
+      "ordinary_TP_cancel": 86887,
+      "pendingcancel_latefill": 86887.5,
+      "cancelACK": 86889.01,
+      "actual_excess_debt": [
+        86890,
+        86891
+      ],
+      "actual_remaining_TPs": [
+        86892,
+        86893,
+        86894
+      ],
+      "native_terminal": 86900
+    }
+  ],
+  "required": [
+    "all final run_fixture assertions are essential; NOT_REACHED/UNKNOWN=FAILED STOP no prefix",
+    "sameOID queued modify native latest generation ACK AFTERpublicRETURN; zero unresolved before nextmatching; filled+desiredtotal offset",
+    "standing unconsumed conservation/no ordinary reallocation; actual3TP and consumedTP3 bothparents",
+    "current book marketableDEFER/debt amount+duration/resolution; firstsafe afterDEFER services residual without resetting absolute debt age",
+    "real SOL partial invalidtotal native rejection and unchanged working protection; no BTC validmodify failure waiver",
+    "nativePendingUpdate cache proof/A0false, cross, actual stockmargin staleDENY freshPASS",
+    "one original A0GTC realpartial/nativependingcancel latefill/cap no reanchor/refund/resubmit",
+    "all genuine TradeID/UUID routes dedup; unlinked NativeOrder rawposition separately from cacheindex",
+    "actualnativeBTC/SOLflat orders0 inflight0 zeroLiq, before-END and allfiveSTOPPED thenDISPOSED"
+  ],
+  "limitations": [
+    "Synthetic native engineering, not monetary prefix/venue/live admission; shortfixture fundingNOT_TESTED",
+    "No stockauto-positive expected on actual unlinked NETTING/noexecalgo route; unexpected association or updateSTOP",
+    "LateDEBT positiveinsert case source-excluded byinsert0; actual ordinaryTPflat→NOdebt required",
+    "No arbitrary async/nonflat partial latency or live ACK guarantee",
+    "Future full/financial/pilot/prod/training/download/order/transfer all0"
+  ],
+  "environment": {
+    "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime:/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "environment_mode": "FULL_REPLACEMENT_NOT_OS_ENV_OVERLAY",
+  "prepare_command": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-gate.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "--prepare"
+  ],
+  "launch_command": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-gate.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "--launch"
+  ],
+  "root_go": false
+}

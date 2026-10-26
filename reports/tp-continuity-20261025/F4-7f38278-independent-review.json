@@ -1,0 +1,78 @@
+{
+  "schema": "CM_F4_7F38278_INDEPENDENT_REVIEW_V1",
+  "decision": "LIMITED_PRODUCT_CORRECTION_AND_DRIVER_REVIEW_PASS_NOT_ROOT_GO",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "p0": [],
+  "p1": [],
+  "closures": {
+    "F4-PROD-01": "Verified boundInitialized beforecache earnsnoACK. Terminalgeneric usesactualcacheeventhistory/immutableowner withoutrestoringintent/rights; workingownerremainsstrict. RealCache/Order/event replay covers pre-cache/fullterminal/rollover/foreign/unknownhistory/validreject, explicitlyunit-only.",
+    "F4-PROD-02": "DEFER exportsactualheld/cap/residual/since/duration andnativeTP/debt/flatresolution. Absoluteexposureage preserved; executable service clock resumesafterlongDEFER.",
+    "F4-MAP-01": "ActualSOL negativeModifyRejected, potentiallymatching nonquote settle andexactcontrolbinding nowpresent."
+  },
+  "product_delta": "Only correctiondelta reviewed; unchangedb389 notrepeated. DefaultOFF/legacybranch/R3guard andoldkwargsJSONhashes retained. C0/A0 exactB2_F0 samefix, onlyA0bool/label difference. Statechangeaudit suppression followsguardexecution/counters; detailedengineering logsall. Providerreset clearswitnessonly anddiagnostics donothingmonetary. No new sizing/price/initialweight/SOL/cap/A0right/fee/funding change. Unexpectedroute/index/update/validreject/unknownSTOP.",
+  "first_driver_review": {
+    "registered": "SharedR2_A0 builder/validator, actualnative sizing/cap, sourcefeatures/waves729causalseed+daily0/DAY, oneaccount/strategy/engine andtwo naturalparents; no reset/fakeepisode/manualnativeqty/cap. Depth2 is declaredsyntheticliquidity, N752pureonly.",
+    "SOL_negative_feasibility": "a1/PB100/PS100 timesBTCqref2 givesSOL2 at.1step. Initial .25/.25/.50 allocation givesTP0.5; .2fill leaves.3>.2, invalidtotal.1<filled.2. Probe isissuedinside realpartialcallback beforebaselegacycancel; actualPENDING_UPDATE/nativeReject/unchangedworkingqty areasserted, no localnoop/validBTCrejectwaiver.",
+    "debt_TP": "RequiresactualnormalDEBT/filled+desiredleaves/afterreturnlatestACK/standing conservation/consumedTP3; subsequentmarketableDEFER andflatnodebt. Nonquote settles canmatch currentbook; actualnonmarketabletransients/latestACK/strictsettledguard retained, no Quote-free exemption.",
+    "margin_clock": "LastfreshVenueMark86760, stale86881 freshFalse =>121s>120s; quotesdonotrefreshpolicy. Fresh86882 suppliesgenuine recovery. Realstocktiermethod iscalled/recorded, no Trueoverride. Cross/OFF60/nativepending barriers separate.",
+    "A0_terminal": "Originalfirstpartial/secondright/postOnlyprice/onegrant-submit, releasepartial/ordinaryTPimmediatecancel/staticcancel2s latefill, nativecap/excessDEBT/no refund/reanchor/retry, consumedlevels/nativeflat/orders0/inflight0/Liq0/actual5STOPPED→DISPOSED required.",
+    "pending_cancel_caveat": "Fillcallback reads post-apply order.is_pending_cancel; nativeFSMmayalreadybePARTIALLY_FILLED so recordedboolean canFalse. Actualqualification mustinspect nativePendingCancel→sameOIDFill→Canceled sequence pluspre-inputpendingassert/2swindow and noafterACKfills, not thatbooleanalone. Rawfutureevidence notyetavailable."
+  },
+  "binding": {
+    "pins_verified": 296,
+    "mismatches": 0,
+    "root_go": false,
+    "namespace_absent": true,
+    "environment_mode": "FULL_REPLACEMENT_NOT_OS_ENV_OVERLAY",
+    "environment": {
+      "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime:/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "argv": "AbsoluteinstalledvenvPython/immutable revieweddriver, exactgate/ledger; FULLreplacementenv/runtime+testsimmutablehelpers, no mutable/dirtyhelper.",
+    "preflight": "Savedactualimmutableprepare rc0/engine0 andunchangedledger; reviewer didnotrun.",
+    "budget": "Max4/3FAILED/active0/remaining1, prefix0/3/HOLD. Rawpriorrows saved/validated, durableSTARTED before soleconstructor; no retry/auto-next/reset."
+  },
+  "proof_pins": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py",
+      "sha256": "b074ece8177c230841b7e490a14cc0c5d655324a367d252badc5084ee732f8e0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/standing_tp_event_replay.py",
+      "sha256": "efd5132a70e5b5bef17cd052a745cc270d44b5a9fd98a0d4956327cc5d4ac37c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/coinmaster/strategy/standing_tp.py",
+      "sha256": "2ccac380fb3b319719165be5178a91ab658dae26834eda55c1d5099e0f04a3c4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/coinmaster/research/native_book.py",
+      "sha256": "9decb10725c5d7ed069889f1f7ac32b247b816628e7a46528e0c63d2f48e3cf8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-source-7f38278.diff",
+      "sha256": "38a6cc50cd1e017f2d037f7d052af1ce88d86a30a86c738d327c23f8b8315776"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-7f38278-pure-proof.json",
+      "sha256": "7cc68692f315aa58d7ad79681c7150de9c161b5bdc37aac308530ae3fb1b2d8f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-plan.json",
+      "sha256": "8a0868ee16b0eae58ee7c5f2bd9fc995fcc778065f4dfeeb2d3a7702acf7e4b5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-gate.json",
+      "sha256": "b7251392d18c7a01f9a4642818155e129b541bc7f0eeff42ddb142ce12104c9f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-7f38278-preflight.json",
+      "sha256": "59dbb3d84b6d517d8e55e363135034a5d25f1bfb7a24f0df385b4514a5015138"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-final-code-feed-assertion-map.json",
+      "sha256": "7a3814d4f328bb48d11865ea1ddd4c19088da8a055d3532cb47c3ee85ba1a9e8"
+    }
+  ],
+  "limits": "No reviewerengines/tests/prepare/Popen/source/gate/ledger edits. Onlyreviewpairwritten. No nativePASS/economicadmission promised; rootseparatelydecides soleGO andfutureactualevidence acceptance."
+}

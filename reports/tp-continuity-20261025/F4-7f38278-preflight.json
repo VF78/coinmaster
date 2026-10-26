@@ -1,0 +1,35 @@
+{
+  "status": "ENGINE_FREE_PREPARE_PASS",
+  "actual_process_returncode": 0,
+  "command": [
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests/run_registered_standing_tp.py",
+    "--gate",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-registered-gate.json",
+    "--ledger",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/engineering-amended-four-ledger.json",
+    "--prepare"
+  ],
+  "environment_mode": "FULL_REPLACEMENT",
+  "environment": {
+    "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime:/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/paired-tp-continuity-20261025/source-7f38278/runtime/tests",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "root_go": false,
+  "gate_sha256": "b7251392d18c7a01f9a4642818155e129b541bc7f0eeff42ddb142ce12104c9f",
+  "source_commit": "7f38278257624b321c9d88d9df962505b6f5bab0",
+  "immutable_pin_count": 296,
+  "elapsed_seconds": 2.1080965995788574,
+  "stdout": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-7f38278-prepare.stdout.json",
+    "sha256": "a2fbb69e04cec788ebe9a1249cd56db3012842f84d9256504d297dcf675dfd9c"
+  },
+  "stderr": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/tp-continuity-20261025/F4-7f38278-prepare.stderr.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "ledger_before_sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a",
+  "ledger_after_sha256": "1130c9614a6eac88fe1d2256fa44af2eef418fc37f20d15dbbe2599c2ac24f7a",
+  "namespace_absent": true,
+  "engine_constructors": 0
+}
