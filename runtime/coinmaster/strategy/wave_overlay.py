@@ -2225,13 +2225,15 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         self._forced_close_reason = reason
         self._forced_close_intent = intent
         self._forced_close_submitted.clear()
+        self._pair_sol_global_begin(reason,self.clock.timestamp_ns())
         for order in list(self.cache.orders_open()):
-            self.cancel_order(order)
+            if self._pair_sol_global_cancel(order):self.cancel_order(order)
 
     def _submit_forced_close_on_quote(self, tick: QuoteTick) -> None:
         # Cancel confirmation/reconciliation is authoritative: no market close
         # is submitted while a resting reduction can still consume leaves.
-        if self.cache.orders_open() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
+        if self._pair_sol_global_dispatch(tick):return
+        if self._pair_sol_global_wait() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
             return
         if self._forced_close_reason == "RESEARCH_V3_T3" and tick.ts_event < self._v3_trail_trigger_ns:
             return
@@ -2267,11 +2269,13 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         """Continue a forced close after the final native cancel confirmation."""
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
-        if self.cache.orders_open() or (self._carry_busy() and (self.cache.orders_inflight() or self._pending_by_order)):
+        self._pair_sol_global_dispatch()
+        if self._pair_sol_global_wait() or (self._carry_busy() and (self.cache.orders_inflight() or self._pending_by_order)):
             return
         if self.config.research_v3_risk == "t3" and self._forced_close_reason == "RESEARCH_V3_T3":
             return
         for position in list(self.cache.positions_open()):
+            if self._pair_sol_global_active()and position.instrument_id==self.config.sol_id:continue
             if position.instrument_id not in (self.config.btc_id, self.config.sol_id) or position.instrument_id in self._forced_close_submitted:
                 continue
             # A market order remains native taker; this read only verifies a
@@ -2705,6 +2709,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         self._record_native_event(str(event_id), "order")
         if isinstance(event, OrderAccepted):
             self._accept_native_order(event)
+        self._pair_sol_retire_check(event.ts_event)
 
     def on_order_accepted(self, event: OrderAccepted) -> None:
         self._accept_native_order(event)
@@ -2737,6 +2742,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         self._terminal_without_fill(str(event.client_order_id),event.ts_event)
 
     def on_position_event(self, event) -> None:
+        self._pair_sol_retire_check(event.ts_event)
         self._pair_position_event(event.ts_event)
         self._hedge_refresh(event.ts_event)
         self._insurance_position(event)
@@ -2754,7 +2760,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
 
     def _reconcile_group_flat(self) -> None:
         """Clear a completed close group after the native cache is actually flat."""
-        if self._pair_work() or not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
+        if self._pair_sol_retire_busy() or self._pair_work() or not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
             return
         if self._pending_by_order or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_sol_btc_open_only or self.config.research_h4_ema is not None) and (self._queued_intents or self.cache.orders_inflight())):
             return  # An opening order awaiting terminal native receipt may still fill.

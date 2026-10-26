@@ -109,6 +109,169 @@ class PairedCaps:
 
 
 class PairedPrefixResearch:
+    def _pair_sol_v2(self):
+        c=self.config
+        return bool(getattr(c,"research_sol_standing_protection",False)
+            and getattr(c,"research_btc_standing_tp",False)
+            and getattr(c,"research_a0_family",None)=="R2_A0_V1"
+            and getattr(c,"research_paired_prefix",None)=="B2_F0" and self._pair)
+
+    def _pair_sol_order(self,oid,owner):
+        p=self._pair;order=self.cache.order(ClientOrderId(oid))
+        if (not p or owner.get("parent")!=p["parent"] or owner.get("instrument")!=self.config.sol_id
+            or order is None or order.strategy_id!=self.id or order.instrument_id!=self.config.sol_id
+            or order.side!=(OrderSide.BUY if p["side"]==1 else OrderSide.SELL)
+            or not order.is_reduce_only or order.exec_algorithm_id is not None
+            or self.cache.position_id(order.client_order_id)is not None):
+            raise ValueError("SOL_REDUCTION_OWNER_UNKNOWN")
+        return order
+
+    def _pair_sol_ack_known(self,order,owner):
+        events=[e for e in order.events if type(e).__name__ in {"OrderAccepted","OrderUpdated"}]
+        return bool(events and owner.get("last_ack_event_id")==str(events[-1].id)
+            and owner.get("accepted") and owner.get("pending")is None
+            and order.status.name in {"ACCEPTED","PARTIALLY_FILLED","TRIGGERED"}
+            and owner.get("ack")is not None and self._pair_sol_payload_matches(order,owner["ack"]))
+
+    def _pair_sol_retire_busy(self):
+        if not self._pair_sol_v2():return False
+        return any(o.get("parent")==self._pair["parent"] and o.get("retiring")
+            and not o["retiring"].get("terminal_event_id")for o in self._pair_orders.values())
+
+    def _pair_sol_retire_observe(self,oid,owner,ns,*,commit=False):
+        retirement=owner.get("retiring")
+        if not retirement:return
+        order=self._pair_sol_order(oid,owner)
+        if order.filled_qty.as_decimal()!=retirement["filled_at_cancel"]+retirement["actual_filled"]:
+            raise ValueError("SOL_RETIRING_UNRECONCILED_FILL")
+        if retirement["actual_filled"]>retirement["native_right"]:
+            raise ValueError("SOL_RETIRING_LIABILITY_EXCEEDED")
+        cancel_events=[e for e in order.events if type(e).__name__=="OrderPendingCancel"and e.ts_event>=retirement["cancel_ns"]]
+        if not cancel_events:raise ValueError("SOL_RETIRING_CANCEL_HISTORY_UNKNOWN")
+        if retirement.get("cancel_event_id")not in(None,str(cancel_events[0].id)):
+            raise ValueError("SOL_RETIRING_CANCEL_ID_CHANGED")
+        if commit:retirement["cancel_event_id"]=str(cancel_events[0].id)
+        if order.is_closed:
+            terminal=[e for e in order.events if type(e).__name__ in {"OrderCanceled","OrderFilled"}]
+            if not terminal or order.status.name not in {"CANCELED","FILLED"}:
+                raise ValueError("SOL_RETIRING_INVALID_TERMINAL")
+            if commit:retirement["terminal_event_id"]=str(terminal[-1].id)
+        elif not order.is_pending_cancel:
+            # Stock OrderFilled transitions PENDING_CANCEL -> PARTIALLY_FILLED.
+            # The original cancel command remains owned/in flight; no retry.
+            after=order.events[order.events.index(cancel_events[0])+1:]
+            if order.status.name!="PARTIALLY_FILLED"or not after or any(type(e).__name__!="OrderFilled"for e in after):
+                raise ValueError("SOL_RETIRING_LIVE_WITHOUT_CANCEL")
+
+    def _pair_sol_retire_check(self,ns):
+        if not self._pair_sol_v2():return
+        p=self._pair
+        for oid,owner in self._pair_orders.items():
+            if owner.get("parent")==p["parent"] and owner.get("retiring"):
+                self._pair_sol_retire_observe(oid,owner,ns)
+        deadline=p.get("retirement_deadline_ns")
+        if deadline is not None and ns>=deadline and self._pair_sol_retire_busy():
+            raise ValueError("SOL_RETIRING_ACK_DEADLINE")
+
+    def _pair_sol_retire(self,oid,owner,order,ns):
+        if owner.get("retiring"):
+            self._pair_sol_retire_observe(oid,owner,ns);return
+        if owner.get("pending")is not None:return  # No exception while modify is pending.
+        self._pair_sol_order(oid,owner)
+        if owner["kind"]!="TP" or self._pair["tp_lots"].get(owner["level"],0)!=0 or not self._pair_sol_ack_known(order,owner):
+            raise ValueError("SOL_RETIRING_REQUIRES_ZERO_RIGHT_LATEST_ACK")
+        p=self._pair
+        if p.get("retirement_deadline_ns")is None:p["retirement_deadline_ns"]=ns+MINUTE
+        if ns>=p["retirement_deadline_ns"]:raise ValueError("SOL_RETIRING_ACK_DEADLINE")
+        owner["retiring"]=dict(cancel_ns=ns,native_right=order.leaves_qty.as_decimal(),latest_ack_event_id=owner["last_ack_event_id"],
+            filled_at_cancel=order.filled_qty.as_decimal(),actual_filled=D(0),terminal_event_id=None)
+        self._pair_log("SOL_RETIRING_CANCEL",ns,order_id=oid,parent=p["parent"],
+            native_right=owner["retiring"]["native_right"],deadline_ns=p["retirement_deadline_ns"])
+        self.cancel_order(order)
+
+    def _pair_sol_positive(self,order,exact=False):
+        if not self._pair_sol_v2():return False
+        oid=str(order.client_order_id);owner=self._pair_orders.get(oid);p=self._pair
+        if not owner or owner["kind"]not in {"TP","STOP"}or owner.get("parent")!=p["parent"]:return False
+        self._pair_sol_order(oid,owner)
+        if owner.get("retiring"):return False
+        held=self._pair_qty(self.config.sol_id)
+        if not held:return False
+        q=held if owner["kind"]=="STOP" else D(p["tp_lots"].get(owner["level"],0))*self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
+        if q<=0:return False
+        if not exact:return True
+        prices,stop=sol_prices(p["p0"],p["atr"],-p["side"],self.cache.instrument(self.config.sol_id).price_increment.as_decimal())
+        payload=(order.filled_qty.as_decimal()+q,prices[owner["level"]]if owner["kind"]=="TP"else None,stop if owner["kind"]=="STOP"else None)
+        return self._pair_sol_ack_known(order,owner)and order.leaves_qty.as_decimal()==q and self._pair_sol_payload_matches(order,payload)
+
+    def _pair_sol_global_begin(self,reason,ns):
+        if not self._pair_sol_v2():return
+        p=self._pair
+        position=self._pair_position(self.config.sol_id)
+        if self._pair_qty(self.config.sol_id)and (position is None or position.strategy_id!=self.id or position.is_long!=(p["side"]==-1)):
+            raise ValueError("SOL_GLOBAL_POSITION_OWNER_UNKNOWN")
+        p["global_close_reason"]=reason;p["close_sol"]=True
+        self._pair_log("SOL_GLOBAL_CLOSE_DELEGATED",ns,parent=p["parent"],reason=reason)
+
+    def _pair_sol_global_active(self):
+        return bool(self._pair_sol_v2()and self._pair.get("global_close_reason"))
+
+    def _pair_sol_global_cancel(self,order):
+        # None means the legacy/non-SOL path. In the gated SOL path only an
+        # owned ENTRY is canceled; protection and existing reductions stay owned.
+        if not self._pair_sol_global_active()or order.instrument_id!=self.config.sol_id:return True
+        owner=self._pair_orders.get(str(order.client_order_id))
+        if not owner or owner.get("parent")!=self._pair["parent"]or order.strategy_id!=self.id:return False
+        if owner.get("retiring"):return False  # Existing native cancel remains owned; never retry.
+        if owner["kind"]=="ENTRY":return not order.is_reduce_only and order.side==(OrderSide.SELL if self._pair["side"]==1 else OrderSide.BUY)
+        if (self._pair.get("failed")or self._pair.get("stop_filled"))and owner["kind"]in {"TP","STOP"}:
+            self._pair_sol_order(str(order.client_order_id),owner)
+            return True  # Explicit qualification fault: existing conservative drain only.
+        return False
+
+    def _pair_sol_global_wait(self):
+        orders=self.cache.orders_open()
+        if not self._pair_sol_global_active():return orders
+        orders={str(o.client_order_id):o for o in orders+self.cache.orders_inflight()}.values()
+        return [o for o in orders if not(o.instrument_id==self.config.sol_id and self._pair_sol_positive(o,exact=True))]
+
+    def _pair_sol_global_dispatch(self,tick=None):
+        if not self._pair_sol_global_active():return False
+        if tick is not None and tick.instrument_id!=self.config.sol_id:return False
+        quote=tick if tick is not None else self.cache.quote_tick(self.config.sol_id)
+        now=self.clock.timestamp_ns()
+        if quote is None or not 0<=now-quote.ts_event<=MINUTE:return True
+        if self._pair_sol_global_wait():return True
+        self._pair_sol_reduce(now,self.config.sol_id)
+        return True
+
+    def _pair_sol_reduce(self,ns,instrument):
+        p=self._pair
+        self._pair_sol_retire_check(ns)
+        entries=self._pair_work(instrument=self.config.sol_id,kinds={"ENTRY"})
+        if any(o is None or owner.get("parent")!=p["parent"]or o.strategy_id!=self.id or o.is_reduce_only
+            or o.side!=(OrderSide.SELL if p["side"]==1 else OrderSide.BUY)for _,owner,o in entries):return
+        if self._pair_cancel(entries):return
+        if self._pair_work(instrument=self.config.sol_id,kinds={"SOL_CAP","SOL_CLOSE"})or self._pair_sol_retire_busy():return
+        # Unknown/foreign SOL orders remain blockers, never adopted/canceled.
+        for order in self.cache.orders_open()+self.cache.orders_inflight():
+            if order.instrument_id==self.config.sol_id:
+                oid=str(order.client_order_id);owner=self._pair_orders.get(oid)
+                if not owner or owner.get("parent")!=p["parent"]or order.strategy_id!=self.id:return
+                if owner["kind"]not in {"TP","STOP"}:return
+        held=self._pair_qty(self.config.sol_id)
+        if not held:self._pair_protect(ns);return
+        fault=p.get("failed",False)or p.get("stop_filled",False)
+        if fault:
+            if self._pair_cancel(self._pair_work(instrument=self.config.sol_id,kinds={"TP","STOP"})):return
+        else:
+            self._pair_sol_protect(ns)
+            if p.get("failed")or p.get("protection_since")is not None:return
+            if not all(self._pair_sol_positive(o,exact=True)for _,_,o in self._pair_work(instrument=self.config.sol_id,kinds={"TP","STOP"})):return
+        excess=held if p["close_sol"]else max(D(0),held-p["caps"].solmax)
+        if excess and instrument==self.config.sol_id:
+            self._pair_submit(self.config.sol_id,p["side"],excess,"SOL_CLOSE"if p["close_sol"]else"SOL_CAP",ns)
+
     def _pair_init(self):
         self._pair = None
         self._pair_orders = {}
@@ -156,6 +319,8 @@ class PairedPrefixResearch:
 
     def _pair_cancel(self, work):
         for oid, owner, order in work:
+            if self._pair_sol_v2()and owner.get("retiring")and not owner["retiring"].get("terminal_event_id"):
+                continue  # Already-issued cancel survives native late-fill status transition.
             if order is not None and not order.is_closed and not order.is_pending_cancel:
                 self.cancel_order(order)
         return bool(work)
@@ -203,7 +368,7 @@ class PairedPrefixResearch:
 
     def _pair_release_if_terminal(self, ns):
         p = self._pair
-        if p and not getattr(self,"_tp_flat_terminal_busy",lambda:False)() and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight() and not (getattr(self.config, "research_sol_standing_protection", False) and any(o.get("pending") is not None and o.get("parent") == p["parent"] for o in self._pair_orders.values())):
+        if p and not self._pair_sol_retire_busy() and not getattr(self,"_tp_flat_terminal_busy",lambda:False)() and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight() and not (getattr(self.config, "research_sol_standing_protection", False) and any(o.get("pending") is not None and o.get("parent") == p["parent"] for o in self._pair_orders.values())):
             self._pair_predecision(ns,"PARENT_NATIVE_TERMINAL")
             self._pair_log("PARENT_NATIVE_TERMINAL_FLAT", ns, parent=p["parent"])
             self._pair = None
@@ -305,6 +470,10 @@ class PairedPrefixResearch:
         o = self._pair_orders.get(str(event.client_order_id))
         if o and not o["accepted"]:
             o["accepted"] = True
+            if self._pair_sol_v2()and o["instrument"]==self.config.sol_id and o["kind"]in {"TP","STOP"}:
+                order=self.cache.order(event.client_order_id)
+                o["ack"]=(order.quantity.as_decimal(),getattr(order,"price",None).as_decimal()if getattr(order,"price",None)is not None else None,getattr(order,"trigger_price",None).as_decimal()if getattr(order,"trigger_price",None)is not None else None)
+                o["last_ack_event_id"]=str(event.id)
             self._pair_log("ACCEPTED", event.ts_event, order_id=str(event.client_order_id), kind=o["kind"], level=o["level"])
             self._pair_protect(event.ts_event)
 
@@ -328,7 +497,10 @@ class PairedPrefixResearch:
                 self._pair_fail("PARTIAL_NATIVE_STOP", ns)
         if rejected and p:
             self._pair_fail("NATIVE_" + owner["kind"] + "_REJECTED", ns)
-        if p and owner["kind"] in {"TP", "STOP"}:
+        if self._pair_sol_v2():
+            if owner.get("retiring"):self._pair_sol_retire_observe(oid,owner,ns,commit=True)
+            self._pair_sol_retire_check(ns)
+        if p and (owner["kind"] in {"TP", "STOP"} or self._pair_sol_v2()and owner["kind"]in {"SOL_CAP","SOL_CLOSE"}):
             self._pair_protect(ns)
         self._pair_release_if_terminal(ns)
         return True
@@ -344,10 +516,18 @@ class PairedPrefixResearch:
         if p is None:
             raise ValueError("PAIRED_LATE_FILL_WITHOUT_OWNER")
         qty = event.last_qty.as_decimal(); px = event.last_px.as_decimal()
+        retiring=owner.get("retiring") if self._pair_sol_v2()else None
+        if retiring:
+            order=self._pair_sol_order(oid,owner)
+            if qty<=0 or retiring["actual_filled"]+qty>retiring["native_right"]:
+                raise ValueError("SOL_RETIRING_LIABILITY_EXCEEDED")
+            if not any(str(e.id)==str(event.id)for e in order.events):raise ValueError("SOL_RETIRING_FILL_HISTORY_UNKNOWN")
+            retiring["actual_filled"]+=qty
         if owner["kind"]=="STOP" and getattr(self.config,"research_sol_standing_protection",False):
             # A partial STOP callback can precede IOC terminal cancellation.
             # Any genuine STOP fill closes protection ownership immediately.
             p["close_sol"]=True
+            if self._pair_sol_v2():p["stop_filled"]=True
             self._pair_log("SOL_STOP_FILL_CLOSING_BARRIER",event.ts_event,order_id=oid,trade_id=str(event.trade_id),qty=qty)
         if owner["kind"] == "ENTRY":
             step = self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
@@ -380,7 +560,7 @@ class PairedPrefixResearch:
         if owner["instrument"] == self.config.sol_id and owner["kind"] != "ENTRY":
             step = self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
             removed = int(qty / step)
-            if owner["kind"] == "TP":
+            if owner["kind"] == "TP" and not retiring:
                 level = owner["level"]
                 p["tp_lots"][level] = max(0, p["tp_lots"].get(level, 0) - removed)
             else:
@@ -425,7 +605,7 @@ class PairedPrefixResearch:
         p["last_btc"], p["last_sol"] = btc, sol
         if not btc:
             p["close_sol"] = True
-            self._pair_cancel(self._pair_work(instrument=self.config.sol_id, kinds={"ENTRY", "TP", "STOP"}))
+            self._pair_cancel(self._pair_work(instrument=self.config.sol_id, kinds={"ENTRY"}if self._pair_sol_v2()else{"ENTRY", "TP", "STOP"}))
         self._pair_log("CACHE_POSITION", ns, btc=btc, sol=sol, bmax=p["caps"].bmax, solmax=p["caps"].solmax)
         self._pair_arm_btc_debt(ns)
         self._pair_protect(ns)
@@ -470,6 +650,7 @@ class PairedPrefixResearch:
         if not self.config.research_paired_prefix:
             return
         ns = tick.ts_event
+        self._pair_sol_retire_check(ns)
         self._pair_last_quote[tick.instrument_id] = tick
         if tick.instrument_id == self.config.btc_id:
             # Native matching/fill delivery precedes strategy quote callback.
@@ -498,7 +679,10 @@ class PairedPrefixResearch:
         self._pair_cancel_btc_increases(ns)
         if self._forced_close_reason or self._liquidating or self.terminal_lifecycle.get("lockout"):
             p["close_sol"] = True
-            self._pair_cancel(self._pair_work())
+            if self._pair_sol_v2():
+                if not p.get("global_close_reason"):self._pair_sol_global_begin(self._forced_close_reason or "NATIVE_TERMINAL_LOCKOUT",ns)
+                self._pair_sol_global_dispatch(tick)
+            else:self._pair_cancel(self._pair_work())
             if p["debt_since"] is not None and ns > p["debt_since"] + MINUTE:
                 self._pair_fail("TRIM_DEBT_OVERDUE_DURING_HIGHER_NATIVE_CLOSE", ns)
             self._pair_release_if_terminal(ns)
@@ -540,7 +724,9 @@ class PairedPrefixResearch:
             p["standing_debt_deferred"] = False
             p["standing_safe_since"] = None
         excess = sol if p["close_sol"] else max(D(0), sol - p["caps"].solmax) if p["caps"].initialized else D(0)
-        if excess:
+        if excess and self._pair_sol_v2():
+            self._pair_sol_reduce(ns,tick.instrument_id)
+        elif excess:
             if not self._pair_cancel(self._pair_work(instrument=self.config.sol_id, kinds={"ENTRY", "TP", "STOP"})) and tick.instrument_id == self.config.sol_id and not self._pair_work(instrument=self.config.sol_id):
                 self._pair_submit(self.config.sol_id, p["side"], excess, "SOL_CLOSE" if p["close_sol"] else "SOL_CAP", ns)
         else:
@@ -589,6 +775,19 @@ class PairedPrefixResearch:
         self._pair_log("SOL_NATIVE_EVENT", event.ts_event, order_id=oid,
             native_event_id=key, event_type=name, route=route,
             observed_ns=self.clock.timestamp_ns(), status=None if order is None else order.status.name)
+        if self._pair_sol_v2()and owner.get("retiring"):
+            if name=="OrderCancelRejected":
+                if not order.is_closed:raise ValueError("SOL_RETIRING_LIVE_CANCEL_REJECTED")
+                self._pair_sol_retire_observe(oid,owner,event.ts_event,commit=True)
+                if not owner["retiring"].get("terminal_event_id"):raise ValueError("SOL_RETIRING_LIVE_CANCEL_REJECTED")
+            elif name in {"OrderExpired","OrderUpdated","OrderModifyRejected","OrderRejected","OrderDenied"}:
+                raise ValueError("SOL_RETIRING_INVALID_NATIVE_EVENT")
+            elif name!="OrderFilled":self._pair_sol_retire_observe(oid,owner,event.ts_event,commit=True)
+            self._pair_sol_retire_check(event.ts_event)
+            self._pair_protect(event.ts_event)
+            self._pair_release_if_terminal(event.ts_event)
+            return
+        if self._pair_sol_v2():self._pair_sol_retire_check(event.ts_event)
         if name not in {"OrderUpdated", "OrderModifyRejected"}:
             return
         pending = owner.get("pending")
@@ -606,6 +805,7 @@ class PairedPrefixResearch:
             self._pair_fail("SOL_MODIFY_ACK_PAYLOAD_UNKNOWN", event.ts_event)
         else:
             owner["ack"] = pending["payload"]
+            if self._pair_sol_v2():owner["last_ack_event_id"]=key
             owner.pop("rejected_desired", None)
             self._pair_log("SOL_LATEST_MODIFY_ACK", event.ts_event, order_id=oid,
                 sequence=pending["sequence"], native_event_id=key, generation=pending["generation"])
@@ -623,7 +823,7 @@ class PairedPrefixResearch:
         if p is None or p["p0"] is None or p.get("sol_reconciling"):
             return
         held = self._pair_qty(self.config.sol_id)
-        if not held or p["close_sol"]:
+        if not held or p["close_sol"]and not(self._pair_sol_v2()and not p.get("failed")and not p.get("stop_filled")):
             # Keep owner registries until native cancellation/terminal is observed.
             if not held:
                 p["protection_since"] = None
@@ -666,7 +866,8 @@ class PairedPrefixResearch:
                     raise ValueError("SOL_UNKNOWN_NATIVE_ORDER_OWNERSHIP")
                 indexed[key] = oid, owner, order
                 if key not in desired:
-                    self._pair_cancel([(oid, owner, order)])
+                    if self._pair_sol_v2():self._pair_sol_retire(oid,owner,order,ns)
+                    else:self._pair_cancel([(oid, owner, order)])
             for key, target in desired.items():
                 leaves, price, trigger = target
                 if key not in indexed:
@@ -709,6 +910,9 @@ class PairedPrefixResearch:
                 self._pair_log("SOL_PUBLIC_MODIFY_RETURN", ns, order_id=oid, sequence=pending["sequence"],
                     status=order.status.name, pending=owner.get("pending") is not None)
             work = self._pair_work(instrument=self.config.sol_id, kinds={"TP", "STOP"})
+            if self._pair_sol_v2():
+                self._pair_sol_retire_check(ns)
+                work=[(oid,owner,order)for oid,owner,order in work if not owner.get("retiring")]
             exact = len(work) == len(desired)
             for oid, owner, order in work:
                 target = desired.get((owner["kind"], owner["level"]))
@@ -878,7 +1082,7 @@ class PairedPrefixResearch:
 
 
     def _a0_targets_ready(self, ep, m, held):
-        if getattr(self,"_tp_flat_terminal_busy",lambda:False)():return False
+        if getattr(self,"_tp_flat_terminal_busy",lambda:False)()or self._pair_sol_retire_busy():return False
         # Runs after the original off_ns/+60 initialization, preserving clocks.
         # Same original right/clock; unknown SOL ACK or a draining STOP blocks
         # increases until actual terminal state, never grants synthetic coverage.
@@ -895,7 +1099,8 @@ class PairedPrefixResearch:
         if not getattr(self.config, "research_sol_standing_protection", False) or not self._pair:
             return
         p=self._pair;held=self._pair_qty(self.config.sol_id)
-        rows=[];exact=True;expected={}
+        if self._pair_sol_v2():self._pair_sol_retire_check(ns)
+        rows=[];exact=True;expected={};retiring=[]
         if held and p["p0"] is not None:
             inst=self.cache.instrument(self.config.sol_id)
             prices,stop=sol_prices(p["p0"],p["atr"],-p["side"],inst.price_increment.as_decimal())
@@ -904,12 +1109,17 @@ class PairedPrefixResearch:
             expected[("STOP",None)]=(held,None,stop)
         work=self._pair_work(instrument=self.config.sol_id,kinds={"TP","STOP"})
         for oid,owner,order in work:
+            if self._pair_sol_v2()and owner.get("retiring"):
+                self._pair_sol_retire_observe(oid,owner,ns)
+                retiring.append(dict(order_id=oid,original_right=str(owner["retiring"]["native_right"]),actual_filled=str(owner["retiring"]["actual_filled"]),native_leaves=str(order.leaves_qty),terminal_event_id=owner["retiring"]["terminal_event_id"]))
+                continue
             target=expected.get((owner["kind"],owner["level"]))
             matches=(order is not None and target is not None and owner.get("parent")==p["parent"]
                 and order.strategy_id==self.id and order.instrument_id==self.config.sol_id and order.is_reduce_only
                 and order.side==(OrderSide.BUY if p["side"]==1 else OrderSide.SELL)and owner["accepted"] and owner.get("pending")is None
                 and order.status.name in {"ACCEPTED","PARTIALLY_FILLED","TRIGGERED"}
                 and order.leaves_qty.as_decimal()==target[0]
+                and (not self._pair_sol_v2()or self._pair_sol_ack_known(order,owner))
                 and self._pair_sol_payload_matches(order,(order.filled_qty.as_decimal()+target[0],target[1],target[2])))
             exact=exact and matches
             rows.append(dict(order_id=oid,kind=owner["kind"],level=owner["level"],exact=matches,
@@ -921,9 +1131,10 @@ class PairedPrefixResearch:
                 trigger="UNKNOWN"if order is None else str(getattr(order,"trigger_price",None)),
                 desired="UNKNOWN"if target is None else [str(v)for v in target],
                 desired_generation=p["generation"],pending=owner.get("pending")is not None))
-        exact=exact and len(work)==len(expected)and sum(p["tp_lots"].values())*self.cache.instrument(self.config.sol_id).size_increment.as_decimal()==held
+        exact=exact and len(work)-len(retiring)==len(expected)and sum(p["tp_lots"].values())*self.cache.instrument(self.config.sol_id).size_increment.as_decimal()==held
         pending_commands=any(o.get("pending")is not None and o.get("parent")==p["parent"]for o in self._pair_orders.values())
-        state="CLOSING"if p["close_sol"]else"DRAINING"if not held and (work or pending_commands) else"FLAT"if not held else"PROTECTED"if exact else"UNKNOWN"
+        fault=self._pair_sol_v2()and (p.get("failed")or p.get("stop_filled")and held)
+        state="FAULT_UNPROTECTED"if fault else"CLOSING_PROTECTED"if self._pair_sol_v2()and p["close_sol"]and held and exact else"CLOSING"if p["close_sol"]and not self._pair_sol_v2()else"DRAINING"if not held and (work or pending_commands) else"FLAT"if not held else"PROTECTED"if exact else"UNKNOWN"
         counts=getattr(self,"_pair_sol_boundary_counts",None)
         if counts is None:self._pair_sol_boundary_counts=counts=dict(checks=0,strict=0,unknown=0)
         counts["checks"]+=1;counts["strict"]+=int(strict);counts["unknown"]+=int(held and not p["close_sol"]and not exact)
@@ -931,9 +1142,9 @@ class PairedPrefixResearch:
         detailed=bool(getattr(getattr(self.config,"research_native_book",None),"detailed",False))
         if detailed or signature!=p.get("sol_boundary_signature"):
             self._pair_log("SOL_NATIVE_BOUNDARY",ns,label=label,parent=p["parent"],actual_sol=held,
-                state=state,exact=exact,orders=rows,protection_since=p["protection_since"])
+                state=state,exact=exact,orders=rows,retiring=retiring,protection_since=p["protection_since"])
             p["sol_boundary_signature"]=signature
-        if strict and held and not p["close_sol"] and not exact:
+        if strict and held and not exact and (not fault if self._pair_sol_v2()else not p["close_sol"]):
             raise ValueError("SOL_BEFORE_MATCHING_EXACT_COVERAGE_UNKNOWN")
 
 
