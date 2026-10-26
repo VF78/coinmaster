@@ -1,0 +1,297 @@
+{
+  "schema": "CM137_PREDECISION_PRODUCER_INTERFACE_97_V1",
+  "status": "BOUNDED_FIXTURE_INTERFACE_MAPPED_PREFIX_PROOF_HOLD",
+  "scope": "Read-only actual8predecisionrecords inFAILED E6 capture and exact97producer shapes; no stream/test/engine/economicmath/patch",
+  "source_commit": "97db9659199d9d4655336826d007cccf1883982e",
+  "attempt_id": "da9ba9ec-72aa-4961-8f6e-c7bf2b41d985",
+  "fixture_id": "E6",
+  "scenario": "E1",
+  "actual_paths": {
+    "capture": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/FAILURE_BEFORE_END.json",
+    "capture_records_json_path": [
+      "paired",
+      "predecision_records"
+    ],
+    "capture_coverage_json_path": [
+      "paired",
+      "predecision_coverage"
+    ],
+    "future_economic_report_records_json_path": [
+      "paired_prefix_audit",
+      "predecision_records"
+    ],
+    "future_path_status": "EXPECTED_INTERFACE_ONLY_NOT_SEEN_IN_ACCEPTED_PREFIX; mustfreezeactualsource/reportpathbeforeproof"
+  },
+  "actual_bounded_summary": {
+    "records": 8,
+    "checks": 10,
+    "coalesced": 2,
+    "parents": 1,
+    "activation_selected_events": 1,
+    "risk_OFF_events": 0,
+    "risk_OFF_record_reasons": 0,
+    "first_OFFplus60_records": 0,
+    "A0_trading_enabled_values": [
+      false
+    ],
+    "record_timestamps_ns": [
+      "70000000000",
+      "70000000000",
+      "130000000000",
+      "131000000000",
+      "136000000000",
+      "137000000000",
+      "138000000000",
+      "139000000000"
+    ],
+    "phase_counts": {
+      "CAUSE_RISK_CANCEL": 1,
+      "AFTER_PAIR_RISK_AND_MD_RECONCILE_BEFORE_A0_CHECK": 7
+    },
+    "reason_counts": {
+      "RISK_CANCEL": 1,
+      "AFTER_MD_RECONCILE_BEFORE_A0": 7
+    },
+    "observer_reason_counts": {
+      "WAIT_RISK_OFF": 7,
+      "PARENT_TP_FLAT_CLOSE_OR_PAUSE": 1
+    },
+    "account_capture_complete_records": 8,
+    "account_capture_errors_records": 0,
+    "raw_predecision_coverage": {
+      "parent_count": 1,
+      "parents": [
+        {
+          "parent": "ded33322-0aee-40c1-bf1c-ba2834eb727c",
+          "risk_off_ns": null,
+          "first_off60_quote_observed": false,
+          "original_right_lock_eligible": true,
+          "original_second_orders": [
+            "O-19700101-000002-001-000-5"
+          ]
+        }
+      ],
+      "counts": {
+        "checks": 10,
+        "records": 8,
+        "coalesced": 2
+      },
+      "account_capture_complete": true,
+      "incomplete_capture_blocks_financial_coverage": false,
+      "truncated": false
+    },
+    "result_json": {
+      "child_exit_code": 1,
+      "result": null
+    },
+    "qualification": "FAILEDfixture; no acceptedwholecase, prefixcoverage/opportunity/PnL/economicPASS inferred."
+  },
+  "exact_fact_map_proposal": {
+    "original_second_budget": {
+      "primary": [
+        "original_second"
+      ],
+      "additional": [
+        "original_first_allocation",
+        "first_filled_ever",
+        "first_terminal",
+        "original_second_orders",
+        "original_tif",
+        "original_price"
+      ]
+    },
+    "actual_second_filled_ever": {
+      "primary": [
+        "second_filled_ever"
+      ]
+    },
+    "original_second_remaining": {
+      "primary": [
+        "remaining"
+      ]
+    },
+    "risk_off_plus_60_clock": {
+      "primary": [
+        "off_plus60_ready"
+      ],
+      "additional": [
+        "off_ns",
+        "lock_ns",
+        "timestamp_ns",
+        "quote_ns",
+        "risk"
+      ]
+    },
+    "actual_quote_and_cross": {
+      "primary": [
+        "post_only_cross"
+      ],
+      "additional": [
+        "bid",
+        "ask",
+        "quote_ns",
+        "instrument",
+        "book",
+        "native_input_identity",
+        "native_event_uuid"
+      ]
+    },
+    "native_debt": {
+      "primary": [
+        "debt_since"
+      ],
+      "additional": [
+        "held",
+        "cap"
+      ],
+      "limit": "debt_since is a clock/armed-state fact, not standalone outstanding quantity; bind actualheld/cap too, no invented field or counterfactual value."
+    },
+    "native_cap": {
+      "primary": [
+        "cap"
+      ],
+      "additional": [
+        "observer_locked_cap",
+        "declared_quantity"
+      ]
+    },
+    "remaining_TP_and_ordinary_exit": {
+      "primary": [
+        "current_btc_tp"
+      ],
+      "additional": [
+        "ordinary_tp_touched",
+        "entry_terminal",
+        "entries_enabled",
+        "sol_protection_gap"
+      ]
+    },
+    "pending_ACK_and_reservations": {
+      "primary": [
+        "open_inflight"
+      ],
+      "additional": [
+        "old_orders",
+        "native_account.balances_locked",
+        "native_account.balances_free",
+        "native_account.balances_total"
+      ]
+    },
+    "native_current_margin": {
+      "primary": [
+        "native_account"
+      ],
+      "additional": [
+        "native_account_capture",
+        "native_margin",
+        "marks",
+        "read_only_current_fact_margin_for_attempts",
+        "stock_guard_invoked",
+        "stock_margin_invoked",
+        "stock_margin_result",
+        "stock_margin_invocation_scope",
+        "admission"
+      ]
+    }
+  },
+  "explicit_aliases_proposal": {
+    "capture_status": {
+      "raw_paths": [
+        "native_account.status",
+        "native_account.complete",
+        "native_account.errors",
+        "native_account_capture.complete",
+        "native_account_capture.errors"
+      ],
+      "mapping": "Explicitly require statusKNOWN, complete isTrue, errors exactlyempty in both captures. Missing/UNKNOWN/errors cannotbe metadataPASS. This only establishes gettercapture, not financialcoverage."
+    },
+    "financial_coverage_eligible": {
+      "raw_literal_field": "ABSENT",
+      "mapping": "No default. Root observationalproof requires accountcapture AND fullcausaluniverses/timestamps/facts/reasons/coalescing/no-truncation fromactualsource+report. Raw accountcompletealone insufficient."
+    },
+    "margin_unknown": {
+      "raw_paths": [
+        "stock_guard_invoked",
+        "stock_margin_invoked",
+        "stock_margin_result",
+        "admission",
+        "native_account.instruments.*.margin_init",
+        "native_account.instruments.*.margin_maint"
+      ],
+      "mapping": "ObservedFalse +UNKNOWN_NOT_EXECUTED_OBSERVER is legitimate noninvocation, not absentcapture. ABSENT_NATIVE_VALUE on getterNone is explicitnativeabsence, not exception/zero/marginPASS. OwnA0guard atdispatch remainsseparate."
+    }
+  },
+  "stage_binding": {
+    "quote_record_stage": "AFTER_PAIR_RISK_AND_MD_RECONCILE_BEFORE_A0_CHECK",
+    "observed_cause_stage": "CAUSE_RISK_CANCEL",
+    "quote_reason": "AFTER_MD_RECONCILE_BEFORE_A0",
+    "source_call": "market_redesign.py:144 afterMDreconcile beforeA0check",
+    "source_observer": "paired_prefix.py:757-875; configpaired+activeparent guards, noA0flagguard; actual8rowsflagFalse",
+    "future_cause_stages": "CausalRISK_OFF/FIRST_OFFplus60/PARENT_NATIVE_TERMINAL stages mustbe frozen/qualifiedifactuallyreached; noneofthesebranchcoverages provenhere."
+  },
+  "reader_binding_readiness": {
+    "uppercase_stage_supported": true,
+    "reason": "validate_predecision_coverage compares proof.record_stage to rootgate.predecision.record_stage; no hardcoded lowercase stage. Freezeactualuppercase string inrootgate/proof. Templateplaceholder is notproductcontract.",
+    "path_supported": true,
+    "reason_path": "Explicitrootgate producer_json_path/field_map acceptsactualfuturefullreport path; fixture$.paired is NOT implicitly future$.paired_prefix_audit.",
+    "reader_change_needed_now": false,
+    "existing_13_pure_tests": "Reusedpriorcheckpoint only; NOT_RERUNthisreadiness task; moneycoreunchanged."
+  },
+  "schema_gaps_and_limits": [
+    "No literalcapture_status/financial_coverage_eligible; existingstatus/complete/errors sufficeonlywithexplicitreviewedalias. Do notrequestnewproductflags solelyfornames.",
+    "Currentpredecision_coverage providesparenttable/checks/records/coalesced/accountcapture/truncated, notindependently complete riskselection/OFF/candidateparent expected-versusobservedIDuniverses. RootmustjoinactualACTIVATION_SELECTED/parentregistry/OFF/+60recordrules, no defaultPASS.",
+    "Snapshots are coalescedonlogicaleligibility/statechanges, notonequoteonerow; firstOFFplus60 forcedrecordsourcepath existsbutnotreachedhere. Need coalescingrule/sourcefreeze/countbinding plusallrequiredcause/firsteligible checkpoints inactualprefixproof.",
+    "native_event_uuid explicitlyunavailable; quote native_input_identity is processlocalid(tick), notdurableeventUUID. Use capture/reportSHA+JSONrowindex+parent+timestamp+phase andactualquoteidentity asboundreference; never manufactureNativeUUID.",
+    "HelpergetterABSENT_NATIVE_VALUE isexplicitNone, notthrownexception; exception→UNKNOWN/errors/incomplete andmustblockfinancialcoverageproof. Missingaccountblocks.",
+    "Fixtureonlyoneactivation/noriskOFF→no+60/A0admissioncoverage; cannotclaimcandidateopportunityzeroorpositiveinprefix.",
+    "Sourcehelpergettercapture isnotsettled/eventfinancialaccounting, actualmarginadmission orfinancialeligibility. FailedresultNonecannotfinancialqualify."
+  ],
+  "next_proof_binding": [
+    "Freezefinalnewsource/reportSHA/attemptUUID/label/phase/recordstage andexactfutureproducerJSONpath. 97source ishistoricalfixtureevidence, notnewfinancialsourceapproval.",
+    "Pinreportandcausalcoverageproof inrootfinancialreadgate andevidence.proof_artifacts; statusROOT_ACCEPTED_COMPLETE_OBSERVATIONAL_COVERAGE onlyafteractualrootreview.",
+    "Exactfieldmapwithcompoundfactcomponents, explicit getteraliasrules/error/missingreasonpolicy and accountcaptureversuscoverage separate.",
+    "Buildactualexpected/observedIDuniversesriskselections/OFF/candidateparents fromsameboundreport; preservecoalescedchecksandrequiredstate/first_OFF60observations. Missing/truncated/UNKNOWN⇒reject.",
+    "Completecoverage/structuralopportunity0 distinct: legitimate knownzero maycloseunusedA0; meaningfulriskselections0→NOT_TESTED. Capturecomplete never createsmeaningfulopportunity.",
+    "OwnA0guardchecks/runtimemargin/fills/profit remainfutureoutcomes; do notdemandorpreprovefromC0metadata."
+  ],
+  "actions": {
+    "new_engines": 0,
+    "tests": 0,
+    "new_money_calculations": 0,
+    "stream_reads": 0,
+    "Popen": 0,
+    "source_edits": 0,
+    "gate_edits": 0,
+    "ledger_edits": 0
+  },
+  "evidence": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/FAILURE_BEFORE_END.json",
+      "sha256": "1d22b172834f996f1a103af4032e746bc32bf48013c67b66ac87b7c6f30a393d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/engineering/E6_E1_97db965_RESERVED_REPEAT/result.json",
+      "sha256": "14dc8c0abb315eaa94b36910dfcd40449c40be682be80798d12bf6e21199b062"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-97db965/runtime/coinmaster/strategy/paired_prefix.py",
+      "sha256": "0aa36ccab1df7ca46a2c89819d19e237b0907a65405d5990252c6b9712f17020"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-97db965/runtime/coinmaster/strategy/native_account_snapshot.py",
+      "sha256": "5ad6abee1ed0d285b23bb9d7eea6787843c00c8afeffc2cb855c49b462c14892"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-97db965/runtime/coinmaster/strategy/market_redesign.py",
+      "sha256": "0b1aeb01a85b2d4af9748fcbd7c84cd6648ebeb61605abea87924e09778972a0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-standing-protection-20261026/source-97db965/runtime/tests/run_sol_standing_fixture.py",
+      "sha256": "46a9a515ee2817956722dbdc84ca5e90f12e0115d4f8c2b917960f7ebef93399"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/financial_reader_binding.py",
+      "sha256": "a68d00e0730388974bb3c52f9d2ba0a9c0a886e31440a5e2d2db14d28265b757"
+    }
+  ]
+}

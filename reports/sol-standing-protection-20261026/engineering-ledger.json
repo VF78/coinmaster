@@ -1,12 +1,12 @@
 {
   "schema": "CM_SOL_STANDING_BUDGET_LEDGER_V1",
   "task": "CM-SOL-STANDING-20261026",
-  "status": "AWAITING_ROOT_DISPOSITION_NO_AUTONEXT",
+  "status": "AMEND7_OWNER_APPROVED_AWAITING_REVIEW_ROOT_GO",
   "kind": "PHYSICAL_NATIVE_ENGINE_ATTEMPT_INCLUDING_FAILURES_AND_MATCHING_TESTS",
-  "physical_max": 6,
+  "physical_max": 7,
   "physical_started": 2,
   "active": 0,
-  "authorized_remaining": 4,
+  "authorized_remaining": 5,
   "attempts": [
     {
       "attempt_id": "2413619e-c67c-433f-851c-dce075595aee",
@@ -93,5 +93,9 @@
   "source_base": "7f38278257624b321c9d88d9df962505b6f5bab0",
   "old_slots_transferred": 0,
   "full_training_downloads_pilot_production": 0,
-  "root_go": false
+  "root_go": false,
+  "amendment_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-amendment7-approval.json",
+    "sha256": "c4ee6b54366edc880b7c42a98dff094f8e757f4bda7e412b8493fb5441004ab6"
+  }
 }

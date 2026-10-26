@@ -1,0 +1,16 @@
+{
+  "status": "ISSUE_BODY_APPROVAL_UPDATE_ACTUAL_EXIT0",
+  "issue": 137,
+  "issue_state": "OPEN",
+  "title": "[Research] Four-week review and staged BTC/SOL recovery plan",
+  "updated_at": "2026-10-26T17:39:53Z",
+  "approval_receipt_sha256": "c4ee6b54366edc880b7c42a98dff094f8e757f4bda7e412b8493fb5441004ab6",
+  "engineering_max": 7,
+  "engineering_started": 2,
+  "active": 0,
+  "prefix_started": 0,
+  "project_last_successful_readback": "PROJECT137_E6_FAILED_READBACK.json",
+  "project_board_not_mutated_since_readback": true,
+  "latest_graphql_readback": "TLS_HANDSHAKE_TIMEOUT_NOT_CURRENT_READBACK",
+  "native_root_go": false
+}
