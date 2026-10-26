@@ -2683,7 +2683,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(event.ts_event)
-        if self._forced_close_reason is not None and not self.cache.orders_open():
+        if self._forced_close_reason is not None and not self._pair_sol_global_wait():
             self._submit_forced_closes_from_cache()
         if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
             self._group_close_reconciliation_pending = True
@@ -2882,7 +2882,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
         # A synchronous native denial must not resubmit into the same throttle.
         # Known terminal leaves remain eligible for the existing fresh-quote path.
-        if not forced_close_terminal and self._forced_close_reason is not None and not self.cache.orders_open():
+        if not forced_close_terminal and self._forced_close_reason is not None and not self._pair_sol_global_wait():
             self._submit_forced_closes_from_cache()
         if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
             self._group_close_reconciliation_pending = True

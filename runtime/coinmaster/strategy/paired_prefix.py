@@ -371,7 +371,16 @@ class PairedPrefixResearch:
         if p and not self._pair_sol_retire_busy() and not getattr(self,"_tp_flat_terminal_busy",lambda:False)() and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight() and not (getattr(self.config, "research_sol_standing_protection", False) and any(o.get("pending") is not None and o.get("parent") == p["parent"] for o in self._pair_orders.values())):
             self._pair_predecision(ns,"PARENT_NATIVE_TERMINAL")
             self._pair_log("PARENT_NATIVE_TERMINAL_FLAT", ns, parent=p["parent"])
+            delegated=self._pair_sol_global_active()
             self._pair = None
+            if delegated:
+                # Actual two-leg flat, all native ACKs/commands drained above.
+                # Service the existing domain/group/terminal owners now: paired
+                # fill/cancel callbacks intentionally bypass generic fill logic.
+                self._group_close_reconciliation_pending=True
+                self._reconcile_group_flat()
+                self._reconcile_liquidation_flat()
+                self._reconcile_terminal_flat()
 
     def _pair_start(self, signal, ns):
         if self._forced_close_reason or self._liquidating:

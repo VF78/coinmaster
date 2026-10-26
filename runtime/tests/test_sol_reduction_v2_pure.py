@@ -33,6 +33,7 @@ class H(PairedPrefixResearch):
         self.held=D(2);self.btc_held=D(2);self.commands=[];self.cancels=[];self.submits=[];self.failures=[];self.recorded=[];self.predecisions=[]
         self._pending_by_order={};self._domain=NS(episode=NS(id="P",side=1,btc_open_qty=2));self._md_plans={"P":{}}
         self._forced_close_reason=None;self._forced_close_intent=None;self._forced_close_submitted=set();self._forced_close_orders=set();self._mandatory_sol_exit=None;self._accepted_reductions={};self._v3_reduction=None;self._liquidating=False;self._group_close_reconciliation_pending=False;self._research_protect_latch=None;self.terminal_lifecycle={}
+        self._reconcile_group_flat=lambda:None;self._reconcile_liquidation_flat=lambda:None;self._reconcile_terminal_flat=lambda:None
         self._split_stop=lambda reason:None;self._risk_first_sol_stop=lambda reason:False;self._md_enabled=lambda:False;self._discard_queued_intents=lambda fn:None;self._carry_busy=lambda:False
         self._tp_enabled=lambda:False;self._tier_allows_increase=lambda *a:True
         prices,stop=sol_prices(D(100),D(2),-1,SOL_PERP.price_increment.as_decimal())
@@ -266,3 +267,94 @@ def test_matching_observer_only_checks_and_logs_never_commits_owner_or_rights():
     # owner, receives no observer-created terminal ACK or early release credit.
     o=h.cache.order(ClientOrderId(oid));h.apply(o,TestEventStubs.order_canceled(o,ts_event=1));h.strict()
     assert not h._pair_orders[oid]["retiring"]["terminal_event_id"]and h._pair_sol_retire_busy()
+
+
+class CallbackH(H):
+    """Real Wave callback/dispatcher/reconciliation methods; domain-only spies.
+
+    Method-unit inventory getters remain explicit; no cache positions, cash or
+    matching is fabricated. Native Order/event history and open/inflight Cache
+    sets are real. Domain calls prove handoff, never a financial outcome.
+    """
+    on_order_canceled=WaveOverlayStrategy.on_order_canceled
+    on_order_filled=WaveOverlayStrategy.on_order_filled
+    _terminal_without_fill=WaveOverlayStrategy._terminal_without_fill
+    _submit_forced_closes_from_cache=WaveOverlayStrategy._submit_forced_closes_from_cache
+    _ordinary_forced_close_active=WaveOverlayStrategy._ordinary_forced_close_active
+    _begin_forced_close=WaveOverlayStrategy._begin_forced_close
+    _submit_terminal_closes=WaveOverlayStrategy._submit_terminal_closes
+    def __init__(self):
+        from types import MethodType
+        super().__init__()
+        self.config.research_v0_execution_repairs=True;self.config.research_v0_selective_lifecycle_repairs=True
+        self.config.research_sol_risk_first=None;self.config.research_sol_btc_open_only=False;self.config.research_h4_ema=None;self.config.research_regime_reentry_band=None
+        self._sigma_by_order={};self._decision_index_by_order={};self._v3_orders={};self._deposit_exit_orders=set();self._liquidation_orders=set();self._seen_trade_ids=set()
+        self._conditional_enabled=lambda:False;self._md_cancel_terminal=lambda *a:None;self._md_first_terminal=lambda *a:None;self._md_reject=lambda *a:None;self._next_terminal=lambda *a:None;self._hedge_terminal=lambda *a:None
+        self._insurance_enabled=lambda:False;self._carry_flat=lambda:None;self._tp_before_fill=lambda *a:None
+        self.fill_observations=[];self._record_native_fill=lambda e:self.fill_observations.append((str(e.trade_id),str(e.last_qty),str(e.commission)));self._record_fill_audit=lambda e:None
+        self.group_completions=[];self.parent_terminals=[]
+        self._domain.on_parent_terminal=lambda oid:self.parent_terminals.append(oid)
+        def group_flat():self.group_completions.append("ACTUAL_CACHE_GROUP_FLAT");self._domain.episode=None;return None
+        self._domain.on_group_flat=group_flat
+        self.terminal_lifecycle=dict(status="NO_OPEN_POSITION",lockout=False)
+        self._current_btc=NS(ts_event=1)
+        self._reconcile_group_flat=MethodType(WaveOverlayStrategy._reconcile_group_flat,self)
+        self._reconcile_liquidation_flat=MethodType(WaveOverlayStrategy._reconcile_liquidation_flat,self)
+        self._reconcile_terminal_flat=MethodType(WaveOverlayStrategy._reconcile_terminal_flat,self)
+    def callback_fill(self,o,quantity,trade):
+        e=self.apply(o,TestEventStubs.order_filled(o,SOL_PERP,last_qty=SOL_PERP.make_qty(D(quantity)),trade_id=TradeId(trade),ts_event=self.clock.timestamp_ns()))
+        self.held-=D(quantity);self.on_order_filled(e);self._pair_sol_native_event(e,"generic");return e
+    def callback_cancel(self,o):
+        e=self.apply(o,TestEventStubs.order_canceled(o,ts_event=self.clock.timestamp_ns()));self.on_order_canceled(e);self._pair_sol_native_event(e,"generic");return e
+    def btc_work(self):
+        o=self.order_factory.limit(BTC_PERP.id,OrderSide.BUY,BTC_PERP.make_qty(D(1)),BTC_PERP.make_price(D(99)),reduce_only=False)
+        self.cache.add_order(o);self.apply(o,TestEventStubs.order_accepted(o,ts_event=1));return o
+
+@pytest.mark.parametrize("route",["cancel","reject"])
+@pytest.mark.parametrize("foreign_blocker",[False,True])
+def test_real_wave_last_btc_terminal_callback_reaches_filtered_cached_sol_exit(route,foreign_blocker):
+    h=CallbackH();btc=h.btc_work();h._begin_forced_close("REGIME")
+    assert btc.is_pending_cancel and not h.submits
+    if foreign_blocker:
+        foreign=h.order_factory.limit(SOL_PERP.id,OrderSide.SELL,SOL_PERP.make_qty(D(1)),SOL_PERP.make_price(D(100)),reduce_only=False)
+        h.cache.add_order(foreign);h.apply(foreign,TestEventStubs.order_accepted(foreign,ts_event=1))
+    if route=="cancel":
+        e=h.apply(btc,TestEventStubs.order_canceled(btc,ts_event=1));h.on_order_canceled(e);h.on_order_canceled(e)
+    else:
+        # A native accepted order can expire; this invokes the actual common
+        # rejection/denial/expiry callback path without inventing invalid events.
+        e=h.apply(btc,TestEventStubs.order_expired(btc,ts_event=1));h._terminal_without_fill(str(btc.client_order_id),e.ts_event);h._terminal_without_fill(str(btc.client_order_id),e.ts_event)
+    assert len(h.submits)==(0 if foreign_blocker else 1)
+    assert not h.group_completions and not h._forced_close_submitted and not h._forced_close_orders
+    if not foreign_blocker:
+        assert h._pair_orders[str(h.submits[0].client_order_id)]["kind"]=="SOL_CLOSE"
+        assert all(not h.cache.order(ClientOrderId(oid)).is_pending_cancel for oid,x in h._pair_orders.items()if x["kind"]in {"TP","STOP"})
+
+@pytest.mark.parametrize("reason",["REGIME","TERMINAL_BOUNDARY_SETTLEMENT"])
+@pytest.mark.parametrize("btc_first",[True,False])
+def test_real_paired_exit_fill_and_ack_drain_complete_existing_global_domain_once(reason,btc_first):
+    h=CallbackH();h.btc_held=D(0)if btc_first else D(2)
+    if reason=="TERMINAL_BOUNDARY_SETTLEMENT":h._submit_terminal_closes()
+    else:h._begin_forced_close(reason)
+    # A real last BTC cancellation callback provides the normal cache handoff;
+    # it is not a direct dispatcher-only test and adds no synthetic quote.
+    btc=h.btc_work();h.apply(btc,TestEventStubs.order_pending_cancel(btc,ts_event=1));h.callback_cancel(btc)
+    assert len(h.submits)==1;o=h.submits[0]
+    h.callback_fill(o,".5","CALLBACK-SOL-PARTIAL");h.ack_all()
+    assert h._pair is not None and not h.group_completions and not h.cancels
+    h.callback_fill(o,"1.5","CALLBACK-SOL-FULL")
+    assert h.held==0 and len(h.cancels)==4 and not h.group_completions
+    h.btc_held=D(0)  # Explicit actual-inventory method input; no native fill claim.
+    callbacks=[]
+    for oid,x in list(h._pair_orders.items()):
+        order=h.cache.order(ClientOrderId(oid))
+        if order.is_pending_cancel:callbacks.append((order,h.callback_cancel(order)))
+    assert h._pair is None and h.group_completions==["ACTUAL_CACHE_GROUP_FLAT"]and not h._group_close_reconciliation_pending
+    assert not h.cache.orders_open()and not h.cache.orders_inflight()and len(h.fill_observations)==2
+    assert not h._forced_close_submitted and not h._forced_close_orders
+    if reason=="REGIME":assert h._forced_close_reason is None and h._domain.episode is None
+    else:assert h.terminal_lifecycle["status"]=="FLAT"and h.terminal_lifecycle["lockout"]
+    # Duplicate genuine callbacks/history do not create a second group completion.
+    for order,event in callbacks:h.on_order_canceled(event)
+    h.on_order_filled(next(e for e in o.events if type(e).__name__=="OrderFilled"))
+    assert h.group_completions==["ACTUAL_CACHE_GROUP_FLAT"]and len(h.fill_observations)==2
