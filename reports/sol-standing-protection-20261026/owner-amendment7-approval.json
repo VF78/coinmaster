@@ -1,0 +1,53 @@
+{
+  "schema": "CM137_OWNER_ENGINEERING_AMENDMENT_V1",
+  "status": "APPROVED_BY_OWNER",
+  "utc_recorded": "2026-10-26T17:35:58Z",
+  "authority": "DIRECT_HUMAN_REPLY_IN_THIS_CHAT",
+  "question_id": "[\"request_user_input_async\",\"call_445078b1b682451a819e022498728695\",0]",
+  "exact_answer": "Утверждаю исправление и общий лимит 7",
+  "original_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/owner-approval.json",
+    "sha256": "6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1"
+  },
+  "original_protocol_sha256": "faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea",
+  "amendment_protocol": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/sol-standing-protection-20261026/BTC_FLAT_DRAIN_AMEND7_PROPOSED_RU.md",
+    "sha256": "53f6d79a2c1be4164e9f298b9f8c58d5246d74f0e064708b2942d8914a189b37"
+  },
+  "source_before": "97db9659199d9d4655336826d007cccf1883982e",
+  "previous_engineering_max": 6,
+  "engineering_physical_max": 7,
+  "extra_authorized_attempts": 1,
+  "already_spent": 2,
+  "remaining_after_amendment": 5,
+  "reserve_attempts": 0,
+  "failed_ledger_sha256_before_amendment": "42af6234b3847f25a9de552e04bdf06c3484a78845e873ca55c206bc2207bb32",
+  "preserved_failed_rows": [
+    {
+      "attempt_id": "2413619e-c67c-433f-851c-dce075595aee",
+      "canonical_sha256": "d325f056cc06dc913a85ce7e60d8e33e5ed088f3e15316b6699c4fdbc966397e"
+    },
+    {
+      "attempt_id": "da9ba9ec-72aa-4961-8f6e-c7bf2b41d985",
+      "canonical_sha256": "2170f5873bc6f1eae715a091a44a6bfc0d6305b4699c0f18b29893271a5f5f10"
+    }
+  ],
+  "physical_schedule": [
+    {"physical_index": 3, "fixture_id": "E7", "scenario": "E1", "repeat_of": "da9ba9ec-72aa-4961-8f6e-c7bf2b41d985"},
+    {"physical_index": 4, "fixture_id": "E2", "scenario": "E2"},
+    {"physical_index": 5, "fixture_id": "E3", "scenario": "E3"},
+    {"physical_index": 6, "fixture_id": "E4", "scenario": "E4"},
+    {"physical_index": 7, "fixture_id": "E5", "scenario": "E5"}
+  ],
+  "scope": "Research-gated owned standing BTC TP public cancellation and actual terminal ACK drain after actual flat; preserve entry rights, late-event ownership, barriers, core, signals, prices, weights, clocks and monetary math. Bounded supervisor amendment identity and receipt checks before claim.",
+  "prefix_physical_max": 4,
+  "prefix_already_spent": 0,
+  "prefix_condition": "Only after complete engineering PASS and individual root financial GO",
+  "max_processed_hours_per_fixture": 48,
+  "all_failures_and_matching_native_constructors_count": true,
+  "individual_frozen_reviewed_root_go_required": true,
+  "native_root_go": false,
+  "economic_root_go": false,
+  "automatic_retries": false,
+  "full_training_download_pilot_production_deploy_real_orders_transfers": 0
+}
