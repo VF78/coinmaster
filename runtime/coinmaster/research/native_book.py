@@ -34,6 +34,13 @@ class NativeBookWitness(SimulationModule):
         if self.strategy is not None:
             self.strategy._tp_transient_boundary('NATIVE_SETTLEMENT_PASS',ts_now)
 
+    def log_diagnostics(self,logger):
+        # No monetary accounting belongs to this read-only witness.
+        pass
+
+    def reset(self):
+        self.current.clear();self.epochs.clear();self.audit.clear()
+
     def matching(self,instrument_id):
         quote=self.current.get(instrument_id);book=self.exchange.get_book(instrument_id)
         if quote is None or book is None:raise ValueError('NATIVE_MATCHING_BOOK_UNKNOWN')

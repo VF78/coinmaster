@@ -75,7 +75,9 @@ def proof():
     assert all(k in SimulatedExchange.__dict__ for k in ('get_book','latency_model','use_message_queue','oms_type')) and 'exchange'in SimulationModule.__dict__
     book=OrderBook(BTC_PERP.id,BookType.L1_MBP);q=QuoteTick(BTC_PERP.id,BTC_PERP.make_price(D(100)),BTC_PERP.make_price(D(100)),BTC_PERP.make_qty(D(1)),BTC_PERP.make_qty(D(1)),1,1);book.update_quote_tick(q)
     assert book.best_bid_price()==q.bid_price and book.best_ask_price()==q.ask_price and book.ts_last==q.ts_event
-    passed('REAL_public_native_book_latency_and_default_RO_descriptors')
+    witness=NativeBookWitness();witness.pre_process(q);assert witness.current[BTC_PERP.id]is q
+    witness.process(1);witness.log_diagnostics(None);witness.reset();assert not witness.current and not witness.epochs
+    passed('REAL_public_native_book_latency_default_RO_and_all_module_hooks')
     src=Path(__file__).resolve().parents[1]/'coinmaster'
     # Product import closure must not import any test helper.
     for path in (src/'strategy/standing_tp.py',src/'research/native_book.py'):
