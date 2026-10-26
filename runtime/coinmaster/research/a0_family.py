@@ -7,13 +7,16 @@ VARIANTS = {"R2_OFF": (None, False), "R2_C0": ("B2_F0", False), "R2_A0": ("B2_F0
 START_MS, END_MS = 1725148800000, 1736899200000
 
 
-def build_a0_kwargs(data_root, artifact_dir, variant, feed, *, start_ms=START_MS, end_ms=END_MS):
+def build_a0_kwargs(data_root, artifact_dir, variant, feed, *, start_ms=START_MS, end_ms=END_MS, standing_tp=False):
     if variant not in VARIANTS:
         raise ValueError("A0_EXACT_VARIANT_REQUIRED")
-    if not ((start_ms, end_ms) == (START_MS, END_MS) or 0 < end_ms - start_ms <= 48 * 3600000):
+    if not ((start_ms, end_ms) == (START_MS, END_MS) or 0 < end_ms - start_ms <= 48 * 3600000 or (standing_tp is True and (start_ms,end_ms)==(-86400000,90600000))):
         raise ValueError("A0_APPROVED_WINDOW_REQUIRED")
     from coinmaster.research.paired_prefix_run import build_native_kwargs
     kwargs = build_native_kwargs(config_for("R2"), data_root, artifact_dir, "OFF", feed, registered_control="R2")
+    if type(standing_tp) is not bool: raise ValueError("STANDING_FLAG_MUST_BE_BOOL")
+    if standing_tp and variant == "R2_OFF": raise ValueError("STANDING_OFF_CONTROL_MUST_USE_DEFAULT_FALSE")
+    if standing_tp: kwargs["research_btc_standing_tp"] = True
     kwargs["research_registered_control"] = None
     kwargs["research_a0_family"] = FAMILY
     kwargs["research_paired_prefix"], kwargs["research_a0_original_second"] = VARIANTS[variant]
@@ -31,7 +34,7 @@ def validate_native_a0(actual):
     if actual["research_a0_family"] != FAMILY or variant is None:
         raise ValueError("A0_EXACT_FAMILY_REQUIRED")
     expected = build_a0_kwargs(actual["data_root"], actual["artifact_dir"], variant,
-        actual["research_paired_signal_rows"], start_ms=actual["trading_start_ms"], end_ms=actual["trading_end_ms"])
+        actual["research_paired_signal_rows"], start_ms=actual["trading_start_ms"], end_ms=actual["trading_end_ms"], standing_tp=actual["research_btc_standing_tp"])
     bound = signature(run_native_diagnostic).bind(**expected)
     bound.apply_defaults()
     for key, value in bound.arguments.items():

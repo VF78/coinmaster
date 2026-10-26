@@ -174,6 +174,8 @@ class MarketRedesignResearch(A0RightsResearch):
             self._split_child_submit=False
 
     def _md_reconcile(self,ts):
+        if self._tp_enabled():
+            return self._tp_reconcile(ts)
         if self._pair_btc_tp_paused():
             return
         if not self._md_enabled():
@@ -269,6 +271,8 @@ class MarketRedesignResearch(A0RightsResearch):
             return
         m=self._md_plans.get(intent.episode_id)
         if m and intent.level not in m["consumed"]:
+            if self._tp_enabled() and self._tp_held_lots() and not self._forced_close_reason and not self._liquidating:
+                raise ValueError("STANDING_UNEXPECTED_REQUIRED_TARGET_CANCEL")
             m["accepted"].discard(intent.level)
             self._md_coverage(ts,False,intent.episode_id,"TARGET_CANCEL_ACK")
 
@@ -323,7 +327,7 @@ class MarketRedesignResearch(A0RightsResearch):
                 self._domain.episode.btc_filled_tps.add(intent.level)
                 # A terminal old target during replacement cannot be restored
                 # merely because the newer inventory allocation is larger.
-                m["allocated_entry"]=None
+                if not self._tp_enabled(): m["allocated_entry"]=None
             self._split_stop("FIRST_POSITIVE_TP_FILL")
             ep=self._domain.episode
             if ep:
@@ -352,5 +356,5 @@ class MarketRedesignResearch(A0RightsResearch):
             submits=submits,accepted=accepted,denials=[e for e in self.market_redesign_audit if e["event"]=="A0_DENY"],
             native_fill_coverage_complete=bool(complete),native_release_fills=fills,
             actual_releases=len({f["client_order_id"] for f in fills}))
-        return dict(a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
+        return dict(standing_tp_audit=self.standing_tp_audit if self._tp_enabled() else None,a0_release_audit=release_audit,a0_rights=rights,events=self.market_redesign_audit,missing_three_tp_ns=str(self._md_missing_total_ns),
             open_protection_exception_since_ns=str(self._md_missing_since) if self._md_missing_since is not None else None)

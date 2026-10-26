@@ -759,6 +759,7 @@ def build_native_strategy_config(context):
         research_h1_b1=research_h1_b1,
         research_a0_family=context["research_a0_family"], research_a0_original_second=context["research_a0_original_second"],
         research_paired_prefix=research_paired_prefix, research_paired_signal_rows=research_paired_signal_rows,
+        research_btc_standing_tp=context.get("research_btc_standing_tp", False), research_native_book=context.get("research_native_book"),
         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
@@ -826,6 +827,7 @@ def run_native_diagnostic(
     research_registered_control: str | None = None,
     research_paired_prefix: str | None = None,
     research_paired_signal_rows: tuple = (),
+    research_btc_standing_tp: bool = False,
     research_btc_real_u: bool = False,
     research_btc_q_mode: str | None = None,
     research_sol_off: bool = False,
@@ -981,6 +983,11 @@ def run_native_diagnostic(
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
         run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first=="alpha-corridor-v1"),
         **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
+    research_native_book = None
+    if research_btc_standing_tp:
+        from coinmaster.research.native_book import NativeBookWitness
+        research_native_book = NativeBookWitness()
+        modules.append(research_native_book)
     engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), liquidity_consumption=research_paired_policy, bar_execution=not bool(research_paired_policy or research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
@@ -1009,6 +1016,7 @@ def run_native_diagnostic(
             raise ValueError("COVER_EXACT_720_HOURLY_RETURNS_REQUIRED")
         cover_hour_seed = tuple((t*1_000_000,paired["BTCUSDT"][t],paired["SOLUSDT"][t]) for t in timestamps)
     strategy = strategy_type(build_native_strategy_config(locals()))
+    if research_native_book is not None: research_native_book.bind(strategy)
     engine.add_strategy(strategy)
     audit_archive = None
     if research_sol_risk_first == "alpha-corridor-v1":

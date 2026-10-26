@@ -70,6 +70,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_a0_original_second: bool = False
     research_paired_prefix: str | None = None
     research_paired_signal_rows: tuple[PairedSignal, ...] = ()
+    research_btc_standing_tp: bool = False
+    research_native_book: object = None
     research_btc_real_u: bool = False
     research_btc_q_mode: str | None = None
     research_sol_off: bool = False
@@ -195,12 +197,16 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+from coinmaster.strategy.standing_tp import StandingTPResearch
+
+
+class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
         self._split_cover_init()
         self._md_init()
+        self._tp_init()
         self._pair_init()
         self._risk_first_init()
         self._conditional_init()
@@ -306,6 +312,8 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
         self.sol_cap_admission_audit: list[dict[str, str]] = []
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
         self._domain = WaveOverlayState(self._candidate)
+        if config.research_btc_standing_tp and (not config.research_btc_real_u or config.research_btc_q_mode != "LEGACY_Q_CONTROL" or config.research_native_book is None or config.research_a0_family != "R2_A0_V1" or config.research_paired_prefix != "B2_F0"):
+            raise ValueError("STANDING_TP_EXACT_REAL_U_NATIVE_PROVIDER_REQUIRED")
         self._domain.research_real_u = config.research_btc_real_u
         self._domain.research_sol_cover = config.research_sol_cover is not None
         self._domain.research_h4_owned = config.research_h4_ema is not None
@@ -2045,6 +2053,7 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
         client_order_id = str(order.client_order_id)
         self._risk_first_sol_bind(intent,order)
         self._pending_by_order[client_order_id] = intent
+        self._tp_bind_order(order, intent)
         if intent.action == "BTC_ENTRY" and self._md_enabled():
             self._a0_bind_entry(client_order_id, intent)
         # A pre-submit durable checkpoint must see the exact order-to-episode
@@ -2402,6 +2411,7 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
             self._rf_fill_epoch+=1
             self._rf_last_fill_ns=event.ts_event
         self._record_fill_audit(event)
+        self._tp_before_fill(event)
         if self._pair_fill(event):
             return
         self._carry_native_fill(event)
@@ -2656,7 +2666,15 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
             self._group_close_reconciliation_pending = True
             self._reconcile_group_flat()
 
+    def on_order_updated(self, event) -> None:
+        self._tp_native_event(event, "typed")
+        self._tp_refresh(event.ts_event) if self._tp_enabled() else None
+
+    def on_order_modify_rejected(self, event) -> None:
+        self._tp_native_event(event, "typed")
+
     def on_order_event(self, event) -> None:
+        self._tp_native_event(event, "generic")
         # Event identity, not client order identity, preserves the sequence
         # Submitted -> Accepted -> terminal without manufacturing an ACK.
         event_id = getattr(event, "id", None)
@@ -2674,7 +2692,9 @@ class WaveOverlayStrategy(PairedPrefixResearch, MarketRedesignResearch, NextBand
         if context is not None and context.get("accept_ns") is None:
             context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
+        self._tp_native_event(event, "typed_accepted")
         self._md_accept(event)
+        if self._tp_enabled(): self._tp_refresh(event.ts_event)
         self._pair_accept(event)
         if self.config.research_sol_risk_first=="split-atr":
             owned=self._rf_sol_orders.get(str(event.client_order_id))
