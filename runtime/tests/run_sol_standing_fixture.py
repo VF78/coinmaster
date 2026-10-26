@@ -10,6 +10,7 @@ from datetime import datetime,timedelta,timezone
 from inspect import signature
 import argparse,ast,copy,hashlib,json,math,os,traceback,uuid
 from dataclasses import asdict,is_dataclass
+from sol_standing_supervisor import case_identity
 from coinmaster.research.registered_control import config_for,build_registered_control_kwargs,native_kwargs_json_roundtrip,validate_native_control
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.config import BacktestEngineConfig
@@ -427,29 +428,36 @@ def prepare_proof():
     return dict(status='ENGINE_FREE_CONFIG_AST_PASS',engine_constructors=0,declared_constructor_sites=1,
         configs=configs,processed_data_ns=[0,END],config_guard_ns=[-DAY,END],native_reachability='NOT_RUN_UNKNOWN')
 
+def fixture_binding(g,row):
+    identity=case_identity(g)
+    assert all(row.get(k)==v for k,v in identity.items()if k!='repeat_of'or v is not None),"WORKER_CASE_IDENTITY_MISMATCH"
+    return identity
+
+
 def child(gate_path,ledger_path,attempt):
     # Outer stdlib supervisor has already durably claimed even import failures.
     g=json.loads(Path(gate_path).read_text());ledger=json.loads(Path(ledger_path).read_text())
     row=next(x for x in ledger['attempts']if x['attempt_id']==attempt)
     assert row['status']=='STARTED'and row['gate_sha256']==hashlib.sha256(Path(gate_path).read_bytes()).hexdigest()
     assert g['root_go']is True and not row.get('engine_constructor_claimed',False)
-    namespace=Path(g['namespace']);case=g.get('scenario',g['fixture_id']);assert case in ('E1','E2','E3','E4','E5')
+    identity=fixture_binding(g,row)
+    namespace=Path(g['namespace']);case=identity['scenario'];assert case in ('E1','E2','E3','E4','E5')
     stress=case in ('E2','E3','E4');cancel=2*S if stress else 0
     witness=NativeBookWitness(detailed=True);cfg,kwargs=fixture_config(witness,case)
     config_pin=snapshot_config(cfg);kwargs_pin=snapshot_config(kwargs)
     assert config_pin['sha256']==g['native_config_sha256']and kwargs_pin['sha256']==g['registered_kwargs_sha256']
     assert g['transport']==dict(base=0,insert=0,update=0,cancel=cancel)
-    write(namespace/'config.json',dict(config=config_pin,kwargs=kwargs_pin,
+    write(namespace/'config.json',dict(**identity,config=config_pin,kwargs=kwargs_pin,
         data_ns=[0,END],config_ns=[-DAY,END],previous_config_day_guard=True,transport=dict(base=0,insert=0,update=0,cancel=cancel)))
     assert END<=48*3600*S and cfg.trading_start_open_ns==-DAY and cfg.terminal_close_at_ns==END
     # This process has exactly one native constructor. Record intent before it.
     row.update(engine_constructor_claimed=True,child_pid=os.getpid(),engine_constructor_count=1)
-    write(ledger_path,ledger);write(namespace/'ENGINE_INTENT.json',dict(attempt_id=attempt,pid=os.getpid(),source_commit=g['source_commit'],constructor_count=1))
+    write(ledger_path,ledger);write(namespace/'ENGINE_INTENT.json',dict(attempt_id=attempt,pid=os.getpid(),source_commit=g['source_commit'],constructor_count=1,**identity))
     e=s=None;rc=1;errors=[];result=None
     def capture(label):
         if e is None:return
         account=e.cache.account_for_venue(SIM)
-        write(namespace/(label+'.json'),dict(label=label,attempt_id=attempt,pid=os.getpid(),lifecycle=lifecycle(e),
+        write(namespace/(label+'.json'),dict(label=label,attempt_id=attempt,pid=os.getpid(),**identity,lifecycle=lifecycle(e),
             cash=None if account is None else str(account.balance_total()),orders=[]if s is None else s.orders(),
             positions=[]if s is None else s.positions(),events=[]if s is None else s.events,fills=[]if s is None else s.fills,
             standing=[]if s is None else s.standing_tp_audit,paired=None if s is None else s._pair_report(),
@@ -482,7 +490,7 @@ def child(gate_path,ledger_path,attempt):
                 if not all(x['disposed']for x in lifecycle(e).values()):raise AssertionError('NOT_ALL_DISPOSED')
             except BaseException as error:errors.append(dict(stage='DISPOSE',error=repr(error)));rc=1
             write(namespace/'AFTER_DISPOSE.json',dict(lifecycle=lifecycle(e)))
-        write(namespace/'result.json',dict(child_exit_code=rc,result=result,errors=errors,attempt_id=attempt,fixture_id=g['fixture_id']))
+        write(namespace/'result.json',dict(child_exit_code=rc,result=result,errors=errors,attempt_id=attempt,**identity))
     return rc
 
 if __name__=='__main__':

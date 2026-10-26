@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal as D, ROUND_CEILING, ROUND_FLOOR
 from nautilus_trader.model.enums import OrderSide, TimeInForce
 from nautilus_trader.model.identifiers import ClientOrderId
+from coinmaster.strategy.native_account_snapshot import native_account_snapshot
 
 MINUTE = 60_000_000_000
 
@@ -553,7 +554,8 @@ class PairedPrefixResearch:
                         parents=[dict(parent=k,risk_off_ns=v["off_ns"],first_off60_quote_observed=v.get("off60_recorded",False),
                             original_right_lock_eligible=v["lock_eligible"],original_second_orders=list(v.get("original_second_orders",())))
                             for k,v in self._pair_observed_rights.items()],
-                        counts=self._pair_predecision_counts,truncated=False),
+                        counts=self._pair_predecision_counts,account_capture_complete=self._pair_predecision_counts.get("capture_errors",0)==0,
+                        incomplete_capture_blocks_financial_coverage=self._pair_predecision_counts.get("capture_errors",0)>0,truncated=False),
                     sol_boundary_counts=self._pair_sol_boundary_counts, failures=list(self._pair_failures),
                     open_owner=self._pair is not None, physical_budget_authority="EXTERNAL_SINGLE_SOURCE_RUN_LEDGER")
 
@@ -777,11 +779,18 @@ class PairedPrefixResearch:
                 filled="UNKNOWN" if o is None else str(o.filled_qty),
                 leaves="UNKNOWN" if o is None else str(o.leaves_qty),
                 generation=m.get("order_generation", {}).get(oid, "UNKNOWN"))
-        account = self.cache.account_for_venue(self.config.btc_id.venue)
-        native_margin = {}
-        for instrument in (self.config.btc_id, self.config.sol_id):
-            native_margin[str(instrument)] = {name: "UNKNOWN" if account is None or (v := getattr(account, name)(instrument)) is None else str(v)
-                for name in ("margin_init", "margin_maint")}
+        account_error=None
+        try:account=self.cache.account_for_venue(self.config.btc_id.venue)
+        except Exception as exc:
+            account=None;account_error=dict(field="cache.account_for_venue",type=type(exc).__name__,message=str(exc))
+        account_facts=native_account_snapshot(account,(self.config.btc_id,self.config.sol_id))
+        if account_error:account_facts["errors"].append(account_error)
+        if not account_facts["complete"]:counts["capture_errors"]=counts.get("capture_errors",0)+1
+        native_margin={}
+        for instrument in(self.config.btc_id,self.config.sol_id):
+            values=account_facts["instruments"].get(str(instrument),{})
+            native_margin[str(instrument)]={name:(value.get("text",value.get("status","UNKNOWN"))if isinstance(value,dict)else value)
+                for name in("margin_init","margin_maint")for value in(values.get(name,"UNKNOWN"),)}
         quote = self._pair_last_quote.get(self.config.btc_id) if tick is None else tick
         marks = {};margin_fact_reads={}
         policy = self.config.margin_policy
@@ -824,7 +833,8 @@ class PairedPrefixResearch:
             current_btc_tp=[order_row(oid) for oid, intent in self._pending_by_order.items()
                 if intent.action == "BTC_REDUCE" and intent.episode_id == pair["parent"]],
             sol_protection_gap=pair["protection_since"], marks=marks, native_margin=native_margin,
-            native_account="UNKNOWN" if account is None else type(account).to_dict(account),
+            native_account="UNKNOWN"if account is None else account_facts,
+            native_account_capture=dict(complete=account_facts["complete"],errors=account_facts["errors"]),
             stock_guard_invoked=False,stock_margin_invoked=False,stock_margin_invocation_scope="PROSPECTIVE_STRATEGY_GUARD_ONLY",
             read_only_current_fact_margin_for_attempts=margin_fact_reads,stock_margin_result="UNKNOWN_NOT_EXECUTED_OBSERVER", admission="UNKNOWN_OBSERVATION_ONLY",
             bid="UNKNOWN" if quote is None else str(quote.bid_price), ask="UNKNOWN" if quote is None else str(quote.ask_price),
@@ -859,7 +869,7 @@ class PairedPrefixResearch:
         # movement without changed eligibility cannot manufacture opportunities.
         signature=repr((wait,held,row["sol_held"],row["cap"],remaining,
             row["old_orders"],row["open_inflight"],row["current_btc_tp"],
-            row["sol_protection_gap"],[(k,v["policy_current"])for k,v in marks.items()]))
+            row["sol_protection_gap"],account_facts["complete"],[(e["field"],e["type"])for e in account_facts["errors"]],[(k,v["policy_current"])for k,v in marks.items()]))
         if reason in {"RISK_CANCEL", "RISK_OFF","FIRST_BTC_QUOTE_AFTER_RISK_OFF_PLUS60"} or signature != a["last_record"]:
             if len(self._pair_predecisions)>=10000:raise ValueError("PREDECISION_OBSERVER_CAPACITY_EXCEEDED_NO_TRUNCATION")
             self._pair_predecisions.append(row);counts["records"]+=1

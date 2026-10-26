@@ -23,6 +23,39 @@ def write(path,value):
     finally:os.close(fd)
 
 
+def case_identity(g):
+    logical=g["fixture_id"];scenario=g.get("scenario",logical);repeat=g.get("repeat_of")
+    assert logical in("E1","E2","E3","E4","E5","E6")
+    if logical=="E6":
+        assert scenario=="E1"and isinstance(repeat,str)and str(uuid.UUID(repeat))==repeat
+    else:assert scenario==logical and repeat is None
+    return dict(fixture_id=logical,scenario=scenario,repeat_of=repeat)
+
+def canonical(value):
+    return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+
+def validate_reserved_repeat(g,l,launch=False):
+    identity=case_identity(g)
+    if identity["fixture_id"]!="E6":return identity
+    assert 1<=l["physical_started"]<l["physical_max"]==6
+    assert not any(row.get("reserved_repeat")or row["fixture_id"]=="E6"for row in l["attempts"]),"RESERVED_REPEAT_ALREADY_SPENT"
+    failed=[row for row in l["attempts"]if row["attempt_id"]==identity["repeat_of"]]
+    assert len(failed)==1
+    failed=failed[0]
+    assert failed["status"]=="FAILED"and failed["fixture_id"]=="E1"and failed.get("scenario","E1")=="E1"
+    assert failed["source_commit"]==g["repeat_of_source_commit"]and failed["source_commit"]!=g["source_commit"]
+    assert canonical(failed)==g["failed_entry_canonical_sha256"],"FIRST_FAILED_ENTRY_CHANGED"
+    saved=g["failed_ledger_snapshot"];assert sha(saved["path"])==saved["sha256"]
+    snapshot=json.loads(Path(saved["path"]).read_text())
+    old=[row for row in snapshot["attempts"]if row["attempt_id"]==identity["repeat_of"]]
+    assert len(old)==1 and canonical(old[0])==canonical(failed)
+    if launch or g.get("consolidated_correction_reviewed"):
+        assert g.get("consolidated_correction_reviewed")is True
+        assert g["reviewed_source_commit"]==g["source_commit"]
+        review=g["correction_review"];assert sha(review["path"])==review["sha256"]
+        assert json.loads(Path(review["path"]).read_text())["source_commit"]==g["source_commit"]
+    return identity
+
 def verify(gate_path,ledger_path,launch=False):
     g=json.loads(Path(gate_path).read_text());l=json.loads(Path(ledger_path).read_text())
     assert g['protocol_sha256']==PROTOCOL and g['source_base']==BASE
@@ -55,9 +88,7 @@ def verify(gate_path,ledger_path,launch=False):
     assert frozen['transport']==g['transport'],'STATIC_TRANSPORT_PIN_CHANGED'
     assert Path(g['python']).is_absolute()and Path(g['python']).is_file()
     assert not Path(g['namespace']).exists(),'FRESH_NAMESPACE_REQUIRED'
-    if g['fixture_id']=='E6':
-        assert l['physical_started']==5 and g.get('repeat_of')and g['scenario']in('E1','E2','E3','E4','E5')
-        assert g.get('consolidated_correction_reviewed')is True
+    validate_reserved_repeat(g,l,launch)
     return g,l,driver
 
 
@@ -116,9 +147,11 @@ def launch(gate_path,ledger_path):
     with Path(str(ledger_path)+'.lock').open('a')as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         g,l,driver=verify(gate_path,ledger_path,True)
+        identity=case_identity(g)
         ns=Path(g['namespace']);before=Path(ledger_path).read_bytes()
         attempt=str(uuid.uuid4());row=dict(attempt_id=attempt,physical_index=l['physical_started']+1,
-            fixture_id=g['fixture_id'],scenario=g.get('scenario',g['fixture_id']),status='STARTED',
+            fixture_id=identity['fixture_id'],scenario=identity['scenario'],repeat_of=identity['repeat_of'],
+            reserved_repeat=identity['fixture_id']=='E6',status='STARTED',
             started_utc=now(),supervisor_pid=os.getpid(),source_commit=g['source_commit'],
             gate_sha256=sha(gate_path),namespace=str(ns),protocol_sha256=PROTOCOL,
             ledger_before_sha256=hashlib.sha256(before).hexdigest(),
@@ -134,7 +167,7 @@ def launch(gate_path,ledger_path):
             with (ns/'LEDGER_BEFORE_CLAIM.json').open('rb')as f:os.fsync(f.fileno())
             write(ns/'CLAIM.json',row)
         def started(p):
-            write(ns/'PROCESS_STARTED.json',dict(attempt_id=attempt,pid=p.pid,source_commit=g['source_commit']))
+            write(ns/'PROCESS_STARTED.json',dict(attempt_id=attempt,pid=p.pid,source_commit=g['source_commit'],**identity))
         env=dict(PATH='/usr/bin:/bin',LANG='en_US.UTF-8',PYTHONNOUSERSITE='1',
             PYTHONDONTWRITEBYTECODE='1',PYTHONPATH=str(g['source_root'])+os.pathsep+str(driver.parent),OPENBLAS_NUM_THREADS='1')
         result=dispatch_once([g['python'],str(driver),'--gate',str(gate_path),'--ledger',str(ledger_path),
@@ -152,7 +185,7 @@ def launch(gate_path,ledger_path):
         if result['terminal_confirmed']:entry['finished_utc']=now()
         if (ns/'result.json').exists():entry.update(result_path=str(ns/'result.json'),result_sha256=sha(ns/'result.json'))
         file='PROCESS_EXIT.json'if result['child_actual_process_exit_code']is not None else'NOT_SPAWNED.json'if result['child_not_spawned_confirmed']else'PROCESS_STATE_UNKNOWN.json'
-        try:write(ns/file,dict(attempt_id=attempt,**result))
+        try:write(ns/file,dict(attempt_id=attempt,**identity,**result))
         except BaseException as exc:
             entry['terminal_receipt_write_error']=repr(exc);entry['supervisor_return_code']=1
             if state['status']=='COMPLETED':entry['status']='FAILED'
@@ -165,5 +198,6 @@ if __name__=='__main__':
     mode=p.add_mutually_exclusive_group(required=True);mode.add_argument('--prepare',action='store_true');mode.add_argument('--launch',action='store_true');a=p.parse_args()
     if a.prepare:
         g,l,_=verify(a.gate,a.ledger);print(json.dumps(dict(status='PREPARED_ENGINE0_NO_ATTEMPT',
-            root_go=g['root_go'],physical_started=l['physical_started'],engine_constructors=0)));raise SystemExit(0)
+            root_go=g['root_go'],physical_started=l['physical_started'],engine_constructors=0,
+            identity=case_identity(g),correction_reviewed=g.get('consolidated_correction_reviewed',False))));raise SystemExit(0)
     raise SystemExit(launch(a.gate,a.ledger))
