@@ -129,3 +129,39 @@ def test_logical_case_worker_config_result_and_external_metadata_match_without_e
     assert path.read_bytes()==before and sup.canonical(l['attempts'][0])==canonical
     wrong=dict(claim,fixture_id='E1')
     with pytest.raises(AssertionError,match='WORKER_CASE_IDENTITY_MISMATCH'):fixture_binding(g,wrong)
+
+
+def amend_state():
+    first=dict(attempt_id=FAILED_UUID,fixture_id="E1",scenario="E1",status="FAILED",source_commit="BEFORE")
+    second=dict(attempt_id="22222222-2222-4222-8222-222222222222",fixture_id="E6",scenario="E1",status="FAILED",source_commit="OLD")
+    l=dict(physical_started=2,physical_max=7,active=0,attempts=[first,second])
+    a=dict(preserved_failed_rows=[dict(attempt_id=x["attempt_id"],canonical_sha256=sup.canonical(x))for x in l["attempts"]],physical_schedule=[dict(physical_index=3,fixture_id="E7",scenario="E1",repeat_of=second["attempt_id"])]+[dict(physical_index=i+2,fixture_id="E"+str(i),scenario="E"+str(i))for i in range(2,6)])
+    g=dict(fixture_id="E7",scenario="E1",repeat_of=second["attempt_id"],source_commit="NEW",consolidated_correction_reviewed=False)
+    return g,l,a
+
+def test_amend7_physical3_is_same_e1_scenario_and_review_blocks_launch():
+    g,l,a=amend_state();sup.amendment7_identity(g,l,a)
+    assert sup.case_identity(g)==dict(fixture_id="E7",scenario="E1",repeat_of=g["repeat_of"])
+    from run_sol_standing_fixture import fixture_binding,fixture_config
+    assert fixture_binding(g,sup.case_identity(g))==sup.case_identity(g)
+    assert fixture_config(None,"E1")[0].research_a0_original_second is False
+    with pytest.raises(AssertionError):sup.amendment7_identity(g,l,a,launch=True)
+
+@pytest.mark.parametrize("fault",["max6","wrong_repeat","rewritten_failure","duplicate_e7","wrong_physical","same_source"])
+def test_amend7_rejects_identity_budget_or_failed_history_changes(fault):
+    g,l,a=amend_state()
+    if fault=="max6":l["physical_max"]=6
+    elif fault=="wrong_repeat":g["repeat_of"]=FAILED_UUID
+    elif fault=="rewritten_failure":l["attempts"][0]["status"]="COMPLETED"
+    elif fault=="duplicate_e7":l["attempts"].append(dict(fixture_id="E7"))
+    elif fault=="wrong_physical":l["physical_started"]=3
+    else:g["source_commit"]="OLD"
+    with pytest.raises((AssertionError,StopIteration,KeyError)):sup.amendment7_identity(g,l,a)
+
+def test_amend7_remaining_e2_to_e5_schedule_no_extra_slot():
+    g,l,a=amend_state()
+    for physical in range(4,8):
+        case="E"+str(physical-2);l["physical_started"]=physical-1;g.update(fixture_id=case,scenario=case,repeat_of=None)
+        sup.amendment7_identity(g,l,a)
+    l["physical_started"]=7
+    with pytest.raises(AssertionError):sup.amendment7_identity(g,l,a)

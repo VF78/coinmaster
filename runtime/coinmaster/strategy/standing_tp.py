@@ -27,8 +27,87 @@ class StandingTPResearch:
 
     def _tp_init(self):
         self._tp_owners = {}; self._tp_commands = {}; self._tp_seq = 0
+        self._tp_flat_draining = set()
         self._tp_seen_events = set(); self._tp_seen_trades = set(); self.standing_tp_audit = []
         self._tp_audit_counts = {}; self._tp_audit_state = {}
+
+    def _tp_flat_gate(self):
+        return (self._tp_enabled()and getattr(self.config,"research_a0_family",None)=="R2_A0_V1"
+            and getattr(self.config,"research_paired_prefix",None)=="B2_F0")
+
+    def _tp_flat_terminal_busy(self):
+        return bool(self._tp_flat_gate()and getattr(self,"_tp_flat_draining",()))
+
+    def _tp_flat_recheck(self,ts,parent):
+        ep,m=self._tp_plan();pair=getattr(self,"_pair",None)
+        if ep and ep.id!=parent:return
+        if not ep:
+            if not(pair and pair["parent"]==parent)and parent not in self._tp_flat_draining:return
+            m=self._md_plans.get(parent)
+        if m and self._tp_held_lots()==0:self._tp_flat_owned_drain(parent,m,ts)
+
+    def _tp_flat_owned_drain(self,parent,m,ts):
+        """Only current-owned standing TP cancellation; no entry/SOL command."""
+        if not self._tp_flat_gate():return False
+        if self._tp_held_lots():return False
+        pair=getattr(self,"_pair",None);ep=getattr(self._domain,"episode",None)
+        if (pair and pair["parent"]!=parent)or(ep and ep.id!=parent):
+            raise ValueError("STANDING_FLAT_PARENT_UNKNOWN")
+        self._tp_flat_draining.add(parent)
+        if m.get("flat_drain_busy"):return True
+        m["flat_drain_busy"]=True
+        try:
+            entries=set(m.get("entry_orders",{}))
+            a=m.get("a0")
+            if a and a.get("order_id"):entries.add(a["order_id"])
+            entries.update(oid for oid,intent in self._pending_by_order.items()
+                if intent.action=="BTC_ENTRY"and intent.episode_id==parent)
+            pending_entries=[]
+            expected_side=ep.side if ep else pair["side"]if pair else None
+            for oid in entries:
+                order=self.cache.order(ClientOrderId(oid))
+                if order is None or order.strategy_id!=self.id or order.instrument_id!=self.config.btc_id or order.is_reduce_only or expected_side is None or order.side.name!=("BUY"if expected_side==1 else"SELL"):
+                    raise ValueError("STANDING_FLAT_ENTRY_OWNERSHIP_UNKNOWN")
+                if not order.is_closed:pending_entries.append(oid)
+            for order in self.cache.orders_open()+self.cache.orders_inflight():
+                if order.strategy_id==self.id and order.instrument_id==self.config.btc_id and not order.is_reduce_only and str(order.client_order_id)not in entries:
+                    raise ValueError("STANDING_FLAT_UNREGISTERED_INCREASE")
+            if pending_entries:
+                self._tp_log("FLAT_DRAIN_WAIT_ENTRY_TERMINAL",ts,parent=parent,order_ids=sorted(pending_entries))
+                return True
+            owners=[(oid,owner)for oid,owner in self._tp_owners.items()if owner["parent"]==parent]
+            live=[]
+            for oid,owner in owners:
+                order=self.cache.order(ClientOrderId(oid))
+                if order is None or order.strategy_id!=self.id or order.instrument_id!=self.config.btc_id or not order.is_reduce_only or order.side.name!=owner["side"]:
+                    raise ValueError("STANDING_FLAT_TP_OWNERSHIP_UNKNOWN")
+                if not order.is_closed:live.append((oid,self._tp_owned_order(oid,owner)))
+            if any(oid in self._tp_commands for oid,_ in owners):
+                self._tp_log("FLAT_DRAIN_WAIT_MODIFY_ACK",ts,parent=parent)
+                return True
+            for oid,order in live:
+                if self._tp_held_lots():return False
+                if not order.is_pending_cancel:
+                    self._tp_log("FLAT_DRAIN_CANCEL_SUBMIT",ts,parent=parent,order_id=oid)
+                    self.cancel_order(order)
+            pending=[oid for oid,_ in owners if (o:=self.cache.order(ClientOrderId(oid)))is None
+                or not o.is_closed or not self._tp_owners[oid].get("terminal_event_id")
+                or not any(str(e.id)==self._tp_owners[oid]["terminal_event_id"]for e in o.events)]
+            owned_inflight=[str(o.client_order_id)for o in self.cache.orders_inflight()
+                if o.strategy_id==self.id and o.instrument_id==self.config.btc_id]
+            debt=bool(pair and (pair.get("debt_since")is not None or self._pair_work(instrument=self.config.btc_id)))
+            if pending or owned_inflight or self._tp_commands or debt:
+                self._tp_log("FLAT_DRAIN_WAIT_NATIVE_ACK",ts,parent=parent,order_ids=pending,inflight=owned_inflight,debt=debt)
+                return True
+            if self._tp_held_lots():return False
+            self._tp_flat_draining.discard(parent)
+            if not m.get("flat_drain_complete"):
+                m["flat_drain_complete"]=True
+                self._tp_log("FLAT_OWNED_TP_DRAINED",ts,parent=parent,order_ids=[oid for oid,_ in owners])
+                self._md_coverage(ts,True,parent,"NATIVE_FLAT_OWNED_TP_DRAINED")
+                self._pair_release_if_terminal(ts)
+            return True
+        finally:m["flat_drain_busy"]=False
 
     def _tp_log(self, event, ts, **data):
         self._tp_audit_counts[event]=self._tp_audit_counts.get(event,0)+1
@@ -112,6 +191,8 @@ class StandingTPResearch:
                 self._tp_owned_order(oid,owner)
             if order.exec_algorithm_id is not None or self.cache.position_id(order.client_order_id) is not None:
                 raise ValueError('STANDING_UNEXPECTED_HISTORICAL_PROTECTIVE_LINK')
+            if order.is_closed:owner['terminal_event_id']=eid
+            if self._tp_flat_gate():self._tp_flat_recheck(event.ts_event,owner['parent'])
             return
         order = self._tp_owned_order(oid, owner)
         if name == 'OrderModifyRejected':
@@ -127,6 +208,7 @@ class StandingTPResearch:
         if name == 'OrderAccepted':
             owner['ack_generation'] = owner['generation']; owner['ack_sequence'] = 0
         if name != 'OrderFilled': self._tp_transient_boundary('NATIVE_'+name,event.ts_event)
+        if name=='OrderUpdated'and self._tp_flat_gate():self._tp_flat_recheck(event.ts_event,owner['parent'])
 
     def _tp_before_fill(self, event):
         if not self._tp_enabled(): return
@@ -151,7 +233,10 @@ class StandingTPResearch:
         if not m or m['p0'] is None or self._forced_close_reason or self._liquidating: return
         inst = self.cache.instrument(self.config.btc_id); step = inst.size_increment.as_decimal(); held = self._tp_held_lots()
         if not held:
-            self._split_stop('BTC_FLAT'); self._md_coverage(ts, True, ep.id, 'NATIVE_FLAT'); return
+            self._split_stop('BTC_FLAT')
+            if self._tp_flat_owned_drain(ep.id,m,ts):return
+            self._md_coverage(ts, True, ep.id, 'NATIVE_FLAT'); return
+        m['flat_drain_complete']=False
         if 'standing' not in m or m.get('standing_inventory_dirty') or m.get('standing_entry') != ep.btc_entry_qty_exact:
             if self._tp_commands: raise ValueError('STANDING_INVENTORY_CHANGE_WITH_MODIFY_INFLIGHT')
             m['standing'] = target_lots(held, m['consumed']); m['standing_inventory_dirty'] = False
@@ -197,6 +282,9 @@ class StandingTPResearch:
             self._tp_log('PUBLIC_MODIFY_RETURN',ts,order_id=oid,sequence=command['sequence'],ack_received=oid not in self._tp_commands)
             self._tp_transient_boundary('PUBLIC_MODIFY_RETURN',ts)
         self._tp_refresh(ts)
+        if ep.id in self._tp_flat_draining and not self._tp_commands:
+            required={k for k,v in m['standing'].items()if v>0 and k not in m['consumed']}
+            if m['accepted']==required:self._tp_flat_draining.discard(ep.id)
 
     def _tp_refresh(self, ts):
         ep,m=self._tp_plan()

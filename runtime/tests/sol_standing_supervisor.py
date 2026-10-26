@@ -10,6 +10,8 @@ import argparse, errno, fcntl, hashlib, json, os, subprocess, sys, uuid
 PROTOCOL='faa392477050d3c33f54b837edd6e0d9dca536eef4e740730d64ca52b7a5d0ea'
 APPROVAL='6b8625d810878d0ef0a959687cc14f43b4a3adc85ac79e078c65eafc3e3be6d1'
 BASE='7f38278257624b321c9d88d9df962505b6f5bab0'
+AMENDMENT='c4ee6b54366edc880b7c42a98dff094f8e757f4bda7e412b8493fb5441004ab6'
+AMENDMENT_PROTOCOL='53f6d79a2c1be4164e9f298b9f8c58d5246d74f0e064708b2942d8914a189b37'
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -25,8 +27,8 @@ def write(path,value):
 
 def case_identity(g):
     logical=g["fixture_id"];scenario=g.get("scenario",logical);repeat=g.get("repeat_of")
-    assert logical in("E1","E2","E3","E4","E5","E6")
-    if logical=="E6":
+    assert logical in("E1","E2","E3","E4","E5","E6","E7")
+    if logical in("E6","E7"):
         assert scenario=="E1"and isinstance(repeat,str)and str(uuid.UUID(repeat))==repeat
     else:assert scenario==logical and repeat is None
     return dict(fixture_id=logical,scenario=scenario,repeat_of=repeat)
@@ -56,16 +58,49 @@ def validate_reserved_repeat(g,l,launch=False):
         assert json.loads(Path(review["path"]).read_text())["source_commit"]==g["source_commit"]
     return identity
 
+def validate_amendment7(g,l,launch=False):
+    pin=g["amendment_approval"]
+    assert pin["sha256"]==AMENDMENT and sha(pin["path"])==AMENDMENT
+    assert l["amendment_approval"]==pin
+    a=json.loads(Path(pin["path"]).read_text())
+    assert a["status"]=="APPROVED_BY_OWNER"and a["engineering_physical_max"]==7
+    assert a["original_approval"]["sha256"]==APPROVAL and a["original_protocol_sha256"]==PROTOCOL
+    protocol=g["amendment_protocol"]
+    assert a["amendment_protocol"]["sha256"]==protocol["sha256"]==AMENDMENT_PROTOCOL and sha(protocol["path"])==AMENDMENT_PROTOCOL
+    return amendment7_identity(g,l,a,launch)
+
+def amendment7_identity(g,l,a,launch=False):
+    assert l["physical_max"]==7 and l["physical_started"]<7 and l["active"]==0
+    for saved in a["preserved_failed_rows"]:
+        matches=[row for row in l["attempts"]if row["attempt_id"]==saved["attempt_id"]]
+        assert len(matches)==1 and matches[0]["status"]=="FAILED"
+        assert canonical(matches[0])==saved["canonical_sha256"],"PRESERVED_FAILED_ROW_CHANGED"
+    identity=case_identity(g)
+    schedule=next(row for row in a["physical_schedule"]if row["physical_index"]==l["physical_started"]+1)
+    assert identity["fixture_id"]==schedule["fixture_id"]and identity["scenario"]==schedule["scenario"]
+    assert identity["repeat_of"]==schedule.get("repeat_of")
+    if identity["fixture_id"]=="E7":
+        assert l["physical_started"]==2 and not any(row["fixture_id"]=="E7"for row in l["attempts"])
+        failed=next(row for row in l["attempts"]if row["attempt_id"]==identity["repeat_of"])
+        assert failed["fixture_id"]=="E6"and failed["scenario"]=="E1"and failed["status"]=="FAILED"
+        assert failed["source_commit"]!=g["source_commit"]
+    if launch or g.get("consolidated_correction_reviewed"):
+        assert g.get("consolidated_correction_reviewed")is True
+        assert g["reviewed_source_commit"]==g["source_commit"]
+        review=g["correction_review"];assert sha(review["path"])==review["sha256"]
+        assert json.loads(Path(review["path"]).read_text())["source_commit"]==g["source_commit"]
+    return identity
+
 def verify(gate_path,ledger_path,launch=False):
     g=json.loads(Path(gate_path).read_text());l=json.loads(Path(ledger_path).read_text())
     assert g['protocol_sha256']==PROTOCOL and g['source_base']==BASE
-    assert g['fixture_id']in('E1','E2','E3','E4','E5','E6')
+    case_identity(g)
     assert g['owner_approval']['sha256']==APPROVAL and sha(g['owner_approval']['path'])==APPROVAL
     approval=json.loads(Path(g['owner_approval']['path']).read_text())
     assert approval['status']=='APPROVED_BY_OWNER'and approval['engineering_physical_max']==6
     assert approval['protocol_sha256']==PROTOCOL
-    assert l['physical_max']==6 and l['physical_started']==g['expected_before'] and l['active']==0
-    assert l['physical_started']<6 and len(l['attempts'])==l['physical_started']
+    assert l['physical_max']==7 and l['physical_started']==g['expected_before'] and l['active']==0
+    assert l['physical_started']<7 and len(l['attempts'])==l['physical_started']
     assert not any(x['status']=='STARTED'for x in l['attempts'])
     assert sha(ledger_path)==g['ledger_before_sha256'],'LEDGER_PIN_CHANGED'
     assert type(g['root_go'])is bool
@@ -88,7 +123,7 @@ def verify(gate_path,ledger_path,launch=False):
     assert frozen['transport']==g['transport'],'STATIC_TRANSPORT_PIN_CHANGED'
     assert Path(g['python']).is_absolute()and Path(g['python']).is_file()
     assert not Path(g['namespace']).exists(),'FRESH_NAMESPACE_REQUIRED'
-    validate_reserved_repeat(g,l,launch)
+    validate_amendment7(g,l,launch)
     return g,l,driver
 
 
@@ -151,15 +186,15 @@ def launch(gate_path,ledger_path):
         ns=Path(g['namespace']);before=Path(ledger_path).read_bytes()
         attempt=str(uuid.uuid4());row=dict(attempt_id=attempt,physical_index=l['physical_started']+1,
             fixture_id=identity['fixture_id'],scenario=identity['scenario'],repeat_of=identity['repeat_of'],
-            reserved_repeat=identity['fixture_id']=='E6',status='STARTED',
+            reserved_repeat=identity['fixture_id']=='E6',amended_repeat=identity['fixture_id']=='E7',status='STARTED',
             started_utc=now(),supervisor_pid=os.getpid(),source_commit=g['source_commit'],
             gate_sha256=sha(gate_path),namespace=str(ns),protocol_sha256=PROTOCOL,
-            ledger_before_sha256=hashlib.sha256(before).hexdigest(),
+            ledger_before_sha256=hashlib.sha256(before).hexdigest(),amendment_approval=g['amendment_approval'],amendment_protocol=g['amendment_protocol'],
             engine_constructor_claimed=False,child_pid=None,actual_process_exit_code=None,
             actual_supervisor_exit_code=None)
         # Every valid dispatch is spent before namespace creation/Popen/import.
         l['attempts'].append(row);l.update(physical_started=len(l['attempts']),active=1,
-            authorized_remaining=6-len(l['attempts']),status='RUNNING',root_go=False)
+            authorized_remaining=7-len(l['attempts']),status='RUNNING',root_go=False)
         write(ledger_path,l)
         def before_spawn():
             ns.mkdir(parents=True,exist_ok=False)

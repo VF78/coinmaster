@@ -278,11 +278,14 @@ def ordinary_fixture(e,s,capture,case):
         assert not s._pair_failures and not s._forced_close_reason and not s._liquidating
     def protection():return {(o['kind'],o['level']):oid for oid,o in s._pair_orders.items()
         if o['kind']in('TP','STOP')and not s.cache.order(ClientOrderId(oid)).is_closed}
+    drain_proof=None
     s.stage=case+'_NATURAL_ENTRY'
     advance(0,bsize='2',session=729);advance(1,bsize='2');advance(2)
     assert s.quantity(BTC_PERP.id)==D(2)and s._split_parent['first_quantity']>D(2)
     advance(70);advance(72.01,quotes=False);advance(130);advance(131)
     assert s._pair['entry_terminal']and s.quantity(SOL_PERP.id)==D(2)
+    original_btc_oids=list(s._tp_owners)
+    assert len(original_btc_oids)==3
     original=protection();assert set(original)=={('TP',0),('TP',1),('TP',2),('STOP',None)}
     if case=='E1':
         s.stage='E1_PARTIAL';advance(135,sol='99',ssize='.2')
@@ -319,9 +322,19 @@ def ordinary_fixture(e,s,capture,case):
         advance(155.01,quotes=False);advance(156,btc='120');advance(157,btc='120');advance(160,btc='120')
         assert all(s.cache.order(ClientOrderId(oid)).is_closed for oid in pending)
     assert not e.cache.positions_open()and not e.cache.orders_open()and not e.cache.orders_inflight()and s._pair is None
+    if case=='E1':
+        canceled=[]
+        for oid in original_btc_oids:
+            order=s.cache.order(ClientOrderId(oid));owner=s._tp_owners[oid]
+            events=[ev for ev in order.events if type(ev).__name__=='OrderCanceled'and str(ev.id)==owner.get('terminal_event_id')]
+            assert order.is_closed and len(events)==1 and events[0].ts_event<=140*S
+            canceled.append(dict(order_id=oid,event_id=str(events[0].id),timestamp_ns=str(events[0].ts_event)))
+        assert not s._tp_commands and not s._tp_flat_terminal_busy()and not s._pair_work(instrument=BTC_PERP.id)
+        assert any(x['event']=='FLAT_OWNED_TP_DRAINED'for x in s.standing_tp_audit)
+        drain_proof=dict(original_btc_standing_oids=original_btc_oids,actual_terminal_cancel_acks=canceled,positions=0,open_orders=0,inflight_orders=0,commands=0,debt=0,pair=None,before_cleanup=True)
     assert not s.liquidation_audit and len({f['trade_id']for f in s.fills})==len(s.fills)
     return dict(status=case+'_NATIVE_REQUIRES_ROOT_ACCEPTANCE',native_flat=True,
-        original_sol_oids={str(key):oid for key,oid in original.items()},actual_sol_acks=sum(x['event']=='SOL_LATEST_MODIFY_ACK'for x in s.paired_prefix_audit))
+        btc_flat_drain=drain_proof,original_sol_oids={str(key):oid for key,oid in original.items()},actual_sol_acks=sum(x['event']=='SOL_LATEST_MODIFY_ACK'for x in s.paired_prefix_audit))
 
 
 

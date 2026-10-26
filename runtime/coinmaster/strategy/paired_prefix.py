@@ -172,7 +172,7 @@ class PairedPrefixResearch:
             self._pair_arm_btc_debt(ns)
 
     def _pair_no_increase(self):
-        return bool(self.config.research_paired_prefix and self._pair and not getattr(self, "_a0_submitting", False))
+        return bool(self.config.research_paired_prefix and (self._pair or getattr(self,"_tp_flat_terminal_busy",lambda:False)()) and not getattr(self, "_a0_submitting", False))
 
     def _pair_btc_tp_paused(self):
         p = self._pair
@@ -203,7 +203,7 @@ class PairedPrefixResearch:
 
     def _pair_release_if_terminal(self, ns):
         p = self._pair
-        if p and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight() and not (getattr(self.config, "research_sol_standing_protection", False) and any(o.get("pending") is not None and o.get("parent") == p["parent"] for o in self._pair_orders.values())):
+        if p and not getattr(self,"_tp_flat_terminal_busy",lambda:False)() and not self._pair_qty(self.config.btc_id) and not self._pair_qty(self.config.sol_id) and not self._pair_work() and not self.cache.orders_open() and not self.cache.orders_inflight() and not (getattr(self.config, "research_sol_standing_protection", False) and any(o.get("pending") is not None and o.get("parent") == p["parent"] for o in self._pair_orders.values())):
             self._pair_predecision(ns,"PARENT_NATIVE_TERMINAL")
             self._pair_log("PARENT_NATIVE_TERMINAL_FLAT", ns, parent=p["parent"])
             self._pair = None
@@ -878,6 +878,7 @@ class PairedPrefixResearch:
 
 
     def _a0_targets_ready(self, ep, m, held):
+        if getattr(self,"_tp_flat_terminal_busy",lambda:False)():return False
         # Runs after the original off_ns/+60 initialization, preserving clocks.
         # Same original right/clock; unknown SOL ACK or a draining STOP blocks
         # increases until actual terminal state, never grants synthetic coverage.
