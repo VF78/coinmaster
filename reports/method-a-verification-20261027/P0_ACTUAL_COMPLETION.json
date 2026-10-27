@@ -1,0 +1,27 @@
+{
+  "active": 0,
+  "actual_exit_receipt": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0_ACTUAL_EXIT-caa12c14-70fc-48e9-b4fc-160ddc12412f.json",
+    "sha256": "9e2d4879cba88981789682bcb67e5ba9a1f858e876bfb0e380c743625dd157b7"
+  },
+  "actual_returncode": 0,
+  "attempt_id": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+  "failure": null,
+  "financial_acceptance": "NOT_QUALIFIED_PENDING_ROOT_READER",
+  "freeze": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/P0_FREEZE-caa12c14-70fc-48e9-b4fc-160ddc12412f.json",
+    "sha256": "b56e2d6b5c90cf1741bc734fce4a140529c300c7a0977d5d1ea2932f242f29eb"
+  },
+  "ledger_snapshot": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0_COMPLETED_LEDGER-caa12c14-70fc-48e9-b4fc-160ddc12412f.json",
+    "sha256": "ca0fabc5d5ce52e06eededfa4b03edc34f4a8dee8bf7cc8875e3ef0d00bbef3a"
+  },
+  "physical_started": 2,
+  "status": "P0_COMPLETED_FINANCIAL_REVIEW_REQUIRED",
+  "supervisor": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0_SUPERVISOR-caa12c14-70fc-48e9-b4fc-160ddc12412f.json",
+    "sha256": "74350ba24460472c79c6fbfc9fb23fbf7f9eba078d7be7ce29d7d897f2a9b928"
+  },
+  "variant": "P0",
+  "worker_pid": 67293
+}

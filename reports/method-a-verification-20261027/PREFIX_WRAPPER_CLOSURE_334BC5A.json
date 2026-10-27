@@ -1,0 +1,28 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "source": "334bc5a56bef36e981022c1fd2d22dc9ffd4c74f",
+  "review_base": "178f3b5bd60937d8940a62b62d2680a98d8ad0e1",
+  "runtime_source": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "status": "PREFIX_WRAPPER_SOURCE_CLOSED",
+  "counts": {
+    "P0": 0,
+    "P1": 0
+  },
+  "reviewer_native_engine_constructors": 0,
+  "tests_executed": 0,
+  "scope": "Focused one-batch closure of three existing wrapper findings, symlink/profile binding and read-only native PositionClosed capture. No broad product/financial review or source edits.",
+  "closures": {
+    "PREFIX178-01": "CLOSED_SOURCE: gzip SHA reads1MiB chunks; whole-run UUID set removed. native_event_UUID_frames explicitly counts callback frame occurrences including duplicates; exact UUID dedup deferred to post-run stream analysis. Durable frames unchanged.",
+    "PREFIX178-02": "CLOSED_SOURCE: current P1 rehashes actual inputs/profiles and recomputes common economic identity. Projection changes only research_method_a_tp, artifact_label and artifact_dir. All other bound kwargs/defaults remain exact; source/metric/input/profile/venue bound. Qualified P0 receipt, current and immutable completed rows and physical report match current input/common identity before constructor.",
+    "PREFIX178-03": "CLOSED_SOURCE: P0 report/receipt/row.detail/manifest/supervisor physical_identity equality; sourceSeal/config/kwargs/fullkwargs/input/recipe/common/profile/freeze/PID cross-binding; pinned freeze and actual observed OS exit receipt; report/manifest/supervisor paths and hashes cross-linked. Four financial roles and four extras rehashed; profile equals report profile and binds protection stream path/SHA; actual config hash preserved separately from effective config SHA."
+  },
+  "additional_checks": [
+    "Exact git diff a4dd→334 runtime is empty. Native product, control decoder, source seal/M1 fixtures and money code remain unchanged.",
+    "Logical nine consumer IDs retained; actual normalized symlink targets resolve before physical pin comparison. Three public profile paths resolve from frozen source_root, and their actual SHA map enters consumed input/common economic identity. Unused live profile copies do not satisfy required frozen paths.",
+    "PositionClosed capture reads immutable native event realized_pnl and public Cache.position getters only. Position fill history/trade IDs/commissions/settlement currency/closed status are serialized without mutating account, position, Cache or orders.",
+    "Installed Nautilus1.231 position.pyx895–922 and930–957 subtract settlement-currency commission on each fill before accumulating native realized_pnl. Captured convention correctly says not to subtract those fees again.",
+    "Thirteen-group owner engine-free proof source and compact receipt inspected only; no tests rerun. Unit metadata and synthetic native-class events are explicitly not actual financial evidence.",
+    "Earlier verified public pre_process-before-matching, single constructor proxy, exact venue flags and super-once behavior are unchanged by this scoped delta."
+  ],
+  "limits": "Source closure is not prefix root GO or financial acceptance. Root must finish actual Mac loader preflight, effective kwargs/data/profile/source/wrapper freeze and current canonical ledger claim. P1 additionally needs actual MethodA-qualified P0 receipt with the new full physical/economic identity chain. Financial adapter is separate and was not reviewed here."
+}

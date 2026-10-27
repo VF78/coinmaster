@@ -1,0 +1,60 @@
+{
+  "status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "ranking_eligible": false,
+  "fills": 109,
+  "terminal_open_positions": 0,
+  "liquidation_count": 0,
+  "report_bytes": 1209476,
+  "streaming": {
+    "batch_count": 20,
+    "cursor_batch_rows": 10080,
+    "event_count": 783632,
+    "expected_rows_per_source": 195840,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 488030208,
+    "processed_rows_per_source": 195840
+  },
+  "coherent": {
+    "status": "PASS",
+    "unknown": [],
+    "sequence_count": 588116,
+    "mutation_epochs": 298
+  },
+  "profile": {
+    "frames": 1176546,
+    "phase_counts": {
+      "AFTER_STRATEGY_on_order_accepted": 42,
+      "AFTER_STRATEGY_on_order_canceled": 38,
+      "AFTER_STRATEGY_on_order_event": 455,
+      "AFTER_STRATEGY_on_order_filled": 109,
+      "AFTER_STRATEGY_on_position_event": 109,
+      "AFTER_STRATEGY_on_quote_tick": 391680,
+      "BEFORE_NATIVE_MATCHING_INPUT": 391680,
+      "BEFORE_STRATEGY_on_order_accepted_NATIVE_CACHE_ALREADY_MUTATED": 42,
+      "BEFORE_STRATEGY_on_order_canceled_NATIVE_CACHE_ALREADY_MUTATED": 38,
+      "BEFORE_STRATEGY_on_order_event_NATIVE_CACHE_ALREADY_MUTATED": 455,
+      "BEFORE_STRATEGY_on_order_filled_NATIVE_CACHE_ALREADY_MUTATED": 109,
+      "BEFORE_STRATEGY_on_position_event_NATIVE_CACHE_ALREADY_MUTATED": 109,
+      "BEFORE_STRATEGY_on_quote_tick_NATIVE_CACHE_ALREADY_MUTATED": 391680
+    },
+    "native_event_UUID_frames": 1506,
+    "actual_venue_registrations": [
+      {
+        "authority": "ACTUAL_STOCK_ADD_VENUE_RETURNED_WITH_SAME_KWARGS_PLUS_READ_ONLY_MODULE",
+        "bar_execution": true,
+        "liquidity_consumption": false,
+        "modules_before_observer": [
+          "PerpetualFundingModule",
+          "BybitTierMarginModule",
+          "CommittedNativeObserver"
+        ],
+        "observer_added": "PrefixCoverageModule",
+        "venue": "P1SIM"
+      }
+    ]
+  },
+  "fill_audit_len": 109,
+  "funding_count": 189,
+  "financially_qualified": false
+}

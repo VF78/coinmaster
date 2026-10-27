@@ -1,0 +1,35 @@
+{
+  "checks": [
+    "ce7_P0_P1_exact_kwargs_types_JSON_defaults_and_stock_venue_false_true",
+    "unregistered_P3_and_wrong_data_root_actual_nine_paths_failclosed",
+    "unique_started_UUID_exact_flat_unified17_prefix6_label_source_namespace_pins",
+    "real_Cache_Order_history_UUID_before_matching_module_compact_SHA_stream",
+    "thin_engine_factory_spy_constructor1_same_kwargs_plus_readonly_module_no_native_engine",
+    "strategy_callback_delegates_once_preserves_return_labels_after_cache_mutation",
+    "all_runtime_product_and_money_bytes_exact_a4dd_unchanged"
+  ],
+  "engine_constructors": 0,
+  "financial_outcome": "NOT_RUN_NOT_PREPROVEN",
+  "scope": "NEW_PACKET_WRAPPERS_ONLY_ALL_RUNTIME_BYTES_EXACT_A4DD",
+  "script_pins": [
+    {
+      "path": "reports/method-a-verification-20261027/prefix_common.py",
+      "sha256": "062913add09fa124debb6c9a7f625b762547d68c7cb1145cf9d8f728b1f6a563"
+    },
+    {
+      "path": "reports/method-a-verification-20261027/prefix_observer.py",
+      "sha256": "a38a3826c3b84e9da4c16088186c1cf0bda3a90e9f692c491c86ea49eb1d0ad4"
+    },
+    {
+      "path": "reports/method-a-verification-20261027/prefix_preflight.py",
+      "sha256": "ce7ae047d195c1d601ef9ce2769e876aaed636aaa5cb9427748969aab6ea2edd"
+    },
+    {
+      "path": "reports/method-a-verification-20261027/prefix_worker.py",
+      "sha256": "5c93b1bc61ae45c971cae92b5f8591c6dc00370a2c80f913ea9386a9f9445c0e"
+    }
+  ],
+  "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "status": "PREFIX_WRAPPER_ENGINE_FREE_PASS",
+  "stock_loader_actual_historical_preflight": "REQUIRED_ON_MAC_BEFORE_ANY_PREFIX_GO"
+}

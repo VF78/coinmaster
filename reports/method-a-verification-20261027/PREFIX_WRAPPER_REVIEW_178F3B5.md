@@ -1,0 +1,38 @@
+# Prefix wrapper source review 178f3b5
+
+**HOLD: P0=0/P1=3.** One focused wrapper-only correction; native/tests0. Runtime a4dd unchanged.
+
+## PREFIX178-01 [P1] Observer materializes whole stream and retains all native UUIDs
+
+`reports/method-a-verification-20261027/prefix_observer.py:77`
+
+close() hashes self.path.read_bytes(), allocating the entire completed prefix gzip in RAM. native_event_ids (23,68) also retains every native UUID for the full calendar. Thus the claimed bounded stream becomes proportional to full output/events and can add a late resource failure after spending a native slot.
+
+Correction: Hash the output incrementally and replace whole-run UUID RAM retention with an explicitly bounded/count-only or disk-backed exact mechanism; preserve every emitted frame and honest UUID count semantics.
+
+## PREFIX178-02 [P1] Prior P0 financial gate does not bind current P1 consumed data/common economic call
+
+`reports/method-a-verification-20261027/prefix_common.py:203`
+
+verify_prior_financial validates the prior P0 row and report against its root receipt, but never compares its native_input_sha256 with current g.native_input_sha256. Nor does it bind a common economic kwargs/config projection between prior P0 and current P1. A fully valid P0 qualification can therefore satisfy this gate while P1 uses a different pinned set of nine consumer files or otherwise noncomparable call metadata. The historical source_config_data_comparable PASS of P0 does not establish comparability to the current not-yet-run P1.
+
+Correction: Bind and compare exact current/prior consumed input identity plus a canonical common economic identity permitting only the declared TP flag and artifact/namespace metadata differences. Include source/calendar/seed/fees/clocks/venue assumptions and exact decoded control kwargs; fail closed on mismatch.
+
+## PREFIX178-03 [P1] Prior completion/supervisor checks do not cross-bind report and physical identities
+
+`reports/method-a-verification-20261027/prefix_common.py:222`
+
+Completion manifest and supervisor are pinned and checked for UUID/source/OS0, but their report path/SHA and physical freeze/config/input/recipe bindings are not compared to the qualified P0 report/receipt/completed row. The manifest artifact roles and extra-evidence hashes are not revalidated here. A same-UUID but conflicting proposal/export manifest can pass alongside a separately qualified report; the required all-rows/hash physical chain is incomplete.
+
+Correction: Cross-bind manifest/supervisor report path/SHA, worker PID/observed exit, physical identity/freeze/config/input/recipe and completed row to the root receipt and actual report; rehash the manifest-bound actual role outputs needed by qualification. Preserve P0 native3TP exemption and actual root OS authority.
+
+## Verified scope
+
+- Exact checkpoint diff adds seven packet files only; runtime source/config/money bytes are unchanged.
+- Installed Nautilus1.231 public engine.pyx3483–3510 calls each SimulationModule.pre_process(tick) at3499 before matching_engine.process_quote_tick at3510. New observer uses that public boundary; strategy callback labels explicitly identify already-mutated Cache.
+- Observer only reads native Cache/strategy state and writes its own evidence stream; no orders/Cache/account/PnL mutations or engine-generated fills found. Strategy wrapper calls super exactly once per callback.
+- Stock run_native_diagnostic imports BacktestEngine/WaveOverlayStrategy inside function, so proxy substitution is reachable; one native constructor delegated, add_venue preserves all arguments except adding one read-only module identically. Actual returned venue flags are recorded false/true, independent observer present.
+- Default/full-decoded kwargs/stock9-file consumers/calendar/preflight pins and unified17 prefix6 STARTED claim gate are explicit. No preflight or actual economic outcome is preproven.
+- Worker proposal does not self-certify OS0; separate finalize route requires actual root-observed exit receipt and rehashes proposal exports. P0 legacy3TP exemption and P1 required root financial review remain explicit.
+
+One focused wrapper-only correction batch, then exact closure/preflight freeze and root one-shot gate. No product correction, new engine slot or financial authorization inferred.

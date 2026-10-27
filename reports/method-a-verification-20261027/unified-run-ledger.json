@@ -1,12 +1,96 @@
 {
-  "schema": "METHOD_A_UNIFIED_PHYSICAL_LEDGER_V1",
-  "task": "CM-METHOD-A-VERIFY-20261027",
-  "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
-  "protocol_sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93",
-  "status": "M1_ACCEPTED_P0_P1_PREPARATION",
-  "total_max": 17,
-  "physical_started": 1,
   "active": 0,
+  "attempts": [
+    {
+      "actual_returncode": 0,
+      "attempt_id": "ee47c0f4-b157-4362-9700-21a1b8c6c1e8",
+      "case": "M1_TP_ONLY_ORIGINAL_E4_SECOND",
+      "category": "engineering",
+      "finished_utc": "2026-10-27T08:27:45.008996+00:00",
+      "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+      "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/ee47c0f4-b157-4362-9700-21a1b8c6c1e8.log",
+      "log_sha256": "3e76b970af4bc08b4dca7067e697bd4f9f560eba45cbb19b8c71d9cf0487f227",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M1-ee47c0f4-b157-4362-9700-21a1b8c6c1e8",
+      "native_config_sha256": "eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1",
+      "native_input_sha256": "60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51",
+      "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+      "pid": 62647,
+      "recipe_sha256": "9ee653c8b54b2559567b823b8da1b25ac117b591fa49ac60a04cacaffea14dcd",
+      "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M1-ee47c0f4-b157-4362-9700-21a1b8c6c1e8/result.json",
+      "result_sha256": "f7a0d38dd82380ce41eb4339cee7c57110bae1b970db4c8f1bde94cb99617fa6",
+      "root_acceptance_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/M1_ROOT_CASE_ACCEPTANCE.json",
+      "root_acceptance_sha256": "dce1157f4d6617124865652dcaa7089549b221ecb72a0aaca9e57962e6d05897",
+      "root_accepted_case": true,
+      "slot": "M1_PLANNED",
+      "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+      "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+      "started_utc": "2026-10-27T08:27:42.645475+00:00",
+      "status": "COMPLETED"
+    },
+    {
+      "actual_returncode": 0,
+      "attempt_id": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+      "case": "P0_PREFIX",
+      "category": "prefix",
+      "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+      "detail": {
+        "actual_returncode": 0,
+        "completion_manifest": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0-caa12c14-70fc-48e9-b4fc-160ddc12412f/completion-manifest.json",
+        "completion_manifest_sha256": "c007de8bea4df1799699a24f3e52bbad1efc3cb5f3495f867ab33bfafc4c7828",
+        "physical_identity": {
+          "attempt_id": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+          "category": "prefix",
+          "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+          "freeze_sha256": "b56e2d6b5c90cf1741bc734fce4a140529c300c7a0977d5d1ea2932f242f29eb",
+          "full_bound_kwargs_sha256": "790b6cd90f1ee1948b3547fbd9b2a2ff9f751ba5ba27e225c906f71668e94aa0",
+          "kwargs_sha256": "f31e654fceae55d22b9777acc9823b78317859314be00e05d39e60f5f1d9bfdd",
+          "label": "P0",
+          "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+          "native_config_sha256": "ac8357a6161d34dacf229e886c75e1e2f78eb6c4828d794e18fa7757ffc43f2c",
+          "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+          "public_profile_sha256": {
+            "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+            "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+            "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+          },
+          "recipe_sha256": "8d926ed557d501be695ce99c2e176b9795df2aaa2305769e2f9823f3b565da6e",
+          "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+          "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+          "variant": "P0",
+          "worker_pid": 67293
+        },
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0-caa12c14-70fc-48e9-b4fc-160ddc12412f/result/P0.json",
+        "report_sha256": "f5b985fe7b4315c278117ba9a322e312d40a8e0e1ffb837d931e992bbfceda67",
+        "supervisor": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0_SUPERVISOR-caa12c14-70fc-48e9-b4fc-160ddc12412f.json",
+        "supervisor_sha256": "74350ba24460472c79c6fbfc9fb23fbf7f9eba078d7be7ce29d7d897f2a9b928"
+      },
+      "finished_utc": "2026-10-27T09:29:24.882743+00:00",
+      "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/P0_FREEZE-caa12c14-70fc-48e9-b4fc-160ddc12412f.json",
+      "freeze_sha256": "b56e2d6b5c90cf1741bc734fce4a140529c300c7a0977d5d1ea2932f242f29eb",
+      "full_bound_kwargs_sha256": "790b6cd90f1ee1948b3547fbd9b2a2ff9f751ba5ba27e225c906f71668e94aa0",
+      "kwargs_sha256": "f31e654fceae55d22b9777acc9823b78317859314be00e05d39e60f5f1d9bfdd",
+      "label": "P0",
+      "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+      "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/caa12c14-70fc-48e9-b4fc-160ddc12412f.log",
+      "log_sha256": "4deb413dbbd36992eaf398fdaf62d1bc849074bd5f4696295baa154acec745a4",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0-caa12c14-70fc-48e9-b4fc-160ddc12412f",
+      "native_config_sha256": "ac8357a6161d34dacf229e886c75e1e2f78eb6c4828d794e18fa7757ffc43f2c",
+      "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+      "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+      "pid": 67293,
+      "recipe_sha256": "8d926ed557d501be695ce99c2e176b9795df2aaa2305769e2f9823f3b565da6e",
+      "root_go_receipt": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/P0_ROOT_GO-caa12c14-70fc-48e9-b4fc-160ddc12412f.json",
+        "sha256": "366f51303b9a724478b7039d7798e81d0c72e4e6d0cf49d6e0429b6cdfc477ac"
+      },
+      "slot": "P0_PLANNED",
+      "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+      "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+      "started_utc": "2026-10-27T09:27:32.608794+00:00",
+      "status": "COMPLETED",
+      "variant": "P0"
+    }
+  ],
   "categories": {
     "engineering": {
       "max": 9,
@@ -14,53 +98,32 @@
       "reserve": 1,
       "started": 1
     },
-    "prefix": {
-      "max": 6,
-      "planned": 5,
-      "reserve": 1,
-      "started": 0
-    },
     "full": {
       "max": 2,
       "planned": 2,
       "reserve": 0,
       "started": 0
+    },
+    "prefix": {
+      "max": 6,
+      "planned": 5,
+      "reserve": 1,
+      "started": 1
     }
   },
-  "root_go": false,
-  "sol_gate": false,
-  "prefix_gate": true,
   "full_gate": false,
-  "attempts": [
-    {
-      "attempt_id": "ee47c0f4-b157-4362-9700-21a1b8c6c1e8",
-      "case": "M1_TP_ONLY_ORIGINAL_E4_SECOND",
-      "status": "COMPLETED",
-      "category": "engineering",
-      "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
-      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M1-ee47c0f4-b157-4362-9700-21a1b8c6c1e8",
-      "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
-      "recipe_sha256": "9ee653c8b54b2559567b823b8da1b25ac117b591fa49ac60a04cacaffea14dcd",
-      "native_config_sha256": "eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1",
-      "native_input_sha256": "60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51",
-      "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
-      "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
-      "started_utc": "2026-10-27T08:27:42.645475+00:00",
-      "slot": "M1_PLANNED",
-      "pid": 62647,
-      "finished_utc": "2026-10-27T08:27:45.008996+00:00",
-      "actual_returncode": 0,
-      "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/ee47c0f4-b157-4362-9700-21a1b8c6c1e8.log",
-      "log_sha256": "3e76b970af4bc08b4dca7067e697bd4f9f560eba45cbb19b8c71d9cf0487f227",
-      "result_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M1-ee47c0f4-b157-4362-9700-21a1b8c6c1e8/result.json",
-      "result_sha256": "f7a0d38dd82380ce41eb4339cee7c57110bae1b970db4c8f1bde94cb99617fa6",
-      "root_acceptance_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/M1_ROOT_CASE_ACCEPTANCE.json",
-      "root_acceptance_sha256": "dce1157f4d6617124865652dcaa7089549b221ecb72a0aaca9e57962e6d05897",
-      "root_accepted_case": true
-    }
-  ],
+  "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+  "physical_started": 2,
+  "prefix_gate": true,
   "prefix_labels_allowed_after_preflight": [
     "P0",
     "P1_AFTER_P0_FINANCIAL"
-  ]
+  ],
+  "protocol_sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93",
+  "root_go": false,
+  "schema": "METHOD_A_UNIFIED_PHYSICAL_LEDGER_V1",
+  "sol_gate": false,
+  "status": "P0_COMPLETED_FINANCIAL_REVIEW_REQUIRED",
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "total_max": 17
 }
