@@ -133,6 +133,86 @@ class RiskInterface(unittest.TestCase):
         breach=State(D('.1'),D(0),D(50),D(100),D(100),D(100));ctx._mr_snapshot=lambda ns:(breach,feature)
         MethodARiskResearch._mr_after_actual(ctx,MINUTE+4);self.assertEqual(failures[-1][0],'CUSHION_BREACH')
 
+    @staticmethod
+    def denial_actor(state,feature,stock_allowed=True,liabilities=()):
+        from run_method_a_m1 import config
+        from coinmaster.strategy.wave_overlay import MethodAWaveOverlayStrategy
+        from copy import deepcopy
+        cfg,_=config();cfg=replace(cfg,research_method_a_risk='HEDGE',research_sol_off=True,candidate=dr(cfg.candidate,sol_overlay_enabled=False))
+        actor=MethodAWaveOverlayStrategy(cfg)
+        actor._mr_snapshot=lambda ns:(state,feature)
+        actor._mr_last_snapshot='risk:1'
+        actor._tier_allows_increase=lambda *args:stock_allowed
+        actor._mr_liabilities=lambda ns,proposed=None:tuple(liabilities)+(() if proposed is None else (proposed,))
+        actor._pair=dict(parent='ORIGINAL',caps=NS(sol_lot=D('.1'),bmax=abs(state.btc)),entry_sent=True,entry_terminal=False,entry_band='MEDIUM',quantity=D(0),generation=0,atr=D(2),consumed=set(),tp_lots={})
+        actor._split_parent=dict(episode_id='ORIGINAL',quantity=D(550),first_quantity=D(275),filled=D(275),first_filled=D(275),deadline_ns=14_400_000_000_000,fallback=False,closed=False)
+        actor._pair_arm_btc_debt=lambda ns:None
+        actor._test_forced=[];actor._begin_forced_close=lambda reason,*args:actor._test_forced.append(reason)
+        return actor,deepcopy(actor._split_parent)
+
+    def test_known_benefit_and_stock_denials_create_no_entry_or_allocation(self):
+        from coinmaster.strategy.method_a_risk import State,Features
+        state=State(D(275),D(0),D(10000),D(10000),D(100),D(100))
+        normal=Features(0,0,0,D(1),D(1),D('.095'),D('.1'),D('.1'),D('.01'),D('.0003'),D('.0003'))
+        adverse=dr(normal,residual=D('.4'))
+        for feature,stock,reason in ((adverse,True,'FULL_TARGET_BENEFIT_HURDLE'),(normal,False,'CURRENT_NATIVE_STOCK_GUARD')):
+            actor,original=self.denial_actor(state,feature,stock)
+            decision=actor._pair_submit(actor.config.sol_id,-1,D('130.6'),'ENTRY',123)
+            self.assertEqual((decision.status,decision.reason),('DENY',reason))
+            self.assertIsNone(decision.native_order_id);self.assertFalse(actor._mr_allocated);self.assertFalse(actor._mr_failed)
+            self.assertEqual(actor._pair_orders,{});self.assertEqual(actor._pair_seen_fills,set());self.assertEqual(actor._split_parent,original)
+            self.assertEqual(actor._test_forced,[])
+
+    def test_known_all_partial_envelope_denial_is_not_transport_fault(self):
+        from coinmaster.strategy.method_a_risk import State,Features,Liability,TAKER,RESERVE
+        state=State(D(550),D(0),D('5982.295375'),D(10000),D('92.6'),D(100))
+        feature=Features(0,0,0,D('1.205846711019932600346124964'),D('.9956960364932228545501451570'),D('.01108304617753870851535862821'),D('.01342222354156980922129954289'),D('.015672393400768784539637486'),D('.00180796292411156648851052033'),D(0),D(0))
+        rights=(Liability('BTC_TP_NATIVE_LOTS','BTC',-1,550000,D('.001'),True,state.pb*(TAKER+RESERVE)),)
+        actor,original=self.denial_actor(state,feature,True,rights)
+        decision=actor._pair_submit(actor.config.sol_id,-1,D('420.5'),'ENTRY',123)
+        self.assertEqual((decision.status,decision.reason),('DENY','JOINT_EXECUTION_ENVELOPE'))
+        self.assertFalse(actor._mr_allocated);self.assertFalse(actor._mr_failed);self.assertEqual(actor._pair_orders,{})
+        self.assertEqual(actor._split_parent,original);self.assertEqual(actor._test_forced,[])
+
+    def test_unknown_current_margin_still_fails_closed_without_entry(self):
+        from coinmaster.strategy.method_a_risk import State,Features
+        state=State(D(275),D(0),D(10000),D(10000),D(100),D(100))
+        feature=Features(0,0,0,D(1),D(1),D('.095'),D('.1'),D('.1'),D('.01'),D(0),D(0))
+        actor,original=self.denial_actor(state,feature)
+        def unknown(ns):raise ValueError('UNKNOWN_NATIVE_MARGIN')
+        actor._mr_snapshot=unknown
+        decision=actor._pair_submit(actor.config.sol_id,-1,D('130.6'),'ENTRY',123)
+        self.assertEqual((decision.status,decision.reason),('UNKNOWN','UNKNOWN_NATIVE_MARGIN'))
+        self.assertTrue(actor._mr_failed);self.assertFalse(actor._mr_allocated);self.assertEqual(actor._pair_orders,{})
+        self.assertEqual(actor._pair_seen_fills,set());self.assertEqual(actor._test_forced,['METHOD_A_UNKNOWN_NATIVE_MARGIN'])
+
+    def test_durable_checkpoint_false_remains_transport_failure(self):
+        from coinmaster.strategy.method_a_risk import State,Features
+        class DurableBase:
+            def _record_submission(self,*args):return False
+            def _pair_fail(self,reason,ns):self.failures.append(reason)
+        class Probe(MethodARiskResearch,DurableBase):
+            def __init__(self):
+                self.config=NS(research_method_a_risk='HEDGE',btc_id=BTC_PERP.id,sol_id=SOL_PERP.id)
+                self.clock=TestClock();self.cache=Cache();self.cache.add_instrument(SOL_PERP)
+                self._mr_failed=False;self._forced_close_reason=None;self._liquidating=False;self._mr_allocated=False
+                self._mr_last_snapshot='risk:1';self._mr_creation_snapshot='risk:1';self._mr_recovery_ref=None
+                self._mr_submission_results={};self._mr_denied_intents=set();self._pair_orders={};self._ma_commands={};self._pair={'parent':'P'}
+                self._domain=NS(episode=None);self.failures=[];self.forced=[];self.logs=[]
+            def _mr_snapshot(self,ns):return State(D(275),D(0),D(10000),D(10000),D(100),D(100)),Features(0,0,0,D(1),D(1),D('.095'),D('.1'),D('.1'),D('.01'),D(0),D(0))
+            def _mr_liabilities(self,ns,proposed=None,exclude=None):return (proposed,)
+            def _mr_margin(self,*args):return D(0),D(0)
+            def _mr_envelope(self,*args):return NS(safe=True,states=2,worst_deficit=D(-100),margin_pass=True)
+            def _mr_original_second(self):return None
+            def _mr_log(self,*args,**kwargs):self.logs.append((args,kwargs))
+            def _begin_forced_close(self,reason):self.forced.append(reason)
+        probe=Probe();factory=OrderFactory(TraderId('EXAMPLE-001'),StrategyId('MethodA-001'),probe.clock)
+        order=factory.market(instrument_id=SOL_PERP.id,order_side=OrderSide.SELL,quantity=SOL_PERP.make_qty(D('130.6')),time_in_force=TimeInForce.IOC)
+        self.assertFalse(probe._record_submission(order,'I','P','PAIRED_ENTRY'))
+        self.assertEqual(probe._mr_submission_results[str(order.client_order_id)].status,'TRANSPORT_FAILURE')
+        self.assertTrue(probe._mr_failed);self.assertFalse(probe._mr_allocated)
+        self.assertEqual(probe.forced,['METHOD_A_DURABLE_SUBMIT_DENIED']);self.assertIsNone(probe.cache.order(order.client_order_id))
+
     def test_public_types_roundtrip(self):
         example=public_example();self.assertEqual(json.loads(json.dumps(example)),example)
         self.assertEqual(example['nested_examples']['native_fill']['type'],'OrderFilled')

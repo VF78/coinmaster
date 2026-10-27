@@ -7,7 +7,7 @@ realized PnL. Unsupported/unknown state fails closed before any increase.
 NATIVE_READINESS='INTEGRATION_CHECKPOINT_NOT_NATIVE_READY'
 
 from decimal import Decimal as D
-from dataclasses import dataclass
+from dataclasses import dataclass,asdict
 from fractions import Fraction as F
 from coinmaster.strategy.method_a_recovery import recovery_candidates,floor as ifloor,ceil as iceil
 from nautilus_trader.model.identifiers import ClientOrderId
@@ -17,6 +17,18 @@ from coinmaster.strategy.method_a_risk import (Observation, Funding, State, Liab
 from coinmaster.strategy.paired_prefix import exact_lots,sol_prices
 from coinmaster.strategy.native_account_snapshot import native_account_snapshot
 from coinmaster.research.method_a_risk_rows import SCHEMA,wire
+
+
+@dataclass(frozen=True)
+class EntrySubmissionDecision:
+    status: str
+    reason: str
+    parent: str | None
+    instrument: str
+    side: int
+    quantity: str
+    snapshot_ref: str | None
+    native_order_id: str | None = None
 
 
 @dataclass
@@ -60,6 +72,7 @@ class MethodARiskResearch:
         self._mr_sequence=0;self._mr_pair_sequence=0;self._mr_episode=0;self._mr_last_snapshot=None
         self._mr_creation_snapshot=None;self._mr_recovery_ref=None;self._mr_suspended_entry_ids=set()
         self._mr_cached_feature_key=None;self._mr_cached_feature=None;self._mr_last_sol_boundary=None
+        self._mr_submission_results={}
 
     def _mr_log(self,event,ns,**fields):
         self._mr_sequence+=1
@@ -347,9 +360,7 @@ class MethodARiskResearch:
             self._mr_creation_snapshot=self._mr_last_snapshot
             self._mr_log('HEDGE_ADMISSION',ns,band=band,target=str(target),benefit=str(benefit),cost=str(cost),useful=useful,creation_snapshot_ref=self._mr_creation_snapshot)
             if useful and target>0:
-                self._mr_allocated=True;self._mr_last_episode_day=feature.end_ns
                 p['quantity']=target;p['atr']=selection.atr_sol;p['branch']=branch;p['entry_terminal']=False;p['entry_sent']=True;p['close_sol']=False;p['entry_band']=band
-                self._pair_valid_allocations(target,state.ps)
                 self._pair_submit(self.config.sol_id,-ep.side,target,'ENTRY',ns)
         self._mr_log('DECISION',ns,on=on,band=band,actual_loss=str(ev.loss),deficit=str(ev.worst_deficit),entry_allocated=self._mr_allocated,frozen_entry_band=p.get('entry_band'),quote_instrument=str(tick.instrument_id))
 
@@ -377,6 +388,7 @@ class MethodARiskResearch:
 
     def _pair_submit(self,instrument,side,qty,kind,ns,**kwargs):
         if not self._mr_enabled():return super()._pair_submit(instrument,side,qty,kind,ns,**kwargs)
+        if kind=='ENTRY':return self._mr_submit_entry(instrument,side,qty,ns)
         quote=self.cache.quote_tick(instrument)
         if quote is None or not 0<=ns-quote.ts_event<=MINUTE:raise ValueError('UNKNOWN_SUBMIT_QUOTE')
         inst=self.cache.instrument(instrument)
@@ -545,11 +557,16 @@ class MethodARiskResearch:
                 pending_hedge_credit='0',all_partial_partition_states=envelope.states,deficit=str(envelope.worst_deficit),margin_pass=envelope.margin_pass,
                 native_initialized_event_id=str(order.init_event.id),native_order=order.to_dict(),liabilities=self._mr_liability_rows(ns,exclude=oid,proposed=order),creation_snapshot_ref=self._mr_creation_snapshot,recovery_ref=self._mr_recovery_ref,original_second=self._mr_original_second())
             if not allowed:
+                self._mr_submission_results[oid]=EntrySubmissionDecision('DENY','JOINT_EXECUTION_ENVELOPE',episode_id,str(order.instrument_id),proposed.side,str(order.quantity),self._mr_last_snapshot,oid)
                 if action=='BTC_ENTRY':self._mr_denied_intents.add(intent_id);self._mr_suspended=True
                 return False
         except (ValueError,KeyError,TypeError) as error:
+            self._mr_submission_results[oid]=EntrySubmissionDecision('UNKNOWN',str(error),episode_id,str(order.instrument_id),1 if order.side==OrderSide.BUY else -1,str(order.quantity),self._mr_last_snapshot,oid)
             self._mr_fail(str(error),ns);return False
-        return super()._record_submission(order,intent_id,episode_id,action,reason,level)
+        allowed=super()._record_submission(order,intent_id,episode_id,action,reason,level)
+        self._mr_submission_results[oid]=EntrySubmissionDecision('ALLOW' if allowed else 'TRANSPORT_FAILURE','DURABLE_CHECKPOINT_ACCEPTED' if allowed else 'DURABLE_SUBMIT_DENIED',episode_id,str(order.instrument_id),1 if order.side==OrderSide.BUY else -1,str(order.quantity),self._mr_last_snapshot,oid)
+        if not allowed:self._mr_fail('DURABLE_SUBMIT_DENIED',ns)
+        return allowed
 
     def _deny_local_entry(self,intent,reason,ts_now):
         if not self._mr_enabled():return super()._deny_local_entry(intent,reason,ts_now)
@@ -772,3 +789,78 @@ class MethodARiskResearch:
         self._pair_sol_protect(ns)
         if p.get('failed') or p.get('protection_since') is not None:return False
         return all(self._pair_sol_positive(order,exact=True) for oid,owner,order in self._pair_work(instrument=self.config.sol_id,kinds={'TP','STOP'}))
+
+
+    def _mr_entry_decision(self,status,reason,instrument,side,qty,ns,oid=None):
+        decision=EntrySubmissionDecision(status,reason,self._pair['parent'] if self._pair else None,str(instrument),side,str(qty),self._mr_last_snapshot,oid)
+        if status=='DENY' and not self._mr_allocated and self._pair:
+            self._pair.update(entry_sent=False,entry_terminal=True,entry_band=None)
+        self._mr_log('ENTRY_SUBMISSION_DECISION',ns,decision=asdict(decision),allocation_used=self._mr_allocated,pending_hedge_credit='0',original_second=self._mr_original_second())
+        return decision
+
+    def _mr_submit_entry(self,instrument,side,qty,ns):
+        """Known economic denial is not a durable/transport failure.
+
+        Use the same native MARKET/IOC factory, ownership fields and durable
+        checkpoint as the frozen paired helper. No order/allocation is created
+        for a known preflight DENY. An initialized CID earns no hedge credit.
+        """
+        if self._mr_allocated:
+            return self._mr_entry_decision('DENY','ALLOCATION_ALREADY_USED',instrument,side,qty,ns)
+        try:
+            state,feature=self._mr_snapshot(ns)
+            if self._pair is None or instrument!=self.config.sol_id or side not in (-1,1):raise ValueError('UNKNOWN_ENTRY_OWNER')
+            lot=self._pair['caps'].sol_lot
+            if qty<=0 or exact_lots(qty,lot)==0:
+                return self._mr_entry_decision('DENY','ZERO_NATIVE_TARGET',instrument,side,qty,ns)
+            useful,benefit,cost=useful_hedge(state,feature,qty)
+            if not useful:return self._mr_entry_decision('DENY','FULL_TARGET_BENEFIT_HURDLE',instrument,side,qty,ns)
+            # A false existing guard grants no permission. Current account,
+            # ownership, marks and zero-shock getter equality were established
+            # by the strict snapshot; prospective denial leaves BTC policy live.
+            if not self._tier_allows_increase(instrument,OrderSide.BUY if side==1 else OrderSide.SELL,qty,ns):
+                return self._mr_entry_decision('DENY','CURRENT_NATIVE_STOCK_GUARD',instrument,side,qty,ns)
+            proposal=Liability('LOCAL_ENTRY_PROPOSAL_NOT_A_NATIVE_CID','SOL',side,exact_lots(qty,lot),lot,False,state.ps*(TAKER+RESERVE))
+            envelope=self._mr_envelope(state,feature,self._mr_liabilities(ns,proposal))
+            if not envelope.safe:return self._mr_entry_decision('DENY','JOINT_EXECUTION_ENVELOPE',instrument,side,qty,ns)
+            quote=self.cache.quote_tick(instrument)
+            if quote is None or not 0<=ns-quote.ts_event<=MINUTE:raise ValueError('UNKNOWN_SUBMIT_QUOTE')
+            inst=self.cache.instrument(instrument)
+            executable=quote.bid_price.as_decimal() if side<0 else quote.ask_price.as_decimal()
+            if (inst.min_quantity and qty<inst.min_quantity.as_decimal()) or (inst.min_notional and qty*executable<inst.min_notional.as_decimal()):
+                return self._mr_entry_decision('DENY','NATIVE_ENTRY_MINIMUM',instrument,side,qty,ns)
+            try:self._pair_valid_allocations(qty,state.ps)
+            except ValueError as error:
+                if str(error)=='PAIRED_INVALID_NATIVE_TP_OR_STOP_ALLOCATION':
+                    return self._mr_entry_decision('DENY','PLANNED_TP_STOP_MINIMUM',instrument,side,qty,ns)
+                raise
+            order=self.order_factory.market(instrument_id=instrument,order_side=OrderSide.BUY if side==1 else OrderSide.SELL,
+                quantity=inst.make_qty(qty),reduce_only=False,time_in_force=TimeInForce.IOC)
+            if order.quantity.as_decimal()!=qty:raise ValueError('UNKNOWN_NATIVE_WIRE_QUANTITY')
+            oid=str(order.client_order_id);p=self._pair
+            self._pair_orders[oid]=dict(instrument=instrument,kind='ENTRY',level=None,accepted=False,generation=p['generation'],submit_ns=ns,parent=p['parent'],initial_oid=oid,initialized_event_id=str(order.init_event.id),pending=None,ack=None,command_sequence=0)
+            if not self._record_submission(order,'paired:'+oid,p['parent'],'PAIRED_ENTRY','PAIRED_ENTRY',None):
+                decision=self._mr_submission_results.get(oid)
+                if decision is not None and decision.status=='DENY':
+                    # The command has not reached submit_order. Only initialized,
+                    # absent-from-cache local metadata may be removed here.
+                    if self.cache.order(order.client_order_id) is not None or order.status.name!='INITIALIZED':raise ValueError('UNKNOWN_UNSENT_ORDER_OWNERSHIP')
+                    self._pair_orders.pop(oid)
+                    return self._mr_entry_decision('DENY',decision.reason,instrument,side,qty,ns,oid)
+                if decision is None:raise ValueError('UNKNOWN_DURABLE_SUBMISSION_RESULT')
+                return decision  # UNKNOWN/transport failure already failed closed.
+            self._mr_allocated=True;self._mr_last_episode_day=feature.end_ns
+            p['entry_sent']=True;p['entry_terminal']=False;p['allocation_order_id']=oid
+            self._pair_log('SUBMIT',ns,order_id=oid,kind='ENTRY',level=None,quantity=qty,price=None,stop=None,generation=p['generation'])
+            decision=self._mr_entry_decision('ALLOW','NATIVE_ENTRY_ISSUED',instrument,side,qty,ns,oid)
+            try:self.submit_order(order)
+            except Exception as error:
+                # The native command may already be registered/inflight. Retain
+                # owner/allocation, grant no fill credit, and fail closed.
+                decision=self._mr_entry_decision('UNKNOWN','NATIVE_TRANSPORT_EXCEPTION:'+type(error).__name__+':'+str(error),instrument,side,qty,ns,oid)
+                self._mr_submission_results[oid]=decision;self._mr_fail(decision.reason,ns)
+            return decision
+        except (ValueError,KeyError,TypeError) as error:
+            decision=self._mr_entry_decision('UNKNOWN',str(error),instrument,side,qty,ns)
+            self._mr_fail(str(error),ns)
+            return decision

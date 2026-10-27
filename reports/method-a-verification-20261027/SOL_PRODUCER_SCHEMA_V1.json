@@ -101,6 +101,12 @@
       "failure_native_account",
       "failure_positions",
       "failure_capture_errors"
+    ],
+    "ENTRY_SUBMISSION_DECISION": [
+      "decision",
+      "allocation_used",
+      "pending_hedge_credit",
+      "original_second"
     ]
   },
   "feature_fields": [
@@ -171,5 +177,21 @@
     "typed native callback example",
     "risk-retired BTC action PAIRED_BTC_DEBT levelNone with irreversible btc_risk_retired_lots writer, not BTC_TP",
     "consumer one literal alignment after complete example"
+  ],
+  "entry_decision_fields": [
+    "status",
+    "reason",
+    "parent",
+    "instrument",
+    "side",
+    "quantity",
+    "snapshot_ref",
+    "native_order_id"
+  ],
+  "entry_decision_statuses": [
+    "ALLOW",
+    "DENY",
+    "UNKNOWN",
+    "TRANSPORT_FAILURE"
   ]
 }

@@ -1,0 +1,39 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "DENIAL_ROUTING_CHECKPOINT_NOT_NATIVE_READY",
+  "base": "eadcbc3c960188826082a3834f76eb33f53ffc46",
+  "scope": "FINISH_UNCOMPLETED_NEW_OWNER_ADMISSION_ONLY_NOT_POLICY_CHANGE",
+  "known_denials": [
+    "FULL_TARGET_BENEFIT_HURDLE",
+    "CURRENT_NATIVE_STOCK_GUARD",
+    "JOINT_EXECUTION_ENVELOPE",
+    "NATIVE_ENTRY_MINIMUM",
+    "PLANNED_TP_STOP_MINIMUM"
+  ],
+  "known_denial_effects": {
+    "allocation_consumed": false,
+    "actual_fill_credit": "0",
+    "global_failure": false,
+    "original_second_rights_unchanged": true,
+    "native_order_transported": false,
+    "native_registered_order": false,
+    "initialized_only_model_possible_on_final_recheck": true
+  },
+  "unknown_effects": "GLOBAL_NO_GO_UNCERTAIN_NATIVE_OWNERSHIP_RETAINED_NO_FILL_CREDIT",
+  "transport_checkpoint_false": "TRANSPORT_FAILURE_NOT_ECONOMIC_DENIAL",
+  "checks": {
+    "focused_interface_denial_tests": 9,
+    "actual_bound_strategy_negative_paths": true,
+    "actual_public_native_order_checkpoint_failure": true,
+    "compiled_changed_files": 2,
+    "BacktestEngine_constructors": 0
+  },
+  "protected_dirty_sha256": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "pre_engine_HOLD_preserved": true,
+  "case_recipes_byte_complete": 0,
+  "remaining": "FIVE_PRODUCER_FACT_GROUPS_AND_SHARED_PUBLIC_RUNNER_WITH_SEVEN_FROZEN_RECIPES",
+  "pilot_production_changes": 0
+}
