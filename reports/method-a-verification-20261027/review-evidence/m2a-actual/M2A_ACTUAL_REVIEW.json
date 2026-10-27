@@ -1,0 +1,427 @@
+{
+  "disposition": "M2_ENGINEERING_PASS",
+  "attempt_id": "6b54e679-e091-421f-bce6-1d0ab4d1674f",
+  "source_commit": "c5a2f137a94b387a944af3af213cfe4c742aef34",
+  "checks": [
+    {
+      "check": "sealed_artifacts",
+      "pass": true,
+      "detail": {
+        "count": 13,
+        "manifest_sha256": "190ad4d7547bd2214e393b511b351938ae45d83f3b11f2a6d566fc40b076575b"
+      }
+    },
+    {
+      "check": "actual_os_and_canonical_completed_row",
+      "pass": true,
+      "detail": {
+        "canonical_row_sha256": "95c2cd6a069e7efc08575019c9080fea16cc0dd13e8b7c37eeeeae5df66ec414",
+        "ledger_sha256_at_review": "381f638f5ebbe2fa0df46bf7dc728d0332747c19ed96cea9fe5832065452810e"
+      }
+    },
+    {
+      "check": "identity_source_binding",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "prepared_actual_binding_equal",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "frozen_source_hash_binding",
+      "pass": true,
+      "detail": {
+        "files": 215
+      }
+    },
+    {
+      "check": "approved_recipe_raw_hash",
+      "pass": true,
+      "detail": "955a748cd3b3fae20f005509981664fd5f2dc8b0729da406bef97487a3ba2a87"
+    },
+    {
+      "check": "ledger_budget_and_prior_failures",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "bounded_trace_integrity",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "actual_quote_universe",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "second_native_accept_then_maker_fill",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "full_btc_cash_peak_before_stress",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "no_rejected_denied_expired_native_orders",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "single_partial_ioc_no_pending_credit",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "entry_causal_refs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "actual_native_sol_and_btc_tp_fills",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_accepted_3tp_stop_before_first_tp",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_stop_resizing_preserves_id",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "btc550_retained_after_sol_flat_deficit",
+      "pass": true,
+      "detail": {
+        "snapshot": "risk:68",
+        "signed_deficit": "-304.91001964597798956860445771811350000000000000000000000000000"
+      }
+    },
+    {
+      "check": "native_getter_parity_8_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_10_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_12_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_16_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_19_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_22_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_25_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_28_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_30_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_33_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_36_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_41_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_43_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_45_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_49_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_49_SOL",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_52_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_52_SOL",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_55_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_55_SOL",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_58_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_58_SOL",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_60_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_60_SOL",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_63_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_63_SOL",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_65_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_65_SOL",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_68_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_70_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_73_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_76_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_79_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_81_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_86_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_90_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_92_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "native_getter_parity_96_BTC",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "flat_before_engine_end",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "fill_event_causal_joins",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "qualification_stays_false",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "protection_ack_ids_in_native_snapshot",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "coherent_cash_plus_native_upnl",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "exact_native_fee_cash_witness",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "captured_profile_native_config_binding",
+      "pass": true,
+      "detail": {
+        "BTCUSDT": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+        "SOLUSDT": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+      }
+    }
+  ],
+  "counts": {
+    "checks": 63,
+    "passed": 63,
+    "risk_rows": 103,
+    "paired_rows": 43,
+    "coherent_rows": 55,
+    "native_fill_events": 9,
+    "numeric_native_getter_comparisons": 38,
+    "physical_spent": 7,
+    "cap": 18,
+    "active": 0
+  },
+  "financial_qualification": false,
+  "boundary": "Only actual M2 engineering mechanism. No economic/full/OOS/capacity/DD-goal guarantee. SOL10 partial is qualitative insurance only. No new constructor or engine import; no source edit, replay, publication or ledger mutation. Remaining M3-M8 and P2/P4/P3 binding and each financial/root gate remain required.",
+  "native_fee_cash_witness": {
+    "cash_before_SOL": "9979.3915",
+    "SOL_gross_realized": "27.5",
+    "SOL_total_fees": "0.7445",
+    "SOL_net_realized": "26.7555",
+    "cash_after_SOL": "10006.147",
+    "terminal_native_cash": "12341.1317125",
+    "terminal_total_native_commissions": "32.8057875"
+  },
+  "nonblocking_observations": [
+    {
+      "priority": "P2",
+      "finding": "Six paired modify rows use command-local sequence 1/2 rather than file-global sequence. M2 joins use immutable native event IDs, CID, risk refs, generations and physical rows; no engineering ambiguity. Future consumers must not assume every paired sequence is globally unique.",
+      "physical_lines": [
+        23,
+        25,
+        28,
+        31,
+        33,
+        36
+      ]
+    }
+  ],
+  "sealed_evidence": [
+    {
+      "name": "AFTER_DISPOSE.json",
+      "sha256": "ac09f13427f4271df0db24dbbb42f1b44b2029d60e1d144af00242c2aa109c32"
+    },
+    {
+      "name": "AFTER_END.json",
+      "sha256": "f96c4afba8f0cf817df5e3ea256e45822f76f3ac891ea82049124e1b130f9cad"
+    },
+    {
+      "name": "BEFORE_DISPOSE.json",
+      "sha256": "85a4334119b5d5a3af1777bdd99973a8e96fb992b91c53e2b9d7291926b12b2a"
+    },
+    {
+      "name": "BEFORE_END.json",
+      "sha256": "462034418bdb71ecfacb3511929edda80c09b821347696b90938512d09ab5331"
+    },
+    {
+      "name": "coherent-native-events.jsonl.gz",
+      "sha256": "31497a9ab038c3d5aac5006c566db3ee7c6919ba50a0e5829b0b805fcbc01289"
+    },
+    {
+      "name": "paired.jsonl.gz",
+      "sha256": "c2379a5f58f6ab6de6a4779e3775133317d237e5048a84e60ab449481cdbb188"
+    },
+    {
+      "name": "result.json",
+      "sha256": "a6c59f11d81fc9cd48bb6f2cc8a36a98c0511848818e9af0d543ff7ac7cf9e70"
+    },
+    {
+      "name": "risk.jsonl.gz",
+      "sha256": "fd0c397b27149398cef7792ef0d1cfa973c1e7ad153ea575d3f49c5d76218e30"
+    },
+    {
+      "name": "M2A_ROOT_CLAIM-6b54e679-e091-421f-bce6-1d0ab4d1674f.json",
+      "sha256": "c4756f1b874ed079fc6188a414695086cbf6c877f17f8e6278f890ce95d84b87"
+    },
+    {
+      "name": "M2A_ROOT_GO-6b54e679-e091-421f-bce6-1d0ab4d1674f.json",
+      "sha256": "9a6424f80ca9ddd67e606b56da1274ef433e0e4fc166332bdc6813d9fa591e7c"
+    },
+    {
+      "name": "M2A_ROOT_PREFLIGHT_ACCEPTANCE-6b54e679-e091-421f-bce6-1d0ab4d1674f.json",
+      "sha256": "08303974deb43c9d97b082cefe65ad7e057f56ea4e07e9e85b9049eb089e7850"
+    },
+    {
+      "name": "6b54e679-e091-421f-bce6-1d0ab4d1674f.log",
+      "sha256": "d750b0da9e84a290313912056963fa4cac6d0c655ebf9c20494fc465f29f92f7"
+    },
+    {
+      "name": "M2A_SUPERVISOR-6b54e679-e091-421f-bce6-1d0ab4d1674f.json",
+      "sha256": "cbd07070318051b23d2036f7ee365f7682944583ace475f6ba6a409d88da4beb"
+    }
+  ]
+}

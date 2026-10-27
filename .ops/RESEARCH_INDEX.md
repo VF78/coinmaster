@@ -1,5 +1,5 @@
-## Current Method A checkpoint — 2026-10-27
-`reports/method-a-verification-20261027/CURRENT_RESULT_RU.md`:6/17=4COMPLETED+2FAILED; P1realTPgrowthPASS/DDworse. M2marksrepairworked, M2Rpostonlyfixturefailed; reserveconsumed/no furtherM2GO. ProposedDATArepair+exact1extracase requestpreparation, fullgoalsNOT_MET. CurrenthandoffACTIVE only.
+## Current Method A checkpoint — 2026-10-28
+`reports/method-a-verification-20261027/CURRENT_RESULT_RU.md`:7/18=5COMPLETED+2FAILED; engineering4/10,prefix3/6,full0/2. M2A c5a2f137 nativeOS0/independent63of63 ENGINEERING_PASS: partialSOL10, real3TP+STOP, BTC550survived, flatbeforecleanup. Both reserves consumed; M3–M8 and P2/P4/P3/conditionalfull remain. M3 DATA preparation only; no newnativeGO. FullgoalsNOT_MET. ACTIVE and actualapproval/ledger are current authority.
 
 # Research memory — as of2026-10-26; read before opening archives
 

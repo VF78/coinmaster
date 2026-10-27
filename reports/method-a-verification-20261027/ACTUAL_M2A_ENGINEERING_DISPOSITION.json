@@ -1,0 +1,18 @@
+{
+  "status": "ROOT_M2_ENGINEERING_ACCEPTED",
+  "attempt_id": "6b54e679-e091-421f-bce6-1d0ab4d1674f",
+  "source_commit": "c5a2f137a94b387a944af3af213cfe4c742aef34",
+  "actual_os_exit": 0,
+  "actual_review": {
+    "path": "/private/tmp/cm_m2a_actual_review/M2A_ACTUAL_REVIEW.json",
+    "sha256": "83b4ffba977481b48ad49d5a070196060abb59136f18616eb5a67319b453483f"
+  },
+  "canonical_completed_row_sha256": "95c2cd6a069e7efc08575019c9080fea16cc0dd13e8b7c37eeeeae5df66ec414",
+  "scope": "M2_ENGINEERING_ONLY",
+  "financial_qualification": false,
+  "economic_goal": "NOT_MET",
+  "partial_SOL_filled": "10",
+  "SOL_requested": "210.9",
+  "BTC_retained_after_SOL_TP": "550",
+  "root_GO": false
+}
