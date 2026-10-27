@@ -1,0 +1,52 @@
+{
+  "approved_case": {
+    "path": "reports/method-a-verification-20261027/M2_APPROVED.json",
+    "sha256": "955a748cd3b3fae20f005509981664fd5f2dc8b0729da406bef97487a3ba2a87"
+  },
+  "base_source": "e20f3e5c1826489a35480abcdf8c0a21575e2acf",
+  "config_payload_equal_excluding_input_binding": true,
+  "engine_constructors_executed": 0,
+  "financial_qualification": false,
+  "focused_tests": {
+    "command": "PYTHONPATH=runtime:runtime/tests PYTHONDONTWRITEBYTECODE=1 <existing Python> -m pytest runtime/tests/test_method_a_risk_interface_pure.py runtime/tests/test_method_a_sol_public_pure.py -q",
+    "failed": 0,
+    "passed": 18
+  },
+  "full550_cash9979_3915_H10000_before61s": "WORKER_ASSERTED_NOT_NATIVE_PROVEN",
+  "last_timestamp_ns": 82000000000,
+  "native_config_sha256": "949c82d3ba5d2eb2528f7c97a6ddfbe53e65db89c0800799aa098786f6602821",
+  "native_input_count": 53,
+  "native_input_sha256": "6521cca319b206d942f490e0cd3f2ca3f41c99945ce448387e91d6212a3ef0d9",
+  "native_result": null,
+  "prepare_constructor_guard": "nautilus_trader.backtest.engine.BacktestEngine replaced before worker import by raising sentinel; calls=0",
+  "previous_failed_attempts_preserved": [
+    "3950947b-96d4-4534-a729-c85b90c2a114",
+    "d7da970b-e560-4244-b988-5b15348fb164"
+  ],
+  "product_bytes_equal_e20": true,
+  "proposal_checkpoint": "83a41dbb5addbfc0dc744c4bbce660ff482d246f",
+  "proposal_manifest_sha256": "1268bbe75e762024b01d68645297d65c91ea79bbb5775e3c03d1a21d45454cbf",
+  "proposal_pins": {
+    "M2_PROPOSED.json": "955a748cd3b3fae20f005509981664fd5f2dc8b0729da406bef97487a3ba2a87",
+    "M2_WORKER_ASSERTIONS_PROPOSED.patch": "829673a3f5a9ea8ade52f2459a5decfe30ff932261306dcc4902770de33d388d",
+    "PROPOSED_PREFLIGHT.json": "eaaaf172b0bc42dac20bbe06e69778c2c4ae14ab88a4265cd79f541ca818911d",
+    "PROTOCOL_AMENDMENT_PROPOSED_RU.md": "b58f51d617bd6c3f9b65ef84fffd2c27077abf2253b0928e918854769a0345b8",
+    "run_method_a_sol.PROPOSED.py": "2cfb25e0ba3aa2f71423e509ce87c9101d0e0eca404d945b7c275f15214af2f8"
+  },
+  "quote_count": 23,
+  "quote_universe": {
+    "BTC": 10,
+    "SOL": 13
+  },
+  "recipe_sha256": "f19289f14132cfc507261820e1550a45a59c993e43ce80b65eb739d6181c0d92",
+  "root_GO": false,
+  "runtime_versions": {
+    "nautilus": "1.231.0",
+    "python": "3.12.3"
+  },
+  "schema": "METHOD_A_M2A_ENGINE_FREE_APPLIED_PREFLIGHT_V1",
+  "second_passive_2s_then_fill_3s_prerequisite": "DECLARED_AND_WORKER_ASSERTED_NOT_NATIVE_PROVEN",
+  "sol_depth10_preloaded": true,
+  "status": "PASS_ENGINE_FREE_ONLY_ROOT_GO_FALSE",
+  "worker_sha256": "2cfb25e0ba3aa2f71423e509ce87c9101d0e0eca404d945b7c275f15214af2f8"
+}
