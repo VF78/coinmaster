@@ -409,7 +409,7 @@ class MethodARiskResearch:
             self._mr_creation_snapshot=self._mr_last_snapshot
             self._mr_log('HEDGE_ADMISSION',ns,band=band,target=str(target),benefit=str(benefit),cost=str(cost),useful=useful,creation_snapshot_ref=self._mr_creation_snapshot)
             if useful and target>0:
-                p['quantity']=target;p['atr']=selection.atr_sol;p['branch']=branch;p['entry_terminal']=False;p['entry_sent']=True;p['close_sol']=False;p['entry_band']=band
+                p['quantity']=target;p['atr']=selection.atr_sol;p['branch']=branch;p['entry_terminal']=False;p['entry_sent']=True;p['close_sol']=False;p['entry_band']=band;p['entry_selection_ref']=self._mr_selection_ref
                 self._pair_submit(self.config.sol_id,-ep.side,target,'ENTRY',ns)
         self._mr_log('DECISION',ns,on=on,band=band,actual_loss=str(ev.loss),deficit=str(ev.worst_deficit),entry_allocated=self._mr_allocated,frozen_entry_band=p.get('entry_band'),quote_instrument=str(tick.instrument_id))
 
@@ -790,7 +790,7 @@ class MethodARiskResearch:
         if detailed or signature!=p.get("sol_boundary_signature"):
             self._pair_log("SOL_NATIVE_BOUNDARY",ns,label=label,parent=p["parent"],actual_sol=held,
                 state=state,exact=exact,orders=rows,retiring=retiring,protection_since=p["protection_since"],
-                entry_basis=dict(actual_entry_quantity=str(p["entry_qty"]),actual_entry_notional=str(p["entry_notional"]),p0=None if p["p0"] is None else str(p["p0"]),frozen_atr=str(p["atr"]),first_fill_ns=p["first_fill_ns"],frozen_entry_band=p.get("entry_band")))
+                entry_basis=dict(actual_entry_quantity=str(p["entry_qty"]),actual_entry_notional=str(p["entry_notional"]),p0=None if p["p0"] is None else str(p["p0"]),frozen_atr=str(p["atr"]),first_fill_ns=p["first_fill_ns"],frozen_entry_band=p.get("entry_band"),entry_selection_ref=p.get("entry_selection_ref")))
             p["sol_boundary_signature"]=signature
         if strict and held and not exact and (not fault if self._pair_sol_v2()else not p["close_sol"]):
             raise ValueError("SOL_BEFORE_MATCHING_EXACT_COVERAGE_UNKNOWN")

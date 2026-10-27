@@ -27,6 +27,23 @@ class PublicInputs(unittest.TestCase):
         quote=groups[-1][1][0];payload=quote.to_dict(quote)
         self.assertEqual(QuoteTick.from_dict(payload).to_dict(QuoteTick.from_dict(payload)),payload)
 
+    def test_shared_runner_root_go_false_cannot_construct_engine(self):
+        import run_method_a_sol as runner
+        from unittest.mock import patch
+        from run_method_a_m1 import source_seal
+        import subprocess
+        case=Path(__file__).resolve().parents[2]/'reports/method-a-verification-20261027/recipe-drafts-owner/M2.json'
+        proof=runner.prepare(case)
+        commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+        with tempfile.TemporaryDirectory() as temp:
+            seal=Path(temp)/'seal.json';seal.write_text(json.dumps(source_seal(commit)))
+            import hashlib
+            gate=Path(temp)/'gate.json';gate.write_text(json.dumps(dict(source_seal_path=str(seal),source_seal_sha256=hashlib.sha256(seal.read_bytes()).hexdigest(),source_commit=commit,case_id='M2',purpose='METHOD_A_REGISTERED_ENGINEERING_CASE',root_go=False)))
+            with patch.object(runner,'BacktestEngine',side_effect=AssertionError('FORBIDDEN_ENGINE_CONSTRUCTOR')) as constructor:
+                with self.assertRaises(AssertionError):runner.launch(case,gate)
+                constructor.assert_not_called()
+        self.assertEqual(proof['engine_constructors'],0)
+
     def test_actual_selection_consumption_binds_intraday_raw_row(self):
         from coinmaster.research.paired_signal_feed import PairedSignal
         from coinmaster.strategy.method_a_risk import State,Features

@@ -67,7 +67,7 @@
     "boundary_native_order": "each positive TP/STOP row carries actual native_order.to_dict, last_ack_event_id and matching public ack_native_event from that order history; native STOP trigger_price and typed accepted/updated UUID must be checked, exact booleans are not evidence alone",
     "boundary_state_ref": "paired:<sequence> resolves the full coalesced SOL_NATIVE_BOUNDARY object; reference equality is identity, not a repeated text label",
     "callback_refs": "ACTUAL_NATIVE_FILL native_event_id/trade_id/CID joins installed public OrderFilled and coherent observer PRE_FILL_LAST_COMMITTED_NATIVE_COPY/POST_FILL_COMMITTED_NATIVE by trade_id. callback_pre/post_snapshot_ref are actual controller references, not a promise each fill creates a new snapshot (terminal path may retain prior reference).",
-    "entry_basis": "actual_entry_quantity/notional/p0 from native filled quantities and prices, frozen_atr from selected raw PairedSignal via selection_ref, first_fill_ns and frozen_entry_band. Verify p0 versus actual native fills and frozen sol_prices helper; never desired alone.",
+    "entry_basis": "actual_entry_quantity/notional/p0 from native filled quantities and prices, frozen_atr from selected raw PairedSignal via selection_ref, first_fill_ns and frozen_entry_band. Verify p0 versus actual native fills and frozen sol_prices helper; never desired alone. entry_selection_ref is frozen at the actual entry admission attempt, independent of any later current selection_ref.",
     "envelope_liability": {
       "cost_per_unit": "exact nonnegative per-CID Decimal",
       "identity": "native CID",
