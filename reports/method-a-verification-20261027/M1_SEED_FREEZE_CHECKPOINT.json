@@ -1,0 +1,30 @@
+{
+  "base_harness_commit": "fe44f8e0fd917b3753c5835d710524a1281a0da7",
+  "product_commit": "140a6b975f5b55f54cc20fdfd4c300f029130554",
+  "scope": "HARNESS_DATA_STABILITY_ONLY",
+  "proof": {
+    "status": "M1_HARNESS_PURE_PASS",
+    "engine_constructors": 0,
+    "immutable_source_seal_verified": true,
+    "tampered_frozen_copy_rejected": true,
+    "JSON_actual_newline_and_roundtrip": true,
+    "retained_alpha_context_recorded_without_domain_reset": true,
+    "recipe_adds_exact_seed_pin_config_and_95_inputs_unchanged": true,
+    "seed_rows": 731,
+    "exact_VPS_seed_in_source_seal": true,
+    "planned_constructors": 1
+  },
+  "original_VPS_seed_all731_bars_exact_binary64_equality": true,
+  "original_generator": "Original Linux seed values frozen before loader edit; all btc_open/btc_close/sol_close float.hex equal after JSON roundtrip.",
+  "seed_file": "runtime/tests/fixtures/method_a_m1_seed.json",
+  "seed_sha256": "8541061707af51159263947bdb528f35339d77e81a82796683a14316419d6eae",
+  "previous_recipe_sha256": "c8a59ef0e962ac16ecb4c9fecd5fd469d0b52ee9261749dedc1868c4222e131c",
+  "recipe_sha256": "9ee653c8b54b2559567b823b8da1b25ac117b591fa49ac60a04cacaffea14dcd",
+  "native_config_sha256": "eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1",
+  "native_input_sha256": "60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51",
+  "rows": 23,
+  "input_events": 95,
+  "native_constructors": 0,
+  "no_tolerance": true,
+  "no_quote_latency_or_depth_change": true
+}

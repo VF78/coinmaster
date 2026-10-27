@@ -3,14 +3,17 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace as NS
 import hashlib,json,ast
-from run_method_a_m1 import prepare,source_seal,verify_source,write_json,domain_context
+from run_method_a_m1 import prepare,source_seal,verify_source,write_json,domain_context,seed,SEED_SHA256,source_inventory
 
 
 def proof():
     prepared=prepare()
-    assert prepared['recipe_sha256']=='c8a59ef0e962ac16ecb4c9fecd5fd469d0b52ee9261749dedc1868c4222e131c'
+    assert prepared['recipe_sha256']=='9ee653c8b54b2559567b823b8da1b25ac117b591fa49ac60a04cacaffea14dcd'
     assert prepared['config']['sha256']=='eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1'
     assert prepared['native_input_sha256']=='60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51'
+    assert len(seed())==731
+    assert prepared['recipe']['seed_sha256']==SEED_SHA256
+    assert next(f for f in source_inventory() if f['path']=='runtime/tests/fixtures/method_a_m1_seed.json')['sha256']==SEED_SHA256
     with TemporaryDirectory(prefix='method-a-harness-pure-') as directory:
         root=Path(directory);(root/'runtime/coinmaster').mkdir(parents=True)
         (root/'runtime/tests').mkdir();code=root/'runtime/coinmaster/unit.py';code.write_text('VALUE=1'+chr(10))
@@ -31,4 +34,4 @@ def proof():
     assert len([n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='BacktestEngine'])==1
     return dict(status='M1_HARNESS_PURE_PASS',engine_constructors=0,immutable_source_seal_verified=True,tampered_frozen_copy_rejected=True,
         JSON_actual_newline_and_roundtrip=True,retained_alpha_context_recorded_without_domain_reset=True,
-        recipe_config_input_hashes_unchanged=True,planned_constructors=1)
+        recipe_adds_exact_seed_pin_config_and_95_inputs_unchanged=True,seed_rows=731,exact_VPS_seed_in_source_seal=True,planned_constructors=1)

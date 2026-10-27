@@ -9,7 +9,7 @@ from decimal import Decimal as D
 from datetime import datetime, timedelta, timezone
 from dataclasses import asdict
 from inspect import signature
-import argparse, hashlib, json, math, os, subprocess, traceback
+import argparse, hashlib, json, os, subprocess, traceback
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.config import BacktestEngineConfig
 from nautilus_trader.backtest.models import LatencyModel, MakerTakerFeeModel
@@ -29,6 +29,7 @@ from coinmaster.venues.signals import daily_signal
 from run_continuous_hedge_preflight import snapshot_config
 
 CASE='M1_TP_ONLY_ORIGINAL_E4_SECOND'; S=10**9; DAY=86400*S; END=129600*S
+SEED_SHA256='8541061707af51159263947bdb528f35339d77e81a82796683a14316419d6eae'
 
 
 def canonical(value):
@@ -45,6 +46,7 @@ def source_inventory(source_root=None):
     root=Path(source_root) if source_root is not None else Path(__file__).resolve().parents[2]
     paths=set((root/'runtime/coinmaster').rglob('*.py'))|set((root/'runtime/tests').rglob('*.py'))
     paths.update((root/'runtime/coinmaster/research/control_configs').glob('*.json'))
+    paths.update((root/'runtime/tests/fixtures').glob('method_a_m1_seed.json'))
     for name in ('runtime/pyproject.toml','runtime/uv.lock'):
         if (root/name).is_file():paths.add(root/name)
     if not paths:raise ValueError('M1_SOURCE_INVENTORY_EMPTY')
@@ -80,12 +82,16 @@ def domain_context(strategy):
 
 
 def seed():
-    epoch=datetime(1970,1,1,tzinfo=timezone.utc); bars=[]
-    for i in range(731):
-        btc=100*math.exp(.05*math.sin(2*math.pi*i/20)+.0001*i)
-        sol=100*(btc/100)**1.2*math.exp(.002*math.sin(2*math.pi*i/7))
-        close=epoch+timedelta(days=i-729)
-        bars.append(DailyBar(close-timedelta(days=1),close,close,bars[-1].btc_close if bars else btc,btc,sol))
+    # Original VPS values are frozen once. No platform libm regeneration.
+    path=Path(__file__).with_name('fixtures')/'method_a_m1_seed.json'
+    assert hashlib.sha256(path.read_bytes()).hexdigest()==SEED_SHA256,'M1_EXACT_VPS_SEED_PIN'
+    rows=json.loads(path.read_text());assert len(rows)==731
+    bars=[]
+    for row in rows:
+        values=dict(row)
+        for key in ('open_time','close_time','available_at'):
+            values[key]=datetime.fromisoformat(values[key])
+        bars.append(DailyBar(**values))
     return tuple(bars)
 
 
@@ -102,7 +108,7 @@ def recipe():
     row(100803,'98.3');row(100804,'98');row(100805,depth='.2');row(100806)
     row(100807,'90');row(100808,'90');row(100809,'90')
     row(129600,'90');row(129601,'90')
-    return dict(case=CASE,rows=rows,window_ns=[0,129601*S],
+    return dict(case=CASE,seed_sha256=SEED_SHA256,rows=rows,window_ns=[0,129601*S],
         latency=dict(base=0,insert=0,update=0,cancel=0),liquidity_consumption=True,
         bar_execution=False,use_message_queue=True,use_reduce_only=True,
         fee_maker='.00020',fee_taker='.00055',venue_model='DECLARED_STRESS_FIXTURE_ONLY_NOT_ECONOMICS',
