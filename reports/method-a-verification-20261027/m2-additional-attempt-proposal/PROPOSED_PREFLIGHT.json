@@ -1,0 +1,49 @@
+{
+  "status": "PROPOSED_ENGINE_FREE_PREFLIGHT_NOT_NATIVE_RESULT",
+  "base_source": "e20f3e5c1826489a35480abcdf8c0a21575e2acf",
+  "engine_constructors": 0,
+  "proposed_worker_executed": false,
+  "recipe_file_sha256": "955a748cd3b3fae20f005509981664fd5f2dc8b0729da406bef97487a3ba2a87",
+  "recipe_canonical_sha256": "f19289f14132cfc507261820e1550a45a59c993e43ce80b65eb739d6181c0d92",
+  "native_input_sha256": "6521cca319b206d942f490e0cd3f2ca3f41c99945ce448387e91d6212a3ef0d9",
+  "input_events": 53,
+  "quotes": 23,
+  "quote_universe": {
+    "BTC": 10,
+    "SOL": 13
+  },
+  "last_ns": 82000000000,
+  "planning_only": {
+    "first_TAKER_fee": "15.12500",
+    "second_MAKER_fee": "5.483500",
+    "post_entries_native_cash_expected": "9979.391500",
+    "entry_average": "99.85",
+    "pre_stress_peak_expected": "10000",
+    "stress_E": "6156.891500",
+    "stress_C": "1156.891500",
+    "stress_L": "878.73698035402201043139554228188650000000000000000000000000000",
+    "u": "0.7595673236029670979788472318",
+    "band": "MEDIUM",
+    "target": "210.9",
+    "gross_benefit": "360.4395120524167814479573357663816459202464540381426293600",
+    "full_incremental_cost": "66.055884051696736116696663179092961551176382003759121075508000",
+    "envelope_safe": true,
+    "envelope_states": 400,
+    "envelope_deficit": "-245.46501964597798956860445771811350000000000000000000000000000"
+  },
+  "source_callback_map": {
+    "first_possible_SOL_entry": "_mr_quote line405-413 requires actualSOL QuoteTick, active selection after60s andactualBTC; BTC61 andafterfill do not have openingENTRY route. Sole oldlegacyENTRY caller _pair_quote isshadowedbyactualMethodARiskResearch MRO.",
+    "afterfill": "_mr_after_actual line645-674 only actualrisk recovery BTC_DEBT/SOL_CAP; no ENTRY. ActualBTC3 callback occurs before selectionready, withSOL2 nativebookdepth10 alreadycached.",
+    "book": "EverySOLquote0/1/2/3/62 has bid/askdepth10. At61 currentSOLbook is3s@100/depth10(age58s); at62 nativeexchange updatesbook10 BEFORE DataEngine quote callback. QueuedENTRYcommand settlesagainstalready10; no assumptionaboutfuture63depth1000."
+  },
+  "prerequisite_assertions": [
+    "actualSECOND ACCEPTED2s/noRejected, qty275/price99.7/postonlyGTC/nativehistory",
+    "actualSECOND FILLED3s Maker99.7/actualBTC550/cash9979.3915/H10000",
+    "samefull550stillpresent immediatelyBEFOREloading61stress",
+    "actualbeforeNativeDispatch matchingbook/CID/epoch/quote showsbiddepth10",
+    "originalM2 actualpartialIOC/3TPSTOP/safeBTC/ownBTCTP/beforecleanupflat assertions retained"
+  ],
+  "frozen_source_and_old_data_unmodified": true,
+  "protocol_authorization": false,
+  "native_authorization": false
+}

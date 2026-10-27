@@ -1,0 +1,342 @@
+{
+  "schema": "coinmaster.method-a-public-case.v1",
+  "case_id": "M2",
+  "risk_mode": "HEDGE",
+  "cancel_latency_ns": 0,
+  "terminal_close_at_ns": null,
+  "expected_negative_not_before_ns": null,
+  "selection_rows": [
+    {
+      "decision_ns": 0,
+      "available_ns": 0,
+      "not_before_ns": 60000000000,
+      "btc_close": "100",
+      "sol_close": "100",
+      "a": ".5",
+      "atr_sol": "2",
+      "valid": true,
+      "b2_long": true,
+      "b2_short": true,
+      "f0_long": false,
+      "f0_short": false,
+      "k_long": "110",
+      "k_short": "90",
+      "open_o": "100"
+    }
+  ],
+  "funding_history": "KNOWN_ZERO_8H_FEATURE_ONLY_W30",
+  "rows": [
+    {
+      "ns": 0,
+      "marks": {
+        "BTC": "100",
+        "SOL": "100"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "10",
+          "ask_depth": "10"
+        }
+      ],
+      "phase": "NATURAL_LONG",
+      "daily_session": 729
+    },
+    {
+      "ns": 1000000000,
+      "marks": {
+        "BTC": "100",
+        "SOL": "100"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "10",
+          "ask_depth": "10"
+        }
+      ],
+      "phase": "FIRST_FULL"
+    },
+    {
+      "ns": 2000000000,
+      "marks": {
+        "BTC": "100",
+        "SOL": "100"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "10",
+          "ask_depth": "10"
+        }
+      ],
+      "phase": "ORIGINAL_SECOND_POST_ONLY_PASSIVE_ACCEPT"
+    },
+    {
+      "ns": 3000000000,
+      "marks": {
+        "BTC": "99.7",
+        "SOL": "100"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "99.7",
+          "ask": "99.7",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "10",
+          "ask_depth": "10"
+        }
+      ],
+      "phase": "ORIGINAL_SECOND_EARLY_MAKER_FILL_BEFORE_STRESS"
+    },
+    {
+      "ns": 61000000000,
+      "marks": {
+        "BTC": "92.9",
+        "SOL": "100"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "92.9",
+          "ask": "92.9",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "MEDIUM_WITH_FULL_ORIGINAL_BTC_NO_PENDING_SECOND"
+    },
+    {
+      "ns": 62000000000,
+      "marks": {
+        "BTC": "92.9",
+        "SOL": "100"
+      },
+      "quotes": [
+        {
+          "asset": "SOL",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "10",
+          "ask_depth": "10"
+        }
+      ],
+      "phase": "PARTIAL_SOL_IOC"
+    },
+    {
+      "ns": 63000000000,
+      "marks": {
+        "BTC": "92.9",
+        "SOL": "100"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "92.9",
+          "ask": "92.9",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "100",
+          "ask": "100",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "REAL_THREE_TP_STOP"
+    },
+    {
+      "ns": 64000000000,
+      "marks": {
+        "BTC": "92.9",
+        "SOL": "99"
+      },
+      "quotes": [
+        {
+          "asset": "SOL",
+          "bid": "99",
+          "ask": "99",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "SOL_TP0"
+    },
+    {
+      "ns": 65000000000,
+      "marks": {
+        "BTC": "92.9",
+        "SOL": "98"
+      },
+      "quotes": [
+        {
+          "asset": "SOL",
+          "bid": "98",
+          "ask": "98",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "SOL_TP1"
+    },
+    {
+      "ns": 66000000000,
+      "marks": {
+        "BTC": "92.9",
+        "SOL": "96"
+      },
+      "quotes": [
+        {
+          "asset": "SOL",
+          "bid": "96",
+          "ask": "96",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "SOL_TP2_SAFE_BTC_SURVIVES"
+    },
+    {
+      "ns": 67000000000,
+      "marks": {
+        "BTC": "92.9",
+        "SOL": "96"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "92.9",
+          "ask": "92.9",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "96",
+          "ask": "96",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "NO_RATIO_DEBT"
+    },
+    {
+      "ns": 80000000000,
+      "marks": {
+        "BTC": "110",
+        "SOL": "96"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "110",
+          "ask": "110",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "96",
+          "ask": "96",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "BTC_OWN_REAL_TPS"
+    },
+    {
+      "ns": 81000000000,
+      "marks": {
+        "BTC": "110",
+        "SOL": "96"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "110",
+          "ask": "110",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "96",
+          "ask": "96",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "ACK_DRAIN"
+    },
+    {
+      "ns": 82000000000,
+      "marks": {
+        "BTC": "110",
+        "SOL": "96"
+      },
+      "quotes": [
+        {
+          "asset": "BTC",
+          "bid": "110",
+          "ask": "110",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        },
+        {
+          "asset": "SOL",
+          "bid": "96",
+          "ask": "96",
+          "bid_depth": "1000",
+          "ask_depth": "1000"
+        }
+      ],
+      "phase": "NATIVE_FLAT"
+    }
+  ],
+  "required_witnesses": [
+    "Actual passive POST_ONLY SECOND accepted at2s before separate3s crossing",
+    "Actual SECOND275 MAKER fill99.7 and nativeBTC550/cash9979.3915/peak10000 BEFORE61s stress",
+    "No nativeRejected/Denied/Expired order; original .0025/GTC/postonly/expiry preserved",
+    "Native SOL book biddepth10 already present before any eligible61BTC/62SOL/afterfill entry path",
+    "Actual partial native SOL IOC entry; no pending hedge credit",
+    "Actual accepted positive SOL TP0/1/2+STOP and typednativeACK",
+    "All SOL TP fills leave known safeBTC>0/debt0, thenBTC ownrealTP only",
+    "Native flat/orders/pending/inflight0 beforecleanup; anymissingprerequisite FAIL notrelabel"
+  ]
+}

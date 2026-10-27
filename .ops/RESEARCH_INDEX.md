@@ -1,5 +1,5 @@
 ## Current Method A checkpoint — 2026-10-27
-`reports/method-a-verification-20261027/CURRENT_RESULT_RU.md`: 4/17 completed, P1 realBTC3TP local growth-screen PASS; DD worsened, SOL engineering preparation active, full goals NOT_MET. Current handoff only `.ops/ACTIVE_TASK.md`.
+`reports/method-a-verification-20261027/CURRENT_RESULT_RU.md`:6/17=4COMPLETED+2FAILED; P1realTPgrowthPASS/DDworse. M2marksrepairworked, M2Rpostonlyfixturefailed; reserveconsumed/no furtherM2GO. ProposedDATArepair+exact1extracase requestpreparation, fullgoalsNOT_MET. CurrenthandoffACTIVE only.
 
 # Research memory — as of2026-10-26; read before opening archives
 

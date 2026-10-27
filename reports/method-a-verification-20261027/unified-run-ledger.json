@@ -216,14 +216,77 @@
       "started_utc": "2026-10-27T12:25:29.791853+00:00",
       "status": "COMPLETED",
       "variant": "P1"
+    },
+    {
+      "actual_returncode": 1,
+      "attempt_id": "3950947b-96d4-4534-a729-c85b90c2a114",
+      "case": "M2_SAFE_BTC_SURVIVES_SOL_TP",
+      "case_id": "M2",
+      "category": "engineering",
+      "failure": {
+        "error": "AssertionError('M2_CHILD_NONZERO:1')",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/cm_method_a_root_m2_once.py\", line 86, in <module>\n    assert rc==0,'M2_CHILD_NONZERO:'+str(rc)\n           ^^^^^\nAssertionError: M2_CHILD_NONZERO:1\n"
+      },
+      "finished_utc": "2026-10-27T16:45:39.550396+00:00",
+      "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/3950947b-96d4-4534-a729-c85b90c2a114.log",
+      "log_sha256": "1ca7c348f814d57af2103fac963eea0eae6ce0213bf56648fe9e2f47c8130062",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M2-3950947b-96d4-4534-a729-c85b90c2a114",
+      "native_config_sha256": "bd08a621ef7baf0099ff9a4a8b129e80845d8a22b9dbb5706dcbe7c5455824df",
+      "native_input_sha256": "6894d326edf3b691f0d9b58ba351863bec4b3c09577752af4b4aea2348cdb675",
+      "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+      "pid": 8869,
+      "preflight_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/M2_ROOT_PREFLIGHT_ACCEPTANCE-3950947b-96d4-4534-a729-c85b90c2a114.json",
+      "preflight_sha256": "9f060bd42dd9d16285531afc7d8eebbe6af745392965e5fabed591673326be98",
+      "recipe_sha256": "2b7311ce46d6fb6e489bcea05e04da987fb399b13f59fa3f5a74b9bd1db87b79",
+      "slot": "M2_PLANNED",
+      "source_commit": "68dfd07ed9496f6f190daa2a4bf82f719b58b37b",
+      "source_seal_sha256": "62c942106c9ae2e415e4705845accedfe483e8811a7de31b79dc0e60990734ca",
+      "started_utc": "2026-10-27T16:45:37.435541+00:00",
+      "status": "FAILED",
+      "supervisor": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M2_SUPERVISOR-3950947b-96d4-4534-a729-c85b90c2a114.json",
+      "supervisor_sha256": "d2202ea702cd35111228115fb0e52af9b5771d6bf3b74e994254ed929fc63dfe",
+      "wall_deadline_utc": "2026-10-27T16:48:37.435650+00:00"
+    },
+    {
+      "actual_returncode": 1,
+      "attempt_id": "d7da970b-e560-4244-b988-5b15348fb164",
+      "case": "M2_SAFE_BTC_SURVIVES_SOL_TP",
+      "case_id": "M2",
+      "category": "engineering",
+      "failure": {
+        "error": "AssertionError('M2_CHILD_NONZERO:1')",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/cm_method_a_root_m2r_once.py\", line 99, in <module>\n    assert rc==0,'M2_CHILD_NONZERO:'+str(rc)\n           ^^^^^\nAssertionError: M2_CHILD_NONZERO:1\n"
+      },
+      "finished_utc": "2026-10-27T17:12:14.515444+00:00",
+      "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/d7da970b-e560-4244-b988-5b15348fb164.log",
+      "log_sha256": "41968488cc40f1f55f421d1be422ee5e35a68e586d3566453bcc58a2f0214282",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M2R-d7da970b-e560-4244-b988-5b15348fb164",
+      "native_config_sha256": "62990f7822ec5dadac6fad272589294bdad92e6b2655e2f35fee3ca6fe573070",
+      "native_input_sha256": "6894d326edf3b691f0d9b58ba351863bec4b3c09577752af4b4aea2348cdb675",
+      "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+      "pid": 10709,
+      "preflight_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/M2R_ROOT_PREFLIGHT_ACCEPTANCE-d7da970b-e560-4244-b988-5b15348fb164.json",
+      "preflight_sha256": "4154b386e71014f35bede303a2b2d1632ae59034fc7e239e5828c186ab0e4ff3",
+      "recipe_sha256": "2b7311ce46d6fb6e489bcea05e04da987fb399b13f59fa3f5a74b9bd1db87b79",
+      "repeat_of": "3950947b-96d4-4534-a729-c85b90c2a114",
+      "slot": "ENGINEERING_PREIMPORT_HARNESS_ONLY_RESERVE_1",
+      "source_commit": "e20f3e5c1826489a35480abcdf8c0a21575e2acf",
+      "source_seal_sha256": "d2ff1ccdc55bcf936cd40390d5bb1c9fb67ce4b92c80150f4d5e953cdf78221a",
+      "started_utc": "2026-10-27T17:12:12.519547+00:00",
+      "status": "FAILED",
+      "supervisor": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M2R_SUPERVISOR-d7da970b-e560-4244-b988-5b15348fb164.json",
+      "supervisor_sha256": "cdc0230a17085997654e27a3e4e7c05eac2438d393b0da621d8492054d091e44",
+      "wall_deadline_utc": "2026-10-27T17:15:12.519877+00:00"
     }
   ],
   "categories": {
     "engineering": {
+      "harness_reserve_repeat_of": "3950947b-96d4-4534-a729-c85b90c2a114",
+      "harness_reserve_used": 1,
       "max": 9,
       "planned": 8,
       "reserve": 1,
-      "started": 1
+      "started": 3
     },
     "full": {
       "max": 2,
@@ -238,9 +301,16 @@
       "started": 3
     }
   },
+  "engineering_case_gate": {
+    "all_SOL_or_economic_qualification": false,
+    "attempt_id": "d7da970b-e560-4244-b988-5b15348fb164",
+    "case_id": "M2",
+    "root_GO": false,
+    "scope": "CURRENT_CASE_ONLY"
+  },
   "full_gate": false,
   "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
-  "physical_started": 4,
+  "physical_started": 6,
   "prefix_gate": true,
   "prefix_labels_allowed_after_preflight": [
     "P0",
@@ -251,7 +321,7 @@
   "schema": "METHOD_A_UNIFIED_PHYSICAL_LEDGER_V1",
   "sol_engineering_preparation_allowed": true,
   "sol_gate": false,
-  "status": "TP_SCREEN_PASS_SOL_ENGINEERING_PREPARATION",
+  "status": "M2R_FAILED_STOP_NO_RESERVE_OR_AUTOMATIC_REPLAY",
   "task": "CM-METHOD-A-VERIFY-20261027",
   "total_max": 17
 }

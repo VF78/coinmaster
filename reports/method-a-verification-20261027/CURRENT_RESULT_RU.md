@@ -1,6 +1,6 @@
 # Method A: текущий проверенный результат
 
-Физические попытки: 4/17, все завершились OS0; активных нет. Engineering 1/9, prefix 3/6, full 0/2. Пилот и production не изменялись.
+Физические попытки: 6/17 — 4 COMPLETED/OS0, 2 FAILED/OS1; активных нет. Engineering 3/9, prefix 3/6, full 0/2. Пилот и production не изменялись.
 
 BTC TP1/TP2/TP3 стали реальными в исследовательском runtime a4dd469 (default OFF). M1 подтвердил лотовые права, SECOND и очистку native-ордеров; P1 подтвердил их на историческом prefix. Это ещё не доказательство двухлетнего результата.
 
@@ -21,3 +21,7 @@ DD вырос на 4.8306107381 п.п. Реальные TP прошли лока
 Следующий разрешённый этап — реализация настоящего SOL risk-owner в изолированном VPS-worktree и инженерные M2–M8. Пока готов pure solver: 9 focused tests; независимые 350 малых переборов подтвердили сжатие envelope при оговорённых условиях. Расчётное ядро12cbafa независимо проверено; source-integrationf3 прошёл один correction batch eadcbc3 (два P1 закрыты), ordinary DENY/ALLOW seam завершён a8/5c31bbe (10 focused checks, narrow closure0P1). Native adapter ещё не квалифицирован. Открытые gates: native parity/lifecycle, пять групп producer bindings и семь конкретных case recipes. Математические примеры M2/M3/M8 получены на VPS, но не являются native-case PASS. Новых native GO пока нет.
 
 После инженерного PASS остаются ровно P2/P4/P3; два full условны. Цели ≥70% и затем ≥90% исходной двухлетней прибыли при DD≤50% остаются NOT_MET. Новый SOL пока не имеет native- или экономического подтверждения.
+
+Первый M2 (3950947b-96d4-4534-a729-c85b90c2a114, source68dfd07) FAILED после первого BTC fill: UNKNOWN_NATIVE_MARGIN. CustomData/VenueMark не поступал в exchange module, а static marks были пусты; модуль очищал IM/MM. Независимая диагностика совпала. SOL ещё не прошёл native-case. Кандидат исправления ограничен test runner и existing static mark API; до replay нужны неизменность продукта/данных/recipe/latency и временная причинность. Единственный harness reserve пока не израсходован; автоматического повтора нет. Cleanup flat не является PASS.
+
+M2R (d7da970b-e560-4244-b988-5b15348fb164, sourcee20) тоже FAILED: native SECOND был создан post-only по99.7 одновременно с ask99.7 и отвергнут. Фактический BTC275 вместо предполагавшихся550 оставил riskOFF; SOL не открылся. Это ошибка достижимости fixture, не доказанный новый дефект risk-логики. Harnessreserve израсходован, исходный OS1 сохранён. Готовое DATA/harness-предложение независимо проверено0P0/P1 и опубликовано в83a41db, зеркалировано в m2-additional-attempt-proposal/. Recipe53inputs/23quotes/82s разделяет passiveaccept2s/cross3s доstress61 и проверяетactual550. PatchUNAPPLIED. Asyncзапрос на+1 (общий18/engineering10) показан владельцу; ответа пока нет. Новыхзапусков/capchangesнет. Все экономические цели и nativeSOLhedgePASS остаются NOT_MET.

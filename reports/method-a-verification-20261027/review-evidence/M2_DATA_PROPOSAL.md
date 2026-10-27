@@ -1,0 +1,27 @@
+# Narrow frozen corrected-M2 proposal review
+
+**0 P0 / 0 P1 in the proposed DATA/harness amendment scope.** This is review of an unapplied, unexecuted proposal; no owner approval, new attempt/claim/UUID, reserve, root GO or native result is inferred. Active base remains `e20f3e5c1826489a35480abcdf8c0a21575e2acf`.
+
+Exact manifest SHA `1268bbe75e762024b01d68645297d65c91ea79bbb5775e3c03d1a21d45454cbf`; recipe file `955a748cd3b3fae20f005509981664fd5f2dc8b0729da406bef97487a3ba2a87`; worker draft `2cfb25e0ba3aa2f71423e509ce87c9101d0e0eca404d945b7c275f15214af2f8`; assertion patch `829673a3f5a9ea8ade52f2459a5decfe30ff932261306dcc4902770de33d388d`; protocol `b58f51d617bd6c3f9b65ef84fffd2c27077abf2253b0928e918854769a0345b8`; pure preflight `eaaaf172b0bc42dac20bbe06e69778c2c4ae14ab88a4265cd79f541ca818911d`. Remote file hashes verified; worker parses as Python. Independently checked active runtime/coinmaster, runtime/tests and original failed M2 recipe have no diff from e20.
+
+## Corrected factual prerequisite
+
+The new2s quote is100/100, so unchanged native-normalized post-only BUY275@99.7 arrives strictly below current ask and can be accepted as passive. A distinct3s quote99.7/99.7 then crosses an already accepted order with depth1000. Neither source post-only semantics nor original FIRST/SECOND split, discount,4h expiry, fees, TIF, latency or no-resurrection rule changes. The worker checks actual Accepted exactly2s, quantity275/price99.7/post_only/GTC/original550+275 entitlement+14,401s expiry, no reject/deny/expiry; after3s it requires actual full275 maker fill@99.7 and actualBTC550/SOL0. A further FULL_BEFORE_STRESS assertion runs BEFORE loading61s marks. Phase labels cannot substitute for these native facts.
+
+## Earliest entry and real book, not future depth
+
+The unchanged risk opening path requires a SOL QuoteTick (`_mr_quote` HEDGE branch); the61s BTC quote can turn ON but cannot open SOL. `_mr_after_actual` has only recovery reductions, no opening ENTRY; the3s SECOND fill cannot invoke an alternative open path. Legacy SOL increase families remain disabled by unchanged config/MRO. Independently read every proposed SOL quote: both sides depth10 already at0/1/2/3s and62s. Thus the cached SOL book is10 before the61s BTC decision or any intervening callback, and the62s quote installs depth10 before strategy quote delivery. The proposal does not rely on63s depth1000 to limit an earlier fill.
+
+The harness-only Probe wraps the existing `_mr_log` result for BEFORE_NATIVE_DISPATCH/PAIRED_ENTRY and records real native CID, risk sequence, current quote and NativeBookWitness.matching identity/epoch. The existing matching helper verifies book/quote clock and best prices; new before-cleanup assertions require one dispatch at>=61s and actual bid book+quote depth10. This is observation plus failclosed assertions; no model/order/matching mutation. Native partial IOC, sole CID/no re-add, actual SOL3TP+STOP, safe retainedBTC after allSOLTP, later ownBTC TP0/1/2 and nativeflat-beforecleanup assertions remain mandatory and unchanged in substance.
+
+## Arithmetic / band consistency
+
+Independently recomputed finite-Decimal input arithmetic: FIRST275@100 taker0.055%=15.125; SECOND275@99.7 maker0.020%=5.4835; cash9979.3915; average99.85. AtPB92.9 andBTC550, E6156.8915 and C1156.8915 with fixed coherentH10000. The supplied pure L878.736980354… gives u0.7595673236, within MEDIUM[0.70,0.85); reported rounded target210.9 is consistent with unchanged source coefficients/lattice. Pure preflight reports useful gross360.4395>2×66.055884 and400-state envelope deficit−245.465. Core/envelope mathematics was not re-audited here; those are conditional planning results, not native getters/fills. New worker prerequisites force the actual cash/H/quantity basis to exist before stress rather than silently substituting the assumed550.
+
+## One reviewable authorization request, still unapproved
+
+The proposed protocol requests **exactly ONE additional engineering M2 attempt: engineering max9→10, total max17→18**, no new reserve. Six spent attempts, including both failed UUIDs `3950947b-96d4-4534-a729-c85b90c2a114` and `d7da970b-e560-4244-b988-5b15348fb164`, stay immutable/accounted; remaining mandatory M3–M8, prefixes and conditional full slots are not borrowed or expanded. No automatic further attempt on failure. The revised placement/cross/depth rows are an explicit proposed data revision and cannot be charged to the consumed harness reserve.
+
+Only after new direct owner approval may root arrange applying this exact harness assertion patch in the isolated VPS, source/data commit+seal, fresh Mac freeze/preflight through the prescribed executor, and an approval-linked single claim/root GO/Popen with actual runtime versions and both prior failed UUIDs. The reports draft itself must never be launched; executable worker remains the sealed runtime/tests/run_method_a_sol.py. Product runtime/coinmaster and all governing parameters stay immutable. Root alone decides GO, native acceptance and independent consumer qualification.
+
+No native imports/constructors/replay, source/data edits, tests, publication, raw Mac data export, optional blocked artifact or hook bypass by reviewer. No full core/admission/source-gate/financial audit. The proposal source/API/synthetic arithmetic establishes a concrete candidate for authorization; actual native acceptance, maker classification, partial entry, protection/retirement and end state remain to be witnessed in any separately authorized attempt.

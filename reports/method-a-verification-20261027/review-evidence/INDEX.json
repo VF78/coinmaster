@@ -1,0 +1,41 @@
+{
+  "scope": "Current Method A exact narrow review evidence; no private token telemetry or blocked optional report",
+  "files": {
+    "PURE_CORE_12CBAFA.md": {
+      "sha256": "522fe4ee3d4011ef4b58e04a72d921661b5ba2eba80d6e7b02850c48ef44581d",
+      "original_local_evidence": "/private/tmp/cm_sol_core_review/RESULT.md"
+    },
+    "INTEGRATION_CORRECTION_EADCBC3.md": {
+      "sha256": "5907eb2f75269dd854f8bfdde82224a4d3b779f46d68d8d655240471583c94d2",
+      "original_local_evidence": "/private/tmp/cm_sol_integration_review/CORRECTION_CLOSURE.md"
+    },
+    "ALLOW_CORRECTION_5C31BBE.md": {
+      "sha256": "bfc6f7c6f28ec0240cbf2e83d223149df1b6e698a29ae69934c3945fdab4a242",
+      "original_local_evidence": "/private/tmp/cm_sol_denial_review/CORRECTION_CLOSURE.md"
+    },
+    "SELECTION_CORRECTION_1653564.md": {
+      "sha256": "4c837abd7676a966780c19480e481fde94bfbaf0d6aac85abf7f8f6f1b223934",
+      "original_local_evidence": "/private/tmp/cm_sol_producer_review/CORRECTION_CLOSURE.md"
+    },
+    "M2_RUNNER_68DFD07.md": {
+      "sha256": "1f5dbb14f29cb42181ec03b0e76cc6d4f6d405654a6f8b91d040b7c08565b166",
+      "original_local_evidence": "/private/tmp/cm_sol_runner_review/RESULT.md"
+    },
+    "M2_FIRST_FAILURE.md": {
+      "sha256": "b2968e68ae4f53c6d77768cb5b009a07886394ddda6dc623672e5e62aee524d2",
+      "original_local_evidence": "/private/tmp/cm_sol_m2_failure_review/RESULT.md"
+    },
+    "M2_HARNESS_E20F3E5.md": {
+      "sha256": "e7750c58ddd2c7495807c42e353df2cbcfdb31673f60cc063326d192eff1fca7",
+      "original_local_evidence": "/private/tmp/cm_sol_m2_harness_review/RESULT.md"
+    },
+    "M2R_SECOND_FAILURE.md": {
+      "sha256": "1d77bb950480f24842475a97aabc1c846f420b1bef802185e4d11470c48f68e0",
+      "original_local_evidence": "/private/tmp/cm_sol_m2r_failure_review/RESULT.md"
+    },
+    "M2_DATA_PROPOSAL.md": {
+      "sha256": "a3a7d7e3f0c63bfc15464042c094aec86862d21e0c047f0f030f488ef35cb2a7",
+      "original_local_evidence": "/private/tmp/cm_sol_m2_proposal_review/RESULT.md"
+    }
+  }
+}

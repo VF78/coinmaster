@@ -1,0 +1,16 @@
+# CM-METHOD-A-VERIFY-20261027 — independent pure-core review
+
+Verdict: **0 P0 / 0 P1** in the assigned pure risk/recovery source at exact VPS commit `12cbafa9c3b3a11fde2f5836cb7b1a0a7ce24563`. No core edits. Native imports/BacktestEngine constructors/physical native attempts: **0**.
+
+Scope: `runtime/coinmaster/strategy/method_a_risk.py`, `method_a_recovery.py` and the three tests introduced by that commit. Read frozen source with `git show`, not the owner's moving adapter diff. Authority: frozen `ONE_RISK_CONTRACT_RU.md` §§3–6 plus supplied fixed-H/no-hypothetical-profit screening clarification. Mathematical comparison: `/private/tmp/cm_method_a_envelope_math/RESULT.md`; it does not override source/contract.
+
+Checks:
+- `method_a_risk.py:233,331–363`: opening cost reserve is exactly the constant sum of each CID's capacity times its own cost. Reduction cost frontier sorts descending cost, accounts exact capacities and clips to inventory. No same-maximum-cost substitution.
+- `method_a_risk.py:313–354`: duplicate generations/crossing opening directions/noninteger held lots fail closed. Tier and MM-zero callbacks are explicitly required to supply exact rational cuts; integer cross-products and both neighboring lattice sides preserve discontinuities. Correctness is conditional on the callback supplying every declared raw-policy cut and raising on unavailable/out-of-profile margin.
+- `method_a_risk.py:164–188,364–369`: signed mark shocks, exit/funding and unpaid screening costs use the current fixed E/H snapshot. Deficit is signed `L−C`; there is no `max(0,L−C)`. Margin constraints retain strict MM and non-strict IM boundaries. No favorable hypothetical execution profit.
+- `method_a_recovery.py:60–96`: varying proposed capacity is partitioned by moving cost/inventory lines and fixed tier-neighbor points; every supplied route constraint is intersected over each cell using its own strictness.
+- `method_a_recovery.py:98–110`: full-step strict improvement and interior pairwise signed minimax intersections are included. Helper returns candidates; final cross-leg ranking by signed deficit, remaining BTC, turnover and identity belongs to its caller and is not implemented/proven by this module alone.
+
+Independent verification from exact local frozen snapshots: **9/9 engine-free risk tests PASS**, plus **500/500 exact rational recovery cases PASS** against every capacity/every partial fill, 158 feasible strict-improvement cases, including the reported three interior optima. No Nautilus imports occurred. The third test file was inspected only: its 3 native Money/profile checks were not rerun in this pure review.
+
+Limits / remaining integration gates: exact raw zero-shock parity with actual simultaneous native getters (mismatch => UNKNOWN, no tolerance); correct tier/MM-zero callback binding; stable affine scenario/constraint callback ordering; native ownership/generation/late-fill liabilities and legal capacities; final cross-leg tie ranking; lifecycle/deadline/failclosed behavior. These are caller/adapter obligations explicitly exposed by the pure APIs, not closed by this source review. Money-rounded scenario policies need all rounding cuts or another proof; the reviewed theorem concerns raw frozen policy formulas. No SOL native/economic PASS, deployment or physical-run authorization is inferred.
