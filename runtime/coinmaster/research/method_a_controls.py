@@ -54,3 +54,17 @@ def build_method_a_kwargs(data_root, artifact_dir, variant, *, start_ms=START_MS
     if restored != kwargs:
         raise ValueError('METHOD_A_NATIVE_KWARGS_ROUNDTRIP')
     return kwargs
+
+
+def build_method_a_sol_kwargs(data_root,artifact_dir,variant,selection=(),funding=(),*,start_ms=START_MS,end_ms=PREFIX_END_MS):
+    """Same P1 BTC/venue; explicit feature-only inputs do not enter matching."""
+    if variant not in ('P2','P4','P3'):raise ValueError('METHOD_A_SOL_STAGE_VARIANT')
+    kwargs=build_method_a_kwargs(data_root,artifact_dir,'P1',start_ms=start_ms,end_ms=end_ms)
+    kwargs.update(artifact_label='method-a-'+variant,research_sol_off=True)
+    if variant!='P2':
+        if not selection or not funding:raise ValueError('METHOD_A_CAUSAL_FEATURE_INPUTS_REQUIRED')
+        kwargs.update(research_method_a_risk='TRIM' if variant=='P4' else 'HEDGE',research_method_a_selection=tuple(selection),research_method_a_funding=tuple(funding))
+    from coinmaster.research.registered_control import native_kwargs_json_roundtrip
+    _,restored=native_kwargs_json_roundtrip(kwargs)
+    if restored!=kwargs:raise ValueError('METHOD_A_SOL_KWARGS_ROUNDTRIP')
+    return kwargs

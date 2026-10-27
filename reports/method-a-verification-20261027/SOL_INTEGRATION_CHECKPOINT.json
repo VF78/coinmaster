@@ -1,0 +1,80 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "REVIEWABLE_INTEGRATION_CHECKPOINT_NOT_NATIVE_READY",
+  "pure_commit": "12cbafa9c3b3a11fde2f5836cb7b1a0a7ce24563",
+  "pure_review": {
+    "P0": 0,
+    "P1": 0,
+    "result_sha256": "522fe4ee3d4011ef4b58e04a72d921661b5ba2eba80d6e7b02850c48ef44581d"
+  },
+  "checks": {
+    "compiled_integration_files": 6,
+    "base_wave_methods_ast_equal": 104,
+    "copied_sol_helper_bodies_equal_except_family_gates": 2,
+    "protected_core_data_files_byte_equal": 8,
+    "venue_statement_byte_equal": true,
+    "old_M1_prepare_inputs": 95,
+    "actual_strategy_objects_OFF_ON": "PASS",
+    "BacktestEngine_constructors": 0
+  },
+  "native_readiness": false,
+  "explicit_pre_engine_HOLD": true,
+  "protected_dirty_sha256": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "case_map": [
+    {
+      "case": "M2",
+      "planned": true,
+      "ready_to_launch": false
+    },
+    {
+      "case": "M3",
+      "planned": true,
+      "ready_to_launch": false
+    },
+    {
+      "case": "M4",
+      "planned": true,
+      "ready_to_launch": false
+    },
+    {
+      "case": "M5",
+      "planned": true,
+      "ready_to_launch": false
+    },
+    {
+      "case": "M6",
+      "planned": true,
+      "ready_to_launch": false
+    },
+    {
+      "case": "M7",
+      "planned": true,
+      "ready_to_launch": false
+    },
+    {
+      "case": "M8",
+      "planned": true,
+      "ready_to_launch": false
+    },
+    {
+      "case": "HARNESS_ONLY_RESERVE",
+      "planned": false,
+      "ready_to_launch": false,
+      "slots": 1
+    }
+  ],
+  "remaining": [
+    "factual_public_type_producer_example_and_stream_wiring",
+    "typed_callbacks_and_adapter_legal_capacities",
+    "one_consumer_alignment",
+    "exact_seven_public_input_recipes_and_static_capacity_proofs",
+    "independent_integration_review_and_root_freeze"
+  ],
+  "new_native_budget": 0,
+  "native_attempts_by_this_owner": 0,
+  "pilot_production_changes": 0,
+  "push_performed": false
+}

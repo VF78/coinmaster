@@ -763,6 +763,10 @@ def build_native_strategy_config(context):
         research_sol_standing_protection=context.get("research_sol_standing_protection", False),
         research_btc_trim_control=context.get("research_btc_trim_control", False),
         research_method_a_tp=context.get("research_method_a_tp", False),
+        research_method_a_risk=context.get("research_method_a_risk"),
+        research_method_a_funding=context.get("research_method_a_funding",()),
+        research_method_a_selection=context.get("research_method_a_selection",()),
+        research_method_a_peak_source=context.get("coherent_observer") if context.get("research_method_a_risk") else None,
         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
@@ -835,6 +839,9 @@ def run_native_diagnostic(
     research_btc_trim_control: bool = False,
     research_method_a_tp: bool = False,
     research_method_a_observer: bool = False,
+    research_method_a_risk: str | None = None,
+    research_method_a_funding: tuple = (),
+    research_method_a_selection: tuple = (),
     research_btc_real_u: bool = False,
     research_btc_q_mode: str | None = None,
     research_sol_off: bool = False,
@@ -902,6 +909,12 @@ def run_native_diagnostic(
         from coinmaster.research.registered_control import validate_native_control
         validate_native_control(locals())
     approved_q = "LEGACY_Q_CONTROL" if research_registered_control == "R2" or research_a0_family == "R2_A0_V1" else "CLEAN_Q"
+    if research_method_a_risk is not None:
+        from coinmaster.strategy.method_a_risk_native import NATIVE_READINESS
+        if NATIVE_READINESS!='QUALIFIED':
+            raise ValueError('METHOD_A_SOL_NATIVE_HOLD:'+NATIVE_READINESS)
+    if research_method_a_risk is not None and not (research_method_a_risk in ('HEDGE','TRIM') and research_method_a_tp and research_method_a_observer and research_sol_off and include_funding and not research_paired_policy and research_method_a_funding and research_method_a_selection):
+        raise ValueError('METHOD_A_RISK_EXACT_INPUTS_REQUIRED_BEFORE_ENGINE')
     if research_paired_policy and not (research_btc_real_u and research_btc_q_mode == approved_q and research_sol_off and observe_minute_risk and include_funding):
         raise ValueError("PAIRED_POLICY_REQUIRES_EXACT_R3_FUNDED_OBSERVER")
     if research_paired_prefix and not research_paired_signal_rows:
@@ -943,7 +956,11 @@ def run_native_diagnostic(
     # prior canonical journal, whose durable IDs are only valid for genuine
     # process restart of the same account/engine, never for a fresh engine.
     journal = NativeEventJournal(str(journal_attempt_path)) if journal_attempt_path else None
-    modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
+    if research_method_a_risk is not None:
+        from coinmaster.research.method_a_margin import MethodATierMarginModule
+        modules = [MethodATierMarginModule((), selected_leverage, max_mark_age_ns)]
+    else:
+        modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
     from nautilus_trader.model.currencies import BTC, SOL
@@ -953,7 +970,11 @@ def run_native_diagnostic(
     btc_instrument = perpetual("BTCUSDT", BTC, "0.1", "0.001", "0.025", maker * multiplier, taker * multiplier)
     sol_instrument = perpetual("SOLUSDT", SOL, "0.01", "0.1", "0.05", maker * multiplier, taker * multiplier)
     selected_leverage = ((btc_instrument.id, Decimal("40")), (sol_instrument.id, Decimal("20")))
-    modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
+    if research_method_a_risk is not None:
+        from coinmaster.research.method_a_margin import MethodATierMarginModule
+        modules = [MethodATierMarginModule((), selected_leverage, max_mark_age_ns)]
+    else:
+        modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
     coherent_observer = None
@@ -1261,6 +1282,9 @@ def run_native_diagnostic(
         # Preserve native facts before any boundary/metadata packaging assertion.
         result["config"].update(research_method_a_tp=research_method_a_tp, research_method_a_observer=research_method_a_observer, research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
         result["method_a_tp_audit"] = strategy.method_a_tp_audit if research_method_a_tp else None
+        if research_method_a_risk is not None:
+            result['method_a_risk_audit']=strategy.method_a_risk_audit
+            result['config']['research_method_a_risk']=research_method_a_risk
         result["market_redesign_audit"]=strategy._md_report()
         result["paired_prefix_audit"] = strategy._pair_report()
         result["coherent_native_observer"] = coherent_observer_report

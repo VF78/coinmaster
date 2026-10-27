@@ -1,0 +1,170 @@
+{
+  "schema": "coinmaster.method-a-risk.v1",
+  "status": "PRODUCER_INTERFACE_FROZEN_ENGINE_FREE_NOT_NATIVE_QUALIFIED",
+  "report_fields": {
+    "method_a_risk_audit": "gzip JSONL reference",
+    "paired_prefix_audit.events": "gzip JSONL reference"
+  },
+  "reference_fields": [
+    "schema",
+    "kind",
+    "path",
+    "rows",
+    "sha256",
+    "completeness",
+    "native_state_mutations"
+  ],
+  "common_row_fields": [
+    "schema",
+    "sequence",
+    "event",
+    "timestamp_ns",
+    "parent",
+    "risk_episode_id",
+    "snapshot_ref"
+  ],
+  "required_events": {
+    "NATIVE_SNAPSHOT": [
+      "native_cash",
+      "equity",
+      "peak",
+      "cushion",
+      "native_positions",
+      "marks",
+      "native_account",
+      "feature",
+      "coherent_peak_source"
+    ],
+    "HEDGE_ADMISSION": [
+      "band",
+      "target",
+      "benefit",
+      "cost",
+      "useful",
+      "creation_snapshot_ref"
+    ],
+    "BEFORE_NATIVE_DISPATCH": [
+      "order_id",
+      "action",
+      "native_initialized_event_id",
+      "native_order",
+      "liabilities",
+      "all_partial_partition_states",
+      "deficit",
+      "margin_pass",
+      "pending_hedge_credit",
+      "creation_snapshot_ref",
+      "recovery_ref",
+      "original_second"
+    ],
+    "DECISION": [
+      "on",
+      "band",
+      "actual_loss",
+      "deficit",
+      "entry_allocated",
+      "frozen_entry_band",
+      "quote_instrument"
+    ],
+    "RECOVERY_DECISION": [
+      "selected_leg",
+      "quantity",
+      "initial_signed_deficit",
+      "full_signed_deficit",
+      "remaining_btc",
+      "turnover",
+      "legal_feasible_intervals"
+    ],
+    "ACTUAL_NATIVE_FILL": [
+      "native_event_id",
+      "trade_id",
+      "order_id",
+      "native_fill"
+    ],
+    "ORIGINAL_SECOND_SUSPEND": [
+      "order_id",
+      "native_order",
+      "original_second"
+    ],
+    "ORIGINAL_SECOND_RELEASE_CHECK": [
+      "original_second",
+      "old_orders"
+    ],
+    "NATIVE_STOCK_GUARD_RESULT": [
+      "instrument",
+      "quantity",
+      "side",
+      "allowed"
+    ],
+    "QUALIFICATION_NO_GO": [
+      "reason",
+      "failure_native_account",
+      "failure_positions",
+      "failure_capture_errors"
+    ]
+  },
+  "feature_fields": [
+    "start_ns",
+    "end_ns",
+    "available_ns",
+    "beta",
+    "rho",
+    "sigma_b",
+    "sigma_s",
+    "b",
+    "residual",
+    "fund_b",
+    "fund_s",
+    "omega"
+  ],
+  "liability_fields": [
+    "order_id",
+    "leg",
+    "side",
+    "reduce_only",
+    "native_lot",
+    "max_native_leaves",
+    "native_status",
+    "native_filled",
+    "latest_native_event_id",
+    "latest_native_event_type",
+    "old_new_generation",
+    "retiring",
+    "pending_hedge_credit"
+  ],
+  "original_second_fields": [
+    "parent",
+    "original_quantity",
+    "original_first_quantity",
+    "actual_filled",
+    "actual_first_filled",
+    "original_expiry_ns",
+    "original_discount",
+    "fallback",
+    "closed",
+    "known_off_since_ns",
+    "first_risk_retired",
+    "remaining_original_quantity"
+  ],
+  "semantics": {
+    "money": "native cash+native Position UPNL only; no second PnL or funds ledger",
+    "peak": "continuous coherent prefill/preopen native H; fixed for hypothetical screening; every actual fill rebuilds E/H/leaves",
+    "cost": "exact per-CID unpaid opening reserve and reduction frontier; scenario raw frozen TierMarginPolicy, zero-shock exact native getter parity; mismatch UNKNOWN",
+    "objective": "SIGNED L-C then greatest remaining BTC then least turnover then leg identity",
+    "credit": "submitted/pending/initialized quantity earns zero actual hedge or profit credit",
+    "native_fill": "public OrderFilled.to_dict payload; no fabricated fill or ACK",
+    "join": "native CIDs/event IDs and coherent sequence/epoch; Quote has no invented event UUID",
+    "unknown": "missing/nonfinite/unbound rights/account/margin/ownership fields block qualification",
+    "P0_P1": "existing D889 and protected dirty files unchanged; this interface does not requalify controls or authorize reruns"
+  },
+  "consumer_scope": "Read-only report adaptation for P2/P4/P3. Reuse existing exact cash/fees/signed funding/coherent-DD reconciliation; separately prove actual hedge>0, once-episode, native real3TP/STOP/retirement/soleClose, safeBTCafterSOLTP, dangerousBTCactualRecovery, original-second expiry/no-restore and producer causal frame completeness. No runtime writes, native constructors or control reruns.",
+  "producer_implementation_status": "PARTIAL_HOLD_NOT_YET_A_CAUSAL_QUALIFICATION_INTERFACE",
+  "public_type_roundtrip_example": "PENDING",
+  "remaining_exact_binding": [
+    "native boundary witness registration and complete receipt stream",
+    "stream references wired to final report",
+    "typed native callback example",
+    "risk-retired BTC action PAIRED_BTC_DEBT levelNone with irreversible btc_risk_retired_lots writer, not BTC_TP",
+    "consumer one literal alignment after complete example"
+  ]
+}

@@ -9,6 +9,7 @@ from coinmaster.research.paired_signal_feed import PairedSignal
 from coinmaster.strategy.paired_prefix import PairedPrefixResearch
 from coinmaster.strategy.market_redesign import MarketRedesignResearch, PHI, legacy_net_lots
 from coinmaster.strategy.method_a_tp import MethodATpResearch
+from coinmaster.strategy.method_a_risk_native import MethodARiskResearch
 from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
 
 from dataclasses import replace
@@ -76,6 +77,10 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_standing_tp: bool = False
     research_native_book: object = None
     research_method_a_tp: bool = False
+    research_method_a_risk: str | None = None
+    research_method_a_funding: tuple = ()
+    research_method_a_selection: tuple[PairedSignal, ...] = ()
+    research_method_a_peak_source: object = None
     research_btc_real_u: bool = False
     research_btc_q_mode: str | None = None
     research_sol_off: bool = False
@@ -204,7 +209,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
 from coinmaster.strategy.standing_tp import StandingTPResearch
 
 
-class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(MethodARiskResearch, MethodATpResearch, StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
