@@ -1,0 +1,44 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "ENGINE_FREE_CORE_CHECKPOINT_NOT_NATIVE_READY",
+  "base": "3604532d99d50f7334686acce1700be26ace2d2e",
+  "engine_constructors": 0,
+  "backtest_modules_loaded_in_actual_object_check": [],
+  "physical_budget_used": 0,
+  "legacy_runtime_tracked_files_changed": [],
+  "protected_financial_dirty_sha256": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "checks": {
+    "risk_reference_and_partition": 9,
+    "stock_money_profile": 3,
+    "parametric_recovery_exhaustive": 500,
+    "nonempty_recovery_routes": 158
+  },
+  "proof": {
+    "opening_reserve": "SUM_EXACT_CID_COST_TIMES_REMAINING_CAPACITY",
+    "reductions": "EXACT_DESCENDING_CID_COST_FRONTIER",
+    "tier_partition": "ALL_SCENARIO_TIER_CAPS_AND_MM_ZEROES_INTEGER_RATIO_NEIGHBORS",
+    "arithmetic": "FINITE_COEFFICIENT_STRESS_ALGEBRA_INPUT_DERIVED_PRECISION_PLUS256_PROFILE_GUARD_FROZEN_PROFILE_MAX_WIDTH10",
+    "recovery_objective": "SIGNED_L_MINUS_C_THEN_MAX_BTC_THEN_MIN_TURNOVER",
+    "peak": "CURRENT_COHERENT_NATIVE_H_FIXED_FOR_HYPOTHETICAL_SCREENING_ACTUAL_FILL_REBUILDS_E_H_LEAVES"
+  },
+  "native_money": {
+    "currency": "USDT",
+    "precision": 8,
+    "raw_examples_exact_parity": 3,
+    "nonrepresentable_raw_margin": "UNKNOWN_NO_TOLERANCE",
+    "actual_simultaneous_getter_parity": "M2_REQUIRED_NOT_YET_PROVEN",
+    "scenario_margin": "RAW_FROZEN_TIER_FORMULA_NOT_CURRENCY_ROUNDED_NATIVE_ACCOUNT_MUTATION"
+  },
+  "next": [
+    "first-gated_native_adapter",
+    "M2-M8_exact_public_inputs_and_capacity_recipes",
+    "independent_diff_review",
+    "root_freeze_and_separate_one_shot_GO"
+  ],
+  "native_adapter_integrated": false,
+  "ready_to_launch": false,
+  "pilot_production_changes": 0
+}
