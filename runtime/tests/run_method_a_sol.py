@@ -17,7 +17,7 @@ from nautilus_trader.backtest.models import LatencyModel,MakerTakerFeeModel
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.model.enums import OmsType,AccountType
 from nautilus_trader.model.objects import Money
-from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP,SIM,perpetual
+from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP,SIM,perpetual,MarkPriceUpdate
 from coinmaster.research.method_a_margin import MethodATierMarginModule,MethodABookWitness
 from coinmaster.research.method_a_risk_rows import MethodARiskRows,wire
 from coinmaster.research.paired_observer import CommittedNativeObserver
@@ -53,6 +53,18 @@ def funding():
     return tuple((leg,t,t,'0',DAY//3) for leg in ('BTC','SOL') for t in range(-31*DAY+DAY//3,1,DAY//3))
 
 
+def declared_margin_marks(case):
+    """Bind the same public paired marks to the existing static module API.
+
+    Nautilus CustomData goes to DataEngine, not exchange pre_process. The
+    frozen TierMarginPolicy selects only marks with ts_event<=now and rejects
+    age>120s. No quote/data/order/latency or margin formula is changed.
+    """
+    return tuple(MarkPriceUpdate(iid,D(row['marks'][leg]),row['ns'])
+        for row in case['rows'] if row.get('marks')
+        for leg,iid in (('BTC',BTC_PERP.id),('SOL',SOL_PERP.id)))
+
+
 def config_for(case,binding,observer=None,book=None):
     cfg,_=m1_config()
     return replace(cfg,candidate=dr(cfg.candidate,sol_overlay_enabled=False),research_sol_off=True,
@@ -75,7 +87,7 @@ def prepare(case_path):
     # Observer set_week consumes source timestamps in milliseconds. Every
     # declared fixture mark must roundtrip exactly; no lost native clock bits.
     assert all(r['ns']%1_000_000==0 for r in case['rows'] if r.get('marks')),'SOL_OBSERVER_SOURCE_CLOCK_NOT_EXACT_MS'
-    proof.update(runtime_versions=runtime_versions,native_config=snapshot_config(cfg),input_binding=binding,source_inventory_sha256=canonical(sources),required_witnesses=case['required_witnesses'],root_GO_required=True,ready_to_launch=False)
+    proof.update(harness_margin_tape=dict(count=len(declared_margin_marks(case)),sha256=canonical([dict(instrument=str(m.instrument_id),price=str(m.price),ts_event=m.ts_event) for m in declared_margin_marks(case)])),runtime_versions=runtime_versions,native_config=snapshot_config(cfg),input_binding=binding,source_inventory_sha256=canonical(sources),required_witnesses=case['required_witnesses'],root_GO_required=True,ready_to_launch=False)
     return proof
 
 
@@ -156,7 +168,7 @@ def launch(case_path,gate_path):
         # are declared fixture sources; future rows cannot be selected by
         # observer._pair before their native timestamp.
         observer.set_week(tuple(NS(open_time_ms=r['ns']//1_000_000-60000,btc_mark={'close':r['marks']['BTC']},sol_mark={'close':r['marks']['SOL']}) for r in case['rows'] if r.get('marks')))
-        book=MethodABookWitness();module=MethodATierMarginModule((),((BTC_PERP.id,D(40)),(SOL_PERP.id,D(20))),120_000_000_000)
+        book=MethodABookWitness();module=MethodATierMarginModule(declared_margin_marks(case),((BTC_PERP.id,D(40)),(SOL_PERP.id,D(20))),120_000_000_000)
         engine=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
         engine.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1),liquidity_consumption=True,bar_execution=False,use_message_queue=True,use_market_order_acks=False,use_reduce_only=True,modules=[module,observer,book],fee_model=MakerTakerFeeModel(),latency_model=LatencyModel(base_latency_nanos=0,insert_latency_nanos=0,update_latency_nanos=0,cancel_latency_nanos=case['cancel_latency_ns']))
         for instrument in instruments:engine.add_instrument(instrument)

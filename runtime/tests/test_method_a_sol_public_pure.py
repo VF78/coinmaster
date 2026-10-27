@@ -27,6 +27,72 @@ class PublicInputs(unittest.TestCase):
         quote=groups[-1][1][0];payload=quote.to_dict(quote)
         self.assertEqual(QuoteTick.from_dict(payload).to_dict(QuoteTick.from_dict(payload)),payload)
 
+    def test_harness_margin_tape_equals_every_declared_public_mark(self):
+        from run_method_a_sol import declared_margin_marks
+        from method_a_sol_public import load_case
+        case=load_case(Path(__file__).resolve().parents[2]/'reports/method-a-verification-20261027/recipe-drafts-owner/M2.json')
+        actual=[(str(m.instrument_id),m.price,m.ts_event) for m in declared_margin_marks(case)]
+        expected=[]
+        for row in case['rows']:
+            for client,group,_ in native_inputs(row):
+                if str(client)!='BYBIT_MARK':continue
+                for event in group:
+                    self.assertEqual(event.data.ts_event,event.data.ts_init)
+                    expected.append((str(event.data.instrument_id),event.data.price,event.data.ts_init))
+        self.assertEqual(actual,expected);self.assertEqual(len(actual),26)
+
+    def test_exact_m2_temporal_input_surface(self):
+        from run_method_a_sol import prepare,config_for
+        from method_a_sol_public import load_case
+        path=Path(__file__).resolve().parents[2]/'reports/method-a-verification-20261027/recipe-drafts-owner/M2.json'
+        case=load_case(path);proof=prepare(path);cfg=config_for(case,proof['input_binding'])
+        self.assertIsNone(cfg.deposit_runtime);self.assertIsNone(cfg.funding_sink)
+        self.assertIsNone(cfg.research_h4_bar_type);self.assertEqual(cfg.research_confirmation_bars,())
+        self.assertEqual(cfg.execution_delay_ns,0);self.assertEqual(case['cancel_latency_ns'],0)
+        self.assertLess(case['rows'][-1]['ns'],4*3600*10**9)
+        self.assertEqual(len({r['ns'] for r in case['rows']}),len(case['rows']))
+        marks={}
+        self.assertEqual({r['type'] for r in proof['public_inputs']},{'VenueMark','DailySignalBar','QuoteTick'})
+        for record in proof['public_inputs']:
+            if record['type']=='VenueMark':marks[record['instrument']]=record['ts_init']
+            if record['type']=='QuoteTick':
+                self.assertEqual(marks,{str(BTC_PERP.id):record['ts_init'],str(SOL_PERP.id):record['ts_init']})
+
+    def test_existing_static_mark_api_rejects_future_and_stale(self):
+        from coinmaster.research.native_fixture import TierMarginPolicy,MarkPriceUpdate
+        tape=(MarkPriceUpdate(BTC_PERP.id,D(100),0),MarkPriceUpdate(BTC_PERP.id,D(999),2*10**9))
+        policy=TierMarginPolicy(tape,{BTC_PERP.id:D(40)},120*10**9)
+        self.assertEqual(policy.margin_for(BTC_PERP.id,D(275),10**9),(D('687.5'),D('90.75'),D(100)))
+        self.assertEqual(policy.margin_for(BTC_PERP.id,D(275),2*10**9)[2],D(999))
+        with self.assertRaisesRegex(ValueError,'stale explicit mark'):policy.margin_for(BTC_PERP.id,D(275),123*10**9)
+        future_only=TierMarginPolicy(tape[1:],{BTC_PERP.id:D(40)},120*10**9)
+        with self.assertRaisesRegex(ValueError,'missing explicit mark'):future_only.margin_for(BTC_PERP.id,D(275),10**9)
+
+    def test_frozen_margin_process_empty_vs_exact_tape_native_getters(self):
+        from coinmaster.research.native_fixture import BybitTierMarginModule,MarkPriceUpdate
+        from test_method_a_risk_interface_pure import objects
+        from nautilus_trader.model.events import OrderFilled
+        from nautilus_trader.model.identifiers import VenueOrderId,TradeId,PositionId
+        from nautilus_trader.model.enums import OrderSide,OrderType,LiquiditySide,OmsType
+        from nautilus_trader.model.position import Position
+        from nautilus_trader.model.objects import Money
+        from nautilus_trader.model.currencies import USDT
+        from nautilus_trader.core.uuid import UUID4
+        trader,strategy,account_id,clock,old_fill,_,account,order,_=objects()
+        # Local public model objects only. No native engine/order execution and
+        # no replacement of the captured M2 account or its failed outcome.
+        fill=OrderFilled(trader,strategy,BTC_PERP.id,old_fill.client_order_id,VenueOrderId('PUBLIC-API-VENUE'),account_id,TradeId('PUBLIC-API-TRADE'),PositionId('PUBLIC-API-BTC-POSITION'),OrderSide.BUY,OrderType.MARKET,BTC_PERP.make_qty(D(275)),BTC_PERP.make_price(D(100)),USDT,Money(D('15.125'),USDT),LiquiditySide.TAKER,UUID4(),10**9,10**9)
+        cache=Cache();cache.add_instrument(BTC_PERP);cache.add_position(Position(BTC_PERP,fill),OmsType.NETTING)
+        before=account.balance_total(USDT).as_decimal()
+        context=NS(exchange=NS(get_account=lambda:account,cache=cache),_dynamic_marks={},_static_marks=(),_selected_leverage={BTC_PERP.id:D(40),SOL_PERP.id:D(20)},_max_mark_age_ns=120*10**9,observed=[])
+        BybitTierMarginModule.process(context,10**9)
+        self.assertIsNone(account.margin_init(BTC_PERP.id));self.assertIsNone(account.margin_maint(BTC_PERP.id))
+        context._static_marks=(MarkPriceUpdate(BTC_PERP.id,D(100),10**9),MarkPriceUpdate(SOL_PERP.id,D(100),10**9))
+        BybitTierMarginModule.process(context,10**9)
+        self.assertEqual(account.margin_init(BTC_PERP.id).as_decimal(),D('687.5'))
+        self.assertEqual(account.margin_maint(BTC_PERP.id).as_decimal(),D('90.75'))
+        self.assertEqual(account.balance_total(USDT).as_decimal(),before)
+
     def test_shared_runner_root_go_false_cannot_construct_engine(self):
         import run_method_a_sol as runner
         from unittest.mock import patch
