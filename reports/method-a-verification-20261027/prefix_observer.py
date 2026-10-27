@@ -21,6 +21,7 @@ class PrefixEvidence:
         self.path=Path(path);self.file=gzip.open(self.path,'wt');self.strategy=None
         self.sequence=0;self.counts=Counter();self.last_state=None;self.registration=[]
         self.first_quote_ns=None;self.last_quote_ns=None;self.native_event_uuid_frames=0
+        self.admission_attempts=0;self.admission_recorded=0;self.admission_errors=0;self.admission_error_samples=[]
     def bind(self,strategy):self.strategy=strategy
     def order(self,order,history=False):
         row=dict(order_id=str(order.client_order_id),instrument=str(order.instrument_id),
@@ -30,6 +31,73 @@ class PrefixEvidence:
             native_position_id=None if order.position_id is None else str(order.position_id))
         if history:row['native_history']=[dict(id=str(e.id),type=type(e).__name__,event_ns=str(e.ts_event)) for e in order.events]
         return row
+
+    @staticmethod
+    def legacy_episode(ep,m=None):
+        if ep is None:return None
+        floats=dict(h=ep.h,btc_initial_qty=ep.btc_initial_qty,btc_net_planned_qty=ep.btc_net_planned_qty,
+            btc_reference_qty=ep.btc_reference_qty,btc_entry_vwap=ep.btc_entry_vwap,beta_entry=ep.beta_entry,fixed_sigma=ep.fixed_sigma)
+        maps=dict(sol_add_filled_notional=dict(ep.sol_add_filled_notional),sol_ownership_transfer_credit=dict(ep.sol_ownership_transfer_credit),
+            sol_risk_retired_notional=dict(ep.sol_risk_retired_notional),sol_right_fraction=dict(ep.sol_right_fraction))
+        return dict(h=ep.h,sol_add_filled_notional=maps['sol_add_filled_notional'],
+            sol_ownership_transfer_credit=maps['sol_ownership_transfer_credit'],sol_risk_retired_notional=maps['sol_risk_retired_notional'],
+            btc_deferred_right_touched=ep.btc_deferred_right_touched,
+            btc_deferred_right_reference_price=None if ep.btc_deferred_right_reference_price is None else str(ep.btc_deferred_right_reference_price),
+            sol_right_decision_index=dict(ep.sol_right_decision_index),
+            source_float_values=floats,source_float_hex={k:None if v is None else float(v).hex() for k,v in floats.items()},
+            source_float_maps=maps,source_float_maps_hex={name:{k:float(v).hex() for k,v in values.items()} for name,values in maps.items()},
+            raw_entry=dict(btc_entry_qty_exact=str(ep.btc_entry_qty_exact),btc_planref_vwap=None if ep.btc_planref_vwap is None else str(ep.btc_planref_vwap),
+                btc_reference_target_lots=dict(ep.btc_reference_target_lots),btc_tp_target_lots=dict(ep.btc_tp_target_lots),
+                btc_tp_filled_lots=dict(ep.btc_tp_filled_lots),btc_tp_filled_qty=dict(ep.btc_tp_filled_qty),
+                method_a_raw_target_lots=None if m is None else dict(m['raw_target_lots'])),
+            sol_lifecycle=dict(sol_qty=ep.sol_qty,first_fill_at=None if ep.sol_first_fill_at is None else ep.sol_first_fill_at.isoformat(),
+                first_owned_at=None if ep.sol_first_owned_at is None else ep.sol_first_owned_at.isoformat(),
+                half_done=ep.sol_half_done,half_decision_index=ep.sol_half_decision_index,attempted_sol_at=dict(ep.attempted_sol_at)))
+
+    def legacy_sessions(self):
+        s=self.strategy;bars=s._bars;bar=bars[-1] if bars else None
+        def native(value):
+            return None if value is None else dict(instrument=str(value.bar_type.instrument_id),ts_event=str(value.ts_event),ts_init=str(value.ts_init))
+        features=s._current_signals[-1] if s._current_signals else None
+        return dict(last_accepted_session=None if s._last_accepted_session is None else str(s._last_accepted_session),
+            latest_seen_session=None if s._latest_seen_session is None else str(s._latest_seen_session),
+            current_BTC_SOL_signal_sessions=dict(BTC=native(s._current_btc),SOL=native(s._current_sol),
+                bar_index=len(bars)-1,bar_close_time=None if bar is None else bar.close_time.isoformat(),
+                bar_available_at=None if bar is None else bar.available_at.isoformat(),
+                source_bar_session_ns=None if bar is None else str(int(bar.close_time.timestamp()*1_000_000_000))),
+            current_features=None if features is None else {k:getattr(features,k) for k in ('index','side','beta','relative','mu','sigma','z')})
+
+    def submission(self,order,intent_id,episode_id,action,reason,level):
+        self.admission_attempts+=1
+        s=self.strategy;ep=s._domain.episode;oid=str(order.client_order_id);intent=s._pending_by_order.get(oid)
+        instrument=s.cache.instrument(order.instrument_id);quote=s.cache.quote_tick(order.instrument_id)
+        m=None if ep is None else s._ma_plans.get(ep.id);candidate=s._candidate
+        admission=dict(schema='METHOD_A_LEGACY_SOL_PRE_TRANSPORT_V2',checkpoint_result=True,
+            boundary='ORIGINAL_RECORD_SUBMISSION_RETURNED_TRUE_BEFORE_NATIVE_TRANSPORT',
+            initialized_order_is_ACK_or_fill=False,order_timestamp_semantics='NATIVE_ORDER_TS_INIT_NOT_ADMISSION_WALL_CLOCK',
+            client_order_id=oid,intent_id=intent_id,parent=episode_id,action=action,reason=reason,level=level,
+            pending_intent=None if intent is None else dict(id=intent.id,parent=intent.episode_id,action=intent.action,level=intent.level,
+                side=intent.side,quantity=intent.quantity,requested_notional=intent.requested_notional,decision_index=intent.decision_index,reason=intent.reason),
+            domain_pending_contains_intent=False if ep is None else intent_id in ep.pending,
+            order_decision_index=s._decision_index_by_order.get(oid),current_parent=None if ep is None else ep.id,
+            episode=None if ep is None else dict(h_at_SOL_ADD_admission=ep.h,sol_add_filled_notional_at_SOL_ADD_admission=dict(ep.sol_add_filled_notional),id=ep.id,side=ep.side,old_SOL_rights=sorted(ep.sol_rights),
+                old_SOL_fractions=dict(ep.sol_right_fraction),**self.legacy_episode(ep,m)),
+            sessions=self.legacy_sessions(),native_initialized_order=self.order(order,True),
+            current_native_cache_order_present=s.cache.order(order.client_order_id) is not None,
+            native_quote=None if quote is None else dict(instrument=str(quote.instrument_id),event_ns=str(quote.ts_event),init_ns=str(quote.ts_init),
+                bid=str(quote.bid_price),ask=str(quote.ask_price)),
+            instrument=None if instrument is None else dict(id=str(instrument.id),size_increment=str(instrument.size_increment),
+                min_quantity=None if instrument.min_quantity is None else str(instrument.min_quantity),
+                min_notional=None if instrument.min_notional is None else str(instrument.min_notional)),
+            original_policy={k:getattr(candidate,k) for k in ('sol_size_multipliers_h','sol_entry_z','sol_late_entry_after_tp',
+                'sol_overlay_enabled','episode_fixed_beta','max_parent_notional','sol_max_holding_days','sol_exit_half_z','sol_exit_all_z')})
+        self.record('SOL_ADD_PRE_NATIVE_TRANSPORT_AFTER_CHECKPOINT',order.ts_init,admission=admission)
+        self.admission_recorded+=1
+
+    def admission_error(self,error):
+        self.admission_errors+=1
+        if len(self.admission_error_samples)<8:self.admission_error_samples.append(type(error).__name__[:80])
+
     def state(self):
         s=self.strategy
         if s is None:return None
@@ -38,13 +106,14 @@ class PrefixEvidence:
         account=cache.account_for_venue(s.config.btc_id.venue)
         m=None if ep is None else s._ma_plans.get(ep.id)
         owners={oid:dict(owner) for oid,owner in s._ma_owners.items() if oid in orders}
-        return dict(native_cash=None if account is None else str(account.balance_total()),
+        return dict(legacy_sessions=self.legacy_sessions(),native_cash=None if account is None else str(account.balance_total()),
             positions=[dict(id=str(p.id),instrument=str(p.instrument_id),side='LONG' if p.is_long else 'SHORT',quantity=str(p.quantity)) for p in cache.positions_open()],
             active_orders=orders,owned_pending={oid:dict(intent_id=i.id,parent=i.episode_id,action=i.action,level=i.level,reason=i.reason) for oid,i in s._pending_by_order.items()},
-            queued=[dict(intent_id=i.id,parent=i.episode_id,action=i.action,level=i.level) for i,_,_ in s._queued_intents],
+            queued=[dict(intent_id=i.id,parent=i.episode_id,action=i.action,level=i.level,side=i.side,quantity=i.quantity,
+                requested_notional=i.requested_notional,decision_index=i.decision_index,reason=i.reason) for i,_,_ in s._queued_intents],
             episode=None if ep is None else dict(id=ep.id,side=ep.side,entry_qty_exact=str(ep.btc_entry_qty_exact),
                 target_lots=dict(ep.btc_tp_target_lots),actual_tp_filled_lots=dict(ep.btc_tp_filled_lots),risk_retired_lots=dict(ep.btc_risk_retired_lots),
-                omitted_raw_levels=sorted(ep.btc_omitted_zero_levels),old_SOL_rights=sorted(ep.sol_rights),old_SOL_fractions=dict(ep.sol_right_fraction)),
+                omitted_raw_levels=sorted(ep.btc_omitted_zero_levels),old_SOL_rights=sorted(ep.sol_rights),old_SOL_fractions=dict(ep.sol_right_fraction),**self.legacy_episode(ep,m)),
             method_a=None if m is None else dict(coverage_ready=m.get('coverage_ready'),raw_levels=m.get('raw_levels'),
                 raw_target_lots=m.get('raw_target_lots'),expected_cancels=sorted(m['expected_cancels'])),
             method_a_active_owners=owners,method_a_commands={oid:{k:str(v) for k,v in c.items()} for oid,c in s._ma_commands.items()})
@@ -93,6 +162,7 @@ class PrefixEvidence:
         with self.path.open('rb') as stream:
             while chunk:=stream.read(1024*1024):checksum.update(chunk)
         return dict(path=str(self.path.resolve()),sha256=checksum.hexdigest(),
+            legacy_SOL_admission_capture=dict(schema='METHOD_A_LEGACY_SOL_PRE_TRANSPORT_V2',attempts=self.admission_attempts,recorded=self.admission_recorded,error_count=self.admission_errors,error_samples=self.admission_error_samples,requires_financial_UNKNOWN_if_errors=True),
             frames=self.sequence,phase_counts=dict(self.counts),native_event_UUID_frames=self.native_event_uuid_frames,native_event_UUID_count_semantics='FRAME_OCCURRENCES_INCLUDING_TYPED_GENERIC_DUPLICATES;EXACT_UUID_DEDUP_IS_POST_RUN_STREAM_ANALYSIS',
             first_quote_ns=self.first_quote_ns,last_quote_ns=self.last_quote_ns,
             input_boundary='PUBLIC_SIMULATION_MODULE_PRE_PROCESS_BEFORE_NATIVE_MATCHING',
@@ -117,7 +187,14 @@ def observed_strategy_type(base,evidence):
             finally:evidence.callback('AFTER_STRATEGY_'+name,event)
         return callback
     names=('on_quote_tick','on_order_filled','on_order_accepted','on_order_updated','on_order_canceled','on_order_modify_rejected','on_order_event','on_position_event')
-    cls=type('MethodAPrefixObservedStrategy',(base,),{name:wrap(name) for name in names})
+    def record_submission(self,order,intent_id,episode_id,action,reason=None,level=None):
+        result=super(cls,self)._record_submission(order,intent_id,episode_id,action,reason,level)
+        if result and action=='SOL_ADD':
+            try:evidence.submission(order,intent_id,episode_id,action,reason,level)
+            except Exception as error:evidence.admission_error(error)
+        return result
+    methods={name:wrap(name) for name in names};methods['_record_submission']=record_submission
+    cls=type('MethodAPrefixObservedStrategy',(base,),methods)
     return cls
 
 
