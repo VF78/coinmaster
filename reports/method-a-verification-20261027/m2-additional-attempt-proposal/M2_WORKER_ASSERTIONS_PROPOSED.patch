@@ -1,0 +1,79 @@
+--- a/runtime/tests/run_method_a_sol.py
++++ b/runtime/tests/run_method_a_sol.py
+@@ -93,10 +93,13 @@
+ 
+ class Probe(MethodAWaveOverlayStrategy):
+     def __init__(self,cfg):
+-        super().__init__(cfg);self.native_fill_receipts=[];self.native_ack_receipts=[];self.case_latest_snapshot=None;self.case_safe_btc_after_sol_tp=None
++        super().__init__(cfg);self.native_fill_receipts=[];self.native_ack_receipts=[];self.case_latest_snapshot=None;self.case_safe_btc_after_sol_tp=None;self.case_second_phase_witnesses={};self.case_entry_book_witnesses=[]
+     def _mr_log(self,event,ns,**fields):
+         row=super()._mr_log(event,ns,**fields)
+         if event=='NATIVE_SNAPSHOT':self.case_latest_snapshot=row
++        if event=='BEFORE_NATIVE_DISPATCH' and fields.get('action')=='PAIRED_ENTRY':
++            quote=self.cache.quote_tick(self.config.sol_id)
++            self.case_entry_book_witnesses.append(wire(dict(order_id=fields['order_id'],risk_ref='risk:'+str(row['sequence']),timestamp_ns=ns,native_quote=None if quote is None else quote.to_dict(quote),native_book=self.config.research_native_book.matching(self.config.sol_id))))
+         return row
+     def on_order_filled(self,event):
+         intent=self._pending_by_order.get(str(event.client_order_id))
+@@ -116,9 +119,39 @@
+         self.native_ack_receipts.append(type(event).to_dict(event));return super().on_order_accepted(event)
+ 
+ 
++def assert_m2_second_phase(engine,strategy,label):
++    orders=engine.cache.orders()
++    assert not any(type(event).__name__ in ('OrderRejected','OrderDenied','OrderExpired') for order in orders for event in order.events),'M2_PREREQUISITE_NATIVE_REJECT'
++    seconds=[o for o in orders if o.instrument_id==BTC_PERP.id and not o.is_reduce_only and o.order_type.name=='LIMIT']
++    assert len(seconds)==1,'M2_ORIGINAL_SECOND_IDENTITY'
++    order=seconds[0];parent=strategy._split_parent
++    assert order.side.name=='BUY' and order.is_post_only and order.time_in_force.name=='GTC' and order.price.as_decimal()==D('99.7') and order.quantity.as_decimal()==D(275),'M2_ORIGINAL_SECOND_PRICE_TIF_SIZE'
++    assert parent['quantity']==D(550) and parent['first_quantity']==D(275) and parent['deadline_ns']==14401*10**9,'M2_ORIGINAL_ENTITLEMENT_OR_EXPIRY'
++    accepted=[e for e in order.events if type(e).__name__=='OrderAccepted']
++    assert len(accepted)==1 and accepted[0].ts_event==2*10**9,'M2_SECOND_NOT_ACTUALLY_ACCEPTED_AT_2'
++    if label=='ACCEPTED_AT_2':
++        assert order.status.name=='ACCEPTED' and not order.filled_qty.as_decimal() and strategy._pair_qty(BTC_PERP.id)==D(275),'M2_SECOND_NOT_PASSIVE_BEFORE_CROSS'
++    else:
++        fills=[e for e in order.events if type(e).__name__=='OrderFilled']
++        assert order.status.name=='FILLED' and order.filled_qty.as_decimal()==D(275) and sum((e.last_qty.as_decimal() for e in fills),D(0))==D(275),'M2_SECOND_NOT_ACTUALLY_FULL'
++        assert all(e.ts_event==3*10**9 and e.last_px.as_decimal()==D('99.7') and e.liquidity_side.name=='MAKER' for e in fills),'M2_SECOND_NOT_EARLY_NATIVE_MAKER'
++        assert strategy._pair_qty(BTC_PERP.id)==D(550) and not strategy._pair_qty(SOL_PERP.id),'M2_FULL_BTC_BEFORE_STRESS'
++        account=engine.cache.account_for_venue(SIM)
++        assert account.balance_total(BTC_PERP.quote_currency).as_decimal()==D('9979.3915'),'M2_BASE_ENTRY_CASH'
++        assert D(str(strategy.config.research_method_a_peak_source.events.peak['equity']))==D(10000),'M2_PREFILL_PEAK'
++    proof=wire(dict(label=label,original_second=order.to_dict(),native_events=[type(e).to_dict(e) for e in order.events],actual_btc_held=str(strategy._pair_qty(BTC_PERP.id)),original_parent={k:str(v) for k,v in parent.items() if k!='intent'}))
++    strategy.case_second_phase_witnesses[label]=proof
++    return proof
++
++
+ def assert_m2_before_cleanup(engine,strategy):
+     from nautilus_trader.model.identifiers import ClientOrderId
+     assert not strategy._mr_failed and not strategy._pair_failures,'M2_UNEXPECTED_OWNER_NO_GO'
++    assert set(strategy.case_second_phase_witnesses)=={'ACCEPTED_AT_2','FILLED_AT_3','FULL_BEFORE_STRESS'},'M2_MISSING_BEFORE_STRESS_NATIVE_PREREQUISITE'
++    assert not any(type(event).__name__ in ('OrderRejected','OrderDenied','OrderExpired') for order in engine.cache.orders() for event in order.events),'M2_NATIVE_REJECT'
++    books=strategy.case_entry_book_witnesses
++    assert len(books)==1 and books[0]['timestamp_ns']>=61*10**9,'M2_ENTRY_DISPATCH_COUNT_OR_EARLY'
++    assert D(books[0]['native_book']['bid_size'])==D(10) and D(books[0]['native_quote']['bid_size'])==D(10),'M2_ENTRY_BOOK_NOT_PRELOADED_DEPTH10'
+     fills=strategy.native_fill_receipts
+     entries=[r for r in fills if r['owner_kind']=='ENTRY' and r['native_fill']['instrument_id']==str(SOL_PERP.id)]
+     assert entries,'M2_NO_ACTUAL_SOL_ENTRY'
+@@ -140,7 +173,7 @@
+     assert not any(r['action']=='PAIRED_BTC_DEBT' for r in fills),'M2_RATIO_OR_RISK_BTC_TRIM'
+     btc_tps=[r for r in fills if r['action']=='BTC_REDUCE']
+     assert {r['level'] for r in btc_tps}=={0,1,2} and all(int(r['native_fill']['ts_event'])>max(int(x['native_fill']['ts_event']) for x in sol_tps) for r in btc_tps),'M2_BTC_NOT_OWN_REAL_TP_AFTER_SOL_TPS'
+-    return dict(case='M2',partial_native_entry=entry.to_dict(),native_accepted_protection=protected,safe_btc_after_sol_tp=witness,actual_SOL_TP_levels=[0,1,2],actual_BTC_TP_levels=[0,1,2],financial_qualification=False)
++    return dict(case='M2',before_stress_prerequisites=strategy.case_second_phase_witnesses,entry_dispatch_native_book=books,partial_native_entry=entry.to_dict(),native_accepted_protection=protected,safe_btc_after_sol_tp=witness,actual_SOL_TP_levels=[0,1,2],actual_BTC_TP_levels=[0,1,2],financial_qualification=False)
+ 
+ 
+ def launch(case_path,gate_path):
+@@ -178,10 +211,12 @@
+         book.bind(strategy);engine.add_strategy(strategy)
+         for row in case['rows']:
+             current_ns=row['ns']
++            if case['case_id']=='M2' and current_ns==61*10**9:assert_m2_second_phase(engine,strategy,'FULL_BEFORE_STRESS')
+             for client,inputs,sort in native_inputs(row):
+                 if client is None:engine.add_data(inputs,sort=sort)
+                 else:engine.add_data(inputs,client_id=client,sort=sort)
+             engine.run(streaming=True);engine.clear_data()
++            if case['case_id']=='M2' and current_ns in (2*10**9,3*10**9):assert_m2_second_phase(engine,strategy,'ACCEPTED_AT_2' if current_ns==2*10**9 else 'FILLED_AT_3')
+             assert not strategy.liquidation_audit,'SOL_UNEXPECTED_LIQUIDATION'
+             if strategy._mr_failed:
+                 start=case.get('expected_negative_not_before_ns')

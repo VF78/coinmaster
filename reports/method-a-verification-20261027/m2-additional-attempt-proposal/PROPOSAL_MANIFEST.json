@@ -1,0 +1,28 @@
+{
+  "already_spent": 6,
+  "base_source": "e20f3e5c1826489a35480abcdf8c0a21575e2acf",
+  "current_authorized_max_engineering": 9,
+  "current_authorized_max_total": 17,
+  "engines_executed": 0,
+  "files": {
+    "M2_PROPOSED.json": "955a748cd3b3fae20f005509981664fd5f2dc8b0729da406bef97487a3ba2a87",
+    "M2_WORKER_ASSERTIONS_PROPOSED.patch": "829673a3f5a9ea8ade52f2459a5decfe30ff932261306dcc4902770de33d388d",
+    "PROPOSED_PREFLIGHT.json": "eaaaf172b0bc42dac20bbe06e69778c2c4ae14ab88a4265cd79f541ca818911d",
+    "PROTOCOL_AMENDMENT_PROPOSED_RU.md": "b58f51d617bd6c3f9b65ef84fffd2c27077abf2253b0928e918854769a0345b8",
+    "run_method_a_sol.PROPOSED.py": "2cfb25e0ba3aa2f71423e509ce87c9101d0e0eca404d945b7c275f15214af2f8"
+  },
+  "ledger_or_GO_edits": false,
+  "new_reserves": 0,
+  "previous_failed_attempts": [
+    "3950947b-96d4-4534-a729-c85b90c2a114",
+    "d7da970b-e560-4244-b988-5b15348fb164"
+  ],
+  "proposed_max_engineering": 10,
+  "proposed_max_total": 18,
+  "requested_extra_native_attempts": 1,
+  "runtime_coinmaster_edits": false,
+  "runtime_tests_edits": false,
+  "slot_borrowing": false,
+  "status": "PROPOSED_PREPARATION_ONLY_NOT_OWNER_APPROVED",
+  "worker_patch_applied": false
+}
