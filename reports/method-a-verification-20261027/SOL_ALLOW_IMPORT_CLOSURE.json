@@ -1,0 +1,22 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "reviewed_source": "a8f90b1ee034a6ed7a4fa907877a09dec867ab40",
+  "routine_fix": "EXPLICIT_NATIVE_TimeInForce_IMPORT",
+  "checks": {
+    "focused_interface_tests": 10,
+    "full_ALLOW_public_factory_checkpoint_transport_spy": "PASS",
+    "market_IOC_native_type": true,
+    "checkpoint_calls": 1,
+    "stock_guard_calls": 1,
+    "transport_spy_calls": 1,
+    "native_fills": 0,
+    "native_ACK_credit": false,
+    "BacktestEngine_constructors": 0
+  },
+  "ruff_available": false,
+  "pyflakes_available": false,
+  "no_dependency_install": true,
+  "example_sha256": "a0fdd8166e9c66e66ddbdc212f7cf6a63c8a6aea66af82dfb2fea4c1d4f72533",
+  "ready_to_launch": false,
+  "pre_engine_HOLD": true
+}

@@ -11,7 +11,7 @@ from dataclasses import dataclass,asdict
 from fractions import Fraction as F
 from coinmaster.strategy.method_a_recovery import recovery_candidates,floor as ifloor,ceil as iceil
 from nautilus_trader.model.identifiers import ClientOrderId
-from nautilus_trader.model.enums import OrderSide
+from nautilus_trader.model.enums import OrderSide,TimeInForce
 from coinmaster.strategy.method_a_risk import (Observation, Funding, State, Liability,
     lagged_features,evaluate,tier_partition_envelope,hedge_target,useful_hedge,exact_algebra,MINUTE,DAY,TAKER,RESERVE)
 from coinmaster.strategy.paired_prefix import exact_lots,sol_prices

@@ -193,5 +193,11 @@
     "DENY",
     "UNKNOWN",
     "TRANSPORT_FAILURE"
-  ]
+  ],
+  "allow_factory_example": {
+    "path": "SOL_ALLOW_FACTORY_EXAMPLE_V1.json",
+    "sha256": "a0fdd8166e9c66e66ddbdc212f7cf6a63c8a6aea66af82dfb2fea4c1d4f72533",
+    "qualified": false,
+    "scope": "ENGINE_FREE_ALLOW_FACTORY_CHECKPOINT_WITH_TRANSPORT_SPY_ONLY"
+  }
 }

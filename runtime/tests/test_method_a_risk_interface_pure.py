@@ -213,6 +213,48 @@ class RiskInterface(unittest.TestCase):
         self.assertTrue(probe._mr_failed);self.assertFalse(probe._mr_allocated)
         self.assertEqual(probe.forced,['METHOD_A_DURABLE_SUBMIT_DENIED']);self.assertIsNone(probe.cache.order(order.client_order_id))
 
+    def test_full_allow_native_factory_checkpoint_and_transport_call(self):
+        from run_method_a_m1 import config
+        from coinmaster.strategy.method_a_risk import State,Features
+        from coinmaster.research.native_fixture import perpetual
+        class DurableBase:
+            def _record_submission(self,*args):self.checkpoints.append(args);return True
+        class Probe(MethodARiskResearch,DurableBase):
+            _pair_work=PairedPrefixResearch._pair_work
+            _pair_valid_allocations=PairedPrefixResearch._pair_valid_allocations
+            def __init__(self):
+                cfg,_=config();self.config=replace(cfg,research_method_a_risk='HEDGE',research_sol_off=True)
+                self.id=StrategyId('MethodA-001');self.clock=TestClock();self.clock.set_time(123)
+                self.cache=Cache()
+                for base in (BTC_PERP,SOL_PERP):
+                    self.cache.add_instrument(perpetual(base.raw_symbol.value,base.base_currency,str(base.price_increment),str(base.size_increment),str(base.margin_init),D('.00020'),D('.00055')))
+                from nautilus_trader.model.data import QuoteTick
+                sol=self.cache.instrument(SOL_PERP.id)
+                self.cache.add_quote_tick(QuoteTick(sol.id,sol.make_price(D(100)),sol.make_price(D(100)),sol.make_qty(D(1000)),sol.make_qty(D(1000)),123,123))
+                self.order_factory=OrderFactory(TraderId('EXAMPLE-001'),self.id,self.clock)
+                self._mr_failed=False;self._forced_close_reason=None;self._liquidating=False;self._mr_allocated=False;self._mr_submission_results={}
+                self._mr_last_snapshot='risk:1';self._mr_creation_snapshot='risk:1';self._mr_recovery_ref=None;self._mr_denied_intents=set()
+                self._pair_orders={};self._pending_by_order={};self._ma_commands={}
+                self._pair=dict(parent='P',side=1,generation=0,caps=NS(sol_lot=D('.1')),entry_sent=False,entry_terminal=True,entry_band='MEDIUM',atr=D(2),tp_lots={},consumed=set())
+                self.checkpoints=[];self.sent=[];self.logs=[];self.guards=[]
+            def _mr_snapshot(self,ns):return State(D(1),D(0),D(5014),D(10000),D(100),D(100)),Features(0,0,0,D(1),D(1),D('.095'),D('.1'),D('.1'),D('.01'),D('.0003'),D('.0003'))
+            def _tier_allows_increase(self,*args):self.guards.append(args);return True
+            def _mr_original_second(self):return None
+            def _mr_log(self,*args,**kw):self.logs.append((args,kw))
+            def _pair_log(self,*args,**kw):self.logs.append((args,kw))
+            def _mr_fail(self,*args):raise AssertionError(args)
+            def submit_order(self,order):self.sent.append(order)  # No engine or fill.
+        probe=Probe();decision=probe._pair_submit(SOL_PERP.id,-1,D('.4'),'ENTRY',123)
+        self.assertEqual(decision.status,'ALLOW');self.assertEqual(len(probe.guards),1);self.assertEqual(len(probe.checkpoints),1);self.assertEqual(len(probe.sent),1)
+        order=probe.sent[0];oid=str(order.client_order_id)
+        self.assertEqual(order.order_type,OrderType.MARKET);self.assertEqual(order.time_in_force,TimeInForce.IOC);self.assertFalse(order.is_reduce_only)
+        self.assertEqual(order.quantity.as_decimal(),D('.4'));self.assertEqual(order.status.name,'INITIALIZED')
+        self.assertTrue(probe._mr_allocated);self.assertFalse(probe._pair_orders[oid]['accepted']);self.assertIsNone(probe._pair_orders[oid]['ack'])
+        self.assertEqual(probe._pair_orders[oid]['initialized_event_id'],str(order.init_event.id));self.assertEqual(probe._mr_submission_results[oid].status,'ALLOW')
+        self.assertIsNone(probe.cache.order(order.client_order_id));self.assertEqual(probe.cache.positions_open(),[])
+        from dataclasses import asdict
+        self.__class__.allow_example=wire(dict(schema=SCHEMA,scope='ENGINE_FREE_ALLOW_FACTORY_CHECKPOINT_WITH_TRANSPORT_SPY_ONLY',qualified=False,engine_constructors=0,decision=asdict(decision),native_order=order.to_dict(),native_initialized_event_id=str(order.init_event.id),durable_checkpoint_calls=len(probe.checkpoints),stock_guard_calls=len(probe.guards),transport_spy_calls=len(probe.sent),native_registered_order=False,native_fills=0,native_ACK_credit=False,allocation_used=probe._mr_allocated))
+
     def test_public_types_roundtrip(self):
         example=public_example();self.assertEqual(json.loads(json.dumps(example)),example)
         self.assertEqual(example['nested_examples']['native_fill']['type'],'OrderFilled')
