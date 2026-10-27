@@ -762,6 +762,7 @@ def build_native_strategy_config(context):
         research_btc_standing_tp=context.get("research_btc_standing_tp", False), research_native_book=context.get("research_native_book"),
         research_sol_standing_protection=context.get("research_sol_standing_protection", False),
         research_btc_trim_control=context.get("research_btc_trim_control", False),
+        research_method_a_tp=context.get("research_method_a_tp", False),
         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
@@ -832,6 +833,8 @@ def run_native_diagnostic(
     research_btc_standing_tp: bool = False,
     research_sol_standing_protection: bool = False,
     research_btc_trim_control: bool = False,
+    research_method_a_tp: bool = False,
+    research_method_a_observer: bool = False,
     research_btc_real_u: bool = False,
     research_btc_q_mode: str | None = None,
     research_sol_off: bool = False,
@@ -955,7 +958,7 @@ def run_native_diagnostic(
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
     coherent_observer = None
     coherent_observer_report = None
-    if research_paired_policy:
+    if research_paired_policy or research_method_a_observer:
         from coinmaster.research.paired_observer import CommittedNativeObserver
         coherent_observer = CommittedNativeObserver(artifacts_root / "coherent-native-events.jsonl.gz",
             initial_active_seed,(btc_instrument,sol_instrument),journal)
@@ -1256,7 +1259,8 @@ def run_native_diagnostic(
                 )
             }
         # Preserve native facts before any boundary/metadata packaging assertion.
-        result["config"].update(research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
+        result["config"].update(research_method_a_tp=research_method_a_tp, research_method_a_observer=research_method_a_observer, research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
+        result["method_a_tp_audit"] = strategy.method_a_tp_audit if research_method_a_tp else None
         result["market_redesign_audit"]=strategy._md_report()
         result["paired_prefix_audit"] = strategy._pair_report()
         result["coherent_native_observer"] = coherent_observer_report

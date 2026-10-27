@@ -8,6 +8,7 @@ from __future__ import annotations
 from coinmaster.research.paired_signal_feed import PairedSignal
 from coinmaster.strategy.paired_prefix import PairedPrefixResearch
 from coinmaster.strategy.market_redesign import MarketRedesignResearch, PHI, legacy_net_lots
+from coinmaster.strategy.method_a_tp import MethodATpResearch
 from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
 
 from dataclasses import replace
@@ -74,6 +75,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_sol_standing_protection: bool = False
     research_btc_standing_tp: bool = False
     research_native_book: object = None
+    research_method_a_tp: bool = False
     research_btc_real_u: bool = False
     research_btc_q_mode: str | None = None
     research_sol_off: bool = False
@@ -202,12 +204,13 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
 from coinmaster.strategy.standing_tp import StandingTPResearch
 
 
-class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
         self._split_cover_init()
         self._md_init()
+        self._ma_init()
         self._tp_init()
         self._pair_init()
         self._risk_first_init()
@@ -320,6 +323,9 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
             raise ValueError("SOL_STANDING_REQUIRES_QUALIFIED_PAIRED_STANDING_FAMILY")
         if config.research_btc_standing_tp and (not config.research_btc_real_u or config.research_btc_q_mode != "LEGACY_Q_CONTROL" or config.research_native_book is None or config.research_a0_family != "R2_A0_V1" or config.research_paired_prefix != "B2_F0"):
             raise ValueError("STANDING_TP_EXACT_REAL_U_NATIVE_PROVIDER_REQUIRED")
+        if config.research_method_a_tp and (config.research_btc_real_u or not config.research_btc_split50 or not config.research_btc_split_planref_v1 or not config.research_btc_split_tp_ioc or config.research_btc_split_discount != Decimal(".0025") or config.research_btc_standing_tp or config.research_paired_prefix or config.research_a0_original_second):
+            raise ValueError("METHOD_A_REQUIRES_UNCHANGED_E4_SPLIT_AND_NO_R2_OWNER")
+        self._domain.research_method_a_tp = config.research_method_a_tp
         self._domain.research_real_u = config.research_btc_real_u
         self._domain.research_sol_cover = config.research_sol_cover is not None
         self._domain.research_h4_owned = config.research_h4_ema is not None
@@ -1460,6 +1466,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
                     self._b1_candidate = None
         if tick.instrument_id == self.config.sol_id:
             self._h1_check(tick.ts_event)
+        self._ma_reconcile(tick.ts_event)
         self._md_check(tick)
         self._split_check(tick)
         self._cover_check(tick)
@@ -1987,6 +1994,8 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
                 return
         if intent.action == "SOL_ADD":
             rounded = self._risk_first_sol_prepare(intent,rounded,step,ts_now or 0,sigma,decision_index)
+        if intent.action == "BTC_ENTRY" and not self._split_child_submit:
+            self._ma_prepare(intent,rounded,instrument,executable_price,ts_now or 0)
         if intent.action == "BTC_ENTRY" and self._md_enabled() and not self._split_child_submit:
             self._md_prepare(intent,rounded,instrument,executable_price,ts_now or 0)
         if intent.action == "BTC_ENTRY":
@@ -2028,7 +2037,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
                 if (episode.side == 1 and limit_price.as_decimal() < floor.as_decimal()) or (episode.side == -1 and limit_price.as_decimal() > floor.as_decimal()):
                     limit_price = floor
             quote_tick = self.cache.quote_tick(instrument_id)
-            if quote_tick is not None and not self._md_enabled():
+            if quote_tick is not None and not (self._md_enabled() or self._ma_enabled()):
                 # Check the exact wire-equivalent native price.  A five-sig
                 # rounding step may otherwise turn a passive quote marketable.
                 canonical = limit_price.as_decimal()
@@ -2038,7 +2047,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
             order = self.order_factory.limit(
                 instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded),
                 price=limit_price, time_in_force=TimeInForce.GTC,
-                post_only=not self._md_enabled(), reduce_only=True,
+                post_only=not (self._md_enabled() or self._ma_enabled()), reduce_only=True,
             )
         elif intent.action == "BTC_REDUCE" and self.config.tp_fee_floor_v1:
             episode = self._domain.episode
@@ -2105,7 +2114,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         return any(key[1] in {"SOL_HALF_EXIT", "SOL_EXIT"} for key in self._accepted_reductions)
 
     def _own_accepted_reduction(self, intent: Intent, quantity: Decimal) -> None:
-        if not self.config.research_v0_selective_lifecycle_repairs:
+        if not self.config.research_v0_selective_lifecycle_repairs or (self._ma_enabled() and intent.action == "BTC_REDUCE"):
             return
         episode = self._domain.episode
         ordinary_sol = intent.reason in {"SOL_Z_HALF_EXIT", "SOL_Z_FULL_EXIT"}
@@ -2115,7 +2124,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
             self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
 
     def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:
-        if self._carry_busy() or self._md_enabled():
+        if self._carry_busy() or self._md_enabled() or (self._ma_enabled() and intent.action == "BTC_REDUCE"):
             return
         key = self._reduction_key(intent)
         owner = self._accepted_reductions.get(key)
@@ -2506,6 +2515,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         self._after_domain_fill(event)
         if closed:
             self._md_first_terminal(intent,event.ts_event)
+        self._ma_after_fill(intent,event)
         self._md_after_fill(intent,event)
         if closed:
             self._terminal_submission(str(event.client_order_id))
@@ -2610,6 +2620,9 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
+        if self._ma_enabled():
+            self._ma_reconcile(ready_ns)
+            return
         if self._md_enabled():
             self._md_reconcile(ready_ns)
             return
@@ -2680,6 +2693,7 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
         if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,event.ts_event,"CANCELED")
         if self._md_enabled():
             self._md_reconcile(event.ts_event)
+        self._ma_terminal(intent,event)
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(event.ts_event)
@@ -2835,6 +2849,8 @@ class WaveOverlayStrategy(StandingTPResearch, PairedPrefixResearch, MarketRedesi
             return
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
+        if self._ma_enabled() and failed_intent is not None and failed_intent.action == "BTC_REDUCE":
+            self._begin_forced_close("METHOD_A_NATIVE_TARGET_REJECTED")
         self._md_reject(failed_intent,terminal_ns)
         self._md_first_terminal(failed_intent,terminal_ns)
         self._hedge_terminal(failed_intent, self.clock.timestamp_ns(), "DENIED_REJECTED_EXPIRED")

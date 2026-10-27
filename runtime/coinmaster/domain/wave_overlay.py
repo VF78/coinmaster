@@ -410,7 +410,7 @@ class WaveOverlayState:
         intents: list[Intent] = []
         if getattr(self,"research_real_u",False):
             return []
-        for level, threshold in enumerate(episode.wave_levels or ()):
+        for level, threshold in enumerate(() if getattr(self, "research_method_a_tp", False) else episode.wave_levels or ()):
             # v3 installs known targets as genuine resting post-only orders on
             # the confirmed initial fill.  A target that was not installed
             # (for example an invalid/marketable post-only price) retains the
