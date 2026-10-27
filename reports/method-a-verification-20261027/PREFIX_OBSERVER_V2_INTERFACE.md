@@ -16,3 +16,5 @@ Pure command (VPS only, no native run):
 PYTHONPATH=reports/method-a-verification-20261027:runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -c 'import json;from test_prefix_observer_v2_pure import proof;print(json.dumps(proof(),sort_keys=True))'
 
 Future native replay requires separate fresh UUID/repeat_of caa12c14-70fc-48e9-b4fc-160ddc12412f, one existing prefix reserve/cap6-total17, independent source+reader review, exact original fill/cash/funding/scalar equality reference, and expiring explicit root GO. This checkpoint grants no native permission.
+
+C963 narrow correction: legacy_sessions explicitly handles stock DailySignalBar.instrument_id, public native Bar.bar_type.instrument_id, and null. Focused fixture now uses exact daily_signal(...).data factory objects for normal capture/checkpoint tests, with independent native Bar/null regression and exact ts_init/event/instrument preservation. No other feature or execution change.

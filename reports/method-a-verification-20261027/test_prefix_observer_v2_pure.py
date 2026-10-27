@@ -17,6 +17,7 @@ def proof():
         from prefix_observer import PrefixEvidence,observed_strategy_type
         from coinmaster.domain.wave_overlay import Candidate,Episode,Intent,WaveOverlayState,DailyBar,Features
         from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+        from coinmaster.venues.signals import DailySignalBar,daily_signal
         from nautilus_trader.cache.cache import Cache
         from nautilus_trader.model.data import Bar,BarType,QuoteTick
         from nautilus_trader.model.objects import Quantity
@@ -31,7 +32,7 @@ def proof():
                 return WaveOverlayStrategy._record_submission(self,*args,**kwargs)
             def _ma_enabled(self):return False
             def _split_tp_ioc_eligible(self,intent):return False
-        def setup(evidence):
+        def setup(evidence,native_bar=False):
             cls=observed_strategy_type(Base,evidence);s=cls()
             s.original_calls=0;s.sink_calls=0;s.sink_result=True;s.sink_error=None
             def sink(**kwargs):
@@ -59,7 +60,17 @@ def proof():
             def bar(inst,px):
                 price=inst.make_price(D(px))
                 return Bar(BarType.from_str(str(inst.id)+'-1-DAY-LAST-EXTERNAL'),price,price,price,price,Quantity.from_int(1),ns,ns)
-            s._current_btc=bar(BTC_PERP,'10000');s._current_sol=bar(SOL_PERP,'100')
+            if native_bar:
+                s._current_btc=bar(BTC_PERP,'10000');s._current_sol=bar(SOL_PERP,'100')
+            else:
+                # Exact stock factory CustomData.data -> paired _day values -> current fields at source1182.
+                btc=daily_signal(BTC_PERP.id,D('10000'),D('10000'),D('10000'),D('10000'),ns,ns+17).data
+                sol=daily_signal(SOL_PERP.id,D('100'),D('100'),D('100'),D('100'),ns,ns+19).data
+                assert isinstance(btc,DailySignalBar) and isinstance(sol,DailySignalBar)
+                assert not hasattr(btc,'bar_type')
+                paired={s.config.btc_id:btc,SOL_PERP.id:sol}
+                s._current_btc,s._current_sol=paired[s.config.btc_id],paired[SOL_PERP.id]
+
             s._current_signals=[Features(0,1,1.,.1,0.,.05,2.)]
             q=QuoteTick(SOL_PERP.id,SOL_PERP.make_price(D('100')),SOL_PERP.make_price(D('100.1')),SOL_PERP.make_qty(D('1')),SOL_PERP.make_qty(D('1')),ns+1,ns+1)
             s.cache.add_quote_tick(q);evidence.bind(s)
@@ -84,8 +95,24 @@ def proof():
             assert v['btc_deferred_right_touched'] is True and v['sol_right_decision_index']=={'0':0}
             sessions=a['sessions'];assert sessions['last_accepted_session']==sessions['current_BTC_SOL_signal_sessions']['BTC']['ts_event']==sessions['current_BTC_SOL_signal_sessions']['SOL']['ts_event']
             assert a['pending_intent']['requested_notional']==10. and state['queued'][0]['requested_notional']==10.
+            assert sessions['current_BTC_SOL_signal_sessions']['BTC']['instrument']==str(BTC_PERP.id)
+            assert sessions['current_BTC_SOL_signal_sessions']['SOL']['instrument']==str(SOL_PERP.id)
+            assert sessions['current_BTC_SOL_signal_sessions']['BTC']['ts_init']==str(s._current_btc.ts_init)
+            assert sessions['current_BTC_SOL_signal_sessions']['SOL']['ts_init']==str(s._current_sol.ts_init)
+
             assert meta['legacy_SOL_admission_capture']['error_count']==0 and meta['sha256']==hashlib.sha256(e.path.read_bytes()).hexdigest()
-            checks+=['actual_Episode_Cache_initialized_Order_readonly_snapshot_and_six_facts','original_checkpoint_true_once_with_actual_source_method','JSON_roundtrip_hex_maps_intent_sessions_and_stream_hash']
+            checks+=['actual_DailySignalBar_NativeBar_null_Episode_Cache_Order_readonly_six_facts','original_checkpoint_true_once_with_actual_source_method','JSON_roundtrip_hex_maps_intent_sessions_and_stream_hash']
+            e=PrefixEvidence(d/'public-signal-types-unit.gz');s,ep,i,o=setup(e,native_bar=True)
+            native=s._current_btc
+            assert isinstance(native,Bar)
+            context=e.legacy_sessions()['current_BTC_SOL_signal_sessions']
+            assert context['BTC']==dict(instrument=str(native.bar_type.instrument_id),ts_event=str(native.ts_event),ts_init=str(native.ts_init))
+            s._current_btc=None;s._current_sol=None;s._last_accepted_session=None;s._latest_seen_session=None;s._bars=[];s._current_signals=[]
+            context=e.legacy_sessions()
+            assert context['last_accepted_session'] is None and context['latest_seen_session'] is None and context['current_features'] is None
+            assert context['current_BTC_SOL_signal_sessions']['BTC'] is None and context['current_BTC_SOL_signal_sessions']['SOL'] is None
+            assert context['current_BTC_SOL_signal_sessions']['source_bar_session_ns'] is None
+            e.close()
             e=PrefixEvidence(d/'false-unit.gz');s,ep,i,o=setup(e);s.sink_result=False
             assert call(s,i,o) is False and (s.original_calls,s.sink_calls)==(1,1) and e.admission_attempts==0
             e.close()

@@ -1,9 +1,11 @@
 {
+  "correction": "Only explicit DailySignalBar/Bar/null public instrument/session capture plus exact stock factory regression",
+  "correction_of": "c963db24a0e00b3a4949f0cda18660120bc53af4",
   "creation_origin_gate": "UNRESOLVED_UNTIL_SOURCE_PLUS_ACTUAL_CAPTURED_STREAM_PROOF;NO_GLOBAL_NONMUTATION_CLAIM",
   "files_sha256": {
-    "PREFIX_OBSERVER_V2_INTERFACE.md": "c69966a1bb96022f2b7d1d249d052b81002b95f6a798e2561b69c28190402317",
-    "prefix_observer.py": "b3982358f93d2bf4a3b9c3d8ea990724a5100b7e44b48a472a3b0089662aa9c7",
-    "test_prefix_observer_v2_pure.py": "6fd673651888041405f22c63cf574a0ccfb72a7b2b97e1fc477077199485420d"
+    "PREFIX_OBSERVER_V2_INTERFACE.md": "3a453341f2d88d1cdfae8a0a054ef1b199b8c3d8cf78792d4cc307a88bbf8fe4",
+    "prefix_observer.py": "6e21b00d7df3a7819a67bf0c571ff31f33822888d5095ebf43075c7fa7f72aa7",
+    "test_prefix_observer_v2_pure.py": "30e87cbc63540270861a34c86a29dae3a6b9d7a7115ca9d93024479fb2ab3926"
   },
   "intent_origin": "No unconditional queued-lifetime nonmutation claim; actual stream/source evidence required or UNKNOWN",
   "native_launches": 0,
@@ -15,7 +17,7 @@
   "pure_command": "PYTHONPATH=reports/method-a-verification-20261027:runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -c 'import json;from test_prefix_observer_v2_pure import proof;print(json.dumps(proof(),sort_keys=True))'",
   "pure_result": {
     "checks": [
-      "actual_Episode_Cache_initialized_Order_readonly_snapshot_and_six_facts",
+      "actual_DailySignalBar_NativeBar_null_Episode_Cache_Order_readonly_six_facts",
       "original_checkpoint_true_once_with_actual_source_method",
       "JSON_roundtrip_hex_maps_intent_sessions_and_stream_hash",
       "false_and_original_exception_preserved_once_no_admitted_frame",
@@ -38,7 +40,7 @@
     "test_prefix_observer_v2_pure.py",
     "PREFIX_OBSERVER_V2_INTERFACE.md"
   ],
-  "source_parent_commit": "8c6a12360a4ab37d4c4da16c2e20c187f724030b",
-  "status": "FOCUSED_PURE_PASS_PENDING_INDEPENDENT_REVIEW_NO_NATIVE_GO",
+  "source_parent_commit": "c963db24a0e00b3a4949f0cda18660120bc53af4",
+  "status": "FOCUSED_PURE_PASS_PENDING_NARROW_PUBLIC_TYPE_CLOSURE_NO_NATIVE_GO",
   "wrapper_base": "334bc5a56bef36e981022c1fd2d22dc9ffd4c74f"
 }

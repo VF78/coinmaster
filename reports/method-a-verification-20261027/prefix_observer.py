@@ -9,7 +9,8 @@ from collections import Counter
 import gzip,hashlib,json
 from nautilus_trader.backtest.modules import SimulationModule
 from nautilus_trader.backtest.config import SimulationModuleConfig
-from nautilus_trader.model.data import QuoteTick
+from nautilus_trader.model.data import QuoteTick,Bar
+from coinmaster.venues.signals import DailySignalBar
 
 
 def digest(value):
@@ -57,7 +58,11 @@ class PrefixEvidence:
     def legacy_sessions(self):
         s=self.strategy;bars=s._bars;bar=bars[-1] if bars else None
         def native(value):
-            return None if value is None else dict(instrument=str(value.bar_type.instrument_id),ts_event=str(value.ts_event),ts_init=str(value.ts_init))
+            if value is None:return None
+            if isinstance(value,DailySignalBar):instrument=value.instrument_id
+            elif isinstance(value,Bar):instrument=value.bar_type.instrument_id
+            else:raise TypeError('UNSUPPORTED_PUBLIC_DAILY_SIGNAL_TYPE')
+            return dict(instrument=str(instrument),ts_event=str(value.ts_event),ts_init=str(value.ts_init))
         features=s._current_signals[-1] if s._current_signals else None
         return dict(last_accepted_session=None if s._last_accepted_session is None else str(s._last_accepted_session),
             latest_seen_session=None if s._latest_seen_session is None else str(s._latest_seen_session),
