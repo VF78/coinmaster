@@ -73,20 +73,21 @@ class MethodARiskResearch:
         self._mr_creation_snapshot=None;self._mr_recovery_ref=None;self._mr_suspended_entry_ids=set()
         self._mr_cached_feature_key=None;self._mr_cached_feature=None;self._mr_last_sol_boundary=None
         self._mr_submission_results={}
+        self._mr_inputs_ref=None;self._mr_last_stock_guard=None
 
     def _mr_log(self,event,ns,**fields):
         self._mr_sequence+=1
         if event=='NATIVE_SNAPSHOT':self._mr_last_snapshot='risk:'+str(self._mr_sequence)
         ep=getattr(self,'_domain',None);ep=getattr(ep,'episode',None)
         row=dict(schema=SCHEMA,sequence=self._mr_sequence,event=event,timestamp_ns=str(ns),
-            parent=getattr(ep,'id',None),risk_episode_id=(str(getattr(ep,'id',None))+':'+str(self._mr_episode)),snapshot_ref=self._mr_last_snapshot)
+            parent=getattr(ep,'id',None),risk_episode_id=(str(getattr(ep,'id',None))+':'+str(self._mr_episode)),snapshot_ref=self._mr_last_snapshot,inputs_ref=self._mr_inputs_ref)
         row.update(fields);self.method_a_risk_audit.append(wire(row));return row
 
     def _pair_log(self,event,ns,**fields):
         if not self._mr_enabled():return super()._pair_log(event,ns,**fields)
         self._mr_pair_sequence+=1
         row=dict(schema=SCHEMA,sequence=self._mr_pair_sequence,event=event,timestamp_ns=str(ns),
-            parent=self._pair['parent'] if self._pair else self._mr_parent,risk_episode_id=str(self._mr_parent)+':'+str(self._mr_episode),snapshot_ref=self._mr_last_snapshot)
+            parent=self._pair['parent'] if self._pair else self._mr_parent,risk_episode_id=str(self._mr_parent)+':'+str(self._mr_episode),snapshot_ref=self._mr_last_snapshot,inputs_ref=self._mr_inputs_ref)
         if event=='SOL_NATIVE_BOUNDARY':
             self._mr_last_sol_boundary='paired:'+str(self._mr_pair_sequence)
             position=self._pair_position(self.config.sol_id)
@@ -95,6 +96,30 @@ class MethodARiskResearch:
         if event=='PARENT_NATIVE_TERMINAL_FLAT':
             fields.update(native_positions=[p.to_dict() for p in self.cache.positions_open()],native_orders_open=[o.to_dict() for o in self.cache.orders_open()],native_orders_inflight=[o.to_dict() for o in self.cache.orders_inflight()],native_pending_ids=list(self._pending_by_order))
         row.update(fields);self.paired_prefix_audit.append(wire(row))
+
+    def _pair_sol_global_dispatch(self,tick=None):
+        if not self._mr_enabled():return super()._pair_sol_global_dispatch(tick)
+        quote=tick if tick is not None else self.cache.quote_tick(self.config.sol_id)
+        now=self.clock.timestamp_ns()
+        before=set(self._pair_orders)
+        result=super()._pair_sol_global_dispatch(tick)
+        self._pair_log('SOL_GLOBAL_DISPATCH_RECEIPT',now,
+            route='QUOTE' if tick is not None else 'CACHE',active=self._pair_sol_global_active(),
+            native_quote=None if quote is None else quote.to_dict(quote),
+            new_owned_cids=sorted(set(self._pair_orders)-before),
+            close_owners=[dict(order_id=oid,kind=owner['kind'],native_order=None if order is None else order.to_dict()) for oid,owner,order in self._pair_work(instrument=self.config.sol_id,kinds={'SOL_CLOSE','SOL_CAP'})],
+            returned=result)
+        return result
+
+    def _pair_report(self):
+        report=super()._pair_report()
+        if self._mr_enabled() and hasattr(self.paired_prefix_audit,'finish'):
+            report['events']=self.paired_prefix_audit.finish()
+        if self._mr_enabled() and self.config.research_native_book is not None:
+            book=self.config.research_native_book
+            report['received_quote_universe']={str(iid):count for iid,count in book.epochs.items()}
+            report['received_quote_count']=sum(book.epochs.values())
+        return report
 
     def _mr_original_second(self):
         p=self._split_parent
@@ -166,7 +191,9 @@ class MethodARiskResearch:
             rows=tuple(Observation(int(b.close_time.timestamp()*1_000_000_000),
                 max(int(b.available_at.timestamp()*1_000_000_000),int(b.close_time.timestamp()*1_000_000_000)+MINUTE),D(str(b.btc_close)),D(str(b.sol_close))) for b in self._bars)
             funding=tuple(Funding(leg,effective,available,D(rate),interval) for leg,effective,available,rate,interval in self.config.research_method_a_funding)
-            self._mr_cached_feature=lagged_features(rows,funding,ns);self._mr_cached_feature_key=feature_key
+            feature=lagged_features(rows,funding,ns)
+            self._mr_emit_inputs(ns,rows,funding,feature)
+            self._mr_cached_feature=feature;self._mr_cached_feature_key=feature_key
         feature=self._mr_cached_feature;self._mr_feature=feature
         self._mr_log('NATIVE_SNAPSHOT',ns,native_cash=str(balance.as_decimal()),equity=str(equity),peak=str(self._mr_peak),cushion=str(state.cushion),
             native_positions=[p.to_dict() for p in positions],
@@ -175,6 +202,26 @@ class MethodARiskResearch:
             feature={**{k:str(v) for k,v in feature.__dict__.items()},'omega':[tuple(map(str,x)) for x in feature.shocks()]},
             coherent_peak_source=dict(sequence=observer.sequence,epoch=observer.epoch,peak=dict(observer.events.peak)))
         return state,feature
+
+    def _mr_emit_inputs(self,ns,rows,funding,feature):
+        binding=self.config.research_method_a_input_binding
+        if not isinstance(binding,dict) or not all(key in binding for key in ('source','config','data','policy')):
+            raise ValueError('UNKNOWN_SOURCE_CONFIG_DATA_POLICY_BINDING')
+        profile=getattr(self.config.margin_policy,'_profile',None)
+        if profile is None:raise ValueError('UNKNOWN_CAPTURED_TIER_PROFILE')
+        observations=[asdict(r) for r in rows if feature.start_ns<=r.end_ns<=feature.end_ns]
+        history=[asdict(r) for r in funding if feature.start_ns<r.effective_ns<=feature.end_ns]
+        if len(observations)!=31:raise ValueError('UNKNOWN_INPUT_OBSERVATION_UNIVERSE')
+        self._mr_inputs_ref='risk:'+str(self._mr_sequence+1)
+        self._mr_log('RISK_INPUTS',ns,input_binding=binding,
+            feature_start_ns=str(feature.start_ns),feature_end_ns=str(feature.end_ns),
+            observations=observations,funding_history=history,
+            captured_profile=asdict(profile),selected_leverage={str(k):str(v) for k,v in self.config.margin_policy._selected_leverage.items()},
+            native_instruments=[dict(instrument=str(iid),maker_fee=str(self.cache.instrument(iid).maker_fee),taker_fee=str(self.cache.instrument(iid).taker_fee),price_increment=str(self.cache.instrument(iid).price_increment),size_increment=str(self.cache.instrument(iid).size_increment)) for iid in (self.config.btc_id,self.config.sol_id)],
+            effective_flags=dict(risk_mode=self.config.research_method_a_risk,method_a_tp=self.config.research_method_a_tp,sol_off=self.config.research_sol_off,standalone_sol_enabled=self.config.candidate.sol_overlay_enabled,paired_prefix=self.config.research_paired_prefix,standing_sol=self.config.research_sol_standing_protection,conditional_sol=self.config.research_conditional_sol),
+            clock=dict(decision_ns=str(ns),utc_day_start_ns=str(ns//DAY*DAY),lagged_cutoff_ns=str(ns//DAY*DAY-DAY),modeled_d1_publication_delay_ns=str(MINUTE)),
+            selection_rows=[asdict(r) for r in self.config.research_method_a_selection if r.available_ns<=ns and r.not_before_ns<=ns][-1:],
+            feature={k:str(v) for k,v in feature.__dict__.items()})
 
     def _mr_liabilities(self,ns,proposed=None,exclude=None):
         rows={str(o.client_order_id):o for o in self.cache.orders_open()+self.cache.orders_inflight()}
@@ -549,12 +596,13 @@ class MethodARiskResearch:
             lot=self.cache.instrument(order.instrument_id).size_increment.as_decimal()
             proposed=Liability(oid,leg,1 if order.side==OrderSide.BUY else -1,exact_lots(order.quantity.as_decimal(),lot),lot,order.is_reduce_only,
                 (state.pb if leg=='BTC' else state.ps)*(TAKER+RESERVE))
-            envelope=self._mr_envelope(state,feature,self._mr_liabilities(ns,proposed,exclude=oid))
+            envelope_liabilities=self._mr_liabilities(ns,proposed,exclude=oid)
+            envelope=self._mr_envelope(state,feature,envelope_liabilities)
             initial=evaluate(state,feature,self._mr_margin)
             recovery=order.is_reduce_only and initial.worst_deficit>0
             allowed=envelope.safe or recovery and envelope.margin_pass and envelope.worst_deficit<=initial.worst_deficit
-            self._mr_log('BEFORE_NATIVE_DISPATCH' if allowed else 'ENVELOPE_DENY',ns,order_id=oid,action=action,quantity=str(order.quantity),
-                pending_hedge_credit='0',all_partial_partition_states=envelope.states,deficit=str(envelope.worst_deficit),margin_pass=envelope.margin_pass,
+            self._mr_log('BEFORE_NATIVE_DISPATCH' if allowed else 'ENVELOPE_DENY',ns,order_id=oid,action=action,quantity=str(order.quantity),stock_guard_ref=self._mr_last_stock_guard,
+                pending_hedge_credit='0',all_partial_partition_states=envelope.states,deficit=str(envelope.worst_deficit),margin_pass=envelope.margin_pass,envelope_state=asdict(state),envelope_liabilities=[asdict(item) for item in envelope_liabilities],
                 native_initialized_event_id=str(order.init_event.id),native_order=order.to_dict(),liabilities=self._mr_liability_rows(ns,exclude=oid,proposed=order),creation_snapshot_ref=self._mr_creation_snapshot,recovery_ref=self._mr_recovery_ref,original_second=self._mr_original_second())
             if not allowed:
                 self._mr_submission_results[oid]=EntrySubmissionDecision('DENY','JOINT_EXECUTION_ENVELOPE',episode_id,str(order.instrument_id),proposed.side,str(order.quantity),self._mr_last_snapshot,oid)
@@ -586,9 +634,10 @@ class MethodARiskResearch:
     def on_order_filled(self,event):
         if not self._mr_enabled():return super().on_order_filled(event)
         parent=self._domain.episode.id if self._domain.episode else None
+        callback_pre_snapshot_ref=self._mr_last_snapshot
         result=super().on_order_filled(event)
         self._mr_after_actual(event.ts_event)
-        self._mr_log('ACTUAL_NATIVE_FILL',event.ts_event,parent=parent,native_event_id=str(event.id),trade_id=str(event.trade_id),order_id=str(event.client_order_id),native_fill=type(event).to_dict(event))
+        self._mr_log('ACTUAL_NATIVE_FILL',event.ts_event,parent=parent,native_event_id=str(event.id),trade_id=str(event.trade_id),order_id=str(event.client_order_id),native_fill=type(event).to_dict(event),callback_pre_snapshot_ref=callback_pre_snapshot_ref,callback_post_snapshot_ref=self._mr_last_snapshot)
         return result
 
     def _mr_after_actual(self,ns):
@@ -762,7 +811,8 @@ class MethodARiskResearch:
     def _tier_allows_increase(self,instrument_id,side,quantity,ts_now):
         if not self._mr_enabled():return super()._tier_allows_increase(instrument_id,side,quantity,ts_now)
         allowed=super()._tier_allows_increase(instrument_id,side,quantity,ts_now)
-        self._mr_log('NATIVE_STOCK_GUARD_RESULT',ts_now,instrument=str(instrument_id),side=getattr(side,'name',str(side)),quantity=str(quantity),allowed=allowed)
+        row=self._mr_log('NATIVE_STOCK_GUARD_RESULT',ts_now,instrument=str(instrument_id),side=getattr(side,'name',str(side)),quantity=str(quantity),allowed=allowed)
+        self._mr_last_stock_guard='risk:'+str(row['sequence'])
         return allowed
 
 

@@ -767,6 +767,7 @@ def build_native_strategy_config(context):
         research_method_a_funding=context.get("research_method_a_funding",()),
         research_method_a_selection=context.get("research_method_a_selection",()),
         research_method_a_peak_source=context.get("coherent_observer") if context.get("research_method_a_risk") else None,
+        research_method_a_input_binding=context.get("research_method_a_input_binding"),
         research_btc_real_u=research_btc_real_u, research_btc_q_mode=research_btc_q_mode, research_sol_off=research_sol_off,
         research_btc_split50=research_btc_split50,
         research_btc_split_planref_v1=research_btc_split_planref_v1,
@@ -1016,6 +1017,10 @@ def run_native_diagnostic(
         from coinmaster.research.native_book import NativeBookWitness
         research_native_book = NativeBookWitness()
         modules.append(research_native_book)
+    elif research_method_a_risk is not None:
+        from coinmaster.research.method_a_margin import MethodABookWitness
+        research_native_book = MethodABookWitness()
+        modules.append(research_native_book)
     engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), liquidity_consumption=research_paired_policy, bar_execution=not bool(research_paired_policy or research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
@@ -1046,7 +1051,21 @@ def run_native_diagnostic(
         if len(timestamps) != 721 or any(b-a != 3_600_000 for a,b in zip(timestamps,timestamps[1:])) or timestamps[-1] != trading_start_ms:
             raise ValueError("COVER_EXACT_720_HOURLY_RETURNS_REQUIRED")
         cover_hour_seed = tuple((t*1_000_000,paired["BTCUSDT"][t],paired["SOLUSDT"][t]) for t in timestamps)
+    research_method_a_input_binding = None
+    risk_row_streams = ()
+    if research_method_a_risk is not None:
+        # Read-only provenance for the exact existing source/config/data/policy.
+        source_root=Path(__file__).resolve().parents[1]
+        research_method_a_input_binding=dict(
+            source={str(p.relative_to(source_root)):sha256_file(p) for p in sorted(source_root.rglob('*.py'))},
+            config=dict(candidate=asdict(candidate),initial_active_seed=str(initial_active_seed),risk_mode=research_method_a_risk,method_a_tp=research_method_a_tp,sol_off=research_sol_off,start_ns=trading_start_ms*1_000_000,end_ns=trading_end_ms*1_000_000),
+            data=dict(manifest_path=str(data_root/'bybit-1m'/'manifest.json'),manifest_sha256=sha256_file(data_root/'bybit-1m'/'manifest.json')),
+            policy=dict(execution=asdict(policy),execution_sha256=policy.hash,base_fees=asdict(fee_policy),base_fees_sha256=fee_policy.hash))
     strategy = strategy_type(build_native_strategy_config(locals()))
+    if research_method_a_risk is not None:
+        from coinmaster.research.method_a_risk_rows import MethodARiskRows
+        risk_row_streams=(MethodARiskRows(artifacts_root/f'{artifact_label}-risk.jsonl.gz','RISK'),MethodARiskRows(artifacts_root/f'{artifact_label}-paired.jsonl.gz','PAIRED'))
+        strategy.method_a_risk_audit,strategy.paired_prefix_audit=risk_row_streams
     if research_native_book is not None: research_native_book.bind(strategy)
     engine.add_strategy(strategy)
     audit_archive = None
@@ -1286,7 +1305,7 @@ def run_native_diagnostic(
         result["config"].update(research_method_a_tp=research_method_a_tp, research_method_a_observer=research_method_a_observer, research_btc_real_u=research_btc_real_u,research_btc_q_mode=research_btc_q_mode,research_sol_off=research_sol_off)
         result["method_a_tp_audit"] = strategy.method_a_tp_audit if research_method_a_tp else None
         if research_method_a_risk is not None:
-            result['method_a_risk_audit']=strategy.method_a_risk_audit
+            result['method_a_risk_audit']=strategy.method_a_risk_audit.finish()
             result['config']['research_method_a_risk']=research_method_a_risk
         result["market_redesign_audit"]=strategy._md_report()
         result["paired_prefix_audit"] = strategy._pair_report()
@@ -1389,6 +1408,7 @@ def run_native_diagnostic(
         successful_run = True
         return result
     finally:
+        for stream in risk_row_streams:stream.finish()
         if audit_archive is not None:
             audit_archive.close()
         if risk_recorder is not None:

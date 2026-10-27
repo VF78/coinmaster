@@ -35,6 +35,6 @@ class MethodABookWitness(NativeBookWitness):
             held=strategy._pair_qty(strategy.config.sol_id)
             if held and not strategy._pair:raise ValueError('METHOD_A_SOL_WITHOUT_NATIVE_OWNER')
             strategy._mr_log('SOL_BOUNDARY_RECEIPT',data.ts_event,
-                quote_instrument=str(data.instrument_id),native_input_epoch=self.epochs[data.instrument_id],
+                quote_instrument=str(data.instrument_id),native_input_epoch=self.epochs[data.instrument_id],global_input_index=sum(self.epochs.values()),native_quote=data.to_dict(data),
                 sol_native_held=str(held),boundary_state_ref=strategy._mr_last_sol_boundary,
                 boundary_counters=dict(strategy._pair_sol_boundary_counts))

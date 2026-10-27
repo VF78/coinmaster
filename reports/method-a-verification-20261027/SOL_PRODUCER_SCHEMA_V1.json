@@ -1,19 +1,10 @@
 {
-  "schema": "coinmaster.method-a-risk.v1",
-  "status": "PRODUCER_INTERFACE_FROZEN_ENGINE_FREE_NOT_NATIVE_QUALIFIED",
-  "report_fields": {
-    "method_a_risk_audit": "gzip JSONL reference",
-    "paired_prefix_audit.events": "gzip JSONL reference"
+  "allow_factory_example": {
+    "path": "SOL_ALLOW_FACTORY_EXAMPLE_V1.json",
+    "qualified": false,
+    "scope": "ENGINE_FREE_ALLOW_FACTORY_CHECKPOINT_WITH_TRANSPORT_SPY_ONLY",
+    "sha256": "a0fdd8166e9c66e66ddbdc212f7cf6a63c8a6aea66af82dfb2fea4c1d4f72533"
   },
-  "reference_fields": [
-    "schema",
-    "kind",
-    "path",
-    "rows",
-    "sha256",
-    "completeness",
-    "native_state_mutations"
-  ],
   "common_row_fields": [
     "schema",
     "sequence",
@@ -21,94 +12,26 @@
     "timestamp_ns",
     "parent",
     "risk_episode_id",
-    "snapshot_ref"
+    "snapshot_ref",
+    "inputs_ref"
   ],
-  "required_events": {
-    "NATIVE_SNAPSHOT": [
-      "native_cash",
-      "equity",
-      "peak",
-      "cushion",
-      "native_positions",
-      "marks",
-      "native_account",
-      "feature",
-      "coherent_peak_source"
-    ],
-    "HEDGE_ADMISSION": [
-      "band",
-      "target",
-      "benefit",
-      "cost",
-      "useful",
-      "creation_snapshot_ref"
-    ],
-    "BEFORE_NATIVE_DISPATCH": [
-      "order_id",
-      "action",
-      "native_initialized_event_id",
-      "native_order",
-      "liabilities",
-      "all_partial_partition_states",
-      "deficit",
-      "margin_pass",
-      "pending_hedge_credit",
-      "creation_snapshot_ref",
-      "recovery_ref",
-      "original_second"
-    ],
-    "DECISION": [
-      "on",
-      "band",
-      "actual_loss",
-      "deficit",
-      "entry_allocated",
-      "frozen_entry_band",
-      "quote_instrument"
-    ],
-    "RECOVERY_DECISION": [
-      "selected_leg",
-      "quantity",
-      "initial_signed_deficit",
-      "full_signed_deficit",
-      "remaining_btc",
-      "turnover",
-      "legal_feasible_intervals"
-    ],
-    "ACTUAL_NATIVE_FILL": [
-      "native_event_id",
-      "trade_id",
-      "order_id",
-      "native_fill"
-    ],
-    "ORIGINAL_SECOND_SUSPEND": [
-      "order_id",
-      "native_order",
-      "original_second"
-    ],
-    "ORIGINAL_SECOND_RELEASE_CHECK": [
-      "original_second",
-      "old_orders"
-    ],
-    "NATIVE_STOCK_GUARD_RESULT": [
-      "instrument",
-      "quantity",
-      "side",
-      "allowed"
-    ],
-    "QUALIFICATION_NO_GO": [
-      "reason",
-      "failure_native_account",
-      "failure_positions",
-      "failure_capture_errors"
-    ],
-    "ENTRY_SUBMISSION_DECISION": [
-      "decision",
-      "allocation_used",
-      "pending_hedge_credit",
-      "original_second"
-    ]
-  },
+  "consumer_scope": "Read-only report adaptation for P2/P4/P3. Reuse existing exact cash/fees/signed funding/coherent-DD reconciliation; separately prove actual hedge>0, once-episode, native real3TP/STOP/retirement/soleClose, safeBTCafterSOLTP, dangerousBTCactualRecovery, original-second expiry/no-restore and producer causal frame completeness. No runtime writes, native constructors or control reruns.",
+  "entry_decision_fields": [
+    "status",
+    "reason",
+    "parent",
+    "instrument",
+    "side",
+    "quantity",
+    "snapshot_ref",
+    "native_order_id"
+  ],
+  "entry_decision_statuses": [
+    "ALLOW",
+    "DENY",
+    "UNKNOWN",
+    "TRANSPORT_FAILURE"
+  ],
   "feature_fields": [
     "start_ns",
     "end_ns",
@@ -138,6 +61,45 @@
     "retiring",
     "pending_hedge_credit"
   ],
+  "nested_definitions": {
+    "all_partial_partition_states": "integer count of finite exact partition candidates, NOT a fabricated list of native fills. Recompute exact coverage from envelope_state, per-CID envelope_liabilities, feature shocks and captured profile.",
+    "boundary_state_ref": "paired:<sequence> resolves the full coalesced SOL_NATIVE_BOUNDARY object; reference equality is identity, not a repeated text label",
+    "callback_refs": "ACTUAL_NATIVE_FILL native_event_id/trade_id/CID joins installed public OrderFilled and coherent observer PRE_FILL_LAST_COMMITTED_NATIVE_COPY/POST_FILL_COMMITTED_NATIVE by trade_id. callback_pre/post_snapshot_ref are actual controller references, not a promise each fill creates a new snapshot (terminal path may retain prior reference).",
+    "envelope_liability": {
+      "cost_per_unit": "exact nonnegative per-CID Decimal",
+      "identity": "native CID",
+      "leg": "BTC|SOL",
+      "lot": "positive Decimal",
+      "lots": "nonnegative integer max-old/new native lots",
+      "reduce_only": "boolean",
+      "side": "1|-1"
+    },
+    "envelope_state": {
+      "btc": "signed Decimal",
+      "equity": "native Decimal",
+      "pb": "raw BTC mark Decimal",
+      "peak": "frozen native H Decimal",
+      "ps": "raw SOL mark Decimal",
+      "sol": "signed Decimal"
+    },
+    "funding": {
+      "available_ns": "integer",
+      "effective_ns": "integer",
+      "interval_ns": "integer positive",
+      "leg": "BTC|SOL",
+      "rate": "signed Decimal string"
+    },
+    "input_binding": "source/config/data/policy exact public descriptors; source file hashes, data manifest hash, BASE fee policy and execution policy descriptors; absent binding is UNKNOWN",
+    "native_public_payloads": "exact installed Nautilus .to_dict shapes from the type example; OrderFilled fields are instrument_id/client_order_id/trade_id/event_id/last_qty/last_px/commission etc; no invented ACK or quote UUID",
+    "observation": {
+      "available_ns": "integer >= end_ns+60000000000",
+      "btc": "Decimal string",
+      "end_ns": "integer",
+      "sol": "Decimal string"
+    },
+    "quote_universe": "every QuoteTick increments one instrument epoch and one global index; compare final received universe to immutable prepare_case quote_universe or existing native processed source row counts. Missing receipt/unbound universe is UNKNOWN",
+    "stock_guard_ref": "risk:<sequence> of actual native guard invocation before transport. CID binds in BEFORE_NATIVE_DISPATCH. Original FIRST child may be <= original full-parent guarded quantity; no retroactive invented CID on earlier guard"
+  },
   "original_second_fields": [
     "parent",
     "original_quantity",
@@ -152,52 +114,334 @@
     "first_risk_retired",
     "remaining_original_quantity"
   ],
-  "semantics": {
-    "money": "native cash+native Position UPNL only; no second PnL or funds ledger",
-    "peak": "continuous coherent prefill/preopen native H; fixed for hypothetical screening; every actual fill rebuilds E/H/leaves",
-    "cost": "exact per-CID unpaid opening reserve and reduction frontier; scenario raw frozen TierMarginPolicy, zero-shock exact native getter parity; mismatch UNKNOWN",
-    "objective": "SIGNED L-C then greatest remaining BTC then least turnover then leg identity",
-    "credit": "submitted/pending/initialized quantity earns zero actual hedge or profit credit",
-    "native_fill": "public OrderFilled.to_dict payload; no fabricated fill or ACK",
-    "join": "native CIDs/event IDs and coherent sequence/epoch; Quote has no invented event UUID",
-    "unknown": "missing/nonfinite/unbound rights/account/margin/ownership fields block qualification",
-    "P0_P1": "existing D889 and protected dirty files unchanged; this interface does not requalify controls or authorize reruns"
+  "paired_conditional_fields": {
+    "PARENT_NATIVE_TERMINAL_FLAT": [
+      "native_positions",
+      "native_orders_open",
+      "native_orders_inflight",
+      "native_pending_ids"
+    ],
+    "SOL_NATIVE_BOUNDARY": [
+      "native_sol_position",
+      "close_owners"
+    ]
   },
-  "consumer_scope": "Read-only report adaptation for P2/P4/P3. Reuse existing exact cash/fees/signed funding/coherent-DD reconciliation; separately prove actual hedge>0, once-episode, native real3TP/STOP/retirement/soleClose, safeBTCafterSOLTP, dangerousBTCactualRecovery, original-second expiry/no-restore and producer causal frame completeness. No runtime writes, native constructors or control reruns.",
-  "producer_implementation_status": "PARTIAL_HOLD_NOT_YET_A_CAUSAL_QUALIFICATION_INTERFACE",
+  "paired_event_keyword_catalog": {
+    "ACCEPTED": [
+      "kind",
+      "level",
+      "order_id"
+    ],
+    "ACTIVATION_SELECTED": [
+      "atr",
+      "boundary",
+      "branch",
+      "intended_sol",
+      "k",
+      "parent",
+      "qref"
+    ],
+    "ACTUAL_BTC_DEBT_OPEN": [
+      "actual_btc",
+      "bmax"
+    ],
+    "ACTUAL_FILL": [
+      "bmax",
+      "kind",
+      "level",
+      "order_id",
+      "price",
+      "qty",
+      "risk"
+    ],
+    "ADMISSION_CANCELLED_ALREADY_INACTIVE": [],
+    "CACHE_POSITION": [
+      "bmax",
+      "btc",
+      "sol",
+      "solmax"
+    ],
+    "ENTRY_TERMINAL_P0_FROZEN": [
+      "actual_sol",
+      "bmax",
+      "p0"
+    ],
+    "LATE_ENTRY_FILL_NO_REANCHOR": [
+      "frozen_p0"
+    ],
+    "PARENT_NATIVE_TERMINAL_FLAT": [
+      "parent"
+    ],
+    "QUALIFICATION_NO_GO": [
+      "actual_btc",
+      "actual_parent",
+      "parent",
+      "reason",
+      "selected_qref"
+    ],
+    "RISK_INVALID_OR_EXPIRED": [
+      "btc_close"
+    ],
+    "SOL_GLOBAL_CLOSE_DELEGATED": [
+      "parent",
+      "reason"
+    ],
+    "SOL_GLOBAL_DISPATCH_RECEIPT": [
+      "active",
+      "close_owners",
+      "native_quote",
+      "new_owned_cids",
+      "returned",
+      "route"
+    ],
+    "SOL_LATEST_MODIFY_ACK": [
+      "generation",
+      "native_event_id",
+      "order_id",
+      "sequence"
+    ],
+    "SOL_MODIFY_REJECTED": [
+      "order_id",
+      "reason",
+      "sequence"
+    ],
+    "SOL_MODIFY_SUBMIT": [
+      "desired_leaves",
+      "filled",
+      "generation",
+      "kind",
+      "level",
+      "order_id",
+      "sequence",
+      "total"
+    ],
+    "SOL_NATIVE_BOUNDARY": [
+      "actual_sol",
+      "exact",
+      "label",
+      "orders",
+      "parent",
+      "protection_since",
+      "retiring",
+      "state"
+    ],
+    "SOL_NATIVE_EVENT": [
+      "event_type",
+      "native_event_id",
+      "observed_ns",
+      "order_id",
+      "route",
+      "status"
+    ],
+    "SOL_PUBLIC_MODIFY_RETURN": [
+      "order_id",
+      "pending",
+      "sequence",
+      "status"
+    ],
+    "SOL_RETIRING_CANCEL": [
+      "deadline_ns",
+      "native_right",
+      "order_id",
+      "parent"
+    ],
+    "SOL_STOP_FILL_CLOSING_BARRIER": [
+      "order_id",
+      "qty",
+      "trade_id"
+    ],
+    "SUBMIT": [
+      "generation",
+      "kind",
+      "level",
+      "order_id",
+      "price",
+      "quantity",
+      "stop"
+    ],
+    "TRIM_CAUSAL_SELECTED": [
+      "C0_clock",
+      "branch",
+      "eligible_ns",
+      "nominal_deadline_ns",
+      "parent"
+    ],
+    "TRIM_NATIVE_ABSOLUTE_CAP": [
+      "PB",
+      "PS",
+      "actual_C0_SOL_fills",
+      "ask",
+      "bid",
+      "coefficient_available_ns",
+      "coefficient_last_ns",
+      "eligible_ns",
+      "native_SOL_credit",
+      "nominal_deadline_ns",
+      "rho",
+      "sigma_btc",
+      "sigma_sol"
+    ],
+    "TRIM_RISK_OFF_NO_RESTORE": [
+      "nominal_deadline_ns"
+    ]
+  },
+  "producer_binding_example": {
+    "path": "SOL_PRODUCER_BINDING_EXAMPLE_V1.json",
+    "qualified": false,
+    "sha256": "2f6bb323da0bca9c10f37f1a1b070c34d3ffc7bee86fc3cabc74bcf4f281a2da"
+  },
+  "producer_implementation_status": "BOUND_WRITERS_ENGINE_FREE_CHECKPOINT_CONSUMER_AND_CASE_READINESS_PENDING",
   "public_type_roundtrip_example": {
     "path": "SOL_PUBLIC_TYPE_EXAMPLE_V1.json",
-    "sha256": "13cf5085b96cfb15ba3b31543d51d661299cd09cb0b3b16430447b3820f5fc0e",
-    "scope": "ENGINE_FREE_PUBLIC_TYPE_ROUNDTRIP_ONLY_NOT_NATIVE_RESULT",
-    "qualified": false
-  },
-  "remaining_exact_binding": [
-    "native boundary witness registration and complete receipt stream",
-    "stream references wired to final report",
-    "typed native callback example",
-    "risk-retired BTC action PAIRED_BTC_DEBT levelNone with irreversible btc_risk_retired_lots writer, not BTC_TP",
-    "consumer one literal alignment after complete example"
-  ],
-  "entry_decision_fields": [
-    "status",
-    "reason",
-    "parent",
-    "instrument",
-    "side",
-    "quantity",
-    "snapshot_ref",
-    "native_order_id"
-  ],
-  "entry_decision_statuses": [
-    "ALLOW",
-    "DENY",
-    "UNKNOWN",
-    "TRANSPORT_FAILURE"
-  ],
-  "allow_factory_example": {
-    "path": "SOL_ALLOW_FACTORY_EXAMPLE_V1.json",
-    "sha256": "a0fdd8166e9c66e66ddbdc212f7cf6a63c8a6aea66af82dfb2fea4c1d4f72533",
     "qualified": false,
-    "scope": "ENGINE_FREE_ALLOW_FACTORY_CHECKPOINT_WITH_TRANSPORT_SPY_ONLY"
-  }
+    "scope": "ENGINE_FREE_PUBLIC_TYPE_ROUNDTRIP_ONLY_NOT_NATIVE_RESULT",
+    "sha256": "13cf5085b96cfb15ba3b31543d51d661299cd09cb0b3b16430447b3820f5fc0e"
+  },
+  "reference_fields": [
+    "schema",
+    "kind",
+    "path",
+    "rows",
+    "sha256",
+    "completeness",
+    "native_state_mutations"
+  ],
+  "remaining_exact_binding": [
+    "shared launch runner immutable input-universe/source gate and before-cleanup assertions",
+    "all seven public recipe exact reachability and pins; M5 real stock-margin denial remains unproven",
+    "consumer literal schema validation and actual native case proof after root GO; no emitted row count substitutes expected input universe"
+  ],
+  "report_fields": {
+    "method_a_risk_audit": "gzip JSONL reference",
+    "paired_prefix_audit.events": "gzip JSONL reference"
+  },
+  "required_events": {
+    "ACTUAL_NATIVE_FILL": [
+      "native_event_id",
+      "trade_id",
+      "order_id",
+      "native_fill",
+      "callback_pre_snapshot_ref",
+      "callback_post_snapshot_ref"
+    ],
+    "BEFORE_NATIVE_DISPATCH": [
+      "order_id",
+      "action",
+      "native_initialized_event_id",
+      "native_order",
+      "liabilities",
+      "all_partial_partition_states",
+      "deficit",
+      "margin_pass",
+      "pending_hedge_credit",
+      "creation_snapshot_ref",
+      "recovery_ref",
+      "original_second",
+      "stock_guard_ref",
+      "envelope_state",
+      "envelope_liabilities"
+    ],
+    "DECISION": [
+      "on",
+      "band",
+      "actual_loss",
+      "deficit",
+      "entry_allocated",
+      "frozen_entry_band",
+      "quote_instrument"
+    ],
+    "ENTRY_SUBMISSION_DECISION": [
+      "decision",
+      "allocation_used",
+      "pending_hedge_credit",
+      "original_second"
+    ],
+    "HEDGE_ADMISSION": [
+      "band",
+      "target",
+      "benefit",
+      "cost",
+      "useful",
+      "creation_snapshot_ref"
+    ],
+    "NATIVE_SNAPSHOT": [
+      "native_cash",
+      "equity",
+      "peak",
+      "cushion",
+      "native_positions",
+      "marks",
+      "native_account",
+      "feature",
+      "coherent_peak_source",
+      "margin_parity"
+    ],
+    "NATIVE_STOCK_GUARD_RESULT": [
+      "instrument",
+      "quantity",
+      "side",
+      "allowed"
+    ],
+    "ORIGINAL_SECOND_RELEASE_CHECK": [
+      "original_second",
+      "old_orders"
+    ],
+    "ORIGINAL_SECOND_SUSPEND": [
+      "order_id",
+      "native_order",
+      "original_second"
+    ],
+    "QUALIFICATION_NO_GO": [
+      "reason",
+      "failure_native_account",
+      "failure_positions",
+      "failure_capture_errors"
+    ],
+    "RECOVERY_DECISION": [
+      "selected_leg",
+      "quantity",
+      "initial_signed_deficit",
+      "full_signed_deficit",
+      "remaining_btc",
+      "turnover",
+      "legal_feasible_intervals"
+    ],
+    "RISK_INPUTS": [
+      "input_binding",
+      "feature_start_ns",
+      "feature_end_ns",
+      "observations",
+      "funding_history",
+      "captured_profile",
+      "selected_leverage",
+      "native_instruments",
+      "effective_flags",
+      "clock",
+      "selection_rows",
+      "feature"
+    ],
+    "SOL_BOUNDARY_RECEIPT": [
+      "quote_instrument",
+      "native_input_epoch",
+      "global_input_index",
+      "native_quote",
+      "sol_native_held",
+      "boundary_state_ref",
+      "boundary_counters"
+    ]
+  },
+  "schema": "coinmaster.method-a-risk.v1",
+  "semantics": {
+    "P0_P1": "existing D889 and protected dirty files unchanged; this interface does not requalify controls or authorize reruns",
+    "cost": "exact per-CID unpaid opening reserve and reduction frontier; scenario raw frozen TierMarginPolicy, zero-shock exact native getter parity; mismatch UNKNOWN",
+    "credit": "submitted/pending/initialized quantity earns zero actual hedge or profit credit",
+    "join": "native CIDs/event IDs and coherent sequence/epoch; Quote has no invented event UUID",
+    "money": "native cash+native Position UPNL only; no second PnL or funds ledger",
+    "native_fill": "public OrderFilled.to_dict payload; no fabricated fill or ACK",
+    "objective": "SIGNED L-C then greatest remaining BTC then least turnover then leg identity",
+    "peak": "continuous coherent prefill/preopen native H; fixed for hypothetical screening; every actual fill rebuilds E/H/leaves",
+    "risk_trim": "PAIRED_BTC_DEBT, level null; irreversible btc_risk_retired_lots reconciled in method_a_tp_audit ENTITLEMENT; BTC_REDUCE level0/1/2 remains genuine TP",
+    "unknown": "missing/nonfinite/unbound rights/account/margin/ownership fields block qualification"
+  },
+  "status": "PRODUCER_INTERFACE_FROZEN_ENGINE_FREE_NOT_NATIVE_QUALIFIED"
 }

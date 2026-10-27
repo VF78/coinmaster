@@ -81,6 +81,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_method_a_funding: tuple = ()
     research_method_a_selection: tuple[PairedSignal, ...] = ()
     research_method_a_peak_source: object = None
+    research_method_a_input_binding: object = None
     research_btc_real_u: bool = False
     research_btc_q_mode: str | None = None
     research_sol_off: bool = False

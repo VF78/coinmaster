@@ -195,9 +195,9 @@ class RiskInterface(unittest.TestCase):
             def __init__(self):
                 self.config=NS(research_method_a_risk='HEDGE',btc_id=BTC_PERP.id,sol_id=SOL_PERP.id)
                 self.clock=TestClock();self.cache=Cache();self.cache.add_instrument(SOL_PERP)
-                self._mr_failed=False;self._forced_close_reason=None;self._liquidating=False;self._mr_allocated=False
+                self._mr_last_stock_guard=None;self._mr_failed=False;self._forced_close_reason=None;self._liquidating=False;self._mr_allocated=False
                 self._mr_last_snapshot='risk:1';self._mr_creation_snapshot='risk:1';self._mr_recovery_ref=None
-                self._mr_submission_results={};self._mr_denied_intents=set();self._pair_orders={};self._ma_commands={};self._pair={'parent':'P'}
+                self._mr_last_stock_guard=None;self._mr_submission_results={};self._mr_denied_intents=set();self._pair_orders={};self._ma_commands={};self._pair={'parent':'P'}
                 self._domain=NS(episode=None);self.failures=[];self.forced=[];self.logs=[]
             def _mr_snapshot(self,ns):return State(D(275),D(0),D(10000),D(10000),D(100),D(100)),Features(0,0,0,D(1),D(1),D('.095'),D('.1'),D('.1'),D('.01'),D(0),D(0))
             def _mr_liabilities(self,ns,proposed=None,exclude=None):return (proposed,)
@@ -232,7 +232,7 @@ class RiskInterface(unittest.TestCase):
                 sol=self.cache.instrument(SOL_PERP.id)
                 self.cache.add_quote_tick(QuoteTick(sol.id,sol.make_price(D(100)),sol.make_price(D(100)),sol.make_qty(D(1000)),sol.make_qty(D(1000)),123,123))
                 self.order_factory=OrderFactory(TraderId('EXAMPLE-001'),self.id,self.clock)
-                self._mr_failed=False;self._forced_close_reason=None;self._liquidating=False;self._mr_allocated=False;self._mr_submission_results={}
+                self._mr_last_stock_guard=None;self._mr_failed=False;self._forced_close_reason=None;self._liquidating=False;self._mr_allocated=False;self._mr_submission_results={}
                 self._mr_last_snapshot='risk:1';self._mr_creation_snapshot='risk:1';self._mr_recovery_ref=None;self._mr_denied_intents=set()
                 self._pair_orders={};self._pending_by_order={};self._ma_commands={}
                 self._pair=dict(parent='P',side=1,generation=0,caps=NS(sol_lot=D('.1')),entry_sent=False,entry_terminal=True,entry_band='MEDIUM',atr=D(2),tp_lots={},consumed=set())

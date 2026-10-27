@@ -1,0 +1,52 @@
+{
+  "schema": "coinmaster.method-a-public-case.v1",
+  "status": "FIXED_SHARED_INPUT_API_NOT_LAUNCH_PERMISSION",
+  "case_fields": {
+    "case_id": "M2..M8",
+    "risk_mode": "HEDGE or TRIM",
+    "cancel_latency_ns": "0 or 2000000000; base/insert/update always0",
+    "terminal_close_at_ns": "integer or null",
+    "expected_negative_not_before_ns": "integer only M3 final phase, otherwise null",
+    "selection_rows": "list of PairedSignal field dictionaries, Decimal fields as strings",
+    "funding_history": "KNOWN_ZERO_8H_FEATURE_ONLY_W30 declared synthetic inputs",
+    "rows": "ordered PublicRow list",
+    "required_witnesses": "list of declared case assertions, not observed outcomes"
+  },
+  "row_fields": {
+    "ns": "integer>=0 nanoseconds",
+    "marks": "{} or {BTC:decimal_string,SOL:decimal_string}; both paired marks delivered before any quote",
+    "quotes": "ordered list of {asset:BTC|SOL,bid:decimal_string,ask:decimal_string,bid_depth:quantity_string,ask_depth:quantity_string}",
+    "daily_session": "null or729 or730; ns must equal frozen seed close timestamp",
+    "sol_daily_close_override": "null except predeclared M8 or documented feature-only SOL construction; BTC fields never altered",
+    "h4_btc_close": "null or decimal_string, public NextClosedBar4h using oldM1 helper",
+    "phase": "literal assertion label only, no strategy behavior switch"
+  },
+  "public_event_order": [
+    "paired VenueMark CustomData",
+    "DailySignalBar CustomData at frozen session clock",
+    "NextClosedBar4h CustomData if declared",
+    "QuoteTicks in quotes list order"
+  ],
+  "invariants": {
+    "btc_seed_sha256": "8541061707af51159263947bdb528f35339d77e81a82796683a14316419d6eae",
+    "native_engine": "Nautilus1.231.0",
+    "oms": "NETTING",
+    "account": "MARGIN",
+    "fees": {
+      "maker": ".00020",
+      "taker": ".00055"
+    },
+    "initial_seed": "10000",
+    "matching_span_max_ns": 172800000000000,
+    "use_message_queue": true,
+    "use_market_order_acks": false,
+    "stress_fixture_liquidity_consumption": true,
+    "stress_fixture_bar_execution": false,
+    "economic_venue_change": false,
+    "private_strategy_domain_feature_setters": false,
+    "manual_fill_cash_position_patches": false,
+    "engine_constructors_in_prepare": 0
+  },
+  "writer_scope": "JSON DATA ONLY. Owner writes shared builder/runner and runtime. No source/ledger/UUID/push by data helper.",
+  "native_readiness": false
+}

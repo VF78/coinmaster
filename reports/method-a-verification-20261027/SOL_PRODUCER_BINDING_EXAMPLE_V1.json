@@ -1,0 +1,2264 @@
+{
+  "allow_factory_example": {
+    "allocation_used": true,
+    "decision": {
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "native_order_id": "O-19700101-000000-001-001-1",
+      "parent": "P",
+      "quantity": "0.4",
+      "reason": "NATIVE_ENTRY_ISSUED",
+      "side": -1,
+      "snapshot_ref": "risk:1",
+      "status": "ALLOW"
+    },
+    "durable_checkpoint_calls": 1,
+    "engine_constructors": 0,
+    "native_ACK_credit": false,
+    "native_fills": 0,
+    "native_initialized_event_id": "26e50f72-3438-4aef-bd63-e46b540eb5b3",
+    "native_order": {
+      "account_id": null,
+      "avg_px": null,
+      "client_order_id": "O-19700101-000000-001-001-1",
+      "commissions": null,
+      "contingency_type": "NO_CONTINGENCY",
+      "emulation_trigger": "NO_TRIGGER",
+      "exec_algorithm_id": null,
+      "exec_algorithm_params": null,
+      "exec_spawn_id": null,
+      "filled_qty": "0.0",
+      "init_id": "26e50f72-3438-4aef-bd63-e46b540eb5b3",
+      "instrument_id": "SOLUSDT-PERP.P1SIM",
+      "is_quote_quantity": false,
+      "is_reduce_only": false,
+      "last_trade_id": null,
+      "linked_order_ids": null,
+      "liquidity_side": "NO_LIQUIDITY_SIDE",
+      "order_list_id": null,
+      "parent_order_id": null,
+      "position_id": null,
+      "quantity": "0.4",
+      "side": "SELL",
+      "slippage": null,
+      "status": "INITIALIZED",
+      "strategy_id": "MethodA-001",
+      "tags": null,
+      "time_in_force": "IOC",
+      "trader_id": "EXAMPLE-001",
+      "ts_init": 123,
+      "ts_last": 123,
+      "type": "MARKET",
+      "venue_order_id": null
+    },
+    "native_registered_order": false,
+    "qualified": false,
+    "schema": "coinmaster.method-a-risk.v1",
+    "scope": "ENGINE_FREE_ALLOW_FACTORY_CHECKPOINT_WITH_TRANSPORT_SPY_ONLY",
+    "stock_guard_calls": 1,
+    "transport_spy_calls": 1
+  },
+  "causal_execution_chain": null,
+  "engine_constructors": 0,
+  "limitation": "No actual engine callbacks or fill/ACK/terminal outcomes. Distinct public type fixtures are not joined as one observed execution.",
+  "native_types": {
+    "native_account": {
+      "balances_free": {
+        "USDT": {
+          "amount": "9997.8",
+          "currency": "USDT",
+          "text": "9997.80000000 USDT"
+        }
+      },
+      "balances_locked": {
+        "USDT": {
+          "amount": "2.2",
+          "currency": "USDT",
+          "text": "2.20000000 USDT"
+        }
+      },
+      "balances_total": {
+        "USDT": {
+          "amount": "10000",
+          "currency": "USDT",
+          "text": "10000.00000000 USDT"
+        }
+      },
+      "base_currency": "USDT",
+      "commissions": {},
+      "complete": true,
+      "default_leverage": "1",
+      "errors": [],
+      "id": "SIM-EXAMPLE",
+      "instruments": {
+        "BTCUSDT-PERP.P1SIM": {
+          "leverage": {
+            "status": "ABSENT_NATIVE_VALUE"
+          },
+          "margin_init": {
+            "status": "ABSENT_NATIVE_VALUE"
+          },
+          "margin_maint": {
+            "status": "ABSENT_NATIVE_VALUE"
+          }
+        },
+        "SOLUSDT-PERP.P1SIM": {
+          "leverage": {
+            "status": "ABSENT_NATIVE_VALUE"
+          },
+          "margin_init": {
+            "amount": "2",
+            "currency": "USDT",
+            "text": "2.00000000 USDT"
+          },
+          "margin_maint": {
+            "amount": "0.2",
+            "currency": "USDT",
+            "text": "0.20000000 USDT"
+          }
+        }
+      },
+      "status": "KNOWN",
+      "type": "MARGIN"
+    },
+    "native_fill": {
+      "account_id": "SIM-EXAMPLE",
+      "client_order_id": "O-19700101-000000-001-001-1",
+      "commission": "0.02200000 USDT",
+      "currency": "USDT",
+      "event_id": "1604e0f4-1ab7-4823-b2f7-09ec9159fe98",
+      "info": {},
+      "instrument_id": "SOLUSDT-PERP.P1SIM",
+      "last_px": "100.00",
+      "last_qty": "0.4",
+      "liquidity_side": "TAKER",
+      "order_side": "SELL",
+      "order_type": "MARKET",
+      "position_id": "EXAMPLE-SOL-POSITION",
+      "reconciliation": false,
+      "strategy_id": "MethodA-001",
+      "trade_id": "EXAMPLE-TRADE",
+      "trader_id": "EXAMPLE-001",
+      "ts_event": 1,
+      "ts_init": 1,
+      "type": "OrderFilled",
+      "venue_order_id": "EXAMPLE-VENUE-ENTRY"
+    },
+    "native_order": {
+      "account_id": "SIM-EXAMPLE",
+      "avg_px": null,
+      "client_order_id": "O-19700101-000000-001-001-2",
+      "commissions": null,
+      "contingency_type": "NO_CONTINGENCY",
+      "display_qty": null,
+      "emulation_trigger": "NO_TRIGGER",
+      "exec_algorithm_id": null,
+      "exec_algorithm_params": null,
+      "exec_spawn_id": null,
+      "expire_time_ns": null,
+      "filled_qty": "0.0",
+      "init_id": "820a1fd8-e4b3-4ff3-be45-1d699b4c23c8",
+      "instrument_id": "SOLUSDT-PERP.P1SIM",
+      "is_post_only": false,
+      "is_quote_quantity": false,
+      "is_reduce_only": true,
+      "last_trade_id": null,
+      "linked_order_ids": null,
+      "liquidity_side": "NO_LIQUIDITY_SIDE",
+      "order_list_id": null,
+      "parent_order_id": null,
+      "position_id": null,
+      "price": "98.00",
+      "quantity": "0.3",
+      "side": "BUY",
+      "slippage": null,
+      "status": "ACCEPTED",
+      "strategy_id": "MethodA-001",
+      "tags": null,
+      "time_in_force": "GTC",
+      "trader_id": "EXAMPLE-001",
+      "trigger_instrument_id": null,
+      "ts_init": 0,
+      "ts_last": 4,
+      "type": "LIMIT",
+      "venue_order_id": "EXAMPLE-VENUE-TP"
+    },
+    "native_positions": [
+      {
+        "account_id": "SIM-EXAMPLE",
+        "avg_px_close": null,
+        "avg_px_open": 100.0,
+        "base_currency": "SOL",
+        "closing_order_id": null,
+        "commissions": [
+          "0.02200000 USDT"
+        ],
+        "duration_ns": null,
+        "entry": "SELL",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "opening_order_id": "O-19700101-000000-001-001-1",
+        "peak_qty": "0.4",
+        "position_id": "EXAMPLE-SOL-POSITION",
+        "quantity": "0.4",
+        "quote_currency": "USDT",
+        "realized_pnl": "-0.02200000 USDT",
+        "realized_return": 0.0,
+        "settlement_currency": "USDT",
+        "side": "SHORT",
+        "signed_qty": -0.4,
+        "strategy_id": "MethodA-001",
+        "trader_id": "EXAMPLE-001",
+        "ts_closed": null,
+        "ts_init": 1,
+        "ts_last": 1,
+        "ts_opened": 1
+      }
+    ],
+    "native_updated": {
+      "account_id": "SIM-EXAMPLE",
+      "client_order_id": "O-19700101-000000-001-001-2",
+      "event_id": "d1cafb1a-fb3a-454b-ba95-2d897542d391",
+      "instrument_id": "SOLUSDT-PERP.P1SIM",
+      "is_quote_quantity": false,
+      "price": "98.00",
+      "quantity": "0.3",
+      "reconciliation": false,
+      "strategy_id": "MethodA-001",
+      "trader_id": "EXAMPLE-001",
+      "trigger_price": null,
+      "ts_event": 4,
+      "ts_init": 4,
+      "type": "OrderUpdated",
+      "venue_order_id": "EXAMPLE-VENUE-TP"
+    }
+  },
+  "qualified": false,
+  "risk_inputs": {
+    "captured_profile": {
+      "hashes": {
+        "BTCUSDT": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+        "SOLUSDT": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+      },
+      "tiers": {
+        "BTCUSDT": [
+          {
+            "cap": "300000",
+            "deduction": "0",
+            "im": "0.0066",
+            "max_leverage": "150.00",
+            "mm": "0.0033"
+          },
+          {
+            "cap": "2000000",
+            "deduction": "510",
+            "im": "0.01",
+            "max_leverage": "100.00",
+            "mm": "0.005"
+          },
+          {
+            "cap": "2600000",
+            "deduction": "1710",
+            "im": "0.0111",
+            "max_leverage": "90.00",
+            "mm": "0.0056"
+          },
+          {
+            "cap": "3200000",
+            "deduction": "3530",
+            "im": "0.0125",
+            "max_leverage": "80.00",
+            "mm": "0.0063"
+          },
+          {
+            "cap": "3800000",
+            "deduction": "4810",
+            "im": "0.0133",
+            "max_leverage": "75.00",
+            "mm": "0.0067"
+          },
+          {
+            "cap": "4400000",
+            "deduction": "6330",
+            "im": "0.0143",
+            "max_leverage": "70.00",
+            "mm": "0.0071"
+          },
+          {
+            "cap": "5000000",
+            "deduction": "8970",
+            "im": "0.0154",
+            "max_leverage": "65.00",
+            "mm": "0.0077"
+          },
+          {
+            "cap": "5600000",
+            "deduction": "15970",
+            "im": "0.0182",
+            "max_leverage": "55.00",
+            "mm": "0.0091"
+          },
+          {
+            "cap": "8500000",
+            "deduction": "21010",
+            "im": "0.02",
+            "max_leverage": "50.00",
+            "mm": "0.01"
+          },
+          {
+            "cap": "10000000",
+            "deduction": "46510",
+            "im": "0.0222",
+            "max_leverage": "45.00",
+            "mm": "0.013"
+          },
+          {
+            "cap": "14000000",
+            "deduction": "66510",
+            "im": "0.025",
+            "max_leverage": "40.00",
+            "mm": "0.015"
+          },
+          {
+            "cap": "20000000",
+            "deduction": "80510",
+            "im": "0.0286",
+            "max_leverage": "35.00",
+            "mm": "0.016"
+          },
+          {
+            "cap": "28000000",
+            "deduction": "160510",
+            "im": "0.0333",
+            "max_leverage": "30.00",
+            "mm": "0.02"
+          },
+          {
+            "cap": "38000000",
+            "deduction": "300510",
+            "im": "0.04",
+            "max_leverage": "25.00",
+            "mm": "0.025"
+          },
+          {
+            "cap": "50000000",
+            "deduction": "452510",
+            "im": "0.05",
+            "max_leverage": "20.00",
+            "mm": "0.029"
+          },
+          {
+            "cap": "55000000",
+            "deduction": "502510",
+            "im": "0.0526",
+            "max_leverage": "19.00",
+            "mm": "0.03"
+          },
+          {
+            "cap": "60000000",
+            "deduction": "777510",
+            "im": "0.0556",
+            "max_leverage": "18.00",
+            "mm": "0.035"
+          },
+          {
+            "cap": "65000000",
+            "deduction": "837510",
+            "im": "0.0588",
+            "max_leverage": "17.00",
+            "mm": "0.036"
+          },
+          {
+            "cap": "70000000",
+            "deduction": "967510",
+            "im": "0.0625",
+            "max_leverage": "16.00",
+            "mm": "0.038"
+          },
+          {
+            "cap": "75000000",
+            "deduction": "1107510",
+            "im": "0.0667",
+            "max_leverage": "15.00",
+            "mm": "0.04"
+          },
+          {
+            "cap": "80000000",
+            "deduction": "1482510",
+            "im": "0.0714",
+            "max_leverage": "14.00",
+            "mm": "0.045"
+          },
+          {
+            "cap": "85000000",
+            "deduction": "1882510",
+            "im": "0.0769",
+            "max_leverage": "13.00",
+            "mm": "0.05"
+          },
+          {
+            "cap": "90000000",
+            "deduction": "2307510",
+            "im": "0.0833",
+            "max_leverage": "12.00",
+            "mm": "0.055"
+          },
+          {
+            "cap": "95000000",
+            "deduction": "2757510",
+            "im": "0.0909",
+            "max_leverage": "11.00",
+            "mm": "0.06"
+          },
+          {
+            "cap": "100000000",
+            "deduction": "3232510",
+            "im": "0.1",
+            "max_leverage": "10.00",
+            "mm": "0.065"
+          },
+          {
+            "cap": "105000000",
+            "deduction": "3732510",
+            "im": "0.1111",
+            "max_leverage": "9.00",
+            "mm": "0.07"
+          },
+          {
+            "cap": "110000000",
+            "deduction": "5307510",
+            "im": "0.125",
+            "max_leverage": "8.00",
+            "mm": "0.085"
+          },
+          {
+            "cap": "115000000",
+            "deduction": "6407510",
+            "im": "0.1429",
+            "max_leverage": "7.00",
+            "mm": "0.095"
+          },
+          {
+            "cap": "120000000",
+            "deduction": "6982510",
+            "im": "0.1667",
+            "max_leverage": "6.00",
+            "mm": "0.1"
+          },
+          {
+            "cap": "150000000",
+            "deduction": "9382510",
+            "im": "0.2",
+            "max_leverage": "5.00",
+            "mm": "0.12"
+          },
+          {
+            "cap": "200000000",
+            "deduction": "12382510",
+            "im": "0.25",
+            "max_leverage": "4.00",
+            "mm": "0.14"
+          },
+          {
+            "cap": "250000000",
+            "deduction": "20382510",
+            "im": "0.3333",
+            "max_leverage": "3.00",
+            "mm": "0.18"
+          },
+          {
+            "cap": "400000000",
+            "deduction": "50382510",
+            "im": "0.5",
+            "max_leverage": "2.00",
+            "mm": "0.3"
+          },
+          {
+            "cap": "800000000",
+            "deduction": "98382510",
+            "im": "0.6993",
+            "max_leverage": "1.43",
+            "mm": "0.42"
+          },
+          {
+            "cap": "1200000000",
+            "deduction": "242382510",
+            "im": "1",
+            "max_leverage": "1.00",
+            "mm": "0.6"
+          }
+        ],
+        "SOLUSDT": [
+          {
+            "cap": "50000",
+            "deduction": "0",
+            "im": "0.01",
+            "max_leverage": "100.00",
+            "mm": "0.005"
+          },
+          {
+            "cap": "100000",
+            "deduction": "30",
+            "im": "0.0111",
+            "max_leverage": "90.00",
+            "mm": "0.0056"
+          },
+          {
+            "cap": "250000",
+            "deduction": "100",
+            "im": "0.0125",
+            "max_leverage": "80.00",
+            "mm": "0.0063"
+          },
+          {
+            "cap": "400000",
+            "deduction": "200",
+            "im": "0.0133",
+            "max_leverage": "75.00",
+            "mm": "0.0067"
+          },
+          {
+            "cap": "550000",
+            "deduction": "360",
+            "im": "0.0143",
+            "max_leverage": "70.00",
+            "mm": "0.0071"
+          },
+          {
+            "cap": "700000",
+            "deduction": "690",
+            "im": "0.0154",
+            "max_leverage": "65.00",
+            "mm": "0.0077"
+          },
+          {
+            "cap": "850000",
+            "deduction": "1670",
+            "im": "0.0182",
+            "max_leverage": "55.00",
+            "mm": "0.0091"
+          },
+          {
+            "cap": "1000000",
+            "deduction": "2435",
+            "im": "0.02",
+            "max_leverage": "50.00",
+            "mm": "0.01"
+          },
+          {
+            "cap": "2000000",
+            "deduction": "3535",
+            "im": "0.0222",
+            "max_leverage": "45.00",
+            "mm": "0.0111"
+          },
+          {
+            "cap": "3000000",
+            "deduction": "6335",
+            "im": "0.025",
+            "max_leverage": "40.00",
+            "mm": "0.0125"
+          },
+          {
+            "cap": "4000000",
+            "deduction": "11735",
+            "im": "0.0286",
+            "max_leverage": "35.00",
+            "mm": "0.0143"
+          },
+          {
+            "cap": "6000000",
+            "deduction": "21335",
+            "im": "0.0333",
+            "max_leverage": "30.00",
+            "mm": "0.0167"
+          },
+          {
+            "cap": "8000000",
+            "deduction": "41135",
+            "im": "0.04",
+            "max_leverage": "25.00",
+            "mm": "0.02"
+          },
+          {
+            "cap": "10000000",
+            "deduction": "81135",
+            "im": "0.05",
+            "max_leverage": "20.00",
+            "mm": "0.025"
+          },
+          {
+            "cap": "12000000",
+            "deduction": "94135",
+            "im": "0.0526",
+            "max_leverage": "19.00",
+            "mm": "0.0263"
+          },
+          {
+            "cap": "14000000",
+            "deduction": "112135",
+            "im": "0.0556",
+            "max_leverage": "18.00",
+            "mm": "0.0278"
+          },
+          {
+            "cap": "16000000",
+            "deduction": "134535",
+            "im": "0.0588",
+            "max_leverage": "17.00",
+            "mm": "0.0294"
+          },
+          {
+            "cap": "18000000",
+            "deduction": "164935",
+            "im": "0.0625",
+            "max_leverage": "16.00",
+            "mm": "0.0313"
+          },
+          {
+            "cap": "20000000",
+            "deduction": "200935",
+            "im": "0.0667",
+            "max_leverage": "15.00",
+            "mm": "0.0333"
+          },
+          {
+            "cap": "22000000",
+            "deduction": "248935",
+            "im": "0.0714",
+            "max_leverage": "14.00",
+            "mm": "0.0357"
+          },
+          {
+            "cap": "24000000",
+            "deduction": "310535",
+            "im": "0.0769",
+            "max_leverage": "13.00",
+            "mm": "0.0385"
+          },
+          {
+            "cap": "26000000",
+            "deduction": "387335",
+            "im": "0.0833",
+            "max_leverage": "12.00",
+            "mm": "0.0417"
+          },
+          {
+            "cap": "28000000",
+            "deduction": "486135",
+            "im": "0.0909",
+            "max_leverage": "11.00",
+            "mm": "0.0455"
+          },
+          {
+            "cap": "30000000",
+            "deduction": "612135",
+            "im": "0.1",
+            "max_leverage": "10.00",
+            "mm": "0.05"
+          },
+          {
+            "cap": "35000000",
+            "deduction": "780135",
+            "im": "0.1111",
+            "max_leverage": "9.00",
+            "mm": "0.0556"
+          },
+          {
+            "cap": "40000000",
+            "deduction": "1021635",
+            "im": "0.125",
+            "max_leverage": "8.00",
+            "mm": "0.0625"
+          },
+          {
+            "cap": "45000000",
+            "deduction": "1377635",
+            "im": "0.1429",
+            "max_leverage": "7.00",
+            "mm": "0.0714"
+          },
+          {
+            "cap": "50000000",
+            "deduction": "1913135",
+            "im": "0.1667",
+            "max_leverage": "6.00",
+            "mm": "0.0833"
+          },
+          {
+            "cap": "60000000",
+            "deduction": "2748135",
+            "im": "0.2",
+            "max_leverage": "5.00",
+            "mm": "0.1"
+          },
+          {
+            "cap": "80000000",
+            "deduction": "4248135",
+            "im": "0.25",
+            "max_leverage": "4.00",
+            "mm": "0.125"
+          },
+          {
+            "cap": "100000000",
+            "deduction": "7584135",
+            "im": "0.3333",
+            "max_leverage": "3.00",
+            "mm": "0.1667"
+          },
+          {
+            "cap": "150000000",
+            "deduction": "15914135",
+            "im": "0.5",
+            "max_leverage": "2.00",
+            "mm": "0.25"
+          },
+          {
+            "cap": "200000000",
+            "deduction": "30869135",
+            "im": "0.6993",
+            "max_leverage": "1.43",
+            "mm": "0.3497"
+          },
+          {
+            "cap": "250000000",
+            "deduction": "39049135",
+            "im": "0.7813",
+            "max_leverage": "1.28",
+            "mm": "0.3906"
+          },
+          {
+            "cap": "300000000",
+            "deduction": "66399135",
+            "im": "1",
+            "max_leverage": "1.00",
+            "mm": "0.5"
+          }
+        ]
+      }
+    },
+    "clock": {
+      "decision_ns": "0",
+      "lagged_cutoff_ns": "-86400000000000",
+      "modeled_d1_publication_delay_ns": "60000000000",
+      "utc_day_start_ns": "0"
+    },
+    "effective_flags": {
+      "conditional_sol": false,
+      "method_a_tp": true,
+      "paired_prefix": null,
+      "risk_mode": "HEDGE",
+      "sol_off": false,
+      "standalone_sol_enabled": false,
+      "standing_sol": false
+    },
+    "event": "RISK_INPUTS",
+    "feature": {
+      "available_ns": "-86340000000000",
+      "b": "0.015672393400768784539637486",
+      "beta": "1.205846711019932600346124964",
+      "end_ns": "-86400000000000",
+      "fund_b": "0",
+      "fund_s": "0",
+      "residual": "0.00180796292411156648851052033",
+      "rho": "0.9956960364932228545501451570",
+      "sigma_b": "0.01108304617753870851535862821",
+      "sigma_s": "0.01342222354156980922129954289",
+      "start_ns": "-2678400000000000"
+    },
+    "feature_end_ns": "-86400000000000",
+    "feature_start_ns": "-2678400000000000",
+    "funding_history": [
+      {
+        "available_ns": -2649600000000000,
+        "effective_ns": -2649600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2620800000000000,
+        "effective_ns": -2620800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2592000000000000,
+        "effective_ns": -2592000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2563200000000000,
+        "effective_ns": -2563200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2534400000000000,
+        "effective_ns": -2534400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2505600000000000,
+        "effective_ns": -2505600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2476800000000000,
+        "effective_ns": -2476800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2448000000000000,
+        "effective_ns": -2448000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2419200000000000,
+        "effective_ns": -2419200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2390400000000000,
+        "effective_ns": -2390400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2361600000000000,
+        "effective_ns": -2361600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2332800000000000,
+        "effective_ns": -2332800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2304000000000000,
+        "effective_ns": -2304000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2275200000000000,
+        "effective_ns": -2275200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2246400000000000,
+        "effective_ns": -2246400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2217600000000000,
+        "effective_ns": -2217600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2188800000000000,
+        "effective_ns": -2188800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2160000000000000,
+        "effective_ns": -2160000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2131200000000000,
+        "effective_ns": -2131200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2102400000000000,
+        "effective_ns": -2102400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2073600000000000,
+        "effective_ns": -2073600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2044800000000000,
+        "effective_ns": -2044800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2016000000000000,
+        "effective_ns": -2016000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1987200000000000,
+        "effective_ns": -1987200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1958400000000000,
+        "effective_ns": -1958400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1929600000000000,
+        "effective_ns": -1929600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1900800000000000,
+        "effective_ns": -1900800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1872000000000000,
+        "effective_ns": -1872000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1843200000000000,
+        "effective_ns": -1843200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1814400000000000,
+        "effective_ns": -1814400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1785600000000000,
+        "effective_ns": -1785600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1756800000000000,
+        "effective_ns": -1756800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1728000000000000,
+        "effective_ns": -1728000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1699200000000000,
+        "effective_ns": -1699200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1670400000000000,
+        "effective_ns": -1670400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1641600000000000,
+        "effective_ns": -1641600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1612800000000000,
+        "effective_ns": -1612800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1584000000000000,
+        "effective_ns": -1584000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1555200000000000,
+        "effective_ns": -1555200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1526400000000000,
+        "effective_ns": -1526400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1497600000000000,
+        "effective_ns": -1497600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1468800000000000,
+        "effective_ns": -1468800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1440000000000000,
+        "effective_ns": -1440000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1411200000000000,
+        "effective_ns": -1411200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1382400000000000,
+        "effective_ns": -1382400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1353600000000000,
+        "effective_ns": -1353600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1324800000000000,
+        "effective_ns": -1324800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1296000000000000,
+        "effective_ns": -1296000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1267200000000000,
+        "effective_ns": -1267200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1238400000000000,
+        "effective_ns": -1238400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1209600000000000,
+        "effective_ns": -1209600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1180800000000000,
+        "effective_ns": -1180800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1152000000000000,
+        "effective_ns": -1152000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1123200000000000,
+        "effective_ns": -1123200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1094400000000000,
+        "effective_ns": -1094400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1065600000000000,
+        "effective_ns": -1065600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1036800000000000,
+        "effective_ns": -1036800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1008000000000000,
+        "effective_ns": -1008000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -979200000000000,
+        "effective_ns": -979200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -950400000000000,
+        "effective_ns": -950400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -921600000000000,
+        "effective_ns": -921600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -892800000000000,
+        "effective_ns": -892800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -864000000000000,
+        "effective_ns": -864000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -835200000000000,
+        "effective_ns": -835200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -806400000000000,
+        "effective_ns": -806400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -777600000000000,
+        "effective_ns": -777600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -748800000000000,
+        "effective_ns": -748800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -720000000000000,
+        "effective_ns": -720000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -691200000000000,
+        "effective_ns": -691200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -662400000000000,
+        "effective_ns": -662400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -633600000000000,
+        "effective_ns": -633600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -604800000000000,
+        "effective_ns": -604800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -576000000000000,
+        "effective_ns": -576000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -547200000000000,
+        "effective_ns": -547200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -518400000000000,
+        "effective_ns": -518400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -489600000000000,
+        "effective_ns": -489600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -460800000000000,
+        "effective_ns": -460800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -432000000000000,
+        "effective_ns": -432000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -403200000000000,
+        "effective_ns": -403200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -374400000000000,
+        "effective_ns": -374400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -345600000000000,
+        "effective_ns": -345600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -316800000000000,
+        "effective_ns": -316800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -288000000000000,
+        "effective_ns": -288000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -259200000000000,
+        "effective_ns": -259200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -230400000000000,
+        "effective_ns": -230400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -201600000000000,
+        "effective_ns": -201600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -172800000000000,
+        "effective_ns": -172800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -144000000000000,
+        "effective_ns": -144000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -115200000000000,
+        "effective_ns": -115200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -86400000000000,
+        "effective_ns": -86400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "BTC",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2649600000000000,
+        "effective_ns": -2649600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2620800000000000,
+        "effective_ns": -2620800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2592000000000000,
+        "effective_ns": -2592000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2563200000000000,
+        "effective_ns": -2563200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2534400000000000,
+        "effective_ns": -2534400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2505600000000000,
+        "effective_ns": -2505600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2476800000000000,
+        "effective_ns": -2476800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2448000000000000,
+        "effective_ns": -2448000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2419200000000000,
+        "effective_ns": -2419200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2390400000000000,
+        "effective_ns": -2390400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2361600000000000,
+        "effective_ns": -2361600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2332800000000000,
+        "effective_ns": -2332800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2304000000000000,
+        "effective_ns": -2304000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2275200000000000,
+        "effective_ns": -2275200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2246400000000000,
+        "effective_ns": -2246400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2217600000000000,
+        "effective_ns": -2217600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2188800000000000,
+        "effective_ns": -2188800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2160000000000000,
+        "effective_ns": -2160000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2131200000000000,
+        "effective_ns": -2131200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2102400000000000,
+        "effective_ns": -2102400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2073600000000000,
+        "effective_ns": -2073600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2044800000000000,
+        "effective_ns": -2044800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -2016000000000000,
+        "effective_ns": -2016000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1987200000000000,
+        "effective_ns": -1987200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1958400000000000,
+        "effective_ns": -1958400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1929600000000000,
+        "effective_ns": -1929600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1900800000000000,
+        "effective_ns": -1900800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1872000000000000,
+        "effective_ns": -1872000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1843200000000000,
+        "effective_ns": -1843200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1814400000000000,
+        "effective_ns": -1814400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1785600000000000,
+        "effective_ns": -1785600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1756800000000000,
+        "effective_ns": -1756800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1728000000000000,
+        "effective_ns": -1728000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1699200000000000,
+        "effective_ns": -1699200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1670400000000000,
+        "effective_ns": -1670400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1641600000000000,
+        "effective_ns": -1641600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1612800000000000,
+        "effective_ns": -1612800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1584000000000000,
+        "effective_ns": -1584000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1555200000000000,
+        "effective_ns": -1555200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1526400000000000,
+        "effective_ns": -1526400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1497600000000000,
+        "effective_ns": -1497600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1468800000000000,
+        "effective_ns": -1468800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1440000000000000,
+        "effective_ns": -1440000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1411200000000000,
+        "effective_ns": -1411200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1382400000000000,
+        "effective_ns": -1382400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1353600000000000,
+        "effective_ns": -1353600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1324800000000000,
+        "effective_ns": -1324800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1296000000000000,
+        "effective_ns": -1296000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1267200000000000,
+        "effective_ns": -1267200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1238400000000000,
+        "effective_ns": -1238400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1209600000000000,
+        "effective_ns": -1209600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1180800000000000,
+        "effective_ns": -1180800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1152000000000000,
+        "effective_ns": -1152000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1123200000000000,
+        "effective_ns": -1123200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1094400000000000,
+        "effective_ns": -1094400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1065600000000000,
+        "effective_ns": -1065600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1036800000000000,
+        "effective_ns": -1036800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -1008000000000000,
+        "effective_ns": -1008000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -979200000000000,
+        "effective_ns": -979200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -950400000000000,
+        "effective_ns": -950400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -921600000000000,
+        "effective_ns": -921600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -892800000000000,
+        "effective_ns": -892800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -864000000000000,
+        "effective_ns": -864000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -835200000000000,
+        "effective_ns": -835200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -806400000000000,
+        "effective_ns": -806400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -777600000000000,
+        "effective_ns": -777600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -748800000000000,
+        "effective_ns": -748800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -720000000000000,
+        "effective_ns": -720000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -691200000000000,
+        "effective_ns": -691200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -662400000000000,
+        "effective_ns": -662400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -633600000000000,
+        "effective_ns": -633600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -604800000000000,
+        "effective_ns": -604800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -576000000000000,
+        "effective_ns": -576000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -547200000000000,
+        "effective_ns": -547200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -518400000000000,
+        "effective_ns": -518400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -489600000000000,
+        "effective_ns": -489600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -460800000000000,
+        "effective_ns": -460800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -432000000000000,
+        "effective_ns": -432000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -403200000000000,
+        "effective_ns": -403200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -374400000000000,
+        "effective_ns": -374400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -345600000000000,
+        "effective_ns": -345600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -316800000000000,
+        "effective_ns": -316800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -288000000000000,
+        "effective_ns": -288000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -259200000000000,
+        "effective_ns": -259200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -230400000000000,
+        "effective_ns": -230400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -201600000000000,
+        "effective_ns": -201600000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -172800000000000,
+        "effective_ns": -172800000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -144000000000000,
+        "effective_ns": -144000000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -115200000000000,
+        "effective_ns": -115200000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      },
+      {
+        "available_ns": -86400000000000,
+        "effective_ns": -86400000000000,
+        "interval_ns": 28800000000000,
+        "leg": "SOL",
+        "rate": "0"
+      }
+    ],
+    "input_binding": {
+      "config": {
+        "variant": "P3"
+      },
+      "data": {
+        "seed_sha256": "8541061707af51159263947bdb528f35339d77e81a82796683a14316419d6eae"
+      },
+      "policy": {
+        "BASE": "maker .00020 / taker .00055"
+      },
+      "source": {
+        "fixture": "actual immutable test source"
+      }
+    },
+    "inputs_ref": "risk:1",
+    "native_instruments": [
+      {
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "maker_fee": "0.001",
+        "price_increment": "0.1",
+        "size_increment": "0.001",
+        "taker_fee": "0.001"
+      },
+      {
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "maker_fee": "0.001",
+        "price_increment": "0.01",
+        "size_increment": "0.1",
+        "taker_fee": "0.001"
+      }
+    ],
+    "observations": [
+      {
+        "available_ns": -2678340000000000,
+        "btc": "104.12383618955683",
+        "end_ns": -2678400000000000,
+        "sol": "104.76431571760064"
+      },
+      {
+        "available_ns": -2591940000000000,
+        "btc": "105.59587798415447",
+        "end_ns": -2592000000000000,
+        "sol": "106.58528932276388"
+      },
+      {
+        "available_ns": -2505540000000000,
+        "btc": "107.25081812542156",
+        "end_ns": -2505600000000000,
+        "sol": "108.7628893808825"
+      },
+      {
+        "available_ns": -2419140000000000,
+        "btc": "108.93169513963747",
+        "end_ns": -2419200000000000,
+        "sol": "110.98497908708735"
+      },
+      {
+        "available_ns": -2332740000000000,
+        "btc": "110.47170762736407",
+        "end_ns": -2332800000000000,
+        "sol": "112.91407790382529"
+      },
+      {
+        "available_ns": -2246340000000000,
+        "btc": "111.71165422778905",
+        "end_ns": -2246400000000000,
+        "sol": "114.31284830817332"
+      },
+      {
+        "available_ns": -2159940000000000,
+        "btc": "112.51910301452308",
+        "end_ns": -2160000000000000,
+        "sol": "115.10512134567782"
+      },
+      {
+        "available_ns": -2073540000000000,
+        "btc": "112.80607409657644",
+        "end_ns": -2073600000000000,
+        "sol": "115.33262331746658"
+      },
+      {
+        "available_ns": -1987140000000000,
+        "btc": "112.54160908565815",
+        "end_ns": -1987200000000000,
+        "sol": "115.05265740030686"
+      },
+      {
+        "available_ns": -1900740000000000,
+        "btc": "111.75634782760437",
+        "end_ns": -1900800000000000,
+        "sol": "114.26853009639109"
+      },
+      {
+        "available_ns": -1814340000000000,
+        "btc": "110.53801054082551",
+        "end_ns": -1814400000000000,
+        "sol": "112.95177572085105"
+      },
+      {
+        "available_ns": -1727940000000000,
+        "btc": "109.01887536318907",
+        "end_ns": -1728000000000000,
+        "sol": "111.13448688402393"
+      },
+      {
+        "available_ns": -1641540000000000,
+        "btc": "107.35812258683588",
+        "end_ns": -1641600000000000,
+        "sol": "108.9880184234251"
+      },
+      {
+        "available_ns": -1555140000000000,
+        "btc": "105.72266909718854",
+        "end_ns": -1555200000000000,
+        "sol": "106.81318765804996"
+      },
+      {
+        "available_ns": -1468740000000000,
+        "btc": "104.26971164921757",
+        "end_ns": -1468800000000000,
+        "sol": "104.94046769423555"
+      },
+      {
+        "available_ns": -1382340000000000,
+        "btc": "103.13299163238348",
+        "end_ns": -1382400000000000,
+        "sol": "103.60913518098928"
+      },
+      {
+        "available_ns": -1295940000000000,
+        "btc": "102.41337918491564",
+        "end_ns": -1296000000000000,
+        "sol": "102.90299980205711"
+      },
+      {
+        "available_ns": -1209540000000000,
+        "btc": "102.17327903373821",
+        "end_ns": -1209600000000000,
+        "sol": "102.77414863280404"
+      },
+      {
+        "available_ns": -1123140000000000,
+        "btc": "102.43386390915674",
+        "end_ns": -1123200000000000,
+        "sol": "103.12858944976941"
+      },
+      {
+        "available_ns": -1036740000000000,
+        "btc": "103.17425308077593",
+        "end_ns": -1036800000000000,
+        "sol": "103.9112255154568"
+      },
+      {
+        "available_ns": -950340000000000,
+        "btc": "104.33229224850945",
+        "end_ns": -950400000000000,
+        "sol": "105.1297501887684"
+      },
+      {
+        "available_ns": -863940000000000,
+        "btc": "105.8072810727437",
+        "end_ns": -864000000000000,
+        "sol": "106.80014780864686"
+      },
+      {
+        "available_ns": -777540000000000,
+        "btc": "107.46553440638131",
+        "end_ns": -777600000000000,
+        "sol": "108.85388986154418"
+      },
+      {
+        "available_ns": -691140000000000,
+        "btc": "109.14977653862181",
+        "end_ns": -691200000000000,
+        "sol": "111.07783876101308"
+      },
+      {
+        "available_ns": -604740000000000,
+        "btc": "110.69287213340324",
+        "end_ns": -604800000000000,
+        "sol": "113.14169419090787"
+      },
+      {
+        "available_ns": -518340000000000,
+        "btc": "111.9353011085766",
+        "end_ns": -518400000000000,
+        "sol": "114.71158956833494"
+      },
+      {
+        "available_ns": -431940000000000,
+        "btc": "112.74436640885872",
+        "end_ns": -432000000000000,
+        "sol": "115.58212825821234"
+      },
+      {
+        "available_ns": -345540000000000,
+        "btc": "113.0319120074011",
+        "end_ns": -345600000000000,
+        "sol": "115.7349217138407"
+      },
+      {
+        "available_ns": -259140000000000,
+        "btc": "112.76691753717816",
+        "end_ns": -259200000000000,
+        "sol": "115.28458471338078"
+      },
+      {
+        "available_ns": -172740000000000,
+        "btc": "111.9800841850382",
+        "end_ns": -172800000000000,
+        "sol": "114.36413707430843"
+      },
+      {
+        "available_ns": -86340000000000,
+        "btc": "110.75930778538607",
+        "end_ns": -86400000000000,
+        "sol": "113.04628098768151"
+      }
+    ],
+    "parent": null,
+    "risk_episode_id": "None:0",
+    "schema": "coinmaster.method-a-risk.v1",
+    "selected_leverage": {
+      "BTCUSDT-PERP.P1SIM": "40",
+      "SOLUSDT-PERP.P1SIM": "20"
+    },
+    "selection_rows": [],
+    "sequence": 1,
+    "snapshot_ref": null,
+    "timestamp_ns": "0"
+  },
+  "schema": "coinmaster.method-a-risk.v1",
+  "scope": "ENGINE_FREE_PUBLIC_INPUT_HEADER_AND_NATIVE_TYPES_ONLY"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "PRODUCER_SHARED_INPUT_CHECKPOINT_NOT_NATIVE_READY",
+  "base": "5c31bbebb96a075aa9e3ab01f08ae060f6622a68",
+  "engine_constructors": 0,
+  "native_attempts": 0,
+  "focused_tests": "12 PASS actual public objects / no engine",
+  "protected_wave_method_ASTs": 104,
+  "closed_reviews_unchanged": [
+    "12cbafa core",
+    "eadcbc3 two integration corrections",
+    "5c31bbe ALLOW enum and public factory"
+  ],
+  "producer_delta": [
+    "once-per-feature RISK_INPUTS raw31closes and complete signed funding intervals",
+    "exact captured tier/BASE instrument fee/clock/source/config/data/policy descriptors",
+    "per-CID envelope input state/cost/generation plus stockguard reference",
+    "registered native QuoteTick receipt with global/per-leg counters",
+    "bounded gzip streams and final references without cache mutation",
+    "native fill pre/post controller references and sole terminal dispatcher QUOTE/CACHE receipt"
+  ],
+  "public_builder": "runtime/tests/method_a_sol_public.py",
+  "blockers": [
+    "shared launch runner source/universe gate and before-cleanup assertions unfinished",
+    "M2/M3/M8 exact immutable recipe files not yet frozen",
+    "M4-M7 data helper draft bytes prepared but native reachability not qualified; real M5 stock-margin DENY numerical witness absent",
+    "consumer final literal binding alignment remains pending; examples are type-only, no synthetic execution chain"
+  ],
+  "native_readiness": false,
+  "root_GO": false,
+  "dirty_financial_files": "preserved exact SHA / unstaged"
+}
