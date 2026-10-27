@@ -1,0 +1,20 @@
+{
+  "actual_P0_financial_results": "NOT_READ_BY_IMPLEMENTATION_OR_UNIT_PROOF",
+  "cash_residual_policy": "STRICT_ZERO_NONZERO_UNKNOWN_NO_WIDENING",
+  "checks": [
+    "Decimal50_exact_fractional_tail_ES20_no_clipping",
+    "strict_native_cash_residual_zero_no_tolerance",
+    "old_A0_gate_schema_rejected",
+    "prestrategy_native_cache_transition_not_TP_failure",
+    "before_matching_actual_missing_TP_failclosed",
+    "disk_dedup_identical_native_ID_vs_conflict",
+    "Money_string_numeric_currency_exact"
+  ],
+  "engine_constructors": 0,
+  "metric_contract_sha256": "ca815cbe3b8e163b16ccca8e388c9299125f74f0e1dd10beaa3ee15e4fe31102",
+  "native_modules_imported": 0,
+  "reused_metric_reader_sha256": "53767502d749d75e624a8e9ec1c8957c6444b399f288530c9ab66821e6c995e2",
+  "runtime_source": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "status": "METHOD_A_FINANCIAL_ADAPTER_PURE_PASS",
+  "wrapper_checkpoint": "334bc5a56bef36e981022c1fd2d22dc9ffd4c74f"
+}

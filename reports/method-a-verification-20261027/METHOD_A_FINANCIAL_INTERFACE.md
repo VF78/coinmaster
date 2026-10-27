@@ -1,0 +1,29 @@
+# Method-A completed-result financial reader
+
+Packet-only/disjoint from334 wrappers; all runtime a4dd bytes and frozen execution wrappers unchanged. No engine imports, new PnL engine, native calls, supervisor or ledger mutation. No actual P0 financial amounts were read during implementation/tests. Source arithmetic is predeclared metricca815 Decimal50: unchanged fractional-tail ES20,136 UTC endpoints, earliest native both-flat/order-quiescent parent endpoints, separate coherent event and settled peak/DD and signed funding SQLite/account/observer reconciliation. Reused computation source financial_reader.py SHA53767502d749d75e624a8e9ec1c8957c6444b399f288530c9ab66821e6c995e2; old approval/schema/labels/A0 rights are not reused as authority.
+
+## Root gate and exact command
+
+Root writes gate schema METHOD_A_FINANCIAL_READ_GATE_V1 with decision ROOT_APPROVED_FINANCIAL_READ, approved_by /root, completed_result_only true, label P0/P1, source_commit a4dd4694284192dc7fe063495ac3e727efff4b38, actual attempt_id and completed_attempt_sha256. Pins: metric{path,sha256}=ca815, financial_contract, freeze, ledger_snapshot, report, completion_manifest, supervisor. current_ledger_path is canonical unified17 ledger. roles is exact four-role map report/orders/funding/coherent, each{path,sha256}. reader_pins is exactly method_a_financial_binding.py and method_a_financial_reader.py (actual absolute paths/hash). output is a fresh absolute risk JSON path with existing parent directory.
+
+`PYTHONPATH=ABS_FINANCIAL_PACKET:ABS_FROZEN_334_PACKET PYTHON3_12 ABS_FINANCIAL_PACKET/method_a_financial_reader.py --gate ABS_ROOT_FINANCIAL_GATE.json --gate-sha256 EXACT_GATE_SHA`
+
+prefix_common.py must be importable and byte-identical to freeze's334 script pin. Financial reader imports no Nautilus. Binding verifies actual completed current/snapshot UUID, report/manifest/supervisor/source/PID/OS/freeze/config/kwargs/input/recipe/common economics and actual3frozen profile identity; rehashes all four financial roles/four extra evidence outputs and source seal. P1 additionally compares actual P0 qualified common identity/input/profile and normalized exact decoded kwargs (only label/artifact namespace/TP flag differences allowed). No P0 actual-3TP requirement and no A0 release requirement.
+
+## Native cash proof and fees
+
+Only actual AFTER on_position_event PositionClosed UUIDs supply immutable native realized_pnl. They are deduplicated on disk, joined to public closed Position fill history and actual AFTER on_order_filled TradeID/eventUUID/OID/quantity/commission facts. Closed history must cover every native fill exactly, with matching amounts/currency/identity. Native Position realized PnL already includes settlement-currency commissions (stock1.231 position.pyx895–922/930–957); do not subtract those same fees again. Actual fill fees separately reconcile with report.native_fees and fee audit. Signed funding comes only from native funding_cash rows and matching coherent before/after native account transitions, perinstrument; no unallocated cash bridge is called funding.
+
+Identity: native terminal minus10000 minus sum(native PositionClosed realized NETfees) minus signed native funding. Default residual must be EXACT0. Nonzero is UNKNOWN, preserved as-is, never tolerated, reclassified as funding or fee rewrite. Root may later require exact source/native-object attribution of an existing residual; this reader invents no threshold or automatic waiver. Cash+nativeUPNL bridge, complete epoch/fill snapshots and full source-minute coverage are separately checked, never substituted for complete realized/account reconciliation.
+
+## P1 and control contract
+
+P0 native_3TP=NOT_APPLICABLE_LEGACY_CONTROL is the predeclared legacy control exemption. P1 evaluates actual accepted/partially-filled native reduce-only TP owners, current native ACK/no unresolved modify, cumulative integer actual-entry grants17/80 +17/80 +rest, actual filled/retired consumption and Cache held conservation at BEFORE_NATIVE_MATCHING_INPUT. BEFORE_STRATEGY callback frames are explicitly native-cache-already-mutated transitional states and are not labelled missing protection. Every interior BTC/SOL source quote is checked on disk (2×195839 unique source minute/instrument keys); every full/ref state hash and frame sequence is checked. Missing facts fail closed; no old realU missing-three-TP counter stands in for new evidence. OldSOL eligibility/ownership facts are diagnostic and source-bound.
+
+No DD<=50 performance condition is applied to diagnostic P0/P1 accounting. Output has12 explicit financial gates (native fee reconciliation separately exposed), qualified only when allPASS except exact P0 legacy3TP exemption. Parent ES UNKNOWN is explicit if native endpoints cannot be proven; no fabricated endpoint. Prefix/full/profit admission remains root protocol, not reader permission.
+
+Risk output includes exact physical_binding with report/manifest/supervisor/current completed-row digest/full physical_identity and actual artifact_roles map, suitable for root's CM_METHOD_A_FINANCIAL_QUALIFICATION_V1 receipt only AFTER independent actual analysis. Reader itself does not create qualification receipts, grant P1 GO or write native ledger. Failed/UNKNOWN facts remain visible in financial_gates, stream/protection issues and strict cash reconciliation residual.
+
+## Focused verification
+
+Stdlib-only pure test rejects all Nautilus imports, checks Decimal50 fractional tail/no clipping, strict-zero versus1e-8 residual, old A0 gate rejection, transitional-beforestrategy versus actual beforematching missing-TP distinction and identical/conflicting disk-dedup facts. Constructor0/nativeimports0. No actual P0 financial analysis occurred in these tests and no actual PASS was prefilled. Source syntax checked; runtime and334 wrappers remain byte-identical.
