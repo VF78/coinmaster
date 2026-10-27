@@ -333,6 +333,7 @@ class MethodARiskResearch:
             self._pair_cancel_btc_increases(ns)
             self._mr_recover(tick,state,feature,ev)
             return
+        p['debt_since']=None  # Only a fresh actual safe snapshot clears breach debt.
         if p['protection_since'] is not None and ns>p['protection_since']:
             raise ValueError('PROTECTION_OVERDUE_NEXT_QUOTE')
         if self._pair_qty(self.config.sol_id):
@@ -370,7 +371,7 @@ class MethodARiskResearch:
         self._mr_log('RECOVERY_DECISION',tick.ts_event,recovery_ref=self._mr_recovery_ref,selected_leg=leg,quantity=str(D(d)*self.cache.instrument(iid).size_increment.as_decimal()),initial_signed_deficit=str(initial.worst_deficit),full_signed_deficit=str(objective),remaining_btc=str(-negative_btc),turnover=str(turnover),legal_feasible_intervals=proof)
         p=self._pair;p['debt_since']=p['debt_since'] if p['debt_since'] is not None else tick.ts_event
         if tick.ts_event>p['debt_since']+MINUTE:raise ValueError('RECOVERY_DEADLINE')
-        if tick.instrument_id==iid and not self._pair_work(instrument=iid):
+        if tick.instrument_id==iid and self._mr_recovery_ready(iid,tick.ts_event):
             lot=self.cache.instrument(iid).size_increment.as_decimal()
             self._pair_submit(iid,-1 if (state.btc if leg=='BTC' else state.sol)>0 else 1,D(d)*lot,'BTC_DEBT' if leg=='BTC' else 'SOL_CAP',tick.ts_event)
 
@@ -580,7 +581,12 @@ class MethodARiskResearch:
         try:
             state,feature=self._mr_snapshot(ns);ev=evaluate(state,feature,self._mr_margin)
             self._pair['caps'].bmax=abs(state.btc)
-            if state.cushion<=0 or ev.worst_deficit>0 or not ev.margin_pass:
+            if state.cushion<=0:
+                self._mr_fail('CUSHION_BREACH',ns);return
+            if ev.worst_deficit>0 or not ev.margin_pass:
+                if self._pair['debt_since'] is None:self._pair['debt_since']=ns
+                if ns>self._pair['debt_since']+MINUTE:
+                    self._mr_fail('RECOVERY_DEADLINE',ns);return
                 self._pair_cancel_btc_increases(ns)
                 choices=[]
                 liabilities=self._mr_liabilities(ns)
@@ -593,8 +599,9 @@ class MethodARiskResearch:
                 objective,negative_btc,turnover,leg,iid,d,held,proof=min(choices,key=lambda x:x[:4])
                 self._mr_recovery_ref='recovery:'+str(self._mr_sequence+1)
                 self._mr_log('RECOVERY_DECISION',ns,recovery_ref=self._mr_recovery_ref,selected_leg=leg,quantity=str(D(d)*self.cache.instrument(iid).size_increment.as_decimal()),initial_signed_deficit=str(ev.worst_deficit),full_signed_deficit=str(objective),remaining_btc=str(-negative_btc),turnover=str(turnover),legal_feasible_intervals=proof)
-                if not self._pair_work(instrument=iid):
+                if self._mr_recovery_ready(iid,ns):
                     self._pair_submit(iid,-1 if held>0 else 1,D(d)*self.cache.instrument(iid).size_increment.as_decimal(),'BTC_DEBT' if leg=='BTC' else 'SOL_CAP',ns)
+            else:self._pair['debt_since']=None
         except (ValueError,KeyError,TypeError) as error:self._mr_fail(str(error),ns)
         finally:self._mr_after_busy=False
 
@@ -740,3 +747,28 @@ class MethodARiskResearch:
         allowed=super()._tier_allows_increase(instrument_id,side,quantity,ts_now)
         self._mr_log('NATIVE_STOCK_GUARD_RESULT',ts_now,instrument=str(instrument_id),side=getattr(side,'name',str(side)),quantity=str(quantity),allowed=allowed)
         return allowed
+
+
+    def _mr_recovery_ready(self,instrument,ns):
+        """Same sole-reduction blockers as the frozen SOL reduction helper.
+
+        Positive TP/STOP remain live; ENTRY, existing reduction, retiring or
+        foreign ownership blocks. No new OMS, cancellation of positive
+        protection, or optimistic unknown ACK is introduced.
+        """
+        if instrument==self.config.btc_id:
+            return not self._pair_work(instrument=instrument,kinds={'BTC_DEBT'})
+        p=self._pair
+        if p is None or p.get('failed') or p.get('stop_filled'):return False
+        entries=self._pair_work(instrument=self.config.sol_id,kinds={'ENTRY'})
+        if any(order is None or owner.get('parent')!=p['parent'] or order.strategy_id!=self.id or order.is_reduce_only
+            or order.side!=(OrderSide.SELL if p['side']==1 else OrderSide.BUY) for oid,owner,order in entries):return False
+        if self._pair_cancel(entries):return False
+        if self._pair_work(instrument=self.config.sol_id,kinds={'SOL_CAP','SOL_CLOSE'}) or self._pair_sol_retire_busy():return False
+        for order in self.cache.orders_open()+self.cache.orders_inflight():
+            if order.instrument_id==self.config.sol_id:
+                owner=self._pair_orders.get(str(order.client_order_id))
+                if not owner or owner.get('parent')!=p['parent'] or order.strategy_id!=self.id or owner['kind'] not in {'TP','STOP'}:return False
+        self._pair_sol_protect(ns)
+        if p.get('failed') or p.get('protection_since') is not None:return False
+        return all(self._pair_sol_positive(order,exact=True) for oid,owner,order in self._pair_work(instrument=self.config.sol_id,kinds={'TP','STOP'}))

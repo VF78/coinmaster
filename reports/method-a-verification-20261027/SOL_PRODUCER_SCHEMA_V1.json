@@ -159,7 +159,12 @@
   },
   "consumer_scope": "Read-only report adaptation for P2/P4/P3. Reuse existing exact cash/fees/signed funding/coherent-DD reconciliation; separately prove actual hedge>0, once-episode, native real3TP/STOP/retirement/soleClose, safeBTCafterSOLTP, dangerousBTCactualRecovery, original-second expiry/no-restore and producer causal frame completeness. No runtime writes, native constructors or control reruns.",
   "producer_implementation_status": "PARTIAL_HOLD_NOT_YET_A_CAUSAL_QUALIFICATION_INTERFACE",
-  "public_type_roundtrip_example": "PENDING",
+  "public_type_roundtrip_example": {
+    "path": "SOL_PUBLIC_TYPE_EXAMPLE_V1.json",
+    "sha256": "13cf5085b96cfb15ba3b31543d51d661299cd09cb0b3b16430447b3820f5fc0e",
+    "scope": "ENGINE_FREE_PUBLIC_TYPE_ROUNDTRIP_ONLY_NOT_NATIVE_RESULT",
+    "qualified": false
+  },
   "remaining_exact_binding": [
     "native boundary witness registration and complete receipt stream",
     "stream references wired to final report",

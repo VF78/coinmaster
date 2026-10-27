@@ -1,0 +1,213 @@
+{
+  "engine_constructors": 0,
+  "exact_zero_shock_example": {
+    "exact_equal": true,
+    "leg": "SOL",
+    "native_initial": "2",
+    "native_maintenance": "0.2",
+    "native_position_id": "EXAMPLE-SOL-POSITION",
+    "scenario_zero_initial": "2",
+    "scenario_zero_maintenance": ".2"
+  },
+  "identity_semantics": {
+    "boundary_state_ref": "paired:<monotone-paired-sequence>",
+    "coherent_peak_source": "actual observer sequence/epoch/native peak; this example has no observed peak",
+    "risk_episode_id": "<native-parent-id>:<risk-episode-counter>",
+    "snapshot_ref": "risk:<monotone-risk-sequence>"
+  },
+  "nested_examples": {
+    "native_account": {
+      "balances_free": {
+        "USDT": {
+          "amount": "9997.8",
+          "currency": "USDT",
+          "text": "9997.80000000 USDT"
+        }
+      },
+      "balances_locked": {
+        "USDT": {
+          "amount": "2.2",
+          "currency": "USDT",
+          "text": "2.20000000 USDT"
+        }
+      },
+      "balances_total": {
+        "USDT": {
+          "amount": "10000",
+          "currency": "USDT",
+          "text": "10000.00000000 USDT"
+        }
+      },
+      "base_currency": "USDT",
+      "commissions": {},
+      "complete": true,
+      "default_leverage": "1",
+      "errors": [],
+      "id": "SIM-EXAMPLE",
+      "instruments": {
+        "BTCUSDT-PERP.P1SIM": {
+          "leverage": {
+            "status": "ABSENT_NATIVE_VALUE"
+          },
+          "margin_init": {
+            "status": "ABSENT_NATIVE_VALUE"
+          },
+          "margin_maint": {
+            "status": "ABSENT_NATIVE_VALUE"
+          }
+        },
+        "SOLUSDT-PERP.P1SIM": {
+          "leverage": {
+            "status": "ABSENT_NATIVE_VALUE"
+          },
+          "margin_init": {
+            "amount": "2",
+            "currency": "USDT",
+            "text": "2.00000000 USDT"
+          },
+          "margin_maint": {
+            "amount": "0.2",
+            "currency": "USDT",
+            "text": "0.20000000 USDT"
+          }
+        }
+      },
+      "status": "KNOWN",
+      "type": "MARGIN"
+    },
+    "native_fill": {
+      "account_id": "SIM-EXAMPLE",
+      "client_order_id": "O-19700101-000000-001-001-1",
+      "commission": "0.02200000 USDT",
+      "currency": "USDT",
+      "event_id": "1604e0f4-1ab7-4823-b2f7-09ec9159fe98",
+      "info": {},
+      "instrument_id": "SOLUSDT-PERP.P1SIM",
+      "last_px": "100.00",
+      "last_qty": "0.4",
+      "liquidity_side": "TAKER",
+      "order_side": "SELL",
+      "order_type": "MARKET",
+      "position_id": "EXAMPLE-SOL-POSITION",
+      "reconciliation": false,
+      "strategy_id": "MethodA-001",
+      "trade_id": "EXAMPLE-TRADE",
+      "trader_id": "EXAMPLE-001",
+      "ts_event": 1,
+      "ts_init": 1,
+      "type": "OrderFilled",
+      "venue_order_id": "EXAMPLE-VENUE-ENTRY"
+    },
+    "native_order": {
+      "account_id": "SIM-EXAMPLE",
+      "avg_px": null,
+      "client_order_id": "O-19700101-000000-001-001-2",
+      "commissions": null,
+      "contingency_type": "NO_CONTINGENCY",
+      "display_qty": null,
+      "emulation_trigger": "NO_TRIGGER",
+      "exec_algorithm_id": null,
+      "exec_algorithm_params": null,
+      "exec_spawn_id": null,
+      "expire_time_ns": null,
+      "filled_qty": "0.0",
+      "init_id": "820a1fd8-e4b3-4ff3-be45-1d699b4c23c8",
+      "instrument_id": "SOLUSDT-PERP.P1SIM",
+      "is_post_only": false,
+      "is_quote_quantity": false,
+      "is_reduce_only": true,
+      "last_trade_id": null,
+      "linked_order_ids": null,
+      "liquidity_side": "NO_LIQUIDITY_SIDE",
+      "order_list_id": null,
+      "parent_order_id": null,
+      "position_id": null,
+      "price": "98.00",
+      "quantity": "0.3",
+      "side": "BUY",
+      "slippage": null,
+      "status": "ACCEPTED",
+      "strategy_id": "MethodA-001",
+      "tags": null,
+      "time_in_force": "GTC",
+      "trader_id": "EXAMPLE-001",
+      "trigger_instrument_id": null,
+      "ts_init": 0,
+      "ts_last": 4,
+      "type": "LIMIT",
+      "venue_order_id": "EXAMPLE-VENUE-TP"
+    },
+    "native_positions": [
+      {
+        "account_id": "SIM-EXAMPLE",
+        "avg_px_close": null,
+        "avg_px_open": 100.0,
+        "base_currency": "SOL",
+        "closing_order_id": null,
+        "commissions": [
+          "0.02200000 USDT"
+        ],
+        "duration_ns": null,
+        "entry": "SELL",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "opening_order_id": "O-19700101-000000-001-001-1",
+        "peak_qty": "0.4",
+        "position_id": "EXAMPLE-SOL-POSITION",
+        "quantity": "0.4",
+        "quote_currency": "USDT",
+        "realized_pnl": "-0.02200000 USDT",
+        "realized_return": 0.0,
+        "settlement_currency": "USDT",
+        "side": "SHORT",
+        "signed_qty": -0.4,
+        "strategy_id": "MethodA-001",
+        "trader_id": "EXAMPLE-001",
+        "ts_closed": null,
+        "ts_init": 1,
+        "ts_last": 1,
+        "ts_opened": 1
+      }
+    ],
+    "native_updated": {
+      "account_id": "SIM-EXAMPLE",
+      "client_order_id": "O-19700101-000000-001-001-2",
+      "event_id": "d1cafb1a-fb3a-454b-ba95-2d897542d391",
+      "instrument_id": "SOLUSDT-PERP.P1SIM",
+      "is_quote_quantity": false,
+      "price": "98.00",
+      "quantity": "0.3",
+      "reconciliation": false,
+      "strategy_id": "MethodA-001",
+      "trader_id": "EXAMPLE-001",
+      "trigger_price": null,
+      "ts_event": 4,
+      "ts_init": 4,
+      "type": "OrderUpdated",
+      "venue_order_id": "EXAMPLE-VENUE-TP"
+    }
+  },
+  "qualification_limit": "Public nested types only. No lifecycle/once-episode/closed-cash/coherent-peak evidence; consumer must return UNKNOWN.",
+  "qualified": false,
+  "reference_shape": {
+    "completeness": "ALL_EMITTED_ROWS_NO_SAMPLING",
+    "kind": "risk",
+    "native_state_mutations": 0,
+    "path": "EXAMPLE_ONLY_NOT_A_NATIVE_REPORT.jsonl.gz",
+    "rows": 0,
+    "schema": "coinmaster.method-a-risk.v1",
+    "sha256": null
+  },
+  "schema": "coinmaster.method-a-risk.v1",
+  "scope": "ENGINE_FREE_PUBLIC_TYPE_ROUNDTRIP_ONLY_NOT_NATIVE_RESULT",
+  "trim_mapping": {
+    "action": "PAIRED_BTC_DEBT",
+    "genuine_tp_action": "BTC_REDUCE",
+    "genuine_tp_levels": [
+      0,
+      1,
+      2
+    ],
+    "level": null,
+    "writer": "MethodARiskResearch._pair_fill -> btc_risk_retired_lots; then existing _ma_reconcile"
+  }
+}

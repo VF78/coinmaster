@@ -1,0 +1,35 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "SINGLE_CORRECTION_BATCH_FROZEN_STILL_NOT_NATIVE_READY",
+  "reviewed_failed_source": "f3dcd29e879cb51b8c3a51561a9f22539cce6e5d",
+  "findings_addressed": [
+    "P1_CONCRETE_CLASS_SHADOWED_MANDATORY_MIXIN_HOOKS",
+    "P1_POSITIVE_SOL_PROTECTION_BLOCKED_SELECTED_RECOVERY"
+  ],
+  "changes": [
+    "risk_ON_only_top_subclass_precedes_concrete_Wave_hooks",
+    "registered_strategy_type_chosen_before_existing_minute_observer_class",
+    "same_sole_reduction_owner_blockers_preserve_positive_TP_STOP",
+    "postfill_first_breach_clock_and_C_nonpositive_failclosed"
+  ],
+  "checks": {
+    "focused_interface_tests": 5,
+    "actual_bound_hooks": 4,
+    "actual_typed_OrderUpdated_UUID_dedup": "PASS",
+    "protected_SOL_recovery_and_ENTRY_CAP_foreign_retiring_blockers": "PASS",
+    "public_native_type_roundtrip": "PASS",
+    "old_Wave_method_AST_equal": 104,
+    "BacktestEngine_constructors": 0
+  },
+  "public_example_sha256": "13cf5085b96cfb15ba3b31543d51d661299cd09cb0b3b16430447b3820f5fc0e",
+  "readiness": false,
+  "pre_engine_HOLD_preserved": true,
+  "remaining": [
+    "complete_producer_factual_schema_stream_wiring",
+    "one_consumer_literal_alignment_and_factual_validator",
+    "seven_exact_public_case_recipes",
+    "focused_independent_correction_review_then_root_freeze"
+  ],
+  "physical_attempts_by_this_owner": 0,
+  "pilot_production_changes": 0
+}

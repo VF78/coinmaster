@@ -209,7 +209,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
 from coinmaster.strategy.standing_tp import StandingTPResearch
 
 
-class WaveOverlayStrategy(MethodARiskResearch, MethodATpResearch, StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixResearch, MarketRedesignResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
@@ -3208,3 +3208,13 @@ class WaveOverlayStrategy(MethodARiskResearch, MethodATpResearch, StandingTPRese
             terminal = getattr(sink, "terminal", None)
             if callable(terminal):
                 terminal(client_order_id)
+
+
+class MethodAWaveOverlayStrategy(MethodARiskResearch, WaveOverlayStrategy):
+    """Registered risk-ON class: mandatory wrappers precede concrete Wave hooks.
+
+    Diagnostic P0/P1/P2 construct WaveOverlayStrategy itself, retaining its
+    original MRO and method bodies. Only the new registered flag selects this
+    subclass, before the existing minute-risk observer class is derived.
+    """
+    pass

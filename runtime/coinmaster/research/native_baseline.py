@@ -1022,10 +1022,13 @@ def run_native_diagnostic(
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
     risk_recorder = None
     strategy_type = WaveOverlayStrategy
+    if research_method_a_risk is not None:
+        from coinmaster.strategy.wave_overlay import MethodAWaveOverlayStrategy
+        strategy_type = MethodAWaveOverlayStrategy
     if observe_minute_risk:
         from coinmaster.research.minute_risk import NativeMinuteRiskRecorder, observed_strategy_type
         risk_recorder = NativeMinuteRiskRecorder(artifacts_root / "minute-native-risk.csv.gz", initial_active_seed, (btc_instrument, sol_instrument), dict(selected_leverage), trading_end_ms * 1_000_000)
-        strategy_type = observed_strategy_type(WaveOverlayStrategy, risk_recorder)
+        strategy_type = observed_strategy_type(strategy_type, risk_recorder)
     cover_hour_seed = ()
     cover_warmup_hashes = {}
     if research_sol_cover or research_conditional_sol or research_sol_risk_first:
