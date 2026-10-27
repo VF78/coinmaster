@@ -1,0 +1,41 @@
+# Method A TP — независимый source review d97a15d
+
+**REQUEST_CHANGES: P0=0, P1=4, P2=0.** Exact source `d97a15d818a3a5dc1416fd41f5e33ab2a8ccaedd`, base `a50af5433a0bbe00aecd6fec26e8d5c0321ced80`. One review pass, native/tests/engines0; uncommitted harness excluded.
+
+## TP-D97-01 [P1] Terminal fill does not release replacement cancel ownership
+
+`runtime/coinmaster/strategy/method_a_tp.py:125`
+
+Replacement records every mismatched target in expected_cancels (119), then blocks all replenishment while that set is nonempty (125–126). Only _ma_terminal discards the ID (179), and it is called from on_order_canceled only. A full native fill during pending cancel goes through _ma_after_fill (wave_overlay.py:2518), removes the normal pending mapping, but never clears expected_cancels. Fully filled orders need not receive a cancel ACK; all later TP replacement and new SECOND inventory protection remain blocked indefinitely.
+
+Correction: Retire replacement ownership on authoritative terminal full-fill as well as canceled terminal; preserve actual late partial fills and never treat command issuance as ACK.
+
+## TP-D97-02 [P1] New positive TP bypasses raw-zero oldSOL eligibility guard
+
+`runtime/coinmaster/strategy/method_a_tp.py:163`
+
+Method A now creates real positive TP for every bucket, including btc_omitted_zero_levels. Before this hook, shared domain.on_fill unconditionally adds the filled level to sol_rights (domain/wave_overlay.py:502) and stamps its decision cycle (531). This hook only restores its fraction; it leaves the newly created right in place. A positive actual TP reached below the deferred raw q0 reference can therefore authorize omitted-level SOL before the original crossing and paired-session gate (_activate_selective_sol_rights, wave_overlay.py:1618–1642). The causal contract explicitly preserves that raw-level eligibility gate.
+
+Correction: Keep omitted-level actual TP consumption independent from oldSOL activation, which must still pass the original causal crossing/session guard.
+
+## TP-D97-03 [P1] Replacement compares nominal TP with a different submitted wire price
+
+`runtime/coinmaster/strategy/method_a_tp.py:116`
+
+Reconciler prices are computed from completed FIRST PLANREF (94–97), but shared submission can move the actual limit outward to _fee_floor_price based on cumulative blended entry and actual fees (wave_overlay.py:2032–2038; fee helper181–202). An allowed expensive original SECOND chase can raise that blended fee floor beyond the fixed FIRST-based target. While the current quote remains below the nominal target, the replacement is submitted at the raised floor, judged wrong on the next reconciliation, canceled and recreated at the same raised floor indefinitely. This causes repeated protection gaps/cancel churn although native leaves and grants are unchanged. The existing pure proof never exercises reconcile against submission.
+
+Correction: Resolve one canonical executable wire target, including the applicable actual-entry fee floor, and use it consistently for comparison and submission; preserve original split rights and actual-fill consumption.
+
+## TP-D97-04 [P1] Partial entry replenishment cancels every live positive TP before covering new inventory
+
+`runtime/coinmaster/strategy/method_a_tp.py:118`
+
+Every further actual FIRST/SECOND fill increases cumulative desired leaves; a partial FIRST can also change all FIRST-VWAP TP prices. Lines115–124 classify the existing positive targets as wrong, send cancels, and return without coverage for newly acquired lots. On each earlier cancel ACK the remaining expected_cancels barrier still blocks replacement; after the last ACK all three replacement orders are only newly submitted, with no accepted coverage yet. Thus the required partial FIRST → TP → remaining FIRST/SECOND path deliberately removes working positive protection and leaves actual held inventory outside acknowledged targets across cancel/accept latency. This is a blanket cancel/recreate owner, not deterministic continuously protected retiring inventory; the protocol M1 cancel0 target cannot pass this path.
+
+Correction: Use the approved native modification/retiring lifecycle with actual Cache ownership, fill-terminal handling and protection-debt priority. Establish the exact native API semantics without treating a command or marketable modify as standing acknowledged coverage; do not allow another entry increase while protection remains unresolved.
+
+## Limits
+
+Default-off hooks return before domain/cache use; split_cover.py unchanged in checkpoint diff; pure entitlement arithmetic is consistent by source inspection. add_venue kwargs remain liquidity_consumption=research_paired_policy and bar_execution=not bool(other original policies), so Method A TP/observer flags alone do not change them. Pure AST proof checks expressions, not actual runtime registration; actual registered kwargs/report binding and all lifecycle/cash/protection properties remain native-gated and unproven. Observer is appended after funding/tier modules; no second matching/accounting engine or fabricated fills found.
+
+No economic or native admission is granted. Source-only findings require the single consolidated owner correction before root M1 GO. No old packet, ledger, product or runtime files were modified.

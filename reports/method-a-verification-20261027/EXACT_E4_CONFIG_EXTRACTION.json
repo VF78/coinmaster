@@ -1,0 +1,9 @@
+{
+  "source_commit": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "native_report_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/b-50-90-next-20261023/E4/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-E4-B-ATR0.5-btc-direction.json",
+  "selective_stream_bytes_read_to_config": 357580,
+  "total_report_bytes": 6136311,
+  "config_canonical_sha256": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+  "match": true,
+  "new_native": 0
+}

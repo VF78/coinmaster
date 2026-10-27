@@ -1,0 +1,42 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "owner_exact_reply": "согласовано",
+  "antecedent_exact_scope": "Следующий этап на отдельное утверждение: изолированная реализация этого протокола и максимум 17 попыток, включая два условных full.",
+  "approved_utc": "2026-10-27T07:31:32Z",
+  "approved_code": "ISOLATED_RESEARCH_IMPLEMENTATION_ONLY",
+  "physical_cap_total": 17,
+  "engineering": {
+    "planned": 8,
+    "harness_only_reserve": 1,
+    "max": 9
+  },
+  "prefix": {
+    "planned": 5,
+    "preimport_harness_only_reserve": 1,
+    "max": 6
+  },
+  "full": {
+    "conditional_planned": 2,
+    "reserve": 0,
+    "max": 2
+  },
+  "all_failures_count": true,
+  "initial_gate": "TP_ONLY_ENGINE_FREE_REVIEW_THEN_M1_ROOT_GO_THEN_P0_P1_PREFIX",
+  "sol_stage_conditional_on_tp_growth_gate": true,
+  "old_budgets_transferred": false,
+  "pilot_production_deploy_orders_transfers_training_download": 0,
+  "documents": [
+    {
+      "path": "reports/method-a-design-20261027/ONE_EXECUTION_AND_EXPERIMENT_PROTOCOL_RU.md",
+      "sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93"
+    },
+    {
+      "path": "reports/method-a-design-20261027/ONE_RISK_CONTRACT_RU.md",
+      "sha256": "c6126ae211a0472d58d2de423104f8dabc55dd96484538d849c0df0e7c1c6c83"
+    },
+    {
+      "path": "reports/method-a-design-20261027/CAUSAL_DELTA_MATRIX_RU.md",
+      "sha256": "884d33196cd01c05c3a1a690407fad758da83676c28b692965098440986a7ba5"
+    }
+  ]
+}

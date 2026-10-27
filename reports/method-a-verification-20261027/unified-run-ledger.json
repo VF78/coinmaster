@@ -1,0 +1,35 @@
+{
+  "schema": "METHOD_A_UNIFIED_PHYSICAL_LEDGER_V1",
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+  "protocol_sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93",
+  "status": "APPROVED_IMPLEMENTATION_TP_PHASE_ENGINE_FREE",
+  "total_max": 17,
+  "physical_started": 0,
+  "active": 0,
+  "categories": {
+    "engineering": {
+      "max": 9,
+      "planned": 8,
+      "reserve": 1,
+      "started": 0
+    },
+    "prefix": {
+      "max": 6,
+      "planned": 5,
+      "reserve": 1,
+      "started": 0
+    },
+    "full": {
+      "max": 2,
+      "planned": 2,
+      "reserve": 0,
+      "started": 0
+    }
+  },
+  "root_go": false,
+  "sol_gate": false,
+  "prefix_gate": false,
+  "full_gate": false,
+  "attempts": []
+}
