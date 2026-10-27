@@ -1,0 +1,24 @@
+{
+  "source": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "product": "ENGINE_FREE_PASS",
+  "product_groups": 10,
+  "harness": {
+    "status": "M1_HARNESS_PURE_PASS",
+    "engine_constructors": 0,
+    "immutable_source_seal_verified": true,
+    "tampered_frozen_copy_rejected": true,
+    "JSON_actual_newline_and_roundtrip": true,
+    "retained_alpha_context_recorded_without_domain_reset": true,
+    "recipe_adds_exact_seed_pin_config_and_95_inputs_unchanged": true,
+    "seed_rows": 731,
+    "exact_VPS_seed_in_source_seal": true,
+    "planned_constructors": 1
+  },
+  "native_constructors": 0,
+  "elapsed_seconds": 0.36732120905071497,
+  "recipe_sha256": "9ee653c8b54b2559567b823b8da1b25ac117b591fa49ac60a04cacaffea14dcd",
+  "native_config_sha256": "eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1",
+  "native_input_sha256": "60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51",
+  "full_receipt_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/MAC_PURE_AND_PREPARE_A4DD469.json",
+  "full_receipt_sha256": "27eed0e24e63e231e470e076c7144477ee3b54cf4bb60976ef25e2c264ea2092"
+}

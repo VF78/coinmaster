@@ -1,0 +1,92 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "disposition": "ROOT_GO_CANDIDATE_P0_P1",
+  "meaning": "Accept this bounded M1 engineering witness for root consideration of the separately gated exact P0/P1 prefix screen. This review does not authorize a new physical run or grant financial/full-family qualification.",
+  "attempt_id": "ee47c0f4-b157-4362-9700-21a1b8c6c1e8",
+  "source": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "pid": 62647,
+  "actual_OS_returncode": 0,
+  "ledger_observed": {
+    "sha256": "859073c447f1145a7392e33448dd70631a8faa6d78b10011c12a6c2ee026fc02",
+    "status": "M1_COMPLETED_AWAIT_ROOT_ACCEPTANCE",
+    "attempt_status": "COMPLETED",
+    "physical_started": 1,
+    "total_max": 17,
+    "active": 0,
+    "root_go": false,
+    "prefix_gate": false,
+    "full_gate": false
+  },
+  "P0": 0,
+  "P1": 0,
+  "reviewer_engine_constructors": 0,
+  "scope": "One bounded actual-artifact review; no engines, tests, source audit or broad historical packet reads.",
+  "evidence": {
+    "UUID_source_result": "Actual execution receipt and canonical completed row match UUID, PID62647, sourcea4dd, namespace, OS0. Independent result file SHA equals the completed row. Recipe9ee/configeb5/input608/source-seal35e remain pinned in that row.",
+    "native_trace": "Two distinct natural LONG/SHORT parents,16 unique trade IDs/16 cached OrderFilled events. Every trace fill matches an order native fill timestamp. FIRST2→three TP ACKs→actual TP0.425→remaining FIRST→original SECOND.2+remainder before original4h; PLANREF frozen to completed FIRST; no fallback.",
+    "grants": {
+      "ENTITLEMENT_rows": 34,
+      "integer_grant_conservation_failures": [],
+      "actual_new_lots_only": "All rows independently match floor17A/80, floor17A/40 cuts and grants=actual TP consumption+retired+leaves. Initial sold TP0 remains deducted after remaining FIRST and SECOND; final leaves0/held0/coverage_readyTrue for each parent."
+    },
+    "native_order_history_counts": {
+      "OrderInitialized": 14,
+      "OrderSubmitted": 14,
+      "OrderFilled": 16,
+      "OrderCanceled": 2,
+      "OrderAccepted": 10,
+      "OrderPendingUpdate": 16,
+      "OrderUpdated": 16
+    },
+    "positive_protection_cancel_count": 0,
+    "cancels": "Only two partially filled initial FIRST IOC entry orders canceled. Every positive TP owner reaches FILLED;16 public PendingUpdate/Updated pairs and16 audit ACKs bind actual cached OrderUpdated UUIDs.",
+    "coverage_limit": "Current ACK coverage returns at the same fixture timestamp after each update; no future entry submission occurs across unresolved next-quote coverage in this zero-latency witness. Nonzero-latency and full late-fill/cancel races remain outside actual M1 proof.",
+    "precleanup": "PASS_BEFORE_END shows positions[], all14 orders native terminal, owned pending[], actual result inflight0. Retained historical domain btc_open_qty1.1368683772161603e-13 is explicitly preserved; integer/native held is0, no native position was rounded away.",
+    "cleanup": "Pre-end native state and AFTER_END native state are identical. Five engines RUNNING before end→all STOPPED/nonrunning→all DISPOSED/nonrunning.",
+    "fixture_cash_reconciliation": {
+      "initial": "10000",
+      "parents": [
+        {
+          "parent": "85491381-ad7f-4c33-a2ca-a565d7f0d256",
+          "side": "1",
+          "entry_qty": "550.000",
+          "exit_qty": "550.000",
+          "native_fee_sum": "32.63706700",
+          "fixture_cash_before": "10000",
+          "fixture_cash_after": "12359.94793300",
+          "original_deadline_ns": "14401000000000",
+          "fallback": "False"
+        },
+        {
+          "parent": "be6a54aa-efb1-4e54-acc6-660801714ee9",
+          "side": "-1",
+          "entry_qty": "973.345",
+          "exit_qty": "973.345",
+          "native_fee_sum": "54.31123266",
+          "fixture_cash_before": "12359.94793300",
+          "fixture_cash_after": "16133.60500034",
+          "original_deadline_ns": "115202000000000",
+          "fallback": "False"
+        }
+      ],
+      "sum_native_fees": "86.94829966",
+      "computed_terminal": "16133.60500034",
+      "native_terminal": "16133.60500034 USDT",
+      "exact_match": true,
+      "interpretation": "Declared synthetic stress fixture accounting only. No ROI, strategy profit, economic floor or financial admission claim. Second quantity973.345 derives from actual prior fixture cash12359.947933 and fixed short7.875 at quote100."
+    }
+  },
+  "artifact_sha256": {
+    "result.json": "f7a0d38dd82380ce41eb4339cee7c57110bae1b970db4c8f1bde94cb99617fa6",
+    "PASS_BEFORE_END.json": "596da950c2ee72375d189f24926e8841fee12b60058939306a0494090f1753a5",
+    "AFTER_END.json": "da80317ac6cb4cd7a19b3bb4e4cf08f5561a0040d44a508b828c8b58ceaf5c98",
+    "AFTER_DISPOSE.json": "ac09f13427f4271df0db24dbbb42f1b44b2029d60e1d144af00242c2aa109c32"
+  },
+  "unknown_not_qualified": [
+    "Actual oldSOL orders/exits and omitted-zero raw eligibility branch",
+    "Nonzero latency continuity, all pending modify/late-fill/cancel permutations",
+    "Complete signed funding, coherent-event/settled calendar DD, real-data P0/P1 capital comparison",
+    "Broader SOL/new risk-owner family and prefix/full performance"
+  ],
+  "next_gate": "Root may accept M1 and separately freeze exact economic P0/P1 kwargs/data/venue consumptionFalse+barTrue and financial receipts before explicit individual prefix GO. Old closed budgets remain untouched."
+}

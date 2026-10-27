@@ -1,0 +1,25 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "source": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "base": "fe44f8e0fd917b3753c5835d710524a1281a0da7",
+  "status": "M1_STATIC_GO_CARRIED_FORWARD",
+  "unclosed_P0": 0,
+  "unclosed_P1": 0,
+  "scope": "Only deterministic seed portability delta. No additional product audit, tests, engine or native execution.",
+  "native_engine_constructors": 0,
+  "tests_executed": 0,
+  "verified": [
+    "Exact diff changes4 harness/data/receipt files; runtime/coinmaster remains unchanged from the preceding closed product checkpoint.",
+    "seed() checks committed exact file SHA before parsing731 DailyBar rows; the platform libm generator is removed. ISO datetime fields are restored without float transformations or relaxed comparisons.",
+    "Readonly git-show payload SHA independently matches8541061707af51159263947bdb528f35339d77e81a82796683a14316419d6eae; no bulk seed payload emitted.",
+    "Source inventory now explicitly seals the seed JSON; recipe adds its exact SHA. The root gate still binds recipe/source-seal/config/input before the single constructor.",
+    "Exact configeb5 and native input608 checks remain unchanged, no tolerance or hash widening. New recipe9ee changes solely by explicit seed identity in this scoped diff. Quote/depth/latency rows and constructor/cleanup paths unchanged."
+  ],
+  "pins": {
+    "seed_sha256": "8541061707af51159263947bdb528f35339d77e81a82796683a14316419d6eae",
+    "recipe_sha256": "9ee653c8b54b2559567b823b8da1b25ac117b591fa49ac60a04cacaffea14dcd",
+    "native_config_sha256": "eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1",
+    "native_input_sha256": "60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51"
+  },
+  "evidence_limit": "Original VPS all731 binary64 equality is explicitly reported in the frozen owner receipt; not independently recomputed here. Root Mac frozen engine-free check must confirm actual eb5/608 before one-shot root GO. No native or financial PASS is asserted."
+}

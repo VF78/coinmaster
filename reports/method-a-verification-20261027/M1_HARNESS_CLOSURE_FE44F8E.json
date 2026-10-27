@@ -1,0 +1,29 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "source": "fe44f8e0fd917b3753c5835d710524a1281a0da7",
+  "base": "140a6b975f5b55f54cc20fdfd4c300f029130554",
+  "status": "M1_STATIC_GO",
+  "scope": "Only the frozen harness corrections and unchanged runtime/coinmaster diff; no fresh product audit, tests or native execution.",
+  "counts": {
+    "unclosed_P0": 0,
+    "unclosed_P1": 0
+  },
+  "engine_constructors_used": 0,
+  "tests_executed": 0,
+  "prior_blocker": "TP140-M1-01 CLOSED_SOURCE. Removed unjustified episode=None assertion; native Cache positions/open orders/inflight/pending0 remain mandatory and all cached orders require closed status plus terminal native event history. Retained historical alpha episode and domain pending are captured without resets.",
+  "verification": [
+    "Exact git diff140→fe44 has3 files, no runtime/coinmaster change. Product closure from140 carries forward.",
+    "Source seal contains sorted full runtime coinmaster/tests Python inventory, control config JSON, pyproject and uv.lock when present; byte hashes and full inventory equality reject changed frozen source. Root gate binds exact seal bytes SHA and source commit; canonical Git checkout checks explicit git -C root HEAD, while Git-less Mac copies use the sealed bytes.",
+    "Launch still checks root_go/case/source/recipe/config/input and STARTED claim attempt/case/source before the single constructor. Root supplies the separately validated canonical unified-ledger/namespace/unique-claim binding; this static GO does not itself issue root GO.",
+    "Output JSON uses allow_nan=False, actual newline and json.loads roundtrip. Native order event IDs/types/timestamps plus retained domain context are captured before cleanup.",
+    "Frozen recipe/config/input pins unchanged; owner compact engine-free receipt read without rerunning it."
+  ],
+  "pins": {
+    "recipe_sha256": "c8a59ef0e962ac16ecb4c9fecd5fd469d0b52ee9261749dedc1868c4222e131c",
+    "native_config_sha256": "eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1",
+    "native_input_sha256": "60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51",
+    "rows": 23,
+    "input_events": 95
+  },
+  "limits": "M1_STATIC_GO means no source blocker remains in the scoped harness correction. No native/matching/financial PASS or extra physical slot is granted. Root must finish its exact source freeze, ledger/namespace checks and one-shot GO before launch; actual native lifecycle, cash/fees and public modify ACK behavior remain unproven until the registered witness."
+}
