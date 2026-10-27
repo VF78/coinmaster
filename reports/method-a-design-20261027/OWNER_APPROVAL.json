@@ -1,0 +1,19 @@
+{
+  "task": "CM-METHOD-A-DESIGN-20261027",
+  "owner_exact_message": "Утверждаю метод A и первый этап до 2 часов, без кода и native-прогонов. На выходе — конкретный механизм, протокол и единый бюджет проверки. Пилот и production не трогай.",
+  "received_client_date": "2026-10-27",
+  "stage_start_utc": "2026-10-27T06:36:16Z",
+  "hard_wall_deadline_utc": "2026-10-27T08:36:16Z",
+  "timezone": "Europe/Moscow",
+  "approved": "METHOD_A_FIRST_DESIGN_STAGE_ONLY",
+  "plan_path": "reports/methodology-audit-20261027/PLAN_FOR_APPROVAL_RU.md",
+  "plan_sha256": "a8da420517fefc8654f6c5a3b781c7032e597f82794d0c6e39b1ad146bd27de6",
+  "product_edits": 0,
+  "native_matching": 0,
+  "prefix_full_training": 0,
+  "pilot_production": 0,
+  "future_verification_budget": "TO_PROPOSE_NOT_AUTHORIZED",
+  "design_completed_utc": "2026-10-27T07:08:07Z",
+  "wall_seconds_to_design_completion": 1911,
+  "within_two_hour_cap": true
+}

@@ -1,0 +1,50 @@
+{
+  "task": "CM-METHOD-A-DESIGN-20261027",
+  "owner_scope": "FIRST_DESIGN_STAGE_ONLY_NO_CODE_NATIVE",
+  "review_scope": "four identified logical blockers in final three documents",
+  "reviewer": "method_a_design_review",
+  "final_review_p0": 0,
+  "final_review_p1": 0,
+  "found_and_closed": [
+    "unreachable_after_breach_hedge_replaced_by_anticipatory_bands",
+    "fullfill_gross_benefit_separate_from_partialfill_execution_envelope",
+    "safe_target_separate_from_actual_intermediate_recovery_path",
+    "P1_source_seam_and_newentry_entitlement_without_resurrection"
+  ],
+  "root_extra_clarifications": [
+    "diagnostic_controls_DD_above50_not_control_integrity_failure",
+    "direct_prefixP3_profit_screen_againstP0_not_two70percent_products",
+    "Bybit_profile_MM_not_HL_Sandbox_policy",
+    "original_E4_4h_expiry_not_R2_late_limit_restore",
+    "warmup_inclusive_end_t_not_strict_end_lt_t",
+    "economic_venue_flags_matched_no_implicit_paired_policy_switch"
+  ],
+  "future_launch_ready": false,
+  "future_budget_authorized": 0,
+  "future_budget_proposed": {
+    "engineering_planned": 8,
+    "engineering_harness_reserve": 1,
+    "prefix_planned": 5,
+    "prefix_harness_reserve": 1,
+    "full_conditional": 2,
+    "total": 17
+  },
+  "new_product_edits": 0,
+  "new_native_prefix_full": 0,
+  "old_engineering_ledger_sha256": "e277263c37ae979b43b13a47357b82df3f904d158e5e99fda38c0f66f2c24b9f",
+  "old_prefix_ledger_sha256": "aefb8326a54ef028dac750233a2c9fad2ff44ef5acce8ed0ddcaab97ee14febf",
+  "files": [
+    {
+      "path": "CAUSAL_DELTA_MATRIX_RU.md",
+      "sha256": "884d33196cd01c05c3a1a690407fad758da83676c28b692965098440986a7ba5"
+    },
+    {
+      "path": "ONE_RISK_CONTRACT_RU.md",
+      "sha256": "c6126ae211a0472d58d2de423104f8dabc55dd96484538d849c0df0e7c1c6c83"
+    },
+    {
+      "path": "ONE_EXECUTION_AND_EXPERIMENT_PROTOCOL_RU.md",
+      "sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93"
+    }
+  ]
+}
