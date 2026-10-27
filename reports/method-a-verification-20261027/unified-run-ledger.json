@@ -89,6 +89,133 @@
       "started_utc": "2026-10-27T09:27:32.608794+00:00",
       "status": "COMPLETED",
       "variant": "P0"
+    },
+    {
+      "actual_returncode": 0,
+      "attempt_id": "1abf144e-a2f4-47e6-b62c-ffd82d6fd93a",
+      "case": "P0_PREFIX",
+      "category": "prefix",
+      "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+      "detail": {
+        "actual_returncode": 0,
+        "completion_manifest": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0R-1abf144e-a2f4-47e6-b62c-ffd82d6fd93a/completion-manifest.json",
+        "completion_manifest_sha256": "7f45e2e7cb8a4b3902d04e464006164ba0627407f5dd5f1d0bc5cb0333c02ba6",
+        "physical_identity": {
+          "attempt_id": "1abf144e-a2f4-47e6-b62c-ffd82d6fd93a",
+          "category": "prefix",
+          "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+          "freeze_sha256": "49058f29e5c71f107e55e8728eb807c808334341411cba3aa100f9abf028ddcf",
+          "full_bound_kwargs_sha256": "4be170db86a857be21be1091f2e3e286019fa4535fbc93d1d63429ceef96e1b8",
+          "kwargs_sha256": "1ea29688beb3f0ae5ff4d75e0c9036a09f2f57a1efa1ff8b2009f6b16287224d",
+          "label": "P0",
+          "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+          "native_config_sha256": "ac8357a6161d34dacf229e886c75e1e2f78eb6c4828d794e18fa7757ffc43f2c",
+          "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+          "public_profile_sha256": {
+            "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+            "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+            "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+          },
+          "recipe_sha256": "9126b46ef34431cdd1b48c2261333d0b2d4284da1d38967a67d2251a16deafe6",
+          "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+          "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+          "variant": "P0",
+          "worker_pid": 81664
+        },
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0R-1abf144e-a2f4-47e6-b62c-ffd82d6fd93a/result/P0.json",
+        "report_sha256": "0e9b6f2c8bee6fb22a68d1bb7b24382f17f04c2eb1f1d111f47d5834bbc26673",
+        "supervisor": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0R_SUPERVISOR-1abf144e-a2f4-47e6-b62c-ffd82d6fd93a.json",
+        "supervisor_sha256": "30fc77bb1613aa2385eef7c9863f944b0fb7f4e9664064f26086b17a4e3fc484"
+      },
+      "finished_utc": "2026-10-27T12:10:07.412092+00:00",
+      "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/P0R_FREEZE-1abf144e-a2f4-47e6-b62c-ffd82d6fd93a.json",
+      "freeze_sha256": "49058f29e5c71f107e55e8728eb807c808334341411cba3aa100f9abf028ddcf",
+      "full_bound_kwargs_sha256": "4be170db86a857be21be1091f2e3e286019fa4535fbc93d1d63429ceef96e1b8",
+      "kwargs_sha256": "1ea29688beb3f0ae5ff4d75e0c9036a09f2f57a1efa1ff8b2009f6b16287224d",
+      "label": "P0",
+      "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+      "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/1abf144e-a2f4-47e6-b62c-ffd82d6fd93a.log",
+      "log_sha256": "03762e52a3c67000e5763c65192a3c17300f0bf59dc8e10af768659d452e51c4",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P0R-1abf144e-a2f4-47e6-b62c-ffd82d6fd93a",
+      "native_config_sha256": "ac8357a6161d34dacf229e886c75e1e2f78eb6c4828d794e18fa7757ffc43f2c",
+      "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+      "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+      "pid": 81664,
+      "recipe_sha256": "9126b46ef34431cdd1b48c2261333d0b2d4284da1d38967a67d2251a16deafe6",
+      "repeat_of": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+      "root_go_receipt": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/P0R_ROOT_GO-1abf144e-a2f4-47e6-b62c-ffd82d6fd93a.json",
+        "sha256": "2678d6d423d6e07bf756029842646933bf9e0ea45d4bab5a5618d4c369e79cd4"
+      },
+      "slot": "PREFIX_PREIMPORT_HARNESS_ONLY_RESERVE_1",
+      "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+      "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+      "started_utc": "2026-10-27T12:07:44.729839+00:00",
+      "status": "COMPLETED",
+      "variant": "P0"
+    },
+    {
+      "actual_returncode": 0,
+      "attempt_id": "3cedfcac-2331-4c70-8004-183f011af921",
+      "case": "P1_PREFIX",
+      "category": "prefix",
+      "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+      "detail": {
+        "actual_returncode": 0,
+        "completion_manifest": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P1-3cedfcac-2331-4c70-8004-183f011af921/completion-manifest.json",
+        "completion_manifest_sha256": "afbce2d2729ea30a33e0d7452b4a4c5f6c15706a672c66c5abb3fc39657008d2",
+        "physical_identity": {
+          "attempt_id": "3cedfcac-2331-4c70-8004-183f011af921",
+          "category": "prefix",
+          "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+          "freeze_sha256": "b00afb8c2b40e4f68475eb39986a5ad30db80668c58d47b9a6b67a9cefd4cb55",
+          "full_bound_kwargs_sha256": "a061b149d6b45a36738cab5459e256417c7c81c344561a20c3ba829144de3c8f",
+          "kwargs_sha256": "4d4fc418f7477b1fbd3779aa595c24d134936d652ad17f7c4194d9c09d006820",
+          "label": "P1",
+          "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+          "native_config_sha256": "d9d37e46dcb5443c123e08fd450041109abe635009fba7bcda945a21654fdb65",
+          "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+          "public_profile_sha256": {
+            "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+            "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+            "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+          },
+          "recipe_sha256": "5f3f58e35df0b56201b0a1e69405d7b999d5594f6670edcaedbb617ffed2a769",
+          "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+          "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+          "variant": "P1",
+          "worker_pid": 83670
+        },
+        "report": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P1-3cedfcac-2331-4c70-8004-183f011af921/result/P1.json",
+        "report_sha256": "b145212b2c9fdd83d13e80c99fc7eefc14ab14d69d3948a98a5ef5b9f6892d73",
+        "supervisor": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P1_SUPERVISOR-3cedfcac-2331-4c70-8004-183f011af921.json",
+        "supervisor_sha256": "e31a1ff8e46874952398a04b8e99d589f513b2b5e3ba078aa618c076d3ac314b"
+      },
+      "finished_utc": "2026-10-27T12:28:08.443312+00:00",
+      "freeze_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/P1_FREEZE-3cedfcac-2331-4c70-8004-183f011af921.json",
+      "freeze_sha256": "b00afb8c2b40e4f68475eb39986a5ad30db80668c58d47b9a6b67a9cefd4cb55",
+      "full_bound_kwargs_sha256": "a061b149d6b45a36738cab5459e256417c7c81c344561a20c3ba829144de3c8f",
+      "kwargs_sha256": "4d4fc418f7477b1fbd3779aa595c24d134936d652ad17f7c4194d9c09d006820",
+      "label": "P1",
+      "ledger_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+      "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/3cedfcac-2331-4c70-8004-183f011af921.log",
+      "log_sha256": "98ce4daf1ffb1737ac4239760ac85793914f562b84435344bf42d2915ac74c2f",
+      "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix/P1-3cedfcac-2331-4c70-8004-183f011af921",
+      "native_config_sha256": "d9d37e46dcb5443c123e08fd450041109abe635009fba7bcda945a21654fdb65",
+      "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+      "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
+      "pid": 83670,
+      "recipe_sha256": "5f3f58e35df0b56201b0a1e69405d7b999d5594f6670edcaedbb617ffed2a769",
+      "root_go_receipt": {
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/P1_ROOT_GO-3cedfcac-2331-4c70-8004-183f011af921.json",
+        "sha256": "b38f2ccd8ea880476e9ed8f632135ed038d0ec72fbb8b4196bc58a69920d2b1a"
+      },
+      "slot": "P1_PLANNED",
+      "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+      "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+      "started_utc": "2026-10-27T12:25:29.791853+00:00",
+      "status": "COMPLETED",
+      "variant": "P1"
     }
   ],
   "categories": {
@@ -108,12 +235,12 @@
       "max": 6,
       "planned": 5,
       "reserve": 1,
-      "started": 1
+      "started": 3
     }
   },
   "full_gate": false,
   "owner_approval_sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60",
-  "physical_started": 2,
+  "physical_started": 4,
   "prefix_gate": true,
   "prefix_labels_allowed_after_preflight": [
     "P0",
@@ -122,8 +249,9 @@
   "protocol_sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93",
   "root_go": false,
   "schema": "METHOD_A_UNIFIED_PHYSICAL_LEDGER_V1",
+  "sol_engineering_preparation_allowed": true,
   "sol_gate": false,
-  "status": "P0_COMPLETED_FINANCIAL_REVIEW_REQUIRED",
+  "status": "TP_SCREEN_PASS_SOL_ENGINEERING_PREPARATION",
   "task": "CM-METHOD-A-VERIFY-20261027",
   "total_max": 17
 }

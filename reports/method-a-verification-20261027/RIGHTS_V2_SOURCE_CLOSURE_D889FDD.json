@@ -1,0 +1,34 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "source_kind": "CONSOLIDATED_PURE_RESEARCH_DRAFT_NOT_EXECUTED",
+  "draft_directory": "/private/tmp/cm_method_a_rights_v2_final",
+  "inventory_sha256": "58d0e968ac3b8b408c04f14b04dd68296d66f97dcc7b7cdea45418c3bf68408c",
+  "incremental_patch_sha256": "d889fddd8049a3b174d54cdf675051a0aa14e222099146ed0ecfedac8950b64d",
+  "full_patch_from6f77_sha256": "523c482a1d1d3d7acf2cf929ab164587aa4e782e3695cb9e389a43ebc5080634",
+  "reader_sha256": "e659acfc12fb664d5bbb7c08edfabb363d5684ce56d01366e9f22fac8ea98917",
+  "producer_commit": "3604532d99d50f7334686acce1700be26ace2d2e",
+  "status": "RIGHTS_V2_FOCUSED_SOURCE_CLOSED_PENDING_PURE_AND_ACTUAL_PROOF",
+  "counts": {
+    "unclosed_P0": 0,
+    "unclosed_P1": 0
+  },
+  "reviewer_native_engine_constructors": 0,
+  "reader_executions": 0,
+  "tests_executed": 0,
+  "actual_replay_results_read": false,
+  "root_native_GO": false,
+  "scope": "Only RIGHTSV2-01/02 consolidated correction and introduced delta; no broader audit or native/source changes.",
+  "closures": {
+    "RIGHTSV2-01": "CLOSED_SOURCE: registered market IOC does not require optional Accepted. Actual final native order history/CID/strategy/instrument/side/quantity/terminal event is checked; actual Filled IDs join profile fills and closed Position trade/event/OID/quantity/price. Filled totals must match native order filled quantity. Genuine unfilled terminal history proves zero exposure; INITIALIZED alone remains UNKNOWN. Optional ACK is checked if present; resting BTC TP native ACK code is unchanged.",
+    "RIGHTSV2-02": "CLOSED_SOURCE: only actual before/after BTC quote callback transitions record touch/activation actions. Proof binds earlier earned false→true latch to source crossing/entry, then later actual rights activation to paired readiness/decision index without recross requirement. Actual callback frame sequence bounds confirmed entry and excludes later same-ns fills. Latch retention is checked over recorded actions; no activation-time recross or timestamp-only entry sum remains."
+  },
+  "verified": [
+    "Inventory58d0, incremental d889, full523c and every final draft-file SHA independently match supplied pins.",
+    "Exact source text comparison against accepted final6f77 base confirms es/money/native_cash_residual/authorized_tp_prices/tp_authority/tp_order_errors/old rights_evidence unchanged. The inherited coherent/cash/funding/fee/daily/parent/settled/event numerical analyze span is byte-identical. Additional position_trades.px is native identity evidence only, not a new cash/PnL calculation.",
+    "New helper remains stdlib-only; it consumes source-pinned observer360 native facts. No orders, account mutations, native imports/constructors, policy parameters, economic tolerance or final-H backfill introduced.",
+    "Pre-existing per-intent creation/admission/writer/fraction/late-entry/source-rounding rules are unchanged by this focused correction. No new current-budget clamp, P3/A0 or BTC-flat rule.",
+    "Draft tests now cover no-Accepted genuine Filled, initialized-only rejection, genuine unfilled terminal, preserved strict BTC TP ACK, prior unready touch/later activation without recross and later equal-ns entry exclusion. The12 new plus11 base groups are planned/source-inspected, not executed by this review."
+  ],
+  "limits": "Source blockers closed does not establish actual rights PASS, oldP0 backward behavior, replay equivalence or reserve launch permission. Missing/stale/conflicting actual origin/clock/event/terminal facts remain fail-closed. No financial receipt or P1 GO is granted.",
+  "next": "Terra may copy only exact pinned research bytes into a fresh analysis packet, run the focused23 pure groups with no-native guard and verify original P0 remains rightsUNKNOWN. Root then separately freezes/reviews actual replay gate, same economics/source/data/venue, normalized trace/cash reference, fresh UUID/repeat_of/real deadline/canonical cap claim and expiring one-shot GO. Preserve the original P0 and sole reserve until all gates pass."
+}

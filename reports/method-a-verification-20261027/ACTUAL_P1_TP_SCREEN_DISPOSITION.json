@@ -1,0 +1,149 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "decision": "TP_SCREEN_PASS_ALLOW_SOL_ENGINEERING_PREPARATION",
+  "counts": {
+    "unclosed_P0": 0,
+    "unclosed_P1": 0
+  },
+  "scope": "Fast bounded actual P1 summary, qualified P0R comparison and completed-row/hash binding only; no raw-stream/source re-audit, tests, reader or native execution.",
+  "reviewer_engine_constructors": 0,
+  "tests_executed": 0,
+  "attempt_id": "3cedfcac-2331-4c70-8004-183f011af921",
+  "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "actual_process": {
+    "pid": 83670,
+    "actual_returncode": 0,
+    "row_status": "COMPLETED",
+    "canonical_current_completed_row_digest_matches": true,
+    "detail_physical_identity_matches": true,
+    "report_sha256": "b145212b2c9fdd83d13e80c99fc7eefc14ab14d69d3948a98a5ef5b9f6892d73",
+    "completed_attempt_sha256": "773ed9ccb4e96661a0b8ac607ca4634ef2e4ae9e4513ad88e09e214d9c720d7e"
+  },
+  "artifacts": {
+    "P1_FINANCIAL_EXECUTION.json": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/financial/P1_FINANCIAL_EXECUTION.json",
+      "sha256": "d50d03cd06657fa78c39571db794a481a58ec3f6c842e2ecb625e79cd1a3ddeb"
+    },
+    "P1-financial-analysis-d889.json": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/financial/P1-financial-analysis-d889.json",
+      "sha256": "9c0a54c45a0f1955630d5f28ee553ebb48f10063b3cba4b911218263de2da3ff"
+    }
+  },
+  "execution_receipt_analysis_sha_matches": true,
+  "matched_control": {
+    "attempt_id": "1abf144e-a2f4-47e6-b62c-ffd82d6fd93a",
+    "qualification": "VALID_ACCOUNTED_PREFIX",
+    "accounting_qualified": true,
+    "source_same": true,
+    "common_economic_identity_same": true,
+    "native_input_same": true,
+    "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+    "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+    "interpretation": "Exact previously qualified P0R control. Binding preserves the declared TP-only economic delta; artifact/config identities differ as expected between P0/P1. Endogenous own-capital quantities and oldSOL actions may differ."
+  },
+  "actual_financial_result": {
+    "qualification": "VALID_ACCOUNTED_PREFIX",
+    "accounting_qualified": true,
+    "financial_gates": {
+      "actual_os_exit0": "PASS",
+      "coherent_prefill_preopen_event_coverage": "PASS",
+      "complete_cash_reconciliation": "PASS",
+      "continuous_settled_coverage": "PASS",
+      "native_3TP": "PASS",
+      "native_fee_reconciliation": "PASS",
+      "ownership": "PASS",
+      "rights_audit_complete": "PASS",
+      "signed_asset_funding_reconciliation": "PASS",
+      "source_config_data_comparable": "PASS",
+      "terminal_positions0_orders0": "PASS",
+      "zero_model_liquidations": "PASS"
+    },
+    "all12_PASS": true,
+    "cash_reconciliation": {
+      "all_fill_history_covered": true,
+      "extra_native_fill_history": 0,
+      "fee_convention": "NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_SETTLEMENT_CURRENCY_FEES_DO_NOT_SUBTRACT_AGAIN",
+      "missing_native_fill_history": 0,
+      "native_fill_history_conflicts": 0,
+      "native_realized_NET_settlement_fees": "153452.32937145",
+      "policy": "STRICT_ZERO_DEFAULT_NONZERO_UNKNOWN_NO_TOLERANCE_NO_FUNDING_RECLASSIFICATION",
+      "residual": "0E-8",
+      "seed": "10000",
+      "signed_funding": "-2259.29885248",
+      "terminal": "161193.03051897"
+    },
+    "native_fills": 118,
+    "native_closed_positions": 25,
+    "native_actual_fill_fees": "7127.41432855",
+    "signed_funding": "-2259.29885248",
+    "terminal_total": "161193.03051897",
+    "daily_count": 136,
+    "daily_missing": [],
+    "parent_count": 19,
+    "parent_proven_count": 19,
+    "settled_receipts": 195839,
+    "stream_issues": {},
+    "protection_profile_issues": {}
+  },
+  "actual_TP_rights_scope": {
+    "native_3TP": "PASS",
+    "checked_P1_held_pre_matching_frames": 133881,
+    "complete_interior_quote_universe": true,
+    "quote_frames": 391680,
+    "typed_OrderUpdated_after_frames": 56,
+    "SOL_pre_transport_frames": 16,
+    "rights_status": "PASS",
+    "actual_admitted_orders": 16,
+    "actual_qualified_orders": 16,
+    "actual_SOL_ADD_fills": 16,
+    "missing": [],
+    "failures": {},
+    "observed_origin": "All16 earliest actual queued; zero intervening native writers in recorded origin→admission intervals, level0 actual rights universe only. No broader branch/latency or new SOL-owner qualification inferred."
+  },
+  "local_TP_growth_screen": {
+    "P0R_netprofit": "150527.62564425",
+    "P1_netprofit": "151193.03051897",
+    "both_positive": true,
+    "minimum_P1_netprofit": "105369.3379509750",
+    "P1_ge_70percent_P0R": true,
+    "P1_over_P0R": "1.0044204834286869506581827225299394779535416926191",
+    "netprofit_difference": "665.40487472",
+    "status": "PASS"
+  },
+  "diagnostic_DD": {
+    "P0R_percent": {
+      "event": "57.585410459622263791144662586712381678692945895675",
+      "settled": "57.585410459622263791144662586712381678692945895675"
+    },
+    "P1_percent": {
+      "event": "62.416021197735440629951214973612969502778781016487",
+      "settled": "62.416021197735440629951214973612969502778781016487"
+    },
+    "increase_percentage_points": "4.830610738113176838806552386900587824085835120812",
+    "disposition": "P1 DD is worse and exceeds50. Both are predeclared diagnostic controls; this is recorded, not a reason to suppress the valid TP growth comparison. Candidate DD<=50 and original full-profit70/90 goals are not met or waived by this screen."
+  },
+  "causal_interpretation": "The measured P1−P0R net difference665.40487472 is the total TP-policy effect under each native own-capital path, including changed oldSOL timing/actions. It is not a standalone BTC-TP dollar attribution or a new hedge/risk-controller result.",
+  "budget": {
+    "physical_started": 4,
+    "total_max": 17,
+    "active": 0,
+    "prefix_started": 3,
+    "prefix_max": 6,
+    "engineering_remaining": 8,
+    "prefix_remaining_planned": [
+      "P2",
+      "P4",
+      "P3"
+    ],
+    "full_remaining_conditional": 2,
+    "prefix_harness_reserve_remaining": 0,
+    "new_budget_created": false
+  },
+  "authority": {
+    "allow_next_approved_SOL_implementation_and_engine_free_preparation": true,
+    "native_case_launch_GO": false,
+    "full_GO": false,
+    "pilot_production_GO": false,
+    "meaning": "Root may advance within the existing approved protocol to the selected SOL owner/defaultOFF implementation and M2–M8 preparation. New source requires its scoped noninterference/pure/review/freeze gates; each physical case still needs exact canonical claim and separate one-shot rootGO. No automatic extra replay or full slot activation."
+  }
+}

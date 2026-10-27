@@ -1,3 +1,6 @@
+## Current Method A checkpoint — 2026-10-27
+`reports/method-a-verification-20261027/CURRENT_RESULT_RU.md`: 4/17 completed, P1 realBTC3TP local growth-screen PASS; DD worsened, SOL engineering preparation active, full goals NOT_MET. Current handoff only `.ops/ACTIVE_TASK.md`.
+
 # Research memory — as of2026-10-26; read before opening archives
 
 ## Fixed controls, not approximate reimplementations

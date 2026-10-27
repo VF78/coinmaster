@@ -135,9 +135,358 @@ def rights_evidence(db,report):
         no_modern_P3_A0_rules_applied=True,no_unemitted_fact_promoted_to_PASS=True)
 
 
+class RightsFactMissing(Exception):pass
+class RightsPolicyViolation(Exception):pass
+
+def rights_need(condition,name):
+    if not condition:raise RightsPolicyViolation(name)
+
+def rights_float(value,hex_value=None):
+    result=float(value)
+    if not D(str(result)).is_finite():raise RightsFactMissing('nonfinite_source_float')
+    if hex_value is not None and result.hex()!=hex_value:raise RightsFactMissing('source_float_hex_conflict')
+    return result
+
+def rights_auth(ep):
+    values=ep['source_float_values'];hexes=ep['source_float_hex'];maps=ep['source_float_maps'];maphex=ep['source_float_maps_hex']
+    for key,value in values.items():
+        if value is not None:rights_float(value,hexes[key])
+    for name,entries in maps.items():
+        for level,value in entries.items():rights_float(value,maphex[name][level])
+    rights_need(ep['h']==values['h'],'source_H_alias_conflict')
+    for name in ('sol_add_filled_notional','sol_ownership_transfer_credit','sol_risk_retired_notional'):
+        rights_need(ep[name]==maps[name],'source_map_alias_conflict')
+    rights_need(ep['old_SOL_fractions']==maps['sol_right_fraction'],'source_fraction_alias_conflict')
+    return values,maps
+
+def rights_budget(ep,policy,level):
+    values,maps=rights_auth(ep);key=str(level)
+    h=rights_float(values['h']);fraction=rights_float(maps['sol_right_fraction'].get(key,1.0))
+    rights_need(h>0 and 0<fraction<=1,'invalid_original_H_or_fraction')
+    allowed=h*float(policy['sol_size_multipliers_h'][level])*fraction
+    return allowed-maps['sol_add_filled_notional'].get(key,0.0)-maps['sol_ownership_transfer_credit'].get(key,0.0)-maps['sol_risk_retired_notional'].get(key,0.0)
+
+def rights_intent(value):
+    return dict(id=value.get('id',value.get('intent_id')),parent=value['parent'],action=value['action'],level=value['level'],
+        side=value['side'],quantity=value['quantity'],requested_notional=value['requested_notional'],
+        decision_index=value['decision_index'],reason=value['reason'])
+
+def rights_context(state):
+    return dict(episode=state['episode'],sessions=state.get('legacy_sessions'))
+
+def rights_v2_tables(db):
+    for name in ('rights_origin','rights_admission','rights_after','rights_control','rights_quote_actions','rights_native_order'):
+        db.execute('CREATE TABLE '+name+' (id TEXT PRIMARY KEY,body TEXT NOT NULL)')
+
+def rights_v2_frame(db,row,state,issues):
+    phase=row['phase'];seq=row['sequence'];context=rights_context(state)
+    def put(table,key,body):return insert_unique(db,table,key,body,issues)
+    def get(table,key):
+        value=db.execute('SELECT body FROM '+table+' WHERE id=?',(key,)).fetchone()
+        return None if value is None else json.loads(value[0])
+    def control(key,body):db.execute('INSERT OR REPLACE INTO rights_control VALUES (?,?)',(key,json.dumps(body,sort_keys=True)))
+    if phase=='BEFORE_STRATEGY_on_quote_tick_NATIVE_CACHE_ALREADY_MUTATED':
+        control('quote_callback',dict(seq=seq,context=context,input=get('rights_control','source_input'),writer_count=get('rights_control','writers') or 0))
+    if phase=='BEFORE_STRATEGY_on_order_filled_NATIVE_CACHE_ALREADY_MUTATED':
+        control('writers',(get('rights_control','writers') or 0)+1)
+    for value in state['queued']:
+        if value['action']!='SOL_ADD':continue
+        try:intent=rights_intent(value)
+        except KeyError:continue  # V1 schema remains explicitly unqualified.
+        old=get('rights_origin',intent['id'])
+        if old is None:put('rights_origin',intent['id'],dict(seq=seq,method='EARLIEST_ACTUAL_QUEUED_INTENT',intent=intent,context=context))
+        elif old['intent']!=intent:issues['rights_immutable_queued_intent_conflict']+=1
+    if phase=='BEFORE_NATIVE_MATCHING_INPUT':
+        control('source_input',dict(seq=seq,input=row['input']))
+    if phase.startswith('AFTER_STRATEGY_') and row.get('native_order') is not None:
+        order=row['native_order']
+        db.execute('INSERT OR REPLACE INTO rights_native_order VALUES (?,?)',(order['order_id'],json.dumps(
+            dict(seq=seq,order=order,event_id=row['native_event_id'],event_type=row['native_event_type']),sort_keys=True)))
+    if phase=='SOL_ADD_PRE_NATIVE_TRANSPORT_AFTER_CHECKPOINT':
+        admission=row['admission'];intent=rights_intent(admission['pending_intent'])
+        origin=get('rights_origin',intent['id'])
+        if origin is None:
+            opened=get('rights_control','quote_callback')
+            # This is a source-serial interval proof from actual frames, never a fabricated creation snapshot.
+            if opened is not None and opened['writer_count']==(get('rights_control','writers') or 0):
+                before=opened['context']['episode'];after=context['episode']
+                keys=('source_float_values','source_float_maps')
+                if before is not None and after is not None and before['id']==after['id'] and all(before.get(k)==after.get(k) for k in keys):
+                    put('rights_origin',intent['id'],dict(seq=opened['seq'],method='SAME_SERIAL_QUOTE_CALLBACK_NO_AUTHORIZATION_WRITER',
+                        intent=intent,context=context,actual_pre_callback_context=opened['context']))
+        put('rights_admission',admission['client_order_id'],dict(seq=seq,admission=admission,context=context))
+    if phase=='AFTER_STRATEGY_on_order_filled' and row['native_event_type']=='OrderFilled':
+        put('rights_after',row['native_event_id'],dict(seq=seq,episode=state['episode']))
+    if phase=='AFTER_STRATEGY_on_quote_tick':
+        opened=get('rights_control','quote_callback')
+        if opened is not None and opened['input'] is not None:
+            tick=opened['input']['input'];pre=opened['context']['episode'];post=context['episode']
+            if tick['instrument']=='BTCUSDT-PERP.P1SIM' and tick['event_ns']==row['event_ns'] and pre is not None and post is not None and pre['id']==post['id']:
+                if pre.get('btc_deferred_right_touched')!=post.get('btc_deferred_right_touched') or pre['old_SOL_rights']!=post['old_SOL_rights']:
+                    put('rights_quote_actions',str(opened['seq']),dict(before_seq=opened['seq'],after_seq=seq,input=tick,before=opened['context'],after=context))
+        db.execute('DELETE FROM rights_control WHERE id=?',('quote_callback',))
+
+
+def rights_sessions(context,intent,creation=False):
+    ep=context['episode'];sessions=context['sessions'];s=sessions['current_BTC_SOL_signal_sessions'];latest=int(s['bar_index'])
+    expected=s['source_bar_session_ns']
+    rights_need(s['BTC']['instrument']=='BTCUSDT-PERP.P1SIM' and s['SOL']['instrument']=='SOLUSDT-PERP.P1SIM','wrong_native_daily_instrument')
+    feature=sessions['current_features'];rights_need(feature['index']==latest,'source_feature_index_conflict')
+    decision=ep['sol_right_decision_index'][str(intent.get('level',0))]
+    if type(decision) is not int or not 0<=decision<=latest:raise RightsFactMissing('actual_right_decision_index_causal_origin')
+    if not (s['BTC']['ts_event']==s['SOL']['ts_event']==sessions['last_accepted_session']==expected and sessions['latest_seen_session'] in (None,expected)):raise RightsFactMissing('stale_or_conflicting_native_session')
+    if creation and latest!=intent['decision_index']:raise RightsFactMissing('creation_feature_origin_not_observed')
+    return latest,feature
+
+def rights_source_z(ep,feature):
+    values,_=rights_auth(ep)
+    fixed=values['fixed_sigma']
+    if fixed is None:return feature['z']
+    if feature['relative'] is None or feature['mu'] is None:return None
+    return (feature['relative']-feature['mu'])/fixed
+
+
+def rights_entry_native(db,ep,seq,entry):
+    values,_=rights_auth(ep);native_entry=D(0);native_float=0.0
+    for (body,) in db.execute("SELECT body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+        fill=json.loads(body)
+        if fill['parent']==ep['id'] and fill['action']=='BTC_ENTRY' and fill['sequence']<=seq:
+            native_entry+=D(fill['qty']);native_float+=float(fill['qty'])
+    rights_need(native_entry==D(ep['raw_entry']['btc_entry_qty_exact']) and native_float.hex()==float(values['btc_initial_qty']).hex(),'actual_entry_fraction_native_fill_source_conflict')
+    net=values['btc_net_planned_qty'];rights_need(net>0 and float(entry['net_submitted_btc_qty']).hex()==float(net).hex(),'raw_entry_denominator_conflict')
+
+def rights_raw_fraction(db,ep,level,seq,entry,label):
+    rights_entry_native(db,ep,seq,entry);key=str(level);omitted=level in ep['omitted_raw_levels'];writer=None
+    for (body,) in db.execute("SELECT body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+        fill=json.loads(body)
+        if fill['parent']!=ep['id'] or fill['sequence']>seq:continue
+        if (fill['action']=='BTC_ENTRY' and omitted) or (fill['action']=='BTC_REDUCE' and str(fill['level'])==key):writer=fill
+    if writer is None:raise RightsFactMissing('actual_native_fraction_writer:'+ep['id']+':'+key)
+    row=db.execute('SELECT body FROM rights_after WHERE id=?',(writer['native_event_id'],)).fetchone()
+    if row is None:raise RightsFactMissing('actual_fraction_writer_after_snapshot')
+    written=json.loads(row[0]);source=written['episode'];rights_need(source['id']==ep['id'],'fraction_writer_parent_conflict')
+    rights_entry_native(db,source,written['seq'],entry)
+    values,maps=rights_auth(source);raw=source['raw_entry'];fraction=min(1.0,values['btc_initial_qty']/values['btc_net_planned_qty'])
+    if not omitted:
+        denominator=(raw['method_a_raw_target_lots'] if label=='P1' else raw['btc_tp_target_lots'])[key]
+        filled=raw['btc_tp_filled_lots'].get(key,0);tp=D(0)
+        for (body,) in db.execute("SELECT body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+            fill=json.loads(body)
+            if fill['parent']==ep['id'] and fill['action']=='BTC_REDUCE' and str(fill['level'])==key and fill['sequence']<=written['seq']:tp+=D(fill['qty'])
+        lots=tp/D('.001');rights_need(lots==lots.to_integral_value() and denominator>0,'raw_native_TP_lot_denominator_conflict')
+        rights_need(filled==min(int(lots),raw['btc_tp_target_lots'][key]) if label=='P0' else filled==int(lots),'raw_TP_consumption_native_conflict')
+        fraction=min(1.0,filled/denominator)*fraction if label=='P1' else filled/denominator*fraction
+    rights_need(float(maps['sol_right_fraction'][key]).hex()==float(fraction).hex(),'original_fraction_writer_formula_conflict')
+    rights_need(float(ep['old_SOL_fractions'][key]).hex()==float(fraction).hex(),'current_fraction_changed_without_original_writer')
+    if not omitted:rights_need(ep['sol_right_decision_index'][key]==source['sol_right_decision_index'][key],'actual_TP_right_decision_writer_conflict')
+    return omitted
+
+
+def rights_guarded_touch(db,ep,entry,level,admission_seq):
+    rights_need(ep['btc_deferred_right_touched'] is True,'deferred_reference_not_touched')
+    reference=D(ep['btc_deferred_right_reference_price']);rights_need(reference>0,'invalid_deferred_reference')
+    key=str(level)
+    actions=[json.loads(x[0]) for x in db.execute("SELECT body FROM rights_quote_actions ORDER BY CAST(json_extract(body,'$.before_seq') AS INTEGER)")]
+    activations=entry.get('sol_right_activations',())
+    for active in actions:
+        if active['after_seq']>admission_seq:continue
+        before=active['before']['episode'];after=active['after']['episode'];quote=active['input']
+        if before is None or after is None or before['id']!=ep['id'] or after['id']!=ep['id']:continue
+        if level in before['old_SOL_rights'] or level not in after['old_SOL_rights']:continue
+        rows=[x for x in activations if level in x['levels'] and int(x['timestamp_ns'])==int(quote['event_ns'])]
+        if not rows:continue
+        if before['btc_deferred_right_reference_price']!=str(reference) or after['btc_deferred_right_touched'] is not True:continue
+        index,_=rights_sessions(dict(episode=after,sessions=active['before']['sessions']),dict(decision_index=0,level=level))
+        rights_need(after['sol_right_decision_index'][key]==index and ep['sol_right_decision_index'][key]==index,'guarded_right_decision_session_conflict')
+        # Source _activate_selective runs at the start of this strategy quote callback.
+        # Matching/native fills are already applied; future same-ns callbacks are excluded.
+        rights_entry_native(db,before,active['before_seq'],entry)
+        confirmed=before['source_float_values']['btc_initial_qty']
+        rights_need(confirmed>0 and any(float(x['confirmed_native_entry_qty']).hex()==float(confirmed).hex() for x in rows),'guarded_activation_confirmed_entry_sequence_conflict')
+        for touched in actions:
+            if touched['before_seq']>active['before_seq']:break
+            pre=touched['before']['episode'];post=touched['after']['episode'];tick=touched['input']
+            if pre is None or post is None or pre['id']!=ep['id'] or post['id']!=ep['id']:continue
+            if pre['btc_deferred_right_touched'] is not False or post['btc_deferred_right_touched'] is not True:continue
+            if int(tick['event_ns'])<int(entry['q1_ns']) or pre['btc_deferred_right_reference_price']!=str(reference):continue
+            crossed=(ep['side']==1 and D(tick['bid'])>=reference) or (ep['side']==-1 and D(tick['ask'])<=reference)
+            if not crossed:continue
+            rights_entry_native(db,pre,touched['before_seq'],entry)
+            earned=pre['source_float_values']['btc_initial_qty']>0 and any(pre['old_SOL_fractions'].get(str(x),0)>0 for x in pre['omitted_raw_levels'])
+            if not earned:continue
+            # Readiness is intentionally not required at the earlier earned latch.
+            if touched['before_seq']!=active['before_seq'] and before['btc_deferred_right_touched'] is not True:continue
+            if any(x['after']['episode'] is not None and x['after']['episode']['id']==ep['id'] and
+                   touched['after_seq']<=x['after_seq']<=active['after_seq'] and x['after']['episode']['btc_deferred_right_touched'] is not True for x in actions):
+                raise RightsFactMissing('earned_touch_latch_not_continuously_retained')
+            return
+    raise RightsFactMissing('actual_earned_touch_then_guarded_activation_sequence')
+
+
+def rights_auth_signature(ep):
+    rights_auth(ep)
+    return dict(h=ep['source_float_hex']['h'],maps=ep['source_float_maps_hex'])
+
+def rights_origin_interval(db,origin,current,admission_seq):
+    expected=rights_auth_signature(origin['context']['episode']);parent=origin['context']['episode']['id'];writers=0
+    for (body,) in db.execute("SELECT body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+        fill=json.loads(body)
+        if fill['parent']!=parent or not origin['seq']<fill['sequence']<=admission_seq:continue
+        before=db.execute('SELECT body FROM sol_before WHERE id=?',(fill['native_event_id'],)).fetchone()
+        after=db.execute('SELECT body FROM rights_after WHERE id=?',(fill['native_event_id'],)).fetchone()
+        if before is None or after is None:raise RightsFactMissing('actual_origin_interval_writer_frames')
+        pre=json.loads(before[0])['episode'];post=json.loads(after[0])['episode']
+        if pre is None or post is None or pre['id']!=parent or post['id']!=parent:raise RightsFactMissing('origin_interval_writer_parent')
+        if rights_auth_signature(pre)!=expected:raise RightsFactMissing('unobserved_authorization_writer_before_native_fill')
+        expected=rights_auth_signature(post);writers+=1
+    if expected!=rights_auth_signature(current):raise RightsFactMissing('unobserved_authorization_writer_before_admission')
+    return writers
+
+
+def rights_market_execution(db,oid,initialized):
+    row=db.execute('SELECT body FROM rights_native_order WHERE id=?',(oid,)).fetchone()
+    if row is None:raise RightsFactMissing('actual_market_native_history_or_terminal:'+oid)
+    fact=json.loads(row[0]);order=fact['order'];history=order['native_history']
+    for key in ('order_id','instrument','strategy','side','quantity','reduce_only'):
+        rights_need(order[key]==initialized[key],'actual_market_order_identity_conflict')
+    terminal={'FILLED':'OrderFilled','CANCELED':'OrderCanceled','REJECTED':'OrderRejected','EXPIRED':'OrderExpired','DENIED':'OrderDenied'}
+    if order['status'] not in terminal:raise RightsFactMissing('actual_market_terminal_disposition:'+oid)
+    terminal_events=[x for x in history if x['id'] and x['type']==terminal[order['status']]]
+    if not terminal_events or not fact['event_id'] or not any(x['id']==fact['event_id'] and x['type']==fact['event_type'] for x in history):
+        raise RightsFactMissing('actual_market_terminal_event_not_in_history:'+oid)
+    terminal_id=terminal_events[-1]['id']
+    quantity=D(order['quantity']);filled=D(order['filled'])
+    rights_need(quantity>0 and 0<=filled<=quantity,'actual_market_terminal_quantity_conflict')
+    actual=D(0);count=0
+    for trade,body in db.execute("SELECT id,body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+        fill=json.loads(body)
+        if fill['oid']!=oid:continue
+        rights_need(fill['action']=='SOL_ADD' and fill['instrument']==order['instrument'],'actual_market_fill_owner_conflict')
+        if not trade or not fill['native_event_id'] or not any(x['id']==fill['native_event_id'] and x['type']=='OrderFilled' for x in history):
+            raise RightsFactMissing('actual_market_fill_event_history_join:'+oid)
+        native=db.execute('SELECT body FROM position_trades WHERE id=?',(trade,)).fetchone()
+        if native is None:raise RightsFactMissing('actual_market_trade_closed_native_history_join:'+trade)
+        native=json.loads(native[0])
+        rights_need(native['native_event_id']==fill['native_event_id'] and native['oid']==oid and D(native['qty'])==D(fill['qty']) and D(native['px'])==D(fill['px']),'actual_market_trade_native_position_conflict')
+        rights_need(D(fill['qty'])>0 and D(fill['px'])>0,'nonpositive_actual_market_fill')
+        actual+=D(fill['qty']);count+=1
+    rights_need(actual==filled,'actual_market_fill_total_vs_native_order_conflict')
+    rights_need((order['status']=='FILLED' and filled==quantity and count>0) or (order['status']!='FILLED' and filled<quantity),'actual_market_terminal_filled_state_conflict')
+    return dict(kind='GENUINE_NATIVE_FILLED_HISTORY' if count else 'GENUINE_UNFILLED_NATIVE_TERMINAL',
+        terminal_status=order['status'],terminal_event_id=terminal_id,actual_trade_events=count,
+        optional_Accepted_present=any(x['type']=='OrderAccepted' for x in history),initialized_never_execution_credit=True)
+
+def rights_v2_evidence(db,report,label,metadata,observer_sha):
+    expected_observer='6e21b00d7df3a7819a67bf0c571ff31f33822888d5095ebf43075c7fa7f72aa7'
+    missing=set();failures=Counter();examples=[];admissions=0;actual_fills=0
+    def get(table,key):
+        row=db.execute('SELECT body FROM '+table+' WHERE id=?',(key,)).fetchone()
+        return None if row is None else json.loads(row[0])
+    if observer_sha!=expected_observer:missing.add('exact_frozen_observer360_script_pin')
+    capture=metadata.get('legacy_SOL_admission_capture')
+    if capture is None:missing.add('observer_profile.legacy_SOL_admission_capture')
+    else:
+        if capture.get('schema')!='METHOD_A_LEGACY_SOL_PRE_TRANSPORT_V2':missing.add('observer_profile.V2_schema')
+        if capture.get('error_count')!=0:missing.add('observer_profile.zero_capture_errors')
+    entries={x['episode_id']:x for x in report['entry_sizing_audit']}
+    qualified={}
+    for oid,body in db.execute('SELECT id,body FROM rights_admission'):
+        admissions+=1
+        try:
+            row=json.loads(body);a=row['admission'];ep=row['context']['episode'];i=rights_intent(a['pending_intent']);level=int(i['level']);key=str(level)
+            origin=get('rights_origin',i['id'])
+            if origin is None:raise RightsFactMissing('intent_origin_interval:'+i['id'])
+            if origin['intent']!=i:raise RightsFactMissing('conflicting_immutable_intent_before_admission')
+            if db.execute("SELECT COUNT(*) FROM rights_admission WHERE json_extract(body,'$.admission.intent_id')=?",(i['id'],)).fetchone()[0]>1:raise RightsFactMissing('active_ce7_requeue_origin_not_proven')
+            writer_count=rights_origin_interval(db,origin,ep,row['seq'])
+            rights_need(origin['context']['episode']['id']==ep['id']==a['parent']==i['parent']==a['current_parent'],'actual_parent_mapping_conflict')
+            rights_need(a['schema']=='METHOD_A_LEGACY_SOL_PRE_TRANSPORT_V2' and a['boundary']=='ORIGINAL_RECORD_SUBMISSION_RETURNED_TRUE_BEFORE_NATIVE_TRANSPORT','wrong_admission_schema_or_boundary')
+            if a['sessions']!=row['context']['sessions']:raise RightsFactMissing('conflicting_admission_session_copy')
+            for name in set(a['episode'])&set(ep):
+                if a['episode'][name]!=ep[name]:raise RightsFactMissing('conflicting_admission_episode_copy')
+            rights_need(a['episode']['h_at_SOL_ADD_admission']==ep['h'] and a['episode']['sol_add_filled_notional_at_SOL_ADD_admission']==ep['sol_add_filled_notional'],'admission_missing_six_fact_alias_conflict')
+            rights_need(a['checkpoint_result'] is True and a['initialized_order_is_ACK_or_fill'] is False and a['domain_pending_contains_intent'] is True,'invalid_pre_transport_boundary')
+            rights_need(a['order_decision_index']==i['decision_index'] and a['action']==i['action']=='SOL_ADD' and a['level']==level,'intent_order_decision_mapping_conflict')
+            policy=a['original_policy']
+            rights_need(policy['sol_overlay_enabled'] is True and policy['sol_late_entry_after_tp'] is True and policy['episode_fixed_beta'] is False,'not_original_ce7_SOL_policy')
+            rights_need(policy['sol_size_multipliers_h']==[1.75,2.625,3.5] and policy['sol_entry_z']==[1.25,2.5,3.75] and policy['max_parent_notional']==30000000.0,'original_ce7_policy_value_drift')
+            created=origin['context'];remaining=rights_budget(created['episode'],policy,level)
+            rights_need(remaining>1e-12 and float(i['requested_notional']).hex()==float(remaining).hex(),'immutable_requested_notional_not_original_creation_remaining')
+            original_latest,feature=rights_sessions(created,i,True)
+            rights_need(level in created['episode']['old_SOL_rights'] and feature['beta'] is not None and .2<feature['beta']<4,'creation_right_or_beta_invalid')
+            z=rights_source_z(created['episode'],feature)
+            rights_need(z is not None and created['episode']['side']*z>=policy['sol_entry_z'][level],'creation_original_z_guard_invalid')
+            current_latest,current_feature=rights_sessions(row['context'],i)
+            rights_need(level in ep['old_SOL_rights'],'admission_original_right_missing')
+            if current_latest>i['decision_index']:
+                z=rights_source_z(ep,current_feature)
+                rights_need(current_feature['side']==ep['side'] and current_feature['beta'] is not None and .2<current_feature['beta']<4 and z is not None and ep['side']*z>=policy['sol_entry_z'][level],'original_stale_add_guard_invalid')
+                values,maps=rights_auth(ep)
+                rights_need(values['h']*policy['sol_size_multipliers_h'][level]*maps['sol_right_fraction'].get(key,1.0)>maps['sol_add_filled_notional'].get(key,0.0),'original_stale_right_already_consumed')
+                lifecycle=ep['sol_lifecycle'];bar=datetime.fromisoformat(row['context']['sessions']['current_BTC_SOL_signal_sessions']['bar_close_time'])
+                if lifecycle['sol_qty'] and lifecycle['first_fill_at'] is not None:
+                    rights_need(bar<datetime.fromisoformat(lifecycle['first_fill_at'])+timedelta(days=policy['sol_max_holding_days']),'original_stale_holding_timeout')
+                    signed=ep['side']*z
+                    rights_need(not ((not lifecycle['half_done'] and signed<=policy['sol_exit_half_z']) or (lifecycle['half_done'] and lifecycle['half_decision_index'] is not None and current_latest>lifecycle['half_decision_index'] and signed<=policy['sol_exit_all_z'])),'original_stale_SOL_exit_preempts_add')
+            entry=entries[ep['id']]
+            omitted=rights_raw_fraction(db,created['episode'],level,origin['seq'],entry,label)
+            rights_raw_fraction(db,ep,level,row['seq'],entry,label)
+            for context,boundary_seq in ((created,origin['seq']),(row['context'],row['seq'])):
+                consumed=0.0
+                for (payload,) in db.execute("SELECT body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+                    fill=json.loads(payload)
+                    if fill['action']=='SOL_ADD' and fill['parent']==ep['id'] and str(fill['level'])==key and fill['sequence']<=boundary_seq:consumed+=float(fill['qty'])*float(fill['px'])
+                rights_need(float(context['episode']['sol_add_filled_notional'].get(key,0.0)).hex()==consumed.hex(),'irreversible_consumption_actual_native_fill_conflict')
+            order=a['native_initialized_order'];quote=a['native_quote'];inst=a['instrument']
+            rights_need(order['order_id']==oid and order['instrument']==quote['instrument']==inst['id']=='SOLUSDT-PERP.P1SIM','native_SOL_order_quote_instrument_conflict')
+            rights_need(order['side']==('SELL' if ep['side']==1 else 'BUY') and i['side']==-ep['side'] and not order['reduce_only'] and order['status']=='INITIALIZED','native_SOL_side_or_initialized_state_conflict')
+            execution=rights_market_execution(db,oid,order)
+            ack=get('native_acks',oid)
+            if ack is not None:
+                rights_need(ack['instrument']==order['instrument'] and ack['strategy']==order['strategy'] and ack['side']==order['side'] and D(ack['quantity'])==D(order['quantity']),'optional_actual_market_ACK_order_conflict')
+            with localcontext() as ctx:
+                ctx.prec=28
+                executable=D(str(float(quote['ask'] if order['side']=='BUY' else quote['bid'])))
+                quantity=float(D(str(min(i['requested_notional'],policy['max_parent_notional'])))/executable)
+                step=D(inst['size_increment']);rounded=(D(str(quantity))//step)*step
+                rights_need(rounded>0 and D(order['quantity'])==rounded,'original_native_lot_rounding_conflict')
+                if inst['min_quantity'] is not None:rights_need(rounded>=D(inst['min_quantity']),'native_min_quantity_conflict')
+                if inst['min_notional'] is not None:rights_need(rounded*executable>=D(inst['min_notional'].split()[0].replace('_','')),'native_min_notional_conflict')
+            if omitted:rights_guarded_touch(db,ep,entry,level,row['seq'])
+            qualified[oid]=a
+            if len(examples)<16:examples.append(dict(oid=oid,intent_id=i['id'],parent=ep['id'],level=level,origin_method=origin['method'],actual_interval_native_writers=writer_count,actual_native_market_execution=execution,
+                original_creation_remaining_hex=float(remaining).hex(),actual_admission_remaining_hex=float(rights_budget(ep,policy,level)).hex(),no_new_admission_clamp=True))
+        except (KeyError,TypeError,RightsFactMissing) as error:missing.add(type(error).__name__+':'+str(error))
+        except (ValueError,ArithmeticError,RightsPolicyViolation) as error:failures[str(error)]+=1
+    totals=Counter()
+    for (body,) in db.execute("SELECT body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+        fill=json.loads(body)
+        if fill['action']!='SOL_ADD':continue
+        actual_fills+=1;oid=fill['oid']
+        try:
+            if oid not in qualified:raise RightsFactMissing('qualified_admission_for_actual_SOL_ADD:'+oid)
+            a=qualified[oid];level=str(fill['level']);before=get('sol_before',fill['native_event_id']);after=get('rights_after',fill['native_event_id'])
+            if before is None or after is None:raise RightsFactMissing('actual_SOL_ADD_before_after_source_frames:'+fill['native_event_id'])
+            b=before['episode'];z=after['episode']
+            rights_need(b['id']==z['id']==fill['parent']==a['parent'] and int(a['level'])==int(fill['level']),'native_fill_parent_level_conflict')
+            rights_need(D(fill['qty'])>0 and D(fill['px'])>0,'nonpositive_actual_native_fill')
+            rights_need(fill['instrument']==a['native_initialized_order']['instrument'],'native_fill_instrument_conflict')
+            expected=b['sol_add_filled_notional'].get(level,0.0)+float(fill['qty'])*float(fill['px'])
+            rights_need(float(z['sol_add_filled_notional'][level]).hex()==expected.hex(),'native_partial_fill_consumption_update_conflict')
+            totals[oid]+=D(fill['qty']);rights_need(totals[oid]<=D(a['native_initialized_order']['quantity']),'actual_native_fills_exceed_initialized_order')
+        except (KeyError,TypeError,RightsFactMissing) as error:missing.add(type(error).__name__+':'+str(error))
+        except (ValueError,ArithmeticError,RightsPolicyViolation) as error:failures[str(error)]+=1
+    if capture is not None and (capture.get('attempts')!=capture.get('recorded') or capture.get('recorded')!=admissions):missing.add('admission_attempts_recorded_stream_count_mismatch')
+    return dict(status='FAIL' if failures else ('UNKNOWN' if missing else 'PASS'),actual_SOL_ADD_fills=actual_fills,actual_admitted_orders=admissions,
+        actual_qualified_orders=len(qualified),missing_required_fields=sorted(missing),failures=dict(failures),examples=examples,examples_capped_at=16,
+        mechanism_status='NOT_TESTED_NO_ACTUAL_SOL_ADD' if admissions==actual_fills==0 else 'ACTUAL_V2_SOURCE_RIGHTS_EVIDENCE',
+        initialized_order_never_ACK_credit=True,no_current_budget_clamp=True,no_new_P3_A0_rules=True,no_shadow_PnL=True)
+
+
 def profile_read(path,db,owners,label,audit=None):
     bad=Counter();counts=Counter();last=None;state_hash=None;seq=0;quote_frames=0;checked_tp=0;first_cash=None
     authority=tp_authority(audit)
+    rights_v2_tables(db)
     for table in ('fills','closed','position_trades','order_context','native_acks','sol_before'):
         db.execute('CREATE TABLE '+table+' (id TEXT PRIMARY KEY,body TEXT NOT NULL)')
     db.execute('CREATE TABLE quotes (ns INTEGER,instrument TEXT,PRIMARY KEY(ns,instrument))')
@@ -163,6 +512,7 @@ def profile_read(path,db,owners,label,audit=None):
         for oid,order in state['active_orders'].items():
             if oid not in owners:bad['unmapped_native_active_order']+=1
             if not order['strategy']:bad['native_strategy_missing']+=1
+        rights_v2_frame(db,row,state,bad)
         if phase=='BEFORE_NATIVE_MATCHING_INPUT':
             quote_frames+=1;tick=row['input'];ns=int(tick['event_ns'])
             if ns!=int(row['event_ns']):bad['quote_clock_binding']+=1
@@ -218,14 +568,14 @@ def profile_read(path,db,owners,label,audit=None):
                     command=None if logged is None else authority['submits'].get((order['order_id'],str(logged['sequence'])))
                     if logged is None or command is None or D(logged['price'])!=D(order['price']) or D(logged['total'])!=D(order['quantity']) or D(command['price'])!=D(order['price']) or D(command['total'])!=D(order['quantity']):bad['P1_modify_ACK_not_authorized_current_price']+=1
         if phase=='BEFORE_STRATEGY_on_order_filled_NATIVE_CACHE_ALREADY_MUTATED' and row['native_event_type']=='OrderFilled':
-            insert_unique(db,'sol_before',row['native_event_id'],dict(episode=state['episode']),bad)
+            insert_unique(db,'sol_before',row['native_event_id'],dict(episode=state['episode'],sequence=seq),bad)
         if phase=='AFTER_STRATEGY_on_order_filled' and row['native_event_type']=='OrderFilled':
             oid=row['client_order_id'];context=db.execute('SELECT body FROM order_context WHERE id=?',(oid,)).fetchone()
             context=json.loads(context[0]) if context else {};raw=owners.get(oid,{})
             action=context.get('action',raw.get('action'));parent=context.get('parent');level=context.get('level',raw.get('level'))
             commission,currency=money(row['commission'])
             value=dict(native_event_id=row['native_event_id'],oid=oid,parent=parent,action=action,level=level,qty=row['last_qty'],
-                commission=str(commission),currency=currency,ns=row['event_ns'])
+                commission=str(commission),currency=currency,ns=row['event_ns'],px=row['last_px'],sequence=seq,instrument=row['native_order']['instrument'])
             fresh=insert_unique(db,'fills',row['trade_id'],value,bad)
             if fresh and parent is not None and action in ('BTC_ENTRY','BTC_REDUCE'):
                 db.execute('INSERT OR IGNORE INTO parent_actual VALUES (?,?,?,?,?)',(parent,'0','0','0','0'))
@@ -243,7 +593,7 @@ def profile_read(path,db,owners,label,audit=None):
             value=dict(position_id=event['position_id'],realized=event['realized_pnl'],commissions=position['commissions'])
             if insert_unique(db,'closed',row['native_event_id'],value,bad):
                 for fill in position['native_fill_history']:
-                    insert_unique(db,'position_trades',fill['trade_id'],dict(closed_event=row['native_event_id'],native_event_id=fill['event_id'],oid=fill['client_order_id'],qty=fill['qty'],commission=fill['commission']),bad)
+                    insert_unique(db,'position_trades',fill['trade_id'],dict(closed_event=row['native_event_id'],native_event_id=fill['event_id'],oid=fill['client_order_id'],qty=fill['qty'],commission=fill['commission'],px=fill['px']),bad)
     interior=db.execute('SELECT instrument,COUNT(*),MIN(ns),MAX(ns) FROM quotes WHERE ns>? AND ns<? GROUP BY instrument',(c.START*10**6,c.END*10**6)).fetchall()
     universe=len(interior)==2 and all(count==195839 and first==1725148860000000000 and last==1736899140000000000 for _,count,first,last in interior)
     return dict(issues=dict(bad),complete_interior_quote_universe=universe,interior_quotes=interior,phase_counts=dict(counts),frames=seq,quote_frames=quote_frames,checked_P1_held_frames=checked_tp,first_native_cash=first_cash,last_state=last)
@@ -336,13 +686,14 @@ def analyze(bound):
         native_epochs=(n==o['sequence_count'] and last_epoch==o['mutation_epochs']==a['fills']+a['funding']['count'])
         native_pairs=(coherent_count==a['fills'] and unpaired==unmatched==0 and fill_count==a['fills'])
         profile_good=(not profile['issues'] and profile['complete_interior_quote_universe'] and profile['frames']==bound['profile']['frames'] and profile['phase_counts']==bound['profile']['phase_counts'])
-        rights=rights_evidence(db,a)
+        observer_pin=next(x for x in bound['freeze']['script_pins'] if Path(x['path']).name=='prefix_observer.py')
+        rights=rights_v2_evidence(db,a,label,bound['profile'],observer_pin['sha256'])
         gates=dict(actual_os_exit0='PASS',complete_cash_reconciliation='PASS' if cashproof else 'UNKNOWN',signed_asset_funding_reconciliation='PASS' if fproof and signed==D(a['funding']['signed_amount']) else 'UNKNOWN',
             native_fee_reconciliation='PASS' if fees==fill_fees==D(a['native_fees']) and currencies_ok else 'UNKNOWN',
             native_3TP='NOT_APPLICABLE_LEGACY_CONTROL' if label=='P0' else ('PASS' if profile_good and profile['checked_P1_held_frames']>0 and a.get('method_a_tp_audit') else 'UNKNOWN'),
             ownership='PASS' if profile_good and fill_count==a['fills'] else 'UNKNOWN',continuous_settled_coverage='PASS' if complete_range and not bad else 'UNKNOWN',
             coherent_prefill_preopen_event_coverage='PASS' if o['status']=='PASS' and not o['unknown'] and native_epochs and native_pairs and not bad else 'UNKNOWN',
-            source_config_data_comparable='PASS' if venue else 'UNKNOWN',rights_audit_complete='PASS' if profile_good and native_pairs and rights['status']=='PASS' else 'UNKNOWN',
+            source_config_data_comparable='PASS' if venue else 'UNKNOWN',rights_audit_complete=rights['status'] if profile_good and native_pairs else 'UNKNOWN',
             terminal_positions0_orders0='PASS' if terminal else 'UNKNOWN',zero_model_liquidations='PASS' if a['liquidation_count']==0 else 'FAIL')
         qualified=all(value=='PASS' or (key=='native_3TP' and label=='P0' and value=='NOT_APPLICABLE_LEGACY_CONTROL') for key,value in gates.items())
         out=dict(label=label,source_commit=c.SOURCE,attempt_id=bound['gate']['attempt_id'],report_sha256=bound['gate']['report']['sha256'],prefix_only=True,

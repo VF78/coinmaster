@@ -1,0 +1,308 @@
+--- a/reports/method-a-verification-20261027/method_a_financial_reader.py
++++ b/reports/method-a-verification-20261027/method_a_financial_reader.py
+@@ -175,7 +175,7 @@
+     return dict(episode=state['episode'],sessions=state.get('legacy_sessions'))
+ 
+ def rights_v2_tables(db):
+-    for name in ('rights_origin','rights_admission','rights_after','rights_control','rights_BTC_quote'):
++    for name in ('rights_origin','rights_admission','rights_after','rights_control','rights_quote_actions','rights_native_order'):
+         db.execute('CREATE TABLE '+name+' (id TEXT PRIMARY KEY,body TEXT NOT NULL)')
+ 
+ def rights_v2_frame(db,row,state,issues):
+@@ -186,7 +186,7 @@
+         return None if value is None else json.loads(value[0])
+     def control(key,body):db.execute('INSERT OR REPLACE INTO rights_control VALUES (?,?)',(key,json.dumps(body,sort_keys=True)))
+     if phase=='BEFORE_STRATEGY_on_quote_tick_NATIVE_CACHE_ALREADY_MUTATED':
+-        control('quote_callback',dict(seq=seq,context=context,writer_count=get('rights_control','writers') or 0))
++        control('quote_callback',dict(seq=seq,context=context,input=get('rights_control','source_input'),writer_count=get('rights_control','writers') or 0))
+     if phase=='BEFORE_STRATEGY_on_order_filled_NATIVE_CACHE_ALREADY_MUTATED':
+         control('writers',(get('rights_control','writers') or 0)+1)
+     for value in state['queued']:
+@@ -196,9 +196,12 @@
+         old=get('rights_origin',intent['id'])
+         if old is None:put('rights_origin',intent['id'],dict(seq=seq,method='EARLIEST_ACTUAL_QUEUED_INTENT',intent=intent,context=context))
+         elif old['intent']!=intent:issues['rights_immutable_queued_intent_conflict']+=1
+-    if phase=='BEFORE_NATIVE_MATCHING_INPUT' and row['input']['instrument']=='BTCUSDT-PERP.P1SIM':
+-        put('rights_BTC_quote',str(seq),dict(seq=seq,input=row['input'],parent=None if context['episode'] is None else context['episode']['id'],
+-            signal_sessions=context['sessions'],deferred_reference=None if context['episode'] is None else context['episode'].get('btc_deferred_right_reference_price')))
++    if phase=='BEFORE_NATIVE_MATCHING_INPUT':
++        control('source_input',dict(seq=seq,input=row['input']))
++    if phase.startswith('AFTER_STRATEGY_') and row.get('native_order') is not None:
++        order=row['native_order']
++        db.execute('INSERT OR REPLACE INTO rights_native_order VALUES (?,?)',(order['order_id'],json.dumps(
++            dict(seq=seq,order=order,event_id=row['native_event_id'],event_type=row['native_event_type']),sort_keys=True)))
+     if phase=='SOL_ADD_PRE_NATIVE_TRANSPORT_AFTER_CHECKPOINT':
+         admission=row['admission'];intent=rights_intent(admission['pending_intent'])
+         origin=get('rights_origin',intent['id'])
+@@ -214,7 +217,15 @@
+         put('rights_admission',admission['client_order_id'],dict(seq=seq,admission=admission,context=context))
+     if phase=='AFTER_STRATEGY_on_order_filled' and row['native_event_type']=='OrderFilled':
+         put('rights_after',row['native_event_id'],dict(seq=seq,episode=state['episode']))
+-    if phase=='AFTER_STRATEGY_on_quote_tick':db.execute('DELETE FROM rights_control WHERE id=?',('quote_callback',))
++    if phase=='AFTER_STRATEGY_on_quote_tick':
++        opened=get('rights_control','quote_callback')
++        if opened is not None and opened['input'] is not None:
++            tick=opened['input']['input'];pre=opened['context']['episode'];post=context['episode']
++            if tick['instrument']=='BTCUSDT-PERP.P1SIM' and tick['event_ns']==row['event_ns'] and pre is not None and post is not None and pre['id']==post['id']:
++                if pre.get('btc_deferred_right_touched')!=post.get('btc_deferred_right_touched') or pre['old_SOL_rights']!=post['old_SOL_rights']:
++                    put('rights_quote_actions',str(opened['seq']),dict(before_seq=opened['seq'],after_seq=seq,input=tick,before=opened['context'],after=context))
++        db.execute('DELETE FROM rights_control WHERE id=?',('quote_callback',))
++
+ 
+ def rights_sessions(context,intent,creation=False):
+     ep=context['episode'];sessions=context['sessions'];s=sessions['current_BTC_SOL_signal_sessions'];latest=int(s['bar_index'])
+@@ -271,25 +282,45 @@
+     return omitted
+ 
+ 
+-def rights_guarded_touch(db,ep,entry,level,admission_ns):
++def rights_guarded_touch(db,ep,entry,level,admission_seq):
+     rights_need(ep['btc_deferred_right_touched'] is True,'deferred_reference_not_touched')
+     reference=D(ep['btc_deferred_right_reference_price']);rights_need(reference>0,'invalid_deferred_reference')
+-    activations=[x for x in entry.get('sol_right_activations',()) if level in x['levels'] and int(x['timestamp_ns'])<=admission_ns and D(x['confirmed_native_entry_qty'])>0]
+-    if not activations:raise RightsFactMissing('guarded_omitted_activation_missing')
+-    for activation in activations:
+-        for (body,) in db.execute('SELECT body FROM rights_BTC_quote'):
+-            row=json.loads(body);quote=row['input']
+-            if row['parent']!=ep['id'] or int(quote['event_ns'])!=int(activation['timestamp_ns']):continue
+-            if int(quote['event_ns'])<int(entry['q1_ns']) or row['deferred_reference']!=str(reference):continue
+-            activation_index,_=rights_sessions(dict(episode=ep,sessions=row['signal_sessions']),dict(decision_index=0,level=level))
+-            rights_need(ep['sol_right_decision_index'][str(level)]==activation_index,'guarded_right_decision_session_conflict')
+-            earned=0.0
+-            for (payload,) in db.execute("SELECT body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
+-                fill=json.loads(payload)
+-                if fill['parent']==ep['id'] and fill['action']=='BTC_ENTRY' and int(fill['ns'])<=int(activation['timestamp_ns']):earned+=float(fill['qty'])
+-            rights_need(earned>0 and earned.hex()==float(activation['confirmed_native_entry_qty']).hex(),'guarded_touch_confirmed_native_entry_conflict')
+-            if (ep['side']==1 and D(quote['bid'])>=reference) or (ep['side']==-1 and D(quote['ask'])<=reference):return
+-    raise RightsFactMissing('actual_causal_BTC_quote_for_guarded_touch')
++    key=str(level)
++    actions=[json.loads(x[0]) for x in db.execute("SELECT body FROM rights_quote_actions ORDER BY CAST(json_extract(body,'$.before_seq') AS INTEGER)")]
++    activations=entry.get('sol_right_activations',())
++    for active in actions:
++        if active['after_seq']>admission_seq:continue
++        before=active['before']['episode'];after=active['after']['episode'];quote=active['input']
++        if before is None or after is None or before['id']!=ep['id'] or after['id']!=ep['id']:continue
++        if level in before['old_SOL_rights'] or level not in after['old_SOL_rights']:continue
++        rows=[x for x in activations if level in x['levels'] and int(x['timestamp_ns'])==int(quote['event_ns'])]
++        if not rows:continue
++        if before['btc_deferred_right_reference_price']!=str(reference) or after['btc_deferred_right_touched'] is not True:continue
++        index,_=rights_sessions(dict(episode=after,sessions=active['before']['sessions']),dict(decision_index=0,level=level))
++        rights_need(after['sol_right_decision_index'][key]==index and ep['sol_right_decision_index'][key]==index,'guarded_right_decision_session_conflict')
++        # Source _activate_selective runs at the start of this strategy quote callback.
++        # Matching/native fills are already applied; future same-ns callbacks are excluded.
++        rights_entry_native(db,before,active['before_seq'],entry)
++        confirmed=before['source_float_values']['btc_initial_qty']
++        rights_need(confirmed>0 and any(float(x['confirmed_native_entry_qty']).hex()==float(confirmed).hex() for x in rows),'guarded_activation_confirmed_entry_sequence_conflict')
++        for touched in actions:
++            if touched['before_seq']>active['before_seq']:break
++            pre=touched['before']['episode'];post=touched['after']['episode'];tick=touched['input']
++            if pre is None or post is None or pre['id']!=ep['id'] or post['id']!=ep['id']:continue
++            if pre['btc_deferred_right_touched'] is not False or post['btc_deferred_right_touched'] is not True:continue
++            if int(tick['event_ns'])<int(entry['q1_ns']) or pre['btc_deferred_right_reference_price']!=str(reference):continue
++            crossed=(ep['side']==1 and D(tick['bid'])>=reference) or (ep['side']==-1 and D(tick['ask'])<=reference)
++            if not crossed:continue
++            rights_entry_native(db,pre,touched['before_seq'],entry)
++            earned=pre['source_float_values']['btc_initial_qty']>0 and any(pre['old_SOL_fractions'].get(str(x),0)>0 for x in pre['omitted_raw_levels'])
++            if not earned:continue
++            # Readiness is intentionally not required at the earlier earned latch.
++            if touched['before_seq']!=active['before_seq'] and before['btc_deferred_right_touched'] is not True:continue
++            if any(x['after']['episode'] is not None and x['after']['episode']['id']==ep['id'] and
++                   touched['after_seq']<=x['after_seq']<=active['after_seq'] and x['after']['episode']['btc_deferred_right_touched'] is not True for x in actions):
++                raise RightsFactMissing('earned_touch_latch_not_continuously_retained')
++            return
++    raise RightsFactMissing('actual_earned_touch_then_guarded_activation_sequence')
+ 
+ 
+ def rights_auth_signature(ep):
+@@ -310,6 +341,40 @@
+         expected=rights_auth_signature(post);writers+=1
+     if expected!=rights_auth_signature(current):raise RightsFactMissing('unobserved_authorization_writer_before_admission')
+     return writers
++
++
++def rights_market_execution(db,oid,initialized):
++    row=db.execute('SELECT body FROM rights_native_order WHERE id=?',(oid,)).fetchone()
++    if row is None:raise RightsFactMissing('actual_market_native_history_or_terminal:'+oid)
++    fact=json.loads(row[0]);order=fact['order'];history=order['native_history']
++    for key in ('order_id','instrument','strategy','side','quantity','reduce_only'):
++        rights_need(order[key]==initialized[key],'actual_market_order_identity_conflict')
++    terminal={'FILLED':'OrderFilled','CANCELED':'OrderCanceled','REJECTED':'OrderRejected','EXPIRED':'OrderExpired','DENIED':'OrderDenied'}
++    if order['status'] not in terminal:raise RightsFactMissing('actual_market_terminal_disposition:'+oid)
++    terminal_events=[x for x in history if x['id'] and x['type']==terminal[order['status']]]
++    if not terminal_events or not fact['event_id'] or not any(x['id']==fact['event_id'] and x['type']==fact['event_type'] for x in history):
++        raise RightsFactMissing('actual_market_terminal_event_not_in_history:'+oid)
++    terminal_id=terminal_events[-1]['id']
++    quantity=D(order['quantity']);filled=D(order['filled'])
++    rights_need(quantity>0 and 0<=filled<=quantity,'actual_market_terminal_quantity_conflict')
++    actual=D(0);count=0
++    for trade,body in db.execute("SELECT id,body FROM fills ORDER BY CAST(json_extract(body,'$.sequence') AS INTEGER)"):
++        fill=json.loads(body)
++        if fill['oid']!=oid:continue
++        rights_need(fill['action']=='SOL_ADD' and fill['instrument']==order['instrument'],'actual_market_fill_owner_conflict')
++        if not trade or not fill['native_event_id'] or not any(x['id']==fill['native_event_id'] and x['type']=='OrderFilled' for x in history):
++            raise RightsFactMissing('actual_market_fill_event_history_join:'+oid)
++        native=db.execute('SELECT body FROM position_trades WHERE id=?',(trade,)).fetchone()
++        if native is None:raise RightsFactMissing('actual_market_trade_closed_native_history_join:'+trade)
++        native=json.loads(native[0])
++        rights_need(native['native_event_id']==fill['native_event_id'] and native['oid']==oid and D(native['qty'])==D(fill['qty']) and D(native['px'])==D(fill['px']),'actual_market_trade_native_position_conflict')
++        rights_need(D(fill['qty'])>0 and D(fill['px'])>0,'nonpositive_actual_market_fill')
++        actual+=D(fill['qty']);count+=1
++    rights_need(actual==filled,'actual_market_fill_total_vs_native_order_conflict')
++    rights_need((order['status']=='FILLED' and filled==quantity and count>0) or (order['status']!='FILLED' and filled<quantity),'actual_market_terminal_filled_state_conflict')
++    return dict(kind='GENUINE_NATIVE_FILLED_HISTORY' if count else 'GENUINE_UNFILLED_NATIVE_TERMINAL',
++        terminal_status=order['status'],terminal_event_id=terminal_id,actual_trade_events=count,
++        optional_Accepted_present=any(x['type']=='OrderAccepted' for x in history),initialized_never_execution_credit=True)
+ 
+ def rights_v2_evidence(db,report,label,metadata,observer_sha):
+     expected_observer='6e21b00d7df3a7819a67bf0c571ff31f33822888d5095ebf43075c7fa7f72aa7'
+@@ -375,9 +440,10 @@
+             order=a['native_initialized_order'];quote=a['native_quote'];inst=a['instrument']
+             rights_need(order['order_id']==oid and order['instrument']==quote['instrument']==inst['id']=='SOLUSDT-PERP.P1SIM','native_SOL_order_quote_instrument_conflict')
+             rights_need(order['side']==('SELL' if ep['side']==1 else 'BUY') and i['side']==-ep['side'] and not order['reduce_only'] and order['status']=='INITIALIZED','native_SOL_side_or_initialized_state_conflict')
++            execution=rights_market_execution(db,oid,order)
+             ack=get('native_acks',oid)
+-            if ack is None:raise RightsFactMissing('actual_native_ACK:'+oid)
+-            rights_need(ack['instrument']==order['instrument'] and ack['strategy']==order['strategy'] and ack['side']==order['side'] and D(ack['quantity'])==D(order['quantity']),'actual_native_ACK_order_conflict')
++            if ack is not None:
++                rights_need(ack['instrument']==order['instrument'] and ack['strategy']==order['strategy'] and ack['side']==order['side'] and D(ack['quantity'])==D(order['quantity']),'optional_actual_market_ACK_order_conflict')
+             with localcontext() as ctx:
+                 ctx.prec=28
+                 executable=D(str(float(quote['ask'] if order['side']=='BUY' else quote['bid'])))
+@@ -386,9 +452,9 @@
+                 rights_need(rounded>0 and D(order['quantity'])==rounded,'original_native_lot_rounding_conflict')
+                 if inst['min_quantity'] is not None:rights_need(rounded>=D(inst['min_quantity']),'native_min_quantity_conflict')
+                 if inst['min_notional'] is not None:rights_need(rounded*executable>=D(inst['min_notional'].split()[0].replace('_','')),'native_min_notional_conflict')
+-            if omitted:rights_guarded_touch(db,ep,entry,level,int(quote['event_ns']))
++            if omitted:rights_guarded_touch(db,ep,entry,level,row['seq'])
+             qualified[oid]=a
+-            if len(examples)<16:examples.append(dict(oid=oid,intent_id=i['id'],parent=ep['id'],level=level,origin_method=origin['method'],actual_interval_native_writers=writer_count,
++            if len(examples)<16:examples.append(dict(oid=oid,intent_id=i['id'],parent=ep['id'],level=level,origin_method=origin['method'],actual_interval_native_writers=writer_count,actual_native_market_execution=execution,
+                 original_creation_remaining_hex=float(remaining).hex(),actual_admission_remaining_hex=float(rights_budget(ep,policy,level)).hex(),no_new_admission_clamp=True))
+         except (KeyError,TypeError,RightsFactMissing) as error:missing.add(type(error).__name__+':'+str(error))
+         except (ValueError,ArithmeticError,RightsPolicyViolation) as error:failures[str(error)]+=1
+@@ -527,7 +593,7 @@
+             value=dict(position_id=event['position_id'],realized=event['realized_pnl'],commissions=position['commissions'])
+             if insert_unique(db,'closed',row['native_event_id'],value,bad):
+                 for fill in position['native_fill_history']:
+-                    insert_unique(db,'position_trades',fill['trade_id'],dict(closed_event=row['native_event_id'],native_event_id=fill['event_id'],oid=fill['client_order_id'],qty=fill['qty'],commission=fill['commission']),bad)
++                    insert_unique(db,'position_trades',fill['trade_id'],dict(closed_event=row['native_event_id'],native_event_id=fill['event_id'],oid=fill['client_order_id'],qty=fill['qty'],commission=fill['commission'],px=fill['px']),bad)
+     interior=db.execute('SELECT instrument,COUNT(*),MIN(ns),MAX(ns) FROM quotes WHERE ns>? AND ns<? GROUP BY instrument',(c.START*10**6,c.END*10**6)).fetchall()
+     universe=len(interior)==2 and all(count==195839 and first==1725148860000000000 and last==1736899140000000000 for _,count,first,last in interior)
+     return dict(issues=dict(bad),complete_interior_quote_universe=universe,interior_quotes=interior,phase_counts=dict(counts),frames=seq,quote_frames=quote_frames,checked_P1_held_frames=checked_tp,first_native_cash=first_cash,last_state=last)
+--- a/reports/method-a-verification-20261027/test_method_a_rights_v2_pure.py
++++ b/reports/method-a-verification-20261027/test_method_a_rights_v2_pure.py
+@@ -35,24 +35,36 @@
+         order=dict(order_id='O',instrument='SOLUSDT-PERP.P1SIM',side='SELL',strategy='UNIT-001',quantity='1.7',reduce_only=False,status='INITIALIZED')
+         def fixture(db):
+             r.rights_v2_tables(db)
+-            for table in ('fills','sol_before','native_acks'):db.execute('CREATE TABLE '+table+' (id TEXT PRIMARY KEY,body TEXT NOT NULL)')
++            for table in ('fills','sol_before','native_acks','position_trades'):db.execute('CREATE TABLE '+table+' (id TEXT PRIMARY KEY,body TEXT NOT NULL)')
+             def put(table,key,value):db.execute('INSERT INTO '+table+' VALUES (?,?)',(key,json.dumps(value,sort_keys=True)))
+-            entry=dict(episode_id='UNIT',net_submitted_btc_qty='1',q1_ns='10',sol_right_activations=[dict(levels=[0],timestamp_ns='20',confirmed_native_entry_qty='1')])
++            entry=dict(episode_id='UNIT',net_submitted_btc_qty='1',q1_ns='10',sol_right_activations=[dict(levels=[0],timestamp_ns='30',confirmed_native_entry_qty='1')])
+             report=dict(entry_sizing_audit=[entry])
+             put('fills','B',dict(native_event_id='B',action='BTC_ENTRY',parent='UNIT',level=None,sequence=1,ns='10',qty='1',px='10000',instrument='BTCUSDT-PERP.P1SIM',oid='BTC'))
+             put('rights_after','B',dict(seq=1,episode=ep()))
+-            put('rights_BTC_quote','2',dict(seq=2,parent='UNIT',signal_sessions=sessions,deferred_reference='10000.1',input=dict(instrument='BTCUSDT-PERP.P1SIM',event_ns='20',bid='10000.1',ask='10000.2')))
+-            put('rights_origin','I',dict(seq=3,method='EARLIEST_ACTUAL_QUEUED_INTENT',intent=intent,context=dict(episode=ep(),sessions=sessions)))
++            untouched=ep();untouched['btc_deferred_right_touched']=False;untouched['old_SOL_rights']=[];untouched['sol_right_decision_index']={}
++            latched=ep();latched['old_SOL_rights']=[];latched['sol_right_decision_index']={}
++            unready=copy.deepcopy(sessions);unready['last_accepted_session']=None
++            put('rights_quote_actions','2',dict(before_seq=2,after_seq=3,input=dict(instrument='BTCUSDT-PERP.P1SIM',event_ns='20',bid='10000.1',ask='10000.2'),
++                before=dict(episode=untouched,sessions=unready),after=dict(episode=latched,sessions=unready)))
++            put('rights_quote_actions','4',dict(before_seq=4,after_seq=5,input=dict(instrument='BTCUSDT-PERP.P1SIM',event_ns='30',bid='9999.0',ask='9999.1'),
++                before=dict(episode=latched,sessions=sessions),after=dict(episode=ep(),sessions=sessions)))
++
++            put('rights_origin','I',dict(seq=5,method='EARLIEST_ACTUAL_QUEUED_INTENT',intent=intent,context=dict(episode=ep(),sessions=sessions)))
+             a=dict(schema='METHOD_A_LEGACY_SOL_PRE_TRANSPORT_V2',boundary='ORIGINAL_RECORD_SUBMISSION_RETURNED_TRUE_BEFORE_NATIVE_TRANSPORT',
+                 client_order_id='O',intent_id='I',parent='UNIT',current_parent='UNIT',action='SOL_ADD',level=0,checkpoint_result=True,
+                 initialized_order_is_ACK_or_fill=False,domain_pending_contains_intent=True,order_decision_index=0,pending_intent=intent,
+                 original_policy=policy,sessions=sessions,native_initialized_order=order,native_quote=dict(instrument='SOLUSDT-PERP.P1SIM',event_ns='40',bid='100',ask='100.1'),
+                 instrument=dict(id='SOLUSDT-PERP.P1SIM',size_increment='.1',min_quantity='.1',min_notional=None),
+                 episode=dict(ep(),h_at_SOL_ADD_admission=100.,sol_add_filled_notional_at_SOL_ADD_admission={}))
+-            put('rights_admission','O',dict(seq=4,admission=a,context=dict(episode=ep(),sessions=sessions)))
+-            put('native_acks','O',dict(instrument=order['instrument'],strategy=order['strategy'],side='SELL',quantity='1.7',native_event_id='ACK_REAL_JOIN_UNIT'))
+-            for event,seq,qty,pre,post in [('F1',6,'.5',0.,50.),('F2',8,'1.2',50.,170.)]:
++            put('rights_admission','O',dict(seq=7,admission=a,context=dict(episode=ep(),sessions=sessions)))
++            # Registered MARKET IOC uses no optional Accepted event; history is real fact-chain input here.
++            history=[dict(id='INIT',type='OrderInitialized'),dict(id='SUB',type='OrderSubmitted'),dict(id='F1',type='OrderFilled'),dict(id='F2',type='OrderFilled')]
++            actual=dict(order,status='FILLED',filled='1.7',leaves='0.0',native_history=history)
++            put('rights_native_order','O',dict(seq=11,order=actual,event_id='F2',event_type='OrderFilled'))
++
++            for event,seq,qty,pre,post in [('F1',9,'.5',0.,50.),('F2',11,'1.2',50.,170.)]:
+                 put('fills',event,dict(native_event_id=event,action='SOL_ADD',parent='UNIT',level=0,sequence=seq,qty=qty,px='100',instrument='SOLUSDT-PERP.P1SIM',oid='O'))
++                put('position_trades',event,dict(native_event_id=event,oid='O',qty=qty,px='100'))
+                 put('sol_before',event,dict(episode=ep(pre),sequence=seq-1))
+                 put('rights_after',event,dict(seq=seq,episode=ep(post)))
+             meta=dict(legacy_SOL_admission_capture=dict(schema='METHOD_A_LEGACY_SOL_PRE_TRANSPORT_V2',attempts=1,recorded=1,error_count=0))
+@@ -65,13 +77,43 @@
+                 result=r.rights_v2_evidence(db,report,'P0',meta,observer);db.close();return result
+             result=run_case('positive_partial')
+             assert result['status']=='PASS' and result['actual_SOL_ADD_fills']==2 and result['actual_qualified_orders']==1
+-            checks.append('V2_positive_origin_admission_actual_ACK_and_two_partial_native_fill_fact_joins')
++            assert result['examples'][0]['actual_native_market_execution']['optional_Accepted_present'] is False
++            checks.append('market_no_Accepted_genuine_Filled_native_history_and_partial_trade_joins')
+             def change_body(db,table,key,edit):
+                 value=json.loads(db.execute('SELECT body FROM '+table+' WHERE id=?',(key,)).fetchone()[0]);edit(value)
+                 db.execute('UPDATE '+table+' SET body=? WHERE id=?',(json.dumps(value,sort_keys=True),key))
+             missing=run_case('missing_origin',lambda db,*_:db.execute("DELETE FROM rights_origin"))
+             assert missing['status']=='UNKNOWN' and any('origin' in x for x in missing['missing_required_fields'])
+             checks.append('missing_actual_origin_is_UNKNOWN')
++            db=sqlite3.connect(str(Path(directory)/'touch_sequence.sqlite'));report,meta=fixture(db)
++            r.rights_guarded_touch(db,ep(),report['entry_sizing_audit'][0],0,7)
++            # A later same-timestamp fill must neither invalidate the earlier snapshot nor earn it retroactively.
++            future=dict(native_event_id='FUTURE_BTC',action='BTC_ENTRY',parent='UNIT',level=None,sequence=6,ns='30',qty='.5',px='10000',instrument='BTCUSDT-PERP.P1SIM',oid='BTC2')
++            db.execute('INSERT INTO fills VALUES (?,?)',('FUTURE_BTC',json.dumps(future)))
++            r.rights_guarded_touch(db,ep(),report['entry_sizing_audit'][0],0,7)
++            report['entry_sizing_audit'][0]['sol_right_activations'][0]['confirmed_native_entry_qty']='1.5'
++            try:r.rights_guarded_touch(db,ep(),report['entry_sizing_audit'][0],0,7)
++            except r.RightsPolicyViolation:pass
++            else:raise AssertionError('FUTURE_SAME_NS_ENTRY_GRANTED_EARLIER_RIGHT')
++            db.close()
++            checks.append('earlier_earned_touch_unready_then_later_activation_without_recross_and_sequence_cutoff')
++            def fake_init(db,*_):
++                change_body(db,'rights_native_order','O',lambda x:x.update(order=dict(order,filled='0',leaves='1.7',native_history=[dict(id='INIT',type='OrderInitialized')]),event_id='INIT',event_type='OrderInitialized'))
++            assert run_case('fake_init',fake_init)['status']=='UNKNOWN'
++            checks.append('initialized_only_history_never_counts_as_market_execution')
++            db=sqlite3.connect(str(Path(directory)/'unfilled_terminal.sqlite'));report,meta=fixture(db)
++            db.execute("DELETE FROM fills WHERE id IN ('F1','F2')");db.execute('DELETE FROM position_trades')
++            native=dict(order,status='CANCELED',filled='0',leaves='1.7',native_history=[dict(id='INIT',type='OrderInitialized'),dict(id='SUB',type='OrderSubmitted'),dict(id='CANCEL',type='OrderCanceled')])
++            db.execute('UPDATE rights_native_order SET body=? WHERE id=?',(json.dumps(dict(seq=8,order=native,event_id='CANCEL',event_type='OrderCanceled')),'O'))
++            terminal=r.rights_market_execution(db,'O',order)
++            assert terminal['kind']=='GENUINE_UNFILLED_NATIVE_TERMINAL' and terminal['actual_trade_events']==0
++            db.close()
++            checks.append('unfilled_market_terminal_requires_genuine_native_disposition')
++            price=r.authorized_tp_prices('10000','.01',1)[0]
++            btc=dict(instrument='BTCUSDT-PERP.P1SIM',side='SELL',strategy='BTC-001',price=str(price),quantity='1')
++            assert 'P1_TP_native_ACK_price_missing' in r.tp_order_errors(btc,dict(side='SELL',strategy_id='BTC-001'),None,price,1)
++            checks.append('resting_BTC_TP_actual_ACK_remains_strict')
++
+             def conflict(db,*_):change_body(db,'rights_origin','I',lambda x:x['intent'].update(requested_notional=999.))
+             assert run_case('conflict',conflict)['status']=='UNKNOWN'
+             checks.append('conflicting_immutable_intent_is_UNKNOWN')
+@@ -85,7 +127,7 @@
+             checks.append('capture_error_or_duplicate_count_cannot_PASS')
+             def requeue(db,*_):
+                 value=json.loads(db.execute("SELECT body FROM rights_admission WHERE id='O'").fetchone()[0])
+-                value['seq']=10;value['admission']['client_order_id']='O2';value['admission']['native_initialized_order']['order_id']='O2'
++                value['seq']=15;value['admission']['client_order_id']='O2';value['admission']['native_initialized_order']['order_id']='O2'
+                 db.execute('INSERT INTO rights_admission VALUES (?,?)',('O2',json.dumps(value)))
+             assert run_case('unproven_requeue',requeue)['status']=='UNKNOWN'
+             checks.append('same_intent_unproven_requeue_is_UNKNOWN_no_new_policy')
+--- a/reports/method-a-verification-20261027/METHOD_A_RIGHTS_V2_INTERFACE.md
++++ b/reports/method-a-verification-20261027/METHOD_A_RIGHTS_V2_INTERFACE.md
+@@ -6,7 +6,7 @@
+ 
+ Disk tables retain first immutable full queued Intent + current source context, true admission frames, actual before/after fill snapshots, native BTC quote crossings and source callback interval controls. A same-call newly created Intent can use the actual serial on_quote interval only when no authorization writer intervened and captured source H/maps remain equal. No fabricated creation event or H is emitted. Any missing origin, stale/conflicting copy, unsupported requeue, missing writer frame or capture counter error is UNKNOWN.
+ 
+-Source original request must equal original creation remaining in binary-float source operation order, including separate consumed/transfer/retired maps. Actual interval native before/after writer snapshots must connect origin to admission. H/remaining may change; no new admission-budget clamp is applied. Native normalized quantity is checked using original Decimal28/float/size_increment flooring and max_parent_notional, preserving original minima. Native initialized order grants no ACK/fill credit; require actual source ACK history table and genuine fill/OID/event/instrument joins from existing closed-native-position coverage.
++Source original request must equal original creation remaining in binary-float source operation order, including separate consumed/transfer/retired maps. Actual interval native before/after writer snapshots must connect origin to admission. H/remaining may change; no new admission-budget clamp is applied. Native normalized quantity is checked using original Decimal28/float/size_increment flooring and max_parent_notional, preserving original minima. Native initialized order grants no ACK/fill credit; require actual native terminal/fill history and genuine fill/OID/event/instrument joins from existing closed-native-position coverage; market Accepted is optional while resting BTC TP ACK remains strict.
+ 
+ Actual entry quantities and raw legacy fraction are verified against native fills and the last actual fraction-writer snapshot, so later SECOND fills do not silently rewrite an already earned nonomitted fraction using a new denominator. P0 uses original raw target denominator; P1 uses existing raw_legacy plan denominator, never its executable cumulative TP grants as oldSOL denominator. Omitted right additionally needs native earned fraction, source touch/reference, actual BTC crossing quote and guarded activation row. Original accepted/native paired sessions and source feature index/beta/z are checked; ce7 late_entry true is preserved, with original stale path only when current index is later. Every actual partial SOL fill must update irreversible consumed source notional exactly by the existing quantity*price float operation; exits never refund authorization.
+ 
+@@ -19,3 +19,5 @@
+ Actual completed-result reader uses the same root --gate/--gate-sha256 CLI, with new exact reader SHA and source-bound360 observer pin. No tests or actual reader execution occurred while preparing this draft.
+ 
+ Touch proof also binds the original activation decision index to the actual quote's paired-session snapshot and native confirmed entry at that activation. Non-omitted decision index is linked to its last native fraction-writer snapshot; ce7 late entry still allows a later admission index.
++
++Consolidated FAB144 correction: registered SOL MARKET IOC may legitimately have no OrderAccepted (use_market_order_acks=False). Require genuine terminal native order history/CID/strategy/instrument/side/quantity, actual Filled event IDs and closed Position trade/qty/price joins; an unfilled native terminal disposition proves zero exposure only. Optional Accepted is checked when present. Resting BTC TP strict ACK is unchanged. Guarded touch is an earlier earned false-to-true latch in a BTC quote callback; paired readiness is required at the later actual activation callback, without a recross rule. Both activation confirmed entry and touch earnings use actual callback frame sequence, excluding future same-ns native fills. Only transition/activation callbacks are retained on disk.

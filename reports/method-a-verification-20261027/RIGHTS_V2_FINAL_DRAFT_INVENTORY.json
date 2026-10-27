@@ -1,0 +1,37 @@
+{
+  "actual_replay_results_read": false,
+  "base_patch_sha256": "fab14403c5a269e46d5c8b1a3270cacc49aafa7ecbc31d82382b16aca1d05bef",
+  "base_reader_sha256": "7e6251a96e5d9192c867f7495f84c115d4a9f5993dff7b905164cedc3f4f0b83",
+  "binder_sha256": "76385ca8cfb9e2091e7452ee56d4cc990d6e3b9a4e9233c0a92f2f92d57ee7fe",
+  "corrects": [
+    "RIGHTSV2-01",
+    "RIGHTSV2-02"
+  ],
+  "draft_sha256": {
+    "METHOD_A_RIGHTS_V2_INTERFACE.md": "56a9d2688b84fbb0cb681ed860bf3d4cbb901fc3a5b3d0fa4425d97acd61849e",
+    "RIGHTS_V2_CONSOLIDATED.patch": "d889fddd8049a3b174d54cdf675051a0aa14e222099146ed0ecfedac8950b64d",
+    "RIGHTS_V2_FINAL_FROM_6F77.patch": "523c482a1d1d3d7acf2cf929ab164587aa4e782e3695cb9e389a43ebc5080634",
+    "method_a_financial_reader.py": "e659acfc12fb664d5bbb7c08edfabb363d5684ce56d01366e9f22fac8ea98917",
+    "test_method_a_rights_v2_pure.py": "90175895fe14737bc07ee93b32ee2054109dc2b2ac1f3116dbb08c53d0a8359e"
+  },
+  "engine_constructors": 0,
+  "native_imports": 0,
+  "old_financial_test_sha256": "1045c25bca5651599054ba033f05ddca983eb623efdbe3397828bb75f84eb430",
+  "planned_new_test_groups": 12,
+  "planned_unchanged_financial_test_groups": 11,
+  "producer_commit": "3604532d99d50f7334686acce1700be26ace2d2e",
+  "producer_observer_sha256": "6e21b00d7df3a7819a67bf0c571ff31f33822888d5095ebf43075c7fa7f72aa7",
+  "reader_test_executions": 0,
+  "status": "CONSOLIDATED_PURE_RESEARCH_DRAFT_NOT_EXECUTED",
+  "syntax_ast_parse": "PASS_NOT_EXECUTION",
+  "unchanged_function_numerical_sha256": {
+    "analyze_numerical_block": "348d103041bb43ebf0842c8b9142c8568e1a6b0bbffa804495af624dbac25294",
+    "authorized_tp_prices": "a423e4846ab0ef316c72cc3639859f814c844ef2c859dc152d23e813c260c5ac",
+    "es": "da9a6f6caadc0e198e75aded870ac527180a246be6441c725e19d2b64fe8679f",
+    "money": "5755e3ead75fd812fd47bb8c6a743553050917877279ca967bba7b6c2df98b5b",
+    "native_cash_residual": "650c7f785143d4700629fdc4a08fe3c7017bb75034cfe59dc46333e584384689",
+    "rights_evidence": "df592ab98f38363ef61a5894ae87d2ef073716e97499d6cdddac547bd528e8d6",
+    "tp_authority": "648923d4f9f6b9483bd9c7b0e028da30e34338456cf3a1e16640efaacdab2438",
+    "tp_order_errors": "88e1b31490f541d5dddb1d12d2347c246673f45e1556d68cdd8b9b587b2a084b"
+  }
+}
