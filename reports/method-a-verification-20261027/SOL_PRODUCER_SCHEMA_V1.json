@@ -13,7 +13,8 @@
     "parent",
     "risk_episode_id",
     "snapshot_ref",
-    "inputs_ref"
+    "inputs_ref",
+    "selection_ref"
   ],
   "consumer_scope": "Read-only report adaptation for P2/P4/P3. Reuse existing exact cash/fees/signed funding/coherent-DD reconciliation; separately prove actual hedge>0, once-episode, native real3TP/STOP/retirement/soleClose, safeBTCafterSOLTP, dangerousBTCactualRecovery, original-second expiry/no-restore and producer causal frame completeness. No runtime writes, native constructors or control reruns.",
   "entry_decision_fields": [
@@ -98,6 +99,7 @@
       "sol": "Decimal string"
     },
     "quote_universe": "every QuoteTick increments one instrument epoch and one global index; compare final received universe to immutable prepare_case quote_universe or existing native processed source row counts. Missing receipt/unbound universe is UNKNOWN",
+    "selection_ref": "risk:<sequence> of the actual consumed RISK_SELECTION_INPUT; every consumed intraday input emits raw installed PairedSignal fields, actual input_index and receipt timestamp_ns. Selected valid row sets this ref; invalid later rows do not retroactively replace it. Refs clear when parent/selection expires.",
     "stock_guard_ref": "risk:<sequence> of actual native guard invocation before transport. CID binds in BEFORE_NATIVE_DISPATCH. Original FIRST child may be <= original full-parent guarded quantity; no retroactive invented CID on earlier guard"
   },
   "original_second_fields": [
@@ -288,9 +290,10 @@
   "producer_binding_example": {
     "path": "SOL_PRODUCER_BINDING_EXAMPLE_V1.json",
     "qualified": false,
-    "sha256": "2f6bb323da0bca9c10f37f1a1b070c34d3ffc7bee86fc3cabc74bcf4f281a2da"
+    "sha256": "f4e7996ca0a473e24ae4a3cedb97fa395cdf888a430eef83f3ee11a61ef246d4"
   },
   "producer_implementation_status": "BOUND_WRITERS_ENGINE_FREE_CHECKPOINT_CONSUMER_AND_CASE_READINESS_PENDING",
+  "producer_selection_review": "9c74 frozen one P1 intraday raw selection omission; corrected by immutable receipt per consumed input, no selection-policy change",
   "public_type_roundtrip_example": {
     "path": "SOL_PUBLIC_TYPE_EXAMPLE_V1.json",
     "qualified": false,
@@ -419,6 +422,10 @@
       "clock",
       "selection_rows",
       "feature"
+    ],
+    "RISK_SELECTION_INPUT": [
+      "input_index",
+      "raw_selection"
     ],
     "SOL_BOUNDARY_RECEIPT": [
       "quote_instrument",

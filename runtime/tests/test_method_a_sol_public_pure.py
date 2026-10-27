@@ -27,6 +27,32 @@ class PublicInputs(unittest.TestCase):
         quote=groups[-1][1][0];payload=quote.to_dict(quote)
         self.assertEqual(QuoteTick.from_dict(payload).to_dict(QuoteTick.from_dict(payload)),payload)
 
+    def test_actual_selection_consumption_binds_intraday_raw_row(self):
+        from coinmaster.research.paired_signal_feed import PairedSignal
+        from coinmaster.strategy.method_a_risk import State,Features
+        class CapturedTransition(Exception):pass
+        signals=tuple(PairedSignal(t,t,t+MINUTE,D(100),D(100),D('.5'),D(2),True,True,True,False,False,D(110),D(90),D(100)) for t in (0,4*3600*10**9))
+        class Probe(MethodARiskResearch):
+            def __init__(self):
+                self.config=NS(btc_id=BTC_PERP.id,sol_id=SOL_PERP.id,research_method_a_selection=signals)
+                self._pair=None;self._mr_parent='P';self._domain=NS(episode=NS(id='P'))
+                self._mr_on=False;self._mr_allocated=False;self._mr_last_episode_day=None;self._mr_selection=None;self._mr_selection_ref=None;self._mr_signal_index=0
+                self._forced_close_reason=None;self._liquidating=False;self.terminal_lifecycle={};self._pair_last_quote={}
+                self._mr_sequence=0;self._mr_episode=0;self._mr_last_snapshot='risk:old';self._mr_inputs_ref='risk:header';self._mr_off_since=None;self.method_a_risk_audit=[]
+            def _pair_sol_retire_check(self,*args):pass
+            def _pair_qty(self,*args):return D(275)
+            def _pair_work(self,*args,**kwargs):return []
+            def _mr_snapshot(self,*args):return State(D(275),D(0),D(5530),D(10000),D('83.8'),D(100)),Features(0,0,0,D(1),D(1),D('.01'),D('.012'),D('.015'),D('.002'),D(0),D(0))
+            def _mr_log(self,event,ns,**fields):
+                row=super()._mr_log(event,ns,**fields)
+                if event=='RISK_BAND_TRANSITION':raise CapturedTransition
+                return row
+        probe=Probe()
+        with self.assertRaises(CapturedTransition):probe._mr_quote(NS(ts_event=5*3600*10**9,instrument_id=BTC_PERP.id))
+        rows=probe.method_a_risk_audit;self.assertEqual([r['event'] for r in rows],['RISK_SELECTION_INPUT','RISK_SELECTION_INPUT','RISK_BAND_TRANSITION'])
+        self.assertEqual(rows[1]['input_index'],1);self.assertEqual(rows[1]['raw_selection']['decision_ns'],4*3600*10**9)
+        self.assertEqual(rows[-1]['selection_ref'],'risk:2');self.assertEqual(rows[-1]['inputs_ref'],'risk:header')
+
     def test_header_binds_raw_inputs_and_native_fee_profile(self):
         cfg,_=config();bars=seed()[:729]
         observations=tuple(Observation(int(b.close_time.timestamp()*10**9),int(b.close_time.timestamp()*10**9)+MINUTE,D(str(b.btc_close)),D(str(b.sol_close))) for b in bars)
@@ -37,13 +63,16 @@ class PublicInputs(unittest.TestCase):
         class Probe(MethodARiskResearch):
             def __init__(self):
                 self.config=replace(cfg,research_method_a_risk='HEDGE',research_method_a_input_binding=binding,candidate=dr(cfg.candidate,sol_overlay_enabled=False))
-                self.cache=Cache();self.cache.add_instrument(BTC_PERP);self.cache.add_instrument(SOL_PERP)
-                self._domain=NS(episode=None);self._mr_sequence=0;self._mr_episode=0;self._mr_last_snapshot=None;self._mr_inputs_ref=None;self.method_a_risk_audit=[]
+                from coinmaster.research.native_fixture import perpetual
+                self.cache=Cache()
+                for base in (BTC_PERP,SOL_PERP):self.cache.add_instrument(perpetual(base.raw_symbol.value,base.base_currency,str(base.price_increment),str(base.size_increment),str(base.margin_init),maker_fee=D('.00020'),taker_fee=D('.00055')))
+                self._domain=NS(episode=None);self._mr_sequence=0;self._mr_episode=0;self._mr_last_snapshot=None;self._mr_inputs_ref=None;self._mr_selection_ref=None;self.method_a_risk_audit=[]
         probe=Probe();probe._mr_emit_inputs(0,observations,funding,feature)
         row=json.loads(json.dumps(probe.method_a_risk_audit[0]))
         self.assertEqual(row['inputs_ref'],'risk:1');self.assertEqual(row['event'],'RISK_INPUTS')
         self.assertEqual(len(row['observations']),31);self.assertEqual(len(row['funding_history']),180)
         self.assertEqual(set(row['captured_profile']['tiers']),{'BTCUSDT','SOLUSDT'})
         self.assertEqual(row['input_binding'],binding)
+        self.assertTrue(all(D(i['maker_fee'])==D('.00020') and D(i['taker_fee'])==D('.00055') for i in row['native_instruments']))
         self.assertFalse(row['effective_flags']['standalone_sol_enabled'])
         self.__class__.header_example=row

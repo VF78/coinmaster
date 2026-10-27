@@ -59,7 +59,7 @@
   },
   "causal_execution_chain": null,
   "engine_constructors": 0,
-  "limitation": "No actual engine callbacks or fill/ACK/terminal outcomes. Distinct public type fixtures are not joined as one observed execution.",
+  "limitation": "No actual engine callbacks or fill/ACK/terminal outcomes. Distinct public type fixtures are not joined as one observed execution. Header uses actual BASE instruments; separate older native type payloads may carry fixture fees and never qualify an execution.",
   "native_types": {
     "native_account": {
       "balances_free": {
@@ -2046,17 +2046,17 @@
     "native_instruments": [
       {
         "instrument": "BTCUSDT-PERP.P1SIM",
-        "maker_fee": "0.001",
+        "maker_fee": "0.00020",
         "price_increment": "0.1",
         "size_increment": "0.001",
-        "taker_fee": "0.001"
+        "taker_fee": "0.00055"
       },
       {
         "instrument": "SOLUSDT-PERP.P1SIM",
-        "maker_fee": "0.001",
+        "maker_fee": "0.00020",
         "price_increment": "0.01",
         "size_increment": "0.1",
-        "taker_fee": "0.001"
+        "taker_fee": "0.00055"
       }
     ],
     "observations": [
@@ -2254,6 +2254,7 @@
       "BTCUSDT-PERP.P1SIM": "40",
       "SOLUSDT-PERP.P1SIM": "20"
     },
+    "selection_ref": null,
     "selection_rows": [],
     "sequence": 1,
     "snapshot_ref": null,

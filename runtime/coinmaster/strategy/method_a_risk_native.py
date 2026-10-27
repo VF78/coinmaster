@@ -73,21 +73,21 @@ class MethodARiskResearch:
         self._mr_creation_snapshot=None;self._mr_recovery_ref=None;self._mr_suspended_entry_ids=set()
         self._mr_cached_feature_key=None;self._mr_cached_feature=None;self._mr_last_sol_boundary=None
         self._mr_submission_results={}
-        self._mr_inputs_ref=None;self._mr_last_stock_guard=None
+        self._mr_inputs_ref=None;self._mr_last_stock_guard=None;self._mr_selection_ref=None
 
     def _mr_log(self,event,ns,**fields):
         self._mr_sequence+=1
         if event=='NATIVE_SNAPSHOT':self._mr_last_snapshot='risk:'+str(self._mr_sequence)
         ep=getattr(self,'_domain',None);ep=getattr(ep,'episode',None)
         row=dict(schema=SCHEMA,sequence=self._mr_sequence,event=event,timestamp_ns=str(ns),
-            parent=getattr(ep,'id',None),risk_episode_id=(str(getattr(ep,'id',None))+':'+str(self._mr_episode)),snapshot_ref=self._mr_last_snapshot,inputs_ref=self._mr_inputs_ref)
+            parent=getattr(ep,'id',None),risk_episode_id=(str(getattr(ep,'id',None))+':'+str(self._mr_episode)),snapshot_ref=self._mr_last_snapshot,inputs_ref=self._mr_inputs_ref,selection_ref=self._mr_selection_ref)
         row.update(fields);self.method_a_risk_audit.append(wire(row));return row
 
     def _pair_log(self,event,ns,**fields):
         if not self._mr_enabled():return super()._pair_log(event,ns,**fields)
         self._mr_pair_sequence+=1
         row=dict(schema=SCHEMA,sequence=self._mr_pair_sequence,event=event,timestamp_ns=str(ns),
-            parent=self._pair['parent'] if self._pair else self._mr_parent,risk_episode_id=str(self._mr_parent)+':'+str(self._mr_episode),snapshot_ref=self._mr_last_snapshot,inputs_ref=self._mr_inputs_ref)
+            parent=self._pair['parent'] if self._pair else self._mr_parent,risk_episode_id=str(self._mr_parent)+':'+str(self._mr_episode),snapshot_ref=self._mr_last_snapshot,inputs_ref=self._mr_inputs_ref,selection_ref=self._mr_selection_ref)
         if event=='SOL_NATIVE_BOUNDARY':
             self._mr_last_sol_boundary='paired:'+str(self._mr_pair_sequence)
             position=self._pair_position(self.config.sol_id)
@@ -345,13 +345,15 @@ class MethodARiskResearch:
         state,feature=self._mr_snapshot(ns)
         if self._mr_parent!=ep.id:
             self._mr_parent=ep.id;self._mr_on=False;self._mr_allocated=False;self._mr_off_since=None;self._mr_selection=None
-            self._mr_first_retired=False;self._mr_suspended=False
+            self._mr_first_retired=False;self._mr_suspended=False;self._mr_selection_ref=None
         signals=self.config.research_method_a_selection
         while self._mr_signal_index<len(signals) and signals[self._mr_signal_index].not_before_ns<ns:
             signal=signals[self._mr_signal_index];self._mr_signal_index+=1
+            signal_receipt=self._mr_log('RISK_SELECTION_INPUT',ns,input_index=self._mr_signal_index-1,raw_selection=asdict(signal))
             side=1 if state.btc>0 else -1
             if signal.valid and (getattr(signal,'b2_long' if side==1 else 'b2_short') or getattr(signal,'f0_long' if side==1 else 'f0_short')):
                 self._mr_selection=signal
+                self._mr_selection_ref='risk:'+str(signal_receipt['sequence'])
         selection=self._mr_selection
         active=False;branch=None
         if selection is not None:
@@ -360,9 +362,9 @@ class MethodARiskResearch:
             boundary=(selection.k_long if side==1 else selection.k_short) if branch=='B2' else selection.open_o
             if boundary is None:raise ValueError('UNKNOWN_SELECTION_BOUNDARY')
             active=ns>selection.not_before_ns and side*(state.pb-boundary)<0
-            if not active and ns>selection.not_before_ns:self._mr_selection=None
+            if not active and ns>selection.not_before_ns:self._mr_selection=None;self._mr_selection_ref=None
         if self._pair and self._pair.get('deadline_ns') is not None and ns>=self._pair['deadline_ns']:
-            active=False;self._mr_selection=None
+            active=False;self._mr_selection=None;self._mr_selection_ref=None
         prior_on=self._mr_on;prior_allocated=self._mr_allocated;prior_day=self._mr_last_episode_day
         on,band,target=hedge_target(state,feature,self._mr_on,active)
         if not on and self._mr_on:self._mr_off_since=ns
