@@ -78,6 +78,8 @@ class RiskInterface(unittest.TestCase):
         MethodARiskResearch._pair_sol_native_event(context,update,'typed_updated')
         self.assertIsNone(owner['pending']);self.assertEqual(owner['ack'],(D('.3'),D(98),None));self.assertEqual(owner['last_ack_event_id'],str(update.id))
         self.assertEqual(protection,[4]);count=len(logs)
+        raw=next(kw for args,kw in logs if args[0]=='SOL_NATIVE_EVENT')
+        self.assertEqual(raw['native_event'],type(update).to_dict(update));self.assertEqual(raw['native_order'],order.to_dict())
         MethodARiskResearch._pair_sol_native_event(context,update,'generic_duplicate')
         self.assertEqual(len(logs),count);self.assertEqual(protection,[4])
 

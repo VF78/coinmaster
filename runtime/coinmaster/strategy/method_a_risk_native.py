@@ -700,7 +700,8 @@ class MethodARiskResearch:
             return
         self._pair_log("SOL_NATIVE_EVENT", event.ts_event, order_id=oid,
             native_event_id=key, event_type=name, route=route,
-            observed_ns=self.clock.timestamp_ns(), status=None if order is None else order.status.name)
+            observed_ns=self.clock.timestamp_ns(), status=None if order is None else order.status.name,
+            native_event=type(event).to_dict(event),native_order=order.to_dict())
         if self._pair_sol_v2()and owner.get("retiring"):
             if name=="OrderCancelRejected":
                 if not order.is_closed:raise ValueError("SOL_RETIRING_LIVE_CANCEL_REJECTED")
@@ -773,7 +774,10 @@ class MethodARiskResearch:
                 price="UNKNOWN"if order is None else str(getattr(order,"price",None)),
                 trigger="UNKNOWN"if order is None else str(getattr(order,"trigger_price",None)),
                 desired="UNKNOWN"if target is None else [str(v)for v in target],
-                desired_generation=p["generation"],pending=owner.get("pending")is not None))
+                desired_generation=p["generation"],pending=owner.get("pending")is not None,
+                native_order=None if order is None else order.to_dict(),
+                last_ack_event_id=owner.get("last_ack_event_id"),
+                ack_native_event=None if order is None else next((type(e).to_dict(e) for e in reversed(order.events) if str(e.id)==owner.get("last_ack_event_id")),None)))
         exact=exact and len(work)-len(retiring)==len(expected)and sum(p["tp_lots"].values())*self.cache.instrument(self.config.sol_id).size_increment.as_decimal()==held
         pending_commands=any(o.get("pending")is not None and o.get("parent")==p["parent"]for o in self._pair_orders.values())
         fault=self._pair_sol_v2()and (p.get("failed")or p.get("stop_filled")and held)
@@ -785,7 +789,8 @@ class MethodARiskResearch:
         detailed=bool(getattr(getattr(self.config,"research_native_book",None),"detailed",False))
         if detailed or signature!=p.get("sol_boundary_signature"):
             self._pair_log("SOL_NATIVE_BOUNDARY",ns,label=label,parent=p["parent"],actual_sol=held,
-                state=state,exact=exact,orders=rows,retiring=retiring,protection_since=p["protection_since"])
+                state=state,exact=exact,orders=rows,retiring=retiring,protection_since=p["protection_since"],
+                entry_basis=dict(actual_entry_quantity=str(p["entry_qty"]),actual_entry_notional=str(p["entry_notional"]),p0=None if p["p0"] is None else str(p["p0"]),frozen_atr=str(p["atr"]),first_fill_ns=p["first_fill_ns"],frozen_entry_band=p.get("entry_band")))
             p["sol_boundary_signature"]=signature
         if strict and held and not exact and (not fault if self._pair_sol_v2()else not p["close_sol"]):
             raise ValueError("SOL_BEFORE_MATCHING_EXACT_COVERAGE_UNKNOWN")

@@ -64,8 +64,10 @@
   ],
   "nested_definitions": {
     "all_partial_partition_states": "integer count of finite exact partition candidates, NOT a fabricated list of native fills. Recompute exact coverage from envelope_state, per-CID envelope_liabilities, feature shocks and captured profile.",
+    "boundary_native_order": "each positive TP/STOP row carries actual native_order.to_dict, last_ack_event_id and matching public ack_native_event from that order history; native STOP trigger_price and typed accepted/updated UUID must be checked, exact booleans are not evidence alone",
     "boundary_state_ref": "paired:<sequence> resolves the full coalesced SOL_NATIVE_BOUNDARY object; reference equality is identity, not a repeated text label",
     "callback_refs": "ACTUAL_NATIVE_FILL native_event_id/trade_id/CID joins installed public OrderFilled and coherent observer PRE_FILL_LAST_COMMITTED_NATIVE_COPY/POST_FILL_COMMITTED_NATIVE by trade_id. callback_pre/post_snapshot_ref are actual controller references, not a promise each fill creates a new snapshot (terminal path may retain prior reference).",
+    "entry_basis": "actual_entry_quantity/notional/p0 from native filled quantities and prices, frozen_atr from selected raw PairedSignal via selection_ref, first_fill_ns and frozen_entry_band. Verify p0 versus actual native fills and frozen sol_prices helper; never desired alone.",
     "envelope_liability": {
       "cost_per_unit": "exact nonnegative per-CID Decimal",
       "identity": "native CID",
@@ -225,7 +227,8 @@
       "parent",
       "protection_since",
       "retiring",
-      "state"
+      "state",
+      "entry_basis"
     ],
     "SOL_NATIVE_EVENT": [
       "event_type",
@@ -233,7 +236,9 @@
       "observed_ns",
       "order_id",
       "route",
-      "status"
+      "status",
+      "native_event",
+      "native_order"
     ],
     "SOL_PUBLIC_MODIFY_RETURN": [
       "order_id",
@@ -320,108 +325,146 @@
   },
   "required_events": {
     "ACTUAL_NATIVE_FILL": [
-      "native_event_id",
-      "trade_id",
-      "order_id",
-      "native_fill",
+      "callback_post_snapshot_ref",
       "callback_pre_snapshot_ref",
-      "callback_post_snapshot_ref"
+      "native_event_id",
+      "native_fill",
+      "order_id",
+      "parent",
+      "trade_id"
     ],
     "BEFORE_NATIVE_DISPATCH": [
-      "order_id",
       "action",
+      "all_partial_partition_states",
+      "creation_snapshot_ref",
+      "deficit",
+      "envelope_liabilities",
+      "envelope_state",
+      "liabilities",
+      "margin_pass",
       "native_initialized_event_id",
       "native_order",
-      "liabilities",
-      "all_partial_partition_states",
-      "deficit",
-      "margin_pass",
-      "pending_hedge_credit",
-      "creation_snapshot_ref",
-      "recovery_ref",
+      "order_id",
       "original_second",
-      "stock_guard_ref",
-      "envelope_state",
-      "envelope_liabilities"
+      "pending_hedge_credit",
+      "quantity",
+      "recovery_ref",
+      "stock_guard_ref"
     ],
     "DECISION": [
-      "on",
-      "band",
       "actual_loss",
+      "band",
       "deficit",
       "entry_allocated",
       "frozen_entry_band",
+      "on",
       "quote_instrument"
     ],
     "ENTRY_SUBMISSION_DECISION": [
-      "decision",
       "allocation_used",
+      "decision",
+      "original_second",
+      "pending_hedge_credit"
+    ],
+    "ENVELOPE_DENY": [
+      "action",
+      "all_partial_partition_states",
+      "creation_snapshot_ref",
+      "deficit",
+      "envelope_liabilities",
+      "envelope_state",
+      "liabilities",
+      "margin_pass",
+      "native_initialized_event_id",
+      "native_order",
+      "order_id",
+      "original_second",
       "pending_hedge_credit",
-      "original_second"
+      "quantity",
+      "recovery_ref",
+      "stock_guard_ref"
     ],
     "HEDGE_ADMISSION": [
       "band",
-      "target",
       "benefit",
       "cost",
-      "useful",
-      "creation_snapshot_ref"
+      "creation_snapshot_ref",
+      "target",
+      "useful"
     ],
     "NATIVE_SNAPSHOT": [
-      "native_cash",
-      "equity",
-      "peak",
+      "coherent_peak_source",
       "cushion",
-      "native_positions",
+      "equity",
+      "feature",
+      "margin_parity",
       "marks",
       "native_account",
-      "feature",
-      "coherent_peak_source",
-      "margin_parity"
+      "native_cash",
+      "native_positions",
+      "peak"
     ],
     "NATIVE_STOCK_GUARD_RESULT": [
+      "allowed",
       "instrument",
       "quantity",
-      "side",
-      "allowed"
+      "side"
     ],
     "ORIGINAL_SECOND_RELEASE_CHECK": [
-      "original_second",
-      "old_orders"
-    ],
-    "ORIGINAL_SECOND_SUSPEND": [
-      "order_id",
-      "native_order",
+      "old_orders",
       "original_second"
     ],
+    "ORIGINAL_SECOND_SUSPEND": [
+      "native_order",
+      "order_id",
+      "original_second"
+    ],
+    "ORIGINAL_SECOND_SUSPENDED_UNSENT": [
+      "original_expiry_ns",
+      "parent",
+      "remaining"
+    ],
     "QUALIFICATION_NO_GO": [
-      "reason",
+      "failure_capture_errors",
       "failure_native_account",
       "failure_positions",
-      "failure_capture_errors"
+      "reason"
     ],
     "RECOVERY_DECISION": [
-      "selected_leg",
-      "quantity",
-      "initial_signed_deficit",
       "full_signed_deficit",
+      "initial_signed_deficit",
+      "legal_feasible_intervals",
+      "quantity",
+      "recovery_ref",
       "remaining_btc",
-      "turnover",
-      "legal_feasible_intervals"
+      "selected_leg",
+      "turnover"
+    ],
+    "RISK_BAND_TRANSITION": [
+      "allocation_used",
+      "feature_end_ns",
+      "known_off_since_ns",
+      "on",
+      "previous_feature_end_ns",
+      "previous_on",
+      "prior_allocation_used",
+      "selection_ns",
+      "sol_native_held",
+      "sol_owned_work"
     ],
     "RISK_INPUTS": [
-      "input_binding",
-      "feature_start_ns",
-      "feature_end_ns",
-      "observations",
-      "funding_history",
       "captured_profile",
-      "selected_leverage",
-      "native_instruments",
-      "effective_flags",
       "clock",
-      "selection_rows",
-      "feature"
+      "effective_flags",
+      "feature",
+      "feature_end_ns",
+      "feature_start_ns",
+      "funding_history",
+      "input_binding",
+      "native_instruments",
+      "observations",
+      "selected_leverage",
+      "selection_rows"
     ],
     "RISK_SELECTION_INPUT": [
       "input_index",
