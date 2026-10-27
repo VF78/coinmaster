@@ -1,0 +1,20 @@
+# Method A observer V2 admission capture
+
+Observer-only packet change. Runtime a4dd469 and prefix_common/worker/preflight plus original test334 remain byte-identical. Same observer is used for P0 replay and P1. No native launch, ledger mutation, kwargs/data/fees/venue/default or trading policy change.
+
+The generated observed strategy delegates original _record_submission exactly once. Original false/exception is unchanged. Only actual true SOL_ADD snapshots existing Episode, immutable pending Intent, source sessions, public native initialized order/instrument/quote after durable checkpoint and before native transport. Initialized CID is explicitly not ACK/fill credit. Capture failure latches bounded observer error metadata and leaves the original return/trading path unchanged; financial verification must remain UNKNOWN.
+
+New SOL_ADD_PRE_NATIVE_TRANSPORT_AFTER_CHECKPOINT frame binds CID/intent/parent/level/order, current H, irreversible SOL-filled-notional, ownership-transfer credit, risk-retired authorization, actual oldSOL fraction/raw entry denominator, deferred-touch/reference/right-decision indices, accepted/current BTC/SOL/bar/latest-seen sessions and original policy/feature inputs. Float source values include exact hex copies; Decimal and native quantities are strings. No admission budget, signal, price, PnL or synthetic creation state is calculated by this observer. Event ns is the initialized native order ts_init, explicitly identified, with native quote/session clocks copied separately.
+
+Existing quote/fill callback states also include these current fields and full immutable queued Intent quantity/requested_notional/decision_index. This is the existing stream, not a second creation hook. No unconditional creation-to-submission H/fraction/session nonmutation is claimed: native fills can change H/fraction during queue lifetime. Financial reader must use earliest observed queue/native callback states plus exact source causal ordering to prove each actual interval or return UNKNOWN. Never copy final H backward, introduce a current-budget clamp, or invent origin facts. Original Intent is frozen at domain196-205; decision remaining/request at444-448, queue insertion strategy1369, source stale guard1651-1706, normalized native order1896-1917 and checkpoint2081/submit2110 remain unchanged.
+
+From checkpoint to submit, _own_accepted_reduction is inert for SOL_ADD; subsequent entry-audit branches apply only to BTC_ENTRY. Focused method-unit proof uses actual source checkpoint/_own_accepted_reduction, actual Episode/Intent/Cache/initialized Order/Bar/QuoteTick, with native engine constructor tripwire before imports. These unit snapshots are not actual engine fills or economics.
+
+Observer retains streaming gzip, 1MiB hashing, prior-state hash coalescing and count-only native UUID tracking. Admission counters are scalar; error sample list capped8/class names80; no whole-run UUID set. Financial reader must require capture attempts==recorded, error_count0, exact CID/event joins and actual required source facts; absent/stale/conflicting facts UNKNOWN. No second PnL engine, new tolerance, P3/A0 cap or original-policy waiver.
+
+Pure command (VPS only, no native run):
+PYTHONPATH=reports/method-a-verification-20261027:runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -c 'import json;from test_prefix_observer_v2_pure import proof;print(json.dumps(proof(),sort_keys=True))'
+
+Future native replay requires separate fresh UUID/repeat_of caa12c14-70fc-48e9-b4fc-160ddc12412f, one existing prefix reserve/cap6-total17, independent source+reader review, exact original fill/cash/funding/scalar equality reference, and expiring explicit root GO. This checkpoint grants no native permission.
+
+C963 narrow correction: legacy_sessions explicitly handles stock DailySignalBar.instrument_id, public native Bar.bar_type.instrument_id, and null. Focused fixture now uses exact daily_signal(...).data factory objects for normal capture/checkpoint tests, with independent native Bar/null regression and exact ts_init/event/instrument preservation. No other feature or execution change.

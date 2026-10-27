@@ -1,0 +1,22 @@
+{
+  "checks": [
+    "actual_DailySignalBar_NativeBar_null_Episode_Cache_Order_readonly_six_facts",
+    "original_checkpoint_true_once_with_actual_source_method",
+    "JSON_roundtrip_hex_maps_intent_sessions_and_stream_hash",
+    "false_and_original_exception_preserved_once_no_admitted_frame",
+    "nonSOL_checkpoint_route_unchanged",
+    "capture_serialization_failure_does_not_change_original_result_or_domain",
+    "actual_source_post_checkpoint_SOL_ADD_bridge_nonmutating",
+    "all_runtime_bytes_a4_other334_wrappers_unchanged"
+  ],
+  "engine_constructors": 0,
+  "engine_tripwire_attempts": [],
+  "intent_origin": "Immutable actual Intent is copied; global creation_to_submission_nonmutation_NOT_CLAIMED; actual stream proof required",
+  "matching_runs": 0,
+  "observer_checkpoint": "3604532d99d50f7334686acce1700be26ace2d2e",
+  "root_constructor_calls": 0,
+  "runtime_inventory_exact_a4dd": true,
+  "runtime_source": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "status": "METHOD_A_OBSERVER_V2_FOCUSED_PURE_PASS",
+  "unit_states_are_not_actual_native_events": true
+}

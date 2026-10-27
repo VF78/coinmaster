@@ -1,0 +1,22 @@
+{
+  "actual_P0_financial_results": "NOT_READ_BY_IMPLEMENTATION_OR_UNIT_PROOF",
+  "checks": [
+    "Decimal50_exact_fractional_tail_ES20_no_clipping",
+    "strict_native_cash_residual_zero_no_tolerance",
+    "old_A0_gate_schema_rejected",
+    "prestrategy_native_cache_transition_not_TP_failure",
+    "before_matching_actual_missing_TP_failclosed",
+    "disk_dedup_identical_native_ID_vs_conflict",
+    "Money_string_numeric_currency_exact",
+    "P1_actual_native_geometry_both_sides_positive_ordered_and_negative_cases",
+    "P1_native_instrument_exit_side_strategy_current_ACK_price_quantity",
+    "P1_conflicting_reference_stays_unknown",
+    "old_SOL_missing_current_budget_session_facts_UNKNOWN_no_reconstruction"
+  ],
+  "draft_inventory_sha256": "cf8e4b1c5c1f515fecce98f08d41d9ea0662a9e3200840aed0765f40d66f6666",
+  "engine_constructors": 0,
+  "native_modules_imported": 0,
+  "reader_sha256": "787ee07ce19fc864088b76d9c80a880bfab804870efb78067f894d47d69cc933",
+  "root_native_imports": 0,
+  "status": "METHOD_A_FINANCIAL_ADAPTER_PURE_PASS"
+}

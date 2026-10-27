@@ -1,0 +1,11 @@
+{
+  "exact_same_file_as334": true,
+  "existing_runtime_and_wrapper_bytes_unchanged": true,
+  "missing_file": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/prefix-source-3604532/reports/method-a-verification-20261027/test_prefix_wrappers_pure.py",
+  "native_physical_claims": 0,
+  "prior_failure": "FileNotFoundError in last pure source-invariance check; no economics/engine launched",
+  "sha256": "f8c649bd971e2f5918390c6bf962a85eb812aadc254568b21e2abb4c02c69850",
+  "source_commit": "3604532d99d50f7334686acce1700be26ace2d2e",
+  "source_seal_runtime_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+  "status": "ROOT_PACKAGING_OMISSION_EXACT_MISSING_HELPER_COMPLETED"
+}

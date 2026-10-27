@@ -1,0 +1,77 @@
+{
+  "accounting_qualified": false,
+  "attempt_id": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+  "cash_reconciliation": {
+    "all_fill_history_covered": true,
+    "extra_native_fill_history": 0,
+    "fee_convention": "NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_SETTLEMENT_CURRENCY_FEES_DO_NOT_SUBTRACT_AGAIN",
+    "missing_native_fill_history": 0,
+    "native_fill_history_conflicts": 0,
+    "native_realized_NET_settlement_fees": "152253.48428190",
+    "policy": "STRICT_ZERO_DEFAULT_NONZERO_UNKNOWN_NO_TOLERANCE_NO_FUNDING_RECLASSIFICATION",
+    "residual": "0E-8",
+    "seed": "10000",
+    "signed_funding": "-1725.85863765",
+    "terminal": "160527.62564425"
+  },
+  "computed_DD_percent": {
+    "event": "57.585410459622263791144662586712381678692945895675",
+    "settled": "57.585410459622263791144662586712381678692945895675"
+  },
+  "daily_count": 136,
+  "financial_gates": {
+    "actual_os_exit0": "PASS",
+    "coherent_prefill_preopen_event_coverage": "PASS",
+    "complete_cash_reconciliation": "PASS",
+    "continuous_settled_coverage": "PASS",
+    "native_3TP": "NOT_APPLICABLE_LEGACY_CONTROL",
+    "native_fee_reconciliation": "PASS",
+    "ownership": "PASS",
+    "rights_audit_complete": "UNKNOWN",
+    "signed_asset_funding_reconciliation": "PASS",
+    "source_config_data_comparable": "PASS",
+    "terminal_positions0_orders0": "PASS",
+    "zero_model_liquidations": "PASS"
+  },
+  "funding_by_asset": {
+    "BTCUSDT-PERP.P1SIM": "-1729.83088838",
+    "SOLUSDT-PERP.P1SIM": "3.97225073"
+  },
+  "label": "P0",
+  "native_actual_fill_fees": "7376.86891809",
+  "native_closed_positions": 25,
+  "native_fills": 109,
+  "netprofit": "150527.62564425",
+  "old_SOL_rights_evidence": {
+    "actual_SOL_ADD_fills": 15,
+    "available_actual_field_map": {
+      "H": "report.split_cover_audit.parents.planref_v1_h_actual(final only)",
+      "activation": "report.entry_sizing_audit.sol_right_activations",
+      "fraction": "profile.episode.old_SOL_fractions",
+      "parent": "profile.owned_pending + native event/OID",
+      "raw_denominators": "report.entry_sizing_audit.reference_target_lots/omitted_zero_levels/net_submitted_btc_qty"
+    },
+    "examples_capped_at": 16,
+    "failures": {},
+    "mechanism_status": "PARTIALLY_OBSERVED_MISSING_REQUIRED_FACTS",
+    "missing_required_fields": [
+      "profile.current_BTC_SOL_signal_sessions",
+      "profile.episode.btc_deferred_right_touched",
+      "profile.episode.h_at_SOL_ADD_admission",
+      "profile.episode.sol_add_filled_notional_at_SOL_ADD_admission",
+      "profile.episode.sol_right_decision_index",
+      "profile.last_accepted_session"
+    ],
+    "no_modern_P3_A0_rules_applied": true,
+    "no_unemitted_fact_promoted_to_PASS": true,
+    "status": "UNKNOWN"
+  },
+  "parent_count": 19,
+  "parent_proven_count": 19,
+  "qualification": "UNKNOWN_OR_FAILED_BLOCKS_ACCEPTANCE",
+  "scope": "Actual prefix control only; no rootqualification/P1GO; original6m benchmark/fullgoals unchanged.",
+  "settled_receipts": 195839,
+  "signed_funding": "-1725.85863765",
+  "stream_issues": {},
+  "terminal_total": "160527.62564425"
+}

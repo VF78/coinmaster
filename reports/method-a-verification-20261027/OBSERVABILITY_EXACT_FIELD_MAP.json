@@ -1,0 +1,481 @@
+{
+  "additional_existing_facts": [
+    {
+      "attributes": [
+        "episode.id",
+        "episode.side",
+        "episode.pending[intent_id]",
+        "intent.id",
+        "intent.episode_id",
+        "intent.action",
+        "intent.level",
+        "intent.side",
+        "intent.requested_notional",
+        "intent.quantity",
+        "intent.decision_index",
+        "intent.reason",
+        "strategy._decision_index_by_order[CID]"
+      ],
+      "purpose": "Bind one actual initialized native order CID to existing pending intent, parent and original decision; copy before submission, not reconstructed from final fill.",
+      "source": [
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Intent",
+          "line": 197
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 218
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 275
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._submit_intent",
+          "line": 2072
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._submit_intent",
+          "line": 2080
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "episode.sol_rights",
+        "episode.sol_right_fraction",
+        "episode.sol_ownership_transfer_credit",
+        "episode.sol_risk_retired_notional"
+      ],
+      "purpose": "Original remaining = ((H * multiplier[level]) * fraction.get(level,1.0)) - filled.get(level,0.0) - transfer.get(level,0.0) - retired.get(level,0.0), with original binary-float operation order. Transfer credit is not a fill/PnL; retired authorization never a fee/funding amount. Keep each actual dictionary separate.",
+      "source": [
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 245
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 256
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 262
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 264
+        }
+      ],
+      "types": [
+        "set[int]",
+        "dict[int,float]",
+        "dict[int,float]",
+        "dict[int,float]"
+      ]
+    },
+    {
+      "attributes": [
+        "episode.btc_initial_qty",
+        "episode.btc_entry_qty_exact",
+        "episode.btc_net_planned_qty",
+        "episode.btc_reference_qty",
+        "episode.btc_reference_target_lots",
+        "episode.btc_omitted_zero_levels",
+        "episode.btc_tp_target_lots",
+        "episode.btc_tp_filled_lots",
+        "episode.btc_tp_filled_qty",
+        "episode.btc_deferred_right_reference_price",
+        "episode.btc_planref_vwap"
+      ],
+      "purpose": "Raw legacy denominators and actual-entry fraction evidence only. P0 original lot targets; P1 actual TP consumed lots mapped to _ma_plans[parent].raw_target_lots per accepted method_a_tp274-284. Never substitute executable cumulative P1 targets for oldSOL raw denominator. Decimal fields copied as strings, float fields repr+hex.",
+      "source": [
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 224
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 229
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Episode",
+          "line": 234
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._select_deferred_btc_entry",
+          "line": 1594
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "WaveOverlayState.on_fill",
+          "line": 515
+        },
+        {
+          "file": "runtime/coinmaster/strategy/method_a_tp.py",
+          "function": "MethodATpResearch._ma_after_fill",
+          "line": 274
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "strategy._candidate.sol_size_multipliers_h",
+        "strategy._candidate.sol_entry_z",
+        "strategy._candidate.sol_late_entry_after_tp",
+        "strategy._candidate.sol_overlay_enabled",
+        "strategy._candidate.episode_fixed_beta",
+        "strategy._candidate.max_parent_notional",
+        "strategy._current_signals[latest]",
+        "episode.fixed_sigma",
+        "episode.beta_entry",
+        "episode.sol_first_fill_at",
+        "episode.sol_first_owned_at",
+        "episode.sol_qty",
+        "episode.sol_half_done",
+        "episode.sol_half_decision_index",
+        "episode.attempted_sol_at"
+      ],
+      "purpose": "Copy existing eligibility inputs and actual candidate values, no alternative signal model. Features fields: index,side,beta,relative,mu,sigma,z. Original feature/z/timeout comparisons only; no modern cap/right defaults.",
+      "source": [
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Candidate",
+          "line": 53
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "Features",
+          "line": 67
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "WaveOverlayState.decide",
+          "line": 436
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._stale_sol_add",
+          "line": 1674
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "cache.quote_tick(order.instrument_id)",
+        "cache.instrument(order.instrument_id)",
+        "order.client_order_id",
+        "order.instrument_id",
+        "order.strategy_id",
+        "order.side",
+        "order.quantity",
+        "order.price if order.has_price else null",
+        "order.ts_init",
+        "order.status",
+        "order.events"
+      ],
+      "purpose": "Public native objects only. Copy quote bid/ask/ts_event/ts_init, instrument increment/minimum quantities/notional, native initialized order fields/history IDs. Bind quote to existing recorded causal input; prove executable Decimal(str(float(quote side))) equals source path. If unavailable/mismatched, UNKNOWN, not inferred price. Initialized order is not a Cache admission/ACK/fill.",
+      "source": [
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._submit_intent",
+          "line": 1896
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._submit_intent",
+          "line": 1917
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._submit_intent",
+          "line": 2070
+        }
+      ]
+    }
+  ],
+  "budget_context": {
+    "prefix_reserve": "conditional one already-approved reserve; no claim, GO or automatic repeat permission from this draft",
+    "root_reported_spent": 2,
+    "total_cap": 17
+  },
+  "exact_ce7_policy": {
+    "canonical_archived_config_sha256": "ce7c101ace5d8c21f0a912a0cd3221659591e5d56b744d3f8dc5ecb7c01d2ef6",
+    "episode_fixed_beta": false,
+    "max_parent_notional": 30000000.0,
+    "research_conditional_sol": false,
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_execution_repairs": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "sol_entry_z": [
+      1.25,
+      2.5,
+      3.75
+    ],
+    "sol_late_entry_after_tp": true,
+    "sol_overlay_enabled": true,
+    "sol_size_multipliers_h": [
+      1.75,
+      2.625,
+      3.5
+    ]
+  },
+  "native_launches": 0,
+  "noninterference_proof_plan": [
+    "Full203 runtime source inventory and product method ASTs equal accepted a4; no config/default fields changed. Only packet observer code changes after finalized root protocol on restored isolated VPS, separately sealed. Observer false/plain Strategy route does not construct the observer-generated override.",
+    "Same observer capture on P0/P1; only predeclared MethodA flag differs. Same13 inputs, exact kwargs/common identity, latency/fees/clock/venue. No tuning, source patch, fixture change or native launch in this drafting task.",
+    "Compare original and observed checkpoint true/false/original-exception paths for exactly one original invocation and identical return/exception; compare native order/events and Episode/pending/session dictionaries to unobserved control after expected original audit mutation. Capture IO failure yields financial UNKNOWN without candidate actions.",
+    "Bounded memory: append only one compact admission record per actual native CID; current3-level maps + bounded pending state, reuse existing stream hash/count and disk postprocessing dedup. No whole-run in-memory UUID set or all-history-per-quote expansion.",
+    "Before any future reserve launch root/independent review must prove pure observability and freeze new observer/recipe bindings, repeat_of, one UUID/ledger claim/deadline/root GO plus original P0 trace/cash/fees/funding/terminal equivalence contract. Draft grants no GO."
+  ],
+  "observer_base_commit": "334bc5a56bef36e981022c1fd2d22dc9ffd4c74f",
+  "pure_test_plan": {
+    "native_constructors": 0,
+    "requirements": [
+      "Install existing no-BacktestEngine/no-native-matching tripwire before imports; use actual domain Episode/Intent/Candidate and public native Cache/Order/Instrument classes only. Do not construct native_fixture engine or hidden helpers.",
+      "Use unit-only dataclass snapshots for nonzero H/fraction/filled/transfer/retired and omitted reference/decision/session facts; assert exact field copy incl float.hex/null and no changes to original objects. Never label seeded unit state actual native execution evidence.",
+      "Actual Cache/initialized native Order unit object verifies CID/intent/order binding pre-submit, expected absent Cache association and no fake Accepted/Filled event. Use existing public fixture instrument constants only if their imports are proven engine-free.",
+      "Original stub checkpoint true/false/raised sentinel and capture failure tests verify one super call, identical result/original exception, no submit/modify/cancel/clock/domain calls added by observation. Pure unit snapshots do not perform matching.",
+      "Negative field-reader cases: missing current H/session/remaining components stay UNKNOWN; final parent H never substitutes; transfer/retired not counted as native fills; ce7 late_entry true does not require new strict-cycle equality; original source lot rounding unchanged."
+    ],
+    "status": "PLANNED_NOT_RUN"
+  },
+  "runtime_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "schema": "CM_METHOD_A_OBSERVER_EXACT_FIELD_MAP_DRAFT_V1",
+  "scope": "Read-only additional facts for original ce7 oldSOL P0/P1 diagnostic qualification; no P3/A0 limits, trading changes or new economic engine.",
+  "selected_seam": {
+    "boundary": "AFTER_ORIGINAL_RECORD_SUBMISSION_TRUE_BEFORE_NATIVE_SUBMIT",
+    "callsite": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "function": "WaveOverlayStrategy._submit_intent",
+      "line": 2081
+    },
+    "clock": "Use order.ts_init, actual native QuoteTick/Bar timestamps and stored session fields only. No time.time_ns or invented admission timestamp.",
+    "implementation_outline": "Only the existing observer-generated strategy subclass may override _record_submission with the same explicit signature. Call super()._record_submission exactly once. If actual result is true and action is SOL_ADD, snapshot facts before returning the identical result. False is returned unchanged with no admitted event. An original exception propagates unchanged, never retry the call. Do not override submit_order/matching/clock/Cache or invoke _stale_sol_add/decide/advance for observation.",
+    "linkage": [
+      "existing attempt UUID/observer hash",
+      "CID",
+      "native instrument/strategy",
+      "pending intent ID/parent/action/level",
+      "original checkpoint true",
+      "quote event identity",
+      "subsequent actual order ACK/fill event UUIDs from334 history"
+    ],
+    "native_submit": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "function": "WaveOverlayStrategy._submit_intent",
+      "line": 2110
+    },
+    "observer_error_contract": "Observer capture failure must not change the original call count/result/exception or order submission. Latch an observer-only error/final financial UNKNOWN and preserve missing evidence; never mutate candidate/domain or retry trading calls. Root final protocol must pin this behavior before implementation.",
+    "original": {
+      "file": "runtime/coinmaster/strategy/wave_overlay.py",
+      "function": "WaveOverlayStrategy._record_submission",
+      "line": 3148
+    },
+    "source_reachability": "CID->intent is bound at2070-2080 before durable checkpoint. SOL_ADD then skips BTC_ENTRY-only audit blocks2092-2109. _own_accepted_reduction2091 is nonmutating for SOL_ADD by2126-2133 (ordinary_sol only exits, BTC fallback only BTC_REDUCE). Thus admission snapshot before checkpoint-return observes the same rights/session state before submit_order. No native ACK is claimed."
+  },
+  "six_missing_fields": [
+    {
+      "capture": "Copy current float repr and float.hex, or explicit null. Never copy final split-cover H into admission.",
+      "definition": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "Episode",
+        "line": 241
+      },
+      "existing_attribute": "strategy._domain.episode.h",
+      "missing_field": "profile.episode.h_at_SOL_ADD_admission",
+      "policy_read": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "WaveOverlayState.decide",
+        "line": 444
+      },
+      "type": "float | None",
+      "writer": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "WaveOverlayState.on_fill",
+        "line": 569
+      }
+    },
+    {
+      "capture": "Copy full current per-level dictionary. Missing level has existing policy get(level,0.0) meaning; native SOL_ADD fills increment it, SOL exits never refund it.",
+      "definition": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "Episode",
+        "line": 259
+      },
+      "existing_attribute": "strategy._domain.episode.sol_add_filled_notional",
+      "missing_field": "profile.episode.sol_add_filled_notional_at_SOL_ADD_admission",
+      "policy_read": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "WaveOverlayState.decide",
+        "line": 445
+      },
+      "type": "dict[int,float]",
+      "writer": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "WaveOverlayState.on_fill",
+        "line": 540
+      }
+    },
+    {
+      "capture": "Copy integer ns as string or null; do not call wall clock or assign a replacement session.",
+      "definition": {
+        "file": "runtime/coinmaster/strategy/wave_overlay.py",
+        "function": "WaveOverlayStrategy.__init__",
+        "line": 333
+      },
+      "existing_attribute": "strategy._last_accepted_session",
+      "missing_field": "profile.last_accepted_session",
+      "policy_read": {
+        "file": "runtime/coinmaster/strategy/wave_overlay.py",
+        "function": "WaveOverlayStrategy._stale_sol_add",
+        "line": 1665
+      },
+      "type": "int | None (native daily-bar close ns)",
+      "writer": [
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._try_advance_session",
+          "line": 1180
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy.backfill_signal_history",
+          "line": 1229
+        }
+      ]
+    },
+    {
+      "capture": "Copy actual current BTC/SOL Bar instrument ids and ts_event/ts_init, raw UTC bar.close_time.isoformat and its exact existing int(timestamp()*1e9) session, bar index, latest-seen ns. Preserve nulls. Session equality is the original paired-native executable-session guard, not a newly invented clock.",
+      "definition": [
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy.__init__",
+          "line": 346
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy.__init__",
+          "line": 347
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "DailyBar",
+          "line": 26
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy.__init__",
+          "line": 336
+        }
+      ],
+      "existing_attribute": [
+        "strategy._current_btc.ts_event",
+        "strategy._current_sol.ts_event",
+        "strategy._bars[-1].close_time",
+        "strategy._latest_seen_session",
+        "len(strategy._bars)-1"
+      ],
+      "missing_field": "profile.current_BTC_SOL_signal_sessions",
+      "policy_read": {
+        "file": "runtime/coinmaster/strategy/wave_overlay.py",
+        "function": "WaveOverlayStrategy._stale_sol_add",
+        "line": 1661
+      },
+      "type": [
+        "Bar | None -> int ns",
+        "Bar | None -> int ns",
+        "DailyBar.close_time: UTC datetime",
+        "int | None",
+        "int"
+      ]
+    },
+    {
+      "capture": "Copy the current latch and btc_deferred_right_reference_price Decimal|null (definition domain239, assigned strategy1602). BTC quote crossing uses bid>=reference for long / ask<=reference for short, with earned-entry guard. Reuse archived quote stream/activation rows to prove origin; latch alone does not prove the historical crossing.",
+      "definition": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "Episode",
+        "line": 240
+      },
+      "existing_attribute": "strategy._domain.episode.btc_deferred_right_touched",
+      "missing_field": "profile.episode.btc_deferred_right_touched",
+      "policy_read": {
+        "file": "runtime/coinmaster/strategy/wave_overlay.py",
+        "function": "WaveOverlayStrategy._activate_selective_sol_rights",
+        "line": 1627
+      },
+      "type": "bool",
+      "writer": {
+        "file": "runtime/coinmaster/strategy/wave_overlay.py",
+        "function": "WaveOverlayStrategy._activate_selective_sol_rights",
+        "line": 1626
+      }
+    },
+    {
+      "capture": "Copy actual level->decision index and intent.decision_index/current bar index; do not infer an index from fill time. ce7.sol_late_entry_after_tp is true: equality with current index is conditional on this existing flag being false, never an added P3 rule.",
+      "definition": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "Episode",
+        "line": 257
+      },
+      "existing_attribute": "strategy._domain.episode.sol_right_decision_index",
+      "missing_field": "profile.episode.sol_right_decision_index",
+      "policy_read": {
+        "file": "runtime/coinmaster/domain/wave_overlay.py",
+        "function": "WaveOverlayState.decide",
+        "line": 446
+      },
+      "type": "dict[int,int]",
+      "writer": [
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "WaveOverlayState.on_fill",
+          "line": 500
+        },
+        {
+          "file": "runtime/coinmaster/domain/wave_overlay.py",
+          "function": "WaveOverlayState.on_fill",
+          "line": 534
+        },
+        {
+          "file": "runtime/coinmaster/strategy/wave_overlay.py",
+          "function": "WaveOverlayStrategy._activate_selective_sol_rights",
+          "line": 1642
+        }
+      ]
+    }
+  ],
+  "source_files_sha256": {
+    "runtime/coinmaster/domain/wave_overlay.py": "a76bbff077dd493b800e16d29a35bfd5179812627f5abbdc244325da42529edc",
+    "runtime/coinmaster/strategy/live_recovery.py": "0c702dfda60f47b5d26e4c250226135bfd670fb401dadc11adbdbbd2260b42bd",
+    "runtime/coinmaster/strategy/method_a_tp.py": "a7ab2b75580b6ad59c89f467a118fc91eebcd8f0384ec16d082b44a2f01ab6cb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "82fcb8d685cfc4e15581733ed347ed77464e6e58858ee7bb5c316c5e670aa85a"
+  },
+  "source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/source-a4dd469",
+  "status": "PREPARATORY_DOCUMENT_ONLY_NOT_IMPLEMENTED_NOT_TESTED_NO_GO",
+  "unresolved_before_implementation": [
+    "The chosen seam captures admission-time facts, not an earlier intent-creation snapshot. Root must decide whether existing domain decision + captured intent.requested_notional/source proof suffices, or a distinct read-only creation-fact capture is strictly required. Do not silently broaden the seam or claim missing origin facts proven.",
+    "Exact future capture observer schema/error latching and reader binding must be frozen/reviewed before any implementation or repeat; this document provides no native GO."
+  ],
+  "verifier_outline": [
+    "Bind full source/config/input/profile/observer hashes and completed physical chain as existing reader. One admitted event per CID; same parent/intent/level/instrument/side links to actual ACK/fill. False/exception paths produce no admitted event. Require no unknown/error records.",
+    "Reproduce original remaining authorization only from current captured H,multiplier,fraction and separate consumed/transfer/retired maps, exact source float operation order using hex values. Preserve source positivity comparison >1e-12 at domain445-446 (existing rule, not a new tolerance). No reestimated final H or cash/PnL reconstruction.",
+    "Verify requested_notional was bounded by original current remaining when intent was created; admission may occur later. Snapshot intent.requested_notional plus current budget, but do not invent a new current-budget clamp. If differing origin-time facts are necessary, existing captured creation/daily facts must prove them or return UNKNOWN. This seam alone must not promote an unobserved decision-time fact to PASS.",
+    "Verify native quantity uses existing min(requested_notional,max_parent_notional), executable source price, float conversion and native size_increment floor at1896-1917, plus existing minima. Do not compare actual adverse fill price against a made-up at-fill cap, add risk caps, or widen rounding tolerance.",
+    "Verify raw entry denominators/earned fraction and P0/P1 original fraction formulas from domain478-534 and method_a_tp274-284 against actual native fill events. Omitted-level rights additionally require captured reference/touch and existing causal BTC quote crossing + entry_sizing activation rows; nonomitted rights use actual BTC TP-derived consumption. No rights resurrected by SOL exits.",
+    "Verify last accepted session/current BTC/current SOL/latest seen equal causal DailyBar close session under exact existing guards. ce7 allows late entry: do not newly require right decision index==latest. If checking stale path when latest>intent index, reuse existing source guard inputs; latest<=index is existing fast path, not a missing-signal waiver invented by the reader.",
+    "Check all fifteen original actual SOL_ADD fills (root-reported opportunity count) map to admitted initialized orders and subsequent genuine native ACK/fill/history. Transfer/retired facts remain distinct nonfill authorization. Preserve original full cash/funding/fees/terminal gates unchanged; no new PnL engine or fabricated financial PASS."
+  ]
+}

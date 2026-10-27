@@ -1,0 +1,20 @@
+{
+  "actual_P0_money_read": false,
+  "base_adapter_commit": "8c6a12360a4ab37d4c4da16c2e20c187f724030b",
+  "base_sha256": {
+    "METHOD_A_FINANCIAL_INTERFACE.md": "c281be44e325cd641efe754f41d52ae3ca206e7e1429605507f71058dabe5820",
+    "method_a_financial_reader.py": "65db1ff13452be264dbc6cfe620d42d453cdb2a479b399d6854dca856f42880f",
+    "test_method_a_financial_pure.py": "6c77261ca398d3544d7a11c94eaba98f190ce0680aeee08365ddcc02664883c3"
+  },
+  "draft_sha256": {
+    "FIN8C6_FINAL.patch": "6f77b784f46b77135246898e696e43849ae04585cc9e1a44e436c07b07e99490",
+    "METHOD_A_FINANCIAL_INTERFACE.md": "2f865b782f371f966b560d0a8013805d10e78f6b2a7bc16a25fadbc6cec735cd",
+    "method_a_financial_reader.py": "787ee07ce19fc864088b76d9c80a880bfab804870efb78067f894d47d69cc933",
+    "test_method_a_financial_pure.py": "1045c25bca5651599054ba033f05ddca983eb623efdbe3397828bb75f84eb430"
+  },
+  "execution_wrappers_unchanged": "334bc5a56bef36e981022c1fd2d22dc9ffd4c74f",
+  "native_launches": 0,
+  "reader_and_test_executions": 0,
+  "runtime_unchanged": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "status": "PURE_RESEARCH_DRAFT_NOT_EXECUTED"
+}

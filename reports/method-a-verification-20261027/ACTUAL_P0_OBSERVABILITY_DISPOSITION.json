@@ -1,0 +1,163 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "disposition": "ELIGIBLE_SINGLE_PREFIX_HARNESS_RESERVE_OBSERVABILITY_ONLY",
+  "native_launch_GO": false,
+  "P1_GO": false,
+  "financial_qualification": false,
+  "attempt_id": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+  "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "scope": "Independent bounded actual-result review of only corrected analysis and its execution receipt; no raw streams, money recalculation, source changes, tests or engines.",
+  "reviewer_native_engine_constructors": 0,
+  "evidence": {
+    "execution_receipt": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/financial/P0_FINAL_DIAGNOSIS_EXECUTION.json",
+      "sha256": "fd395740a903df87314eb76e8a39e0ec34c8294edebda425fcbc5c4480f103b7"
+    },
+    "analysis": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/financial/P0-analysis-final-6f77b78.json",
+      "sha256": "b1a7e516130063918be2f1bceed1ac64347872ecb4d1f727ddf29bd9c0327fe6",
+      "matches_execution_receipt": true
+    },
+    "postprocessor_native_imports": 0,
+    "postprocessor_engine_constructors": 0,
+    "native_attempts_unchanged": 2,
+    "money_math_unchanged_vs_previous_diagnostic": {
+      "cash_reconciliation": true,
+      "computed_DD_percent": true,
+      "funding_by_asset": true,
+      "native_actual_fill_fees": true,
+      "native_closed_positions": true,
+      "native_closed_realized_NET_fees": true,
+      "native_fills": true,
+      "netprofit": true,
+      "signed_funding": true,
+      "terminal_total": true
+    }
+  },
+  "actual_diagnosis": {
+    "qualification": "UNKNOWN_OR_FAILED_BLOCKS_ACCEPTANCE",
+    "accounting_qualified": false,
+    "financial_gates": {
+      "actual_os_exit0": "PASS",
+      "coherent_prefill_preopen_event_coverage": "PASS",
+      "complete_cash_reconciliation": "PASS",
+      "continuous_settled_coverage": "PASS",
+      "native_3TP": "NOT_APPLICABLE_LEGACY_CONTROL",
+      "native_fee_reconciliation": "PASS",
+      "ownership": "PASS",
+      "rights_audit_complete": "UNKNOWN",
+      "signed_asset_funding_reconciliation": "PASS",
+      "source_config_data_comparable": "PASS",
+      "terminal_positions0_orders0": "PASS",
+      "zero_model_liquidations": "PASS"
+    },
+    "gate_counts": {
+      "PASS": 10,
+      "P0_legacy_3TP_NOT_APPLICABLE": 1,
+      "UNKNOWN_rights_only": 1
+    },
+    "stream_issues": {},
+    "protection_profile_issues": {},
+    "complete_interior_quote_universe": true,
+    "cash_reconciliation": {
+      "all_fill_history_covered": true,
+      "extra_native_fill_history": 0,
+      "fee_convention": "NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_SETTLEMENT_CURRENCY_FEES_DO_NOT_SUBTRACT_AGAIN",
+      "missing_native_fill_history": 0,
+      "native_fill_history_conflicts": 0,
+      "native_realized_NET_settlement_fees": "152253.48428190",
+      "policy": "STRICT_ZERO_DEFAULT_NONZERO_UNKNOWN_NO_TOLERANCE_NO_FUNDING_RECLASSIFICATION",
+      "residual": "0E-8",
+      "seed": "10000",
+      "signed_funding": "-1725.85863765",
+      "terminal": "160527.62564425"
+    },
+    "native_fills": 109,
+    "native_closed_positions": 25,
+    "daily_count": 136,
+    "daily_missing": [],
+    "parent_count": 19,
+    "parent_proven_count": 19,
+    "settled_receipts": 195839,
+    "coherent_stream_rows": 588116,
+    "measured_DD_percent": {
+      "event": "57.585410459622263791144662586712381678692945895675",
+      "settled": "57.585410459622263791144662586712381678692945895675"
+    },
+    "DD_disposition": "P0 diagnostic DD57.585... is recorded, not a control accounting failure under protocol5."
+  },
+  "rights_diagnosis": {
+    "status": "UNKNOWN",
+    "actual_SOL_ADD_fills": 15,
+    "examples_examined_by_reader": 15,
+    "failures": {},
+    "missing_required_fields": [
+      "profile.current_BTC_SOL_signal_sessions",
+      "profile.episode.btc_deferred_right_touched",
+      "profile.episode.h_at_SOL_ADD_admission",
+      "profile.episode.sol_add_filled_notional_at_SOL_ADD_admission",
+      "profile.episode.sol_right_decision_index",
+      "profile.last_accepted_session"
+    ],
+    "mechanism_status": "PARTIALLY_OBSERVED_MISSING_REQUIRED_FACTS",
+    "interpretation": "The sole remaining failed admission condition is missing emitted original oldSOL admission/session facts. All15 actual SOL_ADD fills have bounded examples and no failure in the available mapped facts. This does not prove unobserved rights valid: complete rights qualification remains UNKNOWN. No other measured policy/stream/money failure is shown by the reviewed corrected analysis."
+  },
+  "immutable_control_reference": {
+    "physical_identity": {
+      "attempt_id": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+      "category": "prefix",
+      "common_economic_identity_sha256": "4e584c8ab844f2f8a8a31f6eec996d797c0af53fe195d88c1f3097eb3a0ef855",
+      "freeze_sha256": "b56e2d6b5c90cf1741bc734fce4a140529c300c7a0977d5d1ea2932f242f29eb",
+      "full_bound_kwargs_sha256": "790b6cd90f1ee1948b3547fbd9b2a2ff9f751ba5ba27e225c906f71668e94aa0",
+      "kwargs_sha256": "f31e654fceae55d22b9777acc9823b78317859314be00e05d39e60f5f1d9bfdd",
+      "label": "P0",
+      "ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/unified-run-ledger.json",
+      "native_config_sha256": "ac8357a6161d34dacf229e886c75e1e2f78eb6c4828d794e18fa7757ffc43f2c",
+      "native_input_sha256": "e9e862d04d495d77204fd333901d693c7cbb14c0c9652c88a56b991c4c56ed26",
+      "public_profile_sha256": {
+        "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+        "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+        "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+      },
+      "recipe_sha256": "8d926ed557d501be695ce99c2e176b9795df2aaa2305769e2f9823f3b565da6e",
+      "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+      "source_seal_sha256": "35e83e22175672ff2556c852e97f26a71611700063519d734ccfabf02a81e965",
+      "variant": "P0",
+      "worker_pid": 67293
+    },
+    "report_sha256": "f5b985fe7b4315c278117ba9a322e312d40a8e0e1ffb837d931e992bbfceda67",
+    "completed_attempt_sha256": "52c1c0e197c991ab7c0daa395442a7ac687f911307dcbebf9d092b7b9f4bba58",
+    "native_terminal_total": "160527.62564425",
+    "native_realized_NET_settlement_fees": "152253.48428190",
+    "native_fill_fees": "7376.86891809",
+    "signed_funding": "-1725.85863765",
+    "funding_by_asset": {
+      "BTCUSDT-PERP.P1SIM": "-1729.83088838",
+      "SOLUSDT-PERP.P1SIM": "3.97225073"
+    },
+    "cash_residual": "0E-8",
+    "note": "Original complete native control remains immutable and financially UNKNOWN. These actual reference values are equality controls for a possible instrumentation replay, not qualified performance or a new target."
+  },
+  "protocol_basis": {
+    "document": "reports/method-a-design-20261027/ONE_EXECUTION_AND_EXPERIMENT_PROTOCOL_RU.md",
+    "sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93",
+    "sections": [
+      "2 lines22/26 observer causal fields and observer-only noninterference",
+      "6 line85 independently diagnosed harness reserve, unchanged productAST/logicalcase/staticrecipe/variant/data/latency, repeat_ofUUID and deadline"
+    ],
+    "owner_receipt": "reports/method-a-verification-20261027/OWNER_IMPLEMENTATION_AND_17_APPROVAL.json",
+    "prefix_max": 6,
+    "total_max": 17,
+    "eligible_prefix_reserve": 1,
+    "new_budget_created": false
+  },
+  "conditions_before_any_replay": [
+    "Preserve original caa12c14-70fc-48e9-b4fc-160ddc12412f OS0/COMPLETED and raw/hash/state; financial qualification staysUNKNOWN, not relabeledFAIL/PASS.",
+    "Add read-only capture of existing original-policy H/filled/transfer/retired notional/right decision/deferred touch/accepted and paired signal sessions/causal parent origin only; no new P3/A0 risk or rights rule.",
+    "Prove exact a4 runtime/protected monetary AST/defaultflags/data/fees/clock/venue/logicalcase/economic staticrecipe unchanged; freeze new observer-only byte identities separately and pass focused pure/source review.",
+    "Predeclare equality to this original control for normalized native actions/side/quantity/price/time/liquidity/commission and actual cash/fees/funding/terminal results. Normalize only declared UUID/OID/artifact metadata, not economic facts.",
+    "FreshUUID with repeat_of=caa12c14-70fc-48e9-b4fc-160ddc12412f, oneprefixreserve slot counted within6/17, real deadline, durable canonical claim and separate explicit one-shot rootGO before constructor.",
+    "If new capture reveals a real rights/product/accounting failure or replay changes economic trace, STOP/HOLD; do not call it observability repair, loosen checks or allocate another automatic replay."
+  ],
+  "next": "Only prepare/review the read-only capture and exact replay gate within these conditions. This disposition grants no engine launch, financial receipt, P1 GO or full/SOL-stage authority."
+}

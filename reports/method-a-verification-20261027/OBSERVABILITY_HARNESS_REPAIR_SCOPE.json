@@ -1,0 +1,112 @@
+{
+  "actual_diagnosis": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/ACTUAL_P0_OBSERVABILITY_DISPOSITION.json",
+    "sha256": "b435f5bc158993a70bd8fe71dc65fb391ccf904b4c47d59b89da6cde07f5521c"
+  },
+  "base_protocol": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-design-20261027/ONE_EXECUTION_AND_EXPERIMENT_PROTOCOL_RU.md",
+    "section": "6 line85, observer-only scope section2 lines22/26"
+  },
+  "capture_contract": {
+    "additional_existing_budget_facts": [
+      "sol_ownership_transfer_credit",
+      "sol_risk_retired_notional",
+      "actual fraction and original multiplier/raw-entry denominator",
+      "actual source quote/order/intent/parent identity and quantity/notional"
+    ],
+    "clocks": "Read existing accepted-session/current native quote/source bar clocks. Preserve actual availability/causal meaning; no fabricated clock or finalH copied backward.",
+    "same_observer_for": [
+      "replayedP0",
+      "P1"
+    ],
+    "seam": "Existing _record_submission returned actualTrue, after durable mapping checkpoint and before submit_order. Delegate original exactly once, preserve return/error. Snapshot SOL_ADD existing state and actual initialized nativeCID; initialized is NOT accepted/fill/hedge credit. No source state/cache/order/money mutation.",
+    "six_missing_fields": [
+      "profile.current_BTC_SOL_signal_sessions",
+      "profile.episode.btc_deferred_right_touched",
+      "profile.episode.h_at_SOL_ADD_admission",
+      "profile.episode.sol_add_filled_notional_at_SOL_ADD_admission",
+      "profile.episode.sol_right_decision_index",
+      "profile.last_accepted_session"
+    ],
+    "unknown": "Missing/stale/conflicting required fact remains UNKNOWN. Policy violation or source drift is not harness success."
+  },
+  "current_budget": {
+    "engineering_started": 1,
+    "full_started": 0,
+    "physical_started": 2,
+    "prefix_max": 6,
+    "prefix_started": 1,
+    "total_max": 17
+  },
+  "economic_reference": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/P0_OBSERVER_REPLAY_ECONOMIC_REFERENCE.json",
+    "sha256": "1cec6880413e36782245ff24cf9bc4b6e913a3959e2b396b63f6814b07d079a7"
+  },
+  "not_authorized": [
+    "pilot",
+    "production",
+    "services",
+    "deployment",
+    "external orders/transfers",
+    "training/download changes",
+    "extra prefix/full or product repair through this reserve"
+  ],
+  "old_attempt": "Keep original OS0/COMPLETED row/raw/snapshot byte-identical; financialUNKNOWN stays. Do not relabel it FAILED_OS or qualified.",
+  "owner_approval": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/OWNER_IMPLEMENTATION_AND_17_APPROVAL.json",
+    "sha256": "3d17cb80101d1b88cd39043a062665f89086b22bebd53b5135535d260494ab60"
+  },
+  "postrun": [
+    "actualOS0 and immutable manifest/supervisor/currentrow/snapshot chain",
+    "exact normalized fill/cash/funding/scalar equality originalP0",
+    "all current control accounting/ownership/rights gates PASS except declaredP0legacy3TPN/A",
+    "only then root P0financialreceipt permits preparedP1; otherwiseHOLD/STOP no autoreserveincrease"
+  ],
+  "prelaunch_gates": [
+    "exact existing-source field map and review",
+    "runtime203byte noninterference + unchanged defaults/kwargs/venue/data",
+    "one focused actualEpisode/Cache/Order/serialization/source-call-delegation proof with engine constructors0",
+    "stdlib rights verifier source review/no new PnL or tolerance",
+    "frozen scripts/source/profile/recipe and current cap6/17",
+    "root freshUUID repeat_of + realdeadline + canonical claim before Popen + separate rootGO"
+  ],
+  "remaining_prefix_after_this_replay": [
+    "P1",
+    "P2",
+    "P4",
+    "P3"
+  ],
+  "reserved_replay": {
+    "calendar_ms": [
+      1725148800000,
+      1736899200000
+    ],
+    "count_before_Popen": true,
+    "failed_launch_counts": true,
+    "fresh_UUID_namespace": true,
+    "label": "P0",
+    "launch_deadline": "Future explicit one-shot rootGO must expire300s after issuance; no claim/launch after expiration. No automatic retry.",
+    "max": 1,
+    "repeat_of": "caa12c14-70fc-48e9-b4fc-160ddc12412f",
+    "slot": "PREFIX_PREIMPORT_HARNESS_ONLY_RESERVE_1"
+  },
+  "root_native_go": false,
+  "schema": "METHOD_A_OBSERVABILITY_HARNESS_REPAIR_SCOPE_V1",
+  "source_kind": "Observer/report-only repair; unchanged a4 runtime203files, ce7 policy, candidate parameters, native engine/fees/data/clock/venue and control labelP0. No product-money/order fix or parameter search.",
+  "source_permissions": {
+    "Mac": "Only frozen native execution; report postprocessor research drafts placed/tested by Terra/high as exact finalized inputs.",
+    "isolated_VPS_worktree": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/method-a-tp-only-20261027",
+    "native_launches_from_owner": 0,
+    "permitted": [
+      "prefix_observer.py read-only fields + source pre-transport seam",
+      "focused observer actual-object pure tests/interface",
+      "separate stdlib rights reader support for actual emitted original-policy facts"
+    ],
+    "preserve_remote_dirty": [
+      "method_a_financial_reader.py"
+    ],
+    "product_runtime_edits": 0
+  },
+  "status": "ROOT_AUTHORIZED_READ_ONLY_HARNESS_IMPLEMENTATION_WITHIN_EXISTING_RESERVE_NATIVE_NOT_GO",
+  "task": "CM-METHOD-A-VERIFY-20261027"
+}

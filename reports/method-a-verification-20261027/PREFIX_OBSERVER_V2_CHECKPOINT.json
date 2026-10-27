@@ -1,0 +1,46 @@
+{
+  "correction": "Only explicit DailySignalBar/Bar/null public instrument/session capture plus exact stock factory regression",
+  "correction_of": "c963db24a0e00b3a4949f0cda18660120bc53af4",
+  "creation_origin_gate": "UNRESOLVED_UNTIL_SOURCE_PLUS_ACTUAL_CAPTURED_STREAM_PROOF;NO_GLOBAL_NONMUTATION_CLAIM",
+  "files_sha256": {
+    "PREFIX_OBSERVER_V2_INTERFACE.md": "3a453341f2d88d1cdfae8a0a054ef1b199b8c3d8cf78792d4cc307a88bbf8fe4",
+    "prefix_observer.py": "6e21b00d7df3a7819a67bf0c571ff31f33822888d5095ebf43075c7fa7f72aa7",
+    "test_prefix_observer_v2_pure.py": "30e87cbc63540270861a34c86a29dae3a6b9d7a7115ca9d93024479fb2ab3926"
+  },
+  "intent_origin": "No unconditional queued-lifetime nonmutation claim; actual stream/source evidence required or UNKNOWN",
+  "native_launches": 0,
+  "other334_wrappers": "BYTE_IDENTICAL",
+  "preserved_financial_dirty_sha256": {
+    "method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "pure_command": "PYTHONPATH=reports/method-a-verification-20261027:runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -c 'import json;from test_prefix_observer_v2_pure import proof;print(json.dumps(proof(),sort_keys=True))'",
+  "pure_result": {
+    "checks": [
+      "actual_DailySignalBar_NativeBar_null_Episode_Cache_Order_readonly_six_facts",
+      "original_checkpoint_true_once_with_actual_source_method",
+      "JSON_roundtrip_hex_maps_intent_sessions_and_stream_hash",
+      "false_and_original_exception_preserved_once_no_admitted_frame",
+      "nonSOL_checkpoint_route_unchanged",
+      "capture_serialization_failure_does_not_change_original_result_or_domain",
+      "actual_source_post_checkpoint_SOL_ADD_bridge_nonmutating",
+      "all_runtime_bytes_a4_other334_wrappers_unchanged"
+    ],
+    "engine_constructors": 0,
+    "engine_tripwire_attempts": [],
+    "matching_runs": 0,
+    "status": "METHOD_A_OBSERVER_V2_FOCUSED_PURE_PASS",
+    "unit_states_are_not_actual_native_events": true
+  },
+  "root_native_GO": false,
+  "runtime_diff_from_a4": "EMPTY",
+  "runtime_source": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "source_files": [
+    "prefix_observer.py",
+    "test_prefix_observer_v2_pure.py",
+    "PREFIX_OBSERVER_V2_INTERFACE.md"
+  ],
+  "source_parent_commit": "c963db24a0e00b3a4949f0cda18660120bc53af4",
+  "status": "FOCUSED_PURE_PASS_PENDING_NARROW_PUBLIC_TYPE_CLOSURE_NO_NATIVE_GO",
+  "wrapper_base": "334bc5a56bef36e981022c1fd2d22dc9ffd4c74f"
+}
