@@ -499,7 +499,9 @@ class WaveOverlayState:
                     if episode.btc_deferred_right_reference_price is None or level not in episode.sol_rights:
                         episode.sol_right_decision_index[level] = self._decision_index if decision_index is None else decision_index
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
-            episode.sol_rights.add(intent.level)
+            omitted_method_a = getattr(self, "research_method_a_tp", False) and intent.level in episode.btc_omitted_zero_levels
+            if not omitted_method_a:
+                episode.sol_rights.add(intent.level)
             if self.btc_lot_step is not None:
                 self._ensure_btc_targets(episode)
                 target_lots = episode.btc_tp_target_lots[intent.level]
@@ -528,7 +530,8 @@ class WaveOverlayState:
             # Resting targets can fill days after their creation. Strict H3
             # compares against the fill's applied decision cycle, never the
             # stale intent creation cycle.
-            episode.sol_right_decision_index[intent.level] = self._decision_index if decision_index is None else decision_index
+            if not omitted_method_a:
+                episode.sol_right_decision_index[intent.level] = self._decision_index if decision_index is None else decision_index
             episode.btc_open_qty = max(0.0, episode.btc_open_qty - quantity)
         elif intent.action == "SOL_ADD":
             episode.sol_adds.add(intent.level)  # type: ignore[arg-type]

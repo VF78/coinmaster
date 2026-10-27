@@ -1836,6 +1836,8 @@ class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixRes
         self._domain.on_parent_terminal(intent.id)
 
     def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None, entry_override_qty: Decimal | None = None) -> None:
+        if intent.action == "BTC_ENTRY" and not self._ma_entry_ready():
+            return  # Existing original split retries after actual TP ACK; no new right or deadline.
         if intent.action == "BTC_ENTRY" and self._pair_no_increase():
             self._deny_local_entry(intent, "PAIRED_MONOTONE_PARENT_CEILING", ts_now)
             return
@@ -2068,6 +2070,7 @@ class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixRes
         client_order_id = str(order.client_order_id)
         self._risk_first_sol_bind(intent,order)
         self._pending_by_order[client_order_id] = intent
+        self._ma_bind_order(order, intent)
         self._tp_bind_order(order, intent)
         if intent.action == "BTC_ENTRY" and self._md_enabled():
             self._a0_bind_entry(client_order_id, intent)
@@ -2443,6 +2446,7 @@ class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixRes
             self._rf_fill_epoch+=1
             self._rf_last_fill_ns=event.ts_event
         self._record_fill_audit(event)
+        self._ma_before_fill(event)
         self._tp_before_fill(event)
         if self._pair_fill(event):
             return
@@ -2705,15 +2709,18 @@ class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixRes
 
     def on_order_updated(self, event) -> None:
         self._pair_sol_native_event(event, "typed")
+        self._ma_native_event(event)
         self._tp_native_event(event, "typed")
         self._tp_refresh(event.ts_event) if self._tp_enabled() else None
 
     def on_order_modify_rejected(self, event) -> None:
+        self._ma_native_event(event)
         self._pair_sol_native_event(event, "typed")
         self._tp_native_event(event, "typed")
 
     def on_order_event(self, event) -> None:
         self._pair_sol_native_event(event, "generic")
+        self._ma_native_event(event)
         self._tp_native_event(event, "generic")
         # Event identity, not client order identity, preserves the sequence
         # Submitted -> Accepted -> terminal without manufacturing an ACK.
@@ -2733,6 +2740,7 @@ class WaveOverlayStrategy(MethodATpResearch, StandingTPResearch, PairedPrefixRes
         if context is not None and context.get("accept_ns") is None:
             context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
+        self._ma_native_event(event)
         self._tp_native_event(event, "typed_accepted")
         self._md_accept(event)
         if self._tp_enabled(): self._tp_refresh(event.ts_event)

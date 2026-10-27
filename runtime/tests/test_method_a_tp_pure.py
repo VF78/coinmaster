@@ -62,7 +62,10 @@ def proof():
     assert s._ma_enabled() and not s._md_enabled() and not s._tp_enabled()
     assert s._domain.research_method_a_tp and not s._domain.research_real_u
     assert s.config.research_btc_split_discount == D('.0025') and s.config.candidate.sol_overlay_enabled
-    checks.append('actual_native_config_P1_oldSOL_legacy_split_noR2_owner')
+    try: WaveOverlayStrategy(method_config.__replace__(tp_fee_floor_v1=True))
+    except ValueError: pass
+    else: raise AssertionError('Fee floor is incompatible with unchanged E4 split IOC guard')
+    checks.append('actual_native_config_P1_oldSOL_legacy_split_noR2_owner_fee_floor_guard')
     root=Path(__file__).resolve().parents[2]
     base=subprocess.check_output(['git','show','a50af5433a0bbe00aecd6fec26e8d5c0321ced80:runtime/coinmaster/strategy/split_cover.py'],cwd=root)
     assert (root/'runtime/coinmaster/strategy/split_cover.py').read_bytes() == base
@@ -80,7 +83,15 @@ def proof():
             assert eval(compile(ast.Expression(values['liquidity_consumption']),'venue','eval'),{},scope) is False
             assert eval(compile(ast.Expression(values['bar_execution']),'venue','eval'),{},scope) is True
     checks.append('P0_P1_observer_only_flags_venue_consumptionFalse_barTrue')
-    return dict(status='ENGINE_FREE_PASS',engine_constructors=0,checks=checks,
+    from method_a_tp_event_replay import replay_proof
+    replay=replay_proof();checks.append('real_Cache_Order_Position_modify_ACK_terminal_fill_replay')
+    from method_a_eligibility_replay import eligibility_proof
+    eligibility=eligibility_proof();checks.append('raw_omitted_SOL_original_cross_session_and_shared_wire_floor')
+    from coinmaster.research.method_a_controls import build_method_a_kwargs
+    p0=build_method_a_kwargs('.', '.', 'P0');p1=build_method_a_kwargs('.', '.', 'P1')
+    assert {k for k in p0 if p0[k]!=p1[k]}=={'artifact_label','research_method_a_tp'}
+    checks.append('exact_E4_ce7_P0P1_kwargs_only_TP_flag_and_artifact_label')
+    return dict(status='ENGINE_FREE_PASS',engine_constructors=0,checks=checks,replay=replay,eligibility=eligibility,
         rounding='cumulative cuts floor17A/80, floor17A/40 minus first, remaining',
         config=snapshot_config(method_config))
 

@@ -1,0 +1,11 @@
+{
+  "source_commit": "d97a15d818a3a5dc1416fd41f5e33ab2a8ccaedd",
+  "formal_proof_functions": 1,
+  "check_groups": 7,
+  "integer_states": 8001,
+  "native_engine_constructors": 0,
+  "tripwire": "Before runpy/product/helper imports: import nautilus_trader.backtest.engine as engine; import nautilus_trader.backtest.node as node; engine.BacktestEngine=node.BacktestEngine=forbidden; forbidden raises METHOD_A_ENGINE_TRIPWIRE_NATIVE_BUDGET_0",
+  "command": "PYTHONPATH=.:tests /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python - (runpy.run_path tests/test_method_a_tp_pure.py as __main__)",
+  "status": "ENGINE_FREE_PASS",
+  "harness_fix": "AST test selector initially chose earlier add_venue without liquidity_consumption; corrected selector only; native0"
+}
