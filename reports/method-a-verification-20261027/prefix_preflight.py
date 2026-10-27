@@ -10,6 +10,6 @@ def main():
     _,proof,payload=common.prepare(g)
     a.kwargs_output.write_text(payload+chr(10));assert common.sha(a.kwargs_output)==proof['kwargs_sha256']
     common.write(a.output,proof)
-    print(json.dumps({key:proof[key] for key in ('status','label','source_commit','native_config_sha256','recipe_sha256','native_input_sha256','kwargs_sha256','engine_constructors')},sort_keys=True))
+    print(json.dumps({key:proof[key] for key in ('status','label','source_commit','native_config_sha256','recipe_sha256','native_input_sha256','kwargs_sha256','common_economic_identity_sha256','public_profile_sha256','engine_constructors')},sort_keys=True))
 
 if __name__=='__main__':main()

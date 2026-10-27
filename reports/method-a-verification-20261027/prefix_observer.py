@@ -20,7 +20,7 @@ class PrefixEvidence:
     def __init__(self,path):
         self.path=Path(path);self.file=gzip.open(self.path,'wt');self.strategy=None
         self.sequence=0;self.counts=Counter();self.last_state=None;self.registration=[]
-        self.first_quote_ns=None;self.last_quote_ns=None;self.native_event_ids=set()
+        self.first_quote_ns=None;self.last_quote_ns=None;self.native_event_uuid_frames=0
     def bind(self,strategy):self.strategy=strategy
     def order(self,order,history=False):
         row=dict(order_id=str(order.client_order_id),instrument=str(order.instrument_id),
@@ -65,17 +65,35 @@ class PrefixEvidence:
         self.record('BEFORE_NATIVE_MATCHING_INPUT',data.ts_event,input=value,input_sha256=digest(value),quote_native_UUID=None)
     def callback(self,phase,event):
         native_id=getattr(event,'id',None)
-        if native_id is not None:self.native_event_ids.add(str(native_id))
+        if native_id is not None:self.native_event_uuid_frames+=1
         oid=getattr(event,'client_order_id',None);order=None if oid is None or self.strategy is None else self.strategy.cache.order(oid)
         values=dict(native_event_id=None if native_id is None else str(native_id),native_event_type=type(event).__name__,
             client_order_id=None if oid is None else str(oid),native_order=None if order is None else self.order(order,True))
+        position_id=getattr(event,'position_id',None)
+        if type(event).__name__=='PositionClosed' and position_id is not None and self.strategy is not None:
+            realized=getattr(event,'realized_pnl',None)
+            values['native_position_closed_event']=dict(position_id=str(position_id),realized_pnl=None if realized is None else dict(amount=str(realized.as_decimal()),currency=str(realized.currency)),source='IMMUTABLE_NATIVE_POSITION_CLOSED_EVENT',realized_fee_convention='INCLUDES_SETTLEMENT_CURRENCY_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN')
+            position=self.strategy.cache.position(position_id)
+            if position is not None:
+                def money(value):
+                    return None if value is None else dict(amount=str(value.as_decimal()),currency=str(value.currency))
+                values['native_position']=dict(position_id=str(position.id),instrument=str(position.instrument_id),
+                    is_closed=bool(position.is_closed),quantity=str(position.quantity),
+                    realized_pnl=money(position.realized_pnl),commissions=[money(value) for value in position.commissions()],
+                    settlement_currency=str(position.settlement_currency),ts_opened=str(position.ts_opened),ts_closed=str(position.ts_closed),
+                    native_fill_history=[dict(event_id=str(fill.id),trade_id=str(fill.trade_id),client_order_id=str(fill.client_order_id),
+                        qty=str(fill.last_qty),px=str(fill.last_px),commission=money(fill.commission)) for fill in position.events],
+                    realized_fee_convention='NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_SETTLEMENT_CURRENCY_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN')
         for key in ('trade_id','last_qty','last_px','commission'):
             if hasattr(event,key):values[key]=str(getattr(event,key))
         self.record(phase,event.ts_event,**values)
     def close(self):
         self.file.close()
-        return dict(path=str(self.path.resolve()),sha256=hashlib.sha256(self.path.read_bytes()).hexdigest(),
-            frames=self.sequence,phase_counts=dict(self.counts),unique_native_event_UUIDs=len(self.native_event_ids),
+        checksum=hashlib.sha256()
+        with self.path.open('rb') as stream:
+            while chunk:=stream.read(1024*1024):checksum.update(chunk)
+        return dict(path=str(self.path.resolve()),sha256=checksum.hexdigest(),
+            frames=self.sequence,phase_counts=dict(self.counts),native_event_UUID_frames=self.native_event_uuid_frames,native_event_UUID_count_semantics='FRAME_OCCURRENCES_INCLUDING_TYPED_GENERIC_DUPLICATES;EXACT_UUID_DEDUP_IS_POST_RUN_STREAM_ANALYSIS',
             first_quote_ns=self.first_quote_ns,last_quote_ns=self.last_quote_ns,
             input_boundary='PUBLIC_SIMULATION_MODULE_PRE_PROCESS_BEFORE_NATIVE_MATCHING',
             strategy_callback_boundary='NATIVE_CACHE_ALREADY_MUTATED_NOT_PRE_MATCH',

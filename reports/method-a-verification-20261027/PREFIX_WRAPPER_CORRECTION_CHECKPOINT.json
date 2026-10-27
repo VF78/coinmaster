@@ -1,0 +1,30 @@
+{
+  "actual_historical_Mac_preflight": "REQUIRED_BEFORE_P0_ROOT_GO",
+  "base_wrapper_commit": "178f3b5bd60937d8940a62b62d2680a98d8ad0e1",
+  "checks": [
+    "ce7_P0_P1_exact_kwargs_types_JSON_defaults_and_stock_venue_false_true",
+    "unregistered_P3_and_wrong_data_root_actual_nine_paths_failclosed",
+    "unique_started_UUID_exact_flat_unified17_prefix6_label_source_namespace_pins",
+    "real_Cache_Order_history_UUID_before_matching_module_compact_SHA_stream",
+    "thin_engine_factory_spy_constructor1_same_kwargs_plus_readonly_module_no_native_engine",
+    "public_native_PositionClosed_realized_commissions_and_fill_history_JSON_getters",
+    "strategy_callback_delegates_once_preserves_return_labels_after_cache_mutation",
+    "all_runtime_product_and_money_bytes_exact_a4dd_unchanged",
+    "existing_normalized_symlinks_resolve_for_pins_keep_nine_logical_IDs",
+    "actual_frozen_three_profiles_required_unused_live_alias_rejected",
+    "P0_P1_only_TP_and_artifact_delta_fee_input_profile_drift_rejected",
+    "full_prior_P0_report_manifest_supervisor_exit_role_chain_positive_and_negative",
+    "observer_stream_hash_uses_chunks_no_whole_read_no_whole_run_UUID_set"
+  ],
+  "engine_constructors": 0,
+  "financial_outcome": "NOT_RUN_NOT_PREPROVEN",
+  "review_findings_closed": [
+    "PREFIX178-01",
+    "PREFIX178-02",
+    "PREFIX178-03"
+  ],
+  "scope": "ONE_CONSOLIDATED_WRAPPER_CORRECTION_NO_RUNTIME_CHANGE",
+  "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "status": "PREFIX_WRAPPER_ENGINE_FREE_PASS",
+  "stock_loader_actual_historical_preflight": "REQUIRED_ON_MAC_BEFORE_ANY_PREFIX_GO"
+}

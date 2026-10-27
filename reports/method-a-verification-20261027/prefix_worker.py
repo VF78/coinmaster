@@ -9,10 +9,10 @@ import prefix_common as common
 
 def worker(g,ledger_path,attempt):
     common.verify_authority(g,launch=True);common.verify_claim(g,ledger_path,attempt)
-    common.verify_prior_financial(g,ledger_path)
     source=common.verify_source(g);common.verify_inputs(g)
+    common.verify_prior_financial(g,ledger_path)
     kwargs,proof,_=common.prepare(g)
-    for key in ('recipe_sha256','native_config_sha256','native_input_sha256','kwargs_sha256','full_bound_kwargs_sha256'):assert proof[key]==g[key]
+    for key in ('recipe_sha256','native_config_sha256','native_input_sha256','kwargs_sha256','full_bound_kwargs_sha256','common_economic_identity_sha256'):assert proof[key]==g[key]
     namespace=Path(g['namespace']).resolve();assert namespace.is_dir()
     result=namespace/'result';assert not result.exists();result.mkdir()
     from prefix_observer import PrefixEvidence,observed_strategy_type,recording_engine_factory
@@ -40,7 +40,8 @@ def worker(g,ledger_path,attempt):
     native['physical_prefix_attempt']=dict(attempt_id=attempt,variant=g['label'],label=g['label'],category='prefix',
         ledger=str(Path(ledger_path).resolve()),source_commit=common.SOURCE,source_seal_sha256=g['source_seal_sha256'],
         freeze_sha256=g['_freeze_sha256'],native_config_sha256=g['native_config_sha256'],kwargs_sha256=g['kwargs_sha256'],
-        full_bound_kwargs_sha256=g['full_bound_kwargs_sha256'],native_input_sha256=g['native_input_sha256'],recipe_sha256=g['recipe_sha256'])
+        full_bound_kwargs_sha256=g['full_bound_kwargs_sha256'],native_input_sha256=g['native_input_sha256'],recipe_sha256=g['recipe_sha256'],
+        common_economic_identity_sha256=g['common_economic_identity_sha256'],public_profile_sha256=proof['public_profile_sha256'],worker_pid=os.getpid())
     native['method_a_execution_profile']=profile
     # Raw source hash is preserved. Existing baseline computes it before its
     # post-config metadata additions; expose a separate effective identity.
@@ -67,7 +68,7 @@ def finalize(g,exit_ref):
     assert receipt['schema']=='METHOD_A_PREFIX_ACTUAL_OS_EXIT_V1' and receipt['authority']=='ROOT_OBSERVED_CHILD_POPEN_WAIT'
     for key in ('attempt_id','variant','source_commit','worker_pid'):assert receipt[key]==proposal[key]
     assert type(receipt['actual_returncode']) is int and receipt['actual_returncode']==0
-    assert proposal['freeze_sha256']==g['_freeze_sha256'] and proposal['variant']==g['label']
+    assert proposal['freeze_sha256']==g['_freeze_sha256']==receipt['freeze_sha256'] and proposal['variant']==g['label']
     for row in proposal['artifacts']+proposal['extra_evidence']:common.pinned(dict(path=row['path'],sha256=row['sha256']))
     manifest=dict(proposal,status='NATIVE_PROCESS_EXPORTED_ACTUAL_OS_ZERO',actual_returncode=receipt['actual_returncode'],
         actual_exit_receipt=exit_ref,financial_acceptance='ROOT_REVIEW_REQUIRED')
