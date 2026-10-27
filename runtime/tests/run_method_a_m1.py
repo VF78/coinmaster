@@ -35,6 +35,50 @@ def canonical(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 
+def write_json(path, payload):
+    encoded=json.dumps(payload,indent=2,allow_nan=False)
+    Path(path).write_text(encoded+chr(10))
+    assert json.loads(Path(path).read_text())==json.loads(encoded)
+
+
+def source_inventory(source_root=None):
+    root=Path(source_root) if source_root is not None else Path(__file__).resolve().parents[2]
+    paths=set((root/'runtime/coinmaster').rglob('*.py'))|set((root/'runtime/tests').rglob('*.py'))
+    paths.update((root/'runtime/coinmaster/research/control_configs').glob('*.json'))
+    for name in ('runtime/pyproject.toml','runtime/uv.lock'):
+        if (root/name).is_file():paths.add(root/name)
+    if not paths:raise ValueError('M1_SOURCE_INVENTORY_EMPTY')
+    return [dict(path=str(path.relative_to(root)),sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for path in sorted(paths)]
+
+
+def source_seal(source_commit, source_root=None):
+    # Caller binds these bytes to the root gate's exact seal SHA before Popen.
+    return dict(schema='METHOD_A_IMMUTABLE_SOURCE_SEAL_V1',source_commit=source_commit,files=source_inventory(source_root))
+
+
+def verify_source(gate, source_root=None):
+    root=Path(source_root) if source_root is not None else Path(__file__).resolve().parents[2]
+    seal_path=Path(gate['source_seal_path'])
+    assert hashlib.sha256(seal_path.read_bytes()).hexdigest()==gate['source_seal_sha256'],'M1_BOUND_SOURCE_SEAL_SHA'
+    seal=json.loads(seal_path.read_text())
+    assert seal['schema']=='METHOD_A_IMMUTABLE_SOURCE_SEAL_V1'
+    assert seal['source_commit']==gate['source_commit'] and len(seal['source_commit'])==40
+    assert seal['files']==source_inventory(root),'M1_IMMUTABLE_SOURCE_BYTES_OR_INVENTORY_CHANGED'
+    if (root/'.git').exists():
+        actual=subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
+        assert actual==gate['source_commit'],'M1_CANONICAL_GIT_HEAD_MISMATCH'
+    return seal['source_commit']
+
+
+def domain_context(strategy):
+    ep=strategy._domain.episode
+    return dict(retained_episode_id=None if ep is None else ep.id,
+        btc_open_qty=None if ep is None else str(ep.btc_open_qty),
+        sol_qty=None if ep is None else str(ep.sol_qty),
+        historical_domain_pending=[] if ep is None else sorted(ep.pending),
+        owned_native_pending=sorted(strategy._pending_by_order))
+
+
 def seed():
     epoch=datetime(1970,1,1,tzinfo=timezone.utc); bars=[]
     for i in range(731):
@@ -203,15 +247,19 @@ def run_case(engine,strategy):
     assert all(sum(x['leaves'].values())==x['actual_held_lots'] for x in audit)
     assert any(x['event']=='ACTUAL_TP_FILL' and x['old_sol_rights'] for x in strategy.method_a_tp_audit)
     assert not engine.cache.positions_open() and not engine.cache.orders_open() and not engine.cache.orders_inflight()
-    assert not strategy._pending_by_order and strategy._domain.episode is None
+    assert not strategy._pending_by_order
+    # Old alpha intentionally retains a historical domain episode after TP-flat.
+    # Native terminal orders, actual inventory and owned work are authority.
+    terminal_names={'OrderFilled','OrderCanceled','OrderExpired','OrderRejected','OrderDenied'}
+    assert all(o.is_closed and any(type(event).__name__ in terminal_names for event in o.events) for o in engine.cache.orders())
     return dict(status='M1_NATIVE_PASS_REQUIRES_ROOT_ACCEPTANCE',parents=strategy.parents,
         fills=len(strategy.fills),actual_native_flat=True,actual_open_orders=0,actual_inflight=0,
-        engine_constructors=1,financial_authority=False)
+        engine_constructors=1,financial_authority=False,domain_context=domain_context(strategy))
 
 
 def launch(gate_path):
     gate=json.loads(Path(gate_path).read_text());proof=prepare()
-    source=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+    source=verify_source(gate)
     assert gate['root_go'] is True and gate['case']==CASE and gate['source_commit']==source
     assert gate['recipe_sha256']==proof['recipe_sha256'] and gate['native_config_sha256']==proof['config']['sha256']
     assert gate['native_input_sha256']==proof['native_input_sha256']
@@ -222,12 +270,12 @@ def launch(gate_path):
     def capture(label):
         if e is None:return
         account=e.cache.account_for_venue(SIM)
-        payload=dict(label=label,lifecycle=lifecycle(e),native_cash=None if account is None else str(account.balance_total()),positions=[dict(instrument=str(p.instrument_id),quantity=str(p.quantity),side='LONG' if p.is_long else 'SHORT') for p in e.cache.positions_open()],
-            orders=[dict(id=str(o.client_order_id),instrument=str(o.instrument_id),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),price=str(getattr(o,'price',None))) for o in e.cache.orders()],
+        payload=dict(label=label,lifecycle=lifecycle(e),domain_context=None if s is None else domain_context(s),native_cash=None if account is None else str(account.balance_total()),positions=[dict(instrument=str(p.instrument_id),quantity=str(p.quantity),side='LONG' if p.is_long else 'SHORT') for p in e.cache.positions_open()],
+            orders=[dict(id=str(o.client_order_id),instrument=str(o.instrument_id),status=o.status.name,quantity=str(o.quantity),filled=str(o.filled_qty),leaves=str(o.leaves_qty),price=str(getattr(o,'price',None)),native_event_history=[dict(type=type(event).__name__,id=str(event.id),timestamp_ns=str(event.ts_event)) for event in o.events]) for o in e.cache.orders()],
             fills=[] if s is None else s.fills,events=[] if s is None else s.events,
             tp_audit=[] if s is None else s.method_a_tp_audit,
             split=[] if s is None else [{k:str(v) for k,v in p.items() if k!='intent'} for p in s.split_parent_audit])
-        (out/(label+'.json')).write_text(json.dumps(payload,indent=2)+'\n')
+        write_json(out/(label+'.json'),payload)
     try:
         cfg,_=config()
         e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
@@ -250,14 +298,14 @@ def launch(gate_path):
                 capture('AFTER_END')
                 assert all(x['state']=='STOPPED' and not x['running'] for x in lifecycle(e).values())
             except BaseException:
-                error=(error or '')+'\\nEND:'+traceback.format_exc()
+                error=(error or '')+chr(10)+'END:'+traceback.format_exc()
             try:
                 capture('BEFORE_DISPOSE');e.dispose()
-                (out/'AFTER_DISPOSE.json').write_text(json.dumps(lifecycle(e),indent=2)+'\\n')
+                write_json(out/'AFTER_DISPOSE.json',lifecycle(e))
                 assert all(x['disposed'] for x in lifecycle(e).values())
             except BaseException:
-                error=(error or '')+'\\nDISPOSE:'+traceback.format_exc()
-        (out/'result.json').write_text(json.dumps(dict(case=CASE,attempt_id=gate['attempt_id'],result=result,error=error),indent=2)+'\n')
+                error=(error or '')+chr(10)+'DISPOSE:'+traceback.format_exc()
+        write_json(out/'result.json',dict(case=CASE,attempt_id=gate['attempt_id'],result=result,error=error))
     return 0 if error is None else 1
 
 

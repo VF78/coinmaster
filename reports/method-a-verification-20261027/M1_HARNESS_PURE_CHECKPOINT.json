@@ -1,0 +1,28 @@
+{
+  "status": "M1_HARNESS_PURE_PASS",
+  "base_product_commit": "140a6b975f5b55f54cc20fdfd4c300f029130554",
+  "scope": "HARNESS_ONLY_NO_PRODUCT_AST_CHANGE",
+  "native_engine_constructors": 0,
+  "recipe_sha256": "c8a59ef0e962ac16ecb4c9fecd5fd469d0b52ee9261749dedc1868c4222e131c",
+  "native_config_sha256": "eb5ec0cee0ae1d8abc2eb33b1ab79ab44139f89630118692431f82670d1f0ee1",
+  "native_input_sha256": "60825887adabf5c15b70f5e92854414d6e7f4d23759b667c5e0616aa6ae2dd51",
+  "input_rows": 23,
+  "input_events": 95,
+  "checks": [
+    "retained historical alpha episode recorded without reset; native flat/orders/inflight/pending and cached native terminal history remain mandatory",
+    "root gate SHA binds complete immutable runtime source seal; canonical git validated using explicit source root when .git exists",
+    "tampered sealed copy rejected",
+    "every output JSON uses real newline and json.loads roundtrip",
+    "exact recipe/config/input hashes unchanged; planned constructor call1"
+  ],
+  "files": [
+    {
+      "path": "runtime/tests/run_method_a_m1.py",
+      "sha256": "756100be834ae557f8dc6fe58c8c3d5c7f785fe8c7efecb73495af27b4fd6ee8"
+    },
+    {
+      "path": "runtime/tests/test_method_a_m1_harness_pure.py",
+      "sha256": "e4811bcba69f482982b3659566e5a2dcf878b74d3aab69a701c6a5c82f498245"
+    }
+  ]
+}
