@@ -1,0 +1,1657 @@
+{
+  "rows": 39,
+  "quotes": 56,
+  "public_inputs": 139,
+  "quote_side_records": 112,
+  "note": "All original inputs counted by source builder schema:78 marks+4 daily+1 H4+56 quotes; static quote-side coverage does not establish strategy commands/fills.",
+  "quotes_audited": [
+    {
+      "quote_ordinal": 1,
+      "public_input_ordinal": 5,
+      "ns": 0,
+      "phase": "NATURAL_LONG",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 2,
+      "public_input_ordinal": 6,
+      "ns": 0,
+      "phase": "NATURAL_LONG",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 3,
+      "public_input_ordinal": 9,
+      "ns": 1000000000,
+      "phase": "FIRST_FULL",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 1,
+            "ns": 0,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 1,
+            "ns": 0,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 4,
+      "public_input_ordinal": 10,
+      "ns": 1000000000,
+      "phase": "FIRST_FULL",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 2,
+            "ns": 0,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 2,
+            "ns": 0,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 5,
+      "public_input_ordinal": 13,
+      "ns": 2000000000,
+      "phase": "FIRST_SECOND_PASSIVE",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 3,
+            "ns": 1000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 3,
+            "ns": 1000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 6,
+      "public_input_ordinal": 14,
+      "ns": 2000000000,
+      "phase": "FIRST_SECOND_PASSIVE",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 4,
+            "ns": 1000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 4,
+            "ns": 1000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 7,
+      "public_input_ordinal": 17,
+      "ns": 3000000000,
+      "phase": "FIRST_SECOND_FILLED",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "99.7",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "99.7",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 8,
+      "public_input_ordinal": 18,
+      "ns": 3000000000,
+      "phase": "FIRST_SECOND_FILLED",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 6,
+            "ns": 2000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 6,
+            "ns": 2000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 9,
+      "public_input_ordinal": 21,
+      "ns": 61000000000,
+      "phase": "FULL_BEFORE_STRESS",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "92.9",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "92.9",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 10,
+      "public_input_ordinal": 24,
+      "ns": 62000000000,
+      "phase": "SOL_FULL_ENTRY",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 8,
+            "ns": 3000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 8,
+            "ns": 3000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 11,
+      "public_input_ordinal": 27,
+      "ns": 63000000000,
+      "phase": "SOL_FULL_PROTECTED",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "92.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 9,
+            "ns": 61000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "92.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 9,
+            "ns": 61000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 12,
+      "public_input_ordinal": 28,
+      "ns": 63000000000,
+      "phase": "SOL_FULL_PROTECTED",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 10,
+            "ns": 62000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 10,
+            "ns": 62000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 13,
+      "public_input_ordinal": 31,
+      "ns": 64000000000,
+      "phase": "PRELOAD_CAP_BOOK_BEFORE_BTC_TPS",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "132.9",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "132.9",
+          "depth": "10",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 14,
+      "public_input_ordinal": 34,
+      "ns": 65000000000,
+      "phase": "BTC_TP0_ONLY",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "107",
+          "depth": "116.875",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "107",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 15,
+      "public_input_ordinal": 37,
+      "ns": 66000000000,
+      "phase": "BTC_TP1_ONLY",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "107",
+          "depth": "116.875",
+          "previous_same_price": {
+            "quote_ordinal": 14,
+            "ns": 65000000000,
+            "depth": "116.875"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "107",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 14,
+            "ns": 65000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 16,
+      "public_input_ordinal": 40,
+      "ns": 67000000000,
+      "phase": "BTC_TP2_PARTIAL",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "107",
+          "depth": "116.250",
+          "previous_same_price": {
+            "quote_ordinal": 15,
+            "ns": 66000000000,
+            "depth": "116.875"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "107",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 15,
+            "ns": 66000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 17,
+      "public_input_ordinal": 43,
+      "ns": 68000000000,
+      "phase": "CAP_PARTIAL",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "132.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 13,
+            "ns": 64000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "132.9",
+          "depth": "10",
+          "previous_same_price": {
+            "quote_ordinal": 13,
+            "ns": 64000000000,
+            "depth": "10"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 18,
+      "public_input_ordinal": 46,
+      "ns": 69000000000,
+      "phase": "CAP_DONE",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "132.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 17,
+            "ns": 68000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "132.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 17,
+            "ns": 68000000000,
+            "depth": "10"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 19,
+      "public_input_ordinal": 49,
+      "ns": 70000000000,
+      "phase": "HEALTHY_DEFER",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "107",
+          "depth": "199",
+          "previous_same_price": {
+            "quote_ordinal": 16,
+            "ns": 67000000000,
+            "depth": "116.250"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "107",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 16,
+            "ns": 67000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 20,
+      "public_input_ordinal": 52,
+      "ns": 71000000000,
+      "phase": "TINY_PROTECTED",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "128",
+          "depth": "132.3",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 21,
+      "public_input_ordinal": 55,
+      "ns": 72000000000,
+      "phase": "RETIRE_ZERO",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 20,
+            "ns": 71000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "128",
+          "depth": ".1",
+          "previous_same_price": {
+            "quote_ordinal": 20,
+            "ns": 71000000000,
+            "depth": "132.3"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 22,
+      "public_input_ordinal": 58,
+      "ns": 72500000000,
+      "phase": "LATE_TP0",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "60",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "60",
+          "depth": ".1",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 23,
+      "public_input_ordinal": 61,
+      "ns": 73000000000,
+      "phase": "LATE_TP1",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "60",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 22,
+            "ns": 72500000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "60",
+          "depth": ".1",
+          "previous_same_price": {
+            "quote_ordinal": 22,
+            "ns": 72500000000,
+            "depth": ".1"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 24,
+      "public_input_ordinal": 64,
+      "ns": 73500000000,
+      "phase": "CLOSE_RESIDUAL",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 21,
+            "ns": 72000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "128",
+          "depth": ".3",
+          "previous_same_price": {
+            "quote_ordinal": 21,
+            "ns": 72000000000,
+            "depth": ".1"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 25,
+      "public_input_ordinal": 67,
+      "ns": 74100000000,
+      "phase": "BENIGN_CANCEL_REJECT",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 24,
+            "ns": 73500000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 24,
+            "ns": 73500000000,
+            "depth": ".3"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 26,
+      "public_input_ordinal": 70,
+      "ns": 75600000000,
+      "phase": "SOL_CANCEL_DRAIN",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 25,
+            "ns": 74100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 25,
+            "ns": 74100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 27,
+      "public_input_ordinal": 73,
+      "ns": 76000000000,
+      "phase": "FIRST_PARENT_FLAT",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "107",
+          "depth": "1",
+          "previous_same_price": {
+            "quote_ordinal": 19,
+            "ns": 70000000000,
+            "depth": "199"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "107",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 19,
+            "ns": 70000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 28,
+      "public_input_ordinal": 76,
+      "ns": 76500000000,
+      "phase": "FIRST_FLAT_ACK",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "107",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 27,
+            "ns": 76000000000,
+            "depth": "1"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "107",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 27,
+            "ns": 76000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 29,
+      "public_input_ordinal": 77,
+      "ns": 76500000000,
+      "phase": "FIRST_FLAT_ACK",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 26,
+            "ns": 75600000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "128",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 26,
+            "ns": 75600000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 30,
+      "public_input_ordinal": 82,
+      "ns": 86400000000000,
+      "phase": "NEXT_NATURAL_D1",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 12,
+            "ns": 63000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 12,
+            "ns": 63000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 31,
+      "public_input_ordinal": 85,
+      "ns": 86401000000000,
+      "phase": "NEXT_D1_READY",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 30,
+            "ns": 86400000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 30,
+            "ns": 86400000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 32,
+      "public_input_ordinal": 89,
+      "ns": 100800000000000,
+      "phase": "NATURAL_SHORT_H4",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 5,
+            "ns": 2000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 5,
+            "ns": 2000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 33,
+      "public_input_ordinal": 90,
+      "ns": 100800000000000,
+      "phase": "NATURAL_SHORT_H4",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 31,
+            "ns": 86401000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 31,
+            "ns": 86401000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 34,
+      "public_input_ordinal": 93,
+      "ns": 100801000000000,
+      "phase": "SECOND_FIRST_WINDOW1",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 32,
+            "ns": 100800000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 32,
+            "ns": 100800000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 35,
+      "public_input_ordinal": 94,
+      "ns": 100801000000000,
+      "phase": "SECOND_FIRST_WINDOW1",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 33,
+            "ns": 100800000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 33,
+            "ns": 100800000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 36,
+      "public_input_ordinal": 97,
+      "ns": 100802000000000,
+      "phase": "SECOND_FIRST_WINDOW2",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 34,
+            "ns": 100801000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 34,
+            "ns": 100801000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 37,
+      "public_input_ordinal": 98,
+      "ns": 100802000000000,
+      "phase": "SECOND_FIRST_WINDOW2",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 35,
+            "ns": 100801000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 35,
+            "ns": 100801000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 38,
+      "public_input_ordinal": 101,
+      "ns": 100803000000000,
+      "phase": "SECOND_PARENT_PASSIVE",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 36,
+            "ns": 100802000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 36,
+            "ns": 100802000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 39,
+      "public_input_ordinal": 102,
+      "ns": 100803000000000,
+      "phase": "SECOND_PARENT_PASSIVE",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 37,
+            "ns": 100802000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 37,
+            "ns": 100802000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 40,
+      "public_input_ordinal": 105,
+      "ns": 100804000000000,
+      "phase": "SECOND_PARENT_FULL",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100.3",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100.3",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 41,
+      "public_input_ordinal": 106,
+      "ns": 100804000000000,
+      "phase": "SECOND_PARENT_FULL",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 39,
+            "ns": 100803000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 39,
+            "ns": 100803000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 42,
+      "public_input_ordinal": 109,
+      "ns": 100805000000000,
+      "phase": "SECOND_FULL_SETTLE",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "100.3",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 40,
+            "ns": 100804000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100.3",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 40,
+            "ns": 100804000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 43,
+      "public_input_ordinal": 110,
+      "ns": 100805000000000,
+      "phase": "SECOND_FULL_SETTLE",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 41,
+            "ns": 100804000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 41,
+            "ns": 100804000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 44,
+      "public_input_ordinal": 113,
+      "ns": 100861000000000,
+      "phase": "SECOND_MEDIUM",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 45,
+      "public_input_ordinal": 116,
+      "ns": 100862000000000,
+      "phase": "SECOND_SOL_ENTRY",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 43,
+            "ns": 100805000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 43,
+            "ns": 100805000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 46,
+      "public_input_ordinal": 119,
+      "ns": 100863000000000,
+      "phase": "SECOND_SOL_PROTECTED",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 44,
+            "ns": 100861000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 44,
+            "ns": 100861000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 47,
+      "public_input_ordinal": 120,
+      "ns": 100863000000000,
+      "phase": "SECOND_SOL_PROTECTED",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 45,
+            "ns": 100862000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "100",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 45,
+            "ns": 100862000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 48,
+      "public_input_ordinal": 123,
+      "ns": 100864000000000,
+      "phase": "DECLARED_PARTIAL_STOP_FAULT",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "98",
+          "depth": ".1",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": null,
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 49,
+      "public_input_ordinal": 126,
+      "ns": 100865000000000,
+      "phase": "FAULT_CANCEL_WAIT",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 46,
+            "ns": 100863000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 46,
+            "ns": 100863000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 50,
+      "public_input_ordinal": 127,
+      "ns": 100865000000000,
+      "phase": "FAULT_CANCEL_WAIT",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 48,
+            "ns": 100864000000000,
+            "depth": ".1"
+          },
+          "same_size_as_previous_at_price": false,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 48,
+            "ns": 100864000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 51,
+      "public_input_ordinal": 130,
+      "ns": 100866100000000,
+      "phase": "FAULT_CANCEL_DRAIN",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 49,
+            "ns": 100865000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 49,
+            "ns": 100865000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 52,
+      "public_input_ordinal": 131,
+      "ns": 100866100000000,
+      "phase": "FAULT_CANCEL_DRAIN",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 50,
+            "ns": 100865000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 50,
+            "ns": 100865000000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 53,
+      "public_input_ordinal": 134,
+      "ns": 100867100000000,
+      "phase": "FAULT_CONSERVATIVE_COMMANDS",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 51,
+            "ns": 100866100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 51,
+            "ns": 100866100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 54,
+      "public_input_ordinal": 135,
+      "ns": 100867100000000,
+      "phase": "FAULT_CONSERVATIVE_COMMANDS",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 52,
+            "ns": 100866100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 52,
+            "ns": 100866100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 55,
+      "public_input_ordinal": 138,
+      "ns": 100868100000000,
+      "phase": "FAULT_FINAL_CAPTURE",
+      "asset": "BTC",
+      "sides": {
+        "bid": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 53,
+            "ns": 100867100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "99.9",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 53,
+            "ns": 100867100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    },
+    {
+      "quote_ordinal": 56,
+      "public_input_ordinal": 139,
+      "ns": 100868100000000,
+      "phase": "FAULT_FINAL_CAPTURE",
+      "asset": "SOL",
+      "sides": {
+        "bid": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 54,
+            "ns": 100867100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        },
+        "ask": {
+          "price": "98",
+          "depth": "1000",
+          "previous_same_price": {
+            "quote_ordinal": 54,
+            "ns": 100867100000000,
+            "depth": "1000"
+          },
+          "same_size_as_previous_at_price": true,
+          "fill_claim": "NONE_STATIC_INPUT_COVERAGE"
+        }
+      }
+    }
+  ]
+}

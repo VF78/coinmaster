@@ -1,0 +1,39 @@
+{
+  "status": "PROPOSED_NOT_APPROVED_NOT_LEDGER_CHANGE",
+  "current_total_max": 18,
+  "proposed_total_max": 18,
+  "spent": 8,
+  "current_category_caps": {
+    "engineering": 10,
+    "prefix": 6,
+    "full": 2
+  },
+  "proposed_category_caps": {
+    "engineering": 11,
+    "prefix": 6,
+    "full": 1
+  },
+  "remaining_sequence": [
+    "M3_DATA_CORRECTED_ONCE",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+    "P2_PREFIX",
+    "P4_PREFIX",
+    "P3_PREFIX",
+    "P3_FULL_CONDITIONAL"
+  ],
+  "closed_unspent_full_case": "P2_FULL_DIAGNOSTIC",
+  "new_reserves": 0,
+  "failed_counted": true,
+  "additional_M2_replays": 0,
+  "pilot_production": false,
+  "prefix_gate_proposal": "DDboth<=50 and netP3>=.70netP0R and actualhedge>0 and allfinancialPASS and P3notdominatedbyP4; report all tradeoffs",
+  "full_attribution_limit": "No fullP2, no independent full SOL effect claim",
+  "native_authority_now": false,
+  "P4_role_proposal": "DIAGNOSTIC_PREFIX: DD>50 alone not execution/accounting invalidity; P3candidate alone DD50 stop. All liquidation/accounting/ownership/native safety gates retained.",
+  "dominance_definition": "P4 dominates P3 iff netTOTAL4>=3, settledDD4<=3, coherentDD4<=3 and at least one strict; qualified rawDecimal comparisons, no new performance epsilon. All-three equality HOLD/full0; UNKNOWN or invalidP4 HOLD/full0.",
+  "DATA_candidate_sha256": "96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba"
+}

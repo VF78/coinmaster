@@ -1,0 +1,48 @@
+{
+  "source_sha256": "ae29a508bd34821b7d909ea07d40e22260290eb889422fcd72f4377de647d0fc",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/rows/9/quotes/0/bid_depth",
+      "old": "116.875",
+      "value": "116.874",
+      "ns": 66000000000
+    },
+    {
+      "op": "replace",
+      "path": "/rows/10/quotes/0/bid_depth",
+      "old": "116.250",
+      "value": "116.251",
+      "ns": 67000000000
+    },
+    {
+      "op": "replace",
+      "path": "/rows/16/quotes/0/ask_depth",
+      "old": ".1",
+      "value": ".2",
+      "ns": 72500000000
+    },
+    {
+      "op": "replace",
+      "path": "/rows/17/quotes/0/ask_depth",
+      "old": ".1",
+      "value": ".2",
+      "ns": 73000000000
+    },
+    {
+      "op": "add",
+      "path": "/rows/11/quotes/0",
+      "value": {
+        "asset": "BTC",
+        "bid": "107",
+        "ask": "107",
+        "bid_depth": "116.251",
+        "ask_depth": "1000"
+      },
+      "ns": 68000000000,
+      "reason": "Explicit retained-liquidity iteration before SOL CAP sizing; not a reset."
+    }
+  ],
+  "candidate_sha256": "96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba",
+  "status": "PROPOSAL_ONLY_NATIVE_UNPROVEN_NO_RETRY_AUTHORITY"
+}

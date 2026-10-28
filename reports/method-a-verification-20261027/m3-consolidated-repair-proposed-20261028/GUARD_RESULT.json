@@ -1,0 +1,30 @@
+{
+  "status": "PASS_PURE_INPUT_AND_ARITHMETIC_GUARDS_ONLY",
+  "native_constructors": 0,
+  "engine_runs": 0,
+  "product_changes": 0,
+  "source_unchanged": "ae29a508bd34821b7d909ea07d40e22260290eb889422fcd72f4377de647d0fc",
+  "candidate_public_inputs": 140,
+  "candidate_quotes": 57,
+  "files": {
+    "M3_DATA_CANDIDATE.json": "96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba",
+    "PATCH.json": "30ae28ae756a5d12739fe003ace38c263dbcf429d1b4dc4b74e69c7c8b7bcc06",
+    "INPUT_COVERAGE.json": "9952fd7de56b2b0823b6f1ab65fe18d2767e7597ea54c964ebded2fedefb847d"
+  },
+  "installed_engine_sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+  "candidate_quote_universe": {
+    "BTC": 25,
+    "SOL": 32
+  },
+  "unknown_map": {
+    "native_qualification": "UNKNOWN",
+    "CAP_selected_78_and_partial_IOC_terminal": "UNKNOWN",
+    "CAP_residual_command_timing_and_source_book_freshness": "UNKNOWN",
+    "exact_67_BTC_TP2_event_timing": "UNKNOWN_retained_capacity_explicit_preCAP_quote_added",
+    "exact_late_fill_split_72_5_vs_73": "UNKNOWN_cumulative_capacity_and_deadline_compatible",
+    "receipt_barrier_complete_native_empty_handoff": "UNKNOWN_requires_separate_readonly_producer_evidence",
+    "cash_6011_93042250_and_second_parent_sizing": "UNKNOWN",
+    "final_STOP_fail_closed_and_conservative_commands": "UNKNOWN",
+    "financial_qualification": false
+  }
+}

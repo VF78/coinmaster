@@ -1,0 +1,7 @@
+{
+  "intentional_unstaged_VPS": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "instruction": "Preserve existing user/previous research dirty files unstaged; verify against these last-recorded pins before any source edit; do not reset."
+}
