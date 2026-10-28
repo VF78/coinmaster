@@ -1,0 +1,83 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "review": "bounded actual M3R forensic; read-only artifact/source inspection; no code import, engine or test execution",
+  "reviewed_utc": "2026-10-28T14:03:44.819350+00:00",
+  "attempt": "acd8fedd-0842-48a7-9df2-b8414bba3fb8",
+  "source_commit": "b03dacc69d69195ea819b7caee5adecee35c8f0d",
+  "classification": "REAL_STRATEGY_QUALIFICATION_NO_GO_PRECEDES_SECONDARY_FIXTURE_PROTECTION_ASSERTION",
+  "disposition": "FAILED/OS1 unchanged; no retry; root sole ledger/GO; lifecycle DISPOSED does not prove flat",
+  "finding": "The failure is not a same-callback pending-modify/ACK timing false negative. At69s all three SOL TPs and STOP are latest native ACCEPTED/exact with no pending modification. At70s BTC TP3 fills199, leaving BTC1/SOL-132.9. The risk owner first rejects post-fill recovery and initiates forced closure, causing actual PENDING_CANCEL on all four SOL protections. The fixture then rejects this already failed protection state. This establishes a real risk-contract/scenario incompatibility, not by itself a proven algorithm bug or permission to alter money logic.",
+  "chronology": [
+    {
+      "time_ns": 69000000000,
+      "refs": [
+        "paired physical rows60/62/64/66",
+        "paired row68",
+        "risk row93"
+      ],
+      "fact": "SOL cap completion: total78 via10+68 native fills; BTC200/SOL132.9. Updated TP quantities33.2/33.2/66.5 and STOP132.9 accepted. Boundary PROTECTED/exactTrue; latestACKs generation3, pendingFalse."
+    },
+    {
+      "time_ns": 70000000000,
+      "refs": [
+        "risk row94",
+        "risk row95",
+        "risk row96",
+        "risk row97",
+        "paired rows69-74"
+      ],
+      "fact": "Preinput receipt references prior PROTECTED state. BTC native fill199@105.2 occurs; postfill snapshot has equity5360.2863425,peak10000,cushion360.2863425,cash9725.5463425. _mr_after_actual finds no proven recovery choices and calls NO_PROVEN_POSTFILL_RECOVERY before ACTUAL_NATIVE_FILL report row. _mr_fail delegates global close and requests cancellation of STOP/TPs."
+    },
+    {
+      "time_ns": 70000000000,
+      "refs": [
+        "paired row79",
+        "FAILURE_BEFORE_END.json",
+        "result.json"
+      ],
+      "fact": "All4 SOL protections PENDING_CANCEL, quantities unchanged; pending modifyFalse, latest ACKs remain69s. FAULT_UNPROTECTED/exactFalse. HEALTHY_DEFER m3_protection exact assertion fails secondarily; no cancellation ACK or later protection restored is proven."
+    }
+  ],
+  "source_cause": {
+    "method_a_risk_native.py:636-642": "on_order_filled calls superclass then _mr_after_actual then logs actual fill; explains report order",
+    "method_a_risk_native.py:645-674": "positive cushion; branch requires worst_deficit>0 or margin_fail; both legal recovery choices absent leads line666 NO_PROVEN_POSTFILL_RECOVERY",
+    "method_a_risk_native.py:528-586": "choice requires fresh quotes, legal lot/notional/TP entitlements and all-partial route/margin constraints; no candidates returnsNone",
+    "method_a_risk_native.py:133-143": "_mr_fail logs qualification NO_GO then parent failure and forced close",
+    "run_method_a_sol.py:197-202,242-245": "fixture HEALTHY_DEFER assumes healthy accepted protections after callback, ignores existing earlier NO_GO in its error label"
+  },
+  "diagnostic_limit": "Actual exact rejected recovery intervals, ev deficit and margin boolean are not exported at70s; no claim identifying which inequality rejected each leg. Only source branch and raw NO_GO prove no admissible returned choices. No functions rerun or counterfactual outcome fabricated.",
+  "empty_episode_evidence": {
+    "availability": "ACTUAL_RAW_EMPTY_SOL_CAPTURE_AVAILABLE; FULL_FINANCIAL_QUALIFICATION_UNKNOWN",
+    "risk_row": 40,
+    "timestamp_ns": 62000000000,
+    "risk_episode": "e13553d1-ddf3-467f-84a5-34bcac813e1c:1",
+    "watermark": 39,
+    "receipt_ordinal": 10,
+    "facts": "5 cached BTC orders, BTC550; no SOL cache order/init/position/owner; queued/mandatory/emulated/inflight/unresolved empty;3 BTC pending resolved. exec_command8/event14/factoryCID5/list0;one M3Probe,no actors/algos. SOL init CID6 appears later at risk46 atsame62s.",
+    "limit": "EP1 begins within61s strategy callback (risk38); raw first observed at62s. boundary_state_ref paired:2 is EP1 FLAT at61s NATIVE_SETTLEMENT_PASS, not a fresh same62s strict-barrier emitted row. Thus strict SAME-barrier row identity and complete sealed command universe remain UNKNOWN; raw snapshot alone gives no financialPASS. Never substitute this62s capture for61s episode-transition barrier."
+  },
+  "unreached": "TINY_PROTECTED,retirement/latefills/cancel-reject,first-flat-ACK,natural second parent,second protection and expected PARTIAL_NATIVE_STOP@100864s all unreached. Full M3/M4-M8/prefix/financial gates remain unqualified.",
+  "terminal": "AFTER_END still BTC1/SOL-132.9; AFTER_DISPOSE has5 components DISPOSED. No flat/terminal-moneyPASS.",
+  "conditional_remedy_only": "Any next proposal must distinguish healthy protection-lifecycle fixture from genuine postfill risk-recovery feasibility using exact captured70s state and documented legal constraints. Keep risk guard and native ACK requirements; no assertion waiver, source edit, engine retry or new allocation authorized. Dedicated correctedM3 slot exhausted;budget9/18 active0 per root.",
+  "structured_refs": {
+    "artifact_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3R-acd8fedd-0842-48a7-9df2-b8414bba3fb8",
+    "artifact_sha256": {
+      "risk.jsonl.gz": "3e9a3e530175b11a90ce307081281eb05be8a540279bff3fb95957c310e67687",
+      "paired.jsonl.gz": "501aba0caeab4b61735acf47ee6a17ad9b9064a81f4eef831c8ade23890ecd9a",
+      "coherent-native-events.jsonl.gz": "ff6f170cc5625e9ec26fbb335715c6f88522c42a44123ed44ff1482190391374",
+      "FAILURE_BEFORE_END.json": "f743a34dc7699ecf94d61c314f950369c35a4b5d40e7abb1f1c040c38313586a",
+      "AFTER_END.json": "4e013012c9b0df8b888e062e88b9f3ec5585bbead576dc8b026ba798340fe253",
+      "AFTER_DISPOSE.json": "ac09f13427f4271df0db24dbbb42f1b44b2029d60e1d144af00242c2aa109c32",
+      "result.json": "139ebca93142f22fda82d1c9b019b0d14d11511705e5ef3cd6c57117d5afb6c7",
+      "ROOT_ACTUAL_EXIT.json": "c0b980a2cf0ddec617dbc11ba9943984c35d432a3dc21ae8f64aa890c4f39fd0"
+    },
+    "frozen_source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/source-m3r-b03dacc",
+    "source_sha256": {
+      "runtime/coinmaster/strategy/method_a_risk_native.py": "2a0e697c87449c3c6fb5768f8f48ca34b962ae797be2ac5447f1d05425335ace",
+      "runtime/tests/run_method_a_sol.py": "d34ed2c237af6a82fb8e53f33b500b31e6015c4314d8051103d23c90afe2b645",
+      "runtime/coinmaster/research/method_a_margin.py": "622314b39729973566de45a597d7e0f8f0ae59f69a320b99aa2765ba3671bac8",
+      "reports/method-a-verification-20261027/M3_DATA_CANDIDATE_APPROVED_20261028.json": "96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba"
+    },
+    "row_convention": "physical JSONL line numbers1-based; paired sequence can be overwritten by modify payload sequence, so use physical row+event+timestamp"
+  }
+}

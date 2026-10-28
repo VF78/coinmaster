@@ -1,0 +1,50 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "scope": "single final narrow analytical read review of rectangle lemma and code0 proposal; no architecture review, source changes, source execution, native imports, tests or forensic repetition",
+  "reviewed_utc": "2026-10-28T14:33:17.034721+00:00",
+  "status": "PASS_SCOPED_MATHEMATICAL_LEMMA_AND_PROPOSAL_ONLY",
+  "open_findings": {
+    "P0": 0,
+    "P1": 0
+  },
+  "approved_implementation": false,
+  "root_source_GO": false,
+  "native_GO": false,
+  "reviewed_pins": {
+    "HYPOTHESIS_PROOF.json": "d03afc9f70c35c311542a18ee7c9fe7ec24a6db015c31f018978e2835293cb90",
+    "HYPOTHESIS_PROOF_RU.md": "1581abca9c7e81fcbbb327f14a4de5cfcb6c4de693a25aa948548359938d1366",
+    "RECOVERY_CONTRACT_CODE0_PROPOSED_RU.md": "5e5885f4f387ee53cb3eaf12e202b17999476b0a53336a2f5228bad72fa4e1f0",
+    "DIAGNOSTIC.json": "899c089c3482da1f573d349196307c74b24059f35b6d785b48b67d0bc44cbf00",
+    "REPORT_RU.md": "dba49a405888618a9640bbeeb595ad2518e6cf5097ab9ecfa90203d7f8668dff"
+  },
+  "reasoning": {
+    "affine_domain": "Fixed marks/features/peak/funding0; B=1-x>=0,S=-132.9+z<=0 on rectangle. Closed fill cost is affine; surviving exposure exit reserve is affine. Zero-shock loss is nonnegative, so evaluate max(0,scenario losses) is exactly max of the five stated forms.",
+    "convexity": "Maximum of five affine forms is convex. Each rectangle point is convex combination of its four corners, so F<=max corner F. Full z=132.9 edge similarly bounded by its two endpoints, both negative.",
+    "exact_arithmetic": "Independent decimal arithmetic from stated coefficients, without importing or calling product evaluate, matches all5 affine forms at all4 corners and all4 IM/MM minima exactly. No numerical discrepancies.",
+    "baseline": "max_x F(x,0)=35.2044175723066680672513309359253634779200290912681790379146920. Same benchmark used for every candidate partial; it is an already unsafe standing-order benchmark, not a safe admission gate.",
+    "full_edge": "max F(x,132.9)=-331.0694101725632575571746878750531; therefore all old-BTC fill outcomes on full-SOL edge are safe within this model.",
+    "cash_cost": "BTC residual fill loss107-105.2+105.2*.00020=1.82104 per BTC. SOL assumed bound132.9*(.00055+.001)=.205995. Actual199BTC fill/fee already in starting E. Each residual fill cost subtracted once; do not add old .16585*x frontier cost again. Exit cost inside L applies only remaining exposures.",
+    "margin_and_tiers": "Nonnegative quantity rectangle plus zero deductions and stressed notional ceilings108.6769461/18028.1361091 below first tier caps300000/50000 keep IM/MM affine. Independent corner minima match IM4091.332387941643...,MM4902.598512851287...>0;min cushion331.088567>0. Native lot grid is subset; per-lot costs terminate within1e-8 USDT.",
+    "normal_admission": "Proposal explicitly confines benchmark to already BREACH, requires every feasible partial<=same unavoidable baseline AND entire full execution edge safe, known margins/owners/ACK. Prior safe normal admission and actual DD50/cushion remain unchanged. No pending-fill relief.",
+    "protection_and_unknowns": "Live positive TP/STOP and increasesOFF until actual safe state; no cancellation/ACK waiver or second OMS. Additional oldSOL TP/STOP paths, tiers/sign changes/nonlinear costs/funding/other producers or unknown fields must be covered by existing pure evaluator/partitioner or UNKNOWN/DENY."
+  },
+  "limits": [
+    "Lemma does not certify native price/depth or actual SOL cost<=phi; referenceask69s alone is insufficient.",
+    "Zero/partial fill may remain BREACH; proof does not guarantee fills, completion, deadlines, liquidity, queue visibility or native lifecycle.",
+    "Only the stated2D oldBTC/newSOL fill universe is proved. Independent oldSOL TP/STOP outcomes are excluded and must not silently disappear in implementation.",
+    "This changes monetary recovery semantics if later approved; it is not a correction to current solver results, financialPASS or waiver.",
+    "Before any future native case map, cash and SECOND-parent expectations must be rederived from changed recovery behavior; old6011 expectations cannot be reused.",
+    "No implementation approval yet. Proposed next stage is one isolated defaultOFF code/pure pass+focused review, native0/prefix0/full0. Cap18 unchanged,spent9,active0,correctedM3remaining0; no slot borrowing or inference. OldFAILED/raw remain immutable."
+  ],
+  "static_source_crosscheck": {
+    "method_a_risk.py": "Read evaluate lines165-189: loss includes surviving exit cost; es=equity+pnl-unpaid; IM>= and MM> checks match proof. No code imported.",
+    "method_a_risk_native.py": "Read _mr_margin lines145-155: max(tierIM,1/leverage),max0(notionalMM-deduction); affine restriction is valid only under pinned no-tier/no-deduction domain."
+  },
+  "changes_or_executions": {
+    "source_edits": 0,
+    "tests": 0,
+    "native_runs": 0,
+    "ledger_changes": 0,
+    "implementation_authority": 0
+  }
+}

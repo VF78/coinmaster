@@ -1,0 +1,195 @@
+{
+  "status": "BOUNDED_PURE_DIAGNOSTIC_COMPLETE_NO_NATIVE_NO_SOURCE_CHANGE",
+  "attempt": "acd8fedd-0842-48a7-9df2-b8414bba3fb8",
+  "source_commit": "b03dacc69d69195ea819b7caee5adecee35c8f0d",
+  "calculation": {
+    "actual69_evaluate": {
+      "gross": "33.52907453417002211105793644487923913142626020541343014536",
+      "loss": "93.0880735214909844789705254251288019520799709087318209620853080",
+      "margin_pass": true,
+      "worst_deficit": "-629.5852289785090155210294745748711980479200290912681790379146920"
+    },
+    "actual70_state": {
+      "btc": "1.000",
+      "sol": "-132.9",
+      "equity": "5360.2863425",
+      "peak": "10000",
+      "pb": "107",
+      "ps": "132.9"
+    },
+    "actual70_evaluate": {
+      "gross": "364.04916300931445321610925171671136086857373979458656985464",
+      "loss": "392.1612232448699256244260188109784634779200290912681790379146920",
+      "margin_pass": true,
+      "worst_deficit": "31.8748807448699256244260188109784634779200290912681790379146920"
+    },
+    "native_cushion_loss": "362.3869600",
+    "actual_native_fill_mark_basis_loss": "358.2",
+    "actual_fill_fee": "4.18696000",
+    "route_witness_no_new_SOL_fill_old_BTC_TP_full": {
+      "gross": "365.72610910319671316185046271871136086857373979458656985464",
+      "loss": "393.8355700723066680672513309359253634779200290912681790379146920",
+      "margin_pass": true,
+      "worst_deficit": "33.5492275723066680672513309359253634779200290912681790379146920"
+    },
+    "route_witness_excess": "1.6743468274367424428253121249469000000000000000000000000000000",
+    "BTC_objective_one_lot": {
+      "gross": "364.05083995540833547605499292771336086857373979458656985464",
+      "loss": "392.1628975916973623668688441231034103779200290912681790379146920",
+      "margin_pass": true,
+      "worst_deficit": "31.8765550916973623668688441231034103779200290912681790379146920"
+    },
+    "BTC_one_lot_deficit_increase": "0.0016743468274367424428253121249469000000000000000000000000000",
+    "BTC_reduction_coefficient_per_unit": "1.67434682743674244282531212494690",
+    "five_scenarios": [
+      {
+        "b": "0",
+        "s": "0",
+        "L": "27.54258550",
+        "deficit": "-332.74375700",
+        "IM_slack": "4474.4908425",
+        "MM_slack": "5271.6211925"
+      },
+      {
+        "b": "-0.015672393400768784539637486",
+        "s": "-0.020706466960239101751224802431758257274549381414800504",
+        "L": "-337.0760522448699256244260188109784634779200290912681790379146920",
+        "deficit": "-697.3623947448699256244260188109784634779200290912681790379146920",
+        "IM_slack": "4856.8682346168213453728453051276969289120024267843158983473720",
+        "MM_slack": "5637.50451997694024823973945002661151767291660849355950270391320"
+      },
+      {
+        "b": "-0.015672393400768784539637486",
+        "s": "-0.017090541112015968774203761771758257274549381414800504",
+        "L": "-273.1110951384207616432665874393042980479200290912681790379146920",
+        "deficit": "-633.3974376384207616432665874393042980479200290912681790379146920",
+        "IM_slack": "4789.8089715128608619419457964259267989120024267843158983473720",
+        "MM_slack": "5573.31922529172092838444992026920296467291660849355950270391320"
+      },
+      {
+        "b": "0.015672393400768784539637486",
+        "s": "0.017090541112015968774203761771758257274549381414800504",
+        "L": "328.1962661384207616432665874393042980479200290912681790379146920",
+        "deficit": "-32.0900763615792383567334125606957019520799709087318209620853080",
+        "IM_slack": "4159.1727134871391380580542035740732010879975732156841016526280",
+        "MM_slack": "4969.92315970827907161555007973079703532708339150644049729608680"
+      },
+      {
+        "b": "0.015672393400768784539637486",
+        "s": "0.020706466960239101751224802431758257274549381414800504",
+        "L": "392.1612232448699256244260188109784634779200290912681790379146920",
+        "deficit": "31.8748807448699256244260188109784634779200290912681790379146920",
+        "IM_slack": "4092.1134503831786546271546948723030710879975732156841016526280",
+        "MM_slack": "4905.73786502305975176026054997338848232708339150644049729608680"
+      }
+    ]
+  },
+  "method": "Existing pure method_a_risk.py evaluate/Features/State; exact finite captured coefficients and captured-profile raw margin formula from _mr_margin. No adapter/native/engine imports, no matching or money-counterfactual.",
+  "legal_proposed_lots": {
+    "BTC": [
+      [
+        1,
+        999
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "SOL": [
+      [
+        1,
+        1329
+      ]
+    ]
+  },
+  "reconstructed_feasible_intervals": {
+    "BTC": [],
+    "SOL": []
+  },
+  "binding_refs": {
+    "pre_fill": "risk physical92",
+    "post_fill": "risk physical95",
+    "fill": "risk physical97",
+    "NO_GO": "risk physical96",
+    "pre_input": "risk physical94",
+    "last_protected": "paired physical68",
+    "native_order_universe": "FAILURE_BEFORE_END.json, quantity/last-event provenance; statuses after forced cancel must not be projected earlier"
+  },
+  "proof": {
+    "BTC": "For every proposed d>0 BTC lots, objective at current SOL = initial_deficit + d*.001*107*b*(1-.00155) > initial_deficit, violating strict full-step improvement.",
+    "SOL": "For every proposed d1..1329, source all-partial route includes qSOL=h1329(new reduction0 fill), otherBTC q0(existing TP full1BTC), unpaid.16585. Its deficit-initial_deficit=1.6743468274367424428253121249469>0. Thus no d satisfies route nonworsening; no new SOL fill credit.",
+    "runtime_interval_trace": "NOT_EXPORTED; intervals mathematically reconstructed from a sufficient rejecting source-constraint witness, not a newly observed runtime trace."
+  },
+  "source_pins": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "2a0e697c87449c3c6fb5768f8f48ca34b962ae797be2ac5447f1d05425335ace",
+    "runtime/coinmaster/strategy/method_a_risk.py": "5b96a27f6bc209ec3edc9d4cd7bb3c51de2a81517dc77d9dc3ee3e6659ec5cbe",
+    "runtime/coinmaster/strategy/method_a_recovery.py": "1fe9a2a92d1912339e3bd6695aa3caa5941f1b3e544659a5da1940654ba3ef39",
+    "runtime/coinmaster/strategy/method_a_tp.py": "a7ab2b75580b6ad59c89f467a118fc91eebcd8f0384ec16d082b44a2f01ab6cb"
+  },
+  "raw_pins": {
+    "risk.jsonl.gz": "3e9a3e530175b11a90ce307081281eb05be8a540279bff3fb95957c310e67687",
+    "paired.jsonl.gz": "501aba0caeab4b61735acf47ee6a17ad9b9064a81f4eef831c8ade23890ecd9a",
+    "FAILURE_BEFORE_END.json": "f743a34dc7699ecf94d61c314f950369c35a4b5d40e7abb1f1c040c38313586a"
+  },
+  "native_constructors": 0,
+  "engine_runs": 0,
+  "tests_run": 0,
+  "product_edits": 0,
+  "GO": false,
+  "financial_qualification": false,
+  "source_bug_proven": false,
+  "one_minimal_remedy_proposal": {
+    "status": "NEW_RISK_CONTRACT_HYPOTHESIS_ONLY_REQUIRES_OWNER_APPROVAL",
+    "baseline": "max risk deficit over already-working BTC TP partial/full paths; same native mark and known limit price/fee, no fill credit for a NEW SOL command",
+    "basis": "risk-corner algebra only, not actual fill/cash/profit outcome",
+    "remaining_BTC_TP": {
+      "quantity": "1",
+      "native_limit_price": "105.2",
+      "maker_fee": ".00020",
+      "mark": "107",
+      "risk_corner_equity_cost": "1.821040"
+    },
+    "baseline_BTC0_corner": {
+      "state": {
+        "btc": "0",
+        "sol": "-132.9",
+        "equity": "5358.4653025",
+        "peak": "10000",
+        "pb": "107",
+        "ps": "132.9"
+      },
+      "evaluation": {
+        "gross": "365.72610910319671316185046271871136086857373979458656985464",
+        "loss": "393.6697200723066680672513309359253634779200290912681790379146920",
+        "margin_pass": true,
+        "worst_deficit": "35.2044175723066680672513309359253634779200290912681790379146920"
+      }
+    },
+    "SOL_full_endpoint_example": {
+      "quantity": "132.9",
+      "execution_reference": "132.9 current public SOL ask, actual execution not proven",
+      "conservative_cost_rate": ".00155",
+      "conservative_cost": "27.3767355",
+      "BTC": "0",
+      "SOL": "0",
+      "scenario_equity": "5331.0885670",
+      "C": "331.0885670",
+      "L": "0",
+      "deficit": "-331.0885670",
+      "margin_pass_algebra": true
+    },
+    "not_a_full_feasibility_result": "ALL partial routes/other standing SOL orders/latest native execution and protections not qualified. Full endpoint safe alone does not qualify proposal.",
+    "rules": [
+      "No increases",
+      "Keep DD50/cushion floors and coherent peak unchanged",
+      "No pending/new-SOL fill credit",
+      "All partial paths must not worsen SAME pre-action unavoidable baseline",
+      "Full endpoint must improve or be safe",
+      "Native protection remains retained until actual qualified transition; no cancellation/ACK waiver"
+    ],
+    "product_changes": 0,
+    "native_runs": 0,
+    "GO": false
+  }
+}

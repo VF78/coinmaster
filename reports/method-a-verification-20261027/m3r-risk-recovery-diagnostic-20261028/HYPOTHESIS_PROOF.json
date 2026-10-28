@@ -1,0 +1,201 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "SCOPED_TWO_DIMENSIONAL_ROBUST_BENCHMARK_LEMMA_PROVEN_PROPOSAL_ONLY",
+  "source_commit": "b03dacc69d69195ea819b7caee5adecee35c8f0d",
+  "attempt": "acd8fedd-0842-48a7-9df2-b8414bba3fb8",
+  "method": "Existing pure evaluate only; no adapter/native matching imports; continuous domain proves discrete native lot subset.",
+  "domain": {
+    "x": [
+      "0",
+      "1"
+    ],
+    "z": [
+      "0",
+      "132.9"
+    ],
+    "BTC": "1-x",
+    "SOL": "-132.9+z",
+    "E": "5360.2863425 - 1.82104*x - .205995*z",
+    "H": "10000",
+    "C": "360.2863425 - 1.82104*x - .205995*z"
+  },
+  "F_definition": "max_k[-B*107*b_k-S*132.9*s_k+(abs(B)*107*(1+b_k)+abs(S)*132.9*(1+s_k))*.00155] - C(x,z)",
+  "costs": {
+    "BTC_per_unit_closed": "1.821040",
+    "BTC_components": {
+      "mark": "107",
+      "actual_native_limit": "105.2",
+      "maker_fee": ".00020",
+      "basis": "1.8",
+      "fee": ".02104"
+    },
+    "SOL_phi_per_unit_closed": "0.205995",
+    "SOL_phi_definition": "132.9*(.00055 taker + .001 reserve)",
+    "SOL_reference_ask": "132.90 @69s",
+    "scope": "Assumed affine prospective fill-cost bounds for this proposal; not realized money or native price/depth guarantee"
+  },
+  "corners": [
+    {
+      "x": "0",
+      "z": "0",
+      "E": "5360.2863425",
+      "C": "360.2863425",
+      "evaluation": {
+        "gross": "364.04916300931445321610925171671136086857373979458656985464",
+        "loss": "392.1612232448699256244260188109784634779200290912681790379146920",
+        "margin_pass": true,
+        "worst_deficit": "31.8748807448699256244260188109784634779200290912681790379146920"
+      },
+      "min_IM_slack": "4092.1134503831786546271546948723030710879975732156841016526280",
+      "min_MM_slack": "4905.73786502305975176026054997338848232708339150644049729608680"
+    },
+    {
+      "x": "0",
+      "z": "132.9",
+      "E": "5332.9096070",
+      "C": "332.9096070",
+      "evaluation": {
+        "gross": "1.67694609388225994574121100200000000000000000000000000000",
+        "loss": "1.8401968274367424428253121249469000000000000000000000000000000",
+        "margin_pass": true,
+        "worst_deficit": "-331.0694101725632575571746878750531000000000000000000000000000000"
+      },
+      "min_IM_slack": "5328.5995845584647965529023192730500000000000000000000000000000",
+      "min_MM_slack": "5330.88509482822755151207973499430660000000000000000000000000"
+    },
+    {
+      "x": "1",
+      "z": "0",
+      "E": "5358.4653025",
+      "C": "358.4653025",
+      "evaluation": {
+        "gross": "365.72610910319671316185046271871136086857373979458656985464",
+        "loss": "393.6697200723066680672513309359253634779200290912681790379146920",
+        "margin_pass": true,
+        "worst_deficit": "35.2044175723066680672513309359253634779200290912681790379146920"
+      },
+      "min_IM_slack": "4091.3323879416434511800570141453530710879975732156841016526280",
+      "min_MM_slack": "4902.59851285128730327234028496769508232708339150644049729608680"
+    },
+    {
+      "x": "1",
+      "z": "132.9",
+      "E": "5331.0885670",
+      "C": "331.0885670",
+      "evaluation": {
+        "gross": "0",
+        "loss": "0",
+        "margin_pass": true,
+        "worst_deficit": "-331.0885670"
+      },
+      "min_IM_slack": "5331.0885670",
+      "min_MM_slack": "5331.0885670"
+    }
+  ],
+  "scenario_affine_forms": [
+    {
+      "b": "0",
+      "s": "0",
+      "constant": "-332.7437570",
+      "coefficient_x": "1.655190",
+      "coefficient_z": "0.000000"
+    },
+    {
+      "b": "-0.015672393400768784539637486",
+      "s": "-0.020706466960239101751224802431758257274549381414800504",
+      "constant": "-697.3623947448699256244260188109784634779200290912681790379146920",
+      "coefficient_x": "-0.01915682743674244282531212494690",
+      "coefficient_z": "2.756154887677251076503019796357602433994883589851528811421480"
+    },
+    {
+      "b": "-0.015672393400768784539637486",
+      "s": "-0.017090541112015968774203761771758257274549381414800504",
+      "constant": "-633.3974376384207616432665874393042980479200290912681790379146920",
+      "coefficient_x": "-0.01915682743674244282531212494690",
+      "coefficient_z": "2.274853479803291979579322043372845733994883589851528811421480"
+    },
+    {
+      "b": "0.015672393400768784539637486",
+      "s": "0.017090541112015968774203761771758257274549381414800504",
+      "constant": "-32.0900763615792383567334125606957019520799709087318209620853080",
+      "coefficient_x": "3.32953682743674244282531212494690",
+      "coefficient_z": "-2.274853479803291979579322043372845733994883589851528811421480"
+    },
+    {
+      "b": "0.015672393400768784539637486",
+      "s": "0.020706466960239101751224802431758257274549381414800504",
+      "constant": "31.8748807448699256244260188109784634779200290912681790379146920",
+      "coefficient_x": "3.32953682743674244282531212494690",
+      "coefficient_z": "-2.756154887677251076503019796357602433994883589851528811421480"
+    }
+  ],
+  "unavoidable_baseline": "35.2044175723066680672513309359253634779200290912681790379146920",
+  "max_rectangle_F": "35.2044175723066680672513309359253634779200290912681790379146920",
+  "max_full_SOL_edge_F": "-331.0694101725632575571746878750531000000000000000000000000000000",
+  "full_edge_strict_improvement": "366.2738277448699256244260188109784634779200290912681790379146920",
+  "min_cushion_rectangle": "331.0885670",
+  "min_IM_slack_rectangle": "4091.3323879416434511800570141453530710879975732156841016526280",
+  "min_MM_slack_rectangle": "4902.59851285128730327234028496769508232708339150644049729608680",
+  "tier_proof": {
+    "max_BTC_notional": "108.676946093882259945741211002",
+    "BTC_first_cap": "300000",
+    "BTC_IM": ".025",
+    "BTC_MM": ".0033",
+    "max_SOL_notional": "18028.13610910319671316185046271871136086857373979458656985464",
+    "SOL_first_cap": "50000",
+    "SOL_IM": ".05",
+    "SOL_MM": ".005",
+    "both_deductions": "0",
+    "interior_tier_knots": [],
+    "boundary_zero_quantity": "x=1 and z=132.9 already rectangle edges; MMmax0 remains affine on nonnegative quantities"
+  },
+  "lemma_proof": [
+    "Fixed feature/shocks, peak and reference marks; funding0. On rectangle B>=0,S<=0, so absolute exposures are affine. Actual-exposure exit cost and closed-fill costs are affine; zero shock has nonnegative loss, so evaluate loss max0 adds no branch beyond five affine lines.",
+    "Therefore F=max5 affine forms, hence convex. Every rectangle point is a convex combination of four corners; F(point)<=weighted corner F<=max corner F=baseline. Full z=132.9 edge has both F endpoints<0, so entire full edge safe.",
+    "Tier/margin coefficients constant in rectangle. Each scenario IM/MM slack is affine; all corner minima positive imply all rectangle margins pass. C affine minimum331.088567>0.",
+    "Continuous proof covers .001BTC/.1SOL grids. BTCcost per .001=.00182104 and SOLphi cost per .1=.0205995 are exactly representable on1e-8 USDT lattice; no added fee-rounding tolerance assumed."
+  ],
+  "double_count_guard": "Starting E/C already include the actual199BTC fill+fee. Subtract kb*x and ks*z exactly once; surviving-position exit cost remains inside L. Do NOT add source old-BTC _mr_frontier unpaid.16585*x on top of kb*x. Do NOT pre-credit unfilled new SOL quantity; z is actual filled amount only.",
+  "conditions_and_limits": [
+    "This is a new benchmark contract proposal, not current solver behavior or a bug fix.",
+    "Zero-fill F(0,0)>0 and baseline>0: no proof that every partial path is safe, only no worsening versus same already-working BTC benchmark.",
+    "No guarantee any positive SOL fill or completion occurs; deadlines and fail-closed lifecycle need separate native proof.",
+    "Global DD50, actual cushion/peak, increasesOFF and live native protection remain required; no cancel/ACK waiver.",
+    "Native command queue, independent oldSOL TP/STOP fill paths, additional producers, source-bound universe and lifecycle UNKNOWN and outside this two-dimensional lemma.",
+    "Any changed marks/features/peak/cost bounds/other fills require fresh proof; actual SOL execution cost <=phi is not established by currentask alone.",
+    "No native replay or budget inferred; ledger9/18, dedicated correctedM3 remaining0."
+  ],
+  "bindings": {
+    "risk95_state_feature": "risk physical95",
+    "risk97_actual_BTC_price_fee": "risk physical97",
+    "pending_BTC_order": {
+      "client_order_id": "O-19700101-000001-001-000-4",
+      "type": "LIMIT",
+      "quantity": "316.250",
+      "price": "105.2",
+      "filled_qty": "315.250",
+      "is_reduce_only": true
+    },
+    "raw_source_pins": {
+      "runtime/coinmaster/strategy/method_a_risk_native.py": "2a0e697c87449c3c6fb5768f8f48ca34b962ae797be2ac5447f1d05425335ace",
+      "runtime/coinmaster/strategy/method_a_risk.py": "5b96a27f6bc209ec3edc9d4cd7bb3c51de2a81517dc77d9dc3ee3e6659ec5cbe",
+      "runtime/coinmaster/strategy/method_a_recovery.py": "1fe9a2a92d1912339e3bd6695aa3caa5941f1b3e544659a5da1940654ba3ef39",
+      "runtime/coinmaster/strategy/method_a_tp.py": "a7ab2b75580b6ad59c89f467a118fc91eebcd8f0384ec16d082b44a2f01ab6cb"
+    },
+    "raw_pins": {
+      "risk.jsonl.gz": "3e9a3e530175b11a90ce307081281eb05be8a540279bff3fb95957c310e67687",
+      "paired.jsonl.gz": "501aba0caeab4b61735acf47ee6a17ad9b9064a81f4eef831c8ade23890ecd9a",
+      "FAILURE_BEFORE_END.json": "f743a34dc7699ecf94d61c314f950369c35a4b5d40e7abb1f1c040c38313586a"
+    }
+  },
+  "original_diagnostic_pins": {
+    "DIAGNOSTIC.json": "899c089c3482da1f573d349196307c74b24059f35b6d785b48b67d0bc44cbf00",
+    "REPORT_RU.md": "dba49a405888618a9640bbeeb595ad2518e6cf5097ab9ecfa90203d7f8668dff"
+  },
+  "product_edits": 0,
+  "tests_run": 0,
+  "native_imports": 0,
+  "engine_runs": 0,
+  "ledger_changes": 0,
+  "GO": false
+}

@@ -1,0 +1,6 @@
+test_unknown_owner_capture_is_unknown_and_does_not_throw (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_unknown_owner_capture_is_unknown_and_does_not_throw) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

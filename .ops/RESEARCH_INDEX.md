@@ -1,5 +1,5 @@
 ## Current Method A checkpoint — 2026-10-28
-8/18=5COMPLETED+3FAILED,active0. M2 engineering63/63PASS preserved; M3failed immutable. Owner explicitly APPROVED budget-neutral amendment: OWNER_BUDGET18_REALLOCATION_APPROVAL_20261028.json SHA d6b16b1781ab95f64cc479011ef225806ebe515b68e22c99df77dbac0eadee71. Canonical caps nowengineering11/prefix6/full1, skipfullP2; onecorrectedM3 afterreview/freeze/Macpreflight/rootGO. DATA140inputs57quotes approved; producerbarrier readonlyevidence repair approved. SolVPSsolewriter implementing, no newnative/claim, moneylogic unchanged. CurrentauthorityACTIVE+approval+ledger. FullgoalsNOT_MET.
+9/18=5COMPLETED+4FAILED,active0;eng6/11,prefix3/6,full0/1;ownerapproved18amendmentconsumedcorrectedM3slot. M2engineeringPASS preserved. M3R b03dacc FAILED70s afteractualCAP78; realriskNO_GO NO_PROVEN_POSTFILL_RECOVERY beforeprotectionassert, no provedsourcebug. ExactC360.2863425/L392.16122324487;unavoidableBTCremainingTPfillcornerrejectsallSOLrecoverysizesunderexistingcontract. Purediagnostic m3r-risk-recovery-diagnostic-20261028/REPORT_RU.md; proposednewunavoidablebaselineisNOTapprovedmoneylogic/newrun. ACTUAL_M3R_FAILURE_REVIEW.json +CURRENT_RESULT authoritative. NativeSTOP/no spareM3,financialUNKNOWN/fullgoalsNOT_MET. Oldraw/rowsimmutable.
 
 # Research memory — as of2026-10-26; read before opening archives
 

@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "tests": 6,
+  "failures": 0,
+  "errors": 0,
+  "engine_constructors": 0,
+  "source_freeze": false,
+  "root_go": false,
+  "recipe_sha256": "907fd040530150f820ac9f271449a6c6f98b8adc96f6a2fa9fe66612a8dcb152",
+  "native_input_sha256": "a69c7eaf2bc5478258158658afdf03db9028a5ff3c580d9a38a6a43b80eb6b33",
+  "native_config_sha256": "ccba131d19a490872c1477595c8160623efc941bf6eac11ba7e92653e3adea06",
+  "source_inventory_sha256": "4b74c2bb4b7d97213af903f3812392c4fe0ec6817f17eed0f91e3a0703ff53ec",
+  "public_inputs": 140,
+  "quotes": 57,
+  "quote_universe": {
+    "BTC": 25,
+    "SOL": 32
+  },
+  "case_file_sha256": "96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba"
+}

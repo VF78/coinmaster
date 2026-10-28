@@ -1,0 +1,24 @@
+test_earlier_no_go_cannot_be_relabelled (test_method_a_m3_candidate_pure.M3CandidatePure.test_earlier_no_go_cannot_be_relabelled) ... ok
+test_exact_approved_bytes_and_reversible_data_only_patch (test_method_a_m3_candidate_pure.M3CandidatePure.test_exact_approved_bytes_and_reversible_data_only_patch) ... ok
+test_exact_causal_data_and_books (test_method_a_m3_candidate_pure.M3CandidatePure.test_exact_causal_data_and_books) ... ok
+test_expected_time_does_not_allow_wrong_reason (test_method_a_m3_candidate_pure.M3CandidatePure.test_expected_time_does_not_allow_wrong_reason) ... ok
+test_prepare_constructor_is_never_called (test_method_a_m3_candidate_pure.M3CandidatePure.test_prepare_constructor_is_never_called) ... ok
+test_reason_without_actual_native_stop_is_rejected (test_method_a_m3_candidate_pure.M3CandidatePure.test_reason_without_actual_native_stop_is_rejected) ... ok
+test_actual_factory_counter_read_has_no_mutation (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_actual_factory_counter_read_has_no_mutation) ... ok
+test_actual_native_initialized_foreign_order_is_never_omitted (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_actual_native_initialized_foreign_order_is_never_omitted) ... ok
+test_episode_change_refreshes_only_audit_dedupe (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_episode_change_refreshes_only_audit_dedupe) ... ok
+test_source_hook_precedes_first_run_and_snapshot_is_at_receipt (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_source_hook_precedes_first_run_and_snapshot_is_at_receipt) ... FAIL
+test_unresolved_owner_and_pending_are_exported_with_no_zero_waiver (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_unresolved_owner_and_pending_are_exported_with_no_zero_waiver) ... ok
+
+======================================================================
+FAIL: test_source_hook_precedes_first_run_and_snapshot_is_at_receipt (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_source_hook_precedes_first_run_and_snapshot_is_at_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/method-a-tp-only-20261027/runtime/tests/test_method_a_receipt_snapshot_pure.py", line 88, in test_source_hook_precedes_first_run_and_snapshot_is_at_receipt
+    self.assertLess(source.index("research_native_book.bind_receipt_source(engine)"),source.index("engine.run("))
+AssertionError: 69461 not less than 31616
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.395s
+
+FAILED (failures=1)

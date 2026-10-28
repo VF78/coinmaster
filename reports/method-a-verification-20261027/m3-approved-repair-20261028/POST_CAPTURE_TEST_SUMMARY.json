@@ -1,0 +1,19 @@
+{
+  "status": "FAIL",
+  "tests": 11,
+  "failures": 1,
+  "errors": 0,
+  "engine_constructors": 0,
+  "source_freeze": false,
+  "root_go": false,
+  "recipe_sha256": "907fd040530150f820ac9f271449a6c6f98b8adc96f6a2fa9fe66612a8dcb152",
+  "native_input_sha256": "a69c7eaf2bc5478258158658afdf03db9028a5ff3c580d9a38a6a43b80eb6b33",
+  "native_config_sha256": "280f9a0d410d387ae63c919fa7cdf428b17619cb890eaa0c03f59c5e6769c01f",
+  "source_inventory_sha256": "df4fd97f862768bb3f71eb609b6c0efca14db90243cf7da04208acc6856579c6",
+  "public_inputs": 140,
+  "quotes": 57,
+  "quote_universe": {
+    "BTC": 25,
+    "SOL": 32
+  }
+}
