@@ -115,6 +115,8 @@ class LiveEpochRuntime(PaperRuntime):
                 or self.c1_initialization() is not None or self.strategy_checkpoint() is not None
                 or self.all_submissions() or self.applied_fill_ids() or self.pending_submissions()
                 or self.pending_native_funding() or self.native_revision()!=expected_revision
+                or self.db.execute('SELECT EXISTS(SELECT 1 FROM paper_native_fill_details)').fetchone()[0]
+                or self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events WHERE kind='fill')").fetchone()[0]
                 or self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_command_audit WHERE command!='pause-new-entries' OR status!='ACCEPTED')").fetchone()[0]):
                 raise ValueError('C1_INIT_PRIOR_OR_UNCERTAIN_STATE')
             marker=dict(schema='coinmaster-live-c1-initialization-v1',policy_sha256=policy_sha256,

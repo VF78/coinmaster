@@ -495,7 +495,7 @@ def test_canonical_fresh_epoch_initializes_from_actual_native_once_and_restart_p
     finally:r.close()
 
 
-@pytest.mark.parametrize('fault',['intent','nonflat','unknown','checkpoint','seen_fill','native_equity','unpaused'])
+@pytest.mark.parametrize('fault',['intent','nonflat','unknown','checkpoint','seen_fill','native_equity','unpaused','raw_fill','legacy_fill'])
 def test_fresh_epoch_rejects_missing_intent_nonflat_unknown_or_prior_state(code,tmp_path,fault):
     s,r,view,now=fresh_init_fixture(code,tmp_path)
     try:
@@ -505,6 +505,11 @@ def test_fresh_epoch_rejects_missing_intent_nonflat_unknown_or_prior_state(code,
         elif fault=='unknown':s._fresh_init_generation_validator=lambda:False
         elif fault=='checkpoint':assert r.persist_strategy_checkpoint(s.on_save()[code.env['_KEY']],r.native_revision())
         elif fault=='seen_fill':s._seen_trade_ids={'prior'}
+        elif fault in ('raw_fill','legacy_fill'):
+            if fault=='raw_fill':r.db.execute("INSERT INTO paper_native_fill_details(trade_id,instrument_id,quantity,price) VALUES ('old','BTC','1','100')")
+            else:r.db.execute("INSERT INTO paper_events VALUES ('old','fill')")
+            snapshot={'ts_ns':now,'positions':[],'orders':[],'funding_event_ids':[],'reconciled':True,'native_revision':r.native_revision(),'native_account_total':'82','native_account_currency':'USDC','strategy_restartable':True}
+            r.db.execute('INSERT OR REPLACE INTO paper_snapshot VALUES (1,?)',(json.dumps(snapshot),));r.db.commit()
         elif fault=='unpaused':r.entry_control_command('resume-new-entries','fixture-resume')
         elif fault=='native_equity':
             from dataclasses import replace
