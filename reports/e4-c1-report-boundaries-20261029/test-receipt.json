@@ -1,0 +1,26 @@
+{
+  "record_type": "EXACT_ALREADY_RETURNED_TOOL_OUTPUT_TRANSCRIPTION",
+  "calls": [
+    {
+      "result": "21PASS",
+      "seconds": 0.16,
+      "session": 76703,
+      "chunk": "198674"
+    },
+    {
+      "result": "24PASS",
+      "seconds": 0.16,
+      "session": 18571,
+      "chunk": "65b6ee"
+    },
+    {
+      "result": "26PASS",
+      "seconds": 0.2,
+      "session": 11686,
+      "chunk": "14154a"
+    }
+  ],
+  "final_stdout": "..........................                                               [100%]\n26 passed in 0.20s\n",
+  "native_constructors": 0,
+  "native_runs": 0
+}

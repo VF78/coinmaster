@@ -306,12 +306,15 @@ def _fill_timestamp_ns(value) -> int:
 
 
 def _reporting_checkpoints(start: datetime, end: datetime) -> tuple[int, ...]:
-    """True UTC month boundaries; the last one is the post-boundary mark."""
-    cursor = start.replace(day=1)
+    """UTC month boundaries inside the interval, plus its actual end boundary."""
+    if start>=end:raise ValueError("INVALID_REPORT_INTERVAL")
+    cursor = start.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
     result: list[int] = []
-    while cursor < end:
+    while True:
         cursor = cursor.replace(year=cursor.year + (cursor.month == 12), month=1 if cursor.month == 12 else cursor.month + 1)
+        if cursor>=end:break
         result.append(int(cursor.timestamp() * 1_000_000_000))
+    result.append(int(end.timestamp() * 1_000_000_000))
     return tuple(result)
 
 
@@ -321,10 +324,20 @@ def assert_report_boundaries(report: dict) -> None:
     months = summary["monthly_returns"]
     start = datetime.fromisoformat(report["run_interval"]["start"])
     end = datetime.fromisoformat(report["run_interval"]["end_exclusive"])
-    expected_months = max(1, (end.year - start.year) * 12 + end.month - start.month)
+    if start.tzinfo is None or end.tzinfo is None or start.utcoffset()!=timedelta(0) or end.utcoffset()!=timedelta(0) or start>=end:
+        raise ValueError("INVALID_REPORT_INTERVAL")
+    cursor=start.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+    expected_labels=[]
+    while cursor<end:
+        expected_labels.append(cursor.strftime("%Y-%m"))
+        cursor=cursor.replace(year=cursor.year+(cursor.month==12),month=1 if cursor.month==12 else cursor.month+1)
+    expected_months=len(expected_labels)
     liquidated_early_lockout = bool(report.get("liquidation_count")) and bool(report.get("liquidation_lockout"))
     if (not liquidated_early_lockout and len(months) != expected_months) or not months:
         raise ValueError(f"MONTHLY_ROW_COUNT:{len(months)}")
+    labels=[month.get("month") for month in months]
+    if labels!=(expected_labels[:len(months)] if liquidated_early_lockout else expected_labels):
+        raise ValueError("MONTHLY_INTERVAL_COVERAGE_MISMATCH")
     interval_terminal = Decimal(summary["interval_cash_terminal_total"])
     if Decimal(months[-1]["total"]) != interval_terminal:
         raise ValueError("MONTHLY_INTERVAL_CASH_MISMATCH")
@@ -352,6 +365,38 @@ def assert_report_boundaries(report: dict) -> None:
         raise ValueError("POST_BOUNDARY_FILL_COUNT_MISMATCH")
     if any(timestamp == boundary_ns for timestamp in fills) != bool(settlement["fill_count"]):
         raise ValueError("POST_BOUNDARY_FILL_CONVENTION_MISMATCH")
+
+
+def _finalize_native_resources(*,audit_archive,risk_recorder,coherent_observer,engine,journal,
+                               successful_run,journal_attempt_path,journal_path,primary_error=None):
+    """Flush every report stream; retain the original failure and funding quarantine."""
+    errors=[]
+    for resource in (audit_archive,risk_recorder,coherent_observer):
+        if resource is None:continue
+        try:
+            close=getattr(resource,"close_writers",None) or resource.close
+            close()
+        except BaseException as error:errors.append(error)
+    try:engine.dispose()
+    except BaseException as error:errors.append(error)
+    if journal is not None:
+        if successful_run and primary_error is None and not errors:
+            try:_publish_clean_funding_attempt(journal,journal_attempt_path,journal_path)
+            except BaseException as error:
+                errors.append(error)
+                try:journal.close()
+                except BaseException as close_error:errors.append(close_error)
+                try:_quarantine_funding_attempt(journal_attempt_path)
+                except BaseException as quarantine_error:errors.append(quarantine_error)
+        else:
+            try:journal.close()
+            except BaseException as error:errors.append(error)
+            try:_quarantine_funding_attempt(journal_attempt_path)
+            except BaseException as error:errors.append(error)
+    if primary_error is not None:
+        for error in errors:primary_error.add_note("Native report cleanup: "+repr(error))
+    elif errors:
+        raise errors[0]
 
 
 def save_native_artifact(frame, path: Path) -> dict[str, str | int]:
@@ -1284,19 +1329,10 @@ def run_native_diagnostic(
         successful_run = True
         return result
     finally:
-        if audit_archive is not None:
-            audit_archive.close()
-        if risk_recorder is not None:
-            risk_recorder.file.close()
-        if coherent_observer is not None:
-            coherent_observer.close()
-        engine.dispose()
-        if journal:
-            if successful_run:
-                _publish_clean_funding_attempt(journal, journal_attempt_path, journal_path)
-            else:
-                journal.close()
-                _quarantine_funding_attempt(journal_attempt_path)
+        _finalize_native_resources(audit_archive=audit_archive,risk_recorder=risk_recorder,
+            coherent_observer=coherent_observer,engine=engine,journal=journal,
+            successful_run=successful_run,journal_attempt_path=journal_attempt_path,journal_path=journal_path,
+            primary_error=os.sys.exc_info()[1])
 
 
 def coverage_blockers(root: Path) -> list[str]:

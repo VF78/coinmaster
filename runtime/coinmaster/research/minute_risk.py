@@ -244,9 +244,16 @@ class NativeMinuteRiskRecorder:
         self.writer.writerow([bundle.open_time_ms,timestamp,row_phase,cash,free,initial,maintenance,equity,adverse,favorable,upper,breach,json.dumps(details,separators=(",",":"))])
         self.rows += 1
 
+    def close_writers(self):
+        """Finish both gzip streams even when one close fails; no summary export."""
+        errors=[]
+        for writer in (self.file,self.receipt_file):
+            try:writer.close()
+            except BaseException as error:errors.append(error)
+        if errors:raise errors[0]
+
     def close(self):
-        self.file.close()
-        self.receipt_file.close()
+        self.close_writers()
         if self.rows != self.expected_minutes*3 or any(
             count != self.expected_minutes for count in self.phase_counts.values()
         ):
