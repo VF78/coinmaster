@@ -1,0 +1,45 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "candidate": "FIRST_FRESH_COMBO",
+  "verdict": "PASS_SOURCE_ONLY",
+  "open_P0": 0,
+  "open_P1": 0,
+  "findings": [],
+  "base_commit": "d30df523af7513545dfde19cd69c5105102f3acb",
+  "source_patch_sha256": "a50cb7a2e83488c1162073f14704477d0b33ea73195f39c1806b1e309ba22eb4",
+  "preparation_sha256": "12773f493ef16b28107ed19f3125993aa2ebcffc5caa03bd3b4502684e00849f",
+  "config_sha256": "0782684ce8906ee2ad07963f59f84be2c5e33019b13e263fa1c8f8fd1cfd975a",
+  "prior_COMBO_canonical_sha256": "75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba",
+  "tracked_diff_sha256": "ef776b1bcc5113a2e43bbfcdc25ccb5fc088c482285eb7e7bfe3f50857a0700b",
+  "protocol_sha256": "324513a1e4c4dee7733759294cfc924c794b1d14f4b44ca79f729a21b5c6474b",
+  "scheduling_evidence_sha256": "aaebecfc9158760fb8a2906c0e625dc26a4993e3be9d8ce858370edb486b3a5d",
+  "test_receipt_sha256": "2f91108cdcb3bfdea5d29d73e77a8e51931376f0fb7f491f0a2ea3a182c16a1f",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "acf5fb557daaecd780f39d12703e82cb44bf3e5ac2d36b8b6e72447ac8ce758a",
+    "runtime/coinmaster/strategy/wave_overlay.py": "dc54aa86257dc4628f69e72111d50548bb07c07083cd9993fcaff8626c0bbdea",
+    "runtime/coinmaster/research/native_baseline.py": "a28ac2574a26b53e2f727cdbcda15fe886cd094597c235086cbbc9d922cf8a20",
+    "runtime/tests/test_c1_first_fresh_h4_pure.py": "5e00910b06609798a387275106a38636b1dc843d624fb6cd5f118f7240745691"
+  },
+  "checks": [
+    "DefaultOFF and COMBO-only enabled guards; G/stress remainOFF in selected config. CLI->repairCLI->runner->strategy plumbing complete.",
+    "Capture requires eligible fullyclosed relevant H4 after cutfill/terminal, bar reclaim, HELD actualcredit, no prior ordinaryconfirmation and missing currentmoney. Saved identity uses actual current fill epoch, cutfill/cutterminal/nativeposition/group/credit/buckets; stale checkpoint does not supply identity.",
+    "First matching selected quote strictlyafter original available_ns plus valid _c1_current_money and source>=barclose consumes deferred candidate once. Invalid currentmoney/prebar/sameclock retains without permission; changed identity, fresh DD40 or currentreclaim denial drops until new H4.",
+    "Successful promotion clears deferred candidate and creates ordinary confirmation, then unchanged native TP cancellation/real ACK/fresh money/price/margin guards run. Waiting harmlessTP cancellation is not denial; ordinary margin denial clears token without new attempt.",
+    "New relevant closed H4 watermark invalidates/replaces deferred only and prevents duplicate/older H4 from recreating consumed candidate. Legacy fresh valid-bar confirmation handler retained; deferred logic never clears already confirmed token.",
+    "Four source/test hashes and nine unchanged anchors verified. C1/Q/R/G raw config pins match; prior COMBO rebuilt canonical75ca verified; new config differs solely by first_fresh_h4 metadata.",
+    "Actual source AST pure fixture source inspected plus existing transcribed42PASS0.72s receipt;3pytestcalls2.26s incl2fixture-only failures. Last CLI misuse guard added after passing tests was source-read, not a tested economic branch change."
+  ],
+  "reviewer_product_edits": 0,
+  "reviewer_tests": 0,
+  "reviewer_native_engine_or_model_constructors": 0,
+  "reviewer_repair_requests": 0,
+  "historical_go_granted": false,
+  "live_order_capability": false,
+  "limits": [
+    "Pure scheduling/ACK doubles do not prove any earlier actual native cancel ACK, restore submit/fill or profit.",
+    "New behavior can first diverge in October2024, so old COMBO prefix/JanuaryDD inheritance cannot be promised.",
+    "One new own-capital native path remains conditional on freeze/registry/rootGO; results must meet unchanged floor/target and bothDD, exact native accounting.",
+    "Transparent root allocation amendment and total8 are documented; this source review grants no historical attempt or budget amendment.",
+    "No ATR controller, new sizing/TP/SOL semantics, live deployment or final START authorization."
+  ]
+}

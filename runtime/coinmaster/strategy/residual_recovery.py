@@ -11,6 +11,7 @@ class ResidualRecoveryResearch:
         if self.config.research_c1_btc_cut_divisor not in (2,4):raise ValueError('C1_BTC_CUT_DIVISOR_MUST_BE_2_OR_4')
         if self.config.research_c1_restore_dd not in (D(".35"),D(".40")):raise ValueError("C1_RESTORE_DD_MUST_BE_35_OR_40")
         if self.config.research_c1_global_cut_arm and (self.config.research_c1_btc_cut_divisor!=2 or self.config.research_c1_restore_dd!=D('.35')):raise ValueError('G_STANDALONE_REQUIRES_C1_HALF_RESTORE35')
+        if getattr(self.config,'research_c1_first_fresh_h4',False) and (not self.config.research_residual_recovery or self.config.research_c1_btc_cut_divisor!=4 or self.config.research_c1_restore_dd!=D('.40') or self.config.research_c1_global_cut_arm):raise ValueError('FIRST_FRESH_REQUIRES_COMBO_Q_R_NO_G')
         self._c1_global_cut_armed=True
         self._c1_global_rearm_blocked_source=None
         self.c1_audit=[];self._c1_state=None;self._c1_peak=D(str(self.config.active_seed))
@@ -39,6 +40,7 @@ class ResidualRecoveryResearch:
         t=self._c1_state
         if not t or t['state']=='RELEASED':return
         if t['revoked']:return
+        if getattr(self.config,'research_c1_first_fresh_h4',False):t.pop('first_fresh_deferred',None)
         t['revoked']=True;t['credit']=0;t['state']='REVOKED'
         self._c1_cancel_owned();self._c1_log('TOKEN_REVOKED',ns,reason=reason,rights=self._c1_rights())
 
@@ -138,16 +140,53 @@ class ResidualRecoveryResearch:
         self._c1_state=dict(group=ep.id,state='CUT_RESOLVING',instrument=inst,side=1 if pos.is_long else -1,step=step,held_lots=lots,target_lots=lots-cut_lots,cut_lots=cut_lots,cut_submitted=False,restore_submitted=False,cut_filled=0,restore_filled=0,credit=0,cut_value=D(0),bucket={},revoked=False,claim_ns=ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,cut_terminal_ns=None,last_cut_fill_ns=None,confirmation=None)
         self._c1_log('CLAIM',ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,frozen_held_lots=lots,frozen_target_lots=lots-cut_lots,rights=self._c1_rights())
 
+    def _c1_deferred_identity(self,t):
+        # Actual lifecycle/fill identity; a stale money checkpoint is no authority.
+        keys=('group','instrument','side','state','restore_submitted','native_position_id',
+              'native_position_open_ns','cut_filled','cut_value','credit','bucket',
+              'last_cut_fill_ns','cut_terminal_ns','revoked')
+        return dict(values={k:(dict(t[k]) if k=='bucket' else t[k]) for k in keys},fill_epoch=self._c1_fill_epoch)
+
     def _c1_closed_bar(self,bar):
         if not self.config.research_residual_recovery or getattr(bar,'hours',None)!=4:return
         t=self._c1_state
-        if not t or t['state']!='HELD' or not t['credit'] or bar.instrument_id!=t['instrument']:return
+        if not t or bar.instrument_id!=t['instrument']:return
+        deferred=getattr(self.config,'research_c1_first_fresh_h4',False)
+        if deferred:
+            # Every NEW relevant H4 invalidates only the deferred market candidate.
+            if bar.ts_event<=t.get('first_fresh_last_h4_ns',-1):return
+            t['first_fresh_last_h4_ns']=bar.ts_event
+            t.pop('first_fresh_deferred',None)
+        if t['state']!='HELD' or not t['credit']:return
         if bar.open_time_ns<=max(t['last_cut_fill_ns'],t['cut_terminal_ns']):return
         close=bar.close.as_decimal() if hasattr(bar.close,'as_decimal') else D(str(bar.close))
         c=self._c1_current_money(bar.ts_event)
-        if c is not None and c['DD']<=self.config.research_c1_restore_dd and t['side']*(close-t['cut_value']/(D(t['cut_filled'])*t['step']))>0:
+        reclaim=t['side']*(close-t['cut_value']/(D(t['cut_filled'])*t['step']))>0
+        if deferred and c is None and reclaim and t['confirmation'] is None and not t['revoked'] and not t['restore_submitted']:
+            t['first_fresh_deferred']=dict(close_ns=bar.ts_event,open_ns=bar.open_time_ns,close=close,
+                available_ns=max(bar.ts_event,getattr(bar,'ts_init',bar.ts_event)),identity=self._c1_deferred_identity(t))
+            self._c1_log('CLOSED_4H_DEFERRED_NO_MONEY',bar.ts_event,open_ns=bar.open_time_ns,close=str(close),actual_fill_epoch=self._c1_fill_epoch)
+        if c is not None and c['DD']<=self.config.research_c1_restore_dd and reclaim:
             t['confirmation']=dict(close_ns=bar.ts_event,open_ns=bar.open_time_ns,close=close)
             self._c1_log('CLOSED_4H_RECLAIM',bar.ts_event,open_ns=bar.open_time_ns,close=str(close),DD=str(c['DD']))
+
+    def _c1_first_fresh_quote(self,tick,c):
+        if not getattr(self.config,'research_c1_first_fresh_h4',False):return
+        t=self._c1_state;pending=t.get('first_fresh_deferred') if t else None
+        if pending is None or tick.instrument_id!=t['instrument']:return
+        if tick.ts_event<=pending['available_ns'] or c['source']<pending['close_ns']:return
+        # This first fresh evaluation consumes once, including on denial.
+        t.pop('first_fresh_deferred')
+        ep=self._domain.episode
+        identity=(ep is not None and ep.id==t['group'] and pending['identity']==self._c1_deferred_identity(t)
+                  and t['state']=='HELD' and not t['revoked'] and not t['restore_submitted'] and t['credit']>0 and t['confirmation'] is None)
+        executable=tick.ask_price.as_decimal() if t['side']==1 else tick.bid_price.as_decimal()
+        reclaim=t['side']*(executable-t['cut_value']/(D(t['cut_filled'])*t['step']))>0 if t['cut_filled'] else False
+        if not identity or c['DD']>self.config.research_c1_restore_dd or not reclaim:
+            self._c1_log('DEFERRED_4H_FIRST_FRESH_DENIED',tick.ts_event,identity=identity,current_reclaim=reclaim,DD=str(c['DD']))
+            return
+        t['confirmation']={k:pending[k] for k in ('close_ns','open_ns','close')}
+        self._c1_log('DEFERRED_4H_FIRST_FRESH_CONFIRMED',tick.ts_event,close_ns=pending['close_ns'],source_quote_ns=c['source'],actual_fill_epoch=self._c1_fill_epoch,DD=str(c['DD']))
 
     def _c1_before_submit(self,i,ns):
         if not self.config.research_residual_recovery:return True
@@ -280,6 +319,7 @@ class ResidualRecoveryResearch:
         if self._c1_conflict():self._c1_revoke(ns,'ORDINARY_OR_UNKNOWN_COMPETING_OWNER');return
         c=self._c1_current_money(ns)
         if c is None:return
+        self._c1_first_fresh_quote(tick,c)
         if t['state']=='CUT_RESOLVING' and not t['cut_submitted']:
             for o in self.cache.orders_open()+self.cache.orders_inflight():
                 i=self._pending_by_order.get(str(o.client_order_id))

@@ -1,0 +1,23 @@
+{
+  "status": "PASS_SOURCE_ONLY_NOT_HISTORICAL_GO",
+  "base_commit": "d30df523af7513545dfde19cd69c5105102f3acb",
+  "reviewed_patch_sha256": "a50cb7a2e83488c1162073f14704477d0b33ea73195f39c1806b1e309ba22eb4",
+  "reviewed_preparation_sha256": "12773f493ef16b28107ed19f3125993aa2ebcffc5caa03bd3b4502684e00849f",
+  "peer_receipt_sha256": "e0321314db3eb29bf111f39fcfa73654a8860f3b585524eddc919376b491e05a",
+  "test_receipt_sha256": "2f91108cdcb3bfdea5d29d73e77a8e51931376f0fb7f491f0a2ea3a182c16a1f",
+  "config_sha256": "0782684ce8906ee2ad07963f59f84be2c5e33019b13e263fa1c8f8fd1cfd975a",
+  "files": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "acf5fb557daaecd780f39d12703e82cb44bf3e5ac2d36b8b6e72447ac8ce758a",
+    "runtime/coinmaster/strategy/wave_overlay.py": "dc54aa86257dc4628f69e72111d50548bb07c07083cd9993fcaff8626c0bbdea",
+    "runtime/coinmaster/research/native_baseline.py": "a28ac2574a26b53e2f727cdbcda15fe886cd094597c235086cbbc9d922cf8a20",
+    "runtime/tests/test_c1_first_fresh_h4_pure.py": "5e00910b06609798a387275106a38636b1dc843d624fb6cd5f118f7240745691",
+    "reports/e4-c1-fast-pilot-20261028/config-FIRST-FRESH-COMBO.json": "0782684ce8906ee2ad07963f59f84be2c5e33019b13e263fa1c8f8fd1cfd975a",
+    "reports/e4-c1-fast-pilot-20261028/first-fresh-run-command.json": "99c569e9917d2e7bb3b1e469fde3931e43e524e400d9b74392a55795df086218",
+    "reports/e4-c1-fast-pilot-20261028/first-fresh-source-preparation.json": "12773f493ef16b28107ed19f3125993aa2ebcffc5caa03bd3b4502684e00849f",
+    "reports/e4-c1-fast-pilot-20261028/first-fresh-source.patch": "a50cb7a2e83488c1162073f14704477d0b33ea73195f39c1806b1e309ba22eb4",
+    "reports/e4-c1-fast-pilot-20261028/first-fresh-test-receipt.json": "2f91108cdcb3bfdea5d29d73e77a8e51931376f0fb7f491f0a2ea3a182c16a1f",
+    "reports/e4-c1-fast-pilot-20261028/first-fresh-peer-review.json": "e0321314db3eb29bf111f39fcfa73654a8860f3b585524eddc919376b491e05a"
+  },
+  "historical_attempts": 0,
+  "live_order_capability": false
+}

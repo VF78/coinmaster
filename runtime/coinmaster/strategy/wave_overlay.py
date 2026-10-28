@@ -77,6 +77,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_c1_btc_cut_divisor: int = 2
     research_c1_restore_dd: Decimal = Decimal(".35")
     research_c1_global_cut_arm: bool = False
+    research_c1_first_fresh_h4: bool = False
     research_next_signals: tuple[DataType, ...] = ()
     research_h4_ema: int | None = None
     research_h4_gamma: Decimal = Decimal(".5")
