@@ -1,0 +1,56 @@
+{
+  "base_head": "b03dacc69d69195ea819b7caee5adecee35c8f0d",
+  "changed_source_paths": [
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/coinmaster/strategy/method_a_risk_native.py",
+    "runtime/coinmaster/strategy/paired_prefix.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py",
+    "runtime/tests/test_method_a_recovery_code0.py",
+    "runtime/tests/test_method_a_recovery_code0_partial.py",
+    "runtime/tests/test_method_a_recovery_code0_final_guards.py"
+  ],
+  "packet_paths": [
+    "reports/method-a-verification-20261027/code0-recovery-20261028/AUTO_REVIEW_REJECTION.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/CODE0_SOURCE_FOR_REVIEW.patch",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FAILED_NATIVE_TRIGGER_FIXTURE_ASSUMPTION.txt",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_SOURCE_ACCEPTANCE_RECEIPT.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_SOURCE_ACCEPTANCE_RESULT.txt",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_SOURCE_TEST_PROOF.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_THREE_GUARD_TEST_RESULT.txt",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FOCUSED_TEST_PROOF.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FOCUSED_TEST_RESULT.txt",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FUTURE_NATIVE_CASE_MAP_PROPOSED.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/IMPLEMENTATION_REPORT.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/IMPLEMENTATION_REPORT_BEFORE_FINAL_THREE_GUARDS.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/IMPLEMENTATION_REPORT_BEFORE_P1_CORRECTION.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/INDEPENDENT_PEER_RECEIPT_REFERENCE.json",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/P1_CORRECTION_TEST_RESULT.txt",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/P1_OLD_BTC_TERMINAL_TEST_RESULT.txt"
+  ],
+  "packet_hashes": {
+    "reports/method-a-verification-20261027/code0-recovery-20261028/AUTO_REVIEW_REJECTION.json": "dd3a4907b280390457db115edf4e0c87f3a758baef0f2d9d7da9e6cfc1e9918b",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/CODE0_SOURCE_FOR_REVIEW.patch": "9a63fd29c1c027945e99a8d89119e97e0772f64dcb85301c03e7d633ce40703d",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FAILED_NATIVE_TRIGGER_FIXTURE_ASSUMPTION.txt": "04e619f11e64d1c5d86c4561826562b5e7a6bb325151fa01615b49afe7ddc29f",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_SOURCE_ACCEPTANCE_RECEIPT.json": "15edae7b00bef9c67b5c463a842e6feb3bd70c67420cb6de91f8360df6795f44",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_SOURCE_ACCEPTANCE_RESULT.txt": "19cdfe6ce950f3b603b4534d09570ba1b6bbb25dd5e27df5013a2abd21fd51a0",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_SOURCE_TEST_PROOF.json": "b58d5d6ff17f1c2dd07eebe02e1b852e0a2fc6ab373524e04e7f6a5a071c0767",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FINAL_THREE_GUARD_TEST_RESULT.txt": "880b3f01c4c089768812a40dc6c00eca56f548cc0c53cbd67513f859a48fa8e2",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FOCUSED_TEST_PROOF.json": "b58d5d6ff17f1c2dd07eebe02e1b852e0a2fc6ab373524e04e7f6a5a071c0767",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FOCUSED_TEST_RESULT.txt": "9238a78eb18de51a1c6f2925683b0a137b533ce9d5f4146a0aefdd194a53f485",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/FUTURE_NATIVE_CASE_MAP_PROPOSED.json": "0b03177c733833c8743062571c3ac6d5512d373b054650e1bfb9c88f28aee576",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/IMPLEMENTATION_REPORT.json": "994b315649ffa014fc02da59a3d996fda6bc50c8f7d07ddf31cd4fb68aecc856",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/IMPLEMENTATION_REPORT_BEFORE_FINAL_THREE_GUARDS.json": "66615a194e2821db31c9834dea5717a8a00a0cd45ec36b38f0e7881180b4333b",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/IMPLEMENTATION_REPORT_BEFORE_P1_CORRECTION.json": "7be9183356abfb36956c22f3c6ddd73e8ebb05ce3685528be0771846c36a5213",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/INDEPENDENT_PEER_RECEIPT_REFERENCE.json": "4bf107b6d90f93066dadbb36d4c486a0bb90b17dc0271bab86169a6ed5401b7f",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/P1_CORRECTION_TEST_RESULT.txt": "cfd2830efefc0e331b4173651bb83375dff51ec1b4d9ce50c8595461659e7338",
+    "reports/method-a-verification-20261027/code0-recovery-20261028/P1_OLD_BTC_TERMINAL_TEST_RESULT.txt": "6a2b48f31932051b9e175a7b7da3ed87794ec1a9920c4f9a93adb1d19003ad3a"
+  },
+  "preserved_financial_dirty": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "ledger_changes": 0,
+  "native_attempts": 0,
+  "commit_receipt": "COMMIT_RECEIPT.json is written externally after commit; no self-referential commit hash in tracked report"
+}

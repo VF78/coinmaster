@@ -764,6 +764,7 @@ def build_native_strategy_config(context):
         research_btc_trim_control=context.get("research_btc_trim_control", False),
         research_method_a_tp=context.get("research_method_a_tp", False),
         research_method_a_risk=context.get("research_method_a_risk"),
+        research_method_a_recovery_code0=context.get("research_method_a_recovery_code0", False),
         research_method_a_funding=context.get("research_method_a_funding",()),
         research_method_a_selection=context.get("research_method_a_selection",()),
         research_method_a_peak_source=context.get("coherent_observer") if context.get("research_method_a_risk") else None,

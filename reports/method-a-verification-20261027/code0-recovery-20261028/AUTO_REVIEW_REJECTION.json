@@ -1,0 +1,6 @@
+{
+  "status": "AUTO_REVIEW_REJECTED_NO_RETRY_NO_WORKAROUND",
+  "action": "Remove BTC<=1/SOL>=-132.9 validation quantity guards and add larger-quantity positive admission test",
+  "reason": "The action edits the monetary recovery implementation to remove the explicitly approved bounded quantity domain (BTC ≤1, SOL ≥−132.9) and adds extrapolated larger-quantity claims; this materially broadens the risk contract beyond the user-approved CODE0 scope.",
+  "resolution": "Guard removal not performed. Captured-domain validation guards retained; negative outside-domain test passes. Further authorization/approval needed for generalization; no agent bypass."
+}

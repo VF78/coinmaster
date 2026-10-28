@@ -1,0 +1,16 @@
+test_actual_limit_ioc_native_payload_checkpoint_no_pending_credit (test_method_a_recovery_code0.Code0.test_actual_limit_ioc_native_payload_checkpoint_no_pending_credit) ... ok
+test_actual_margin_failure_and_pending_debt_block_increases (test_method_a_recovery_code0.Code0.test_actual_margin_failure_and_pending_debt_block_increases) ... ok
+test_actual_safe_state_never_borrows_new_benchmark (test_method_a_recovery_code0.Code0.test_actual_safe_state_never_borrows_new_benchmark) ... ok
+test_buy_sell_tick_directions_and_unmarketable (test_method_a_recovery_code0.Code0.test_buy_sell_tick_directions_and_unmarketable) ... ok
+test_captured70_baseline_all_partials_full_and_normal_admission (test_method_a_recovery_code0.Code0.test_captured70_baseline_all_partials_full_and_normal_admission) ... ok
+test_default_off_and_ordinary_positive_protection_commands (test_method_a_recovery_code0.Code0.test_default_off_and_ordinary_positive_protection_commands) ... ok
+test_old_sol_crossed_shock_or_current_book_denied (test_method_a_recovery_code0.Code0.test_old_sol_crossed_shock_or_current_book_denied) ... ok
+test_outside_validation_quantity_domain_is_unknown (test_method_a_recovery_code0.Code0.test_outside_validation_quantity_domain_is_unknown) ... ok
+test_pending_unknown_ack_sign_funding_and_tier_guards (test_method_a_recovery_code0.Code0.test_pending_unknown_ack_sign_funding_and_tier_guards) ... ok
+test_triggered_protection_unknown_fee_and_unmarketable_cap (test_method_a_recovery_code0.Code0.test_triggered_protection_unknown_fee_and_unmarketable_cap) ... ok
+test_wrong_side_and_per_native_fill_fee_rounding (test_method_a_recovery_code0.Code0.test_wrong_side_and_per_native_fill_fee_rounding) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.458s
+
+OK

@@ -11,7 +11,7 @@ from dataclasses import dataclass,asdict
 from fractions import Fraction as F
 from coinmaster.strategy.method_a_recovery import recovery_candidates,floor as ifloor,ceil as iceil
 from nautilus_trader.model.identifiers import ClientOrderId
-from nautilus_trader.model.enums import OrderSide,TimeInForce
+from nautilus_trader.model.enums import OrderSide,TimeInForce,OrderType,LiquiditySide
 from coinmaster.strategy.method_a_risk import (Observation, Funding, State, Liability,
     lagged_features,evaluate,tier_partition_envelope,hedge_target,useful_hedge,exact_algebra,MINUTE,DAY,TAKER,RESERVE)
 from coinmaster.strategy.paired_prefix import exact_lots,sol_prices
@@ -55,11 +55,16 @@ def mr_floor_lot(value,lot):
 
 
 class MethodARiskResearch:
+    def _mr_code0_enabled(self):
+        return self._mr_enabled() and bool(getattr(self.config,"research_method_a_recovery_code0",False))
+
     def _mr_enabled(self):
         return self.config.research_method_a_risk is not None
 
     def __init__(self, config):
         super().__init__(config)
+        if getattr(config,"research_method_a_recovery_code0",False) and not self._mr_enabled():
+            raise ValueError("CODE0_REQUIRES_METHOD_A_RISK")
         if not self._mr_enabled():return
         if config.research_method_a_risk not in ('HEDGE','TRIM') or not config.research_method_a_tp or not config.research_sol_off or config.research_paired_prefix or config.research_sol_standing_protection or config.research_a0_family or config.research_conditional_sol:
             raise ValueError('METHOD_A_RISK_REQUIRES_EXACT_P1_BTC_SOL_OFF')
@@ -337,12 +342,16 @@ class MethodARiskResearch:
             return
         ep=self._domain.episode;btc=self._pair_qty(self.config.btc_id)
         if not ep or not btc:
+            if self._mr_code0_enabled() and self._pair and self._pair.get('code0_drain_oid'):
+                state,feature=self._mr_snapshot(ns)
+                if self._mr_code0_drain(state,feature,ns):return
             if self._pair:
                 self._pair['close_sol']=True
                 self._pair_sol_reduce(ns,tick.instrument_id)
                 self._pair_release_if_terminal(ns)
             return
         state,feature=self._mr_snapshot(ns)
+        if self._mr_code0_enabled() and self._mr_code0_drain(state,feature,ns):return
         if self._mr_parent!=ep.id:
             self._mr_parent=ep.id;self._mr_on=False;self._mr_allocated=False;self._mr_off_since=None;self._mr_selection=None
             self._mr_first_retired=False;self._mr_suspended=False;self._mr_selection_ref=None
@@ -426,7 +435,7 @@ class MethodARiskResearch:
                 candidates.append((objective,-remaining_btc,turnover,leg,iid,d,proof))
         if not candidates:
             self._mr_fail('NO_PROVEN_NONATOMIC_RECOVERY',tick.ts_event);return
-        objective,negative_btc,turnover,leg,iid,d,proof=min(candidates,key=lambda x:x[:4])
+        objective,negative_btc,turnover,leg,iid,d,proof=min(candidates,key=lambda x:self._mr_recovery_rank(x,state,feature))
         self._mr_recovery_ref='recovery:'+str(self._mr_sequence+1)
         self._mr_log('RECOVERY_DECISION',tick.ts_event,recovery_ref=self._mr_recovery_ref,selected_leg=leg,quantity=str(D(d)*self.cache.instrument(iid).size_increment.as_decimal()),initial_signed_deficit=str(initial.worst_deficit),full_signed_deficit=str(objective),remaining_btc=str(-negative_btc),turnover=str(turnover),legal_feasible_intervals=proof)
         p=self._pair;p['debt_since']=p['debt_since'] if p['debt_since'] is not None else tick.ts_event
@@ -443,6 +452,14 @@ class MethodARiskResearch:
         inst=self.cache.instrument(instrument)
         if qty<=0 or (inst.min_quantity and qty<inst.min_quantity.as_decimal()) or (inst.min_notional and qty*(quote.bid_price.as_decimal() if side<0 else quote.ask_price.as_decimal())<inst.min_notional.as_decimal()):
             raise ValueError('UNEXECUTABLE_NATIVE_REDUCE_OR_ENTRY')
+        if self._mr_code0_enabled() and kind in {'BTC_DEBT','SOL_CAP','SOL_CLOSE'}:
+            state,feature=self._mr_snapshot(ns)
+            if evaluate(state,feature,self._mr_margin).worst_deficit>0:
+                leg='BTC' if instrument==self.config.btc_id else 'SOL'
+                held=state.btc if leg=='BTC' else state.sol
+                if qty!=abs(held) or side!=(-1 if held>0 else 1):raise ValueError('CODE0_EXACT_FULL_ROUTE_ONLY')
+                price,cost=self._mr_code0_price(leg,state,ns)
+                return super()._pair_submit(instrument,side,qty,kind,ns,price=price,recovery_code0=True)
         return super()._pair_submit(instrument,side,qty,kind,ns,**kwargs)
 
     def _pair_fill(self,event):
@@ -526,6 +543,8 @@ class MethodARiskResearch:
 
     @exact_algebra
     def _mr_recovery_choice(self,leg,state,feature,liabilities,initial_deficit,ns):
+        if self._mr_code0_enabled():
+            return self._mr_code0_choice(leg,state,feature,liabilities,ns)
         selected=self._mr_leg(leg,state,feature,liabilities)
         other=self._mr_leg('SOL' if leg=='BTC' else 'BTC',state,feature,liabilities)
         quote=self.cache.quote_tick(selected['iid'])
@@ -603,8 +622,24 @@ class MethodARiskResearch:
             initial=evaluate(state,feature,self._mr_margin)
             recovery=order.is_reduce_only and initial.worst_deficit>0
             allowed=envelope.safe or recovery and envelope.margin_pass and envelope.worst_deficit<=initial.worst_deficit
+            code0_proof=None
+            if self._mr_code0_enabled():
+                if not order.is_reduce_only and (initial.worst_deficit>0 or self._pair and self._pair.get('debt_since') is not None):
+                    allowed=False
+                if recovery and action in {'PAIRED_BTC_DEBT','PAIRED_SOL_CAP','PAIRED_SOL_CLOSE'}:
+                    if order.order_type!=OrderType.LIMIT or order.time_in_force!=TimeInForce.IOC:
+                        raise ValueError('CODE0_REQUIRES_LIMIT_IOC')
+                    price,cost=self._mr_code0_price(leg,state,ns)
+                    if order.price.as_decimal()!=price or order.quantity.as_decimal()!=abs(state.btc if leg=='BTC' else state.sol) or proposed.side!=(-1 if (state.btc if leg=='BTC' else state.sol)>0 else 1):
+                        raise ValueError('CODE0_CHANGED_NATIVE_ROUTE')
+                    old=self._mr_code0_old(state,feature,self._mr_liabilities(ns,exclude=oid),ns)
+                    from coinmaster.strategy.method_a_recovery_code0 import prove_flat_route
+                    allowed,code0_proof=prove_flat_route(state,feature,old,leg,lot,cost,self._mr_margin,self._mr_tier_boundaries)
+                    code0_proof.update(native_price=str(price),native_type='LIMIT',native_tif='IOC',reduce_only=True,
+                        dormant_sol_ids=[x.identity for x in envelope_liabilities if x.leg=='SOL' and x.identity!=oid],
+                        scenario_sol_prices=[str(state.ps*(1+s)) for b,s in feature.shocks()],frame_binding=self.config.research_method_a_input_binding)
             self._mr_log('BEFORE_NATIVE_DISPATCH' if allowed else 'ENVELOPE_DENY',ns,order_id=oid,action=action,quantity=str(order.quantity),stock_guard_ref=self._mr_last_stock_guard,
-                pending_hedge_credit='0',all_partial_partition_states=envelope.states,deficit=str(envelope.worst_deficit),margin_pass=envelope.margin_pass,envelope_state=asdict(state),envelope_liabilities=[asdict(item) for item in envelope_liabilities],
+                recovery_code0=code0_proof,pending_hedge_credit='0',all_partial_partition_states=envelope.states,deficit=str(envelope.worst_deficit),margin_pass=envelope.margin_pass,envelope_state=asdict(state),envelope_liabilities=[asdict(item) for item in envelope_liabilities],
                 native_initialized_event_id=str(order.init_event.id),native_order=order.to_dict(),liabilities=self._mr_liability_rows(ns,exclude=oid,proposed=order),creation_snapshot_ref=self._mr_creation_snapshot,recovery_ref=self._mr_recovery_ref,original_second=self._mr_original_second())
             if not allowed:
                 self._mr_submission_results[oid]=EntrySubmissionDecision('DENY','JOINT_EXECUTION_ENVELOPE',episode_id,str(order.instrument_id),proposed.side,str(order.quantity),self._mr_last_snapshot,oid)
@@ -614,6 +649,15 @@ class MethodARiskResearch:
             self._mr_submission_results[oid]=EntrySubmissionDecision('UNKNOWN',str(error),episode_id,str(order.instrument_id),1 if order.side==OrderSide.BUY else -1,str(order.quantity),self._mr_last_snapshot,oid)
             self._mr_fail(str(error),ns);return False
         allowed=super()._record_submission(order,intent_id,episode_id,action,reason,level)
+        if allowed and code0_proof is not None:
+            owner=self._pair_orders[oid]
+            if self._pair.get('code0_drain_oid'):raise ValueError('CODE0_SECOND_NATIVE_OWNER')
+            owner['code0_route']=dict(price=order.price.as_decimal(),quantity=order.quantity.as_decimal(),
+                side=order.side,initialized_event_id=str(order.init_event.id),feature=feature,
+                pb=state.pb,ps=state.ps,peak=state.peak,binding=dict(self.config.research_method_a_input_binding),
+                deadline=self._pair['debt_since']+MINUTE,proof=code0_proof,btc=state.btc,sol=state.sol,
+                known_ids=tuple(x.identity for x in envelope_liabilities))
+            self._pair['code0_drain_oid']=oid
         self._mr_submission_results[oid]=EntrySubmissionDecision('ALLOW' if allowed else 'TRANSPORT_FAILURE','DURABLE_CHECKPOINT_ACCEPTED' if allowed else 'DURABLE_SUBMIT_DENIED',episode_id,str(order.instrument_id),1 if order.side==OrderSide.BUY else -1,str(order.quantity),self._mr_last_snapshot,oid)
         if not allowed:self._mr_fail('DURABLE_SUBMIT_DENIED',ns)
         return allowed
@@ -644,10 +688,11 @@ class MethodARiskResearch:
 
     def _mr_after_actual(self,ns):
         if self._mr_after_busy or self._forced_close_reason or self._liquidating:return
-        if not self._pair or not self._pair_qty(self.config.btc_id):return
+        if not self._pair or (not self._pair_qty(self.config.btc_id) and not (self._mr_code0_enabled() and self._pair.get('code0_drain_oid'))):return
         self._mr_after_busy=True
         try:
             state,feature=self._mr_snapshot(ns);ev=evaluate(state,feature,self._mr_margin)
+            if self._mr_code0_enabled() and self._mr_code0_drain(state,feature,ns):return
             self._pair['caps'].bmax=abs(state.btc)
             if state.cushion<=0:
                 self._mr_fail('CUSHION_BREACH',ns);return
@@ -664,7 +709,7 @@ class MethodARiskResearch:
                         if choice is not None:
                             d,obj,btc,turn,proof=choice;choices.append((obj,-btc,turn,leg,iid,d,held,proof))
                 if not choices:self._mr_fail('NO_PROVEN_POSTFILL_RECOVERY',ns);return
-                objective,negative_btc,turnover,leg,iid,d,held,proof=min(choices,key=lambda x:x[:4])
+                objective,negative_btc,turnover,leg,iid,d,held,proof=min(choices,key=lambda x:self._mr_recovery_rank(x,state,feature))
                 self._mr_recovery_ref='recovery:'+str(self._mr_sequence+1)
                 self._mr_log('RECOVERY_DECISION',ns,recovery_ref=self._mr_recovery_ref,selected_leg=leg,quantity=str(D(d)*self.cache.instrument(iid).size_increment.as_decimal()),initial_signed_deficit=str(ev.worst_deficit),full_signed_deficit=str(objective),remaining_btc=str(-negative_btc),turnover=str(turnover),legal_feasible_intervals=proof)
                 if self._mr_recovery_ready(iid,ns):
@@ -921,3 +966,209 @@ class MethodARiskResearch:
             decision=self._mr_entry_decision('UNKNOWN',str(error),instrument,side,qty,ns)
             self._mr_fail(str(error),ns)
             return decision
+
+
+    def _mr_recovery_rank(self,row,state,feature):
+        if self._mr_code0_enabled():
+            excess=abs(state.sol)*state.ps*feature.sigma_s>abs(state.btc)*state.pb*feature.sigma_b
+            if excess:return (0 if row[3]=='SOL' else 1,)+row[:4]
+        return row[:4]
+
+    @exact_algebra
+    def _mr_code0_price(self,leg,state,ns):
+        from coinmaster.strategy.method_a_recovery_code0 import recovery_limit
+        iid=self.config.btc_id if leg=='BTC' else self.config.sol_id
+        inst=self.cache.instrument(iid);quote=self.cache.quote_tick(iid)
+        if quote is None or not 0<=ns-quote.ts_event<=MINUTE:raise ValueError('CODE0_UNKNOWN_QUOTE')
+        if (str(inst.quote_currency)!='USDT' or str(inst.settlement_currency)!='USDT' or inst.is_inverse
+                or inst.maker_fee!=D('.00020') or inst.taker_fee!=TAKER):
+            raise ValueError('CODE0_UNKNOWN_LINEAR_USDT_FEES')
+        held=state.btc if leg=='BTC' else state.sol;mark=state.pb if leg=='BTC' else state.ps
+        price,cost=recovery_limit(side=-1 if held>0 else 1,mark=mark,cost_cap=mark*(TAKER+RESERVE),
+            fee=max(inst.maker_fee,inst.taker_fee),tick=inst.price_increment.as_decimal(),
+            bid=quote.bid_price.as_decimal(),ask=quote.ask_price.as_decimal())
+        # Native commissions are rounded per fill. Bound every possible lot
+        # split by rounding each minimal native-lot fee UP to USDT precision.
+        lot=inst.size_increment.as_decimal();quantum=D(1).scaleb(-inst.quote_currency.precision)
+        fee_lot=price*max(inst.maker_fee,inst.taker_fee)*lot
+        fee_bound=D(iceil(F(fee_lot)/F(quantum)))*quantum/lot
+        bounded=max(D(0),(-1 if held>0 else 1)*(price-mark)+fee_bound)
+        if bounded>mark*(TAKER+RESERVE):raise ValueError('CODE0_NATIVE_FEE_ROUNDING_EXCEEDS_CAP')
+        return price,bounded
+
+    @exact_algebra
+    def _mr_code0_old(self,state,feature,liabilities,ns):
+        # Deliberately bounded proof domain. Unsupported paths stay UNKNOWN.
+        if not (D(0)<=state.btc<=D(1) and -D('132.9')<=state.sol<=D(0)):
+            raise ValueError('CODE0_UNKNOWN_SIGN_SIZE')
+        if feature.fund_b or feature.fund_s or len(feature.shocks())!=5:
+            raise ValueError('CODE0_UNKNOWN_SCENARIO_FUNDING')
+        binding=self.config.research_method_a_input_binding
+        if not isinstance(binding,dict) or not all(binding.get(k) for k in ('source','config','data','policy')):
+            raise ValueError('CODE0_UNKNOWN_FRAME_BINDING')
+        profile=self.config.margin_policy._profile
+        for leg,qty,mark,symbol in (('BTC',state.btc,state.pb,'BTCUSDT'),('SOL',-state.sol,state.ps,'SOLUSDT')):
+            tier=profile.tiers[symbol][0]
+            if tier.deduction or any(qty*mark*(1+(b if leg=='BTC' else s))>tier.cap for b,s in feature.shocks()):
+                raise ValueError('CODE0_UNKNOWN_TIER')
+        old=[]
+        for liability in liabilities:
+            order=self.cache.order(ClientOrderId(liability.identity))
+            if (order is None or order.strategy_id!=self.id or not order.is_reduce_only
+                    or order.exec_algorithm_id is not None or order.status.name not in {'ACCEPTED','PARTIALLY_FILLED'}
+                    or liability.identity in self._ma_commands or liability.identity in self._pending_by_order):
+                raise ValueError('CODE0_UNKNOWN_NATIVE_ACK')
+            if liability.leg=='BTC':
+                owner=self._ma_owners.get(liability.identity)
+                if (len(old) or not owner or owner.get('parent')!=self._pair.get('parent') or not owner.get('ack') or order.side!=OrderSide.SELL
+                        or order.order_type!=OrderType.LIMIT or order.time_in_force!=TimeInForce.GTC
+                        or order.leaves_qty.as_decimal()>state.btc):
+                    raise ValueError('CODE0_UNKNOWN_OLD_BTC_TP')
+                inst=self.cache.instrument(order.instrument_id)
+                if inst.maker_fee!=D('.00020') or inst.taker_fee!=TAKER or str(inst.quote_currency)!='USDT' or str(inst.settlement_currency)!='USDT' or inst.is_inverse:
+                    raise ValueError('CODE0_UNKNOWN_OLD_BTC_FEES')
+                price=order.price.as_decimal();quantum=D(1).scaleb(-inst.quote_currency.precision)
+                fee_lot=price*inst.maker_fee*inst.size_increment.as_decimal()
+                if (F(fee_lot)/F(quantum)).denominator!=1:
+                    raise ValueError('CODE0_UNKNOWN_OLD_BTC_FEE_AFFINITY')
+                cost=state.pb-price+price*inst.maker_fee
+                if cost<0:raise ValueError('CODE0_UNKNOWN_NEGATIVE_OLD_BTC_COST')
+                fills=[e for e in order.events if type(e).__name__=='OrderFilled']
+                # This scoped partial TP already demonstrated native maker fills
+                # at the same unchanged price. Never infer maker from GTC alone.
+                if not fills or any(e.liquidity_side!=LiquiditySide.MAKER or e.last_px!=order.price
+                        or str(e.commission.currency)!='USDT' or e.commission.as_decimal()!=e.last_qty.as_decimal()*e.last_px.as_decimal()*inst.maker_fee for e in fills):
+                    raise ValueError('CODE0_UNKNOWN_BTC_MAKER_PROVENANCE')
+                old.append(Liability(liability.identity,'BTC',-1,liability.lots,liability.lot,True,cost))
+            else:
+                owner=self._pair_orders.get(liability.identity)
+                if (not owner or owner.get('kind') not in {'TP','STOP'} or not owner.get('accepted')
+                        or owner.get('pending') is not None or owner.get('retiring') is not None
+                        or not owner.get('last_ack_event_id') or not any(str(e.id)==owner['last_ack_event_id'] and type(e).__name__ in {'OrderAccepted','OrderUpdated'} for e in order.events) or not owner.get('ack')
+                        or owner.get('parent')!=self._pair.get('parent') or order.side!=OrderSide.BUY
+                        or not self._pair_sol_payload_matches(order,owner['ack'])):
+                    raise ValueError('CODE0_UNKNOWN_SOL_PROTECTION_ACK')
+                quote=self.cache.quote_tick(order.instrument_id)
+                if quote is None or not 0<=ns-quote.ts_event<=MINUTE:raise ValueError('CODE0_UNKNOWN_SOL_BOOK')
+                prices=[state.ps*(1+s) for b,s in feature.shocks()]+[quote.bid_price.as_decimal(),quote.ask_price.as_decimal()]
+                if owner['kind']=='TP':
+                    dormant=order.order_type==OrderType.LIMIT and order.price.as_decimal()<min(prices)
+                else:
+                    dormant=order.order_type==OrderType.STOP_MARKET and order.trigger_price.as_decimal()>max(prices)
+                if not dormant:raise ValueError('CODE0_OLD_SOL_PATH_NOT_DORMANT')
+                # Explicit fixed-scenario exclusion only: no gap/live guarantee.
+        return tuple(old)
+
+    @exact_algebra
+    def _mr_code0_choice(self,leg,state,feature,liabilities,ns):
+        from coinmaster.strategy.method_a_recovery_code0 import prove_flat_route
+        old=self._mr_code0_old(state,feature,liabilities,ns)
+        try:price,cost=self._mr_code0_price(leg,state,ns)
+        except ValueError as error:
+            if str(error) in {'CODE0_UNMARKETABLE_COST_CAP','CODE0_NATIVE_FEE_ROUNDING_EXCEEDS_CAP'}:return None
+            raise
+        iid=self.config.btc_id if leg=='BTC' else self.config.sol_id
+        inst=self.cache.instrument(iid);lot=inst.size_increment.as_decimal()
+        held=state.btc if leg=='BTC' else state.sol
+        if not held:return None
+        allowed,proof=prove_flat_route(state,feature,old,leg,lot,cost,self._mr_margin,self._mr_tier_boundaries)
+        if not allowed:return None
+        proof.update(native_price=str(price),native_type='LIMIT',native_tif='IOC',reduce_only=True,
+            dormant_sol_ids=[x.identity for x in liabilities if x.leg=='SOL'],
+            scenario_sol_prices=[str(state.ps*(1+s)) for b,s in feature.shocks()],frame_binding=self.config.research_method_a_input_binding)
+        d=exact_lots(abs(held),lot)
+        return d,F(proof['full']),D(0) if leg=='BTC' else abs(state.btc),abs(held)*(state.pb if leg=='BTC' else state.ps),proof
+
+
+    def _mr_code0_drain(self,state,feature,ns):
+        """Wait for ONE already-proved native IOC and its owned resize ACKs.
+
+        This is not admission or relief from pending quantity. Actual Cache
+        terminal events and the existing protection ACK handler are authority.
+        The original deadline never moves; a fresh snapshot/proof is required
+        after draining, even when a smaller residual route is then possible.
+        """
+        p=self._pair;oid=p.get('code0_drain_oid') if p else None
+        if not oid:return False
+        if p.get('failed') or p.get('stop_filled'):
+            raise ValueError('CODE0_DRAIN_KNOWN_PROTECTION_FAULT')
+        owner=self._pair_orders.get(oid);route=owner.get('code0_route') if owner else None
+        if not route or owner.get('parent')!=p['parent'] or owner.get('kind') not in {'BTC_DEBT','SOL_CAP','SOL_CLOSE'}:
+            raise ValueError('CODE0_UNKNOWN_DRAIN_OWNER')
+        if p.get('debt_since') is None or route['deadline']!=p['debt_since']+MINUTE or ns>route['deadline']:
+            raise ValueError('RECOVERY_DEADLINE')
+        self._pair_cancel_btc_increases(ns)
+        # Validates the complete actual native universe, including foreign and
+        # unregistered order rejection, without crediting any pending outcome.
+        liabilities=self._mr_liabilities(ns)
+        if (any(x.identity not in route['known_ids'] or not x.reduce_only for x in liabilities)
+                or not D(0)<=state.btc<=route['btc'] or not route['sol']<=state.sol<=D(0)):
+            raise ValueError('CODE0_UNKNOWN_DRAIN_UNIVERSE')
+        order=self.cache.order(ClientOrderId(oid))
+        if (order is None or order.strategy_id!=self.id or order.instrument_id!=owner['instrument']
+                or order.order_type!=OrderType.LIMIT or order.time_in_force!=TimeInForce.IOC
+                or not order.is_reduce_only or order.exec_algorithm_id is not None
+                or order.price.as_decimal()!=route['price'] or order.quantity.as_decimal()!=route['quantity']
+                or order.side!=route['side'] or str(order.init_event.id)!=route['initialized_event_id']
+                or owner.get('pending') is not None or owner.get('retiring') is not None):
+            raise ValueError('CODE0_UNKNOWN_DRAIN_NATIVE_PAYLOAD')
+        live=not order.is_closed
+        if live and (order.status.name not in {'SUBMITTED','ACCEPTED','PARTIALLY_FILLED','PENDING_CANCEL'}
+                or (state.pb,state.ps,state.peak)!=(route['pb'],route['ps'],route['peak'])
+                or feature!=route['feature'] or self.config.research_method_a_input_binding!=route['binding']):
+            raise ValueError('CODE0_STALE_OR_UNKNOWN_DRAIN_FRAME')
+        if not live and (order.status.name not in {'CANCELED','EXPIRED','FILLED'}
+                or type(order.events[-1]).__name__ not in {'OrderCanceled','OrderExpired','OrderFilled'}):
+            raise ValueError('CODE0_UNKNOWN_DRAIN_TERMINAL')
+        waiting=live;pending_ids=[]
+        # A partial native reduction normally resizes positive protection. Only
+        # known same-price quantity reductions may wait for their existing ACK.
+        for coid,co,protection in self._pair_work(instrument=self.config.sol_id,kinds={'TP','STOP'}):
+            if protection is not None and protection.is_closed:continue
+            pending=co.get('pending')
+            if (protection is None or protection.strategy_id!=self.id or protection.instrument_id!=self.config.sol_id
+                    or co.get('parent')!=p['parent'] or not co.get('accepted') or (co.get('retiring') is not None and state.sol!=0)
+                    or not protection.is_reduce_only or protection.side!=OrderSide.BUY
+                    or protection.exec_algorithm_id is not None or protection.leaves_qty.as_decimal()<=0
+                    or protection.status.name not in ({'ACCEPTED','PARTIALLY_FILLED','PENDING_UPDATE','PENDING_CANCEL'} if state.sol==0 else {'ACCEPTED','PARTIALLY_FILLED','PENDING_UPDATE'})
+                    or not co.get('ack') or not any(str(e.id)==co.get('last_ack_event_id') and type(e).__name__ in {'OrderAccepted','OrderUpdated'} for e in protection.events)):
+                raise ValueError('CODE0_UNKNOWN_DRAIN_PROTECTION')
+            if state.sol==0:
+                # The actual native leg is flat: old positive RO protection
+                # is exhausted, and its existing cancellation ACKs may drain.
+                waiting=True;pending_ids.append(coid);continue
+            quote=self.cache.quote_tick(self.config.sol_id)
+            if quote is None or not 0<=ns-quote.ts_event<=MINUTE:raise ValueError('CODE0_STALE_DRAIN_PROTECTION_BOOK')
+            prices=[state.ps*(1+s) for b,s in feature.shocks()]+[quote.bid_price.as_decimal(),quote.ask_price.as_decimal()]
+            if co['kind']=='TP':dormant=protection.order_type==OrderType.LIMIT and protection.price.as_decimal()<min(prices)
+            else:dormant=protection.order_type==OrderType.STOP_MARKET and protection.trigger_price.as_decimal()>max(prices)
+            if not dormant:raise ValueError('CODE0_DRAIN_PROTECTION_NOT_DORMANT')
+            if pending is not None:
+                payload=pending.get('payload');ack=co['ack']
+                if (not isinstance(payload,(tuple,list)) or len(payload)!=3
+                        or type(pending.get('sequence'))is not int or pending['sequence']<=0
+                        or pending.get('generation')!=co.get('generation')
+                        or not protection.filled_qty.as_decimal()<payload[0]<=ack[0]
+                        or tuple(payload[1:])!=tuple(ack[1:])
+                        or not (self._pair_sol_payload_matches(protection,ack) or self._pair_sol_payload_matches(protection,payload))):
+                    raise ValueError('CODE0_UNKNOWN_DRAIN_RESIZE_PAYLOAD')
+                waiting=True;pending_ids.append(coid)
+            elif not self._pair_sol_payload_matches(protection,co['ack']):
+                raise ValueError('CODE0_UNKNOWN_DRAIN_PROTECTION_ACK')
+        for coid,command in self._ma_commands.items():
+            ma=self._ma_owners.get(coid);working=self.cache.order(ClientOrderId(coid))
+            if (not ma or ma.get('parent')!=p['parent'] or not ma.get('ack') or working is None
+                    or working.strategy_id!=self.id or working.instrument_id!=self.config.btc_id
+                    or working.order_type!=OrderType.LIMIT or not working.is_reduce_only
+                    or working.is_closed or command.get('price')!=working.price.as_decimal()
+                    or not working.filled_qty.as_decimal()<command.get('total',D(0))<=working.quantity.as_decimal()):
+                raise ValueError('CODE0_UNKNOWN_DRAIN_BTC_RESIZE')
+            waiting=True;pending_ids.append(coid)
+        if waiting:
+            self._mr_log('CODE0_NATIVE_DRAIN_WAIT',ns,order_id=oid,native_status=order.status.name,
+                native_order=order.to_dict(),pending_protection_ids=pending_ids,
+                deadline_ns=str(route['deadline']),pending_hedge_credit='0',actual_equity=str(state.equity))
+            return True
+        p.pop('code0_drain_oid',None)
+        self._mr_log('CODE0_NATIVE_DRAIN_COMPLETE',ns,order_id=oid,native_order=order.to_dict(),pending_hedge_credit='0')
+        return False

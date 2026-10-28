@@ -1,0 +1,18 @@
+{
+  "status": "PASS_BOUNDED_CODE0_SOURCE_ONLY_0P0_0P1",
+  "external_receipt_path": "/private/tmp/cm_recovery_code0_peer_review.json",
+  "external_receipt_sha256": "8abc0f67a076530e3c979bfaca4cc22ee9476881e895ff80da654b803a0daee9",
+  "accepted_by_root": true,
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "1054b2eb1bbbacdac288c27194dbb9920692160f7b092e16f7b6898f104dad99",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "5f4cae1b4763431f982f0fbe544a7df2a64ae5574dcbfdd72d8945f01fedf127",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/wave_overlay.py": "d4d5030852365bab1cfe6c42a6d1e9866140c8803146f8d996e835a5820c657a",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/tests/test_method_a_recovery_code0.py": "a49ffd2d60865857488654a5500cd6c4910833c6de32b030708a593d61c7aa98",
+    "runtime/tests/test_method_a_recovery_code0_partial.py": "91d900e2a7f2c3c733652520e1571a299fd5ca7bd6c9853b53b6709584bbbf01",
+    "runtime/tests/test_method_a_recovery_code0_final_guards.py": "af0ef85396e0e9e4fe7d080bba53983cfca4db8aa96103fb1d8b0ad951d6ea6f"
+  },
+  "patch_sha256": "9a63fd29c1c027945e99a8d89119e97e0772f64dcb85301c03e7d633ce40703d",
+  "native_GO": false
+}

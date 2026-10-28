@@ -78,6 +78,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_native_book: object = None
     research_method_a_tp: bool = False
     research_method_a_risk: str | None = None
+    research_method_a_recovery_code0: bool = False
     research_method_a_funding: tuple = ()
     research_method_a_selection: tuple[PairedSignal, ...] = ()
     research_method_a_peak_source: object = None

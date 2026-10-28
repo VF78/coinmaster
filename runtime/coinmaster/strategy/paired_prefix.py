@@ -446,8 +446,11 @@ class PairedPrefixResearch:
                 raise ValueError("PAIRED_INVALID_NATIVE_TP_OR_STOP_ALLOCATION")
         return prices, stop, lots
 
-    def _pair_submit(self, instrument, side, qty, kind, ns, *, price=None, stop=None, level=None):
+    def _pair_submit(self, instrument, side, qty, kind, ns, *, price=None, stop=None, level=None, recovery_code0=False):
         inst = self.cache.instrument(instrument)
+        if recovery_code0 and (not getattr(self.config,'research_method_a_recovery_code0',False)
+                or kind not in {'BTC_DEBT','SOL_CAP','SOL_CLOSE'} or price is None or stop is not None):
+            raise ValueError('CODE0_INVALID_NATIVE_REDUCTION')
         if kind == "ENTRY" and not self._tier_allows_increase(instrument, side, qty, ns):
             self._pair_fail("NATIVE_MARGIN_ENTRY_DENIED", ns)
             self._pair["entry_terminal"] = True
@@ -461,7 +464,7 @@ class PairedPrefixResearch:
             # IOC is mandatory: GTC stock L1 synthesizes exhausted-book remainder.
             order = self.order_factory.stop_market(**kw, trigger_price=inst.make_price(stop), time_in_force=TimeInForce.IOC)
         elif price is not None:
-            order = self.order_factory.limit(**kw, price=inst.make_price(price), time_in_force=TimeInForce.GTC)
+            order = self.order_factory.limit(**kw, price=inst.make_price(price), time_in_force=TimeInForce.IOC if recovery_code0 else TimeInForce.GTC)
         else:
             order = self.order_factory.market(**kw, time_in_force=TimeInForce.IOC)
         oid = str(order.client_order_id)
