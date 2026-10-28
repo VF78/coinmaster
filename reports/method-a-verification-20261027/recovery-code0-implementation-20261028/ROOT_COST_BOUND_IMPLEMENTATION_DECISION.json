@@ -1,0 +1,25 @@
+{
+  "status": "ROOT_IMPLEMENTATION_CHOICE_WITHIN_APPROVED_CODE0_NATIVE0",
+  "owner_approval": "OWNER_RECOVERY_CODE0_APPROVAL_20261028.json",
+  "scope": "Only new default-OFF BREACH recovery; existing sole native execution owner; ordinary order paths and BTC/SOL TP/STOP unchanged",
+  "new_order": "native LIMIT IOC reduce_only, no post_only, no resting/new OMS",
+  "cost_formula_buy": "limit=floor_tick((mark+phi_per_unit)/(1+known_fee_upper)); require limit>=fresh_ask",
+  "cost_formula_sell": "limit=ceil_tick((mark-phi_per_unit)/(1-known_fee_upper)); require limit<=fresh_bid",
+  "example_buy": {
+    "mark": "132.9",
+    "phi": "0.205995",
+    "fee": "0.00055",
+    "tick": "0.01",
+    "limit": "133.03",
+    "worst_cost": "0.2031665"
+  },
+  "not_authority": [
+    "No native/prefix/full",
+    "No new slots",
+    "No old STOP-market finite-price assertion",
+    "No pending fill credit",
+    "No live gap/intraminute or final ROI guarantee"
+  ],
+  "domain": "Derived from actual quantities, working order leaves and source scenario coefficients; test quantities1BTC/132.9SOL are not optimization/admission parameters. Unsupported sign/tier/pending/order-price/fee/funding/old-stop paths UNKNOWN/DENY.",
+  "reason": "An uncapped MARKET IOC cannot establish prospective cost<=phi; native price-capped route enforces the bound required by the approved new contract."
+}
