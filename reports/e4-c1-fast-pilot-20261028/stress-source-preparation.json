@@ -1,0 +1,45 @@
+{
+  "state": "SOURCE_ONLY_PEER_PASS_DEFAULT_OFF",
+  "base_commit": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "0b2af2808c5586cb42ae3e26cb174cac7549cde0090cedb9b95c33edacf0a2b5",
+    "runtime/tests/test_native_qualification_stress_wiring.py": "c3dd399312ad7ebc32eb14358366db67e048445b2a98dde3c10938f629073a1a"
+  },
+  "unchanged_trading_and_accounting": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "06aa1886bc75790fb22c5a3f666f4fa36f93760bb0e2a5fcb53782caa71ff370",
+    "runtime/coinmaster/strategy/wave_overlay.py": "2788ea0d36fa93cd961a84125fe93584c8c10938d40fdf6f6a67356922503254",
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d"
+  },
+  "native_source_proof": {
+    "backtest/models/fill.pyx": "68c2c9be2092453f566883e221105386d4784dccfa27ee8d60c2e4faef631cb8",
+    "backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+  },
+  "native_API": "FillModel(prob_fill_on_limit=1.0,prob_slippage=1.0,random_seed=0); fill.pyx34-80,engine.pyx7382-7386: everyL1fillBUY+increment/SELL-increment includinglimit/maker",
+  "CLI": "--qualification-stress",
+  "default_off": "False atCLI,repairCLIandnativeRunner; emptyvenuekwargs and noextraeconomicsconfigkeywhenOFF",
+  "scenario": "Diagnostic adverse1nativeinstrumenttick everyL1fill; nativeprobfill1/nativeprobslip1/seed0. All fees/quote prices/data/depth1000/liquidity_consumptionFalse/strategy unchanged; noLatencyModel.",
+  "tests": {
+    "result": "4PASS",
+    "wall_seconds": 0.2,
+    "pytest_calls": 1,
+    "native_engine_constructors": 0,
+    "native_FillModel_constructors": 0,
+    "network_calls": 0
+  },
+  "historical_attempts": 0,
+  "qualification_attempts": 0,
+  "candidate": "NONE_SELECTED_YET",
+  "qualification_criteria": "ROOT_MUST_DECLARE_BEFORE_RUN; noautolaunch",
+  "live_WIP": "Separatelivebranchcheckpoint6be3ca5fac821441ef9aa9c1531fa5b8aabf7f65b0b59d8f1cd1b1c6c81a1773 preserved; no mixing",
+  "peer_review": {
+    "status": "PASS_SOURCE_ONLY",
+    "open_P0": 0,
+    "open_P1": 0,
+    "report": "stress-peer-review.json",
+    "sha256": "cb3430d01b8991e01e8de314e71d5875a61658ceaaab911d54bfabae21303cc4",
+    "reviewed_preparation_sha256": "bf0d8f1935a3a9e5f9f828218f71a029bc897e6a125529399caf72621f4f088f"
+  }
+}

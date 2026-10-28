@@ -1,0 +1,164 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 004293b..1ce4cea 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -658,6 +658,25 @@ def _quarantine_funding_attempt(attempt_path: Path) -> None:
+     _move_sqlite_family(attempt_path, "aborted")
+ 
+ 
++def qualification_stress_venue_kwargs(enabled: bool, *, fill_model_factory=None) -> dict:
++    """Default OFF: preserve the native venue's original fill-model default."""
++    if not enabled:return {}
++    if fill_model_factory is None:
++        from nautilus_trader.backtest.models import FillModel
++        fill_model_factory=FillModel
++    return {"fill_model":fill_model_factory(prob_fill_on_limit=1.0,prob_slippage=1.0,random_seed=0)}
++
++
++def qualification_stress_metadata() -> dict:
++    return dict(enabled=True,model="NautilusTrader.FillModel",parameters=dict(
++        prob_fill_on_limit=1.0,prob_slippage=1.0,random_seed=0),
++        effect="ONE_ADVERSE_NATIVE_INSTRUMENT_TICK_PER_L1_FILL_BUY_PLUS_SELL_MINUS",
++        includes_limit_and_maker_fills=True,limit_price_protection="NATIVE_DIAGNOSTIC_MAY_SLIP_PAST_LIMIT",
++        liquidity_consumption=False,latency_model="UNCHANGED_NATIVE_DEFAULT",
++        fees="UNCHANGED_BASE_NATIVE_MAKER_TAKER",qualification_only=True,
++        historical_market_liquidity_claim=False)
++
++
+ def run_native_diagnostic(
+     data_root: Path,
+     include_funding: bool = False,
+@@ -695,6 +714,7 @@ def run_native_diagnostic(
+     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
+     research_btc_episode_loss_20: bool = False,
+     research_sol_remaining_btc_hedge: bool = False,
++    qualification_stress: bool = False,
+ ) -> dict:
+     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
+ 
+@@ -826,7 +846,7 @@ def run_native_diagnostic(
+     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+         run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first=="alpha-corridor-v1"),
+         **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
+-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
++    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair), **qualification_stress_venue_kwargs(qualification_stress))
+     engine.add_instrument(btc_instrument)
+     engine.add_instrument(sol_instrument)
+     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
+@@ -1064,6 +1084,8 @@ def run_native_diagnostic(
+                 full_config["research_v0_deferred_selective_zero_tp"] = True
+         if research_v0_selective_lifecycle_repairs:
+             full_config["research_v0_selective_lifecycle_repairs"] = True
++        if qualification_stress:
++            full_config["native_qualification_stress"]=qualification_stress_metadata()
+         stats["peak_rss_bytes"] = _peak_rss_bytes()
+         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+         if research_residual_recovery:
+@@ -1392,7 +1414,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None, qualification_stress: bool = False) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1479,7 +1501,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+     if research_sol_remaining_btc_hedge:
+         label += "-solhedge"
+     report = run_native_diagnostic(
+-        data_root, include_funding=True, candidate=candidate,
++        data_root, include_funding=True, candidate=candidate, qualification_stress=qualification_stress,
+         execution_policy=policy, fixed_base_fee_policy=fee_policy,
+         initial_active_seed=Decimal(config["run_interval"]["initial_active_seed"]),
+         artifact_dir=artifact_dir, artifact_label=label,
+@@ -1556,6 +1578,7 @@ def main() -> None:
+     parser.add_argument("--research-sol-remaining-btc-hedge", action="store_true", help="Research-only earned SOL admission clipped to remaining native BTC/beta")
+     parser.add_argument("--research-portfolio-protect-45", action="store_true", help="Research-only paired-minute 45%% protective epoch drawdown; resume next genuine BTC episode")
+     parser.add_argument("--research-sol-notional-cap-6x", action="store_true", help="Research-only aggregate SOL entry notional capped at 6x fresh native marked equity")
++    parser.add_argument("--qualification-stress", action="store_true", help="Qualification-only native FillModel: one adverse instrument tick per L1 fill, including maker/limit")
+     parser.add_argument("--research-c1-restore-dd", choices=("0.35","0.40"), default="0.35")
+     parser.add_argument("--research-c1-btc-cut-divisor", type=int, choices=(2,4), default=2)
+     parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
+@@ -1576,6 +1599,8 @@ def main() -> None:
+         parser.error("research risk variants are mutually exclusive")
+     if (args.research_sol_notional_cap_6x or args.research_portfolio_protect_45 or args.research_btc_episode_loss_20 or args.research_sol_remaining_btc_hedge or args.research_btc_direction_sizing or args.research_btc_drawdown_sizing or args.research_v3_risk or args.research_h1_b1) and not (args.research_v0_selective_lifecycle_repairs and args.observe_minute_risk):
+         parser.error("SOL cap requires selective lifecycle control and minute observer")
++    if args.qualification_stress and not args.research_v0_execution_repairs:
++        parser.error("qualification stress requires the existing research execution runner")
+     if args.observe_minute_risk and not args.research_v0_execution_repairs:
+         parser.error("minute risk observer requires isolated research execution repairs")
+     if args.research_v0_execution_repairs:
+@@ -1586,7 +1611,7 @@ def main() -> None:
+             zero_tp_netting=not (args.research_v0_original_zero_tp or args.research_v0_deferred_selective_zero_tp),
+             deferred_selective_zero_tp=args.research_v0_deferred_selective_zero_tp,
+             selective_lifecycle_repairs=args.research_v0_selective_lifecycle_repairs,
+-            observe_minute_risk=args.observe_minute_risk,
++            observe_minute_risk=args.observe_minute_risk, qualification_stress=args.qualification_stress,
+             research_sol_notional_cap_6x=args.research_sol_notional_cap_6x,
+             research_portfolio_protect_45=args.research_portfolio_protect_45,
+             research_btc_direction_sizing=args.research_btc_direction_sizing,
+diff --git a/runtime/tests/test_native_qualification_stress_wiring.py b/runtime/tests/test_native_qualification_stress_wiring.py
+new file mode 100644
+index 0000000..31663cb
+--- /dev/null
++++ b/runtime/tests/test_native_qualification_stress_wiring.py
+@@ -0,0 +1,58 @@
++"""Engine-free stress parameter/wiring proof; never instantiate any native object."""
++import ast
++from pathlib import Path
++
++SOURCE=Path(__file__).parents[1]/'coinmaster/research/native_baseline.py'
++TREE=ast.parse(SOURCE.read_text())
++FUNCTIONS={n.name:n for n in TREE.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
++
++def helpers():
++ names=('qualification_stress_venue_kwargs','qualification_stress_metadata')
++ module=ast.Module(body=[FUNCTIONS[n] for n in names],type_ignores=[])
++ namespace={}
++ exec(compile(module,str(SOURCE),'exec'),namespace)
++ return namespace
++
++def test_disabled_stress_preserves_absent_venue_override_and_never_calls_factory():
++ h=helpers()
++ def forbidden(**kwargs):raise AssertionError('default OFF must not construct a FillModel')
++ assert h['qualification_stress_venue_kwargs'](False,fill_model_factory=forbidden)=={}
++
++def test_enabled_stress_forwards_exact_installed_fillmodel_parameters_once():
++ h=helpers();calls=[];sentinel=object()
++ def factory(**kwargs):calls.append(kwargs);return sentinel
++ assert h['qualification_stress_venue_kwargs'](True,fill_model_factory=factory)=={'fill_model':sentinel}
++ assert calls==[dict(prob_fill_on_limit=1.0,prob_slippage=1.0,random_seed=0)]
++
++def test_stress_metadata_is_explicit_diagnostic_with_unchanged_base_fees_liquidity():
++ metadata=helpers()['qualification_stress_metadata']()
++ assert metadata['parameters']==dict(prob_fill_on_limit=1.0,prob_slippage=1.0,random_seed=0)
++ assert metadata['includes_limit_and_maker_fills'] is True
++ assert metadata['liquidity_consumption'] is False
++ assert metadata['fees']=='UNCHANGED_BASE_NATIVE_MAKER_TAKER'
++ assert metadata['qualification_only'] is True and metadata['historical_market_liquidity_claim'] is False
++ assert metadata['effect']=='ONE_ADVERSE_NATIVE_INSTRUMENT_TICK_PER_L1_FILL_BUY_PLUS_SELL_MINUS'
++
++def test_complete_cli_to_native_venue_wiring_is_default_off_without_latency_or_liquidity_override():
++ runner=FUNCTIONS['run_native_diagnostic'];cli=FUNCTIONS['run_research_v0_repairs_cli'];main=FUNCTIONS['main']
++ def default(node,name):
++  args=node.args.args;values=[None]*(len(args)-len(node.args.defaults))+node.args.defaults
++  return next(ast.literal_eval(v) for a,v in zip(args,values) if a.arg==name)
++ assert default(runner,'qualification_stress') is False
++ kwdefaults=dict(zip((a.arg for a in cli.args.kwonlyargs),cli.args.kw_defaults))
++ assert ast.literal_eval(kwdefaults['qualification_stress']) is False
++ venues=[n for n in ast.walk(runner) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='add_venue']
++ assert len(venues)==1
++ venue=venues[0];ordinary={k.arg for k in venue.keywords if k.arg is not None}
++ assert 'fill_model' not in ordinary and 'latency_model' not in ordinary and 'liquidity_consumption' not in ordinary
++ expansions=[k.value for k in venue.keywords if k.arg is None]
++ assert len(expansions)==1 and ast.unparse(expansions[0])=='qualification_stress_venue_kwargs(qualification_stress)'
++ calls=[n for n in ast.walk(cli) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='run_native_diagnostic']
++ assert len(calls)==1 and any(k.arg=='qualification_stress' and ast.unparse(k.value)=='qualification_stress' for k in calls[0].keywords)
++ calls=[n for n in ast.walk(main) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='run_research_v0_repairs_cli']
++ assert len(calls)==1 and any(k.arg=='qualification_stress' and ast.unparse(k.value)=='args.qualification_stress' for k in calls[0].keywords)
++ flags=[n for n in ast.walk(main) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='add_argument' and n.args and isinstance(n.args[0],ast.Constant) and n.args[0].value=='--qualification-stress']
++ assert len(flags)==1 and any(k.arg=='action' and ast.literal_eval(k.value)=='store_true' for k in flags[0].keywords)
++ config_branches=[n for n in ast.walk(runner) if isinstance(n,ast.If) and ast.unparse(n.test)=='qualification_stress']
++ assert len(config_branches)==1
++ assert 'full_config[\'native_qualification_stress\'] = qualification_stress_metadata()' in ast.unparse(config_branches[0])
