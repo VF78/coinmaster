@@ -1,0 +1,74 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "candidate": "G_STANDALONE",
+  "state": "SOURCE_ONLY_PEER_PASS_AWAIT_ROOT_LAST_G_FREEZE_REGISTRY_GO",
+  "base_commit": "5b68e7928398fe215a29b63f03f6fbbbc5b44eaa",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "2f0a38c2827b986f69506390dc5e06d9c8dc6606e93be314c8e0a09e8b2a7785",
+    "runtime/coinmaster/strategy/wave_overlay.py": "7f60fa0b288e7e932549600b7d13bae5e632345142bccaa1d513adfcf33d62c4",
+    "runtime/coinmaster/research/native_baseline.py": "611206d4a0a4211a95495cd55fd152844299b892eee24cc42b4e1d3a74a707bc",
+    "runtime/tests/test_c1_global_arm_pure.py": "2597e31a9765cc01b8110bf0b6fee429b731bd655623688682d3b8a285956304"
+  },
+  "unchanged_economic_accounting_stress_pins": {
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "runtime/tests/test_native_qualification_stress_wiring.py": "c3dd399312ad7ebc32eb14358366db67e048445b2a98dde3c10938f629073a1a"
+  },
+  "G_config_sha256": "df1c48cd536970122e4335de07840226008e8cb11dceeff7cb71d68494d8ca78",
+  "default_OFF_config_pins": {
+    "C1": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+    "Q": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+    "R": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c"
+  },
+  "default_OFF_COMBO_config_sha256": "75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba",
+  "rule": {
+    "initially_armed": true,
+    "consume": "POSITIVE_ECONOMIC_CLAIM_BEFORE_SUBMIT",
+    "rearm_DD": "0.35",
+    "unresolved_c1_pending_or_native_inflight_blocks": true,
+    "new_source_after_unresolved_required": true
+  },
+  "additional_rearm_conditions": "No unresolved C1 ownpending or nativeinflight; healthy ACCEPTED ordinary standing limits do not block. After unresolved state clears, require a strictly later actual coherent source quote, not remembered recovery or ACK alone.",
+  "unchanged": "C1BTC/SOLhalf,restore35,onecut/group,rights/ordinarymandatorypriority/HWM/globalDDobserver/executionmodel/basefees/data/stressOFF",
+  "G_admission_evidence_sha256": "358157d0db359fcbfe1c008d51bc81b88e489caccdb23e23ce0193ce43e08485",
+  "saved_path_first_delta": "Aug10,2026 15:38claim15:39fill; noDD35sinceAug5; notfutureROI",
+  "engineering_calls": [
+    {
+      "result": "18PASS",
+      "wall_seconds": 0.4,
+      "pytest_calls": 1,
+      "native_engine_constructors": 0,
+      "native_model_constructors": 0,
+      "scope": "14actualC1pureguardtests+4unchangedstresswiring"
+    },
+    {
+      "result": "16PASS",
+      "wall_seconds": 0.3,
+      "pytest_calls": 1,
+      "native_engine_constructors": 0,
+      "native_model_constructors": 0,
+      "scope": "16Gpuretests includingactualnextparentgate+defaultOFF"
+    }
+  ],
+  "repair_iterations": 0,
+  "G_historical_attempts": 0,
+  "budget": "LAST_CANDIDATE4_OF4 onlyafterrootclaim/GO; campaignmax8 remains",
+  "qualification_stress": false,
+  "live_order_capability": false,
+  "live_checkpoint_dependency_if_G_selected": "Persist _c1_global_cut_armed and _c1_global_rearm_blocked_source in future selected live policy checkpoint; liveWIP from2e90 remains unqualified and separate",
+  "peer_review": {
+    "status": "PASS_SOURCE_ONLY",
+    "open_P0": 0,
+    "open_P1": 0,
+    "report": "G-peer-review.json",
+    "sha256": "39e0bae98ef78b6f4ebdbaeb5c3350965ad9b9835e69192bab182470e574fd5d",
+    "reviewed_preparation_sha256": "682b6732560f541eb184d4186f0b8a58c9b2b5f50984e9371f27d1ff39dc9f1c",
+    "reviewer_engines": 0
+  }
+}

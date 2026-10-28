@@ -1,0 +1,298 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 1ce4cea..a3dced9 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -709,7 +709,7 @@ def run_native_diagnostic(
+     research_btc_split_planref_v1: bool = False,
+     research_btc_split_tp_ioc: bool = False,
+     research_btc_split_discount: str = "0.0025",
+-    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
++    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_global_cut_arm: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
+     research_sol_cover: str | None = None,
+     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
+     research_btc_episode_loss_20: bool = False,
+@@ -818,6 +818,7 @@ def run_native_diagnostic(
+         modules.append(coherent_observer)
+     def kind(instrument, price_type):
+         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
++    if research_c1_global_cut_arm and (not research_residual_recovery or research_c1_btc_cut_divisor!=2 or research_c1_restore_dd!="0.35"):raise ValueError("G_STANDALONE_REQUIRES_C1_HALF_RESTORE35")
+     if research_c1_restore_dd not in ("0.35","0.40") or (research_c1_restore_dd!="0.35" and not research_residual_recovery):raise ValueError("R_REQUIRES_C1_RESTORE_DD_35_OR_40")
+     if research_c1_btc_cut_divisor not in (2,4) or (research_c1_btc_cut_divisor!=2 and not research_residual_recovery):raise ValueError("Q_REQUIRES_C1_DIVISOR_2_OR_4")
+     if research_residual_recovery and (not observe_minute_risk or not research_wait_4h or research_regime_reentry_band!="0.5" or research_zero_retrace or research_sol_dominant or research_wait_persist or research_sol_risk_first or research_conditional_sol or research_alpha_cushion or research_chop_pair):raise ValueError("C1_REQUIRES_CLEAN_E4_SETTLED_OBSERVER")
+@@ -892,7 +893,7 @@ def run_native_diagnostic(
+         research_sol_btc_open_only=research_sol_btc_open_only,
+         research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
+         research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
+-        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=Decimal(research_c1_restore_dd), research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
++        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=Decimal(research_c1_restore_dd), research_c1_global_cut_arm=research_c1_global_cut_arm, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
+         research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
+         research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
+@@ -1090,6 +1091,10 @@ def run_native_diagnostic(
+         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+         if research_residual_recovery:
+             full_config["residual_recovery_research"]=dict(version="C1",trigger_DD="0.40",open_loss_dominates_remaining_50_cushion=True,cut_fraction="0.50",restore_DD="0.35",restore_closed_hours=4,max_cut_restore_per_group=1)
++        if research_c1_global_cut_arm:
++            full_config["residual_recovery_research"]["global_cut_arm"]=dict(initially_armed=True,
++                consume="POSITIVE_ECONOMIC_CLAIM_BEFORE_SUBMIT",rearm_DD="0.35",
++                unresolved_c1_pending_or_native_inflight_blocks=True,new_source_after_unresolved_required=True)
+         if research_c1_restore_dd != "0.35":
+             full_config["residual_recovery_research"]["restore_DD"]=research_c1_restore_dd
+         if research_c1_btc_cut_divisor != 2:
+@@ -1414,7 +1419,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None, qualification_stress: bool = False) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_global_cut_arm: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None, qualification_stress: bool = False) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1529,7 +1534,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
+         research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
+         research_regime_reentry_band=research_regime_reentry_band,
+-        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=research_c1_restore_dd, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
++        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=research_c1_restore_dd, research_c1_global_cut_arm=research_c1_global_cut_arm, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant,
+         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
+         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
+@@ -1579,6 +1584,7 @@ def main() -> None:
+     parser.add_argument("--research-portfolio-protect-45", action="store_true", help="Research-only paired-minute 45%% protective epoch drawdown; resume next genuine BTC episode")
+     parser.add_argument("--research-sol-notional-cap-6x", action="store_true", help="Research-only aggregate SOL entry notional capped at 6x fresh native marked equity")
+     parser.add_argument("--qualification-stress", action="store_true", help="Qualification-only native FillModel: one adverse instrument tick per L1 fill, including maker/limit")
++    parser.add_argument("--research-c1-global-cut-arm", action="store_true", help="Standalone G: account cut arm consumed on positive claim; fresh coherent DD35-only rearm")
+     parser.add_argument("--research-c1-restore-dd", choices=("0.35","0.40"), default="0.35")
+     parser.add_argument("--research-c1-btc-cut-divisor", type=int, choices=(2,4), default=2)
+     parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
+@@ -1629,7 +1635,7 @@ def main() -> None:
+             research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
+             research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
+             research_regime_reentry_band=args.research_regime_reentry_band,
+-            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_c1_restore_dd=args.research_c1_restore_dd, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
++            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_c1_restore_dd=args.research_c1_restore_dd, research_c1_global_cut_arm=args.research_c1_global_cut_arm, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
+             research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant,
+             research_batch_minutes=args.research_batch_minutes,
+             research_sol_risk_first=args.research_sol_risk_first,
+diff --git a/runtime/coinmaster/strategy/residual_recovery.py b/runtime/coinmaster/strategy/residual_recovery.py
+index 3f13557..031e9e8 100644
+--- a/runtime/coinmaster/strategy/residual_recovery.py
++++ b/runtime/coinmaster/strategy/residual_recovery.py
+@@ -10,6 +10,9 @@ class ResidualRecoveryResearch:
+     def _c1_init(self):
+         if self.config.research_c1_btc_cut_divisor not in (2,4):raise ValueError('C1_BTC_CUT_DIVISOR_MUST_BE_2_OR_4')
+         if self.config.research_c1_restore_dd not in (D(".35"),D(".40")):raise ValueError("C1_RESTORE_DD_MUST_BE_35_OR_40")
++        if self.config.research_c1_global_cut_arm and (self.config.research_c1_btc_cut_divisor!=2 or self.config.research_c1_restore_dd!=D('.35')):raise ValueError('G_STANDALONE_REQUIRES_C1_HALF_RESTORE35')
++        self._c1_global_cut_armed=True
++        self._c1_global_rearm_blocked_source=None
+         self.c1_audit=[];self._c1_state=None;self._c1_peak=D(str(self.config.active_seed))
+         self._c1_checkpoint=None;self._c1_fill_epoch=0;self._c1_intents={};self._c1_last_bars={};self._c1_sol_levels={};self._c1_terminal_ids=set();self.c1_denials={};self._c1_blocked_ids=set()
+         if self.config.research_residual_recovery and (not self.config.research_wait_4h or self.config.research_regime_reentry_band!=D('.5') or self.config.research_zero_retrace or self.config.research_sol_dominant or self.config.research_wait_persist):
+@@ -68,12 +71,33 @@ class ResidualRecoveryResearch:
+         if account is None or account.last_event.ts_event>c['source']:return None
+         return c
+ 
++    def _c1_update_global_cut_arm(self,ns):
++        if not self.config.research_c1_global_cut_arm or self._c1_global_cut_armed:return
++        c=self._c1_current_money(ns)
++        if c is None or c['DD']>D('.35'):return
++        if self._c1_own_pending() or self.cache.orders_inflight():
++            # An ACK/terminal later cannot reuse a remembered recovery quote.
++            old=self._c1_global_rearm_blocked_source
++            self._c1_global_rearm_blocked_source=max(c['source'],old if old is not None else c['source'])
++            return
++        if self._c1_global_rearm_blocked_source is not None and c['source']<=self._c1_global_rearm_blocked_source:return
++        self._c1_global_cut_armed=True
++        self._c1_global_rearm_blocked_source=None
++        self._c1_log('GLOBAL_CUT_ARM_REARMED',ns,source_quote_ns=c['source'],DD=str(c['DD']),H=str(c['H']))
++
++    def _c1_consume_global_cut_arm(self,cut_lots):
++        if not self.config.research_c1_global_cut_arm:return
++        if cut_lots<=0 or not self._c1_global_cut_armed:raise ValueError('G_CUT_ARM_COMMIT_INVALID')
++        # Economically committed claim consumes before any submit/fill/ACK.
++        self._c1_global_cut_armed=False
++
+     def _c1_observe(self,equity,ns,source,epoch,details):
+         if not self.config.research_residual_recovery:return
+         E=D(str(equity))
+         if not E.is_finite() or E<=0 or source>=ns:return
+         self._c1_peak=max(self._c1_peak,E)
+         self._c1_checkpoint=dict(E=E,H=self._c1_peak,DD=1-E/self._c1_peak,C=max(D(0),E-D('.5')*self._c1_peak),source=source,receipt=ns,epoch=epoch)
++        self._c1_update_global_cut_arm(ns)
+         ep=self._domain.episode;t=self._c1_state
+         if t and (ep is None or ep.id!=t['group']):
+             if self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight() or self._pending_by_order or self._queued_intents:raise ValueError('C1_GROUP_CHANGED_BEFORE_NATIVE_FLAT')
+@@ -100,6 +124,7 @@ class ResidualRecoveryResearch:
+         step=self.cache.instrument(inst).size_increment.as_decimal();lots=int(pos.quantity.as_decimal()/step)
+         cut_lots=lots//(self.config.research_c1_btc_cut_divisor if inst==self.config.btc_id else 2)
+         gates['native_half_exists']=cut_lots>0
++        if self.config.research_c1_global_cut_arm:gates['global_cut_armed']=self._c1_global_cut_armed
+         if not all(gates.values()):
+             from datetime import datetime,timezone
+             key=str((ep.id,datetime.fromtimestamp(ns/1e9,timezone.utc).strftime('%Y-%m'),tuple(sorted(gates.items()))))
+@@ -109,6 +134,7 @@ class ResidualRecoveryResearch:
+         self._c1_log('PROPOSED_DECISION',ns,source_quote_ns=source,receipt_ns=ns,fill_epoch=epoch,E=str(E),H=str(c['H']),DD=str(c['DD']),cushion=str(c['C']),selected=str(inst),selected_loss=str(loss),positions=details,gates=gates,rights=self._c1_rights(),pending=[i.id for i in self._pending_by_order.values()])
+         if not all(gates.values()):return
+         self._domain._ensure_btc_targets(ep)
++        self._c1_consume_global_cut_arm(cut_lots)
+         self._c1_state=dict(group=ep.id,state='CUT_RESOLVING',instrument=inst,side=1 if pos.is_long else -1,step=step,held_lots=lots,target_lots=lots-cut_lots,cut_lots=cut_lots,cut_submitted=False,restore_submitted=False,cut_filled=0,restore_filled=0,credit=0,cut_value=D(0),bucket={},revoked=False,claim_ns=ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,cut_terminal_ns=None,last_cut_fill_ns=None,confirmation=None)
+         self._c1_log('CLAIM',ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,frozen_held_lots=lots,frozen_target_lots=lots-cut_lots,rights=self._c1_rights())
+ 
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 98dce12..210b482 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -76,6 +76,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_residual_recovery: bool = False
+     research_c1_btc_cut_divisor: int = 2
+     research_c1_restore_dd: Decimal = Decimal(".35")
++    research_c1_global_cut_arm: bool = False
+     research_next_signals: tuple[DataType, ...] = ()
+     research_h4_ema: int | None = None
+     research_h4_gamma: Decimal = Decimal(".5")
+diff --git a/runtime/tests/test_c1_global_arm_pure.py b/runtime/tests/test_c1_global_arm_pure.py
+new file mode 100644
+index 0000000..6fb9d15
+--- /dev/null
++++ b/runtime/tests/test_c1_global_arm_pure.py
+@@ -0,0 +1,140 @@
++"""G protocol fixtures execute actual C1 methods; zero native object constructors."""
++import ast
++from decimal import Decimal as D
++from pathlib import Path
++from types import SimpleNamespace as N
++import pytest
++
++ROOT=Path(__file__).parents[1]/'coinmaster'
++TREE=ast.parse((ROOT/'strategy/residual_recovery.py').read_text())
++CLASS=next(n for n in TREE.body if isinstance(n,ast.ClassDef) and n.name=='ResidualRecoveryResearch')
++ENV={'D':D,'H4':14_400_000_000_000,'CUT':'C1_RESIDUAL_CUT','RESTORE':'C1_RESIDUAL_RESTORE'}
++exec(compile(ast.Module(body=[CLASS],type_ignores=[]),'actual_residual_recovery_methods','exec'),ENV)
++
++class ID(str):venue='TEST'
++class Owner(ENV['ResidualRecoveryResearch']):
++ def __init__(self,enabled=True,held=10,episode=True):
++  self.config=N(research_c1_btc_cut_divisor=2,research_c1_restore_dd=D('.35'),research_c1_global_cut_arm=enabled,
++   active_seed=D(10000),research_residual_recovery=True,research_wait_4h=True,research_regime_reentry_band=D('.5'),
++   research_zero_retrace=False,research_sol_dominant=False,research_wait_persist=False,max_mark_age_ns=50,btc_id=ID('BTC'),sol_id=ID('SOL'))
++  self.account=N(last_event=N(ts_event=0));self.inflight=[];self.open_orders=[];self.own_positions=[]
++  self.position=N(quantity=N(as_decimal=lambda:D(held)),is_long=True,id='native-owned',ts_opened=1,
++   unrealized_pnl=lambda price:N(as_decimal=lambda:D(-3000)))
++  self.cache=N(account_for_venue=lambda venue:self.account,orders_inflight=lambda:self.inflight,
++   orders_open=lambda:self.open_orders,positions_open=lambda:self.own_positions,
++   instrument=lambda inst:N(size_increment=N(as_decimal=lambda:D(1)),make_price=lambda mark:mark))
++  ep=N(id='group-1') if episode else None
++  self._domain=N(episode=ep,_ensure_btc_targets=lambda ep:None)
++  self._split_parent=dict(episode_id='group-1',closed=True)
++  self._pending_by_order={};self._queued_intents=[]
++  self._c1_init()
++ def _split_unfinished(self):return False
++ def _c1_conflict(self):return False
++ def _hb_position(self,inst):return self.position if inst==self.config.btc_id else None
++ def _c1_rights(self):return {}
++ def observe(self,equity='6000',source=100,receipt=101,epoch=None,account_ns=None):
++  self.account.last_event.ts_event=source if account_ns is None else account_ns
++  details=[dict(instrument_id='BTC',mark_ohlc=dict(close='100'))] if self._domain.episode else []
++  self._c1_observe(D(equity),receipt,source,self._c1_fill_epoch if epoch is None else epoch,details)
++
++
++def test_positive_economic_claim_consumes_before_submit_and_keeps_c1_frozen_half_target():
++ s=Owner();s.observe();t=s._c1_state
++ assert t['state']=='CUT_RESOLVING' and t['cut_lots']==5 and t['target_lots']==5
++ assert not t['cut_submitted'] and not s._c1_global_cut_armed
++ with pytest.raises(ValueError,match='G_CUT_ARM_COMMIT_INVALID'):s._c1_consume_global_cut_arm(1)
++ observe=next(n for n in CLASS.body if isinstance(n,ast.FunctionDef) and n.name=='_c1_observe')
++ text=ast.unparse(observe)
++ assert text.index('self._c1_consume_global_cut_arm(cut_lots)')<text.index("self._c1_state = dict(group=ep.id")
++
++
++def test_zero_lot_proposal_does_not_claim_or_consume_arm():
++ s=Owner(held=1);s.observe()
++ assert s._c1_state is None and s._c1_global_cut_armed
++ assert not any(r['event']=='CLAIM' for r in s.c1_audit)
++
++@pytest.mark.parametrize('filled',[0,2,5])
++def test_zero_partial_full_terminal_revoke_group_month_do_not_rearm(filled):
++ s=Owner();s.observe();t=s._c1_state;t['cut_filled']=filled;t['credit']=filled
++ s._c1_intents['cut']='CUT';s._c1_terminal(N(id='cut',episode_id='group-1'),102)
++ assert not s._c1_global_cut_armed
++ s._c1_revoke(103,'ORDINARY_EXIT');assert not s._c1_global_cut_armed
++ s._domain.episode=None;s.observe(source=200,receipt=201)
++ assert s._c1_state is None and not s._c1_global_cut_armed
++ # Arbitrary later month cannot reset an account-wide latch while DD stays40.
++ s.observe(source=1_900_000_000_000_000_000,receipt=1_900_000_000_000_000_001)
++ assert not s._c1_global_cut_armed
++
++
++def test_restore_terminal_cannot_rearm_and_original_parent_once_rule_survives_rearm():
++ s=Owner();s.observe();t=s._c1_state;t['credit']=2
++ s._c1_intents['restore']='RESTORE';s._c1_terminal(N(id='restore',episode_id='group-1'),102)
++ assert t['state']=='RELEASED' and not s._c1_global_cut_armed
++ s.observe(equity='6500',source=200,receipt=201)
++ assert s._c1_global_cut_armed
++ s.observe(source=202,receipt=203)
++ assert sum(r['event']=='CLAIM' for r in s.c1_audit)==1 # Same parent remains spent.
++
++@pytest.mark.parametrize('fault',['stale','mixed_epoch','account_after_source'])
++def test_stale_or_mixed_money_cannot_rearm(fault):
++ s=Owner(episode=False);s._c1_consume_global_cut_arm(5)
++ if fault=='stale':s.observe(equity='7000',source=100,receipt=200)
++ elif fault=='mixed_epoch':
++  s._c1_fill_epoch=1;s.observe(equity='7000',source=100,receipt=101,epoch=0)
++ else:s.observe(equity='7000',source=100,receipt=101,account_ns=101)
++ assert not s._c1_global_cut_armed
++ s.observe(equity='6500',source=300,receipt=301)
++ assert s._c1_global_cut_armed and s._c1_peak==D(10000)
++
++@pytest.mark.parametrize('pending',['own','inflight'])
++def test_dd35_with_unresolved_blocks_then_ack_requires_new_actual_source(pending):
++ s=Owner(episode=False);s._c1_consume_global_cut_arm(5)
++ if pending=='own':s._c1_intents['cut']='CUT';s._pending_by_order['oid']=N(id='cut')
++ else:s.inflight.append(N())
++ s.observe(equity='6500',source=100,receipt=101)
++ assert not s._c1_global_cut_armed and s._c1_global_rearm_blocked_source==100
++ s._pending_by_order.clear();s.inflight.clear()
++ s._c1_update_global_cut_arm(102) # ACK alone cannot reuse old recovery receipt.
++ assert not s._c1_global_cut_armed
++ s.observe(equity='6500',source=102,receipt=103)
++ assert s._c1_global_cut_armed
++
++
++def test_healthy_accepted_standing_limit_is_not_unresolved_c1_or_inflight():
++ s=Owner(episode=False);s._c1_consume_global_cut_arm(5)
++ s.open_orders=[N(status='ACCEPTED')];s._pending_by_order['tp']=N(id='ordinary-tp')
++ s.observe(equity='6500',source=100,receipt=101)
++ assert s._c1_global_cut_armed
++
++
++def test_default_off_has_no_new_gate_or_changed_half_claim_and_no_arm_effect():
++ s=Owner(enabled=False);s.observe();t=s._c1_state
++ assert t['cut_lots']==5 and t['target_lots']==5 and s._c1_global_cut_armed
++ proposed=next(r for r in s.c1_audit if r['event']=='PROPOSED_DECISION')
++ assert 'global_cut_armed' not in proposed['gates']
++ s._c1_global_cut_armed=False;s.observe(equity='6500',source=200,receipt=201)
++ assert not s._c1_global_cut_armed # Disabled G does not affect even injected arm state.
++
++
++def test_g_standalone_cli_and_default_off_metadata_wiring():
++ tree=ast.parse((ROOT/'research/native_baseline.py').read_text())
++ functions={n.name:n for n in tree.body if isinstance(n,ast.FunctionDef)}
++ runner=functions['run_native_diagnostic'];cli=functions['run_research_v0_repairs_cli'];main=functions['main']
++ args=runner.args.args;values=[None]*(len(args)-len(runner.args.defaults))+runner.args.defaults
++ assert next(ast.literal_eval(v) for a,v in zip(args,values) if a.arg=='research_c1_global_cut_arm') is False
++ assert ast.literal_eval(dict(zip((a.arg for a in cli.args.kwonlyargs),cli.args.kw_defaults))['research_c1_global_cut_arm']) is False
++ assert 'G_STANDALONE_REQUIRES_C1_HALF_RESTORE35' in ast.unparse(runner)
++ assert 'research_c1_global_cut_arm=args.research_c1_global_cut_arm' in ast.unparse(main)
++ assert 'research_c1_global_cut_arm=research_c1_global_cut_arm' in ast.unparse(cli)
++ assert 'unresolved_c1_pending_or_native_inflight_blocks=True' in ast.unparse(runner)
++
++@pytest.mark.parametrize('enabled',[False,True])
++def test_next_parent_cut_is_blocked_only_by_enabled_unrearmed_account_arm(enabled):
++ s=Owner(enabled=enabled);s.observe()
++ s._domain.episode=None;s.observe(source=200,receipt=201) # Actual old-group flat/reset path.
++ s._domain.episode=N(id='group-2');s._split_parent=dict(episode_id='group-2',closed=True)
++ s.observe(source=202,receipt=203)
++ assert (s._c1_state is None)==enabled
++ assert sum(r['event']=='CLAIM' for r in s.c1_audit)==(1 if enabled else 2)
++ if enabled:
++  assert any(not row['gates']['global_cut_armed'] for row in s.c1_denials.values())

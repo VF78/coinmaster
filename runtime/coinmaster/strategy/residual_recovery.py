@@ -10,6 +10,9 @@ class ResidualRecoveryResearch:
     def _c1_init(self):
         if self.config.research_c1_btc_cut_divisor not in (2,4):raise ValueError('C1_BTC_CUT_DIVISOR_MUST_BE_2_OR_4')
         if self.config.research_c1_restore_dd not in (D(".35"),D(".40")):raise ValueError("C1_RESTORE_DD_MUST_BE_35_OR_40")
+        if self.config.research_c1_global_cut_arm and (self.config.research_c1_btc_cut_divisor!=2 or self.config.research_c1_restore_dd!=D('.35')):raise ValueError('G_STANDALONE_REQUIRES_C1_HALF_RESTORE35')
+        self._c1_global_cut_armed=True
+        self._c1_global_rearm_blocked_source=None
         self.c1_audit=[];self._c1_state=None;self._c1_peak=D(str(self.config.active_seed))
         self._c1_checkpoint=None;self._c1_fill_epoch=0;self._c1_intents={};self._c1_last_bars={};self._c1_sol_levels={};self._c1_terminal_ids=set();self.c1_denials={};self._c1_blocked_ids=set()
         if self.config.research_residual_recovery and (not self.config.research_wait_4h or self.config.research_regime_reentry_band!=D('.5') or self.config.research_zero_retrace or self.config.research_sol_dominant or self.config.research_wait_persist):
@@ -68,12 +71,33 @@ class ResidualRecoveryResearch:
         if account is None or account.last_event.ts_event>c['source']:return None
         return c
 
+    def _c1_update_global_cut_arm(self,ns):
+        if not self.config.research_c1_global_cut_arm or self._c1_global_cut_armed:return
+        c=self._c1_current_money(ns)
+        if c is None or c['DD']>D('.35'):return
+        if self._c1_own_pending() or self.cache.orders_inflight():
+            # An ACK/terminal later cannot reuse a remembered recovery quote.
+            old=self._c1_global_rearm_blocked_source
+            self._c1_global_rearm_blocked_source=max(c['source'],old if old is not None else c['source'])
+            return
+        if self._c1_global_rearm_blocked_source is not None and c['source']<=self._c1_global_rearm_blocked_source:return
+        self._c1_global_cut_armed=True
+        self._c1_global_rearm_blocked_source=None
+        self._c1_log('GLOBAL_CUT_ARM_REARMED',ns,source_quote_ns=c['source'],DD=str(c['DD']),H=str(c['H']))
+
+    def _c1_consume_global_cut_arm(self,cut_lots):
+        if not self.config.research_c1_global_cut_arm:return
+        if cut_lots<=0 or not self._c1_global_cut_armed:raise ValueError('G_CUT_ARM_COMMIT_INVALID')
+        # Economically committed claim consumes before any submit/fill/ACK.
+        self._c1_global_cut_armed=False
+
     def _c1_observe(self,equity,ns,source,epoch,details):
         if not self.config.research_residual_recovery:return
         E=D(str(equity))
         if not E.is_finite() or E<=0 or source>=ns:return
         self._c1_peak=max(self._c1_peak,E)
         self._c1_checkpoint=dict(E=E,H=self._c1_peak,DD=1-E/self._c1_peak,C=max(D(0),E-D('.5')*self._c1_peak),source=source,receipt=ns,epoch=epoch)
+        self._c1_update_global_cut_arm(ns)
         ep=self._domain.episode;t=self._c1_state
         if t and (ep is None or ep.id!=t['group']):
             if self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight() or self._pending_by_order or self._queued_intents:raise ValueError('C1_GROUP_CHANGED_BEFORE_NATIVE_FLAT')
@@ -100,6 +124,7 @@ class ResidualRecoveryResearch:
         step=self.cache.instrument(inst).size_increment.as_decimal();lots=int(pos.quantity.as_decimal()/step)
         cut_lots=lots//(self.config.research_c1_btc_cut_divisor if inst==self.config.btc_id else 2)
         gates['native_half_exists']=cut_lots>0
+        if self.config.research_c1_global_cut_arm:gates['global_cut_armed']=self._c1_global_cut_armed
         if not all(gates.values()):
             from datetime import datetime,timezone
             key=str((ep.id,datetime.fromtimestamp(ns/1e9,timezone.utc).strftime('%Y-%m'),tuple(sorted(gates.items()))))
@@ -109,6 +134,7 @@ class ResidualRecoveryResearch:
         self._c1_log('PROPOSED_DECISION',ns,source_quote_ns=source,receipt_ns=ns,fill_epoch=epoch,E=str(E),H=str(c['H']),DD=str(c['DD']),cushion=str(c['C']),selected=str(inst),selected_loss=str(loss),positions=details,gates=gates,rights=self._c1_rights(),pending=[i.id for i in self._pending_by_order.values()])
         if not all(gates.values()):return
         self._domain._ensure_btc_targets(ep)
+        self._c1_consume_global_cut_arm(cut_lots)
         self._c1_state=dict(group=ep.id,state='CUT_RESOLVING',instrument=inst,side=1 if pos.is_long else -1,step=step,held_lots=lots,target_lots=lots-cut_lots,cut_lots=cut_lots,cut_submitted=False,restore_submitted=False,cut_filled=0,restore_filled=0,credit=0,cut_value=D(0),bucket={},revoked=False,claim_ns=ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,cut_terminal_ns=None,last_cut_fill_ns=None,confirmation=None)
         self._c1_log('CLAIM',ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,frozen_held_lots=lots,frozen_target_lots=lots-cut_lots,rights=self._c1_rights())
 
