@@ -1,0 +1,175 @@
+diff --git a/runtime/tests/run_method_a_sol.py b/runtime/tests/run_method_a_sol.py
+index 09425c3..06f395a 100644
+--- a/runtime/tests/run_method_a_sol.py
++++ b/runtime/tests/run_method_a_sol.py
+@@ -30,7 +30,7 @@ from run_continuous_hedge_preflight import snapshot_config
+ from run_method_a_m1 import config as m1_config,seed,source_inventory,verify_source,lifecycle,write_json,domain_context
+ from method_a_sol_public import load_case,prepare_case,native_inputs,canonical
+ 
+-ENGINEERING_CASE_READINESS={'M2':'M2_SOURCE_READY_REQUIRES_EXACT_ROOT_PREFLIGHT_GO_AND_CLAIM'}
++ENGINEERING_CASE_READINESS={'M2':'M2_SOURCE_READY_REQUIRES_EXACT_ROOT_PREFLIGHT_GO_AND_CLAIM','M3':'M3_SOURCE_READY_REQUIRES_EXACT_ROOT_PREFLIGHT_GO_AND_CLAIM'}
+ 
+ 
+ def selection(rows):
+@@ -176,9 +176,126 @@ def assert_m2_before_cleanup(engine,strategy):
+     return dict(case='M2',before_stress_prerequisites=strategy.case_second_phase_witnesses,entry_dispatch_native_book=books,partial_native_entry=entry.to_dict(),native_accepted_protection=protected,safe_btc_after_sol_tp=witness,actual_SOL_TP_levels=[0,1,2],actual_BTC_TP_levels=[0,1,2],financial_qualification=False)
+ 
+ 
++class M3Probe(Probe):
++    """Read-only case receipts around the unchanged product callbacks."""
++    def __init__(self,cfg):
++        super().__init__(cfg);self.m3_risk=[];self.m3_paired=[];self.m3_witnesses={};self.m3_fault=None
++    def _mr_log(self,event,ns,**values):
++        row=super()._mr_log(event,ns,**values);self.m3_risk.append(wire(dict(row)));return row
++    def _pair_log(self,event,ns,**values):
++        super()._pair_log(event,ns,**values)
++        self.m3_paired.append(wire(dict(event=event,timestamp_ns=ns,**values)))
++
++
++def m3_orders(engine,strategy,kind=None,parent=None):
++    return [(o,strategy._pair_orders.get(str(o.client_order_id))) for o in engine.cache.orders()
++        if strategy._pair_orders.get(str(o.client_order_id)) is not None
++        and (kind is None or strategy._pair_orders[str(o.client_order_id)]['kind']==kind)
++        and (parent is None or strategy._pair_orders[str(o.client_order_id)]['parent']==parent)]
++
++
++def m3_protection(engine,strategy,levels):
++    work=strategy._pair_work(instrument=SOL_PERP.id,kinds={'TP','STOP'})
++    assert {owner['level']for _,owner,_ in work if owner['kind']=='TP' and not owner.get('retiring')}==set(levels),'M3_POSITIVE_TP_LEVELS'
++    assert any(owner['kind']=='STOP'for _,owner,_ in work),'M3_MISSING_STOP'
++    assert all(strategy._pair_sol_positive(order,exact=True)for _,owner,order in work if not owner.get('retiring')),'M3_HEALTHY_PROTECTION_NOT_LATEST_ACCEPTED'
++    return [dict(kind=owner['kind'],level=owner['level'],native_order=order.to_dict())for _,owner,order in work if not owner.get('retiring')]
++
++
++def assert_m3_fault(engine,strategy,case,now):
++    faults=[r for r in strategy.m3_risk if r['event']=='QUALIFICATION_NO_GO']
++    start=case['expected_negative_not_before_ns']
++    assert now>=start and len(faults)==1 and int(faults[0]['timestamp_ns'])==start,'M3_UNEXPECTED_EARLY_OR_DUPLICATE_NO_GO'
++    assert faults[0]['reason']==case['expected_negative_reason']=='PARTIAL_NATIVE_STOP','M3_WRONG_EXPECTED_NATIVE_FAULT'
++    stopped=[(o,owner)for o,owner in m3_orders(engine,strategy,'STOP') if any(type(e).__name__=='OrderFilled' and e.ts_event==start for e in o.events)]
++    assert len(stopped)==1,'M3_MISSING_ACTUAL_FAULT_STOP'
++    order,owner=stopped[0]
++    assert owner['parent']==strategy.m3_witnesses['second_parent'],'M3_FAULT_WRONG_NATURAL_PARENT'
++    fills=[e for e in order.events if type(e).__name__=='OrderFilled']
++    terminals=[e for e in order.events if type(e).__name__=='OrderCanceled' and e.ts_event==start]
++    assert order.order_type.name=='STOP_MARKET' and order.time_in_force.name=='IOC' and order.is_reduce_only and order.side.name=='SELL' and order.trigger_price.as_decimal()==D(98),'M3_FAULT_STOP_PAYLOAD'
++    assert order.status.name=='CANCELED' and order.quantity.as_decimal()==D('196.4') and order.filled_qty.as_decimal()==D('.1') and terminals,'M3_NOT_ACTUAL_PARTIAL_STOP_IOC_TERMINAL'
++    assert len(fills)==1 and fills[0].last_qty.as_decimal()==D('.1') and fills[0].last_px.as_decimal()==D(98),'M3_FAULT_NATIVE_FILL'
++    assert strategy._mr_failed and strategy._pair_no_increase() and strategy._forced_close_reason=='METHOD_A_PARTIAL_NATIVE_STOP','M3_FAULT_NOT_FAIL_CLOSED'
++    assert not any(not o.is_reduce_only and o.ts_init>=start for o in engine.cache.orders()),'M3_HEALTHY_RESUME_OR_INCREASE_AFTER_FAULT'
++    strategy.m3_fault=wire(dict(reason=faults[0],STOP=order.to_dict(),native_events=[type(e).to_dict(e)for e in order.events],fault_parent=owner['parent']))
++    return strategy.m3_fault
++
++
++def assert_m3_phase(engine,strategy,row,case):
++    phase=row['phase'];ns=row['ns'];w=strategy.m3_witnesses
++    if phase=='FIRST_SECOND_PASSIVE':
++        w['FIRST_PASSIVE']=assert_m2_second_phase(engine,strategy,'ACCEPTED_AT_2')
++    elif phase=='FIRST_SECOND_FILLED':
++        w['FIRST_FULL']=assert_m2_second_phase(engine,strategy,'FILLED_AT_3');w['first_parent']=strategy._domain.episode.id
++    elif phase=='SOL_FULL_PROTECTED':
++        assert strategy._pair_qty(SOL_PERP.id)==D('210.9') and strategy._pair['atr']==D(40) and strategy._pair['p0']==D(100),'M3_FIRST_ENTRY_NOT_DECLARED_FULL'
++        w[phase]=m3_protection(engine,strategy,{0,1,2})
++    elif phase=='CAP_DONE':
++        cap=m3_orders(engine,strategy,'SOL_CAP',w['first_parent'])
++        assert strategy._pair_qty(BTC_PERP.id)==D(200) and strategy._pair_qty(SOL_PERP.id)==D('132.9'),'M3_CAP_ACTUAL_INVENTORY'
++        assert sum((o.filled_qty.as_decimal()for o,_ in cap),D(0))==D(78),'M3_CAP_FILL_TOTAL'
++        assert any(o.time_in_force.name=='IOC' and o.is_reduce_only and D(0)<o.filled_qty.as_decimal()<o.quantity.as_decimal() and o.status.name=='CANCELED'for o,_ in cap),'M3_CAP_NOT_ACTUAL_PARTIAL_IOC'
++        assert all(e.last_px.as_decimal()==D('132.9')for o,_ in cap for e in o.events if type(e).__name__=='OrderFilled'),'M3_CAP_STALE_FAVOURABLE_BOOK'
++        assert not m3_orders(engine,strategy,'SOL_CLOSE',w['first_parent']),'M3_CLOSE_MISLABELED_CAP'
++        w[phase]=[o.to_dict()for o,_ in cap]
++    elif phase=='HEALTHY_DEFER':
++        assert strategy._pair_qty(BTC_PERP.id)==D(1) and strategy._pair_qty(SOL_PERP.id)==D('132.9') and strategy._pair['close_sol'],'M3_DEFER_ACTUAL_STATE'
++        assert not m3_orders(engine,strategy,'SOL_CLOSE',w['first_parent']),'M3_DEFER_UNEXPECTED_EARLY_COMMAND'
++        w[phase]=m3_protection(engine,strategy,{0,1,2})
++    elif phase=='TINY_PROTECTED':
++        assert strategy._pair_qty(SOL_PERP.id)==D('.6') and strategy._pair['tp_lots']=={0:1,1:1,2:4},'M3_TINY_ACTUAL_RIGHTS'
++        w[phase]=m3_protection(engine,strategy,{0,1,2})
++    elif phase=='RETIRE_ZERO':
++        assert strategy._pair_qty(SOL_PERP.id)==D('.5') and strategy._pair['tp_lots']=={0:0,1:0,2:5},'M3_RETIRING_NOT_KNOWN_ZERO'
++        retired=[(o,owner)for o,owner in m3_orders(engine,strategy,'TP',w['first_parent']) if owner.get('retiring')]
++        assert {owner['level']for _,owner in retired}=={0,1} and all(o.is_pending_cancel and o.leaves_qty.as_decimal()==D('.1')for o,_ in retired),'M3_MISSING_TWO_ACTUAL_PENDING_CANCEL'
++        w[phase]=[dict(order_id=str(o.client_order_id),native_order=o.to_dict(),retiring=wire(owner['retiring']))for o,owner in retired]
++        w['retired_ids']=[str(o.client_order_id)for o,_ in retired]
++    elif phase=='BENIGN_CANCEL_REJECT':
++        retired=[(o,owner)for o,owner in m3_orders(engine,strategy,'TP',w['first_parent'])if str(o.client_order_id)in w['retired_ids']]
++        for order,owner in retired:
++            cancel=[e for e in order.events if type(e).__name__=='OrderPendingCancel'];fills=[e for e in order.events if type(e).__name__=='OrderFilled'];reject=[e for e in order.events if type(e).__name__=='OrderCancelRejected']
++            assert len(cancel)==len(fills)==len(reject)==1 and order.status.name=='FILLED','M3_NOT_BENIGN_TERMINAL_CANCEL_REJECT'
++            assert cancel[0].ts_event<fills[0].ts_event<cancel[0].ts_event+2*10**9 and fills[0].last_qty.as_decimal()==D('.1') and reject[0].ts_event>=fills[0].ts_event,'M3_NOT_TWO_ACTUAL_LATE_FILLS'
++        assert len(retired)==2,'M3_LATE_FILL_IDENTITIES'
++        w[phase]=[dict(native_order=o.to_dict(),native_events=[type(e).to_dict(e)for e in o.events])for o,_ in retired]
++    elif phase=='FIRST_FLAT_ACK':
++        assert not engine.cache.positions_open() and not engine.cache.orders_open() and not engine.cache.orders_inflight() and not strategy._pending_by_order,'M3_FIRST_PARENT_NOT_NATIVE_FLAT_ACK'
++        cash=engine.cache.account_for_venue(SIM).balance_total(BTC_PERP.quote_currency).as_decimal()
++        assert cash==D('6011.93042250') and D(str(strategy.config.research_method_a_peak_source.events.peak['equity']))==D(10000),'M3_FIRST_CASH_OR_CONTINUOUS_PEAK'
++        w[phase]=dict(native_cash=str(cash),native_account=native_account_snapshot(engine.cache.account_for_venue(SIM),(BTC_PERP.id,SOL_PERP.id)))
++    elif phase=='SECOND_PARENT_PASSIVE':
++        p=strategy._split_parent;assert p and p['episode_id']!=w['first_parent'] and p['quantity']==D('473.439') and p['first_filled']==p['first_quantity']==D('236.719'),'M3_SECOND_NATURAL_PARENT_OR_FIRST'
++        seconds=[o for o in engine.cache.orders()if o.instrument_id==BTC_PERP.id and not o.is_reduce_only and o.order_type.name=='LIMIT' and o.side.name=='SELL']
++        assert len(seconds)==1 and seconds[0].status.name=='ACCEPTED' and seconds[0].is_post_only and seconds[0].price.as_decimal()==D('100.3') and not seconds[0].filled_qty.as_decimal(),'M3_SECOND_NOT_ACTUALLY_PASSIVE'
++        w[phase]=seconds[0].to_dict();w['second_parent']=p['episode_id']
++    elif phase=='SECOND_PARENT_FULL':
++        orders=[o for o in engine.cache.orders()if str(o.client_order_id)==w['SECOND_PARENT_PASSIVE']['client_order_id']];assert len(orders)==1
++        order=orders[0];accepted=[e for e in order.events if type(e).__name__=='OrderAccepted'];fills=[e for e in order.events if type(e).__name__=='OrderFilled']
++        assert order.status.name=='FILLED' and order.filled_qty.as_decimal()==D('236.720') and all(e.last_px.as_decimal()==D('100.3') and e.liquidity_side.name=='MAKER' and accepted[0].ts_event<e.ts_event==ns for e in fills),'M3_SECOND_NOT_LATER_NATIVE_MAKER'
++        assert strategy._pair_position(BTC_PERP.id).is_short and strategy._pair_qty(BTC_PERP.id)==D('473.439'),'M3_SECOND_FULL_NATIVE_BTC'
++        w[phase]=order.to_dict()
++    elif phase=='SECOND_SOL_PROTECTED':
++        assert strategy._pair_qty(SOL_PERP.id)==D('196.4') and strategy._pair_position(SOL_PERP.id).is_long and strategy._pair['atr']==D(2) and strategy._pair['p0']==D(100),'M3_SECOND_SOL_ENTRY_OR_ATR'
++        assert not any(r['action']=='BTC_REDUCE' and r['parent']==w['second_parent']for r in strategy.native_fill_receipts),'M3_PREMATURE_SECOND_PARENT_BTC_TP'
++        w[phase]=m3_protection(engine,strategy,{0,1,2})
++
++
++def assert_m3_before_cleanup(engine,strategy):
++    required={'FIRST_PASSIVE','FIRST_FULL','SOL_FULL_PROTECTED','CAP_DONE','HEALTHY_DEFER','TINY_PROTECTED','RETIRE_ZERO','BENIGN_CANCEL_REJECT','FIRST_FLAT_ACK','SECOND_PARENT_PASSIVE','SECOND_PARENT_FULL','SECOND_SOL_PROTECTED'}
++    assert required<=set(strategy.m3_witnesses) and strategy.m3_fault,'M3_REQUIRED_PHASE_NOT_REACHED'
++    allowed_ids=set(strategy.m3_witnesses['retired_ids'])
++    assert all(type(e).__name__not in {'OrderRejected','OrderDenied','OrderExpired'}and(type(e).__name__!='OrderCancelRejected'or str(o.client_order_id)in allowed_ids)for o in engine.cache.orders()for e in o.events),'M3_UNEXPECTED_NATIVE_REJECTION'
++    start=int(strategy.m3_fault['reason']['timestamp_ns'])
++    conservative=[o for o in engine.cache.orders()if o.is_reduce_only and o.ts_init>=start and o.order_type.name=='MARKET' and any(type(e).__name__=='OrderSubmitted'for e in o.events)]
++    assert conservative,'M3_NO_ACTUAL_CONSERVATIVE_COMMAND'
++    return wire(dict(case='M3',normal_phase_witnesses=strategy.m3_witnesses,expected_native_fault=strategy.m3_fault,actual_conservative_commands=[o.to_dict()for o in conservative],financial_qualification=False))
++
++
+ def launch(case_path,gate_path):
+     case=load_case(case_path);proof=prepare(case_path);gate=json.loads(Path(gate_path).read_text());source=verify_source(gate)
+-    assert ENGINEERING_CASE_READINESS.get(case['case_id'])=='M2_SOURCE_READY_REQUIRES_EXACT_ROOT_PREFLIGHT_GO_AND_CLAIM','SOL_ENGINEERING_CASE_NOT_SOURCE_READY'
++    assert ENGINEERING_CASE_READINESS.get(case['case_id'])==case['case_id']+'_SOURCE_READY_REQUIRES_EXACT_ROOT_PREFLIGHT_GO_AND_CLAIM','SOL_ENGINEERING_CASE_NOT_SOURCE_READY'
+     assert gate.get('purpose')=='METHOD_A_REGISTERED_ENGINEERING_CASE','SOL_ENGINEERING_PURPOSE_REQUIRED'
+     assert gate['root_go']is True and gate['case_id']==case['case_id'] and gate['source_commit']==source
+     assert gate['runtime_versions']==proof['runtime_versions'],'SOL_ROOT_PREFLIGHT_RUNTIME_VERSION_MISMATCH'
+@@ -205,25 +322,30 @@ def launch(case_path,gate_path):
+         engine=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
+         engine.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1),liquidity_consumption=True,bar_execution=False,use_message_queue=True,use_market_order_acks=False,use_reduce_only=True,modules=[module,observer,book],fee_model=MakerTakerFeeModel(),latency_model=LatencyModel(base_latency_nanos=0,insert_latency_nanos=0,update_latency_nanos=0,cancel_latency_nanos=case['cancel_latency_ns']))
+         for instrument in instruments:engine.add_instrument(instrument)
+-        cfg=config_for(case,proof['input_binding'],observer,book);strategy=Probe(cfg)
++        cfg=config_for(case,proof['input_binding'],observer,book);strategy=M3Probe(cfg) if case['case_id']=='M3' else Probe(cfg)
+         streams=(MethodARiskRows(out/'risk.jsonl.gz','RISK'),MethodARiskRows(out/'paired.jsonl.gz','PAIRED'))
+         strategy.method_a_risk_audit,strategy.paired_prefix_audit=streams
+         book.bind(strategy);engine.add_strategy(strategy)
+         for row in case['rows']:
+             current_ns=row['ns']
+-            if case['case_id']=='M2' and current_ns==61*10**9:assert_m2_second_phase(engine,strategy,'FULL_BEFORE_STRESS')
++            if case['case_id']in ('M2','M3') and current_ns==61*10**9:assert_m2_second_phase(engine,strategy,'FULL_BEFORE_STRESS')
+             for client,inputs,sort in native_inputs(row):
+                 if client is None:engine.add_data(inputs,sort=sort)
+                 else:engine.add_data(inputs,client_id=client,sort=sort)
+             engine.run(streaming=True);engine.clear_data()
+             if case['case_id']=='M2' and current_ns in (2*10**9,3*10**9):assert_m2_second_phase(engine,strategy,'ACCEPTED_AT_2' if current_ns==2*10**9 else 'FILLED_AT_3')
++            if case['case_id']=='M3':
++                assert_m3_phase(engine,strategy,row,case)
++                if strategy.m3_fault is not None:assert_m3_fault(engine,strategy,case,current_ns)
+             assert not strategy.liquidation_audit,'SOL_UNEXPECTED_LIQUIDATION'
+             if strategy._mr_failed:
+                 start=case.get('expected_negative_not_before_ns')
+                 assert case['case_id']=='M3' and start is not None and current_ns>=start,'SOL_UNEXPECTED_EARLY_NO_GO'
++                assert_m3_fault(engine,strategy,case,current_ns)
+                 stopped_at_expected_negative=True
++        if case['case_id']=='M3':assert stopped_at_expected_negative,'M3_EXPECTED_NATIVE_FAULT_NOT_REACHED'
+         capture('BEFORE_END')
+-        mechanism_case_witnesses=assert_m2_before_cleanup(engine,strategy) if case['case_id']=='M2' else None
++        mechanism_case_witnesses=assert_m2_before_cleanup(engine,strategy) if case['case_id']=='M2' else assert_m3_before_cleanup(engine,strategy)
+         received={a:book.epochs.get(i.id,0) for a,i in (('BTC',BTC_PERP),('SOL',SOL_PERP))}
+         assert received==proof['quote_universe'],'SOL_EXPECTED_NATIVE_INPUT_UNIVERSE_MISMATCH'
+         if not stopped_at_expected_negative:

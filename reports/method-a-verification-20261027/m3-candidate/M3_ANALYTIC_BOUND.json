@@ -1,0 +1,79 @@
+{
+  "B_min": "5926.450343946967957225182213",
+  "FIRST": "236.719",
+  "MEDIUM_interval": [
+    "99.79120642667514853136241071",
+    "100.2164605076551840856182537"
+  ],
+  "SECOND": "236.720",
+  "SECOND_contemporaneous_state": {
+    "btc": "-236.719",
+    "equity": "5927.89517750",
+    "pb": "100.3",
+    "peak": "10000",
+    "ps": "100",
+    "sol": "0"
+  },
+  "SECOND_envelope": {
+    "margin_pass": true,
+    "safe": true,
+    "states": 7,
+    "worst_deficit": "-72.11856774652589215203947255971245539000000000000000000000000"
+  },
+  "actual_money_claim": false,
+  "after_both_entry_BASEfees_cash": "5994.162274300",
+  "base_source": "c5a2f137a94b387a944af3af213cfe4c742aef34",
+  "chosen_OFF_CLOSE": "128",
+  "closeprice_upper_bound": "128.6438062573725524267968954",
+  "continuous_peak_lower_bound": "10000; any larger actualH must fail the case cash/peak assertion",
+  "entry_envelope": {
+    "margin_pass": true,
+    "safe": true,
+    "states": 156,
+    "worst_deficit": "-266.37134078203326646050591534112935487000000000000000000000000"
+  },
+  "formula": {
+    "B_min": "5000/(FIRST_equity_coefficient-pending_SECOND_loss_coefficient)",
+    "FIRST": "floor(parentlots/2)*.001",
+    "FIRST_equity_coefficient": "0.986021875",
+    "Q": "7.875*B/100 before exact native lot floor",
+    "flatcapital": "5746.38445250+132.772985*(130-closeprice)",
+    "pending_SECOND_loss_coefficient": "0.1423465365055513191626099487",
+    "why_extremum": "Same-side native BTC exposure only: positive loss slope dominates paid reductioncost; maximum at full original inventory. Actual filled VWAP/fees checked by exact native-lot point."
+  },
+  "helper_sha256": "d4b26034187cd50ce874dbb3a0ace1b927c2f84370d77d006746ee5ac6d4afc0",
+  "hypothetical_first_parent_flatcapital": "6011.93042250",
+  "native_constructors": 0,
+  "original_parent": "473.439",
+  "own_filled_VWAP": "100.1500003168306793483426587",
+  "partial_STOP_current_evaluation": {
+    "gross": "413.2898003125475927591169572634988839985525900370504355224",
+    "loss": "518.074708801535408853774434773552550988354833522493007347340280",
+    "margin_pass": true,
+    "worst_deficit": "-190.840075498464591146225565226447449011645166477506992652659720"
+  },
+  "partial_STOP_state": {
+    "btc": "-473.439",
+    "equity": "5708.914784300",
+    "pb": "99.9",
+    "peak": "10000",
+    "ps": "98",
+    "sol": "196.3"
+  },
+  "rejected130_alternative": {
+    "SECOND_cross100_3_worst_deficit": "151.91551245786662611680498142521212173000000000000000000000000",
+    "classification": "DATA_PROPOSAL_REJECTED_NOT_PRODUCT_FAILURE",
+    "flatB": "5746.38445250"
+  },
+  "selected_contemporaneous_PB": "99.9",
+  "selection_state": {
+    "btc": "-473.439",
+    "equity": "6112.522174300",
+    "pb": "99.9",
+    "peak": "10000",
+    "ps": "100",
+    "sol": "0"
+  },
+  "status": "CONDITIONAL_PLANNING_MATH_ONLY_NOT_NATIVE_PNL",
+  "target": "196.4"
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "METHOD_A_M3_REVIEW_CANDIDATE_MANIFEST_V1",
+  "status": "SEALED_CANDIDATE_REQUIRES_PEER_REVIEW_SOURCE_FREEZE_MAC_PREFLIGHT_ROOT_GO",
+  "base_source_commit": "c5a2f137a94b387a944af3af213cfe4c742aef34",
+  "source_commit": null,
+  "root_GO": false,
+  "ready_to_launch": false,
+  "files": {
+    "runtime/tests/run_method_a_sol.py": "620636e046ba0262461ebe990fe477fbee557e6244d452d30f04de50a0696285",
+    "runtime/tests/test_method_a_m3_candidate_pure.py": "88d40e715761f6b076a15bf350bcdccc34a58a5840badf21aba4dfb887d0e984",
+    "reports/method-a-verification-20261027/m3-candidate/M3_DATA_PROPOSED.json": "ae29a508bd34821b7d909ea07d40e22260290eb889422fcd72f4377de647d0fc",
+    "reports/method-a-verification-20261027/m3-candidate/M3_PREPARED_CANDIDATE.json": "3a872868c201d4149a4dbca67b0f705860e4f44aea2f23c6f11a430675bc8375",
+    "reports/method-a-verification-20261027/m3-candidate/M3_WORKER_CANDIDATE.patch": "e2affc9110311ae2b05cd37a3d06f6e9ca0a4562ba402afe96d6317c8d999f73",
+    "reports/method-a-verification-20261027/m3-candidate/M3_ANALYTIC_BOUND.json": "5f8b78dcf7182f10cd64b7b76b6b0d13c165708e2d561fee4f64b9e43c3c3616",
+    "reports/method-a-verification-20261027/m3-candidate/check_m3_candidate_math.py": "20ea060686b4235c5562da1add7e6b6ac2a03ea60865cc3687f1f81c0626a711"
+  },
+  "tests": {
+    "passed": 23,
+    "failed": 0,
+    "seconds": "3.91",
+    "command": "PYTHONPATH=runtime:runtime/tests PYTHONDONTWRITEBYTECODE=1 <existingPython> -m pytest runtime/tests/test_method_a_risk_interface_pure.py runtime/tests/test_method_a_sol_public_pure.py runtime/tests/test_method_a_m3_candidate_pure.py -q"
+  },
+  "engine_constructors": 0,
+  "M2_Probe_helpers_prepare_config_AST_equal_c5": true,
+  "product_runtime_coinmaster_equal_c5": true,
+  "protected_financial_dirty_pins_unchanged_unstaged": true,
+  "preflight": {
+    "native_inputs": 139,
+    "quotes": 56,
+    "quote_universe": {
+      "BTC": 24,
+      "SOL": 32
+    },
+    "native_input_sha256": "d48fcd142b4d5808da56fe9d5fa6170e938a003e3ebf73f78aa06238cb04d164",
+    "recipe_sha256": "31a1a9ca552421579873c609b64985ee58684dfc4c6ec2173f9e08664e35cb9e",
+    "config_sha256": "76b844b73d32382496e4be3eb4dadf857b305fc0ed2386ac49ceed62cbd62989",
+    "source_inventory_sha256": "ab18b145449f7a8d541725e6e0c934814062c9fa1f9806ffd44c75e671b19749",
+    "runtime_versions": {
+      "python": "3.12.3",
+      "nautilus": "1.231.0"
+    },
+    "last_timestamp_ns": 100868100000000
+  },
+  "new_guards": [
+    "M3 isolated Probe subclass; stock source/runtime/recipe/config/claim gate unchanged forM2; unregisteredM4-M8 stillblocked",
+    "M3 native fullparent/passiveSECOND/fullBTC beforestress; exact2distinctnaturalparentIDs",
+    "CAP78 actualpartialIOC/realresidual/price132.9 and preloadedpublicbook; noCLOSEasCAP",
+    "Positive3TPSTOP healthydefer, exact.6\u2192.5zero-rightretirement, 2actualPendingCancel latefills+terminalCancelRejected",
+    "Actualfirstparentflat+allACK/cash6011.93042250/continuousH10000",
+    "Contemporaneoussecondparent100.3 makerfull; noBTCprematureTP; actualSOL196.4/ATR2",
+    "NoearlierNO_GO; onlyexactPARTIAL_NATIVE_STOP atdeclaredtime tiedactualpartialIOCSTOP196.4/.1/trigger98/OrderCanceled/nativeCID/parent",
+    "Nohealthyresumeornewincrease afterfault; actualnativeROmarket conservativecommands required"
+  ],
+  "remaining_native_measurements": [
+    "Exact publicdata\u2192quote matching\u2192queued modify/IOC/CAP/drain order; .7 possibleintermediateCAP handledwithoutassuminginstant78",
+    "Known-zero retirementbeforematching, completeoldnativePendingCancel/Filled/CancelRejected event histories and strictcoverage atnextinput",
+    "NaturalshortFIRST/SECOND timing and stockmargin ALLOW, exactnativecash/peak continuity",
+    "FinalSTOPactualpartialIOC cancellation/reason andconservativecommands; cleanupflat isnotcasefinancialPASS"
+  ],
+  "known_limitations": [
+    "Mathematical receipts are conditional planning witnesses, notnativePnL/account results",
+    "No newUUID/claim/GO/ledgerwrite/engine/publicpush/commit",
+    "Separatefinancialreceiptbarrier highwatermark completeness audit isoutofM3scope; no financialwaiver"
+  ]
+}
