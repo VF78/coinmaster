@@ -1,0 +1,44 @@
+{
+  "base": "a4ed258b25345208a4612bfa1953a232812c64ff",
+  "source_paths": [
+    "runtime/coinmaster/strategy/method_a_risk_native.py",
+    "runtime/tests/test_method_a_recovery_code0.py",
+    "runtime/tests/test_method_a_recovery_code0_quantities.py"
+  ],
+  "source_pins": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/tests/test_method_a_recovery_code0.py": "e05b467a635cbdb790f460bdc917d3f0fe62798eb388d30b8783594fc8dd161f",
+    "runtime/tests/test_method_a_recovery_code0_quantities.py": "7f7dbc2ab1f5eb039d2d57309e597feb35c25e575c69f0858d54f3fa5e709283"
+  },
+  "packet_paths": [
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/DELTA_REPORT.json",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/FAILED_NATIVE_FILL_FIXTURE_VENUE_ID.txt",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/FINAL_LARGER_BINDING_TEST_RESULT.txt",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/FOCUSED_TEST_RESULT.txt",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/INDEPENDENT_QUANTITY_PEER_REVIEW.json",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/KNOWN_WORKING_LEAVES_TEST_RESULT.txt",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/LARGER_ACTUAL_CACHE_PROOF.json",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/OWNER_APPROVAL.json",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/PARAMETRIC_PROOF.md",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/QUANTITY_DELTA_FOR_REVIEW.patch",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/SOURCE_ACCEPTANCE.json"
+  ],
+  "packet_hashes": {
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/DELTA_REPORT.json": "b79920efc948f0e9f2d010a2fae693212ad414bde574b4cb27de2ba6cf9b08ca",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/FAILED_NATIVE_FILL_FIXTURE_VENUE_ID.txt": "c5f36665165893580e7fcb9dc3c59e781897165b7f4effd2b0036ff49a8e5f11",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/FINAL_LARGER_BINDING_TEST_RESULT.txt": "8b134d8f16cbd3c2a436f7b1bfe53df5b31c36830b9b9a06492f35e8c6d9bc7b",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/FOCUSED_TEST_RESULT.txt": "203cc7bfeb6cead8e71c9140971546439867c6294bb1b687d0bbe4a61f6f5b42",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/INDEPENDENT_QUANTITY_PEER_REVIEW.json": "55dabac74dc7618bbddf983ff6360ffa1e96ab5e1bb73b377a3c3b0e8ec76892",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/KNOWN_WORKING_LEAVES_TEST_RESULT.txt": "6f9d6642775c536bbf0c187781169c2df0c37d8f7016cdbf7fc8771d977c6f06",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/LARGER_ACTUAL_CACHE_PROOF.json": "65e0d3b6adc524dec3808f8e548cdf67d31a7388c8ba3236ea37ba04aa8213d1",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/OWNER_APPROVAL.json": "d9095fa9b5599def4b93232614eb4ece19b24163532c6f9151b6b3cdea92185b",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/PARAMETRIC_PROOF.md": "3bacfa459d60ded31b9b65f7ae59d8c0f19ffc45aefe114d6caa86c1d9f4f91d",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/QUANTITY_DELTA_FOR_REVIEW.patch": "ddd78dbd46753339c802406363031f849cf2ce0bb75598bd427feadafeddebba",
+    "reports/method-a-verification-20261027/code0-quantity-generalization-20261028/SOURCE_ACCEPTANCE.json": "7e0681e28985f370ad59f901d6099c33de8956d6244c786de1b8d606c0e5cae6"
+  },
+  "copy_extra_after_commit": "COMMIT_PUBLICATION_RECEIPT.json written externally after ordinary commit and exact remote readback",
+  "preserved_financial_dirty": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  }
+}

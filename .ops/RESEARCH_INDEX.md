@@ -1,5 +1,5 @@
 ## Current Method A checkpoint — 2026-10-28
-CODE0 COMPLETE_LIMITED a4ed258 defaultOFF,20/20finalenginefreePASS,peer0P0P1,native0. Owner45a5e11a approval code/pure only. Sameunavoidablebaseline/full-safe/cappedLIMITIOC+partial-drain logic implemented; normal/defaultOFF/TPSTOP/financialreader unchanged. Quantitybounds BTC[0,1]/SOL[-132.9,0] retained after autoreview rejected generalization; current code0 packet contains exactrejection; owner receipt d9095fa9 now explicitly approves quantity-only implementation/pure generalization, in progress, native0. Canonical ledgerUNCHANGED9/18,active0; no newnative/economic permission, all fullgoalsNOT_MET. Current CURRENT_RESULT/ACTIVE+approval authority.
+CODE0 quantity-only COMPLETE b1807f1 defaultOFF, native0: boundedbase20checks plus4focusedquantitychecks separate; bothpeer0P0P1. Fixed1BTC/132.9SOLceilings replacedactualCache/workingTPleaves afterexplicitownerreceipt d9095fa9; otherguards/runtimebytes unchanged. Current audit: reports/method-a-verification-20261027/CHATGPT_AUDIT_STATUS_RU.md. CanonicalledgerUNCHANGED9/18active0; economicsNOT_MET; nextnative needsnewconcreteprotocol/ownerallocation, dedicatedM3exhausted.
 
 # Research memory — as of2026-10-26; read before opening archives
 

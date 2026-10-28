@@ -1,0 +1,81 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "OWNER_AUTHORIZED_QUANTITY_DELTA_READY_FOR_ONE_FOCUSED_PEER_REVIEW_NO_COMMIT",
+  "base": "a4ed258b25345208a4612bfa1953a232812c64ff",
+  "approval_sha256": "d9095fa9b5599def4b93232614eb4ece19b24163532c6f9151b6b3cdea92185b",
+  "runtime_only_change": "Remove literal BTC<=1/SOL>=-132.9 ceilings; retain signs, derive all fill bounds from actual native B,S and working TP leaves. Exact source-text comparison proves every other runtime byte unchanged.",
+  "runtime_other_bytes_unchanged": true,
+  "source_pins": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/tests/test_method_a_recovery_code0.py": "e05b467a635cbdb790f460bdc917d3f0fe62798eb388d30b8783594fc8dd161f",
+    "runtime/tests/test_method_a_recovery_code0_quantities.py": "7f7dbc2ab1f5eb039d2d57309e597feb35c25e575c69f0858d54f3fa5e709283"
+  },
+  "patch_sha256": "ddd78dbd46753339c802406363031f849cf2ce0bb75598bd427feadafeddebba",
+  "proof_sha256": "3bacfa459d60ded31b9b65f7ae59d8c0f19ffc45aefe114d6caa86c1d9f4f91d",
+  "test_evidence": {
+    "FOCUSED_TEST_RESULT.txt": "203cc7bfeb6cead8e71c9140971546439867c6294bb1b687d0bbe4a61f6f5b42",
+    "KNOWN_WORKING_LEAVES_TEST_RESULT.txt": "6f9d6642775c536bbf0c187781169c2df0c37d8f7016cdbf7fc8771d977c6f06",
+    "FINAL_LARGER_BINDING_TEST_RESULT.txt": "8b134d8f16cbd3c2a436f7b1bfe53df5b31c36830b9b9a06492f35e8c6d9bc7b",
+    "LARGER_ACTUAL_CACHE_PROOF.json": "65e0d3b6adc524dec3808f8e548cdf67d31a7388c8ba3236ea37ba04aa8213d1"
+  },
+  "tests": {
+    "unique_focused_pass": 4,
+    "initial_three_seconds": "0.446",
+    "working_leaves_seconds": "0.011",
+    "larger_final_snapshot_serialization_seconds": "0.301",
+    "broad_or_old_whole_suite_reruns": 0,
+    "engine_constructors": 0,
+    "native_attempts": 0
+  },
+  "larger_native_object_case": {
+    "actual_Cache_positions": {
+      "BTC": "2",
+      "SOL": "-200"
+    },
+    "actual_Cache_account_equity": "5500",
+    "peak": "10000",
+    "cushion": "500",
+    "working_BTC_TP_leaves": "2",
+    "new_native_order": "LIMIT IOC BUY200SOL @133.03 reduce_only",
+    "unavoidable_baseline": "96.072057535450215300603959271520486798976717970305762284296000",
+    "route_max": "96.072057535450215300603959271520486798976717970305762284296000",
+    "full_edge_max": "-455.686306345126515114349375750106200000000000000000000000000000",
+    "native_transport": "spy only, no engine/fills from execution; Cache snapshot populated via actual public events/objects"
+  },
+  "negative_cases": [
+    "SOL400 orBTC3000 cross first tier -> UNKNOWN",
+    "pendingoldBTCcommand -> UNKNOWN",
+    "knownworkingTPleaves>actualBTC -> UNKNOWN"
+  ],
+  "captured70_regression": "same baseline35.2044175723066680672513309359253634779200290912681790379146920, SOL132.9 cap133.03 unchanged",
+  "guards_unchanged": [
+    "defaultOFF/BREACH-only",
+    "normaladmission/DD50/cushion",
+    "no pendingcredit",
+    "oneoldBTCorder/knownACK",
+    "negativecost/fee-affinity/knownlinearUSDTfees",
+    "funding0/fixedsigns/firsttier",
+    "dormantoldSOLTPSTOP",
+    "soleLIMITIOCpricecostcap",
+    "nativepartial/resizeACKdrain/originaldeadline"
+  ],
+  "prior_auto_review_rejection": "Prior packet preserved; THIS newly explicit human approval authorizes the exact previously rejected action. No hidden retry or agent reroute.",
+  "preserved_financial_dirty": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "ledger": {
+    "spent": 9,
+    "cap": 18,
+    "changes": 0,
+    "new_slot": 0,
+    "GO": false
+  },
+  "native_prefix_full": [
+    0,
+    0,
+    0
+  ],
+  "economic_qualification": false,
+  "commit": null
+}

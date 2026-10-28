@@ -1,0 +1,30 @@
+{
+  "status": "COMMITTED_PUBLISHED_EXACT_REMOTE_VERIFIED_SOURCE_ONLY_NATIVE0",
+  "created_utc": "2026-10-28T16:11:16.752054+00:00",
+  "commit": "b1807f15043522b57d3e76527586f152c2db572c",
+  "parent": "a4ed258b25345208a4612bfa1953a232812c64ff",
+  "ref": "refs/heads/codex/hedge-rights-unlock-20261025",
+  "push_exit_code": 0,
+  "remote_read_exit_code": 0,
+  "remote_sha": "b1807f15043522b57d3e76527586f152c2db572c",
+  "exact_remote_match": true,
+  "source_pins": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/tests/test_method_a_recovery_code0.py": "e05b467a635cbdb790f460bdc917d3f0fe62798eb388d30b8783594fc8dd161f",
+    "runtime/tests/test_method_a_recovery_code0_quantities.py": "7f7dbc2ab1f5eb039d2d57309e597feb35c25e575c69f0858d54f3fa5e709283"
+  },
+  "report_sha256": "b79920efc948f0e9f2d010a2fae693212ad414bde574b4cb27de2ba6cf9b08ca",
+  "peer_sha256": "55dabac74dc7618bbddf983ff6360ffa1e96ab5e1bb73b377a3c3b0e8ec76892",
+  "manifest_sha256": "a3b30ecfc6b3bea7ed0d843be322c0258fb1c70566ef616e479c356dea27f006",
+  "acceptance_sha256": "7e0681e28985f370ad59f901d6099c33de8956d6244c786de1b8d606c0e5cae6",
+  "financial_dirty_preserved_unstaged": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "tests": "4 unique quantity-delta checks; prior bounded20 are separate. No tests rerun at publication.",
+  "native_attempts": 0,
+  "engine_constructors": 0,
+  "ledger_changes": 0,
+  "raw_git_auth_output": "Not printed or persisted",
+  "copy_packet": "Committed packet directory plus this external untracked COMMIT_PUBLICATION_RECEIPT.json"
+}

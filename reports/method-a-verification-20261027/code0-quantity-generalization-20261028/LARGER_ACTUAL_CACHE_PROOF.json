@@ -1,0 +1,297 @@
+{
+  "scope": "ENGINE_FREE_PUBLIC_NATIVE_CACHE_POSITION_ACCOUNT_ORDER_ONLY",
+  "native_attempts": 0,
+  "engine_constructors": 0,
+  "positions": {
+    "BTC": "2",
+    "SOL": "-200"
+  },
+  "equity": "5500",
+  "peak": "10000",
+  "cushion": "500",
+  "known_working_BTC_TP_leaves": "2",
+  "route_proof": {
+    "baseline": "96.072057535450215300603959271520486798976717970305762284296000",
+    "route": "96.072057535450215300603959271520486798976717970305762284296000",
+    "full": "-455.686306345126515114349375750106200000000000000000000000000000",
+    "partition_states": 156,
+    "full_partition_states": 4,
+    "cost_per_unit": "0.2031665",
+    "quantity": "200",
+    "endpoint_equity_bound": "5459.3667000",
+    "no_pending_credit": true,
+    "scope": "FIXED_FIVE_SCENARIOS_ONLY_NO_GAP_OR_FILL_GUARANTEE",
+    "native_price": "133.03",
+    "native_type": "LIMIT",
+    "native_tif": "IOC",
+    "reduce_only": true,
+    "dormant_sol_ids": [
+      "O-19700101-000110-001-001-2",
+      "O-19700101-000110-001-001-3",
+      "O-19700101-000110-001-001-4",
+      "O-19700101-000110-001-001-5"
+    ],
+    "scenario_sol_prices": [
+      "132.9",
+      "130.1481105409842233772622237568193276082123872099730130184",
+      "130.6286670862130777499083200605333276082123872099730130184",
+      "135.1713329137869222500916799394666723917876127900269869816",
+      "135.6518894590157766227377762431806723917876127900269869816"
+    ],
+    "frame_binding": {
+      "source": "a4ed258+APPROVED_QUANTITY_DIFF",
+      "config": "CODE0_ENGINE_FREE",
+      "data": "SYNTHETIC_NATIVE_CACHE_BTC2_SOL200",
+      "policy": "FROZEN_PROFILE"
+    }
+  },
+  "native_order": {
+    "trader_id": "EXAMPLE-001",
+    "strategy_id": "MethodA-001",
+    "instrument_id": "SOLUSDT-PERP.P1SIM",
+    "client_order_id": "O-19700101-000110-001-001-8",
+    "venue_order_id": null,
+    "position_id": null,
+    "account_id": null,
+    "last_trade_id": null,
+    "type": "LIMIT",
+    "side": "BUY",
+    "quantity": "200.0",
+    "price": "133.03",
+    "time_in_force": "IOC",
+    "expire_time_ns": null,
+    "filled_qty": "0.0",
+    "liquidity_side": "NO_LIQUIDITY_SIDE",
+    "avg_px": null,
+    "slippage": null,
+    "commissions": null,
+    "status": "INITIALIZED",
+    "is_post_only": false,
+    "is_reduce_only": true,
+    "is_quote_quantity": false,
+    "display_qty": null,
+    "emulation_trigger": "NO_TRIGGER",
+    "trigger_instrument_id": null,
+    "contingency_type": "NO_CONTINGENCY",
+    "order_list_id": null,
+    "linked_order_ids": null,
+    "parent_order_id": null,
+    "exec_algorithm_id": null,
+    "exec_algorithm_params": null,
+    "exec_spawn_id": null,
+    "tags": null,
+    "init_id": "73902005-9f64-4483-911c-508951e9c7d8",
+    "ts_init": 70000000000,
+    "ts_last": 70000000000
+  },
+  "native_snapshot": {
+    "native_cash": "5500",
+    "equity": "5500",
+    "peak": "10000",
+    "cushion": "500",
+    "native_positions": [
+      {
+        "position_id": "BTC-POS",
+        "trader_id": "EXAMPLE-001",
+        "strategy_id": "MethodA-001",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "account_id": "P1SIM-EXAMPLE",
+        "opening_order_id": "O-19700101-000110-001-001-6",
+        "closing_order_id": null,
+        "entry": "BUY",
+        "side": "LONG",
+        "signed_qty": 2.0,
+        "quantity": "2.000",
+        "peak_qty": "317.250",
+        "ts_init": 69999999996,
+        "ts_opened": 69999999996,
+        "ts_last": 69999999999,
+        "ts_closed": null,
+        "duration_ns": null,
+        "avg_px_open": 107.0,
+        "avg_px_close": 105.2,
+        "quote_currency": "USDT",
+        "base_currency": "BTC",
+        "settlement_currency": "USDT",
+        "commissions": [
+          "25.30302250 USDT"
+        ],
+        "realized_return": -0.01682,
+        "realized_pnl": "-592.75302250 USDT"
+      },
+      {
+        "position_id": "SOL-POS",
+        "trader_id": "EXAMPLE-001",
+        "strategy_id": "MethodA-001",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "account_id": "P1SIM-EXAMPLE",
+        "opening_order_id": "O-19700101-000110-001-001-7",
+        "closing_order_id": null,
+        "entry": "SELL",
+        "side": "SHORT",
+        "signed_qty": -200.0,
+        "quantity": "200.0",
+        "peak_qty": "200.0",
+        "ts_init": 69999999996,
+        "ts_opened": 69999999996,
+        "ts_last": 69999999996,
+        "ts_closed": null,
+        "duration_ns": null,
+        "avg_px_open": 132.9,
+        "avg_px_close": null,
+        "quote_currency": "USDT",
+        "base_currency": "SOL",
+        "settlement_currency": "USDT",
+        "commissions": [
+          "14.61900000 USDT"
+        ],
+        "realized_return": 0.0,
+        "realized_pnl": "-14.61900000 USDT"
+      }
+    ],
+    "marks": [
+      {
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "raw_price": "107",
+        "native_price": "107.0",
+        "event_ns": "70000000000",
+        "available_ns": "70000000000",
+        "age_ns": "0"
+      },
+      {
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "raw_price": "132.9",
+        "native_price": "132.90",
+        "event_ns": "70000000000",
+        "available_ns": "70000000000",
+        "age_ns": "0"
+      }
+    ],
+    "native_account": {
+      "status": "KNOWN",
+      "complete": true,
+      "errors": [],
+      "instruments": {
+        "BTCUSDT-PERP.P1SIM": {
+          "margin_init": {
+            "amount": "5.35",
+            "currency": "USDT",
+            "text": "5.35000000 USDT"
+          },
+          "margin_maint": {
+            "amount": "0.7062",
+            "currency": "USDT",
+            "text": "0.70620000 USDT"
+          },
+          "leverage": {
+            "status": "ABSENT_NATIVE_VALUE"
+          }
+        },
+        "SOLUSDT-PERP.P1SIM": {
+          "margin_init": {
+            "amount": "1329",
+            "currency": "USDT",
+            "text": "1329.00000000 USDT"
+          },
+          "margin_maint": {
+            "amount": "132.9",
+            "currency": "USDT",
+            "text": "132.90000000 USDT"
+          },
+          "leverage": {
+            "status": "ABSENT_NATIVE_VALUE"
+          }
+        }
+      },
+      "id": "P1SIM-EXAMPLE",
+      "type": "MARGIN",
+      "base_currency": "USDT",
+      "default_leverage": "1",
+      "balances_total": {
+        "USDT": {
+          "amount": "5500",
+          "currency": "USDT",
+          "text": "5500.00000000 USDT"
+        }
+      },
+      "balances_free": {
+        "USDT": {
+          "amount": "4032.0438",
+          "currency": "USDT",
+          "text": "4032.04380000 USDT"
+        }
+      },
+      "balances_locked": {
+        "USDT": {
+          "amount": "1467.9562",
+          "currency": "USDT",
+          "text": "1467.95620000 USDT"
+        }
+      },
+      "commissions": {}
+    },
+    "margin_parity": [
+      {
+        "leg": "BTC",
+        "native_position_id": "BTC-POS",
+        "native_initial": "5.35",
+        "native_maintenance": "0.7062",
+        "scenario_zero_initial": "5.350",
+        "scenario_zero_maintenance": "0.7062",
+        "exact_equal": true
+      },
+      {
+        "leg": "SOL",
+        "native_position_id": "SOL-POS",
+        "native_initial": "1329",
+        "native_maintenance": "132.9",
+        "scenario_zero_initial": "1329.000",
+        "scenario_zero_maintenance": "132.9000",
+        "exact_equal": true
+      }
+    ],
+    "feature": {
+      "start_ns": "0",
+      "end_ns": "0",
+      "available_ns": "0",
+      "beta": "1.205846711019932600346124964",
+      "rho": "0.9956960364932228545501451570",
+      "sigma_b": "0.01108304617753870851535862821",
+      "sigma_s": "0.01342222354156980922129954289",
+      "b": "0.015672393400768784539637486",
+      "residual": "0.00180796292411156648851052033",
+      "fund_b": "0",
+      "fund_s": "0",
+      "omega": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "-0.015672393400768784539637486",
+          "-0.020706466960239101751224802431758257274549381414800504"
+        ],
+        [
+          "-0.015672393400768784539637486",
+          "-0.017090541112015968774203761771758257274549381414800504"
+        ],
+        [
+          "0.015672393400768784539637486",
+          "0.017090541112015968774203761771758257274549381414800504"
+        ],
+        [
+          "0.015672393400768784539637486",
+          "0.020706466960239101751224802431758257274549381414800504"
+        ]
+      ]
+    },
+    "coherent_peak_source": {
+      "sequence": 1,
+      "epoch": "TEST",
+      "peak": {
+        "equity": "10000"
+      }
+    }
+  },
+  "financial_qualified": false
+}

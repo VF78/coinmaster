@@ -1,6 +1,6 @@
 # CoinMaster: текущий статус для внешнего аудита ChatGPT
 
-**Срез: 28.10.2026, 16:01 UTC / 19:01 Europe/Moscow. Это доказательства и статус, а не разрешение менять код или запускать торги.**
+**Срез: 28.10.2026, 16:13 UTC / 19:13 Europe/Moscow. Это доказательства и статус, а не разрешение менять код или запускать торги.**
 
 ## Итог без завышения прогресса
 
@@ -37,9 +37,11 @@ BTC199 исполнился по TP105.2 при mark107: equity уменьшил
 
 ## Ограничение и что происходит сейчас
 
-Точный последний опубликованный implementation commit: **a4ed258b25345208a4612bfa1953a232812c64ff**. Он сохраняет proof-domain BTC[0,1]/SOL[-132.9,0], один известный old BTC maker TP и другие guard-условия. Это не оптимизированные торговые параметры; это ограниченный прототип, недостаточный для заявления о масштабировании до миллионов. Автоматическая проверка отклонила снятие этих границ; операция не была выполнена обходным способом.
+Последний опубликованный implementation commit: **b1807f15043522b57d3e76527586f152c2db572c**, parent a4ed258. Владелец прямо разрешил обобщение количеств: [receipt](OWNER_CODE0_QUANTITY_GENERALIZATION_APPROVAL_20261028.json). Обобщение завершено и принято только на уровне исходников/engine-free: [отчёт](code0-quantity-generalization-20261028/DELTA_REPORT.json), [параметрическое доказательство](code0-quantity-generalization-20261028/PARAMETRIC_PROOF.md), [независимое ревью](code0-quantity-generalization-20261028/INDEPENDENT_QUANTITY_PEER_REVIEW.json), [source acceptance](code0-quantity-generalization-20261028/SOURCE_ACCEPTANCE.json).
 
-Владелец теперь прямо разрешил именно обобщение количеств и larger-size engine-free tests, native0: [receipt](OWNER_CODE0_QUANTITY_GENERALIZATION_APPROVAL_20261028.json). **Обобщение в работе, нового принятого commit пока нет.** Остальные доказательные ограничения не снимаются; unsupported остаётся UNKNOWN/DENY. Не путать новое разрешение с доказанной применимостью или разрешением native.
+Удалены только абсолютные validation ceilings BTC1/SOL132.9. Теперь диапазоны берутся из actual native Cache inventory и known working TP leaves<=actualBTC. Четыре уникальные целевые проверки PASS, включая synthetic snapshot на настоящих объектах Cache/Position/MarginAccount BTC2/SOL−200, equity5500/peak10000; captured70 regression; tier/pending/leaves negatives. Peer0P0/P1. Остальные runtime bytes неизменны. Прежние20 bounded checks и новые4 — разные checkpoints, не заявляются как единый24-test suite. Ранее отклонённое расширение выполнено только после прямого разрешения; история отказа сохранена.
+
+Остальные ограничения (знаки, первая tier, fees/funding, owner/ACK, известные dormant SOL TP/STOP) не сняты; unsupported UNKNOWN/DENY. Реальные native fills/lifecycle, финансовая и экономическая квалификация **нового** кода пока отсутствуют. Применимость при росте капитала до миллионов не доказана.
 
 ## Бюджет и границы
 
@@ -52,9 +54,10 @@ BTC199 исполнился по TP105.2 при mark107: equity уменьшил
 1. [Текущий результат](CURRENT_RESULT_RU.md),[аудит и план](AUDIT_AND_ACCELERATED_PLAN_20261028_RU.md),[ledger](unified-run-ledger.json).
 2. [CODE0 implementation report](code0-recovery-20261028/IMPLEMENTATION_REPORT.json),[final20 receipt](code0-recovery-20261028/FINAL_SOURCE_ACCEPTANCE_RECEIPT.json),[independent review](code0-recovery-20261028/INDEPENDENT_FINAL_REVIEW.json),[root acceptance](code0-recovery-20261028/ROOT_CODE0_ACCEPTANCE.json).
 3. [M3R actual failure](ACTUAL_M3R_FAILURE_REVIEW.json),[точный диагноз](m3r-risk-recovery-diagnostic-20261028/REPORT_RU.md),[четыре угла и пределы леммы](m3r-risk-recovery-diagnostic-20261028/HYPOTHESIS_PROOF_RU.md),[точные коэффициенты](m3r-risk-recovery-diagnostic-20261028/HYPOTHESIS_PROOF.json).
-4. Source immutable:a4ed258 —[recovery helper](https://github.com/VF78/coinmaster/blob/a4ed258b25345208a4612bfa1953a232812c64ff/runtime/coinmaster/strategy/method_a_recovery_code0.py),[native adapter](https://github.com/VF78/coinmaster/blob/a4ed258b25345208a4612bfa1953a232812c64ff/runtime/coinmaster/strategy/method_a_risk_native.py),[paired lifecycle](https://github.com/VF78/coinmaster/blob/a4ed258b25345208a4612bfa1953a232812c64ff/runtime/coinmaster/strategy/paired_prefix.py).
-5. Source tests:[основные](https://github.com/VF78/coinmaster/blob/a4ed258b25345208a4612bfa1953a232812c64ff/runtime/tests/test_method_a_recovery_code0.py),[partial lifecycle](https://github.com/VF78/coinmaster/blob/a4ed258b25345208a4612bfa1953a232812c64ff/runtime/tests/test_method_a_recovery_code0_partial.py),[final guards](https://github.com/VF78/coinmaster/blob/a4ed258b25345208a4612bfa1953a232812c64ff/runtime/tests/test_method_a_recovery_code0_final_guards.py).
-6. [CODE0 owner approval](OWNER_RECOVERY_CODE0_APPROVAL_20261028.json),[общий18 amendment](OWNER_BUDGET18_REALLOCATION_APPROVAL_20261028.json),[новое количественное разрешение](OWNER_CODE0_QUANTITY_GENERALIZATION_APPROVAL_20261028.json),[точный прошлый отказ](code0-recovery-20261028/AUTO_REVIEW_REJECTION.json).
+4. Source immutable:b1807f1 —[recovery helper](https://github.com/VF78/coinmaster/blob/b1807f15043522b57d3e76527586f152c2db572c/runtime/coinmaster/strategy/method_a_recovery_code0.py),[native adapter](https://github.com/VF78/coinmaster/blob/b1807f15043522b57d3e76527586f152c2db572c/runtime/coinmaster/strategy/method_a_risk_native.py),[paired lifecycle](https://github.com/VF78/coinmaster/blob/b1807f15043522b57d3e76527586f152c2db572c/runtime/coinmaster/strategy/paired_prefix.py).
+5. Source tests:[основные](https://github.com/VF78/coinmaster/blob/b1807f15043522b57d3e76527586f152c2db572c/runtime/tests/test_method_a_recovery_code0.py),[partial lifecycle](https://github.com/VF78/coinmaster/blob/b1807f15043522b57d3e76527586f152c2db572c/runtime/tests/test_method_a_recovery_code0_partial.py),[final guards](https://github.com/VF78/coinmaster/blob/b1807f15043522b57d3e76527586f152c2db572c/runtime/tests/test_method_a_recovery_code0_final_guards.py).
+6. [Larger-quantity source tests](https://github.com/VF78/coinmaster/blob/b1807f15043522b57d3e76527586f152c2db572c/runtime/tests/test_method_a_recovery_code0_quantities.py), [publication receipt](code0-quantity-generalization-20261028/COMMIT_PUBLICATION_RECEIPT.json).
+7. [CODE0 owner approval](OWNER_RECOVERY_CODE0_APPROVAL_20261028.json),[общий18 amendment](OWNER_BUDGET18_REALLOCATION_APPROVAL_20261028.json),[новое количественное разрешение](OWNER_CODE0_QUANTITY_GENERALIZATION_APPROVAL_20261028.json),[точный прошлый отказ](code0-recovery-20261028/AUTO_REVIEW_REJECTION.json).
 
 ## Что полезно проверить внешним аудитом
 
