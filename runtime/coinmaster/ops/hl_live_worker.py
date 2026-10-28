@@ -212,7 +212,7 @@ class HyperliquidLiveNode:
             market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
             deposit_runtime=state, deposit_instance_id=instance.instance_id, deposit_account_id="HYPERLIQUID-master",
             deposit_equity_reader=lambda strategy: strategy._validated_live_deposit_equity(),
-            deposit_initialization_allowed=lambda: self.strategy.recovery_confirmed and not state.all_submissions(),
+            deposit_initialization_allowed=lambda: (self.strategy.recovery_confirmed or (self.input_readiness and state.c1_initialization() is not None and state.coherent_snapshot() and state.recovery_state()=='FLAT_RESTART')) and not state.all_submissions(),
         ))
         self.hooks.strategy = self.strategy
         # Paused preparation must reach the existing explicit flat-only setter.
@@ -226,12 +226,20 @@ class HyperliquidLiveNode:
         if self.manage_only_readiness:
             self.strategy.enable_manage_only_preparation()
             checkpoint=state.strategy_checkpoint()
-            if checkpoint is None:raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
-            self.strategy.on_load({"wave_overlay_live_recovery_v1":checkpoint[0]})
-            from nautilus_trader.core import nautilus_pyo3
-            def cloid_for(client_id):
-                return str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(nautilus_pyo3.ClientOrderId(client_id)))
-            scope=durable_management_scope(state,self.master,"",cloid_for)
+            if checkpoint is None:
+                intent=self.profile.get('initialization_intent')
+                if (intent!='INITIALIZE_FRESH_C1_EPOCH' or state.c1_initialization() is not None
+                    or state.all_submissions() or state.applied_fill_ids() or state.pending_submissions()
+                    or state.pending_native_funding()):raise RuntimeError('MANAGEMENT_POLICY_LOAD_REQUIRED')
+                state.entry_control_command('pause-new-entries','c1-init-prepare')
+                self.strategy._fresh_c1_init_intent=intent
+                scope=NativeLiveRecoveryScope(self.master,"",time.time_ns()//1_000_000,None,(),frozenset({"BTC","SOL"}))
+            else:
+                self.strategy.on_load({"wave_overlay_live_recovery_v1":checkpoint[0]})
+                from nautilus_trader.core import nautilus_pyo3
+                def cloid_for(client_id):
+                    return str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(nautilus_pyo3.ClientOrderId(client_id)))
+                scope=durable_management_scope(state,self.master,"",cloid_for)
         else:
             scope=NativeLiveRecoveryScope(self.master,"",time.time_ns()//1_000_000,None,(),frozenset({"BTC","SOL"}))
         factory = ScopedHyperliquidExecClientFactory.bind(scope, state, self.strategy, account_lock_root=Path("/run/coinmaster-hl-live"))
@@ -296,14 +304,15 @@ class LiveWorker:
         self.runtime.acquire()
         self.recovery_marker = self.instance.state_db.parent / "manual-recovery-required"
         try:
-            manage_preparation=load_live_profile(root,self.candidate.candidate).get("manage_only_readiness",False) is True
+            profile=load_live_profile(root,self.candidate.candidate)
+            manage_preparation=profile.get("manage_only_readiness",False) is True
             if self.recovery_marker.exists() and not manage_preparation:
                 raise RuntimeError("LIVE_RESTART_MANUAL_RECOVERY_REQUIRED")
             # Even a flat native cache cannot erase a previous episode or ambiguous result.
             identity = json.loads((root / "live-release.json").read_text())
             if not manage_preparation:
                 self.runtime.prepare_flat_epoch(release_commit=identity["source_commit"])
-            elif self.runtime.strategy_checkpoint() is None:
+            elif self.runtime.strategy_checkpoint() is None and profile.get('initialization_intent')!='INITIALIZE_FRESH_C1_EPOCH':
                 raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
             from coinmaster.ops.stage_g_refresh import refresh_stageg_warmup
             refresh_stageg_warmup(self.instance.signal_warmup_manifest.parent.parent)

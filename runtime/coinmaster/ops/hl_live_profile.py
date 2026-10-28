@@ -24,8 +24,8 @@ INPUT_FLAGS={**FLAGS,'research_btc_split50':True,'research_btc_split_planref_v1'
 def _validate_input_readiness_profile(root,profile,candidate):
     from decimal import Decimal
     keys={'schema','profile_id','initial_capital_usdc','candidate_sha256','research_source','economic_config_sha256',
-        'strategy_flags','manage_only_readiness','input_readiness','live_order_capability','source_pins','deposit_protection_percent','retained_equity_floor_fraction'}
-    if (set(profile)!=keys or profile['profile_id']!='E4_C1_INPUT_READINESS_ONLY'
+        'strategy_flags','manage_only_readiness','input_readiness','live_order_capability','source_pins','deposit_protection_percent','retained_equity_floor_fraction','initialization_intent'}
+    if (set(profile)!=keys or profile['initialization_intent'] not in (None,'INITIALIZE_FRESH_C1_EPOCH') or profile['profile_id']!='E4_C1_INPUT_READINESS_ONLY'
         or profile['manage_only_readiness'] is not True or profile['input_readiness'] is not True or profile['live_order_capability'] is not False
         or profile['research_source']!='fccd60c01e8cae5e8258748b046f43f88a16bb79'
         or profile['economic_config_sha256']!='a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253'

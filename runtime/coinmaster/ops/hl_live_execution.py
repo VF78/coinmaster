@@ -792,9 +792,10 @@ def bind_clean_flat_live_handover(
             raise RuntimeError('LIVE_READINESS_TRANSPORT_SINGLE_ATTEMPT_REQUIRED')
         strategy._live_input_request=lambda:client.request_portfolio_observation(strategy)
         strategy._live_input_ws_epoch=lambda:client._cm_ws_epoch
+        strategy._fresh_init_generation_validator=lambda: (client._cm_ws_failure is None and client._cm_transport_ok() and client._cm_generation_started_ns is not None and time.monotonic_ns()-client._cm_generation_started_ns<=9_000_000_000)
     if strategy.config.research_residual_recovery and not manage_only:
         raise RuntimeError("E4_C1_LIVE_REQUIRES_MANAGE_ONLY_PREPARATION")
-    if manage_only and (not strategy._manage_only_preparation or not strategy._checkpoint_policy_valid):
+    if manage_only and (not strategy._manage_only_preparation or (not strategy._checkpoint_policy_valid and strategy._fresh_c1_init_intent!='INITIALIZE_FRESH_C1_EPOCH')):
         raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
     expected_ids = (
         InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID"),
@@ -907,6 +908,18 @@ def bind_clean_flat_live_handover(
                     or (sol is not None and sol.is_long != (episode.side == -1))
                 ):
                     raise IncompleteInfoReport("LIVE_EPISODE_POSITION_MISMATCH")
+        if getattr(strategy,'_fresh_c1_init_intent',None) is not None:
+            if (not getattr(client,'_cm_inputs_enabled',False) or not manage_only
+                or scope.durable_orders or runtime.all_submissions() or runtime.applied_fill_ids()
+                or mass.order_reports or mass.fill_reports or mass.position_reports
+                or native_orders or native_positions or strategy.cache.orders_inflight()):
+                raise IncompleteInfoReport('C1_INIT_NATIVE_FLAT_UNPROVEN')
+            initial_money=live_perps_money_view(receipt,account_ref=scope.account_ref,dex=scope.dex,
+                account_id=str(client.account_id),native_account=client._cache.account_for_venue(client.venue),
+                native_positions=(),now_ms=client._clock.timestamp_ns()//1_000_000,max_age_ms=9_000,
+                selected_assets=client._cm_last_margin_assets or (),native_revision=runtime.native_revision())
+            if not initial_money.selected_assets:raise IncompleteInfoReport('LIVE_SELECTED_MARGIN_UNKNOWN')
+            strategy.initialize_clean_flat_c1_epoch(initial_money,intent=strategy._fresh_c1_init_intent,now_ns=client._clock.timestamp_ns(),history_anchor_ms=receipt.start_ms)
         checkpoint = runtime.strategy_checkpoint()
         if checkpoint is not None and durable_decision_checkpoint(checkpoint[0]) != durable_decision_checkpoint(
             strategy.on_save()["wave_overlay_live_recovery_v1"]
@@ -918,7 +931,8 @@ def bind_clean_flat_live_handover(
             now_ns=client._clock.timestamp_ns()
             generation=receipt.end_ms*1_000_000
             revision=client._cm_last_revision
-            if (not receipt.fill_anchor_proven or receipt.account.lower()!=scope.account_ref.lower() or receipt.dex!=scope.dex
+            fresh_flat_epoch=(getattr(client,'_cm_inputs_enabled',False) and runtime.c1_initialization() is not None and not scope.durable_orders and not native_orders and not native_positions and not receipt.fills)
+            if ((not receipt.fill_anchor_proven and not fresh_flat_epoch) or receipt.account.lower()!=scope.account_ref.lower() or receipt.dex!=scope.dex
                 or not 0<=now_ns-generation<=9_000_000_000 or type(revision) is not int or revision!=runtime.native_revision()
                 or not strategy._checkpoint_policy_valid
                 or strategy._loaded_policy_sha256!=recovery_policy_hash(strategy.config,strategy._candidate)):

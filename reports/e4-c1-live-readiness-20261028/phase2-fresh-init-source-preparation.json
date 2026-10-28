@@ -1,0 +1,45 @@
+{
+  "schema": "coinmaster-live-fresh-c1-initialization-source-v1",
+  "state": "SOURCE_PURE_PASS_AWAIT_NARROW_PEER_NATIVE_NOT_RUN_NOT_RELEASE_READY",
+  "base_commit": "ab244302053ef7d74f3bafbb0802d53c247be62a",
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_live_epoch.py": "f30b4a5c907698c011b597f5a01290159fbbc9df5023a18bc9887b2f45d394dd",
+    "runtime/coinmaster/ops/hl_live_execution.py": "6c0279a9932bd0e0b47a74e64e33a5effa684b4f14ac785046dbdd1b60eae847",
+    "runtime/coinmaster/ops/hl_live_profile.py": "d35f535efad8ee2c7cd920a4815b34d7fdbc61da5eb9fc5e105a48d8deb57b78",
+    "runtime/coinmaster/ops/hl_live_worker.py": "9639fdf9ab0f465ac144f11cff5bde3cdc5dd474d099fb2023a6a5113346e726",
+    "runtime/coinmaster/ops/live_recovery.py": "5ffeb02acf07dade8f8a17719dcff272ae5bb705f166860ecf9d41dd93440dac",
+    "runtime/coinmaster/strategy/live_recovery.py": "0bae942d6564933cec543e0f90174dcbce91c8e026cc8409203fc6e133d6b000",
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "aad33167d661e54e2ed02d71f9044e8e2e8d778ac640780540669a69924c9563"
+  },
+  "authority": "Root owner-settled fresh-native-flat initialization contract; actual real initialization only after explicit owner START",
+  "api": "strategy.initialize_clean_flat_c1_epoch(view, *, intent, now_ns, history_anchor_ms)",
+  "journal_api": "runtime.initialize_c1_epoch(intent, checkpoint, policy_sha256, equity, account_total, account_event_id, expected_revision, now_ns, history_anchor_ms)",
+  "guards": [
+    "Explicit sealed profile initialization_intent=INITIALIZE_FRESH_C1_EPOCH",
+    "Native actual qualified money/AccountState and complete full receipt flat/orders/fills/inflight/unknown0; sourceflags/policy pinned",
+    "Existing idempotent PAUSED admission; never enable increases",
+    "No prior checkpoint/marker/submissions/applied fills or uncertain execution commands; account lease/current native revision",
+    "Canonical serializer of freshly constructed native strategy; C1/NextH set from actual qualified native equity, not benchmarkseed or virtual strategy",
+    "Marker+canonical checkpoint+native flat snapshot atomically in same existingSQLite; original receipt.start_ms retained as durable history anchor",
+    "Restart loads original state/H/rights/clocks; zero-fill initialized restart reuses saved original anchor; no fresh-now overwrite",
+    "DP daily-close H/latch not reset; existing explicit paused-flat55 setter separate; only empty DP may initialize under existing condition after proved fresh epoch",
+    "Pre-init transient checkpoint writes deferred; native clock/fingerprint observations retained, no historical order replay"
+  ],
+  "tests": {
+    "final": "86PASS15.67s",
+    "previous": "85PASS14.40s;85PASS15.38s",
+    "command": "Same actual-source pure test_e4_c1_input_bridge_pure + manage_only + deposit suite",
+    "static": "Changed Python AST PASS; diffcheckPASS"
+  },
+  "native_engine_node_strategy_order_model_constructors": 0,
+  "venue_requests": 0,
+  "account_mutations": 0,
+  "runtime_services": 0,
+  "historical_runs": 0,
+  "capability": "SOURCE_PREPARATION_ONLY_ALL_C1_NORMAL_DISPATCH_OFF",
+  "remaining": [
+    "Narrow static init peer close",
+    "A/B test-only fixture repin and bounded native rootGO",
+    "Owner-selected account-mode compatibility remains separate required qualification, no whitelist widening in this checkpoint"
+  ]
+}

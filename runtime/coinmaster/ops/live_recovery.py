@@ -321,6 +321,13 @@ def durable_management_scope(runtime,account_ref,dex,cloid_for):
     rows=runtime.all_submissions()
     checkpoint=runtime.strategy_checkpoint()
     details=runtime.db.execute("SELECT trade_id,ts_event_ns FROM paper_native_fill_details ORDER BY ts_event_ns,trade_id").fetchall()
+    if not rows and not details and checkpoint is not None:
+        marker=getattr(runtime,'c1_initialization',lambda:None)()
+        body=json.loads(checkpoint[0])
+        if (marker is not None and marker.get('schema')=='coinmaster-live-c1-initialization-v1'
+            and body.get('policy_sha256')==marker.get('policy_sha256')
+            and type(marker.get('history_anchor_ms')) is int and marker['history_anchor_ms']>=0):
+            return NativeLiveRecoveryScope(account_ref,dex,marker['history_anchor_ms'],None,(),frozenset({'BTC','SOL'}))
     if not rows or checkpoint is None or not details or any(r[1] is None for r in details):
         raise ValueError("MANAGEMENT_DURABLE_CURSOR_UNKNOWN")
     # Query from the earliest retained actual fill; strict full-set parity still

@@ -241,6 +241,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._recovery_health = None
         self._live_money_provider = None
         self._input_readiness_preparation=False
+        self._fresh_c1_init_intent=None
+        self._fresh_init_generation_validator=None
         self._live_signal_clock_state={}
         self._live_minute_bar_types=()
         self._live_input_request=None
@@ -370,6 +372,42 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if self._live_refresh is not None:
             self._live_refresh()
 
+    def initialize_clean_flat_c1_epoch(self,view,*,intent,now_ns,history_anchor_ms):
+        """Use canonical freshly constructed state only after strict native proof."""
+        runtime=self._recovery_runtime
+        if (intent!='INITIALIZE_FRESH_C1_EPOCH' or self._fresh_c1_init_intent!=intent
+            or not self._input_readiness_preparation or not self._manage_only_preparation
+            or runtime is None or runtime.entry_control_state()!='PAUSED' or not isinstance(view,LivePerpsMoneyView)
+            or view.native_revision!=runtime.native_revision() or view.position_sizes
+            or type(history_anchor_ms) is not int or not 0<=history_anchor_ms<=view.end_ms
+            or view.equity!=view.raw_usd or self._fresh_init_generation_validator is None
+            or not self._fresh_init_generation_validator()):
+            raise ValueError('C1_INIT_EXPLICIT_NATIVE_PROOF_REQUIRED')
+        view.require_fresh(now_ns//1_000_000,9_000)
+        if (self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight()
+            or self._domain.episode is not None or self._pending_by_order or self._queued_intents
+            or self._c1_state is not None or self._c1_intents or self._c1_fill_epoch or self._seen_trade_ids
+            or not self.config.research_c1_first_fresh_h4 or not self.config.research_c1_btc_postcut_d1
+            or self.config.research_c1_btc_cut_divisor!=4 or self.config.research_c1_restore_dd!=Decimal('.40')
+            or self.config.research_c1_global_cut_arm):raise ValueError('C1_INIT_NONFLAT_OR_POLICY_UNKNOWN')
+        account=self.cache.account_for_venue(self.config.btc_id.venue);event=getattr(account,'last_event',None)
+        event_id=getattr(event,'id',None) or getattr(event,'event_id',None)
+        if account is None or account.base_currency is not None or account.balance_total(USDC) is None or not event_id:
+            raise ValueError('C1_INIT_ACCOUNT_UNKNOWN')
+        account_total=account.balance_total(USDC).as_decimal()
+        old_h,old_next=self._c1_peak,self._next_peak
+        try:
+            self._c1_peak=view.equity;self._next_peak=view.equity
+            body=self.on_save()[_KEY];policy=recovery_policy_hash(self.config,self._candidate)
+            runtime.initialize_c1_epoch(intent=intent,checkpoint=body,policy_sha256=policy,equity=view.equity,
+                account_total=account_total,account_event_id=event_id,expected_revision=view.native_revision,now_ns=now_ns,history_anchor_ms=history_anchor_ms)
+        except BaseException:
+            self._c1_peak,self._next_peak=old_h,old_next
+            raise
+        self._fresh_c1_init_intent=None;self._checkpoint_policy_valid=True;self._loaded_policy_sha256=policy
+        self.recovery_confirmed=False;self._management_certificate=None
+        return body
+
     def _validated_live_deposit_equity(self):
         """Money observation for existing DP only; no recovery/order capability."""
         if not self._input_readiness_preparation:return self._validated_live_money().equity
@@ -496,7 +534,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
 
     def _persist_transient_checkpoint(self) -> None:
         runtime = self._recovery_runtime
-        if runtime is None:
+        if runtime is None or self._fresh_c1_init_intent is not None:
             return
         revision = runtime.native_revision()
         body = self.on_save()[_KEY]

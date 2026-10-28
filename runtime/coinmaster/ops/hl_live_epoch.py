@@ -96,6 +96,40 @@ class LiveEpochRuntime(PaperRuntime):
                 and self._journal_order_fills(client)==proof['journal_fills']):cached[cloid]=proof['status']
         return cached,tuple(fills),latest['time'] if latest else None,latest['tid'] if latest else None
 
+    def c1_initialization(self):
+        return self.evidence_cursor('c1_epoch_initialization')
+
+    @_journal_locked
+    def initialize_c1_epoch(self,*,intent,checkpoint,policy_sha256,equity,account_total,account_event_id,
+                            expected_revision,now_ns,history_anchor_ms):
+        """One virgin epoch marker + canonical state + native flat snapshot commit."""
+        if intent!='INITIALIZE_FRESH_C1_EPOCH' or type(history_anchor_ms) is not int or not 0<=history_anchor_ms<=now_ns//1_000_000:raise ValueError('C1_INIT_EXPLICIT_INTENT_REQUIRED')
+        if (not isinstance(equity,Decimal) or not equity.is_finite() or equity<=0
+            or equity!=account_total or not account_event_id):raise ValueError('C1_INIT_NATIVE_EQUITY_UNKNOWN')
+        body=json.loads(checkpoint);checkpoint_structure(body)
+        if body.get('schema')!=_C1_SCHEMA or body.get('policy_sha256')!=policy_sha256:
+            raise ValueError('C1_INIT_POLICY_UNKNOWN')
+        try:
+            self.db.execute('BEGIN IMMEDIATE')
+            if (self._live_account_identity is None or self.entry_control_state()!='PAUSED' or self.recovery_state()!='FLAT_RESTART'
+                or self.c1_initialization() is not None or self.strategy_checkpoint() is not None
+                or self.all_submissions() or self.applied_fill_ids() or self.pending_submissions()
+                or self.pending_native_funding() or self.native_revision()!=expected_revision
+                or self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_command_audit WHERE command!='pause-new-entries' OR status!='ACCEPTED')").fetchone()[0]):
+                raise ValueError('C1_INIT_PRIOR_OR_UNCERTAIN_STATE')
+            marker=dict(schema='coinmaster-live-c1-initialization-v1',policy_sha256=policy_sha256,
+                checkpoint_sha256=hashlib.sha256(checkpoint).hexdigest(),initial_equity=str(equity),
+                native_account_event_id=str(account_event_id),native_revision=expected_revision,initialized_ns=now_ns,history_anchor_ms=history_anchor_ms)
+            self.db.execute('INSERT INTO live_evidence_cursors VALUES (?,?)',('c1_epoch_initialization',json.dumps(marker,sort_keys=True)))
+            self.db.execute('INSERT INTO paper_strategy_checkpoint VALUES (1,?,?)',(checkpoint,expected_revision))
+            snapshot=dict(ts_ns=now_ns,positions=[],orders=[],funding_event_ids=[],reconciled=True,
+                native_revision=expected_revision,native_account_total=str(account_total),native_account_currency='USDC',strategy_restartable=True)
+            self.db.execute('INSERT OR REPLACE INTO paper_snapshot VALUES (1,?)',(json.dumps(snapshot,sort_keys=True),))
+            self.append_evidence('c1-epoch-initialize','Info',marker,commit=False)
+            self.db.commit()
+        except BaseException:self.db.rollback();raise
+        return marker
+
     @_journal_locked
     def commit_applied_fills(self,trade_ids,strategy_state):
         """Typed native-fill payload and applied-ID/checkpoint share one commit."""

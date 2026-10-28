@@ -451,3 +451,65 @@ def test_actual_input_worker_constructor_preserves_runtime_decimal_and_paused_dp
     node._refresh_warmup_readiness=lambda:None
     assert node.strategy.deposit_projection()['drawdown_limit_percent']==50
     assert node._entries_enabled() is False
+
+
+def fresh_init_fixture(code,tmp_path):
+    from dataclasses import dataclass
+    from test_e4_c1_manage_only_pure import config,ACCOUNT,ACCOUNT_ID
+    from coinmaster.ops.hl_info_receipt import IncompleteInfoReport
+    money={'dataclass':dataclass,'Decimal':D,'IncompleteInfoReport':IncompleteInfoReport}
+    run_ast(nodes('ops/hl_live_money.py',{'LivePerpsMoneyView'}),money)
+    code.env['LivePerpsMoneyView']=money['LivePerpsMoneyView'];code.env['USDC']='USDC'
+    cfg=config();cfg.research_c1_btc_cut_divisor=4;cfg.research_c1_restore_dd=D('.40')
+    cfg.research_c1_first_fresh_h4=True;cfg.research_c1_btc_postcut_d1=True;cfg.research_c1_global_cut_arm=False
+    s=code.Strategy(cfg);s._input_readiness_preparation=True;s.enable_manage_only_preparation()
+    s._domain.episode=None;s._c1_state=None;s._c1_intents={};s._c1_fill_epoch=0;s._seen_trade_ids=set()
+    s._fresh_c1_init_intent='INITIALIZE_FRESH_C1_EPOCH';s._fresh_init_generation_validator=lambda:True
+    r=code.Runtime(tmp_path/'fresh.sqlite','fresh-owner',10**20);r.acquire();r.acquire_live_account(ACCOUNT,'HYPERLIQUID',lock_root=tmp_path/'fresh-locks')
+    s.attach_recovery_runtime(r)
+    r.entry_control_command('pause-new-entries','fixture-c1-init')
+    cash=N(as_decimal=lambda:D(82));account=N(id=ACCOUNT_ID,base_currency=None,last_event=N(id='fresh-native'),balance_total=lambda currency:cash)
+    s.cache=N(account_for_venue=lambda venue:account,positions_open=lambda:[],orders_open=lambda:[],orders_inflight=lambda:[])
+    now=DAY_NS+1000
+    view=money['LivePerpsMoneyView'](ACCOUNT,'',now//1_000_000,D(82),D(82),D(0),D(82),(N(coin='BTC'),N(coin='SOL')),(),r.native_revision())
+    return s,r,view,now
+
+
+def test_canonical_fresh_epoch_initializes_from_actual_native_once_and_restart_preserves_h(code,tmp_path):
+    s,r,view,now=fresh_init_fixture(code,tmp_path)
+    try:
+        s._live_signal_clock_state={'last_h4':{'BTC':14_400_000_000_000}}
+        body=s.initialize_clean_flat_c1_epoch(view,intent='INITIALIZE_FRESH_C1_EPOCH',now_ns=now,history_anchor_ms=0)
+        assert r.strategy_checkpoint()[0]==body and r.c1_initialization()['initial_equity']=='82'
+        assert s._c1_peak==D(82) and s._next_peak==D(82) and s._c1_state is None and s._c1_fill_epoch==0
+        assert r.coherent_snapshot() and r.projection_snapshot()==([],[])
+        scope=code.management['durable_management_scope'](r,view.account,'',lambda client:'unused')
+        assert scope.anchor_ms==0 and scope.anchor_tid is None and scope.durable_orders==()
+        assert not s.recovery_confirmed and not s._entries_enabled() and not s._management_dispatch_enabled
+        restored=code.Strategy(s.config);restored.on_load(s.on_save())
+        assert restored._c1_peak==D(82) and restored._live_signal_clock_state==s._live_signal_clock_state
+        assert restored._management_certificate is None and not restored.recovery_confirmed
+        before=r.strategy_checkpoint();marker=r.c1_initialization();s._fresh_c1_init_intent='INITIALIZE_FRESH_C1_EPOCH'
+        with pytest.raises(ValueError,match='PRIOR_OR_UNCERTAIN'):s.initialize_clean_flat_c1_epoch(view,intent='INITIALIZE_FRESH_C1_EPOCH',now_ns=now+1,history_anchor_ms=0)
+        assert r.strategy_checkpoint()==before and r.c1_initialization()==marker and s._c1_peak==D(82)
+    finally:r.close()
+
+
+@pytest.mark.parametrize('fault',['intent','nonflat','unknown','checkpoint','seen_fill','native_equity','unpaused'])
+def test_fresh_epoch_rejects_missing_intent_nonflat_unknown_or_prior_state(code,tmp_path,fault):
+    s,r,view,now=fresh_init_fixture(code,tmp_path)
+    try:
+        intent='INITIALIZE_FRESH_C1_EPOCH'
+        if fault=='intent':intent=None
+        elif fault=='nonflat':s.cache.positions_open=lambda:[object()]
+        elif fault=='unknown':s._fresh_init_generation_validator=lambda:False
+        elif fault=='checkpoint':assert r.persist_strategy_checkpoint(s.on_save()[code.env['_KEY']],r.native_revision())
+        elif fault=='seen_fill':s._seen_trade_ids={'prior'}
+        elif fault=='unpaused':r.entry_control_command('resume-new-entries','fixture-resume')
+        elif fault=='native_equity':
+            from dataclasses import replace
+            view=replace(view,equity=D(83),raw_usd=D(83))
+        previous=r.strategy_checkpoint();old_h=s._c1_peak
+        with pytest.raises(ValueError):s.initialize_clean_flat_c1_epoch(view,intent=intent,now_ns=now,history_anchor_ms=0)
+        assert r.c1_initialization() is None and r.strategy_checkpoint()==previous and s._c1_peak==old_h
+    finally:r.close()
