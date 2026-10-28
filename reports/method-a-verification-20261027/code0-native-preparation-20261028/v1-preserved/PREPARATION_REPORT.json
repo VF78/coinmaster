@@ -1,0 +1,81 @@
+{
+  "status": "CONCRETE_PREPARATION_PACKET_NOT_READY_TO_LAUNCH_AWAITING_FOCUSED_REVIEW",
+  "source_base": "b1807f15043522b57d3e76527586f152c2db572c",
+  "source_changes": {
+    "runtime/coinmaster/research/method_a_margin.py": "3cb88e3fed04c4b9a9461bc9f7c894ac6467d3a5213b89d120eaed62aa6e24cb",
+    "runtime/coinmaster/research/method_a_receipt_codec.py": "e5e809e883d3c84dd5eccdee1c4d3f4e29c5c10adbe04d7701cf9c26139b388e",
+    "runtime/tests/test_method_a_receipt_codec_pure.py": "ead1aaecb69a585695a53188bdc8af059bb35d3d39783ebc6eac93ffd73cf2af"
+  },
+  "trading_source_unchanged": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/method_a_tp.py": "a7ab2b75580b6ad59c89f467a118fc91eebcd8f0384ec16d082b44a2f01ab6cb"
+  },
+  "codec": "Only explicit known Features->asdict and OrderSide.name on copied metadata. No owner/risk/cash mutation; unknown still raises/collectorUNKNOWN.",
+  "codec_tests": {
+    "passed": 2,
+    "seconds": "0.336",
+    "result_sha256": "2e9d3f4388e21431dbc0321f06741b2c2fb3fb127f92f99acc450d3757180760",
+    "no_passing_suites_rerun": true,
+    "engine_constructors": 0
+  },
+  "prospective_data_sha256": "2de2857f3146a6721cfb4962bf43363606ee3f500c0e1fca4b203c10fb89a935",
+  "data_quote_universe": {
+    "BTC": 26,
+    "SOL": 34
+  },
+  "harness": "Concrete stdlib source/input validation + public receipt assertions; launch intentionally LOCKED until original phase adapter/dynamicsecondqty/nativeprotocol review. NOT a runnable full-M3 replacement.",
+  "mandatory_uncovered": [
+    "native zero/partial/residual IOC + actual terminal/ownedresize ACK reachability",
+    "all original healthydefer/tinyrights/latefills/CancelRejected gates on changed timeline",
+    "cash-derived SECOND/nativeSOLtarget exact frozen assertions",
+    "new source-bound freshbarrier + complete actual producer closure",
+    "final native STOPnegative/flatACK/lifecycle actual receipts"
+  ],
+  "noninterference": "Codec operates only research receipt copying. CODE0-off P0/P1 and safe M2 commands/risk/admission code unchanged; no repeated M2/P0/P1 run. detailedTrue change is prospective logging-only; runtime/harness review still required.",
+  "budget": {
+    "authorized_current_cap": 18,
+    "spent": 9,
+    "dedicated_M3_remaining": 0,
+    "reserved_other9": {
+      "M4_M8": 5,
+      "prefix": 3,
+      "full": 1
+    },
+    "proposed_only": {
+      "cap": 19,
+      "engineering": 12,
+      "prefix": 6,
+      "full": 1,
+      "new_fresh_M3": 1
+    },
+    "native_authority": 0,
+    "ledger_changes": 0
+  },
+  "M8_composite": "REJECTED minimal-scope alternative: conflicting declared day1 feature close override, cancel0vs2s and36h terminalvs28hnegative require causal/timing/cash/harness expansion. No slot release.",
+  "financial_dirty_preserved": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "no_native_prefix_full": [
+    0,
+    0,
+    0
+  ],
+  "commit": null,
+  "packet_hashes": {
+    "CODEC_TEST_RESULT.txt": "2e9d3f4388e21431dbc0321f06741b2c2fb3fb127f92f99acc450d3757180760",
+    "DATA_ONLY.diff": "cc72258eacb86580842f80f3f22192f93761c75f036604f5715ce23d3b2882e3",
+    "ENGINEERING_BINDER_CONTRACT.json": "dc59f34cee9ecb405140ce8a48ddfc604920b3c8fa06b85c0311438030efc680",
+    "EXPECTED_INPUT_UNIVERSE.json": "b2af8c375b0df9b446bd1fa3a7b993bb9db930dc9be82449f8aa3da34f37ea9d",
+    "M3_CODE0_DATA_PROSPECTIVE.json": "2de2857f3146a6721cfb4962bf43363606ee3f500c0e1fca4b203c10fb89a935",
+    "MANDATORY_GATES.json": "0aacc7d4d84dc330db2399ec3985c1da9f95f324165d49d5e038bebd16750f5c",
+    "PROSPECTIVE_SOURCE_INVENTORY.json": "887f582ec2b33d7026d03fe39f543bd56d2f8d76d155910ee8a280265eb5ae05",
+    "PROTOCOL_NOT_READY.md": "5d59f504b0325700d1e25ffacfd77301c67ff17134b8876fac4f941a29a92cb9",
+    "REACHABILITY_AND_CASH_MATH.json": "1c809e71740bb5f63e85f6753670baa6e33f46769469d65e3a6e1c514431e1ec",
+    "READ_ONLY_CODEC.patch": "fd3dba2b0e40834d4e757fba27d59452a91fd647067721f308837ae3655af238",
+    "STDLIB_DATA_VALIDATION.json": "8e5abd31980dd3af25348a5d2123427c2a6b1e3d44228c78f4ba90afe64cec5b",
+    "prospective_harness.py": "e149ff0db7a6e87ecfb2460e494f250316d1724b903274147e2331bda4cd9630"
+  }
+}

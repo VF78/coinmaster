@@ -26,6 +26,7 @@ from coinmaster.research.native_book import NativeBookWitness
 from nautilus_trader.model.data import QuoteTick
 from coinmaster.research.method_a_risk_rows import wire
 from dataclasses import asdict
+from coinmaster.research.method_a_receipt_codec import receipt_owner_values
 
 
 class MethodABookWitness(NativeBookWitness):
@@ -97,7 +98,7 @@ def native_receipt_snapshot(strategy,engine,ordinal):
     for oid,owner in strategy._pair_orders.items():
         # Preserve the complete existing owner mapping; instrument is the sole
         # native identifier in this mapping. Existing wire owns Decimal tuples.
-        values=dict(owner);values['instrument']=str(values['instrument'])
+        values=receipt_owner_values(owner)
         owners.append(dict(**resolve(oid),owner=values))
     ep=strategy._domain.episode
     kernel=engine.kernel

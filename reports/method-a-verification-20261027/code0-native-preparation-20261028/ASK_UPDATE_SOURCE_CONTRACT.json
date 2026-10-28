@@ -1,0 +1,13 @@
+{
+  "status": "PROSPECTIVE_SOURCE_BOUND_DISTINCT_ASK_PLUS_MANDATORY_NATIVE_ASSERTIONS_NOT_OBSERVED",
+  "v1_error": "70.1 and70.2 identical consumed ask132.9/depth.1; v1 preserved, cannot assume refill",
+  "v2_change": "70.2 ask132.91/depth.1, within existing native LIMIT133.03; bid alone is not used as refill proof",
+  "pinned_source": {
+    "runtime/coinmaster/research/native_book.py": "7ba67d9ed3e584c62b1d2f742a48416146728baa11cf422db0c063a3ff714532",
+    "runtime/tests/run_method_a_sol.py": "d34ed2c237af6a82fb8e53f33b500b31e6015c4314d8051103d23c90afe2b645",
+    "new_harness": "cc66147dfcb3c6c47d0e039a473e4fac307e0222cee419af29ab6aa038adce1b"
+  },
+  "source_semantics": "NativeBookWitness.matching reads public exchange.get_book, requires exact current quote timestamp/ask, and returns actual best_ask_size before new IOC native dispatch. Distinct ask creates a distinct L1 ask-price input; this plan NEVER infers depth from timestamp/bid alone. Future runner requires actual book132.91/depth.1 and matching nativefill. Missing reset or different stock behavior FAILS.",
+  "installed_native_internal_reset_source": "Not reconstructed or claimed from private internals; installed native runtime/version and public book evidence must be sealed at actual preflight. No private queue visibility asserted.",
+  "zero_at70": "Enumerate genuine zeroIOC CIDs/status/fills separately; require terminal and no pendingcredit before70.1/70.2 actual partial CIDs."
+}
