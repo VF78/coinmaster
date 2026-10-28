@@ -1,0 +1,18 @@
+{
+  "status": "ROOT_AUTHORIZED_SOURCE_COMMIT_PENDING_NARROW_PEER_NOT_NATIVE_GO",
+  "base_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+  "source_prep_sha256": "8cff3c96642a46c8cdb9682a11374b64f6717ff3c868b522507655e0f77e43ee",
+  "patch_sha256": "f6f2de136ed5d11c86fd8271b49f07742a5771942e3133031828e8a4d0b10bd7",
+  "files": {
+    "runtime/coinmaster/research/native_baseline.py": "09c0c41b5387a77d7d7f55a0e49a0d2d651cb4c02ba72c1983340c200de066ea",
+    "runtime/tests/test_qualification_interval_cli_pure.py": "95e10cbd0eacb11f6dafb5e64832d0794ae56bed07d5709e1e6ebcc755ff4001",
+    "reports/e4-c1-fast-pilot-20261028/config-QUAL-VALIDATION.json": "9c7e16e4bee8ab6c91dae5009b083b1509ffe6053d36c5c38af929964a78d1db",
+    "reports/e4-c1-fast-pilot-20261028/QUAL-VALIDATION-run-command.json": "05ade22474ebb9443c2b988b88a1a1a730b696b5950bd3b551e11e7c44292839",
+    "reports/e4-c1-fast-pilot-20261028/qualification-harness-source-preparation.json": "8cff3c96642a46c8cdb9682a11374b64f6717ff3c868b522507655e0f77e43ee",
+    "reports/e4-c1-fast-pilot-20261028/qualification-harness-source.patch": "f6f2de136ed5d11c86fd8271b49f07742a5771942e3133031828e8a4d0b10bd7",
+    "reports/e4-c1-fast-pilot-20261028/qualification-harness-test-receipt.json": "a04079903ef9ad554c2c5cd4bfa19257a74cc6a050396802e6c02e3b3af469e5",
+    "reports/e4-c1-fast-pilot-20261028/qualification-stress-source-facts.json": "14cb9da5412b7a6eb690148ab9e862a44694bad5dd4c9853420aefd7016190e7"
+  },
+  "native_attempts": 0,
+  "live_order_capability": false
+}

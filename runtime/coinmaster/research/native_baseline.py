@@ -1431,9 +1431,19 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_global_cut_arm: bool = False, research_c1_first_fresh_h4: bool = False, research_c1_btc_postcut_d1: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None, qualification_stress: bool = False) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_global_cut_arm: bool = False, research_c1_first_fresh_h4: bool = False, research_c1_btc_postcut_d1: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None, qualification_stress: bool = False, trading_start_ms: int | None = None, trading_end_ms: int | None = None, warmup_start_ms: int | None = None, qualification_data_hash: str | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
+
+    qualification_override=any(value is not None for value in (trading_start_ms,trading_end_ms,warmup_start_ms,qualification_data_hash))
+    if qualification_override:
+        if any(value is None for value in (trading_start_ms,trading_end_ms,warmup_start_ms,qualification_data_hash)):
+            raise ValueError("QUALIFICATION_REQUIRES_COMPLETE_INTERVAL_AND_DATA_HASH")
+        if (any(type(value) is not int or value%DAY_MS for value in (trading_start_ms,trading_end_ms,warmup_start_ms))
+            or trading_end_ms<=trading_start_ms or trading_start_ms-warmup_start_ms<730*DAY_MS):
+            raise ValueError("QUALIFICATION_INTERVAL_REQUIRES_UTC_DAYS_AND_730_D1_WARMUP")
+        if not isinstance(qualification_data_hash,str) or len(qualification_data_hash)!=64 or any(c not in '0123456789abcdef' for c in qualification_data_hash):
+            raise ValueError("QUALIFICATION_DATA_HASH_MUST_BE_CANONICAL_SHA256")
 
     if research_batch_minutes is not None and (not (research_alpha_cushion or research_chop_pair) or not 1 <= research_batch_minutes <= WEEK_MINUTES):
         raise ValueError("BATCH_OVERRIDE_REQUIRES_ALPHA_AND_1_TO_10080_MINUTES")
@@ -1460,10 +1470,13 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         or config["execution_policy"] != control["policy"]
     ):
         raise ValueError("CONTROL_V0_INPUTS_MISMATCH")
+    if qualification_override and (sha256_file(control_report)!="d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+        or control["data_hash"]!="7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"):
+        raise ValueError("QUALIFICATION_ARCHIVED_CONTROL_PROVENANCE_MISMATCH")
     manifest = data_root / "bybit-1m" / "manifest.json"
     actual_data_hash = hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-    if actual_data_hash != control["data_hash"]:
-        raise ValueError("CONTROL_V0_DATA_HASH_MISMATCH")
+    if actual_data_hash != (qualification_data_hash if qualification_override else control["data_hash"]):
+        raise ValueError("QUALIFICATION_DATA_HASH_MISMATCH" if qualification_override else "CONTROL_V0_DATA_HASH_MISMATCH")
     candidate = Candidate(**config["candidate"])
     if selective_lifecycle_repairs:
         candidate = replace(candidate, max_parent_notional=30_000_000.0)
@@ -1552,9 +1565,18 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
         research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
+        **{name:value for name,value in (("trading_start_ms",trading_start_ms),("trading_end_ms",trading_end_ms),("warmup_start_ms",warmup_start_ms)) if value is not None},
     )
     report["control_report_sha256"] = sha256_file(control_report)
     report["control_terminal_total"] = control["summary"]["terminal_total"]
+    if qualification_override:
+        report["qualification_context"]=dict(mode="FRESH_START_DIFFERENT_INTERVAL_NOT_CONTROL_COMPARISON",
+            fresh_native_account=True,initial_active_seed="10000",initial_reserve="0",
+            trading_start_ms=trading_start_ms,trading_end_ms=trading_end_ms,warmup_start_ms=warmup_start_ms,
+            expected_data_hash=qualification_data_hash,actual_data_hash=actual_data_hash,
+            archived_control_data_hash=control["data_hash"],archived_control_matched_interval=False,
+            archived_control_matched_dataset=False,ranking_against_archived_control=False,
+            archived_control_fields="IMMUTABLE_PROVENANCE_ONLY_NOT_MATCHED_RETURN_BENCHMARK")
     return save_diagnostic_report(data_root, report, label, artifact_dir)
 
 
@@ -1573,6 +1595,10 @@ def main() -> None:
     parser.add_argument("--research-immediate-lookback",type=int,default=90)
     parser.add_argument("--research-sol-risk-first", choices=("cap50","dd-cov","split-atr","alpha-corridor-v1"),default=None)
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
+    parser.add_argument("--trading-start-ms", type=int, default=None)
+    parser.add_argument("--trading-end-ms", type=int, default=None)
+    parser.add_argument("--warmup-start-ms", type=int, default=None)
+    parser.add_argument("--qualification-data-hash", default=None)
     parser.add_argument("--diagnostic-no-funding", action="store_true")
     parser.add_argument("--diagnostic-with-prior-minute-funding", action="store_true")
     parser.add_argument("--job-request", type=Path)
@@ -1619,6 +1645,8 @@ def main() -> None:
         parser.error("research risk variants are mutually exclusive")
     if (args.research_sol_notional_cap_6x or args.research_portfolio_protect_45 or args.research_btc_episode_loss_20 or args.research_sol_remaining_btc_hedge or args.research_btc_direction_sizing or args.research_btc_drawdown_sizing or args.research_v3_risk or args.research_h1_b1) and not (args.research_v0_selective_lifecycle_repairs and args.observe_minute_risk):
         parser.error("SOL cap requires selective lifecycle control and minute observer")
+    if any(value is not None for value in (args.trading_start_ms,args.trading_end_ms,args.warmup_start_ms,args.qualification_data_hash)) and not args.research_v0_execution_repairs:
+        parser.error("explicit intervals require the existing research execution runner")
     if args.research_c1_btc_postcut_d1 and not args.research_v0_execution_repairs:
         parser.error("BTC post-cut D1 requires the existing research execution runner")
     if args.research_c1_first_fresh_h4 and not args.research_v0_execution_repairs:
@@ -1636,6 +1664,7 @@ def main() -> None:
             deferred_selective_zero_tp=args.research_v0_deferred_selective_zero_tp,
             selective_lifecycle_repairs=args.research_v0_selective_lifecycle_repairs,
             observe_minute_risk=args.observe_minute_risk, qualification_stress=args.qualification_stress,
+            trading_start_ms=args.trading_start_ms, trading_end_ms=args.trading_end_ms, warmup_start_ms=args.warmup_start_ms, qualification_data_hash=args.qualification_data_hash,
             research_sol_notional_cap_6x=args.research_sol_notional_cap_6x,
             research_portfolio_protect_45=args.research_portfolio_protect_45,
             research_btc_direction_sizing=args.research_btc_direction_sizing,

@@ -1,0 +1,100 @@
+{
+  "state": "SOURCE_COMMIT_READY_FOR_NARROW_PEER_NOT_NATIVE_GO",
+  "base_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+  "scope": "OPTIONAL_COMPLETE_UTC_INTERVAL_AND_EXACT_NEW_DATA_PIN_ONLY",
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "09c0c41b5387a77d7d7f55a0e49a0d2d651cb4c02ba72c1983340c200de066ea",
+    "runtime/tests/test_qualification_interval_cli_pure.py": "95e10cbd0eacb11f6dafb5e64832d0794ae56bed07d5709e1e6ebcc755ff4001"
+  },
+  "unchanged_economic_files": {
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "runtime/tests/test_native_qualification_stress_wiring.py": "c3dd399312ad7ebc32eb14358366db67e048445b2a98dde3c10938f629073a1a",
+    "runtime/coinmaster/strategy/residual_recovery.py": "db0350c565e2c1c4a1aadf9d4cbb5e56146f801f166685a2d74ffd7874267a1d",
+    "runtime/coinmaster/strategy/wave_overlay.py": "4e01f36d268a6f32a0c74f1ad2540d291b0e2cba53c3ef222c48efa64587b1d9"
+  },
+  "unchanged_native_function_source_pins": {
+    "validate_bounded_interval": "132f68e1ea6bcbd06fa82b917918f89e44c585d51b6a61d73d2b431199df020f",
+    "ExecutionPolicy": "128a9e50e036d743f5b4c23009f9cc07943d1dd1bbb67906f8485670453e0754",
+    "FixedBaseFeePolicy": "6b7e1bb72957e3a95c21dba0c676c948a6ca3d12181856ef3fe9882ac60113d3",
+    "native_fee_attribution": "0fe7c2642bb181dc47b9300764dc399e4c550a4bef52b8daa3bb7c964600c767",
+    "MinuteBundle": "50286261e065739f90f430d4648937cfb54c55c77a2a7abfe8d66d2e41202ea3",
+    "ParquetMinuteCursor": "4af98f28329768343a78141a6d4662f298c941ef97c085e6737fc75b77284e0b",
+    "iter_minute_bundles": "67bd48df842d2de1f8f03b02f5a7a699204fd4224f82e1fab1bd8ab39d8d492f",
+    "iter_weekly_minute_batches": "eb3de4db8d98065b096cc57d87b2c8c2e25a9b885e8503bca7bdfbff59d317e6",
+    "_peak_rss_bytes": "9a4febb94ef4abbdb4427c57b60a0f467577083311f8230a3324e7b2a1fafd88",
+    "monthly_returns": "ad61054f307e22661d7161ca62d0967d676f72b99183f2a7796d1ced6ffcea89",
+    "standard_drawdown": "d18ba78b950d463e31f2ab8ced81f410f88b34e8016979013099dd96c6a5536d",
+    "_fill_timestamp_ns": "5d976e69e54a737bcf45c8bddaa8f867eff101ded7475cc279cca0ee1598f560",
+    "_reporting_checkpoints": "e34b3179ac125d9edc404c107b52dcb9e6def54378944549409e7779ffd79029",
+    "assert_report_boundaries": "e5dca64250d8f2d6ded4a902cfb8953583a40e0eb7a171512c372a466c866db6",
+    "save_native_artifact": "c23a8bcb9c933b2515c0798e51209349e3c2a9025bba9df867e91852f6d23139",
+    "funding_with_prior_minute_marks": "4e25d3d91e6ee4c58edd48dc31f5f4fc3955362ac6c156a02d6b16a707e1f1fe",
+    "run_sparse_native_diagnostic_legacy": "97a53e395d6da0cd53c600b0ff7fd926ab6c3eb10b381f5017882c26f25044e1",
+    "_load_daily_seed": "94b13de9bfdc84455813245c29ade56a6ecb7d7f751d7dda149fdf0f4237a41c",
+    "_funding_attempt_path": "bf2b81758b8669eed18c7538732a3f831c526b56903cf2a6115ce9360d37406b",
+    "_move_sqlite_family": "468fde24a513abcd4c10885d773a428626d0de05c17a9533580cd7c21a8bf2f3",
+    "_publish_clean_funding_attempt": "45be9c9168a2670ff5eba85293ab8e7ce5dd48f0d6dca9fb1b84b2dcff83fa6f",
+    "_quarantine_funding_attempt": "32f361643b749c8ae75076e8cae25db712bddb8dc0b939531b9d08106e08fcfe",
+    "qualification_stress_venue_kwargs": "8ac1265d0eac4be02ed54e8b8b2bfa60642bb6a7fec117023dd52c5f265e9a05",
+    "qualification_stress_metadata": "7f75c501dc426f412a03e688fb8c0530db238569ac268a49de299cf7c4762640",
+    "run_native_diagnostic": "c79f87513a002ca011b28b6bf36ffcd3a0c8299d49a548a9f2e52d61d920b346",
+    "coverage_blockers": "f65f0702a20796807c4b2307a74db37d1cfe740e24e8f2e4c4aa4a14338eddc0",
+    "save_diagnostic_report": "fb2e23943d992bc293d2b126e6de99af3620c46e1d108b13c5d27318cf612181",
+    "_emit": "84abdce4d8c61044428fddf46d3a36048d6631ae455ea9a1d22fd780562db5af",
+    "_candidate_from_job_config": "8029eea31a0fcc0b851c6be06da31c1fbbd2d663fefb9ec253ca9906d9c74723",
+    "run_job_request": "3ff402f64cedced56173ec537daf517a19abb92915a7b46e49255331cbc83f08"
+  },
+  "default_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "QUAL_VALIDATION_config_sha256": "9c7e16e4bee8ab6c91dae5009b083b1509ffe6053d36c5c38af929964a78d1db",
+  "interval_ms": {
+    "trading_start_ms": 1788220800000,
+    "trading_end_ms": 1793145600000,
+    "warmup_start_ms": 1725148800000
+  },
+  "trading_days": 57,
+  "warmup_D1_days": 730,
+  "initial_active_seed": "10000",
+  "initial_reserve": "0",
+  "new_manifest_raw_sha256": "0c0e26584801c7a41644b9cf9daaf7bd58bc08647d6c59699e0052285b8a9e71",
+  "new_manifest_canonical_sha256": "1714540d189ce5dbc45489ea007f2fb16a5dafb9a451c13010ceee208639171b",
+  "data_pin_source": "ROOT_SUPPLIED_MAC_PREFLIGHT_NO_DATA_COPY_TO_VPS",
+  "archived_control_raw_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+  "archived_control_data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "copied_control_fixture": {
+    "path": "/tmp/cm-e4-c1-archived-control-v0.json",
+    "sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+    "bytes": 1131026,
+    "public_source_packet_included": false
+  },
+  "engineering_calls": [
+    {
+      "result": "9PASS1FAIL_MAIN_FIXTURE_SHA_DEPENDENCY",
+      "wall_seconds": 0.72
+    },
+    {
+      "result": "18PASS",
+      "wall_seconds": 0.76
+    },
+    {
+      "result": "21PASS",
+      "wall_seconds": 0.97
+    }
+  ],
+  "pytest_calls": 3,
+  "pytest_wall_seconds": 2.45,
+  "native_constructors": 0,
+  "repairs_by_blocker": {
+    "main_pure_fixture_missing_sha_dependency": 1
+  },
+  "native_attempts": 0,
+  "qualification_slots": "2_CONDITIONAL_OF_MAX8_AFTER6CANDIDATES_ROOTCLAIM_BEFORE_POPEN",
+  "live_order_capability": false,
+  "metadata": "Default no qualification_context; override fresh account/different interval/nonmatched archived control/not ROI comparison. Existing native full_config only run_interval delta; warmup exported by existing native report and qualification_context."
+}

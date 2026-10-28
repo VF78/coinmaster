@@ -1,0 +1,31 @@
+{
+  "record_type": "EXACT_TOOL_OUTPUT_TRANSCRIPTION_NOT_RERUN",
+  "initial": {
+    "session": 8157,
+    "chunk": "72b3fb",
+    "exit_code": 1,
+    "result": "1 failed, 9 passed in 0.72s",
+    "cause": "main fake output path missing sha256_file dependency; corrected fixture"
+  },
+  "second": {
+    "session": 11460,
+    "chunk": "5237a7",
+    "exit_code": 0,
+    "result": "18 passed in 0.76s"
+  },
+  "final": {
+    "session": 23089,
+    "chunk": "19704c",
+    "exit_code": 0,
+    "stdout": ".....................                                                    [100%]\n21 passed in 0.97s\n"
+  },
+  "pytest_calls": 3,
+  "wall_seconds": 2.45,
+  "native_constructors": 0,
+  "external_fixture_pin": {
+    "path": "/tmp/cm-e4-c1-archived-control-v0.json",
+    "sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+    "bytes": 1131026,
+    "public_source_packet_included": false
+  }
+}
