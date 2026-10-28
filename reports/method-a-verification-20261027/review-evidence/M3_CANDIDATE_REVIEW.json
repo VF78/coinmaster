@@ -1,0 +1,68 @@
+{
+  "disposition": "READY_FOR_SOURCE_FREEZE_AND_MAC_PREFLIGHT_ROOT_GO_REQUIRED",
+  "P0": 0,
+  "P1": 0,
+  "scope": "ONE_NARROW_READ_ONLY_SEALED_M3_CANDIDATE_REVIEW",
+  "base_source_commit": "c5a2f137a94b387a944af3af213cfe4c742aef34",
+  "candidate_source_commit": null,
+  "manifest_sha256": "2b03ed4132b79de995cbb902613e8dd0dc64c44d00a6b65c3e8ea06d5cc9ed9d",
+  "exact_hashes": {
+    "runtime/tests/run_method_a_sol.py": "620636e046ba0262461ebe990fe477fbee557e6244d452d30f04de50a0696285",
+    "runtime/tests/test_method_a_m3_candidate_pure.py": "88d40e715761f6b076a15bf350bcdccc34a58a5840badf21aba4dfb887d0e984",
+    "M3_DATA_PROPOSED.json": "ae29a508bd34821b7d909ea07d40e22260290eb889422fcd72f4377de647d0fc",
+    "M3_PREPARED_CANDIDATE.json": "3a872868c201d4149a4dbca67b0f705860e4f44aea2f23c6f11a430675bc8375",
+    "M3_WORKER_CANDIDATE.patch": "e2affc9110311ae2b05cd37a3d06f6e9ca0a4562ba402afe96d6317c8d999f73",
+    "M3_ANALYTIC_BOUND.json": "5f8b78dcf7182f10cd64b7b76b6b0d13c165708e2d561fee4f64b9e43c3c3616",
+    "check_m3_candidate_math.py": "20ea060686b4235c5562da1add7e6b6ac2a03ea60865cc3687f1f81c0626a711"
+  },
+  "verified_checks": [
+    "HEAD matches c5; all seven manifest file hashes and manifest SHA verified read-only",
+    "runtime/coinmaster diff versus c5 empty; M2 approved recipe diff empty",
+    "Probe, selection, funding, declared_margin_marks, config_for, prepare, assert_m2_second_phase and assert_m2_before_cleanup AST byte semantics equal c5",
+    "existing root GO, claim, preflight, runtime, source/config/input/recipe and one-constructor guard remain before BacktestEngine construction",
+    "M3Probe observes/logs and stores case receipts only; no strategy/domain/native account/order state mutation added",
+    "CAP requires actual partial native IOC canceled remainder plus actual total78/held132.9; preloaded public SOL book price132.9 before BTC TP callbacks",
+    "healthy defer requires BTC1, SOL132.9 and native latest positive3TP+STOP; tiny .6 to .5 known-zero retirement requires two real pending-cancel TP IDs",
+    "both retiring TP CIDs require genuine .1 native fill within 2s cancel window plus native terminal CancelRejected; unexpected reject/deny/expiry blocked",
+    "first natural parent native positions/open/inflight/pending0 plus exact cash6011.93042250 and continuousH10000 asserted before second parent or cleanup",
+    "distinct second natural short parent; actual passive secondAccepted100.3 then later native makerfill/currentmark100.3; fullBTC473.439",
+    "second actual longSOL196.4 ATR2/P0100 and positive3TP+STOP; premature BTC reductions blocked",
+    "expected negative cannot be time-only: exactly one NO_GO at declared endpoint with PARTIAL_NATIVE_STOP; actual second-parent reduce-only SELL STOP_MARKET IOC196.4 trigger98 filled.1@98 then native CANCELED",
+    "failclosed flags/forced-close reason and no new nonreduce orders afterfault; native submitted reduce-only MARKET conservative commands required beforecleanup",
+    "BASE maker.00020/taker.00055; static currentmark/margin public APIs, funding clock, observer source and config unchanged; no balance/H patch",
+    "two protected dirty financial file hashes unchanged and index empty",
+    "prepared139inputs/56quotes(BTC24,SOL32), cancel2s and input/recipe/config SHA match sealed manifest"
+  ],
+  "prepared_pins": {
+    "native_input_sha256": "d48fcd142b4d5808da56fe9d5fa6170e938a003e3ebf73f78aa06238cb04d164",
+    "recipe_sha256": "31a1a9ca552421579873c609b64985ee58684dfc4c6ec2173f9e08664e35cb9e",
+    "native_config_sha256": "76b844b73d32382496e4be3eb4dadf857b305fc0ed2386ac49ceed62cbd62989"
+  },
+  "tests": {
+    "sealed_writer_report_passed": 23,
+    "review_repeated_core_tests": 0,
+    "review_new_native_or_runtime_runs": 0,
+    "review_engine_imports": 0,
+    "review_engine_constructors": 0,
+    "basis": "Static guards/recipe/source/AST/hash review; no uncovered case required another test."
+  },
+  "limitations": [
+    "READY applies only to reviewed candidate; source commit/freeze, Mac preflight and exact ROOT GO still mandatory. VPS prepared runtime is Python3.12.3; Mac3.12.13 must produce and bind its own exact preflight.",
+    "Native queued matching/CAP residual/latefill/drain/natural-parent stockmargin behavior is measured by the original single M3 attempt, not claimed actual PASS before launch.",
+    "Conditional analytic bound/cash are planning witnesses. Actual cash/H/native account/BASE fees must satisfy before-cleanup assertions; no reset or manual patch permitted.",
+    "Expected partial STOP is negative engineering witness only, not financial qualification, healthy resume permission or cleanup-flat proof.",
+    "Separate consumer risk40/paired1 episode conflict and financial receipt highwatermark completeness review remain UNKNOWN/out of M3 scope.",
+    "Generic source inventory unchanged; exact case path/rawSHA/canonical recipe and candidate worker/source must be pinned separately in sealed root ready/gate."
+  ],
+  "root_GO": false,
+  "ready_to_launch": false,
+  "financial_qualification": false,
+  "budget_observed_at_assignment": {
+    "engineering_started": 4,
+    "engineering_max": 10,
+    "physical_started": 7,
+    "total_max": 18,
+    "new_claims": 0
+  },
+  "no_edits_replays_publication": true
+}

@@ -1,0 +1,125 @@
+{
+  "disposition": "PASS_WITH_LIMITS",
+  "scope": "CONSUMER_PAIRED_SEQUENCE_INTERPRETATION_ONLY",
+  "P0": 0,
+  "P1": 0,
+  "checks": [
+    {
+      "check": "patch_reconstructs_exact_reviewed_consumer_in_memory",
+      "pass": true
+    },
+    {
+      "check": "all_5_inventory_artifact_hashes_match",
+      "pass": true
+    },
+    {
+      "check": "all_3_changed_file_hashes_match",
+      "pass": true
+    },
+    {
+      "check": "all_3_frozen_producer_source_pins_match",
+      "pass": true
+    },
+    {
+      "check": "physical_ordinal_proven_by_pinned_increment_append_source_contract",
+      "pass": true
+    },
+    {
+      "check": "only_four_command_event_types_accept_local_sequence",
+      "pass": true
+    },
+    {
+      "check": "raw_json_sequence_preserved_and_actual_compressed_file_retained",
+      "pass": true
+    },
+    {
+      "check": "noncommand_raw_sequence_must_equal_ordinal_and_risk_unchanged",
+      "pass": true
+    },
+    {
+      "check": "per_CID_initial_submit_parent_episode_contiguous_local_lifecycle_checks",
+      "pass": true
+    },
+    {
+      "check": "native_terminal_type_CID_event_ID_clock_generation_and_uniqueness_guards",
+      "pass": true
+    },
+    {
+      "check": "source_context_comes_from_existing_unchanged_binder",
+      "pass": true
+    },
+    {
+      "check": "accounting_reader_binding_proof_byte_identical",
+      "pass": true
+    },
+    {
+      "check": "unknown_state_and_full_proof_financial_gate_not_bypassed",
+      "pass": true
+    },
+    {
+      "check": "actual_risk40_paired1_episode_conflict_retained_UNKNOWN",
+      "pass": true
+    }
+  ],
+  "patch_sha256": "d7a47fbae0844525176d42b07db79f9689bb83c2b1ee7f5824ad3531888fbbfc",
+  "consumer_after_sha256": "0669ec03155f37a1395fcf032a9b12d4ea4e82d999158201152cf38dbe0a7115",
+  "source_pins": {
+    "research/method_a_risk_rows.py": "652ecaca7df2ebbebe0119d7132a43b51bcb43835230037d7f8fd6f739b1a768",
+    "strategy/method_a_risk_native.py": "a075b8f5dfc40e7f999ea36f47d46a02555fb215864c33e340d21ab855e2c7d6",
+    "strategy/paired_prefix.py": "fb6c5d21482f27619c536461a67b64dcd24bb55e0c4839a4fdbcbe77b86fe41f"
+  },
+  "unchanged_files": {
+    "method_a_financial_reader.py": "7703214c88964a585a6666cd260e3cbf85cb8a148d64089ced549234cc12cd58",
+    "method_a_financial_binding.py": "76385ca8cfb9e2091e7452ee56d4cc990d6e3b9a4e9233c0a92f2f92d57ee7fe",
+    "method_a_sol_proof.py": "17d16925743b4cd321cd0324af1169dd058b2f6718b5fb3172d016dfef62e9d5"
+  },
+  "verification": {
+    "existing_48_test_report": "VERIFIED_HASH_NOT_RERUN_IN_FULL",
+    "selected_tests_run": 4,
+    "selected_tests_passed": 4,
+    "selected_tests": [
+      "test_missing_and_bad_source_cannot_allow_collision",
+      "test_native_ack_raw_payload_and_identity_required",
+      "test_boundary_reference_uses_ordinal_and_owner_checks_survive",
+      "test_actual_43_rows_raw_local_sequence_and_receipts"
+    ],
+    "engine_imports": 0,
+    "engine_constructors": 0,
+    "runtime_runs": 0,
+    "source_changes": 0,
+    "publications": 0
+  },
+  "limitations": [
+    "Transport INTEGRITY_ONLY is not candidate/mechanism/economic proof.",
+    "risk:40 receipt references paired:1 from episode0 while receipt is episode1: receipt_boundary_owner_conflict remains UNKNOWN, with no waiver.",
+    "M2 engineering63/63 not reopened. P2/P4/P3/full financial gates unchanged.",
+    "No product or frozen source changes approved by this review; reviewed patch remains private draft."
+  ],
+  "actual_raw_paired_sha256": "c2379a5f58f6ab6de6a4779e3775133317d237e5048a84e60ab449481cdbb188",
+  "raw_local_rows": [
+    [
+      23,
+      1
+    ],
+    [
+      25,
+      1
+    ],
+    [
+      28,
+      1
+    ],
+    [
+      31,
+      2
+    ],
+    [
+      33,
+      2
+    ],
+    [
+      36,
+      2
+    ]
+  ]
+}

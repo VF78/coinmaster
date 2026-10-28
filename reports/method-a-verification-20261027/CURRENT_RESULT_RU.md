@@ -25,3 +25,5 @@ M2A после отдельного согласованного DATA/harness-и
 Продолжается bounded DATA/harness подготовка M3: cap, настоящие PendingCancel latefills, сохранение защиты и отдельный ожидаемый partialSTOP fault. При PS132.9/PB107 найден точный allpartial CAP-envelope PASS; капитал для второго естественного parent пока не квалифицирован. Новых native активных/GO нет, торговые параметры и ядро BTC сохраняются.
 
 В consumer обнаружена отдельная проблема формата sequence: готов report-only patch48testsPASS; raw сохранён. Переход пустого episode остаётся отдельным UNKNOWN, его не маскируем. Полная финансовая квалификация SOL и цели70/50,90/50 остаются NOT_MET. Пилот/production не менялись. Подробности: ACTUAL_M2A_ENGINEERING_DISPOSITION.json и review-evidence/m2a-actual/.
+
+Продолжение 28 октября: M3 candidate имеет23 focused PASS и независимое review0P0P1. Исходная фиксация/копирование на Mac ещё не подтверждены. SSH control socket умер, одна свежая попытка соединения завершилась banner-exchange timeout. Новых native/ledgerclaims нет; расход7/18. Точный checkpoint: RESUME_CHECKPOINT_20261028.json.

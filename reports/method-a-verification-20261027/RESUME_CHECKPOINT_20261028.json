@@ -1,0 +1,18 @@
+{
+  "status": "M3_SOURCE_FREEZE_PENDING_VPS_ACCESS_UNAVAILABLE",
+  "ledger_started": 7,
+  "total_max": 18,
+  "active": 0,
+  "M2": "ROOT_ENGINEERING_ACCEPTED_63_OF_63",
+  "M3": "CANDIDATE_REVIEW_PASS_NOT_NATIVE_STARTED",
+  "M3_review_sha256": "3b42f1bb3bfe47d3f9aebd66bc055ed3daa16a3b77e53405fc8f49b2955f3e9b",
+  "VPS_current_HEAD": "UNVERIFIED_THIS_RESUME",
+  "VPS_last_verified_source": "c5a2f137a94b387a944af3af213cfe4c742aef34",
+  "candidate_worker_sha256": "620636e046ba0262461ebe990fe477fbee557e6244d452d30f04de50a0696285",
+  "candidate_manifest_sha256": "2b03ed4132b79de995cbb902613e8dd0dc64c44d00a6b65c3e8ea06d5cc9ed9d",
+  "old_control_socket": "CONNECTION_REFUSED",
+  "single_new_connection": "SSH_BANNER_EXCHANGE_TIMEOUT_EXIT255",
+  "product_changes": false,
+  "native_attempts_started": 0,
+  "next": "Restore SSH access, verify actual source/status/seals, preserve reviewed candidate; sourcefreeze/Macpreflight then original single M3 after rootGO. Do not replay M2 or re-run passing reviews."
+}

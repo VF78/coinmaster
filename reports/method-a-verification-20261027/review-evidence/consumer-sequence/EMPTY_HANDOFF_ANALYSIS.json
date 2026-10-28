@@ -1,0 +1,334 @@
+{
+  "status": "UNKNOWN_COMPLETE_NATIVE_EMPTY_HANDOFF_NOT_PROVEN",
+  "scope": "Only actual risk40 -> physical paired1, no code change, no new engine run, no publication, no tests rerun",
+  "source_commit": "c5a2f137a94b387a944af3af213cfe4c742aef34",
+  "attempt_id": "6b54e679-e091-421f-bce6-1d0ab4d1674f",
+  "finding": "Source and full bounded traces prove fresh held-zero and first observed owned pre-allocation handoff; they do not prove complete all-native orders/pending/command emptiness at risk40. No safe full-proof waiver follows.",
+  "guards": [
+    {
+      "guard": "complete_bounded_transport",
+      "status": "PASS",
+      "required": "Read entire frozen risk/paired/coherent streams, exact gzip SHA/count/no sampling and no producer failure.",
+      "actual_evidence": {
+        "risk_rows": 103,
+        "paired_rows": 43,
+        "coherent_rows": 55,
+        "wrapper_error": null,
+        "NO_GO_rows": 0,
+        "reference_completeness": "ALL_EMITTED_ROWS_NO_SAMPLING",
+        "paired_local_sequence_caveat": "six command-local sequence rows already independently reviewed, physical ordinal used for paired refs"
+      },
+      "limit": "Transport completeness covers emitted rows, not completeness of every possible native command/event producer."
+    },
+    {
+      "guard": "same_parent_first_off_to_on_episode",
+      "status": "PASS",
+      "required": "Same immutable parent, exactly old :0 to new :1 first activation; no prior allocation/nonempty risk episode.",
+      "actual_evidence": {
+        "parent": "85068138-47ca-41e7-aeb8-5a8ac61695be",
+        "episodes": [
+          "85068138-47ca-41e7-aeb8-5a8ac61695be:0",
+          "85068138-47ca-41e7-aeb8-5a8ac61695be:1"
+        ],
+        "on_transition_risk_sequences": [
+          38
+        ],
+        "transition": {
+          "risk": 38,
+          "clock_ns": "61000000000",
+          "previous_on": false,
+          "on": true,
+          "prior_allocation_used": false,
+          "allocation_used": false,
+          "native_SOL_held": "0",
+          "sol_owned_work": []
+        },
+        "risk39_entry_allocated": false,
+        "first_entry_allocation": {
+          "risk": 47,
+          "clock_ns": "62000000000",
+          "allocation_used": true
+        }
+      }
+    },
+    {
+      "guard": "old_boundary_all_observed_SOL_state_empty",
+      "status": "PASS",
+      "required": "Referenced old boundary has no SOL position, owned protection/retirement/close owner or entry basis.",
+      "actual_evidence": {
+        "paired_ordinal": 1,
+        "raw_sequence": 1,
+        "clock_ns": "1000000000",
+        "episode": "85068138-47ca-41e7-aeb8-5a8ac61695be:0",
+        "actual_sol": "0",
+        "native_sol_position": null,
+        "orders": [],
+        "retiring": [],
+        "close_owners": [],
+        "entry_basis": {
+          "actual_entry_notional": "0",
+          "actual_entry_quantity": "0",
+          "entry_selection_ref": null,
+          "first_fill_ns": null,
+          "frozen_atr": "1",
+          "frozen_entry_band": null,
+          "p0": null
+        }
+      },
+      "limit": "Describes old observation; exact=true/state=FLAT flags alone are not used as proof of receipt-time complete cache."
+    },
+    {
+      "guard": "receipt_time_native_SOL_held_zero",
+      "status": "PASS",
+      "required": "Fresh direct native/cache-held read at exact receipt barrier, with coherent native position corroboration.",
+      "actual_evidence": {
+        "risk40": {
+          "timestamp_ns": "62000000000",
+          "sol_native_held": "0",
+          "native_input_epoch": 5,
+          "global_input_index": 10,
+          "quote_instrument": "SOLUSDT-PERP.P1SIM"
+        },
+        "source": "MethodABookWitness.pre_process calls super.pre_process, then _pair_qty(config.sol_id), then _mr_log receipt",
+        "coherent19": {
+          "kind": "PREQUOTE_DIRECT_NATIVE",
+          "event_ns": "62000000000",
+          "state_epoch": 2,
+          "SOL_positions": []
+        },
+        "risk41_native_SOL_positions": []
+      }
+    },
+    {
+      "guard": "fresh_boundary_signature_subset",
+      "status": "PASS",
+      "required": "Native boundary runs before receipt; signature unchanged proves only fields represented by signature.",
+      "actual_evidence": {
+        "source_chain": [
+          "MethodABookWitness.pre_process -> NativeBookWitness.pre_process",
+          "_pair_sol_boundary(BEFORE_NATIVE_MATCHING_INPUT,strict=True)",
+          "_mr_log(SOL_BOUNDARY_RECEIPT)"
+        ],
+        "risk35_counters": {
+          "checks": 19,
+          "strict": 5,
+          "unknown": 0
+        },
+        "risk40_counters": {
+          "checks": 24,
+          "strict": 6,
+          "unknown": 0
+        },
+        "old_ref_retained": "paired:1",
+        "signature_fields": [
+          "held",
+          "state",
+          "exact",
+          "rows",
+          "protection_since"
+        ],
+        "source_cause": "episode and parent are absent from signature; _mr_episode increments without clearing sol_boundary_signature"
+      },
+      "limit": "Unchanged FLAT signature implies no owned TP/STOP work and no owner.pending for current pair parent. It does not include all cached native orders, all queued commands, unowned orders, close_owners, entry basis, or epoch."
+    },
+    {
+      "guard": "first_observed_owned_SOL_dispatch_after_receipt",
+      "status": "PASS",
+      "required": "Bound exact source/row order of first SOL creation/admission/dispatch; timestamp equality is insufficient by itself.",
+      "actual_evidence": {
+        "risk_order": [
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "first_SOL_dispatch_risk": 46,
+        "first_SOL_dispatch_native_order_init_id": "f15c2c06-3bb8-49f8-bde7-133ff737d37d",
+        "first_SOL_dispatch_CID": "O-19700101-000102-001-000-6",
+        "paired_first_submit_ordinal": 2,
+        "paired_first_submit_snapshot_ref": "risk:45",
+        "paired_first_submit_CID": "O-19700101-000102-001-000-6",
+        "first_SOL_fill_risk": 50,
+        "first_SOL_coherent_postfill": 21,
+        "first_5_BEFORE_NATIVE_DISPATCH_instruments": [
+          "BTCUSDT-PERP.P1SIM",
+          "BTCUSDT-PERP.P1SIM",
+          "BTCUSDT-PERP.P1SIM",
+          "BTCUSDT-PERP.P1SIM",
+          "BTCUSDT-PERP.P1SIM"
+        ]
+      },
+      "limit": "Proves observed strategy path, not a complete globally sequenced native command universe."
+    },
+    {
+      "guard": "all_native_SOL_orders_and_pending_zero_at_receipt",
+      "status": "UNKNOWN",
+      "required": "At risk40, complete public native cache SOL open/inflight orders and pending IDs/commands are empty; cover foreign/unowned CIDs, pending entries/closes/retirements and unresolved IDs.",
+      "actual_evidence": {
+        "risk38_owned_work": [],
+        "risk40_raw_fields": [
+          "boundary_counters",
+          "boundary_state_ref",
+          "event",
+          "global_input_index",
+          "inputs_ref",
+          "native_input_epoch",
+          "native_quote",
+          "parent",
+          "quote_instrument",
+          "risk_episode_id",
+          "schema",
+          "selection_ref",
+          "sequence",
+          "snapshot_ref",
+          "sol_native_held",
+          "timestamp_ns"
+        ],
+        "coherent_scope": "positions/cash/equity only; no orders/pending",
+        "terminal_cache_SOL_orders": [
+          {
+            "cid": "O-19700101-000102-001-000-10",
+            "ts_init": 62000000000,
+            "status": "CANCELED"
+          },
+          {
+            "cid": "O-19700101-000102-001-000-6",
+            "ts_init": 62000000000,
+            "status": "CANCELED"
+          },
+          {
+            "cid": "O-19700101-000102-001-000-7",
+            "ts_init": 62000000000,
+            "status": "FILLED"
+          },
+          {
+            "cid": "O-19700101-000102-001-000-8",
+            "ts_init": 62000000000,
+            "status": "FILLED"
+          },
+          {
+            "cid": "O-19700101-000102-001-000-9",
+            "ts_init": 62000000000,
+            "status": "FILLED"
+          }
+        ],
+        "risk46_liability_SOL_CIDs": [
+          "O-19700101-000102-001-000-6"
+        ]
+      },
+      "limit": "No full order/pending snapshot is captured at risk40. Terminal cache orders all init at 62s, same clock as receipt, but no global initialization/command ordinal relates every possible CID to risk40. Later liability snapshot cannot establish earlier pending queue emptiness without complete intervening native command history."
+    },
+    {
+      "guard": "complete_native_command_universe_no_prior_writer",
+      "status": "UNKNOWN",
+      "required": "Independent complete native initialized/submitted/modify/cancel/terminal universe or exact complete zero-before-barrier native command counter; all producers and CIDs covered, no purge/omission.",
+      "actual_evidence": {
+        "paired_native_event_filter": "MethodARiskResearch._pair_sol_native_event returns unless owner exists, instrument is SOL, and kind is TP/STOP; OrderInitialized is validated but not emitted",
+        "paired_emitted_SOL_NATIVE_EVENT_rows": 17,
+        "risk_dispatch_coverage_limit": "_record_submission bypasses BEFORE_NATIVE_DISPATCH for PAIRED_TP/PAIRED_STOP and in failed/forced-close/liquidating paths; paired SUBMIT covers normal owned path, not a general native command journal",
+        "terminal_native_orders_count": 10,
+        "terminal_native_SOL_orders_count": 5,
+        "coherent_native_fill_count": 9
+      },
+      "limit": "ALL_EMITTED_ROWS_NO_SAMPLING is not ALL_NATIVE_COMMANDS. Absence of prior emitted SOL SUBMIT/fill is established; absence of any unobserved/foreign/native queued command is not established by these formats."
+    },
+    {
+      "guard": "fresh_full_native_boundary_equivalence_across_episode",
+      "status": "UNKNOWN",
+      "required": "Old empty boundary is equivalent to fresh full SOL positions/orders/pending/owner state at exact receipt; cross-episode handoff has explicit complete causal binding.",
+      "actual_evidence": {
+        "reference_clock_ns": "1000000000",
+        "receipt_clock_ns": "62000000000",
+        "age_ns": "61000000000",
+        "old_episode": "85068138-47ca-41e7-aeb8-5a8ac61695be:0",
+        "new_episode": "85068138-47ca-41e7-aeb8-5a8ac61695be:1",
+        "exact_parent_equal": true,
+        "signature_subset_guard": "PASS"
+      },
+      "limit": "61s-old boundary can be refreshed for its signature subset by source/counters, but whole native order/command state is not part of signature or serialized at risk40; do not relabel raw old episode as new episode."
+    },
+    {
+      "guard": "no_nonempty_episode_reuse_in_actual_fixture",
+      "status": "PASS",
+      "required": "Handoff must be first-ever empty episode0->1 only; no general transfer across previously nonempty/allocated episodes or other parents.",
+      "actual_evidence": {
+        "actual_episode_set": [
+          "85068138-47ca-41e7-aeb8-5a8ac61695be:0",
+          "85068138-47ca-41e7-aeb8-5a8ac61695be:1"
+        ],
+        "first_ever_SOL_fill_risk": 50,
+        "first_positive_boundary_ordinal": 21,
+        "positive_boundary_episodes": [
+          "85068138-47ca-41e7-aeb8-5a8ac61695be:1"
+        ],
+        "no_second_on_transition": true
+      },
+      "limit": "Observed fixture restriction only; no consumer exception implemented, no general episode handoff guarantee."
+    }
+  ],
+  "minimal_additional_producer_datum": {
+    "observation_point": "Same synchronous PRE_NATIVE_MATCHING_INPUT/pre-strategy barrier as risk40, before any current quote strategy initialization/submission. No need for monetary calculations.",
+    "identity_binding": [
+      "attempt/source pins",
+      "parent",
+      "old and new episode",
+      "transition risk:38",
+      "last boundary paired:1",
+      "global input index10 / native input epoch5",
+      "timestamp_ns62000000000",
+      "monotonic native command/initialization barrier ordinal"
+    ],
+    "raw_native_snapshot": [
+      "all actual SOL positions",
+      "complete native cache SOL open and inflight orders",
+      "complete cached SOL order ID/init event universe or complete initialized-event index",
+      "all native/domain pending IDs with instrument/CID resolution; unknown IDs block",
+      "complete owned SOL ENTRY/TP/STOP/CLOSE/CAP/retiring owners and pending commands"
+    ],
+    "complete_command_coverage": "Either complete source-pinned native command/event journal across all producers from engine start through the barrier (including initialized but not submitted orders and queued commands), or an independently verified complete observation/counter with zero prior SOL commands and no unresolved pending/foreign writers; do not substitute an asserted desired/empty bool.",
+    "causal_ordering": "Tie actual zero snapshot and complete command high watermark to risk40 before native init f15c2c06-3bb8-49f8-bde7-133ff737d37d; same timestamp alone is not sufficient.",
+    "replay_disposition": "No new M2 replay or budget inferred. Existing M2 engineering acceptance unchanged. This identifies missing evidence for later separately authorized producer/candidate proof work."
+  },
+  "financial_qualification": false,
+  "consumer_owner_conflict": "UNCHANGED_UNKNOWN",
+  "native_constructors": 0,
+  "source_files": {
+    "research/method_a_margin.py": {
+      "sha256": "2559c4e0e93003de80ebc4bec255b3f7c93b3da615bb50901623344aea265a86"
+    },
+    "research/native_book.py": {
+      "sha256": "7ba67d9ed3e584c62b1d2f742a48416146728baa11cf422db0c063a3ff714532"
+    },
+    "strategy/method_a_risk_native.py": {
+      "sha256": "a075b8f5dfc40e7f999ea36f47d46a02555fb215864c33e340d21ab855e2c7d6"
+    },
+    "strategy/paired_prefix.py": {
+      "sha256": "fb6c5d21482f27619c536461a67b64dcd24bb55e0c4839a4fdbcbe77b86fe41f"
+    }
+  },
+  "artifacts": {
+    "risk.jsonl.gz": {
+      "rows": 103,
+      "sha256": "fd0c397b27149398cef7792ef0d1cfa973c1e7ad153ea575d3f49c5d76218e30"
+    },
+    "paired.jsonl.gz": {
+      "rows": 43,
+      "sha256": "c2379a5f58f6ab6de6a4779e3775133317d237e5048a84e60ab449481cdbb188"
+    },
+    "coherent-native-events.jsonl.gz": {
+      "rows": 55,
+      "sha256": "31497a9ab038c3d5aac5006c566db3ee7c6919ba50a0e5829b0b805fcbc01289"
+    }
+  },
+  "terminal_snapshot": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M2A-6b54e679-e091-421f-bce6-1d0ab4d1674f/BEFORE_END.json",
+    "sha256": "462034418bdb71ecfacb3511929edda80c09b821347696b90938512d09ab5331"
+  }
+}
