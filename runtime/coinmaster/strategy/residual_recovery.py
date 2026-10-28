@@ -9,6 +9,7 @@ RESTORE='C1_RESIDUAL_RESTORE'
 class ResidualRecoveryResearch:
     def _c1_init(self):
         if self.config.research_c1_btc_cut_divisor not in (2,4):raise ValueError('C1_BTC_CUT_DIVISOR_MUST_BE_2_OR_4')
+        if self.config.research_c1_restore_dd not in (D(".35"),D(".40")):raise ValueError("C1_RESTORE_DD_MUST_BE_35_OR_40")
         self.c1_audit=[];self._c1_state=None;self._c1_peak=D(str(self.config.active_seed))
         self._c1_checkpoint=None;self._c1_fill_epoch=0;self._c1_intents={};self._c1_last_bars={};self._c1_sol_levels={};self._c1_terminal_ids=set();self.c1_denials={};self._c1_blocked_ids=set()
         if self.config.research_residual_recovery and (not self.config.research_wait_4h or self.config.research_regime_reentry_band!=D('.5') or self.config.research_zero_retrace or self.config.research_sol_dominant or self.config.research_wait_persist):
@@ -118,7 +119,7 @@ class ResidualRecoveryResearch:
         if bar.open_time_ns<=max(t['last_cut_fill_ns'],t['cut_terminal_ns']):return
         close=bar.close.as_decimal() if hasattr(bar.close,'as_decimal') else D(str(bar.close))
         c=self._c1_current_money(bar.ts_event)
-        if c is not None and c['DD']<=D('.35') and t['side']*(close-t['cut_value']/(D(t['cut_filled'])*t['step']))>0:
+        if c is not None and c['DD']<=self.config.research_c1_restore_dd and t['side']*(close-t['cut_value']/(D(t['cut_filled'])*t['step']))>0:
             t['confirmation']=dict(close_ns=bar.ts_event,open_ns=bar.open_time_ns,close=close)
             self._c1_log('CLOSED_4H_RECLAIM',bar.ts_event,open_ns=bar.open_time_ns,close=str(close),DD=str(c['DD']))
 
@@ -267,7 +268,7 @@ class ResidualRecoveryResearch:
         elif t['state']=='HELD' and not t['restore_submitted']:
             conf=t['confirmation']
             if not conf or ns<=conf['close_ns']:return
-            if c['DD']>D('.35'):t['confirmation']=None;return
+            if c['DD']>self.config.research_c1_restore_dd:t['confirmation']=None;return
             vwap=t['cut_value']/(D(t['cut_filled'])*t['step']);executable=tick.ask_price.as_decimal() if t['side']==1 else tick.bid_price.as_decimal()
             if t['side']*(executable-vwap)<=0:
                 t['confirmation']=None;self._c1_log('RESTORE_CURRENT_RECLAIM_FAILED',ns);return

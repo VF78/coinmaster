@@ -1,0 +1,210 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index e8dfce4..997d75a 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -690,7 +690,7 @@ def run_native_diagnostic(
+     research_btc_split_planref_v1: bool = False,
+     research_btc_split_tp_ioc: bool = False,
+     research_btc_split_discount: str = "0.0025",
+-    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
++    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
+     research_sol_cover: str | None = None,
+     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
+     research_btc_episode_loss_20: bool = False,
+@@ -798,6 +798,7 @@ def run_native_diagnostic(
+         modules.append(coherent_observer)
+     def kind(instrument, price_type):
+         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
++    if research_c1_restore_dd not in ("0.35","0.40") or (research_c1_restore_dd!="0.35" and not research_residual_recovery):raise ValueError("R_REQUIRES_C1_RESTORE_DD_35_OR_40")
+     if research_c1_btc_cut_divisor not in (2,4) or (research_c1_btc_cut_divisor!=2 and not research_residual_recovery):raise ValueError("Q_REQUIRES_C1_DIVISOR_2_OR_4")
+     if research_residual_recovery and (not observe_minute_risk or not research_wait_4h or research_regime_reentry_band!="0.5" or research_zero_retrace or research_sol_dominant or research_wait_persist or research_sol_risk_first or research_conditional_sol or research_alpha_cushion or research_chop_pair):raise ValueError("C1_REQUIRES_CLEAN_E4_SETTLED_OBSERVER")
+     next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
+@@ -871,7 +872,7 @@ def run_native_diagnostic(
+         research_sol_btc_open_only=research_sol_btc_open_only,
+         research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
+         research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
+-        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
++        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=Decimal(research_c1_restore_dd), research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
+         research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
+         research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
+@@ -1067,6 +1068,8 @@ def run_native_diagnostic(
+         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+         if research_residual_recovery:
+             full_config["residual_recovery_research"]=dict(version="C1",trigger_DD="0.40",open_loss_dominates_remaining_50_cushion=True,cut_fraction="0.50",restore_DD="0.35",restore_closed_hours=4,max_cut_restore_per_group=1)
++        if research_c1_restore_dd != "0.35":
++            full_config["residual_recovery_research"]["restore_DD"]=research_c1_restore_dd
+         if research_c1_btc_cut_divisor != 2:
+             full_config["residual_recovery_research"]["btc_cut_divisor"]=research_c1_btc_cut_divisor
+         if next_enabled:
+@@ -1384,7 +1387,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1499,7 +1502,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
+         research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
+         research_regime_reentry_band=research_regime_reentry_band,
+-        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
++        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=research_c1_restore_dd, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant,
+         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
+         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
+@@ -1548,6 +1551,7 @@ def main() -> None:
+     parser.add_argument("--research-sol-remaining-btc-hedge", action="store_true", help="Research-only earned SOL admission clipped to remaining native BTC/beta")
+     parser.add_argument("--research-portfolio-protect-45", action="store_true", help="Research-only paired-minute 45%% protective epoch drawdown; resume next genuine BTC episode")
+     parser.add_argument("--research-sol-notional-cap-6x", action="store_true", help="Research-only aggregate SOL entry notional capped at 6x fresh native marked equity")
++    parser.add_argument("--research-c1-restore-dd", choices=("0.35","0.40"), default="0.35")
+     parser.add_argument("--research-c1-btc-cut-divisor", type=int, choices=(2,4), default=2)
+     parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
+     parser.add_argument("--control-report", type=Path)
+@@ -1595,7 +1599,7 @@ def main() -> None:
+             research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
+             research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
+             research_regime_reentry_band=args.research_regime_reentry_band,
+-            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
++            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_c1_restore_dd=args.research_c1_restore_dd, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
+             research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant,
+             research_batch_minutes=args.research_batch_minutes,
+             research_sol_risk_first=args.research_sol_risk_first,
+diff --git a/runtime/coinmaster/strategy/residual_recovery.py b/runtime/coinmaster/strategy/residual_recovery.py
+index 04071b2..3f13557 100644
+--- a/runtime/coinmaster/strategy/residual_recovery.py
++++ b/runtime/coinmaster/strategy/residual_recovery.py
+@@ -9,6 +9,7 @@ RESTORE='C1_RESIDUAL_RESTORE'
+ class ResidualRecoveryResearch:
+     def _c1_init(self):
+         if self.config.research_c1_btc_cut_divisor not in (2,4):raise ValueError('C1_BTC_CUT_DIVISOR_MUST_BE_2_OR_4')
++        if self.config.research_c1_restore_dd not in (D(".35"),D(".40")):raise ValueError("C1_RESTORE_DD_MUST_BE_35_OR_40")
+         self.c1_audit=[];self._c1_state=None;self._c1_peak=D(str(self.config.active_seed))
+         self._c1_checkpoint=None;self._c1_fill_epoch=0;self._c1_intents={};self._c1_last_bars={};self._c1_sol_levels={};self._c1_terminal_ids=set();self.c1_denials={};self._c1_blocked_ids=set()
+         if self.config.research_residual_recovery and (not self.config.research_wait_4h or self.config.research_regime_reentry_band!=D('.5') or self.config.research_zero_retrace or self.config.research_sol_dominant or self.config.research_wait_persist):
+@@ -118,7 +119,7 @@ class ResidualRecoveryResearch:
+         if bar.open_time_ns<=max(t['last_cut_fill_ns'],t['cut_terminal_ns']):return
+         close=bar.close.as_decimal() if hasattr(bar.close,'as_decimal') else D(str(bar.close))
+         c=self._c1_current_money(bar.ts_event)
+-        if c is not None and c['DD']<=D('.35') and t['side']*(close-t['cut_value']/(D(t['cut_filled'])*t['step']))>0:
++        if c is not None and c['DD']<=self.config.research_c1_restore_dd and t['side']*(close-t['cut_value']/(D(t['cut_filled'])*t['step']))>0:
+             t['confirmation']=dict(close_ns=bar.ts_event,open_ns=bar.open_time_ns,close=close)
+             self._c1_log('CLOSED_4H_RECLAIM',bar.ts_event,open_ns=bar.open_time_ns,close=str(close),DD=str(c['DD']))
+ 
+@@ -267,7 +268,7 @@ class ResidualRecoveryResearch:
+         elif t['state']=='HELD' and not t['restore_submitted']:
+             conf=t['confirmation']
+             if not conf or ns<=conf['close_ns']:return
+-            if c['DD']>D('.35'):t['confirmation']=None;return
++            if c['DD']>self.config.research_c1_restore_dd:t['confirmation']=None;return
+             vwap=t['cut_value']/(D(t['cut_filled'])*t['step']);executable=tick.ask_price.as_decimal() if t['side']==1 else tick.bid_price.as_decimal()
+             if t['side']*(executable-vwap)<=0:
+                 t['confirmation']=None;self._c1_log('RESTORE_CURRENT_RECLAIM_FAILED',ns);return
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 1c2910c..98dce12 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -75,6 +75,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_sol_dominant: bool = False
+     research_residual_recovery: bool = False
+     research_c1_btc_cut_divisor: int = 2
++    research_c1_restore_dd: Decimal = Decimal(".35")
+     research_next_signals: tuple[DataType, ...] = ()
+     research_h4_ema: int | None = None
+     research_h4_gamma: Decimal = Decimal(".5")
+diff --git a/runtime/tests/test_native_residual_recovery.py b/runtime/tests/test_native_residual_recovery.py
+index 4242d06..d106d51 100644
+--- a/runtime/tests/test_native_residual_recovery.py
++++ b/runtime/tests/test_native_residual_recovery.py
+@@ -14,8 +14,8 @@ from test_native_episode_risk import NativeProbe,tick,run_ticks,marks
+ from test_native_btc_sizing import prepare_day
+ from test_wave_native_integration import native_engine,lifecycle_config
+ 
+-def held(asset='BTC',side=1,cls=NativeProbe,cut_divisor=2):
+- s=cls(cfg(research_wait_4h=True,research_residual_recovery=True,research_c1_btc_cut_divisor=cut_divisor,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
++def held(asset='BTC',side=1,cls=NativeProbe,cut_divisor=2,restore_dd=D(".35")):
++ s=cls(cfg(research_wait_4h=True,research_residual_recovery=True,research_c1_btc_cut_divisor=cut_divisor,research_c1_restore_dd=restore_dd,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
+  e=native_engine(s);run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
+  prepare_day(s,2,side);ep=s._domain.episode=Episode('c1',side,10000,1,wave_levels=(.50,.60,.70),btc_planref_vwap=D(100))
+  i=s._domain._intent(ep,'BTC_ENTRY',side,None,quantity=100)
+diff --git a/runtime/tests/test_native_c1_r.py b/runtime/tests/test_native_c1_r.py
+new file mode 100644
+index 0000000..baa8aaf
+--- /dev/null
++++ b/runtime/tests/test_native_c1_r.py
+@@ -0,0 +1,73 @@
++"""R restores at DD40; all held credit, ownership and revoke-release semantics stay C1."""
++from copy import deepcopy
++from decimal import Decimal as D
++import pytest
++from test_native_residual_recovery import held,cut,observe
++from test_native_episode_risk import NativeProbe,run_ticks,tick
++from coinmaster.research.native_fixture import BTC_PERP
++from coinmaster.strategy.next_band import next_closed_bar,H4
++
++
++def confirm(s,side,ns=2*H4,equity='6400'):
++ reclaim='80' if side==1 else '120'
++ observe(s,ns,btc=reclaim,equity=equity)
++ s._c1_closed_bar(next_closed_bar(BTC_PERP.id,4,D(reclaim),D(reclaim),D(reclaim),D(reclaim),ns).data)
++ return reclaim
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_r_both_restore_gates_admit_dd36_and_exact_actual_credit(side):
++ s,e,ep=held(side=side,restore_dd=D('.40'))
++ try:
++  cut(s,e,price='55' if side==1 else '145');t=s._c1_state
++  assert t['cut_lots']==50000 and t['target_lots']==50000
++  rights=(deepcopy(ep.btc_tp_target_lots),ep.btc_planref_vwap,ep.h,deepcopy(ep.sol_add_filled_notional))
++  reclaim=confirm(s,side);assert t['confirmation'] is not None
++  for n in range(1,6):
++   observe(s,2*H4+n,btc=reclaim,equity='6400');run_ticks(e,[tick(BTC_PERP,2*H4+n,reclaim)])
++  assert t['restore_filled']==50000 and t['credit']==0 and ep.btc_open_qty==100
++  assert sum(ep.btc_risk_retired_lots.values())==0 and not ep.sol_rights
++  assert rights==(ep.btc_tp_target_lots,ep.btc_planref_vwap,ep.h,ep.sol_add_filled_notional)
++  witness=next(x for x in s.c1_audit if x['event']=='ATTEMPT_SUBMIT' and x['kind']=='RESTORE')
++  assert D('.35')<D(witness['DD'])<=D('.40')
++ finally:e.end();e.dispose()
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_r_quote_above40_clears_confirmation_and_does_not_restore_later_without_new_bar(side):
++ s,e,ep=held(side=side,restore_dd=D('.40'))
++ try:
++  cut(s,e,price='55' if side==1 else '145');t=s._c1_state
++  reclaim=confirm(s,side);assert t['confirmation']
++  observe(s,2*H4+1,btc=reclaim,equity='5900');run_ticks(e,[tick(BTC_PERP,2*H4+1,reclaim)])
++  assert t['confirmation'] is None and not t['restore_submitted'] and t['credit']==50000
++  observe(s,2*H4+2,btc=reclaim,equity='6400');run_ticks(e,[tick(BTC_PERP,2*H4+2,reclaim)])
++  assert not t['restore_submitted'] and t['restore_filled']==0
++ finally:e.end();e.dispose()
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_r_revoked_hold_release_stays35(side):
++ s,e,ep=held(side=side,restore_dd=D('.40'))
++ try:
++  cut(s,e,price='55' if side==1 else '145');t=s._c1_state
++  s._c1_revoke(2000,'TEST_REVOKE')
++  observe(s,2001,btc='80' if side==1 else '120',equity='6400')
++  assert t['state']=='REVOKED' and t['credit']==0
++  observe(s,2002,btc='80' if side==1 else '120',equity='6500')
++  assert t['state']=='RELEASED'
++ finally:e.end();e.dispose()
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_r_native_margin_denial_keeps_actual_credit_and_needs_new_bar(side):
++ class Admission(NativeProbe):
++  allow=True
++  def _tier_allows_increase(self,*a):return self.allow
++ s,e,ep=held(side=side,cls=Admission,restore_dd=D('.40'))
++ try:
++  cut(s,e,price='55' if side==1 else '145');t=s._c1_state
++  reclaim=confirm(s,side);assert t['confirmation']
++  s.allow=False
++  for n in range(1,6):
++   observe(s,2*H4+n,btc=reclaim,equity='6400');run_ticks(e,[tick(BTC_PERP,2*H4+n,reclaim)])
++  assert t['state']=='HELD' and not t['restore_submitted'] and t['credit']==50000 and t['confirmation'] is None
++  s.allow=True;observe(s,2*H4+100,btc=reclaim,equity='6400');run_ticks(e,[tick(BTC_PERP,2*H4+100,reclaim)])
++  assert not t['restore_submitted'] and t['credit']==50000
++ finally:e.end();e.dispose()

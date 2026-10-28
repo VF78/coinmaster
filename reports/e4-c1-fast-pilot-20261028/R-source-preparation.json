@@ -1,0 +1,72 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "candidate": "R_STANDALONE",
+  "state": "SOURCE_ONLY_PEER_PASS_AWAIT_ROOT_R_FREEZE_HISTORICAL_GO",
+  "base_commit": "72cc39cfda5d64529da977276729418f90521d36",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "06aa1886bc75790fb22c5a3f666f4fa36f93760bb0e2a5fcb53782caa71ff370",
+    "runtime/coinmaster/strategy/wave_overlay.py": "2788ea0d36fa93cd961a84125fe93584c8c10938d40fdf6f6a67356922503254",
+    "runtime/coinmaster/research/native_baseline.py": "1edab25e08f92df7b6efde7a288d78abfbb3a8cd2640ca6d9e94d984b9b93d7b",
+    "runtime/tests/test_native_residual_recovery.py": "a40ab2588a476c83e6dbc20921275893166b7f6ed24acaad92f6654fcd2fce84",
+    "runtime/tests/test_native_c1_r.py": "a94f2311c33a4cf32f66019721c949f0d48ab60bf4183d91c6fe165ddcfed4fa"
+  },
+  "unchanged_q_observer_and_core_pins": {
+    "runtime/coinmaster/research/paired_observer.py": "bef4930508e2497ec78ea2dfdd4eba6010c6e272cd41fa2739bc2021640c4010",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb"
+  },
+  "exact_C1_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "unchanged_Q_config_sha256": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+  "R_config_sha256": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
+  "economic_delta": {
+    "residual_recovery_research.restore_DD": {
+      "old": "0.35",
+      "new": "0.40"
+    }
+  },
+  "BTC_cut_divisor": 2,
+  "SOL_cut_divisor": 2,
+  "restore_gates_changed": [
+    "CLOSED_4H_RECLAIM_DD",
+    "FRESH_QUOTE_RESTORE_DD_RECHECK"
+  ],
+  "literal35_preserved": [
+    "REVOKED_HOLD_RELEASE"
+  ],
+  "reachability": {
+    "status": "SOURCE_BOUND_EARLIER_ELIGIBLE",
+    "guard_closure_sha256": "f3803b91c050c714ef92dc20054a5d94dc88d2e607d45de3a1336ec3594bf991",
+    "source": "root/evidence agent immutable old C1 reconstruction",
+    "witness": "g2Jan13 20:00closedH4->20:01quote; DD36.0998/36.6959; actualSOLcredit1000HELD; noownership/margin/freshness/ordinaryblocker",
+    "not_new_TOTAL": true
+  },
+  "engineering_calls": [
+    {
+      "kind": "R_native_focused_plus_default_C1_precision",
+      "pytest_invocations": 1,
+      "native_engine_constructors": 24,
+      "wall_seconds": 4.19,
+      "result": "26PASS",
+      "constructor_count_basis": "8R native+16defaultC1 native;2pureprecision; count reconstructed from deterministic fixture paths"
+    }
+  ],
+  "repair_iterations": 0,
+  "R_historical_attempts": 0,
+  "campaign_historical_status": "Q1_RUNNING_ROOT_MAC_FROZEN_72_UNTOUCHED",
+  "run_permission": "NO_R_HISTORICAL_UNTIL_Q_RESULT_AND_ROOT_GO",
+  "live_order_capability": false,
+  "live_boundary": "Only later separately scoped adapter preparation; owner budget81.84USDC and explicit final START still required",
+  "peer_review": {
+    "status": "PASS_SOURCE_ONLY",
+    "open_P0": 0,
+    "open_P1": 0,
+    "report": "R-peer-review.json",
+    "sha256": "6e75d076ffe75f436128d78aa5b5101374dc71797c535c3e099c30b72222d19e",
+    "reviewed_preparation_sha256": "d042091a0f5cf01e96993eba11204e9050ac9d4646d5352633b24674ea54aa12",
+    "reviewer_engine_calls": 0
+  }
+}

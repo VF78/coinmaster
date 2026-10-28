@@ -14,8 +14,8 @@ from test_native_episode_risk import NativeProbe,tick,run_ticks,marks
 from test_native_btc_sizing import prepare_day
 from test_wave_native_integration import native_engine,lifecycle_config
 
-def held(asset='BTC',side=1,cls=NativeProbe,cut_divisor=2):
- s=cls(cfg(research_wait_4h=True,research_residual_recovery=True,research_c1_btc_cut_divisor=cut_divisor,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
+def held(asset='BTC',side=1,cls=NativeProbe,cut_divisor=2,restore_dd=D(".35")):
+ s=cls(cfg(research_wait_4h=True,research_residual_recovery=True,research_c1_btc_cut_divisor=cut_divisor,research_c1_restore_dd=restore_dd,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
  e=native_engine(s);run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
  prepare_day(s,2,side);ep=s._domain.episode=Episode('c1',side,10000,1,wave_levels=(.50,.60,.70),btc_planref_vwap=D(100))
  i=s._domain._intent(ep,'BTC_ENTRY',side,None,quantity=100)
