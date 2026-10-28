@@ -1,0 +1,12 @@
+{
+  "observed_utc": "2026-10-28T20:20:41.805720+00:00",
+  "status": "PUBLISHED_EXACT_REMOTE_VERIFIED_BY_EXECUTOR",
+  "commit": "e1713f8a3b800323e0176e276d98ec18fb5262db",
+  "repository": "https://github.com/VF78/coinmaster",
+  "ref": "refs/heads/codex/e4-c1-live-readiness-20261028",
+  "authorization": "owner-publication-approval.json",
+  "deployment": false,
+  "orders": 0,
+  "live_start": false,
+  "component_only_not_release_ready": true
+}

@@ -1,0 +1,20 @@
+{
+  "recorded_utc": "2026-10-28T20:15:24.888722+00:00",
+  "authority": "DIRECT_HUMAN_REPLY_IN_CURRENT_CHAT",
+  "source_commit": "e1713f8a3b800323e0176e276d98ec18fb5262db",
+  "repository": "https://github.com/VF78/coinmaster",
+  "branch": "codex/e4-c1-live-readiness-20261028",
+  "payload": "16files runtime source/tests/technicalreports, exact private ownerreviewpatch90ec9344e16a0e29639638cabe4501f810e6811e358ca8d0229f7743b062c021",
+  "scope_includes_subsequent_verified_CoinMaster_updates": true,
+  "excluded": [
+    "secrets",
+    "accountaddress",
+    "balances",
+    "financialreadbacks",
+    "deployment",
+    "transfers",
+    "live_start"
+  ],
+  "owner_reply_verbatim": "Разрешаю указанную публикацию и обновления",
+  "final_owner_START_still_required": true
+}

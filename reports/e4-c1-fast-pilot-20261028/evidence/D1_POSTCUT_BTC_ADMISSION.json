@@ -1,0 +1,403 @@
+{
+  "schema": "D1_POSTCUT_BTC_ADMISSION_V1",
+  "status": "ADMITTED_FOR_CODE_DESIGN_ONLY_NOT_NATIVE_GO",
+  "predeclared_rule": "For ALL BTC RESTORE paths (normal/deferred), require observed fully closed BTC DailySignalBar whose source open_ns >= last actual CUT fill_ns and max(ts_event,ts_init) <= fresh decision_ns. SOL unchanged. Universal FIRST_FRESH_H4 fix retained.",
+  "source_semantics": {
+    "native_baseline.py967_980": "At UTC day boundary use real normalized daily row daily_open=available-DAY; emitBTC/SOL DailySignalBar available_ns=(last minute.open+MINUTE); enqueue marks then daily signals then H4/other next bars then quotes; native sort_data; no synthetic daily bar.",
+    "venues/signals.py15_18": "DailySignalBar.ts_event=closed timestamp, ts_init defaults same. No explicit open_ns on object; infer close-DAY only for this exact fixedD1 source contract; do not apply arbitrary intraday timestamp.",
+    "wave_overlay.py632_650": "BTC DailySignalBar reception identified by configured btc_signal_id or btc_id before daily pair/advance. New gate must consume verified input observation, not wall-clock elapsedtime.",
+    "observed_callback_receipt_limit": "Raw actual outputs do not export per-D1 callback sequence. Exact generated source availability and enqueue ordering are proven; future implementation must check delivered matchingBTC D1 observation before admitting restore, so callback tie cannot pre-admit."
+  },
+  "actual_paths": [
+    {
+      "variant": "R",
+      "group": "b49e47dd-dcb4-4834-9373-c35a6baa293e",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "cut_UTC": "2024-10-03T09:04:00+00:00",
+      "cut_ns": 1727946240000000000,
+      "cut_lots": 5000,
+      "cut_price": "135.3",
+      "restore": {
+        "UTC": "2024-10-04T12:02:00+00:00",
+        "lots": 5000,
+        "price": "140.13"
+      },
+      "revoke": null,
+      "guard_applies": false,
+      "first_fully_postcut_BTC_D1_open_ns": null,
+      "first_fully_postcut_BTC_D1_open_UTC": null,
+      "first_D1_closed_available_ns": null,
+      "first_D1_closed_available_UTC": null,
+      "classification": "SOL_UNCHANGED"
+    },
+    {
+      "variant": "R",
+      "group": "4cc28428-2cca-442f-b3db-ce1f5d00f25c",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-01-13T11:57:00+00:00",
+      "cut_ns": 1736769420000000000,
+      "cut_lots": 10000,
+      "cut_price": "175.58",
+      "restore": {
+        "UTC": "2025-01-13T20:01:00+00:00",
+        "lots": 10000,
+        "price": "177.35"
+      },
+      "revoke": null,
+      "guard_applies": false,
+      "first_fully_postcut_BTC_D1_open_ns": null,
+      "first_fully_postcut_BTC_D1_open_UTC": null,
+      "first_D1_closed_available_ns": null,
+      "first_D1_closed_available_UTC": null,
+      "classification": "SOL_UNCHANGED"
+    },
+    {
+      "variant": "R",
+      "group": "ea33234b-3157-4146-b450-44d39889f8d8",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-06-06T09:22:00+00:00",
+      "cut_ns": 1749201720000000000,
+      "cut_lots": 12038,
+      "cut_price": "103680.0",
+      "restore": null,
+      "revoke": {
+        "UTC": "2025-06-07T00:00:00+00:00",
+        "reason": "MANDATORY_GROUP_CLOSE"
+      },
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1749254400000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2025-06-07T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1749340800000000000,
+      "first_D1_closed_available_UTC": "2025-06-08T00:00:00+00:00",
+      "classification": "ACTUAL_REVOKE_BEFORE_D1_GATE_NO_RESTORE_DELTA_ON_SAVED_PATH",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1749254400000,
+        "open": "104227.5",
+        "high": "105865.9",
+        "low": "103811",
+        "close": "105499.9"
+      }
+    },
+    {
+      "variant": "R",
+      "group": "0c11ab2d-db04-4ea9-bb61-db6cbd22cd78",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-11-27T02:24:00+00:00",
+      "cut_ns": 1764210240000000000,
+      "cut_lots": 79592,
+      "cut_price": "91057.1",
+      "restore": {
+        "UTC": "2025-11-29T04:02:00+00:00",
+        "lots": 79592,
+        "price": "90628.2"
+      },
+      "revoke": null,
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1764288000000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2025-11-28T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1764374400000000000,
+      "first_D1_closed_available_UTC": "2025-11-29T00:00:00+00:00",
+      "classification": "ACTUAL_RESTORE_ALREADY_AFTER_D1_MARKET_GATE",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1764288000000,
+        "open": "91284.2",
+        "high": "93081",
+        "low": "90151.9",
+        "close": "90845.7"
+      }
+    },
+    {
+      "variant": "R",
+      "group": "80ba4d6b-6ab4-448e-8ebf-b19a23ef99b9",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2026-08-10T16:57:00+00:00",
+      "cut_ns": 1786381020000000000,
+      "cut_lots": 230705,
+      "cut_price": "63814.1",
+      "restore": null,
+      "revoke": {
+        "UTC": "2026-08-11T00:00:00+00:00",
+        "reason": "MANDATORY_GROUP_CLOSE"
+      },
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1786406400000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2026-08-11T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1786492800000000000,
+      "first_D1_closed_available_UTC": "2026-08-12T00:00:00+00:00",
+      "classification": "ACTUAL_REVOKE_BEFORE_D1_GATE_NO_RESTORE_DELTA_ON_SAVED_PATH",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1786406400000,
+        "open": "63946.8",
+        "high": "64486.3",
+        "low": "63183.1",
+        "close": "63560.5"
+      }
+    },
+    {
+      "variant": "COMBO",
+      "group": "b8dd04f2-f0d8-4a9f-b4e7-84f4a11abc52",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "cut_UTC": "2024-10-03T09:04:00+00:00",
+      "cut_ns": 1727946240000000000,
+      "cut_lots": 5000,
+      "cut_price": "135.3",
+      "restore": {
+        "UTC": "2024-10-04T12:02:00+00:00",
+        "lots": 5000,
+        "price": "140.13"
+      },
+      "revoke": null,
+      "guard_applies": false,
+      "first_fully_postcut_BTC_D1_open_ns": null,
+      "first_fully_postcut_BTC_D1_open_UTC": null,
+      "first_D1_closed_available_ns": null,
+      "first_D1_closed_available_UTC": null,
+      "classification": "SOL_UNCHANGED"
+    },
+    {
+      "variant": "COMBO",
+      "group": "03503f9e-047d-4135-abc5-167c19abcf7f",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-01-13T11:57:00+00:00",
+      "cut_ns": 1736769420000000000,
+      "cut_lots": 10000,
+      "cut_price": "175.58",
+      "restore": {
+        "UTC": "2025-01-13T20:01:00+00:00",
+        "lots": 10000,
+        "price": "177.35"
+      },
+      "revoke": null,
+      "guard_applies": false,
+      "first_fully_postcut_BTC_D1_open_ns": null,
+      "first_fully_postcut_BTC_D1_open_UTC": null,
+      "first_D1_closed_available_ns": null,
+      "first_D1_closed_available_UTC": null,
+      "classification": "SOL_UNCHANGED"
+    },
+    {
+      "variant": "COMBO",
+      "group": "6eb84193-7bb5-435b-bc17-d72bd515224f",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-06-06T09:22:00+00:00",
+      "cut_ns": 1749201720000000000,
+      "cut_lots": 6019,
+      "cut_price": "103680.0",
+      "restore": null,
+      "revoke": {
+        "UTC": "2025-06-07T00:00:00+00:00",
+        "reason": "MANDATORY_GROUP_CLOSE"
+      },
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1749254400000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2025-06-07T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1749340800000000000,
+      "first_D1_closed_available_UTC": "2025-06-08T00:00:00+00:00",
+      "classification": "ACTUAL_REVOKE_BEFORE_D1_GATE_NO_RESTORE_DELTA_ON_SAVED_PATH",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1749254400000,
+        "open": "104227.5",
+        "high": "105865.9",
+        "low": "103811",
+        "close": "105499.9"
+      }
+    },
+    {
+      "variant": "COMBO",
+      "group": "d113c5eb-2c61-4e52-b058-71d065e5290a",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-11-27T02:24:00+00:00",
+      "cut_ns": 1764210240000000000,
+      "cut_lots": 39584,
+      "cut_price": "91057.1",
+      "restore": {
+        "UTC": "2025-11-29T04:02:00+00:00",
+        "lots": 39584,
+        "price": "90628.2"
+      },
+      "revoke": null,
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1764288000000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2025-11-28T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1764374400000000000,
+      "first_D1_closed_available_UTC": "2025-11-29T00:00:00+00:00",
+      "classification": "ACTUAL_RESTORE_ALREADY_AFTER_D1_MARKET_GATE",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1764288000000,
+        "open": "91284.2",
+        "high": "93081",
+        "low": "90151.9",
+        "close": "90845.7"
+      }
+    },
+    {
+      "variant": "COMBO",
+      "group": "aac3167a-c41e-44b9-8495-46ce8d22f3a2",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2026-08-10T16:58:00+00:00",
+      "cut_ns": 1786381080000000000,
+      "cut_lots": 115352,
+      "cut_price": "63814.3",
+      "restore": null,
+      "revoke": {
+        "UTC": "2026-08-11T00:00:00+00:00",
+        "reason": "MANDATORY_GROUP_CLOSE"
+      },
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1786406400000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2026-08-11T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1786492800000000000,
+      "first_D1_closed_available_UTC": "2026-08-12T00:00:00+00:00",
+      "classification": "ACTUAL_REVOKE_BEFORE_D1_GATE_NO_RESTORE_DELTA_ON_SAVED_PATH",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1786406400000,
+        "open": "63946.8",
+        "high": "64486.3",
+        "low": "63183.1",
+        "close": "63560.5"
+      }
+    },
+    {
+      "variant": "FIRST_FRESH_COMBO",
+      "group": "49c154c5-1000-4d22-99c7-d807fd817658",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "cut_UTC": "2024-10-03T09:04:00+00:00",
+      "cut_ns": 1727946240000000000,
+      "cut_lots": 5000,
+      "cut_price": "135.3",
+      "restore": {
+        "UTC": "2024-10-04T08:02:00+00:00",
+        "lots": 5000,
+        "price": "139.36"
+      },
+      "revoke": null,
+      "guard_applies": false,
+      "first_fully_postcut_BTC_D1_open_ns": null,
+      "first_fully_postcut_BTC_D1_open_UTC": null,
+      "first_D1_closed_available_ns": null,
+      "first_D1_closed_available_UTC": null,
+      "classification": "SOL_UNCHANGED"
+    },
+    {
+      "variant": "FIRST_FRESH_COMBO",
+      "group": "e2f1480c-cc9d-438f-b40f-c311ba6af02e",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-01-13T12:00:00+00:00",
+      "cut_ns": 1736769600000000000,
+      "cut_lots": 10000,
+      "cut_price": "175.36",
+      "restore": {
+        "UTC": "2025-01-13T20:01:00+00:00",
+        "lots": 10000,
+        "price": "177.35"
+      },
+      "revoke": null,
+      "guard_applies": false,
+      "first_fully_postcut_BTC_D1_open_ns": null,
+      "first_fully_postcut_BTC_D1_open_UTC": null,
+      "first_D1_closed_available_ns": null,
+      "first_D1_closed_available_UTC": null,
+      "classification": "SOL_UNCHANGED"
+    },
+    {
+      "variant": "FIRST_FRESH_COMBO",
+      "group": "6a9a94fd-aa63-49a3-a454-432136706719",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-06-06T09:22:00+00:00",
+      "cut_ns": 1749201720000000000,
+      "cut_lots": 6074,
+      "cut_price": "103680.0",
+      "restore": null,
+      "revoke": {
+        "UTC": "2025-06-07T00:00:00+00:00",
+        "reason": "MANDATORY_GROUP_CLOSE"
+      },
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1749254400000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2025-06-07T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1749340800000000000,
+      "first_D1_closed_available_UTC": "2025-06-08T00:00:00+00:00",
+      "classification": "ACTUAL_REVOKE_BEFORE_D1_GATE_NO_RESTORE_DELTA_ON_SAVED_PATH",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1749254400000,
+        "open": "104227.5",
+        "high": "105865.9",
+        "low": "103811",
+        "close": "105499.9"
+      }
+    },
+    {
+      "variant": "FIRST_FRESH_COMBO",
+      "group": "dcc44d7c-3630-4c97-8f00-aba51b04b422",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "cut_UTC": "2025-11-27T02:24:00+00:00",
+      "cut_ns": 1764210240000000000,
+      "cut_lots": 39775,
+      "cut_price": "91057.1",
+      "restore": {
+        "UTC": "2025-11-27T16:02:00+00:00",
+        "lots": 39775,
+        "price": "90882.7"
+      },
+      "revoke": null,
+      "guard_applies": true,
+      "first_fully_postcut_BTC_D1_open_ns": 1764288000000000000,
+      "first_fully_postcut_BTC_D1_open_UTC": "2025-11-28T00:00:00+00:00",
+      "first_D1_closed_available_ns": 1764374400000000000,
+      "first_D1_closed_available_UTC": "2025-11-29T00:00:00+00:00",
+      "classification": "ACTUAL_EARLY_RESTORE_BLOCKED",
+      "exact_existing_D1_row": {
+        "open_time_ms": 1764288000000,
+        "open": "91284.2",
+        "high": "93081",
+        "low": "90151.9",
+        "close": "90845.7"
+      }
+    }
+  ],
+  "first_delta_vs_FIRST_FRESH": {
+    "market_confirmation": "Nov27 2025 16:01UTC deferred BTC confirmation may still be promoted by unchanged universal FIRST_FRESH logic.",
+    "first_command_delta": "Actual Nov27 16:01UTC BTC originalTP cancel withheld while D1 gate false.",
+    "first_economic_delta": "Actual Nov27 16:02UTC BTC restore39775lots at90882.7 must not be submitted/executed by guarded candidate.",
+    "D1_only_not_automatic_restore": "Earliest qualifyingD1 source availabilityNov29 00:00UTC. Financial action requires receivedD1+freshmoney+oldH4/currentreclaim/rights/ordinarypriority+realcancelACK; exactfirstfreshfinancialaction/price/PNL UNKNOWN after Nov27 ownpathdivergence."
+  },
+  "comparison_with_COMBO": {
+    "first_delta": "Universal FIRST_FRESH fix already changes Oct4 SOL restore08:02 vsCOMBO12:02; newBTC-D1 predicate does not change that prefix.",
+    "base_relation": "AtNov27firstBTC-D1 gate delta candidate departsFIRST_FRESH; cannot assume later cash equalsCOMBO/R or inheritNov29restorefill."
+  },
+  "implementation_contract": {
+    "scope": "DEFAULT_OFF newresearch guard enabled only on fixed FIRST_FRESH_COMBO candidate; BTCdiv4/R40; noH4color/ATR/newTP/threshold change.",
+    "observation": "Track matchingBTC D1 close, inferred fixed-day open, available=max(ts_event,ts_init); qualify only ifopen>=latestactualCUTfill andavailable<=now; rejectfuture/outoforder/duplicatecausalrights as appropriate. No placeholderD1 fromcalendar.",
+    "waiting": "D1 waiting consumes neither restore attempt nor credit; does not erase ordinary H4 confirmation merely due waiting. Normal freshDD/price/identity invalidation behavior retained. Deferred promotion/firstfreshdenial contract remains universal/unchanged.",
+    "placement": "Check BTC D1 restorepermission before any restore-owned TPcancel and before nativeincrease. Existing freshmoney/DD40/reclaim/nativeadmission/ownerACK gates still apply; current confirmation validity must not be bypassed.",
+    "ordinary_priority": "Ordinary exits/revoke/reset remain earlier priority. Gate never postpones mandatory reduction/close.",
+    "resets": "LatestactualCUTfill is authoritative, notclaim/submit. Group/revoke/reset clears stalepermission state or compare observation againstcurrentgroupcut.",
+    "funding_boundary": "D1 availability00:00 is onlymarketgate; same-timeaccount/funding can invalidate oldmoney. Never reusecachedmoney asfresh or assert00:00fill.",
+    "safety": "No cancel untilgate, realcancelterminal andnewfreshquote required asoriginal. No inferredACK."
+  },
+  "beneficial_SOL_kept": {
+    "October_actual_FIRST_FRESH_restore": "2024-10-04T08:02:00+00:00",
+    "January_actual_FIRST_FRESH_restore": "2025-01-13T20:01:00+00:00",
+    "logical_prefix_reason": "PredicateBTC-only and firstBTCrestorepermissiondifferenceNov27; all earlier SOL behavior unchanged under deterministic sameinput/sourcebase."
+  },
+  "limits": [
+    "No engine/native replay/source edit/test/venue fetch.",
+    "No forecast, counterfactualTOTAL, cash addback or future PnL assertion.",
+    "June revoke beforeD1 proof is causal prefix beforefirstNovemberdelta; August R/COMBO is savedpath witness only afternewNovemberdivergence. FIRST_FRESH actualownpath has noAugustC1claim.",
+    "D1 cutoff is predeclared nativeBTC primarysignal cadence, not tuned date/window.",
+    "Admission proves actiondelta and preserved SOL prefix, not profit/DD feasibility."
+  ],
+  "input_sha256": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/R/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "9b3ac2f440e8d48201615ebc573813d7fa18166bef80e4dbf887e8b20b3bef17",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/COMBO/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "947caeb756af1a87176b66f348cb0ee5cc6ccda288cef88528aef0d34cde6ba6",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/FIRST_FRESH_COMBO/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "dbb174bf01f077bbe222a490b12a7d86fa3e7d9e3a7e9c8e36165f66dc6b5af9",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-FIRST-FRESH-ff253cc852cb/runtime/coinmaster/research/native_baseline.py": "a28ac2574a26b53e2f727cdbcda15fe886cd094597c235086cbbc9d922cf8a20",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-FIRST-FRESH-ff253cc852cb/runtime/coinmaster/venues/signals.py": "2548d380be312126bb35e02cc36a8d3654930b15953ff41ff4c450a1fb00b46c",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-FIRST-FRESH-ff253cc852cb/runtime/coinmaster/strategy/wave_overlay.py": "dc54aa86257dc4628f69e72111d50548bb07c07083cd9993fcaff8626c0bbdea",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-FIRST-FRESH-ff253cc852cb/runtime/coinmaster/strategy/residual_recovery.py": "acf5fb557daaecd780f39d12703e82cb44bf3e5ac2d36b8b6e72447ac8ce758a"
+  },
+  "new_native_runs": 0,
+  "new_tests": 0,
+  "new_product_edits": 0
+}

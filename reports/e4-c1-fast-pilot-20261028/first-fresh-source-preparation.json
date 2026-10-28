@@ -1,0 +1,69 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "candidate": "FIRST_FRESH_COMBO",
+  "state": "SOURCE_ONLY_AWAIT_PEER_ROOT_FREEZE_REGISTRY_GO",
+  "base_commit": "d30df523af7513545dfde19cd69c5105102f3acb",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "acf5fb557daaecd780f39d12703e82cb44bf3e5ac2d36b8b6e72447ac8ce758a",
+    "runtime/coinmaster/strategy/wave_overlay.py": "dc54aa86257dc4628f69e72111d50548bb07c07083cd9993fcaff8626c0bbdea",
+    "runtime/coinmaster/research/native_baseline.py": "a28ac2574a26b53e2f727cdbcda15fe886cd094597c235086cbbc9d922cf8a20",
+    "runtime/tests/test_c1_first_fresh_h4_pure.py": "5e00910b06609798a387275106a38636b1dc843d624fb6cd5f118f7240745691"
+  },
+  "unchanged_economic_accounting_stress_pins": {
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "runtime/tests/test_native_qualification_stress_wiring.py": "c3dd399312ad7ebc32eb14358366db67e048445b2a98dde3c10938f629073a1a"
+  },
+  "default_OFF_config_pins": {
+    "C1": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+    "Q": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+    "R": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
+    "G": "df1c48cd536970122e4335de07840226008e8cb11dceeff7cb71d68494d8ca78",
+    "COMBO": "75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba"
+  },
+  "config_sha256": "0782684ce8906ee2ad07963f59f84be2c5e33019b13e263fa1c8f8fd1cfd975a",
+  "base_COMBO_config_sha256": "75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba",
+  "delta": {
+    "capture": "VALID_CLOSED_MARKET_BAR_ONLY_WHEN_BAR_MONEY_NONE",
+    "consume": "ONCE_FIRST_FRESH_SELECTED_QUOTE_AFTER_AVAILABLE",
+    "source_at_least_bar_close": true,
+    "actual_fill_identity": true,
+    "denial_drops_until_new_H4": true,
+    "promotion": "EXISTING_CONFIRMATION_REAL_CANCEL_ACK_AND_NATIVE_ADMISSION",
+    "new_H4_replaces_deferred_only": true
+  },
+  "engineering_calls": [
+    {
+      "result": "38PASS2FAIL_PRICE_DOUBLE",
+      "wall_seconds": 0.77,
+      "native_constructors": 0
+    },
+    {
+      "result": "41PASS1FAIL_GROUPRESET_FIXTURE_ORDER",
+      "wall_seconds": 0.77,
+      "native_constructors": 0
+    },
+    {
+      "result": "42PASS",
+      "wall_seconds": 0.72,
+      "native_constructors": 0
+    }
+  ],
+  "repair_iterations_by_blocker": {
+    "price_float_double": 1,
+    "groupreset_fixture_order": 1
+  },
+  "historical_attempts": 0,
+  "qualification_stress": false,
+  "global_cut_arm": false,
+  "live_order_capability": false,
+  "allocation": "ROOT_AMENDED_5CANDIDATE_1CONTROL_2QUAL_TOTAL8_SAME4SPENT_NOT_NEW_NUMERIC_OWNER_REPLY",
+  "evidence_sha256": "aaebecfc9158760fb8a2906c0e625dc26a4993e3be9d8ce858370edb486b3a5d",
+  "limitations": "Funding-window fixtures are archived R scheduling mechanics, not COMBO earlier ACK/fill/TOTAL. New source first changes potentially October2024; no Q prefix/January preservation claim. Root freeze/registry and explicit new native GO mandatory."
+}

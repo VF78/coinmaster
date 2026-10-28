@@ -1,0 +1,582 @@
+{
+  "status": "G_COMPLETED_NOT_SELECTED_FINANCIAL_OBSERVATION",
+  "TOTAL": "4482202.31880551",
+  "TOTAL_minus_C1": "93588.93655208",
+  "TOTAL_minus_E4": "-1149415.04073172",
+  "gap_to_floor": "988194.196181837",
+  "config_hash": "df1c48cd536970122e4335de07840226008e8cb11dceeff7cb71d68494d8ca78",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "settled_receipts_streamed": 1051199,
+  "prefix": {
+    "first_mismatched_fill_projection": {
+      "G": {
+        "accept_ns": "1786406400000000000",
+        "action": "FORCED_CLOSE",
+        "commission": "14329.9663056",
+        "commission_currency": "USDT",
+        "fill_ns": "1786406400000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "26054484.192",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "63946.8",
+        "qty": "407.44",
+        "reason": "REGIME",
+        "submit_ns": "1786406400000000000",
+        "venue": "P1SIM"
+      },
+      "C1": {
+        "accept_ns": "1786376340000000000",
+        "action": "BTC_REDUCE",
+        "commission": "7199.3140472",
+        "commission_currency": "USDT",
+        "fill_ns": "1786376340000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "13089661.904",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "64253.2",
+        "qty": "203.72",
+        "reason": "C1_RESIDUAL_CUT",
+        "submit_ns": "1786376340000000000",
+        "venue": "P1SIM"
+      }
+    },
+    "before_first_economic_delta_ns": 1786376340000000000,
+    "before_first_economic_delta_utc": "2026-08-10T15:39:00+00:00",
+    "fill_economic_projection_equal": true,
+    "fill_count_G": 526,
+    "fill_count_C1": 526,
+    "projection_fields": [
+      "accept_ns",
+      "action",
+      "commission",
+      "commission_currency",
+      "fill_ns",
+      "instrument",
+      "level",
+      "native_liquidity_side",
+      "notional",
+      "order_type",
+      "policy_hash",
+      "post_only",
+      "px",
+      "qty",
+      "reason",
+      "submit_ns",
+      "venue"
+    ],
+    "settled_rows_compared": 1020457,
+    "settled_projection_equal": true,
+    "first_settled_difference": null,
+    "first_post_treatment_difference": {
+      "receipt_ns": 1786376400000000000,
+      "receipt_UTC": "2026-08-10T15:40:00+00:00",
+      "G_cash": "4795840.38386195",
+      "C1_cash": "4649398.44981475",
+      "G_E": "4517355.14386195",
+      "C1_E": "4510155.82981475"
+    }
+  },
+  "coherent_observer": {
+    "actual_intraminute_price_path_proven": false,
+    "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+    "end_exclusive_ns": "1788220800000000000",
+    "event_drawdown": {
+      "maximum_loss_below_seed_amount": "2718.83042195",
+      "maximum_loss_below_seed_percent": "27.188304219500",
+      "minimum": {
+        "equity": "7281.16957805",
+        "timestamp_ns": "141170"
+      },
+      "samples": 2105968,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "83426.17527200",
+          "drawdown_peak_percent": "51.80315157406654834417870238",
+          "peak": {
+            "equity": "161044.59427091",
+            "timestamp_ns": "579557"
+          },
+          "recovery": {
+            "equity": "161264.7315447",
+            "timestamp_ns": "614205"
+          },
+          "trough": {
+            "equity": "77618.41899891",
+            "timestamp_ns": "582080"
+          }
+        },
+        {
+          "drawdown_amount": "4400069.77550152",
+          "drawdown_peak_percent": "51.68803570478031450931349163",
+          "peak": {
+            "equity": "8512743.25964487",
+            "timestamp_ns": "2913046"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "4112673.48414335",
+            "timestamp_ns": "3102097"
+          }
+        },
+        {
+          "drawdown_amount": "7462.28814679",
+          "drawdown_peak_percent": "50.61423368968206387218769810",
+          "peak": {
+            "equity": "14743.45772484",
+            "timestamp_ns": "139053"
+          },
+          "recovery": {
+            "equity": "14748.53369265",
+            "timestamp_ns": "174783"
+          },
+          "trough": {
+            "equity": "7281.16957805",
+            "timestamp_ns": "141170"
+          }
+        }
+      ]
+    },
+    "event_timestamp_basis": "SEQUENCE_ORDER_JOIN_EVENT_NS_AND_RECEIPT_NS_IN_TRACE",
+    "mutation_epochs": 1785,
+    "native_account_publications": 2201,
+    "native_cash_transitions": {
+      "exact_bridge": "0E-8",
+      "native_fill_cash_delta_total": "4418507.07700471",
+      "native_funding_cash_delta_total": "53695.24180080",
+      "seed": "10000",
+      "status": "EXACT_OBSERVED_NATIVE_TRANSITIONS",
+      "terminal_cash": "4482202.31880551",
+      "tolerance": null,
+      "trace_fields": "POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction"
+    },
+    "native_funding_transitions": 1248,
+    "native_unique_fills": 537,
+    "post_boundary_settlement_excluded_from_event_drawdown": true,
+    "sequence_count": 3157170,
+    "settled_drawdown": {
+      "maximum_loss_below_seed_amount": "2718.83042195",
+      "maximum_loss_below_seed_percent": "27.188304219500",
+      "minimum": {
+        "equity": "7281.16957805",
+        "timestamp_ns": "1727970240000000000"
+      },
+      "samples": 1051200,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "83426.17527200",
+          "drawdown_peak_percent": "51.80315157406654834417870238",
+          "peak": {
+            "equity": "161044.59427091",
+            "timestamp_ns": "1736728560000000000"
+          },
+          "recovery": {
+            "equity": "161226.8282767",
+            "timestamp_ns": "1737420540000000000"
+          },
+          "trough": {
+            "equity": "77618.41899891",
+            "timestamp_ns": "1736778960000000000"
+          }
+        },
+        {
+          "drawdown_amount": "4400069.77550152",
+          "drawdown_peak_percent": "51.68803570478031450931349163",
+          "peak": {
+            "equity": "8512743.25964487",
+            "timestamp_ns": "1783345140000000000"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "4112673.48414335",
+            "timestamp_ns": "1787119980000000000"
+          }
+        },
+        {
+          "drawdown_amount": "7462.28814679",
+          "drawdown_peak_percent": "50.61423368968206387218769810",
+          "peak": {
+            "equity": "14743.45772484",
+            "timestamp_ns": "1727928000000000000"
+          },
+          "recovery": {
+            "equity": "14748.53369265",
+            "timestamp_ns": "1728641100000000000"
+          },
+          "trough": {
+            "equity": "7281.16957805",
+            "timestamp_ns": "1727970240000000000"
+          }
+        }
+      ]
+    },
+    "settled_receipts": 1051199,
+    "status": "PASS",
+    "terminal_actual_cash": "4482202.31880551",
+    "unknown": []
+  },
+  "event_endpoint_sequence_join": {
+    "139053": {
+      "sequence": 139053,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1727928000000000000",
+      "receipt_ns": "1727928000000000000",
+      "mark_available_ns": "1727928000000000000",
+      "cash": "12526.05072484",
+      "equity": "14743.45772484",
+      "native_id": null,
+      "event_UTC": "2024-10-03T04:00:00+00:00",
+      "receipt_UTC": "2024-10-03T04:00:00+00:00"
+    },
+    "141170": {
+      "sequence": 141170,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1727970240000000000",
+      "receipt_ns": "1727970240000000000",
+      "mark_available_ns": "1727970240000000000",
+      "cash": "10104.46057805",
+      "equity": "7281.16957805",
+      "native_id": null,
+      "event_UTC": "2024-10-03T15:44:00+00:00",
+      "receipt_UTC": "2024-10-03T15:44:00+00:00"
+    },
+    "174783": {
+      "sequence": 174783,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1728641100000000000",
+      "receipt_ns": "1728641100000000000",
+      "mark_available_ns": "1728641100000000000",
+      "cash": "11774.93169265",
+      "equity": "14748.53369265",
+      "native_id": null,
+      "event_UTC": "2024-10-11T10:05:00+00:00",
+      "receipt_UTC": "2024-10-11T10:05:00+00:00"
+    },
+    "579557": {
+      "sequence": 579557,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1736728560000000000",
+      "receipt_ns": "1736728560000000000",
+      "mark_available_ns": "1736728560000000000",
+      "cash": "142844.59427091",
+      "equity": "161044.59427091",
+      "native_id": null,
+      "event_UTC": "2025-01-13T00:36:00+00:00",
+      "receipt_UTC": "2025-01-13T00:36:00+00:00"
+    },
+    "582080": {
+      "sequence": 582080,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1736778960000000000",
+      "receipt_ns": "1736778960000000000",
+      "mark_available_ns": "1736778960000000000",
+      "cash": "131078.41899891",
+      "equity": "77618.41899891",
+      "native_id": null,
+      "event_UTC": "2025-01-13T14:36:00+00:00",
+      "receipt_UTC": "2025-01-13T14:36:00+00:00"
+    },
+    "614205": {
+      "sequence": 614205,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1737420540000000000",
+      "receipt_ns": "1737420540000000000",
+      "mark_available_ns": "1737420540000000000",
+      "cash": "157345.6995447",
+      "equity": "161264.7315447",
+      "native_id": null,
+      "event_UTC": "2025-01-21T00:49:00+00:00",
+      "receipt_UTC": "2025-01-21T00:49:00+00:00"
+    },
+    "2913046": {
+      "sequence": 2913046,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1783345140000000000",
+      "receipt_ns": "1783345140000000000",
+      "mark_available_ns": "1783345140000000000",
+      "cash": "8157860.36239487",
+      "equity": "8512743.25964487",
+      "native_id": null,
+      "event_UTC": "2026-07-06T13:39:00+00:00",
+      "receipt_UTC": "2026-07-06T13:39:00+00:00"
+    },
+    "3102097": {
+      "sequence": 3102097,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1787119980000000000",
+      "receipt_ns": "1787119980000000000",
+      "mark_available_ns": "1787119980000000000",
+      "cash": "4245528.42614335",
+      "equity": "4112673.48414335",
+      "native_id": null,
+      "event_UTC": "2026-08-19T06:13:00+00:00",
+      "receipt_UTC": "2026-08-19T06:13:00+00:00"
+    }
+  },
+  "event_kind_counts": {
+    "PREQUOTE_DIRECT_NATIVE": 2102400,
+    "SETTLED_PRE_NEXT_SOURCE_WATERMARK": 1051199,
+    "PRE_FILL_LAST_COMMITTED_NATIVE_COPY": 537,
+    "POST_FILL_COMMITTED_NATIVE": 537,
+    "PRE_FUNDING_COMMITTED_NATIVE_COPY": 1248,
+    "POST_FUNDING_ACCOUNT_NATIVE": 1248,
+    "DIRECT_NATIVE_AFTER_ENGINE_END_RETURNED": 1
+  },
+  "event_sequence_count": 3157170,
+  "native_cash_transition_reconciliation": {
+    "method": "SUM_ACTUAL_NATIVE_PRE_POST_CASH_TRANSITIONS_BY_UNIQUE_FILL_OR_FUNDING_ID;NO_DERIVED_TRADE_PNL",
+    "seed": "10000",
+    "actual_native_fill_cash_delta": "4418507.07700471",
+    "actual_native_funding_cash_delta": "53695.24180080",
+    "terminal": "4482202.31880551",
+    "residual": "0E-8",
+    "native_fill_pairs": 537,
+    "native_funding_pairs": 1248,
+    "unmatched_pre_count": 0,
+    "duplicate_post_ids": 0,
+    "pair_errors": [],
+    "cash_change_count": 1785,
+    "cash_changes_outside_post_fill_or_funding": [],
+    "fees": "Nativecashdeltasalreadyincludefees;NOfee subtractionagain",
+    "original_JSON_reconciliation": "G_ORIGINAL_COMPLETE_NATIVE_LIFECYCLES_PRESERVED",
+    "independent_native_position_lifecycle_PNL_reconciliation": "PASS_EXACT_ALL_NATIVE_LIFECYCLES",
+    "status": "PASS_EXACT_NATIVE_CASH_TRANSITION_RECONCILIATION",
+    "mutation_pair_chain_errors": [],
+    "physical_snapshots_checked": 2105971,
+    "retrospective_copies_excluded": 1051199
+  },
+  "funding": {
+    "rows": 1248,
+    "unique_event_instrument_ids": 1248,
+    "actual_signed_sum": "53695.24180080",
+    "bad_arithmetic_rows": [],
+    "JSON_matches_SQLite": true,
+    "sqlite_funding_events_rows": 1248,
+    "sqlite_funding_cash_rows": 1248,
+    "unique_original_event_ids": 1248,
+    "event_stream_pair_delta_match": true,
+    "bridge_is_funding": false,
+    "original_journal_cash_after_matches": true,
+    "actual_signed_by_instrument": {
+      "BTCUSDT-PERP.P1SIM": "44745.91640839",
+      "SOLUSDT-PERP.P1SIM": "8949.32539241"
+    }
+  },
+  "C1_interventions": {
+    "cuts": 5,
+    "restores": 3,
+    "revocations": 2,
+    "native_intervention_fees": "13353.69392358",
+    "native_intervention_turnover": "24279443.4974",
+    "fee_change_vs_C1": "-17144.34680404",
+    "all_fills": 537,
+    "native_total_fees": "668779.92049538",
+    "total_fee_change_vs_C1": "-2283.45361651"
+  },
+  "liquidations": 0,
+  "terminal": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "14043707.2156"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "source_mode_actual_native": true,
+  "new_runs": 0,
+  "tests": 0,
+  "independent_native_lifecycle_check": {
+    "status": "PASS_EXACT_NATIVE_LIFECYCLE_PNL_IDENTITY",
+    "exported_lifecycles": 108,
+    "unique_lifecycles": 108,
+    "all_closed": true,
+    "native_event_count_sum": 537,
+    "native_realized_pnl_sum": "4418507.07700471",
+    "native_commissions_sum": "668779.92049538",
+    "commissions_equal_native_fees": true,
+    "bridge": "0E-8",
+    "by_asset": {
+      "BTCUSDT-PERP.P1SIM": 83,
+      "SOLUSDT-PERP.P1SIM": 25
+    },
+    "identity_fields": [
+      "position_id",
+      "opened_ns",
+      "closed_ns",
+      "opening_order_id",
+      "native_fill_lifecycle_sha256"
+    ],
+    "double_fee_subtraction": false
+  },
+  "original_native_cash_reconciliation_summary": {
+    "actual_native_cash_transitions": {
+      "exact_bridge": "0E-8",
+      "native_fill_cash_delta_total": "4418507.07700471",
+      "native_funding_cash_delta_total": "53695.24180080",
+      "seed": "10000",
+      "status": "EXACT_OBSERVED_NATIVE_TRANSITIONS",
+      "terminal_cash": "4482202.31880551",
+      "tolerance": null,
+      "trace_fields": "POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction"
+    },
+    "bridge_is_funding": false,
+    "fees_policy": "NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_NATIVE_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN",
+    "native_realized_total": "4418507.07700471",
+    "seed": "10000",
+    "signed_funding": "53695.24180080",
+    "status": "EXACT",
+    "terminal_cash": "4482202.31880551",
+    "tolerance": null,
+    "unallocated_bridge": "0E-8",
+    "native_lifecycle_export_header": {
+      "duplicate_native_copies": 0,
+      "identity": "ORIGINAL_FILL_POSITION_ID+OPENED_NS+CLOSED_NS+OPENING_ORDER_ID+NATIVE_FILL_LIFECYCLE_SHA256",
+      "native_current_count": 2,
+      "native_snapshot_count": 106,
+      "unique_lifecycles": 108,
+      "unknown": []
+    },
+    "full_positions_reference": "Original G report; exact SHA in G-analysis-input-hashes.json"
+  },
+  "global_arm_actual_audit": {
+    "consuming_positive_claims": 5,
+    "native_rearms": [
+      {
+        "DD": "0.3488966423224727944727494816",
+        "H": "14743.45772484",
+        "event": "GLOBAL_CUT_ARM_REARMED",
+        "group": "6f196291-3fdf-4380-a2b2-8026b656e31b",
+        "sequence": 11,
+        "source_quote_ns": 1728029520000000000,
+        "state": "HELD",
+        "timestamp_ns": 1728029580000000000
+      },
+      {
+        "DD": "0.3410618997841238975676699518",
+        "H": "161044.59427091",
+        "event": "GLOBAL_CUT_ARM_REARMED",
+        "group": "cf53946c-e088-4062-854a-6b9a1df1fe00",
+        "sequence": 30,
+        "source_quote_ns": 1736781540000000000,
+        "state": "HELD",
+        "timestamp_ns": 1736781600000000000
+      },
+      {
+        "DD": "0.3497486855667471498444612434",
+        "H": "537079.68781164",
+        "event": "GLOBAL_CUT_ARM_REARMED",
+        "group": null,
+        "sequence": 53,
+        "source_quote_ns": 1749503400000000000,
+        "state": "IDLE",
+        "timestamp_ns": 1749503460000000000
+      },
+      {
+        "DD": "0.3426928519304011713727294858",
+        "H": "1890828.54919136",
+        "event": "GLOBAL_CUT_ARM_REARMED",
+        "group": "49fec358-8072-4e29-9d0b-f473ee3103ce",
+        "sequence": 63,
+        "source_quote_ns": 1764547500000000000,
+        "state": "HELD",
+        "timestamp_ns": 1764547560000000000
+      }
+    ],
+    "global_disarmed_denials": [
+      {
+        "first_ns": 1786376280000000000,
+        "last_ns": 1786406400000000000,
+        "first_UTC": "2026-08-10T15:38:00+00:00",
+        "count": 489,
+        "gates": {
+          "checkpoint_epoch": true,
+          "global_cut_armed": false,
+          "native_half_exists": true,
+          "no_competing_owner": true,
+          "open_loss_dominates": true,
+          "parent_complete": true
+        },
+        "only_global_arm_false": true
+      },
+      {
+        "first_ns": 1786527240000000000,
+        "last_ns": 1787011200000000000,
+        "first_UTC": "2026-08-12T09:34:00+00:00",
+        "count": 691,
+        "gates": {
+          "checkpoint_epoch": true,
+          "global_cut_armed": false,
+          "native_half_exists": true,
+          "no_competing_owner": true,
+          "open_loss_dominates": true,
+          "parent_complete": true
+        },
+        "only_global_arm_false": true
+      },
+      {
+        "first_ns": 1787069040000000000,
+        "last_ns": 1787069880000000000,
+        "first_UTC": "2026-08-18T16:04:00+00:00",
+        "count": 15,
+        "gates": {
+          "checkpoint_epoch": true,
+          "global_cut_armed": false,
+          "native_half_exists": true,
+          "no_competing_owner": false,
+          "open_loss_dominates": true,
+          "parent_complete": false
+        },
+        "only_global_arm_false": false
+      },
+      {
+        "first_ns": 1787069940000000000,
+        "last_ns": 1787146980000000000,
+        "first_UTC": "2026-08-18T16:19:00+00:00",
+        "count": 1202,
+        "gates": {
+          "checkpoint_epoch": true,
+          "global_cut_armed": false,
+          "native_half_exists": true,
+          "no_competing_owner": true,
+          "open_loss_dominates": true,
+          "parent_complete": true
+        },
+        "only_global_arm_false": true
+      },
+      {
+        "first_ns": 1788132660000000000,
+        "last_ns": 1788153120000000000,
+        "first_UTC": "2026-08-30T23:31:00+00:00",
+        "count": 153,
+        "gates": {
+          "checkpoint_epoch": true,
+          "global_cut_armed": false,
+          "native_half_exists": true,
+          "no_competing_owner": true,
+          "open_loss_dominates": true,
+          "parent_complete": true
+        },
+        "only_global_arm_false": true
+      }
+    ],
+    "denied_receipts_total": 2550,
+    "denied_receipts_only_arm_false": 2535,
+    "first_decisive_delta": "2026-08-10T15:38:00+00:00 original would-be economic claim denied solely by global_cut_armed=False",
+    "future_economic_path": "Afterfirstsuppression all later denials and actions are ownGnativepath; do not map old fixed quantities or add back old cut profits.",
+    "terminal_arm_field": "Not explicitly included in c1_terminal_state; five consumes/four rearms and no later rearm imply disarmed by source/audit."
+  },
+  "S0_net_profit_retention": "0.7371226752265051969782895831"
+}

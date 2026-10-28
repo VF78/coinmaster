@@ -1,0 +1,32 @@
+{
+  "record_type": "EXACT_TOOL_OUTPUT_TRANSCRIPTION_NOT_RERUN",
+  "command": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q runtime/tests/test_c1_first_fresh_h4_pure.py runtime/tests/test_c1_global_arm_pure.py runtime/tests/test_native_qualification_stress_wiring.py",
+  "call_1": {
+    "tool_session": 63980,
+    "tool_chunk": "66fa00",
+    "result": "2 failed, 38 passed in 0.77s",
+    "cause": "Pure Price double lacked float interface; production methods unchanged",
+    "repair_count": 1
+  },
+  "call_2": {
+    "tool_session": 48337,
+    "tool_chunk": "83fce6",
+    "result": "1 failed, 41 passed in 0.77s",
+    "cause": "New group-reset fixture constructed quote after clearing state; production methods unchanged",
+    "repair_count": 1
+  },
+  "call_3": {
+    "tool_session": 35742,
+    "tool_chunk": "28bac1",
+    "exit_code": 0,
+    "stdout": "..........................................                               [100%]\n42 passed in 0.72s\n"
+  },
+  "pytest_calls": 3,
+  "pytest_wall_seconds": 2.26,
+  "native_engine_constructors": 0,
+  "native_strategy_constructors": 0,
+  "native_model_constructors": 0,
+  "historical_attempts": 0,
+  "network_or_exchange_calls": 0,
+  "note": "AST-loaded actual C1 class; no Nautilus imports. This records already returned exec output, not a new pytest invocation. Last following CLI misuse guard is parsed in frozen prep and does not change tested C1 methods."
+}

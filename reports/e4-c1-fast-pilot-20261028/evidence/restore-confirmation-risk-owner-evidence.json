@@ -1,0 +1,174 @@
+{
+  "1728028860000000000": {
+    "UTC": "2024-10-04T08:01:00+00:00",
+    "risk": {
+      "bar_open_ms": "1728028800000",
+      "close_available_ns": "1728028860000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "10118.89982842",
+      "free_cash": "10118.89982842",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "9315.50482842",
+      "conditional_adverse_equity": "9285.51882842",
+      "conditional_favorable_equity": "9370.50482842",
+      "conditional_high_mark_mm_upper": "551.3344068",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"0.940\",\"avg_px_open\":\"60887.24999999999\",\"mark_ohlc\":{\"open_time_ms\":1728028800000,\"open\":\"61413.36\",\"high\":\"61433.4\",\"low\":\"61401.52\",\"close\":\"61401.52\"},\"low_native_pnl\":\"-483.395\",\"high_native_pnl\":\"-513.381\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"500.0\",\"avg_px_open\":\"140.09\",\"mark_ohlc\":{\"open_time_ms\":1728028800000,\"open\":\"139.476\",\"high\":\"139.56\",\"low\":\"139.45\",\"close\":\"139.454\"},\"low_native_pnl\":\"-320\",\"high_native_pnl\":\"-265\"}]"
+    },
+    "native_active_orders": [
+      {
+        "client_order_id": "O-20241003-090600-001-000-22",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "BUY",
+        "type": "LIMIT",
+        "price": "57429.9",
+        "is_reduce_only": "True",
+        "ts_init": "1727946360000000000",
+        "ts_last": "1728043260000000000",
+        "status": "CANCELED",
+        "quantity": "0.940",
+        "native_order_events": {
+          "accept_ns": "1727946360000000000",
+          "action": "BTC_REDUCE",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "level": "2",
+          "order_type": "2",
+          "post_only": "true",
+          "reason": "BTC_TP3",
+          "submit_ns": "1727946360000000000",
+          "venue": "P1SIM"
+        }
+      }
+    ]
+  },
+  "1728028920000000000": {
+    "UTC": "2024-10-04T08:02:00+00:00",
+    "risk": {
+      "bar_open_ms": "1728028860000",
+      "close_available_ns": "1728028920000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "10118.89982842",
+      "free_cash": "10118.89982842",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "9290.90282842",
+      "conditional_adverse_equity": "9245.50482842",
+      "conditional_favorable_equity": "9351.99482842",
+      "conditional_high_mark_mm_upper": "550.94151504",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"0.940\",\"avg_px_open\":\"60887.24999999999\",\"mark_ohlc\":{\"open_time_ms\":1728028860000,\"open\":\"61401.52\",\"high\":\"61401.52\",\"low\":\"61368.03\",\"close\":\"61379.8\"},\"low_native_pnl\":\"-451.905\",\"high_native_pnl\":\"-483.395\"},{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"500.0\",\"avg_px_open\":\"140.09\",\"mark_ohlc\":{\"open_time_ms\":1728028860000,\"open\":\"139.454\",\"high\":\"139.455\",\"low\":\"139.31\",\"close\":\"139.36\"},\"low_native_pnl\":\"-390\",\"high_native_pnl\":\"-315\"}]"
+    },
+    "native_active_orders": [
+      {
+        "client_order_id": "O-20241003-090600-001-000-22",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "BUY",
+        "type": "LIMIT",
+        "price": "57429.9",
+        "is_reduce_only": "True",
+        "ts_init": "1727946360000000000",
+        "ts_last": "1728043260000000000",
+        "status": "CANCELED",
+        "quantity": "0.940",
+        "native_order_events": {
+          "accept_ns": "1727946360000000000",
+          "action": "BTC_REDUCE",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "level": "2",
+          "order_type": "2",
+          "post_only": "true",
+          "reason": "BTC_TP3",
+          "submit_ns": "1727946360000000000",
+          "venue": "P1SIM"
+        }
+      }
+    ]
+  },
+  "1764259260000000000": {
+    "UTC": "2025-11-27T16:01:00+00:00",
+    "risk": {
+      "bar_open_ms": "1764259200000",
+      "close_available_ns": "1764259260000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "1466301.21832625",
+      "free_cash": "1466301.21832625",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "1191613.89095159",
+      "conditional_adverse_equity": "1188270.98495159",
+      "conditional_favorable_equity": "1191972.05945159",
+      "conditional_high_mark_mm_upper": "51346.40444",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"79.593\",\"avg_px_open\":\"87414.85068568018\",\"mark_ohlc\":{\"open_time_ms\":1764259200000,\"open\":\"90908\",\"high\":\"90908\",\"low\":\"90861.46\",\"close\":\"90866\"},\"low_native_pnl\":\"-274329.15887466\",\"high_native_pnl\":\"-278030.23337466\"}]"
+    },
+    "native_active_orders": [
+      {
+        "client_order_id": "O-20251127-022500-001-000-428",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "BUY",
+        "type": "LIMIT",
+        "price": "84539.2",
+        "is_reduce_only": "True",
+        "ts_init": "1764210300000000000",
+        "ts_last": "1764388860000000000",
+        "status": "CANCELED",
+        "quantity": "45.767",
+        "native_order_events": {
+          "accept_ns": "1764210300000000000",
+          "action": "BTC_REDUCE",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "level": "2",
+          "order_type": "2",
+          "post_only": "true",
+          "reason": "BTC_TP3",
+          "submit_ns": "1764210300000000000",
+          "venue": "P1SIM"
+        }
+      }
+    ]
+  },
+  "1764259320000000000": {
+    "UTC": "2025-11-27T16:02:00+00:00",
+    "risk": {
+      "bar_open_ms": "1764259260000",
+      "close_available_ns": "1764259320000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "1466301.21832625",
+      "free_cash": "1466301.21832625",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "1190284.68785159",
+      "conditional_adverse_equity": "1189568.35085159",
+      "conditional_favorable_equity": "1191685.52465159",
+      "conditional_high_mark_mm_upper": "51333.430781",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"79.593\",\"avg_px_open\":\"87414.85068568018\",\"mark_ohlc\":{\"open_time_ms\":1764259260000,\"open\":\"90866\",\"high\":\"90891.7\",\"low\":\"90865.13\",\"close\":\"90882.7\"},\"low_native_pnl\":\"-274615.69367466\",\"high_native_pnl\":\"-276732.86747466\"}]"
+    },
+    "native_active_orders": [
+      {
+        "client_order_id": "O-20251127-022500-001-000-428",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "BUY",
+        "type": "LIMIT",
+        "price": "84539.2",
+        "is_reduce_only": "True",
+        "ts_init": "1764210300000000000",
+        "ts_last": "1764388860000000000",
+        "status": "CANCELED",
+        "quantity": "45.767",
+        "native_order_events": {
+          "accept_ns": "1764210300000000000",
+          "action": "BTC_REDUCE",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "level": "2",
+          "order_type": "2",
+          "post_only": "true",
+          "reason": "BTC_TP3",
+          "submit_ns": "1764210300000000000",
+          "venue": "P1SIM"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,4394 @@
+{
+  "status": "PASS_BOUNDED_NATIVE_BENCHMARK",
+  "TOTAL": "5499360.14984003",
+  "TOTAL_minus_E4": "-132257.20969720",
+  "gap_to_floor": "-28963.634852683",
+  "config_hash": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "settled_receipts_streamed": 1051199,
+  "prefix": {
+    "first_mismatched_fill_projection": {
+      "BTC_POSTCUT_D1": {
+        "accept_ns": "1764374520000000000",
+        "action": "BTC_RESTORE",
+        "commission": "1987.641073",
+        "commission_currency": "USDT",
+        "fill_ns": "1764374520000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "3613892.8600",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "90858.4",
+        "qty": "39.775",
+        "reason": "C1_RESIDUAL_RESTORE",
+        "submit_ns": "1764374520000000000",
+        "venue": "P1SIM"
+      },
+      "FIRST_FRESH": {
+        "accept_ns": "1764259320000000000",
+        "action": "BTC_RESTORE",
+        "commission": "1988.17266588",
+        "commission_currency": "USDT",
+        "fill_ns": "1764259320000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "3614859.3925",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "90882.7",
+        "qty": "39.775",
+        "reason": "C1_RESIDUAL_RESTORE",
+        "submit_ns": "1764259320000000000",
+        "venue": "P1SIM"
+      }
+    },
+    "before_first_economic_delta_ns": 1764259320000000000,
+    "before_first_economic_delta_utc": "2025-11-27T16:02:00+00:00",
+    "fill_economic_projection_equal": true,
+    "fill_count_BTC_POSTCUT_D1": 382,
+    "fill_count_R": 382,
+    "projection_fields": [
+      "accept_ns",
+      "action",
+      "commission",
+      "commission_currency",
+      "fill_ns",
+      "instrument",
+      "level",
+      "native_liquidity_side",
+      "notional",
+      "order_type",
+      "policy_hash",
+      "post_only",
+      "px",
+      "qty",
+      "reason",
+      "submit_ns",
+      "venue"
+    ],
+    "settled_rows_compared": 651840,
+    "settled_projection_equal": true,
+    "first_settled_difference": null,
+    "first_post_treatment_difference": {
+      "receipt_ns": 1764259380000000000,
+      "receipt_UTC": "2025-11-27T16:03:00+00:00",
+      "BTC_POSTCUT_D1_cash": "1612358.91297512",
+      "R_cash": "1610370.74030924",
+      "BTC_POSTCUT_D1_E": "1198550.77602512",
+      "R_E": "1196562.60335924"
+    }
+  },
+  "coherent_observer": {
+    "actual_intraminute_price_path_proven": false,
+    "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+    "end_exclusive_ns": "1788220800000000000",
+    "event_drawdown": {
+      "maximum_loss_below_seed_amount": "2718.83042195",
+      "maximum_loss_below_seed_percent": "27.188304219500",
+      "minimum": {
+        "equity": "7281.16957805",
+        "timestamp_ns": "141170"
+      },
+      "samples": 2105974,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "83646.05427200",
+          "drawdown_peak_percent": "51.26863558248311161216905115",
+          "peak": {
+            "equity": "163152.48752315",
+            "timestamp_ns": "579561"
+          },
+          "recovery": {
+            "equity": "163285.81215029",
+            "timestamp_ns": "598419"
+          },
+          "trough": {
+            "equity": "79506.43325115",
+            "timestamp_ns": "582084"
+          }
+        },
+        {
+          "drawdown_amount": "992665.03372705",
+          "drawdown_peak_percent": "51.03306127471686412741822147",
+          "peak": {
+            "equity": "1945141.06920496",
+            "timestamp_ns": "1803402"
+          },
+          "recovery": {
+            "equity": "1948077.04165038",
+            "timestamp_ns": "1973200"
+          },
+          "trough": {
+            "equity": "952476.03547791",
+            "timestamp_ns": "1962076"
+          }
+        },
+        {
+          "drawdown_amount": "7462.28814679",
+          "drawdown_peak_percent": "50.61423368968206387218769810",
+          "peak": {
+            "equity": "14743.45772484",
+            "timestamp_ns": "139053"
+          },
+          "recovery": {
+            "equity": "14778.43453013",
+            "timestamp_ns": "174166"
+          },
+          "trough": {
+            "equity": "7281.16957805",
+            "timestamp_ns": "141170"
+          }
+        }
+      ]
+    },
+    "event_timestamp_basis": "SEQUENCE_ORDER_JOIN_EVENT_NS_AND_RECEIPT_NS_IN_TRACE",
+    "mutation_epochs": 1788,
+    "native_account_publications": 2206,
+    "native_cash_transitions": {
+      "exact_bridge": "0E-8",
+      "native_fill_cash_delta_total": "5439514.43553724",
+      "native_funding_cash_delta_total": "49845.71430279",
+      "seed": "10000",
+      "status": "EXACT_OBSERVED_NATIVE_TRANSITIONS",
+      "terminal_cash": "5499360.14984003",
+      "tolerance": null,
+      "trace_fields": "POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction"
+    },
+    "native_funding_transitions": 1248,
+    "native_unique_fills": 540,
+    "post_boundary_settlement_excluded_from_event_drawdown": true,
+    "sequence_count": 3157176,
+    "settled_drawdown": {
+      "maximum_loss_below_seed_amount": "2718.83042195",
+      "maximum_loss_below_seed_percent": "27.188304219500",
+      "minimum": {
+        "equity": "7281.16957805",
+        "timestamp_ns": "1727970240000000000"
+      },
+      "samples": 1051200,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "83646.05427200",
+          "drawdown_peak_percent": "51.26863558248311161216905115",
+          "peak": {
+            "equity": "163152.48752315",
+            "timestamp_ns": "1736728560000000000"
+          },
+          "recovery": {
+            "equity": "163285.81215029",
+            "timestamp_ns": "1737104820000000000"
+          },
+          "trough": {
+            "equity": "79506.43325115",
+            "timestamp_ns": "1736778960000000000"
+          }
+        },
+        {
+          "drawdown_amount": "992665.03372705",
+          "drawdown_peak_percent": "51.03306127471686412741822147",
+          "peak": {
+            "equity": "1945141.06920496",
+            "timestamp_ns": "1761168540000000000"
+          },
+          "recovery": {
+            "equity": "1948077.04165038",
+            "timestamp_ns": "1764562200000000000"
+          },
+          "trough": {
+            "equity": "952476.03547791",
+            "timestamp_ns": "1764340080000000000"
+          }
+        },
+        {
+          "drawdown_amount": "7462.28814679",
+          "drawdown_peak_percent": "50.61423368968206387218769810",
+          "peak": {
+            "equity": "14743.45772484",
+            "timestamp_ns": "1727928000000000000"
+          },
+          "recovery": {
+            "equity": "14778.43453013",
+            "timestamp_ns": "1728628800000000000"
+          },
+          "trough": {
+            "equity": "7281.16957805",
+            "timestamp_ns": "1727970240000000000"
+          }
+        }
+      ]
+    },
+    "settled_receipts": 1051199,
+    "status": "PASS",
+    "terminal_actual_cash": "5499360.14984003",
+    "unknown": []
+  },
+  "event_endpoint_sequence_join": {
+    "139053": {
+      "sequence": 139053,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1727928000000000000",
+      "receipt_ns": "1727928000000000000",
+      "mark_available_ns": "1727928000000000000",
+      "cash": "12526.05072484",
+      "equity": "14743.45772484",
+      "native_id": null,
+      "event_UTC": "2024-10-03T04:00:00+00:00",
+      "receipt_UTC": "2024-10-03T04:00:00+00:00"
+    },
+    "141170": {
+      "sequence": 141170,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1727970240000000000",
+      "receipt_ns": "1727970240000000000",
+      "mark_available_ns": "1727970240000000000",
+      "cash": "10104.46057805",
+      "equity": "7281.16957805",
+      "native_id": null,
+      "event_UTC": "2024-10-03T15:44:00+00:00",
+      "receipt_UTC": "2024-10-03T15:44:00+00:00"
+    },
+    "174166": {
+      "sequence": 174166,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1728628800000000000",
+      "receipt_ns": "1728628800000000000",
+      "mark_available_ns": "1728628800000000000",
+      "cash": "12158.14453013",
+      "equity": "14778.43453013",
+      "native_id": null,
+      "event_UTC": "2024-10-11T06:40:00+00:00",
+      "receipt_UTC": "2024-10-11T06:40:00+00:00"
+    },
+    "579561": {
+      "sequence": 579561,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1736728560000000000",
+      "receipt_ns": "1736728560000000000",
+      "mark_available_ns": "1736728560000000000",
+      "cash": "144952.48752315",
+      "equity": "163152.48752315",
+      "native_id": null,
+      "event_UTC": "2025-01-13T00:36:00+00:00",
+      "receipt_UTC": "2025-01-13T00:36:00+00:00"
+    },
+    "582084": {
+      "sequence": 582084,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1736778960000000000",
+      "receipt_ns": "1736778960000000000",
+      "mark_available_ns": "1736778960000000000",
+      "cash": "132966.43325115",
+      "equity": "79506.43325115",
+      "native_id": null,
+      "event_UTC": "2025-01-13T14:36:00+00:00",
+      "receipt_UTC": "2025-01-13T14:36:00+00:00"
+    },
+    "598419": {
+      "sequence": 598419,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1737104820000000000",
+      "receipt_ns": "1737104820000000000",
+      "mark_available_ns": "1737104820000000000",
+      "cash": "149088.93236506",
+      "equity": "163285.81215029",
+      "native_id": null,
+      "event_UTC": "2025-01-17T09:07:00+00:00",
+      "receipt_UTC": "2025-01-17T09:07:00+00:00"
+    },
+    "1803402": {
+      "sequence": 1803402,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1761168540000000000",
+      "receipt_ns": "1761168540000000000",
+      "mark_available_ns": "1761168540000000000",
+      "cash": "1735459.78540496",
+      "equity": "1945141.06920496",
+      "native_id": null,
+      "event_UTC": "2025-10-22T21:29:00+00:00",
+      "receipt_UTC": "2025-10-22T21:29:00+00:00"
+    },
+    "1962076": {
+      "sequence": 1962076,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1764340080000000000",
+      "receipt_ns": "1764340080000000000",
+      "mark_available_ns": "1764340080000000000",
+      "cash": "1612336.44642791",
+      "equity": "952476.03547791",
+      "native_id": null,
+      "event_UTC": "2025-11-28T14:28:00+00:00",
+      "receipt_UTC": "2025-11-28T14:28:00+00:00"
+    },
+    "1973200": {
+      "sequence": 1973200,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1764562200000000000",
+      "receipt_ns": "1764562200000000000",
+      "mark_available_ns": "1764562200000000000",
+      "cash": "1611381.14470038",
+      "equity": "1948077.04165038",
+      "native_id": null,
+      "event_UTC": "2025-12-01T04:10:00+00:00",
+      "receipt_UTC": "2025-12-01T04:10:00+00:00"
+    }
+  },
+  "event_kind_counts": {
+    "PREQUOTE_DIRECT_NATIVE": 2102400,
+    "SETTLED_PRE_NEXT_SOURCE_WATERMARK": 1051199,
+    "PRE_FILL_LAST_COMMITTED_NATIVE_COPY": 540,
+    "POST_FILL_COMMITTED_NATIVE": 540,
+    "PRE_FUNDING_COMMITTED_NATIVE_COPY": 1248,
+    "POST_FUNDING_ACCOUNT_NATIVE": 1248,
+    "DIRECT_NATIVE_AFTER_ENGINE_END_RETURNED": 1
+  },
+  "event_sequence_count": 3157176,
+  "native_cash_transition_reconciliation": {
+    "method": "SUM_ACTUAL_NATIVE_PRE_POST_CASH_TRANSITIONS_BY_UNIQUE_FILL_OR_FUNDING_ID;NO_DERIVED_TRADE_PNL",
+    "seed": "10000",
+    "actual_native_fill_cash_delta": "5439514.43553724",
+    "actual_native_funding_cash_delta": "49845.71430279",
+    "terminal": "5499360.14984003",
+    "residual": "0E-8",
+    "native_fill_pairs": 540,
+    "native_funding_pairs": 1248,
+    "unmatched_pre_count": 0,
+    "duplicate_post_ids": 0,
+    "pair_errors": [],
+    "cash_change_count": 1788,
+    "cash_changes_outside_post_fill_or_funding": [],
+    "fees": "Nativecashdeltasalreadyincludefees;NOfee subtractionagain",
+    "original_JSON_reconciliation": "R_ORIGINAL_COMPLETE_NATIVE_LIFECYCLES_PRESERVED",
+    "independent_native_position_lifecycle_PNL_reconciliation": "PASS_EXACT",
+    "status": "PASS_NATIVE_CASH_TRANSITION_IDENTITY"
+  },
+  "funding": {
+    "rows": 1248,
+    "unique_event_instrument_ids": 1248,
+    "actual_signed_sum": "49845.71430279",
+    "bad_arithmetic_rows": [],
+    "JSON_matches_SQLite": true,
+    "sqlite_funding_events_rows": 1248,
+    "sqlite_funding_cash_rows": 1248,
+    "unique_original_event_ids": 1248,
+    "event_stream_pair_delta_match": true,
+    "bridge_is_funding": false,
+    "original_journal_cash_after_matches": true
+  },
+  "C1_interventions": {
+    "cuts": 4,
+    "restores": 3,
+    "revocations": 1,
+    "native_intervention_fees": "4595.51473288",
+    "native_intervention_turnover": "8355481.3325",
+    "fee_change_vs_FIRST_FRESH": "-0.53159288",
+    "all_fills": 540,
+    "native_total_fees": "702795.29626284"
+  },
+  "liquidations": 0,
+  "terminal": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "17230561.7572"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "original_incomplete_cash_reconciliation": {
+    "actual_native_cash_transitions": {
+      "exact_bridge": "0E-8",
+      "native_fill_cash_delta_total": "5439514.43553724",
+      "native_funding_cash_delta_total": "49845.71430279",
+      "seed": "10000",
+      "status": "EXACT_OBSERVED_NATIVE_TRANSITIONS",
+      "terminal_cash": "5499360.14984003",
+      "tolerance": null,
+      "trace_fields": "POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction"
+    },
+    "bridge_is_funding": false,
+    "fees_policy": "NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_NATIVE_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN",
+    "native_position_lifecycle_export": {
+      "duplicate_native_copies": 0,
+      "identity": "ORIGINAL_FILL_POSITION_ID+OPENED_NS+CLOSED_NS+OPENING_ORDER_ID+NATIVE_FILL_LIFECYCLE_SHA256",
+      "native_current_count": 2,
+      "native_snapshot_count": 106,
+      "positions": [
+        {
+          "closed": true,
+          "closed_ns": "1725634080000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "25.65770121 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-3c52ce0a-73b1-4f44-9330-0dc7475f9f4e",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "a4ff08e7bb9375dd78bdf931ee1fa0729589f021aee8bdbf638d500fa19f9723",
+          "opened_ns": "1725235260000000000",
+          "opening_order_id": "O-20240902-000100-001-000-1",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "2086.10709879",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1726063200000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "40.48021725 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ee65803c-ffd4-4d3d-91cd-f5aad28d7cd3",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "1f98bfebce1b261006a116d2838f0b579d2ddeee789bb6e209e45a57ed6a79a1",
+          "opened_ns": "1726012860000000000",
+          "opening_order_id": "O-20240911-000100-001-000-4",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "1320.96478275",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1726531200000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "66.62493656 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0f9b9933-34c1-4f6d-bc95-926f465121ef",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "9de90bd9f62e0755af0c8e0d2c1e0090c47f001dd757e3e71b58b9325f8b075d",
+          "opened_ns": "1726272120000000000",
+          "opening_order_id": "O-20240914-000200-001-000-8",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-2839.22573656",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1726747620000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "42.56597809 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-99daddac-c27e-494c-9aa4-64ebdbecd1c6",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "965f68e770807fb0eae56a3dfe165684623d885fa23521e921d584fce9630e88",
+          "opened_ns": "1726617660000000000",
+          "opening_order_id": "O-20240918-000100-001-000-12",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "2084.00682191",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1728086400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "53.53009540 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b6a41941-4c72-46c6-8ef7-15cd1df270e2",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "5a6cd65ad907b435a29a0e16e68eb824f16f114c8efba620f074a798b3490667",
+          "opened_ns": "1727827260000000000",
+          "opening_order_id": "O-20241002-000100-001-000-17",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-1146.5150954",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1728518400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "61.65272273 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d80d7c0c-d1cb-41ca-850a-805741d0a277",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "5a336746d70deca74525c95b2c22fcc89cdc9cf55763546fbcdc335df69a856f",
+          "opened_ns": "1728230520000000000",
+          "opening_order_id": "O-20241006-160200-001-000-27",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-1289.62872273",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1728583740000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "28.36619235 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-86e5608b-2f1b-4871-9285-630468ffde1f",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "6ee31fc36db835a24d99a564f4ade843778e5f25e471e75fba149f7159f8afe2",
+          "opened_ns": "1728518460000000000",
+          "opening_order_id": "O-20241010-000100-001-000-33",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "1262.76480765",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1728916020000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "43.45826653 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5c3046d2-282d-49fd-bae5-6d35b0353c74",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "bfdce743e179522a48d64f7b3e59c745a1933fbc9b8d65ed393c2cd5b997a517",
+          "opened_ns": "1728720120000000000",
+          "opening_order_id": "O-20241012-080200-001-000-38",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "2757.71773347",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1730210520000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "75.29513882 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b71c7a14-7d03-4edf-a8e6-c4e021e8ec9a",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "4599ac4bb37fd75367bc4dbcb4932d836b6893e76345702c49e68b6767f5e8ea",
+          "opened_ns": "1729814460000000000",
+          "opening_order_id": "O-20241025-000100-001-000-42",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "4243.23176118",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1730937600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "125.54834360 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-eaacc5dd-e73a-42a7-8ab0-8ee12f3f5c88",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "bf6c73f365d1bb757847d75ac876c0cbe256f8dcc228b8b4baa004e5ac372661",
+          "opened_ns": "1730505660000000000",
+          "opening_order_id": "O-20241102-000100-001-000-47",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "6606.1154564",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1732161180000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "156.69519872 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d0e42169-65da-49e6-86a2-44b12c34302e",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "7e9fdc2cb836cd7297281c29b51bf44c1928fa4982a8d12cb05a198d3eef402a",
+          "opened_ns": "1731715260000000000",
+          "opening_order_id": "O-20241116-000100-001-000-53",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "5318.03870129",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1732752000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "298.84764643 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0e999ef1-f594-4a2a-9b20-f15f98b53780",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "e71f1301eacd3406262d9609d0ca279a3bc701cd973550d5386dd1543b4d9ba1",
+          "opened_ns": "1732665660000000000",
+          "opening_order_id": "O-20241127-000100-001-000-63",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "12357.29715357",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1733949720000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "265.40445265 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0b791edb-0406-4bd3-8540-f9c8cdc78823",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "0694d4b9db9b86c9984df1e88e10b55a7715e04f375840b5b8bc6da603c69800",
+          "opened_ns": "1733875260000000000",
+          "opening_order_id": "O-20241211-000100-001-000-69",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "11508.34254735",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1734912000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "467.34625593 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8139cf76-0ef1-4ed4-bcd3-33f39976a12f",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "a826d88ee858493339accabf3598ad67a02098c5434853cddc0c8d93d2291b21",
+          "opened_ns": "1734652860000000000",
+          "opening_order_id": "O-20241220-000100-001-000-74",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-6473.54685593",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1735084800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "333.44517315 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-87cc55f3-fe1c-4fd6-b9e1-b2505f06ab1b",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "775880b0fe4df1e7ef164c0efdbf5a751b17280b0044771387c24fea53d3a4eb",
+          "opened_ns": "1734969720000000000",
+          "opening_order_id": "O-20241223-160200-001-000-81",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-20150.71667315",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1735257600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "427.06039436 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0ef698d0-4ad1-4d07-b5ce-4b6466cad9da",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "c3204dceec1bfdc7d71aa45fca1a0a9480d3fd7c7a9d1591a3802f13dc814e0e",
+          "opened_ns": "1735084860000000000",
+          "opening_order_id": "O-20241225-000100-001-000-89",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-6837.98629436",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1735603200000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "392.55293716 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-34e10bb1-83ed-46c0-9643-a4c5d978e2a1",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "d206b45341557c8263abd7e52a7f2d5b8708f098bfb9ef6dc0aba96cf8a33a9d",
+          "opened_ns": "1735502520000000000",
+          "opening_order_id": "O-20241229-200200-001-000-96",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "8579.96706284",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1736294400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "549.22334262 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-691922ef-33d4-4b43-b7c1-8fee12d87bab",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "6858ff4aabd65e29efc8c3cc50b93c77ca6fb9a73989be44b9f7996768db1745",
+          "opened_ns": "1735934520000000000",
+          "opening_order_id": "O-20250103-200200-001-000-107",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-7352.66514262",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1736467200000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "670.06672954 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-6986257e-090d-409c-9b4f-31ae7cbbb0ab",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "b379e022410802bd21ce1738f3f3a21ed56435153fcd6185905c71e117b29a4c",
+          "opened_ns": "1736380860000000000",
+          "opening_order_id": "O-20250109-000100-001-000-113",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "26378.77127045",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1737130620000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "674.96106529 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4b99717f-65c6-492c-88d1-af511b452641",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "71707186d6104572691dd351558a29934b6872cc57c0a0fc97be8293df6939fa",
+          "opened_ns": "1736956920000000000",
+          "opening_order_id": "O-20250115-160200-001-000-130",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "26520.28513472",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1737936000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "817.74779406 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-662e1550-8536-41ad-bfb0-e9ea4e2eafed",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "94b63458051fb0951b1cf78d32af15f9445eb26715d549fc78d6a3a7ace6857a",
+          "opened_ns": "1737417660000000000",
+          "opening_order_id": "O-20250121-000100-001-000-136",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "10282.92150593",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1738540800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "859.38735256 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-06b20d66-ee64-483b-8c23-32b764c52a95",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "c5c3c01b5fe969c4d134f88960300810a55bc7c23b5dd11e16341366117a501f",
+          "opened_ns": "1738022460000000000",
+          "opening_order_id": "O-20250128-000100-001-000-142",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-25838.90255256",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1738546560000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "817.67796838 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-220f6a0b-f6a6-4282-83c4-d7160e2af5b5",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "fe6184a2adb2cb3c633ad95e6f6463b96354317c126bdb3b360775a02de9840c",
+          "opened_ns": "1738540860000000000",
+          "opening_order_id": "O-20250203-000100-001-000-148",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "18565.62003162",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1739137440000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "453.55845504 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-7da24c05-59f3-42d4-a781-fd5a13a5daf2",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "e73c6c0e526240a6a9a41a4e5033bed91f0f9b9d918804bb6ba683ea4233c0b3",
+          "opened_ns": "1738713660000000000",
+          "opening_order_id": "O-20250205-000100-001-000-152",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "21354.05834496",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1740441600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1445.91428924 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b2947aec-b40d-4d72-9c2c-9d52931d0060",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "4e4c8c9e8d9b08c11f2d472de32b70bd265974715a515514df5607fdf81e92fd",
+          "opened_ns": "1740182460000000000",
+          "opening_order_id": "O-20250222-000100-001-000-158",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "39249.47481076",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1741564800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1581.18534768 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-2f723815-a718-4100-8941-af101c9e9602",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "106540aef693e87a18ffee18416ff5a86c5d63c7c3733b784036e00524cfdd82",
+          "opened_ns": "1741046460000000000",
+          "opening_order_id": "O-20250304-000100-001-000-163",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "53604.97615233",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1741910400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "2150.21803415 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-bae113d9-5b9b-4a42-8fde-40fd80bc4f1d",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "d2977559a887884be092fc89cfcc1274018eaa2e1bf3ffdaf0815e793441a043",
+          "opened_ns": "1741824060000000000",
+          "opening_order_id": "O-20250313-000100-001-000-173",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "48387.69356584",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1742165520000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1688.75131517 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-a082a5ea-752e-4d14-b79c-3735eb44e2a3",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "bfb80297ddaff7bcb0ef921b98b691f9de079a6ec965b93b0fa10c55d718b704",
+          "opened_ns": "1742083260000000000",
+          "opening_order_id": "O-20250316-000100-001-000-181",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "40084.33198483",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1743245640000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "2692.45247440 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-772e81ab-b03b-41d1-8b0d-f3a9f89bf464",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "6030635046f3122cabf5a3d4805ee36eb3654a908de2851c12707fca515e23bc",
+          "opened_ns": "1743148920000000000",
+          "opening_order_id": "O-20250328-080200-001-000-188",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "53011.3693256",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1743962820000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "2189.58839320 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-306bde19-208f-4981-aff1-1455884837d6",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "dba6f713f5aa9ef537887ed579a42b54985877c1583f45fdbb9a2bba6b73de35",
+          "opened_ns": "1743638460000000000",
+          "opening_order_id": "O-20250403-000100-001-000-202",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "52985.1706068",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1744502400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "3951.19974002 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8b3cb057-51bd-4cd8-9154-34149b4ec915",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "1d082ba8c77b694592d8f86d1886b8707df8d14fc076ca8b6856f6a894bede58",
+          "opened_ns": "1744329660000000000",
+          "opening_order_id": "O-20250411-000100-001-000-220",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-185672.33544002",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1745332800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1986.26724945 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4a444ec0-e1f6-445f-9f76-e0b0767bad9a",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "73e599769dd96d115ca6a84d6905e937c46983ed4a656ca1f2e51a400e0b05c4",
+          "opened_ns": "1745208120000000000",
+          "opening_order_id": "O-20250421-040200-001-000-228",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "47844.14245055",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1749168000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1280.67056655 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-73974f42-b56c-40a2-b642-93ab7a12df12",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "a5a75cb274411821da90c9e5d7ad3517a6a5c196dfdbeddf5704cb2d50b22ee4",
+          "opened_ns": "1748131260000000000",
+          "opening_order_id": "O-20250525-000100-001-000-251",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-82811.46886655",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1749254400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "3476.76221651 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5108377d-55a2-4a19-a63a-c967181f1b3c",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "c2fd719702b112658e2ab00619e104662c84eb2aae91266691264bf23b281578",
+          "opened_ns": "1749168060000000000",
+          "opening_order_id": "O-20250606-000100-001-000-257",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-68539.40321651",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1749504600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "790.50701235 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-adc43ba9-7ced-4f83-913b-9f8f4f93a154",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "b673ecf396c65bdacc83153f981760dc574025a44a52e053c8ee97c93b976aea",
+          "opened_ns": "1749268920000000000",
+          "opening_order_id": "O-20250607-040200-001-000-265",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "49705.28598765",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1750204800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1159.00530716 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f49a35e2-5998-4ed9-9cee-c0d86601b180",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "281e8cf1a4915cd33e8a78e5b2ae087ac847a13a03efb9c859bcd743f0352ed5",
+          "opened_ns": "1749859260000000000",
+          "opening_order_id": "O-20250614-000100-001-000-273",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-17111.23740716",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1750548900000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "987.80070420 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4d1fe41d-aa77-453f-a80b-75fc9ff20449",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "cfd8488cda801b786f146a24e756c0511366194f4cbe7202643918bff33dc5c2",
+          "opened_ns": "1750449720000000000",
+          "opening_order_id": "O-20250620-200200-001-000-277",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "40622.1347958",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1752090780000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1017.01701907 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-3587b536-77f3-41b8-af43-2487526ccfc9",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "6636c36b734ece6182d20c6569accae52fe8295e1f39f473611b0809d9203eab",
+          "opened_ns": "1750824120000000000",
+          "opening_order_id": "O-20250625-040200-001-000-280",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "66177.17458093",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1754352000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "2440.99733097 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-04b2f6d7-fce7-4655-acb2-a1e20fe90db6",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "9da184458a2b78cdcdd4ecf71970f98a445cdec2bbe437066fdbd847aed60b9d",
+          "opened_ns": "1754092860000000000",
+          "opening_order_id": "O-20250802-000100-001-000-292",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-39198.48183097",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1755114660000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "2171.94627522 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f1cf1398-05f7-4ef4-b3fb-bdf8449497e5",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "f95dc5e5f9521ae13ecbcfee7ef7dac36a0e0800db007ef10ac25f07679821d3",
+          "opened_ns": "1754568120000000000",
+          "opening_order_id": "O-20250807-120200-001-000-296",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "100101.34222478",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1755561600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1984.99520868 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-95c51ef6-c492-472e-a46f-adaf27965812",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "d16a53e5e37d04c606b2f519859a66be673be54f832a7dad18cdd2e89a362737",
+          "opened_ns": "1755302460000000000",
+          "opening_order_id": "O-20250816-000100-001-000-315",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-20274.68040868",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1755865980000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "3224.47771667 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-1d37823f-c2ec-4bf6-9521-6876f6b2b5aa",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "5d0de5bb2a862ed657ed0a76923177b3f739810dbf09766f29fa5c0d2d720fdc",
+          "opened_ns": "1755576120000000000",
+          "opening_order_id": "O-20250819-040200-001-000-326",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "98374.30008333",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1756166400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "3785.59929218 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9dbc9163-a4ae-4d50-8d92-5c376b7f709b",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "42a607abd136571de8d3bc2ac5bff1e0e6768cee8daef45703bcd781c31634e5",
+          "opened_ns": "1756065720000000000",
+          "opening_order_id": "O-20250824-200200-001-000-331",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "127471.41830782",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1757548800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "3413.41218502 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-15279528-b5ca-4359-9004-0dc6ffc76d4b",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "9a4e121c5adb49feb3a43401f98dd3b15afe2363d5ee06d22020e9a6136aea7d",
+          "opened_ns": "1757030460000000000",
+          "opening_order_id": "O-20250905-000100-001-000-336",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-102409.33378502",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1758585600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "2034.78239192 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f622a0bb-e7fd-4747-8a3e-9315e5f94844",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "367d93707d991cbda44ffc2f74439c767f9dd58ae8c50ab76c1d2ec88afaaeb8",
+          "opened_ns": "1757563320000000000",
+          "opening_order_id": "O-20250911-040200-001-000-340",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-31314.41849192",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1758821820000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "7447.49512046 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d9ce4086-ac40-4a96-b8f7-0af0b8878385",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "e7d0d6742ed112b61647228e28eab4ca6d48086e82b6f321231634b2e14bdd09",
+          "opened_ns": "1758585660000000000",
+          "opening_order_id": "O-20250923-000100-001-000-388",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "129748.47507954",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1759431480000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "6004.31003184 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d500dfa3-3f8f-4fca-a504-ee4c80288b51",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "bfe0dd3f296278ad17c9105d4da29f880133311b770f2571007dc3c86feb2ca4",
+          "opened_ns": "1759305720000000000",
+          "opening_order_id": "O-20251001-080200-001-000-394",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "226744.12236816",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1760629620000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "8229.14563379 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8aa3d0d1-c2aa-40e6-92a2-527961aa1840",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "cdfce8ed99fd2e33a324a1016d664cb026d15ca87c84aabea9da81e37cf7b626",
+          "opened_ns": "1760140920000000000",
+          "opening_order_id": "O-20251011-000200-001-000-402",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "274698.3687662",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1761523200000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "12898.91608781 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-23c2fbad-ddd1-4bb6-b641-70c4a1d650ca",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "0cd501c82bbaa3b37fe5f01b9bf9947c6f94cbf37fcc6bf8bad985750fe7c2fa",
+          "opened_ns": "1761091260000000000",
+          "opening_order_id": "O-20251022-000100-001-000-407",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-415689.80878782",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1761696000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "4600.69382784 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-6c3cc659-2d61-47a2-a59d-1fa1c626a590",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "284344fce5257fbf31816ebba5670dc45e76f1ef48a0bb98026af6423fb016f3",
+          "opened_ns": "1761537720000000000",
+          "opening_order_id": "O-20251027-040200-001-000-413",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-92496.14342784",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1761844860000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "3194.56180257 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-78da9301-ba4d-4bf6-bc9c-eff5ca50adac",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "b08acd4c6d90d58c2e9fabb251ef05a88443b8bb58e2072a5db1e40ddd84c301",
+          "opened_ns": "1761768120000000000",
+          "opening_order_id": "O-20251029-200200-001-000-418",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "181760.28959743",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1762905600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "7989.56930182 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-239a5c44-0be0-4c13-abd3-03d43afca2a4",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "4549e4697804713c354a2aa86c213afa316132589034cd5c5684c386650c34dc",
+          "opened_ns": "1762819260000000000",
+          "opening_order_id": "O-20251111-000100-001-000-421",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "342280.68529818",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1764633600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "13946.25024823 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-94cd94fc-b8d9-468b-ab3f-7ebcd11977a2",
+          "native_event_count": 7,
+          "native_fill_lifecycle_sha256": "cf3ca4145fe03403efb222ea2dfb7be2bd756c5ed8eb0c35d376f00648ea684c",
+          "opened_ns": "1764115260000000000",
+          "opening_order_id": "O-20251126-000100-001-000-426",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "320390.19535178",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1768402020000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "5019.62388235 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0f518e27-3bcb-42e8-9602-6489d0e3c775",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "910eb0b9addbfdb3a356d476b096d14e188ed805a2690a2fefc3ee43ace9c5ce",
+          "opened_ns": "1767499320000000000",
+          "opening_order_id": "O-20260104-040200-001-000-435",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "347800.38211765",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1768953600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "6898.04567270 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-822f6b52-784d-4bc9-a27f-6a6fea3e8e27",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "b7a82ff0e0abf9074da9218f1146e1a620d0f0861bbc2e6b6cf8f93bbb0f830e",
+          "opened_ns": "1768867260000000000",
+          "opening_order_id": "O-20260120-000100-001-000-439",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-342220.5786727",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1769699640000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "5369.10163370 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e470c949-24b6-4e1b-98e6-80ed3c6ee560",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "b86ee53a56bedb24268e1169f6878493cd71c1111461a364464dcf4228500ae1",
+          "opened_ns": "1768953660000000000",
+          "opening_order_id": "O-20260121-000100-001-000-443",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "311436.6772663",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1770790440000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "13566.71880126 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-94307397-0017-4b44-ae3c-ceac81bf26b0",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "acd517a5d38fff037a54f865d6b69ef5522e1c57acdfc4d88eb2312971aec68b",
+          "opened_ns": "1770508860000000000",
+          "opening_order_id": "O-20260208-000100-001-000-446",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "400163.17329874",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1771255980000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "9421.20615657 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8b0f9be7-c434-4145-8abc-936fbc102456",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "e9e5879843bda18060ef62fe29edfbd2f326cb31ae285b90faf9240a7fee8c2f",
+          "opened_ns": "1771113660000000000",
+          "opening_order_id": "O-20260215-000100-001-000-451",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "408362.07074343",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1772236800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "18037.65640628 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-95ed2af5-9635-4b9f-b8ac-bff4a48137db",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "c471a15b98834ed3804743a73f4d602500366707222ccc08d0184e8d77c9e372",
+          "opened_ns": "1772150460000000000",
+          "opening_order_id": "O-20260227-000100-001-000-455",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "728237.97169372",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1773007440000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21556.66807420 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-96c1f638-18e8-405f-8372-3e30caed69bb",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "51eb05c1e87c15b90d80d565716245fb520d3dd454111d6ad0c4abf58249911e",
+          "opened_ns": "1772812920000000000",
+          "opening_order_id": "O-20260306-160200-001-000-460",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "652508.1683258",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1773360000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "27867.83656865 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-03a965c4-55ab-4dc5-91d7-0448302c1afd",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "9762beab6aff194c4689e774447bd0e55f0d896964732f28ece88e0b0c810a2d",
+          "opened_ns": "1773187260000000000",
+          "opening_order_id": "O-20260311-000100-001-000-465",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-268313.85796865",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1773878400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21838.82549261 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-eadcb04b-9ba1-4754-9a3b-2aa004a7fad1",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "1fde1c767aa2b2eb7814eeb645dce0b62a173efdbfb6831f696ea9fbaf6a728b",
+          "opened_ns": "1773403320000000000",
+          "opening_order_id": "O-20260313-120200-001-000-469",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-117515.80299261",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1774214400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21503.99041852 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-300381a6-57c9-45cb-826d-27d07a32890e",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "1d300e0659e398dbfbd5d882508ba9aa827acf5cf19cb7e18a90f87afaff3616",
+          "opened_ns": "1773964860000000000",
+          "opening_order_id": "O-20260320-000100-001-000-475",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "772145.15518149",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1774656000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21346.47429180 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d65f8849-fe57-47cf-96a4-20422b210056",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "604a433a9e15d254bb2674f65ec9cba9af6eba81584ec0327cb8b4d7d26b9810",
+          "opened_ns": "1774569660000000000",
+          "opening_order_id": "O-20260327-000100-001-000-480",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "1010499.7109082",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1775174400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21475.82371970 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e96e2877-4343-4776-9492-fa28326f0056",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "deda322cb1b637d75825ea61e984c8784af63c3a22f984c3c1c1608084e6968f",
+          "opened_ns": "1775088060000000000",
+          "opening_order_id": "O-20260402-000100-001-000-485",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "796909.06398031",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1776175140000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21969.26246811 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5cbf7595-30ba-488f-a591-2a8c8bbd1356",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "a2b98d999303be769dbcb15bcae5159340affe697ebd34dea8e7010c0abd4181",
+          "opened_ns": "1775606520000000000",
+          "opening_order_id": "O-20260408-000200-001-000-490",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "1029780.80093189",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1776835560000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21864.63640120 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-17ca610b-cb22-42f6-9245-c2063cdec0c4",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "db2489648ea51f62b151f769911c709d90e888b16ecb63f2f7d6cac843eab90a",
+          "opened_ns": "1776729660000000000",
+          "opening_order_id": "O-20260421-000100-001-000-495",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "665910.4270988",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1777840620000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "21900.95362070 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9c81971d-a8bb-4db3-9c07-c627fe125a35",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "32b8a79d585dbbf266f0ce63a2890ad70931fec425a2025bf6090b50cac2d02a",
+          "opened_ns": "1777507260000000000",
+          "opening_order_id": "O-20260430-000100-001-000-500",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "847757.5984793",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1779062400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "26996.68823225 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-685e0637-7006-493d-8286-6057438c0f45",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "12fca656783eaaa329daa240bc267eb8adcf001285981cddd3bc758e49987af2",
+          "opened_ns": "1778803260000000000",
+          "opening_order_id": "O-20260515-000100-001-000-505",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-1345480.58753225",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1779938340000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "17608.50143773 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b6063034-6633-40bc-88c6-e7c24c542280",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "685aec5aa5eeb9258be71c515fc040c198948ec18319cb7c3007769a3154b14d",
+          "opened_ns": "1779120120000000000",
+          "opening_order_id": "O-20260518-160200-001-000-509",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "537115.42406227",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1781049600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "24529.19399831 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-6f66af88-d9d6-4438-a1e8-112cc2ff7fa8",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "51cb3e9b0f6dc7cdf69217b7e0e8cfed85557a4e7c38c1b3441839274b1e1840",
+          "opened_ns": "1780963260000000000",
+          "opening_order_id": "O-20260609-000100-001-000-540",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "651761.4899017",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1783728000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "19868.14766852 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f9c2e007-5bdf-4a85-840a-69524d390571",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "500df8353f2f833b2f360afde54d82f0b70be2792a0522c2dd28534d076bfb94",
+          "opened_ns": "1783123260000000000",
+          "opening_order_id": "O-20260704-000100-001-000-546",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-404518.01476852",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1784073600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "33271.67605806 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-deda2859-83c2-411d-9a1c-a590c928a4d9",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "8339f1d9ffa35ef5d91aea65d223572a7b77dbfa664b923239176525c5360a40",
+          "opened_ns": "1783915320000000000",
+          "opening_order_id": "O-20260713-040200-001-000-551",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-616388.98045806",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1784246400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "15775.32745526 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8f7e6c71-bd92-4aa1-b8f7-e75f874e0a3d",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "b383ca9ce16a0632e9a4d243a9b61235b9c28647a82f1628c51348bc434cd04c",
+          "opened_ns": "1784073660000000000",
+          "opening_order_id": "O-20260715-000100-001-000-558",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-312149.97315526",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1784332800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "19796.53730750 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-a5906ddb-d44b-4257-9cdd-15febfcdd4ac",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "842356cfcf02bffc067b0e6b030d61fa1f0584d6d215026f39a0f6667f40a0f7",
+          "opened_ns": "1784275320000000000",
+          "opening_order_id": "O-20260717-080200-001-000-562",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-282777.1593075",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1784937600000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "27653.06291411 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-404a3a36-6b87-457f-a73e-cc8930f8f64e",
+          "native_event_count": 5,
+          "native_fill_lifecycle_sha256": "a240094b1d940487f20baf9700645d4375b0c05bce462dae7fcef2432fa4baf4",
+          "opened_ns": "1784548920000000000",
+          "opening_order_id": "O-20260720-120200-001-000-567",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-152645.4279141",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1785196800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "15710.88297720 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-3c2b6a06-a9b9-4ac1-a6ab-8ffd3d9338d9",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "c31f4819b7383a98fe49ec73d8883a68b094813b2c943972d4c327331e032202",
+          "opened_ns": "1785110460000000000",
+          "opening_order_id": "O-20260727-000100-001-000-581",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-421842.5740772",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1785456000000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "28133.76323538 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0177eb75-0114-49a4-b570-f8fb7550720e",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "e9f3c2501be98698a726f7bdd3b72ee87de99d0ea2053c590e4875cb40e606a4",
+          "opened_ns": "1785211320000000000",
+          "opening_order_id": "O-20260728-040200-001-000-585",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-680881.40073538",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1785974400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "16226.98950618 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ce58c82a-22cf-4e5e-8169-b523be0ed45e",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "259ba067c18aa9699e64ada8469d4aad906d55e3bb1bbdc8876184c16476c45d",
+          "opened_ns": "1785542460000000000",
+          "opening_order_id": "O-20260801-000100-001-000-589",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-476773.65870618",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1786406400000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "27470.61188430 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-993a24a1-375a-448f-b30d-4f83a1e7250a",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "a7f2c8f302deea4a3765a56b9232b812635da3210e4f6fd6bcbd57d52de7e15d",
+          "opened_ns": "1786104120000000000",
+          "opening_order_id": "O-20260807-120200-001-000-593",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-484220.3708843",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1787011200000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "9556.86348144 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b1197ba8-64c0-40f8-8ea1-fd20de1db24f",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "a24f994961b71f77e00a185ccbb1901a8fe7d3ddf4eb072956370f53d1ac7f9f",
+          "opened_ns": "1786478520000000000",
+          "opening_order_id": "O-20260811-200200-001-000-597",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-131517.98028144",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1787151240000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "9520.40523654 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f07b017d-f7c4-44df-ba0c-d873984f6c7c",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "c3038c8b664946bad9ede2f3ff8a763fd3cdb3c2e85bd015e39a94cba7ba75b7",
+          "opened_ns": "1787068920000000000",
+          "opening_order_id": "O-20260818-160200-001-000-600",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "204870.44796346",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1728086400000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "231.29700000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-745c0656-a3d6-4dfd-b774-2112340e719b",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "6e52a3eaa533ba87b4ae7862a4536568c64df8819131b74d32a248989e66def6",
+          "opened_ns": "1727913600000000000",
+          "opening_order_id": "O-20241003-000000-001-000-20",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "768.703",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1728691200000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "143.84794490 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-60d2fdf9-2e65-42b1-9791-cfced1488550",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "c4d4137a69a65c357951d41d6b45dbee01f2aa9a575aef899230edadb3881c1f",
+          "opened_ns": "1728604800000000000",
+          "opening_order_id": "O-20241011-000000-001-000-36",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "5859.8340551",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1732579200000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "278.00952520 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b2ea265a-dda3-44c6-97f9-e9b84af220c9",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "ee4705b2ab18a98937690ef249cc5761ff357cde264bb015d8303316dd866d5c",
+          "opened_ns": "1732233600000000000",
+          "opening_order_id": "O-20241122-000000-001-000-59",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "22652.3104748",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1735084800000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "422.29000000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5253fbe1-98fc-44f0-a316-e859ecba7bb3",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "985a4630bfea75a7aeb02fb139443ba3b68cf48a1b02aa07c3bb97ffd5fbb522",
+          "opened_ns": "1734972420000000000",
+          "opening_order_id": "O-20241223-164700-001-000-83",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "19657.71",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1735862400000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "659.64250000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-26155e42-2a50-42e2-a719-c1f37070618f",
+          "native_event_count": 6,
+          "native_fill_lifecycle_sha256": "c7f6fcf672472d55dbee7eb01486fa48a4f79ac7729b7842d5b861f80177f4a7",
+          "opened_ns": "1735603200000000000",
+          "opening_order_id": "O-20241231-000000-001-000-101",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "49370.35750001",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1736899200000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1221.86900000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ca3259cc-6fa3-40f1-88a6-6dd6421739f0",
+          "native_event_count": 12,
+          "native_fill_lifecycle_sha256": "b5f0d6ee097df6d47fb9ba88c239eb7bbc7c17daa6b5d92fe02b44bdfa47746f",
+          "opened_ns": "1736467200000000000",
+          "opening_order_id": "O-20250110-000000-001-000-118",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "2318.131",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1739577600000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "213.40000000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-858506e7-eea2-4e08-ab8a-effe21f8da26",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "c451a2a16a0e2e19aa2edcfbede90287f4fedfaecbd40db948a94a5e870beb3e",
+          "opened_ns": "1738886400000000000",
+          "opening_order_id": "O-20250207-000000-001-000-155",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "8986.6",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1741737600000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "272.37650000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d8d482e5-f5ca-4799-b1ed-68dafded2e4a",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "5463577efc1c7c5b645594db2e5cb953c74479ea3703568e07b6b334ca52d116",
+          "opened_ns": "1741564800000000000",
+          "opening_order_id": "O-20250310-000000-001-000-169",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "5577.6235",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1741996800000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "141.22350000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-1dee32ac-52ec-4e11-9672-8af502796484",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "ce04e6bb755c4fd1eb9e8493f8a30a7020ba62faee02ce6a697badf70b4e4b12",
+          "opened_ns": "1741910400000000000",
+          "opening_order_id": "O-20250314-000000-001-000-179",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "10008.7765",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1742860800000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "148.15900000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-20a58122-1f00-4d83-a2ee-17e4374589c5",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "f2cff9fde3669d3465077df8881c0df0daddc892ac1feacdd2a850c08d77920e",
+          "opened_ns": "1742688000000000000",
+          "opening_order_id": "O-20250323-000000-001-000-186",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "12351.841",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1743552000000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "555.27450000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d2e974f0-852d-4c0e-a497-de32c9ee9c43",
+          "native_event_count": 8,
+          "native_fill_lifecycle_sha256": "e236895eb2fe9fa0ff9843c7b1860f79a8ff1bffefc9fa37630c579a9574135d",
+          "opened_ns": "1743206400000000000",
+          "opening_order_id": "O-20250329-000000-001-000-194",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "2894.7255",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1744243200000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "895.55400000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8cc864c9-09c6-47a4-8fcb-08a55e0a9bda",
+          "native_event_count": 14,
+          "native_fill_lifecycle_sha256": "e1e7a2706284b94c09193ec06cfc5253861556fceb54043d2411961dc4c2200e",
+          "opened_ns": "1743638520000000000",
+          "opening_order_id": "O-20250403-000200-001-000-204",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "36964.44599999",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1744502400000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "134.71150000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-12cd30a4-5036-4c21-be43-22313ada2884",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "b4babbb10e7ef16ee74d57f83db5c5557fc79c2b12cdbd2e14f2fdc002df75fa",
+          "opened_ns": "1744329900000000000",
+          "opening_order_id": "O-20250411-000500-001-000-223",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "19495.2885",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1746576000000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "161.05100000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5a514946-7dc4-4c2d-8634-1a824b894d5e",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "b5acbfac3e9119714c5af986acb1b018178c04d0677d5508952d86e9ba48f3c6",
+          "opened_ns": "1746057600000000000",
+          "opening_order_id": "O-20250501-000000-001-000-234",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "1978.949",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1748044800000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1341.70300000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e77f32e2-81bb-43c9-b60b-6db0bc5a54c9",
+          "native_event_count": 14,
+          "native_fill_lifecycle_sha256": "d6e0de51bdde6c6569ffec8992bc746441c6195a28d00e9e03211096000e3712",
+          "opened_ns": "1746835200000000000",
+          "opening_order_id": "O-20250510-000000-001-000-237",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "2258.29700003",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1749168000000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "174.62500000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-a6b8d2b6-b244-4536-a136-ca4c07ee09a1",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "bc46cd82cc3ae9d3479278d0b6b3348fe23a2afc84590f12e64f8952cc215bda",
+          "opened_ns": "1748133840000000000",
+          "opening_order_id": "O-20250525-004400-001-000-253",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "28925.375",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1749772800000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "346.72000000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-50718554-cbc1-47b3-a83e-9a16a2679850",
+          "native_event_count": 4,
+          "native_fill_lifecycle_sha256": "b65f26e2ccb86c208db7dad3de96cc8a4c176a77ef2ddc494318ed355be38235",
+          "opened_ns": "1749600000000000000",
+          "opening_order_id": "O-20250611-000000-001-000-269",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "21133.28",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1754006400000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "806.56400000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4fe36928-e815-47da-ad7d-32b9f13409ba",
+          "native_event_count": 8,
+          "native_fill_lifecycle_sha256": "59dcc4c48a216eac16445f371d3dc7e5b5ce5928b441c903027060984b8d0e0f",
+          "opened_ns": "1753142400000000000",
+          "opening_order_id": "O-20250722-000000-001-000-284",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "88553.436",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1755216000000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1446.32950000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9bef05b4-81dc-4cb8-91b1-0c4fe6312a94",
+          "native_event_count": 14,
+          "native_fill_lifecycle_sha256": "58a28f5c6e5bc7ab2b44fa922b93e8b14e8bd9c8e86f99f17dc0b8408603252e",
+          "opened_ns": "1754611200000000000",
+          "opening_order_id": "O-20250808-000000-001-000-301",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-65916.3295",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1755561600000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "613.76700000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-34a80e4c-e188-4137-b56e-424674879481",
+          "native_event_count": 6,
+          "native_fill_lifecycle_sha256": "c08a9a1b4c9145dd07e29ec56ff9efd1ca50f174cb8fdf2d7419055aaf1a3837",
+          "opened_ns": "1755316920000000000",
+          "opening_order_id": "O-20250816-040200-001-000-318",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "18706.233",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1758585600000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "5548.81800000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ed0f86dc-a700-475d-a93e-a9debcc4e4b9",
+          "native_event_count": 44,
+          "native_fill_lifecycle_sha256": "49f96628ee7ef5444ba8967e88c163e4f55392b2152a109a6fe1f0e23fc17d8b",
+          "opened_ns": "1757572380000000000",
+          "opening_order_id": "O-20250911-063300-001-000-343",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "388251.182",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1760140800000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "232.45200000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e89b6584-5437-498c-bc0b-043b7df4d07a",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "5cd959711353696ffc0cbe8bc236956e6eeb484e1e94e7c619e2e80025f1ed8e",
+          "opened_ns": "1759449600000000000",
+          "opening_order_id": "O-20251003-000000-001-000-400",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "46367.548",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1780359120000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "1182.17000000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-181824c4-c806-4a18-9cbd-03dbcbb5e0ee",
+          "native_event_count": 26,
+          "native_fill_lifecycle_sha256": "387cc46f006864f077b330ba42284bc437fbac1f9a08165f8a050a190a8dbdbb",
+          "opened_ns": "1779120540000000000",
+          "opening_order_id": "O-20260518-160900-001-000-512",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "-40942.16999998",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1784937600000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "332.90950000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9f9ce775-5f03-46d3-8c2c-833b4fd91501",
+          "native_event_count": 8,
+          "native_fill_lifecycle_sha256": "49a202ee3f94aebaf9cac1235916ac5d0899627cc1e783808fea6eda85abc82d",
+          "opened_ns": "1784592000000000000",
+          "opening_order_id": "O-20260721-000000-001-000-572",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "13677.0905",
+          "sources": [
+            "NATIVE_CACHE_SNAPSHOT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1788220800000000000",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "15906.16730901 USDT"
+          ],
+          "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "native_event_count": 3,
+          "native_fill_lifecycle_sha256": "a3602ddbad13c3a285e3e41825d306ba4cd5b39990af2f5d3f4459f7d837bc03",
+          "opened_ns": "1788048060000000000",
+          "opening_order_id": "O-20260830-000100-001-000-605",
+          "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "79709.58369099",
+          "sources": [
+            "NATIVE_CACHE_CURRENT"
+          ]
+        },
+        {
+          "closed": true,
+          "closed_ns": "1787961600000000000",
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "native_commissions": [
+            "117.24350000 USDT"
+          ],
+          "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "native_event_count": 2,
+          "native_fill_lifecycle_sha256": "9c5baf9965826fefecf243cd2b628d8a3e82e104e1f39eb165d31c8d47f95ce3",
+          "opened_ns": "1787875200000000000",
+          "opening_order_id": "O-20260828-000000-001-000-603",
+          "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+          "realized_pnl": "4872.7565",
+          "sources": [
+            "NATIVE_CACHE_CURRENT"
+          ]
+        }
+      ],
+      "unique_lifecycles": 108,
+      "unknown": []
+    },
+    "native_position_realized": [
+      {
+        "closed": true,
+        "closed_ns": "1725634080000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "25.65770121 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-3c52ce0a-73b1-4f44-9330-0dc7475f9f4e",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "a4ff08e7bb9375dd78bdf931ee1fa0729589f021aee8bdbf638d500fa19f9723",
+        "opened_ns": "1725235260000000000",
+        "opening_order_id": "O-20240902-000100-001-000-1",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "2086.10709879",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1726063200000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "40.48021725 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ee65803c-ffd4-4d3d-91cd-f5aad28d7cd3",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "1f98bfebce1b261006a116d2838f0b579d2ddeee789bb6e209e45a57ed6a79a1",
+        "opened_ns": "1726012860000000000",
+        "opening_order_id": "O-20240911-000100-001-000-4",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "1320.96478275",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1726531200000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "66.62493656 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0f9b9933-34c1-4f6d-bc95-926f465121ef",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "9de90bd9f62e0755af0c8e0d2c1e0090c47f001dd757e3e71b58b9325f8b075d",
+        "opened_ns": "1726272120000000000",
+        "opening_order_id": "O-20240914-000200-001-000-8",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-2839.22573656",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1726747620000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "42.56597809 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-99daddac-c27e-494c-9aa4-64ebdbecd1c6",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "965f68e770807fb0eae56a3dfe165684623d885fa23521e921d584fce9630e88",
+        "opened_ns": "1726617660000000000",
+        "opening_order_id": "O-20240918-000100-001-000-12",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "2084.00682191",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1728086400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "53.53009540 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b6a41941-4c72-46c6-8ef7-15cd1df270e2",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "5a6cd65ad907b435a29a0e16e68eb824f16f114c8efba620f074a798b3490667",
+        "opened_ns": "1727827260000000000",
+        "opening_order_id": "O-20241002-000100-001-000-17",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-1146.5150954",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1728518400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "61.65272273 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d80d7c0c-d1cb-41ca-850a-805741d0a277",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "5a336746d70deca74525c95b2c22fcc89cdc9cf55763546fbcdc335df69a856f",
+        "opened_ns": "1728230520000000000",
+        "opening_order_id": "O-20241006-160200-001-000-27",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-1289.62872273",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1728583740000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "28.36619235 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-86e5608b-2f1b-4871-9285-630468ffde1f",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "6ee31fc36db835a24d99a564f4ade843778e5f25e471e75fba149f7159f8afe2",
+        "opened_ns": "1728518460000000000",
+        "opening_order_id": "O-20241010-000100-001-000-33",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "1262.76480765",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1728916020000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "43.45826653 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5c3046d2-282d-49fd-bae5-6d35b0353c74",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "bfdce743e179522a48d64f7b3e59c745a1933fbc9b8d65ed393c2cd5b997a517",
+        "opened_ns": "1728720120000000000",
+        "opening_order_id": "O-20241012-080200-001-000-38",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "2757.71773347",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1730210520000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "75.29513882 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b71c7a14-7d03-4edf-a8e6-c4e021e8ec9a",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "4599ac4bb37fd75367bc4dbcb4932d836b6893e76345702c49e68b6767f5e8ea",
+        "opened_ns": "1729814460000000000",
+        "opening_order_id": "O-20241025-000100-001-000-42",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "4243.23176118",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1730937600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "125.54834360 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-eaacc5dd-e73a-42a7-8ab0-8ee12f3f5c88",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "bf6c73f365d1bb757847d75ac876c0cbe256f8dcc228b8b4baa004e5ac372661",
+        "opened_ns": "1730505660000000000",
+        "opening_order_id": "O-20241102-000100-001-000-47",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "6606.1154564",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1732161180000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "156.69519872 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d0e42169-65da-49e6-86a2-44b12c34302e",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "7e9fdc2cb836cd7297281c29b51bf44c1928fa4982a8d12cb05a198d3eef402a",
+        "opened_ns": "1731715260000000000",
+        "opening_order_id": "O-20241116-000100-001-000-53",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "5318.03870129",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1732752000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "298.84764643 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0e999ef1-f594-4a2a-9b20-f15f98b53780",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "e71f1301eacd3406262d9609d0ca279a3bc701cd973550d5386dd1543b4d9ba1",
+        "opened_ns": "1732665660000000000",
+        "opening_order_id": "O-20241127-000100-001-000-63",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "12357.29715357",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1733949720000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "265.40445265 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0b791edb-0406-4bd3-8540-f9c8cdc78823",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "0694d4b9db9b86c9984df1e88e10b55a7715e04f375840b5b8bc6da603c69800",
+        "opened_ns": "1733875260000000000",
+        "opening_order_id": "O-20241211-000100-001-000-69",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "11508.34254735",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1734912000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "467.34625593 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8139cf76-0ef1-4ed4-bcd3-33f39976a12f",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "a826d88ee858493339accabf3598ad67a02098c5434853cddc0c8d93d2291b21",
+        "opened_ns": "1734652860000000000",
+        "opening_order_id": "O-20241220-000100-001-000-74",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-6473.54685593",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1735084800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "333.44517315 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-87cc55f3-fe1c-4fd6-b9e1-b2505f06ab1b",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "775880b0fe4df1e7ef164c0efdbf5a751b17280b0044771387c24fea53d3a4eb",
+        "opened_ns": "1734969720000000000",
+        "opening_order_id": "O-20241223-160200-001-000-81",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-20150.71667315",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1735257600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "427.06039436 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0ef698d0-4ad1-4d07-b5ce-4b6466cad9da",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "c3204dceec1bfdc7d71aa45fca1a0a9480d3fd7c7a9d1591a3802f13dc814e0e",
+        "opened_ns": "1735084860000000000",
+        "opening_order_id": "O-20241225-000100-001-000-89",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-6837.98629436",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1735603200000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "392.55293716 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-34e10bb1-83ed-46c0-9643-a4c5d978e2a1",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "d206b45341557c8263abd7e52a7f2d5b8708f098bfb9ef6dc0aba96cf8a33a9d",
+        "opened_ns": "1735502520000000000",
+        "opening_order_id": "O-20241229-200200-001-000-96",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "8579.96706284",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1736294400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "549.22334262 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-691922ef-33d4-4b43-b7c1-8fee12d87bab",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "6858ff4aabd65e29efc8c3cc50b93c77ca6fb9a73989be44b9f7996768db1745",
+        "opened_ns": "1735934520000000000",
+        "opening_order_id": "O-20250103-200200-001-000-107",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-7352.66514262",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1736467200000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "670.06672954 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-6986257e-090d-409c-9b4f-31ae7cbbb0ab",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "b379e022410802bd21ce1738f3f3a21ed56435153fcd6185905c71e117b29a4c",
+        "opened_ns": "1736380860000000000",
+        "opening_order_id": "O-20250109-000100-001-000-113",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "26378.77127045",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1737130620000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "674.96106529 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4b99717f-65c6-492c-88d1-af511b452641",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "71707186d6104572691dd351558a29934b6872cc57c0a0fc97be8293df6939fa",
+        "opened_ns": "1736956920000000000",
+        "opening_order_id": "O-20250115-160200-001-000-130",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "26520.28513472",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1737936000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "817.74779406 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-662e1550-8536-41ad-bfb0-e9ea4e2eafed",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "94b63458051fb0951b1cf78d32af15f9445eb26715d549fc78d6a3a7ace6857a",
+        "opened_ns": "1737417660000000000",
+        "opening_order_id": "O-20250121-000100-001-000-136",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "10282.92150593",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1738540800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "859.38735256 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-06b20d66-ee64-483b-8c23-32b764c52a95",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "c5c3c01b5fe969c4d134f88960300810a55bc7c23b5dd11e16341366117a501f",
+        "opened_ns": "1738022460000000000",
+        "opening_order_id": "O-20250128-000100-001-000-142",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-25838.90255256",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1738546560000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "817.67796838 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-220f6a0b-f6a6-4282-83c4-d7160e2af5b5",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "fe6184a2adb2cb3c633ad95e6f6463b96354317c126bdb3b360775a02de9840c",
+        "opened_ns": "1738540860000000000",
+        "opening_order_id": "O-20250203-000100-001-000-148",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "18565.62003162",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1739137440000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "453.55845504 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-7da24c05-59f3-42d4-a781-fd5a13a5daf2",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "e73c6c0e526240a6a9a41a4e5033bed91f0f9b9d918804bb6ba683ea4233c0b3",
+        "opened_ns": "1738713660000000000",
+        "opening_order_id": "O-20250205-000100-001-000-152",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "21354.05834496",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1740441600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1445.91428924 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b2947aec-b40d-4d72-9c2c-9d52931d0060",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "4e4c8c9e8d9b08c11f2d472de32b70bd265974715a515514df5607fdf81e92fd",
+        "opened_ns": "1740182460000000000",
+        "opening_order_id": "O-20250222-000100-001-000-158",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "39249.47481076",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1741564800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1581.18534768 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-2f723815-a718-4100-8941-af101c9e9602",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "106540aef693e87a18ffee18416ff5a86c5d63c7c3733b784036e00524cfdd82",
+        "opened_ns": "1741046460000000000",
+        "opening_order_id": "O-20250304-000100-001-000-163",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "53604.97615233",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1741910400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "2150.21803415 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-bae113d9-5b9b-4a42-8fde-40fd80bc4f1d",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "d2977559a887884be092fc89cfcc1274018eaa2e1bf3ffdaf0815e793441a043",
+        "opened_ns": "1741824060000000000",
+        "opening_order_id": "O-20250313-000100-001-000-173",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "48387.69356584",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1742165520000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1688.75131517 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-a082a5ea-752e-4d14-b79c-3735eb44e2a3",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "bfb80297ddaff7bcb0ef921b98b691f9de079a6ec965b93b0fa10c55d718b704",
+        "opened_ns": "1742083260000000000",
+        "opening_order_id": "O-20250316-000100-001-000-181",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "40084.33198483",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1743245640000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "2692.45247440 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-772e81ab-b03b-41d1-8b0d-f3a9f89bf464",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "6030635046f3122cabf5a3d4805ee36eb3654a908de2851c12707fca515e23bc",
+        "opened_ns": "1743148920000000000",
+        "opening_order_id": "O-20250328-080200-001-000-188",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "53011.3693256",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1743962820000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "2189.58839320 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-306bde19-208f-4981-aff1-1455884837d6",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "dba6f713f5aa9ef537887ed579a42b54985877c1583f45fdbb9a2bba6b73de35",
+        "opened_ns": "1743638460000000000",
+        "opening_order_id": "O-20250403-000100-001-000-202",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "52985.1706068",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1744502400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "3951.19974002 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8b3cb057-51bd-4cd8-9154-34149b4ec915",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "1d082ba8c77b694592d8f86d1886b8707df8d14fc076ca8b6856f6a894bede58",
+        "opened_ns": "1744329660000000000",
+        "opening_order_id": "O-20250411-000100-001-000-220",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-185672.33544002",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1745332800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1986.26724945 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4a444ec0-e1f6-445f-9f76-e0b0767bad9a",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "73e599769dd96d115ca6a84d6905e937c46983ed4a656ca1f2e51a400e0b05c4",
+        "opened_ns": "1745208120000000000",
+        "opening_order_id": "O-20250421-040200-001-000-228",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "47844.14245055",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1749168000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1280.67056655 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-73974f42-b56c-40a2-b642-93ab7a12df12",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "a5a75cb274411821da90c9e5d7ad3517a6a5c196dfdbeddf5704cb2d50b22ee4",
+        "opened_ns": "1748131260000000000",
+        "opening_order_id": "O-20250525-000100-001-000-251",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-82811.46886655",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1749254400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "3476.76221651 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5108377d-55a2-4a19-a63a-c967181f1b3c",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "c2fd719702b112658e2ab00619e104662c84eb2aae91266691264bf23b281578",
+        "opened_ns": "1749168060000000000",
+        "opening_order_id": "O-20250606-000100-001-000-257",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-68539.40321651",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1749504600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "790.50701235 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-adc43ba9-7ced-4f83-913b-9f8f4f93a154",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "b673ecf396c65bdacc83153f981760dc574025a44a52e053c8ee97c93b976aea",
+        "opened_ns": "1749268920000000000",
+        "opening_order_id": "O-20250607-040200-001-000-265",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "49705.28598765",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1750204800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1159.00530716 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f49a35e2-5998-4ed9-9cee-c0d86601b180",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "281e8cf1a4915cd33e8a78e5b2ae087ac847a13a03efb9c859bcd743f0352ed5",
+        "opened_ns": "1749859260000000000",
+        "opening_order_id": "O-20250614-000100-001-000-273",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-17111.23740716",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1750548900000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "987.80070420 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4d1fe41d-aa77-453f-a80b-75fc9ff20449",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "cfd8488cda801b786f146a24e756c0511366194f4cbe7202643918bff33dc5c2",
+        "opened_ns": "1750449720000000000",
+        "opening_order_id": "O-20250620-200200-001-000-277",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "40622.1347958",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1752090780000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1017.01701907 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-3587b536-77f3-41b8-af43-2487526ccfc9",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "6636c36b734ece6182d20c6569accae52fe8295e1f39f473611b0809d9203eab",
+        "opened_ns": "1750824120000000000",
+        "opening_order_id": "O-20250625-040200-001-000-280",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "66177.17458093",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1754352000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "2440.99733097 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-04b2f6d7-fce7-4655-acb2-a1e20fe90db6",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "9da184458a2b78cdcdd4ecf71970f98a445cdec2bbe437066fdbd847aed60b9d",
+        "opened_ns": "1754092860000000000",
+        "opening_order_id": "O-20250802-000100-001-000-292",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-39198.48183097",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1755114660000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "2171.94627522 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f1cf1398-05f7-4ef4-b3fb-bdf8449497e5",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "f95dc5e5f9521ae13ecbcfee7ef7dac36a0e0800db007ef10ac25f07679821d3",
+        "opened_ns": "1754568120000000000",
+        "opening_order_id": "O-20250807-120200-001-000-296",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "100101.34222478",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1755561600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1984.99520868 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-95c51ef6-c492-472e-a46f-adaf27965812",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "d16a53e5e37d04c606b2f519859a66be673be54f832a7dad18cdd2e89a362737",
+        "opened_ns": "1755302460000000000",
+        "opening_order_id": "O-20250816-000100-001-000-315",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-20274.68040868",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1755865980000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "3224.47771667 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-1d37823f-c2ec-4bf6-9521-6876f6b2b5aa",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "5d0de5bb2a862ed657ed0a76923177b3f739810dbf09766f29fa5c0d2d720fdc",
+        "opened_ns": "1755576120000000000",
+        "opening_order_id": "O-20250819-040200-001-000-326",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "98374.30008333",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1756166400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "3785.59929218 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9dbc9163-a4ae-4d50-8d92-5c376b7f709b",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "42a607abd136571de8d3bc2ac5bff1e0e6768cee8daef45703bcd781c31634e5",
+        "opened_ns": "1756065720000000000",
+        "opening_order_id": "O-20250824-200200-001-000-331",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "127471.41830782",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1757548800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "3413.41218502 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-15279528-b5ca-4359-9004-0dc6ffc76d4b",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "9a4e121c5adb49feb3a43401f98dd3b15afe2363d5ee06d22020e9a6136aea7d",
+        "opened_ns": "1757030460000000000",
+        "opening_order_id": "O-20250905-000100-001-000-336",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-102409.33378502",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1758585600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "2034.78239192 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f622a0bb-e7fd-4747-8a3e-9315e5f94844",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "367d93707d991cbda44ffc2f74439c767f9dd58ae8c50ab76c1d2ec88afaaeb8",
+        "opened_ns": "1757563320000000000",
+        "opening_order_id": "O-20250911-040200-001-000-340",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-31314.41849192",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1758821820000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "7447.49512046 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d9ce4086-ac40-4a96-b8f7-0af0b8878385",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "e7d0d6742ed112b61647228e28eab4ca6d48086e82b6f321231634b2e14bdd09",
+        "opened_ns": "1758585660000000000",
+        "opening_order_id": "O-20250923-000100-001-000-388",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "129748.47507954",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1759431480000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "6004.31003184 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d500dfa3-3f8f-4fca-a504-ee4c80288b51",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "bfe0dd3f296278ad17c9105d4da29f880133311b770f2571007dc3c86feb2ca4",
+        "opened_ns": "1759305720000000000",
+        "opening_order_id": "O-20251001-080200-001-000-394",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "226744.12236816",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1760629620000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "8229.14563379 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8aa3d0d1-c2aa-40e6-92a2-527961aa1840",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "cdfce8ed99fd2e33a324a1016d664cb026d15ca87c84aabea9da81e37cf7b626",
+        "opened_ns": "1760140920000000000",
+        "opening_order_id": "O-20251011-000200-001-000-402",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "274698.3687662",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1761523200000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "12898.91608781 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-23c2fbad-ddd1-4bb6-b641-70c4a1d650ca",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "0cd501c82bbaa3b37fe5f01b9bf9947c6f94cbf37fcc6bf8bad985750fe7c2fa",
+        "opened_ns": "1761091260000000000",
+        "opening_order_id": "O-20251022-000100-001-000-407",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-415689.80878782",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1761696000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "4600.69382784 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-6c3cc659-2d61-47a2-a59d-1fa1c626a590",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "284344fce5257fbf31816ebba5670dc45e76f1ef48a0bb98026af6423fb016f3",
+        "opened_ns": "1761537720000000000",
+        "opening_order_id": "O-20251027-040200-001-000-413",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-92496.14342784",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1761844860000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "3194.56180257 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-78da9301-ba4d-4bf6-bc9c-eff5ca50adac",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "b08acd4c6d90d58c2e9fabb251ef05a88443b8bb58e2072a5db1e40ddd84c301",
+        "opened_ns": "1761768120000000000",
+        "opening_order_id": "O-20251029-200200-001-000-418",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "181760.28959743",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1762905600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "7989.56930182 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-239a5c44-0be0-4c13-abd3-03d43afca2a4",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "4549e4697804713c354a2aa86c213afa316132589034cd5c5684c386650c34dc",
+        "opened_ns": "1762819260000000000",
+        "opening_order_id": "O-20251111-000100-001-000-421",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "342280.68529818",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1764633600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "13946.25024823 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-94cd94fc-b8d9-468b-ab3f-7ebcd11977a2",
+        "native_event_count": 7,
+        "native_fill_lifecycle_sha256": "cf3ca4145fe03403efb222ea2dfb7be2bd756c5ed8eb0c35d376f00648ea684c",
+        "opened_ns": "1764115260000000000",
+        "opening_order_id": "O-20251126-000100-001-000-426",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "320390.19535178",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1768402020000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "5019.62388235 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0f518e27-3bcb-42e8-9602-6489d0e3c775",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "910eb0b9addbfdb3a356d476b096d14e188ed805a2690a2fefc3ee43ace9c5ce",
+        "opened_ns": "1767499320000000000",
+        "opening_order_id": "O-20260104-040200-001-000-435",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "347800.38211765",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1768953600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "6898.04567270 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-822f6b52-784d-4bc9-a27f-6a6fea3e8e27",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "b7a82ff0e0abf9074da9218f1146e1a620d0f0861bbc2e6b6cf8f93bbb0f830e",
+        "opened_ns": "1768867260000000000",
+        "opening_order_id": "O-20260120-000100-001-000-439",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-342220.5786727",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1769699640000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "5369.10163370 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e470c949-24b6-4e1b-98e6-80ed3c6ee560",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "b86ee53a56bedb24268e1169f6878493cd71c1111461a364464dcf4228500ae1",
+        "opened_ns": "1768953660000000000",
+        "opening_order_id": "O-20260121-000100-001-000-443",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "311436.6772663",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1770790440000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "13566.71880126 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-94307397-0017-4b44-ae3c-ceac81bf26b0",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "acd517a5d38fff037a54f865d6b69ef5522e1c57acdfc4d88eb2312971aec68b",
+        "opened_ns": "1770508860000000000",
+        "opening_order_id": "O-20260208-000100-001-000-446",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "400163.17329874",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1771255980000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "9421.20615657 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8b0f9be7-c434-4145-8abc-936fbc102456",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "e9e5879843bda18060ef62fe29edfbd2f326cb31ae285b90faf9240a7fee8c2f",
+        "opened_ns": "1771113660000000000",
+        "opening_order_id": "O-20260215-000100-001-000-451",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "408362.07074343",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1772236800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "18037.65640628 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-95ed2af5-9635-4b9f-b8ac-bff4a48137db",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "c471a15b98834ed3804743a73f4d602500366707222ccc08d0184e8d77c9e372",
+        "opened_ns": "1772150460000000000",
+        "opening_order_id": "O-20260227-000100-001-000-455",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "728237.97169372",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1773007440000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21556.66807420 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-96c1f638-18e8-405f-8372-3e30caed69bb",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "51eb05c1e87c15b90d80d565716245fb520d3dd454111d6ad0c4abf58249911e",
+        "opened_ns": "1772812920000000000",
+        "opening_order_id": "O-20260306-160200-001-000-460",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "652508.1683258",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1773360000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "27867.83656865 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-03a965c4-55ab-4dc5-91d7-0448302c1afd",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "9762beab6aff194c4689e774447bd0e55f0d896964732f28ece88e0b0c810a2d",
+        "opened_ns": "1773187260000000000",
+        "opening_order_id": "O-20260311-000100-001-000-465",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-268313.85796865",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1773878400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21838.82549261 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-eadcb04b-9ba1-4754-9a3b-2aa004a7fad1",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "1fde1c767aa2b2eb7814eeb645dce0b62a173efdbfb6831f696ea9fbaf6a728b",
+        "opened_ns": "1773403320000000000",
+        "opening_order_id": "O-20260313-120200-001-000-469",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-117515.80299261",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1774214400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21503.99041852 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-300381a6-57c9-45cb-826d-27d07a32890e",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "1d300e0659e398dbfbd5d882508ba9aa827acf5cf19cb7e18a90f87afaff3616",
+        "opened_ns": "1773964860000000000",
+        "opening_order_id": "O-20260320-000100-001-000-475",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "772145.15518149",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1774656000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21346.47429180 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d65f8849-fe57-47cf-96a4-20422b210056",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "604a433a9e15d254bb2674f65ec9cba9af6eba81584ec0327cb8b4d7d26b9810",
+        "opened_ns": "1774569660000000000",
+        "opening_order_id": "O-20260327-000100-001-000-480",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "1010499.7109082",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1775174400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21475.82371970 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e96e2877-4343-4776-9492-fa28326f0056",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "deda322cb1b637d75825ea61e984c8784af63c3a22f984c3c1c1608084e6968f",
+        "opened_ns": "1775088060000000000",
+        "opening_order_id": "O-20260402-000100-001-000-485",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "796909.06398031",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1776175140000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21969.26246811 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5cbf7595-30ba-488f-a591-2a8c8bbd1356",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "a2b98d999303be769dbcb15bcae5159340affe697ebd34dea8e7010c0abd4181",
+        "opened_ns": "1775606520000000000",
+        "opening_order_id": "O-20260408-000200-001-000-490",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "1029780.80093189",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1776835560000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21864.63640120 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-17ca610b-cb22-42f6-9245-c2063cdec0c4",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "db2489648ea51f62b151f769911c709d90e888b16ecb63f2f7d6cac843eab90a",
+        "opened_ns": "1776729660000000000",
+        "opening_order_id": "O-20260421-000100-001-000-495",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "665910.4270988",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1777840620000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "21900.95362070 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9c81971d-a8bb-4db3-9c07-c627fe125a35",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "32b8a79d585dbbf266f0ce63a2890ad70931fec425a2025bf6090b50cac2d02a",
+        "opened_ns": "1777507260000000000",
+        "opening_order_id": "O-20260430-000100-001-000-500",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "847757.5984793",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1779062400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "26996.68823225 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-685e0637-7006-493d-8286-6057438c0f45",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "12fca656783eaaa329daa240bc267eb8adcf001285981cddd3bc758e49987af2",
+        "opened_ns": "1778803260000000000",
+        "opening_order_id": "O-20260515-000100-001-000-505",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-1345480.58753225",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1779938340000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "17608.50143773 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b6063034-6633-40bc-88c6-e7c24c542280",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "685aec5aa5eeb9258be71c515fc040c198948ec18319cb7c3007769a3154b14d",
+        "opened_ns": "1779120120000000000",
+        "opening_order_id": "O-20260518-160200-001-000-509",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "537115.42406227",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1781049600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "24529.19399831 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-6f66af88-d9d6-4438-a1e8-112cc2ff7fa8",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "51cb3e9b0f6dc7cdf69217b7e0e8cfed85557a4e7c38c1b3441839274b1e1840",
+        "opened_ns": "1780963260000000000",
+        "opening_order_id": "O-20260609-000100-001-000-540",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "651761.4899017",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1783728000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "19868.14766852 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f9c2e007-5bdf-4a85-840a-69524d390571",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "500df8353f2f833b2f360afde54d82f0b70be2792a0522c2dd28534d076bfb94",
+        "opened_ns": "1783123260000000000",
+        "opening_order_id": "O-20260704-000100-001-000-546",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-404518.01476852",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1784073600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "33271.67605806 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-deda2859-83c2-411d-9a1c-a590c928a4d9",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "8339f1d9ffa35ef5d91aea65d223572a7b77dbfa664b923239176525c5360a40",
+        "opened_ns": "1783915320000000000",
+        "opening_order_id": "O-20260713-040200-001-000-551",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-616388.98045806",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1784246400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "15775.32745526 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8f7e6c71-bd92-4aa1-b8f7-e75f874e0a3d",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "b383ca9ce16a0632e9a4d243a9b61235b9c28647a82f1628c51348bc434cd04c",
+        "opened_ns": "1784073660000000000",
+        "opening_order_id": "O-20260715-000100-001-000-558",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-312149.97315526",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1784332800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "19796.53730750 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-a5906ddb-d44b-4257-9cdd-15febfcdd4ac",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "842356cfcf02bffc067b0e6b030d61fa1f0584d6d215026f39a0f6667f40a0f7",
+        "opened_ns": "1784275320000000000",
+        "opening_order_id": "O-20260717-080200-001-000-562",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-282777.1593075",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1784937600000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "27653.06291411 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-404a3a36-6b87-457f-a73e-cc8930f8f64e",
+        "native_event_count": 5,
+        "native_fill_lifecycle_sha256": "a240094b1d940487f20baf9700645d4375b0c05bce462dae7fcef2432fa4baf4",
+        "opened_ns": "1784548920000000000",
+        "opening_order_id": "O-20260720-120200-001-000-567",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-152645.4279141",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1785196800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "15710.88297720 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-3c2b6a06-a9b9-4ac1-a6ab-8ffd3d9338d9",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "c31f4819b7383a98fe49ec73d8883a68b094813b2c943972d4c327331e032202",
+        "opened_ns": "1785110460000000000",
+        "opening_order_id": "O-20260727-000100-001-000-581",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-421842.5740772",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1785456000000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "28133.76323538 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-0177eb75-0114-49a4-b570-f8fb7550720e",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "e9f3c2501be98698a726f7bdd3b72ee87de99d0ea2053c590e4875cb40e606a4",
+        "opened_ns": "1785211320000000000",
+        "opening_order_id": "O-20260728-040200-001-000-585",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-680881.40073538",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1785974400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "16226.98950618 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ce58c82a-22cf-4e5e-8169-b523be0ed45e",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "259ba067c18aa9699e64ada8469d4aad906d55e3bb1bbdc8876184c16476c45d",
+        "opened_ns": "1785542460000000000",
+        "opening_order_id": "O-20260801-000100-001-000-589",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-476773.65870618",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1786406400000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "27470.61188430 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-993a24a1-375a-448f-b30d-4f83a1e7250a",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "a7f2c8f302deea4a3765a56b9232b812635da3210e4f6fd6bcbd57d52de7e15d",
+        "opened_ns": "1786104120000000000",
+        "opening_order_id": "O-20260807-120200-001-000-593",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-484220.3708843",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1787011200000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "9556.86348144 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b1197ba8-64c0-40f8-8ea1-fd20de1db24f",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "a24f994961b71f77e00a185ccbb1901a8fe7d3ddf4eb072956370f53d1ac7f9f",
+        "opened_ns": "1786478520000000000",
+        "opening_order_id": "O-20260811-200200-001-000-597",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-131517.98028144",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1787151240000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "9520.40523654 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000-f07b017d-f7c4-44df-ba0c-d873984f6c7c",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "c3038c8b664946bad9ede2f3ff8a763fd3cdb3c2e85bd015e39a94cba7ba75b7",
+        "opened_ns": "1787068920000000000",
+        "opening_order_id": "O-20260818-160200-001-000-600",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "204870.44796346",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1728086400000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "231.29700000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-745c0656-a3d6-4dfd-b774-2112340e719b",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "6e52a3eaa533ba87b4ae7862a4536568c64df8819131b74d32a248989e66def6",
+        "opened_ns": "1727913600000000000",
+        "opening_order_id": "O-20241003-000000-001-000-20",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "768.703",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1728691200000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "143.84794490 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-60d2fdf9-2e65-42b1-9791-cfced1488550",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "c4d4137a69a65c357951d41d6b45dbee01f2aa9a575aef899230edadb3881c1f",
+        "opened_ns": "1728604800000000000",
+        "opening_order_id": "O-20241011-000000-001-000-36",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "5859.8340551",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1732579200000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "278.00952520 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-b2ea265a-dda3-44c6-97f9-e9b84af220c9",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "ee4705b2ab18a98937690ef249cc5761ff357cde264bb015d8303316dd866d5c",
+        "opened_ns": "1732233600000000000",
+        "opening_order_id": "O-20241122-000000-001-000-59",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "22652.3104748",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1735084800000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "422.29000000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5253fbe1-98fc-44f0-a316-e859ecba7bb3",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "985a4630bfea75a7aeb02fb139443ba3b68cf48a1b02aa07c3bb97ffd5fbb522",
+        "opened_ns": "1734972420000000000",
+        "opening_order_id": "O-20241223-164700-001-000-83",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "19657.71",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1735862400000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "659.64250000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-26155e42-2a50-42e2-a719-c1f37070618f",
+        "native_event_count": 6,
+        "native_fill_lifecycle_sha256": "c7f6fcf672472d55dbee7eb01486fa48a4f79ac7729b7842d5b861f80177f4a7",
+        "opened_ns": "1735603200000000000",
+        "opening_order_id": "O-20241231-000000-001-000-101",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "49370.35750001",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1736899200000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1221.86900000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ca3259cc-6fa3-40f1-88a6-6dd6421739f0",
+        "native_event_count": 12,
+        "native_fill_lifecycle_sha256": "b5f0d6ee097df6d47fb9ba88c239eb7bbc7c17daa6b5d92fe02b44bdfa47746f",
+        "opened_ns": "1736467200000000000",
+        "opening_order_id": "O-20250110-000000-001-000-118",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "2318.131",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1739577600000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "213.40000000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-858506e7-eea2-4e08-ab8a-effe21f8da26",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "c451a2a16a0e2e19aa2edcfbede90287f4fedfaecbd40db948a94a5e870beb3e",
+        "opened_ns": "1738886400000000000",
+        "opening_order_id": "O-20250207-000000-001-000-155",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "8986.6",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1741737600000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "272.37650000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d8d482e5-f5ca-4799-b1ed-68dafded2e4a",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "5463577efc1c7c5b645594db2e5cb953c74479ea3703568e07b6b334ca52d116",
+        "opened_ns": "1741564800000000000",
+        "opening_order_id": "O-20250310-000000-001-000-169",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "5577.6235",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1741996800000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "141.22350000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-1dee32ac-52ec-4e11-9672-8af502796484",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "ce04e6bb755c4fd1eb9e8493f8a30a7020ba62faee02ce6a697badf70b4e4b12",
+        "opened_ns": "1741910400000000000",
+        "opening_order_id": "O-20250314-000000-001-000-179",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "10008.7765",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1742860800000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "148.15900000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-20a58122-1f00-4d83-a2ee-17e4374589c5",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "f2cff9fde3669d3465077df8881c0df0daddc892ac1feacdd2a850c08d77920e",
+        "opened_ns": "1742688000000000000",
+        "opening_order_id": "O-20250323-000000-001-000-186",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "12351.841",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1743552000000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "555.27450000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-d2e974f0-852d-4c0e-a497-de32c9ee9c43",
+        "native_event_count": 8,
+        "native_fill_lifecycle_sha256": "e236895eb2fe9fa0ff9843c7b1860f79a8ff1bffefc9fa37630c579a9574135d",
+        "opened_ns": "1743206400000000000",
+        "opening_order_id": "O-20250329-000000-001-000-194",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "2894.7255",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1744243200000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "895.55400000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-8cc864c9-09c6-47a4-8fcb-08a55e0a9bda",
+        "native_event_count": 14,
+        "native_fill_lifecycle_sha256": "e1e7a2706284b94c09193ec06cfc5253861556fceb54043d2411961dc4c2200e",
+        "opened_ns": "1743638520000000000",
+        "opening_order_id": "O-20250403-000200-001-000-204",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "36964.44599999",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1744502400000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "134.71150000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-12cd30a4-5036-4c21-be43-22313ada2884",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "b4babbb10e7ef16ee74d57f83db5c5557fc79c2b12cdbd2e14f2fdc002df75fa",
+        "opened_ns": "1744329900000000000",
+        "opening_order_id": "O-20250411-000500-001-000-223",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "19495.2885",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1746576000000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "161.05100000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-5a514946-7dc4-4c2d-8634-1a824b894d5e",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "b5acbfac3e9119714c5af986acb1b018178c04d0677d5508952d86e9ba48f3c6",
+        "opened_ns": "1746057600000000000",
+        "opening_order_id": "O-20250501-000000-001-000-234",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "1978.949",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1748044800000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1341.70300000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e77f32e2-81bb-43c9-b60b-6db0bc5a54c9",
+        "native_event_count": 14,
+        "native_fill_lifecycle_sha256": "d6e0de51bdde6c6569ffec8992bc746441c6195a28d00e9e03211096000e3712",
+        "opened_ns": "1746835200000000000",
+        "opening_order_id": "O-20250510-000000-001-000-237",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "2258.29700003",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1749168000000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "174.62500000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-a6b8d2b6-b244-4536-a136-ca4c07ee09a1",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "bc46cd82cc3ae9d3479278d0b6b3348fe23a2afc84590f12e64f8952cc215bda",
+        "opened_ns": "1748133840000000000",
+        "opening_order_id": "O-20250525-004400-001-000-253",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "28925.375",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1749772800000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "346.72000000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-50718554-cbc1-47b3-a83e-9a16a2679850",
+        "native_event_count": 4,
+        "native_fill_lifecycle_sha256": "b65f26e2ccb86c208db7dad3de96cc8a4c176a77ef2ddc494318ed355be38235",
+        "opened_ns": "1749600000000000000",
+        "opening_order_id": "O-20250611-000000-001-000-269",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "21133.28",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1754006400000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "806.56400000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-4fe36928-e815-47da-ad7d-32b9f13409ba",
+        "native_event_count": 8,
+        "native_fill_lifecycle_sha256": "59dcc4c48a216eac16445f371d3dc7e5b5ce5928b441c903027060984b8d0e0f",
+        "opened_ns": "1753142400000000000",
+        "opening_order_id": "O-20250722-000000-001-000-284",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "88553.436",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1755216000000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1446.32950000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9bef05b4-81dc-4cb8-91b1-0c4fe6312a94",
+        "native_event_count": 14,
+        "native_fill_lifecycle_sha256": "58a28f5c6e5bc7ab2b44fa922b93e8b14e8bd9c8e86f99f17dc0b8408603252e",
+        "opened_ns": "1754611200000000000",
+        "opening_order_id": "O-20250808-000000-001-000-301",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-65916.3295",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1755561600000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "613.76700000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-34a80e4c-e188-4137-b56e-424674879481",
+        "native_event_count": 6,
+        "native_fill_lifecycle_sha256": "c08a9a1b4c9145dd07e29ec56ff9efd1ca50f174cb8fdf2d7419055aaf1a3837",
+        "opened_ns": "1755316920000000000",
+        "opening_order_id": "O-20250816-040200-001-000-318",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "18706.233",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1758585600000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "5548.81800000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-ed0f86dc-a700-475d-a93e-a9debcc4e4b9",
+        "native_event_count": 44,
+        "native_fill_lifecycle_sha256": "49f96628ee7ef5444ba8967e88c163e4f55392b2152a109a6fe1f0e23fc17d8b",
+        "opened_ns": "1757572380000000000",
+        "opening_order_id": "O-20250911-063300-001-000-343",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "388251.182",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1760140800000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "232.45200000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-e89b6584-5437-498c-bc0b-043b7df4d07a",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "5cd959711353696ffc0cbe8bc236956e6eeb484e1e94e7c619e2e80025f1ed8e",
+        "opened_ns": "1759449600000000000",
+        "opening_order_id": "O-20251003-000000-001-000-400",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "46367.548",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1780359120000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "1182.17000000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-181824c4-c806-4a18-9cbd-03dbcbb5e0ee",
+        "native_event_count": 26,
+        "native_fill_lifecycle_sha256": "387cc46f006864f077b330ba42284bc437fbac1f9a08165f8a050a190a8dbdbb",
+        "opened_ns": "1779120540000000000",
+        "opening_order_id": "O-20260518-160900-001-000-512",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "-40942.16999998",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1784937600000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "332.90950000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000-9f9ce775-5f03-46d3-8c2c-833b4fd91501",
+        "native_event_count": 8,
+        "native_fill_lifecycle_sha256": "49a202ee3f94aebaf9cac1235916ac5d0899627cc1e783808fea6eda85abc82d",
+        "opened_ns": "1784592000000000000",
+        "opening_order_id": "O-20260721-000000-001-000-572",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "13677.0905",
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1788220800000000000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "15906.16730901 USDT"
+        ],
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "native_event_count": 3,
+        "native_fill_lifecycle_sha256": "a3602ddbad13c3a285e3e41825d306ba4cd5b39990af2f5d3f4459f7d837bc03",
+        "opened_ns": "1788048060000000000",
+        "opening_order_id": "O-20260830-000100-001-000-605",
+        "position_id": "BTCUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "79709.58369099",
+        "sources": [
+          "NATIVE_CACHE_CURRENT"
+        ]
+      },
+      {
+        "closed": true,
+        "closed_ns": "1787961600000000000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "native_commissions": [
+          "117.24350000 USDT"
+        ],
+        "native_copy_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "9c5baf9965826fefecf243cd2b628d8a3e82e104e1f39eb165d31c8d47f95ce3",
+        "opened_ns": "1787875200000000000",
+        "opening_order_id": "O-20260828-000000-001-000-603",
+        "position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+        "realized_pnl": "4872.7565",
+        "sources": [
+          "NATIVE_CACHE_CURRENT"
+        ]
+      }
+    ],
+    "native_realized_total": "5439514.43553724",
+    "seed": "10000",
+    "signed_funding": "49845.71430279",
+    "status": "EXACT",
+    "terminal_cash": "5499360.14984003",
+    "tolerance": null,
+    "unallocated_bridge": "0E-8"
+  },
+  "source_mode_actual_native": true,
+  "new_runs": 0,
+  "tests": 0,
+  "native_position_lifecycle_reconciliation": {
+    "count": 108,
+    "all_closed": true,
+    "unique_lifecycle_identities": 108,
+    "native_realized_pnl_sum": "5439514.43553724",
+    "actual_funding_sum": "49845.71430279",
+    "terminal_bridge": "0E-8",
+    "fees_already_in_native_realized_pnl": true,
+    "duplicate_native_copies": 0
+  },
+  "independent_drawdown": {
+    "settled_maximum_percent": "51.26863558248311161216905115",
+    "event_maximum_percent": "51.26863558248311161216905115",
+    "event_samples": 2105974,
+    "event_worst": {
+      "peak_sequence": 579561,
+      "trough_sequence": 582084,
+      "event_ns": "1736778960000000000",
+      "event_UTC": "2025-01-13T14:36:00+00:00",
+      "peak_equity": "163152.48752315",
+      "trough_equity": "79506.43325115"
+    },
+    "settled_initial_seed_included": true,
+    "event_initial_seed_included": true,
+    "one_terminal_boundary_left_limit_included": true,
+    "retrospective_watermarks_excluded": true,
+    "event_order": "sequence; endpoints joined using event_ns"
+  },
+  "execution_verification": {
+    "receipt_sha256": "d62202569be9bb55eccdb3e255604b9a0daa3e1b5adcb9d8d375985ad20d1ac1",
+    "attempt_uuid": "4235c861-6308-4d00-a708-f8363bc6dea0",
+    "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+    "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+    "actual_native_child_pid": 73032,
+    "actual_native_child_exit": 0
+  },
+  "acceptance_checks": {
+    "execution_receipt": true,
+    "child_exit": true,
+    "uuid": true,
+    "source": true,
+    "config": true,
+    "floor": true,
+    "settled_DD": true,
+    "event_DD": true,
+    "settled_report_exact": true,
+    "event_report_exact": true,
+    "event_samples_match": true,
+    "cash_reconciled": true,
+    "position_reconciled": true,
+    "funding_reconciled": true,
+    "zero_liquidations": true,
+    "terminal_flat": true,
+    "months24": true,
+    "prefix_equal": true
+  },
+  "TOTAL_minus_FIRST_FRESH": "-1121.86326957",
+  "comparison_reference": "FIRST_FRESH_COMBO",
+  "limits": [
+    "Existing native outputs only; no new native runs, tests, optimization, deployment or live qualification",
+    "Synthetic minute-close L1 and historical fees/depth assumptions; no intraminute path or venue capacity guarantee",
+    "Current campaign DD cap passes; strict 50 percent target is not met"
+  ]
+}

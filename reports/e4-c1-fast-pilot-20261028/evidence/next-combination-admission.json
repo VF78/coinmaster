@@ -1,0 +1,444 @@
+{
+  "status": "NO_NATIVE_ADMISSION_G_ON_R_OR_COMBO_SOURCE_BOUND_NOOP",
+  "variants": {
+    "R": {
+      "status": "SOURCE_BOUND_NO_ACTION_DELTA",
+      "all_actual_claims_preserved": true,
+      "claims_checked": 5,
+      "receipt_rows": 1051199,
+      "claim_intervals": [
+        {
+          "claim_index": 1,
+          "claim_UTC": "2024-10-03T09:03:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": null,
+          "minimum_DD_since_prior_claim": null,
+          "rearm_witness": null,
+          "original_cut": {
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "submit_UTC": "2024-10-03T09:04:00+00:00",
+            "lots": 5000
+          }
+        },
+        {
+          "claim_index": 2,
+          "claim_UTC": "2025-01-13T11:56:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2024-10-03T09:03:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2024-10-04T08:13:00+00:00",
+            "receipt_ns": 1728029580000000000,
+            "source_quote_ns": 1728029520000000000,
+            "DD": "0.3488966423224727944727494816",
+            "fill_epoch": "18",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 1,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1727946240000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "submit_UTC": "2025-01-13T11:57:00+00:00",
+            "lots": 20000
+          }
+        },
+        {
+          "claim_index": 3,
+          "claim_UTC": "2025-06-06T09:21:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2025-01-13T11:56:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2025-01-13T15:20:00+00:00",
+            "receipt_ns": 1736781600000000000,
+            "source_quote_ns": 1736781540000000000,
+            "DD": "0.3410618997841238975676699518",
+            "fill_epoch": "102",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 0,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1736769420000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "submit_UTC": "2025-06-06T09:22:00+00:00",
+            "lots": 12038
+          }
+        },
+        {
+          "claim_index": 4,
+          "claim_UTC": "2025-11-27T02:23:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2025-06-06T09:21:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2025-06-09T21:19:00+00:00",
+            "receipt_ns": 1749503940000000000,
+            "source_quote_ns": 1749503880000000000,
+            "DD": "0.3499548389207636183371220943",
+            "fill_epoch": "231",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 1,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1749201720000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "submit_UTC": "2025-11-27T02:24:00+00:00",
+            "lots": 79592
+          }
+        },
+        {
+          "claim_index": 5,
+          "claim_UTC": "2026-08-10T16:56:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2025-11-27T02:23:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2025-11-29T18:20:00+00:00",
+            "receipt_ns": 1764440400000000000,
+            "source_quote_ns": 1764440340000000000,
+            "DD": "0.3455147340061559617142742093",
+            "fill_epoch": "381",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 1,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1764388920000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "submit_UTC": "2026-08-10T16:57:00+00:00",
+            "lots": 230705
+          }
+        }
+      ],
+      "inductive_frame": "GaddsONLYglobalarmadmission+armstate/logging;nevercreatesbasecutsorordinaryrights. Allbaseactualclaimsremainarmed,otherbasefailedgatesstayfailedwithadditionalGgate. Henceentirebasefinancialpathunchangedbyinduction;notanativecounterfactualROI.",
+      "source_report_sha256": "9b3ac2f440e8d48201615ebc573813d7fa18166bef80e4dbf887e8b20b3bef17",
+      "strict_zero_native_order_rearm_witnesses": [
+        {
+          "claim_index": 1,
+          "claim_UTC": "2024-10-03T09:03:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": null
+        },
+        {
+          "claim_index": 2,
+          "claim_UTC": "2025-01-13T11:56:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2024-10-05T00:02:00+00:00",
+            "receipt_ns": 1728086520000000000,
+            "source_quote_ns": 1728086460000000000,
+            "DD": "0.1945044036541381071843960605",
+            "fill_epoch": "21",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1728043320000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        },
+        {
+          "claim_index": 3,
+          "claim_UTC": "2025-06-06T09:21:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2025-01-13T15:20:00+00:00",
+            "receipt_ns": 1736781600000000000,
+            "source_quote_ns": 1736781540000000000,
+            "DD": "0.3410618997841238975676699518",
+            "fill_epoch": "102",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1736769420000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        },
+        {
+          "claim_index": 4,
+          "claim_UTC": "2025-11-27T02:23:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2025-06-09T21:32:00+00:00",
+            "receipt_ns": 1749504720000000000,
+            "source_quote_ns": 1749504660000000000,
+            "DD": "0.3409704160642093784716138387",
+            "fill_epoch": "232",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1749201720000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        },
+        {
+          "claim_index": 5,
+          "claim_UTC": "2026-08-10T16:56:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2025-12-01T15:37:00+00:00",
+            "receipt_ns": 1764603420000000000,
+            "source_quote_ns": 1764603360000000000,
+            "DD": "0.0012846097481357390018769731",
+            "fill_epoch": "382",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1764388920000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        }
+      ],
+      "strict_zero_order_rearm_preserves_all_claims": true
+    },
+    "COMBO": {
+      "status": "SOURCE_BOUND_NO_ACTION_DELTA",
+      "all_actual_claims_preserved": true,
+      "claims_checked": 5,
+      "receipt_rows": 1051199,
+      "claim_intervals": [
+        {
+          "claim_index": 1,
+          "claim_UTC": "2024-10-03T09:03:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": null,
+          "minimum_DD_since_prior_claim": null,
+          "rearm_witness": null,
+          "original_cut": {
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "submit_UTC": "2024-10-03T09:04:00+00:00",
+            "lots": 5000
+          }
+        },
+        {
+          "claim_index": 2,
+          "claim_UTC": "2025-01-13T11:56:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2024-10-03T09:03:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2024-10-04T08:13:00+00:00",
+            "receipt_ns": 1728029580000000000,
+            "source_quote_ns": 1728029520000000000,
+            "DD": "0.3488966423224727944727494816",
+            "fill_epoch": "18",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 1,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1727946240000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "submit_UTC": "2025-01-13T11:57:00+00:00",
+            "lots": 20000
+          }
+        },
+        {
+          "claim_index": 3,
+          "claim_UTC": "2025-06-06T09:21:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2025-01-13T11:56:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2025-01-13T15:20:00+00:00",
+            "receipt_ns": 1736781600000000000,
+            "source_quote_ns": 1736781540000000000,
+            "DD": "0.3410618997841238975676699518",
+            "fill_epoch": "102",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 0,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1736769420000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "submit_UTC": "2025-06-06T09:22:00+00:00",
+            "lots": 6019
+          }
+        },
+        {
+          "claim_index": 4,
+          "claim_UTC": "2025-11-27T02:23:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2025-06-06T09:21:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2025-06-09T21:28:00+00:00",
+            "receipt_ns": 1749504480000000000,
+            "source_quote_ns": 1749504420000000000,
+            "DD": "0.3482743775102220519200827303",
+            "fill_epoch": "231",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 1,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1749201720000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "submit_UTC": "2025-11-27T02:24:00+00:00",
+            "lots": 39584
+          }
+        },
+        {
+          "claim_index": 5,
+          "claim_UTC": "2026-08-10T16:57:00+00:00",
+          "arm_before_claim": true,
+          "prior_claim_UTC": "2025-11-27T02:23:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "rearm_witness": {
+            "receipt_UTC": "2025-11-28T17:34:00+00:00",
+            "receipt_ns": 1764351240000000000,
+            "source_quote_ns": 1764351180000000000,
+            "DD": "0.3478282579494804171973658400",
+            "fill_epoch": "380",
+            "own_C1_pending": 0,
+            "native_inflight_source_bound": 0,
+            "active_orders_count": 1,
+            "active_native_accept_before_source": true,
+            "quiet_source_to_receipt_no_order_lifecycle_mutation": true,
+            "latest_C1_terminal_ns": 1764210240000000000,
+            "strict_new_source_after_terminal": true,
+            "current_money_proof": "Exportedreceiptmintchecksaccountlast_event<=sourceandfill_epoch;source<receipt. Noorder/filltransitionin(source,receipt],C1epochsameasrecorder;DD35freshnow."
+          },
+          "original_cut": {
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "submit_UTC": "2026-08-10T16:58:00+00:00",
+            "lots": 115352
+          }
+        }
+      ],
+      "inductive_frame": "GaddsONLYglobalarmadmission+armstate/logging;nevercreatesbasecutsorordinaryrights. Allbaseactualclaimsremainarmed,otherbasefailedgatesstayfailedwithadditionalGgate. Henceentirebasefinancialpathunchangedbyinduction;notanativecounterfactualROI.",
+      "source_report_sha256": "947caeb756af1a87176b66f348cb0ee5cc6ccda288cef88528aef0d34cde6ba6",
+      "strict_zero_native_order_rearm_witnesses": [
+        {
+          "claim_index": 1,
+          "claim_UTC": "2024-10-03T09:03:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": null
+        },
+        {
+          "claim_index": 2,
+          "claim_UTC": "2025-01-13T11:56:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2024-10-05T00:02:00+00:00",
+            "receipt_ns": 1728086520000000000,
+            "source_quote_ns": 1728086460000000000,
+            "DD": "0.1945044036541381071843960605",
+            "fill_epoch": "21",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1728043320000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        },
+        {
+          "claim_index": 3,
+          "claim_UTC": "2025-06-06T09:21:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2025-01-13T15:20:00+00:00",
+            "receipt_ns": 1736781600000000000,
+            "source_quote_ns": 1736781540000000000,
+            "DD": "0.3410618997841238975676699518",
+            "fill_epoch": "102",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1736769420000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        },
+        {
+          "claim_index": 4,
+          "claim_UTC": "2025-11-27T02:23:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2025-06-09T21:32:00+00:00",
+            "receipt_ns": 1749504720000000000,
+            "source_quote_ns": 1749504660000000000,
+            "DD": "0.3476789783802701593840677444",
+            "fill_epoch": "232",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1749201720000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        },
+        {
+          "claim_index": 5,
+          "claim_UTC": "2026-08-10T16:57:00+00:00",
+          "arm_preserved_with_strict_zero_order_rearm": true,
+          "witness": {
+            "receipt_UTC": "2025-12-01T15:37:00+00:00",
+            "receipt_ns": 1764603420000000000,
+            "source_quote_ns": 1764603360000000000,
+            "DD": "0.0012726319877377632825945204",
+            "fill_epoch": "382",
+            "native_orders_open_or_inflight_or_mutating_in_source_receipt_window": 0,
+            "all_prior_native_order_terminal_times_strictly_before_source": true,
+            "latest_C1_terminal_ns": 1764388920000000000,
+            "strict_new_source_after_terminal": true,
+            "C1_own_pending": 0,
+            "pending_proof": "AllC1actualattemptsterminalandsourceboundterminalcallbackremovespendingmap;allnativeordersfinishedbeforefreshsource.Noacceptedorder/pendingcancelclassificationneeded."
+          }
+        }
+      ],
+      "strict_zero_order_rearm_preserves_all_claims": true
+    }
+  },
+  "exact_G_source_sha256": "2f0a38c2827b986f69506390dc5e06d9c8dc6606e93be314c8e0a09e8b2a7785",
+  "G_rule": "Initialarmtrue;consumepositiveeconomicCLAIM;freshDD<=35rearmonlywhennoC1ownpending/nonativeinflightandnewsourceafterpreviousunresolvedblock",
+  "no_owner_shortcut": "Rearmwitnessesselectquietactualnativeorderlifetimeintervalsandacceptedorders;notmerelyDDminima. NoACKcompletioninvented.",
+  "no_engine_spend": "Do not run R+G or COMBO+G to rediscover this source-bound no-op; no new native GO is issued.",
+  "counterfactual_TOTAL": null,
+  "actual_native_engines": 0,
+  "tests": 0,
+  "private_account_details": false,
+  "owner_proof_strengthening": "ForNOOPconclusionusestrictzero-orderwitnesses,notearlieracceptedTPwitnesses:everypriororderterminalbeforefreshsource,allC1callbacksresolved,noinflight/cancelambiguity;candidateDD35alreadyfreshatthemint.",
+  "existing_implementation_guard": {
+    "source": "source-G-d30df523af75/runtime/coinmaster/strategy/residual_recovery.py:13",
+    "exact_error": "G_STANDALONE_REQUIRES_C1_HALF_RESTORE35",
+    "contract": "GlobalarmflagcurrentlyrequiresBTCdivisor2andrestoreDD.35. ExistingGconstructorrejectsRrestore40andCOMBOquarter+restore40.",
+    "screen_interpretation": "NO_ACTION_DELTAisalogicaladditional-G-admission-gatescreenonsavedR/COMBOpaths,notaclaimthosemixedconfigsarecurrentlyrunnable. No guard bypass/sourcechange/nativeattemptproposed."
+  }
+}

@@ -1,9 +1,9 @@
 {
   "task": "CM-E4-C1-FAST-PILOT-20261028",
-  "recorded_utc": "2026-10-28T19:26:43.303523+00:00",
-  "status": "Q_R_COMBO_PROFIT_FAIL_G_LAST_CANDIDATE_SOURCE_PREPARATION",
+  "recorded_utc": "2026-10-28T22:00:35.865896+00:00",
+  "status": "BENCHMARK_AUDIT_PASS_QUAL_STRESS_RUNNING_ATTEMPT7_OF8",
   "owner_authorization": {
-    "direct_instruction": "\u0432\u043e\u0437\u044c\u043c\u0438 \u043f\u043b\u0430\u043d \u0438\u0437 \u0432\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0437\u0430 \u043e\u0441\u043d\u043e\u0432\u0443 ... \u0421\u0434\u0435\u043b\u0430\u0439 \u0435\u0434\u0438\u043d\u044b\u0439 \u0441\u043e\u0433\u043b\u0430\u0441\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u043f\u043b\u0430\u043d, \u0430\u043a\u0442\u0443\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0439 project \u0438 \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0430\u0439 \u043f\u043e \u0443\u0442\u043e\u0447\u043d\u0435\u043d\u043d\u043e\u043c\u0443 \u043f\u043b\u0430\u043d\u0443",
+    "direct_instruction": "возьми план из вложения за основу ... Сделай единый согласованный план, актуализируй project и продолжай по уточненному плану",
     "attachment_path": "/Users/vf/Downloads/CODEX_E4_C1_FAST_PILOT_2026-10-28.md",
     "attachment_sha256": "bf7ac3d5898b690946bec6a07881b607a6f50d86c37532375c05c970549c8798",
     "new_campaign_scope": "limited E4/C1 Q/R/G R&D and pilot preparation; not trading keys/funds/services/orders",
@@ -26,21 +26,26 @@
   },
   "budget": {
     "historical_max": 8,
-    "candidate_max": 4,
-    "conditional_control_max": 2,
+    "candidate_max": 6,
+    "conditional_control_max": 0,
     "qualification_max": 2,
-    "historical_attempts_started": 3,
+    "historical_attempts_started": 7,
     "failed_invalid_repeats_count": true,
     "engineering_component_calls": {
-      "pytest_calls": 10,
+      "pytest_calls": 18,
       "synthetic_native_constructors": 104,
-      "wall_seconds": "34.67",
-      "count_method": "deterministic executed fixture path reconstruction, not runtimeinstrumentation"
+      "wall_seconds": "39.89",
+      "count_method": "deterministic executed fixture path reconstruction, not runtimeinstrumentation",
+      "live_component_separate": "47purePASS8.97s final; zeroengine/node/strategy/order/modelconstructors; separatecountreport"
     },
     "repair_iterations_per_blocker_max": 2,
     "old_budgets_transferred": false,
     "MethodA_status": "HOLD_9_OF_19_UNCHANGED",
-    "authority": "experiment_registry.csv historical_budget_count, claim beforePopen"
+    "authority": "experiment_registry.csv historical_budget_count, claim beforePopen",
+    "candidate_slots_remaining": 0,
+    "active_historical_children": 1,
+    "unused_qualification_admission": "CONDITIONAL_ON_INDEPENDENT_BENCHMARK_AUDIT_AND_FROZEN_PROTOCOL",
+    "unused_control_admission": "NO_MATERIAL_COMPARABILITY_NEED"
   },
   "source": {
     "E4": "bd04c9b3858bcda40060a08eff488849c69af5d8",
@@ -52,14 +57,14 @@
     "native_engine": "NautilusTrader1.231.0",
     "VPS_worktree": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-fast-pilot-20261028",
     "branch": "codex/e4-c1-fast-pilot-20261028",
-    "accepted_new_source": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+    "accepted_new_source": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
     "Q_peer_review_sha256": "71e128aed7591b4c0f0b025b07d8b4c85c0e0e1dec01727c523f5754deef8fb7",
     "R_economic_config_sha256": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
     "accounting_peer_review_sha256": "549bcb33b559f9db7e7e27c93f3c88ab8737a8f9809fd5b7899ee5e8e1e3157b"
   },
   "campaign_rules": [
     "Q first: BTC heldlots//4; SOL heldlots//2; all other C1 unchanged",
-    "R only restore DD35\u219240 at two restore gates if earlier eligible source witness proved; no grid",
+    "R only restore DD35→40 at two restore gates if earlier eligible source witness proved; no grid",
     "G one account-wide cut arm until actual fresh DD<=35; no change ordinary rights",
     "At most one evidence-based combination; stop searching once candidate meets profit/DD",
     "Archives not replayed automatically; controls only material comparability need",
@@ -140,13 +145,178 @@
       "settled_DD_percent": "51.80315157406654834417870238",
       "event_DD_percent": "51.80315157406654834417870238",
       "selected": false,
-      "report_sha256": "947caeb756af1a87176b66f348cb0ee5cc6ccda288cef88528aef0d34cde6ba6"
+      "report_sha256": "947caeb756af1a87176b66f348cb0ee5cc6ccda288cef88528aef0d34cde6ba6",
+      "independent_full_analysis": "PASS_NATIVE_CASH_AND_108_LIFECYCLE_EXACT"
     },
     "G": {
-      "root_go": false,
-      "status": "SOURCE_PREPARATION_LAST_CANDIDATE",
-      "scope": "STANDALONE_C1_PLUS_ACCOUNT_GLOBAL_ARM_ONLY",
-      "automatic_repeat": false
+      "root_go": true,
+      "status": "G_COMPLETED_PROFIT_FAIL",
+      "scope": "ONE_LAST_STANDALONE_G_FULL_PATH",
+      "automatic_repeat": false,
+      "root_go_utc": "2026-10-28T19:37:28.578806+00:00",
+      "attempt_uuid": "87036cf7-c9aa-4f44-a407-9f91de090895",
+      "source_commit": "d30df523af7513545dfde19cd69c5105102f3acb",
+      "config_sha256": "df1c48cd536970122e4335de07840226008e8cb11dceeff7cb71d68494d8ca78",
+      "runner_sha256": "44bcd56db36c003e0f3cc876fca7efb2e79f730d7d426cdda4387ae9b5b116f5",
+      "preflight_sha256": "3219aca688bf8ca136a8fc543467bc24c4f54525c2f43fe66c18e289b382197f",
+      "peer_sha256": "39e0bae98ef78b6f4ebdbaeb5c3350965ad9b9835e69192bab182470e574fd5d",
+      "live_orders": false,
+      "actual_native_child_pid": 66250,
+      "native_child_exit": 0,
+      "TOTAL": "4482202.31880551",
+      "settled_DD_percent": "51.80315157406654834417870238",
+      "event_DD_percent": "51.80315157406654834417870238",
+      "selected": false,
+      "report_sha256": "51b116395041a8e268a8602b24b010bf386432b55f4c7bed64d165de529b7285"
+    },
+    "FIRST_FRESH_COMBO": {
+      "root_go": true,
+      "status": "COMPLETED_RISK_FAIL",
+      "source_commit": "ff253cc852cb9d564186d1c97f3201429ba5978a",
+      "config_sha256": "0782684ce8906ee2ad07963f59f84be2c5e33019b13e263fa1c8f8fd1cfd975a",
+      "automatic_repeat": false,
+      "root_go_utc": "2026-10-28T20:33:57.055955+00:00",
+      "attempt_uuid": "915a2633-7cd8-4cab-986e-12985f89dbde",
+      "runner_sha256": "4b75a98cffb74f2a88da671e6b4d114f1473466c914495e116f70ac6ca631e50",
+      "preflight_sha256": "de5e4c511616405df8d3fd863e6dc0ee7e10c69b5fbdea9548657ec769f14c09",
+      "peer_sha256": "e0321314db3eb29bf111f39fcfa73654a8860f3b585524eddc919376b491e05a",
+      "scope": "ONE_FUNDING_BAR_FIRST_FRESH_COMBO_FULL_PATH",
+      "live_orders": false,
+      "actual_native_child_pid": 69396,
+      "native_child_exit": 0,
+      "TOTAL": "5500482.01310960",
+      "settled_DD_percent": "55.35211621214503813510235076",
+      "event_DD_percent": "55.35211621214503813510235076",
+      "selected": false
+    },
+    "BTC_POSTCUT_D1": {
+      "root_go": true,
+      "status": "COMPLETED_BENCHMARK_THRESHOLDS_PASS_AUDIT_PENDING",
+      "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+      "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+      "automatic_repeat": false,
+      "root_go_utc": "2026-10-28T21:36:24.950895+00:00",
+      "attempt_uuid": "4235c861-6308-4d00-a708-f8363bc6dea0",
+      "runner_sha256": "da4b1729338890d8c87a0498cbbf4483eb90b963ad75cfb7a7d9c415d165819b",
+      "preflight_sha256": "42decdcc27205e4bdab4e3c3b03a436268089f7c404c17af494f2c135d1b6380",
+      "peer_sha256": "a6669f2e9e67e415bbdcc9913f42607c569296d0a69f3228b5391cd8ea7c7590",
+      "scope": "ONE_LAST_CANDIDATE_BTC_POSTCUT_D1_FULL_PATH",
+      "live_orders": false,
+      "actual_native_child_pid": 73032,
+      "native_child_exit": 0,
+      "TOTAL": "5499360.14984003",
+      "settled_DD_percent": "51.26863558248311161216905115",
+      "event_DD_percent": "51.26863558248311161216905115",
+      "report_sha256": "c3e23a88efff0688b33b6d9e93c9dd29e0f19e9973e2224b845e8fa51bd049d2",
+      "execution_receipt_sha256": "d62202569be9bb55eccdb3e255604b9a0daa3e1b5adcb9d8d375985ad20d1ac1",
+      "native_report_cash_reconciliation": "EXACT_0E-8",
+      "independent_full_analysis": "PASS_NATIVE_CASH_AND_108_LIFECYCLE_EXACT",
+      "selected_for_qualification": true,
+      "selected_for_live": false,
+      "independent_artifact_manifest_sha256": "f00ef8b5d5d996f0b71980ab0beb094242df7ccb351e42835e6282fe965cdc3f"
+    },
+    "QUAL_STRESS": {
+      "root_go": true,
+      "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+      "config_sha256": "5a1aab4a8e0c75711869fd886aa80c08052874f38e3d107f6d2bea925ac62883",
+      "attempt_uuid": "e98fc3db-6497-47f8-84c0-1e2fdf81b9d3",
+      "status": "RUNNING",
+      "automatic_repeat": false,
+      "scope": "ONE_FIXED_ADVERSE_TICK_QUALIFIER",
+      "protocol": "QUALIFICATION_PROTOCOL.md",
+      "runner_sha256": "3b712a15f9f4a044544e547ec9a64003355bcaf0b9f278c3be13565747dc9de8",
+      "actual_native_child_pid": 74342
     }
+  },
+  "qualification_data": {
+    "status": "INDEPENDENT_DATA_QUALITY_PASS_NATIVE_GO_PENDING",
+    "report": "evidence/qualification-data-acceptance.json",
+    "report_sha256": "8aa061affc87902f9ad1f7952ca97280c2bb40d1334f9fccc4916bb567f90562",
+    "period": "[2026-09-01,2026-10-28)UTC",
+    "minute_rows_per_stream": 82081,
+    "prior_minute_included": true,
+    "gaps": 0,
+    "duplicate_timestamps": 0,
+    "funding_postbenchmark_events_per_asset": 171,
+    "D1_warmup_rows": 730,
+    "warmup_original_numeric_differences": 0
+  },
+  "live_preparation": {
+    "source": "SEPARATE_LIVE_WIP_DEFAULT_OFF",
+    "status": "CHECKPOINT_AND_MANAGE_ONLY_IMPLEMENTATION_PURE_QUALIFICATION_PENDING",
+    "live_order_capability": false,
+    "final_owner_start_required": true
+  },
+  "next_step": {
+    "economic_search": "FROZEN_NO_FURTHER_CANDIDATES",
+    "first": "Independent existing-artifact BTC_POSTCUT_D1 financial audit; no rerun",
+    "then": [
+      "One fixed adverse-tick QUAL_STRESS",
+      "One fixed 57-day clean-start QUAL_VALIDATION after interval-only harness review"
+    ],
+    "parallel": "Existing-stack live money/closed-bar/accounting integration after bounded contract closure",
+    "live_gate": "Owner winner approval then qualified deployment verification; separate explicit START LIVE still required"
+  },
+  "budget_amendments": [
+    {
+      "recorded_utc": "2026-10-28T20:07:46.409565+00:00",
+      "authority": "Standing direct owner authorization 2026-10-28 necessary CoinMaster R&D/preparation; manager explicit bounded allocation revision, NOT a separate numeric owner reply",
+      "reason": "Four valid candidates profitfail; nativeH4schedulingloss confirmed from2actual fundingwindows; no materialcontrolrerunneeded",
+      "previous": {
+        "candidate_max": 4,
+        "conditional_control_max": 2,
+        "qualification_max": 2,
+        "historical_max": 8
+      },
+      "current": {
+        "candidate_max": 5,
+        "conditional_control_max": 1,
+        "qualification_max": 2,
+        "historical_max": 8
+      },
+      "additional_candidate": "FIRST_FRESH_COMBO",
+      "new_attempts_authorized_by_this_record": 0,
+      "native_gate": "Source/review/freeze/preflight/rootGO stillrequired; exactlyoneconditionalcandidatephysical, failurescount; noautomaticrepeat",
+      "protocol": "FIRST_FRESH_H4_PROTOCOL.md",
+      "donor_unattempted_slot": "CONTROL_C1",
+      "donor_spent": 0
+    },
+    {
+      "recorded_utc": "2026-10-28T21:23:26.894339+00:00",
+      "authority": "StandingdirectownernecessaryR&D;explicitmanagerallocationNOTnewnumericownerreply",
+      "previous": {
+        "candidate_max": 5,
+        "conditional_control_max": 1,
+        "qualification_max": 2,
+        "historical_max": 8
+      },
+      "current": {
+        "candidate_max": 6,
+        "conditional_control_max": 0,
+        "qualification_max": 2,
+        "historical_max": 8
+      },
+      "donor_unattempted_slot": "CONTROL_E4",
+      "donor_spent": 0,
+      "additional_candidate": "BTC_POSTCUT_D1",
+      "protocol": "BTC_POSTCUT_D1_PROTOCOL.md",
+      "native_go": false
+    }
+  ],
+  "live_publication_authority": {
+    "direct_owner_reply": "Разрешаю указанную публикацию и обновления",
+    "receipt": "owner-publication-approval.json",
+    "exact_initial_commit": "e1713f8a3b800323e0176e276d98ec18fb5262db",
+    "future_verified_CoinMaster_source_test_technical_report_updates": true,
+    "account_financial_data_excluded": true,
+    "live_START_included": false
+  },
+  "owner_new_tasks": {
+    "scope": "currentpilot/HL/Nautilus/releaseaudit+GUIafterliveifindependent+longGUIauth/passwordreplacement",
+    "plan": "LIVE_PREPARATION_PLAN_20261029.md",
+    "stop_existing_pilot": "ONLY_AFTER_SELECTED_WINNER_AND_OWNER_APPROVAL",
+    "live_start": "EXPLICIT_FINAL_START_REQUIRED",
+    "credentials": "PRIVATE_KEYCHAIN_ONLY_NOT_IN_REPORTS",
+    "GUI_independent": true
   }
 }

@@ -1,0 +1,13 @@
+Текущий пилот проверен по работающему процессу, а не по старому снимку. Native Sandbox работает с 28.09.2026 07:39:45 UTC: PID2009732, release81e6318, Nautilus1.231.0. Все55 файлов установленного coinmaster совпали с release manifest. Это отдельный старый Stage-G алгоритм; E4/C1-кандидаты не установлены.
+
+Полный аудит с первого запуска имеет ограничения: сохранены39 native fills и45 intents, sparse equity наблюдения с28сентября, но подробный journal только с26октября. Дубликатов fill/trade/intentID и fills без intent не найдено. Один ACKED intent соответствует принятому native reduce-only ордеру; в snapshot есть открытая позиция. Исторические причины cancellation/reject/partial и полную cash-chain восстановить из latest-state схемы нельзя: UNKNOWN, не PASS. Никакого расчёта PnL по ценам fills не выполнялось.
+
+В45066 сохранённых status-снимках оба public feed READY, node/thread живы, live-order capability false.188 снимков на двух UTC-границах имеют missing latest completed warmup session: increases/orders блокировались, максимальное наблюдаемое окно около15мин. Это подтверждённая задержка готовности; потеря торгового решения не доказана. Backfill error отсутствует.11 traceback относятся только к BrokenPipeError при записи HTTP status ответа. Числа ERROR/WARN/funding из повторяющихся status-словарей не являются числами инцидентов.
+
+Funding в установленном Sandbox явно UNPOSTED по исходному контракту; обе funding-таблицы пусты. Полное экономическое соответствие с фактическим funding/fee/cash-chain не подтверждено. Это ограничение квалификации, а не скрытый нулевой funding.
+
+GUI развёртывается отдельно: собственный PID2515189 и releasebe2f71d, собственные control/auth SQLite. Штатный GUI promote переключает только GUI release, перезапускает runtime API и connections broker, проверяет сохранение PID трейдера. API/fingerprint совместимость с worker остаётся обязательной. Ни один deploy/restart не выполнялся.
+
+Повторный вход объясняется установленным GuiAuth: idle30мин, абсолютный срок12ч с created_at, без продления абсолютного срока и без persistent cookie Max-Age/Expires. auth.sqlite сохраняется; fingerprint зависит от password hash. Для конкретного прошлого logout browser-корреляции нет. Пароль/секреты не читались и не менялись. Изменение политики сессии следует отделить от алгоритма и сохранить revocation/CSRF/Secure/HttpOnly.
+
+Исходные журналы и согласованные SQLite snapshots остались только в private VPS каталоге0700, файлы0600. В отчёте нет account identity, адресов, балансов, бюджетов или финансовых сумм. Сервисы, исходники, ордера и конфигурация не менялись; engines/tests/new venue requests0.

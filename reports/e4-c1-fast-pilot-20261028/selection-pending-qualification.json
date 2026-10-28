@@ -1,0 +1,26 @@
+{
+  "recorded_utc": "2026-10-28T22:00:35.865896+00:00",
+  "status": "FROZEN_FOR_QUALIFICATION_NOT_LIVE_READY",
+  "candidate": "BTC_POSTCUT_D1",
+  "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+  "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "report_sha256": "c3e23a88efff0688b33b6d9e93c9dd29e0f19e9973e2224b845e8fa51bd049d2",
+  "TOTAL": "5499360.14984003",
+  "seed": "10000",
+  "original_net_profit_retention_percent": "90.47738788375289086288875952",
+  "settled_DD_percent": "51.26863558248311161216905115",
+  "event_DD_percent": "51.26863558248311161216905115",
+  "profit_floor": "5470396.514987347",
+  "DD_cap_percent": "51.80315157406654834417870238",
+  "independent_financial_audit": "PASS_NATIVE_CASH_AND_108_LIFECYCLE_EXACT",
+  "qualification": "TWO_CONDITIONAL_SLOTS_NOT_STARTED",
+  "live_ready": false,
+  "owner_START_LIVE": false,
+  "limitations": [
+    "Historical Bybit 1m synthetic L1/depth1000 model, not Hyperliquid execution proof",
+    "Legacy reference/zero TP and SOL alpha retained; not a true continuous SOL hedge or all-real 3TP",
+    "DD30-50% objective remains not achieved",
+    "Historical data reused for selection; not untouched OOS"
+  ],
+  "independent_artifact_manifest_sha256": "f00ef8b5d5d996f0b71980ab0beb094242df7ccb351e42835e6282fe965cdc3f"
+}

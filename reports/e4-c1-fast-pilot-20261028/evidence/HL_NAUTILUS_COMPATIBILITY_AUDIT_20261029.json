@@ -1,0 +1,315 @@
+{
+  "task": "CM-HL-NAUTILUS-PARALLEL-AUDIT-20261029",
+  "status": "BOUNDED_SOURCE_DOCS_FIRST_MATRIX_NOT_RELEASE_GO",
+  "checked_date": "2026-10-29",
+  "scope": "Officialdocs/taggedsource/installedpublicsource/GitHubissueforums; noaccountrequests/privatekeys/install/upgrade/services/deploy/orders",
+  "versions": {
+    "research": "1.231.0",
+    "running_pilot": {
+      "release_commit": "81e6318646b51280497806a1c0492591654b5fe6",
+      "version": "1.231.0",
+      "pid": 2009732,
+      "cwd": "/srv/coinmaster/runtime",
+      "module": "coinmaster.ops.hyperliquid_testnet_worker",
+      "reported_mode": "nativeSandboxwithlegacytestnetname",
+      "evidence": "Directread-onlyevidenceagentverification; actualconfig/sealreceipt followsseparately; not a liveaccount audit",
+      "verified_seal": {
+        "manifest_path": "/srv/coinmaster/runtime/release-manifest.json",
+        "manifest_sha256": "31a7ee68d1a92ab26158f0c587ba8d4ee7224446e738cd1a087f47f8988b2e33",
+        "dirty": false,
+        "declared_source_files_checked": 55,
+        "missing_or_mismatched": 0,
+        "candidate_sha256": "637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d",
+        "strategy_sha256": "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511",
+        "execution_policy_sha256": "eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687",
+        "instance_mode": "sandbox",
+        "venue": "HYPERLIQUID",
+        "retained_status_records": 45066,
+        "status_live_order_capability": false,
+        "status_node_alive": true,
+        "source": "Direct read-only evidence-agent verification; no balances, account identifiers or private keys."
+      }
+    },
+    "audited_readiness_commit": "e1713f8a3b800323e0176e276d98ec18fb5262db",
+    "current_latest_stable": "1.231.0",
+    "stable_release_date": "2026-08-02",
+    "latest_pypi_prerelease": "2.0.0rc7",
+    "prerelease_date": "2026-10-15",
+    "upgrade_now": "NO; stablealreadyinstalled. Recheckafterwinnerandownerapproval; rcisnotautomaticallyneededupgrade."
+  },
+  "no_selected_release": {
+    "reason": "BestnewF5TOTAL5500482 withDD55.352%fails acceptedDD; no financialwinnerselected",
+    "e171_component": "47purePASSand2P1fixediscomponentproofonly",
+    "phase2": "Sourcecontract6e41699availableVPSonly/CODE0; not reviewedorqualifiedinthisboundedmatrix"
+  },
+  "matrix": [
+    {
+      "topic": "Release/upgrade boundary",
+      "source_version": "official v1.231.0 / PyPI as checked2026-10-29",
+      "finding": "Latest non-prerelease is1.231.0 datedAug2; PyPI lists2.0.0rc7 datedOct15 as prerelease. Release explains v1/v2 core/API/schema migration.",
+      "our_actual_code_relevance": "Research and actual pilot both1.231.0; live readiness sourcee171 is separate from pilot81e6318.",
+      "status": "NO_STABLE_UPGRADE_INDICATED_NOW",
+      "minimal_next_fix_or_acceptance_test": "After winner+ownerapproval: stop old pilot through normal procedure, recheck stable releases; stage exact version/wheel in isolated environment only if justified, rerun benchmark+release audit before deployment. No --pre by default.",
+      "sources": [
+        "https://github.com/nautechsystems/nautilus_trader/releases/tag/v1.231.0",
+        "https://pypi.org/project/nautilus-trader/"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "Signer vs account/vault scope",
+      "source_version": "HL current docs + v1.231 installed Python factory",
+      "finding": "An agent signs; queries must target owned master/subaccount. Simultaneous account_address/vault_address may split read and signed scopes.",
+      "our_actual_code_relevance": "hl_live_worker.py130 passes explicitmaster/account_address and vaultNone; hl_live_execution.py545-550 independently resolves and matches scope. This supports standard master only; no actual wallet role inspected.",
+      "status": "SOURCE_GUARDED_STANDARD_SCOPE_ONLY",
+      "minimal_next_fix_or_acceptance_test": "Pure mismatched signer-derived/master/vault/readscope cases must deny; later authorized read-only role+APIagent permission check. Keep accountrole/dex/abstraction pins. Do not infer subaccount readiness.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/nonces-and-api-wallets",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/signing",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint",
+        "https://github.com/nautechsystems/nautilus_trader/issues/4010"
+      ],
+      "issue": {
+        "number": 4010,
+        "state": "CLOSED",
+        "opened": "2026-05-06",
+        "closed": "2026-05-07",
+        "reported_version": "1.227.0a20260504",
+        "conclusion": "Maintainer identified API-wallet/master-address confusion; current wrapper explicitly guards address."
+      }
+    },
+    {
+      "topic": "Nonce, clock and multiple writers",
+      "source_version": "HL current / exactv1.231 HTTPsource",
+      "finding": "Nonces are per signer, including its multiple subaccounts; time and uniqueness matter.",
+      "our_actual_code_relevance": "PinnedHTTPsource sign_action_exec_request uses nonce_manager.next; our account lease is account-scoped, not proof no other program shares signer. Public code only inspected; no key accessed.",
+      "status": "FUTURE_RELEASE_SINGLE_SIGNER_WRITER_PROOF_REQUIRED",
+      "minimal_next_fix_or_acceptance_test": "One dedicated APIwallet per trading process; test concurrent same-millisecond actions via native API mocks, nonce uniqueness and restart; record clock synchronization/drift before release. No independent signing implementation or nonce reset.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/nonces-and-api-wallets",
+        "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/crates/adapters/hyperliquid/src/http/client.rs"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "CLOID, idempotency and unknown submit/cancel",
+      "source_version": "installed1.231 Python + taggedHTTPsource",
+      "finding": "TaggedHTTP exchange action signs and sends one roundtrip, no Info retry loop. Config retry settings are not consumed in1.231, so max_retries=0 is not a safety control.",
+      "our_actual_code_relevance": "Installed execution.py transport failure retains SUBMITTED for reconciliation. e171 persistent intent/command reservation+singleusecert happens before dispatch; unknownACK remains journaled.",
+      "status": "SOURCE_GUARDED_NATIVE_FAULT_ACCEPTANCE_PENDING",
+      "minimal_next_fix_or_acceptance_test": "Fault-inject response loss after accepted send/cancel: exactly one dispatch, no inferred rejection/flat/resend; reconcile exactclient/CLOID/OID/tradeIDs. Never trust CLOID alone as generic idempotency.",
+      "sources": [
+        "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/crates/adapters/hyperliquid/src/http/client.rs",
+        "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/docs/integrations/hyperliquid.md",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "Partials, out-of-order fills and modify chains",
+      "source_version": "issues#3972/#3986/#4270 + exactinstalled1.231",
+      "finding": "Closed upstream reports concern cancel-replace/fill races; closure alone is not installed binary proof.",
+      "our_actual_code_relevance": "Current managed lane denies modify/orderlists and only admits individually owned cancel or bounded opposite-side IOC reduceOnly; installed execution.py has tradeIDdedup and pendingfill queues. Normal research strategies still need real nativepartial/latefill qualification.",
+      "status": "MODIFY_RISK_SCOPED_OUT_MANAGEMENT_NATIVE_PARTIAL_PROOF_PENDING",
+      "minimal_next_fix_or_acceptance_test": "Native fixture: partialIOC then cancel/timeout, lateuniqueFill afterterminal, duplicateFill, out-of-order Accepted/Filled; exactcredit/rights once and no extraorder. If futuremodify enabled, add fullCLOID/newOID regression; do not broaden now.",
+      "sources": [
+        "https://github.com/nautechsystems/nautilus_trader/issues/3972",
+        "https://github.com/nautechsystems/nautilus_trader/issues/3986",
+        "https://github.com/nautechsystems/nautilus_trader/issues/4270",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint"
+      ],
+      "issue": {
+        "issues": [
+          {
+            "number": 3972,
+            "state": "CLOSED",
+            "opened": "2026-05-01"
+          },
+          {
+            "number": 3986,
+            "state": "CLOSED",
+            "opened": "2026-05-03"
+          },
+          {
+            "number": 4270,
+            "state": "CLOSED",
+            "opened": "2026-06-14"
+          }
+        ]
+      }
+    },
+    {
+      "topic": "Reconnect and report completeness",
+      "source_version": "HLInfo/WS + e171 strictwrapper",
+      "finding": "Venue histories are capped; userFillsByTime has2000/response and10000retention. Reconnect/resubscribe is not a complete audit trail.",
+      "our_actual_code_relevance": "hl_info_receipt recursively bisects saturated fill windows, rejects saturatedtimestamp/conflictingduplicate/foreignfill/lostanchor; exactappliedIDparity in hl_qualified_reports. WS epoch change revokes e171authority.",
+      "status": "FAIL_CLOSED_COVERAGE_GUARDS_NATIVE_RESTART_NOT_PROVEN",
+      "minimal_next_fix_or_acceptance_test": "Native disconnect with fills during gap plus same-timestamp saturation/missinganchor/missingposition: no authority until exactreports+actualcacheeffects match. Retention exhaustion remainsUNKNOWN/manualreconciliation; no invented fills. Do not import currentdevelop recovery guarantees into1.231.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions",
+        "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/docs/integrations/hyperliquid.md"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "Price, lot, min-notional and MARKET semantics",
+      "source_version": "HL current constraints + installed1.231 execution.py",
+      "finding": "Perp price max5 significantdigits plus6-szDecimals decimal cap (integerexception); size follows szDecimals. Venue has minimum-value rejections; IOC may partiallyfill.",
+      "our_actual_code_relevance": "Installed marketpath derives a capped executable limit from quote with default50bps buffer, then rounds. e171 factory keeps native normalize_prices default; Bybit syntheticmarket fills do not prove HLexecution.",
+      "status": "ACTUAL_INSTRUMENT_ACCEPTANCE_REQUIRED",
+      "minimal_next_fix_or_acceptance_test": "Later authorized read-only metadata pin BTC/SOL tick/lot/minnotional; boundary cases for integerprice, decimalcaps, dustclose and IOC partial. Assert actual rounded price/qty and reduction cannot flip position. No universal deposit guessed.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint",
+        "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/docs/integrations/hyperliquid.md"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "Fees, rebates and builder attribution",
+      "source_version": "HL fee schedule checked2026-10-29",
+      "finding": "Base perps0.045%taker/0.015%maker; effective tier/staking/referral may differ. Subaccount fees aggregate to master; vault fees separate.",
+      "our_actual_code_relevance": "ResearchBASEassumptions remain unchanged. e171 worker disables builderattribution and factory rejects enabled flag. Native feeToken/commission remain authority.",
+      "status": "BASE_COMPARISON_PRESERVED_LIVE_EFFECTIVE_FEES_UNVERIFIED",
+      "minimal_next_fix_or_acceptance_test": "Later read-only userFees/currentfee schedule plus native actualcommission sample; testzero/negativefee and builderfee inclusion once, no secondfee subtraction. Do not relabel IOCmaker.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "AccountValue freshness and UPnL",
+      "source_version": "open#5449 / tagged1.231 source / e171 moneyview",
+      "finding": "Issue reports cachedAccountState not following fills/funding; taggedsource supplies explicitquery_account. Issue is latestdevelop, not proof our1.231 behaves identically.",
+      "our_actual_code_relevance": "hl_live_money uses venueaccountValue as equity and validates nativebalance projection; it does not add nativeUPnL again. StrictInfo comparesnativepositions. A stale nativebalance mismatch denies increases, but e171 is not a complete currentaccountValue/H4C1 projection.",
+      "status": "P1_RELEASE_DEPENDENCY_FRESH_MONEY_BRIDGE_NOT_FULL_GO",
+      "minimal_next_fix_or_acceptance_test": "Phase2acceptance: actual fill+fee+funding with freshnativeAccountState and exactInfo generation/revision; accountValue usedonce; stale/mixedcash/mark denied. Moneyunknown must not prevent separatelyverifiedownedreduce. No fabricatedcash/fundingbridge.",
+      "sources": [
+        "https://github.com/nautechsystems/nautilus_trader/issues/5449",
+        "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/crates/adapters/hyperliquid/src/execution.rs",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margining"
+      ],
+      "issue": {
+        "number": 5449,
+        "state": "OPEN",
+        "opened": "2026-10-24",
+        "reported_version": "latestdevelop",
+        "not_a_confirmed_v1231_regression": true
+      }
+    },
+    {
+      "topic": "Cross/isolated/abstraction and leverage",
+      "source_version": "HL current margin docs + e171 selectedasset gates",
+      "finding": "Margin mode and account abstraction alter collateral scope; cross and isolated cannot be silently equated.",
+      "our_actual_code_relevance": "live_perps_money_view requires standarduser/dexempty/abstractiondisabled/crosssummary agreement and crosspositions; rejectsunsupportedisolated. Nativevenue leverage/risktiers are not guaranteed by researchBybittiers.",
+      "status": "RESTRICTED_STANDARD_CROSS_ONLY",
+      "minimal_next_fix_or_acceptance_test": "Pin real selected BTC/SOL leverage/tier/IM/MM and native maxincrease at authorizedrelease; testunrecognizedaccountmode/isolatedswitch denies increase while adequateownedreduce proof survives. Do not set leverage automatically.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margining",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "Funding cash, hourly timing and HWM",
+      "source_version": "HL funding docs + current source",
+      "finding": "HL funding is periodic signedcash, not an independent marked-equity addback.",
+      "our_actual_code_relevance": "Researchnativefunding exports actualaccountdeltas; live e171 explicitInfoaccountValue must already reflect venuefunding. HWM/checkpoint recovery and funding/closedH4clock are nextphase dependencies.",
+      "status": "LIVE_CAUSAL_CLOCK_AND_CASH_PROJECTION_PENDING",
+      "minimal_next_fix_or_acceptance_test": "Native fixture at funding+H4boundary with before/aftercash, sameclose source, correctsign and monotoneglobalH. No duplicatefunding/UPnL; verify closedH4/D1 availability before any restore.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint"
+      ],
+      "issue": null
+    },
+    {
+      "topic": "Rate budgets, timing and startup availability",
+      "source_version": "HLcurrentlimits + open#5354",
+      "finding": "HLREST1200weight/min/IP; addressactionlimit separate. Current wrapperreserves1000/min locally,400/generation; otherprocesses shareIP but not thatlocalbudget.",
+      "our_actual_code_relevance": "InfoWeightBudget accountsuserRole60 and fillitemweights; manyorders/historymay exhaustsafe400 and denyfreshness. NativeHTTP/WSlimits are distinct. #5354describesdevelop startupuniverse performance, not proven1.231failure.",
+      "status": "BOUNDED_RATE_GUARD_EXISTING_SHARED_IP_AND_STARTUP_TEST_PENDING",
+      "minimal_next_fix_or_acceptance_test": "Record boundedrequestweights for worstownedhistory; 429/timeout leavesUNKNOWN/noresend; verifyclockstale/future behavior. Separateenvironmentboot test withactualselectedinstrumentprovider only afterreleaseapproval; do not increasequota orreplaceSDK.",
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits",
+        "https://github.com/nautechsystems/nautilus_trader/issues/5354"
+      ],
+      "issue": {
+        "number": 5354,
+        "state": "OPEN",
+        "opened": "2026-10-17",
+        "reported_version": "develop5b88254a689a",
+        "relevance": "Availability/migration warning; no installed1.231correctness claim."
+      }
+    }
+  ],
+  "sources": {
+    "release": "https://github.com/nautechsystems/nautilus_trader/releases/tag/v1.231.0",
+    "pypi": "https://pypi.org/project/nautilus-trader/",
+    "pinned_docs": "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/docs/integrations/hyperliquid.md",
+    "current_docs": "https://github.com/nautechsystems/nautilus_trader/blob/develop/docs/integrations/hyperliquid.md",
+    "http_v1231": "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/crates/adapters/hyperliquid/src/http/client.rs",
+    "exec_v1231": "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/crates/adapters/hyperliquid/src/execution.rs",
+    "nonces": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/nonces-and-api-wallets",
+    "signing": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/signing",
+    "exchange": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint",
+    "info": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "ws": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions",
+    "precision": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size",
+    "rates": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits",
+    "fees": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees",
+    "margin": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margining",
+    "funding": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding",
+    "issue5449": "https://github.com/nautechsystems/nautilus_trader/issues/5449",
+    "issue4010": "https://github.com/nautechsystems/nautilus_trader/issues/4010",
+    "issue3972": "https://github.com/nautechsystems/nautilus_trader/issues/3972",
+    "issue4270": "https://github.com/nautechsystems/nautilus_trader/issues/4270",
+    "issue3986": "https://github.com/nautechsystems/nautilus_trader/issues/3986",
+    "issue5354": "https://github.com/nautechsystems/nautilus_trader/issues/5354"
+  },
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_live_execution.py": "aa41439999932f6a73f235d2265ff8791311525c891a703941c66048bcb4d66f",
+    "runtime/coinmaster/ops/hl_info_receipt.py": "f162a23ee1cd38d29a85b571338b6c3abb8bffbddbc2c8c6a3d5eb199dffe402",
+    "runtime/coinmaster/ops/hl_qualified_reports.py": "3c43378fd813107fbc9f12b40b929287fb955d8c77455895e7689003073fd59c",
+    "runtime/coinmaster/ops/hl_live_money.py": "9fd36143807ac7a87ca18f708ec60ae85d9b2b67acc671d1c04fd881f00ca032",
+    "runtime/coinmaster/ops/hl_live_worker.py": "666207407100a29adcc883f8efbda3a2d410b931de62d869a3464281589916a8",
+    "runtime/coinmaster/ops/live_recovery.py": "604c9056ebcc87c51b16d096c868e3da47a50b863ccb708e48b2f6882cdd9795"
+  },
+  "installed_research_adapter_source_pins": {
+    "execution.py": "64f94799a882f054b42b94f25cecc1ae9f16f578655c07dde72b79b5e7ea4c8b",
+    "config.py": "98ecb538b5e92015860d77a62604fefa566290d13f799d2d7446b6fee732fdff",
+    "factories.py": "d71755676ecfcf29940ba9041ac1a3c049a9edef8f3897a4173a566a5576b219"
+  },
+  "forum_scope": "OfficialGitHubissues+maintainercommentssearched/read. GitHubDiscussionssearchreturnedcachemiss/noindependentusefulresult; nosecondaryforumclaimadoptedwithoutprimaryproof.",
+  "plan_update": [
+    "Keepresearch/installed1.231pinned; do not stopworkingpilotnow.",
+    "Choosecandidatepassingunchangedfinancialgates, thenobtainownerapproval for exactrelease/pilottransition.",
+    "Thencontrolledstop,currentstablecheck; ifversionchangejustified, isolatedwheel/sourcepin andmigrationcompatibility first.",
+    "Freshbenchmark onactualchosenengine/source/config; boundednativefaultacceptance forrowsabove, then deepreleaseaudit/currentfees/instruments/accountscope/minlots andcoherentmoney/H4.",
+    "Freezeapprovedrelease/accountalias/budgetandexplicitfinalSTARTbeforeanymainnetorder."
+  ],
+  "actions": {
+    "product_edits": 0,
+    "tests": 0,
+    "native_objects_or_engines": 0,
+    "account_requests": 0,
+    "keys_read": 0,
+    "install_upgrade": 0,
+    "service_changes": 0,
+    "orders": 0
+  },
+  "limitations": [
+    "Documentationobservationsaretime-scopedandnotsameasinstalledbinaryAPIproof. Tagged1.231sourceandinstalledPythonreadbacksupportonlyexplicitclaimsabove.",
+    "No currentwalletpermission/fees/leverage/balance/accountinspectionperformed; genericagentsemanticsarenotproofthiskeyhasrightscope.",
+    "Nativefailure/WS/signing testslistedarefutureminimumacceptance,notexecuted.",
+    "No newSDK/fork/riskservice/protocolengine or automaticrestartcapability proposed."
+  ],
+  "summary_ru": [
+    "Последняя проверенная stable-версия Nautilus — 1.231.0 от 2 августа 2026. Она уже установлена в research и работающем пилоте. 2.0.0rc7 от 15 октября — prerelease; переход на него не является необходимым stable-обновлением.",
+    "Пилот 81e6318 работает в native Sandbox, live order capability FALSE. Проверенный e171 — отдельный компонент подготовки. Выбранного финансово проходящего релиза пока нет.",
+    "Главные оставшиеся зависимости: свежая согласованная native account/Info проекция и закрытые H4/D1; проверка неизвестного результата отправки, partial/late fill и reconnect на реальном native пути. Текущие source/pure проверки этих свойств полностью не доказывают.",
+    "Порядок сохранён: выбрать проходящий вариант → получить одобрение владельца → остановить старый пилот → повторно проверить stable и обновлять только при обоснованной необходимости → свежий benchmark и глубокий аудит точного релиза → отдельный START. Сейчас ничего не останавливалось и не обновлялось."
+  ]
+}

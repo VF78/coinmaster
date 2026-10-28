@@ -1,0 +1,33 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "scope": "FROZEN_STRESS_PATCH_ONLY",
+  "verdict": "PASS_SOURCE_ONLY",
+  "open_P0": 0,
+  "open_P1": 0,
+  "findings": [],
+  "base_commit": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+  "patch_sha256": "ad72c92abd2e6d3321b6375c739343aa2de6724159b737748fad71922b79b2cb",
+  "preparation_sha256": "bf0d8f1935a3a9e5f9f828218f71a029bc897e6a125529399caf72621f4f088f",
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "0b2af2808c5586cb42ae3e26cb174cac7549cde0090cedb9b95c33edacf0a2b5",
+    "runtime/tests/test_native_qualification_stress_wiring.py": "c3dd399312ad7ebc32eb14358366db67e048445b2a98dde3c10938f629073a1a"
+  },
+  "checks": [
+    "Frozen patch reconstructed in memory against exact base; both resultant source hashes match preparation. Six unchanged base anchors match. Active G source not reviewed.",
+    "DefaultOFF at CLI, repair CLI and native runner; OFF helper returns empty kwargs and creates no FillModel, leaves full_config unchanged.",
+    "ON uses stock public FillModel(prob_fill_on_limit=1.0,prob_slippage=1.0,random_seed=0), conditional venue kwargs, explicit configuration metadata and unchanged native fee model.",
+    "Metadata honestly says all L1 fills include maker/limit, may slip past limit, qualification-only, no historical liquidity claim; native latency and liquidity_consumptionFalse defaults unchanged.",
+    "Existing installed stock API/model hashes already independently verified in qualification planning; no new model/quote/depth/strategy/accounting changes.",
+    "Engine-free AST/fake-factory test source and existing 4PASS0.20s output inspected."
+  ],
+  "reviewer_tests": 0,
+  "reviewer_native_constructors": 0,
+  "reviewer_product_edits": 0,
+  "qualification_attempts": 0,
+  "historical_go_granted": false,
+  "limitations": [
+    "Candidate not selected; benchmark profit floor still unmet. Source PASS is not financial qualification GO.",
+    "Run criteria must be frozen before the one separately counted qualification attempt; no automatic run or retry.",
+    "No G source review or live START/order authorization in this receipt."
+  ]
+}

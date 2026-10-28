@@ -1,0 +1,186 @@
+{
+  "status": "YES_REACHABLE_EARLIER_FRESH_CONFIRMATION_EVALUATION;EXACT_EARLY_NATIVE_SUBMISSION_ACK_NOT_OBSERVED",
+  "code0_native0": true,
+  "source_finding": "_c1_closed_bar requires current money at the bar boundary and retains no bar when money is None. Later _c1_quote receives fresh money but returns when confirmation is None; it never reevaluates that completed H4. An already stored confirmation is NOT discarded merely because a quote has stale money: current_money None returns without clearing it.",
+  "actual_cause": "A funding AccountState at the H4 timestamp invalidates the older checkpoint whose source is H4 minus one minute. The native coherent trace contains real post-funding cash at the closed boundary; the first next receipt commits it with source equal to the H4 boundary. No observed DD40, price, reclaim or numerical margin gate blocks fresh reevaluation in these two windows.",
+  "windows": {
+    "OCT": {
+      "status": "YES_CLOSED_MARKET_BAR_LOST_BY_STALE_MONEY_AT_BAR_CALLBACK",
+      "H4_close_ns": 1728028800000000000,
+      "H4_close_execution": "139.47",
+      "first_fresh_receipt": {
+        "source_quote_ns": "1728028800000000000",
+        "receipt_ns": "1728028860000000000",
+        "fill_epoch": "18",
+        "cash": "10118.89982842",
+        "paired_close_equity": "9319.31882842",
+        "receipt_UTC": "2024-10-04T08:01:00+00:00",
+        "H": "14743.45772484",
+        "DD": "0.3679014107580292346733937325",
+        "execution_quote_close": "139.45"
+      },
+      "second_fresh_receipt": {
+        "source_quote_ns": "1728028860000000000",
+        "receipt_ns": "1728028920000000000",
+        "fill_epoch": "18",
+        "cash": "10118.89982842",
+        "paired_close_equity": "9315.50482842",
+        "receipt_UTC": "2024-10-04T08:02:00+00:00",
+        "H": "14743.45772484",
+        "DD": "0.3681601017700822699163138926",
+        "execution_quote_close": "139.36"
+      },
+      "first_fresh_quote_price_reclaim": true,
+      "second_fresh_quote_price_reclaim": true,
+      "both_fresh_DD40_pass": true,
+      "unchanged_native_fill_epoch": true,
+      "live_actual_restore_credit": "500",
+      "no_actual_revocation_before_first_fresh": true,
+      "first_fresh_native_active_orders": [
+        {
+          "client_order_id": "O-20241003-090600-001-000-22",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "BUY",
+          "type": "LIMIT",
+          "price": "57429.9",
+          "is_reduce_only": "True",
+          "ts_init": "1727946360000000000",
+          "ts_last": "1728043260000000000",
+          "status": "CANCELED",
+          "quantity": "0.940",
+          "native_order_events": {
+            "accept_ns": "1727946360000000000",
+            "action": "BTC_REDUCE",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "level": "2",
+            "order_type": "2",
+            "post_only": "true",
+            "reason": "BTC_TP3",
+            "submit_ns": "1727946360000000000",
+            "venue": "P1SIM"
+          }
+        }
+      ],
+      "cancel_boundary": "One harmless accepted BTC reduce-only TP remains. An earlier decision must cancel it and await the actual terminal ACK. Actual R never requested cancellation at this earlier time, so its ACK is not present and must not be invented.",
+      "source_bound_increase_guard_before_reserved_credit": {
+        "required_IM_plus_MM": "9384.663435040",
+        "actual_native_free": "10118.89982842",
+        "margin_pass_without_any_reserved_credit": true,
+        "prospective_gross": "197171.42880",
+        "actual_native_equity_current": "9315.50482842",
+        "gross50_pass": true,
+        "parts": [
+          {
+            "symbol": "BTCUSDT",
+            "prospective_abs_quantity": "0.940",
+            "raw_current_mark": "61401.52",
+            "tier_cap": "300000",
+            "IM": "1442.93572000",
+            "MM": "190.467515040"
+          },
+          {
+            "symbol": "SOLUSDT",
+            "prospective_abs_quantity": "1000.0",
+            "raw_current_mark": "139.454",
+            "tier_cap": "250000",
+            "IM": "6972.700000",
+            "MM": "778.56020000"
+          }
+        ]
+      },
+      "reachable_earlier_step": "The first fresh quote can validate the completed market H4 and initiate the required TP cancellation under unchanged DD, price, freshness, credit and rights gates. Financial submission still requires actual cancellation terminal and another fresh quote.",
+      "actual_early_native_fill": "NOT_OBSERVED",
+      "unobserved_field_for_unconditional_exact_next_quote_submit": "Native cancellation terminal ACK at the proposed earlier cancel time; this command was not issued in actual R."
+    },
+    "NOV": {
+      "status": "YES_CLOSED_MARKET_BAR_LOST_BY_STALE_MONEY_AT_BAR_CALLBACK",
+      "H4_close_ns": 1764259200000000000,
+      "H4_close_execution": "90908",
+      "first_fresh_receipt": {
+        "source_quote_ns": "1764259200000000000",
+        "receipt_ns": "1764259260000000000",
+        "fill_epoch": "380",
+        "cash": "1466301.21832625",
+        "paired_close_equity": "1188270.98495159",
+        "receipt_UTC": "2025-11-27T16:01:00+00:00",
+        "H": "1946164.51379807",
+        "DD": "0.3894293228928525531484198648",
+        "execution_quote_close": "90866"
+      },
+      "second_fresh_receipt": {
+        "source_quote_ns": "1764259260000000000",
+        "receipt_ns": "1764259320000000000",
+        "fill_epoch": "380",
+        "cash": "1466301.21832625",
+        "paired_close_equity": "1191613.89095159",
+        "receipt_UTC": "2025-11-27T16:02:00+00:00",
+        "H": "1946164.51379807",
+        "DD": "0.3877116335730138640105728953",
+        "execution_quote_close": "90882.7"
+      },
+      "first_fresh_quote_price_reclaim": true,
+      "second_fresh_quote_price_reclaim": true,
+      "both_fresh_DD40_pass": true,
+      "unchanged_native_fill_epoch": true,
+      "live_actual_restore_credit": "79.592",
+      "no_actual_revocation_before_first_fresh": true,
+      "first_fresh_native_active_orders": [
+        {
+          "client_order_id": "O-20251127-022500-001-000-428",
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "BUY",
+          "type": "LIMIT",
+          "price": "84539.2",
+          "is_reduce_only": "True",
+          "ts_init": "1764210300000000000",
+          "ts_last": "1764388860000000000",
+          "status": "CANCELED",
+          "quantity": "45.767",
+          "native_order_events": {
+            "accept_ns": "1764210300000000000",
+            "action": "BTC_REDUCE",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "level": "2",
+            "order_type": "2",
+            "post_only": "true",
+            "reason": "BTC_TP3",
+            "submit_ns": "1764210300000000000",
+            "venue": "P1SIM"
+          }
+        }
+      ],
+      "cancel_boundary": "One harmless accepted BTC reduce-only TP remains. An earlier decision must cancel it and await the actual terminal ACK. Actual R never requested cancellation at this earlier time, so its ACK is not present and must not be invented.",
+      "source_bound_increase_guard_before_reserved_credit": {
+        "required_IM_plus_MM": "564606.8877660",
+        "actual_native_free": "1466301.21832625",
+        "margin_pass_without_any_reserved_credit": true,
+        "prospective_gross": "14464504.210",
+        "actual_native_equity_current": "1191613.89095159",
+        "gross50_pass": true,
+        "parts": [
+          {
+            "symbol": "BTCUSDT",
+            "prospective_abs_quantity": "159.185",
+            "raw_current_mark": "90866",
+            "tier_cap": "20000000",
+            "IM": "413684.8204060",
+            "MM": "150922.067360"
+          }
+        ]
+      },
+      "reachable_earlier_step": "The first fresh quote can validate the completed market H4 and initiate the required TP cancellation under unchanged DD, price, freshness, credit and rights gates. Financial submission still requires actual cancellation terminal and another fresh quote.",
+      "actual_early_native_fill": "NOT_OBSERVED",
+      "unobserved_field_for_unconditional_exact_next_quote_submit": "Native cancellation terminal ACK at the proposed earlier cancel time; this command was not issued in actual R."
+    }
+  },
+  "strict_preservation_requirement": "Retain only completed market bar identity/close and the actual cut terminal basis. Never reuse cached cash as fresh. On the first fully fresh matching receipt/quote, recheck DD40, cut VWAP reclaim, state/group/credit, fill epoch/account source freshness, ordinary priority/native owner, original rights and native increase gates. Await a real cancel ACK before submission. Expire on invalidating fill, ordinary revocation, group change or terminal event. No new TP rights, larger threshold or extra attempt.",
+  "qualification_limit": "Finite evidence proves event-scheduling loss and an earlier state-machine decision. It does not prove an observed new fill or economic result. Exact next-quote RESTORE submission remains UNKNOWN because the earlier TP cancellation was never requested and its ACK does not exist in actual output. No native/full GO or product edit is issued.",
+  "counterfactual_TOTAL": null,
+  "new_engine_calls": 0,
+  "new_tests": 0,
+  "source_and_evidence_hashes": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-c1-fast-pilot-20261028/evidence/restore-confirmation-window-evidence.json": "5f00627ae4d5fa214cfad35120eb85141f983d4b51a1be85d96681fe725b1edb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-c1-fast-pilot-20261028/evidence/restore-confirmation-risk-owner-evidence.json": "b248126fb66410e0734268fecffac81a9f4241263417378b19eaba95aa622431",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/strategy/residual_recovery.py": "06aa1886bc75790fb22c5a3f666f4fa36f93760bb0e2a5fcb53782caa71ff370"
+  }
+}

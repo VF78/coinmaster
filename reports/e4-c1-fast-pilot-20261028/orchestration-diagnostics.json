@@ -1,0 +1,21 @@
+{
+  "scope": "ENGINE_FREE_ORCHESTRATION_ONLY",
+  "historical_attempts_added": 0,
+  "observations": [
+    {
+      "case": "R_FIRST_PREFLIGHT_PARENT_ASSERTION",
+      "actual_exit": 1,
+      "cause": "Runner expected C1ancestor as archive immediatebase; actual reviewed immediate parent bf081fe6.",
+      "correction": "Require exact bf081fe6 plus pinned prep chain, retain frozen source/config/input bytes.",
+      "accepted_preflight_sha256": "b0d69638f4c0c7eb3010c11c561fbc83c04c393b6836c6ac1681dc6e352a4399"
+    },
+    {
+      "case": "PUBLIC_ACCOUNT_DISCLOSURE_REJECTION",
+      "outcome": "No rejected command executed. Safer Project/repo publication excludes live account identity/capital/balances/readbacks; private condition retained locally. No bypass."
+    },
+    {
+      "case": "MAC_GITHUB_TRANSIENT_NETWORK",
+      "outcome": "Ordinaryhooks push first reset, boundedretry succeeded, exactremote verified483141ff45ced04cc1343db1f723421090755733."
+    }
+  ]
+}

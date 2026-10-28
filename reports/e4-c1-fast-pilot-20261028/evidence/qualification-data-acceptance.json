@@ -659,5 +659,11 @@
     "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/research/bybit_minute.py": "db23b1dc96bec935a26e42a7225781ddbb90ab8d795d9f6055dae28b79a3d376",
     "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/research/native_baseline.py": "19437a6261142e1dece8c5fe030d20070f6868022e07e40dbc044bfbd19f099b"
   },
-  "first_failed_log_sha256": "10e8212d103433f588154226590e18bac11a08c4a9e679224e46d1a76aa14281"
+  "first_failed_log_sha256": "10e8212d103433f588154226590e18bac11a08c4a9e679224e46d1a76aa14281",
+  "final_collection_receipt_file_hashes": {
+    "checked_count": 377,
+    "mismatches": [],
+    "status": "PASS"
+  },
+  "collector_source_hashes_match_plan": true
 }

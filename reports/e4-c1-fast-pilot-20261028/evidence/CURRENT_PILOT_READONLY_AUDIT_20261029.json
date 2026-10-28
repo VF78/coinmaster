@@ -1,0 +1,260 @@
+{
+  "schema": "coinmaster-current-pilot-readonly-audit-v1",
+  "captured_UTC": "2026-10-28T21:13:16.441800+00:00",
+  "status": "PARTIAL_AUDIT_COMPLETE_RETAINED_HISTORY_LIMITS_EXPLICIT",
+  "scope": "Installed native Sandbox only. No live-account claim. Source/config metadata, read-only consistent private SQLite backup, retained unit journals. No service/order/credential/runtime change, engine, test or external venue request.",
+  "identity": {
+    "worker": {
+      "unit": "coinmaster-hl-stageg-testnet.service",
+      "PID": 2009732,
+      "start_UTC": "2026-09-28T07:39:45+00:00",
+      "NRestarts": 0,
+      "active": "running",
+      "cwd": "/srv/coinmaster/runtime",
+      "module": "coinmaster.ops.hyperliquid_testnet_worker",
+      "source_commit": "81e6318646b51280497806a1c0492591654b5fe6",
+      "mode": "sandbox",
+      "public_data_environment": "mainnet-public",
+      "venue": "HYPERLIQUID",
+      "nautilus_version": "1.231.0",
+      "release_manifest_sha256": "31a7ee68d1a92ab26158f0c587ba8d4ee7224446e738cd1a087f47f8988b2e33",
+      "manifest_source_dirty": false,
+      "declared_runtime_source_files": 55,
+      "verified_source_files": 55,
+      "source_hash_mismatches": 0,
+      "candidate_sha256": "637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d",
+      "strategy_sha256": "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511",
+      "execution_policy_sha256": "eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687",
+      "config_path": "/srv/coinmaster/runtime/configs/stage-g-v1.json",
+      "config_sha256": "1efda54b793eb39d9085e88c5c7dec02a9f5d226d156fe7e3d7511f6e08ae362",
+      "warmup_manifest_path": "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json",
+      "warmup_manifest_sha256": "36b2bb1854fbb92c9b237d995166e41251fc73b3ada8c3e943dacbc32198abbf",
+      "algorithm_comparison": "Audit is against this sealed installed Stage-G candidate, not E4/C1 research candidates."
+    },
+    "GUI": {
+      "unit": "coinmaster-runtime.service",
+      "PID": 2515189,
+      "start_UTC": "2026-10-24T06:30:16+00:00",
+      "NRestarts": 0,
+      "active": "running",
+      "cwd": "/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8/runtime",
+      "current_symlink": "/srv/coinmaster-native-gui/current",
+      "release": "be2f71daac848a20b183ee0167194e5cfa65a5b8",
+      "module": "coinmaster.api.runtime_sidecar:app",
+      "nautilus_version": "1.231.0"
+    }
+  },
+  "privacy": {
+    "raw_journals_and_snapshots": "VPS only, directory0700/files0600; not copied into reports",
+    "published_account_identifiers_or_financial_values": false,
+    "environment_or_keys_printed": false
+  },
+  "persistence": {
+    "pilot_database": "/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite",
+    "source_mode": "read-only SQLite connection; backup API into separate private file; no checkpoint/VACUUM/lock changes",
+    "private_snapshot": "/var/tmp/coinmaster-current-pilot-audit-20261029/pilot-consistent.sqlite",
+    "snapshot_sha256": "c4234d6cc5a6e2d6932d3dd6d7f959634eb63a6a0caa977c4a6eea0b1ea50213",
+    "snapshot_bytes": 1392640,
+    "tables": {
+      "paper_command_audit": 0,
+      "paper_commands": 0,
+      "paper_deposit_audit": 31,
+      "paper_deposit_protection": 1,
+      "paper_events": 248,
+      "paper_funding_ledger": 0,
+      "paper_intents": 45,
+      "paper_lock": 1,
+      "paper_native_equity_observations": 8758,
+      "paper_native_fill_details": 39,
+      "paper_native_funding": 0,
+      "paper_native_revision": 1,
+      "paper_recovered_fills": 0,
+      "paper_snapshot": 1,
+      "paper_strategy_checkpoint": 0
+    },
+    "GUI_databases": [
+      "/var/lib/coinmaster-native-gui/control.sqlite",
+      "/var/lib/coinmaster-native-gui/legacy-control.sqlite",
+      "/var/lib/coinmaster-native-gui/auth.sqlite"
+    ]
+  },
+  "coverage": {
+    "equity_observations": {
+      "first_UTC": "2026-09-28T07:39:52.797978+00:00",
+      "last_UTC": "2026-10-28T21:03:13.717197+00:00",
+      "rows": 8758,
+      "run_epochs": 1,
+      "sample_interval_seconds": 300,
+      "retention_days": 31,
+      "baseline_tolerance_seconds": 600,
+      "gaps_over_600_seconds": 3,
+      "largest_gap_seconds": 1376.547695808,
+      "largest_gap_UTC": [
+        "2026-10-15T12:05:29.051849+00:00",
+        "2026-10-15T12:28:25.599545+00:00"
+      ],
+      "meaning": "Sparse observation gaps do not prove public feed gaps or native execution failure."
+    },
+    "fills": {
+      "first_UTC": "2026-09-29T00:00:15.554376+00:00",
+      "last_UTC": "2026-10-23T00:00:27.786022+00:00",
+      "rows": 39
+    },
+    "worker_journal": {
+      "first_UTC": "2026-10-26T06:09:40.136874+00:00",
+      "last_UTC": "2026-10-28T21:07:04.181228+00:00",
+      "records": 45590,
+      "private_archive_sha256": "67cd86610fcadfd0ee7aaed85ad4ab7de731e839b56b2d4f0b234596b3c0ed97"
+    },
+    "GUI_journal": {
+      "first_UTC": "2026-10-26T06:10:23.618395+00:00",
+      "last_UTC": "2026-10-28T21:06:24.759672+00:00",
+      "records": 7525,
+      "private_archive_sha256": "7b117e676f8f2c0fa495d58dbd6a710bab89f6ff49fe4343d63af5c02fe83e15"
+    },
+    "whole_history_ack_cancel_reject_reconnect_feedgap_status": "UNKNOWN before retained Oct26 journals; event-ID-only schema cannot reconstruct discarded transitions."
+  },
+  "native_execution_checks": {
+    "event_counts": {
+      "fill": 39,
+      "order": 170,
+      "position": 39
+    },
+    "intents": {
+      "total": 45,
+      "TERMINAL": 44,
+      "ACKED": 1,
+      "actions": {
+        "BTC_ENTRY": 9,
+        "BTC_REDUCE": 27,
+        "FORCED_CLOSE": 9
+      },
+      "terminal_full_fills": 35,
+      "terminal_no_fill": 5,
+      "terminal_partial_fill": 4,
+      "ACKED_no_fill": 1,
+      "quantity_over_request": 0,
+      "duplicate_intent_ids": 0
+    },
+    "fill_checks": {
+      "duplicate_trade_ids": 0,
+      "duplicate_native_event_ids": 0,
+      "without_intent": 0,
+      "complete_commission_currency_quantity_time_client_fields": 39,
+      "maker": 21,
+      "taker": 18,
+      "negative_event_to_init_latency": 0,
+      "multifill_clients": 0
+    },
+    "latest_snapshot": {
+      "positions_count": 1,
+      "orders_count": 1,
+      "reconciled": true,
+      "strategy_restartable": false,
+      "pending_matches_owned_native_order": true,
+      "open_order_status": "ACCEPTED",
+      "all_open_orders_reduce_only": true,
+      "funding_event_ids_count": 0
+    },
+    "partial_cancel_reject_classification": "UNKNOWN for historical terminal/no-fill and terminal/partial cases: latest-state-only intents omit terminal reason and timestamp. No unfilled intent relabeled rejected."
+  },
+  "retained_feed_and_gate_checks": {
+    "parsed_status_records": 45066,
+    "all_public_feed_states_READY": true,
+    "all_node_running_and_native_thread_alive": true,
+    "all_live_order_capability_FALSE": true,
+    "recovery_required_FALSE_records": 45066,
+    "recovery_state_ACTIVE_OWNED_REDUCTIONS_records": 45066,
+    "warmup_READY_and_safe_for_increase_TRUE_records": 44878,
+    "warmup_missing_and_orders_disabled_and_increase_blocked_records": 188,
+    "warmup_missing_windows": [
+      {
+        "first_UTC": "2026-10-27T00:00:08.644855+00:00",
+        "last_UTC": "2026-10-27T00:00:38.699182+00:00",
+        "status_records": 7
+      },
+      {
+        "first_UTC": "2026-10-28T00:00:10.732563+00:00",
+        "last_UTC": "2026-10-28T00:15:16.189424+00:00",
+        "status_records": 181
+      }
+    ],
+    "backfill_error_nonempty": 0,
+    "reconnect_or_subminute_feed_continuity": "UNKNOWN: status sampling only; retained status readiness does not prove no transient disconnect.",
+    "exceptions": {
+      "BrokenPipeError": 11,
+      "confirmed_source_frame": "hyperliquid_testnet_worker.py342 do_GET -> socketserver.py840 write",
+      "scope": "HTTP client disconnect while writing status response; no retained strategy traceback class found."
+    }
+  },
+  "accounting": {
+    "native_funding_rows": 0,
+    "modelled_funding_rows": 0,
+    "actual_installed_funding_state": "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
+    "source_contract": "hyperliquid_testnet.py138; stage_g_warmup.py390 explicitly UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE",
+    "fees_native_fills": "39 fills retain native commission fields and liquidity class; no public fee amounts or account financial values disclosed",
+    "full_native_cash_chain_and_closed_lifecycle_PnL": "UNKNOWN: no complete persisted native AccountState pre/post mutation chain or full closed Position lifecycle exports in this ledger; no reconstruction from fill prices used",
+    "full_economic_reconciliation_PASS": false
+  },
+  "GUI_deployment": {
+    "independent_process_release_and_DB": true,
+    "source_script": "/srv/coinmaster-native-gui/current/runtime/scripts/native_gui_host.sh",
+    "promotion_lines": "310-319",
+    "targets": "Stops/starts coinmaster-runtime.service, switches GUI current release; refreshes coinmaster-connections.service broker; asserts preserved trader/paper PIDs. Does not stop/restart trader.",
+    "coupling": "GUI/API proxy relies on worker status and native fill history contract; matching worker strategy fingerprint and API smoke checks required. Independent deployment does not mean arbitrary API compatibility.",
+    "audit_executed_deploy": false
+  },
+  "GUI_auth": {
+    "source": "/srv/coinmaster-native-gui/current/runtime/coinmaster/api/gui_auth.py",
+    "idle_seconds": 1800,
+    "absolute_seconds": 43200,
+    "absolute_basis": "created_at; touched_at does not renew absolute limit",
+    "session_database_persistent": true,
+    "credential_fingerprint": "derived from configured password hash; mismatch invalidates session; no random regenerated signing-secret dependency in this source",
+    "cookie": "Secure HttpOnly SameSiteStrict path/; no Max-Age/Expires, browser-session cookie",
+    "refresh_endpoint_or_rotating_refresh_token": "NONE in inspected authentication source",
+    "metadata_at_snapshot": {
+      "sessions": 76,
+      "revoked": 3,
+      "absolute_expired": 73,
+      "idle_expired": 75,
+      "unrevoked_within_both_TTL": 1
+    },
+    "daily_logout_cause": "CONFIRMED source-enforced absolute12h (plus30min idle and browser-session cookie); exact individual historical logout attribution UNKNOWN without browser/session correlation.",
+    "password_change": "NOT_PERFORMED; no secret read/exposure/new password in prompts"
+  },
+  "findings": [
+    {
+      "id": "PILOT-AUDIT-COVERAGE",
+      "severity": "P1_VERIFICATION_GAP",
+      "confirmed": "Whole-run safety/accounting/strategy parity cannot receive PASS from retained metadata. Worker startsSep28; rich journal startsOct26; schema keeps order event IDs and latest intent state, not full transition payloads.",
+      "minimal_fix_design": "Future append-only sanitized lifecycle/decision/feed/account transition receipts with retention covering intended audit horizon; preserve native authority, no reconstructed economic engine. No retrofit claim for missing history."
+    },
+    {
+      "id": "PILOT-FUNDING-UNPOSTED",
+      "severity": "P1_ECONOMIC_QUALIFICATION_LIMIT",
+      "confirmed": "Installed Sandbox explicitly leaves funding unposted; zero funding rows match its declared contract.",
+      "minimal_fix_design": "Qualified native settlement oracle and one-post receipt identity required before funded economic/live equivalence claim; do not substitute next-payment forecasts or zero funding."
+    },
+    {
+      "id": "GUI-SESSION-EXPIRY",
+      "severity": "P2_USER_EXPERIENCE",
+      "confirmed": "Absolute12h and idle30min expiry are installed behavior, explaining repeated sign-in. Cookie is browser-session-only.",
+      "minimal_fix_design": "Separate bounded authentication policy change: explicit persistent cookie and revised idle/absolute/refresh contract, preserve durable session revocation, credential fingerprint, CSRF and secure cookie properties. No change during audit."
+    },
+    {
+      "id": "WARMUP-DAILY-LAG",
+      "severity": "P2_AVAILABILITY_OBSERVATION",
+      "confirmed": "188 retained snapshots lack latest completed session, with increases blocked; longest observed window approximately15min atOct28 UTC boundary.",
+      "hypothesis": "Daily warmup publication/refresh lag. No backfill error in retained snapshots; whether a valid decision was delayed or lost is UNKNOWN without complete decision receipt history.",
+      "minimal_fix_design": "First diagnose prepared-data publication and consumer timing against existing daily readiness contract; no threshold/strategy change from this observation."
+    },
+    {
+      "id": "HTTP-BROKEN-PIPE",
+      "severity": "P3_OBSERVABILITY",
+      "confirmed": "11 BrokenPipeError stack traces all follow HTTP status do_GET worker342 -> socketserver.write840. Client response disconnect, not observed native strategy exception.",
+      "minimal_fix_design": "Catch client disconnect errors only at status response write boundary; retain actual native/strategy failure logging. No deployed fix."
+    }
+  ],
+  "dead_code": "UNKNOWN: no removal conclusion from bounded source inspection; research files present in installed tree are not evidence of active strategy routing."
+}

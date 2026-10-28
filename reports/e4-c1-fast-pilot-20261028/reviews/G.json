@@ -1,0 +1,40 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "candidate": "G_STANDALONE",
+  "verdict": "PASS_SOURCE_ONLY",
+  "open_P0": 0,
+  "open_P1": 0,
+  "findings": [],
+  "base_commit": "5b68e7928398fe215a29b63f03f6fbbbc5b44eaa",
+  "patch_sha256": "72b6c97b95085b0d70a7a97e0cfd74537ff24d0a1ca744872b2c2faf36b27ce5",
+  "preparation_sha256": "682b6732560f541eb184d4186f0b8a58c9b2b5f50984e9371f27d1ff39dc9f1c",
+  "tracked_diff_sha256": "18ad62d00511eaaa04f6a2dba8fb4bcb4960089f61eedac14709d74742039a6f",
+  "G_config_sha256": "df1c48cd536970122e4335de07840226008e8cb11dceeff7cb71d68494d8ca78",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "2f0a38c2827b986f69506390dc5e06d9c8dc6606e93be314c8e0a09e8b2a7785",
+    "runtime/coinmaster/strategy/wave_overlay.py": "7f60fa0b288e7e932549600b7d13bae5e632345142bccaa1d513adfcf33d62c4",
+    "runtime/coinmaster/research/native_baseline.py": "611206d4a0a4211a95495cd55fd152844299b892eee24cc42b4e1d3a74a707bc",
+    "runtime/tests/test_c1_global_arm_pure.py": "2597e31a9765cc01b8110bf0b6fee429b731bd655623688682d3b8a285956304"
+  },
+  "checks": [
+    "DefaultOFF CLI/repairCLI/runner/config; enabled standalone guard denies BTCdivisor4 or restoreDD40 and requires C1 in runner.",
+    "Positive native-lot economic claim consumes armed latch before constructing cut state or dispatch; zero-lot proposal does not consume. All existing claim/conflict/native-half gates remain.",
+    "Only fresh _c1_current_money with global-HWM DD<=35 can rearm; C1 own pending and any native inflight block. After a blocked recovery source, strictly later coherent source required; ACK/remembered receipt alone cannot rearm. Healthy accepted ordinary limits intentionally remain eligible.",
+    "Cut zero/partial/full result, restore terminal, revoke, group reset/month do not directly rearm or reset account latch. Existing per-parent spent state survives account rearm.",
+    "Cut halves both assets, restore35/H4/actual-credit/buckets/rights/mandatory ownership/native margin/HWM unchanged; accounting and observer unchanged; stress remains defaultOFF.",
+    "All four source/test hashes and nine unchanged accounting/economic/stress pins verified. G JSON equals exact C1 after removing sole global_cut_arm rule; C1/Q/R raw hashes unchanged.",
+    "Existing actual-method AST pure fixtures cover consume/gates/new-parent denial/defaultOFF/rearm freshness+unresolved blocking. 18PASS0.40s then16PASS0.30s receipts inspected; reviewer did not execute."
+  ],
+  "reviewer_tests": 0,
+  "reviewer_engine_or_model_constructors": 0,
+  "reviewer_product_edits": 0,
+  "repair_requests": 0,
+  "G_historical_attempts": 0,
+  "historical_go_granted": false,
+  "limitations": [
+    "Old-path saved witness indicates first decision delta only; no inferred futureTOTAL/DD or additive gain.",
+    "Root must freeze/claim and grant exact historical GO before last candidate attempt; no automatic execution.",
+    "If G selected later, live checkpoint must persist account armed latch and blocked-source watermark before any live qualification; separate live branch remains unqualified.",
+    "Research-only source PASS does not authorize orders/deployment or finalSTART."
+  ]
+}

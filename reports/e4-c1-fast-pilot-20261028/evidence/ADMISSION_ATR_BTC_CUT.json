@@ -1,0 +1,282 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "scope": "ONE_OFFLINE_ADMISSION_MECHANISM_ATR_BTC_CUT",
+  "status": "SUPPORTED_MIX_SOURCE_ONLY_NO_NATIVE_GO",
+  "product_code_changes": 0,
+  "native_engine_or_model_constructors": 0,
+  "historical_attempts": 0,
+  "parameters_searched": 0,
+  "rule": {
+    "L": "0.5180315157406654834417870238",
+    "C": "E-(1-L)*H equivalently (L-DD)*H",
+    "U_BTC": "abs(actualheldBTCqty)*last_completed_D1_WilderATR14_BTC",
+    "U_SOL": "abs(actualheldSOLqty)*last_completed_D1_WilderATR14_SOL",
+    "choice": "25% BTC cut iff .75*U_BTC+U_SOL<=C; otherwise50%",
+    "SOL_cut": "existing C1 half unchanged",
+    "restore": "R40 retained",
+    "other_economics": "BTCentries/E4/EMAs/relative sizing/SOL/TP/ordinary C1 trigger-selection-claim-credit/HWM unchanged"
+  },
+  "input_pins": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/R/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.json": "8a16b9451043845dd2a6de66510b737cb983d2983ba0ffb4876b001f9c7e6405",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/COMBO/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.json": "be0b29de8ad32ee37452406afef7f78319f6eb47412af5dd95bb9a339fdd2a14",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/research/native_baseline.py": "19437a6261142e1dece8c5fe030d20070f6868022e07e40dbc044bfbd19f099b"
+  },
+  "ATR_contract": {
+    "TR": "max(high-low,abs(high-prevclose),abs(low-prevclose))",
+    "seed": "first14 TR arithmeticmean; first available previousclose from pinned2022-09-02 D1",
+    "recursion": "(13*ATR+TR)/14 over accepted full closed D1 chain; no rolling reseed",
+    "arithmetic": "Source-compatible float D1 TR/Wilder computation, converted via Decimal(str(floatATR)) for cash comparison; not a new economic simulator",
+    "BTC_source": "frozen hedge_band.py72-105",
+    "SOL_status": "Same Wilder14 formula reconstructed offline from pinned SOL D1 OHLC; no preexisting qualified native SOLATR export claimed",
+    "ready_at": "D1open+86400sec; native historical runner ts_init equals closedD1 timestamp, accepted paired bars required; historical exchange publication latency UNKNOWN"
+  },
+  "observations": [
+    {
+      "variant": "R",
+      "claim_utc": "2025-06-06T09:21:00+00:00",
+      "source_quote_utc": "2025-06-06T09:20:00+00:00",
+      "claim_sequence": 38,
+      "source_quote_ns": "1749201600000000000",
+      "receipt_ns": "1749201660000000000",
+      "E": "338876.46974239",
+      "H": "574862.39059109",
+      "DD": "0.4105085403239765031417357618",
+      "actual_native_held_BTC": "24.076",
+      "actual_native_held_SOL": "0",
+      "closed_D1_ATR14": {
+        "BTCUSDT": "2912.4847598425886",
+        "SOLUSDT": "9.109842150164042"
+      },
+      "ready_at_UTC": {
+        "BTCUSDT": "2025-06-06T00:00:00+00:00",
+        "SOLUSDT": "2025-06-06T00:00:00+00:00"
+      },
+      "cushion_C": "61810.914691504828641001074980260773897942",
+      "U_BTC": "70120.9830779701631336",
+      "U_SOL": "0E-15",
+      "quarter_residual_box": "52590.737308477622350200",
+      "quarter_load_over_C": "0.85083253614600837710256353768461847431266371648647",
+      "rule_cut_percent": 25,
+      "fixed_R_cut_percent": 50,
+      "fixed_COMBO_cut_percent": 25,
+      "delta_vs_R": true,
+      "delta_vs_COMBO": false,
+      "half_residual_box": "35060.49153898508156680",
+      "half_box_also_exceeds_C": false,
+      "native_quarter_rounding_box": "52590.7373084776223502",
+      "quarter_native_rounding_changes_decision": false
+    },
+    {
+      "variant": "R",
+      "claim_utc": "2025-11-27T02:23:00+00:00",
+      "source_quote_utc": "2025-11-27T02:22:00+00:00",
+      "claim_sequence": 49,
+      "source_quote_ns": "1764210120000000000",
+      "receipt_ns": "1764210180000000000",
+      "E": "1165442.67679544",
+      "H": "1946164.51379807",
+      "DD": "0.4011592193092654864608840461",
+      "actual_native_held_BTC": "159.185",
+      "actual_native_held_SOL": "0",
+      "closed_D1_ATR14": {
+        "BTCUSDT": "4211.007891874962",
+        "SOLUSDT": "11.215458433847909"
+      },
+      "ready_at_UTC": {
+        "BTCUSDT": "2025-11-27T00:00:00+00:00",
+        "SOLUSDT": "2025-11-27T00:00:00+00:00"
+      },
+      "cushion_C": "227452.715960879486645547909393833379484066",
+      "U_BTC": "670329.291268115825970",
+      "U_SOL": "0E-15",
+      "quarter_residual_box": "502746.96845108686947750",
+      "quarter_load_over_C": "2.2103361849394506932080444656055509678313513554842",
+      "rule_cut_percent": 50,
+      "fixed_R_cut_percent": 50,
+      "fixed_COMBO_cut_percent": 25,
+      "delta_vs_R": false,
+      "delta_vs_COMBO": true,
+      "half_residual_box": "335164.6456340579129850",
+      "half_box_also_exceeds_C": true,
+      "native_quarter_rounding_box": "502748.021203059838218",
+      "quarter_native_rounding_changes_decision": false
+    },
+    {
+      "variant": "R",
+      "claim_utc": "2026-08-10T16:56:00+00:00",
+      "source_quote_utc": "2026-08-10T16:55:00+00:00",
+      "claim_sequence": 67,
+      "source_quote_ns": "1786380900000000000",
+      "receipt_ns": "1786380960000000000",
+      "E": "5241940.53520638",
+      "H": "9453817.29994522",
+      "DD": "0.4455212779247643865092166096",
+      "actual_native_held_BTC": "461.410",
+      "actual_native_held_SOL": "0",
+      "closed_D1_ATR14": {
+        "BTCUSDT": "1403.332797303415",
+        "SOLUSDT": "2.47478444847255"
+      },
+      "ready_at_UTC": {
+        "BTCUSDT": "2026-08-10T00:00:00+00:00",
+        "SOLUSDT": "2026-08-10T00:00:00+00:00"
+      },
+      "cushion_C": "685498.540687107894442556053333010646836236",
+      "U_BTC": "647511.786003768715150",
+      "U_SOL": "0E-14",
+      "quarter_residual_box": "485633.83950282653636250",
+      "quarter_load_over_C": "0.70843891077587498295490272827431957681657700187946",
+      "rule_cut_percent": 25,
+      "fixed_R_cut_percent": 50,
+      "fixed_COMBO_cut_percent": 25,
+      "delta_vs_R": true,
+      "delta_vs_COMBO": false,
+      "half_residual_box": "323755.8930018843575750",
+      "half_box_also_exceeds_C": false,
+      "native_quarter_rounding_box": "485634.541169225188070",
+      "quarter_native_rounding_changes_decision": false
+    },
+    {
+      "variant": "COMBO",
+      "claim_utc": "2025-06-06T09:21:00+00:00",
+      "source_quote_utc": "2025-06-06T09:20:00+00:00",
+      "claim_sequence": 38,
+      "source_quote_ns": "1749201600000000000",
+      "receipt_ns": "1749201660000000000",
+      "E": "338876.46974239",
+      "H": "574862.39059109",
+      "DD": "0.4105085403239765031417357618",
+      "actual_native_held_BTC": "24.076",
+      "actual_native_held_SOL": "0",
+      "closed_D1_ATR14": {
+        "BTCUSDT": "2912.4847598425886",
+        "SOLUSDT": "9.109842150164042"
+      },
+      "ready_at_UTC": {
+        "BTCUSDT": "2025-06-06T00:00:00+00:00",
+        "SOLUSDT": "2025-06-06T00:00:00+00:00"
+      },
+      "cushion_C": "61810.914691504828641001074980260773897942",
+      "U_BTC": "70120.9830779701631336",
+      "U_SOL": "0E-15",
+      "quarter_residual_box": "52590.737308477622350200",
+      "quarter_load_over_C": "0.85083253614600837710256353768461847431266371648647",
+      "rule_cut_percent": 25,
+      "fixed_R_cut_percent": 50,
+      "fixed_COMBO_cut_percent": 25,
+      "delta_vs_R": true,
+      "delta_vs_COMBO": false,
+      "half_residual_box": "35060.49153898508156680",
+      "half_box_also_exceeds_C": false,
+      "native_quarter_rounding_box": "52590.7373084776223502",
+      "quarter_native_rounding_changes_decision": false
+    },
+    {
+      "variant": "COMBO",
+      "claim_utc": "2025-11-27T02:23:00+00:00",
+      "source_quote_utc": "2025-11-27T02:22:00+00:00",
+      "claim_sequence": 49,
+      "source_quote_ns": "1764210120000000000",
+      "receipt_ns": "1764210180000000000",
+      "E": "1159248.73637914",
+      "H": "1935811.15205173",
+      "DD": "0.4011560811856704273807516885",
+      "actual_native_held_BTC": "158.339",
+      "actual_native_held_SOL": "0",
+      "closed_D1_ATR14": {
+        "BTCUSDT": "4211.007891874962",
+        "SOLUSDT": "11.215458433847909"
+      },
+      "ready_at_UTC": {
+        "BTCUSDT": "2025-11-27T00:00:00+00:00",
+        "SOLUSDT": "2025-11-27T00:00:00+00:00"
+      },
+      "cushion_C": "226248.769612451553057347288939373060341174",
+      "U_BTC": "666766.778591589608118",
+      "U_SOL": "0E-15",
+      "quarter_residual_box": "500075.08394369220608850",
+      "quarter_load_over_C": "2.2102886340566012072115709049667469507483953620226",
+      "rule_cut_percent": 50,
+      "fixed_R_cut_percent": 50,
+      "fixed_COMBO_cut_percent": 25,
+      "delta_vs_R": false,
+      "delta_vs_COMBO": true,
+      "half_residual_box": "333383.3892957948040590",
+      "half_box_also_exceeds_C": true,
+      "native_quarter_rounding_box": "500078.242199611112310",
+      "quarter_native_rounding_changes_decision": false
+    },
+    {
+      "variant": "COMBO",
+      "claim_utc": "2026-08-10T16:57:00+00:00",
+      "source_quote_utc": "2026-08-10T16:56:00+00:00",
+      "claim_sequence": 67,
+      "source_quote_ns": "1786380960000000000",
+      "receipt_ns": "1786381020000000000",
+      "E": "5253119.08543162",
+      "H": "9471409.44917046",
+      "DD": "0.4453709224985826153941084474",
+      "actual_native_held_BTC": "461.410",
+      "actual_native_held_SOL": "0",
+      "closed_D1_ATR14": {
+        "BTCUSDT": "1403.332797303415",
+        "SOLUSDT": "2.47478444847255"
+      },
+      "ready_at_UTC": {
+        "BTCUSDT": "2026-08-10T00:00:00+00:00",
+        "SOLUSDT": "2026-08-10T00:00:00+00:00"
+      },
+      "cushion_C": "688198.229415394945591848496972394902276948",
+      "U_BTC": "647511.786003768715150",
+      "U_SOL": "0E-14",
+      "quarter_residual_box": "485633.83950282653636250",
+      "quarter_load_over_C": "0.70565982117588246996025146924294422236275058180191",
+      "rule_cut_percent": 25,
+      "fixed_R_cut_percent": 50,
+      "fixed_COMBO_cut_percent": 25,
+      "delta_vs_R": true,
+      "delta_vs_COMBO": false,
+      "half_residual_box": "323755.8930018843575750",
+      "half_box_also_exceeds_C": false,
+      "native_quarter_rounding_box": "485634.541169225188070",
+      "quarter_native_rounding_changes_decision": false
+    }
+  ],
+  "admission": {
+    "mix_each_old_path": [
+      25,
+      50,
+      25
+    ],
+    "all25_or_all50": false,
+    "no_parameter_fitting": true,
+    "first_supported_change_vs_COMBO": "2025-11-27T02:23Z claim:25->50; June rule25 equals COMBO so pre-Nov capital inherits COMBO provided exact unchanged execution. No native run performed.",
+    "first_change_vs_R": "2025-06-06T09:21Z claim:50->25",
+    "August": "old-path witness only after first adaptive-Nov divergence; no claim about adaptive August path",
+    "C1_early_DD": "Unchanged pre-Jun6 prefix retains January settled51.80315157406654834417870238%; this rule cannot establish strict50"
+  },
+  "risk_intuition": [
+    "Compared with remaining globalDDcashcushion, November daily BTC range exposure is materially larger; fixed 1ATR diagnostic chooses deeper cut. June/Aug witness loads fit quarter residual.",
+    "All six BTC claim snapshots are native SOLflat; U_SOL term is present but not exercised by these witnesses.",
+    "November even nominalhalf residual still exceeds C on both trajectories: fallback50 is the stricter existing action, not proof that targetDD is protected.",
+    "ATR is historical average range, not a quantile/probability/guaranteed adverse bound; 1day horizon does not cover multi-day gaps/trends or intraminute price path.",
+    "Ordinary execution lag, partial/zero IOC, funding/fees and native lot rounding are outside this oneATR box; exact native quarter rounding did not flip any recorded comparison.",
+    "Rule is causally measurable, but was proposed after seeing four failed variants on same benchmark: exploratory/in-sample, not pristine OOS."
+  ],
+  "protocol_suggestion": {
+    "status": "PROPOSED_ONLY_PENDING_OWNER_SCOPE_AND_ROOT_PROTOCOL",
+    "candidate": "one adaptive25/50 BTCcut with fixedRrestore40; no G/TP/SOL/sizing bundle",
+    "predeclare": "Freeze exact formula, L, ATRseed/arithmetic/ready_at, native lot residual semantics and missingATR=>conservative50; do not tune ATRfactor or threshold after output.",
+    "minimum_source_delta": "Research-only opt-in selector plus closedD1 BTC+SOLOHLC state/ATR14 availability audit and metadata; preserve old defaultOFF behavior; no change to engine or signal decisions.",
+    "witness_gate": "Require pure saved June/Nov/Aug snapshots to reproduce25/50/25 and reject unavailable/noncausal ATR. No financial backfill or synthetic fills.",
+    "future_run": "If separately authorized, one own-capital native path under unchanged fees/depth/orderclock; report originalTOTALfloor/target and bothDD independently, fullcashreconciliation, no additiveprofit estimates.",
+    "budget": "Current globalmax8 unchanged; 4historicalspent; this receipt grants no additionalattempt or budgetamendment."
+  },
+  "live_order_capability": false,
+  "final_START": "Still explicit and pending; no live order/account authorization",
+  "ROI_estimate": null,
+  "estimated_cash_addback": null
+}
