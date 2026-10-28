@@ -34,16 +34,23 @@ def preflight(args):
     pinned = subprocess.check_output(["git", "show", args.source + ":" + NORMALIZER_SOURCE], cwd=root)
     if (root / NORMALIZER_SOURCE).read_bytes() != pinned:
         raise RuntimeError("PRODUCTION_PROVIDER_SOURCE_NOT_FROZEN")
-    approval = json.loads(args.approval_file.read_text())
+    approval_path = args.approval_file.resolve(strict=True)
+    artifact_path = args.artifact_dir.resolve()
+    approval = json.loads(approval_path.read_text())
     expected = dict(kind="E4_C1_ENGINE_FREE_CURRENCY_MODEL", status="RUNNING", execution_limit=1,
                     model_object_limit=64, source_commit=args.source,
-                    fixture_sha256=sha(Path(__file__).read_bytes()))
+                    fixture_sha256=sha(Path(__file__).read_bytes()),
+                    allocation_path=str(approval_path), artifact_dir=str(artifact_path))
     if any(approval.get(k) != v for k, v in expected.items()):
         raise RuntimeError("ROOT_SINGLE_EXECUTION_MODEL_ALLOCATION_REQUIRED")
-    args.artifact_dir.mkdir(parents=True, exist_ok=True)
-    with (args.artifact_dir/"currency-model-execution.claim").open("x") as stream:
+    # One claim belongs to the canonical root allocation, never to a caller-
+    # selected output directory. A different --artifact-dir cannot buy a rerun.
+    claim_path = approval_path.with_name(approval_path.name + ".execution.claim")
+    with claim_path.open("x") as stream:
         json.dump(expected, stream, sort_keys=True)
     return dict(source_commit=args.source, provider_source_sha256=sha(pinned),
+                provider_source_path=str((root/NORMALIZER_SOURCE).resolve()),
+                canonical_allocation_path=str(approval_path), canonical_claim_path=str(claim_path),
                 fixture_sha256=expected["fixture_sha256"])
 
 
@@ -68,15 +75,26 @@ def run(result):
         raise RuntimeError("NAUTILUS_1_231_0_REQUIRED")
     calls = result["counts"]
     owned = []
-    def adopt(label, value):
-        if all(value is not prior for prior in owned):
-            owned.append(value)
-            calls["explicit_native_model_objects"] += 1
-            if calls["explicit_native_model_objects"] > 64:
-                raise RuntimeError("MODEL_OBJECT_CAP_64_EXCEEDED")
+    def reserve(count=1):
+        # Reserve BEFORE calling any constructor or helper returning a native
+        # model. Even a future count error cannot construct object65 first.
+        if calls["explicit_native_model_objects"] + count > 64:
+            raise RuntimeError("MODEL_OBJECT_CAP_64_EXCEEDED")
+        calls["explicit_native_model_objects"] += count
+    def produce(label, callback, *a, **kw):
+        reserve()
+        value = callback(*a, **kw)
+        owned.append(value)
         return value
+    def produce_one_list(label, callback, *a, **kw):
+        reserve()
+        values = callback(*a, **kw)
+        if not isinstance(values, list) or len(values) != 1:
+            raise RuntimeError("EXPECTED_ONE_NATIVE_MODEL_RETURN:" + label)
+        owned.extend(values)
+        return values
     def model(cls, *a, **kw):
-        return adopt(cls.__name__, cls(*a, **kw))
+        return produce(cls.__name__, cls, *a, **kw)
     def no_network(*a, **kw):
         calls["network_attempts"] += 1
         raise RuntimeError("MODEL_SMOKE_NETWORK_FORBIDDEN")
@@ -84,7 +102,17 @@ def run(result):
     socket.socket.connect = no_network
     try:
         production = importlib.import_module(NORMALIZER_MODULE)
+        expected_origin = Path(result["provider_source_path"]).resolve(strict=True)
+        actual_origin = Path(production.__file__).resolve(strict=True)
+        if actual_origin != expected_origin or sha(actual_origin.read_bytes()) != result["provider_source_sha256"]:
+            raise RuntimeError("IMPORTED_PRODUCTION_NORMALIZER_ORIGIN_OR_SHA_MISMATCH")
         normalize = getattr(production, NORMALIZER_FUNCTION)
+        result["imported_provider_source_path"] = str(actual_origin)
+        # Independent model positions reuse these three event UUIDs; no engine,
+        # cache or journal merges the counterfactual raw/release cases.
+        account_uuid = model(UUID4)
+        opening_uuid = model(UUID4)
+        closing_uuid = model(UUID4)
         account_id = model(AccountId, "HYPERLIQUID-model-smoke")
         trader_id = model(TraderId, "E4-C1-MODEL")
         strategy_id = model(StrategyId, "E4-C1-MODEL-001")
@@ -99,7 +127,7 @@ def run(result):
         balance = model(AccountBalance, model(Money, D("100"), USDC), model(Money, D("30"), USDC),
                         model(Money, D("70"), USDC))
         stamp = time.time_ns()
-        event = model(AccountState, account_id, AccountType.MARGIN, None, True, [balance], [], {}, UUID4(), stamp, stamp)
+        event = model(AccountState, account_id, AccountType.MARGIN, None, True, [balance], [], {}, account_uuid, stamp, stamp)
         account = model(MarginAccount, event)
         initial = (account.balance_total(USDC).as_decimal(), account.balance_locked(USDC).as_decimal(),
                    account.balance_free(USDC).as_decimal(), str(account.last_event.id))
@@ -111,8 +139,10 @@ def run(result):
                 close_client if closing else entry_client, venue_order, account_id,
                 close_trade if closing else entry_trade, position_id, side, OrderType.LIMIT,
                 qty, price, inst.quote_currency, fee, LiquiditySide.TAKER,
-                UUID4(), now, now)
+                closing_uuid if closing else opening_uuid, now, now)
 
+        # Shared prices are exactly valid on BOTH preserved native tick grids.
+        prices = [model(Price.from_str, v) for v in ("100.00", "110.00", "90.00")]
         for coin, base, tick, step in (("BTC", BTC, "0.1", "0.00001"), ("SOL", SOL, "0.01", "0.01")):
             # Exact stock default HL denomination: public ID USD, settlement USDC,
             # min notional10 USD and zero stock margin/fee rates. No FX instrument.
@@ -123,9 +153,9 @@ def run(result):
                 margin_init=D(0), margin_maint=D(0), maker_fee=D(0), taker_fee=D(0))
             # Public from_dict/to_dict only; actual production helper is the sole
             # place permitted to normalize quote/min-notional denomination.
-            native_raw = adopt("PyO3 raw instrument", nautilus_pyo3.CryptoPerpetual.from_dict(CryptoPerpetual.to_dict(raw)))
-            native_release = adopt("production normalized instrument", normalize(native_raw))
-            release = adopt("Cython release instrument", CryptoPerpetual.from_dict(native_release.to_dict()))
+            native_raw = produce("PyO3 raw instrument", nautilus_pyo3.CryptoPerpetual.from_dict, CryptoPerpetual.to_dict(raw))
+            native_release = produce("production normalized instrument", normalize, native_raw)
+            release = produce("Cython release instrument", CryptoPerpetual.from_dict, native_release.to_dict())
             assert str(raw.id) == str(release.id) == coin+"-USD-PERP.HYPERLIQUID"
             assert raw.price_increment == release.price_increment and raw.size_increment == release.size_increment
             assert raw.min_quantity == release.min_quantity
@@ -135,16 +165,16 @@ def run(result):
             assert raw.margin_init == release.margin_init == raw.margin_maint == release.margin_maint == D(0)
             assert raw.maker_fee == release.maker_fee == raw.taker_fee == release.taker_fee == D(0)
             assert raw.get_cost_currency() == USD and release.get_cost_currency() == USDC
-            prices = [adopt("reference price", release.make_price(D(v))) for v in ("100", "110", "90")]
-            qty = adopt("open quantity", release.make_qty(D("2")))
-            half = adopt("partial quantity", release.make_qty(D("1")))
+            assert all(p.as_decimal() % release.price_increment.as_decimal() == 0 for p in prices)
+            qty = produce("open quantity", release.make_qty, D("2"))
+            half = produce("partial quantity", release.make_qty, D("1"))
             raw_commission = None
             if coin == "BTC":
-                raw_commission = adopt("raw commission helper", account.calculate_commission(raw, qty, prices[0], LiquiditySide.TAKER))
+                raw_commission = produce("raw commission helper", account.calculate_commission, raw, qty, prices[0], LiquiditySide.TAKER)
                 assert raw_commission.currency == USD
                 raw_fill = fill(raw, OrderSide.BUY, qty, prices[0])
                 raw_pos = model(Position, raw, raw_fill)
-                raw_pnl = adopt("raw native pnl", raw_pos.unrealized_pnl(prices[1]))
+                raw_pnl = produce("raw native pnl", raw_pos.unrealized_pnl, prices[1])
                 assert raw_pos.settlement_currency == raw_pnl.currency == USD
                 assert raw_pnl.as_decimal() == D("20")
                 assert raw_pos.realized_pnl.as_decimal() == D(0)  # USDC fee is missed by raw USD cost currency.
@@ -158,15 +188,14 @@ def run(result):
                 opening = fill(release, side, qty, prices[0])
                 pos = model(Position, release, opening)
                 pos_name = "LONG" if side == OrderSide.BUY else "SHORT"
-                up = adopt("native positive pnl", pos.unrealized_pnl(prices[1] if side == OrderSide.BUY else prices[2]))
-                down = adopt("native negative pnl", pos.unrealized_pnl(prices[2] if side == OrderSide.BUY else prices[1]))
+                up = produce("native positive pnl", pos.unrealized_pnl, prices[1] if side == OrderSide.BUY else prices[2])
+                down = produce("native negative pnl", pos.unrealized_pnl, prices[2] if side == OrderSide.BUY else prices[1])
                 assert pos.settlement_currency == USDC and up.currency == down.currency == USDC
                 assert up.as_decimal() == D("20") and down.as_decimal() == D("-20")
                 assert pos.realized_pnl.currency == USDC and pos.realized_pnl.as_decimal() == D("-0.01")
                 close_px = prices[1] if side == OrderSide.BUY else prices[2]
                 closing = fill(release, OrderSide.SELL if side == OrderSide.BUY else OrderSide.BUY, half, close_px, closing=True)
-                cashflow = account.calculate_pnls(release, closing, pos)
-                for amount in cashflow: adopt("native close pnl", amount)
+                cashflow = produce_one_list("native close pnl", account.calculate_pnls, release, closing, pos)
                 assert len(cashflow) == 1 and cashflow[0].currency == USDC and cashflow[0].as_decimal() == D("10")
                 pos.apply(closing)
                 assert pos.quantity.as_decimal() == D("1") and pos.realized_pnl.currency == USDC
@@ -179,8 +208,8 @@ def run(result):
             # Native zero rates remain zero; they NEVER establish buying power.
             initial_margin = commission = None
             if coin == "BTC":
-                initial_margin = adopt("native margin helper", account.calculate_margin_init(release, qty, prices[0]))
-                commission = adopt("native commission helper", account.calculate_commission(release, qty, prices[0], LiquiditySide.TAKER))
+                initial_margin = produce("native margin helper", account.calculate_margin_init, release, qty, prices[0])
+                commission = produce("native commission helper", account.calculate_commission, release, qty, prices[0], LiquiditySide.TAKER)
                 assert initial_margin.currency == commission.currency == USDC
                 assert initial_margin.as_decimal() == commission.as_decimal() == D(0)
             cases[coin+"_denomination"] = dict(status="PASS", id=str(release.id), raw_cost_currency=str(raw.get_cost_currency()),
