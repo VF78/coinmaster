@@ -24,8 +24,10 @@ INPUT_FLAGS={**FLAGS,'research_btc_split50':True,'research_btc_split_planref_v1'
 def _validate_input_readiness_profile(root,profile,candidate):
     from decimal import Decimal
     keys={'schema','profile_id','initial_capital_usdc','candidate_sha256','research_source','economic_config_sha256',
-        'strategy_flags','manage_only_readiness','input_readiness','live_order_capability','source_pins','deposit_protection_percent','retained_equity_floor_fraction','initialization_intent'}
-    if (set(profile)!=keys or profile['initialization_intent'] not in (None,'INITIALIZE_FRESH_C1_EPOCH') or profile['profile_id']!='E4_C1_INPUT_READINESS_ONLY'
+        'strategy_flags','manage_only_readiness','input_readiness','live_order_capability','source_pins','deposit_protection_percent','retained_equity_floor_fraction','initialization_intent','account_mode','equity_basis'}
+    if (set(profile)!=keys or profile['account_mode'] not in ('disabled','unifiedAccount')
+        or profile['equity_basis']!=('HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' if profile['account_mode']=='unifiedAccount' else 'HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1')
+        or profile['initialization_intent'] not in (None,'INITIALIZE_FRESH_C1_EPOCH') or profile['profile_id']!='E4_C1_INPUT_READINESS_ONLY'
         or profile['manage_only_readiness'] is not True or profile['input_readiness'] is not True or profile['live_order_capability'] is not False
         or profile['research_source']!='fccd60c01e8cae5e8258748b046f43f88a16bb79'
         or profile['economic_config_sha256']!='a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253'
@@ -36,7 +38,8 @@ def _validate_input_readiness_profile(root,profile,candidate):
     capital=Decimal(profile['initial_capital_usdc'])
     if not capital.is_finite() or capital<=0:raise RuntimeError('LIVE_INPUT_PROFILE_CAPITAL_INVALID')
     required={'coinmaster/strategy/residual_recovery.py','coinmaster/strategy/wave_overlay.py','coinmaster/strategy/next_band.py',
-        'coinmaster/strategy/hedge_band.py','coinmaster/domain/wave_overlay.py','coinmaster/strategy/c1_inputs.py'}
+        'coinmaster/strategy/hedge_band.py','coinmaster/domain/wave_overlay.py','coinmaster/strategy/c1_inputs.py','coinmaster/ops/hl_unified_account.py','coinmaster/ops/hl_unified_instruments.py',
+        'coinmaster/ops/hl_live_execution.py','coinmaster/ops/hl_info_receipt.py','coinmaster/ops/hl_live_money.py'}
     if set(profile['source_pins'])!=required or any(hashlib.sha256((root/name).read_bytes()).hexdigest()!=digest for name,digest in profile['source_pins'].items()):
         raise RuntimeError('LIVE_INPUT_PROFILE_SOURCE_MISMATCH')
     return {**profile,'profile_sha256':hashlib.sha256(json.dumps(profile,sort_keys=True,separators=(',',':')).encode()).hexdigest()}

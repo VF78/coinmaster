@@ -30,11 +30,13 @@ class SelectedCrossAsset:
     coin: str
     leverage: int
     mark: Decimal
+    max_trade_sizes: tuple[Decimal,Decimal] | None = None
+    available_to_trade: tuple[Decimal,Decimal] | None = None
 
 
 async def collect_selected_cross_assets(
     info: Callable[[dict[str, Any]], Awaitable[Any]], *,
-    account_ref: str, coins: frozenset[str],
+    account_ref: str, coins: frozenset[str], require_venue_limits: bool = False,
 ) -> tuple[SelectedCrossAsset, ...]:
     """Read the selected account's leverage/mark, never side-indexed capacity."""
     if not coins or not coins.issubset({"BTC", "SOL"}):
@@ -59,7 +61,15 @@ async def collect_selected_cross_assets(
         mark = _amount(raw.get("markPx"), "SELECTED_MARK")
         if mark <= 0:
             raise IncompleteInfoReport("LIVE_ASSET_MARK_UNKNOWN")
-        selected.append(SelectedCrossAsset(coin, raw["leverage"]["value"], mark))
+        limits=available=None
+        if require_venue_limits:
+            if (not isinstance(raw.get('maxTradeSzs'),list) or len(raw['maxTradeSzs'])!=2
+                or not isinstance(raw.get('availableToTrade'),list) or len(raw['availableToTrade'])!=2):
+                raise IncompleteInfoReport('LIVE_VENUE_TRADE_LIMITS_UNKNOWN')
+            limits=tuple(_amount(v,'MAX_TRADE_SIZE') for v in raw['maxTradeSzs'])
+            available=tuple(_amount(v,'AVAILABLE_TO_TRADE') for v in raw['availableToTrade'])
+            if min(*limits,*available)<0:raise IncompleteInfoReport('LIVE_VENUE_TRADE_LIMITS_INVALID')
+        selected.append(SelectedCrossAsset(coin,raw['leverage']['value'],mark,limits,available))
     return tuple(selected)
 
 
@@ -75,6 +85,9 @@ class LivePerpsMoneyView:
     selected_assets: tuple[SelectedCrossAsset, ...] = ()
     position_sizes: tuple[tuple[str, Decimal], ...] = ()
     native_revision: int | None = None
+    account_mode: str = "disabled"
+    equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
+    margin_basis: str = "CLASSIC_PERPS_REPORTED_MARGIN"
 
     def require_fresh(self, now_ms: int, max_age_ms: int) -> None:
         if (
@@ -91,6 +104,19 @@ def live_perps_money_view(
     max_age_ms: int = 10_000, selected_assets: tuple[SelectedCrossAsset, ...] = (),
     native_revision: int | None = None,
 ) -> LivePerpsMoneyView:
+    if isinstance(receipt,InfoReceipt) and receipt.account_mode=='unifiedAccount':
+        from coinmaster.ops.hl_unified_account import native_unified_money,EQUITY_BASIS,HOLD_BASIS
+        if (receipt.account.lower()!=account_ref.lower() or dex!='' or receipt.dex!=dex
+            or receipt.account_role!='user' or receipt.abstraction!='unifiedAccount' or receipt.dex_abstraction is not False
+            or receipt.equity_basis!=EQUITY_BASIS):raise IncompleteInfoReport('UNIFIED_MODE_PROOF_UNKNOWN')
+        total,hold,free,sizes=native_unified_money({'balances':list(receipt.spot_balances)},list(receipt.all_dex_states),
+            native_account=native_account,native_positions=native_positions,account_id=account_id)
+        if hold and not native_positions and not receipt.open_orders:raise IncompleteInfoReport('UNIFIED_UNATTRIBUTED_HOLD')
+        require_native_unified_projection(native_account,total,hold,free)
+        view=LivePerpsMoneyView(account_ref,dex,receipt.end_ms,total,free,hold,total,selected_assets,sizes,native_revision,
+            'unifiedAccount',EQUITY_BASIS,HOLD_BASIS)
+        view.require_fresh(now_ms,max_age_ms)
+        return view
     if (
         not isinstance(receipt, InfoReceipt)
         or receipt.account.lower() != account_ref.lower() or receipt.dex != dex
@@ -181,6 +207,16 @@ def live_perps_money_view(
 
 
 
+def require_native_unified_projection(account,total,hold,free):
+    balance=account.balance_total(USDC);available=account.balance_free(USDC)
+    margin=account.margin_init_for_currency(USDC);maintenance=account.margin_maint_for_currency(USDC)
+    if (balance is None or available is None or balance.currency!=USDC or available.currency!=USDC
+        or balance.as_decimal()!=total or available.as_decimal()!=free
+        or margin is None or maintenance is None or margin.currency!=USDC or maintenance.currency!=USDC
+        or margin.as_decimal()!=hold or maintenance.as_decimal()!=hold):
+        raise IncompleteInfoReport('UNIFIED_NATIVE_ACCOUNT_REFRESH_REQUIRED')
+
+
 def prospective_cross_margin_ok(
     view: LivePerpsMoneyView, *,
     positions: dict[str, Decimal],
@@ -211,6 +247,17 @@ def prospective_cross_margin_ok(
         (buys if pending_side == "BUY" else sells)[pending_coin] += leaves
         fees_notional += leaves * assets[pending_coin].mark
     (buys if side == "BUY" else sells)[coin] += quantity
+    if view.account_mode=='unifiedAccount':
+        asset=assets[coin];index=0 if side=='BUY' else 1
+        if asset.max_trade_sizes is None or asset.available_to_trade is None:return False
+        proposed=(buys if side=='BUY' else sells)[coin]
+        # Limits are fresh real venue account-specific capacities. Margin rates
+        # remain stockzero; HOLD is reported proxy, never liquidation MM.
+        if (proposed>asset.max_trade_sizes[index]
+            or proposed*asset.mark/asset.leverage+fees_notional*fee_reserve_rate>asset.available_to_trade[index]
+            or fees_notional*fee_reserve_rate>view.free_collateral):return False
+        gross=sum(max(abs(positions.get(name,Decimal(0))+buys[name]),abs(positions.get(name,Decimal(0))-sells[name]))*item.mark for name,item in assets.items())
+        return gross<=view.equity*max_gross_multiple
     prospective_im = gross = Decimal("0")
     for name, asset in assets.items():
         current = positions.get(name, Decimal("0"))
@@ -243,6 +290,8 @@ class CheapPortfolioObservation:
     response_completed_ns: int
     source_available_ns: int
     native_account_event_id: str
+    account_mode: str = "disabled"
+    equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
 
     def require_current(self,*,now_ns,revision,fill_epoch,ws_epoch):
         if (not self.generation_started_ns<=self.response_completed_ns<=now_ns
@@ -311,10 +360,33 @@ def materialize_live_c1_input(observation,*,native_positions,native_marks,native
         if (mark is None or not 0<=decision_ns-mark.ts_event<=max_mark_age_ns
             or not 0<=decision_ns-mark.ts_init<=max_mark_age_ns):raise IncompleteInfoReport('C1_LIVE_MARK_STALE')
         price=Decimal(str(mark.price));native_instrument=native_cache.instrument(position.instrument_id)
-        pnl=position.unrealized_pnl(native_instrument.make_price(price)).as_decimal()
+        native_pnl=position.unrealized_pnl(native_instrument.make_price(price))
+        if observation.account_mode=='unifiedAccount' and (native_pnl.currency!=USDC
+            or native_instrument.quote_currency!=USDC or native_instrument.settlement_currency!=USDC):
+            raise IncompleteInfoReport('UNIFIED_NATIVE_PNL_CURRENCY_UNSUPPORTED')
+        pnl=native_pnl.as_decimal()
         quantity=position.quantity.as_decimal();sizes[coin]=quantity*(1 if position.is_long else -1)
         rows.append(C1PositionInput(instrument,str(position.id),position.ts_opened,position.is_long,quantity,
-            native_instrument.size_increment.as_decimal(),price,mark.ts_event,pnl))
+            native_instrument.size_increment.as_decimal(),price,mark.ts_event,pnl,str(getattr(native_pnl,'currency','UNKNOWN'))))
     if tuple(sorted(sizes.items()))!=observation.position_sizes:raise IncompleteInfoReport('C1_LIVE_POSITION_MOVED')
     return C1DecisionInput(observation.equity,observation.source_available_ns,decision_ns,fill_epoch,revision,ws_epoch,
-        observation.native_account_event_id,tuple(sorted(rows,key=lambda row:row.instrument_id)))
+        observation.native_account_event_id,tuple(sorted(rows,key=lambda row:row.instrument_id)),observation.equity_basis)
+
+
+def cheap_unified_observation(raw_spot,all_dex,*,account_id,native_account,native_positions,strategy_id,
+                              revision,fill_epoch,ws_epoch,started_ns,completed_ns,available_ns,native_open_orders=()):
+    from coinmaster.ops.hl_unified_account import native_unified_money,EQUITY_BASIS
+    total,hold,free,sizes=native_unified_money(raw_spot,all_dex,native_account=native_account,
+        native_positions=native_positions,account_id=account_id,strategy_id=strategy_id)
+    for order in native_open_orders:
+        if (str(order.account_id)!=account_id or str(order.strategy_id)!=strategy_id
+            or str(order.instrument_id) not in ('BTC-USD-PERP.HYPERLIQUID','SOL-USD-PERP.HYPERLIQUID')):
+            raise IncompleteInfoReport('UNIFIED_UNKNOWN_NATIVE_ORDER')
+    if hold and not native_positions and not native_open_orders:raise IncompleteInfoReport('UNIFIED_UNATTRIBUTED_HOLD')
+    require_native_unified_projection(native_account,total,hold,free)
+    event_id=getattr(native_account.last_event,'id',None) or getattr(native_account.last_event,'event_id',None)
+    if not event_id:raise IncompleteInfoReport('UNIFIED_NATIVE_ACCOUNT_EVENT_UNKNOWN')
+    value=CheapPortfolioObservation(total,total,free,hold,sizes,revision,fill_epoch,ws_epoch,started_ns,completed_ns,
+        available_ns,str(event_id),'unifiedAccount',EQUITY_BASIS)
+    value.require_current(now_ns=completed_ns,revision=revision,fill_epoch=fill_epoch,ws_epoch=ws_epoch)
+    return value

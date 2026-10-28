@@ -70,7 +70,7 @@ def recovery_policy_hash(config, candidate):
     names=getattr(type(config), "__struct_fields__", None)
     if names is None:names=tuple(vars(config))
     names=sorted(name for name in names if name.startswith("research_") or name in (
-        "btc_id","sol_id","btc_signal_id","sol_signal_id","max_mark_age_ns",
+        "btc_id","sol_id","btc_signal_id","sol_signal_id","max_mark_age_ns","live_account_mode","live_equity_basis",
         "execution_policy_hash","execution_policy_version","market_exit_time_in_force","market_exit_reduce_only",
         "tp_fee_floor_v1","freeze_sigma_on_first_sol_fill","max_gross_to_active"))
     def value(item):
@@ -86,7 +86,7 @@ def recovery_policy_hash(config, candidate):
         body['retained_equity_floor_fraction']='0.45'
         body['live_input_clock_contract']='BYBIT_NATIVE_CONFIRMED_LAST_1M_UTC240_H4_ACTUAL_AVAILABILITY_V1'
         root=Path(__file__).resolve().parents[1]
-        body['economic_source_pins']={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ('strategy/residual_recovery.py','strategy/wave_overlay.py','strategy/next_band.py','strategy/hedge_band.py','domain/wave_overlay.py','strategy/c1_inputs.py')}
+        body['economic_source_pins']={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ('strategy/residual_recovery.py','strategy/wave_overlay.py','strategy/next_band.py','strategy/hedge_band.py','domain/wave_overlay.py','strategy/c1_inputs.py','ops/hl_unified_account.py','ops/hl_unified_instruments.py')}
     body["candidate_sha256"]=hashlib.sha256(canonical_candidate_json(candidate).encode()).hexdigest()
     return hashlib.sha256(json.dumps(body,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest()
 
@@ -240,6 +240,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._post_drain_task = None
         self._recovery_health = None
         self._live_money_provider = None
+        self._live_account_mode=getattr(config,'live_account_mode','disabled')
         self._input_readiness_preparation=False
         self._fresh_c1_init_intent=None
         self._fresh_init_generation_validator=None
@@ -329,7 +330,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def _materialize_live_c1_observation(self,now_ns):
         from coinmaster.ops.hl_live_money import materialize_live_c1_input
         observation=self._last_live_input_observation
-        if observation is None or self._live_inputs_dirty or self._live_input_ws_epoch is None:
+        if observation is None or observation.account_mode!=self._live_account_mode or observation.equity_basis!=getattr(self.config,'live_equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1') or self._live_inputs_dirty or self._live_input_ws_epoch is None:
             raise ValueError('C1_LIVE_OBSERVATION_UNAVAILABLE')
         account=self.cache.account_for_venue(self.config.btc_id.venue)
         event=getattr(account,'last_event',None)
@@ -378,6 +379,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if (intent!='INITIALIZE_FRESH_C1_EPOCH' or self._fresh_c1_init_intent!=intent
             or not self._input_readiness_preparation or not self._manage_only_preparation
             or runtime is None or runtime.entry_control_state()!='PAUSED' or not isinstance(view,LivePerpsMoneyView)
+            or view.account_mode!=self._live_account_mode
+            or view.equity_basis!=getattr(self.config,'live_equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1')
             or view.native_revision!=runtime.native_revision() or view.position_sizes
             or type(history_anchor_ms) is not int or not 0<=history_anchor_ms<=view.end_ms
             or view.equity!=view.raw_usd or self._fresh_init_generation_validator is None
@@ -408,12 +411,30 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self.recovery_confirmed=False;self._management_certificate=None
         return body
 
+    def initialize_fresh_live_deposit_protection(self,idempotency_key):
+        """Virgin-only wrapper around existing public controls; never reset H."""
+        runtime=self._recovery_runtime
+        marker=runtime.c1_initialization() if runtime is not None else None
+        if (not idempotency_key or not self._input_readiness_preparation or not self._manage_only_preparation
+            or marker is None or marker.get('policy_sha256')!=recovery_policy_hash(self.config,self._candidate)
+            or self._deposit.high_water is not None or self._deposit.latched or self._deposit.trigger is not None
+            or runtime.all_submissions() or runtime.applied_fill_ids() or runtime.pending_submissions()
+            or runtime.pending_native_funding() or self._seen_trade_ids or self._c1_state is not None or self._c1_fill_epoch
+            or runtime.db.execute('SELECT EXISTS(SELECT 1 FROM paper_native_fill_details)').fetchone()[0]
+            or runtime.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events WHERE kind='fill')").fetchone()[0]):
+            raise ValueError('LIVE_DP_VIRGIN_INITIALIZATION_ONLY')
+        # Initialize H through the existing confirmed-flat public reset control.
+        # Persist a valid H before changing its limit: if interrupted, strict55
+        # readiness blocks and the existing SET command can finish without reset.
+        self.apply_deposit_control('reset-deposit-protection',idempotency_key+':initial',confirm=True)
+        return self.apply_deposit_control('set-deposit-protection',idempotency_key+':limit55',drawdown_limit_percent=55)
+
     def _validated_live_deposit_equity(self):
         """Money observation for existing DP only; no recovery/order capability."""
         if not self._input_readiness_preparation:return self._validated_live_money().equity
         from coinmaster.ops.hl_live_money import CheapPortfolioObservation
         observation=self._last_live_input_observation
-        if (not isinstance(observation,CheapPortfolioObservation) or self._live_inputs_dirty
+        if (not isinstance(observation,CheapPortfolioObservation) or observation.account_mode!=self._live_account_mode or observation.equity_basis!=getattr(self.config,'live_equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1') or self._live_inputs_dirty
             or self._recovery_runtime is None or self._live_input_ws_epoch is None
             or self._recovery_health is None or not self._recovery_health()):
             raise ValueError('LIVE_DP_OBSERVATION_UNAVAILABLE')

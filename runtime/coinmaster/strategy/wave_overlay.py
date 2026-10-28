@@ -133,6 +133,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     # settlement. ``FundingRateUpdate.next_funding_ns`` is explicitly *not*
     # such an event: it names the next scheduled payment.
     funding_sink: object | None = None
+    live_account_mode: str = "disabled"
+    live_equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
     deposit_runtime: object | None = None
     deposit_instance_id: str = ""
     deposit_account_id: str = ""

@@ -13,6 +13,7 @@ class C1PositionInput:
     mark: Decimal
     mark_ns: int
     native_pnl: Decimal
+    pnl_currency: str = "UNSPECIFIED_RESEARCH"
 
     def __post_init__(self):
         if (not self.instrument_id or not self.position_id or type(self.opened_ns) is not int
@@ -31,6 +32,7 @@ class C1DecisionInput:
     ws_epoch: int
     account_event_id: str
     positions: tuple[C1PositionInput,...]
+    equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
 
     def __post_init__(self):
         if (not isinstance(self.equity,Decimal) or not self.equity.is_finite() or self.equity<=0

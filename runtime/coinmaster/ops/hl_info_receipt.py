@@ -41,6 +41,10 @@ class InfoReceipt:
     cached_terminal_cloids: tuple[str, ...] = ()
     query_start_ms: int | None = None
     query_anchor_tid: int | None = None
+    account_mode: str = "disabled"
+    spot_balances: tuple[dict,...] = ()
+    all_dex_states: tuple = ()
+    equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
 
 
 def _number(value: Any, name: str) -> Decimal:
@@ -116,6 +120,7 @@ async def collect_info_receipt(
     cached_terminal_statuses: dict | None = None, archived_fills: tuple = (),
     query_anchor_ms: int | None = None, query_anchor_tid: int | None = None,
     allow_fill_subdivision: bool = True,
+    account_mode: str = "disabled",
 ) -> InfoReceipt:
     """Collect a validated, bounded batch; raises on uncertainty.
 
@@ -169,14 +174,23 @@ async def collect_info_receipt(
             raise IncompleteInfoReport("INFO_TRANSPORT_FAILED") from exc
 
     open_orders = await request({"type": "frontendOpenOrders", "user": account, "dex": dex})
-    state = await request({"type": "clearinghouseState", "user": account, "dex": dex})
+    if account_mode not in ('disabled','unifiedAccount'):raise IncompleteInfoReport('UNSUPPORTED_ACCOUNT_ABSTRACTION')
+    spot_rows=();all_dex_rows=()
+    if account_mode=='unifiedAccount':
+        from coinmaster.ops.hl_unified_account import default_dex_state,spot_usdc
+        if dex!='':raise IncompleteInfoReport('UNIFIED_DEFAULT_DEX_REQUIRED')
+        all_dex=await request({'type':'allDexsClearinghouseState','user':account})
+        state=default_dex_state(all_dex)
+        spot=await request({'type':'spotClearinghouseState','user':account})
+        spot_usdc(spot);spot_rows=tuple(spot['balances']);all_dex_rows=tuple((item[0],item[1]) for item in all_dex)
+    else:state = await request({"type": "clearinghouseState", "user": account, "dex": dex})
     if not isinstance(open_orders, list) or not isinstance(state, dict) or not isinstance(state.get("assetPositions"), list):
         raise IncompleteInfoReport("MALFORMED_ACCOUNT_OR_ORDERS")
     summary = state.get("marginSummary")
     if not isinstance(summary, dict):
         raise IncompleteInfoReport("MALFORMED_ACCOUNT_SUMMARY")
     account_value = _number(summary.get("accountValue"), "ACCOUNT_VALUE")
-    if account_value < 0:
+    if account_value < 0 and account_mode=="disabled":
         raise IncompleteInfoReport("BAD_ACCOUNT_VALUE")
     totals = []
     for field in ("totalRawUsd", "totalMarginUsed", "totalNtlPos"):
@@ -185,7 +199,7 @@ async def collect_info_receipt(
             raise IncompleteInfoReport(f"BAD_{field}")
         totals.append(str(value))
     withdrawable = _number(state.get("withdrawable"), "WITHDRAWABLE")
-    if withdrawable < 0:
+    if withdrawable < 0 and account_mode=="disabled":
         raise IncompleteInfoReport("BAD_WITHDRAWABLE")
     cross_values: tuple[str, str, str, str] = ()
     role = abstraction = ""
@@ -198,7 +212,7 @@ async def collect_info_receipt(
             _number(cross.get(field), "CROSS_" + field)
             for field in ("accountValue", "totalRawUsd", "totalMarginUsed", "totalNtlPos")
         )
-        if cross_numbers[0] < 0 or cross_numbers[2] < 0 or cross_numbers[3] < 0:
+        if (cross_numbers[0] < 0 and account_mode=="disabled") or cross_numbers[2] < 0 or cross_numbers[3] < 0:
             raise IncompleteInfoReport("BAD_CROSS_MARGIN_SUMMARY")
         cross_values = tuple(str(value) for value in cross_numbers)
         raw_role = await request({"type": "userRole", "user": account})
@@ -206,7 +220,7 @@ async def collect_info_receipt(
         dex_abstraction = await request({"type": "userDexAbstraction", "user": account})
         role = raw_role.get("role") if isinstance(raw_role, dict) else ""
         abstraction = raw_abstraction if isinstance(raw_abstraction, str) else ""
-        if role != "user" or abstraction != "disabled" or dex_abstraction is not False:
+        if role != "user" or abstraction != account_mode or dex_abstraction is not False:
             raise IncompleteInfoReport("UNSUPPORTED_ACCOUNT_ABSTRACTION")
 
     statuses = []
@@ -346,4 +360,6 @@ async def collect_info_receipt(
         cross_account_summary=cross_values, account_role=role,
         abstraction=abstraction, dex_abstraction=dex_abstraction,
         cached_terminal_cloids=tuple(sorted(cached_terminal_statuses)),query_start_ms=query_anchor_ms,query_anchor_tid=query_anchor_tid,
+        account_mode=account_mode,spot_balances=spot_rows,all_dex_states=all_dex_rows,
+        equity_basis=('HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' if account_mode=='unifiedAccount' else 'HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),
     )

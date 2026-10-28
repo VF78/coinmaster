@@ -26,9 +26,10 @@ from nautilus_trader.live.factories import LiveExecClientFactory
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.enums import OrderStatus
 from nautilus_trader.model.events import OrderDenied
+from nautilus_trader.model.objects import AccountBalance,MarginBalance
 
 from coinmaster.ops.hl_info_receipt import IncompleteInfoReport, collect_info_receipt
-from coinmaster.ops.hl_live_money import collect_selected_cross_assets, live_perps_money_view, cheap_portfolio_observation
+from coinmaster.ops.hl_live_money import collect_selected_cross_assets, live_perps_money_view, cheap_portfolio_observation, cheap_unified_observation
 from coinmaster.ops.hl_qualified_reports import qualified_mass_status
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy, durable_decision_checkpoint
@@ -45,10 +46,10 @@ class InfoWeightBudget:
 
     async def __call__(self, body: dict[str, Any]):
         kind = body["type"]
-        if kind not in {'userRole','clearinghouseState','orderStatus','frontendOpenOrders','userAbstraction','userDexAbstraction','userFillsByTime','activeAssetData'}:
+        if kind not in {'userRole','clearinghouseState','orderStatus','frontendOpenOrders','userAbstraction','userDexAbstraction','userFillsByTime','activeAssetData','spotClearinghouseState','allDexsClearinghouseState'}:
             raise IncompleteInfoReport('LIVE_INFO_UNSUPPORTED_REQUEST')
         cost = 60 if kind == "userRole" else 2 if kind in {
-            "clearinghouseState", "orderStatus",
+            "clearinghouseState", "orderStatus", "spotClearinghouseState",
         } else 20
         if self.used + cost > self.limit:
             raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
@@ -61,10 +62,10 @@ class InfoWeightBudget:
         return value
 
 
-def finite_generation_reservation(uncached_orders):
+def finite_generation_reservation(uncached_orders,*,unified=False):
     if type(uncached_orders) is not int or not 0<=uncached_orders<=15:
         raise IncompleteInfoReport('LIVE_INFO_SCOPE_EXCEEDS_GENERATION_CAP')
-    return 540+4*uncached_orders
+    return (592 if unified else 540)+4*uncached_orders
 
 
 class ReadinessInfoBudget:
@@ -179,6 +180,14 @@ class QualifiedInfoBoundary:
         self._cm_last_revision = None
         self._cm_runtime = None
         self._cm_inputs_enabled=False
+        self._cm_unified=False
+        self._cm_unified_mode_proof=None
+        self._cm_unified_account_task=None
+        self._cm_unified_refresh_task=None
+        self._cm_unified_native_started_ns=None
+        self._cm_unified_generation_reservation=None
+        self._cm_unified_native_charge=0
+        self._cm_unified_discovery=None
         self._cm_inputs_budget=ReadinessInfoBudget()
         self._cm_money_task=None
         self._cm_account_refresh_wait=None
@@ -255,6 +264,12 @@ class QualifiedInfoBoundary:
         try:
             for kind, handler in _WS_HANDLERS:
                 if isinstance(msg, kind):
+                    if self._cm_unified and handler!='_handle_account_state':
+                        client_id=getattr(msg,'client_order_id',None)
+                        if client_id is not None and str(client_id) not in {row['client_order_id'] for row in self._cm_runtime.all_submissions()}:
+                            self._cm_unified_discovery=None
+                            self._cm_fail('UNIFIED_UNKNOWN_ORDER_ACTIVITY')
+                            raise IncompleteInfoReport('UNIFIED_UNKNOWN_ORDER_ACTIVITY')
                     getattr(self, handler)(msg)
                     if isinstance(msg, nautilus_pyo3.PositionStatusReport):
                         # Pinned 1.231 only logs these reports; no cache effect.
@@ -309,6 +324,60 @@ class QualifiedInfoBoundary:
         venue_orders = tuple(order for order in native_orders if str(order.client_order_id) not in local_denied)
         return replace(self._cm_scope, durable_orders=tuple(durable)), revision, venue_orders, applied, tuple(signature)
 
+    def _cm_unified_discovery_current(self):
+        from coinmaster.strategy.live_recovery import recovery_policy_hash
+        proof=self._cm_unified_discovery
+        return (proof is not None and proof['account']==self._cm_scope.account_ref.lower()
+            and proof['ws_epoch']==self._cm_ws_epoch
+            and proof['policy_sha256']==recovery_policy_hash(self._cm_strategy.config,self._cm_strategy._candidate))
+
+    def _cm_validate_unified_dex_directory(self,raw):
+        if not isinstance(raw,list) or any(not isinstance(item,(tuple,list)) or len(item)!=2 for item in raw):
+            raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_UNKNOWN')
+        if not self._cm_unified_discovery_current() or any(item[0] not in self._cm_unified_discovery['dex_names'] for item in raw):
+            self._cm_unified_discovery=None
+            raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_CHANGED')
+
+    async def _cm_qualified_info(self,body):
+        value=await self._cm_info(body)
+        if self._cm_unified and body['type']=='allDexsClearinghouseState':self._cm_validate_unified_dex_directory(value)
+        return value
+
+    async def qualify_unified_prestart_orders(self):
+        """One bounded catalog snapshot, not perpetual universal order authority."""
+        from coinmaster.strategy.live_recovery import recovery_policy_hash
+        if not self._cm_unified:return
+        if self._cm_unified_discovery_current():return
+        if type(self._cm_info) is not SingleAttemptInfoTransport:raise IncompleteInfoReport('LIVE_READINESS_TRANSPORT_SINGLE_ATTEMPT_REQUIRED')
+        reservation=self._cm_inputs_budget.reserve(660,time.monotonic());cost=0;started=time.monotonic_ns()
+        try:
+            cost=20;raw=await self._cm_info({'type':'perpDexs'})
+            if not isinstance(raw,list) or not 1<=len(raw)<=32:raise IncompleteInfoReport('UNIFIED_DEX_DISCOVERY_BOUND_UNKNOWN')
+            names=[]
+            for item in raw:
+                name='' if item is None else item.get('name') if isinstance(item,dict) else None
+                if not isinstance(name,str) or name in names:raise IncompleteInfoReport('UNIFIED_DEX_CATALOG_MALFORMED')
+                names.append(name)
+            if '' not in names:raise IncompleteInfoReport('UNIFIED_DEFAULT_DEX_MISSING')
+            scope,_,_,_,_=self._cm_owned_scope();known=dict((cloid.lower(),oid) for _,cloid,oid in scope.durable_orders)
+            for dex in names:
+                if time.monotonic_ns()-started>9_000_000_000:raise IncompleteInfoReport('UNIFIED_ORDER_DISCOVERY_STALE')
+                cost+=20;orders=await self._cm_info({'type':'frontendOpenOrders','user':scope.account_ref,'dex':dex})
+                if not isinstance(orders,list) or len(orders)>=2000:raise IncompleteInfoReport('UNIFIED_ORDER_DISCOVERY_INCOMPLETE')
+                for row in orders:
+                    if not isinstance(row,dict) or dex or row.get('coin') not in scope.owned_coins:
+                        raise IncompleteInfoReport('UNIFIED_FOREIGN_RESTING_ORDER')
+                    cloid=row.get('cloid');oid=row.get('oid')
+                    if not ((isinstance(cloid,str) and cloid.lower() in known) or any(value is not None and value==oid for value in known.values())):
+                        raise IncompleteInfoReport('UNIFIED_UNKNOWN_RESTING_ORDER')
+            if time.monotonic_ns()-started>9_000_000_000:raise IncompleteInfoReport('UNIFIED_ORDER_DISCOVERY_STALE')
+            self._cm_unified_discovery=dict(account=scope.account_ref.lower(),ws_epoch=self._cm_ws_epoch,
+                policy_sha256=recovery_policy_hash(self._cm_strategy.config,self._cm_strategy._candidate),
+                dex_names=tuple(names),started_ns=started,completed_ns=time.monotonic_ns(),
+                scope='PRESTART_SNAPSHOT_ACCOUNT_EXCLUSIVE_WRITER_NOT_UNIVERSAL_FUTURE_GTC_PROOF')
+        except BaseException:self._cm_unified_discovery=None;raise
+        finally:self._cm_inputs_budget.settle(reservation,cost)
+
     async def _cm_refresh_native_account_for_generation(self):
         account=self._cache.account_for_venue(self.venue)
         event=getattr(account,'last_event',None)
@@ -316,6 +385,7 @@ class QualifiedInfoBoundary:
         query_started_ns=self._clock.timestamp_ns()
         self._cm_strategy.query_account(self.account_id)
         while True:
+            self._cm_require_healthy()
             if time.monotonic_ns()-self._cm_generation_started_ns>9_000_000_000:
                 raise IncompleteInfoReport('LIVE_NATIVE_ACCOUNT_GENERATION_STALE')
             account=self._cache.account_for_venue(self.venue);event=getattr(account,'last_event',None)
@@ -335,6 +405,7 @@ class QualifiedInfoBoundary:
                 cached_terminal={};archived_fills=();query_anchor_ms=query_anchor_tid=None
                 reservation=None;native_refresh_cost=0
                 if self._cm_inputs_enabled:
+                    if self._cm_unified:await self.qualify_unified_prestart_orders()
                     frozen_scope,_,native_orders,applied,frozen_signature=self._cm_owned_scope()
                     frozen_applied=applied
                     fingerprints={str(o.client_order_id):_native_order_fingerprint(o) for o in native_orders}
@@ -342,8 +413,11 @@ class QualifiedInfoBoundary:
                     fresh_orders=len(frozen_scope.durable_orders)-len(cached_terminal)
                     # Reserve complete minimum before ANY request; terminal history
                     # remains retained and validated, only redundant status reads go.
-                    reservation=self._cm_inputs_budget.reserve(finite_generation_reservation(fresh_orders),time.monotonic())
+                    if self._cm_unified and not self._cm_unified_discovery_current():raise IncompleteInfoReport('UNIFIED_PRESTART_DISCOVERY_REQUIRED')
+                    reservation=self._cm_inputs_budget.reserve(finite_generation_reservation(fresh_orders,unified=self._cm_unified),time.monotonic())
                     self._cm_generation_started_ns=time.monotonic_ns()
+                    if self._cm_unified:
+                        self._cm_unified_generation_reservation=reservation;self._cm_unified_native_charge=0
                 now = time.monotonic()
                 while self._cm_info_usage and now - self._cm_info_usage[0][0] >= 60:
                     self._cm_info_usage.popleft()
@@ -354,14 +428,15 @@ class QualifiedInfoBoundary:
                 remaining = 1000 - sum(weight for _, weight in self._cm_info_usage)
                 if remaining <= 0:
                     raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
-                weighted_info = InfoWeightBudget(self._cm_info, 584 if self._cm_inputs_enabled else min(400, remaining))
+                weighted_info = InfoWeightBudget(self._cm_qualified_info if self._cm_unified else self._cm_info, (672 if self._cm_unified else 584) if self._cm_inputs_enabled else min(400, remaining))
                 revision = None
                 try:
                     if self._cm_inputs_enabled:
                         if type(self._cm_info) is not SingleAttemptInfoTransport:
                             raise IncompleteInfoReport('LIVE_READINESS_TRANSPORT_SINGLE_ATTEMPT_REQUIRED')
-                        native_refresh_cost=16
+                        native_refresh_cost=0 if self._cm_unified else 16
                         await self._cm_refresh_native_account_for_generation()
+                        if self._cm_unified:native_refresh_cost=self._cm_unified_native_charge
                     scope, revision, native_orders, applied, signature = self._cm_owned_scope()
                     if self._cm_inputs_enabled and (scope.durable_orders!=frozen_scope.durable_orders or applied!=frozen_applied or signature!=frozen_signature):
                         raise IncompleteInfoReport('LIVE_RESERVED_SCOPE_MOVED')
@@ -375,12 +450,13 @@ class QualifiedInfoBoundary:
                             require_money_scope=True,cached_terminal_statuses=cached_terminal,
                             archived_fills=archived_fills,query_anchor_ms=query_anchor_ms,query_anchor_tid=query_anchor_tid,
                             allow_fill_subdivision=not self._cm_inputs_enabled,
+                            account_mode='unifiedAccount' if self._cm_unified else 'disabled',
                         )
 
                     first = await sweep(end)
                     second = await sweep(max(end + 1, self._clock.timestamp_ns() // 1_000_000))
                     selected_assets = await collect_selected_cross_assets(
-                        weighted_info, account_ref=scope.account_ref, coins=scope.owned_coins,
+                        weighted_info, account_ref=scope.account_ref, coins=scope.owned_coins,require_venue_limits=self._cm_unified,
                     )
                     instruments = {
                         coin: self._cache.instrument(InstrumentId.from_str(f"{coin}-USD-PERP.HYPERLIQUID"))
@@ -426,6 +502,9 @@ class QualifiedInfoBoundary:
                     await asyncio.sleep(0.25)
                 finally:
                     if self._cm_inputs_enabled and reservation is not None:
+                        if self._cm_unified:
+                            native_refresh_cost=self._cm_unified_native_charge
+                            self._cm_unified_generation_reservation=None
                         self._cm_inputs_budget.settle(reservation,weighted_info.used+native_refresh_cost)
                     elif weighted_info.used:
                         self._cm_info_usage.append((now, weighted_info.used))
@@ -556,7 +635,7 @@ class QualifiedInfoBoundary:
     def request_portfolio_observation(self,strategy):
         if not self._cm_inputs_enabled or not self.recovery_healthy() or time.monotonic()<self._cm_next_money_request:return False
         if self._cm_money_task is not None and not self._cm_money_task.done():return True
-        self._cm_next_money_request=time.monotonic()+1
+        self._cm_next_money_request=time.monotonic()+(3 if self._cm_unified else 1)
         self._cm_money_task=asyncio.get_running_loop().create_task(self._cm_collect_portfolio_observation(strategy))
         return True
 
@@ -577,27 +656,39 @@ class QualifiedInfoBoundary:
                     strategy._live_inputs_dirty=False
                 revision=self._cm_runtime.native_revision();epoch=strategy._c1_fill_epoch;ws=self._cm_ws_epoch
                 fingerprints=tuple(_native_order_fingerprint(o) for o in self._cache.orders(venue=self.venue))
-                self._cm_inputs_budget.reserve(2,time.monotonic())
-                raw=await self._cm_info({'type':'clearinghouseState','user':self._cm_scope.account_ref,'dex':self._cm_scope.dex})
+                if self._cm_unified:
+                    if not self._cm_unified_discovery_current():raise IncompleteInfoReport('UNIFIED_PRESTART_DISCOVERY_REQUIRED')
+                    proof=self._cm_unified_mode_proof
+                    if proof is None or proof['ws_epoch']!=ws or started-proof['started_ns']>9_000_000_000:
+                        raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED')
+                    self._cm_inputs_budget.reserve(22,time.monotonic())
+                    all_dex=await self._cm_qualified_info({'type':'allDexsClearinghouseState','user':self._cm_scope.account_ref})
+                    raw=await self._cm_info({'type':'spotClearinghouseState','user':self._cm_scope.account_ref})
+                else:
+                    self._cm_inputs_budget.reserve(2,time.monotonic())
+                    raw=await self._cm_info({'type':'clearinghouseState','user':self._cm_scope.account_ref,'dex':self._cm_scope.dex})
                 complete=time.monotonic_ns();available=self._clock.timestamp_ns()
                 if not self.recovery_healthy() or self._cm_runtime.native_revision()!=revision or strategy._c1_fill_epoch!=epoch or self._cm_ws_epoch!=ws or fingerprints!=tuple(_native_order_fingerprint(o) for o in self._cache.orders(venue=self.venue)):
                     raise IncompleteInfoReport('PORTFOLIO_NATIVE_REVISION_MOVED')
                 account=self._cache.account_for_venue(self.venue)
                 if getattr(strategy,'_live_inputs_dirty',False):raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED')
-                observation=cheap_portfolio_observation(raw,account_id=str(self.account_id),native_account=account,
+                producer=cheap_unified_observation if self._cm_unified else cheap_portfolio_observation
+                positional=(raw,all_dex) if self._cm_unified else (raw,)
+                observation=producer(*positional,account_id=str(self.account_id),native_account=account,
                     native_positions=tuple(self._cache.positions_open()),strategy_id=str(strategy.id),revision=revision,
-                    fill_epoch=epoch,ws_epoch=ws,started_ns=started,completed_ns=complete,available_ns=available)
+                    fill_epoch=epoch,ws_epoch=ws,started_ns=started,completed_ns=complete,available_ns=available,
+                    **({'native_open_orders':tuple(self._cache.orders_open(venue=self.venue))} if self._cm_unified else {}))
                 strategy._last_live_input_observation=observation
-                self._cm_runtime.append_evidence('portfolio:'+str(available),'account',dict(source='ONE_CLEARINGHOUSE_RESPONSE',raw=raw,
+                self._cm_runtime.append_evidence('portfolio:'+str(available),'account',dict(source='UNIFIED_SPOT_REPORTED_TOTAL' if self._cm_unified else 'ONE_CLEARINGHOUSE_RESPONSE',raw=raw,equity_basis=observation.equity_basis,
                     native_account_event_id=observation.native_account_event_id,generation_started_ns=started,response_completed_ns=complete,
                     source_available_ns=available,native_revision=revision,fill_epoch=epoch,ws_epoch=ws,command_capability=False))
         except IncompleteInfoReport as error:
             strategy._last_live_input_observation=None
             strategy._live_inputs_reason=str(error)
-            if str(error)=='PORTFOLIO_ACCOUNT_REFRESH_REQUIRED' and self._cm_account_refresh_wait is None:
+            if str(error) in ('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED','UNIFIED_NATIVE_ACCOUNT_REFRESH_REQUIRED') and self._cm_account_refresh_wait is None:
                 try:
                     # v1.231 source: perp2+spot2, each <=4 HTTP attempts =>16.
-                    self._cm_inputs_budget.reserve(16,time.monotonic())
+                    if not self._cm_unified:self._cm_inputs_budget.reserve(16,time.monotonic())
                     account=self._cache.account_for_venue(self.venue)
                     old=str(getattr(getattr(account,'last_event',None),'id',None) or getattr(getattr(account,'last_event',None),'event_id',''))
                     self._cm_account_refresh_wait=(old,time.monotonic_ns())
@@ -681,6 +772,56 @@ class QualifiedHyperliquidExecutionClient(QualifiedInfoBoundary, HyperliquidExec
         super().__init__(**native_kwargs)
         self.configure_info_boundary(scope, info, applied_fill_ids)
 
+    async def _update_account_state(self):
+        if not getattr(self,'_cm_unified',False):return await super()._update_account_state()
+        task=self._cm_unified_account_task
+        if task is None or task.done():
+            self._cm_unified_native_started_ns=time.monotonic_ns()
+            task=self._cm_unified_account_task=asyncio.get_running_loop().create_task(self._cm_collect_unified_native_account())
+        elif self._cm_unified_generation_reservation is not None:
+            self._cm_generation_started_ns=min(self._cm_generation_started_ns,self._cm_unified_native_started_ns)
+        return await task
+
+    async def _cm_collect_unified_native_account(self):
+        from coinmaster.ops.hl_unified_account import native_spot_usdc_dicts
+        started=self._cm_unified_native_started_ns;prepaid=self._cm_unified_generation_reservation is not None
+        reservation=None;cost=0
+        try:
+            if prepaid:
+                if self._cm_unified_native_charge:raise IncompleteInfoReport('UNIFIED_NATIVE_REFRESH_ALREADY_CHARGED')
+            else:reservation=self._cm_inputs_budget.reserve(28,time.monotonic())
+            cost=20
+            if prepaid:self._cm_unified_native_charge=cost
+            mode=await self._cm_info({'type':'userAbstraction','user':self._cm_scope.account_ref})
+            if mode!='unifiedAccount':raise IncompleteInfoReport('UNIFIED_MODE_MISMATCH')
+            cost+=8
+            if prepaid:self._cm_unified_native_charge=cost
+            native=await self._client.request_spot_balances()  # Stock native readonly public API, <=4*2.
+            balance,margin=native_spot_usdc_dicts(native)
+            completed=time.monotonic_ns()
+            if completed-started>9_000_000_000:raise IncompleteInfoReport('UNIFIED_NATIVE_ACCOUNT_STALE')
+            self._cm_require_healthy()
+            self.generate_account_state(balances=[AccountBalance.from_dict(balance)],margins=[MarginBalance.from_dict(margin)],
+                reported=True,ts_event=self._clock.timestamp_ns())
+            self._cm_unified_mode_proof=dict(mode=mode,started_ns=started,completed_ns=completed,ws_epoch=self._cm_ws_epoch)
+        except BaseException:
+            self._cm_unified_mode_proof=None
+            self._cm_fail('UNIFIED_NATIVE_ACCOUNT_UNKNOWN')
+            raise
+        finally:
+            if reservation is not None:self._cm_inputs_budget.settle(reservation,cost)
+
+    def _handle_account_state(self,msg):
+        if not getattr(self,'_cm_unified',False):return super()._handle_account_state(msg)
+        # The1.231 WS account payload uses the old perp/spot heuristic. Never let
+        # it overwrite this mode-aware reported state; refresh the public spot path.
+        strategy=getattr(self,'_cm_strategy',None)
+        if strategy is not None:
+            strategy._live_inputs_dirty=True;strategy._last_live_input_observation=None
+        if self._cm_unified_generation_reservation is not None:return
+        if self._cm_unified_refresh_task is None or self._cm_unified_refresh_task.done():
+            self._cm_unified_refresh_task=asyncio.get_running_loop().create_task(self._update_account_state())
+
     async def _disconnect(self) -> None:
         self._cm_fail("WS_DISCONNECTED")
         if self._cm_parity_task is not None:
@@ -751,10 +892,12 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
             normalize_prices=config.normalize_prices,
             include_builder_attribution=config.include_builder_attribution,
         )
-        provider = get_cached_hyperliquid_instrument_provider(
-            client=client, config=config.instrument_provider,
-            product_types=_resolve_product_types(config.product_types),
-        )
+        if getattr(cls._strategy,'_live_account_mode','disabled')=='unifiedAccount':
+            from coinmaster.ops.hl_unified_instruments import get_unified_instrument_provider
+            provider=get_unified_instrument_provider(client,config.instrument_provider,_resolve_product_types(config.product_types))
+        else:
+            provider=get_cached_hyperliquid_instrument_provider(client=client,config=config.instrument_provider,
+                product_types=_resolve_product_types(config.product_types))
         info = cls._info
         if info is None:
             info = SingleAttemptInfoTransport(testnet=environment == nautilus_pyo3.HyperliquidEnvironment.TESTNET,
@@ -786,6 +929,7 @@ def bind_clean_flat_live_handover(
     scope = client._cm_scope
     client._cm_management_only=manage_only
     client._cm_inputs_enabled=getattr(strategy,'_input_readiness_preparation',False)
+    client._cm_unified=getattr(strategy,'_live_account_mode','disabled')=='unifiedAccount'
     client._cm_strategy=strategy
     if client._cm_inputs_enabled:
         if type(client._cm_info) is not SingleAttemptInfoTransport:

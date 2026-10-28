@@ -44,7 +44,7 @@ def nodes(path,names):
  tree=ast.parse((ROOT/path).read_text())
  found=[]
  for node in tree.body:
-  if isinstance(node,(ast.FunctionDef,ast.ClassDef)) and node.name in names:found.append(node)
+  if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)) and node.name in names:found.append(node)
   elif isinstance(node,ast.Assign) and any(isinstance(t,ast.Name) and t.id in names for t in node.targets):found.append(node)
  return found
 

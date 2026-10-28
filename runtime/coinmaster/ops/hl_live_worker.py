@@ -153,6 +153,7 @@ class HyperliquidLiveNode:
         source = self.profile_root / "coinmaster/strategy/wave_overlay.py"
         self.profile = load_live_profile(self.profile_root, candidate)
         self.input_readiness=self.profile.get('input_readiness',False) is True
+        self.account_mode=self.profile.get('account_mode','disabled')
         if self.input_readiness and self.profile.get('manage_only_readiness',False) is not True:
             raise RuntimeError('INPUT_READINESS_REQUIRES_MANAGE_ONLY')
         # Qualification never implies order authorization: main checks approval before this read.
@@ -204,6 +205,7 @@ class HyperliquidLiveNode:
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
             active_seed=equity, candidate=candidate, seed_bars=self.warmup_bundle.bars,
+            live_account_mode=self.account_mode,live_equity_basis=self.profile.get('equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),
             **strategy_flags,
             max_mark_age_ns=120_000_000_000, entries_gate=self._entries_enabled,
             event_sink=self.hooks.record_event, native_fill_sink=state.record_native_fill, submission_sink=self.hooks,
@@ -245,7 +247,10 @@ class HyperliquidLiveNode:
         factory = ScopedHyperliquidExecClientFactory.bind(scope, state, self.strategy, account_lock_root=Path("/run/coinmaster-hl-live"))
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
-        self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
+        if self.account_mode=='unifiedAccount':
+            from coinmaster.ops.hl_unified_instruments import UnifiedHyperliquidDataClientFactory
+            self.node.add_data_client_factory('HYPERLIQUID',UnifiedHyperliquidDataClientFactory)
+        else:self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
         self.node.add_exec_client_factory("HYPERLIQUID", factory)
         self.node.build()
         self.feed_observer = FeedObserver(FeedObserverConfig(

@@ -211,7 +211,7 @@ def test_actual_full_generation_vector_prepays_native_refresh_and_refunds_unused
         'read_info_http':read_http,'_native_order_fingerprint':lambda o:[], 'replace':replace}
     run_ast(nodes('ops/hl_live_execution.py',{'ReadinessInfoBudget','finite_generation_reservation','InfoWeightBudget','SingleAttemptInfoTransport','QualifiedInfoBoundary'}),env)
     owner=env['QualifiedInfoBoundary']()
-    owner._cm_inputs_enabled=True;owner._cm_last_receipt=None;owner._cm_last_margin_assets=None;owner._cm_last_revision=None
+    owner._cm_unified=False;owner._cm_inputs_enabled=True;owner._cm_last_receipt=None;owner._cm_last_margin_assets=None;owner._cm_last_revision=None
     owner._cm_bootstrapped=False;owner._cm_ws_failure=None;owner._cm_info_usage=deque();owner._cm_ws_phase='BUFFERING'
     owner._cm_inputs_budget=env['ReadinessInfoBudget']();owner._cm_require_healthy=lambda:None
     owner._cm_fail=lambda reason:(_ for _ in ()).throw(AssertionError(reason))
