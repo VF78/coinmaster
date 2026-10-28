@@ -1,0 +1,19 @@
+{
+  "task": "CM_E4_C1_NATIVE_ENGINE_ACCEPTANCE_20261029",
+  "created_utc": "2026-10-28T22:54:24.366172+00:00",
+  "authority": "Ownerdirectrequest20261029 finishengine/Hyperliquidreadiness; rootboundedverificationallocation, NOTseparatenumericownerreply",
+  "maximum_physical_attempts": 3,
+  "spent": 0,
+  "active": 0,
+  "source_freeze": "PENDING",
+  "independent_source_review": "PENDING",
+  "root_go": false,
+  "real_orders_allowed": false,
+  "external_execution_allowed": false,
+  "historical_research_ledger_untouched": true,
+  "required_cases": [
+    "A",
+    "B"
+  ],
+  "attempts": []
+}

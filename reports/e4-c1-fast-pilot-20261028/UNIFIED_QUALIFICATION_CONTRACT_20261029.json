@@ -1,0 +1,51 @@
+{
+  "status": "OWNER_REQUESTED_UNIFIED_SOURCE_QUALIFICATION_IN_PROGRESS_NOT_READY",
+  "updated_utc": "2026-10-28T23:20:55.179845+00:00",
+  "owner_choice": "Сохранить Unified и отдельно квалифицировать его поддержку",
+  "engine": "Stock Nautilus1.231.0 remains; no v2 migration/globalupgrade",
+  "base_source_commit": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
+  "base_tests": "88purePASS16.20s/independentpeerPASS",
+  "implementation": "Thin explicit Unifiedcompat via native public APIs, using upstream5187 mapping; no libraryfork/manualcache/PNLengine",
+  "upstream_fix": "https://github.com/nautechsystems/nautilus_trader/pull/5187",
+  "reference_commit": "91853c3c36ee21b05d8006f1d483cc945a6af9dd",
+  "supported_scope": "Exact unifiedAccount, USDC-only collateral, default BTC/SOL cross perps; unhandledcollateral/isolated/foreignexposures UNKNOWN",
+  "equity_basis": "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1",
+  "E": "native reported USDCtotal == fresh spotUSDC.total, no extraUPNL add/subtract",
+  "evidence_class": "Official balance docs+upstream mapping+independent original production/test implementations; not synchronized heldvenueempiricalproof",
+  "references": [
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes",
+    "https://github.com/OneKeyHQ/app-monorepo/blob/6c60d4d2744ad41d4f458551e5c534a71401bf42/packages/shared/src/utils/hyperliquidPortfolioUtils.ts",
+    "https://github.com/rainbow-me/rainbow/blob/6fee444595a3938bf8f9fdf07eb888c0ffc0f524/src/features/perps/services/hyperliquid-account-client.ts",
+    "https://github.com/sushi-labs/sushiswap/blob/b693441566378a3b6c975168401e8ef79f5e0904/apps/web/src/lib/perps/user/get-portfolio-value.ts"
+  ],
+  "native_path": "request_spot_balances→nativeAccountBalance serialization→legacy native model→LiveExecutionClient.generate_account_state reportedTrue",
+  "ingress": "Cover _update_account_state AND _handle_account_state; old heuristic may notoverwrite validated Unified balances",
+  "zero_and_margin": "Explicit zeroUSDC clears previousbalance/margin; holdproxyonce, NOTtrueMM; no fee/funding re-post",
+  "currency_gate": "ActualstockBTC/SOLUSDquote/USDCsettlement and nativePnL/fee currency must beproven; no inventedFX/nonzeroMarginRates; see5024",
+  "DP": {
+    "retained_fraction": "0.45",
+    "loss_limit_percent": 55,
+    "HWM": "Existing initial then higherUTCdailyclose; no reset",
+    "runtime_applied": false
+  },
+  "budget": {
+    "classic_per_generation": 600,
+    "unified_per_generation_max": 700,
+    "rolling60s": 1000,
+    "N_max": 15,
+    "illustrative_complete_bound": "592+4N onlyif actualmode/spot/native/allDexs vector verified",
+    "gate": "Actualcompleteboundverified/prepaidbeforeHTTP; no recursion/silentextraAPI; oldestspan9s",
+    "userFunding_max45": "Separate samebucket/lock, saturation500UNKNOWN",
+    "foreign_resting_prestart_discovery": {
+      "maxDEXincludingdefault": 32,
+      "reserve_before_directory": 660,
+      "actual_cost": "20+20D",
+      "root_public_directory_probe_D": 11,
+      "scope": "prestartonly/bindWSepoch+account+policy+nativeownedrecon/exclusivewriterassumption; no universalfutureglobalrestingproof"
+    }
+  },
+  "native_attempts": 0,
+  "native_fixture_budget": "max3/spent0/sourcefreezepeer/rootGOstillpending",
+  "realorders_transfers_modechanges_services": 0,
+  "explicit_START_LIVE": false
+}

@@ -1,34 +1,52 @@
-# Подготовка live: единый порядок после уточнения владельца
+# Live: актуальный статус и порядок,29.10.2026
 
-Текущий статус: победитель ещё не выбран. Пятый FIRST_FRESH прошёл прибыль (TOTAL5500482.01310960), но не DD (55.3521162121%). Шестой BTC_POSTCUT_D1 запущен один раз в общем max8. Два qualification-слота сохранены. Реальный live требует отдельного явного START владельца после готового алгоритма.
+Исследовательский кандидат **BTC_POSTCUT_D1** определён: **TOTAL5499360.14984003 USDT из10000**, обеDD51.26863558248311161216905115%, сохранено90.47738788375289% исходной чистой прибылиS0. Это5.499млн, не54.999млн. Sourcefccd60c/configa2c7. Финальный live-release не выбран/не квалифицирован; отдельный START владельца обязателен.
 
-## Параллельно исследованию
+## Drawdown protection: уточнение владельца
 
-- Аудит текущего пилота выполнен только чтением. Worker release81e6318/NT1.231.0,55source files match seal, nativeSandbox.39nativefills связаны с intents, дублей/overrequest не найдено;45intents включают44terminal/1ACKED, текущие1position/1acceptedreduce-onlyorder. Это не утверждение flat или безопасного restart.
-- Полный аудит всех финансовых переходов с первого запуска UNKNOWN: detailed journal доступен только26–28Oct при старте28Sep, ledger хранит IDs/последние состояния вместо всех переходов.8758equity observations и39fills покрывают более длинный период, но не заменяют отсутствующую cash-chain. Funding в старом Sandbox явно не проводится.11BrokenPipe относятся к отключению HTTP-клиента, не доказывают ошибки стратегии;45066ready-status нельзя считать45066ошибками.
-- Для нового live обязательны существующий durable journal с typed decision→command→ACK→fill/account/funding payloads, source clocks/IDs/cursors/dedup, причины отказов/частичных исполнений и сохранённая история. Никакого нового OMS/PnL-сервиса и восстановления выдуманных старых данных. HTTP disconnect обработать точечно; прочие ошибки не скрывать.
-- Hyperliquid/Nautilus audit:12source-bound rows, official docs/issues. Stable1.231.0 совпадает с установленной;2.0.0rc7 prerelease не является поводом обновляться. OpenAccountState#5449 требует собственной acceptance проверки свежести/stockrefresh. Native retry config не считается защитой, если установленный source его не потребляет. Unknown ACK не переотправлять.
-- Live component e171 опубликован после прямого разрешения:47purePASS, peer0P0/P1; cancel identity и server/native held parity исправлены. Это COMPONENT_ONLY, не готовый live release. Phase2 money/H4 contract требует закрыть refresh budget/freshness и journal coverage до кода.
+Защищённый остаток45% = разрешённая просадка55%. Существующий durable `drawdown_limit_percent` должен быть55; профильный `deposit_protection_percent` тоже означает loss-limit, а не remainingfraction. Новый input-readiness профиль сейчас не содержит DP-поля: source-owner готовит явную привязку55 и profile/stateparity. Порог=0.45*существующийзащитныйHWM; новый HWM/reset не изобретается. В текущем механизме HWM повышается по валидному UTCdailyclose, не по каждому intradaypeak. Латч блокирует increases и вызывает native market_exit; только фактические подтверждения доказывают flat. Фактический loss может превысить порог при исполнении. Runtime не изменён. Полный ownerrequest — LIVE_DRAWDOWN_PROTECTION_OWNER_REQUEST.json.
 
-## После выбора и согласования алгоритма
+Benchmark был без внешнейDP; его нельзя переименовать в проверенныйDP55live. DP55 относится к подготовленному/проверенному релизу, внутренние C1cuts/restore и выбранное экономическое ядро не меняются.
 
-1. Зафиксировать экономический source/config/data/fees/model и полный benchmark/qualification. Представить результат владельцу для согласования версии; не скрывать DD/model/OOS ограничения.
-2. Сохранить финальное состояние/историю старого Sandbox и остановить его штатно только после этого согласования. Виртуальные позиции/капитал не импортировать в live. Stop не объявлять nativeflat без подтверждения.
-3. Повторно проверить stable Nautilus. Обновлять только при обоснованной совместимой необходимости, отдельно квалифицировать adapter/fees/rounding/serialization; не менять на RC автоматически. Immutable release, rollback и профиль относятся к новой версии; source push не deployment.
-4. Выполнить запрошенный владельцем fresh benchmark на фактическом целевом runtime/release с scrubbed research environment и без торговых credentials/venue orders. Это release verification, не подмена старых результатов и не новая оптимизационная попытка; отдельный точный bounded replay-протокол перед запуском.
-5. Проверить release diff/мертвый код/необоснованные ветви и connected native acceptance: partial/zero IOC, cancel+latefill, duplicate/lostACK, reconnect, account/funding refresh, warmup/closedbars, restart+MANAGE_ONLY, реальная lot/fee/margin достаточность, pause/stop/reconcile. Все найденные P0/P1 закрыть простыми системными изменениями.
-6. Сверить designated account/agent/permissions/private budget/no other writer, реальный баланс и maxstart, точный LIVE_RELEASE. До отдельного START live_order_capability=false. Начальный капитал/адреса/ключи/readbacks только private.
+## 1. Текущий пилот — частичный аудит завершён, полный исторический PASS недоказуем
 
-## GUI и авторизация
+Read-only snapshot: установленный Worker81e6318/native1.231,55/55sourcefiles совпали сseal.39fills/45intents, без дубликатов, fillwithoutintent и overrequest. Один ACKED соответствует рабочемуreduce-only ордеру; snapshotсодержит открытую виртуальнуюпозицию. Это старый nativeSandbox, не выбранныйBTC_POSTCUT_D1.
 
-GUI доказанно выпускается отдельно: отдельные unit/cwd/release; promote script меняет API/connections broker и проверяет неизменность workerPID. Сохраняются API/status schema и fingerprint compatibility. По прямому указанию владельца полный GUI-редизайн выполняется после подготовки/старта live; независимая публикация GUI не требует менять торговый процесс.
+Подробные логи доступны только26–28октября при старте28сентября. Полная cash-chain/исторические причиныpartial/reject/cancel отсутствуют в latest-statejournal. Funding старогоSandbox по его контракту не проводится. Найдены краткие задержкиwarmup до15мин иHTTPBrokenPipe при отключении клиента; последствия для торговых решений не доказаны. Полный финансовый PASS с первого запуска не заявлен; отсутствующие данные не восстанавливаются выдуманными суммами.
 
-После этого: все страницы/настройки под выбранный алгоритм; Dashboard отражает actual account/position/order/PnL/funding без виртуального стартового капитала/исследовательских полей. Executions→Trade History, точные columns/layout/type/color/spacing из Hyperliquid reference и приватного оригинального screenshot2924×1810. Не копировать личные trade-values/email/balance в fixtures или публичные отчёты. Browser/DPR/viewport фиксируются для pixel comparison; точность не заявляется без rendered validation.
+Новые durablepayloads decision→command→ACK→fill/account/actualfunding и sourceclock/dedup готовятся существующим стеком для нового релиза. Все fixes не объявлены завершёнными; текущий pilot не менялся.
 
-График: колёсико над plot меняет горизонтальный масштаб; над price scale — вертикальный; проверить drag/zoom/reset/autoscale и отсутствие сброса viewport на stream updates. Сначала actual installed chart version/typings; только public API, без private DOM/engine hacks. Навыки ui-ux-pro-max и lightweight-charts применяются, точный пользовательский reference имеет приоритет.
+## 2. Победитель и переход на него — исследование есть, deployment ещё не проводился
 
-Отдельная auth задача: устранить ежедневный ввод пароля и заменить пароль указанным владельцем. Причина установлена:12habsolute+30minidle, session-cookie безMaxAge/Expires; authSQLite и fingerprint устойчивы. Подготовить максимально практичную persistent long session со скользящим idle, server revocation/logout/password-change invalidation; финальный срок зафиксировать по ограничениям стека. Не отключать auth/CSRF/HttpOnly/Secure/SameSite. Новый пароль защищён в Keychain, применение пока PENDING. Ни пароль, ни APIprivatekey не писать в source/reports/logs.
+Независимые эталонные сверки108lifecycle/540fill/1248funding точны0E-8, liquidation0/flat. Стресс TOTAL5469423.50671297/DD51.41651839, технический/riskPASS; нижеосновногоprofitfloor на973.008274377 — отдельная заранее заявленная диагностика.
 
-## Сохранность
+57дней[01.09.2026,28.10.2026) с новымseed10000: rawTOTAL19661.98052982, доходность96.6198052982%, обеDD34.9510965702;7lifecycle/26fills/109funding точны0E-8, orders0/flat/liquidation0. СамprocessFAILED1 из-за неверного учёта неполногооктября при экспорте. Усекающийсяsettledgzip сохранён; completeeventwatermarks независимо доказали DD. Полный qualificationPASS не заявлен.
 
-Сервисы/средства/реальные ордера не изменялись. Ключ API локально проверен штатной функцией Nautilus и сохранён в Keychain; агент привязан к designated account, результат только private. Это не START. Скриншот, account config и financial readbacks остаются gitignored/private. Публичная публикация проверенного CoinMaster source/tests/technicalreports разрешена; секреты/аккаунтные финансовые данные исключены.
+Report-onlyfix29f66e166ff6b518b1b27a76095d6acd7649e4e4 опубликован:26purePASS и независимое0P0/P1, correctedvalidator проверен на реальном immutableRAW; writers закрываются при исключениях. OriginalFAILED8 не переписан, nativeповтора нет; бюджет8/8 закрыт.
+
+Текущийpilot не остановлен, новаяверсия не задеплоена, freshbenchmark на фактически установленном целевом релизе и connectednativefaultacceptance ещё не выполнены. Повторная официальнаяпроверка29октября: GitHub latestrelease ведёт наv1.231.0, установленнаяверсия совпадает. Нового обновления/установки не делали; RC автоматически не ставится.
+
+## 3. Hyperliquid/Nautilus — аудит источников выполнен, исправления и connectedproof частичны
+
+Официальные docs/taggedsource/installedsource и maintainerissues проверены. Componente171 опубликован:47purePASS/peer0P0/P1, исправлены cancelidentity и native/serverheldsetparity; unknownACK не переотправляется. Это componentproof, неexchangequalification.
+
+Свежая sourceпроверка: e171HEAD,11файловWIP603added/14removed сохранены, без reset/повторареализации. Уже есть ClosedTradeClock/native1m subscribe-request/D1dispatch и terminalevidence-querycache. Не завершены currentmoney/C1materializer, связная journalatomicity/budget/freshness квалификация и реальные failurecases. StockQueryAccount использует2endpoint/cost4normal и16worstretries; Bybitconfirmedbarfilter доказан поsource1.231. Эти факты не заменяются поведением latest/developdocs.
+
+SingleVPSowner завершает минимальный existingstackbridge: всеистории/H/rights сохраняются; исключаются из freshorderStatusqueries только доказанно terminalorders с native+fillfingerprints; OPEN/UNCERTAIN остаются, новыеfill/revision отзываютcertificate. Никакого нового OMS/PnLсервиса, молчаливого увеличенияbudget илиповторногоall-historysweepкаждуюкотировку. Нужны connectedпроверкиpartial/latefill/duplicate/lostACK/reconnect/accountfunding/margin/precision/restart/stop. Venue/node/nativecalls сейчас0.
+
+## 4. GUI и авторизация — независимость deployment доказана, реализация отложена
+
+Отдельныеunit/cwd/release и штатныйpromote подтверждают самостоятельныйGUIdeployment с неизменнымworkerPID; требуется API/fingerprintсовместимость. По поручению владельца глубокийредизайн выполняется послеlive.
+
+ПерерисовкаDashboard/всехстраниц/TradeHistory, удалениеpilot-text, точноецветовое/пиксельноесовпадение Hyperliquid и plot-horizontal/price-scale-vertical zoom **ещё не выполнены и не приняты**. Reference/screenshot приватно сохранены; личныезначения вfixtures не копируются. PixelPASS только после actualbrowser/DPR/viewport comparison.
+
+Долгаясессия/сменапароля тоже pending: причинаlogout установлена12habsolute/30minidle/sessioncookie. Новыйпароль вKeychain, не применён. Auth/CSRF/Secure/HttpOnly/revocation сохраняются.
+
+## Ближайший порядок
+
+1. Завершить existinglivebridge и DP55profile/stateparity, focusedenginefreeпроверки, одинpeer. Представить точныйrelease/casemap и оставшиесяgates; без новых поисковпараметров.
+2. После выбора/согласования версии владельцем: сохранитьстарыйSandbox, остановитьштатно; ещёразпроверитьNautilus, сформироватьimmutabledeployment/rollback, выполнитьзапрошенную проверкуэталона на целевомruntime/release по конкретномупротоколу, connectednativefaults и аудитdiff/мертвогокода/расчетов.
+3. Freshprivateaccount/agent/budget/precision/margin reconciliation и фактическийDP55readback. Реальныеордера/переводы/START только после отдельногоявного подтверждения владельца.
+4. Послеlive — независимыйGUI/authрелиз по согласованномуreference и acceptance.
+
+Secrets/accountaddresses/balances/readbacks остаютсяprivate. Публикация исходников неdeployment. MVP честно сохраняет legacyreference/zeroTP и SOLalpha; настоящий continuousSOLhedge/real3TP — последующаяоптимизация, не достигнутыйфактэтойверсии.

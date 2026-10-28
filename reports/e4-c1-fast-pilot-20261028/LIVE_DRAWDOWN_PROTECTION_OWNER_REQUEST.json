@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-28T22:45:33.708634+00:00",
+  "authority": "DIRECT_OWNER_CLARIFICATION_20261029",
+  "owner_words": "Drawdown protection на остаток45%, то есть просадка не более55%",
+  "retained_equity_fraction": "0.45",
+  "drawdown_limit_percent": 55,
+  "existing_durable_key": "drawdown_limit_percent",
+  "profile_key": "deposit_protection_percent",
+  "profile_key_semantics": "Existing field denotes allowed loss percent, not retained percent; new input-readiness profile must explicitly bind55 and enforce durable-state parity",
+  "anchor": "Existing persistent protectiveHWM: initial validated equity, then higher validUTCdailyclose; NOT silently changed to intraday peak",
+  "threshold": "HWM * 0.45",
+  "action": "Existing latch blocks increases and invokes native market_exit; only actualnative+durable reconciliation establishesflat; existing explicitpaused-flat reset only",
+  "hwm_reset_authorized": false,
+  "runtime_applied": false,
+  "source_preparation": "SingleVPSowner minimalprofile55/stateparity/tests; no runtime setter/deploy/service/orders",
+  "hard_executed_loss_guarantee": false,
+  "benchmark_compatibility": "Historical5.499m report used researchDPdisabled; do not relabelit asDP55testedrelease or infer equaloutcome; releaseverificationstillrequired",
+  "live_START_authorized": false
+}

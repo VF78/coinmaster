@@ -390,11 +390,66 @@
     "publication": "PUBLIC_REMOTE_EXACT_VERIFIED_BY_OWNER",
     "source_commit": "29f66e166ff6b518b1b27a76095d6acd7649e4e4"
   },
-  "live_preparation_current": "Resumeexistinge171bridge: cheapmoney+confirmedtradebars+stockaccountrefresh16worstcost+durabletypedjournal+terminalqueryscopeboundedbyfreshproof; allhistory/H/unknownsretained; enginefreeonly, no liveorders/services",
+  "live_preparation_current": "Freshsourceowner live_bridge_owner_20261029 verifiede171HEAD+11fileWIP603add/14del; reuseexistingClosedTradeClock/native1msubscribe/D1dispatch andterminalqueryevidence. Currentmoney/C1materializer, journalatomicity/budgetguards unqualified. PrepareDP55state/profileparity(no runtime); enginefreeonly.",
   "manager_publication_current": {
     "local_commit": "1e94dc4f5b74b80cf03a34cf81d1ee4d78385d90",
     "push": "TIMED_OUT_READBACK_CONFIRMS_REMOTE_STILL1db9697",
     "last_verified_public": "1db96977e3511b1f55c8eac52313a497f11a439a",
     "restart_critical_changes_preserved_locally": true
+  },
+  "live_drawdown_protection_owner_request": {
+    "recorded_utc": "2026-10-28T22:45:33.708634+00:00",
+    "authority": "DIRECT_OWNER_CLARIFICATION_20261029",
+    "owner_words": "Drawdown protection на остаток45%, то есть просадка не более55%",
+    "retained_equity_fraction": "0.45",
+    "drawdown_limit_percent": 55,
+    "existing_durable_key": "drawdown_limit_percent",
+    "profile_key": "deposit_protection_percent",
+    "profile_key_semantics": "Existing field denotes allowed loss percent, not retained percent; new input-readiness profile must explicitly bind55 and enforce durable-state parity",
+    "anchor": "Existing persistent protectiveHWM: initial validated equity, then higher validUTCdailyclose; NOT silently changed to intraday peak",
+    "threshold": "HWM * 0.45",
+    "action": "Existing latch blocks increases and invokes native market_exit; only actualnative+durable reconciliation establishesflat; existing explicitpaused-flat reset only",
+    "hwm_reset_authorized": false,
+    "runtime_applied": false,
+    "source_preparation": "SingleVPSowner minimalprofile55/stateparity/tests; no runtime setter/deploy/service/orders",
+    "hard_executed_loss_guarantee": false,
+    "benchmark_compatibility": "Historical5.499m report used researchDPdisabled; do not relabelit asDP55testedrelease or infer equaloutcome; releaseverificationstillrequired",
+    "live_START_authorized": false
+  },
+  "native_engineering_acceptance": {
+    "protocol": "NATIVE_ENGINE_ACCEPTANCE_PROTOCOL_20261029.md",
+    "ledger": "native-engine-acceptance-ledger.json",
+    "maximum_physical_attempts": 3,
+    "spent": 0,
+    "root_go": false,
+    "historical_budget_separate": true
+  },
+  "live_read_budget_amendment": {
+    "source_review": "live_read_budget_review sourceverified540+4N",
+    "per_generation": 600,
+    "rolling_per60seconds": 1000,
+    "previous_per_generation": 400,
+    "N_max": 15,
+    "fill_response_saturation": 2000,
+    "recursive_subdivision": false,
+    "oldest_response_seconds_max": 9,
+    "source_implementation": "CONNECTED_PURE_CHECKPOINT_PENDING_FULL_PEER",
+    "native_venue_changes": 0
+  },
+  "live_source_checkpoint": {
+    "source_commit": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
+    "published_exact_verified": true,
+    "bridge_fresh_init_DP55": "88purePASS16.20s/independentpeerPASS",
+    "native_tests": 0,
+    "full_live_ready": false,
+    "Unified_extension": "IN_PROGRESS_SEPARATE_REQUIRED_GATE"
+  },
+  "Unified_qualification_contract": "UNIFIED_QUALIFICATION_CONTRACT_20261029.json",
+  "read_only_account_precheck": {
+    "unsigned_Info_reads": 5,
+    "no_keys_loaded": true,
+    "no_signed_actions_or_orders": true,
+    "native_HTTP_AccountState": "READONLY_FETCH_SUCCESS_NO_NODECACHE_PROOF",
+    "private_receipts": "J/private only; no accountidentity/balance/readback public"
   }
 }
