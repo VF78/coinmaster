@@ -1,0 +1,15 @@
+# QUAL_STRESS — narrow independent existing-artifact audit
+
+Technical PASS; current-cap risk PASS; stress profit floor FAIL (diagnostic under frozen QUALIFICATION_PROTOCOL.md).
+
+- TOTAL 5469423.50671297 is 973.008274377 BELOW the unchanged reference floor 5470396.514987347. Stress cost versus frozen BTC_POSTCUT_D1 benchmark is -29936.64312706. Total retention 99.45563406812098272594081943%; net-profit retention 99.45464239346852822977613529%.
+- Frozen benchmark TOTAL 5499360.14984003 retains its separately audited PASS. This stress result does not change the floor or reclassify benchmark economics.
+- Independently recomputed settled and coherent event DD both 51.41651839266131413482653213%, within current cap 51.80315157406654834417870238%. Strict 50% remains unmet. Event sequence IDs joined to event_ns; peak 2025-01-13 00:36 UTC 162702.67102321, trough 2025-01-13 14:36 UTC 79046.62225121.
+- All 108 unique native lifecycles closed. Native Position realized PnL 5409261.39564821 + actual signed funding 50162.11106476 + seed 10000 = terminal cash, bridge 0E-8. Position PnL includes native fees; fees are not subtracted twice.
+- Physical PRE/POST pairs independently reconcile: 541 fills and 1248 funding transitions; fill cash delta 5409261.39564821, actual funding 50162.11106476, terminal bridge 0E-8. No unmatched PRE, duplicate POST or unexplained physical cash mutation. Funding JSON/SQLite/original journal cash-after/event-pair checks pass. Retrospective SETTLED watermarks are excluded from physical mutation accounting.
+- 1051199 settled receipts, 24 monthly rows, four predeclared windows, 3157178 contiguous native event rows, 2105976 eligible event DD samples including seed and one terminal boundary left limit. Post-boundary terminal cash is reconciled; post-boundary mutations do not enter interval DD.
+- Zero modeled liquidations, terminal native FLAT/open positions zero/lockout true. Native final order export: 610 unique orders, 373 FILLED/237 CANCELED, active orders zero.
+- Five cuts, three restores, two revocations; all eight C1 actions exported. Native total fees 702038.90615190, intervention fees 8631.45701501, intervention turnover 15693558.2091.
+- Actual native child 74342 exit 0; UUID e98fc3db-6497-47f8-84c0-1e2fdf81b9d3; receipt SHA bcc3d3acd665a7af6d514d79e1568da2df7eb35466911650d265201a71b98857. Native report SHA 061b23b19c2bd97242642c5ededf19442f33aa5e97312d27c6889c4035cc841e. Source fccd60c01e8cae5e8258748b046f43f88a16bb79; config 5a1aab4a8e0c75711869fd886aa80c08052874f38e3d107f6d2bea925ac62883. All identities and actual --qualification-stress argument verified.
+
+Scope: existing native artifacts only, bounded analyzer reused. No engine/native runs, tests, source/product/config/registry edits, optimization/retry, orders, deployment or live claims. Earlier immutable benchmark/FIRST_FRESH audits are preserved and hash-pinned. Synthetic minute-close L1 and one adverse native tick are diagnostic assumptions; no historical exchange fill, venue capacity, intraminute path or fresh OOS guarantee.

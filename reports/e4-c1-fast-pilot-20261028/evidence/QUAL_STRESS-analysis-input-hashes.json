@@ -1,0 +1,13 @@
+{
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-BTC-POSTCUT-D1-fccd60c01e8c/runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/QUAL_STRESS/execution.json": "bcc3d3acd665a7af6d514d79e1568da2df7eb35466911650d265201a71b98857",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-c1-fast-pilot-20261028/evidence/analyze_QUAL_STRESS_existing.py": "0a450e848e965dbbe9b44a54eda1ab5b5aa3c93572becbcf6b40c2ab9c1a8dcc",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-c1-fast-pilot-20261028/evidence/analyze_FIRST_FRESH_existing.py": "593be7462d19993b476fcc7b4250117109252541259c718eefb942608f1479cf",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/e4-c1-fast-pilot-20261028/evidence/BTC_POSTCUT_D1-analysis.json": "591c305aba29b7215c0a0cb07fbb6f79a7b3f737f68c07775aeedea3e82a9e7e",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/QUAL_STRESS/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "061b23b19c2bd97242642c5ededf19442f33aa5e97312d27c6889c4035cc841e",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/BTC_POSTCUT_D1/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "c3e23a88efff0688b33b6d9e93c9dd29e0f19e9973e2224b845e8fa51bd049d2",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/QUAL_STRESS/result/coherent-native-events.jsonl.gz": "3ead81f51766f409b0e0f45046b69c768849bba2b64cbbe16c4dd300e74e2cf7",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/QUAL_STRESS/result/minute-native-settled-receipts.csv.gz": "66eaa58b9ae3065902c0e231baf10a984987d0404391d1b882d2e898cd608c53",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/BTC_POSTCUT_D1/result/minute-native-settled-receipts.csv.gz": "ad48e45a2e473368900f2f163642fc7ec0ee5304c2d92950e934f05037ed7c81",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/QUAL_STRESS/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-funding.sqlite": "25d0039d087a3bc33c70811d99c3c98b542b07231c63c3a9342ece85766f7114"
+}

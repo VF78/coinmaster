@@ -1,0 +1,14 @@
+{
+  "status": "PASS_NATIVE_TERMINAL_ORDERS_CLOSED",
+  "orders": 610,
+  "unique_order_ids": 610,
+  "final_status_counts": {
+    "FILLED": 373,
+    "CANCELED": 237
+  },
+  "active_order_count": 0,
+  "orders_export_sha256": "ece28bbb64540270c0cff3757418edfa61f6a6c0cd450de9d06636b1b468e9fd",
+  "orders_export_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/QUAL_STRESS/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-orders.csv",
+  "frozen_protocol_sha256": "8e07cdedb4375e790ac8fe0c9f71ee26361b06420cb83ae0ce4b6f698c1dc9b7",
+  "protocol_profit_policy": "Stress profit/retention reported separately as diagnostic; reference profit-floor decision remains frozen benchmark."
+}

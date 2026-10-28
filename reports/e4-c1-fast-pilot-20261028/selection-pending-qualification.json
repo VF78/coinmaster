@@ -1,6 +1,6 @@
 {
   "recorded_utc": "2026-10-28T22:00:35.865896+00:00",
-  "status": "FROZEN_FOR_QUALIFICATION_NOT_LIVE_READY",
+  "status": "BENCHMARK_PASS_STRESS_RISK_PASS_VALIDATION_FINANCIAL_PASS_TECHNICAL_EXPORT_FAIL",
   "candidate": "BTC_POSTCUT_D1",
   "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
   "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
@@ -13,7 +13,12 @@
   "profit_floor": "5470396.514987347",
   "DD_cap_percent": "51.80315157406654834417870238",
   "independent_financial_audit": "PASS_NATIVE_CASH_AND_108_LIFECYCLE_EXACT",
-  "qualification": "TWO_CONDITIONAL_SLOTS_NOT_STARTED",
+  "qualification": {
+    "stress": "INDEPENDENT_TECHNICAL_RISK_PASS_PROFIT_FLOOR_FAIL_DIAGNOSTIC",
+    "validation": "INDEPENDENT_RAW_FINANCIAL_PASS_ACTUAL_PROCESS_FAILED_REPORT_MONTH_COVERAGE",
+    "native_budget": "8_OF8_EXHAUSTED_7COMPLETED1FAILED_NO_RETRY",
+    "release_ready": false
+  },
   "live_ready": false,
   "owner_START_LIVE": false,
   "limitations": [

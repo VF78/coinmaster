@@ -1,7 +1,7 @@
 {
   "task": "CM-E4-C1-FAST-PILOT-20261028",
   "recorded_utc": "2026-10-28T22:00:35.865896+00:00",
-  "status": "BENCHMARK_AUDIT_PASS_QUAL_STRESS_RUNNING_ATTEMPT7_OF8",
+  "status": "BENCHMARK_AND_STRESS_ACCEPTED_VALIDATION_RAW_FINANCIAL_PASS_TECHNICAL_EXPORT_FAILED",
   "owner_authorization": {
     "direct_instruction": "возьми план из вложения за основу ... Сделай единый согласованный план, актуализируй project и продолжай по уточненному плану",
     "attachment_path": "/Users/vf/Downloads/CODEX_E4_C1_FAST_PILOT_2026-10-28.md",
@@ -29,7 +29,7 @@
     "candidate_max": 6,
     "conditional_control_max": 0,
     "qualification_max": 2,
-    "historical_attempts_started": 7,
+    "historical_attempts_started": 8,
     "failed_invalid_repeats_count": true,
     "engineering_component_calls": {
       "pytest_calls": 18,
@@ -43,9 +43,10 @@
     "MethodA_status": "HOLD_9_OF_19_UNCHANGED",
     "authority": "experiment_registry.csv historical_budget_count, claim beforePopen",
     "candidate_slots_remaining": 0,
-    "active_historical_children": 1,
+    "active_historical_children": 0,
     "unused_qualification_admission": "CONDITIONAL_ON_INDEPENDENT_BENCHMARK_AUDIT_AND_FROZEN_PROTOCOL",
-    "unused_control_admission": "NO_MATERIAL_COMPARABILITY_NEED"
+    "unused_control_admission": "NO_MATERIAL_COMPARABILITY_NEED",
+    "remaining_historical_attempts": 0
   },
   "source": {
     "E4": "bd04c9b3858bcda40060a08eff488849c69af5d8",
@@ -220,12 +221,59 @@
       "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
       "config_sha256": "5a1aab4a8e0c75711869fd886aa80c08052874f38e3d107f6d2bea925ac62883",
       "attempt_uuid": "e98fc3db-6497-47f8-84c0-1e2fdf81b9d3",
-      "status": "RUNNING",
+      "status": "COMPLETED_TECHNICAL_RISK_PASS_STRESS_PROFIT_FAIL_DIAGNOSTIC",
       "automatic_repeat": false,
       "scope": "ONE_FIXED_ADVERSE_TICK_QUALIFIER",
       "protocol": "QUALIFICATION_PROTOCOL.md",
       "runner_sha256": "3b712a15f9f4a044544e547ec9a64003355bcaf0b9f278c3be13565747dc9de8",
-      "actual_native_child_pid": 74342
+      "actual_native_child_pid": 74342,
+      "native_child_exit": 0,
+      "TOTAL": "5469423.50671297",
+      "settled_DD_percent": "51.41651839266131413482653213",
+      "event_DD_percent": "51.41651839266131413482653213",
+      "report_sha256": "061b23b19c2bd97242642c5ededf19442f33aa5e97312d27c6889c4035cc841e",
+      "execution_receipt_sha256": "bcc3d3acd665a7af6d514d79e1568da2df7eb35466911650d265201a71b98857",
+      "reference_profit_floor_status": "FAIL_DIAGNOSTIC_STRESS_ONLY_SHORT_973.008274377",
+      "qualification_technical_status": "PASS",
+      "qualification_risk_status": "PASS",
+      "independent_artifact_manifest_sha256": "04630335880f751d53c16dd3cf8a1b1da10508a430e5bd7eb0022b65af9ea594"
+    },
+    "QUAL_VALIDATION": {
+      "root_go": true,
+      "status": "FAILED_NATIVE_EXIT_REPORT_MONTH_COUNT_RAW_AUDIT_PENDING",
+      "source_commit": "299197a7140ad0ae5c18aecdf596cbdbd7124bf4",
+      "config_sha256": "9c7e16e4bee8ab6c91dae5009b083b1509ffe6053d36c5c38af929964a78d1db",
+      "peer_sha256": "b1783fbfa26ec716e72a5e8745d965a8078af7789c00e0560c21c7156ad041f4",
+      "preflight_sha256": "2eef7fdee038f61863436534d4b92bfb2d3db947ff57d64189c8ffb489eb2af0",
+      "runner_sha256": "749a1d0e1391f3c395fc34a727d3fd928bca3b4cacd1f2e60ab8333acbb77f33",
+      "data_hash": "1714540d189ce5dbc45489ea007f2fb16a5dafb9a451c13010ceee208639171b",
+      "automatic_repeat": false,
+      "fresh_account_seed": "10000",
+      "fresh_account_reserve": "0",
+      "period": "[2026-09-01,2026-10-28)",
+      "native_attempts_started": 0,
+      "attempt_uuid": "c441e4fe-8a0d-43f0-8a83-62de3e14f1cf",
+      "scope": "ONE_FIXED_CANDIDATE_VALIDATION_NO_TUNING_NO_REPEAT",
+      "actual_native_child_pid": 75889,
+      "native_child_exit": 1,
+      "execution_receipt_sha256": "61546762847d41b2e9eb26bef146b87827bb908c526fdfdaba35056f5a110392",
+      "raw_report_sha256": "640a0abaa07a99ccdd682e8672828b4c1c90b1a6601a09680343d9af8ab4a3a2",
+      "raw_reported_TOTAL": "19661.98052982",
+      "raw_reported_DD_percent": "34.95109657022590675517330698",
+      "qualification_technical_status": "FAIL_NATIVE_EXIT1_REPORTING_BUG",
+      "financial_evidence_status": "PASS_INDEPENDENT_RAW_CASH_POSITION_FUNDING_BOTH_DD",
+      "failure": "MONTHLY_ROW_COUNT:2; expected_months formula incorrectly excludes partialOctober; engine.run/end completed before report assertion; gzip trace finalization under audit",
+      "independent_artifact_manifest_sha256": "2548616da906874cd1d238fd63c1610a0615cc1debc39c9a7173a1c1a19c9bf7",
+      "raw_TOTAL": "19661.98052982",
+      "raw_return_percent": "96.6198052982",
+      "raw_settled_DD_percent": "34.95109657022590675517330698",
+      "raw_event_DD_percent": "34.95109657022590675517330698",
+      "settled_trace_limit": "Originalsettledgziptruncated81654rows; completeeventgzip82079SETTLEDwatermarks independentlyprovefullsettledDD",
+      "native_cash_position_funding_reconciliation": "EXACT_0E-8",
+      "model_liquidations": 0,
+      "terminal_positions": 0,
+      "active_orders": 0,
+      "config_reconstruction": "Analysis-only8deterministiclaterpackagingfields matches9c7 intendedconfig; rawcd20 preserved"
     }
   },
   "qualification_data": {
@@ -318,5 +366,12 @@
     "live_start": "EXPLICIT_FINAL_START_REQUIRED",
     "credentials": "PRIVATE_KEYCHAIN_ONLY_NOT_IN_REPORTS",
     "GUI_independent": true
+  },
+  "project_sync": {
+    "issue_137_update": "BLOCKED_NETWORK_TLS_HANDSHAKE_TIMEOUT",
+    "connector": "404",
+    "public_git_checkpoint": "1db96977e3511b1f55c8eac52313a497f11a439a",
+    "remote_verified": true,
+    "effect": "No trading effect; do not repeat retry loop. Public results/handoff are current; Projectreadback stale."
   }
 }

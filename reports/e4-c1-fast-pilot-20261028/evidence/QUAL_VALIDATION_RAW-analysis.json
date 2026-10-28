@@ -1,0 +1,285 @@
+{
+  "status": "PROCESS_FAILED_FINANCIAL_EVIDENCE_INDEPENDENTLY_RECONCILED",
+  "normal_qualification_PASS": false,
+  "process_status": "FAILED_NATIVE_EXIT",
+  "actual_exit": 1,
+  "TOTAL": "19661.98052982",
+  "net_profit": "9661.98052982",
+  "return_percent": "96.619805298200",
+  "raw_sha256": "640a0abaa07a99ccdd682e8672828b4c1c90b1a6601a09680343d9af8ab4a3a2",
+  "raw_audit_state": "NATIVE_COMPLETE_PACKAGING_NOT_VALIDATED",
+  "raw_report_status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "run_interval": {
+    "end_exclusive": "2026-10-28T00:00:00+00:00",
+    "initial_active_seed": "10000",
+    "start": "2026-09-01T00:00:00+00:00"
+  },
+  "warmup": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00) feature-only",
+  "data_hash": "1714540d189ce5dbc45489ea007f2fb16a5dafb9a451c13010ceee208639171b",
+  "raw_config_hash": "cd20ace5fd0a4e0a65f9bcbf85622216aa330677857c841911508af1cfa375ba",
+  "intended_final_config_hash": "9c7e16e4bee8ab6c91dae5009b083b1509ffe6053d36c5c38af929964a78d1db",
+  "raw_config_missing_final_metadata": {
+    "btc_management_reference_policy": "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1",
+    "cover_hour_warmup_sha256": {},
+    "positive_tp_ioc_policy": "COMPLETED_PARENT_CROSSED_POSITIVE_TARGET_NATIVE_IOC_ACTUAL_TAKER",
+    "research_btc_split50": true,
+    "research_btc_split_discount": "0.0025",
+    "research_btc_split_planref_v1": true,
+    "research_btc_split_tp_ioc": true,
+    "research_conditional_sol": false,
+    "research_sol_cover": null
+  },
+  "existing_config_mismatches": {},
+  "reconstructed_metadata_hash": "9c7e16e4bee8ab6c91dae5009b083b1509ffe6053d36c5c38af929964a78d1db",
+  "config_explanation": "Raw snapshot saved at source1208 before split/cover metadata additions1213-1243; raw preserved unchanged. Reconstruction is analysis-only, not a normal exported report.",
+  "source_code_hash": "09c0c41b5387a77d7d7f55a0e49a0d2d651cb4c02ba72c1983340c200de066ea",
+  "source_commit": "299197a7140ad0ae5c18aecdf596cbdbd7124bf4",
+  "retained_settled_csv_rows": 81654,
+  "settled_event_watermark_rows": 82079,
+  "retained_csv_matches_event_watermark_prefix": true,
+  "retained_prefix_rows_compared": 81654,
+  "months": [
+    "2026-09",
+    "2026-10"
+  ],
+  "event_sequence_count": 246510,
+  "event_DD_samples": 164428,
+  "truncated_settled_csv_DD_percent": "34.31829849654392215568288764",
+  "settled_DD_percent": "34.95109657022590675517330698",
+  "settled_DD_basis": "COMPLETE_IMMUTABLE_SETTLED_PRE_NEXT_SOURCE_WATERMARK_ROWS_IN_COMPLETE_NATIVE_EVENT_TRACE",
+  "event_DD_percent": "34.95109657022590675517330698",
+  "event_worst": {
+    "peak_sequence": 163174,
+    "trough_sequence": 246083,
+    "event_ns": "1793137140000000000",
+    "event_UTC": "2026-10-27T21:39:00+00:00",
+    "peak_equity": "29730.702585",
+    "trough_equity": "19339.49601351"
+  },
+  "event_endpoint_sequence_join": {
+    "45762": {
+      "sequence": 45762,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1789135380000000000",
+      "receipt_ns": "1789135380000000000",
+      "mark_available_ns": "1789135380000000000",
+      "cash": "11874.62180653",
+      "equity": "13080.20890653",
+      "native_id": null,
+      "event_UTC": "2026-09-11T14:03:00+00:00",
+      "receipt_UTC": "2026-09-11T14:03:00+00:00"
+    },
+    "63928": {
+      "sequence": 63928,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1789498200000000000",
+      "receipt_ns": "1789498200000000000",
+      "mark_available_ns": "1789498200000000000",
+      "cash": "11843.24530133",
+      "equity": "9204.65880133",
+      "native_id": null,
+      "event_UTC": "2026-09-15T18:50:00+00:00",
+      "receipt_UTC": "2026-09-15T18:50:00+00:00"
+    },
+    "75995": {
+      "sequence": 75995,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1789739220000000000",
+      "receipt_ns": "1789739220000000000",
+      "mark_available_ns": "1789739220000000000",
+      "cash": "11814.74264523",
+      "equity": "13123.19704523",
+      "native_id": null,
+      "event_UTC": "2026-09-18T13:47:00+00:00",
+      "receipt_UTC": "2026-09-18T13:47:00+00:00"
+    },
+    "132471": {
+      "sequence": 132471,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1790867400000000000",
+      "receipt_ns": "1790867400000000000",
+      "mark_available_ns": "1790867400000000000",
+      "cash": "13831.98694742",
+      "equity": "18184.95994929",
+      "native_id": null,
+      "event_UTC": "2026-10-01T15:10:00+00:00",
+      "receipt_UTC": "2026-10-01T15:10:00+00:00"
+    },
+    "134971": {
+      "sequence": 134971,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1790917260000000000",
+      "receipt_ns": "1790917260000000000",
+      "mark_available_ns": "1790917260000000000",
+      "cash": "13818.52638314",
+      "equity": "13531.61368501",
+      "native_id": null,
+      "event_UTC": "2026-10-02T05:01:00+00:00",
+      "receipt_UTC": "2026-10-02T05:01:00+00:00"
+    },
+    "137427": {
+      "sequence": 137427,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1790966220000000000",
+      "receipt_ns": "1790966220000000000",
+      "mark_available_ns": "1790966220000000000",
+      "cash": "15167.41580748",
+      "equity": "18188.28380748",
+      "native_id": null,
+      "event_UTC": "2026-10-02T18:37:00+00:00",
+      "receipt_UTC": "2026-10-02T18:37:00+00:00"
+    },
+    "163174": {
+      "sequence": 163174,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1791480420000000000",
+      "receipt_ns": "1791480420000000000",
+      "mark_available_ns": "1791480420000000000",
+      "cash": "15191.094585",
+      "equity": "29730.702585",
+      "native_id": null,
+      "event_UTC": "2026-10-08T17:27:00+00:00",
+      "receipt_UTC": "2026-10-08T17:27:00+00:00"
+    },
+    "246083": {
+      "sequence": 246083,
+      "kind": "PREQUOTE_DIRECT_NATIVE",
+      "event_ns": "1793137140000000000",
+      "receipt_ns": "1793137140000000000",
+      "mark_available_ns": "1793137140000000000",
+      "cash": "19974.43581351",
+      "equity": "19339.49601351",
+      "native_id": null,
+      "event_UTC": "2026-10-27T21:39:00+00:00",
+      "receipt_UTC": "2026-10-27T21:39:00+00:00"
+    }
+  },
+  "native_cash_transition_reconciliation": {
+    "method": "SUM_ACTUAL_NATIVE_PRE_POST_CASH_TRANSITIONS_BY_UNIQUE_FILL_OR_FUNDING_ID;NO_DERIVED_TRADE_PNL",
+    "seed": "10000",
+    "actual_native_fill_cash_delta": "9704.63309195",
+    "actual_native_funding_cash_delta": "-42.65256213",
+    "terminal": "19661.98052982",
+    "residual": "0E-8",
+    "native_fill_pairs": 26,
+    "native_funding_pairs": 109,
+    "unmatched_pre_count": 0,
+    "duplicate_post_ids": 0,
+    "pair_errors": [],
+    "cash_change_count": 135,
+    "cash_changes_outside_post_fill_or_funding": [],
+    "fees": "Nativecashdeltasalreadyincludefees;NOfee subtractionagain",
+    "original_JSON_reconciliation": "R_ORIGINAL_COMPLETE_NATIVE_LIFECYCLES_PRESERVED",
+    "independent_native_position_lifecycle_PNL_reconciliation": "INDEPENDENT_SUM_PENDING",
+    "status": "PASS_NATIVE_CASH_TRANSITION_IDENTITY"
+  },
+  "native_position_lifecycle": {
+    "count": 7,
+    "unique_closed": 7,
+    "realized_pnl": "9704.63309195",
+    "actual_funding": "-42.65256213",
+    "terminal_bridge": "0E-8",
+    "fees_already_in_native_pnl": true
+  },
+  "funding": {
+    "rows": 109,
+    "signed_sum": "-42.65256213",
+    "JSON_matches_SQLite": true,
+    "event_pair_match": true,
+    "bad_arithmetic_rows": []
+  },
+  "terminal": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1793145600000000000",
+        "value": "90740.5158"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1793145600000000000"
+  },
+  "orders": {
+    "count": 33,
+    "status_counts": {
+      "FILLED": 26,
+      "CANCELED": 7
+    },
+    "active": 0
+  },
+  "fills": 26,
+  "native_fees": "595.16880803",
+  "liquidations": 0,
+  "native_cash_monthly_returns": [
+    {
+      "month": "2026-09",
+      "return": "0.3844399129",
+      "total": "13844.39912900"
+    },
+    {
+      "month": "2026-10",
+      "return": "0.442780985103885905166321646",
+      "total": "19974.43581351"
+    }
+  ],
+  "checks": {
+    "raw_config_selfhash": true,
+    "existing_config_keys_match_expected": true,
+    "config_metadata_reconstruction": true,
+    "data_hash": true,
+    "source_code_hash": true,
+    "execution_identity": true,
+    "position_PnL": true,
+    "cash_reconciled": true,
+    "funding_reconciled": true,
+    "settled_event_watermarks_complete": true,
+    "settled_DD_exact": true,
+    "event_DD_exact": true,
+    "event_samples_match": true,
+    "risk_cap": true,
+    "terminal_flat": true,
+    "terminal_orders_closed": true,
+    "zero_liquidations": true,
+    "observer_known": true
+  },
+  "boundary_failure": {
+    "source_lines_324_327": [
+      "    expected_months = max(1, (end.year - start.year) * 12 + end.month - start.month)",
+      "    liquidated_early_lockout = bool(report.get(\"liquidation_count\")) and bool(report.get(\"liquidation_lockout\"))",
+      "    if (not liquidated_early_lockout and len(months) != expected_months) or not months:",
+      "        raise ValueError(f\"MONTHLY_ROW_COUNT:{len(months)}\")"
+    ],
+    "actual_months": 2,
+    "computed_expected_months": 1,
+    "explanation": "Month-count formula excludes partial final October: Sep1 to Oct28 yields1, but actual Sep and Oct rows are correct2. Not a hardcoded24 assertion.",
+    "process_gate": "FAIL; no waiver"
+  },
+  "limits": [
+    "Failed standard export/receipt preserved; no normal PASS report created",
+    "No engine/tests/source changes/retry",
+    "No matched benchmark comparison or absolute 2-year profit-floor decision for 57-day interval",
+    "No fresh untouched OOS or live readiness claim"
+  ],
+  "trace_integrity": {
+    "minute-native-settled-receipts.csv.gz": {
+      "gzip_eof_marker_present": false,
+      "decoded_bytes": 22645954,
+      "complete_newline_records": 81655,
+      "trailing_incomplete_record_bytes": 305,
+      "original_unchanged": true,
+      "method": "READ_ONLY_ZLIB_COMPLETE_NEWLINE_RECORDS_NO_RAW_REPAIR"
+    },
+    "coherent-native-events.jsonl.gz": {
+      "gzip_eof_marker_present": true,
+      "decoded_bytes": 123019882,
+      "complete_newline_records": 246510,
+      "trailing_incomplete_record_bytes": 0,
+      "original_unchanged": true,
+      "method": "READ_ONLY_ZLIB_COMPLETE_NEWLINE_RECORDS_NO_RAW_REPAIR"
+    }
+  },
+  "settled_csv_availability": "TRUNCATED; complete retained rows exactly match full immutable event watermark prefix; full event watermarks used for independent settled DD, not a regenerated standard report",
+  "trace_footer_status": "INCOMPLETE_GZIP_FOOTER_PRESERVED"
+}

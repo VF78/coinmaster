@@ -1,0 +1,10 @@
+{
+  "QUAL_VALIDATION_RAW-analysis.json": "e6646b143c8dfbb3e429aa0c300c59da57ad47d96e2e80cc0899c35fd708b774",
+  "QUAL_VALIDATION_RAW-event-watermark-months.csv": "9875f8eaa371ba1e7594a507adf54ae9bbd5d2a262708f15130189ef1e996c05",
+  "QUAL_VALIDATION_RAW-findings.md": "cfcd0ec2281c37f34c6ef3b9314f47b410cdf424c94f74f1d03cd248ada0f0ea",
+  "QUAL_VALIDATION_RAW-input-hashes.json": "072864ccea3949cb42b636c103a1a3a92a9942a9efd4bb39f28fca3cb310fcf4",
+  "QUAL_VALIDATION_RAW-months.csv": "1936a73fdeccbcde21b4a39fbb1cea21122c889306b0f834e7136cde639a6658",
+  "QUAL_VALIDATION_RAW-native-cash-transitions.csv": "1b0e360d86c10349c85589eef419ecce6bde777dcc1c43218087187d1a80dea6",
+  "QUAL_VALIDATION_RAW-native-position-lifecycles.csv": "c2183011dadafc740500148bf4e16b05a250ee30c2c53c3cc07221f0db29e408",
+  "analyze_QUAL_VALIDATION_RAW_existing.py": "924b95e6d8cf408272c3fdc64521972b5cb571d8643711f6edb2b81e46c466fd"
+}

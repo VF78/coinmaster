@@ -1,0 +1,12 @@
+{
+  "QUAL_STRESS-analysis-input-hashes.json": "1a9660d04f546c4304d66a21683828f1618a67f0a1abc39c714e7555a5e8f7d4",
+  "QUAL_STRESS-analysis.json": "a02f98ae464096008d0efcc1eb391beccb76ddd2b3c42dac4d43bd53a1368033",
+  "QUAL_STRESS-c1-actions.csv": "e12bcedc61cd87ab6da994b7c1bfb94e0c1bcb6eb91b0b6f081ee10609c3efa6",
+  "QUAL_STRESS-findings.md": "aa75d93a3502d21f5d62b8e0498f48fca06696e80a041f3514756e685b78d8a7",
+  "QUAL_STRESS-months.csv": "b22b997ea7420f7e98c45839314df9ddd8660800aa3b778326f057f78b86d173",
+  "QUAL_STRESS-native-cash-transitions.csv": "987fe8990e976b2ac788b6673c15f7222fcc2922ef1021ef9c9a2270429b3948",
+  "QUAL_STRESS-native-position-lifecycles.csv": "96b7f13039f1b15464f60a11dba51e60ce60444d72cc47391035a3a50432f6ea",
+  "QUAL_STRESS-terminal-orders.json": "b15eb6a3599b3e49056d96d5a412a8e30f5db1f2391e0dc0aa38fa9bb175bfb6",
+  "QUAL_STRESS-windows.csv": "79902b2e9fad13f2aaec6a0ac2240232c38d308329d2e93e0d0e3b06b50fb1b3",
+  "analyze_QUAL_STRESS_existing.py": "0a450e848e965dbbe9b44a54eda1ab5b5aa3c93572becbcf6b40c2ab9c1a8dcc"
+}

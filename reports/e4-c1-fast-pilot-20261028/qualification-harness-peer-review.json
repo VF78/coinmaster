@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "P0": 0,
+  "P1": 0,
+  "review_scope": "Qualification interval wrapper and CLI diff only; no engine/native run",
+  "commit": "299197a7140ad0ae5c18aecdf596cbdbd7124bf4",
+  "parent": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+  "patch_sha256": "f6f2de136ed5d11c86fd8271b49f07742a5771942e3133031828e8a4d0b10bd7",
+  "preparation_sha256": "8cff3c96642a46c8cdb9682a11374b64f6717ff3c868b522507655e0f77e43ee",
+  "changed_existing_functions": [
+    "run_research_v0_repairs_cli",
+    "main"
+  ],
+  "public_diagnostic_body_sha256": "c79f87513a002ca011b28b6bf36ffcd3a0c8299d49a548a9f2e52d61d920b346",
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "09c0c41b5387a77d7d7f55a0e49a0d2d651cb4c02ba72c1983340c200de066ea",
+    "runtime/tests/test_qualification_interval_cli_pure.py": "95e10cbd0eacb11f6dafb5e64832d0794ae56bed07d5709e1e6ebcc755ff4001"
+  },
+  "unchanged_economic_files": {
+    "runtime/coinmaster/research/native_accounting.py": true,
+    "runtime/coinmaster/research/paired_observer.py": true,
+    "runtime/coinmaster/research/native_fixture.py": true,
+    "runtime/coinmaster/ledger/journal.py": true,
+    "runtime/coinmaster/research/minute_risk.py": true,
+    "runtime/coinmaster/domain/wave_overlay.py": true,
+    "runtime/coinmaster/strategy/next_band.py": true,
+    "runtime/coinmaster/strategy/hedge_band.py": true,
+    "runtime/tests/test_native_qualification_stress_wiring.py": true,
+    "runtime/coinmaster/strategy/residual_recovery.py": true,
+    "runtime/coinmaster/strategy/wave_overlay.py": true
+  },
+  "config_diff_keys": [
+    "run_interval"
+  ],
+  "default_config_hash": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "qualification_config_hash": "9c7e16e4bee8ab6c91dae5009b083b1509ffe6053d36c5c38af929964a78d1db",
+  "qualification_run_interval": {
+    "end_exclusive": "2026-10-28T00:00:00+00:00",
+    "initial_active_seed": "10000",
+    "start": "2026-09-01T00:00:00+00:00"
+  },
+  "archived_control_fixture_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+  "checked": {
+    "actual_api_passthrough": "CLI main -> repairs wrapper -> existing run_native_diagnostic gets all three exact supplied milliseconds; qualification hash validates manifest only",
+    "default_parity": "All four optional arguments default None; native interval kwargs omitted; strict archived dataset comparison and default a2c7 config preserved",
+    "complete_bundle": "Any override requires all four; UTC-day integer alignment, ordered interval, >=730-day feature warmup and canonical lowercase SHA256 reject invalid input",
+    "archived_control_pin": "Override requires exact raw d6a29d6e control SHA and old 7ab5 dataset hash; control file never rewritten",
+    "new_data_pin": "Exact canonical manifest SHA must equal supplied qualification hash before artifact directory/native call",
+    "fresh_native_account": "Existing native callee creates new account from fixed verified 10000 seed; reserve zero; no historical inventory import",
+    "causal_warmup": "Unchanged _load_daily_seed includes only [warmup_start,trading_start); daily available_at close preserved; strategy/trading/funding start and terminal end get explicit interval",
+    "labels": "qualification_context explicitly fresh interval/dataset, control provenance only, no matched-control ranking; unchanged native report ranking_eligible false"
+  },
+  "prior_focused_tests": {
+    "result": "21 passed in 0.97s",
+    "source": "Read existing qualification-harness-test-receipt.json and reviewed actual AST-extracted fake-callee tests",
+    "rerun": false
+  },
+  "new_native_runs": 0,
+  "new_tests": 0,
+  "source_edits": 0,
+  "limitations": [
+    "Source-only acceptance; dataset content/freeze/execution remain manager preflight responsibilities",
+    "No native qualification result, economic acceptance, launch GO, deployment or live permission inferred"
+  ]
+}
