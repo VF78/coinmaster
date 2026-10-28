@@ -1,6 +1,6 @@
 # Текущий проверенный результат
 
-Native ledger неизменен: 9/18, 5 COMPLETED и4 FAILED; engineering6/11, prefix3/6, full0/1, active0. Последний исправленный M3R остаётся FAILED. CODE0 выполнен с нулём новых native/prefix/full запусков. Пилот и production не затронуты.
+Native attempts неизменны; ledger теперь9/19, 5 COMPLETED и4 FAILED; engineering6/12, prefix3/6, full0/1, active0. Последний исправленный M3R остаётся FAILED. CODE0 выполнен с нулём новых native/prefix/full запусков. Пилот и production не затронуты.
 
 | Работа | Доказанный результат | Что остаётся неизвестным |
 |---|---|---|
@@ -19,6 +19,6 @@ Published source3f555d94cad009a0170b4c15230e18b84811c387: read-only Features/Ord
 
 Выявлена важная область применимости: реальные старые P1 notionals существенно выше firsttier; real causal funding coefficients не обязательно0. Текущий native CODE0 сохраняет firsttier/longBTC-shortSOL/onehistoricallyfilledTP/funding0 guards, поэтому универсальная применимость не доказана. Условно доказан более общий SOL-only pointwise контракт Factual(x,z)<=max(Factualold(x,0),0) при universallySAFEfullendpoint и полном cashrounding cap. Он позволяет предложить одно расширение signs/tiers/multipleBTCordinaryTP/knownfunding через существующий exactpartitioner, без нового PnL движка. Код этого расширения не реализован и не разрешён.
 
-CODE0_NEXT_QUALIFICATION_DRAFT_RU.md готов, peer0P0/P1, PROPOSED_ONLY: сначала code/pure/review/freeze, затем+1freshM3 (cap18→19,engineering11→12,prefix6/full1 прежние), далее прежние обязательные cases/экономические gates. Ledger9/18 неизменен, native0; никакого переноса слотов и autorerun. P4 диагностический, DD>50 сам по себе его не инвалидирует; P3 требует обеDD50. Финансовая квалификация нового source и ROI/DD UNKNOWN.
+CODE0_NEXT_QUALIFICATION_DRAFT_RU.md готов, peer0P0/P1, OWNER_APPROVED receipt171aacb8: сначала source-bound cashproof/code/pure/review/freeze, затем+1freshM3 (cap19,engineering12,prefix6/full1), далее прежние обязательные cases/экономические gates. Старые9attemptrows неизменны, ledger9/19/root_goFalse; текущаяimplementationpureonly; никакого переноса слотов и autorerun. P4 диагностический, DD>50 сам по себе его не инвалидирует; P3 требует обеDD50. Финансовая квалификация нового source и ROI/DD UNKNOWN.
 
 Цели DD30–50% и сохранения не менее90% исходной прибыли остаются NOT_MET. Full S0 TOTAL6077107.23887483, seed10000; промежуточный70% TOTALfloor4256975.067212381, финальный90%5470396.514987347. Нового ROI/DD от CODE0 не измеряли.

@@ -1,6 +1,6 @@
 # CoinMaster: текущий статус для внешнего аудита ChatGPT
 
-**Срез: 28.10.2026, 17:10 UTC / 20:10 Europe/Moscow. Это доказательства и статус, а не разрешение менять код или запускать торги.**
+**Срез: 28.10.2026, 17:30 UTC / 20:30 Europe/Moscow. Это доказательства и статус, а не разрешение менять код или запускать торги.**
 
 ## Итог без завышения прогресса
 
@@ -47,9 +47,9 @@ M3 harness теперь исполняемый, закрыт до owner/root/led
 
 ## Бюджет и границы
 
-[Canonical ledger](unified-run-ledger.json):9/18=5COMPLETED+4FAILED, active0, root_goFalse. Engineering6/11, prefix3/6, full0/1. Оба резерва и исправленный M3 slot израсходованы. FullP2 закрыт явным owner amendment; оставлен один условный fullP3. Все FAILED и старые raw неизменны. Новые CODE0 stages имеют native/prefix/full0; слоты не переносятся.
+[Canonical ledger](unified-run-ledger.json):9/19=5COMPLETED+4FAILED, active0, root_goFalse. Engineering6/12, prefix3/6, full0/1. Все9 старых строк неизменны; добавлен ровно1freshM3, без нового резерва, [предыдущий ledger](LEDGER_BEFORE_POINTWISE_CAP19_20261028.json) сохранён. Оба резерва и исправленный M3 slot израсходованы. FullP2 закрыт явным owner amendment; оставлен один условный fullP3. Все FAILED и старые raw неизменны. Предыдущие CODE0 code-only stages потратили native/prefix/full0. Текущий cap19 разрешает новуюM3 условно после gates; немедленногоengineGOнет, слоты не переносятся.
 
-Нельзя начинать экономику до обязательных engineering/financial gates. Будущий native case map —PROPOSED, в частности старые cash6011/SECOND ожидания нельзя переносить после успешного раннего recovery. Готов конкретный консолидированный протокол, но он PROPOSED: предлагает ровно+1freshM3 и max19 (engineering12/prefix6/full1), без резерва, после code/pure/review/freeze. Новые семантики и cap19 ещё НЕ разрешены; code-only PASS их не заменяет. Пилот/production/services/deployment/real orders/transfers/training не затрагивались.
+Нельзя начинать экономику до обязательных engineering/financial gates. Будущий native case map —PROPOSED, в частности старые cash6011/SECOND ожидания нельзя переносить после успешного раннего recovery. Готов конкретный консолидированный протокол, теперь утверждён владельцем: ровно+1freshM3 и max19 (engineering12/prefix6/full1), без резерва, после code/pure/review/freeze. Владелец прямо утвердил единый протокол и cap19: [receipt](OWNER_SOL_POINTWISE_CAP19_APPROVAL_20261028.json). Реализация начата; native остаётся закрыт до cash-proof/pure/review/freeze/rootGO. Code-only PASS не заменяет эти gates. Пилот/production/services/deployment/real orders/transfers/training не затрагивались.
 
 ## Минимальный набор первичных материалов для аудита
 

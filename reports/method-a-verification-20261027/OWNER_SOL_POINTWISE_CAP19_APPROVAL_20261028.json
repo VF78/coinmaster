@@ -1,0 +1,30 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "recorded_utc": "2026-10-28T17:31:17.954513+00:00",
+  "owner_exact_reply": "Утверждаю единый протокол и общий лимит19",
+  "source": "direct human user response to request_user_input_async call_220d40592f5a4faa8fedcdb5bc700fd5 item0",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/CODE0_NEXT_QUALIFICATION_DRAFT_RU.md",
+  "protocol_sha256": "ecab9d063de7b278d3b0afb0d64c69677ed22b098b0905f67b54a899ed612dfd",
+  "protocol_public_url": "https://github.com/VF78/coinmaster/blob/0bc00a00356d58248ea81c4c08093369c3c32403/reports/method-a-verification-20261027/CODE0_NEXT_QUALIFICATION_DRAFT_RU.md",
+  "approved_implementation": "SOL-only pointwise mirrored directions, frozen margin tiers, multiple ordinary BTC TP, known causal funding; preserve core/DD50/TP/UNKNOWN; complete per-partial native cash cost bound required",
+  "total_max": 19,
+  "category_max": {
+    "engineering": 12,
+    "prefix": 6,
+    "full": 1
+  },
+  "additional_native_attempts": 1,
+  "additional_native_case": "FRESH_M3_SOL_POINTWISE",
+  "new_reserve": 0,
+  "old_attempts_immutable": true,
+  "conditions": [
+    "Complete source-bound native cash/rounding/raw-native-mark proof",
+    "Focused relevant tests and independent review PASS",
+    "Source/config/data freeze and fresh canonical claim/rootGO",
+    "M3 partial-only; full native SOL endpoint mandatory M8 before economics",
+    "Existing prefix/full engineering+financial+comparison gates retained; P4 diagnostic DD>50 alone valid"
+  ],
+  "current_physical_started": 9,
+  "immediate_engine_GO": false,
+  "pilot_production_deployment_externalorders": false
+}

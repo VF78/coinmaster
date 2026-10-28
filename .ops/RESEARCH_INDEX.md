@@ -1,5 +1,5 @@
 ## Current Method A checkpoint — 2026-10-28
-Latestsource3f555d9readonlycodec+M3prospectivepreppeer0P0P1; riskb180unchanged, native0/ledger9of18. NewconditionalSOLpointwiseproof allowsproposedrealdomainexpansion; sourceguardsstillfirsttier/onesign/onefilledTP/funding0. Consolidateddomain+max19protocol PROPOSED_ONLY peer0P0P1, ownerapprovalpending; no newmoneycode/native/fullauthority. Currentaudit/ACTIVE authoritative.
+OWNER_APPROVED consolidatedSOLpointwise+cap19 receipt171aacb8; canonical9/19active0rootFalse (old9rowsunchanged/noreserve). Implementationactiveonewriter +independentnativecostproof; nativeONLYaftercashbound/tests/peer/freeze/claim. Base3f555d9read-onlycodec/M3preppassed; newdomainnotyetaccepted. ExistingfullDD/profitgoalsNOT_MET; CURRENT/ACTIVE authoritative.
 
 # Research memory — as of2026-10-26; read before opening archives
 
