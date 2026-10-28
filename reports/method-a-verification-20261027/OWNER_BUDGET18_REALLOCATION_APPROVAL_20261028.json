@@ -1,0 +1,29 @@
+{
+  "status": "OWNER_APPROVED_EXPLICIT_PROTOCOL_AMENDMENT",
+  "human_reply": "Утверждаю уточнение, общий лимит18",
+  "received_utc": "2026-10-28T13:36:18.466508+00:00",
+  "approved_plan_commit": "93d200aa8cb4876a766cc93b9118d7f0ac1882f8",
+  "plan_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/AUDIT_AND_ACCELERATED_PLAN_20261028_RU.md",
+  "plan_sha256": "14f7769412fdab2c3ba642c66b20831c1cd4c03eea4deb67dedaf9ce9ef3603f",
+  "proposal_sha256": "4743948372d01bc53f8e4180d7f3f3a6e346ea5e595e52a188739ddf95d4e746",
+  "review_sha256": "8f459ac82834ce94a4da757a25fc1512b4c5c55adbd73e538a94c45f4a6d6b18",
+  "total_max": 18,
+  "category_caps": {
+    "engineering": 11,
+    "prefix": 6,
+    "full": 1
+  },
+  "dedicated_corrected_M3_attempts": 1,
+  "closed_unstarted_case": "P2_FULL_DIAGNOSTIC",
+  "data_candidate_sha256": "96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba",
+  "approved_scope": [
+    "DATA/harness correction",
+    "read-only orders/pending plus command/init barrier evidence",
+    "prospective P4 diagnostic and P3 comparison gates from exact plan"
+  ],
+  "no_M2_replay": true,
+  "no_new_reserve": true,
+  "failed_attempts_counted": true,
+  "pilot_production_excluded": true,
+  "native_GO_now": false
+}

@@ -1,5 +1,5 @@
 ## Current Method A checkpoint — 2026-10-28
-8/18=5COMPLETED+3FAILED,active0. M2 engineering63/63PASS preserved; M3 FAILED69s duefixtureconsumeddepth, no productbug proven/economicsNOT_MET. Audit+consolidatedDATAproposal+budget-neutral18amendment ready: reports/method-a-verification-20261027/{AUDIT_AND_ACCELERATED_PLAN_20261028_RU.md,BUDGET18_REALLOCATION_PROPOSED_20261028.json,ACCELERATED_PLAN_REVIEW_20261028.json}; review0P0P1. Proposed eng11/prefix6/full1 (skipfullP2), ONEcorrectedM3; not approved, ledgercaps remain10/6/2. DATA140inputs57quotes code/source notapplied, constructor0. No retry or borrowedslots untilowneramendment; ACTIVE+receipts authority.
+8/18=5COMPLETED+3FAILED,active0. M2 engineering63/63PASS preserved; M3failed immutable. Owner explicitly APPROVED budget-neutral amendment: OWNER_BUDGET18_REALLOCATION_APPROVAL_20261028.json SHA d6b16b1781ab95f64cc479011ef225806ebe515b68e22c99df77dbac0eadee71. Canonical caps nowengineering11/prefix6/full1, skipfullP2; onecorrectedM3 afterreview/freeze/Macpreflight/rootGO. DATA140inputs57quotes approved; producerbarrier readonlyevidence repair approved. SolVPSsolewriter implementing, no newnative/claim, moneylogic unchanged. CurrentauthorityACTIVE+approval+ledger. FullgoalsNOT_MET.
 
 # Research memory — as of2026-10-26; read before opening archives
 

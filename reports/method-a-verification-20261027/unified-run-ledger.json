@@ -357,18 +357,26 @@
     "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/OWNER_M2_PLUS_ONE_18_APPROVAL.json",
     "sha256": "e9d7ee8b638b2ae6801bffa906b512c9b81bc7e921c7b130c9661efb3e51cb42"
   },
+  "budget_reallocation": {
+    "approval_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/OWNER_BUDGET18_REALLOCATION_APPROVAL_20261028.json",
+    "approval_sha256": "d6b16b1781ab95f64cc479011ef225806ebe515b68e22c99df77dbac0eadee71",
+    "from_unstarted_case": "P2_FULL_DIAGNOSTIC",
+    "no_reserve": true,
+    "remaining_dedicated_attempts": 1,
+    "to_case": "M3_DATA_CORRECTED_ONCE"
+  },
   "categories": {
     "engineering": {
       "harness_reserve_repeat_of": "3950947b-96d4-4534-a729-c85b90c2a114",
       "harness_reserve_used": 1,
-      "max": 10,
-      "planned": 9,
+      "max": 11,
+      "planned": 10,
       "reserve": 1,
       "started": 5
     },
     "full": {
-      "max": 2,
-      "planned": 2,
+      "max": 1,
+      "planned": 1,
       "reserve": 0,
       "started": 0
     },
@@ -393,12 +401,17 @@
     "P0",
     "P1_AFTER_P0_FINANCIAL"
   ],
+  "prospective_comparison_protocol": {
+    "P3_gate": "raw qualified netTOTAL and both DD; not dominated by validP4; equality/UNKNOWN HOLD; all native/financial/liquidation gates retained",
+    "P4_role": "DIAGNOSTIC",
+    "approved_proposal_sha256": "4743948372d01bc53f8e4180d7f3f3a6e346ea5e595e52a188739ddf95d4e746"
+  },
   "protocol_sha256": "d7d32143cd26d2ff389483d2be0149499547b77c00af2404492b3b1b6af6bf93",
   "root_go": false,
   "schema": "METHOD_A_UNIFIED_PHYSICAL_LEDGER_V1",
   "sol_engineering_preparation_allowed": true,
   "sol_gate": false,
-  "status": "M3_FAILED_STOP_NO_REPLAY",
+  "status": "M3_REPAIR_AMENDMENT_APPROVED_PREPARATION_ONLY",
   "task": "CM-METHOD-A-VERIFY-20261027",
   "total_max": 18
 }
