@@ -1,0 +1,24 @@
+{
+  "status": "PASS_SOURCE_ONLY_NOT_HISTORICAL_GO",
+  "root_clarification": "A_UNIVERSAL_SIGNAL_CONSUMPTION_BTC_EXECUTION_GATE_ONLY",
+  "base_commit": "ff253cc852cb9d564186d1c97f3201429ba5978a",
+  "reviewed_patch_sha256": "bcf139d546f2b186bfdb697b3a718d856d0fb1f782d1793951dda68fb5508265",
+  "reviewed_preparation_sha256": "a83e519870225c93eb74669154b54806fbb78aec99fab7ac89bd79ac14dd9308",
+  "peer_receipt_sha256": "a6669f2e9e67e415bbdcc9913f42607c569296d0a69f3228b5391cd8ea7c7590",
+  "test_receipt_sha256": "7da32d8fc07d06f50cfd9019e4582637a0b7a05a46838700d73f8a7205d8fb8b",
+  "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "files": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "db0350c565e2c1c4a1aadf9d4cbb5e56146f801f166685a2d74ffd7874267a1d",
+    "runtime/coinmaster/strategy/wave_overlay.py": "4e01f36d268a6f32a0c74f1ad2540d291b0e2cba53c3ef222c48efa64587b1d9",
+    "runtime/coinmaster/research/native_baseline.py": "a7f18f6baca8e62953436d7ab12b819484a97e2793005e9730b173acfb81e2c9",
+    "runtime/tests/test_c1_btc_postcut_d1_pure.py": "91385207d08edcd75d5c56da67806050a1ae7ee82be24d913340144056cdf232",
+    "reports/e4-c1-fast-pilot-20261028/config-BTC-POSTCUT-D1.json": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+    "reports/e4-c1-fast-pilot-20261028/btc-postcut-d1-run-command.json": "283a832a4b4e5e8cd937652927f0218861c1acd484fcbcfa65223e5fc725e226",
+    "reports/e4-c1-fast-pilot-20261028/btc-postcut-d1-source-preparation.json": "a83e519870225c93eb74669154b54806fbb78aec99fab7ac89bd79ac14dd9308",
+    "reports/e4-c1-fast-pilot-20261028/btc-postcut-d1-source.patch": "bcf139d546f2b186bfdb697b3a718d856d0fb1f782d1793951dda68fb5508265",
+    "reports/e4-c1-fast-pilot-20261028/btc-postcut-d1-test-receipt.json": "7da32d8fc07d06f50cfd9019e4582637a0b7a05a46838700d73f8a7205d8fb8b",
+    "reports/e4-c1-fast-pilot-20261028/btc-postcut-d1-peer-review.json": "a6669f2e9e67e415bbdcc9913f42607c569296d0a69f3228b5391cd8ea7c7590"
+  },
+  "historical_attempts": 0,
+  "live_order_capability": false
+}

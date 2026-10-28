@@ -12,6 +12,7 @@ class ResidualRecoveryResearch:
         if self.config.research_c1_restore_dd not in (D(".35"),D(".40")):raise ValueError("C1_RESTORE_DD_MUST_BE_35_OR_40")
         if self.config.research_c1_global_cut_arm and (self.config.research_c1_btc_cut_divisor!=2 or self.config.research_c1_restore_dd!=D('.35')):raise ValueError('G_STANDALONE_REQUIRES_C1_HALF_RESTORE35')
         if getattr(self.config,'research_c1_first_fresh_h4',False) and (not self.config.research_residual_recovery or self.config.research_c1_btc_cut_divisor!=4 or self.config.research_c1_restore_dd!=D('.40') or self.config.research_c1_global_cut_arm):raise ValueError('FIRST_FRESH_REQUIRES_COMBO_Q_R_NO_G')
+        if getattr(self.config,'research_c1_btc_postcut_d1',False) and (not getattr(self.config,'research_c1_first_fresh_h4',False) or self.config.research_c1_btc_cut_divisor!=4 or self.config.research_c1_restore_dd!=D('.40') or self.config.research_c1_global_cut_arm):raise ValueError('BTC_POSTCUT_D1_REQUIRES_FIRST_FRESH_COMBO')
         self._c1_global_cut_armed=True
         self._c1_global_rearm_blocked_source=None
         self.c1_audit=[];self._c1_state=None;self._c1_peak=D(str(self.config.active_seed))
@@ -139,6 +140,25 @@ class ResidualRecoveryResearch:
         self._c1_consume_global_cut_arm(cut_lots)
         self._c1_state=dict(group=ep.id,state='CUT_RESOLVING',instrument=inst,side=1 if pos.is_long else -1,step=step,held_lots=lots,target_lots=lots-cut_lots,cut_lots=cut_lots,cut_submitted=False,restore_submitted=False,cut_filled=0,restore_filled=0,credit=0,cut_value=D(0),bucket={},revoked=False,claim_ns=ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,cut_terminal_ns=None,last_cut_fill_ns=None,confirmation=None)
         self._c1_log('CLAIM',ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,frozen_held_lots=lots,frozen_target_lots=lots-cut_lots,rights=self._c1_rights())
+
+    def _c1_observed_btc_d1(self,bar):
+        if not getattr(self.config,'research_c1_btc_postcut_d1',False):return
+        if bar.instrument_id!=(self.config.btc_signal_id or self.config.btc_id):return
+        close=bar.ts_event;available=self.clock.timestamp_ns();init=bar.ts_init;day=86_400_000_000_000
+        if type(close) is not int or type(init) is not int or close<=0 or close%day or not close<=init<=available:return
+        try:values=[D(str(getattr(bar,k))) for k in ('open','high','low','close')]
+        except (ValueError,TypeError,ArithmeticError):return
+        o,h,l,c=values
+        if not all(v.is_finite() for v in values) or not 0<l<=min(o,c)<=max(o,c)<=h:return
+        old=self._c1_last_bars.get('BTC_POSTCUT_D1')
+        if old is not None and close<=old['close_ns']:return
+        self._c1_last_bars['BTC_POSTCUT_D1']=dict(open_ns=close-day,close_ns=close,available_ns=available,instrument=str(bar.instrument_id))
+
+    def _c1_btc_postcut_d1_allowed(self,t,c,ns):
+        if not getattr(self.config,'research_c1_btc_postcut_d1',False) or t['instrument']!=self.config.btc_id:return True
+        bar=self._c1_last_bars.get('BTC_POSTCUT_D1');last=t.get('last_cut_fill_ns')
+        return bool(bar and type(last) is int and bar['instrument']==str(self.config.btc_signal_id or self.config.btc_id)
+                    and bar['open_ns']>=last and bar['close_ns']<=bar['available_ns']<=c['source']<=ns)
 
     def _c1_deferred_identity(self,t):
         # Actual lifecycle/fill identity; a stale money checkpoint is no authority.
@@ -334,6 +354,7 @@ class ResidualRecoveryResearch:
         elif t['state']=='HELD' and not t['restore_submitted']:
             conf=t['confirmation']
             if not conf or ns<=conf['close_ns']:return
+            if not self._c1_btc_postcut_d1_allowed(t,c,ns):return
             if c['DD']>self.config.research_c1_restore_dd:t['confirmation']=None;return
             vwap=t['cut_value']/(D(t['cut_filled'])*t['step']);executable=tick.ask_price.as_decimal() if t['side']==1 else tick.bid_price.as_decimal()
             if t['side']*(executable-vwap)<=0:

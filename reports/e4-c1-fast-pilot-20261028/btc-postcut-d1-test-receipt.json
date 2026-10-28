@@ -1,0 +1,24 @@
+{
+  "record_type": "EXACT_TOOL_OUTPUT_TRANSCRIPTION_NOT_RERUN",
+  "pytest_calls": 2,
+  "wall_seconds": 2.06,
+  "native_constructors": 0,
+  "historical_attempts": 0,
+  "repairs": 0,
+  "command": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q runtime/tests/test_c1_btc_postcut_d1_pure.py runtime/tests/test_c1_first_fresh_h4_pure.py runtime/tests/test_c1_global_arm_pure.py runtime/tests/test_native_qualification_stress_wiring.py",
+  "initial_call": {
+    "tool_session": 59959,
+    "tool_chunk": "a787f6",
+    "exit_code": 0,
+    "stdout": "..........................................................               [100%]\n58 passed in 1.05s\n"
+  },
+  "final_call": {
+    "tool_session": 31850,
+    "tool_chunk": "2c0d24",
+    "exit_code": 0,
+    "stdout": "............................................................             [100%]\n60 passed in 1.01s\n"
+  },
+  "product_changes_after_initial_test": 0,
+  "root_clarification": "A",
+  "new_test_cases": 2
+}

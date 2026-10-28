@@ -1,0 +1,71 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "candidate": "BTC_POSTCUT_D1",
+  "state": "SOURCE_ONLY_AWAIT_PEER_ROOT_FREEZE_REGISTRY_GO",
+  "base_commit": "ff253cc852cb9d564186d1c97f3201429ba5978a",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "db0350c565e2c1c4a1aadf9d4cbb5e56146f801f166685a2d74ffd7874267a1d",
+    "runtime/coinmaster/strategy/wave_overlay.py": "4e01f36d268a6f32a0c74f1ad2540d291b0e2cba53c3ef222c48efa64587b1d9",
+    "runtime/coinmaster/research/native_baseline.py": "a7f18f6baca8e62953436d7ab12b819484a97e2793005e9730b173acfb81e2c9",
+    "runtime/tests/test_c1_btc_postcut_d1_pure.py": "91385207d08edcd75d5c56da67806050a1ae7ee82be24d913340144056cdf232"
+  },
+  "unchanged_economic_accounting_stress_pins": {
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "runtime/tests/test_native_qualification_stress_wiring.py": "c3dd399312ad7ebc32eb14358366db67e048445b2a98dde3c10938f629073a1a"
+  },
+  "default_OFF_config_pins": {
+    "C1": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+    "Q": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+    "R": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
+    "G": "df1c48cd536970122e4335de07840226008e8cb11dceeff7cb71d68494d8ca78",
+    "COMBO": "75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba",
+    "FIRST_FRESH_COMBO": "0782684ce8906ee2ad07963f59f84be2c5e33019b13e263fa1c8f8fd1cfd975a"
+  },
+  "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "base_config_sha256": "0782684ce8906ee2ad07963f59f84be2c5e33019b13e263fa1c8f8fd1cfd975a",
+  "delta": {
+    "source": "OBSERVED_MATCHING_BTC_DAILY_SIGNAL",
+    "open_at_least_last_actual_cut_fill": true,
+    "availability": "OBSERVED_AVAILABLE_LE_VALID_MONEY_SOURCE_LE_DECISION",
+    "applies": "ALL_BTC_RESTORES_BEFORE_ANY_TP_CANCEL_OR_SUBMIT",
+    "waiting": "RETAIN_CONFIRMATION_CREDIT_NO_ATTEMPT",
+    "SOL": "UNCHANGED"
+  },
+  "engineering_calls": [
+    {
+      "result": "58PASS",
+      "wall_seconds": 1.05,
+      "native_constructors": 0,
+      "pytest_calls": 1
+    },
+    {
+      "result": "60PASS",
+      "wall_seconds": 1.01,
+      "native_constructors": 0,
+      "pytest_calls": 1
+    }
+  ],
+  "repair_iterations": 0,
+  "historical_attempts": 0,
+  "qualification_stress": false,
+  "global_cut_arm": false,
+  "live_order_capability": false,
+  "allocation": "ROOT_AMENDED_6CANDIDATE_0CONTROL_2QUAL_TOTAL8_SAME5SPENT_DONOR_UNATTEMPTED_CONTROL_E4_NOT_NEW_NUMERIC_OWNER_REPLY",
+  "evidence_sha256": "ed33ca9c24f3354a8ff37c35519777f8cc9925c1b8afabdebdde8d022869fd98",
+  "persistence": "Observed UTC BTC D1 stored in existing _c1_last_bars field; full research flag included by existing generic future live policy hash. Actual selected source integration into live remains separate/unimplemented.",
+  "limitations": "Earliest command delta withholds BTC TPcancel27Nov2025 16:01; future economic paths UNKNOWN. Observed available callbackclock is not calendar permission. New native rootfreeze/registry/GO mandatory.",
+  "contract_clarification": {
+    "root_freeze": "A_UNIVERSAL_FIRST_FRESH_SIGNAL_UNCHANGED_BTC_D1_EXECUTION_ONLY",
+    "prior_preparation_sha256": "b724946ce726231171a082d8c1c084a5dbb08fd5bab2840804a90fdcbf0985d3",
+    "product_changes": 0,
+    "test_regressions_added": 2,
+    "rule": "Universal first-fresh may consume/deny BTC deferred before D1 on bad DD/reclaim; no resurrection. D1 then gates ALL BTC restore EXECUTION before current DD/price/TPcancel/send. Waiting preserves VALID promoted/normal ordinary token, actual credit and attempt."
+  }
+}

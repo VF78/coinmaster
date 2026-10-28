@@ -78,6 +78,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_c1_restore_dd: Decimal = Decimal(".35")
     research_c1_global_cut_arm: bool = False
     research_c1_first_fresh_h4: bool = False
+    research_c1_btc_postcut_d1: bool = False
     research_next_signals: tuple[DataType, ...] = ()
     research_h4_ema: int | None = None
     research_h4_gamma: Decimal = Decimal(".5")
@@ -641,6 +642,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                 return
             self._latest_seen_session = max(self._latest_seen_session or mark.ts_event, mark.ts_event)
             self._day.setdefault(mark.ts_event, {})[bar_type] = mark
+            self._c1_observed_btc_d1(mark)
             # Input ordering is mark -> signal -> quote.  Retain only the two
             # latest marks and pair them here at the daily boundary.
             latest = self._latest_marks.get(execution_id)

@@ -1,0 +1,44 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "candidate": "BTC_POSTCUT_D1",
+  "verdict": "PASS_SOURCE_ONLY",
+  "open_P0": 0,
+  "open_P1": 0,
+  "base_commit": "ff253cc852cb9d564186d1c97f3201429ba5978a",
+  "source_patch_sha256": "bcf139d546f2b186bfdb697b3a718d856d0fb1f782d1793951dda68fb5508265",
+  "preparation_sha256": "a83e519870225c93eb74669154b54806fbb78aec99fab7ac89bd79ac14dd9308",
+  "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "test_receipt_sha256": "7da32d8fc07d06f50cfd9019e4582637a0b7a05a46838700d73f8a7205d8fb8b",
+  "protocol_sha256": "3b08f62ec86128b11de7285fa760829f018abf84cfdd1ab1ef7cb85e9b5a9c20",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "db0350c565e2c1c4a1aadf9d4cbb5e56146f801f166685a2d74ffd7874267a1d",
+    "runtime/coinmaster/strategy/wave_overlay.py": "4e01f36d268a6f32a0c74f1ad2540d291b0e2cba53c3ef222c48efa64587b1d9",
+    "runtime/coinmaster/research/native_baseline.py": "a7f18f6baca8e62953436d7ab12b819484a97e2793005e9730b173acfb81e2c9",
+    "runtime/tests/test_c1_btc_postcut_d1_pure.py": "91385207d08edcd75d5c56da67806050a1ae7ee82be24d913340144056cdf232"
+  },
+  "contract_closure": {
+    "initial_issue": "Ambiguous before-DD wording could mean D1 delays deferred first-fresh signal consumption, or only restore execution.",
+    "root_explicit_pre_result_choice": "A: universal FIRST_FRESH signal consume-once remains unchanged for BTC and SOL. Before D1, bad fresh DD/reclaim may consume deferred candidate without credit/native-attempt spend; never resurrect. New D1 gates restore execution only before execution DD/current-price/TP-cancel/send.",
+    "resolution": "Protocol amended before result; product unchanged. Two added pure cross-regressions verify exact A. No safety invariant waived."
+  },
+  "checks": [
+    "Matching actual DailySignal producer flows through actual Wave.on_data BTC signal hook; observer validates UTC close, positive coherentOHLC and close<=init<=actualcallback clock; latest valid observed bar retained.",
+    "All BTC restore execution paths use common D1 guard: baropen>=latestACTUALcutfill and observedavailable<=validmoney.source<=decision. No calendar-only/future/SOLD1 permission; later cutfill moves requirement.",
+    "Valid normal confirmation preserved while daygatefalse; no TPcancel, native submit, restoreattempt or credit spend. After observedD1, original currentmoney/DD/price/margin/realACK checks remain.",
+    "Universal firstfresh candidate creation/consume-once remains unchanged; rootA cross-regressions prove denial beforeD1 cannot resurrect later. SOL restore and defaultOFF paths unchanged.",
+    "Four final source/test hashes and nine unchanged economics/accounting/stress pins match; six OFFconfig pins verified (COMBO canonical fromR). New config differs from078268FIRST_FRESH only bybtc_postcut_d1metadata.",
+    "Existing transcribed58PASS1.05s plus60PASS1.01s inspected;2pytest2.06s, zero native imports/constructors as fixture source. Reviewer did not rerun."
+  ],
+  "reviewer_tests": 0,
+  "reviewer_engines_models_nodes": 0,
+  "reviewer_product_edits": 0,
+  "product_repair_requests": 0,
+  "historical_go_granted": false,
+  "live_order_capability": false,
+  "limits": [
+    "D1 source and pure ACK doubles are not physical cancellation/fill proof; actual new capital path remainsUNKNOWN until separately frozen/claimed native attempt.",
+    "Budget6candidate0control2qualifier/total8 is explicit root allocation, not a new direct owner numeric reply; no attempt granted by this review.",
+    "SOL/entries/sizing/TP/fees/data/nativeengine unchanged; no forecast or addback of saved restoreloss.",
+    "Selected live source integration/checkpoint/clock/account/nativefault qualification and explicit finalSTART remain separate."
+  ]
+}
