@@ -1,0 +1,19 @@
+{
+  "actual_returncode": 1,
+  "attempt_id": "63ad9d1a-a374-472f-ba03-d02fb2f4e997",
+  "case_id": "M3",
+  "failure": {
+    "error": "AssertionError('M3_CHILD_NONZERO:1')",
+    "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/cm_method_a_root_m3_once.py\", line 49, in <module>\n    assert rc==0,'M3_CHILD_NONZERO:'+str(rc)\nAssertionError: M3_CHILD_NONZERO:1\n"
+  },
+  "financial_qualification": false,
+  "finished_utc": "2026-10-28T08:00:57.347337+00:00",
+  "log_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/63ad9d1a-a374-472f-ba03-d02fb2f4e997.log",
+  "namespace": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997",
+  "physical_spent": 8,
+  "pid": 32774,
+  "root_case_acceptance": "NOT_ACCEPTED",
+  "source_commit": "6591609d3112963e9cc8283cc9caf33ca22e8fa4",
+  "status": "FAILED",
+  "total_max": 18
+}

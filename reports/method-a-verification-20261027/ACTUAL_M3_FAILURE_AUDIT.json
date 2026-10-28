@@ -1,0 +1,419 @@
+{
+  "schema": "coinmaster.m3.actual-failure-forensic.v1",
+  "mode": "BOUNDED_READ_ONLY_NO_ENGINE_NO_TEST_NO_REPLAY_NO_CODE_CHANGE",
+  "attempt_id": "63ad9d1a-a374-472f-ba03-d02fb2f4e997",
+  "source_commit": "6591609d3112963e9cc8283cc9caf33ca22e8fa4",
+  "status": "FAILED_IMMUTABLE",
+  "financial_goal": "NOT_MET",
+  "financial_qualification": false,
+  "root_cause": {
+    "classification": "DATA_HARNESS_LIQUIDITY_REPLENISHMENT_ASSUMPTION",
+    "product_bug_proven": false,
+    "first_divergence_ns": 66000000000,
+    "explanation": "At65s the BTC bid107 size116.875 is fully consumed by TP0. At66s the same bid price and same size do not reset native consumption, so there is zero available liquidity and TP1 receives no fill. At67s size changes to116.250, resetting consumption; price-time order priority spends it on TP1, leaving0.625. TP2 receives nothing. Quantity difference116.875 is exactly the missed66s fill. CAP then naturally selects0.3 instead of78 under actual316.875BTC state, and0.3 fully fills against SOL ask depth10. CAP_DONE asserts a counterfactual inventory and fails at69s.",
+    "native_semantics": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "lines": "6518-6547",
+      "rule": "Reset consumption when original_size != level_size_raw; timestamp alone does not reset it.",
+      "config": "liquidity_consumption=True,use_message_queue=True,L1 QuoteTick; zero insert/update latency, cancel2s",
+      "queue": "No fresh liquidity at66s; chronological resting TP1 precedes TP2. No canceled/retiring orders yet. This is consumption state, not the later2s cancellation race."
+    },
+    "planned_fill_quantities": [
+      "116.875",
+      "116.875",
+      "116.250"
+    ],
+    "actual_fills": [
+      {
+        "timestamp_ns": 65000000000,
+        "order_id": "O-19700101-000001-001-000-2",
+        "qty": "116.875",
+        "price": "101.8",
+        "level": 0
+      },
+      {
+        "timestamp_ns": 67000000000,
+        "order_id": "O-19700101-000001-001-000-3",
+        "qty": "116.250",
+        "price": "103.5",
+        "level": 1
+      }
+    ],
+    "actual_btc_tp_orders": [
+      {
+        "client_order_id": "O-19700101-000001-001-000-2",
+        "quantity": "116.875",
+        "filled_qty": "116.875",
+        "price": "101.8",
+        "status": "FILLED",
+        "ts_last": 65000000000
+      },
+      {
+        "client_order_id": "O-19700101-000001-001-000-3",
+        "quantity": "116.875",
+        "filled_qty": "116.250",
+        "price": "103.5",
+        "status": "PARTIALLY_FILLED",
+        "ts_last": 67000000000
+      },
+      {
+        "client_order_id": "O-19700101-000001-001-000-4",
+        "quantity": "316.250",
+        "filled_qty": "0.000",
+        "price": "105.2",
+        "status": "ACCEPTED",
+        "ts_last": 3000000000
+      }
+    ],
+    "actual_CAP": {
+      "order": {
+        "trader_id": "BACKTESTER-001",
+        "strategy_id": "M3Probe-000",
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "client_order_id": "O-19700101-000108-001-000-11",
+        "venue_order_id": "P1SIM-2-006",
+        "position_id": "SOLUSDT-PERP.P1SIM-M3Probe-000",
+        "account_id": "P1SIM-001",
+        "last_trade_id": "T-4bd1e364a685f7a8-002",
+        "type": "MARKET",
+        "side": "BUY",
+        "quantity": "0.3",
+        "time_in_force": "IOC",
+        "is_reduce_only": true,
+        "is_quote_quantity": false,
+        "filled_qty": "0.3",
+        "liquidity_side": "TAKER",
+        "avg_px": 132.9,
+        "slippage": 0.0,
+        "commissions": [
+          "0.02192850 USDT"
+        ],
+        "emulation_trigger": "NO_TRIGGER",
+        "status": "FILLED",
+        "contingency_type": "NO_CONTINGENCY",
+        "order_list_id": null,
+        "linked_order_ids": null,
+        "parent_order_id": null,
+        "exec_algorithm_id": null,
+        "exec_algorithm_params": null,
+        "exec_spawn_id": null,
+        "tags": null,
+        "init_id": "080fb3d5-c601-4232-a728-4139d3882fe4",
+        "ts_init": 68000000000,
+        "ts_last": 68000000000
+      },
+      "dispatch_risk_physical_row": 76,
+      "dispatch_partition_states": 273,
+      "dispatch_margin_pass": true,
+      "dispatch_signed_deficit": "-264.9999199388677479655131249481816466704790509003125736712098680",
+      "paired_physical_rows": [
+        22,
+        23
+      ]
+    },
+    "expected_inventory": {
+      "BTC": "200",
+      "SOL": "-132.9",
+      "CAP_fills": "78"
+    },
+    "actual_inventory": {
+      "BTC": "316.875",
+      "SOL": "-210.6",
+      "CAP_fills": "0.3"
+    },
+    "raw_refs": {
+      "quote_rows": [
+        60,
+        65,
+        68,
+        73,
+        80
+      ],
+      "fill_rows": [
+        62,
+        70,
+        79
+      ],
+      "state_rows": [
+        61,
+        66,
+        69,
+        75,
+        78,
+        81
+      ]
+    }
+  },
+  "safety_before_expected_negative": {
+    "qualification": "BOUNDED_OBSERVED_PREFIX_ONLY",
+    "through_ns": 69000000000,
+    "expected_negative_ns": 100864000000000,
+    "observed_QUALIFICATION_NO_GO": [],
+    "minimum_snapshot_equity": "5942.2491215",
+    "minimum_cushion": "942.2491215",
+    "native_margin_parity_all_exact": true,
+    "native_boundaries": [
+      {
+        "physical_row": 1,
+        "timestamp_ns": "1000000000",
+        "state": "FLAT",
+        "exact": true,
+        "actual_sol": "0",
+        "orders": []
+      },
+      {
+        "physical_row": 21,
+        "timestamp_ns": "62000000000",
+        "state": "PROTECTED",
+        "exact": true,
+        "actual_sol": "210.9",
+        "orders": [
+          {
+            "order_id": "O-19700101-000102-001-000-7",
+            "kind": "TP",
+            "level": 0,
+            "status": "ACCEPTED",
+            "leaves": "52.7",
+            "exact": true,
+            "pending": false
+          },
+          {
+            "order_id": "O-19700101-000102-001-000-8",
+            "kind": "TP",
+            "level": 1,
+            "status": "ACCEPTED",
+            "leaves": "52.7",
+            "exact": true,
+            "pending": false
+          },
+          {
+            "order_id": "O-19700101-000102-001-000-9",
+            "kind": "TP",
+            "level": 2,
+            "status": "ACCEPTED",
+            "leaves": "105.5",
+            "exact": true,
+            "pending": false
+          },
+          {
+            "order_id": "O-19700101-000102-001-000-10",
+            "kind": "STOP",
+            "level": null,
+            "status": "ACCEPTED",
+            "leaves": "210.9",
+            "exact": true,
+            "pending": false
+          }
+        ]
+      },
+      {
+        "physical_row": 44,
+        "timestamp_ns": "68000000000",
+        "state": "PROTECTED",
+        "exact": true,
+        "actual_sol": "210.6",
+        "orders": [
+          {
+            "order_id": "O-19700101-000102-001-000-7",
+            "kind": "TP",
+            "level": 0,
+            "status": "ACCEPTED",
+            "leaves": "52.6",
+            "exact": true,
+            "pending": false
+          },
+          {
+            "order_id": "O-19700101-000102-001-000-8",
+            "kind": "TP",
+            "level": 1,
+            "status": "ACCEPTED",
+            "leaves": "52.6",
+            "exact": true,
+            "pending": false
+          },
+          {
+            "order_id": "O-19700101-000102-001-000-9",
+            "kind": "TP",
+            "level": 2,
+            "status": "ACCEPTED",
+            "leaves": "105.4",
+            "exact": true,
+            "pending": false
+          },
+          {
+            "order_id": "O-19700101-000102-001-000-10",
+            "kind": "STOP",
+            "level": null,
+            "status": "ACCEPTED",
+            "leaves": "210.6",
+            "exact": true,
+            "pending": false
+          }
+        ]
+      }
+    ],
+    "dispatch_envelope_all_partitions_margin_pass": true,
+    "terminal_flat": false,
+    "open_native_orders": 6,
+    "native_inflight": [],
+    "note": "Native accepted 3TP and STOP cover actual SOL; after0.3CAP accepted3TP sum210.6 and STOP210.6 are exact. No observed early qualification failure; this cannot establish later safety or actual intended expected-negative. domain_context.sol_qty=0.0 is not authoritative: native actualSOL=-210.6. Coherent PASS before finish is an observed prefix report; BEFORE_DISPOSE turns UNKNOWN because positions/orders remain."
+  },
+  "gates": {
+    "reached": [
+      "FIRST_SECOND_PASSIVE",
+      "FIRST_SECOND_FILLED",
+      "FULL_BEFORE_STRESS",
+      "SOL_FULL_ENTRY",
+      "SOL_FULL_PROTECTED",
+      "BTC_TP0_ONLY"
+    ],
+    "diverged": [
+      "BTC_TP1_ONLY (no fill)",
+      "BTC_TP2_PARTIAL (filled prior TP1 instead)"
+    ],
+    "failed": "CAP_DONE/M3_CAP_ACTUAL_INVENTORY at69s",
+    "unreached": [
+      "CAP78 partial IOC total proof",
+      "HEALTHY_DEFER",
+      "TINY_PROTECTED",
+      "RETIRE_ZERO",
+      "BENIGN_CANCEL_REJECT actual two late fills",
+      "FIRST_FLAT_ACK and cash6011.93042250",
+      "SECOND_PARENT_PASSIVE",
+      "SECOND_PARENT_FULL",
+      "SECOND_SOL_PROTECTED",
+      "DECLARED_PARTIAL_STOP_FAULT",
+      "fail-closed after genuine partial STOP",
+      "assert_m3_before_cleanup acceptance",
+      "economics"
+    ]
+  },
+  "lifecycle": {
+    "failure": {
+      "trader": "RUNNING",
+      "data_engine": "RUNNING",
+      "risk_engine": "RUNNING",
+      "exec_engine": "RUNNING",
+      "emulator": "RUNNING"
+    },
+    "after_end": {
+      "trader": "STOPPED",
+      "data_engine": "STOPPED",
+      "risk_engine": "STOPPED",
+      "exec_engine": "STOPPED",
+      "emulator": "STOPPED"
+    },
+    "after_dispose": {
+      "trader": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "data_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "risk_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "exec_engine": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      },
+      "emulator": {
+        "state": "DISPOSED",
+        "running": false,
+        "disposed": true
+      }
+    },
+    "returncode": 1,
+    "cleanup_is_PASS": false,
+    "positions_and_open_orders_preserved_through_end": true
+  },
+  "minimal_remedy": {
+    "status": "PROPOSED_ONLY_NOT_IMPLEMENTED_NOT_NATIVE_QUALIFIED_NO_RETRY_AUTHORITY",
+    "scope": "DATA-only candidate plus focused pure guard expectations; product/engine/parameters unchanged",
+    "proposal": "Replace duplicate66s BTC depth116.875 with116.874; replace67s depth116.250 with116.251. Under installed size-change consumption semantics66s then fills TP1=116.874;67s completes TP1=.001 and fills TP2=116.250, preserving aggregate TP0/TP1/TP2=116.875/116.875/116.250, maker prices and intended200BTC. This is analytical proposed remedy only; exact native command path and later gates remain unproven.",
+    "requirements": "Independently review all future repeated price+size quote replenishment assumptions and per-phase inventory arithmetic before any authorization request. Existing failed attempt/raw/ledger unchanged; no passing witness waiver or relabel."
+  },
+  "authority": {
+    "ledger": "8/18 active0 per parent handoff",
+    "harness_reserves": "CONSUMED",
+    "M3_retry_authorized": false,
+    "all_previous_attempts": "IMMUTABLE"
+  },
+  "limitations": [
+    "No full native order-event history for BTC is serialized in failure snapshot; actual final native TP totals and risk latest-event refs establish updated totals116.875/116.875/316.250. No extra history was invented.",
+    "No new engine/native run, tests, code modification, publication, cleanup mutation or economic claim."
+  ],
+  "evidence": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/risk.jsonl.gz",
+      "sha256": "ce3be54224caae2bf67d313024469db5beebfcd7ebf8a06c9b506f44cbcc829b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/paired.jsonl.gz",
+      "sha256": "91b15976025aaf276e126de622ed6238be99ec748bd64a0bec39a43ff55266b5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/coherent-native-events.jsonl.gz",
+      "sha256": "3fece74a5aba72161e0adfd52e90454097d86e337dc72386ccf8c86375073cc8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/FAILURE_BEFORE_END.json",
+      "sha256": "583dd068b5100188ec0a7b084e0b4bb974a54fae9b985bf0278dc3d3df63923e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/AFTER_END.json",
+      "sha256": "4148c01dde2711734bf9c50f9e46641a375ac1c8c8fa180da86395fa6d55fb99"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/BEFORE_DISPOSE.json",
+      "sha256": "f7aaa261c22f7fddfc2b2af344e358d400115d3e214f04bf93309dd0575fa043"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/AFTER_DISPOSE.json",
+      "sha256": "ac09f13427f4271df0db24dbbb42f1b44b2029d60e1d144af00242c2aa109c32"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/ROOT_ACTUAL_EXIT.json",
+      "sha256": "a7b2dca4b6fad84a63a0c6d94855874505d34b7f2097cd64db116d63fc4c0950"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/M3-63ad9d1a-a374-472f-ba03-d02fb2f4e997/result.json",
+      "sha256": "5420d42dcfdcedf9c4f0c033280cd4c883f85d3db7bcc86cbc4c535ac22586af"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/engineering/63ad9d1a-a374-472f-ba03-d02fb2f4e997.log",
+      "sha256": "12867864c50306ee20118c8b203bf8a0da59493b80fd5aa561546f71953ab1ac"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/source-m3-6591609/reports/method-a-verification-20261027/m3-candidate/M3_DATA_PROPOSED.json",
+      "sha256": "ae29a508bd34821b7d909ea07d40e22260290eb889422fcd72f4377de647d0fc"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/source-m3-6591609/runtime/tests/run_method_a_sol.py",
+      "sha256": "620636e046ba0262461ebe990fe477fbee557e6244d452d30f04de50a0696285"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/source-m3-6591609/runtime/tests/method_a_sol_public.py",
+      "sha256": "b5037aeeb84914b6b1276707e62b98e44ef6b68614f0240624aaca759acfbb6d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/source-m3-6591609/runtime/tests/test_method_a_m3_candidate_pure.py",
+      "sha256": "88d40e715761f6b076a15bf350bcdccc34a58a5840badf21aba4dfb887d0e984"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/method-a-verification-20261027/M3_ACTUAL_EXECUTION.json",
+      "sha256": "d65f9afd7aa090f1a4d324265a83eafccb41f323e56a331b1060a928fc13e3e9"
+    }
+  ]
+}

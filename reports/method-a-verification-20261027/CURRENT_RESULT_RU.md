@@ -1,6 +1,6 @@
 # Method A: текущий проверенный результат
 
-Физические попытки: 7/18 — 5 COMPLETED/OS0, 2 FAILED/OS1; активных нет. Engineering 4/10, prefix 3/6, full 0/2. Пилот и production не изменялись.
+Физические попытки: 8/18 — 5 COMPLETED/OS0, 3 FAILED/OS1; активных нет. Engineering 5/10, prefix 3/6, full 0/2. Пилот и production не изменялись.
 
 BTC TP1/TP2/TP3 стали реальными в исследовательском runtime a4dd469 (default OFF). M1 подтвердил лотовые права, SECOND и очистку native-ордеров; P1 подтвердил их на историческом prefix. Это ещё не доказательство двухлетнего результата.
 
@@ -27,3 +27,5 @@ M2A после отдельного согласованного DATA/harness-и
 В consumer обнаружена отдельная проблема формата sequence: готов report-only patch48testsPASS; raw сохранён. Переход пустого episode остаётся отдельным UNKNOWN, его не маскируем. Полная финансовая квалификация SOL и цели70/50,90/50 остаются NOT_MET. Пилот/production не менялись. Подробности: ACTUAL_M2A_ENGINEERING_DISPOSITION.json и review-evidence/m2a-actual/.
 
 Продолжение 28 октября: M3 candidate имеет23 focused PASS и независимое review0P0P1. Исходная фиксация/копирование на Mac ещё не подтверждены. SSH control socket умер, одна свежая попытка соединения завершилась banner-exchange timeout. Новых native/ledgerclaims нет; расход7/18. Точный checkpoint: RESUME_CHECKPOINT_20261028.json.
+
+M3 actual 28 октября: SSH восстановлен без изменений сервисов; source6591609 зафиксирован, Mac engine-free5checks PASS. Единственная M3 UUID63ad9d1a-a374-472f-ba03-d02fb2f4e997 завершилась OS1 на69s: BTC316.875/SOL210.6 вместо200/132.9. Первая дивергенция на66s: повтор одинаковой BBO глубины не восполняет уже потреблённую native ликвидность. Ошибка DATA/harness-планирования, не доказанный дефект продукта. STOP/retiringlatefill gates не достигнуты. Cleanupdisposed5/5 не является casePASS. Расход8/18; повторов/нового nativeGO нет. Raw/log/ledger snapshot/failure-artifact-manifest сохранены; аудит завершён: ACTUAL_M3_FAILURE_AUDIT.json. Native source подтверждает сохранение consumed-depth при том же размере. До69s native margin/state/protection оставались согласованы, но последующие M3 gates не достигнуты. Предложена только DATA-коррекция глубин66s116.874/67s116.251 с учётом рыночных TP; native-повтор не разрешён и не выполнялся.

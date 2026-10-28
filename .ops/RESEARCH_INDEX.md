@@ -1,5 +1,5 @@
 ## Current Method A checkpoint — 2026-10-28
-`reports/method-a-verification-20261027/CURRENT_RESULT_RU.md`:7/18=5COMPLETED+2FAILED; engineering4/10,prefix3/6,full0/2. M2A c5a2f137 nativeOS0/independent63of63 ENGINEERING_PASS: partialSOL10, real3TP+STOP, BTC550survived, flatbeforecleanup. Both reserves consumed; M3–M8 and P2/P4/P3/conditionalfull remain. M3 DATA preparation only; no newnativeGO. FullgoalsNOT_MET. ACTIVE and actualapproval/ledger are current authority.
+`reports/method-a-verification-20261027/CURRENT_RESULT_RU.md`:8/18=5COMPLETED+3FAILED; engineering5/10,prefix3/6,full0/2. M2 nativeOS0/independent63of63 ENGINEERING_PASS preserved. SSH restored; M3source6591609+Mac5focusedPASS, actual63ad9d1a FAILED at69s: unchanged BBOdepth did not replenish nativeconsumedliquidity, actualBTC316.875/SOL210.6 vs200/132.9. Boundednative-source/rawaudit confirmsDATA/harness assumptionerror; no productbug established; later M3gates unreached. ACTUAL_M3_FAILURE_AUDIT.json/EXECUTION_DISPOSITION +sealedraw preserved. NoM3retry/reserve; remainingM4–M8/P2P4P3/full notspareattempts, economicsblocked. FullgoalsNOT_MET. ACTIVE+actualledger authority.
 
 # Research memory — as of2026-10-26; read before opening archives
 
