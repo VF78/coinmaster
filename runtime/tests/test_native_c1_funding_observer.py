@@ -79,9 +79,14 @@ def test_stock_postfill_account_position_epochs_funding_and_on_off_parity(tmp_pa
     assert on['report']['native_funding_transitions']==2,on['report']
     assert on['report']['terminal_actual_cash']==on['cash']
     assert on['report']['status']=='PASS',on['report']
+    transitions=on['report']['native_cash_transitions']
+    assert transitions['status']=='EXACT_OBSERVED_NATIVE_TRANSITIONS' and transitions['exact_bridge']=='0'
+    assert D(transitions['native_funding_cash_delta_total'])==sum((D(r[5]) for r in on['funding']),D(0))
+    assert D(transitions['seed'])+D(transitions['native_fill_cash_delta_total'])+D(transitions['native_funding_cash_delta_total'])==D(on['cash'])
     rows=[json.loads(x) for x in gzip.open(ondir/'events.jsonl.gz','rt')]
     post=[r for r in rows if r['kind']=='POST_FILL_COMMITTED_NATIVE']
     assert len(post)==4
+    assert sum((D(r['native_cash_delta']) for r in post),D(0))==D(transitions['native_fill_cash_delta_total'])
     assert len(post[0]['positions'])==1 and len(post[1]['positions'])==2
     assert not post[-1]['positions']
     assert [r['sequence'] for r in rows]==list(range(1,len(rows)+1))

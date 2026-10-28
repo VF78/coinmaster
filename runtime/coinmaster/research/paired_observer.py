@@ -45,6 +45,7 @@ class CommittedNativeObserver(SimulationModule):
         self.events=DrawdownTracker(seed);self.settled=DrawdownTracker(seed)
         self.events.add(0,D(seed));self.settled.add(0,D(seed))
         self.final=None;self.account_count=0
+        self.initial_cash=D(seed);self.fill_cash_delta=D(0);self.funding_cash_delta=D(0)
         self.retained_prior=None;self.retained_prior_invalid=False
 
     def register_venue(self, exchange):
@@ -106,7 +107,7 @@ class CommittedNativeObserver(SimulationModule):
                 raw_mark=str(prices[position.instrument_id]),native_price=str(price),native_upnl=str(upnl)))
         return equity,source,details
 
-    def _emit(self,kind,ns,state,*,identity=None,track=True,receipt_ns=None,state_epoch=None,retention=None):
+    def _emit(self,kind,ns,state,*,identity=None,track=True,receipt_ns=None,state_epoch=None,retention=None,native_cash_delta=None):
         equity,source,positions=self._value(state,ns)
         self.sequence+=1
         row=dict(sequence=self.sequence,epoch=self.epoch,state_epoch=self.epoch if state_epoch is None else state_epoch,kind=kind,event_ns=str(ns),
@@ -114,6 +115,7 @@ class CommittedNativeObserver(SimulationModule):
             mark_available_ns=str(source) if source is not None else None,
             cash=str(state["cash"]),native_positions_sha256=state["position_hash"],
             equity=str(equity) if equity is not None else None,positions=positions)
+        if native_cash_delta is not None:row["native_cash_delta"]=str(native_cash_delta)
         if retention is not None:
             row["prior_source_retention"]=dict(source_ns=str(retention.source_ns),state_epoch=retention.state_epoch,
                 signature=list(retention.signature),first_new_mutation_ns=str(retention.first_new_mutation_ns))
@@ -171,7 +173,9 @@ class CommittedNativeObserver(SimulationModule):
             self._retain_before_new_mutation(event.ts_event)
             self._emit("PRE_FILL_LAST_COMMITTED_NATIVE_COPY",event.ts_event,self.last,identity=identity)
             self.epoch+=1
-            self._emit("POST_FILL_COMMITTED_NATIVE",event.ts_event,state,identity=identity)
+            delta=state["cash"]-self.last["cash"]
+            self.fill_cash_delta+=delta
+            self._emit("POST_FILL_COMMITTED_NATIVE",event.ts_event,state,identity=identity,native_cash_delta=delta)
         self.last=state;self.last_mutation_ns=event.ts_event
         # Native fill-associated account updates occur before this committed
         # post-position topic; transient cash/new+position/old pairs are not valued.
@@ -192,7 +196,9 @@ class CommittedNativeObserver(SimulationModule):
             self._retain_before_new_mutation(int(row[2]))
             self._emit("PRE_FUNDING_COMMITTED_NATIVE_COPY",int(row[2]),self.last,identity=row[0])
             self.epoch+=1;self.funding_count+=1
-            self._emit("POST_FUNDING_ACCOUNT_NATIVE",int(row[2]),state,identity=row[0],receipt_ns=received)
+            delta=state["cash"]-self.last["cash"]
+            self.funding_cash_delta+=delta
+            self._emit("POST_FUNDING_ACCOUNT_NATIVE",int(row[2]),state,identity=row[0],receipt_ns=received,native_cash_delta=delta)
             self.last=state;self.last_mutation_ns=int(row[2])
             self.pending_accounts=self.pending_accounts[index+1:]
         current=self._snapshot()
@@ -254,7 +260,12 @@ class CommittedNativeObserver(SimulationModule):
         return self.report()
 
     def report(self):
-        return dict(status="PASS" if not self.unknown else "UNKNOWN",unknown=list(self.unknown),
+        cash_bridge=D(self.final)-self.initial_cash-self.fill_cash_delta-self.funding_cash_delta if self.final is not None else None
+        return dict(native_cash_transitions=dict(seed=str(self.initial_cash),terminal_cash=self.final,
+            native_fill_cash_delta_total=str(self.fill_cash_delta),native_funding_cash_delta_total=str(self.funding_cash_delta),
+            exact_bridge=str(cash_bridge) if cash_bridge is not None else None,
+            status="EXACT_OBSERVED_NATIVE_TRANSITIONS" if cash_bridge==0 and not self.unknown else "UNKNOWN",
+            trace_fields="POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction",tolerance=None),status="PASS" if not self.unknown else "UNKNOWN",unknown=list(self.unknown),
             sequence_count=self.sequence,mutation_epochs=self.epoch,native_unique_fills=self.fill_count,
             native_funding_transitions=self.funding_count,native_account_publications=self.account_count,
             settled_receipts=self.settled_count,event_drawdown=self.events.summary(),

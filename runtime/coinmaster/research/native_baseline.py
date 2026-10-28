@@ -1116,18 +1116,18 @@ def run_native_diagnostic(
             result["coherent_native_observer"] = coherent_observer_report
             result["funding_cash_audit"] = journal.funding_cash_audit() if journal else []
             result["funding"]["signed_amount"] = str(sum((Decimal(row[5]) for row in result["funding_cash_audit"]),Decimal(0)))
-            native_realized=[dict(position_id=str(p.id),instrument_id=str(p.instrument_id),
-                realized_pnl=str(p.realized_pnl.as_decimal()) if p.realized_pnl is not None else None,
-                native_commissions=[str(c) for c in p.commissions()]) for p in engine.cache.positions()]
-            complete=all(row["realized_pnl"] is not None for row in native_realized) and not engine.cache.positions_open()
+            from coinmaster.research.native_accounting import native_position_lifecycles
+            lifecycle_export=native_position_lifecycles(engine.cache)
+            native_realized=lifecycle_export["positions"]
+            complete=not lifecycle_export["unknown"] and all(row["realized_pnl"] is not None and row["closed"] for row in native_realized) and not engine.cache.positions_open()
             realized_total=sum((Decimal(row["realized_pnl"]) for row in native_realized),Decimal(0)) if complete else None
             bridge=terminal_active-initial_active_seed-realized_total-Decimal(result["funding"]["signed_amount"]) if complete else None
             result["native_cash_reconciliation"]=dict(terminal_cash=str(terminal_active),seed=str(initial_active_seed),
-                native_position_realized=native_realized,native_realized_total=str(realized_total) if complete else None,
+                native_position_lifecycle_export=lifecycle_export,native_position_realized=native_realized,native_realized_total=str(realized_total) if complete else None,
                 signed_funding=result["funding"]["signed_amount"],unallocated_bridge=str(bridge) if complete else None,
                 status="EXACT" if bridge==0 else "UNKNOWN_UNALLOCATED_NATIVE_BRIDGE",
                 fees_policy="NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_NATIVE_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN",
-                bridge_is_funding=False,tolerance=None)
+                bridge_is_funding=False,tolerance=None,actual_native_cash_transitions=(coherent_observer_report or {}).get("native_cash_transitions"))
             result["c1_audit"]=strategy.c1_audit
             result["c1_denial_counts"]=strategy.c1_denials
             result["c1_terminal_state"]=strategy._c1_export_terminal()
@@ -1141,7 +1141,7 @@ def run_native_diagnostic(
             "funding": {
                 "count": len(audit),
                 "by_instrument_count": {instrument: sum(1 for row in audit if row[1] == instrument) for instrument in sorted({row[1] for row in audit})},
-                "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+                "signed_amount": result["funding"]["signed_amount"] if research_residual_recovery else "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
             },
         })
         if research_v0_execution_repairs:
@@ -1155,6 +1155,11 @@ def run_native_diagnostic(
                     *(((("hedge_band", "strategy/hedge_band.py"),)) if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None else ()),
                 )
             }
+        if research_residual_recovery:
+            coinmaster_root=Path(__file__).resolve().parents[1]
+            result.setdefault("source_hashes",{}).update({name:hashlib.sha256((coinmaster_root/relative).read_bytes()).hexdigest() for name,relative in (
+                ("native_accounting","research/native_accounting.py"),("paired_observer","research/paired_observer.py"),
+                ("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
         # Preserve native facts before any boundary/metadata packaging assertion.
         raw_native={**result,'native_strategy_events':strategy.reporting_state(),'native_order_events':strategy._order_audit,
             'native_risk_first_audit':strategy.risk_first_sol_audit,

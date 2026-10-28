@@ -1,0 +1,81 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "state": "SOURCE_ONLY_PEER_PASS_AWAIT_ROOT_R_FREEZE_REGISTRY_GO",
+  "base_commit": "bf081fe6f17087a6a5e90baa139f90b8d3541b31",
+  "root_cause": "cache.positions() retains only current/latest NETTING lifecycle per reused ID; previous closed native lives remain cache.position_snapshots()",
+  "repair": "Read cache snapshots plus current; dedup ORIGINAL_FILL_POSITION_ID+OPENED_NS+CLOSED_NS+OPENING_ORDER_ID+nativefilldigest. Sum native realizedPnl inclusive fees once. Record actual committed fill/funding native cash deltas in existing coherent trace and summary. Preserve observed signed funding through later packaging.",
+  "source_pins": {
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/research/native_baseline.py": "19437a6261142e1dece8c5fe030d20070f6868022e07e40dbc044bfbd19f099b",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/tests/test_native_lifecycle_accounting.py": "8dfc5899cb2ede43cccb24020d507143ba9ee6dcc903b2ae1a4ac85402ddc238",
+    "runtime/tests/test_native_c1_funding_observer.py": "998ac8c8d525d63711c0326927391538d0d390934b522ced2560f3585b354361"
+  },
+  "unchanged_trading_config_clock_fees_source": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "06aa1886bc75790fb22c5a3f666f4fa36f93760bb0e2a5fcb53782caa71ff370",
+    "runtime/coinmaster/strategy/wave_overlay.py": "2788ea0d36fa93cd961a84125fe93584c8c10938d40fdf6f6a67356922503254",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb"
+  },
+  "config_pins": {
+    "config-C1.json": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+    "config-Q.json": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+    "config-R.json": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c"
+  },
+  "native_api_source": {
+    "cache/cache.pyx": {
+      "lines": "2478-2508,5470-5499",
+      "proof": "snapshot_position pickles immutable native copy with UUID-appended copy ID; position_snapshots returns all copies",
+      "installed_source_sha256": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf"
+    },
+    "execution/engine.pyx": {
+      "lines": "1769-1781,1868-1872",
+      "proof": "NETTING snapshots closed position before ID reuse/reopen/flip",
+      "installed_source_sha256": "5b7113b1c210f8123d658caeb5c50435bf266477de7dc36f30892f377ee913f5"
+    },
+    "model/position.pyx": {
+      "lines": "919-922",
+      "proof": "native realized PnL cumulatively quantized as Money from f64; exporter does not reconstruct or change it",
+      "installed_source_sha256": "f61d6e291a353d736727c081f31cbe152338e06f90111a4c9bbcd0c07031b2a7"
+    }
+  },
+  "tests": [
+    {
+      "result": "7PASS",
+      "wall_seconds": 3.21,
+      "native_engine_constructors": 4,
+      "scope": "2close/reopen lifecycles bothsides+funding/onoff+pureboundary+reportprecision"
+    },
+    {
+      "result": "3PASS",
+      "wall_seconds": 3.08,
+      "native_engine_constructors": 2,
+      "scope": "explicit committedcashdelta/trace/journal equality assertions+pureboundary"
+    }
+  ],
+  "native_constructor_count_basis": "Deterministic executed fixtures, not runtime instrumentation",
+  "engineering_pytest_calls": 2,
+  "engineering_native_constructors": 6,
+  "engineering_wall_seconds": 6.29,
+  "repair_iterations": 1,
+  "actual_accounting_attempts": 0,
+  "historical_attempts_for_repair": 0,
+  "Q_raw": "UNCHANGED_NOT_RERUN",
+  "R_historical_launch": "NOT_AUTHORIZED_YET_ROOT_FREEZE_REGISTRY_GO_REQUIRED",
+  "unallocated_bridge_policy": "Retain exact native-realized-vs-cash bridge; nonzero UNKNOWN, never fitted tolerance or funding relabel. Separately report fully observed native cash transition bridge; exact only with full mutation coverage. Perfill native cash/position quantization differences are not independently reconstructed or guessed.",
+  "native_delta_authority": "Existing qualified committed native post-position fill topic + funding before/after account total; original cash+Position snapshots; no PnL simulator",
+  "live_order_capability": false,
+  "peer_review": {
+    "status": "PASS_SOURCE_ONLY",
+    "open_P0": 0,
+    "open_P1": 0,
+    "report": "accounting-peer-review.json",
+    "sha256": "549bcb33b559f9db7e7e27c93f3c88ab8737a8f9809fd5b7899ee5e8e1e3157b",
+    "reviewed_preparation_sha256": "049bdfc8c2b9bfe5c0e06fc93f137dc7445a572c90382697904e3b0686034df4",
+    "reviewer_engines": 0
+  }
+}

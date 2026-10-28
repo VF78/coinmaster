@@ -1,0 +1,52 @@
+{
+  "cash": "100296.3",
+  "old_last_only_total": "198.2",
+  "all_native_lifecycle_total": "296.3",
+  "report": {
+    "positions": [
+      {
+        "position_id": "BTCUSDT-PERP.P1SIM-NativeCapabilityProbe-000",
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-NativeCapabilityProbe-000-e4fc6f30-9c62-4c28-a927-8169ac082ee0",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "opened_ns": "10",
+        "closed_ns": "12",
+        "opening_order_id": "O-19700101-000000-001-000-1",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "a45de763414ed4ec78f6db8c1550282832af789ece15de0ee29c58762d988be5",
+        "closed": true,
+        "realized_pnl": "98.1",
+        "native_commissions": [
+          "1.90000000 USDT"
+        ],
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT"
+        ]
+      },
+      {
+        "position_id": "BTCUSDT-PERP.P1SIM-NativeCapabilityProbe-000",
+        "native_copy_id": "BTCUSDT-PERP.P1SIM-NativeCapabilityProbe-000-4f41d940-edd2-4c77-99fc-7622b54c9f51",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "opened_ns": "20",
+        "closed_ns": "22",
+        "opening_order_id": "O-19700101-000000-001-000-3",
+        "native_event_count": 2,
+        "native_fill_lifecycle_sha256": "4716917d6f9a7c393dfa126eedf1c00c60844133c03c4ebd762bdb4ef7805d00",
+        "closed": true,
+        "realized_pnl": "198.2",
+        "native_commissions": [
+          "1.80000000 USDT"
+        ],
+        "sources": [
+          "NATIVE_CACHE_SNAPSHOT",
+          "NATIVE_CACHE_CURRENT"
+        ]
+      }
+    ],
+    "native_snapshot_count": 2,
+    "native_current_count": 1,
+    "unique_lifecycles": 2,
+    "duplicate_native_copies": 1,
+    "unknown": [],
+    "identity": "ORIGINAL_FILL_POSITION_ID+OPENED_NS+CLOSED_NS+OPENING_ORDER_ID+NATIVE_FILL_LIFECYCLE_SHA256"
+  }
+}

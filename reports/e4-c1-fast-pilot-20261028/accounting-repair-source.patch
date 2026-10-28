@@ -1,0 +1,224 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index 997d75a..004293b 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -1116,18 +1116,18 @@ def run_native_diagnostic(
+             result["coherent_native_observer"] = coherent_observer_report
+             result["funding_cash_audit"] = journal.funding_cash_audit() if journal else []
+             result["funding"]["signed_amount"] = str(sum((Decimal(row[5]) for row in result["funding_cash_audit"]),Decimal(0)))
+-            native_realized=[dict(position_id=str(p.id),instrument_id=str(p.instrument_id),
+-                realized_pnl=str(p.realized_pnl.as_decimal()) if p.realized_pnl is not None else None,
+-                native_commissions=[str(c) for c in p.commissions()]) for p in engine.cache.positions()]
+-            complete=all(row["realized_pnl"] is not None for row in native_realized) and not engine.cache.positions_open()
++            from coinmaster.research.native_accounting import native_position_lifecycles
++            lifecycle_export=native_position_lifecycles(engine.cache)
++            native_realized=lifecycle_export["positions"]
++            complete=not lifecycle_export["unknown"] and all(row["realized_pnl"] is not None and row["closed"] for row in native_realized) and not engine.cache.positions_open()
+             realized_total=sum((Decimal(row["realized_pnl"]) for row in native_realized),Decimal(0)) if complete else None
+             bridge=terminal_active-initial_active_seed-realized_total-Decimal(result["funding"]["signed_amount"]) if complete else None
+             result["native_cash_reconciliation"]=dict(terminal_cash=str(terminal_active),seed=str(initial_active_seed),
+-                native_position_realized=native_realized,native_realized_total=str(realized_total) if complete else None,
++                native_position_lifecycle_export=lifecycle_export,native_position_realized=native_realized,native_realized_total=str(realized_total) if complete else None,
+                 signed_funding=result["funding"]["signed_amount"],unallocated_bridge=str(bridge) if complete else None,
+                 status="EXACT" if bridge==0 else "UNKNOWN_UNALLOCATED_NATIVE_BRIDGE",
+                 fees_policy="NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_NATIVE_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN",
+-                bridge_is_funding=False,tolerance=None)
++                bridge_is_funding=False,tolerance=None,actual_native_cash_transitions=(coherent_observer_report or {}).get("native_cash_transitions"))
+             result["c1_audit"]=strategy.c1_audit
+             result["c1_denial_counts"]=strategy.c1_denials
+             result["c1_terminal_state"]=strategy._c1_export_terminal()
+@@ -1141,7 +1141,7 @@ def run_native_diagnostic(
+             "funding": {
+                 "count": len(audit),
+                 "by_instrument_count": {instrument: sum(1 for row in audit if row[1] == instrument) for instrument in sorted({row[1] for row in audit})},
+-                "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
++                "signed_amount": result["funding"]["signed_amount"] if research_residual_recovery else "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+             },
+         })
+         if research_v0_execution_repairs:
+@@ -1155,6 +1155,11 @@ def run_native_diagnostic(
+                     *(((("hedge_band", "strategy/hedge_band.py"),)) if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None else ()),
+                 )
+             }
++        if research_residual_recovery:
++            coinmaster_root=Path(__file__).resolve().parents[1]
++            result.setdefault("source_hashes",{}).update({name:hashlib.sha256((coinmaster_root/relative).read_bytes()).hexdigest() for name,relative in (
++                ("native_accounting","research/native_accounting.py"),("paired_observer","research/paired_observer.py"),
++                ("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
+         # Preserve native facts before any boundary/metadata packaging assertion.
+         raw_native={**result,'native_strategy_events':strategy.reporting_state(),'native_order_events':strategy._order_audit,
+             'native_risk_first_audit':strategy.risk_first_sol_audit,
+diff --git a/runtime/coinmaster/research/paired_observer.py b/runtime/coinmaster/research/paired_observer.py
+index d46d457..1ae53e2 100644
+--- a/runtime/coinmaster/research/paired_observer.py
++++ b/runtime/coinmaster/research/paired_observer.py
+@@ -45,6 +45,7 @@ class CommittedNativeObserver(SimulationModule):
+         self.events=DrawdownTracker(seed);self.settled=DrawdownTracker(seed)
+         self.events.add(0,D(seed));self.settled.add(0,D(seed))
+         self.final=None;self.account_count=0
++        self.initial_cash=D(seed);self.fill_cash_delta=D(0);self.funding_cash_delta=D(0)
+         self.retained_prior=None;self.retained_prior_invalid=False
+ 
+     def register_venue(self, exchange):
+@@ -106,7 +107,7 @@ class CommittedNativeObserver(SimulationModule):
+                 raw_mark=str(prices[position.instrument_id]),native_price=str(price),native_upnl=str(upnl)))
+         return equity,source,details
+ 
+-    def _emit(self,kind,ns,state,*,identity=None,track=True,receipt_ns=None,state_epoch=None,retention=None):
++    def _emit(self,kind,ns,state,*,identity=None,track=True,receipt_ns=None,state_epoch=None,retention=None,native_cash_delta=None):
+         equity,source,positions=self._value(state,ns)
+         self.sequence+=1
+         row=dict(sequence=self.sequence,epoch=self.epoch,state_epoch=self.epoch if state_epoch is None else state_epoch,kind=kind,event_ns=str(ns),
+@@ -114,6 +115,7 @@ class CommittedNativeObserver(SimulationModule):
+             mark_available_ns=str(source) if source is not None else None,
+             cash=str(state["cash"]),native_positions_sha256=state["position_hash"],
+             equity=str(equity) if equity is not None else None,positions=positions)
++        if native_cash_delta is not None:row["native_cash_delta"]=str(native_cash_delta)
+         if retention is not None:
+             row["prior_source_retention"]=dict(source_ns=str(retention.source_ns),state_epoch=retention.state_epoch,
+                 signature=list(retention.signature),first_new_mutation_ns=str(retention.first_new_mutation_ns))
+@@ -171,7 +173,9 @@ class CommittedNativeObserver(SimulationModule):
+             self._retain_before_new_mutation(event.ts_event)
+             self._emit("PRE_FILL_LAST_COMMITTED_NATIVE_COPY",event.ts_event,self.last,identity=identity)
+             self.epoch+=1
+-            self._emit("POST_FILL_COMMITTED_NATIVE",event.ts_event,state,identity=identity)
++            delta=state["cash"]-self.last["cash"]
++            self.fill_cash_delta+=delta
++            self._emit("POST_FILL_COMMITTED_NATIVE",event.ts_event,state,identity=identity,native_cash_delta=delta)
+         self.last=state;self.last_mutation_ns=event.ts_event
+         # Native fill-associated account updates occur before this committed
+         # post-position topic; transient cash/new+position/old pairs are not valued.
+@@ -192,7 +196,9 @@ class CommittedNativeObserver(SimulationModule):
+             self._retain_before_new_mutation(int(row[2]))
+             self._emit("PRE_FUNDING_COMMITTED_NATIVE_COPY",int(row[2]),self.last,identity=row[0])
+             self.epoch+=1;self.funding_count+=1
+-            self._emit("POST_FUNDING_ACCOUNT_NATIVE",int(row[2]),state,identity=row[0],receipt_ns=received)
++            delta=state["cash"]-self.last["cash"]
++            self.funding_cash_delta+=delta
++            self._emit("POST_FUNDING_ACCOUNT_NATIVE",int(row[2]),state,identity=row[0],receipt_ns=received,native_cash_delta=delta)
+             self.last=state;self.last_mutation_ns=int(row[2])
+             self.pending_accounts=self.pending_accounts[index+1:]
+         current=self._snapshot()
+@@ -254,7 +260,12 @@ class CommittedNativeObserver(SimulationModule):
+         return self.report()
+ 
+     def report(self):
+-        return dict(status="PASS" if not self.unknown else "UNKNOWN",unknown=list(self.unknown),
++        cash_bridge=D(self.final)-self.initial_cash-self.fill_cash_delta-self.funding_cash_delta if self.final is not None else None
++        return dict(native_cash_transitions=dict(seed=str(self.initial_cash),terminal_cash=self.final,
++            native_fill_cash_delta_total=str(self.fill_cash_delta),native_funding_cash_delta_total=str(self.funding_cash_delta),
++            exact_bridge=str(cash_bridge) if cash_bridge is not None else None,
++            status="EXACT_OBSERVED_NATIVE_TRANSITIONS" if cash_bridge==0 and not self.unknown else "UNKNOWN",
++            trace_fields="POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction",tolerance=None),status="PASS" if not self.unknown else "UNKNOWN",unknown=list(self.unknown),
+             sequence_count=self.sequence,mutation_epochs=self.epoch,native_unique_fills=self.fill_count,
+             native_funding_transitions=self.funding_count,native_account_publications=self.account_count,
+             settled_receipts=self.settled_count,event_drawdown=self.events.summary(),
+diff --git a/runtime/tests/test_native_c1_funding_observer.py b/runtime/tests/test_native_c1_funding_observer.py
+index 106376b..e5aef30 100644
+--- a/runtime/tests/test_native_c1_funding_observer.py
++++ b/runtime/tests/test_native_c1_funding_observer.py
+@@ -79,9 +79,14 @@ def test_stock_postfill_account_position_epochs_funding_and_on_off_parity(tmp_pa
+     assert on['report']['native_funding_transitions']==2,on['report']
+     assert on['report']['terminal_actual_cash']==on['cash']
+     assert on['report']['status']=='PASS',on['report']
++    transitions=on['report']['native_cash_transitions']
++    assert transitions['status']=='EXACT_OBSERVED_NATIVE_TRANSITIONS' and transitions['exact_bridge']=='0'
++    assert D(transitions['native_funding_cash_delta_total'])==sum((D(r[5]) for r in on['funding']),D(0))
++    assert D(transitions['seed'])+D(transitions['native_fill_cash_delta_total'])+D(transitions['native_funding_cash_delta_total'])==D(on['cash'])
+     rows=[json.loads(x) for x in gzip.open(ondir/'events.jsonl.gz','rt')]
+     post=[r for r in rows if r['kind']=='POST_FILL_COMMITTED_NATIVE']
+     assert len(post)==4
++    assert sum((D(r['native_cash_delta']) for r in post),D(0))==D(transitions['native_fill_cash_delta_total'])
+     assert len(post[0]['positions'])==1 and len(post[1]['positions'])==2
+     assert not post[-1]['positions']
+     assert [r['sequence'] for r in rows]==list(range(1,len(rows)+1))
+diff --git a/runtime/coinmaster/research/native_accounting.py b/runtime/coinmaster/research/native_accounting.py
+new file mode 100644
+index 0000000..47edf69
+--- /dev/null
++++ b/runtime/coinmaster/research/native_accounting.py
+@@ -0,0 +1,31 @@
++"""Read-only native lifecycle export: native cache history, never PnL reconstruction."""
++import hashlib
++import json
++
++
++def native_position_lifecycles(cache):
++    """NETTING reuses IDs; archived native snapshots retain older closed lives."""
++    rows={};duplicate_copies=0;unknown=[]
++    snapshots=cache.position_snapshots()
++    current=cache.positions()
++    for source,positions in (("NATIVE_CACHE_SNAPSHOT",snapshots),("NATIVE_CACHE_CURRENT",current)):
++        for position in positions:
++            events=position.events
++            original_id=str(events[0].position_id) if events and events[0].position_id is not None else str(position.id)
++            fills=[(str(e.trade_id),int(e.ts_event),str(e.last_qty),str(e.last_px),str(e.commission)) for e in events]
++            digest=hashlib.sha256(json.dumps(fills,separators=(",",":")).encode()).hexdigest()
++            key=(original_id,int(position.ts_opened),int(position.ts_closed),str(position.opening_order_id),digest)
++            row=dict(position_id=original_id,native_copy_id=str(position.id),instrument_id=str(position.instrument_id),
++                opened_ns=str(position.ts_opened),closed_ns=str(position.ts_closed),opening_order_id=str(position.opening_order_id),
++                native_event_count=len(events),native_fill_lifecycle_sha256=digest,closed=position.is_closed,
++                realized_pnl=str(position.realized_pnl.as_decimal()) if position.realized_pnl is not None else None,
++                native_commissions=[str(c) for c in position.commissions()],sources=[source])
++            if key in rows:
++                old=rows[key]
++                if (old['realized_pnl'],old['native_commissions'],old['closed'])!=(row['realized_pnl'],row['native_commissions'],row['closed']):
++                    unknown.append('DUPLICATE_LIFECYCLE_NATIVE_VALUES_DISAGREE')
++                old['sources'].append(source);duplicate_copies+=1
++            else:rows[key]=row
++    return dict(positions=list(rows.values()),native_snapshot_count=len(snapshots),native_current_count=len(current),
++        unique_lifecycles=len(rows),duplicate_native_copies=duplicate_copies,unknown=unknown,
++        identity='ORIGINAL_FILL_POSITION_ID+OPENED_NS+CLOSED_NS+OPENING_ORDER_ID+NATIVE_FILL_LIFECYCLE_SHA256')
+diff --git a/runtime/tests/test_native_lifecycle_accounting.py b/runtime/tests/test_native_lifecycle_accounting.py
+new file mode 100644
+index 0000000..11d3200
+--- /dev/null
++++ b/runtime/tests/test_native_lifecycle_accounting.py
+@@ -0,0 +1,47 @@
++"""Two genuine close/reopen lifecycles under one native NETTING position ID."""
++from decimal import Decimal as D
++import json
++import pytest
++from nautilus_trader.backtest.config import BacktestEngineConfig
++from nautilus_trader.backtest.engine import BacktestEngine
++from nautilus_trader.config import LoggingConfig
++from nautilus_trader.model.enums import AccountType,OmsType,OrderSide,TimeInForce
++from nautilus_trader.model.objects import Money
++from coinmaster.research.native_fixture import SIM,BTC_PERP
++from coinmaster.research.native_accounting import native_position_lifecycles
++from test_native_c1_funding_observer import NativeCapabilityProbe
++from test_native_episode_risk import tick,run_ticks
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_all_closed_lifecycles_and_duplicate_snapshot_are_native_cash_complete(tmp_path,side):
++ e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
++ e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
++  starting_balances=[Money(100000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1))
++ e.add_instrument(BTC_PERP);s=NativeCapabilityProbe();e.add_strategy(s)
++ try:
++  run_ticks(e,[tick(BTC_PERP,1)])
++  for cycle in range(2):
++   ns=10+cycle*10;entry=OrderSide.BUY if side==1 else OrderSide.SELL;exit=OrderSide.SELL if side==1 else OrderSide.BUY
++   s.submit_order(s.order_factory.market(BTC_PERP.id,entry,BTC_PERP.make_qty(D(10)),time_in_force=TimeInForce.IOC))
++   run_ticks(e,[tick(BTC_PERP,ns,'100'),tick(BTC_PERP,ns+1,'100')])
++   s.submit_order(s.order_factory.market(BTC_PERP.id,exit,BTC_PERP.make_qty(D(10)),time_in_force=TimeInForce.IOC,reduce_only=True))
++   price=str(110+cycle*10 if side==1 else 90-cycle*10)
++   run_ticks(e,[tick(BTC_PERP,ns+2,price),tick(BTC_PERP,ns+3,price)])
++  e.end()
++  report=native_position_lifecycles(e.cache)
++  cash=e.cache.account_for_venue(SIM).balance_total().as_decimal()
++  assert len(e.cache.positions())==1 and len(e.cache.position_snapshots())==1
++  assert report['unique_lifecycles']==2 and report['native_snapshot_count']==1 and not report['unknown']
++  assert len({r['position_id'] for r in report['positions']})==1
++  assert len({(r['opened_ns'],r['closed_ns'],r['opening_order_id']) for r in report['positions']})==2
++  total=sum((D(r['realized_pnl']) for r in report['positions']),D(0))
++  old_total=sum((p.realized_pnl.as_decimal() for p in e.cache.positions()),D(0))
++  assert cash-D(100000)-total==0
++  assert cash-D(100000)-old_total!=0 # Old last-position-only exporter drops first life.
++  # A native duplicate snapshot of the final current closed lifecycle must not double-count it.
++  e.cache.snapshot_position(e.cache.positions()[0])
++  duplicate=native_position_lifecycles(e.cache)
++  assert duplicate['unique_lifecycles']==2 and duplicate['duplicate_native_copies']==1
++  assert sum((D(r['realized_pnl']) for r in duplicate['positions']),D(0))==total
++  (tmp_path/('lifecycle-proof-'+str(side)+'.json')).write_text(json.dumps(dict(cash=str(cash),old_last_only_total=str(old_total),all_native_lifecycle_total=str(total),report=duplicate),indent=2))
++ finally:e.dispose()

@@ -1,5 +1,5 @@
 {
-  "status": "SOURCE_ONLY_NOT_EXECUTED_AWAIT_PEER_ROOT_GO",
+  "status": "SOURCE_ONLY_R_AND_ACCOUNTING_PEER_PASS_AWAIT_ROOT_FREEZE_REGISTRY_GO",
   "candidate": "R",
   "proposed_frozen_source": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-c4b53b9",
   "argv": [
@@ -45,7 +45,7 @@
   },
   "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/R/result",
   "stdout_stderr_log": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/R/native.log",
-  "source_prep": "R-source-preparation.json",
+  "source_prep": "accounting-repair-source-preparation.json",
   "expected_config_sha256": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
   "base_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
   "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
@@ -67,5 +67,6 @@
   "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
   "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
   "launch_contract": "subprocess.Popen(argv,cwd=cwd,env=env,stdout=log,stderr=subprocess.STDOUT); record process.pid and exact process.wait() exit. No time-l. Fresh artifact/log/journal only. Root claim must count before Popen. NO automatic launch/retry.",
-  "expected_prefix": "R differs only after a formerly DD35-blocked but otherwise eligible restore state; own native continuous capital trajectory. No Q bundling; BTCdivisor2/SOLhalf."
+  "expected_prefix": "R differs only after a formerly DD35-blocked but otherwise eligible restore state; own native continuous capital trajectory. No Q bundling; BTCdivisor2/SOLhalf.",
+  "economic_strategy_preparation": "R-source-preparation.json"
 }

@@ -1,0 +1,51 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "scope": "FINITE_ACCOUNTING_EXPORT_REPAIR_ONLY",
+  "verdict": "PASS_SOURCE_ONLY",
+  "open_P0": 0,
+  "open_P1": 0,
+  "findings": [],
+  "base_commit": "bf081fe6f17087a6a5e90baa139f90b8d3541b31",
+  "branch": "codex/e4-c1-fast-pilot-20261028",
+  "source_preparation_sha256": "049bdfc8c2b9bfe5c0e06fc93f137dc7445a572c90382697904e3b0686034df4",
+  "full_source_patch_sha256": "ce94e517a93bbd7a667b99b0df327566185f5f78cbae2e1df57c218085285dbb",
+  "tracked_diff_sha256": "0624eab6e466b8a47f6550fc0e0990360f53f44881dae1d65be8b1cea836fabc",
+  "source_pins": {
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/research/native_baseline.py": "19437a6261142e1dece8c5fe030d20070f6868022e07e40dbc044bfbd19f099b",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/tests/test_native_lifecycle_accounting.py": "8dfc5899cb2ede43cccb24020d507143ba9ee6dcc903b2ae1a4ac85402ddc238",
+    "runtime/tests/test_native_c1_funding_observer.py": "998ac8c8d525d63711c0326927391538d0d390934b522ced2560f3585b354361"
+  },
+  "checks": [
+    "Native lifecycle reader includes cache.position_snapshots() and cache.positions(); snapshot UUID copy IDs are normalized by original first native fill position_id. Dedup includes original ID, opened/closed ns, opening order ID and native fill digest. Duplicate native PnL/commission/closed disagreement exports UNKNOWN.",
+    "Only native lifecycle realized_pnl summed once, inclusive native fees; no reconstructed PnL or second commission subtraction. Incomplete/open lifecycle or unknown export blocks complete bridge.",
+    "Funding signed_amount from actual journal cash deltas now survives later result.update packaging; funding application and journal bytes unchanged.",
+    "Existing committed observer now records actual postfill and funding cash differences into trace/cumulative totals. Exact observed cash-transition bridge is separate from realized-PnL bridge; both retain no-tolerance policy and observer mutation UNKNOWN blocks transition EXACT.",
+    "Realized-PnL-vs-cash bridge remains EXACT only at literal zero, otherwise UNKNOWN_UNALLOCATED_NATIVE_BRIDGE. No native transition total is relabeled funding or realized PnL.",
+    "Five source/test hashes and eight unchanged strategy/domain/clock/funding/journal hashes independently verified against preparation. HEAD verified. C1/Q/R config hashes independently unchanged.",
+    "Lifecycle fixture demonstrates two native close/reopen lifecycles both sides under one NETTING ID, old current-only missing PnL and duplicate snapshot dedup. Cash observer fixture asserts trace/journal/cumulative exact transition equality."
+  ],
+  "config_pins": {
+    "C1": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+    "Q": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+    "R": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c"
+  },
+  "writer_test_evidence": [
+    "accounting-lifecycle-tests.txt:7PASS3.21s",
+    "accounting-cash-transition-tests.txt:3PASS3.08s"
+  ],
+  "reviewer_tests": 0,
+  "reviewer_engine_constructors": 0,
+  "reviewer_product_edits": 0,
+  "reviewer_repair_requests": 0,
+  "repair_historical_attempts": 0,
+  "historical_go_granted": false,
+  "limits": [
+    "No Q replay or raw artifact mutation reviewed or authorized. Source repair cannot retroactively claim complete old Q lifecycle accounting.",
+    "New R/native run must export actual accounting evidence; source PASS does not prove future bridge exactness or financial qualification.",
+    "Fully observed cash transitions can be exact while native realized-vs-cash remains nonzero UNKNOWN; these statuses must remain distinct.",
+    "Finite review excludes deployment, services, live orders and any universal cost-proof or new PnL engine.",
+    "Source commit/hooks and later root freeze/registry/GO are separate from this read-only review."
+  ]
+}
