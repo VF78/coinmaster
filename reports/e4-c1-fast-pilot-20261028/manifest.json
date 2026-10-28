@@ -32,11 +32,14 @@
     "historical_attempts_started": 8,
     "failed_invalid_repeats_count": true,
     "engineering_component_calls": {
-      "pytest_calls": 18,
+      "pytest_calls": 24,
       "synthetic_native_constructors": 104,
-      "wall_seconds": "39.89",
+      "wall_seconds": "42.86",
       "count_method": "deterministic executed fixture path reconstruction, not runtimeinstrumentation",
-      "live_component_separate": "47purePASS8.97s final; zeroengine/node/strategy/order/modelconstructors; separatecountreport"
+      "live_component_separate": "47purePASS8.97s final; zeroengine/node/strategy/order/modelconstructors; separatecountreport",
+      "qualifier_harness_added": "3calls/21finalpurePASS/2.45s_total",
+      "reporting_repair_added": "3calls/26finalpurePASS/.52s_total",
+      "economic_native_constructors_unchanged": true
     },
     "repair_iterations_per_blocker_max": 2,
     "old_budgets_transferred": false,
@@ -373,5 +376,25 @@
     "public_git_checkpoint": "1db96977e3511b1f55c8eac52313a497f11a439a",
     "remote_verified": true,
     "effect": "No trading effect; do not repeat retry loop. Public results/handoff are current; Projectreadback stale."
+  },
+  "reporting_repair": {
+    "scope": "ExactpartialUTCmonthcoverage+exception-safewriterfinalization",
+    "isolated_worktree": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-report-boundaries-20261029",
+    "patch_sha256": "f8831495dc9b8570561d5cf0e27991934c0322e037641d99ef094b95f24bd695",
+    "pure_tests": "26PASS_0.20s",
+    "native_runs": 0,
+    "peer_status": "PASS_0P0_P1_REAL_IMMUTABLE_RAW_VALIDATOR_ACCEPTED",
+    "peer_sha256": "7526af0cca088fb5890f46af9c785650680687eb687596f757215968ed766711",
+    "original_failed8_unchanged": true,
+    "full_qualification": "NOT_PASS_NATIVE_EXIT1_REMAINS",
+    "publication": "PUBLIC_REMOTE_EXACT_VERIFIED_BY_OWNER",
+    "source_commit": "29f66e166ff6b518b1b27a76095d6acd7649e4e4"
+  },
+  "live_preparation_current": "Resumeexistinge171bridge: cheapmoney+confirmedtradebars+stockaccountrefresh16worstcost+durabletypedjournal+terminalqueryscopeboundedbyfreshproof; allhistory/H/unknownsretained; enginefreeonly, no liveorders/services",
+  "manager_publication_current": {
+    "local_commit": "1e94dc4f5b74b80cf03a34cf81d1ee4d78385d90",
+    "push": "TIMED_OUT_READBACK_CONFIRMS_REMOTE_STILL1db9697",
+    "last_verified_public": "1db96977e3511b1f55c8eac52313a497f11a439a",
+    "restart_critical_changes_preserved_locally": true
   }
 }

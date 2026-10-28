@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "P0": 0,
+  "P1": 0,
+  "scope": "Report-only source review and read-only AST-extracted corrected validator on real immutable QUAL_VALIDATION raw; no native run",
+  "parent_head": "299197a7140ad0ae5c18aecdf596cbdbd7124bf4",
+  "branch": "codex/e4-c1-report-boundaries-20261029",
+  "patch_sha": "f8831495dc9b8570561d5cf0e27991934c0322e037641d99ef094b95f24bd695",
+  "preparation_sha": "389d7c40a0adab30ba97faf511aad7b85818618f2888bbfb259f8d022bf0df3a",
+  "test_receipt_sha": "ee37c01ce7b597a70384ea5e34c6feaee683dfa9ce426fc12b5d5048991383fc",
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "86ec346e57fde57527dd593daf56219ad24ee15961c185cba9228288792aca58",
+    "runtime/coinmaster/research/minute_risk.py": "7cff30df1108052e51919fbdc02aab7f42cdf536ea8034296b129d04b02306f8",
+    "runtime/tests/test_report_interval_boundaries_pure.py": "28f534a796ca4f727c7ce24a1f205c1f0f920e55a4f83fdf80abf8738bcbcf83"
+  },
+  "economic_body_AST_identical_except_finally": true,
+  "risk_changed_methods": [
+    "close"
+  ],
+  "risk_added_methods": [
+    "close_writers"
+  ],
+  "real_raw_pure_checks": {
+    "checks": {
+      "real_raw_corrected_validator": true,
+      "real_raw_months_exactly_September_October": true,
+      "wrong_label_rejected": true,
+      "missing_rejected": true,
+      "duplicate_rejected": true,
+      "out_of_order_rejected": true,
+      "partial_checkpoints_exact": true,
+      "full24_checkpoints": true,
+      "immutable_raw_and_failed_receipt_unchanged": true,
+      "original_attempt_failed": true,
+      "full24_exact_tuple_matches_frozen_original": true
+    },
+    "raw_sha256": "640a0abaa07a99ccdd682e8672828b4c1c90b1a6601a09680343d9af8ab4a3a2",
+    "failed_receipt_sha256": "61546762847d41b2e9eb26bef146b87827bb908c526fdfdaba35056f5a110392",
+    "pure_source_sha256": "07759143816c0eb5debb785bd8948960c2e6ea45f5d0f41036330f0c30b4fb5b",
+    "month_labels": [
+      "2026-09",
+      "2026-10"
+    ],
+    "corrected_checkpoints": [
+      1790812800000000000,
+      1793145600000000000
+    ],
+    "native_imports": 0,
+    "engine_runs": 0,
+    "normal_export_created": false
+  },
+  "financial_guards": "Original terminal cash equality, Decimal80 compounding/tolerance, interval DD endpoints, fill bounds, terminal convention and boundary fill-count assertions remain unchanged; exact ordered month labels added",
+  "early_liquidation_rule": "Only nonempty contiguous in-interval prefix of expected calendar month labels allowed with actual liquidation_count and lockout",
+  "cleanup_review": "Every archive/risk stream/coherent observer close and engine disposal attempted even after failures. NativeMinuteRiskRecorder.close_writers closes both gzip files without summary fabrication. Original primary exception retained with cleanup notes; any cleanup error blocks clean funding promotion. Failed/promotion-error journals close and quarantine. No original raw repair.",
+  "existing_focused_tests": {
+    "result": "26 passed in 0.20s",
+    "receipt_sha256": "ee37c01ce7b597a70384ea5e34c6feaee683dfa9ce426fc12b5d5048991383fc",
+    "full_suite_rerun": false
+  },
+  "additional_engine_runs": 0,
+  "native_imports": 0,
+  "source_edits": 0,
+  "normal_export_created": false,
+  "original_attempt8_status": "FAILED_NATIVE_EXIT / child75889 exit1 unchanged",
+  "campaign_budget": "8/8 consumed and closed; no retry authorized",
+  "full_qualification_PASS": false,
+  "limitations": [
+    "Source-only fix acceptance; no process0 waiver or native rerun",
+    "Real raw financial acceptance remains separate QUAL_VALIDATION_RAW audit",
+    "Original truncated settled gzip/raw/failed receipt unchanged"
+  ]
+}
