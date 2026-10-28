@@ -1,0 +1,24 @@
+{
+  "schema": "coinmaster-e4-c1-prepared-deposit-protection-v1",
+  "status": "SOURCE_PREPARATION_ONLY_NOT_APPLIED_NOT_RELEASE_READY",
+  "deposit_protection_percent": 55,
+  "drawdown_limit_percent": 55,
+  "retained_equity_floor_fraction": "0.45",
+  "display": "Остаток 45% / максимальная просадка 55%",
+  "threshold": "existing_daily_close_high_water_equity * 0.45",
+  "basis": "Initial native qualified equity, raised only by a valid fresh UTC daily-close sample. Not intraday peak.",
+  "apply_path": "Existing set-deposit-protection with drawdown_limit_percent=55 and unique idempotency_key; requires PAUSED, coherent native/durable confirmed flat and fresh qualified native equity. No automatic setter call.",
+  "state_parity": "Input-readiness profile requires55 and0.45; constructor/readiness gate reject durable limit mismatch. Existing default50 is not silently accepted.",
+  "preserve": [
+    "high_water_equity",
+    "last_daily_close_utc",
+    "latched",
+    "trigger",
+    "exit_state",
+    "all historical evidence"
+  ],
+  "action": "Existing durable latch blocks increases; native market_exit requests reduce-only IOC closure. Native flat confirmation required; execution/gaps may exceed threshold.",
+  "benchmark": "fccd/a2c7 benchmark unchanged and immutable; no benchmark profit claim for DP55 configuration",
+  "runtime_actions": 0,
+  "final_START_required": true
+}

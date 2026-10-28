@@ -17,7 +17,8 @@ from nautilus_trader.adapters.bybit import BybitLiveDataClientFactory
 from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidExecClientConfig
 from nautilus_trader.live.node import TradingNode
-from nautilus_trader.model.enums import TimeInForce
+from nautilus_trader.model.enums import TimeInForce, BarAggregation, PriceType, AggregationSource
+from nautilus_trader.model.data import BarType, BarSpecification
 from nautilus_trader.model.identifiers import ClientId
 
 from coinmaster.ops.hl_live_credential_preflight import check_live_credential, _read_json
@@ -30,7 +31,7 @@ from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_stat
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink, durable_management_scope
 from coinmaster.ops.native_paper_node import BYBIT_IDS, FeedBook, FeedObserver, FeedObserverConfig, bybit_daily_bar_type
 from coinmaster.ops.hl_live_epoch import LiveEpochRuntime as PaperRuntime
-from coinmaster.ops.hl_live_profile import load_live_profile
+from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
@@ -73,6 +74,61 @@ class LiveSubmissionHooks(LifecycleHooks):
         )(**request)
 
 
+class ClosedTradeClock:
+    """True Bybit trade1m -> BTC/SOL H4 + SOL1H, actual availability."""
+    MINUTE=60_000_000_000
+    H4=14_400_000_000_000
+    DAY=86_400_000_000_000
+    def __init__(self,state):self.state=state
+    def minute(self,instrument,close_ns,init_ns,available_ns,values):
+        if (type(close_ns) is not int or close_ns<=0 or close_ns%self.MINUTE or not close_ns<=init_ns<=available_ns
+            or len(values)!=4 or not all(v.is_finite() for v in values)
+            or not 0<values[2]<=min(values[0],values[3])<=max(values[0],values[3])<=values[1]):
+            raise ValueError('LIVE_CLOSED_MINUTE_INVALID')
+        for hours in ((1,4) if instrument.startswith('SOL') else (4,)):
+            span=hours*60*self.MINUTE;start=((close_ns-1)//span)*span;key=(instrument,hours,start)
+            buckets=self.state.setdefault('minute_buckets',{});bucket=buckets.setdefault(key,{})
+            record=(tuple(values),available_ns)
+            if close_ns in bucket:
+                if bucket[close_ns][0]!=record[0]:raise ValueError('LIVE_CLOSED_MINUTE_CONFLICT')
+                continue
+            bucket[close_ns]=record
+            if len(bucket)==hours*60:
+                expected=list(range(start+self.MINUTE,start+span+self.MINUTE,self.MINUTE))
+                if sorted(bucket)!=expected:raise ValueError('LIVE_CLOSED_AGGREGATE_GAP')
+                rows=[bucket[ns][0] for ns in expected]
+                bar=dict(instrument=instrument,hours=hours,close_ns=start+span,
+                    available_ns=max(bucket[ns][1] for ns in expected),
+                    OHLC=(rows[0][0],max(r[1] for r in rows),min(r[2] for r in rows),rows[-1][3]))
+                published=self.state.setdefault('last_closed',{}).get((instrument,hours),0)
+                if bar['close_ns']>published:self.state.setdefault('pending_h4',[]).append(bar)
+            starts=sorted(k[2] for k in buckets if k[:2]==(instrument,hours))
+            for old in starts[:-3]:buckets.pop((instrument,hours,old))
+    def daily(self,instrument,close_ns,available_ns):
+        if close_ns%self.DAY or close_ns>available_ns:raise ValueError('LIVE_CLOSED_D1_INVALID')
+        days=self.state.setdefault('daily_seen',{});old=days.get(instrument)
+        if old is None or close_ns>old[0]:days[instrument]=(close_ns,available_ns)
+    def drain(self,quote_available_ns,instruments):
+        remaining=[];ready=[];days=self.state.get('daily_seen',{})
+        published=dict(self.state.get('last_closed',{}));h4=dict(self.state.get('last_h4',{}))
+        for bar in sorted(self.state.get('pending_h4',[]),key=lambda b:(b['close_ns'],b['instrument'],b['hours'])):
+            available=bar['available_ns'];hours=bar['hours']
+            if hours==4 and bar['close_ns']%self.DAY==0:
+                if any(i not in days or days[i][0]<bar['close_ns'] for i in instruments):remaining.append(bar);continue
+                available=max(available,*(days[i][1] for i in instruments))
+            if available>=quote_available_ns:remaining.append(bar);continue
+            bar=dict(bar,available_ns=available);key=(bar['instrument'],hours)
+            last=published.get(key,0)
+            if last and bar['close_ns']>last+hours*60*self.MINUTE:
+                raise ValueError('LIVE_CLOSED_AGGREGATE_COVERAGE_GAP')
+            if bar['close_ns']>last:
+                ready.append(bar);published[key]=bar['close_ns']
+                if hours==4:h4[bar['instrument']]=bar['close_ns']
+        self.state['pending_h4']=remaining
+        self.state['last_closed']=published;self.state['last_h4']=h4
+        return ready
+
+
 class HyperliquidLiveNode:
     # Reuse only public feature/warmup, native cache projection and lifecycle helpers.
     def _refresh_warmup_readiness(self):
@@ -96,6 +152,9 @@ class HyperliquidLiveNode:
         self.profile_root = Path(__file__).resolve().parents[2]
         source = self.profile_root / "coinmaster/strategy/wave_overlay.py"
         self.profile = load_live_profile(self.profile_root, candidate)
+        self.input_readiness=self.profile.get('input_readiness',False) is True
+        if self.input_readiness and self.profile.get('manage_only_readiness',False) is not True:
+            raise RuntimeError('INPUT_READINESS_REQUIRES_MANAGE_ONLY')
         # Qualification never implies order authorization: main checks approval before this read.
         equity = check_live_credential(credential_path, fingerprint_path)
         prior_balance = getattr(state, "flat_epoch_balance", None)
@@ -130,6 +189,14 @@ class HyperliquidLiveNode:
             account_address=self.master, vault_address=None, include_builder_attribution=False,
         )
         del record
+        strategy_flags=dict(self.profile['strategy_flags'])
+        for key in ('research_c1_restore_dd','research_regime_reentry_band'):
+            if key in strategy_flags:strategy_flags[key]=Decimal(str(strategy_flags[key]))
+        if self.input_readiness:
+            from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
+            rows,state=load_stageg_bybit_warmup(instance.signal_warmup_manifest)
+            if state!='READY':raise RuntimeError('C1_DAILY_OHLC_WARMUP_UNKNOWN')
+            strategy_flags['research_band_daily_seed']=tuple(((int(row['open_time_ms'])+86_400_000)*1_000_000,float(row['high']),float(row['low'])) for row in rows['BTCUSDT'])
         self.strategy = RecoverableWaveOverlayStrategy(WaveOverlayStrategyConfig(
             strategy_id=instance.strategy_id, order_id_tag=instance.order_id_tag,
             btc_id=BTC_PERP, sol_id=SOL_PERP,
@@ -137,7 +204,7 @@ class HyperliquidLiveNode:
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
             active_seed=equity, candidate=candidate, seed_bars=self.warmup_bundle.bars,
-            **self.profile["strategy_flags"],
+            **strategy_flags,
             max_mark_age_ns=120_000_000_000, entries_gate=self._entries_enabled,
             event_sink=self.hooks.record_event, native_fill_sink=state.record_native_fill, submission_sink=self.hooks,
             btc_signal_id=BYBIT_IDS[0], sol_signal_id=BYBIT_IDS[1],
@@ -148,6 +215,12 @@ class HyperliquidLiveNode:
             deposit_initialization_allowed=lambda: self.strategy.recovery_confirmed and not state.all_submissions(),
         ))
         self.hooks.strategy = self.strategy
+        if self.input_readiness:
+            require_profile_deposit_parity(self.profile, self.strategy.deposit_projection())
+        self.strategy._input_readiness_preparation=self.input_readiness
+        if self.input_readiness:
+            self.strategy._live_minute_bar_types=tuple(BarType(i,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL) for i in BYBIT_IDS)
+            self.config.data_clients['BYBIT-PUBLIC-SIGNAL']=replace(self.config.data_clients['BYBIT-PUBLIC-SIGNAL'],bars_timestamp_on_close=True)
         self.manage_only_readiness=self.profile.get("manage_only_readiness",False) is True
         if self.manage_only_readiness:
             self.strategy.enable_manage_only_preparation()
@@ -178,6 +251,8 @@ class HyperliquidLiveNode:
         try:
             self._refresh_warmup_readiness()
             self.strategy._validated_live_money()
+            if self.input_readiness:
+                require_profile_deposit_parity(self.profile, self.strategy.deposit_projection())
             return (self.state.entry_control_state() != "PAUSED" and self.gate.attachable
                     and self.node.is_running() and self.strategy.recovery_confirmed
                     and self.strategy.deposit_projection()["state"] == "ARMED"
@@ -258,6 +333,8 @@ class LiveWorker:
 
     def poll(self):
         self.runtime.heartbeat(time.time_ns())
+        if getattr(self.native,'input_readiness',False):
+            self.native.loop.call_soon_threadsafe(self.native.strategy.request_live_input_observation)
         if not self.native.strategy.recovery_confirmed:
             return
         try:

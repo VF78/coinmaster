@@ -1,0 +1,23 @@
+{
+  "schema": "coinmaster-live-finite-info-budget-amendment-v1",
+  "authority": "Root coordinator explicitly accepted independent finite engineering-contract amendment 2026-10-29; source preparation only",
+  "replaces_generation_cap": 400,
+  "generation_cap": 600,
+  "rolling_cap": 1000,
+  "rolling_seconds": 60,
+  "prepaid_bound": "540+4*N",
+  "uncached_order_limit": 15,
+  "arithmetic": "2*(frontend20+clearinghouse2+role60+abstraction20+dexAbstraction20+fills20+2*N)+2*activeAsset20+2*ceil(2000/20)+stockQueryAccount16=540+4*N",
+  "transport": "One HTTP attempt per collector request; stockQueryAccount perp+spot<=4 attempts each at2=16. No hidden retry/custom transport in readiness.",
+  "saturation": "One fills request per sweep; >=2000 rows ->UNKNOWN immediately, no recursive subdivision or command. One full generation attempt.",
+  "reservation": "Reserve entire540+4N before firstHTTP; settle collector actual costs and conservative native16, refund only unused known reservation. Retain actual charges on failure/cancellation.",
+  "freshness": "Whole generation, native AccountState and oldest required evidence<=9s orUNKNOWN",
+  "reviewer": "/root/live_read_budget_review independent read-only exact pinned source analysis",
+  "source_before": {
+    "runtime/coinmaster/ops/hl_live_execution.py": "272e7587318ce2833f57b87469aebfb0121740cc4844aa141d68d5215a2b7fe1",
+    "runtime/coinmaster/ops/hl_info_receipt.py": "037447cd93a5c82c135abdb950ef9b3e941d556f3594a08499a134d072eb1e9c"
+  },
+  "runtime_actions": 0,
+  "native_constructors": 0,
+  "venue_requests": 0
+}

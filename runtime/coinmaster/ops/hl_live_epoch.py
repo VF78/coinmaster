@@ -13,6 +13,101 @@ from coinmaster.strategy.live_recovery import _decode, _FIELDS, _C1_SCHEMA, chec
 class LiveEpochRuntime(PaperRuntime):
     """Keep the complete SQLite audit while scoping native parity to this epoch."""
 
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.db.execute("CREATE TABLE IF NOT EXISTS live_evidence_payloads (cursor INTEGER PRIMARY KEY AUTOINCREMENT,event_id TEXT NOT NULL,kind TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(event_id,kind))")
+        self.db.execute("CREATE TABLE IF NOT EXISTS live_evidence_cursors (source TEXT PRIMARY KEY,body TEXT NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS live_info_checkpoint (id INTEGER PRIMARY KEY CHECK(id=1),body TEXT NOT NULL)")
+        self.db.commit()
+
+    @_journal_locked
+    def append_evidence(self,event_id,kind,payload,*,commit=True):
+        if not event_id or kind not in ('decision','command','ACK','fill','account','funding_cash','funding_rate','signal','Info'):
+            raise ValueError('LIVE_EVIDENCE_ID_OR_KIND_INVALID')
+        body=json.dumps(payload,sort_keys=True,separators=(',',':'),allow_nan=False,default=str)
+        prior=self.db.execute('SELECT body FROM live_evidence_payloads WHERE event_id=? AND kind=?',(event_id,kind)).fetchone()
+        if prior is not None:
+            old=json.loads(prior[0]);current=json.loads(body)
+            if isinstance(old,dict) and isinstance(current,dict):
+                old.pop('received_ns',None);current.pop('received_ns',None)
+            if old!=current:raise ValueError('LIVE_EVIDENCE_CONFLICTING_DUPLICATE')
+            return False
+        self.db.execute('INSERT INTO live_evidence_payloads(event_id,kind,body) VALUES (?,?,?)',(event_id,kind,body))
+        if commit:self.db.commit()
+        return True
+
+    @_journal_locked
+    def evidence_cursor(self,source):
+        row=self.db.execute('SELECT body FROM live_evidence_cursors WHERE source=?',(source,)).fetchone()
+        return json.loads(row[0]) if row else None
+
+    @_journal_locked
+    def record_funding_page(self,rows,*,expected_cursor,next_cursor,complete):
+        # Actual userFunding cashflows only. Never invokes Sandbox cash posting.
+        if not complete or not isinstance(next_cursor,dict):raise ValueError('LIVE_FUNDING_PAGE_INCOMPLETE')
+        try:
+            self.db.execute('BEGIN IMMEDIATE')
+            if self.evidence_cursor('userFunding')!=expected_cursor:raise ValueError('LIVE_FUNDING_CURSOR_MOVED')
+            for row in rows:
+                if not isinstance(row,dict) or type(row.get('time')) is not int or not row.get('hash') or not isinstance(row.get('delta'),dict):
+                    raise ValueError('LIVE_FUNDING_CASHFLOW_INVALID')
+                delta=row['delta'];amount=Decimal(str(delta.get('usdc')))
+                if delta.get('coin') not in ('BTC','SOL') or not amount.is_finite():raise ValueError('LIVE_FUNDING_CASHFLOW_SCOPE')
+                key='funding:'+str(row['hash'])+':'+str(row['time'])+':'+delta['coin']
+                self.append_evidence(key,'funding_cash',dict(source='ACTUAL_VENUE_USERFUNDING',native=row,cash_posted=False),commit=False)
+            self.db.execute('INSERT OR REPLACE INTO live_evidence_cursors VALUES (?,?)',('userFunding',json.dumps(next_cursor,sort_keys=True)))
+            self.db.commit()
+        except BaseException:self.db.rollback();raise
+
+    def _journal_order_fills(self,client_id):
+        rows=self.db.execute('SELECT trade_id,native_event_id,client_order_id,venue_order_id,instrument_id,order_side,quantity,price,commission_amount,commission_currency,liquidity_side,ts_event_ns,ts_init_ns FROM paper_native_fill_details WHERE client_order_id=? ORDER BY trade_id',(client_id,)).fetchall()
+        return [list(row) for row in rows]
+
+    @_journal_locked
+    def save_verified_info_checkpoint(self,receipt,terminal_proofs,expected_revision):
+        if self.native_revision()!=expected_revision:raise ValueError('LIVE_INFO_CHECKPOINT_REVISION_MOVED')
+        body=dict(start_ms=receipt.start_ms,anchor_tid=receipt.anchor_tid,end_ms=receipt.end_ms,
+            fills=list(receipt.fills),terminal_proofs=terminal_proofs,revision=expected_revision)
+        self.db.execute('INSERT OR REPLACE INTO live_info_checkpoint VALUES (1,?)',(json.dumps(body,sort_keys=True),))
+        self.append_evidence('Info:'+str(receipt.end_ms)+':'+str(expected_revision),'Info',body,commit=False)
+        self.db.commit()
+
+    @_journal_locked
+    def info_query_evidence(self,native_fingerprints,applied):
+        row=self.db.execute('SELECT body FROM live_info_checkpoint WHERE id=1').fetchone()
+        if row is None:return {},(),None,None
+        old=json.loads(row[0]);fills=old['fills'];known={str(fill['tid']) for fill in fills}
+        if not known.issubset(applied):raise ValueError('LIVE_INFO_ARCHIVED_FILL_DISAPPEARED')
+        latest=max(fills,key=lambda f:(f['time'],f['tid'])) if fills else None
+        if latest is not None:
+            # A newly received fill older than our tail revokes that tail; re-read
+            # original history, retaining all journal evidence and all ownership.
+            for tid in applied-known:
+                native=self.db.execute('SELECT ts_event_ns FROM paper_native_fill_details WHERE trade_id=?',(tid,)).fetchone()
+                if native is None or native[0] is None:raise ValueError('LIVE_INFO_FILL_CLOCK_UNKNOWN')
+                if native[0]//1_000_000<latest['time']:return {},(),None,None
+        cached={}
+        unresolved={json.loads(command)['client_order_id'] for (command,) in self.db.execute("SELECT command FROM paper_command_audit WHERE status='MANAGE_SUBMITTING'")}
+        states={row['client_order_id']:row['state'] for row in self.all_submissions()}
+        for cloid,proof in old['terminal_proofs'].items():
+            client=proof['client_id']
+            if (client not in unresolved and states.get(client)=='TERMINAL'
+                and native_fingerprints.get(client)==proof['native_fingerprint']
+                and self._journal_order_fills(client)==proof['journal_fills']):cached[cloid]=proof['status']
+        return cached,tuple(fills),latest['time'] if latest else None,latest['tid'] if latest else None
+
+    @_journal_locked
+    def commit_applied_fills(self,trade_ids,strategy_state):
+        """Typed native-fill payload and applied-ID/checkpoint share one commit."""
+        try:
+            for trade_id in trade_ids:
+                row=self.db.execute('SELECT native_event_id,client_order_id,venue_order_id,instrument_id,order_side,quantity,price,commission_amount,commission_currency,liquidity_side,ts_event_ns,ts_init_ns FROM paper_native_fill_details WHERE trade_id=?',(trade_id,)).fetchone()
+                if row is None:raise ValueError('LIVE_TYPED_FILL_NATIVE_FACTS_MISSING')
+                keys=('native_event_id','client_order_id','venue_order_id','instrument_id','order_side','quantity','price','commission_amount','commission_currency','liquidity_side','ts_event_ns','ts_init_ns')
+                self.append_evidence(trade_id,'fill',dict(source='ACTUAL_NATIVE_FILL',trade_id=trade_id,native=dict(zip(keys,row))),commit=False)
+            return super().commit_applied_fills(trade_ids,strategy_state)
+        except BaseException:self.db.rollback();raise
+
     @_journal_locked
     def acquire(self) -> None:
         if self._process_lock_fd is not None:return
@@ -166,6 +261,7 @@ class LiveEpochRuntime(PaperRuntime):
                 self.db.rollback();return False
             command=json.dumps(dict(kind=kind,client_order_id=client_order_id,instrument_id=instrument_id),sort_keys=True)
             self.db.execute("INSERT INTO paper_command_audit VALUES (?,?,?,?)",(command_id,command,"MANAGE_SUBMITTING",time.time_ns()))
+            self.append_evidence(command_id,'command',dict(state='RESERVED_BEFORE_DISPATCH',kind=kind,client_order_id=client_order_id,instrument_id=instrument_id,quantity=quantity,side=side,episode_id=episode_id,native_revision=expected_revision),commit=False)
             if kind=="REDUCE":
                 return self.record_submission(client_order_id=client_order_id,intent_id=command_id,episode_id=episode_id,
                     action="FORCED_CLOSE",instrument_id=instrument_id,quantity=quantity,reduce_only=True,

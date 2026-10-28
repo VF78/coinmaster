@@ -28,7 +28,7 @@ from nautilus_trader.model.enums import OrderStatus
 from nautilus_trader.model.events import OrderDenied
 
 from coinmaster.ops.hl_info_receipt import IncompleteInfoReport, collect_info_receipt
-from coinmaster.ops.hl_live_money import collect_selected_cross_assets, live_perps_money_view
+from coinmaster.ops.hl_live_money import collect_selected_cross_assets, live_perps_money_view, cheap_portfolio_observation
 from coinmaster.ops.hl_qualified_reports import qualified_mass_status
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy, durable_decision_checkpoint
@@ -45,6 +45,8 @@ class InfoWeightBudget:
 
     async def __call__(self, body: dict[str, Any]):
         kind = body["type"]
+        if kind not in {'userRole','clearinghouseState','orderStatus','frontendOpenOrders','userAbstraction','userDexAbstraction','userFillsByTime','activeAssetData'}:
+            raise IncompleteInfoReport('LIVE_INFO_UNSUPPORTED_REQUEST')
         cost = 60 if kind == "userRole" else 2 if kind in {
             "clearinghouseState", "orderStatus",
         } else 20
@@ -57,6 +59,48 @@ class InfoWeightBudget:
             if self.used > self.limit:
                 raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
         return value
+
+
+def finite_generation_reservation(uncached_orders):
+    if type(uncached_orders) is not int or not 0<=uncached_orders<=15:
+        raise IncompleteInfoReport('LIVE_INFO_SCOPE_EXCEEDS_GENERATION_CAP')
+    return 540+4*uncached_orders
+
+
+class ReadinessInfoBudget:
+    """Atomic prepaid admission; known unused reservation refunded exactly once."""
+    def __init__(self):self.spent=deque();self.next_affordable=None
+    def reserve(self,weight,now):
+        if type(weight) is not int or not 0<weight<=1000:raise IncompleteInfoReport('LIVE_INFO_COST_UNKNOWN')
+        while self.spent and now-self.spent[0][0]>=60:self.spent.popleft()
+        used=sum(item[1] for item in self.spent)
+        if used+weight>1000:
+            for item in self.spent:
+                used-=item[1]
+                if used+weight<=1000:self.next_affordable=item[0]+60;break
+            raise IncompleteInfoReport('LIVE_INFO_RATE_BUDGET_EXCEEDED')
+        entry=[now,weight,False];self.spent.append(entry);self.next_affordable=None
+        return entry
+    def settle(self,reservation,actual):
+        if (reservation[2] or type(actual) is not int or actual<0):
+            raise IncompleteInfoReport('LIVE_INFO_RESERVATION_SETTLEMENT_INVALID')
+        overflow=actual>reservation[1]
+        reservation[1]=actual;reservation[2]=True
+        self.next_affordable=None
+        if overflow:raise IncompleteInfoReport('LIVE_INFO_RESERVATION_COST_OVERFLOW')
+
+
+class SingleAttemptInfoTransport:
+    """Pinned collector transport: exactly one urllib POST, no injected retry."""
+    def __init__(self,*,testnet,timeout):self.testnet=testnet;self.timeout=timeout
+    async def __call__(self,body):
+        return await read_info_http(body,testnet=self.testnet,timeout=self.timeout)
+
+
+def _native_order_fingerprint(order):
+    return [str(order.client_order_id),str(order.venue_order_id),str(order.account_id),str(order.strategy_id),
+        str(order.instrument_id),str(order.status),str(order.quantity),str(order.filled_qty),
+        sorted(map(str,order.trade_ids)),bool(order.is_closed),bool(order.is_pending_cancel)]
 
 
 def _proven_local_denial(row: dict, order: Any) -> bool:
@@ -134,6 +178,12 @@ class QualifiedInfoBoundary:
         self._cm_last_margin_assets = None
         self._cm_last_revision = None
         self._cm_runtime = None
+        self._cm_inputs_enabled=False
+        self._cm_inputs_budget=ReadinessInfoBudget()
+        self._cm_money_task=None
+        self._cm_account_refresh_wait=None
+        self._cm_next_money_request=0.0
+        self._cm_generation_started_ns=None
         self._cm_bootstrapped = False
         self._cm_suspend_recovery = None
         self._cm_resume_recovery = None
@@ -259,6 +309,20 @@ class QualifiedInfoBoundary:
         venue_orders = tuple(order for order in native_orders if str(order.client_order_id) not in local_denied)
         return replace(self._cm_scope, durable_orders=tuple(durable)), revision, venue_orders, applied, tuple(signature)
 
+    async def _cm_refresh_native_account_for_generation(self):
+        account=self._cache.account_for_venue(self.venue)
+        event=getattr(account,'last_event',None)
+        old=getattr(event,'id',None) or getattr(event,'event_id',None)
+        query_started_ns=self._clock.timestamp_ns()
+        self._cm_strategy.query_account(self.account_id)
+        while True:
+            if time.monotonic_ns()-self._cm_generation_started_ns>9_000_000_000:
+                raise IncompleteInfoReport('LIVE_NATIVE_ACCOUNT_GENERATION_STALE')
+            account=self._cache.account_for_venue(self.venue);event=getattr(account,'last_event',None)
+            current=getattr(event,'id',None) or getattr(event,'event_id',None)
+            if current and current!=old and getattr(event,'ts_init',0)>=query_started_ns:return
+            await asyncio.sleep(.01)
+
     async def generate_mass_status(self, lookback_mins=None):
         self._cm_last_receipt = None
         self._cm_last_margin_assets = None
@@ -267,20 +331,40 @@ class QualifiedInfoBoundary:
             self._cm_require_healthy()
             if self._cm_bootstrapped and self._cm_ws_phase == "LIVE" and self._cm_suspend_recovery is not None:
                 self._cm_suspend_recovery()
-            for attempt in range(4):
+            for attempt in range(1 if self._cm_inputs_enabled else 4):
+                cached_terminal={};archived_fills=();query_anchor_ms=query_anchor_tid=None
+                reservation=None;native_refresh_cost=0
+                if self._cm_inputs_enabled:
+                    frozen_scope,_,native_orders,applied,frozen_signature=self._cm_owned_scope()
+                    frozen_applied=applied
+                    fingerprints={str(o.client_order_id):_native_order_fingerprint(o) for o in native_orders}
+                    cached_terminal,archived_fills,query_anchor_ms,query_anchor_tid=self._cm_runtime.info_query_evidence(fingerprints,applied)
+                    fresh_orders=len(frozen_scope.durable_orders)-len(cached_terminal)
+                    # Reserve complete minimum before ANY request; terminal history
+                    # remains retained and validated, only redundant status reads go.
+                    reservation=self._cm_inputs_budget.reserve(finite_generation_reservation(fresh_orders),time.monotonic())
+                    self._cm_generation_started_ns=time.monotonic_ns()
                 now = time.monotonic()
                 while self._cm_info_usage and now - self._cm_info_usage[0][0] >= 60:
                     self._cm_info_usage.popleft()
-                # Every attempt stays under 400; retries also consume the
+                # Legacy attempts stay under400; readiness prepaid600 includes native16.
+                # Legacy retries also consume the
                 # rolling 1000/min budget. The transport wrapper enforces the
                 # remaining allowance on each request, including fill rows.
                 remaining = 1000 - sum(weight for _, weight in self._cm_info_usage)
                 if remaining <= 0:
                     raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
-                weighted_info = InfoWeightBudget(self._cm_info, min(400, remaining))
+                weighted_info = InfoWeightBudget(self._cm_info, 584 if self._cm_inputs_enabled else min(400, remaining))
                 revision = None
                 try:
+                    if self._cm_inputs_enabled:
+                        if type(self._cm_info) is not SingleAttemptInfoTransport:
+                            raise IncompleteInfoReport('LIVE_READINESS_TRANSPORT_SINGLE_ATTEMPT_REQUIRED')
+                        native_refresh_cost=16
+                        await self._cm_refresh_native_account_for_generation()
                     scope, revision, native_orders, applied, signature = self._cm_owned_scope()
+                    if self._cm_inputs_enabled and (scope.durable_orders!=frozen_scope.durable_orders or applied!=frozen_applied or signature!=frozen_signature):
+                        raise IncompleteInfoReport('LIVE_RESERVED_SCOPE_MOVED')
                     expected = {cloid: oid for _, cloid, oid in scope.durable_orders}
                     end = self._clock.timestamp_ns() // 1_000_000
                     async def sweep(at: int):
@@ -288,7 +372,9 @@ class QualifiedInfoBoundary:
                             weighted_info, account=scope.account_ref, dex=scope.dex,
                             anchor_ms=scope.anchor_ms, anchor_tid=scope.anchor_tid,
                             end_ms=at, expected_orders=expected, owned_coins=scope.owned_coins,
-                            require_money_scope=True,
+                            require_money_scope=True,cached_terminal_statuses=cached_terminal,
+                            archived_fills=archived_fills,query_anchor_ms=query_anchor_ms,query_anchor_tid=query_anchor_tid,
+                            allow_fill_subdivision=not self._cm_inputs_enabled,
                         )
 
                     first = await sweep(end)
@@ -314,6 +400,8 @@ class QualifiedInfoBoundary:
                         _, current_revision, _, current_applied, current_signature = self._cm_owned_scope()
                         if (current_revision, current_applied, current_signature) != (revision, applied, signature):
                             raise IncompleteInfoReport("LIVE_DURABLE_REVISION_MOVED")
+                    if self._cm_inputs_enabled and time.monotonic_ns()-self._cm_generation_started_ns>9_000_000_000:
+                        raise IncompleteInfoReport('LIVE_INFO_GENERATION_OLDEST_RESPONSE_STALE')
                     self._cm_last_receipt = second
                     self._cm_last_margin_assets = selected_assets
                     self._cm_last_revision = revision
@@ -337,7 +425,9 @@ class QualifiedInfoBoundary:
                         raise
                     await asyncio.sleep(0.25)
                 finally:
-                    if weighted_info.used:
+                    if self._cm_inputs_enabled and reservation is not None:
+                        self._cm_inputs_budget.settle(reservation,weighted_info.used+native_refresh_cost)
+                    elif weighted_info.used:
                         self._cm_info_usage.append((now, weighted_info.used))
         except IncompleteInfoReport as error:
             if str(error) == "LIVE_INFO_RATE_BUDGET_EXCEEDED":
@@ -401,6 +491,13 @@ class QualifiedInfoBoundary:
 
     def request_effect_parity_refresh(self) -> bool:
         """One candidate-triggered strict refresh, serialized with the monitor."""
+        if self._cm_inputs_enabled and self._cm_inputs_budget.next_affordable is not None and time.monotonic()<self._cm_inputs_budget.next_affordable:
+            if getattr(self,'_cm_affordable_handle',None) is None:
+                def wake():
+                    self._cm_affordable_handle=None
+                    self.request_effect_parity_refresh()
+                self._cm_affordable_handle=asyncio.get_running_loop().call_later(self._cm_inputs_budget.next_affordable-time.monotonic(),wake)
+            return False
         if self._cm_ws_phase != "LIVE" or self._cm_ws_failure or self._cm_parity_verifier is None:
             return False
         if self._cm_refresh_task is None or self._cm_refresh_task.done():
@@ -425,7 +522,9 @@ class QualifiedInfoBoundary:
         except IncompleteInfoReport as error:
             # Shared-IP budget exhaustion leaves the candidate queued. No
             # evidence is accepted and the increase gate stays suspended.
-            if str(error) != "LIVE_INFO_RATE_BUDGET_EXCEEDED":
+            if str(error) == "LIVE_INFO_RATE_BUDGET_EXCEEDED":
+                self.request_effect_parity_refresh()  # one earliest-affordable scheduled wake
+            else:
                 self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_FAILED")
         except asyncio.CancelledError:
             self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_CANCELED")
@@ -433,12 +532,109 @@ class QualifiedInfoBoundary:
         except BaseException:
             self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_FAILED")
 
+    async def collect_user_funding_observation(self,strategy):
+        """One actual bounded cashflow page; no funding forecast or cash posting."""
+        if not self._cm_inputs_enabled or not self.recovery_healthy():return False
+        async with self._cm_parity_lock:
+            cursor=self._cm_runtime.evidence_cursor('userFunding')
+            start=self._cm_scope.anchor_ms if cursor is None else cursor['end_ms']
+            end=min(self._clock.timestamp_ns()//1_000_000,start+86_400_000)
+            if end<=start:return False
+            # Separate bounded source observation, never inside a600 generation.
+            # Official per20-row item weight applies to userFunding as to fills.
+            reservation=self._cm_inputs_budget.reserve(45,time.monotonic());actual=20
+            try:
+                rows=await self._cm_info({'type':'userFunding','user':self._cm_scope.account_ref,'startTime':start,'endTime':end})
+                if isinstance(rows,list):actual+=(len(rows)+19)//20
+                if not isinstance(rows,list) or len(rows)>=500:raise IncompleteInfoReport('LIVE_FUNDING_PAGE_COMPLETENESS_UNKNOWN')
+                if any(type(row.get('time')) is not int or not start<=row['time']<=end for row in rows):raise IncompleteInfoReport('LIVE_FUNDING_PAGE_TIME_INVALID')
+                self._cm_runtime.record_funding_page(rows,expected_cursor=cursor,next_cursor={'end_ms':end},complete=True)
+            finally:self._cm_inputs_budget.settle(reservation,actual)
+            if rows:strategy._live_inputs_dirty=True;strategy._last_live_input_observation=None
+            return True
+
+    def request_portfolio_observation(self,strategy):
+        if not self._cm_inputs_enabled or not self.recovery_healthy() or time.monotonic()<self._cm_next_money_request:return False
+        if self._cm_money_task is not None and not self._cm_money_task.done():return True
+        self._cm_next_money_request=time.monotonic()+1
+        self._cm_money_task=asyncio.get_running_loop().create_task(self._cm_collect_portfolio_observation(strategy))
+        return True
+
+    async def _cm_collect_portfolio_observation(self,strategy):
+        try:
+            async with self._cm_parity_lock:
+                if not self.recovery_healthy():return
+                account=self._cache.account_for_venue(self.venue)
+                event_id=str(getattr(getattr(account,'last_event',None),'id',None) or getattr(getattr(account,'last_event',None),'event_id',''))
+                started=time.monotonic_ns()
+                if self._cm_account_refresh_wait is not None:
+                    old_id,query_started=self._cm_account_refresh_wait
+                    if event_id==old_id:return  # Real native AccountState has not arrived.
+                    if started-query_started>9_000_000_000:
+                        self._cm_account_refresh_wait=None
+                        raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_STALE')
+                    started=query_started;self._cm_account_refresh_wait=None
+                    strategy._live_inputs_dirty=False
+                revision=self._cm_runtime.native_revision();epoch=strategy._c1_fill_epoch;ws=self._cm_ws_epoch
+                fingerprints=tuple(_native_order_fingerprint(o) for o in self._cache.orders(venue=self.venue))
+                self._cm_inputs_budget.reserve(2,time.monotonic())
+                raw=await self._cm_info({'type':'clearinghouseState','user':self._cm_scope.account_ref,'dex':self._cm_scope.dex})
+                complete=time.monotonic_ns();available=self._clock.timestamp_ns()
+                if not self.recovery_healthy() or self._cm_runtime.native_revision()!=revision or strategy._c1_fill_epoch!=epoch or self._cm_ws_epoch!=ws or fingerprints!=tuple(_native_order_fingerprint(o) for o in self._cache.orders(venue=self.venue)):
+                    raise IncompleteInfoReport('PORTFOLIO_NATIVE_REVISION_MOVED')
+                account=self._cache.account_for_venue(self.venue)
+                if getattr(strategy,'_live_inputs_dirty',False):raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED')
+                observation=cheap_portfolio_observation(raw,account_id=str(self.account_id),native_account=account,
+                    native_positions=tuple(self._cache.positions_open()),strategy_id=str(strategy.id),revision=revision,
+                    fill_epoch=epoch,ws_epoch=ws,started_ns=started,completed_ns=complete,available_ns=available)
+                strategy._last_live_input_observation=observation
+                self._cm_runtime.append_evidence('portfolio:'+str(available),'account',dict(source='ONE_CLEARINGHOUSE_RESPONSE',raw=raw,
+                    native_account_event_id=observation.native_account_event_id,generation_started_ns=started,response_completed_ns=complete,
+                    source_available_ns=available,native_revision=revision,fill_epoch=epoch,ws_epoch=ws,command_capability=False))
+        except IncompleteInfoReport as error:
+            strategy._last_live_input_observation=None
+            strategy._live_inputs_reason=str(error)
+            if str(error)=='PORTFOLIO_ACCOUNT_REFRESH_REQUIRED' and self._cm_account_refresh_wait is None:
+                try:
+                    # v1.231 source: perp2+spot2, each <=4 HTTP attempts =>16.
+                    self._cm_inputs_budget.reserve(16,time.monotonic())
+                    account=self._cache.account_for_venue(self.venue)
+                    old=str(getattr(getattr(account,'last_event',None),'id',None) or getattr(getattr(account,'last_event',None),'event_id',''))
+                    self._cm_account_refresh_wait=(old,time.monotonic_ns())
+                    strategy.query_account(self.account_id)  # Stock public command path.
+                except BaseException as query_error:
+                    self._cm_account_refresh_wait=None;strategy._live_inputs_reason=repr(query_error)
+            # A money failure never revokes an independent ownership certificate.
+        except BaseException as error:
+            strategy._last_live_input_observation=None;strategy._live_inputs_reason=repr(error)
+
+    def save_verified_query_evidence(self,strategy,receipt,orders):
+        if not self._cm_inputs_enabled:return
+        if self._cm_generation_started_ns is None or time.monotonic_ns()-self._cm_generation_started_ns>9_000_000_000:
+            raise IncompleteInfoReport('LIVE_INFO_GENERATION_OLDEST_RESPONSE_STALE')
+        rows={row['client_order_id']:row for row in self._cm_runtime.all_submissions()};proofs={}
+        statuses={str(item['order']['order'].get('cloid','')).lower():item for item in receipt.order_statuses}
+        for order in orders:
+            client=str(order.client_order_id)
+            if client not in rows or rows[client]['state']!='TERMINAL' or not order.is_closed or order.is_pending_cancel:continue
+            cloid=str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(nautilus_pyo3.ClientOrderId(client)))
+            status=statuses.get(cloid.lower())
+            if status is None or status['order']['status'] not in ('filled','canceled'):continue
+            journal_fills=self._cm_runtime._journal_order_fills(client)
+            if {str(row[0]) for row in journal_fills}!=set(map(str,order.trade_ids)):continue
+            proofs[cloid]=dict(client_id=client,native_fingerprint=_native_order_fingerprint(order),journal_fills=journal_fills,status=status)
+        self._cm_runtime.save_verified_info_checkpoint(receipt,proofs,self._cm_runtime.native_revision())
+
     async def _cm_monitor_parity(
         self, verify: Callable[[Any], Awaitable[bool]], interval: float,
     ) -> None:
         try:
             while self._cm_ws_phase == "LIVE" and self._cm_ws_failure is None:
                 await asyncio.sleep(interval)
+                if self._cm_inputs_enabled:
+                    # Cheap transport health only. Expiry never launches full Info.
+                    if not self._cm_transport_ok():return
+                    continue
                 if not self._cm_transport_ok():
                     return
                 seen_parity_error = False
@@ -561,10 +757,8 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
         )
         info = cls._info
         if info is None:
-            info = lambda body: read_info_http(
-                body, testnet=environment == nautilus_pyo3.HyperliquidEnvironment.TESTNET,
-                timeout=config.http_timeout_secs,
-            )
+            info = SingleAttemptInfoTransport(testnet=environment == nautilus_pyo3.HyperliquidEnvironment.TESTNET,
+                timeout=config.http_timeout_secs)
         owner = QualifiedHyperliquidExecutionClient(
             loop=loop, client=client, msgbus=msgbus, cache=cache, clock=clock,
             instrument_provider=provider, config=config, name=name, account_address=address,
@@ -591,6 +785,13 @@ def bind_clean_flat_live_handover(
         raise RuntimeError("LIVE_HANDOVER_STRATEGY_UNQUALIFIED")
     scope = client._cm_scope
     client._cm_management_only=manage_only
+    client._cm_inputs_enabled=getattr(strategy,'_input_readiness_preparation',False)
+    client._cm_strategy=strategy
+    if client._cm_inputs_enabled:
+        if type(client._cm_info) is not SingleAttemptInfoTransport:
+            raise RuntimeError('LIVE_READINESS_TRANSPORT_SINGLE_ATTEMPT_REQUIRED')
+        strategy._live_input_request=lambda:client.request_portfolio_observation(strategy)
+        strategy._live_input_ws_epoch=lambda:client._cm_ws_epoch
     if strategy.config.research_residual_recovery and not manage_only:
         raise RuntimeError("E4_C1_LIVE_REQUIRES_MANAGE_ONLY_PREPARATION")
     if manage_only and (not strategy._manage_only_preparation or not strategy._checkpoint_policy_valid):
@@ -617,6 +818,7 @@ def bind_clean_flat_live_handover(
         ):
             raise IncompleteInfoReport("LIVE_HANDOVER_NATIVE_ROUTE_MISMATCH")
         receipt = client._cm_last_receipt
+        if getattr(client,'_cm_inputs_enabled',False) and (client._cm_generation_started_ns is None or time.monotonic_ns()-client._cm_generation_started_ns>9_000_000_000):raise IncompleteInfoReport('LIVE_INFO_GENERATION_OLDEST_RESPONSE_STALE')
         if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
         if receipt is None or mass.account_id != client.account_id or mass.venue != client.venue:
@@ -749,6 +951,7 @@ def bind_clean_flat_live_handover(
             positions,orders,signature=management_cache_evidence(client._cache,client.venue)
             runtime.reconcile_management_commands({o[0] for o in orders if o[4]},revision)
             if runtime.native_revision()!=revision:raise IncompleteInfoReport("MANAGEMENT_GENERATION_REVISION_MOVED")
+            if getattr(client,'_cm_inputs_enabled',False):client.save_verified_query_evidence(strategy,receipt,native_orders)
             strategy._management_certificate=ManagementCertificate(revision,generation+9_000_000_000,
                 recovery_policy_hash(strategy.config,strategy._candidate),signature,
                 hashlib.sha256(durable_decision_checkpoint(strategy.on_save()["wave_overlay_live_recovery_v1"])).hexdigest(),
@@ -770,6 +973,7 @@ def bind_clean_flat_live_handover(
             raise IncompleteInfoReport("LIVE_FLAT_EPOCH_BALANCE_CHANGED")
         if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
+        if getattr(client,'_cm_inputs_enabled',False):client.save_verified_query_evidence(strategy,receipt,native_orders)
         latest_money[0] = candidate_money
         return True
 

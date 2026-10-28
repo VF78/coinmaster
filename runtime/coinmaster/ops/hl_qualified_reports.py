@@ -43,7 +43,10 @@ def _same_generation(first: InfoReceipt, second: InfoReceipt) -> None:
     # Comparing dataclass equality would require identical end_ms and could
     # accidentally certify a replay of one response as two observations.
     if (
-        first.start_ms != second.start_ms
+        first.cached_terminal_cloids != second.cached_terminal_cloids
+        or first.query_start_ms != second.query_start_ms
+        or first.query_anchor_tid != second.query_anchor_tid
+        or first.start_ms != second.start_ms
         or not first.start_ms < first.end_ms < second.end_ms
         or first.account != second.account or first.dex != second.dex
         or first.anchor_tid != second.anchor_tid

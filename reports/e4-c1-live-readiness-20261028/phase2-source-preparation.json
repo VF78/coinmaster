@@ -1,0 +1,61 @@
+{
+  "schema": "coinmaster-live-input-bridge-source-preparation-v1",
+  "state": "SOURCE_COMPONENT_PURE_PASS_AWAIT_CONNECTED_PEER_NATIVE_NOT_RUN_NOT_RELEASE_READY",
+  "base_commit": "e1713f8a3b800323e0176e276d98ec18fb5262db",
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_info_receipt.py": "f5712992147871d3072ffef6147f19a19fecf6b939fce674a862400085233b69",
+    "runtime/coinmaster/ops/hl_live_epoch.py": "f5c86242e58a379262094e872118cc759d797800e37753bf9af06579e4d025b7",
+    "runtime/coinmaster/ops/hl_live_execution.py": "28dbe1f2fda23f066fb705fc872110eb1a5f4b144f5a7789b1b9871a880064c6",
+    "runtime/coinmaster/ops/hl_live_money.py": "e6e4119f1b84a53d61095e0bc4b9e706bbd16ee9e6ff9bfee66913a732c3d43a",
+    "runtime/coinmaster/ops/hl_live_profile.py": "55a9a94e5af9c204307c17b95f37961295535c404790740f97134c667b09e30c",
+    "runtime/coinmaster/ops/hl_live_worker.py": "90b1b1ba9886040ba04c709647f7739a2e19a7866e3a134c4faa48080cc29fb5",
+    "runtime/coinmaster/ops/hl_qualified_reports.py": "6d52f879df5cef7d4442abf8a5a4c458c8313e6dc99f8c361994b63141b276e6",
+    "runtime/coinmaster/strategy/live_recovery.py": "c4eb9e83ed3f36d822bfc328d3a7b87e1aa9a9c5a9b29825a5a9d9039efa35d7",
+    "runtime/coinmaster/strategy/residual_recovery.py": "34575a932e9ce57cb99529f603ed258603651d06ead0670fad68737420852dfa",
+    "runtime/coinmaster/strategy/wave_overlay.py": "4e01f36d268a6f32a0c74f1ad2540d291b0e2cba53c3ef222c48efa64587b1d9",
+    "runtime/tests/test_e4_c1_manage_only_pure.py": "b53e1c9cf83aea570832ca381ad25c304be45662201b9daf9ab018496efdda11",
+    "runtime/coinmaster/strategy/c1_inputs.py": "00528b9c24359c10f98ff4ad43bf715b85709518d1dcde787196dab5e7d36fb1",
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "6808f0b0eb5bcb2c39e496e65e64c6f863cf825a9dfe42c9d76709cc8bb6c33d"
+  },
+  "implementation": [
+    "Immutable C1 DTO/shared existing native loss materializer, research real mark OHLC vs live native HL marks and unrealized_pnl; no parallel PnL",
+    "Observed accountValue once, stock QueryAccount actual fresh AccountState, revision/fill/WS/event and generation9s checks",
+    "Single native lifecycle startup (shadowed on_start removed); native closed Bybit1m trade route, SOL1H/BTC+SOLH4, true availability, pairedD1 at midnight, persisted-watermark backfill/gap denial",
+    "Entire minute economics fingerprints kept in existing SQLite; clock/H/rights/FIRST_FRESH/BTC_POSTCUT_D1 checkpoint, loaded freshness/certificates invalid",
+    "Terminal-query exemption only exact saved verified native order+all journal fill fingerprints, open/uncertain retained, all historical rows retained",
+    "Explicit finite600 engineering amendment, rolling1000/60s unchanged, prepay540+4N N<=15 including native16, single transport attempt, one fills response/sweep,2000 saturationUNKNOWN no recursion; actual spend retained/unused refund",
+    "Separate same-budget userFunding prepaid45,per20-row item costs,500 saturationUNKNOWN/no cursor advance/no cash posting",
+    "Actual typed fill facts+applied-ID/checkpoint one SQLite commit",
+    "Existing DP55/retained45% daily-closeHWM binding/profile-state parity; no H/latch reset or runtime setter",
+    "Input-readiness quote lane observes shared policy and actual callback firstfresh, returns before ordinary quote command processing; all normal C1 entries/dispatch OFF"
+  ],
+  "tests": {
+    "final": "76PASS12.07s",
+    "command": "PYTHONPATH=runtime canonical runtime/.venv/bin/python -m pytest runtime/tests/test_e4_c1_input_bridge_pure.py runtime/tests/test_e4_c1_manage_only_pure.py runtime/tests/test_deposit_protection.py -q --maxfail=1",
+    "earlier_connected": [
+      "53PASS9.69s",
+      "63PASS9.49s",
+      "68PASS10.93s",
+      "73PASS10.94s",
+      "75PASS11.86s"
+    ],
+    "preserved_failures": [
+      "Two initial pure test invocations used wrong editable package path; no native economics launched",
+      "Fixture quote availability equality failed10PASS1FAIL; corrected to strictly later actual quote callback"
+    ],
+    "static": "All changed Python AST parsed; git diff --check PASS; targeted class duplicate method inventoryPASS"
+  },
+  "readiness_limits": [
+    "Actual native lifecycle/adapter/account reconciliation/fault fixture not run in this phase",
+    "No real venue bootstrap; current private live profile/seal/policy/checkpoint require qualified native acceptance and prepared release approval",
+    "No order/start/deployment/runtime authority from source or tests"
+  ],
+  "economic_benchmark": "fccd60/a2c7 immutable; original5499360 benchmark does not apply to DP55 release without qualification; no rerun",
+  "native_engine_node_strategy_order_model_constructors": 0,
+  "test_nautilus_imports": false,
+  "venue_requests": 0,
+  "services_changed": 0,
+  "account_reads_writes": 0,
+  "historical_runs": 0,
+  "final_explicit_START_required": true
+}

@@ -12,7 +12,7 @@ import json
 import math
 import time
 from dataclasses import fields, is_dataclass
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 from decimal import Decimal
 
 from nautilus_trader.model.data import Bar, BarType
@@ -48,9 +48,9 @@ _FIELDS = (
 )
 
 
-_C1_SCHEMA = "coinmaster-wave-overlay-e4-c1-recovery-v2"
+_C1_SCHEMA = "coinmaster-wave-overlay-e4-c1-recovery-v3"
 _C1_FIELDS = (
-    "_c1_peak", "_c1_state", "_c1_checkpoint", "_c1_fill_epoch", "_c1_intents",
+    "_live_signal_clock_state", "_c1_peak", "_c1_state", "_c1_checkpoint", "_c1_fill_epoch", "_c1_intents",
     "_c1_last_bars", "_c1_sol_levels", "_c1_terminal_ids", "_c1_blocked_ids",
     "_next_enabled", "_next_bars", "_next_last_bar", "_next_daily_ns", "_next_daily_side",
     "_next_count", "_next_wait", "_next_release", "_next_peak", "_next_equity", "_next_equity_ns",
@@ -81,6 +81,12 @@ def recovery_policy_hash(config, candidate):
             return {"enum":type(item).__name__,"name":item.name}
         return _encode(item)
     body={name:value(getattr(config,name)) for name in names}
+    if config.research_residual_recovery:
+        body['live_deposit_limit_percent']=55
+        body['retained_equity_floor_fraction']='0.45'
+        body['live_input_clock_contract']='BYBIT_NATIVE_CONFIRMED_LAST_1M_UTC240_H4_ACTUAL_AVAILABILITY_V1'
+        root=Path(__file__).resolve().parents[1]
+        body['economic_source_pins']={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ('strategy/residual_recovery.py','strategy/wave_overlay.py','strategy/next_band.py','strategy/hedge_band.py','domain/wave_overlay.py','strategy/c1_inputs.py')}
     body["candidate_sha256"]=hashlib.sha256(canonical_candidate_json(candidate).encode()).hexdigest()
     return hashlib.sha256(json.dumps(body,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest()
 
@@ -234,12 +240,121 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._post_drain_task = None
         self._recovery_health = None
         self._live_money_provider = None
+        self._input_readiness_preparation=False
+        self._live_signal_clock_state={}
+        self._live_minute_bar_types=()
+        self._live_input_request=None
+        self._live_input_ws_epoch=None
+        self._live_c1_input=None
+        self._last_live_input_observation=None
+        self._live_inputs_dirty=True
+        self._live_inputs_reason='NO_NATIVE_OBSERVATION'
+        self._live_history_cutoff_ns=None
         self._live_refresh = None
         self._manage_only_preparation = False
         self._management_certificate = None
         self._management_dispatch_enabled = False
         self._checkpoint_policy_valid = False
         self._loaded_policy_sha256 = None
+
+    def request_live_input_observation(self):
+        if self._input_readiness_preparation and self._live_input_request is not None:return self._live_input_request()
+        return False
+
+    def _start_live_inputs(self):
+        if self._input_readiness_preparation:
+            cutoff=self.clock.timestamp_ns()//60_000_000_000*60_000_000_000
+            self._live_history_cutoff_ns=cutoff
+            end=datetime.fromtimestamp(cutoff/1e9,tz=timezone.utc)
+            # Native REST backfill has actual NOW availability; forming bar is
+            # excluded by the fixed request cutoff, even if response is delayed.
+            watermarks=self._live_signal_clock_state.get('last_h4',{})
+            recent=cutoff//14_400_000_000_000*14_400_000_000_000-14_400_000_000_000
+            # Persisted clocks determine missing coverage; downtime is never
+            # silently truncated to the last two H4 windows.
+            start_ns=min([recent,*watermarks.values()]) if watermarks else recent
+            start=datetime.fromtimestamp(start_ns/1e9,tz=timezone.utc)
+            for kind in self._live_minute_bar_types:
+                self.subscribe_bars(kind)
+                self.request_bars(kind,start=start,end=end)
+
+    def _live_clock(self):
+        from coinmaster.ops.hl_live_worker import ClosedTradeClock
+        return ClosedTradeClock(self._live_signal_clock_state)
+
+    def _accept_live_minute(self,bar,*,historical=False):
+        if historical and (self._live_history_cutoff_ns is None or bar.ts_event>self._live_history_cutoff_ns):return
+        source=bar.bar_type.instrument_id
+        if source not in (self.config.btc_signal_id,self.config.sol_signal_id):raise ValueError('LIVE_MINUTE_SOURCE_SCOPE')
+        instrument=self.config.btc_id if source==self.config.btc_signal_id else self.config.sol_id
+        values=tuple(getattr(bar,key).as_decimal() for key in ('open','high','low','close'))
+        available=self.clock.timestamp_ns()
+        if self._recovery_runtime is not None:
+            self._recovery_runtime.append_evidence('Bybit1m:'+str(source)+':'+str(bar.ts_event),'signal',
+                dict(source='BYBIT_TRADE_CLOSED_1M',instrument=str(source),close_ns=bar.ts_event,OHLC=tuple(map(str,values)),received_ns=available))
+        self._live_clock().minute(str(instrument),bar.ts_event,bar.ts_init,available,values)
+        self._persist_transient_checkpoint()
+
+    def on_historical_data(self,data):
+        if self._input_readiness_preparation and isinstance(data,Bar) and data.bar_type in self._live_minute_bar_types:
+            self._accept_live_minute(data,historical=True)
+            return
+        return super().on_historical_data(data)
+
+    def on_bar(self,bar):
+        if self._input_readiness_preparation:
+            if bar.bar_type in self._live_minute_bar_types:
+                self._accept_live_minute(bar);return
+            if bar.bar_type in (self.config.btc_bar_type,self.config.sol_bar_type):
+                available=self.clock.timestamp_ns()
+                if not bar.ts_event<=bar.ts_init<=available or bar.ts_event%86_400_000_000_000:raise ValueError('LIVE_D1_SOURCE_INVALID')
+                signal_id=bar.bar_type.instrument_id
+                instrument=self.config.btc_id if signal_id==self.config.btc_signal_id else self.config.sol_id
+                actual=DailySignalBar(signal_id,bar.open.as_decimal(),bar.high.as_decimal(),bar.low.as_decimal(),bar.close.as_decimal(),bar.ts_event,available)
+                # Same actual DailySignal dispatch as the selected research core.
+                if instrument==self.config.btc_id:self._hb_daily_ohlc[bar.ts_event]=(float(bar.high),float(bar.low))
+                self.on_data(actual)
+                self._live_clock().daily(str(instrument),bar.ts_event,available)
+                self._persist_transient_checkpoint();return
+        return super().on_bar(bar)
+
+    def on_order_event(self,event):
+        if self._input_readiness_preparation and self._recovery_runtime is not None:
+            native=event.to_dict(event) if callable(getattr(event,'to_dict',None)) else {key:str(getattr(event,key,None)) for key in ('client_order_id','venue_order_id','instrument_id','ts_event','ts_init')}
+            self._recovery_runtime.append_evidence(str(getattr(event,'id',None)) or str(getattr(event,'client_order_id',''))+':'+type(event).__name__+':'+str(getattr(event,'ts_event','')),'ACK',dict(native_type=type(event).__name__,native=native,received_ns=self.clock.timestamp_ns()))
+        return super().on_order_event(event)
+
+    def _materialize_live_c1_observation(self,now_ns):
+        from coinmaster.ops.hl_live_money import materialize_live_c1_input
+        observation=self._last_live_input_observation
+        if observation is None or self._live_inputs_dirty or self._live_input_ws_epoch is None:
+            raise ValueError('C1_LIVE_OBSERVATION_UNAVAILABLE')
+        account=self.cache.account_for_venue(self.config.btc_id.venue)
+        event=getattr(account,'last_event',None)
+        account_event_id=getattr(event,'id',None) or getattr(event,'event_id',None)
+        value=materialize_live_c1_input(observation,native_positions=tuple(self.cache.positions_open()),
+            native_marks=self._latest_marks,native_cache=self.cache,account_event_id=account_event_id,
+            strategy_id=str(self.id),account_id=str(account.id),decision_ns=now_ns,monotonic_ns=time.monotonic_ns(),
+            revision=self._recovery_runtime.native_revision(),fill_epoch=self._c1_fill_epoch,
+            ws_epoch=self._live_input_ws_epoch(),max_mark_age_ns=self.config.max_mark_age_ns)
+        self._live_c1_input=value
+        self._c1_observe(value.equity,value.decision_ns,value.source_available_ns,value.fill_epoch,value.positions)
+        return value
+
+    def _c1_current_money(self,ns):
+        if not self._input_readiness_preparation:return super()._c1_current_money(ns)
+        value=self._live_c1_input;c=self._c1_checkpoint
+        if value is None or c is None or self._last_live_input_observation is None:return None
+        try:
+            self._last_live_input_observation.require_current(now_ns=time.monotonic_ns(),
+                revision=self._recovery_runtime.native_revision(),fill_epoch=self._c1_fill_epoch,
+                ws_epoch=self._live_input_ws_epoch())
+            account=self.cache.account_for_venue(self.config.btc_id.venue);event=account.last_event
+            event_id=getattr(event,'id',None) or getattr(event,'event_id',None)
+            if str(event_id)!=value.account_event_id or self._live_inputs_dirty:return None
+            if not c['source']<c['receipt']<=ns or c['epoch']!=self._c1_fill_epoch:return None
+        except (ValueError,AttributeError,TypeError):return None
+        return c
 
     def attach_live_money_view(self, provider) -> None:
         if not callable(provider) or self._live_money_provider is not None:
@@ -390,6 +505,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def on_start(self) -> None:
         self.recovery_confirmed = False
         super().on_start()
+        self._start_live_inputs()
         if self._post_drain_verifier is not None:
             # Kernel starts the Trader only after native execution reconciliation.
             # The verifier owns fresh Info/cache/domain/account parity and may
@@ -464,6 +580,23 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         return True
 
     def on_quote_tick(self, tick) -> None:
+        if self._input_readiness_preparation:
+            now_ns=self.clock.timestamp_ns()
+            if tick.instrument_id not in (self.config.btc_id,self.config.sol_id):return
+            if not tick.ts_event<=tick.ts_init<=now_ns:raise ValueError('LIVE_QUOTE_CLOCK_INVALID')
+            try:self._materialize_live_c1_observation(now_ns)
+            except ValueError as error:
+                self._live_c1_input=None;self._live_inputs_reason=str(error)
+                self.request_live_input_observation()
+            for bar in self._live_clock().drain(self.clock.timestamp_ns(),(str(self.config.btc_id),str(self.config.sol_id))):
+                o,h,l,c=bar['OHLC'];instrument=self.config.btc_id if bar['instrument']==str(self.config.btc_id) else self.config.sol_id
+                self.on_data(NextClosedBar(instrument,bar['hours'],o,h,l,c,bar['close_ns'],bar['available_ns']))
+            current=self._c1_current_money(now_ns)
+            if current is not None:self._c1_first_fresh_quote(tick,current,decision_ns=now_ns)
+            # Observe selected policy only: no ordinary quote command callback,
+            # dispatch, queued historical quote or ownership authority here.
+            self._persist_transient_checkpoint()
+            return
         if self._liquidating:
             self.recovery_confirmed = False
             raise RuntimeError("LIVE_LOCAL_LIQUIDATION_FORBIDDEN")
@@ -557,6 +690,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         # actual fills still need the same atomic applied-ID/checkpoint commit
         # as an ordinary domain fill, after its native close state is updated.
         trade_id, order_id = str(event.trade_id), str(event.client_order_id)
+        if self._input_readiness_preparation:
+            self._live_inputs_dirty=True;self._last_live_input_observation=None;self._live_c1_input=None
         duplicate = trade_id in self._seen_trade_ids
         special = any(order_id in getattr(self, name) for name in (
             "_forced_close_orders", "_deposit_exit_orders", "_terminal_order_ids",

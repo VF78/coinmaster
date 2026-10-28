@@ -226,3 +226,95 @@ def prospective_cross_margin_ok(
         required + fees_notional * fee_reserve_rate <= view.equity
         and gross <= view.equity * max_gross_multiple
     )
+
+
+@dataclass(frozen=True)
+class CheapPortfolioObservation:
+    """Observed money only. Never an order/recovery/certificate capability."""
+    equity: Decimal
+    raw_usd: Decimal
+    free_collateral: Decimal
+    margin_used: Decimal
+    position_sizes: tuple
+    native_revision: int
+    fill_epoch: int
+    ws_epoch: int
+    generation_started_ns: int
+    response_completed_ns: int
+    source_available_ns: int
+    native_account_event_id: str
+
+    def require_current(self,*,now_ns,revision,fill_epoch,ws_epoch):
+        if (not self.generation_started_ns<=self.response_completed_ns<=now_ns
+            or now_ns-self.generation_started_ns>9_000_000_000
+            or (revision,fill_epoch,ws_epoch)!=(self.native_revision,self.fill_epoch,self.ws_epoch)):
+            raise IncompleteInfoReport("PORTFOLIO_OBSERVATION_STALE_OR_MOVED")
+
+
+def cheap_portfolio_observation(raw,*,account_id,native_account,native_positions,strategy_id,
+                                revision,fill_epoch,ws_epoch,started_ns,completed_ns,available_ns):
+    """One actual clearinghouseState response; no invented Info receipt or OHLC."""
+    if not isinstance(raw,dict) or not isinstance(raw.get('assetPositions'),list):
+        raise IncompleteInfoReport('PORTFOLIO_RESPONSE_MALFORMED')
+    summary=raw.get('marginSummary');cross=raw.get('crossMarginSummary')
+    if not isinstance(summary,dict) or not isinstance(cross,dict):raise IncompleteInfoReport('PORTFOLIO_SUMMARY_UNKNOWN')
+    keys=('accountValue','totalRawUsd','totalMarginUsed','totalNtlPos')
+    values=tuple(_amount(summary.get(k),k) for k in keys)
+    if values!=tuple(_amount(cross.get(k),k) for k in keys):raise IncompleteInfoReport('PORTFOLIO_CROSS_MODE_UNKNOWN')
+    equity,cash,margin,notional=values;free=_amount(raw.get('withdrawable'),'WITHDRAWABLE')
+    if equity<=0 or margin<0 or notional<0 or not 0<=free<=equity:raise IncompleteInfoReport('PORTFOLIO_VALUES_INVALID')
+    positions={};seen_coins=set();actual_notional=Decimal(0)
+    for item in raw['assetPositions']:
+        row=item.get('position') if isinstance(item,dict) else None
+        if not isinstance(row,dict) or row.get('coin') not in ('BTC','SOL'):raise IncompleteInfoReport('PORTFOLIO_FOREIGN_POSITION')
+        coin=row['coin'];size=_amount(row.get('szi'),'SIZE')
+        if coin in seen_coins:raise IncompleteInfoReport('PORTFOLIO_DUPLICATE_POSITION')
+        seen_coins.add(coin)
+        if row.get('leverage',{}).get('type')!='cross':raise IncompleteInfoReport('PORTFOLIO_ISOLATED_UNSUPPORTED')
+        value=_amount(row.get('positionValue'),'POSITION_VALUE')
+        if value<0:raise IncompleteInfoReport('PORTFOLIO_POSITION_VALUE_INVALID')
+        actual_notional+=value
+        if size:positions[coin]=size
+    native={}
+    for position in native_positions:
+        coin=str(position.instrument_id).split('-USD-PERP.')[0]
+        if coin not in ('BTC','SOL') or coin in native or str(position.account_id)!=account_id or str(position.strategy_id)!=strategy_id:
+            raise IncompleteInfoReport('PORTFOLIO_NATIVE_POSITION_SCOPE')
+        native[coin]=position.quantity.as_decimal()*(1 if position.is_long else -1)
+    if native!=positions or actual_notional!=notional:raise IncompleteInfoReport('PORTFOLIO_NATIVE_POSITION_MISMATCH')
+    if native_account is None or str(native_account.id)!=account_id or native_account.base_currency is not None:
+        raise IncompleteInfoReport('PORTFOLIO_NATIVE_ACCOUNT_UNKNOWN')
+    total=native_account.balance_total(USDC);native_free=native_account.balance_free(USDC)
+    if total is None or native_free is None or total.currency!=USDC or native_free.currency!=USDC or total.as_decimal()!=(cash if cash<0 else max(cash,free)) or native_free.as_decimal()!=free:
+        raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED')
+    event_id=getattr(native_account.last_event,'id',None) or getattr(native_account.last_event,'event_id',None)
+    if not event_id:raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_EVENT_UNKNOWN')
+    result=CheapPortfolioObservation(equity,cash,free,margin,tuple(sorted(native.items())),revision,fill_epoch,ws_epoch,
+        started_ns,completed_ns,available_ns,str(event_id))
+    result.require_current(now_ns=completed_ns,revision=revision,fill_epoch=fill_epoch,ws_epoch=ws_epoch)
+    return result
+
+
+def materialize_live_c1_input(observation,*,native_positions,native_marks,native_cache,account_event_id,
+                              strategy_id,account_id,decision_ns,monotonic_ns,revision,fill_epoch,ws_epoch,max_mark_age_ns):
+    """Read native PnL at real HL marks; no manufactured OHLC or cash additions."""
+    from coinmaster.strategy.c1_inputs import C1PositionInput,C1DecisionInput
+    if not isinstance(observation,CheapPortfolioObservation):raise IncompleteInfoReport('C1_LIVE_OBSERVATION_UNKNOWN')
+    observation.require_current(now_ns=monotonic_ns,revision=revision,fill_epoch=fill_epoch,ws_epoch=ws_epoch)
+    if str(account_event_id)!=observation.native_account_event_id:raise IncompleteInfoReport('C1_LIVE_ACCOUNT_EVENT_MOVED')
+    rows=[];sizes={}
+    for position in native_positions:
+        instrument=str(position.instrument_id);coin=instrument.split('-USD-PERP.')[0]
+        if coin not in ('BTC','SOL') or coin in sizes or str(position.account_id)!=account_id or str(position.strategy_id)!=strategy_id:
+            raise IncompleteInfoReport('C1_LIVE_POSITION_SCOPE')
+        mark=native_marks.get(position.instrument_id)
+        if (mark is None or not 0<=decision_ns-mark.ts_event<=max_mark_age_ns
+            or not 0<=decision_ns-mark.ts_init<=max_mark_age_ns):raise IncompleteInfoReport('C1_LIVE_MARK_STALE')
+        price=Decimal(str(mark.price));native_instrument=native_cache.instrument(position.instrument_id)
+        pnl=position.unrealized_pnl(native_instrument.make_price(price)).as_decimal()
+        quantity=position.quantity.as_decimal();sizes[coin]=quantity*(1 if position.is_long else -1)
+        rows.append(C1PositionInput(instrument,str(position.id),position.ts_opened,position.is_long,quantity,
+            native_instrument.size_increment.as_decimal(),price,mark.ts_event,pnl))
+    if tuple(sorted(sizes.items()))!=observation.position_sizes:raise IncompleteInfoReport('C1_LIVE_POSITION_MOVED')
+    return C1DecisionInput(observation.equity,observation.source_available_ns,decision_ns,fill_epoch,revision,ws_epoch,
+        observation.native_account_event_id,tuple(sorted(rows,key=lambda row:row.instrument_id)))
