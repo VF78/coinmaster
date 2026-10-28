@@ -1,0 +1,68 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "CAPTURED_DOMAIN_IMPLEMENTED_FOCUSED_11_PASS_AWAITING_ONE_PEER_REVIEW",
+  "head": "b03dacc69d69195ea819b7caee5adecee35c8f0d",
+  "flag": "WaveOverlayStrategyConfig.research_method_a_recovery_code0=False; build_native_strategy_config context get defaultFalse",
+  "changed_files": {
+    "runtime/coinmaster/research/native_baseline.py": "1054b2eb1bbbacdac288c27194dbb9920692160f7b092e16f7b6898f104dad99",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "101399b7683888bd367a1a102fbf380a15e0b3516165ada2331264e25dec6395",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/wave_overlay.py": "d4d5030852365bab1cfe6c42a6d1e9866140c8803146f8d996e835a5820c657a",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/tests/test_method_a_recovery_code0.py": "e4ae63b7c1eb79e73f5f51f0f3b88f5944641b18119b0a3cf4706633866bf425"
+  },
+  "patch_sha256": "af4f79c86363a5d5ef71adc2a56a00e09bd32bb0f4ff215641fd4a6a3cb1e831",
+  "test_result_sha256": "9238a78eb18de51a1c6f2925683b0a137b533ce9d5f4146a0aefdd194a53f485",
+  "test_proof_sha256": "cb8db7f7cf9df70e63aa7f85206222bb27932406a96e7eadc37c80657e5bfeab",
+  "tests": {
+    "focused": 11,
+    "passed": 11,
+    "seconds": "0.458",
+    "engine_constructors": 0,
+    "backtest_modules_loaded": [],
+    "native_attempts": 0,
+    "failed_fixture_evidence": "FAILED_NATIVE_TRIGGER_FIXTURE_ASSUMPTION.txt; prior fixture setup errors were venue-order identity and Cache open-index, no native attempt"
+  },
+  "noninterference": {
+    "default_off_market_ioc": true,
+    "normal_admission_old_strict_envelope_unchanged": true,
+    "positive_tp_gtc_stop_market_unchanged": true,
+    "financial_dirty_hashes_preserved": {
+      "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+      "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+    },
+    "risk_evaluator_solver_sources_untouched": [
+      "method_a_risk.py",
+      "method_a_recovery.py",
+      "method_a_tp.py"
+    ],
+    "money_reader_edited_by_this_stage": false
+  },
+  "limits": [
+    "BTC[0,1]/SOL[-132.9,0] are retained validation-scope guards after auto-review rejection, NOT optimized economic parameters. Outside domain UNKNOWN/DENY.",
+    "Only full-held close candidates are implemented; safe smaller routes need separate bounded scope, no general optimizer claim.",
+    "Only one source-owned ACKed partially filled oldBTC GTC TP with exact maker provenance. Additional old orders/other generations UNKNOWN.",
+    "OldSOL protection excluded ONLY when known ACK/untriggered/no pending and all5 fixed scenario plus current book prices cannot execute them. No live gap guarantee.",
+    "Native completion/liquidity/callback lifecycle, full ROI and financial qualification remain UNKNOWN until separately authorized future proof.",
+    "One peer review required before source commit/freeze; no commit made."
+  ],
+  "ledger": {
+    "spent": 9,
+    "cap": 18,
+    "caps": [
+      11,
+      6,
+      1
+    ],
+    "active": 0,
+    "GO": false,
+    "changes": 0
+  },
+  "artifact_paths": [
+    "FOCUSED_TEST_RESULT.txt",
+    "FOCUSED_TEST_PROOF.json",
+    "CODE0_SOURCE_FOR_REVIEW.patch",
+    "AUTO_REVIEW_REJECTION.json",
+    "FUTURE_NATIVE_CASE_MAP_PROPOSED.json"
+  ]
+}

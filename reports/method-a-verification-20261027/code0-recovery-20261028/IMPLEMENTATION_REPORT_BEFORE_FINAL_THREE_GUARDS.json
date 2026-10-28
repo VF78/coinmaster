@@ -1,0 +1,97 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "P1_CORRECTION_IMPLEMENTED_TARGETED6_PASS_AWAITING_PEER_CLOSURE_NO_COMMIT",
+  "head": "b03dacc69d69195ea819b7caee5adecee35c8f0d",
+  "flag": "WaveOverlayStrategyConfig.research_method_a_recovery_code0=False; build_native_strategy_config context get defaultFalse",
+  "changed_files": {
+    "runtime/coinmaster/research/native_baseline.py": "1054b2eb1bbbacdac288c27194dbb9920692160f7b092e16f7b6898f104dad99",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "0a60711ce338f25f2550c915b7c18146843a37e5034b3f7175a476f32680ffd0",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/wave_overlay.py": "d4d5030852365bab1cfe6c42a6d1e9866140c8803146f8d996e835a5820c657a",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/tests/test_method_a_recovery_code0.py": "a49ffd2d60865857488654a5500cd6c4910833c6de32b030708a593d61c7aa98",
+    "runtime/tests/test_method_a_recovery_code0_partial.py": "91d900e2a7f2c3c733652520e1571a299fd5ca7bd6c9853b53b6709584bbbf01"
+  },
+  "patch_sha256": "4ab85bccd88f221f84926417140cebd276bb253dd7ed75a54b745581e08d1ca1",
+  "test_result_sha256": "9238a78eb18de51a1c6f2925683b0a137b533ce9d5f4146a0aefdd194a53f485",
+  "test_proof_sha256": "cb8db7f7cf9df70e63aa7f85206222bb27932406a96e7eadc37c80657e5bfeab",
+  "tests": {
+    "initial_checkpoint_focused_pass": 11,
+    "initial_checkpoint_seconds": "0.458",
+    "correction_targeted_pass": 6,
+    "correction_batches": 1,
+    "passing_whole_suites_rerun": 0,
+    "engine_constructors": 0,
+    "native_attempts": 0,
+    "results": {
+      "FOCUSED_TEST_RESULT.txt": "9238a78eb18de51a1c6f2925683b0a137b533ce9d5f4146a0aefdd194a53f485",
+      "P1_CORRECTION_TEST_RESULT.txt": "cfd2830efefc0e331b4173651bb83375dff51ec1b4d9ce50c8595461659e7338",
+      "P1_OLD_BTC_TERMINAL_TEST_RESULT.txt": "6a2b48f31932051b9e175a7b7da3ed87794ec1a9920c4f9a93adb1d19003ad3a"
+    }
+  },
+  "noninterference": {
+    "default_off_market_ioc": true,
+    "normal_admission_old_strict_envelope_unchanged": true,
+    "positive_tp_gtc_stop_market_unchanged": true,
+    "financial_dirty_hashes_preserved": {
+      "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+      "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+    },
+    "risk_evaluator_solver_sources_untouched": [
+      "method_a_risk.py",
+      "method_a_recovery.py",
+      "method_a_tp.py"
+    ],
+    "money_reader_edited_by_this_stage": false
+  },
+  "limits": [
+    "BTC[0,1]/SOL[-132.9,0] are retained validation-scope guards after auto-review rejection, NOT optimized economic parameters. Outside domain UNKNOWN/DENY.",
+    "Only full-held close candidates are implemented; safe smaller routes need separate bounded scope, no general optimizer claim.",
+    "Only one source-owned ACKed partially filled oldBTC GTC TP with exact maker provenance. Additional old orders/other generations UNKNOWN.",
+    "OldSOL protection excluded ONLY when known ACK/untriggered/no pending and all5 fixed scenario plus current book prices cannot execute them. No live gap guarantee.",
+    "Native completion/liquidity/callback lifecycle, full ROI and financial qualification remain UNKNOWN until separately authorized future proof.",
+    "One peer review required before source commit/freeze; no commit made."
+  ],
+  "ledger": {
+    "spent": 9,
+    "cap": 18,
+    "caps": [
+      11,
+      6,
+      1
+    ],
+    "active": 0,
+    "GO": false,
+    "changes": 0
+  },
+  "artifact_paths": [
+    "FOCUSED_TEST_RESULT.txt",
+    "FOCUSED_TEST_PROOF.json",
+    "CODE0_SOURCE_FOR_REVIEW.patch",
+    "AUTO_REVIEW_REJECTION.json",
+    "FUTURE_NATIVE_CASE_MAP_PROPOSED.json",
+    "P1_CORRECTION_TEST_RESULT.txt",
+    "P1_OLD_BTC_TERMINAL_TEST_RESULT.txt",
+    "IMPLEMENTATION_REPORT_BEFORE_P1_CORRECTION.json"
+  ],
+  "p1_correction": {
+    "finding": "A partially filled same native recovery IOC was rejected before readiness, causing hard fail/cancel instead of drain.",
+    "changes": [
+      "Bind exact cost-bounded native IOC to existing owner and original deadline after durable checkpoint.",
+      "Before candidate selection/debt-clear, validate Cache order, known source universe/fixed frame and wait for that same IOC; no new owner or pending credit.",
+      "After real terminal, wait only for known same-price quantity-decreasing protection resize ACKs through existing native event consumer; actual-flat positive protection may finish existing cancel ACKs.",
+      "After terminal+ACKs, fresh actual snapshot/proof may choose residual route. No guarantee it can dispatch/fill.",
+      "No-BTC actual edge still drains same SOL IOC; original debt deadline is never reset.",
+      "Native per-lot USDT ceil fee bound rejects mark109.94/limit109.83/.001BTC cap overrun."
+    ],
+    "targeted_chain": "realCache native .1SOL fill -> _mr_after_actual wait/duplicate -> nativeOrderCanceled -> ownednativeOrderUpdated ACKs -> fresh residualSOL132.8 proof; no second dispatch",
+    "negatives": [
+      "foreign/unregistered native order",
+      "stale fixed frame",
+      "unknown changed resize price",
+      "original deadline exceeded",
+      "native fee rounding cap exceeded"
+    ],
+    "initial_review_sha256": "0f17dfca5b3c85cb81f4f7bbe64570b9236367d2681d7d0dcda5eb5a56ced467"
+  }
+}

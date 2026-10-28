@@ -1,0 +1,24 @@
+{
+  "status": "OWNER_EXPLICITLY_APPROVED_PREVIOUSLY_BLOCKED_GENERALIZATION",
+  "human_reply": "Разрешаю обобщение, native0",
+  "received_utc": "2026-10-28T15:59:51.534665+00:00",
+  "explicit_action": "Replace absolute BTC<=1 and abs(SOL)<=132.9 proof-domain guards by bounds from actual native positions and known working TP; prove same risk conditions and add focused engine-free larger-quantity tests",
+  "prior_rejection_path": "code0-recovery-20261028/AUTO_REVIEW_REJECTION.json",
+  "proposal_path": "code0-recovery-20261028/QUANTITY_GENERALIZATION_PROPOSED_RU.md",
+  "preserved": [
+    "defaultOFF",
+    "DD50/cushion",
+    "ordinary admission",
+    "TP/STOP",
+    "other proof-domain guards",
+    "unsupported UNKNOWN/DENY"
+  ],
+  "new_native": 0,
+  "new_prefix": 0,
+  "new_full": 0,
+  "spent": 9,
+  "total_max": 18,
+  "slot_changes": false,
+  "pilot_production_excluded": true,
+  "ledger_sha256_unchanged": "64f2ce3d0371da3646362b3ba6bfea6e78c7677525823bc96710a2da79aa6193"
+}

@@ -1,0 +1,10 @@
+test_actually_safe_partial_still_waits_without_pending_credit_or_debt_clear (test_method_a_recovery_code0_partial.PartialClosure.test_actually_safe_partial_still_waits_without_pending_credit_or_debt_clear) ... ok
+test_btc_native_money_rounding_counterexample_is_denied (test_method_a_recovery_code0_partial.PartialClosure.test_btc_native_money_rounding_counterexample_is_denied) ... ok
+test_partial_then_terminal_then_owned_resize_ack_then_fresh_residual_proof (test_method_a_recovery_code0_partial.PartialClosure.test_partial_then_terminal_then_owned_resize_ack_then_fresh_residual_proof) ... ok
+test_stale_frame_foreign_order_and_resize_price_change_fail_closed (test_method_a_recovery_code0_partial.PartialClosure.test_stale_frame_foreign_order_and_resize_price_change_fail_closed) ... ok
+test_zero_fill_and_repeated_callback_keep_original_deadline (test_method_a_recovery_code0_partial.PartialClosure.test_zero_fill_and_repeated_callback_keep_original_deadline) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.496s
+
+OK

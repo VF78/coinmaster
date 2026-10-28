@@ -1,0 +1,89 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "PASS_LIMITED_CODE0_AFTER_ONE_CONSOLIDATED_CORRECTION",
+  "review_scope": "One independent CODE0 money/execution-seam review of frozen read-ready packet; no native/engine/publication/source edits",
+  "base_commit": "b03dacc69d69195ea819b7caee5adecee35c8f0d",
+  "packet_report_sha256": "7be9183356abfb36956c22f3c6ddd73e8ebb05ce3685528be0771846c36a5213",
+  "patch_sha256": "af4f79c86363a5d5ef71adc2a56a00e09bd32bb0f4ff215641fd4a6a3cb1e831",
+  "findings": [
+    {
+      "priority": "P1",
+      "file": "runtime/coinmaster/strategy/method_a_risk_native.py",
+      "line": 696,
+      "title": "A valid partial recovery IOC is rejected before the sole-owner wait gate",
+      "evidence": "on_order_filled calls _mr_after_actual; this builds _mr_recovery_choice/_mr_code0_old before _mr_recovery_ready. A PARTIALLY_FILLED SOL_CAP/SOL_CLOSE native LIMIT IOC is present in _mr_liabilities but rejected by the old-SOL TP/STOP whitelist. BTC_DEBT is likewise outside the old-BTC GTC maker-TP whitelist. The outer exception invokes _mr_fail, turning a valid contract-permitted zero/partial recovery path into hard failure/protection cancellation. Existing 11 focused tests stop at INITIALIZED dispatch and do not cover callback continuation.",
+      "independent_tiny_check": "Using existing Probe with real public Cache/Order classes: submit SOL_CAP, native accept then native OrderFilled .1 of132.9 at133.03, Cache status PARTIALLY_FILLED, update actual state to SOL-132.8 and subtract .02031665 once; _mr_code0_old raises CODE0_UNKNOWN_SOL_PROTECTION_ACK. Backtest modules absent; engines/native attempts0.",
+      "required_correction": "Validate and retain the same already registered, price/fee bounded sole recovery IOC while it drains to actual native terminal ACK. Preserve increasesOFF/deadline and protection; no second recovery dispatch, blanket pending exemption, pending-fill credit or restored BTC. Cover protection resize ACKs produced by partial fills without treating them as blanket safe. At terminal/actual state revalidate normal proof before subsequent actions. Add a focused public Cache/Order callback regression for zero/partial/terminal and stale/foreign/changed-route denial.",
+      "status": "CLOSED_BY_EXACT_NATIVE_DRAIN_AND_TARGETED_CALLBACK_CHECKS"
+    }
+  ],
+  "open_findings": {
+    "P0": 0,
+    "P1": 0
+  },
+  "money_and_seam_review": {
+    "new_price_bound": "BUY floor_tick((mark+phi)/(1+feeUpper)); SELL ceil_tick((mark-phi)/(1-feeUpper)); marketability and rounded-per-min-lot USDT fee checked; actual initialized LIMIT IOC reduce_only payload revalidated at dispatch.",
+    "proof": "Existing evaluate/tier_partition_envelope reused; same old-order baseline versus every new partial, separate full-edge safe requirement; unpaid oldBTC loss at actual105.2 plus maker fee counted once; no second PnL engine/pending credit.",
+    "domain": "BTC[0,1], SOL[-132.9,0] retained; first-tier/zero-funding/known-linear-USDT/owner+ACK+provenance guards fail closed. No removal/generalization attempted.",
+    "old_stop": "Old SOL STOP_MARKET is excluded only as dormant over current book plus five declared shock prices. Crossed/pending/unknown states denied. No finite market execution-cost guarantee asserted for it.",
+    "noninterference": "New flag defaultsFalse; native ordinary MARKET IOC and TP LIMIT GTC/STOP_MARKET path preserved by diff and focused payload checks. Normal admission retains existing strict envelope; flag-enabled increases denied during actual breach/debt. No claim of byte-identical audit logs: new recovery_code0=null field is added when flagOFF.",
+    "native_api": "Actual public Cache/OrderFactory/OrderFilled/Order.to_dict classes used engine-free; new route constructed only by existing sole pair submission owner. No engine imported."
+  },
+  "source_sha256_verified": {
+    "runtime/coinmaster/research/native_baseline.py": "1054b2eb1bbbacdac288c27194dbb9920692160f7b092e16f7b6898f104dad99",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "5f4cae1b4763431f982f0fbe544a7df2a64ae5574dcbfdd72d8945f01fedf127",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/wave_overlay.py": "d4d5030852365bab1cfe6c42a6d1e9866140c8803146f8d996e835a5820c657a",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/tests/test_method_a_recovery_code0.py": "a49ffd2d60865857488654a5500cd6c4910833c6de32b030708a593d61c7aa98",
+    "runtime/tests/test_method_a_recovery_code0_partial.py": "91d900e2a7f2c3c733652520e1571a299fd5ca7bd6c9853b53b6709584bbbf01",
+    "runtime/tests/test_method_a_recovery_code0_final_guards.py": "af0ef85396e0e9e4fe7d080bba53983cfca4db8aa96103fb1d8b0ad951d6ea6f"
+  },
+  "financial_dirty_pins_verified": {
+    "method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "tests": {
+    "writer_focused_read": "11/11 PASS0.458s",
+    "passing_suite_repeated": false,
+    "independent_uncovered_tiny_checks": 2,
+    "independent_check_result": "Initial partial P1 reproduced; native Money counterexample and existing denial confirmed",
+    "engines": 0,
+    "native_attempts": 0,
+    "closure_targeted_read": 9
+  },
+  "limitations": [
+    "Automatic approval review rejected quantity-generalization; bounded validation coverage retained, not optimized economic parameters or general ROI.",
+    "No fill/completion/liquidity/native callback ordering guarantee or future financial cash/SECOND approval.",
+    "Only full-held close candidates, bounded signs/tiers/funding and admitted old-order universe; unsupported paths UNKNOWN/DENY.",
+    "One focused correction batch permitted by current approval. Root source GO remains false until concrete issue closed; no native budget inferred."
+  ],
+  "ledger": {
+    "spent": 9,
+    "cap": 18,
+    "active": 0,
+    "changes": 0
+  },
+  "source_GO": false,
+  "native_GO": false,
+  "new_native": 0,
+  "new_prefix": 0,
+  "new_full": 0,
+  "initial_review_status": "CHANGES_REQUIRED_ONE_CONSOLIDATED_CORRECTION",
+  "closure": {
+    "scope": "Narrow closure only; no architecture expansion, source edits by reviewer, native or repeated passing suites",
+    "report_sha256": "41399c7c771b650ff70f48089b7b98dd8aa9ca138f1ea1171e4c8dc5d9a508a0",
+    "patch_sha256": "9a63fd29c1c027945e99a8d89119e97e0772f64dcb85301c03e7d633ce40703d",
+    "partial_ioc": "Same registered native LIMIT IOC owner/initID/price/qty/side/known universe/fixed frame/original deadline drains before candidate/debt-clear; actual terminal and existing OrderUpdated protection ACK consumer then require fresh actual residual proof. No second dispatch/pending credit. OldBTC fully filled edge remains in drain.",
+    "targeted_evidence": "Initial11 checkpointPASS; correction6 targetedPASS; final3 unsupported-guard negativesPASS. These were distinct checks, not a 20-test final-source whole-suite rerun.",
+    "fee_counterexample": "Independent actual Money(109.83*.00055*.001,USDT)=.00006041, actual cost.00017041>cap.000170407; existing per-lot-ceil _mr_code0_price raises CODE0_NATIVE_FEE_ROUNDING_EXCEEDS_CAP. No unsafe order sent.",
+    "final_guards": [
+      "Negative signed oldTP cash cost UNKNOWN instead of clamping0",
+      "OldBTC makerFee*price*minlot must lie exactly on quote Money lattice;105.21 case UNKNOWN; captured105.2 remains exact",
+      "Known failed/stop_filled actual state preempts wait/clear with CODE0_DRAIN_KNOWN_PROTECTION_FAULT"
+    ],
+    "root_source_GO": "Root decision required; peer accepts bounded CODE0 code/pure scope only",
+    "native_GO": false
+  },
+  "peer_accepts_limited_code0": true
+}

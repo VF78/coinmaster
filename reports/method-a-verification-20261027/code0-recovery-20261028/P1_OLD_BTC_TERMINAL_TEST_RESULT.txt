@@ -1,0 +1,6 @@
+test_old_btc_tp_full_during_sol_partial_still_drains_same_route (test_method_a_recovery_code0_partial.PartialClosure.test_old_btc_tp_full_during_sol_partial_still_drains_same_route) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.149s
+
+OK

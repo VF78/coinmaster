@@ -1,0 +1,39 @@
+{
+  "status": "PROPOSED_ONLY_NOT_AUTHORIZED_NOT_RUN",
+  "native_authority": 0,
+  "source_requires_peer_PASS_before_commit": true,
+  "scope": "One future engineering native qualification with fresh UUID/journal, unchanged ledger until separately approved; no old M3/M3R script rerun.",
+  "case_map": [
+    {
+      "case": "NEW_CODE0_CAPTURED70_FIXED_FRAME",
+      "setup": "Freeze changed reviewed source, fresh source/config/data/policy binding, native cash/positions/quotes/peak; reproduce captured1BTC/-132.9SOL only after separately authorized new script.",
+      "route": "BUY LIMIT IOC reduce_only132.9SOL @133.03; existing BTC TP105.2 and SOL TP80/60/20 STOP140 remain intact.",
+      "all_partial_assertion": "Every native zero/partial result remains increasesOFF; source partition route <=same old-BTC native-price/fee baseline35.2044175723066680672513309359253634779200290912681790379146920. Not every partial is safe.",
+      "full_assertion": "Actual full new fill plus any admitted oldBTC path must pass actual snapshot cushion/margins; old SOL stops/TP must still be dormant in all5 shocks and current book; otherwise UNKNOWN/DENY.",
+      "money_expectations": {
+        "scope": "Prospective algebra ONLY, not observed native money. Verify native getters and actual fill-price/commission events; do not patch reader expectations.",
+        "equity_at_same_marks_if_full_SOL_at132.9_taker": "5350.5720170",
+        "flat_cash_if_also_residual_BTC1_TP_at105.2_maker": "5348.7509770",
+        "equity_lower_bound_at_SOL_limit133.03_before_BTC_TP": "5333.28551465",
+        "flat_cash_lower_bound_if_also_BTC_TP_full": "5331.46447465",
+        "old6011_reused": false
+      },
+      "SECOND": "UNKNOWN quantity until actual cash, coherent safe state, original unspent rights, parent expiry and native pending/ACK gates are rederived; never assume old SECOND full quantity."
+    },
+    {
+      "case": "UNSUPPORTED_DOMAIN_NEGATIVES",
+      "setup": "Outside validation quantities, unknown fee/ACK/frame, pending/triggered/crossed STOP, tier crossing or unmarketable bound.",
+      "expectation": "UNKNOWN/DENY; no increase credit; no guard relaxation."
+    }
+  ],
+  "separate_future_budget_proposal": {
+    "engineering_native": 1,
+    "prefix": 0,
+    "full": 0,
+    "authorized_now": 0,
+    "existing_cap": 18,
+    "spent_unchanged": 9,
+    "existing_dedicated_remaining": 0,
+    "requires": "New direct owner-approved dedicated allocation/protocol; no borrowing from M4-M8, no implicit GO."
+  }
+}

@@ -1,0 +1,8 @@
+test_known_failed_or_stop_filled_state_preempts_native_drain (test_method_a_recovery_code0_final_guards.FinalGuards.test_known_failed_or_stop_filled_state_preempts_native_drain) ... ok
+test_negative_signed_old_tp_cost_is_unknown (test_method_a_recovery_code0_final_guards.FinalGuards.test_negative_signed_old_tp_cost_is_unknown) ... ok
+test_nonaffine_old_maker_fee_per_minlot_is_unknown_before_provenance (test_method_a_recovery_code0_final_guards.FinalGuards.test_nonaffine_old_maker_fee_per_minlot_is_unknown_before_provenance) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.367s
+
+OK

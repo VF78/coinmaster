@@ -1,0 +1,12 @@
+{
+  "status": "ROOT_LIMITED_CODE0_ACCEPTED_NATIVE0",
+  "source_commit": "a4ed258b25345208a4612bfa1953a232812c64ff",
+  "peer_sha256": "8abc0f67a076530e3c979bfaca4cc22ee9476881e895ff80da654b803a0daee9",
+  "final_source_checks": 20,
+  "native_attempts": 0,
+  "ledger_unchanged": true,
+  "quantity_scope": "BTC[0,1], SOL[-132.9,0]; larger admission blocked by automatic review, no workaround",
+  "financial_or_economic_qualification": false,
+  "source_publication": "exact ref verified codex/hedge-rights-unlock-20261025",
+  "next_generalization": "PROPOSED, not authorized; no native authority"
+}
