@@ -1,0 +1,56 @@
+{
+  "status": "SOURCE_ONLY_READY_NARROW_PEER_NOT_FINANCIAL_ADJUDICATION",
+  "base_commit": "299197a7140ad0ae5c18aecdf596cbdbd7124bf4",
+  "branch": "codex/e4-c1-report-boundaries-20261029",
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "86ec346e57fde57527dd593daf56219ad24ee15961c185cba9228288792aca58",
+    "runtime/coinmaster/research/minute_risk.py": "7cff30df1108052e51919fbdc02aab7f42cdf536ea8034296b129d04b02306f8",
+    "runtime/tests/test_report_interval_boundaries_pure.py": "28f534a796ca4f727c7ce24a1f205c1f0f920e55a4f83fdf80abf8738bcbcf83"
+  },
+  "patch_sha256": "f8831495dc9b8570561d5cf0e27991934c0322e037641d99ef094b95f24bd695",
+  "root_cause": [
+    "Expected count used raw month difference and omitted partial terminal month: Sep1-Oct28 expected1 but actual correct2.",
+    "Failure finally closed minute-risk main file only, leaving settled receipt gzip writer unclosed; event gzip separately closed."
+  ],
+  "fix": [
+    "Enumerate exact covered UTC calendar labels for [start,end), including partial terminalmonth and excluding exactexclusive firstday. Require unique ordered exact labels; preserve authoritative earlylockout contiguousprefix.",
+    "Reporting checkpoints remain true month boundaries insideinterval plus actualend; full24month schedule identical.",
+    "Close both gzip writers in writer-only method from existingfinally; close every archive/observer/engine resource even onexceptions; preserve original exception and notes forcleanupfailure. Fundingjournal remains aborted/quarantined onoriginal orcleanup failure."
+  ],
+  "unchanged_function_source_pins": {
+    "monthly_returns": "ad61054f307e22661d7161ca62d0967d676f72b99183f2a7796d1ced6ffcea89",
+    "standard_drawdown": "d18ba78b950d463e31f2ab8ced81f410f88b34e8016979013099dd96c6a5536d",
+    "run_research_v0_repairs_cli": "bc3aaafd42dbde1ce964fc01fb292496c32d79f64037ae186ea0d76b42cab120",
+    "qualification_stress_venue_kwargs": "8ac1265d0eac4be02ed54e8b8b2bfa60642bb6a7fec117023dd52c5f265e9a05",
+    "qualification_stress_metadata": "7f75c501dc426f412a03e688fb8c0530db238569ac268a49de299cf7c4762640"
+  },
+  "native_run_proof": "AST-identical run_native_diagnostic body after replacing ONLY finally with frozen original. No engine.run/end/action/fees/accounting/model edits; strategy/economic files absentdiff.",
+  "engineering_calls": [
+    {
+      "result": "21PASS",
+      "seconds": 0.16,
+      "session": 76703,
+      "chunk": "198674"
+    },
+    {
+      "result": "24PASS",
+      "seconds": 0.16,
+      "session": 18571,
+      "chunk": "65b6ee"
+    },
+    {
+      "result": "26PASS",
+      "seconds": 0.2,
+      "session": 11686,
+      "chunk": "14154a"
+    }
+  ],
+  "pytest_calls": 3,
+  "pytest_wall_seconds": 0.52,
+  "native_constructors": 0,
+  "native_runs": 0,
+  "repair_iterations": 0,
+  "immutable_failed_qualification": "UNCHANGED process1 remains FAILED; raw/event/settledgzip/fundingSQLite untouched, no reexport or repair. Parent independent raw financial audit separate.",
+  "monthly_returns_inspection": "Existing monthly_returns and CashRows.monthly_returns include partialOctober using actual cash record timestamps and carry silent interior months; unchanged. Exact coverage assertion rejects missing finalmonth rather than invent cash. Actual57dayraw has2months per independent audit.",
+  "next": "Narrow peer runs corrected validator against REAL immutable raw read-only, plus source/cleanup proof; no historical repeat."
+}
