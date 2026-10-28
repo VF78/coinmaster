@@ -998,8 +998,9 @@ class MethodARiskResearch:
 
     @exact_algebra
     def _mr_code0_old(self,state,feature,liabilities,ns):
-        # Deliberately bounded proof domain. Unsupported paths stay UNKNOWN.
-        if not (D(0)<=state.btc<=D(1) and -D('132.9')<=state.sol<=D(0)):
+        # Quantities come from actual native positions and known TP leaves.
+        # Fixed signs/fees/tiers/ACK universe still bound the proof domain.
+        if state.btc<0 or state.sol>0:
             raise ValueError('CODE0_UNKNOWN_SIGN_SIZE')
         if feature.fund_b or feature.fund_s or len(feature.shocks())!=5:
             raise ValueError('CODE0_UNKNOWN_SCENARIO_FUNDING')

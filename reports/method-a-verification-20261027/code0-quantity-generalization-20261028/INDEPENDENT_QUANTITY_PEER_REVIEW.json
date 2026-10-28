@@ -1,0 +1,49 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "PASS_OWNER_APPROVED_QUANTITY_ONLY_CODE0_DELTA",
+  "base_commit": "a4ed258b25345208a4612bfa1953a232812c64ff",
+  "open_findings": {"P0": 0, "P1": 0},
+  "scope": "One focused read-only review of quantity domain delta, conditional parametric proof and four focused test cases; no product imports/tests rerun/source edits/engine/native/commit/push by reviewer.",
+  "reviewed_hashes": {
+    "OWNER_APPROVAL.json": "d9095fa9b5599def4b93232614eb4ece19b24163532c6f9151b6b3cdea92185b",
+    "DELTA_REPORT.json": "b79920efc948f0e9f2d010a2fae693212ad414bde574b4cb27de2ba6cf9b08ca",
+    "QUANTITY_DELTA_FOR_REVIEW.patch": "ddd78dbd46753339c802406363031f849cf2ce0bb75598bd427feadafeddebba",
+    "PARAMETRIC_PROOF.md": "3bacfa459d60ded31b9b65f7ae59d8c0f19ffc45aefe114d6caa86c1d9f4f91d",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/tests/test_method_a_recovery_code0.py": "e05b467a635cbdb790f460bdc917d3f0fe62798eb388d30b8783594fc8dd161f",
+    "runtime/tests/test_method_a_recovery_code0_quantities.py": "7f7dbc2ab1f5eb039d2d57309e597feb35c25e575c69f0858d54f3fa5e709283"
+  },
+  "acceptance_reasoning": {
+    "authorization": "Explicit human approval covers exact previously rejected quantity-generalization; old rejection remains historical. Approval retains all other guards and native0.",
+    "exact_runtime_delta": "Independent read-only source text assertion against git base confirms the sole runtime change is replacement of BTC<=1 and SOL>=-132.9 with BTC>=0/SOL<=0. Every other runtime byte matches base; no other runtime path changed.",
+    "parametric_proof": "For actual B>=0,S=-h<=0 and known oldTP leaves0<=Q<=B, fixed marks/peak/scenarios/zero funding and fixed first-tier coefficients make scenario deficit affine in old x in[0,Q] and new z in[0,h]. Max of affine deficits is convex; corner maxima bound whole rectangle, same baseline max(F(0,0),F(Q,0)), and full edge safe at both endpoints implies all full-edge outcomes safe. Margin/cushion affine minima checked. No theorem requires numeric1/132.9. Native-lot outcomes are a subset. Existing exact partitioner covers overlapping BTC old/new clipping and costly-frontier knots rather than misusing independent rectangle.",
+    "actual_bounds": "Existing native snapshot supplies inventory; old working TP leaves>actual BTC denied; new full-held route quantity derives from actual position and native lot. Retained first-tier checks bound scenario notionals, reductions cannot increase them; signs cannot cross. Native ownership/ACK, known fee/currency and per-lot fee affinity, nonnegative old cost, zero funding and dormant old SOL protection remain guarded.",
+    "preserved_semantics": "DefaultOFF, ordinary strict admission/DD50/cushion, no pending credit, price-capped native LIMIT IOC, sole owner, exact partial/ACK drain and original deadline unchanged byte-for-byte. No economic optimizer or generalized native qualification introduced."
+  },
+  "test_evidence_read_only": {
+    "unique_cases": 4,
+    "writer_results": "Three quantity cases PASS0.446s plus actual-working-leaves negative PASS0.011s. Larger actual snapshot serialization test repeated by writer PASS0.301s to finalize binding artifact; no broad/old suite rerun. Reviewer ran none.",
+    "larger_case": "Actual public Cache positionsBTC2/SOL-200, MarginAccount E5500/peak10000, working BTC TP leaves2; production snapshot method reads them; proof baseline/route96.0720575354502, full edge-455.6863063451; initialized native LIMIT IOC BUY200SOL@133.03 reduce_only checkpoint and JSON roundtrip; spy transport only, no engine fill.",
+    "regression": "Captured70 baseline35.204417572306668... and SOL132.9 cap133.03 unchanged.",
+    "negative": "SOL400/BTC3000 first-tier crossing UNKNOWN; pendingoldBTCcommand UNKNOWN; known workingTPleaves>.999BTC actual position UNKNOWN."
+  },
+  "financial_dirty_sha256_verified": {
+    "method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "limits": [
+    "Conditional fixed-scenario risk proof only; unsupported signs/tiers/fees/funding/ownership/ACK/order paths UNKNOWN/DENY.",
+    "Actual Cache/account test state is synthetic public-native-object fixture, not economic native run or historical observation.",
+    "No live-gap, liquidity, fill-completion, callback lifecycle, financial qualification or ROI claim.",
+    "Earlier native failures unchanged; future native case cash/SECOND and numerical run budget require separate qualification."
+  ],
+  "peer_accepts_quantity_only_code0": true,
+  "root_source_GO": false,
+  "native_GO": false,
+  "new_native": 0,
+  "new_prefix": 0,
+  "new_full": 0,
+  "ledger": {"spent": 9, "cap": 18, "changes": 0, "new_slot": 0},
+  "reviewer_tests_rerun": 0,
+  "reviewer_product_edits": 0
+}

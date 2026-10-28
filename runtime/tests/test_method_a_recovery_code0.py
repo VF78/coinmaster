@@ -45,13 +45,13 @@ class Durable:
 
 
 class Probe(MethodARiskResearch,PairedPrefixResearch,Durable):
-    def __init__(self,enabled=True,protection=True,sol_maker_fee=D('.00020'),btc_tick='0.1'):
+    def __init__(self,enabled=True,protection=True,sol_maker_fee=D('.00020'),btc_tick='0.1',account_id='SIM-EXAMPLE'):
         self.btc=instrument(BTC,btc_tick,'0.001','.025');self.sol=instrument(SOL,'0.01','0.1','.05',sol_maker_fee)
         profile=BybitVenueProfile.from_raw(Path(__file__).resolve().parents[1])
         self.config=NS(research_method_a_risk='HEDGE',research_method_a_recovery_code0=enabled,
             btc_id=self.btc.id,sol_id=self.sol.id,research_method_a_input_binding=dict(source='b03dacc+CODE0_DIFF',config='TEST',data='CAPTURED70',policy='FROZEN'),
             margin_policy=NS(_profile=profile,_selected_leverage={self.btc.id:D(40),self.sol.id:D(20)}))
-        self.id=StrategyId('MethodA-001');self.trader=TraderId('EXAMPLE-001');self.account=AccountId('SIM-EXAMPLE')
+        self.id=StrategyId('MethodA-001');self.trader=TraderId('EXAMPLE-001');self.account=AccountId(account_id)
         self.clock=TestClock();self.clock.set_time(70_000_000_000);self.ns=self.clock.timestamp_ns()
         self.cache=Cache();self.cache.add_instrument(self.btc);self.cache.add_instrument(self.sol)
         self.order_factory=OrderFactory(self.trader,self.id,self.clock)
@@ -150,11 +150,10 @@ class Code0(unittest.TestCase):
         # Per-fill fee ceil at 1e-8 USDT is included for every minimal lot.
         self.assertGreater(D('.1588'),D('.158795'))
 
-    def test_outside_validation_quantity_domain_is_unknown(self):
+    def test_actual_working_tp_leaves_cannot_exceed_actual_btc(self):
         p=Probe();old=p._mr_liabilities(p.ns)
-        for state in (replace(STATE,btc=D('1.001')),replace(STATE,sol=-D('133.0'))):
-            with self.assertRaisesRegex(ValueError,'CODE0_UNKNOWN_SIGN_SIZE'):
-                p._mr_code0_old(state,FEATURE,old,p.ns)
+        with self.assertRaisesRegex(ValueError,'CODE0_UNKNOWN_OLD_BTC_TP'):
+            p._mr_code0_old(replace(STATE,btc=D('.999')),FEATURE,old,p.ns)
         self.assertEqual(p.sent,[])
 
     def test_triggered_protection_unknown_fee_and_unmarketable_cap(self):
