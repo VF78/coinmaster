@@ -1,0 +1,112 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "state": "SOURCE_ONLY_PEER_PASS_AWAIT_ROOT_FREEZE_REGISTRY_GO",
+  "base_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "branch": "codex/e4-c1-fast-pilot-20261028",
+  "q_economic_delta": "BTC held_lots//4; SOL held_lots//2; frozen_remaining=held-cut; no other economic change",
+  "base_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "q_config_sha256": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+  "config_diff": {
+    "residual_recovery_research.btc_cut_divisor": {
+      "old": "ABSENT_EFFECTIVE_2",
+      "new": 4
+    }
+  },
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "engine": "NautilusTrader1.231.0",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "a788119e25c9d5b91060de26f225892b8cef92de18cb6525931f319fea32b6b0",
+    "runtime/coinmaster/strategy/wave_overlay.py": "5f7db255ca7d15f1996dbd5c2c2ee8643361a7c1d756b05225e190f3dd3b0fcf",
+    "runtime/coinmaster/research/native_baseline.py": "4f6ca07ae3fcb7768c2aefb147e589b4cf64af3a940940371b6c2138bae41196",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/research/paired_observer.py": "bef4930508e2497ec78ea2dfdd4eba6010c6e272cd41fa2739bc2021640c4010",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/tests/test_native_residual_recovery.py": "76c2d34bdebacaef63cc7dda31a05e45c37c9376deda60a84a5c7c69c0db4cf4",
+    "runtime/tests/test_native_c1_q.py": "ec35c587ad8b3f09b016d17766a6c1c8533e6d2eed5fff72030188bd9bca4911",
+    "runtime/tests/test_native_c1_funding_observer.py": "0d01b8f12615dd37b9d7be80efe2232fd322eae9bf9c9f2444e3c1cb0f40f87c"
+  },
+  "unchanged_economic_sources": {
+    "runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/venues/margin.py": "a9e1e8860ded3450bfa04f5f13a94e2f83b19480e940b46acf766c6a15e397ab"
+  },
+  "observer_origin": "a4dd4694284192dc7fe063495ac3e727efff4b38:runtime/coinmaster/research/paired_observer.py",
+  "observer_adaptation": "Optional end_exclusive_ns filter only; exactly first coherent boundary left-limit retained (prequote or immutable pre-fill/pre-funding copy); all subsequent sameclock/end boundary states excluded from eventDD, full trace retained; legacy settled recorder untouched",
+  "source_noninterference": "C1 native observer on/off exact order/fill/cash/controller-audit parity on both sides, native funding on/off exact parity; existing clean default C1 lifecycle tests pass",
+  "historical_attempts": 0,
+  "engineering_invocations": [
+    {
+      "kind": "Q_collection",
+      "tests": "ERROR_INDENTATION",
+      "wall_seconds": 3.44,
+      "native_engine_constructors": 0
+    },
+    {
+      "kind": "Q_C1_precision",
+      "tests": "26PASS",
+      "wall_seconds": 3.87,
+      "native_engine_constructors": 24
+    },
+    {
+      "kind": "observer_initial",
+      "tests": "9PASS2FAIL_TEST_UUID_IDENTITY_ONLY",
+      "wall_seconds": 3.69,
+      "native_engine_constructors": 14
+    },
+    {
+      "kind": "connected_focused",
+      "tests": "29PASS",
+      "wall_seconds": 4.47,
+      "native_engine_constructors": 30
+    },
+    {
+      "kind": "cash_export",
+      "tests": "1PASS",
+      "wall_seconds": 2.91,
+      "native_engine_constructors": 2
+    },
+    {
+      "kind": "observer_boundary_cash_final",
+      "tests": "2PASS",
+      "wall_seconds": 3.06,
+      "native_engine_constructors": 2
+    },
+    {
+      "kind": "review_boundary_sameclock_correction",
+      "tests": "3PASS",
+      "wall_seconds": 2.75,
+      "native_engine_constructors": 2
+    }
+  ],
+  "repair_iterations": {
+    "config_insertion_indentation": 1,
+    "parity_fixture_random_uuid": 1,
+    "review_boundary_multiquote": 1
+  },
+  "historical_engine_launched": false,
+  "commit_created": false,
+  "limitations": [
+    "Q cannot improve unchanged pre-Jun6-2025 prefix, January settledDD51.8031515741 retained if exact inheritance",
+    "Archived C1 coherent eventDD remains UNKNOWN until trace-qualified; old all_close samples are not coherent",
+    "Any new native cash bridge nonzero is exported UNKNOWN_UNALLOCATED_NATIVE_BRIDGE; no tolerance, no funding relabel",
+    "Native execution still synthetic1mL1 depth1000; no historical tick/L2 proof",
+    "Live equity/clock/restart wiring not qualified; no live capability"
+  ],
+  "peer_review_state": "PASS_SOURCE_ONLY_0_OPEN_P0_P1",
+  "engineering_totals": {
+    "pytest_invocations": 7,
+    "native_engine_constructors": 74,
+    "wall_seconds": 24.19,
+    "count_basis": "Deterministic executed fixture construction paths: C1 16x1; Q 8x1; parity2x2; signedfunding1x2; boundaryunit0. Collectionfailure0. Constructor counts reconstructed from executed tests/parametrizations, not runtime instrumented. All synthetic nativecomponent fixtures, historicalattempts0."
+  },
+  "peer_review": {
+    "report": "/private/tmp/cm_e4_c1_q_review.json",
+    "report_sha256": "71e128aed7591b4c0f0b025b07d8b4c85c0e0e1dec01727c523f5754deef8fb7",
+    "reviewed_preparation_sha256": "d97997b762138260bd9b4300e1b4c650e0d40fcb12fea3dde5178c3c20d693ba",
+    "reviewed_product_patch_sha256": "959bcd28b9f289c62a1ebc9896baefde7ac6776f6e9cf9a6dad1149b19a04142",
+    "reviewer_engine_calls": 0
+  }
+}

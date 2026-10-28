@@ -1,0 +1,6 @@
+{
+  "residual_recovery_research.btc_cut_divisor": {
+    "old": "ABSENT_EFFECTIVE_2",
+    "new": 4
+  }
+}

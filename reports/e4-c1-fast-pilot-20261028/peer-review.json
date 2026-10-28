@@ -1,0 +1,65 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "review_type": "FOCUSED_READ_ONLY_SOURCE_REVIEW",
+  "verdict": "PASS_SOURCE_ONLY",
+  "open_P0": 0,
+  "open_P1": 0,
+  "base_commit": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "branch": "codex/e4-c1-fast-pilot-20261028",
+  "tracked_diff_sha256": "f5170455d6ba22667161cfc29dc19a271eb13c5c55c25d7548a64738690371e6",
+  "full_source_patch_sha256": "959bcd28b9f289c62a1ebc9896baefde7ac6776f6e9cf9a6dad1149b19a04142",
+  "source_preparation_sha256_at_review": "d97997b762138260bd9b4300e1b4c650e0d40fcb12fea3dde5178c3c20d693ba",
+  "config_C1_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+  "config_Q_sha256": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "pins_verified": "All nine source/test files and five unchanged economic anchors match source-preparation.json; base and branch verified. Data/policy identifiers checked in source preparation, no full data rehash.",
+  "source_pins": {
+    "runtime/coinmaster/strategy/residual_recovery.py": "a788119e25c9d5b91060de26f225892b8cef92de18cb6525931f319fea32b6b0",
+    "runtime/coinmaster/strategy/wave_overlay.py": "5f7db255ca7d15f1996dbd5c2c2ee8643361a7c1d756b05225e190f3dd3b0fcf",
+    "runtime/coinmaster/research/native_baseline.py": "4f6ca07ae3fcb7768c2aefb147e589b4cf64af3a940940371b6c2138bae41196",
+    "runtime/coinmaster/research/native_fixture.py": "17037d733d6e27ea78cf939f113d171cc116f57d89d20539802c6335a3c3c189",
+    "runtime/coinmaster/research/paired_observer.py": "bef4930508e2497ec78ea2dfdd4eba6010c6e272cd41fa2739bc2021640c4010",
+    "runtime/coinmaster/ledger/journal.py": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+    "runtime/tests/test_native_residual_recovery.py": "76c2d34bdebacaef63cc7dda31a05e45c37c9376deda60a84a5c7c69c0db4cf4",
+    "runtime/tests/test_native_c1_q.py": "ec35c587ad8b3f09b016d17766a6c1c8533e6d2eed5fff72030188bd9bca4911",
+    "runtime/tests/test_native_c1_funding_observer.py": "0d01b8f12615dd37b9d7be80efe2232fd322eae9bf9c9f2444e3c1cb0f40f87c"
+  },
+  "checks": [
+    "Sole Q economic delta: BTC native held_lots//4 instead of //2; SOL remains //2; target held minus cut. Default C1 divisor2 remains.",
+    "Existing one-attempt cut, frozen target/native held cap, actual-fill restore credit, committed restore cap, group blocking, TP buckets, global HWM, restore35, partial/late receipt semantics unchanged.",
+    "Observer extraction from a4dd4694284192dc7fe063495ac3e727efff4b38 differs only by reporting/end boundary filtering; no Method A strategy/risk code imported. Read-only native callbacks, immutable position copies, common completed marks, causal prior-state retention retained.",
+    "Actual funding before/after native account cash captured with instrument ID; no unallocated bridge relabeled funding. Native position realized PnL includes commissions; export does not subtract again; exact zero bridge or UNKNOWN, no fitted tolerance.",
+    "Old E4 SOL alpha/reference/omission and execution assumptions preserved; no claim of profitable zero TP fills.",
+    "Config JSON equality confirmed after removing Q sole nested btc_cut_divisor4. Raw config SHA verified."
+  ],
+  "resolved_findings": [
+    {
+      "priority": "P1",
+      "issue": "Boundary filter accepted second PREQUOTE after same-clock terminal fill, potentially leaking excluded settlement into event DD.",
+      "resolution": "First coherent boundary left-limit only (prequote or immutable pre-fill/pre-funding copy); all later boundary rows retained in trace but excluded from DD.",
+      "repair_passes": 1,
+      "readback": "Verified code and both prequote-fill-prequote and prefunding-funding-prequote regression assertions."
+    }
+  ],
+  "existing_writer_test_evidence": [
+    "29 passed in 4.47s",
+    "cash export 1 passed in 2.91s",
+    "observer final 2 passed in 3.06s",
+    "review boundary correction 3 passed in 2.75s"
+  ],
+  "reviewer_executed_tests": false,
+  "reviewer_constructed_engines": false,
+  "reviewer_product_edits": false,
+  "historical_attempts": 0,
+  "historical_go_granted": false,
+  "limits": [
+    "Source review is not historical financial qualification or engine/live readiness.",
+    "No historical runner freeze/registry/dispatch or optional DD-abort implementation was reviewed; root must preserve exact candidate-only causal current-HWM abort semantics and terminal TOTAL UNKNOWN on TARGET_FAIL_DD if used.",
+    "Both DD <= .5180315157406654834417870238, working minimum TOTAL5470396.514987347, target5631617.35953723 remain outcome criteria; strict50 is separate.",
+    "January C1 DD and pre-Jun6-2025 trajectory remain inherited until first BTC-cut delta; no guaranteed economic improvement.",
+    "Unknown observer mutation coverage or nonzero native cash bridge remains UNKNOWN; source PASS does not waive either.",
+    "No universal CODE0/floating-cost proof or Method A qualification dependency requested; no deployment/services/live orders authorized."
+  ],
+  "preparation_metadata_note": "Writer added reconstructed constructor accounting only: seven pytest calls, 74 engine constructors, 24.19 seconds; no product/patch change. Counter basis is fixture-path reconstruction, not runtime instrumentation."
+}

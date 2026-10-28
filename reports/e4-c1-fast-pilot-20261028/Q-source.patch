@@ -1,0 +1,730 @@
+diff --git a/runtime/coinmaster/ledger/journal.py b/runtime/coinmaster/ledger/journal.py
+index df24cdf..5d22e8d 100644
+--- a/runtime/coinmaster/ledger/journal.py
++++ b/runtime/coinmaster/ledger/journal.py
+@@ -19,6 +19,7 @@ class NativeEventJournal:
+             "event_id TEXT PRIMARY KEY, instrument_id TEXT NOT NULL, ts_event INTEGER NOT NULL, "
+             "rate TEXT NOT NULL, settlement_mark TEXT NOT NULL, account_total_after TEXT NOT NULL)"
+         )
++        self.db.execute("CREATE TABLE IF NOT EXISTS funding_cash (event_id TEXT NOT NULL,instrument_id TEXT NOT NULL,ts_event INTEGER NOT NULL,before_total TEXT NOT NULL,after_total TEXT NOT NULL,signed_delta TEXT NOT NULL,PRIMARY KEY(event_id,instrument_id))")
+         self.db.execute("CREATE TABLE IF NOT EXISTS transfers (event_id TEXT PRIMARY KEY, active_before TEXT NOT NULL, active_after TEXT NOT NULL, reserve_before TEXT NOT NULL, reserve_after TEXT NOT NULL)")
+         self.db.execute(
+             "CREATE TABLE IF NOT EXISTS native_parent_order_audit ("
+@@ -69,6 +70,14 @@ class NativeEventJournal:
+             "FROM funding_events ORDER BY ts_event, event_id",
+         ).fetchall()
+ 
++    def record_funding_cash(self,event_id,instrument_id,ts_event,before,after):
++        self.db.execute("INSERT OR IGNORE INTO funding_cash VALUES (?,?,?,?,?,?)",
++            (event_id,instrument_id,ts_event,str(before),str(after),str(after-before)))
++        self.db.commit()
++
++    def funding_cash_audit(self):
++        return self.db.execute("SELECT event_id,instrument_id,ts_event,before_total,after_total,signed_delta FROM funding_cash ORDER BY ts_event,event_id,instrument_id").fetchall()
++
+     def checkpoint(self) -> None:
+         """Flush durable evidence before an artifact DB is atomically published."""
+         self.db.commit()
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index ddf5cd9..e8dfce4 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -690,7 +690,7 @@ def run_native_diagnostic(
+     research_btc_split_planref_v1: bool = False,
+     research_btc_split_tp_ioc: bool = False,
+     research_btc_split_discount: str = "0.0025",
+-    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
++    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
+     research_sol_cover: str | None = None,
+     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
+     research_btc_episode_loss_20: bool = False,
+@@ -789,8 +789,16 @@ def run_native_diagnostic(
+     modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
+     if journal:
+         modules.insert(0, PerpetualFundingModule(funding_events, journal))
++    coherent_observer = None
++    coherent_observer_report = None
++    if research_residual_recovery:
++        from coinmaster.research.paired_observer import CommittedNativeObserver
++        coherent_observer = CommittedNativeObserver(artifacts_root / "coherent-native-events.jsonl.gz",
++            initial_active_seed,(btc_instrument,sol_instrument),journal,trading_end_ms * 1_000_000)
++        modules.append(coherent_observer)
+     def kind(instrument, price_type):
+         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
++    if research_c1_btc_cut_divisor not in (2,4) or (research_c1_btc_cut_divisor!=2 and not research_residual_recovery):raise ValueError("Q_REQUIRES_C1_DIVISOR_2_OR_4")
+     if research_residual_recovery and (not observe_minute_risk or not research_wait_4h or research_regime_reentry_band!="0.5" or research_zero_retrace or research_sol_dominant or research_wait_persist or research_sol_risk_first or research_conditional_sol or research_alpha_cushion or research_chop_pair):raise ValueError("C1_REQUIRES_CLEAN_E4_SETTLED_OBSERVER")
+     next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
+     from coinmaster.strategy.next_band import next_bar_type, next_closed_bar
+@@ -863,7 +871,7 @@ def run_native_diagnostic(
+         research_sol_btc_open_only=research_sol_btc_open_only,
+         research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
+         research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
+-        research_residual_recovery=research_residual_recovery, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
++        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
+         research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
+         research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
+@@ -906,6 +914,8 @@ def run_native_diagnostic(
+         for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), archival_batch_minutes):
+             if risk_recorder is not None:
+                 risk_recorder.set_week(week)
++            if coherent_observer is not None:
++                coherent_observer.set_week(week)
+             marks, signals, quotes, source_bars, next_bars = [], [], [], [], []
+             for minute in week:
+                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
+@@ -979,6 +989,8 @@ def run_native_diagnostic(
+                 early_liquidation_cutoff = True
+                 break
+         engine.end()
++        if coherent_observer is not None:
++            coherent_observer_report = coherent_observer.finish_after_engine_end(trading_end_ms * 1_000_000)
+         # Retain only one native report DataFrame at a time; native history
+         # remains authoritative and report-derived monetary formulas are unchanged.
+         if audit_archive is not None:
+@@ -1055,6 +1067,8 @@ def run_native_diagnostic(
+         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+         if research_residual_recovery:
+             full_config["residual_recovery_research"]=dict(version="C1",trigger_DD="0.40",open_loss_dominates_remaining_50_cushion=True,cut_fraction="0.50",restore_DD="0.35",restore_closed_hours=4,max_cut_restore_per_group=1)
++        if research_c1_btc_cut_divisor != 2:
++            full_config["residual_recovery_research"]["btc_cut_divisor"]=research_c1_btc_cut_divisor
+         if next_enabled:
+             full_config["next_band_research"] = dict(wait_4h=research_wait_4h,wait_persist=research_wait_persist,zero_retrace=research_zero_retrace,sol_dominant=research_sol_dominant,bar_contract="PINNED_CLOSED_OHLC_D1_BEFORE_INTRADAY_QUOTE")
+         if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+@@ -1096,6 +1110,21 @@ def run_native_diagnostic(
+         if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+             result["hedge_band_audit"] = strategy.hedge_band_audit
+         if research_residual_recovery:
++            result["coherent_native_observer"] = coherent_observer_report
++            result["funding_cash_audit"] = journal.funding_cash_audit() if journal else []
++            result["funding"]["signed_amount"] = str(sum((Decimal(row[5]) for row in result["funding_cash_audit"]),Decimal(0)))
++            native_realized=[dict(position_id=str(p.id),instrument_id=str(p.instrument_id),
++                realized_pnl=str(p.realized_pnl.as_decimal()) if p.realized_pnl is not None else None,
++                native_commissions=[str(c) for c in p.commissions()]) for p in engine.cache.positions()]
++            complete=all(row["realized_pnl"] is not None for row in native_realized) and not engine.cache.positions_open()
++            realized_total=sum((Decimal(row["realized_pnl"]) for row in native_realized),Decimal(0)) if complete else None
++            bridge=terminal_active-initial_active_seed-realized_total-Decimal(result["funding"]["signed_amount"]) if complete else None
++            result["native_cash_reconciliation"]=dict(terminal_cash=str(terminal_active),seed=str(initial_active_seed),
++                native_position_realized=native_realized,native_realized_total=str(realized_total) if complete else None,
++                signed_funding=result["funding"]["signed_amount"],unallocated_bridge=str(bridge) if complete else None,
++                status="EXACT" if bridge==0 else "UNKNOWN_UNALLOCATED_NATIVE_BRIDGE",
++                fees_policy="NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_NATIVE_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN",
++                bridge_is_funding=False,tolerance=None)
+             result["c1_audit"]=strategy.c1_audit
+             result["c1_denial_counts"]=strategy.c1_denials
+             result["c1_terminal_state"]=strategy._c1_export_terminal()
+@@ -1212,6 +1241,8 @@ def run_native_diagnostic(
+             audit_archive.close()
+         if risk_recorder is not None:
+             risk_recorder.file.close()
++        if coherent_observer is not None:
++            coherent_observer.close()
+         engine.dispose()
+         if journal:
+             if successful_run:
+@@ -1353,7 +1384,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1468,7 +1499,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
+         research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
+         research_regime_reentry_band=research_regime_reentry_band,
+-        research_residual_recovery=research_residual_recovery, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
++        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant,
+         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
+         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
+@@ -1517,6 +1548,7 @@ def main() -> None:
+     parser.add_argument("--research-sol-remaining-btc-hedge", action="store_true", help="Research-only earned SOL admission clipped to remaining native BTC/beta")
+     parser.add_argument("--research-portfolio-protect-45", action="store_true", help="Research-only paired-minute 45%% protective epoch drawdown; resume next genuine BTC episode")
+     parser.add_argument("--research-sol-notional-cap-6x", action="store_true", help="Research-only aggregate SOL entry notional capped at 6x fresh native marked equity")
++    parser.add_argument("--research-c1-btc-cut-divisor", type=int, choices=(2,4), default=2)
+     parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
+     parser.add_argument("--control-report", type=Path)
+     parser.add_argument("--artifact-dir", type=Path)
+@@ -1563,7 +1595,7 @@ def main() -> None:
+             research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
+             research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
+             research_regime_reentry_band=args.research_regime_reentry_band,
+-            research_residual_recovery=args.research_residual_recovery, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
++            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
+             research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant,
+             research_batch_minutes=args.research_batch_minutes,
+             research_sol_risk_first=args.research_sol_risk_first,
+diff --git a/runtime/coinmaster/research/native_fixture.py b/runtime/coinmaster/research/native_fixture.py
+index 25b3b6f..4e935aa 100644
+--- a/runtime/coinmaster/research/native_fixture.py
++++ b/runtime/coinmaster/research/native_fixture.py
+@@ -287,8 +287,10 @@ class PerpetualFundingModule(SimulationModule):
+                 notional = position.quantity.as_decimal() * mark
+                 # Positive funding: longs pay and shorts receive; negative reverses it.
+                 sign = Decimal("-1") if position.is_long else Decimal("1")
++                before_total = self.exchange.get_account().balance_total(USDT).as_decimal()
+                 self.exchange.adjust_account(Money(sign * notional * event.rate, instrument.quote_currency))
+                 account_total = self.exchange.get_account().balance_total(USDT).as_decimal()
++                self._journal.record_funding_cash(event.event_id,str(event.instrument_id),event.ts_event,before_total,account_total)
+                 self._journal.record_funding(
+                     event.event_id,
+                     str(event.instrument_id),
+diff --git a/runtime/coinmaster/strategy/residual_recovery.py b/runtime/coinmaster/strategy/residual_recovery.py
+index e6529f2..04071b2 100644
+--- a/runtime/coinmaster/strategy/residual_recovery.py
++++ b/runtime/coinmaster/strategy/residual_recovery.py
+@@ -8,6 +8,7 @@ RESTORE='C1_RESIDUAL_RESTORE'
+ 
+ class ResidualRecoveryResearch:
+     def _c1_init(self):
++        if self.config.research_c1_btc_cut_divisor not in (2,4):raise ValueError('C1_BTC_CUT_DIVISOR_MUST_BE_2_OR_4')
+         self.c1_audit=[];self._c1_state=None;self._c1_peak=D(str(self.config.active_seed))
+         self._c1_checkpoint=None;self._c1_fill_epoch=0;self._c1_intents={};self._c1_last_bars={};self._c1_sol_levels={};self._c1_terminal_ids=set();self.c1_denials={};self._c1_blocked_ids=set()
+         if self.config.research_residual_recovery and (not self.config.research_wait_4h or self.config.research_regime_reentry_band!=D('.5') or self.config.research_zero_retrace or self.config.research_sol_dominant or self.config.research_wait_persist):
+@@ -95,7 +96,9 @@ class ResidualRecoveryResearch:
+         if not candidates:return
+         pnl,_,inst,pos,mark=min(candidates,key=lambda x:(x[0],x[1]));loss=-pnl;gates['open_loss_dominates']=loss>c['C']
+         if not gates['open_loss_dominates']:return
+-        step=self.cache.instrument(inst).size_increment.as_decimal();lots=int(pos.quantity.as_decimal()/step);gates['native_half_exists']=lots//2>0
++        step=self.cache.instrument(inst).size_increment.as_decimal();lots=int(pos.quantity.as_decimal()/step)
++        cut_lots=lots//(self.config.research_c1_btc_cut_divisor if inst==self.config.btc_id else 2)
++        gates['native_half_exists']=cut_lots>0
+         if not all(gates.values()):
+             from datetime import datetime,timezone
+             key=str((ep.id,datetime.fromtimestamp(ns/1e9,timezone.utc).strftime('%Y-%m'),tuple(sorted(gates.items()))))
+@@ -105,8 +108,8 @@ class ResidualRecoveryResearch:
+         self._c1_log('PROPOSED_DECISION',ns,source_quote_ns=source,receipt_ns=ns,fill_epoch=epoch,E=str(E),H=str(c['H']),DD=str(c['DD']),cushion=str(c['C']),selected=str(inst),selected_loss=str(loss),positions=details,gates=gates,rights=self._c1_rights(),pending=[i.id for i in self._pending_by_order.values()])
+         if not all(gates.values()):return
+         self._domain._ensure_btc_targets(ep)
+-        self._c1_state=dict(group=ep.id,state='CUT_RESOLVING',instrument=inst,side=1 if pos.is_long else -1,step=step,held_lots=lots,target_lots=lots-lots//2,cut_lots=lots//2,cut_submitted=False,restore_submitted=False,cut_filled=0,restore_filled=0,credit=0,cut_value=D(0),bucket={},revoked=False,claim_ns=ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,cut_terminal_ns=None,last_cut_fill_ns=None,confirmation=None)
+-        self._c1_log('CLAIM',ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,frozen_held_lots=lots,frozen_target_lots=lots-lots//2,rights=self._c1_rights())
++        self._c1_state=dict(group=ep.id,state='CUT_RESOLVING',instrument=inst,side=1 if pos.is_long else -1,step=step,held_lots=lots,target_lots=lots-cut_lots,cut_lots=cut_lots,cut_submitted=False,restore_submitted=False,cut_filled=0,restore_filled=0,credit=0,cut_value=D(0),bucket={},revoked=False,claim_ns=ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,cut_terminal_ns=None,last_cut_fill_ns=None,confirmation=None)
++        self._c1_log('CLAIM',ns,native_position_id=str(pos.id),native_position_open_ns=pos.ts_opened,frozen_held_lots=lots,frozen_target_lots=lots-cut_lots,rights=self._c1_rights())
+ 
+     def _c1_closed_bar(self,bar):
+         if not self.config.research_residual_recovery or getattr(bar,'hours',None)!=4:return
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 74b4208..1c2910c 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -74,6 +74,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_zero_retrace: bool = False
+     research_sol_dominant: bool = False
+     research_residual_recovery: bool = False
++    research_c1_btc_cut_divisor: int = 2
+     research_next_signals: tuple[DataType, ...] = ()
+     research_h4_ema: int | None = None
+     research_h4_gamma: Decimal = Decimal(".5")
+diff --git a/runtime/tests/test_native_residual_recovery.py b/runtime/tests/test_native_residual_recovery.py
+index e69edce..4242d06 100644
+--- a/runtime/tests/test_native_residual_recovery.py
++++ b/runtime/tests/test_native_residual_recovery.py
+@@ -14,8 +14,8 @@ from test_native_episode_risk import NativeProbe,tick,run_ticks,marks
+ from test_native_btc_sizing import prepare_day
+ from test_wave_native_integration import native_engine,lifecycle_config
+ 
+-def held(asset='BTC',side=1,cls=NativeProbe):
+- s=cls(cfg(research_wait_4h=True,research_residual_recovery=True,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
++def held(asset='BTC',side=1,cls=NativeProbe,cut_divisor=2):
++ s=cls(cfg(research_wait_4h=True,research_residual_recovery=True,research_c1_btc_cut_divisor=cut_divisor,candidate=Candidate(btc_tp_fractions_initial_qty=(.2125,.2125,.575))))
+  e=native_engine(s);run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
+  prepare_day(s,2,side);ep=s._domain.episode=Episode('c1',side,10000,1,wave_levels=(.50,.60,.70),btc_planref_vwap=D(100))
+  i=s._domain._intent(ep,'BTC_ENTRY',side,None,quantity=100)
+diff --git a/runtime/coinmaster/research/paired_observer.py b/runtime/coinmaster/research/paired_observer.py
+new file mode 100644
+index 0000000..d46d457
+--- /dev/null
++++ b/runtime/coinmaster/research/paired_observer.py
+@@ -0,0 +1,270 @@
++"""Read-only committed-native snapshot journal; never applies/replays a fill.
++
++Private immutable native Position pickles follow the stock cache snapshot idiom.
++Cash is native Money; UPNL is stock Position.unrealized_pnl(explicit Price).
++Unknown mutation coverage is exported as UNKNOWN and blocks qualification.
++"""
++import bisect
++import gzip
++import hashlib
++import json
++import pickle
++from dataclasses import dataclass
++from types import MappingProxyType
++from decimal import Decimal as D
++from pathlib import Path
++from nautilus_trader.backtest.config import SimulationModuleConfig
++from nautilus_trader.backtest.modules import SimulationModule
++from nautilus_trader.model.data import QuoteTick
++from coinmaster.research.minute_risk import DrawdownTracker
++
++MINUTE=60_000_000_000
++
++
++@dataclass(frozen=True)
++class _RetainedPriorSource:
++    source_ns: int
++    state_epoch: int
++    signature: tuple
++    first_new_mutation_ns: int
++    state: object
++
++
++class CommittedNativeObserver(SimulationModule):
++    def __init__(self, path: Path, seed, instruments, funding_journal=None, end_exclusive_ns=None):
++        super().__init__(SimulationModuleConfig())
++        self.end_exclusive_ns=end_exclusive_ns
++        self.boundary_left_limit_recorded=False
++        self.instruments={i.id:i for i in instruments}
++        self.journal=funding_journal
++        self.file=gzip.open(path,"wt",compresslevel=1)
++        self.sequence=0;self.epoch=0;self.last=None;self.last_mutation_ns=None
++        self.seen_fills=set();self.funding_ids=set();self.pending_accounts=[]
++        self.unknown=[];self.marks={};self.mark_times=[];self.previous_pair=None
++        self.minute_source=None;self.settled_count=0;self.fill_count=0;self.funding_count=0
++        self.events=DrawdownTracker(seed);self.settled=DrawdownTracker(seed)
++        self.events.add(0,D(seed));self.settled.add(0,D(seed))
++        self.final=None;self.account_count=0
++        self.retained_prior=None;self.retained_prior_invalid=False
++
++    def register_venue(self, exchange):
++        super().register_venue(exchange)
++        self.msgbus.subscribe(topic="events.fills.*",handler=self.on_committed_fill)
++        self.msgbus.subscribe(topic="events.account.*",handler=self.on_committed_account)
++
++    def set_week(self, week):
++        if self.mark_times:
++            self.previous_pair=(self.mark_times[-1],self.marks[self.mark_times[-1]])
++        ids=tuple(self.instruments)
++        self.marks={(m.open_time_ms+60000)*1000000:
++            {ids[0]:D(str(m.btc_mark["close"])),ids[1]:D(str(m.sol_mark["close"]))} for m in week}
++        self.mark_times=sorted(self.marks)
++
++    def _problem(self, reason):
++        if reason not in self.unknown:self.unknown.append(reason)
++
++    def _snapshot(self):
++        account=self.exchange.get_account()
++        if account is None or account.base_currency is None:
++            return None
++        balance=account.balance_total(account.base_currency)
++        if balance is None:return None
++        positions=[]
++        for position in sorted(self.exchange.cache.positions_open(),key=lambda p:str(p.id)):
++            if position.instrument_id not in self.instruments:
++                raise ValueError("COHERENT_OBSERVER_FOREIGN_NATIVE_POSITION")
++            inst=self.instruments[position.instrument_id]
++            if inst.quote_currency!=account.base_currency:
++                raise ValueError("COHERENT_OBSERVER_UNKNOWN_SETTLEMENT_CURRENCY")
++            positions.append(pickle.dumps(position,protocol=pickle.HIGHEST_PROTOCOL))
++        positions=tuple(positions)
++        position_hash=hashlib.sha256(b"".join(positions)).hexdigest()
++        cash=balance.as_decimal()
++        signature=(str(cash),position_hash)
++        return dict(cash=cash,positions=positions,position_hash=position_hash,signature=signature)
++
++    def _pair(self, ns):
++        i=bisect.bisect_right(self.mark_times,ns)-1
++        if i>=0:return self.mark_times[i],self.marks[self.mark_times[i]]
++        if self.previous_pair and self.previous_pair[0]<=ns:return self.previous_pair
++        return None,None
++
++    def _value(self,state,ns):
++        source,prices=self._pair(ns)
++        equity=state["cash"];details=[]
++        if state["positions"] and prices is None:
++            self._problem("MISSING_COMPLETED_PAIRED_MARK_SOURCE")
++            return None,source,[]
++        for raw in state["positions"]:
++            position=pickle.loads(raw)
++            inst=self.instruments[position.instrument_id]
++            price=inst.make_price(prices[position.instrument_id])
++            upnl=position.unrealized_pnl(price).as_decimal()
++            equity+=upnl
++            details.append(dict(position_id=str(position.id),instrument_id=str(position.instrument_id),
++                quantity=str(position.quantity),side="LONG" if position.is_long else "SHORT",
++                raw_mark=str(prices[position.instrument_id]),native_price=str(price),native_upnl=str(upnl)))
++        return equity,source,details
++
++    def _emit(self,kind,ns,state,*,identity=None,track=True,receipt_ns=None,state_epoch=None,retention=None):
++        equity,source,positions=self._value(state,ns)
++        self.sequence+=1
++        row=dict(sequence=self.sequence,epoch=self.epoch,state_epoch=self.epoch if state_epoch is None else state_epoch,kind=kind,event_ns=str(ns),
++            receipt_ns=str(receipt_ns if receipt_ns is not None else ns),native_id=identity,
++            mark_available_ns=str(source) if source is not None else None,
++            cash=str(state["cash"]),native_positions_sha256=state["position_hash"],
++            equity=str(equity) if equity is not None else None,positions=positions)
++        if retention is not None:
++            row["prior_source_retention"]=dict(source_ns=str(retention.source_ns),state_epoch=retention.state_epoch,
++                signature=list(retention.signature),first_new_mutation_ns=str(retention.first_new_mutation_ns))
++        self.file.write(json.dumps(row,separators=(",",":"))+"\n")
++        # Exactly one coherent left-limit is eligible at the boundary. BTC/SOL
++        # quote callbacks can share its timestamp; after the first boundary
++        # mutation, another PREQUOTE is already post-boundary native state.
++        boundary_left_limit=(self.end_exclusive_ns is not None and ns==self.end_exclusive_ns
++            and not self.boundary_left_limit_recorded and kind in (
++                "PREQUOTE_DIRECT_NATIVE","PRE_FILL_LAST_COMMITTED_NATIVE_COPY",
++                "PRE_FUNDING_COMMITTED_NATIVE_COPY"))
++        in_interval=self.end_exclusive_ns is None or ns<self.end_exclusive_ns or boundary_left_limit
++        if track and in_interval and equity is not None:
++            self.events.add(self.sequence,equity)
++            if boundary_left_limit:self.boundary_left_limit_recorded=True
++        return equity
++
++    def _retain_before_new_mutation(self,ns):
++        """Keep the first actual old-source state, never roll cash/positions back.
++
++        Native engine drains timestamps <T before first data T. Funding can
++        commit on CustomData T before the first quote T; preserve the already
++        complete actual native copy before that first newer mutation.
++        """
++        retained=self.retained_prior
++        if retained is not None:
++            if ns<=retained.source_ns:
++                self.retained_prior_invalid=True
++                self._problem("OLD_SOURCE_MUTATION_AFTER_IMMUTABLE_RETENTION")
++            return
++        if self.minute_source is None or ns<=self.minute_source:return
++        if self.last is None or (self.last_mutation_ns is not None and self.last_mutation_ns>self.minute_source):
++            self.retained_prior_invalid=True
++            self._problem("PRIOR_SOURCE_NATIVE_SNAPSHOT_NOT_COMPLETE_AT_RETENTION")
++            return
++        # Every member is immutable: native cash Decimal, native Position
++        # pickle bytes tuple, strings and signature tuple. No mutable cache refs.
++        self.retained_prior=_RetainedPriorSource(self.minute_source,self.epoch,self.last["signature"],
++            ns,MappingProxyType(dict(self.last)))
++
++    def on_committed_account(self,event):
++        state=self._snapshot()
++        if state is not None:
++            self.pending_accounts.append((str(event.id),event.ts_event,state))
++            self.account_count+=1
++
++    def on_committed_fill(self,event):
++        identity=str(event.trade_id)
++        if identity in self.seen_fills:return
++        self.seen_fills.add(identity);self.fill_count+=1
++        state=self._snapshot()
++        if self.last is None or state is None:
++            self._problem("FILL_WITHOUT_COMPLETE_PRE_NATIVE_SNAPSHOT")
++        else:
++            self._retain_before_new_mutation(event.ts_event)
++            self._emit("PRE_FILL_LAST_COMMITTED_NATIVE_COPY",event.ts_event,self.last,identity=identity)
++            self.epoch+=1
++            self._emit("POST_FILL_COMMITTED_NATIVE",event.ts_event,state,identity=identity)
++        self.last=state;self.last_mutation_ns=event.ts_event
++        # Native fill-associated account updates occur before this committed
++        # post-position topic; transient cash/new+position/old pairs are not valued.
++        self.pending_accounts=[]
++
++    def _resolve_funding(self,ns):
++        rows=self.journal.funding_cash_audit() if self.journal and self.pending_accounts else ()
++        new=[r for r in rows if (r[0],r[1]) not in self.funding_ids]
++        for row in new:
++            key=(row[0],row[1]);self.funding_ids.add(key)
++            match=next(((k,a) for k,a in enumerate(self.pending_accounts)
++                if a[2]["cash"]==D(row[4]) and self.last is not None and
++                   a[2]["position_hash"]==self.last["position_hash"]),None)
++            if self.last is None or self.last["cash"]!=D(row[3]) or match is None:
++                self._problem("FUNDING_MUTATION_EPOCH_NOT_EXACTLY_COVERED")
++                continue
++            index,(event_id,received,state)=match
++            self._retain_before_new_mutation(int(row[2]))
++            self._emit("PRE_FUNDING_COMMITTED_NATIVE_COPY",int(row[2]),self.last,identity=row[0])
++            self.epoch+=1;self.funding_count+=1
++            self._emit("POST_FUNDING_ACCOUNT_NATIVE",int(row[2]),state,identity=row[0],receipt_ns=received)
++            self.last=state;self.last_mutation_ns=int(row[2])
++            self.pending_accounts=self.pending_accounts[index+1:]
++        current=self._snapshot()
++        if self.last is not None and current is not None and current["signature"]!=self.last["signature"]:
++            self._problem("UNOBSERVED_NATIVE_CASH_OR_POSITION_MUTATION")
++        # Duplicate account publications with the same committed state are inert.
++        if current is not None and all(a[2]["signature"]==current["signature"] for a in self.pending_accounts):
++            self.pending_accounts=[]
++        elif self.pending_accounts:
++            self._problem("UNRESOLVED_NATIVE_ACCOUNT_PUBLICATION")
++
++    def pre_process(self,data):
++        if not isinstance(data,QuoteTick):return
++        ns=data.ts_event
++        self._resolve_funding(ns)
++        current=self._snapshot()
++        if current is None:
++            self._problem("PREQUOTE_NATIVE_STATE_MISSING");return
++        if self.last is None:self.last=current
++        consistent=current["signature"]==self.last["signature"]
++        if not consistent:self._problem("PREQUOTE_NATIVE_STATE_EPOCH_MISMATCH")
++        if self.minute_source is not None and ns>self.minute_source:
++            retained=self.retained_prior
++            state=self.last;state_epoch=self.epoch
++            valid=consistent and not self.retained_prior_invalid
++            if retained is not None:
++                valid=valid and retained.source_ns==self.minute_source and retained.first_new_mutation_ns>self.minute_source and retained.state["signature"]==retained.signature
++                state=retained.state;state_epoch=retained.state_epoch
++            elif self.last_mutation_ns is not None and self.last_mutation_ns>self.minute_source:
++                valid=False
++            if not valid:
++                self._problem("NO_EXACT_PRIOR_SOURCE_SETTLED_WATERMARK")
++            else:
++                equity=self._emit("SETTLED_PRE_NEXT_SOURCE_WATERMARK",self.minute_source,state,
++                    track=False,receipt_ns=ns,state_epoch=state_epoch,retention=retained)
++                if equity is not None:self.settled.add(self.minute_source,equity);self.settled_count+=1
++            self.retained_prior=None;self.retained_prior_invalid=False
++        if self.minute_source is None or ns>self.minute_source:self.minute_source=ns
++        self._emit("PREQUOTE_DIRECT_NATIVE",ns,current)
++        self.last=current
++
++    def process(self,ts_now):
++        self._resolve_funding(ts_now)
++
++    def finish_after_engine_end(self,ns):
++        self._resolve_funding(ns)
++        current=self._snapshot()
++        if self.retained_prior is not None:
++            self._problem("PRIOR_SOURCE_WATERMARK_PENDING_AT_TERMINAL")
++        if current is None:
++            self._problem("TERMINAL_NATIVE_ACCOUNT_MISSING")
++        else:
++            if current["positions"]:self._problem("TERMINAL_NOT_NATIVE_FLAT")
++            if self.exchange.cache.orders_open() or self.exchange.cache.orders_inflight():
++                self._problem("TERMINAL_NATIVE_ORDERS_NONTERMINAL")
++            self._emit("DIRECT_NATIVE_AFTER_ENGINE_END_RETURNED",ns,current)
++            self.final=str(current["cash"]) if not current["positions"] else None
++        self.file.flush()
++        return self.report()
++
++    def report(self):
++        return dict(status="PASS" if not self.unknown else "UNKNOWN",unknown=list(self.unknown),
++            sequence_count=self.sequence,mutation_epochs=self.epoch,native_unique_fills=self.fill_count,
++            native_funding_transitions=self.funding_count,native_account_publications=self.account_count,
++            settled_receipts=self.settled_count,event_drawdown=self.events.summary(),
++            settled_drawdown=self.settled.summary(),terminal_actual_cash=self.final,
++            basis="ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
++            event_timestamp_basis="SEQUENCE_ORDER_JOIN_EVENT_NS_AND_RECEIPT_NS_IN_TRACE",
++            end_exclusive_ns=str(self.end_exclusive_ns) if self.end_exclusive_ns is not None else None,
++            post_boundary_settlement_excluded_from_event_drawdown=self.end_exclusive_ns is not None,
++            actual_intraminute_price_path_proven=False)
++
++    def close(self):self.file.close()
++    def log_diagnostics(self,logger):pass
++    def reset(self):pass
+diff --git a/runtime/tests/test_native_c1_q.py b/runtime/tests/test_native_c1_q.py
+new file mode 100644
+index 0000000..71e3fc0
+--- /dev/null
++++ b/runtime/tests/test_native_c1_q.py
+@@ -0,0 +1,89 @@
++"""Q cut intensity only: native executions, both sides, rights and actual credit."""
++from copy import deepcopy
++from decimal import Decimal as D
++import pytest
++from test_native_residual_recovery import held,cut,observe
++from test_native_episode_risk import run_ticks,tick
++from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP
++from coinmaster.strategy.next_band import next_closed_bar,H4
++
++@pytest.mark.parametrize("side",[1,-1])
++@pytest.mark.parametrize("size,expected",[("1000",25000),("3",3000),("0",0)])
++def test_q_native_btc_quarter_single_attempt_actual_credit_rights(side,size,expected):
++ s,e,ep=held(side=side,cut_divisor=4)
++ try:
++  original=(deepcopy(ep.btc_tp_target_lots),ep.btc_planref_vwap,ep.h,deepcopy(ep.sol_add_filled_notional))
++  price='55' if side==1 else '145'
++  cut(s,e,price=price,size=size);t=s._c1_state
++  assert (t['held_lots'],t['cut_lots'],t['target_lots'])==(100000,25000,75000)
++  assert t['cut_filled']==t['credit']==expected
++  assert ep.btc_open_qty==100-expected/1000
++  assert sum(ep.btc_risk_retired_lots.values())==expected
++  assert original==(ep.btc_tp_target_lots,ep.btc_planref_vwap,ep.h,ep.sol_add_filled_notional)
++  assert not ep.sol_rights
++  assert len([r for r in s.c1_audit if r['event']=='ATTEMPT_SUBMIT' and r['kind']=='CUT'])==1
++  # Following quotes do not complete an unfilled/partial frozen cut.
++  for ns in range(2000,2004):
++   observe(s,ns,btc=price);run_ticks(e,[tick(BTC_PERP,ns,price)])
++  assert t['cut_filled']==expected
++  if expected:
++   reclaim='80' if side==1 else '120';observe(s,2*H4,btc=reclaim)
++   s._c1_closed_bar(next_closed_bar(BTC_PERP.id,4,D(reclaim),D(reclaim),D(reclaim),D(reclaim),2*H4).data)
++   for n in range(1,6):
++    observe(s,2*H4+n,btc=reclaim);run_ticks(e,[tick(BTC_PERP,2*H4+n,reclaim)])
++   assert t['restore_filled']==expected and t['credit']==0 and ep.btc_open_qty==100
++ finally:e.end();e.dispose()
++
++@pytest.mark.parametrize("side",[1,-1])
++def test_q_sol_cut_stays_half(side):
++ s,e,ep=held(asset='SOL',side=side,cut_divisor=4)
++ try:
++  # Set BTC mark at entry, SOL adverse, so selected loss belongs to SOL.
++  cut(s,e,asset='SOL',price='145' if side==1 else '55');t=s._c1_state
++  assert t['instrument']==SOL_PERP.id
++  assert (t['held_lots'],t['cut_lots'],t['target_lots'])==(1000,500,500)
++  assert t['cut_filled']==t['credit']==500
++ finally:e.end();e.dispose()
++
++@pytest.mark.parametrize("side",[1,-1])
++def test_c1_native_coherent_observer_noninterference(tmp_path,monkeypatch,side):
++ import json
++ from types import SimpleNamespace
++ import test_native_residual_recovery as fixture
++ from nautilus_trader.backtest.config import BacktestEngineConfig
++ from nautilus_trader.backtest.engine import BacktestEngine
++ from nautilus_trader.config import LoggingConfig
++ from nautilus_trader.model.enums import AccountType,OmsType
++ from nautilus_trader.model.objects import Money
++ from coinmaster.research.native_fixture import SIM
++ from coinmaster.research.paired_observer import CommittedNativeObserver
++ traces=[]
++ for enabled in (False,True):
++  import itertools,uuid
++  import coinmaster.domain.wave_overlay as domain
++  ids=itertools.count(1)
++  monkeypatch.setattr(domain,"uuid4",lambda:uuid.UUID(int=next(ids)))
++  observer=CommittedNativeObserver(tmp_path/(str(enabled)+'.gz'),D(10000),(BTC_PERP,SOL_PERP)) if enabled else None
++  if observer:observer.set_week([SimpleNamespace(open_time_ms=-60000,btc_mark={'close':'100'},sol_mark={'close':'100'})])
++  def build(strategy):
++   e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
++   e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,default_leverage=D(1),modules=[observer] if observer else [])
++   e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(strategy);return e
++  monkeypatch.setattr(fixture,'native_engine',build)
++  s,e,ep=fixture.held(side=side,cut_divisor=4)
++  try:
++   fixture.cut(s,e,price='55' if side==1 else '145',size='3')
++   s._begin_forced_close('TEST_TERMINAL')
++   for ns in range(3000,3010):run_ticks(e,[tick(BTC_PERP,ns),tick(SOL_PERP,ns)])
++   e.end()
++   proof=observer.finish_after_engine_end(3010) if observer else None
++   traces.append(dict(fills=s.fill_audit,c1=s.c1_audit,cash=str(e.cache.account_for_venue(SIM).balance_total().as_decimal()),orders=[(str(o.client_order_id),str(o.status),str(o.quantity),str(o.filled_qty)) for o in e.cache.orders()]))
++   if observer:
++    assert proof['status']=='PASS',proof
++    assert proof['native_unique_fills']==len(s.fill_audit)
++    assert proof['terminal_actual_cash']==traces[-1]['cash']
++    (tmp_path/('c1-parity-'+str(side)+'.json')).write_text(json.dumps(proof,indent=2))
++  finally:
++   if observer:observer.close()
++   e.dispose()
++ assert traces[0]==traces[1]
+diff --git a/runtime/tests/test_native_c1_funding_observer.py b/runtime/tests/test_native_c1_funding_observer.py
+new file mode 100644
+index 0000000..106376b
+--- /dev/null
++++ b/runtime/tests/test_native_c1_funding_observer.py
+@@ -0,0 +1,118 @@
++"""Stock hook ordering/native object-copy proof, including exact signed funding."""
++from decimal import Decimal as D
++from types import SimpleNamespace
++import gzip,json
++import pytest
++from nautilus_trader.backtest.config import BacktestEngineConfig
++from nautilus_trader.backtest.engine import BacktestEngine
++from nautilus_trader.config import LoggingConfig
++from nautilus_trader.model.enums import AccountType, OmsType, OrderSide, TimeInForce
++from nautilus_trader.model.objects import Money
++from coinmaster.research.native_fixture import SIM,BTC_PERP,SOL_PERP,FundingInstruction,PerpetualFundingModule
++from coinmaster.ledger.journal import NativeEventJournal
++from coinmaster.research.paired_observer import CommittedNativeObserver
++from nautilus_trader.trading.strategy import Strategy
++
++class NativeCapabilityProbe(Strategy):
++    def __init__(self):
++        super().__init__()
++        self.receipts = []
++
++    def on_order_event(self, event):
++        self.receipts.append(dict(kind=type(event).__name__, order_id=str(event.client_order_id),
++                                 ts=str(event.ts_event)))
++
++    def on_order_filled(self, event):
++        self.receipts.append(dict(kind="FILL", order_id=str(event.client_order_id),
++            ts=str(event.ts_event), qty=str(event.last_qty), px=str(event.last_px),
++            fee=str(event.commission), liquidity=event.liquidity_side.name))
++
++
++from test_native_episode_risk import tick,run_ticks
++
++
++def run_observed(tmp_path, enabled=True):
++    journal=NativeEventJournal(str(tmp_path/'funding.sqlite'))
++    funds=(FundingInstruction('btc-pay',BTC_PERP.id,D('.001'),120_000_000_000,D(100),'venue_mark'),
++           FundingInstruction('sol-receive',SOL_PERP.id,D('.002'),120_000_000_000,D(100),'venue_mark'))
++    modules=[PerpetualFundingModule(funds,journal)]
++    observer=CommittedNativeObserver(tmp_path/'events.jsonl.gz',D(1000000),(BTC_PERP,SOL_PERP),journal) if enabled else None
++    if observer:modules.append(observer)
++    e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR')))
++    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
++        starting_balances=[Money(1000000,SOL_PERP.quote_currency)],base_currency=SOL_PERP.quote_currency,
++        default_leverage=D(1),bar_execution=False,modules=modules)
++    e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP)
++    s=NativeCapabilityProbe();e.add_strategy(s)
++    if observer:
++        observer.set_week([SimpleNamespace(open_time_ms=x,btc_mark={'close':'100'},sol_mark={'close':'100'}) for x in (0,60000,120000)])
++    try:
++        run_ticks(e,[tick(BTC_PERP,60_000_000_000),tick(SOL_PERP,60_000_000_000)])
++        for inst,side in ((BTC_PERP,OrderSide.BUY),(SOL_PERP,OrderSide.SELL)):
++            s.submit_order(s.order_factory.market(inst.id,side,inst.make_qty(D(10)),time_in_force=TimeInForce.IOC))
++        run_ticks(e,[tick(BTC_PERP,60_000_000_001),tick(SOL_PERP,60_000_000_001)])
++        run_ticks(e,[tick(BTC_PERP,120_000_000_000),tick(SOL_PERP,120_000_000_000)])
++        for inst,side in ((BTC_PERP,OrderSide.SELL),(SOL_PERP,OrderSide.BUY)):
++            s.submit_order(s.order_factory.market(inst.id,side,inst.make_qty(D(10)),time_in_force=TimeInForce.IOC,reduce_only=True))
++        run_ticks(e,[tick(BTC_PERP,120_000_000_001),tick(SOL_PERP,120_000_000_001),tick(BTC_PERP,180_000_000_000),tick(SOL_PERP,180_000_000_000)])
++        e.end()
++        report=observer.finish_after_engine_end(180_000_000_000) if observer else None
++        actual=str(e.cache.account_for_venue(SIM).balance_total().as_decimal())
++        return dict(report=report,cash=actual,funding=journal.funding_cash_audit(),
++            realized=sum((p.realized_pnl.as_decimal() for p in e.cache.positions()),D(0)),
++            commissions=[str(c) for p in e.cache.positions() for c in p.commissions()],
++            fills=[r for r in s.receipts if r['kind']=='FILL'])
++    finally:
++        if observer:observer.close()
++        e.dispose();journal.close()
++
++
++def test_stock_postfill_account_position_epochs_funding_and_on_off_parity(tmp_path):
++    ondir=tmp_path/'on';offdir=tmp_path/'off';ondir.mkdir();offdir.mkdir()
++    on=run_observed(ondir);off=run_observed(offdir,False)
++    assert on['cash']==off['cash']
++    assert D(on['cash'])-D(1000000)-on['realized']-sum((D(r[5]) for r in on['funding']),D(0))==0
++    assert on['commissions']==off['commissions']
++    assert on['funding']==off['funding']
++    assert on['fills']==off['fills']
++    assert on['report']['native_unique_fills']==4
++    assert on['report']['native_funding_transitions']==2,on['report']
++    assert on['report']['terminal_actual_cash']==on['cash']
++    assert on['report']['status']=='PASS',on['report']
++    rows=[json.loads(x) for x in gzip.open(ondir/'events.jsonl.gz','rt')]
++    post=[r for r in rows if r['kind']=='POST_FILL_COMMITTED_NATIVE']
++    assert len(post)==4
++    assert len(post[0]['positions'])==1 and len(post[1]['positions'])==2
++    assert not post[-1]['positions']
++    assert [r['sequence'] for r in rows]==list(range(1,len(rows)+1))
++    assert json.loads(json.dumps(on['report']))==on['report']
++
++
++
++def test_interval_boundary_event_dd_excludes_terminal_fill_keeps_prequote(tmp_path):
++ observer=CommittedNativeObserver(tmp_path/'boundary.gz',D(100),(BTC_PERP,SOL_PERP),end_exclusive_ns=100)
++ try:
++  def state(cash):return dict(cash=D(cash),positions=(),position_hash='flat',signature=(cash,'flat'))
++  observer._emit('PREQUOTE_DIRECT_NATIVE',100,state('120'))
++  observer._emit('POST_FILL_COMMITTED_NATIVE',100,state('1'))
++  observer._emit('PREQUOTE_DIRECT_NATIVE',100,state('1'))
++  observer._emit('DIRECT_NATIVE_AFTER_ENGINE_END_RETURNED',100,state('1'))
++  report=observer.report()
++  assert report['event_drawdown']['samples']==2
++  assert report['event_drawdown']['minimum']['equity']=='100'
++  assert report['event_drawdown']['top3_distinct_excursions']==[]
++ finally:observer.close()
++
++
++def test_interval_boundary_prefunding_copy_is_only_left_limit(tmp_path):
++ observer=CommittedNativeObserver(tmp_path/'funding-boundary.gz',D(100),(BTC_PERP,SOL_PERP),end_exclusive_ns=100)
++ try:
++  def state(cash):return dict(cash=D(cash),positions=(),position_hash='flat',signature=(cash,'flat'))
++  observer._emit('PRE_FUNDING_COMMITTED_NATIVE_COPY',100,state('120'))
++  observer._emit('POST_FUNDING_ACCOUNT_NATIVE',100,state('1'))
++  observer._emit('PREQUOTE_DIRECT_NATIVE',100,state('1'))
++  report=observer.report()
++  assert report['event_drawdown']['samples']==2
++  assert report['event_drawdown']['minimum']['equity']=='100'
++  assert report['event_drawdown']['top3_distinct_excursions']==[]
++ finally:observer.close()

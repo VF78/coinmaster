@@ -690,7 +690,7 @@ def run_native_diagnostic(
     research_btc_split_planref_v1: bool = False,
     research_btc_split_tp_ioc: bool = False,
     research_btc_split_discount: str = "0.0025",
-    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
+    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
     research_sol_cover: str | None = None,
     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
     research_btc_episode_loss_20: bool = False,
@@ -789,8 +789,16 @@ def run_native_diagnostic(
     modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
+    coherent_observer = None
+    coherent_observer_report = None
+    if research_residual_recovery:
+        from coinmaster.research.paired_observer import CommittedNativeObserver
+        coherent_observer = CommittedNativeObserver(artifacts_root / "coherent-native-events.jsonl.gz",
+            initial_active_seed,(btc_instrument,sol_instrument),journal,trading_end_ms * 1_000_000)
+        modules.append(coherent_observer)
     def kind(instrument, price_type):
         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
+    if research_c1_btc_cut_divisor not in (2,4) or (research_c1_btc_cut_divisor!=2 and not research_residual_recovery):raise ValueError("Q_REQUIRES_C1_DIVISOR_2_OR_4")
     if research_residual_recovery and (not observe_minute_risk or not research_wait_4h or research_regime_reentry_band!="0.5" or research_zero_retrace or research_sol_dominant or research_wait_persist or research_sol_risk_first or research_conditional_sol or research_alpha_cushion or research_chop_pair):raise ValueError("C1_REQUIRES_CLEAN_E4_SETTLED_OBSERVER")
     next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
     from coinmaster.strategy.next_band import next_bar_type, next_closed_bar
@@ -863,7 +871,7 @@ def run_native_diagnostic(
         research_sol_btc_open_only=research_sol_btc_open_only,
         research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
         research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
-        research_residual_recovery=research_residual_recovery, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
         research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
         research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
@@ -906,6 +914,8 @@ def run_native_diagnostic(
         for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), archival_batch_minutes):
             if risk_recorder is not None:
                 risk_recorder.set_week(week)
+            if coherent_observer is not None:
+                coherent_observer.set_week(week)
             marks, signals, quotes, source_bars, next_bars = [], [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
@@ -979,6 +989,8 @@ def run_native_diagnostic(
                 early_liquidation_cutoff = True
                 break
         engine.end()
+        if coherent_observer is not None:
+            coherent_observer_report = coherent_observer.finish_after_engine_end(trading_end_ms * 1_000_000)
         # Retain only one native report DataFrame at a time; native history
         # remains authoritative and report-derived monetary formulas are unchanged.
         if audit_archive is not None:
@@ -1055,6 +1067,8 @@ def run_native_diagnostic(
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
         if research_residual_recovery:
             full_config["residual_recovery_research"]=dict(version="C1",trigger_DD="0.40",open_loss_dominates_remaining_50_cushion=True,cut_fraction="0.50",restore_DD="0.35",restore_closed_hours=4,max_cut_restore_per_group=1)
+        if research_c1_btc_cut_divisor != 2:
+            full_config["residual_recovery_research"]["btc_cut_divisor"]=research_c1_btc_cut_divisor
         if next_enabled:
             full_config["next_band_research"] = dict(wait_4h=research_wait_4h,wait_persist=research_wait_persist,zero_retrace=research_zero_retrace,sol_dominant=research_sol_dominant,bar_contract="PINNED_CLOSED_OHLC_D1_BEFORE_INTRADAY_QUOTE")
         if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
@@ -1096,6 +1110,21 @@ def run_native_diagnostic(
         if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
             result["hedge_band_audit"] = strategy.hedge_band_audit
         if research_residual_recovery:
+            result["coherent_native_observer"] = coherent_observer_report
+            result["funding_cash_audit"] = journal.funding_cash_audit() if journal else []
+            result["funding"]["signed_amount"] = str(sum((Decimal(row[5]) for row in result["funding_cash_audit"]),Decimal(0)))
+            native_realized=[dict(position_id=str(p.id),instrument_id=str(p.instrument_id),
+                realized_pnl=str(p.realized_pnl.as_decimal()) if p.realized_pnl is not None else None,
+                native_commissions=[str(c) for c in p.commissions()]) for p in engine.cache.positions()]
+            complete=all(row["realized_pnl"] is not None for row in native_realized) and not engine.cache.positions_open()
+            realized_total=sum((Decimal(row["realized_pnl"]) for row in native_realized),Decimal(0)) if complete else None
+            bridge=terminal_active-initial_active_seed-realized_total-Decimal(result["funding"]["signed_amount"]) if complete else None
+            result["native_cash_reconciliation"]=dict(terminal_cash=str(terminal_active),seed=str(initial_active_seed),
+                native_position_realized=native_realized,native_realized_total=str(realized_total) if complete else None,
+                signed_funding=result["funding"]["signed_amount"],unallocated_bridge=str(bridge) if complete else None,
+                status="EXACT" if bridge==0 else "UNKNOWN_UNALLOCATED_NATIVE_BRIDGE",
+                fees_policy="NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_NATIVE_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN",
+                bridge_is_funding=False,tolerance=None)
             result["c1_audit"]=strategy.c1_audit
             result["c1_denial_counts"]=strategy.c1_denials
             result["c1_terminal_state"]=strategy._c1_export_terminal()
@@ -1212,6 +1241,8 @@ def run_native_diagnostic(
             audit_archive.close()
         if risk_recorder is not None:
             risk_recorder.file.close()
+        if coherent_observer is not None:
+            coherent_observer.close()
         engine.dispose()
         if journal:
             if successful_run:
@@ -1353,7 +1384,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1468,7 +1499,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
         research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
         research_regime_reentry_band=research_regime_reentry_band,
-        research_residual_recovery=research_residual_recovery, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant,
         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
@@ -1517,6 +1548,7 @@ def main() -> None:
     parser.add_argument("--research-sol-remaining-btc-hedge", action="store_true", help="Research-only earned SOL admission clipped to remaining native BTC/beta")
     parser.add_argument("--research-portfolio-protect-45", action="store_true", help="Research-only paired-minute 45%% protective epoch drawdown; resume next genuine BTC episode")
     parser.add_argument("--research-sol-notional-cap-6x", action="store_true", help="Research-only aggregate SOL entry notional capped at 6x fresh native marked equity")
+    parser.add_argument("--research-c1-btc-cut-divisor", type=int, choices=(2,4), default=2)
     parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
     parser.add_argument("--control-report", type=Path)
     parser.add_argument("--artifact-dir", type=Path)
@@ -1563,7 +1595,7 @@ def main() -> None:
             research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
             research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
             research_regime_reentry_band=args.research_regime_reentry_band,
-            research_residual_recovery=args.research_residual_recovery, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
+            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
             research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant,
             research_batch_minutes=args.research_batch_minutes,
             research_sol_risk_first=args.research_sol_risk_first,

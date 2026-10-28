@@ -74,6 +74,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_zero_retrace: bool = False
     research_sol_dominant: bool = False
     research_residual_recovery: bool = False
+    research_c1_btc_cut_divisor: int = 2
     research_next_signals: tuple[DataType, ...] = ()
     research_h4_ema: int | None = None
     research_h4_gamma: Decimal = Decimal(".5")

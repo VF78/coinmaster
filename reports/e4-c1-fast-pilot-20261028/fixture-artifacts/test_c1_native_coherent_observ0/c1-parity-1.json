@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "unknown": [],
+  "sequence_count": 55,
+  "mutation_epochs": 3,
+  "native_unique_fills": 3,
+  "native_funding_transitions": 0,
+  "native_account_publications": 17,
+  "settled_receipts": 18,
+  "event_drawdown": {
+    "samples": 38,
+    "minimum": {
+      "timestamp_ns": "26",
+      "equity": "9845.135"
+    },
+    "maximum_loss_below_seed_amount": "154.865",
+    "maximum_loss_below_seed_percent": "1.5486500",
+    "top3_distinct_excursions": [
+      {
+        "peak": {
+          "timestamp_ns": "5",
+          "equity": "10000"
+        },
+        "trough": {
+          "timestamp_ns": "26",
+          "equity": "9845.135"
+        },
+        "recovery": null,
+        "drawdown_amount": "154.865",
+        "drawdown_peak_percent": "1.5486500"
+      }
+    ]
+  },
+  "settled_drawdown": {
+    "samples": 19,
+    "minimum": {
+      "timestamp_ns": "3000",
+      "equity": "9845.135"
+    },
+    "maximum_loss_below_seed_amount": "154.865",
+    "maximum_loss_below_seed_percent": "1.5486500",
+    "top3_distinct_excursions": [
+      {
+        "peak": {
+          "timestamp_ns": "1",
+          "equity": "10000"
+        },
+        "trough": {
+          "timestamp_ns": "3000",
+          "equity": "9845.135"
+        },
+        "recovery": null,
+        "drawdown_amount": "154.865",
+        "drawdown_peak_percent": "1.5486500"
+      }
+    ]
+  },
+  "terminal_actual_cash": "9845.135",
+  "basis": "ACTUAL_NATIVE_CASH_AND_IMMUTABLE_NATIVE_POSITION_UPNL_AT_COMMON_COMPLETED_MARK",
+  "actual_intraminute_price_path_proven": false
+}
