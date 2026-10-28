@@ -1,0 +1,43 @@
+{
+  "observed_utc": "2026-10-28T23:35:53.486647+00:00",
+  "issues": {
+    "137": {
+      "number": 137,
+      "state": "open",
+      "title": "[Research] E4/C1 profit-preserving pilot and BTC/SOL optimization",
+      "html_url": "https://github.com/VF78/coinmaster/issues/137",
+      "updated_at": "2026-10-28T23:35:54Z",
+      "error_exit": null
+    },
+    "101": {
+      "number": 101,
+      "state": "open",
+      "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout",
+      "html_url": "https://github.com/VF78/coinmaster/issues/101",
+      "updated_at": "2026-10-28T23:35:56Z",
+      "error_exit": null
+    }
+  },
+  "runtime_actions": 0,
+  "project137": {
+    "data": {
+      "node": {
+        "id": "PVTI_lAHOBIUvJs4BPJNjzhDm9GA",
+        "isArchived": false,
+        "project": {
+          "number": 2
+        },
+        "fieldValueByName": {
+          "name": "In Progress",
+          "optionId": "47fc9ee4"
+        },
+        "content": {
+          "number": 137,
+          "state": "OPEN",
+          "title": "[Research] E4/C1 profit-preserving pilot and BTC/SOL optimization",
+          "url": "https://github.com/VF78/coinmaster/issues/137"
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "status": "DRAFT_NOT_READY_NOT_START_APPROVAL",
-  "updated_utc": "2026-10-28T22:54:24.366172+00:00",
+  "updated_utc": "2026-10-28T23:42:42.258868+00:00",
   "candidate": "BTC_POSTCUT_D1",
   "economic_source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
   "economic_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
@@ -34,5 +34,14 @@
     "Fullpilotstart-to-datefinancialauditincompletebecausemissinglogs"
   ],
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
-  "Unified_support": "OWNER_REQUIRED_SOURCE_EXTENSION_IN_PROGRESS"
+  "Unified_support": "OWNER_REQUIRED_SOURCE_EXTENSION_IN_PROGRESS",
+  "documentation_forums_review": "LIVE_PREPARATION_PLAN_20261029.md#документация-и-обсуждения-api-что-включить-в-допуск",
+  "Unified_pure_WIP": "15additionalcasesPASS0.60s_notFinalConnectedOrNativePASS",
+  "manager_public_verified_checkpoint": "85f3d281620f6a17a623b5c99a9024c01d84c1dd",
+  "packaging_remaining_gates": [
+    "Approvedprivatecap/profile/releaseidentity; no hardcodedlegacy82 or oldapprovals",
+    "Explicitqualifiedactiveprofilepath; currentinputreadinessismanageonly",
+    "Actualsmallcapitalminlot/minnotional/venueavailablemarginfeasibility",
+    "Immutableartifactseal/runbook/rollback_andownerVERSIONapproval_beforeinstalledbenchmark"
+  ]
 }

@@ -2,7 +2,7 @@
   "status": "DRAFT_NOT_ENGINE_PILOT_READY_NOT_LIVE_GO",
   "task": "CM-E4-C1-FAST-PILOT-20261028",
   "live_order_capability": false,
-  "selected_candidate": null,
+  "selected_candidate": "BTC_POSTCUT_D1",
   "source_commit": null,
   "config_sha256": null,
   "research_venue": "Bybit",
@@ -18,19 +18,40 @@
   "HWM_reset_on_restart_allowed": false,
   "model_label": "E4/C1-derived alpha+drawdown-control; legacyreference/omittedTPnotfills; SOLnotcontinuoushedge",
   "readiness": {
-    "coherent_equity_clock_H4_D1_warmup": "NOT_VERIFIED",
-    "open_risk_restart_globalH_parent_PLANREF_credit_latch_rights_pending": "NOT_VERIFIED",
-    "native_partial_cancel_fill_duplicate_reconnect_priority": "NOT_VERIFIED",
-    "exact_cash_signedfunding_nativefees": "NOT_VERIFIED",
-    "isolated_account_budget_minlots_no_doublewriter": "NOT_VERIFIED",
-    "stop_entries_cancel_owned_manage_actual_close_reporting": "NOT_VERIFIED"
+    "coherent_equity_clock_H4_D1_warmup": "SOURCE_COMPONENT_PASS_NATIVE_NOT_YET_VERIFIED",
+    "open_risk_restart_globalH_parent_PLANREF_credit_latch_rights_pending": "FRESH_INIT_SOURCE_PASS_PAUSED_FLAT_RESTART_PENDING_OPEN_RISK_AUTORECOVERY_DEFERRED",
+    "native_partial_cancel_fill_duplicate_reconnect_priority": "NATIVE_A_B_PENDING_FINAL_SOURCE_FREEZE",
+    "exact_cash_signedfunding_nativefees": "BENCHMARK_EXACT_LIVE_REPORTED_BALANCE_BASIS_AND_NATIVE_CURRENCY_PENDING",
+    "isolated_account_budget_minlots_no_doublewriter": "MASTER_AGENT_UNSIGNED_READ_PASS_VENUE_FEASIBILITY_AND_EXECUTION_BINDING_PENDING",
+    "stop_entries_cancel_owned_manage_actual_close_reporting": "SOURCE_COMPONENT_PASS_NATIVE_A_B_PENDING",
+    "Unified_compatibility": "PUBLIC_API_SOURCE_EXTENSION_AND_PROVIDER_IN_PROGRESS"
   },
-  "candidate_metrics": null,
+  "candidate_metrics": {
+    "reference_TOTAL": "5499360.14984003",
+    "reference_seed": "10000",
+    "reference_currency": "USDT",
+    "reference_settled_and_event_DD_percent": "51.26863558248311161216905115",
+    "profit_retention_percent_of_S0": "90.47738788375289",
+    "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+    "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+    "venue_model": "HistoricalBybit1mSyntheticL1_NotHLMatching"
+  },
   "current_services_changed": false,
   "owner_go_authorization_mode": "PREPARATION_AUTHORIZED_FINAL_LIVE_START_CONFIRMATION_REQUIRED",
   "owner_final_confirmation_required": [
     "explicit_live_start_after_final_benchmark_verified_algorithm"
   ],
   "local_private_binding": "runtime/var/research-jobs/e4-c1-fast-pilot-20261028/private/live-account.json",
-  "funds_status": "OWNER_REPORTED_TRANSFER_PRIVATE_CAP_USDC_NOT_YET_API_RECONCILED"
+  "funds_status": "UNSIGNED_MASTERACCOUNT_SPOT_AND_NATIVE_HTTP_READBACK_SUCCEEDED_PRIVATE_ONLY_NOT_FULL_CACHE_OR_HELD_PROOF",
+  "updated_utc": "2026-10-28T23:42:42.258868+00:00",
+  "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
+  "source_freeze": "PENDING_UNIFIED_PROVIDER_AND_CONNECTED_ACCEPTANCE",
+  "drawdown_protection": {
+    "retained_equity_fraction": "0.45",
+    "loss_limit_percent": 55,
+    "anchor": "Persistentinitial_thenhigherValidUTCdailyclose",
+    "applied_to_runtime": false,
+    "executed_loss_guarantee": false
+  },
+  "account_mode": "OWNER_KEEP_UNIFIED_USDC_ONLY_DEFAULT_BTC_SOL_CROSS"
 }

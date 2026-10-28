@@ -1,6 +1,6 @@
 {
   "task": "CM-E4-C1-FAST-PILOT-20261028",
-  "recorded_utc": "2026-10-28T22:00:35.865896+00:00",
+  "recorded_utc": "2026-10-28T23:44:59.742707+00:00",
   "status": "BENCHMARK_AND_STRESS_ACCEPTED_VALIDATION_RAW_FINANCIAL_PASS_TECHNICAL_EXPORT_FAILED",
   "owner_authorization": {
     "direct_instruction": "возьми план из вложения за основу ... Сделай единый согласованный план, актуализируй project и продолжай по уточненному плану",
@@ -195,7 +195,7 @@
     },
     "BTC_POSTCUT_D1": {
       "root_go": true,
-      "status": "COMPLETED_BENCHMARK_THRESHOLDS_PASS_AUDIT_PENDING",
+      "status": "COMPLETED_BENCHMARK_AND_INDEPENDENT_ACCOUNTING_PASS",
       "source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
       "config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
       "automatic_repeat": false,
@@ -243,7 +243,7 @@
     },
     "QUAL_VALIDATION": {
       "root_go": true,
-      "status": "FAILED_NATIVE_EXIT_REPORT_MONTH_COUNT_RAW_AUDIT_PENDING",
+      "status": "FAILED_NATIVE_EXIT1_REPORTING_RAW_FINANCIAL_AUDIT_PASS",
       "source_commit": "299197a7140ad0ae5c18aecdf596cbdbd7124bf4",
       "config_sha256": "9c7e16e4bee8ab6c91dae5009b083b1509ffe6053d36c5c38af929964a78d1db",
       "peer_sha256": "b1783fbfa26ec716e72a5e8745d965a8078af7789c00e0560c21c7156ad041f4",
@@ -254,7 +254,7 @@
       "fresh_account_seed": "10000",
       "fresh_account_reserve": "0",
       "period": "[2026-09-01,2026-10-28)",
-      "native_attempts_started": 0,
+      "native_attempts_started": 1,
       "attempt_uuid": "c441e4fe-8a0d-43f0-8a83-62de3e14f1cf",
       "scope": "ONE_FIXED_CANDIDATE_VALIDATION_NO_TUNING_NO_REPEAT",
       "actual_native_child_pid": 75889,
@@ -299,14 +299,14 @@
     "final_owner_start_required": true
   },
   "next_step": {
-    "economic_search": "FROZEN_NO_FURTHER_CANDIDATES",
-    "first": "Independent existing-artifact BTC_POSTCUT_D1 financial audit; no rerun",
+    "economic_search": "CLOSED8_OF8_NO_REPEAT_OR_NEW_CANDIDATE",
+    "first": "FinishUnifiedpublicAPI/providercompatibility_on8ef_then_connectedpure_and_onepeer",
     "then": [
-      "One fixed adverse-tick QUAL_STRESS",
-      "One fixed 57-day clean-start QUAL_VALIDATION after interval-only harness review"
+      "Freeze source/config/fixture; one bounded currency-modelsmoke; nativeA/B max3 inclFAILED spent0/rootGOFalse",
+      "FreshprivateHLreadonlycache/identity/mode/precision/margin/feasibility proof",
+      "Immutablewinnerrelease/runbook/rollback forownerVERSIONapproval; installedreleasebenchmark stillpending"
     ],
-    "parallel": "Existing-stack live money/closed-bar/accounting integration after bounded contract closure",
-    "live_gate": "Owner winner approval then qualified deployment verification; separate explicit START LIVE still required"
+    "live_gate": "No oldSandboxstop/deploy beforeownerVERSIONapproval; separateexplicitSTART beforeorders/transfers"
   },
   "budget_amendments": [
     {
@@ -390,12 +390,29 @@
     "publication": "PUBLIC_REMOTE_EXACT_VERIFIED_BY_OWNER",
     "source_commit": "29f66e166ff6b518b1b27a76095d6acd7649e4e4"
   },
-  "live_preparation_current": "Freshsourceowner live_bridge_owner_20261029 verifiede171HEAD+11fileWIP603add/14del; reuseexistingClosedTradeClock/native1msubscribe/D1dispatch andterminalqueryevidence. Currentmoney/C1materializer, journalatomicity/budgetguards unqualified. PrepareDP55state/profileparity(no runtime); enginefreeonly.",
+  "live_preparation_current": {
+    "sourcebase": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
+    "component": "88purePASS16.20s_independentpeerPASS",
+    "Unified": "WIP15additionalpurePASS0.60s_provider_and_final_connected_peer_pending",
+    "live_order_capability": false,
+    "realorders_transfers_services_modechanges": 0,
+    "documentation_forums_findings": "LIVE_PREPARATION_PLAN_20261029.md",
+    "sourcefreeze": "PENDING",
+    "packaging_gates": [
+      "Removelegacy82capitalbinding_inapprovedprivatecap/releaseidentity_notOldApprovalReuse",
+      "Qualifyactiveprofilepath_currentinputreadinessmanageonly_by_design",
+      "Minlot_minnotional_currentprivatecap_feasibility",
+      "Exactcandidate_profile_source_seals_androllback"
+    ],
+    "componentfixture": "c53c38ae41e310d7762ebc2129027d9109eb3501_staticOnly_FinalUnifiedrepinPending"
+  },
   "manager_publication_current": {
-    "local_commit": "1e94dc4f5b74b80cf03a34cf81d1ee4d78385d90",
-    "push": "TIMED_OUT_READBACK_CONFIRMS_REMOTE_STILL1db9697",
-    "last_verified_public": "1db96977e3511b1f55c8eac52313a497f11a439a",
-    "restart_critical_changes_preserved_locally": true
+    "verified_head": "85f3d281620f6a17a623b5c99a9024c01d84c1dd",
+    "route": "NormalhooksVPSsavedgitcredentials_cleanisolatedpublisher_bundleSHAverified",
+    "remote_exact_verified": true,
+    "primary_dirty_preserved": true,
+    "private_financial_readbacks_published": false,
+    "Project137_101_readback": "project-readback-20261029.json"
   },
   "live_drawdown_protection_owner_request": {
     "recorded_utc": "2026-10-28T22:45:33.708634+00:00",
