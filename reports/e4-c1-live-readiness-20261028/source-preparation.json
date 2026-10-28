@@ -1,0 +1,111 @@
+{
+  "task": "CM-E4-C1-LIVE-READINESS-20261028",
+  "state": "PASS_SOURCE_ONLY_COMPONENT_NOT_RELEASE_READY",
+  "base_commit": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+  "branch": "codex/e4-c1-live-readiness-20261028",
+  "source_pins": {
+    "runtime/coinmaster/strategy/live_recovery.py": "e43577dceb4991c63cb4ff01f4400182488dd6455fe09c1fd31e951cb291871e",
+    "runtime/coinmaster/ops/live_recovery.py": "604c9056ebcc87c51b16d096c868e3da47a50b863ccb708e48b2f6882cdd9795",
+    "runtime/coinmaster/ops/hl_live_execution.py": "aa41439999932f6a73f235d2265ff8791311525c891a703941c66048bcb4d66f",
+    "runtime/coinmaster/ops/hl_live_epoch.py": "2f3a03f5e4a91c9640f6b3a270e94c3f3a218b3c8510b9de70ae5e3ec64b549a",
+    "runtime/coinmaster/ops/hl_live_worker.py": "666207407100a29adcc883f8efbda3a2d410b931de62d869a3464281589916a8",
+    "runtime/tests/test_e4_c1_manage_only_pure.py": "7c832d1df33592999becb6d18f9540875a214461224e1dda32e5ca574766f6d2"
+  },
+  "unchanged_research_and_shared_journal_sources": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "2788ea0d36fa93cd961a84125fe93584c8c10938d40fdf6f6a67356922503254",
+    "runtime/coinmaster/strategy/residual_recovery.py": "06aa1886bc75790fb22c5a3f666f4fa36f93760bb0e2a5fcb53782caa71ff370",
+    "runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "runtime/coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "runtime/coinmaster/research/native_baseline.py": "19437a6261142e1dece8c5fe030d20070f6868022e07e40dbc044bfbd19f099b",
+    "runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "runtime/coinmaster/research/paired_observer.py": "e97dc55cceb23850028585c8cd9db440cc302b5bdbaecf4cfd1afca64e6b7fff",
+    "runtime/coinmaster/research/native_accounting.py": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+    "runtime/coinmaster/ops/paper.py": "095de459baa932154caeaff53094d983b6c2ebbfaf7e42c98000d9d233288dfe"
+  },
+  "contract": "Opt-in E4/C1 checkpoint+policy validation and quarantined verified-owned MANAGE_ONLY. No normal C1 entry/add/restore/restart activation.",
+  "persistence": "Existing v1 storage key/table retained; opt-in v2 schema, full research/native execution policy hash, original Episode/Intent plus C1H/credit/buckets/pending/fillIDs/split/E4clock state. Loaded inputs never fresh authority. Missing/mismatched policy denies. Flat epoch refuses C1 checkpoint retirement, preserving H.",
+  "management": "Existing strict Info/mass/native owned order+fill+position/account/side/episode parity, durable original fill cursor; ephemeral certificate binds revision/cache/owned decision projection/loaded policy/freshness/transport. Individual known owned cancel or bounded opposite-side market IOC reduceOnly through existing native forced-close bookkeeping. No new SDK/PNL/fill engine.",
+  "atomicity": "Single-use certificate consumed before validation/reservation. Existing account lease+runtime RLock+SQLite BEGIN IMMEDIATE; command reservation, exact checkpoint and reduce submission committed before native dispatch. Reservation bumps revision; concurrent old-generation commands cannot collectively over-reduce. Unknown ACK persists, never reset/resubmitted; fresh complete terminal readback alone resolves.",
+  "default": "Private sealed profile opt-in false; management dispatch disabled/process-local/not persisted. Existing live profile/order approval gates retained. All normal C1 APIs and increases blocked. release/live order capability remains false for readiness.",
+  "tests": [
+    {
+      "result": "6PASS12FAIL",
+      "wall_seconds": 3.33,
+      "pytest_calls": 1,
+      "reason": "Synthetic fill fixture omitted required SQLite quantity/price; fixture correction1"
+    },
+    {
+      "result": "17PASS1FAIL",
+      "wall_seconds": 3.02,
+      "pytest_calls": 1,
+      "reason": "Same-owner PaperRuntime.acquire failedINSERT leaves empty transaction; corrected in LiveEpochRuntime only"
+    },
+    {
+      "result": "28PASS9FAIL",
+      "wall_seconds": 6.51,
+      "pytest_calls": 1,
+      "reason": "Synthetic native report fixture missing clientID/localdenial globals; fixture correction1"
+    },
+    {
+      "result": "37PASS",
+      "wall_seconds": 6.29,
+      "pytest_calls": 1,
+      "reason": "Final connected actual-source pure methods + real local SQLite/OS account lease + concurrent reservation"
+    },
+    {
+      "result": "47PASS",
+      "wall_seconds": 8.97,
+      "pytest_calls": 1,
+      "reason": "One finite correction for certified cache cancel object + exact fresh venue/native position-set equality; native massreport dict/list shape mirrored"
+    }
+  ],
+  "engineering_pytest_calls": 5,
+  "engineering_test_wall_seconds": 28.12,
+  "native_engine_constructors": 0,
+  "native_node_constructors": 0,
+  "native_strategy_order_model_constructors": 0,
+  "test_Nautilus_imports": false,
+  "test_exchange_network_calls": 0,
+  "exchange_account_reads_writes": 0,
+  "keys_read": 0,
+  "services_changed": 0,
+  "historical_attempts": 0,
+  "repairs": {
+    "synthetic_fill_schema": 1,
+    "same_owner_empty_SQLite_transaction": 1,
+    "synthetic_report_schema": 1,
+    "peer_two_P1_single_pass": 1
+  },
+  "live_order_capability": false,
+  "owner_final_START_required": true,
+  "private_account_configuration_in_public_packet": false,
+  "limits": [
+    "Pure adapter/source proof only; no native/live runtime acceptance claim",
+    "Actual selected-candidate live source/profile, coherent accountValue+C1 receipt projection and real fully closed H4/D1 warmup/feed wiring remain separate next dependencies",
+    "No account/signing/shadow/fee/minlot/currentinstrument qualification performed",
+    "If G selected, its global arm+blocked-source state must be added when the selected algorithm source is explicitly integrated; this worktree is exact2e90 baseline, not researchd30G",
+    "Normal open-risk automatic strategy resume intentionally unavailable; management technical lane remains disabled until separate qualified release and explicit owner final START"
+  ],
+  "prior_reviewed_preparation_sha256": "640a7c5eaf164f7db04f4aca6cd54bb2e19940fdd16167e85da1342517c6ab48",
+  "peer_findings_corrected": [
+    {
+      "priority": "P1",
+      "issue": "Caller cancel object could reuseownedclientIDwithuncertifiedvenue/instrument/account",
+      "fix": "Exactfullcaller/cert/cache evidence equality and dispatchcanonicalcurrentcacheobject; wrongvenue/instrument/account casesdeny"
+    },
+    {
+      "priority": "P1",
+      "issue": "Stale cache heldquantity notcomparedtofreshexchangepositionreports",
+      "fix": "Exactuniqueinstrument/account/side/nativeQuantity set equality to flattened actual MassStatus.position_reports dict->list beforecertificate; smaller/wrongside/missing/extra/duplicate casesdeny withoutmoneyrequirement"
+    }
+  ],
+  "peer_review": {
+    "status": "PASS_SOURCE_ONLY_COMPONENT",
+    "open_P0": 0,
+    "open_P1": 0,
+    "receipt": "peer-review.json",
+    "sha256": "0489cfbff471b22ed533119fcdb76abe15b0c0a62f27f30b6ff1e0c54d4ffd8d",
+    "reviewed_preparation_sha256": "f9f4593e9bbfbd4ff8ab9cb27d7a28437bbe75c4289c079777dbd30aaa777255",
+    "reviewer_engines_tests": 0
+  }
+}

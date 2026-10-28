@@ -27,7 +27,7 @@ from coinmaster.ops.hyperliquid_testnet import (
     cross_venue_stage_g_gate, hyperliquid_testnet_node_config, load_stageg_warmup_bundle,
 )
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_status_server
-from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink
+from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink, durable_management_scope
 from coinmaster.ops.native_paper_node import BYBIT_IDS, FeedBook, FeedObserver, FeedObserverConfig, bybit_daily_bar_type
 from coinmaster.ops.hl_live_epoch import LiveEpochRuntime as PaperRuntime
 from coinmaster.ops.hl_live_profile import load_live_profile
@@ -99,7 +99,7 @@ class HyperliquidLiveNode:
         # Qualification never implies order authorization: main checks approval before this read.
         equity = check_live_credential(credential_path, fingerprint_path)
         prior_balance = getattr(state, "flat_epoch_balance", None)
-        if equity != (prior_balance if prior_balance is not None else Decimal("82")):
+        if self.profile.get("manage_only_readiness",False) is not True and equity != (prior_balance if prior_balance is not None else Decimal("82")):
             raise RuntimeError("LIVE_PILOT_INITIAL_82_OR_OWNED_FLAT_BALANCE_REQUIRED")
         record = _read_json(credential_path)
         self.master = record["master_address"]
@@ -148,7 +148,18 @@ class HyperliquidLiveNode:
             deposit_initialization_allowed=lambda: self.strategy.recovery_confirmed and not state.all_submissions(),
         ))
         self.hooks.strategy = self.strategy
-        scope = NativeLiveRecoveryScope(self.master, "", time.time_ns() // 1_000_000, None, (), frozenset({"BTC", "SOL"}))
+        self.manage_only_readiness=self.profile.get("manage_only_readiness",False) is True
+        if self.manage_only_readiness:
+            self.strategy.enable_manage_only_preparation()
+            checkpoint=state.strategy_checkpoint()
+            if checkpoint is None:raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
+            self.strategy.on_load({"wave_overlay_live_recovery_v1":checkpoint[0]})
+            from nautilus_trader.core import nautilus_pyo3
+            def cloid_for(client_id):
+                return str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(nautilus_pyo3.ClientOrderId(client_id)))
+            scope=durable_management_scope(state,self.master,"",cloid_for)
+        else:
+            scope=NativeLiveRecoveryScope(self.master,"",time.time_ns()//1_000_000,None,(),frozenset({"BTC","SOL"}))
         factory = ScopedHyperliquidExecClientFactory.bind(scope, state, self.strategy, account_lock_root=Path("/run/coinmaster-hl-live"))
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
@@ -179,9 +190,9 @@ class HyperliquidLiveNode:
         return {"instance_id": self.instance.instance_id, "mode": "live", "environment": "mainnet",
                 "profile": self.profile,
                 "state": "PUBLIC_FEEDS_READY" if self._entries_enabled() else "RECOVERY_REQUIRED/PAUSED",
-                "orders_enabled": self._entries_enabled(), "live_order_capability": True,
+                "orders_enabled": self._entries_enabled(), "live_order_capability": not self.manage_only_readiness,
                 "recovery_required": not self.strategy.recovery_confirmed,
-                "recovery_capability": "MANUAL_CLEAN_FLAT_ONLY", "feeds": self.feed.status(time.time_ns()),
+                "recovery_capability": "MANAGE_ONLY_PREPARATION_NO_ORDER_AUTHORIZATION" if self.manage_only_readiness else "MANUAL_CLEAN_FLAT_ONLY", "feeds": self.feed.status(time.time_ns()),
                 "warmup": {"state": self.warmup_state, "rows": self.warmup_bundle.rows},
                 "prime_error": self.prime_error,
                 "signal_seal": {"state": self.gate.approval_state, "strategy_sha256": self.gate.strategy_code_hash},
@@ -209,11 +220,15 @@ class LiveWorker:
         self.runtime.acquire()
         self.recovery_marker = self.instance.state_db.parent / "manual-recovery-required"
         try:
-            if self.recovery_marker.exists():
+            manage_preparation=load_live_profile(root,self.candidate.candidate).get("manage_only_readiness",False) is True
+            if self.recovery_marker.exists() and not manage_preparation:
                 raise RuntimeError("LIVE_RESTART_MANUAL_RECOVERY_REQUIRED")
             # Even a flat native cache cannot erase a previous episode or ambiguous result.
             identity = json.loads((root / "live-release.json").read_text())
-            self.runtime.prepare_flat_epoch(release_commit=identity["source_commit"])
+            if not manage_preparation:
+                self.runtime.prepare_flat_epoch(release_commit=identity["source_commit"])
+            elif self.runtime.strategy_checkpoint() is None:
+                raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
             from coinmaster.ops.stage_g_refresh import refresh_stageg_warmup
             refresh_stageg_warmup(self.instance.signal_warmup_manifest.parent.parent)
             self.native = HyperliquidLiveNode(

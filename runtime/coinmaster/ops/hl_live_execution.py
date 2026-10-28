@@ -6,6 +6,7 @@ This adapter never falls back to the pinned opaque bulk report methods.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import time
 from collections import deque
@@ -219,7 +220,8 @@ class QualifiedInfoBoundary:
     def _cm_owned_scope(self):
         """Freeze journal/cache identity for one current-process Info generation."""
         if not self._cm_bootstrapped:
-            return self._cm_scope, None, tuple(self._cache.orders(venue=self.venue)), self._cm_applied_fill_ids(), None
+            revision=self._cm_runtime.native_revision() if getattr(self,"_cm_management_only",False) and self._cm_runtime is not None else None
+            return self._cm_scope, revision, tuple(self._cache.orders(venue=self.venue)), self._cm_applied_fill_ids(), None
         runtime = self._cm_runtime
         if runtime is None:
             raise IncompleteInfoReport("LIVE_DURABLE_RUNTIME_MISSING")
@@ -569,13 +571,13 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
             scope=cls._scope, info=info, applied_fill_ids=cls._runtime.applied_fill_ids,
         )
         owner._cm_runtime = cls._runtime
-        bind_clean_flat_live_handover(owner, cls._strategy, cls._runtime)
+        bind_clean_flat_live_handover(owner, cls._strategy, cls._runtime,manage_only=getattr(cls._strategy,"_manage_only_preparation",False))
         return owner
 
 
 def bind_clean_flat_live_handover(
     client: QualifiedInfoBoundary, strategy, runtime, *,
-    monitor_interval_secs: float = 30.0,
+    monitor_interval_secs: float = 30.0, manage_only: bool = False,
 ) -> None:
     """Require clean-flat restart bootstrap, then monitor current-process owned state.
 
@@ -588,6 +590,11 @@ def bind_clean_flat_live_handover(
     if not isinstance(strategy, RecoverableWaveOverlayStrategy):
         raise RuntimeError("LIVE_HANDOVER_STRATEGY_UNQUALIFIED")
     scope = client._cm_scope
+    client._cm_management_only=manage_only
+    if strategy.config.research_residual_recovery and not manage_only:
+        raise RuntimeError("E4_C1_LIVE_REQUIRES_MANAGE_ONLY_PREPARATION")
+    if manage_only and (not strategy._manage_only_preparation or not strategy._checkpoint_policy_valid):
+        raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
     expected_ids = (
         InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID"),
         InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID"),
@@ -614,11 +621,11 @@ def bind_clean_flat_live_handover(
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
         if receipt is None or mass.account_id != client.account_id or mass.venue != client.venue:
             raise IncompleteInfoReport("LIVE_HANDOVER_GENERATION_MISSING")
-        if not client._cm_bootstrapped and scope.durable_orders:
+        if not manage_only and not client._cm_bootstrapped and scope.durable_orders:
             raise IncompleteInfoReport("LIVE_OPEN_FUNDING_CURSOR_UNPROVEN")
         native_orders = tuple(client._cache.orders(venue=client.venue))
         native_positions = tuple(client._cache.positions_open())
-        if not client._cm_bootstrapped:
+        if not manage_only and not client._cm_bootstrapped:
             if (
                 scope.durable_orders or runtime.all_submissions() or runtime.applied_fill_ids()
                 or mass.order_reports or mass.fill_reports or mass.position_reports
@@ -675,7 +682,7 @@ def bind_clean_flat_live_handover(
             by_coin = {str(position.instrument_id): position for position in native_positions}
             if len(by_coin) != len(native_positions) or (episode is None and by_coin):
                 raise IncompleteInfoReport("LIVE_EPISODE_POSITION_MISMATCH")
-            if episode is not None:
+            if episode is not None and not manage_only:
                 btc = by_coin.get(str(strategy.config.btc_id))
                 sol = by_coin.get(str(strategy.config.sol_id))
                 # Domain float arithmetic may drift below one native lot;
@@ -703,6 +710,50 @@ def bind_clean_flat_live_handover(
             strategy.on_save()["wave_overlay_live_recovery_v1"]
         ):
             raise IncompleteInfoReport("LIVE_HANDOVER_DOMAIN_CHECKPOINT_MISMATCH")
+        if manage_only:
+            from coinmaster.ops.live_recovery import ManagementCertificate,management_cache_evidence
+            from coinmaster.strategy.live_recovery import recovery_policy_hash
+            now_ns=client._clock.timestamp_ns()
+            generation=receipt.end_ms*1_000_000
+            revision=client._cm_last_revision
+            if (not receipt.fill_anchor_proven or receipt.account.lower()!=scope.account_ref.lower() or receipt.dex!=scope.dex
+                or not 0<=now_ns-generation<=9_000_000_000 or type(revision) is not int or revision!=runtime.native_revision()
+                or not strategy._checkpoint_policy_valid
+                or strategy._loaded_policy_sha256!=recovery_policy_hash(strategy.config,strategy._candidate)):
+                raise IncompleteInfoReport("MANAGEMENT_GENERATION_UNPROVEN")
+            venue_positions=[p for batch in mass.position_reports.values() for p in batch]
+            by_report={str(p.instrument_id):p for p in venue_positions}
+            if len(by_report)!=len(venue_positions) or set(by_report)!=set(by_coin):
+                raise IncompleteInfoReport("MANAGEMENT_FRESH_POSITION_SET_MISMATCH")
+            for instrument,position in by_coin.items():
+                report=by_report[instrument]
+                quantity=report.quantity.as_decimal()
+                side="LONG" if position.is_long else "SHORT"
+                if (str(report.account_id)!=str(client.account_id) or report.position_side.name!=side
+                    or not quantity.is_finite() or quantity<=0 or quantity!=position.quantity.as_decimal()):
+                    raise IncompleteInfoReport("MANAGEMENT_FRESH_POSITION_PARITY_FAILED")
+            # Every held native lifecycle must be attributable to journal-owned
+            # orders and already-applied execution IDs. No floating size inference.
+            for position in native_positions:
+                if not position.events or any(str(e.client_order_id) not in journal or str(e.trade_id) not in runtime.applied_fill_ids() or journal[str(e.client_order_id)]["episode_id"]!=episode.id for e in position.events):
+                    raise IncompleteInfoReport("MANAGEMENT_POSITION_LINEAGE_UNKNOWN")
+            if any(str(p.account_id)!=str(client.account_id) for p in native_positions):
+                raise IncompleteInfoReport("MANAGEMENT_POSITION_ACCOUNT_MISMATCH")
+            for order in native_orders:
+                report=reports.get(str(order.client_order_id))
+                if str(order.client_order_id) in local_denied:continue
+                if (report is None or str(report.account_id)!=str(client.account_id)
+                    or (order.account_id is not None and str(order.account_id)!=str(client.account_id))
+                    or report.order_side!=order.side):
+                    raise IncompleteInfoReport("MANAGEMENT_ORDER_ACCOUNT_OR_SIDE_MISMATCH")
+            positions,orders,signature=management_cache_evidence(client._cache,client.venue)
+            runtime.reconcile_management_commands({o[0] for o in orders if o[4]},revision)
+            if runtime.native_revision()!=revision:raise IncompleteInfoReport("MANAGEMENT_GENERATION_REVISION_MOVED")
+            strategy._management_certificate=ManagementCertificate(revision,generation+9_000_000_000,
+                recovery_policy_hash(strategy.config,strategy._candidate),signature,
+                hashlib.sha256(durable_decision_checkpoint(strategy.on_save()["wave_overlay_live_recovery_v1"])).hexdigest(),
+                positions,orders,generation,client.recovery_healthy)
+            return True
         account = client._cache.account_for_venue(client.venue)
         candidate_money = live_perps_money_view(
             receipt, account_ref=scope.account_ref, dex=scope.dex,
@@ -726,6 +777,12 @@ def bind_clean_flat_live_handover(
         await client.release_after_effect_parity(
             verify, monitor_interval_secs=monitor_interval_secs,
         )
+        if manage_only:
+            if strategy._management_certificate is None or not client.recovery_healthy():
+                raise RuntimeError("MANAGEMENT_HANDOVER_UNCONFIRMED")
+            client._cm_bootstrapped=True
+            strategy.recovery_confirmed=False
+            return
         if latest_money[0] is None or not client.recovery_healthy():
             raise RuntimeError("LIVE_HANDOVER_UNCONFIRMED")
         client._cm_bootstrapped = True
@@ -734,10 +791,10 @@ def bind_clean_flat_live_handover(
     strategy.attach_live_money_view(lambda: latest_money[0])
     strategy.attach_live_refresh(client.request_effect_parity_refresh)
     strategy.attach_recovery_health(client.recovery_healthy)
-    client.bind_recovery_revocation(lambda: setattr(strategy, "recovery_confirmed", False))
+    client.bind_recovery_revocation(strategy.revoke_management if manage_only else lambda: setattr(strategy, "recovery_confirmed", False))
     client.bind_recovery_suspension(
-        lambda: setattr(strategy, "recovery_confirmed", False),
-        lambda: setattr(strategy, "recovery_confirmed", client.recovery_healthy()),
+        strategy.revoke_management if manage_only else lambda: setattr(strategy, "recovery_confirmed", False),
+        (lambda: None) if manage_only else lambda: setattr(strategy, "recovery_confirmed", client.recovery_healthy()),
     )
     strategy.attach_recovery_runtime(runtime)
     strategy.attach_post_drain_verifier(release)

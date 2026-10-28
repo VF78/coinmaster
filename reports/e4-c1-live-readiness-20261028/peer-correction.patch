@@ -1,0 +1,164 @@
+--- a/runtime/coinmaster/strategy/live_recovery.py
++++ b/runtime/coinmaster/strategy/live_recovery.py
+@@ -675,6 +675,6 @@
+         cert=self._management_certificate
+         self._management_certificate=None  # Consume before reservation, even on failure.
+         if cert is None:raise RuntimeError("MANAGEMENT_CERTIFICATE_REQUIRED")
+-        reserve_managed_action(self,cert,command_id,kind,order,now_ns=now_ns)
++        order=reserve_managed_action(self,cert,command_id,kind,order,now_ns=now_ns)
+         if kind=="CANCEL":return WaveOverlayStrategy.cancel_order(self,order)
+         return WaveOverlayStrategy.submit_order(self,order)
+--- a/runtime/coinmaster/ops/live_recovery.py
++++ b/runtime/coinmaster/ops/live_recovery.py
+@@ -302,11 +302,16 @@
+     transport_healthy: object
+ 
+ 
++def _management_order_evidence(order):
++    return (str(order.client_order_id),str(order.venue_order_id) if order.venue_order_id is not None else None,
++        str(order.instrument_id),bool(order.is_reduce_only),bool(order.is_closed),order.side.name,
++        str(order.quantity.as_decimal()),str(order.filled_qty.as_decimal()),order.status.name,str(order.strategy_id),
++        str(order.account_id) if order.account_id is not None else None,bool(order.is_pending_cancel))
++
++
+ def management_cache_evidence(cache, venue):
+-    positions=tuple(sorted((str(p.instrument_id),str(p.id),"BUY" if p.is_long else "SELL",str(p.quantity.as_decimal()),str(p.strategy_id)) for p in cache.positions_open()))
+-    orders=tuple(sorted((str(o.client_order_id),str(o.venue_order_id) if o.venue_order_id is not None else None,
+-        str(o.instrument_id),bool(o.is_reduce_only),bool(o.is_closed),o.side.name,
+-        str(o.quantity.as_decimal()),str(o.filled_qty.as_decimal()),o.status.name,str(o.strategy_id)) for o in cache.orders(venue=venue)))
++    positions=tuple(sorted((str(p.instrument_id),str(p.id),"BUY" if p.is_long else "SELL",str(p.quantity.as_decimal()),str(p.strategy_id),str(p.account_id)) for p in cache.positions_open()))
++    orders=tuple(sorted(_management_order_evidence(o) for o in cache.orders(venue=venue)))
+     signature=hashlib.sha256(json.dumps((positions,orders),separators=(",",":")).encode()).hexdigest()
+     return positions,orders,signature
+ 
+@@ -350,16 +355,22 @@
+     rows={r["client_order_id"]:r for r in runtime.all_submissions()}
+     if kind=="CANCEL":
+         known=[o for o in orders if o[0]==client]
+-        if len(known)!=1 or client not in rows or known[0][1] is None or known[0][4] or getattr(order,"is_pending_cancel",False):
++        actual=[o for o in strategy.cache.orders(venue=strategy.config.btc_id.venue) if str(o.client_order_id)==client]
++        if (len(known)!=1 or len(actual)!=1 or client not in rows or known[0][1] is None
++            or known[0][4] or known[0][11] or _management_order_evidence(order)!=known[0]
++            or _management_order_evidence(actual[0])!=known[0]):
+             raise RuntimeError("MANAGEMENT_CANCEL_OWNERSHIP_UNKNOWN")
++        dispatch_order=actual[0] # Send the certified current cache object, never a caller substitute.
+     elif kind=="REDUCE":
+         held=[p for p in positions if p[0]==str(order.instrument_id)]
+         if (len(held)!=1 or held[0][4]!=str(strategy.id) or not order.is_reduce_only
+             or order.side.name==held[0][2] or not Decimal(0)<order.quantity.as_decimal()<=Decimal(held[0][3])
++            or (order.account_id is not None and str(order.account_id)!=held[0][5])
+             or client in rows or any(o[2]==str(order.instrument_id) and o[3] and not o[4] for o in orders)
+             or order.time_in_force.name!="IOC" or order.order_type.name!="MARKET"):
+             raise RuntimeError("MANAGEMENT_REDUCE_NOT_VERIFIED")
+         if strategy._domain.episode is None:raise RuntimeError("MANAGEMENT_EPISODE_UNKNOWN")
++        dispatch_order=order
+     else:raise RuntimeError("MANAGEMENT_ACTION_FORBIDDEN")
+     # Reserve under the existing runtime account/journal lock. A second
+     # certificate at this revision cannot reserve after this command bumps it.
+@@ -375,3 +386,4 @@
+     except BaseException:
+         strategy._forced_close_orders=prior
+         raise
++    return dispatch_order
+--- a/runtime/coinmaster/ops/hl_live_execution.py
++++ b/runtime/coinmaster/ops/hl_live_execution.py
+@@ -721,6 +721,17 @@
+                 or not strategy._checkpoint_policy_valid
+                 or strategy._loaded_policy_sha256!=recovery_policy_hash(strategy.config,strategy._candidate)):
+                 raise IncompleteInfoReport("MANAGEMENT_GENERATION_UNPROVEN")
++            venue_positions=[p for batch in mass.position_reports.values() for p in batch]
++            by_report={str(p.instrument_id):p for p in venue_positions}
++            if len(by_report)!=len(venue_positions) or set(by_report)!=set(by_coin):
++                raise IncompleteInfoReport("MANAGEMENT_FRESH_POSITION_SET_MISMATCH")
++            for instrument,position in by_coin.items():
++                report=by_report[instrument]
++                quantity=report.quantity.as_decimal()
++                side="LONG" if position.is_long else "SHORT"
++                if (str(report.account_id)!=str(client.account_id) or report.position_side.name!=side
++                    or not quantity.is_finite() or quantity<=0 or quantity!=position.quantity.as_decimal()):
++                    raise IncompleteInfoReport("MANAGEMENT_FRESH_POSITION_PARITY_FAILED")
+             # Every held native lifecycle must be attributable to journal-owned
+             # orders and already-applied execution IDs. No floating size inference.
+             for position in native_positions:
+--- a/runtime/tests/test_e4_c1_manage_only_pure.py
++++ b/runtime/tests/test_e4_c1_manage_only_pure.py
+@@ -78,12 +78,13 @@
+    self.dispatched.append(('REDUCE',str(order.client_order_id)))
+   def cancel_order(self,order):
+    assert self._recovery_runtime.db.execute("SELECT COUNT(*) FROM paper_command_audit WHERE status='MANAGE_SUBMITTING'").fetchone()[0]==1
++   self.last_cancel_object=order
+    self.dispatched.append(('CANCEL',str(order.client_order_id)))
+  env['WaveOverlayStrategy']=FakeNativeBase
+  run_ast(nodes('strategy/live_recovery.py',{'RecoverableWaveOverlayStrategy'}),env)
+  module=ModuleType('coinmaster.strategy.live_recovery');module.__dict__.update(env);monkeypatch.setitem(sys.modules,module.__name__,module)
+  management=dict(dataclass=dataclass,hashlib=hashlib,json=json,Decimal=D,time=time,PaperRuntime=PaperRuntime)
+- run_ast(nodes('ops/live_recovery.py',{'NativeLiveRecoveryScope','ManagementCertificate','management_cache_evidence','durable_management_scope','reserve_managed_action'}),management)
++ run_ast(nodes('ops/live_recovery.py',{'NativeLiveRecoveryScope','ManagementCertificate','_management_order_evidence','management_cache_evidence','durable_management_scope','reserve_managed_action'}),management)
+  module=ModuleType('coinmaster.ops.live_recovery');module.__dict__.update(management);monkeypatch.setitem(sys.modules,module.__name__,module)
+  epoch=dict(env,PaperRuntime=PaperRuntime,_journal_locked=_journal_locked)
+  run_ast(nodes('ops/hl_live_epoch.py',{'LiveEpochRuntime'}),epoch)
+@@ -237,7 +238,8 @@
+  scope=code.management['NativeLiveRecoveryScope'](ACCOUNT,'',1,10,(('ENTRY','fixture',100),),frozenset({'BTC','SOL'}))
+  report=N(client_order_id=entry.client_order_id,instrument_id=entry.instrument_id,venue_order_id=entry.venue_order_id,quantity=entry.quantity,
+   filled_qty=entry.filled_qty,order_status=entry.status,reduce_only=False,account_id=ACCOUNT_ID,order_side=entry.side)
+- mass=N(account_id=ACCOUNT_ID,venue=VENUE,order_reports={'ENTRY':report},fill_reports={'ENTRY':[N(trade_id='10')]},position_reports={'BTC':N()})
++ position_report=N(instrument_id=position.instrument_id,account_id=ACCOUNT_ID,position_side=N(name='LONG'),quantity=Q('10'))
++ mass=N(account_id=ACCOUNT_ID,venue=VENUE,order_reports={'ENTRY':report},fill_reports={'ENTRY':[N(trade_id='10')]},position_reports={position.instrument_id:[position_report]})
+  class Client(Boundary):
+   def __init__(self):
+    self._cm_scope=scope;self._cm_bootstrapped=False;self._cm_last_revision=r.native_revision()
+@@ -259,6 +261,13 @@
+  elif fault=='policy':s.config.research_c1_restore_dd=D('.40')
+  elif fault=='order_side':report.order_side=N(name='SELL')
+  elif fault=='different_episode':position.events=[N(client_order_id='FOREIGN_EPISODE',trade_id='10')]
++ elif fault=='smaller_venue':position_report.quantity=Q('7')
++ elif fault=='wrong_position_side':position_report.position_side=N(name='SHORT')
++ elif fault=='missing_position_report':mass.position_reports={}
++ elif fault=='extra_native_position':
++  extra=N(**vars(position));extra.instrument_id=s.config.sol_id;extra.id='EXTRA_POSITION';s.cache.positions_open=lambda:[position,extra]
++ elif fault=='extra_position_report':mass.position_reports[s.config.sol_id]=[N(instrument_id=s.config.sol_id,account_id=ACCOUNT_ID,position_side=N(name='SHORT'),quantity=Q('1'))]
++ elif fault=='duplicate_position_report':mass.position_reports[position.instrument_id].append(position_report)
+  namespace=dict(RecoverableWaveOverlayStrategy=code.Strategy,QualifiedInfoBoundary=Boundary,
+   InstrumentId=ID,IncompleteInfoReport=ReportError,Decimal=D,hashlib=hashlib,OrderStatus=N(DENIED=N(name="DENIED")),OrderDenied=Placeholder,
+   durable_decision_checkpoint=code.env['durable_decision_checkpoint'])
+@@ -277,7 +286,7 @@
+   client.revoke();assert s._management_certificate is None and not s.recovery_confirmed
+  finally:r.close()
+ 
+-@pytest.mark.parametrize('fault',['stale','revision','foreign_position','account','missing_fill','policy','order_side','different_episode'])
++@pytest.mark.parametrize('fault',['stale','revision','foreign_position','account','missing_fill','policy','order_side','different_episode','smaller_venue','wrong_position_side','missing_position_report','extra_native_position','extra_position_report','duplicate_position_report'])
+ def test_management_report_mismatch_never_grants_authority(code,tmp_path,fault):
+  s,r,entry,position=setup(code,tmp_path)
+  try:
+@@ -327,3 +336,31 @@
+   assert r.strategy_checkpoint()[0]==checkpoint and len(r.all_submissions())==1
+   assert code.env['_decode'](json.loads(checkpoint)['state']['_c1_peak'])==D(15000)
+  finally:r.close()
++
++@pytest.mark.parametrize('fault',['venue_order_id','instrument_id','account_id'])
++def test_cancel_same_owned_client_id_cannot_substitute_uncertified_order(code,tmp_path,fault):
++ s,r,entry,position=setup(code,tmp_path);tp=order('TP',quantity='2')
++ try:
++  r.record_submission(client_order_id='TP',intent_id='tp',episode_id='episode',action='BTC_REDUCE',instrument_id=str(s.config.btc_id),quantity='2',reduce_only=True,strategy_state=s.on_save()[code.env['_KEY']]);r.acknowledge_submission('TP')
++  s.cache.orders=lambda venue=None:[entry,tp]
++  substitute=N(**vars(tp))
++  if fault=='venue_order_id':substitute.venue_order_id='999'
++  elif fault=='instrument_id':substitute.instrument_id=s.config.sol_id
++  else:substitute.account_id='FOREIGN_ACCOUNT'
++  s._management_certificate=certificate(code,s,r);s._management_dispatch_enabled=True
++  with pytest.raises(RuntimeError,match='MANAGEMENT_CANCEL_OWNERSHIP_UNKNOWN'):s.dispatch_manage_only('bad-cancel','CANCEL',substitute,now_ns=NOW)
++  assert not s.dispatched and s._management_certificate is None
++  assert not r.db.execute('SELECT 1 FROM paper_command_audit').fetchall()
++ finally:r.close()
++
++
++def test_cancel_dispatch_uses_certified_current_cache_object_instead_of_identical_caller_copy(code,tmp_path):
++ s,r,entry,position=setup(code,tmp_path);tp=order('TP',quantity='2')
++ try:
++  r.record_submission(client_order_id='TP',intent_id='tp',episode_id='episode',action='BTC_REDUCE',instrument_id=str(s.config.btc_id),quantity='2',reduce_only=True,strategy_state=s.on_save()[code.env['_KEY']]);r.acknowledge_submission('TP')
++  s.cache.orders=lambda venue=None:[entry,tp];copy=N(**vars(tp))
++  s._management_certificate=certificate(code,s,r);s._management_dispatch_enabled=True
++  s.dispatch_manage_only('cancel','CANCEL',copy,now_ns=NOW)
++  assert s.last_cancel_object is tp and s.last_cancel_object is not copy
++  assert s.dispatched==[('CANCEL','TP')]
++ finally:r.close()

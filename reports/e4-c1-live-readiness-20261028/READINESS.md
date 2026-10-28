@@ -1,0 +1,11 @@
+# E4/C1 restart management preparation
+
+Source-only phase: v2 policy-bound C1/E4 checkpoint preserves global H, actual rights/credit, pending commands and closed-bar clocks. Legacy v1 remains the default. Exact schema/policy/candidate/strategy identity is validated on load; caches are never restored as fresh permission. C1 flat-epoch retirement is refused, retaining the saved high water mark.
+
+MANAGE_ONLY has one explicit action per fresh immutable owned report. Certificate binds current native revision/cache, owned decision checkpoint, policy, freshness and transport. It is consumed immediately; the existing account lease and journal RLock serialize a durable command reservation/checkpoint before any native dispatch. A second same-generation certificate loses the revision race. Unknown ACK stays unresolved across restart; cancel is not terminal/flat. Existing native forced-close fill bookkeeping handles reduceOnly without granting TP/SOL rights.
+
+All normal C1 native APIs/increases remain blocked, including restore. Readiness profile defaults off, dispatch capability remains false, and no persisted field grants it. Existing external live approval/profile seals remain in force. This preparation does not activate live, sign, read credentials, inspect an account or alter a service. Private account configuration is absent from this public packet.
+
+Final pure connected suite:47PASS8.97s; actual source methods run on fake native report objects/dispatch and real local SQLite/account leases. Zero Nautilus engine/node/strategy/order/model constructors and no exchange network. Five engineering pytest calls including preserved fixture failures and one inherited same-owner SQLite transaction correction; full counts are source-preparation.json. One finite peer correction binds cancel dispatch to the certified current cache object and requires exact fresh venue/native held-position set equality. No historical attempts.
+
+Next dependencies: integrate the actual selected algorithm source/profile (including G latch state if selected), live coherent money/C1 observation plus genuine closed H4/D1 continuity, connected native fault/shadow and instrument/fee/lot qualification, then an immutable release and explicit final owner START. No claim of full automatic open-risk strategy resume or live readiness.

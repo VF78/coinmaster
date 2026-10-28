@@ -6,12 +6,22 @@ import json
 import time
 from decimal import Decimal
 
-from coinmaster.ops.paper import PaperRuntime
-from coinmaster.strategy.live_recovery import _decode, _FIELDS
+from coinmaster.ops.paper import PaperRuntime, _journal_locked
+from coinmaster.strategy.live_recovery import _decode, _FIELDS, _C1_SCHEMA, checkpoint_structure
 
 
 class LiveEpochRuntime(PaperRuntime):
     """Keep the complete SQLite audit while scoping native parity to this epoch."""
+
+    @_journal_locked
+    def acquire(self) -> None:
+        if self._process_lock_fd is not None:return
+        if self.db.in_transaction:raise RuntimeError("LIVE_ACQUIRE_PENDING_TRANSACTION")
+        super().acquire()
+        # PaperRuntime's same-owner INSERT conflict leaves an empty SQLite
+        # transaction open. End only that failed INSERT, never commit or erase
+        # any durable pending command/checkpoint on restart.
+        if self.db.in_transaction:self.db.rollback()
 
     def prepare_flat_epoch(self, *, release_commit: str) -> Decimal | None:
         rows = super().all_submissions()
@@ -42,6 +52,11 @@ class LiveEpochRuntime(PaperRuntime):
         if protection is None:
             raise RuntimeError("LIVE_FLAT_HISTORY_DEPOSIT_ANCHOR_MISSING")
         body = json.loads(checkpoint[0])
+        if body.get("schema")==_C1_SCHEMA:
+            checkpoint_structure(body)
+            # No closed-epoch retirement of C1 global H/rights/causal clocks.
+            # The next process must load the exact policy-bound checkpoint.
+            raise RuntimeError("C1_E4_CHECKPOINT_REQUIRES_MANAGE_ONLY")
         if (body.get("schema") != "coinmaster-wave-overlay-live-recovery-v1"
                 or set(body) != {"schema", "candidate_sha256", "strategy_id", "domain", "state"}
                 or not set(body["state"]).issubset(_FIELDS)
@@ -134,3 +149,39 @@ class LiveEpochRuntime(PaperRuntime):
     def strategy_checkpoint(self):
         result = super().strategy_checkpoint()
         return None if result == getattr(self, "_retired_checkpoint", None) else result
+
+
+    @_journal_locked
+    def reserve_management(self,*,command_id,kind,client_order_id,instrument_id,quantity,side,episode_id,expected_revision,strategy_state):
+        """Existing journal transaction + account lease; uncertainty survives restart."""
+        if self._live_account_identity is None:raise RuntimeError("LIVE_ACCOUNT_LEASE_REQUIRED")
+        try:
+            self.db.execute("BEGIN IMMEDIATE")
+            if self.native_revision()!=expected_revision:
+                self.db.rollback();return False
+            unresolved=self.db.execute("SELECT command FROM paper_command_audit WHERE status='MANAGE_SUBMITTING'").fetchall()
+            if unresolved:
+                self.db.rollback();return False
+            if kind=="REDUCE" and any(r["body"].get("reduce_only") and r["state"]!="TERMINAL" for r in self.all_submissions()):
+                self.db.rollback();return False
+            command=json.dumps(dict(kind=kind,client_order_id=client_order_id,instrument_id=instrument_id),sort_keys=True)
+            self.db.execute("INSERT INTO paper_command_audit VALUES (?,?,?,?)",(command_id,command,"MANAGE_SUBMITTING",time.time_ns()))
+            if kind=="REDUCE":
+                return self.record_submission(client_order_id=client_order_id,intent_id=command_id,episode_id=episode_id,
+                    action="FORCED_CLOSE",instrument_id=instrument_id,quantity=quantity,reduce_only=True,
+                    strategy_state=strategy_state,order_shape=dict(side=side,kind="MARKET",tif="IOC",post_only=False,price=None))
+            if kind!="CANCEL":raise ValueError("MANAGEMENT_ACTION_FORBIDDEN")
+            self._bump_native_revision()
+            self.db.execute("INSERT OR REPLACE INTO paper_strategy_checkpoint VALUES (1,?,?)",(strategy_state,self.native_revision()))
+            self.db.commit();return True
+        except BaseException:
+            self.db.rollback();raise
+
+    @_journal_locked
+    def reconcile_management_commands(self,terminal_client_ids,expected_revision):
+        """Only a complete fresh owned report may resolve uncertain command audit."""
+        if self.native_revision()!=expected_revision:raise RuntimeError("MANAGEMENT_RESOLUTION_REVISION_MOVED")
+        for key,command in self.db.execute("SELECT idempotency_key,command FROM paper_command_audit WHERE status='MANAGE_SUBMITTING'").fetchall():
+            if json.loads(command)["client_order_id"] in terminal_client_ids:
+                self.db.execute("UPDATE paper_command_audit SET status='MANAGE_TERMINAL_OBSERVED' WHERE idempotency_key=?",(key,))
+        self.db.commit()

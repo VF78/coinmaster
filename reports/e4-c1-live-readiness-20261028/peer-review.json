@@ -1,0 +1,54 @@
+{
+  "task": "CM-E4-C1-LIVE-READINESS-20261028",
+  "scope": "FIVE_PRODUCTION_FILES_PLUS_ONE_PURE_FIXTURE_COMPONENT_ONLY",
+  "verdict": "PASS_SOURCE_ONLY_COMPONENT",
+  "open_P0": 0,
+  "open_P1": 0,
+  "base_commit": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+  "branch": "codex/e4-c1-live-readiness-20261028",
+  "full_patch_sha256": "90ec9344e16a0e29639638cabe4501f810e6811e358ca8d0229f7743b062c021",
+  "preparation_sha256": "f9f4593e9bbfbd4ff8ab9cb27d7a28437bbe75c4289c079777dbd30aaa777255",
+  "correction_patch_sha256": "e0d851a4f7e2821366283abc3528761bfb5438aa247b8d8d63e50877d7f9b276",
+  "tracked_diff_sha256": "dd9a729ad05ee53967528f25dab10111171fe9ae7b977405dba161d230e87bbe",
+  "source_pins": {
+    "runtime/coinmaster/strategy/live_recovery.py": "e43577dceb4991c63cb4ff01f4400182488dd6455fe09c1fd31e951cb291871e",
+    "runtime/coinmaster/ops/live_recovery.py": "604c9056ebcc87c51b16d096c868e3da47a50b863ccb708e48b2f6882cdd9795",
+    "runtime/coinmaster/ops/hl_live_execution.py": "aa41439999932f6a73f235d2265ff8791311525c891a703941c66048bcb4d66f",
+    "runtime/coinmaster/ops/hl_live_epoch.py": "2f3a03f5e4a91c9640f6b3a270e94c3f3a218b3c8510b9de70ae5e3ec64b549a",
+    "runtime/coinmaster/ops/hl_live_worker.py": "666207407100a29adcc883f8efbda3a2d410b931de62d869a3464281589916a8",
+    "runtime/tests/test_e4_c1_manage_only_pure.py": "7c832d1df33592999becb6d18f9540875a214461224e1dda32e5ca574766f6d2"
+  },
+  "pin_verification": "All six final source/test hashes and nine unchanged research/shared-journal anchors independently match preparation; exact base/branch verified.",
+  "resolved_P1": [
+    {
+      "issue": "Caller cancel object could substitute uncertified venue/instrument/account under an owned client ID.",
+      "resolution": "Full caller and actual cached evidence tuple must equal certified tuple; reserve returns the actual cached order and native dispatch uses it. Same-client wrong venue/instrument/account pure regressions deny; identical-copy regression proves cache object dispatched."
+    },
+    {
+      "issue": "Manage verifier did not compare fresh venue position report quantity/side set with native held positions.",
+      "resolution": "Flatten actual dict[instrument,list[PositionStatusReport]] shape; unique full instrument set and exact account/side/finitepositiveDecimalquantity parity before certificate. Smaller/wrongside/missing/extras/duplicates regressions deny; no cash/funding-known dependency added."
+    }
+  ],
+  "finite_peer_repair_passes": 1,
+  "checked_invariants": [
+    "Versioned complete C1/E4 state checkpoint with candidate/policy/schema identity rejection; globalH loaded, cached quote authority cleared; normal C1 dispatch/increases denied.",
+    "Certificate consumed before reservation; existing account lease/RLock/BEGINIMMEDIATE makes command+checkpoint+reduce submission durable before native API; revision advances and concurrent same-generation certificate cannot reserve again.",
+    "Unknown submit/cancel ACK retained through journal/restart; only fresh terminal report resolves command; individual owned cancel/bounded opposite IOC reduceOnly only, no blanket/modify/orderlist entry paths.",
+    "Receipt refresh, native revision/cache/owned decision projection and transport/WS changes prevent stale authority.",
+    "LiveEpoch same-owner acquisition rolls back only failed empty INSERT transaction after prechecking no pending transaction; flat epoch refuses retiring C1 checkpoint.",
+    "Private opt-in, process-local dispatch defaultOFF, existing release/seal/approval boundaries retained. Research/accounting/shared PaperRuntime sources unchanged."
+  ],
+  "existing_writer_evidence": "Final47purePASS8.97s after one two-P1 correction. Campaign component5pytestcalls28.12s including retained failed corrections. Native/node/strategy/order/model constructors0, Nautilusimports0/network0 as writer source/evidence; reviewer ran none.",
+  "reviewer_tests": 0,
+  "reviewer_engine_or_native_constructors": 0,
+  "reviewer_product_edits": 0,
+  "live_order_capability": false,
+  "release_ready": false,
+  "automatic_open_risk_restart_qualified": false,
+  "remaining_explicit_scope": [
+    "Selected research algorithm/profile and G latch fields if selected must be integrated explicitly.",
+    "Coherent live money/C1 receipt projection and fully closed H4/D1 feed/warmup wiring not qualified.",
+    "Native fault/restart/IOC/late ACK/shadow execution and account/fee/minlot/currentinstrument release qualification remain.",
+    "No deployment/account/order authorization; explicit owner final START still required."
+  ]
+}

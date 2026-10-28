@@ -6,6 +6,8 @@ Nautilus remains authoritative; recovered intents are never resubmitted.
 from __future__ import annotations
 
 import time
+import hashlib
+import json
 from dataclasses import dataclass
 from collections import defaultdict
 from decimal import Decimal
@@ -285,3 +287,103 @@ class LiveRecoveryReconciler:
             if not self.runtime.commit_applied_fills(missing, state):
                 raise ValueError("RECOVERY_FILL_CURSOR_CONFLICT")
             self.strategy.on_load({"wave_overlay_live_recovery_v1": state})
+
+
+@dataclass(frozen=True)
+class ManagementCertificate:
+    revision: int
+    expires_ns: int
+    policy_sha256: str
+    cache_signature: str
+    decision_sha256: str
+    positions: tuple
+    orders: tuple
+    generation_ns: int
+    transport_healthy: object
+
+
+def _management_order_evidence(order):
+    return (str(order.client_order_id),str(order.venue_order_id) if order.venue_order_id is not None else None,
+        str(order.instrument_id),bool(order.is_reduce_only),bool(order.is_closed),order.side.name,
+        str(order.quantity.as_decimal()),str(order.filled_qty.as_decimal()),order.status.name,str(order.strategy_id),
+        str(order.account_id) if order.account_id is not None else None,bool(order.is_pending_cancel))
+
+
+def management_cache_evidence(cache, venue):
+    positions=tuple(sorted((str(p.instrument_id),str(p.id),"BUY" if p.is_long else "SELL",str(p.quantity.as_decimal()),str(p.strategy_id),str(p.account_id)) for p in cache.positions_open()))
+    orders=tuple(sorted(_management_order_evidence(o) for o in cache.orders(venue=venue)))
+    signature=hashlib.sha256(json.dumps((positions,orders),separators=(",",":")).encode()).hexdigest()
+    return positions,orders,signature
+
+
+def durable_management_scope(runtime,account_ref,dex,cloid_for):
+    """Use existing durable history, never replace open history with a new-now anchor."""
+    rows=runtime.all_submissions()
+    checkpoint=runtime.strategy_checkpoint()
+    details=runtime.db.execute("SELECT trade_id,ts_event_ns FROM paper_native_fill_details ORDER BY ts_event_ns,trade_id").fetchall()
+    if not rows or checkpoint is None or not details or any(r[1] is None for r in details):
+        raise ValueError("MANAGEMENT_DURABLE_CURSOR_UNKNOWN")
+    # Query from the earliest retained actual fill; strict full-set parity still
+    # rejects truncated/missing history. Do not guess a missing venue fill ID.
+    anchor=min(int(r[1]) for r in details)//1_000_000
+    try:anchor_tid=min(int(r[0]) for r in details if int(r[1])//1_000_000==anchor)
+    except (TypeError,ValueError):raise ValueError("MANAGEMENT_DURABLE_CURSOR_UNKNOWN") from None
+    durable=tuple((r["client_order_id"],cloid_for(r["client_order_id"]),None) for r in rows)
+    return NativeLiveRecoveryScope(account_ref,dex,anchor,anchor_tid,durable,frozenset({"BTC","SOL"}))
+
+
+def reserve_managed_action(strategy,cert,command_id,kind,order,*,now_ns):
+    """Validate one immutable native generation, then durably reserve before dispatch."""
+    from coinmaster.strategy.live_recovery import recovery_policy_hash,durable_decision_checkpoint,_KEY
+    runtime=strategy._recovery_runtime
+    if (not strategy._manage_only_preparation or not strategy._checkpoint_policy_valid or runtime is None
+        or cert.policy_sha256!=recovery_policy_hash(strategy.config,strategy._candidate)
+        or strategy._loaded_policy_sha256!=cert.policy_sha256
+        or not cert.generation_ns<=now_ns<=cert.expires_ns or not cert.transport_healthy()
+        or runtime.native_revision()!=cert.revision):
+        raise RuntimeError("MANAGEMENT_EVIDENCE_STALE_OR_UNKNOWN")
+    positions,orders,signature=management_cache_evidence(strategy.cache,strategy.config.btc_id.venue)
+    if signature!=cert.cache_signature:raise RuntimeError("MANAGEMENT_NATIVE_GENERATION_MOVED")
+    current=strategy.on_save()[_KEY]
+    checkpoint=runtime.strategy_checkpoint()
+    if (checkpoint is None or hashlib.sha256(durable_decision_checkpoint(current)).hexdigest()!=cert.decision_sha256
+        or durable_decision_checkpoint(checkpoint[0])!=durable_decision_checkpoint(current)):
+        raise RuntimeError("MANAGEMENT_CHECKPOINT_MOVED")
+    if str(order.strategy_id)!=str(strategy.id) or order.instrument_id not in (strategy.config.btc_id,strategy.config.sol_id):
+        raise RuntimeError("MANAGEMENT_FOREIGN_ORDER")
+    client=str(order.client_order_id)
+    rows={r["client_order_id"]:r for r in runtime.all_submissions()}
+    if kind=="CANCEL":
+        known=[o for o in orders if o[0]==client]
+        actual=[o for o in strategy.cache.orders(venue=strategy.config.btc_id.venue) if str(o.client_order_id)==client]
+        if (len(known)!=1 or len(actual)!=1 or client not in rows or known[0][1] is None
+            or known[0][4] or known[0][11] or _management_order_evidence(order)!=known[0]
+            or _management_order_evidence(actual[0])!=known[0]):
+            raise RuntimeError("MANAGEMENT_CANCEL_OWNERSHIP_UNKNOWN")
+        dispatch_order=actual[0] # Send the certified current cache object, never a caller substitute.
+    elif kind=="REDUCE":
+        held=[p for p in positions if p[0]==str(order.instrument_id)]
+        if (len(held)!=1 or held[0][4]!=str(strategy.id) or not order.is_reduce_only
+            or order.side.name==held[0][2] or not Decimal(0)<order.quantity.as_decimal()<=Decimal(held[0][3])
+            or (order.account_id is not None and str(order.account_id)!=held[0][5])
+            or client in rows or any(o[2]==str(order.instrument_id) and o[3] and not o[4] for o in orders)
+            or order.time_in_force.name!="IOC" or order.order_type.name!="MARKET"):
+            raise RuntimeError("MANAGEMENT_REDUCE_NOT_VERIFIED")
+        if strategy._domain.episode is None:raise RuntimeError("MANAGEMENT_EPISODE_UNKNOWN")
+        dispatch_order=order
+    else:raise RuntimeError("MANAGEMENT_ACTION_FORBIDDEN")
+    # Reserve under the existing runtime account/journal lock. A second
+    # certificate at this revision cannot reserve after this command bumps it.
+    prior=set(strategy._forced_close_orders)
+    if kind=="REDUCE":strategy._forced_close_orders.add(client)
+    try:
+        checkpoint=strategy.on_save()[_KEY]
+        if not runtime.reserve_management(command_id=command_id,kind=kind,client_order_id=client,
+            instrument_id=str(order.instrument_id),quantity=str(order.quantity.as_decimal()),
+            side=order.side.name,episode_id=strategy._domain.episode.id if strategy._domain.episode else "CANCEL_OWNED",
+            expected_revision=cert.revision,strategy_state=checkpoint):
+            raise RuntimeError("MANAGEMENT_RESERVATION_NOT_COMMITTED")
+    except BaseException:
+        strategy._forced_close_orders=prior
+        raise
+    return dispatch_order

@@ -26,6 +26,7 @@ from coinmaster.ops.stage_g_config import canonical_candidate_json
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
 from coinmaster.venues.marks import VenueMark
 from coinmaster.venues.signals import DailySignalBar
+from coinmaster.strategy.next_band import NextClosedBar
 
 
 _SCHEMA = "coinmaster-wave-overlay-live-recovery-v1"
@@ -47,6 +48,57 @@ _FIELDS = (
 )
 
 
+_C1_SCHEMA = "coinmaster-wave-overlay-e4-c1-recovery-v2"
+_C1_FIELDS = (
+    "_c1_peak", "_c1_state", "_c1_checkpoint", "_c1_fill_epoch", "_c1_intents",
+    "_c1_last_bars", "_c1_sol_levels", "_c1_terminal_ids", "_c1_blocked_ids",
+    "_next_enabled", "_next_bars", "_next_last_bar", "_next_daily_ns", "_next_daily_side",
+    "_next_count", "_next_wait", "_next_release", "_next_peak", "_next_equity", "_next_equity_ns",
+    "_next_z", "_next_s", "_next_risk_intents", "_next_entry_terminal",
+    "_hb_wait_regime", "_hb_daily_ohlc", "_hb_ema", "_hb_count", "_hb_bar_ns", "_hb_side",
+    "_hb_cycle", "_hb_eligible", "_hb_quote_seq", "_hb_last_submit_seq", "_hb_cancel_ids", "_hb_exit_pending",
+    "_split_parent", "_split_child_submit", "_seen_trade_ids", "_last_accepted_session", "_latest_seen_session",
+)
+
+
+def recovery_fields(config):
+    return _FIELDS + _C1_FIELDS if config.research_residual_recovery else _FIELDS
+
+
+def recovery_policy_hash(config, candidate):
+    # Pin every research policy input plus the native execution/clock contract.
+    names=getattr(type(config), "__struct_fields__", None)
+    if names is None:names=tuple(vars(config))
+    names=sorted(name for name in names if name.startswith("research_") or name in (
+        "btc_id","sol_id","btc_signal_id","sol_signal_id","max_mark_age_ns",
+        "execution_policy_hash","execution_policy_version","market_exit_time_in_force","market_exit_reduce_only",
+        "tp_fee_floor_v1","freeze_sigma_on_first_sol_fill","max_gross_to_active"))
+    def value(item):
+        if hasattr(item,"type") and hasattr(item,"metadata"):
+            return {"type":item.type.__module__+"."+item.type.__qualname__,"metadata":_encode(dict(item.metadata))}
+        if isinstance(item,(tuple,list)):return [value(x) for x in item]
+        if hasattr(item,"name") and not isinstance(item,(str,bytes)):
+            return {"enum":type(item).__name__,"name":item.name}
+        return _encode(item)
+    body={name:value(getattr(config,name)) for name in names}
+    body["candidate_sha256"]=hashlib.sha256(canonical_candidate_json(candidate).encode()).hexdigest()
+    return hashlib.sha256(json.dumps(body,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest()
+
+
+def checkpoint_structure(document):
+    if not isinstance(document,dict):raise ValueError("RECOVERY_CHECKPOINT_STRUCTURE_UNKNOWN")
+    c1=document.get("schema")==_C1_SCHEMA
+    keys={"schema","candidate_sha256","strategy_id","domain","state"} | ({"policy_sha256"} if c1 else set())
+    expected=_FIELDS+_C1_FIELDS if c1 else _FIELDS
+    if (set(document)!=keys or document.get("schema") not in (_SCHEMA,_C1_SCHEMA)
+        or not isinstance(document.get("state"),dict) or set(document["state"])!=set(expected)
+        or not isinstance(document.get("domain"),dict)
+        or set(document["domain"])!={"episode","locked_after_liquidation","decision_index"}
+        or (c1 and (not isinstance(document["policy_sha256"],str) or len(document["policy_sha256"])!=64))):
+        raise ValueError("RECOVERY_CHECKPOINT_STRUCTURE_UNKNOWN")
+    return c1
+
+
 # Public feed buffers may advance while the strict Info generation awaits.
 # They are needed for restart/input continuity, but do not grant ownership of
 # an order, fill, episode decision, exit or durable submission.
@@ -61,16 +113,7 @@ def durable_decision_checkpoint(snapshot: bytes) -> bytes:
     """Compare exact owned decisions while allowing public input caches to move."""
     try:
         document = json.loads(snapshot)
-        if (
-            not isinstance(document, dict)
-            or set(document) != {"schema", "candidate_sha256", "strategy_id", "domain", "state"}
-            or document["schema"] != _SCHEMA
-            or not isinstance(document["domain"], dict)
-            or set(document["domain"]) != {"episode", "locked_after_liquidation", "decision_index"}
-            or not isinstance(document["state"], dict)
-            or set(document["state"]) != set(_FIELDS)
-        ):
-            raise ValueError("RECOVERY_CHECKPOINT_STRUCTURE_UNKNOWN")
+        checkpoint_structure(document)
         document["state"] = {
             name: value for name, value in document["state"].items()
             if name not in _PUBLIC_INPUT_FIELDS
@@ -101,6 +144,8 @@ def _encode(value):
         return {"t": "bar_type", "v": str(value)}
     if isinstance(value, Bar):
         return {"t": "bar", "v": _encode(Bar.to_dict(value))}
+    if isinstance(value, NextClosedBar):
+        return {"t":"next_closed_bar","v":[_encode(value.instrument_id),value.hours,_encode(value.open),_encode(value.high),_encode(value.low),_encode(value.close),value.ts_event,value.ts_init]}
     if isinstance(value, DailySignalBar):
         return {"t": "daily_signal", "v": [
             _encode(value.instrument_id), _encode(value.open), _encode(value.high),
@@ -149,6 +194,8 @@ def _decode(value):
         return BarType.from_str(body)
     if kind == "bar":
         return Bar.from_dict(_decode(body))
+    if kind == "next_closed_bar":
+        return NextClosedBar(*[_decode(item) for item in body])
     if kind == "daily_signal":
         return DailySignalBar(*[_decode(item) for item in body])
     if kind == "venue_mark":
@@ -188,6 +235,11 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._recovery_health = None
         self._live_money_provider = None
         self._live_refresh = None
+        self._manage_only_preparation = False
+        self._management_certificate = None
+        self._management_dispatch_enabled = False
+        self._checkpoint_policy_valid = False
+        self._loaded_policy_sha256 = None
 
     def attach_live_money_view(self, provider) -> None:
         if not callable(provider) or self._live_money_provider is not None:
@@ -360,6 +412,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         super().on_stop()
 
     def _require_recovery_confirmed(self) -> None:
+        if self._manage_only_preparation or self.config.research_residual_recovery:
+            raise RuntimeError("MANAGE_ONLY_NORMAL_DISPATCH_FORBIDDEN")
         if not self.recovery_confirmed or (self._recovery_health is not None and not self._recovery_health()):
             self.recovery_confirmed = False
             raise RuntimeError("RECOVERY_NOT_CONFIRMED")
@@ -537,6 +591,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             raise RuntimeError("RECOVERY_FILL_CHECKPOINT_CONFLICT")
 
     def _entries_enabled(self) -> bool:
+        if self._manage_only_preparation or self.config.research_residual_recovery:return False
         try:
             self._validated_live_money()
         except ValueError:
@@ -545,7 +600,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
 
     def on_save(self) -> dict[str, bytes]:
         document = {
-            "schema": _SCHEMA,
+            "schema": _C1_SCHEMA if self.config.research_residual_recovery else _SCHEMA,
             "candidate_sha256": hashlib.sha256(canonical_candidate_json(self._candidate).encode()).hexdigest(),
             "strategy_id": str(self.id),
             "domain": {
@@ -553,18 +608,28 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                 "locked_after_liquidation": self._domain.locked_after_liquidation,
                 "decision_index": self._domain._decision_index,
             },
-            "state": {name: _encode(getattr(self, name)) for name in _FIELDS},
+            "state": {name: _encode(getattr(self, name)) for name in recovery_fields(self.config)},
         }
+        if self.config.research_residual_recovery:document["policy_sha256"]=recovery_policy_hash(self.config,self._candidate)
         return {_KEY: json.dumps(document, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()}
 
     def on_load(self, state: dict[str, bytes]) -> None:
+        self._checkpoint_policy_valid=False
+        self._loaded_policy_sha256=None
+        self._management_certificate=None
+        self.recovery_confirmed=False
         if set(state) != {_KEY}:
             raise ValueError("RECOVERY_STATE_KEY_MISMATCH")
         document = json.loads(state[_KEY])
         expected_hash = hashlib.sha256(canonical_candidate_json(self._candidate).encode()).hexdigest()
-        if document.get("schema") != _SCHEMA or document.get("candidate_sha256") != expected_hash:
+        self._checkpoint_policy_valid=False
+        self._management_certificate=None
+        c1=checkpoint_structure(document)
+        if c1!=bool(self.config.research_residual_recovery) or (c1 and document["policy_sha256"]!=recovery_policy_hash(self.config,self._candidate)):
+            raise ValueError("RECOVERY_POLICY_IDENTITY_MISMATCH")
+        if document.get("schema") not in (_SCHEMA,_C1_SCHEMA) or document.get("candidate_sha256") != expected_hash:
             raise ValueError("RECOVERY_STATE_IDENTITY_MISMATCH")
-        if document.get("strategy_id") != str(self.id) or set(document.get("state", {})) != set(_FIELDS):
+        if document.get("strategy_id") != str(self.id) or set(document.get("state", {})) != set(recovery_fields(self.config)):
             raise ValueError("RECOVERY_STATE_FIELDS_MISMATCH")
         domain = document.get("domain")
         if not isinstance(domain, dict) or set(domain) != {"episode", "locked_after_liquidation", "decision_index"}:
@@ -581,3 +646,35 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         from coinmaster.domain.wave_overlay import features_for
         self._current_signals = features_for(self._bars, self._candidate)
         self.recovery_confirmed = False
+        self._checkpoint_policy_valid=c1
+        self._loaded_policy_sha256=document.get("policy_sha256") if c1 else None
+        self._quote_ns={}  # Saved inputs never grant new live freshness/authority.
+        self._management_certificate=None
+
+    def enable_manage_only_preparation(self) -> None:
+        if not self.config.research_residual_recovery:
+            raise RuntimeError("MANAGE_ONLY_REQUIRES_E4_C1_CHECKPOINT")
+        self._manage_only_preparation=True
+        self.recovery_confirmed=False
+        self._management_dispatch_enabled=False
+        self._management_certificate=None
+
+    def revoke_management(self) -> None:
+        self._management_certificate=None
+        self.recovery_confirmed=False
+
+    def dispatch_manage_only(self, command_id, kind, order, *, now_ns=None):
+        """One explicit owned action, never a replay/automatic close loop.
+
+        The outer immutable release approval remains independently required.
+        Preparation leaves dispatch disabled; no persisted field enables it.
+        """
+        from coinmaster.ops.live_recovery import reserve_managed_action
+        now_ns=time.time_ns() if now_ns is None else now_ns
+        if not self._management_dispatch_enabled:raise RuntimeError("LIVE_ORDER_CAPABILITY_FALSE")
+        cert=self._management_certificate
+        self._management_certificate=None  # Consume before reservation, even on failure.
+        if cert is None:raise RuntimeError("MANAGEMENT_CERTIFICATE_REQUIRED")
+        order=reserve_managed_action(self,cert,command_id,kind,order,now_ns=now_ns)
+        if kind=="CANCEL":return WaveOverlayStrategy.cancel_order(self,order)
+        return WaveOverlayStrategy.submit_order(self,order)
