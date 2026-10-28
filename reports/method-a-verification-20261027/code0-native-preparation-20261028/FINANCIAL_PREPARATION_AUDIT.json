@@ -1,0 +1,80 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "READ_ONLY_PREPARATION_AUDIT_COMPLETE_FINANCIAL_BINDER_NOT_READY",
+  "source_commit_verified": "b1807f15043522b57d3e76527586f152c2db572c",
+  "scope": "Narrow source/universe/fresh-barrier consumer gaps only; no product or test edits, product imports, tests rerun, engines, native, ledger changes, commit or push.",
+  "financial_source_binder": "UNKNOWN_NOT_IMPLEMENTED_FOR_B180_P2_P4_P3",
+  "actual_economic_result": "NONE_FOR_NEW_CODE0; old M3/M3R remain FAILED; old P0R/P1 qualifications are historical controls",
+  "preserved_dirty_sha256_verified": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "checklist": [
+    {
+      "id": "BIND_SOURCE_LABEL",
+      "status": "MISSING",
+      "exact_locations": ["reports/method-a-verification-20261027/prefix_common.py:SOURCE,LABELS,load_freeze,verify_source,verify_authority,build_qualified_args,verify_prior_financial", "reports/method-a-verification-20261027/method_a_financial_binding.py:bind", "reports/method-a-verification-20261027/method_a_financial_reader.py:analyze,profile_read,rights_evidence"],
+      "gap": "Common still SOURCE=a4dd469..., LABELS=P0/P1, old cap17/protocol and P0/P1 entry flags. bind asserts TP only P1 and old sol_overlay_enabledTrue. Reader has P1-only nativeTP protection and oldSOL rights plus hardcoded prefix calendar; it does not parse risk/paired producer schema. b180 P2/P4/P3 cannot be accepted by merely changing a source string or labelling P3 as P1.",
+      "minimal_prospective_repair": "Add separately named source/label-aware harness binder and SOL producer sidecar consumer; retain old reader/tests bytes and numeric arithmetic/tolerances. Reuse numeric routines through explicit reviewed interfaces, never spoof prefix_common.SOURCE/LABELS or fabricate P0/P1 payloads. Bind exact new source seal, config/kwargs/data/metric/execution policy and actual completed-result physical identity. Apply control-specific P2SOLoff/P4trim/P3paired protection/rights gates outside preserved numerical block. Until this adapter exists, accounting qualification remains UNKNOWN."
+    },
+    {
+      "id": "BIND_FRESH_BARRIER",
+      "status": "MISSING_IN_OLD_ACTUAL; PROSPECTIVE_HARNESS_OPTION_EXISTS",
+      "exact_locations": ["runtime/coinmaster/research/native_book.py:NativeBookWitness.__init__,pre_process", "runtime/coinmaster/research/method_a_margin.py:MethodABookWitness.pre_process,receipt_snapshot,native_receipt_snapshot", "runtime/coinmaster/strategy/method_a_risk_native.py:_pair_sol_boundary,_pair_log", "runtime/tests/run_method_a_sol.py:launch"],
+      "actual_evidence": "M3R risk physical40 sequence40 timestamp62000000000 episode1, ordinal10, risk_sequence_before_receipt39, SOL epoch5/global10, raw5BTCorders/noSOL; risk46 later same62s is initialized native SOL MARKET CID6. But boundary_state_ref paired:2 resolves SOL_NATIVE_BOUNDARY timestamp61000000000 labelNATIVE_SETTLEMENT_PASS stateFLAT, not same62s strict barrier. Independently reread raw gzip facts; no retroactive PASS.",
+      "minimal_prospective_repair": "Harness can propose existing MethodABookWitness(detailed=True), rather than changing risk/strict control: detailed makes existing boundary logger emit after every current strict pre_process check. Source code shows detailed only affects log dedupe. Freeze/read-only noninterference proof still required before adoption. Keep full raw cache capture once per first observed new parent/episode; never substitute later receipt for an earlier episode transition.",
+      "consumer_required_fields": ["receipt event/schema/physical row identity", "receipt.sequence==native_receipt_snapshot.risk_sequence_before_receipt+1", "parent and risk_episode_id equal raw+boundary", "boundary_state_ref resolves exactly one SOL_NATIVE_BOUNDARY", "boundary.label==BEFORE_NATIVE_MATCHING_INPUT", "boundary.timestamp_ns==receipt.timestamp_ns", "boundary emitted before this receipt in source-bound strict pre_process order", "native_input_epoch/global_input_index/native_quote match current immutable quote", "same-receipt raw capture availability and receipt_ordinal", "current raw snapshot no unresolved/foreign/active SOL state before earliest native init/command"],
+      "sequence_caution": "Some paired modify events carry operation sequence in fields that overwrites the outer generic sequence; do not assert every paired row has a globally unique monotonic sequence. Resolve paired refs in SOL_NATIVE_BOUNDARY event namespace and bind physical row index+row hash; distinguish command sequence/generation from audit stream identity."
+    },
+    {
+      "id": "BIND_INPUT_UNIVERSE",
+      "status": "PRODUCER_COUNTS_EXIST_CONSUMER_JOIN_MISSING",
+      "exact_locations": ["runtime/tests/run_method_a_sol.py:prepare/config_for/launch", "runtime/coinmaster/strategy/method_a_risk_native.py:_pair_report", "runtime/coinmaster/research/method_a_margin.py:MethodABookWitness.pre_process", "reports/method-a-verification-20261027/SOL_PRODUCER_SCHEMA_V1.json"],
+      "gap": "launch compares final received epochs to prepared quote_universe, and report exposes received_quote_universe/count. Existing financial binder neither pins/consumes risk+paired roles nor checks every native input quote receipt. Producer row count is not the expected universe.",
+      "minimal_prospective_repair": "Freeze immutable prepared source input universe independently: recipe/native_input/config hashes, actual ordered quote descriptors per instrument including same timestamp duplicates and perinstrument epoch/global index. Sidecar validates contiguous risk rows and receipt indexes, native_quote equality, zero omissions/extras/conflicts, exact expected perinstrument/final counts. Pin gzip path/hash/rows and literal schemas as report artifact roles; include risk, paired, input universe and source inventory in manifest/read gate. Streaming economic source row clocks retain their own declared calendar; do not copy tiny engineering counts to prefix."
+    },
+    {
+      "id": "BIND_COMPLETE_COMMAND_UNIVERSE",
+      "status": "UNKNOWN_REQUIRES_SEALED_SOURCE_PROOF",
+      "exact_locations": ["runtime/coinmaster/research/method_a_margin.py:native_receipt_snapshot", "runtime/tests/run_method_a_sol.py:launch", "runtime/coinmaster/research/native_baseline.py:strategy registration/receipt source binding", "reports/method-a-verification-20261027/m3-approved-repair-20261028/SOURCE_PROOF_AND_CONSUMER_REQUIREMENTS.md"],
+      "gap": "Raw public exchange queues are NOT_EXPOSED_BY_PUBLIC_API. Current capture truthfully declares complete_command_universe UNKNOWN_REQUIRES_SEALED_SOURCE_PROOF. Empty open/inflight or factory counter alone cannot prove no queued SOL command.",
+      "minimal_prospective_repair": "Freeze/read-review exact installed native submit_order init->global cache->command path and one active selected strategy, no actor/exec algorithm/emulation/contingent/foreign direct exchange writer, no cache purge or bypass producer path. Match producer_inventory, actual exec command/event+factory counters and every public cache order/init/position/pending/owner/domain/queued/mandatory/control fact. Resolve all referenced CIDs including initialized/non-open orders. Any unmatched producer, missing target, collector exception or early init remains UNKNOWN; never claim private queue visibility."
+    },
+    {
+      "id": "BIND_CODE0_LIFECYCLE_AND_CONTROL",
+      "status": "SOURCE_PURE_ACCEPTED_ACTUAL_CONSUMER_MISSING",
+      "exact_locations": ["runtime/coinmaster/strategy/method_a_risk_native.py:_record_submission,_mr_code0_drain,_mr_code0_old,_mr_after_actual,_mr_original_second", "reports/method-a-verification-20261027/SOL_PRODUCER_SCHEMA_V1.json:required_events,nested_definitions"],
+      "gap": "Original producer schema/consumer requirements precede CODE0; newly emitted recovery_code0 and CODE0_NATIVE_DRAIN_WAIT/COMPLETE need literal sidecar bindings. Pure source acceptance is not actual completion/protection evidence.",
+      "minimal_prospective_repair": "Bind actual dispatch price/type/IOC/reduce_only/initUUID, same-old baseline/route/full proof, exact state/features/fee/tier/source frame, actual oldTP leaves/ACK/maker commission affinity, registered sole owner and original deadline. Join every partial fill by eventUUID/tradeID/CID to coherent pre/post actual state and native fee; native terminal precedes drain completion; actual protection resize ACK event/sequence/generation payload must match working native order. Pending hedge credit remains0; original SECOND rights/expiry/no restore must be actual-source-bound. P3/P4 settled+eventDD50/performance gates evaluated only after accounting gates; P2 diagnosticDD above50 recorded."
+    },
+    {
+      "id": "BIND_PHYSICAL_RESULT",
+      "status": "FUTURE_ACTUAL_REQUIRED",
+      "exact_locations": ["reports/method-a-verification-20261027/method_a_financial_binding.py:bind", "runtime/tests/run_method_a_sol.py:launch,capture", "reports/method-a-verification-20261027/FINANCIAL_ACCEPTANCE_CONTRACT.md"],
+      "minimal_prospective_repair": "Retain current completed-result discipline with new explicit source/protocol: exact attemptUUID/category/label/source, immutable freeze and ledger row digest, actual root child PID/OSexit0 receipt, completion manifest/supervisor/reportSHA/role hashes. For accounting: strict-zero native cash reconciliation, native fees and signed instrument funding, coherent prefill/preopen and complete settled calendar, actual terminal positions/orders/inflight/commands/debt0 BEFORE cleanup and zero model liquidation. Engineering deliberately negative cases are separate case qualification; cannot be economic completed flat/PASS by disposal."
+    }
+  ],
+  "freeze_and_readback_gates_before_any_future_native": [
+    "Owner-approved concrete new case map/protocol/numeric attempt authority; old dedicated M3 and reserves exhausted. Existing CODE0/quantity approvals native0 cannot supply it.",
+    "One frozen source/harness/config/data/metric/engine/public API/fee/venue policy inventory, new source commit if observer/harness bytes change. Exact public ref and preserved old_FAILED/raw/dirty files verified.",
+    "Focused read-only delta review and existing distinct pure evidence reused; only new meaningful uncovered observer/binder assertions if later authorized. No broad passing-suite repeats.",
+    "Mac execution delegated exactTerra6.1high with finalized frozen inputs; fresh snapshot/hash/readback/version/preflight and no hidden engine constructors. No old ROOTscripts replay.",
+    "Canonical ledger9/18 active0/root_goFalse checked, rootGO+fresh namespace/claim only under new explicit owner run authorization; no slot borrowing.",
+    "After actual completion independently reread physical artifacts and source/universe/fresh barrier joins; then numerical accounting and separate economic gates. All missing facts UNKNOWN."
+  ],
+  "read_only_patch_proposal": {
+    "harness_only_candidate": "runtime/tests/run_method_a_sol.py launch: MethodABookWitness() -> MethodABookWitness(detailed=True), prospective only after exact logging noninterference review; economic native_baseline supplied book configuration must be separately frozen.",
+    "report_adapter_candidate": "New named source-aware binder/sidecar modules for P2/P4/P3 risk+paired schema and physical/universe joins; no numericreader edits or constant spoofing.",
+    "not_implemented": true,
+    "not_authority": true
+  },
+  "native_GO": false,
+  "financial_GO": false,
+  "new_native": 0,
+  "new_prefix": 0,
+  "new_full": 0,
+  "ledger": {"spent": 9, "cap": 18, "changes": 0},
+  "writer_packet_touched": false,
+  "tests_run": 0,
+  "product_edits": 0
+}

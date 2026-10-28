@@ -1,0 +1,43 @@
+{
+  "status": "SOURCE_ONLY_COMMITTED_PUBLISHED_EXACT_REMOTE_VERIFIED",
+  "created_utc": "2026-10-28T16:57:20.675996+00:00",
+  "commit": "3f555d94cad009a0170b4c15230e18b84811c387",
+  "parent": "b1807f15043522b57d3e76527586f152c2db572c",
+  "ref": "refs/heads/codex/hedge-rights-unlock-20261025",
+  "push_exit_code": 0,
+  "remote_read_exit_code": 0,
+  "remote_sha": "3f555d94cad009a0170b4c15230e18b84811c387",
+  "exact_remote_match": true,
+  "manifest_sha256": "e599ec2e9516eeb094675a38d1cc538a4f1cb17ade9ac0299dd4f09889925f26",
+  "source_acceptance_sha256": "aa0a98fdb881e874a829d0b3a653b8f2b9498038f253ede7fa64d01d5c42c7a5",
+  "peer_initial_sha256": "0c81a97bb99840df652ec661a8b9ad0437e4676c3ec346cb9444a2cba2ebd237",
+  "peer_closure_sha256": "7e6e8db2f066a4df38ce4896431d37684b4b50d4d43a43ca955739c70b643a3f",
+  "report_sha256": "9e35234fb7deae0ae91803e9b995b06d66cf7056500b892ada0988004fb812cb",
+  "harness_sha256": "11cdd883f2cb31e180d3fea89d9e7dd0ca456e639f6883e3a3a6a2a4e177ffac",
+  "source_pins": {
+    "runtime/coinmaster/research/method_a_margin.py": "3cb88e3fed04c4b9a9461bc9f7c894ac6467d3a5213b89d120eaed62aa6e24cb",
+    "runtime/coinmaster/research/method_a_receipt_codec.py": "e5e809e883d3c84dd5eccdee1c4d3f4e29c5c10adbe04d7701cf9c26139b388e",
+    "runtime/tests/test_method_a_receipt_codec_pure.py": "ead1aaecb69a585695a53188bdc8af059bb35d3d39783ebc6eac93ffd73cf2af"
+  },
+  "trading_unchanged": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/method_a_tp.py": "a7ab2b75580b6ad59c89f467a118fc91eebcd8f0384ec16d082b44a2f01ab6cb"
+  },
+  "financial_dirty_preserved_unstaged": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "native_authority": 0,
+  "engine_constructors": 0,
+  "tests_rerun": 0,
+  "ledger_changes": 0,
+  "current_cap": 18,
+  "spent": 9,
+  "full_CODE0": "NOT_TESTED_REQUIRED_M8",
+  "source_closure": "ROOT_POSTRUN_MANUAL_REQUIRED",
+  "diffstat_summary": "35 files,8285 insertions,1 deletion;3 observer/helper/test paths +32 scopedpacketfiles including preservedv1",
+  "raw_git_auth_output": "not printed/persisted",
+  "copy_extra": "This external untracked COMMIT_PUBLICATION_RECEIPT.json plus entire committed preparation packet"
+}

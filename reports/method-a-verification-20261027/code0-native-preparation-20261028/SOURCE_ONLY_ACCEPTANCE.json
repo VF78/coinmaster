@@ -1,0 +1,40 @@
+{
+  "status": "ROOT_SOURCE_ONLY_READY_PEER_CLOSED_NOT_NATIVE_GO",
+  "accepted_utc": "2026-10-28T16:56:45.883922+00:00",
+  "base": "b1807f15043522b57d3e76527586f152c2db572c",
+  "report_sha256": "9e35234fb7deae0ae91803e9b995b06d66cf7056500b892ada0988004fb812cb",
+  "harness_sha256": "11cdd883f2cb31e180d3fea89d9e7dd0ca456e639f6883e3a3a6a2a4e177ffac",
+  "peer_initial_sha256": "0c81a97bb99840df652ec661a8b9ad0437e4676c3ec346cb9444a2cba2ebd237",
+  "peer_closure_sha256": "7e6e8db2f066a4df38ce4896431d37684b4b50d4d43a43ca955739c70b643a3f",
+  "source_pins": {
+    "runtime/coinmaster/research/method_a_margin.py": "3cb88e3fed04c4b9a9461bc9f7c894ac6467d3a5213b89d120eaed62aa6e24cb",
+    "runtime/coinmaster/research/method_a_receipt_codec.py": "e5e809e883d3c84dd5eccdee1c4d3f4e29c5c10adbe04d7701cf9c26139b388e",
+    "runtime/tests/test_method_a_receipt_codec_pure.py": "ead1aaecb69a585695a53188bdc8af059bb35d3d39783ebc6eac93ffd73cf2af"
+  },
+  "trading_source_unchanged": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/method_a_tp.py": "a7ab2b75580b6ad59c89f467a118fc91eebcd8f0384ec16d082b44a2f01ab6cb"
+  },
+  "native_scope": "M3_LIFECYCLE_CODE0_PARTIAL_RESIDUAL_ONLY",
+  "full_CODE0_endpoint": "NOT_TESTED_REQUIRED_M8_BEFORE_ECONOMICS",
+  "source_closure": "ROOT_POSTRUN_MANUAL_SEALED_SOURCE_CLOSURE_REQUIRED; rawUNKNOWN_not_promoted",
+  "financial_qualification": false,
+  "budget": {
+    "current_cap": 18,
+    "spent": 9,
+    "dedicated_M3_remaining": 0,
+    "proposed19_NOT_authorized": true
+  },
+  "native_authority": 0,
+  "engine_constructors": 0,
+  "tests_rerun_for_commit": 0,
+  "codec_test_evidence": "2 focused PASS0.336s already reviewed; no rerun",
+  "ledger_changes": 0,
+  "publication_ref": "refs/heads/codex/hedge-rights-unlock-20261025",
+  "preserved_financial_dirty": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  }
+}

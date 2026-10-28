@@ -1,0 +1,97 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "source_commit": "b1807f15043522b57d3e76527586f152c2db572c",
+  "reviewed_utc": "2026-10-28T16:54:34.328501+00:00",
+  "status": "CONDITIONAL_MATH_PROOF_SIGNS_TIERS_MULTIPLE_ORDINARY_BTC_TP_AND_FIXED_KNOWN_FUNDING;NATIVE_GENERALIZATION_NOT_PROVEN",
+  "source_edits": 0,
+  "tests": 0,
+  "native_or_engine_runs": 0,
+  "owner_approval_required_before_implementation": true,
+  "reason": "Latest quantity approval excludes signs/tiers. Existing pure proof is sign-generic and tier-partitioned; native adapter/drain remain sign-specific and must be generalized together under a new consolidated protocol.",
+  "first_tier_guard_mathematically_necessary": false,
+  "proof_conditions": [
+    "fixed sign per leg under native reduce-only clipping; exact integer lot quantities",
+    "all scenario prices positive; fixed feature/peak/marks/binding",
+    "all frozen tier cap and MMzero thresholds as exact Fractions; finite maximum cap; leverage and deductions exact",
+    "all per-CID nonnegative affine conservative cost capacities and frontier breakpoints covered; per-fill rounding bounded",
+    "piecewise affine loss/margin evaluated on every lattice-neighbor cell corner; no global convexity assumption",
+    "baseline/route/full use same complete known old universe; unchanged margin positivity/cushion/allpartial<=baseline/fullsafe requirements",
+    "Per-CID multiple ordinary BTC TP descending-cost frontier and cumulative-capacity cuts complete; all costs nonnegative",
+    "Fixed known feature funding bounds may be nonzero and remain affine; this does not prove native future settlement events"
+  ],
+  "native_guard_changes_required": [
+    "Replace longBTC/shortSOL domain guard only with explicitly approved opposite-sign orientations/zero boundary; general same-sign holdings are mathematically evaluable but not an authorized hedge domain.",
+    "Use sign(actualheld) for oldBTC side, old maker cost and liability side; keep unchanged-price native maker provenance, ACK/owner/leaves/fee-affinity/nonnegative-cost checks.",
+    "Replace first-tier check with frozen complete-profile/boundaries/finite-cap qualification through existing partitioner; retain UNKNOWN for missing/out-of-range tiers.",
+    "Mirror SOL TP/STOP dormancy, native side, position ownership and actual signed monotonic drain inequalities in BOTH old-universe and drain paths.",
+    "Keep positive protection, pending-generation/ACK checks, same-price quantity reductions, flat-only cancellation-drain and one owner/deadline rules.",
+    "Permit multiple ordinary BTC TP only with per-CID maker/cost/ACK/lot/generation evidence and aggregate leaves<=absBTC; source maker proof needed for untouched targets.",
+    "Only under explicit approval, replace zero-only feature-funding restriction by validated fixed known finite nonnegative causal bounds; retain UNKNOWN/unbounded funding DENY and native transition/reproof guards."
+  ],
+  "counterexamples": [
+    "shortBTC mark107 BUY108.8 maker.00020: true cost1.82176; hardcoded long formula gives-1.77824",
+    "SOLlong SELL TP80 with book100/scenarios95..105 is marketable but passes old short dormant inequality80<95",
+    "SOLlong SELL STOP140 with book100/scenarios95..105 is already trigger-eligible but passes old short dormant inequality140>105",
+    "Four outer corners alone do not prove piecewise tier margin; exact cap/MMzero lattice neighbors are essential."
+  ],
+  "important_limits": [
+    "Source proof of native command universe, price/depth/completion and actual lifecycle remain separate UNKNOWN.",
+    "Full new-fill endpoint is not every mixed old/new clipped-flat endpoint; latter must retain full cost history and actual post-drain safety check.",
+    "No reuse of35.2044 numeric baseline or6011/cash SECOND expectations for new signs/tiers.",
+    "Root-supplied historical notionals demonstrate existing firsttier guard exclusion, not counterfactual P3 values or new native eligibility.",
+    "Normal admission, DD50, no pending credit, increasesOFF, old FAILED immutable and cap18 remain unchanged. Native/prefix/full authority0."
+  ],
+  "source_sha256": {
+    "runtime/coinmaster/strategy/method_a_risk.py": "5b96a27f6bc209ec3edc9d4cd7bb3c51de2a81517dc77d9dc3ee3e6659ec5cbe",
+    "runtime/coinmaster/strategy/method_a_recovery.py": "1fe9a2a92d1912339e3bd6695aa3caa5941f1b3e544659a5da1940654ba3ef39",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/coinmaster/venues/margin_policy.py": "ca855858ff19791544bb17930721e591e35acb2d33adb257db85bf6b175c1e15",
+    "runtime/coinmaster/venues/bybit_profile.py": "9a26ffc79aa7f4e80d14fb1bb42a91846e153378e83d0b9a79695e46195088e7",
+    "runtime/coinmaster/research/method_a_controls.py": "c5864389ec79a674804693f9fef678d0881c679bd2a8ea3a841b8cdeafc9347d",
+    "runtime/coinmaster/research/native_baseline.py": "1054b2eb1bbbacdac288c27194dbb9920692160f7b092e16f7b6898f104dad99",
+    "runtime/tests/run_method_a_sol.py": "d34ed2c237af6a82fb8e53f33b500b31e6015c4314d8051103d23c90afe2b645"
+  },
+  "source_refs": [
+    "method_a_risk.py:tier_partition_envelope and evaluate",
+    "method_a_recovery_code0.py:prove_flat_route/recovery_limit",
+    "method_a_risk_native.py:_mr_tier_boundaries/_mr_margin/_mr_code0_old(1000+)/_mr_code0_price(978+)/_mr_code0_drain(1100+)",
+    "bybit_profile.py:tier_for67-71",
+    "method_a_controls.py:build_method_a_sol_kwargs requires funding tuple forP3/P4",
+    "method_a_risk_native.py:_mr_snapshot195-201 config funding conversion",
+    "method_a_risk.py:lagged_features funding completeintervals/max24hABS;evaluate fundingline179",
+    "run_method_a_sol.py:funding50-53 zero fixture"
+  ],
+  "prior_lemma_sha256": "d03afc9f70c35c311542a18ee7c9fe7ec24a6db015c31f018978e2835293cb90",
+  "math_note": {
+    "path": "/private/tmp/cm_code0_domain_generalization_math_note.md",
+    "sha256": "9ef1bd9a3ef4851a2a42e72ec72fb970287010cbd6b37257e6f67c3df1796df6"
+  },
+  "GO": false,
+  "multiple_ordinary_BTC_TP": {
+    "mathematical_support": "Existing tuple old→tier_partition_envelope per-CID descending-cost frontier/cumulative-capacity cuts→prove_flat_route covers multiple known nonnegative-cost BTC maker TP at different prices. Aggregate leaves<=actualheld and no openings/sign crossing; no new simulator.",
+    "required_guards": [
+      "distinct nativeCID; correct parent/instrument/close-side;ACK and accepted leaves;single lot;no pendingmodify",
+      "known price/fee/cost for EACH TP; per-fill fee-affinity or approved conservative rounding;cost>=0",
+      "aggregate leaves<=absBTC;live TP entitlement and native clipping preserve fixed sign",
+      "maker provenance of every target/source-specific maker-rule proof;GTC alone not evidence"
+    ],
+    "current_applicability": "len(old) rejects second target; per-order historical makerfill guard rejects untouched TP. Three-target/two-remaining ordinary real states are therefore outside current CODE0. Lifting count alone does not qualify them.",
+    "excluded": "BTC STOP/trigger paths, unknown costs,foreign/opening orders,new OMS"
+  },
+  "funding": {
+    "real_source": "_mr_snapshot config tuple→Funding→lagged_features requires complete causal intervals and produces max24h SUM ABS rates in prior30d, not forced0. Any nonzero prior rate gives positive corresponding feature bound.",
+    "fixture": "run_method_a_sol.py50-53 explicitly zero8h engineering fixture only; not historical settlement",
+    "mathematical_extension": "For fixed known finite nonnegative featurefund_b/s, funding risk charge absheld*scenarioPrice*fund remains affine per fixed sign and quantity cell. Existing exact partitioner already includes it; no added cuts needed. Baseline/route/full must recompute including SAME bounds.",
+    "unknown": "Concrete future economicprefix funding producer/data and countofnonzerodays not checked; no alwaysnonzero claim. Actual future funding cash/peak/order-time path and bound sufficiency not proved.",
+    "current_guard": "Keep zero-only guard until explicit owner approval; possible consolidated proposal may include known fixed causal risk-feature bounds. UNKNOWN rates/incomplete intervals/unboundedfuturefunding DENY; actual native cash transitions require snapshot/reproof."
+  },
+  "baseline_semantics_obstacle": {
+    "status": "NO_PROOF_OF_EXACT_NATIVE_JOINT_ATTAINABILITY",
+    "proof": "Existing partitioner exact for declared independent per-CID capacity/cost envelope; not automatically exact native joint price/depth/priority attainable path supremum.",
+    "why_material": "Overstating OLD baseline can relax candidate comparison. Upper-envelope conservatism alone does not preserve non-worsening vs smaller true-native baseline.",
+    "necessary_resolution": "Explicit owner agreement to SAME conservative declared-envelope benchmark semantics, or source-bound proof native old baseline joint attainability. Otherwise UNKNOWN.",
+    "abstract_counterexample": "Two old capacities1 each, cost1 each, real shared fillcapacity1. Independent baselinecost2>true native1; newcost1.5 can pass inflated2 while worsen1. This is a mathematical obstacle, not a claim current BTC matcher behaves this way.",
+    "ordinaryTP_note": "Descending oldcost often corresponds to limit price priority for side-correct ordinary TPs, but native priority/shared depth/maker fill-price attainability has not been established by this static pure review."
+  }
+}

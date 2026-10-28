@@ -1,0 +1,71 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "source_commit": "b1807f15043522b57d3e76527586f152c2db572c",
+  "status": "PROOF_CONDITIONAL_SOL_ONLY_POINTWISE_NONWORSENING",
+  "reviewed_utc": "2026-10-28T17:04:10.285171+00:00",
+  "theorem": "For every fixed oldBTC execution vector x INCLUDING actual old costs, Factual(x,z)<=max(Factual_old(x,0),0), if actual newSOL cost<=k*z, fixed sign/frame, and fullSOL endpoint universally safe over all covered old x/costs.",
+  "proof": [
+    "Set Gx(z) using SAME actual oldcost a(x) and newSOL affine uppercost kz. Factual<=Gx and Gx(0)=same actualold F.",
+    "Fixed signs/frozen shocks/marks/peak and known fixed risk funding make Gx max affine in z; convex interpolation gives Gx(z)<=(1-z/h)Gx(0)+(z/h)Gx(h).",
+    "Existing full.safe with conservative old-cost frontier implies Gx(h)<=0 for EVERY actual oldx, because a(x)<=frontier bound and higher equity improves deficit/margins.",
+    "Thus Factual(x,z)<=max(Factualold(x,0),0). Need no exact joint attainability of old maximum; overapprox in universal fullsafe condition is conservative."
+  ],
+  "existing_source_helper_reuse": {
+    "prove_flat_route": "SOL endpoint retains BTC and removes SOL; full tier_partition_envelope includes every oldBTC liability. No new PnL engine.",
+    "tier_partition_envelope": "Per-CID descending nonnegative cost frontier/cumulative cuts plus allscenario cap/MMzero/floorceil-neighbor cuts covers fullendpoint and allpartial margins.",
+    "evaluate": "Known fixed nonnegative funding risk charges affine; F convex in SOL amount independent of piecewise margin tiers.",
+    "max_cost": "Existing fullcapacity cost sum conservative, plus cushion>max_cost protects allpartial positive cushion.",
+    "scalar_baseline_gate": "May remain extra gate; not standalone pointwise proof. Do not claim global old maximum exactly native attainable."
+  },
+  "oldBTC_cost_uncertainty": {
+    "allowed_conditional": "Multiple known ordinary LIMIT/GTC RO TP, aggregateleaves<=absBTC, correctside/parent/ACK/lot/no pendingmods. Conservative native fee/price/rounding caps can replace makerhistory assumption only after owner-approved source-bound proof.",
+    "formula": "k_i=max(0,sigmaBTC*(mark-P)+fmax*P+epsilon_perunit); close-side=-sigmaBTC; epsilon bounds all native better-price/per-fill rounding, not just P. Any additional native realizedPnL/equity settlement rounding must also be bounded; fee-only is insufficient if other cash rounding exists.",
+    "maker": "maxmaker/taker cap avoids relabeling actual native classification; current history-only adapter guard remains until approved change.",
+    "coupling": "Any actual BTC/SOL book correlation okay since universal allx proof; contingent cash/fee/liability dependencies outside separable cost bound are UNKNOWN."
+  },
+  "necessary_conditions": [
+    "already actualBREACH;positiveactualC and margin; no normaladmission/increase/DD50 relaxation",
+    "newSOL-only;no oldSOL fills;dormantprotection source/scenario/book proof; no newBTC route overlap",
+    "fixed signed reductions to0; no crossflat/signreversal",
+    "fullSOL.safe for ALL oldBTCx and costbounds; not merely x0",
+    "newpartial actual equity debit<=kz for every native-lot split, including ALL fee and realizedPnL/settlement rounding; cost0=0",
+    "complete known oldorder/owner/ACK/currency/fee universe; unknown/pending admission/triggeredSTOP DENY",
+    "frozen marks/peak/features/risk-funding bounds or failclosed reproof on any uncovered change",
+    "known fixed causal funding riskbounds allowed algebraically; unbounded/unknown actualfuture funding and untracked cash/peak changes not allowed",
+    "allpartial margin/cushion via exacttier partitioner; finiteprofile/maxcap,zero/MM cuts,rounding qualified",
+    "native protection/ACK/generation,oneowner,originaldeadline,increasesOFF and actual postdrain safe check preserved"
+  ],
+  "counterexamples": [
+    "Fixed firsttinyfill fee not bounded bykz can worsenpartial despite safefull averagecost.",
+    "Unknown fundingcash debit/new coherentpeak breaks affine frame.",
+    "Fullendpoint checked only x0 can fail after oldBTC reduces hedge.",
+    "OldSOLSTOP or newBTC overlap changes sameleg clipping/cost universe; theorem not applicable."
+  ],
+  "limits": [
+    "Pointwise old comparator is conditional SAME realized x/prices/fees, not a separate executable counterfactual native run.",
+    "This proves risk inequality within fixed finite scenario model, not fills/liquidity/completion/native lifecycle/economicPASS.",
+    "Existing adapter/drain hardcoded signs/tier/oneold/makerhistory/fund0 guards still require consolidated approved implementation/review.",
+    "Do not borrow slots or rewrite FAILED. native/prefix/full0; cap18 unchanged;cash SECOND expectations must rederive."
+  ],
+  "source_sha256": {
+    "runtime/coinmaster/strategy/method_a_risk.py": "5b96a27f6bc209ec3edc9d4cd7bb3c51de2a81517dc77d9dc3ee3e6659ec5cbe",
+    "runtime/coinmaster/strategy/method_a_recovery.py": "1fe9a2a92d1912339e3bd6695aa3caa5941f1b3e544659a5da1940654ba3ef39",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/coinmaster/venues/margin_policy.py": "ca855858ff19791544bb17930721e591e35acb2d33adb257db85bf6b175c1e15",
+    "runtime/coinmaster/venues/bybit_profile.py": "9a26ffc79aa7f4e80d14fb1bb42a91846e153378e83d0b9a79695e46195088e7",
+    "runtime/coinmaster/research/method_a_controls.py": "c5864389ec79a674804693f9fef678d0881c679bd2a8ea3a841b8cdeafc9347d",
+    "runtime/coinmaster/research/native_baseline.py": "1054b2eb1bbbacdac288c27194dbb9920692160f7b092e16f7b6898f104dad99",
+    "runtime/tests/run_method_a_sol.py": "d34ed2c237af6a82fb8e53f33b500b31e6015c4314d8051103d23c90afe2b645"
+  },
+  "prior_analysis_sha256": "fe84acde86a8c3c165183b77a3aa38e305670cf3fbee635ba02fef2054479e9d",
+  "math_note": {
+    "path": "/private/tmp/cm_code0_pointwise_sol_theorem.md",
+    "sha256": "cdddc7cdeaf7e989cce294a021630bd5d277c461820d7bbc9eac04ed2ace7f20"
+  },
+  "source_edits": 0,
+  "tests": 0,
+  "engine_native_runs": 0,
+  "implementation_approved": false,
+  "GO": false
+}

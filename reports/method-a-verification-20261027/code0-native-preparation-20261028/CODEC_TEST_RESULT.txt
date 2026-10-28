@@ -1,0 +1,7 @@
+test_actual_persisted_code0_owner_serializes_without_mutation (test_method_a_receipt_codec_pure.ReceiptCodec.test_actual_persisted_code0_owner_serializes_without_mutation) ... ok
+test_unsupported_metadata_remains_unknown_without_repr_or_owner_mutation (test_method_a_receipt_codec_pure.ReceiptCodec.test_unsupported_metadata_remains_unknown_without_repr_or_owner_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.336s
+
+OK

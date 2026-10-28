@@ -1,0 +1,19 @@
+{
+  "scope": "DECLARED_PROSPECTIVE_EQUATIONS_NOT_NATIVE_RESULT",
+  "E69_reference": "5722.6733025",
+  "C69": "722.6733025",
+  "BTC_only_loss": "368.03936548734848856506242498938000",
+  "u69": "0.5092748884096883993650262526328485754460259724344805168722833786986340207302732066817979622265069077",
+  "public_mark_move_1329_to1327_equity_change": "26.58",
+  "C69_1": "749.2533025",
+  "u69_1": "0.4912081992289229696989722978089642788060984222355162725492291039985105704622503148726528302489530902",
+  "off_threshold_unchanged": ".50",
+  "noncrossing_BTC_bid": "105.1<oldTP105.2",
+  "normal_close_depth71": "132.9-.1-.1-.6=132.1",
+  "first_flat_cash_conditional": "6010.94888295",
+  "first_flat_cash_lower_bound_at_limit": "6010.92386920",
+  "second_parent_quantity": "Existing registered intent requestednotional/source normalization + actual nativecash; executable adapter implemented. Native result still unobserved.",
+  "reachability": "PROSPECTIVE_ONLY; price/depth consumption/callback sequence and original gate reachability require actual fresh native qualification",
+  "second_partial_execution_price": "132.91 distinct new ask level",
+  "extra_cost_vs_v1": ".00100055"
+}

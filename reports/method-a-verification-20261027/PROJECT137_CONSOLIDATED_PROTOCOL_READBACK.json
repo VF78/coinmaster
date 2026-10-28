@@ -1,0 +1,24 @@
+{
+  "issue_updated_at": "2026-10-28T17:12:14Z",
+  "readback": {
+    "data": {
+      "node": {
+        "id": "PVTI_lAHOBIUvJs4BPJNjzhDm9GA",
+        "isArchived": false,
+        "project": {
+          "number": 2
+        },
+        "fieldValueByName": {
+          "name": "In Progress",
+          "optionId": "47fc9ee4"
+        },
+        "content": {
+          "number": 137,
+          "state": "OPEN",
+          "title": "[Research] Four-week review and staged BTC/SOL recovery plan",
+          "url": "https://github.com/VF78/coinmaster/issues/137"
+        }
+      }
+    }
+  }
+}

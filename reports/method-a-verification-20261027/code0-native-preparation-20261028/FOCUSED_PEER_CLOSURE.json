@@ -1,0 +1,67 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "PASS_SCOPED_PROSPECTIVE_M3_PARTIAL_PREPARATION_CODEC_AND_HARNESS",
+  "open_findings": {"P0": 0, "P1": 0},
+  "initial_review_sha256": "0c81a97bb99840df652ec661a8b9ad0437e4676c3ec346cb9444a2cba2ebd237",
+  "source_base": "b1807f15043522b57d3e76527586f152c2db572c",
+  "final_reviewed_hashes": {
+    "PREPARATION_REPORT.json": "9e35234fb7deae0ae91803e9b995b06d66cf7056500b892ada0988004fb812cb",
+    "prospective_harness.py": "11cdd883f2cb31e180d3fea89d9e7dd0ca456e639f6883e3a3a6a2a4e177ffac",
+    "M3_CODE0_DATA_PROSPECTIVE.json": "0fb1618f7418b42c42b7ecf7165a0dc5b68f0297e849cdfc9ce15411787243db",
+    "READ_ONLY_CODEC.patch": "fd3dba2b0e40834d4e757fba27d59452a91fd647067721f308837ae3655af238",
+    "method_a_margin.py": "3cb88e3fed04c4b9a9461bc9f7c894ac6467d3a5213b89d120eaed62aa6e24cb",
+    "method_a_receipt_codec.py": "e5e809e883d3c84dd5eccdee1c4d3f4e29c5c10adbe04d7701cf9c26139b388e"
+  },
+  "closed_findings": [
+    {
+      "finding": "Fresh timestamp, exact namespace and source-universe binder",
+      "status": "CLOSED_IN_SCOPED_ENGINEERING_BINDER",
+      "evidence": "Strict canonical nonnegative integer parsing handles native string clocks and expected integer ns. Boundary index includes ONLY SOL_NATIVE_BOUNDARY and rejects duplicates, preventing operation-sequence collisions. Exact ref/physicalrow/hash, label/currenttime/outer+raw+boundaryparent/episode, native quote fields/epoch/global index, independent input count and first positive episode full-capture assertions implemented. First actual firstparent:1 capture is mandatory and precedes firstSOL initialized dispatch physical risk row; full Cache/initCID/index/owner/pending resolutions and emptySOL/control facts checked. DetailedBook emits a fresh getter-based no-pair boundary where existing product hook returns early. This changes logging only, not commands/domain/native state."
+    },
+    {
+      "finding": "Runnable future-gated original phase and dynamic quantity adapter",
+      "status": "CLOSED_AT_PROSPECTIVE_SOURCE_LEVEL",
+      "evidence": "Default path remains stdlib-only validation. Native preparation needs explicit no-engine preparation approval; native path requires fresh owner allocation19/rootGO/source/data/harness pins/newUUID/namespace then original root-gated one-constructor launch with claim/preflight checks. Harness observations reuse originalphase/fault/cleanup semantics; SECOND uses registered domain request/native cash/source lot normalization and first/second entitlement. MEDIUM HEDGE_ADMISSION target binds actual entry/held SOL and later nativeSTOP quantity. Old473.439/196.4 assertions replaced in new adapter, original script unchanged."
+    },
+    {
+      "finding": "Full-held endpoint scope overclaim",
+      "status": "CLOSED_BY_EXPLICIT_COVERAGE_SPLIT_NOT_A_NATIVE_PASS",
+      "evidence": "M3 scope is zero/multiple-partial/residual/ACK/deadline plus all original semantic lifecycle gates, ending exact expected PARTIAL_NATIVE_STOP. Full-held CODE0 actual SAFE endpoint explicitly REQUIRED_M8_NOT_YET_RUN. Exact M8 recipe placement while positive-parent SOL remains held is deferred/feasibilityUNKNOWN; economics blocked until actual M8full gatePASS. No third M3parent/newfullroute slot or waived oldgate."
+    },
+    {
+      "finding": "Repeated identical partial-book depth",
+      "status": "CLOSED_AT_DECLARED_SOURCE_AND_ASSERTION_LEVEL",
+      "evidence": "Second partial ask132.91 differs from132.9 and remains within133.03 cap. New adapter requires actual public matching book ask/depth.1 and native fill at exact corresponding price for each distinct partial CID; real zeroIOC@70 enumerated separately and canceled zero-fill. Conditional first-flat cash recalculated6010.94888295, not observed money. Stock completion/reachability remains actual-run gate."
+    }
+  ],
+  "codec_acceptance_retained": "0P0P1: copied knownFeatures/OrderSide metadata only, unsupported types remain collectorUNKNOWN; original2focused codecPASS evidence retained, not rerun.",
+  "source_noninterference": "Previous independent byte comparison showed four trading files equal b180; corrected changes confined to prospective harness/binder/logging/declared DATA, codec unchanged. No product changes by reviewer.",
+  "manual_postrun_source_closure": {
+    "status": "REQUIRED_NOT_AUTOMATICALLY_PROVEN",
+    "binder_result_label": "ENGINEERING_EVIDENCE_BINDING_ONLY_ROOT_POSTRUN_MANUAL_SOURCE_CLOSURE_REQUIRED",
+    "complete_command_universe": "UNKNOWN_REQUIRES_ROOT_POSTRUN_SEALED_SOURCE_CLOSURE",
+    "financial_qualification": false,
+    "requirement": "Independent root actual source/inventory/no-bypass/no-cachepurge producer review and case acceptance remain mandatory. Private native queues never claimed visible; no global historical financial qualification generated."
+  },
+  "protected_financial_sha256_verified": {
+    "method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "readiness_meaning": "Prospective codec/harness/DATA scoped source review accepted for freeze and future exact root preflight. Actual zero/partial/book/ACK/cash/SECOND/STOP reachability has not occurred; this is expected prelaunch uncertainty, not proof of PASS or remaining implementation-placeholder. No claim of actual accounting/economics/full native recovery.",
+  "remaining_before_engine": [
+    "Final committed/frozen source and exact inventory/harness/config/data/engine/profile/quote universe pins plus Mac preflight/readback",
+    "Separate direct human new-attempt budget approval (proposed cap19/engineering12/prefix6/full1 not yet granted), then rootGO/canonical newclaim/fresh namespace",
+    "Independent actual postrun case/raw-source closure; oldM3/M3R remainFAILED; later M8full and economic adapter/accounting gates mandatory"
+  ],
+  "reviewer_tests_run": 0,
+  "reviewer_native_imports": 0,
+  "reviewer_product_edits": 0,
+  "engine_runs": 0,
+  "source_review_acceptance_only": true,
+  "native_GO": false,
+  "financial_GO": false,
+  "new_native": 0,
+  "new_prefix": 0,
+  "new_full": 0,
+  "ledger": {"spent": 9, "authorized_cap": 18, "changes": 0, "proposed19_approved": false}
+}

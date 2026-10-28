@@ -1,0 +1,96 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "CODEC_ACCEPTABLE_PROSPECTIVE_NATIVE_PACKAGE_NOT_READY",
+  "open_findings": {
+    "P0": 0,
+    "P1": 4
+  },
+  "reviewed_pins": {
+    "source_base": "b1807f15043522b57d3e76527586f152c2db572c",
+    "PREPARATION_REPORT.json": "b311733542b8d233c9ef0b7fc0ff3bf78acc370fec1ece386a341c426e95142f",
+    "READ_ONLY_CODEC.patch": "fd3dba2b0e40834d4e757fba27d59452a91fd647067721f308837ae3655af238",
+    "PROSPECTIVE_SOURCE_INVENTORY.json": "887f582ec2b33d7026d03fe39f543bd56d2f8d76d155910ee8a280265eb5ae05",
+    "M3_CODE0_DATA_PROSPECTIVE.json": "2de2857f3146a6721cfb4962bf43363606ee3f500c0e1fca4b203c10fb89a935",
+    "prospective_harness.py": "e149ff0db7a6e87ecfb2460e494f250316d1724b903274147e2331bda4cd9630",
+    "method_a_margin.py": "3cb88e3fed04c4b9a9461bc9f7c894ac6467d3a5213b89d120eaed62aa6e24cb",
+    "method_a_receipt_codec.py": "e5e809e883d3c84dd5eccdee1c4d3f4e29c5c10adbe04d7701cf9c26139b388e",
+    "test_method_a_receipt_codec_pure.py": "ead1aaecb69a585695a53188bdc8af059bb35d3d39783ebc6eac93ffd73cf2af"
+  },
+  "codec_review": {
+    "status": "PASS_READ_ONLY_CODEC_SCOPE_0P0P1",
+    "reason": "receipt_owner_values copies owner and code0_route dicts, converts exactly known Features via asdict and known BUY/SELL OrderSide to name, then existing wire recursively produces fresh JSON-compatible values. No assignment touches original owner/route, orders, risk/cash or native commands. Unsupported route/feature/side raises explicit TypeError; other opaque metadata still wire TypeError -> collectorUNKNOWN. No repr/stringification fallback introduced.",
+    "noninterference": "Independent source-text comparison confirms four trading files risk_native/recovery_code0/paired_prefix/method_a_tp exactly equal b180 base. Only research collector invokes new copied-metadata codec. detailedTrue remains prospective, not implemented in launch here.",
+    "test_evidence": "Two writer-focused public persisted-owner codec checks PASS0.336s; reviewer read results/source, ran no tests or engines."
+  },
+  "findings": [
+    {
+      "priority": "P1",
+      "file": "reports/method-a-verification-20261027/code0-native-preparation-20261028/prospective_harness.py",
+      "function": "assert_fresh_barrier",
+      "title": "Fresh-barrier assertion rejects real exported timestamp types and omits essential identity joins",
+      "evidence": "Existing risk/paired exported timestamp_ns is decimal string; EXPECTED_INPUT_UNIVERSE.global_input_list[].ns is integer. boundary.timestamp_ns==receipt.timestamp_ns==expected_input.ns therefore always fails on a real valid exported receipt. Function also accepts a supplied boundary without resolving receipt.boundary_state_ref, omits outer receipt parent/episode consistency, native_quote equality and independent exact-once input-universe completion.",
+      "correction": "Normalize timestamps through strict integer parsing, compare all outer/raw/boundary parent+episode+timestamp, resolve boundary ref to exactly one SOL_NATIVE_BOUNDARY BEFORE_NATIVE_MATCHING_INPUT physical row/hash preceding same receipt. Validate actual native_quote against immutable expected quote descriptor plus perinstrument epoch/global index; add explicit exact-once universe/final count and raw-capture/source closure assertions. No numerical reader changes."
+    },
+    {
+      "priority": "P1",
+      "file": "reports/method-a-verification-20261027/code0-native-preparation-20261028/prospective_harness.py",
+      "function": "launch/original phase adapter",
+      "title": "Concrete M3 phase/quantity adapter and required assertions remain unimplemented",
+      "evidence": "launch intentionally raises NOT_READY; only data validation, one .1 partial helper and incomplete barrier helper are implemented. No callable native launch adapter enforces all original phases, zero IOC, successive actual residual IOC/owned resize ACK drain/deadline, conditional cash and dynamically derived natural parent2/SECOND/SOL size. Existing original assert_m3_phase/assert_m3_fault retain old6011.93042250/473.439/236.719/236.720/196.4 constants; MANDATORY_GATES.mandatory_original still repeats these incompatible amounts despite protocol forbidding their reuse.",
+      "correction": "Implement one explicit new adapter reusing original semantic assertions with source-planned/native actual quantities and exact native events. Before launch freeze executable formulas/lot rules to derive natural second parent and SOL target from actual source capital, and assert native initialized orders match those derived values; this does NOT require knowing future actual cash/PASS before launch. Replace contradictory literal oldamount gates with corresponding new source-derived assertions, preserve every semantic phase/final expected PARTIAL_NATIVE_STOP and before-cleanup fault/command evidence. Keep old launch/scripts/raw unchanged and locked out."
+    },
+    {
+      "priority": "P1",
+      "file": "reports/method-a-verification-20261027/code0-native-preparation-20261028/MANDATORY_GATES.json",
+      "title": "Native full-held CODE0 safe endpoint is neither exercised nor explicitly excluded",
+      "evidence": "Declared timeline yields zero fill then .1 and .1 capped IOC fills, then mark128 and ordinary SOL_CLOSE to tiny/latefill phases. It does not exercise a full-held capped CODE0 IOC completion and actual safe endpoint. Pure full-edge proof cannot be represented as native endpoint coverage. mandatory_uncovered lists native partial sequencing but does not explicitly declare full-held native endpoint untested.",
+      "correction": "Either add a separately coherent declared full-held CODE0 native-completion/actual-safe endpoint gate without dropping original M3 semantic gates, or explicitly state this fresh M3 provides only zero/multiple-partial/drain coverage and full-held CODE0 native endpoint remains NOT_TESTED, with separate future qualification required before claiming complete native recovery acceptance. Do not silently expand DATA or waive original gates just to obtain both."
+    },
+    {
+      "priority": "P1",
+      "file": "reports/method-a-verification-20261027/code0-native-preparation-20261028/M3_CODE0_DATA_PROSPECTIVE.json",
+      "title": "Identical70.1/70.2 SOL quotes repeat known consumed-depth nonreset hazard",
+      "evidence": "Both declared SOL quotes bid=ask132.9,bid_depth1000,ask_depth.1; changing timestamp alone must not be assumed to replenish stock consumed liquidity. This repeats the known failed M3 repeated-identical-depth class. Thus claimed two successive native .1 fills is not a source-supported predeclared reachability argument. Root independently identified this exact DATA issue in the same correction pass.",
+      "correction": "Make second partial quote a distinct predeclared marketable price within133.03 cap, e.g132.91, or another source-validated distinctbook update; recompute exact conditionalcash/fee and nativepartial price expectations accordingly. Preserve failed old fixture evidence; no trial engine or silent post-outcome adjustment."
+    }
+  ],
+  "one_consolidated_correction_list": [
+    "Fix strict timestamp/physical boundary/source quote/universe joins in prospective assertion helper.",
+    "Correct identical70.1/70.2 consumed-depth DATA hazard with distinct predeclared price/book and recompute conditional fee/cash and exact partial expectations.",
+    "Implement and review one runnable new M3 adapter with executable zero/partial/terminal/ACK/deadline/source-derived quantity gates; keep old wrappers untouched.",
+    "Reconcile mandatory old literal quantities/cash with conditional new cash and dynamic exact native parent/SECOND/SOL lot formulas.",
+    "Add full-held actual CODE0 endpoint gate OR explicitly bound this case to partial-only native coverage, no full native acceptance claim.",
+    "Freeze final source/config/DATA/universe/harness/codec report hashes only after correction; proposed cap19/newattempt still requires separate human approval."
+  ],
+  "reachability_assessment": {
+    "public_off_intent": "Conditional equations are coherent: SOL132.9->132.7 raises marked equity26.58, BTC-only u .50927->.49120 below retainedOFF. Noncrossing BTCbid105.1<oldTP105.2 can set close intent without premature BTC fill. Does not prove later native execution.",
+    "cash": "6010.94988350 is correct conditional difference6011.93042250-.2*(132.9-128)*(1+.00055); lower-limit-cost bound6010.92386920 likewise prospective. They are not actual witnessed balances. Per-fill native Money/tick and native fill ordering still authoritative.",
+    "normal_unobserved": "Native quote depth consumption, zero/partial executions, resize ACK sequencing and all original gates have not yet occurred under new DATA. This is normal prelaunch uncertainty; do not require a future actual PASS as a prelaunch condition. It must instead be a concretely executable declaration and post-run gate. Current unimplemented launch/assertions are the blocking distinction.",
+    "coverage": "Two full prices/depth changes at70.1/70.2 plausibly make two .1 fills possible, but source callback ordering through real terminal+protection ACKs must be asserted, not assumed or replaced with pending relief. Final exact STOP negative must remain an expected engineering negative, not economic or flat success."
+  },
+  "protected_financial_pins_verified": {
+    "method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "reviewer_tests_run": 0,
+  "reviewer_product_edits": 0,
+  "engine_runs": 0,
+  "native_GO": false,
+  "financial_GO": false,
+  "ledger": {
+    "spent": 9,
+    "authorized_cap": 18,
+    "changes": 0,
+    "proposed19_approved": false
+  },
+  "new_native": 0,
+  "new_prefix": 0,
+  "new_full": 0,
+  "planned_coverage_split_assessment": {
+    "status": "SEMANTICALLY_ACCEPTABLE_DEFERRED_EXACT_M8_FEASIBILITY_UNKNOWN",
+    "M3": "Zero/multiple-partial native IOC, terminal+ACK/deadline and all original semantic M3 gates; explicitly full-held CODE0 endpoint NOT_TESTED.",
+    "M8": "Mandatory future full-held CODE0native completion and actual safe endpoint within existing positive parent, before later adverse-basis parent; economic qualification blocked until actual full gate PASS. No third M3parent or extra fullroute slot.",
+    "feasibility_limit": "Existing M8 positive SOLTP0/1/2 exhaust SOL by66s and BTCflat82s; full SOL recovery cannot be inserted after those exhausted-inventory facts. Exact future recipe must place route while positiveparent SOL still held after actual on/useful/partial facts, reconcile existing phase semantics and changed cash-derived adverseparent quantities, then freeze/review before M8. M8cancel0 and M3cancel2s remain separate declared fixtures.",
+    "not_actual_coverage": true
+  }
+}

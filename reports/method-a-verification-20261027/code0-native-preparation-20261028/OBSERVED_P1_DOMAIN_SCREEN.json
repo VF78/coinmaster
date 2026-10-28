@@ -1,0 +1,39 @@
+{
+  "status": "OBSERVED_P1_DOMAIN_SCREEN_NOT_COUNTERFACTUAL_RESULT",
+  "source_attempt": "3cedfcac-2331-4c70-8004-183f011af921",
+  "source_commit": "a4dd4694284192dc7fe063495ac3e727efff4b38",
+  "artifact_sha256": "b70ce57725c5bd356a94ab5fb37e71839f31b5c2c3f53e8a03b174ac64dc56e3",
+  "profile_sha256": {
+    "BTC": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+    "SOL": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+  },
+  "first_tier_caps": {
+    "BTC": "300000",
+    "SOL": "50000"
+  },
+  "counts": {
+    "total_rows": 588128,
+    "held_rows": 261006,
+    "both_held_rows": 16624,
+    "held_direction_in_CODE0_sign_domain": 168092,
+    "both_held_direction_in_CODE0_sign_domain": 0,
+    "held_current_notional_above_first_tier": 122276,
+    "sign_domain_and_current_notional_above_first_tier": 59744
+  },
+  "observed_max_native_mark_notional": {
+    "BTC": "1108990.1088",
+    "SOL": "1140300.000"
+  },
+  "observed_max_position_quantity": {
+    "BTC": "11.634",
+    "SOL": "6000.0"
+  },
+  "limits": [
+    "Counts are coherent event rows, not elapsed time, independent samples or probability.",
+    "Old P1 includes legacy SOL alpha and its own capital path; new P3 positions/features differ.",
+    "No CODE0 invocation or economic engine; sign/current-mark tier screen only, other ACK/funding/shock/price guards not evaluated.",
+    "Cannot infer exact new hedge ROI, failure rate or infeasibility; domain coverage must be addressed before economic admission."
+  ],
+  "new_native": 0,
+  "ledger_changes": 0
+}

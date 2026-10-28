@@ -1,0 +1,91 @@
+{
+  "status": "CORRECTED_EXECUTABLE_FUTURE_GATED_M3_PARTIAL_RUNNER_READY_FOR_PEER_CLOSURE_NATIVE0",
+  "source_base": "b1807f15043522b57d3e76527586f152c2db572c",
+  "source_changes": {
+    "runtime/coinmaster/research/method_a_margin.py": "3cb88e3fed04c4b9a9461bc9f7c894ac6467d3a5213b89d120eaed62aa6e24cb",
+    "runtime/coinmaster/research/method_a_receipt_codec.py": "e5e809e883d3c84dd5eccdee1c4d3f4e29c5c10adbe04d7701cf9c26139b388e",
+    "runtime/tests/test_method_a_receipt_codec_pure.py": "ead1aaecb69a585695a53188bdc8af059bb35d3d39783ebc6eac93ffd73cf2af"
+  },
+  "trading_source_unchanged": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/coinmaster/strategy/method_a_recovery_code0.py": "e96ca645dd95ab936c18ffa0d5590d1b99135c395bf7010e245975ec2cb01880",
+    "runtime/coinmaster/strategy/paired_prefix.py": "b64e5aa8a399fecf3bfbe2d58a6488714984fc5db8b596ed4ac09f9ef6e1fe75",
+    "runtime/coinmaster/strategy/method_a_tp.py": "a7ab2b75580b6ad59c89f467a118fc91eebcd8f0384ec16d082b44a2f01ab6cb"
+  },
+  "codec": "Only explicit known Features->asdict and OrderSide.name on copied metadata. No owner/risk/cash mutation; unknown still raises/collectorUNKNOWN.",
+  "codec_tests": {
+    "passed": 2,
+    "seconds": "0.336",
+    "result_sha256": "2e9d3f4388e21431dbc0321f06741b2c2fb3fb127f92f99acc450d3757180760",
+    "no_passing_suites_rerun": true,
+    "engine_constructors": 0
+  },
+  "prospective_data_sha256": "0fb1618f7418b42c42b7ecf7165a0dc5b68f0297e849cdfc9ce15411787243db",
+  "data_quote_universe": {
+    "BTC": 26,
+    "SOL": 34
+  },
+  "harness": "Complete callable future nativeprepare/launch path, default stdlib-only locked before native imports. Existing one-constructor gated launch reused under fresh authority/claim/namespace. Complete originalsemantic phase+fault+cleanup adapters and nativecash/request-derived SECOND/HEDGE_ADMISSION fulltarget assertions. Not executed.",
+  "mandatory_uncovered": [
+    "Unobserved actual native reachability/zero+partial+residual/ACKs/oldlatency+latefill+fault gates",
+    "Unobserved actual cash/nativeplannedSECOND/SOLtarget (executable assertions now present)",
+    "Unobserved actual freshbarrier/sourceproducerclosure receipts",
+    "FullheldCODE0 SAFE endpoint REQUIRED_M8_NOT_YET_RUN before economics; not part of M3 partial-scope claim"
+  ],
+  "noninterference": "Codec operates only research receipt copying. CODE0-off P0/P1 and safe M2 commands/risk/admission code unchanged; no repeated M2/P0/P1 run. detailedTrue change is prospective logging-only; runtime/harness review still required.",
+  "budget": {
+    "authorized_current_cap": 18,
+    "spent": 9,
+    "dedicated_M3_remaining": 0,
+    "reserved_other9": {
+      "M4_M8": 5,
+      "prefix": 3,
+      "full": 1
+    },
+    "proposed_only": {
+      "cap": 19,
+      "engineering": 12,
+      "prefix": 6,
+      "full": 1,
+      "new_fresh_M3": 1
+    },
+    "native_authority": 0,
+    "ledger_changes": 0
+  },
+  "M8_composite": "No M3+M8 same-engine merger. Root coverage split preserves separate original M8 slot; M8 fullendpoint feasibility remains UNKNOWN, not a released or borrowed slot.",
+  "financial_dirty_preserved": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "no_native_prefix_full": [
+    0,
+    0,
+    0
+  ],
+  "commit": null,
+  "packet_hashes": {
+    "ASK_UPDATE_SOURCE_CONTRACT.json": "0b9ad2daa77437a6723a04ef61d9517632d35e5840c48359eff829014e44787f",
+    "CODEC_TEST_RESULT.txt": "2e9d3f4388e21431dbc0321f06741b2c2fb3fb127f92f99acc450d3757180760",
+    "DATA_ONLY.diff": "a4b9932523ff97eb38eb735fb4b45a725d5cd3567884ef376ff1a5335e650b39",
+    "DOMAIN_APPLICABILITY_NOTE.md": "4e8e5403301b0f024f2ded863cc72fef22daaaebeb0b541dec785dc44c51d645",
+    "ENGINEERING_BINDER_CONTRACT.json": "b653422385202c7ac71212870806377c1f4fe60332e3fd1149efa7a2ecdd6444",
+    "EXPECTED_INPUT_UNIVERSE.json": "c08273b67ab4947a9917cb06e17d7548d92b156d7d4ac83bb17ef4a8b5680757",
+    "M3_CODE0_DATA_PROSPECTIVE.json": "0fb1618f7418b42c42b7ecf7165a0dc5b68f0297e849cdfc9ce15411787243db",
+    "MANDATORY_GATES.json": "8ebd94c9dde7fcfdc533bab72593c3b7e96f738ad049580a03d3635b3953fe9a",
+    "PROSPECTIVE_SOURCE_INVENTORY.json": "887f582ec2b33d7026d03fe39f543bd56d2f8d76d155910ee8a280265eb5ae05",
+    "PROTOCOL_NOT_READY.md": "61a0e035c83b7c8195cb93ff9541cb5499de1f5e72126ee2f733ed19dd4315a4",
+    "REACHABILITY_AND_CASH_MATH.json": "957bd0950d81e6ddc5e8b0e50cc4d3d4521bfdd17276f5a9c47b7c36bf3f8e7e",
+    "READ_ONLY_CODEC.patch": "fd3dba2b0e40834d4e757fba27d59452a91fd647067721f308837ae3655af238",
+    "STDLIB_DATA_VALIDATION.json": "04e2fc38141c4a31ade0be6ba3d4050825d1f040bcda22bf5fa00924c1abd0ac",
+    "prospective_harness.py": "11cdd883f2cb31e180d3fea89d9e7dd0ca456e639f6883e3a3a6a2a4e177ffac"
+  },
+  "correction_batch": 1,
+  "v1_preserved": "v1-preserved/ original DATA/lockedplaceholder/report and consumed-depth assumption retained",
+  "conditional_cash_v2": "6010.94888295",
+  "full_endpoint_coverage": "REQUIRED_M8_NOT_YET_RUN: source/recipe feasible insertion must be proved while positive-parent SOL stillheld after safe/on/useful partial observations, before TPs/BTCflat/adverseparent. Exact M8 recipe deferred until M3PASS; no extra case/budget or claimsuccess.",
+  "validation": "Stdlib compile/AST/JSON/Decimal +strict integer negative checks only after correction; existing2codecPASS evidence unchanged. No native imports or engines in correction validation.",
+  "boundary_namespace_correction": "Index SOL_NATIVE_BOUNDARY events only; reject duplicate boundarysequence; exclude operationsequence namespace; retain physicalrow/linehash/filehash.",
+  "domain_applicability": "DOMAIN_APPLICABILITY_NOTE.md: root-observed oldP1 real-scale notionals exceed firsttiercaps; no CODE0/P3 performance inference or economics authority.",
+  "finite_binder_closure": "Mandatory initial firstparent:1 fullcapture, resolved exactCache/init/owner/open/inflight/emulated CID/instruments, actual empty SOL orders/init/positions/owner/pending/domain/queued/mandatory/control before physical firstSOLinit; every firstpositive episode capture mandatory; output exact uncaptured list. Engineering evidence only, root postrun sealedsource closure explicitUNKNOWN.",
+  "harness_no_pair_fresh_boundary": "READONLY DetailedBook supplies current-input no-SOL-owner boundary when existing product hook returns without pair, using actual held/open/inflight getters and explicit current parent/episode; no stale flat-transition reference reuse or state/command mutation."
+}

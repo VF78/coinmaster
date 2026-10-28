@@ -1,0 +1,39 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "review": "single narrow protocol consistency review, no new analysis/tests/code/native",
+  "reviewed_utc": "2026-10-28T17:09:13.420951+00:00",
+  "protocol_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/method-a-verification-20261027/CODE0_NEXT_QUALIFICATION_DRAFT_RU.md",
+  "protocol_sha256": "ecab9d063de7b278d3b0afb0d64c69677ed22b098b0905f67b54a899ed612dfd",
+  "status": "PASS_NARROW_PROTOCOL_CONSISTENCY_REVIEW",
+  "open_findings": {
+    "P0": 0,
+    "P1": 0
+  },
+  "otherwise_consistent": [
+    "SOL-only pointwise theorem explicitly compares sameactualoldpath, universally safefull endpoint, no globalunattainableoldmax reliance",
+    "mirrored signs/tiers/multipleordinaryBTC TP/knowncausalfunding proposed only;currentadapter not alreadyqualified",
+    "ALLcash price/fee/PnL/equity rounding proof at every partial/betterprice required; no arbitraryepsilon/phi widening",
+    "newBTC overlap not generalized;unknown/pending/triggeredSOL/oldBTCSTOP paths DENY;positiveprotection/ACK/deadline retained",
+    "fixedframe/fundingcash changes require freshproof/reconciliation;no pendingcredit",
+    "actual fullSOL SAFE endpoint mandatory M8, not replaced by M3partial or math;unresolvedM8compatibilitySTOP beforeeconomics",
+    "budgetproposal19=eng12+prefix6+full1;spent9+M3one+M4-M8five+prefixthree+fullone=19;noreserve/noautomaticretry",
+    "currentcap18/native0 unchanged;newexplicitownerreceipt beforemonetaryextension/physicalattempt;oldFAILED immutable",
+    "noeconomicPASS/marketpromise/newnativepermission inferred"
+  ],
+  "readiness_claims_not_reaudited": "Prepared3f555d source/codec2tests/peer history treated as supplied receipts; no repetition of previous source/preflight reviews.",
+  "source_edits": 0,
+  "tests": 0,
+  "native_runs": 0,
+  "GO": false,
+  "initial_protocol_sha256": "23930067b93cbf1790be52a65bd6c3207c1a3e232a4804c91af12e65f4bf5c60",
+  "closed_findings": [
+    {
+      "priority": "P1",
+      "section": 7,
+      "quote": "P3/P4: settled и coherent-event DD≤50%",
+      "issue": "This makes P4 diagnostic DD>50 a gate failure, contrary to approved budget18 amendment: P4 DD>50 alone is not invalidity and may remain qualified Pareto comparator.",
+      "required_correction": "Separate P3 candidate DD≤50 requirement from P4 diagnostic integrity. State explicitly P4 DD>50 alone is not invalid; retain native accounting/ownership/no liquidation/financial integrity and existing Pareto gates.",
+      "resolution": "Readback confirmed corrected §7: P3 requires both DD≤50; P4 diagnostic DD>50 alone not invalid; both integrity requirements and qualified P4 Pareto gate retained. Only sole correction reread."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "status": "PROSPECTIVE_ENGINEERING_BINDER_CONTRACT_NOT_ACTUAL_COVERAGE",
+  "source_base": "b1807f15043522b57d3e76527586f152c2db572c",
+  "source_inventory_path": "PROSPECTIVE_SOURCE_INVENTORY.json",
+  "source_inventory_sha256": "887f582ec2b33d7026d03fe39f543bd56d2f8d76d155910ee8a280265eb5ae05",
+  "new_harness_sha256": "e149ff0db7a6e87ecfb2460e494f250316d1724b903274147e2331bda4cd9630",
+  "new_data_sha256": "2de2857f3146a6721cfb4962bf43363606ee3f500c0e1fca4b203c10fb89a935",
+  "codec_patch_sha256": "fd3dba2b0e40834d4e757fba27d59452a91fd647067721f308837ae3655af238",
+  "pipeline_closure_candidate": {
+    "existing_path": "reports/method-a-verification-20261027/m3-approved-repair-20261028/SOURCE_PROOF_AND_CONSUMER_REQUIREMENTS.md",
+    "existing_sha256": "b5a1426bbc16e8eace3ca1afa7225294d0ca72ae51b0baf9ad2209702dab3bc3",
+    "installed_strategy_pyx": "857 initialized ->871 cache ->876 SubmitOrder ->897 risk; reuse only as candidate, no invented private-queue proof"
+  },
+  "mandatory_actual_producer_closure": [
+    "exactly1 strategy",
+    "actors0",
+    "execution_algorithms0",
+    "no cache purge writer/direct exchange producer in sealed source/harness",
+    "ALL cache/order/owner/pending CIDs resolved against native initialized order/event history",
+    "raw queues remain NOT_EXPOSED_BY_PUBLIC_API; counters not standalone SOL-command counts"
+  ],
+  "barrier": [
+    "detailed=True for newcase book, originalcases defaultFalse",
+    "SOL_NATIVE_BOUNDARY labelBEFORE_NATIVE_MATCHING_INPUT same time/parent/risk episode before same receipt",
+    "receipt.sequence==raw.risk_sequence_before_receipt+1",
+    "bind quote epoch/global input index/nativequote to EXPECTED_INPUT_UNIVERSE once; final perinstrument received universe must match independent source rows"
+  ],
+  "financial_scope": "Engineering CODE0 receipt readiness only. No P2/P3/P4 economic adapter here; numeric reader unchanged; old M3R stale61s ref remains UNKNOWN."
+}

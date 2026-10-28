@@ -1,5 +1,5 @@
 ## Current Method A checkpoint — 2026-10-28
-CODE0 quantity-only COMPLETE b1807f1 defaultOFF, native0: boundedbase20checks plus4focusedquantitychecks separate; bothpeer0P0P1. Fixed1BTC/132.9SOLceilings replacedactualCache/workingTPleaves afterexplicitownerreceipt d9095fa9; otherguards/runtimebytes unchanged. Current audit: reports/method-a-verification-20261027/CHATGPT_AUDIT_STATUS_RU.md. CanonicalledgerUNCHANGED9/18active0; economicsNOT_MET; nextnative needsnewconcreteprotocol/ownerallocation, dedicatedM3exhausted.
+Latestsource3f555d9readonlycodec+M3prospectivepreppeer0P0P1; riskb180unchanged, native0/ledger9of18. NewconditionalSOLpointwiseproof allowsproposedrealdomainexpansion; sourceguardsstillfirsttier/onesign/onefilledTP/funding0. Consolidateddomain+max19protocol PROPOSED_ONLY peer0P0P1, ownerapprovalpending; no newmoneycode/native/fullauthority. Currentaudit/ACTIVE authoritative.
 
 # Research memory — as of2026-10-26; read before opening archives
 

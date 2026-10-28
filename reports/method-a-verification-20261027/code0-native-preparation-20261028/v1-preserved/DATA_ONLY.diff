@@ -1,0 +1,92 @@
+--- reports/method-a-verification-20261027/M3_DATA_CANDIDATE_APPROVED_20261028.json
++++ M3_CODE0_DATA_PROSPECTIVE.json
+@@ -304,6 +304,23 @@
+           "bid": "132.9",
+           "ask": "132.9",
+           "bid_depth": "1000",
++          "ask_depth": "68"
++        }
++      ]
++    },
++    {
++      "ns": 69100000000,
++      "phase": "PUBLIC_OFF_INTENT_BEFORE_BREACH",
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.7"
++      },
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "105.1",
++          "ask": "107",
++          "bid_depth": "1000",
+           "ask_depth": "1000"
+         }
+       ]
+@@ -326,6 +343,40 @@
+       ]
+     },
+     {
++      "ns": 70100000000,
++      "phase": "CODE0_PARTIAL_ONE",
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "132.9",
++          "ask": "132.9",
++          "bid_depth": "1000",
++          "ask_depth": ".1"
++        }
++      ]
++    },
++    {
++      "ns": 70200000000,
++      "phase": "CODE0_RESIDUAL_PARTIAL",
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "132.9",
++          "ask": "132.9",
++          "bid_depth": "1000",
++          "ask_depth": ".1"
++        }
++      ]
++    },
++    {
+       "ns": 71000000000,
+       "marks": {
+         "BTC": "107",
+@@ -338,7 +389,7 @@
+           "bid": "128",
+           "ask": "128",
+           "bid_depth": "1000",
+-          "ask_depth": "132.3"
++          "ask_depth": "132.1"
+         }
+       ]
+     },
+@@ -848,6 +899,13 @@
+     "Distinctnaturalshort; originalpassiveSECOND100.3 thenlatercross withcontemporaneousmark100.3, full473.439",
+     "ActualMEDIUM99.9 selection/ATR2; fullnativeSOL196.4 positive3TP+STOP98",
+     "OnlydeclaredfinalpartialnativeSTOP.1, exactPARTIAL_NATIVE_STOP plusactualIOCterminal payload; noearlyNO_GO",
+-    "Increasesdisabled, nohealthyresume, actualnative conservativecommands; fault remainsnonfinancial"
+-  ]
++    "Increasesdisabled, nohealthyresume, actualnative conservativecommands; fault remainsnonfinancial",
++    "Native CODE0 zero-fill70s then .1IOCpartial70.1s and fresh residualIOCpartial.1@70.2s; actualACK/costcap/deadline/increasesOFF proof",
++    "Exact old semantic gates retained; numerical cash/second quantities require explicit new protocol rederivation, never old6011/473.439/196.4 constants"
++  ],
++  "research_method_a_recovery_code0": true,
++  "detailed_receipts": true,
++  "prospective_case_label": "M3-CODE0-FRESH",
++  "native_authority": 0,
++  "source_base": "b1807f15043522b57d3e76527586f152c2db572c"
+ }
