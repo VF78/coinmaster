@@ -1,0 +1,27 @@
+{
+  "schema": "coinmaster-live-bridge-connected-peer-v1",
+  "status": "PASS_SOURCE_COMPONENT_AND_FRESH_INIT_NOT_NATIVE_READINESS",
+  "bridge_review": {
+    "base": "e1713f8a3b800323e0176e276d98ec18fb5262db",
+    "initial": "543295896e7888656f50b159d436b2d105386635",
+    "correction": "ab244302053ef7d74f3bafbb0802d53c247be62a",
+    "findings": [
+      "Warmup status overwrote runtime state",
+      "PLANREF discount string missingDecimalconversion",
+      "DP constructor mismatch prevented existing setter route"
+    ],
+    "additional_root_testwriter_finding": "Actual worker DP reader could not access manage-only money; separate observed native equity reader implemented with no command permission",
+    "close": "Independent peer PASS static close ab24430;78purePASS13.63s writer evidence"
+  },
+  "fresh_init_review": {
+    "initial": "a995ff8f16772c38ed234c03182f336223c09d67",
+    "finding": "Virgin guard omitted persisted unapplied/legacy fill evidence despite reconciled flat snapshot",
+    "correction": "bd3ae25dd1178ffa19f8011e7e9105d0989b509b",
+    "close": "Independent peer PASS static close bd3ae25;88purePASS16.20s writer evidence"
+  },
+  "reviewer": "Scoped independent gpt-6.1-sol medium; read-only, no duplicated full audit/rerun",
+  "runtime_account_mode_gate": "Compatibility qualification remains required. This source does not widen existing mode whitelist or claim account-mode held-money support.",
+  "native_venue_services_historical_runs": 0,
+  "live_capability": false,
+  "final_explicit_START_required": true
+}
