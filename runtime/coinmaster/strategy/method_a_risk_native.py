@@ -785,7 +785,7 @@ class MethodARiskResearch:
         counts=getattr(self,"_pair_sol_boundary_counts",None)
         if counts is None:self._pair_sol_boundary_counts=counts=dict(checks=0,strict=0,unknown=0)
         counts["checks"]+=1;counts["strict"]+=int(strict);counts["unknown"]+=int(held and not p["close_sol"]and not exact)
-        signature=repr((held,state,exact,rows,p["protection_since"]))
+        signature=repr((p["parent"],self._mr_episode,held,state,exact,rows,p["protection_since"]))
         detailed=bool(getattr(getattr(self.config,"research_native_book",None),"detailed",False))
         if detailed or signature!=p.get("sol_boundary_signature"):
             self._pair_log("SOL_NATIVE_BOUNDARY",ns,label=label,parent=p["parent"],actual_sol=held,

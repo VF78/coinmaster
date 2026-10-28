@@ -1,0 +1,29 @@
+{
+  "status": "PASS_SOURCE_BYTE_GUARDS",
+  "financial_logic_unchanged": true,
+  "method_a_adapter_only_changed_expression": "audit dedupe signature adds parent and episode; exact rest-of-file byte identity",
+  "runner_only_added": "bind_receipt_source(engine) before first run",
+  "native_baseline_only_added": "conditional bind_receipt_source(engine) before first run",
+  "tier_margin_class_byte_identical": true,
+  "raw_helper_attribute_calls": [
+    "actor_ids",
+    "append",
+    "exec_algorithm_ids",
+    "get",
+    "get_client_order_id_count",
+    "get_order_list_id_count",
+    "is_exiting",
+    "items",
+    "orders",
+    "orders_emulated",
+    "orders_inflight",
+    "orders_open",
+    "positions",
+    "strategy_ids",
+    "to_dict"
+  ],
+  "native_order_factory_outputs_unchanged": true,
+  "M2_data_untouched": true,
+  "financial_reader_untouched": true,
+  "no_native_run": true
+}

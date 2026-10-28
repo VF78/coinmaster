@@ -1,0 +1,7 @@
+test_source_hook_precedes_first_run_and_snapshot_is_at_receipt (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_source_hook_precedes_first_run_and_snapshot_is_at_receipt) ... ok
+test_full_cache_capture_is_once_at_first_receipt_of_new_episode (test_method_a_receipt_snapshot_pure.ReceiptSnapshotPure.test_full_cache_capture_is_once_at_first_receipt_of_new_episode) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.002s
+
+OK

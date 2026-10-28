@@ -1,0 +1,11 @@
+test_earlier_no_go_cannot_be_relabelled (test_method_a_m3_candidate_pure.M3CandidatePure.test_earlier_no_go_cannot_be_relabelled) ... ok
+test_exact_approved_bytes_and_reversible_data_only_patch (test_method_a_m3_candidate_pure.M3CandidatePure.test_exact_approved_bytes_and_reversible_data_only_patch) ... ok
+test_exact_causal_data_and_books (test_method_a_m3_candidate_pure.M3CandidatePure.test_exact_causal_data_and_books) ... ok
+test_expected_time_does_not_allow_wrong_reason (test_method_a_m3_candidate_pure.M3CandidatePure.test_expected_time_does_not_allow_wrong_reason) ... ok
+test_prepare_constructor_is_never_called (test_method_a_m3_candidate_pure.M3CandidatePure.test_prepare_constructor_is_never_called) ... ok
+test_reason_without_actual_native_stop_is_rejected (test_method_a_m3_candidate_pure.M3CandidatePure.test_reason_without_actual_native_stop_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.335s
+
+OK

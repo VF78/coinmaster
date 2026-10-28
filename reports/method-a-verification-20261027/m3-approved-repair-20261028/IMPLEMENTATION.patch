@@ -1,0 +1,1212 @@
+diff --git a/runtime/coinmaster/research/method_a_margin.py b/runtime/coinmaster/research/method_a_margin.py
+index 68578b5..bebac72 100644
+--- a/runtime/coinmaster/research/method_a_margin.py
++++ b/runtime/coinmaster/research/method_a_margin.py
+@@ -24,10 +24,47 @@ class MethodATierMarginModule(BybitTierMarginModule):
+ 
+ from coinmaster.research.native_book import NativeBookWitness
+ from nautilus_trader.model.data import QuoteTick
++from coinmaster.research.method_a_risk_rows import wire
++from dataclasses import asdict
+ 
+ 
+ class MethodABookWitness(NativeBookWitness):
+     """Existing strict barrier plus small complete causal input receipts."""
++    def bind_receipt_source(self,engine):
++        # Public native getters only. Registration precedes first engine.run.
++        self.receipt_engine=engine
++        self.receipt_ordinal=0
++        self.receipt_episode=None
++
++    def receipt_snapshot(self):
++        if not hasattr(self,'receipt_engine'):
++            return dict(schema='coinmaster.method-a-native-receipt.v1',
++                availability='UNKNOWN_UNBOUND_PRODUCER',financial_qualification=False)
++        self.receipt_ordinal+=1
++        ep=self.strategy._domain.episode
++        key=(None if ep is None else ep.id,self.strategy._mr_episode)
++        previous=self.receipt_episode
++        self.receipt_episode=key
++        if key[1]<=0 or key==previous:
++            return dict(schema='coinmaster.method-a-native-receipt.v1',
++                receipt_ordinal=self.receipt_ordinal,availability='NOT_CAPTURED_NO_NEW_RISK_EPISODE',
++                financial_qualification=False)
++        try:
++            raw=native_receipt_snapshot(self.strategy,self.receipt_engine,self.receipt_ordinal)
++        except Exception as error:
++            # Evidence failure is UNKNOWN, never a trading-state exception.
++            # Strict native/risk pre_process errors remain outside this catch.
++            return dict(schema='coinmaster.method-a-native-receipt.v1',
++                receipt_ordinal=self.receipt_ordinal,parent=key[0],risk_episode_id=str(key[0])+':'+str(key[1]),
++                previous_receipt_parent=None if previous is None else previous[0],
++                previous_receipt_episode=None if previous is None else previous[1],
++                risk_sequence_before_receipt=self.strategy._mr_sequence,
++                availability='UNKNOWN_COLLECTOR_EXCEPTION',collection_error_type=type(error).__name__,
++                complete_command_universe='UNKNOWN',financial_qualification=False)
++        raw['previous_receipt_parent']=None if previous is None else previous[0]
++        raw['previous_receipt_episode']=None if previous is None else previous[1]
++        return raw
++
+     def pre_process(self,data):
+         super().pre_process(data)
+         if isinstance(data,QuoteTick) and self.strategy is not None:
+@@ -37,4 +74,62 @@ class MethodABookWitness(NativeBookWitness):
+             strategy._mr_log('SOL_BOUNDARY_RECEIPT',data.ts_event,
+                 quote_instrument=str(data.instrument_id),native_input_epoch=self.epochs[data.instrument_id],global_input_index=sum(self.epochs.values()),native_quote=data.to_dict(data),
+                 sol_native_held=str(held),boundary_state_ref=strategy._mr_last_sol_boundary,
++                native_receipt_snapshot=self.receipt_snapshot(),
+                 boundary_counters=dict(strategy._pair_sol_boundary_counts))
++
++
++def native_receipt_snapshot(strategy,engine,ordinal):
++    """Raw receipt facts; coverage/financial qualification require source review.
++
++    No native command/event is created, no order/cache/factory is mutated.
++    All cached orders are retained, including foreign and terminal orders.
++    Generic counters are observations, never an asserted SOL command count.
++    """
++    cache=strategy.cache
++    orders=list(cache.orders())
++    indexed={str(o.client_order_id):o for o in orders}
++    def resolve(oid):
++        key=str(oid);order=indexed.get(key)
++        return dict(client_order_id=key,resolved=order is not None,
++                    instrument=None if order is None else str(order.instrument_id))
++    pending=[dict(**resolve(oid),intent=asdict(intent)) for oid,intent in strategy._pending_by_order.items()]
++    owners=[]
++    for oid,owner in strategy._pair_orders.items():
++        # Preserve the complete existing owner mapping; instrument is the sole
++        # native identifier in this mapping. Existing wire owns Decimal tuples.
++        values=dict(owner);values['instrument']=str(values['instrument'])
++        owners.append(dict(**resolve(oid),owner=values))
++    ep=strategy._domain.episode
++    kernel=engine.kernel
++    return wire(dict(schema='coinmaster.method-a-native-receipt.v1',
++        receipt_ordinal=ordinal,risk_sequence_before_receipt=strategy._mr_sequence,
++        parent=None if ep is None else ep.id,
++        risk_episode_id=str(None if ep is None else ep.id)+':'+str(strategy._mr_episode),
++        input_binding=strategy.config.research_method_a_input_binding,
++        high_watermarks=dict(exec_command_count=kernel.exec_engine.command_count,
++            exec_event_count=kernel.exec_engine.event_count,
++            factory_client_order_id_count=strategy.order_factory.get_client_order_id_count(),
++            factory_order_list_id_count=strategy.order_factory.get_order_list_id_count()),
++        producer_inventory=dict(strategy_ids=[str(v) for v in kernel.trader.strategy_ids()],
++            actor_ids=[str(v) for v in kernel.trader.actor_ids()],
++            exec_algorithm_ids=[str(v) for v in kernel.trader.exec_algorithm_ids()]),
++        native_positions=[p.to_dict() for p in cache.positions()],
++        native_orders=[o.to_dict() for o in orders],
++        native_init_events=[type(o.init_event).to_dict(o.init_event) for o in orders],
++        native_open_ids=[resolve(o.client_order_id) for o in cache.orders_open()],
++        native_inflight_ids=[resolve(o.client_order_id) for o in cache.orders_inflight()],
++        native_emulated_ids=[resolve(o.client_order_id) for o in cache.orders_emulated()],
++        pending_by_order=pending,paired_owners=owners,
++        domain_pending={} if ep is None else {str(k):asdict(v) for k,v in ep.pending.items()},
++        queued_intents=[dict(intent=asdict(intent),sigma=sigma,decision_index=index)
++            for intent,sigma,index in strategy._queued_intents],
++        mandatory_sol_exit=None if strategy._mandatory_sol_exit is None else
++            dict(intent=asdict(strategy._mandatory_sol_exit[0]),sigma=strategy._mandatory_sol_exit[1],
++                 decision_index=strategy._mandatory_sol_exit[2]),
++        native_control_state=dict(liquidating=strategy._liquidating,
++            forced_close_reason=strategy._forced_close_reason,
++            exiting=strategy.is_exiting(),method_a_failed=strategy._mr_failed),
++        unresolved_ids=sorted({r['client_order_id'] for r in pending+owners if not r['resolved']}),
++        complete_command_universe='UNKNOWN_REQUIRES_SEALED_SOURCE_PROOF',
++        raw_native_queue_visibility='NOT_EXPOSED_BY_PUBLIC_API',
++        financial_qualification=False))
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index f0c83d9..a2675ce 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -1068,6 +1068,8 @@ def run_native_diagnostic(
+         strategy.method_a_risk_audit,strategy.paired_prefix_audit=risk_row_streams
+     if research_native_book is not None: research_native_book.bind(strategy)
+     engine.add_strategy(strategy)
++    if research_native_book is not None and hasattr(research_native_book,'bind_receipt_source'):
++        research_native_book.bind_receipt_source(engine)
+     audit_archive = None
+     if research_sol_risk_first == "alpha-corridor-v1":
+         from coinmaster.research.native_audit import NativeAuditArchive
+diff --git a/runtime/coinmaster/strategy/method_a_risk_native.py b/runtime/coinmaster/strategy/method_a_risk_native.py
+index 54a42e2..debd1f1 100644
+--- a/runtime/coinmaster/strategy/method_a_risk_native.py
++++ b/runtime/coinmaster/strategy/method_a_risk_native.py
+@@ -785,7 +785,7 @@ class MethodARiskResearch:
+         counts=getattr(self,"_pair_sol_boundary_counts",None)
+         if counts is None:self._pair_sol_boundary_counts=counts=dict(checks=0,strict=0,unknown=0)
+         counts["checks"]+=1;counts["strict"]+=int(strict);counts["unknown"]+=int(held and not p["close_sol"]and not exact)
+-        signature=repr((held,state,exact,rows,p["protection_since"]))
++        signature=repr((p["parent"],self._mr_episode,held,state,exact,rows,p["protection_since"]))
+         detailed=bool(getattr(getattr(self.config,"research_native_book",None),"detailed",False))
+         if detailed or signature!=p.get("sol_boundary_signature"):
+             self._pair_log("SOL_NATIVE_BOUNDARY",ns,label=label,parent=p["parent"],actual_sol=held,
+diff --git a/runtime/tests/run_method_a_sol.py b/runtime/tests/run_method_a_sol.py
+index 06f395a..fd76dd4 100644
+--- a/runtime/tests/run_method_a_sol.py
++++ b/runtime/tests/run_method_a_sol.py
+@@ -325,7 +325,7 @@ def launch(case_path,gate_path):
+         cfg=config_for(case,proof['input_binding'],observer,book);strategy=M3Probe(cfg) if case['case_id']=='M3' else Probe(cfg)
+         streams=(MethodARiskRows(out/'risk.jsonl.gz','RISK'),MethodARiskRows(out/'paired.jsonl.gz','PAIRED'))
+         strategy.method_a_risk_audit,strategy.paired_prefix_audit=streams
+-        book.bind(strategy);engine.add_strategy(strategy)
++        book.bind(strategy);engine.add_strategy(strategy);book.bind_receipt_source(engine)
+         for row in case['rows']:
+             current_ns=row['ns']
+             if case['case_id']in ('M2','M3') and current_ns==61*10**9:assert_m2_second_phase(engine,strategy,'FULL_BEFORE_STRESS')
+diff --git a/runtime/tests/test_method_a_m3_candidate_pure.py b/runtime/tests/test_method_a_m3_candidate_pure.py
+index c31d566..4e5f339 100644
+--- a/runtime/tests/test_method_a_m3_candidate_pure.py
++++ b/runtime/tests/test_method_a_m3_candidate_pure.py
+@@ -1,10 +1,10 @@
+ """M3 data/guard assertions only: no fills, account changes or engine."""
+-import json,unittest
++import hashlib,json,unittest
+ from pathlib import Path
+ from types import SimpleNamespace as NS
+ from unittest.mock import patch
+ import run_method_a_sol as runner
+-CASE=Path(__file__).resolve().parents[2]/"reports/method-a-verification-20261027/m3-candidate/M3_DATA_PROPOSED.json"
++CASE=Path(__file__).resolve().parents[2]/"reports/method-a-verification-20261027/M3_DATA_CANDIDATE_APPROVED_20261028.json"
+ 
+ class M3CandidatePure(unittest.TestCase):
+     def test_exact_causal_data_and_books(self):
+@@ -15,19 +15,34 @@ class M3CandidatePure(unittest.TestCase):
+         self.assertEqual(rows['PRELOAD_CAP_BOOK_BEFORE_BTC_TPS']['quotes'][0]['ask'],'132.9')
+         self.assertEqual(rows['PRELOAD_CAP_BOOK_BEFORE_BTC_TPS']['quotes'][0]['ask_depth'],'10')
+         self.assertLess(rows['PRELOAD_CAP_BOOK_BEFORE_BTC_TPS']['ns'],rows['BTC_TP0_ONLY']['ns'])
+-        self.assertEqual([rows[p]['quotes'][0]['bid_depth']for p in ('BTC_TP0_ONLY','BTC_TP1_ONLY','BTC_TP2_PARTIAL')],['116.875','116.875','116.250'])
++        self.assertEqual([rows[p]['quotes'][0]['bid_depth']for p in ('BTC_TP0_ONLY','BTC_TP1_ONLY','BTC_TP2_PARTIAL')],['116.875','116.874','116.251'])
+         self.assertEqual(rows['SECOND_PARENT_FULL']['marks']['BTC'],rows['SECOND_PARENT_FULL']['quotes'][0]['bid'])
+         self.assertEqual(rows['SECOND_PARENT_FULL']['marks']['BTC'],'100.3')
+         self.assertEqual(rows['TINY_PROTECTED']['quotes'][0]['ask'],'128')
+         self.assertEqual(rows['DECLARED_PARTIAL_STOP_FAULT']['quotes'][0]['bid_depth'],'.1')
+         self.assertEqual(rows['DECLARED_PARTIAL_STOP_FAULT']['ns'],case['expected_negative_not_before_ns'])
+ 
++    def test_exact_approved_bytes_and_reversible_data_only_patch(self):
++        self.assertEqual(hashlib.sha256(CASE.read_bytes()).hexdigest(),"96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba")
++        case=json.loads(CASE.read_text())
++        original=json.loads((CASE.parent/"m3-candidate/M3_DATA_PROPOSED.json").read_text())
++        rows={r["phase"]:r for r in case["rows"]}
++        self.assertEqual([q["asset"] for q in rows["CAP_PARTIAL"]["quotes"]],["BTC","SOL"])
++        self.assertEqual(rows["CAP_PARTIAL"]["quotes"][0],dict(asset="BTC",bid="107",ask="107",bid_depth="116.251",ask_depth="1000"))
++        for phase in ("LATE_TP0","LATE_TP1"):
++            self.assertEqual(rows[phase]["quotes"][0]["ask_depth"],".2")
++            rows[phase]["quotes"][0]["ask_depth"]=".1"
++        rows["BTC_TP1_ONLY"]["quotes"][0]["bid_depth"]="116.875"
++        rows["BTC_TP2_PARTIAL"]["quotes"][0]["bid_depth"]="116.250"
++        rows["CAP_PARTIAL"]["quotes"].pop(0)
++        self.assertEqual(case,original)
++
+     def test_prepare_constructor_is_never_called(self):
+         with patch.object(runner,'BacktestEngine',side_effect=AssertionError('FORBIDDEN_ENGINE')) as constructor:
+             proof=runner.prepare(CASE)
+         constructor.assert_not_called()
+-        self.assertEqual((len(proof['public_inputs']),proof['quote_count']),(139,56))
+-        self.assertEqual(proof['quote_universe'],{'BTC':24,'SOL':32})
++        self.assertEqual((len(proof['public_inputs']),proof['quote_count']),(140,57))
++        self.assertEqual(proof['quote_universe'],{'BTC':25,'SOL':32})
+         self.assertEqual(proof['engine_constructors'],0)
+         self.assertFalse(proof['ready_to_launch'])
+ 
+diff --git a/runtime/tests/test_method_a_receipt_snapshot_pure.py b/runtime/tests/test_method_a_receipt_snapshot_pure.py
+new file mode 100644
+index 0000000..ab4db5d
+--- /dev/null
++++ b/runtime/tests/test_method_a_receipt_snapshot_pure.py
+@@ -0,0 +1,138 @@
++"""Public native Cache/Order receipt serialization, no engine/matcher."""
++import json,unittest
++from types import SimpleNamespace as NS
++from decimal import Decimal as D
++from pathlib import Path
++from nautilus_trader.cache.cache import Cache
++from nautilus_trader.common.component import TestClock
++from nautilus_trader.common.factories import OrderFactory
++from nautilus_trader.model.enums import OrderSide,TimeInForce
++from nautilus_trader.model.identifiers import TraderId,StrategyId
++from coinmaster.research.native_fixture import SOL_PERP,BTC_PERP
++from coinmaster.research.method_a_margin import native_receipt_snapshot
++from coinmaster.domain.wave_overlay import Intent
++
++class ReceiptSnapshotPure(unittest.TestCase):
++    def context(self):
++        cache=Cache();cache.add_instrument(SOL_PERP);cache.add_instrument(BTC_PERP)
++        sid=StrategyId("UNIT-001");clock=TestClock()
++        factory=OrderFactory(TraderId("UNIT-001"),sid,clock)
++        trader=NS(strategy_ids=lambda:[sid],actor_ids=lambda:[],exec_algorithm_ids=lambda:[])
++        engine=NS(kernel=NS(exec_engine=NS(command_count=7,event_count=11),trader=trader))
++        ep=NS(id="P",pending={})
++        strategy=NS(cache=cache,id=sid,order_factory=factory,_domain=NS(episode=ep),
++            config=NS(research_method_a_input_binding={"source":{"proof":"UNIT_ONLY"}}),
++            _mr_episode=1,_mr_sequence=39,_pending_by_order={},_pair_orders={},
++            _queued_intents=[],_mandatory_sol_exit=None,_liquidating=False,
++            _forced_close_reason=None,is_exiting=lambda:False,_mr_failed=False)
++        return strategy,engine
++
++    def test_actual_native_initialized_foreign_order_is_never_omitted(self):
++        s,e=self.context()
++        foreign=OrderFactory(TraderId("UNIT-001"),StrategyId("FOREIGN-001"),TestClock())
++        order=foreign.market(instrument_id=SOL_PERP.id,order_side=OrderSide.BUY,
++            quantity=SOL_PERP.make_qty(D(".1")),time_in_force=TimeInForce.IOC)
++        s.cache.add_order(order)
++        before=order.to_dict()
++        raw=native_receipt_snapshot(s,e,5)
++        self.assertEqual(json.loads(json.dumps(raw)),raw)
++        self.assertEqual(raw["native_orders"],[before])
++        self.assertEqual(raw["native_init_events"],[type(order.init_event).to_dict(order.init_event)])
++        self.assertEqual(raw["native_orders"][0]["status"],"INITIALIZED")
++        self.assertEqual(order.to_dict(),before)
++        self.assertFalse(raw["financial_qualification"])
++        self.assertEqual(raw["complete_command_universe"],"UNKNOWN_REQUIRES_SEALED_SOURCE_PROOF")
++
++    def test_unresolved_owner_and_pending_are_exported_with_no_zero_waiver(self):
++        s,e=self.context()
++        intent=Intent("I","P","SOL_ADD",None,1,quantity=.1)
++        s._pending_by_order["MISSING-PENDING"]=intent
++        s._pair_orders["MISSING-OWNER"]=dict(instrument=SOL_PERP.id,kind="SOL_CLOSE",parent="P",
++            pending=dict(payload=(D(".1"),None,None),sequence=1),
++            retiring=dict(native_right=D(".1"),terminal_event_id=None))
++        s._domain.episode.pending["I"]=intent
++        s._queued_intents=[(intent,None,3)]
++        s._mandatory_sol_exit=(intent,None,4)
++        raw=native_receipt_snapshot(s,e,9)
++        self.assertEqual(raw["unresolved_ids"],["MISSING-OWNER","MISSING-PENDING"])
++        self.assertFalse(raw["pending_by_order"][0]["resolved"])
++        self.assertEqual(raw["paired_owners"][0]["owner"]["pending"]["payload"],["0.1",None,None])
++        self.assertEqual(raw["domain_pending"]["I"]["action"],"SOL_ADD")
++        self.assertEqual(len(raw["queued_intents"]),1)
++        self.assertEqual(raw["mandatory_sol_exit"]["decision_index"],4)
++        self.assertEqual(json.loads(json.dumps(raw)),raw)
++
++    def test_actual_factory_counter_read_has_no_mutation(self):
++        s,e=self.context()
++        order=s.order_factory.market(instrument_id=BTC_PERP.id,order_side=OrderSide.BUY,
++            quantity=BTC_PERP.make_qty(D(".001")),time_in_force=TimeInForce.IOC)
++        s.cache.add_order(order)
++        count=s.order_factory.get_client_order_id_count()
++        raw=native_receipt_snapshot(s,e,2)
++        self.assertEqual(raw["high_watermarks"],dict(exec_command_count=7,exec_event_count=11,
++            factory_client_order_id_count=count,factory_order_list_id_count=0))
++        self.assertEqual(s.order_factory.get_client_order_id_count(),count)
++        self.assertEqual(raw["parent"],"P")
++        self.assertEqual(raw["risk_episode_id"],"P:1")
++        self.assertEqual(raw["risk_sequence_before_receipt"],39)
++
++    def test_source_hook_precedes_first_run_and_snapshot_is_at_receipt(self):
++        root=Path(__file__).resolve().parents[1]
++        source=(root/"tests/run_method_a_sol.py").read_text()
++        self.assertLess(source.index("book.bind_receipt_source(engine)"),source.index("engine.run(streaming=True)"))
++        source=(root/"coinmaster/research/method_a_margin.py").read_text()
++        pre=source[source.index("    def pre_process(self,data):"):source.index("\n\ndef native_receipt_snapshot")]
++        self.assertLess(pre.index("super().pre_process(data)"),pre.index("self.receipt_snapshot()"))
++        self.assertIn("native_input_epoch=self.epochs[data.instrument_id]",pre)
++        source=(root/"coinmaster/research/native_baseline.py").read_text()
++        source=source[source.index("    research_native_book = None"):]
++        self.assertLess(source.index("research_native_book.bind_receipt_source(engine)"),source.index("engine.run("))
++
++
++    def test_episode_change_refreshes_only_audit_dedupe(self):
++        from coinmaster.strategy.method_a_risk_native import MethodARiskResearch
++        logs=[]
++        p=dict(parent="P",p0=None,tp_lots={},close_sol=False,protection_since=None,
++            entry_qty=D(0),entry_notional=D(0),atr=D(1),first_fill_ns=None)
++        s=NS(config=NS(sol_id=SOL_PERP.id,research_native_book=None),_pair=p,_mr_episode=0,
++            _mr_enabled=lambda:True,_pair_qty=lambda iid:D(0),_pair_sol_v2=lambda:False,
++            _pair_work=lambda **kwargs:[],_pair_orders={},_pair_log=lambda *a,**kw:logs.append((a,kw)),
++            cache=NS(instrument=lambda iid:SOL_PERP))
++        MethodARiskResearch._pair_sol_boundary(s,"BEFORE_NATIVE_MATCHING_INPUT",1,True)
++        MethodARiskResearch._pair_sol_boundary(s,"BEFORE_NATIVE_MATCHING_INPUT",2,True)
++        self.assertEqual(len(logs),1)
++        s._mr_episode=1
++        MethodARiskResearch._pair_sol_boundary(s,"BEFORE_NATIVE_MATCHING_INPUT",3,True)
++        self.assertEqual(len(logs),2)
++        self.assertEqual(s._pair_sol_boundary_counts,dict(checks=3,strict=3,unknown=0))
++        self.assertEqual(logs[0][1],logs[1][1])
++
++    def test_full_cache_capture_is_once_at_first_receipt_of_new_episode(self):
++        from coinmaster.research.method_a_margin import MethodABookWitness
++        s,e=self.context()
++        s._mr_episode=0
++        book=NS(strategy=s,receipt_engine=e,receipt_ordinal=0,receipt_episode=None)
++        old=MethodABookWitness.receipt_snapshot(book)
++        self.assertEqual(old["availability"],"NOT_CAPTURED_NO_NEW_RISK_EPISODE")
++        s._mr_episode=1
++        new=MethodABookWitness.receipt_snapshot(book)
++        self.assertEqual(new["previous_receipt_parent"],"P")
++        self.assertEqual(new["previous_receipt_episode"],0)
++        self.assertEqual(new["receipt_ordinal"],2)
++        self.assertEqual(new["risk_episode_id"],"P:1")
++        later=MethodABookWitness.receipt_snapshot(book)
++        self.assertEqual(later["availability"],"NOT_CAPTURED_NO_NEW_RISK_EPISODE")
++        self.assertEqual(book.receipt_ordinal,3)
++
++    def test_unknown_owner_capture_is_unknown_and_does_not_throw(self):
++        from coinmaster.research.method_a_margin import MethodABookWitness
++        s,e=self.context()
++        s._pair_orders["MALFORMED-OWNER"]={}
++        book=NS(strategy=s,receipt_engine=e,receipt_ordinal=0,receipt_episode=("P",0))
++        raw=MethodABookWitness.receipt_snapshot(book)
++        self.assertEqual(raw["availability"],"UNKNOWN_COLLECTOR_EXCEPTION")
++        self.assertEqual(raw["collection_error_type"],"KeyError")
++        self.assertEqual(raw["risk_sequence_before_receipt"],39)
++        self.assertEqual(raw["risk_episode_id"],"P:1")
++        self.assertFalse(raw["financial_qualification"])
++        self.assertEqual(json.loads(json.dumps(raw)),raw)
+diff --git a/reports/method-a-verification-20261027/M3_DATA_CANDIDATE_APPROVED_20261028.json b/reports/method-a-verification-20261027/M3_DATA_CANDIDATE_APPROVED_20261028.json
+new file mode 100644
+index 0000000..334152f
+--- /dev/null
++++ b/reports/method-a-verification-20261027/M3_DATA_CANDIDATE_APPROVED_20261028.json
+@@ -0,0 +1,853 @@
++{
++  "schema": "coinmaster.method-a-public-case.v1",
++  "case_id": "M3",
++  "risk_mode": "HEDGE",
++  "cancel_latency_ns": 2000000000,
++  "terminal_close_at_ns": null,
++  "expected_negative_not_before_ns": 100864000000000,
++  "expected_negative_reason": "PARTIAL_NATIVE_STOP",
++  "selection_rows": [
++    {
++      "decision_ns": 0,
++      "available_ns": 0,
++      "not_before_ns": 60000000000,
++      "btc_close": "100",
++      "sol_close": "100",
++      "a": ".5",
++      "atr_sol": "40",
++      "valid": true,
++      "b2_long": true,
++      "b2_short": true,
++      "f0_long": false,
++      "f0_short": false,
++      "k_long": "110",
++      "k_short": "90",
++      "open_o": "100"
++    },
++    {
++      "decision_ns": 100800000000000,
++      "available_ns": 100800000000000,
++      "not_before_ns": 100860000000000,
++      "btc_close": "100",
++      "sol_close": "100",
++      "a": ".5",
++      "atr_sol": "2",
++      "valid": true,
++      "b2_long": true,
++      "b2_short": true,
++      "f0_long": false,
++      "f0_short": false,
++      "k_long": "110",
++      "k_short": "90",
++      "open_o": "100"
++    }
++  ],
++  "funding_history": "KNOWN_ZERO_8H_FEATURE_ONLY_W30",
++  "rows": [
++    {
++      "ns": 0,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "NATURAL_LONG",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ],
++      "daily_session": 729
++    },
++    {
++      "ns": 1000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "FIRST_FULL",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 2000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "FIRST_SECOND_PASSIVE",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 3000000000,
++      "marks": {
++        "BTC": "99.7",
++        "SOL": "100"
++      },
++      "phase": "FIRST_SECOND_FILLED",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "99.7",
++          "ask": "99.7",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 61000000000,
++      "marks": {
++        "BTC": "92.9",
++        "SOL": "100"
++      },
++      "phase": "FULL_BEFORE_STRESS",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "92.9",
++          "ask": "92.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 62000000000,
++      "marks": {
++        "BTC": "92.9",
++        "SOL": "100"
++      },
++      "phase": "SOL_FULL_ENTRY",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 63000000000,
++      "marks": {
++        "BTC": "92.9",
++        "SOL": "100"
++      },
++      "phase": "SOL_FULL_PROTECTED",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "92.9",
++          "ask": "92.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 64000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "phase": "PRELOAD_CAP_BOOK_BEFORE_BTC_TPS",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "132.9",
++          "ask": "132.9",
++          "bid_depth": "1000",
++          "ask_depth": "10"
++        }
++      ]
++    },
++    {
++      "ns": 65000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "phase": "BTC_TP0_ONLY",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "107",
++          "ask": "107",
++          "bid_depth": "116.875",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 66000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "phase": "BTC_TP1_ONLY",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "107",
++          "ask": "107",
++          "bid_depth": "116.874",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 67000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "phase": "BTC_TP2_PARTIAL",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "107",
++          "ask": "107",
++          "bid_depth": "116.251",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 68000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "phase": "CAP_PARTIAL",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "107",
++          "ask": "107",
++          "bid_depth": "116.251",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "132.9",
++          "ask": "132.9",
++          "bid_depth": "1000",
++          "ask_depth": "10"
++        }
++      ]
++    },
++    {
++      "ns": 69000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "phase": "CAP_DONE",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "132.9",
++          "ask": "132.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 70000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "132.9"
++      },
++      "phase": "HEALTHY_DEFER",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "107",
++          "ask": "107",
++          "bid_depth": "199",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 71000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "128"
++      },
++      "phase": "TINY_PROTECTED",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "128",
++          "ask": "128",
++          "bid_depth": "1000",
++          "ask_depth": "132.3"
++        }
++      ]
++    },
++    {
++      "ns": 72000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "128"
++      },
++      "phase": "RETIRE_ZERO",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "128",
++          "ask": "128",
++          "bid_depth": "1000",
++          "ask_depth": ".1"
++        }
++      ]
++    },
++    {
++      "ns": 72500000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "60"
++      },
++      "phase": "LATE_TP0",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "60",
++          "ask": "60",
++          "bid_depth": "1000",
++          "ask_depth": ".2"
++        }
++      ]
++    },
++    {
++      "ns": 73000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "60"
++      },
++      "phase": "LATE_TP1",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "60",
++          "ask": "60",
++          "bid_depth": "1000",
++          "ask_depth": ".2"
++        }
++      ]
++    },
++    {
++      "ns": 73500000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "128"
++      },
++      "phase": "CLOSE_RESIDUAL",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "128",
++          "ask": "128",
++          "bid_depth": "1000",
++          "ask_depth": ".3"
++        }
++      ]
++    },
++    {
++      "ns": 74100000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "128"
++      },
++      "phase": "BENIGN_CANCEL_REJECT",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "128",
++          "ask": "128",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 75600000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "128"
++      },
++      "phase": "SOL_CANCEL_DRAIN",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "128",
++          "ask": "128",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 76000000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "128"
++      },
++      "phase": "FIRST_PARENT_FLAT",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "107",
++          "ask": "107",
++          "bid_depth": "1",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 76500000000,
++      "marks": {
++        "BTC": "107",
++        "SOL": "128"
++      },
++      "phase": "FIRST_FLAT_ACK",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "107",
++          "ask": "107",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "128",
++          "ask": "128",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 86400000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "NEXT_NATURAL_D1",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ],
++      "daily_session": 730
++    },
++    {
++      "ns": 86401000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "NEXT_D1_READY",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100800000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "NATURAL_SHORT_H4",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ],
++      "h4_btc_close": "50"
++    },
++    {
++      "ns": 100801000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "SECOND_FIRST_WINDOW1",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100802000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "SECOND_FIRST_WINDOW2",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100803000000000,
++      "marks": {
++        "BTC": "100",
++        "SOL": "100"
++      },
++      "phase": "SECOND_PARENT_PASSIVE",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100804000000000,
++      "marks": {
++        "BTC": "100.3",
++        "SOL": "100"
++      },
++      "phase": "SECOND_PARENT_FULL",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100.3",
++          "ask": "100.3",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100805000000000,
++      "marks": {
++        "BTC": "100.3",
++        "SOL": "100"
++      },
++      "phase": "SECOND_FULL_SETTLE",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "100.3",
++          "ask": "100.3",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100861000000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "100"
++      },
++      "phase": "SECOND_MEDIUM",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "99.9",
++          "ask": "99.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100862000000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "100"
++      },
++      "phase": "SECOND_SOL_ENTRY",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100863000000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "100"
++      },
++      "phase": "SECOND_SOL_PROTECTED",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "99.9",
++          "ask": "99.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "100",
++          "ask": "100",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100864000000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "98"
++      },
++      "phase": "DECLARED_PARTIAL_STOP_FAULT",
++      "quotes": [
++        {
++          "asset": "SOL",
++          "bid": "98",
++          "ask": "98",
++          "bid_depth": ".1",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100865000000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "98"
++      },
++      "phase": "FAULT_CANCEL_WAIT",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "99.9",
++          "ask": "99.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "98",
++          "ask": "98",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100866100000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "98"
++      },
++      "phase": "FAULT_CANCEL_DRAIN",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "99.9",
++          "ask": "99.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "98",
++          "ask": "98",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100867100000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "98"
++      },
++      "phase": "FAULT_CONSERVATIVE_COMMANDS",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "99.9",
++          "ask": "99.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "98",
++          "ask": "98",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    },
++    {
++      "ns": 100868100000000,
++      "marks": {
++        "BTC": "99.9",
++        "SOL": "98"
++      },
++      "phase": "FAULT_FINAL_CAPTURE",
++      "quotes": [
++        {
++          "asset": "BTC",
++          "bid": "99.9",
++          "ask": "99.9",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        },
++        {
++          "asset": "SOL",
++          "bid": "98",
++          "ask": "98",
++          "bid_depth": "1000",
++          "ask_depth": "1000"
++        }
++      ]
++    }
++  ],
++  "required_witnesses": [
++    "Native passive SECOND accepted2s then fullmaker3s beforefirst61s stress",
++    "First fullSOL210.9 native3TP80/60/20 STOP140; preloadedCAPbook132.9",
++    "Actual CAP partialIOC+terminal residual; total78 and remaining132.9",
++    "Healthydefer BTC1 retainspositive3TP+STOP beforeSOLquote",
++    "OFF normalSOL_CLOSE, never relabeledCAP; .6\u2192.5 knownzero rights",
++    "Two originalPendingCancelTPs each native.1latefill beforecancel2s then genuinebenignCancelRejected",
++    "First parent actualnativeflat+allACK; continuouspeak>=10000 and cash6011.93042250",
++    "Distinctnaturalshort; originalpassiveSECOND100.3 thenlatercross withcontemporaneousmark100.3, full473.439",
++    "ActualMEDIUM99.9 selection/ATR2; fullnativeSOL196.4 positive3TP+STOP98",
++    "OnlydeclaredfinalpartialnativeSTOP.1, exactPARTIAL_NATIVE_STOP plusactualIOCterminal payload; noearlyNO_GO",
++    "Increasesdisabled, nohealthyresume, actualnative conservativecommands; fault remainsnonfinancial"
++  ]
++}

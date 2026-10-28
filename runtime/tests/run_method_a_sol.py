@@ -325,7 +325,7 @@ def launch(case_path,gate_path):
         cfg=config_for(case,proof['input_binding'],observer,book);strategy=M3Probe(cfg) if case['case_id']=='M3' else Probe(cfg)
         streams=(MethodARiskRows(out/'risk.jsonl.gz','RISK'),MethodARiskRows(out/'paired.jsonl.gz','PAIRED'))
         strategy.method_a_risk_audit,strategy.paired_prefix_audit=streams
-        book.bind(strategy);engine.add_strategy(strategy)
+        book.bind(strategy);engine.add_strategy(strategy);book.bind_receipt_source(engine)
         for row in case['rows']:
             current_ns=row['ns']
             if case['case_id']in ('M2','M3') and current_ns==61*10**9:assert_m2_second_phase(engine,strategy,'FULL_BEFORE_STRESS')

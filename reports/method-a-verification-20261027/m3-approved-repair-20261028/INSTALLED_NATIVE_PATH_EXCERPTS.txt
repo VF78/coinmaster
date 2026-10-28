@@ -1,0 +1,222 @@
+
+trading/strategy.pyx 850-899 SHA256 c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246
+850:             Condition.is_true(
+851:                 order.status_c() == OrderStatus.INITIALIZED,
+852:                 f"Invalid order status on submit: expected 'INITIALIZED', was '{order.status_string_c()}'",
+853:             )
+854: 
+855:         # Publish initialized event
+856:         self._msgbus.publish_c(
+857:             topic=f"events.order.{order.strategy_id.to_str()}",
+858:             msg=order.init_event_c(),
+859:         )
+860: 
+861:         if self._is_exiting and not order.is_reduce_only and self._market_exit_tag not in (order.tags or []):
+862:             self._deny_order(order, "MARKET_EXIT_IN_PROGRESS")
+863:             return
+864: 
+865:         # Check for duplicate client order ID
+866:         if self.cache.order_exists(order.client_order_id):
+867:             self._log.error(f"Cannot submit order: duplicate {repr(order.client_order_id)}")
+868:             self._deny_order(order, f"duplicate {repr(order.client_order_id)}")
+869:             return
+870: 
+871:         self.cache.add_order(order, position_id, client_id)
+872: 
+873:         cdef dict[str, object] used_params = {}
+874:         if params:
+875:             used_params.update(params)
+876: 
+877:         cdef SubmitOrder command = SubmitOrder(
+878:             trader_id=self.trader_id,
+879:             strategy_id=self.id,
+880:             order=order,
+881:             command_id=UUID4(),
+882:             ts_init=self.clock.timestamp_ns(),
+883:             position_id=position_id,
+884:             client_id=client_id,
+885:             params=used_params,
+886:         )
+887: 
+888:         if self.manage_gtd_expiry and order.time_in_force == TimeInForce.GTD:
+889:             self._set_gtd_expiry(order)
+890: 
+891:         # Route order
+892:         if order.emulation_trigger != TriggerType.NO_TRIGGER:
+893:             self._manager.send_emulator_command(command)
+894:         elif order.exec_algorithm_id is not None:
+895:             self._manager.send_algo_command(command, order.exec_algorithm_id)
+896:         else:
+897:             self._manager.send_risk_command(command)
+898: 
+899:     cpdef void submit_order_list(
+
+trading/strategy.pyx 1598-1620 SHA256 c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246
+1598:         if not updating:
+1599:             price_str = f", {order.price=}" if order.has_price_c() else ""
+1600:             trigger_str = f", {order.trigger_price=}" if order.has_trigger_price_c() else ""
+1601:             self.log.error(
+1602:                 "Cannot create command ModifyOrder: "
+1603:                 f"{quantity=}, {price=}, {trigger_price=} were either None "
+1604:                 f"or the same as existing values: {order.quantity=}{price_str}{trigger_str}",
+1605:             )
+1606:             return None  # Cannot send command
+1607: 
+1608:         if order.is_closed_c() or order.is_pending_cancel_c():
+1609:             self.log.warning(
+1610:                 f"Cannot create command ModifyOrder: "
+1611:                 f"state is {order.status_string_c()}, {order}",
+1612:             )
+1613:             return None  # Cannot send command
+1614: 
+1615:         cdef OrderPendingUpdate event
+1616:         if not order.is_active_local_c():
+1617:             # Generate and apply event
+1618:             event = self._generate_order_pending_update(order)
+1619:             try:
+1620:                 order.apply(event)
+
+trading/strategy.pyx 1640-1675 SHA256 c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246
+1640:             price=price,
+1641:             trigger_price=trigger_price,
+1642:             command_id=UUID4(),
+1643:             ts_init=self.clock.timestamp_ns(),
+1644:             client_id=client_id,
+1645:             params=params,
+1646:         )
+1647: 
+1648:     cdef CancelOrder _create_cancel_order(self, Order order, ClientId client_id = None, dict[str, object] params = None):
+1649:         if order.is_closed_c() or order.is_pending_cancel_c():
+1650:             self.log.warning(
+1651:                 f"Cannot cancel order: state is {order.status_string_c()}, {order}",
+1652:             )
+1653:             return None  # Cannot send command
+1654: 
+1655:         cdef OrderStatus order_status = order.status_c()
+1656: 
+1657:         cdef OrderPendingCancel event
+1658:         if not order.is_active_local_c():
+1659:             # Generate and apply event
+1660:             event = self._generate_order_pending_cancel(order)
+1661:             try:
+1662:                 order.apply(event)
+1663:             except InvalidStateTrigger as e:
+1664:                 self._log.warning(f"InvalidStateTrigger: {e}, did not apply {event}")
+1665:                 return None  # Cannot send command
+1666: 
+1667:             self.cache.update_order(order)
+1668: 
+1669:             # Publish event
+1670:             self._msgbus.publish_c(
+1671:                 topic=f"events.order.{order.strategy_id.to_str()}",
+1672:                 msg=event,
+1673:             )
+1674: 
+1675:         return CancelOrder(
+
+backtest/engine.pyx 3357-3404 SHA256 eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb
+3357:     cdef bint _has_pending_commands(self, uint64_t ts_now):
+3358:         if self._message_queue:
+3359:             return True
+3360:         if self._inflight_queue and self._inflight_queue[0][0][0] <= ts_now:
+3361:             return True
+3362:         return False
+3363: 
+3364:     cpdef void send(self, TradingCommand command):
+3365:         """
+3366:         Send the given trading command into the exchange.
+3367: 
+3368:         Parameters
+3369:         ----------
+3370:         command : TradingCommand
+3371:             The command to send.
+3372: 
+3373:         """
+3374:         Condition.not_none(command, "command")
+3375: 
+3376:         if not self.use_message_queue:
+3377:             self._process_trading_command(command)
+3378:         elif self.latency_model is None:
+3379:             self._message_queue.appendleft(command)
+3380:         else:
+3381:             heappush(self._inflight_queue, self.generate_inflight_command(command))
+3382: 
+3383:     cdef tuple generate_inflight_command(self, TradingCommand command):
+3384:         cdef uint64_t ts
+3385:         if isinstance(command, (SubmitOrder, SubmitOrderList)):
+3386:             ts = command.ts_init + self.latency_model.insert_latency_nanos
+3387:         elif isinstance(command, ModifyOrder):
+3388:             ts = command.ts_init + self.latency_model.update_latency_nanos
+3389:         elif isinstance(command, (CancelOrder, CancelAllOrders, BatchCancelOrders)):
+3390:             ts = command.ts_init + self.latency_model.cancel_latency_nanos
+3391:         else:
+3392:             raise ValueError(f"invalid `TradingCommand`, was {command}")  # pragma: no cover (design-time error)
+3393: 
+3394:         if ts not in self._inflight_counter:
+3395:             self._inflight_counter[ts] = 0
+3396: 
+3397:         self._inflight_counter[ts] += 1
+3398:         cdef (uint64_t, uint64_t) key = (ts, self._inflight_counter[ts])
+3399: 
+3400:         return key, command
+3401: 
+3402:     cpdef void process_order_book_delta(self, OrderBookDelta delta):
+3403:         """
+3404:         Process the exchanges market for the given order book delta.
+
+backtest/engine.pxd 285-316 SHA256 04418742e8e2459419195246590d923aeeb0022ac1f18e339256306dab7866b6
+285:     cdef object _message_queue
+286:     cdef list[tuple[tuple[uint64_t, uint64_t], TradingCommand]] _inflight_queue
+287:     cdef dict[uint64_t, uint64_t] _inflight_counter
+288: 
+289: # -- REGISTRATION ---------------------------------------------------------------------------------
+290: 
+291:     cpdef void register_client(self, BacktestExecClient client)
+292:     cpdef void set_fill_model(self, FillModel fill_model)
+293:     cpdef void set_latency_model(self, LatencyModel latency_model)
+294:     cpdef void initialize_account(self)
+295:     cpdef void add_instrument(self, Instrument instrument)
+296: 
+297: # -- QUERIES --------------------------------------------------------------------------------------
+298: 
+299:     cpdef Price best_bid_price(self, InstrumentId instrument_id)
+300:     cpdef Price best_ask_price(self, InstrumentId instrument_id)
+301:     cpdef OrderBook get_book(self, InstrumentId instrument_id)
+302:     cpdef OrderMatchingEngine get_matching_engine(self, InstrumentId instrument_id)
+303:     cpdef dict[InstrumentId, OrderMatchingEngine] get_matching_engines(self)
+304:     cpdef dict[InstrumentId, OrderBook] get_books(self)
+305:     cpdef list[Order] get_open_orders(self, InstrumentId instrument_id=*)
+306:     cpdef list[Order] get_open_bid_orders(self, InstrumentId instrument_id=*)
+307:     cpdef list[Order] get_open_ask_orders(self, InstrumentId instrument_id=*)
+308:     cpdef Account get_account(self)
+309: 
+310: # -- COMMANDS -------------------------------------------------------------------------------------
+311: 
+312:     cpdef void adjust_account(self, Money adjustment)
+313:     cpdef void update_instrument(self, Instrument instrument)
+314:     cdef tuple generate_inflight_command(self, TradingCommand command)
+315:     cdef bint _has_pending_commands(self, uint64_t ts_now)
+316:     cdef void _drain_commands(self, uint64_t ts_now)
+
+common/factories.pyx 102-122 SHA256 bcaf9dbfb381e299d90590efafdd052f1b7f4dae5d916c95341e8b2c252b03eb
+102:     cpdef get_client_order_id_count(self):
+103:         """
+104:         Return the client order ID count for the factory.
+105: 
+106:         Returns
+107:         -------
+108:         int
+109: 
+110:         """
+111:         return self._order_id_generator.count
+112: 
+113:     cpdef get_order_list_id_count(self):
+114:         """
+115:         Return the order list ID count for the factory.
+116: 
+117:         Returns
+118:         -------
+119:         int
+120: 
+121:         """
+122:         return self._order_list_id_generator.count

@@ -1068,6 +1068,8 @@ def run_native_diagnostic(
         strategy.method_a_risk_audit,strategy.paired_prefix_audit=risk_row_streams
     if research_native_book is not None: research_native_book.bind(strategy)
     engine.add_strategy(strategy)
+    if research_native_book is not None and hasattr(research_native_book,'bind_receipt_source'):
+        research_native_book.bind_receipt_source(engine)
     audit_archive = None
     if research_sol_risk_first == "alpha-corridor-v1":
         from coinmaster.research.native_audit import NativeAuditArchive

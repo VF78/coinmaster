@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "unique_tests": 13,
+  "prior_suite": {
+    "passed": 10,
+    "failed": 1,
+    "test_only_cause": "global source.index selected earlier unrelated baseline helper engine.run"
+  },
+  "corrected_and_new_tests": {
+    "tests": 2,
+    "failures": 0,
+    "errors": 0
+  },
+  "engine_constructors": 0,
+  "source_freeze": false,
+  "root_go": false,
+  "recipe_sha256": "907fd040530150f820ac9f271449a6c6f98b8adc96f6a2fa9fe66612a8dcb152",
+  "native_input_sha256": "a69c7eaf2bc5478258158658afdf03db9028a5ff3c580d9a38a6a43b80eb6b33",
+  "native_config_sha256": "7795635ddec5e66b5eaf2e334fa0192a2d4b3705ab4b8c5abfd37a605fde1005",
+  "source_inventory_sha256": "53716a766acfa80b0552f338dd9acb8212731b6e32b0dddb0ba5025dde90d620",
+  "public_inputs": 140,
+  "quotes": 57,
+  "quote_universe": {
+    "BTC": 25,
+    "SOL": 32
+  },
+  "peer_correction_tests": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0
+  }
+}

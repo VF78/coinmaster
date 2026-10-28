@@ -1,0 +1,66 @@
+{
+  "status": "REVIEW_READY_NOT_FROZEN_NOT_NATIVE_QUALIFIED",
+  "base_head": "6591609d3112963e9cc8283cc9caf33ca22e8fa4",
+  "changed_file_pins": {
+    "runtime/coinmaster/research/method_a_margin.py": "622314b39729973566de45a597d7e0f8f0ae59f69a320b99aa2765ba3671bac8",
+    "runtime/coinmaster/research/native_baseline.py": "37372bfa1b6b20cb80851f90ccf7e2ce7c593d6f8ec28563500e3f8991d0d83f",
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "2a0e697c87449c3c6fb5768f8f48ca34b962ae797be2ac5447f1d05425335ace",
+    "runtime/tests/run_method_a_sol.py": "d34ed2c237af6a82fb8e53f33b500b31e6015c4314d8051103d23c90afe2b645",
+    "runtime/tests/test_method_a_m3_candidate_pure.py": "882a72bb9d102cd10e1f65177971ff3afa4ab6b984efeb5750be42adf7e32536",
+    "runtime/tests/test_method_a_receipt_snapshot_pure.py": "71ec69d22e97206c51573659233e56e5379c558d83efd2c3dd040ce4061cc0c6"
+  },
+  "preserved_financial_pins": {
+    "reports/method-a-verification-20261027/method_a_financial_reader.py": "587dcc9d13f6f5acdd20b4e024f2d6ea24bfe76c544d8dc104e5e5bf007faad7",
+    "reports/method-a-verification-20261027/test_method_a_financial_pure.py": "d7a03495d60710bff0013f5ea4c95c4b08049d77849407bfb61426ae8e893a08"
+  },
+  "installed_native_source_pins": {
+    "trading/strategy.pyx": "c8c72a2b4796fa2c70fd1d8ec2c82172c8693e8274e3e397f8e8756707177246",
+    "backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+    "backtest/engine.pxd": "04418742e8e2459419195246590d923aeeb0022ac1f18e339256306dab7866b6",
+    "common/factories.pyx": "bcaf9dbfb381e299d90590efafdd052f1b7f4dae5d916c95341e8b2c252b03eb",
+    "cache/cache.pyx": "078236a445ec27cc88d9dfd5332d51c4bd6e57e8db5d85685c967ea5458db7cf",
+    "execution/engine.pxd": "77f4e4341a3e3227417f3ff07b9c5c01fba854860918e1b011b717142b87f01b"
+  },
+  "case_path": "reports/method-a-verification-20261027/M3_DATA_CANDIDATE_APPROVED_20261028.json",
+  "case_sha256": "96cf5d004856e06742a88a0e61534d567deb373c41f9c8c705dd3eb275a802ba",
+  "prepared_path": "reports/method-a-verification-20261027/m3-approved-repair-20261028/M3_REPAIR_PREPARED.json",
+  "prepared_sha256": "4318ea279129777751987db0ea69c410d80485a3ce506166fc7cd35e2883949e",
+  "test_summary": {
+    "status": "PASS",
+    "unique_tests": 13,
+    "prior_suite": {
+      "passed": 10,
+      "failed": 1,
+      "test_only_cause": "global source.index selected earlier unrelated baseline helper engine.run"
+    },
+    "corrected_and_new_tests": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    "engine_constructors": 0,
+    "source_freeze": false,
+    "root_go": false,
+    "recipe_sha256": "907fd040530150f820ac9f271449a6c6f98b8adc96f6a2fa9fe66612a8dcb152",
+    "native_input_sha256": "a69c7eaf2bc5478258158658afdf03db9028a5ff3c580d9a38a6a43b80eb6b33",
+    "native_config_sha256": "7795635ddec5e66b5eaf2e334fa0192a2d4b3705ab4b8c5abfd37a605fde1005",
+    "source_inventory_sha256": "53716a766acfa80b0552f338dd9acb8212731b6e32b0dddb0ba5025dde90d620",
+    "public_inputs": 140,
+    "quotes": 57,
+    "quote_universe": {
+      "BTC": 25,
+      "SOL": 32
+    },
+    "peer_correction_tests": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "engine_constructors": 0,
+  "physical_attempts": 0,
+  "financial_qualification": false,
+  "source_freeze": false,
+  "commit": false,
+  "root_go": false
+}
