@@ -1,0 +1,118 @@
+{
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "recorded_utc": "2026-10-28T19:03:57.760236+00:00",
+  "status": "Q_PROFIT_FAIL_R_ROOT_GO",
+  "owner_authorization": {
+    "direct_instruction": "\u0432\u043e\u0437\u044c\u043c\u0438 \u043f\u043b\u0430\u043d \u0438\u0437 \u0432\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0437\u0430 \u043e\u0441\u043d\u043e\u0432\u0443 ... \u0421\u0434\u0435\u043b\u0430\u0439 \u0435\u0434\u0438\u043d\u044b\u0439 \u0441\u043e\u0433\u043b\u0430\u0441\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u043f\u043b\u0430\u043d, \u0430\u043a\u0442\u0443\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0439 project \u0438 \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0430\u0439 \u043f\u043e \u0443\u0442\u043e\u0447\u043d\u0435\u043d\u043d\u043e\u043c\u0443 \u043f\u043b\u0430\u043d\u0443",
+    "attachment_path": "/Users/vf/Downloads/CODEX_E4_C1_FAST_PILOT_2026-10-28.md",
+    "attachment_sha256": "bf7ac3d5898b690946bec6a07881b607a6f50d86c37532375c05c970549c8798",
+    "new_campaign_scope": "limited E4/C1 Q/R/G R&D and pilot preparation; not trading keys/funds/services/orders",
+    "live_final_go_required": true,
+    "standing_authorization": ".ops/OWNER_AUTHORIZATION.md",
+    "live_go_conditions": "Latest owner instruction: finalalgorithmverifiedreferencebenchmark AND separateexplicitownerstartliveconfirmation; ordinaryresearch/preparation alreadyauthorized"
+  },
+  "benchmark": {
+    "start_utc": "2024-09-01T00:00:00Z",
+    "end_exclusive_utc": "2026-09-01T00:00:00Z",
+    "seed": "10000",
+    "reserve": "0",
+    "S0_TOTAL": "6077107.23887483",
+    "E4_TARGET_TOTAL": "5631617.35953723",
+    "working_min_TOTAL": "5470396.514987347",
+    "pilot_DD_limit_fraction": ".5180315157406654834417870238",
+    "strict_parallel_DD_fraction": ".50",
+    "candidate_requires_settled_and_coherent_event_DD": true,
+    "working_floor_is_inherited_not_new_owner_percent_tolerance": true
+  },
+  "budget": {
+    "historical_max": 8,
+    "candidate_max": 4,
+    "conditional_control_max": 2,
+    "qualification_max": 2,
+    "historical_attempts_started": 1,
+    "failed_invalid_repeats_count": true,
+    "engineering_component_calls": {
+      "pytest_calls": 10,
+      "synthetic_native_constructors": 104,
+      "wall_seconds": "34.67",
+      "count_method": "deterministic executed fixture path reconstruction, not runtimeinstrumentation"
+    },
+    "repair_iterations_per_blocker_max": 2,
+    "old_budgets_transferred": false,
+    "MethodA_status": "HOLD_9_OF_19_UNCHANGED",
+    "authority": "experiment_registry.csv historical_budget_count, claim beforePopen"
+  },
+  "source": {
+    "E4": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+    "C1_base_final": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+    "C1_economic_config_sha256": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6",
+    "Q_economic_config_sha256": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+    "archived_data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "archived_policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "native_engine": "NautilusTrader1.231.0",
+    "VPS_worktree": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-fast-pilot-20261028",
+    "branch": "codex/e4-c1-fast-pilot-20261028",
+    "accepted_new_source": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+    "Q_peer_review_sha256": "71e128aed7591b4c0f0b025b07d8b4c85c0e0e1dec01727c523f5754deef8fb7",
+    "R_economic_config_sha256": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
+    "accounting_peer_review_sha256": "549bcb33b559f9db7e7e27c93f3c88ab8737a8f9809fd5b7899ee5e8e1e3157b"
+  },
+  "campaign_rules": [
+    "Q first: BTC heldlots//4; SOL heldlots//2; all other C1 unchanged",
+    "R only restore DD35\u219240 at two restore gates if earlier eligible source witness proved; no grid",
+    "G one account-wide cut arm until actual fresh DD<=35; no change ordinary rights",
+    "At most one evidence-based combination; stop searching once candidate meets profit/DD",
+    "Archives not replayed automatically; controls only material comparability need",
+    "Each policy native own capital/fees/funding/lot path; no staticaddback or forcedoldBTCquantities",
+    "DD early targetfail permitted only causal ininterval candidate DD; terminalTOTALUNKNOWN; controls not aborted",
+    "No MethodA/newTP/newhedge/60%cut/newmodel/EMA/ATR/leverage/ML changes",
+    "Prepare exactLIVE_RELEASE; separate finalownergo before keys/funds/services/orders"
+  ],
+  "artifacts": {
+    "registry": "experiment_registry.csv",
+    "decisions": "evidence/e4_c1_decisions.csv",
+    "results": "RESULTS_E4_C1.md",
+    "live_release": "LIVE_RELEASE.json"
+  },
+  "live_parameters": {
+    "venue": "hyperliquid",
+    "full_address_published": false
+  },
+  "runs": {
+    "Q": {
+      "root_go": true,
+      "root_go_utc": "2026-10-28T18:40:47.812975+00:00",
+      "attempt_uuid": "1273fa18-0c7c-48d4-a8d3-f44a72147fd6",
+      "source_commit": "72cc39cfda5d64529da977276729418f90521d36",
+      "config_sha256": "492e4937518e5f8868a75af00d53efbe5c359a9d926c4b3b611fb84990a60e62",
+      "runner_sha256": "bec1af31b760345a12dbf2be457102a316938045b0c5898114b95bc6a1857e4c",
+      "preflight_sha256": "e1d200be0ee128eb46f69998594fba06a8b94c0cea4c4ec522fc889c4908816d",
+      "scope": "ONE_CANDIDATE_Q_FULL_PATH",
+      "automatic_repeat": false,
+      "early_abort": "NOT_REQUIRED_FOR_Q_FULLPATH; no addedstrategychange",
+      "live_orders": false,
+      "status": "COMPLETED_PROFIT_FAIL",
+      "native_child_exit": 0,
+      "TOTAL": "4800260.20248922",
+      "settled_DD_percent": "51.80315157406654834417870238",
+      "event_DD_percent": "51.80315157406654834417870238",
+      "actual_cash_transition_reconciliation": "PASS_RESIDUAL_0E-8",
+      "all_position_lifecycle_PNL_reconciliation": "UNKNOWN_NOT_EXPORTED",
+      "selected": false
+    },
+    "R": {
+      "root_go": true,
+      "source_commit": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+      "config_sha256": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
+      "status": "PREFLIGHT_PASS_ROOT_GO",
+      "saved_path_eligibility": "SOURCE_BOUND_EARLIER_ELIGIBLE_LOCAL_SAVED_STATE",
+      "automatic_repeat": false,
+      "root_go_utc": "2026-10-28T19:05:55.640820+00:00",
+      "attempt_uuid": "ef472948-da03-4b78-81df-48e15cfacbb1",
+      "runner_sha256": "ed5d692435c73b961280f3d88a7ee344c9c4c16fd1ff856efb23f03947275321",
+      "preflight_sha256": "b0d69638f4c0c7eb3010c11c561fbc83c04c393b6836c6ac1681dc6e352a4399",
+      "scope": "ONE_CANDIDATE_R_FULL_PATH",
+      "live_orders": false
+    }
+  }
+}

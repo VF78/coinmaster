@@ -1,0 +1,72 @@
+{
+  "status": "READ_ONLY_NATIVE_EVIDENCE_R_GUARDS_PARTIALLY_UNOBSERVED",
+  "native_runs": 0,
+  "tests": 0,
+  "product_changes": 0,
+  "all_groups": 9,
+  "all_H4_endpoints": 90,
+  "receipt_count": 1051199,
+  "receipt_months": 24,
+  "R": {
+    "no_action_delta_proven_globally": false,
+    "price_DD_earlier_candidates_groups": [
+      1,
+      2,
+      4
+    ],
+    "complete_eligible_earlier_event": "UNKNOWN_PENDING_SOURCE_INVARIANT_CLOSURE",
+    "strongest_state_witness": {
+      "group_index": 2,
+      "H4_utc": "2025-01-13T20:00:00+00:00",
+      "first_quote_utc": "2025-01-13T20:01:00+00:00",
+      "native_order_lifetimes_at_quote": 0,
+      "funding_events_at_bar": 0,
+      "nearby_fills": 0,
+      "actual_live_credit_SOL": "1000",
+      "bar_close": "177.53",
+      "cut_VWAP": "175.58",
+      "bar_DD": "0.3609983785407408911194366772",
+      "first_quote": "177.35",
+      "first_quote_DD": "0.3669594603413822919067753575",
+      "native_free": "131047.75686636",
+      "native_marked_equity_current": "101467.75686636",
+      "prospective_SOL": "4000",
+      "prospective_notional": "709480",
+      "policy_initial_plus_maintenance_before_reserved_credit": "40260.268",
+      "numerical_margin_and_gross_guards": "PASS_CONSERVATIVE_EXACT_SOURCE_ARITHMETIC"
+    },
+    "minimal_missing_direct_fields": [
+      "account.last_event.ts_event at H4 and quote",
+      "_c1_fill_epoch vs committed checkpoint epoch",
+      "_queued_intents / _pending_by_order at first quote",
+      "_forced_close_reason / _mandatory_sol_exit / _liquidating",
+      "_entries_enabled runtime gate flags",
+      "native cancel ACK/current accepted order cache if harmless TP cancellation required"
+    ],
+    "funding_boundary_caveat": "First price/DD witnesses in groups1/4 and Jan13 16:00 coincide account mutation; current-money ordering not proven by receipt alone"
+  },
+  "G": {
+    "saved_August_globalH": "8512743.25964487",
+    "rearm_65pct_H": "5533283.1187691655",
+    "August_peak": "5491398.68607077",
+    "no35_rearm_saved_path": true,
+    "keep_group": 5,
+    "suppress_groups": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "later_signed_unit_paths": [
+      "-306.4",
+      "-302.3",
+      "1000.8",
+      "697.4"
+    ],
+    "economic_improvement": "UNKNOWN_NO_COUNTERFACTUAL_TOTAL"
+  },
+  "event_DD": "UNKNOWN_COHERENT_FILL_BY_FILL_PRE_FILL_PRE_OPEN_NOT_EXPORTED",
+  "signed_asset_funding": "UNKNOWN",
+  "cash_bridge_not_funding": "53801.142665296518712",
+  "counterfactual_TOTAL": null
+}

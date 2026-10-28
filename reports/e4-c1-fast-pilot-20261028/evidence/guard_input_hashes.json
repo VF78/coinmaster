@@ -1,0 +1,13 @@
+{
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.json": "7e7f3def0d937fb09752379640191208e98634cba3f3a8033de49c05c1f3c117",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-orders.csv": "1e9aee77b32928bf4eb62c18bdcd00fceb2000f2fe69adcfa70659bad9693da4",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-funding.sqlite": "47365faad666e43ffb1f1e820a31bac1f1515d7c9967bd43411904c65b05e463",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/strategy/residual_recovery.py": "01ea8b85e38cf30c40238130b19c2f90db3e96a983844fe40cf2e8cf587a9776",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/strategy/wave_overlay.py": "8a5d47733a035d60bf65819fe598c416cee88da3505a64984451e781b4027165",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/research/native_fixture.py": "bec814bbf98217b116018bb0498ec3c690592bc1c259c44bf0507fd71ff05df4",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/research/native_baseline.py": "b0afd075b2c9f5d603937bb6aeaa19268107271991529682772c8c93a2c6e4d8",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02"
+}

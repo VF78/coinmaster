@@ -1,4 +1,6 @@
-# Текущий проверенный результат
+# MethodA: сохранённый проверенный результат
+
+Текущий основной маршрут — [E4/C1 fast pilot](../e4-c1-fast-pilot-20261028/RESULTS_E4_C1.md). MethodA9/19 находится HOLD по новому указанию владельца; WIP сохранён отдельно и не является prerequisite E4/C1.
 
 Native attempts неизменны; ledger теперь9/19, 5 COMPLETED и4 FAILED; engineering6/12, prefix3/6, full0/1, active0. Последний исправленный M3R остаётся FAILED. CODE0 выполнен с нулём новых native/prefix/full запусков. Пилот и production не затронуты.
 

@@ -1,0 +1,385 @@
+{
+  "status": "SOURCE_BOUND_EARLIER_ELIGIBLE_LOCAL_SAVED_STATE",
+  "candidate": "R restore_DD .35_to_.40 atclosedH4andfreshquoteONLY",
+  "group": "68f3efbc-3732-4f69-a8d3-a6402bf00fed",
+  "group_index": 2,
+  "bar_utc": "2025-01-13T20:00:00+00:00",
+  "quote_utc": "2025-01-13T20:01:00+00:00",
+  "actual_first_restore_utc": "2025-01-14T04:01:00+00:00",
+  "earlier_hours": 8,
+  "bar_checkpoint": {
+    "checkpoint_E": "102907.75686636",
+    "checkpoint_cash": "131047.75686636",
+    "checkpoint_H": "161044.59427091",
+    "checkpoint_DD": "0.3609983785407408911194366772",
+    "execution_close": "177.53"
+  },
+  "quote_checkpoint": {
+    "timestamp_ns": 1736798460000000000,
+    "utc": "2025-01-13T20:01:00+00:00",
+    "checkpoint": {
+      "source_quote_ns": "1736798400000000000",
+      "receipt_ns": "1736798460000000000",
+      "fill_epoch": "102",
+      "cash": "131047.75686636",
+      "paired_close_equity": "101947.75686636",
+      "H": "161044.59427091",
+      "DD": "0.3669594603413822919067753575"
+    },
+    "raw_execution_close": "177.35",
+    "price_reclaim": true,
+    "DD35": false,
+    "DD40": true
+  },
+  "guards": [
+    {
+      "name": "HELD_credit_terminal_group",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "Native ACTUAL_FILL gives10000lots\u00d7.1=1000SOL; ATTEMPT_TERMINAL CUT11:57 givescredit10000 andstateHELD; no subsequent ACTUAL_FILL, TOKEN_REVOKED, GROUP_FLAT_RESET before20:01. Firstactualrestore04:01nextday confirms samecredit/epoch102.",
+      "source_refs": [
+        "residual_recovery.py:143-158",
+        "residual_recovery.py:175-212",
+        "native_c1_selected_audit.json group2"
+      ]
+    },
+    {
+      "name": "completed_H4_after_last_fill_and_terminal",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "Baropen16:00 > actual lastcutfill/terminal11:57; barclose20:00; actualexecutionclose177.53 >cutVWAP175.58; nativecheckpointDD.36099837854<=.40.",
+      "source_refs": [
+        "residual_recovery.py:111-120",
+        "h4_restore_windows.csv group2 20:00"
+      ]
+    },
+    {
+      "name": "quote_price_DD_after_confirmation",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "20:01strictly>20:00; executableASK177.35>cutVWAP175.58; committedcheckpointDD.36695946034<=.40. C1original.35 fails atbarandquote; R.40passesboth.",
+      "source_refs": [
+        "residual_recovery.py:264-271",
+        "h4_restore_windows.csv group2 20:00 fresh_quote_evidence"
+      ]
+    },
+    {
+      "name": "current_money_at_H4_and_quote",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "observed_strategy.on_data callsfinalize_receipt beforebase.on_data on everycustomevent; exportedreceipts prove source<receipt<=ns, account.last_event<=source and unchangedrecorderfill_epoch atmint. C1 `_c1_observe` stores sameepoch. H4source19:59; quotesource20:00, age60s<=configured120s. No fills/nativeorderlifetimes/funding events at20:00/20:01, so neither nativeaccount events nor C1epoch change betweenmintandH4/quote. TierMarginModule calls marginsetters; installednative margin setters/recalculate_balance mutate maps and balances, neverappend AccountState; base.apply alone appends AccountState. Latestfunding accountmutation16:00 precedesbothsources.",
+      "source_refs": [
+        "minute_risk.py:171-204",
+        "minute_risk.py:279-309",
+        "residual_recovery.py:60-77",
+        "native_fixture.py:418-445",
+        "native_baseline.py:768-789",
+        "nativeaccount margin.pyx:523-593,715-771",
+        "nativeaccount base.pyx:73-92,367-388",
+        "first_candidate_ownership_funding.json group2"
+      ]
+    },
+    {
+      "name": "mandatory_and_competing_owner_false",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "on_quote_tick topalwaysrevokes C1ifforced/liquidating/mandatorySOLexit. _c1_quote againchecks mandatory and conflict BEFOREconfirmation/DD; any conflictingqueued/pendingorderwouldemit TOKEN_REVOKED eveninoriginalDD35path. No revoke anywhereingroup2window. Nativeorders lifetimeinventory gives0at20:01, includinginflight range conservativelyts_init..ts_last. Completeactualfill_audit hasnonearbyfill. Earlyreturnbranches excludingC1are disabled by frozenC1config: noDP,V3,H1,carry; mandatorybrancheswouldlogrevoke. Hence originalcallback reachedpreconfirmationguardsanddidnotrevoke.",
+      "source_refs": [
+        "wave_overlay.py:1358-1440,1502-1504",
+        "residual_recovery.py:54-59,231-248",
+        "native_baseline.py:794,847-891",
+        "first_candidate_ownership_funding.json group2"
+      ]
+    },
+    {
+      "name": "queued_and_pending_empty_for_submission",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "C1 holds everyincrease; eachquote discardsqueuedBTC_ENTRY/SOL_ADD and blocksotherincreases atbefore_submit. Any nonharmless queued/pendingintentwouldmake_c1_conflict true and revoke beforeDDcheck; noneobserved. Onlyharmless exceptionisBTC_REDUCElimit; actualBTCnativeposition0, actualC1rightsbucket btcopen0 and consumedBTCtargets; noBTCnativeorderlifetimes. _c1_quote requeue requires actualBTCposition and domainconfirmedtargetplanner createsonlypositiveleaves; no remainingBTCleaves. Cutterminalcallback synchronouslypopsits_pending_by_order; no subsequentnativeorders. Thereforepending/open/inflight/queuedall0atcandidate; nocancelACKneeded.",
+      "source_refs": [
+        "residual_recovery.py:121-131,240-248,272-275",
+        "wave_overlay.py:2519-2533,2548-2556",
+        "domain/wave_overlay.py:563-587",
+        "first_candidate_ownership_funding.json group2",
+        "guard-closure.json native_state_witnesses + raw_native_evidence"
+      ]
+    },
+    {
+      "name": "entries_enabled",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "Frozenrunnerdoesnotpassentries_enabled/entries_gate/depositruntime: defaultsTrue/None/None. Configimmutable. ResearchprotectlatchinitialNone; its nonclearwritesrequireportfolio45orBTCepisode20; bothFalse because BTCdirection_sizingTrue and constructor exclusivityguardadmitsatmostone. No real liquidation entireactualrun; terminal_lifecycle.lockout initializedFalse and onlytrueonliquidation/terminalboundary; candidateJanuary2025beforeendSeptember2026. Thus_entries_enabledTrue.",
+      "source_refs": [
+        "wave_overlay.py:98-109,291,365,718,1026,1099-1113,2269,2979-2988",
+        "native_baseline.py:722,847-891",
+        "rawconfig research_btc_direction_sizing=True",
+        "rawliquidation_count=0"
+      ]
+    },
+    {
+      "name": "minimum_lots_native_instrument",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "Existingnativeinstrumentbuiltvia perpetualSOLtick.01/step.1 withminquantity/minnotionalNone; livecredit10000lots=>1000SOLexactpositive. No newrights; restoredoriginalactualcreditonly.",
+      "source_refs": [
+        "native_fixture.py:40-63",
+        "native_baseline.py:786-787",
+        "residual_recovery.py:276-282"
+      ]
+    },
+    {
+      "name": "tier_margin_and_gross",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "Native20:01riskheldSOL3000, mark177.37, cash/free131047.75686636, activeE101467.75686636. Prospective4000SOLgross709480; selectedleverage20 =>IM35474; tiercap850000 IM.0182/MM.0091/deduction1670 =>MM4786.268, IM+MM40260.268 <actualfree131047.75686636 evenzeroexistingreservedcredit. gross709480 <50\u00d7activeE5073387.84331800. ClosedBTCparentatclaim andcoveroff meanmarginreserveunchanged. Bothlatestmarks at20:01sourcefresh; policytimestampnow20:01. Subsequent_submit_intentrepeatssameincreaseguardbeforeanynewfill.",
+      "source_refs": [
+        "wave_overlay.py:2284-2363",
+        "split_cover.py:365-385",
+        "native_fixture.py:376-397",
+        "native_baseline.py:788,852",
+        "first_candidate_native_risk.json 20:01prequote",
+        "guard_input_hashes.json capturedSOLtierprofile"
+      ]
+    },
+    {
+      "name": "no_hidden_submission_delay_or_external_sink",
+      "value": "PASS_SOURCE_BOUND",
+      "proof": "Nativefrozenpolicyexecution_delay_minutes1 maps execution_delay_ns=(1\u22121)minute=0. submission/event sinksNone; native instrument exists. SOL_RESTORE is ownC1intent, passes_c1_before_submit, carry/split/riskfirst off for thisaction; positive1000quantity. No pending cancellation required inthiscandidate. This provesearliereligiblesubmission, notnewnativefill/price/result.",
+      "source_refs": [
+        "native_baseline.py:886-891",
+        "wave_overlay.py:1798-1868,1944-1960",
+        "next_band.py _next_before_submit",
+        "residual_recovery.py:121-131,282-293"
+      ]
+    }
+  ],
+  "missing_guards_for_this_local_state": [],
+  "native_execution_performed": false,
+  "tests_performed": 0,
+  "new_PnL_or_matching_engine": false,
+  "scope_limit": "Proof of existing-code eligibility at a concrete earlier saved C1 state. Not a native counterfactual outcome; earlier changes elsewhere can change arrivalstate and no counterfactualTOTAL/DDisasserted. Group1/4 funding-boundary candidates are NOT promoted bythisproof. Exactengine/source/binarypublication qualification remainsrootresponsibility.",
+  "source_hashes": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/strategy/residual_recovery.py": "01ea8b85e38cf30c40238130b19c2f90db3e96a983844fe40cf2e8cf587a9776",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/strategy/wave_overlay.py": "8a5d47733a035d60bf65819fe598c416cee88da3505a64984451e781b4027165",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/strategy/next_band.py": "25ddfc850b36097bfb11f9e837a1b72c004106807639de35349a020dd408e9a5",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/research/native_baseline.py": "b0afd075b2c9f5d603937bb6aeaa19268107271991529682772c8c93a2c6e4d8",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/research/native_fixture.py": "bec814bbf98217b116018bb0498ec3c690592bc1c259c44bf0507fd71ff05df4",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/source-78cb85a/runtime/coinmaster/research/minute_risk.py": "e3ced51a595d694e6d399bba37e9e987591b1eaea23b66a882eb29feba8c5e02",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/accounts/base.pyx": "b885685fbbbc471ca11e22274d902e0f0d598a6b48b0635b350f745be1aa534e",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/accounts/margin.pyx": "57d4ed794c64fa1d514bfa92084933447ff56325f780d43cd51d41230924b063",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb"
+  },
+  "immutable_initial_evidence_manifest_sha256": "a5b7646bd8d46a0094d74a51e3d70398edc31218ad91bdc96f8c5b2939fc4080",
+  "initial_structured_findings_sha256": "e9bdda593a5860635dcff6b3a1595b24afa7901b58427ad3ef779f98224987e9",
+  "proof_type": "Deterministic source-invariant and complete actual native lifecycle/receipt evidence, not directlylogged candidate snapshot",
+  "native_state_witnesses": {
+    "CLAIM": {
+      "event": "CLAIM",
+      "frozen_held_lots": 40000,
+      "frozen_target_lots": 20000,
+      "group": "68f3efbc-3732-4f69-a8d3-a6402bf00fed",
+      "native_position_id": "SOLUSDT-PERP.P1SIM-WaveOverlayStrategy-000",
+      "native_position_open_ns": 1736467200000000000,
+      "rights": {
+        "H": "771987.3082458683",
+        "PLANREF": "94974.4",
+        "btc_filled": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "btc_open": "0.0",
+        "btc_retired": {},
+        "btc_targets": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "sol_consumed": {
+          "0": 748920.0
+        },
+        "sol_held_lots": {
+          "0": 40000
+        },
+        "sol_open": "4000.0",
+        "sol_right_fraction": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0
+        },
+        "sol_rights": [
+          0,
+          1,
+          2
+        ]
+      },
+      "sequence": 21,
+      "state": "CUT_RESOLVING",
+      "timestamp_ns": 1736769360000000000
+    },
+    "ACTUAL_FILL": {
+      "bucket": {
+        "0": 10000
+      },
+      "credit": 10000,
+      "credit_before": 0,
+      "cut_attempts": 1,
+      "event": "ACTUAL_FILL",
+      "group": "68f3efbc-3732-4f69-a8d3-a6402bf00fed",
+      "intent_id": "11ee6070-df41-4715-963b-d83251cc3162",
+      "kind": "CUT",
+      "lots": 10000,
+      "price": "175.58",
+      "restore_attempts": 0,
+      "rights_after": {
+        "H": "771987.3082458683",
+        "PLANREF": "94974.4",
+        "btc_filled": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "btc_open": "0.0",
+        "btc_retired": {},
+        "btc_targets": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "sol_consumed": {
+          "0": 748920.0
+        },
+        "sol_held_lots": {
+          "0": 30000
+        },
+        "sol_open": "3000.0",
+        "sol_right_fraction": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0
+        },
+        "sol_rights": [
+          0,
+          1,
+          2
+        ]
+      },
+      "rights_before": {
+        "H": "771987.3082458683",
+        "PLANREF": "94974.4",
+        "btc_filled": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "btc_open": "0.0",
+        "btc_retired": {},
+        "btc_targets": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "sol_consumed": {
+          "0": 748920.0
+        },
+        "sol_held_lots": {
+          "0": 40000
+        },
+        "sol_open": "4000.0",
+        "sol_right_fraction": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0
+        },
+        "sol_rights": [
+          0,
+          1,
+          2
+        ]
+      },
+      "sequence": 26,
+      "state": "CUT_RESOLVING",
+      "timestamp_ns": 1736769420000000000
+    },
+    "ATTEMPT_TERMINAL": {
+      "credit": 10000,
+      "event": "ATTEMPT_TERMINAL",
+      "group": "68f3efbc-3732-4f69-a8d3-a6402bf00fed",
+      "intent_id": "11ee6070-df41-4715-963b-d83251cc3162",
+      "kind": "CUT",
+      "rights": {
+        "H": "771987.3082458683",
+        "PLANREF": "94974.4",
+        "btc_filled": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "btc_open": "0.0",
+        "btc_retired": {},
+        "btc_targets": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "sol_consumed": {
+          "0": 748920.0
+        },
+        "sol_held_lots": {
+          "0": 30000
+        },
+        "sol_open": "3000.0",
+        "sol_right_fraction": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0
+        },
+        "sol_rights": [
+          0,
+          1,
+          2
+        ]
+      },
+      "sequence": 27,
+      "state": "HELD",
+      "timestamp_ns": 1736769420000000000
+    },
+    "ORIGINAL_TP_LEAVES_REQUEUED": {
+      "event": "ORIGINAL_TP_LEAVES_REQUEUED",
+      "group": "68f3efbc-3732-4f69-a8d3-a6402bf00fed",
+      "rights": {
+        "H": "771987.3082458683",
+        "PLANREF": "94974.4",
+        "btc_filled": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "btc_open": "0.0",
+        "btc_retired": {},
+        "btc_targets": {
+          "0": 2067,
+          "1": 2067,
+          "2": 5596
+        },
+        "sol_consumed": {
+          "0": 748920.0
+        },
+        "sol_held_lots": {
+          "0": 30000
+        },
+        "sol_open": "3000.0",
+        "sol_right_fraction": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0
+        },
+        "sol_rights": [
+          0,
+          1,
+          2
+        ]
+      },
+      "sequence": 28,
+      "state": "HELD",
+      "timestamp_ns": 1736769480000000000
+    }
+  },
+  "raw_native_evidence": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction-raw-native.json",
+    "sha256": "7e7f3def0d937fb09752379640191208e98634cba3f3a8033de49c05c1f3c117"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "6f8150684aedc5c69672e401daa7d85b8b6915eb94f53903527205143011d9e5",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/minute-native-settled-receipts.csv.gz": "cce639eea80ef7c2ca3da6fef2f69f46ce247eba35943ece8a9eafc653994673",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/minute-native-risk.csv.gz": "debc309c8ac3914f752ecacee6c01e2a97facf474d225cec3ae5d06bccb2ed46",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-C1-CORRECTED-actions.csv": "ab30531a0249acb73e4edffc5de91b1a085161a419eb6dbde4894f714b630962",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-C1-CORRECTED-local-cut-trough.csv": "40cdebec9825bd93806dbcdd8ba25f70b79d10c74cbc224e827a82fc441ed961",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-C1-CORRECTED-groups.csv": "2801485179ded5aaf8c254687cbe4bdb8654cb9ca9c335cc9f198074edd06648",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021/reports/residual-recovery-20261023/owner-C1-CORRECTED-postmortem.json": "ece990ae0513f0f7ad0bd0866c089cb3808fe3154b56922e663354d3c104b928",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+  "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+}

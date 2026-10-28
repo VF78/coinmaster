@@ -1,0 +1,36 @@
+{
+  "status": "DRAFT_NOT_ENGINE_PILOT_READY_NOT_LIVE_GO",
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "live_order_capability": false,
+  "selected_candidate": null,
+  "source_commit": null,
+  "config_sha256": null,
+  "research_venue": "Bybit",
+  "live_venue": "hyperliquid",
+  "max_initial_budget": {
+    "amount": "PRIVATE_CAP",
+    "currency": "USDC"
+  },
+  "withdrawal_permission_allowed": false,
+  "automatic_topup_allowed": false,
+  "simultaneous_BTC_SOL_writer_allowed": false,
+  "relative_sizing": "PRESERVE_SELECTED_E4_C1; minlot/minnotional sufficiency not yet calculated",
+  "HWM_reset_on_restart_allowed": false,
+  "model_label": "E4/C1-derived alpha+drawdown-control; legacyreference/omittedTPnotfills; SOLnotcontinuoushedge",
+  "readiness": {
+    "coherent_equity_clock_H4_D1_warmup": "NOT_VERIFIED",
+    "open_risk_restart_globalH_parent_PLANREF_credit_latch_rights_pending": "NOT_VERIFIED",
+    "native_partial_cancel_fill_duplicate_reconnect_priority": "NOT_VERIFIED",
+    "exact_cash_signedfunding_nativefees": "NOT_VERIFIED",
+    "isolated_account_budget_minlots_no_doublewriter": "NOT_VERIFIED",
+    "stop_entries_cancel_owned_manage_actual_close_reporting": "NOT_VERIFIED"
+  },
+  "candidate_metrics": null,
+  "current_services_changed": false,
+  "owner_go_authorization_mode": "PREPARATION_AUTHORIZED_FINAL_LIVE_START_CONFIRMATION_REQUIRED",
+  "owner_final_confirmation_required": [
+    "explicit_live_start_after_final_benchmark_verified_algorithm"
+  ],
+  "local_private_binding": "runtime/var/research-jobs/e4-c1-fast-pilot-20261028/private/live-account.json",
+  "funds_status": "OWNER_REPORTED_TRANSFER_PRIVATE_CAP_USDC_NOT_YET_API_RECONCILED"
+}

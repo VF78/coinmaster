@@ -1,6 +1,7 @@
 # Owner
 
-- Vladimir; communicate in Russian, plainly and without filler.
-- Timezone: Europe/Moscow (current owner/client context).
-- Goal: improve terminal ACTIVE+RESERVE after actual expenses with the agreed DD/profit constraints.
-- Prefers simple native Nautilus solutions, minimal layers, minimal total model cost and rework.
+- Vladimir; communicate in Russian, plainly and concisely. Timezone Europe/Moscow.
+- Optimize terminal ACTIVE+RESERVE after actual costs under the current profit/DD constraints in ACTIVE_TASK.
+- Prefer native Nautilus, minimal layers, total model cost and rework.
+- Standing necessary CoinMaster R&D/preparation authorization: .ops/OWNER_AUTHORIZATION.md. Account parameters and readbacks remain in gitignored local private configuration.
+- Final algorithm must pass the reference benchmark; real live start requires Vladimir’s separate explicit confirmation. Preparation continues without routine permission requests.

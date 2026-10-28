@@ -1,0 +1,86 @@
+{
+  "native_receipts_streamed": 1051199,
+  "source_months": [
+    "2024-09",
+    "2024-10",
+    "2024-11",
+    "2024-12",
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05",
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08"
+  ],
+  "groups": 9,
+  "h4_rows": 90,
+  "confirmation_crosschecks": [
+    {
+      "index": "1",
+      "timestamp_ns": 1728043200000000000,
+      "native_DD": "0.3470754955805682333106083442",
+      "extracted_DD": "0.3470754955805682333106083442",
+      "native_close": "140.06",
+      "extracted_close": "140.06",
+      "exact_DD": true,
+      "exact_close": true
+    },
+    {
+      "index": "2",
+      "timestamp_ns": 1736827200000000000,
+      "native_DD": "0.2427606696786339004795236406",
+      "extracted_DD": "0.2427606696786339004795236406",
+      "native_close": "184.1",
+      "extracted_close": "184.1",
+      "exact_DD": true,
+      "exact_close": true
+    },
+    {
+      "index": "4",
+      "timestamp_ns": 1764561600000000000,
+      "native_DD": "0.2036130125063214358769396442",
+      "extracted_DD": "0.2036130125063214358769396442",
+      "native_close": "86322.2",
+      "extracted_close": "86322.2",
+      "exact_DD": true,
+      "exact_close": true
+    }
+  ],
+  "price_DD_only_no_action": 6,
+  "threshold_candidate_groups": [
+    "1",
+    "2",
+    "4"
+  ],
+  "engine_runs": 0,
+  "new_matching_or_PnL_engine": false,
+  "coherent_event_DD_status": "UNKNOWN: minute phased close samples exist; fill-by-fill pre-fill/pre-open equity not proven",
+  "signed_asset_funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 841,
+      "SOLUSDT-PERP.P1SIM": 404
+    },
+    "count": 1245,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "cash_bridge_not_funding": "53801.142665296518712",
+  "C1_source": "78cb85aca1cf5c2e4455f5c5ddf02851cfb40076",
+  "E4_source": "bd04c9b3858bcda40060a08eff488849c69af5d8",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "config_hash": "405ab01b74eb459117dcbb340bc56ace4a1e6edc64290cb049d63695cae772b6"
+}

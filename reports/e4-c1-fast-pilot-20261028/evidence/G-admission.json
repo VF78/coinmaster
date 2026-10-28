@@ -1,0 +1,355 @@
+{
+  "status": "G_HAS_DECISIVE_SAVED_PATH_ACTION_DELTA_NO_ECONOMIC_PASS_CLAIM",
+  "rule": "Oneaccount-widecutarm;consumeonfirsteconomicallyclaimedcut;rearmONLYactualfreshcoherentsettledDD<=.35againstpersistentglobalH;groupclose/ordinaryexit/creditrevoke/restore/monthchangesDO_NOT_rearm",
+  "preserved_C1_contract": "Per-groupmaxonecut/onrestoreandactualfill-onlycredit/ordinaryexitpriorityunchanged;globalarmONLYadditionalcutadmissioncondition",
+  "consume_point_precision": "OriginalGproseunspecifiedCLAIMversusSUBMIT.ChooseCLAIMexplicitlybeforecode;allactualclaimsherenativelysubmit/fillnextminute. Noeconomicbenefitassumedfromthischoice. DoNOTrearmjustbecausecutattemptzero/partialorcreditrevoked.",
+  "native_saved_paths": {
+    "C1": {
+      "claims": [
+        {
+          "claim_index": 1,
+          "claim_UTC": "2024-10-03T09:03:00+00:00",
+          "claim_ns": 1727946180000000000,
+          "actual_cut_UTC": "2024-10-03T09:04:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 5000,
+          "DD_at_claim": "0.4021030044262792825085544636",
+          "prior_actual_claim_UTC": null,
+          "minimum_DD_since_prior_claim": null,
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 2,
+          "claim_UTC": "2025-01-13T11:56:00+00:00",
+          "claim_ns": 1736769360000000000,
+          "actual_cut_UTC": "2025-01-13T11:57:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 20000,
+          "DD_at_claim": "0.4010044954589650624050862269",
+          "prior_actual_claim_UTC": "2024-10-03T09:03:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1728029580000000000,
+            "receipt_UTC": "2024-10-04T08:13:00+00:00",
+            "source_quote_ns": "1728029520000000000",
+            "fill_epoch": "18",
+            "DD": "0.3488966423224727944727494816"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 3,
+          "claim_UTC": "2025-06-06T09:22:00+00:00",
+          "claim_ns": 1749201720000000000,
+          "actual_cut_UTC": "2025-06-06T09:23:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 11353,
+          "DD_at_claim": "0.4068580993951232644680940123",
+          "prior_actual_claim_UTC": "2025-01-13T11:56:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1736781600000000000,
+            "receipt_UTC": "2025-01-13T15:20:00+00:00",
+            "source_quote_ns": "1736781540000000000",
+            "fill_epoch": "102",
+            "DD": "0.3410618997841238975676699518"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 4,
+          "claim_UTC": "2025-11-27T02:23:00+00:00",
+          "claim_ns": 1764210180000000000,
+          "actual_cut_UTC": "2025-11-27T02:24:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 77329,
+          "DD_at_claim": "0.4011573487938088720569750263",
+          "prior_actual_claim_UTC": "2025-06-06T09:22:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1749503460000000000,
+            "receipt_UTC": "2025-06-09T21:11:00+00:00",
+            "source_quote_ns": "1749503400000000000",
+            "fill_epoch": "229",
+            "DD": "0.3497486855667471498444612434"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 5,
+          "claim_UTC": "2026-08-05T19:10:00+00:00",
+          "claim_ns": 1785957000000000000,
+          "actual_cut_UTC": "2026-08-05T19:11:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 137214,
+          "DD_at_claim": "0.4378924550915774649565399797",
+          "prior_actual_claim_UTC": "2025-11-27T02:23:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1764547560000000000,
+            "receipt_UTC": "2025-12-01T00:06:00+00:00",
+            "source_quote_ns": "1764547500000000000",
+            "fill_epoch": "378",
+            "DD": "0.3426928519304011713727294858"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 6,
+          "claim_UTC": "2026-08-10T15:38:00+00:00",
+          "claim_ns": 1786376280000000000,
+          "actual_cut_UTC": "2026-08-10T15:39:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 203720,
+          "DD_at_claim": "0.4687293815964772635802899770",
+          "prior_actual_claim_UTC": "2026-08-05T19:10:00+00:00",
+          "minimum_DD_since_prior_claim": "0.4142789024379307859711937747",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "SUPPRESS",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 7,
+          "claim_UTC": "2026-08-12T12:10:00+00:00",
+          "claim_ns": 1786536600000000000,
+          "actual_cut_UTC": "2026-08-12T12:11:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 67824,
+          "DD_at_claim": "0.4895564304851696156002945501",
+          "prior_actual_claim_UTC": "2026-08-10T15:38:00+00:00",
+          "minimum_DD_since_prior_claim": "0.4685891271665733352248033366",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "SUPPRESS",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 8,
+          "claim_UTC": "2026-08-18T20:00:00+00:00",
+          "claim_ns": 1787083200000000000,
+          "actual_cut_UTC": "2026-08-18T20:01:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 105504,
+          "DD_at_claim": "0.4962751750446379846434605485",
+          "prior_actual_claim_UTC": "2026-08-12T12:10:00+00:00",
+          "minimum_DD_since_prior_claim": "0.4757976692948813337401991856",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "SUPPRESS",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 9,
+          "claim_UTC": "2026-08-30T23:31:00+00:00",
+          "claim_ns": 1788132660000000000,
+          "actual_cut_UTC": "2026-08-30T23:32:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 88759,
+          "DD_at_claim": "0.4945066183547727639769474795",
+          "prior_actual_claim_UTC": "2026-08-18T20:00:00+00:00",
+          "minimum_DD_since_prior_claim": "0.4597900032536227603621466496",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "SUPPRESS",
+          "claim_group_reset_does_not_rearm": true
+        }
+      ],
+      "first_decisive_saved_path_delta": {
+        "claim_index": 6,
+        "claim_UTC": "2026-08-10T15:38:00+00:00",
+        "claim_ns": 1786376280000000000,
+        "actual_cut_UTC": "2026-08-10T15:39:00+00:00",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "actual_cut_requested_lots": 203720,
+        "DD_at_claim": "0.4687293815964772635802899770",
+        "prior_actual_claim_UTC": "2026-08-05T19:10:00+00:00",
+        "minimum_DD_since_prior_claim": "0.4142789024379307859711937747",
+        "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+        "G_saved_path_decision": "SUPPRESS",
+        "claim_group_reset_does_not_rearm": true
+      },
+      "all_receipts_streamed": 1051199,
+      "allowed_claims": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "suppressed_claims": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "later_assessment_scope": "Afterfirstsuppressedclaim changednativecapital/qty/eligibilityareUNKNOWN;laterdecisionsareconditionalsaved-pathdiagnosisONLY"
+    },
+    "Q": {
+      "claims": [
+        {
+          "claim_index": 1,
+          "claim_UTC": "2024-10-03T09:03:00+00:00",
+          "claim_ns": 1727946180000000000,
+          "actual_cut_UTC": "2024-10-03T09:04:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 5000,
+          "DD_at_claim": "0.4021030044262792825085544636",
+          "prior_actual_claim_UTC": null,
+          "minimum_DD_since_prior_claim": null,
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 2,
+          "claim_UTC": "2025-01-13T11:56:00+00:00",
+          "claim_ns": 1736769360000000000,
+          "actual_cut_UTC": "2025-01-13T11:57:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 20000,
+          "DD_at_claim": "0.4010044954589650624050862269",
+          "prior_actual_claim_UTC": "2024-10-03T09:03:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1728029580000000000,
+            "receipt_UTC": "2024-10-04T08:13:00+00:00",
+            "source_quote_ns": "1728029520000000000",
+            "fill_epoch": "18",
+            "DD": "0.3488966423224727944727494816"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 3,
+          "claim_UTC": "2025-06-06T09:22:00+00:00",
+          "claim_ns": 1749201720000000000,
+          "actual_cut_UTC": "2025-06-06T09:23:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 5676,
+          "DD_at_claim": "0.4068580993951232644680940123",
+          "prior_actual_claim_UTC": "2025-01-13T11:56:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1736781600000000000,
+            "receipt_UTC": "2025-01-13T15:20:00+00:00",
+            "source_quote_ns": "1736781540000000000",
+            "fill_epoch": "102",
+            "DD": "0.3410618997841238975676699518"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 4,
+          "claim_UTC": "2025-11-27T02:23:00+00:00",
+          "claim_ns": 1764210180000000000,
+          "actual_cut_UTC": "2025-11-27T02:24:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 38437,
+          "DD_at_claim": "0.4011538759746785719094130525",
+          "prior_actual_claim_UTC": "2025-06-06T09:22:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1749503820000000000,
+            "receipt_UTC": "2025-06-09T21:17:00+00:00",
+            "source_quote_ns": "1749503760000000000",
+            "fill_epoch": "229",
+            "DD": "0.3499020694439249651914926011"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 5,
+          "claim_UTC": "2026-08-10T16:21:00+00:00",
+          "claim_ns": 1786378860000000000,
+          "actual_cut_UTC": "2026-08-10T16:22:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 112066,
+          "DD_at_claim": "0.4562468117900877731213058995",
+          "prior_actual_claim_UTC": "2025-11-27T02:23:00+00:00",
+          "minimum_DD_since_prior_claim": "0",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": {
+            "receipt_ns": 1764351240000000000,
+            "receipt_UTC": "2025-11-28T17:34:00+00:00",
+            "source_quote_ns": "1764351180000000000",
+            "fill_epoch": "378",
+            "DD": "0.3478258009383096701495373299"
+          },
+          "G_saved_path_decision": "ALLOW",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 6,
+          "claim_UTC": "2026-08-19T02:09:00+00:00",
+          "claim_ns": 1787105340000000000,
+          "actual_cut_UTC": "2026-08-19T02:10:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 57177,
+          "DD_at_claim": "0.4889352499517847296363451602",
+          "prior_actual_claim_UTC": "2026-08-10T16:21:00+00:00",
+          "minimum_DD_since_prior_claim": "0.4472104968497674564240083094",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "SUPPRESS",
+          "claim_group_reset_does_not_rearm": true
+        },
+        {
+          "claim_index": 7,
+          "claim_UTC": "2026-08-30T23:48:00+00:00",
+          "claim_ns": 1788133680000000000,
+          "actual_cut_UTC": "2026-08-30T23:49:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "actual_cut_requested_lots": 48519,
+          "DD_at_claim": "0.4842528318241472544628854370",
+          "prior_actual_claim_UTC": "2026-08-19T02:09:00+00:00",
+          "minimum_DD_since_prior_claim": "0.4391938947839443836638124895",
+          "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+          "G_saved_path_decision": "SUPPRESS",
+          "claim_group_reset_does_not_rearm": true
+        }
+      ],
+      "first_decisive_saved_path_delta": {
+        "claim_index": 6,
+        "claim_UTC": "2026-08-19T02:09:00+00:00",
+        "claim_ns": 1787105340000000000,
+        "actual_cut_UTC": "2026-08-19T02:10:00+00:00",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "actual_cut_requested_lots": 57177,
+        "DD_at_claim": "0.4889352499517847296363451602",
+        "prior_actual_claim_UTC": "2026-08-10T16:21:00+00:00",
+        "minimum_DD_since_prior_claim": "0.4472104968497674564240083094",
+        "first_fresh_DD35_rearm_since_last_allowed_claim": null,
+        "G_saved_path_decision": "SUPPRESS",
+        "claim_group_reset_does_not_rearm": true
+      },
+      "all_receipts_streamed": 1051199,
+      "allowed_claims": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "suppressed_claims": [
+        6,
+        7
+      ],
+      "later_assessment_scope": "Afterfirstsuppressedclaim changednativecapital/qty/eligibilityareUNKNOWN;laterdecisionsareconditionalsaved-pathdiagnosisONLY"
+    }
+  },
+  "admission_conclusion": "SupportedmechanismandfirstdeltaforboundedGnativecandidateassessment;profitandDDimprovementUNKNOWN. EarliestC1delta2026Aug10 occursAFTERunchangedJanmaxDD51.803%,soGalonecannotrepairstrict50onC1prefix. QlikewiseunchangedJanDD. Nativevariantmustownitswholepath. NoR+GcombinationinferredbeforeRresult.",
+  "input_hashes": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "6f8150684aedc5c69672e401daa7d85b8b6915eb94f53903527205143011d9e5",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/residual-recovery-20261023/C1_CORRECTED/result/minute-native-settled-receipts.csv.gz": "cce639eea80ef7c2ca3da6fef2f69f46ce247eba35943ece8a9eafc653994673",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/Q/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-C1-E4-B-ATR0.5-btc-direction.json": "f63f3bf51e2a20b5624507b06183d4068f88ab387482482b80cef3c20a499f45",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/Q/result/minute-native-settled-receipts.csv.gz": "64b3d93046b0afc3ca4db559933747315bb7d63e88c28ad4a0ced7b9fda221c9"
+  },
+  "no_new_engine": true,
+  "no_new_tests": true,
+  "no_counterfactual_cash_addback": true,
+  "public_privacy": "Noaccountalias/accountbalance/livebudget/accounthistoryincluded"
+}

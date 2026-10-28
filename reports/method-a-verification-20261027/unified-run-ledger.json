@@ -444,6 +444,14 @@
     "P0",
     "P1_AFTER_P0_FINANCIAL"
   ],
+  "priority_handoff": {
+    "attachment_sha256": "bf7ac3d5898b690946bec6a07881b607a6f50d86c37532375c05c970549c8798",
+    "native_attempts_added": 0,
+    "new_task": "CM-E4-C1-FAST-PILOT-20261028",
+    "safe_checkpoint": "VPS reports/method-a-verification-20261027/code0-pointwise-implementation-20261028/SAFE_CHECKPOINT.json",
+    "safe_checkpoint_sha256": "bc4da54b1f305f19a6b4c84522bc2427b612bf1f71451417646f348fbf45f3a4",
+    "slots_transferred": 0
+  },
   "prospective_comparison_protocol": {
     "P3_gate": "raw qualified netTOTAL and both DD; not dominated by validP4; equality/UNKNOWN HOLD; all native/financial/liquidation gates retained",
     "P4_role": "DIAGNOSTIC",
@@ -454,7 +462,7 @@
   "schema": "METHOD_A_UNIFIED_PHYSICAL_LEDGER_V1",
   "sol_engineering_preparation_allowed": true,
   "sol_gate": false,
-  "status": "SOL_POINTWISE_OWNER_APPROVED_PREPARATION_NATIVE_GATE_CLOSED",
+  "status": "HOLD_OWNER_E4_C1_PRIMARY_20261028",
   "task": "CM-METHOD-A-VERIFY-20261027",
   "total_max": 19
 }

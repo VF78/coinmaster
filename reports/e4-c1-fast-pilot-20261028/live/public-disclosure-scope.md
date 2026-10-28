@@ -1,0 +1,1 @@
+Public packet contains research economics and technical readiness only. Account identity, deposit/capital and account financial readbacks remain in the gitignored local private configuration. Latest owner requires final benchmark verification and separate explicit START LIVE confirmation. No live order capability is enabled.

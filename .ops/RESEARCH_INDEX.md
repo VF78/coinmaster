@@ -1,5 +1,5 @@
-## Current Method A checkpoint — 2026-10-28
-OWNER_APPROVED consolidatedSOLpointwise+cap19 receipt171aacb8; canonical9/19active0rootFalse (old9rowsunchanged/noreserve). Implementationactiveonewriter +independentnativecostproof; nativeONLYaftercashbound/tests/peer/freeze/claim. Base3f555d9read-onlycodec/M3preppassed; newdomainnotyetaccepted. ExistingfullDD/profitgoalsNOT_MET; CURRENT/ACTIVE authoritative.
+## Primary E4/C1 fast pilot checkpoint — 2026-10-28
+CM-E4-C1-FAST-PILOT-20261028 owneradoptedattachmentbf7ac3d5; historicalcap8(4candidate+2conditionalcontrols+2qualifiers), currently0. Q72cc39c SOURCE_ONLYPASS, config492e493, exactC1base78cb85a/config405ab. Roldpath9group/90H4evidencepartial, notNOOP. Targetaround5.6316m, bothDD<=.5180315157406654834417870238, inheritedfloor5.4704m; noqualifiedcandidateyet. HL80USDCparameters+standingauthorization .ops/OWNER_AUTHORIZATION.md; privateaddresslocalONLY. MethodA HOLD9/19notdependency/slotsnotborrowed. ReadprimaryRESULTS/manifest/registry/currentACTIVE.
 
 # Research memory — as of2026-10-26; read before opening archives
 

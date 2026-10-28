@@ -1,0 +1,14 @@
+{
+  "FINDINGS_RU.md": "7c8982e15817a212a2fa6563b0b4615287bbcccccf5af3f952c3f5c203c33f51",
+  "e4_c1_decisions.csv": "c0a27536d048e604cfe9270b6dda7848556e506ee83fce4ce5333e231257e26e",
+  "extract_existing.py": "ed14df384b468cfd7c4c99541a08ad1cfae7a13da10c1636dbb903ea4f223e24",
+  "extraction_summary.json": "6afa0216030deae9c61987aec428ff329a95d8272a8d73fe33de0a6328d12e2c",
+  "first_candidate_native_risk.json": "23ac80f4738ce14573f69ac6e40970cb51bc43663b02a82789a3132790008075",
+  "first_candidate_ownership_funding.json": "ae1b7411a054684a48302c1ae6485158c082dd0a92385bb9ed3cdc83de87ad6b",
+  "guard_input_hashes.json": "cc1f9d40d5d9b2ebde1e7d442ff82d22600509219fa46b6b1058a3a1a15d24fc",
+  "h4_restore_windows.csv": "2bcb45def856969c2cccf48a4e4976c23893ab59626cf98595484490f4a76fa3",
+  "input_hashes.json": "41234fd70dceefe90669347e25495c034a61b1cc31c7b1a4be3696a4a8304d35",
+  "native_c1_selected_audit.json": "ca817311799eb954c6efe84024230b7516ab7fced2bd05e0657875cabc888694",
+  "structured_findings.json": "e9bdda593a5860635dcff6b3a1595b24afa7901b58427ad3ef779f98224987e9",
+  "successful_confirmation_crosscheck.csv": "68b4fd589ceb4516e4903ee94ae77c55dc05d0d341bef1120d101baaf0bbb1ab"
+}

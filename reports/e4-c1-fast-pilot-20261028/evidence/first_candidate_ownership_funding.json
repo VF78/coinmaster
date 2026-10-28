@@ -1,0 +1,151 @@
+[
+  {
+    "index": "1",
+    "bar_ns": 1728028800000000000,
+    "first_quote_ns": 1728028860000000000,
+    "all_active_order_lifetimes": [
+      {
+        "client_order_id": "O-20241003-090600-001-000-22",
+        "trader_id": "BACKTESTER-001",
+        "strategy_id": "WaveOverlayStrategy-000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "venue_order_id": "P1SIM-1-020",
+        "position_id": "",
+        "account_id": "P1SIM-001",
+        "last_trade_id": "",
+        "type": "LIMIT",
+        "side": "BUY",
+        "quantity": "0.940",
+        "time_in_force": "GTC",
+        "is_reduce_only": "True",
+        "is_quote_quantity": "False",
+        "filled_qty": "0.000",
+        "liquidity_side": "NO_LIQUIDITY_SIDE",
+        "avg_px": "",
+        "slippage": "",
+        "commissions": "",
+        "emulation_trigger": "NO_TRIGGER",
+        "status": "CANCELED",
+        "contingency_type": "NO_CONTINGENCY",
+        "order_list_id": "",
+        "linked_order_ids": "",
+        "parent_order_id": "",
+        "exec_algorithm_id": "",
+        "exec_algorithm_params": "",
+        "exec_spawn_id": "",
+        "tags": "",
+        "init_id": "ffd0dae2-87a3-4b0d-8c32-337b22c69d8b",
+        "ts_init": "1727946360000000000",
+        "ts_last": "1728043260000000000",
+        "price": "57429.9",
+        "expire_time_ns": "",
+        "is_post_only": "True",
+        "display_qty": "",
+        "trigger_instrument_id": "",
+        "native_order_events": {
+          "accept_ns": "1727946360000000000",
+          "action": "BTC_REDUCE",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "level": "2",
+          "order_type": "2",
+          "post_only": "true",
+          "reason": "BTC_TP3",
+          "submit_ns": "1727946360000000000",
+          "venue": "P1SIM"
+        }
+      }
+    ],
+    "native_funding_events_at_bar": [
+      [
+        "bybit:BTCUSDT:1728028800000:0.00000878",
+        "BTCUSDT-PERP.P1SIM",
+        1728028800000000000,
+        "0.00000878",
+        "10117.29167014"
+      ],
+      [
+        "bybit:SOLUSDT:1728028800000:-0.00002306",
+        "SOLUSDT-PERP.P1SIM",
+        1728028800000000000,
+        "-0.00002306",
+        "10118.89982842"
+      ]
+    ],
+    "fills_from_bar_minus1min_to_quote_plus2min": []
+  },
+  {
+    "index": "2",
+    "bar_ns": 1736798400000000000,
+    "first_quote_ns": 1736798460000000000,
+    "all_active_order_lifetimes": [],
+    "native_funding_events_at_bar": [],
+    "fills_from_bar_minus1min_to_quote_plus2min": []
+  },
+  {
+    "index": "4",
+    "bar_ns": 1764259200000000000,
+    "first_quote_ns": 1764259260000000000,
+    "all_active_order_lifetimes": [
+      {
+        "client_order_id": "O-20251127-022500-001-000-426",
+        "trader_id": "BACKTESTER-001",
+        "strategy_id": "WaveOverlayStrategy-000",
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "venue_order_id": "P1SIM-1-266",
+        "position_id": "",
+        "account_id": "P1SIM-001",
+        "last_trade_id": "",
+        "type": "LIMIT",
+        "side": "BUY",
+        "quantity": "44.465",
+        "time_in_force": "GTC",
+        "is_reduce_only": "True",
+        "is_quote_quantity": "False",
+        "filled_qty": "0.000",
+        "liquidity_side": "NO_LIQUIDITY_SIDE",
+        "avg_px": "",
+        "slippage": "",
+        "commissions": "",
+        "emulation_trigger": "NO_TRIGGER",
+        "status": "CANCELED",
+        "contingency_type": "NO_CONTINGENCY",
+        "order_list_id": "",
+        "linked_order_ids": "",
+        "parent_order_id": "",
+        "exec_algorithm_id": "",
+        "exec_algorithm_params": "",
+        "exec_spawn_id": "",
+        "tags": "",
+        "init_id": "1265b543-6f49-4330-b246-34590db64707",
+        "ts_init": "1764210300000000000",
+        "ts_last": "1764561660000000000",
+        "price": "84539.2",
+        "expire_time_ns": "",
+        "is_post_only": "True",
+        "display_qty": "",
+        "trigger_instrument_id": "",
+        "native_order_events": {
+          "accept_ns": "1764210300000000000",
+          "action": "BTC_REDUCE",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "level": "2",
+          "order_type": "2",
+          "post_only": "true",
+          "reason": "BTC_TP3",
+          "submit_ns": "1764210300000000000",
+          "venue": "P1SIM"
+        }
+      }
+    ],
+    "native_funding_events_at_bar": [
+      [
+        "bybit:BTCUSDT:1764259200000:-0.00000801",
+        "BTCUSDT-PERP.P1SIM",
+        1764259200000000000,
+        "-0.00000801",
+        "1424613.26534606"
+      ]
+    ],
+    "fills_from_bar_minus1min_to_quote_plus2min": []
+  }
+]

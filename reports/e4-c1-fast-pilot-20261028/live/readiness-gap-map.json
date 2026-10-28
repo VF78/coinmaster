@@ -1,0 +1,119 @@
+{
+  "schema": "coinmaster-e4-c1-live-readiness-gap-map-v1",
+  "task": "CM-E4-C1-FAST-PILOT-20261028",
+  "audit_mode": "READ_ONLY_SOURCE_NO_IMPORTS_NO_TESTS_NO_SERVICES_NO_SIGNING",
+  "source_commit": "72cc39cfda5d64529da977276729418f90521d36",
+  "source_root": "local frozen source-Q-72cc39cfda5d",
+  "installed_runtime_identity": "UNKNOWN",
+  "ssh_inventory": "One supplied-socket SSH read failed: Connection closed by UNKNOWN port 65535; no retry, no systemd inventory performed. Root separate readback may supersede.",
+  "account_balance_authorization_positions_orders": "UNKNOWN_PENDING_SEPARATE_READBACK",
+  "live_order_capability": false,
+  "release_gate": "Final benchmark-qualified frozen algorithm plus explicit final owner start confirmation and all six technical gates. Standing preparation authorization is not a need for routine permission loops.",
+  "conclusion": "Existing stock native HL execution/receipt/control stack is reusable; live E4/C1 integration, causal H4/money observation and open-risk MANAGE_ONLY restart are concrete missing code, not one research flag. No new SDK/framework or universal CODE0 cost proof prerequisite identified.",
+  "gates": [
+    {
+      "gate": 1,
+      "status": "GAP",
+      "existing": [
+        "runtime/coinmaster/ops/hl_live_money.py:live_perps_money_view validates standard cross accountValue, totalRawUsd, margin, withdrawable, native positions and revision; RecoverableWaveOverlayStrategy._active_marked returns venue equity once",
+        "runtime/coinmaster/ops/hl_live_worker.py:HyperliquidLiveNode uses Bybit D1 signal and HL marks/quotes; _entries_enabled checks feed, money, warmup and recovery",
+        "runtime/coinmaster/strategy/residual_recovery.py:_c1_observe/_c1_current_money enforce causal source<receipt, fill epoch and source freshness"
+      ],
+      "gaps": [
+        "C1 observation is invoked by research/minute_risk.py:finalize_receipt via observed_strategy_type.on_data, absent from live composition. Setting research_residual_recovery alone creates no live observation.",
+        "E4/C1 NextClosedBar generation (BTC4h, SOL4h; research runner also produces SOL1h) lives in research/native_baseline.py, absent in live worker. stage_g_warmup verifies D1 only; do not confuse separate hedge_h4_ema 730-bar mode with E4.",
+        "C1 presently expects details.mark_ohlc.close and account.last_event<=source. A live Info receipt after account updates cannot be pasted into this contract without defining one coherent generation."
+      ],
+      "minimal_change": "Add a bounded live receipt projection into existing strategy callbacks from one strict Info generation and matched BTC/SOL marks/positions/native revision. Use accountValue as equity (never add UPnL); retain rawUsd as cash-only. Adapt position detail shape without OHLC fabrication; reject mixed/stale/revision-moved observations. Add real fully closed UTC H4 signal feed, warmup/provenance and continuity gates alongside existing D1. Replay identical committed inputs through research/live and compare decisions."
+    },
+    {
+      "gate": 2,
+      "status": "GAP",
+      "existing": [
+        "runtime/coinmaster/strategy/live_recovery.py:on_save/on_load versioned domain Episode/Intent plus pending order state",
+        "runtime/coinmaster/ops/live_recovery.py:LiveRecoveryReconciler.apply_partial_fills and LiveRecoverySubmissionSink atomic checkpoint/order journal",
+        "runtime/coinmaster/ops/hl_live_execution.py:bind_clean_flat_live_handover periodic current-process owned-state parity",
+        "runtime/coinmaster/ops/hl_live_epoch.py:prepare_flat_epoch retains ledger and protection"
+      ],
+      "gaps": [
+        "Recovery _FIELDS omits _c1_peak/state/checkpoint/fill_epoch/intents/last_bars/sol_levels/terminal_ids, _next_* and _hb_* causal E4 state; config/profile identity does not pin complete new policy.",
+        "Live factory builds empty durable scope and fresh anchor; bind_clean_flat_live_handover explicitly rejects open startup with LIVE_OPEN_FUNDING_CURSOR_UNPROVEN. Status declares MANUAL_CLEAN_FLAT_ONLY.",
+        "recovery_confirmed=False prevents submit, cancel and close_position. No separate MANAGE_ONLY reduce/cancel path exists; process stop is not a flatten guarantee."
+      ],
+      "minimal_change": "Extend existing checkpoint schema with exact C1/E4 causal state and identity; preserve global H independently of flat epochs. Reconstruct durable scope/cursors from existing journal and reconcile with stock reports before increases. Add explicit verified-owned MANAGE_ONLY mode: unknown exposure blocks increases, known owned positions/orders can be reduced/cancelled under fresh authoritative scope; unresolved ownership remains unknown/manual. Do not blindly reopen all methods or resubmit unknown ACK."
+    },
+    {
+      "gate": 3,
+      "status": "REUSE_WITH_C1_QUALIFICATION",
+      "existing": [
+        "runtime/coinmaster/ops/hl_live_execution.py:QualifiedInfoBoundary, scoped factory, WS effect buffering/epoch, revision parity, budgeted refresh",
+        "runtime/coinmaster/ops/live_recovery.py:apply_partial_fills validates order shape, venue IDs, duplicate trade IDs, pending lineage",
+        "runtime/coinmaster/strategy/wave_overlay.py:_seen_trade_ids, _record_submission, _c1_fill/native_fill/terminal hooks, actual-fill rights",
+        "runtime/coinmaster/ops/hl_live_worker.py:IOC and reduceOnly exits"
+      ],
+      "gaps": [
+        "Existing fixtures cover old V3/current-process flow, not frozen Q live wiring or C1 checkpoint restart.",
+        "Account-specific lot/tick/min-notional/leverage and current fee tier not yet supplied by separate public readback."
+      ],
+      "minimal_change": "Reuse runtime/tests/test_hl_live_execution.py, test_live_native_report_recovery.py, test_live_recovery_state.py, test_hl_live_money.py and C1 fixture families. Extend only connected C1 paths for partial IOC/zero, cancel+late fill, duplicate Filled, lost ACK, reconnect/out-of-order, ordinary-close priority, credit<=actual fills and no accidental restore side flip. Native execution IDs/account reports remain authority."
+    },
+    {
+      "gate": 4,
+      "status": "REUSE_WITH_IDENTITY_GAP",
+      "existing": [
+        "runtime/coinmaster/strategy/residual_recovery.py:_c1_fill restores original lot buckets without new SOL rights; ordinary/mandatory fills revoke credit",
+        "runtime/coinmaster/strategy/wave_overlay.py actual fills and reference/omission logic"
+      ],
+      "gaps": [
+        "Current live profile is V3+DP50, hardcoded old source and flags; it is not E4/C1/Q.",
+        "Full new E4/C1 state not included in live recovery serialization."
+      ],
+      "minimal_change": "Freeze selected benchmark-qualified candidate/source/config and explicit E4/C1-derived alpha+drawdown-control label. Pin existing legacy reference/omission semantics; never report omitted/reference TP as fills. Verify rights/PLANREF/credit roundtrip including partial execution."
+    },
+    {
+      "gate": 5,
+      "status": "UNKNOWN_ACCOUNT_AND_PROFILE_GAP",
+      "existing": [
+        "runtime/coinmaster/ops/hl_live_execution.py account-level lease excludes same account across journals/processes",
+        "runtime/coinmaster/ops/hl_live_money.py:collect_selected_cross_assets + prospective_cross_margin_ok checks selected account cross leverage, aggregate pending openings, gross cap and fee reserve",
+        "runtime/coinmaster/strategy/wave_overlay.py:_submit_intent checks native size increment, minimum quantity/notional"
+      ],
+      "gaps": [
+        "require_live_order_approval, load_live_profile and initial money gate hardcode 82 USDC; latest owner cap is PRIVATE_CAP, pending final benchmark and explicit final start confirmation.",
+        "Dedicated account/subaccount status, funds, authorization, no withdrawal permission/no other external writer and auto-topup off not established by source or old #101.",
+        "No numerical minimum-lot sufficiency can be asserted without current instruments/marks/leverage, chosen candidate relative sizing and actual available equity."
+      ],
+      "minimal_change": "Replace legacy exact82/V3 seals with exact chosen release+account fingerprint+capPRIVATE_CAP; do not disable seal. Consume separate read-only account/public metadata. Calculate rounded original relative sizing, BTC first/second leg, TP leaves, BTC quarter cut/SOL half and potential restore minimums at current marks. Fail/record skipped too-small actions; never increase budget or round up exposure to manufacture comparability. Use actual account fee evidence; existing .0005 fee reserve is admission reserve, not execution fee."
+    },
+    {
+      "gate": 6,
+      "status": "PARTIAL_GAP",
+      "existing": [
+        "runtime/coinmaster/ops/hyperliquid_testnet_worker.py control endpoint uses runtime.entry_control_command PAUSE/RESUME",
+        "runtime/coinmaster/ops/hl_live_worker.py durable submission/fill events, equity observation, native snapshots, failure restart marker",
+        "runtime/coinmaster/ops/hyperliquid_testnet.py:stop halts callbacks before journal close"
+      ],
+      "gaps": [
+        "PAUSE blocks new entries but does not itself cancel/flatten. Current recovery gate also blocks management when recovery is revoked.",
+        "No qualified E4/C1 emergency stop across partial/cancel/unknown ACK demonstrated; logs lack connected C1 live receipt/reason/shadow parity."
+      ],
+      "minimal_change": "Reuse authenticated control and journal; bounded stop sequence PAUSE increases -> reconcile owned orders -> cancel owned -> reduce authoritative residual via native reduceOnly -> final readback. Report UNKNOWN rather than flat on missing reports. Preserve HWM and emit intended/accepted/filled, equity/marks/funding/latency/C1 reasons/shadow deviations; classify economic loss separately from engine faults."
+    }
+  ],
+  "critical_path": [
+    "Read separate account/instrument/installed metadata; preserve UNKNOWN where absent.",
+    "Freeze selected historical candidate; source/config/policy identity and capPRIVATE_CAP exact release profile.",
+    "Implement live coherent money+C1 observation and closed H4/D1 signal continuity in existing node.",
+    "Extend versioned existing checkpoint and durable scope; prove restart MANAGE_ONLY reduces without increases or H reset.",
+    "Run one bounded connected fault scenario set using existing fixtures, then real-feed shadow and lot/fee/leverage qualification; no arbitrary calendar delay.",
+    "Final stop/reconciliation readback, sealed LIVE_RELEASE capability false until final owner start confirmation."
+  ],
+  "venue_qualification": "Bybit benchmark and signal warmup are not Hyperliquid execution/performance evidence. Existing cross-venue signal source must be named and verified; use genuine HL current execution constraints and bounded live-feed/fault qualification. Missing pristine OOS does not itself block honest engine pilot; unsupported account mode or stock connector capability is a concrete blocker.",
+  "untouched": [
+    "running Q historical attempt",
+    "working Sandbox",
+    "production",
+    "keys and private account file",
+    "services and source files"
+  ]
+}
