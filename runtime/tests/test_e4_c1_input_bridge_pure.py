@@ -365,3 +365,89 @@ def test_live_firstfresh_uses_real_callback_clock_without_forging_quote_event():
     policy._c1_first_fresh_quote(tick,current,decision_ns=300)
     assert policy._c1_state['confirmation']['close_ns']==100 and 'first_fresh_deferred' not in policy._c1_state
     assert tick.ts_event==150
+
+
+def test_actual_worker_dp_reader_observes_native_equity_without_command_permit(code,tmp_path,monkeypatch):
+    import ast,time,sys
+    from types import ModuleType
+    from test_e4_c1_manage_only_pure import ROOT,ACCOUNT_ID
+    m=money_code();module=ModuleType('coinmaster.ops.hl_live_money');module.CheapPortfolioObservation=m.CheapPortfolioObservation
+    monkeypatch.setitem(sys.modules,module.__name__,module)
+    tree=ast.parse((ROOT/'ops/hl_live_worker.py').read_text())
+    reader=next(k.value for n in ast.walk(tree) if isinstance(n,ast.Call) for k in n.keywords if k.arg=='deposit_equity_reader')
+    actual_reader=eval(compile(ast.Expression(reader),'actual_worker_dp_reader','eval'),{})
+    s,r,entry,position=setup(code,tmp_path)
+    try:
+        s._input_readiness_preparation=True;s._live_inputs_dirty=False;s._live_input_ws_epoch=lambda:3;s._recovery_health=lambda:True
+        account=N(id=ACCOUNT_ID,last_event=N(id='native-actual'))
+        s.cache.account_for_venue=lambda venue:account
+        now=time.monotonic_ns()
+        s._last_live_input_observation=m.CheapPortfolioObservation(D('45.01'),D(100),D(40),D(5),(('BTC',D(10)),),r.native_revision(),s._c1_fill_epoch,3,now,now,DAY_NS+1,'native-actual')
+        dp=DepositProtection(limit_percent=55);dp.initialize(D(100),DAY_NS+1)
+        assert actual_reader(s)==D('45.01')
+        assert dp.observe(actual_reader(s),DAY_NS+2)==(False,False)
+        from dataclasses import replace
+        s._last_live_input_observation=replace(s._last_live_input_observation,equity=D(45))
+        assert dp.observe(actual_reader(s),DAY_NS+3)==(True,True)
+        assert dp.high_water==D(100) and dp.threshold==D(45) and dp.latched
+        assert not s.recovery_confirmed and not s._entries_enabled() and not s._management_dispatch_enabled
+        account.last_event.id='changed'
+        with pytest.raises(ValueError,match='ACCOUNT_MOVED'):actual_reader(s)
+    finally:r.close()
+
+
+def test_actual_input_worker_constructor_preserves_runtime_decimal_and_paused_dp_setter_route(monkeypatch):
+    import sys
+    from types import ModuleType
+    from pathlib import Path
+    from test_e4_c1_manage_only_pure import ROOT
+    runtime=N(record_native_fill=lambda **kwargs:None,all_submissions=lambda:[],strategy_checkpoint=lambda:(b'fixture',0))
+    flags={'research_btc_split_discount':'0.0025','research_c1_restore_dd':'0.40','research_regime_reentry_band':'0.5'}
+    profile={'input_readiness':True,'manage_only_readiness':True,'strategy_flags':flags,'deposit_protection_percent':55,'retained_equity_floor_fraction':'0.45'}
+    captured=[]
+    class FakeStrategy:
+        def __init__(self,config):
+            assert config.deposit_runtime is runtime
+            assert config.research_btc_split_discount==D('.0025') and type(config.research_btc_split_discount) is D
+            self.config=config;self.recovery_confirmed=False
+        def enable_manage_only_preparation(self):pass
+        def on_load(self,body):pass
+        def _validated_live_money(self):return None
+        def deposit_projection(self):return {'drawdown_limit_percent':50}
+    class FakeNode:
+        def __init__(self,**kwargs):self.trader=N(add_strategy=lambda strategy:captured.append(strategy))
+        def add_data_client_factory(self,*args):pass
+        def add_exec_client_factory(self,*args):pass
+        def build(self):captured.append('built')
+    warmup=ModuleType('coinmaster.ops.stage_g_warmup')
+    warmup.load_stageg_bybit_warmup=lambda path:({'BTCUSDT':[{'open_time_ms':0,'high':'101','low':'99'}]},'READY')
+    monkeypatch.setitem(sys.modules,warmup.__name__,warmup)
+    native=ModuleType('nautilus_trader');native.__path__=[]
+    core=ModuleType('nautilus_trader.core');core.nautilus_pyo3=N()
+    monkeypatch.setitem(sys.modules,native.__name__,native);monkeypatch.setitem(sys.modules,core.__name__,core)
+    env={'Path':Path,'__file__':str(ROOT/'ops/hl_live_worker.py'),'Decimal':D,'time':__import__('time'),
+        'asyncio':N(new_event_loop=lambda:'fixture-loop'),'replace':lambda value,**kw:N(**(vars(value)|kw)),
+        'load_live_profile':lambda *args:profile,'check_live_credential':lambda *args:D(100),
+        '_read_json':lambda path:{'master_address':'synthetic','agent_private_key':'synthetic-not-key'},
+        'cross_venue_stage_g_gate':lambda **kwargs:N(warmup_state='READY',margin_policy_state='READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE',candidate_hash='fixture'),
+        'load_stageg_warmup_bundle':lambda path:(N(bars=(),rows=730),'READY'),
+        'LiveSubmissionHooks':lambda state:N(record_event=lambda *args:None), 'FeedBook':lambda **kwargs:N(),
+        'hyperliquid_testnet_node_config':lambda **kwargs:N(exec_clients={'HYPERLIQUID-LIVE':N(instrument_provider=None,routing=None,environment=None)},data_clients={'BYBIT-PUBLIC-SIGNAL':N()}),
+        'HyperliquidExecClientConfig':lambda **kwargs:N(**kwargs),'RecoverableWaveOverlayStrategy':FakeStrategy,
+        'WaveOverlayStrategyConfig':lambda **kwargs:N(**kwargs),'BTC_PERP':'BTC','SOL_PERP':'SOL','BYBIT_IDS':('BTCUSDT','SOLUSDT'),
+        'TESTNET_IDS':('BTC','SOL'),'bybit_daily_bar_type':lambda i:i,'venue_mark_data_type':lambda i:i,'ClientId':str,
+        'TimeInForce':N(IOC='IOC'),'BarType':lambda *args:args,'BarSpecification':lambda *args:args,
+        'BarAggregation':N(MINUTE='MINUTE'),'PriceType':N(LAST='LAST'),'AggregationSource':N(EXTERNAL='EXTERNAL'),
+        'durable_management_scope':lambda state,*args:N(runtime=state),
+        'ScopedHyperliquidExecClientFactory':N(bind=lambda scope,state,*args,**kwargs:captured.append(state)),
+        'TradingNode':FakeNode,'BybitLiveDataClientFactory':object(),'HyperliquidLiveDataClientFactory':object(),
+        'FeedObserver':lambda config:N(),'FeedObserverConfig':lambda **kwargs:N(**kwargs),
+        'HyperliquidTestnetNode':N(sandbox_snapshot=None,strategy_restartable=None,start=None,stop=None),
+        'require_profile_deposit_parity':require_profile_deposit_parity}
+    run_ast(nodes('ops/hl_live_worker.py',{'HyperliquidLiveNode'}),env)
+    instance=N(mode='live',instance_id='hl-stageg-live',signal_warmup_manifest=Path('/synthetic'),trader_id='trader',strategy_id='strategy',order_id_tag='tag')
+    node=env['HyperliquidLiveNode'](instance=instance,candidate=object(),state=runtime,credential_path=Path('/synthetic'),fingerprint_path=Path('/synthetic'))
+    assert node.state is runtime and runtime in captured and 'built' in captured
+    node._refresh_warmup_readiness=lambda:None
+    assert node.strategy.deposit_projection()['drawdown_limit_percent']==50
+    assert node._entries_enabled() is False

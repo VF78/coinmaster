@@ -370,6 +370,31 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if self._live_refresh is not None:
             self._live_refresh()
 
+    def _validated_live_deposit_equity(self):
+        """Money observation for existing DP only; no recovery/order capability."""
+        if not self._input_readiness_preparation:return self._validated_live_money().equity
+        from coinmaster.ops.hl_live_money import CheapPortfolioObservation
+        observation=self._last_live_input_observation
+        if (not isinstance(observation,CheapPortfolioObservation) or self._live_inputs_dirty
+            or self._recovery_runtime is None or self._live_input_ws_epoch is None
+            or self._recovery_health is None or not self._recovery_health()):
+            raise ValueError('LIVE_DP_OBSERVATION_UNAVAILABLE')
+        observation.require_current(now_ns=time.monotonic_ns(),revision=self._recovery_runtime.native_revision(),
+            fill_epoch=self._c1_fill_epoch,ws_epoch=self._live_input_ws_epoch())
+        account=self.cache.account_for_venue(self.config.btc_id.venue);event=getattr(account,'last_event',None)
+        event_id=getattr(event,'id',None) or getattr(event,'event_id',None)
+        if account is None or str(event_id)!=observation.native_account_event_id:
+            raise ValueError('LIVE_DP_NATIVE_ACCOUNT_MOVED')
+        sizes={}
+        for position in self.cache.positions_open():
+            instrument=str(position.instrument_id);coin=instrument.split('-USD-PERP.')[0]
+            if (instrument not in (str(self.config.btc_id),str(self.config.sol_id)) or coin in sizes
+                or str(position.strategy_id)!=str(self.id) or str(position.account_id)!=str(account.id)):
+                raise ValueError('LIVE_DP_NATIVE_POSITION_SCOPE')
+            sizes[coin]=position.quantity.as_decimal()*(1 if position.is_long else -1)
+        if tuple(sorted(sizes.items()))!=observation.position_sizes:raise ValueError('LIVE_DP_NATIVE_POSITION_MOVED')
+        return observation.equity
+
     def _validated_live_money(self) -> LivePerpsMoneyView:
         if not self.recovery_confirmed or self._live_money_provider is None:
             raise ValueError("LIVE_MONEY_UNCONFIRMED")

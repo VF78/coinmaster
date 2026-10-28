@@ -190,12 +190,12 @@ class HyperliquidLiveNode:
         )
         del record
         strategy_flags=dict(self.profile['strategy_flags'])
-        for key in ('research_c1_restore_dd','research_regime_reentry_band'):
+        for key in ('research_c1_restore_dd','research_regime_reentry_band','research_btc_split_discount'):
             if key in strategy_flags:strategy_flags[key]=Decimal(str(strategy_flags[key]))
         if self.input_readiness:
             from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
-            rows,state=load_stageg_bybit_warmup(instance.signal_warmup_manifest)
-            if state!='READY':raise RuntimeError('C1_DAILY_OHLC_WARMUP_UNKNOWN')
+            rows,warmup_state=load_stageg_bybit_warmup(instance.signal_warmup_manifest)
+            if warmup_state!='READY':raise RuntimeError('C1_DAILY_OHLC_WARMUP_UNKNOWN')
             strategy_flags['research_band_daily_seed']=tuple(((int(row['open_time_ms'])+86_400_000)*1_000_000,float(row['high']),float(row['low'])) for row in rows['BTCUSDT'])
         self.strategy = RecoverableWaveOverlayStrategy(WaveOverlayStrategyConfig(
             strategy_id=instance.strategy_id, order_id_tag=instance.order_id_tag,
@@ -211,12 +211,13 @@ class HyperliquidLiveNode:
             execution_policy_hash="hl-mainnet-native-owned-v1", execution_policy_version="hl-mainnet-native-owned-v1",
             market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
             deposit_runtime=state, deposit_instance_id=instance.instance_id, deposit_account_id="HYPERLIQUID-master",
-            deposit_equity_reader=lambda strategy: strategy._validated_live_money().equity,
+            deposit_equity_reader=lambda strategy: strategy._validated_live_deposit_equity(),
             deposit_initialization_allowed=lambda: self.strategy.recovery_confirmed and not state.all_submissions(),
         ))
         self.hooks.strategy = self.strategy
-        if self.input_readiness:
-            require_profile_deposit_parity(self.profile, self.strategy.deposit_projection())
+        # Paused preparation must reach the existing explicit flat-only setter.
+        # Readiness checks below retain strict profile/durable parity; construction
+        # never changes/reset the persisted control or high-water anchor.
         self.strategy._input_readiness_preparation=self.input_readiness
         if self.input_readiness:
             self.strategy._live_minute_bar_types=tuple(BarType(i,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL) for i in BYBIT_IDS)

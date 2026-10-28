@@ -8,14 +8,14 @@
     "runtime/coinmaster/ops/hl_live_execution.py": "28dbe1f2fda23f066fb705fc872110eb1a5f4b144f5a7789b1b9871a880064c6",
     "runtime/coinmaster/ops/hl_live_money.py": "e6e4119f1b84a53d61095e0bc4b9e706bbd16ee9e6ff9bfee66913a732c3d43a",
     "runtime/coinmaster/ops/hl_live_profile.py": "55a9a94e5af9c204307c17b95f37961295535c404790740f97134c667b09e30c",
-    "runtime/coinmaster/ops/hl_live_worker.py": "90b1b1ba9886040ba04c709647f7739a2e19a7866e3a134c4faa48080cc29fb5",
+    "runtime/coinmaster/ops/hl_live_worker.py": "f1e17bddf20bec2bd069dba815a11f92c0a36df9e0b83c73d1499845dfeb9631",
     "runtime/coinmaster/ops/hl_qualified_reports.py": "6d52f879df5cef7d4442abf8a5a4c458c8313e6dc99f8c361994b63141b276e6",
-    "runtime/coinmaster/strategy/live_recovery.py": "c4eb9e83ed3f36d822bfc328d3a7b87e1aa9a9c5a9b29825a5a9d9039efa35d7",
+    "runtime/coinmaster/strategy/live_recovery.py": "73fd8ef643fa8e9985e251284a43ac5d9ad619c03ce6719bec666e7f938fc5c5",
     "runtime/coinmaster/strategy/residual_recovery.py": "34575a932e9ce57cb99529f603ed258603651d06ead0670fad68737420852dfa",
     "runtime/coinmaster/strategy/wave_overlay.py": "4e01f36d268a6f32a0c74f1ad2540d291b0e2cba53c3ef222c48efa64587b1d9",
     "runtime/tests/test_e4_c1_manage_only_pure.py": "b53e1c9cf83aea570832ca381ad25c304be45662201b9daf9ab018496efdda11",
     "runtime/coinmaster/strategy/c1_inputs.py": "00528b9c24359c10f98ff4ad43bf715b85709518d1dcde787196dab5e7d36fb1",
-    "runtime/tests/test_e4_c1_input_bridge_pure.py": "6808f0b0eb5bcb2c39e496e65e64c6f863cf825a9dfe42c9d76709cc8bb6c33d"
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "2e500fb17feef482b648dd8ee758447160361436a13efc11d6c7c639f262c249"
   },
   "implementation": [
     "Immutable C1 DTO/shared existing native loss materializer, research real mark OHLC vs live native HL marks and unrealized_pnl; no parallel PnL",
@@ -30,7 +30,7 @@
     "Input-readiness quote lane observes shared policy and actual callback firstfresh, returns before ordinary quote command processing; all normal C1 entries/dispatch OFF"
   ],
   "tests": {
-    "final": "76PASS12.07s",
+    "final": "78PASS13.63s",
     "command": "PYTHONPATH=runtime canonical runtime/.venv/bin/python -m pytest runtime/tests/test_e4_c1_input_bridge_pure.py runtime/tests/test_e4_c1_manage_only_pure.py runtime/tests/test_deposit_protection.py -q --maxfail=1",
     "earlier_connected": [
       "53PASS9.69s",
@@ -48,7 +48,8 @@
   "readiness_limits": [
     "Actual native lifecycle/adapter/account reconciliation/fault fixture not run in this phase",
     "No real venue bootstrap; current private live profile/seal/policy/checkpoint require qualified native acceptance and prepared release approval",
-    "No order/start/deployment/runtime authority from source or tests"
+    "No order/start/deployment/runtime authority from source or tests",
+    "Fresh clean-flat C1 one-time initialization contract newly settled by root; not yet implemented in this checkpoint."
   ],
   "economic_benchmark": "fccd60/a2c7 immutable; original5499360 benchmark does not apply to DP55 release without qualification; no rerun",
   "native_engine_node_strategy_order_model_constructors": 0,
@@ -57,5 +58,6 @@
   "services_changed": 0,
   "account_reads_writes": 0,
   "historical_runs": 0,
-  "final_explicit_START_required": true
+  "final_explicit_START_required": true,
+  "peer_correction": "One bounded connected correction batch: warmup status no longer overwrites runtime; split discount Decimal; paused constructor permits explicit DP55 setter route but readiness requires parity; actual worker DPreader consumes separately validated native observation without command/recovery permission."
 }

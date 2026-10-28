@@ -8,7 +8,7 @@
   "threshold": "existing_daily_close_high_water_equity * 0.45",
   "basis": "Initial native qualified equity, raised only by a valid fresh UTC daily-close sample. Not intraday peak.",
   "apply_path": "Existing set-deposit-protection with drawdown_limit_percent=55 and unique idempotency_key; requires PAUSED, coherent native/durable confirmed flat and fresh qualified native equity. No automatic setter call.",
-  "state_parity": "Input-readiness profile requires55 and0.45; constructor/readiness gate reject durable limit mismatch. Existing default50 is not silently accepted.",
+  "state_parity": "Input-readiness profile requires55 and0.45; paused preparation construction can reach existing explicit setter; readiness gate rejects durable mismatch. No automatic setter/reset/default50 acceptance for readiness.",
   "preserve": [
     "high_water_equity",
     "last_daily_close_utc",
