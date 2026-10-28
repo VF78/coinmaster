@@ -1,0 +1,35 @@
+{
+  "status": "R_COMPLETED_PROFIT_FAIL",
+  "TOTAL": "5412310.79137133",
+  "gap_to_working_floor": "58085.723616017",
+  "gain_vs_C1": "1023697.40911790",
+  "settled_DD_percent": "51.80315157406654834417870238",
+  "event_DD_percent": "51.80315157406654834417870238",
+  "native_child_exit": 0,
+  "native_cash_reconciliation": {
+    "status": "EXACT",
+    "seed": "10000",
+    "native_realized_total": "5351229.30963637",
+    "signed_funding": "51081.48173496",
+    "terminal_cash": "5412310.79137133",
+    "unallocated_bridge": "0E-8"
+  },
+  "actual_cash_transition_reconciliation": {
+    "exact_bridge": "0E-8",
+    "native_fill_cash_delta_total": "5351229.30963637",
+    "native_funding_cash_delta_total": "51081.48173496",
+    "seed": "10000",
+    "status": "EXACT_OBSERVED_NATIVE_TRANSITIONS",
+    "terminal_cash": "5412310.79137133",
+    "tolerance": null,
+    "trace_fields": "POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction"
+  },
+  "model_liquidations": 0,
+  "terminal_open_positions": 0,
+  "native_order_rejections": 0,
+  "coherent_observer_status": "PASS",
+  "native_unique_fills": 539,
+  "funding_count": 1248,
+  "all_lifecycles": 108,
+  "full_independent_trace_analysis": "PENDING"
+}

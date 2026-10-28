@@ -1,40 +1,46 @@
-# E4/C1: единый план и текущий результат
+# E4/C1: результат и единый план
 
-Статус: R&D активен, историческая попытка Q завершена (1/8), следующий R, live выключен. Основание — прямое указание владельца принять CODEX_E4_C1_FAST_PILOT_2026-10-28.md за основной план; SHA и полномочия закреплены в manifest.json. Это новая кампания, не продолжение закрытого C2 и не расход MethodA19.
+Основная задача — CM-E4-C1-FAST-PILOT-20261028, GitHub #137 / Project #2. Основание: прямое поручение владельца принять CODEX_E4_C1_FAST_PILOT_2026-10-28.md за основной план. SHA документа и бюджет закреплены в manifest.json; фактические попытки — experiment_registry.csv.
 
-## Что известно
+## Фактический результат
 
-C1 уже является E4+residual cut/restore. E4 вернул своевременное участие через закрытую H4 после REGIME при сохранённых D1 EMA34/ATR и дал5631617.35953723, settledDD57.58541046%. C1 уменьшил DD до51.80315157406654834417870238%, но TOTAL4388613.38225343. Комбинация нужной прибыли и допуска пока не получена. Уровни архива — ARCHIVE_SETTLED_REFERENCE; coherent eventDD и signed funding ещёUNKNOWN.
+Эталон: [01.09.2024, 01.09.2026), UTC, seed 10000 USDT, reserve 0. Только native NautilusTrader 1.231.0. Это историческая диагностическая модель с Bybit 1m и синтетическим L1/depth1000; она не доказывает исполнение Hyperliquid или доходность live.
 
-Цена C1 — не только комиссии:9cuts/3restores/6revoked credits,12interventionfills fees30498.04072762. Цена трёх пар cut→restore385696.0245 безfees, главным образом ноябрьBTC; эти суммы нельзя прибавлять кTOTAL. Ранний SOL cashflow влияет на будущий BTCsizing. Прежний C2bundle60%+completion+rearm остаётся отрицательным/непроверенным; сейчас другой DDдопуск и отдельные абляции.
+| Вариант | TOTAL USDT | Settled DD | Coherent event DD | Решение |
+|---|---:|---:|---:|---|
+| Архив S0 | 6 077 107.23887483 | 66.2569% | UNKNOWN | Исходный прибыльный ориентир |
+| Архив E4 | 5 631 617.35953723 | 57.5854% | UNKNOWN | Цель по прибыли, риск выше допуска |
+| Архив C1 | 4 388 613.38225343 | 51.8031515741% | UNKNOWN | Контроль, недостаточная прибыль |
+| Q, попытка 1 | 4 800 260.20248922 | 51.8031515741% | 51.8031515741% | Не выбран: прибыль ниже минимума |
+| R, попытка 2 | 5 412 310.79137133 | 51.8031515741% | 51.8031515741% | Не выбран: до минимума 58 085.723616017 |
+| COMBO Q+R, попытка 3 | 5 446 657.63139715 | 51.8031515741% | 51.8031515741% | Не выбран: до минимума 23 738.883590197 |
 
-Цель — около5631617 или выше, рабочий унаследованный нижний ориентир5470396.514987347; это не новый точный owner%-допуск. Для pilot candidate обе измеренные DD≤.5180315157406654834417870238; strict50% продолжается отдельно. Среди корректных вариантов максимизируемTOTAL, не выбираем меньшую прибыль ради меньшейDD. LegacyTPzero/reference и SOLalpha в этом MVP сохраняются и называются честно.
+Цель — TOTAL около 5 631 617.35953723 или выше. Унаследованный рабочий минимум — 5 470 396.514987347 (90% исходной чистой прибыли S0); это не новый согласованный процент отклонения от E4. Для эталонного кандидата обе измеренные DD должны быть ≤51.80315157406654834417870238%. Оптимизация до 30–50% продолжается после получения рабочего прибыльного варианта. Январский максимум у Q и R пока не изменился.
 
-## Новый фактический результат Q
+Q уменьшает BTC cut с половины до четверти, SOL cut остаётся половиной. Он принёс +411 646.82023579 к C1. До первого BTC cut 06.06.2025 совпали 225 fills и 400881 receipts. Независимая цепочка 537 fill +1245 funding transitions закрывается точно: 10000 +4738172.41324906 +52087.78924016 = TOTAL, residual 0E-8. Исходный экспорт последних двух positions сохранён некорректным; полная отдельная lifecycle PnL-сумма Q UNKNOWN. Повтор Q не нужен.
 
-Один полный native запуск, actual child exit 0: TOTAL **4 800 260.20248922**, settled и coherent event DD **51.80315157406654834417870238%**. Прирост к C1 **411 646.82023579**, но до рабочего минимума не хватает **670 136.312498127**; Q не выбран для live. До первого BTC cut 06.06.2025 совпали 225 fills и 400881 receipts. Получены 7 cuts / 3 restores / 4 revokes; intervention fees 12369.60926835.
+R сохраняет оба half-cut и меняет только два порога разрешения restore: DD35→40; остальные подтверждения и release revoked credit при DD35 сохранены. Прирост к C1 +1 023 697.40911790. Native restore января произошёл 13.01.2025 20:01 — на 8 часов раньше; ноября 29.11.2025 04:02 — на 2 суток раньше C1. Cuts 5 вместо 9, restores 3, revokes 2. Native экспорт всех 108 закрытых lifecycle и фактическая cash transition-сверка дают точные нулевые bridges; liquidation 0, terminal positions 0. Независимый аудит R завершён: все 1787 cash changes объяснены, 108 lifecycle и 539 fills сверены, обе цепочки точны.
 
-Независимая сверка фактических native cash transitions: seed10000 + fill cash deltas4738172.41324906 + signed funding52087.78924016 = TOTAL, residual0E-8. Проверены 1782 изменения cash без пропусков; retrospective settled copies исключены из мутаций. Исходный Q экспорт последних двух positions сохранён как некорректный; полная отдельная lifecycle PnL-сумма UNKNOWN, не подменяется cash-сверкой. Подробности и 24 месяца — evidence/Q-analysis.json и Q-*.
+Следующим выбран единственный разрешённый COMBO Q+R: обе отдельные дельты повысили прибыль, а R близок к минимуму. Используется тот же reviewed source 2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc без нового product patch, два существующих флага; config 75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba. COMBO завершён exit0; TOTAL5 446 657.63139715, обе DD51.8031515741%, обе денежные сверки точны, liquidation0/terminalflat. Он улучшил R лишь на34 346.84002582 — выигрыши одиночных правил не складываются. До floor23 738.883590197, поэтому это промежуточный результат. Последний кандидат — standalone G; источник готовится.
 
-Для R узко исправлен только экспорт всех native lifecycle snapshots и signed funding, стратегия не менялась. Source2e90a6c, peer0P0/P1; R configc4b53b97. Повтор Q не нужен. Следующий шаг — frozen preflight R и один запуск в том же бюджете.
+## Дальнейшие действия
 
-## Выполнение по порядку
+1. Завершить focused source review и frozen preflight standalone G, затем один native запуск в четвёртом и последнем candidate-слоте. Сохранить фактические результаты и независимый аудит COMBO.
+2. При первом проходящем варианте зафиксировать source/config/data/policy и прекратить поиск дополнительного рекорда. Затем выполнить два заранее ограниченных qualification: неблагоприятное исполнение и проверка на данных после эталона. Нельзя называть уже просмотренные данные нетронутым OOS.
+3. Если COMBO не проходит, G остаётся непотраченным направлением. G допускает только один общий cut до нового фактического DD≤35. На сохранённом пути он действительно подавляет повторные cuts августа 2026; январскую максимальную DD он не меняет. После первой разницы дальнейший капитал и прибыль неизвестны — cash addback недопустим. Второй combo не разрешён этой кампанией.
+4. Параллельно завершить минимальную подготовку existing Hyperliquid stack: причинные money/H4/D1 callbacks; сохранение C1/E4 global H, credit/rights/pending/clocks; проверенный MANAGE_ONLY после restart; partial/late fill/duplicate/reconnect/stop checks; lot/margin/fees и точный release seal.
+5. Представить владельцу конкретный итоговый release, benchmark/qualification и технические ограничения. Live стартует только после его отдельного явного подтверждения.
 
-1. Восстановить exactC1final78cb85a/E4bd04, config405ab/data7ab5/policyc954. Полный C1config уже извлечён из фактического отчёта, hash совпал. Новая isolatedVPSветкаcodex/e4-c1-fast-pilot-20261028; MethodA не cherry-pick.
-2. Сохранённая выборка9групп/90H4 уже собрана в evidence/. R не доказанноno-op: есть более ранние price/DDкандидаты. Сильнейший — Jan13 20:00→20:01; численныеmargin/free/gross проходят; source-bound closure пройден: 13.01.2025 20:01 на 8 часов раньше фактического restore. Это доказательство допуска на старом пути, не новый ROI.
-3. Первый кандидатQ: BTC cut25%, SOL50%; все остальные C1условия/права/clock/partials без изменений. Код и focusedтесты готовы; единственное замечание observerнаendboundary исправлено, peer0P0/P1; source72cc39c опубликован. До первогоBTCcut06.06.2025 экономический путь должен совпасть сC1, включая январь51.803%; Qнеобещаетstrict50.
-4. После frozen source/config/input/observer review — один Qfullpath сdirectPopen/actualchildexit, registryclaim до запуска. Каждый вариант имеет собственныекапитал/fees/funding/qty/HWM. При causalDDвыше допуска TARGET_FAIL_DD и TOTALUNKNOWN, без искусственногоterminalPnl. Объявленноеотрицательноеcandidateсостояние не подменяетnativeошибку.
-5. Если Qне проходит — Rтолько при доказанномраннемeligible, затем G по всеминтервалам. Не больше одного информативногосочетания, дельта выбрана до результата. При первом проходящемварианте заморозитьего и перейти кpilotqualification, безлишнего рекорда.
-6. Параллельно подготовить existingengine/live wiring/restart/partial/reconciliation/stop. После выбораварианта — заранееописанный stress и validation на имеющихсяпоследующихданных; seenhistory неOOS. Неттребованияпроизвольныхнедельожидания.
+Входные минутные execution/mark после 01.09.2026 отсутствовали в проверенных хранилищах. Отдельный сбор существующими официальными Bybit collectors остановился на сервисной ошибке10016 после155.421с; raw сохранён. Один corrective resume успешно завершён с atomic cursor; все ранее полученные raw сохранены. Оба collector child exit0, суммарно237.593с/31.54MB, native0. Независимые coverage/funding gates ещё проверяются. Период: до 28.10.2026 00:00 UTC плюс prior minute для funding и 730 дней D1 warmup. Новых native engines при сборе нет. Ограничения: 900 секунд, 400 MiB; minute CLI ≤83 страницы на поток. Daily CLI не имеет жёсткого счётчика запросов: не выдаём оценку 396 за гарантированный cap. Coverage/hash/gap/funding schedule проверяются до квалификационного запуска.
 
-## Один бюджет и точность результата
+## Бюджет и сохранность
 
-До4candidatefullpath, до2controlreproduction только при реальнойнесопоставимости, до2qualification: максимум8историческихпопыток, включаяошибки. Unit/nativecomponentfixtures отдельно счисломвызовов/wall, максимум2repairитерации наblocker. Старыеархивыне повторятьдляназванияметрики. Одинmanifest/registry/итог; безновыхсогласованийкаждойпроверки.
+Одна кампания: до 4 кандидатов (Q, R, G, один combo), до 2 контролей только при материальной несопоставимости и до 2 qualification; максимум 8 исторических попыток вместе с ошибками. Сейчас 3 попытки начаты, controls 0. Claim registry выполняется до Popen; actual native child exit обязателен. Старые E4/C1 не повторяются для нового названия метрики. Unit/component fixtures учитываются отдельно, до 2 repair iterations на blocker.
 
-На каждомисторическомзапуске: TOTAL/ROI/retentionS0&E4, settled/eventDDtimestamps/minE, все24месяца/4окна, actualcuts/restores/revokes/blockedadds, nativefees/funding/cashreconciliation, liquidation иterminalstatus. Fundingизactualnativecashdeltas; bridge53801.142665296518712 неfunding. Новыйsignedfundingobserverиcoherentobserver — read-only, исходныеeconomicanchorbytesпроверяются. Ненулевойточныйнеобъяснённыйbridge остаётсяUNKNOWN, неtolerancePASS.
+Mac исполняет только frozen research copies; nontrivial product changes — в isolated VPS worktrees. Live readiness и research patches разделены. MethodA/CODE0 — HOLD 9/19, WIP и SAFE_CHECKPOINT сохранены; его proof не является обязательным предшественником E4/C1. Старые слоты не заимствуются, raw/failed artifacts не удаляются.
 
-## Live и сохранённые результаты
+## Граница live
 
-LIVE_RELEASE.json пока DRAFT/live_order_capability=false: владелец уже указал Hyperliquid/аккаунтPRIVATE_ACCOUNT/бюджет≤PRIVATE_CAPUSDC; точныйrelease и6readinesschecks ещёне готовы. До mainnetнужны6readinesschecksизвложения, warmclosedH4/D1, globalH/parent/PLANREF/credit/rearm/TPrights/pendingpersist+reconciliation, managedreduceпутьприUNKNOWN, реальныеvenueordersemantics/minlots, изоляцияиstopreporting. Исследовательскийфлагнеподменяетlivecallbacks. Стоящее прямое разрешение владельца сохранено в .ops/OWNER_AUTHORIZATION.md; повторных согласований обычных действий нет. Последнее уточнение владельца: перед ордерами нужны итоговый алгоритм, проверенный на эталонном периоде, readiness/reconciliation, соблюдениеPRIVATE_CAPUSDC и его отдельное явное подтверждение стартаlive; работающие сервисы пока не менялись.
+LIVE_RELEASE.json остаётся DRAFT, live_order_capability=false. Приватные параметры, разрешённый капитал, полное последнее уточнение владельца и account readbacks — только в gitignored local private config, не в публичном репозитории. Владелец прямо требует итоговый проверенный на эталоне алгоритм и отдельное подтверждение START LIVE. Подготовка разрешена и продолжается без повторных согласований.
 
-MethodA/CODE0сохранённаотдельномVPSworktree: base3f555d9+точныйSAFE_CHECKPOINT/WIPpatch, безновыхтестовилиnative; бюджет9/19 HOLD, слоты незаимствуются. Настоящие3TP/continuoushedge/общийSL/другиеальты остаютсяпоследующейотдельнойоптимизацией. Непроверенныйкод невыдаётсязаготовыйliveалгоритм.
+Legacy zero/reference TP и SOL alpha в этом MVP сохранены и называются честно. Это E4/C1-derived alpha + drawdown control, а не уже доказанный настоящий continuous hedge с тремя реальными TP. Эти изменения остаются последующей оптимизацией. Неизвестный ACK не считается отказом, неизвестная позиция — flat, PAUSE — доказанным закрытием. Existing Sandbox/production, средства и реальные ордера не менялись.

@@ -1,0 +1,15 @@
+{
+  "status": "COLLECTED_PENDING_INDEPENDENT_DATA_QUALIFICATION",
+  "engines": 0,
+  "first_collector_status": "FAILED_COLLECTOR",
+  "first_wall_seconds": 155.421,
+  "corrective_resume_status": "COLLECTED_PENDING_DATA_QUALIFICATION",
+  "resume_wall_seconds": 82.172,
+  "total_wall_seconds": 237.593,
+  "disk_bytes": 31543391,
+  "original_raw_preserved": true,
+  "first_receipt_sha256": "ffeb2e3666f3615de4bbf5a5756da512966ebc0df6cbf6d752701baa4030877d",
+  "resume_receipt_sha256": "6e4014d048a85b4968faa8b55892a3f9734462c40e989b45bf60e11b16ffbe4d",
+  "data_job": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-qualification-data-20260901-20261028",
+  "no_native_budget_consumption": true
+}

@@ -1,0 +1,136 @@
+{
+  "status": "PREPARATION_ONLY_NOT_EXECUTED_NO_QUAL_ENGINE_GO",
+  "existing_source": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a",
+  "source_commit": "2e90a6cd185a",
+  "collector_source_hashes": {
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/research/bybit_data.py": "81d3b048ade5ee7a3ca20954d48efed53f3ab706e9ea8ff8a5de4fa5f07789b6",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/research/bybit_minute.py": "db23b1dc96bec935a26e42a7225781ddbb90ab8d795d9f6055dae28b79a3d376",
+    "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime/coinmaster/research/native_baseline.py": "19437a6261142e1dece8c5fe030d20070f6868022e07e40dbc044bfbd19f099b"
+  },
+  "proposed_fresh_job": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-qualification-data-20260901-20261028",
+  "filesystem_precondition": "JobpathmustNOTexist;createfreshstagingjobonly.Nooverwriteofcurrentnormalizedstoresoroldjobs.Rawresponsesappendcontent-addressed;progressmutableuntilseal;finalinputsmanifestsimmutableafterseal.",
+  "interval": {
+    "validation_start": "2026-09-01T00:00:00+00:00",
+    "end_exclusive": "2026-10-28T00:00:00+00:00",
+    "end_choice": "LatestcompletedUTCdayasof2026-10-28;57fulldays. DeliberatelycommonD1/minuteclosedboundary,notcurrentlyformingD1. Freezeoncebeforenetwork.",
+    "minute_rows_expected_per_stream": 82080,
+    "symbols": [
+      "BTCUSDT",
+      "SOLUSDT"
+    ],
+    "D1_funding_collect_start": "2024-09-01T00:00:00+00:00",
+    "D1_rows_expected_per_asset": 787,
+    "warmup_days_before_validation": 730,
+    "reason_for_historical_D1_funding_refetch": "ExistingD1collectorcouplesD1+funding.787D1rowsfitonepage;refetchingwarmupavoidsnewmergeprogramanddirectlysatisfiesnative_load_daily_seed730daycontract. Oldpinnedinputsarenotmodified;overlappingwarmuprowsmustmatcholdpinsexactlybeforevalidation."
+  },
+  "commands": [
+    {
+      "order": 1,
+      "role": "collectofficialexecution1m+MARK1m",
+      "argv": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "-m",
+        "coinmaster.research.bybit_minute",
+        "--start",
+        "2026-09-01T00:00:00+00:00",
+        "--end",
+        "2026-10-28T00:00:00+00:00",
+        "--output",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-qualification-data-20260901-20261028/inputs/data",
+        "--max-pages",
+        "83"
+      ],
+      "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime",
+      "env": {
+        "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    },
+    {
+      "order": 2,
+      "role": "collectofficialD1+MARKD1+fundingincluding730daywarmupwithoutnewmergeprogram",
+      "argv": [
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/bin/python",
+        "-m",
+        "coinmaster.research.bybit_data",
+        "--start",
+        "2024-09-01T00:00:00+00:00",
+        "--end",
+        "2026-10-28T00:00:00+00:00",
+        "--output",
+        "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-qualification-data-20260901-20261028/inputs/data"
+      ],
+      "cwd": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime",
+      "env": {
+        "PYTHONPATH": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028/source-R-2e90a6cd185a/runtime",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    }
+  ],
+  "request_and_storage_bounds": {
+    "normal_minute_pages_per_stream": 83,
+    "normal_minute_requests_all4streams": 332,
+    "minute_hard_cumulative_pages_per_stream": 83,
+    "normal_D1_pages_all4streams": 4,
+    "normal_funding_pages_each_symbol": 12,
+    "normal_funding_requests_both_symbols": 24,
+    "normal_HTTP_total": 360,
+    "assumptions": "1000nonduplicatecandlesperfullpage/200fundingeventsperfullpage;8hfundingonlyforrequestestimate. Empty/shortpagesdonotjustifyinventedcoverage.",
+    "supervision": "Collectorrequesttimeout30s/failfast/noautomaticnetworkretry. Boundonejobto900swall/128MiBexpectedstorage,stopat400MiBactualdataorunexpectedpagegrowth. DailyhelperhasNOintrinsicmaxpages:normal28HTTPisanestimate,notahardpromise;supervisormuststopifdailyrawpages>64. Minute83cumulativepagecappreservesPARTIALifcoverageincomplete. Noautomaticcapextension/redownload.",
+    "storage_estimate_MiB": "Approximately30\u2013100MiBraw+normalized+manifests;128MiBworkingreservation,400MiBabsolutestop. Estimateonly;content/compressiondependonAPI.",
+    "explicit_exclusions": "Noengine/replay/training/candidatefinancialrun;nofeatureorstrategychanges;noaccountprivateAPI.",
+    "supervised_daily_raw_page_stop": 64,
+    "supervised_total_HTTP_stop": 396,
+    "funding_schedule_headroom": "Daily64pagecapallowsmoreactualfundingeventsthan8hestimate;observedschedulechangesremainexplicitqualificationgate,notreasonforeventdeletion."
+  },
+  "manifest_contract": {
+    "minute": "inputs/data/bybit-1m/manifest.json:venue/category/start/end_exclusive/captured_at;2symbols\u00d7execution+mark,expected/received/missing_count/duplicate_count/parquet_sha256/raw_pages. Eachprogresshasstart_ms/end_ms/next_end_ms/raw(path,sha256,count)/completed andconflictingresumeisrejected.",
+    "D1_funding": "inputs/data/bybit/manifest.json:requested_start/requested_end_exclusive/captured_at;perassetrawcontenthashes/normalizedpaths/GapReportsforkline_daily,mark_daily,funding_8h;observedfundingintervalhistogram;raw_manifest_sha256.",
+    "normalized_files": [
+      "bybit-BTCUSDT-execution-1m.parquet",
+      "bybit-SOLUSDT-execution-1m.parquet",
+      "bybit-BTCUSDT-mark-1m.parquet",
+      "bybit-SOLUSDT-mark-1m.parquet",
+      "bybit-BTCUSDT-daily.parquet",
+      "bybit-SOLUSDT-daily.parquet",
+      "bybit-BTCUSDT-funding.parquet",
+      "bybit-SOLUSDT-funding.parquet"
+    ],
+    "gaps_gate": "RejectPARTIAL,missing/duplicate/off-gridtimestamps,noncausalorunclosedbars,missingD1mark_close;exact4wayminuteintersectionmustcover82080rows;validateD1bothassets787rowsandfundingactualtimestamps+priorM1markavailability. No syntheticmarks/forwardfill/exclusionsofbadminutes.",
+    "funding_schedule_caveat": "ExistingD1GapReportassumes8hwhileofficialfundingintervalissymboldependent. Preserveallactualfundingrowsandobservedintervals;non8hscheduleisUNKNOWNuntilqualifiedagainstsourceevidence,notfilled/droppedtofit8h.",
+    "existing_coverage_blockers_limitation": "native_baseline.coverage_blockerschecksPARTIAL/gaps/hashbutdoesNOTfullyassert2symbols\u00d72streams,duplicate_countorrawresponsehashes;rootpreflightmustassertthosemanifestconditionswithoutengine."
+  },
+  "must_pin_before_candidate_validation": [
+    "Collectorcode/exactCLI+commonfrozenUTCend,jobidentity,Python/PyArrowversions",
+    "Everyrawpagefullcontenthash+endpointparams+capturetimeandallprogress/manifests",
+    "All8normalizedfileSHA256+rowcounts/ranges/gaps/commonminuteintersection;donotrelyonlyon1mmanifesthash",
+    "D1warmup730dayprefixexactrowmatchagainstpinnedoriginalbase;fundingrates/timestampsactualandproperpriorM1MARK",
+    "Fullpassingcandidatefinalsource/config/policy/BASEfees/nativeobserverandledgerclaim",
+    "Initialqualificationstateexplicit:fromfreshseed/flatormatchedpersistedcontinuationnotinterchangeable;featurewarmupnohistoricalorderreplay",
+    "KnownpreviouslyseenSep1\u201322D1warmupusageflagged;postbenchmarkvalidationnotautomaticallyfreshOOS",
+    "Qualificationenginebudgetremainsreserveduntilfixedpassingcandidate;collectiondoesnotgrantengineGO"
+  ],
+  "official_primary_sources": [
+    {
+      "url": "https://bybit-exchange.github.io/docs/v5/market/kline",
+      "supports": "Publiclinearhistoricalkline,interval1/D,reverseorderedstartTime,limit1000;unclosedcloseislasttrade."
+    },
+    {
+      "url": "https://bybit-exchange.github.io/docs/v5/market/mark-kline",
+      "supports": "PubliclinearhistoricalMARKkline,interval1/D,limit1000."
+    },
+    {
+      "url": "https://bybit-exchange.github.io/docs/v5/market/history-fund-rate",
+      "supports": "Historicalfunding,limit200,endTimebackpaging;intervaldependsymbol."
+    },
+    {
+      "url": "https://bybit-exchange.github.io/docs/v5/rate-limit",
+      "supports": "DefaultIP600requests/5s;publichostregionalrestrictions/networkavailabilitystillactualfetchoutcome."
+    }
+  ],
+  "availability_retention": "Officialpagesdocumenthistoricalend/startpaginationbutNOguaranteedretentionwindowforthisrequestedinterval. Existingcollectorpreviouslycaptured2yminutehistory;thatdoesnotprovefutureavailability. Actualrawpages/coveragechecksdecide,neverassume5k/200recordtotalhistorylimit.",
+  "privacy": "Noaccountidentity/privatebalance/livebudget/accounthistoryincluded",
+  "executed_network_collector_calls": 0,
+  "executed_native_engines": 0,
+  "new_programs_or_product_edits": 0
+}

@@ -1,0 +1,33 @@
+{
+  "status": "COMBO_COMPLETED_PROFIT_FAIL",
+  "TOTAL": "5446657.63139715",
+  "gap_to_working_floor": "23738.883590197",
+  "gain_vs_C1": "1058044.24914372",
+  "gain_vs_R": "34346.84002582",
+  "archive_C1_factorial_interaction_diagnostic": "-377299.98020997",
+  "settled_DD_percent": "51.80315157406654834417870238",
+  "event_DD_percent": "51.80315157406654834417870238",
+  "native_child_exit": 0,
+  "native_cash_reconciliation": {
+    "status": "EXACT",
+    "native_realized_total": "5386454.47311780",
+    "signed_funding": "50203.15827935",
+    "terminal_cash": "5446657.63139715",
+    "unallocated_bridge": "0E-8"
+  },
+  "actual_cash_transition_reconciliation": {
+    "exact_bridge": "0E-8",
+    "native_fill_cash_delta_total": "5386454.47311780",
+    "native_funding_cash_delta_total": "50203.15827935",
+    "seed": "10000",
+    "status": "EXACT_OBSERVED_NATIVE_TRANSITIONS",
+    "terminal_cash": "5446657.63139715",
+    "tolerance": null,
+    "trace_fields": "POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction"
+  },
+  "model_liquidations": 0,
+  "terminal_open_positions": 0,
+  "config_sha256": "75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba",
+  "report_sha256": "947caeb756af1a87176b66f348cb0ee5cc6ccda288cef88528aef0d34cde6ba6",
+  "independent_fulltrace_analysis": "PENDING"
+}

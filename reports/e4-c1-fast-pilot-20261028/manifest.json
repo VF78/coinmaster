@@ -1,7 +1,7 @@
 {
   "task": "CM-E4-C1-FAST-PILOT-20261028",
-  "recorded_utc": "2026-10-28T19:03:57.760236+00:00",
-  "status": "Q_PROFIT_FAIL_R_ROOT_GO",
+  "recorded_utc": "2026-10-28T19:26:43.303523+00:00",
+  "status": "Q_R_COMBO_PROFIT_FAIL_G_LAST_CANDIDATE_SOURCE_PREPARATION",
   "owner_authorization": {
     "direct_instruction": "\u0432\u043e\u0437\u044c\u043c\u0438 \u043f\u043b\u0430\u043d \u0438\u0437 \u0432\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0437\u0430 \u043e\u0441\u043d\u043e\u0432\u0443 ... \u0421\u0434\u0435\u043b\u0430\u0439 \u0435\u0434\u0438\u043d\u044b\u0439 \u0441\u043e\u0433\u043b\u0430\u0441\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u043f\u043b\u0430\u043d, \u0430\u043a\u0442\u0443\u0430\u043b\u0438\u0437\u0438\u0440\u0443\u0439 project \u0438 \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0430\u0439 \u043f\u043e \u0443\u0442\u043e\u0447\u043d\u0435\u043d\u043d\u043e\u043c\u0443 \u043f\u043b\u0430\u043d\u0443",
     "attachment_path": "/Users/vf/Downloads/CODEX_E4_C1_FAST_PILOT_2026-10-28.md",
@@ -29,7 +29,7 @@
     "candidate_max": 4,
     "conditional_control_max": 2,
     "qualification_max": 2,
-    "historical_attempts_started": 1,
+    "historical_attempts_started": 3,
     "failed_invalid_repeats_count": true,
     "engineering_component_calls": {
       "pytest_calls": 10,
@@ -104,7 +104,7 @@
       "root_go": true,
       "source_commit": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
       "config_sha256": "c4b53b97fde42c9f09d1d02e5a96a6c8577b4a5be3182d3c95d21911a115ca1c",
-      "status": "PREFLIGHT_PASS_ROOT_GO",
+      "status": "R_COMPLETED_PROFIT_FAIL",
       "saved_path_eligibility": "SOURCE_BOUND_EARLIER_ELIGIBLE_LOCAL_SAVED_STATE",
       "automatic_repeat": false,
       "root_go_utc": "2026-10-28T19:05:55.640820+00:00",
@@ -112,7 +112,41 @@
       "runner_sha256": "ed5d692435c73b961280f3d88a7ee344c9c4c16fd1ff856efb23f03947275321",
       "preflight_sha256": "b0d69638f4c0c7eb3010c11c561fbc83c04c393b6836c6ac1681dc6e352a4399",
       "scope": "ONE_CANDIDATE_R_FULL_PATH",
-      "live_orders": false
+      "live_orders": false,
+      "native_child_exit": 0,
+      "TOTAL": "5412310.79137133",
+      "settled_DD_percent": "51.80315157406654834417870238",
+      "event_DD_percent": "51.80315157406654834417870238",
+      "selected": false,
+      "report_sha256": "9b3ac2f440e8d48201615ebc573813d7fa18166bef80e4dbf887e8b20b3bef17",
+      "independent_full_analysis": "PASS_NATIVE_CASH_AND_108_LIFECYCLE_EXACT"
+    },
+    "COMBO": {
+      "root_go": true,
+      "source_commit": "2e90a6cd185ad7ba9abb6ca2deb4350da744ccdc",
+      "config_sha256": "75ca9ae18b7f6be31871e8062bc7f4354cf726abbe5b136d1480201ba632a7ba",
+      "selection": "Q_PLUS_R_FIRST_BOTH_SINGLE_POSITIVE_R_FLOOR_GAP_58085;G_UNSPENT_CONDITIONAL",
+      "source_peer_review": "PASS_0P0P1_CONFIG_INDEPENDENTLY_DERIVED",
+      "automatic_repeat": false,
+      "root_go_utc": "2026-10-28T19:16:02.413584+00:00",
+      "attempt_uuid": "320a6285-65ca-4fab-839d-0c419e69c533",
+      "runner_sha256": "fc95d7442624808977c3dad0f3d28ec27d0ffadfe6c26a96f650665e204684fa",
+      "preflight_sha256": "8e4e3c77ec05a688a8b047e8313c215ca0247966d126bcbe87d0c072e5e13f0f",
+      "scope": "ONE_CANDIDATE_COMBO_Q_R_FULL_PATH",
+      "live_orders": false,
+      "status": "COMBO_COMPLETED_PROFIT_FAIL",
+      "native_child_exit": 0,
+      "TOTAL": "5446657.63139715",
+      "settled_DD_percent": "51.80315157406654834417870238",
+      "event_DD_percent": "51.80315157406654834417870238",
+      "selected": false,
+      "report_sha256": "947caeb756af1a87176b66f348cb0ee5cc6ccda288cef88528aef0d34cde6ba6"
+    },
+    "G": {
+      "root_go": false,
+      "status": "SOURCE_PREPARATION_LAST_CANDIDATE",
+      "scope": "STANDALONE_C1_PLUS_ACCOUNT_GLOBAL_ARM_ONLY",
+      "automatic_repeat": false
     }
   }
 }

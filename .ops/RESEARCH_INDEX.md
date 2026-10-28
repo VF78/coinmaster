@@ -1,5 +1,6 @@
-## Primary E4/C1 fast pilot checkpoint — 2026-10-28
-CM-E4-C1-FAST-PILOT-20261028 owneradoptedattachmentbf7ac3d5; historicalcap8(4candidate+2conditionalcontrols+2qualifiers), currently0. Q72cc39c SOURCE_ONLYPASS, config492e493, exactC1base78cb85a/config405ab. Roldpath9group/90H4evidencepartial, notNOOP. Targetaround5.6316m, bothDD<=.5180315157406654834417870238, inheritedfloor5.4704m; noqualifiedcandidateyet. HL80USDCparameters+standingauthorization .ops/OWNER_AUTHORIZATION.md; privateaddresslocalONLY. MethodA HOLD9/19notdependency/slotsnotborrowed. ReadprimaryRESULTS/manifest/registry/currentACTIVE.
+## Primary E4/C1 fast pilot — 2026-10-28
+
+CM-E4-C1-FAST-PILOT-20261028; cap8 (4 candidates,2 conditional controls,2 qualifiers). Q completed TOTAL4800260.20248922, settled/event DD51.8031515741%, not selected for profit. R source2e90a6c/configc4b53b97 running as attempt2; read ACTIVE_TASK and reports/e4-c1-fast-pilot-20261028/{RESULTS_E4_C1.md,manifest.json,experiment_registry.csv} for actual state. Target around5631617.35953723, inherited minimum5470396.514987347, current DD cap51.8031515741%; strict30–50% later. MethodA9/19 HOLD separately, no borrowed slots. Account parameters/private readbacks remain local. Benchmark-qualified final algorithm and explicit owner START required before live; standing preparation authorization .ops/OWNER_AUTHORIZATION.md.
 
 # Research memory — as of2026-10-26; read before opening archives
 
