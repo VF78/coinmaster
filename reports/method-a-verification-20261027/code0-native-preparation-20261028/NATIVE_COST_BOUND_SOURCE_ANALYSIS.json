@@ -1,0 +1,119 @@
+{
+  "task": "CM-METHOD-A-VERIFY-20261027",
+  "status": "NO_PROOF_FULL_NATIVE_AFFINE_COST_BOUND",
+  "reviewed_utc": "2026-10-28T17:18:56.820781+00:00",
+  "source_commit": "3f555d94cad009a0170b4c15230e18b84811c387",
+  "native_version_source": "nautilus_trader-1.231.0.dist-info/METADATA Version1.231.0",
+  "installed_root": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader",
+  "conclusion": "No numeric epsilon or quantum-count fullcost bound proven. Current native path contains magnitude-dependent binaryfloat operations before Money quantization; raw/native mark identity is not guarded. Conditional symbolic decomposition only.",
+  "proven_observations": [
+    "Stock MakerTakerFeeModel bound in harness/baseline; nativefee classification retained.",
+    "Fee path DOUBLE linear notional→Money→Decimal rate product→Money; Moneyconstructor converts even Decimaltofloat.",
+    "Realizedcash PnL and UPNL use stored double average and double subtract/multiply→Money.",
+    "SingleUSDT balance PnL-minuscommission and total/free addition use raw integer Moneyadd/sub, no extra balance rounding.",
+    "Position.realized_pnl cumulative field is not a second cash-settlement debit.",
+    "Snapshot equity uses native make_price(rawmark) UPnL; state pb/ps remain rawmark. Explicit native/raw equality absent."
+  ],
+  "symbolic_bound_only": {
+    "per_fill": "debit<=ideal_limit_debit+epsilon_fee+epsilon_realized+epsilon_UPNL_before+epsilon_UPNL_after+q*abs(nativeMark-rawMark)",
+    "per_unit_conditional": "If each error has proven finite frame-wide maximum and fills are nonzero integer native lots, N<=QTY/lot, so epsilon_unit=(epsilon_fee+epsilon_realized+2epsilon_UPNL)/lot plus mark_basis_bound. No numeric epsilon chosen.",
+    "missing": [
+      "Exact installed Rust money_new/price_new/quantity_new conversion rounding or equivalent qualified bound",
+      "Magnitude-bounded IEEE operations incl avgOpen/quantity/prices/multiplier and Money inputfloat conversion",
+      "Fee Decimal context and notional pre-rounding bounds",
+      "All allowed better-price fee/PNL rounding, not only LIMIT price",
+      "Native raw-mark identity or explicit bounded residual;currentmarginparity insufficient",
+      "Source-bound callback/funding/FX absence or reproof;nonUSDT/inverse outside scope"
+    ]
+  },
+  "known_tick_lot": {
+    "BTC": {
+      "tick": ".1",
+      "lot": ".001"
+    },
+    "SOL": {
+      "tick": ".01",
+      "lot": ".1"
+    },
+    "currency": "USDT registry from Rust internalmap;precision must be pinned from native context;Q=10^-precision"
+  },
+  "refs": [
+    {
+      "module": "backtest/models/fee.pyx",
+      "lines": "82-113",
+      "function": "MakerTakerFeeModel.get_commission"
+    },
+    {
+      "module": "backtest/engine.pyx",
+      "lines": "7886-7903",
+      "function": "native commission→OrderFilled"
+    },
+    {
+      "module": "model/instruments/base.pyx",
+      "lines": "798-847,565-579",
+      "function": "notional_value,make_price"
+    },
+    {
+      "module": "model/objects.pyx",
+      "lines": "1189-1205,1369-1443",
+      "function": "Money.__init__,exactDecimalalternative,rawadd/sub"
+    },
+    {
+      "module": "accounting/accounts/margin.pyx",
+      "lines": "932-990",
+      "function": "calculate_pnls"
+    },
+    {
+      "module": "accounting/manager.pyx",
+      "lines": "106-173,485-549",
+      "function": "update_balances,_update_balance_single_currency"
+    },
+    {
+      "module": "model/position.pyx",
+      "lines": "799-841,895-990,1016-1032",
+      "function": "calculate_pnl,unrealized_pnl,fillhandlers,_calculate_pnl"
+    },
+    {
+      "module": "model/currencies.py",
+      "lines": "133",
+      "function": "USDTfrominternalmap"
+    },
+    {
+      "module": "core/rust/model.pxd",
+      "lines": "2295",
+      "function": "money_newFFIdeclaration"
+    },
+    {
+      "module": "runtime/coinmaster/strategy/method_a_risk_native.py",
+      "lines": "160-190",
+      "function": "_mr_snapshot raw/nativebasis"
+    }
+  ],
+  "native_source_sha256": {
+    "backtest/models/fee.pyx": "d0951ccad7777a1f2817400bfc075f94f61e7942a556d73fdf835cda210d7483",
+    "backtest/engine.pyx": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+    "model/position.pyx": "f61d6e291a353d736727c081f31cbe152338e06f90111a4c9bbcd0c07031b2a7",
+    "model/objects.pyx": "1a4035c506f2d6b045bc1503a7b463c0f3ab0f7be8f87bc144ed4927218f2f4f",
+    "model/instruments/base.pyx": "98609441996235336bebd688c1ee943bde1ad25c8f9186e3998b2240d7c085cb",
+    "accounting/accounts/margin.pyx": "57d4ed794c64fa1d514bfa92084933447ff56325f780d43cd51d41230924b063",
+    "accounting/manager.pyx": "5ed488c4b8c3af7668cf67d44e1e0ce7f8209dc2668193a92d77cc788cfb173e",
+    "core/rust/model.pxd": "5be85ec319a5e0b36654bac31ddc6bc8bc0e4462dfcc493875988fd7c0c47a46",
+    "model/currencies.py": "445d09d662984bf0121a38950109d32fd31acc12cc2ad53a0c66fa7b25a60ab4"
+  },
+  "project_source_sha256": {
+    "runtime/coinmaster/strategy/method_a_risk_native.py": "bac6738d840f1a952586e46be4ef17e099c4ea2bd279d079ca602a36cbb5ffeb",
+    "runtime/coinmaster/research/native_fixture.py": "7cb458de56b7cd1a49491ac4fdf3cab586729a47733d85850373f0efd8da601d",
+    "runtime/coinmaster/research/native_baseline.py": "1054b2eb1bbbacdac288c27194dbb9920692160f7b092e16f7b6898f104dad99",
+    "runtime/tests/run_method_a_sol.py": "d34ed2c237af6a82fb8e53f33b500b31e6015c4314d8051103d23c90afe2b645"
+  },
+  "math_note": {
+    "path": "/private/tmp/cm_code0_native_cost_bound_analysis.md",
+    "sha256": "9aabbc0cc74922679b52de6213fdb2be22413016f04efcf8d319a066275094b5"
+  },
+  "source_edits": 0,
+  "tests": 0,
+  "native_imports_or_objects": 0,
+  "engine_runs": 0,
+  "financial_files_modified": 0,
+  "GO": false
+}
