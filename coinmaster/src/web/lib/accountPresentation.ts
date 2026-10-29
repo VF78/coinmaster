@@ -1,20 +1,18 @@
 import type { HlStagegProjection } from './nautilusApi';
-import { traderMoney } from './traderFormatting';
+import { traderMoney, projectionCurrency } from './traderFormatting';
 
 export type AccountFigure = { label: string; value: string };
 
-function amount(value: string | null | undefined): string {
-  return traderMoney(value);
-}
 
 export function accountFigures(state: HlStagegProjection | null): AccountFigure[] {
   const account = state?.account;
+  const amount = (value: string | null | undefined) => traderMoney(value, projectionCurrency(state));
   const stale = account?.mark_state === 'STALE_OR_MISSING';
   return [
-    { label: 'Cash', value: amount(account?.native_cash) },
+    { label: state?.mode === 'live' ? 'Reported account total' : 'Cash', value: amount(account?.native_cash) },
     { label: 'Available cash', value: amount(account?.native_free) },
-    { label: 'Reserved cash', value: amount(account?.native_locked) },
-    { label: 'Marked equity', value: stale ? 'Not current' : amount(account?.equity) },
+    { label: state?.mode === 'live' ? 'USDC hold · proxy' : 'Reserved cash', value: amount(account?.native_locked) },
+    { label: state?.mode === 'live' ? 'Reported equity' : 'Marked equity', value: stale ? 'Not current' : amount(account?.equity) },
     { label: 'Realized PnL after fees', value: amount(account?.realized_pnl_net_fees) },
     { label: 'Unrealized PnL', value: stale ? 'Not current' : amount(account?.unrealized_pnl) },
     { label: 'Fees paid', value: amount(account?.fees) },
@@ -69,6 +67,7 @@ export function dashboardState(state: HlStagegProjection | null): DashboardState
     exposure: exposure || "Exposure not reconciled", canAssertFlat: false,
   };
   if (state.projection_state !== "READY") return { label: humanizeProjectionState(state.projection_state), tone: "danger", detail: "Stage-G status is not ready; exposure cannot be confirmed.", exposure: exposure || "Unavailable", canAssertFlat: false };
+  if (!projectionCurrency(state)) return { label: "Currency unverified", tone: "danger", detail: "USDC denomination is unverified; account values are withheld.", exposure: "Exposure not reconciled", canAssertFlat: false };
   if (state.account.status === "UNAVAILABLE") return { label: "Account unavailable", tone: "danger", detail: "The native account read is unavailable. No account value is inferred from the planned seed.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
   const processLabels: Record<string, string> = {
     PUBLIC_FEEDS_READY: "Public market data ready",
@@ -80,7 +79,7 @@ export function dashboardState(state: HlStagegProjection | null): DashboardState
 }
 
 export function protectionIsVerified(state: HlStagegProjection | null): boolean {
-  return Boolean(state && state.recovery_required !== true && state.projection_state === "READY" && state.deposit_protection?.state === "ARMED");
+  return Boolean(state && state.recovery_required !== true && state.projection_state === "READY" && state.deposit_protection?.state === "ARMED" && state.deposit_protection.currency === "USDC" && projectionCurrency(state) === "USDC");
 }
 
 export function protectionIsFresh(

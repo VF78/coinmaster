@@ -321,6 +321,11 @@
             ],
             "title": "Observed At Ms"
           },
+          "quote_currency": {
+            "const": "USDC",
+            "title": "Quote Currency",
+            "type": "string"
+          },
           "reason": {
             "anyOf": [
               {
@@ -365,6 +370,7 @@
           "source",
           "execution_evidence",
           "coin",
+          "quote_currency",
           "interval",
           "state",
           "observed_at_ms",
@@ -378,6 +384,28 @@
       "HlStagegAccount": {
         "additionalProperties": false,
         "properties": {
+          "available": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
           "equity": {
             "anyOf": [
               {
@@ -388,6 +416,17 @@
               }
             ],
             "title": "Equity"
+          },
+          "equity_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity Basis"
           },
           "fees": {
             "anyOf": [
@@ -400,6 +439,17 @@
             ],
             "title": "Fees"
           },
+          "free_collateral": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Collateral"
+          },
           "free_margin": {
             "anyOf": [
               {
@@ -411,6 +461,61 @@
             ],
             "title": "Free Margin"
           },
+          "funding": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding"
+          },
+          "funding_coverage_end_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Coverage End Ns"
+          },
+          "funding_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Currency"
+          },
+          "funding_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Reason"
+          },
+          "hold": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hold"
+          },
           "im": {
             "anyOf": [
               {
@@ -421,6 +526,28 @@
               }
             ],
             "title": "Im"
+          },
+          "locked": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locked"
+          },
+          "margin_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Basis"
           },
           "mark_state": {
             "anyOf": [
@@ -447,6 +574,17 @@
               }
             ],
             "title": "Mm"
+          },
+          "money_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Money Currency"
           },
           "native_cash": {
             "anyOf": [
@@ -503,6 +641,28 @@
             ],
             "title": "Realized Pnl Net Fees"
           },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "reported_total": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reported Total"
+          },
           "status": {
             "default": "UNAVAILABLE",
             "enum": [
@@ -526,6 +686,131 @@
           }
         },
         "title": "HlStagegAccount",
+        "type": "object"
+      },
+      "HlStagegC1": {
+        "additionalProperties": false,
+        "properties": {
+          "DD": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dd"
+          },
+          "E": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "E"
+          },
+          "H": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "H"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "cushion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cushion"
+          },
+          "decision_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision Ns"
+          },
+          "equity_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity Basis"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "rights": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights"
+          },
+          "source_available_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Available Ns"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state"
+        ],
+        "title": "HlStagegC1",
         "type": "object"
       },
       "HlStagegControlAction": {
@@ -693,6 +978,17 @@
             ],
             "title": "Equity"
           },
+          "high_water_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High Water Basis"
+          },
           "high_water_equity": {
             "anyOf": [
               {
@@ -725,6 +1021,28 @@
               }
             ],
             "title": "Observed At Ns"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "retained_equity_floor_fraction": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retained Equity Floor Fraction"
           },
           "state": {
             "enum": [
@@ -1307,6 +1625,16 @@
           "account": {
             "$ref": "#/components/schemas/HlStagegAccount"
           },
+          "c1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HlStagegC1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "deposit_protection": {
             "anyOf": [
               {
@@ -1327,6 +1655,17 @@
             ],
             "title": "Environment",
             "type": "string"
+          },
+          "equity_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity Basis"
           },
           "event_cursor": {
             "title": "Event Cursor",
@@ -1387,6 +1726,28 @@
             ],
             "title": "Mode",
             "type": "string"
+          },
+          "money_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Money Currency"
+          },
+          "money_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Money Reason"
           },
           "native_thread_alive": {
             "anyOf": [

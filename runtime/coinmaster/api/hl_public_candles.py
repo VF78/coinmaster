@@ -61,7 +61,7 @@ def public_candles(
     result = {
         "version": "hl-public-candles-v1", "venue": "HYPERLIQUID",
         "environment": "mainnet-public", "source": "OFFICIAL_INFO_CANDLE_SNAPSHOT",
-        "execution_evidence": False, "coin": coin, "interval": interval,
+        "execution_evidence": False, "coin": coin, "quote_currency": "USDC", "interval": interval,
         "state": "UNAVAILABLE", "observed_at_ms": None, "latest_closed_at_ms": None,
         "candles": [], "reason": "NO_PUBLIC_CANDLES",
     }

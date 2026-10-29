@@ -16,7 +16,7 @@ import { parseFiniteNumberFields, strategyDraftError } from '../lib/strategyDraf
 import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, unavailableTradeHistoryLabel, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
 
 import { verifiedControlReadback } from '../lib/controlReadback';
-import { effectiveLeverage, researchMetric, traderMoney, traderNumber, traderPercent } from '../lib/traderFormatting';
+import { effectiveLeverage, researchMetric, traderMoney, projectionCurrency, nativeMoney, traderNumber, traderPercent } from '../lib/traderFormatting';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -356,14 +356,15 @@ export function RuntimePage() {
         <Stat label="Available cash" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
         <Stat label="Realized P&L · net fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
         <Stat label="Unrealized P&L" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
-        <Stat label="Trading fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : traderMoney(state?.account.fees)} />
+        {selectedMode === 'live' ? <Stat label="Posted funding" value={nativeMoney(state?.account.funding, projectionCurrency(state) && state?.account.funding_currency)} /> : null}
+        <Stat label="Trading fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : traderMoney(state?.account.fees, projectionCurrency(state))} />
         <Stat label="Effective leverage" value={effectiveLeverage(state)} />
       </div>
       <p className="account-capital-caption">{selectedMode === 'live' ? 'Live account ·' : 'Virtual starting capital: 10,000 USDC ·'} {projectionReady ? positionSummary + ' · ' + orderRows.length + ' working orders' : loading ? 'Loading exposure…' : 'Exposure unavailable'}</p>
       {accountIsUnknown ? null : <details className="nautilus-diagnostics runtime-account-details"><summary>Margin, P&amp;L and account details</summary>
         <div className="runtime-account-secondary" aria-label="Current margin and profit and loss">
-          <Stat label="Initial margin" value={traderMoney(state?.account.im)} /><Stat label="Effective leverage" value={effectiveLeverage(state)} />
-          <Stat label="Maintenance margin" value={traderMoney(state?.account.mm)} />
+          <Stat label="Initial margin" value={traderMoney(state?.account.im, projectionCurrency(state))} /><Stat label="Effective leverage" value={effectiveLeverage(state)} />
+          <Stat label="Maintenance margin" value={traderMoney(state?.account.mm, projectionCurrency(state))} />
           <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
           <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
         </div>
@@ -373,6 +374,7 @@ export function RuntimePage() {
       {state?.account.mark_state === 'STALE_OR_MISSING' ? <p className="runtime-empty-note">Mark is stale or missing. Marked equity and unrealized P&amp;L are not current.</p> : null}
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is partial. Missing account fields remain unavailable.</p> : null}
     </Card>
+    {selectedMode === 'live' && state?.account.funding_reason ? <p className="trader-note">Funding: {humanizeBlocker(state.account.funding_reason)}. Posted funding is already included in reported equity.</p> : null}
     <DashboardMarketChart projection={state} history={fillHistoryMatchesRun ? fillHistory : null} equity={equityChanges} />
     <div className="trader-activity-tabs" role="tablist" aria-label="Trading activity">
       <button type="button" id="exposure-tab" role="tab" aria-selected={activityTab === 'exposure'} aria-controls="exposure-panel" onClick={() => setActivityTab('exposure')}>Positions &amp; orders</button>
@@ -384,22 +386,22 @@ export function RuntimePage() {
         const fresh = feed?.state === 'READY' && feed.mark_age_ns != null && feed.mark_age_ns >= 0 && feed.mark_age_ns <= 15_000_000_000;
         const position = positionPresentation(state, instrumentId);
         const linkedOrders = orderRows.filter((order) => order.instrument_id === instrumentId);
-        return <Card key={instrumentId} className="trader-market-card" title={symbol} actions={<Badge tone={loading && !state ? 'neutral' : fresh ? 'success' : 'danger'}>{loading && !state ? 'Loading' : fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
+        return <Card key={instrumentId} className="trader-market-card" title={symbol + "/USDC"} actions={<Badge tone={loading && !state ? 'neutral' : fresh ? 'success' : 'danger'}>{loading && !state ? 'Loading' : fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
           <div className="trader-market-price">
             <span>{fresh ? 'Mark' : 'Previous mark'}</span>
-            <strong>{loading && !state ? 'Loading…' : traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3)}</strong>
+            <strong>{loading && !state ? 'Loading…' : nativeMoney(feed?.mark, projectionCurrency(state))}</strong>
             <small>{fresh ? `Mark age ${age(feed?.mark_age_ns)}` : feed?.mark ? `Stale · ${age(feed.mark_age_ns)}` : 'Mark unavailable'}</small>
           </div>
           <div className="trader-market-exposure">
             <div className="trader-market-exposure__heading"><span>{selectedModeLabel} position</span><Badge tone={position.state === 'OPEN' ? 'success' : position.state === 'FLAT' ? 'neutral' : 'danger'}>{position.state === 'OPEN' ? 'Open' : position.state === 'FLAT' ? 'Flat' : loading && !state ? 'Loading' : 'Unconfirmed'}</Badge></div>
             {position.state === 'OPEN' ? <div className="trader-market-exposure__value"><strong className={position.side === 'LONG' ? 'up' : 'down'}>{position.side}</strong><span>{traderNumber(Math.abs(Number(position.quantity)), 5)} {symbol}</span></div> : position.state === 'FLAT' ? <p>Confirmed flat · 0 position size</p> : <p>{loading ? 'Loading position…' : state?.recovery_required ? 'Position ownership requires recovery.' : 'Position status unavailable.'}</p>}
           </div>
-          {position.state === 'OPEN' ? <dl className="position-price-details"><div><dt>Average entry</dt><dd>{traderNumber(positionRows.find((row) => row.instrument_id === instrumentId)?.average_entry_price, symbol === 'BTC' ? 2 : 3)}</dd></div><div><dt>Current mark</dt><dd>{fresh ? traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3) : 'Stale · unavailable'}</dd></div></dl> : null}
+          {position.state === 'OPEN' ? <dl className="position-price-details"><div><dt>Average entry</dt><dd>{nativeMoney(positionRows.find((row) => row.instrument_id === instrumentId)?.average_entry_price, projectionCurrency(state))}</dd></div><div><dt>Current mark</dt><dd>{fresh ? nativeMoney(feed?.mark, projectionCurrency(state)) : 'Stale · unavailable'}</dd></div></dl> : null}
           <div className="trader-market-orders">
             <div className="trader-market-orders__heading"><span>{state?.recovery_required ? 'Stored orders' : 'Working orders'}</span><span>{state?.projection_state === 'READY' ? linkedOrders.length : 'Unavailable'}</span></div>
             {linkedOrders.length ? linkedOrders.map((order) => <div className="trader-market-order" key={order.client_order_id}>
               <span>{order.reduce_only === true ? 'Take-profit / reduction' : 'Working order'}{order.side ? ` · ${order.side}` : ''}</span>
-              <strong>{traderNumber(order.price, symbol === 'BTC' ? 2 : 3)}</strong>
+              <strong>{nativeMoney(order.price, projectionCurrency(state))}</strong>
               <small>{humanizeResearchCode(order.status ?? 'UNAVAILABLE')} · {humanizeResearchCode(order.order_type ?? 'UNAVAILABLE')} · remaining {order.leaves_quantity ?? order.quantity ?? 'Unavailable'}</small>
             </div>) : <p>{state?.recovery_required ? 'Stored order ownership is not reconciled.' : runtimeStatus.canAssertFlat ? 'No working orders.' : 'Order state unavailable.'}</p>}
           </div>
@@ -423,20 +425,21 @@ export function RuntimePage() {
         ? <p className="runtime-empty-note">{unavailableTradeHistoryLabel(fillHistory?.historical_id_only_count)}</p>
         : <>
           {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older execution record{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} no saved trade details.</p> : null}
-          <DataTable rows={fillHistory.fills.slice().sort((a, b) => b.cursor - a.cursor).map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market'} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
+          <DataTable rows={fillHistory.fills.slice().sort((a, b) => b.cursor - a.cursor).map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${fill.instrument_id.startsWith('BTC-') ? 'BTC/USDC' : fill.instrument_id.startsWith('SOL-') ? 'SOL/USDC' : 'Other market'} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
             { key: 'action', header: 'Type', render: (fill) => nativeFillActionLabel(fill.action) },
             { key: 'time', header: 'Time (UTC)', render: (fill) => fill.ts_event_ns == null ? 'Unavailable' : formatUtcTimestamp(new Date(fill.ts_event_ns / 1000000).toISOString()) },
-            { key: 'market', header: 'Market', render: (fill) => fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market' },
+            { key: 'market', header: 'Market', render: (fill) => fill.instrument_id.startsWith('BTC-') ? 'BTC/USDC' : fill.instrument_id.startsWith('SOL-') ? 'SOL/USDC' : 'Other market' },
             { key: 'side', header: 'Side', render: (fill) => fill.order_side ?? 'Unavailable' },
             { key: 'quantity', header: 'Quantity', render: (fill) => traderNumber(fill.quantity, 5) },
-            { key: 'price', header: 'Price', render: (fill) => traderNumber(fill.price) },
-            { key: 'fee', header: 'Fee', render: (fill) => fill.commission_amount == null ? 'Unavailable' : traderMoney(fill.commission_amount, fill.commission_currency ?? '') },
+            { key: 'price', header: 'Price', render: (fill) => nativeMoney(fill.price, projectionCurrency(state)) },
+            { key: 'fee', header: 'Fee', render: (fill) => fill.commission_amount == null ? 'Unavailable' : nativeMoney(fill.commission_amount, fill.commission_currency) },
           ]} />
           {fillHistoryHasMore ? <Button variant="secondary" onClick={loadMoreFills}>Load more fills</Button> : null}
         </>}
     </Card></div>
+    {selectedMode === 'live' && state?.c1 ? <Card title="Capital control"><p className="trader-note">{humanizeResearchCode(state.c1.state)}{state.c1.reason ? ' · ' + humanizeBlocker(state.c1.reason) : ''}</p><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Reported equity E" value={nativeMoney(state.c1.E, projectionCurrency(state) && state.c1.currency)} /><Stat label="High-water equity H" value={nativeMoney(state.c1.H, projectionCurrency(state) && state.c1.currency)} /><Stat label="Cushion" value={nativeMoney(state.c1.cushion, projectionCurrency(state) && state.c1.currency)} /><Stat label="Drawdown" value={traderPercent(projectionCurrency(state) && state.c1.currency === "USDC" ? state.c1.DD : null)} /></div></Card> : null}
     <Card title="Drawdown protection" actions={<Badge tone={loading && !state ? "neutral" : protectionArmed ? "success" : "danger"}>{protectionArmed ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
-      {protectionFresh ? <><p className="trader-note">Maximum drawdown limit: <strong>{String(protection?.drawdown_limit_percent)}%</strong></p><details className="nautilus-diagnostics"><summary>Protection basis and sample time</summary><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Protection equity" value={traderMoney(protection?.equity)} /><Stat label="High-water equity" value={traderMoney(protection?.high_water_equity)} /><Stat label="Threshold" value={traderMoney(protection?.threshold_equity)} /><Stat label="Last daily close" value={formatUtcTimestamp(protection?.last_daily_close_utc)} /><Stat label="Observed" value={protection?.observed_at_ns ? formatUtcTimestamp(new Date(protection.observed_at_ns / 1_000_000).toISOString()) : "Unavailable"} /></div></details></> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : loading ? "Loading drawdown protection…" : "Protection is not armed."}</p>}
+      {protectionFresh ? <><p className="trader-note">Retained equity floor: <strong>{traderNumber(100 - (protection?.drawdown_limit_percent ?? 100), 0)}%</strong> · Maximum drawdown: <strong>{String(protection?.drawdown_limit_percent)}%</strong></p><details className="nautilus-diagnostics"><summary>Protection basis and sample time</summary><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Protection equity" value={nativeMoney(protection?.equity, protection?.currency)} /><Stat label="High-water equity" value={nativeMoney(protection?.high_water_equity, protection?.currency)} /><Stat label="Threshold" value={nativeMoney(protection?.threshold_equity, protection?.currency)} /><Stat label="Last daily close" value={formatUtcTimestamp(protection?.last_daily_close_utc)} /><Stat label="Observed" value={protection?.observed_at_ns ? formatUtcTimestamp(new Date(protection.observed_at_ns / 1_000_000).toISOString()) : "Unavailable"} /></div></details></> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : loading ? "Loading drawdown protection…" : "Protection is not armed."}</p>}
     </Card>
     {state?.warnings.filter((warning) => warning !== 'FLAT_RESTART').length ? <div className="runtime-warning-list" role="status"><strong>Worker notice</strong><ul>{state.warnings.filter((warning) => warning !== 'FLAT_RESTART').map((warning, index) => <li key={index}>{humanizeBlocker(warning)}</li>)}</ul></div> : null}
 
@@ -514,6 +517,7 @@ export function WorkspaceSettingsPage() {
       <details className="settings-sandbox-details"><summary>Funding and account notes</summary><p>{selectedMode === 'live' ? 'Account values come from the native exchange account.' : 'Observed funding is reference only and is not credited to Sandbox cash.'} {fundingLabel(state)}.</p></details>
     </Card>
     <SettingsConnections />
+    {selectedMode === 'live' && state?.c1 ? <Card title="Capital control"><p className="trader-note">{humanizeResearchCode(state.c1.state)}{state.c1.reason ? ' · ' + humanizeBlocker(state.c1.reason) : ''}</p><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Reported equity E" value={nativeMoney(state.c1.E, projectionCurrency(state) && state.c1.currency)} /><Stat label="High-water equity H" value={nativeMoney(state.c1.H, projectionCurrency(state) && state.c1.currency)} /><Stat label="Cushion" value={nativeMoney(state.c1.cushion, projectionCurrency(state) && state.c1.currency)} /><Stat label="Drawdown" value={traderPercent(projectionCurrency(state) && state.c1.currency === "USDC" ? state.c1.DD : null)} /></div></Card> : null}
     <Card title="Drawdown protection" actions={<Badge tone={loading && !state ? "neutral" : protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
       {state?.recovery_required ? <p className="runtime-empty-note">Recovery is required. Protection values are withheld and settings remain read-only until account ownership is restored.</p> : <>
       <p className="muted">Changes require a paused worker and confirmed flat exposure.</p>
@@ -521,7 +525,7 @@ export function WorkspaceSettingsPage() {
         <label className="rules-field"><span>Allowed drawdown, %</span><input aria-label="Allowed drawdown, %" type="number" min={1} max={99} step={1} value={protectionDraft} onChange={(event) => setProtectionDraft(event.target.value)} /></label>
         <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled={!pausedAndFlat || !Number.isInteger(percent) || percent < 1 || percent > 99 || commandInFlight !== null} onClick={() => void saveProtection()}>{commandInFlight === 'set-deposit-protection' ? 'Saving…' : 'Save'}</Button><Button variant="danger" disabled={!pausedAndFlat || protection?.equity == null || commandInFlight !== null} onClick={() => void resetProtection()}>{commandInFlight === 'reset-deposit-protection' ? 'Resetting…' : 'Set new baseline'}</Button></div>
       </div>
-      {protectionFresh ? <p className="muted">Protection is {protection?.state?.toLowerCase() ?? 'unavailable'} · Equity {traderMoney(protection?.equity)} · High-water {traderMoney(protection?.high_water_equity)} · Limit threshold {traderMoney(protection?.threshold_equity)}.</p> : <p className="runtime-empty-note">Protection values are stale or unverified and are withheld.</p>}
+      {protectionFresh ? <p className="muted">Protection is {protection?.state?.toLowerCase() ?? 'unavailable'} · Equity {nativeMoney(protection?.equity, protection?.currency)} · High-water {nativeMoney(protection?.high_water_equity, protection?.currency)} · Limit threshold {nativeMoney(protection?.threshold_equity, protection?.currency)}.</p> : <p className="runtime-empty-note">Protection values are stale or unverified and are withheld.</p>}
       </>}
     </Card>
     <Card title="Entry controls" actions={<Badge tone={controls?.pause.enabled && controlsAllowed ? 'success' : 'danger'}>{controlAvailabilityLabel(controls?.pause.enabled && controlsAllowed, state?.recovery_required)}</Badge>}>

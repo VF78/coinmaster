@@ -27,6 +27,8 @@ from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_
 
 
 UNKNOWN = "UNKNOWN"
+USDC_EQUITY_BASIS = "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1"
+USDC_MARGIN_BASIS = "HYPERLIQUID_SPOT_USDC_HOLD_PROXY_NOT_LIQUIDATION_MM_V1"
 
 
 class RuntimeSchema(BaseModel):
@@ -147,6 +149,9 @@ class HlStagegDepositProtection(RuntimeSchema):
     state: Literal["NOT_INITIALIZED", "RECOVERY_REQUIRED", "ARMED", "EQUITY_UNAVAILABLE", "EXITING", "TRIPPED_FLAT", "EXIT_INCOMPLETE"]
     drawdown_limit_percent: int
     currency: str | None = None
+    retained_equity_floor_fraction: str | None = None
+    high_water_basis: str | None = None
+    reason: str | None = None
     equity: str | None = None
     high_water_equity: str | None = None
     threshold_equity: str | None = None
@@ -231,6 +236,16 @@ class HlStagegProtectionCommand(RuntimeSchema):
 
 
 class HlStagegAccount(RuntimeSchema):
+    currency: str | None = None
+    money_currency: str | None = None
+    equity_basis: str | None = None
+    margin_basis: str | None = None
+    reason: str | None = None
+    reported_total: str | None = None
+    available: str | None = None
+    free_collateral: str | None = None
+    locked: str | None = None
+    hold: str | None = None
     status: Literal["AVAILABLE", "PARTIAL", "UNAVAILABLE"] = "UNAVAILABLE"
     observed_at_ns: int | None = None
     native_cash: str | None = None
@@ -239,13 +254,17 @@ class HlStagegAccount(RuntimeSchema):
     realized_pnl_net_fees: str | None = None
     unrealized_pnl: str | None = None
     fees: str | None = None
+    funding: str | None = None
+    funding_currency: str | None = None
+    funding_reason: str | None = None
+    funding_coverage_end_ns: int | None = None
     mark_state: Literal["CURRENT", "STALE_OR_MISSING"] | None = None
     equity: str | None = None
     im: str | None = None
     mm: str | None = None
     free_margin: str | None = None
 
-    @field_validator("native_cash", "native_free", "native_locked", "realized_pnl_net_fees", "unrealized_pnl", "fees", "equity", "im", "mm", "free_margin")
+    @field_validator("reported_total", "available", "free_collateral", "locked", "hold", "native_cash", "native_free", "native_locked", "realized_pnl_net_fees", "unrealized_pnl", "fees", "funding", "equity", "im", "mm", "free_margin")
     @classmethod
     def decimal_or_unavailable(cls, value: str | None) -> str | None:
         if value is None:
@@ -317,7 +336,30 @@ class HlStagegOrder(RuntimeSchema):
     provenance: Literal["SANDBOX", "LIVE"] = "SANDBOX"
 
 
+class HlStagegC1(RuntimeSchema):
+    state: str
+    E: str | None = None
+    H: str | None = None
+    DD: str | None = None
+    cushion: str | None = None
+    source_available_ns: int | None = None
+    decision_ns: int | None = None
+    currency: str | None = None
+    equity_basis: str | None = None
+    rights: dict[str, Any] | None = None
+    reason: str | None = None
+
+    @field_validator("E", "H", "DD", "cushion")
+    @classmethod
+    def finite_c1(cls, value: str | None) -> str | None:
+        return HlStagegAccount.decimal_or_unavailable(value)
+
+
 class HlStagegProjection(RuntimeSchema):
+    money_currency: str | None = None
+    equity_basis: str | None = None
+    money_reason: str | None = None
+    c1: HlStagegC1 | None = None
     version: Literal["hl-stageg-projection-v1"]
     instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"]
     projection_state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
@@ -505,6 +547,7 @@ class HlPublicCandles(RuntimeSchema):
     source: Literal["OFFICIAL_INFO_CANDLE_SNAPSHOT"]
     execution_evidence: Literal[False]
     coin: Literal["BTC", "SOL"]
+    quote_currency: Literal["USDC"]
     interval: Literal["1m", "5m", "15m", "1h", "4h", "1d"]
     state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
     observed_at_ms: int | None
@@ -775,15 +818,42 @@ class HlLiveProjectionReader(HlStagegProjectionReader):
             profile = raw.get("profile") or {}
             account = raw.get("account") or {}
             account_fields = {key: account[key] for key in HlStagegAccount.model_fields if key in account}
-            account_fields.update(native_free=account.get("withdrawable"), native_locked=account.get("margin_used"),
-                                  observed_at_ns=observed)
+            account_fields["observed_at_ns"] = observed
+            money_valid = (raw.get("money_currency") == "USDC"
+                           and raw.get("equity_basis") == USDC_EQUITY_BASIS
+                           and account.get("currency") == "USDC"
+                           and account.get("money_currency") == "USDC"
+                           and account.get("equity_basis") == USDC_EQUITY_BASIS)
+            money_reason = None if money_valid else "LIVE_MONEY_DENOMINATION_UNVERIFIED"
+            if not money_valid:
+                account_fields = {"reason": money_reason}
+            elif account.get("margin_basis") != USDC_MARGIN_BASIS:
+                for key in ("native_locked", "locked", "hold", "im", "mm", "free_margin"):
+                    account_fields[key] = None
+                account_fields["reason"] = "LIVE_MARGIN_BASIS_UNVERIFIED"
+            if money_valid and account.get("funding_currency") != "USDC":
+                account_fields.update(funding=None, funding_reason="LIVE_FUNDING_CURRENCY_UNVERIFIED")
+            # A spot hold proxy is not native initial/liquidation maintenance margin.
+            account_fields.update(im=None, mm=None)
+            protection = raw.get("deposit_protection")
+            if protection and (not money_valid or protection.get("currency") != "USDC"):
+                protection = {**protection, "equity": None, "high_water_equity": None,
+                              "threshold_equity": None, "reason": "LIVE_PROTECTION_CURRENCY_UNVERIFIED"}
+            c1 = raw.get("c1")
+            if c1 and (not money_valid or c1.get("currency") != "USDC" or c1.get("equity_basis") != USDC_EQUITY_BASIS):
+                c1 = {**c1, "E": None, "H": None, "DD": None, "cushion": None, "rights": None,
+                      "reason": "LIVE_C1_CURRENCY_UNVERIFIED"}
+            if money_valid and not account_fields.get("reason") and any(account_fields.get(key) is None for key in ("native_cash", "native_free", "native_locked", "equity")):
+                account_fields["reason"] = "LIVE_MONEY_FIELDS_PARTIAL"
             if raw.get("account_state") != "CURRENT":
-                account_fields = {}
+                account_fields = {"reason": "LIVE_ACCOUNT_NOT_CURRENT"}
             hashes = {key: profile.get(key, UNKNOWN) for key in HlStagegHashes.model_fields}
             gates = {"attachable": raw.get("orders_enabled") is True}
             result = HlStagegProjection.model_validate({
                 "version": "hl-stageg-projection-v1", "instance_id": "hl-stageg-live", "mode": "live",
                 "environment": "mainnet", "projection_state": "READY", "observed_at_ns": observed,
+                "money_currency": raw.get("money_currency"), "equity_basis": raw.get("equity_basis"),
+                "money_reason": money_reason, "c1": c1,
                 "live_order_capability": True, "run_epoch": raw["run_epoch"], "profile": profile,
                 "runtime_release_commit": raw.get("release_commit"),
                 "runtime_master_address_sha256": raw.get("master_address_sha256"),
@@ -792,14 +862,15 @@ class HlLiveProjectionReader(HlStagegProjectionReader):
                 "native_thread_alive": raw.get("native_thread_alive") is True,
                 "hashes": hashes, "warmup": {"state": UNKNOWN, **{key: value for key, value in raw.get("warmup", {}).items() if key in HlStagegWarmup.model_fields}},
                 "gates": gates, "account": account_fields, "entry_control": raw.get("entry_control", {"state": "PAUSED", "capability": "UNAVAILABLE"}),
-                "funding_state": "NATIVE_ACCOUNT_SETTLEMENT", "feeds": raw.get("feeds", {}),
-                "positions": [{**row, "provenance": "LIVE"} for row in raw.get("positions", [])],
-                "orders": [{**row, "provenance": "LIVE"} for row in raw.get("orders", [])],
+                "funding_state": "NATIVE_ACCOUNT_SETTLEMENT",
+                "feeds": {key: value if money_valid else {**value, "mark": None} for key, value in raw.get("feeds", {}).items()},
+                "positions": [{**row, **({} if money_valid else {"average_entry_price": None}), "provenance": "LIVE"} for row in raw.get("positions", [])],
+                "orders": [{**row, **({} if money_valid else {"price": None}), "provenance": "LIVE"} for row in raw.get("orders", [])],
                 "events": [{**row, "provenance": "LIVE"} for row in raw.get("events", [])],
-                "event_cursor": raw.get("event_cursor", 0), "deposit_protection": raw.get("deposit_protection"),
+                "event_cursor": raw.get("event_cursor", 0), "deposit_protection": protection,
                 "provenance": "NATIVE_MAINNET_OWNED_ACCOUNT", "warnings": ["EXACT_LIVE_ORDER_APPROVAL_REQUIRED"],
             })
-            approved = raw.get("real_order_approval") is True and live_order_approval_matches(result)
+            approved = money_valid and raw.get("real_order_approval") is True and live_order_approval_matches(result)
             return result.model_copy(update={"real_order_approval": approved, "warnings": [] if approved else ["EXACT_LIVE_ORDER_APPROVAL_REQUIRED"]})
         except (OSError, TimeoutError):
             return self.unavailable("UNAVAILABLE", "LIVE_WORKER_UNAVAILABLE")

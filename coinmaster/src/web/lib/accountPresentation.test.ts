@@ -6,7 +6,8 @@ import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, prote
 
 function projection(account: Partial<HlStagegProjection['account']>, overrides: Partial<HlStagegProjection> = {}): HlStagegProjection {
   return {
-    account: { status: 'AVAILABLE', ...account },
+    money_currency: 'USDC',
+    account: { status: 'AVAILABLE', currency: 'USDC', money_currency: 'USDC', ...account },
     entry_control: { state: 'RUNNING' },
     environment: 'mainnet-public',
     event_cursor: 0,
@@ -71,7 +72,7 @@ test("captured recovered worker exposes stored exposure but never claims flat or
   assert.equal(captured.positions[0].signed_quantity, "0.53865");
   assert.equal(captured.orders[0].reduce_only, true);
   assert.deepEqual(accountFigures(captured).map(({ value }) => value), Array(7).fill("Unavailable"));
-  assert.equal(protectionIsVerified({ ...captured, deposit_protection: { state: "ARMED", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), false);
+  assert.equal(protectionIsVerified({ ...captured, deposit_protection: { state: "ARMED", currency: "USDC", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), false);
 });
 
 test("healthy owned flat projection can say flat and trusts only armed protection", () => {
@@ -80,17 +81,17 @@ test("healthy owned flat projection can say flat and trusts only armed protectio
     realized_pnl_net_fees: "0", unrealized_pnl: "0", fees: "0", mark_state: "CURRENT",
   }, { recovery_required: false, positions: [], orders: [] });
   const status = dashboardState(healthy);
-  assert.equal(status.label, "Sandbox worker ready");
+  assert.equal(status.label, "Worker ready");
   assert.equal(status.exposure, "Flat");
   assert.equal(status.canAssertFlat, true);
-  assert.equal(protectionIsVerified({ ...healthy, deposit_protection: { state: "ARMED", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), true);
+  assert.equal(protectionIsVerified({ ...healthy, deposit_protection: { state: "ARMED", currency: "USDC", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), true);
 });
 
 test('protection values are fresh only for a current sample within the 15-second window', () => {
   const observedAt = 100_000_000_000;
   const armed = projection({}, {
     deposit_protection: {
-      state: 'ARMED', drawdown_limit_percent: 50, equity: '10000', high_water_equity: '10000',
+      state: 'ARMED', currency: 'USDC', drawdown_limit_percent: 50, equity: '10000', high_water_equity: '10000',
       threshold_equity: '5000', daily_sample_missed: false, observed_at_ns: observedAt,
     },
   });
@@ -104,4 +105,13 @@ test('formats UTC protection timestamps compactly without exposing nanosecond st
   assert.equal(formatUtcTimestamp('2026-09-27T00:00:00.000000000Z'), '27 Sept 2026 · 00:00 UTC');
   assert.equal(formatUtcTimestamp('bad timestamp'), 'Unavailable');
   assert.equal(formatUtcTimestamp(null), 'Unavailable');
+});
+
+test('legacy untyped and foreign live projections withhold every money figure', () => {
+  const account = { native_cash: '10', native_free: '9', native_locked: '1', equity: '10', realized_pnl_net_fees: '0', unrealized_pnl: '0', fees: '0' };
+  for (const state of [projection(account, { money_currency: null }), projection({ ...account, currency: 'USD' }), projection(account, { mode: 'live', equity_basis: null })]) {
+    assert.deepEqual(accountFigures(state).map((item) => item.value), Array(7).fill('Unavailable'));
+    assert.equal(dashboardState(state).label, 'Currency unverified');
+    assert.equal(protectionIsVerified(state), false);
+  }
 });

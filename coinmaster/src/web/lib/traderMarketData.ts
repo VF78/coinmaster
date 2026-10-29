@@ -1,5 +1,6 @@
 import type { CandlestickData, UTCTimestamp } from 'lightweight-charts';
 import type { HlNativeEquityChanges, HlPublicCandle, HlStagegFillHistory, HlStagegProjection } from './nautilusApi';
+import { projectionCurrency } from './traderFormatting';
 import { nativeFillActionLabel } from './traderLabels';
 import { TRADER_MARKETS } from './traderPresentation';
 
@@ -33,7 +34,7 @@ export function nativeOverlays(
 ): { markers: Array<{ time: UTCTimestamp; position: 'aboveBar' | 'belowBar'; color: string; shape: 'arrowUp' | 'arrowDown'; text: string }>; lines: NativeOverlay[] } {
   const markers: Array<{ time: UTCTimestamp; position: 'aboveBar' | 'belowBar'; color: string; shape: 'arrowUp' | 'arrowDown'; text: string }> = [];
   const lines: NativeOverlay[] = [];
-  if (!candlesReady || !projection || projection.projection_state !== 'READY' || projection.recovery_required || !projection.run_epoch) return { markers, lines };
+  if (!candlesReady || !projection || !projectionCurrency(projection) || projection.projection_state !== 'READY' || projection.recovery_required || !projection.run_epoch) return { markers, lines };
   const market = TRADER_MARKETS.find((item) => item.symbol === coin)!;
   const position = projection.positions.find((item) => item.instrument_id === market.instrumentId);
   if (position && Number.isFinite(Number(position.signed_quantity)) && Number(position.signed_quantity) !== 0) {
@@ -47,7 +48,7 @@ export function nativeOverlays(
     if (price === null) continue;
     const side = order.side ? ` ${order.side}` : '';
     const status = order.status ? ` · ${order.status}` : '';
-    lines.push({ price, title: `Native order${side} · ${leaves ?? 'size unavailable'}${status}`, color: order.reduce_only ? '#e8aa65' : '#85a7ff' });
+    lines.push({ price, title: `Native order${side} · ${leaves ?? 'size unavailable'} ${coin}${status}`, color: order.reduce_only ? '#e8aa65' : '#85a7ff' });
   }
   if (history?.run_epoch === projection.run_epoch) {
     const validBarTimes = new Set(candleBars(candleRows).map((bar) => Number(bar.time)));
@@ -67,7 +68,7 @@ export function nativeOverlays(
       const isSell = fill.order_side?.toUpperCase() === 'SELL';
       if (!isBuy && !isSell) continue;
       const action = fill.action ? nativeFillActionLabel(fill.action) : isBuy ? 'Buy' : 'Sell';
-      markers.push({ time: candle.open as UTCTimestamp, position: isBuy ? 'belowBar' : 'aboveBar', color: isBuy ? '#50c99e' : '#ef7d80', shape: isBuy ? 'arrowUp' : 'arrowDown', text: `${action} ${fill.quantity} @ ${fill.price}` });
+      markers.push({ time: candle.open as UTCTimestamp, position: isBuy ? 'belowBar' : 'aboveBar', color: isBuy ? '#50c99e' : '#ef7d80', shape: isBuy ? 'arrowUp' : 'arrowDown', text: `${action} ${fill.quantity} ${coin} @ ${fill.price} USDC` });
     }
   }
   markers.sort((a, b) => Number(a.time) - Number(b.time));
@@ -79,7 +80,7 @@ export function equityWindowRows(
   data: HlNativeEquityChanges | null,
   nowMs: number,
 ): Array<{ label: string; value: string; percent: string }> | null {
-  if (!projection || projection.projection_state !== 'READY' || projection.recovery_required || !projection.run_epoch) return null;
+  if (!projection || !projectionCurrency(projection) || projection.projection_state !== 'READY' || projection.recovery_required || !projection.run_epoch) return null;
   if (!data || data.instance_id !== projection.instance_id || data.source !== (projection.mode === 'live' ? 'NATIVE_LIVE_ACCOUNT' : 'NATIVE_SANDBOX_ACCOUNT') || data.state !== 'READY' || data.run_epoch !== projection.run_epoch) return null;
   if (data.as_of_ns === null || !Number.isFinite(data.as_of_ns)) return null;
   const asOfMs = data.as_of_ns / 1_000_000;
