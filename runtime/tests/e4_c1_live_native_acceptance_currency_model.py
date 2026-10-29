@@ -17,7 +17,7 @@ import sys
 import time
 import traceback
 
-ROOT_MODEL_GO = False
+ROOT_MODEL_GO = True
 NORMALIZER_MODULE = "coinmaster.ops.hl_unified_instruments"
 NORMALIZER_FUNCTION = "normalize_unified_pyo3_instrument"
 NORMALIZER_SOURCE = "runtime/coinmaster/ops/hl_unified_instruments.py"
