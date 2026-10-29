@@ -237,6 +237,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._recovery_runtime = None
         # Process-local evidence: a restored checkpoint never grants feed freshness.
         self._quote_ns = {}
+        self._prepared_order_dispatch=None
+        self._prepared_deposit_dispatch=None
         self._post_drain_verifier = None
         self._post_drain_task = None
         self._recovery_health = None
@@ -466,6 +468,22 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
 
     def _validated_live_deposit_equity(self):
         """Money observation for existing DP only; no recovery/order capability."""
+        continuation=getattr(self,'_prepared_deposit_dispatch',None)
+        if continuation is not None:
+            import sys
+            import threading
+            order,proof=continuation
+            caller=sys._getframe(1)
+            reader_code=getattr(self.config.deposit_equity_reader,'__code__',None)
+            if reader_code is not None and caller.f_code is reader_code:caller=caller.f_back
+            if (caller is None or threading.get_ident()!=proof['thread']
+                or caller.f_code.co_name!='_deposit_equity'
+                or caller.f_back is None or caller.f_back.f_code.co_name!='_deposit_check'
+                or caller.f_back.f_back is None
+                or caller.f_back.f_back.f_code is not WaveOverlayStrategy.submit_order.__code__
+                or caller.f_back.f_back.f_locals.get('order') is not order):
+                raise ValueError('LIVE_PREPARED_DP_CALL_SCOPE_REQUIRED')
+            return self._require_prepared_dispatch(order,proof)
         if not self._input_readiness_preparation:return self._validated_live_money().equity
         from coinmaster.ops.hl_live_money import CheapPortfolioObservation
         observation=self._last_live_input_observation
@@ -663,6 +681,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             raise
 
     def on_stop(self) -> None:
+        self._prepared_order_dispatch=None
+        self._prepared_deposit_dispatch=None
         self.recovery_confirmed = False
         if self._post_drain_task is not None and not self._post_drain_task.done():
             self._post_drain_task.cancel()
@@ -726,9 +746,85 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             self.recovery_confirmed = False
             raise RuntimeError("RECOVERY_NOT_CONFIRMED")
 
+    def _prepared_order_fingerprint(self,order):
+        return (str(order.client_order_id),str(order.instrument_id),str(order.strategy_id),
+            str(order.account_id),str(order.side),str(order.order_type),str(order.time_in_force),
+            str(order.quantity),bool(order.is_reduce_only),bool(order.is_post_only),
+            str(order.price) if order.has_price else None,order.ts_init,tuple(order.tags or ()))
+
+    def _prepared_native_state(self):
+        from coinmaster.ops.live_recovery import management_cache_evidence
+        account=self.cache.account_for_venue(self.config.btc_id.venue)
+        event=getattr(account,'last_event',None)
+        return (str(getattr(event,'id',None) or getattr(event,'event_id',None)),
+            str(account.id),str(account.balance_total(USDC)),str(account.balance_free(USDC)),
+            management_cache_evidence(self.cache,self.config.btc_id.venue),
+            self._c1_fill_epoch,self._live_input_ws_epoch(),self._deposit.durable(),
+            self._recovery_runtime.entry_control_state(),
+            recovery_policy_hash(self.config,self._candidate),self._live_account_mode,
+            getattr(self.config,'live_equity_basis',None),self._live_financial_deadline_ns)
+
+    def _require_prepared_dispatch(self,order,proof):
+        import threading
+        runtime=self._recovery_runtime
+        if (proof is None or proof['thread']!=threading.get_ident() or proof['order'] is not order
+            or proof['fingerprint']!=self._prepared_order_fingerprint(order)
+            or runtime.native_revision()!=proof['revision']+1
+            or time.monotonic_ns()>proof['deadline']
+            or self._prepared_native_state()!=proof['state']
+            or not self._active_c1_authorized or not self.recovery_confirmed
+            or self._recovery_health is None or not self._recovery_health()
+            or self._live_financial_suspended
+            or self._live_money_provider() is not proof['money']
+            or self._last_live_input_observation is not proof['observation']
+            or self._live_inputs_dirty
+            or self._live_context_current is None or not self._live_context_current()
+            or self._live_increase_headroom is None or not self._live_increase_headroom()):
+            raise ValueError('LIVE_PREPARED_DISPATCH_MOVED_OR_UNKNOWN')
+        all_rows=runtime.all_submissions()
+        rows=[r for r in all_rows if r['client_order_id']==str(order.client_order_id)]
+        remaining=[r for r in all_rows if r['client_order_id']!=str(order.client_order_id)]
+        if remaining!=proof['journal_before']:
+            raise ValueError('LIVE_PREPARED_DISPATCH_OTHER_JOURNAL_MOVEMENT')
+        intent=self._pending_by_order.get(str(order.client_order_id))
+        if (len(rows)!=1 or rows[0]['state']!='SUBMITTING' or intent is None
+            or (rows[0]['intent_id'],rows[0]['episode_id'],rows[0]['action'])!=proof['intent']
+            or (intent.id,intent.episode_id,intent.action)!=proof['intent']
+            or rows[0]['instrument_id']!=str(order.instrument_id)
+            or rows[0]['body']!=proof['body']):
+            raise ValueError('LIVE_PREPARED_DISPATCH_JOURNAL_MISMATCH')
+        proof['observation'].require_current(now_ns=time.monotonic_ns(),revision=proof['revision'],
+            fill_epoch=self._c1_fill_epoch,ws_epoch=self._live_input_ws_epoch())
+        return proof['equity']
+
     def submit_order(self, *args, **kwargs):
-        self._require_recovery_confirmed()
-        return super().submit_order(*args, **kwargs)
+        order=args[0] if args else kwargs.get('order')
+        proof=getattr(self,'_prepared_order_dispatch',None)
+        if not self._active_c1_authorized or order is None or order.is_reduce_only:
+            self._require_recovery_confirmed()
+            return super().submit_order(*args, **kwargs)
+        with self._recovery_runtime._lock:
+            self._prepared_order_dispatch=None  # One-use, never persisted or reusable.
+            try:
+                self._require_recovery_confirmed()
+                self._require_prepared_dispatch(order,proof)
+            except BaseException:
+                # This stack has provably NOT entered any native submission API.
+                # Use existing domain/journal terminal cleanup, not an uncertain resend.
+                if proof is not None and self.cache.order(proof['order'].client_order_id) is None:
+                    self._terminal_without_fill(str(proof['order'].client_order_id))
+                raise
+            self._prepared_deposit_dispatch=(order,proof)
+            try:
+                # Base DP still observes/compares the certified equity and can block.
+                # Once this call begins, errors are uncertain: keep durable SUBMITTING.
+                return super().submit_order(*args, **kwargs)
+            finally:
+                self._prepared_deposit_dispatch=None
+    def _on_proven_local_submission_refusal(self,order):
+        continuation=getattr(self,'_prepared_deposit_dispatch',None)
+        if continuation is not None and continuation[0] is order:
+            self._terminal_without_fill(str(order.client_order_id))
 
     def submit_order_list(self, *args, **kwargs):
         self._require_recovery_confirmed()
@@ -871,10 +967,17 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                 self._persist_transient_checkpoint()
                 self._request_live_refresh()
                 return
-        return super()._submit_intent(
-            intent, bid_price, ask_price, sigma, decision_index,
-            only_instrument=only_instrument, ts_now=ts_now,entry_override_qty=entry_override_qty,
-        )
+        try:
+            return super()._submit_intent(
+                intent, bid_price, ask_price, sigma, decision_index,
+                only_instrument=only_instrument, ts_now=ts_now,entry_override_qty=entry_override_qty,
+            )
+        finally:
+            proof=getattr(self,'_prepared_order_dispatch',None)
+            self._prepared_order_dispatch=None
+            if proof is not None and self.cache.order(proof['order'].client_order_id) is None:
+                # Still unconsumed means submit_order never reached its native handoff.
+                self._terminal_without_fill(str(proof['order'].client_order_id))
 
     def establish_owned_effect_chain(self, *, account_id, ws_epoch, policy_sha256):
         if not self._active_c1_authorized or self._live_input_ws_epoch is None:
@@ -970,7 +1073,30 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                             tp_fractions=fractions,cut_divisor=self.config.research_c1_btc_cut_divisor if order.instrument_id==self.config.btc_id else 2):return False
                     if not self._tier_allows_increase(
                         order.instrument_id,order.side,order.quantity.as_decimal(),time.time_ns()):return False
-            return super()._record_submission(*args, **kwargs)
+            proof=None
+            if self._active_c1_authorized and not order.is_reduce_only:
+                self._prepared_order_dispatch=None
+                try:
+                    money,_,_=self._current_owned_money()
+                    if not self._deposit_check():return False
+                    equity=self._validated_live_deposit_equity()
+                    observation=self._last_live_input_observation
+                    import threading
+                    proof=dict(order=order,thread=threading.get_ident(),
+                        journal_before=runtime.all_submissions(),
+                        body=dict(quantity=str(order.quantity),reduce_only=False,shape=dict(
+                            side=getattr(order.side,'name',str(order.side)),
+                            kind=getattr(order.order_type,'name',str(order.order_type)),
+                            tif=getattr(order.time_in_force,'name',str(order.time_in_force)),
+                            post_only=bool(order.is_post_only),price=str(order.price) if order.has_price else None)),
+                        fingerprint=self._prepared_order_fingerprint(order),
+                        intent=(args[1],args[2],args[3]),revision=runtime.native_revision(),
+                        state=self._prepared_native_state(),money=money,observation=observation,equity=equity,
+                        deadline=min(self._live_financial_deadline_ns,observation.generation_started_ns+9_000_000_000))
+                except (ValueError,RuntimeError):return False
+            accepted=super()._record_submission(*args, **kwargs)
+            if accepted and proof is not None:self._prepared_order_dispatch=proof
+            return accepted
 
     def attach_recovery_runtime(self, runtime) -> None:
         self._recovery_runtime = runtime
@@ -1118,6 +1244,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self.recovery_confirmed = False
         self._checkpoint_policy_valid=c1
         self._loaded_policy_sha256=document.get("policy_sha256") if c1 else None
+        self._prepared_order_dispatch=None
+        self._prepared_deposit_dispatch=None
         self._quote_ns={}  # Saved inputs never grant new live freshness/authority.
         self._management_certificate=None
 

@@ -1,0 +1,86 @@
+{
+  "base": "36b2e5e7d5d21fcb75f1e4a76312b7b4703eee7c",
+  "checks": {
+    "connected": {
+      "command": [
+        "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "runtime/tests/test_e4_c1_manage_only_pure.py",
+        "runtime/tests/test_e4_c1_input_bridge_pure.py",
+        "runtime/tests/test_e4_c1_unified_pure.py",
+        "runtime/tests/test_deposit_protection.py",
+        "runtime/tests/test_e4_c1_active_authorization_pure.py",
+        "runtime/tests/test_e4_c1_active_composition_pure.py",
+        "runtime/tests/test_e4_c1_per_dex_http_pure.py",
+        "runtime/tests/test_e4_c1_partial_lifecycle_pure.py",
+        "runtime/tests/test_e4_c1_prepared_dispatch_pure.py",
+        "runtime/tests/test_e4_c1_live_name_resolution_pure.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "........................................................................ [ 22%]\n........................................................................ [ 44%]\n........................................................................ [ 66%]\n........................................................................ [ 88%]\n....................................                                     [100%]\n324 passed in 73.26s (0:01:13)\n",
+      "wall_seconds": 73.96694649104029
+    },
+    "prior_connected_preserved": {
+      "reason": "Before exact missing-account pre-handoff cleanup exception correction; not final source qualification",
+      "result": {
+        "command": [
+          "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python",
+          "-B",
+          "-m",
+          "pytest",
+          "-q",
+          "--noconftest",
+          "-p",
+          "no:cacheprovider",
+          "runtime/tests/test_e4_c1_manage_only_pure.py",
+          "runtime/tests/test_e4_c1_input_bridge_pure.py",
+          "runtime/tests/test_e4_c1_unified_pure.py",
+          "runtime/tests/test_deposit_protection.py",
+          "runtime/tests/test_e4_c1_active_authorization_pure.py",
+          "runtime/tests/test_e4_c1_active_composition_pure.py",
+          "runtime/tests/test_e4_c1_per_dex_http_pure.py",
+          "runtime/tests/test_e4_c1_partial_lifecycle_pure.py",
+          "runtime/tests/test_e4_c1_prepared_dispatch_pure.py",
+          "runtime/tests/test_e4_c1_live_name_resolution_pure.py"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "........................................................................ [ 22%]\n........................................................................ [ 44%]\n........................................................................ [ 66%]\n........................................................................ [ 89%]\n...................................                                      [100%]\n323 passed in 74.26s (0:01:14)\n",
+        "wall_seconds": 75.01961785648018
+      }
+    },
+    "targeted": {
+      "breakdown": "28 actual prepared-chain cases +20 bounded source name checks, included again in final connected count",
+      "passed": 48,
+      "seconds": 28.23
+    }
+  },
+  "contract": [
+    "Capture only after actual fresh full money and actual DP check inside existing journal lock; preserve original oldest full/observation 9-second deadline.",
+    "Bind exact order object and wire fingerprint, CLOID, intent/episode/action, account/native event/USDC total+free, known native positions/orders, fill/WS epochs, policy/mode/basis, DP durable state and entry control.",
+    "Require sole expected revision increment, exact own SUBMITTING row/body and all prior journal rows unchanged.",
+    "Consume once; use certified observed equity only in same thread and exact configured DP callback -> _deposit_equity -> _deposit_check -> WaveOverlay.submit_order for that order. Global money/revision guards unchanged.",
+    "Real DP check still executes; silent pre-native DP refusal invokes existing domain+atomic terminal cleanup. All pre-handoff validation exceptions and unconsumed pre-dispatch proof cleanup can terminal only positively unsent/cache-absent local preparation.",
+    "Once native-super handoff begins, an exception remains uncertain SUBMITTING; no terminal assumption/resend/flat claim.",
+    "Clear scopes in finally/on_stop/on_load; never serialize or restore authority. Native RiskEngine still receives actual order.",
+    "Default inactive/research path unchanged; reductions keep existing independently qualified native protection path."
+  ],
+  "gate": "SOURCE TEST PASS ONLY; same critical peer/root NativeGO/held matching/owner START remain separate. No actual account data; all fixture amounts synthetic. Stock sub-minimum partial-close limitation unchanged.",
+  "normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "schema": "CM_E4_C1_PREPARED_ORDER_DP_CONTINUATION_V1",
+  "scope": "Two existing strategy files plus engine-free regression; no money model, candidate, native normalizer, RiskEngine, account mode, service or real runtime changes.",
+  "source_pins": {
+    "runtime/coinmaster/strategy/live_recovery.py": "37bfac08c957f7ee1adfbe118883ea628a5f2ed98696b091ef079159a1af7839",
+    "runtime/coinmaster/strategy/wave_overlay.py": "561a5cb85fb17a1fdfd38b49dd67ab235909a4e8f278ce8ae8769860a4ca97ee",
+    "runtime/tests/test_e4_c1_prepared_dispatch_pure.py": "2a36bf57cbda6ab51312d100e7ebcf30feab31cd3208ac93c554d842fd56db52"
+  },
+  "trigger": "A4 actual fake-native ordinary entry durably prepared at revision0->1; final DP reader rejected its own revision0 observation before native handoff. Original failed A4 retained by coordinator.",
+  "writer_native_imports_models_nodes_engines_queries_orders": 0
+}

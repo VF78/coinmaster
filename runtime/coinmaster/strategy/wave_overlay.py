@@ -2883,9 +2883,13 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
     def submit_order(self, order, *args, **kwargs):
         if self.config.deposit_runtime is not None and self._deposit.latched and "MARKET_EXIT" not in (order.tags or ()):
             self.log.warning("Deposit market exit owns closure; other orders blocked")
+            refused=getattr(self,"_on_proven_local_submission_refusal",None)
+            if callable(refused):refused(order)
             return None
         if self.config.deposit_runtime is not None and not order.is_reduce_only and not self._deposit_check():
             self.log.warning("Deposit protection blocks native increase submission")
+            refused=getattr(self,"_on_proven_local_submission_refusal",None)
+            if callable(refused):refused(order)
             return None
         if self.config.deposit_runtime is not None and "MARKET_EXIT" in (order.tags or ()):
             if (
