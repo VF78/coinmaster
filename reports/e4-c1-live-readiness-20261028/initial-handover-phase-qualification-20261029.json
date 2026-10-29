@@ -1,0 +1,75 @@
+{
+  "base": "fd35f20486837afdacb3b166b67bd076bd912131",
+  "change": [
+    "One product file only. Actual initial release brackets its verifier with a same-WS-epoch marker and clears it in finally.",
+    "BUFFERING may finish financial verification only inside that actual initial handover while not bootstrapped. Failure latch, real transport/epoch, native revision, pending native effects, cashflow quarantine and original oldest9s guards remain.",
+    "Post-bootstrap financial verification still requires actual LIVE health. No global health/deadline relaxation or early phase flip.",
+    "Existing release queue drain, pending-fill check, full mass, pre/post-verifier queue checks, transport check, LIVE transition and outer strategy recovery confirmation remain in their existing order.",
+    "A queued event after verifier completion keeps money/order authority unusable, is drained, and requires another fresh full generation before LIVE; transport gap denies release."
+  ],
+  "checks": {
+    "connected": {
+      "command": [
+        "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "runtime/tests/test_e4_c1_manage_only_pure.py",
+        "runtime/tests/test_e4_c1_input_bridge_pure.py",
+        "runtime/tests/test_e4_c1_unified_pure.py",
+        "runtime/tests/test_deposit_protection.py",
+        "runtime/tests/test_e4_c1_active_authorization_pure.py",
+        "runtime/tests/test_e4_c1_active_composition_pure.py",
+        "runtime/tests/test_e4_c1_per_dex_http_pure.py",
+        "runtime/tests/test_e4_c1_partial_lifecycle_pure.py",
+        "runtime/tests/test_e4_c1_prepared_dispatch_pure.py",
+        "runtime/tests/test_e4_c1_live_name_resolution_pure.py",
+        "runtime/tests/test_e4_c1_first_held_anchor_pure.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "........................................................................ [ 20%]\n........................................................................ [ 40%]\n........................................................................ [ 60%]\n........................................................................ [ 80%]\n........................................................................ [100%]\n360 passed in 99.71s (0:01:39)\n",
+      "wall_seconds": 100.479822027497
+    },
+    "first_unseeded_whole_lifecycle": {
+      "passed": 1,
+      "path": "same SQLite with no marker/Info seed -> actual recovery_healthy and release_after_effect_parity -> 2Info/INIT -> releaseLIVE -> flatfull -> confirmed/applied native-shaped fill facts -> heldfull -> actual money reader",
+      "seconds": 1.35
+    },
+    "fixture_integrity": "Assert actual inherited health/release __func__ identity; no True health/release overrides. Controlled transport/report models remain pure stand-ins. Causal actual millisecond timestamps and real later receipt wait; source frame/clock guards unchanged.",
+    "targeted": {
+      "breakdown": "35 complete lifecycle/firstheld cases plus20 source namespace/import checks, included in connected count",
+      "passed": 55,
+      "seconds": 22.14
+    }
+  },
+  "gate": "One critical peer provisional PASS on exact code bytes; final commit binding/root physical protocol/GO remain separate.",
+  "reviewed_tracked_diff_sha256": "e3bedeaf31812a0b56372ccf3eb8029a203be5756e29702acd9ec6479a384502",
+  "risks": [
+    "Source-only qualification; no native physical rerun or held matching/START claim.",
+    "All earlier source/pure receipts and nine failed physical fixture records remain evidence; no automatic budget extension.",
+    "Owner INITIAL-cap prerequisite and sub-minimum IOC residual limitation remain separate/unmodified."
+  ],
+  "root_cause": "A9 actual initial verifier ran while WS BUFFERING; recovery_healthy intentionally required LIVE, but release_after_effect_parity sets LIVE only after verify. The new final financial guard had introduced a circular startup condition, not an old Info checkpoint revision dependency.",
+  "saved_A9_facts": {
+    "cashflow_quarantine_present": false,
+    "first_failed_gate": "LIVE_FINAL_FINANCIAL_GENERATION_MOVED",
+    "init_marker_present": true,
+    "native_revision": 0,
+    "result_sha256": "546fa2158220696f51852db77a0deedbd0397df3dc1ccb37d8508d1bd60a80b9",
+    "retest_by_writer": false,
+    "strategy_checkpoint_revision": 0,
+    "verified_info_checkpoint_count": 0
+  },
+  "schema": "CM_E4_C1_INITIAL_HANDOVER_PHASE_QUALIFICATION_V1",
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_live_execution.py": "b142b3947db223156a9b28d8b0b24a6e0f3ac111515e735aa606aeb7d7bcadee",
+    "runtime/tests/test_e4_c1_first_held_anchor_pure.py": "e7acae6a4ff485cdf24439d7896dc1d1c7ebcd3b15f4643f7151b5e3eca1d2aa"
+  },
+  "unchanged_normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "writer_native_imports_models_nodes_engines_queries_orders_services": 0
+}

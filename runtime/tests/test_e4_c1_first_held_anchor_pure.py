@@ -52,7 +52,7 @@ class Mass:
         for row in rows:self.position_reports[row.instrument_id].append(row)
 
 @pytest.fixture
-def chain(code,tmp_path):
+def chain(code,tmp_path,request):
     helper_env=code.management
     run_ast(nodes('ops/live_recovery.py',{'owned_fill_anchor_fingerprint','applied_owned_fill_anchor'}),helper_env)
     fake=sys.modules['coinmaster.ops.live_recovery']
@@ -62,53 +62,58 @@ def chain(code,tmp_path):
     code.env['OrderSide']=SIDE
     s._candidate=Candidate(**json.loads((ROOT.parent/'configs/hl-live-v3-dp50.candidate.json').read_text())['candidate'])
     s.config.live_account_mode='unifiedAccount';s.config.live_equity_basis=EQUITY_BASIS
+    s.config.live_initial_capital_limit_usdc='100'
     s._live_account_mode='unifiedAccount'
     s._deposit=DepositProtection(limit_percent=55)
     now=time.time_ns();start=now//1_000_000-1000
     assets=(m.SelectedCrossAsset('BTC',20,D(100),(D(100),D(100)),(D(1000),D(1000))),
         m.SelectedCrossAsset('SOL',20,D(200),(D(100),D(100)),(D(1000),D(1000))))
-    initial=m.LivePerpsMoneyView(ACCOUNT,'',now//1_000_000,D(82),D(82),D(0),D(82),assets,(),r.native_revision(),account_mode='unifiedAccount',equity_basis=EQUITY_BASIS)
-    s.initialize_clean_flat_c1_epoch(initial,intent='INITIALIZE_FRESH_C1_EPOCH',now_ns=now,
-        history_anchor_ms=start,cashflow_page=dict(start_ms=start,end_ms=start+1,rows=[],complete=True,expected_cursor=None))
-    s._active_c1_authorized=True;s._manage_only_preparation=False;s.recovery_confirmed=True
-    s._domain=WaveOverlayState(s._candidate);s._domain.episode=Episode('episode',1,82,1,wave_levels=(.01,.02,.03))
-    s._pending_by_order={};s._seen_trade_ids=set();s._c1_fill_epoch=2;s._live_inputs_dirty=False
+    s._active_c1_authorized=True;s._manage_only_preparation=False;s.recovery_confirmed=False
+    s._domain=WaveOverlayState(s._candidate)
+    s._pending_by_order={};s._seen_trade_ids=set();s._c1_fill_epoch=0;s._live_inputs_dirty=False
     s._recovery_health=None;s._live_input_ws_epoch=lambda:4
     account=N(id=ACCOUNT_ID,base_currency=None,last_event=N(id='native-account'),
-        balance_total=lambda currency:Cash(82),balance_free=lambda currency:Cash(62),
-        margin_init_for_currency=lambda currency:Cash(20),margin_maint_for_currency=lambda currency:Cash(20))
+        balance_total=lambda currency:Cash(82),balance_free=lambda currency:Cash(62 if orders else 82),
+        margin_init_for_currency=lambda currency:Cash(20 if orders else 0),margin_maint_for_currency=lambda currency:Cash(20 if orders else 0))
     orders=[];rawfills=[];cloids={};statuses={}
-    for index,quantity in enumerate(('4','6'),1):
-        client='ENTRY'+str(index);cloid='0x'+str(index)*32;cloids[client]=cloid;oid=str(100+index);tid=str(100+index)
-        intent=s._domain._intent(s._domain.episode,'BTC_ENTRY',1,None,quantity=float(quantity))
-        r.record_submission(client_order_id=client,intent_id=intent.id,episode_id='episode',action='BTC_ENTRY',
-            instrument_id=str(s.config.btc_id),quantity=quantity,reduce_only=False,strategy_state=s.on_save()[code.env['_KEY']],
-            order_shape=dict(side='BUY',kind='MARKET',tif='IOC',post_only=False,price=None))
-        ts=(start+100)*1_000_000  # Same genuine venue millisecond retains both IDs.
-        event=Fill(ACCOUNT_ID,s.config.btc_id,oid,tid,SIDE.BUY,Q.from_str(quantity),Q.from_str('100'),
-            Cash('.01'),LIQ.TAKER,'event'+tid,ts,ts+1000,client_order_id=client)
-        r.record_native_fill(trade_id=tid,native_event_id=event.id,client_order_id=client,venue_order_id=oid,
-            instrument_id=str(s.config.btc_id),order_side='BUY',quantity=quantity,price='100',
-            commission_amount='.01',commission_currency='USDC',liquidity_side='TAKER',ts_event_ns=ts,ts_init_ns=ts+1000)
-        s._domain.on_fill(intent.id,float(quantity),100,__import__('datetime').datetime.now(__import__('datetime').timezone.utc),None,decision_index=0)
-        s._seen_trade_ids.add(tid)
-        r.commit_applied_fills([tid],s.on_save()[code.env['_KEY']]);r.terminal_submission(client,s.on_save()[code.env['_KEY']])
-        native=N(client_order_id=client,venue_order_id=oid,instrument_id=s.config.btc_id,strategy_id=str(s.id),
-            account_id=ACCOUNT_ID,side=SIDE.BUY,quantity=Q.from_str(quantity),filled_qty=Q.from_str(quantity),
-            is_reduce_only=False,is_closed=True,is_pending_cancel=False,is_post_only=False,has_price=False,
-            order_type=TYPE.MARKET,time_in_force=TIF.IOC,status=STATUS.FILLED,trade_ids=[tid],events=[event])
-        orders.append(native)
-        rawfills.append(dict(tid=int(tid),oid=int(oid),coin='BTC',side='B',sz=quantity,px='100',fee='.01',feeToken='USDC',crossed=True,hash='0x'+tid,time=ts//1_000_000))
-        statuses[cloid]=dict(status='order',order=dict(status='filled',statusTimestamp=start+101,
-            order=dict(cloid=cloid,oid=int(oid),coin='BTC',side='B',origSz=quantity,sz='0',limitPx='100',
-                reduceOnly=False,orderType='Limit',tif='Ioc',timestamp=start+50)))
-    # Native journal baseline17, reached through existing event recording, not relaxed guards.
-    while r.native_revision()<17:r.record_native_event('owned-status-'+str(r.native_revision()),'order')
-    assert r.native_revision()==17
+    fill_clock=[]
+    def apply_owned_fills():
+        time.sleep(.003)  # Actual next millisecond after the completed virgin INIT/release.
+        fill_clock.append(time.time_ns()//1_000_000)
+        s._domain.episode=Episode('episode',1,82,1,wave_levels=(.01,.02,.03))
+        for index,quantity in enumerate(('4','6'),1):
+            client='ENTRY'+str(index);cloid='0x'+str(index)*32;cloids[client]=cloid;oid=str(100+index);tid=str(100+index)
+            intent=s._domain._intent(s._domain.episode,'BTC_ENTRY',1,None,quantity=float(quantity))
+            r.record_submission(client_order_id=client,intent_id=intent.id,episode_id='episode',action='BTC_ENTRY',
+                instrument_id=str(s.config.btc_id),quantity=quantity,reduce_only=False,strategy_state=s.on_save()[code.env['_KEY']],
+                order_shape=dict(side='BUY',kind='MARKET',tif='IOC',post_only=False,price=None))
+            ts=fill_clock[0]*1_000_000  # Same controlled venue millisecond; strictly after INIT.
+            event=Fill(ACCOUNT_ID,s.config.btc_id,oid,tid,SIDE.BUY,Q.from_str(quantity),Q.from_str('100'),
+                Cash('.01'),LIQ.TAKER,'event'+tid,ts,ts+1000,client_order_id=client)
+            r.record_native_fill(trade_id=tid,native_event_id=event.id,client_order_id=client,venue_order_id=oid,
+                instrument_id=str(s.config.btc_id),order_side='BUY',quantity=quantity,price='100',
+                commission_amount='.01',commission_currency='USDC',liquidity_side='TAKER',ts_event_ns=ts,ts_init_ns=ts+1000)
+            s._domain.on_fill(intent.id,float(quantity),100,__import__('datetime').datetime.now(__import__('datetime').timezone.utc),None,decision_index=0)
+            s._seen_trade_ids.add(tid)
+            r.commit_applied_fills([tid],s.on_save()[code.env['_KEY']]);r.terminal_submission(client,s.on_save()[code.env['_KEY']])
+            native=N(client_order_id=client,venue_order_id=oid,instrument_id=s.config.btc_id,strategy_id=str(s.id),
+                account_id=ACCOUNT_ID,side=SIDE.BUY,quantity=Q.from_str(quantity),filled_qty=Q.from_str(quantity),
+                is_reduce_only=False,is_closed=True,is_pending_cancel=False,is_post_only=False,has_price=False,
+                order_type=TYPE.MARKET,time_in_force=TIF.IOC,status=STATUS.FILLED,trade_ids=[tid],events=[event])
+            orders.append(native)
+            rawfills.append(dict(tid=int(tid),oid=int(oid),coin='BTC',side='B',sz=quantity,px='100',fee='.01',feeToken='USDC',crossed=True,hash='0x'+tid,time=ts//1_000_000))
+            statuses[cloid]=dict(status='order',order=dict(status='filled',statusTimestamp=fill_clock[0],
+                order=dict(cloid=cloid,oid=int(oid),coin='BTC',side='B',origSz=quantity,sz='0',limitPx='100',
+                    reduceOnly=False,orderType='Limit',tif='Ioc',timestamp=fill_clock[0]-1)))
+        # Native journal baseline17, reached through existing event recording, not relaxed guards.
+        while r.native_revision()<17:r.record_native_event('owned-status-'+str(r.native_revision()),'order')
+        assert r.native_revision()==17
+        s._c1_fill_epoch=2;account.last_event.id='native-after-fills'
+        position.events=[o.events[0] for o in orders]
     position=N(instrument_id=s.config.btc_id,id='owned-position',is_long=True,quantity=Q.from_str('10'),
         strategy_id=str(s.id),account_id=ACCOUNT_ID,events=[o.events[0] for o in orders],ts_opened=(start+100)*1_000_000)
     instruments={coin:N(id=iid,size_precision=0,price_precision=0,size_increment=Q.from_str('1')) for coin,iid in [('BTC',s.config.btc_id),('SOL',s.config.sol_id)]}
-    cache=N(orders=lambda venue=None:orders,positions_open=lambda:[position],orders_open=lambda:[],orders_inflight=lambda:[],
+    cache=N(orders=lambda venue=None:orders,positions_open=lambda:[position] if orders else [],orders_open=lambda:[],orders_inflight=lambda:[],
         account_for_venue=lambda venue:account,instrument=lambda iid:next(i for i in instruments.values() if i.id==iid))
     s.cache=cache
     pyo=N(ClientOrderId=str,hyperliquid_cloid_from_client_order_id=lambda client:cloids[client])
@@ -123,32 +128,38 @@ def chain(code,tmp_path):
         Quantity=Q,Price=Q,Money=Cash,FillReport=Fill,OrderStatusReport=OrderReport,PositionStatusReport=PositionReport,ExecutionMassStatus=Mass)
     run_ast(nodes('ops/hl_qualified_reports.py',{'_precise','_same_generation','qualified_mass_status'}),report_env)
     Boundary=env['QualifiedInfoBoundary']
+    full_counts=[];boot_observations=[];socket_epoch=[4];socket_active=[True]
+    boot_mode=getattr(request,'param',None)
     class Client(Boundary):
-        def recovery_healthy(self):return self._cm_ws_failure is None
-        def _cm_transport_ok(self):return self._cm_ws_failure is None
-        def request_effect_parity_refresh(self):return False
-        def bind_recovery_revocation(self,fn):self.revoke=fn
-        def bind_recovery_suspension(self,suspend,resume):self.suspend=suspend;self.resume=resume
-        async def release_after_effect_parity(self,verify,**kwargs):
-            self.verify_current_risk_epoch=verify
-            assert await verify(self.mass) is True
+        async def generate_mass_status(self):
+            full_counts.append((self._cm_ws_phase,self._cm_bootstrapped,r.native_revision()))
+            unused,unused2,mass=await collect()
+            return mass
+        def _cm_dispatch(self,message):
+            assert message=='KNOWN_BUFFERED_STATUS'
+            r.record_native_event('buffered-native-status','order')
+            account.last_event.id='after-buffered-status'
     client=Client();client._cm_runtime=r;client._cm_scope=helper_env['NativeLiveRecoveryScope'](ACCOUNT,'',start,None,(),frozenset({'BTC','SOL'}))
-    client._cm_bootstrapped=True;client._cm_inputs_enabled=True;client._cm_unified=True;client._cm_strategy=s
+    client._cm_bootstrapped=False;client._cm_inputs_enabled=True;client._cm_unified=True;client._cm_strategy=s
     client._cache=cache;client._msgbus=s.msgbus;client.trader_id=s.trader_id;client.venue=VENUE;client.account_id=ACCOUNT_ID
     client._clock=N(timestamp_ns=time.time_ns);client._cm_ws_epoch=4;client._cm_ws_failure=None
-    client._cm_account_context={};client._cm_last_margin_assets=assets;client._cm_last_revision=17
+    client._cm_account_context={};client._cm_last_margin_assets=assets;client._cm_last_revision=None
     client._cm_generation_started_ns=time.monotonic_ns();client._cm_last_generation_bound=413
     client._cm_next_money_request=0
+    client._cm_ws_phase='BUFFERING';client._cm_ws_queue=deque();client._pending_fills={}
+    client._cm_handover_verification_epoch=None;client._cm_applied_fill_ids=r.applied_fill_ids
+    client._cm_revoke_recovery=None;client._cm_parity_task=None
+    client._ws_client=N(connection_epoch=lambda:socket_epoch[0],is_active=lambda:socket_active[0],is_closed=lambda:not socket_active[0])
     calls=[];fault={}
     async def transport(body):
         calls.append(dict(body));kind=body['type']
         if kind=='frontendOpenOrders':return []
-        if kind=='clearinghouseState':return state('10','0') if body.get('dex','')=='' else state('0','0')
-        if kind=='spotClearinghouseState':return spot('82','20')
+        if kind=='clearinghouseState':return state('10' if orders else '0','0') if body.get('dex','')=='' else state('0','0')
+        if kind=='spotClearinghouseState':return spot('82','20' if orders else '0')
         if kind=='orderStatus':return statuses[body['oid']]
         if kind=='userFillsByTime':
             rows=[dict(f) for f in rawfills if body['startTime']<=f['time']<=body['endTime']]
-            sweep=sum(q['type']=='userFillsByTime' for q in calls)
+            sweep=sum(q['type']=='userFillsByTime' for q in calls)-fault.get('sweep_offset',0)
             if fault.get('missing_sweep')==sweep:rows=[f for f in rows if f['tid']!=101]
             if fault.get('raw_change'):
                 key,value=fault['raw_change'];rows[0][key]=value
@@ -163,9 +174,14 @@ def chain(code,tmp_path):
     context=dict(master_role='user',mode='unifiedAccount',dex_abstraction=False,dex_names=('', 'xyz'),
         verified_at_ns=time.monotonic_ns(),mode_observed_at_ns=time.monotonic_ns())
     async def collect():
+        if client._cm_bootstrapped:client._cm_suspend_recovery()
+        client._cm_generation_started_ns=time.monotonic_ns()
         scope,revision,native,applied,signature=client._cm_owned_scope()
         receipts=[]
-        for end in (time.time_ns()//1_000_000-2,time.time_ns()//1_000_000-1):
+        first_end=time.time_ns()//1_000_000
+        for sweep_index in range(2):
+            if sweep_index:await asyncio.sleep(.003)  # Real later receipt, no future source timestamp.
+            end=time.time_ns()//1_000_000
             receipts.append(await collect_info_receipt(transport,account=ACCOUNT,dex='',anchor_ms=scope.anchor_ms,
                 anchor_tid=scope.anchor_tid,fill_anchor_ms=scope.fill_anchor_ms,fill_anchor_fingerprint=scope.fill_anchor_fingerprint,
                 end_ms=end,expected_orders={c:o for _,c,o in scope.durable_orders},owned_coins=scope.owned_coins,
@@ -176,34 +192,81 @@ def chain(code,tmp_path):
         client._cm_last_receipt=receipts[-1];client._cm_last_revision=revision;client.mass=mass
         client._cm_cashflow_page=await client._cm_collect_cashflow_page(transport)
         return scope,receipts,mass
+    env['bind_clean_flat_live_handover'](client,s,r)
+    assert client.recovery_healthy.__func__ is Boundary.recovery_healthy
+    assert client.release_after_effect_parity.__func__ is Boundary.release_after_effect_parity
+    assert r.c1_initialization() is None and r.db.execute('SELECT body FROM live_info_checkpoint').fetchone() is None
+    assert client._cm_ws_phase=='BUFFERING' and not client.recovery_healthy() and not s.recovery_confirmed
+    if boot_mode is not None:
+        # Observe the ACTUAL verifier return; do not replace health/release or its result.
+        release=s._post_drain_verifier
+        cells=dict(zip(release.__code__.co_freevars,release.__closure__))
+        original=cells['verify'].cell_contents
+        async def observe_after_verify(mass):
+            result=await original(mass)
+            if not boot_observations:
+                assert result is True and client._cm_ws_phase=='BUFFERING'
+                assert not client.recovery_healthy() and not s.recovery_confirmed
+                with pytest.raises((ValueError,RuntimeError)):s._validated_live_money()
+                boot_observations.append(r.native_revision())
+                client._cm_ws_queue.append('KNOWN_BUFFERED_STATUS')
+                if boot_mode=='queued_then_gap':socket_active[0]=False
+            return result
+        cells['verify'].cell_contents=observe_after_verify
+    boot_error=None
+    try:asyncio.run(s._post_drain_verifier())
+    except (ValueError,RuntimeError) as error:
+        if boot_mode!='queued_then_gap':raise
+        boot_error=error
+    boot_generations=len(full_counts)
+    if boot_error is None:
+        assert client._cm_ws_phase=='LIVE' and client.recovery_healthy() and s.recovery_confirmed
+        assert client._cm_handover_verification_epoch is None
+        assert r.c1_initialization() is not None and r.db.execute('SELECT body FROM live_info_checkpoint').fetchone()
+        client.verify_current_risk_epoch=client._cm_parity_verifier
+        async def flat_full():
+            unused,unused2,mass=await collect()
+            assert await client.verify_current_risk_epoch(mass) is True
+            client._cm_resume_recovery()
+        asyncio.run(flat_full())
+        prior_info=r.db.execute('SELECT body FROM live_info_checkpoint').fetchone()[0]
+        initial_marker=r.c1_initialization()
+        apply_owned_fills()
+        client._cm_suspend_recovery()
+        fault['sweep_offset']=sum(q['type']=='userFillsByTime' for q in calls)
+    else:
+        prior_info=None;initial_marker=r.c1_initialization()
     ctx=N(s=s,r=r,client=client,orders=orders,position=position,account=account,rawfills=rawfills,statuses=statuses,
         collect=collect,env=env,report_env=report_env,calls=calls,start=start,code=code,
-        fault=fault,transport=transport,context=context)
+        fault=fault,transport=transport,context=context,prior_info=prior_info,initial_marker=initial_marker,
+        anchor_ms=fill_clock[0] if fill_clock else None,full_counts=full_counts,boot_generations=boot_generations,boot_observations=boot_observations,boot_error=boot_error,socket_epoch=socket_epoch)
     yield ctx
     r.close()
 
 def publish(ctx):
-    ctx.env['bind_clean_flat_live_handover'](ctx.client,ctx.s,ctx.r)
-    asyncio.run(ctx.s._post_drain_verifier())
+    async def verify_current():
+        assert await ctx.client.verify_current_risk_epoch(ctx.client.mass) is True
+        ctx.client._cm_resume_recovery()
+    asyncio.run(verify_current())
 
 def test_complete_first_held_chain_two_sweeps_cashflow_revision17_and_money_publication(chain):
     c=chain;scope,receipts,mass=asyncio.run(c.collect())
-    assert scope.anchor_ms==c.start and scope.fill_anchor_ms==c.start+100 and scope.anchor_tid==101
+    assert scope.anchor_ms==c.start and scope.fill_anchor_ms==c.anchor_ms and scope.anchor_tid==101
     assert c.client._cm_scope.anchor_tid is None # Local candidate is not promoted authority.
     assert all(r.start_ms==c.start and r.fill_anchor_fingerprint==scope.fill_anchor_fingerprint for r in receipts)
-    assert [q['startTime'] for q in c.calls if q['type']=='userFillsByTime']==[c.start,c.start]
-    assert c.r.db.execute('SELECT body FROM live_info_checkpoint').fetchone() is None
+    assert [q['startTime'] for q in c.calls if q['type']=='userFillsByTime'][-2:]==[c.start,c.start]
+    assert c.r.db.execute('SELECT body FROM live_info_checkpoint').fetchone()[0]==c.prior_info
     publish(c)
     assert c.r.native_revision()==17 and c.s._validated_live_money().equity==D(82)
     assert c.s._validated_live_money().native_revision==17
     old=json.loads(c.r.db.execute('SELECT body FROM live_info_checkpoint').fetchone()[0])
-    assert old['start_ms']==c.start and old['fill_anchor_ms']==c.start+100 and old['anchor_tid']==101
+    assert old['start_ms']==c.start and old['fill_anchor_ms']==c.anchor_ms and old['anchor_tid']==101
     assert len(old['fills'])==2 and c.r.c1_initialization()['history_anchor_ms']==c.start
     assert c.r.evidence_cursor('userNonFundingLedgerUpdates')['end_ms']>=c.start
     assert c.r.info_query_evidence({},c.r.applied_fill_ids(),anchor_proof=(101,scope.fill_anchor_ms,scope.fill_anchor_fingerprint))[1]
 
 def no_promotion(c):
-    assert c.r.db.execute('SELECT body FROM live_info_checkpoint').fetchone() is None
+    assert c.r.db.execute('SELECT body FROM live_info_checkpoint').fetchone()[0]==c.prior_info
     if c.s._live_money_provider is not None:
         with pytest.raises((ValueError,RuntimeError)):c.s._validated_live_money()
 
@@ -224,7 +287,7 @@ def test_candidate_requires_complete_applied_owned_exact_native_details(chain,fa
 def test_unapplied_fill_not_selected_and_whole_chain_denies_uncommitted_prefix(chain):
     c=chain;c.r.db.execute("DELETE FROM paper_recovered_fills WHERE trade_id='101'");c.r.db.commit()
     scope,receipts,mass=asyncio.run(c.collect())
-    assert scope.anchor_tid==102 and scope.fill_anchor_ms==c.start+100
+    assert scope.anchor_tid==102 and scope.fill_anchor_ms==c.anchor_ms
     with pytest.raises(IncompleteInfoReport,match='LIVE_OWNED_FILL_PARITY_FAILED'):publish(c)
     no_promotion(c)
 
@@ -243,7 +306,7 @@ def test_both_raw_sweeps_cannot_override_native_anchor_economics(chain,field,val
 def test_saturated_page_denies_without_second_window_or_authority(chain):
     c=chain;c.fault['saturated']=True
     with pytest.raises(IncompleteInfoReport,match='SATURATED'):asyncio.run(c.collect())
-    assert len([q for q in c.calls if q['type']=='userFillsByTime'])==1
+    assert len([q for q in c.calls if q['type']=='userFillsByTime'])==5
     no_promotion(c)
 
 @pytest.mark.parametrize('movement',['native_revision','oldest_deadline','ws_gap','policy','external_cashflow'])
@@ -288,3 +351,41 @@ def test_restart_rederives_candidate_but_never_reuses_checkpoint_as_authority(ch
     c.r.db.execute('UPDATE live_info_checkpoint SET body=?',(json.dumps(old),));c.r.db.commit()
     with pytest.raises(ValueError,match='ARCHIVED_ANCHOR_INVALID'):
         c.r.info_query_evidence({},c.r.applied_fill_ids(),anchor_proof=(101,scope.fill_anchor_ms,scope.fill_anchor_fingerprint))
+
+def test_unseeded_virgin_to_INIT_releaseLIVE_flatfull_then_held_sameSQLite(chain):
+    c=chain
+    assert c.boot_generations==1 and c.full_counts[0]==('BUFFERING',False,0)
+    assert c.client._cm_ws_phase=='LIVE' and c.client.recovery_healthy()
+    assert c.initial_marker['native_revision']==0 and c.initial_marker['history_anchor_ms']==c.start
+    assert c.s._c1_peak==D(82) and c.r.native_revision()==17
+    scope,receipts,mass=asyncio.run(c.collect());publish(c)
+    assert c.s._validated_live_money().native_revision==17
+    assert c.r.c1_initialization()==c.initial_marker
+
+@pytest.mark.parametrize('chain',['buffered_boot'],indirect=True)
+def test_actual_release_drains_event_after_verify_and_requires_new_full_beforeLIVE(chain):
+    c=chain
+    assert c.boot_observations==[0] and c.boot_generations==2
+    assert c.full_counts[:2]==[('BUFFERING',False,0),('BUFFERING',False,1)]
+    assert c.client._cm_ws_phase=='LIVE' and c.s.recovery_confirmed
+    assert c.r.c1_initialization()['native_revision']==0 # Never reinitialize the epoch.
+    asyncio.run(c.collect());publish(c)
+    assert c.s._validated_live_money().native_revision==17
+
+@pytest.mark.parametrize('chain',['queued_then_gap'],indirect=True)
+def test_actual_release_denies_transport_gap_after_provisional_verify_noLIVE(chain):
+    c=chain
+    assert c.boot_error is not None and c.boot_observations==[0]
+    assert c.client._cm_ws_phase!='LIVE' and not c.client.recovery_healthy() and not c.s.recovery_confirmed
+    assert c.client._cm_handover_verification_epoch is None
+    with pytest.raises((ValueError,RuntimeError)):c.s._validated_live_money()
+
+@pytest.mark.parametrize('fault',['postboot_buffering','outside_handover','pending_native_effect','socket_epoch'])
+def test_final_phase_guard_cannot_be_reused_outside_actual_initial_release(chain,fault):
+    c=chain;asyncio.run(c.collect())
+    if fault=='postboot_buffering':c.client._cm_ws_phase='BUFFERING'
+    elif fault=='outside_handover':c.client._cm_ws_phase='BUFFERING';c.client._cm_bootstrapped=False
+    elif fault=='pending_native_effect':c.client._pending_fills={'unknown':object()}
+    else:c.socket_epoch[0]+=1
+    with pytest.raises((ValueError,RuntimeError)):publish(c)
+    no_promotion(c)

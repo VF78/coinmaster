@@ -239,6 +239,7 @@ class QualifiedInfoBoundary:
         self._cm_ws_queue = deque()
         self._cm_ws_limit = max_ws_messages
         self._cm_ws_phase = "BUFFERING"
+        self._cm_handover_verification_epoch = None
         self._cm_ws_failure = None
         self._cm_parity_task = None
         self._cm_last_receipt = None
@@ -745,11 +746,15 @@ class QualifiedInfoBoundary:
             mass = await self.generate_mass_status()
             if self._cm_ws_queue:
                 continue
+            self._cm_handover_verification_epoch=(
+                self._cm_ws_epoch if not self._cm_bootstrapped and self._cm_ws_phase=="BUFFERING" else None)
             try:
                 verified = await verify(mass)
             except BaseException:
                 self._cm_fail("WS_EFFECT_PARITY_FAILED")
                 raise
+            finally:
+                self._cm_handover_verification_epoch=None
             if verified is not True:
                 self._cm_fail("WS_EFFECT_PARITY_FAILED")
                 break
@@ -1405,7 +1410,16 @@ def bind_clean_flat_live_handover(
         if active_c1:
             # Promotion is one final unchanged generation, never the local candidate alone.
             with runtime._lock:
-                if (runtime.native_revision()!=client._cm_last_revision or not client.recovery_healthy()
+                client._cm_require_healthy()
+                initial_handover=(
+                    not client._cm_bootstrapped and client._cm_ws_phase=="BUFFERING"
+                    and getattr(client,'_cm_handover_verification_epoch',None)==client._cm_ws_epoch)
+                # BUFFERING is verification, never usable recovery/order authority.
+                # The existing release loop still drains/reverifies queued effects
+                # before it alone sets LIVE and the strategy confirms recovery.
+                stage_ok=initial_handover or (client._cm_ws_phase=="LIVE" and client.recovery_healthy())
+                if (runtime.native_revision()!=client._cm_last_revision or not stage_ok
+                    or bool(getattr(client,'_pending_fills',{}))
                     or not client._cm_transport_ok() or runtime.cashflow_quarantined()):
                     raise IncompleteInfoReport('LIVE_FINAL_FINANCIAL_GENERATION_MOVED')
                 strategy.accept_live_financial_authority(started_ns=client._cm_generation_started_ns)
