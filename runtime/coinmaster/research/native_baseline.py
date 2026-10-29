@@ -754,6 +754,9 @@ def run_native_diagnostic(
     non-matching daily signals, then executable quotes are added as separate
     homogeneous lists so identical timestamps preserve their causal order.
     """
+    from coinmaster.strategy.execution_config import validate_zero_tp_modes
+    validate_zero_tp_modes(deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp,
+        zero_tp_netting=research_v0_zero_tp_netting)
     from nautilus_trader.backtest.config import BacktestEngineConfig
     from nautilus_trader.backtest.engine import BacktestEngine
     from nautilus_trader.backtest.models import MakerTakerFeeModel
@@ -1514,8 +1517,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         raise ValueError("BATCH_OVERRIDE_REQUIRES_ALPHA_AND_1_TO_10080_MINUTES")
     if artifact_dir.exists():
         raise ValueError("RESEARCH_ARTIFACT_DIR_MUST_BE_NEW")
-    if deferred_selective_zero_tp and zero_tp_netting:
-        raise ValueError("DEFERRED_SELECTIVE_REQUIRES_ORIGINAL_ZERO_TP_BASE")
+    from coinmaster.strategy.execution_config import validate_zero_tp_modes
+    validate_zero_tp_modes(deferred_selective_zero_tp=deferred_selective_zero_tp,zero_tp_netting=zero_tp_netting)
     if selective_lifecycle_repairs and not deferred_selective_zero_tp:
         raise ValueError("SELECTIVE_LIFECYCLE_REQUIRES_DEFERRED_SELECTIVE")
     if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None, research_h1_b1 is not None)) > 1:
