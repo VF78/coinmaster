@@ -588,7 +588,7 @@ def run_sparse_native_diagnostic_legacy(
             spread = Decimal(policy.symmetric_adverse_spread_bps) / Decimal("10000")
             def stressed_quote(instrument, close, precision):
                 mid = Decimal(str(close))
-                return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", (execution_minute + 60_000) * 1_000_000)
+                return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", (execution_minute + 60_000) * 1_000_000, size_precision=instrument.size_precision)
             quote_data += [stressed_quote(btc_instrument, be["close"], 1), stressed_quote(sol_instrument, se["close"], 2)]
     engine.add_data(signal_data, client_id=ClientId("BYBIT_SIGNAL"), sort=False)
     engine.add_data(quote_data, sort=False)
@@ -966,7 +966,7 @@ def run_native_diagnostic(
     early_liquidation_cutoff = False
     def native_quote(instrument, close: str, precision: int, available_ns: int):
         mid = Decimal(str(close))
-        return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns)
+        return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns, size_precision=instrument.size_precision)
     next_accumulators = {}
     successful_run = False
     # Research housekeeping only: bound live reports between archival receipts.

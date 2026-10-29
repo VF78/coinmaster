@@ -471,8 +471,13 @@ class MarkPriceUpdate:
     ts_event: int
 
 
-def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int) -> QuoteTick:
-    size = "1000.0" if instrument_id == SOL_PERP.id else "1000.000"
+def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int, *, size_precision: int | None = None) -> QuoteTick:
+    if size_precision is None:
+        size = "1000.0" if instrument_id == SOL_PERP.id else "1000.000"
+    else:
+        if not isinstance(size_precision, int) or isinstance(size_precision, bool) or size_precision < 0:
+            raise ValueError("size_precision must be a nonnegative integer")
+        size = format(Decimal("1000"), f".{size_precision}f")
     return QuoteTick(
         instrument_id, Price.from_str(bid), Price.from_str(ask),
         Quantity.from_str(size), Quantity.from_str(size), ts, ts,
