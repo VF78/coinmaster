@@ -306,3 +306,13 @@ def test_actual_public_virgin_dp_wrapper_initializes_observed_h_then55_and_rejec
         assert r.deposit_protection_state(instance_id=r.owner,account_id='HYPERLIQUID-master')==stored
         assert not s.recovery_confirmed and not s._management_dispatch_enabled
     finally:r.close()
+
+
+def test_shared_usdc_pending_opening_collateral_is_reserved_across_btc_and_sol():
+    m=money_source();assets=(m.SelectedCrossAsset('BTC',5,D(100),(D(100),D(100)),(D(80),D(80))),m.SelectedCrossAsset('SOL',5,D(10),(D(100),D(100)),(D(80),D(80))))
+    view=m.LivePerpsMoneyView(ACCOUNT,'',1,D(100),D(80),D(20),D(100),assets,(),7,'unifiedAccount',EQUITY_BASIS,'HOLD_PROXY')
+    args=dict(positions={},coin='BTC',side='BUY',max_gross_multiple=D(8))
+    assert not m.prospective_cross_margin_ok(view,pending_openings=(('SOL','BUY',D(30)),),quantity=D(2),**args)
+    assert m.prospective_cross_margin_ok(view,pending_openings=(('SOL','BUY',D(10)),),quantity=D(1),**args)
+    unknown=replace(view,selected_assets=(assets[0],replace(assets[1],available_to_trade=None)))
+    assert not m.prospective_cross_margin_ok(unknown,pending_openings=(('SOL','BUY',D(10)),),quantity=D(1),**args)

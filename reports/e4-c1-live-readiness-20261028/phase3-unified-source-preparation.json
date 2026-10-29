@@ -5,7 +5,7 @@
   "source_pins": {
     "runtime/coinmaster/ops/hl_info_receipt.py": "0eb46e49ec487df590647b348524af671f6a4688b69ee6b9ff8cbc619a17645a",
     "runtime/coinmaster/ops/hl_live_execution.py": "059274b7bb75c8ef3ae84989417ca2047cef28ea39ef7c6526b4791e3a5352e7",
-    "runtime/coinmaster/ops/hl_live_money.py": "08ef030178df46634fa4565554f18cf4184536d75a01f2c7e6a1fa3ad4c5dbcf",
+    "runtime/coinmaster/ops/hl_live_money.py": "68a0cb94f0b3e8597fa61bc14ed8276310e5c96432f77a5f02e88bc766dcca36",
     "runtime/coinmaster/ops/hl_live_profile.py": "258a76b838a416438527b7a0b15c7876581b90f766e470efb92938961d8cd475",
     "runtime/coinmaster/ops/hl_live_worker.py": "667559a34fad1c7edbc05f6c90ad9c4e8884ca39cad66714b31583a6185387c9",
     "runtime/coinmaster/strategy/c1_inputs.py": "e69c50884cbf24884122d9163ee760db5b440f0832c35e9899802163e8b35c4d",
@@ -15,7 +15,7 @@
     "runtime/tests/test_e4_c1_manage_only_pure.py": "c905b9297b96230e79c8fe09f9be05d93d28f4315ac3abc3359e3d07dc1d656c",
     "runtime/coinmaster/ops/hl_unified_account.py": "ba07b1c8fc701760791ea9ee3163ff12b1d00406fcec8e731a92c3a53e0832e5",
     "runtime/coinmaster/ops/hl_unified_instruments.py": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
-    "runtime/tests/test_e4_c1_unified_pure.py": "8dd12d923a457dbdccfd70832d0ec97e8c6a75c852164699f98356f6e0f1fe75"
+    "runtime/tests/test_e4_c1_unified_pure.py": "25bc8b70a02c4407bdb48bbaa5530f31dd68b9416d45f5a0ee633943ddd6368d"
   },
   "owner_scope": "Keep exact Unified account mode, bounded native1.231 public-API compatibility, no engine migration/fork/newPNL/cache patch",
   "equity_basis": "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1",
@@ -63,7 +63,7 @@
     "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals"
   ],
   "tests": {
-    "final": "112PASS16.34s",
+    "final": "113PASS17.23s",
     "command": "PYTHONPATH=runtime canonicalruntime/.venv/bin/python -m pytest test_e4_c1_unified_pure +test_e4_c1_input_bridge_pure +test_e4_c1_manage_only_pure +test_deposit_protection -q --maxfail=1",
     "prior_passes": [
       "15UnifiedPASS0.60s",
@@ -89,5 +89,6 @@
   "venue_calls": 0,
   "runtime_services_account_changes": 0,
   "historical_runs": 0,
-  "final_explicit_START_required": true
+  "final_explicit_START_required": true,
+  "peer_correction": "Single P1: reserve all BTC/SOL pending opening collateral+fees using fresh venue marks/leverage/limits against shared available/free; unknown pending terms DENY, no optimistic credit."
 }

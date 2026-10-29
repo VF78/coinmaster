@@ -251,11 +251,20 @@ def prospective_cross_margin_ok(
         asset=assets[coin];index=0 if side=='BUY' else 1
         if asset.max_trade_sizes is None or asset.available_to_trade is None:return False
         proposed=(buys if side=='BUY' else sells)[coin]
-        # Limits are fresh real venue account-specific capacities. Margin rates
-        # remain stockzero; HOLD is reported proxy, never liquidation MM.
-        if (proposed>asset.max_trade_sizes[index]
-            or proposed*asset.mark/asset.leverage+fees_notional*fee_reserve_rate>asset.available_to_trade[index]
-            or fees_notional*fee_reserve_rate>view.free_collateral):return False
+        # All pending opening collateral consumes the SAME USDC pool. Retain
+        # actual venue side limits and conservatively reserve even pending orders
+        # already reflected by the venue: no optimistic double-use of collateral.
+        opening_collateral=Decimal(0)
+        for name,item in assets.items():
+            if not item.mark.is_finite() or item.mark<=0 or item.leverage<=0:return False
+            for which,pending in enumerate((buys[name],sells[name])):
+                if not pending:continue
+                if (item.max_trade_sizes is None or item.available_to_trade is None
+                    or pending>item.max_trade_sizes[which] or item.available_to_trade[which]<0):return False
+                opening_collateral+=pending*item.mark/item.leverage
+        reserve=opening_collateral+fees_notional*fee_reserve_rate
+        if (proposed>asset.max_trade_sizes[index] or reserve>asset.available_to_trade[index]
+            or reserve>view.free_collateral):return False
         gross=sum(max(abs(positions.get(name,Decimal(0))+buys[name]),abs(positions.get(name,Decimal(0))-sells[name]))*item.mark for name,item in assets.items())
         return gross<=view.equity*max_gross_multiple
     prospective_im = gross = Decimal("0")
