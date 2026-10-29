@@ -1,4 +1,4 @@
-Read AGENTS then SOUL USER PROJECT_TRUTH ACTIVE. No active native calculation. Preserve completedB1 and uncommitted NEWpeak WIP; externalapprovalcapacityblock.
+Read AGENTS then SOUL USER PROJECT_TRUTH ACTIVE. No active engine; final HLlot+PEAKcandidate not yet economically qualified.
 
 CoinMaster29Oct2026 CAPITAL_REPAIR: original10k FULL B1 COMPLETED exit0/3474.9506s; NO native active. OwnerSTART NOT GIVEN.
 B1 exactsource5e429a1c original7ab5 data24months/DP55dailybasis: frozenrunnerrequiresall540fills1248fundingparity/nativecashEXACT/bothDD<=51.26863558/TOTAL>=5499360.14984003/noLiquidation/flat/DPunlatched. Exit0meansallgatespassed; exactfinancialfilereadback BLOCKED byautomaticapprovalmodelcapacity.
@@ -9,8 +9,8 @@ Shared30mfactory/actualC1flags/BTC5SOL2/quote-metadataprecision fixed. OldBybit3
 NEWsemanticgap: dailycloseHWM55 permitsabout62.33%coherentpeakDD beforesamplinggap. UsermaxDD55requiresOBSERVED_NATIVE_EQUITY_PEAK basis; rootselectedfreshprofileamendmentunder6pointfixrequest, NOToldstoredH reset.
 NEWisolatedpeakworktree WIP:200purePASS14.80s/engine0, NOTfrozen/committed. Current5e untouched. Explicitnewbasis/defaultlegacyDaily/durablemismatchreject/HIGH_WATERunique(now,H)/profilebinding implemented.
 Remainingbeforefreeze: inspectfreshINIT andprofilegenerator/roundtrip, removestaleDailyprojectionlabels inlive_recovery89/hl_live_worker530; actualnativeobjectcheck/independentreview. No permissionbasisclaimorHWMreset/deployment.
-NativeE3 peakdistinguishing100→130→50(protectiveRO200/SOLfirst/exitat50) plannednotrun; rootproposedmax6=eng4/full2 NOTyetcanonicalamended. ThenB2newPeakHLlotDP55same24m/privatefrozenseed.
-Avoidduplicate10kfullONLYifactualB1allDPdecisionobservations+NEWcontroller+realPaperRuntimepersistenceNOHIT/nohealthdenial andstaticnoninterference proof. OldmaxDD51.27aloneinsufficient; ifcoverageunproven fullnewcontrolnecessary.
+NativeE3 peakdistinguishing100→130→50(protectiveRO200/SOLfirst/exitat50) plannednotrun; rootproposedmax7=eng4/full3 NOTyetcanonicalamended. FinalHLlot+PEAKprofile requires10kANDsmall fullcomparison; completedlegacyB1iscontrol, notproofnewquantityprofile.
+DoNOTwaive final10kHLlot+PEAK fullrun: newquantityprecision changesactualorders evenifPeakguardNOHIT. Conditionalguardreplay canproveonlybasisnoninterference onUNCHANGEDlotmodel.
 Criticalcurrentblock: automaticapprovalreviewmodelatcapacity/timeouts preventedread-onlySSH byRoot,Sol,Terrahigh; actionsNOTEXECUTED/notunsafeverdict. DoNOTbypass. GitHubconnector404 andpublicrawfetchfailed; noProjectfinalreadback.
 Localfinalizedreadscript /private/tmp/cm_final_readonly_receipts_20261029.py isreadytosafelyreadB1technical+freshINIT sourceonceapprovalworks; noengine/account/runtimechange.
 ConsultLOCALPRIVATEoperationalhandoff forexactpaths/codepins/ledgers; preserveuncommittedpeakWIP/rawfailures. NO restart/rerun ofcompletedB1. No newengineuntilsourcefreeze/review/rootclaim.

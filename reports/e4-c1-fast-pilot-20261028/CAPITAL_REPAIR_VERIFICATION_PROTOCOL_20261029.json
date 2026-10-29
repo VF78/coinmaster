@@ -41,7 +41,8 @@
     "Hard realized DD55 ceiling across quote gaps/slippage",
     "Exact10k economic parity before native run",
     "USDC/Hyperliquid economic qualification from Bybit-USDT metadata diagnostic",
-    "Live START or deployment authorization for new source"
+    "Live START or deployment authorization for new source",
+    "Legacy-lot10kPASS doesnotproveHL-lot10kprofitparity; finalcandidatefullcomparisonpending"
   ],
   "source_freeze": "5e429a1cd23ea4cd38458e5a6cc52e7752e4ea18",
   "source_engine_free": "47DP_related_plus8quote_tests_PASS_and_independent_closures",
@@ -67,11 +68,13 @@
       "freeze_review_nativeE3",
       "thenB2"
     ],
-    "proposed_root_maximum": 6,
+    "proposed_root_maximum": 7,
     "proposed_engineering_max": 4,
     "full_max": 2,
     "canonical_amendment_applied": false,
-    "live_runtime_state_changes": false
+    "live_runtime_state_changes": false,
+    "proposed_full_max": 3,
+    "final_candidate_comparison": "Both10k_and_small_actual_HL_quantity_precision_plus_PEAK; legacyB1alreadycompletediscontrol_notnewlotmodelproof"
   },
   "blocker": "Automaticapprovalreviewmodelcapacity/timeouts; readonlySSHnotexecuted; no unsafeverdict/no bypass"
 }

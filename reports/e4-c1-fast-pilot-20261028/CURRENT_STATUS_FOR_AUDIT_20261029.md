@@ -9,3 +9,5 @@ A further protection-basis gap was found: the existing daily-close HWM differs f
 Continuation is blocked by automatic approval review model capacity/timeouts: authorized read-only SSH actions were not executed, with no unsafe-action determination. The required review has not been bypassed. The GitHub connector also returned404; the final Project update is not verified. Prior Project/public manager state still showed B1 running; this local status supersedes it.
 
 Current canonical verification maximum5/spent4/active0; proposed extra peak-specific short case is not yet entered into the remote ledger. All prior failed evidence and the completed control are preserved. Live START has not been given.
+
+The completed10K control retains original Bybit lot precision. It must not be presented as a profit proof for the final HL-lot-plus-peak candidate. That final candidate requires a matched full10K and small-capital comparison after its source is frozen; a no-hit guard replay cannot waive the economic effect of changed quantity precision.
