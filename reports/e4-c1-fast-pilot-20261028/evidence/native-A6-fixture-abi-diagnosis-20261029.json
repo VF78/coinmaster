@@ -1,0 +1,14 @@
+{
+  "task": "A6_FAKE_ORDER_STATUS_ABI_DIAGNOSIS",
+  "recorded_utc": "2026-10-29T04:18:58.174380+00:00",
+  "actual_A6_result_sha256": "8bfb87f1ccf24535ac21eea66cd5c70268016c11adff775240621b56fec05a49",
+  "persisted_exact_transport_exception": "UNKNOWN_NOT_RECORDED",
+  "direct_static_defect": "FakeInfo orderStatus accesses Order.is_filled absent pinnedNT1.231 public Cython API",
+  "count_localization": "Initial24 plus held sample3 plus nativeMode1 plus first sweep4 =32; firstorderStatus33, no userFills/second sweep reached",
+  "engine_free_reproduction": "Actual extracted FakeInfo/raw_order AST and API-shaped stdlib stand-in raises AttributeError; corrected enum branch FILLED/CANCELED/ACCEPTED matches expected status",
+  "fix": "order.status == OrderStatus.FILLED before is_closed cancellation check",
+  "bounded_abi": "15 used Order fields verified from installed base.pxd/base.pyx/limit.pxd; preimport guard now checks them",
+  "source_unchanged": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "native_imports_models_queries_by_diagnoser": 0,
+  "conclusion": "Concrete deterministic fixture defect consistent with A6 failure; actualfull native retry still required, no source health PASS inferred"
+}

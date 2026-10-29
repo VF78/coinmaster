@@ -1,0 +1,21 @@
+{
+  "task": "A8_FIRST_HELD_SOURCE_ANCHOR_DIAGNOSIS",
+  "actual_A8_result_sha256": "5860f9a0583b0a3761bee03db7924c5fd63127b7dd179781034c07ae144f15d0",
+  "source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "persisted_failure_tag": "WS_ON_DEMAND_EFFECT_PARITY_FAILED",
+  "persisted_inner_exception": "UNKNOWN_DISCARDED_BY_CATCH",
+  "counts": {
+    "info": 45,
+    "native_spot": 5,
+    "submits": 2,
+    "cancels": 1,
+    "passed_gates": 6
+  },
+  "proven_progress": "Bothsweeps/massstatus/native-owned order-fill-episode parity/cashflow page+acceptbasis reached; cashflow cursor advanced",
+  "deterministic_source_defect": "Virgin scope anchor_tid None; onlyinitialconfigure assignment; owned_scope replacesdurableorders only; receipt.fill_anchor_proven false; heldfreshflat false; MANAGEMENT_GENERATION_UNPROVEN guaranteed",
+  "later_predicates": "NOT_PROVEN",
+  "source_only_next": "Minimal currentowned confirmednativefill anchor qualification retaining originalwindow and validating bothrawsweeps/economics; completefirstheldfinancialadmission purechain and narrowindependentreview beforeNative",
+  "fixture_workaround_allowed": false,
+  "new_native_allowed": false,
+  "recorded_utc": "2026-10-29T04:29:35.109163+00:00"
+}

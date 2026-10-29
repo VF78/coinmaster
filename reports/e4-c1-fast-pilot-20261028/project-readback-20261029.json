@@ -1,24 +1,21 @@
 {
+  "verified_utc": "2026-10-29T04:13:02.772924+00:00",
   "issues": [
     {
-      "body_sha256": "84dca67e49e7fd5dd06492bec3bb764c0cae79ec2723398170282a70c15f85db",
-      "issue": 137,
-      "project_item_id": "PVTI_lAHOBIUvJs4BPJNjzhDm9GA",
-      "project_status": "In Progress",
+      "issue": 101,
       "state": "open",
-      "url": "https://github.com/VF78/coinmaster/issues/137"
+      "body_sha256": "cf504c21caa125e6a4c8397191c427bd506950a2c9295a3188882a5ecbf8fbfd",
+      "url": "https://github.com/VF78/coinmaster/issues/101",
+      "project_status": "In Progress"
     },
     {
-      "body_sha256": "69b98554459b1a03c98ab2b1a0ed7f867d8aa4c167873430662cd6081c9f4af2",
-      "issue": 101,
-      "project_item_id": "PVTI_lAHOBIUvJs4BPJNjzg8CXeo",
-      "project_status": "In Progress",
+      "issue": 137,
       "state": "open",
-      "url": "https://github.com/VF78/coinmaster/issues/101"
+      "body_sha256": "5d212dd588f4c73981fae3acd3ae3f136edc314ae09bf5bfeac016ddec9738d1",
+      "url": "https://github.com/VF78/coinmaster/issues/137",
+      "project_status": "In Progress"
     }
   ],
-  "project": "https://github.com/users/VF78/projects/2",
-  "runtime_actions": 0,
-  "source_manager_commit": "8e0deb35cf77655d621965676c284bf237e41624",
-  "verified_utc": "2026-10-29T03:45:36.753041+00:00"
+  "no_new_items": true,
+  "runtime_actions": 0
 }

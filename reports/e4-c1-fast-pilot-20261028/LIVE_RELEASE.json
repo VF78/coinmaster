@@ -1,5 +1,5 @@
 {
-  "status": "DRAFT_NATIVE_A6_PARTIAL_PROGRESS_SPLIT_RECOVERY_HEALTH_PENDING",
+  "status": "DRAFT_NOT_READY_SOURCE_FIRST_HELD_ANCHOR_P1",
   "task": "CM-E4-C1-FAST-PILOT-20261028",
   "live_order_capability": false,
   "selected_candidate": "BTC_POSTCUT_D1",
@@ -43,7 +43,7 @@
   ],
   "local_private_binding": "runtime/var/research-jobs/e4-c1-fast-pilot-20261028/private/live-account.json",
   "funds_status": "REAL_READONLY_PORTFOLIO_CACHE_USDC_PARITY_PASS_PRIVATE_VALUES; HELD_MATCHING_ACTIVE_AND_SMALLCAP_PENDING",
-  "updated_utc": "2026-10-29T04:10:48.683733+00:00",
+  "updated_utc": "2026-10-29T04:29:35.109163+00:00",
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
   "source_freeze": "83e_SOURCE325PASS_EXACTPEER_CLOSURE_NATIVE_PENDING",
   "drawdown_protection": {

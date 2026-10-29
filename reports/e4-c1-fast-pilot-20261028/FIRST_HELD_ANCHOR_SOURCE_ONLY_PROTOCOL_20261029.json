@@ -1,0 +1,39 @@
+{
+  "task": "CM_FIRST_HELD_ANCHOR_QUALIFICATION_20261029",
+  "status": "ROOT_APPROVED_IMPLEMENTATION_ENGINE_FREE_ONLY_NATIVE0",
+  "base_source": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "authority": "Owner necessary live preparation; source repair isolatedVPS only; no live START/deployment/economicrun authority",
+  "bug": "Virgin scope anchor_tid None never promotes after actualownedfirstfill, firstheld financialgeneration guaranteeddenied",
+  "mechanism": "One typedcandidate from atomicallyapplied ownednativefill frozenatgenerationrevision; proveexactcandidate economics inBOTHrawInfo sweeps; original history/epoch/window unchanged; promote onlyafterwholefinancial/nativeverify",
+  "required_bindings": [
+    "TID/nativeevent/CLOID-OID/account/instrument/side/exactvenue time/quantity/price/feeUSDC/liquidity",
+    "Confirmed appliednativejournal+knownnativecache ownership, no pending/unknownACK credit",
+    "Original inclusive history_start/anchor_ms retained separately from actualanchor_trade_time",
+    "Original9s oldestfinancialdeadline and sameaccount/policy/mode/control/WS/fillepoch",
+    "Fullinclusiveprefix/cashflow/order/position/native/account and marginverification, not anchorboolean alone"
+  ],
+  "must_deny": [
+    "Missing candidate in either sweep",
+    "Conflicting sameTID economics or same-ms droppedprefix",
+    "Foreign/unapplied/pending/unknownACK evidence",
+    "Revision/fillepoch/WS change or saturated/incomplete/expiredsweep"
+  ],
+  "checks": [
+    "Actual full firstheld chain:SQLite nativefillfacts -> owned_scope -> bothsweeps -> qualification -> cashflowwrites -> verify_current_risk_epoch -> publish/current_money",
+    "Candidate noauthority and no promotion on anywholeverificationfailure",
+    "Originalflat bootstrap and legacy anchoredhistory default unchanged",
+    "Check owncashflowjournal revisions for same-gate self-invalidation beforeNative",
+    "One relevant connected sourcepass and one narrowcriticalpeer closure afterfreeze"
+  ],
+  "new_native_models_nodes_engines_queries_orders_transfers_services": 0,
+  "current_native_budget": "8FAILED/rootmax9/active0/unusedBslotHOLD nottransferred; freshphysicalprotocol onlyafternewsourcefreeze+review",
+  "economic_budgets": "8of8CLOSED andMethodA9of19HOLD untouched",
+  "created_utc": "2026-10-29T04:30:39.264677+00:00",
+  "proposal_peer": "PASS_NO_CONCRETE_P0_P1_SCOPED_CONTRACT",
+  "approved_utc": "2026-10-29T04:31:39.002952+00:00",
+  "literal_peer_conditions": [
+    "Filter complete native detailrows to actuallyAPPLIED+OWNED; existing durable_management_scope alone currently readsall detailrows",
+    "Optionalanchorfields and proof fingerprint in same-generation/checkpoint validation",
+    "FinalACTIVEcheckpointwrite onlyafter wholeverify succeeds; legacy/manageonly unchanged"
+  ]
+}

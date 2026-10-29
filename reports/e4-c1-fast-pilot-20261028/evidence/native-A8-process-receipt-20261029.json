@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 4193356,
+  "attempt_id": "A-008-54112386-788c-49a6-a402-2a7710059ad4",
+  "case": "A",
+  "error": "AssertionError()",
+  "failed_gates": [
+    "actual_split_remaining_and_postonly_second_child_complete"
+  ],
+  "fixture_sha256": "4d17bb93c723e9faf696dc37c1e3689c72b4d9e0c2ed80439dff1cf16becad71",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 6,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "5860f9a0583b0a3761bee03db7924c5fd63127b7dd179781034c07ae144f15d0",
+  "source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 1,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 2,
+    "synthetic_cancel_commands": 1,
+    "synthetic_info_requests": 45,
+    "synthetic_native_spot_reads": 5,
+    "synthetic_submit_commands": 2
+  },
+  "traceback_tail": "penclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1161, in bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1129, in run\n    await gate(\"actual_split_remaining_and_postonly_second_child_complete\",lambda:complete_actual_split(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 492, in gate\n    await value\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 733, in complete_actual_split\n    await full_for_split_increase(ordinary)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 721, in full_for_split_increase\n    assert client.recovery_healthy() and strategy.recovery_confirmed\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "wall_seconds": 54.107463335
+}

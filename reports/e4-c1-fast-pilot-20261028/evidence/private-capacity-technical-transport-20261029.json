@@ -1,0 +1,32 @@
+{
+  "task": "CM_PRIVATE_CAPACITY_TRANSPORT_20261029",
+  "attempts_spent": 2,
+  "maximum_attempts": 2,
+  "active": 0,
+  "status": "CLOSED_UNQUALIFIED",
+  "source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "script_sha256": "d6c1ecde49646615b6cdfa0e7f601ed83d69d80ecb5529e493847bb31929fe2f",
+  "attempts": [
+    {
+      "n": 1,
+      "result": "UNKNOWN_NO_RESPONSES_RESTRICTED_NETWORK_CONTEXT",
+      "response_count": 0,
+      "attempted_calls": 10,
+      "raw_sha256": "6d0ec5f5d66e34fe5ad5070f2965419b69deaa9935e62f130c114dc58030dd7c"
+    },
+    {
+      "n": 2,
+      "transport": "PASS",
+      "response_count": 10,
+      "weight": 128,
+      "collection_ms": 1071.113208,
+      "capacity_release_gate": "NOT_QUALIFIED_PRIVATE_REASON_ONLY",
+      "raw_sha256": "16e9b0afba97a4779ff89696c902471a382d8393b302ef4d01815b13ca27aa99",
+      "report_sha256": "8eefd2c3d3f81ffdb14bd36f382352c94b35e1a598dd7057ca6944284cbb3534"
+    }
+  ],
+  "raw_and_financial_findings": "PRIVATE_ONLY",
+  "native_models_nodes_engines_keys_orders_transfers_services": 0,
+  "no_automatic_retry": true,
+  "recorded_utc": "2026-10-29T04:29:35.109163+00:00"
+}

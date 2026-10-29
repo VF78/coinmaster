@@ -1,6 +1,6 @@
 {
-  "status": "DRAFT_NATIVE_A6_PARTIAL_PROGRESS_SPLIT_RECOVERY_HEALTH_PENDING",
-  "updated_utc": "2026-10-29T04:10:48.682327+00:00",
+  "status": "DRAFT_NOT_READY_SOURCE_FIRST_HELD_ANCHOR_P1",
+  "updated_utc": "2026-10-29T04:29:35.109163+00:00",
   "candidate": "BTC_POSTCUT_D1",
   "economic_source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
   "economic_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
@@ -18,7 +18,7 @@
   "DP_retained_equity_fraction": "0.45",
   "DP_anchor": "Existingpersistentinitial_thenhigherUTCdailyclose",
   "DP_applied": false,
-  "native_engineering_qualification": "6FAILED/rootmax7/active0/BslotHOLD; A6 actualordinaryentry+partial/cancel/duplicate PASS6gates; splitremaining/C1/DPflat NOTPROVEN",
+  "native_engineering_qualification": "8FAILED/rootmax9/active0/lastBslotHOLD; A8 entry-partial-cancel-duplicate PASS6; full heldfirstfinancialscope sourceP1 PROVEN; C1-DPflat-restartNOTREACHED",
   "fresh_readonly_HL_bootstrap": "RealreadonlyPortfolio/CacheUSDCtransportPASS; held/matching/finalACTIVEcommandgatespending",
   "installed_release_benchmark": "NOT_RUN_REQUIRES_PREPARED_RELEASE_PROTOCOL_AND_OWNER_VERSION_APPROVAL",
   "deployment": "NOT_PERFORMED",
@@ -36,7 +36,6 @@
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
   "Unified_support": "NATIVE_CURRENCY_COMPONENT_PASS_ACTIVE_C1_EXECUTION_COMPOSITION_IN_PROGRESS",
   "documentation_forums_review": "LIVE_PREPARATION_PLAN_20261029.md#\u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044f-\u0438-\u043e\u0431\u0441\u0443\u0436\u0434\u0435\u043d\u0438\u044f-api-\u0447\u0442\u043e-\u0432\u043a\u043b\u044e\u0447\u0438\u0442\u044c-\u0432-\u0434\u043e\u043f\u0443\u0441\u043a",
-  "manager_public_verified_checkpoint": "e22caafecb138868e7cd5854d112d82804c366fd",
   "packaging_remaining_gates": [
     "Approvedprivatecap/profile/releaseidentity; no hardcodedlegacy82 or oldapprovals",
     "Explicitqualifiedactiveprofilepath; currentinputreadinessismanageonly",
@@ -99,7 +98,9 @@
     "secret_or_actual_address_flags": 0,
     "deployment": false
   },
-  "freshest_native_failure_scope": "Native startupandINITmarkerobserved; no economic/fulltrade/C1/DPflat nativegate yet; sourcePathfix276+20/peerPASS; currentA3fixfixture-only",
-  "active_current_blocker": "A6 full refresh after actualprotectedbudgetwait: recovery_healthy/recovery_confirmed assertion; readonly savedstate diagnosis pending; no automaticretry",
-  "source_only_repair_protocol": "PREPARED_SUBMISSION_DP_CONTINUITY_PROTOCOL_20261029.json"
+  "freshest_native_failure_scope": "A8 Info45, bothsweeps/mass/order-fill parity/cashflow advanced; later managementmoneyguards NOTPROVEN",
+  "active_current_blocker": "Virgin scopeanchor neverpromotes afteractualfirstfill; MANAGEMENT_GENERATION_UNPROVEN; source-only contract/purewholefirstheldchain+criticalpeer underway",
+  "source_only_repair_protocol": "FIRST_HELD_ANCHOR_SOURCE_ONLY_PROTOCOL_20261029.json",
+  "private_capacity": "2of2CLOSED; actual10response/128weight/1.071s transportPASS; financialreleasegateunqualified/privatefindings only",
+  "previous_manager_public_exact": "e25680d306a0b6025441a0ea4250710ff724e153"
 }
