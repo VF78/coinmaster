@@ -1,0 +1,25 @@
+{
+  "schema": "coinmaster-targeted-independent-source-closure-v1",
+  "source_commit": "1831dcccef8566c41f89c30b5b9ad6ffd5259b80",
+  "reviewer": "active_c1_money_peer_20261029",
+  "tests_run_by_peer": 0,
+  "account_queries": 0,
+  "native_runs": 0,
+  "closed": [
+    "Original4P1",
+    "Splitquantityoverride/retryABI",
+    "ignore_research_protectionkeywordABI",
+    "DocumentedperDEXHTTP/nozero-inference",
+    "Parallel8/two_sequential_sweeps/drainfailurebatch",
+    "Atomicprepay/actualcharges/original9sdeadline",
+    "D-derivedcost/D11N15DENY1001/dynamicheadroom",
+    "Directory20metadataTTL/originalrestingsnapshotnotreaged",
+    "CanonicalTPfinalremainder/noaddedlots"
+  ],
+  "known_open_P1": [
+    "FinancialPENDING canstopunfinishedsplitafterlastACKwithoutrequeueingconfirmedheldtargets"
+  ],
+  "overall": "NO_GO_PARTIAL_LIFECYCLE_CORRECTION_REQUIRED",
+  "guard_scope_limit": "ConservativefalseDENYcanremainwithzeroTPomissions/grossreferencebasis; no unsafeinflationclaim",
+  "updated_utc": "2026-10-29T02:08:19.130333+00:00"
+}

@@ -1,0 +1,41 @@
+{
+  "task": "CM_PREPARED_SUBMISSION_DP_CONTINUITY_20261029",
+  "status": "ROOT_APPROVED_SOURCE_ONLY_NATIVE_HOLD",
+  "base_source_commit": "36b2e5e7d5d21fcb75f1e4a76312b7b4703eee7c",
+  "cause": "ActualA4 own durableSUBMITTING reservation revision0→1 invalidatesreadonlyDPobservationrev0 beforefirstnativeforward; fullage1.183s/observationage.776s, no expiry/nativeevent",
+  "authority": "Ownernecessarylivepreparation; rootconcreteboundedsourceprotocol; not ownerSTART or new economicrunbudget",
+  "selected_mechanism": "Ephemeralone-useexactprepared-ordercontinuation; actualfinalDPcheckstillruns",
+  "binding": [
+    "ActualreservationtransactionandexactdurableSUBMITTINGrow",
+    "Fullwirefingerprint:CLOID/strategy/account/instrument/side/qty/price/trigger/order-type/TIF/reduce/postonly",
+    "Soleexpectedlocalrevisiontransition",
+    "Originalfinancialdeadline/no timestamprefresh",
+    "UnchangedaccountEvent/fillEpoch/WS/nativeknownstate",
+    "Unchangedaccount-policy-mode/control/DPH-limit-latch",
+    "Sameexactthread/caller/submit_order→DPdispatchscope"
+  ],
+  "must_not": [
+    "No globalrevisionguardremoval",
+    "No ambientmoney/increasecredit",
+    "No newcashledger/OMS/riskservice",
+    "No nativeRiskEnginebypass",
+    "No pendingopeningcredit/flip/unknownACKresend",
+    "No sourcehistoricalBtcSolpolicychange"
+  ],
+  "lifecycle": "Consumeonce/clearfinallyonsilentDPreturn/exception/handoff/onstop; nonpersistent/no restartcredit",
+  "local_terminal": "Onlypositiveproofneverhandedtonative; noACK/nomatchedeventaloneinsufficient; unknownsentremainsuncertain",
+  "checks": [
+    "Actual_submit_intent→actualSQLitehooks→actualsubmit_order→actualDPreader chain; noDPTruebypass",
+    "Soleunchangedlocalprep forwards exactlyonce",
+    "Extra revision/account/fill/WS/control/DP/time movementdenies",
+    "Differentorder/thread/reusefails",
+    "ProvenlocalNoSendterminal_vsuncertainNativehandoff",
+    "Researchdefaultbehaviorandprior financialguardsunchanged"
+  ],
+  "independent_contract_review": "Soundwithbounds/noinherentP0P1; exactfinalcallerchainreviewrequired",
+  "native_status": "4FAILEDofrootmax5, active0,lastBslotHOLD; no automaticattempt/amendment before sourcechecks+peerfreeze+newrootprotocol",
+  "historical_economic_budgets": "8/8CLOSED; MethodA9/19HOLD unchanged",
+  "pilot_services_credentials_realorders_transfers": 0,
+  "owner_START": false,
+  "updated_utc": "2026-10-29T03:41:22.094957+00:00"
+}

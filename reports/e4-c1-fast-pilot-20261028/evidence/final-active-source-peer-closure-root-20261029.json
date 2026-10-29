@@ -1,0 +1,33 @@
+{
+  "schema": "coinmaster-final-scoped-independent-source-review-v1",
+  "source_commit": "1b27e98844140322a6618d293760faa92027f971",
+  "status": "PASS_SOURCE_ONLY_NO_OPEN_SCOPED_P0_P1",
+  "reviewer": "active_c1_money_peer_20261029",
+  "checks_run_by_reviewer": {
+    "native": 0,
+    "imports": 0,
+    "tests": 0,
+    "account_queries": 0
+  },
+  "source_checks": "276connectedPASS44.49s/10targetedPASS8.39s",
+  "closed": [
+    "OriginalfourP1",
+    "splitquantityandkeywordABI",
+    "HTTPperDEXparallel8/prepaidactualcharges/9soriginaldeadline",
+    "Partialconfirmedtargetatomicreplan/cancel-realACK/canonicalfullbaseline",
+    "Temporaryfreshmoney-context/headroomdenialparkschildbeforebase"
+  ],
+  "preserved": [
+    "Originalresearchdefaulthooks",
+    "Originalplanner/targetprices/weights/zeroomissions",
+    "Finalopeningandactualnativequantityguards",
+    "HardPAUSE/DP/forced/ownershipboundaries"
+  ],
+  "limits": [
+    "NativeA/BNOTRUN",
+    "Noheld/matching/liveSTARTqualification",
+    "Arbitrarysub10USDCstockcloseboundaryUNKNOWN/no bypass",
+    "WS-gapmanualdegradation/EXIT_INCOMPLETEpossible"
+  ],
+  "updated_utc": "2026-10-29T02:52:38.855012+00:00"
+}

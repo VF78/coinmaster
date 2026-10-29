@@ -1,6 +1,6 @@
 {
-  "status": "REAL_API_P1_HTTP_ROUTE_CORRECTION_REQUIRED_NOT_READY",
-  "updated_utc": "2026-10-29T01:46:48.665436+00:00",
+  "status": "FINAL_SOURCE_AND_REAL_FLAT_CACHE_COMPONENT_PASS_NATIVE_AND_HELD_GATES_PENDING",
+  "updated_utc": "2026-10-29T02:53:37.025383+00:00",
   "owner_choice": "Сохранить Unified и отдельно квалифицировать его поддержку",
   "engine": "Stock Nautilus1.231.0 remains; no v2 migration/globalupgrade",
   "base_source_commit": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
@@ -59,7 +59,9 @@
   "native_currency_model_proof": "PASS actualPID4137203/exit0/64countedmodels; rawUSDUSDCbugreproduced, actualpublicnormalizerfixedBTC_LONG/SOL_SHORTPnLfeesandpartialclose; noNode/Engine/network",
   "model_executions": 1,
   "native_owned_reduce_chain": "RootapprovedboundedzeroInfo reductiononly fromfreshfullownedlineage, exactSTART/account/policy/continuousWS; knownnativeACK/fill/checkpoint only; actualheldminuspendinguncertainreductions, noflip/openingcredit; unknownactivityrevokes",
-  "real_api_failure": "Readonlyprobe1/1NO_GO HTTP422 beforecache; allDexsClearinghouseState WS-only. Failedraw/chargesimmutable; onecorrectedread-onlyattemptrootapprovedpendingstaticfreeze, noautomaticretry.",
+  "real_api_failure": "OriginalHTTP422immutable; documentedperDEX+parallel8correctedactualreadonlyattempt2PASS, sourcecorrected+reviewed; no repeat",
   "corrected_route_contract": "EnumerateD<=32fromSTARTcatalogue; HTTPclearinghouseState(user,dex)2each; explicitresponses/nozero-inference; E stillSpotUSDC",
-  "keyless_portfolio_cache_proof": "REAL_PASS2of2 ledgerCLOSED; PID4158856/6.250905964s/Portfolio1Cache1/nativeAccountState1; flatUSDCtransportonly; noheld/matchingproof"
+  "keyless_portfolio_cache_proof": "REAL_PASS2of2 ledgerCLOSED; PID4158856/6.250905964s/Portfolio1Cache1/nativeAccountState1; flatUSDCtransportonly; noheld/matchingproof",
+  "final_composed_source": "1b27e98844140322a6618d293760faa92027f971",
+  "final_source_checks": "276PASS44.49s/independentpeerPASS"
 }

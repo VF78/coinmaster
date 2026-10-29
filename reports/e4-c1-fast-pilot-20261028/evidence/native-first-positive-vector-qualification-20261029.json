@@ -1,0 +1,33 @@
+{
+  "schema": "coinmaster-reused-single-observed-native-fixture-vector-v1",
+  "status": "FIXED_VECTOR_EXTRACTED_PURE_DOMAIN_FEATURE_MATCH_PASS_NATIVE_NOT_RUN",
+  "economic_source": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+  "economic_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "raw_sha256": "227bd65cf5af0cf37cd54728045dbbf751ae8fdbc6646dd58dabc6b1eced283a",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "bytes": 237589,
+  "seed_rows_per_asset": 730,
+  "assets": [
+    "BTC",
+    "SOL"
+  ],
+  "incoming_open_UTC": "2024-09-01T00:00:00Z",
+  "incoming_close_UTC": "2024-09-02T00:00:00Z",
+  "first_observed_episode": "eb2c00b0-e1c2-48a7-aa3f-bdb56f133402",
+  "side": "SHORT",
+  "beta_exact_raw_match": "1.2025561552240123",
+  "sigma_exact_raw_match": "0.10685229920783393",
+  "positive_levels": [
+    2
+  ],
+  "zero_omitted_levels": [
+    0,
+    1
+  ],
+  "proof_scope": "ONE earliestalreadyobservedpositiveTPepisode; no search/grid/parameterchange/engine/replayedPnL",
+  "fixture_timestamp_policy": "ExplicitwholeUTCshift/allOHLCpreserved/causalclosedhistory/no futurebars",
+  "physical_native_attempts": 0,
+  "old_800row_recipe": "RejectedSTATIC:all3completedwavelevels0/passivenetlots0; noNodewasted",
+  "updated_utc": "2026-10-29T02:30:36.990781+00:00"
+}

@@ -1,0 +1,39 @@
+{
+  "task": "CM_ACTIVE_PARTIAL_LIFECYCLE_REPAIR_20261029",
+  "status": "SOURCE_COMPLETE_276PURE_AND_INDEPENDENT_PEER_PASS_NATIVE_NOT_RUN",
+  "base_source_commit": "1831dcccef8566c41f89c30b5b9ad6ffd5259b80",
+  "authority": "Ownerstandingnecessaryengine/livepreparation; rootfiniteimplementationprotocol; NOTliveSTART",
+  "root_approved_utc": "2026-10-29T02:08:19.130333+00:00",
+  "source_scope": "Threeexistingruntimefiles/defaultresearchhooksunchanged; oneenginewriter",
+  "changes": [
+    "ACTIVEtemporaryfinancial/context/headroomwaitparksparent; actualPAUSE/DP/forcedclose/ownershiplossremainhardstops",
+    "Reuseunchangeddomainconfirmed-targetplannerforactualpartialheldACTIVEonly; preserveoriginalprices/weights/zeroomissions",
+    "QueuedprotectiveintentsincludedBEFOREatomicappliedfill/checkpointcommit; actualsubmissiononlylaterquoteaftercommit",
+    "Onhardparentstoprequeueconfirmedsettledheldtargetsandpersistwhenno_futureACK; DP/forcedmarket_exitownsclosewithoutduplicate"
+  ],
+  "invariants": [
+    "ANYopeningchildstillrequiresfreshFULL",
+    "ConfirmedheldminusALLpending/uncertain/cancelpendingreductions",
+    "Noopeningcredit/flip/resend",
+    "Winnerfullparentbaselineallocationunchanged",
+    "No newTPtype/threeTPclaim/alpha/riskservice/parent-envelope",
+    "No riskbypass/roundup/topup"
+  ],
+  "checks": [
+    "Actual_split_check plusactual_entries_enabledinteraction, no forcedlambdaTrue",
+    "Partial/cancelACK/latefill/dedupqueuedstateatomicity",
+    "Hardpause/nofutureterminaltargetrearm",
+    "DPexistingcloseowner/noextraTP",
+    "Aggregatepending-reductionbounds",
+    "Unchangeddefaultresearchbehavior/fullparentallocation"
+  ],
+  "source_peer": "Exact1b27PASS; previous01feinvariantsclosed+tinycontext/headroomedgeclosed",
+  "native_attempts_in_this_source_step": 0,
+  "existing_native_budget": "A/Bmax3/spent0/HOLD untilfinalsource/pure/peer/rootGO",
+  "fixture_scope": "SyntheticD2default+xyz; realreadonlyseparateD11; 180schildunchanged; forecastderivedactualcosts/no fakeexpiry/no unprotectedwait",
+  "remaining_smallcapital_boundary": "ActualHLcapacity/privatewholelifecyclepending; stock1.231min_notionalappliesreduceorders too; arbitrarysub10IOCresidualnotyetqualified, no inventedvenuefullcloseexception",
+  "owner_START": false,
+  "updated_utc": "2026-10-29T02:52:38.855012+00:00",
+  "final_source_commit": "1b27e98844140322a6618d293760faa92027f971",
+  "source_checks": "276PASS44.49s/targeted10PASS8.39s"
+}

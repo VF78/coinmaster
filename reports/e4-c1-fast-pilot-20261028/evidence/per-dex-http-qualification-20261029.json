@@ -1,0 +1,74 @@
+{
+  "schema": "coinmaster-per-dex-http-source-qualification-v1",
+  "source_parent": "0b3e47005813d54a713800b6a7e7c6ab3f1d7af4",
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_info_receipt.py": "908c702b70a8a8265b48d07d0feaf19d00a7cb1703d372250ee738d40da7a9f4",
+    "runtime/coinmaster/ops/hl_live_execution.py": "38675c659261eb9cfc73000abc91a1814f9c1f346d97c53a4a78389cca3f9fc3",
+    "runtime/coinmaster/ops/hl_live_money.py": "e81488c33a04f374006418a09380db0051a9cb3c6d91a95dd7e73078b5fc12e9",
+    "runtime/coinmaster/ops/hl_unified_account.py": "3269a7be6be45df0e7e7ba67bdb5c6fe6dff809b1fe93b0cd96c3ad7ac3378ad",
+    "runtime/coinmaster/strategy/live_recovery.py": "6ffb7206737b84a0bcdefc71a89e406f39097cb6b636b1270c1cac81d526cf00",
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "8c3e6151967a82802078a9854bd7b9253d3f99e6064604e5a5f6499d0b398baa",
+    "runtime/tests/test_e4_c1_unified_pure.py": "c0cbdc68a9d93548b08c4bedffccb7ae2d831d1e0d73216b9c81c73535b4be33",
+    "runtime/tests/test_e4_c1_per_dex_http_pure.py": "6ed81c83941b4fed3f84a6dc96d46b5c832e9570896801563e8234d987a7f076"
+  },
+  "state": "HTTP_SOURCE_CONNECTED_PASS_PARTIAL_LIFECYCLE_GATE_OPEN_PENDING_PEER",
+  "tests": {
+    "connected": "266PASS33.56s",
+    "files": 7,
+    "targeted_http": "29PASS5.37s",
+    "prior_http": "43PASS1FAIL6.42s: validated tuple/list internal assembly compatibility corrected; no missing=zero",
+    "prior_connected": "258PASS8FAIL34.70s: ALL8 actual-selected cases exposed same noncanonical lastTP dust guard; fixed to canonical remainder",
+    "old_five_p1": "237PASS27.09s",
+    "no_native_models": true,
+    "no_node": true,
+    "no_engine": true,
+    "no_network": true
+  },
+  "http": {
+    "supported": "POST /info clearinghouseState user+dex, EACH verified directory entry includingdefault",
+    "unsupported": "allDexsClearinghouseState explicitly denied before HTTP; valid WS-only name retained solely denial",
+    "capital": "spot/native reportedUSDC total unchanged; perp summaries are position-scope only",
+    "assembly": "InfoReceipt.all_dex_states is CLIENT assembled explicit perDEX pairs, never claimed a server aggregate; monotonic per-request provenance",
+    "parallel": "max8/batch; independent requests; both fullsweeps remain sequential barriers; all dispatched tasks drained on transport failure/cancel; no retry/partialflat"
+  },
+  "budget": {
+    "full_formula": "397+4D+4N",
+    "D_max": 32,
+    "N_max": 15,
+    "full_cap": 700,
+    "max_bound": 585,
+    "held_sample": "28+2D",
+    "held_cadence_seconds": 6,
+    "held_60s": "280+20D",
+    "D11_N15": "501+500=1001: DENY increase",
+    "D11_N14": "497+500=997: potential only; actual expiry forecast still required",
+    "D32": "585+920=1505: no increase admission claim",
+    "rolling": "same1000/60s; gatewayRLock; actual request/item times preserved; opaque native retries conservatively completion; no unsettled expiry",
+    "directory": "prestart660 worst retained; periodic perpDexs20 separate prepay; original foreign-order snapshot timestamps never re-aged; directory actualtimestamp/hash max300s; change/malformed quarantine",
+    "priority": "protected heldDP first; directory before optionalfull/funding; absent fresh directory blocks increase"
+  },
+  "actual_source_evidence": {
+    "root_corrected_keyless": "ROOT private read-only attempt2PASS financialspan6.250905964s; not this test execution and not engine/matching qualification",
+    "original_422": "retained genuine NO_GO; no retry/rerun by product owner"
+  },
+  "selected_lots": {
+    "source": "public hl-live-v3-dp50.candidate.json and actual direction-sizing method",
+    "multipliers": "LONG5.5/SHORT7.875",
+    "tp_fractions": [
+      ".2125",
+      ".2125",
+      ".575"
+    ],
+    "final_target": "canonical last remaining native lots when sumfractions1; no ceil or quantity increase",
+    "synthetic_cases": "E72/E108, P100000 fixture, BTCstep.00001, long/short, normal and two-zero-target omission; minNotional10 checksPASS",
+    "limitation": "No real private-cap/price/availableToTrade/margin/wholeSOL qualification; fresh prestart feasibility required",
+    "previous_half_capital_negatives": "generic sanity requests only, not selected-strategy NO_GO"
+  },
+  "inherited_guard_abi": "ignore_research_protection=False optional keyword forwarded to base while all liveguards retained; no observed selected runtime failure claimed",
+  "open_lifecycle": "Expected financial suspension may trigger split_stop; unfinished split skips confirmed TP queue. Separate minimal correction required before NativeA/READY; no parent-envelope/newOMS or moneyguard bypass.",
+  "normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "owner_start": false,
+  "product_owner_venue_calls": 0,
+  "native_a_b_attempts_spent": 0,
+  "retained_untracked": "six historical WIP/R1 report artifacts preserved; no reset/clean"
+}

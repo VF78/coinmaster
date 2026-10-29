@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 4178813,
+  "attempt_id": "A-003-a5a3e3ec-3bd1-4011-87aa-1539f4134c01",
+  "case": "A",
+  "error": "AssertionError()",
+  "failed_gates": [
+    "actual_virgin_native_flat_INIT_atomic_once_and_original_anchor"
+  ],
+  "fixture_sha256": "8d7115b6cbdaca7f2b9c85c04810ba953bbdfefe585b5d252e0ca768a4329990",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 1,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "099d356921e20556ea1e5c39c2b854c6ad98961d4bd95392504d5c47d2e6d154",
+  "source_commit": "36b2e5e7d5d21fcb75f1e4a76312b7b4703eee7c",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 0,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 1,
+    "synthetic_cancel_commands": 0,
+    "synthetic_info_requests": 21,
+    "synthetic_native_spot_reads": 2,
+    "synthetic_submit_commands": 0
+  },
+  "traceback_tail": "vents.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1081, in bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 953, in run\n    await gate(\"actual_virgin_native_flat_INIT_atomic_once_and_original_anchor\", fresh_init)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 427, in gate\n    await value\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 950, in fresh_init\n    await current_observation(\"100\")\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 545, in current_observation\n    assert observation is not None\n           ^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "wall_seconds": 15.231643137
+}

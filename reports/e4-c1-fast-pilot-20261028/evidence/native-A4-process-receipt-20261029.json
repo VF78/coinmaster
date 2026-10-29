@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 4181270,
+  "attempt_id": "A-004-f23a3ec3-f608-42df-942f-28bceebd678f",
+  "case": "A",
+  "error": "AssertionError()",
+  "failed_gates": [
+    "ACTIVE_same_core_public_closed_D1_q0_q1_actual_native_entry"
+  ],
+  "fixture_sha256": "9c82342ae814c99497afec10492a30701ce10e2c274d253fbf20bcf8925bd255",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 4,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "996aba502beb6ed8b5d0445b5a57381cd51ade10fe42852726261106aa17e33d",
+  "source_commit": "36b2e5e7d5d21fcb75f1e4a76312b7b4703eee7c",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 0,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 1,
+    "synthetic_cancel_commands": 0,
+    "synthetic_info_requests": 24,
+    "synthetic_native_spot_reads": 3,
+    "synthetic_submit_commands": 0
+  },
+  "traceback_tail": " bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1069, in run\n    await gate(\"ACTIVE_same_core_public_closed_D1_q0_q1_actual_native_entry\",ordinary_gate)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 468, in gate\n    await value\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1068, in ordinary_gate\n    ordinary[\"entry\"],ordinary[\"quote\"]=await ordinary_entry_from_closed_daily_public_callbacks()\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1057, in ordinary_entry_from_closed_daily_public_callbacks\n    assert len(entries)==1 and entries[0].order_type==OrderType.MARKET\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "wall_seconds": 15.891097605
+}

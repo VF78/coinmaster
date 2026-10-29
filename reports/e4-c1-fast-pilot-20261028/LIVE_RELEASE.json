@@ -1,9 +1,9 @@
 {
-  "status": "DRAFT_NOT_ENGINE_PILOT_READY_NOT_LIVE_GO",
+  "status": "DRAFT_NOT_READY_ACTUAL_POST_PREPARATION_DP_ORDERING_P1",
   "task": "CM-E4-C1-FAST-PILOT-20261028",
   "live_order_capability": false,
   "selected_candidate": "BTC_POSTCUT_D1",
-  "source_commit": null,
+  "source_commit": "36b2e5e7d5d21fcb75f1e4a76312b7b4703eee7c",
   "config_sha256": null,
   "research_venue": "Bybit",
   "live_venue": "hyperliquid",
@@ -20,11 +20,11 @@
   "readiness": {
     "coherent_equity_clock_H4_D1_warmup": "SOURCE_COMPONENT_PASS_NATIVE_NOT_YET_VERIFIED",
     "open_risk_restart_globalH_parent_PLANREF_credit_latch_rights_pending": "FRESH_INIT_SOURCE_PASS_PAUSED_FLAT_RESTART_PENDING_OPEN_RISK_AUTORECOVERY_DEFERRED",
-    "native_partial_cancel_fill_duplicate_reconnect_priority": "NATIVE_A_B_PENDING_FINAL_SOURCE_FREEZE",
+    "native_partial_cancel_fill_duplicate_reconnect_priority": "NOT_REACHED_4FAILED_NATIVE_FIRST_TRADE_NOT_FORWARDED",
     "exact_cash_signedfunding_nativefees": "MODEL_USDC_PNL_FEE_PASS_AND_API_GUI_PURE_PASS; FINAL_ACTIVE_AND_REAL_CACHE_PENDING",
     "isolated_account_budget_minlots_no_doublewriter": "MASTER_AGENT_UNSIGNED_READ_PASS_VENUE_FEASIBILITY_AND_EXECUTION_BINDING_PENDING",
     "stop_entries_cancel_owned_manage_actual_close_reporting": "SOURCE_COMPONENT_PASS_NATIVE_A_B_PENDING",
-    "Unified_compatibility": "COMPONENT_PASS_REAL_HTTP_ROUTE_CORRECTION_AND_PORTFOLIO_CACHE_PENDING"
+    "Unified_compatibility": "SOURCE_AND_REAL_FLAT_CACHE_COMPONENT_PASS_NATIVE_A_B_PENDING"
   },
   "candidate_metrics": {
     "reference_TOTAL": "5499360.14984003",
@@ -43,9 +43,9 @@
   ],
   "local_private_binding": "runtime/var/research-jobs/e4-c1-fast-pilot-20261028/private/live-account.json",
   "funds_status": "REAL_READONLY_PORTFOLIO_CACHE_USDC_PARITY_PASS_PRIVATE_VALUES; HELD_MATCHING_ACTIVE_AND_SMALLCAP_PENDING",
-  "updated_utc": "2026-10-29T01:46:48.665436+00:00",
+  "updated_utc": "2026-10-29T03:42:24.649488+00:00",
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
-  "source_freeze": "HTTP_ROUTE_CORRECTION_HIGH_PEER_CLOSURE_AND_NATIVE_ACCEPTANCE_PENDING",
+  "source_freeze": "36b2_PUBLISHED_STATIC_PASS_BUT_A4_EXPOSED_ORDERING_P1_SOURCE_REPAIR_IN_PROGRESS",
   "drawdown_protection": {
     "retained_equity_fraction": "0.45",
     "loss_limit_percent": 55,

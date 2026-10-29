@@ -1,6 +1,6 @@
 {
   "schema": "coinmaster-hl-live-usdc-contract-v1",
-  "status": "OWNER_REQUIRED_IMPLEMENTATION_IN_PROGRESS_NOT_READY",
+  "status": "SOURCE_MODEL_REALFLATCACHE_API_GUI_PASS_CONNECTED_NATIVE_A_B_PENDING",
   "owner_instruction": "исправить системно, все должно быть в USDC (и торговля и отображение в GUI и прочее, никакого разнобоя)",
   "scope": "Hyperliquidlive USDC-only defaultBTC/SOLcross; all monetary engine/API/GUI/export values",
   "money_currency": "USDC",
@@ -35,13 +35,13 @@
     "raw_report_sha256": "6cacf9f1b028211333701c08f1ee1b83c5d3d116f707e2b6ff9d1a2dfa4ed9c0",
     "product_component": "b9f60ed7/113pure17.23s/peerclosurePASS/publicexactverified",
     "USDC_API_GUI": "c5cfcf97 PUBLICEXACT/22pureAPI+21UI+type-build/regenPASS/currency+budgetpeerPASS",
-    "real_private_Portfolio_Cache": "PASS attempt2 PID4158856/exit0/span6.250905964s; reportedUSDCnativePortfolio→Cache; actualaccountvaluesPRIVATE; firstfailurepreserved"
+    "real_private_Portfolio_Cache": "PASS attempt2 PID4158856/exit0/span6.250905964s; reportedUSDCnativePortfolio→Cache; actualaccountvaluesPRIVATE; firstfailurepreserved",
+    "final_composed_source": "1b27e98844140322a6618d293760faa92027f971"
   },
   "remaining": [
-    "FinishACTIVE-C1samecore authorisation/cashflow/clock/reducechain/liveness",
-    "FinalsourcecompositionwithqualifiedAPI-GUIbranch andconnectedpeer/nativeA-B",
-    "Wholelifecyclesmallcapitalpreflight; privatekeylesscachegatealreadyPASS",
-    "VERSIONapproval/installedbenchmark/separateSTART"
+    "NativeA-B onfinalfrozenfixture/source beforeadmission",
+    "Privateactualcapacity/wholelifecyclefeasibility; sub10closeboundaryexplicitUNKNOWN",
+    "ImmutableDRAFTrelease/VERSIONapproval/installedbenchmark/separateSTART"
   ],
   "owners": {
     "engine": "live_bridge_owner_20261029",
@@ -51,5 +51,5 @@
   "full_GUI_redesign_and_auth": "Deferred; currencycorrectnessNOW beforeSTART",
   "deployed": false,
   "START_LIVE": false,
-  "updated_utc": "2026-10-29T01:46:48.665436+00:00"
+  "updated_utc": "2026-10-29T02:52:38.855012+00:00"
 }

@@ -1,0 +1,27 @@
+{
+  "schema": "coinmaster-partial-transient-authority-edge-v1",
+  "source_parent": "01fe7ec7229cd26e5ed2a2072aeebcb008bec148",
+  "source_pins": {
+    "runtime/coinmaster/strategy/live_recovery.py": "467ab281cc4bbcbc3804aadaeadcf4156615e233e2948f40ff9b7a05e04c4331",
+    "runtime/tests/test_e4_c1_partial_lifecycle_pure.py": "2cba86142824873352735d5640909ae214c5f3a01335e20572d88f8b8154f19c"
+  },
+  "state": "SOURCE_CONNECTED_PASS_PENDING_EXACT_PEER_AND_NATIVE_QUALIFICATION",
+  "finding": "Fresh money/revision but context-current or held-headroomFalse could reach base localdenial and stop logicalsplitparent ratherthan park.",
+  "fix": "ACTIVE split-child checks actual temporary entriesdenial beforebase dispatcher; parks/persists/requestsrefresh ifhard-stop hookFalse; no openingpermission/quantitychange/hard-stop weakening.",
+  "tests": {
+    "targeted": "10PASS8.39s",
+    "connected": "276PASS44.49s",
+    "files": 8,
+    "cases": "Actual _split_check + actual _entries_enabled + actual fresh _current_owned_money/nativeRevision, contextFalse and headroomFalse, no pendingchild; parentexact20/filled4 retained; no nativeorder/cancel",
+    "preserved_unnecessary_failed_connected": "274PASS2FAIL43.90s; launched before targetedfailureinspection; onlyfixture SimpleNamespace marks notserializable; corrected toexisting VenueMark fixture protocol, no productbehaviorchange",
+    "previous": "274PASS44.56s and partial8PASS6.25s retained"
+  },
+  "normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "native": 0,
+  "node": 0,
+  "engine": 0,
+  "network": 0,
+  "keys": 0,
+  "owner_start": false,
+  "boundary": "Arbitrary sub10USDC partial close remains unproved/UNKNOWN under installedstock1.231; no minimum-size inflation or risk bypass. No full liveREADY claim."
+}

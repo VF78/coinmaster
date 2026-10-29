@@ -1,6 +1,6 @@
 {
   "task": "CM_E4_C1_ACTIVE_RELEASE_COMPOSITION_20261029",
-  "status": "AUTHORIZED_SOURCE_ONLY_IN_PROGRESS",
+  "status": "FINAL_SOURCE_PASS_NATIVE_A_B_AND_PRIVATE_ADMISSION_PENDING",
   "authority": "Directowner finishengine/HLreadiness+systemicUSDC; rootminimalcompositionprotocol, no newSTART",
   "base_peer_pass_source": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
   "economic_core_source": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
@@ -42,7 +42,7 @@
   "runtime_changes": 0,
   "owner_VERSION_approval": "RequiredbeforeoldSandboxstop/deploy/installedbenchmark",
   "owner_START": "Requiredbeforeorders/transfers; NOTGIVEN",
-  "updated_utc": "2026-10-29T01:42:56.598779+00:00",
+  "updated_utc": "2026-10-29T02:53:37.025383+00:00",
   "smallcapital_gate": "Privatecap+freshactualHLlots/minnotional/price mustprove wholeentry/TP/cut/close executable; lowcapitalquarterfloorbelow10 isDENY, noceil/inventedtopup",
   "five_P1_correction": "0b3e470/237purePASS27.09s; independentclosureafterHTTPcorrection, NOTREADY",
   "http_route_evidence": {
@@ -54,5 +54,8 @@
       "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions",
       "https://github.com/hyperliquid-dex/hyperliquid-python-sdk/blob/master/hyperliquid/info.py"
     ]
-  }
+  },
+  "final_source_commit": "1b27e98844140322a6618d293760faa92027f971",
+  "final_checks": "276PASS44.49s/targeted10PASS8.39s/finalscopedpeerPASS",
+  "source_public_exact_verified": true
 }

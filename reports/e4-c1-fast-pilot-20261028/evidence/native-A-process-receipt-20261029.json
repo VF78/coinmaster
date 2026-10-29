@@ -1,0 +1,28 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 4173827,
+  "attempt_id": "A-001-aa8523c3-8791-4498-b8a3-65fd9f32bb66",
+  "case": "A",
+  "error": "ValueError('UNIFIED_STOCKZERO_RATES_REQUIRED')",
+  "failed_gates": [],
+  "fixture_sha256": "7a9a732027d9630bdd95cfaadb628f06802a7287ede72ba4459a6a717ce20c82",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 0,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "0efe2a3ea5d0519c0a50e693f657df28453d2c39d15ce13ab8a6412d4c69ad97",
+  "source_commit": "1b27e98844140322a6618d293760faa92027f971",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 0,
+    "external_network_attempts": 0,
+    "nodes_constructed": 0,
+    "query_account_commands": 0,
+    "synthetic_cancel_commands": 0,
+    "synthetic_info_requests": 0,
+    "synthetic_native_spot_reads": 0,
+    "synthetic_submit_commands": 0
+  },
+  "traceback_tail": "\n           ^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1051, in bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 163, in run\n    HL_BTC = provider_module.normalize_unified_legacy_instrument(scaffolding.HL_BTC)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/ops/hl_unified_instruments.py\", line 49, in normalize_unified_legacy_instrument\n    return CryptoPerpetual.from_dict(normalize_unified_instrument_dict(values))\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/ops/hl_unified_instruments.py\", line 26, in normalize_unified_instrument_dict\n    raise ValueError('UNIFIED_STOCKZERO_RATES_REQUIRED')\nValueError: UNIFIED_STOCKZERO_RATES_REQUIRED\n",
+  "wall_seconds": 4.284784991
+}
