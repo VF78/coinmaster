@@ -231,3 +231,35 @@ def test_default_research_hooks_keep_old_entry_stop_and_unfinished_target_block(
     assert attempts==[]
     s.config.entries_enabled=False
     assert s._split_stop_requested() is True
+
+@pytest.mark.parametrize('denial',['context','headroom'])
+def test_fresh_money_revision_with_temporary_context_or_headroom_denial_parks_actual_child(code,tmp_path,denial):
+    from test_e4_c1_unified_pure import money_source
+    ctx=fixture(code,tmp_path)
+    try:
+        fill(ctx,'first','4')
+        ctx.entry.is_closed=True;ctx.s._pending_by_order.pop('ENTRY')
+        ctx.r.terminal_submission('ENTRY',ctx.s.on_save()[ctx.env['_KEY']])
+        m=money_source();code.env['LivePerpsMoneyView']=m.LivePerpsMoneyView;code.env['USDC']='USDC'
+        now=time.time_ns();cash=N(as_decimal=lambda:D(1000))
+        account=N(id=ACCOUNT_ID,balance_total=lambda currency:cash,balance_free=lambda currency:cash)
+        ctx.s.cache.account_for_venue=lambda venue:account
+        ctx.s._quote_ns={ctx.cfg.btc_id:now,ctx.cfg.sol_id:now}
+        ctx.s._latest_marks={}
+        for instrument_id in (ctx.cfg.btc_id,ctx.cfg.sol_id):
+            mark=code.env['VenueMark']();mark.instrument_id=instrument_id;mark.price=D(100);mark.ts_event=now;mark.ts_init=now
+            ctx.s._latest_marks[instrument_id]=mark
+        view=m.LivePerpsMoneyView(ACCOUNT,'',now//1_000_000,D(1000),D(1000),D(0),D(1000),(),
+            (('BTC',D(4)),),ctx.r.native_revision())
+        ctx.s._live_money_provider=lambda:view
+        ctx.s.accept_live_financial_authority(started_ns=time.monotonic_ns())
+        ctx.s._capital_basis_verified=True
+        ctx.s._live_context_current=lambda:denial!='context'
+        ctx.s._live_increase_headroom=lambda:denial!='headroom'
+        assert ctx.s._current_owned_money()[0] is view # Actual fresh cash/revision passes.
+        assert not ctx.s._entries_enabled() and not ctx.s._split_stop_requested()
+        tick=N(instrument_id=ctx.cfg.btc_id,bid_price=NativeQ('99'),ask_price=NativeQ('100'),ts_event=1000)
+        ctx.s._split_check(tick)
+        assert not ctx.s._split_parent['closed'] and ctx.s._split_parent['quantity']==20
+        assert ctx.s._split_parent['filled']==4 and ctx.refresh and ctx.sent==[] and ctx.cancelled==[]
+    finally:ctx.r.close()

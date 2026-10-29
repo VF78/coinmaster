@@ -819,6 +819,15 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         only_instrument: InstrumentId | None = None, ts_now: int | None = None,
         entry_override_qty: Decimal | None = None,
     ) -> None:
+        if (self._active_c1_authorized and entry_override_qty is not None
+            and intent.action=="BTC_ENTRY" and not self._split_stop_requested()
+            and not self._entries_enabled()):
+            # Fresh cash alone is not opening authority: temporary context or
+            # headroom denial parks the same child instead of terminally denying
+            # its logical parent in the base dispatcher.
+            self._persist_transient_checkpoint()
+            self._request_live_refresh()
+            return
         if (self._active_c1_authorized and intent.action=="BTC_REDUCE"
             and str(intent.reason or "").startswith("BTC_TP")):
             if any(value.id==intent.id for value in self._pending_by_order.values()):return
