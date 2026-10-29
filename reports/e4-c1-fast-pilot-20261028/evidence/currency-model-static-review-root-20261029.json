@@ -1,0 +1,15 @@
+{
+  "review_kind": "Focusedclosureofthreeindependentpeerfindings_sourceonly",
+  "observed_utc": "2026-10-28T23:58:43.204515+00:00",
+  "test_commit": "8ac95108669aa46255510897ea21c2177f2f9f3d",
+  "fixture_sha256": "630471a1b9705ee8e5d31f85be64151f03a08768e611f49357758235fa99f7fa",
+  "result": "THREE_FINDINGS_CLOSED_0_OPEN_P0_P1_FOR_MODEL_TEST",
+  "closed": [
+    "ExplicitUUIDandallocationcountreservedBEFOREconstructor/helper",
+    "Claimboundcanonicalrootallocationandpinnedartifactdir",
+    "ImportednormalizerresolvedoriginandSHAcheckedbeforefirstmodelcall"
+  ],
+  "scope": "Oneengine-freecurrencycomponenttest; noNode/Engine/network; cap64explicitcountedallocations; doesnotprovevenueexecution",
+  "product_peer": "P1_PENDING_COLLATERAL_REPAIR; ROOT_MODEL_GO_FALSE",
+  "native_or_model_runs": 0
+}

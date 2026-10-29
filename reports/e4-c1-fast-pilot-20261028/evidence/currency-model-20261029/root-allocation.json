@@ -1,0 +1,12 @@
+{
+  "kind": "E4_C1_ENGINE_FREE_CURRENCY_MODEL",
+  "status": "RUNNING",
+  "execution_limit": 1,
+  "model_object_limit": 64,
+  "source_commit": "268361712edc9412e2b026a353dedb311818149e",
+  "fixture_sha256": "e0d83d6cd9438891cbf7b926fb054b88f2b4319710ee6382548268dd8999ec5f",
+  "allocation_path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/var/currency-model-20261029/root-allocation.json",
+  "artifact_dir": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/var/currency-model-20261029/artifacts",
+  "attempt_id": "0671519b-5fc9-46bc-ba91-cf5e5e39feed",
+  "root_authorization": "BoundedMODELonly; pendingunrelatedadmissionP1doesnotgrantproductREADY; realorders0/Node0/Engine0/network0"
+}

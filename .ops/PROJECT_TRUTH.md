@@ -15,6 +15,8 @@ VPS development root: `/root/.openclaw/workspace/coinmaster/coinmaster` on `root
 - Current direct owner authorization2026-10-28 covers necessaryCoinMasterresearch and qualifiedlivepilot actions; see .ops/OWNER_AUTHORIZATION.md. DesignatedHLaccountaliasPRIVATE_ACCOUNT/maxPRIVATE_CAPUSDC; readiness/reconciliation/release required. Do not repeat routinepermissionrequests or infer unrelatedaccounts/unlimitedfunding. ExistingSandbox/foreignprojects remainseparate.
 - Hermes, f-ai.studio, app.f-ai.studio and VPN are outside CoinMaster cleanup scope.
 
+- Owner29Oct: all Hyperliquidlive monetaryvalues from nativecost/PnL/fees/funding/margin through API/GUI/export must be explicitUSDC. Unsupported currency is UNKNOWN, never silently relabeled. Preserve opaquevenueIDs and truthful immutableBybitUSDT evidence. See ACTIVE for implementation/qualification.
+
 ## Research objective and accounting
 - Frozen benchmark: [2024-09-01,2026-09-01), UTC, seed10000USDT, RESERVE0.
 - Currentfastpilot objective: legacyE4/C1-derivedTOTALaround5631617.35953723, workingfloor5470396.514987347, bothsettled+coherentDD<=.5180315157406654834417870238; maximizeTOTALwithinband. StrictDD30–50%/profitoptimizationcontinuesseparately. Exactcurrentcampaign8budget/scopeinACTIVE; MethodA9/19HOLDnotdependency. Zero model liquidations/completeaccountingremain. Owner allows experimental >=70% net profit as an intermediate gate only; final90% unchanged. PreferDD30–50%; below30% allowed. Exact absolute floors in RESEARCH_INDEX.

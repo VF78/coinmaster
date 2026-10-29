@@ -40,7 +40,7 @@ Report-onlyfix29f66e166ff6b518b1b27a76095d6acd7649e4e4 опубликован:26
 
 ## 4. GUI и авторизация — независимость deployment доказана, реализация отложена
 
-Отдельныеunit/cwd/release и штатныйpromote подтверждают самостоятельныйGUIdeployment с неизменнымworkerPID; требуется API/fingerprintсовместимость. По поручению владельца глубокийредизайн выполняется послеlive.
+Отдельныеunit/cwd/release и штатныйpromote подтверждают самостоятельныйGUIdeployment с неизменнымworkerPID; требуется API/fingerprintсовместимость. По поручению владельца глубокийредизайн выполняется послеlive. Новое прямое указание29октября: сквозная корректность USDC/API/GUI выполняется сейчас, доSTART, отдельным изолированнымпатчем без пересечения сenginewriter.
 
 ПерерисовкаDashboard/всехстраниц/TradeHistory, удалениеpilot-text, точноецветовое/пиксельноесовпадение Hyperliquid и plot-horizontal/price-scale-vertical zoom **ещё не выполнены и не приняты**. Reference/screenshot приватно сохранены; личныезначения вfixtures не копируются. PixelPASS только после actualbrowser/DPR/viewport comparison.
 
@@ -73,3 +73,5 @@ Secrets/accountaddresses/balances/readbacks остаютсяprivate. Публи�
 | WS reconnect не доказывает непрерывность состояния | FreshnativeAccountState+сверкаfills/orders, новыйWSepoch; oldcertificate недействителен | Sourceproof есть; nativeA/B открыт |
 
 Источники: [режимы аккаунта](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes), [лимиты](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits), [APIwallet/nonce](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/nonces-and-api-wallets), [tick/lot](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size), [ordererrors](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/error-responses), [exchange/IOC/cancel](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint), [Nautilus5024](https://github.com/nautechsystems/nautilus_trader/issues/5024), [Nautilus5187](https://github.com/nautechsystems/nautilus_trader/pull/5187), [Hummingbot8170: Unifiedbalancefallback/reproduction/QA](https://github.com/hummingbot/hummingbot/pull/8170).
+
+Текущий USDCcontract и exactACTIVEcomposition/sourcegates: LIVE_USDC_ACCOUNTING_CONTRACT_20261029.json, ACTIVE_RELEASE_COMPOSITION_PROTOCOL_20261029.json. NativecurrencyMODEL ужеPASS1/1; sharedpendingcollateralP1 исправлен b9f60ed7/113pure+peerPASS. A/Bнерасходованы, HOLDдоокончательногоactivepath.

@@ -1,0 +1,81 @@
+{
+  "canonical_allocation_path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/var/currency-model-20261029/root-allocation.json",
+  "canonical_claim_path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/var/currency-model-20261029/root-allocation.json.execution.claim",
+  "cases": {
+    "BTC_LONG": {
+      "commissions": [
+        "0.02000000 USDC"
+      ],
+      "native_close_cashflow": "10.00000000 USDC",
+      "negative_pnl": "-20.00000000 USDC",
+      "partial_realized": "9.98000000 USDC",
+      "positive_pnl": "20.00000000 USDC",
+      "status": "PASS"
+    },
+    "BTC_denomination": {
+      "buying_power_authority": false,
+      "id": "BTC-USD-PERP.HYPERLIQUID",
+      "min_notional": "10.00000000 USDC",
+      "raw_commission": "0.00 USD",
+      "raw_cost_currency": "USD",
+      "release_commission": "0.00000000 USDC",
+      "release_cost_currency": "USDC",
+      "release_margin": "0.00000000 USDC",
+      "status": "PASS",
+      "zero_margin_rates_preserved": true
+    },
+    "SOL_SHORT": {
+      "commissions": [
+        "0.02000000 USDC"
+      ],
+      "native_close_cashflow": "10.00000000 USDC",
+      "negative_pnl": "-20.00000000 USDC",
+      "partial_realized": "9.98000000 USDC",
+      "positive_pnl": "20.00000000 USDC",
+      "status": "PASS"
+    },
+    "SOL_denomination": {
+      "buying_power_authority": false,
+      "id": "SOL-USD-PERP.HYPERLIQUID",
+      "min_notional": "10.00000000 USDC",
+      "raw_commission": "None",
+      "raw_cost_currency": "USD",
+      "release_commission": "None",
+      "release_cost_currency": "USDC",
+      "release_margin": "None",
+      "status": "PASS",
+      "zero_margin_rates_preserved": true
+    },
+    "raw_stock_negative_reference": {
+      "actual_fee": "0.01000000 USDC",
+      "helper_commission": "0.00 USD",
+      "native_pnl": "20.00 USD",
+      "production_money_authority": false,
+      "realized_pnl": "0.00 USD",
+      "status": "EXPECTED_LIMITATION"
+    },
+    "reported_AccountState_holds_preserved": {
+      "free": "70",
+      "locked": "30",
+      "native_cash_posted": false,
+      "status": "PASS",
+      "total": "100",
+      "unchanged_event_id": "d712be90-0883-462f-a37d-99560e3974e9"
+    }
+  },
+  "counts": {
+    "engines": 0,
+    "explicit_native_model_objects": 64,
+    "network_attempts": 0,
+    "trading_nodes": 0
+  },
+  "finished_ns": 1793232259344242722,
+  "fixture_sha256": "e0d83d6cd9438891cbf7b926fb054b88f2b4319710ee6382548268dd8999ec5f",
+  "imported_provider_source_path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/ops/hl_unified_instruments.py",
+  "provider_source_path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/ops/hl_unified_instruments.py",
+  "provider_source_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "schema": "e4-c1-engine-free-currency-model-v1",
+  "source_commit": "268361712edc9412e2b026a353dedb311818149e",
+  "started_ns": 1793232256469470245,
+  "status": "PASS"
+}

@@ -1,0 +1,47 @@
+{
+  "task": "CM_E4_C1_ACTIVE_RELEASE_COMPOSITION_20261029",
+  "status": "AUTHORIZED_SOURCE_ONLY_IN_PROGRESS",
+  "authority": "Directowner finishengine/HLreadiness+systemicUSDC; rootminimalcompositionprotocol, no newSTART",
+  "base_peer_pass_source": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
+  "economic_core_source": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+  "keep": [
+    "BTC_POSTCUT_D1algorithmflags/moneyrules",
+    "ExistingC1ownership/lineage/INIT/H/latch/rights",
+    "DP55/retained45/dailycloseH",
+    "UnknownACKnoresend/no pendingcredit",
+    "NativeNautilus1.231/publicAPIs/no newOMS-PnL-riskservice"
+  ],
+  "required_source_changes": [
+    "ExactsealedACTIVEprofile+STARTartifact boundaccount/release/profile/mode/equitybasis/privateINITIALcap; no legacy82",
+    "Initialcap onlyvirgin0<E<=cap; ownedrestartcompoundprofitsnotcapped",
+    "ExistingC1load/virginINIT atomicpreservation; neverlegacyC1state-resetprepare_flat_epoch",
+    "Normalcore permittedonlyactiveAuthorized/freshfullproof/DPparity/publicpause-resume; readinessstaysOFF",
+    "Binder publishes strictcurrentmoney andqualifiedrecoveryonlyafteractualnativeparity",
+    "Activequote calls sameWaveOverlaycoreexactlyonce, explicitdecision_ns defaultNone preservesresearchbehavior; keeprealticktimestamps",
+    "Modeawarecredentialpreflight prepay142samegatewaybucket beforeHTTP",
+    "NonFundingLedgerUpdates oneboundedpage/prepay45/acceptedrows<500; full437+4N<=497N15 afterexplicitSTARTcontextdedup; cap700; actualweights/saturationUNKNOWN/inclusivecursor+dedup/no cashpost",
+    "Cashflowbasis requiredfornewHcredit; cheapdownwardDP remainsprotective; foreignactivityquarantine",
+    "EndtoendUSDCcontract inclseparateAPI-GUIpatch"
+  ],
+  "liveness_gate": "Proveactual60sschedule: fullmax497+held480=977 underrolling1000; STARTcontextmax300s/originaltimestamps/notfinancialfreshness; exactmode6s; dynamicpostsettlementheadroom; no28HTTPpereveryWSmessage; lowpriorityfunding/context/extraFull cannotstarveDP/ownedprotection. PublicGUI150/minpersistedguardseparate; startupmetadata/chargesexpiredwhileprotectedflat beforeentry.",
+  "source_checks": "Targetedpurecases+connectedrelevantpass+onefocusedpeer/freeze beforeNodeA/B",
+  "native_budget": {
+    "max_physical_attempts": 3,
+    "spent": 0,
+    "root_go": false,
+    "cases": [
+      "Aactualordinaryentry/partial/protection/cut/DPflat",
+      "BpausedflatrestartsameC1Hrights/latch/noautoresume"
+    ],
+    "conditional_repair": 1,
+    "wallcap_seconds_per_child": 180,
+    "no_network_keys_realorders": true
+  },
+  "D1_restore_coverage": "PositivecausalD1restore existingnativeeconomicproof+targetedpure; NodeA actualLiveClock mustdenybeforeeligibleclosedD1, no fabricatedfuturebar/backdatedfill/clockpatch",
+  "model_budget": "Separate1/1CLOSEDPASS onunchangedhelper; no rerun",
+  "runtime_changes": 0,
+  "owner_VERSION_approval": "RequiredbeforeoldSandboxstop/deploy/installedbenchmark",
+  "owner_START": "Requiredbeforeorders/transfers; NOTGIVEN",
+  "updated_utc": "2026-10-29T00:15:52.472028+00:00",
+  "smallcapital_gate": "Privatecap+freshactualHLlots/minnotional/price mustprove wholeentry/TP/cut/close executable; lowcapitalquarterfloorbelow10 isDENY, noceil/inventedtopup"
+}

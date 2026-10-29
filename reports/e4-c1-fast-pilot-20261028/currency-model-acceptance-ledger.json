@@ -1,0 +1,40 @@
+{
+  "task": "CM_E4_C1_ENGINE_FREE_CURRENCY_MODEL_20261029",
+  "updated_utc": "2026-10-29T00:05:01.059290+00:00",
+  "authority": "OwnerfinishengineHLreadiness; rootfinitecomponentallocation/scopeamendment inNATIVE_ENGINE_ACCEPTANCE_PROTOCOL",
+  "maximum_executions": 1,
+  "max_counted_explicit_model_allocations": 64,
+  "spent": 1,
+  "active": 0,
+  "source_commit": "268361712edc9412e2b026a353dedb311818149e",
+  "provider_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "fixture_sha256": "e0d83d6cd9438891cbf7b926fb054b88f2b4319710ee6382548268dd8999ec5f",
+  "root_go": false,
+  "product_ready": false,
+  "engines_allowed": 0,
+  "trading_nodes_allowed": 0,
+  "network_allowed": false,
+  "attempts": [
+    {
+      "attempt_id": "0671519b-5fc9-46bc-ba91-cf5e5e39feed",
+      "status": "PASS",
+      "claimed_utc": "2026-10-29T00:04:02.283249+00:00",
+      "source_commit": "268361712edc9412e2b026a353dedb311818149e",
+      "fixture_commit": "7e001bf1543c9be2bae011b7248a7602d405f6ba",
+      "fixture_sha256": "e0d83d6cd9438891cbf7b926fb054b88f2b4319710ee6382548268dd8999ec5f",
+      "allocation_path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/var/currency-model-20261029/root-allocation.json",
+      "artifact_dir": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/var/currency-model-20261029/artifacts",
+      "actual_pid": 4137203,
+      "actual_exit": 0,
+      "wall_seconds": 3.27193102,
+      "component_counts": {
+        "engines": 0,
+        "explicit_native_model_objects": 64,
+        "network_attempts": 0,
+        "trading_nodes": 0
+      },
+      "combined_evidence_sha256": "0352464b026fdda1a407f0a6ede23fd8d7fa74a65fb60fd5124da2e3df8850f6"
+    }
+  ],
+  "status": "CLOSED_1_OF1_COMPONENT_PASS"
+}

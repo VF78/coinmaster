@@ -1,0 +1,55 @@
+{
+  "schema": "coinmaster-hl-live-usdc-contract-v1",
+  "status": "OWNER_REQUIRED_IMPLEMENTATION_IN_PROGRESS_NOT_READY",
+  "owner_instruction": "исправить системно, все должно быть в USDC (и торговля и отображение в GUI и прочее, никакого разнобоя)",
+  "scope": "Hyperliquidlive USDC-only defaultBTC/SOLcross; all monetary engine/API/GUI/export values",
+  "money_currency": "USDC",
+  "equity_basis": "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1",
+  "amount_encoding": "Decimalstrings+explicitcurrency; unknown=null+reason",
+  "fields": [
+    "prices",
+    "notional",
+    "reported_total",
+    "available_free",
+    "locked_hold",
+    "actual_venue_margin",
+    "realized_pnl",
+    "unrealized_pnl",
+    "fees",
+    "funding",
+    "C1_E_H_cushion",
+    "DP_E_H_threshold"
+  ],
+  "no_UPNL_double_add": true,
+  "unsupported_currency": "UNKNOWN/DENY; never silently relabel or inventFXconversion",
+  "display_pairs": [
+    "BTC/USDC",
+    "SOL/USDC"
+  ],
+  "venue_instrument_ids": "Preserve native *-USD-PERP opaqueIDs; not tradercurrencylabels",
+  "hold_semantics": "Lockedcollateral/proxy, NOTtrueMaintenanceMargin",
+  "immutable_history": "OriginalBybitUSDTreceipts/signals remain truthfullydenominated; not rewritten asUSDC",
+  "evidence": {
+    "native_model": "PASS oneexecution/PID4137203/exit0/64countedobjects/Node0Engine0network0",
+    "provider_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+    "raw_report_sha256": "6cacf9f1b028211333701c08f1ee1b83c5d3d116f707e2b6ff9d1a2dfa4ed9c0",
+    "product_component": "b9f60ed7/113pure17.23s/peerclosurePASS/publicexactverified",
+    "USDC_API_GUI": "dc3de458/8pureAPI+8selectedAPI+21UI/type-build/regenPASS/2P1peerclosurePASS; publicIPguardstillWIP"
+  },
+  "remaining": [
+    "ACTIVE-C1composition/defaultOFF/exactSTART/privateinitialcap/sharedbudget/cashflowguard",
+    "APIpreservecurrency+basis+correctfreeholdsemantics",
+    "GUIfee/PnL/DP/candles/totals explicitUSDC/unknowncurrencyguard",
+    "GeneratedAPI/TSschema/export andtargetedtests",
+    "FinalnativeA/B/privateprestart/releaseapproval"
+  ],
+  "owners": {
+    "engine": "live_bridge_owner_20261029",
+    "disjoint_API_GUI": "usdc_projection_owner_20261029",
+    "coordinator": "root"
+  },
+  "full_GUI_redesign_and_auth": "Deferred; currencycorrectnessNOW beforeSTART",
+  "deployed": false,
+  "START_LIVE": false,
+  "updated_utc": "2026-10-29T00:15:52.472028+00:00"
+}

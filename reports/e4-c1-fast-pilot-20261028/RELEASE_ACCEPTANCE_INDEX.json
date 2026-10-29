@@ -1,6 +1,6 @@
 {
   "status": "DRAFT_NOT_READY_NOT_START_APPROVAL",
-  "updated_utc": "2026-10-28T23:42:42.258868+00:00",
+  "updated_utc": "2026-10-29T00:30:30.836997+00:00",
   "candidate": "BTC_POSTCUT_D1",
   "economic_source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
   "economic_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
@@ -18,7 +18,7 @@
   "DP_retained_equity_fraction": "0.45",
   "DP_anchor": "Existingpersistentinitial_thenhigherUTCdailyclose",
   "DP_applied": false,
-  "native_engineering_qualification": "PENDING_FINAL_UNIFIED_FREEZE_PEER_A_B",
+  "native_engineering_qualification": "A_B_HOLD_UNTIL_FINAL_ACTIVE_C1_SOURCE_AND_PRODUCT_PEER",
   "fresh_readonly_HL_bootstrap": "UNSIGNED5READS_AND_NATIVE_HTTP_ACCOUNTSTATE_SUCCESS; FULLMODE_HELD/CACHEGATES_PENDING",
   "installed_release_benchmark": "NOT_RUN_REQUIRES_PREPARED_RELEASE_PROTOCOL_AND_OWNER_VERSION_APPROVAL",
   "deployment": "NOT_PERFORMED",
@@ -34,14 +34,40 @@
     "Fullpilotstart-to-datefinancialauditincompletebecausemissinglogs"
   ],
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
-  "Unified_support": "OWNER_REQUIRED_SOURCE_EXTENSION_IN_PROGRESS",
+  "Unified_support": "NATIVE_CURRENCY_COMPONENT_PASS_ACTIVE_C1_EXECUTION_COMPOSITION_IN_PROGRESS",
   "documentation_forums_review": "LIVE_PREPARATION_PLAN_20261029.md#документация-и-обсуждения-api-что-включить-в-допуск",
-  "Unified_pure_WIP": "15additionalcasesPASS0.60s_notFinalConnectedOrNativePASS",
-  "manager_public_verified_checkpoint": "85f3d281620f6a17a623b5c99a9024c01d84c1dd",
+  "manager_public_verified_checkpoint": "f9d3c193362f800647b4255d787f0dc8be9e80fc",
   "packaging_remaining_gates": [
     "Approvedprivatecap/profile/releaseidentity; no hardcodedlegacy82 or oldapprovals",
     "Explicitqualifiedactiveprofilepath; currentinputreadinessismanageonly",
     "Actualsmallcapitalminlot/minnotional/venueavailablemarginfeasibility",
     "Immutableartifactseal/runbook/rollback_andownerVERSIONapproval_beforeinstalledbenchmark"
-  ]
+  ],
+  "Unified_component_source_commit": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
+  "Unified_component_tests": "113purePASS17.23s_peerP1closurePASS_PUBLICEXACTVERIFIED",
+  "Unified_component_receipt_sha256": "1439a003215e17bc2143d23c7cd1554fd21710116a62cfb761c33b433fd488c6",
+  "currency_model_component": {
+    "status": "PASS_1_OF1_CLOSED",
+    "source_commit": "268361712edc9412e2b026a353dedb311818149e",
+    "provider_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+    "fixture_sha256": "e0d83d6cd9438891cbf7b926fb054b88f2b4319710ee6382548268dd8999ec5f",
+    "actual_pid": 4137203,
+    "actual_exit": 0,
+    "wall_seconds": 3.27193102,
+    "counts": {
+      "engines": 0,
+      "explicit_native_model_objects": 64,
+      "network_attempts": 0,
+      "trading_nodes": 0
+    },
+    "scope": "SyntheticnativeMODELcurrency/PnL/fee/partialclose/reportedbalanceproof_only_NotNodeOrVenue",
+    "evidence": "evidence/currency-model-combined-root-receipt-20261029.json"
+  },
+  "USDC_API_GUI": {
+    "source_commit": "dc3de458273bef0f09e52b5e40400e92b0c700b9",
+    "checks": "8pureAPI+8selectedAPI+21UI+tsc+vite+genuineOpenAPI/TSregenPASS",
+    "peer": "PASS_2P1_CLOSED_exactd453_to_dc3_SourceOnly",
+    "public_candle_budget": "GUARD150_PER60_PERSISTED_CACHE5S_SOURCE_AND_TESTS_IN_PROGRESS",
+    "deployed": false
+  }
 }

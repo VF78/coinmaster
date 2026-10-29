@@ -1,0 +1,8 @@
+{
+  "root-allocation.json": "c3dbf5dc136d913ec95744c5de31c996bd8c6330e0230fdaa31f9cd5946b054b",
+  "root-allocation.json.execution.claim": "656cf82d6c62fbcb3352c457616c97cccc427deec677623315843842fb9b3215",
+  "artifacts/currency-model-result.json": "6cacf9f1b028211333701c08f1ee1b83c5d3d116f707e2b6ff9d1a2dfa4ed9c0",
+  "artifacts/process-execution.json": "6d8f213023ee9c23175598e9dddf3ba1a326168c2bdf557912cf60a918288eaf",
+  "artifacts/stdout.txt": "87805d18183065d29fc0dc3ebc3ddf7c150b4b9c52d11bb936505c7a557daa9e",
+  "artifacts/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

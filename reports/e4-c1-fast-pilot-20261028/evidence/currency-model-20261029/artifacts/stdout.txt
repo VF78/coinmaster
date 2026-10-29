@@ -1,0 +1,1 @@
+{"status": "PASS", "counts": {"explicit_native_model_objects": 64, "network_attempts": 0, "trading_nodes": 0, "engines": 0}, "error": null}

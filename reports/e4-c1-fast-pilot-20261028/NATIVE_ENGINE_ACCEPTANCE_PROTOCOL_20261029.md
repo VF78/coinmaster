@@ -37,3 +37,9 @@ Injectedfakevenueevents доказывают nativeintegration, не факти�
 ## Отдельная component-проверка валют
 
 После FINALpublicproviderfreeze и review root допускает ровно один engine-free modelsmoke: <=64nativeMODELobjects, безTradingNode/ExecutionEngine/BacktestEngine/сети/ключей. Это не physicalA/B и не скрытый nativeengineповтор. Проверяются rawUSD/USDCnegativecase, actualproductionnormalizedBTC/SOL instruments, USDCget_cost_currency/PositionPnL/fees/min_notional, неизменныеIDs/ticks/lot/zeroRates и venue-reportedbalances. Compile/AST подготовка допускается без nativeconstructor; выполнение только после отдельного ROOT_GO. Результат/фактическое числоobjects фиксируются.
+
+## Root-уточнение порядка после source-review
+
+Source2683617/112purePASS ещё имеет P1 по общему pendingcollateral, исправление обязательно до допуска. Текущийinputreadiness наблюдает C1 и блокируетordinaryentries; окончательныйactiveC1path/cap/profile/approvalbinding должен быть зафиксирован ДО nativeA/B, чтобы не повторять доказательство на иной версии. A/B остаютсяHOLD, max3/spent0/rootGOFalse.
+
+Отдельный MODELtest использует только неизменный publiccurrency-normalizer01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222 на268361712edc9412e2b026a353dedb311818149e и stockmodel1.231. Его independentAPI/accountingreview не нашёл ошибок; триfixtureP1 закрыты rootпоdiff630471a1. Pendingcollateraladmission им не вызывается. Root разрешает выделить ровно одну componentпопытку/cap64countedexplicitallocations после finalfixturepin/каноническойallocationclaim, без ожидания иных productизменений. Это уточнение собственного инженерногопорядка, не объявление productpeerPASS/READY и не расход research/nativeNodeслотов. Любое расхождениеhelperhash/origin блокирует запуск. Фактические Node/Engine/network должныостаться0.

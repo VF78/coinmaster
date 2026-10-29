@@ -1,6 +1,6 @@
 {
-  "status": "OWNER_REQUESTED_UNIFIED_SOURCE_QUALIFICATION_IN_PROGRESS_NOT_READY",
-  "updated_utc": "2026-10-28T23:20:55.179845+00:00",
+  "status": "CURRENCY_COMPONENT_PASS_ACTIVE_COMPOSITION_AND_USDC_API_GUI_IN_PROGRESS",
+  "updated_utc": "2026-10-29T00:30:30.836997+00:00",
   "owner_choice": "Сохранить Unified и отдельно квалифицировать его поддержку",
   "engine": "Stock Nautilus1.231.0 remains; no v2 migration/globalupgrade",
   "base_source_commit": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
@@ -21,7 +21,7 @@
   "native_path": "request_spot_balances→nativeAccountBalance serialization→legacy native model→LiveExecutionClient.generate_account_state reportedTrue",
   "ingress": "Cover _update_account_state AND _handle_account_state; old heuristic may notoverwrite validated Unified balances",
   "zero_and_margin": "Explicit zeroUSDC clears previousbalance/margin; holdproxyonce, NOTtrueMM; no fee/funding re-post",
-  "currency_gate": "ActualstockBTC/SOLUSDquote/USDCsettlement and nativePnL/fee currency must beproven; no inventedFX/nonzeroMarginRates; see5024",
+  "currency_gate": "PublicproviderUSD→USDCnormalizationimplemented_bothlegacyPyO3/dataexec/loadrefresh_IDsticksratespreserved_minnotionalnumeric10NativeUSDC; actualnativePnLfeeproofPENDING",
   "DP": {
     "retained_fraction": "0.45",
     "loss_limit_percent": 55,
@@ -42,10 +42,20 @@
       "actual_cost": "20+20D",
       "root_public_directory_probe_D": 11,
       "scope": "prestartonly/bindWSepoch+account+policy+nativeownedrecon/exclusivewriterassumption; no universalfutureglobalrestingproof"
-    }
+    },
+    "active_planned_dedup_bound": "437+4N/max497 usingexplicitcachedSTARTcontext, maxTTL300/no reaging, freshnativeunifiedmode each<=6s; capital/positions/orders/fills/ledger/capacityfresh<=9s",
+    "active_held_schedule": "480/min +heavyfull497=977/min; dynamicremainingheadroomrequired; context/fundinglowpriority; provebeforeNode",
+    "public_GUI_separate_slice": "PLANNED150/min persistentcrossworkers/restart; combinedengine1000+GUI150=1150<1200/IP; startupmetadataalsoqualificationgate"
   },
   "native_attempts": 0,
-  "native_fixture_budget": "max3/spent0/sourcefreezepeer/rootGOstillpending",
+  "native_fixture_budget": "A/B max3/spent0/HOLD finalACTIVEsource/pure/peer/rootGO",
   "realorders_transfers_modechanges_services": 0,
-  "explicit_START_LIVE": false
+  "explicit_START_LIVE": false,
+  "component_source_commit": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
+  "component_tests": "113purePASS17.23s",
+  "component_source_receipt": "evidence/live-unified-source-preparation-2683617.json",
+  "component_peer": "PASS_SHARED_PENDING_COLLATERAL_FIXED",
+  "native_currency_model_proof": "PASS actualPID4137203/exit0/64countedmodels; rawUSDUSDCbugreproduced, actualpublicnormalizerfixedBTC_LONG/SOL_SHORTPnLfeesandpartialclose; noNode/Engine/network",
+  "model_executions": 1,
+  "native_owned_reduce_chain": "RootapprovedboundedzeroInfo reductiononly fromfreshfullownedlineage, exactSTART/account/policy/continuousWS; knownnativeACK/fill/checkpoint only; actualheldminuspendinguncertainreductions, noflip/openingcredit; unknownactivityrevokes"
 }

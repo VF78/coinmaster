@@ -1,6 +1,6 @@
 {
   "task": "CM-E4-C1-FAST-PILOT-20261028",
-  "recorded_utc": "2026-10-28T23:44:59.742707+00:00",
+  "recorded_utc": "2026-10-29T00:30:30.836997+00:00",
   "status": "BENCHMARK_AND_STRESS_ACCEPTED_VALIDATION_RAW_FINANCIAL_PASS_TECHNICAL_EXPORT_FAILED",
   "owner_authorization": {
     "direct_instruction": "возьми план из вложения за основу ... Сделай единый согласованный план, актуализируй project и продолжай по уточненному плану",
@@ -300,7 +300,7 @@
   },
   "next_step": {
     "economic_search": "CLOSED8_OF8_NO_REPEAT_OR_NEW_CANDIDATE",
-    "first": "FinishUnifiedpublicAPI/providercompatibility_on8ef_then_connectedpure_and_onepeer",
+    "first": "FinishminimalACTIVE-C1samecore composition/liveness anddisjointUSDCAPI-GUI/candlebudget fix, onepeer/finalfreeze beforeA/B",
     "then": [
       "Freeze source/config/fixture; one bounded currency-modelsmoke; nativeA/B max3 inclFAILED spent0/rootGOFalse",
       "FreshprivateHLreadonlycache/identity/mode/precision/margin/feasibility proof",
@@ -391,20 +391,15 @@
     "source_commit": "29f66e166ff6b518b1b27a76095d6acd7649e4e4"
   },
   "live_preparation_current": {
-    "sourcebase": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
-    "component": "88purePASS16.20s_independentpeerPASS",
-    "Unified": "WIP15additionalpurePASS0.60s_provider_and_final_connected_peer_pending",
+    "source_component": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
+    "public_exact_verified": true,
+    "checks": "113pure17.23s/peerPASS",
+    "currency_model": "1_OF1_CLOSED_PASS_64COUNTEDMODEL_NODE0ENGINE0NETWORK0",
+    "active_C1_source": "IN_PROGRESS_DEFAULT_OFF",
+    "USDC_API_GUI": "d453/8pureAPI+8selectedAPI+19UI+type/build/regenPASS,peer2P1fixpending",
+    "public_candle_budget": "150/min/cache5/persistedguardIN_PROGRESS",
     "live_order_capability": false,
-    "realorders_transfers_services_modechanges": 0,
-    "documentation_forums_findings": "LIVE_PREPARATION_PLAN_20261029.md",
-    "sourcefreeze": "PENDING",
-    "packaging_gates": [
-      "Removelegacy82capitalbinding_inapprovedprivatecap/releaseidentity_notOldApprovalReuse",
-      "Qualifyactiveprofilepath_currentinputreadinessmanageonly_by_design",
-      "Minlot_minnotional_currentprivatecap_feasibility",
-      "Exactcandidate_profile_source_seals_androllback"
-    ],
-    "componentfixture": "c53c38ae41e310d7762ebc2129027d9109eb3501_staticOnly_FinalUnifiedrepinPending"
+    "realorders_transfers_services_modechanges": 0
   },
   "manager_publication_current": {
     "verified_head": "85f3d281620f6a17a623b5c99a9024c01d84c1dd",
@@ -468,5 +463,25 @@
     "no_signed_actions_or_orders": true,
     "native_HTTP_AccountState": "READONLY_FETCH_SUCCESS_NO_NODECACHE_PROOF",
     "private_receipts": "J/private only; no accountidentity/balance/readback public"
+  },
+  "live_usdc_accounting_contract": "LIVE_USDC_ACCOUNTING_CONTRACT_20261029.json",
+  "active_release_composition_protocol": "ACTIVE_RELEASE_COMPOSITION_PROTOCOL_20261029.json",
+  "currency_model_acceptance": {
+    "ledger": "currency-model-acceptance-ledger.json",
+    "status": "CLOSED_PASS_1_OF1",
+    "source_commit": "268361712edc9412e2b026a353dedb311818149e",
+    "provider_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+    "raw_result_sha256": "6cacf9f1b028211333701c08f1ee1b83c5d3d116f707e2b6ff9d1a2dfa4ed9c0",
+    "process_receipt_sha256": "6d8f213023ee9c23175598e9dddf3ba1a326168c2bdf557912cf60a918288eaf",
+    "actual_pid": 4137203,
+    "actual_exit": 0,
+    "wall_seconds": 3.271931019,
+    "counts": {
+      "explicit_native_model_objects": 64,
+      "trading_nodes": 0,
+      "engines": 0,
+      "network_attempts": 0
+    },
+    "classification": "Synthetic100/30/70fixture, NOTprivateaccountfinancialreadback"
   }
 }

@@ -1,38 +1,28 @@
-# CoinMaster: текущий статус для независимого аудита,29.10.2026
+# CoinMaster: текущий статус для аудита,29.10.2026
 
-**Релиз ещё не готов к live. Торговых действий/переводов/смены режима/изменений работающего Sandbox не было.** Владелец требует сохранить Unified Account, DP=остаток45%/DD55%, и отдельное явное подтверждение START.
+**Релиз ещё не готов к live. START не дан; ордеров, переводов, смены режима, deployment и изменений работающего Sandbox не было.** Подготовка продолжается по ACTIVE_RELEASE_COMPOSITION_PROTOCOL_20261029.json. Новое прямое указание владельца — весь Hyperliquidlive контур учёта/API/GUI в USDC; контракт LIVE_USDC_ACCOUNTING_CONTRACT_20261029.json.
 
-## Результат алгоритма
+| Область | Фактический результат | Что осталось |
+|---|---|---|
+| Исторический алгоритм BTC_POSTCUT_D1 | TOTAL5499360.14984003 из10000USDT; settled/eventDD51.26863558248311161216905115%;90.4773878838% чистойприбылиS0.108life/540fill/1248funding сверены0E-8,flat/liq0 | Выбор версии владельцем и freshinstalled-release проверка по конкретному протоколу |
+| Native USDC currency | Один modelprocess/PID4137203/exit0/PASS/3.2719s/64countedobjects; Node0/Engine0/network0. Реальный publicnormalizer исправил nativePnL/fee/partialclose BTC_LONG/SOL_SHORT | Связная проверка окончательного activeworker, затем venueисполнение послеSTART |
+| Unified component | b9f60ed7/113pure17.23s/peerPASS; общий pendingcollateralBTC/SOL исправлен; source опубликованexact | ACTIVE-C1composition/defaultOFF/initialcap/START/clock/liveness, sourcewriterработает |
+| USDC API/GUI | dc3de458:8pureAPI+8selectedAPI+21UI+tsc+vite+genuineOpenAPI/TSregenPASS | ОбаP1 закрыты независимымpeer по exactd453→dc3; publicIPguard ещёвработе |
+| Общий IP APIbudget | Обнаружен неограниченный путь публичных свечей | APIguard150/60s+cache5s/persistenceacrossworkers/restart вработе; enginecap1000, venue1200/IP |
+| Связные NodeA/B | spent0/max3 включаяFAILED, ROOT_GO=false | HOLDдоокончательногоACTIVEsource/pure/peer/freeze; повторятьподготовительныйнаблюдательвместоторговогопути не планируется |
 
-Кандидат BTC_POSTCUT_D1/sourcefccd60c/configa2c7 за[01.09.2024,01.09.2026), seed10000/res0: TOTAL5499360.14984003, settled/eventDD51.26863558248311161216905115%,90.4773878838% исходной чистой прибылиS0. NativeNautilus1.231, историческиеBybit1m+syntheticL1, не Hyperliquidmatching.108lifecycle/540fills/1248funding независимо сверены,0E-8/flat/liq0.
+NativeMODEL воспроизвёл исходный дефект stockHyperliquid: cost/PnLUSD, комиссияUSDC не попадала в realizedPnL. Исправленный actualproductionprovider используетUSDC quote/settlement/cost/PnL/fees/minnotional, сохраняя nativeIDs/ticks/lots/zeroRates. При partialclose nativecashflow10USDC, realized9.98USDC сfee0.02USDC, обе стороны ±20USDC. Reported100/30/70 не менялись. Все суммы в этих артефактах — синтетические fixtureзначения, не финансовыйreadback кошелька. RAW/claim/processreceipt сохранены: evidence/currency-model-20261029/; rawSHA6cacf9f1…/process6d8f2130… . Бюджет1/1 CLOSED, повтор не нужен при неизменномhelper01e57.
 
-Стресс:5469423.50671297/DD51.41651839, технический/riskPASS; profitfloor−973.008274377 — заранее обозначенная отдельная диагностика.57днейfreshseed10000: RAW19661.98052982/DD34.95109657/return96.6198%, финансоваясверкаPASS. СамprocessFAILED1 из-заpartialmonthvalidator; исходныйFAILED сохранён. Report-onlyfix29f66e/26pure/peerPASS проверен на неизменномRAW. Economicbudget8/8 CLOSED, новых поисков/прогонов нет.
+Unified сохраняется по прямому решению владельца. E=нативный reportedUSDCtotal=freshspotUSDCtotal; UPNL отдельный диагностический показатель, повторно кE не прибавляется. Nativehold — блокировка/прокси, не trueMaintenanceMargin. Другой collateral/isolated/неподдержаннаяforeignactivity даютUNKNOWN. Первичные docs/upstream/productiontests подтверждают выбранный контракт; синхронного liveheldэмпирическогоproof до реальной сделки пока нет.
 
-MVP сохраняет legacyreference/zeroTP и SOLalpha. Настоящий continuoushedge/все3реальныхTP не заявлены достижением этогоMVP.
+DP: остаток45%=losslimit55%, порог.45H. H — первоначальныйкапитал и более высокий валидный UTCdailyclose; H/latch/history сохраняются, executedloss не гарантированценой порога. Runtime не применён. INITIALcap относится только кпервому финансированию; последующий compoundprofit не ограничивается этимчислом.
 
-## Движок и Hyperliquid
+ACTIVEcomposition использует тот же winnercore. Нужны exactSTART/account/profile/mode/E/privateINITIALcap, сохранениеC1INIT/H/rights, одинordinarycallback с реальнымdecisiontime, подтверждённыйcashflowbasis для Hcredit и boundedownedreducechain для своевременнойTP/DPзащиты послеfill. Полный financialproof остаётся fresh<=9s; статический STARTcontext не выдаётся за свежий HTTP. Cadence/headroom должны быть доказаны до физических A/B, без искусственнойпаузы, скрывающей пробел защиты.
 
-Связанныйsource-onlycheckpoint **8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75** опубликован:88purePASS16.20s/независимыйpeerPASS. Исправлены shadowedon_start, триошибкиконструктора, реальныйDPmoneyprovider, закрытыеSOL1H/BTC-SOLH4/D1, fingerprints/backfill, nativeAccountStatefreshness, boundedqueryscope и атомарныежурналы. FreshINIT одноразовый: явноеintent, реальныйnativeflat/actualequity, canonicalcheckpoint+marker+исходныйhistoryanchor; старыеH/latch/history не сбрасываются. Native/venue/orderqualification ещё не выполнена.
+Документация и developerforums связаны с конкретнымиgates в LIVE_PREPARATION_PLAN_20261029.md: Unifiedspot,5024/5187, nonce/master-agent,HTTP200errors/partialIOC/lostACK, rateweights, WSreconnect, minimum/ticks, scheduledCancel. Пять unsignedInfo и stocknativeHTTPAccountState ранее прошли безключа/подписей; privateaccountreadbacks толькоJ/private. Они не заменяютNodecache/held/matchingproof.
 
-DP55prepared с profile/stateparity. СуществующаябазаDP — первоначальныйкапитал и повышающийUTCdailycloseHWM; threshold=.45H. Это не intradaypeak и не гарантия фактическойцены закрытия. Runtimeнеприменён. VirginинициализацияDP должна идти черезреальнуюпубличнуюподготовленнуюфункцию, не ручнуюподменуH вfixture.
+Historicalresearch8/8 CLOSED:7COMPLETED1FAILED. Stress5469423.50671297/DD51.41651839 technical/riskPASS, floor−973.008274377DIAGNOSTIC. Validation57d RAW19661.98052982/DD34.95109657 финансовоPASS; processFAILED1 partialmonthreportbug. OriginalFAILED/rawне переписаны; reportfix29f66e/26pure+peer проверен на томжеRAW; nativeповторов нет. MethodA9/19HOLD отдельно.
 
-**Обязательный открытый gate: Unified.** Stock1.231 ошибочно выбираетperpUSDC приоткрытыхпозициях; upstream#5187 исправляетэто вболее новых выпусках. Выбран минимальныйявный compatibilitymapping черезпубличныеnativeAPI1.231, бездругогоOMS/PNLдвижка/ручногоизменениякэша/миграцииv2. Обеaccount-stateingress должныиспользоватьspotUSDConce и очищатьнулевыеостатки. Equitybasis C1/DP — нативныйreportedUSDCtotal, совпадающий сfreshspotUSDCtotal; nativeUPNL отдельно дляатрибуции, не прибавляетсяповторно. Это подтвержденоофициальнымиbalance-docs и исходнымиproduction/testреализациямиOneKey/Rainbow/Sushi, не синхроннымэмпирическимheld-trace. См.UNIFIED_QUALIFICATION_CONTRACT_20261029.json.
+Пилот read-only audit:55/55seal/39fills/45intents, безdup/overrequest; подробныелоги26–28Octпристарте28Sep, полныйфинансовыйаудитUNKNOWN/fundingUNPOSTED. Старыйruntime сохранён. GUIcurrencycorrectness выполняетсясейчас; полныйpixelredesign/TradeHistory/zoom/authlongsession/newpassword по прежнемупорядку отложены. Оригинальные BybitUSDTархивы сохраняют свою валюту; UI не получает фиктивнуюFXконверсию.
 
-Нужны реальныеnativecurrency/commission/margin assertions: USDquote/USDCsettlement/zeroinstrumentrates известныпоофициальномуissue5024. Никакой выдуманнойFXпаритетности/произвольныхmarginrates; publicproviderroute только при доказаннойсовместимости и сохраненииvenue-reportedbalances. Истиннаяmaintenance/liquidationratio не равнаholdproxy.
-
-APIдокументация/официальныеissues/maintainerforums изучены; agent/masteraddress, retries/unknownACK, nonce/CLOID, modifycancel-replace, zero-balances, fundinghourly, rateweights, builderFalse и ограниченияscheduledCancel учтены вacceptance. ПятьunsignedInfo-read и штатныйnativeHTTPAccountState прошлибезключа/подписей/Node/Engine; всеaccountreadbacks private. Это не Nodecache/held/exchangefillproof.
-
-## Следующие gates и лимиты
-
-1. ЗавершитьUnifiedmapping+currency/foreignexposure+funding/budgetcases, одинconnectedpeer, FINALfreeze.
-2. ИзолированныйfixtureA/B черезнастоящийTradingNode/ExecutionEngine/cache сfakeexecutiontransport: lifecycle,partial/latefill/dup/unknownACK, accountrefresh,DP55/nativeflat, paused-flatrestart/Hpreserve. **Макс3физическиеинженерныепопытки, включаяFAILED; spent0/ROOT_GO=false.** Исторические8непереносятся. Test-onlybf31 подготовлен, hardguardне допускаетзапускдоновыхAPI/Unifiedsourcepins.
-3. FreshprivateHLread-onlycache/identity/precision/leverage/marginproof; реальныеmatching/отправкаордеров доSTART не проверяются и не объявляютсядоказанными.
-4. Подготовитьimmutablewinnerrelease/runbook/rollback/конкретныйreleaseverificationпротокол для согласования. Старыйpilotстоп/deploy/freshbenchmarkнацелевомrelease — после выбораверсиивладельцем. START/реальныеордера/переводы — отдельнотолькоявнаякоманда.
-
-Classicengineeringcap600/rolling1000 соответствует540+4N,N<=15; Unifiedпредварительноcap700/тотжеrolling при полномдоказанномвекторе. ВсеmaxboundsпредрезервируютсядоHTTP; saturation→UNKNOWN, не unboundedpagination. Source/age<=9s; userFundingcatchup45 отдельнототжебюджет. Никакихскрытыхзапросов/поднятийфинансовогориска.
-
-## Пилот и GUI
-
-Пилотread-onlyaudit:55/55seal,39fills/45intents, безduplicates/overrequests. Подробныелоги26–28Octпристарте28Sep; полныйфинансовыйаудитсостартаUNKNOWN, fundingстарогоSandboxпоегоcontractUNPOSTED. История/сервисы сохранены.
-
-GUIвыпускаетсяотдельно, поэтомупо указаниювладельцаTradeHistory/новыйDashboard/pixel-matchHyperliquid/zoom иlongsession/passwordприменение отложены. Ихготовностьне заявлена. СекретывKeychain, account/config/readbacks/screenshot толькоprivate, вpubliccode/reports не включены.
+Следующий порядок: source+USDCAPI/GUI/budgets → focusedpeer/finalfreeze → NativeA/B/privateprestart → immutableDRAFTrelease для VERSIONapproval → штатный переход/проверкацелевогорелиза → отдельныйявный START. Секреты/адрес/реальныйбаланс/financialreadbacks не включенывpublicпакет.

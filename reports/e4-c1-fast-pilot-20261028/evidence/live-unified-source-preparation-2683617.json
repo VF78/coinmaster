@@ -1,0 +1,93 @@
+{
+  "schema": "coinmaster-unified-compatibility-source-preparation-v1",
+  "state": "CONNECTED_PURE_PASS_AWAIT_ONE_PEER_NATIVE_NOT_RUN_NOT_RELEASE_READY",
+  "base_commit": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_info_receipt.py": "0eb46e49ec487df590647b348524af671f6a4688b69ee6b9ff8cbc619a17645a",
+    "runtime/coinmaster/ops/hl_live_execution.py": "059274b7bb75c8ef3ae84989417ca2047cef28ea39ef7c6526b4791e3a5352e7",
+    "runtime/coinmaster/ops/hl_live_money.py": "08ef030178df46634fa4565554f18cf4184536d75a01f2c7e6a1fa3ad4c5dbcf",
+    "runtime/coinmaster/ops/hl_live_profile.py": "258a76b838a416438527b7a0b15c7876581b90f766e470efb92938961d8cd475",
+    "runtime/coinmaster/ops/hl_live_worker.py": "667559a34fad1c7edbc05f6c90ad9c4e8884ca39cad66714b31583a6185387c9",
+    "runtime/coinmaster/strategy/c1_inputs.py": "e69c50884cbf24884122d9163ee760db5b440f0832c35e9899802163e8b35c4d",
+    "runtime/coinmaster/strategy/live_recovery.py": "b5040f49cccb9e8486125969a3051fc12d544125d0d1b199e4a37cd4f8cad999",
+    "runtime/coinmaster/strategy/wave_overlay.py": "ec8ee84a8c84a4de30fc874aa0fd0ab04d8e1f69180c46dad9889f719e3dc6bb",
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "b19cc15f14fc2973f97d8fd524d9f6cee6f271c7630966c709ce71e31fd1182b",
+    "runtime/tests/test_e4_c1_manage_only_pure.py": "c905b9297b96230e79c8fe09f9be05d93d28f4315ac3abc3359e3d07dc1d656c",
+    "runtime/coinmaster/ops/hl_unified_account.py": "ba07b1c8fc701760791ea9ee3163ff12b1d00406fcec8e731a92c3a53e0832e5",
+    "runtime/coinmaster/ops/hl_unified_instruments.py": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+    "runtime/tests/test_e4_c1_unified_pure.py": "8dd12d923a457dbdccfd70832d0ec97e8c6a75c852164699f98356f6e0f1fe75"
+  },
+  "owner_scope": "Keep exact Unified account mode, bounded native1.231 public-API compatibility, no engine migration/fork/newPNL/cache patch",
+  "equity_basis": "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1",
+  "money_contract": [
+    "Capital=C1/DP reported native USDCtotal matching fresh venue spotUSDCtotal; nativeUPNL is separate loss attribution, never added again",
+    "ExactmodeunifiedAccount, defaultDEXUSDC-only BTC/SOLcross; othercollateral/isolated/foreignexposure/unknownhold/order UNKNOWN",
+    "Stock public request_spot_balances\u2192nativeAccountBalance.to_dict\u2192legacyAccountBalance.from_dict\u2192generate_account_state reportedTrue",
+    "Both_update_account_state and_handle_account_state covered; legacyWSperpheuristic cannot overwrite; coalescedfreshread, mode/epoch/wholeoldest<=9s",
+    "ExplicitzeroUSDCandzeroaccountwidehold clearsprior cachedbalance/margin; hold isproxy NOTliquidationMM; no manualcashpost"
+  ],
+  "currency_contract": [
+    "PublicPyO3 andlegacyCryptoPerpetualfrom_dict normalizeONLYdefaultBTC/SOLlinearquote toactualUSDCsettlement",
+    "IDs/ticks/size/multiplier/numericlimits preserved; min/maxnotional USDdenomination only becomesUSDC sameamount, unknowncurrencyDENY",
+    "Stockmargin rates/fees remainzero, no FX/no arbitraryrates",
+    "Normalizedprovider installedinBOTHdataandexecfactories andpublicload/refresh caches; sourcequoted#5024 route",
+    "ActualnativePnLcurrency mustUSDC; commandgate usesfreshreal activeAssetData maxTradeSzs/availableToTrade ratherthan claimingzeroRates prove venue margin"
+  ],
+  "budget": {
+    "classic_generation_cap": 600,
+    "unified_generation_cap": 700,
+    "unified_prepaid_bound": "592+4N;N<=15 =>652",
+    "rolling_weight": 1000,
+    "rolling_seconds": 60,
+    "vector": "2*(frontend20+allDexsClearinghouseState20+spot2+role60+mode20+dexMode20+fills20+2N)+assets40+fillsitemmax200+nativecompat28",
+    "nativecompat": "mode20singleurllib +stockspot8(max4attempts*2),coalesced andincluded samefullreservation, standaloneprepaid28",
+    "cheap": "allDEX20+spot2=22;coalesced3sdemandonly; freshmode/nativeAccountStateproof<=9s; no commandpermit",
+    "discovery": "Separate660WORSTprepaidBEFOREperpDexs20, D<=32 incldefault, frontend20each;actual20+20D refundedknownunused; beforefullreservation; incomplete/foreign/staleUNKNOWN",
+    "no_hidden_requests": "Onecollectorattempt, two nonrecursivefills responses, saturation2000UNKNOWN; fundingseparate45/itemcharges; no recursivehistory"
+  },
+  "foreign_activity_scope": "Discovery is bounded prestart snapshot tiedaccount/policy/WS andownedscope; directory/newunknownorder/foreignposition quarantine. Exclusivewritercondition, notuniversal futureHIP3GTCproof or guaranteedDPcap underforeigntrading.",
+  "dp_bootstrap": "Public initialize_fresh_live_deposit_protection(key) virginHNone/latchFalse/history0/marker/currentpolicy only. Existingconfirmed-flat reset(confirmTrue) initializesHactual first, existingSET55 second; crashbetween retainsvalidH/readinessblocksuntilSET55. ANYpriorH/latch/history wrapperDENY; neverresetexistingH. CurrentexistingDPtimeralsohaspersistedfreshC1/coherentflat initializationcondition.",
+  "public_api": {
+    "normalizer": "coinmaster.ops.hl_unified_instruments.normalize_unified_pyo3_instrument(raw)",
+    "legacy_normalizer": "normalize_unified_legacy_instrument(raw)",
+    "provider": "UnifiedHyperliquidInstrumentProvider",
+    "data_factory": "UnifiedHyperliquidDataClientFactory",
+    "receipt": "collect_info_receipt(...account_mode=unifiedAccount), InfoReceipt.account_mode/spot_balances/all_dex_states/equity_basis",
+    "native_state": "QualifiedHyperliquidExecutionClient._update_account_state/_handle_account_state use public native projection"
+  },
+  "source_references": [
+    "https://github.com/nautechsystems/nautilus_trader/pull/5187",
+    "https://github.com/nautechsystems/nautilus_trader/issues/5024",
+    "https://raw.githubusercontent.com/nautechsystems/nautilus_trader/v1.231.0/crates/model/src/python/instruments/crypto_perpetual.rs",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals"
+  ],
+  "tests": {
+    "final": "112PASS16.34s",
+    "command": "PYTHONPATH=runtime canonicalruntime/.venv/bin/python -m pytest test_e4_c1_unified_pure +test_e4_c1_input_bridge_pure +test_e4_c1_manage_only_pure +test_deposit_protection -q --maxfail=1",
+    "prior_passes": [
+      "15UnifiedPASS0.60s",
+      "109connectedPASS16.46s",
+      "111connectedPASS16.12s"
+    ],
+    "preserved_fixture_corrections": [
+      "ASTextractor extended toactualtop-levelasync producer",
+      "Secondcatalog probe mustwaitrealrollingwindowexpiry",
+      "ActualextractedDPsource needsDecimalglobal"
+    ],
+    "static": "AllchangedPythonASTPASS;gitdiffcheckPASS"
+  },
+  "remaining_release_gates": [
+    "Onefocusedproductpeer",
+    "Actualnativecurrency-modelsmoke/publicnormalizer andA/Bengine/cache/faultqualification underrootboundedGO",
+    "Account-mode primaryimplementationcontract is wellsupported but NOTsynchronizedliveheldempiricalproof; actualfirstfillreadbackonlyafterownerSTART",
+    "Privateinitialcap/account/profile/releaseexactapproval binding stillpackaginggate; initialcap mustnotblockfuturecompoundprofits",
+    "Currentinputreadinessprofile MANAGE_ONLY/capabilityFALSE isNOTtradableactivepath; activecore/profile requiresseparateexactSTARTapproval",
+    "No deployment/order/transfer/servicechange fromsourcepush"
+  ],
+  "native_imports_engine_node_model_constructors": 0,
+  "venue_calls": 0,
+  "runtime_services_account_changes": 0,
+  "historical_runs": 0,
+  "final_explicit_START_required": true
+}
