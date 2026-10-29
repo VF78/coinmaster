@@ -709,7 +709,36 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if not self._active_c1_authorized:return super()._split_partial_targets_allowed()
         return self._owned_chain_current()
 
+    def _live_c1_tp_priority(self,ns):
+        # Withhold ordinary TP production only; existing C1 quote remains the
+        # sole cancellation/submission authority and revalidates every gate.
+        t=self._c1_state;ep=self._domain.episode
+        if (not self._active_c1_authorized or not self.config.research_residual_recovery
+            or not t or ep is None or ep.id!=t['group'] or t['revoked']):return False
+        if t['state'] in ('CUT_RESOLVING','RESTORE_RESOLVING'):return True
+        if (t['state']!='HELD' or t.get('restore_submitted') or t.get('credit',0)<=0
+            or t.get('cut_filled',0)<=0 or not t.get('confirmation')
+            or ns<=t['confirmation']['close_ns']):return False
+        c=self._c1_current_money(ns)
+        if c is None or c['DD']>self.config.research_c1_restore_dd or not self._c1_btc_postcut_d1_allowed(t,c,ns):return False
+        q=self.cache.quote_tick(t['instrument'])
+        if q is None or not 0<=ns-q.ts_event<=self.config.max_mark_age_ns:return False
+        executable=q.ask_price.as_decimal() if t['side']==1 else q.bid_price.as_decimal()
+        return t['side']*(executable-t['cut_value']/(Decimal(t['cut_filled'])*t['step']))>0
+
     def _queue_confirmed_btc_targets(self,sigma,decision_index,ready_ns):
+        if self._live_c1_tp_priority(ready_ns):
+            # Surrender only unsent normal TP reservations. Native/journal
+            # ownership (including uncertain ACKs) must survive until receipts.
+            pending={intent.id for intent in self._pending_by_order.values()}
+            recorded={row['intent_id'] for row in self._recovery_runtime.all_submissions()}
+            group=self._c1_state['group']
+            self._discard_queued_intents(lambda intent: intent.episode_id==group
+                and intent.action=='BTC_REDUCE' and str(intent.reason or '').startswith('BTC_TP')
+                and intent.level is not None and intent.limit_price is not None
+                and intent.id not in self._c1_intents and intent.id not in pending
+                and intent.id not in recorded)
+            return
         if self._active_c1_authorized and self._split_parent is not None:
             pending=self._split_parent.get("partial_tp_replan_pending",())
             if pending:
