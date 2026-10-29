@@ -324,14 +324,27 @@ def native_usdc_margin_core(strategy,instrument_id,side,quantity,ts_now):
         core=prospective_cross_margin_core(equity=equity,free_collateral=equity-held_im,
             selected_assets=assets,positions=positions,pending_openings=tuple(pending),
             coin=coin,side=side.name,quantity=quantity,max_gross_multiple=strategy.config.max_gross_to_active)
+        tier_reason=None
+        if core is not None:
+            for identifier,name in zip(ids,("BTC","SOL")):
+                held=positions.get(name,Decimal(0))
+                worst=max(abs(held+core["buys"][name]),abs(held-core["sells"][name]))
+                if worst:
+                    try:
+                        strategy.config.margin_policy.margin_for(identifier,worst,ts_now)
+                    except ValueError as error:
+                        tier_reason="CURRENT_HL_PROSPECTIVE_TIER_DENIED:"+str(error)
+                        core=dict(core,allowed=False)
+                        break
         strategy._last_hl_admission_audit=dict(E=str(equity),economic_free_collateral=str(equity-held_im),
+            public_tier_guard_reason=tier_reason or "CURRENT_HL_PROSPECTIVE_TIER_PASS",
             held_initial_margin=str(held_im),opening_collateral=None if core is None else str(core["opening_collateral"]),
             fee_reserve=None if core is None else str(core["fee_reserve"]),
             prospective_gross=None if core is None else str(core["gross"]),
             admission_allowed=bool(core is not None and core["allowed"]))
         if core is not None and not core["allowed"]:
             strategy.pre_submit_gate_blocks.append(dict(timestamp=str(ts_now),action="HL_ADMISSION_CORE",
-                reason="SHARED_ECONOMIC_HEADROOM_OR_GROSS_DENIED",**strategy._last_hl_admission_audit))
+                reason=tier_reason or "SHARED_ECONOMIC_HEADROOM_OR_GROSS_DENIED",**strategy._last_hl_admission_audit))
         return core is not None and core["allowed"]
     except (AttributeError,KeyError,RuntimeError,TypeError,ValueError):
         return False

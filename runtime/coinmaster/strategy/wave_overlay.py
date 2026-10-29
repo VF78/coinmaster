@@ -3110,7 +3110,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self.fill_audit.append({
             "venue": str(context.get("venue", event.instrument_id.venue)),
             "client_order_id": str(event.client_order_id), "trade_id": str(event.trade_id),
-            **{key: context.get(key) for key in ("intent_id", "episode_id", "decision_ns", "cancel_ack_ns", "quote_ns", "quote_bid", "quote_ask", "raw_requested_qty", "preround_qty", "rounded_qty", "requested_notional", "H", "episode_entry_E", "sizing_guard", "E", "economic_free_collateral", "held_initial_margin", "opening_collateral", "fee_reserve", "prospective_gross", "admission_allowed")},
+            **{key: context.get(key) for key in ("intent_id", "episode_id", "decision_ns", "cancel_ack_ns", "quote_ns", "quote_bid", "quote_ask", "raw_requested_qty", "preround_qty", "rounded_qty", "requested_notional", "H", "episode_entry_E", "sizing_guard", "E", "economic_free_collateral", "held_initial_margin", "opening_collateral", "fee_reserve", "prospective_gross", "admission_allowed", "public_tier_guard_reason")},
             "instrument": str(event.instrument_id),
             "action": str(context.get("action", "UNKNOWN")),
             "reason": str(context.get("reason", "UNKNOWN")),

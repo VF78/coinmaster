@@ -1,5 +1,6 @@
 """Actual controller AST and native objects; engine constructions zero."""
 import ast
+import pytest
 from decimal import Decimal as D
 from pathlib import Path
 from types import SimpleNamespace as N
@@ -163,3 +164,37 @@ def test_native_plus_minus_upnl_and_live_share_economic_core_with_additional_liv
                selected_assets=assets,account_mode="unifiedAccount")
         assert not module.prospective_cross_margin_ok(view,positions={"SOL":D(10)},pending_openings=(("SOL","SELL",D(2)),),
             coin="SOL",side="BUY",quantity=D(1800),max_gross_multiple=D(50))
+
+
+@pytest.mark.parametrize("coin,quantity,allowed",[
+    ("BTC","1499.99999",True),("BTC","1500",False),
+    ("SOL","699999.99",True),("SOL","700000",False),
+])
+def test_current_hl_exact_prospective_tier_boundaries_and_opposite_side_netting(coin,quantity,allowed):
+    from coinmaster.ops.hl_live_money import native_usdc_margin_core
+    from coinmaster.research.current_hl_profile import load_current_hl_diagnostic
+    from nautilus_trader.model.currencies import USDC
+    from nautilus_trader.model.objects import Money
+    profile=load_current_hl_diagnostic(Path(__file__).parent/"fixtures/hl-current-20261029")
+    btc,sol=profile.instruments
+    marks={btc.id:N(instrument_id=btc.id,price=D(100000),ts_event=100),sol.id:N(instrument_id=sol.id,price=D(100),ts_event=100)}
+    policy=profile.margin_policy(100)
+    for mark in marks.values():policy.update_mark(mark)
+    held=[];pending=[]
+    strategy=N(config=N(btc_id=btc.id,sol_id=sol.id,max_mark_age_ns=100,margin_policy=policy,
+        native_hl_selected_leverage=profile.selected_leverage,max_gross_to_active=D(50)),
+        _latest_marks=marks,pre_submit_gate_blocks=[],
+        cache=N(account_for_venue=lambda v:N(balance_total=lambda c:Money(1000000000,USDC)),
+            positions_open=lambda:held,orders_open=lambda:pending,orders_inflight=lambda:[],
+            instrument=lambda i:btc if i==btc.id else sol))
+    instrument=btc if coin=="BTC" else sol
+    assert native_usdc_margin_core(strategy,instrument.id,OrderSide.BUY,D(quantity),100)==allowed
+    if not allowed:assert "PROSPECTIVE_TIER_DENIED" in strategy.pre_submit_gate_blocks[-1]["reason"]
+    # A pending opposite SELL cannot erase worst-side BUY exposure. A net-only
+    # sum would show 500 BTC; the current worst side is 1500 BTC and is denied.
+    held.append(N(instrument_id=btc.id,is_long=True,quantity=btc.make_qty(D(1000)),unrealized_pnl=lambda p:Money(0,USDC)))
+    pending.append(N(client_order_id="opposite",is_closed=False,is_reduce_only=False,instrument_id=btc.id,
+        quantity=btc.make_qty(D(1000)),filled_qty=btc.make_qty(D(0)),side=OrderSide.SELL))
+    assert not native_usdc_margin_core(strategy,btc.id,OrderSide.BUY,D(500),100)
+    assert "PROSPECTIVE_TIER_DENIED" in strategy.pre_submit_gate_blocks[-1]["reason"]
+    assert native_usdc_margin_core(strategy,btc.id,OrderSide.SELL,D(500),100)
