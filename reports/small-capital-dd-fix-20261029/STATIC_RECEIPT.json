@@ -1,24 +1,32 @@
 {
   "BTC_precision": 5,
+  "DP_observation_sites": [
+    "on_quote_tick",
+    "_on_deposit_timer",
+    "_tier_allows_increase",
+    "submit_order"
+  ],
   "HTTP": 0,
   "SOL_precision": 1,
   "base": "5e429a1cd23ea4cd38458e5a6cc52e7752e4ea18",
   "currency": "BYBIT_NATIVE_USDT_UNCHANGED",
   "engines": 0,
   "fees_venue_signals_execution": "UNCHANGED",
+  "fill_callback_eligibility": "ACTUAL_on_order_filled_calls_advance_eligibility_WITHOUT_NATIVE_MONEY_READ_HIGH_CHANGE_TRIP_OR_PERSIST;NEXT_ACTUAL_QUOTE_OBSERVES",
   "legacy_basis_default": "UTC_DAILY_CLOSE",
   "live_files_changed": false,
   "persisted_basis_mismatch": "REJECT_NO_RESET_NO_MIGRATION",
-  "pure_checks": "61 PASS 2.85s",
+  "pure_checks": "63 PASS 3.45s",
   "quote_display_quantity": "1000_UNCHANGED",
   "schema": "coinmaster-research-peak-btc-only-static-v1",
   "selected_basis": "OBSERVED_NATIVE_EQUITY_PEAK",
+  "selected_fill_continuation": "_advance_current_day_ONLY_QUEUES;NO_submit_order/_submit_intent/_tier_allows_increase/_deposit_check;confirmed_targets_ONLY_QUEUE;C1_native_fill_updates_epoch_and_revokes;reductions_bypass_increase_observation",
   "selected_quantity_model": "btc_lot_diagnostic",
   "source_pins": {
     "runtime/coinmaster/domain/deposit_protection.py": "21161559dc898ff404fb3422c5a46f0afceedba7ea0af0931cf2fa6962d8e974",
     "runtime/coinmaster/research/qualification_policy.py": "f4b4833b1660de929dba13d88f8026117ccfe429bb81878c2817229aa70e092f",
-    "runtime/coinmaster/strategy/wave_overlay.py": "85cf7137eaa21a85156ce3a9440e13f99d210a1773c1dc4c866d227b12004f47",
-    "runtime/tests/test_deposit_peak_basis_pure.py": "5f26592fd3ec43a980cdbb108b2ec600389e7159ceb832231648366396341ac3",
+    "runtime/coinmaster/strategy/wave_overlay.py": "571f89480b9b20305dca952a633b1581dbaf439034d1572b2e39eb9ed8e366b6",
+    "runtime/tests/test_deposit_peak_basis_pure.py": "d4e53f3eb9ac1242096e523d4eea425cacb8ea84752f069b7edc3ac29dbfb9b8",
     "runtime/tests/test_qualification_dp_pure.py": "e7b00a52ca590fa0f39f2d90b3a9396b963d80a3997577031e1d4c2ea4534476"
   }
 }

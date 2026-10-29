@@ -3012,12 +3012,20 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             raise RuntimeError("DEPOSIT_CONTROL_PERSISTENCE_FAILED")
         return self.deposit_projection()
 
+    def _deposit_health(self) -> bool:
+        """Read last observed DP state without reading native money or persisting."""
+        return (
+            self._deposit.high_water is not None and self._deposit.current_equity is not None
+            and not self._deposit.latched and not self._deposit.daily_sample_missed
+            and not self._deposit_storage_failed
+        )
+
     def _entries_enabled(self, *, ignore_research_protection: bool = False) -> bool:
         if self._research_protect_latch is not None and not ignore_research_protection:
             return False
         if self.config.research_v0_selective_lifecycle_repairs and self.terminal_lifecycle.get("lockout"):
             return False
-        if self.config.deposit_runtime is not None and not self._deposit_check():
+        if self.config.deposit_runtime is not None and not self._deposit_health():
             return False
         gate = self.config.entries_gate
         return self.config.entries_enabled and (bool(gate()) if callable(gate) else True)
