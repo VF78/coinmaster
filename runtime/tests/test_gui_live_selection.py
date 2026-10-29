@@ -13,8 +13,10 @@ def live(**patch):
     return {"instance_id": "hl-stageg-live", "mode": "live", "environment": "mainnet",
             "version": "hl-stageg-live-projection-v1", "provenance": "NATIVE_MAINNET_OWNED_ACCOUNT",
             "live_order_capability": True, "run_epoch": "live-epoch", "observed_at_ns": time.time_ns(),
+            "money_currency": "USDC", "equity_basis": sidecar.USDC_EQUITY_BASIS,
             "state": "PUBLIC_FEEDS_READY", "native_thread_alive": True, "account_state": "CURRENT",
-            "account": {"native_cash": "81.5", "equity": "82.3", "withdrawable": "70", "margin_used": "11.5"},
+            "account": {"currency": "USDC", "money_currency": "USDC", "equity_basis": sidecar.USDC_EQUITY_BASIS,
+                        "margin_basis": sidecar.USDC_MARGIN_BASIS, "native_cash": "81.5", "equity": "82.3", "native_free": "70", "native_locked": "11.5"},
             "profile": {"profile_id": "V3+DP50", "initial_capital_usdc": "82", "deposit_protection_percent": 50},
             "entry_control": {"state": "RUNNING", "capability": "READY"}, "recovery_required": False,
             "orders_enabled": True, "feeds": {}, "positions": [], "orders": [], "events": [], **patch}

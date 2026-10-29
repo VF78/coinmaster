@@ -213,7 +213,7 @@ def test_authenticated_sidecar_relays_real_worker_equity_and_public_candles(monk
 
     now_ms = 1000 * MINUTE_MS + 7
     # The test supplies exact public Info rows; no network or Bybit fallback.
-    monkeypatch.setattr(sidecar, "public_candles", lambda coin, interval, limit: public_candles(
+    monkeypatch.setattr(sidecar.PublicCandleBudget, "request", lambda _self, coin, interval, limit: public_candles(
         coin, interval, limit, now_ms=now_ms,
         post=lambda _body: [_candle(999 * MINUTE_MS)],
     ))

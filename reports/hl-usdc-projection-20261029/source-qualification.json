@@ -1,0 +1,55 @@
+{
+  "task": "CM-HL-USDC-ENDTOEND-20261029",
+  "base": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
+  "scope": "source-only API/frontend USDC denomination propagation; no deployment/runtime/account queries",
+  "contract": {
+    "currency": "USDC",
+    "equity_basis": "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1",
+    "margin_basis": "HYPERLIQUID_SPOT_USDC_HOLD_PROXY_NOT_LIQUIDATION_MM_V1",
+    "amounts": "finite decimal strings; unverified live currency null plus reason",
+    "equity": "reported total unchanged; UPNL/funding never added",
+    "native_ids": "opaque *-USD-PERP.HYPERLIQUID unchanged",
+    "display_pairs": [
+      "BTC/USDC",
+      "SOL/USDC"
+    ],
+    "historical_bybit": "USDT preserved; legacy untyped Sandbox GUI money withheld"
+  },
+  "checks": {
+    "pure_wire_contract": "8 passed; AST-selected schema/reader definitions, native objects 0",
+    "existing_api_currency_selection": "8 passed, 12 deselected; URL mocked",
+    "frontend": "19 passed",
+    "typescript": "tsc --noEmit PASS",
+    "web_build": "vite build PASS; /tmp/cm-usdc-web-build-final-20261029",
+    "diff_check": "PASS",
+    "openapi": "genuine existing export_runtime_openapi.py + openapi-typescript regenerated after finalized funding fields",
+    "generator_scope": "approved import-only BTC_PERP/SOL_PERP two CryptoPerpetual fixtures plus associated identifiers/Price/Quantity/Money; no TradingNode/ExecutionEngine/BacktestEngine constructors; network connect guarded; fresh isolated DB /tmp/cm-usdc-schema-bgis8c_d"
+  },
+  "remaining": {
+    "legacy_orphans": "App.tsx active routes do not mount legacy DashboardPage/HistoryPage. Their USD formatter/feeUsd schema untouched; must not blanket-relabel Bybit amounts. No active CSV monetary export endpoint found; active JSON/OpenAPI exports updated.",
+    "sandbox": "old producer has no verified denomination; no seed/provenance inference. Paired qualified producer needed before displayed money.",
+    "gui_pixels_auth": "deferred by scope",
+    "runtime": "not deployed; no START, engine, accounts or keys read"
+  },
+  "shared_ip_public_candles": {
+    "max_rows": 500,
+    "frontend_rows": 300,
+    "cache_ttl": "NONE",
+    "global_weight_guard": "NONE",
+    "ready_stale_poll_seconds": {
+      "1m": 60,
+      "5m": 300,
+      "15m": 900,
+      "1h": 3600,
+      "4h": 14400,
+      "1d": 21600
+    },
+    "unavailable_retry_seconds": 15,
+    "immediate": "initial load, market/interval switch, manual refresh",
+    "weight": "20 plus one per60 rows; 300 rows=25/request; max500 conservative29",
+    "steady_one_tab": "1m25/min; default15m average1.67/min with25 burst; error retry up to100/min at300returnedrows",
+    "absolute_bound": "UNBOUNDED across tabs, manual refresh and authenticated API clients. No shared-IP engine+GUI budget enforcement. Before START must qualify <=1000 engine + <=200 GUI/public weights/60s under venue shared1200/IP.",
+    "cadence_changed": false,
+    "primary_source": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits"
+  }
+}

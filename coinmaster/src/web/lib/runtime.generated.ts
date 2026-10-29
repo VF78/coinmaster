@@ -669,6 +669,11 @@ export interface components {
             latest_closed_at_ms: number | null;
             /** Observed At Ms */
             observed_at_ms: number | null;
+            /**
+             * Quote Currency
+             * @constant
+             */
+            quote_currency: "USDC";
             /** Reason */
             reason: string | null;
             /**
@@ -694,18 +699,42 @@ export interface components {
         };
         /** HlStagegAccount */
         HlStagegAccount: {
+            /** Available */
+            available?: string | null;
+            /** Currency */
+            currency?: string | null;
             /** Equity */
             equity?: string | null;
+            /** Equity Basis */
+            equity_basis?: string | null;
             /** Fees */
             fees?: string | null;
+            /** Free Collateral */
+            free_collateral?: string | null;
             /** Free Margin */
             free_margin?: string | null;
+            /** Funding */
+            funding?: string | null;
+            /** Funding Coverage End Ns */
+            funding_coverage_end_ns?: number | null;
+            /** Funding Currency */
+            funding_currency?: string | null;
+            /** Funding Reason */
+            funding_reason?: string | null;
+            /** Hold */
+            hold?: string | null;
             /** Im */
             im?: string | null;
+            /** Locked */
+            locked?: string | null;
+            /** Margin Basis */
+            margin_basis?: string | null;
             /** Mark State */
             mark_state?: ("CURRENT" | "STALE_OR_MISSING") | null;
             /** Mm */
             mm?: string | null;
+            /** Money Currency */
+            money_currency?: string | null;
             /** Native Cash */
             native_cash?: string | null;
             /** Native Free */
@@ -716,6 +745,10 @@ export interface components {
             observed_at_ns?: number | null;
             /** Realized Pnl Net Fees */
             realized_pnl_net_fees?: string | null;
+            /** Reason */
+            reason?: string | null;
+            /** Reported Total */
+            reported_total?: string | null;
             /**
              * Status
              * @default UNAVAILABLE
@@ -724,6 +757,33 @@ export interface components {
             status: "AVAILABLE" | "PARTIAL" | "UNAVAILABLE";
             /** Unrealized Pnl */
             unrealized_pnl?: string | null;
+        };
+        /** HlStagegC1 */
+        HlStagegC1: {
+            /** Dd */
+            DD?: string | null;
+            /** E */
+            E?: string | null;
+            /** H */
+            H?: string | null;
+            /** Currency */
+            currency?: string | null;
+            /** Cushion */
+            cushion?: string | null;
+            /** Decision Ns */
+            decision_ns?: number | null;
+            /** Equity Basis */
+            equity_basis?: string | null;
+            /** Reason */
+            reason?: string | null;
+            /** Rights */
+            rights?: {
+                [key: string]: unknown;
+            } | null;
+            /** Source Available Ns */
+            source_available_ns?: number | null;
+            /** State */
+            state: string;
         };
         /** HlStagegControlAction */
         HlStagegControlAction: {
@@ -799,12 +859,18 @@ export interface components {
             drawdown_limit_percent: number;
             /** Equity */
             equity?: string | null;
+            /** High Water Basis */
+            high_water_basis?: string | null;
             /** High Water Equity */
             high_water_equity?: string | null;
             /** Last Daily Close Utc */
             last_daily_close_utc?: string | null;
             /** Observed At Ns */
             observed_at_ns?: number | null;
+            /** Reason */
+            reason?: string | null;
+            /** Retained Equity Floor Fraction */
+            retained_equity_floor_fraction?: string | null;
             /**
              * State
              * @enum {string}
@@ -971,6 +1037,7 @@ export interface components {
         /** HlStagegProjection */
         HlStagegProjection: {
             account: components["schemas"]["HlStagegAccount"];
+            c1?: components["schemas"]["HlStagegC1"] | null;
             deposit_protection?: components["schemas"]["HlStagegDepositProtection"] | null;
             entry_control: components["schemas"]["HlStagegEntryControl"];
             /**
@@ -978,6 +1045,8 @@ export interface components {
              * @enum {string}
              */
             environment: "mainnet-public" | "mainnet";
+            /** Equity Basis */
+            equity_basis?: string | null;
             /** Event Cursor */
             event_cursor: number;
             /** Events */
@@ -1008,6 +1077,10 @@ export interface components {
              * @enum {string}
              */
             mode: "sandbox" | "live";
+            /** Money Currency */
+            money_currency?: string | null;
+            /** Money Reason */
+            money_reason?: string | null;
             /** Native Thread Alive */
             native_thread_alive?: boolean | null;
             /** Observed At Ns */
