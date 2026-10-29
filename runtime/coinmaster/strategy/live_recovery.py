@@ -14,6 +14,7 @@ import time
 from dataclasses import fields, is_dataclass, replace
 from datetime import datetime,timezone,timedelta
 from decimal import Decimal
+from pathlib import Path
 
 from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.enums import OrderSide
