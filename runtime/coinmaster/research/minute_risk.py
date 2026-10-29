@@ -113,7 +113,7 @@ class NativeMinuteRiskRecorder:
         self.last_post_cash = D(seed)
         self.settled_curve = DrawdownTracker(seed)
         self.receipt_pending = None
-        self.receipt_b_peak = None
+        self.receipt_b_frame = None
         self.fill_epoch = 0
         self.last_fill_ns = None
         self.receipt_count = 0
@@ -203,10 +203,14 @@ class NativeMinuteRiskRecorder:
         self.receipt_count += 1
         self.receipt_pending = None
         if getattr(strategy.config,"research_sol_market_budget_b",False):
-            peak=self.receipt_b_peak
-            high=peak[2] if peak is not None and peak[:2]==(source,epoch) else None
-            strategy._sol_b_observe(equity,timestamp,source,epoch,details,high_water=high)
-            self.receipt_b_peak=None
+            from coinmaster.strategy.sol_market_budget import native_account_identity
+            frame=self.receipt_b_frame
+            matched=(frame is not None and (frame['source'],frame['epoch'],frame['cash'],frame['E'],frame['account'])
+                     ==(source,epoch,cash,equity,native_account_identity(account)))
+            strategy._sol_b_observe(equity,timestamp,source,epoch,details,
+                high_water=frame['H'] if matched else None,source_marks=frame['marks'] if matched else None,
+                account_identity=frame['account'] if matched else None)
+            self.receipt_b_frame=None
         # C1 decisions consume the committed consistent receipt and frozen marks.
         if getattr(strategy.config,"research_residual_recovery",False):
             strategy._c1_observe(equity,timestamp,source,epoch,details)
@@ -235,7 +239,12 @@ class NativeMinuteRiskRecorder:
                 self.receipt_pending = (timestamp, bundle)
                 if getattr(strategy.config,"research_sol_market_budget_b",False):
                     high=strategy.config.research_sol_market_budget_high_water_reader()
-                    self.receipt_b_peak=(timestamp,self.fill_epoch,max(D(high),equity)) if high is not None else None
+                    from coinmaster.strategy.sol_market_budget import native_account_identity
+                    account=strategy.cache.account_for_venue(strategy.config.btc_id.venue)
+                    identity=native_account_identity(account)
+                    self.receipt_b_frame=dict(source=timestamp,epoch=self.fill_epoch,H=D(high),E=equity,cash=cash,account=identity,
+                        marks={strategy.config.btc_id:D(bundle.btc_mark['close']),strategy.config.sol_id:D(bundle.sol_mark['close'])}
+                    ) if high is not None and D(high)>=equity and identity is not None else None
             self.curves[phase].add(timestamp,equity)
             self.curves["all_native_close_samples"].add(timestamp,equity)
         if phase == "pre_quote_paired_close":

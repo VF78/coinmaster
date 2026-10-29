@@ -104,9 +104,10 @@ def test_live_profile_explicitly_unsupported_before_base(monkeypatch):
 def test_epoch_and_native_position_receipts_cannot_mix():
     s=gate();s._c1_fill_epoch=4;s._last_accepted_session=10
     s._sol_b_atr=[N(valid=True,ns=10,atr=D(1))]*2
-    c=dict(source=20,receipt=21,epoch=4,positions={'S':('p',D(10),True)})
+    c=dict(source=20,receipt=21,epoch=4,positions={'S':('p',D(10),True)},account_identity=('account',20))
+    s._bars=[N(available_at=N(timestamp=lambda:10/1e9))]
     s._sol_b_snapshot=c
-    s.cache=N(account_for_venue=lambda v:N(last_event=N(ts_event=20)),positions_open=lambda:[N(instrument_id='S',id='p',quantity=N(as_decimal=lambda:D(10)),is_long=True)])
+    s.cache=N(account_for_venue=lambda v:N(last_event=N(id="account",ts_event=20)),positions_open=lambda:[N(instrument_id='S',id='p',quantity=N(as_decimal=lambda:D(10)),is_long=True)])
     s.config.btc_id=N(venue='V')
     assert SolMarketBudgetResearch._sol_b_current(s,30) is c
     s._c1_fill_epoch=5
@@ -114,19 +115,33 @@ def test_epoch_and_native_position_receipts_cannot_mix():
     s._c1_fill_epoch=4;s.cache.positions_open=lambda:[N(instrument_id='S',id='p',quantity=N(as_decimal=lambda:D(9)),is_long=True)]
     assert SolMarketBudgetResearch._sol_b_current(s,30) is None
 
-def test_receipt_uses_frozen_source_hwm_not_later_current_peak():
+@pytest.mark.parametrize('initial_high,final_money,accepted',[(100,100,True),(100,95,False),(90,100,False)])
+def test_receipt_rejects_same_source_same_epoch_cash_change_and_later_hwm(initial_high,final_money,accepted):
     from coinmaster.research.minute_risk import NativeMinuteRiskRecorder
+    from nautilus_trader.model.identifiers import InstrumentId
+    btc=InstrumentId.from_str('BTC.TEST');sol=InstrumentId.from_str('SOL.TEST')
+    bundle=N(btc_mark={'close':'100'},sol_mark={'close':'10'},open_time_ms=0)
     r=NativeMinuteRiskRecorder.__new__(NativeMinuteRiskRecorder)
-    r.receipt_pending=(10,N());r.receipt_b_peak=(10,3,D(100));r.fill_epoch=3;r.last_fill_ns=10
-    r._snapshot=lambda *a:(None,D(50),None,None,None,D(50),None,None,None,[])
+    r.receipt_pending=None;r.receipt_b_frame=None;r.fill_epoch=3;r.last_fill_ns=10
+    r.bundles={10:bundle};r.end_exclusive_ns=1000;r.phase_counts={'post_quote_paired_close':0}
+    r.curves={k:N(add=lambda *a:None) for k in ('post_quote_paired_close','all_native_close_samples')}
+    r.writer=N(writerow=lambda *a:None);r.rows=0
+    r._snapshot=lambda *a:(bundle,D(100),D(100),D(0),D(0),D(100),D(0),D(0),D(0),[])
     r.settled_curve=N(add=lambda *a:None);r.receipt_writer=N(writerow=lambda *a:None);r.receipt_count=0
-    got=[]
-    s=N(config=N(btc_id=N(venue='V'),research_sol_market_budget_b=True,research_residual_recovery=False,
-                   research_sol_market_budget_high_water_reader=lambda:D(999)),
-        cache=N(account_for_venue=lambda *a:N(last_event=N(ts_event=10))),
+    got=[];hwm=[D(initial_high)]
+    s=N(config=N(btc_id=btc,sol_id=sol,research_sol_market_budget_b=True,research_residual_recovery=False,
+                   research_sol_market_budget_high_water_reader=lambda:hwm[0]),
+        cache=N(account_for_venue=lambda *a:N(last_event=N(id='account',ts_event=10))),
         _sol_b_observe=lambda *a,**kw:got.append((a,kw)))
+    r.capture(s,10,'post_quote_paired_close')
+    if initial_high>=100:assert r.receipt_b_frame['H']==100 and r.receipt_b_frame['E']==100
+    else:assert r.receipt_b_frame is None  # callback E cannot invent a canonical peak
+    hwm[0]=D(999)
+    r._snapshot=lambda *a:(bundle,D(final_money),None,None,None,D(final_money),None,None,None,[])
     r.finalize_receipt(s,11)
-    assert got[0][1]['high_water']==100 and r.receipt_b_peak is None
+    assert (got[0][1]['high_water']==100) if accepted else got[0][1]['high_water'] is None
+    assert r.receipt_b_frame is None
+
 
 def test_activation_release_only_flat_terminal_and_recovered():
     s=Gates();s.config=N(research_sol_market_budget_b=True,btc_id='B',sol_id='S')
@@ -135,17 +150,17 @@ def test_activation_release_only_flat_terminal_and_recovered():
         unrealized_pnl=lambda mark:N(as_decimal=lambda:D(-15)))
     positions=[p];orders=[]
     s.cache=N(positions_open=lambda:positions,instrument=lambda iid:N(make_price=lambda x:N(as_decimal=lambda:D(x))))
-    s._latest_marks={'B':N(ts_event=10,price=D(100)),'S':N(ts_event=10,price=D(10))}
+    s._latest_marks={'B':N(ts_event=11,price=D(999)),'S':N(ts_event=11,price=D(999))}
     s._sol_b_orders=lambda:orders
     rows=[{'instrument_id':'S','mark_ohlc':{'close':'10'}}]
-    s._sol_b_observe(D(50),11,10,0,rows,high_water=D(100))
-    assert s._sol_b_armed
+    s._sol_b_observe(D(50),11,10,0,rows,high_water=D(100),source_marks={'B':D(100),'S':D(10)},account_identity=('account',10))
+    assert s._sol_b_armed and s._sol_b_snapshot["marks"]=={"B":D(100),"S":D(10)}
     # C1 state cannot clear it; recovered money with position still held cannot.
-    s._sol_b_observe(D(90),11,10,0,rows,high_water=D(100));assert s._sol_b_armed
+    s._sol_b_observe(D(90),11,10,0,rows,high_water=D(100),source_marks={'B':D(100),'S':D(10)},account_identity=('account',10));assert s._sol_b_armed
     positions.clear();orders.append(N())
-    s._sol_b_observe(D(90),11,10,0,[],high_water=D(100));assert s._sol_b_armed
-    orders.clear();s._sol_b_observe(D(50),11,10,0,[],high_water=D(100));assert s._sol_b_armed
-    s._sol_b_observe(D(90),11,10,0,[],high_water=D(100));assert not s._sol_b_armed
+    s._sol_b_observe(D(90),11,10,0,[],high_water=D(100),source_marks={'B':D(100),'S':D(10)},account_identity=('account',10));assert s._sol_b_armed
+    orders.clear();s._sol_b_observe(D(50),11,10,0,[],high_water=D(100),source_marks={'B':D(100),'S':D(10)},account_identity=('account',10));assert s._sol_b_armed
+    s._sol_b_observe(D(90),11,10,0,[],high_water=D(100),source_marks={'B':D(100),'S':D(10)},account_identity=('account',10));assert not s._sol_b_armed
 
 def test_pending_increase_whole_leaves_cancel_unknown_no_fake_trim():
     s=gate();s._sol_b_current=lambda ns:None
@@ -166,11 +181,12 @@ def test_actual_native_trim_callbacks_no_duplicate_or_target_assumption(position
     s._sol_b_armed=True;s._sol_b_last_held=None;s.sol_market_budget_audit=[];s._c1_fill_epoch=0
     s._hb_position=lambda iid:c.position if iid==c.sol.id else None
     s._c1_own_pending=lambda:False;s._has_owned_sol_exit=lambda:bool(s._accepted_reductions)
+    s._bars=[N(available_at=N(timestamp=lambda:50/1e9))]
     s._last_accepted_session=50;s._sol_b_atr=[N(valid=True,ns=50,atr=D(1))]*2
     s._current_signals=[N(beta=1)]
     s._sol_b_snapshot=dict(E=D(10000),H=D(20000),source=98,receipt=99,epoch=0,
-        positions={c.sol.id:(str(c.position.id),D(4000),True)},marks={c.sol.id:D(100),c.btc.id:D(100)})
-    s.cache.account_for_venue=lambda v:N(last_event=N(ts_event=98))
+        positions={c.sol.id:(str(c.position.id),D(4000),True)},marks={c.sol.id:D(100),c.btc.id:D(100)},account_identity=('account',98))
+    s.cache.account_for_venue=lambda v:N(last_event=N(id="account",ts_event=98))
     tick=instrument_quote(c.sol,'100','100',100)
     assert s._sol_b_quote(tick,100)
     assert len(c.sent)==1 and c.sent[0].is_reduce_only and c.sent[0].quantity.as_decimal()==3950
@@ -247,3 +263,27 @@ def test_b_factory_scales_shared_ceiling_without_a_children(seed,cap):
     exec(compile(ast.fix_missing_locations(ast.Module(body=[statement],type_ignores=[])),'actual_B_candidate_assignment','exec'),env)
     expected=asdict(effective_research_candidate(selective_lifecycle_repairs=True));expected['max_parent_notional']=float(D(cap))
     assert asdict(env['candidate'])==expected
+
+def test_closed_d1_boundary_uses_decision_availability_not_old_money_source():
+    from datetime import datetime,UTC,timedelta
+    from types import MethodType
+    from nautilus_trader.model.identifiers import InstrumentId
+    at=datetime(2024,10,3,tzinfo=UTC);ns=int(at.timestamp()*1_000_000_000)
+    source=ns-60_000_000_000;btc=InstrumentId.from_str('BTC.TEST')
+    s=gate();s.config.btc_id=btc;s.config.max_mark_age_ns=120_000_000_000;s._sol_b_armed=False
+    s._c1_fill_epoch=7;s._last_accepted_session=ns
+    s._bars=[N(available_at=at)];s._sol_b_atr=[N(valid=True,ns=ns,atr=D(1))]*2
+    c=dict(source=source,receipt=ns,epoch=7,positions={},account_identity=('source-account',source))
+    s._sol_b_snapshot=c
+    event=N(id='source-account',ts_event=source)
+    s.cache=N(account_for_venue=lambda v:N(last_event=event),positions_open=lambda:[])
+    s._sol_b_current=MethodType(SolMarketBudgetResearch._sol_b_current,s)
+    assert s._sol_b_current(ns) is c
+    assert s._sol_b_increase_qty(D(8),1,ns)==8
+    # The same D1 becomes ineligible if its actual availability is later.
+    s._bars=[N(available_at=at+timedelta(seconds=1))]
+    assert s._sol_b_increase_qty(D(8),1,ns)==0
+    assert s._sol_b_increase_qty(D(8),1,ns+1_000_000_000)==8
+    # A new publication at the SAME source timestamp invalidates the receipt.
+    event.id='funding-commit'
+    assert s._sol_b_increase_qty(D(8),1,ns+1_000_000_000)==0

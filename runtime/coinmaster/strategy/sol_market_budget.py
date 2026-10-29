@@ -89,6 +89,12 @@ class ClosedD1Wilder14:
                 if len(self.tr)==14:self.atr=sum(self.tr)/14
         self.ns=ns;self.previous=close
 
+def native_account_identity(account):
+    """Actual account publication identity; timestamp alone is not a revision."""
+    event=getattr(account,'last_event',None)
+    identity=getattr(event,'id',None) or getattr(event,'event_id',None)
+    return (str(identity),event.ts_event) if identity is not None else None
+
 class SolMarketBudgetResearch:
     def _sol_b_init(self):
         self.sol_market_budget_audit=[];self._sol_b_armed=False;self._sol_b_snapshot=None;self._sol_b_last_held=None
@@ -111,27 +117,27 @@ class SolMarketBudgetResearch:
         return list({str(o.client_order_id):o for o in self.cache.orders_open()+self.cache.orders_inflight()
                      if o.instrument_id==self.config.sol_id and not o.is_closed}.values())
 
-    def _sol_b_observe(self,equity,ns,source,epoch,details,*,high_water=None):
+    def _sol_b_observe(self,equity,ns,source,epoch,details,*,high_water=None,source_marks=None,account_identity=None):
         if not self.config.research_sol_market_budget_b:return
         raw=high_water
-        if raw is None:self._sol_b_snapshot=None;return
+        if raw is None or source_marks is None or account_identity is None:self._sol_b_snapshot=None;return
         high=D(str(raw));equity=D(str(equity))
         if not high.is_finite() or high<=0 or not equity.is_finite():self._sol_b_snapshot=None;return
         rows={row['instrument_id']:row for row in details}
         positions={p.instrument_id:p for p in self.cache.positions_open()}
         marks={};identity={};pnl={}
+        for iid in (self.config.btc_id,self.config.sol_id):
+            raw_mark=source_marks.get(iid)
+            if raw_mark is None:self._sol_b_snapshot=None;return
+            marks[iid]=self.cache.instrument(iid).make_price(raw_mark).as_decimal()
         # Frozen source OHLC comes from the existing coherent native recorder.
         for iid,p in positions.items():
             row=rows.get(str(iid))
             if row is None:self._sol_b_snapshot=None;return
-            inst=self.cache.instrument(iid);mark=inst.make_price(D(row['mark_ohlc']['close'])).as_decimal()
-            marks[iid]=mark;identity[iid]=(str(p.id),p.quantity.as_decimal(),p.is_long)
+            inst=self.cache.instrument(iid);mark=marks[iid]
+            if inst.make_price(D(row['mark_ohlc']['close'])).as_decimal()!=mark:self._sol_b_snapshot=None;return
+            identity[iid]=(str(p.id),p.quantity.as_decimal(),p.is_long)
             pnl[iid]=p.unrealized_pnl(inst.make_price(mark)).as_decimal()
-        for iid in (self.config.btc_id,self.config.sol_id):
-            if iid not in marks:
-                mark=self._latest_marks.get(iid)
-                if mark is None or mark.ts_event!=source:self._sol_b_snapshot=None;return
-                marks[iid]=self.cache.instrument(iid).make_price(mark.price).as_decimal()
         dd=1-equity/high
         if (dd>=D('.40') and -pnl.get(self.config.sol_id,D(0))>max(D(0),equity-D('.50')*high)):
             if not self._sol_b_armed:
@@ -139,17 +145,18 @@ class SolMarketBudgetResearch:
         if self._sol_b_armed and self.config.sol_id not in positions and not self._sol_b_orders() and dd<D('.40'):
             self._sol_b_armed=False;self._sol_b_log('CLEARED_NATIVE_FLAT',ns)
         self._sol_b_snapshot=dict(E=equity,H=high,source=source,receipt=ns,epoch=epoch,
-                                  positions=identity,marks=marks)
+                                  positions=identity,marks=marks,account_identity=account_identity)
 
     def _sol_b_current(self,ns):
         c=self._sol_b_snapshot
         if not c or not c['source']<c['receipt']<=ns or ns-c['source']>self.config.max_mark_age_ns or c['epoch']!=self._c1_fill_epoch:return None
         account=self.cache.account_for_venue(self.config.btc_id.venue)
-        if account is None or account.last_event.ts_event>c['source']:return None
+        if account is None or account.last_event.ts_event>c['source'] or native_account_identity(account)!=c['account_identity']:return None
         actual={p.instrument_id:(str(p.id),p.quantity.as_decimal(),p.is_long) for p in self.cache.positions_open()}
         if actual!=c['positions']:return None
         last=self._last_accepted_session
-        if last is None or last>c['source'] or any(not x.valid or x.ns!=last or x.atr is None or x.atr<=0 for x in self._sol_b_atr):return None
+        available=int(self._bars[-1].available_at.timestamp()*1_000_000_000) if self._bars else None
+        if last is None or last>ns or available is None or available>ns or any(not x.valid or x.ns!=last or x.atr is None or x.atr<=0 for x in self._sol_b_atr):return None
         return c
 
     def _sol_b_result(self,c,demand,side):
