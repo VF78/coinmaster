@@ -1,6 +1,6 @@
 {
   "scope": "Owner six-point capital-comparison, execution/configuration and DP repair request2026-10-29",
-  "status": "B1_ORIGINAL_10K_FULL_RUNNING",
+  "status": "B1_CONTROL_COMPLETED_EXIT0_NEW_PEAK_BASIS_WIP_REVIEW_INFRA_BLOCKED",
   "authorization": "Direct owner request to fix and verify; numerical bound chosen by coordinator, not quoted as a separate numeric owner approval",
   "preserve": [
     "BTC entry core and existing one-cycle C1 profit logic",
@@ -28,7 +28,7 @@
     "all_failures_count": true,
     "concurrent_engines": 1,
     "automatic_retry": false,
-    "root_GO": true
+    "root_GO": false
   },
   "gates": [
     "Frozen source/config/data/reader/metadata/currency/timer/profile pins, complete source hash paths checked before first engine",
@@ -54,7 +54,24 @@
     "E1": "ACTUAL_PASS_12.229s_2fills2funding_exact_DP55_healthy",
     "E2": "ACTUAL_FAILED_2.778s_quote_size_precision3_vs_HL_BTC5_before_exit_test",
     "E2R": "ACTUAL_PASS_3.485s_native_DP_exit_adverse30_flat_PAUSED",
-    "B1": "RUNNING_sameoriginal24monthdata_10k_DP55",
-    "B2": "CONDITIONAL_NOT_STARTED"
-  }
+    "B1": "ACTUAL_EXIT0_3474.9506s_ALL_STRICT_NATIVE_CONTROL_GATES_PASSED",
+    "B2": "NOT_STARTED_HOLD_FOR_PEAK_BASIS_FIX"
+  },
+  "basis_amendment": {
+    "selected_basis": "OBSERVED_NATIVE_EQUITY_PEAK",
+    "reason": "Dailycloseanchor55permits~62.33coherentDDbeforeM1gap",
+    "implementation": "NEW_ISOLATED_UNCOMMITTED_200PURE_PASS_ENGINE0",
+    "remaining": [
+      "freshINIT_and_profilegenerator_checks",
+      "staleprojectionbasis_labels",
+      "freeze_review_nativeE3",
+      "thenB2"
+    ],
+    "proposed_root_maximum": 6,
+    "proposed_engineering_max": 4,
+    "full_max": 2,
+    "canonical_amendment_applied": false,
+    "live_runtime_state_changes": false
+  },
+  "blocker": "Automaticapprovalreviewmodelcapacity/timeouts; readonlySSHnotexecuted; no unsafeverdict/no bypass"
 }

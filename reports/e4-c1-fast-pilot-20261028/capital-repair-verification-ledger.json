@@ -4,9 +4,9 @@
   "engineering_max": 3,
   "full_max": 2,
   "spent": 4,
-  "active": 1,
+  "active": 0,
   "reserve": 0,
-  "status": "B1_FULL_RUNNING",
+  "status": "B1_COMPLETED_B2_HOLD_PEAK_FIX_REVIEW_CAPACITY",
   "attempts": [
     {
       "case": "E1",
@@ -28,8 +28,11 @@
     },
     {
       "case": "B1",
-      "status": "RUNNING",
-      "wall_cap_seconds": 5400
+      "status": "PASS",
+      "wall_cap_seconds": 5400,
+      "actual_exit": 0,
+      "wall_seconds": 3474.950620648451
     }
-  ]
+  ],
+  "root_GO": false
 }

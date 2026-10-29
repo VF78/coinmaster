@@ -97,7 +97,7 @@
     "deployment": false
   },
   "freshest_native_failure_scope": "HistoricalA22wrongACTIVEcertificateNoneassertion; actualsourceguardsDENY, fixturecorrected; finalA23B24PASS supersedescurrentblocker_withoutrewritingFAILED",
-  "active_current_blocker": "Await original10k full regression result; small diagnostic conditional; no liveSTART",
+  "active_current_blocker": "Peak-vs-daily protectionbasis gap being corrected; newcode200pure notfrozen; nativeE3/B2 pending; automaticapprovalmodelcapacityblocksSSH. NoSTART.",
   "source_only_repair_protocol": "BOOTSTRAP_PHASE_SOURCE_ONLY_PROTOCOL_20261029.json",
   "private_capacity": "Actualinitialpolicyfreshbounded1of1CLOSED CAPACITY_CASES_RECORDED_NO_START;10response128weight/2.217243scollection/6.747361334swrapper/32BTC12SOLfixedcases; private values only, notglobalforeignorderproof",
   "previous_manager_public_exact": "54a886e18f1adc8181e81da4803ed0dbc10b7dae",
@@ -120,11 +120,12 @@
     "source_public": "5e429a1cd23ea4cd38458e5a6cc52e7752e4ea18",
     "source_review": "DP/cap47pure_plus_quote8pure_and_independent_closures_PASS",
     "engineering": "E1PASS_E2FAILED_preserved_E2RPASS_native_adverse_exit_flat_PAUSED",
-    "current": "ONE_FULL_ORIGINAL_10K_REFERENCE_RUNNING_no_new_economic_result_yet",
-    "later": "ONE_CONDITIONAL_SMALL_HL_LOT_DIAGNOSTIC_after10kPASS",
+    "current": "B1_FULL_10K_COMPLETED_EXIT0_STRICT_PARITY_GATES_PASS",
+    "later": "NEW_PEAK_BASIS_WIP200PURE_thenE3_B2_NOT_STARTED",
     "live_STARTED": false,
     "new_source_installed": false,
     "protocol": "CAPITAL_REPAIR_VERIFICATION_PROTOCOL_20261029.json",
-    "ledger": "capital-repair-verification-ledger.json"
+    "ledger": "capital-repair-verification-ledger.json",
+    "blocker": "AUTOMATIC_APPROVAL_MODEL_CAPACITY_READONLY_SSH_NOT_EXECUTED"
   }
 }
