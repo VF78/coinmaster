@@ -1,21 +1,11 @@
 # CoinMaster — current status 29 October 2026
 
-Version 5f10ce87 is installed inactive. The old pilot was stopped after backups. Live has not started; separate owner START remains required.
+The owner-requested paired capital audit and careful execution/risk repair are in progress. Source5e429a1c is public and reviewed. Installed5f10ce87 remains inactive; live START has not been given.
 
-The single final historical test has completed the market-data interval from 1 September 2024 through 28 October 2026 inclusive (UTC). Its numerical initial capital came from the actual private USDC snapshot. The retained historical Bybit USDT model is a nominal-capital scenario, not an FX conversion or Hyperliquid execution proof. Research DP was disabled; live DP55 qualification is separate.
+The selected trading core and one-cycle C1 profit logic are preserved. Shared configuration restores the selected30M cap; actual instrument metadata provides BTC5/SOL2 quantity precision; existing global DP55 is wired to historical qualification independently of C1 state. Live default currency/cadence remain USDC/1second; historical Bybit controls retain truthful USDT accounting and their original lot precision.
 
-Native cash, fees and funding reconciliation passed. Risk acceptance failed, with a model liquidation. This is not a live-readiness PASS.
+Engineering E1 passed: the original first48hours match every preboundary fill, fee and funding event with DP55 healthy. E2 failed because synthetic quote-size precision did not match the higher-precision instrument. The shared quote producer was corrected without changing displayed depth or legacy quotes. E2R passed: genuine SOL fill, protective cancel ACK, native IOC reduce-only exit at the adverse fixture price, cache flat and persisted TRIPPED_FLAT/PAUSED. The failed attempt is retained.
 
-Two preparation defects were found: a report-source path caused exit1 after native exports; one candidate position-size cap differed from the selected CLI configuration. The report was recovered offline without changing financial fields, rerunning the engine or rewriting the original failure. Exact parameter equivalence remains FAIL; the SOL cap is inactive and the BTC cap effect remains UNKNOWN.
+One full original24month10K regression run is active. It must match all original540fills/1248funding and preserve TOTAL/drawdown. A single small-capital HL-lot diagnostic is conditional on that result. No parameter search or automatic rerun. Final economic results are pending.
 
-No repeat or optimization is scheduled. Next: finish offline attribution and present a minimal corrective proposal. Original winner figures belong to a different initial capital and period. Current MVP still does not establish genuine3TP, continuous SOL hedge or strictDD30–50.
-
-Detailed financial and operational evidence remains private. Public status omits account values, internal paths, process identifiers and infrastructure parameters.
-
-The owner-requested audit verified the original24month result and independently inspected the complete saved native trace. The small-capital24month metrics equal the extended test because the model liquidation and lockout occurred inside the original period. The native money bridge is exact, with no transfers or reserve.
-
-Scale invariance is broken by lot rounding and fixed synthetic liquidity. The observed loss occurred with SOL held after BTC exit; continuous BTC hedge protection is not established. Focused static research-path review identified no further material reachable source delta, without claiming full counterfactual equivalence.
-
-Reporting fields mix fractions/percentages and cash/marked-equity bases; the liquidation policy label is misleading. Detailed owner answers and numerical proof remain private. No new engine or live start occurred during the audit.
-
-Direct risk gap proven: after cut and restore, C1 RELEASED prevents another cut until whole-group flat while ordinary SOL additions remain allowed. BTC exit does not reset the group while SOL remains held. This is an actual control gap, not a cash-reconciliation error.
+The previous small-capital failed test remains unchanged. Offline audit confirmed exact cash reconciliation, scale dependence and the C1 protection gap. Enabling DP and metadata precision is not yet a claim of preserved full-period ROI or actual Hyperliquid historical matching. Detailed financial/operational evidence stays private.

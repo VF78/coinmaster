@@ -1,18 +1,20 @@
-Read AGENTS then SOUL USER PROJECT_TRUTH ACTIVE; private audit evidence stays local.
+Read AGENTS then SOUL USER PROJECT_TRUTH ACTIVE, currentcapitalprotocol; one FULLengine active, no duplicate.
 
-CoinMaster 29 October 2026: owner-approved version 5f10ce87 installed INACTIVE. Separate START NOT GIVEN.
-Old pilot stopped after backups. The single extended historical test COMPLETED; active0/spent1of1/no automatic retry.
-Period UTC 1 September 2024 through 28 October 2026 inclusive; numerical seed from actual private USDC snapshot.
-Unchanged Bybit USDT historical model, not FX/USDC profit or Hyperliquid matching; research DP disabled, live DP55 separate.
-Market data interval completed and native cash/fees/funding accounting PASS. Risk acceptance NO_GO, liquidation present.
-Physical exit1 occurred in report metadata after native exports. Offline report recovery preserved all financial fields and original failure.
-Exact candidate equivalence FAIL: one position-size cap differs from selected CLI configuration. SOL cap inactive; BTC cap effect UNKNOWN. Do not attribute this run to the exact winner.
-Before operational actions read local PRIVATE supplement manager-operational-handoff.md in this task's ignored private workspace; never export it.
-Owner audit completed offline: original24month result verified; small-seed24month metrics equal extended result because liquidation/lockout occurred in April2025. Native money bridge exact; no transfers/reserve.
-Lot rounding and fixed synthetic liquidity break scale invariance; SOL remained alone after BTC exit. C1 RELEASED state blocks another cut until whole-group flat while ordinary SOL adds remain allowed; concrete protection gap proven. Research DP55 was not enabled. No extra reachable economic source delta identified in focused static review.
-Reporting units/field labels and diagnostic-liquidation label need correction; detailed evidence private AUDIT_ANSWERS_20261029.json.
-NEXT owner reviews audit/minimal correction plan. No new engine or live start.
-Old engineering24/24 and research8/8 CLOSED; MethodA9/19 HOLD. No budget transfer or optimization inferred.
-Actual live initial capital is available USDC; no repeated amount questions. DP retained45%=DD55.
-GUI USDC component and fresh readiness remain before START. Genuine3TP/continuous hedge/strictDD30-50 not delivered by current MVP.
-Public business status only; operational and financial evidence retained privately. Preserve all raw results and user WIP.
+CoinMaster29Oct2026 CAPITAL_REPAIR: source5e429a1c PUBLIC/independentpeerPASS, installed5f10ce87 remains INACTIVE, ownerSTART NOT GIVEN.
+Sole nativeB1 FULL ORIGINAL10k24month control RUNNING. NEVERrestart/repeat; consultLOCALPRIVATEoperationalhandoff+canonicalledger beforeprocessactions.
+Currentrootboundedverificationmax5=3engineering+2full, spent4/active1/reserve0; failedE2 retained. Old8/24/MethodA9of19closed/hold unchanged.
+E1 PASS actual12.229s: originalfirst48h twofills/twofunding ALLexact, DP55healthy/daily_missed0.
+E2 FAILED actual2.778s NativeQuoteTickquantityprecision3 vsHLBTC5; systematicsharedproducerquote-metadatafix done.
+E2R PASS actual3.485s: genuineSOLfill, standingROcancelACK, oneIOCROexit atadverse30, nativeflat/durableTRIPPED_FLAT/PAUSED. No hiddencontrolengine.
+Sourcecap/DPwiring47purePASS+independent2P1/1P2closure; quote8purePASS+exactnativeobject/equalityproof+independentclosure.
+GlobalexistingDP55 independentC1RELEASED/SOLalone; originalone-cycleprofitlogic preserved. No newC1counter/rearm/secondriskengine.
+ActualpublicHLmetadata BTC5/SOL2; core quantitiesinstrument-driven, legacyBybitBTC3/SOL1 unchanged. Quote sizes1000unchanged; HLlotdiagnostic explicit.
+B1 original7ab5 reference/sourceflags/10000/Bybitlots+DP55; requireall540fills/1248funding/cash/bothDD/TOTALno regression. Originalbaseline5.499m/DD51.27notnewresultyet.
+B2 ONLY afterB1financialPASS:actualprivatefrozenseed/HLlots/DP55/same24monthdata; oneconditionalfullslot. TruthfullyBybitUSDTdiagnostic/notactualHLUSDCeconomics.
+Source/harness/HEADfrozen5e duringB1: no edits/commits inproductworktree. Managerdocs separate. No newoptimization/grid/datafetch/accountHTTP.
+Nativecurrentprogress passivefile privateonly; bound90min/samechild/noautoretry. Rootownsprocess. Exactpaths/PIDs/hashes onlyprivatehandoff.
+Deepaudit: all30BTCentrytimes/TPpolicy beforeAprliq matched; size/riskdiff. Atoldsmallliqminute bothSOLalone butdifferentcapital/exposure.
+Original10k tradesall24months, lastnormalBTCentries30Aug2026/boundaryclose1Sep, no liquidation/lockout. PureDP55oldtrace noTRIP/missedday0; notnewnativeparityproof.
+OldsmallFAILED98.29DD/liquidation preserved, offlinecashbridgePASS, norewrite. PrivateAUDIT_ANSWERS holdsdetails; noprivatefinancialspublic.
+Newsource5eNOTinstalled; no services/deployment/keys/orders/transfers. DefaultliveUSDC1s retained; researchcurrencyUSDT/60s explicitlynamed.
+Beforeend/resetrefreshACTIVE/Project/privateproof+actualnativeledger. DoNOTstartliveorclaimnewROIuntilactualfullresultandownerapproval.

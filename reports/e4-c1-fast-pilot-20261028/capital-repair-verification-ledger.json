@@ -1,0 +1,35 @@
+{
+  "task": "CAPITAL_REPAIR_VERIFICATION_20261029",
+  "maximum": 5,
+  "engineering_max": 3,
+  "full_max": 2,
+  "spent": 4,
+  "active": 1,
+  "reserve": 0,
+  "status": "B1_FULL_RUNNING",
+  "attempts": [
+    {
+      "case": "E1",
+      "status": "PASS",
+      "actual_exit": 0,
+      "wall_seconds": 12.229469515383244
+    },
+    {
+      "case": "E2",
+      "status": "FAILED",
+      "actual_exit": 1,
+      "wall_seconds": 2.7777879079803824
+    },
+    {
+      "case": "E2R",
+      "status": "PASS",
+      "actual_exit": 0,
+      "wall_seconds": 3.4853924987837672
+    },
+    {
+      "case": "B1",
+      "status": "RUNNING",
+      "wall_cap_seconds": 5400
+    }
+  ]
+}
