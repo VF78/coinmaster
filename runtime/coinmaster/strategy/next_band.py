@@ -223,9 +223,9 @@ class NextBandResearch:
         self._next_s=dict(kind='S',episode_id=ep.id,side=side,remaining=remaining,triggered=True,canceled=False)
         self._next_sol_cancel_adds();self._next_log('S_TRIGGER',ns,signal_asof_ns=bar_ns,held=str(held),desired_remaining=str(remaining),beta=beta,settled_equity=str(self._next_equity),peak=str(self._next_peak))
 
-    def _next_quote(self,tick):
+    def _next_quote(self,tick,*,decision_ns=None):
         if not self._next_enabled:return
-        ns=tick.ts_event
+        ns=tick.ts_event if decision_ns is None else decision_ns
         if self.config.terminal_close_at_ns is not None and ns>=self.config.terminal_close_at_ns:return
         self._next_daily();self._next_process_bars(ns)
         if self._next_z and not self._next_z['canceled']:

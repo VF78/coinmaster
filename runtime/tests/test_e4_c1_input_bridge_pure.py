@@ -114,7 +114,7 @@ def test_finite600_generation_actual_cost_refund_rolling1000_earliest_wake():
     with pytest.raises(ValueError,match='SCOPE'):b.finite_generation_reservation(16)
     reservation=state.reserve(600,0)
     with pytest.raises(ValueError,match='RATE_BUDGET'):state.reserve(540,1)
-    assert state.next_affordable==60
+    assert state.next_affordable is None  # Inflight prepayment cannot expire until settled.
     state.settle(reservation,340)
     second=state.reserve(600,2);state.settle(second,340)
     with pytest.raises(ValueError,match='RATE_BUDGET'):state.reserve(540,3)
@@ -218,7 +218,7 @@ def test_actual_full_generation_vector_prepays_native_refresh_and_refunds_unused
     scope=N(durable_orders=(),account_ref='0x'+'1'*40,dex='',anchor_ms=0,anchor_tid=None,owned_coins=frozenset({'BTC','SOL'}))
     owner._cm_owned_scope=lambda:(scope,7,(),frozenset(),())
     owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None))
-    owner._cache=N(account_for_venue=lambda venue:account,instrument=lambda i:object())
+    owner._cache=N(account_for_venue=lambda venue:account,instrument=lambda i:object(),positions_open=lambda:[])
     owner._clock=N(timestamp_ns=lambda:10_000_000_000);owner.venue='HL';owner.account_id='acct';owner.id='client'
     def query(account_id):queries.append(account_id);account.last_event=N(id='fresh',ts_init=10_000_000_000)
     owner._cm_strategy=N(query_account=query)
@@ -336,6 +336,7 @@ def test_funding_separate_same_rolling_budget_item_weights_no_cashposting(code,t
     calls=[]
     async def info(body):calls.append(body);return rows
     owner._cm_info=info
+    owner._cache=N(positions_open=lambda:[position]);owner._cm_next_money_request=0
     try:
         revision=r.native_revision()
         assert asyncio.run(owner.collect_user_funding_observation(s))
@@ -403,7 +404,7 @@ def test_actual_input_worker_constructor_preserves_runtime_decimal_and_paused_dp
     from test_e4_c1_manage_only_pure import ROOT
     runtime=N(record_native_fill=lambda **kwargs:None,all_submissions=lambda:[],strategy_checkpoint=lambda:(b'fixture',0))
     flags={'research_btc_split_discount':'0.0025','research_c1_restore_dd':'0.40','research_regime_reentry_band':'0.5'}
-    profile={'input_readiness':True,'manage_only_readiness':True,'strategy_flags':flags,'deposit_protection_percent':55,'retained_equity_floor_fraction':'0.45'}
+    profile={'initial_capital_usdc':'100','input_readiness':True,'manage_only_readiness':True,'strategy_flags':flags,'deposit_protection_percent':55,'retained_equity_floor_fraction':'0.45'}
     captured=[]
     class FakeStrategy:
         def __init__(self,config):
@@ -427,7 +428,7 @@ def test_actual_input_worker_constructor_preserves_runtime_decimal_and_paused_dp
     monkeypatch.setitem(sys.modules,native.__name__,native);monkeypatch.setitem(sys.modules,core.__name__,core)
     env={'Path':Path,'__file__':str(ROOT/'ops/hl_live_worker.py'),'Decimal':D,'time':__import__('time'),
         'asyncio':N(new_event_loop=lambda:'fixture-loop'),'replace':lambda value,**kw:N(**(vars(value)|kw)),
-        'load_live_profile':lambda *args:profile,'check_live_credential':lambda *args:D(100),
+        'load_live_profile':lambda *args:profile,'check_live_credential':lambda *args,**kwargs:D(100),'ReadinessInfoBudget':budget_code().ReadinessInfoBudget,
         '_read_json':lambda path:{'master_address':'synthetic','agent_private_key':'synthetic-not-key'},
         'cross_venue_stage_g_gate':lambda **kwargs:N(warmup_state='READY',margin_policy_state='READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE',candidate_hash='fixture'),
         'load_stageg_warmup_bundle':lambda path:(N(bars=(),rows=730),'READY'),

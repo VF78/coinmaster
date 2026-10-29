@@ -22,7 +22,7 @@ class LiveEpochRuntime(PaperRuntime):
 
     @_journal_locked
     def append_evidence(self,event_id,kind,payload,*,commit=True):
-        if not event_id or kind not in ('decision','command','ACK','fill','account','funding_cash','funding_rate','signal','Info'):
+        if not event_id or kind not in ('decision','command','ACK','fill','account','funding_cash','funding_rate','signal','Info','external_cashflow'):
             raise ValueError('LIVE_EVIDENCE_ID_OR_KIND_INVALID')
         body=json.dumps(payload,sort_keys=True,separators=(',',':'),allow_nan=False,default=str)
         prior=self.db.execute('SELECT body FROM live_evidence_payloads WHERE event_id=? AND kind=?',(event_id,kind)).fetchone()
@@ -58,6 +58,21 @@ class LiveEpochRuntime(PaperRuntime):
             self.db.execute('INSERT OR REPLACE INTO live_evidence_cursors VALUES (?,?)',('userFunding',json.dumps(next_cursor,sort_keys=True)))
             self.db.commit()
         except BaseException:self.db.rollback();raise
+
+    @_journal_locked
+    def funding_projection(self):
+        cursor=self.evidence_cursor('userFunding')
+        if cursor is None:
+            return dict(funding=None,funding_currency='USDC',funding_reason='FUNDING_ATTRIBUTION_UNKNOWN_OR_INCOMPLETE',funding_coverage_end_ns=None)
+        total=Decimal(0)
+        for (body,) in self.db.execute("SELECT body FROM live_evidence_payloads WHERE kind='funding_cash'"):
+            payload=json.loads(body)
+            if payload.get('source')!='ACTUAL_VENUE_USERFUNDING' or payload.get('cash_posted') is not False:
+                raise ValueError('LIVE_FUNDING_PROJECTION_PROVENANCE')
+            value=Decimal(str(payload['native']['delta']['usdc']))
+            if not value.is_finite():raise ValueError('LIVE_FUNDING_PROJECTION_NONFINITE')
+            total+=value
+        return dict(funding=str(total),funding_currency='USDC',funding_reason=None,funding_coverage_end_ns=cursor['end_ms']*1_000_000)
 
     def _journal_order_fills(self,client_id):
         rows=self.db.execute('SELECT trade_id,native_event_id,client_order_id,venue_order_id,instrument_id,order_side,quantity,price,commission_amount,commission_currency,liquidity_side,ts_event_ns,ts_init_ns FROM paper_native_fill_details WHERE client_order_id=? ORDER BY trade_id',(client_id,)).fetchall()
@@ -96,12 +111,45 @@ class LiveEpochRuntime(PaperRuntime):
                 and self._journal_order_fills(client)==proof['journal_fills']):cached[cloid]=proof['status']
         return cached,tuple(fills),latest['time'] if latest else None,latest['tid'] if latest else None
 
+    def cashflow_quarantined(self):
+        return self.evidence_cursor('external_cashflow_quarantine') is not None
+
+    def _cashflow_page_locked(self,page,*,baseline=False):
+        if (not isinstance(page,dict) or page.get('complete') is not True
+            or type(page.get('end_ms')) is not int or type(page.get('start_ms')) is not int or not 0<=page['start_ms']<=page['end_ms']
+            or (page.get('expected_cursor') is not None and page['start_ms']!=page['expected_cursor'].get('end_ms'))
+            or not isinstance(page.get('rows'),list)
+            or len(page['rows'])>=500 or self.evidence_cursor('userNonFundingLedgerUpdates')!=page.get('expected_cursor')):
+            raise ValueError('LIVE_CASHFLOW_PAGE_COVERAGE_UNKNOWN')
+        external=False
+        for row in page['rows']:
+            if (not isinstance(row,dict) or type(row.get('time')) is not int or not page['start_ms']<=row['time']<=page['end_ms']
+                or not isinstance(row.get('hash'),str) or not isinstance(row.get('delta'),dict) or not row['delta'].get('type')):
+                raise ValueError('LIVE_CASHFLOW_ROW_MALFORMED')
+            body=json.dumps(row,sort_keys=True,separators=(',',':'),allow_nan=False)
+            event_id='cashflow:'+hashlib.sha256(body.encode()).hexdigest()
+            unseen=self.append_evidence(event_id,'external_cashflow',dict(native=row,cash_posted=False),commit=False)
+            if unseen and not baseline:external=True
+        cursor=dict(end_ms=page['end_ms'])
+        self.db.execute('INSERT OR REPLACE INTO live_evidence_cursors VALUES (?,?)',('userNonFundingLedgerUpdates',json.dumps(cursor,sort_keys=True)))
+        if external:
+            self.db.execute('INSERT OR REPLACE INTO live_evidence_cursors VALUES (?,?)',('external_cashflow_quarantine',json.dumps(dict(reason='UNSEEN_EXTERNAL_CASHFLOW',end_ms=page['end_ms']))))
+        return not external and not self.cashflow_quarantined()
+
+    @_journal_locked
+    def record_cashflow_page(self,page):
+        try:
+            self.db.execute('BEGIN IMMEDIATE')
+            result=self._cashflow_page_locked(page,baseline=False)
+            self.db.commit();return result
+        except BaseException:self.db.rollback();raise
+
     def c1_initialization(self):
         return self.evidence_cursor('c1_epoch_initialization')
 
     @_journal_locked
     def initialize_c1_epoch(self,*,intent,checkpoint,policy_sha256,equity,account_total,account_event_id,
-                            expected_revision,now_ns,history_anchor_ms):
+                            expected_revision,now_ns,history_anchor_ms,cashflow_page=None):
         """One virgin epoch marker + canonical state + native flat snapshot commit."""
         if intent!='INITIALIZE_FRESH_C1_EPOCH' or type(history_anchor_ms) is not int or not 0<=history_anchor_ms<=now_ns//1_000_000:raise ValueError('C1_INIT_EXPLICIT_INTENT_REQUIRED')
         if (not isinstance(equity,Decimal) or not equity.is_finite() or equity<=0
@@ -119,6 +167,7 @@ class LiveEpochRuntime(PaperRuntime):
                 or self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events WHERE kind='fill')").fetchone()[0]
                 or self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_command_audit WHERE command!='pause-new-entries' OR status!='ACCEPTED')").fetchone()[0]):
                 raise ValueError('C1_INIT_PRIOR_OR_UNCERTAIN_STATE')
+            if cashflow_page is not None:self._cashflow_page_locked(cashflow_page,baseline=True)
             marker=dict(schema='coinmaster-live-c1-initialization-v1',policy_sha256=policy_sha256,
                 checkpoint_sha256=hashlib.sha256(checkpoint).hexdigest(),initial_equity=str(equity),
                 native_account_event_id=str(account_event_id),native_revision=expected_revision,initialized_ns=now_ns,history_anchor_ms=history_anchor_ms)

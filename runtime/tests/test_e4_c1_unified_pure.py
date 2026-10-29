@@ -1,5 +1,5 @@
 """Actual public-adapter source on pure fixtures; no native imports/constructors."""
-import asyncio,time
+import asyncio,time,hashlib
 from collections import deque
 from dataclasses import dataclass,replace
 from decimal import Decimal as D,InvalidOperation
@@ -90,7 +90,7 @@ def native_source():
     env=dict(asyncio=asyncio,time=time,deque=deque,IncompleteInfoReport=IncompleteInfoReport,
         QualifiedInfoBoundary=Boundary,HyperliquidExecutionClient=Legacy,
         AccountBalance=N(from_dict=lambda row:dict(row)),MarginBalance=N(from_dict=lambda row:dict(row)))
-    run_ast(nodes('ops/hl_live_execution.py',{'ReadinessInfoBudget','QualifiedHyperliquidExecutionClient','finite_generation_reservation','InfoWeightBudget'}),env)
+    run_ast(nodes('ops/hl_live_execution.py',{'ReadinessInfoBudget','QualifiedInfoBoundary','QualifiedHyperliquidExecutionClient','finite_generation_reservation','InfoWeightBudget'}),env)
     return N(**env)
 
 
@@ -126,12 +126,13 @@ def test_stock_public_spot_to_reported_accountstate_coalesces_and_classic_unchan
 
 def test_legacy_ws_account_heuristic_cannot_overwrite_unified_and_zero_clears():
     owner,e=native_owner(raw=[])
-    async def run():
-        owner._handle_account_state(N(total='999999-old-perp'))
-        await owner._cm_unified_refresh_task
-    asyncio.run(run())
-    assert owner.legacy_ws==0 and owner.generated[0]['balances'][0]['total']=='0'
-    assert owner.generated[0]['margins'][0]['initial']=='0' and owner._cm_strategy._last_live_input_observation is None
+    demands=[]
+    owner.request_portfolio_observation=lambda strategy:demands.append(strategy)
+    for _ in range(20):owner._handle_account_state(N(total='999999-old-perp'))
+    assert len(demands)==20 and owner.legacy_ws==0 and owner.http==[]
+    asyncio.run(owner._update_account_state())
+    assert owner.generated[0]['balances'][0]['total']=='0'
+    assert owner.generated[0]['margins'][0]['initial']=='0'
 
 
 def test_wrong_mode_or_nonusdc_native_collateral_never_emits_qualified_state():
@@ -143,15 +144,15 @@ def test_wrong_mode_or_nonusdc_native_collateral_never_emits_qualified_state():
     assert owner.generated==[]
 
 
-def test_unified_generation_max652_under700_classic600_and_prepaid_native_not_doublecharged():
+def test_unified_generation_max497_under700_classic600_and_prepaid_native_not_doublecharged():
     owner,e=native_owner()
     assert e.finite_generation_reservation(15)==600
-    assert e.finite_generation_reservation(15,unified=True)==652
+    assert e.finite_generation_reservation(15,unified=True)==497
     with pytest.raises(ValueError,match='SCOPE'):e.finite_generation_reservation(16,unified=True)
-    owner._cm_unified_generation_reservation=owner._cm_inputs_budget.reserve(592,time.monotonic())
+    owner._cm_unified_generation_reservation=owner._cm_inputs_budget.reserve(437,time.monotonic())
     asyncio.run(owner._update_account_state())
     assert owner._cm_unified_native_charge==28 and len(owner._cm_inputs_budget.spent)==1
-    assert owner._cm_inputs_budget.spent[0][1]==592
+    assert owner._cm_inputs_budget.spent[0][1]==437
 
 
 def test_unified_venue_admission_uses_real_side_limits_and_free_fees():
@@ -235,10 +236,10 @@ def test_actual_unified_discovery_then_full_vector_and_refund_and_directory_quar
         if kind=='userRole':return {'role':'user'}
         if kind=='userAbstraction':return 'unifiedAccount'
         if kind=='userDexAbstraction':return False
-        if kind=='userFillsByTime':return []
+        if kind in ('userFillsByTime','userNonFundingLedgerUpdates'):return []
         if kind=='activeAssetData':return {'user':ACCOUNT,'coin':body['coin'],'leverage':{'type':'cross','value':5},'markPx':'100','maxTradeSzs':['5','5'],'availableToTrade':['100','100']}
         raise AssertionError(body)
-    env=dict(asyncio=asyncio,time=time,deque=deque,IncompleteInfoReport=IncompleteInfoReport,collect_info_receipt=collect_info_receipt,
+    env=dict(asyncio=asyncio,time=time,hashlib=hashlib,deque=deque,IncompleteInfoReport=IncompleteInfoReport,collect_info_receipt=collect_info_receipt,
         collect_selected_cross_assets=m.collect_selected_cross_assets,qualified_mass_status=lambda *args,**kwargs:N(account_id='acct'),
         InstrumentId=N(from_str=lambda v:v),read_info_http=read_http,_native_order_fingerprint=lambda o:[])
     run_ast(nodes('ops/hl_live_execution.py',{'ReadinessInfoBudget','finite_generation_reservation','InfoWeightBudget','SingleAttemptInfoTransport','QualifiedInfoBoundary'}),env)
@@ -250,15 +251,25 @@ def test_actual_unified_discovery_then_full_vector_and_refund_and_directory_quar
     owner._cm_strategy=code.Strategy(config())
     scope=N(durable_orders=(),account_ref=ACCOUNT,dex='',anchor_ms=0,anchor_tid=None,owned_coins=frozenset({'BTC','SOL'}))
     owner._cm_scope=scope;owner._cm_owned_scope=lambda:(scope,7,(),frozenset(),())
-    owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None))
-    owner._cache=N(instrument=lambda i:object());owner._clock=N(timestamp_ns=lambda:10_000_000_000)
+    owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None),evidence_cursor=lambda source:None)
+    owner._cache=N(instrument=lambda i:object(),positions_open=lambda:[]);owner._clock=N(timestamp_ns=lambda:10_000_000_000)
     owner.venue='HL';owner.account_id='acct';owner.id='client'
     owner._cm_info=env['SingleAttemptInfoTransport'](testnet=False,timeout=1)
-    async def refresh():owner._cm_unified_native_charge=28
+    from coinmaster.strategy.live_recovery import recovery_policy_hash
+    signer='synthetic-signer'
+    owner._cm_strategy._signer_sha256=signer
+    owner._cm_account_context=dict(master_role='user',agent_role='agent',
+        account_sha256=hashlib.sha256(ACCOUNT.lower().encode()).hexdigest(),signer_sha256=signer,
+        policy_sha256=recovery_policy_hash(owner._cm_strategy.config,owner._cm_strategy._candidate),
+        ws_epoch=2,dex_abstraction=False,verified_at_ns=time.monotonic_ns())
+    owner._cm_unified_mode_proof=None
+    async def refresh():
+        owner._cm_unified_native_charge=28
+        owner._cm_unified_mode_proof=dict(started_ns=time.monotonic_ns(),ws_epoch=2)
     owner._cm_refresh_native_account_for_generation=refresh
     assert asyncio.run(owner.generate_mass_status()).account_id=='acct'
-    assert len(calls)==19 and calls.count('perpDexs')==1 and calls.count('allDexsClearinghouseState')==2 and calls.count('spotClearinghouseState')==2
-    assert sum(item[1] for item in owner._cm_inputs_budget.spent)==452  # Discovery60 +collector364+native28.
+    assert len(calls)==14 and calls.count('perpDexs')==1 and calls.count('allDexsClearinghouseState')==2 and calls.count('spotClearinghouseState')==2
+    assert sum(item[1] for item in owner._cm_inputs_budget.spent)==272  # Discovery60 +context-dedup collector184+native28 incl ledger20.
     assert owner._cm_unified_generation_reservation is None and owner._cm_unified_discovery_current()
     with pytest.raises(ValueError,match='DIRECTORY_CHANGED'):owner._cm_validate_unified_dex_directory([['newdex',state()]])
     assert owner._cm_unified_discovery is None

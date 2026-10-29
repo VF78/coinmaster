@@ -383,10 +383,10 @@ def materialize_live_c1_input(observation,*,native_positions,native_marks,native
 
 
 def cheap_unified_observation(raw_spot,all_dex,*,account_id,native_account,native_positions,strategy_id,
-                              revision,fill_epoch,ws_epoch,started_ns,completed_ns,available_ns,native_open_orders=()):
+                              revision,fill_epoch,ws_epoch,started_ns,completed_ns,available_ns,native_open_orders=(),native_spot_money=None):
     from coinmaster.ops.hl_unified_account import native_unified_money,EQUITY_BASIS
     total,hold,free,sizes=native_unified_money(raw_spot,all_dex,native_account=native_account,
-        native_positions=native_positions,account_id=account_id,strategy_id=strategy_id)
+        native_positions=native_positions,account_id=account_id,strategy_id=strategy_id,native_spot_money=native_spot_money)
     for order in native_open_orders:
         if (str(order.account_id)!=account_id or str(order.strategy_id)!=strategy_id
             or str(order.instrument_id) not in ('BTC-USD-PERP.HYPERLIQUID','SOL-USD-PERP.HYPERLIQUID')):
@@ -399,3 +399,30 @@ def cheap_unified_observation(raw_spot,all_dex,*,account_id,native_account,nativ
         available_ns,str(event_id),'unifiedAccount',EQUITY_BASIS)
     value.require_current(now_ns=completed_ns,revision=revision,fill_epoch=fill_epoch,ws_epoch=ws_epoch)
     return value
+
+
+def native_lifecycle_feasible(instrument,quantity,price,*,tp_fractions=(),cut_divisor=4):
+    """Conservative current-price lot proof; no rounding up or future-price promise."""
+    step=instrument.size_increment.as_decimal()
+    if any(not isinstance(v,Decimal) or not v.is_finite() or v<=0 for v in (quantity,price,step)):
+        return False
+    if quantity%step or type(cut_divisor) is not int or cut_divisor not in (2,4):return False
+    minimum=instrument.min_quantity.as_decimal() if instrument.min_quantity is not None else step
+    notional=instrument.min_notional
+    if notional is not None and str(notional.currency)!='USDC':return False
+    floor_notional=notional.as_decimal() if notional is not None else Decimal(0)
+    def supported(lots):
+        value=Decimal(lots)*step
+        return value>=minimum and value*price>=floor_notional
+    lots=int(quantity/step)
+    if not supported(lots) or not supported(lots//cut_divisor):return False
+    remaining=lots
+    for fraction in tp_fractions:
+        fraction=Decimal(str(fraction))
+        if not fraction.is_finite() or not 0<=fraction<=1:return False
+        part=int(Decimal(lots)*fraction)
+        if not part:continue
+        if part>remaining or not supported(part):return False
+        remaining-=part
+        if remaining and not supported(remaining):return False
+    return True

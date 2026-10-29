@@ -50,7 +50,7 @@ _FIELDS = (
 
 _C1_SCHEMA = "coinmaster-wave-overlay-e4-c1-recovery-v3"
 _C1_FIELDS = (
-    "_live_signal_clock_state", "_c1_peak", "_c1_state", "_c1_checkpoint", "_c1_fill_epoch", "_c1_intents",
+    "_live_signal_clock_state", "_c1_pending_peak", "_c1_peak", "_c1_state", "_c1_checkpoint", "_c1_fill_epoch", "_c1_intents",
     "_c1_last_bars", "_c1_sol_levels", "_c1_terminal_ids", "_c1_blocked_ids",
     "_next_enabled", "_next_bars", "_next_last_bar", "_next_daily_ns", "_next_daily_side",
     "_next_count", "_next_wait", "_next_release", "_next_peak", "_next_equity", "_next_equity_ns",
@@ -70,7 +70,7 @@ def recovery_policy_hash(config, candidate):
     names=getattr(type(config), "__struct_fields__", None)
     if names is None:names=tuple(vars(config))
     names=sorted(name for name in names if name.startswith("research_") or name in (
-        "btc_id","sol_id","btc_signal_id","sol_signal_id","max_mark_age_ns","live_account_mode","live_equity_basis",
+        "btc_id","sol_id","btc_signal_id","sol_signal_id","max_mark_age_ns","live_account_mode","live_equity_basis","live_initial_capital_limit_usdc",
         "execution_policy_hash","execution_policy_version","market_exit_time_in_force","market_exit_reduce_only",
         "tp_fee_floor_v1","freeze_sigma_on_first_sol_fill","max_gross_to_active"))
     def value(item):
@@ -240,6 +240,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._post_drain_task = None
         self._recovery_health = None
         self._live_money_provider = None
+        self._active_c1_authorized=getattr(config,'live_start_approved',False) is True
         self._live_account_mode=getattr(config,'live_account_mode','disabled')
         self._input_readiness_preparation=False
         self._fresh_c1_init_intent=None
@@ -249,6 +250,12 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._live_input_request=None
         self._live_input_ws_epoch=None
         self._live_c1_input=None
+        self._c1_pending_peak=None
+        self._owned_effect_chain=None
+        self._live_increase_headroom=None
+        self._live_context_current=None
+        self._capital_basis_verified=False
+        self._capital_basis_end_ms=None
         self._last_live_input_observation=None
         self._live_inputs_dirty=True
         self._live_inputs_reason='NO_NATIVE_OBSERVATION'
@@ -341,7 +348,10 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             revision=self._recovery_runtime.native_revision(),fill_epoch=self._c1_fill_epoch,
             ws_epoch=self._live_input_ws_epoch(),max_mark_age_ns=self.config.max_mark_age_ns)
         self._live_c1_input=value
-        self._c1_observe(value.equity,value.decision_ns,value.source_available_ns,value.fill_epoch,value.positions)
+        raise_allowed=self._capital_high_water_allowed(value.equity,value.source_available_ns)
+        if not raise_allowed and value.equity>self._c1_peak and (self._c1_pending_peak is None or value.equity>self._c1_pending_peak['equity']):
+            self._c1_pending_peak=dict(equity=value.equity,observed_ns=value.source_available_ns)
+        self._c1_observe(value.equity,value.decision_ns,value.source_available_ns,value.fill_epoch,value.positions,allow_peak_raise=raise_allowed)
         return value
 
     def _c1_current_money(self,ns):
@@ -373,11 +383,11 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if self._live_refresh is not None:
             self._live_refresh()
 
-    def initialize_clean_flat_c1_epoch(self,view,*,intent,now_ns,history_anchor_ms):
+    def initialize_clean_flat_c1_epoch(self,view,*,intent,now_ns,history_anchor_ms,cashflow_page=None):
         """Use canonical freshly constructed state only after strict native proof."""
         runtime=self._recovery_runtime
         if (intent!='INITIALIZE_FRESH_C1_EPOCH' or self._fresh_c1_init_intent!=intent
-            or not self._input_readiness_preparation or not self._manage_only_preparation
+            or not self._input_readiness_preparation or (not self._manage_only_preparation and not self._active_c1_authorized)
             or runtime is None or runtime.entry_control_state()!='PAUSED' or not isinstance(view,LivePerpsMoneyView)
             or view.account_mode!=self._live_account_mode
             or view.equity_basis!=getattr(self.config,'live_equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1')
@@ -387,6 +397,10 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             or not self._fresh_init_generation_validator()):
             raise ValueError('C1_INIT_EXPLICIT_NATIVE_PROOF_REQUIRED')
         view.require_fresh(now_ns//1_000_000,9_000)
+        if self._active_c1_authorized:
+            if cashflow_page is None:raise ValueError('LIVE_INITIAL_CASHFLOW_BASELINE_REQUIRED')
+            from coinmaster.ops.hl_live_profile import initial_capital_limit
+            if view.equity>initial_capital_limit(self.config.live_initial_capital_limit_usdc):raise ValueError('LIVE_INITIAL_CAPITAL_LIMIT_EXCEEDED')
         if (self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight()
             or self._domain.episode is not None or self._pending_by_order or self._queued_intents
             or self._c1_state is not None or self._c1_intents or self._c1_fill_epoch or self._seen_trade_ids
@@ -403,7 +417,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             self._c1_peak=view.equity;self._next_peak=view.equity
             body=self.on_save()[_KEY];policy=recovery_policy_hash(self.config,self._candidate)
             runtime.initialize_c1_epoch(intent=intent,checkpoint=body,policy_sha256=policy,equity=view.equity,
-                account_total=account_total,account_event_id=event_id,expected_revision=view.native_revision,now_ns=now_ns,history_anchor_ms=history_anchor_ms)
+                account_total=account_total,account_event_id=event_id,expected_revision=view.native_revision,now_ns=now_ns,history_anchor_ms=history_anchor_ms,cashflow_page=cashflow_page)
         except BaseException:
             self._c1_peak,self._next_peak=old_h,old_next
             raise
@@ -415,7 +429,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         """Virgin-only wrapper around existing public controls; never reset H."""
         runtime=self._recovery_runtime
         marker=runtime.c1_initialization() if runtime is not None else None
-        if (not idempotency_key or not self._input_readiness_preparation or not self._manage_only_preparation
+        if (not idempotency_key or not self._input_readiness_preparation or (not self._manage_only_preparation and not self._active_c1_authorized)
             or marker is None or marker.get('policy_sha256')!=recovery_policy_hash(self.config,self._candidate)
             or self._deposit.high_water is not None or self._deposit.latched or self._deposit.trigger is not None
             or runtime.all_submissions() or runtime.applied_fill_ids() or runtime.pending_submissions()
@@ -428,6 +442,24 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         # readiness blocks and the existing SET command can finish without reset.
         self.apply_deposit_control('reset-deposit-protection',idempotency_key+':initial',confirm=True)
         return self.apply_deposit_control('set-deposit-protection',idempotency_key+':limit55',drawdown_limit_percent=55)
+
+    def _capital_high_water_allowed(self,value=None,observed_ns=None):
+        if not self._input_readiness_preparation:return True
+        if not self._capital_basis_verified or self._recovery_runtime is None or self._recovery_runtime.cashflow_quarantined():return False
+        observation=self._last_live_input_observation
+        observed_ns=observed_ns if observed_ns is not None else getattr(observation,'source_available_ns',None)
+        return observed_ns is not None and self._capital_basis_end_ms is not None and observed_ns//1_000_000<=self._capital_basis_end_ms
+
+    def accept_cashflow_basis(self,page):
+        self._capital_basis_verified=not self._recovery_runtime.cashflow_quarantined()
+        self._capital_basis_end_ms=page['end_ms'] if self._capital_basis_verified else None
+        if not self._capital_basis_verified:return
+        pending=self._c1_pending_peak
+        if pending is not None and page['start_ms']*1_000_000<=pending['observed_ns']<=(page['end_ms']+1)*1_000_000:
+            self._c1_peak=max(self._c1_peak,pending['equity']);self._c1_pending_peak=None
+        if self._deposit.confirm_pending_high(page['start_ms'],page['end_ms']):
+            self._persist_deposit('CASHFLOW_VERIFIED_DAILY_HIGH','deposit:cashflow:'+str(page['end_ms']),self.clock.timestamp_ns())
+        self._persist_transient_checkpoint()
 
     def _validated_live_deposit_equity(self):
         """Money observation for existing DP only; no recovery/order capability."""
@@ -460,7 +492,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         view = self._live_money_provider()
         if not isinstance(view, LivePerpsMoneyView):
             raise ValueError("LIVE_MONEY_VIEW_UNKNOWN")
-        view.require_fresh(time.time_ns() // 1_000_000, 10_000)
+        view.require_fresh(time.time_ns() // 1_000_000, 9_000)
         return view
 
     def _halt_on_deferred_daily_decision(self) -> bool:
@@ -543,6 +575,11 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         try:
+            if self._active_c1_authorized and (
+                not self._capital_basis_verified or self._recovery_runtime.cashflow_quarantined()
+                or self._live_context_current is None or not self._live_context_current()
+                or self._live_increase_headroom is None or not self._live_increase_headroom()):
+                return False
             view, positions, pending = self._current_owned_money()
             coin = "BTC" if instrument_id == self.config.btc_id else "SOL" if instrument_id == self.config.sol_id else ""
             return prospective_cross_margin_ok(
@@ -612,7 +649,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         super().on_stop()
 
     def _require_recovery_confirmed(self) -> None:
-        if self._manage_only_preparation or self.config.research_residual_recovery:
+        if self._manage_only_preparation or (self.config.research_residual_recovery and not self._active_c1_authorized):
             raise RuntimeError("MANAGE_ONLY_NORMAL_DISPATCH_FORBIDDEN")
         if not self.recovery_confirmed or (self._recovery_health is not None and not self._recovery_health()):
             self.recovery_confirmed = False
@@ -668,6 +705,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             now_ns=self.clock.timestamp_ns()
             if tick.instrument_id not in (self.config.btc_id,self.config.sol_id):return
             if not tick.ts_event<=tick.ts_init<=now_ns:raise ValueError('LIVE_QUOTE_CLOCK_INVALID')
+            if self.cache.positions_open():self.request_live_input_observation()
             try:self._materialize_live_c1_observation(now_ns)
             except ValueError as error:
                 self._live_c1_input=None;self._live_inputs_reason=str(error)
@@ -680,6 +718,11 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             # Observe selected policy only: no ordinary quote command callback,
             # dispatch, queued historical quote or ownership authority here.
             self._persist_transient_checkpoint()
+            if not self._active_c1_authorized:return
+            self._quote_ns[tick.instrument_id]=tick.ts_event
+            if self._feeds_fresh(now_ns):
+                super().on_quote_tick(tick,decision_ns=now_ns)
+                self._persist_transient_checkpoint()
             return
         if self._liquidating:
             self.recovery_confirmed = False
@@ -702,7 +745,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         sigma: float | None, decision_index: int,
         only_instrument: InstrumentId | None = None, ts_now: int | None = None,
     ) -> None:
-        if intent.action != "CLOSE_ALL":
+        if intent.action != "CLOSE_ALL" and not (self._active_c1_authorized and intent.action in ("BTC_REDUCE","SOL_HALF_EXIT","SOL_EXIT","C1_RESIDUAL_CUT")):
             try:
                 self._current_owned_money()
             except (ValueError, RuntimeError):
@@ -717,25 +760,91 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             only_instrument=only_instrument, ts_now=ts_now,
         )
 
-    def _record_submission(self, *args, **kwargs) -> bool:
-        # Final pre-submit gate covers queued entries and every reduce-only management action.
-        try:
-            self._require_recovery_confirmed()
-        except RuntimeError:
+    def establish_owned_effect_chain(self, *, account_id, ws_epoch, policy_sha256):
+        if not self._active_c1_authorized or self._live_input_ws_epoch is None:
+            raise ValueError("LIVE_OWNED_CHAIN_START_REQUIRED")
+        if policy_sha256 != recovery_policy_hash(self.config,self._candidate):
+            raise ValueError("LIVE_OWNED_CHAIN_POLICY")
+        self._owned_effect_chain=(str(account_id),ws_epoch,policy_sha256)
+
+    def _owned_reduce_allowed(self, order):
+        """Native lineage only; this grants no money, H or opening authority."""
+        chain=self._owned_effect_chain
+        if (not self._active_c1_authorized or chain is None or not order.is_reduce_only
+            or not self.recovery_confirmed or self._recovery_health is None or not self._recovery_health()
+            or self._live_input_ws_epoch is None or self._live_input_ws_epoch()!=chain[1]
+            or recovery_policy_hash(self.config,self._candidate)!=chain[2]):
             return False
-        try:
-            self._validated_live_money()
-        except ValueError:
-            return False
-        if not self._feeds_fresh(time.time_ns()):
-            return False
-        if args and getattr(args[0], "is_reduce_only", True) is False:
-            order = args[0]
-            if not self._tier_allows_increase(
-                order.instrument_id, order.side, order.quantity.as_decimal(), time.time_ns(),
-            ):
+        rows=self._recovery_runtime.all_submissions()
+        journal={r["client_order_id"]:r for r in rows}
+        if len(journal)!=len(rows) or str(order.client_order_id) in journal:return False
+        native={str(o.client_order_id):o for o in self.cache.orders(venue=self.config.btc_id.venue)}
+        if not set(native).issubset(journal):return False
+        for client_id,cached in native.items():
+            row=journal[client_id]
+            shape=row["body"].get("shape") or {}
+            if (str(cached.strategy_id)!=str(self.id)
+                or (cached.account_id is not None and str(cached.account_id)!=chain[0])
+                or str(cached.instrument_id)!=row["instrument_id"]
+                or cached.quantity.as_decimal()!=Decimal(row["body"]["quantity"])
+                or bool(cached.is_reduce_only)!=(row["body"].get("reduce_only") is True)
+                or (shape.get("side") is not None and getattr(cached.side,"name",str(cached.side))!=shape["side"])):
                 return False
-        return super()._record_submission(*args, **kwargs)
+            if getattr(cached.status,"name",str(cached.status))=="REJECTED":
+                self._owned_effect_chain=None
+                return False
+        held=None
+        applied=self._recovery_runtime.applied_fill_ids()
+        for position in self.cache.positions_open():
+            if (str(position.account_id)!=chain[0] or str(position.strategy_id)!=str(self.id)
+                or position.instrument_id not in (self.config.btc_id,self.config.sol_id)):
+                return False
+            if any(str(e.client_order_id) not in journal or str(e.trade_id) not in applied for e in position.events):
+                return False
+            if position.instrument_id==order.instrument_id:
+                if held is not None:return False
+                held=position
+        if held is None or (order.side==OrderSide.SELL)!=held.is_long:return False
+        reserved=Decimal("0")
+        for client_id,row in journal.items():
+            if row["instrument_id"]!=str(order.instrument_id) or row["body"].get("reduce_only") is not True:continue
+            cached=native.get(client_id)
+            if cached is not None:
+                if str(cached.strategy_id)!=str(self.id):return False
+                if cached.is_closed:continue
+                reserved+=max(Decimal("0"),cached.quantity.as_decimal()-cached.filled_qty.as_decimal())
+            elif row["state"]!="TERMINAL":
+                reserved+=Decimal(row["body"]["quantity"])
+        quantity=order.quantity.as_decimal()
+        return quantity>0 and quantity<=held.quantity.as_decimal()-reserved
+
+    def _record_submission(self, *args, **kwargs) -> bool:
+        if not args:return False
+        order=args[0]
+        runtime=self._recovery_runtime
+        if runtime is None:return False
+        # The same journal lock covers the final native quantity check and durable reservation.
+        with runtime._lock:
+            if self._active_c1_authorized and order.is_reduce_only:
+                if not self._owned_reduce_allowed(order):return False
+            else:
+                try:
+                    self._require_recovery_confirmed()
+                    self._validated_live_money()
+                except (ValueError,RuntimeError):return False
+                if not self._feeds_fresh(time.time_ns()):return False
+                if not order.is_reduce_only:
+                    if self._active_c1_authorized:
+                        from coinmaster.ops.hl_live_money import native_lifecycle_feasible
+                        instrument=self.cache.instrument(order.instrument_id)
+                        mark=self._latest_marks.get(order.instrument_id)
+                        if instrument is None or mark is None:return False
+                        fractions=self._candidate.btc_tp_fractions_initial_qty if order.instrument_id==self.config.btc_id else ()
+                        if not native_lifecycle_feasible(instrument,order.quantity.as_decimal(),Decimal(str(mark.price)),
+                            tp_fractions=fractions,cut_divisor=self.config.research_c1_btc_cut_divisor if order.instrument_id==self.config.btc_id else 2):return False
+                    if not self._tier_allows_increase(
+                        order.instrument_id,order.side,order.quantity.as_decimal(),time.time_ns()):return False
+            return super()._record_submission(*args, **kwargs)
 
     def attach_recovery_runtime(self, runtime) -> None:
         self._recovery_runtime = runtime
@@ -810,10 +919,15 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             raise RuntimeError("RECOVERY_FILL_CHECKPOINT_CONFLICT")
 
     def _entries_enabled(self) -> bool:
-        if self._manage_only_preparation or self.config.research_residual_recovery:return False
+        if self._manage_only_preparation or (self.config.research_residual_recovery and not self._active_c1_authorized):return False
         try:
             self._validated_live_money()
-        except ValueError:
+            if self._active_c1_authorized and (
+                not self._capital_basis_verified or self._recovery_runtime.cashflow_quarantined()
+                or self._live_context_current is None or not self._live_context_current()
+                or self._live_increase_headroom is None or not self._live_increase_headroom()):
+                return False
+        except (ValueError,RuntimeError):
             return False
         return self._feeds_fresh(time.time_ns()) and super()._entries_enabled()
 

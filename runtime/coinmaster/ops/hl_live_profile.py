@@ -21,22 +21,35 @@ INPUT_FLAGS={**FLAGS,'research_btc_split50':True,'research_btc_split_planref_v1'
     'research_c1_global_cut_arm':False,'research_c1_first_fresh_h4':True,'research_c1_btc_postcut_d1':True}
 
 
+def initial_capital_limit(value):
+    """Canonical PRIVATE maximuminitial funding, never a future NAV ceiling."""
+    from decimal import Decimal,InvalidOperation
+    if type(value) is not str:raise RuntimeError('LIVE_INITIAL_CAPITAL_LIMIT_INVALID')
+    try:amount=Decimal(value)
+    except (InvalidOperation,ValueError):raise RuntimeError('LIVE_INITIAL_CAPITAL_LIMIT_INVALID') from None
+    canonical=format(amount,'f')
+    if '.' in canonical:canonical=canonical.rstrip('0').rstrip('.')
+    if not amount.is_finite() or amount<=0 or canonical!=value:raise RuntimeError('LIVE_INITIAL_CAPITAL_LIMIT_INVALID')
+    return amount
+
+
 def _validate_input_readiness_profile(root,profile,candidate):
     from decimal import Decimal
+    active=profile.get('profile_id')=='E4_C1_ACTIVE_SELECTED'
     keys={'schema','profile_id','initial_capital_usdc','candidate_sha256','research_source','economic_config_sha256',
         'strategy_flags','manage_only_readiness','input_readiness','live_order_capability','source_pins','deposit_protection_percent','retained_equity_floor_fraction','initialization_intent','account_mode','equity_basis'}
-    if (set(profile)!=keys or profile['account_mode'] not in ('disabled','unifiedAccount')
+    if active:keys=keys|{'owner_start_required'}
+    if (set(profile)!=keys or profile.get('schema')!=('coinmaster-live-selected-c1-v1' if active else 'coinmaster-live-input-readiness-v1') or (active and (profile.get('owner_start_required') is not True or profile.get('schema')!='coinmaster-live-selected-c1-v1')) or profile['account_mode'] not in ('disabled','unifiedAccount')
         or profile['equity_basis']!=('HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' if profile['account_mode']=='unifiedAccount' else 'HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1')
-        or profile['initialization_intent'] not in (None,'INITIALIZE_FRESH_C1_EPOCH') or profile['profile_id']!='E4_C1_INPUT_READINESS_ONLY'
-        or profile['manage_only_readiness'] is not True or profile['input_readiness'] is not True or profile['live_order_capability'] is not False
+        or profile['initialization_intent'] not in (None,'INITIALIZE_FRESH_C1_EPOCH') or profile['profile_id'] not in ('E4_C1_INPUT_READINESS_ONLY','E4_C1_ACTIVE_SELECTED')
+        or profile['manage_only_readiness'] is not (not active) or profile['input_readiness'] is not True or profile['live_order_capability'] is not active
         or profile['research_source']!='fccd60c01e8cae5e8258748b046f43f88a16bb79'
         or profile['economic_config_sha256']!='a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253'
         or type(profile['deposit_protection_percent']) is not int or profile['deposit_protection_percent']!=55
         or profile['retained_equity_floor_fraction']!='0.45'
         or profile['strategy_flags']!=INPUT_FLAGS or profile['candidate_sha256']!=candidate_content_hash(candidate)):
         raise RuntimeError('LIVE_INPUT_PROFILE_MISMATCH')
-    capital=Decimal(profile['initial_capital_usdc'])
-    if not capital.is_finite() or capital<=0:raise RuntimeError('LIVE_INPUT_PROFILE_CAPITAL_INVALID')
+    initial_capital_limit(profile['initial_capital_usdc'])
     required={'coinmaster/strategy/residual_recovery.py','coinmaster/strategy/wave_overlay.py','coinmaster/strategy/next_band.py',
         'coinmaster/strategy/hedge_band.py','coinmaster/domain/wave_overlay.py','coinmaster/strategy/c1_inputs.py','coinmaster/ops/hl_unified_account.py','coinmaster/ops/hl_unified_instruments.py',
         'coinmaster/ops/hl_live_execution.py','coinmaster/ops/hl_info_receipt.py','coinmaster/ops/hl_live_money.py'}
@@ -46,9 +59,10 @@ def _validate_input_readiness_profile(root,profile,candidate):
 
 
 def load_live_profile(root: Path, candidate):
-    path = root / "configs/hl-live-v3-dp50.profile.json"
+    selected=root / "configs/hl-live-selected.profile.json"
+    path=selected if selected.exists() else root / "configs/hl-live-v3-dp50.profile.json"
     profile = json.loads(path.read_text())
-    if profile.get('schema')=='coinmaster-live-input-readiness-v1':return _validate_input_readiness_profile(root,profile,candidate)
+    if profile.get('schema') in ('coinmaster-live-input-readiness-v1','coinmaster-live-selected-c1-v1'):return _validate_input_readiness_profile(root,profile,candidate)
     if (set(profile) != {"schema", "profile_id", "initial_capital_usdc",
                          "deposit_protection_percent", "research_source",
                          "candidate_sha256", "strategy_sha256", "domain_sha256", "strategy_flags",

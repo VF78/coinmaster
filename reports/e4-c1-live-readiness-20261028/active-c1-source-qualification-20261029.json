@@ -1,0 +1,73 @@
+{
+  "schema": "coinmaster-active-c1-source-qualification-v1",
+  "source_parent": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
+  "source_pins": {
+    "runtime/coinmaster/domain/deposit_protection.py": "cdacbbae7baa22355e2db5452fd0ca13caaffa3e150088bc0ff567059a29209b",
+    "runtime/coinmaster/ops/hl_info_receipt.py": "b10cb092da42a40db621bf5e401f8fb02b4c301f21cb1a2877fad509d4d13a37",
+    "runtime/coinmaster/ops/hl_live_credential_preflight.py": "239abce4f3131859b46ff75fd7879428e008c56431a1122a3b9512d7fc867821",
+    "runtime/coinmaster/ops/hl_live_epoch.py": "9bbe6539bed5d427bdfb1f62d3a95903506ac37559fa83c3d0ae54ba169e571b",
+    "runtime/coinmaster/ops/hl_live_execution.py": "8f55130137f966da4e64c7526475988bc39f228dcbd6146805748bf572405c56",
+    "runtime/coinmaster/ops/hl_live_money.py": "9cb3fb7268b479f39dd4ef74ba34eb6c33ceea3f563b5af4c57098be4c751e1d",
+    "runtime/coinmaster/ops/hl_live_profile.py": "b9ac119bfc26ebb45d8df3f9472a73562278461d2aead4b7ee8d6ddc8db0d884",
+    "runtime/coinmaster/ops/hl_live_worker.py": "1e981d7bff708875000111b1369eb9d4a3d46a5fd94d19cd2310d0e8b9402d2b",
+    "runtime/coinmaster/ops/hl_unified_account.py": "db12cbda526fe8e8851d5fc563a1deddc322b3baf106716bc6a8cd1da6d54d88",
+    "runtime/coinmaster/strategy/live_recovery.py": "012adb6a73afc0e669d341b86345bd91ae05c45549ae51b4644c346ab304ad22",
+    "runtime/coinmaster/strategy/next_band.py": "ba01f1a0bf9a78197a469483c807a73a8089a4ccf2c0e35598b4ae6b9321cef7",
+    "runtime/coinmaster/strategy/residual_recovery.py": "55b4db26540a297a8d53dfe45be446136c7c0df3956ba73005013be7a5112483",
+    "runtime/coinmaster/strategy/wave_overlay.py": "0ce3900f396a99ed2c6a4caf2045bf2eedbded3099ee6a284753fb375fbd482f",
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "476f4447f3d5a2460118e766b4abd7ecd3d57fad5d3050c617edf72be74abf86",
+    "runtime/tests/test_e4_c1_unified_pure.py": "b9371428b18f63c90581092bf07c5e2dc1fb0874c843e12adddfd9f6adbee0e3",
+    "runtime/tests/test_e4_c1_active_authorization_pure.py": "ed315308fc8959bd55c835362e90f959ef7904607dbcdbe15014fec7c0fc44d1",
+    "runtime/tests/test_e4_c1_active_composition_pure.py": "c2570dd921c295920ec8d5627afca03f5ab4107b1a1a0d9d2cba911255b3dc52"
+  },
+  "state": "SOURCE_ENGINE_FREE_CONNECTED_PASS_PENDING_INDEPENDENT_REVIEW",
+  "tests": {
+    "result": "PASS",
+    "passed": 231,
+    "seconds": "25.58",
+    "files": [
+      "test_e4_c1_manage_only_pure.py",
+      "test_e4_c1_input_bridge_pure.py",
+      "test_e4_c1_unified_pure.py",
+      "test_deposit_protection.py",
+      "test_e4_c1_active_authorization_pure.py",
+      "test_e4_c1_active_composition_pure.py"
+    ],
+    "prior_connected_failure": {
+      "passed": 221,
+      "failed": 5,
+      "seconds": "25.91",
+      "resolution": "obsolete fixture ABI/expiry assertions corrected; negative guards retained"
+    },
+    "execution": "PYTHONPATH=runtime PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -B -m pytest -q --noconftest -p no:cacheprovider"
+  },
+  "contract": {
+    "default": "OFF; PREPARE remains manage-only; ACTIVE requires exact selected v2 START ticket",
+    "candidate_source": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+    "economic_config": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
+    "capital": "maximum INITIAL capital only; fresh INIT actual native USDC total; restart never resets H/rights/latch",
+    "equity_basis": "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1; native UPNL never added again",
+    "dp": "retained45/maxDD55; initial and higher valid UTC daily-close H; cashflow basis required for H credit; no hard execution cap guarantee",
+    "generation": "437+4N <=497, N<=15, cap700; classic600 unchanged; one attempt; ledger saturation500/fills2000 UNKNOWN",
+    "rolling": "same1000/60s; prepaid full bound; settle real endpoint/item timestamps; opaque native retries completion; no unsettled expiry",
+    "context": "START role/defaultDEX proof original timestamp max300s/earlier known agent expiry; account/signer/policy/WS binding; mode freshly read",
+    "held": "native mode20+stock spot<=8+allDEX20; demand/coalesced6s; actual native cache event awaited; oldest9s; bounded budget wait; unknown remains unknown",
+    "authority": "fresh full proof for increases; independent native-owned known-lineage reduce chain0Info; all pending/uncertain reductions reserved including pending cancel",
+    "cashflow": "ONE inclusive-overlap userNonFundingLedgerUpdates page; baseline IDs+cursor atomic INIT; unseen later same-ms row quarantines; no cash/H credit",
+    "clock": "same ordinary callback once with actual decision_ns; original tick timestamps preserved; default decision_nsNone research behavior",
+    "feasibility": "synthetic72/108 current-price HL lot/minNotional whole-lifecycle negatives; no ceil or private account feasibility claim"
+  },
+  "retained_model_helper_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "native_node_engine_runs": 0,
+  "venue_calls": 0,
+  "keys_loaded": 0,
+  "orders_transfers_service_changes": 0,
+  "start_authorized": false,
+  "remaining": [
+    "one focused independent critical peer",
+    "compose already-qualified UI/API and report repair",
+    "frozen native A/B casemap+rootGO, budget3 spent0",
+    "final immutable release/profile approval and explicit owner START"
+  ],
+  "evidence_limit": "Functional/source qualification; no synchronized held venue execution proof. Fresh START readback and first actual fill remain required."
+}

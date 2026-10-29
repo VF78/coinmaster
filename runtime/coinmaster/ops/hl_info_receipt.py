@@ -45,6 +45,8 @@ class InfoReceipt:
     spot_balances: tuple[dict,...] = ()
     all_dex_states: tuple = ()
     equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
+    context_verified_at_ns: int | None = None
+    mode_observed_at_ns: int | None = None
 
 
 def _number(value: Any, name: str) -> Decimal:
@@ -120,7 +122,7 @@ async def collect_info_receipt(
     cached_terminal_statuses: dict | None = None, archived_fills: tuple = (),
     query_anchor_ms: int | None = None, query_anchor_tid: int | None = None,
     allow_fill_subdivision: bool = True,
-    account_mode: str = "disabled",
+    account_mode: str = "disabled",account_context: dict | None = None,
 ) -> InfoReceipt:
     """Collect a validated, bounded batch; raises on uncertainty.
 
@@ -215,11 +217,14 @@ async def collect_info_receipt(
         if (cross_numbers[0] < 0 and account_mode=="disabled") or cross_numbers[2] < 0 or cross_numbers[3] < 0:
             raise IncompleteInfoReport("BAD_CROSS_MARGIN_SUMMARY")
         cross_values = tuple(str(value) for value in cross_numbers)
-        raw_role = await request({"type": "userRole", "user": account})
-        raw_abstraction = await request({"type": "userAbstraction", "user": account})
-        dex_abstraction = await request({"type": "userDexAbstraction", "user": account})
-        role = raw_role.get("role") if isinstance(raw_role, dict) else ""
-        abstraction = raw_abstraction if isinstance(raw_abstraction, str) else ""
+        if account_mode=='unifiedAccount' and account_context is not None:
+            role=account_context['master_role'];abstraction=account_context['mode'];dex_abstraction=account_context['dex_abstraction']
+        else:
+            raw_role=await request({'type':'userRole','user':account})
+            raw_abstraction=await request({'type':'userAbstraction','user':account})
+            dex_abstraction=await request({'type':'userDexAbstraction','user':account})
+            role=raw_role.get('role') if isinstance(raw_role,dict) else ''
+            abstraction=raw_abstraction if isinstance(raw_abstraction,str) else ''
         if role != "user" or abstraction != account_mode or dex_abstraction is not False:
             raise IncompleteInfoReport("UNSUPPORTED_ACCOUNT_ABSTRACTION")
 
@@ -362,4 +367,6 @@ async def collect_info_receipt(
         cached_terminal_cloids=tuple(sorted(cached_terminal_statuses)),query_start_ms=query_anchor_ms,query_anchor_tid=query_anchor_tid,
         account_mode=account_mode,spot_balances=spot_rows,all_dex_states=all_dex_rows,
         equity_basis=('HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' if account_mode=='unifiedAccount' else 'HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),
+        context_verified_at_ns=account_context.get('verified_at_ns') if account_context else None,
+        mode_observed_at_ns=account_context.get('mode_observed_at_ns') if account_context else None,
     )

@@ -22,7 +22,7 @@ from nautilus_trader.model.data import BarType, BarSpecification
 from nautilus_trader.model.identifiers import ClientId
 
 from coinmaster.ops.hl_live_credential_preflight import check_live_credential, _read_json
-from coinmaster.ops.hl_live_execution import ScopedHyperliquidExecClientFactory
+from coinmaster.ops.hl_live_execution import ScopedHyperliquidExecClientFactory,ReadinessInfoBudget
 from coinmaster.ops.hyperliquid_testnet import (
     BTC_PERP, SOL_PERP, TESTNET_IDS, LifecycleHooks, HyperliquidTestnetNode,
     cross_venue_stage_g_gate, hyperliquid_testnet_node_config, load_stageg_warmup_bundle,
@@ -31,7 +31,7 @@ from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_stat
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink, durable_management_scope
 from coinmaster.ops.native_paper_node import BYBIT_IDS, FeedBook, FeedObserver, FeedObserverConfig, bybit_daily_bar_type
 from coinmaster.ops.hl_live_epoch import LiveEpochRuntime as PaperRuntime
-from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity
+from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity,initial_capital_limit
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
@@ -40,25 +40,41 @@ from coinmaster.venues.marks import venue_mark_data_type
 SEALED_V0_SHA = "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511"
 
 
-def require_live_order_approval(path: Path, fingerprint_path: Path, release_root: Path) -> dict:
-    """Owner must approve this exact immutable release and selected account separately."""
+def require_live_order_approval(path: Path, fingerprint_path: Path, release_root: Path,*,profile=None) -> dict:
+    """Exact immutable release authorization; source preparation never impliesSTART."""
     try:
-        approval = json.loads(path.read_text())
-        fingerprint = json.loads(fingerprint_path.read_text())
-        identity = json.loads((release_root / "live-release.json").read_text())
-        if (approval.get("schema") != "coinmaster-live-order-approval-v1"
-                or approval.get("instance_id") != "hl-stageg-live"
-                or approval.get("orders_approved") is not True
-                or approval.get("pilot_capital_usdc") != "82"
-                or approval.get("release_commit") != identity["source_commit"]
-                or approval.get("master_address_sha256") != fingerprint["master_address_sha256"]
-                or approval.get("strategy_sha256") != identity["strategy_sha256"]
-                or approval.get("candidate_sha256") != identity["candidate_sha256"]
-                or approval.get("profile_sha256") != identity["profile_sha256"]):
-            raise ValueError
+        approval=json.loads(path.read_text());fingerprint=json.loads(fingerprint_path.read_text())
+        identity=json.loads((release_root/'live-release.json').read_text())
+        selected=profile is not None and profile.get('profile_id') in ('E4_C1_INPUT_READINESS_ONLY','E4_C1_ACTIVE_SELECTED')
+        active=selected and profile['profile_id']=='E4_C1_ACTIVE_SELECTED'
+        if (approval.get('instance_id')!='hl-stageg-live'
+            or approval.get('release_commit')!=identity['source_commit']
+            or approval.get('master_address_sha256')!=fingerprint['master_address_sha256']
+            or approval.get('strategy_sha256')!=identity['strategy_sha256']
+            or approval.get('candidate_sha256')!=identity['candidate_sha256']
+            or approval.get('profile_sha256')!=identity['profile_sha256']):raise ValueError
+        if selected:
+            cap=profile['initial_capital_usdc'];initial_capital_limit(cap)
+            if (approval.get('schema')!='coinmaster-live-order-approval-v2'
+                or identity.get('initial_capital_limit_usdc')!=cap or approval.get('initial_capital_limit_usdc')!=cap
+                or profile['profile_sha256']!=identity['profile_sha256']
+                or identity.get('account_mode')!=profile['account_mode'] or approval.get('account_mode')!=profile['account_mode']
+                or identity.get('equity_basis')!=profile['equity_basis'] or approval.get('equity_basis')!=profile['equity_basis']
+                or identity.get('money_currency')!='USDC' or identity.get('research_source')!=profile['research_source']
+                or identity.get('economic_config_sha256')!=profile['economic_config_sha256']):raise ValueError
+            if active or profile.get('initialization_intent') is not None:
+                if (approval.get('authorization')!='START_LIVE_E4_C1' or approval.get('start_approved') is not True
+                    or approval.get('orders_approved') is not True):raise ValueError
+            elif approval.get('authorization')!='PREPARE_ONLY' or approval.get('orders_approved') is not False:raise ValueError
+        else:
+            if approval.get('schema')!='coinmaster-live-order-approval-v1' or approval.get('orders_approved') is not True:raise ValueError
+            # Legacy profile remains exact-bound; no source literal private amount.
+            cap=identity.get('initial_capital_limit_usdc',approval.get('pilot_capital_usdc'))
+            initial_capital_limit(cap)
+            if approval.get('pilot_capital_usdc')!=cap:raise ValueError
         return approval
-    except (OSError, ValueError, KeyError, TypeError):
-        raise RuntimeError("LIVE_OWNER_ORDER_APPROVAL_REQUIRED") from None
+    except (OSError,ValueError,KeyError,TypeError,RuntimeError):
+        raise RuntimeError('LIVE_OWNER_ORDER_APPROVAL_REQUIRED') from None
 
 
 class LiveSubmissionHooks(LifecycleHooks):
@@ -145,7 +161,7 @@ class HyperliquidLiveNode:
     start = HyperliquidTestnetNode.start
     stop = HyperliquidTestnetNode.stop
 
-    def __init__(self, *, instance, candidate, state, credential_path, fingerprint_path):
+    def __init__(self, *, instance, candidate, state, credential_path, fingerprint_path,order_approval=None,readiness_budget=None):
         if instance.mode != "live" or instance.instance_id != "hl-stageg-live":
             raise RuntimeError("LIVE_INSTANCE_REQUIRED")
         self.instance, self.candidate, self.state = instance, candidate, state
@@ -154,13 +170,20 @@ class HyperliquidLiveNode:
         self.profile = load_live_profile(self.profile_root, candidate)
         self.input_readiness=self.profile.get('input_readiness',False) is True
         self.account_mode=self.profile.get('account_mode','disabled')
-        if self.input_readiness and self.profile.get('manage_only_readiness',False) is not True:
+        self.active_c1=self.profile.get('profile_id')=='E4_C1_ACTIVE_SELECTED'
+        if self.active_c1 and (not isinstance(order_approval,dict) or order_approval.get('authorization')!='START_LIVE_E4_C1' or order_approval.get('start_approved') is not True or order_approval.get('orders_approved') is not True or order_approval.get('profile_sha256')!=self.profile.get('profile_sha256')):
+            raise RuntimeError('LIVE_OWNER_START_REQUIRED')
+        if self.input_readiness and not self.active_c1 and self.profile.get('manage_only_readiness',False) is not True:
             raise RuntimeError('INPUT_READINESS_REQUIRES_MANAGE_ONLY')
         # Qualification never implies order authorization: main checks approval before this read.
-        equity = check_live_credential(credential_path, fingerprint_path)
+        self.readiness_budget=readiness_budget if readiness_budget is not None else ReadinessInfoBudget()
+        self.account_context={}
+        equity=check_live_credential(credential_path,fingerprint_path,account_mode=self.account_mode,readiness_budget=self.readiness_budget,context_out=self.account_context)
+        if self.active_c1 and state.strategy_checkpoint() is None and equity>initial_capital_limit(self.profile['initial_capital_usdc']):
+            raise RuntimeError('LIVE_INITIAL_CAPITAL_LIMIT_EXCEEDED')
         prior_balance = getattr(state, "flat_epoch_balance", None)
-        if self.profile.get("manage_only_readiness",False) is not True and equity != (prior_balance if prior_balance is not None else Decimal("82")):
-            raise RuntimeError("LIVE_PILOT_INITIAL_82_OR_OWNED_FLAT_BALANCE_REQUIRED")
+        if not self.input_readiness and self.profile.get("manage_only_readiness",False) is not True and equity != (prior_balance if prior_balance is not None else initial_capital_limit(self.profile["initial_capital_usdc"])):
+            raise RuntimeError("LIVE_INITIAL_OR_OWNED_FLAT_BALANCE_REQUIRED")
         record = _read_json(credential_path)
         self.master = record["master_address"]
         self.gate = cross_venue_stage_g_gate(
@@ -205,6 +228,7 @@ class HyperliquidLiveNode:
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
             active_seed=equity, candidate=candidate, seed_bars=self.warmup_bundle.bars,
+            live_start_approved=self.active_c1,live_initial_capital_limit_usdc=self.profile["initial_capital_usdc"],
             live_account_mode=self.account_mode,live_equity_basis=self.profile.get('equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),
             **strategy_flags,
             max_mark_age_ns=120_000_000_000, entries_gate=self._entries_enabled,
@@ -214,6 +238,7 @@ class HyperliquidLiveNode:
             market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
             deposit_runtime=state, deposit_instance_id=instance.instance_id, deposit_account_id="HYPERLIQUID-master",
             deposit_equity_reader=lambda strategy: strategy._validated_live_deposit_equity(),
+            deposit_high_water_allowed=lambda:self.strategy._capital_high_water_allowed(),
             deposit_initialization_allowed=lambda: (self.strategy.recovery_confirmed or (self.input_readiness and state.c1_initialization() is not None and state.coherent_snapshot() and state.recovery_state()=='FLAT_RESTART')) and not state.all_submissions(),
         ))
         self.hooks.strategy = self.strategy
@@ -225,8 +250,10 @@ class HyperliquidLiveNode:
             self.strategy._live_minute_bar_types=tuple(BarType(i,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL) for i in BYBIT_IDS)
             self.config.data_clients['BYBIT-PUBLIC-SIGNAL']=replace(self.config.data_clients['BYBIT-PUBLIC-SIGNAL'],bars_timestamp_on_close=True)
         self.manage_only_readiness=self.profile.get("manage_only_readiness",False) is True
-        if self.manage_only_readiness:
-            self.strategy.enable_manage_only_preparation()
+        if self.input_readiness:
+            if self.active_c1:
+                state.entry_control_command('pause-new-entries','active-node-start:'+uuid.uuid4().hex)
+            else:self.strategy.enable_manage_only_preparation()
             checkpoint=state.strategy_checkpoint()
             if checkpoint is None:
                 intent=self.profile.get('initialization_intent')
@@ -244,7 +271,7 @@ class HyperliquidLiveNode:
                 scope=durable_management_scope(state,self.master,"",cloid_for)
         else:
             scope=NativeLiveRecoveryScope(self.master,"",time.time_ns()//1_000_000,None,(),frozenset({"BTC","SOL"}))
-        factory = ScopedHyperliquidExecClientFactory.bind(scope, state, self.strategy, account_lock_root=Path("/run/coinmaster-hl-live"))
+        factory = ScopedHyperliquidExecClientFactory.bind(scope, state, self.strategy, account_lock_root=Path("/run/coinmaster-hl-live"),readiness_budget=self.readiness_budget,account_context=self.account_context)
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
         if self.account_mode=='unifiedAccount':
@@ -297,7 +324,9 @@ class LiveWorker:
         self.instance = load_testnet_instance_config(Path(environment["COINMASTER_HL_LIVE_INSTANCE_CONFIG"]))
         root = Path(__file__).resolve().parents[2]
         fingerprints = root / "configs/hl-stageg-live.account-fingerprint.json"
-        self.order_approval = require_live_order_approval(Path(environment.get("COINMASTER_LIVE_ORDER_APPROVAL", "/etc/coinmaster/live-order-approval.json")), fingerprints, root)
+        self.candidate=load_candidate(self.instance.strategy_config)
+        selected_profile=load_live_profile(root,self.candidate.candidate)
+        self.order_approval=require_live_order_approval(Path(environment.get('COINMASTER_LIVE_ORDER_APPROVAL','/etc/coinmaster/live-order-approval.json')),fingerprints,root,profile=selected_profile)
         self.release_identity = json.loads((root / "live-release.json").read_text())
         self.master_address_sha256 = json.loads(fingerprints.read_text())["master_address_sha256"]
         self.candidate = load_candidate(self.instance.strategy_config)
@@ -310,7 +339,7 @@ class LiveWorker:
         self.recovery_marker = self.instance.state_db.parent / "manual-recovery-required"
         try:
             profile=load_live_profile(root,self.candidate.candidate)
-            manage_preparation=profile.get("manage_only_readiness",False) is True
+            manage_preparation=profile.get("input_readiness",False) is True
             if self.recovery_marker.exists() and not manage_preparation:
                 raise RuntimeError("LIVE_RESTART_MANUAL_RECOVERY_REQUIRED")
             # Even a flat native cache cannot erase a previous episode or ambiguous result.
@@ -323,7 +352,7 @@ class LiveWorker:
             refresh_stageg_warmup(self.instance.signal_warmup_manifest.parent.parent)
             self.native = HyperliquidLiveNode(
                 instance=self.instance, candidate=self.candidate.candidate, state=self.runtime,
-                credential_path=Path(environment["CREDENTIALS_DIRECTORY"]) / "connection.json", fingerprint_path=fingerprints,
+                credential_path=Path(environment["CREDENTIALS_DIRECTORY"]) / "connection.json",fingerprint_path=fingerprints,order_approval=self.order_approval,
             )
         except BaseException:
             self.runtime.close()
@@ -398,25 +427,41 @@ class LiveWorker:
         positions, orders = self.native.native_snapshot()
         events, cursor = self.runtime.projection_events(100)
         account = {}
-        if self.native.strategy.recovery_confirmed:
-            try:
-                money = self.native.strategy._validated_live_money()
-                account = {"equity": str(money.equity), "native_cash": str(money.raw_usd),
-                           "withdrawable": str(money.free_collateral), "margin_used": str(money.margin_used)}
-            except ValueError as error:
-                if str(error) != "LIVE_MONEY_STALE_OR_UNKNOWN":
-                    raise
-                self.native.loop.call_soon_threadsafe(self.native.strategy._request_live_refresh)
-                status["state"] = "LIVE_MONEY_STALE/PAUSED"
-                status["orders_enabled"] = False
+        strategy=self.native.strategy
+        basis=strategy.config.live_equity_basis
+        try:
+            if strategy._input_readiness_preparation:
+                equity=strategy._validated_live_deposit_equity()
+                observation=strategy._last_live_input_observation
+                total,free,hold=equity,observation.free_collateral,observation.margin_used
+            else:
+                money=strategy._validated_live_money()
+                total,free,hold=money.equity,money.free_collateral,money.margin_used
+            account=dict(equity=str(total),reported_total=str(total),native_cash=str(total),
+                native_free=str(free),available=str(free),free_collateral=str(free),
+                native_locked=str(hold),locked=str(hold),hold=str(hold),margin_used=str(hold),
+                currency='USDC',money_currency='USDC',equity_basis=basis,
+                margin_basis='HYPERLIQUID_SPOT_USDC_HOLD_PROXY_NOT_LIQUIDATION_MM_V1' if strategy._live_account_mode=='unifiedAccount' else 'CLASSIC_PERPS_MARGIN_USED',
+                reason=None,**self.runtime.funding_projection())
+        except (ValueError,RuntimeError):
+            status["orders_enabled"]=False
+        capital=strategy._live_c1_input
+        c1=None if capital is None else dict(state=(strategy._c1_state or {}).get('state','IDLE'), E=str(capital.equity),
+            H=str(strategy._c1_peak),DD=str(max(Decimal(0),1-capital.equity/strategy._c1_peak)) if strategy._c1_peak else None,
+            cushion=str(max(Decimal(0),capital.equity-strategy._c1_peak*Decimal('.45'))),
+            source_available_ns=capital.source_available_ns,decision_ns=capital.decision_ns,
+            currency='USDC',equity_basis=basis,rights=strategy._c1_rights())
+        protection={**strategy.deposit_projection(), 'currency':'USDC',
+            'retained_equity_floor_fraction':'.45','high_water_basis':'INITIAL_AND_HIGHER_VALID_UTC_DAILY_CLOSE'}
         return {**status, "version": "hl-stageg-live-projection-v1", "run_epoch": self.run_epoch,
                 "observed_at_ns": time.time_ns(),
                 "release_commit": self.release_identity["source_commit"],
                 "master_address_sha256": self.master_address_sha256,
                 "real_order_approval": self.order_approval.get("orders_approved") is True,
                 "native_thread_alive": bool(getattr(self.native, "_thread", None) and self.native._thread.is_alive()),
+                "money_currency":"USDC","equity_basis":basis,"c1":c1,
                 "account": account, "account_state": "CURRENT" if account else "UNAVAILABLE", "positions": positions, "orders": orders, "events": events, "event_cursor": cursor,
-                "deposit_protection": self.native.strategy.deposit_projection(),
+                "deposit_protection": protection,
                 "entry_control": {"state": self.runtime.entry_control_state(), "capability": "READY" if self.control_available else "UNAVAILABLE"},
                 "provenance": "NATIVE_MAINNET_OWNED_ACCOUNT"}
 

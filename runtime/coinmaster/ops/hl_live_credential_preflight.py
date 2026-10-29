@@ -40,7 +40,7 @@ def _fingerprint(address: str) -> str:
     return hashlib.sha256(address.lower().encode("ascii")).hexdigest()
 
 
-def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info_lookup=_hyperliquid_info) -> Decimal:
+def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info_lookup=_hyperliquid_info,account_mode="disabled",readiness_budget=None,context_out=None) -> Decimal:
     record = _read_json(credential_path)
     expected = _read_json(fingerprint_path)
     master = record.get("master_address")
@@ -72,32 +72,38 @@ def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info
         saved = expected.get(label + "_address_sha256")
         if not isinstance(saved, str) or not hmac.compare_digest(_fingerprint(address), saved):
             raise CredentialGateError("ACCOUNT_FINGERPRINT_MISMATCH")
+    import time
+    if account_mode not in ('disabled','unifiedAccount'):raise CredentialGateError('ACCOUNT_MODE_UNSUPPORTED')
+    if account_mode=='unifiedAccount' and readiness_budget is None:raise CredentialGateError('SHARED_PREFLIGHT_BUDGET_REQUIRED')
+    started=time.monotonic_ns();reservation=readiness_budget.reserve(142 if account_mode=='unifiedAccount' else 122,time.monotonic()) if readiness_budget is not None else None
+    cost=0
     try:
-        master_role = info_lookup("userRole", master)
-        agent_role = info_lookup("userRole", agent)
-        state_response = info_lookup("clearinghouseState", master)
-        if master_role.get("role") != "user":
-            raise ValueError
-        if agent_role.get("role") == "missing":
-            raise CredentialGateError("AGENT_AUTHORIZATION_MISSING")
-        if agent_role.get("role") != "agent":
-            raise ValueError
-        agent_data = agent_role.get("data")
-        if not isinstance(agent_data, dict) or not isinstance(agent_data.get("user"), str):
-            raise ValueError
-        if agent_data["user"].lower() != master.lower():
-            raise ValueError
-        margin = state_response.get("marginSummary")
-        if not isinstance(margin, dict):
-            raise ValueError
-        collateral = Decimal(str(margin.get("accountValue")))
-        if not collateral.is_finite() or collateral <= 0:
-            raise CredentialGateError("ACCOUNT_COLLATERAL_NOT_POSITIVE")
-    except CredentialGateError:
-        raise
-    except (ValueError, TypeError, InvalidOperation, AttributeError, OSError):
-        raise CredentialGateError("ACCOUNT_LIVE_CHECK_FAILED") from None
-
+        cost+=60;master_role=info_lookup('userRole',master)
+        cost+=60;agent_role=info_lookup('userRole',agent)
+        if not isinstance(master_role,dict) or master_role.get('role')!='user':raise ValueError
+        if not isinstance(agent_role,dict) or agent_role.get('role')!='agent':raise CredentialGateError('AGENT_AUTHORIZATION_MISSING')
+        agent_data=agent_role.get('data')
+        if not isinstance(agent_data,dict) or not isinstance(agent_data.get('user'),str) or agent_data['user'].lower()!=master.lower():raise ValueError
+        if account_mode=='unifiedAccount':
+            cost+=20;mode=info_lookup('userAbstraction',master)
+            if mode!='unifiedAccount':raise CredentialGateError('ACCOUNT_MODE_MISMATCH')
+            cost+=2;raw=info_lookup('spotClearinghouseState',master)
+            from coinmaster.ops.hl_unified_account import spot_usdc
+            collateral=spot_usdc(raw)[0]
+        else:
+            cost+=2;raw=info_lookup('clearinghouseState',master)
+            collateral=Decimal(str(raw['marginSummary']['accountValue']))
+        if not collateral.is_finite() or collateral<=0:raise CredentialGateError('ACCOUNT_COLLATERAL_NOT_POSITIVE')
+        if time.monotonic_ns()-started>9_000_000_000:raise CredentialGateError('CREDENTIAL_PREFLIGHT_STALE')
+        if context_out is not None:
+            expiry=agent_data.get('validUntil',state.get('agent_expiry_unix_ms'))
+            if expiry is not None and (type(expiry) is not int or expiry*1_000_000<=time.time_ns()):raise CredentialGateError('AGENT_AUTHORIZATION_EXPIRED')
+            context_out.update(account_sha256=_fingerprint(master),signer_sha256=_fingerprint(agent),
+                master_role='user',agent_role='agent',agent_address=agent,verified_at_ns=started,agent_expiry_unix_ms=expiry)
+    except CredentialGateError:raise
+    except (ValueError,TypeError,InvalidOperation,AttributeError,OSError,KeyError):raise CredentialGateError('ACCOUNT_LIVE_CHECK_FAILED') from None
+    finally:
+        if reservation is not None:readiness_budget.settle(reservation,cost,now=time.monotonic())
     return collateral
 
 

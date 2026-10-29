@@ -41,12 +41,13 @@ InfoTransport = Callable[[dict[str, Any]], Awaitable[Any]]
 class InfoWeightBudget:
     """One bounded strict generation; leave shared-IP headroom for other users."""
 
-    def __init__(self, info: InfoTransport, limit: int = 400) -> None:
+    def __init__(self, info: InfoTransport, limit: int = 400, charge=None) -> None:
         self.info, self.limit, self.used = info, limit, 0
+        self.charge=charge
 
     async def __call__(self, body: dict[str, Any]):
         kind = body["type"]
-        if kind not in {'userRole','clearinghouseState','orderStatus','frontendOpenOrders','userAbstraction','userDexAbstraction','userFillsByTime','activeAssetData','spotClearinghouseState','allDexsClearinghouseState'}:
+        if kind not in {'userRole','clearinghouseState','orderStatus','frontendOpenOrders','userAbstraction','userDexAbstraction','userFillsByTime','activeAssetData','spotClearinghouseState','allDexsClearinghouseState','userNonFundingLedgerUpdates'}:
             raise IncompleteInfoReport('LIVE_INFO_UNSUPPORTED_REQUEST')
         cost = 60 if kind == "userRole" else 2 if kind in {
             "clearinghouseState", "orderStatus", "spotClearinghouseState",
@@ -54,9 +55,12 @@ class InfoWeightBudget:
         if self.used + cost > self.limit:
             raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
         self.used += cost
+        if self.charge is not None:self.charge(cost,time.monotonic())
         value = await self.info(body)
-        if kind == "userFillsByTime" and isinstance(value, list):
-            self.used += (len(value) + 19) // 20
+        if kind in ("userFillsByTime","userNonFundingLedgerUpdates") and isinstance(value,list):
+            extra=(len(value)+19)//20
+            self.used += extra
+            if extra and self.charge is not None:self.charge(extra,time.monotonic())
             if self.used > self.limit:
                 raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
         return value
@@ -65,7 +69,7 @@ class InfoWeightBudget:
 def finite_generation_reservation(uncached_orders,*,unified=False):
     if type(uncached_orders) is not int or not 0<=uncached_orders<=15:
         raise IncompleteInfoReport('LIVE_INFO_SCOPE_EXCEEDS_GENERATION_CAP')
-    return (592 if unified else 540)+4*uncached_orders
+    return (437 if unified else 540)+4*uncached_orders
 
 
 class ReadinessInfoBudget:
@@ -73,22 +77,64 @@ class ReadinessInfoBudget:
     def __init__(self):self.spent=deque();self.next_affordable=None
     def reserve(self,weight,now):
         if type(weight) is not int or not 0<weight<=1000:raise IncompleteInfoReport('LIVE_INFO_COST_UNKNOWN')
-        while self.spent and now-self.spent[0][0]>=60:self.spent.popleft()
+        self.spent=deque(item for item in self.spent if not item[2] or now-item[0]<60)
         used=sum(item[1] for item in self.spent)
         if used+weight>1000:
+            self.next_affordable=None
             for item in self.spent:
+                if not item[2]:continue
                 used-=item[1]
                 if used+weight<=1000:self.next_affordable=item[0]+60;break
             raise IncompleteInfoReport('LIVE_INFO_RATE_BUDGET_EXCEEDED')
-        entry=[now,weight,False];self.spent.append(entry);self.next_affordable=None
+        entry=[now,weight,False,[]];self.spent.append(entry);self.next_affordable=None
         return entry
-    def settle(self,reservation,actual):
+    def remaining(self,now):
+        self.spent=deque(item for item in self.spent if not item[2] or now-item[0]<60)
+        return 1000-sum(item[1] for item in self.spent)
+    def protects_held_schedule(self,now,*,additional=0,next_due=None):
+        """Forecast prepaid48/6s renewals against actual unexpired charges.
+        Up to3s budget wait leaves the unchanged9s freshness gate in force.
+        Actual HTTP delay can still make evidence UNKNOWN; no latency guarantee.
+        """
+        self.remaining(now)
+        charges=[(item[0]+60,item[1]) for item in self.spent]
+        if additional:charges.append((now+69,additional))
+        if sum(weight for expiry,weight in charges)>1000:return False
+        due=max(now,next_due if next_due is not None else now)
+        for index in range(10):
+            at=due+index*6
+            active=[(expiry,weight) for expiry,weight in charges if expiry>at]
+            used=sum(weight for _,weight in active)
+            affordable=at
+            for expiry,weight in sorted(active):
+                if used+48<=1000:break
+                used-=weight;affordable=expiry
+            if used+48>1000 or affordable-at>3:return False
+            charges.append((affordable+60,48))
+        return True
+    def note(self,reservation,weight,now):
+        if reservation[2] or type(weight) is not int or weight<0 or now<reservation[0]:
+            raise IncompleteInfoReport('LIVE_INFO_CHARGE_INVALID')
+        if weight:reservation[3].append((now,weight))
+    def settle(self,reservation,actual,*,now=None):
         if (reservation[2] or type(actual) is not int or actual<0):
             raise IncompleteInfoReport('LIVE_INFO_RESERVATION_SETTLEMENT_INVALID')
         overflow=actual>reservation[1]
+        notes=reservation[3]
+        noted=sum(weight for _,weight in notes)
+        if noted>actual:raise IncompleteInfoReport('LIVE_INFO_SETTLEMENT_BELOW_RECORDED_CHARGES')
+        # Entire bound remains reserved until atomic settlement; afterwards each
+        # real request/item charge retains its own time, never early start expiry.
+        fallback=reservation[0] if now is None else now
+        charges=[*notes]
+        if actual>noted:charges.append((fallback,actual-noted))
+        self.spent=deque(item for item in self.spent if item is not reservation)
+        self.spent.extend([at,weight,True,[]] for at,weight in charges)
+        self.spent=deque(sorted(self.spent,key=lambda item:item[0]))
         reservation[1]=actual;reservation[2]=True
         self.next_affordable=None
         if overflow:raise IncompleteInfoReport('LIVE_INFO_RESERVATION_COST_OVERFLOW')
+
 
 
 class SingleAttemptInfoTransport:
@@ -146,7 +192,7 @@ class QualifiedInfoBoundary:
 
     def configure_info_boundary(
         self, scope: NativeLiveRecoveryScope, info: InfoTransport,
-        applied_fill_ids: Callable[[], frozenset[str]], *, max_ws_messages: int = 256,
+        applied_fill_ids: Callable[[], frozenset[str]], *, max_ws_messages: int = 256,readiness_budget=None,
     ) -> None:
         if not isinstance(scope, NativeLiveRecoveryScope) or max_ws_messages <= 0:
             raise ValueError("RECOVERY_SCOPE_OR_WS_LIMIT_INVALID")
@@ -188,7 +234,10 @@ class QualifiedInfoBoundary:
         self._cm_unified_generation_reservation=None
         self._cm_unified_native_charge=0
         self._cm_unified_discovery=None
-        self._cm_inputs_budget=ReadinessInfoBudget()
+        self._cm_account_context={}
+        self._cm_cashflow_page=None
+        self._cm_financial_authority=None
+        self._cm_inputs_budget=readiness_budget if readiness_budget is not None else ReadinessInfoBudget()
         self._cm_money_task=None
         self._cm_account_refresh_wait=None
         self._cm_next_money_request=0.0
@@ -198,6 +247,7 @@ class QualifiedInfoBoundary:
         self._cm_resume_recovery = None
         self._cm_info_usage = deque()
         self._cm_parity_lock = asyncio.Lock()
+        self._cm_money_lock = asyncio.Lock()
         self._cm_refresh_task = None
         self._cm_parity_verifier = None
 
@@ -324,6 +374,59 @@ class QualifiedInfoBoundary:
         venue_orders = tuple(order for order in native_orders if str(order.client_order_id) not in local_denied)
         return replace(self._cm_scope, durable_orders=tuple(durable)), revision, venue_orders, applied, tuple(signature)
 
+    def _cm_context_current(self):
+        from coinmaster.strategy.live_recovery import recovery_policy_hash
+        proof=self._cm_account_context;now=time.monotonic_ns()
+        return (bool(proof) and proof.get('master_role')=='user' and proof.get('agent_role')=='agent'
+            and proof.get('account_sha256')==hashlib.sha256(self._cm_scope.account_ref.lower().encode()).hexdigest()
+            and proof.get('signer_sha256')==getattr(self._cm_strategy,'_signer_sha256',None)
+            and proof.get('policy_sha256')==recovery_policy_hash(self._cm_strategy.config,self._cm_strategy._candidate)
+            and proof.get('ws_epoch')==self._cm_ws_epoch and proof.get('dex_abstraction') is False
+            and type(proof.get('verified_at_ns')) is int and 0<=now-proof['verified_at_ns']<=300_000_000_000
+            and (proof.get('agent_expiry_unix_ms') is None or proof['agent_expiry_unix_ms']*1_000_000>time.time_ns()))
+
+    async def qualify_account_context(self):
+        from coinmaster.strategy.live_recovery import recovery_policy_hash
+        if self._cm_context_current():return
+        proof=self._cm_account_context;now=time.monotonic_ns()
+        if proof and (proof.get('account_sha256')!=hashlib.sha256(self._cm_scope.account_ref.lower().encode()).hexdigest() or proof.get('signer_sha256')!=getattr(self._cm_strategy,'_signer_sha256',None)):
+            raise IncompleteInfoReport('ACCOUNT_CONTEXT_BINDING_MISMATCH')
+        roles_fresh=(proof.get('master_role')=='user' and proof.get('agent_role')=='agent' and type(proof.get('verified_at_ns')) is int and 0<=now-proof['verified_at_ns']<=300_000_000_000)
+        bound=20 if roles_fresh else 140
+        if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=bound,next_due=self._cm_next_money_request):raise IncompleteInfoReport('LIVE_INFO_PROTECTED_HEADROOM')
+        cost=0;reservation=self._cm_inputs_budget.reserve(bound,time.monotonic())
+        try:
+            if not roles_fresh:
+                if not proof.get('agent_address'):raise IncompleteInfoReport('ACCOUNT_CONTEXT_AGENT_REFERENCE_REQUIRED')
+                started=time.monotonic_ns();cost+=60;master=await self._cm_info({'type':'userRole','user':self._cm_scope.account_ref})
+                cost+=60;agent=await self._cm_info({'type':'userRole','user':proof['agent_address']})
+                if (not isinstance(master,dict) or master.get('role')!='user' or not isinstance(agent,dict) or agent.get('role')!='agent'
+                    or agent.get('data',{}).get('user','').lower()!=self._cm_scope.account_ref.lower()):raise IncompleteInfoReport('ACCOUNT_CONTEXT_ROLE_CHANGED')
+                proof={**proof,'master_role':'user','agent_role':'agent','verified_at_ns':started}
+            cost+=20;dex=await self._cm_info({'type':'userDexAbstraction','user':self._cm_scope.account_ref})
+            if dex is not False:raise IncompleteInfoReport('ACCOUNT_CONTEXT_DEX_UNSUPPORTED')
+            proof={**proof,'dex_abstraction':False,'policy_sha256':recovery_policy_hash(self._cm_strategy.config,self._cm_strategy._candidate),'ws_epoch':self._cm_ws_epoch}
+            self._cm_account_context=proof
+            if not self._cm_context_current():raise IncompleteInfoReport('ACCOUNT_CONTEXT_EXPIRED')
+        finally:self._cm_inputs_budget.settle(reservation,cost,now=time.monotonic())
+
+    def _cm_receipt_context(self):
+        if not self._cm_context_current():raise IncompleteInfoReport('ACCOUNT_CONTEXT_EXPIRED')
+        mode=self._cm_unified_mode_proof
+        if mode is None or time.monotonic_ns()-mode['started_ns']>9_000_000_000 or mode['ws_epoch']!=self._cm_ws_epoch:
+            raise IncompleteInfoReport('UNIFIED_MODE_PROOF_STALE')
+        return {**self._cm_account_context,'mode':'unifiedAccount','mode_observed_at_ns':mode['started_ns']}
+
+    async def _cm_collect_cashflow_page(self,weighted):
+        cursor=self._cm_runtime.evidence_cursor('userNonFundingLedgerUpdates')
+        start=self._cm_scope.anchor_ms if cursor is None else cursor['end_ms']
+        end=self._clock.timestamp_ns()//1_000_000
+        rows=await weighted({'type':'userNonFundingLedgerUpdates','user':self._cm_scope.account_ref,'startTime':start,'endTime':end})
+        if not isinstance(rows,list) or len(rows)>=500:raise IncompleteInfoReport('LIVE_CASHFLOW_COVERAGE_UNKNOWN')
+        if any(not isinstance(row,dict) or type(row.get('time')) is not int or not start<=row['time']<=end or not isinstance(row.get('hash'),str) or not isinstance(row.get('delta'),dict) or not row['delta'].get('type') for row in rows):
+            raise IncompleteInfoReport('LIVE_CASHFLOW_ROW_MALFORMED')
+        return dict(rows=rows,start_ms=start,end_ms=end,expected_cursor=cursor,complete=True)
+
     def _cm_unified_discovery_current(self):
         from coinmaster.strategy.live_recovery import recovery_policy_hash
         proof=self._cm_unified_discovery
@@ -376,7 +479,7 @@ class QualifiedInfoBoundary:
                 dex_names=tuple(names),started_ns=started,completed_ns=time.monotonic_ns(),
                 scope='PRESTART_SNAPSHOT_ACCOUNT_EXCLUSIVE_WRITER_NOT_UNIVERSAL_FUTURE_GTC_PROOF')
         except BaseException:self._cm_unified_discovery=None;raise
-        finally:self._cm_inputs_budget.settle(reservation,cost)
+        finally:self._cm_inputs_budget.settle(reservation,cost,now=time.monotonic())
 
     async def _cm_refresh_native_account_for_generation(self):
         account=self._cache.account_for_venue(self.venue)
@@ -405,7 +508,9 @@ class QualifiedInfoBoundary:
                 cached_terminal={};archived_fills=();query_anchor_ms=query_anchor_tid=None
                 reservation=None;native_refresh_cost=0
                 if self._cm_inputs_enabled:
-                    if self._cm_unified:await self.qualify_unified_prestart_orders()
+                    if self._cm_unified:
+                        await self.qualify_account_context()
+                        await self.qualify_unified_prestart_orders()
                     frozen_scope,_,native_orders,applied,frozen_signature=self._cm_owned_scope()
                     frozen_applied=applied
                     fingerprints={str(o.client_order_id):_native_order_fingerprint(o) for o in native_orders}
@@ -414,7 +519,10 @@ class QualifiedInfoBoundary:
                     # Reserve complete minimum before ANY request; terminal history
                     # remains retained and validated, only redundant status reads go.
                     if self._cm_unified and not self._cm_unified_discovery_current():raise IncompleteInfoReport('UNIFIED_PRESTART_DISCOVERY_REQUIRED')
-                    reservation=self._cm_inputs_budget.reserve(finite_generation_reservation(fresh_orders,unified=self._cm_unified),time.monotonic())
+                    bound=finite_generation_reservation(fresh_orders,unified=self._cm_unified)
+                    if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=bound,next_due=self._cm_next_money_request):
+                        raise IncompleteInfoReport('LIVE_INFO_PROTECTED_HEADROOM')
+                    reservation=self._cm_inputs_budget.reserve(bound,time.monotonic())
                     self._cm_generation_started_ns=time.monotonic_ns()
                     if self._cm_unified:
                         self._cm_unified_generation_reservation=reservation;self._cm_unified_native_charge=0
@@ -428,7 +536,7 @@ class QualifiedInfoBoundary:
                 remaining = 1000 - sum(weight for _, weight in self._cm_info_usage)
                 if remaining <= 0:
                     raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
-                weighted_info = InfoWeightBudget(self._cm_qualified_info if self._cm_unified else self._cm_info, (672 if self._cm_unified else 584) if self._cm_inputs_enabled else min(400, remaining))
+                weighted_info = InfoWeightBudget(self._cm_qualified_info if self._cm_unified else self._cm_info, (bound-(28 if self._cm_unified else 16)) if self._cm_inputs_enabled else min(400, remaining),charge=(lambda cost,at:self._cm_inputs_budget.note(reservation,cost,at)) if reservation is not None else None)
                 revision = None
                 try:
                     if self._cm_inputs_enabled:
@@ -451,6 +559,7 @@ class QualifiedInfoBoundary:
                             archived_fills=archived_fills,query_anchor_ms=query_anchor_ms,query_anchor_tid=query_anchor_tid,
                             allow_fill_subdivision=not self._cm_inputs_enabled,
                             account_mode='unifiedAccount' if self._cm_unified else 'disabled',
+                            account_context=self._cm_receipt_context() if self._cm_unified else None,
                         )
 
                     first = await sweep(end)
@@ -472,6 +581,7 @@ class QualifiedInfoBoundary:
                         }, native_orders=native_orders, applied_trade_ids=applied,
                         ts_init=self._clock.timestamp_ns(),
                     )
+                    if self._cm_unified:self._cm_cashflow_page=await self._cm_collect_cashflow_page(weighted_info)
                     if revision is not None:
                         _, current_revision, _, current_applied, current_signature = self._cm_owned_scope()
                         if (current_revision, current_applied, current_signature) != (revision, applied, signature):
@@ -487,7 +597,7 @@ class QualifiedInfoBoundary:
                         revision is not None and self._cm_runtime is not None
                         and self._cm_runtime.native_revision() != revision
                     )
-                    if attempt == 3 or not (
+                    if self._cm_inputs_enabled or attempt == 3 or not (
                         str(error) in {
                             "ORDER_STATUS_UNKNOWN", "LIVE_DURABLE_ORDER_NOT_IN_CACHE",
                             "LIVE_DURABLE_REVISION_MOVED",
@@ -505,11 +615,11 @@ class QualifiedInfoBoundary:
                         if self._cm_unified:
                             native_refresh_cost=self._cm_unified_native_charge
                             self._cm_unified_generation_reservation=None
-                        self._cm_inputs_budget.settle(reservation,weighted_info.used+native_refresh_cost)
+                        self._cm_inputs_budget.settle(reservation,weighted_info.used+native_refresh_cost,now=time.monotonic())
                     elif weighted_info.used:
                         self._cm_info_usage.append((now, weighted_info.used))
         except IncompleteInfoReport as error:
-            if str(error) == "LIVE_INFO_RATE_BUDGET_EXCEEDED":
+            if str(error) in ("LIVE_INFO_RATE_BUDGET_EXCEEDED","LIVE_INFO_PROTECTED_HEADROOM"):
                 if self._cm_suspend_recovery is not None:
                     self._cm_suspend_recovery()
             elif self._cm_ws_failure is None:
@@ -560,7 +670,7 @@ class QualifiedInfoBoundary:
                 self._cm_require_healthy()
             self._cm_ws_phase = "LIVE"
             self._cm_parity_verifier = verify
-            self._cm_parity_task = asyncio.get_running_loop().create_task(
+            self._cm_parity_task = None if self._cm_inputs_enabled else asyncio.get_running_loop().create_task(
                 self._cm_monitor_parity(verify, monitor_interval_secs)
             )
             return
@@ -603,6 +713,9 @@ class QualifiedInfoBoundary:
             # evidence is accepted and the increase gate stays suspended.
             if str(error) == "LIVE_INFO_RATE_BUDGET_EXCEEDED":
                 self.request_effect_parity_refresh()  # one earliest-affordable scheduled wake
+            elif getattr(self._cm_strategy,'_active_c1_authorized',False) and str(error) in (
+                'ACCOUNT_CONTEXT_EXPIRED','LIVE_INFO_PROTECTED_HEADROOM','LIVE_EXTERNAL_CASHFLOW_QUARANTINED'):
+                self._cm_strategy._live_inputs_reason=str(error)
             else:
                 self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_FAILED")
         except asyncio.CancelledError:
@@ -621,6 +734,7 @@ class QualifiedInfoBoundary:
             if end<=start:return False
             # Separate bounded source observation, never inside a600 generation.
             # Official per20-row item weight applies to userFunding as to fills.
+            if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=45,next_due=self._cm_next_money_request):return False
             reservation=self._cm_inputs_budget.reserve(45,time.monotonic());actual=20
             try:
                 rows=await self._cm_info({'type':'userFunding','user':self._cm_scope.account_ref,'startTime':start,'endTime':end})
@@ -628,20 +742,30 @@ class QualifiedInfoBoundary:
                 if not isinstance(rows,list) or len(rows)>=500:raise IncompleteInfoReport('LIVE_FUNDING_PAGE_COMPLETENESS_UNKNOWN')
                 if any(type(row.get('time')) is not int or not start<=row['time']<=end for row in rows):raise IncompleteInfoReport('LIVE_FUNDING_PAGE_TIME_INVALID')
                 self._cm_runtime.record_funding_page(rows,expected_cursor=cursor,next_cursor={'end_ms':end},complete=True)
-            finally:self._cm_inputs_budget.settle(reservation,actual)
+            finally:self._cm_inputs_budget.settle(reservation,actual,now=time.monotonic())
             if rows:strategy._live_inputs_dirty=True;strategy._last_live_input_observation=None
             return True
 
     def request_portfolio_observation(self,strategy):
         if not self._cm_inputs_enabled or not self.recovery_healthy() or time.monotonic()<self._cm_next_money_request:return False
         if self._cm_money_task is not None and not self._cm_money_task.done():return True
-        self._cm_next_money_request=time.monotonic()+(3 if self._cm_unified else 1)
+        self._cm_next_money_request=time.monotonic()+(6 if self._cm_unified else 1)
         self._cm_money_task=asyncio.get_running_loop().create_task(self._cm_collect_portfolio_observation(strategy))
         return True
 
+    async def _cm_reserve_held_read(self,weight,started_ns):
+        for attempt in range(2):
+            try:return self._cm_inputs_budget.reserve(weight,time.monotonic())
+            except IncompleteInfoReport:
+                wake=self._cm_inputs_budget.next_affordable
+                if attempt or wake is None or wake-time.monotonic()>3 or wake*1_000_000_000-started_ns>=9_000_000_000:raise
+                await asyncio.sleep(max(0,wake-time.monotonic()))
+                self._cm_require_healthy()
+        raise IncompleteInfoReport('LIVE_INFO_RATE_BUDGET_EXCEEDED')
+
     async def _cm_collect_portfolio_observation(self,strategy):
         try:
-            async with self._cm_parity_lock:
+            async with self._cm_money_lock:
                 if not self.recovery_healthy():return
                 account=self._cache.account_for_venue(self.venue)
                 event_id=str(getattr(getattr(account,'last_event',None),'id',None) or getattr(getattr(account,'last_event',None),'event_id',''))
@@ -658,12 +782,30 @@ class QualifiedInfoBoundary:
                 fingerprints=tuple(_native_order_fingerprint(o) for o in self._cache.orders(venue=self.venue))
                 if self._cm_unified:
                     if not self._cm_unified_discovery_current():raise IncompleteInfoReport('UNIFIED_PRESTART_DISCOVERY_REQUIRED')
+                    # Stock public account path: mode20 + native spot<=8; allDEX20.
+                    # Await its actual generated AccountState before consuming native evidence.
+                    started=time.monotonic_ns()
+                    old_event_id=event_id
+                    query_started_ns=self._clock.timestamp_ns()
+                    await self._update_account_state()
+                    while True:
+                        account=self._cache.account_for_venue(self.venue)
+                        event=getattr(account,'last_event',None)
+                        current_id=str(getattr(event,'id',None) or getattr(event,'event_id',''))
+                        if current_id!=old_event_id and getattr(event,'ts_init',0)>=query_started_ns:break
+                        if time.monotonic_ns()-started>=9_000_000_000:
+                            raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_STALE')
+                        await asyncio.sleep(.01)
                     proof=self._cm_unified_mode_proof
-                    if proof is None or proof['ws_epoch']!=ws or started-proof['started_ns']>9_000_000_000:
+                    if proof is None or proof['ws_epoch']!=ws:
                         raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED')
-                    self._cm_inputs_budget.reserve(22,time.monotonic())
-                    all_dex=await self._cm_qualified_info({'type':'allDexsClearinghouseState','user':self._cm_scope.account_ref})
-                    raw=await self._cm_info({'type':'spotClearinghouseState','user':self._cm_scope.account_ref})
+                    started=min(started,proof['started_ns'])
+                    reservation=await self._cm_reserve_held_read(20,started)
+                    try:
+                        all_dex=await self._cm_qualified_info({'type':'allDexsClearinghouseState','user':self._cm_scope.account_ref})
+                    finally:self._cm_inputs_budget.settle(reservation,20,now=time.monotonic())
+                    raw=None
+                    strategy._live_inputs_dirty=False
                 else:
                     self._cm_inputs_budget.reserve(2,time.monotonic())
                     raw=await self._cm_info({'type':'clearinghouseState','user':self._cm_scope.account_ref,'dex':self._cm_scope.dex})
@@ -677,7 +819,7 @@ class QualifiedInfoBoundary:
                 observation=producer(*positional,account_id=str(self.account_id),native_account=account,
                     native_positions=tuple(self._cache.positions_open()),strategy_id=str(strategy.id),revision=revision,
                     fill_epoch=epoch,ws_epoch=ws,started_ns=started,completed_ns=complete,available_ns=available,
-                    **({'native_open_orders':tuple(self._cache.orders_open(venue=self.venue))} if self._cm_unified else {}))
+                    **({'native_open_orders':tuple(self._cache.orders_open(venue=self.venue)),'native_spot_money':proof['native_spot_money']} if self._cm_unified else {}))
                 strategy._last_live_input_observation=observation
                 self._cm_runtime.append_evidence('portfolio:'+str(available),'account',dict(source='UNIFIED_SPOT_REPORTED_TOTAL' if self._cm_unified else 'ONE_CLEARINGHOUSE_RESPONSE',raw=raw,equity_basis=observation.equity_basis,
                     native_account_event_id=observation.native_account_event_id,generation_started_ns=started,response_completed_ns=complete,
@@ -685,6 +827,9 @@ class QualifiedInfoBoundary:
         except IncompleteInfoReport as error:
             strategy._last_live_input_observation=None
             strategy._live_inputs_reason=str(error)
+            if str(error) in ('UNIFIED_FOREIGN_DEX_EXPOSURE','UNIFIED_ISOLATED_EXPOSURE',
+                'UNIFIED_UNKNOWN_NATIVE_ORDER','UNIFIED_NATIVE_POSITION_SCOPE','UNIFIED_DEX_DIRECTORY_CHANGED'):
+                self._cm_fail('UNIFIED_FOREIGN_OR_UNKNOWN_ACTIVITY')
             if str(error) in ('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED','UNIFIED_NATIVE_ACCOUNT_REFRESH_REQUIRED') and self._cm_account_refresh_wait is None:
                 try:
                     # v1.231 source: perp2+spot2, each <=4 HTTP attempts =>16.
@@ -768,9 +913,9 @@ class QualifiedInfoBoundary:
 
 class QualifiedHyperliquidExecutionClient(QualifiedInfoBoundary, HyperliquidExecutionClient):
     def __init__(self, *, scope: NativeLiveRecoveryScope, info: InfoTransport,
-                 applied_fill_ids: Callable[[], frozenset[str]], **native_kwargs) -> None:
+                 applied_fill_ids: Callable[[], frozenset[str]],readiness_budget=None, **native_kwargs) -> None:
         super().__init__(**native_kwargs)
-        self.configure_info_boundary(scope, info, applied_fill_ids)
+        self.configure_info_boundary(scope,info,applied_fill_ids,readiness_budget=readiness_budget)
 
     async def _update_account_state(self):
         if not getattr(self,'_cm_unified',False):return await super()._update_account_state()
@@ -784,43 +929,46 @@ class QualifiedHyperliquidExecutionClient(QualifiedInfoBoundary, HyperliquidExec
 
     async def _cm_collect_unified_native_account(self):
         from coinmaster.ops.hl_unified_account import native_spot_usdc_dicts
-        started=self._cm_unified_native_started_ns;prepaid=self._cm_unified_generation_reservation is not None
+        started=self._cm_unified_native_started_ns;prepaid=self._cm_unified_generation_reservation is not None and not self._cm_unified_native_charge
         reservation=None;cost=0
         try:
-            if prepaid:
-                if self._cm_unified_native_charge:raise IncompleteInfoReport('UNIFIED_NATIVE_REFRESH_ALREADY_CHARGED')
-            else:reservation=self._cm_inputs_budget.reserve(28,time.monotonic())
+            if not prepaid:reservation=await self._cm_reserve_held_read(28,started)
             cost=20
+            charged_reservation=self._cm_unified_generation_reservation if prepaid else reservation
+            self._cm_inputs_budget.note(charged_reservation,20,time.monotonic())
             if prepaid:self._cm_unified_native_charge=cost
             mode=await self._cm_info({'type':'userAbstraction','user':self._cm_scope.account_ref})
             if mode!='unifiedAccount':raise IncompleteInfoReport('UNIFIED_MODE_MISMATCH')
             cost+=8
             if prepaid:self._cm_unified_native_charge=cost
             native=await self._client.request_spot_balances()  # Stock native readonly public API, <=4*2.
+            self._cm_inputs_budget.note(charged_reservation,8,time.monotonic())
             balance,margin=native_spot_usdc_dicts(native)
             completed=time.monotonic_ns()
             if completed-started>9_000_000_000:raise IncompleteInfoReport('UNIFIED_NATIVE_ACCOUNT_STALE')
             self._cm_require_healthy()
             self.generate_account_state(balances=[AccountBalance.from_dict(balance)],margins=[MarginBalance.from_dict(margin)],
                 reported=True,ts_event=self._clock.timestamp_ns())
-            self._cm_unified_mode_proof=dict(mode=mode,started_ns=started,completed_ns=completed,ws_epoch=self._cm_ws_epoch)
+            from coinmaster.ops.hl_unified_account import amount
+            self._cm_unified_mode_proof=dict(mode=mode,started_ns=started,completed_ns=completed,ws_epoch=self._cm_ws_epoch,native_spot_money=tuple(amount(balance[k]) for k in ('total','locked','free')))
         except BaseException:
             self._cm_unified_mode_proof=None
-            self._cm_fail('UNIFIED_NATIVE_ACCOUNT_UNKNOWN')
+            import sys
+            error=sys.exception()
+            if not isinstance(error,IncompleteInfoReport) or str(error)!='LIVE_INFO_RATE_BUDGET_EXCEEDED':
+                self._cm_fail('UNIFIED_NATIVE_ACCOUNT_UNKNOWN')
             raise
         finally:
-            if reservation is not None:self._cm_inputs_budget.settle(reservation,cost)
+            if reservation is not None:self._cm_inputs_budget.settle(reservation,cost,now=time.monotonic())
 
     def _handle_account_state(self,msg):
         if not getattr(self,'_cm_unified',False):return super()._handle_account_state(msg)
         # The1.231 WS account payload uses the old perp/spot heuristic. Never let
         # it overwrite this mode-aware reported state; refresh the public spot path.
+        # This legacy payload is not Unified capital truth. Coalesce a demand
+        # into the <=6s held refresh; never charge28 for every WS message.
         strategy=getattr(self,'_cm_strategy',None)
-        if strategy is not None:
-            strategy._live_inputs_dirty=True;strategy._last_live_input_observation=None
-        if self._cm_unified_generation_reservation is not None:return
-        if self._cm_unified_refresh_task is None or self._cm_unified_refresh_task.done():
-            self._cm_unified_refresh_task=asyncio.get_running_loop().create_task(self._update_account_state())
+        if strategy is not None:self.request_portfolio_observation(strategy)
 
     async def _disconnect(self) -> None:
         self._cm_fail("WS_DISCONNECTED")
@@ -845,6 +993,8 @@ class QualifiedHyperliquidExecutionClient(QualifiedInfoBoundary, HyperliquidExec
 
 class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
     """Must be explicitly bound to one account and durable runtime before build."""
+    _readiness_budget=None
+    _account_context=None
     _scope = None
     _runtime = None
     _info = None
@@ -853,7 +1003,7 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
     @classmethod
     def bind(
         cls, scope: NativeLiveRecoveryScope, runtime, strategy, info: InfoTransport | None = None,
-        *, account_lock_root: Path = Path("/run/lock/coinmaster"),
+        *, account_lock_root: Path = Path("/run/lock/coinmaster"),readiness_budget=None,account_context=None,
     ):
         if not isinstance(scope, NativeLiveRecoveryScope) or runtime is None or strategy is None:
             raise ValueError("RECOVERY_SCOPE_AND_STRATEGY_REQUIRED")
@@ -870,6 +1020,8 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
             _runtime = runtime
             _strategy = strategy
             _info = info
+            _readiness_budget=readiness_budget
+            _account_context=account_context
         return Bound
 
     @classmethod
@@ -905,9 +1057,10 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
         owner = QualifiedHyperliquidExecutionClient(
             loop=loop, client=client, msgbus=msgbus, cache=cache, clock=clock,
             instrument_provider=provider, config=config, name=name, account_address=address,
-            scope=cls._scope, info=info, applied_fill_ids=cls._runtime.applied_fill_ids,
+            scope=cls._scope,info=info,applied_fill_ids=cls._runtime.applied_fill_ids,readiness_budget=cls._readiness_budget,
         )
         owner._cm_runtime = cls._runtime
+        owner._cm_account_context=dict(cls._account_context or {})
         bind_clean_flat_live_handover(owner, cls._strategy, cls._runtime,manage_only=getattr(cls._strategy,"_manage_only_preparation",False))
         return owner
 
@@ -927,19 +1080,26 @@ def bind_clean_flat_live_handover(
     if not isinstance(strategy, RecoverableWaveOverlayStrategy):
         raise RuntimeError("LIVE_HANDOVER_STRATEGY_UNQUALIFIED")
     scope = client._cm_scope
+    active_c1=getattr(strategy,'_active_c1_authorized',False)
+    c1_owned=manage_only or active_c1
     client._cm_management_only=manage_only
     client._cm_inputs_enabled=getattr(strategy,'_input_readiness_preparation',False)
     client._cm_unified=getattr(strategy,'_live_account_mode','disabled')=='unifiedAccount'
     client._cm_strategy=strategy
+    context=getattr(client,'_cm_account_context',{})
+    if context:
+        from coinmaster.strategy.live_recovery import recovery_policy_hash
+        client._cm_account_context={**context,'policy_sha256':recovery_policy_hash(strategy.config,strategy._candidate),'ws_epoch':client._cm_ws_epoch}
+        strategy._signer_sha256=context.get('signer_sha256')
     if client._cm_inputs_enabled:
         if type(client._cm_info) is not SingleAttemptInfoTransport:
             raise RuntimeError('LIVE_READINESS_TRANSPORT_SINGLE_ATTEMPT_REQUIRED')
         strategy._live_input_request=lambda:client.request_portfolio_observation(strategy)
         strategy._live_input_ws_epoch=lambda:client._cm_ws_epoch
         strategy._fresh_init_generation_validator=lambda: (client._cm_ws_failure is None and client._cm_transport_ok() and client._cm_generation_started_ns is not None and time.monotonic_ns()-client._cm_generation_started_ns<=9_000_000_000)
-    if strategy.config.research_residual_recovery and not manage_only:
+    if strategy.config.research_residual_recovery and not c1_owned:
         raise RuntimeError("E4_C1_LIVE_REQUIRES_MANAGE_ONLY_PREPARATION")
-    if manage_only and (not strategy._manage_only_preparation or (not strategy._checkpoint_policy_valid and strategy._fresh_c1_init_intent!='INITIALIZE_FRESH_C1_EPOCH')):
+    if c1_owned and ((manage_only and not strategy._manage_only_preparation) or (not strategy._checkpoint_policy_valid and strategy._fresh_c1_init_intent!='INITIALIZE_FRESH_C1_EPOCH')):
         raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
     expected_ids = (
         InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID"),
@@ -968,11 +1128,11 @@ def bind_clean_flat_live_handover(
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
         if receipt is None or mass.account_id != client.account_id or mass.venue != client.venue:
             raise IncompleteInfoReport("LIVE_HANDOVER_GENERATION_MISSING")
-        if not manage_only and not client._cm_bootstrapped and scope.durable_orders:
+        if not c1_owned and not client._cm_bootstrapped and scope.durable_orders:
             raise IncompleteInfoReport("LIVE_OPEN_FUNDING_CURSOR_UNPROVEN")
         native_orders = tuple(client._cache.orders(venue=client.venue))
         native_positions = tuple(client._cache.positions_open())
-        if not manage_only and not client._cm_bootstrapped:
+        if not c1_owned and not client._cm_bootstrapped:
             if (
                 scope.durable_orders or runtime.all_submissions() or runtime.applied_fill_ids()
                 or mass.order_reports or mass.fill_reports or mass.position_reports
@@ -1052,8 +1212,9 @@ def bind_clean_flat_live_handover(
                     or (sol is not None and sol.is_long != (episode.side == -1))
                 ):
                     raise IncompleteInfoReport("LIVE_EPISODE_POSITION_MISMATCH")
+        initialized_this_verify=False
         if getattr(strategy,'_fresh_c1_init_intent',None) is not None:
-            if (not getattr(client,'_cm_inputs_enabled',False) or not manage_only
+            if (not getattr(client,'_cm_inputs_enabled',False) or not c1_owned
                 or scope.durable_orders or runtime.all_submissions() or runtime.applied_fill_ids()
                 or mass.order_reports or mass.fill_reports or mass.position_reports
                 or native_orders or native_positions or strategy.cache.orders_inflight()):
@@ -1063,13 +1224,20 @@ def bind_clean_flat_live_handover(
                 native_positions=(),now_ms=client._clock.timestamp_ns()//1_000_000,max_age_ms=9_000,
                 selected_assets=client._cm_last_margin_assets or (),native_revision=runtime.native_revision())
             if not initial_money.selected_assets:raise IncompleteInfoReport('LIVE_SELECTED_MARGIN_UNKNOWN')
-            strategy.initialize_clean_flat_c1_epoch(initial_money,intent=strategy._fresh_c1_init_intent,now_ns=client._clock.timestamp_ns(),history_anchor_ms=receipt.start_ms)
+            strategy.initialize_clean_flat_c1_epoch(initial_money,intent=strategy._fresh_c1_init_intent,now_ns=client._clock.timestamp_ns(),history_anchor_ms=receipt.start_ms,cashflow_page=client._cm_cashflow_page)
+            initialized_this_verify=True
+        if getattr(client,'_cm_unified',False) and not initialized_this_verify:
+            page=client._cm_cashflow_page
+            # Virgin initializer atomically installed its baseline cursor already.
+            runtime.record_cashflow_page(page)
+            strategy.accept_cashflow_basis(page)
+        elif initialized_this_verify and getattr(client,'_cm_unified',False):strategy.accept_cashflow_basis(client._cm_cashflow_page)
         checkpoint = runtime.strategy_checkpoint()
         if checkpoint is not None and durable_decision_checkpoint(checkpoint[0]) != durable_decision_checkpoint(
             strategy.on_save()["wave_overlay_live_recovery_v1"]
         ):
             raise IncompleteInfoReport("LIVE_HANDOVER_DOMAIN_CHECKPOINT_MISMATCH")
-        if manage_only:
+        if c1_owned:
             from coinmaster.ops.live_recovery import ManagementCertificate,management_cache_evidence
             from coinmaster.strategy.live_recovery import recovery_policy_hash
             now_ns=client._clock.timestamp_ns()
@@ -1114,7 +1282,9 @@ def bind_clean_flat_live_handover(
                 recovery_policy_hash(strategy.config,strategy._candidate),signature,
                 hashlib.sha256(durable_decision_checkpoint(strategy.on_save()["wave_overlay_live_recovery_v1"])).hexdigest(),
                 positions,orders,generation,client.recovery_healthy)
-            return True
+            if manage_only:return True
+            strategy.establish_owned_effect_chain(account_id=client.account_id,ws_epoch=client._cm_ws_epoch,
+                policy_sha256=recovery_policy_hash(strategy.config,strategy._candidate))
         account = client._cache.account_for_venue(client.venue)
         candidate_money = live_perps_money_view(
             receipt, account_ref=scope.account_ref, dex=scope.dex,
@@ -1125,7 +1295,7 @@ def bind_clean_flat_live_handover(
         )
         if not candidate_money.selected_assets:
             raise IncompleteInfoReport("LIVE_SELECTED_MARGIN_UNKNOWN")
-        if (not client._cm_bootstrapped
+        if (not c1_owned and not client._cm_bootstrapped
                 and candidate_money.equity != getattr(
                     runtime, "flat_epoch_balance", strategy.config.active_seed)):
             raise IncompleteInfoReport("LIVE_FLAT_EPOCH_BALANCE_CHANGED")
@@ -1150,12 +1320,19 @@ def bind_clean_flat_live_handover(
         client._cm_bootstrapped = True
         strategy.recovery_confirmed = True
 
+    if active_c1:
+        strategy._live_context_current=client._cm_context_current
+        strategy._live_increase_headroom=lambda:client._cm_inputs_budget.protects_held_schedule(time.monotonic(),next_due=client._cm_next_money_request)
     strategy.attach_live_money_view(lambda: latest_money[0])
     strategy.attach_live_refresh(client.request_effect_parity_refresh)
     strategy.attach_recovery_health(client.recovery_healthy)
-    client.bind_recovery_revocation(strategy.revoke_management if manage_only else lambda: setattr(strategy, "recovery_confirmed", False))
+    def revoke_active():
+        strategy.recovery_confirmed=False
+        strategy._owned_effect_chain=None
+        latest_money[0]=None
+    client.bind_recovery_revocation(strategy.revoke_management if manage_only else revoke_active)
     client.bind_recovery_suspension(
-        strategy.revoke_management if manage_only else lambda: setattr(strategy, "recovery_confirmed", False),
+        strategy.revoke_management if manage_only else (lambda: latest_money.__setitem__(0,None)) if active_c1 else lambda: setattr(strategy, "recovery_confirmed", False),
         (lambda: None) if manage_only else lambda: setattr(strategy, "recovery_confirmed", client.recovery_healthy()),
     )
     strategy.attach_recovery_runtime(runtime)

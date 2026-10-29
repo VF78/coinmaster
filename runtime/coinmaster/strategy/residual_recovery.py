@@ -117,11 +117,11 @@ class ResidualRecoveryResearch:
             if pnl<0:candidates.append((pnl,0 if inst==self.config.btc_id else 1,inst,pos,mark))
         return candidates
 
-    def _c1_observe(self,equity,ns,source,epoch,details):
+    def _c1_observe(self,equity,ns,source,epoch,details,*,allow_peak_raise=True):
         if not self.config.research_residual_recovery:return
         E=D(str(equity))
         if not E.is_finite() or E<=0 or source>=ns:return
-        self._c1_peak=max(self._c1_peak,E)
+        if allow_peak_raise:self._c1_peak=max(self._c1_peak,E)
         self._c1_checkpoint=dict(E=E,H=self._c1_peak,DD=1-E/self._c1_peak,C=max(D(0),E-D('.5')*self._c1_peak),source=source,receipt=ns,epoch=epoch)
         self._c1_update_global_cut_arm(ns)
         ep=self._domain.episode;t=self._c1_state
@@ -334,11 +334,11 @@ class ResidualRecoveryResearch:
             self._c1_blocked_ids.add(i.id);self._c1_log('QUEUED_INCREASE_BLOCKED',ns,intent_id=i.id,action=i.action,rights=self._c1_rights())
         return True
 
-    def _c1_quote(self,tick):
+    def _c1_quote(self,tick,*,decision_ns=None):
         if not self.config.research_residual_recovery:return
         t=self._c1_state
         if not t:return
-        ns=tick.ts_event
+        ns=tick.ts_event if decision_ns is None else decision_ns
         if self.config.terminal_close_at_ns is not None and ns>=self.config.terminal_close_at_ns:self._c1_revoke(ns,'TERMINAL_BOUNDARY');return
         if self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None:self._c1_revoke(ns,'MANDATORY_PRIORITY');return
         if t.get('targets_need_requeue') and not self._c1_own_pending():
@@ -356,7 +356,7 @@ class ResidualRecoveryResearch:
         if self._c1_conflict():self._c1_revoke(ns,'ORDINARY_OR_UNKNOWN_COMPETING_OWNER');return
         c=self._c1_current_money(ns)
         if c is None:return
-        self._c1_first_fresh_quote(tick,c)
+        self._c1_first_fresh_quote(tick,c,decision_ns=ns)
         if t['state']=='CUT_RESOLVING' and not t['cut_submitted']:
             for o in self.cache.orders_open()+self.cache.orders_inflight():
                 i=self._pending_by_order.get(str(o.client_order_id))
@@ -392,7 +392,7 @@ class ResidualRecoveryResearch:
         ep=self._domain.episode
         if ep is None or ep.id!=t['group']:raise ValueError('C1_SUBMIT_LOST_GROUP')
         i=self._domain._intent(ep,action,side,None,quantity=float(D(lots)*t['step']),reason=reason);self._c1_intents[i.id]=kind
-        self._c1_log('ATTEMPT_SUBMIT',ns,claim_ns=t['claim_ns'],confirmation=({**t['confirmation'],'close':str(t['confirmation']['close'])} if t['confirmation'] else None),kind=kind,intent_id=i.id,instrument=str(t['instrument']),side=side,original_side=t['side'],step=str(t['step']),lots=lots,quote_ns=tick.ts_event,bid=str(tick.bid_price),ask=str(tick.ask_price),executable_price=str(tick.ask_price if side==1 else tick.bid_price),E=str(c['E']),H=str(c['H']),DD=str(c['DD']),source_quote_ns=c['source'],receipt_ns=c['receipt'],fill_epoch=c['epoch'],current_fill_epoch=self._c1_fill_epoch,account_event_ns=self.cache.account_for_venue(self.config.btc_id.venue).last_event.ts_event,pending_ids=list(self._pending_by_order),native_open_orders=len(self.cache.orders_open()),native_inflight_orders=len(self.cache.orders_inflight()),queued_intents=len(self._queued_intents),cut_actual_vwap=str(t['cut_value']/(D(t['cut_filled'])*t['step'])) if t['cut_filled'] else None,cut_last_fill_ns=t['last_cut_fill_ns'],cut_terminal_ns=t['cut_terminal_ns'],native_admission='PASSED_EXISTING_INCREASE_GATES' if kind=='RESTORE' else 'REDUCE_ONLY_BYPASS',rights=self._c1_rights())
+        self._c1_log('ATTEMPT_SUBMIT',ns,claim_ns=t['claim_ns'],confirmation=({**t['confirmation'],'close':str(t['confirmation']['close'])} if t['confirmation'] else None),kind=kind,intent_id=i.id,instrument=str(t['instrument']),side=side,original_side=t['side'],step=str(t['step']),lots=lots,quote_ns=tick.ts_event if decision_ns is None else decision_ns,bid=str(tick.bid_price),ask=str(tick.ask_price),executable_price=str(tick.ask_price if side==1 else tick.bid_price),E=str(c['E']),H=str(c['H']),DD=str(c['DD']),source_quote_ns=c['source'],receipt_ns=c['receipt'],fill_epoch=c['epoch'],current_fill_epoch=self._c1_fill_epoch,account_event_ns=self.cache.account_for_venue(self.config.btc_id.venue).last_event.ts_event,pending_ids=list(self._pending_by_order),native_open_orders=len(self.cache.orders_open()),native_inflight_orders=len(self.cache.orders_inflight()),queued_intents=len(self._queued_intents),cut_actual_vwap=str(t['cut_value']/(D(t['cut_filled'])*t['step'])) if t['cut_filled'] else None,cut_last_fill_ns=t['last_cut_fill_ns'],cut_terminal_ns=t['cut_terminal_ns'],native_admission='PASSED_EXISTING_INCREASE_GATES' if kind=='RESTORE' else 'REDUCE_ONLY_BYPASS',rights=self._c1_rights())
         self._submit_intent(i,float(tick.bid_price),float(tick.ask_price),None,len(self._bars)-1,ts_now=ns)
         self._c1_log('SUBMIT_OUTCOME',ns,intent_id=i.id,kind=kind,native_submitted=bool(t.get('native_order_ids',{}).get(i.id)),order_id=t.get('native_order_ids',{}).get(i.id),pending_native=any(x.id==i.id for x in self._pending_by_order.values()),terminal_receipt=i.id in self._c1_terminal_ids)
         if not any(x.id==i.id for x in self._pending_by_order.values()) and i.id not in self._c1_terminal_ids:

@@ -133,6 +133,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     # settlement. ``FundingRateUpdate.next_funding_ns`` is explicitly *not*
     # such an event: it names the next scheduled payment.
     funding_sink: object | None = None
+    live_start_approved: bool = False
+    live_initial_capital_limit_usdc: str = "0"
     live_account_mode: str = "disabled"
     live_equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
     deposit_runtime: object | None = None
@@ -140,6 +142,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     deposit_account_id: str = ""
     deposit_equity_reader: object | None = None
     deposit_initialization_allowed: object | None = None
+    deposit_high_water_allowed: object | None = None
 
 
 def _native_account_money(account, *, free: bool = False) -> Decimal:
@@ -1363,9 +1366,10 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._deferred_entry_session = None
         self._advance_current_day()
 
-    def on_quote_tick(self, tick: QuoteTick) -> None:
-        """Only quotes can execute queued daily decisions or liquidations."""
-        if self.config.research_residual_recovery and (self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None):self._c1_revoke(tick.ts_event,"MANDATORY_QUOTE_PRIORITY")
+    def on_quote_tick(self,tick:QuoteTick,*,decision_ns:int|None=None)->None:
+        """Only real quotes execute; optional live decision clock never rewrites tick."""
+        ts_decision=tick.ts_event if decision_ns is None else decision_ns
+        if self.config.research_residual_recovery and (self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None):self._c1_revoke(ts_decision,"MANDATORY_QUOTE_PRIORITY")
         if self.config.research_h1_b1 == "h1" and tick.instrument_id == self.config.sol_id:
             self._h1_sol_quote_sequence += 1
         if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
@@ -1400,10 +1404,10 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                     or (self.config.research_h1_b1 == "h1" and any(i.action == "SOL_ADD" for i in self._pending_by_order.values()))):
                 return
             intent, sigma, index = self._mandatory_sol_exit
-            if self.config.research_v0_execution_repairs and tick.ts_event < self._mandatory_sol_retry_after_ns:
+            if self.config.research_v0_execution_repairs and ts_decision < self._mandatory_sol_retry_after_ns:
                 return
             self._mandatory_sol_exit = None
-            self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+            self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=ts_decision)
             return
         if self._forced_close_reason is not None:
             self._submit_forced_close_on_quote(tick)
@@ -1424,8 +1428,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             if (candidate and candidate["confirmed_ns"] is not None
                     and self._confirmation_receipt_is_current(candidate["confirmed_ns"],
                         (candidate.get("confirmation_receipt_ns"), candidate.get("eligible_quote_sequence")),
-                        self._b1_btc_quote_sequence, tick.ts_event)
-                    and self._confirmation_marks_current(tick.ts_event)
+                        self._b1_btc_quote_sequence, ts_decision)
+                    and self._confirmation_marks_current(ts_decision)
                     and self._b1_flat_resolved()
                     and self._entries_enabled()):
                 self._current_btc_mark = self._latest_marks.get(self.config.btc_id)
@@ -1437,17 +1441,17 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                     self._b1_consuming = False
                 if self._domain.episode is not None:
                     self.h1_b1_audit.append({"event": "B1_CONFIRMED_ENTRY", **candidate,
-                                            "quote_ns": tick.ts_event})
+                                            "quote_ns": ts_decision})
                     self._b1_candidate = None
         if tick.instrument_id == self.config.sol_id:
-            self._h1_check(tick.ts_event)
+            self._h1_check(ts_decision)
         self._split_check(tick)
         self._cover_check(tick)
         self._conditional_check(tick)
         self._risk_first_sol_check(tick)
         for item in list(self._queued_intents):
             intent, sigma, index = item
-            if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
+            if ts_decision < self._queued_intent_ready_ns.get(intent.id, 0):
                 continue
             if self._split_unfinished() and intent.action == "BTC_REDUCE":
                 continue
@@ -1484,7 +1488,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                         continue
                     self._queued_intents.remove(item)
                     self._queued_intent_ready_ns.pop(intent.id, None)
-                    self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event, entry_override_qty=selected)
+                    self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=ts_decision, entry_override_qty=selected)
                     self._deferred_selective_entries.pop(intent.id, None)
                     continue
                 if self.config.research_v0_execution_repairs and intent.action == "SOL_ADD":
@@ -1501,15 +1505,15 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                         ):
                             self._advance_current_day()
                         continue
-                if not self._next_before_submit(intent,tick.ts_event):
+                if not self._next_before_submit(intent,ts_decision):
                     continue
                 self._queued_intents.remove(item)
                 self._queued_intent_ready_ns.pop(intent.id, None)
-                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=ts_decision)
 
         self._hedge_quote(tick)
-        self._next_quote(tick)
-        self._c1_quote(tick)
+        self._next_quote(tick,decision_ns=ts_decision)
+        self._c1_quote(tick,decision_ns=ts_decision)
 
     def _select_deferred_btc_entry(self, intent: Intent, tick: QuoteTick) -> Decimal | None:
         """Observe q0, then choose entry lots from the next causal BTC quote."""
@@ -2839,7 +2843,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                 self._deposit.initialize(current, now_ns)
                 self._persist_deposit("INITIALIZE", f"deposit:init:{now_ns}", now_ns)
             return self._deposit.high_water is not None and not self._deposit_storage_failed
-        changed, tripped = self._deposit.observe(current, now_ns)
+        high_water_allowed=self.config.deposit_high_water_allowed
+        changed,tripped=self._deposit.observe(current,now_ns,allow_high_water=(bool(high_water_allowed()) if callable(high_water_allowed) else True))
         if changed:
             action = "TRIGGER" if tripped else "UTC_BOUNDARY"
             key = f"deposit:{action.lower()}:{now_ns if tripped else self._deposit.last_boundary_ns}"

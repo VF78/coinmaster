@@ -60,8 +60,10 @@ def default_dex_state(raw):
     return default
 
 
-def native_unified_money(raw_spot,all_dex,*,native_account,native_positions,account_id,strategy_id=None):
-    total,hold,free=spot_usdc(raw_spot);state=default_dex_state(all_dex)
+def native_unified_money(raw_spot,all_dex,*,native_account,native_positions,account_id,strategy_id=None,native_spot_money=None):
+    total,hold,free=spot_usdc(raw_spot) if native_spot_money is None else native_spot_money
+    if not all(isinstance(v,Decimal) and v.is_finite() for v in (total,hold,free)) or not 0<=hold<=total or free!=total-hold:raise IncompleteInfoReport("UNIFIED_NATIVE_BALANCE_IDENTITY")
+    state=default_dex_state(all_dex)
     if native_account is None or str(native_account.id)!=account_id or native_account.base_currency is not None:raise IncompleteInfoReport('UNIFIED_NATIVE_ACCOUNT_SCOPE')
     expected={}
     for row in state['assetPositions']:
