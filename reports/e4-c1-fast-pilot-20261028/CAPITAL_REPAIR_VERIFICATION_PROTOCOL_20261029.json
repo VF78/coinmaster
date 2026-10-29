@@ -1,80 +1,64 @@
 {
-  "scope": "Owner six-point capital-comparison, execution/configuration and DP repair request2026-10-29",
-  "status": "B1_CONTROL_COMPLETED_EXIT0_NEW_PEAK_BASIS_WIP_REVIEW_INFRA_BLOCKED",
-  "authorization": "Direct owner request to fix and verify; numerical bound chosen by coordinator, not quoted as a separate numeric owner approval",
-  "preserve": [
-    "BTC entry core and existing one-cycle C1 profit logic",
-    "frozen original10k report/data as control",
-    "USDC-only live monetary accounting; actual-currency historical controls explicitly labeled",
-    "installed release remains inactive; no deployment or live START"
-  ],
+  "scope": "Latest owner: only systemic small-deposit drawdown repair; SMALL first, conditional10K second",
+  "status": "SMALL_FULL_RUNNING",
+  "authorization": "Direct owner fix/verify request; numerical verification bound chosen by coordinator, not a fabricated separate numerical owner reply",
+  "source_freeze": "6e720552093cd0bb961ab6a5fb8b2ae7dae579f9",
+  "engine_free": "63focusedpurePASS3.45s/corrected actual BTC5SOL1nativeobjectsPASS/independent source+integrationmethodPASS",
   "changes": [
-    "Shared effective candidate configuration retains selected30m cap",
-    "Quantity constraints from actual native instrument metadata; BTC HL5 decimals; frozen Bybit reference unchanged",
-    "Existing global DP55 shared controller active in selected verification profile, fresh durable state/native equity/native market_exit",
-    "Only minimal currency metadata parameter(defaultUSDC) and historical timer cadence60s(defaultlive1s); no second PnL/risk engine"
+    "instrument-derived BTC5; retain historical SOL1",
+    "selected effective30M cap",
+    "globalDP55 causal observed native-equity peak, basis persisted and reload checked",
+    "eligibility reads last observed health without reading/persisting native money mid-fill"
   ],
-  "offline_results": [
-    "All30 BTC entry timestamps and omittedTP policies match until small-seed liquidation",
-    "Original10k trades in all24months; lastentries30Aug2026/end-boundaryclose1Sep2026; no liquidation/lockout",
-    "DP55pure saved-state probe: original10k no trigger/no missed days; small firsttrigger13Jan2025; not an economic counterfactual or exit proof",
-    "Repeated C1DD40 rearm would change2 original released windows; rejected as unnecessary new trading logic"
+  "preserve": [
+    "BTC entry/C1 profit logic",
+    "SOL signals and lifecycle",
+    "depth1000, data, fees, currency and matching model",
+    "original failures/raw traces and completed B1 control"
   ],
-  "provisional_native_limits": {
-    "maximum_physical_engines": 5,
-    "engineering_cases": 3,
-    "full_period_cases": 2,
+  "deferred": [
+    "bookdepth redesign",
+    "SOL must exit with BTC/new hedge",
+    "venue/fee/currency/matching redesign",
+    "GUI and further live preparation"
+  ],
+  "canonical_limits": {
+    "maximum": 7,
+    "engineering_max": 4,
+    "full_max": 3,
+    "spent": 6,
+    "active": 1,
     "reserve": 0,
     "all_failures_count": true,
-    "concurrent_engines": 1,
     "automatic_retry": false,
-    "root_GO": false
+    "remaining_order": [
+      "SMALL running",
+      "CONTROL10K only after SMALL financial and economic PASS"
+    ]
   },
-  "gates": [
-    "Frozen source/config/data/reader/metadata/currency/timer/profile pins, complete source hash paths checked before first engine",
-    "One independent code/contract review and relevant connected engine-free tests",
-    "Engineering healthy48h reference parity plus native SOL-only RELEASED DP55 trigger/close/latch/finality",
-    "Original10k matching24month native DP55 parity: >=originalTOTAL and no DD/liquidation regression; investigate every divergence, no threshold relaxation",
-    "Only after accepted10k parity: actual-small-seed HL-lot DP55 diagnostic over same24months; explicit Bybitprice/currency/fees scope remains, not Hyperliquid historical matching proof"
-  ],
-  "not_claimed": [
-    "Hard realized DD55 ceiling across quote gaps/slippage",
-    "Exact10k economic parity before native run",
-    "USDC/Hyperliquid economic qualification from Bybit-USDT metadata diagnostic",
-    "Live START or deployment authorization for new source",
-    "Legacy-lot10kPASS doesnotproveHL-lot10kprofitparity; finalcandidatefullcomparisonpending"
-  ],
-  "source_freeze": "5e429a1cd23ea4cd38458e5a6cc52e7752e4ea18",
-  "source_engine_free": "47DP_related_plus8quote_tests_PASS_and_independent_closures",
-  "review_findings": [
-    "P1 unknown DP health must block increases without blocking mandatory reductions",
-    "P1 valid DP-paused full feeds need proven native-cash calendar carry-forwards while preserving raw mutation series",
-    "P2 non10k legacy account metadata must state dynamic seed"
-  ],
+  "gates": {
+    "before_engine": "PASS: source6e,63pure,actual objects, source review, full config pins and root exclusive claim",
+    "E3": "FAILED before engine; no retry. Existing actual E2R exit + pure Peak proof + corrected actual native objects + independent integration review admit SMALL as integrated native check. E3 is never relabeled PASS.",
+    "SMALL": "full24months, exact native cash, both coherent and settled DD<=51.26863558248311161216905115%, zero model liquidation, verified terminal state",
+    "CONTROL10K": "same frozen candidate/source/data/config, actual SMALL PASS receipt required; TOTAL>=5499360.14984003; both DD<=51.26863558248311161216905115%, same financial gates"
+  },
   "attempt_results": {
-    "E1": "ACTUAL_PASS_12.229s_2fills2funding_exact_DP55_healthy",
-    "E2": "ACTUAL_FAILED_2.778s_quote_size_precision3_vs_HL_BTC5_before_exit_test",
-    "E2R": "ACTUAL_PASS_3.485s_native_DP_exit_adverse30_flat_PAUSED",
-    "B1": "ACTUAL_EXIT0_3474.9506s_ALL_STRICT_NATIVE_CONTROL_GATES_PASSED",
-    "B2": "NOT_STARTED_HOLD_FOR_PEAK_BASIS_FIX"
+    "E1": "PASS12.229s",
+    "E2": "FAILED2.778s quote-size precision mismatch before risk check",
+    "E2R": "PASS3.485s actual native adverse-price exit/flat/PAUSED",
+    "B1": "COMPLETED strict legacy control PASS3474.950620648451s; TOTAL5499360.14984003/bothDD51.26863558248311161216905115%;540fills1248funding exact/all24months/liq0/flat",
+    "E3": "FAILED_PRE_ENGINE2.427s helper metadata forwarding; files preserved/no retry",
+    "SMALL": "RUNNING single native engine",
+    "CONTROL10K": "NOT_STARTED_CONDITIONAL"
   },
-  "basis_amendment": {
-    "selected_basis": "OBSERVED_NATIVE_EQUITY_PEAK",
-    "reason": "Dailycloseanchor55permits~62.33coherentDDbeforeM1gap",
-    "implementation": "NEW_ISOLATED_UNCOMMITTED_200PURE_PASS_ENGINE0",
-    "remaining": [
-      "freshINIT_and_profilegenerator_checks",
-      "staleprojectionbasis_labels",
-      "freeze_review_nativeE3",
-      "thenB2"
-    ],
-    "proposed_root_maximum": 7,
-    "proposed_engineering_max": 4,
-    "full_max": 2,
-    "canonical_amendment_applied": false,
-    "live_runtime_state_changes": false,
-    "proposed_full_max": 3,
-    "final_candidate_comparison": "Both10k_and_small_actual_HL_quantity_precision_plus_PEAK; legacyB1alreadycompletediscontrol_notnewlotmodelproof"
-  },
-  "blocker": "Automaticapprovalreviewmodelcapacity/timeouts; readonlySSHnotexecuted; no unsafeverdict/no bypass"
+  "method": "Financial completion and economic goal are separate. Completed SMALL NO_GO blocks10K. Inspect actual failing episode before further changes; no arbitrary threshold/capital exemption/search.",
+  "not_claimed": [
+    "DP55 guarantees realizedDD<=55 or target51.27",
+    "legacyB1 proves new BTC5/Peak candidate",
+    "historical Bybit diagnostic proves Hyperliquid live performance",
+    "live START or new deployment"
+  ],
+  "runtime": "unchanged inactive; no orders/transfers/deployment",
+  "blocker": null,
+  "source_public_exact_verified": true
 }
