@@ -13,6 +13,7 @@ from typing import Any, Awaitable, Callable, Sequence
 from nautilus_trader.model.currencies import USDC
 
 from coinmaster.ops.hl_info_receipt import InfoReceipt, IncompleteInfoReport
+from coinmaster.venues.effective_fees import CURRENT_HL_FEES, HL_FEE_RESERVE_BUFFER
 
 
 def _amount(value: str, name: str) -> Decimal:
@@ -223,15 +224,19 @@ def prospective_cross_margin_ok(
     pending_openings: Sequence[tuple[str, str, Decimal]],
     coin: str, side: str, quantity: Decimal,
     max_gross_multiple: Decimal,
-    fee_reserve_rate: Decimal = Decimal("0.0005"),
+    fee_reserve_rate: Decimal = HL_FEE_RESERVE_BUFFER,
 ) -> bool:
-    """Total worst-side IM plus opening costs against venue equity, not withdrawable."""
+    """Total worst-side IM plus explicitly buffered effective opening costs."""
+    try:
+        fee_reserve_rate=CURRENT_HL_FEES.reserve_taker(fee_reserve_rate)
+    except ValueError:
+        return False
     assets = {item.coin: item for item in view.selected_assets}
     if (
         set(assets) != {"BTC", "SOL"} or set(positions) - set(assets)
         or coin not in assets or side not in {"BUY", "SELL"}
         or not quantity.is_finite() or quantity <= 0
-        or not fee_reserve_rate.is_finite() or fee_reserve_rate < Decimal("0.00045")
+        or not fee_reserve_rate.is_finite() or fee_reserve_rate < CURRENT_HL_FEES.taker
         or max_gross_multiple <= 0
     ):
         return False

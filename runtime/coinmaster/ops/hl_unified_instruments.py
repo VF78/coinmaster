@@ -1,10 +1,11 @@
 """Public provider normalization for default BTC/SOL USDC linear contracts.
 
 Only denomination changes: IDs, numeric constraints, ticks, sizes, timestamps and
-stockzero rates/fees remain. This is not an FX conversion or private cache patch.
+stockzero margins remain. Provider rebuilds then apply one explicit effective fee\nsource. This is not an FX conversion or private cache patch.
 """
 from decimal import Decimal
 from functools import lru_cache
+from coinmaster.venues.effective_fees import effective_instrument_dict
 from nautilus_trader.core import nautilus_pyo3
 from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.adapters.hyperliquid.providers import HyperliquidInstrumentProvider
@@ -57,8 +58,8 @@ class UnifiedHyperliquidInstrumentProvider(HyperliquidInstrumentProvider):
 
     async def _load_instruments(self):
         legacy=await super()._load_instruments()
-        native=[normalize_unified_pyo3_instrument(item) for item in super().instruments_pyo3()]
-        normalized=[normalize_unified_legacy_instrument(item) for item in legacy]
+        native=[nautilus_pyo3.CryptoPerpetual.from_dict(effective_instrument_dict(normalize_unified_pyo3_instrument(item).to_dict())) if item.to_dict().get('id') in TARGET_IDS else item for item in super().instruments_pyo3()]
+        normalized=[CryptoPerpetual.from_dict(effective_instrument_dict(CryptoPerpetual.to_dict(normalize_unified_legacy_instrument(item)))) if CryptoPerpetual.to_dict(item).get('id') in TARGET_IDS else item for item in legacy]
         self._unified_pyo3=native
         return normalized
 

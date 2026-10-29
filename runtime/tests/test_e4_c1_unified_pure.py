@@ -8,6 +8,7 @@ import pytest
 from coinmaster.ops.hl_info_receipt import InfoReceipt,IncompleteInfoReport,collect_info_receipt
 from coinmaster.ops.hl_unified_account import spot_usdc,native_spot_usdc_dicts,default_dex_state,EQUITY_BASIS
 from test_e4_c1_manage_only_pure import nodes,run_ast,code
+from coinmaster.venues.effective_fees import CURRENT_HL_FEES,HL_FEE_RESERVE_BUFFER,effective_instrument_dict
 
 ACCOUNT='0x'+'1'*40
 INST='BTC-USD-PERP.HYPERLIQUID'
@@ -36,7 +37,7 @@ def position(size='1'):
 
 
 def money_source():
-    env=dict(dataclass=dataclass,Decimal=D,InvalidOperation=InvalidOperation,USDC='USDC',InfoReceipt=InfoReceipt,IncompleteInfoReport=IncompleteInfoReport)
+    env=dict(CURRENT_HL_FEES=CURRENT_HL_FEES,HL_FEE_RESERVE_BUFFER=HL_FEE_RESERVE_BUFFER,dataclass=dataclass,Decimal=D,InvalidOperation=InvalidOperation,USDC='USDC',InfoReceipt=InfoReceipt,IncompleteInfoReport=IncompleteInfoReport)
     run_ast(nodes('ops/hl_live_money.py',{'_amount','SelectedCrossAsset','LivePerpsMoneyView','live_perps_money_view','require_native_unified_projection','CheapPortfolioObservation','cheap_unified_observation','materialize_live_c1_input','prospective_cross_margin_ok','collect_selected_cross_assets'}),env)
     return N(**env)
 
@@ -188,7 +189,7 @@ def provider_source():
         async def load_all_async(self):self.cache=await self._load_instruments()
     class DataFactory:pass
     from functools import lru_cache
-    env={'Decimal':D,'lru_cache':lru_cache,'nautilus_pyo3':N(CryptoPerpetual=Instrument),'CryptoPerpetual':Legacy,
+    env={'effective_instrument_dict':effective_instrument_dict,'Decimal':D,'lru_cache':lru_cache,'nautilus_pyo3':N(CryptoPerpetual=Instrument),'CryptoPerpetual':Legacy,
          'HyperliquidInstrumentProvider':StockProvider,'LiveDataClientFactory':DataFactory}
     run_ast(nodes('ops/hl_unified_instruments.py',{'TARGET_IDS','POLICY','normalize_unified_instrument_dict','normalize_unified_pyo3_instrument','normalize_unified_legacy_instrument','UnifiedHyperliquidInstrumentProvider'}),env)
     return N(**env,Instrument=Instrument,Legacy=Legacy)
@@ -202,6 +203,8 @@ def test_production_provider_public_rebuild_preserves_id_numeric_limits_zero_rat
     provider=p.UnifiedHyperliquidInstrumentProvider()
     asyncio.run(provider.load_all_async());asyncio.run(provider.load_all_async())
     assert provider.loads==2
+    assert provider.instruments_pyo3()[0].to_dict()['taker_fee']==str(CURRENT_HL_FEES.taker)
+    assert provider.cache[0].to_dict()['maker_fee']==str(CURRENT_HL_FEES.maker)
     assert provider.instruments_pyo3()[0].to_dict()['quote_currency']=='USDC'
     assert provider.cache[0].to_dict()['quote_currency']=='USDC' and provider.cache[0].to_dict()['tick_scheme_name'] is None
     assert provider.raw[0].to_dict()['quote_currency']=='USD'  # Public rebuild, no rawcache mutation.

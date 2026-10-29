@@ -42,6 +42,10 @@ def metadata_lot_constraints(metadata, *, btc_only=False):
 
 
 def research_qualification(mode,quantity_model,metadata,runtime,reader,account_id):
+    if mode=="execution_diagnostic":
+        if quantity_model!="hl_current_usdc" or any(x is not None for x in (metadata,runtime,reader)) or account_id:
+            raise ValueError("EXECUTION_DIAGNOSTIC_CURRENT_HL_NO_DP_ONLY")
+        return {},{}
     if mode=="legacy_reference":
         if quantity_model!="legacy_bybit" or any(x is not None for x in (metadata,runtime,reader)):
             raise ValueError("LEGACY_REFERENCE_MUST_REMAIN_EXPLICITLY_UNMODIFIED")

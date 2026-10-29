@@ -22,9 +22,11 @@ class DrawdownTracker:
         self.top = []
         self.count = 0
 
-    def add(self, timestamp, value):
+    def add(self, timestamp, value, *, sequence_id=None, timestamp_ns=None):
         value = D(value)
-        point = {"timestamp_ns": str(timestamp), "equity": str(value)}
+        point = {"timestamp_ns": str(timestamp if timestamp_ns is None else timestamp_ns), "equity": str(value)}
+        if sequence_id is not None:
+            point["sequence_id"] = str(sequence_id)
         self.count += 1
         if self.minimum is None or value < D(self.minimum["equity"]):
             self.minimum = point
@@ -82,7 +84,7 @@ class ConditionalUpperToLaterLowerTracker:
 
 
 class NativeMinuteRiskRecorder:
-    def __init__(self, path: Path, seed, instruments, leverage, end_exclusive_ns):
+    def __init__(self, path: Path, seed, instruments, leverage, end_exclusive_ns, *, margin_policy=None):
         from coinmaster.research.native_fixture import TierMarginPolicy
         self.path = path
         self.end_exclusive_ns = end_exclusive_ns
@@ -92,10 +94,10 @@ class NativeMinuteRiskRecorder:
         self.writer = csv.writer(self.file)
         self.writer.writerow(["bar_open_ms", "close_available_ns", "phase", "cash", "free_cash", "native_initial_margin", "native_maintenance_margin", "paired_close_equity", "conditional_adverse_equity", "conditional_favorable_equity", "conditional_high_mark_mm_upper", "conditional_margin_breach", "native_positions_and_mark_ohlc_json"])
         self.instruments = instruments
-        self.margin_policy = TierMarginPolicy((), leverage, 120_000_000_000)
+        self.margin_policy = margin_policy or TierMarginPolicy((), leverage, 120_000_000_000)
         # High notional is a maintenance upper bound only for monotone tiers.
         # Validate the actual captured profile rather than assume that property.
-        for tiers in self.margin_policy._profile.tiers.values():
+        for tiers in getattr(self.margin_policy._profile, 'tiers', {}).values():
             if any(t.mm < 0 for t in tiers) or any(
                 a.cap*b.mm-b.deduction < a.cap*a.mm-a.deduction
                 for a,b in zip(tiers,tiers[1:])

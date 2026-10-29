@@ -129,7 +129,7 @@ class CommittedNativeObserver(SimulationModule):
                 "PRE_FUNDING_COMMITTED_NATIVE_COPY"))
         in_interval=self.end_exclusive_ns is None or ns<self.end_exclusive_ns or boundary_left_limit
         if track and in_interval and equity is not None:
-            self.events.add(self.sequence,equity)
+            self.events.add(self.sequence,equity,sequence_id=self.sequence,timestamp_ns=ns)
             if boundary_left_limit:self.boundary_left_limit_recorded=True
         return equity
 

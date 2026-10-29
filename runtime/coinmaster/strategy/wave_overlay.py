@@ -374,6 +374,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             if stored is not None:
                 self._deposit = DepositProtection.from_durable(stored, currency=config.deposit_currency, high_water_basis=config.deposit_high_water_basis)
         self._forced_close_reason: str | None = None
+        self._forced_close_decision_ns = 0
+        self._forced_close_cancel_ack_ns: int | None = None
         self._forced_close_intent: Intent | None = None
         self._forced_close_submitted: set[InstrumentId] = set()
         self._forced_close_orders: set[str] = set()
@@ -1887,6 +1889,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             if intent.action == "BTC_ENTRY":
                 self._deny_local_entry(intent, "QUANTITY_INVALID", ts_now)
             return
+        raw_requested_quantity = quantity
         reduce_only = intent.action in {"BTC_REDUCE", "SOL_HALF_EXIT", "SOL_EXIT"}
         if reduce_only:
             position = next((item for item in self.cache.positions_open() if item.instrument_id == instrument_id), None)
@@ -2061,6 +2064,20 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             else:
                 self._domain.on_parent_terminal(intent.id)
             return
+        quote_reader = getattr(self.cache, "quote_tick", None)
+        quote = quote_reader(instrument_id) if quote_reader is not None else None
+        episode = self._domain.episode
+        self._order_audit[client_order_id].update(
+            decision_ns=str(ts_now if ts_now is not None else self.clock.timestamp_ns()),
+            quote_ns=None if quote is None else str(quote.ts_event),
+            quote_bid=None if quote is None else str(quote.bid_price),
+            quote_ask=None if quote is None else str(quote.ask_price),
+            raw_requested_qty=str(raw_requested_quantity), preround_qty=str(quantity),
+            rounded_qty=str(rounded), requested_notional=str(intent.requested_notional),
+            H=None if episode is None else str(episode.h),
+            episode_entry_E=None if episode is None else str(episode.active_entry),
+            sizing_guard="SUBMITTED_AFTER_EXISTING_GATES" if not reduce_only else "NATIVE_REDUCE_ONLY_LEAVES",
+        )
         self._own_accepted_reduction(intent, rounded)
         if intent.action == "BTC_ENTRY":
             self._daily_decision_reason = "NATIVE_SUBMISSION_PENDING_ACK"
@@ -2204,6 +2221,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._accepted_reductions.clear()
         self._discard_queued_intents(lambda _queued: True)
         self._forced_close_reason = reason
+        self._forced_close_decision_ns = self.clock.timestamp_ns()
+        self._forced_close_cancel_ack_ns = None
         self._forced_close_intent = intent
         self._forced_close_submitted.clear()
         for order in list(self.cache.orders_open()):
@@ -2213,6 +2232,10 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         # Cancel confirmation/reconciliation is authoritative: no market close
         # is submitted while a resting reduction can still consume leaves.
         if self.cache.orders_open() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
+            return
+        # Native matching must see this instrument quote after the decision.
+        # Cancellation/position callbacks never dispatch against a cached book.
+        if self._forced_close_decision_ns is None or tick.ts_event < self._forced_close_decision_ns:
             return
         if self._forced_close_reason == "RESEARCH_V3_T3" and tick.ts_event < self._v3_trail_trigger_ns:
             return
@@ -2233,6 +2256,14 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         forced_action = "TERMINAL_CLOSE" if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT" else "LIQUIDATION_CLOSE" if self._forced_close_reason == "LIQUIDATION" else "FORCED_CLOSE"
         if not self._record_submission(order, f"{self._forced_close_reason}:{order.client_order_id}", "forced", forced_action, self._forced_close_reason, None):
             return
+        self._order_audit[str(order.client_order_id)].update(
+            decision_ns=str(self._forced_close_decision_ns),
+            cancel_ack_ns=None if self._forced_close_cancel_ack_ns is None else str(self._forced_close_cancel_ack_ns),
+            quote_ns=str(tick.ts_event), quote_bid=str(tick.bid_price), quote_ask=str(tick.ask_price),
+            raw_requested_qty=str(position.quantity.as_decimal()),
+            preround_qty=str(position.quantity.as_decimal()), rounded_qty=str(order.quantity),
+            native_reduce_only=True,
+        )
         if self._forced_close_reason == "RESEARCH_V3_T3":
             self.v3_risk_audit.append({"event": "PROTECTIVE_SUBMIT", "reason": "T3", "order_id": str(order.client_order_id), "instrument_id": str(tick.instrument_id), "timestamp_ns": str(tick.ts_event), "trigger_ns": str(self._v3_trail_trigger_ns), "latency_ns": str(tick.ts_event-self._v3_trail_trigger_ns), "quote_ns": str(tick.ts_event), "executable_quote": str(tick.bid_price if position.is_long else tick.ask_price), "quantity": str(order.quantity)})
         self._forced_close_submitted.add(tick.instrument_id)
@@ -2245,40 +2276,17 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self.submit_order(order)
 
     def _submit_forced_closes_from_cache(self) -> None:
-        """Continue a forced close after the final native cancel confirmation."""
+        """After native ACK, use only a quote causally fresh for this decision.
+
+        A post-quote cancellation ACK may safely use that same native book.
+        A pre-quote MARK/D1 decision must await this instrument's fresh quote.
+        """
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
-        if self.cache.orders_open() or (self._carry_busy() and (self.cache.orders_inflight() or self._pending_by_order)):
-            return
-        if self.config.research_v3_risk == "t3" and self._forced_close_reason == "RESEARCH_V3_T3":
-            return
-        for position in list(self.cache.positions_open()):
-            if position.instrument_id not in (self.config.btc_id, self.config.sol_id) or position.instrument_id in self._forced_close_submitted:
-                continue
-            # A market order remains native taker; this read only verifies a
-            # current native book exists to match it against.
-            if self.cache.quote_tick(position.instrument_id) is None:
-                continue
-            instrument = self.cache.instrument(position.instrument_id)
-            if instrument is None:
-                continue
-            order = self.order_factory.market(
-                instrument_id=position.instrument_id,
-                order_side=OrderSide.SELL if position.is_long else OrderSide.BUY,
-                quantity=instrument.make_qty(position.quantity.as_decimal()),
-                time_in_force=TimeInForce.IOC, reduce_only=True,
-            )
-            forced_action = "TERMINAL_CLOSE" if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT" else "LIQUIDATION_CLOSE" if self._forced_close_reason == "LIQUIDATION" else "FORCED_CLOSE"
-            if not self._record_submission(order, f"{self._forced_close_reason}:{order.client_order_id}", "forced", forced_action, self._forced_close_reason, None):
-                continue
-            self._forced_close_submitted.add(position.instrument_id)
-            self._forced_close_orders.add(str(order.client_order_id))
-            if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT":
-                self._terminal_order_ids.add(str(order.client_order_id))
-                self.terminal_lifecycle["status"] = "CLOSE_SUBMITTED"
-            elif self._forced_close_reason == "LIQUIDATION":
-                self._liquidation_orders.add(str(order.client_order_id))
-            self.submit_order(order)
+        for instrument_id in (self.config.btc_id, self.config.sol_id):
+            tick = self.cache.quote_tick(instrument_id)
+            if tick is not None:
+                self._submit_forced_close_on_quote(tick)
 
     def _submit_terminal_closes(self) -> None:
         self._risk_first_sol_stop("TERMINAL")
@@ -2636,6 +2644,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(event.ts_event)
         if self._forced_close_reason is not None and not self.cache.orders_open():
+            self._forced_close_cancel_ack_ns = event.ts_event
             self._submit_forced_closes_from_cache()
         if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
             self._group_close_reconciliation_pending = True
@@ -3068,6 +3077,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
     def _record_submission(self, order, intent_id: str, episode_id: str, action: str, reason: str | None = None, level: int | None = None) -> bool:
         self._order_audit[str(order.client_order_id)] = {
             "venue": str(order.instrument_id.venue), "instrument": str(order.instrument_id),
+            "client_order_id": str(order.client_order_id), "intent_id": intent_id, "episode_id": episode_id,
+            "rounded_qty": str(order.quantity),
             "action": action, "reason": reason or action, "level": "" if level is None else str(level),
             "order_type": str(order.order_type), "post_only": str(bool(order.is_post_only)).lower(),
             "submit_ns": str(order.ts_init), "accept_ns": None,
@@ -3092,6 +3103,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         commission = event.commission.as_decimal()
         self.fill_audit.append({
             "venue": str(context.get("venue", event.instrument_id.venue)),
+            "client_order_id": str(event.client_order_id), "trade_id": str(event.trade_id),
+            **{key: context.get(key) for key in ("intent_id", "episode_id", "decision_ns", "cancel_ack_ns", "quote_ns", "quote_bid", "quote_ask", "raw_requested_qty", "preround_qty", "rounded_qty", "requested_notional", "H", "episode_entry_E", "sizing_guard")},
             "instrument": str(event.instrument_id),
             "action": str(context.get("action", "UNKNOWN")),
             "reason": str(context.get("reason", "UNKNOWN")),

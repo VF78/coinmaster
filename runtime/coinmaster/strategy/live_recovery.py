@@ -45,6 +45,7 @@ _FIELDS = (
     "_liquidation_submitted", "liquidation_audit", "pre_submit_gate_blocks",
     "marked_equity_checkpoints", "_terminal_order_ids", "_order_audit",
     "fill_audit", "_forced_close_reason", "_forced_close_intent",
+    "_forced_close_decision_ns", "_forced_close_cancel_ack_ns",
     "_forced_close_submitted", "_forced_close_orders", "terminal_lifecycle",
 )
 
@@ -99,6 +100,13 @@ def checkpoint_structure(document):
     c1=document.get("schema")==_C1_SCHEMA
     keys={"schema","candidate_sha256","strategy_id","domain","state"} | ({"policy_sha256"} if c1 else set())
     expected=_FIELDS+_C1_FIELDS if c1 else _FIELDS
+    # Older checkpoints did not persist the forced-close decision clock. Decode
+    # them without manufacturing freshness: an active old close remains blocked
+    # until manual reconciliation/new decision supplies causal provenance.
+    state=document.get("state")
+    added={"_forced_close_decision_ns","_forced_close_cancel_ack_ns"}
+    if isinstance(state,dict) and set(state)==set(expected)-added:
+        state.update({name:None for name in added})
     if (set(document)!=keys or document.get("schema") not in (_SCHEMA,_C1_SCHEMA)
         or not isinstance(document.get("state"),dict) or set(document["state"])!=set(expected)
         or not isinstance(document.get("domain"),dict)
