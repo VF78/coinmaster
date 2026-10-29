@@ -1,6 +1,6 @@
 {
-  "status": "PREPARED_FOR_OWNER_VERSION_NATIVE_AB_PASS",
-  "updated_utc": "2026-10-29T10:33:17.533108+00:00",
+  "status": "INSTALLED_INACTIVE_EXTENDED_PRIVATE_CAPITAL_TEST_RUNNING",
+  "updated_utc": "2026-10-29T11:41:49.689428+00:00",
   "candidate": "BTC_POSTCUT_D1",
   "economic_source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
   "economic_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
@@ -20,10 +20,10 @@
   "DP_applied": false,
   "native_engineering_qualification": "CLOSED24of24:22FAILEDpreserved+actualA23PASS11gates+B24PASS3gates_sameDBsourcefixture; active0/unused0/noGO",
   "fresh_readonly_HL_bootstrap": "RealreadonlyPortfolio/CacheUSDCtransportPASS; held/matching/finalACTIVEcommandgatespending",
-  "installed_release_benchmark": "NOT_RUN; oneexactreferencecomparison_proposedonly_after_ownerVERSION",
-  "deployment": "NOT_PERFORMED",
-  "existing_pilot": "PRESERVED",
-  "owner_winner_version_approval": "PENDING",
+  "installed_release_benchmark": "OWNER_REVISED_EXTENDED_CURRENT_CAPITAL_TEST_RUNNING_ONE_ATTEMPT",
+  "deployment": "INSTALLED_INACTIVE_NOT_SELECTED_NOT_STARTED",
+  "existing_pilot": "STOPPED_AFTER_OWNER_VERSION_BACKUPS_PRESERVED",
+  "owner_winner_version_approval": "APPROVED_29OCT_EXACT5F10CE87",
   "owner_START_LIVE": "NOT_GIVEN",
   "live_order_capability": false,
   "secrets_and_account_readbacks": "PRIVATE_ONLY",
@@ -37,10 +37,9 @@
   "Unified_support": "NATIVE_CURRENCY_COMPONENT_PASS_ACTIVE_C1_EXECUTION_COMPOSITION_IN_PROGRESS",
   "documentation_forums_review": "NAUTILUS_METHOD_REVIEW_20261029_RU.md",
   "packaging_remaining_gates": [
-    "OwnerVERSIONdecisionon5f10ce87_andseparateUSDC_API_GUIc5cfcf97",
-    "Installpreparedinactivebytes_andverifyinstalledidentities; privatebindingnotpartofpublicpacket",
-    "Oneconditionalinstalledreferencecomparison_afterVERSION_max1_1800s_nooptimization",
-    "SeparateexplicitownerSTART_afterinstalledchecks/freshactualreadiness"
+    "Resolve extended-test risk failure and configuration mismatch without relabelling results",
+    "Qualified USDC GUI component and fresh actual readiness before START",
+    "Separate explicit owner START"
   ],
   "Unified_component_source_commit": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
   "Unified_component_tests": "113purePASS17.23s_peerP1closurePASS_PUBLICEXACTVERIFIED",
@@ -98,7 +97,7 @@
     "deployment": false
   },
   "freshest_native_failure_scope": "HistoricalA22wrongACTIVEcertificateNoneassertion; actualsourceguardsDENY, fixturecorrected; finalA23B24PASS supersedescurrentblocker_withoutrewritingFAILED",
-  "active_current_blocker": "OwnerVERSIONdecision_on_concreteprepared5f_release_and_oneinstalledcomparison; separateSTARTlater",
+  "active_current_blocker": "Extendedtest riskNO_GO/model liquidation; exact candidate cap mismatch pending offline attribution; noSTART",
   "source_only_repair_protocol": "BOOTSTRAP_PHASE_SOURCE_ONLY_PROTOCOL_20261029.json",
   "private_capacity": "Actualinitialpolicyfreshbounded1of1CLOSED CAPACITY_CASES_RECORDED_NO_START;10response128weight/2.217243scollection/6.747361334swrapper/32BTC12SOLfixedcases; private values only, notglobalforeignorderproof",
   "previous_manager_public_exact": "54a886e18f1adc8181e81da4803ed0dbc10b7dae",
@@ -114,5 +113,7 @@
   "operator_runbook": "OPERATOR_RUNBOOK_5F10_20261029.md",
   "installed_reference_proposal": "INSTALLED_REFERENCE_PROPOSAL_20261029.json",
   "durable_preparation_evidence": "evidence/durable-ready-receipt-20261029.json",
-  "data_preparation_evidence": "evidence/installed-reference-inputs-preparation-20261029.json"
+  "data_preparation_evidence": "evidence/installed-reference-inputs-preparation-20261029.json",
+  "extended_protocol": "INSTALLED_EXTENDED_FINAL_PROTOCOL_20261029.json",
+  "public_scope": "Businessstatusonly; detailedcurrentoperationalmetadata retainedprivate"
 }
