@@ -1,0 +1,208 @@
+{
+  "task": "EXECUTION_PARITY_REBUILD_20261029",
+  "authority": "Direct latest owner request: systemic corrections+deployment; one10K24month diagnostic withoutDDstop, twoSOLvariants and fulltests; no fabricated numeric owner reply",
+  "status": "CLEAN10K_R1_RUNNING",
+  "objective": {
+    "primary_terminal_total": "5499360.14984003",
+    "primary_DD_percent": "52",
+    "outer_terminal_floor": "5000000",
+    "outer_DD_percent": "55",
+    "zero_model_liquidation": true,
+    "not_automatic_live_approval": true
+  },
+  "reference": {
+    "source": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+    "report_sha256": "c3e23a88efff0688b33b6d9e93c9dd29e0f19e9973e2224b845e8fa51bd049d2",
+    "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "period_UTC": "[2024-09-01,2026-09-01)",
+    "seed": "10000",
+    "terminal_metric": "native_post_boundary_flat_cash_active_plus_reserve; netprofit_and_ROI_separately"
+  },
+  "guarantee_boundary": "Identical ordered recorded inputs+nativeevents+sharedconfiguration => deterministic same strategy/state/output test. Future realfills/queues/transport or historicaldifferentvenue prices cannotbe guaranteed. Do not label zeroimpact model live-identical.",
+  "new_common_profile": {
+    "venue_rules": "CURRENT_HYPERLIQUID_BTC_SOL_USDC_NORMALIZED_SHARED_LIVE_HELPERS",
+    "prices": "pinnedBybit1mproxy;nohistoricalHLBBOclaim",
+    "native_engine": "1.231.0",
+    "fees_effective": {
+      "taker": "0.000432",
+      "maker": "0.000144",
+      "referral_already_applied": true
+    },
+    "fee_reserve_rate": "0.0005_separate_conservative_buffer_notchargedfee",
+    "quantity_precision": {
+      "BTC": 5,
+      "SOL": 2
+    },
+    "selected_leverage": {
+      "BTC": "40",
+      "SOL": "20"
+    },
+    "public_meta_sha256": "3611d651c7973b61460c2430c95723f992bb69520bd33fb7c76fb354074197cf",
+    "funding": "samepinnedhistoricalrates/nativeUSDCcashpostings;futurefundingexcludedfromguarantee",
+    "fills": "officialnativeFillModelextension;capacity=ownleaves_qty;freshquotesonly;explicitZERO_MARKET_IMPACT_FULL_FILLassumption",
+    "maker_touch": "no_fill;causaltrade-throughonly",
+    "emergency_DP_research": false,
+    "external_DD_stop": false,
+    "intrinsic_C1_control": true,
+    "live_DP": "55retained;notdisabledbyresearchswitch"
+  },
+  "stages": [
+    {
+      "case": "E0_COMMON",
+      "kind": "connectednativeengineering",
+      "limit_hours_data": 48,
+      "covers": [
+        "freshness/cancelACK/reduceonly",
+        "fullnativeqty>1000withoutarbitrarydepth",
+        "makerstricttrade-through",
+        "USDCnativePnLfeeandfunding",
+        "sharedprofilequantitypriceconstraints",
+        "samesourceeventreplayintents",
+        "checkpointmanualguardpreserved"
+      ]
+    },
+    {
+      "case": "CLEAN10K",
+      "kind": "fullnative",
+      "before": [
+        "sharedpatchpurePASS",
+        "oneindependentreview",
+        "E0PASS",
+        "freeze",
+        "inactiveimmutabledeploy"
+      ],
+      "DDstop": null
+    },
+    {
+      "case": "A10K",
+      "kind": "fullnative",
+      "before": [
+        "CLEAN10Kcompletefinancialanalysis",
+        "Acontractfrozen",
+        "pureandreviewPASS"
+      ],
+      "variant": "explicitcapital-normalizedlegacySOLstaging;nooldcachedfillsorbookrecycling"
+    },
+    {
+      "case": "B10K",
+      "kind": "fullnative",
+      "before": [
+        "CLEAN10Kcompletefinancialanalysis",
+        "Bcontractfrozen",
+        "pureandreviewPASS"
+      ],
+      "variant": "marketcausalgraduatedbuildandcontinuousheldSOLriskbudget;notADDonly"
+    },
+    {
+      "case": "SELECTED_ACTUAL_CAPITAL",
+      "kind": "conditionalfullnative",
+      "before": [
+        "onevariantprimaryorowneradmittedouterPASS",
+        "actualaccountcapitalfrozenprivatewithoutrepeatamountapproval"
+      ],
+      "reason": "cannotlaunchsmalllivebased10Konly;originalfailurewascapitalnoninvariance"
+    }
+  ],
+  "coordinator_planning_bound": {
+    "engineering": 3,
+    "full_10K": 4,
+    "conditional_actualcapital_full": 1,
+    "total": 8,
+    "engineering_second": "usedprecisionrepair; thirdonekernelconfigurationrepair",
+    "oldbudgets_reused": false,
+    "allphysicalenginefailures_count": true,
+    "enginefree_constructor_checks_count_as_native": false,
+    "no_silent_retry": true,
+    "additional_work_requires": "specificcause+updatedrootprotocolbeforeengine;neverfabricateownerbudget"
+  },
+  "deployment": {
+    "authorized": "inactiveimmutablecommonruntimeafterengineeringPASS;finalvariantafterqualification",
+    "source_worktree": "isolatedcanonicalVPS",
+    "no_manual_opt_edits": true,
+    "no_live_orders_or_transfers": true,
+    "separate_START_required": true,
+    "installed_inactive": true,
+    "current_switched": false,
+    "live_started": false
+  },
+  "pre_run_freeze": [
+    "sourceandartifacthash",
+    "nativebinaryversion/origins",
+    "sharedconfiguration",
+    "publicmetadata/providerhash",
+    "privatefeeprovenance",
+    "datahash",
+    "caseflags/fees/funding",
+    "freshnativejournal/outputdirectory",
+    "rootexclusiveclaim"
+  ],
+  "analysis": [
+    "everySOLintent/request/fill vsoriginalwinner",
+    "nativecashfeesfunding/positions bridge",
+    "actualrisknotionaloverequity/time",
+    "TPrights/C1states",
+    "whichconstraintsbindandwhy",
+    "allchangedprices/times/rounding",
+    "coherentandsettledDDseparate",
+    "modelassumptionsandUNKNOWNexplicit"
+  ],
+  "physical_spent": 5,
+  "physical_active": 1,
+  "source_common_frozen": "0ba61448b324df1c617797eac03a00c030e1a5e8",
+  "engineering_amendment": {
+    "authority": "coordinatorboundupdate underdirectowner systemicfix/verification task, notnumericownerreply",
+    "reason": "Native1.231 appliesrecordedL1consumption aftercustombook;False requiredforZeroImpactfullfill, noquoteincrease/kernelpatch",
+    "extra": 1,
+    "old_failed_attempts_preserved": true,
+    "full_budget_unchanged": true
+  },
+  "engineering_result": {
+    "case": "E0R2",
+    "actual_exit": 0,
+    "wall_seconds": 2.379546558484435,
+    "native_full_entry_SOL": "2000",
+    "maker_exit_SOL": "500",
+    "fresh_quote_final_IOC_SOL": "1500",
+    "status": "PASS",
+    "pure_checks": 93,
+    "known_baseline_test_deselected": 1,
+    "independent_review": "PASS_0_NEW_P1"
+  },
+  "control_failure": {
+    "case": "CLEAN10K",
+    "native_engines": 1,
+    "actual_exit": 1,
+    "wall_seconds": 16.968837281689048,
+    "native_elapsed_seconds": 13.03586404491216,
+    "last_data_UTC": "2024-09-02T00:09:00Z",
+    "error": "KeyError sol_right_activations: later split child reuses parent intent ID and appends ordinary sizing record; activation blindly addressed final row",
+    "economic_result": null,
+    "output": "VPS J/CLEAN10K",
+    "preserved": true
+  },
+  "audit_repair_amendment": {
+    "authority": "Coordinator planning adjustment within latest direct systemic correction and requested three full comparisons; not an invented numeric owner reply",
+    "extra_full_attempt": 1,
+    "reason": "Replace failed control caused by audit record association; preserve all three requested valid comparisons",
+    "no_extra_parameter_search": true,
+    "no_old_budget_borrow": true
+  },
+  "journal_only_repair": {
+    "source": "0ba61448b324df1c617797eac03a00c030e1a5e8",
+    "pure_checks": 96,
+    "known_baseline_excluded": 1,
+    "independent_review": "PASS_0_P1",
+    "economic_rules_changed": false,
+    "engineering_not_repeated": "journal association only; genuine E0R2 retained"
+  },
+  "active_control": {
+    "case": "CLEAN10K_R1",
+    "pid": 225699,
+    "supervisor_pid": 225698,
+    "started_utc": "2026-10-29T21:20:45.779450+00:00",
+    "output": "VPS J/CLEAN10K_R1",
+    "source": "0ba61448b324df1c617797eac03a00c030e1a5e8",
+    "stop_on_DD": null,
+    "valid_economic_result": null
+  }
+}
