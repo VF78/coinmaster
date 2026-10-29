@@ -97,7 +97,7 @@
     "deployment": false
   },
   "freshest_native_failure_scope": "HistoricalA22wrongACTIVEcertificateNoneassertion; actualsourceguardsDENY, fixturecorrected; finalA23B24PASS supersedescurrentblocker_withoutrewritingFAILED",
-  "active_current_blocker": "Extendedtest riskNO_GO/model liquidation; exact candidate cap mismatch pending offline attribution; noSTART",
+  "active_current_blocker": "Owner audit confirms small-seed risk failure within original24months; scale/nonhedgedSOL/DP-disabled gaps; BTCcap effectUNKNOWN; noSTART",
   "source_only_repair_protocol": "BOOTSTRAP_PHASE_SOURCE_ONLY_PROTOCOL_20261029.json",
   "private_capacity": "Actualinitialpolicyfreshbounded1of1CLOSED CAPACITY_CASES_RECORDED_NO_START;10response128weight/2.217243scollection/6.747361334swrapper/32BTC12SOLfixedcases; private values only, notglobalforeignorderproof",
   "previous_manager_public_exact": "54a886e18f1adc8181e81da4803ed0dbc10b7dae",
