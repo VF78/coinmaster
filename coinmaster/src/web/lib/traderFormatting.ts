@@ -43,3 +43,11 @@ export function researchMetric(report: Record<string, unknown> | null | undefine
   }
   return report?.[field];
 }
+
+export function nativeMarketLabel(instrumentId: string, currency: unknown): string {
+  const asset = instrumentId === 'BTC-USD-PERP.HYPERLIQUID' ? 'BTC' : instrumentId === 'SOL-USD-PERP.HYPERLIQUID' ? 'SOL' : null;
+  return asset ? currency === 'USDC' ? asset + '/USDC' : asset + ' · currency unverified' : 'Other market';
+}
+export function nativeExecutionSubtitle(fill: { order_side: string | null; quantity: string; price: string }, state: HlStagegProjection | null): string {
+  return (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + nativeMoney(fill.price, projectionCurrency(state));
+}

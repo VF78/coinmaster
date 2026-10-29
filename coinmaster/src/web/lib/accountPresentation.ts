@@ -1,7 +1,7 @@
 import type { HlStagegProjection } from './nautilusApi';
 import { traderMoney, projectionCurrency } from './traderFormatting';
 
-export type AccountFigure = { label: string; value: string };
+export type AccountFigure = { key: string; label: string; value: string };
 
 
 export function accountFigures(state: HlStagegProjection | null): AccountFigure[] {
@@ -9,13 +9,13 @@ export function accountFigures(state: HlStagegProjection | null): AccountFigure[
   const amount = (value: string | null | undefined) => traderMoney(value, projectionCurrency(state));
   const stale = account?.mark_state === 'STALE_OR_MISSING';
   return [
-    { label: state?.mode === 'live' ? 'Reported account total' : 'Cash', value: amount(account?.native_cash) },
-    { label: 'Available cash', value: amount(account?.native_free) },
-    { label: state?.mode === 'live' ? 'USDC hold · proxy' : 'Reserved cash', value: amount(account?.native_locked) },
-    { label: state?.mode === 'live' ? 'Reported equity' : 'Marked equity', value: stale ? 'Not current' : amount(account?.equity) },
-    { label: 'Realized PnL after fees', value: amount(account?.realized_pnl_net_fees) },
-    { label: 'Unrealized PnL', value: stale ? 'Not current' : amount(account?.unrealized_pnl) },
-    { label: 'Fees paid', value: amount(account?.fees) },
+    { key: 'cash', label: state?.mode === 'live' ? 'Reported account total' : 'Cash', value: amount(account?.native_cash) },
+    { key: 'available', label: 'Available cash', value: amount(account?.native_free) },
+    { key: 'hold', label: state?.mode === 'live' ? 'USDC hold · proxy' : 'Reserved cash', value: amount(account?.native_locked) },
+    { key: 'equity', label: state?.mode === 'live' ? 'Reported equity' : 'Marked equity', value: stale ? 'Not current' : amount(account?.equity) },
+    { key: 'realized', label: 'Realized PnL after fees', value: amount(account?.realized_pnl_net_fees) },
+    { key: 'unrealized', label: 'Unrealized PnL', value: stale ? 'Not current' : amount(account?.unrealized_pnl) },
+    { key: 'fees', label: 'Fees paid', value: amount(account?.fees) },
   ];
 }
 

@@ -115,3 +115,10 @@ test('legacy untyped and foreign live projections withhold every money figure', 
     assert.equal(protectionIsVerified(state), false);
   }
 });
+
+test('live headline equity uses the stable equity key despite its reported-equity label', () => {
+  const state = projection({ equity: '100', currency: 'USDC', money_currency: 'USDC', equity_basis: 'HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' }, { mode: 'live', equity_basis: 'HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' });
+  const equity = accountFigures(state).find((figure) => figure.key === 'equity');
+  assert.equal(equity?.label, 'Reported equity');
+  assert.equal(equity?.value, '100.00 USDC');
+});

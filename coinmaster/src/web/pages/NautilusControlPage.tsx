@@ -16,7 +16,7 @@ import { parseFiniteNumberFields, strategyDraftError } from '../lib/strategyDraf
 import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, unavailableTradeHistoryLabel, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
 
 import { verifiedControlReadback } from '../lib/controlReadback';
-import { effectiveLeverage, researchMetric, traderMoney, projectionCurrency, nativeMoney, traderNumber, traderPercent } from '../lib/traderFormatting';
+import { effectiveLeverage, researchMetric, traderMoney, projectionCurrency, nativeMoney, nativeMarketLabel, nativeExecutionSubtitle, traderNumber, traderPercent } from '../lib/traderFormatting';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -352,10 +352,10 @@ export function RuntimePage() {
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={loading && !state ? 'neutral' : runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
       <div className="runtime-hero__heading"><div><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">{selectedModeLabel} snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid runtime-account-grid--compact runtime-priority-grid">
-        <Stat label="Equity" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "Unavailable"} />
-        <Stat label="Available cash" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
-        <Stat label="Realized P&L · net fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
-        <Stat label="Unrealized P&L" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
+        <Stat label="Equity" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.key === "equity")?.value ?? "Unavailable"} />
+        <Stat label="Available cash" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.key === "available")?.value ?? "Unavailable"} />
+        <Stat label="Realized P&L · net fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.key === "realized")?.value ?? "Unavailable"} />
+        <Stat label="Unrealized P&L" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.key === "unrealized")?.value ?? "Unavailable"} />
         {selectedMode === 'live' ? <Stat label="Posted funding" value={nativeMoney(state?.account.funding, projectionCurrency(state) && state?.account.funding_currency)} /> : null}
         <Stat label="Trading fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : traderMoney(state?.account.fees, projectionCurrency(state))} />
         <Stat label="Effective leverage" value={effectiveLeverage(state)} />
@@ -365,10 +365,10 @@ export function RuntimePage() {
         <div className="runtime-account-secondary" aria-label="Current margin and profit and loss">
           <Stat label="Initial margin" value={traderMoney(state?.account.im, projectionCurrency(state))} /><Stat label="Effective leverage" value={effectiveLeverage(state)} />
           <Stat label="Maintenance margin" value={traderMoney(state?.account.mm, projectionCurrency(state))} />
-          <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
-          <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
+          <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.key === "realized")?.value ?? "Unavailable"} />
+          <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.key === "unrealized")?.value ?? "Unavailable"} />
         </div>
-        <div className="runtime-account-grid runtime-account-grid--compact runtime-account-details__other">{figures.filter((figure) => !["Marked equity", "Available cash", "Realized PnL after fees", "Unrealized PnL"].includes(figure.label)).map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}</div>
+        <div className="runtime-account-grid runtime-account-grid--compact runtime-account-details__other">{figures.filter((figure) => !["equity", "available", "realized", "unrealized"].includes(figure.key)).map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}</div>
       </details>}
       {accountIsUnknown && !loading ? <div className="runtime-empty-note account-unavailable"><strong>Account valuation unavailable</strong><span>{runtimeStatus.detail}</span></div> : null}
       {state?.account.mark_state === 'STALE_OR_MISSING' ? <p className="runtime-empty-note">Mark is stale or missing. Marked equity and unrealized P&amp;L are not current.</p> : null}
@@ -386,7 +386,7 @@ export function RuntimePage() {
         const fresh = feed?.state === 'READY' && feed.mark_age_ns != null && feed.mark_age_ns >= 0 && feed.mark_age_ns <= 15_000_000_000;
         const position = positionPresentation(state, instrumentId);
         const linkedOrders = orderRows.filter((order) => order.instrument_id === instrumentId);
-        return <Card key={instrumentId} className="trader-market-card" title={symbol + "/USDC"} actions={<Badge tone={loading && !state ? 'neutral' : fresh ? 'success' : 'danger'}>{loading && !state ? 'Loading' : fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
+        return <Card key={instrumentId} className="trader-market-card" title={nativeMarketLabel(instrumentId, projectionCurrency(state))} actions={<Badge tone={loading && !state ? 'neutral' : fresh ? 'success' : 'danger'}>{loading && !state ? 'Loading' : fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
           <div className="trader-market-price">
             <span>{fresh ? 'Mark' : 'Previous mark'}</span>
             <strong>{loading && !state ? 'Loading…' : nativeMoney(feed?.mark, projectionCurrency(state))}</strong>
@@ -425,10 +425,10 @@ export function RuntimePage() {
         ? <p className="runtime-empty-note">{unavailableTradeHistoryLabel(fillHistory?.historical_id_only_count)}</p>
         : <>
           {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older execution record{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} no saved trade details.</p> : null}
-          <DataTable rows={fillHistory.fills.slice().sort((a, b) => b.cursor - a.cursor).map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${fill.instrument_id.startsWith('BTC-') ? 'BTC/USDC' : fill.instrument_id.startsWith('SOL-') ? 'SOL/USDC' : 'Other market'} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
+          <DataTable rows={fillHistory.fills.slice().sort((a, b) => b.cursor - a.cursor).map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${nativeMarketLabel(fill.instrument_id, projectionCurrency(state))} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => nativeExecutionSubtitle(fill, state)} columns={[
             { key: 'action', header: 'Type', render: (fill) => nativeFillActionLabel(fill.action) },
             { key: 'time', header: 'Time (UTC)', render: (fill) => fill.ts_event_ns == null ? 'Unavailable' : formatUtcTimestamp(new Date(fill.ts_event_ns / 1000000).toISOString()) },
-            { key: 'market', header: 'Market', render: (fill) => fill.instrument_id.startsWith('BTC-') ? 'BTC/USDC' : fill.instrument_id.startsWith('SOL-') ? 'SOL/USDC' : 'Other market' },
+            { key: 'market', header: 'Market', render: (fill) => nativeMarketLabel(fill.instrument_id, projectionCurrency(state)) },
             { key: 'side', header: 'Side', render: (fill) => fill.order_side ?? 'Unavailable' },
             { key: 'quantity', header: 'Quantity', render: (fill) => traderNumber(fill.quantity, 5) },
             { key: 'price', header: 'Price', render: (fill) => nativeMoney(fill.price, projectionCurrency(state)) },

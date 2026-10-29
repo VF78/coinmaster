@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { effectiveLeverage, researchMetric, traderMoney, traderPercent } from './traderFormatting';
+import { effectiveLeverage, researchMetric, traderMoney, traderPercent, nativeMarketLabel, nativeExecutionSubtitle } from './traderFormatting';
 import type { HlStagegProjection } from './nautilusApi';
 test('currency formatting preserves unavailable and correctly rounds exact native inputs', () => {
   assert.equal(traderMoney('11319.40534863', 'USDC'), '11,319.41 USDC');
@@ -28,4 +28,12 @@ test('requires explicit units and never relabels foreign native money', () => {
   assert.equal(traderMoney('10'), 'Unavailable');
   assert.equal(traderMoney('10', 'USD'), 'Unavailable');
   assert.equal(traderMoney('10', 'USDT'), '10.00 USDT');
+});
+
+test('mobile execution text and market units fail closed on unverified currency', () => {
+  const fill = { order_side: 'BUY', quantity: '0.1', price: '123456' };
+  assert.equal(nativeExecutionSubtitle(fill, null), 'BUY · 0.1 @ Unavailable');
+  assert.equal(nativeMarketLabel('BTC-USD-PERP.HYPERLIQUID', null), 'BTC · currency unverified');
+  assert.equal(nativeMarketLabel('BTC-USD-PERP.HYPERLIQUID', 'USDC'), 'BTC/USDC');
+  assert.equal(nativeMarketLabel('BTC-USD-PERP.BYBIT', 'USDC'), 'Other market');
 });
