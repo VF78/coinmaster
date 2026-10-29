@@ -161,7 +161,7 @@ def test_delayed_reservation_is_rebound_before_http_or_expired_without_http(tmp_
     assert guard.request("SOL", "1m", 500)["state"] == "INVALID"
 
 
-def test_api_route_uses_existing_gui_state_directory_without_native_imports(tmp_path, monkeypatch):
+def pure_api_module():
     import ast
     import sys
     import types
@@ -178,6 +178,11 @@ def test_api_route_uses_existing_gui_state_directory_without_native_imports(tmp_
     sys.modules[module.__name__] = module
     exec(compile(tree, str(path), "exec"), module.__dict__)
     module.create_control_app = lambda **_kwargs: module.FastAPI()
+    return module
+
+
+def test_api_route_uses_existing_gui_state_directory_without_native_imports(tmp_path, monkeypatch):
+    module = pure_api_module()
     calls = []
     class FakeBudget:
         def __init__(self, state_dir): calls.append(state_dir)
@@ -192,3 +197,61 @@ def test_api_route_uses_existing_gui_state_directory_without_native_imports(tmp_
     response = route.endpoint("BTC", "1m", 300)
     assert calls == [tmp_path, ("BTC", "1m", 300)]
     assert response.quote_currency == "USDC" and response.state == "UNAVAILABLE"
+
+
+def test_boot_change_even_with_higher_clock_and_unavailable_boot_id_deny(tmp_path):
+    clock = Clock(); calls = []
+    guard = make(tmp_path, clock, lambda body: calls.append(body) or rows(body))
+    guard.boot_id = lambda: "boot-a"
+    warm(guard, clock)
+    assert guard.request("BTC", "1m", 500)["state"] == "READY"
+    clock.advance(1000)
+    guard.boot_id = lambda: "boot-b"
+    assert guard.request("SOL", "1m", 500)["reason"] == "PUBLIC_CANDLE_BUDGET_UNAVAILABLE"
+    guard.boot_id = lambda: ""
+    assert guard.request("SOL", "1m", 500)["reason"] == "PUBLIC_CANDLE_BUDGET_UNAVAILABLE"
+    assert len(calls) == 1
+
+
+def test_backwards_clock_is_latched_after_clock_catches_up(tmp_path):
+    clock = Clock(); guard = make(tmp_path, clock, rows); warm(guard, clock)
+    guard.request("BTC", "1m", 500)
+    clock.advance(-1)
+    assert guard.request("SOL", "1m", 500)["reason"] == "PUBLIC_CANDLE_BUDGET_UNAVAILABLE"
+    clock.advance(1000)
+    assert make(tmp_path, clock, rows).request("SOL", "1m", 500)["reason"] == "PUBLIC_CANDLE_BUDGET_UNAVAILABLE"
+    assert json.loads(guard.path.read_text())["fault"] == "CANDLE_BUDGET_CLOCK_REVERSED"
+
+
+def test_valid_json_bit_flip_fails_checksum_without_http(tmp_path):
+    clock = Clock(); calls = []
+    guard = make(tmp_path, clock, lambda body: calls.append(body) or rows(body)); warm(guard, clock)
+    guard.request("BTC", "1m", 500)
+    state = json.loads(guard.path.read_text()); state["charges"][0]["weight"] = 28
+    guard.path.write_text(json.dumps(state))
+    clock.advance(60)
+    assert guard.request("SOL", "1m", 500)["reason"] == "PUBLIC_CANDLE_BUDGET_UNAVAILABLE"
+    assert len(calls) == 1
+
+
+def test_affected_existing_api_route_fixture_without_native_worker_segment(tmp_path, monkeypatch):
+    import ast
+    import asyncio
+    from urllib.parse import urlsplit
+    from coinmaster.api.hl_public_candles import public_candles
+    module = pure_api_module()
+    path = Path(__file__).with_name("test_hl_dashboard_data.py")
+    tree = ast.parse(path.read_text(), filename=str(path))
+    original = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "test_authenticated_sidecar_relays_real_worker_equity_and_public_candles")
+    # Execute only the actual affected public-candle API tail, never its native
+    # worker/server setup or the module's native imports.
+    start = next(index for index, node in enumerate(original.body) if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "now_ms" for t in node.targets))
+    original.body = original.body[start:]
+    helpers = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in {"_api_get", "_candle"}]
+    isolated = ast.Module(body=helpers + [original], type_ignores=[])
+    namespace = {"sidecar": module, "create_runtime_app": module.create_runtime_app, "public_candles": public_candles,
+                 "asyncio": asyncio, "json": json, "urlsplit": urlsplit, "MINUTE_MS": 60000}
+    exec(compile(isolated, str(path), "exec"), namespace)
+    for key in ("COINMASTER_GUI_USERNAME", "COINMASTER_GUI_PASSWORD_HASH", "COINMASTER_GUI_ORIGIN"):
+        monkeypatch.delenv(key, raising=False)
+    namespace[original.name](monkeypatch, tmp_path)

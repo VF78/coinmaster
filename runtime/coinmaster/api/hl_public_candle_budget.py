@@ -8,6 +8,7 @@ a backwards clock (including an OS reboot) fails closed for manual review.
 from __future__ import annotations
 
 import fcntl
+import hashlib
 import json
 import math
 import os
@@ -36,13 +37,18 @@ class CandleBudgetUnavailable(Exception):
     pass
 
 
+def _boot_identity() -> str:
+    return Path("/proc/sys/kernel/random/boot_id").read_text().strip()
+
+
 class PublicCandleBudget:
     def __init__(self, state_dir: Path, *, post: Callable[[dict[str, Any]], Any] = _post,
                  clock: Callable[[], int] = time.monotonic_ns,
-                 wall_clock: Callable[[], int] = lambda: time.time_ns() // 1_000_000) -> None:
+                 wall_clock: Callable[[], int] = lambda: time.time_ns() // 1_000_000,
+                 boot_id: Callable[[], str] = _boot_identity) -> None:
         self.path = Path(state_dir) / "hl-public-candles.json"
         self.lock_path = Path(state_dir) / "hl-public-candles.lock"
-        self.post, self.clock, self.wall_clock = post, clock, wall_clock
+        self.post, self.clock, self.wall_clock, self.boot_id = post, clock, wall_clock, boot_id
 
     @contextmanager
     def _locked(self):
@@ -55,8 +61,11 @@ class PublicCandleBudget:
             os.close(fd)
 
     def _read(self, now: int) -> dict[str, Any]:
+        boot_id = self.boot_id()
+        if not isinstance(boot_id, str) or not 1 <= len(boot_id) <= 128:
+            raise CandleBudgetUnavailable("CANDLE_BUDGET_BOOT_ID_UNAVAILABLE")
         if not self.path.exists():
-            state = {"version": 1, "last_ns": now,
+            state = {"version": 2, "boot_id": boot_id, "fault": None, "last_ns": now,
                      "charges": [{"id": "INITIAL_CONSERVATIVE_HOLD", "at_ns": now, "weight": CAPACITY}],
                      "pending": {}, "cache": {}}
             self._write(state)
@@ -64,13 +73,24 @@ class PublicCandleBudget:
         if self.path.is_symlink() or self.path.stat().st_size > MAX_STATE_BYTES:
             raise CandleBudgetUnavailable("CANDLE_BUDGET_STATE_INVALID")
         state = json.loads(self.path.read_text(), parse_constant=lambda _v: (_ for _ in ()).throw(ValueError()))
-        if (not isinstance(state, dict) or set(state) != {"version", "last_ns", "charges", "pending", "cache"}
-                or type(state["version"]) is not int or state["version"] != 1 or type(state["last_ns"]) is not int
-                or not 0 <= state["last_ns"] <= now or not isinstance(state["charges"], list)
+        if not isinstance(state, dict):
+            raise CandleBudgetUnavailable("CANDLE_BUDGET_STATE_INVALID")
+        digest = state.pop("sha256", None)
+        canonical = json.dumps(state, separators=(",", ":"), sort_keys=True, allow_nan=False).encode()
+        if not isinstance(digest, str) or hashlib.sha256(canonical).hexdigest() != digest:
+            raise CandleBudgetUnavailable("CANDLE_BUDGET_STATE_CHECKSUM_INVALID")
+        if (set(state) != {"version", "boot_id", "fault", "last_ns", "charges", "pending", "cache"}
+                or type(state["version"]) is not int or state["version"] != 2 or type(state["last_ns"]) is not int
+                or state["boot_id"] != boot_id or state["fault"] is not None
+                or state["last_ns"] < 0 or not isinstance(state["charges"], list)
                 or len(state["charges"]) > CAPACITY or not isinstance(state["pending"], dict)
                 or len(state["pending"]) > MAX_CACHE_ENTRIES or not isinstance(state["cache"], dict)
                 or len(state["cache"]) > MAX_CACHE_ENTRIES):
             raise CandleBudgetUnavailable("CANDLE_BUDGET_STATE_INVALID")
+        if state["last_ns"] > now:
+            state["fault"] = "CANDLE_BUDGET_CLOCK_REVERSED"
+            self._write(state)
+            raise CandleBudgetUnavailable("CANDLE_BUDGET_CLOCK_REVERSED")
         for charge in state["charges"]:
             if (not isinstance(charge, dict) or set(charge) != {"id", "at_ns", "weight"}
                     or not isinstance(charge["id"], str) or type(charge["at_ns"]) is not int
@@ -95,7 +115,9 @@ class PublicCandleBudget:
         return state
 
     def _write(self, state: dict[str, Any]) -> None:
-        data = json.dumps(state, separators=(",", ":"), allow_nan=False).encode()
+        canonical = json.dumps(state, separators=(",", ":"), sort_keys=True, allow_nan=False).encode()
+        data = json.dumps({**state, "sha256": hashlib.sha256(canonical).hexdigest()},
+                          separators=(",", ":"), sort_keys=True, allow_nan=False).encode()
         if len(data) > MAX_STATE_BYTES:
             raise CandleBudgetUnavailable("CANDLE_BUDGET_STATE_TOO_LARGE")
         fd, name = tempfile.mkstemp(prefix=".hl-candles-", dir=self.path.parent)

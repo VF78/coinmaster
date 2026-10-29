@@ -13,7 +13,9 @@
     "persistence": "atomic JSON replace + file/directory fsync; shared across API processes/restarts",
     "first_use_or_missing_state": "150-weight conservative debit for60seconds; cannot reset capacity by deleting state",
     "corruption_or_IO_failure": "failclosed, no new HTTP",
-    "clock": "host monotonic_ns persisted across process restarts; backwards clock/OS reboot failsclosed for review"
+    "clock": "persisted host boot identity plus monotonic_ns; boot mismatch/unavailable denies even with higher now; backwards clock durably latches fault and cannot auto-clear when clock catches up",
+    "integrity": "canonical SHA256 detects accidental valid-JSON corruption; not authentication against deliberate privileged edits",
+    "public_state_reset_runbook": "Operational review only: quiesce public-candle API activity, preserve/reinitialize ONLY hl-public-candles.json public budget/cache state under the existing state directory; retain stable lock inode. Missing public state enforces conservative150-weight60-second warmup. Never reset or delete financial journals, deposit protection, C1/entry controls, account/key configuration. No reset or runtime action was performed by this source task."
   },
   "budget": {
     "capacity_weights": 150,
@@ -36,18 +38,20 @@
     "frontend_poll_cadence_changed": false
   },
   "checks": {
-    "pure_budget_and_currency": "18 passed in2.81s; includes10budget tests and8currency-wire tests; fake HTTP/clock/tmpstate; native objects0",
+    "pure_budget_and_currency": "22 passed in3.77s;14budget/API tests plus8currency-wire; fakeHTTP/clock/tmpstate/nativeobjects0. Includes differentboot+higherclock denial, sameboot clockfault persistent after catchup, validJSONweight bitflip, and actual affected existing route fixture tail AST-extracted without native setup.",
     "concurrency": "20 independent forked test processes share one150-weight bucket",
     "route": "actual API factory/route AST-loaded with native imports excluded; stable state directory injection verified",
     "currency_correction": "21 frontend tests + tsc--noEmit PASS; peer exact twoP1 closure PASS",
     "final_web_build": "vite build PASS, /tmp/cm-usdc-peerfix-web-build-20261029",
     "schema": "unchanged by budget; no extra regeneration",
-    "diff_check": "PASS"
+    "diff_check": "PASS",
+    "budget_peer": "finite review noP0/P1 cap defect; oneP2 boot/clock persistent manual-review contract gap corrected with checksum and old route fixture injection drift in one bounded pass; narrow closure pending"
   },
   "limitations": [
     "Source only, not deployed; existing pilot unchanged; no START.",
     "Other public IP consumers must fit remaining50weights/60s before readiness.",
     "On host clock reversal/reboot state stays unavailable pending operational review; no automatic budget reset.",
     "Legacy orphan USD pages remain deferred; historicUSDT preserved."
-  ]
+  ],
+  "budget_source_review_base": "5461e274a846cfc208a2ddbdfc1ed9e430a7b55c"
 }
