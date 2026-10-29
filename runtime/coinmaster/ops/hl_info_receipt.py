@@ -95,6 +95,8 @@ class InfoReceipt:
     equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
     context_verified_at_ns: int | None = None
     mode_observed_at_ns: int | None = None
+    fill_anchor_ms: int | None = None
+    fill_anchor_fingerprint: str | None = None
     dex_state_provenance: tuple = ()
 
 
@@ -172,6 +174,7 @@ async def collect_info_receipt(
     query_anchor_ms: int | None = None, query_anchor_tid: int | None = None,
     allow_fill_subdivision: bool = True,
     account_mode: str = "disabled",account_context: dict | None = None,
+    fill_anchor_ms: int | None = None,fill_anchor_fingerprint: str | None = None,
 ) -> InfoReceipt:
     """Collect a validated, bounded batch; raises on uncertainty.
 
@@ -197,6 +200,11 @@ async def collect_info_receipt(
         raise IncompleteInfoReport("BAD_OWNERSHIP")
     if anchor_tid is not None and not expected_orders:
         raise IncompleteInfoReport("ANCHOR_WITHOUT_DURABLE_ORDER")
+    if ((fill_anchor_ms is None)!=(fill_anchor_fingerprint is None)
+        or (fill_anchor_ms is not None and (anchor_tid is None or type(fill_anchor_ms) is not int
+            or not anchor_ms<=fill_anchor_ms<=end_ms or not isinstance(fill_anchor_fingerprint,str)
+            or len(fill_anchor_fingerprint)!=64 or any(c not in '0123456789abcdef' for c in fill_anchor_fingerprint)))):
+        raise IncompleteInfoReport('APPLIED_ANCHOR_BINDING_INVALID')
     cached_terminal_statuses=cached_terminal_statuses or {}
     if set(cached_terminal_statuses)-set(expected_orders):raise IncompleteInfoReport('CACHED_TERMINAL_SCOPE_UNKNOWN')
     query_start=anchor_ms if query_anchor_ms is None else query_anchor_ms
@@ -403,7 +411,7 @@ async def collect_info_receipt(
         if tid in fills_by_tid and fills_by_tid[tid]!=raw:raise IncompleteInfoReport('CONFLICTING_ARCHIVED_FILL')
         fills_by_tid[tid]=raw
     if anchor_tid is not None and (
-        anchor_tid not in fills_by_tid or fills_by_tid[anchor_tid]["time"] != anchor_ms
+        anchor_tid not in fills_by_tid or fills_by_tid[anchor_tid]["time"] != (anchor_ms if fill_anchor_ms is None else fill_anchor_ms)
     ):
         raise IncompleteInfoReport("ANCHOR_NOT_RETAINED")
     fills = tuple(sorted(fills_by_tid.values(), key=lambda item: (item["time"], item["tid"])))
@@ -411,6 +419,7 @@ async def collect_info_receipt(
         account, dex, anchor_ms, end_ms, tuple(open_orders), tuple(positions),
         fills, tuple(statuses), fill_anchor_proven=anchor_tid is not None,
         account_value=str(account_value), anchor_tid=anchor_tid,
+        fill_anchor_ms=fill_anchor_ms,fill_anchor_fingerprint=fill_anchor_fingerprint,
         account_summary=(str(account_value), *totals, str(withdrawable)),
         cross_account_summary=cross_values, account_role=role,
         abstraction=abstraction, dex_abstraction=dex_abstraction,

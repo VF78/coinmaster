@@ -356,7 +356,8 @@ class QualifiedInfoBoundary:
 
     def _cm_owned_scope(self):
         """Freeze journal/cache identity for one current-process Info generation."""
-        if not self._cm_bootstrapped:
+        if not self._cm_bootstrapped and not (getattr(self,'_cm_inputs_enabled',False)
+            and self._cm_runtime is not None and self._cm_runtime.all_submissions()):
             revision=self._cm_runtime.native_revision() if (getattr(self,"_cm_management_only",False) or getattr(self,"_cm_inputs_enabled",False)) and self._cm_runtime is not None else None
             return self._cm_scope, revision, tuple(self._cache.orders(venue=self.venue)), self._cm_applied_fill_ids(), None
         runtime = self._cm_runtime
@@ -394,7 +395,18 @@ class QualifiedInfoBoundary:
         if runtime.native_revision() != revision:
             raise IncompleteInfoReport("LIVE_DURABLE_REVISION_MOVED")
         venue_orders = tuple(order for order in native_orders if str(order.client_order_id) not in local_denied)
-        return replace(self._cm_scope, durable_orders=tuple(durable)), revision, venue_orders, applied, tuple(signature)
+        scope=replace(self._cm_scope,durable_orders=tuple(durable))
+        if (getattr(self,'_cm_inputs_enabled',False) and scope.anchor_tid is None
+            and runtime.c1_initialization() is not None and applied):
+            from coinmaster.ops.live_recovery import applied_owned_fill_anchor
+            candidate=applied_owned_fill_anchor(runtime,venue_orders,account_ref=scope.account_ref,dex=scope.dex,
+                account_id=self.account_id,strategy_id=self._cm_strategy.id,history_anchor_ms=scope.anchor_ms,
+                cloid_for=lambda client:str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(nautilus_pyo3.ClientOrderId(client))))
+            if candidate is not None:
+                at,tid,fingerprint=candidate
+                scope=replace(scope,anchor_tid=tid,fill_anchor_ms=at,fill_anchor_fingerprint=fingerprint)
+        if runtime.native_revision()!=revision:raise IncompleteInfoReport('LIVE_DURABLE_REVISION_MOVED')
+        return scope, revision, venue_orders, applied, tuple(signature)
 
     def _cm_context_current(self):
         from coinmaster.strategy.live_recovery import recovery_policy_hash
@@ -588,7 +600,9 @@ class QualifiedInfoBoundary:
                     frozen_scope,_,native_orders,applied,frozen_signature=self._cm_owned_scope()
                     frozen_applied=applied
                     fingerprints={str(o.client_order_id):_native_order_fingerprint(o) for o in native_orders}
-                    cached_terminal,archived_fills,query_anchor_ms,query_anchor_tid=self._cm_runtime.info_query_evidence(fingerprints,applied)
+                    cached_terminal,archived_fills,query_anchor_ms,query_anchor_tid=self._cm_runtime.info_query_evidence(fingerprints,applied,anchor_proof=(
+                        frozen_scope.anchor_tid,frozen_scope.fill_anchor_ms,frozen_scope.fill_anchor_fingerprint)
+                        if frozen_scope.fill_anchor_ms is not None else None)
                     fresh_orders=len(frozen_scope.durable_orders)-len(cached_terminal)
                     # Reserve complete minimum before ANY request; terminal history
                     # remains retained and validated, only redundant status reads go.
@@ -628,6 +642,7 @@ class QualifiedInfoBoundary:
                         return await collect_info_receipt(
                             weighted_info, account=scope.account_ref, dex=scope.dex,
                             anchor_ms=scope.anchor_ms, anchor_tid=scope.anchor_tid,
+                            fill_anchor_ms=scope.fill_anchor_ms,fill_anchor_fingerprint=scope.fill_anchor_fingerprint,
                             end_ms=at, expected_orders=expected, owned_coins=scope.owned_coins,
                             require_money_scope=True,cached_terminal_statuses=cached_terminal,
                             archived_fills=archived_fills,query_anchor_ms=query_anchor_ms,query_anchor_tid=query_anchor_tid,
@@ -1363,7 +1378,7 @@ def bind_clean_flat_live_handover(
             positions,orders,signature=management_cache_evidence(client._cache,client.venue)
             runtime.reconcile_management_commands({o[0] for o in orders if o[4]},revision)
             if runtime.native_revision()!=revision:raise IncompleteInfoReport("MANAGEMENT_GENERATION_REVISION_MOVED")
-            if getattr(client,'_cm_inputs_enabled',False):client.save_verified_query_evidence(strategy,receipt,native_orders)
+            if manage_only and getattr(client,'_cm_inputs_enabled',False):client.save_verified_query_evidence(strategy,receipt,native_orders)
             strategy._management_certificate=ManagementCertificate(revision,generation+9_000_000_000,
                 recovery_policy_hash(strategy.config,strategy._candidate),signature,
                 hashlib.sha256(durable_decision_checkpoint(strategy.on_save()["wave_overlay_live_recovery_v1"])).hexdigest(),
@@ -1387,9 +1402,21 @@ def bind_clean_flat_live_handover(
             raise IncompleteInfoReport("LIVE_FLAT_EPOCH_BALANCE_CHANGED")
         if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
-        if getattr(client,'_cm_inputs_enabled',False):client.save_verified_query_evidence(strategy,receipt,native_orders)
-        if active_c1:strategy.accept_live_financial_authority(started_ns=client._cm_generation_started_ns)
-        latest_money[0] = candidate_money
+        if active_c1:
+            # Promotion is one final unchanged generation, never the local candidate alone.
+            with runtime._lock:
+                if (runtime.native_revision()!=client._cm_last_revision or not client.recovery_healthy()
+                    or not client._cm_transport_ok() or runtime.cashflow_quarantined()):
+                    raise IncompleteInfoReport('LIVE_FINAL_FINANCIAL_GENERATION_MOVED')
+                strategy.accept_live_financial_authority(started_ns=client._cm_generation_started_ns)
+                try:client.save_verified_query_evidence(strategy,receipt,native_orders)
+                except BaseException:
+                    strategy.suspend_live_financial_authority()
+                    raise
+                latest_money[0]=candidate_money
+        else:
+            if getattr(client,'_cm_inputs_enabled',False):client.save_verified_query_evidence(strategy,receipt,native_orders)
+            latest_money[0]=candidate_money
         return True
 
     async def release() -> None:

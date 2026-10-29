@@ -36,6 +36,8 @@ class NativeLiveRecoveryScope:
     anchor_tid: int | None
     durable_orders: tuple[tuple[str, str, int | None], ...]
     owned_coins: frozenset[str]
+    fill_anchor_ms: int | None = None
+    fill_anchor_fingerprint: str | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -67,6 +69,70 @@ class NativeLiveRecoveryScope:
             raise ValueError("LIVE_DURABLE_ORDER_DUPLICATE")
         if self.anchor_tid is not None and not self.durable_orders:
             raise ValueError("LIVE_ANCHOR_WITHOUT_DURABLE_ORDER")
+        if ((self.fill_anchor_ms is None)!=(self.fill_anchor_fingerprint is None)
+            or (self.fill_anchor_ms is not None and (self.anchor_tid is None
+                or type(self.fill_anchor_ms) is not int or self.fill_anchor_ms<self.anchor_ms
+                or not isinstance(self.fill_anchor_fingerprint,str)
+                or len(self.fill_anchor_fingerprint)!=64
+                or any(c not in '0123456789abcdef' for c in self.fill_anchor_fingerprint)))):
+            raise ValueError("LIVE_APPLIED_ANCHOR_BINDING_INVALID")
+
+
+def owned_fill_anchor_fingerprint(*,account_ref,dex,trade_id,cloid,oid,instrument_id,side,
+                                 quantity,price,fee,currency,liquidity,ts_event_ns):
+    if (currency!='USDC' or side not in ('BUY','SELL') or liquidity not in ('MAKER','TAKER')
+        or type(ts_event_ns) is not int or ts_event_ns<=0 or ts_event_ns%1_000_000
+        or not str(trade_id).isdigit() or not str(oid).isdigit()):
+        raise ValueError('LIVE_APPLIED_ANCHOR_ECONOMICS_UNKNOWN')
+    def number(value):
+        result=Decimal(str(value))
+        if not result.is_finite():raise ValueError('LIVE_APPLIED_ANCHOR_ECONOMICS_UNKNOWN')
+        return format(result.normalize(),'f')
+    if Decimal(str(quantity))<=0 or Decimal(str(price))<=0:
+        raise ValueError('LIVE_APPLIED_ANCHOR_ECONOMICS_UNKNOWN')
+    payload=(account_ref.lower(),dex,str(int(trade_id)),cloid.lower(),str(int(oid)),
+        str(instrument_id),side,number(quantity),number(price),number(fee),currency,liquidity,ts_event_ns)
+    return hashlib.sha256(json.dumps(payload,separators=(',',':')).encode()).hexdigest()
+
+
+def applied_owned_fill_anchor(runtime,native_orders,*,account_ref,dex,account_id,strategy_id,cloid_for,history_anchor_ms):
+    """Local candidate only: exact atomically applied owned native event + durable detail."""
+    applied=runtime.applied_fill_ids()
+    if not applied:return None
+    journal={r['client_order_id']:r for r in runtime.all_submissions()}
+    orders={str(o.client_order_id):o for o in native_orders}
+    details=runtime.db.execute('SELECT trade_id,native_event_id,client_order_id,venue_order_id,instrument_id,order_side,quantity,price,commission_amount,commission_currency,liquidity_side,ts_event_ns,ts_init_ns FROM paper_native_fill_details').fetchall()
+    # Explicitly exclude uncommitted/native-only details from candidate selection.
+    selected=[row for row in details if str(row[0]) in applied]
+    if len(selected)!=len(applied) or {str(row[0]) for row in selected}!=applied:
+        raise ValueError('LIVE_APPLIED_ANCHOR_DETAILS_MISSING')
+    candidates=[]
+    for tid,event_id,client,oid,instrument,side,qty,px,fee,currency,liquidity,ts,init in selected:
+        order=orders.get(client);row=journal.get(client)
+        if (order is None or row is None or str(order.strategy_id)!=str(strategy_id)
+            or str(order.account_id)!=str(account_id) or str(order.instrument_id)!=instrument
+            or row['instrument_id']!=instrument or str(order.venue_order_id)!=str(oid)
+            or instrument not in ('BTC-USD-PERP.HYPERLIQUID','SOL-USD-PERP.HYPERLIQUID')
+            or not event_id or type(ts) is not int or type(init) is not int or init<ts
+            or ts//1_000_000<history_anchor_ms or str(tid) not in set(map(str,order.trade_ids))):
+            raise ValueError('LIVE_APPLIED_ANCHOR_OWNERSHIP_UNKNOWN')
+        events=[e for e in order.events if str(getattr(e,'trade_id',''))==str(tid)]
+        if len(events)!=1:raise ValueError('LIVE_APPLIED_ANCHOR_NATIVE_EVENT_UNKNOWN')
+        event=events[0]
+        if (str(getattr(event,'id',None))!=str(event_id) or str(event.client_order_id)!=client
+            or str(event.venue_order_id)!=str(oid) or str(event.instrument_id)!=instrument
+            or str(event.account_id)!=str(account_id)
+            or getattr(event.order_side,'name',str(event.order_side))!=side
+            or event.last_qty.as_decimal()!=Decimal(qty) or event.last_px.as_decimal()!=Decimal(px)
+            or event.commission.as_decimal()!=Decimal(fee) or str(event.commission.currency)!=currency
+            or getattr(event.liquidity_side,'name',str(event.liquidity_side))!=liquidity
+            or event.ts_event!=ts):
+            raise ValueError('LIVE_APPLIED_ANCHOR_NATIVE_ECONOMICS_MISMATCH')
+        fingerprint=owned_fill_anchor_fingerprint(account_ref=account_ref,dex=dex,trade_id=tid,
+            cloid=cloid_for(client),oid=oid,instrument_id=instrument,side=side,quantity=qty,
+            price=px,fee=fee,currency=currency,liquidity=liquidity,ts_event_ns=ts)
+        candidates.append((ts//1_000_000,int(tid),fingerprint))
+    return min(candidates)
 
 
 class LiveRecoverySubmissionSink:
@@ -336,6 +402,12 @@ def durable_management_scope(runtime,account_ref,dex,cloid_for):
     try:anchor_tid=min(int(r[0]) for r in details if int(r[1])//1_000_000==anchor)
     except (TypeError,ValueError):raise ValueError("MANAGEMENT_DURABLE_CURSOR_UNKNOWN") from None
     durable=tuple((r["client_order_id"],cloid_for(r["client_order_id"]),None) for r in rows)
+    marker=getattr(runtime,'c1_initialization',lambda:None)()
+    if marker is not None:
+        history=marker.get('history_anchor_ms')
+        if type(history) is not int or not 0<=history<=anchor:raise ValueError('MANAGEMENT_DURABLE_CURSOR_UNKNOWN')
+        # Restart retains the original session window; native cache must re-prove any held anchor.
+        return NativeLiveRecoveryScope(account_ref,dex,history,None,durable,frozenset({"BTC","SOL"}))
     return NativeLiveRecoveryScope(account_ref,dex,anchor,anchor_tid,durable,frozenset({"BTC","SOL"}))
 
 

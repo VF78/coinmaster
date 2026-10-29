@@ -1,0 +1,73 @@
+{
+  "base": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "change": [
+    "Optional actual fill-anchor timestamp + canonical native economics fingerprint separate from original history start; legacy absent-field timestamp contract unchanged.",
+    "Derive only local candidate from atomically applied complete SQLite fill details exactly matching owned native cached order/event/account/instrument/side/time/qty/price/USDCfee/liquidity and derived CLOID/OID. No pending/unverified/foreign anchor authority.",
+    "Both genuine independent synthetic Info sweeps retain the original inclusive window and must retain the anchor, agree on proof fields and satisfy existing full-prefix/native-economics conversion plus canonical fingerprint.",
+    "Final ACTIVE verified Info checkpoint promotion and financial money publication occur only after full native/ownership/policy/cashflow/revision/WS/oldest9s validation. Candidate alone is neither persisted nor published as authority.",
+    "C1 restart scope retains original INIT window and rederives anchor against confirmed native data. Checkpoint proof mismatch invalidates cached tail/status shortcuts; malformed retained anchor denies.",
+    "Three existing pure test doubles received only optional Scope fields/cache kwargs and actual all_submissions API; no assertions removed. No strategy/core/model/margin/fee/DP/budget changes."
+  ],
+  "checks": {
+    "connected": {
+      "command": [
+        "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "runtime/tests/test_e4_c1_manage_only_pure.py",
+        "runtime/tests/test_e4_c1_input_bridge_pure.py",
+        "runtime/tests/test_e4_c1_unified_pure.py",
+        "runtime/tests/test_deposit_protection.py",
+        "runtime/tests/test_e4_c1_active_authorization_pure.py",
+        "runtime/tests/test_e4_c1_active_composition_pure.py",
+        "runtime/tests/test_e4_c1_per_dex_http_pure.py",
+        "runtime/tests/test_e4_c1_partial_lifecycle_pure.py",
+        "runtime/tests/test_e4_c1_prepared_dispatch_pure.py",
+        "runtime/tests/test_e4_c1_live_name_resolution_pure.py",
+        "runtime/tests/test_e4_c1_first_held_anchor_pure.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "........................................................................ [ 20%]\n........................................................................ [ 40%]\n........................................................................ [ 61%]\n........................................................................ [ 81%]\n.................................................................        [100%]\n353 passed in 93.00s (0:01:33)\n",
+      "wall_seconds": 93.94769622758031
+    },
+    "first_whole_chain": {
+      "passed": 1,
+      "path": "canonicalINIT -> actualSQLite2appliedsame-msfills -> _cm_owned_scope -> 2collect_info_receipt -> qualified_mass_status -> actualcashflow/basis -> bound current-risk verifier -> verifiedInfo checkpoint -> _validated_live_money, frozenrevision17 retained",
+      "seconds": 1.0
+    },
+    "prelaunch_review": "Opaque saved-argv launch rejected before process creation; saved argv inspected read-only; one explicit allowlisted pure11-file launch accepted. No duplicate pytest or native execution.",
+    "targeted": {
+      "breakdown": "28 approved first-held complete-chain/negative/restart tests +20 actual live-origin namespace checks, included in connected count",
+      "passed": 48,
+      "seconds": 16.94
+    }
+  },
+  "gate": "SOURCE TEST PASS; one critical peer closure and root physical protocol/GO still required; original A8 failure and all prior evidence retained.",
+  "limitations": [
+    "Pure stand-ins only at native model/transport boundaries; this is not native matching/held venue/readiness/START proof.",
+    "Complete millisecond-aligned native fill facts, applied IDs and exact owned cache lineage required; unsupported/missing/conflicting facts deny.",
+    "Existing arbitrary sub-minimum IOC residual close limitation and real owner INITIAL-cap gate remain unchanged."
+  ],
+  "root_cause": "Fresh INIT had original session anchor_ms and anchor_tid=None. Current owned scope updated only durable orders, so the first held receipt could never establish a fill anchor and financial verification always denied.",
+  "schema": "CM_E4_C1_FIRST_HELD_APPLIED_ANCHOR_QUALIFICATION_V1",
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_info_receipt.py": "abf87351f59e7fc8e3c513164e0c0e2b8867eff568af91455cc0f48a02fd5c96",
+    "runtime/coinmaster/ops/hl_live_epoch.py": "50dabaf1dca436c1780ca0a4364179c71174d65af97526eb579bdf0ddf7db376",
+    "runtime/coinmaster/ops/hl_live_execution.py": "eed4170ea66bd4192e7e11285ba864b649e96b2d677322348be86baa34716678",
+    "runtime/coinmaster/ops/hl_qualified_reports.py": "5e12e65049fd970e84a35541d59dc66332da20d533edea7737f729503ab3f7d1",
+    "runtime/coinmaster/ops/live_recovery.py": "9e18c8718dac0fdfc39c44a1c651a37e63c992e4e8ac454986f3d639492f004e",
+    "runtime/tests/test_e4_c1_active_composition_pure.py": "2ccaa73b64c1b61ca7dd4e401098f7ecacb943837de9a81163ae7e3c14ddf779",
+    "runtime/tests/test_e4_c1_first_held_anchor_pure.py": "518eb23d6ca52d03d121ab639ae882c003bc96a7961001185e79d8ae1c4f2589",
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "caa6b111e33c258f576b414fabe78e59acd9e448b5d2e0477f29273f466b4aae",
+    "runtime/tests/test_e4_c1_unified_pure.py": "82e707ea5bf263aef012b99b4e1e886c0773c2a3430b91c3882f6b75826a33b0"
+  },
+  "unchanged_normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "unchanged_strategy_sha256": "70949b786ad225948f481c97b620dc5f24be0c90c3da640693add1a91f4f3bad",
+  "writer_native_models_nodes_engines_queries_orders_services": 0
+}

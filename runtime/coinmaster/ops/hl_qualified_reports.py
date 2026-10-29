@@ -49,6 +49,8 @@ def _same_generation(first: InfoReceipt, second: InfoReceipt) -> None:
         or first.start_ms != second.start_ms
         or not first.start_ms < first.end_ms < second.end_ms
         or first.account != second.account or first.dex != second.dex
+        or first.fill_anchor_ms != second.fill_anchor_ms
+        or first.fill_anchor_fingerprint != second.fill_anchor_fingerprint
         or first.anchor_tid != second.anchor_tid
         or first.fill_anchor_proven != second.fill_anchor_proven
         or first.open_orders != second.open_orders
@@ -221,6 +223,14 @@ def qualified_mass_status(
         liquidity = LiquiditySide.TAKER if raw["crossed"] else LiquiditySide.MAKER
         if side != (OrderSide.BUY if row["side"] == "B" else OrderSide.SELL):
             raise IncompleteInfoReport("FILL_ORDER_SIDE_MISMATCH")
+        if receipt.fill_anchor_ms is not None and tid==str(receipt.anchor_tid):
+            from coinmaster.ops.live_recovery import owned_fill_anchor_fingerprint
+            fingerprint=owned_fill_anchor_fingerprint(account_ref=receipt.account,dex=receipt.dex,
+                trade_id=tid,cloid=durable_orders[client][0],oid=raw['oid'],instrument_id=str(instrument.id),
+                side=side.name,quantity=qty,price=px,fee=fee,currency=str(USDC),
+                liquidity=liquidity.name,ts_event_ns=raw['time']*1_000_000)
+            if fingerprint!=receipt.fill_anchor_fingerprint:
+                raise IncompleteInfoReport('APPLIED_ANCHOR_FINGERPRINT_MISMATCH')
         previous = reports.get(tid)
         if previous is not None:
             if (

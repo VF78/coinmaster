@@ -83,15 +83,34 @@ class LiveEpochRuntime(PaperRuntime):
         if self.native_revision()!=expected_revision:raise ValueError('LIVE_INFO_CHECKPOINT_REVISION_MOVED')
         body=dict(start_ms=receipt.start_ms,anchor_tid=receipt.anchor_tid,end_ms=receipt.end_ms,
             fills=list(receipt.fills),terminal_proofs=terminal_proofs,revision=expected_revision)
+        if getattr(receipt,'fill_anchor_ms',None) is not None:
+            anchor=[f for f in receipt.fills if f['tid']==receipt.anchor_tid]
+            detail=self.db.execute('SELECT ts_event_ns FROM paper_native_fill_details WHERE trade_id=?',(str(receipt.anchor_tid),)).fetchone()
+            if (len(anchor)!=1 or str(receipt.anchor_tid) not in self.applied_fill_ids() or detail is None
+                or detail[0]!=receipt.fill_anchor_ms*1_000_000 or anchor[0]['time']!=receipt.fill_anchor_ms
+                or not receipt.start_ms<=receipt.fill_anchor_ms<=receipt.end_ms
+                or not isinstance(receipt.fill_anchor_fingerprint,str) or len(receipt.fill_anchor_fingerprint)!=64):
+                raise ValueError('LIVE_INFO_APPLIED_ANCHOR_CHECKPOINT_INVALID')
+            body.update(fill_anchor_ms=receipt.fill_anchor_ms,fill_anchor_fingerprint=receipt.fill_anchor_fingerprint)
         self.db.execute('INSERT OR REPLACE INTO live_info_checkpoint VALUES (1,?)',(json.dumps(body,sort_keys=True),))
         self.append_evidence('Info:'+str(receipt.end_ms)+':'+str(expected_revision),'Info',body,commit=False)
         self.db.commit()
 
     @_journal_locked
-    def info_query_evidence(self,native_fingerprints,applied):
+    def info_query_evidence(self,native_fingerprints,applied,*,anchor_proof=None):
         row=self.db.execute('SELECT body FROM live_info_checkpoint WHERE id=1').fetchone()
         if row is None:return {},(),None,None
         old=json.loads(row[0]);fills=old['fills'];known={str(fill['tid']) for fill in fills}
+        if old.get('fill_anchor_ms') is not None:
+            candidates=[f for f in fills if f['tid']==old['anchor_tid']]
+            if (len(candidates)!=1 or candidates[0]['time']!=old['fill_anchor_ms']
+                or not old['start_ms']<=old['fill_anchor_ms']<=old['end_ms']
+                or str(old['anchor_tid']) not in applied
+                or not isinstance(old.get('fill_anchor_fingerprint'),str)
+                or len(old['fill_anchor_fingerprint'])!=64):
+                raise ValueError('LIVE_INFO_ARCHIVED_ANCHOR_INVALID')
+            if anchor_proof!=(old['anchor_tid'],old['fill_anchor_ms'],old['fill_anchor_fingerprint']):
+                return {},(),None,None  # Re-derive and re-read original history; no stale proof reuse.
         if not known.issubset(applied):raise ValueError('LIVE_INFO_ARCHIVED_FILL_DISAPPEARED')
         latest=max(fills,key=lambda f:(f['time'],f['tid'])) if fills else None
         if latest is not None:

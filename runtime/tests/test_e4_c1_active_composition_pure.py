@@ -265,9 +265,9 @@ def test_one_generation_race_raises_unknown_without_hidden_retry_or_none():
     owner._cm_ws_failure=None;owner._cm_ws_phase='LIVE';owner._cm_suspend_recovery=None
     owner._cm_inputs_budget=env['ReadinessInfoBudget']();owner._cm_info_usage=deque()
     owner._cm_require_healthy=lambda:None;failures=[];owner._cm_fail=failures.append
-    scope=N(durable_orders=(),account_ref='synthetic',dex='',anchor_ms=0,anchor_tid=None,owned_coins=frozenset())
+    scope=N(durable_orders=(),account_ref='synthetic',dex='',anchor_ms=0,anchor_tid=None,fill_anchor_ms=None,fill_anchor_fingerprint=None,owned_coins=frozenset())
     owner._cm_owned_scope=lambda:(scope,0,(),frozenset(),())
-    owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None),native_revision=lambda:0)
+    owner._cm_runtime=N(info_query_evidence=lambda *args,**kwargs:({},(),None,None),native_revision=lambda:0)
     owner._cache=N(positions_open=lambda:[])
     async def refresh():pass
     owner._cm_refresh_native_account_for_generation=refresh
@@ -286,7 +286,7 @@ def test_active_initial_scope_captures_actual_runtime_revision_and_movement():
     run_ast(nodes('ops/hl_live_execution.py',{'QualifiedInfoBoundary'}),env)
     owner=env['QualifiedInfoBoundary']();owner._cm_bootstrapped=False
     owner._cm_management_only=False;owner._cm_inputs_enabled=True
-    revision=[41];owner._cm_runtime=N(native_revision=lambda:revision[0])
+    revision=[41];owner._cm_runtime=N(native_revision=lambda:revision[0],all_submissions=lambda:())
     owner._cm_scope='scope';owner.venue='HL';owner._cache=N(orders=lambda venue:())
     owner._cm_applied_fill_ids=lambda:frozenset()
     assert owner._cm_owned_scope()[1]==41
