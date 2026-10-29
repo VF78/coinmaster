@@ -1,0 +1,26 @@
+{
+  "task": "CM_BOOTSTRAP_NATIVE_REQUALIFICATION_20261029",
+  "status": "PROPOSED_ONLY_NO_NATIVE_GO",
+  "base_source": "fd35f20486837afdacb3b166b67bd076bd912131",
+  "current": "9FAILED/rootmax10/active0/unusedBslotHOLD",
+  "proposed_root_finite_budget": {
+    "maximum_physical_attempts": 11,
+    "spent_preserved": 9,
+    "fresh_cases": [
+      "A10 fresh SQLite/artifacts on frozenbootfix",
+      "B11 ONLYafterA10actualPASS/sameA10SQLite+source+fixture"
+    ],
+    "reserve": 0
+  },
+  "requirements": [
+    "ONEconnected360 actualPASS onfrozenbytes",
+    "One exactcriticalpeer phaseguardclosure",
+    "Samefixturecases/data/fees/DP/180s/caps/61sprotectedwait, onlysource/profile/origin/staticrepin",
+    "Rootexplicitapproval+claim beforePopen; noautomaticretry"
+  ],
+  "component_reuse": "CurrencyMODEL/keylessPortfolioCache/API-GUI unchanged/no rerun; privatecapacity2/2closed/no furtherHTTP",
+  "real_network_keys_orders_services_transfers": 0,
+  "owner_START": false,
+  "economic_budgets_untouched": true,
+  "created_utc": "2026-10-29T05:08:28.801404+00:00"
+}

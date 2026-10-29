@@ -1,0 +1,15 @@
+{
+  "source_commit": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "base_source": "fd35f20486837afdacb3b166b67bd076bd912131",
+  "status": "FINAL_EXACT_PASS_NO_OPEN_SCOPED_P0_P1",
+  "connected": "360PASS99.71s/ONErun98719",
+  "targeted_included": "55PASS22.14s",
+  "tracked_2file_diff_sha256": "e3bedeaf31812a0b56372ccf3eb8029a203be5756e29702acd9ec6479a384502",
+  "receipt_sha256": "73dff25233fd3359e182418e270ae594bf3326139d8f3d2e6385fc38c81cba03",
+  "reviewer": "active_c1_money_peer_20261029",
+  "reviewer_execution": 0,
+  "public_exact_verified": true,
+  "new_native": 0,
+  "owner_START": false,
+  "recorded_utc": "2026-10-29T05:46:51.294951+00:00"
+}

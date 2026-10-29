@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 5707,
+  "attempt_id": "A-009-1065e118-28b8-4234-b82e-ea2895c42d55",
+  "case": "A",
+  "error": "IncompleteInfoReport('LIVE_FINAL_FINANCIAL_GENERATION_MOVED')",
+  "failed_gates": [
+    "actual_virgin_native_flat_INIT_atomic_once_and_original_anchor"
+  ],
+  "fixture_sha256": "0c0740b2b70adf3dbd0ccc72f392f895fea7ae79529ed4ff9a62e9e7cd90fe47",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 1,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "546fa2158220696f51852db77a0deedbd0397df3dc1ccb37d8508d1bd60a80b9",
+  "source_commit": "fd35f20486837afdacb3b166b67bd076bd912131",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 0,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 1,
+    "synthetic_cancel_commands": 0,
+    "synthetic_info_requests": 21,
+    "synthetic_native_spot_reads": 2,
+    "synthetic_submit_commands": 0
+  },
+  "traceback_tail": "492, in gate\n    await value\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1019, in fresh_init\n    await strategy._post_drain_task  # Actual native on_start invokes the production full verifier.\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/strategy/live_recovery.py\", line 678, in _run_post_drain_verifier\n    await self._post_drain_verifier()\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/ops/hl_live_execution.py\", line 1423, in release\n    await client.release_after_effect_parity(\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/ops/hl_live_execution.py\", line 749, in release_after_effect_parity\n    verified = await verify(mass)\n               ^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/coinmaster/ops/hl_live_execution.py\", line 1410, in verify\n    raise IncompleteInfoReport('LIVE_FINAL_FINANCIAL_GENERATION_MOVED')\ncoinmaster.ops.hl_info_receipt.IncompleteInfoReport: LIVE_FINAL_FINANCIAL_GENERATION_MOVED\n",
+  "wall_seconds": 14.935091335
+}

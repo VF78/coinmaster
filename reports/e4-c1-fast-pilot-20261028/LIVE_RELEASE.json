@@ -1,9 +1,9 @@
 {
-  "status": "DRAFT_NOT_READY_SOURCE_FIRST_HELD_ANCHOR_P1",
+  "status": "DRAFT_SOURCE082_PASS_NATIVE_PENDING",
   "task": "CM-E4-C1-FAST-PILOT-20261028",
   "live_order_capability": false,
   "selected_candidate": "BTC_POSTCUT_D1",
-  "source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "source_commit": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
   "config_sha256": null,
   "research_venue": "Bybit",
   "live_venue": "hyperliquid",
@@ -43,9 +43,9 @@
   ],
   "local_private_binding": "runtime/var/research-jobs/e4-c1-fast-pilot-20261028/private/live-account.json",
   "funds_status": "REAL_READONLY_PORTFOLIO_CACHE_USDC_PARITY_PASS_PRIVATE_VALUES; HELD_MATCHING_ACTIVE_AND_SMALLCAP_PENDING",
-  "updated_utc": "2026-10-29T04:29:35.109163+00:00",
+  "updated_utc": "2026-10-29T05:46:51.294951+00:00",
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
-  "source_freeze": "83e_SOURCE325PASS_EXACTPEER_CLOSURE_NATIVE_PENDING",
+  "source_freeze": "082_360PASS_EXACTPEER_PUBLIC_NATIVE_PENDING",
   "drawdown_protection": {
     "retained_equity_fraction": "0.45",
     "loss_limit_percent": 55,

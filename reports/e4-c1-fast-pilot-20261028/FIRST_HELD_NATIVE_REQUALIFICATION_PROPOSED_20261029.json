@@ -1,0 +1,44 @@
+{
+  "task": "CM_FIRST_HELD_ANCHOR_NATIVE_REQUALIFICATION_20261029",
+  "status": "ROOT_APPROVED_MAX10_SOURCE_QUALIFIED_FIXTURE_GO_PENDING",
+  "authority": "Owner necessary preparation; root finite engineering allocation proposed after sourcefreeze, not owner numeric reply",
+  "requirements": [
+    "Exact newsource frozen after one relevant connectedPASS",
+    "Exact narrow criticalpeer closure on same frozenbytes",
+    "Fixture freshsource/config/profile/origins repin and rootreadback",
+    "Rootexplicitamendment+canonicalexclusiveclaim BEFOREPopen"
+  ],
+  "proposed_root_budget": {
+    "current_maximum": 9,
+    "spent_failed": 8,
+    "active": 0,
+    "proposed_maximum": 10,
+    "fresh_cases": [
+      "A9 newSQLite/artifacts",
+      "B10 onlyafterA9PASS/sameA9SQLite+source+fixture"
+    ],
+    "reserve": 0,
+    "old_failures_immutable": true,
+    "economic_budgets_untouched": true
+  },
+  "unchanged_cases": "SameA/B acceptance protocol, one earliest observed historicalpositiveTP3 vector, no feature/signal/fee/DP/lifecycle relaxation",
+  "same_market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "same_provider_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "per_child": {
+    "nodes": 1,
+    "whole_wall_seconds": 180,
+    "synthetic_submits": 24,
+    "synthetic_cancels": 48,
+    "protected_actual_budget_wait_maximum": 1,
+    "protected_actual_wait_seconds": 61,
+    "external_network": 0,
+    "real_keys_orders_services_transfers": 0
+  },
+  "component_reuse": "ClosedMODEL1/1 and realkeylessPortfolioCache2/2 notrerun; sourcecurrencyhelper/API-GUI unchanged",
+  "owner_START": false,
+  "created_utc": "2026-10-29T04:47:10.546305+00:00",
+  "source_freeze": "fd35f20486837afdacb3b166b67bd076bd912131",
+  "source_checks": "353PASS93s/48targetedIncluded16.94s/oneconnected",
+  "exact_peer": "PASS_EXACTfd35",
+  "approved_utc": "2026-10-29T04:50:56.041626+00:00"
+}

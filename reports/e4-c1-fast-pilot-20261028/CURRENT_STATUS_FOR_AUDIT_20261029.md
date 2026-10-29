@@ -1,38 +1,23 @@
-# CoinMaster — статус на 29.10.2026
+# CoinMaster — текущий статус, 29.10.2026
 
-**Экономический победитель выбран. Релиз к live пока НЕ готов; START не дан.** Пилот, live-сервисы, режим счёта, средства и реальные ордера не менялись.
+Победитель BTC_POSTCUT_D1: итог 5 499 360,14984003 USDT из10 000; обе DD51,26863558%; сохранено90,4774% исходной чистой прибыли. Исторический Bybit/syntheticL1 результат не является Hyperliquid matching.
 
-| Задача | Подтверждённый результат | Что осталось |
-|---|---|---|
-| Победитель BTC_POSTCUT_D1 | 5 499 360,14984003 USDT из 10 000; обе DD 51,26863558%; 90,4774% исходной чистой прибыли. 108 lifecycle / 540 fills / 1248 funding сверены | Согласование точной версии и проверка установленного релиза на эталонном периоде |
-| Движок | Source83e опубликован; 325 engine-free проверок и прежнее узкое ревью прошли. A8 подтвердил ordinary entry, partial IOC, cancel/latefill/duplicate: шесть gate PASS | Обнаружен новый P1 первого перехода flat→held. Полные split/TP/C1/DPflat и paused restart пока НЕ доказаны |
-| Hyperliquid / Unified / USDC | Исправлен native USD/USDC PnL-fee дефект; currency MODEL1/1 PASS. Реальный Portfolio/Cache2/2 PASS. Новый transport: 10/10 ответов, 128 weight, 1,071s | Малый счёт ещё не получил допуск. Финансовые причины и данные остаются PRIVATE; лимит капитала не увеличен |
-| API / GUI | c5cfcf97 опубликован: 22API + 21UI + type/build/regen и peer PASS. Денежные поля USDC, ограничение public candles сохранено | Не развёрнуто. Pixel UI / Trade History / zoom / авторизация и пароль — отдельный отложенный этап |
-| Аудит старого пилота | 55/55 seal; 39 fills / 45 intents; без duplicate/overrequest | Полная история с 28Sep UNKNOWN: подробные логи доступны только с 26Oct, funding UNPOSTED |
+Последний source 082ce016248faa9be5736cd67ba8b4cd9bafbf15 опубликован и точно проверен remote. 360 связанных engine-free тестов PASS99,71s,55targeted включены; финальное независимое ревью PASS на тех же байтах. Исправлены первый held anchor и регресс initialBUFFERING→LIVE. Новый тест проходит пустойSQLite→INIT→actualreleaseLIVE→flatfull→fills→heldfull, без подмены health/release.
 
-## Текущий блокер и исправление
+Полный native lifecycle на082 ещё НЕ запускался и НЕ доказан. Девять FAILED физических попыток сохранены. A8 ранее доказал ordinaryentry/partial/cancel/latefill/duplicate, но не C1/DPflat/restart. A9 на предыдущемfd35 выявил стартовый phasecycle; он исправлен082. Current root cap10/spent9/active0, остаточныйBslot HOLD; следующий отдельный root протокол A10→условныйB11/max11 пока PROPOSED, не GO. Исторические research8/8CLOSED и MethodA9/19HOLD не меняются.
 
-Virgin INIT создаёт scope без anchor_tid. После реального первого fill scope обновляет список ордеров, но не доказательство исполнений. При открытой позиции full verifier поэтому всегда отказывает с MANAGEMENT_GENERATION_UNPROVEN. A8 прошёл два Info-среза, native parity и обработку cashflow; последующие финансовые predicates ещё не доказаны. Сохранён общий тег WS_ON_DEMAND_EFFECT_PARITY_FAILED; конкретный отказ отдельно воспроизведён на фактах и реальном predicate исходников.
+USDC MODEL1/1 и реальный keylessPortfolioCache2/2 PASS закрыты/не повторяются. API/GUIc5:22API+21UI+type/build/regen+peerPASS, исходники готовы/не развёрнуты. Редизайн/TradeHistory/zoom/авторизация/пароль отложены, GUI обновляется независимо.
 
-Утверждена source-only реализация по FIRST_HELD_ANCHOR_SOURCE_ONLY_PROTOCOL_20261029.json. Первый anchor берётся только из применённого собственного native-fill и подтверждается точной экономикой в ОБОИХ Info-срезах. Исходное включительное окно истории и deadline сохраняются; время fill хранится отдельно. Продвижение checkpoint и публикация денег — только после полной проверки. Core BTC, SOL, TP, fees, DP и legacy/manage-only поведение не меняются.
+Capacity2/2CLOSED: первая попытка без сетевых ответов, вторая получила10/10ответов/128weight/1,071s. Финансовый допуск не пройден; причины/данныеPRIVATE. Стартовый лимит не увеличен. Изменение лимита — часть будущего конкретного согласования версии.
 
-Нужна одна связная engine-free проверка actualSQLite→scope→два среза→native economics→cashflow→verifier→money reader, затем freeze и узкое независимое ревью. Нового native GO нет.
+Аудит пилота:55/55seal,39fills/45intents безdup/overrequest; вся финансовая история ссамогостарта UNKNOWN из-за отсутствия ранних подробных логов, fundingUNPOSTED. Пилот/сервисы/аккаунт/средства/реальныеордера не менялись.
 
-## Попытки и расход
+Причины задержки: изолированные тесты с подменой lifecycle скрывали стыковые ошибки; native запускался до достаточной проверки fakeAPI/точности времени; одна ошибка rootlauncher также учтена. Девять ошибок:4fixture,1manager,3исходныхsourceдефекта+1внесённыйстартовыйрегресс. Большое число тестов не было доказательством сквозного исполнения.
 
-Восемь FAILED технических попыток сохранены, active0, текущий root max9; последний B-slot HOLD, автоматически не переносится. Это конечный бюджет инженерной проверки координатора в рамках подготовки, не новая числовая owner-reply и не расход исторического research.
+Оптимизированный путь: один frozen source; реальные методы health/release и целая virgin→held цепочка; staticABI/claim передNode; один полный nativeA и условныйrestartB; один инженер+узкийpeer на frozenbytes; reuseзакрытыхкомпонентов; без новых поисков алгоритма/повторовэкономики. Mac—manager/документы, VPS—единственный source/native, без пересылок архивов.
 
-A1: неверная геометрия тестового инструмента; A2: missing Path в source; A3: отсутствующий fake-updater; A4: собственная запись SUBMITTING делала DP-наблюдение невалидным; A5: ошибка поля лимита в root launcher; A6: отсутствующий Order.is_filled в fake API; A7: разная точность времени native-fill и fake Info; A8: подтверждённый source P1 выше. Исправленные дефекты не выданы за успешный полный цикл. Все старые SQLite, логи, RAW, PID/exit и хеши неизменны.
+Доlive: (1) перепривязка fixture к082 и доказанный nativeA/B; (2) допуск малого счёта, sealedprofile/release/runbook/rollback; (3) ownerVERSIONapproval, штатныйдеплой/проверкаNautilus/эталонныйпрогонустановленнойверсии; (4) отдельный явный START. START НЕ дан.
 
-Исследование 8/8 CLOSED, MethodA9/19 HOLD. Currency MODEL и реальные keyless Portfolio/Cache не повторялись. Отдельная capacity-проверка 2/2 CLOSED: первая без сетевых ответов, вторая получила все ответы, но допуска не дала. Новых экономических поисков и эталонных повторов не было.
+DP: остаток45%=DD55%, persistentinitial→higherUTCdailycloseH/no restartreset; не гарантия цены исполнения. WSgap/sub10residual — явные ручные границы. MVP сохраняетzero/referenceTP1-2 иSOLalpha; три реальныеTP/настоящий continuousSOLhedge не достигнуты.
 
-## До live
-
-1. Закрыть текущий source P1 и доказать полный native lifecycle плюс paused restart на одной зафиксированной версии.
-2. Закрыть допуск малого счёта и собрать immutable release/profile/seal/runbook/rollback.
-3. Получить VERSION approval; затем штатный переход с пилота, проверка версии Nautilus и эталонный прогон установленного релиза.
-4. Отдельный явный START — только после успешной проверки. Он сейчас НЕ дан.
-
-DP: остаток45% = DD55%, постоянный initial→higher UTCdailyclose HWM, без reset на restart. Порог не гарантирует цену исполнения. WS-gap и остаток ниже native minnotional требуют явной ручной сверки; обход RiskEngine, увеличение количества ради минимума и фиктивный flat запрещены.
-
-**Ограничение MVP:** legacy zero/reference TP1/TP2 и SOL-alpha сохранены. Три реальные TP и настоящий continuous SOL hedge этой версией не достигнуты; строгая оптимизация DD30–50% остаётся следующим отдельным этапом. Исторический Bybit USDT / synthetic L1 результат не является доказательством Hyperliquid matching и не переименован в USDC.
+Делегаты Sol вернули ошибку usage limit. Общий usage API одновременно показываетordinaryUsageAllowed=true; полный account-exhaustion не установлен. Подмена модели/покупка/сброс лимита не выполнялись. Все процессы завершены, исходники/RAW/SQLite/PID/exit/хеши сохранены.

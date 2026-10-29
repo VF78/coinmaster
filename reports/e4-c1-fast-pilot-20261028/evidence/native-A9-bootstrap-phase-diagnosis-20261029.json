@@ -1,0 +1,14 @@
+{
+  "task": "A9_BOOTSTRAP_PHASE_SOURCE_DIAGNOSIS",
+  "source": "fd35f20486837afdacb3b166b67bd076bd912131",
+  "actual_result_sha256": "546fa2158220696f51852db77a0deedbd0397df3dc1ccb37d8508d1bd60a80b9",
+  "actual_error": "LIVE_FINAL_FINANCIAL_GENERATION_MOVED",
+  "deterministic_cause": "Finalfinancialverify calls recovery_healthy requiringphaseLIVE, but existingrelease awaitsverify whileBUFFERING and onlythen setsLIVE; startupcycle",
+  "excluded_hypothesis": "Not oldInfoRevisionNone: actualSQL nativeRev0/checkpointRev0/INITmarkertrue/quarantinefalse/verifiedInfoCount0/lastRevision0",
+  "prior_firstheld_regression_gap": "Puretest overrode actual health/release and missedvirginphasecycle",
+  "new_source_only_contract": "Stage-specific integrity duringinitialBUFFERING onlyunderactualhandover&&!bootstrapped, failurelatchclear/currenttransport/epoch/revision/quarantine/original9s; postbootLIVErequired. Existingrelease aloneownsqueuechecks/drain/freshfull/LIVE/strategyconfirm. No prematureorderauthority",
+  "new_regression": "SAMEactualSQLite VIRGINBOOT->full->INIT->actualreleaseLIVE->flatfull->ownedappliedfills->heldfull, no health/release shortcuts; buffered effects afterverify requirefreshfull orDENY",
+  "peer_proposal": "PASS_SCOPED_NO_P0_P1",
+  "new_native_models_queries_orders_services": 0,
+  "recorded_utc": "2026-10-29T04:58:17.038959+00:00"
+}

@@ -1,0 +1,16 @@
+{
+  "source_commit": "fd35f20486837afdacb3b166b67bd076bd912131",
+  "base": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "status": "PASS_NO_OPEN_SCOPED_P0_P1",
+  "reviewer": "active_c1_money_peer_20261029",
+  "scope": "Firstheldanchor qualification only, previous83eclosedpaths retained",
+  "tracked_8file_diff_sha256": "a98a48543cb9646883cf6b4df5128e47ff45255aa94f5abbf8f6ade530d8ef49",
+  "newtest_sha256": "518eb23d6ca52d03d121ab639ae882c003bc96a7961001185e79d8ae1c4f2589",
+  "receipt_sha256": "28d98c20ed5ba069bdf5f35873e92fc753a26e862256cb9e41eef781e4ffc3b9",
+  "checks": "353connectedPASS93s;48targetedIncluded16.94s; installed1.231newcache/eventAPI readbackPASS",
+  "contract": "APPLIED+OWNEDcandidate exactnativejournal; BOTHrawsweeps; originalINITinclusivewindow; separatetime+digest; finalcheckpointonlyafterwholeverify; stale/restartUNKNOWN",
+  "reviewer_native_tests_imports_account_queries": 0,
+  "native_go": false,
+  "owner_START": false,
+  "recorded_utc": "2026-10-29T04:50:56.041626+00:00"
+}
