@@ -221,3 +221,40 @@ def test_actual_baseline_quote_builder_uses_instrument_precision_and_native_code
     assert decoded==actual
     assert decoded.bid_price.precision==decoded.ask_price.precision==instrument.price_precision
     assert decoded.bid_size.precision==decoded.ask_size.precision==instrument.size_precision
+
+
+def test_zero_impact_profile_options_and_actual_native_book_fill_full_2000():
+    from coinmaster.research.native_full_fill import zero_impact_venue_options
+    from coinmaster.research.current_hl_profile import load_current_hl_diagnostic
+    from coinmaster.research.native_fixture import instrument_quote
+    from nautilus_trader.common.component import TestClock
+    from nautilus_trader.common.factories import OrderFactory
+    from nautilus_trader.model.identifiers import TraderId,StrategyId
+    from nautilus_trader.model.enums import TimeInForce
+    from nautilus_trader.backtest.models import FillModel
+    profile=load_current_hl_diagnostic(Path(__file__).parent/"fixtures/hl-current-20261029")
+    sol=profile.instruments[1]
+    clock=TestClock()
+    factory=OrderFactory(TraderId("PARITY-001"),StrategyId("PROBE-001"),clock)
+    order=factory.market(sol.id,OrderSide.BUY,sol.make_qty(D(2000)),time_in_force=TimeInForce.IOC)
+    options=zero_impact_venue_options()
+    assert set(options)=={"fill_model","liquidity_consumption"}
+    assert options["liquidity_consumption"] is False
+    model=options["fill_model"]
+    assert zero_impact_venue_options(model)["fill_model"] is model
+    with pytest.raises(TypeError):zero_impact_venue_options(FillModel())
+    tick=instrument_quote(sol,"99.99","100",100)
+    assert tick.ask_size.as_decimal()==D(1000)  # Nominal quote unchanged.
+    book=model.get_orderbook_for_fill_simulation(sol,order,tick.bid_price,tick.ask_price)
+    fills=book.simulate_fills(order,price_prec=sol.price_precision,size_prec=sol.size_precision,is_aggressive=True)
+    assert sum((qty.as_decimal() for _,qty in fills),D(0))==D(2000)
+    assert all(px==tick.ask_price for px,_ in fills)
+    # Actual current-profile venue options call, without constructing an engine.
+    source=Path(__file__).parents[1]/"coinmaster/research/native_baseline.py"
+    tree=ast.parse(source.read_text())
+    assignment=next(n for n in ast.walk(tree) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=="fill_kwargs" for t in n.targets))
+    env=dict(current_hl=profile,selected_leverage=profile.selected_leverage,zero_impact_venue_options=zero_impact_venue_options)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[assignment],type_ignores=[])),str(source),"exec"),env)
+    assert set(env["fill_kwargs"])=={"fill_model","liquidity_consumption","leverages"}
+    assert env["fill_kwargs"]["liquidity_consumption"] is False
+    assert env["fill_kwargs"]["leverages"]==dict(profile.selected_leverage)

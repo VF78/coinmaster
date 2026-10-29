@@ -28,3 +28,18 @@ class ZeroImpactFullFillDiagnostic(FillModel):
         for side, price, identity in ((OrderSide.BUY, bid, 1), (OrderSide.SELL, ask, 2)):
             book.add(BookOrder(side=side, price=price, size=order.leaves_qty, order_id=identity), 0, 0)
         return book
+
+
+def zero_impact_venue_options(fill_model=None):
+    """Use order-sized simulated capacity without re-capping to recorded L1.
+
+    Pinned NT 1.231 applies recorded-book consumption after the custom market
+    fill hook. Enabling it would reintroduce the nominal 1000-unit quote cap.
+    Real recorded L1/L2 liquidity models must enable consumption separately;
+    this helper belongs only to the explicit full-fill/zero-impact diagnostic.
+    """
+    if fill_model is None:
+        fill_model=ZeroImpactFullFillDiagnostic()
+    if not isinstance(fill_model,ZeroImpactFullFillDiagnostic):
+        raise TypeError("ZERO_IMPACT_FILL_MODEL_REQUIRED")
+    return dict(fill_model=fill_model,liquidity_consumption=False)
