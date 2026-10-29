@@ -11,7 +11,7 @@ import hashlib
 import json
 import math
 import time
-from dataclasses import fields, is_dataclass
+from dataclasses import fields, is_dataclass, replace
 from datetime import datetime,timezone,timedelta
 from decimal import Decimal
 
@@ -667,6 +667,57 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             self._post_drain_task.cancel()
         super().on_stop()
 
+    def _split_stop_requested(self):
+        if not self._active_c1_authorized:return super()._split_stop_requested()
+        deposit=getattr(self,"_deposit",None)
+        return (self._recovery_runtime is None or self._recovery_runtime.entry_control_state()=="PAUSED"
+            or deposit is None or deposit.latched or self._forced_close_reason is not None
+            or self._liquidating or not self._owned_chain_current())
+
+    def _split_partial_targets_allowed(self):
+        if not self._active_c1_authorized:return super()._split_partial_targets_allowed()
+        return self._owned_chain_current()
+
+    def _queue_confirmed_btc_targets(self,sigma,decision_index,ready_ns):
+        if self._active_c1_authorized and self._split_parent is not None:
+            pending=self._split_parent.get("partial_tp_replan_pending",())
+            if pending:
+                orders={str(order.client_order_id):order for order in self.cache.orders(venue=self.config.btc_id.venue)}
+                states={row["client_order_id"]:row["state"] for row in self._recovery_runtime.all_submissions()}
+                if any((client in orders and not orders[client].is_closed)
+                    or (client not in orders and states.get(client)!="TERMINAL") for client in pending):return
+                self._split_parent.pop("partial_tp_replan_pending",None)
+        return super()._queue_confirmed_btc_targets(sigma,decision_index,ready_ns)
+
+    def _split_stop(self,reason):
+        was_open=self._split_unfinished()
+        super()._split_stop(reason)
+        if self._active_c1_authorized and was_open:
+            parent=self._split_parent
+            self._queue_confirmed_btc_targets(parent["sigma"],parent["decision_index"],self.clock.timestamp_ns())
+            self._persist_transient_checkpoint()
+
+    def _prepare_partial_tp_replan(self):
+        parent=self._split_parent
+        if not self._active_c1_authorized or parent is None:return ()
+        working=[]
+        for client,intent in self._pending_by_order.items():
+            if intent.action=="BTC_REDUCE" and str(intent.reason or "").startswith("BTC_TP"):
+                order=next((o for o in self.cache.orders(venue=self.config.btc_id.venue) if str(o.client_order_id)==client),None)
+                if order is None or not order.is_closed:working.append(client)
+        # Remove only unsent obsolete candidates; native working orders remain
+        # reserved until real cancel/fill ACK, never replaced optimistically.
+        native_intents={value.id for value in self._pending_by_order.values()}
+        for item in list(self._queued_intents):
+            intent=item[0]
+            if intent.action=="BTC_REDUCE" and str(intent.reason or "").startswith("BTC_TP") and intent.id not in native_intents:
+                self._queued_intents.remove(item);self._queued_intent_ready_ns.pop(intent.id,None)
+                self._domain.on_parent_cancelled(intent.id)
+        previous=set(parent.get("partial_tp_replan_pending",()))
+        pending=tuple(sorted(previous|set(working)))
+        if pending:parent["partial_tp_replan_pending"]=pending
+        return pending
+
     def _require_recovery_confirmed(self) -> None:
         if self._manage_only_preparation or (self.config.research_residual_recovery and not self._active_c1_authorized):
             raise RuntimeError("MANAGE_ONLY_NORMAL_DISPATCH_FORBIDDEN")
@@ -740,6 +791,9 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             if not self._active_c1_authorized:return
             self._quote_ns[tick.instrument_id]=tick.ts_event
             if self._feeds_fresh(now_ns):
+                parent=self._split_parent
+                if parent is not None and self._split_partial_targets_allowed():
+                    self._queue_confirmed_btc_targets(parent["sigma"],parent["decision_index"],now_ns)
                 super().on_quote_tick(tick,decision_ns=now_ns)
                 self._persist_transient_checkpoint()
             return
@@ -765,6 +819,32 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         only_instrument: InstrumentId | None = None, ts_now: int | None = None,
         entry_override_qty: Decimal | None = None,
     ) -> None:
+        if (self._active_c1_authorized and intent.action=="BTC_REDUCE"
+            and str(intent.reason or "").startswith("BTC_TP")):
+            if any(value.id==intent.id for value in self._pending_by_order.values()):return
+            native_side=OrderSide.BUY if intent.side==1 else OrderSide.SELL
+            capacity=self._owned_reduce_capacity(self.config.btc_id,native_side)
+            if capacity is not None and capacity<=0:
+                # Already reserved by existing native reductions: no additional
+                # candidate, and no false unsupported-minimum latch.
+                self._domain.on_parent_cancelled(intent.id)
+                self._persist_transient_checkpoint()
+                return
+            quantity=min(Decimal(str(intent.quantity or 0)),capacity) if capacity is not None else Decimal(0)
+            instrument=self.cache.instrument(self.config.btc_id)
+            executable=Decimal(str(ask_price if intent.side==1 else bid_price))
+            minimum=(instrument is not None and quantity>0
+                and (instrument.min_quantity is None or quantity>=instrument.min_quantity.as_decimal())
+                and (instrument.min_notional is None or quantity*executable>=instrument.min_notional.as_decimal()))
+            if not minimum:
+                self._domain.on_parent_cancelled(intent.id)
+                self._live_inputs_reason="LIVE_PARTIAL_PROTECTION_QUANTITY_OR_NATIVE_MINIMUM_UNKNOWN"
+                if self._split_parent is not None:self._split_parent["partial_protection_reason"]=self._live_inputs_reason
+                self._persist_transient_checkpoint()
+                return
+            if quantity!=Decimal(str(intent.quantity)):
+                intent=replace(intent,quantity=float(quantity))
+                self._domain.episode.pending[intent.id]=intent
         if intent.action != "CLOSE_ALL" and not (self._active_c1_authorized and intent.action in ("BTC_REDUCE","SOL_HALF_EXIT","SOL_EXIT","C1_RESIDUAL_CUT")):
             try:
                 self._current_owned_money()
@@ -793,19 +873,21 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             raise ValueError("LIVE_OWNED_CHAIN_POLICY")
         self._owned_effect_chain=(str(account_id),ws_epoch,policy_sha256)
 
-    def _owned_reduce_allowed(self, order):
-        """Native lineage only; this grants no money, H or opening authority."""
+    def _owned_chain_current(self):
         chain=self._owned_effect_chain
-        if (not self._active_c1_authorized or chain is None or not order.is_reduce_only
-            or not self.recovery_confirmed or self._recovery_health is None or not self._recovery_health()
-            or self._live_input_ws_epoch is None or self._live_input_ws_epoch()!=chain[1]
-            or recovery_policy_hash(self.config,self._candidate)!=chain[2]):
-            return False
+        return bool(self._active_c1_authorized and chain is not None and self.recovery_confirmed
+            and self._recovery_health is not None and self._recovery_health()
+            and self._live_input_ws_epoch is not None and self._live_input_ws_epoch()==chain[1]
+            and recovery_policy_hash(self.config,self._candidate)==chain[2])
+
+    def _owned_reduce_capacity(self,instrument_id,side,client_order_id=None):
+        chain=self._owned_effect_chain
+        if not self._owned_chain_current():return None
         rows=self._recovery_runtime.all_submissions()
         journal={r["client_order_id"]:r for r in rows}
-        if len(journal)!=len(rows) or str(order.client_order_id) in journal:return False
+        if len(journal)!=len(rows) or (client_order_id is not None and client_order_id in journal):return None
         native={str(o.client_order_id):o for o in self.cache.orders(venue=self.config.btc_id.venue)}
-        if not set(native).issubset(journal):return False
+        if not set(native).issubset(journal):return None
         for client_id,cached in native.items():
             row=journal[client_id]
             shape=row["body"].get("shape") or {}
@@ -815,34 +897,39 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                 or cached.quantity.as_decimal()!=Decimal(row["body"]["quantity"])
                 or bool(cached.is_reduce_only)!=(row["body"].get("reduce_only") is True)
                 or (shape.get("side") is not None and getattr(cached.side,"name",str(cached.side))!=shape["side"])):
-                return False
+                return None
             if getattr(cached.status,"name",str(cached.status))=="REJECTED":
                 self._owned_effect_chain=None
-                return False
+                return None
         held=None
         applied=self._recovery_runtime.applied_fill_ids()
         for position in self.cache.positions_open():
             if (str(position.account_id)!=chain[0] or str(position.strategy_id)!=str(self.id)
                 or position.instrument_id not in (self.config.btc_id,self.config.sol_id)):
-                return False
+                return None
             if any(str(e.client_order_id) not in journal or str(e.trade_id) not in applied for e in position.events):
-                return False
-            if position.instrument_id==order.instrument_id:
-                if held is not None:return False
+                return None
+            if position.instrument_id==instrument_id:
+                if held is not None:return None
                 held=position
-        if held is None or (order.side==OrderSide.SELL)!=held.is_long:return False
+        if held is None or (side==OrderSide.SELL)!=held.is_long:return None
         reserved=Decimal("0")
         for client_id,row in journal.items():
-            if row["instrument_id"]!=str(order.instrument_id) or row["body"].get("reduce_only") is not True:continue
+            if row["instrument_id"]!=str(instrument_id) or row["body"].get("reduce_only") is not True:continue
             cached=native.get(client_id)
             if cached is not None:
-                if str(cached.strategy_id)!=str(self.id):return False
+                if str(cached.strategy_id)!=str(self.id):return None
                 if cached.is_closed:continue
                 reserved+=max(Decimal("0"),cached.quantity.as_decimal()-cached.filled_qty.as_decimal())
             elif row["state"]!="TERMINAL":
                 reserved+=Decimal(row["body"]["quantity"])
+        return max(Decimal("0"),held.quantity.as_decimal()-reserved)
+
+    def _owned_reduce_allowed(self,order):
+        if not order.is_reduce_only:return False
+        capacity=self._owned_reduce_capacity(order.instrument_id,order.side,str(order.client_order_id))
         quantity=order.quantity.as_decimal()
-        return quantity>0 and quantity<=held.quantity.as_decimal()-reserved
+        return capacity is not None and quantity>0 and quantity<=capacity
 
     def _record_submission(self, *args, **kwargs) -> bool:
         if not args:return False
@@ -942,15 +1029,26 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def _after_domain_fill(self, event) -> None:
         if self._recovery_runtime is None:
             raise RuntimeError("RECOVERY_JOURNAL_NOT_ATTACHED")
-        checkpoint = self.on_save()[_KEY]
-        if not self._recovery_runtime.commit_applied_fills([str(event.trade_id)], checkpoint):
-            self.recovery_confirmed = False
+        audit=(self._order_audit or {}).get(str(event.client_order_id),{})
+        replan=()
+        if self._active_c1_authorized and audit.get("action")=="BTC_ENTRY":
+            replan=self._prepare_partial_tp_replan()
+            parent=self._split_parent
+            self._queue_confirmed_btc_targets(parent["sigma"],parent["decision_index"],event.ts_event)
+        checkpoint=self.on_save()[_KEY]
+        if not self._recovery_runtime.commit_applied_fills([str(event.trade_id)],checkpoint):
+            self.recovery_confirmed=False
             raise RuntimeError("RECOVERY_FILL_CHECKPOINT_CONFLICT")
+        if replan and self._owned_chain_current():
+            for order in self.cache.orders(venue=self.config.btc_id.venue):
+                if str(order.client_order_id) in replan and not order.is_closed and not order.is_pending_cancel:
+                    self.cancel_order(order) # Existing native API only AFTER applied checkpoint.
 
     def _entries_enabled(self, *, ignore_research_protection: bool = False) -> bool:
         if self._manage_only_preparation or (self.config.research_residual_recovery and not self._active_c1_authorized):return False
         try:
             self._validated_live_money()
+            if self._active_c1_authorized and self._split_parent and self._split_parent.get("partial_protection_reason"):return False
             if self._active_c1_authorized and (
                 not self._capital_basis_verified or self._recovery_runtime.cashflow_quarantined()
                 or self._live_context_current is None or not self._live_context_current()

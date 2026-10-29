@@ -1453,7 +1453,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             intent, sigma, index = item
             if ts_decision < self._queued_intent_ready_ns.get(intent.id, 0):
                 continue
-            if self._split_unfinished() and intent.action == "BTC_REDUCE":
+            if self._split_unfinished() and intent.action == "BTC_REDUCE" and not self._split_partial_targets_allowed():
                 continue
             if self._split_tp_ioc_eligible(intent) and any(self._reduction_key(owned)==self._reduction_key(intent) for owned in self._pending_by_order.values()):
                 continue
@@ -2559,7 +2559,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
-        if self._forced_close_reason is not None or self._split_unfinished() or self._carry_busy():
+        if self._forced_close_reason is not None or (self._split_unfinished() and not self._split_partial_targets_allowed()) or self._carry_busy():
             return
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return

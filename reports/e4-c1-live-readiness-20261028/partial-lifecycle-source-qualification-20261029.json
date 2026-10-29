@@ -1,0 +1,61 @@
+{
+  "schema": "coinmaster-active-partial-lifecycle-qualification-v1",
+  "source_parent": "1831dcccef8566c41f89c30b5b9ad6ffd5259b80",
+  "source_pins": {
+    "runtime/coinmaster/strategy/live_recovery.py": "00f476d3390acb315013dfffe3f6febb83b4be92dd6db8e421d1643b452af54e",
+    "runtime/coinmaster/strategy/split_cover.py": "d4c154132e22da548cd3e573abe5713d14c493cee95d9b1ebf5af10b276094d2",
+    "runtime/coinmaster/strategy/wave_overlay.py": "0ae2f9598ad609d145c3708d49e84a551d0c72638748cc4fed096ffff500240c",
+    "runtime/tests/test_e4_c1_partial_lifecycle_pure.py": "af18019700a671dc811f82751df5c145695b2fd0e086222b80d9d399674ad3da"
+  },
+  "state": "PARTIAL_P1_SOURCE_CONNECTED_PASS_PENDING_EXACT_PEER_CLOSURE_NOT_LIVE_READY",
+  "change": {
+    "scope": "Three existing runtime files only; no OMS/parent envelope/financial model/new TP levels",
+    "stop": "Default research same stop-on-entrygate; ACTIVE actualPAUSE/DP/forced/ownershiploss separated from temporaryfinancial/context/headroom wait",
+    "opening": "EVERY split child still requires fresh full authority/currentnative revision/oldest9s; no cheap/owned-reducer opening credit",
+    "protection": "Reuse SAME canonical confirmed-target planner/targetlots/reference/weights; ACTIVE unfinished split no longer suppresses confirmed native TP planning/dispatch",
+    "atomic": "Queued candidate state and ONE pending-replan marker in existing split_parent included BEFORE appliedfill checkpoint; actual known native cancels AFTER atomic commit",
+    "replacement": "Old native TP remains reserved including pendingcancel/uncertain state; latefills merge marker; no replacement until actualterminalACK; sameplanner then rebuilds workingtargets",
+    "quantity": "TP execution only clips DOWN to actual confirmed held minus ALL native pending/uncertain reductions; no openingpending credit/flip; final same lock/gate rechecks",
+    "hardstop": "Rearm from settled held on stop even if no laterterminalevent; no TP duplicate behind existingDP/forcedmarketexit",
+    "defaults": "Research hooksFalse/defaultold behavior; no candidate/flags/price/weight/rights/H reset"
+  },
+  "tests": {
+    "focused": "8PASS6.25s",
+    "connected": "274PASS44.56s",
+    "files": 8,
+    "source_methods": "actual SplitCover._split_check; actual live _entries_enabled; existing Wave/domain targetplanner; real SQLite submission/fill/appliedcheckpoint; pure boundary sink only",
+    "positive": "partial4->late+2->duplicate->+3duringcancel->fullyfilled20->actualcancelACK->canonicalworking4/4/12 with original prices",
+    "negative": [
+      "no child opening during temporaryfinancialwait",
+      "no replacement beforecancelACK",
+      "no duplicate nativecancel or fillapplication",
+      "operatorPAUSErearmswithoutlaterACK",
+      "DP/forcedexitdoesnotduplicateTP",
+      "ownershiplosscommandsDENY/currentpositionnotfakeflat",
+      "partialbelowNativeMinUNKNOWN/no sizeup",
+      "defaultresearchstop/unfinishedplanner semantics unchanged"
+    ],
+    "fixture_corrections": [
+      "inactivecarry helper absent in pure fixture",
+      "inactive native lifecycle sets absent",
+      "DPfixturehaddeposit_runtimeNone unlikeproduction; wiredactualruntime"
+    ],
+    "native_models": 0,
+    "node": 0,
+    "engine": 0,
+    "network": 0,
+    "keys": 0
+  },
+  "known_boundary": "Installed1.231 applies min_notional to all orders; arbitrary real partial may leave<10USDC. No stock full-close exception was proved. Such case UNKNOWN/manualreconciliation, no ceil/bypass/newclosepath/all-partials-flat orhardDD55 execution guarantee.",
+  "retained": "Normal helper01e57 nativeMODEL proof and ROOT actual keyless Portfolio/Cache6.25s proof unchanged; neither proves heldmatching or native strategy lifecycle",
+  "normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "owner_start": false,
+  "native_a_b_budget": 3,
+  "native_a_b_spent": 0,
+  "remaining": [
+    "one focused high-peer exact lifecycle closure",
+    "frozen final nativeA/B actualcallback qualification underROOTGO",
+    "fresh actual price/capacity/minimum feasibility; explicit release boundary",
+    "immutable draft release/ownerVERSION approval/separateSTART"
+  ]
+}
