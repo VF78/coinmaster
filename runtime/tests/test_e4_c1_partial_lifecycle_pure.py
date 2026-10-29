@@ -261,5 +261,6 @@ def test_fresh_money_revision_with_temporary_context_or_headroom_denial_parks_ac
         tick=N(instrument_id=ctx.cfg.btc_id,bid_price=NativeQ('99'),ask_price=NativeQ('100'),ts_event=1000)
         ctx.s._split_check(tick)
         assert not ctx.s._split_parent['closed'] and ctx.s._split_parent['quantity']==20
-        assert ctx.s._split_parent['filled']==4 and ctx.refresh and ctx.sent==[] and ctx.cancelled==[]
+        assert ctx.s._split_parent['filled']==4 and ctx.sent==[] and ctx.cancelled==[]
+        assert bool(ctx.refresh)==(denial=='context') # Headroom alone cannot revoke current full money.
     finally:ctx.r.close()

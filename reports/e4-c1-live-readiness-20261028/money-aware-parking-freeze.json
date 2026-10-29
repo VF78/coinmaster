@@ -1,0 +1,45 @@
+{
+  "actual_causal_receipt_sha256": "51f42277bb7cd9b309552497b3a53d3c53882b9860c5ee1ff62d945386cc348d",
+  "base_commit": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "engines": 0,
+  "http": 0,
+  "keys": 0,
+  "native": 0,
+  "negatives": "Missing/stale/full revision/unknown ACK/foreign/native/context invalid require refresh and deny; deadline expiry, WS and pause/pending barriers deny; headroom/feed-only denial parks without financial revocation.",
+  "orders": 0,
+  "preservation": "Exact original full object, native revision and original generation deadline retained while DP remains denied; actual unified cheap collector/source observation publication enables only next fresh quote. No proof/deadline reset or dirty-DP admission.",
+  "product_scope": "One existing split BTC_ENTRY parking branch only: always deny/park; preserve full authority only if current owned chain, callable current account context and actual _current_owned_money pass; otherwise existing full refresh.",
+  "schema": "coinmaster-money-aware-parking-freeze-v1",
+  "secret_or_actual_account_literal_findings": 0,
+  "six_old_WIP_preserved": true,
+  "source_economic_core_edits": 0,
+  "source_sha256": {
+    "reports/e4-c1-live-readiness-20261028/money-aware-parking-connected-tests.txt": "d033a4c53c0a3daa8f3d61e50eb355dfbd46f0ae56a0b1b2829246a01d93b016",
+    "reports/e4-c1-live-readiness-20261028/money-aware-parking-contract-tests.txt": "b4de944119e44e0a3ee9b66fe6dce4bf224106b28a2d00a282bccbb24e9fbc51",
+    "runtime/coinmaster/strategy/live_recovery.py": "5da925029aea909cab0a6f459b8601265e37ac45285bb177b35a5b58bfc4fa28",
+    "runtime/tests/test_e4_c1_money_aware_parking_pure.py": "c85a4ddc63a2722c26ebfa997e0d9d8b962a6fcbc3c21a003fa1240a47a6b533",
+    "runtime/tests/test_e4_c1_partial_lifecycle_pure.py": "6ecd749f75bd074de0456fd5eabc0558c126fc03883e279d3f622923396dac68"
+  },
+  "tests": {
+    "affected_contract": {
+      "change": "Only refresh expectation changed to context=>refresh/headroom=>no refresh; all quantity/safety assertions retained.",
+      "overlap_with_connected": true,
+      "passed": 2,
+      "seconds": 2.01
+    },
+    "connected": {
+      "failed": 1,
+      "failed_case": "test_e4_c1_partial_lifecycle_pure.py::test_fresh_money_revision_with_temporary_context_or_headroom_denial_parks_actual_child[headroom]",
+      "passed": 162,
+      "reason": "Old assertion demanded a full refresh for headroom-only denial; contradicted newly approved contract.",
+      "seconds": 106.19
+    },
+    "final_unique_cases": 163,
+    "new_target": {
+      "passed": 14,
+      "seconds": 20.24
+    },
+    "product_unchanged_after_connected": true,
+    "whole_connected_green_claimed": false
+  }
+}

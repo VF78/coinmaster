@@ -937,7 +937,15 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             # headroom denial parks the same child instead of terminally denying
             # its logical parent in the base dispatcher.
             self._persist_transient_checkpoint()
-            self._request_live_refresh()
+            try:
+                # A lagging cheap DP observation, feed or admission budget does
+                # not revoke independently current full financial authority.
+                if (not self._owned_chain_current() or not callable(self._live_context_current)
+                    or not self._live_context_current()):
+                    raise ValueError("LIVE_OWNED_CONTEXT_UNCONFIRMED")
+                self._current_owned_money()
+            except (ValueError, RuntimeError):
+                self._request_live_refresh()
             return
         if (self._active_c1_authorized and intent.action=="BTC_REDUCE"
             and str(intent.reason or "").startswith("BTC_TP")):
