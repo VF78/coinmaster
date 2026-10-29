@@ -1605,6 +1605,20 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         }
         return Decimal(net_lots) * plan["step"]
 
+    def _entry_sizing_audit_for(self, episode_id: str, intent_id: str | None = None, *, selected_plan: bool = False, reference_wire_price=None):
+        """Find the actual parent sizing record, never infer ownership by row order."""
+        for row in reversed(self.entry_sizing_audit):
+            if row.get("episode_id") != episode_id or (intent_id is not None and row.get("intent_id") != intent_id):
+                continue
+            if "reference_btc_qty" not in row or "net_submitted_btc_qty" not in row:
+                continue
+            if selected_plan and row.get("branch") not in {"PASSIVE_NET_ZERO_LEVELS","MARKETABLE_FULL_ENTRY_FALLBACK"}:
+                continue
+            if reference_wire_price is not None and row.get("reference_wire_price") != str(reference_wire_price):
+                continue
+            return row
+        return None
+
     def _activate_selective_sol_rights(self, tick: QuoteTick) -> None:
         episode = self._domain.episode
         if episode is None or episode.btc_deferred_right_reference_price is None or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
@@ -1630,11 +1644,14 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         for level in newly_active:
             episode.sol_rights.add(level)
             episode.sol_right_decision_index[level] = len(self._bars) - 1
-        if self.entry_sizing_audit:
-            self.entry_sizing_audit[-1]["sol_right_activations"].append({
+        audit=self._entry_sizing_audit_for(episode.id,selected_plan=True,reference_wire_price=reference)
+        if audit is not None and isinstance(audit.get("sol_right_activations"),list):
+            audit["sol_right_activations"].append({
                 "timestamp_ns": str(tick.ts_event), "levels": newly_active,
                 "confirmed_native_entry_qty": str(episode.btc_initial_qty),
             })
+        else:
+            self.log.warning(f"SELECTIVE_SOL_RIGHT_AUDIT_PLAN_UNKNOWN:{episode.id}:{reference}")
         if self._mandatory_sol_exit is None and self._forced_close_reason is None:
             self._advance_current_day()
 
@@ -2553,8 +2570,15 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                 p["planref_v1_beta"] = ep.beta_entry
         if intent.action == "BTC_ENTRY" and self.config.research_v0_execution_repairs and self.entry_sizing_audit:
             episode = self._domain.episode
-            if episode is not None:
-                self.entry_sizing_audit[-1]["confirmed_native_entry_qty"] = str(episode.btc_initial_qty)
+            if episode is not None and episode.id == intent.episode_id:
+                # A split child can append an ordinary sizing row after its
+                # selected parent plan. Preserve both records and their owner.
+                for audit in (
+                    self._entry_sizing_audit_for(episode.id,intent.id,selected_plan=True),
+                    self._entry_sizing_audit_for(episode.id,intent.id),
+                ):
+                    if audit is not None:
+                        audit["confirmed_native_entry_qty"] = str(episode.btc_initial_qty)
         if intent.action == "SOL_HALF_EXIT" and self._domain.episode is not None and self._domain.episode.sol_half_done:
             self._domain.on_half_exit_decision(max(self._decision_index_by_order.get(client_order_id, intent.decision_index), len(self._bars) - 1))
         if not order_closed:
