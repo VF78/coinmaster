@@ -786,7 +786,8 @@ def run_native_diagnostic(
                     research_btc_split_planref_v1, research_btc_split_tp_ioc,
                     research_btc_direction_sizing, observe_minute_risk)):
             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
-    candidate = candidate or Candidate()
+    from coinmaster.research.effective_config import effective_research_candidate
+    candidate = effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs)
     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
     policy = execution_policy or ExecutionPolicy()
@@ -1195,6 +1196,7 @@ def run_native_diagnostic(
                 name: hashlib.sha256((coinmaster_root / relative).read_bytes()).hexdigest()
                 for name, relative in (
                     ("native_baseline", "research/native_baseline.py"),
+                    ("effective_research_config", "research/effective_config.py"),
                     ("wave_domain", "domain/wave_overlay.py"),
                     ("wave_strategy", "strategy/wave_overlay.py"), ("next_band", "strategy/next_band.py"), *(((("residual_recovery", "strategy/residual_recovery.py"),)) if research_residual_recovery else ()),
                     *(((("hedge_band", "strategy/hedge_band.py"),)) if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None else ()),
@@ -1461,9 +1463,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
     actual_data_hash = hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     if actual_data_hash != control["data_hash"]:
         raise ValueError("CONTROL_V0_DATA_HASH_MISMATCH")
-    candidate = Candidate(**config["candidate"])
-    if selective_lifecycle_repairs:
-        candidate = replace(candidate, max_parent_notional=30_000_000.0)
+    from coinmaster.research.effective_config import effective_research_candidate
+    candidate = effective_research_candidate(Candidate(**config["candidate"]), selective_lifecycle_repairs=selective_lifecycle_repairs)
     policy = ExecutionPolicy(**config["execution_policy"])
     fee_policy = FixedBaseFeePolicy(**config["fixed_base_fee_policy"])
     if fee_policy.hash != config["fee_policy_hash"]:
