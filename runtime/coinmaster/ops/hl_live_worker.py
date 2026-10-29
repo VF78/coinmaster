@@ -397,7 +397,7 @@ class LiveWorker:
                 return
             self.runtime.record_native_equity_observation(run_epoch=self.run_epoch, observed_at_ns=time.time_ns(), equity_usdc=str(money.equity))
         except ValueError as error:
-            if str(error) == "LIVE_MONEY_STALE_OR_UNKNOWN":
+            if str(error) in ("LIVE_MONEY_STALE_OR_UNKNOWN","LIVE_MONEY_REFRESH_PENDING"):
                 self.native.loop.call_soon_threadsafe(self.native.strategy._request_live_refresh)
                 return
             self._manual_recovery()
@@ -446,13 +446,14 @@ class LiveWorker:
         except (ValueError,RuntimeError):
             status["orders_enabled"]=False
         capital=strategy._live_c1_input
-        c1=None if capital is None else dict(state=(strategy._c1_state or {}).get('state','IDLE'), E=str(capital.equity),
-            H=str(strategy._c1_peak),DD=str(max(Decimal(0),1-capital.equity/strategy._c1_peak)) if strategy._c1_peak else None,
-            cushion=str(max(Decimal(0),capital.equity-strategy._c1_peak*Decimal('.45'))),
-            source_available_ns=capital.source_available_ns,decision_ns=capital.decision_ns,
+        checkpoint=strategy._c1_checkpoint
+        c1=None if capital is None or checkpoint is None or checkpoint['epoch']!=capital.fill_epoch else dict(
+            state=(strategy._c1_state or {}).get('state','IDLE'),
+            E=str(checkpoint['E']),H=str(checkpoint['H']),DD=str(checkpoint['DD']),cushion=str(checkpoint['C']),
+            source_available_ns=checkpoint['source'],decision_ns=checkpoint['receipt'],
             currency='USDC',equity_basis=basis,rights=strategy._c1_rights())
         protection={**strategy.deposit_projection(), 'currency':'USDC',
-            'retained_equity_floor_fraction':'.45','high_water_basis':'INITIAL_AND_HIGHER_VALID_UTC_DAILY_CLOSE'}
+            'retained_equity_floor_fraction':'0.45','high_water_basis':'INITIAL_AND_HIGHER_VALID_UTC_DAILY_CLOSE'}
         return {**status, "version": "hl-stageg-live-projection-v1", "run_epoch": self.run_epoch,
                 "observed_at_ns": time.time_ns(),
                 "release_commit": self.release_identity["source_commit"],

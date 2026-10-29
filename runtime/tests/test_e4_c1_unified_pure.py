@@ -251,7 +251,7 @@ def test_actual_unified_discovery_then_full_vector_and_refund_and_directory_quar
     owner._cm_strategy=code.Strategy(config())
     scope=N(durable_orders=(),account_ref=ACCOUNT,dex='',anchor_ms=0,anchor_tid=None,owned_coins=frozenset({'BTC','SOL'}))
     owner._cm_scope=scope;owner._cm_owned_scope=lambda:(scope,7,(),frozenset(),())
-    owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None),evidence_cursor=lambda source:None)
+    owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None),evidence_cursor=lambda source:None,native_revision=lambda:7)
     owner._cache=N(instrument=lambda i:object(),positions_open=lambda:[]);owner._clock=N(timestamp_ns=lambda:10_000_000_000)
     owner.venue='HL';owner.account_id='acct';owner.id='client'
     owner._cm_info=env['SingleAttemptInfoTransport'](testnet=False,timeout=1)

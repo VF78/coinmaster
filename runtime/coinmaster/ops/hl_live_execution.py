@@ -335,7 +335,7 @@ class QualifiedInfoBoundary:
     def _cm_owned_scope(self):
         """Freeze journal/cache identity for one current-process Info generation."""
         if not self._cm_bootstrapped:
-            revision=self._cm_runtime.native_revision() if getattr(self,"_cm_management_only",False) and self._cm_runtime is not None else None
+            revision=self._cm_runtime.native_revision() if (getattr(self,"_cm_management_only",False) or getattr(self,"_cm_inputs_enabled",False)) and self._cm_runtime is not None else None
             return self._cm_scope, revision, tuple(self._cache.orders(venue=self.venue)), self._cm_applied_fill_ids(), None
         runtime = self._cm_runtime
         if runtime is None:
@@ -1302,6 +1302,7 @@ def bind_clean_flat_live_handover(
         if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
         if getattr(client,'_cm_inputs_enabled',False):client.save_verified_query_evidence(strategy,receipt,native_orders)
+        if active_c1:strategy.accept_live_financial_authority(started_ns=client._cm_generation_started_ns)
         latest_money[0] = candidate_money
         return True
 
@@ -1326,14 +1327,19 @@ def bind_clean_flat_live_handover(
     strategy.attach_live_money_view(lambda: latest_money[0])
     strategy.attach_live_refresh(client.request_effect_parity_refresh)
     strategy.attach_recovery_health(client.recovery_healthy)
+    def suspend_active():
+        latest_money[0]=None
+        strategy.suspend_live_financial_authority()
+    def resume_active():
+        strategy.recovery_confirmed=client.recovery_healthy()
     def revoke_active():
         strategy.recovery_confirmed=False
         strategy._owned_effect_chain=None
-        latest_money[0]=None
+        suspend_active()
     client.bind_recovery_revocation(strategy.revoke_management if manage_only else revoke_active)
     client.bind_recovery_suspension(
-        strategy.revoke_management if manage_only else (lambda: latest_money.__setitem__(0,None)) if active_c1 else lambda: setattr(strategy, "recovery_confirmed", False),
-        (lambda: None) if manage_only else lambda: setattr(strategy, "recovery_confirmed", client.recovery_healthy()),
+        strategy.revoke_management if manage_only else suspend_active if active_c1 else lambda: setattr(strategy, "recovery_confirmed", False),
+        (lambda: None) if manage_only else resume_active if active_c1 else lambda: setattr(strategy, "recovery_confirmed", client.recovery_healthy()),
     )
     strategy.attach_recovery_runtime(runtime)
     strategy.attach_post_drain_verifier(release)

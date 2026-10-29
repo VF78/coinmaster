@@ -226,7 +226,7 @@ def test_worker_currency_projection_preserves_reported_total_and_real_free_hold(
         _input_readiness_preparation=True,_live_account_mode='unifiedAccount',
         _validated_live_deposit_equity=lambda:D(100),
         _last_live_input_observation=N(free_collateral=D(70),margin_used=D(30)),
-        _live_c1_input=None,deposit_projection=lambda:dict(drawdown_limit_percent=55))
+        _live_c1_input=None,_c1_checkpoint=None,deposit_projection=lambda:dict(drawdown_limit_percent=55))
     worker.native=N(strategy=strategy,status=lambda:dict(state='PAUSED',orders_enabled=False),
         native_snapshot=lambda:([],[]),_thread=None)
     worker.runtime=N(projection_events=lambda count:([],0),entry_control_state=lambda:'PAUSED',
@@ -240,7 +240,7 @@ def test_worker_currency_projection_preserves_reported_total_and_real_free_hold(
     assert account['native_free']==account['available']=='70'
     assert account['native_locked']==account['hold']=='30'
     assert account['funding'] is None and account['funding_reason']
-    assert projection['deposit_protection']['retained_equity_floor_fraction']=='.45'
+    assert projection['deposit_protection']['retained_equity_floor_fraction']=='0.45'
 
 def test_dynamic_post_settlement_headroom_accounts_actual_expiries():
     b=budget();gateway=b.ReadinessInfoBudget()
@@ -280,3 +280,123 @@ def test_one_generation_race_raises_unknown_without_hidden_retry_or_none():
     with pytest.raises(IncompleteInfoReport,match='ORDER_STATUS_UNKNOWN'):
         asyncio.run(owner.generate_mass_status())
     assert calls==[1] and failures==['INFO_GENERATION_FAILED']
+
+def test_active_initial_scope_captures_actual_runtime_revision_and_movement():
+    env=dict(asyncio=asyncio,time=time,deque=deque,IncompleteInfoReport=IncompleteInfoReport)
+    run_ast(nodes('ops/hl_live_execution.py',{'QualifiedInfoBoundary'}),env)
+    owner=env['QualifiedInfoBoundary']();owner._cm_bootstrapped=False
+    owner._cm_management_only=False;owner._cm_inputs_enabled=True
+    revision=[41];owner._cm_runtime=N(native_revision=lambda:revision[0])
+    owner._cm_scope='scope';owner.venue='HL';owner._cache=N(orders=lambda venue:())
+    owner._cm_applied_fill_ids=lambda:frozenset()
+    assert owner._cm_owned_scope()[1]==41
+    revision[0]=42
+    assert owner._cm_owned_scope()[1]==42
+
+def test_oldest_generation_deadline_blocks_every_opening_even_if_second_receipt_is_fresh(code):
+    from test_e4_c1_manage_only_pure import config
+    from test_e4_c1_unified_pure import money_source
+    s=code.Strategy(config());s._active_c1_authorized=True;s.recovery_confirmed=True
+    s._recovery_runtime=N(cashflow_quarantined=lambda:False)
+    s._capital_basis_verified=True;s._live_context_current=lambda:True;s._live_increase_headroom=lambda:True
+    m=money_source();code.env['LivePerpsMoneyView']=m.LivePerpsMoneyView
+    view=m.LivePerpsMoneyView('synthetic','',4000,D(100),D(100),D(0),D(100),(),(),0)
+    s._live_money_provider=lambda:view
+    mono=[8_000_000_000];wall=[8_000_000_000]
+    code.env['time']=N(monotonic_ns=lambda:mono[0],time_ns=lambda:wall[0])
+    s.accept_live_financial_authority(started_ns=0)
+    assert s._validated_live_money() is view
+    mono[0]=12_000_000_000;wall[0]=12_000_000_000
+    # Second-sweep receipt age8s is valid; oldest native start age12s is not.
+    view.require_fresh(12000,9000)
+    with pytest.raises(ValueError,match='STALE_OR_UNKNOWN'):s._validated_live_money()
+    assert not s._entries_enabled()
+    assert not s._tier_allows_increase(s.config.btc_id,'BUY',D(1),wall[0])
+
+def test_worker_poll_expected_financial_suspend_preserves_owned_chain_but_unknown_does_not(code):
+    from test_e4_c1_manage_only_pure import config
+    env=dict(time=time,TestnetWorker=N(deposit_control=lambda:None))
+    run_ast(nodes('ops/hl_live_worker.py',{'LiveWorker'}),env)
+    s=code.Strategy(config());s._active_c1_authorized=True;s.recovery_confirmed=True
+    s._live_money_provider=lambda:None;s._owned_effect_chain=('account',4,'policy')
+    s.suspend_live_financial_authority()
+    requests=[];s._request_live_refresh=lambda:None
+    worker=object.__new__(env['LiveWorker']);worker.runtime=N(heartbeat=lambda now:None)
+    worker.native=N(strategy=s,input_readiness=False,loop=N(call_soon_threadsafe=requests.append))
+    manual=[];worker._manual_recovery=lambda:manual.append(True)
+    worker.poll()
+    assert manual==[] and requests==[s._request_live_refresh]
+    assert s.recovery_confirmed and s._owned_effect_chain
+    # Clear only expected-suspend marker; an actually missing full view remains UNKNOWN.
+    s._live_financial_suspended=False;s._live_financial_deadline_ns=time.monotonic_ns()+9_000_000_000
+    worker.poll()
+    assert manual==[True]
+
+def test_worker_C1_projects_one_canonical_checkpoint_not_DP_floor_or_newer_account(monkeypatch):
+    env=dict(time=time,Decimal=D,TestnetWorker=N(deposit_control=lambda:None))
+    run_ast(nodes('ops/hl_live_worker.py',{'LiveWorker'}),env)
+    worker=object.__new__(env['LiveWorker'])
+    checkpoint=dict(E=D(90),H=D(120),DD=D('.25'),C=D(30),source=10,receipt=15,epoch=5)
+    strategy=N(config=N(live_equity_basis='HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1'),
+        _input_readiness_preparation=True,_live_account_mode='unifiedAccount',
+        _validated_live_deposit_equity=lambda:D(100),_c1_peak=D(140),
+        _last_live_input_observation=N(free_collateral=D(70),margin_used=D(30)),
+        _live_c1_input=N(equity=D(100),source_available_ns=20,decision_ns=25,fill_epoch=5),
+        _c1_checkpoint=checkpoint,_c1_state=None,_c1_rights=lambda:{},
+        deposit_projection=lambda:dict(state='ARMED',drawdown_limit_percent=55,daily_sample_missed=False,
+            equity='100',high_water_equity='120',threshold_equity='54',last_daily_close_utc=0))
+    worker.native=N(strategy=strategy,status=lambda:dict(state='PAUSED',orders_enabled=False,
+        instance_id='hl-stageg-live',mode='live',environment='mainnet',live_order_capability=True,profile={}),
+        native_snapshot=lambda:([],[]),_thread=None)
+    worker.runtime=N(projection_events=lambda count:([],0),entry_control_state=lambda:'PAUSED',
+        funding_projection=lambda:dict(funding=None,funding_currency='USDC',funding_reason='UNKNOWN',funding_coverage_end_ns=None))
+    worker.poll=lambda:None;worker.run_epoch='fixture';worker.release_identity={'source_commit':'frozen'}
+    worker.master_address_sha256='synthetic';worker.order_approval={};worker.control_available=False
+    result=worker.projection()
+    assert result['account']['equity']=='100'
+    assert {key:result['c1'][key] for key in ('E','H','DD','cushion','source_available_ns','decision_ns')}==dict(
+        E='90',H='120',DD='0.25',cushion='30',source_available_ns=10,decision_ns=15)
+    assert result['deposit_protection']['retained_equity_floor_fraction']=='0.45'
+
+    from test_hl_usdc_projection_contract import pure_sidecar,read
+    projected=read(pure_sidecar(),monkeypatch,result)
+    assert projected.projection_state=='READY'
+    assert projected.account.equity=='100' and projected.account.native_free=='70'
+    assert projected.c1.E=='90' and projected.c1.H=='120' and projected.c1.cushion=='30'
+    assert projected.c1.source_available_ns==10 and projected.c1.decision_ns==15
+    assert projected.deposit_protection.retained_equity_floor_fraction=='0.45'
+
+@pytest.mark.parametrize('first_filled,expected',[('2','3'),('5','5')])
+def test_actual_split_check_forwards_exact_remaining_child_through_recoverable(code,first_filled,expected):
+    from coinmaster.domain.wave_overlay import Intent
+    from test_e4_c1_manage_only_pure import config
+    split_env=dict(D=D,HOUR=3_600_000_000_000,DAY=86_400_000_000_000)
+    run_ast(nodes('strategy/split_cover.py',{'SplitCoverResearch'}),split_env)
+    class Combined(code.Strategy,split_env['SplitCoverResearch']):pass
+    cfg=config();cfg.research_btc_split50=True;cfg.research_btc_split_planref_v1=True
+    s=Combined(cfg);s._split_parent=None;s.split_parent_audit=[];s._split_child_submit=False;s._queued_intents=[]
+    s._domain.episode.wave_levels=(.01,.02,.03)
+    intent=Intent('logical-parent',s._domain.episode.id,'BTC_ENTRY',None,1,requested_notional=1000)
+    s._split_prepare(intent,D(10),D(1),1,None,0)
+    s._split_native_fill(intent,N(last_qty=Q(first_filled),last_px=Q('100'),ts_event=2))
+    s._entries_enabled=lambda:True;s._persist_transient_checkpoint=lambda:None
+    s._current_owned_money=lambda:None
+    dispatched=[]
+    code.env['WaveOverlayStrategy']._submit_intent=lambda self,*args,**kwargs:dispatched.append((args,kwargs))
+    class Price(Q):
+        def __float__(self):return float(self.value)
+    tick=N(instrument_id=cfg.btc_id,bid_price=Price('99'),ask_price=Price('99.1'),ts_event=3)
+    s._split_check(tick)
+    assert len(dispatched)==1 and dispatched[0][0][0] is intent
+    assert dispatched[0][1]['entry_override_qty']==D(expected)
+    assert not s._split_child_submit
+    # Expected financial suspension must not enqueue a parent without child qty.
+    dispatched.clear()
+    def pending():raise ValueError('LIVE_MONEY_REFRESH_PENDING')
+    s._current_owned_money=pending;requested=[];s._request_live_refresh=lambda:requested.append(True)
+    s._split_check(tick)
+    assert dispatched==[] and s._queued_intents==[] and requested==[True]
+    # Ordinary default None still forwards identically.
+    s._current_owned_money=lambda:None
+    s._submit_intent(intent,99,99.1,None,0,ts_now=4)
+    assert dispatched[0][1]['entry_override_qty'] is None

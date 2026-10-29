@@ -240,6 +240,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._post_drain_task = None
         self._recovery_health = None
         self._live_money_provider = None
+        self._live_financial_suspended=False
+        self._live_financial_deadline_ns=None
         self._active_c1_authorized=getattr(config,'live_start_approved',False) is True
         self._live_account_mode=getattr(config,'live_account_mode','disabled')
         self._input_readiness_preparation=False
@@ -486,9 +488,26 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if tuple(sorted(sizes.items()))!=observation.position_sizes:raise ValueError('LIVE_DP_NATIVE_POSITION_MOVED')
         return observation.equity
 
+    def suspend_live_financial_authority(self):
+        self._live_financial_suspended=True
+        self._live_financial_deadline_ns=None
+
+    def accept_live_financial_authority(self,*,started_ns):
+        now=time.monotonic_ns()
+        if type(started_ns) is not int or not 0<=now-started_ns<=9_000_000_000:
+            raise ValueError("LIVE_MONEY_STALE_OR_UNKNOWN")
+        self._live_financial_deadline_ns=started_ns+9_000_000_000
+        self._live_financial_suspended=False
+
     def _validated_live_money(self) -> LivePerpsMoneyView:
         if not self.recovery_confirmed or self._live_money_provider is None:
             raise ValueError("LIVE_MONEY_UNCONFIRMED")
+        if self._active_c1_authorized:
+            if self._live_financial_suspended:
+                raise ValueError("LIVE_MONEY_REFRESH_PENDING")
+            deadline=self._live_financial_deadline_ns
+            if type(deadline) is not int or time.monotonic_ns()>deadline:
+                raise ValueError("LIVE_MONEY_STALE_OR_UNKNOWN")
         view = self._live_money_provider()
         if not isinstance(view, LivePerpsMoneyView):
             raise ValueError("LIVE_MONEY_VIEW_UNKNOWN")
@@ -744,11 +763,18 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self, intent: Intent, bid_price: float, ask_price: float,
         sigma: float | None, decision_index: int,
         only_instrument: InstrumentId | None = None, ts_now: int | None = None,
+        entry_override_qty: Decimal | None = None,
     ) -> None:
         if intent.action != "CLOSE_ALL" and not (self._active_c1_authorized and intent.action in ("BTC_REDUCE","SOL_HALF_EXIT","SOL_EXIT","C1_RESIDUAL_CUT")):
             try:
                 self._current_owned_money()
             except (ValueError, RuntimeError):
+                if entry_override_qty is not None:
+                    # Existing split owner recomputes confirmed leaves next quote.
+                    # Queuing the logical parent here would lose its child quantity.
+                    self._persist_transient_checkpoint()
+                    self._request_live_refresh()
+                    return
                 if not any(item[0].id == intent.id for item in self._queued_intents):
                     self._queued_intents.append((intent, sigma, decision_index))
                 self._queued_intent_ready_ns[intent.id] = (ts_now or time.time_ns()) + 1
@@ -757,7 +783,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                 return
         return super()._submit_intent(
             intent, bid_price, ask_price, sigma, decision_index,
-            only_instrument=only_instrument, ts_now=ts_now,
+            only_instrument=only_instrument, ts_now=ts_now,entry_override_qty=entry_override_qty,
         )
 
     def establish_owned_effect_chain(self, *, account_id, ws_epoch, policy_sha256):
@@ -834,13 +860,16 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                 except (ValueError,RuntimeError):return False
                 if not self._feeds_fresh(time.time_ns()):return False
                 if not order.is_reduce_only:
-                    if self._active_c1_authorized:
+                    action=args[3] if len(args)>3 else kwargs.get('action')
+                    if self._active_c1_authorized and action in ("BTC_ENTRY","SOL_ADD") and not self._split_child_submit:
                         from coinmaster.ops.hl_live_money import native_lifecycle_feasible
                         instrument=self.cache.instrument(order.instrument_id)
                         mark=self._latest_marks.get(order.instrument_id)
                         if instrument is None or mark is None:return False
                         fractions=self._candidate.btc_tp_fractions_initial_qty if order.instrument_id==self.config.btc_id else ()
-                        if not native_lifecycle_feasible(instrument,order.quantity.as_decimal(),Decimal(str(mark.price)),
+                        parent=self._split_parent if action=="BTC_ENTRY" else None
+                        planned_quantity=parent["quantity"] if parent is not None else order.quantity.as_decimal()
+                        if not native_lifecycle_feasible(instrument,planned_quantity,Decimal(str(mark.price)),
                             tp_fractions=fractions,cut_divisor=self.config.research_c1_btc_cut_divisor if order.instrument_id==self.config.btc_id else 2):return False
                     if not self._tier_allows_increase(
                         order.instrument_id,order.side,order.quantity.as_decimal(),time.time_ns()):return False

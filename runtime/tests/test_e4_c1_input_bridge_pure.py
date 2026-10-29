@@ -217,7 +217,7 @@ def test_actual_full_generation_vector_prepays_native_refresh_and_refunds_unused
     owner._cm_fail=lambda reason:(_ for _ in ()).throw(AssertionError(reason))
     scope=N(durable_orders=(),account_ref='0x'+'1'*40,dex='',anchor_ms=0,anchor_tid=None,owned_coins=frozenset({'BTC','SOL'}))
     owner._cm_owned_scope=lambda:(scope,7,(),frozenset(),())
-    owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None))
+    owner._cm_runtime=N(info_query_evidence=lambda *args:({},(),None,None),native_revision=lambda:7)
     owner._cache=N(account_for_venue=lambda venue:account,instrument=lambda i:object(),positions_open=lambda:[])
     owner._clock=N(timestamp_ns=lambda:10_000_000_000);owner.venue='HL';owner.account_id='acct';owner.id='client'
     def query(account_id):queries.append(account_id);account.last_event=N(id='fresh',ts_init=10_000_000_000)
