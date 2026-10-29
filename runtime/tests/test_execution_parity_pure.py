@@ -198,3 +198,26 @@ def test_current_hl_exact_prospective_tier_boundaries_and_opposite_side_netting(
     assert not native_usdc_margin_core(strategy,btc.id,OrderSide.BUY,D(500),100)
     assert "PROSPECTIVE_TIER_DENIED" in strategy.pre_submit_gate_blocks[-1]["reason"]
     assert native_usdc_margin_core(strategy,btc.id,OrderSide.SELL,D(500),100)
+
+
+@pytest.mark.parametrize("coin",["BTC","SOL"])
+def test_actual_baseline_quote_builder_uses_instrument_precision_and_native_codec(coin):
+    import json
+    from coinmaster.research.native_fixture import instrument_quote,quote
+    from coinmaster.research.current_hl_profile import load_current_hl_diagnostic
+    from nautilus_trader.model.data import QuoteTick
+    profile=load_current_hl_diagnostic(Path(__file__).parent/"fixtures/hl-current-20261029")
+    instrument=next(i for i in profile.instruments if i.base_currency.code==coin)
+    # Reproduce attempt1 lexical mismatch, then exercise actual baseline producer.
+    direct=instrument_quote(instrument,"99.99","100",100)
+    assert direct.bid_price.precision==direct.ask_price.precision==instrument.price_precision
+    assert direct.bid_size.precision==direct.ask_size.precision==instrument.size_precision
+    source=Path(__file__).parents[1]/"coinmaster/research/native_baseline.py"
+    method=next(n for n in ast.walk(ast.parse(source.read_text())) if isinstance(n,ast.FunctionDef) and n.name=="native_quote")
+    env=dict(Decimal=D,current_hl=profile,spread=D(0),quote=quote,instrument_quote=instrument_quote)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[method],type_ignores=[])),str(source),"exec"),env)
+    actual=env["native_quote"](instrument,"100",2,100)
+    decoded=QuoteTick.from_dict(json.loads(json.dumps(QuoteTick.to_dict(actual))))
+    assert decoded==actual
+    assert decoded.bid_price.precision==decoded.ask_price.precision==instrument.price_precision
+    assert decoded.bid_size.precision==decoded.ask_size.precision==instrument.size_precision

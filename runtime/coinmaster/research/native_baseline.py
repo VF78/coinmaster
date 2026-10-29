@@ -766,7 +766,7 @@ def run_native_diagnostic(
     from nautilus_trader.model.identifiers import ClientId
     from coinmaster.domain.wave_overlay import Candidate
     from coinmaster.ledger.journal import NativeEventJournal
-    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, PerpetualFundingModule, TierMarginPolicy, quote
+    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, PerpetualFundingModule, TierMarginPolicy, quote, instrument_quote
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
     from coinmaster.venues.signals import daily_signal, daily_signal_data_type
@@ -997,7 +997,7 @@ def run_native_diagnostic(
     def native_quote(instrument, close: str, precision: int, available_ns: int):
         mid = Decimal(str(close))
         if current_hl is not None:
-            return quote(instrument.id,str(instrument.make_price(mid*(1-spread))),str(instrument.make_price(mid*(1+spread))),available_ns,size_precision=instrument.size_precision)
+            return instrument_quote(instrument,mid*(1-spread),mid*(1+spread),available_ns)
         return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns, size_precision=instrument.size_precision)
     next_accumulators = {}
     successful_run = False

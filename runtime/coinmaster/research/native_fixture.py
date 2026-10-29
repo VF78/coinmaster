@@ -489,6 +489,19 @@ def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int, *, size_prec
     )
 
 
+def instrument_quote(instrument, bid, ask, ts: int, *, size="1000") -> QuoteTick:
+    """Build both sides and sizes through this actual native instrument.
+
+    The nominal displayed size is not historical depth; the explicit full-fill
+    diagnostic model independently supplies this order's native leaves.
+    """
+    quantity=instrument.make_qty(Decimal(str(size)))
+    return QuoteTick(instrument.id,
+        instrument.make_price(Decimal(str(bid))),
+        instrument.make_price(Decimal(str(ask))),
+        quantity,quantity,ts,ts)
+
+
 def build_engine(
     funding_events: tuple[FundingInstruction, ...] = (),
     funding_journal: NativeEventJournal | None = None,
