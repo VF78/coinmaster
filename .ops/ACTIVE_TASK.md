@@ -1,17 +1,19 @@
-2026-10-29 | CoinMaster | current owner order: SMALL FIRST
-Task: fix only the huge small-deposit drawdown; complete minimal fix, full small test, then conditional10K control. No live START.
-Target: coherent AND settled DD<=51.26863558248311161216905115%, prefer lower; zero model liquidation, complete24months, exact native cash and terminal state.
-Keep: BTC entry/C1 profit core, selected30M cap, existing SOL alpha/legacySOL1 in historical diagnostic, fees/data/currency/depth/matching.
-Current implementation: isolated VPS small-capital-dd-fix-20261029; frozen source6e720552093cd0bb961ab6a5fb8b2ae7dae579f9, independently reviewed/public exact verified.
-Changes under test: instrument-derived BTC precision5 and global DP55 based on observed causal native-equity peak. DP55 alone is not proof of target DD.
-Peer P1 CLOSED: eligibility now reads health only; no native money read or persistence in selected fill callbacks.
-63 focused pure PASS3.45s; corrected actual BTC5/SOL1 native object preflight engine0 PASS; source and integrated-test reviews PASS.
-Completed legacy B1 retained: TOTAL5499360.14984003/bothDD51.26863558248311161216905115%, all24months, exact540fills1248funding, liquidations0, flat. This does not qualify the new candidate.
-Canonical capital-repair ledger max7/spent6/active1/reserve0. E1PASS,E2FAILED,E2RPASS,B1PASS all retained; E3FAILED pre-engine metadata forwarding2.427s preserved/no retry. Root-chosen bounded verification under owner request; not a fabricated numeric owner reply.
-NOW: one SMALL24month full RUNNING on frozen6e. SMALL integrates native peak qualification after corrected actual config preflight; no short repeat.10K only after actual SMALL financial+DD PASS.
-Do not start10K on SMALL runtime success alone; economic DD gate must pass. Completed financial NO_GO is preserved and investigated, never relabeled PASS.
-Deferred by owner: depth1000 changes, SOL closing with BTC/new hedge, venue/fee/currency model redesign, GUI/live-prep extras.
-SSH restored with saved key/new task-owned local socket; no server service/config changes. Exact transport/pins/private receipt paths in local private handoff.
-Manager Mac: /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021, codex/btc-pattern-pilot-m2-20261021. Product work only isolated canonical VPS worktrees.
-Installed release remains inactive; no orders/transfers/deployment. Preserve old WIP, failed evidence, journals, locks and dirty user code.
-Publish only business status/code; account values and detailed operational evidence stay private. Project #137/#101 OPEN/InProgress readback verified; refresh running status and publish manager checkpoint.
+2026-10-29 | PRIMARY: total original-winner execution audit | ENGINE0
+Latest owner: explain all problems/sources in ALL BTC/SOL executions of original TOTAL5499360.14984003. Audit completed with explicit qualifications; no new optimization/product/native/deployment/live.
+Scope: all608 original native orders/540fills (340BTC/200SOL), sourcefccd60c01e8cae5e8258748b046f43f88a16bb79/configa2c7/reportc3e23a88/data7ab5/Native1.231.
+ORIGINAL11artifacts found, SHA256 verified, internally copied for isolated read-only analysis. Do not substitute B1 order metadata without original evidence.
+Audit separates source DESIGN, MODEL_ASSUMPTION, actual CODE_DEVIATION and UNKNOWN; everyfill/order must have evidence/cause.
+Confirmed:95/97SOL_ADDclipped;24sameSIDEquote reusegroups/94fills(max22000SOL);65cachedpriorquotecloses;syntheticzero-spread minutecloseL1.
+Confirmed:38BTC passive-zero-netting plans activated66 omitted-level SOLrights without native TP fills. Do not describe these as fake native cash fills.
+Provenance:1000 introduced19Sep deterministicfixture4a53e255, reused20Sep historicalrunner6a6c3713; measured-market rationale UNKNOWN.
+ALL540/608 original-artifact audit COMPLETE; BTC340/SOL200/source/env/nativecash reviewed. Independent QUALIFIED, no blanket algorithm/livePASS. See public AUDIT_STATUS_RU and LOCALPRIVATE fullpacket.
+Current reviewed researchsource6e720552 public/frozen; BTC5 actual firstfill0.00323 verified. Full smallqualification completed exit0/24months/all7financialchecksPASS/liq0/nativeflat/DPpaused, ECONOMIC_NO_GO. Exact smallseed/results PRIVATE.
+Prior aborted SMALL prefix preserved; latest owner early-test-stop >70%, targetDD<=51.26863558% unchanged, tradingDP55 unchanged. Replacement full completed naturally, not rootstopped.
+Capital-repair physicalledger rootboundmax8/spent7/active0/reserve0; conditionalCONTROL10K unadmitted/HOLD dueSMALLNO_GO. No new run budget inferred.
+Finished NEWstopped-vs10K comparison preserved separately (107rows:103B1/95NEWfills,91exact,12B1only,4NEWonly); oldliquidated81 audit is DIFFERENT and not substituted.
+Rootcause NEWJan10 actualrequest B1 SOL7413.9→1000/CANCELED; NEW105.7→105.7/FILLED. NEWJan13 C1halfcut left52.9HELD; not oldRELEASED rearm case.
+KeepBTCcore/SOL lifecycle/currency/venue/fees/depth untouched until audit disposition; no speculative fixes/threshold tweaks.
+ManagerMac canonical path /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; codex/btc-pattern-pilot-m2-20261021.
+Product only isolated canonicalVPSworktrees. Sourcepushnotdeployment. Preserve oldWIP/rawfailures/locks/source-for-review and exact originals.
+Live inactive; separateexplicitSTART required and notgiven. Secrets/accountreadbacks/smallseed/results/privateops excluded from public docs.
+Detailedcurrent paths/pins/receipts in LOCALPRIVATE operationalhandoff. Public audit final disposition: reports/winner-execution-audit-20261029/AUDIT_STATUS_RU.md.

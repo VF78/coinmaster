@@ -1,6 +1,6 @@
 {
   "scope": "Latest owner: only systemic small-deposit drawdown repair; SMALL first, conditional10K second",
-  "status": "SMALL_FULL_RUNNING",
+  "status": "SMALL70_COMPLETED_ECONOMIC_NO_GO_ORIGINAL_WINNER_AUDIT_QUALIFIED",
   "authorization": "Direct owner fix/verify request; numerical verification bound chosen by coordinator, not a fabricated separate numerical owner reply",
   "source_freeze": "6e720552093cd0bb961ab6a5fb8b2ae7dae579f9",
   "engine_free": "63focusedpurePASS3.45s/corrected actual BTC5SOL1nativeobjectsPASS/independent source+integrationmethodPASS",
@@ -23,17 +23,16 @@
     "GUI and further live preparation"
   ],
   "canonical_limits": {
-    "maximum": 7,
+    "maximum": 8,
     "engineering_max": 4,
-    "full_max": 3,
-    "spent": 6,
-    "active": 1,
+    "full_max": 4,
+    "spent": 7,
+    "active": 0,
     "reserve": 0,
     "all_failures_count": true,
     "automatic_retry": false,
     "remaining_order": [
-      "SMALL running",
-      "CONTROL10K only after SMALL financial and economic PASS"
+      "CONTROL10K_HOLD_UNADMITTED_SMALL_GOAL_FAILED"
     ]
   },
   "gates": {
@@ -48,8 +47,9 @@
     "E2R": "PASS3.485s actual native adverse-price exit/flat/PAUSED",
     "B1": "COMPLETED strict legacy control PASS3474.950620648451s; TOTAL5499360.14984003/bothDD51.26863558248311161216905115%;540fills1248funding exact/all24months/liq0/flat",
     "E3": "FAILED_PRE_ENGINE2.427s helper metadata forwarding; files preserved/no retry",
-    "SMALL": "RUNNING single native engine",
-    "CONTROL10K": "NOT_STARTED_CONDITIONAL"
+    "SMALL": "ROOT_EARLY_OBJECTIVE_STOP_ALREADY_COMPLETED_BEFORE_LATEST_OWNER_MESSAGE; partial evidence preserved; no fullTOTAL/ROI",
+    "CONTROL10K": "NOT_STARTED_CONDITIONAL",
+    "SMALL70": "NATURAL_EXIT0_FULL24MONTH_FINANCIAL_PASS_ECONOMIC_NO_GO; detailedsmallresultsPRIVATE"
   },
   "method": "Financial completion and economic goal are separate. Completed SMALL NO_GO blocks10K. Inspect actual failing episode before further changes; no arbitrary threshold/capital exemption/search.",
   "not_claimed": [
@@ -60,5 +60,10 @@
   ],
   "runtime": "unchanged inactive; no orders/transfers/deployment",
   "blocker": null,
-  "source_public_exact_verified": true
+  "source_public_exact_verified": true,
+  "early_test_stop_DD_percent": 70,
+  "goal_DD_percent": "51.26863558248311161216905115",
+  "trading_DP_limit_percent": 55,
+  "replacement_reason": "Owner changed early-stop rule after previous termination; native engine cannot resume at a partial trace. One fresh same-candidate attempt, all attempts counted; no trading change.",
+  "next": "Audit originalwinner execution model andsource completedQUALIFIED; no newnative/productchangesuntilcorrectedcontract"
 }

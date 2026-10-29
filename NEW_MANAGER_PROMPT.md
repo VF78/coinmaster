@@ -1,5 +1,4 @@
-Read AGENTS, SOUL, USER, PROJECT_TRUTH, ACTIVE_TASK in the authoritative manager checkout.
-Latest owner: minimal small-deposit DD fix; SMALL full first, 10K only after SMALL actual DD/financial PASS.
-Do not resume older10K-first, live-prep, SOL/depth/venue changes or closed campaigns.
-Current single correction, frozen evidence, ledger and next step are in ACTIVE_TASK; exact operational pins/socket are in the local private handoff.
-Preserve all results/WIP; no live START granted.
+Read AGENTS, SOUL, USER, PROJECT_TRUTH and ACTIVE_TASK in this authoritative manager checkout.
+Original-winner ALL540/608 execution audit completed QUALIFIED; read reports/winner-execution-audit-20261029/AUDIT_STATUS_RU.md then exact private packet only as needed.
+Latest question: distinguish backtest data/settings, our callback code, strategy design, reporting and Nautilus limitations. No proven core-engine defect explains the findings; do not call this live-ready.
+Full new small test completed ECONOMIC_NO_GO; detailed small financials private. No new10K control/native/product deployment authorized by this handoff. Preserve all originals/failedprefixes/WIP. No live START.
