@@ -1,0 +1,48 @@
+{
+  "base": "26ed093d2495d4b2a04e95393c97d93c26a41a8a",
+  "checks": {
+    "connected": {
+      "command": [
+        "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "runtime/tests/test_e4_c1_manage_only_pure.py",
+        "runtime/tests/test_e4_c1_input_bridge_pure.py",
+        "runtime/tests/test_e4_c1_unified_pure.py",
+        "runtime/tests/test_deposit_protection.py",
+        "runtime/tests/test_e4_c1_active_authorization_pure.py",
+        "runtime/tests/test_e4_c1_active_composition_pure.py",
+        "runtime/tests/test_e4_c1_per_dex_http_pure.py",
+        "runtime/tests/test_e4_c1_partial_lifecycle_pure.py",
+        "runtime/tests/test_e4_c1_prepared_dispatch_pure.py",
+        "runtime/tests/test_e4_c1_live_name_resolution_pure.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "........................................................................ [ 22%]\n........................................................................ [ 44%]\n........................................................................ [ 66%]\n........................................................................ [ 88%]\n.....................................                                    [100%]\n325 passed in 74.14s (0:01:14)\n",
+      "wall_seconds": 74.90592748578638
+    },
+    "targeted": {
+      "includes": "29 actual prepared-chain cases plus20 source name checks; included in connected count",
+      "passed": 49,
+      "seconds": 28.56
+    }
+  },
+  "correction": "Read/claim current unconsumed proof only inside the journal lock. Explicit native_super_entered flag starts false and is set before native-super entry. Generic local cleanup requires positively pre-handoff state; exact Wave pre-native DP refusal hook remains separately proven. Stale waiters observe no proof and cannot terminalize another handoff.",
+  "deterministic_regression": "Actual wrapper + SQLite, bounded two-thread barriers: waiter reaches lock before owner claim, owner fake-native handoff/cache absent raises uncertain, waiter resumes and denies; exactly one forward, no terminal, durable SUBMITTING retained.",
+  "gate": "Source checks only; same critical peer closure/root native admission/owner START remain separate. Prior failed native evidence and prior pure receipts preserved.",
+  "native_imports_models_nodes_engines_queries_orders_by_writer": 0,
+  "peer_finding": "A second thread could retain a proof before the journal lock, wait for owner handoff, then incorrectly terminalize uncertain SUBMITTING while native cache was absent.",
+  "pins": {
+    "runtime/coinmaster/strategy/live_recovery.py": "70949b786ad225948f481c97b620dc5f24be0c90c3da640693add1a91f4f3bad",
+    "runtime/tests/test_e4_c1_prepared_dispatch_pure.py": "250d0d33dd568c2cf081e469f446dafaca31c32f52d2d6bc4f704598d156fbf2"
+  },
+  "schema": "CM_E4_C1_PREPARED_PROOF_LOCK_CLOSURE_V1",
+  "unchanged_normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "unchanged_wave_sha256": "561a5cb85fb17a1fdfd38b49dd67ab235909a4e8f278ce8ae8769860a4ca97ee"
+}

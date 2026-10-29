@@ -799,11 +799,13 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
 
     def submit_order(self, *args, **kwargs):
         order=args[0] if args else kwargs.get('order')
-        proof=getattr(self,'_prepared_order_dispatch',None)
         if not self._active_c1_authorized or order is None or order.is_reduce_only:
             self._require_recovery_confirmed()
             return super().submit_order(*args, **kwargs)
         with self._recovery_runtime._lock:
+            # Claim only the current unconsumed proof under the same journal lock.
+            # A waiting thread must never retain a pre-handoff reference.
+            proof=getattr(self,'_prepared_order_dispatch',None)
             self._prepared_order_dispatch=None  # One-use, never persisted or reusable.
             try:
                 self._require_recovery_confirmed()
@@ -811,13 +813,15 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             except BaseException:
                 # This stack has provably NOT entered any native submission API.
                 # Use existing domain/journal terminal cleanup, not an uncertain resend.
-                if proof is not None and self.cache.order(proof['order'].client_order_id) is None:
+                if (proof is not None and not proof['native_super_entered']
+                    and self.cache.order(proof['order'].client_order_id) is None):
                     self._terminal_without_fill(str(proof['order'].client_order_id))
                 raise
             self._prepared_deposit_dispatch=(order,proof)
             try:
                 # Base DP still observes/compares the certified equity and can block.
                 # Once this call begins, errors are uncertain: keep durable SUBMITTING.
+                proof['native_super_entered']=True
                 return super().submit_order(*args, **kwargs)
             finally:
                 self._prepared_deposit_dispatch=None
@@ -975,7 +979,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         finally:
             proof=getattr(self,'_prepared_order_dispatch',None)
             self._prepared_order_dispatch=None
-            if proof is not None and self.cache.order(proof['order'].client_order_id) is None:
+            if (proof is not None and not proof['native_super_entered']
+                and self.cache.order(proof['order'].client_order_id) is None):
                 # Still unconsumed means submit_order never reached its native handoff.
                 self._terminal_without_fill(str(proof['order'].client_order_id))
 
@@ -1082,7 +1087,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                     equity=self._validated_live_deposit_equity()
                     observation=self._last_live_input_observation
                     import threading
-                    proof=dict(order=order,thread=threading.get_ident(),
+                    proof=dict(order=order,thread=threading.get_ident(),native_super_entered=False,
                         journal_before=runtime.all_submissions(),
                         body=dict(quantity=str(order.quantity),reduce_only=False,shape=dict(
                             side=getattr(order.side,'name',str(order.side)),

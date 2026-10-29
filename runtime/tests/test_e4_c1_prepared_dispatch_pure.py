@@ -244,3 +244,38 @@ def test_missing_native_account_exception_before_handoff_terminals_proven_unsent
     assert c.sent==[] and c.terminal==['NEW']
     assert c.r.all_submissions()[0]['state']=='TERMINAL'
     assert c.s._prepared_order_dispatch is None
+
+def test_actual_two_thread_waiter_cannot_terminalize_owner_unknown_handoff(prepared):
+    import threading
+    c=prepared;s=c.s
+    entered=threading.Event();release=threading.Event();errors=[];workers=[]
+    original_lock=c.r._lock
+    class BarrierLock:
+        def __enter__(self):
+            if threading.current_thread().name=='late-prepared-dispatch':
+                entered.set()
+                assert release.wait(5),'OWNER_HANDOFF_BARRIER_TIMEOUT'
+            original_lock.acquire()
+            return self
+        def __exit__(self,*unused):original_lock.release()
+    c.r._lock=BarrierLock()
+    def waiter():
+        try:s.submit_order(c.created[0])
+        except BaseException as error:errors.append(error)
+    def prepared_before_submit(*unused):
+        thread=threading.Thread(target=waiter,name='late-prepared-dispatch')
+        workers.append(thread);thread.start()
+        assert entered.wait(5),'WAITER_DID_NOT_REACH_LOCK'
+    s._c1_bind_submission=prepared_before_submit
+    s.fail_after_handoff=True
+    try:
+        with pytest.raises(RuntimeError,match='HANDOFF_UNCERTAIN'):dispatch(c)
+    finally:
+        release.set()
+        for thread in workers:thread.join(5)
+        c.r._lock=original_lock
+    assert workers and all(not thread.is_alive() for thread in workers)
+    assert len(errors)==1 and isinstance(errors[0],ValueError)
+    assert len(c.sent)==1 and c.terminal==[]
+    assert c.r.all_submissions()[0]['state']=='SUBMITTING'
+    assert s._prepared_order_dispatch is None and s._prepared_deposit_dispatch is None
