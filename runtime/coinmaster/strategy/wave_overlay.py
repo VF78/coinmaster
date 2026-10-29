@@ -138,6 +138,10 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     live_initial_capital_policy: str = ""
     live_account_mode: str = "disabled"
     live_equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
+    deposit_currency: str = "USDC"
+    deposit_drawdown_limit_percent: int = 50
+    deposit_check_interval_secs: int = 1
+    deposit_observe_on_quote: bool = False
     deposit_runtime: object | None = None
     deposit_instance_id: str = ""
     deposit_account_id: str = ""
@@ -357,13 +361,17 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._deposit_storage_failed = False
         self._deposit_exit_started = False
         self._deposit_timer_name = f"COINMASTER_DEPOSIT_CHECK:{self.id}"
-        self._deposit = DepositProtection()
+        if type(config.deposit_check_interval_secs) is not int or config.deposit_check_interval_secs <= 0:
+            raise ValueError("DEPOSIT_CHECK_INTERVAL_INVALID")
+        self._deposit = DepositProtection(limit_percent=config.deposit_drawdown_limit_percent, currency=config.deposit_currency)
         if config.deposit_runtime is not None:
+            if getattr(config.deposit_runtime, "deposit_currency", "USDC") != config.deposit_currency:
+                raise ValueError("DEPOSIT_RUNTIME_CURRENCY_MISMATCH")
             stored = config.deposit_runtime.deposit_protection_state(
                 instance_id=config.deposit_instance_id, account_id=config.deposit_account_id,
             )
             if stored is not None:
-                self._deposit = DepositProtection.from_durable(stored)
+                self._deposit = DepositProtection.from_durable(stored, currency=config.deposit_currency)
         self._forced_close_reason: str | None = None
         self._forced_close_intent: Intent | None = None
         self._forced_close_submitted: set[InstrumentId] = set()
@@ -404,7 +412,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             self.subscribe_funding_rates(self.config.sol_id, client_id=self.config.live_mark_client_id)
         if self.config.deposit_runtime is not None:
             self.clock.set_timer(
-                self._deposit_timer_name, pd.Timedelta(seconds=1), None, None,
+                self._deposit_timer_name, pd.Timedelta(seconds=self.config.deposit_check_interval_secs), None, None,
                 self._on_deposit_timer, True, False,
             )
 
@@ -1370,6 +1378,9 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
     def on_quote_tick(self,tick:QuoteTick,*,decision_ns:int|None=None)->None:
         """Only real quotes execute; optional live decision clock never rewrites tick."""
         ts_decision=tick.ts_event if decision_ns is None else decision_ns
+        if self.config.deposit_observe_on_quote and self.config.deposit_runtime is not None and not self._deposit_check():
+            self._reconcile_deposit_flat()
+            return
         if self.config.research_residual_recovery and (self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None):self._c1_revoke(ts_decision,"MANDATORY_QUOTE_PRIORITY")
         if self.config.research_h1_b1 == "h1" and tick.instrument_id == self.config.sol_id:
             self._h1_sol_quote_sequence += 1

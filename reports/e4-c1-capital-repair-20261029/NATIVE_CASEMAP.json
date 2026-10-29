@@ -1,0 +1,51 @@
+{
+  "automatic_retry": false,
+  "cases": [
+    {
+      "id": "E1",
+      "native_seed": "ROOT_FROZEN_REFERENCE_CAPITAL",
+      "quantity_model": "legacy_bybit",
+      "requirements": [
+        "native config serialization before engine;cap30m/bothC1flags/DP55/USDT/60s/IOC_RO",
+        "actual initialflat/nativeaccount cash\u2192DPH initialization",
+        "same existing first48h native fills versus frozenoriginalprefix;terminalclosecash separate",
+        "actualfunding/UTCclose/daily_sample_missed0/noDPtrip/nohiddenadmissiondenial"
+      ],
+      "scope": "ACTUAL_FIRST_48H_HEALTHY_BYBIT_REFERENCE_PREFIX"
+    },
+    {
+      "id": "E2",
+      "market_data": "CLEARLY_LABELED_ENGINEERING_48H_NO_MONETARY_OPTIMIZATION",
+      "quantity_model": "hl_lot_diagnostic",
+      "requirements": [
+        "genuine nativeSOLbuyfill createsposition;no cache/account mutation",
+        "actualadversequote\u2192nativeequity\u2192DP55trigger\u2192one nativeIOC_ROmarket_exit",
+        "native cancel/ACK/fill/cacheflat+DPpersistedTRIPPED_FLAT+pause/noautoresume",
+        "C1RELEASEDindependence covered by actual-controller pure test;nofakeprivateC1state inengine"
+      ],
+      "scope": "EXPLICIT_ENGINEERING_NATIVE_SOL_ONLY_GLOBAL_DP55"
+    }
+  ],
+  "effective_cap": "SHARED_SELECTED_30M",
+  "engines_per_case": 1,
+  "later_full_runs": "ROOT_SEPARATE_FINAL_PROTOCOL_ONLY_AFTER_SOURCE_PEER_AND_E1_E2_PASS:10K_ORIGINAL_BYBIT_LOTS_DP55_THEN_ACTUAL_PRIVATE_SMALL_HL_LOTS_DP55",
+  "max_engine_constructions_total": 2,
+  "metadata_sha256": "c9bd8dc82d352925090527adc592eecb039637497858f9bff62c2551fffa8a84",
+  "no_internal_control_engine": true,
+  "qualification_mode": "live_qualification",
+  "reserve": 0,
+  "schema": "coinmaster-capital-repair-native-casemap-v1",
+  "selected_flags": [
+    "research_c1_first_fresh_h4=True",
+    "research_c1_btc_postcut_d1=True"
+  ],
+  "source_pins": {
+    "runtime/coinmaster/domain/deposit_protection.py": "43c8cb18466de8adbeddf72d2ed16310e9497fee6b41846ba414f54ae58c9cd2",
+    "runtime/coinmaster/ops/paper.py": "8c9ce0349978562078fd174a7d8826568762fec04ddd2e13bf25412d0dd1904a",
+    "runtime/coinmaster/research/effective_config.py": "23a65921cab7cdf4f2ead46d20d8f33bc26714cdb569d7adf1fbaae376b95a91",
+    "runtime/coinmaster/research/native_baseline.py": "429216b0855a2a80281ec5bab668492e12cf0cd762b242bb2b586cf7e1f6408d",
+    "runtime/coinmaster/research/qualification_policy.py": "3db2314b83b4a1ccde0dbd99c80e1ff87e134dc1709da0543d347cf98e95e601",
+    "runtime/coinmaster/strategy/wave_overlay.py": "1174280764ee2fe5c28f37ddd2681e7c2e23c0b1a4b94500447264055011c77a"
+  },
+  "status": "BLOCKED_NO_ROOT_GO"
+}

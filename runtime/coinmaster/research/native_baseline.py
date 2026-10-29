@@ -735,11 +735,17 @@ def run_native_diagnostic(
     research_btc_split_planref_v1: bool = False,
     research_btc_split_tp_ioc: bool = False,
     research_btc_split_discount: str = "0.0025",
-    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
+    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_first_fresh_h4: bool = False, research_c1_btc_postcut_d1: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
     research_sol_cover: str | None = None,
     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
     research_btc_episode_loss_20: bool = False,
     research_sol_remaining_btc_hedge: bool = False,
+    qualification_mode: str = "legacy_reference",
+    qualification_quantity_model: str = "legacy_bybit",
+    qualification_instrument_metadata: dict | None = None,
+    qualification_deposit_runtime=None,
+    qualification_deposit_equity_reader=None,
+    qualification_deposit_account_id: str = "",
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -754,7 +760,7 @@ def run_native_diagnostic(
     from nautilus_trader.cache.config import CacheConfig
     from nautilus_trader.data.config import DataEngineConfig
     from nautilus_trader.model.data import Bar, BarSpecification, BarType
-    from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
+    from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType, TimeInForce
     from nautilus_trader.model.objects import Money
     from nautilus_trader.model.identifiers import ClientId
     from coinmaster.domain.wave_overlay import Candidate
@@ -790,6 +796,13 @@ def run_native_diagnostic(
     candidate = effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs)
     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
+    if research_c1_btc_postcut_d1 and not research_c1_first_fresh_h4:raise ValueError("BTC_POSTCUT_D1_REQUIRES_FIRST_FRESH_COMBO")
+    if research_c1_first_fresh_h4 and (not research_residual_recovery or research_c1_btc_cut_divisor!=4 or research_c1_restore_dd!="0.40"):
+        raise ValueError("FIRST_FRESH_REQUIRES_SELECTED_C1_COMBO")
+    from coinmaster.research.qualification_policy import research_qualification
+    qualification_kwargs, lot_constraints = research_qualification(qualification_mode, qualification_quantity_model,
+        qualification_instrument_metadata, qualification_deposit_runtime, qualification_deposit_equity_reader, qualification_deposit_account_id)
+    if qualification_kwargs:qualification_kwargs["market_exit_time_in_force"]=TimeInForce.IOC
     policy = execution_policy or ExecutionPolicy()
     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
     if fee_policy.venue != "bybit":
@@ -829,8 +842,8 @@ def run_native_diagnostic(
     from coinmaster.research.native_fixture import perpetual
     maker, taker = fee_policy.rates()
     multiplier = Decimal(policy.fee_multiplier)
-    btc_instrument = perpetual("BTCUSDT", BTC, "0.1", "0.001", "0.025", maker * multiplier, taker * multiplier)
-    sol_instrument = perpetual("SOLUSDT", SOL, "0.01", "0.1", "0.05", maker * multiplier, taker * multiplier)
+    btc_instrument = perpetual("BTCUSDT", BTC, "0.1", lot_constraints.get("BTC",{}).get("step","0.001"), "0.025", maker * multiplier, taker * multiplier, min_quantity=lot_constraints.get("BTC",{}).get("min_quantity"))
+    sol_instrument = perpetual("SOLUSDT", SOL, "0.01", lot_constraints.get("SOL",{}).get("step","0.1"), "0.05", maker * multiplier, taker * multiplier, min_quantity=lot_constraints.get("SOL",{}).get("min_quantity"))
     selected_leverage = ((btc_instrument.id, Decimal("40")), (sol_instrument.id, Decimal("20")))
     modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
@@ -918,7 +931,7 @@ def run_native_diagnostic(
         research_sol_btc_open_only=research_sol_btc_open_only,
         research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
         research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
-        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=Decimal(research_c1_restore_dd), research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=Decimal(research_c1_restore_dd), research_c1_first_fresh_h4=research_c1_first_fresh_h4, research_c1_btc_postcut_d1=research_c1_btc_postcut_d1, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
         research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
         research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
@@ -941,6 +954,7 @@ def run_native_diagnostic(
         execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
         execution_policy_hash=policy.hash,
         execution_policy_version=policy.version,
+        **qualification_kwargs,
     ))
     engine.add_strategy(strategy)
     audit_archive = None
@@ -1101,7 +1115,7 @@ def run_native_diagnostic(
         fee_attribution = native_fee_attribution(adapter["fill_audit"], fees)
         audit = journal.funding_audit() if journal else []
         manifest = data_root / "bybit-1m" / "manifest.json"
-        full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH", "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
+        full_config = {**BASELINE_CONFIG, "initial_total_usdt": str(initial_active_seed), "account": BASELINE_CONFIG["account"] if qualification_mode=="legacy_reference" else "SIM_MARGIN_USDT_DP55_QUALIFICATION", "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH" if qualification_mode=="legacy_reference" else "GLOBAL_DP55_NATIVE_USDT_M1", "qualification_mode": qualification_mode, "quantity_model": qualification_quantity_model, "lot_constraints": lot_constraints, "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
         if research_v0_execution_repairs:
             full_config["research_v0_execution_repairs"] = True
             if not research_v0_zero_tp_netting:
@@ -1191,19 +1205,20 @@ def run_native_diagnostic(
             },
         })
         if research_v0_execution_repairs:
-            coinmaster_root = Path(__file__).resolve().parents[1]
+            coinmaster_root = Path(__import__("coinmaster").__file__).resolve().parent
             result["source_hashes"] = {
                 name: hashlib.sha256((coinmaster_root / relative).read_bytes()).hexdigest()
                 for name, relative in (
                     ("native_baseline", "research/native_baseline.py"),
                     ("effective_research_config", "research/effective_config.py"),
+                    ("qualification_policy", "research/qualification_policy.py"),
                     ("wave_domain", "domain/wave_overlay.py"),
                     ("wave_strategy", "strategy/wave_overlay.py"), ("next_band", "strategy/next_band.py"), *(((("residual_recovery", "strategy/residual_recovery.py"),)) if research_residual_recovery else ()),
                     *(((("hedge_band", "strategy/hedge_band.py"),)) if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None else ()),
                 )
             }
         if research_residual_recovery:
-            coinmaster_root=Path(__file__).resolve().parents[1]
+            coinmaster_root=Path(__import__("coinmaster").__file__).resolve().parent
             result.setdefault("source_hashes",{}).update({name:hashlib.sha256((coinmaster_root/relative).read_bytes()).hexdigest() for name,relative in (
                 ("native_accounting","research/native_accounting.py"),("paired_observer","research/paired_observer.py"),
                 ("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
@@ -1228,13 +1243,13 @@ def run_native_diagnostic(
             result["config"]["research_conditional_sol"] = research_conditional_sol
             if research_conditional_sol:
                 result["conditional_sol_audit"] = strategy.conditional_audit
-                result["source_hashes"]["conditional_hedge"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/conditional_hedge.py")
+                result["source_hashes"]["conditional_hedge"] = sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/conditional_hedge.py")
                 result["config"]["conditional_sol_policy"] = {"arm":">0.02_actual_blended_BTC_VWAP","off":"<=0.01_immediate_fresh_BTC_mark","confirmation":"POST_ARM_CLOSED_SOL15m_OR1h_PREVIOUS_BAR_BREAK_NEXT_FRESH_QUOTE","coverage":"0.50_actual_BTC_beta720completed1H_frozen","quantity_cadence":"LATCH_ACTIVATION_AND_ACTUAL_BTC_QUANTITY_CHANGE_ONLY_NO_PRICE_ONLY_REBALANCE","net_target":"MAX_ORIGINAL_AUTHORIZED_REMAINING_AND_CONDITIONAL","ownership_transfer":"SEPARATE_AUTHORIZATION_CREDIT_NO_NATIVE_FILL_OR_PNL"}
             if research_immediate_sol:
                 result["config"]["research_immediate_sol"]=research_immediate_sol
                 result["config"]["research_immediate_lookback"]=research_immediate_lookback
                 result["config"]["immediate_insurance_policy"]={"coefficient":"PURE_SAMPLE_DAILY_VOLRATIO_ROLLING_W_CLOSED_DAYS_FROZEN_FIRST_BTC_FILL","original_SOL":"OFF","target":"ACTUAL_REMAINING_BTC_VOLRATIO_LATCH_ON_FILL_OR_AUTHORIZED_FRACTION","confirm":"CLOSED_SOL_15M_OR_1H_PREVIOUS_BAR_BREAK_THEN_FRESH_QUOTE","funding_components":"UNKNOWN","retry":"KNOWN_ADD_DENIAL_NEXT_MINUTE_NO_RECURSION","BTC":"SELECTED_RULES_UNCHANGED"}
-                result["source_hashes"]["immediate_insurance"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/immediate_insurance.py")
+                result["source_hashes"]["immediate_insurance"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/immediate_insurance.py")
                 result["immediate_sol_insurance_audit"]=strategy.insurance_audit
                 result["immediate_sol_insurance_cycles"]=strategy._insurance_report()["cycles"]
                 result["immediate_daily_sources"]={symbol:sha256_file(data_root/"normalized"/f"bybit-{symbol}-daily.parquet") for symbol in ("BTCUSDT","SOLUSDT")}
@@ -1246,16 +1261,16 @@ def run_native_diagnostic(
                 if research_sol_risk_first=="alpha-corridor-v1":
                     result["corridor_status_counts"]=getattr(strategy,"_rf_corridor_counts",{})
                     result["config"]["risk_first_sol_policy"]={"variant":"ALPHA-CORRIDOR-v1","risk_window":90,"E_H":"FINAL_POST_SOL_NATIVE_CHECKPOINT","floor":".55_GLOBAL_H_NO_RESET","objective":"NEAREST_LAWFUL_ALPHA_CONVEX_NATIVE_LOTS","failure":"EXPLICIT_MIN_L_BEST_EFFORT_NO_BTC_CHANGE","funding_L2":"UNKNOWN"}
-                result["source_hashes"]["risk_first_sol"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/risk_first_sol.py")
+                result["source_hashes"]["risk_first_sol"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/risk_first_sol.py")
             result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
             result["config_hash"] = hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
-            result["source_hashes"]["split_cover"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/split_cover.py")
+            result["source_hashes"]["split_cover"] = sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/split_cover.py")
         if research_chop_pair:
             result["config"]["research_chop_pair"]=True
             result["carry_pair_audit"]=strategy.carry_pair_audit
             result["carry_pair_counts"]=strategy.carry_pair_counts
             result["carry_pair_policy"]={"name":"CHOP_PAIR_50_NET_v1","recovery_label":"REMAINING_INVENTORY_NOT_WHOLE_EPISODE","funding":"UNCHANGED_NATIVE_POSTINGS_ONLY","daily_atr":"EMA_TR_ALPHA_2_15_CAUSAL_SEED","range":"7_CLOSED_DAILY_TWO_CONSECUTIVE_SAME_BOUNDARY_1H"}
-            result["source_hashes"]["carry_pair"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/carry_pair.py")
+            result["source_hashes"]["carry_pair"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/carry_pair.py")
             result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         if research_alpha_cushion:
             result["config"]["research_alpha_cushion"]=True
@@ -1265,7 +1280,7 @@ def run_native_diagnostic(
             result["alpha_cushion_audit_counts"]=strategy.alpha_cushion_counts
             result["alpha_cushion_audit_sampling"]={"diagnostic_sample_cap":4096,"diagnostic_sample_rows":strategy._alpha_sampled_rows,"diagnostic_rows_dropped":strategy._alpha_audit_dropped,"all_beta_and_daily_stress_rows_retained":True}
             result["alpha_cushion_native_peak_validation"]={"basis":"EXISTING_MINUTE_RECORDER_NATIVE_EQUITY_STATE_ONLY","initial_seed":str(initial_active_seed),"samples":strategy._alpha_observer_samples,"peak_updates":strategy._alpha_peak_updates,"peak_decreases":strategy._alpha_peak_decreases,"final_peak":str(strategy._alpha_peak),"last_equity_sample":str(strategy._alpha_equity)}
-            result["source_hashes"]["alpha_cushion"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/alpha_cushion.py")
+            result["source_hashes"]["alpha_cushion"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/alpha_cushion.py")
             result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         if research_h1_b1:
             result["h1_b1_audit"] = strategy.h1_b1_audit
@@ -1430,7 +1445,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_first_fresh_h4: bool = False, research_c1_btc_postcut_d1: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1544,7 +1559,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
         research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
         research_regime_reentry_band=research_regime_reentry_band,
-        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=research_c1_restore_dd, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=research_c1_restore_dd, research_c1_first_fresh_h4=research_c1_first_fresh_h4, research_c1_btc_postcut_d1=research_c1_btc_postcut_d1, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
         research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant,
         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
@@ -1579,7 +1594,7 @@ def main() -> None:
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
     parser.add_argument("--research-sol-btc-open-only", action="store_true")
-    for flag in ("residual-recovery", "wait-4h", "wait-persist", "zero-retrace", "sol-dominant"):
+    for flag in ("residual-recovery", "c1-first-fresh-h4", "c1-btc-postcut-d1", "wait-4h", "wait-persist", "zero-retrace", "sol-dominant"):
         parser.add_argument("--research-"+flag, action="store_true")
     parser.add_argument("--research-h4-ema", type=int, choices=(13,34,89))
     parser.add_argument("--research-h4-gamma", choices=("0.5","1"), default="0.5")
@@ -1641,7 +1656,7 @@ def main() -> None:
             research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
             research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
             research_regime_reentry_band=args.research_regime_reentry_band,
-            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_c1_restore_dd=args.research_c1_restore_dd, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
+            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_c1_restore_dd=args.research_c1_restore_dd, research_c1_first_fresh_h4=args.research_c1_first_fresh_h4, research_c1_btc_postcut_d1=args.research_c1_btc_postcut_d1, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
             research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant,
             research_batch_minutes=args.research_batch_minutes,
             research_sol_risk_first=args.research_sol_risk_first,

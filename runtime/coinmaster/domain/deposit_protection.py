@@ -34,9 +34,11 @@ class DepositProtection:
     current_equity: Decimal | None = None
     observed_ns: int | None = None
     pending_daily_high: dict | None = None
+    currency: str = "USDC"
 
     def __post_init__(self) -> None:
         percent(self.limit_percent)
+        if self.currency not in ("USDC", "USDT"):raise ValueError("DEPOSIT_CURRENCY_UNSUPPORTED")
         if self.high_water is not None and (not self.high_water.is_finite() or self.high_water <= 0):
             raise ValueError("DEPOSIT_HIGH_WATER_INVALID")
         if self.latched != (self.trigger is not None):
@@ -116,7 +118,7 @@ class DepositProtection:
         )
         return {
             "state": state, "drawdown_limit_percent": self.limit_percent,
-            "currency": "USDC", "equity": None if self.current_equity is None else str(self.current_equity),
+            "currency": self.currency, "equity": None if self.current_equity is None else str(self.current_equity),
             "high_water_equity": None if self.high_water is None else str(self.high_water),
             "threshold_equity": None if self.threshold is None else str(self.threshold),
             "observed_at_ns": self.observed_ns,
@@ -135,12 +137,12 @@ class DepositProtection:
         }
 
     @classmethod
-    def from_durable(cls, row: dict[str, object]) -> "DepositProtection":
+    def from_durable(cls, row: dict[str, object], *, currency: str = "USDC") -> "DepositProtection":
         if row.get("schema") != "coinmaster-deposit-protection-v1":
             raise ValueError("DEPOSIT_STATE_SCHEMA_INVALID")
         high = row.get("high_water_equity")
         state = cls(
-            limit_percent=percent(row["drawdown_limit_percent"]),
+            limit_percent=percent(row["drawdown_limit_percent"]), currency=currency,
             high_water=None if high is None else Decimal(high),
             last_boundary_ns=row["last_daily_close_utc"], latched=row["latched"],
             trigger=row["trigger"], exit_state=row["exit_state"],

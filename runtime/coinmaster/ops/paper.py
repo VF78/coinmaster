@@ -35,7 +35,9 @@ class PaperHealth:
 
 
 class PaperRuntime:
-    def __init__(self, database: Path, owner: str, max_data_age_ns: int, *, require_native_cash: bool = False) -> None:
+    def __init__(self, database: Path, owner: str, max_data_age_ns: int, *, require_native_cash: bool = False, deposit_currency: str = "USDC") -> None:
+        if deposit_currency not in ("USDC", "USDT"):raise ValueError("DEPOSIT_CURRENCY_UNSUPPORTED")
+        self.deposit_currency = deposit_currency
         database.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
         # The SQLite owner row is durable identity, not an exclusive process
@@ -757,7 +759,7 @@ class PaperRuntime:
         ).fetchone()
         if row is None:
             return None
-        if row[:3] != (instance_id, account_id, "USDC"):
+        if row[:3] != (instance_id, account_id, self.deposit_currency):
             raise ValueError("DEPOSIT_ACCOUNT_IDENTITY_MISMATCH")
         body = json.loads(row[3])
         if not isinstance(body, dict):
@@ -799,8 +801,8 @@ class PaperRuntime:
         old_body = None if existing is None else json.dumps(existing, sort_keys=True, separators=(",", ":"))
         with self.db:
             self.db.execute(
-                "INSERT OR REPLACE INTO paper_deposit_protection VALUES (1, ?, ?, 'USDC', ?)",
-                (instance_id, account_id, body),
+                "INSERT OR REPLACE INTO paper_deposit_protection VALUES (1, ?, ?, ?, ?)",
+                (instance_id, account_id, self.deposit_currency, body),
             )
             self.db.execute(
                 "INSERT INTO paper_deposit_audit VALUES (?, ?, ?, ?, ?)",

@@ -1,0 +1,68 @@
+{
+  "DP": {
+    "C1_renewal_changes": false,
+    "controller": "EXISTING_DepositProtection_and_native_market_exit",
+    "fresh_qualification_limit": 55,
+    "hard_DD_55_guarantee": false,
+    "historical": {
+      "currency": "USDT",
+      "full_close": "ACTUAL_NATIVE_IOC_REDUCE_ONLY",
+      "quote_observation": true,
+      "reader": "native_marked_deposit_equity_existing_v3_native_cash_UPNL",
+      "runtime": "FRESH_PaperRuntime_separate_DB",
+      "timer_seconds": 60
+    },
+    "live_defaults": {
+      "currency": "USDC",
+      "quote_observation": false,
+      "timer_seconds": 1
+    }
+  },
+  "account_HTTP": 0,
+  "actual_capital_in_tracked_files": false,
+  "candidate_effective_shared": "ORIGINAL_SELECTED_CLI_30M_IN_CLI_AND_DIRECT_API",
+  "installed_edits": 0,
+  "labels": "BYBIT_USDT_native_fees_and_matching;HL_LOT_OVERLAY_ONLY;NOT_USDC_PNL_OR_FULL_HL_ECONOMICS",
+  "limitations": [
+    "Pure controller tests are DTO/native-source AST evidence, not native fill proof.",
+    "Below55 native admission/funding/fill parity remains engineering case E1.",
+    "DP55 is a trigger; M1 gaps, slippage and execution latency can overshoot."
+  ],
+  "native_engines": 0,
+  "old_qualified_harness_edits": 0,
+  "public_metadata_sha256": "c9bd8dc82d352925090527adc592eecb039637497858f9bff62c2551fffa8a84",
+  "pure_connected": "44PASS1.59s",
+  "pure_tests": [
+    "test_deposit_protection.py",
+    "test_effective_research_candidate_pure.py",
+    "test_qualification_dp_pure.py",
+    "test_report_interval_boundaries_pure.py"
+  ],
+  "quantity_models": [
+    "legacy_bybit_UNCHANGED",
+    "hl_lot_diagnostic_public_metadata_BTC5_SOL2"
+  ],
+  "report_boundaries": "PRIOR_REVIEWED_29f_EXACT_FUNCTIONS_REUSED",
+  "schema": "coinmaster-capital-repair-static-v1",
+  "selected_C1_actual_config_forwarding": [
+    "research_c1_first_fresh_h4",
+    "research_c1_btc_postcut_d1"
+  ],
+  "six_conditional_hash_paths_exist_and_actual_package_root": [
+    "strategy/split_cover.py",
+    "strategy/carry_pair.py",
+    "strategy/alpha_cushion.py",
+    "strategy/conditional_hedge.py",
+    "strategy/immediate_insurance.py",
+    "strategy/risk_first_sol.py"
+  ],
+  "source_base": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+  "source_pins": {
+    "runtime/coinmaster/domain/deposit_protection.py": "43c8cb18466de8adbeddf72d2ed16310e9497fee6b41846ba414f54ae58c9cd2",
+    "runtime/coinmaster/ops/paper.py": "8c9ce0349978562078fd174a7d8826568762fec04ddd2e13bf25412d0dd1904a",
+    "runtime/coinmaster/research/effective_config.py": "23a65921cab7cdf4f2ead46d20d8f33bc26714cdb569d7adf1fbaae376b95a91",
+    "runtime/coinmaster/research/native_baseline.py": "429216b0855a2a80281ec5bab668492e12cf0cd762b242bb2b586cf7e1f6408d",
+    "runtime/coinmaster/research/qualification_policy.py": "3db2314b83b4a1ccde0dbd99c80e1ff87e134dc1709da0543d347cf98e95e601",
+    "runtime/coinmaster/strategy/wave_overlay.py": "1174280764ee2fe5c28f37ddd2681e7c2e23c0b1a4b94500447264055011c77a"
+  }
+}

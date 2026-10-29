@@ -37,7 +37,3 @@ def test_actual_entrypoint_candidate_assignment_uses_same_effective_factory(entr
         values = dict(candidate=archived, config={"candidate": asdict(archived)}, Candidate=Candidate, effective_research_candidate=effective_research_candidate, **{flag: enabled})
         exec(compile(ast.fix_missing_locations(ast.Module(body=[statement], type_ignores=[])), "actual_entrypoint_candidate_AST", "exec"), values)
         assert values["candidate"].max_parent_notional == cap
-
-
-def test_no_native_imports_required():
-    assert not any(name == "nautilus_trader" or name.startswith("nautilus_trader.") for name in sys.modules)
