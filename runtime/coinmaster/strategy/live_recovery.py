@@ -82,6 +82,8 @@ def recovery_policy_hash(config, candidate):
             return {"enum":type(item).__name__,"name":item.name}
         return _encode(item)
     body={name:value(getattr(config,name)) for name in names}
+    if getattr(config,"live_initial_capital_policy",""):
+        body["live_initial_capital_policy"]=config.live_initial_capital_policy
     if config.research_residual_recovery:
         body['live_deposit_limit_percent']=55
         body['retained_equity_floor_fraction']='0.45'
@@ -391,6 +393,9 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def initialize_clean_flat_c1_epoch(self,view,*,intent,now_ns,history_anchor_ms,cashflow_page=None):
         """Use canonical freshly constructed state only after strict native proof."""
         runtime=self._recovery_runtime
+        policy=getattr(self.config,"live_initial_capital_policy","")
+        actual=policy=="ACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT"
+        if policy and (not actual or not self._active_c1_authorized):raise ValueError("LIVE_INITIAL_CAPITAL_POLICY_INVALID")
         if (intent!='INITIALIZE_FRESH_C1_EPOCH' or self._fresh_c1_init_intent!=intent
             or not self._input_readiness_preparation or (not self._manage_only_preparation and not self._active_c1_authorized)
             or runtime is None or runtime.entry_control_state()!='PAUSED' or not isinstance(view,LivePerpsMoneyView)
@@ -398,14 +403,19 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             or view.equity_basis!=getattr(self.config,'live_equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1')
             or view.native_revision!=runtime.native_revision() or view.position_sizes
             or type(history_anchor_ms) is not int or not 0<=history_anchor_ms<=view.end_ms
-            or view.equity!=view.raw_usd or self._fresh_init_generation_validator is None
+            or (not actual and view.equity!=view.raw_usd) or self._fresh_init_generation_validator is None
             or not self._fresh_init_generation_validator()):
             raise ValueError('C1_INIT_EXPLICIT_NATIVE_PROOF_REQUIRED')
         view.require_fresh(now_ns//1_000_000,9_000)
         if self._active_c1_authorized:
             if cashflow_page is None:raise ValueError('LIVE_INITIAL_CASHFLOW_BASELINE_REQUIRED')
             from coinmaster.ops.hl_live_profile import initial_capital_limit
-            if view.equity>initial_capital_limit(self.config.live_initial_capital_limit_usdc):raise ValueError('LIVE_INITIAL_CAPITAL_LIMIT_EXCEEDED')
+            if actual:
+                if (not view.equity.is_finite() or view.equity<=0 or view.margin_used!=0
+                    or view.free_collateral!=view.equity or runtime.cashflow_quarantined() or runtime.pending_native_funding()
+                    or runtime._live_account_identity!=("HYPERLIQUID",view.account.lower()) or view.dex!=""):
+                    raise ValueError("LIVE_INITIAL_ACTUAL_CAPITAL_UNPROVEN")
+            elif view.equity>initial_capital_limit(self.config.live_initial_capital_limit_usdc):raise ValueError('LIVE_INITIAL_CAPITAL_LIMIT_EXCEEDED')
         if (self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight()
             or self._domain.episode is not None or self._pending_by_order or self._queued_intents
             or self._c1_state is not None or self._c1_intents or self._c1_fill_epoch or self._seen_trade_ids

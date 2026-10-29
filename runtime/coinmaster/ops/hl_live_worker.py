@@ -31,7 +31,7 @@ from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_stat
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink, durable_management_scope
 from coinmaster.ops.native_paper_node import BYBIT_IDS, FeedBook, FeedObserver, FeedObserverConfig, bybit_daily_bar_type
 from coinmaster.ops.hl_live_epoch import LiveEpochRuntime as PaperRuntime
-from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity,initial_capital_limit
+from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity,initial_capital_limit,actual_initial_capital
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
@@ -54,9 +54,15 @@ def require_live_order_approval(path: Path, fingerprint_path: Path, release_root
             or approval.get('candidate_sha256')!=identity['candidate_sha256']
             or approval.get('profile_sha256')!=identity['profile_sha256']):raise ValueError
         if selected:
-            cap=profile['initial_capital_usdc'];initial_capital_limit(cap)
+            actual = actual_initial_capital(profile)
+            if actual:
+                policy=profile['initial_capital_policy']
+                if (identity.get('initial_capital_policy')!=policy or approval.get('initial_capital_policy')!=policy
+                    or 'initial_capital_limit_usdc' in identity or 'initial_capital_limit_usdc' in approval):raise ValueError
+            else:
+                cap=profile['initial_capital_usdc'];initial_capital_limit(cap)
+                if identity.get('initial_capital_limit_usdc')!=cap or approval.get('initial_capital_limit_usdc')!=cap:raise ValueError
             if (approval.get('schema')!='coinmaster-live-order-approval-v2'
-                or identity.get('initial_capital_limit_usdc')!=cap or approval.get('initial_capital_limit_usdc')!=cap
                 or profile['profile_sha256']!=identity['profile_sha256']
                 or identity.get('account_mode')!=profile['account_mode'] or approval.get('account_mode')!=profile['account_mode']
                 or identity.get('equity_basis')!=profile['equity_basis'] or approval.get('equity_basis')!=profile['equity_basis']
@@ -179,7 +185,7 @@ class HyperliquidLiveNode:
         self.readiness_budget=readiness_budget if readiness_budget is not None else ReadinessInfoBudget()
         self.account_context={}
         equity=check_live_credential(credential_path,fingerprint_path,account_mode=self.account_mode,readiness_budget=self.readiness_budget,context_out=self.account_context)
-        if self.active_c1 and state.strategy_checkpoint() is None and equity>initial_capital_limit(self.profile['initial_capital_usdc']):
+        if self.active_c1 and not actual_initial_capital(self.profile) and state.strategy_checkpoint() is None and equity>initial_capital_limit(self.profile['initial_capital_usdc']):
             raise RuntimeError('LIVE_INITIAL_CAPITAL_LIMIT_EXCEEDED')
         prior_balance = getattr(state, "flat_epoch_balance", None)
         if not self.input_readiness and self.profile.get("manage_only_readiness",False) is not True and equity != (prior_balance if prior_balance is not None else initial_capital_limit(self.profile["initial_capital_usdc"])):
@@ -228,7 +234,8 @@ class HyperliquidLiveNode:
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
             active_seed=equity, candidate=candidate, seed_bars=self.warmup_bundle.bars,
-            live_start_approved=self.active_c1,live_initial_capital_limit_usdc=self.profile["initial_capital_usdc"],
+            live_start_approved=self.active_c1,live_initial_capital_limit_usdc=self.profile.get("initial_capital_usdc","0"),
+            live_initial_capital_policy=self.profile.get("initial_capital_policy",""),
             live_account_mode=self.account_mode,live_equity_basis=self.profile.get('equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),
             **strategy_flags,
             max_mark_age_ns=120_000_000_000, entries_gate=self._entries_enabled,
@@ -242,6 +249,8 @@ class HyperliquidLiveNode:
             deposit_initialization_allowed=lambda: (self.strategy.recovery_confirmed or (self.input_readiness and state.c1_initialization() is not None and state.coherent_snapshot() and state.recovery_state()=='FLAT_RESTART')) and not state.all_submissions(),
         ))
         self.hooks.strategy = self.strategy
+        if self.active_c1:
+            state.bind_live_health(self._live_health_current)
         # Paused preparation must reach the existing explicit flat-only setter.
         # Readiness checks below retain strict profile/durable parity; construction
         # never changes/reset the persisted control or high-water anchor.
@@ -287,6 +296,70 @@ class HyperliquidLiveNode:
         self.node.trader.add_strategy(self.strategy)
         self._thread = None
         self.prime_error = None
+
+    def _live_health_current(self):
+        """Current LIVE authority plus only acknowledged, owned standing BTC TPs.
+
+        The selected dispatcher creates standing LIMIT/GTC protection only for
+        BTC_REDUCE. SOL exits are IOC and remain blocked while nonterminal.
+        This reader must never call runtime.health (also used by submission).
+        """
+        strategy, runtime = self.strategy, self.state
+        if (strategy._recovery_runtime is not runtime or not self.active_c1
+            or not strategy._active_c1_authorized or strategy._manage_only_preparation
+            or not strategy._owned_chain_current() or not strategy._capital_basis_verified
+            or strategy._live_context_current is None or not strategy._live_context_current()
+            or strategy._live_increase_headroom is None or not strategy._live_increase_headroom()
+            or strategy.deposit_projection()['state'] != 'ARMED'):
+            return False
+        revision = runtime.native_revision()
+        view, positions, pending_openings = strategy._current_owned_money()
+        if pending_openings or view.native_revision != revision:
+            return False
+        rows = runtime.pending_submissions()
+        orders = strategy.cache.orders(venue=strategy.config.btc_id.venue)
+        opened = [order for order in orders if not order.is_closed]
+        native = {str(order.client_order_id): order for order in opened}
+        records = {row['client_order_id']: row for row in rows}
+        if len(native) != len(opened) or len(records) != len(rows) or set(native) != set(records):
+            return False
+        chain = strategy._owned_effect_chain
+        episode = strategy._domain.episode
+        held = positions.get('BTC', Decimal(0))
+        reserved = Decimal(0)
+        def name(value): return getattr(value, 'name', str(value))
+        for client, row in records.items():
+            order = native[client]
+            body = row['body']; shape = body.get('shape') or {}
+            intent = strategy._pending_by_order.get(client)
+            if (row['state'] != 'ACKED' or row['action'] != 'BTC_REDUCE'
+                or row['instrument_id'] != str(strategy.config.btc_id)
+                or body.get('reduce_only') is not True or episode is None
+                or row['episode_id'] != episode.id or intent is None
+                or (intent.id, intent.episode_id, intent.action) != (row['intent_id'], row['episode_id'], row['action'])
+                or intent.limit_price is None or not str(intent.reason or '').startswith('BTC_TP')
+                or str(order.strategy_id) != str(strategy.id) or str(order.account_id) != chain[0]
+                or str(order.instrument_id) != row['instrument_id'] or order.venue_order_id is None
+                or name(order.status) not in ('ACCEPTED', 'PARTIALLY_FILLED')
+                or order.is_pending_cancel or order.is_pending_update
+                or not order.is_reduce_only or not order.is_post_only or not order.has_price
+                or shape.get('kind') != 'LIMIT' or name(order.order_type) != 'LIMIT'
+                or shape.get('tif') != 'GTC' or name(order.time_in_force) != 'GTC'
+                or shape.get('post_only') is not True
+                or shape.get('side') not in ('BUY', 'SELL') or name(order.side) != shape['side']
+                or (shape['side'] == 'SELL') != (held > 0)
+                or order.quantity.as_decimal() != Decimal(body['quantity'])
+                or order.price.as_decimal() != Decimal(shape['price'])):
+                return False
+            leaves = order.quantity.as_decimal() - order.filled_qty.as_decimal()
+            if not leaves.is_finite() or leaves <= 0:
+                return False
+            reserved += leaves
+        if reserved > abs(held):
+            return False
+        if records and strategy._owned_reduce_capacity(strategy.config.btc_id, next(iter(native.values())).side) is None:
+            return False
+        return runtime.native_revision() == revision and strategy._owned_chain_current()
 
     def _entries_enabled(self):
         try:

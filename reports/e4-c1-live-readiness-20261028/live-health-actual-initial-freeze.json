@@ -1,0 +1,69 @@
+{
+  "base_commit": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "compressed_patch_sha256": "1fb28209e496db96c134d2f8779b43a47bc79486d2a29c6d9faada74276168bb",
+  "initial_capital_contract": "ACTIVE exact profile/release/approval binding; qualified existing USDC E, virgin flat, hold0/freeE, identity/revision/freshness; atomic native total/E/H init once; no numeric cap on explicit branch; legacy cap unchanged; later deposits quarantined.",
+  "initial_capital_policy": "ACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT",
+  "patch_file": "reports/e4-c1-live-readiness-20261028/live-health-actual-initial-source.patch.gz",
+  "patch_sha256": "79f930a1ca8fe2ff95a58372aba6a8e41915597fa39c3a8de8d3bfdfcba2ff04",
+  "peer_review": "split_gate_diagnostic_peer reviewed combined uncommitted product diff: no concrete P0/P1; exact committed HEAD review pending",
+  "preserved_untracked_count": 6,
+  "production_binding": "runtime.bind_live_health(holder._live_health_current), same exact constructor hook; actual successful initialize_c1_epoch commit activates process marker; never set marker from durable bytes.",
+  "prohibited_actions": {
+    "backtests": 0,
+    "http": 0,
+    "keys": 0,
+    "native_constructors": 0,
+    "orders": 0,
+    "push": 0,
+    "services": 0
+  },
+  "protections": {
+    "cashflow_quarantine_unchanged": true,
+    "no_paper_snapshot_mutation": true,
+    "no_sandbox_activation": true,
+    "post_reservation_health_false_exact_one_use_prepared_forward": true,
+    "pre_reservation_health_only": true,
+    "restart_marker_defaults_false": true,
+    "unknown_pending_denied": true
+  },
+  "root_cause": "PaperRuntime health uses pending intent and old paper snapshot; qualified current LIVE authority was unavailable to inherited health gate.",
+  "schema": "coinmaster-live-health-actual-initial-freeze-v1",
+  "source_sha256": {
+    "runtime/coinmaster/ops/hl_live_epoch.py": "133f9487c11e534f822c85b0a2e593dbea63bd955049ffd08da5269f9b16ebf5",
+    "runtime/coinmaster/ops/hl_live_profile.py": "b74cbc21bf528c368f32b00d5773a028db1ad40dc79868c7c9794b1fa77f317e",
+    "runtime/coinmaster/ops/hl_live_worker.py": "005ef5c7e7b586b2f911900c235e114a6228e5042833918421322ced02fca881",
+    "runtime/coinmaster/strategy/live_recovery.py": "1c1222c002366c6ff51d8d1afa153fc61692b3db8da5888d4e1f89ddf268a93d",
+    "runtime/coinmaster/strategy/wave_overlay.py": "f6bb3e26f384a96b064ff44656d6901f67f9f7f79b7e2da8c7a388ff20073328",
+    "runtime/tests/test_e4_c1_active_authorization_pure.py": "cc022630adf48429c94b2612b3514ef3648b249024fd30fb7bc83b152091d851",
+    "runtime/tests/test_e4_c1_actual_initial_capital_pure.py": "a29c7561a098e9621a2d22b5d594d2b8629f518a846a06b34935a1c9f123f93e",
+    "runtime/tests/test_e4_c1_live_health_pure.py": "af179d5b5b4d53e34e9e581c0346fa4f84578f7992b53a15a2306b4b36f48e38",
+    "runtime/tests/test_e4_c1_prepared_dispatch_pure.py": "354628afe1d13504226141223903f32b556d1689685eeb4c0cd599c41f844b1e"
+  },
+  "standing_inventory": "wave_overlay.py: passive_reduction only BTC_REDUCE with limit_price creates LIMIT/GTC/post_only; SOL exits IOC, all other pending remains denied.",
+  "tests": {
+    "connected": {
+      "count": 298,
+      "files": [
+        "test_e4_c1_live_health_pure.py",
+        "test_e4_c1_actual_initial_capital_pure.py",
+        "test_e4_c1_active_authorization_pure.py",
+        "test_e4_c1_prepared_dispatch_pure.py",
+        "test_e4_c1_first_held_anchor_pure.py",
+        "test_e4_c1_input_bridge_pure.py",
+        "test_e4_c1_active_composition_pure.py",
+        "test_e4_c1_live_name_resolution_pure.py"
+      ],
+      "seconds": 89.2
+    },
+    "logs": {
+      "actual-initial-preflight-bridge-tests.txt": "82f759547f597245c02a113f33ad5468548b781c1a3c8dc9ed85e78f530391eb",
+      "live-health-actual-initial-connected-tests.txt": "17f834aadef116f2e8f68a16e58d6e8b4a1257c286e9c97bee485483208d2e6e"
+    },
+    "strengthened_actual_preflight": {
+      "count": 17,
+      "overlaps_connected": true,
+      "product_source_unchanged": true,
+      "seconds": 4.98
+    }
+  }
+}

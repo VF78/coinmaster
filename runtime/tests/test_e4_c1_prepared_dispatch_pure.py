@@ -104,7 +104,7 @@ def prepared(code,tmp_path,monkeypatch):
     s._deny_local_entry=lambda *args:(_ for _ in ()).throw(AssertionError(('LOCAL_DENIED',args)))
     # Instrument native forward boundary, never fake DP / observation validation.
     def forward(self,native):
-        assert not self._active_c1_authorized or r.all_submissions()[0]['state']=='SUBMITTING'
+        assert not self._active_c1_authorized or next(row for row in r.all_submissions() if row['client_order_id']==str(native.client_order_id))['state']=='SUBMITTING'
         sent.append(native)
         if getattr(self,'fail_after_handoff',False):raise RuntimeError('HANDOFF_UNCERTAIN')
     boundary.submit_order=forward
@@ -279,3 +279,60 @@ def test_actual_two_thread_waiter_cannot_terminalize_owner_unknown_handoff(prepa
     assert len(c.sent)==1 and c.terminal==[]
     assert c.r.all_submissions()[0]['state']=='SUBMITTING'
     assert s._prepared_order_dispatch is None and s._prepared_deposit_dispatch is None
+
+
+def test_full_prepared_forward_with_real_LIVE_health_and_owned_standing_TP(prepared,code,tmp_path):
+    from test_e4_c1_input_bridge_pure import fresh_init_fixture
+    from test_e4_c1_live_health_pure import worker_source
+    c=prepared;s=c.s;r=c.r
+    init,template,view,now=fresh_init_fixture(code,tmp_path/'init-template')
+    try:
+        init.attach_recovery_runtime(r);init.cache.account_for_venue=lambda venue:c.account
+        view=replace(view,equity=D(100),free_collateral=D(100),raw_usd=D(100))
+        r.entry_control_command('pause-new-entries','actual-init-prepare')
+        init.initialize_clean_flat_c1_epoch(view,intent='INITIALIZE_FRESH_C1_EPOCH',now_ns=now,history_anchor_ms=0)
+    finally:template.close()
+    r.entry_control_command('resume-new-entries','actual-init-resume')
+    entry=order('ENTRY',side='BUY',quantity='10',reduce=False,closed=True)
+    class Side(str):
+        @property
+        def name(self):return str(self)
+    tp=order('TP',side='SELL',quantity='3');tp.side=Side('SELL')
+    tp.is_pending_update=False;tp.has_price=True;tp.price=Q('110');tp.is_post_only=True
+    tp.order_type=N(name='LIMIT');tp.time_in_force=N(name='GTC')
+    pos=N(id='owned',instrument_id=s.config.btc_id,strategy_id=s.id,account_id=ACCOUNT_ID,
+        is_long=True,quantity=Q('10'),events=[])
+    standing=Intent('standing','episode','BTC_REDUCE',1,-1,quantity=3,limit_price=110,reason='BTC_TP1')
+    s._pending_by_order['TP']=standing
+    r.record_submission(client_order_id='ENTRY',intent_id='entry',episode_id='episode',action='BTC_ENTRY',
+        instrument_id=str(s.config.btc_id),quantity='10',reduce_only=False)
+    r.terminal_submission('ENTRY')
+    r.record_submission(client_order_id='TP',intent_id='standing',episode_id='episode',action='BTC_REDUCE',
+        instrument_id=str(s.config.btc_id),quantity='3',reduce_only=True,
+        order_shape=dict(side='SELL',kind='LIMIT',tif='GTC',post_only=True,price='110'))
+    r.db.execute("UPDATE paper_intents SET state='ACKED' WHERE client_order_id='TP'");r.db.commit()
+    s.cache.orders=lambda venue=None:[entry,tp];s.cache.positions_open=lambda:[pos]
+    s._capital_basis_verified=True;s.deposit_projection=lambda:dict(state='ARMED')
+    s.establish_owned_effect_chain(account_id=ACCOUNT_ID,ws_epoch=4,
+        policy_sha256=code.env['recovery_policy_hash'](s.config,s._candidate))
+    revision=r.native_revision()
+    money=replace(view,end_ms=time.time_ns()//1_000_000,native_revision=revision,
+        position_sizes=(('BTC',D(10)),))
+    s._live_money_provider=lambda:money
+    del s.__dict__['_current_owned_money'];del s.__dict__['_validated_live_money']
+    s._last_live_input_observation=replace(s._last_live_input_observation,
+        position_sizes=(('BTC',D(10)),),native_revision=revision)
+    node=object.__new__(worker_source());node.state=r;node.strategy=s;node.active_c1=True
+    node.input_readiness=False;node._refresh_warmup_readiness=lambda:None
+    node.gate=N(attachable=True);node.node=N(is_running=lambda:True)
+    node.feed=N(status=lambda now:dict(BTC=dict(state='READY'),SOL=dict(state='READY')))
+    r.bind_live_health(node._live_health_current);s._entries_enabled=node._entries_enabled
+    assert node._entries_enabled()
+    post_health=[]
+    c.after.append(lambda:post_health.append(r.health(time.time_ns()).safe_for_increase))
+    dispatch(c)
+    assert len(c.sent)==1 and post_health==[False] and r.native_revision()==revision+1
+    assert s._prepared_order_dispatch is None and s._prepared_deposit_dispatch is None
+    assert next(row for row in r.all_submissions() if row['client_order_id']=='TP')['state']=='ACKED'
+    with pytest.raises(ValueError):s.submit_order(c.created[0])
+    assert len(c.sent)==1

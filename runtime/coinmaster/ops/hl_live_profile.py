@@ -21,6 +21,16 @@ INPUT_FLAGS={**FLAGS,'research_btc_split50':True,'research_btc_split_planref_v1'
     'research_c1_global_cut_arm':False,'research_c1_first_fresh_h4':True,'research_c1_btc_postcut_d1':True}
 
 
+ACTUAL_INITIAL_CAPITAL_POLICY = 'ACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT'
+
+def actual_initial_capital(profile):
+    policy = profile.get('initial_capital_policy')
+    if policy is None:return False
+    if (policy != ACTUAL_INITIAL_CAPITAL_POLICY or profile.get('profile_id') != 'E4_C1_ACTIVE_SELECTED'
+        or 'initial_capital_usdc' in profile):
+        raise RuntimeError('LIVE_INITIAL_CAPITAL_POLICY_INVALID')
+    return True
+
 def initial_capital_limit(value):
     """Canonical PRIVATE maximuminitial funding, never a future NAV ceiling."""
     from decimal import Decimal,InvalidOperation
@@ -38,6 +48,8 @@ def _validate_input_readiness_profile(root,profile,candidate):
     active=profile.get('profile_id')=='E4_C1_ACTIVE_SELECTED'
     keys={'schema','profile_id','initial_capital_usdc','candidate_sha256','research_source','economic_config_sha256',
         'strategy_flags','manage_only_readiness','input_readiness','live_order_capability','source_pins','deposit_protection_percent','retained_equity_floor_fraction','initialization_intent','account_mode','equity_basis'}
+    actual = actual_initial_capital(profile)
+    if actual: keys=(keys-{'initial_capital_usdc'})|{'initial_capital_policy'}
     if active:keys=keys|{'owner_start_required'}
     if (set(profile)!=keys or profile.get('schema')!=('coinmaster-live-selected-c1-v1' if active else 'coinmaster-live-input-readiness-v1') or (active and (profile.get('owner_start_required') is not True or profile.get('schema')!='coinmaster-live-selected-c1-v1')) or profile['account_mode'] not in ('disabled','unifiedAccount')
         or profile['equity_basis']!=('HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' if profile['account_mode']=='unifiedAccount' else 'HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1')
@@ -49,7 +61,7 @@ def _validate_input_readiness_profile(root,profile,candidate):
         or profile['retained_equity_floor_fraction']!='0.45'
         or profile['strategy_flags']!=INPUT_FLAGS or profile['candidate_sha256']!=candidate_content_hash(candidate)):
         raise RuntimeError('LIVE_INPUT_PROFILE_MISMATCH')
-    initial_capital_limit(profile['initial_capital_usdc'])
+    if not actual:initial_capital_limit(profile['initial_capital_usdc'])
     required={'coinmaster/strategy/residual_recovery.py','coinmaster/strategy/wave_overlay.py','coinmaster/strategy/next_band.py',
         'coinmaster/strategy/hedge_band.py','coinmaster/domain/wave_overlay.py','coinmaster/strategy/c1_inputs.py','coinmaster/ops/hl_unified_account.py','coinmaster/ops/hl_unified_instruments.py',
         'coinmaster/ops/hl_live_execution.py','coinmaster/ops/hl_info_receipt.py','coinmaster/ops/hl_live_money.py'}

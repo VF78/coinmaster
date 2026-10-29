@@ -44,7 +44,7 @@ def code():
     env = dict(__name__=__name__, Path=Path, json=json, hashlib=hashlib, dataclass=dataclass, asdict=asdict)
     execute(selected_nodes("domain/wave_overlay.py", {"Candidate"}), env)
     execute(selected_nodes("ops/stage_g_config.py", {"canonical_candidate_json", "candidate_content_hash"}), env)
-    execute(selected_nodes("ops/hl_live_profile.py", {"FLAGS", "INPUT_FLAGS", "initial_capital_limit",
+    execute(selected_nodes("ops/hl_live_profile.py", {"FLAGS", "INPUT_FLAGS", "initial_capital_limit", "ACTUAL_INITIAL_CAPITAL_POLICY", "actual_initial_capital",
         "_validate_input_readiness_profile", "load_live_profile"}), env)
     execute(selected_nodes("ops/hl_live_worker.py", {"require_live_order_approval"}), env)
     return env
@@ -227,3 +227,28 @@ def test_legacy_v1_exact_canonical_cap_is_not_literal_82(tmp_path, code, cap):
     write_metadata(identity, fingerprint, approval, paths)
     with pytest.raises(RuntimeError, match="LIVE_OWNER_ORDER_APPROVAL_REQUIRED"):
         code["require_live_order_approval"](*paths)
+
+
+def test_actual_initial_policy_is_exclusive_active_and_exact_approval_bound(tmp_path,code):
+    base,candidate=profile_metadata(tmp_path,code)
+    policy=code['ACTUAL_INITIAL_CAPITAL_POLICY']
+    base.pop('initial_capital_usdc');base['initial_capital_policy']=policy
+    profile=code['_validate_input_readiness_profile'](tmp_path,base,candidate)
+    identity=dict(source_commit='synthetic',strategy_sha256='s',candidate_sha256=profile['candidate_sha256'],
+        profile_sha256=profile['profile_sha256'],initial_capital_policy=policy,account_mode=profile['account_mode'],
+        equity_basis=profile['equity_basis'],money_currency='USDC',research_source=profile['research_source'],
+        economic_config_sha256=profile['economic_config_sha256'])
+    approval=dict(schema='coinmaster-live-order-approval-v2',instance_id='hl-stageg-live',release_commit='synthetic',
+        strategy_sha256='s',candidate_sha256=identity['candidate_sha256'],profile_sha256=identity['profile_sha256'],
+        master_address_sha256='synthetic-fingerprint',initial_capital_policy=policy,account_mode=profile['account_mode'],
+        equity_basis=profile['equity_basis'],authorization='START_LIVE_E4_C1',start_approved=True,orders_approved=True)
+    fp=tmp_path/'fp.json';fp.write_text(json.dumps(dict(master_address_sha256='synthetic-fingerprint')))
+    ticket=tmp_path/'ticket.json';release=tmp_path/'live-release.json';release.write_text(json.dumps(identity))
+    ticket.write_text(json.dumps(approval))
+    assert code['require_live_order_approval'](ticket,fp,tmp_path,profile=profile)==approval
+    for field in ('initial_capital_policy','orders_approved'):
+        wrong=approval|{field:'wrong'};ticket.write_text(json.dumps(wrong))
+        with pytest.raises(RuntimeError,match='LIVE_OWNER_ORDER_APPROVAL_REQUIRED'):
+            code['require_live_order_approval'](ticket,fp,tmp_path,profile=profile)
+    with pytest.raises(RuntimeError):code['actual_initial_capital'](base|{'initial_capital_usdc':'82'})
+    with pytest.raises(RuntimeError):code['actual_initial_capital'](base|{'profile_id':'E4_C1_INPUT_READINESS_ONLY'})

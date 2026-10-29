@@ -15,10 +15,41 @@ class LiveEpochRuntime(PaperRuntime):
 
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
+        self._fresh_c1_epoch_active = False
+        self._live_health_provider = None
         self.db.execute("CREATE TABLE IF NOT EXISTS live_evidence_payloads (cursor INTEGER PRIMARY KEY AUTOINCREMENT,event_id TEXT NOT NULL,kind TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(event_id,kind))")
         self.db.execute("CREATE TABLE IF NOT EXISTS live_evidence_cursors (source TEXT PRIMARY KEY,body TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS live_info_checkpoint (id INTEGER PRIMARY KEY CHECK(id=1),body TEXT NOT NULL)")
         self.db.commit()
+
+    def bind_live_health(self, provider):
+        """Bind one process-local native proof reader; durable bytes grant nothing."""
+        if not callable(provider) or self._live_health_provider is not None:
+            raise RuntimeError('LIVE_HEALTH_BINDING_INVALID')
+        self._live_health_provider = provider
+
+    @_journal_locked
+    def health(self, now_ns):
+        from coinmaster.ops.paper import PaperHealth
+        if not self._fresh_c1_epoch_active or self._live_health_provider is None:
+            return super().health(now_ns)
+        paused = self.entry_control_state() != 'RUNNING'
+        flatten = bool(self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_commands WHERE command='flatten-paper')").fetchone()[0])
+        warnings = []
+        if self._process_lock_fd is None or self._live_account_lock_fd is None:
+            warnings.append('LIVE_HEALTH_OWNERSHIP_MISSING')
+        if flatten: warnings.append('LIVE_FLATTEN_REQUESTED')
+        if self.pending_native_funding(): warnings.append('MANAGE_ONLY_PENDING_NATIVE_FUNDING')
+        if self.cashflow_quarantined(): warnings.append('LIVE_CASHFLOW_QUARANTINED')
+        if self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_command_audit WHERE status='MANAGE_SUBMITTING')").fetchone()[0]:
+            warnings.append('LIVE_MANAGEMENT_COMMAND_PENDING')
+        if not warnings and not paused:
+            try:
+                if self._live_health_provider() is not True:
+                    warnings.append('LIVE_NATIVE_CONTINUATION_UNPROVEN')
+            except (AttributeError, KeyError, RuntimeError, TypeError, ValueError):
+                warnings.append('LIVE_NATIVE_CONTINUATION_UNPROVEN')
+        return PaperHealth(self.owner, paused, flatten, not warnings and not paused, tuple(warnings))
 
     @_journal_locked
     def append_evidence(self,event_id,kind,payload,*,commit=True):
@@ -198,6 +229,8 @@ class LiveEpochRuntime(PaperRuntime):
             self.append_evidence('c1-epoch-initialize','Info',marker,commit=False)
             self.db.commit()
         except BaseException:self.db.rollback();raise
+        # Never reconstructed from the durable initialization marker on restart.
+        self._fresh_c1_epoch_active = True
         return marker
 
     @_journal_locked

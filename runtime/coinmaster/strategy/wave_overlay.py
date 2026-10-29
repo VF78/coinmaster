@@ -135,6 +135,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     funding_sink: object | None = None
     live_start_approved: bool = False
     live_initial_capital_limit_usdc: str = "0"
+    live_initial_capital_policy: str = ""
     live_account_mode: str = "disabled"
     live_equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
     deposit_runtime: object | None = None
