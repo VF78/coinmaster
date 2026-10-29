@@ -113,6 +113,7 @@ class NativeMinuteRiskRecorder:
         self.last_post_cash = D(seed)
         self.settled_curve = DrawdownTracker(seed)
         self.receipt_pending = None
+        self.receipt_b_peak = None
         self.fill_epoch = 0
         self.last_fill_ns = None
         self.receipt_count = 0
@@ -201,6 +202,11 @@ class NativeMinuteRiskRecorder:
         self.receipt_writer.writerow([source,timestamp,epoch,cash,equity,json.dumps(details,separators=(",",":"))])
         self.receipt_count += 1
         self.receipt_pending = None
+        if getattr(strategy.config,"research_sol_market_budget_b",False):
+            peak=self.receipt_b_peak
+            high=peak[2] if peak is not None and peak[:2]==(source,epoch) else None
+            strategy._sol_b_observe(equity,timestamp,source,epoch,details,high_water=high)
+            self.receipt_b_peak=None
         # C1 decisions consume the committed consistent receipt and frozen marks.
         if getattr(strategy.config,"research_residual_recovery",False):
             strategy._c1_observe(equity,timestamp,source,epoch,details)
@@ -227,6 +233,9 @@ class NativeMinuteRiskRecorder:
                 if self.receipt_pending is not None:
                     raise ValueError("RISK_OBSERVER_UNSETTLED_PREVIOUS_QUOTE")
                 self.receipt_pending = (timestamp, bundle)
+                if getattr(strategy.config,"research_sol_market_budget_b",False):
+                    high=strategy.config.research_sol_market_budget_high_water_reader()
+                    self.receipt_b_peak=(timestamp,self.fill_epoch,max(D(high),equity)) if high is not None else None
             self.curves[phase].add(timestamp,equity)
             self.curves["all_native_close_samples"].add(timestamp,equity)
         if phase == "pre_quote_paired_close":

@@ -242,6 +242,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     """Versioned state hooks; native reconciliation remains an external gate."""
 
     def __init__(self, config):
+        if getattr(config,"research_sol_market_budget_b",False):
+            raise ValueError("SOL_B_LIVE_RECEIPT_AND_RECOVERY_NOT_QUALIFIED")
         super().__init__(config)
         self.recovery_confirmed = False
         self._recovery_runtime = None

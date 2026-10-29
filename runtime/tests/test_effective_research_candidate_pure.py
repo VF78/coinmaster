@@ -34,6 +34,6 @@ def test_actual_entrypoint_candidate_assignment_uses_same_effective_factory(entr
     # Execute the actual candidate assignment only; never execute its engine function.
     for enabled, cap in [(False, 10_000_000.0), (True, 30_000_000.0)]:
         archived = replace(Candidate(), max_parent_notional=10_000_000.0)
-        values = dict(research_sol_capital_staging_a=False,initial_active_seed=10000,candidate=archived, config={"candidate": asdict(archived)}, Candidate=Candidate, effective_research_candidate=effective_research_candidate, **{flag: enabled})
+        values = dict(research_sol_capital_staging_a=False,research_sol_market_budget_b=False,initial_active_seed=10000,candidate=archived, config={"candidate": asdict(archived)}, Candidate=Candidate, effective_research_candidate=effective_research_candidate, **{flag: enabled})
         exec(compile(ast.fix_missing_locations(ast.Module(body=[statement], type_ignores=[])), "actual_entrypoint_candidate_AST", "exec"), values)
         assert values["candidate"].max_parent_notional == cap

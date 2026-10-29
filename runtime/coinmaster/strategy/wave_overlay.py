@@ -5,6 +5,7 @@ or funding.  It is deliberately not declared a research baseline until a
 finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
+from coinmaster.strategy.sol_market_budget import SolMarketBudgetResearch
 from coinmaster.strategy.next_band import NextBandResearch, NextClosedBar
 from coinmaster.strategy.residual_recovery import ResidualRecoveryResearch
 
@@ -63,6 +64,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     tp_fee_floor_v1: bool = False
     research_v0_execution_repairs: bool = False
     research_sol_capital_staging_a: bool = False
+    research_sol_market_budget_b: bool = False
+    research_sol_market_budget_daily_seed: tuple = ()
+    research_sol_market_budget_high_water_reader: object | None = None
     research_v0_zero_tp_netting: bool = True
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
@@ -154,6 +158,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     deposit_high_water_allowed: object | None = None
 
     def __post_init__(self) -> None:
+        from coinmaster.strategy.execution_config import validate_sol_budget_modes
+        validate_sol_budget_modes(capital_staging_a=self.research_sol_capital_staging_a,market_budget_b=self.research_sol_market_budget_b)
         from coinmaster.strategy.execution_config import validate_zero_tp_modes
         validate_zero_tp_modes(deferred_selective_zero_tp=self.research_v0_deferred_selective_zero_tp,
             zero_tp_netting=self.research_v0_zero_tp_netting)
@@ -211,7 +217,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(SolMarketBudgetResearch, ResidualRecoveryResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         from coinmaster.strategy.execution_config import validate_zero_tp_modes
@@ -283,6 +289,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._hedge_band_init()
         self._next_init()
         self._c1_init()
+        self._sol_b_init()
         self.h1_b1_audit: list[dict[str, object]] = []
         self._confirmation_state: dict[BarType, dict] = {}
         self._confirmation_events: dict[tuple, tuple[int, int]] = {}
@@ -319,7 +326,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self.research_protection_audit: list[dict[str, object]] = []
         self.sol_cap_admission_audit: list[dict[str, str]] = []
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
-        if config.research_sol_capital_staging_a:
+        if config.research_sol_capital_staging_a or config.research_sol_market_budget_b:
             if (not config.research_v0_selective_lifecycle_repairs or config.research_sol_risk_first
                 or config.research_conditional_sol or config.research_sol_cover is not None
                 or config.research_immediate_sol or config.research_alpha_cushion or config.research_chop_pair
@@ -1185,6 +1192,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             )
             if self.config.research_regime_reentry_band is not None:
                 self._hb_daily_ohlc[next_session] = (float(btc.high), float(btc.low))
+            self._sol_b_daily(next_session,btc.high,btc.low,btc.close,sol.high,sol.low,sol.close)
             self._carry_daily_bar(btc)
             self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
             self._last_accepted_session = next_session
@@ -1428,6 +1436,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         ):
             self._apply_verified_backfill()
         self._retry_deferred_daily_decision()
+        if self._sol_b_quote(tick,ts_decision):
+            return
         if self._mandatory_sol_exit is not None:
             # A timeout is allowed to cancel a stale/resting SOL reduction,
             # then uses the actual native position leaves on the next SOL
@@ -2005,6 +2015,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                     return
             self._conditional_original(intent,rounded,executable_price,sigma,decision_index,ts_now or 0)
             return
+        if self.config.research_sol_market_budget_b and instrument_id==self.config.sol_id and not reduce_only:
+            rounded=self._sol_b_increase_qty(rounded,intent.side,ts_now or 0)
         # Increases are gated at the last safe point, after executable-price
         # sizing/normalization and immediately before native order creation.
         # Reductions deliberately bypass both the pause/stale and margin gates.
@@ -2013,7 +2025,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             min_quantity = instrument.min_quantity.as_decimal() if instrument.min_quantity is not None else None
             min_notional = instrument.min_notional.as_decimal() if instrument.min_notional is not None else None
             meets_minimum = (min_quantity is None or rounded >= min_quantity) and (min_notional is None or rounded * executable_price >= min_notional)
-            if not meets_minimum or not self._entries_enabled() or not self._tier_allows_increase(instrument_id, side, rounded, now):
+            if rounded<=0 or not meets_minimum or not self._entries_enabled() or not self._tier_allows_increase(instrument_id, side, rounded, now):
                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
                 self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
                 return

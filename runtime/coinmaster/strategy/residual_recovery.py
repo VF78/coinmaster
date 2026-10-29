@@ -383,9 +383,12 @@ class ResidualRecoveryResearch:
             lots=t['credit']
             if lots<=0:return
             instrument=self.cache.instrument(t['instrument']);quantity=D(lots)*t['step']
+            if t['instrument']==self.config.sol_id and getattr(self.config,'research_sol_market_budget_b',False):
+                quantity=self._sol_b_increase_qty(quantity,t['side'],ns)
+                lots=int(quantity/t['step'])
             minimum=(instrument.min_quantity is None or quantity>=instrument.min_quantity.as_decimal()) and (instrument.min_notional is None or quantity*executable>=instrument.min_notional.as_decimal())
             native_side=OrderSide.BUY if t['side']==1 else OrderSide.SELL
-            if not minimum or not self._entries_enabled() or not self._tier_allows_increase(t['instrument'],native_side,quantity,ns):
+            if quantity<=0 or not minimum or not self._entries_enabled() or not self._tier_allows_increase(t['instrument'],native_side,quantity,ns):
                 t['confirmation']=None;self._c1_log('RESTORE_NATIVE_ADMISSION_DENIED',ns,credit=t['credit']);return
             kind='RESTORE';action='BTC_RESTORE' if t['instrument']==self.config.btc_id else 'SOL_RESTORE';side=t['side'];reason=RESTORE;t['restore_submitted']=True;t['restore_committed']=lots;t['state']='RESTORE_RESOLVING'
         else:return

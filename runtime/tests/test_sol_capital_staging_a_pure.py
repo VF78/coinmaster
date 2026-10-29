@@ -22,7 +22,7 @@ from nautilus_trader.model.identifiers import TraderId,StrategyId,ClientId
 SOURCE=Path(__file__).parents[1]/"coinmaster/strategy/wave_overlay.py"
 
 
-def dispatch(seed,*,admit=True,enabled=True):
+def dispatch(seed,*,admit=True,enabled=True,b_budget=None):
     seed=D(str(seed))
     profile=load_current_hl_diagnostic(Path(__file__).parent/"fixtures/hl-current-20261029")
     btc,sol=profile.instruments
@@ -31,7 +31,7 @@ def dispatch(seed,*,admit=True,enabled=True):
     config=WaveOverlayStrategyConfig(btc_id=btc.id,sol_id=sol.id,btc_bar_type=kind(btc),sol_bar_type=kind(sol),
         btc_mark_data_type=venue_mark_data_type(btc.id),sol_mark_data_type=venue_mark_data_type(sol.id),
         mark_client_id=ClientId("PROBE"),active_seed=seed,candidate=candidate,
-        research_sol_capital_staging_a=enabled,research_v0_selective_lifecycle_repairs=True)
+        research_sol_capital_staging_a=enabled,research_sol_market_budget_b=b_budget is not None,research_v0_selective_lifecycle_repairs=True)
     cls=next(n for n in ast.parse(SOURCE.read_text()).body if isinstance(n,ast.ClassDef) and n.name=="WaveOverlayStrategy")
     method=next(n for n in cls.body if isinstance(n,ast.FunctionDef) and n.name=="_submit_intent")
     module=ast.Module(body=[ast.ImportFrom(module="__future__",names=[ast.alias(name="annotations")],level=0),
@@ -47,6 +47,7 @@ def dispatch(seed,*,admit=True,enabled=True):
     s._conditional_enabled=lambda:False;s._entries_enabled=lambda:True
     gates=[];sent=[];denials=[]
     s._tier_allows_increase=lambda i,side,q,t:(gates.append(q) or admit)
+    s._sol_b_increase_qty=lambda q,side,ns:min(q,b_budget) if b_budget is not None else q
     s._risk_first_sol_prepare=lambda i,q,*a:q;s._risk_first_sol_bind=lambda *a:None;s._risk_first_sol_limit=lambda *a:None
     s._pending_by_order={};s._sigma_by_order={};s._decision_index_by_order={};s._order_audit={}
     s._own_accepted_reduction=lambda *a:None;s._c1_bind_submission=lambda *a:None

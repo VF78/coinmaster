@@ -748,6 +748,7 @@ def run_native_diagnostic(
     qualification_deposit_account_id: str = "",
     current_hl_execution_inputs: Path | None = None,
     research_sol_capital_staging_a: bool = False,
+    research_sol_market_budget_b: bool = False,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -755,6 +756,10 @@ def run_native_diagnostic(
     non-matching daily signals, then executable quotes are added as separate
     homogeneous lists so identical timestamps preserve their causal order.
     """
+    from coinmaster.strategy.execution_config import validate_sol_budget_modes
+    validate_sol_budget_modes(capital_staging_a=research_sol_capital_staging_a,market_budget_b=research_sol_market_budget_b)
+    if research_sol_market_budget_b and (not research_residual_recovery or not observe_minute_risk or current_hl_execution_inputs is None):
+        raise ValueError("SOL_B_REQUIRES_CURRENT_HL_COHERENT_NATIVE_PROFILE")
     from coinmaster.strategy.execution_config import validate_zero_tp_modes
     validate_zero_tp_modes(deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp,
         zero_tp_netting=research_v0_zero_tp_netting)
@@ -801,7 +806,7 @@ def run_native_diagnostic(
     if research_sol_capital_staging_a and current_hl_execution_inputs is None:
         raise ValueError("STAGING_A_REQUIRES_EXPLICIT_CURRENT_HL_PROFILE")
     candidate = effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs,
-        capital_staging_seed=initial_active_seed if research_sol_capital_staging_a else None)
+        capital_staging_seed=initial_active_seed if (research_sol_capital_staging_a or research_sol_market_budget_b) else None)
     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
     if research_c1_btc_postcut_d1 and not research_c1_first_fresh_h4:raise ValueError("BTC_POSTCUT_D1_REQUIRES_FIRST_FRESH_COMBO")
@@ -954,6 +959,9 @@ def run_native_diagnostic(
         deposit_currency=str(btc_instrument.settlement_currency),
         native_hl_admission=current_hl is not None,
         research_sol_capital_staging_a=research_sol_capital_staging_a,
+        research_sol_market_budget_b=research_sol_market_budget_b,
+        research_sol_market_budget_high_water_reader=(lambda: max(initial_active_seed, Decimal(coherent_observer.events.peak["equity"])) if coherent_observer.events.peak else initial_active_seed) if research_sol_market_budget_b else None,
+        research_sol_market_budget_daily_seed=tuple(((t+DAY_MS)*1_000_000, *(Decimal(str(daily[symbol][t][key])) for symbol in ("BTCUSDT","SOLUSDT") for key in ("high","low","close"))) for t in sorted(set(daily["BTCUSDT"]) & set(daily["SOLUSDT"])) if t+DAY_MS<=trading_start_ms) if research_sol_market_budget_b else (),
         native_hl_selected_leverage=current_hl.selected_leverage if current_hl is not None else (),
         margin_policy=current_hl.margin_policy(max_mark_age_ns) if current_hl is not None else TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
         terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
@@ -1145,6 +1153,7 @@ def run_native_diagnostic(
             'native_strategy_events':adapter,'native_order_events':strategy._order_audit,'native_risk_first_audit':strategy.risk_first_sol_audit,
             'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
             'native_alpha_audit':strategy.alpha_cushion_audit,'native_alpha_counts':strategy.alpha_cushion_counts,
+            **({'native_sol_market_budget_b_audit':strategy.sol_market_budget_audit} if research_sol_market_budget_b else {}),
             'execution_artifacts':artifacts,'native_fees':str(fees),'terminal_active':str(terminal_active)},
             artifact_label+'-raw-native',artifacts_root)
         terminal = adapter["terminal_lifecycle"]
@@ -1164,6 +1173,8 @@ def run_native_diagnostic(
                 full_config["research_v0_deferred_selective_zero_tp"] = True
         if research_v0_selective_lifecycle_repairs:
             full_config["research_v0_selective_lifecycle_repairs"] = True
+        if research_sol_market_budget_b:
+            full_config["research_sol_market_budget_b"]=dict(enabled=True,initial_funded_seed=str(initial_active_seed),high_water="CANONICAL_COMMITTED_NATIVE_EVENT_GLOBAL_PEAK",atr="LAST_ACCEPTED_CLOSED_UTC_D1_WILDER14_BTC_SOL",beta="EXISTING_CAUSAL_D1_BETA270",market_scenario="2ATR_RESIDUAL_FLOOR_02",fee_reserve=".0005_NOT_CASH_CHARGE",target_budget="E-.48H",availability="HISTORICAL_VENUE_AVAILABILITY_UNOBSERVED",live_recovery="NOT_QUALIFIED")
         if research_sol_capital_staging_a:
             from coinmaster.strategy.sol_capital_staging import funded_scale,BASE_SOL_CHILD
             full_config["research_sol_capital_staging_a"]=dict(enabled=True,initial_funded_seed=str(initial_active_seed),
@@ -1252,6 +1263,8 @@ def run_native_diagnostic(
             result["c1_audit"]=strategy.c1_audit
             result["c1_denial_counts"]=strategy.c1_denials
             result["c1_terminal_state"]=strategy._c1_export_terminal()
+        if research_sol_market_budget_b:
+            result["sol_market_budget_b_audit"]=strategy.sol_market_budget_audit
         if next_enabled:
             result["next_band_audit"] = strategy.next_band_audit
         result.update({
