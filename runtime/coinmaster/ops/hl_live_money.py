@@ -218,75 +218,123 @@ def require_native_unified_projection(account,total,hold,free):
         raise IncompleteInfoReport('UNIFIED_NATIVE_ACCOUNT_REFRESH_REQUIRED')
 
 
-def prospective_cross_margin_ok(
-    view: LivePerpsMoneyView, *,
-    positions: dict[str, Decimal],
-    pending_openings: Sequence[tuple[str, str, Decimal]],
-    coin: str, side: str, quantity: Decimal,
-    max_gross_multiple: Decimal,
-    fee_reserve_rate: Decimal = HL_FEE_RESERVE_BUFFER,
-) -> bool:
-    """Total worst-side IM plus explicitly buffered effective opening costs."""
+def prospective_cross_margin_core(
+    *, equity, free_collateral, selected_assets, positions, pending_openings,
+    coin, side, quantity, max_gross_multiple, fee_reserve_rate=HL_FEE_RESERVE_BUFFER,
+):
+    """Shared pure economic costs; venue-side availability is a separate live gate."""
     try:
         fee_reserve_rate=CURRENT_HL_FEES.reserve_taker(fee_reserve_rate)
-    except ValueError:
-        return False
-    assets = {item.coin: item for item in view.selected_assets}
-    if (
-        set(assets) != {"BTC", "SOL"} or set(positions) - set(assets)
-        or coin not in assets or side not in {"BUY", "SELL"}
-        or not quantity.is_finite() or quantity <= 0
-        or not fee_reserve_rate.is_finite() or fee_reserve_rate < CURRENT_HL_FEES.taker
-        or max_gross_multiple <= 0
-    ):
-        return False
-    buys = {name: Decimal("0") for name in assets}
-    sells = {name: Decimal("0") for name in assets}
-    fees_notional = quantity * assets[coin].mark
-    for pending_coin, pending_side, leaves in pending_openings:
-        if (
-            pending_coin not in assets or pending_side not in {"BUY", "SELL"}
-            or not leaves.is_finite() or leaves <= 0
-        ):
-            return False
-        (buys if pending_side == "BUY" else sells)[pending_coin] += leaves
-        fees_notional += leaves * assets[pending_coin].mark
-    (buys if side == "BUY" else sells)[coin] += quantity
-    if view.account_mode=='unifiedAccount':
-        asset=assets[coin];index=0 if side=='BUY' else 1
+    except (TypeError,ValueError):
+        return None
+    assets={item.coin:item for item in selected_assets}
+    if (set(assets)!={"BTC","SOL"} or set(positions)-set(assets)
+        or coin not in assets or side not in {"BUY","SELL"}
+        or not quantity.is_finite() or quantity<=0 or max_gross_multiple<=0
+        or not equity.is_finite() or not free_collateral.is_finite()):
+        return None
+    buys={name:Decimal(0) for name in assets};sells=dict(buys)
+    fees_notional=quantity*assets[coin].mark
+    for pending_coin,pending_side,leaves in pending_openings:
+        if (pending_coin not in assets or pending_side not in {"BUY","SELL"}
+            or not leaves.is_finite() or leaves<=0):return None
+        (buys if pending_side=="BUY" else sells)[pending_coin]+=leaves
+        fees_notional+=leaves*assets[pending_coin].mark
+    (buys if side=="BUY" else sells)[coin]+=quantity
+    opening_collateral=gross=Decimal(0)
+    for name,item in assets.items():
+        current=positions.get(name,Decimal(0))
+        if not current.is_finite() or not item.mark.is_finite() or item.mark<=0 or item.leverage<=0:
+            return None
+        opening_collateral+=(buys[name]+sells[name])*item.mark/item.leverage
+        gross+=max(abs(current+buys[name]),abs(current-sells[name]))*item.mark
+    fee_reserve=fees_notional*fee_reserve_rate
+    return dict(allowed=opening_collateral+fee_reserve<=free_collateral and gross<=equity*max_gross_multiple,
+        assets=assets,buys=buys,sells=sells,opening_collateral=opening_collateral,
+        fee_reserve=fee_reserve,gross=gross,fee_reserve_rate=fee_reserve_rate)
+
+
+def prospective_cross_margin_ok(
+    view: LivePerpsMoneyView, *, positions: dict[str,Decimal],
+    pending_openings: Sequence[tuple[str,str,Decimal]], coin: str, side: str,
+    quantity: Decimal, max_gross_multiple: Decimal,
+    fee_reserve_rate: Decimal=HL_FEE_RESERVE_BUFFER,
+) -> bool:
+    """Common economic core plus mandatory authoritative Unified venue limits."""
+    core=prospective_cross_margin_core(equity=view.equity,free_collateral=view.free_collateral,
+        selected_assets=view.selected_assets,positions=positions,pending_openings=pending_openings,
+        coin=coin,side=side,quantity=quantity,max_gross_multiple=max_gross_multiple,
+        fee_reserve_rate=fee_reserve_rate)
+    if core is None:return False
+    assets,buys,sells=core["assets"],core["buys"],core["sells"]
+    if view.account_mode=="unifiedAccount":
+        asset=assets[coin];index=0 if side=="BUY" else 1
         if asset.max_trade_sizes is None or asset.available_to_trade is None:return False
-        proposed=(buys if side=='BUY' else sells)[coin]
-        # All pending opening collateral consumes the SAME USDC pool. Retain
-        # actual venue side limits and conservatively reserve even pending orders
-        # already reflected by the venue: no optimistic double-use of collateral.
-        opening_collateral=Decimal(0)
         for name,item in assets.items():
-            if not item.mark.is_finite() or item.mark<=0 or item.leverage<=0:return False
             for which,pending in enumerate((buys[name],sells[name])):
-                if not pending:continue
-                if (item.max_trade_sizes is None or item.available_to_trade is None
+                if pending and (item.max_trade_sizes is None or item.available_to_trade is None
                     or pending>item.max_trade_sizes[which] or item.available_to_trade[which]<0):return False
-                opening_collateral+=pending*item.mark/item.leverage
-        reserve=opening_collateral+fees_notional*fee_reserve_rate
-        if (proposed>asset.max_trade_sizes[index] or reserve>asset.available_to_trade[index]
-            or reserve>view.free_collateral):return False
-        gross=sum(max(abs(positions.get(name,Decimal(0))+buys[name]),abs(positions.get(name,Decimal(0))-sells[name]))*item.mark for name,item in assets.items())
-        return gross<=view.equity*max_gross_multiple
-    prospective_im = gross = Decimal("0")
-    for name, asset in assets.items():
-        current = positions.get(name, Decimal("0"))
-        if not current.is_finite() or asset.mark <= 0 or asset.leverage <= 0:
-            return False
-        worst = max(abs(current + buys[name]), abs(current - sells[name]))
-        prospective_im += worst * asset.mark / asset.leverage
-        gross += worst * asset.mark
-    # totalMarginUsed is a floor for native margin not explained by our
-    # selected BTC/SOL model. Never subtract existing IM from accountValue twice.
-    required = max(view.margin_used, prospective_im)
-    return (
-        required + fees_notional * fee_reserve_rate <= view.equity
-        and gross <= view.equity * max_gross_multiple
-    )
+        reserve=core["opening_collateral"]+core["fee_reserve"]
+        proposed=(buys if side=="BUY" else sells)[coin]
+        if proposed>asset.max_trade_sizes[index] or reserve>asset.available_to_trade[index]:return False
+        return core["allowed"]
+    # Preserve the previously qualified non-Unified live account projection.
+    prospective_im=sum(max(abs(positions.get(name,Decimal(0))+buys[name]),
+        abs(positions.get(name,Decimal(0))-sells[name]))*item.mark/item.leverage for name,item in assets.items())
+    return max(view.margin_used,prospective_im)+core["fee_reserve"]<=view.equity and core["gross"]<=view.equity*max_gross_multiple
+
+
+def native_usdc_margin_core(strategy,instrument_id,side,quantity,ts_now):
+    """Cached native cash+native UPNL; economic free E-held IM, no venue limits invented."""
+    account=strategy.cache.account_for_venue(strategy.config.btc_id.venue)
+    if account is None:return False
+    cash=account.balance_total(USDC)
+    if cash is None:return False
+    equity=cash.as_decimal();held_im=Decimal(0);positions={};assets=[];pending=[]
+    leverage=dict(strategy.config.native_hl_selected_leverage)
+    ids=(strategy.config.btc_id,strategy.config.sol_id)
+    try:
+        for identifier,coin in zip(ids,("BTC","SOL")):
+            mark=strategy._latest_marks.get(identifier)
+            if mark is None or not 0<=ts_now-mark.ts_event<=strategy.config.max_mark_age_ns:return False
+            selected=leverage[identifier]
+            assets.append(SelectedCrossAsset(coin,selected,Decimal(mark.price)))
+        for position in strategy.cache.positions_open():
+            if position.instrument_id not in ids:return False
+            coin="BTC" if position.instrument_id==ids[0] else "SOL"
+            if coin in positions:return False
+            instrument=strategy.cache.instrument(position.instrument_id)
+            if instrument.quote_currency!=USDC or instrument.settlement_currency!=USDC:return False
+            mark=strategy._latest_marks[position.instrument_id]
+            pnl=position.unrealized_pnl(instrument.make_price(mark.price))
+            if pnl.currency!=USDC:return False
+            equity+=pnl.as_decimal()
+            qty=position.quantity.as_decimal()
+            positions[coin]=qty if position.is_long else -qty
+            initial,_,_=strategy.config.margin_policy.margin_for(position.instrument_id,qty,ts_now)
+            held_im+=initial
+        owned_pending={str(order.client_order_id):order for order in
+            (*strategy.cache.orders_open(),*strategy.cache.orders_inflight())}
+        for order in owned_pending.values():
+            if order.is_closed or order.is_reduce_only:continue
+            if order.instrument_id not in ids:return False
+            leaves=order.quantity.as_decimal()-order.filled_qty.as_decimal()
+            pending.append(("BTC" if order.instrument_id==ids[0] else "SOL",order.side.name,leaves))
+        coin="BTC" if instrument_id==ids[0] else "SOL" if instrument_id==ids[1] else ""
+        core=prospective_cross_margin_core(equity=equity,free_collateral=equity-held_im,
+            selected_assets=assets,positions=positions,pending_openings=tuple(pending),
+            coin=coin,side=side.name,quantity=quantity,max_gross_multiple=strategy.config.max_gross_to_active)
+        strategy._last_hl_admission_audit=dict(E=str(equity),economic_free_collateral=str(equity-held_im),
+            held_initial_margin=str(held_im),opening_collateral=None if core is None else str(core["opening_collateral"]),
+            fee_reserve=None if core is None else str(core["fee_reserve"]),
+            prospective_gross=None if core is None else str(core["gross"]),
+            admission_allowed=bool(core is not None and core["allowed"]))
+        if core is not None and not core["allowed"]:
+            strategy.pre_submit_gate_blocks.append(dict(timestamp=str(ts_now),action="HL_ADMISSION_CORE",
+                reason="SHARED_ECONOMIC_HEADROOM_OR_GROSS_DENIED",**strategy._last_hl_admission_audit))
+        return core is not None and core["allowed"]
+    except (AttributeError,KeyError,RuntimeError,TypeError,ValueError):
+        return False
 
 
 @dataclass(frozen=True)

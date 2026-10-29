@@ -38,7 +38,7 @@ def position(size='1'):
 
 def money_source():
     env=dict(CURRENT_HL_FEES=CURRENT_HL_FEES,HL_FEE_RESERVE_BUFFER=HL_FEE_RESERVE_BUFFER,dataclass=dataclass,Decimal=D,InvalidOperation=InvalidOperation,USDC='USDC',InfoReceipt=InfoReceipt,IncompleteInfoReport=IncompleteInfoReport)
-    run_ast(nodes('ops/hl_live_money.py',{'_amount','SelectedCrossAsset','LivePerpsMoneyView','live_perps_money_view','require_native_unified_projection','CheapPortfolioObservation','cheap_unified_observation','materialize_live_c1_input','prospective_cross_margin_ok','collect_selected_cross_assets'}),env)
+    run_ast(nodes('ops/hl_live_money.py',{'_amount','SelectedCrossAsset','LivePerpsMoneyView','live_perps_money_view','require_native_unified_projection','CheapPortfolioObservation','cheap_unified_observation','materialize_live_c1_input','prospective_cross_margin_ok','prospective_cross_margin_core','collect_selected_cross_assets'}),env)
     return N(**env)
 
 

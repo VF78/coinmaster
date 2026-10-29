@@ -50,6 +50,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     # This is injected by the venue boundary. Production must never obtain a
     # margin policy from research fixtures or a different venue.
     margin_policy: MarginPolicy | None = None
+    native_hl_admission: bool = False
+    native_hl_selected_leverage: tuple[tuple[InstrumentId, Decimal], ...] = ()
     # Compatibility inputs for research callers. They are deliberately inert
     # here: research injects its own policy explicitly.
     tier_marks: tuple["MarkPriceUpdate", ...] = ()
@@ -2074,6 +2076,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             quote_ask=None if quote is None else str(quote.ask_price),
             raw_requested_qty=str(raw_requested_quantity), preround_qty=str(quantity),
             rounded_qty=str(rounded), requested_notional=str(intent.requested_notional),
+            **getattr(self,"_last_hl_admission_audit",{}),
             H=None if episode is None else str(episode.h),
             episode_entry_E=None if episode is None else str(episode.active_entry),
             sizing_guard="SUBMITTED_AFTER_EXISTING_GATES" if not reduce_only else "NATIVE_REDUCE_ONLY_LEAVES",
@@ -2234,7 +2237,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         if self.cache.orders_open() or (self._carry_busy() and self.cache.orders_inflight()) or ((self.config.research_v3_risk or self._carry_busy()) and self._pending_by_order):
             return
         # Native matching must see this instrument quote after the decision.
-        # Cancellation/position callbacks never dispatch against a cached book.
+        # A cached book is eligible only when already causally fresh.
         if self._forced_close_decision_ns is None or tick.ts_event < self._forced_close_decision_ns:
             return
         if self._forced_close_reason == "RESEARCH_V3_T3" and tick.ts_event < self._v3_trail_trigger_ns:
@@ -2314,6 +2317,9 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._begin_forced_close("TERMINAL_BOUNDARY_SETTLEMENT")
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
+        if getattr(self.config, 'native_hl_admission', False):
+            from coinmaster.ops.hl_live_money import native_usdc_margin_core
+            return native_usdc_margin_core(self,instrument_id,side,quantity,ts_now)
         if self.config.deposit_runtime is not None and not self._deposit_check():
             return False
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
@@ -3104,7 +3110,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self.fill_audit.append({
             "venue": str(context.get("venue", event.instrument_id.venue)),
             "client_order_id": str(event.client_order_id), "trade_id": str(event.trade_id),
-            **{key: context.get(key) for key in ("intent_id", "episode_id", "decision_ns", "cancel_ack_ns", "quote_ns", "quote_bid", "quote_ask", "raw_requested_qty", "preround_qty", "rounded_qty", "requested_notional", "H", "episode_entry_E", "sizing_guard")},
+            **{key: context.get(key) for key in ("intent_id", "episode_id", "decision_ns", "cancel_ack_ns", "quote_ns", "quote_bid", "quote_ask", "raw_requested_qty", "preround_qty", "rounded_qty", "requested_notional", "H", "episode_entry_E", "sizing_guard", "E", "economic_free_collateral", "held_initial_margin", "opening_collateral", "fee_reserve", "prospective_gross", "admission_allowed")},
             "instrument": str(event.instrument_id),
             "action": str(context.get("action", "UNKNOWN")),
             "reason": str(context.get("reason", "UNKNOWN")),

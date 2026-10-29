@@ -423,13 +423,13 @@ class BybitTierMarginModule(SimulationModule):
     def process(self, ts_now: int) -> None:
         account = self.exchange.get_account()
         open_ids = {position.instrument_id for position in self.exchange.cache.positions_open()}
-        for instrument_id in (BTC_PERP.id, SOL_PERP.id):
+        for instrument_id in self._selected_leverage:
             if instrument_id not in open_ids:
                 account.clear_margin_init(instrument_id)
                 account.clear_margin_maint(instrument_id)
         for position in self.exchange.cache.positions_open():
             try:
-                policy = TierMarginPolicy(
+                policy = self._injected_policy if self._injected_policy is not None else TierMarginPolicy(
                     tuple(self._dynamic_marks.values()) if self._dynamic_marks else self._static_marks,
                     self._selected_leverage,
                     self._max_mark_age_ns,

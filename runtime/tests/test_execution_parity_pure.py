@@ -106,3 +106,60 @@ def test_current_hl_native_usdc_profile_uses_effective_fees_tiers_and_shared_wir
               btc_entry_fee_fill_count=1,btc_entry_fill_count=1,side=1)
     floor=_fee_floor_price(btc,episode,maker=False).as_decimal()
     assert floor>=D(100000)*(1+CURRENT_HL_FEES.taker)/(1-CURRENT_HL_FEES.taker)
+
+
+def test_actual_native_margin_module_process_uses_injected_policy_configured_ids_and_currency():
+    source=Path(__file__).parents[1]/"coinmaster/research/native_fixture.py"
+    cls=next(n for n in ast.parse(source.read_text()).body if isinstance(n,ast.ClassDef) and n.name=="BybitTierMarginModule")
+    process=next(n for n in cls.body if isinstance(n,ast.FunctionDef) and n.name=="process")
+    def forbidden(*a,**kw):raise AssertionError("legacy policy constructed under HL injection")
+    env=dict(Decimal=D,Money=lambda value,currency:(value,currency),TierMarginPolicy=forbidden)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[process],type_ignores=[])),str(source),"exec"),env)
+    positions=[N(instrument_id=i,quantity=N(as_decimal=lambda:D(2))) for i in ("BTC.HL","SOL.HL")]
+    calls=[];cleared=[];updated=[]
+    account=N(clear_margin_init=lambda i:cleared.append(("IM",i)),clear_margin_maint=lambda i:cleared.append(("MM",i)),
+        update_margin_init=lambda i,m:updated.append((i,m)),update_margin_maint=lambda i,m:updated.append((i,m)))
+    policy=N(margin_for=lambda i,q,t:(calls.append((i,q,t)) or (D(5),D(2),D(100))))
+    obj=N(exchange=N(get_account=lambda:account,cache=N(positions_open=lambda:positions)),
+        _selected_leverage={"BTC.HL":D(40),"SOL.HL":D(20)},_injected_policy=policy,_settlement_currency="USDC",observed=[])
+    env["process"](obj,100)
+    assert [x[0] for x in calls]==["BTC.HL","SOL.HL"]
+    assert all(m[1]=="USDC" for _,m in updated)
+    positions.clear();env["process"](obj,101)
+    assert set(cleared)=={("IM","BTC.HL"),("MM","BTC.HL"),("IM","SOL.HL"),("MM","SOL.HL")}
+
+
+def test_native_plus_minus_upnl_and_live_share_economic_core_with_additional_live_gate(monkeypatch):
+    from coinmaster.ops import hl_live_money as module
+    from coinmaster.research.current_hl_profile import load_current_hl_diagnostic
+    from nautilus_trader.model.currencies import USDC
+    from nautilus_trader.model.objects import Money
+    profile=load_current_hl_diagnostic(Path(__file__).parent/"fixtures/hl-current-20261029")
+    btc,sol=profile.instruments
+    marks={btc.id:N(instrument_id=btc.id,price=D(100000),ts_event=100),sol.id:N(instrument_id=sol.id,price=D(100),ts_event=100)}
+    policy=profile.margin_policy(100)
+    for mark in marks.values():policy.update_mark(mark)
+    original=module.prospective_cross_margin_core;seen=[]
+    def observe(**kw):
+        result=original(**kw);seen.append((kw,result));return result
+    monkeypatch.setattr(module,"prospective_cross_margin_core",observe)
+    for pnl,expected in ((D(-1000),False),(D(1000),True)):
+        pos=N(instrument_id=sol.id,is_long=True,quantity=sol.make_qty(D(10)),
+              unrealized_pnl=lambda price:Money(pnl,USDC))
+        pending=N(client_order_id="pending",is_closed=False,instrument_id=sol.id,is_reduce_only=False,quantity=sol.make_qty(D(2)),filled_qty=sol.make_qty(D(0)),side=OrderSide.SELL)
+        strategy=N(config=N(btc_id=btc.id,sol_id=sol.id,max_mark_age_ns=100,margin_policy=policy,
+            native_hl_selected_leverage=profile.selected_leverage,max_gross_to_active=D(50)),
+            _latest_marks=marks,pre_submit_gate_blocks=[],
+            cache=N(account_for_venue=lambda v:N(balance_total=lambda c:Money(10000,USDC)),
+                positions_open=lambda:[pos],orders_open=lambda:[pending],orders_inflight=lambda:[pending],instrument=lambda i:btc if i==btc.id else sol))
+        assert module.native_usdc_margin_core(strategy,sol.id,OrderSide.BUY,D(1800),100)==expected
+        native_input,native_result=seen[-1]
+        live_result=original(**native_input)
+        assert live_result["allowed"]==native_result["allowed"]==expected
+        assert native_input["equity"]==D(10000)+pnl and native_input["free_collateral"]==D(9950)+pnl
+        # Explicit fixture venue availability may deny even a passing economic core.
+        assets=tuple(module.SelectedCrossAsset(a.coin,a.leverage,a.mark,(D(0),D(0)),(D(0),D(0))) for a in native_input["selected_assets"])
+        view=N(equity=native_input["equity"],free_collateral=native_input["free_collateral"],
+               selected_assets=assets,account_mode="unifiedAccount")
+        assert not module.prospective_cross_margin_ok(view,positions={"SOL":D(10)},pending_openings=(("SOL","SELL",D(2)),),
+            coin="SOL",side="BUY",quantity=D(1800),max_gross_multiple=D(50))
