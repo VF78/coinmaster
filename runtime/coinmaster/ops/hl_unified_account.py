@@ -43,7 +43,7 @@ def native_spot_usdc_dicts(native_balances):
 
 
 def default_dex_state(raw):
-    if not isinstance(raw,list) or not raw:raise IncompleteInfoReport('UNIFIED_ALL_DEX_STATES_MISSING')
+    if not isinstance(raw,(list,tuple)) or not raw:raise IncompleteInfoReport('UNIFIED_ALL_DEX_STATES_MISSING')
     seen=set();default=None
     for item in raw:
         if not isinstance(item,(list,tuple)) or len(item)!=2 or not isinstance(item[0],str) or item[0] in seen:raise IncompleteInfoReport('UNIFIED_DEX_STATE_MALFORMED')

@@ -947,7 +947,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             self.recovery_confirmed = False
             raise RuntimeError("RECOVERY_FILL_CHECKPOINT_CONFLICT")
 
-    def _entries_enabled(self) -> bool:
+    def _entries_enabled(self, *, ignore_research_protection: bool = False) -> bool:
         if self._manage_only_preparation or (self.config.research_residual_recovery and not self._active_c1_authorized):return False
         try:
             self._validated_live_money()
@@ -958,7 +958,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                 return False
         except (ValueError,RuntimeError):
             return False
-        return self._feeds_fresh(time.time_ns()) and super()._entries_enabled()
+        return self._feeds_fresh(time.time_ns()) and super()._entries_enabled(ignore_research_protection=ignore_research_protection)
 
     def on_save(self) -> dict[str, bytes]:
         document = {

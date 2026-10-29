@@ -335,7 +335,7 @@ def test_funding_separate_same_rolling_budget_item_weights_no_cashposting(code,t
     rows=[{'time':1,'hash':'0x1','delta':{'coin':'BTC','usdc':'-1.5'}}]
     calls=[]
     async def info(body):calls.append(body);return rows
-    owner._cm_info=info
+    owner._cm_info=info;owner._cm_unified=False
     owner._cache=N(positions_open=lambda:[position]);owner._cm_next_money_request=0
     try:
         revision=r.native_revision()

@@ -1,0 +1,28 @@
+{
+  "schema": "coinmaster-documented-per-dex-http-contract-v1",
+  "state": "PREPARED_SOURCE_ONLY_NOT_EXECUTED",
+  "parent": "0b3e47005813d54a713800b6a7e7c6ab3f1d7af4",
+  "reason": "Actual ROOT unsigned read-only /info allDexsClearinghouseState returned422; it is a documented WS subscription, not HTTP Info",
+  "primary": [
+    "https://github.com/hyperliquid-dex/hyperliquid-python-sdk/blob/master/hyperliquid/info.py#L263",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint"
+  ],
+  "source_contract": {
+    "http": "clearinghouseState(user,dex)2 EACH directory entry incldefault; never missing=zero",
+    "full": "397+4D+4N, D1..32/N0..15; max585<=700; sequential sweep barriers",
+    "held": "28+2D each6s; oldest9s; ten samples280+20D per60s",
+    "admission": "D11/N15 worst1001 DENY; D11/N14 worst997 potential; dynamic actual rolling capacity still required; no D32 admission claim",
+    "parallel": "bounded8 independent requests per batch; await ALL already-dispatched even on error; stop future batches; actual charges/provenance retained",
+    "catalog": "prestart660 reservation retained; directory20 refresh separate same1000 bucket, max300s actualtimestamp/hash; no re-age original foreign-resting snapshot; changes quarantine",
+    "priority": "held DP first; directory refresh before optional full/funding; cached scope gives no fresh financial evidence"
+  },
+  "caps": {
+    "full_unified": 700,
+    "rolling": 1000,
+    "rolling_seconds": 60
+  },
+  "keys": 0,
+  "native": 0,
+  "venue_calls": 0,
+  "start": false
+}

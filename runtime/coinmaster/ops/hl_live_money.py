@@ -417,10 +417,12 @@ def native_lifecycle_feasible(instrument,quantity,price,*,tp_fractions=(),cut_di
     lots=int(quantity/step)
     if not supported(lots) or not supported(lots//cut_divisor):return False
     remaining=lots
-    for fraction in tp_fractions:
-        fraction=Decimal(str(fraction))
+    fractions=tuple(Decimal(str(value)) for value in tp_fractions)
+    for index,fraction in enumerate(fractions):
         if not fraction.is_finite() or not 0<=fraction<=1:return False
-        part=int(Decimal(lots)*fraction)
+        # Exact canonical domain allocation: the last target owns the native
+        # remainder when configured fractions sum1; no additional lot is added.
+        part=remaining if index==len(fractions)-1 and sum(fractions)==1 else int(Decimal(lots)*fraction)
         if not part:continue
         if part>remaining or not supported(part):return False
         remaining-=part

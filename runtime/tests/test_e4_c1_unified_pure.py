@@ -1,5 +1,5 @@
 """Actual public-adapter source on pure fixtures; no native imports/constructors."""
-import asyncio,time,hashlib
+import asyncio,time,hashlib,json
 from collections import deque
 from dataclasses import dataclass,replace
 from decimal import Decimal as D,InvalidOperation
@@ -147,8 +147,9 @@ def test_wrong_mode_or_nonusdc_native_collateral_never_emits_qualified_state():
 def test_unified_generation_max497_under700_classic600_and_prepaid_native_not_doublecharged():
     owner,e=native_owner()
     assert e.finite_generation_reservation(15)==600
-    assert e.finite_generation_reservation(15,unified=True)==497
-    with pytest.raises(ValueError,match='SCOPE'):e.finite_generation_reservation(16,unified=True)
+    assert e.finite_generation_reservation(14,unified=True,dex_count=11)==497
+    assert e.finite_generation_reservation(15,unified=True,dex_count=32)==585
+    with pytest.raises(ValueError,match='SCOPE'):e.finite_generation_reservation(16,unified=True,dex_count=11)
     owner._cm_unified_generation_reservation=owner._cm_inputs_budget.reserve(437,time.monotonic())
     asyncio.run(owner._update_account_state())
     assert owner._cm_unified_native_charge==28 and len(owner._cm_inputs_budget.spent)==1
@@ -231,7 +232,7 @@ def test_actual_unified_discovery_then_full_vector_and_refund_and_directory_quar
         calls.append(body['type']);kind=body['type']
         if kind=='perpDexs':return [None,{'name':'xyz'}]
         if kind=='frontendOpenOrders':return []
-        if kind=='allDexsClearinghouseState':return [['',state()],['xyz',state()]]
+        if kind=='clearinghouseState':return state()
         if kind=='spotClearinghouseState':return spot()
         if kind=='userRole':return {'role':'user'}
         if kind=='userAbstraction':return 'unifiedAccount'
@@ -239,7 +240,7 @@ def test_actual_unified_discovery_then_full_vector_and_refund_and_directory_quar
         if kind in ('userFillsByTime','userNonFundingLedgerUpdates'):return []
         if kind=='activeAssetData':return {'user':ACCOUNT,'coin':body['coin'],'leverage':{'type':'cross','value':5},'markPx':'100','maxTradeSzs':['5','5'],'availableToTrade':['100','100']}
         raise AssertionError(body)
-    env=dict(asyncio=asyncio,time=time,hashlib=hashlib,deque=deque,IncompleteInfoReport=IncompleteInfoReport,collect_info_receipt=collect_info_receipt,
+    env=dict(asyncio=asyncio,time=time,hashlib=hashlib,json=json,deque=deque,IncompleteInfoReport=IncompleteInfoReport,collect_info_receipt=collect_info_receipt,
         collect_selected_cross_assets=m.collect_selected_cross_assets,qualified_mass_status=lambda *args,**kwargs:N(account_id='acct'),
         InstrumentId=N(from_str=lambda v:v),read_info_http=read_http,_native_order_fingerprint=lambda o:[])
     run_ast(nodes('ops/hl_live_execution.py',{'ReadinessInfoBudget','finite_generation_reservation','InfoWeightBudget','SingleAttemptInfoTransport','QualifiedInfoBoundary'}),env)
@@ -268,8 +269,8 @@ def test_actual_unified_discovery_then_full_vector_and_refund_and_directory_quar
         owner._cm_unified_mode_proof=dict(started_ns=time.monotonic_ns(),ws_epoch=2)
     owner._cm_refresh_native_account_for_generation=refresh
     assert asyncio.run(owner.generate_mass_status()).account_id=='acct'
-    assert len(calls)==14 and calls.count('perpDexs')==1 and calls.count('allDexsClearinghouseState')==2 and calls.count('spotClearinghouseState')==2
-    assert sum(item[1] for item in owner._cm_inputs_budget.spent)==272  # Discovery60 +context-dedup collector184+native28 incl ledger20.
+    assert len(calls)==16 and calls.count('perpDexs')==1 and calls.count('clearinghouseState')==4 and calls.count('spotClearinghouseState')==2
+    assert sum(item[1] for item in owner._cm_inputs_budget.spent)==240  # Discovery60 +documented twoDEX collector152+native28 inclledger20.
     assert owner._cm_unified_generation_reservation is None and owner._cm_unified_discovery_current()
     with pytest.raises(ValueError,match='DIRECTORY_CHANGED'):owner._cm_validate_unified_dex_directory([['newdex',state()]])
     assert owner._cm_unified_discovery is None

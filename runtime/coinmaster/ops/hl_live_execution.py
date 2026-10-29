@@ -47,7 +47,7 @@ class InfoWeightBudget:
 
     async def __call__(self, body: dict[str, Any]):
         kind = body["type"]
-        if kind not in {'userRole','clearinghouseState','orderStatus','frontendOpenOrders','userAbstraction','userDexAbstraction','userFillsByTime','activeAssetData','spotClearinghouseState','allDexsClearinghouseState','userNonFundingLedgerUpdates'}:
+        if kind not in {'userRole','clearinghouseState','orderStatus','frontendOpenOrders','userAbstraction','userDexAbstraction','userFillsByTime','activeAssetData','spotClearinghouseState','userNonFundingLedgerUpdates'}:
             raise IncompleteInfoReport('LIVE_INFO_UNSUPPORTED_REQUEST')
         cost = 60 if kind == "userRole" else 2 if kind in {
             "clearinghouseState", "orderStatus", "spotClearinghouseState",
@@ -66,74 +66,93 @@ class InfoWeightBudget:
         return value
 
 
-def finite_generation_reservation(uncached_orders,*,unified=False):
+def held_sample_reservation(dex_count):
+    if type(dex_count) is not int or not 1<=dex_count<=32:
+        raise IncompleteInfoReport('UNIFIED_DEX_COUNT_UNKNOWN')
+    return 28+2*dex_count
+
+
+def finite_generation_reservation(uncached_orders,*,unified=False,dex_count=None):
     if type(uncached_orders) is not int or not 0<=uncached_orders<=15:
         raise IncompleteInfoReport('LIVE_INFO_SCOPE_EXCEEDS_GENERATION_CAP')
-    return (437 if unified else 540)+4*uncached_orders
+    if unified:
+        if type(dex_count) is not int or not 1<=dex_count<=32:raise IncompleteInfoReport("UNIFIED_DEX_COUNT_UNKNOWN")
+        return 397+4*dex_count+4*uncached_orders
+    return 540+4*uncached_orders
 
 
 class ReadinessInfoBudget:
     """Atomic prepaid admission; known unused reservation refunded exactly once."""
-    def __init__(self):self.spent=deque();self.next_affordable=None
+    def __init__(self):
+        import threading
+        self._lock=threading.RLock()
+        self.spent=deque();self.next_affordable=None
     def reserve(self,weight,now):
-        if type(weight) is not int or not 0<weight<=1000:raise IncompleteInfoReport('LIVE_INFO_COST_UNKNOWN')
-        self.spent=deque(item for item in self.spent if not item[2] or now-item[0]<60)
-        used=sum(item[1] for item in self.spent)
-        if used+weight>1000:
-            self.next_affordable=None
-            for item in self.spent:
-                if not item[2]:continue
-                used-=item[1]
-                if used+weight<=1000:self.next_affordable=item[0]+60;break
-            raise IncompleteInfoReport('LIVE_INFO_RATE_BUDGET_EXCEEDED')
-        entry=[now,weight,False,[]];self.spent.append(entry);self.next_affordable=None
-        return entry
+        with self._lock:
+            if type(weight) is not int or not 0<weight<=1000:raise IncompleteInfoReport('LIVE_INFO_COST_UNKNOWN')
+            self.spent=deque(item for item in self.spent if not item[2] or now-item[0]<60)
+            used=sum(item[1] for item in self.spent)
+            if used+weight>1000:
+                self.next_affordable=None
+                for item in self.spent:
+                    if not item[2]:continue
+                    used-=item[1]
+                    if used+weight<=1000:self.next_affordable=item[0]+60;break
+                raise IncompleteInfoReport('LIVE_INFO_RATE_BUDGET_EXCEEDED')
+            entry=[now,weight,False,[]];self.spent.append(entry);self.next_affordable=None
+            return entry
     def remaining(self,now):
-        self.spent=deque(item for item in self.spent if not item[2] or now-item[0]<60)
-        return 1000-sum(item[1] for item in self.spent)
-    def protects_held_schedule(self,now,*,additional=0,next_due=None):
-        """Forecast prepaid48/6s renewals against actual unexpired charges.
-        Up to3s budget wait leaves the unchanged9s freshness gate in force.
-        Actual HTTP delay can still make evidence UNKNOWN; no latency guarantee.
-        """
-        self.remaining(now)
-        charges=[(item[0]+60,item[1]) for item in self.spent]
-        if additional:charges.append((now+69,additional))
-        if sum(weight for expiry,weight in charges)>1000:return False
-        due=max(now,next_due if next_due is not None else now)
-        for index in range(10):
-            at=due+index*6
-            active=[(expiry,weight) for expiry,weight in charges if expiry>at]
-            used=sum(weight for _,weight in active)
-            affordable=at
-            for expiry,weight in sorted(active):
-                if used+48<=1000:break
-                used-=weight;affordable=expiry
-            if used+48>1000 or affordable-at>3:return False
-            charges.append((affordable+60,48))
-        return True
+        with self._lock:
+            self.spent=deque(item for item in self.spent if not item[2] or now-item[0]<60)
+            return 1000-sum(item[1] for item in self.spent)
+    def protects_held_schedule(self,now,*,additional=0,next_due=None,sample_weight=48):
+        with self._lock:
+            """Forecast prepaid48/6s renewals against actual unexpired charges.
+            Up to3s budget wait leaves the unchanged9s freshness gate in force.
+            Actual HTTP delay can still make evidence UNKNOWN; no latency guarantee.
+            """
+            if type(sample_weight) is not int or not 1<=sample_weight<=1000:return False
+            if additional and additional+10*sample_weight>1000:return False
+            self.remaining(now)
+            charges=[(item[0]+60,item[1]) for item in self.spent]
+            if additional:charges.append((now+69,additional))
+            if sum(weight for expiry,weight in charges)>1000:return False
+            due=max(now,next_due if next_due is not None else now)
+            for index in range(10):
+                at=due+index*6
+                active=[(expiry,weight) for expiry,weight in charges if expiry>at]
+                used=sum(weight for _,weight in active)
+                affordable=at
+                for expiry,weight in sorted(active):
+                    if used+sample_weight<=1000:break
+                    used-=weight;affordable=expiry
+                if used+sample_weight>1000 or affordable-at>3:return False
+                charges.append((affordable+60,sample_weight))
+            return True
     def note(self,reservation,weight,now):
-        if reservation[2] or type(weight) is not int or weight<0 or now<reservation[0]:
-            raise IncompleteInfoReport('LIVE_INFO_CHARGE_INVALID')
-        if weight:reservation[3].append((now,weight))
+        with self._lock:
+            if reservation[2] or type(weight) is not int or weight<0 or now<reservation[0]:
+                raise IncompleteInfoReport('LIVE_INFO_CHARGE_INVALID')
+            if weight:reservation[3].append((now,weight))
     def settle(self,reservation,actual,*,now=None):
-        if (reservation[2] or type(actual) is not int or actual<0):
-            raise IncompleteInfoReport('LIVE_INFO_RESERVATION_SETTLEMENT_INVALID')
-        overflow=actual>reservation[1]
-        notes=reservation[3]
-        noted=sum(weight for _,weight in notes)
-        if noted>actual:raise IncompleteInfoReport('LIVE_INFO_SETTLEMENT_BELOW_RECORDED_CHARGES')
-        # Entire bound remains reserved until atomic settlement; afterwards each
-        # real request/item charge retains its own time, never early start expiry.
-        fallback=reservation[0] if now is None else now
-        charges=[*notes]
-        if actual>noted:charges.append((fallback,actual-noted))
-        self.spent=deque(item for item in self.spent if item is not reservation)
-        self.spent.extend([at,weight,True,[]] for at,weight in charges)
-        self.spent=deque(sorted(self.spent,key=lambda item:item[0]))
-        reservation[1]=actual;reservation[2]=True
-        self.next_affordable=None
-        if overflow:raise IncompleteInfoReport('LIVE_INFO_RESERVATION_COST_OVERFLOW')
+        with self._lock:
+            if (reservation[2] or type(actual) is not int or actual<0):
+                raise IncompleteInfoReport('LIVE_INFO_RESERVATION_SETTLEMENT_INVALID')
+            overflow=actual>reservation[1]
+            notes=reservation[3]
+            noted=sum(weight for _,weight in notes)
+            if noted>actual:raise IncompleteInfoReport('LIVE_INFO_SETTLEMENT_BELOW_RECORDED_CHARGES')
+            # Entire bound remains reserved until atomic settlement; afterwards each
+            # real request/item charge retains its own time, never early start expiry.
+            fallback=reservation[0] if now is None else now
+            charges=[*notes]
+            if actual>noted:charges.append((fallback,actual-noted))
+            self.spent=deque(item for item in self.spent if item is not reservation)
+            self.spent.extend([at,weight,True,[]] for at,weight in charges)
+            self.spent=deque(sorted(self.spent,key=lambda item:item[0]))
+            reservation[1]=actual;reservation[2]=True
+            self.next_affordable=None
+            if overflow:raise IncompleteInfoReport('LIVE_INFO_RESERVATION_COST_OVERFLOW')
 
 
 
@@ -141,6 +160,7 @@ class SingleAttemptInfoTransport:
     """Pinned collector transport: exactly one urllib POST, no injected retry."""
     def __init__(self,*,testnet,timeout):self.testnet=testnet;self.timeout=timeout
     async def __call__(self,body):
+        if body.get('type')=='allDexsClearinghouseState':raise IncompleteInfoReport('INFO_HTTP_WS_SUBSCRIPTION_UNSUPPORTED')
         return await read_info_http(body,testnet=self.testnet,timeout=self.timeout)
 
 
@@ -234,6 +254,8 @@ class QualifiedInfoBoundary:
         self._cm_unified_generation_reservation=None
         self._cm_unified_native_charge=0
         self._cm_unified_discovery=None
+        self._cm_directory_task=None
+        self._cm_last_generation_bound=None
         self._cm_account_context={}
         self._cm_cashflow_page=None
         self._cm_financial_authority=None
@@ -393,7 +415,7 @@ class QualifiedInfoBoundary:
             raise IncompleteInfoReport('ACCOUNT_CONTEXT_BINDING_MISMATCH')
         roles_fresh=(proof.get('master_role')=='user' and proof.get('agent_role')=='agent' and type(proof.get('verified_at_ns')) is int and 0<=now-proof['verified_at_ns']<=300_000_000_000)
         bound=20 if roles_fresh else 140
-        if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=bound,next_due=self._cm_next_money_request):raise IncompleteInfoReport('LIVE_INFO_PROTECTED_HEADROOM')
+        if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=bound,next_due=self._cm_next_money_request,sample_weight=self._cm_held_weight()):raise IncompleteInfoReport('LIVE_INFO_PROTECTED_HEADROOM')
         cost=0;reservation=self._cm_inputs_budget.reserve(bound,time.monotonic())
         try:
             if not roles_fresh:
@@ -415,7 +437,8 @@ class QualifiedInfoBoundary:
         mode=self._cm_unified_mode_proof
         if mode is None or time.monotonic_ns()-mode['started_ns']>9_000_000_000 or mode['ws_epoch']!=self._cm_ws_epoch:
             raise IncompleteInfoReport('UNIFIED_MODE_PROOF_STALE')
-        return {**self._cm_account_context,'mode':'unifiedAccount','mode_observed_at_ns':mode['started_ns']}
+        if not self._cm_dex_directory_current():raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_REFRESH_PENDING')
+        return {**self._cm_account_context,'mode':'unifiedAccount','mode_observed_at_ns':mode['started_ns'],'dex_names':self._cm_unified_discovery['dex_names']}
 
     async def _cm_collect_cashflow_page(self,weighted):
         cursor=self._cm_runtime.evidence_cursor('userNonFundingLedgerUpdates')
@@ -434,52 +457,102 @@ class QualifiedInfoBoundary:
             and proof['ws_epoch']==self._cm_ws_epoch
             and proof['policy_sha256']==recovery_policy_hash(self._cm_strategy.config,self._cm_strategy._candidate))
 
+    def _cm_held_weight(self):
+        if not self._cm_unified:return 48
+        from coinmaster.ops.hl_info_receipt import validated_dex_names
+        return 28+2*len(validated_dex_names(self._cm_unified_discovery['dex_names']))
+
+    def _cm_dex_directory_current(self):
+        proof=self._cm_unified_discovery
+        at=proof.get('directory_observed_ns') if proof is not None else None
+        return (self._cm_unified_discovery_current() and type(at) is int
+            and 0<=time.monotonic_ns()-at<=300_000_000_000)
+
     def _cm_validate_unified_dex_directory(self,raw):
-        if not isinstance(raw,list) or any(not isinstance(item,(tuple,list)) or len(item)!=2 for item in raw):
-            raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_UNKNOWN')
-        if not self._cm_unified_discovery_current() or any(item[0] not in self._cm_unified_discovery['dex_names'] for item in raw):
+        if (not self._cm_unified_discovery_current() or not isinstance(raw,(tuple,list))
+            or tuple(item[0] for item in raw if isinstance(item,(tuple,list)) and len(item)==2)!=self._cm_unified_discovery['dex_names']):
             self._cm_unified_discovery=None
             raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_CHANGED')
 
     async def _cm_qualified_info(self,body):
-        value=await self._cm_info(body)
-        if self._cm_unified and body['type']=='allDexsClearinghouseState':self._cm_validate_unified_dex_directory(value)
-        return value
+        if body.get('type')=='allDexsClearinghouseState':
+            raise IncompleteInfoReport('INFO_HTTP_WS_SUBSCRIPTION_UNSUPPORTED')
+        return await self._cm_info(body)
 
     async def qualify_unified_prestart_orders(self):
         """One bounded catalog snapshot, not perpetual universal order authority."""
         from coinmaster.strategy.live_recovery import recovery_policy_hash
+        from coinmaster.ops.hl_info_receipt import parse_perp_dex_directory,bounded_info_requests
         if not self._cm_unified:return
         if self._cm_unified_discovery_current():return
         if type(self._cm_info) is not SingleAttemptInfoTransport:raise IncompleteInfoReport('LIVE_READINESS_TRANSPORT_SINGLE_ATTEMPT_REQUIRED')
         reservation=self._cm_inputs_budget.reserve(660,time.monotonic());cost=0;started=time.monotonic_ns()
         try:
-            cost=20;raw=await self._cm_info({'type':'perpDexs'})
-            if not isinstance(raw,list) or not 1<=len(raw)<=32:raise IncompleteInfoReport('UNIFIED_DEX_DISCOVERY_BOUND_UNKNOWN')
-            names=[]
-            for item in raw:
-                name='' if item is None else item.get('name') if isinstance(item,dict) else None
-                if not isinstance(name,str) or name in names:raise IncompleteInfoReport('UNIFIED_DEX_CATALOG_MALFORMED')
-                names.append(name)
-            if '' not in names:raise IncompleteInfoReport('UNIFIED_DEFAULT_DEX_MISSING')
+            cost=20;self._cm_inputs_budget.note(reservation,20,time.monotonic())
+            raw=await self._cm_info({'type':'perpDexs'})
+            names=parse_perp_dex_directory(raw);directory_observed=time.monotonic_ns()
             scope,_,_,_,_=self._cm_owned_scope();known=dict((cloid.lower(),oid) for _,cloid,oid in scope.durable_orders)
-            for dex in names:
-                if time.monotonic_ns()-started>9_000_000_000:raise IncompleteInfoReport('UNIFIED_ORDER_DISCOVERY_STALE')
-                cost+=20;orders=await self._cm_info({'type':'frontendOpenOrders','user':scope.account_ref,'dex':dex})
+            async def observed(body):
+                nonlocal cost
+                cost+=20;self._cm_inputs_budget.note(reservation,20,time.monotonic())
+                return await self._cm_info(body)
+            batches,provenance=await bounded_info_requests(observed,[dict(type='frontendOpenOrders',user=scope.account_ref,dex=name) for name in names])
+            for dex,orders in zip(names,batches):
                 if not isinstance(orders,list) or len(orders)>=2000:raise IncompleteInfoReport('UNIFIED_ORDER_DISCOVERY_INCOMPLETE')
                 for row in orders:
-                    if not isinstance(row,dict) or dex or row.get('coin') not in scope.owned_coins:
-                        raise IncompleteInfoReport('UNIFIED_FOREIGN_RESTING_ORDER')
+                    if not isinstance(row,dict) or dex or row.get('coin') not in scope.owned_coins:raise IncompleteInfoReport('UNIFIED_FOREIGN_RESTING_ORDER')
                     cloid=row.get('cloid');oid=row.get('oid')
                     if not ((isinstance(cloid,str) and cloid.lower() in known) or any(value is not None and value==oid for value in known.values())):
                         raise IncompleteInfoReport('UNIFIED_UNKNOWN_RESTING_ORDER')
             if time.monotonic_ns()-started>9_000_000_000:raise IncompleteInfoReport('UNIFIED_ORDER_DISCOVERY_STALE')
             self._cm_unified_discovery=dict(account=scope.account_ref.lower(),ws_epoch=self._cm_ws_epoch,
                 policy_sha256=recovery_policy_hash(self._cm_strategy.config,self._cm_strategy._candidate),
-                dex_names=tuple(names),started_ns=started,completed_ns=time.monotonic_ns(),
+                dex_names=names,started_ns=started,completed_ns=time.monotonic_ns(),
+                directory_observed_ns=directory_observed,directory_sha256=hashlib.sha256(json.dumps(names).encode()).hexdigest(),
+                request_provenance=provenance,
                 scope='PRESTART_SNAPSHOT_ACCOUNT_EXCLUSIVE_WRITER_NOT_UNIVERSAL_FUTURE_GTC_PROOF')
         except BaseException:self._cm_unified_discovery=None;raise
         finally:self._cm_inputs_budget.settle(reservation,cost,now=time.monotonic())
+
+    async def _cm_refresh_dex_directory(self):
+        from coinmaster.ops.hl_info_receipt import parse_perp_dex_directory
+        reservation=self._cm_inputs_budget.reserve(20,time.monotonic());cost=0
+        try:
+            cost=20;self._cm_inputs_budget.note(reservation,20,time.monotonic())
+            raw=await self._cm_info({'type':'perpDexs'})
+            names=parse_perp_dex_directory(raw)
+            if not self._cm_unified_discovery_current() or names!=self._cm_unified_discovery['dex_names']:
+                raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_CHANGED')
+            # Only actual metadata is renewed; original foreign-order snapshot untouched.
+            self._cm_unified_discovery['directory_observed_ns']=time.monotonic_ns()
+            self._cm_unified_discovery['directory_sha256']=hashlib.sha256(json.dumps(names).encode()).hexdigest()
+        except IncompleteInfoReport as error:
+            if str(error)!='LIVE_INFO_RATE_BUDGET_EXCEEDED':
+                self._cm_unified_discovery=None;self._cm_fail('UNIFIED_DEX_DIRECTORY_UNKNOWN')
+            raise
+        finally:self._cm_inputs_budget.settle(reservation,cost,now=time.monotonic())
+
+    def request_unified_directory_refresh(self):
+        if not self._cm_unified or self._cm_unified_discovery is None:return False
+        at=self._cm_unified_discovery.get('directory_observed_ns')
+        if type(at) is int and 0<=time.monotonic_ns()-at<240_000_000_000:return False
+        if self._cm_directory_task is not None and not self._cm_directory_task.done():return True
+        if not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=20,
+            next_due=self._cm_next_money_request,sample_weight=self._cm_held_weight()):return False
+        async def refresh():
+            try:await self._cm_refresh_dex_directory()
+            except IncompleteInfoReport as error:
+                self._cm_strategy._live_inputs_reason=str(error)
+        self._cm_directory_task=asyncio.get_running_loop().create_task(refresh())
+        return True
+
+    async def qualify_unified_dex_directory(self):
+        if self._cm_dex_directory_current():return
+        if not self.request_unified_directory_refresh():
+            raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_REFRESH_PENDING')
+        await asyncio.shield(self._cm_directory_task)
+        if not self._cm_dex_directory_current():
+            raise IncompleteInfoReport('UNIFIED_DEX_DIRECTORY_REFRESH_PENDING')
 
     async def _cm_refresh_native_account_for_generation(self):
         account=self._cache.account_for_venue(self.venue)
@@ -509,8 +582,9 @@ class QualifiedInfoBoundary:
                 reservation=None;native_refresh_cost=0
                 if self._cm_inputs_enabled:
                     if self._cm_unified:
-                        await self.qualify_account_context()
                         await self.qualify_unified_prestart_orders()
+                        await self.qualify_unified_dex_directory()
+                        await self.qualify_account_context()
                     frozen_scope,_,native_orders,applied,frozen_signature=self._cm_owned_scope()
                     frozen_applied=applied
                     fingerprints={str(o.client_order_id):_native_order_fingerprint(o) for o in native_orders}
@@ -519,8 +593,8 @@ class QualifiedInfoBoundary:
                     # Reserve complete minimum before ANY request; terminal history
                     # remains retained and validated, only redundant status reads go.
                     if self._cm_unified and not self._cm_unified_discovery_current():raise IncompleteInfoReport('UNIFIED_PRESTART_DISCOVERY_REQUIRED')
-                    bound=finite_generation_reservation(fresh_orders,unified=self._cm_unified)
-                    if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=bound,next_due=self._cm_next_money_request):
+                    bound=finite_generation_reservation(fresh_orders,unified=self._cm_unified,dex_count=len(self._cm_unified_discovery["dex_names"]) if self._cm_unified else None)
+                    if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=bound,next_due=self._cm_next_money_request,sample_weight=self._cm_held_weight()):
                         raise IncompleteInfoReport('LIVE_INFO_PROTECTED_HEADROOM')
                     reservation=self._cm_inputs_budget.reserve(bound,time.monotonic())
                     self._cm_generation_started_ns=time.monotonic_ns()
@@ -591,6 +665,7 @@ class QualifiedInfoBoundary:
                     self._cm_last_receipt = second
                     self._cm_last_margin_assets = selected_assets
                     self._cm_last_revision = revision
+                    if self._cm_inputs_enabled:self._cm_last_generation_bound=bound
                     return mass
                 except IncompleteInfoReport as error:
                     race = (
@@ -714,7 +789,7 @@ class QualifiedInfoBoundary:
             if str(error) == "LIVE_INFO_RATE_BUDGET_EXCEEDED":
                 self.request_effect_parity_refresh()  # one earliest-affordable scheduled wake
             elif getattr(self._cm_strategy,'_active_c1_authorized',False) and str(error) in (
-                'ACCOUNT_CONTEXT_EXPIRED','LIVE_INFO_PROTECTED_HEADROOM','LIVE_EXTERNAL_CASHFLOW_QUARANTINED'):
+                'ACCOUNT_CONTEXT_EXPIRED','LIVE_INFO_PROTECTED_HEADROOM','LIVE_EXTERNAL_CASHFLOW_QUARANTINED','UNIFIED_DEX_DIRECTORY_REFRESH_PENDING'):
                 self._cm_strategy._live_inputs_reason=str(error)
             else:
                 self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_FAILED")
@@ -728,13 +803,14 @@ class QualifiedInfoBoundary:
         """One actual bounded cashflow page; no funding forecast or cash posting."""
         if not self._cm_inputs_enabled or not self.recovery_healthy():return False
         async with self._cm_parity_lock:
+            if self._cm_unified and (not self._cm_dex_directory_current() or self.request_unified_directory_refresh()):return False
             cursor=self._cm_runtime.evidence_cursor('userFunding')
             start=self._cm_scope.anchor_ms if cursor is None else cursor['end_ms']
             end=min(self._clock.timestamp_ns()//1_000_000,start+86_400_000)
             if end<=start:return False
             # Separate bounded source observation, never inside a600 generation.
             # Official per20-row item weight applies to userFunding as to fills.
-            if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=45,next_due=self._cm_next_money_request):return False
+            if self._cache.positions_open() and not self._cm_inputs_budget.protects_held_schedule(time.monotonic(),additional=45,next_due=self._cm_next_money_request,sample_weight=self._cm_held_weight()):return False
             reservation=self._cm_inputs_budget.reserve(45,time.monotonic());actual=20
             try:
                 rows=await self._cm_info({'type':'userFunding','user':self._cm_scope.account_ref,'startTime':start,'endTime':end})
@@ -800,10 +876,17 @@ class QualifiedInfoBoundary:
                     if proof is None or proof['ws_epoch']!=ws:
                         raise IncompleteInfoReport('PORTFOLIO_ACCOUNT_REFRESH_REQUIRED')
                     started=min(started,proof['started_ns'])
-                    reservation=await self._cm_reserve_held_read(20,started)
+                    from coinmaster.ops.hl_info_receipt import collect_per_dex_states
+                    names=self._cm_unified_discovery['dex_names']
+                    reservation=await self._cm_reserve_held_read(2*len(names),started)
+                    cost=0
+                    async def observed(body):
+                        nonlocal cost
+                        cost+=2;self._cm_inputs_budget.note(reservation,2,time.monotonic())
+                        return await self._cm_qualified_info(body)
                     try:
-                        all_dex=await self._cm_qualified_info({'type':'allDexsClearinghouseState','user':self._cm_scope.account_ref})
-                    finally:self._cm_inputs_budget.settle(reservation,20,now=time.monotonic())
+                        all_dex,provenance=await collect_per_dex_states(observed,account=self._cm_scope.account_ref,dex_names=names)
+                    finally:self._cm_inputs_budget.settle(reservation,cost,now=time.monotonic())
                     raw=None
                     strategy._live_inputs_dirty=False
                 else:
@@ -823,7 +906,10 @@ class QualifiedInfoBoundary:
                 strategy._last_live_input_observation=observation
                 self._cm_runtime.append_evidence('portfolio:'+str(available),'account',dict(source='UNIFIED_SPOT_REPORTED_TOTAL' if self._cm_unified else 'ONE_CLEARINGHOUSE_RESPONSE',raw=raw,equity_basis=observation.equity_basis,
                     native_account_event_id=observation.native_account_event_id,generation_started_ns=started,response_completed_ns=complete,
-                    source_available_ns=available,native_revision=revision,fill_epoch=epoch,ws_epoch=ws,command_capability=False))
+                    source_available_ns=available,native_revision=revision,fill_epoch=epoch,ws_epoch=ws,command_capability=False,
+                    dex_source='CLIENT_ASSEMBLED_EXPLICIT_PER_DEX_HTTP' if self._cm_unified else None,
+                    dex_request_provenance=provenance if self._cm_unified else ()))
+                if self._cm_unified:self.request_unified_directory_refresh()
         except IncompleteInfoReport as error:
             strategy._last_live_input_observation=None
             strategy._live_inputs_reason=str(error)
@@ -1322,8 +1408,8 @@ def bind_clean_flat_live_handover(
         strategy.recovery_confirmed = True
 
     if active_c1:
-        strategy._live_context_current=client._cm_context_current
-        strategy._live_increase_headroom=lambda:client._cm_inputs_budget.protects_held_schedule(time.monotonic(),next_due=client._cm_next_money_request)
+        strategy._live_context_current=lambda:client._cm_context_current() and client._cm_dex_directory_current()
+        strategy._live_increase_headroom=lambda:(type(client._cm_last_generation_bound) is int and client._cm_last_generation_bound+10*client._cm_held_weight()<=1000 and client._cm_inputs_budget.protects_held_schedule(time.monotonic(),next_due=client._cm_next_money_request,sample_weight=client._cm_held_weight()))
     strategy.attach_live_money_view(lambda: latest_money[0])
     strategy.attach_live_refresh(client.request_effect_parity_refresh)
     strategy.attach_recovery_health(client.recovery_healthy)

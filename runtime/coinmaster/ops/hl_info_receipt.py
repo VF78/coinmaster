@@ -19,6 +19,54 @@ class IncompleteInfoReport(ValueError):
     """The venue evidence cannot certify even a conditional report batch."""
 
 
+def validated_dex_names(names):
+    if (not isinstance(names,(tuple,list)) or not 1<=len(names)<=32
+        or any(not isinstance(name,str) for name in names) or len(set(names))!=len(names)
+        or '' not in names):
+        raise IncompleteInfoReport('UNIFIED_DEX_CATALOG_MALFORMED')
+    return tuple(names)
+
+
+def parse_perp_dex_directory(raw):
+    if not isinstance(raw,list) or not 1<=len(raw)<=32:
+        raise IncompleteInfoReport('UNIFIED_DEX_DISCOVERY_BOUND_UNKNOWN')
+    return validated_dex_names(['' if item is None else item.get('name') if isinstance(item,dict) else None for item in raw])
+
+
+async def bounded_info_requests(info,bodies,*,width=8):
+    """Independent prepaid requests only; all dispatched calls finish before fail."""
+    import asyncio,time
+    if type(width) is not int or not 1<=width<=8:
+        raise IncompleteInfoReport('INFO_PARALLELISM_INVALID')
+    results=[];provenance=[]
+    async def measured(body):
+        started=time.monotonic_ns()
+        try:return await info(body)
+        finally:provenance.append((body.get('type'),body.get('dex'),started,time.monotonic_ns()))
+    for offset in range(0,len(bodies),width):
+        pending=asyncio.gather(*(measured(body) for body in bodies[offset:offset+width]),return_exceptions=True)
+        try:batch=await asyncio.shield(pending)
+        except asyncio.CancelledError:
+            await pending
+            raise
+        failures=[value for value in batch if isinstance(value,BaseException)]
+        if failures:
+            error=IncompleteInfoReport('INFO_PARALLEL_BATCH_INCOMPLETE')
+            error.request_provenance=tuple(provenance)
+            raise error from failures[0]
+        results.extend(batch)
+    return tuple(results),tuple(provenance)
+
+
+async def collect_per_dex_states(info,*,account,dex_names):
+    names=validated_dex_names(dex_names)
+    values,provenance=await bounded_info_requests(info,[dict(type='clearinghouseState',user=account,dex=name) for name in names])
+    for value in values:
+        if not isinstance(value,dict) or not isinstance(value.get('assetPositions'),list):
+            raise IncompleteInfoReport('UNIFIED_DEX_POSITION_SET_UNKNOWN')
+    return tuple(zip(names,values)),provenance
+
+
 @dataclass(frozen=True)
 class InfoReceipt:
     account: str
@@ -47,6 +95,7 @@ class InfoReceipt:
     equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
     context_verified_at_ns: int | None = None
     mode_observed_at_ns: int | None = None
+    dex_state_provenance: tuple = ()
 
 
 def _number(value: Any, name: str) -> Decimal:
@@ -177,11 +226,12 @@ async def collect_info_receipt(
 
     open_orders = await request({"type": "frontendOpenOrders", "user": account, "dex": dex})
     if account_mode not in ('disabled','unifiedAccount'):raise IncompleteInfoReport('UNSUPPORTED_ACCOUNT_ABSTRACTION')
-    spot_rows=();all_dex_rows=()
+    spot_rows=();all_dex_rows=();dex_provenance=()
     if account_mode=='unifiedAccount':
         from coinmaster.ops.hl_unified_account import default_dex_state,spot_usdc
         if dex!='':raise IncompleteInfoReport('UNIFIED_DEFAULT_DEX_REQUIRED')
-        all_dex=await request({'type':'allDexsClearinghouseState','user':account})
+        if account_context is None:raise IncompleteInfoReport('UNIFIED_VERIFIED_DEX_DIRECTORY_REQUIRED')
+        all_dex,dex_provenance=await collect_per_dex_states(request,account=account,dex_names=account_context.get('dex_names'))
         state=default_dex_state(all_dex)
         spot=await request({'type':'spotClearinghouseState','user':account})
         spot_usdc(spot);spot_rows=tuple(spot['balances']);all_dex_rows=tuple((item[0],item[1]) for item in all_dex)
@@ -369,4 +419,5 @@ async def collect_info_receipt(
         equity_basis=('HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' if account_mode=='unifiedAccount' else 'HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),
         context_verified_at_ns=account_context.get('verified_at_ns') if account_context else None,
         mode_observed_at_ns=account_context.get('mode_observed_at_ns') if account_context else None,
+        dex_state_provenance=dex_provenance,
     )
