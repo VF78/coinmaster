@@ -22,7 +22,7 @@ def native_marked_deposit_equity(strategy):
     return strategy._v3_equity()  # Existing native account + position.unrealized_pnl.
 
 
-def metadata_lot_constraints(metadata):
+def metadata_lot_constraints(metadata, *, btc_only=False):
     if isinstance(metadata,dict) and isinstance(metadata.get("assets"),list):
         assets={item["name"]:item for item in metadata["assets"] if item.get("name") in ("BTC","SOL")}
         metadata={coin:dict(id=coin+"-USD-PERP.HYPERLIQUID",size_precision=item["szDecimals"],
@@ -36,6 +36,8 @@ def metadata_lot_constraints(metadata):
             or not minimum.is_finite() or minimum<step or minimum%step):raise ValueError("HL_NATIVE_LOT_METADATA_INVALID")
         if coin=="BTC" and precision!=5:raise ValueError("HL_BTC_CURRENT_PRECISION_5_REQUIRED")
         result[coin]=dict(step=format(step,"f"),min_quantity=format(minimum,"f"),size_precision=precision)
+    if btc_only:
+        result["SOL"]=dict(step="0.1",min_quantity=None,size_precision=1)
     return result
 
 
@@ -44,18 +46,18 @@ def research_qualification(mode,quantity_model,metadata,runtime,reader,account_i
         if quantity_model!="legacy_bybit" or any(x is not None for x in (metadata,runtime,reader)):
             raise ValueError("LEGACY_REFERENCE_MUST_REMAIN_EXPLICITLY_UNMODIFIED")
         return {},{}
-    if mode!="live_qualification" or quantity_model not in ("legacy_bybit","hl_lot_diagnostic"):
+    if mode!="live_qualification" or quantity_model not in ("legacy_bybit","hl_lot_diagnostic","btc_lot_diagnostic"):
         raise ValueError("EXPLICIT_QUALIFICATION_MODE_REQUIRED")
     if runtime is None or not callable(reader) or not account_id:raise ValueError("QUALIFICATION_DP55_RUNTIME_READER_REQUIRED")
     if runtime.deposit_currency!="USDT":raise ValueError("RESEARCH_DP_NATIVE_CURRENCY_MISMATCH")
     if runtime.deposit_protection_state(instance_id=runtime.owner,account_id=account_id) is not None or runtime.all_submissions():
         raise ValueError("QUALIFICATION_REQUIRES_FRESH_DP_STORE")
-    constraints=metadata_lot_constraints(metadata) if quantity_model=="hl_lot_diagnostic" else {}
+    constraints=metadata_lot_constraints(metadata,btc_only=quantity_model=="btc_lot_diagnostic") if quantity_model in ("hl_lot_diagnostic","btc_lot_diagnostic") else {}
     if quantity_model=="legacy_bybit" and metadata is not None:raise ValueError("LEGACY_BYBIT_LOTS_CANNOT_ACCEPT_HL_METADATA")
     def initialize_allowed():
         return runtime.deposit_protection_state(instance_id=runtime.owner,account_id=account_id) is None and not runtime.all_submissions()
     return dict(deposit_runtime=runtime,deposit_instance_id=runtime.owner,deposit_account_id=account_id,
-        deposit_currency="USDT",deposit_drawdown_limit_percent=55,deposit_check_interval_secs=60,deposit_observe_on_quote=True,
+        deposit_currency="USDT",deposit_drawdown_limit_percent=55,deposit_high_water_basis="OBSERVED_NATIVE_EQUITY_PEAK",deposit_check_interval_secs=60,deposit_observe_on_quote=True,
         deposit_equity_reader=reader,deposit_initialization_allowed=initialize_allowed,market_exit_reduce_only=True),constraints
 
 

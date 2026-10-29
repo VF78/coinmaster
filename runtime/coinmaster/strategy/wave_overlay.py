@@ -139,6 +139,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     live_account_mode: str = "disabled"
     live_equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
     deposit_currency: str = "USDC"
+    deposit_high_water_basis: str = "UTC_DAILY_CLOSE"
     deposit_drawdown_limit_percent: int = 50
     deposit_check_interval_secs: int = 1
     deposit_observe_on_quote: bool = False
@@ -363,7 +364,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._deposit_timer_name = f"COINMASTER_DEPOSIT_CHECK:{self.id}"
         if type(config.deposit_check_interval_secs) is not int or config.deposit_check_interval_secs <= 0:
             raise ValueError("DEPOSIT_CHECK_INTERVAL_INVALID")
-        self._deposit = DepositProtection(limit_percent=config.deposit_drawdown_limit_percent, currency=config.deposit_currency)
+        self._deposit = DepositProtection(limit_percent=config.deposit_drawdown_limit_percent, currency=config.deposit_currency, high_water_basis=config.deposit_high_water_basis)
         if config.deposit_runtime is not None:
             if getattr(config.deposit_runtime, "deposit_currency", "USDC") != config.deposit_currency:
                 raise ValueError("DEPOSIT_RUNTIME_CURRENCY_MISMATCH")
@@ -371,7 +372,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                 instance_id=config.deposit_instance_id, account_id=config.deposit_account_id,
             )
             if stored is not None:
-                self._deposit = DepositProtection.from_durable(stored, currency=config.deposit_currency)
+                self._deposit = DepositProtection.from_durable(stored, currency=config.deposit_currency, high_water_basis=config.deposit_high_water_basis)
         self._forced_close_reason: str | None = None
         self._forced_close_intent: Intent | None = None
         self._forced_close_submitted: set[InstrumentId] = set()
@@ -2855,10 +2856,17 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                 self._persist_deposit("INITIALIZE", f"deposit:init:{now_ns}", now_ns)
             return self._deposit.high_water is not None and not self._deposit_storage_failed
         high_water_allowed=self.config.deposit_high_water_allowed
+        previous_high = self._deposit.high_water
+        previous_boundary = self._deposit.last_boundary_ns
         changed,tripped=self._deposit.observe(current,now_ns,allow_high_water=(bool(high_water_allowed()) if callable(high_water_allowed) else True))
         if changed:
-            action = "TRIGGER" if tripped else "UTC_BOUNDARY"
-            key = f"deposit:{action.lower()}:{now_ns if tripped else self._deposit.last_boundary_ns}"
+            peak_changed = (self._deposit.high_water_basis == "OBSERVED_NATIVE_EQUITY_PEAK"
+                            and self._deposit.high_water > previous_high)
+            if peak_changed and self._deposit.last_boundary_ns != previous_boundary and not tripped:
+                self._persist_deposit("UTC_BOUNDARY", f"deposit:utc_boundary:{self._deposit.last_boundary_ns}", now_ns)
+            action = "TRIGGER" if tripped else "HIGH_WATER" if peak_changed else "UTC_BOUNDARY"
+            key = (f"deposit:high_water:{now_ns}:{self._deposit.high_water}" if peak_changed and not tripped
+                   else f"deposit:{action.lower()}:{now_ns if tripped else self._deposit.last_boundary_ns}")
             self._persist_deposit(action, key, now_ns)
         if tripped:
             self._start_deposit_exit(now_ns)

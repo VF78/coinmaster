@@ -23,7 +23,7 @@ def controller(tmp_path):
     namespace={"Decimal":D};exec(compile(ast.fix_missing_locations(module),"actual_DP_controller_AST","exec"),namespace)
     obj=namespace["ActualController"]();store=runtime(tmp_path);equity=[D("100")];clock=[DAY_NS+1]
     kwargs,_=research_qualification("live_qualification","legacy_bybit",None,store,lambda _s:equity[0],"SIM-001")
-    obj.config=NS(deposit_high_water_allowed=None,**kwargs);obj._deposit=DepositProtection(limit_percent=kwargs["deposit_drawdown_limit_percent"],currency=kwargs["deposit_currency"])
+    obj.config=NS(deposit_high_water_allowed=None,**kwargs);obj._deposit=DepositProtection(limit_percent=kwargs["deposit_drawdown_limit_percent"],currency=kwargs["deposit_currency"],high_water_basis=kwargs["deposit_high_water_basis"])
     obj.clock=NS(timestamp_ns=lambda:clock[0]);positions=[];orders=[]
     obj.cache=NS(positions_open=lambda:positions,orders_open=lambda:orders,orders_inflight=lambda:[])
     calls=[];obj.log=NS(error=lambda _message:None);obj._deposit_storage_failed=False;obj._deposit_exit_started=False
@@ -52,7 +52,7 @@ def test_existing_global_controller_healthy_init_utc_close_then_SOL_only_RELEASE
     assert obj._reconcile_deposit_flat() and store.entry_control_state()=="PAUSED"
     saved=store.deposit_protection_state(instance_id=store.owner,account_id="SIM-001")
     assert saved["drawdown_limit_percent"]==55 and saved["latched"] and saved["exit_state"]=="TRIPPED_FLAT"
-    assert DepositProtection.from_durable(saved,currency="USDT").projection()["currency"]=="USDT"
+    assert DepositProtection.from_durable(saved,currency="USDT",high_water_basis="OBSERVED_NATIVE_EQUITY_PEAK").projection()["currency"]=="USDT"
     store.close()
 
 
