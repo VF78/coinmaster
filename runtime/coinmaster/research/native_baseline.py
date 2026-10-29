@@ -747,6 +747,7 @@ def run_native_diagnostic(
     qualification_deposit_equity_reader=None,
     qualification_deposit_account_id: str = "",
     current_hl_execution_inputs: Path | None = None,
+    research_sol_capital_staging_a: bool = False,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -794,7 +795,10 @@ def run_native_diagnostic(
                     research_btc_direction_sizing, observe_minute_risk)):
             raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
     from coinmaster.research.effective_config import effective_research_candidate
-    candidate = effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs)
+    if research_sol_capital_staging_a and current_hl_execution_inputs is None:
+        raise ValueError("STAGING_A_REQUIRES_EXPLICIT_CURRENT_HL_PROFILE")
+    candidate = effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs,
+        capital_staging_seed=initial_active_seed if research_sol_capital_staging_a else None)
     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
     if research_c1_btc_postcut_d1 and not research_c1_first_fresh_h4:raise ValueError("BTC_POSTCUT_D1_REQUIRES_FIRST_FRESH_COMBO")
@@ -946,6 +950,7 @@ def run_native_diagnostic(
         mark_client_id=mark_client, active_seed=initial_active_seed,
         deposit_currency=str(btc_instrument.settlement_currency),
         native_hl_admission=current_hl is not None,
+        research_sol_capital_staging_a=research_sol_capital_staging_a,
         native_hl_selected_leverage=current_hl.selected_leverage if current_hl is not None else (),
         margin_policy=current_hl.margin_policy(max_mark_age_ns) if current_hl is not None else TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
         terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
@@ -1156,6 +1161,12 @@ def run_native_diagnostic(
                 full_config["research_v0_deferred_selective_zero_tp"] = True
         if research_v0_selective_lifecycle_repairs:
             full_config["research_v0_selective_lifecycle_repairs"] = True
+        if research_sol_capital_staging_a:
+            from coinmaster.strategy.sol_capital_staging import funded_scale,BASE_SOL_CHILD
+            full_config["research_sol_capital_staging_a"]=dict(enabled=True,initial_funded_seed=str(initial_active_seed),
+                scale=str(funded_scale(initial_active_seed)),child_cap_qty=str(BASE_SOL_CHILD*funded_scale(initial_active_seed)),
+                admission="ORIGINAL_FULL_QUANTITY_BEFORE_CHILD_CAP",residual="ACTUAL_FILL_CHARGES_ORIGINAL_D1_LEVEL_RIGHTS",
+                economic_parent_ceiling=str(candidate.max_parent_notional),venue_grids_and_tiers_scaled=False)
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
         if research_residual_recovery:

@@ -62,6 +62,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     candidate: Candidate = Candidate()
     tp_fee_floor_v1: bool = False
     research_v0_execution_repairs: bool = False
+    research_sol_capital_staging_a: bool = False
     research_v0_zero_tp_netting: bool = True
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
@@ -310,6 +311,15 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self.research_protection_audit: list[dict[str, object]] = []
         self.sol_cap_admission_audit: list[dict[str, str]] = []
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
+        if config.research_sol_capital_staging_a:
+            if (not config.research_v0_selective_lifecycle_repairs or config.research_sol_risk_first
+                or config.research_conditional_sol or config.research_sol_cover is not None
+                or config.research_immediate_sol or config.research_alpha_cushion or config.research_chop_pair
+                or config.research_h1_b1 or config.research_h4_ema is not None):
+                raise ValueError("STAGING_A_REQUIRES_ORIGINAL_SOL_EXECUTOR")
+            from coinmaster.strategy.sol_capital_staging import normalized_parent_ceiling
+            self._candidate=replace(self._candidate,max_parent_notional=float(normalized_parent_ceiling(config.active_seed)))
+
         self._domain = WaveOverlayState(self._candidate)
         self._domain.research_sol_cover = config.research_sol_cover is not None
         self._domain.research_h4_owned = config.research_h4_ema is not None
@@ -1843,6 +1853,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._domain.on_parent_terminal(intent.id)
 
     def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None, entry_override_qty: Decimal | None = None) -> None:
+        staging_audit = None
         if self._carry_busy() and not self._carry_physical and intent.action != "CLOSE_ALL":
             self._domain.on_parent_terminal(intent.id)
             return
@@ -1997,6 +2008,21 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
                 self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
                 return
+        if intent.action=="SOL_ADD" and getattr(self.config,"research_sol_capital_staging_a",False):
+            # Original full quantity has ALREADY passed the existing minimum,
+            # entries and margin gates. Never use child size to rescue a denial.
+            from coinmaster.strategy.sol_capital_staging import staged_sol_child,funded_scale,BASE_SOL_CHILD
+            full_admitted=rounded
+            rounded=staged_sol_child(full_admitted,self.config.active_seed,step)
+            if (rounded<=0 or (instrument.min_quantity is not None and rounded<instrument.min_quantity.as_decimal())
+                or (instrument.min_notional is not None and rounded*executable_price<instrument.min_notional.as_decimal())):
+                self._deny_local_entry(intent,"STAGING_A_CHILD_BELOW_VENUE_MINIMUM",ts_now)
+                return
+            staging_audit=dict(staging_a_initial_seed=str(self.config.active_seed),
+                staging_a_scale=str(funded_scale(self.config.active_seed)),staging_a_full_admitted_qty=str(full_admitted),
+                staging_a_child_cap_qty=str(BASE_SOL_CHILD*funded_scale(self.config.active_seed)),
+                staging_a_child_qty=str(rounded),staging_a_unsubmitted_qty=str(full_admitted-rounded),
+                staging_a_timing="POST_ORIGINAL_FULL_ADMISSION")
         if intent.action == "SOL_ADD":
             rounded = self._risk_first_sol_prepare(intent,rounded,step,ts_now or 0,sigma,decision_index)
         if intent.action == "BTC_ENTRY":
@@ -2093,6 +2119,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             quote_ask=None if quote is None else str(quote.ask_price),
             raw_requested_qty=str(raw_requested_quantity), preround_qty=str(quantity),
             rounded_qty=str(rounded), requested_notional=str(intent.requested_notional),
+            **(staging_audit or {}),
             **getattr(self,"_last_hl_admission_audit",{}),
             H=None if episode is None else str(episode.h),
             episode_entry_E=None if episode is None else str(episode.active_entry),
@@ -3134,7 +3161,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self.fill_audit.append({
             "venue": str(context.get("venue", event.instrument_id.venue)),
             "client_order_id": str(event.client_order_id), "trade_id": str(event.trade_id),
-            **{key: context.get(key) for key in ("intent_id", "episode_id", "decision_ns", "cancel_ack_ns", "quote_ns", "quote_bid", "quote_ask", "raw_requested_qty", "preround_qty", "rounded_qty", "requested_notional", "H", "episode_entry_E", "sizing_guard", "E", "economic_free_collateral", "held_initial_margin", "opening_collateral", "fee_reserve", "prospective_gross", "admission_allowed", "public_tier_guard_reason")},
+            **{key: context.get(key) for key in ("intent_id", "episode_id", "decision_ns", "cancel_ack_ns", "quote_ns", "quote_bid", "quote_ask", "raw_requested_qty", "preround_qty", "rounded_qty", "requested_notional", "H", "episode_entry_E", "sizing_guard", "E", "economic_free_collateral", "held_initial_margin", "opening_collateral", "fee_reserve", "prospective_gross", "admission_allowed", "public_tier_guard_reason", "staging_a_initial_seed", "staging_a_scale", "staging_a_full_admitted_qty", "staging_a_child_cap_qty", "staging_a_child_qty", "staging_a_unsubmitted_qty", "staging_a_timing")},
             "instrument": str(event.instrument_id),
             "action": str(context.get("action", "UNKNOWN")),
             "reason": str(context.get("reason", "UNKNOWN")),
