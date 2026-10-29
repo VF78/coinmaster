@@ -1,0 +1,53 @@
+{
+  "task": "CM-HL-USDC-ENDTOEND-20261029",
+  "currency_source": "d453bf21a3eff64e3d5d8defa5ca0b7d6ec6e07e",
+  "currency_peer_correction": "dc3de458273bef0f09e52b5e40400e92b0c700b9",
+  "scope": "source-only public candle IP-budget guard; no native engine/model construction, runtime changes or real HTTP",
+  "state": {
+    "directory": "existing configured GuiAuth.database.parent; deployed service source specifies /var/lib/coinmaster-native-gui",
+    "files": [
+      "hl-public-candles.json",
+      "hl-public-candles.lock"
+    ],
+    "locking": "nonblocking flock on stable lock inode; lock released before HTTP",
+    "persistence": "atomic JSON replace + file/directory fsync; shared across API processes/restarts",
+    "first_use_or_missing_state": "150-weight conservative debit for60seconds; cannot reset capacity by deleting state",
+    "corruption_or_IO_failure": "failclosed, no new HTTP",
+    "clock": "host monotonic_ns persisted across process restarts; backwards clock/OS reboot failsclosed for review"
+  },
+  "budget": {
+    "capacity_weights": 150,
+    "rolling_seconds": 60,
+    "weight": "20+ceil(raw_returned_rows/60)",
+    "prepay": "20+ceil(proven inclusive request-window maximum rows/60), persisted before actual POST; debit timestamp refreshed immediately before HTTP",
+    "settlement": "refund only known unused weight after valid response, counted from raw list before validation/filter/slice; malformed/exception retain full reserve",
+    "max_requested_rows": 500,
+    "max_prepaid_weight": 29,
+    "frontend_300_row_weight": 25,
+    "retry": "none in backend; exhausted gives explicit stale cached result or unavailable without POST",
+    "shared_ip_allocation": "engine<=1000 + candles<=150 leaves50weights/60s for other public metadata under venue1200/IP; does not independently qualify other public consumers"
+  },
+  "cache": {
+    "ttl_seconds": 5,
+    "max_entries": 12,
+    "key": "coin:interval:limit",
+    "shared_persisted_cache": true,
+    "coalescing": "same-key pending lease30s across API workers; other callers receive stale cache or unavailable; expired lease cannot POST",
+    "frontend_poll_cadence_changed": false
+  },
+  "checks": {
+    "pure_budget_and_currency": "18 passed in2.81s; includes10budget tests and8currency-wire tests; fake HTTP/clock/tmpstate; native objects0",
+    "concurrency": "20 independent forked test processes share one150-weight bucket",
+    "route": "actual API factory/route AST-loaded with native imports excluded; stable state directory injection verified",
+    "currency_correction": "21 frontend tests + tsc--noEmit PASS; peer exact twoP1 closure PASS",
+    "final_web_build": "vite build PASS, /tmp/cm-usdc-peerfix-web-build-20261029",
+    "schema": "unchanged by budget; no extra regeneration",
+    "diff_check": "PASS"
+  },
+  "limitations": [
+    "Source only, not deployed; existing pilot unchanged; no START.",
+    "Other public IP consumers must fit remaining50weights/60s before readiness.",
+    "On host clock reversal/reboot state stays unavailable pending operational review; no automatic budget reset.",
+    "Legacy orphan USD pages remain deferred; historicUSDT preserved."
+  ]
+}

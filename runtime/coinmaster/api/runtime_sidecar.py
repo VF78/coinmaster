@@ -22,7 +22,7 @@ from pydantic import BaseModel, ConfigDict, StrictBool, field_validator, model_v
 
 from coinmaster.api.app import create_app as create_control_app
 from coinmaster.api.gui_auth import GuiAuth, SESSION_COOKIE
-from coinmaster.api.hl_public_candles import public_candles
+from coinmaster.api.hl_public_candle_budget import PublicCandleBudget
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 
 
@@ -1064,6 +1064,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         database=session_database or os.getenv("COINMASTER_GUI_SESSION_DB", "/var/lib/coinmaster-native-gui/auth.sqlite"),
         origin=public_origin if public_origin is not None else os.getenv("COINMASTER_GUI_ORIGIN"), bearer_token=expected,
     )
+    candle_budget = PublicCandleBudget(gui_auth.database.parent)
     def auth(request: Request, authorization: str | None = Header(default=None), x_csrf_token: str | None = Header(default=None, alias="X-CSRF-Token")) -> str:
         return gui_auth.authorize(request, authorization, x_csrf_token)
 
@@ -1182,7 +1183,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         coin: Literal["BTC", "SOL"], interval: Literal["1m", "5m", "15m", "1h", "4h", "1d"],
         limit: int = Query(200, ge=1, le=500),
     ) -> HlPublicCandles:
-        return HlPublicCandles.model_validate(public_candles(coin, interval, limit))
+        return HlPublicCandles.model_validate(candle_budget.request(coin, interval, limit))
     @app.get("/api/v1/instances/hl-stageg-testnet/strategy", response_model=HlStagegStrategy, dependencies=[Depends(auth)])
     def hl_stageg_strategy() -> HlStagegStrategy:
         return hl_strategy_reader.strategy()
