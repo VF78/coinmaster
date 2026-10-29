@@ -1,6 +1,6 @@
 {
   "status": "DRAFT_NOT_READY_NOT_START_APPROVAL",
-  "updated_utc": "2026-10-29T00:30:30.836997+00:00",
+  "updated_utc": "2026-10-29T01:46:48.665436+00:00",
   "candidate": "BTC_POSTCUT_D1",
   "economic_source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
   "economic_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
@@ -19,7 +19,7 @@
   "DP_anchor": "Existingpersistentinitial_thenhigherUTCdailyclose",
   "DP_applied": false,
   "native_engineering_qualification": "A_B_HOLD_UNTIL_FINAL_ACTIVE_C1_SOURCE_AND_PRODUCT_PEER",
-  "fresh_readonly_HL_bootstrap": "UNSIGNED5READS_AND_NATIVE_HTTP_ACCOUNTSTATE_SUCCESS; FULLMODE_HELD/CACHEGATES_PENDING",
+  "fresh_readonly_HL_bootstrap": "RealreadonlyPortfolio/CacheUSDCtransportPASS; held/matching/finalACTIVEcommandgatespending",
   "installed_release_benchmark": "NOT_RUN_REQUIRES_PREPARED_RELEASE_PROTOCOL_AND_OWNER_VERSION_APPROVAL",
   "deployment": "NOT_PERFORMED",
   "existing_pilot": "PRESERVED",
@@ -36,7 +36,7 @@
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
   "Unified_support": "NATIVE_CURRENCY_COMPONENT_PASS_ACTIVE_C1_EXECUTION_COMPOSITION_IN_PROGRESS",
   "documentation_forums_review": "LIVE_PREPARATION_PLAN_20261029.md#документация-и-обсуждения-api-что-включить-в-допуск",
-  "manager_public_verified_checkpoint": "f9d3c193362f800647b4255d787f0dc8be9e80fc",
+  "manager_public_verified_checkpoint": "e22caafecb138868e7cd5854d112d82804c366fd",
   "packaging_remaining_gates": [
     "Approvedprivatecap/profile/releaseidentity; no hardcodedlegacy82 or oldapprovals",
     "Explicitqualifiedactiveprofilepath; currentinputreadinessismanageonly",
@@ -64,10 +64,29 @@
     "evidence": "evidence/currency-model-combined-root-receipt-20261029.json"
   },
   "USDC_API_GUI": {
-    "source_commit": "dc3de458273bef0f09e52b5e40400e92b0c700b9",
-    "checks": "8pureAPI+8selectedAPI+21UI+tsc+vite+genuineOpenAPI/TSregenPASS",
-    "peer": "PASS_2P1_CLOSED_exactd453_to_dc3_SourceOnly",
-    "public_candle_budget": "GUARD150_PER60_PERSISTED_CACHE5S_SOURCE_AND_TESTS_IN_PROGRESS",
+    "source_commit": "c5cfcf97f54d2a2a80e89df81ff44feef082b393",
+    "checks": "22pureAPI+21UI+tsc+vitePASS;8selectedAPI+genuineOpenAPI/TSregenPASS",
+    "peer": "PASS_currency2P1_andbudgetP2closed",
+    "public_exact_verified": true,
+    "public_candle_budget": "150weight/60s persisted acrossworkers/restart; cache5s/max12keys; corruption/clockfailclosed",
     "deployed": false
-  }
+  },
+  "ACTIVE_auth_component": "86purePASS0.48s_ON_WIP_FUNCTIONS_notFullACTIVEPASS; PREPAREschemaandv2mode-basisgapsfixed",
+  "keyless_private_cache_probe": "PASS attempt2of2CLOSED PID4158856/exit0/financialspan6.250905964s; actualPortfolio1Cache1/reportedAccountState1/40Info+nativeSpot1/D11/weight456/parallel8; EngineNodekeysorders0; initial422immutable; privateRAWonly",
+  "ACTIVE_connected_engine_free": "237PASS27.09s_onfiveP1correction0b3e470; HTTProutecorrection/finalpeer/nativePENDING",
+  "ACTIVE_frozen_candidate": {
+    "active_commit": "1d3643aef371cee0ae6ecb7021d7b27f96d08c87",
+    "composed_commit": "c2e87c43c5523d802be0a501d31767654fd09050",
+    "checks": "231connectedPASS25.58s+48composedPASS4.24s_totalOnly",
+    "independent_high_peer": "FOUR_P1_PLUS_SPLIT_ABI_CORRECTED_237PURE_FINAL_ROUTE_AND_CLOSURE_PENDING",
+    "findings": [
+      "ACTIVEbootstrapruntime revisionNone",
+      "Expectedfinancialsuspensioncausespermanentmanualrecovery",
+      "Increaseauthorityoldestgenerationdeadline_notenforcedafterverification",
+      "C1projectionusesDPcushionandmixedcheckpoint"
+    ],
+    "native_go": false,
+    "five_P1_correction_commit": "0b3e47005813d54a713800b6a7e7c6ab3f1d7af4"
+  },
+  "ACTIVE_REAL_API_BLOCKER": "ReadonlycorrectedprobePASS documentedperDEX+parallel8; SAMEproductionroutecorrection/finalsourceandpeerPENDING"
 }

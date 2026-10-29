@@ -1,0 +1,57 @@
+{
+  "schema": "coinmaster-live-focused-peer-correction-v1",
+  "source_parent": "c2e87c43c5523d802be0a501d31767654fd09050",
+  "source_pins": {
+    "runtime/coinmaster/ops/hl_live_execution.py": "b95818fb63ad693d897ff3b9992bebf6c47edb6badb11d8e9b436dca4154c40a",
+    "runtime/coinmaster/ops/hl_live_worker.py": "48ec1f00008208b0b7d8fc704fc94b5fdb3fdd25da581d896b8f1c6b6fd95fee",
+    "runtime/coinmaster/strategy/live_recovery.py": "c48153911fb34d584848fca5b4aab51ae115831bc1ec182289071a23ee5434de",
+    "runtime/tests/test_e4_c1_active_composition_pure.py": "ebc86a36c4295371a429de998388be70ac86a1f1a2fd043e3d5364ae400808ab",
+    "runtime/tests/test_e4_c1_input_bridge_pure.py": "2201db7b9e2dada45364ed3072ba81f6de273a5eab35b6bdd1a3319b847b8826",
+    "runtime/tests/test_e4_c1_unified_pure.py": "e290fe7b77dc130530d9bd08ccdf30a7ab57fe7dcfc31fa5db8bbae1401e2dcd"
+  },
+  "state": "FIVE_P1_SOURCE_CORRECTED_HTTP_ROUTE_422_STILL_NO_GO",
+  "findings": [
+    {
+      "id": 1,
+      "fix": "Initial ACTIVE freezes actual durable native revision; movement guard retained"
+    },
+    {
+      "id": 2,
+      "fix": "Expected financial suspension has distinct LIVE_MONEY_REFRESH_PENDING; poll skips snapshot/coalesces refresh, owned reducer preserved; actual missing authority stays manual"
+    },
+    {
+      "id": 3,
+      "fix": "Accepted ACTIVE authority captures original oldest monotonic start+9s; every increase checks it; second-sweep wall receipt never extends authority"
+    },
+    {
+      "id": 4,
+      "fix": "C1 projection E/H/DD/C/source/receipt/epoch are one canonical checkpoint; DP retained0.45 remains separate; strict composed DTO roundtrip checked"
+    },
+    {
+      "id": 5,
+      "fix": "Exact existing entry_override_qty optional ABI forwarded; split owner retains child retry on financial wait without queueing full logical parent; lifecycle proof uses logical parent quantity, per-order native/restore gates retained"
+    }
+  ],
+  "tests": {
+    "targeted_four_p1": "36PASS7.19s",
+    "connected_four_p1": "235PASS27.29s",
+    "targeted_split_fixture_failure": "36PASS2FAIL7.57s; fixture Price missing float protocol corrected, product unchanged",
+    "connected_five_p1": "237PASS27.09s",
+    "previous_connected": "231PASS25.58s",
+    "composed_report_and_api": "48PASS4.24s",
+    "engine_free": true,
+    "native_models": 0,
+    "node": 0,
+    "engine": 0,
+    "network": 0
+  },
+  "known_blocker": {
+    "endpoint": "allDexsClearinghouseState",
+    "http_status": 422,
+    "source": "ROOT actual keyless read-only probe; no details/account metadata copied",
+    "next": "Documented per-DEX clearinghouseState HTTP correction with finite budget/parallel provenance, then final focused peer closure"
+  },
+  "normalizer_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
+  "owner_start": false,
+  "native_a_b_attempts_spent": 0
+}

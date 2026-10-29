@@ -21,10 +21,10 @@
     "coherent_equity_clock_H4_D1_warmup": "SOURCE_COMPONENT_PASS_NATIVE_NOT_YET_VERIFIED",
     "open_risk_restart_globalH_parent_PLANREF_credit_latch_rights_pending": "FRESH_INIT_SOURCE_PASS_PAUSED_FLAT_RESTART_PENDING_OPEN_RISK_AUTORECOVERY_DEFERRED",
     "native_partial_cancel_fill_duplicate_reconnect_priority": "NATIVE_A_B_PENDING_FINAL_SOURCE_FREEZE",
-    "exact_cash_signedfunding_nativefees": "BENCHMARK_EXACT_LIVE_REPORTED_BALANCE_BASIS_AND_NATIVE_CURRENCY_PENDING",
+    "exact_cash_signedfunding_nativefees": "MODEL_USDC_PNL_FEE_PASS_AND_API_GUI_PURE_PASS; FINAL_ACTIVE_AND_REAL_CACHE_PENDING",
     "isolated_account_budget_minlots_no_doublewriter": "MASTER_AGENT_UNSIGNED_READ_PASS_VENUE_FEASIBILITY_AND_EXECUTION_BINDING_PENDING",
     "stop_entries_cancel_owned_manage_actual_close_reporting": "SOURCE_COMPONENT_PASS_NATIVE_A_B_PENDING",
-    "Unified_compatibility": "PUBLIC_API_SOURCE_EXTENSION_AND_PROVIDER_IN_PROGRESS"
+    "Unified_compatibility": "COMPONENT_PASS_REAL_HTTP_ROUTE_CORRECTION_AND_PORTFOLIO_CACHE_PENDING"
   },
   "candidate_metrics": {
     "reference_TOTAL": "5499360.14984003",
@@ -42,10 +42,10 @@
     "explicit_live_start_after_final_benchmark_verified_algorithm"
   ],
   "local_private_binding": "runtime/var/research-jobs/e4-c1-fast-pilot-20261028/private/live-account.json",
-  "funds_status": "UNSIGNED_MASTERACCOUNT_SPOT_AND_NATIVE_HTTP_READBACK_SUCCEEDED_PRIVATE_ONLY_NOT_FULL_CACHE_OR_HELD_PROOF",
-  "updated_utc": "2026-10-28T23:42:42.258868+00:00",
+  "funds_status": "REAL_READONLY_PORTFOLIO_CACHE_USDC_PARITY_PASS_PRIVATE_VALUES; HELD_MATCHING_ACTIVE_AND_SMALLCAP_PENDING",
+  "updated_utc": "2026-10-29T01:46:48.665436+00:00",
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
-  "source_freeze": "PENDING_UNIFIED_PROVIDER_AND_CONNECTED_ACCEPTANCE",
+  "source_freeze": "HTTP_ROUTE_CORRECTION_HIGH_PEER_CLOSURE_AND_NATIVE_ACCEPTANCE_PENDING",
   "drawdown_protection": {
     "retained_equity_fraction": "0.45",
     "loss_limit_percent": 55,

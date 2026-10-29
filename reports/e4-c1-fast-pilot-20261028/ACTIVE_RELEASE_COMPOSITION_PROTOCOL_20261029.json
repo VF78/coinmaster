@@ -19,11 +19,11 @@
     "Binder publishes strictcurrentmoney andqualifiedrecoveryonlyafteractualnativeparity",
     "Activequote calls sameWaveOverlaycoreexactlyonce, explicitdecision_ns defaultNone preservesresearchbehavior; keeprealticktimestamps",
     "Modeawarecredentialpreflight prepay142samegatewaybucket beforeHTTP",
-    "NonFundingLedgerUpdates oneboundedpage/prepay45/acceptedrows<500; full437+4N<=497N15 afterexplicitSTARTcontextdedup; cap700; actualweights/saturationUNKNOWN/inclusivecursor+dedup/no cashpost",
+    "NonFundingLedgerUpdates oneboundedpage/prepay45/acceptedrows<500; documentedperDEXHTTPpositions2each; full397+4D+4N under700; actualweights/saturationUNKNOWN/inclusivecursor+dedup/no cashpost",
     "Cashflowbasis requiredfornewHcredit; cheapdownwardDP remainsprotective; foreignactivityquarantine",
     "EndtoendUSDCcontract inclseparateAPI-GUIpatch"
   ],
-  "liveness_gate": "Proveactual60sschedule: fullmax497+held480=977 underrolling1000; STARTcontextmax300s/originaltimestamps/notfinancialfreshness; exactmode6s; dynamicpostsettlementheadroom; no28HTTPpereveryWSmessage; lowpriorityfunding/context/extraFull cannotstarveDP/ownedprotection. PublicGUI150/minpersistedguardseparate; startupmetadata/chargesexpiredwhileprotectedflat beforeentry.",
+  "liveness_gate": "Corrected documentedperDEXroute: full397+4D+4N, held10*(28+2D)=280+20D/min. D11/N15would1001>1000=>DENY; dynamicexpiry/headroom and liveowned0Info reductions mandatory. Independentrequests boundedparallel8 per prepaid sweep; two financial sweeps sequential, originalprovenance/9sdeadline, in-flightfailcharges retained. Context300s refresh20 separatelowpriority; do notrerun660 discovery eachTTL. Engine1000+GUI150=1150<venue1200. Realroute/staticmockdifferencemustbeclosedbeforeNative.",
   "source_checks": "Targetedpurecases+connectedrelevantpass+onefocusedpeer/freeze beforeNodeA/B",
   "native_budget": {
     "max_physical_attempts": 3,
@@ -42,6 +42,17 @@
   "runtime_changes": 0,
   "owner_VERSION_approval": "RequiredbeforeoldSandboxstop/deploy/installedbenchmark",
   "owner_START": "Requiredbeforeorders/transfers; NOTGIVEN",
-  "updated_utc": "2026-10-29T00:15:52.472028+00:00",
-  "smallcapital_gate": "Privatecap+freshactualHLlots/minnotional/price mustprove wholeentry/TP/cut/close executable; lowcapitalquarterfloorbelow10 isDENY, noceil/inventedtopup"
+  "updated_utc": "2026-10-29T01:42:56.598779+00:00",
+  "smallcapital_gate": "Privatecap+freshactualHLlots/minnotional/price mustprove wholeentry/TP/cut/close executable; lowcapitalquarterfloorbelow10 isDENY, noceil/inventedtopup",
+  "five_P1_correction": "0b3e470/237purePASS27.09s; independentclosureafterHTTPcorrection, NOTREADY",
+  "http_route_evidence": {
+    "real_probe_status": "NO_GO_HTTP422_beforePortfolio",
+    "unsupported": "allDexsClearinghouseState overHTTP",
+    "supported": "clearinghouseState(user,dex) for eachverifieddirectorymember",
+    "official_sources": [
+      "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+      "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions",
+      "https://github.com/hyperliquid-dex/hyperliquid-python-sdk/blob/master/hyperliquid/info.py"
+    ]
+  }
 }

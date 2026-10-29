@@ -34,9 +34,9 @@ Report-onlyfix29f66e166ff6b518b1b27a76095d6acd7649e4e4 опубликован:26
 
 Владелец выбрал сохранить Unified. На базе8ef один VPSwriter завершает явный compatibilitymapping через public API stock1.231: обе account-state ingress используют spotUSDCreportedtotal, нулевой баланс очищается, PnL не прибавляется повторно. Отдельный обязательный gate — согласовать нативные USDquote/USDCsettlement/PnL/fee через публичный instrumentprovider для BTC/SOL с сохранением IDs/ticks/lot/нулевыхstockrates и проверкой всех load/refresh/cache путей. Истинные venueavailableToTrade/maxTradeSzs ограничивают команду; нулевые instrumentmarginrates не доказывают buyingpower. Нет нового OMS/PnLсервиса, ручного измененияcache или перехода наv2.
 
-Бюджеты конечны и предрезервируются доHTTP: classic600, Unified700, общийrolling1000/60с; N<=15, span/oldest<=9с. Unifiedcheapobservation22; foreignDEXdiscovery резервирует660 доdirectory, max32DEX, actual20+20D. Два нерекурсивных fillsquery; saturation2000→UNKNOWN. Fundingcatchup45/500rows→UNKNOWN безcursoradvance. Сведения об аккаунте остаютсяprivate. UnsignedInfo и nativeHTTPAccountState успешно прочитаны безключа/подписей; это ещё не Nodecache/held/venuefill proof.
+Бюджеты конечны и предрезервируются доHTTP: classic600, Unified700, общийrolling1000/60с; N<=15, span/oldest<=9с. Unifiedheldobservation28+2D; foreignDEXdiscovery резервирует660 доdirectory, max32DEX, actual20+20D. Два нерекурсивных fillsquery; saturation2000→UNKNOWN. Fundingcatchup45/500rows→UNKNOWN безcursoradvance. Сведения об аккаунте остаютсяprivate. UnsignedInfo и nativeHTTPAccountState успешно прочитаны безключа/подписей; это ещё не Nodecache/held/venuefill proof.
 
-После FINALsource/pure/одногоpeer — fixtureA/B, максимум3физическиепопытки включаяFAILED, spent0/ROOT_GO=false. До GO Node/Engine не создаются. Отдельный конечный currency-model smoke: один процесс, <=64modelobjects, безEngine/Node/сети, только послеfinalproviderfreeze. Ни один fixture не выдаётся за реальный Hyperliquid matching.
+Native currency-model уже PASS1/1: actualPID4137203/exit0/64countedobjects, Engine0/Node0/network0; rawUSD/USDCдефект воспроизведён, productionprovider исправлен. Повтор не нужен при неизменномhelper01e57. После FINALsource/pure/одногоpeer — fixtureA/B, максимум3физическиепопытки включаяFAILED, spent0/ROOT_GO=false. Ни один fixture не выдаётся за реальный Hyperliquid matching.
 
 ## 4. GUI и авторизация — независимость deployment доказана, реализация отложена
 
@@ -48,7 +48,7 @@ Report-onlyfix29f66e166ff6b518b1b27a76095d6acd7649e4e4 опубликован:26
 
 ## Ближайший порядок
 
-1. Завершить Unified/provider source, связныеpure-проверки и одинpeer; заморозить source/config/fixture, затем modelsmoke и nativeA/B. Без новых поисков параметров и повторов исторических результатов.
+1. Завершить HTTProuteисправление ACTIVE, связныеpure и focusedpeer; заморозитьsource/config/fixture, затем исправленныйreadonlycacheprobe и nativeA/B. MODELужеPASS, не повторять. Без новых поисков параметров и повторов исторических результатов.
 2. Проверить freshprivate account/cache/agent/foreignexposure/budget/precision/leverage/margin и DP55. Собрать immutable release/runbook/rollback с честно обозначенными недоказанными venueсвойствами и предъявить версию владельцу.
 3. После выбора/согласования версии: сохранить старыйSandbox, остановить штатно; проверить доступную версиюNautilus, выполнить deploy и requestedreferencebenchmark на целевомruntime/release по конкретному протоколу. Старый research8/8 закрыт и автоматически не расширяется. Реальныеордера/переводы/START — только после отдельногоявного подтверждения владельца.
 4. Послеlive — независимыйGUI/authрелиз по согласованномуreference и acceptance.
@@ -61,8 +61,8 @@ Secrets/accountaddresses/balances/readbacks остаютсяprivate. Публи�
 
 | Наблюдение | Требование до START | Состояние |
 |---|---|---|
-| Unified показывает balances/holds в spot, individualperpDEXstate не отражает общий капитал | Exactmode, USDC-only, native reportedtotal; UPNL отдельно, обе ingress/zero-clear | Source WIP; connectednative gate открыт |
-| Nautilus5024: нулевые marginrates и USD/USDC currency mismatch | Actualproduction instrument/PnL/fee proof; venueavailableToTrade/maxTradeSzs; не выдумывать marginrates | Provider WIP; native gate открыт |
+| Unified показывает balances/holds в spot, individualperpDEXstate не отражает общий капитал | Exactmode, USDC-only, native reportedtotal; UPNL отдельно, обе ingress/zero-clear | Source/componentPASS; finalACTIVE/nativegate открыт |
+| Nautilus5024: нулевые marginrates и USD/USDC currency mismatch | Actualproduction instrument/PnL/fee proof; venueavailableToTrade/maxTradeSzs; не выдумывать marginrates | NativeMODEL PASS1/1; connectedACTIVE/nativegate открыт |
 | APIwallet только подписывает; Info читает master/subaccount | Раздельные signer/account identity; freshrole/agentlink | UnsignedreadPASS; releasebinding проверить |
 | Nonces общие на signer; несколько процессов могут конфликтовать | Один livewriter/APIwallet, native atomicnonce; не запускать второй signerworker | Runtime startup gate; live ещё не подключён |
 | REST1200weight/min/IP, UA50k actions/day, batching не отменяет address-basedcount | Общий budget для actualHTTP/retries/items; без рекурсивных заполнений и повторных cancel после полученного результата | Source budget WIP/проверкиpure; native/releaseproof открыт |
@@ -75,3 +75,13 @@ Secrets/accountaddresses/balances/readbacks остаютсяprivate. Публи�
 Источники: [режимы аккаунта](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes), [лимиты](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/rate-limits-and-user-limits), [APIwallet/nonce](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/nonces-and-api-wallets), [tick/lot](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size), [ordererrors](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/error-responses), [exchange/IOC/cancel](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint), [Nautilus5024](https://github.com/nautechsystems/nautilus_trader/issues/5024), [Nautilus5187](https://github.com/nautechsystems/nautilus_trader/pull/5187), [Hummingbot8170: Unifiedbalancefallback/reproduction/QA](https://github.com/hummingbot/hummingbot/pull/8170).
 
 Текущий USDCcontract и exactACTIVEcomposition/sourcegates: LIVE_USDC_ACCOUNTING_CONTRACT_20261029.json, ACTIVE_RELEASE_COMPOSITION_PROTOCOL_20261029.json. NativecurrencyMODEL ужеPASS1/1; sharedpendingcollateralP1 исправлен b9f60ed7/113pure+peerPASS. A/Bнерасходованы, HOLDдоокончательногоactivepath.
+
+## Текущий блокирующий дефект реального API
+
+Read-only probe PID4156042 завершился NO_GO/exit1: HTTP422 на allDexsClearinghouseState после пяти успешных Info. Это WSsubscription, не HTTPметод; Portfolio/Cache ещё не созданы, Engine/Node/keys/orders0. Ошибка затрагивает продуктовый сбор состояния и fake-fixture, исправление проводится системно. Failedreadback сохранёнprivate; стоимость182/6requests учтена. Одна исправленная readonlyпопытка допускается root только после staticfreeze, автоматических повторов нет.
+
+Поддержанный путь — clearinghouseState(user,dex) для каждого проверенного DEX. Новый full397+4D+4N/held280+20Dвминуту, rolling1000 не повышается. D11/N15 даёт1001 и DENY; headroom рассчитывается динамически. Независимые запросы идут boundedparallel8 внутри предоплаченной пачки; две финансовые сверки последовательно, timestamp не обновляется искусственно, oldest<=9s. Неизвестный/неответившийDEX не считается пустым. Документы и officialSDK приведены в ACTIVE_RELEASE_COMPOSITION_PROTOCOL.
+
+Пять выявленных P1 исправлены в0b3e470: ACTIVEbootstraprevision, transientmoneyrefresh, original9sdeadline, canonicalC1cushion/checkpoint, splitquantityABI/retry. 237connectedpurePASS27.09s. Независимое закрытие будет по окончательному HTTPисправлению; sourceREADY и nativePASS ещё не заявлены. API/GUI USDC и publiccandleguard завершены c5cfcf97/22API+21UI+typebuild/peerPASS, опубликованы, не установлены.
+
+Текущий read-onlycachegate закрыт PASS: correctedattempt2/PID4158856/exit0/financialspan6.250905964s,40PythonInfo+nativeSpot1/456weight/D11/parallel8; nativePortfolio1/Cache1/AccountState1. Engine0/Node0/keys/orders0. Ledger2/2CLOSED, original422 сохранён. Это realflatUSDCtransportproof, неheld/matching; дальше продуктовый HTTPfreeze и nativeA/B, без повторногоprobe.

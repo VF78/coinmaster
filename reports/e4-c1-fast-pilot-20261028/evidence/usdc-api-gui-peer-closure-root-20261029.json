@@ -1,0 +1,20 @@
+{
+  "source_commit": "c5cfcf97f54d2a2a80e89df81ff44feef082b393",
+  "base": "b9f60ed7ca68fc3d4bdf770f74c659f319a20619",
+  "currency_review": "d453finite2P1closedbydc3de458_source-onlypeerPASS",
+  "budget_review": "5461noP0P1_P2bootidentityclosedbyc5cfcf97_source-onlypeerPASS",
+  "tests": "22pureAPI+21UI+TypeScript+vitePASS; prior8selectedAPI+genuineOpenAPI/TSregenPASS",
+  "runtime_services_account_actions": 0,
+  "native_nodes_engines": 0,
+  "public_exact_verified": true,
+  "receipts": [
+    {
+      "file": "usdc-api-gui-source-qualification-c5cfcf97.json",
+      "sha256": "b533a4615da5c6e18930d4539634cdd1c055fecc66c16fc58f03ef26ce10cf54"
+    },
+    {
+      "file": "public-candle-budget-qualification-c5cfcf97.json",
+      "sha256": "694af3545119a7e4005707caf545be19739493d85bf08b8aa53e5d172534e987"
+    }
+  ]
+}

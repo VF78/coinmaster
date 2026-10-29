@@ -34,14 +34,14 @@
     "provider_sha256": "01e57ebddcbe1ef43b255f031c26c5a86dd8a9ad5f33583b7729b1ac53dcf222",
     "raw_report_sha256": "6cacf9f1b028211333701c08f1ee1b83c5d3d116f707e2b6ff9d1a2dfa4ed9c0",
     "product_component": "b9f60ed7/113pure17.23s/peerclosurePASS/publicexactverified",
-    "USDC_API_GUI": "dc3de458/8pureAPI+8selectedAPI+21UI/type-build/regenPASS/2P1peerclosurePASS; publicIPguardstillWIP"
+    "USDC_API_GUI": "c5cfcf97 PUBLICEXACT/22pureAPI+21UI+type-build/regenPASS/currency+budgetpeerPASS",
+    "real_private_Portfolio_Cache": "PASS attempt2 PID4158856/exit0/span6.250905964s; reportedUSDCnativePortfolio→Cache; actualaccountvaluesPRIVATE; firstfailurepreserved"
   },
   "remaining": [
-    "ACTIVE-C1composition/defaultOFF/exactSTART/privateinitialcap/sharedbudget/cashflowguard",
-    "APIpreservecurrency+basis+correctfreeholdsemantics",
-    "GUIfee/PnL/DP/candles/totals explicitUSDC/unknowncurrencyguard",
-    "GeneratedAPI/TSschema/export andtargetedtests",
-    "FinalnativeA/B/privateprestart/releaseapproval"
+    "FinishACTIVE-C1samecore authorisation/cashflow/clock/reducechain/liveness",
+    "FinalsourcecompositionwithqualifiedAPI-GUIbranch andconnectedpeer/nativeA-B",
+    "Wholelifecyclesmallcapitalpreflight; privatekeylesscachegatealreadyPASS",
+    "VERSIONapproval/installedbenchmark/separateSTART"
   ],
   "owners": {
     "engine": "live_bridge_owner_20261029",
@@ -51,5 +51,5 @@
   "full_GUI_redesign_and_auth": "Deferred; currencycorrectnessNOW beforeSTART",
   "deployed": false,
   "START_LIVE": false,
-  "updated_utc": "2026-10-29T00:15:52.472028+00:00"
+  "updated_utc": "2026-10-29T01:46:48.665436+00:00"
 }
