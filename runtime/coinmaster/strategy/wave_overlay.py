@@ -391,6 +391,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._forced_close_intent: Intent | None = None
         self._forced_close_submitted: set[InstrumentId] = set()
         self._forced_close_orders: set[str] = set()
+        self._staging_a_forced_children: dict[InstrumentId, dict] = {}
         self.terminal_lifecycle: dict[str, object] = {
             "reason": "NOT_TRIGGERED",
             "status": "NOT_TRIGGERED",
@@ -2008,14 +2009,15 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
                 self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
                 return
-        if intent.action=="SOL_ADD" and getattr(self.config,"research_sol_capital_staging_a",False):
+        if instrument_id==self.config.sol_id and getattr(self.config,"research_sol_capital_staging_a",False):
             # Original full quantity has ALREADY passed the existing minimum,
             # entries and margin gates. Never use child size to rescue a denial.
             from coinmaster.strategy.sol_capital_staging import staged_sol_child,funded_scale,BASE_SOL_CHILD
             full_admitted=rounded
             rounded=staged_sol_child(full_admitted,self.config.active_seed,step)
-            if (rounded<=0 or (instrument.min_quantity is not None and rounded<instrument.min_quantity.as_decimal())
-                or (instrument.min_notional is not None and rounded*executable_price<instrument.min_notional.as_decimal())):
+            if (rounded<=0 or (not reduce_only and (
+                (instrument.min_quantity is not None and rounded<instrument.min_quantity.as_decimal())
+                or (instrument.min_notional is not None and rounded*executable_price<instrument.min_notional.as_decimal())))):
                 self._deny_local_entry(intent,"STAGING_A_CHILD_BELOW_VENUE_MINIMUM",ts_now)
                 return
             staging_audit=dict(staging_a_initial_seed=str(self.config.active_seed),
@@ -2125,7 +2127,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             episode_entry_E=None if episode is None else str(episode.active_entry),
             sizing_guard="SUBMITTED_AFTER_EXISTING_GATES" if not reduce_only else "NATIVE_REDUCE_ONLY_LEAVES",
         )
-        self._own_accepted_reduction(intent, rounded)
+        self._own_accepted_reduction(intent, full_admitted if staging_audit is not None and reduce_only else rounded)
         if intent.action == "BTC_ENTRY":
             self._daily_decision_reason = "NATIVE_SUBMISSION_PENDING_ACK"
             if intent.id in self._selected_entry_audits:
@@ -2267,13 +2269,72 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._v3_reduction = None
         self._accepted_reductions.clear()
         self._discard_queued_intents(lambda _queued: True)
+        keep_staged_child=(getattr(self.config,"research_sol_capital_staging_a",False)
+            and self._staging_a_force_scope() and reason not in {"LIQUIDATION","RESEARCH_PORTFOLIO_45"})
         self._forced_close_reason = reason
         self._forced_close_decision_ns = self.clock.timestamp_ns()
         self._forced_close_cancel_ack_ns = None
         self._forced_close_intent = intent
         self._forced_close_submitted.clear()
+        if not keep_staged_child:
+            getattr(self,"_staging_a_forced_children",{}).clear()
         for order in list(self.cache.orders_open()):
             self.cancel_order(order)
+
+    def _staging_a_force_scope(self) -> bool:
+        # Native liquidation/global protection and operator market_exit remain
+        # full protective flattening. Only the normal research owner is staged.
+        return (getattr(self.config,"research_sol_capital_staging_a",False)
+                and self._forced_close_reason not in {None,"LIQUIDATION","RESEARCH_PORTFOLIO_45"})
+
+    def _staging_a_forced_child_ready(self,instrument_id,quote_ns) -> bool:
+        child=self._staging_a_forced_children.get(instrument_id)
+        if child is None:
+            return True
+        order=self.cache.order(child["order_id"])
+        if (order is None or not order.is_closed or order.instrument_id!=instrument_id
+                or not order.is_reduce_only):
+            return False
+        position=self.cache.position(child["position_id"])
+        if (position is None or position.id!=child["position_id"] or position.instrument_id!=instrument_id):
+            return False  # An absent position receipt is not proof of flatness.
+        if any(p.instrument_id==instrument_id and p.id!=child["position_id"] for p in self.cache.positions_open()):
+            return False  # A newly opened position is not this forced parent's residual.
+        current=position.quantity.as_decimal()
+        if current>child["before_qty"] or (current>0 and position.is_long!=child["was_long"]):
+            return False
+        if current>0:
+            if order.filled_qty.as_decimal()==0:
+                if quote_ns<=child["quote_ns"]:
+                    return False  # A zero-fill terminal never loops on one quote.
+            elif current>=child["before_qty"]:
+                return False  # FILLED/CANCELED alone is not native position progress.
+        self._staging_a_forced_children.pop(instrument_id,None)
+        self._forced_close_submitted.discard(instrument_id)
+        return True
+
+    def _staging_a_reconcile_flat_timeout(self,event) -> None:
+        owner=self._mandatory_sol_exit
+        if event.instrument_id!=self.config.sol_id or owner is None or owner[0].reason!="SOL_HARD_TIMEOUT":
+            return
+        position=self.cache.position(event.position_id)
+        if (position is None or position.id!=event.position_id or position.instrument_id!=self.config.sol_id
+                or not position.is_closed or position.quantity.as_decimal()!=0
+                or any(p.instrument_id==self.config.sol_id for p in self.cache.positions_open())):
+            return
+        # FILLED may arrive before the last native PositionClosed receipt. A
+        # timeout parent queued from the prior cache size has no remaining work.
+        self._domain.on_parent_terminal(owner[0].id)
+        self._mandatory_sol_exit=None
+
+    def _staging_a_continue_forced_fill(self,event) -> None:
+        if not self._staging_a_force_scope():
+            return
+        child=self._staging_a_forced_children.get(event.instrument_id)
+        if child is not None and str(child["order_id"])==str(event.client_order_id):
+            # The quote dispatcher verifies closed order AND the same native
+            # position's decrease before releasing this current child.
+            self._submit_forced_closes_from_cache()
 
     def _submit_forced_close_on_quote(self, tick: QuoteTick) -> None:
         # Cancel confirmation/reconciliation is authoritative: no market close
@@ -2286,6 +2347,10 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             return
         if self._forced_close_reason == "RESEARCH_V3_T3" and tick.ts_event < self._v3_trail_trigger_ns:
             return
+        staged=(tick.instrument_id==self.config.sol_id and getattr(self.config,"research_sol_capital_staging_a",False)
+                and self._staging_a_force_scope())
+        if staged and not self._staging_a_forced_child_ready(tick.instrument_id,tick.ts_event):
+            return
         position = next((item for item in self.cache.positions_open() if item.instrument_id == tick.instrument_id), None)
         if position is None or tick.instrument_id in self._forced_close_submitted:
             if not self.cache.positions_open() and self._forced_close_intent is not None:
@@ -2296,9 +2361,16 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         instrument = self.cache.instrument(tick.instrument_id)
         if instrument is None:
             return
+        full_quantity=position.quantity.as_decimal()
+        quantity=full_quantity
+        if staged:
+            from coinmaster.strategy.sol_capital_staging import staged_sol_child
+            quantity=staged_sol_child(full_quantity,self.config.active_seed,instrument.size_increment.as_decimal())
+            if quantity<=0:
+                return  # Venue grid prevents this explicitly bounded diagnostic child.
         order = self.order_factory.market(
             instrument_id=tick.instrument_id, order_side=OrderSide.SELL if position.is_long else OrderSide.BUY,
-            quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True,
+            quantity=instrument.make_qty(quantity), time_in_force=TimeInForce.IOC, reduce_only=True,
         )
         forced_action = "TERMINAL_CLOSE" if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT" else "LIQUIDATION_CLOSE" if self._forced_close_reason == "LIQUIDATION" else "FORCED_CLOSE"
         if not self._record_submission(order, f"{self._forced_close_reason}:{order.client_order_id}", "forced", forced_action, self._forced_close_reason, None):
@@ -2313,6 +2385,11 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         )
         if self._forced_close_reason == "RESEARCH_V3_T3":
             self.v3_risk_audit.append({"event": "PROTECTIVE_SUBMIT", "reason": "T3", "order_id": str(order.client_order_id), "instrument_id": str(tick.instrument_id), "timestamp_ns": str(tick.ts_event), "trigger_ns": str(self._v3_trail_trigger_ns), "latency_ns": str(tick.ts_event-self._v3_trail_trigger_ns), "quote_ns": str(tick.ts_event), "executable_quote": str(tick.bid_price if position.is_long else tick.ask_price), "quantity": str(order.quantity)})
+        if staged:
+            self._staging_a_forced_children[tick.instrument_id]=dict(order_id=order.client_order_id,
+                position_id=position.id,before_qty=full_quantity,was_long=position.is_long,quote_ns=tick.ts_event)
+            self._order_audit[str(order.client_order_id)].update(staging_a_full_admitted_qty=str(full_quantity),
+                staging_a_child_qty=str(order.quantity),staging_a_timing="POST_ORIGINAL_REDUCE_ONLY_LEAVES")
         self._forced_close_submitted.add(tick.instrument_id)
         self._forced_close_orders.add(str(order.client_order_id))
         if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT":
@@ -2486,6 +2563,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             order = self.cache.order(event.client_order_id)
             if order is not None and order.is_closed:
                 self._terminal_submission(str(event.client_order_id))
+                if getattr(self.config,"research_sol_capital_staging_a",False):
+                    self._staging_a_continue_forced_fill(event)
             self._reconcile_terminal_flat()
             return
         if str(event.client_order_id) in self._forced_close_orders:
@@ -2497,7 +2576,11 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             order = self.cache.order(event.client_order_id)
             if order is not None and order.is_closed:
                 self._terminal_submission(str(event.client_order_id))
-                if self._forced_close_intent is not None:
+                if getattr(self.config,"research_sol_capital_staging_a",False):
+                    self._staging_a_continue_forced_fill(event)
+                if self._forced_close_intent is not None and (
+                    not getattr(self.config,"research_sol_capital_staging_a",False) or not self.cache.positions_open()
+                ):
                     self._domain.on_parent_terminal(self._forced_close_intent.id)
                 self._group_close_reconciliation_pending = True
                 self._reconcile_group_flat()
@@ -2749,7 +2832,12 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
         self._research_capture_btc_episode(event)
         self._v3_capture_sol_cycle(event)
-        if self._ordinary_forced_close_active():
+        if getattr(self.config,"research_sol_capital_staging_a",False):
+            self._staging_a_reconcile_flat_timeout(event)
+        if self._ordinary_forced_close_active() or (
+            getattr(self.config,"research_sol_capital_staging_a",False)
+            and self._staging_a_force_scope() and self._staging_a_forced_children
+        ):
             self._submit_forced_closes_from_cache()
         self._reconcile_group_flat()
         self._reconcile_liquidation_flat()

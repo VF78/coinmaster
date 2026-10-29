@@ -1165,7 +1165,12 @@ def run_native_diagnostic(
             from coinmaster.strategy.sol_capital_staging import funded_scale,BASE_SOL_CHILD
             full_config["research_sol_capital_staging_a"]=dict(enabled=True,initial_funded_seed=str(initial_active_seed),
                 scale=str(funded_scale(initial_active_seed)),child_cap_qty=str(BASE_SOL_CHILD*funded_scale(initial_active_seed)),
-                admission="ORIGINAL_FULL_QUANTITY_BEFORE_CHILD_CAP",residual="ACTUAL_FILL_CHARGES_ORIGINAL_D1_LEVEL_RIGHTS",
+                admission="ORIGINAL_PARENT_ADMISSION_BEFORE_CHILD_CAP",residual="ACTUAL_FILL_CHARGES_AND_ORIGINAL_PARENT_REDUCTION_LEAVES",
+                scope="ALL_NORMAL_STRATEGY_SOL_MARKET_IOC",emergency_flatten_staged=False,
+                native_child_status="TRUTHFUL_FILLED_NOT_FORGED_PARENT_CANCELED",stale_original_quote_replayed=False,
+                historical_queue_identity="UNOBSERVED_NOT_INVENTED",
+                add_retry="ORIGINAL_D1_LEVEL_FREQUENCY",timeout_and_ordinary_reduction_retry="NEXT_60S",
+                forced_retry="SAME_CAUSALLY_FRESH_QUOTE_ONLY_AFTER_NATIVE_TERMINAL_AND_POSITION_PROGRESS",
                 economic_parent_ceiling=str(candidate.max_parent_notional),venue_grids_and_tiers_scaled=False)
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
