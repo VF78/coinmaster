@@ -1,0 +1,39 @@
+{
+  "source": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "parent": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "status": "EXACT_SOURCE_PEER_AND_PUBLIC_PASS_NATIVE_IN_PROGRESS",
+  "product_diff": "live_recovery.py parkbranch9add1delete; no economicformula changes",
+  "source_sha256": "5da925029aea909cab0a6f459b8601265e37ac45285bb177b35a5b58bfc4fa28",
+  "tests": {
+    "new_targeted_pass": 14,
+    "new_targeted_seconds": 20.24,
+    "connected_original_pass": 162,
+    "connected_original_fail": 1,
+    "original_failure": "Oldheadroom-onlytestexpectedunconditionalrefresh, supersededbyapprovedcontract",
+    "correction": "Onlyassertionupdated;2affectedPASS2.01s overlap",
+    "final_unique_verified": 163,
+    "whole_connected_green_claim": false,
+    "product_changed_after_test_run": false
+  },
+  "critical_peer": "FINAL_EXACT022_PASS_NO_P0_P1_allsource/test/receipt hashesverified",
+  "freeze_receipt_sha256": "aba5a54424cf4e8ef79c04dbeb593b16154b82d6d2eb39a0cad9c9da44f98154",
+  "public": {
+    "repository": "https://github.com/VF78/coinmaster",
+    "branch": "codex/e4-c1-live-readiness-20261028",
+    "exact_remote_sha": "022fbe8cf578c6cd4407652461ebf539659bb024",
+    "scanned_tracked_files": 6,
+    "actualsecret_or_accountreadback_findings": 0,
+    "scan_receipt_sha256": "3b6d14b4119e0fe32c3e0c5751e4ae2476a67a7d61046e517281616dbc08dd8c",
+    "authorization": "Existingdirecthumanrepobranchandverifiedupdatesapproval; normalpushafterevidenceverification, nosecuritybypass"
+  },
+  "capacity_reuse": {
+    "all_git_helper_files_unchanged": 9,
+    "public_parser_files": 1,
+    "new_HTTP": 0,
+    "raw_report_not_rewritten": true
+  },
+  "old_source_WIP_preserved": 6,
+  "deployment_live_orders_transfers": 0,
+  "START": false,
+  "recorded_utc": "2026-10-29T08:06:27.776080+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "SOURCE8C1D_PROFILE_ACTUAL_DEPOSIT_VALIDATED_DRAFT_NATIVE_AND_STAGER_PENDING",
+  "source_commit": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "vps_packet_directory": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-live-readiness-20261028/runtime/var/release-preparation-20261029-8c1d",
+  "archive": "source-8c1da8de9dbdd862c62198f36f4dfdaec7675e8f-runtime.tar",
+  "archive_bytes": 3727360,
+  "archive_sha256": "f4dac27cfd9c08935adb82e10dcaa428539f6e49c59124ac1208ead714a146f9",
+  "packet_checksum_manifest_sha256": "eb5b3c93f39b853967c8d8339b5623c3b19c0662fd4fc0f465bdc96c980ee1db",
+  "verified_packet_checksums": 266,
+  "private_ACTIVE_profile_draft_canonical_sha256": "719609d2d200a927b66d086469092183d89a148f262560708b83106500bc6ddb",
+  "profile_validation": "Actual selected validator and11 committed sourcepinsPASS; actualinitialdeposit policy, no numericcap decision required; no account-specific identity/START",
+  "drafts": [
+    "VERSION-APPROVAL-DRAFT.md",
+    "DEPLOYMENT-INSTALLED-REFERENCE-DRAFT.md",
+    "ROLLBACK-DRAFT.md",
+    "STARTUP-AND-PACKAGING-TRACE-DRAFT.md"
+  ],
+  "legacy_tooling": "stage_live82.py is incompatible; generic seal_inputs rejects legacy StageG strategy_sha256. This seal builder is not called by selected worker startup; no seal PASS inferred.",
+  "startup_trace": "hl_live_worker.main -> LiveWorker -> load_live_profile -> require_live_order_approval -> HyperliquidLiveNode; full actual startup unqualified",
+  "remaining_packaging": "Compatible selected-profile outoftree staginghelper proposedonly; nativeA/B andinstalled/runtimebinding verification pending",
+  "source_WIP_preserved": 6,
+  "archive_and_extracted_source_read_only": true,
+  "source_changes_native_network_accounts_services_deployment": 0,
+  "START": false,
+  "live_order_capability": false,
+  "updated_utc": "2026-10-29T07:16:05.747197+00:00"
+}

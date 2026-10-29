@@ -1,0 +1,46 @@
+{
+  "task": "CM_E4_C1_NATIVE_FINAL_PAIR_20261029",
+  "status": "A10_FAILED_B11_HOLD_DIAGNOSIS_ONLY",
+  "authority": "Owner direct instruction29Oct finish native full cycle/restart and prepare winner release; root finite necessary engineering allocation, not a new economic budget or START",
+  "source_commit": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "source_admission": "360 connected engine-free PASS99.71s and exact critical independent peer PASS already closed; reuse without rerun",
+  "root_budget": {
+    "previous_maximum": 10,
+    "maximum_physical_attempts": 11,
+    "failed_attempts_preserved": 9,
+    "fresh_cases": [
+      "A10 full lifecycle on fresh SQLite",
+      "B11 only after actual A10 PASS, same SQLite/source/fixture, new native process"
+    ],
+    "reserve": 0,
+    "automatic_retry": false
+  },
+  "before_Popen": [
+    "Exact frozen fixture source tree/profile/import origins and installed native API static preflight",
+    "Both canonical ledger maximum fields equal11; old9 failures and last result hash unchanged",
+    "Root reviews final fixture and launcher; exclusive canonical attempt claim before child",
+    "Parent validation omits only exclusive claim write; child creates that claim exactly once"
+  ],
+  "unchanged_case_contract": "NATIVE_ENGINE_ACCEPTANCE_PROTOCOL_20261029.md A/B case descriptions; unchanged vector5822faef, DP55, fees, protection assertions, real native callbacks, no seeded money/rights, no clock replacement",
+  "per_child_limits": {
+    "nodes": 1,
+    "wall_seconds": 180,
+    "synthetic_submits": 24,
+    "synthetic_cancels": 48,
+    "network_keys_real_orders": 0
+  },
+  "pass": "Actual native full A lifecycle ends positions/orders/inflight0; B fresh node preserves canonical H/DP/rights/fills/clocks, stays PAUSED and sends no order/cancel",
+  "failure": "Preserve raw results, SQL and process exit; STOP pair, no automatic new allocation",
+  "component_reuse": "Closed currency MODEL, real keyless Portfolio/Cache, source360 and API/GUI checks are not rerun",
+  "economic_research_budget_change": false,
+  "deployment_live_services_transfers": 0,
+  "owner_START": false,
+  "actual_attempt": {
+    "pid": 20292,
+    "exit": 1,
+    "wall_seconds": 19.228709186,
+    "passed_gates": 6,
+    "error": "FULL_FAILED_FOR_REASON_OTHER_THAN_BUDGET",
+    "result_sha256": "539418bbecd8e8e18ba5c96c9d17991de3df13206d20180f0cddc344dac89011"
+  }
+}

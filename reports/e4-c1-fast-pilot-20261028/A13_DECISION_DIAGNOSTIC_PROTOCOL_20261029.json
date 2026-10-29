@@ -1,0 +1,27 @@
+{
+  "task": "CM_E4_C1_ACTUAL_DECISION_DIAGNOSTIC_A13",
+  "status": "ROOT_APPROVED_CONDITIONAL_ON_OBSERVER_STATIC_FREEZE",
+  "authority": "Owner finish native verification; root finite engineering allocation, not economic replay or START",
+  "source_unchanged": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "A12": "FAILED preserved fb2be71a9a9ee76260cab5938504ed6b68eae27ac1feff56db2991edc70ad502;6gates/query2/Info48/2submits1cancel, continuationnotemitted",
+  "evidence_limit": "All saved standingTP/native/intent/shape/held predicates match in actualAST replay, but temporal health/context/headroom/feeds values were not captured. Exact failed guard UNKNOWN; no guessed product fix authorized by this evidence.",
+  "budget": {
+    "maximum_physical_attempts_unchanged": 13,
+    "spent_failed_preserved": 12,
+    "explicit_root_reallocation": "PreviouslyheldconditionalB13 slot becomes ONE diagnosticA13 onfreshSQLite",
+    "reserve": 0,
+    "automatic_retry_or_B": false
+  },
+  "fixture_only": [
+    "Bounded observer of actual decision-time call/return/exception and source returnline for existing entry/livehealth/runtimehealth/money/chain/feed/context/headroom gates",
+    "No replacement predicate, no True override, no repeatedguardcall presentedasoriginalevent, no money/cache/clock modification",
+    "Bounded ringbuffer and restore original trace/profile in finally; observer exceptions cannot alter product control flow",
+    "Separate after-failure diagnostics clearly labeled; same actual case/assertions/fees/vector/limits",
+    "Static observer positive/false/exception/bound/restore proof, exactfixture/rootreview/claim before child"
+  ],
+  "per_child_caps": {"nodes": 1, "wall_seconds": 180, "synthetic_submits": 24, "synthetic_cancels": 48, "network_keys_realorders": 0},
+  "result": "Preserve actual result and diagnostic trace. No further physical allocation follows automatically; if fullA unexpectedlyPASS, reuseit ratherthanrerun before separatelyadmittedB.",
+  "closed_components_reused": true,
+  "economic_services_deployment_orders_transfers_changes": false,
+  "START": false
+}

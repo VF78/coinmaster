@@ -1,0 +1,19 @@
+{
+  "task": "CM_E4_C1_ACTUAL_INITIAL_DEPOSIT_CAPACITY_READ",
+  "status": "ROOT_APPROVED_ONE_ATTEMPT_AFTER_FROZEN_HELPER_AND_OFFLINE_TIMING",
+  "authority": "Owner direct instruction useactualavailableUSDCdeposit/finishminimumorders/readiness; noSTART or realtrade",
+  "source_commit": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "helper_sha256": "47c44c5c90acfafc660626e6d526bb49f656160081e2bd363c63a3118ae73b6f",
+  "source_pins_sha256": "0966896e006a36e05a398a93c089f95b8c3befdeb7998ef5a95b7a4ca6c3c1b4",
+  "admission": "IndependentexacthelperpeerPASS;32BTC/12SOL/7precision/20negative/3actualdepositpositiveofflinechecks; exactMacTerraofflineevaluate4.136325250s below7s, accountreadsHTTPnative0",
+  "new_separate_readonly_budget": {"maximum_attempts": 1, "reserve": 0, "automatic_retry": false, "previous_capacity_attempts": "2of2CLOSED preserved unchanged"},
+  "per_attempt": {"fixed_unsigned_Info_requests": 10, "prepaid_weight": 128, "parallel": 8, "redirect_retry": 0, "original_collection_and_final_evaluation_deadline_seconds": 9},
+  "policy": "ExplicitACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT; actualreportedUSDCpositive/hold0, no numericcap lookup/clamp/infinity. Truthfulactualdepositprivate only.",
+  "rate_admission": "Rootverified no concurrentpreparationHTTP and last actualpreprequestupperbound morethan60s; unchangedsource1000gateway, singleexclusiveclaim",
+  "execution": "Finalized frozen script onMac by gpt-6.1-terra/high; no drafting/rewrite, verifyhashes andclaim beforeexecute",
+  "scope": "Conditionalcurrentmarket plannedsize/sharedmargin feasibility only; NOT_START_OR_GLOBAL_FOREIGN_ORDER_PROOF; venuesub10wholecloseUNKNOWN, no fakeflat",
+  "raw_report_account_values": "PRIVATE0700dirs0600files; publictechnicalcounts/hashesonly",
+  "native_engine_keys_orders_transfers_services_deployment": 0,
+  "START": false,
+  "economic_native_budgets_changed": false
+}

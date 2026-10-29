@@ -1,0 +1,39 @@
+{
+  "task": "CM_E4_C1_NATIVE_SUBMITTED_EVENT_20261029",
+  "status": "A11_FAILED_B12_HOLD_DIAGNOSIS_ONLY",
+  "authority": "Owner direct instruction finish native cycle/restart; root necessary finite engineering allocation only",
+  "source_commit_unchanged": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "A10_result": "FAILED preserved539418bbecd8e8e18ba5c96c9d17991de3df13206d20180f0cddc344dac89011",
+  "root_cause": "Fake client omitted native OrderSubmitted; installed base Order binds account_id only on Submitted, not Accepted. SavedSQL PendingCancel account_id null; actual AST replay of101/102 raises LIVE_APPLIED_ANCHOR_OWNERSHIP_UNKNOWN. Product ownership guard is correct.",
+  "fixture_only_correction": [
+    "Emit public generate_order_submitted at stock HL lifecycle point before lostACK/Accepted",
+    "Statically validate installed public signature and client account binding",
+    "Persist sanitized inner failure before existing assertion; no weaker assertion"
+  ],
+  "root_budget": {
+    "previous_maximum": 11,
+    "maximum_physical_attempts": 12,
+    "failed_attempts_preserved": 10,
+    "fresh_cases": [
+      "A11 fresh SQLite full cycle",
+      "B12 only after actual A11 PASS, same SQLite/source/fixture, new process"
+    ],
+    "reserve": 0,
+    "automatic_retry": false
+  },
+  "admission": "Root reviews narrow exact fixture diff and static ABI/regression/replay evidence; pins frozen; canonical exclusive claim before Popen; both budget fields12",
+  "unchanged": "All A/B assertions, market vector, product082, DP55, native account/cache/OMS, fees, wall180s/submits24/cancels48/network0, closed360source+criticalpeer reused",
+  "failure_policy": "Preserve actual results/raw/SQLite and stop pair; no automatic new allocation",
+  "economic_budget_changes": false,
+  "services_keys_real_orders_deployment_transfers": 0,
+  "START": false,
+  "actual_attempt": {
+    "pid": 22929,
+    "exit": 1,
+    "wall_seconds": 55.573032948,
+    "passed_gates": 6,
+    "technical_progress": "Submittedaccountbindingcorrected; actualfirstheldfullquery2+splitcontinuationattempt advanced",
+    "error": "remaining split order quantity/count assertion",
+    "result_sha256": "cfda48768c7902a9676cebabb115110eeb12fa2b083444211fa259df2d0edbc5"
+  }
+}

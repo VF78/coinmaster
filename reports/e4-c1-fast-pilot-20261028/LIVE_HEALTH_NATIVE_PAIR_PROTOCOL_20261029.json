@@ -1,0 +1,32 @@
+{
+  "task": "CM_E4_C1_QUALIFIED_LIVE_HEALTH_NATIVE_PAIR_20261029",
+  "status": "ROOT_APPROVED_CONDITIONAL_ON_EXACT_STATIC_FIXTURE_FREEZE",
+  "authority": "Owner direct instruction complete native full cycle/restart, useactualavailableinitialUSDCdeposit and preparewinnerrelease; root necessary finite engineering verification only",
+  "source_commit": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "source_evidence": "298connectedPASS89.20s; strengthened17PASS4.98s overlap, productunchanged; criticalexactpeerPASS with9source/testSHA+2logs+patchverified",
+  "changes": "DedicatedsameprocessqualifiedLIVEhealth andexplicitACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT; only5productfiles, wavecorechangeoneconfigmetadatafield; existingBTC/SOLcalculationunchanged",
+  "root_budget": {
+    "previous_maximum": 12,
+    "maximum_physical_attempts": 13,
+    "failed_attempts_preserved": 11,
+    "fresh_cases": ["A12 freshSQLite full actual lifecycle", "B13 only afterA12actualPASS, sameSQLite/source/fixture andnewprocess"],
+    "reserve": 0,
+    "automatic_retry": false
+  },
+  "fixture_admission": [
+    "Exact source/tree/19origins/actualprofilevalidator andinstalledAPI preflight",
+    "ASTloadactualworker_entries_enabled and_live_health_current; exactproduction bind_live_health hook, no rewritten predicate",
+    "Actual INIT alone activates process marker; beforeINIT/reopenedB markerfalse",
+    "Explicit actual-initial-deposit profile/identity/approval/config hashbinding exactlysameproduction builder",
+    "Newmethod global names/holder attributes staticallyverifiedbeforeNative",
+    "KeepstockSubmittedeventrepair,allA/Bcaseassertions,vector5822faef,fees,DP55,nofabricatedsnapshot/rights/clock",
+    "Root finaldiffreview, bothbudgetfields13 andexclusivecanonicalclaimbeforePopen"
+  ],
+  "per_child_caps": {"nodes": 1, "wall_seconds": 180, "synthetic_submits": 24, "synthetic_cancels": 48, "network_keys_real_orders": 0},
+  "pass": "Aactualflatwithorders/inflight0 afterentry/partial/cancel/latefill/duplicate/continuation/TP/C1/preD1deny/DPunknownACKnoretry; BactualnewnodePAUSEDpreservesH/DP/rights/fills/clocks andsends0commands",
+  "failure_policy": "Recordactualprocess/result/SQLite;stop pair, noautomaticnewallocation",
+  "closed_component_reuse": "No repeatcurrencyMODEL/keylessPortfolioCache/API-GUI/economicsearch/previouspuretests",
+  "economic_budgets_changed": false,
+  "services_keys_external_orders_transfers_deployment": 0,
+  "owner_START": false
+}

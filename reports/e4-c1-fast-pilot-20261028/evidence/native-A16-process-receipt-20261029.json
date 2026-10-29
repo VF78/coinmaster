@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 52876,
+  "attempt_id": "A-016-3c8c9bd0-ac97-4390-98c9-a4835b26cc34",
+  "case": "A",
+  "error": "AssertionError('ACTUAL_STANDING_ACK_NOT_COMPLETE_WITHIN_2_SECONDS')",
+  "failed_gates": [
+    "actual_split_remaining_and_postonly_second_child_complete"
+  ],
+  "fixture_sha256": "39dddf1755f76f74afbf39b99a634d2fcbfd10ccd97e755c8024f3750e925a25",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 6,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "6e8f43e09a62109d43410d4e6d7db45f0147e432e328bd194953e1185d48cc91",
+  "source_commit": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 1,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 2,
+    "synthetic_cancel_commands": 2,
+    "synthetic_info_requests": 51,
+    "synthetic_native_spot_reads": 7,
+    "synthetic_submit_commands": 3
+  },
+  "traceback_tail": "File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 705, in invoke\n    if hasattr(value,\"__await__\"):await value\n                                  ^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1094, in complete_actual_split\n    await full_for_split_increase(ordinary)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 988, in full_for_split_increase\n    waited_until=await protected_wait_for_actual_full(ordinary)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 923, in protected_wait_for_actual_full\n    await await_actual_standing_ack()\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 911, in await_actual_standing_ack\n    raise AssertionError(\"ACTUAL_STANDING_ACK_NOT_COMPLETE_WITHIN_2_SECONDS\")\nAssertionError: ACTUAL_STANDING_ACK_NOT_COMPLETE_WITHIN_2_SECONDS\n",
+  "wall_seconds": 63.653080781
+}

@@ -1,0 +1,32 @@
+{
+  "status": "SOURCE_ONLY_ROOT_ACCEPTANCE_PASS_NATIVE_PENDING",
+  "source_commit": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "base": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "product_files": 5,
+  "economic_formula_changes": 0,
+  "wave_overlay_change": "one optional policy metadata configfield only",
+  "connected_tests": {
+    "passed": 298,
+    "seconds": 89.2
+  },
+  "strengthened_actual_preflight_tests": {
+    "passed": 17,
+    "seconds": 4.98,
+    "overlap_not_additive": true,
+    "product_changed_after_connected": false
+  },
+  "critical_peer": "FINAL_EXACT_COMMIT_PASS_NO_P0_P1;9source/test+2logs+raw/compressedpatchSHA independentlyverified",
+  "prepared_forward_regression": "Actualsink/health prerecord PASS; ambientpostrecordhealthDENY; exactoneusepreparedorderfinalDPforwards1/replayDENY",
+  "initial_policy": "ACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT; exactprofile/identity/approval/hashbound; legacycapsunchanged; laterdepositsquarantine",
+  "publication": {
+    "exact_remote_verified": true,
+    "branch": "codex/e4-c1-live-readiness-20261028",
+    "tracked_files_scanned": 13,
+    "actual_secret_or_account_readback_findings": 0,
+    "scan_receipt_sha256": "4dc2690e06383fc5dc1df1e8a6778a1cc387887c984243df3ec1d9cb668e56b9"
+  },
+  "source_old_untracked_WIP_preserved": 6,
+  "native_deployment_services_realorders_transfers": 0,
+  "START": false,
+  "accepted_utc": "2026-10-29T06:36:03.010173+00:00"
+}

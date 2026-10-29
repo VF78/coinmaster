@@ -1,0 +1,241 @@
+{
+  "after_failure_interpretation": "Snapshot is AFTER failure; financial_suspended/deadline cleared reflects subsequent refresh request and is not substituted for recorded prior decision.",
+  "after_failure_snapshot": {
+    "account_lock_present": true,
+    "capital_basis_verified": true,
+    "control": "RUNNING",
+    "financial_deadline_ns": null,
+    "financial_suspended": true,
+    "fresh_process_marker": true,
+    "inputs_dirty": false,
+    "kind": "AFTER_FAILURE_NOT_DECISION_TIME",
+    "last_actual_health": {
+      "flatten_requested": false,
+      "paused_new_entries": false,
+      "safe_for_increase": true,
+      "warnings": []
+    },
+    "native_revision": 19,
+    "process_lock_present": true,
+    "provider_bound_to_actual_holder": true,
+    "recovery_confirmed": true
+  },
+  "attempt": "A14",
+  "causal_limit": "This actual A14 witness proves stale-or-moved DP observation and asynchronous publication after failure. It does not retroactively prove the uninstrumented A12 cause.",
+  "classification": "ACTUAL_DP_OBSERVATION_NOT_CURRENT_BEFORE_ASYNC_FRESH_PUBLICATION",
+  "fixture_sha256": "258e047c2939247c68cf87a768488af515ffee0bddd6eb79a5f5b25e976d89c4",
+  "genuine_TP_ACK": {
+    "actual_elapsed_seconds": 0.012503113597631454,
+    "durable_state": "ACKED",
+    "native_Submitted_and_Accepted": true,
+    "quantity": "0.00237",
+    "real_venue_evidence": false,
+    "status": "ACTUAL_NATIVE_ACK_COMPLETE"
+  },
+  "health_interpretation": "Last observed actual health was safe with no warnings; final base DP check rejected before downstream worker entries gate, so it is not a current health-failure claim.",
+  "mutations": {
+    "SQLite": 0,
+    "canonical_ledger": 0,
+    "fixture": 0,
+    "product": 0,
+    "raw": 0
+  },
+  "observed_failure_chain": [
+    {
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._validated_live_money",
+      "line": 544,
+      "return_type": "LivePerpsMoneyView",
+      "sequence": 1600
+    },
+    {
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._current_owned_money",
+      "line": 622,
+      "return_type": "tuple",
+      "sequence": 1601
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._feeds_fresh",
+      "line": 882,
+      "return_type": "bool",
+      "sequence": 1613
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._owned_chain_current",
+      "line": 1006,
+      "return_type": "bool",
+      "sequence": 1629
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "strategy_callback._live_context_current",
+      "line": 1452,
+      "return_type": "bool",
+      "sequence": 1638
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "strategy_callback._live_increase_headroom",
+      "line": 1453,
+      "return_type": "bool",
+      "sequence": 1642
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._feeds_fresh",
+      "line": 882,
+      "return_type": "bool",
+      "sequence": 1644
+    },
+    {
+      "code": "PORTFOLIO_OBSERVATION_STALE_OR_MOVED",
+      "event": "exception",
+      "exception_type": "IncompleteInfoReport",
+      "function": "RecoverableWaveOverlayStrategy._validated_live_deposit_equity",
+      "line": 504,
+      "sequence": 1653
+    },
+    {
+      "boolean": false,
+      "event": "return",
+      "function": "WaveOverlayStrategy._entries_enabled",
+      "line": 3003,
+      "return_type": "bool",
+      "sequence": 1655
+    },
+    {
+      "boolean": false,
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._entries_enabled",
+      "line": 1210,
+      "return_type": "bool",
+      "sequence": 1656
+    },
+    {
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._validated_live_money",
+      "line": 544,
+      "return_type": "LivePerpsMoneyView",
+      "sequence": 1682
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "strategy_callback._live_context_current",
+      "line": 1452,
+      "return_type": "bool",
+      "sequence": 1686
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "strategy_callback._live_increase_headroom",
+      "line": 1453,
+      "return_type": "bool",
+      "sequence": 1690
+    },
+    {
+      "boolean": true,
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._feeds_fresh",
+      "line": 882,
+      "return_type": "bool",
+      "sequence": 1692
+    },
+    {
+      "code": "PORTFOLIO_OBSERVATION_STALE_OR_MOVED",
+      "event": "exception",
+      "exception_type": "IncompleteInfoReport",
+      "function": "RecoverableWaveOverlayStrategy._validated_live_deposit_equity",
+      "line": 504,
+      "sequence": 1701
+    },
+    {
+      "boolean": false,
+      "event": "return",
+      "function": "WaveOverlayStrategy._entries_enabled",
+      "line": 3003,
+      "return_type": "bool",
+      "sequence": 1703
+    },
+    {
+      "boolean": false,
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._entries_enabled",
+      "line": 1210,
+      "return_type": "bool",
+      "sequence": 1704
+    },
+    {
+      "event": "return",
+      "function": "RecoverableWaveOverlayStrategy._submit_intent",
+      "line": 941,
+      "return_type": "NoneType",
+      "sequence": 1705
+    }
+  ],
+  "observer": {
+    "callback_self_time_ns": 25199233,
+    "errors": 0,
+    "extra_guard_evaluations": 0,
+    "native_reruns": 0,
+    "previous_trace_restored": true,
+    "retained_events": 128
+  },
+  "publication_order": {
+    "exact_exception_event_timestamp_not_recorded": true,
+    "failing_gate_observer_end_ns": 5987506171936702,
+    "fresh_account_evidence_cursor": 19,
+    "fresh_full_Info_cursor": 18,
+    "fresh_full_Info_revision": 19,
+    "fresh_observation_completed_ns": 5987506173906206,
+    "fresh_observation_generation_started_ns": 5987506051890931,
+    "new_publication_completion_after_gate_end_ns": 1969504,
+    "prior_account_evidence_cursor": 14,
+    "prior_observation_age_at_gate_end_seconds": 34.782722908,
+    "prior_observation_generation_started_ns": 5987471389213794,
+    "prior_observation_revision": 15
+  },
+  "ruled_out_at_final_decision": [
+    "native TP ACK absence",
+    "owned money view unavailable",
+    "feed stale",
+    "owned chain revoked",
+    "account context denied",
+    "increase headroom denied"
+  ],
+  "saved_result_sha256": "27f1e6717ba370ea4a8f133e18b306d0696dc585f1975647b6ce3d142db5930e",
+  "schema": "coinmaster-A14-actual-decision-causal-witness-v1",
+  "source_commit": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "source_conditions": {
+    "DP_reader": "runtime/coinmaster/strategy/live_recovery.py:504",
+    "async_publication": "runtime/coinmaster/ops/hl_live_execution.py:926",
+    "base_entries_false": "runtime/coinmaster/strategy/wave_overlay.py:3003",
+    "logical_parent_park": "runtime/coinmaster/strategy/live_recovery.py:933-941",
+    "observation_guard": "runtime/coinmaster/ops/hl_live_money.py:305-309 require_current rejects age over9seconds or revision/fill/ws movement"
+  },
+  "two_lane_compatibility": {
+    "account_collector_source_has_revision_mutation": false,
+    "actual_DP_require_current_AST_at_recorded_cheap_completion": "PASS",
+    "actual_full_view_require_fresh_AST_at_paired_recorded_wall_availability": "PASS",
+    "actual_saved_full_Info_revision": 19,
+    "actual_saved_later_cheap_revision": 19,
+    "cheap_DP_source_binds_current_account_event_id": true,
+    "cheap_generation_age_at_own_completion_ns": 122015275,
+    "conclusion": "NO_FORCED_REVISION_PINGPONG: recorded fresh cheap publication remains revision19 with fullInfo19 and age-valid fullview; account-id refresh alone does not revoke fullview.",
+    "current_journal_revision": 19,
+    "full_view_age_at_cheap_publication_ms": 1916,
+    "full_view_source_binds_revision_positions_balances_not_account_event_id": true,
+    "limits": "This source/recorded-age compatibility proof does not reconstruct the cleared full monotonic deadline or establish a simultaneous actual post-publication submit. Balance/position changes or new journal events must still reject; ordinary-scheduler liveness remains to qualify.",
+    "paper_event_account_count": 0,
+    "proposed_fixture_coordination": "After the existing single protected budget wait and successful actual full refresh, await the already admitted cheap observation task and validate actual current full money plus DP getter/coherent revision/deadline; only then issue a genuine next quote. Bound by remaining original9second authority and existing180second child cap; no second61secondwait, clock patch, extra full retry loop or forced authority."
+  }
+}

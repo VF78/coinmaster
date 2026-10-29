@@ -1,0 +1,33 @@
+{
+  "task": "CM_E4_C1_LIVE_HEALTH_INTEGRATION_20261029",
+  "status": "ROOT_APPROVED_CODE_ONLY_HEALTH_AND_OWNER_ACTUAL_INITIAL_DEPOSIT",
+  "authority": "Owner direct29Oct complete native full cycle/restart and prepare winner release; necessary source preparation, not START",
+  "base_source": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "A11_result": "FAILED preserved cfda48768c7902a9676cebabb115110eeb12fa2b083444211fa259df2d0edbc5",
+  "independently_reproduced_cause": "LiveEpochRuntime inherits paper health. Own ACKED protective TP causes MANAGE_ONLY_PENDING_INTENT and safe_for_increase false; actual worker gates split continuation with that paper health despite successful fresh native financial checkpoint. Saved SQL current revision19 versus virgin paper snapshot0; exact AST replay and independent peer confirm.",
+  "required_design": [
+    "Use explicit same-process qualified live health for live admission; never pretend a paper snapshot or Sandbox session is active",
+    "Only exact native-owned reconciled pending protection can be compatible with increases",
+    "Retain pause/manual/quarantine/foreign/uncertain ACK/WS continuity/original9s financial lineage and revision gates",
+    "Retain pending margin, held-minus-all-pending, DP55/C1, no unknown credit or resend",
+    "Restart stays PAUSED and cannot revive authority"
+  ],
+  "source_process": "One writer healthtargetedcheckpoint+preparedactualforward regression; explicit initialpolicy tests; oneconnectedrelevantcombinedPASS; oneexactcriticalpeer; freeze beforeNative",
+  "unchanged": "BTC_POSTCUT_D1 core/config; SOLalpha rules; USDC currency; native1.231; actual wallet/account/budget; services/GUI",
+  "current_physical_ledger": "11FAILED/max12/active0/rootGOFalse; unused B12 HOLD",
+  "conditional_future_pair_proposed_only": "After qualified new source and frozen fixture: root finite max13, fresh A12 then B13 only if A12 PASS, no reserve; do not launch from this source protocol",
+  "economic_budgets_unchanged": true,
+  "new_native_or_HTTP_under_CODE_phase": 0,
+  "deployment_services_keys_orders_transfers": 0,
+  "START": false,
+  "initial_deposit_owner_contract": {
+    "policy": "ACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT",
+    "authority": "Owner direct current29Oct reply: start withactualavailabledeposit; no repeatednumericcapquestion",
+    "scope": "Explicit selectedACTIVE policy boundprofile/approval/recoveryhash; fixed-cap legacy unchanged",
+    "money": "Reuse existingqualifiedUSDC E only; native/cache/spotparity,originalfreshness/revision/accountidentity,0<E,hold0,verifiedvirginflat/noorders/inflight/foreign/unresolvedcashflow",
+    "init": "ExistingatomicE0/H/marker/checkpoint once; rollback safe; restartnoHreset/PAUSED",
+    "later_deposits": "Deferredpostlive; existingquarantine/cashflow/HWMrulesunchanged; nevercountdepositasprofit",
+    "forbidden": "No fakeequity/min(E,oldcap),no hardcoded81.84/82,newrawUSD/defaultDEXformulas,infinitecap/globalguardbypass,transfers orSTART"
+  },
+  "updated_utc": "2026-10-29T06:24:23.578832+00:00"
+}

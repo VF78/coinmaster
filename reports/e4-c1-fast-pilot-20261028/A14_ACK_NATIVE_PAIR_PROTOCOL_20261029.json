@@ -1,0 +1,21 @@
+{
+  "task": "CM_E4_C1_ACTUAL_ACK_NATIVE_A14_B15",
+  "status": "ROOT_APPROVED_CONDITIONAL_FINAL_STATIC_GO_PINS",
+  "authority": "Owner repeated instruction finish native fullcycle/restart and preparewinnerrelease; root necessary finite engineering allocation only",
+  "source_unchanged": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "source_gate_reuse": "298connectedPASS89.20s+17strengthenedoverlap4.98s/exactcriticalpeerPASS/publicexact; no sourcechanges/redundanttests",
+  "evidence": "A13 actual TP onlyInitialized/SUBMITTING, noSubmitted/Accepted/venueACK whenstandingbaselinechecked. Baselinecorrectlyfailed beforebudgetwait. A13earlierboundarydoesnotestablishA12transientcause.",
+  "fixture_only": [
+    "Await real nativeSubmitted+Accepted/account/venue anddurableACKED protection foratmost2s beforeUNCHANGEDstandingbaseline; immediatefailureonactualDenied/Rejected, no manualACK/newquotes/cachemutation",
+    "No longbudgetwait unlessactualopenTPleaves==actualheld",
+    "Targetunwrappedactualhealth andotherexistingguardcode, disablelineevents, boundedcontinuousring128/counts2048; alloperativeAgates observed, nore-evaluation/fakeclock",
+    "StaticABI/91sourcepaths/19origins/actualprofile+approval+policy/observerregressions/rootdiffreview closed beforelaunch"
+  ],
+  "root_budget": {"previous_maximum": 13, "maximum_physical_attempts": 15, "failed_preserved": 13, "fresh_cases": ["A14 freshSQLite completeA", "B15 onlyafteractualA14PASS sameSQLite/source/fixture newnativeprocess"], "reserve": 0, "automatic_retry": false},
+  "limits": {"per_child_nodes": 1, "wall_seconds": 180, "synthetic_submits": 24, "synthetic_cancels": 48, "realnetwork_keys_orders": 0},
+  "pass": "ExistingfullAfinancial/order/TP/C1/DPflatassertions andBPAUSED/H/rights/fill/clockpersist/zerocommands, no weakercriteria",
+  "failure": "Preserveallraw/SQL/process/actualdecisiontrace; stop pair, noautomaticnewallocation",
+  "fresh_actual_capacity": "Separate1of1closed recorded10Info/128weight/6.747s wrapper, noSTART/globalforeignproof; no newHTTP here",
+  "economic_budgets_services_accounts_deployment_transfers_changed": false,
+  "START": false
+}

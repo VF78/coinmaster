@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 22929,
+  "attempt_id": "A-011-6cbb1396-cf0d-4b3a-b6c7-87963d2ee8ba",
+  "case": "A",
+  "error": "AssertionError()",
+  "failed_gates": [
+    "actual_split_remaining_and_postonly_second_child_complete"
+  ],
+  "fixture_sha256": "5f1750d1e8a59551e8dc0814a71dfaddbf5ce52cba21e40769262fddcbbfe48b",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 6,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "cfda48768c7902a9676cebabb115110eeb12fa2b083444211fa259df2d0edbc5",
+  "source_commit": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 1,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 2,
+    "synthetic_cancel_commands": 1,
+    "synthetic_info_requests": 48,
+    "synthetic_native_spot_reads": 6,
+    "synthetic_submit_commands": 2
+  },
+  "traceback_tail": "p.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1232, in bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1200, in run\n    await gate(\"actual_split_remaining_and_postonly_second_child_complete\",lambda:complete_actual_split(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 554, in gate\n    await value\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 808, in complete_actual_split\n    assert len(new)==1 and new[0].quantity.as_decimal()==first_remaining\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "wall_seconds": 55.573032948
+}

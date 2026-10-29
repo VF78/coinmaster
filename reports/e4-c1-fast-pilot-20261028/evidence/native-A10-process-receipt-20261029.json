@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 20292,
+  "attempt_id": "A-010-212d464b-d566-45d5-b3c2-4a12ffceb176",
+  "case": "A",
+  "error": "AssertionError('FULL_FAILED_FOR_REASON_OTHER_THAN_BUDGET')",
+  "failed_gates": [
+    "actual_split_remaining_and_postonly_second_child_complete"
+  ],
+  "fixture_sha256": "ff0c65b5020b50f0cbe9ffc1a2765ff372eaede16dc47d5b82f1050ed1e4a797",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 6,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "539418bbecd8e8e18ba5c96c9d17991de3df13206d20180f0cddc344dac89011",
+  "source_commit": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 0,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 1,
+    "synthetic_cancel_commands": 1,
+    "synthetic_info_requests": 24,
+    "synthetic_native_spot_reads": 3,
+    "synthetic_submit_commands": 1
+  },
+  "traceback_tail": "coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1163, in bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1131, in run\n    await gate(\"actual_split_remaining_and_postonly_second_child_complete\",lambda:complete_actual_split(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 492, in gate\n    await value\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 735, in complete_actual_split\n    await full_for_split_increase(ordinary)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 707, in full_for_split_increase\n    assert client._cm_ws_failure is None,\"FULL_FAILED_FOR_REASON_OTHER_THAN_BUDGET\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: FULL_FAILED_FOR_REASON_OTHER_THAN_BUDGET\n",
+  "wall_seconds": 19.228709186
+}

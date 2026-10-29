@@ -1,16 +1,12 @@
 {
-  "status": "DRAFT_SOURCE082_PASS_NATIVE_PENDING",
+  "status": "DRAFT_SOURCE022_PASS_NATIVE_FINAL_PAIR_PENDING",
   "task": "CM-E4-C1-FAST-PILOT-20261028",
   "live_order_capability": false,
   "selected_candidate": "BTC_POSTCUT_D1",
-  "source_commit": "082ce016248faa9be5736cd67ba8b4cd9bafbf15",
+  "source_commit": "022fbe8cf578c6cd4407652461ebf539659bb024",
   "config_sha256": null,
   "research_venue": "Bybit",
   "live_venue": "hyperliquid",
-  "max_initial_budget": {
-    "amount": "PRIVATE_CAP",
-    "currency": "USDC"
-  },
   "withdrawal_permission_allowed": false,
   "automatic_topup_allowed": false,
   "simultaneous_BTC_SOL_writer_allowed": false,
@@ -20,9 +16,9 @@
   "readiness": {
     "coherent_equity_clock_H4_D1_warmup": "SOURCE_COMPONENT_PASS_NATIVE_NOT_YET_VERIFIED",
     "open_risk_restart_globalH_parent_PLANREF_credit_latch_rights_pending": "FRESH_INIT_SOURCE_PASS_PAUSED_FLAT_RESTART_PENDING_OPEN_RISK_AUTORECOVERY_DEFERRED",
-    "native_partial_cancel_fill_duplicate_reconnect_priority": "A6_ORDINARY_ENTRY_PARTIAL_CANCEL_LATEFILL_DUPLICATE_PASS_SPLIT_REMAINING_PENDING",
-    "exact_cash_signedfunding_nativefees": "MODEL_USDC_PNL_FEE_PASS_AND_API_GUI_PURE_PASS; FINAL_ACTIVE_AND_REAL_CACHE_PENDING",
-    "isolated_account_budget_minlots_no_doublewriter": "MASTER_AGENT_UNSIGNED_READ_PASS_VENUE_FEASIBILITY_AND_EXECUTION_BINDING_PENDING",
+    "native_partial_cancel_fill_duplicate_reconnect_priority": "NativeINIT/entry/partial/cancel/latefillduplicatePASScomponent; fullsplit/TP/C1/DP/restartNOTPASS",
+    "exact_cash_signedfunding_nativefees": "CLOSED_USDC_MODEL_AND_REAL_READONLYCACHE; newACTIVE nativeA/Bpending",
+    "isolated_account_budget_minlots_no_doublewriter": "Freshprivate32BTC12SOLconditionalcapacityrecorded; positiveadmissiblecases forboth; arbitrarysub10venueexitUNKNOWN",
     "stop_entries_cancel_owned_manage_actual_close_reporting": "SOURCE_COMPONENT_PASS_NATIVE_A_B_PENDING",
     "Unified_compatibility": "SOURCE_AND_REAL_FLAT_CACHE_COMPONENT_PASS_NATIVE_A_B_PENDING"
   },
@@ -42,10 +38,10 @@
     "explicit_live_start_after_final_benchmark_verified_algorithm"
   ],
   "local_private_binding": "runtime/var/research-jobs/e4-c1-fast-pilot-20261028/private/live-account.json",
-  "funds_status": "REAL_READONLY_PORTFOLIO_CACHE_USDC_PARITY_PASS_PRIVATE_VALUES; HELD_MATCHING_ACTIVE_AND_SMALLCAP_PENDING",
-  "updated_utc": "2026-10-29T05:46:51.294951+00:00",
+  "funds_status": "ACTUAL_INITIAL_POLICY_SOURCEPASS_FRESH_CAPACITY_CASES_RECORDED; no numericcapquestion",
+  "updated_utc": "2026-10-29T07:59:07.917969+00:00",
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
-  "source_freeze": "082_360PASS_EXACTPEER_PUBLIC_NATIVE_PENDING",
+  "source_freeze": "022_EXACTPEER_PUBLIC_163UNIQUE_QUALIFIED_NOTWHOLE_CONNECTED_GREEN",
   "drawdown_protection": {
     "retained_equity_fraction": "0.45",
     "loss_limit_percent": 55,
@@ -53,5 +49,11 @@
     "applied_to_runtime": false,
     "executed_loss_guarantee": false
   },
-  "account_mode": "OWNER_KEEP_UNIFIED_USDC_ONLY_DEFAULT_BTC_SOL_CROSS"
+  "account_mode": "OWNER_KEEP_UNIFIED_USDC_ONLY_DEFAULT_BTC_SOL_CROSS",
+  "initial_capital": {
+    "policy": "ACTUAL_AVAILABLE_USDC_AT_FRESH_FLAT_INIT",
+    "owner_authorized": true,
+    "fresh_actual_deposit_binding": "Freshreadonlycapacityrecorded_noSTART; runtimeINITstillrequiresqualifiedfreshnativeparity",
+    "later_topup_support": "DEFERRED_EXISTING_QUARANTINE_RETAINED"
+  }
 }

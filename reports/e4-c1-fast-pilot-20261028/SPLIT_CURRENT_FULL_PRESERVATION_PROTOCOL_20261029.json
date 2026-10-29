@@ -1,0 +1,40 @@
+{
+  "task": "CM_E4_C1_SPLIT_CURRENT_FULL_PRESERVATION",
+  "status": "SOURCE022_EXACT_PEER_PUBLIC_PASS_NATIVE_PAIR_CONDITIONAL_STATIC",
+  "authority": "Owner repeated instruction finish native fullcycle/restart/release, noSTART; necessary isolated source correction",
+  "base_source": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "causal_evidence": "A14actualtrace and exactsourceASTreplay: currentfullrev19 +DPstale -> splitpark requestsfull -> asyncsuspendclearslatest_money/originaldeadline -> budgetdeniesnewfull. NewcheapDP19canpublishbutformerfullauthorityalreadyrevoked.",
+  "causal_receipt_sha256": "51f42277bb7cd9b309552497b3a53d3c53882b9860c5ee1ff62d945386cc348d",
+  "minimal_scope": "Existing splitBTC_ENTRY park branch in live_recovery._submit_intent only; no economicformula/profile/currency changes",
+  "guard": "Afterexistingcheckpointpersist, preserve independentlyqualifiedfull onlyifcurrentownedchain + currentaccountcontext +actual_current_owned_money allPASS. OnValueError/RuntimeErrorrequestfullasbefore. AlwaysreturnDENYforcurrentparkedintent.",
+  "cheap_dirty_semantics": "_live_inputs_dirty describes cheapDP publication, notindependentFULLrevocation; doNOTuseit/DP/feed/headroomfalse alone todeleteotherwisevalidfull. Theirentrydenialgatesremainmandatory.",
+  "invariants": "No deadline/generation/revision resetting, fakeobservation, entrycredit, uncertainresend, fullrefreshglobalbypass or DPweakening. Original9s/actualnativeparity/WS/ownership/control/pendingmargin/C1/DP55 stillrequired; missing/stale/movedfullrequiresrefresh.",
+  "tests": "Actualsource firstDPpendingquote->park preservesexactfull+originaldeadline; realcheappublication->nextquote allowedonlybothguardsfresh. Fullstale/rev/WS/context/unknownpending failuresrefresh+DENY; deadlineexpiryDENY; feed/headroom-onlydenialdoesnotdiscardvalidfull. Oneconnectedrelevantpass+exactcriticalpeer/freeze.",
+  "fixture_await_proposal": "Priorfixture-onlyawait RETRACTED untilsourcecorrection, sinceparkrevokedfull. Afternewfreeze mayawaitsource-admittedcheap task andfeednewgenuinequote withunchangedfull/deadline; no secondfull/61wait/clockpatch.",
+  "physical_ledger": "14FAILED/max15/active0/B15HOLD; CODEphaseNative0. FuturefreshA15/conditionalB16max16proposedonlyafterqualifiedsource/fixture/rootfiniteGO.",
+  "component_reuse": "Freshcapacityhelper9sourcefiles unchanged byplannedonefilepatch; keep1of1read/raw; no economic/currency/API-GUI repeats",
+  "services_accounts_network_orders_deployment_transfers": 0,
+  "START": false,
+  "qualified_source": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "source_test_evidence": "Target14PASS; connected162PASS1oldassertFAIL106.19s; approvedexpectationonlyfix+affected2PASS2.01s overlap/final163unique; productunchanged, notwholegreenrun",
+  "source_publication": "EXACT022_VERIFIED_ROOT_ORDINARY_PUSH_WITH_EXISTING_OWNER_AUTHORIZATION",
+  "native_allocation": {
+    "maximum": 18,
+    "spent_failed_preserved": 16,
+    "cases": [
+      "FreshA17",
+      "B18 onlyafteractualA17PASS sameDB/source/fixture"
+    ],
+    "reserve": 0,
+    "root_go_requires": "Exactstaticfixture/source/profile/origin/API checks+rootfinaldiffreview+exclusiveclaim",
+    "network_keys_realorders": 0,
+    "per_child_nodes": 1,
+    "per_child_wall_seconds": 180,
+    "synthetic_submits": 24,
+    "synthetic_cancels": 48
+  },
+  "fixture_orchestration": "Keeporiginaldemandquote; ifitopenedexpectedENTRYskipextraevent. IfparkedDP-only, awaitONLYadmittedcheap task withinoriginalfull9s deadline, verifyactualfull+DPsamecurrentrev/gen/deadline, thenonegenuineNEXTquote. No newrefresh or second61wait/clockpatch.",
+  "fixture_wait_bound": "RemoveONLYartificialoneprotectedwaitcountlimit; eachactualrollingbudgetwait<=61s andrequiresgenuineACKstandingTPfullheldbefore/during; existingWHOLEchild180s boundsallwaits/commands. Neverresetbudget/source9s clocks orweakensafety.",
+  "latest_actual_progress": "A16completedactualfirstremainingfill; replacementTPqueuedready_ns=now_ns+1, ACKpollwithoutnewquote couldnotdriveit. Source022unchanged.",
+  "fixture_next_quote": "OnlyifknownqueuedBTC_TP replacement+actualoldTPterminal+no nativependingprotection: ONEgenuineNEXTquote duringexisting2s ACKpoll, nonewincrease; no planner/queue mutation, realACK/fullheldbaseline unchanged."
+}

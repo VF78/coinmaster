@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 36648,
+  "attempt_id": "A-013-37dfd248-9ae3-402d-afef-93c02ef51def",
+  "case": "A",
+  "error": "AssertionError('ACTUAL_STANDING_BASELINE_NOT_COMPLETE_NO_WAIT_ALLOWED')",
+  "failed_gates": [
+    "actual_split_remaining_and_postonly_second_child_complete"
+  ],
+  "fixture_sha256": "4a6cb9a4d1d266fc3df70ed850a9f4db3cef8791df3f05017b33b52c9174df0d",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 6,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "9d739443e1448f3cabac579eab97e11e0b3053081adb12a7234be36f38b8f88f",
+  "source_commit": "8c1da8de9dbdd862c62198f36f4dfdaec7675e8f",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 0,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 1,
+    "synthetic_cancel_commands": 1,
+    "synthetic_info_requests": 27,
+    "synthetic_native_spot_reads": 4,
+    "synthetic_submit_commands": 2
+  },
+  "traceback_tail": "tive-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 960, in complete_actual_split\n    await complete_actual_split_body(ordinary)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 986, in complete_actual_split_body\n    await full_for_split_increase(ordinary)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 922, in full_for_split_increase\n    waited_until=await protected_wait_for_actual_full(ordinary)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 858, in protected_wait_for_actual_full\n    standing,held=native_standing_baseline()\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 845, in native_standing_baseline\n    assert standing and leaves==held,\"ACTUAL_STANDING_BASELINE_NOT_COMPLETE_NO_WAIT_ALLOWED\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ACTUAL_STANDING_BASELINE_NOT_COMPLETE_NO_WAIT_ALLOWED\n",
+  "wall_seconds": 23.268049089
+}

@@ -1,0 +1,16 @@
+{
+  "verdict": "CAPACITY_CASES_RECORDED_NO_START",
+  "http_response_count": 10,
+  "request_weight": 128,
+  "collection_span_ns": 2217243000,
+  "whole_wrapper_wall_ns": 6747361334,
+  "btc_enumerated": 32,
+  "sol_enumerated": 12,
+  "reported_money_currency": "USDC",
+  "scope": "NOT_START_OR_GLOBAL_FOREIGN_ORDER_PROOF",
+  "sub_minimum_boundary": "UNKNOWN_VENUE_SUBMINIMUM_CLOSE",
+  "native_keys_orders": 0,
+  "raw_sha256": "838c87cb5bedb0f55b65172a5b0159c56ba3f8243e920326485f45702c4c16bf",
+  "report_sha256": "d6719d75fcdc9071d75e9ce215b0dd511d51f0787dd319d0acf2a298333107ae",
+  "actual_financial_values_public": false
+}

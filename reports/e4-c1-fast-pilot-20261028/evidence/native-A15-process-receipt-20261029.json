@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 50982,
+  "attempt_id": "A-015-c9bcb561-78e4-4e38-96c1-8efe309a3824",
+  "case": "A",
+  "error": "AssertionError()",
+  "failed_gates": [
+    "actual_split_remaining_and_postonly_second_child_complete"
+  ],
+  "fixture_sha256": "14a65f7a1f33ea5a73fb2d6bd8a05b5333c915bec5612f9c9fa4a8655d63ccfa",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 6,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "341c87559c5aa84c401df8006c663ad02a1876b60356c2785d2b018d67612a0e",
+  "source_commit": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 1,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 2,
+    "synthetic_cancel_commands": 2,
+    "synthetic_info_requests": 48,
+    "synthetic_native_spot_reads": 6,
+    "synthetic_submit_commands": 3
+  },
+  "traceback_tail": "rdinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 711, in gate\n    with operative_observer:await invoke()\n                            ^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 705, in invoke\n    if hasattr(value,\"__await__\"):await value\n                                  ^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1095, in complete_actual_split\n    await full_for_split_increase(ordinary)\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 989, in full_for_split_increase\n    waited_until=await protected_wait_for_actual_full(ordinary)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 915, in protected_wait_for_actual_full\n    assert counts[\"bounded_budget_waits\"]==0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "wall_seconds": 59.374834469
+}
