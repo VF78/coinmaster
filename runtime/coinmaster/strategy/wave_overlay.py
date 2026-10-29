@@ -153,6 +153,11 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     deposit_initialization_allowed: object | None = None
     deposit_high_water_allowed: object | None = None
 
+    def __post_init__(self) -> None:
+        from coinmaster.strategy.execution_config import validate_zero_tp_modes
+        validate_zero_tp_modes(deferred_selective_zero_tp=self.research_v0_deferred_selective_zero_tp,
+            zero_tp_netting=self.research_v0_zero_tp_netting)
+
 
 def _native_account_money(account, *, free: bool = False) -> Decimal:
     """Read native account cash in its ledger currency; absent cash fails closed."""
@@ -209,6 +214,9 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
 class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandResearch, CarryPairResearch, AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+        from coinmaster.strategy.execution_config import validate_zero_tp_modes
+        validate_zero_tp_modes(deferred_selective_zero_tp=config.research_v0_deferred_selective_zero_tp,
+            zero_tp_netting=config.research_v0_zero_tp_netting)
         super().__init__(config)
         self._split_cover_init()
         self._risk_first_init()
