@@ -1115,7 +1115,7 @@ def run_native_diagnostic(
         fee_attribution = native_fee_attribution(adapter["fill_audit"], fees)
         audit = journal.funding_audit() if journal else []
         manifest = data_root / "bybit-1m" / "manifest.json"
-        full_config = {**BASELINE_CONFIG, "initial_total_usdt": str(initial_active_seed), "account": BASELINE_CONFIG["account"] if qualification_mode=="legacy_reference" else "SIM_MARGIN_USDT_DP55_QUALIFICATION", "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH" if qualification_mode=="legacy_reference" else "GLOBAL_DP55_NATIVE_USDT_M1", "qualification_mode": qualification_mode, "quantity_model": qualification_quantity_model, "lot_constraints": lot_constraints, "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
+        full_config = {**BASELINE_CONFIG, "initial_total_usdt": str(initial_active_seed), "account": (BASELINE_CONFIG["account"] if initial_active_seed==Decimal("10000") else "SIM_MARGIN_USDT_DYNAMIC_SEED") if qualification_mode=="legacy_reference" else "SIM_MARGIN_USDT_DP55_QUALIFICATION", "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH" if qualification_mode=="legacy_reference" else "GLOBAL_DP55_NATIVE_USDT_M1", "qualification_mode": qualification_mode, "quantity_model": qualification_quantity_model, "lot_constraints": lot_constraints, "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
         if research_v0_execution_repairs:
             full_config["research_v0_execution_repairs"] = True
             if not research_v0_zero_tp_netting:
@@ -1223,12 +1223,31 @@ def run_native_diagnostic(
                 ("native_accounting","research/native_accounting.py"),("paired_observer","research/paired_observer.py"),
                 ("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
         # Preserve native facts before any boundary/metadata packaging assertion.
+        if qualification_mode=="live_qualification":
+            result["deposit_protection_projection"]=strategy.deposit_projection()
+            result["deposit_protection_durable"]=qualification_deposit_runtime.deposit_protection_state(
+                instance_id=qualification_deposit_runtime.owner,account_id=qualification_deposit_account_id)
         raw_native={**result,'native_strategy_events':strategy.reporting_state(),'native_order_events':strategy._order_audit,
             'native_risk_first_audit':strategy.risk_first_sol_audit,
             'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
             'native_alpha_audit':strategy.alpha_cushion_audit,'native_alpha_counts':strategy.alpha_cushion_counts,
             'raw_audit_state':'NATIVE_COMPLETE_PACKAGING_NOT_VALIDATED'}
         save_diagnostic_report(data_root,raw_native,artifact_label+'-raw-native',artifacts_root)
+        if qualification_mode=="live_qualification":
+            if strategy._deposit.latched:
+                if (strategy._deposit.exit_state!="TRIPPED_FLAT" or engine.cache.positions_open()
+                    or engine.cache.orders_open() or engine.cache.orders_inflight()
+                    or result["deposit_protection_durable"]!=strategy._deposit.durable()):
+                    raise ValueError("QUALIFICATION_DP_NATIVE_TERMINAL_FLAT_REQUIRED")
+                if (stats["processed_rows_per_source"]!=expected_rows or coherent_observer_report is None or coherent_observer_report["status"]!="PASS"
+                    or coherent_observer_report["end_exclusive_ns"]!=str(trading_end_ms*1_000_000)):
+                    raise ValueError("DP_CALENDAR_REQUIRES_COMPLETE_NATIVE_WATERMARKS")
+                from coinmaster.research.qualification_policy import verified_flat_calendar_returns
+                result["raw_account_change_months"]=result["summary"]["monthly_returns"]
+                result["summary"]["monthly_returns"]=verified_flat_calendar_returns(
+                    interval_cash_series,initial_active_seed,start_at,end_at,terminal_active)
+                result["summary"]["monthly_returns_basis"]="NATIVE_CASH_MUTATIONS_WITH_VERIFIED_FLAT_TERMINAL_WATERMARK_CARRY_FORWARD"
+                result["continued_trading_after_DP_pause"]=False
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
         if research_btc_split50 or research_sol_cover or research_conditional_sol:

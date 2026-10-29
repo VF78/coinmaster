@@ -119,3 +119,54 @@ def test_actual_config_call_forwards_selected_flags_and_profile_DP55_metadata(tm
     serial={k:v for k,v in kwargs.items() if isinstance(v,(str,int,bool))}
     restored=json.loads(json.dumps(serial));assert restored["deposit_drawdown_limit_percent"]==55 and restored["deposit_check_interval_secs"]==60 and restored["deposit_currency"]=="USDT"
     store.close()
+
+
+def test_actual_quote_UNKNOWN_preserves_forced_reduce_and_original_increase_denial():
+    source=Path(__file__).parents[1]/"coinmaster/strategy/wave_overlay.py"
+    names={"on_quote_tick","submit_order"}
+    functions=[n for n in ast.walk(ast.parse(source.read_text())) if isinstance(n,ast.FunctionDef) and n.name in names]
+    class Base:
+        def submit_order(self,order,*args,**kwargs):return "DTO_NATIVE_REDUCE_FORWARDED"
+    namespace={"Base":Base,"QuoteTick":object};module=ast.Module(body=[ast.ClassDef(name="ActualQuote",bases=[ast.Name(id="Base",ctx=ast.Load())],keywords=[],body=functions,decorator_list=[])],type_ignores=[])
+    exec(compile(ast.fix_missing_locations(module),"actual_UNKNOWN_quote_AST","exec"),namespace)
+    obj=namespace["ActualQuote"]();calls=[]
+    obj.config=NS(deposit_observe_on_quote=True,deposit_runtime=object(),research_residual_recovery=False,research_h1_b1=None,research_v0_deferred_selective_zero_tp=False,btc_id="BTC",sol_id="SOL")
+    obj._deposit_check=lambda:(calls.append("UNKNOWN_OBSERVED") or False);obj._deposit=NS(latched=False);obj._v3_reduction=None;obj._forced_close_reason="RISK";obj._liquidating=False;obj._mandatory_sol_exit=None;obj._latest_seen_session=None
+    obj._retry_deferred_daily_decision=lambda:None;obj._submit_forced_close_on_quote=lambda tick:calls.append("ACTUAL_FORCED_REDUCE_PATH")
+    obj.on_quote_tick(NS(ts_event=10,instrument_id="SOL"))
+    assert calls==["UNKNOWN_OBSERVED","ACTUAL_FORCED_REDUCE_PATH"]
+    obj.log=NS(warning=lambda message:None)
+    assert obj.submit_order(NS(tags=[],is_reduce_only=False)) is None
+    assert obj.submit_order(NS(tags=[],is_reduce_only=True))=="DTO_NATIVE_REDUCE_FORWARDED"
+
+
+def test_DP_paused_calendar_from_list_and_archive_view_preserves_native_rows():
+    from datetime import datetime,timezone
+    from coinmaster.research.qualification_policy import verified_flat_calendar_returns
+    from copy import deepcopy
+    start=datetime(2024,9,1,tzinfo=timezone.utc);end=datetime(2026,10,29,tzinfo=timezone.utc)
+    raw=[dict(timestamp=start.isoformat(),total="100"),dict(timestamp="2025-01-13T14:36:00+00:00",total="44")];original=deepcopy(raw)
+    class ArchiveView:
+        def __iter__(self):return iter(raw)
+    a=verified_flat_calendar_returns(raw,D("100"),start,end,D("44"));b=verified_flat_calendar_returns(ArchiveView(),D("100"),start,end,D("44"))
+    assert a==b and len(a)==26 and a[-1]["month"]=="2026-10" and a[-1]["total"]=="44" and raw==original
+    from decimal import localcontext
+    with localcontext() as context:
+        context.prec=80;ratio=D(1)
+        for row in a:ratio*=1+D(row["return"])
+        assert abs(ratio-D(".44"))<D("1e-24")
+    with pytest.raises(ValueError,match="CASH_MISMATCH"):verified_flat_calendar_returns(raw,D("100"),start,end,D("45"))
+
+
+def test_actual_legacy_dynamic_seed_label_and_qualification_DP_proof_gates():
+    tree=ast.parse((Path(__file__).parents[1]/"coinmaster/research/native_baseline.py").read_text())
+    fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=="run_native_diagnostic")
+    config=next(n.value for n in ast.walk(fn) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=="full_config" for t in n.targets))
+    label=next(v for k,v in zip(config.keys,config.values) if isinstance(k,ast.Constant) and k.value=="account")
+    for seed,expected in [(D("10000"),"SIM_MARGIN_USDT_10000"),(D("81"),"SIM_MARGIN_USDT_DYNAMIC_SEED")]:
+        assert eval(compile(ast.Expression(label),"actual_seed_label_AST","eval"),dict(initial_active_seed=seed,qualification_mode="legacy_reference",BASELINE_CONFIG={"account":"SIM_MARGIN_USDT_10000"},Decimal=D))==expected
+    guard=next(n for n in ast.walk(fn) if isinstance(n,ast.If) and "DP_CALENDAR_REQUIRES_COMPLETE_NATIVE_WATERMARKS" in ast.unparse(n) and "processed_rows_per_source" in ast.unparse(n.test))
+    def denied(rows=10,status="PASS",end_ns="1000000"):
+        namespace=dict(stats={"processed_rows_per_source":rows},expected_rows=10,coherent_observer_report={"status":status,"end_exclusive_ns":end_ns},trading_end_ms=1)
+        return eval(compile(ast.Expression(guard.test),"actual_native_coverage_guard_AST","eval"),namespace)
+    assert not denied() and denied(rows=9) and denied(status="UNKNOWN") and denied(end_ns="99")

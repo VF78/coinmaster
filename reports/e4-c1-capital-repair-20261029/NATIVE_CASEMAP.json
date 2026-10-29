@@ -43,9 +43,9 @@
     "runtime/coinmaster/domain/deposit_protection.py": "43c8cb18466de8adbeddf72d2ed16310e9497fee6b41846ba414f54ae58c9cd2",
     "runtime/coinmaster/ops/paper.py": "8c9ce0349978562078fd174a7d8826568762fec04ddd2e13bf25412d0dd1904a",
     "runtime/coinmaster/research/effective_config.py": "23a65921cab7cdf4f2ead46d20d8f33bc26714cdb569d7adf1fbaae376b95a91",
-    "runtime/coinmaster/research/native_baseline.py": "429216b0855a2a80281ec5bab668492e12cf0cd762b242bb2b586cf7e1f6408d",
-    "runtime/coinmaster/research/qualification_policy.py": "3db2314b83b4a1ccde0dbd99c80e1ff87e134dc1709da0543d347cf98e95e601",
-    "runtime/coinmaster/strategy/wave_overlay.py": "1174280764ee2fe5c28f37ddd2681e7c2e23c0b1a4b94500447264055011c77a"
+    "runtime/coinmaster/research/native_baseline.py": "c158f41393f0fb10b66961dc477c5d8bdf237b3fd9181453b67ba265658f5bc5",
+    "runtime/coinmaster/research/qualification_policy.py": "cd5195d6d61f3b65064a416a7b748c642151c0f58e40e8f850119eb23a0b64f4",
+    "runtime/coinmaster/strategy/wave_overlay.py": "c7b603959aed25ab5b62c0e83e43754c63baf3af30b10d53bac015e4db462ecd"
   },
   "status": "BLOCKED_NO_ROOT_GO"
 }

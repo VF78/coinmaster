@@ -1378,9 +1378,8 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
     def on_quote_tick(self,tick:QuoteTick,*,decision_ns:int|None=None)->None:
         """Only real quotes execute; optional live decision clock never rewrites tick."""
         ts_decision=tick.ts_event if decision_ns is None else decision_ns
-        if self.config.deposit_observe_on_quote and self.config.deposit_runtime is not None and not self._deposit_check():
-            self._reconcile_deposit_flat()
-            return
+        if self.config.deposit_observe_on_quote and self.config.deposit_runtime is not None:
+            self._deposit_check()  # UNKNOWN denies increases in existing gates; risk reductions still run.
         if self.config.research_residual_recovery and (self._forced_close_reason or self._liquidating or self._mandatory_sol_exit is not None):self._c1_revoke(ts_decision,"MANDATORY_QUOTE_PRIORITY")
         if self.config.research_h1_b1 == "h1" and tick.instrument_id == self.config.sol_id:
             self._h1_sol_quote_sequence += 1

@@ -57,3 +57,27 @@ def research_qualification(mode,quantity_model,metadata,runtime,reader,account_i
     return dict(deposit_runtime=runtime,deposit_instance_id=runtime.owner,deposit_account_id=account_id,
         deposit_currency="USDT",deposit_drawdown_limit_percent=55,deposit_check_interval_secs=60,deposit_observe_on_quote=True,
         deposit_equity_reader=reader,deposit_initialization_allowed=initialize_allowed,market_exit_reduce_only=True),constraints
+
+
+def verified_flat_calendar_returns(cash_rows, initial, start, end, terminal_cash):
+    """Calendar carry-forward derived from native mutations and verified terminal cash.
+
+    This produces report rows only, never account events or cash postings.
+    """
+    from datetime import datetime
+    from decimal import localcontext
+    months={};last=Decimal(initial)
+    for point in cash_rows:
+        stamp=datetime.fromisoformat(point["timestamp"])
+        if start<=stamp<end:
+            last=Decimal(point["total"]);months[stamp.strftime("%Y-%m")]=last
+    if last!=Decimal(terminal_cash):raise ValueError("DP_FLAT_TERMINAL_NATIVE_CASH_MISMATCH")
+    cursor=start.replace(day=1,hour=0,minute=0,second=0,microsecond=0);prior=Decimal(initial);rows=[]
+    while cursor<end:
+        month=cursor.strftime("%Y-%m");total=months.get(month,prior)
+        with localcontext() as context:
+            context.prec=80
+            rows.append(dict(month=month,total=str(total),**{"return":str(total/prior-1)}))
+        prior=total
+        cursor=cursor.replace(year=cursor.year+(cursor.month==12),month=1 if cursor.month==12 else cursor.month+1)
+    return rows
