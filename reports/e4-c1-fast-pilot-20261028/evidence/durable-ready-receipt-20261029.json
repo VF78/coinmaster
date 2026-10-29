@@ -1,0 +1,47 @@
+{
+  "accepted_native_tree_sha256": "5cafce5799849398276175066a61ac1ad6151a9c593daa5ae26a6f523b696644",
+  "account": 0,
+  "actual_selected_loader": {
+    "all_origins_durable": true,
+    "base_python_match": true,
+    "coinmaster_origins": {
+      "coinmaster": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/coinmaster/__init__.py",
+      "coinmaster.domain": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/coinmaster/domain/__init__.py",
+      "coinmaster.domain.wave_overlay": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/coinmaster/domain/wave_overlay.py",
+      "coinmaster.ops.hl_live_profile": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/coinmaster/ops/hl_live_profile.py",
+      "coinmaster.ops.stage_g_config": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/coinmaster/ops/stage_g_config.py",
+      "coinmaster.research.native_baseline": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/coinmaster/research/native_baseline.py",
+      "coinmaster.strategy.live_recovery": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/coinmaster/strategy/live_recovery.py"
+    },
+    "native": "1.231.0",
+    "selected_loader_pass": true,
+    "sys_prefix": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release/.venv"
+  },
+  "comparison_proposal_sha256": "07ec67951d62b645dbb7976be12c0dd54d1c4a9f182e4c1751650c5f0de5db6a",
+  "copy_manifest_sha256": "ff61f21bec4d66d1036edebede202452977865357d5c27a9121e3830b378f529",
+  "data_ready": true,
+  "durable_root": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-ready/release",
+  "engines": 0,
+  "environment_proof_sha256": "163d4a1bfb32b00347797df7d30a3905fa97082db7b220fb0d2eae8c7eeba332",
+  "full_tree_matches_pre_move": true,
+  "http": 0,
+  "input_transfer_manifest": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-inputs/transfer-manifest.json",
+  "input_transfer_manifest_sha256": "b04ee354c51994622c9127afdea8cdb3d2bf7208ff4260d300bdd09d80f95245",
+  "installed": false,
+  "move": "same-filesystem os.rename from /tmp; no bytes changed",
+  "native_distribution_python_stdlib_matches_accepted_A23": true,
+  "operator_runbook_sha256": "3676e52d0f8c50892f292de90ec6090cb072e15c2990066efe73713fd09da3a1",
+  "proposed_comparison_attempts": 1,
+  "proposed_comparison_max_runtime_seconds": 1800,
+  "regular_files": 7615,
+  "selected": false,
+  "services_changed": false,
+  "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+  "source_mutations": 0,
+  "symlinks": {
+    ".venv/bin/python": "/usr/bin/python3",
+    ".venv/bin/python3": "python",
+    ".venv/bin/python3.12": "python",
+    ".venv/lib64": "lib"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 72792,
+  "attempt_id": "A-020-f30d9f43-3745-48b7-aa4e-13c8b0e00bdf",
+  "case": "A",
+  "error": "AssertionError('ACTUAL_DP_MARKET_EXIT_DID_NOT_DISPATCH')",
+  "failed_gates": [
+    "actual_DP55_provider_latch_native_close_and_terminal_flat"
+  ],
+  "fixture_sha256": "6dc89cb7fe7d5929c52422a69b839a9d189a2248f70187a4d8203e6dea8da032",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 9,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "c1f2c8120b496f0faddf35480a9592de2ba70ceb4ebd547cd20079dee1ae9e78",
+  "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 2,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 3,
+    "synthetic_cancel_commands": 4,
+    "synthetic_info_requests": 95,
+    "synthetic_native_spot_reads": 16,
+    "synthetic_submit_commands": 7
+  },
+  "traceback_tail": "ait fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1544, in run\n    await gate(\"actual_DP55_provider_latch_native_close_and_terminal_flat\",lambda:actual_dp55_close_and_flat(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 711, in gate\n    with operative_observer:await invoke()\n                            ^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 705, in invoke\n    if hasattr(value,\"__await__\"):await value\n                                  ^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1260, in actual_dp55_close_and_flat\n    await wait_for(lambda:any(str(o.client_order_id) in strategy._deposit_exit_orders\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 699, in wait_for\n    raise AssertionError(reason)\nAssertionError: ACTUAL_DP_MARKET_EXIT_DID_NOT_DISPATCH\n",
+  "wall_seconds": 119.42736294
+}

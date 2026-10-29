@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 76344,
+  "attempt_id": "A-022-3016d78e-29de-42a6-96fe-65513e5207f6",
+  "case": "A",
+  "error": "AssertionError()",
+  "failed_gates": [
+    "actual_DP55_provider_latch_native_close_and_terminal_flat"
+  ],
+  "fixture_sha256": "5f7b61473398948311e54859ed3de4c6d207560084f3fee8a5e1bd75ccb9c64c",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 9,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "bc8cc22801c85d8b505618ba9b572b804f8560634e8dbb104f556dda757bac3c",
+  "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 2,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 3,
+    "synthetic_cancel_commands": 4,
+    "synthetic_info_requests": 95,
+    "synthetic_native_spot_reads": 16,
+    "synthetic_submit_commands": 8
+  },
+  "traceback_tail": "/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1556, in run\n    await gate(\"actual_DP55_provider_latch_native_close_and_terminal_flat\",lambda:actual_dp55_close_and_flat(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 712, in gate\n    with operative_observer:await invoke()\n                            ^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 706, in invoke\n    if hasattr(value,\"__await__\"):await value\n                                  ^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1266, in actual_dp55_close_and_flat\n    await resolve_actual_dp_close_lost_ack(closes[0],ordinary[\"quote\"])\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1301, in resolve_actual_dp_close_lost_ack\n    assert strategy._management_certificate is None\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "wall_seconds": 119.343727627
+}

@@ -1,0 +1,25 @@
+{
+  "commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+  "parent": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "scope": "live TP producer priority only",
+  "files": {
+    "runtime/coinmaster/strategy/live_recovery.py": "3cf08a3288d553244e7cb1edf6eb8d067772d9062f4bdfb36df2dd1d3a727fc2",
+    "runtime/tests/test_e4_c1_tp_priority_pure.py": "e0a6576333bfbbafd3fb5ca8cd1068800023477c345c34c0423ca5d0e50fd76c"
+  },
+  "verification": {
+    "kind": "AST source-derived pure tests with DTO/native-boundary stubs; not Node/native integration",
+    "command": "PYTHONPATH=runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q runtime/tests/test_e4_c1_*pure.py",
+    "result": "447 passed in 145.67s; includes 24 new cases",
+    "log": "/tmp/cm-e4-c1-tp-priority-pure-20261029.log",
+    "log_sha256": "66a80991f1161547c4bedf7e39e8113c0fae0788b23c19d97b7d592054d3ef4e"
+  },
+  "peer": "split_gate_diagnostic_peer FINAL EXACT SOURCE/PURE PASS at 5f10ce870b18fd8181b57c23f0d9d36d3e867d67; no P0/P1; independently verified HEAD/parent/source/test/log SHA; native/HTTP/edits/reruns 0",
+  "native_engines": 0,
+  "http_requests": 0,
+  "account_actions": 0,
+  "service_actions": 0,
+  "deployments": 0,
+  "economic_runs": 0,
+  "semantic_effect": "Live ordinary TP planning yields to existing C1 cut/eligible-restore cancel barrier; research economic source unchanged; execution/economic neutrality and native integration not certified.",
+  "old_untracked_wip_preserved": 6
+}

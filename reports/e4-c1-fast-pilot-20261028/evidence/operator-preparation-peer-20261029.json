@@ -1,0 +1,19 @@
+{
+  "status": "SCOPED_OPERATOR_PREPARATION_PEER_PASS",
+  "source": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+  "reviewer": "split_gate_diagnostic_peer",
+  "runbook_sha256": "3676e52d0f8c50892f292de90ec6090cb072e15c2990066efe73713fd09da3a1",
+  "durable_receipt_sha256": "2113057db4e8b02eb753f0fadfd9cca0befdacad6214550590a42cc34a111c09",
+  "comparison_proposal_sha256": "07ec67951d62b645dbb7976be12c0dd54d1c4a9f182e4c1751650c5f0de5db6a",
+  "checked": [
+    "Exactoriginalargv_python_and3path_rewrites_only",
+    "Newdestinationabsent_nonsymlink_existingparentsregular",
+    "cp_chown_hR_chmod_scope_newdestination_only",
+    "Interpreter_PYTHONPATH_flatpayload",
+    "VERSION_before_copy_comparison_separateSTART",
+    "one_proposed_comparison1800s_no_retry_or_reserve"
+  ],
+  "P0_P1": 0,
+  "review_native_HTTP_imports_test_reruns": 0,
+  "installed": false
+}

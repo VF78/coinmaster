@@ -19,11 +19,11 @@
   "source_test_evidence": "Target14PASS; connected162PASS1oldassertFAIL106.19s; approvedexpectationonlyfix+affected2PASS2.01s overlap/final163unique; productunchanged, notwholegreenrun",
   "source_publication": "EXACT022_VERIFIED_ROOT_ORDINARY_PUSH_WITH_EXISTING_OWNER_AUTHORIZATION",
   "native_allocation": {
-    "maximum": 18,
-    "spent_failed_preserved": 16,
+    "maximum": 20,
+    "spent_failed_preserved": 18,
     "cases": [
-      "FreshA17",
-      "B18 onlyafteractualA17PASS sameDB/source/fixture"
+      "FreshA19",
+      "B20 onlyafteractualA19PASS sameDB/source/fixture"
     ],
     "reserve": 0,
     "root_go_requires": "Exactstaticfixture/source/profile/origin/API checks+rootfinaldiffreview+exclusiveclaim",
@@ -36,5 +36,141 @@
   "fixture_orchestration": "Keeporiginaldemandquote; ifitopenedexpectedENTRYskipextraevent. IfparkedDP-only, awaitONLYadmittedcheap task withinoriginalfull9s deadline, verifyactualfull+DPsamecurrentrev/gen/deadline, thenonegenuineNEXTquote. No newrefresh or second61wait/clockpatch.",
   "fixture_wait_bound": "RemoveONLYartificialoneprotectedwaitcountlimit; eachactualrollingbudgetwait<=61s andrequiresgenuineACKstandingTPfullheldbefore/during; existingWHOLEchild180s boundsallwaits/commands. Neverresetbudget/source9s clocks orweakensafety.",
   "latest_actual_progress": "A16completedactualfirstremainingfill; replacementTPqueuedready_ns=now_ns+1, ACKpollwithoutnewquote couldnotdriveit. Source022unchanged.",
-  "fixture_next_quote": "OnlyifknownqueuedBTC_TP replacement+actualoldTPterminal+no nativependingprotection: ONEgenuineNEXTquote duringexisting2s ACKpoll, nonewincrease; no planner/queue mutation, realACK/fullheldbaseline unchanged."
+  "fixture_next_quote": "OnlyifknownqueuedBTC_TP replacement+actualoldTPterminal+no nativependingprotection: ONEgenuineNEXTquote duringexisting2s ACKpoll, nonewincrease; no planner/queue mutation, realACK/fullheldbaseline unchanged.",
+  "remaining_fixture_barriers": "ExistingTP/C1/DP helpersawaitactualcancel/ACK thennormalgenuinequotesdrivesourcequeuedtargets; selectactualqueuedorworkingTP, nevermanufacturenewintent; originalprice/quantity/unknownACK/flatgatesretained. Source022unchanged.",
+  "target_contract_correction": "RemoveFALSEnewIOC-onlytargetassumption. Verifyactualsource-ownedTPbyintentid/exactside/price/heldqty/nativeACK; restingGTCpartialMAKERretainshealthyremainder, sourceIOCTAKERusesactualterminal/replan. C1realcancel/mapcleanup andDPpriorACKbarriers, unchangedpreD1/DPflat/unknownACK.",
+  "c1_continuation_preparation": {
+    "status": "ROOT_REVIEWED_GO_A20_ONLY_B21_CONDITIONAL",
+    "scope": "Live-only normal TP producer priority for existing C1 cut/restore cancellation barrier",
+    "product_change_lines": 29,
+    "source_derived_regressions": 24,
+    "test_boundary": "AST source methods and DTO fixtures; NOT native TradingNode integration",
+    "independent_diff_review": "PASS_EXACT5F10CE87_NO_P0_P1",
+    "fixture_change": "Remove only private queue emptiness from passive native cancellation ACK barrier; require actual cut progress afterward",
+    "physical_policy": "All19 prior failures immutable; root must allocate and exclusively claim fresh A/B after exact freeze, no reserve or automatic retry",
+    "real_orders_allowed": false,
+    "deployment_allowed": false,
+    "economic_budgets_changed": false,
+    "methodology_reference": "NAUTILUS_METHOD_REVIEW_20261029_RU.md",
+    "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+    "source_sha256": "3cf08a3288d553244e7cb1edf6eb8d067772d9062f4bdfb36df2dd1d3a727fc2",
+    "connected_pure_tests": "447PASS145.67s_includes24new_ASTsourceDTO_notNode",
+    "public_exact_verified": true,
+    "physical_max21": {
+      "spent": 19,
+      "active": 0,
+      "pair": [
+        "A20",
+        "B21onlyifA20PASSsameDBsourcefixture"
+      ],
+      "reserve": 0,
+      "root_go": "A20exclusiveclaim_only_then_B21conditional_on_actualA20PASS"
+    },
+    "evidence": "evidence/c1-tp-priority-source-freeze-20261029.json",
+    "fixture_commit": "1ff5a8c39a6e89267fb7c09ca2b97657bc8ae349",
+    "fixture_sha256": "6dc89cb7fe7d5929c52422a69b839a9d189a2248f70187a4d8203e6dea8da032",
+    "static_checks": "91paths/19origins/installedAPI/holderglobalsPASS_noNativeImport",
+    "root_reviewed_recipe_sha256": "59b80acab30d504c92e0119cf37b488cf6623c9d0ca89e4fe37d3607a5f72575",
+    "A20_root_launcher_sha256": "c3446dca09f81c1a94ee672c04fb88688cf1831f206d2b5bfb7cfd842f66f9c0",
+    "B21_conditional_launcher_sha256": "f6194c42335bfc6b6663ae560585d5617798a568c642c0337bf507131775a937",
+    "root_reviewed_utc": "2026-10-29T09:39:48.142731+00:00"
+  },
+  "DP_fixture_parity_continuation": {
+    "status": "ROOT_EXACT_STATIC_PEER_REVIEWED_GO_A21_ONLY_B22_CONDITIONAL",
+    "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+    "A20result_sha256": "c1f2c8120b496f0faddf35480a9592de2ba70ceb4ebd547cd20079dee1ae9e78",
+    "A20actual": "9gatesPASS_includingC1cut; DPnativeexitFAILED",
+    "cause": "Fixtureomittedmarket_exit_time_in_force; native1.231defaultGTC, productionworkerexplicitIOC+reduce_onlyTrue; sourceguardcorrectlyrejectsGTC; savedmarket-exit-error",
+    "independent_peer": "Exactinstalledconfig/nativeCython/productionkwargs/sourceguard/auditconfirmed; noDPproductfix",
+    "change": "Copyexactproductionmarket_exit_time_in_forceIOC and market_exit_reduce_onlyTrue; static parity for sameconfigfields beforefreeze",
+    "all20failedpreserved": true,
+    "spent": 20,
+    "max": 22,
+    "remaining": [
+      "A21",
+      "B22conditionalA21PASSsameDBsourcefixture"
+    ],
+    "reserve": 0,
+    "real_orders": false,
+    "deployment": false,
+    "economic_budgets_changed": false,
+    "fixture_commit": "c8a772a47ae2ef1816ced0df063817cd7587ea6b",
+    "fixture_sha256": "90f15ff6c2bc7488d02f4ebf442b0d502dfa8dcdf398929d667abf3bc2ea0fb5",
+    "fixture_peer": "PASS_EXACT_C8A772A4_NO_P0_P1",
+    "static_receipt_sha256": "eac6defd72dfcf790be61ce1d30d40abfd3feb79ee36b59907af44d71ea63c1c",
+    "recipe_sha256": "3c3f5d25a68b73ffecbfa5013b822bd937f4d1610d8c873c49b0d501ac5b29ae",
+    "A21_launcher_sha256": "13e0661a05572c5828f5bbb82dacbc65c80fca4da6bffc5faaecf72d5c28d232",
+    "B22_conditional_launcher_sha256": "084218783f9f697fe588da31879a1efc4f8e2b36433b004dcae5c86e9c9689f2",
+    "root_reviewed_utc": "2026-10-29T09:47:52.426187+00:00"
+  },
+  "DP_submitted_barrier_continuation": {
+    "status": "ROOT_EXACT_STATIC_PEER_GO_A22_ONLY_B23_CONDITIONAL",
+    "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+    "A21result_sha256": "8b3bf336fb5b9c88d11a26d62e006fdc53fb55f9b62ebf0ee396981accb80e17",
+    "actual": "EightdistinctSubmittedIDs, exactlyoneDPid, no ninthorder/no duplicate; DPInitialized precedes actualSubmitted824.911ms",
+    "cause": "FixturecapturedtransportcountbeforefirstactualDPsend, mistook7to8firstsendasretry",
+    "peer": "Independentlyconfirmednativeevents/journal/source; no productchange",
+    "change": "Bounded<=2s actualSubmitted+seenonce+lost/noAccepted/noOID/nonterminal/durableSUBMITTING beforebaseline; preserve2quoteequalityandsoleDPid",
+    "spent": 21,
+    "max": 23,
+    "remaining": [
+      "A22",
+      "B23conditionalA22PASSsameDBsourcefixture"
+    ],
+    "reserve": 0,
+    "real_orders": false,
+    "deployment": false,
+    "economic_budgets_changed": false,
+    "fixture_commit": "0132fa0f7fc323cd6d68f45e6592d58db60f5f4e",
+    "fixture_sha256": "5f7b61473398948311e54859ed3de4c6d207560084f3fee8a5e1bd75ccb9c64c",
+    "fixture_peer": "PASS_EXACT_0132FA0_NO_P0_P1",
+    "static_receipt_sha256": "caf964edf53c195707e399d54754dcc71846275370a801197261fda85c384269",
+    "recipe_sha256": "156cd1a277e7fe6a10ca8884e9a94cf546ebd68a87fcdd62bf475cbb3e9e2bba",
+    "A22_launcher_sha256": "7c18622b1979ffc3198e8ba2bcd78eb4e196c59b0d784d09a19397453edeba56",
+    "B23_conditional_launcher_sha256": "a2c11875da656f8ab5a5248adc9f369d0a5cd7366d2075ea218eff4393ac5f72",
+    "root_reviewed_utc": "2026-10-29T09:54:22.112148+00:00"
+  },
+  "ACTIVE_revoked_authority_continuation": {
+    "status": "ROOT_REVIEWED_GO_A23_ONLY_B24_CONDITIONAL",
+    "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+    "A22result_sha256": "bc8cc22801c85d8b505618ba9b572b804f8560634e8dbb104f556dda757bac3c",
+    "cause": "ACTIVErevokeintentionallyretainspriorManagementCertificate; itscurrenttransport/capabilitiesDENY. FixturewronglyrequiredNone(manage-onlypolicy)",
+    "change": "AssertactualownedmoneyDENY_RECOVERY_NOT_CONFIRMED/live_moneyDENY_LIVE_MONEY_UNCONFIRMED+dispatchdisabled/retainedcerttransportFalse/noextrasends; BconstructorNoneunchanged",
+    "fixture_commit": "a939ba9438246e1f96d1b56a8b4fae94bc0df5e2",
+    "fixture_sha256": "a34689a0cfd3d60ebbbdea183320ef25c3a44aea99a426a781c03bea8c9d9133",
+    "fixture_peer": "PASS_EXACT_A939BA94_NO_P0_P1",
+    "static_receipt_sha256": "c89464500abb6d6b1d53e0303937261bef3aa1de362d24ef826f8c7e239b9c05",
+    "recipe_sha256": "e2ab94be91327fec6ced5eb2d386d82cc9b042f3b0c6f6f6348c92fd44298ad6",
+    "spent": 22,
+    "max": 24,
+    "remaining": [
+      "A23",
+      "B24conditionalA23PASSsameDBsourcefixture"
+    ],
+    "reserve": 0,
+    "real_orders": false,
+    "deployment": false,
+    "economic_budgets_changed": false,
+    "A23_launcher_sha256": "612781b8f9d3cdf0f8cc2334dcb60c327c8a507fc6fcf609a54296bc40653bfc",
+    "B24_conditional_launcher_sha256": "2192b718ccdb2524587eba004d55215f460f8ecd98eae29b787fb3139b0dd534",
+    "root_reviewed_utc": "2026-10-29T10:01:08.011438+00:00"
+  },
+  "final_outcome": {
+    "status": "CLOSED_ACTUAL_A23_B24_PASS",
+    "source": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+    "A23_result_sha256": "ffb73a43cfb4bda13f2b23f6799294d35cd04a81bcd03a7a4895b2ba95f9cd8b",
+    "B24_result_sha256": "9f1178c2413a163f2f4cf84d37f405f5fec87a76de73ce08832ab724e7dafe96",
+    "same_DB_source_fixture": true,
+    "gates": {
+      "A": 11,
+      "B": 3
+    },
+    "spent": 24,
+    "failed": 22,
+    "passed": 2,
+    "active": 0,
+    "unused": 0,
+    "no_additional_native_GO": true,
+    "START": false
+  }
 }

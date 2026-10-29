@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 56437,
+  "attempt_id": "A-017-93945b43-19e8-4062-86b2-ccc25d8bd379",
+  "case": "A",
+  "error": "AssertionError('ACTUAL_CONFIRMED_TARGET_PLANNER_EMPTY')",
+  "failed_gates": [
+    "actual_MVP_target_IOC_and_standing_protection_before_wait"
+  ],
+  "fixture_sha256": "a942598b40b968eff81edb9c2711911c80d0b5d5dbc02dce5d34fd956d58fa30",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 7,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "07f73cf024aff3b08ea13d583739a1da400bdcae5b4e37129c5aae0f18b7eae7",
+  "source_commit": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 2,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 3,
+    "synthetic_cancel_commands": 3,
+    "synthetic_info_requests": 74,
+    "synthetic_native_spot_reads": 9,
+    "synthetic_submit_commands": 5
+  },
+  "traceback_tail": "time/tests/e4_c1_live_native_acceptance.py\", line 1531, in bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1500, in run\n    await gate(\"actual_MVP_target_IOC_and_standing_protection_before_wait\",lambda:actual_mvp_target_protection(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 711, in gate\n    with operative_observer:await invoke()\n                            ^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 705, in invoke\n    if hasattr(value,\"__await__\"):await value\n                                  ^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1128, in actual_mvp_target_protection\n    assert targets,\"ACTUAL_CONFIRMED_TARGET_PLANNER_EMPTY\"\n           ^^^^^^^\nAssertionError: ACTUAL_CONFIRMED_TARGET_PLANNER_EMPTY\n",
+  "wall_seconds": 81.818136366
+}

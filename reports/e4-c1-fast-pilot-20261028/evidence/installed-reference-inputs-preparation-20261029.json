@@ -1,0 +1,11 @@
+{
+  "status": "PREPARED_REFERENCE_INPUTS_HASH_PASS_NOT_A_RUN",
+  "data_root": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/release-preparation-20261029-5f10-inputs/data",
+  "files": 10,
+  "bytes": 83478409,
+  "canonical_data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "all_transfer_file_hashes_match": true,
+  "historical_manifest_direct_matches": 4,
+  "engine_runs": 0,
+  "external_venue_calls": 0
+}

@@ -1,0 +1,12 @@
+{
+  "status": "EXACT_EXECUTED_AUDIT_COPY_NOT_NEW_RUN_PERMISSION",
+  "fixture_commit": "a939ba9438246e1f96d1b56a8b4fae94bc0df5e2",
+  "source_commit": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+  "files": {
+    "e4_c1_live_native_acceptance.py": "a34689a0cfd3d60ebbbdea183320ef25c3a44aea99a426a781c03bea8c9d9133",
+    "e4_c1_live_native_acceptance_market_vector.json": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5"
+  },
+  "scope": "Keylessscriptedclient/publichistoricalmarketvector_only_noactualaccountreadbacks",
+  "budget": "CLOSED24of24; do_not_execute_auditcopy",
+  "scan_flags": 0
+}

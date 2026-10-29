@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 60390,
+  "attempt_id": "A-018-ec6b6a77-2637-49c5-abff-b134011de4ce",
+  "case": "A",
+  "error": "AssertionError('ACTUAL_MVP_IOC_NEXT_QUOTE_CATCHUP_NOT_PRODUCED')",
+  "failed_gates": [
+    "actual_MVP_target_IOC_and_standing_protection_before_wait"
+  ],
+  "fixture_sha256": "a7e980d48fe5d0487b59cdb7f59666c8b3f87ca6148e4239f2fa7c05b1875b26",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 7,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "154ac0796971f782febf9a92a343c36e905c53a9ebf7ba48018f175a9e057281",
+  "source_commit": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 2,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 3,
+    "synthetic_cancel_commands": 3,
+    "synthetic_info_requests": 77,
+    "synthetic_native_spot_reads": 10,
+    "synthetic_submit_commands": 6
+  },
+  "traceback_tail": "nce.py\", line 1553, in bounded_run\n    await asyncio.wait_for(run(args,result),timeout=remaining)\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1522, in run\n    await gate(\"actual_MVP_target_IOC_and_standing_protection_before_wait\",lambda:actual_mvp_target_protection(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 711, in gate\n    with operative_observer:await invoke()\n                            ^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 705, in invoke\n    if hasattr(value,\"__await__\"):await value\n                                  ^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1148, in actual_mvp_target_protection\n    assert len(catchups)==1,\"ACTUAL_MVP_IOC_NEXT_QUOTE_CATCHUP_NOT_PRODUCED\"\n           ^^^^^^^^^^^^^^^^\nAssertionError: ACTUAL_MVP_IOC_NEXT_QUOTE_CATCHUP_NOT_PRODUCED\n",
+  "wall_seconds": 83.775802543
+}

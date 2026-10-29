@@ -1,0 +1,30 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 64064,
+  "attempt_id": "A-019-0c0a1519-23f8-44a9-9df0-5a16e468d9e0",
+  "case": "A",
+  "error": "AssertionError('ACTUAL_C1_CANCEL_ACK_BARRIER_REQUIRED')",
+  "failed_gates": [
+    "actual_C1_cancel_ACK_quarter_cut_and_before_D1_restore_denial"
+  ],
+  "fixture_sha256": "0302d981bb97d295ebaa77ef425bf9416bdaa2dc0f098c1629caa00c0da3329e",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 8,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "84673aa7c8404edbdb30a4f0ade5c81f5c938b4cbeed91cc514e6c7f6c2b31ef",
+  "source_commit": "022fbe8cf578c6cd4407652461ebf539659bb024",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 2,
+    "external_network_attempts": 0,
+    "nodes_constructed": 1,
+    "query_account_commands": 3,
+    "synthetic_cancel_commands": 4,
+    "synthetic_info_requests": 83,
+    "synthetic_native_spot_reads": 12,
+    "synthetic_submit_commands": 6
+  },
+  "traceback_tail": " File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1543, in run\n    await gate(\"actual_C1_cancel_ACK_quarter_cut_and_before_D1_restore_denial\",lambda:actual_c1_cut_and_pre_d1_denial(ordinary))\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 711, in gate\n    with operative_observer:await invoke()\n                            ^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 705, in invoke\n    if hasattr(value,\"__await__\"):await value\n                                  ^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1220, in actual_c1_cut_and_pre_d1_denial\n    await wait_for(lambda:all(o.is_closed and str(o.client_order_id) not in strategy._pending_by_order\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 699, in wait_for\n    raise AssertionError(reason)\nAssertionError: ACTUAL_C1_CANCEL_ACK_BARRIER_REQUIRED\n",
+  "wall_seconds": 97.525394626
+}
