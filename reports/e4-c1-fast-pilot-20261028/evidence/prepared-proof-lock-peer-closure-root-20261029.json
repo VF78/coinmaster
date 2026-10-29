@@ -1,0 +1,22 @@
+{
+  "source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "base_review_commit": "26ed093d2495d4b2a04e95393c97d93c26a41a8a",
+  "status": "PASS_NO_OPEN_SCOPED_P0_P1",
+  "reviewer": "active_c1_money_peer_20261029",
+  "scope": "Only lock claim/positive pre-handoff flag/deterministic actualSQLite two-thread regression; prior26ed review retained",
+  "finding_closed": "P1 stale token read before journal lock could terminalize uncertain handed-off SUBMITTING",
+  "checks": "Proof read/claim inside lock; generic unsent cleanup requires native_super_entered false; flag true before super; one owner forward/no terminal/uncertain SUBMITTING retained under waiting thread",
+  "source_verification": {
+    "connected": 325,
+    "seconds": 74.14,
+    "targeted_included": 49,
+    "targeted_seconds": 28.56,
+    "exit": 0,
+    "receipt_sha256": "6338fbc221d0bf2c07ceddd5da4be7260c9a1f56977219492f8b4d1b872e84fb"
+  },
+  "reviewer_rerun_native_import_queries_orders": 0,
+  "native_go": false,
+  "deployment": false,
+  "owner_START": false,
+  "recorded_utc": "2026-10-29T04:00:43.201242+00:00"
+}

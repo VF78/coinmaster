@@ -1,0 +1,28 @@
+{
+  "actual_exit": 1,
+  "actual_pid": 4188692,
+  "attempt_id": "A-005-abba5317-cb4c-49a9-a34d-9382bc2b022d",
+  "case": "A",
+  "error": "RuntimeError('ROOT_PHYSICAL_ATTEMPT_BUDGET_REQUIRED')",
+  "failed_gates": [],
+  "fixture_sha256": "27f47a9ad2ddf7057477b0167e0f08d8d51e69e86cef241fd60184667d29d633",
+  "market_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "parent_timeout": false,
+  "passed_gate_count": 0,
+  "real_orders_signed_actions": 0,
+  "result_sha256": "4862a11e2bff2653ad4c3db37b51f3acbb1dacedab429386a30c094510577c4f",
+  "source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
+  "status": "FAILED",
+  "technical_counts": {
+    "bounded_budget_waits": 0,
+    "external_network_attempts": 0,
+    "nodes_constructed": 0,
+    "query_account_commands": 0,
+    "synthetic_cancel_commands": 0,
+    "synthetic_info_requests": 0,
+    "synthetic_native_spot_reads": 0,
+    "synthetic_submit_commands": 0
+  },
+  "traceback_tail": "Traceback (most recent call last):\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 1128, in main\n    pins, fixture_hash, updater_abi = preflight(args)\n                                      ^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-native-acceptance-20261029/runtime/tests/e4_c1_live_native_acceptance.py\", line 137, in preflight\n    raise RuntimeError(\"ROOT_PHYSICAL_ATTEMPT_BUDGET_REQUIRED\")\nRuntimeError: ROOT_PHYSICAL_ATTEMPT_BUDGET_REQUIRED\n",
+  "wall_seconds": 1.018077172
+}

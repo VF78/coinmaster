@@ -1,39 +1,29 @@
-2026-10-29 PRIMARY CM-E4-C1-FAST-PILOT-20261028; Project2/#137 and#101 OPEN/InProgress. OwnerSTART_NOT_GIVEN.
-Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; public24d8efa49fd217f1a13b627edda16155a1178d10 verified; docsWIP.
-Read reports/e4-c1-fast-pilot-20261028/{RELEASE_ACCEPTANCE_INDEX.json,CURRENT_STATUS_FOR_AUDIT_20261029.md,ACTIVE_RELEASE_COMPOSITION_PROTOCOL_20261029.json}; no bulkarchives.
-WINNER BTC_POSTCUT_D1 TOTAL5499360.14984003USDT/seed10000/res0/bothDD51.26863558248311161216905115/netprofitretention90.4773878838%S0. Bybit1m syntheticL1 NOTHLmatching.
-Economic sourcefccd60c01e8cae5e8258748b046f43f88a16bb79/configa2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253; 108life540fills1248fundingexact0E-8/flat/liq0.
-SEARCH8/8CLOSED=7COMPLETED1FAILED/active0/rem0; MethodA9/19HOLD; no repeat/newoptimizationbudget.
-Stress5469423.50671297/DD51.41651839 technical/riskPASS, floor−973.008274377DIAGNOSTIC. Validation57dRAW19661.98052982/DD34.95109657 financialPASS/physicalFAILEDexit1 partialmonthreportbug immutable.
-Reportfix29f66e166ff6b518b1b27a76095d6acd7649e4e4 public/26pure+peer/RAWvalidatorPASS; composedintoLIVEsource, no nativeeconomicrepeat.
-VPS solewriter live_bridge_owner_20261029 Solmedium; isolated e4-c1-live-readiness-20261028 under /root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees. No /opt edits.
-Livebase8ef2ece8 public/88pure+peer; Unifiedb9f60ed7 public/113pure17.23s/sharedpendingmarginP1closed. No libraryfork/newOMS-PnL/manualcache.
-OWNER KEEPUnified; E=nativeUSDCreportedtotal==freshspotUSDCtotal; neverextraUPNL. USDC-only/defaultBTC-SOLcross; foreigncollateral/isolated/unknownactivityDENY.
-USDC publicprovider helper01e57/IDs-ticks-lots-zeroRates-preserved/minnotional10USDC; bothdataexec/loadrefresh. NoFX; historicalBybitUSDTreceipts unchanged.
-CurrencyMODEL1/1CLOSEDPASS PID4137203/exit0/3.2719s/64countedobjects/Node0Engine0network0. RawUSDfee/PnLbug reproduced/productionUSDCfixed; evidence saved, no rerun.
-API-GUI c5cfcf97f54d2a2a80e89df81ff44feef082b393 PUBLICEXACT:22pureAPI+21UI+tsc/vite/regenPASS; currency2P1+budgetP2peerclosurePASS; notdeployed.
-Publiccandle150weight/60s persistedflock/checksum/bootidentity acrossworkers-restart/cache5s/max12keys/failclosed; engine1000+GUI150<1200. Fullpixel/TradeHistory/zoom/authlater.
-ACTIVE implemented1d3643ae/composedc2e87c43(+c5+29); 231connectedPASS25.58s+48composedPASS4.24s totalonly. Source/defaultOFF, no START.
-FINALsource1b27e98844140322a6618d293760faa92027f971/276connectedPASS44.49s/targeted10PASS8.39s; highpeerALLscopedP0/P1CLOSED inclpartialatomicreplan/context-headroompark. PUBLICEXACT; A1FAILEDfixture/node0,A2FAILEDPath/node1-beforeInfo,A3FAILEDfake-updaterMRO/FIXED; A4FAILEDactualownreservationrev0→1 invalidatesDP/Info24/orders0; source36b2/public+276/20 staticPASS≠NativePASS.
-Corrections: ACTIVEactualrevision; expectedtransientsuspension notpermanentmanual; originalgeneration9sdeadline everyincrease; canonicalC1checkpoint/.5Hcushion distinctfromDP.45H; splitoverrideqty/retry.
-REALkeylessprobe1/1NO_GO PID4156042/exit1 HTTP422 onWS-onlyallDexsClearinghouseState usedasHTTP; 6Info182weight/Portfolio0Engine0Node0/key0/orders0. RawPRIVATE immutable.
-HTTPproduct/fakecorrected1831: documentedclearinghouseState(user,dex)2each/validatedD<=32/parallel8/sequentialsweeps/provenance/nozero-inference; keylessactualPASS.
-Correctfull397+4D+4N<=700; held280+20D/min, rolling1000 unchanged. D11/N15=>1001DENY; dynamicheadroom/expiry, no blindraise. Directory20/300s samebucketlowpriority, no rediscovery660eachTTL.
-Independentrequests boundedparallel8 withinprepaidbatch/threadsafeactualcharges/inflightfailcounts. TWO financialsweepsSEQUENTIAL/originaltimestamps/oldest<=9s/no reaging/retries.
-KEYLESSattempt2PASS PID4158856/exit0/wall10.8315s/financialspan6.250905964s; 40Info+nativeSpot1/D11/weight456/parallel8/Portfolio1Cache1State1; ledger2/2CLOSED/active0, rawprivatebackedup. No rerun/heldmatchingclaim.
-NativeA/B ROOTmax5physicalincludingFAILED/spent4/active0/rootGOFalse (rootamend3→4→5, notownereconomicbudget); sourcefreeze/pure/highpeerclosure+case-map beforeclaim/Popen. Samehelpertest-onlyisolatede4-c1-native-acceptance; guardsFalse.
-A actualordinarycoreentry/split/partial-cancel-latefill-duplicate/standingprotection/C1cut/DPflat; B pausedflatrestart sameSQLite/H/latch/rights/noautoresume. No manualEpisode/H/rights/directseedsubmit.
-NativefixtureFIXEDfirstobservedSep2positiveTP3: actual730closedBTC/SOLwarmup+incoming/vector5822faef/237589B/beta-sigmaEXACTRAW. Old800recipeallzero rejectedSTATIC/noNode. CausalUTCshift/no seedstate; positiveD1restore existingeconomic+pure/preD1DENYactualNode.
-DP retained45%=DD55/persistentinitial→higherUTCdailycloseHWM/latch/noreset/runtimeunapplied. FreshINITone-time/nativeflat/actualE/checkpoint+marker+originalanchor; no priorhistory/reinit.
-ACTIVESTART exactaccount/profile/mode/E/privateINITIALcap; caponlyvirgin, compoundprofitsnotcapped. Samewinnercore callbackonce/actualdecisiontime, cashflowbasis forHcredit.
-OwnedzeroInfo reducechain boundedfreshfulllineage/exactSTART/account/policy/continuousWS; confirmedheld−allpending/uncertainreductions/noopeningcredit/flip. Unknownactivity revokes/manual.
-WSgap boundary: reducerrevoked/moneyunknown/DPreaderunavailable; latchedbutunfilledexit EXIT_INCOMPLETE, no hardDD55executionguarantee. Do not inventemergencylane.
-PrivateJ=/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028; Keychain/privateaccountconfig only. No secrets/addresses/actualbalances/readbacks public.
-Privatewholelifecyclelot/minnotional/capacitypending; selected72/108formulacasesPASS, notprivatecapacityPASS; arbitrarysub10IOCresidualnativeMinNotionalboundaryOPEN/no bypass-ceil-topup. Pushnotdeploy.
-Freshinstalledreleasebenchmark NOTRUN; prepareimmutableprofile/seal/runbook/rollback→ownerVERSIONapproval beforeoldSandboxstop/deploy→installedreferenceproof→separateexplicitSTART beforeorders/transfers.
-OldSandbox81e6318/native1.231 unchanged; audit55/55seal39fills45intents/nodup-overrequest; detailedlogs26–28Oct/start28Sep, wholefinancialhistoryUNKNOWN/fundingUNPOSTED.
-MVP legacyreference/zeroTP1-2 andSOLalpha retained; NOTallreal3TP/truecontinuoushedge. DD30–50 optimization later; no neweconomicsearchnow.
-Next: SOURCEONLYprepared-orderDPcontinuation underPREPARED_SUBMISSION_DP_CONTINUITY_PROTOCOL/actualSQLitepipelinechecks+criticalpeer; NativeHOLD4/5untilnewfrozenprotocol, no budgetautoretry/researchreplay.
-Project137/101 lastactualreadback2026-10-29T01:47:59Z/OPEN/InProgress. Updateexistingitems/readbackatpackage; no newtasks.
-SSHroot@46.225.163.123 saved/private/tmp/cm-e4c1-vps-20261028.sock/networkescalated. VPSwritersSol6.1medium; MacdelegatedexecutionexactTerra6.1high.
-Preserveoldlocks/userdirty/source-for-review/failureraw; no reset/clean/force/hookbypass. Beforeendagents/ledgers/Project≤40lineACTIVE/NEW_MANAGER/commitpublishremoteexactverify.
+2026-10-29 PRIMARY CM-E4-C1-FAST-PILOT-20261028; Project2/#137,#101 OPEN/InProgress. OwnerSTART_NOT_GIVEN.
+Manager /Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021; branchcodex/btc-pattern-pilot-m2-20261021; useactualgitHEAD and exactpublicationreceipt (previous8e0deb35).
+Read reports/e4-c1-fast-pilot-20261028/{RELEASE_ACCEPTANCE_INDEX.json,CURRENT_STATUS_FOR_AUDIT_20261029.md,native-engine-acceptance-ledger.json}; no bulkarchives.
+Winner BTC_POSTCUT_D1 TOTAL5499360.14984003USDT/seed10000/res0/bothDD51.26863558248311161216905115/netprofitretention90.4773878838%S0;108life540fills1248fundingexact/flat/liq0.
+Economic sourcefccd60c01e8cae5e8258748b046f43f88a16bb79/configa2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253; Bybit1m/syntheticL1 NOTHLmatching.
+Research8/8CLOSED(7COMPLETED1FAILED)/active0/rem0; MethodA9/19HOLD; no economicreplay/newoptimizationbudget.
+Stress5469423.50671297/DD51.41651839 technical-riskPASS/floor-973.008274377DIAGNOSTIC;57dvalidationRAW19661.98052982/DD34.95109657 financialPASS/physicalexit1reportbug preserved; reportfix29f66composed/no rerun.
+VPS isolated sourceW=/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/e4-c1-live-readiness-20261028; solewriterlive_bridge_owner_20261029/Solmedium; primarydirty6oldWIP preserved.
+FINAL SOURCE83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d PUBLICEXACT/325connectedPASS74.14s/targeted49included28.56s/highpeer26ed+tiny83eclosurePASS/no openP0P1. No native/sourcequalification equivalence.
+Fixedactualprepared-order->DPordering: one-use exacttransaction/order proof/original9s/finalrealDP/unchangedaccount-fill-WS-control; lockclaim+positivepre-handoffflag; no ambientcredit/globalguardremoval/unknownACKresend.
+Native fixtureF=VPSresearch-worktrees/e4-c1-native-acceptance-20261029; live_read_budget_review STATIC finalrepin83e inprogress/ROOTGOFalse.
+Rootengineering max7/spent6/active0: sixFAILEDpreserved/lastBslotHOLD/noautomaticretry; rootnecessaryverificationallocation NOTownernumericreply/economicbudget. CanonicalF/runtime/var/native-acceptance-20261029-1b27.
+A1FAILEDwrongSandboxinstrument/node0;A2FAILEDactualPath/node1-beforeInfo FIXED36b2;A3FAILEDfakeupdaterMRO FIXED;A4FAILEDactualownSUBMITTINGrev0->1 blocksDP/4gatesPASS/Info24/orders0; allRAW/SQLite immutable/noresend.
+A5FAILEDrootbudgetfield/stalealias/Node0; fixedlauncher equalfields+purepreflightbeforechild. A6FAILED53.748s/PID4189390 after6gatesPASS/actualentry-partial-cancel-duplicate/2submit1cancel; failurefullrefresh recovery_healthy/recovery_confirmed. BfutureMUSTsameSUCCESSsource/fixture/DB. Actualsamewinnercore/partial-cancel-latefill-duplicate/standingTP/C1/DPflat;Bpausedflatrestart/nofreshauthority/noautoresume. claimBEFOREPopen.
+Fixturevector5822faef/237589B/730closedwarmup+incoming/ONEearliestobservedSep2positiveTP3; causallyshiftedactualdata/exactbeta-sigma/no grid/manualEpisode-H/clockpatch. StockzeroMODELgeometry9811 intact.
+OWNERKEEPUnified; allHLlivecash/PnL/fees/funding/margin/API-GUI/exportUSDC. E=nativeUSDCreportedtotal==freshspotUSDCtotal/noextraUPNL; IDsopaque, historicalUSDTtruth unchanged.
+CurrencyMODEL1/1CLOSEDPASS PID4137203/exit0/64models/NodeEngine0; helper01e57 unchanged. REALkeylessPortfolio-Cache2/2CLOSEDPASS PID4158856/exit0/financialspan6.250905964s/D11/weight456; first422 preserved. NO reruns.
+API-GUIc5cfcf97 PUBLICEXACT/22API+21UI/typebuild/regen+peerPASS/notdeployed. Candle150weight60s persistedflock/cache5s/max12keys; fullpixel/TradeHistory/zoom/auth/passwordlater.
+HTTPonlyperDEXclearinghouseState/D<=32; parallel8prepaid/twoSEQfinancialsweeps/originaloldest9s. Full397+4D+4N<=700/held280+20Dmin/rolling1000; D11N15=>1001DENY. No WS-onlyHTTPallDexs.
+DP retained45%=DD55/persistentinitial->higherUTCdailycloseH/noreset/runtimeunapplied/notexecutionpriceguarantee. Sharedpendingmargin/nativeAccountState/C1checkpoint atomic and distinctfromDP.
+Ownedreducechain zeroInfo onlyboundedfreshlineage/continuousWS/actualheld-minusALLpending; noopeningcredit/flip. WSgap unknown/revoked/manual; latchedunfilledexit EXIT_INCOMPLETE, no fakeflat.
+Privatecapacity preparation: ONEunsigned max10Info/128weight/parallel8/span9s/no retries; rootHTTPGO pendingrunnerfreeze. Useactualmetadata/fees/accountmargin+productionlots; notSTART/globalforeignproof.
+Arbitrarysub10IOCresidual nativeMinNotionalboundary remainsOPEN/no RiskEnginebypass/ceil/topup; actualprivatewholelifecyclecapacitypending. Selected72/108formula casesPASS != actualaccountcapacity.
+J=/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/e4-c1-fast-pilot-20261028; Keychain/privateaccountconfig/raw only; no actualaddress/balance/secrets public.
+NextreadonlyA6diagnosis->qualifiednativeA/B->privatefeasibility->immutableDRAFTprofile/seal/runbook/rollback->ownerVERSIONbeforeSandboxstop/deploy/installedreferencebenchmark->separateexplicitSTARTbeforeorders/transfers.
+OldSandbox81e6318/NT1.231 unchanged; audit55/55seal39fills45intents/nodup-overrequest; logs26-28Oct only/start28Sep; wholefinancialhistoryUNKNOWN/fundingUNPOSTED.
+MVP retainslegacyzero/referenceTP1-2 andSOLalpha; NOTallreal3TP/truecontinuoushedge. StrictDD30-50optimizationlater. No deployment/credentials/services/orders/transfers changed.
+Project137/101 actualreadback2026-10-29T03:45:36Z OPEN/InProgress; updateexistingitems/readbackatpackage. SSHsaved/private/tmp/cm-e4c1-vps-20261028.sock/networkescalated.
+Beforeend/resetcheckagents+ledgers/Project; ACTIVE<=40lines/NEW_MANAGER/normalcommit-publish-exactremote. No reset/clean/force/hooksbypass; preserveoldlocks/raw/WIP. MacdelegatedexecutorTerra6.1high.

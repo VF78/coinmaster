@@ -1,6 +1,6 @@
 # Final ACTIVE native acceptance —29.10.2026
 
-Status: HOLD. No physical A/B has started; max5 attempts including FAILED, spent4. This is root’s bounded verification allocation under the owner’s preparation instruction, not a separate numeric owner reply. Search8/8 and MethodA9/19 remain untouched. Canonical ledger: native-engine-acceptance-ledger.json.
+Status: SOURCE83e PASS; fixture/rootGO HOLD. Five actual A attempts FAILED and preserved; current root max7, spent5, active0. Exactly fresh A6 then conditional B7, no reserve. This is root’s bounded verification allocation under the owner’s preparation instruction, not a separate numeric owner reply. Search8/8 and MethodA9/19 remain untouched. Canonical ledger: native-engine-acceptance-ledger.json.
 
 ## Admission
 
@@ -10,7 +10,7 @@ One TradingNode/ExecutionEngine per child, fake transport only, real native Acco
 
 ## A — actual selected trading path
 
-Real fresh INIT and public DP55 wrapper establish H from synthetic native equity; no invented H100 or fixed order quantities. Seed800 causally closed, untraded DailyBars using the existing selected-candidate recipe; the≤48h fixture limit applies to streamed scenario, not required lookback. New genuine closed-bar callback plus fresh quotes invokes the ordinary winner core. Actual submitted orders/lots/prices drive the fixture.
+Real fresh INIT and public DP55 wrapper establish H from synthetic native equity; no invented H100 or fixed order quantities. Feed the frozen first observed positive-TP3 episode vector: 730 causally closed, untraded BTC/SOL DailyBars plus the actual incoming bars; the≤48h fixture limit applies to streamed scenario, not required lookback. New genuine closed-bar callback plus fresh quotes invokes the ordinary winner core. Actual submitted orders/lots/prices drive the fixture.
 
 Exercise first-child actual IOC partial, pending-cancel latefill, actual cancelACK and duplicate event; no direct seed submit. Finish parent via production split lifecycle and fresh admitted authority. Second child is actual post-onlyGTC and must cross at its limit; IOC fills are taker. Native cache/domain/commission and durable identity must reconcile. Actual MVP target protection and C1 BTCquarter cut must respect confirmed held minus all pending/uncertain reductions. Zero/reference TP1-2 are not relabeled fills or three standing targets.
 
@@ -26,8 +26,10 @@ New Node/cache, same isolated SQLite and A-derived checkpoint. Real on_load/on_s
 
 ## Evidence and limits
 
-Each result includes exact source/config/fixture hashes, claimed attempt ID, PID, process exit, actual native object/Node counts, genuine event assertions and resource closure. First failure closes that attempt; one conditional correction is available within the explicit max5 root amendment only. Passing model currency and real read-only Portfolio→Cache checks are reused, never repeated for this fixture.
+Each result includes exact source/config/fixture hashes, claimed attempt ID, PID, process exit, actual native object/Node counts, genuine event assertions and resource closure. First failure closes that attempt; one conditional correction is available within the explicit root allocation only; no automatic retry. Passing model currency and real read-only Portfolio→Cache checks are reused, never repeated for this fixture.
 
 Currency MODEL1/1 CLOSEDPASS (helper01e57); real keyless Portfolio/Cache2/2 CLOSEDPASS attempt2/PID4158856/financialspan6.250905964s, firstHTTP422 preserved. These prove their specific accounting/transport components, not matching, held support, ACTIVE command safety or live START. Source publication is not deployment. All account readbacks and secrets remain PRIVATE.
 
-Current root amendment: max3→4, two FAILED retained (A1 incompatible Sandbox instrument/node0, A2 missing production Path import/node1 before Info). Exactly fresh A3 then conditional B4, no reserve. This changes root engineering verification only, not owner historical/economic budgets. Source repair/static undefined-name gate and fresh fixture/source freeze are required before A3.
+Previous root amendment: max5→6 after four preserved FAILED attempts. A1 incompatible Sandbox instrument/node0; A2 missing production Path import/node1 before Info, corrected36b2; A3 fake updater MRO, corrected fixture; A4 actual ownSUBMITTING revision invalidated DP before native forward. Source83e fixes the actual caller chain with a bounded one-use prepared-order proof while keeping the real finalDP check. 325 connected source checks PASS74.14s and exact independent peer closure PASS; helper01e57 unchanged. All old artifacts/SQLite remain immutable and are never resent or repaired. Exactly one fresh A5 under new frozen fixture/source, then B6 only after actual A5 PASS on the same A5 database. No reserve. Root claim must precede Popen; no real orders/network/keys. Historical/economic budgets unchanged.
+
+Current root amendment max6 to7: A5 FAILED before Node because the manager launcher changed maximum_physical_attempts but left fixture-required max_physical_attempts stale. All five failures remain counted. Source83e and cases unchanged. Exactly freshA6 then conditionalB7, no reserve. Both budget fields must agree at7. Parent validates the exact existing stdlib preflight body before native Popen, excluding only its final exclusive-claim write; the actual child owns that exclusive claim. No risk/accounting/DP checks are removed.

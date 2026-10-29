@@ -1,6 +1,6 @@
 {
-  "status": "DRAFT_NOT_READY_ACTUAL_POST_PREPARATION_DP_ORDERING_P1",
-  "updated_utc": "2026-10-29T03:41:22.094957+00:00",
+  "status": "DRAFT_NATIVE_A6_PARTIAL_PROGRESS_SPLIT_RECOVERY_HEALTH_PENDING",
+  "updated_utc": "2026-10-29T04:10:48.682327+00:00",
   "candidate": "BTC_POSTCUT_D1",
   "economic_source_commit": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
   "economic_config_sha256": "a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253",
@@ -13,12 +13,12 @@
   "validation_physical_status": "FAILED_EXIT1_REPORT_BUG_IMMUTABLE",
   "report_repair_source": "29f66e166ff6b518b1b27a76095d6acd7649e4e4",
   "nautilus_target_version": "1.231.0",
-  "target_live_source_commit": "36b2e5e7d5d21fcb75f1e4a76312b7b4703eee7c",
+  "target_live_source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
   "DP_drawdown_limit_percent": 55,
   "DP_retained_equity_fraction": "0.45",
   "DP_anchor": "Existingpersistentinitial_thenhigherUTCdailyclose",
   "DP_applied": false,
-  "native_engineering_qualification": "4FAILED_OFROOTMAX5/active0/remainingBslotHOLD; actualtrade/C1/DPflatNOTREACHED",
+  "native_engineering_qualification": "6FAILED/rootmax7/active0/BslotHOLD; A6 actualordinaryentry+partial/cancel/duplicate PASS6gates; splitremaining/C1/DPflat NOTPROVEN",
   "fresh_readonly_HL_bootstrap": "RealreadonlyPortfolio/CacheUSDCtransportPASS; held/matching/finalACTIVEcommandgatespending",
   "installed_release_benchmark": "NOT_RUN_REQUIRES_PREPARED_RELEASE_PROTOCOL_AND_OWNER_VERSION_APPROVAL",
   "deployment": "NOT_PERFORMED",
@@ -35,7 +35,7 @@
   ],
   "target_live_source_base": "8ef2ece80a4c6dc7a38cb95852d7ff3439da6e75",
   "Unified_support": "NATIVE_CURRENCY_COMPONENT_PASS_ACTIVE_C1_EXECUTION_COMPOSITION_IN_PROGRESS",
-  "documentation_forums_review": "LIVE_PREPARATION_PLAN_20261029.md#документация-и-обсуждения-api-что-включить-в-допуск",
+  "documentation_forums_review": "LIVE_PREPARATION_PLAN_20261029.md#\u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044f-\u0438-\u043e\u0431\u0441\u0443\u0436\u0434\u0435\u043d\u0438\u044f-api-\u0447\u0442\u043e-\u0432\u043a\u043b\u044e\u0447\u0438\u0442\u044c-\u0432-\u0434\u043e\u043f\u0443\u0441\u043a",
   "manager_public_verified_checkpoint": "e22caafecb138868e7cd5854d112d82804c366fd",
   "packaging_remaining_gates": [
     "Approvedprivatecap/profile/releaseidentity; no hardcodedlegacy82 or oldapprovals",
@@ -73,7 +73,7 @@
   },
   "ACTIVE_auth_component": "86purePASS0.48s_ON_WIP_FUNCTIONS_notFullACTIVEPASS; PREPAREschemaandv2mode-basisgapsfixed",
   "keyless_private_cache_probe": "PASS attempt2of2CLOSED PID4158856/exit0/financialspan6.250905964s; actualPortfolio1Cache1/reportedAccountState1/40Info+nativeSpot1/D11/weight456/parallel8; EngineNodekeysorders0; initial422immutable; privateRAWonly",
-  "ACTIVE_connected_engine_free": "276PASS44.49s/8files; targeted10PASS8.39s; finalscopedindependentSOURCEpeerPASS/no openP0-P1; NativeA-Bpending",
+  "ACTIVE_connected_engine_free": "325PASS74.14s/10files; targeted49PASS28.56s included; source83e exactpeerclosurePASS",
   "ACTIVE_frozen_candidate": {
     "active_commit": "1d3643aef371cee0ae6ecb7021d7b27f96d08c87",
     "composed_commit": "1b27e98844140322a6618d293760faa92027f971",
@@ -90,16 +90,16 @@
   },
   "ACTIVE_REAL_API_BLOCKER": "CLOSED_SOURCE_AND_REAL_READONLY_PORTFOLIO_CACHE_COMPONENT; NativeA-B_AND_PRIVATEFEASIBILITY_PENDING",
   "active_partial_lifecycle_contract": "ACTIVE_PARTIAL_LIFECYCLE_CONTRACT_20261029.json",
-  "final_source_peer_evidence": "evidence/final-active-source-peer-closure-root-20261029.json",
+  "final_source_peer_evidence": "evidence/prepared-proof-lock-peer-closure-root-20261029.json",
   "live_source_publication": {
-    "source_commit": "1b27e98844140322a6618d293760faa92027f971",
+    "source_commit": "83e8931f9e24fbdf68dd3aca4a6deb5d13acc61d",
     "exact_remote_verified": true,
     "branch": "codex/e4-c1-live-readiness-20261028",
-    "scan_new_tracked_files": 52,
+    "scan_new_tracked_files": 5,
     "secret_or_actual_address_flags": 0,
     "deployment": false
   },
   "freshest_native_failure_scope": "Native startupandINITmarkerobserved; no economic/fulltrade/C1/DPflat nativegate yet; sourcePathfix276+20/peerPASS; currentA3fixfixture-only",
-  "active_current_blocker": "OwnSUBMITTINGdurableprep bumpsrev0→1; actualfinalDPreaderrejectsfreshrev0→silentnoNativeforward",
+  "active_current_blocker": "A6 full refresh after actualprotectedbudgetwait: recovery_healthy/recovery_confirmed assertion; readonly savedstate diagnosis pending; no automaticretry",
   "source_only_repair_protocol": "PREPARED_SUBMISSION_DP_CONTINUITY_PROTOCOL_20261029.json"
 }
