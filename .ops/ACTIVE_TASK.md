@@ -37,4 +37,4 @@ READY_FOR_GUARDED_PILOT/0identifiedP0P1. Manualunknownexposure/below-minnotional
 ServicecredentialproviderPASS: systemdLoadCredential→CREDENTIALS_DIRECTORY samefilepreflight+Nativekey;directcanonicaldenyEXPECTED. TargetDBabsent/writableparent/noDP50.
 Detailedprivate root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json;noarchivebulkread.
 Market13:20MSK BTC77340.5/nightlow76443;BybitD1SHORT EMA81434.52/beta1.20475/wavesPASS. FreshseedONLY→firstordinaryD1entrynotbefore31Oct03MSK;conditionaltime.
-DataflowBybithistory+liveD1/M1→HLexecution/USDC;730min/1504seed+15tail;HTTP+publicnativeWSbothvenuesPASS/noengine. Advisorywait15-19MSKreview,notnewcodegate;MARKET_START_ASSESSMENT_20261030_RU.md.
+DataflowBybithistory+liveD1/M1→HLexecution/USDC;730min/1504seed+15tail;HTTP+publicnativeWSbothvenuesPASS/cacheUIDread-write+systemdpathsPASS/noengine. Advisorywait15-19MSKreview,notnewcodegate;MARKET_START_ASSESSMENT_20261030_RU.md.

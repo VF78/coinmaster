@@ -472,5 +472,24 @@
     "signed_actions": 0,
     "shared_runtime_files_written": 0,
     "future_D1_close_or_full_start_not_proved_by_short_probe": true
+  },
+  "warmup_service_access": {
+    "observed_utc": "2026-10-30T10:30:12.661194+00:00",
+    "service_user": "coinmaster-hl-live",
+    "manifest": "/var/lib/coinmaster-hl-stageg-live/data/current/manifest.json",
+    "refresh_parent": "/var/lib/coinmaster-hl-stageg-live/data",
+    "manifest_exists": true,
+    "service_can_read_manifest": true,
+    "service_can_traverse_refresh_parent": true,
+    "service_can_write_refresh_parent": true,
+    "ProtectSystem": "strict",
+    "ReadWritePaths": [
+      "/var/lib/coinmaster-hl-stageg-live",
+      "/run/coinmaster-hl-live"
+    ],
+    "ReadOnlyPaths": [
+      "/srv/coinmaster/hl-live"
+    ],
+    "shared_files_written": 0
   }
 }
