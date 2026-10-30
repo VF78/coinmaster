@@ -386,7 +386,7 @@ def configured_research_data_root(environment: dict[str, str] | None = None) -> 
     return Path(environment.get("COINMASTER_RESEARCH_DATA_ROOT", str(Path(__file__).resolve().parents[2] / "var/data")))
 
 
-def research_capabilities(data_root: Path, config: ConfigurationRecord | None = None, lease_busy: bool = False) -> ResearchCapabilities:
+def research_capabilities(data_root: Path, config: ConfigurationRecord | None = None, lease_busy: bool = False, command_allowlist: dict[str, list[str]] | None = None) -> ResearchCapabilities:
     """Expose native-job availability without returning source manifests."""
     try:
         blockers = coverage_blockers(data_root)
@@ -396,6 +396,11 @@ def research_capabilities(data_root: Path, config: ConfigurationRecord | None = 
         optimizer_blockers, source_hash = source_blockers(data_root)
     except (OSError, TypeError, ValueError, json.JSONDecodeError):
         optimizer_blockers, source_hash = ["INVALID_1M_MANIFEST"], None
+    if command_allowlist is not None:
+        if "native_baseline" not in command_allowlist:
+            blockers.insert(0, "RESEARCH_COMMAND_NOT_ALLOWED")
+        if "native_optimizer" not in command_allowlist:
+            optimizer_blockers.insert(0, "RESEARCH_COMMAND_NOT_ALLOWED")
     if config is None:
         optimizer_blockers.append("CONFIG_REQUIRED")
     else:
@@ -465,7 +470,7 @@ def create_app(database: str | None = None, token: str | None = None, include_le
             except KeyError:
                 pass
         busy = store.db.execute("SELECT 1 FROM research_leases WHERE name='native_baseline'").fetchone() is not None
-        return research_capabilities(research.data_root, selected, busy)
+        return research_capabilities(research.data_root, selected, busy, research.commands)
 
     @app.get("/api/v1/research/catalog/{catalog_id}", response_model=ResearchCatalogDetail, dependencies=[Depends(auth)])
     def research_catalog_detail(catalog_id: str) -> ResearchCatalogDetail:

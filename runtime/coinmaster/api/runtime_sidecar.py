@@ -1053,6 +1053,8 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         database=control_database or os.getenv("COINMASTER_RUNTIME_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/runtime-control.sqlite")),
         token=expected,
         include_legacy_runtime=False,
+        # Legacy research runners require a separately qualified frozen profile.
+        research_commands={},
         auth_dependency=auth,
     )
     app.include_router(control.router, dependencies=[Depends(auth)])

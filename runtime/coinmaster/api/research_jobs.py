@@ -51,7 +51,7 @@ class ResearchJobManager:
     """Owns process groups created by this manager and nothing else."""
     def __init__(self, store: "ControlStore", data_root: Path, command_allowlist: dict[str, list[str]] | None = None, test_options: dict[str, Any] | None = None) -> None:
         self.store, self.data_root, self.test_options = store, data_root, test_options
-        self.commands = command_allowlist or {"native_baseline": [sys.executable, "-m", "coinmaster.research.native_baseline"], "native_optimizer": [sys.executable, "-m", "coinmaster.research.optimizer_job"]}
+        self.commands = command_allowlist if command_allowlist is not None else {"native_baseline": [sys.executable, "-m", "coinmaster.research.native_baseline"], "native_optimizer": [sys.executable, "-m", "coinmaster.research.optimizer_job"]}
         self.processes: dict[str, subprocess.Popen[str]] = {}
         self.lock = threading.RLock()
         self._reconcile_restart()
