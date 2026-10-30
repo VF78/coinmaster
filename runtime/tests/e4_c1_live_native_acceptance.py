@@ -1037,7 +1037,7 @@ async def run(args, result):
         for cls in type(strategy).__mro__:
             for name in ("_entries_enabled","_entries_allowed","_feeds_fresh","_owned_chain_current",
                          "_current_owned_money","_validated_live_money","_validated_live_deposit_equity",
-                         "_split_stop_requested","_submit_intent"):
+                         "_split_stop_requested","_submit_intent","_deposit_health","_deposit_check","_on_deposit_timer"):
                 if name in cls.__dict__:add(cls.__dict__[name],cls.__name__+"."+name)
         for name in ("_live_context_current","_live_increase_headroom","_live_money_provider",
                      "_recovery_health","_live_input_ws_epoch"):
@@ -1061,6 +1061,12 @@ async def run(args, result):
             recovery_confirmed=getattr(strategy,"recovery_confirmed",None),
             capital_basis_verified=getattr(strategy,"_capital_basis_verified",None),
             inputs_dirty=getattr(strategy,"_live_inputs_dirty",None),
+            deposit_observed_equity=str(strategy._deposit.current_equity),
+            deposit_observed_ns=strategy._deposit.observed_ns,
+            deposit_high_water=str(strategy._deposit.high_water),
+            deposit_latched=strategy._deposit.latched,
+            deposit_daily_sample_missed=strategy._deposit.daily_sample_missed,
+            deposit_storage_failed=strategy._deposit_storage_failed,
             last_actual_health=operative_observer.last_health if operative_observer is not None else None)
 
     async def paired_split_quote(quote,before,phase):
@@ -1094,8 +1100,34 @@ async def run(args, result):
         assert observation.native_revision==current_view.native_revision==revision==runtime.native_revision(),"PAIRED_REVISION_MOVED"
         assert client._cm_generation_started_ns==generation and strategy._live_financial_deadline_ns==deadline and time.monotonic_ns()<deadline,"ORIGINAL_FULL_AUTHORITY_EXPIRED_OR_MOVED"
         native_standing_baseline()
+        # Since baseline4ca the entry predicate reads DP health without
+        # observing cash. A23 (source5f10) relied on the old mutating predicate.
+        # Deliver the ACTUAL existing production timer callback after genuine
+        # paired cash publication, before the one next quote. No guard/state is
+        # substituted, and UNKNOWN cannot be made healthy by this fixture.
+        dp_before=dict(equity=None if strategy._deposit.current_equity is None else str(strategy._deposit.current_equity),
+            observed_ns=strategy._deposit.observed_ns,high_water=str(strategy._deposit.high_water),
+            latched=strategy._deposit.latched,daily_sample_missed=strategy._deposit.daily_sample_missed,
+            storage_failed=strategy._deposit_storage_failed)
+        marker=runtime.c1_initialization();saved_h=strategy._deposit.high_water
+        command_counts=(counts["synthetic_submit_commands"],counts["synthetic_cancel_commands"])
+        health_before=strategy._deposit_health()  # Exact read-only reason witness.
+        strategy._on_deposit_timer(None)  # Production callback uses actual paired native cash.
+        actual_equity=strategy._validated_live_deposit_equity()
+        assert strategy._deposit.current_equity==actual_equity
+        assert strategy._deposit.high_water==saved_h and runtime.c1_initialization()==marker
+        assert (counts["synthetic_submit_commands"],counts["synthetic_cancel_commands"])==command_counts
+        assert strategy._deposit.latched==dp_before["latched"] and strategy._deposit.daily_sample_missed==dp_before["daily_sample_missed"]
+        assert (runtime.native_revision(),client._cm_generation_started_ns,strategy._live_financial_deadline_ns)==(revision,generation,deadline)
+        assert time.monotonic_ns()<deadline and strategy._deposit_health()
+        dp_after=dict(equity=str(strategy._deposit.current_equity),observed_ns=strategy._deposit.observed_ns,
+            high_water=str(strategy._deposit.high_water),latched=strategy._deposit.latched,
+            daily_sample_missed=strategy._deposit.daily_sample_missed,storage_failed=strategy._deposit_storage_failed)
         witness.update(paired_guards_current=True,original_generation_preserved=True,
-            original_deadline_preserved=True,revision=revision,extra_quotes=1)
+            original_deadline_preserved=True,revision=revision,extra_quotes=1,
+            deposit_observation=dict(callback="WaveOverlayStrategy._on_deposit_timer",event="SYNTHETIC_TIMER_DELIVERY_AFTER_REAL_PAIRED_PUBLICATION",
+                health_before=health_before,health_after=strategy._deposit_health(),before=dp_before,after=dp_after,
+                native_equity=str(actual_equity),HWM_and_initial_seed_preserved=True,synthetic_commands_unchanged=list(command_counts)))
         await quote(HL_BTC.id,price,half_spread=D("0"))  # ONE genuine NEXT quote.
 
     async def complete_actual_split(ordinary):
