@@ -1,0 +1,66 @@
+{
+  "status": "READY_FOR_OWNER_APPROVAL_AND_GUARDED_PILOT",
+  "audit_completed_utc": "2026-10-30T09:18:12.259894+00:00",
+  "source": "4ca0d87993f28c20fb039840551c04e051378582",
+  "identified_P0_P1_code_blockers": 0,
+  "native_or_economic_runs_during_audit": 0,
+  "real_orders_transfers_signatures": 0,
+  "raw_economic_checks": {
+    "A10K_report_sha256": "c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f",
+    "actual_capital_report_sha256": "7097c2153bda7f44ac34054aff2647a3476fe2b07012f2f26d596f377b2df642",
+    "both_raw_hashes_independently_verified": true,
+    "both_full24months": true,
+    "both_all11_checks_pass": true,
+    "both_actual_exit0": true,
+    "both_liquidations0_and_terminalflat_orders0": true,
+    "actual_account_financial_amounts_excluded": true
+  },
+  "engineering_proof": {
+    "inherited_native_cycle_source": "5f10ce870b18fd8181b57c23f0d9d36d3e867d67",
+    "receipt": "../e4-c1-fast-pilot-20261028/evidence/native-final-A23-B24-acceptance-20261029.json",
+    "A23_native_gates_passed": 11,
+    "B24_native_restart_gates_passed": 3,
+    "controlled_transport_not_exchange_matching": true,
+    "exact4ca_delta_focused_tests": 63,
+    "exact4ca_fresh_full_native_cycle_run": false,
+    "broader_tests": {
+      "passed": 200,
+      "fixture_expectation_failures": 3,
+      "causally_classified_not_code_blockers": true
+    }
+  },
+  "operational": {
+    "fresh_readonly_utc": "2026-10-30T08:51:26.574566+00:00",
+    "sealed_4ca_package_verify_pass": true,
+    "signer_master_Unified_USDC_11DEXflat_orders0_PASS": true,
+    "service_user": "coinmaster-hl-live",
+    "systemd_LoadCredential_same_canonical_source": true,
+    "loaded_unit_no_pending_daemon_reload": true,
+    "worker_preflight_and_native_private_key_same_copy": true,
+    "direct_canonical_service_read_false_is_expected_isolation": true,
+    "target_database_absent_freshINIT_expected": true,
+    "state_parent_writable": true,
+    "persisted_DP50_present": false,
+    "credential_provider_qualification_sha256": "cf364d06e09a9a63caf87e002e890ceb5176d69fbc7484191adb8c6ac59699ab",
+    "raw_negative_permission_receipt_preserved": true,
+    "ACL_code_permission_changes_needed": false
+  },
+  "launch_state": {
+    "live_inactive": true,
+    "current_alias_still_old_6c208": true,
+    "candidate_installed_inactive_4ca": true,
+    "owner_START_present": false,
+    "authorized_release_selection_needed_before_unit_start": true,
+    "normal_fresh_prestart_needed_at_start": true,
+    "DP_drawdown_trigger_percent": 55,
+    "retained_fraction": "0.45",
+    "not_guaranteed_absolute_execution_loss_cap": true
+  },
+  "known_limits": [
+    "Bybit1m/currentHLtiers/zeroimpact historical diagnostic; no guaranteed live ROI/capacity",
+    "manual reconciliation for unknown exposure/ACK; no arbitrary-position automated takeover",
+    "below-minnotional residual may require manual handling",
+    "new SOL hedge and GUI redesign/auth remain after stable live"
+  ],
+  "project_receipt": "FINAL_LIVE_PROJECT_READBACK.json"
+}

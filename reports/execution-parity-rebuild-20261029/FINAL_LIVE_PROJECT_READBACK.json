@@ -1,0 +1,78 @@
+{
+  "project_url": "https://github.com/users/VF78/projects/2",
+  "verified_utc": "2026-10-30T09:06:45Z",
+  "verification": "delegated executor read back actual GitHub Project and issue states",
+  "active_before": 12,
+  "active_after": 10,
+  "counts": {
+    "Done": 7,
+    "In Progress": 1,
+    "Todo": 2
+  },
+  "items": [
+    {
+      "issue": 101,
+      "status": "In Progress",
+      "state": "open",
+      "scope": "audited guarded A rollout; explicit owner START pending"
+    },
+    {
+      "issue": 105,
+      "status": "Todo",
+      "state": "open",
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8R2kU",
+      "scope": "GUI/tradehistory/login after stable live"
+    },
+    {
+      "issue": 108,
+      "status": "Done"
+    },
+    {
+      "issue": 109,
+      "status": "Done"
+    },
+    {
+      "issue": 110,
+      "status": "Done"
+    },
+    {
+      "issue": 111,
+      "status": "Done"
+    },
+    {
+      "issue": 112,
+      "status": "Done"
+    },
+    {
+      "issue": 114,
+      "status": "Done"
+    },
+    {
+      "issue": 137,
+      "status": "Done",
+      "state": "closed",
+      "state_reason": "completed",
+      "scope": "completed execution-parity A selection; campaign10/10closed"
+    },
+    {
+      "issue": 138,
+      "status": "Todo",
+      "state": "open",
+      "scope": "new residual-confirmed SOL hedge after stable live"
+    }
+  ],
+  "archived_project_items": [
+    123,
+    130,
+    131
+  ],
+  "archived_issues_deleted": false,
+  "history_and_raw_receipts_preserved": true,
+  "duplicate_active_cards_found": 0,
+  "failures_remaining": [],
+  "resolved_tool_failures": [
+    "GraphQL issue-close failed; normal REST close and readback succeeded"
+  ],
+  "raw_receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/execution-parity-rebuild-20261029/analysis/final-live-project-readback-20261030.json",
+  "raw_receipt_sha256": "e656207fa27f34d5185bceca1d7ef15ebb25abdcfccb52d2d899dc94aeff6c00"
+}

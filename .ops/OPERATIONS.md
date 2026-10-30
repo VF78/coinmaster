@@ -1,18 +1,15 @@
-# Operations — read-only handoff snapshot, 2026-10-24
+# Operations — final readiness audit30.10.2026
 
-VPS `root@46.225.163.123`; protected siblings Hermes/f-ai.studio/app.f-ai.studio/VPN untouched.
-Production is not any branch HEAD; determine release/seal/config from installed metadata before runtime work.
+Canonical VPS root@46.225.163.123; R=/root/.openclaw/workspace/coinmaster/coinmaster. Preserve unrelated Hermes/f-ai.studio/app.f-ai.studio/VPN. No trader/credential/alias/runtime mutation in this audit.
 
-| Surface | Observed | Scope of evidence |
-|---|---|---|
-| `coinmaster-hl-stageg-testnet.service` | active/running,NRestarts0; ActiveEnter2026-09-28 07:39:45UTC | systemd only, no trade/account/gate-health assertion. Despite legacy name, this is local native Sandbox, not exchange testnet. |
-| `coinmaster-runtime.service` | active/running,NRestarts0; ActiveEnter2026-10-24 06:30:16UTC | GUI/API service metadata only; no browser/content acceptance performed. |
-| Sandbox working directory | `/srv/coinmaster/runtime` | installed `.venv` reports nautilus_trader1.231.0. |
-| GUI current symlink | `/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8` | observed link, not proof of actual process source or full GUI health. |
-| `/opt/coinmaster/.deploy-source-commit` | absent | do not infer current release from this legacy path. Sandbox `.release-commit` observed81e6318646b51280497806a1c0492591654b5fe6; verify seal/config on demand. |
+- Exact prepared source4ca0d87993f28c20fb039840551c04e051378582 installed INACTIVE at /srv/coinmaster/hl-live/releases/4ca0d87993f28c20fb039840551c04e051378582-sol-staging-a-live-inactive-native1.231.0-api-v2. Package/profile/nativepins/imports92files reverified; current identities in ACTIVE_TASK and finalaudit.
+- /srv/coinmaster/hl-live/current remains6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2-v3-dp50-82-wheel-8ff3c6dcc150. coinmaster-hl-stageg-live.service inactive/dead/disabled/PID0. Starting it directly now would select old code. Exact4ca release activation requires separate explicit owner START and ordinary fresh prestart; no implicit permission from this file.
+- UnitUser/Group coinmaster-hl-live. LoadCredential connection.json maps the canonical protected brokerrecord; worker uses CREDENTIALS_DIRECTORY/connection.json for BOTH preflight and Nativeconfig.private_key. PID1/root sourceopenPASS, mode0600; serviceUID directsource readfalse is EXPECTED isolation. Loadedunit noDropIns/NeedDaemonReload=no. No tradingkey in EnvironmentFile; do not print secretvalues or widenACLs.
+- Actual target DB /var/lib/coinmaster-hl-stageg-live/hl-stageg-live.sqlite absent, writableparentPASS; freshINIT expected, no persistedDP50. Source/profile requires DP55/remaining45%; preserve H/latch/seed, never silently reset saved states.
+- Fresh exact4ca read-only08:51:26UTC: signer/master/Unified/USDC/11DEXflat/orders0/profile55/STARTguardPASS. Snapshot does not replace normalfreshprestart. Account-derived readbacks private; do not ask again for key/password/amount. Initialcapital is actualavailableUSDC.
+- Keychain/canonicalbinding alreadycomplete. No real signatures/orders/transfers occurred. Native1.231.0 soleengine; no new native/economic runs in audit, closedcampaign10/10.
+- Nativeengineering A23/B24 source5f10 actualnodes/callbacks/USDC/sameDBrestartPASS withcontrolledtransport; final4ca delta63pure separately. Do not claim exact4ca fresh fullcycle or exchange matching beforepilot. UnknownACK/openposition requires manualreconciliation; below-minnotional residue can needmanualhandling. DP55 is a trigger, not absolute executionlossguarantee.
+- GUIbackendguardb96 lastverifiedactive/health/auth/archivesPASS; visualredesign notdone, Project105TodoAFTERstablelive. GUIrelease/service independent of trader. Sandbox not requalified by this audit; preserve its designated separate state and never import virtualpositions.
+- Project2finalreadback10items=7Done/1InProgress/2Todo.137closed/Done;101rolloutInProgress;105GUI+138SOLTodoafterlive;123/130/131archived/historyretained.
 
-Current positions/PnL/balance/entrygate/master funding/agent authorization/live readiness are NOT rechecked by this memory cleanup. Never replace UNKNOWN with last historical values.
-Existing live backlog #101 retains inactive82USDC+DP50 preparation and manual-reconciliation boundary. Current blocker: sufficient genuineHL execution/mark/funding history + venue qualification and separate guarded rollout/owner authorization. No request to fund or submit orders now. See #101; older release/recovery/GUI proofs moved unchanged to `docs/archive/operations/`.
-Only stock nativeHL connector; no silent fork/upgrade or new recovery subsystem. Preserve sealed source approval and separate paper/live state; virtual trades never migrate to live. Unknown ACK is not rejection; erroneous empty report is not proven flat.
-For authorized runtime work: inspect exact installed identity, current persisted controls/account/ownedorders, qualified script and current approval; retain state or fail closed per the actual deployed contract. Do not promise auto-recovery from historical docs.
-No services were restarted or changed in this handoff. SSH may intermittently time out; report that rather than substituting local guesses.
+Read FINAL_LIVE_READINESS_AUDIT_RU.md and FINAL_LIVE_PROJECT_READBACK.json in currentpacket. Actual money/secrets/privatehandoff remain outside Git. SSH canloseidleconnections: establish fresh approved canonicalSSH with keepalive when needed, do not replay completedjobs or use lostsessionPIDs as runtime truth.
