@@ -1,0 +1,26 @@
+{
+  "all_credential_role_mode_collateral_freshness_checks_passed": true,
+  "canonical_credential_used": true,
+  "engine_runs": 0,
+  "external_orders": 0,
+  "financial_db_absent": true,
+  "info_request_count": 4,
+  "installed_profile_match": true,
+  "live_start_approved": false,
+  "must_repeat_fresh_at_future_START": true,
+  "parent_permissions_unchanged": true,
+  "private_raw_path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/private/installed-unsigned-preflight-raw.json",
+  "private_raw_sha256": "9e446aaf3a903e266d0873a11073065ec9d6184d0f37337aa9bd232e9a54f657",
+  "protected_current_unit_unchanged": true,
+  "reason_code": null,
+  "source_commit": "d8b2039b618c3573a1784564f4658561142a779e",
+  "status": "PASS",
+  "unsigned_info_kinds": [
+    "userRole",
+    "userRole",
+    "userAbstraction",
+    "spotClearinghouseState"
+  ],
+  "unsigned_info_only": true,
+  "wall_seconds": 1.230443686246872
+}

@@ -1,0 +1,35 @@
+{
+  "account_requests": 0,
+  "actual_uid": 988,
+  "actual_user": "coinmaster-hl-live",
+  "binding_sha256": "e9a846fd87ae46ce6f414630ebeb01c03ef8a58d682c0c39bbb5872ae95e4037",
+  "engine_runs": 0,
+  "external_orders": 0,
+  "live_db_absent": true,
+  "manifest": "/var/lib/coinmaster-hl-stageg-live/data/hyperliquid/hl-daily-1793318400000-638b726684d8a9b3/manifest.json",
+  "manifest_sha256": "638b726684d8a9b30cd3aa6084e194bbc9148fc8694e0dcf924e1ebe791b1f46",
+  "minimum730_pass": true,
+  "minutes": {
+    "BTC": {
+      "completed_rows": 480,
+      "eight_hour_contiguous": true,
+      "raw_sha256": "07bf67bd551c513d37a958c678605f26de46be8919777674b24ab4ff916c4f69",
+      "received_after_cutoff": true
+    },
+    "SOL": {
+      "completed_rows": 480,
+      "eight_hour_contiguous": true,
+      "raw_sha256": "8c17100d611fdae76b920d93bb3a060c760b78ba8ecd849b0c5259532c249642",
+      "received_after_cutoff": true
+    }
+  },
+  "old_bybit_cache_unchanged": true,
+  "paired_daily_rows": 1336,
+  "parent_permissions_unchanged": true,
+  "protected_service_current_unchanged": true,
+  "public_cli_pass": true,
+  "source_commit": "d8b2039b618c3573a1784564f4658561142a779e",
+  "source_policy": "LIVE_HYPERLIQUID_TRADE_D1_M1_CLOSE_UTC_H4_H1_ACTUAL_AVAILABILITY_V2",
+  "status": "READY",
+  "wall_seconds": 14.506301154382527
+}

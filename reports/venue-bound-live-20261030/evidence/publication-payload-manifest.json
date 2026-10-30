@@ -1,0 +1,107 @@
+{
+  "source": "d8b2039b618c3573a1784564f4658561142a779e",
+  "base": "4ca0d87993f28c20fb039840551c04e051378582",
+  "repository": "https://github.com/VF78/coinmaster",
+  "branch": "codex/venue-bound-live-20261030",
+  "files": [
+    {
+      "path": "runtime/coinmaster/ops/hl_closed_bars.py",
+      "sha256": "c7fe25f0be6855a7607bc343ff37d1c4a6a8bd49aa7fa7c57500539a8017f57f"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_profile.py",
+      "sha256": "8ab6691ec829f8f15609a4e21546594624349492d2dbeba1f6995dbd73decf08"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_worker.py",
+      "sha256": "eaa3fb5198930d1d1e734ffab6e220ae1d302fa9e906f1ed9b8e37485c6c1340"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hyperliquid_testnet.py",
+      "sha256": "55cb726a83777dba875c6f3d292bfd4e26264da5b33c4ad629ce8c62bfa11926"
+    },
+    {
+      "path": "runtime/coinmaster/ops/stage_g_config.py",
+      "sha256": "41e421d175384357f0dd1c992f7ca9e8cbb71bd0da97d9a5eca22dbf75add2e6"
+    },
+    {
+      "path": "runtime/coinmaster/ops/stage_g_refresh.py",
+      "sha256": "d0e5a51fe717780ed7585357218cf7cee1abb0348ca9e20ecbe7830b64881168"
+    },
+    {
+      "path": "runtime/coinmaster/ops/venue_data.py",
+      "sha256": "96bca67f7a8140571ba59b0517b12661e36b141004198ad4a560bd43d328ed4b"
+    },
+    {
+      "path": "runtime/coinmaster/strategy/live_recovery.py",
+      "sha256": "c9dc13c7b719ac57731ab5636130823961e3b7fc5dc2ca680b9dd55b4fb96947"
+    },
+    {
+      "path": "runtime/configs/hl-stageg-live.instance.json",
+      "sha256": "0072d487d8502bcead9d793c84f81d2ee371391a06e24c1c1931a1219107cdd9"
+    },
+    {
+      "path": "runtime/configs/hl-stageg-testnet.instance.json",
+      "sha256": "3e425f10008152406b3b72cacc0fd05583533f96f3a214a700908759a15097c7"
+    },
+    {
+      "path": "runtime/ops/coinmaster-hl-stageg-live.service",
+      "sha256": "5b378c278f8f7a0b5dd1ebb723a64ee4a1119de418af8268a2d0fffd3fa57c03"
+    },
+    {
+      "path": "runtime/ops/coinmaster-hl-stageg-testnet.service",
+      "sha256": "f8e5c8cbc8c2e7935dc30615fc8cda4c93bef189e4e5c4a9388c8264f3d4cdc6"
+    },
+    {
+      "path": "runtime/ops/coinmaster-hl-stageg-warmup.service",
+      "sha256": "3489894bb3d58224d9b6d31e9566bfb9999d57740e115ba6b166838b4878fa44"
+    },
+    {
+      "path": "runtime/scripts/deploy_stageg_sandbox.py",
+      "sha256": "017d80fb1ba7c41b64a0a731f5721225b4e1206c339d9252b58891a6cc3186c0"
+    },
+    {
+      "path": "runtime/tests/e4_c1_live_native_acceptance.py",
+      "sha256": "e9ddffeecebe945b33015c21efa57cf5de9f96b4d8228e5d0bb6abca3ce040be"
+    },
+    {
+      "path": "runtime/tests/e4_c1_live_native_acceptance_currency_model.py",
+      "sha256": "e0d83d6cd9438891cbf7b926fb054b88f2b4319710ee6382548268dd8999ec5f"
+    },
+    {
+      "path": "runtime/tests/e4_c1_live_native_acceptance_market_vector.json",
+      "sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5"
+    },
+    {
+      "path": "runtime/tests/test_e4_c1_active_authorization_pure.py",
+      "sha256": "70ab9d48e68333b8e86518736428263f01fec6bc32cdbf28861247bf17883bb6"
+    },
+    {
+      "path": "runtime/tests/test_e4_c1_input_bridge_pure.py",
+      "sha256": "f6f18e2507fc0703824b79b5ddc3137a9c2c489310139cc5e03083f753cb7741"
+    },
+    {
+      "path": "runtime/tests/test_hl_live_money.py",
+      "sha256": "48c0d501d3b1bc44c167092249920cf9a5b170ba5bf1cb66f7af1f82ba7436f8"
+    },
+    {
+      "path": "runtime/tests/test_hl_stageg_sandbox_lifecycle.py",
+      "sha256": "cc29e63b7ebc47bf2c445c7e836f7531120b52421f220c4c64fae0d2846fb806"
+    },
+    {
+      "path": "runtime/tests/test_hyperliquid_testnet.py",
+      "sha256": "90582476082759ff9c9f30d9db22d31e73e42aa06c81b3294bce70e305901ba8"
+    },
+    {
+      "path": "runtime/tests/test_sol_staging_a_live_pure.py",
+      "sha256": "485d8005d39157525d0afeee92b93bba13c93a4d413d9d575bd42ee643531f32"
+    },
+    {
+      "path": "runtime/tests/test_venue_bound_live_data.py",
+      "sha256": "4e1a195f5256e02eca40974f11b747e91aab906bbddd05e9ac8949196dab8531"
+    }
+  ],
+  "base_present_in_remote_tracking_refs": [],
+  "private_artifacts_tracked": false,
+  "scope": "PUBLIC_SOURCE_TESTS_CONFIG_ONLY; synthetic fixture values explicitly labelled; no actual account data/secrets/financial readbacks/deployment/start"
+}

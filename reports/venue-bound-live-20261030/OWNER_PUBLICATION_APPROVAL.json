@@ -1,0 +1,24 @@
+{
+  "recorded_utc": "2026-10-30T12:29:55.145962+00:00",
+  "authority": "DIRECT_HUMAN_REPLY_IN_CURRENT_CHAT",
+  "source_commit": "d8b2039b618c3573a1784564f4658561142a779e",
+  "repository": "https://github.com/VF78/coinmaster",
+  "branch": "codex/venue-bound-live-20261030",
+  "payload": "24files current runtime code/tests/config of venue-bound Hyperliquid migration, plus subsequent verified code and technical report updates",
+  "payload_manifest_sha256": "71bafc58bb5ecc6c5d9aa29c662968b2bcaabcde323bee9fb0ba95d5a1e9ab20",
+  "scope_includes_subsequent_verified_CoinMaster_updates": true,
+  "excluded": [
+    "secrets",
+    "account_address",
+    "balances",
+    "private_financial_readbacks",
+    "activation",
+    "live_start"
+  ],
+  "owner_reply_verbatim": "Разрешаю публикацию и проверенные обновления",
+  "previous_auto_review_rejections": "Two before-execution public-push denials; exact target/payload now explicitly approved",
+  "final_owner_START_still_required": true,
+  "publication_result": "PUSH_SUCCESS_EXACT_REMOTE_VERIFIED",
+  "remote_ref": "refs/heads/codex/venue-bound-live-20261030",
+  "remote_commit": "d8b2039b618c3573a1784564f4658561142a779e"
+}

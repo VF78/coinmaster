@@ -1,0 +1,121 @@
+{
+  "A": {
+    "counts": {
+      "bounded_budget_waits": 2,
+      "external_network_attempts": 0,
+      "nodes_constructed": 1,
+      "query_account_commands": 3,
+      "synthetic_cancel_commands": 4,
+      "synthetic_info_requests": 95,
+      "synthetic_native_spot_reads": 16,
+      "synthetic_submit_commands": 8
+    },
+    "gates": {
+      "ACTIVE_same_core_public_closed_D1_q0_q1_actual_native_entry": "PASS",
+      "actual_C1_cancel_ACK_quarter_cut_and_before_D1_restore_denial": "PASS",
+      "actual_DP55_provider_latch_native_close_and_terminal_flat": "PASS",
+      "actual_DP_close_lost_ACK_no_retry_reconnect_late_native_flat_no_resume": "PASS",
+      "actual_source_positive_TP_partial_fill_and_standing_protection": "PASS",
+      "actual_split_remaining_and_postonly_second_child_complete": "PASS",
+      "actual_virgin_native_flat_INIT_atomic_once_and_original_anchor": "PASS",
+      "native_startup_closed_minute_requests": "PASS",
+      "ordinary_partial_IOC_late_cancel_fill_duplicate_native_checkpoint": "PASS",
+      "public_virgin_DP55_wrapper_from_native_equity_never_existing_H_reset": "PASS",
+      "synthetic_funding_evidence_dedup_native_reported_cash_never_posted_twice": "PASS"
+    },
+    "native_minute_per_bar_seconds": 0.2746536906983238,
+    "native_minute_rows": 480,
+    "native_minute_wall_seconds": 131.8337715351954,
+    "status": "PASS",
+    "wall_seconds": 258.657747966
+  },
+  "B": {
+    "counts": {
+      "bounded_budget_waits": 0,
+      "external_network_attempts": 0,
+      "nodes_constructed": 1,
+      "query_account_commands": 0,
+      "synthetic_cancel_commands": 0,
+      "synthetic_info_requests": 1,
+      "synthetic_native_spot_reads": 1,
+      "synthetic_submit_commands": 0
+    },
+    "gates": {
+      "foreign_bybit_source_checkpoint_denied_preserve_money_seed_HWM_watermarks": "PASS",
+      "native_startup_closed_minute_requests": "PASS",
+      "paused_flat_restart_actual_canonical_H55_latch_rights_clocks_no_autoresume": "PASS",
+      "restart_existing_H_reset_denied_and_saved_money_has_no_authority": "PASS"
+    },
+    "status": "PASS",
+    "wall_seconds": 15.032388829
+  },
+  "base_commit": "4ca0d87993f28c20fb039840551c04e051378582",
+  "economic_and_research_byte_identity_to_parent": {
+    "coinmaster/domain/deposit_protection.py": "21161559dc898ff404fb3422c5a46f0afceedba7ea0af0931cf2fa6962d8e974",
+    "coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "coinmaster/ops/hl_live_execution.py": "b142b3947db223156a9b28d8b0b24a6e0f3ac111515e735aa606aeb7d7bcadee",
+    "coinmaster/ops/hl_live_money.py": "bdf98b844af73260608208ee7090a004b37426e5b7ea92c3438163eeeb2a57a2",
+    "coinmaster/ops/hl_unified_account.py": "3269a7be6be45df0e7e7ba67bdb5c6fe6dff809b1fe93b0cd96c3ad7ac3378ad",
+    "coinmaster/ops/hl_unified_instruments.py": "fbd1e4c9490a0f268d36099c6fbffaf551b5d6c84633676dbd023ad22685b5b9",
+    "coinmaster/research/bybit_data.py": "81d3b048ade5ee7a3ca20954d48efed53f3ab706e9ea8ff8a5de4fa5f07789b6",
+    "coinmaster/research/native_baseline.py": "51a3b736509a7eb38c9af7bf975419a9aef513ec6153f1f9a20433e0fc49df61",
+    "coinmaster/strategy/c1_inputs.py": "e69c50884cbf24884122d9163ee760db5b440f0832c35e9899802163e8b35c4d",
+    "coinmaster/strategy/hedge_band.py": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+    "coinmaster/strategy/next_band.py": "ba01f1a0bf9a78197a469483c807a73a8089a4ccf2c0e35598b4ae6b9321cef7",
+    "coinmaster/strategy/residual_recovery.py": "55b4db26540a297a8d53dfe45be446136c7c0df3956ba73005013be7a5112483",
+    "coinmaster/strategy/sol_capital_staging.py": "a63fc3b02cd09549c552cb2a06f79e5e61ca9b332e4dc7f4e821988f63f192e0",
+    "coinmaster/strategy/wave_overlay.py": "4f34b776c9f924e2d346be8c436b4b42692f596d1e0fba6caf8d34fde2b633b3"
+  },
+  "external_real_orders": 0,
+  "fixture_sha256": "e9ddffeecebe945b33015c21efa57cf5de9f96b4d8228e5d0bb6abca3ce040be",
+  "latency_scope": "480 bars TOTAL (240 BTC + 240 SOL), stock per-Bar callbacks with actual durable recovery checkpoints; not a live eight-hour startup throughput qualification",
+  "ledger": {
+    "active": 0,
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/native-acceptance/native-engine-ledger.json",
+    "sha256": "59ba99adf8d4f2642cf4b18c783ff95dc62e60f437a4caecdb0b1c9946fef39e",
+    "spent": 4,
+    "status": "CLOSED",
+    "unused_slots": 2,
+    "unused_status": "CLOSED_NOT_TRANSFERABLE"
+  },
+  "live_start_approved": false,
+  "market_control_vector_sha256": "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5",
+  "native_version": "1.231.0",
+  "public_native_transport_proof": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/venue-bound-live-20261030/public-data-acceptance/acceptance-attempt2.json",
+    "sha256": "afd15130bc6cf7e4efa99c82861466508aca2b629ae49e08aa43449d172dc9ba"
+  },
+  "public_source_provenance": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/public-data-summary.json",
+    "sha256": "96b5bc416df44d705e7d84302c0569055183d3841896ec7fe677b0b34b727981"
+  },
+  "raw_artifacts": {
+    "A-result.json": {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/native-acceptance-A03/A-result.json",
+      "sha256": "1f5763539b5008c4d2cdfc5fdb0442dfb51c26ebb7f1c2c80c50421ef71aac11"
+    },
+    "B-result.json": {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/native-acceptance-A03/B-result.json",
+      "sha256": "a95cfe664a2ab5d2ecda63f069da3180a98496d29b5d9376b5b20e45d0c91fb4"
+    },
+    "VB-A03-process-receipt.json": {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/native-acceptance-A03/VB-A03-process-receipt.json",
+      "sha256": "101de66b7a115208e8979801287ae1439eb2405d3f2596aa9b6b2e6caefd8e63"
+    },
+    "VB-B01-process-receipt.json": {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/native-acceptance-A03/VB-B01-process-receipt.json",
+      "sha256": "0a013fc1fc9e8ba327d4db70fbd3b48cb2153753f1bd65b033e93ec76aab3b08"
+    },
+    "restart-proof.json": {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/native-acceptance-A03/restart-proof.json",
+      "sha256": "12c4e84d7c2bf53457f7d1ebf7a5b61b4adcbb36f1ac0e86ac4cc55071d6c9a6"
+    }
+  },
+  "schema": "coinmaster-venue-bound-public-technical-summary-v1",
+  "scope": "SYNTHETIC_NATIVE_LIFECYCLE_AND_RESTART;NOT_HL_ECONOMICS_OR_REAL_ORDER_PROOF",
+  "source_commit": "d8b2039b618c3573a1784564f4658561142a779e",
+  "source_patch": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/private/source-4ca0d879-to-d8b2039b.patch",
+    "sha256": "119045b33cbc8a965077abf6a204972f39d68a9ccc4a7bb68be0d7ca0629b633"
+  }
+}

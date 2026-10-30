@@ -1,0 +1,38 @@
+{
+  "actual_uid_public_startup": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/actual-uid-public-startup-summary.json",
+    "sha256": "31886e0faa63beb6667953a161a12ff80312066b104758d8e749b66224374153"
+  },
+  "full_orders_positions_all11DEX_prestart_still_required": true,
+  "install": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/deployment/d8b2039b618c3573a1784564f4658561142a779e-venue-bound-hl-live-api-v2/install-receipt.json",
+    "sha256": "bb46921fb518635d893456240fc8212846f6184c1ae7db3bbdd8d8144d38ff12"
+  },
+  "installed_unsigned_identity_mode_positive_collateral_preflight": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/installed-unsigned-preflight-public-summary.json",
+    "sha256": "a170972e25d3ef72a4a31eb4b069bd92900195d780bbe7b22fede564117aced6"
+  },
+  "ledger": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/native-acceptance/native-engine-ledger.json",
+    "sha256": "59ba99adf8d4f2642cf4b18c783ff95dc62e60f437a4caecdb0b1c9946fef39e"
+  },
+  "live_start_approved": false,
+  "native": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/public-technical-summary.json",
+    "sha256": "2eaa6bd4b00308daf78373c2bdf293c05c539baa4751fb1a9224fbb3ecd8c3cf"
+  },
+  "no_further_account_read_or_engine_run": true,
+  "profile_sha256": "f652130f7ebfc2a9ad1ff7bc3b6d9c174b4d3d6a8e0dfcca7e5910c3697f0852",
+  "publication": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/publication-receipt.json",
+    "sha256": "7570aa0b7d225c803d963c2adbaa1fcf15433b9dd3c26c2e863a56247382f8df"
+  },
+  "source_commit": "d8b2039b618c3573a1784564f4658561142a779e",
+  "source_inventory_count": 94,
+  "source_inventory_manifest_sha256": "6351ec18450d18d280da218e989cec0182fc6847d0f82153c56e8ee5c7cd45ba",
+  "state": "IMMUTABLE_INACTIVE_CANDIDATE_VERIFIED_NO_START",
+  "verify": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/var/venue-bound-live-20261030/deployment/d8b2039b618c3573a1784564f4658561142a779e-venue-bound-hl-live-api-v2/verify-existing-receipt.json",
+    "sha256": "85e39cb56be4ed88b417e3d554adccfa6d386a8e1881516ed16f880e85ef1856"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "VENUE_BOUND_ROOT_ENGINEERING_GO_V1",
+  "issued_utc": "2026-10-30T11:52:11.795025+00:00",
+  "reviewed_product_source": "8c5e44823017620fe650df3aafc81812e06d02e6",
+  "review_result": "0 identified P0/P1; prior ordinary Sandbox and first-cache-root findings corrected",
+  "go": "A_THEN_CONDITIONAL_B",
+  "maximum_total_new_engineering_attempts": 6,
+  "conditions": [
+    "Final frozen source clean; may add only narrow inherited-test-fixture correction after reviewed source, product/config/harness bytes unchanged",
+    "Native harness must verify exact current source and all tracked product/config bytes",
+    "Native harness must claim each new attempt in separate current ledger BEFORE engine/node construction",
+    "B requires actual same-source A PASS and same durable DB",
+    "No live unit/account/credential/alias change; no external orders/signatures/transfers",
+    "No full/prefix economics/training and no transfer from old closed10/10",
+    "Source module hashes must remain identical to public HTTP/WS acceptance"
+  ],
+  "public_source_acceptance_sha256": "afd15130bc6cf7e4efa99c82861466508aca2b629ae49e08aa43449d172dc9ba",
+  "scope": "Synthetic control-vector actual native lifecycle/restart; not a historical HL backtest or real matching proof",
+  "final_frozen_source": "486c784ce4d74740c97fbf55956c93c60e129448",
+  "test_only_delta_after_review": "runtime/tests/test_hl_live_money.py; actual native MarketOrder and PaperRuntime replace obsolete string/no-runtime fixture",
+  "native_cases": [
+    "VB-A01",
+    "VB-B01_IF_A_PASS"
+  ],
+  "correction_go": {
+    "issued_utc": "2026-10-30T11:59:20.015254+00:00",
+    "case": "VB-A02_THEN_CONDITIONAL_B01",
+    "scope": "Only reviewed fixture +34/-2 actual production _on_deposit_timer(None) after genuine paired publication; no product guard or financial state assignment",
+    "review": "0 identified P0/P1; independent original A01 trace confirms read-only DP health denial",
+    "requirements": [
+      "New exact-source commit and one-shot ledger claim",
+      "Separate A02 artifact directory; preserve failed A01",
+      "B01 same source and durable DB only after actual A02 PASS"
+    ],
+    "maximum_total_new_engineering_attempts": 6,
+    "frozen_source": "0a689dcbfbd7224ee8f0e5a50cb0c54fa167ae58"
+  },
+  "a02_diagnosis": {
+    "evidence": "Persisted DP_TRIPPED_FLAT,7 nativefills/revision76 by~109s; then full480 historicalM1 per-bar callback burst continued until parent195s kill",
+    "cost": "336 historicalM1 callbacks observed by cap; approximately0.25s per nativebar including full checkpoint",
+    "stock_dispatch": "Historical native Bar dispatched individually, confirmed installed actor.pyx",
+    "decision": "Retain all480 callbacks; no batching or sample reduction",
+    "next_attempt_child_wall_seconds": 420,
+    "next_attempt_parent_wall_seconds": 435,
+    "maximum_attempts_unchanged": 6,
+    "review": "Independent reviewer agrees; preserve all assertions/command/network caps, actual availability/deadlines; document inherited startup latency",
+    "go": "PENDING_EXACT_FIXTURE_FREEZE_REVIEW"
+  },
+  "a03_go": {
+    "issued_utc": "2026-10-30T12:15:59.716203+00:00",
+    "source": "d8b2039b618c3573a1784564f4658561142a779e",
+    "review": "0 identified P0/P1 in exact3-test-file +10/-3; no product/config changes",
+    "case": "VB-A03_THEN_CONDITIONAL_B01",
+    "child_wall_seconds": 420,
+    "parent_wall_seconds": 435,
+    "full_M1_callback_count": 480,
+    "maximum_attempts_unchanged": 6,
+    "all_prior_network_order_assertion_guards": "UNCHANGED"
+  }
+}

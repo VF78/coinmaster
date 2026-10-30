@@ -1,0 +1,23 @@
+{
+  "started": "2026-10-30T11:43:30.763193+00:00",
+  "source_before": {
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/hl_closed_bars.py": "c7fe25f0be6855a7607bc343ff37d1c4a6a8bd49aa7fa7c57500539a8017f57f",
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/venue_data.py": "96bca67f7a8140571ba59b0517b12661e36b141004198ad4a560bd43d328ed4b"
+  },
+  "nodes": 0,
+  "engines": 0,
+  "account_requests": 0,
+  "orders": 0,
+  "attempt": 1,
+  "http": [],
+  "ws": [],
+  "result": "FAIL",
+  "error": "AttributeError(\"'datetime.datetime' object has no attribute 'nanosecond'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/venue-bound-live-20261030/public-data-acceptance/probe.py\", line 68, in <module>\n    try:asyncio.run(main())\n        ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 194, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/venue-bound-live-20261030/public-data-acceptance/probe.py\", line 60, in main\n    before=len(r['http']);await asyncio.wait_for(client._request_bars(request),20);assert len(r['http'])==before+1,'NO_HTTP_RESPONSE'\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/srv/coinmaster/hl-live/releases/4ca0d87993f28c20fb039840551c04e051378582-sol-staging-a-live-inactive-native1.231.0-api-v2/.venv/lib/python3.12/site-packages/nautilus_trader/adapters/hyperliquid/data.py\", line 1007, in _request_bars\n    start = ensure_pydatetime_utc(request.start) if request.start else None\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"nautilus_trader/core/datetime.pyx\", line 450, in nautilus_trader.core.datetime.ensure_pydatetime_utc\nAttributeError: 'datetime.datetime' object has no attribute 'nanosecond'. Did you mean: 'microsecond'?\n",
+  "finished": "2026-10-30T11:43:34.318264+00:00",
+  "source_after": {
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/hl_closed_bars.py": "c7fe25f0be6855a7607bc343ff37d1c4a6a8bd49aa7fa7c57500539a8017f57f",
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/venue_data.py": "96bca67f7a8140571ba59b0517b12661e36b141004198ad4a560bd43d328ed4b"
+  },
+  "source_unchanged": true
+}

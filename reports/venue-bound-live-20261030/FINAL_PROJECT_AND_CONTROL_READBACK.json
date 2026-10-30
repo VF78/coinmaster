@@ -1,0 +1,57 @@
+{
+  "readback_utc": "2026-10-30T12:49:01.448947+00:00",
+  "issue101": {
+    "body": "# HL-only release qualified — owner START pending\n\n- [x] Ordinary live and Sandbox use execution-derived data binding: Hyperliquid history/warmup/D1/M1/C1 seed/client/provenance/checkpoints onlyHL. Mixed/unsupported venues fail; no crossvenue fallback. Bybit explicit research only.\n- [x] Current research explicitly loads originalBybit M1/daily/funding;14 economic/execution/research files unchanged. No new economic full/prefix/training.\n- [x] 287 targeted checks; independentaudit0identifiedP0/P1. Real public nativeHTTP/WS closedcandles/time/availability/OHLCV PASS.\n- [x] Native A03 actualfullcycle11gatesPASS; separate sameDB B01 restart4gatesPASS; full480M1 retained. ForeignBybitpolicy DENY without financial/seed/HWM/latch/clock reset. Synthetic execution/noexchangeorders.\n- [x] EngineeringCLOSED4/6:2FAILED+2PASS/active0/unused2CLOSED_NOT_TRANSFERABLE. Failures preserved; old economic10/10 not reused.\n- [x] Exactd8 INACTIVE immutablepackage installed/verified94files/native1.231.0. Profilef652130f7ebfc2a9ad1ff7bc3b6d9c174b4d3d6a8e0dfcca7e5910c3697f0852. Root independently verified all94installedfilehashes.\n- [x] ActualserviceUID publicfirstbootPASS:1336pairedD1,480M1 perasset/8hcontiguous HL-only. Freshinstalledunsignedidentity/roles/Unified/positiveUSDC checkPASS(4Info),privatefinancials excluded.\n- [x] Publiccode exactremoteverified: https://github.com/VF78/coinmaster/commit/d8b2039b618c3573a1784564f4658561142a779e . Auditpacket reports/venue-bound-live-20261030 on codex/btc-pattern-pilot-m2-20261021.\n- [ ] Separate explicit ownerSTART; then normalfreshFULLprestart(positions/orders/allDEX), qualifiedactivation and controlledfirstrealcycle. Current6c208aliasunchanged/unitinactive/PID0/targetDBabsent; realorders/signatures/transfers/START0.\n\nRelease /srv/coinmaster/hl-live/releases/d8b2039b618c3573a1784564f4658561142a779e-venue-bound-hl-live-inactive-native1.231.0-api-v2.\n\nUSDC/Unified;actualavailableinitialcapital/fixedseed;DP55=remaining45%/durableHWM. UNKNOWNblocks increases pendingreconciliation.480historicalnativecallbacks131.83s; startup can take minutes. Syntheticproof iscontrol/restart, not newHLROI. BybitA5635720.91989984/DD51.43837119% keeps oldprovenance.\n\n#137Done;newSOL#138 and independentGUI/auth#105 remainTodoAFTERstablelive. No unrelatedchanges.\n",
+    "number": 101,
+    "state": "OPEN",
+    "title": "[Live A] Hyperliquid-only release qualified; owner START pending",
+    "url": "https://github.com/VF78/coinmaster/issues/101"
+  },
+  "items": [
+    {
+      "number": 101,
+      "title": "[Live A] Hyperliquid-only release qualified; owner START pending",
+      "state": "OPEN",
+      "status": "In Progress"
+    },
+    {
+      "number": 105,
+      "title": "[After live] Trader GUI, Hyperliquid trade history and long-lived login",
+      "state": "OPEN",
+      "status": "Todo"
+    },
+    {
+      "number": 137,
+      "title": "[Research DONE] Execution parity A selected; campaign closed 10/10",
+      "state": "CLOSED",
+      "status": "Done"
+    },
+    {
+      "number": 138,
+      "title": "[After live] SOL residual-confirmed BTC hedge — causal target inventory",
+      "state": "OPEN",
+      "status": "Todo"
+    }
+  ],
+  "active_item_count": 4,
+  "root_control_readback": {
+    "source_commit": "d8b2039b618c3573a1784564f4658561142a779e",
+    "tracked_clean": true,
+    "canonical_ledger_sha256": "59ba99adf8d4f2642cf4b18c783ff95dc62e60f437a4caecdb0b1c9946fef39e",
+    "installed_files_verified": 94,
+    "source_sha256_json_raw_sha256": "d99fe20f14690c6e00260fb64fc2723f134ca53d2c1a849738058dd32857ba9f",
+    "live_release_json_raw_sha256": "ad33373e251ab742e5ae73f9bb14312a7b8d07aff1fc90677ee3b50911bf7171",
+    "unit": {
+      "MainPID": "0",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "current_alias": "/srv/coinmaster/hl-live/releases/6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2-v3-dp50-82-wheel-8ff3c6dcc150",
+    "target_live_DB_absent": true,
+    "account_reads": 0,
+    "live_START_approved": false
+  },
+  "project_metadata_pages": 1,
+  "project_metadata_complete": true
+}

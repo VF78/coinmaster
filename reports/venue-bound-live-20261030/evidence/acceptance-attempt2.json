@@ -1,0 +1,598 @@
+{
+  "started": "2026-10-30T11:44:06.482758+00:00",
+  "source_before": {
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/hl_closed_bars.py": "c7fe25f0be6855a7607bc343ff37d1c4a6a8bd49aa7fa7c57500539a8017f57f",
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/venue_data.py": "96bca67f7a8140571ba59b0517b12661e36b141004198ad4a560bd43d328ed4b"
+  },
+  "nodes": 0,
+  "engines": 0,
+  "account_requests": 0,
+  "orders": 0,
+  "attempt": 2,
+  "http": [
+    {
+      "bar_type": "BTC-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+      "count": 3,
+      "raw": [
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793059200000000000,
+          "init": 1793059200000000000,
+          "values": [
+            "80111.0",
+            "81281.0",
+            "79489.0",
+            "80889.0",
+            "22025.62933"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793145600000000000,
+          "init": 1793145600000000000,
+          "values": [
+            "80889.0",
+            "81804.0",
+            "80362.0",
+            "81319.0",
+            "27861.98697"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793232000000000000,
+          "init": 1793232000000000000,
+          "values": [
+            "81319.0",
+            "81955.0",
+            "77856.0",
+            "77947.0",
+            "58388.03914"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793145600000000000,
+          "init": 1793360650064362137,
+          "values": [
+            "80111.0",
+            "81281.0",
+            "79489.0",
+            "80889.0",
+            "22025.62933"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793232000000000000,
+          "init": 1793360650064362137,
+          "values": [
+            "80889.0",
+            "81804.0",
+            "80362.0",
+            "81319.0",
+            "27861.98697"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793318400000000000,
+          "init": 1793360650064362137,
+          "values": [
+            "81319.0",
+            "81955.0",
+            "77856.0",
+            "77947.0",
+            "58388.03914"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "observed_ns": 1793360650064994113
+    },
+    {
+      "bar_type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+      "count": 3,
+      "raw": [
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360460000000000,
+          "init": 1793360460000000000,
+          "values": [
+            "77525.0",
+            "77532.0",
+            "77525.0",
+            "77525.0",
+            "1.43721"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360520000000000,
+          "init": 1793360520000000000,
+          "values": [
+            "77523.0",
+            "77532.0",
+            "77479.0",
+            "77479.0",
+            "14.01770"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360580000000000,
+          "init": 1793360580000000000,
+          "values": [
+            "77479.0",
+            "77502.0",
+            "77448.0",
+            "77469.0",
+            "17.55411"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360520000000000,
+          "init": 1793360650309151755,
+          "values": [
+            "77525.0",
+            "77532.0",
+            "77525.0",
+            "77525.0",
+            "1.43721"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360580000000000,
+          "init": 1793360650309151755,
+          "values": [
+            "77523.0",
+            "77532.0",
+            "77479.0",
+            "77479.0",
+            "14.01770"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360640000000000,
+          "init": 1793360650309151755,
+          "values": [
+            "77479.0",
+            "77502.0",
+            "77448.0",
+            "77469.0",
+            "17.55411"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "observed_ns": 1793360650309816832
+    },
+    {
+      "bar_type": "SOL-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+      "count": 3,
+      "raw": [
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793059200000000000,
+          "init": 1793059200000000000,
+          "values": [
+            "100.9200",
+            "101.8800",
+            "99.1230",
+            "101.3400",
+            "884453.25"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793145600000000000,
+          "init": 1793145600000000000,
+          "values": [
+            "101.3200",
+            "103.8500",
+            "100.4300",
+            "102.3900",
+            "1508302.35"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793232000000000000,
+          "init": 1793232000000000000,
+          "values": [
+            "102.4000",
+            "103.1700",
+            "94.8090",
+            "95.6110",
+            "3543526.68"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793145600000000000,
+          "init": 1793360650553847951,
+          "values": [
+            "100.9200",
+            "101.8800",
+            "99.1230",
+            "101.3400",
+            "884453.25"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793232000000000000,
+          "init": 1793360650553847951,
+          "values": [
+            "101.3200",
+            "103.8500",
+            "100.4300",
+            "102.3900",
+            "1508302.35"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-DAY-LAST-EXTERNAL",
+          "event": 1793318400000000000,
+          "init": 1793360650553847951,
+          "values": [
+            "102.4000",
+            "103.1700",
+            "94.8090",
+            "95.6110",
+            "3543526.68"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "observed_ns": 1793360650554469824
+    },
+    {
+      "bar_type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+      "count": 3,
+      "raw": [
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360460000000000,
+          "init": 1793360460000000000,
+          "values": [
+            "96.7990",
+            "96.8070",
+            "96.7800",
+            "96.7840",
+            "1083.97"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360520000000000,
+          "init": 1793360520000000000,
+          "values": [
+            "96.7730",
+            "96.7840",
+            "96.7040",
+            "96.7050",
+            "396.24"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360580000000000,
+          "init": 1793360580000000000,
+          "values": [
+            "96.7000",
+            "96.7170",
+            "96.6160",
+            "96.6820",
+            "3421.49"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "normalized": [
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360520000000000,
+          "init": 1793360650827783574,
+          "values": [
+            "96.7990",
+            "96.8070",
+            "96.7800",
+            "96.7840",
+            "1083.97"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360580000000000,
+          "init": 1793360650827783574,
+          "values": [
+            "96.7730",
+            "96.7840",
+            "96.7040",
+            "96.7050",
+            "396.24"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        },
+        {
+          "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+          "event": 1793360640000000000,
+          "init": 1793360650827783574,
+          "values": [
+            "96.7000",
+            "96.7170",
+            "96.6160",
+            "96.6820",
+            "3421.49"
+          ],
+          "native_types": [
+            "Price",
+            "Price",
+            "Price",
+            "Price",
+            "Quantity"
+          ]
+        }
+      ],
+      "observed_ns": 1793360650828239767
+    }
+  ],
+  "ws": [
+    {
+      "raw": {
+        "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+        "event": 1793360640000000000,
+        "init": 1793360701185825786,
+        "values": [
+          "77469.0",
+          "77488.0",
+          "77415.0",
+          "77415.0",
+          "51.62346"
+        ],
+        "native_types": [
+          "Price",
+          "Price",
+          "Price",
+          "Price",
+          "Quantity"
+        ]
+      },
+      "normalized": {
+        "type": "BTC-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+        "event": 1793360700000000000,
+        "init": 1793360701185825786,
+        "values": [
+          "77469.0",
+          "77488.0",
+          "77415.0",
+          "77415.0",
+          "51.62346"
+        ],
+        "native_types": [
+          "Price",
+          "Price",
+          "Price",
+          "Price",
+          "Quantity"
+        ]
+      },
+      "observed_ns": 1793360701188907846
+    },
+    {
+      "raw": {
+        "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+        "event": 1793360640000000000,
+        "init": 1793360702439863676,
+        "values": [
+          "96.6970",
+          "96.7260",
+          "96.6340",
+          "96.6360",
+          "171.89"
+        ],
+        "native_types": [
+          "Price",
+          "Price",
+          "Price",
+          "Price",
+          "Quantity"
+        ]
+      },
+      "normalized": {
+        "type": "SOL-USD-PERP.HYPERLIQUID-1-MINUTE-LAST-EXTERNAL",
+        "event": 1793360700000000000,
+        "init": 1793360702439863676,
+        "values": [
+          "96.6970",
+          "96.7260",
+          "96.6340",
+          "96.6360",
+          "171.89"
+        ],
+        "native_types": [
+          "Price",
+          "Price",
+          "Price",
+          "Price",
+          "Quantity"
+        ]
+      },
+      "observed_ns": 1793360702440248300
+    }
+  ],
+  "subscribed_ns": 1793360650831944092,
+  "result": "PASS",
+  "finished": "2026-10-30T11:45:26.848300+00:00",
+  "source_after": {
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/hl_closed_bars.py": "c7fe25f0be6855a7607bc343ff37d1c4a6a8bd49aa7fa7c57500539a8017f57f",
+    "/root/.openclaw/workspace/coinmaster/coinmaster/research-worktrees/venue-bound-live-20261030/runtime/coinmaster/ops/venue_data.py": "96bca67f7a8140571ba59b0517b12661e36b141004198ad4a560bd43d328ed4b"
+  },
+  "source_unchanged": true
+}
