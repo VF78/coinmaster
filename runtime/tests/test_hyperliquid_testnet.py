@@ -132,6 +132,7 @@ def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route()
 
 def test_cross_venue_gate_preserves_bybit_signal_ids_and_labels_unposted_funding() -> None:
     gate = cross_venue_stage_g_gate(
+        research_bybit_reference=True,
         candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
         warmup_manifest=ROOT / "var/data/paper-warmup-manifest.json",
         strategy_path=ROOT / "coinmaster/strategy/wave_overlay.py",
@@ -156,6 +157,7 @@ def test_verified_latest_bybit_tail_unlocks_attachment_without_posting_scheduled
     assert document["provenance"]["append_raw_manifest_sha256"] == "0974b9e0d2c39a0cdf6afa6a522540710ebbdb5b3ec0569659532b87da7fb7e0"
     assert {item["daily_gaps"] for item in document["symbols"].values()} == {0}
     gate = cross_venue_stage_g_gate(
+        research_bybit_reference=True,
         candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
         warmup_manifest=manifest,
         strategy_path=ROOT / "coinmaster/strategy/wave_overlay.py",

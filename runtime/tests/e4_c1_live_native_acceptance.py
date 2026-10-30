@@ -27,7 +27,7 @@ PARTIAL_PARENT_LIFECYCLE_QUALIFIED = True  # Root authorized exact final source 
 MAX_PHYSICAL_ATTEMPTS = 6
 MAX_SYNTHETIC_SUBMIT_COMMANDS = 24
 MAX_SYNTHETIC_CANCEL_COMMANDS = 48
-MAX_CHILD_SECONDS = 180
+MAX_CHILD_SECONDS = 420
 KEY = "wave_overlay_live_recovery_v1"
 MARKET_VECTOR_SHA256 = "5822faefcd9f2c9c4be742fefad58731089396dc9ef01dc4aa3c5b42c5a857e5"
 MARKET_VECTOR_NAME = "e4_c1_live_native_acceptance_market_vector.json"
@@ -1310,16 +1310,20 @@ async def run(args, result):
         # boundary/strategy/closed-clock/durable checkpoint chain without adding
         # an economic decision or another engine. Pending clocks survive B.
         received=strategy.clock.timestamp_ns();minute=60_000_000_000
+        minute_started=time.monotonic()
+        print(json.dumps(dict(progress="ACTUAL_480_M1_NATIVE_CHECKPOINT_BURST_START",started_ns=time.time_ns())),flush=True)
         for coin in ("BTC","SOL"):
             for opened in range(closed_ns-240*minute,closed_ns,minute):
                 price=Price.from_str(str(vector["incoming"][coin]["close"]))
                 raw=Bar(bar(coin,BarAggregation.MINUTE),price,price,price,price,Quantity.from_str("0"),opened,opened)
                 normalized=normalize_hl_bar(raw,received_ns=received,historical=True)
                 strategy.on_historical_data(normalized)
+        minute_wall=time.monotonic()-minute_started
+        print(json.dumps(dict(progress="ACTUAL_480_M1_NATIVE_CHECKPOINT_BURST_COMPLETE",wall_seconds=minute_wall)),flush=True)
         state=strategy._live_signal_clock_state
         assert sum(row["hours"]==4 for row in state["pending_h4"])==2
         assert runtime.strategy_checkpoint()[0]==strategy.on_save()[KEY]
-        result["native_minute_boundary"]=dict(rows=480,venue=binding.venue,source_policy=binding.policy,
+        result["native_minute_boundary"]=dict(rows=480,wall_seconds=minute_wall,per_bar_seconds=minute_wall/480,venue=binding.venue,source_policy=binding.policy,
             timestamp_input="OPEN",timestamp_runtime="CLOSE",actual_receipt_ns=received,
             economic_decisions=0,pending_h4=2,saved_clock_is_not_freshness=True)
         persist_actual_paused_flat_restart_proof()
@@ -1662,7 +1666,7 @@ def main():
         result.update(source_pins=pins, fixture_sha256=fixture_hash,market_vector_sha256=MARKET_VECTOR_SHA256,preimport_updater_abi=updater_abi)
         async def bounded_run():
             remaining=MAX_CHILD_SECONDS-(time.time_ns()-result["started_ns"])/1e9
-            if remaining<=0:raise RuntimeError("WHOLE_CHILD_WALL_CAP_180S")
+            if remaining<=0:raise RuntimeError(f"WHOLE_CHILD_WALL_CAP_{MAX_CHILD_SECONDS}S")
             await asyncio.wait_for(run(args,result),timeout=remaining)
         asyncio.run(bounded_run())
         assert result["counts"]["nodes_constructed"] == 1

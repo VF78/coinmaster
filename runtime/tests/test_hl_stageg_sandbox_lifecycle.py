@@ -154,6 +154,7 @@ def test_native_money_reads_usdc_account_for_usd_quote_and_never_uses_seed() -> 
 async def _run_lifecycle(journal_path, *, losing: bool = False, entry_quote_size: str | None = None) -> tuple[AttachedStageGEntryExitProbe, PaperRuntime, TradingNode]:
     candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
     gate = cross_venue_stage_g_gate(
+        research_bybit_reference=True,
         candidate=candidate,
         warmup_manifest=ROOT / "var/data/stageg-bybit-warmup-20260923-verified3/manifest.json",
         strategy_path=ROOT / "coinmaster/strategy/wave_overlay.py",
