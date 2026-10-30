@@ -7,7 +7,8 @@
       "TOTAL": "5499360.14984003",
       "DD_percent": "51.26863558248311161216905115",
       "model": "legacy synthetic1000SOL depth/stalequotes/oldvenuegridfees",
-      "live_fill_qualified": false
+      "live_fill_qualified": false,
+      "currency": "USDT"
     },
     {
       "case": "CLEAN10K_R3",
@@ -33,13 +34,25 @@
     },
     {
       "case": "B10K",
-      "status": "RUNNING",
-      "source": "5e1a899b0e112db488ad4a118f74214b0362d2b0"
+      "status": "FULL_COMPLETED_ECONOMIC_NO_GO_RAW_FINANCIAL_GATE_FAILED",
+      "source": "5e1a899b0e112db488ad4a118f74214b0362d2b0",
+      "TOTAL_raw": "883181.30709990",
+      "coherent_DD_percent": "74.76431632934234140933659134",
+      "actual_exit": 1,
+      "model_liquidations": 0,
+      "native_cash_transition_bridge": "0E-8",
+      "position_PnL_cash_gap": "1E-8",
+      "report_sha256": "3e65b37ab48b5c1946c642e3319a3969e5380faa862ab535e8c015a0dc7a92ec"
     },
     {
       "case": "A_ACTUAL_CAPITAL",
-      "status": "RUNNING",
-      "financial_details": "PRIVATE_ACCOUNT_DERIVED"
+      "status": "COMPLETE_PRIMARY_SCALING_GATE_PASS",
+      "financial_details": "PRIVATE_ACCOUNT_DERIVED",
+      "all11financialchecks": true,
+      "full24months": true,
+      "actual_exit": 0,
+      "model_liquidations": 0,
+      "report_sha256": "7097c2153bda7f44ac34054aff2647a3476fe2b07012f2f26d596f377b2df642"
     }
   ],
   "current_fee_rates": {
@@ -47,5 +60,7 @@
     "taker": "0.000432",
     "referral_already_included": true
   },
-  "qualification": "Exact native accounting inside declared Bybit1m/currentHL/zeroimpactmodel; futuremarketfillsnotguaranteed. Rawreportsnotrewritten."
+  "qualification": "Exact native accounting inside declared Bybit1m/currentHL/zeroimpactmodel; futuremarketfillsnotguaranteed. Rawreportsnotrewritten.",
+  "selected": "A",
+  "currency_comparison": "Original USDT vs current USDC is nominal ownerbenchmark target, not historicalFXconversion"
 }

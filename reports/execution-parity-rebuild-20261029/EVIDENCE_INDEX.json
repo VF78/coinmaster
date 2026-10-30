@@ -1,0 +1,17 @@
+{
+  "native_sol_evidence": {
+    "file": "native-sol-evidence.json.gz",
+    "sha256": "5553e5c3ead2c5d29ea5e63b817b6a5fb021df898fafd8c2f5b08209e720fb19",
+    "rows": 669,
+    "simulated_10K_only": true,
+    "actual_small_financial_data_included": false
+  },
+  "case_report_sha256": {
+    "original": "c3e23a88efff0688b33b6d9e93c9dd29e0f19e9973e2224b845e8fa51bd049d2",
+    "R3": "389c66fc2e7117c60dec688b32ea7a2f0ecc6c52d486e13b37fa6a67131bdaaa",
+    "A": "c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f",
+    "B_raw_failed": "3e65b37ab48b5c1946c642e3319a3969e5380faa862ab535e8c015a0dc7a92ec"
+  },
+  "native": "1.231.0",
+  "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+}

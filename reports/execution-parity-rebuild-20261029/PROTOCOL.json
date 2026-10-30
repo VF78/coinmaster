@@ -1,7 +1,7 @@
 {
   "task": "EXECUTION_PARITY_REBUILD_20261029",
   "authority": "Direct latest owner request: systemic corrections+deployment; one10K24month diagnostic withoutDDstop, twoSOLvariants and fulltests; no fabricated numeric owner reply",
-  "status": "A10K_PRIMARY_MODEL_PASS_B_AND_ACTUAL_RUNNING",
+  "status": "COMPLETE_SELECTED_A_MODEL_AND_ACTUAL_CAPITAL_PASS_AWAITING_KEYCHAIN_AND_START",
   "objective": {
     "primary_terminal_total": "5499360.14984003",
     "primary_DD_percent": "52",
@@ -150,7 +150,7 @@
     "modelassumptionsandUNKNOWNexplicit"
   ],
   "physical_spent": 10,
-  "physical_active": 2,
+  "physical_active": 0,
   "source_common_frozen": "e3cfc392662d5b4a5b55f485f67f3df659138a54",
   "engineering_amendment": {
     "authority": "coordinatorboundupdate underdirectowner systemicfix/verification task, notnumericownerreply",
@@ -228,25 +228,7 @@
     "known_baseline_test_excluded": 1,
     "independent_review": "PASS_0_P1"
   },
-  "active_controls": [
-    {
-      "case": "B10K",
-      "source": "5e1a899b0e112db488ad4a118f74214b0362d2b0",
-      "pid": 262370,
-      "supervisor_pid": 262369,
-      "started_utc": "2026-10-30T00:05:21.901218+00:00",
-      "status": "RUNNING"
-    },
-    {
-      "case": "A_ACTUAL_CAPITAL",
-      "source": "5b56f7d02e09d4495ac018ec1ce701f6f0dfb737",
-      "pid": 262963,
-      "supervisor_pid": 262962,
-      "started_utc": "2026-10-30T00:07:45.523500+00:00",
-      "status": "RUNNING",
-      "amount_and_results": "PRIVATE_ACCOUNT_DERIVED"
-    }
-  ],
+  "active_controls": [],
   "parallel_amendment": {
     "reason": "A contract independently derived from frozen original ALL SOL orders, no dependence on R3 outcomes; shared native cash and fullAPI inputs qualified; saves walltime",
     "max_engines_per_case": 1,
@@ -257,11 +239,12 @@
   },
   "B_contract": "B_MARKET_CONTRACT_RU.md frozen before B outcomes; code native0, live B receipts not qualified",
   "A_live_readiness": {
-    "qualified": false,
+    "source_compatible": true,
+    "economic_files_unchanged": 10,
     "remaining": [
-      "profile exact flag and source pins",
-      "persist fixed initial seed across restarts",
-      "recovery wrapper fill journal ordering"
+      "macOS Keychain access",
+      "secure existing credential binding and fresh read-only qualification",
+      "separate explicit owner START"
     ]
   },
   "completed_control_R3": {
@@ -305,5 +288,41 @@
     ],
     "inactive_installed": true,
     "final_actual_API_boundary": "PASS_NATIVE_0"
+  },
+  "selected_candidate": "A",
+  "B_final": {
+    "status": "RAW_NOT_QUALIFIED_ECONOMIC_NO_GO",
+    "actual_exit": 1,
+    "TOTAL_raw": "883181.30709990",
+    "DD_percent": "74.76431632934234140933659134",
+    "native_cash_bridge": "0E-8",
+    "native_position_sum_gap": "1E-8",
+    "report_sha256": "3e65b37ab48b5c1946c642e3319a3969e5380faa862ab535e8c015a0dc7a92ec",
+    "no_rerun": true
+  },
+  "actual_capital_final": {
+    "status": "PRIMARY_SCALING_GATE_PASS",
+    "all11financialchecks": true,
+    "actual_exit": 0,
+    "model_liquidations": 0,
+    "financial_readbacks": "PRIVATE",
+    "report_sha256": "7097c2153bda7f44ac34054aff2647a3476fe2b07012f2f26d596f377b2df642"
+  },
+  "live_release": {
+    "source": "266f8b664cd07f827f8bce5f0fa9f0c32567aa47",
+    "manifest_sha256": "540f7cb20c726dd43d738e2cb1bb08dda571a0c2bac3fc14c64b9d73f30c2827",
+    "profile_sha256": "ad8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9",
+    "installed_inactive": true,
+    "current_switched": false,
+    "START": false,
+    "keychain_local_action_pending": true
+  },
+  "GUI_guard": {
+    "source": "b96bb47a8e29f43407a33613a4cc643cd2bc00ec",
+    "deployed": true,
+    "new_pid": 284706,
+    "health_auth_archives_frontend": true,
+    "new_legacy_native_jobs": "BLOCKED",
+    "native_runs": 0
   }
 }

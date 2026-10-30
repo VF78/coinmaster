@@ -1,45 +1,40 @@
-# Текущий результат — 30.10.2026
+# Итог проверки — 30.10.2026
 
-**A достиг основной исторической цели в исправленной модели исполнения:** начальные10 000 → **5 635 720,91989984 USDC**, чистая прибыль5 625 720,91989984, ROI+56 257,2092%; coherent и settled DD **51,43837119%**, ликвидаций0. Это на2,4841% больше чистой прибыли прежнего результата5 499 360,14984003. Полные24месяца, exit0,11финансовых проверокPASS, terminalflat/orders0. ReportSHA `c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f`.
+**Для выпуска выбран A.** На эталоне01.09.2024–01.09.2026, начальные10 000USDC: итог **5 635 720,91989984USDC**, чистая прибыль5 625 720,91989984, ROI+56 257,2092%, coherent и settled DD **51,43837119%**, ликвидаций0. Полные24месяца, OS0,11финансовых проверокPASS, terminalflat/orders0. ReportSHA `c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f`.
 
-Это **исторический model PASS, пока не live-ready**. Bybit1m proxy/currentHLrules/zero-impact остаются явными допущениями; raw report сохраняет `NOT_FAITHFUL_DIAGNOSTIC`/ranking_eligibleFalse и не переименован в доказательство реального рынка. Новый результат не доказывает будущие исполнения или прибыль.
+**Фактически доступный малый капитал также прошёл полный эталон и основной scaling gate:**11финансовыхPASS, OS0,0ликвидаций. Его финансовые readbacks PRIVATE; reportSHA `7097c2153bda7f44ac34054aff2647a3476fe2b07012f2f26d596f377b2df642`. Суммы публично не публикуются.
 
-Корректный исходный контроль R3: **561 476,78949795 USDC**, ROI+5514,7679%, обеDD **85,39093016%**,1модельная ликвидацияSOL. Полные24месяца/exit0/11финансовыхPASS; reportSHA `389c66fc2e7117c60dec688b32ea7a2f0ecc6c52d486e13b37fa6a67131bdaaa`. Это валидный экономический NO_GO.
+| Полный10K вариант | Итог | Обе DD | Ликвидации | Вердикт |
+|---|---:|---:|---:|---|
+|Прежний benchmark|5 499 360,15USDT|51,2686%|0|Архив со скрытым1000SOL cap/старыми исполнениями|
+|Корректный контрольR3|561 476,79USDC|85,3909%|1SOL|ФинансовыйPASS, экономическийNO_GO|
+|A: явное SOL-стадирование|5 635 720,92USDC|51,4384%|0|Основная историческая цель выполнена внутри заявленной модели|
+|B: рыночный held-risk budget|883 181,31USDC raw|74,7643%|0|NO_GO; строгий исходный финансовый gateFAILED|
 
-**Работают два независимых прогона:** B10K (source5e1a899b,PID262370,start00:05:21UTC) и A на фактически доступном капитале (source5b56f7d0,PID262963,start00:07:45UTC; account-derived деталиPRIVATE). Их не перезапускаем. Без аварийнойDP и внешнего DD-stop; C1/margin/liquidation сохранены. Live-служба inactive/disabled, realSTART отсутствует.
+B обработал24месяца,598nativefills, inventory и3DD-окна сверены. Nativecash transitions сходятся точно; один BTC lifecycle имеет разницу1e-8USDC между позиционным PnL и фактическим cash. Исходные OS1/UNKNOWN_UNALLOCATED_NATIVE_BRIDGE сохранены.31UNKNOWN-отказ, включая первые два доARM, означает, что сохранение задуманного bootstrap не доказано. Это не чистое опровержение всех идей рыночного хеджа. Повторного прогона нет.
 
-В R3 худшее окно4–6апреля:SOL−3 868 335,20785313;BTC+586 468,13137311;итого−3 281 867,07648002;остаток0. Два другихDD:SOL−696104,17729802 и−234638,23023226 приBTC0. Все168nativefills↔168filledorders, после каждого SOLfill фактическая nativeпозиция совпала; денежные остатки4окон0. Это бухгалтерская атрибуция, не контрфактическое удалениеSOL. R3вначале заработалSOL84020,91/BTC19982,54 до2025, но затем удерживал чрезмерный риск.
+## Механизм A и качество доказательства
 
-Первый реальный BTC контроля:0,39536→0,79073, без второго неттинга. Исходный эталон на старой сетке0,001 давал0,395→0,791; текущая площадкаBTC5/SOL2.
+BTC сохранён по39 исходным полям и полному Candidate; первый фактический BTC0,39536→0,79073 без повторного0,575netting. Все обычные SOL IOC ограничены явным child≤1000SOL×фиксированный initialseed/10 000 ПОСЛЕ полного допуска parent.30Mceilings масштабируются; venue min/lot/tier применяются честно. Actualfillrights/C1credit/restore, timeout60s и nativeposition-progress drain сохранены; настоящие FILLED/ACK, текущие котировки. Emergency/liquidation/globalDP не ограничены. A воспроизводит полезную SOL alpha/стадирование; он не объявлен новым непрерывным BTC-хеджем.
 
-## Ошибочные попытки сохранены
+A:548nativefills↔548orders,202SOL исполнения/25циклов;SOL net+716481,01297376. ХудшаяDD:BTC−1013361,77/SOL0. В корректномR3 худшее окноSOL−3868335,21/BTC+586468,13. Все денежные остатки проверенных окон0. Детали: [SOL_RESULTS_AND_DECISION_RU.md](SOL_RESULTS_AND_DECISION_RU.md).
 
-ПервыйCLEAN10KFAILED16,97снажурнале:split-childдописалordinaryrow, аactivationадресоваласькпоследнейстрокекакparentplan. Source0baисправилidentity/schemaassociationбезизмененияторговыхправил.
+Полные669SOL исполнения ORIGINAL200/R338/A202/B229, циклы и решения B: [native-sol-evidence.json.gz](native-sol-evidence.json.gz), SHA `5553e5c3ead2c5d29ea5e63b817b6a5fb021df898fafd8c2f5b08209e720fb19`. Только симулированные10K, без account-derived малого капитала/адресов/ключей.
 
-R1полностьюобработал24месяцаиnativecashточносошёлся:итог17368,19458222,ROI73,6819458222%,markedDD93,2595082%,1модельнаяликвидация. **ЭтотрезультатНЕСОПОСТАВИМспобедителем.** Яошибсявобвязке:непередалисходныйzero_tp_netting=False; APIdefaultTrueприменилвторой0,575netting иуменьшилBTCс0,79073до0,45467,затемизменилисьH/SOLразмеры. ЗначитR1нельзявыдаватьзарезультатисходногоBTCcoreилиобъяснятьвесьпровалтолькоSOL1000cap.
+## Выпуск и оставшаяся зависимость
 
-ДополнительноwrapperR1ошибочносчитал5месяцевcashactivityвместо24месяцевданных. Rawexit1иfailureсохранены;отдельнофинансовоподтверждены1051200sourcerows,1051199settledreceipts+initialseed,24месяца,nativebridge0,terminalflat. НикакогофальшивогоOS0илиперезапускарадиотчётанебыло. R2завершился6,91сдоконструктора(native0):дублирующаяcallerExecutionPolicyконфликтоваласединойHLфабрикой.
+Экономика A source5b56f7d0; live source **266f8b664cd07f827f8bce5f0fa9f0c32567aa47**. Десять экономических файлов побайтно неизменны. Закрыты профиль/sourcepins, фиксированный actualINIT seed между рестартами, durableTERMINAL/APPLIED до следующегоchild, и передача DP55 из профиля в typed config.196focusedPASS,88послеprofilepin,3DP; это пересекающиеся выборки, не сумма уникальных тестов. Узкие независимые обзоры0P1.
 
-Теперьвместоручногокопированияфлаговполныйreferenceprofileразрешаетсяпо39полям+literaldefaultsfccd,сохраняетсяFalse;сравниваютсяwholeCandidate,baseline,envelope,typedStrategyConfig. РеальныйAPIпроходитвсегейтыдоПЕРЕХВАЧЕННОЙграницыконструктора(native0);фактическиеpolicy/fees/candidateфабрикипроверяютсяполностью. Дублирующаяpolicyнепередаётся. Sourcee3отклоняетнедопустимуюпарурежимоввAPI/CLI/config/strategyдодвижка.
+Полный service-layout релиз установлен НЕАКТИВНО: `266f8b66…-sol-staging-a-live-inactive-native1.231.0-api-v2`; manifest `540f7cb20c726dd43d738e2cb1bb08dda571a0c2bac3fc14c64b9d73f30c2827`; profile `ad8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9`. Проверены фактическиеcwd/import origins, packagedCandidate,92файла/профиль/nativepins. Currentlive6c208 не переключён; START/orders approval отсутствуют.
 
-## Что уже проверено
+GUI backend guard **b96bb47a** установлен:15pure+peerPASS, реальныйhealth/capabilities/auth/архивыPASS. Новые legacybaseline/optimizer jobs BLOCKED до привязки квалифицированного общего профиля; старый путь не может незаметно вернуть1000SOL/stalequote/oldfees. Интерфейс не менялся. Перезапущена только GUI-служба, live/Sandbox не затронуты.
 
-ОбщаяфизикаE0R2PASS:настоящийвход2000SOL,makerвыход500,IOCзакрытие1500послеACK/свежейкотировки;funding/fees/PnL/nativecashUSDCсошлись. Makerтолькопослеcrossing,очередьnative,zero-impactfullfillёмкость=ownleavesqty,безискусственного1000bookcap. ИсторическиеценыBybit1mостаютсяпрокси,реальнаяочередь/L2/влияниезаявкинеизмерены;будущиеlivefillsгарантироватьнельзя. NativeNautilus1.231binary89079fe3/pyo397f3dc49фиксированы.
+Новый предоставленный владельцем API-кошелёк официально авторизован для нужного master; новый fingerprint учтён в неактивном релизе. Ключ сохранён в macOSKeychain; чтение сейчас завершилось таймаутом. Нужен локальный доступ macOS, затем безопасная материализация credentials и финальная read-only сверка. Секрет не напечатан/не переслан. Это не повторное разрешение на работу и не повторный запрос суммы.
 
-Common103purePASS;A140purePASS;по1известномуисходномуfake-cacheтестуисключено. Независимыеревью0P1. SourceG/AустановленыimmutableНЕАКТИВНО:current6c208ислужбысохранены. СредаNautilusпереиспользуетсячерезread-onlyhardlinksизквалифицированной0ba,безкопированиягигабайт/обновлений. Комиссииофициальнопроверены:taker0,0432%,maker0,0144%,referral4%ужевключён;reserve0,05%неявляетсяповторнойкомиссией. [Fees](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees).
+LiveDP — **остаток45%/DD55**, капитал — фактически доступныйUSDC. РеальныйSTART только после отдельного явного подтверждения владельца. [Конкретный пакет выпуска](RELEASE_FOR_OWNER_REVIEW_RU.md).
 
-## Два SOL-варианта
+## Пределы результата и учёт
 
-AявноограничиваетВСЕобычныеSOLmarketIOCchildдо1000SOL×initialseed/10000ПОСЛЕисходногодопускаparent. Денежныеceilings30Mмасштабируютсятемжеs,venuegrid/min/tierнет. Сохраненыactualfillbudget/права/C1credit/restore иразнаякаденция:timeoutследующиеминуты,forcedcloseдренированиепослеterminal+nativepositionprogress. ChildстатусправдивыйFILLED,неподдельныйCANCELED. Emergency/liquidation/globalDPполныйflattenнеограничены. Старыеstaleценынекопируются.
+NativeNautilus1.231.0; BTC5/SOL2;USDC от nativePnL/fees/funding доAPI/GUI; эффективные комиссии taker0,0432%/maker0,0144%,referral уже включён. Исторические Bybit1m/currentHLtiers/zero-impact fullfills — явные допущения. У A measuredDD51,4384%; консервативныйOHLCсценарий52,1053% не доказывает intraminute траекторию. Raw Native report сохраняет NOT_FAITHFUL_DIAGNOSTIC/ranking_eligibleFalse: modelgate не переименован в доказательство исторического рынка. Гарантировать будущие livefills по этим данным нельзя. [Границы доказательства](QUALIFICATION_BOUNDARY_RU.md).
 
-Исходный1000capвлиялнетольковходы:97ADD(95partial),17EXIT(13partial),82FORCED(60partial),2RESTOREи2HALF. 13JanC1requested2000→filled1000,позиция4000→3000,позжевосстановленыactual1000;timeout13kвыходил13дочернимизаявкамичерез720с. ЭтопроверенодоAfull,чтобынетестироватьзаведомонеполныйADD-onlyэмулятор.
-
-Bготовитсяenginefreeпо[B_MARKET_CONTRACT_RU.md](B_MARKET_CONTRACT_RU.md):послереальногоущербаDD40%непрерывныйSOLriskbudget,сценарий2ATR14+causalbeta270иостатокдо52%DD. Сохраняетbootstrapвнеriskрежима,учитываетBTCfactorhedge,необнуляетсяотC1RELEASED. Этосценарий,негарантиябудущегорынка. ДляBещёнеквалифицированliveproducer/recovery;доэтогоживойBпрофильявноотклоняется. NativeBпоканезапускался.
-
-Плановыйпределкоординатора10попыток:3engineering+6full10K(3ошибочных/несопоставимыхконтроля+3верныхсравнения)+1условныйactualcapital. Spent10/active2,B и actualcapital уже запущены, свободных попыток нет. Этоучётвнутрипрямогопоручения,невыдуманныйчисловойответвладельца;старые19/прочиебюджетынепереносятся. Всеошибкиучтены,новогопереборапараметровнет.
-
-Цельнеизменилась:≥5499360,14984003приcoherent+settledDD≤52%;внешний5млн/DD55неявляетсяавтодопускомlive. ПослевыбораactualavailableUSDCквалификацияиконкретныйрелизнасогласование. LiveDP—остаток45%/DD55;STARTтолькопослеотдельногоявногоподтверждения.
-
-Даже при экономическом PASS A ещё потребует узкой live-квалификации: flag/source pins, фиксированный initial seed между рестартами и порядок journal/callback. B явно не допускается live до квалификации producer/recovery. Ни один из этих кандидатов пока не объявлен live-ready.
-
-Консервативный сценарий OHLC для A даёт52,1053% DD и0 потенциальных margin-breach; это не измеренная intraminute траектория. Её исходные данные не позволяют восстановить. См. QUALIFICATION_BOUNDARY_RU.md.
+Все физические попытки учтены:10/10,active0, неиспользованных0; прежние бюджеты закрыты. ОшибочныйR1 NONCOMPARABLE (root опустилFalse/повторный0,575netting), R2engine0 duplicatepolicy, первый auditrowKeyError и все rawfailures сохранены. Никаких тихих повторов/переписанныхOS0. Номинальное сравнение старогоUSDT и текущегоUSDC не является историческимFX-преобразованием.

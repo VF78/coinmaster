@@ -1,38 +1,37 @@
-2026-10-30 | EXECUTION_PARITY_REBUILD | A MODEL PASS / B+ACTUAL RUNNING
-Owner: systemic fixes+inactive deploy;10K24m DPoff;A/B SOL;real START separate.
-Goal TOTAL>=5499360.14984003/coherent+settledDD<=52%;outer5m/DD55notautoPASS;0modelLiq/exactcash.
+2026-10-30 | EXECUTION_PARITY | A SELECTED / RESEARCH CLOSED / KEYCHAIN PENDING
+Ownerlatest:systemicexecutionfix+deploy,10K24mDPoff,A/B SOL;actualcapitalqualification;realSTARTseparate.
 M=/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021;branchcodex/btc-pattern-pilot-m2-20261021.
 R=/root/.openclaw/workspace/coinmaster/coinmaster;J=R/runtime/var/execution-parity-rebuild-20261029.
-CLEAN10K_R3 COMPLETE/e3cfc392/OS0/TOTAL561476.78949795/bothDD85.39093016%/1SOLliq/financialPASS.
-R3 reportSHA389c66fc2e7117c60dec688b32ea7a2f0ecc6c52d486e13b37fa6a67131bdaaa;validECONOMIC_NO_GO.
-A10K COMPLETE/5b56f7d0/OS0/TOTAL5635720.91989984/net5625720.91989984/ROI56257.2092%/bothDD51.43837119%/liq0.
-A all24months/11financialPASS/terminalflat/orders0;netprofit+2.4841%vsoriginal. PRIMARY_OBJECTIVE_MODEL_PASS,notliveReady.
-A reportSHAc01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f.
-A conditionalOHLC conservativeDD52.1053%,marginwarnings0;actualintraminutepathUNKNOWN;rawdiagnostic/rankingFalsepreserved.
-ACTIVE B10K PID262370/super262369/start2026-10-30T00:05:21.901218UTC/outJ/B10K.
-ACTIVE A_ACTUAL_CAPITAL PID262963/super262962/start00:07:45.523500UTC/outJ/private/A_ACTUAL_CAPITAL.
-Noquietrunrestart. Eachnativeengine1/freshjournals/90mincap/nice10/max2;DPoff/C1marginpreserved.
-B source5e1a899b0e112db488ad4a118f74214b0362d2b0;WTsol-market-budget-b-20261030.
-B94pure+independentreview0P1;canonicalH/E/cash/accountframe+frozenbothmarks+causalD1availability;noeconomicresultyet.
-G/A/B immutableinactive installed;current6c208unchanged/liveinactive-disabled;noorders/transfers.
-Spent10/10,active2;noneunspent. Coordinatorbound3eng+6full10K+1actual;oldbudgetsclosed/no inventedownernumericreply.
-A allNORMALSOLIOC cap1000*s POSToriginalparentadmission;s=fixedinitialseed/10000;30Mceilings*s;venuegrid/min/tiershonest.
-Actualfillrights/C1credit/restore/timeout60s+forceddrain;emergency/LIQ/globalDPfull untouched. A islegacySOLalpha staging,notnewtruehedge.
-A-live WTsol-staging-a-live-20261030/provisional0d49a24a/196purePASS/economic10filesBYTEIDENTICAL/narrowreviewpending.
-A-live minimalprofileA/pins/actualINITfixedseed-existingC1marker/SQLiteAPPLIED+TERMINALcallbackcontinuation. No newOMS.
-B producer/recoveryliveUNQUALIFIEDexplicitreject. Existingmanualopenpositionreconciliationremains.
-Native1.231engine89079fe3/pyo397f3dc49;qualified0bavenvreadonlyhardlinks(noGBcopy/chmodsharedfiles).-B/noPycache.
-A/G harness18bc79aa;Bonlye64aedae;ActualA e381a93f8e064f3392275607df60421ff4ba07a23f304ea41b98f2715013139d.
-GuardianB7833d10f.../Actuale82a1528...;actualseedreceiptPRIVATE/currentUSDCunsigned4reads/nosignature.
-39originalfields/False preserved/wholeCandidate/actualAPIboundaryPASSnative0;R3firstBTC.39536→.79073.
-R1NONCOMPARABLE double.575netting(rootomittedFalse),rawexit1preserved;R2FAILEDduplicatepolicy/native0;allcounted.
-R3all168fills/12SOLcycles/all4windowmoneyresidual0;AprDD SOL-3868335.21/BTC+586468.13.
-Aall548fills/25SOLcycles/closedSOLnet716481.01;worstDD BTC-1013361.77/SOL0;JanSOL-83435.44/BTC0.
-HLUSDC/BTC5SOL2/fees.000432/.000144referralincluded/40x20x;historicalBybit1mproxy/currenttiers/zeroimpactassumptions.
-No futurelivefillguarantee. LiveDPremaining45%/DD55/startactualUSDC;separateexplicitSTARTrequired.
-Project137/101OPEN/InProgress readback00:13:13UTC;currentbodiesupdatedA/B/actual. SourceG/Aremoteexactverified;Bpushnext.
-Manager3577ec23plusdirtycurrentdocs;locks/userWIP/oldrawpreserved;gitaddonlyexplicitcurrentfiles.
-RootSSH97637,othersownIDsnotshared;2CPU/~1.7GBdisk;no venvduplicates/cleanupelsewhere.
-NEXTexisting2runs->financial/SOLcomparison;A-livefinalreview/profile/inactivepackage->concretereleaseforownerapproval.
-Detailedprivate root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json.
-Beforeend/reset agents/ledger/Project/docs/push/privatehandoffoverwrite;neverloseactiveruns.
+GoalnominalTOTAL>=5499360.14984003/coherent+settledDD<=52%/0liq/exactcash reachedbyAinsideexplicitmodel.
+A10K5b56f7d0:TOTAL5635720.91989984/net5625720.91989984/ROI56257.2092%/bothDD51.4383711874%/0liq.
+A24mo/OS0/11financialPASS/flat/orders0;reportc01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f.
+A_ACTUAL_CAPITAL COMPLETE24mo/OS0/11PASS/0liq/scalingPASS;amount/PnLPRIVATE;report7097c2153bda7f44ac34054aff2647a3476fe2b07012f2f26d596f377b2df642.
+B10K5e1a899b full24mo/OS1/raw883181.30709990/DD74.76431633%/0liq;NO_GO/financialrawgateFAIL.
+Bcashtransitionbridge0;oneBTClifecyclepositionvsobservedcashgap1E-8;all598fills/inventory/3DDwindows exact.
+B31UNKNOWNdenials inclfirst2bootstrap,bootstrap-preservationUNPROVEN. NoB rerun;report3e65b37ab48b5c1946c642e3319a3969e5380faa862ab535e8c015a0dc7a92ec.
+CorrectR3 e3cfc392:561476.78949795/DD85.39093016/1SOLliq/OS0/financialPASS/economicNO_GO;oldR1NONCOMPARABLE preserved.
+NativeledgerCLOSEDspent10/10,active0,remaining0. Allfailurescounted/oldbudgetsunborrowed/no quietreplay.
+AallNORMALSOLIOCchild1000*sPOSTfullparentadmission;s=fixedinitialseed/10000;30Mceilings*s;venuegrid/min/tierhonest.
+Aactualfillrights/C1credit/restore/timeout60s/nativeprogressdrain;emergency/LIQ/globalDPfull;no fakeCANCELED/stalequotes.
+A preserveslegacyBTCcore/SOLalpha,NOTnewcontinuousBTChedge;strict30-50optimizationseparateafterstablelive.
+Livefinalsource266f8b664cd07f827f8bce5f0fa9f0c32567aa47;WTsol-staging-a-live-dp55-20261030;10economicfilesbyteidenticalA5b.
+ActualINITfixedseed(existingmarker)/typedIDs/SQLiteTERMINAL+APPLIEDchild/profilepins/DP55wiring;196+88+3overlappingpure+peer0P1.
+Installedinactive /srv/coinmaster/hl-live/releases/266f8b664cd07f827f8bce5f0fa9f0c32567aa47-sol-staging-a-live-inactive-native1.231.0-api-v2.
+Manifest540f7cb20c726dd43d738e2cb1bb08dda571a0c2bac3fc14c64b9d73f30c2827/profilead8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9.
+Servicecwd/newcodeimports/92files/packagedCandidate/nativepinsPASS. Livecurrent6c208unchanged/inactive-disabled;noSTART/orders/transfers/signatures.
+NewownerAPIwalletfreshagent/correctmasterPASS;derivedFPnewrelease. OLDservercredentialdifferent/unapproved.
+CorrectkeyMacKeychain(saved28Oct);read15s+55stimeouts;asyncLOCALuseractionpending. NOsecretprinted/transferred;neverrequestkey/passwordinchat.
+AfterlocalOSaccess: secureexistingcredentialbinding+freshreadonlyrole/Unified/nativeUSDC/orders/state thenconcreteownerSTART;noamountreapproval.
+LiveDPremaining45%/DD55, freshprofile55auto;persisted50staysauthoritativeDENY/nosilentHWMreset. LiveDBnotcreatedbythiswork.
+GUIguardb96bb47a8e29f43407a33613a4cc643cd2bc00ec DEPLOYED current.../b96...-legacy-research-guard;PID284706.
+GUI15pure+peer0P1+health/auth/archives/frontendPASS. Legacybaseline/optimizerBLOCKED untilqualifiedsharedprofilefactory;no newGUIeconomics.
+OnlyGUIunitrestarted;Sandbox+liveunitsexactinactive/MainPID0beforeafter. Originalfrontend/auth/env/DBpreserved.
+Evidencepublic669SOLrecords Original200/R338/A202/B229,cycles/Bdecisions,simulated10Konly;native-sol-evidence.json.gz SHA5553e5c3...e720fb19.
+Native1.231engine89079fe3/pyo397f3dc49/readonlyhardlinks;USDCBTC5SOL2/effectivefees.000432/.000144referralincluded/currenttiers40x20x.
+Bybit1mproxy/currentHLtiers/zeroimpactassumptions explicit;futurefills/anycapitalidentityNOTguaranteed;historicalUSDTnotrenamedUSDC.
+AconditionalOHLCscenarioDD52.1053%/0marginwarnings;actualintraminutepathUNKNOWN. Canonicalcontrols/rawreceiptsnotrewritten.
+SourcesG/A/B/live266/GUIb96publicremoteexactverified;managerfinalpacketinbranch;exactHEAD/remoteproofinprivatehandoff. PreserveuserWIP/locks.
+Project137/101OPEN/InProgress finalreadback2026-10-30T01:45:12UTC. DoNOTcreateissues/reopenoldbudgets.
+RootSSH97637healthy;newSSHbannerintermittent. Allnativefinished,doNOTrerun. KeychainUIexecutorTerrahighreturnedUNVERIFIED/noUIinteraction;allagentsfinished.
+NEXT:finishpublication/Project/privatehandoff;waitlocalKeychainaction thencredentialqualification;no realSTARTuntilownerexplicit.
+Detailedprivate root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json;readreportsCURRENT_RESULT+RELEASE_FOR_OWNER_REVIEW only.
