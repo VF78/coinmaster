@@ -1,4 +1,4 @@
-2026-10-30 | HL-ONLY ENGINE QUALIFIED / INSTALLED INACTIVE / OWNER START PENDING
+2026-10-30 | PROD VPS RECOVERY AUDIT / D8 LIVE QUALIFICATION REVOKED PENDING COMPATIBILITY FIX
 M=/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021;managerbranchcodex/btc-pattern-pilot-m2-20261021.
 R=/root/.openclaw/workspace/coinmaster/coinmaster;VPSroot@46.225.163.123. Preserve dirtyprimary/untrackedMaclocks/source-for-review/otherprojects.
 Ownerlatest: ALLstartup/history/tradingdata fromexecutionvenue;HLliveonlyHL. SubsequentoptimizationexplicitlyKEEPSoriginalBybitreference.
@@ -15,11 +15,15 @@ INACTIVErelease /srv/coinmaster/hl-live/releases/d8b2039b618c3573a1784564f465856
 Native1.231.0/engine89079fe3/pyo397f3dc49 unchanged. Immutablequalifiedenv/nooverwrite/start_approvedFalse.
 ActualUID988firstbootHLcacheREADY:1336pairedD1/min730PASS;480M1perasset/8hcontiguous. Cache14.51s;480nativeperBarcheckpoints131.83s—not8hlivethroughputqualification.
 FreshinstalledunsignedPASS identity/roles/Unified/positiveUSDC/4Info. Fullfreshpositions/orders/all11DEXnormalprestartSTILLREQUIREDatSTART;noadditionalaccountreadneedednow.
-Liveunitinactive/disabled/PID0/currentaliasOLD6c208unchanged;targetliveDBabsent. NEVERstartoldaliasdirectly. SeparateexplicitownerSTARTABSENT.
+Liveunitinactive/disabled/PID0;obsoletecurrentaliasREMOVED/CURRENT_UNACTIVATEDafterownerrollbackcleanup;targetliveDBabsent. SeparateexplicitownerSTARTABSENT.
 USDC/Unified/actualavailableinitialcapital/fixedseed;DP55=remaining45%;durableHWM/latch. UNKNOWNexposureACKblocks increases pendingreconciliation;noarbitrarypositiontakeoverclaim.
 CredentialbindingDONE/systemdLoadCredential→CREDENTIALS_DIRECTORY samecopyforpreflight+Nativekey;directcanonicalUIDdenyEXPECTED. Norepeatkey/password/amountrequests.
 14economic/execution/Bybitresearchfilesbyte-identical4ca;currentresearchexplicitBybitM1/D1/funding. ABybit10K5635720.91989984/DD51.43837119% remainsoldprovenance,NOTnewHLROI.
 Project2#101InProgressrollout/ownerSTART;#137Done;#105GUI/#138trueSOLTodoAFTERstablelive. NoSandboxdeployment/otherprojectchanges.
 Newdirectpublicationreply30Oct:«Разрешаю публикацию и проверенные обновления»;OWNER_PUBLICATION_APPROVAL.json. Priorautoreviewpushdenialsresolvedbydirectreply/sameapprovedpush,no bypass.
 Privatehandoff root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json;privatepatch root/runtime/var/private/venue-bound-live-20261030/source-4ca0d879-to-d8b2039b.patch.
-NEXTONLYownerreviewexactrelease;afterseparateSTART runnormalfreshfullprestart,qualifiedaliasactivation,controlledfirstcycle. Nonewengineering/economicrunsorimplicitSTARTfromhandoff.
+CURRENT: userauthorizedprodrecovery+allsaferollbackcleanup+Nautilusoperations/perfdocaudit. Newprotocol reports/vps-recovery-20261030/RECOVERY_PROTOCOL_RU.md;cap4newengineering(coordinatorchosen),spent0/oldclosedbudgetsnotreused/noeconomics.
+InfraWT R/research-worktrees/vps-recovery-audit-20261030 commitb8f9caf3(clean/notpushed);GUIbroker15sretries,Redis7.0.15localhost6380AOFalways/empty,oldSandbox+warmuptimerdisabled;19rollbackdirsremoved/free4.4GiB.
+ProductWT R/research-worktrees/native-recovery-20261030 branchcodex/native-recovery-20261030(baseD8);solePythonwriter native_recovery_product_owner. Reviewer vps_recovery_contract_audit. NoNodeyet.
+CRITICAL: actualpinnedpyo3 lacksconnection_epoch;D8syntheticfixturesmissedAPIincompatibility. Fixexplicitstockpublicsocket+fresh<=9sverifiedsnapshotgeneration/contractversion;noinventednativeepoch/fork. NativeCacheRedis+existingSQLiteactorrestore;supervisorrestartnotcustomhealer.
+NEXT: finalpuretests/freeze→independentdiffreview→rootGOisolatedcachecrash/restart native(max4)→qualifiedinactivepackage+liveunitrecoverysettings(notenable/start)→Project/handoff. D8mustNOTbeactivateduntilfixed.
