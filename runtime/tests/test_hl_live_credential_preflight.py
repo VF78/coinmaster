@@ -94,3 +94,92 @@ def test_saved_verified_agent_missing_now_has_public_reason(tmp_path):
         return lookup(kind, address)
     with pytest.raises(CredentialGateError, match="AGENT_AUTHORIZATION_MISSING"):
         check_live_credential(record, fingerprints, info_lookup=missing)
+
+
+def _fake_http(monkeypatch, *, mode="unifiedAccount", malformed=None):
+    """Exercise the default adapter and real HTTP decoder without network access."""
+    import io
+    from coinmaster.ops import hl_live_execution
+
+    seen = []
+    def urlopen(request, *, timeout):
+        assert request.full_url == "https://api.hyperliquid.xyz/info"
+        assert request.method == "POST" and timeout == 5
+        body = json.loads(request.data)
+        assert set(body) == {"type", "user"}
+        kind, address = body["type"], body["user"]
+        seen.append((kind, address))
+        if kind == "userRole":
+            value = ({"role": "user"} if address == MASTER else
+                     {"role": "agent", "data": {"user": MASTER}})
+        elif kind == "userAbstraction":
+            value = mode
+        elif kind == "spotClearinghouseState":
+            value = {"balances": [{"coin": "USDC", "total": "100", "hold": "0"}]}
+        elif kind == "clearinghouseState":
+            value = {"marginSummary": {"accountValue": "100"}}
+        else:
+            raise AssertionError("unexpected Info endpoint")
+        if malformed and kind == malformed[0]:
+            value = malformed[1]
+        response = io.BytesIO(json.dumps(value).encode())
+        response.status = 200
+        return response
+    monkeypatch.setattr(hl_live_execution, "urlopen", urlopen)
+    return seen
+
+
+@pytest.mark.parametrize("mode", ["disabled", "unifiedAccount"])
+def test_default_lookup_decodes_endpoint_specific_types(tmp_path, monkeypatch, mode):
+    from decimal import Decimal
+    from coinmaster.ops.hl_live_execution import ReadinessInfoBudget
+    record, fingerprints, _, _ = _fixture(tmp_path)
+    seen = _fake_http(monkeypatch, mode=mode)
+    context = {}
+    assert check_live_credential(
+        record, fingerprints, account_mode=mode,
+        readiness_budget=ReadinessInfoBudget(), context_out=context,
+    ) == Decimal("100")
+    assert seen == [("userRole", MASTER), ("userRole", AGENT)] + (
+        [("userAbstraction", MASTER), ("spotClearinghouseState", MASTER)]
+        if mode == "unifiedAccount" else [("clearinghouseState", MASTER)]
+    )
+    assert context["master_role"] == "user" and context["agent_role"] == "agent"
+
+
+@pytest.mark.parametrize("mode,malformed,reason", [
+    ("unifiedAccount", ("userRole", "user"), "ACCOUNT_LIVE_CHECK_FAILED"),
+    ("unifiedAccount", ("userAbstraction", {"mode": "unifiedAccount"}), "ACCOUNT_MODE_MISMATCH"),
+    ("unifiedAccount", ("spotClearinghouseState", []), "ACCOUNT_LIVE_CHECK_FAILED"),
+    ("disabled", ("clearinghouseState", "100"), "ACCOUNT_LIVE_CHECK_FAILED"),
+])
+def test_default_lookup_malformed_endpoint_types_fail_closed(tmp_path, monkeypatch, mode, malformed, reason):
+    from coinmaster.ops.hl_live_execution import ReadinessInfoBudget
+    record, fingerprints, _, _ = _fixture(tmp_path)
+    _fake_http(monkeypatch, mode=mode, malformed=malformed)
+    with pytest.raises(CredentialGateError, match=reason):
+        check_live_credential(record, fingerprints, account_mode=mode,
+                              readiness_budget=ReadinessInfoBudget())
+
+
+def test_actual_live_node_constructor_uses_default_lookup(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from coinmaster.ops import hl_live_worker
+    record, fingerprints, _, _ = _fixture(tmp_path)
+    seen = _fake_http(monkeypatch)
+    monkeypatch.setattr(hl_live_worker, "load_live_profile",
+                        lambda root, candidate: {"account_mode": "unifiedAccount"})
+    class QualifiedBeforeEngine(Exception):
+        pass
+    def qualification_boundary(*args, **kwargs):
+        assert "info_lookup" not in kwargs
+        assert check_live_credential(*args, **kwargs) == 100
+        raise QualifiedBeforeEngine
+    monkeypatch.setattr(hl_live_worker, "check_live_credential", qualification_boundary)
+    with pytest.raises(QualifiedBeforeEngine):
+        hl_live_worker.HyperliquidLiveNode(
+            instance=SimpleNamespace(mode="live", instance_id="hl-stageg-live"),
+            candidate=object(), state=object(), credential_path=record,
+            fingerprint_path=fingerprints,
+        )
+    assert seen[-2:] == [("userAbstraction", MASTER), ("spotClearinghouseState", MASTER)]

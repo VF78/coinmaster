@@ -15,7 +15,7 @@ from pathlib import Path
 
 from nautilus_trader.core.nautilus_pyo3 import hyperliquid_resolve_execution_account_address
 
-from coinmaster.api.connections_broker import ADDRESS_RE, ID_RE, KEY_RE, _hyperliquid_info
+from coinmaster.api.connections_broker import ADDRESS_RE, ID_RE, KEY_RE
 
 
 class CredentialGateError(RuntimeError):
@@ -40,7 +40,17 @@ def _fingerprint(address: str) -> str:
     return hashlib.sha256(address.lower().encode("ascii")).hexdigest()
 
 
-def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info_lookup=_hyperliquid_info,account_mode="disabled",readiness_budget=None,context_out=None) -> Decimal:
+def _credential_info(kind: str, address: str):
+    """Adapt synchronous preflight to the existing unsigned, typed Info transport."""
+    import asyncio
+    from coinmaster.ops.hl_live_execution import read_info_http
+
+    return asyncio.run(read_info_http(
+        {"type": kind, "user": address}, testnet=False, timeout=5,
+    ))
+
+
+def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info_lookup=_credential_info,account_mode="disabled",readiness_budget=None,context_out=None) -> Decimal:
     record = _read_json(credential_path)
     expected = _read_json(fingerprint_path)
     master = record.get("master_address")

@@ -1,0 +1,17 @@
+{
+  "base": "266f8b664cd07f827f8bce5f0fa9f0c32567aa47",
+  "native_runs": 0,
+  "real_network_requests": 0,
+  "test_result": "13 passed in 9.10s",
+  "changed_paths": [
+    "runtime/coinmaster/ops/hl_live_credential_preflight.py",
+    "runtime/tests/test_hl_live_credential_preflight.py"
+  ],
+  "unchanged_all_other_tracked_files": true,
+  "economic_files_unchanged": true,
+  "worker_default_path": "main -> LiveWorker.__init__ -> HyperliquidLiveNode.__init__ -> check_live_credential(default _credential_info) -> asyncio.run(read_info_http); constructor regression stops after successful qualification before engine",
+  "sha256": {
+    "runtime/coinmaster/ops/hl_live_credential_preflight.py": "c489c1e775fcfc34c0cd93d5db80df8fa4fdbd869712f6010dccfc9c734db97b",
+    "runtime/tests/test_hl_live_credential_preflight.py": "81b7b84ede0f6983fe529b857440b22fe204d9fefc0a3162d81c7e421548759d"
+  }
+}
