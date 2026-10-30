@@ -1,0 +1,19 @@
+{
+  "label": "FIXED_PATH_COST_DIAGNOSTIC_NOT_BACKTEST_NOT_ROI",
+  "native_report_sha256": "c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f",
+  "fill_rows": 548,
+  "turnover_USDC": {
+    "BTC": "1698382947.640728",
+    "SOL": "32316958.7257"
+  },
+  "additional_adverse_price_cost_USDC": {
+    "1": "173069.9906366428",
+    "5": "865349.953183214",
+    "10": "1730699.906366428",
+    "50": "8653499.53183214"
+  },
+  "does_not_recompute_dynamic_capital_or_DD": true,
+  "does_not_prove_profit_or_DD_after_slippage": true,
+  "real_fill_partial_zero_late_safety": "reuse A native/pure receipts; independent of market capacity",
+  "native_engines": 0
+}

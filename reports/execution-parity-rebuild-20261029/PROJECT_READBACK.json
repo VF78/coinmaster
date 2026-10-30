@@ -1,19 +1,44 @@
 {
-  "verified_utc": "2026-10-30T01:45:12.431814+00:00",
-  "issues": [
-    {
-      "issue": 137,
-      "state": "open",
-      "project_status": "In Progress",
-      "body_sha256": "e2f73a5079ce4ecd674db6929ba3244cd6422b5e6b6095e84c56fb8bf8542b44"
+  "observed_utc": "2026-10-30T08:08:13.173134+00:00",
+  "project": 2,
+  "items": {
+    "research": {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhDm9GA",
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 137,
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/137",
+        "title": "[Research] E4/C1 profit-preserving pilot and BTC/SOL optimization"
+      }
     },
-    {
-      "issue": 101,
-      "state": "open",
-      "project_status": "In Progress",
-      "body_sha256": "dfe6109617701552dbce80d16e17e6360dfcff20dc03c266c4daa886c42f20c3"
+    "live": {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXeo",
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 101,
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/101",
+        "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout"
+      }
+    },
+    "new_sol": {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhEtKIU",
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 138,
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/138",
+        "title": "[After live] SOL residual-confirmed BTC hedge — causal target inventory"
+      }
     }
-  ],
-  "no_new_items": true,
-  "runtime_actions": 0
+  },
+  "bodies_101_137_readback_equal": true,
+  "new_sol_deferred": true
 }

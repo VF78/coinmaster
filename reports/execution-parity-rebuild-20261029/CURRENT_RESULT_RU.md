@@ -23,13 +23,15 @@ A:548nativefills↔548orders,202SOL исполнения/25циклов;SOL net+
 
 ## Выпуск и оставшаяся зависимость
 
-Экономика A source5b56f7d0; live source **266f8b664cd07f827f8bce5f0fa9f0c32567aa47**. Десять экономических файлов побайтно неизменны. Закрыты профиль/sourcepins, фиксированный actualINIT seed между рестартами, durableTERMINAL/APPLIED до следующегоchild, и передача DP55 из профиля в typed config.196focusedPASS,88послеprofilepin,3DP; это пересекающиеся выборки, не сумма уникальных тестов. Узкие независимые обзоры0P1.
+Экономика A source5b56f7d0; live source **4ca0d87993f28c20fb039840551c04e051378582**. Десять экономических файлов побайтно неизменны. Закрыты профиль/sourcepins, фиксированный actualINIT seed между рестартами, durableTERMINAL/APPLIED до следующегоchild, и передача DP55 из профиля в typed config.196focusedPASS,88послеprofilepin,3DP; это пересекающиеся выборки, не сумма уникальных тестов. Дополнительно13purePASS для default Unified lookup и63focusedPASS для forcedSOLfreshness/deadline. Узкие независимые обзоры0P1; три прежних broad-suiteFAIL воспроизводятся на неизменённой базе и не скрываются.
 
-Полный service-layout релиз установлен НЕАКТИВНО: `266f8b66…-sol-staging-a-live-inactive-native1.231.0-api-v2`; manifest `540f7cb20c726dd43d738e2cb1bb08dda571a0c2bac3fc14c64b9d73f30c2827`; profile `ad8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9`. Проверены фактическиеcwd/import origins, packagedCandidate,92файла/профиль/nativepins. Currentlive6c208 не переключён; START/orders approval отсутствуют.
+Полный service-layout релиз установлен НЕАКТИВНО: `4ca0d879…-sol-staging-a-live-inactive-native1.231.0-api-v2`; manifest `36809b9e0f7ac1cb876e0fde446c3e71418738680f82de1f27fd84b320e37323`; profile `ad8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9`. Проверены фактическиеcwd/import origins, packagedCandidate,92файла/профиль/nativepins. Currentlive6c208 не переключён; START/orders approval отсутствуют.
 
 GUI backend guard **b96bb47a** установлен:15pure+peerPASS, реальныйhealth/capabilities/auth/архивыPASS. Новые legacybaseline/optimizer jobs BLOCKED до привязки квалифицированного общего профиля; старый путь не может незаметно вернуть1000SOL/stalequote/oldfees. Интерфейс не менялся. Перезапущена только GUI-служба, live/Sandbox не затронуты.
 
-Новый предоставленный владельцем API-кошелёк официально авторизован для нужного master; новый fingerprint учтён в неактивном релизе. Ключ сохранён в macOSKeychain; чтение сейчас завершилось таймаутом. Нужен локальный доступ macOS, затем безопасная материализация credentials и финальная read-only сверка. Секрет не напечатан/не переслан. Это не повторное разрешение на работу и не повторный запрос суммы.
+Доступ macOS предоставлен владельцем; сохранённый Keychainключ безопасно привязан к существующему credentialstore без вывода секрета. Read-only проверка30Oct07:30UTC прошла по реальному default preflight: правильные signer/master, Unified, доступныйUSDC,11DEX без позиций/ордеров. Снимок BTC/SOL liquidity07:55UTC PASS для пилотных размеров. Перед фактическим START штатная проверка состояния выполняется свежей; отдельного запроса суммы или ключа не требуется.
+
+[Сверка нового вложения](ATTACHMENT_RECONCILIATION_RU.md): два live-пробела свежести/deadline исправлены. [Новый SOL-хедж — Project138](https://github.com/VF78/coinmaster/issues/138), Todo после запуска и стабилизации A; сейчас не реализуется и не расходует native-бюджет.
 
 LiveDP — **остаток45%/DD55**, капитал — фактически доступныйUSDC. РеальныйSTART только после отдельного явного подтверждения владельца. [Конкретный пакет выпуска](RELEASE_FOR_OWNER_REVIEW_RU.md).
 

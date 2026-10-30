@@ -1,37 +1,37 @@
-2026-10-30 | EXECUTION_PARITY | A SELECTED / RESEARCH CLOSED / KEYCHAIN PENDING
-Ownerlatest:systemicexecutionfix+deploy,10K24mDPoff,A/B SOL;actualcapitalqualification;realSTARTseparate.
+2026-10-30 08:11UTC | A RELEASE PREPARED / ATTACHMENT RECONCILED / EXPLICIT START REQUIRED
 M=/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021;branchcodex/btc-pattern-pilot-m2-20261021.
-R=/root/.openclaw/workspace/coinmaster/coinmaster;J=R/runtime/var/execution-parity-rebuild-20261029.
-GoalnominalTOTAL>=5499360.14984003/coherent+settledDD<=52%/0liq/exactcash reachedbyAinsideexplicitmodel.
-A10K5b56f7d0:TOTAL5635720.91989984/net5625720.91989984/ROI56257.2092%/bothDD51.4383711874%/0liq.
-A24mo/OS0/11financialPASS/flat/orders0;reportc01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f.
-A_ACTUAL_CAPITAL COMPLETE24mo/OS0/11PASS/0liq/scalingPASS;amount/PnLPRIVATE;report7097c2153bda7f44ac34054aff2647a3476fe2b07012f2f26d596f377b2df642.
-B10K5e1a899b full24mo/OS1/raw883181.30709990/DD74.76431633%/0liq;NO_GO/financialrawgateFAIL.
-Bcashtransitionbridge0;oneBTClifecyclepositionvsobservedcashgap1E-8;all598fills/inventory/3DDwindows exact.
-B31UNKNOWNdenials inclfirst2bootstrap,bootstrap-preservationUNPROVEN. NoB rerun;report3e65b37ab48b5c1946c642e3319a3969e5380faa862ab535e8c015a0dc7a92ec.
-CorrectR3 e3cfc392:561476.78949795/DD85.39093016/1SOLliq/OS0/financialPASS/economicNO_GO;oldR1NONCOMPARABLE preserved.
-NativeledgerCLOSEDspent10/10,active0,remaining0. Allfailurescounted/oldbudgetsunborrowed/no quietreplay.
-AallNORMALSOLIOCchild1000*sPOSTfullparentadmission;s=fixedinitialseed/10000;30Mceilings*s;venuegrid/min/tierhonest.
-Aactualfillrights/C1credit/restore/timeout60s/nativeprogressdrain;emergency/LIQ/globalDPfull;no fakeCANCELED/stalequotes.
-A preserveslegacyBTCcore/SOLalpha,NOTnewcontinuousBTChedge;strict30-50optimizationseparateafterstablelive.
-Livefinalsource266f8b664cd07f827f8bce5f0fa9f0c32567aa47;WTsol-staging-a-live-dp55-20261030;10economicfilesbyteidenticalA5b.
-ActualINITfixedseed(existingmarker)/typedIDs/SQLiteTERMINAL+APPLIEDchild/profilepins/DP55wiring;196+88+3overlappingpure+peer0P1.
-Installedinactive /srv/coinmaster/hl-live/releases/266f8b664cd07f827f8bce5f0fa9f0c32567aa47-sol-staging-a-live-inactive-native1.231.0-api-v2.
-Manifest540f7cb20c726dd43d738e2cb1bb08dda571a0c2bac3fc14c64b9d73f30c2827/profilead8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9.
-Servicecwd/newcodeimports/92files/packagedCandidate/nativepinsPASS. Livecurrent6c208unchanged/inactive-disabled;noSTART/orders/transfers/signatures.
-NewownerAPIwalletfreshagent/correctmasterPASS;derivedFPnewrelease. OLDservercredentialdifferent/unapproved.
-CorrectkeyMacKeychain(saved28Oct);read15s+55stimeouts;asyncLOCALuseractionpending. NOsecretprinted/transferred;neverrequestkey/passwordinchat.
-AfterlocalOSaccess: secureexistingcredentialbinding+freshreadonlyrole/Unified/nativeUSDC/orders/state thenconcreteownerSTART;noamountreapproval.
-LiveDPremaining45%/DD55, freshprofile55auto;persisted50staysauthoritativeDENY/nosilentHWMreset. LiveDBnotcreatedbythiswork.
-GUIguardb96bb47a8e29f43407a33613a4cc643cd2bc00ec DEPLOYED current.../b96...-legacy-research-guard;PID284706.
-GUI15pure+peer0P1+health/auth/archives/frontendPASS. Legacybaseline/optimizerBLOCKED untilqualifiedsharedprofilefactory;no newGUIeconomics.
-OnlyGUIunitrestarted;Sandbox+liveunitsexactinactive/MainPID0beforeafter. Originalfrontend/auth/env/DBpreserved.
-Evidencepublic669SOLrecords Original200/R338/A202/B229,cycles/Bdecisions,simulated10Konly;native-sol-evidence.json.gz SHA5553e5c3...e720fb19.
-Native1.231engine89079fe3/pyo397f3dc49/readonlyhardlinks;USDCBTC5SOL2/effectivefees.000432/.000144referralincluded/currenttiers40x20x.
-Bybit1mproxy/currentHLtiers/zeroimpactassumptions explicit;futurefills/anycapitalidentityNOTguaranteed;historicalUSDTnotrenamedUSDC.
-AconditionalOHLCscenarioDD52.1053%/0marginwarnings;actualintraminutepathUNKNOWN. Canonicalcontrols/rawreceiptsnotrewritten.
-SourcesG/A/B/live266/GUIb96publicremoteexactverified;managerfinalpacketinbranch;exactHEAD/remoteproofinprivatehandoff. PreserveuserWIP/locks.
-Project137/101OPEN/InProgress finalreadback2026-10-30T01:45:12UTC. DoNOTcreateissues/reopenoldbudgets.
-RootSSH97637healthy;newSSHbannerintermittent. Allnativefinished,doNOTrerun. KeychainUIexecutorTerrahighreturnedUNVERIFIED/noUIinteraction;allagentsfinished.
-NEXT:finishpublication/Project/privatehandoff;waitlocalKeychainaction thencredentialqualification;no realSTARTuntilownerexplicit.
-Detailedprivate root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json;readreportsCURRENT_RESULT+RELEASE_FOR_OWNER_REVIEW only.
+R=/root/.openclaw/workspace/coinmaster/coinmaster;J=R/runtime/var/execution-parity-rebuild-20261029;SSHroot97637.
+Ownerlatest: compare SOL reset recommendations, fix omissions in A; NEW SOL saveProject AFTERlive, no implementation now.
+AttachmentSHA1b3fb18e1baebed7d66ffae203f406beb9a52e4c6527b599bfc41c85b39db584; arithmetic exactPASS/noengine.
+Aeconomic5b56f7d0:10K24moTOTAL5635720.91989984/net5625720.91989984/ROI56257.2092%/bothDD51.4383711874%/0liq/OS0/11PASS.
+Aactualcapitalfull24moPASS/0liq/scalingPASS; amounts/readbacksPRIVATE;report7097c215...f642.
+A10Kreportc01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f.
+B5e1a899bfullraw883181.30709990/DD74.76431633%/OS1 strictfinancialFAIL;1e-8positionPnl-vs-cashgap/31UNKNOWNinclbootstrap. No rerun.
+CorrectR3TOTAL561476.78949795/DD85.39093016/1SOLliq/financialPASS/economicNO_GO;allrawfailurespreserved.
+NativecampaignCLOSED10/10,active0,remaining0;alloldbudgetsclosed;no new native/prefix/full.
+AallnormalSOLchild<=floorlot1000*fixedinitialseed/10000 AFTERfullparentadmission;actualfillrights/durableTERMINAL+APPLIED;no fakeCANCEL.
+AlegacyBTC39fields/SOLalpha-staging, NOTnewcontinuoushedge.30Mceilingsscale;venuegrid/min/tierreal.
+Finalruntime4ca0d87993f28c20fb039840551c04e051378582;10economicfilesbyteidenticalA;WT R/research-worktrees/a-live-drain-guard-20261030 clean.
+5c886 defaultUnified lookup uses existing unsigned HTTP transport;13purePASS/independent0P1. No new SDK/service.
+4ca forcedSOL REGIME/TRAIL/TERMINAL guard: fresh positive executableBBO +persisted firstdecision120sdeadline/episode+positionbinding/tombstone.
+Freshsamequoteallowed;deadline neverreset child/restart;expiry usesexistingrefresh/recoveryhold;emergency/globalDP/C1/normal13x60cadence preserved.
+63focusedPASS15.58s/independentPASS0P1. Broader200PASS3FAIL;exact3reproducedunchanged5cbase,notfixed/notALLPASS.
+HealthyA83forcedSOLfills/22decisiongroups:maxquoteage0/maxparentdecision-submit0;timestampgateNONBINDING,WS/depthnotcertified.
+InstalledINACTIVE /srv/coinmaster/hl-live/releases/4ca0d87993f28c20fb039840551c04e051378582-sol-staging-a-live-inactive-native1.231.0-api-v2.
+Manifest36809b9e0f7ac1cb876e0fde446c3e71418738680f82de1f27fd84b320e37323;profilead8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9.
+92files/importorigins/packagedCandidate/nativepinsPASS;installer90dd0a69...bdaa7;livecurrent6c208unchanged/unitinactive-disabled/PID0.
+KeychainownerOSgrantDONE;securecanonicalcredentialbindingVERIFIED07:16UTC/sameid/master/otherfields/selection/mode0600. No secret output.
+Actualdefaultread-only5cpreflight07:30UTC PASS: signer/master/Unified/USDCfree/11DEXflat/orders0;sealed4ca usesbyteidenticalpreflight.
+PilotBTC/SOLl2book snapshot07:55UTC PASS; snapshotonly,notfuturecapacity. Start usesfreshnormalprestartqualification.
+LiveDP remaining45%/DD55;actualavailableUSDCfreshflatINIT/fixedseedpersisted;existingmanualUNKNOWNreconciliation, no silentHWMreset.
+RealSTART separateexplicitownerconfirmationABSENT;orders/transfers/signatures0. No repeatkey/password/amountrequest.
+Project2readback101/137OPEN-InProgress,NEW138OPEN-Todo AFTERA live+stability;newSOLcode/nativebudget0.
+NewSOLcontract SOL_HEDGE_AFTER_LIVE_RU.md:actualBTCparent/closedH4residual/covariancetarget/heldrisk-vs-trim/protectiveexits;differentfromoldB.
+GUIb96guardactive/health-auth-archivesPASS/legacyresearchBLOCKED;premiumUI/auth/canonicalprofilefactorybacklogpreserved. No tradingunitrestart.
+Native1.231.0/engine89079fe3/pyo397f3dc49;USDC/BTC5SOL2/leverage40x20x/fees.000432-.000144 referralincluded.
+Bybit1m/currentHLtiers/zeroimpact explicit;rawNOT_FAITHFUL/rankingFalse preserved;futurefills/ROI/anycapitalidentity notguaranteed.
+Publicsource4ca remoteexactverified;reportpacketCURRENT_RESULT/RELEASE_FOR_OWNER_REVIEW/ATTACHMENT_RECONCILIATION/A_LIVE_ATTACHMENT_QUALIFICATION.
+FIXED_PATH_COST_DIAGNOSTIC is NOTbacktest/ROI/DD;public669simulatedSOLrecords retained;actualaccountfinancialsPRIVATE.
+Preservehistorical*.lock and method-a source-for-review untracked;no reset/clean/add-all. No active agents/nativejobs.
+NEXT:ownerreviews exactrelease and explicitlySTART; onlythenqualifiedactivation designatedliveunit/freshnativeINIT;newSOLafterstability.
+Detailedprivate root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json;noarchivebulkread.

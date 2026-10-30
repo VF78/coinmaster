@@ -1,0 +1,151 @@
+{
+  "forced_tape": {
+    "scope": "Read-only historical fixed tape timestamp assessment; no ROI recomputation or engine run",
+    "selected_qualified_sol_fills": 83,
+    "matched_trace_rows": 83,
+    "parent_decision_groups": 22,
+    "max_submission_quote_age_ns": 0,
+    "max_parent_decision_to_submission_ns": 0,
+    "guard_budget_ns": 120000000000,
+    "deadline_timestamp_nonbinding": true,
+    "limitations": "Tape has no live WS/recovery authority or BBO size freshness certification. This supports timestamp nonbinding only; not a live or economic PASS.",
+    "sources": {
+      "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/execution-parity-rebuild-20261029/analysis/a10k-qualified/sol-fills-native-qualified.json": "895df391da441dc831175db1da60a3f2951ffa54f9dca7d6d9a26963754c9bde",
+      "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/execution-parity-rebuild-20261029/analysis/original-vs-a10k/all-native-fill-intent-source-trace.json": "fe3bec76da1d672cc60f8e296ff9e48a09528119d2846b09342ecc451584e166"
+    }
+  },
+  "economic_files": [
+    {
+      "path": "runtime/coinmaster/strategy/residual_recovery.py",
+      "sha256": "55b4db26540a297a8d53dfe45be446136c7c0df3956ba73005013be7a5112483",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "4f34b776c9f924e2d346be8c436b4b42692f596d1e0fba6caf8d34fde2b633b3",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/next_band.py",
+      "sha256": "ba01f1a0bf9a78197a469483c807a73a8089a4ccf2c0e35598b4ae6b9321cef7",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/hedge_band.py",
+      "sha256": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/domain/wave_overlay.py",
+      "sha256": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/c1_inputs.py",
+      "sha256": "e69c50884cbf24884122d9163ee760db5b440f0832c35e9899802163e8b35c4d",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_unified_account.py",
+      "sha256": "3269a7be6be45df0e7e7ba67bdb5c6fe6dff809b1fe93b0cd96c3ad7ac3378ad",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_unified_instruments.py",
+      "sha256": "fbd1e4c9490a0f268d36099c6fbffaf551b5d6c84633676dbd023ad22685b5b9",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_money.py",
+      "sha256": "bdf98b844af73260608208ee7090a004b37426e5b7ea92c3438163eeeb2a57a2",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/coinmaster/strategy/sol_capital_staging.py",
+      "sha256": "a63fc3b02cd09549c552cb2a06f79e5e61ca9b332e4dc7f4e821988f63f192e0",
+      "unchanged": true
+    }
+  ],
+  "default_readonly": {
+    "status": "FINAL_READONLY_PASS",
+    "checks": {
+      "actual_default_credential_path": true,
+      "native_sealed_master_signer_roles": true,
+      "positive_USDC": true,
+      "unified_mode": true,
+      "supported_dex_abstraction": true,
+      "all_DEX_orders_empty": true,
+      "all_DEX_positions_flat": true,
+      "USDC_only_free_positive": true,
+      "bounded_snapshot": true,
+      "profile_DP55": true,
+      "unapproved_START_blocked": true,
+      "live_inactive": true,
+      "live_current_unchanged": true
+    },
+    "observed_utc": "2026-10-30T07:30:17.164124+00:00",
+    "source_commit": "5c88654f3ac564b8075c917ce18fedeb976ab933",
+    "profile_sha256": "ad8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9",
+    "dex_count": 11,
+    "snapshot_seconds": 3.1724007865414023,
+    "total_seconds": 4.386445223353803,
+    "orders": 0,
+    "transfers": 0,
+    "signatures": 0,
+    "native_economic_engines": 0
+  },
+  "pilot_book": {
+    "status": "PILOT_BOOK_SNAPSHOT_PASS",
+    "checks": {
+      "BTC": true,
+      "SOL": true
+    },
+    "observed_utc": "2026-10-30T07:55:24.527674+00:00",
+    "snapshot_only_not_future_capacity": true,
+    "SOL_test": "one fixedseed child",
+    "BTC_test": "conservative seed-times-selected-leverage quantity; not margin admission",
+    "adapter_price_band_fraction": ".005",
+    "native_engines": 0,
+    "orders": 0,
+    "signatures": 0
+  },
+  "installation": {
+    "commit": "4ca0d87993f28c20fb039840551c04e051378582",
+    "destination": "/srv/coinmaster/hl-live/releases/4ca0d87993f28c20fb039840551c04e051378582-sol-staging-a-live-inactive-native1.231.0-api-v2",
+    "manifest_sha256": "36809b9e0f7ac1cb876e0fde446c3e71418738680f82de1f27fd84b320e37323",
+    "source_files": 92,
+    "profile_validation": {
+      "candidate_sha256": "bc328ce339a68468fc2752db00a784f5975b540b43e72b4c5d1ab596ec51c57e",
+      "import_origins": {
+        "coinmaster": "coinmaster/__init__.py",
+        "coinmaster.ops.hl_live_profile": "coinmaster/ops/hl_live_profile.py",
+        "coinmaster.ops.hl_live_worker": "coinmaster/ops/hl_live_worker.py",
+        "coinmaster.ops.live_recovery": "coinmaster/ops/live_recovery.py",
+        "coinmaster.strategy.live_recovery": "coinmaster/strategy/live_recovery.py"
+      },
+      "instance_candidate_alias": "/srv/coinmaster/hl-live/current/configs/hl-live-v3-dp50.candidate.json",
+      "owner_start_required": true,
+      "profile_id": "E4_C1_ACTIVE_SELECTED",
+      "profile_sha256": "ad8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9",
+      "validation_candidate": "PACKAGED_configs/hl-live-v3-dp50.candidate.json"
+    },
+    "before": {
+      "current": "/srv/coinmaster/hl-live/releases/6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2-v3-dp50-82-wheel-8ff3c6dcc150",
+      "service": "MainPID=0\nActiveState=inactive\nSubState=dead\nUnitFileState=disabled"
+    },
+    "after": {
+      "current": "/srv/coinmaster/hl-live/releases/6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2-v3-dp50-82-wheel-8ff3c6dcc150",
+      "service": "MainPID=0\nActiveState=inactive\nSubState=dead\nUnitFileState=disabled"
+    },
+    "engine_runs": 0
+  },
+  "review": {
+    "source": "4ca0d87993f28c20fb039840551c04e051378582",
+    "focused_passed": 63,
+    "seconds": 15.58,
+    "independent": "PASS_0_P1",
+    "broader_passed": 200,
+    "broader_failed": 3,
+    "same_3_fail_on_base_5c886": true
+  }
+}
