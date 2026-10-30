@@ -147,7 +147,7 @@ def test_mixed_long_short_uses_account_value_without_raw_plus_notional_shortcut(
     assert result.equity != result.raw_usd + Decimal("357.15452")
 
 
-def test_negative_native_total_preserved_and_valid_reduction_gate_open(monkeypatch):
+def test_negative_native_total_preserved_and_valid_reduction_gate_open(monkeypatch, tmp_path):
     import time
 
     positions = ({
@@ -174,7 +174,27 @@ def test_negative_native_total_preserved_and_valid_reduction_gate_open(monkeypat
     strategy.recovery_confirmed = True
     strategy._feeds_fresh = lambda *_args: True
     monkeypatch.setattr(WaveOverlayStrategy, "_record_submission", lambda *_args, **_kwargs: True)
-    assert strategy._record_submission("reduce-only-probe") is True
+    from coinmaster.ops.paper import PaperRuntime
+    from nautilus_trader.model.orders import MarketOrder
+    from nautilus_trader.model.enums import OrderSide, TimeInForce
+    from nautilus_trader.model.identifiers import TraderId, ClientOrderId
+    from test_hl_stageg_sandbox_lifecycle import HL_BTC
+    order = MarketOrder(
+        TraderId("CM-MONEY"), strategy.id, HL_BTC.id, ClientOrderId("NEGATIVE-RAW-REDUCE"),
+        OrderSide.SELL, Quantity.from_str("0.01000"), UUID4(), time.time_ns(),
+        time_in_force=TimeInForce.IOC, reduce_only=True,
+    )
+    # Current production requires a journal even for reductions. Negative raw
+    # USDC itself must not block a valid native reduce-only money guard.
+    assert strategy._record_submission(order, action="BTC_REDUCE") is False
+    runtime = PaperRuntime(tmp_path / "negative-raw.sqlite", "negative-raw-probe", 10**20)
+    strategy.attach_recovery_runtime(runtime)
+    try:
+        assert strategy._record_submission(order, action="BTC_REDUCE") is True
+        strategy.recovery_confirmed = False
+        assert strategy._record_submission(order, action="BTC_REDUCE") is False
+    finally:
+        runtime.close()
 
 
 def test_selected_cross_leverage_identity_and_prospective_total_im():
