@@ -1,0 +1,12 @@
+{
+  "schema": "COINMASTER_VENUE_BOUND_ENGINEERING_LEDGER_V1",
+  "task": "venue-bound-live-20261030",
+  "authorization": "Owner explicit implementation and thorough verification request 2026-10-30; coordinator-selected engineering cap, not explicit numeric owner response",
+  "maximum_attempts": 6,
+  "used_attempts": 0,
+  "status": "PRE_ENGINE_FREEZE",
+  "old_economic_campaign": "CLOSED10/10_NONTRANSFERABLE",
+  "full_prefix_training_max": 0,
+  "live_exchange_orders_max": 0,
+  "attempts": []
+}

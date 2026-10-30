@@ -1,40 +1,24 @@
-2026-10-30 | HL-ONLY SIGNAL/HISTORY FEASIBILITY / NO IMPLEMENTATION OR START
+2026-10-30 11:35UTC | VENUE-BOUND LIVE IMPLEMENTATION IN PROGRESS / NO START
 M=/Users/vf/Documents/ChatGPT/Coinmaster/research-worktrees/btc-pattern-pilot-m2-20261021;branchcodex/btc-pattern-pilot-m2-20261021.
-R=/root/.openclaw/workspace/coinmaster/coinmaster;J=R/runtime/var/execution-parity-rebuild-20261029. Old rootSSHclosed; establish fresh canonicalSSH, neverreplayoldjobs.
-Ownerlatest: investigateallhistory/liveD1M1/H4H1signalsHL-only feasibility; studyonly/no productchange/nativeengine/START.
-AttachmentSHA1b3fb18e1baebed7d66ffae203f406beb9a52e4c6527b599bfc41c85b39db584; arithmetic exactPASS/noengine.
-Aeconomic5b56f7d0:10K24moTOTAL5635720.91989984/net5625720.91989984/ROI56257.2092%/bothDD51.4383711874%/0liq/OS0/11PASS.
-Aactualcapitalfull24moPASS/0liq/scalingPASS; amounts/readbacksPRIVATE;report7097c215...f642.
-A10Kreportc01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f.
-B5e1a899bfullraw883181.30709990/DD74.76431633%/OS1 strictfinancialFAIL;1e-8positionPnl-vs-cashgap/31UNKNOWNinclbootstrap. No rerun.
-CorrectR3TOTAL561476.78949795/DD85.39093016/1SOLliq/financialPASS/economicNO_GO;allrawfailurespreserved.
-NativecampaignCLOSED10/10,active0,remaining0;alloldbudgetsclosed;no new native/prefix/full.
-AallnormalSOLchild<=floorlot1000*fixedinitialseed/10000 AFTERfullparentadmission;actualfillrights/durableTERMINAL+APPLIED;no fakeCANCEL.
-AlegacyBTC39fields/SOLalpha-staging, NOTnewcontinuoushedge.30Mceilingsscale;venuegrid/min/tierreal.
-Finalruntime4ca0d87993f28c20fb039840551c04e051378582;10economicfilesbyteidenticalA;WT R/research-worktrees/a-live-drain-guard-20261030 clean.
-5c886 defaultUnified lookup uses existing unsigned HTTP transport;13purePASS/independent0P1. No new SDK/service.
-4ca forcedSOL REGIME/TRAIL/TERMINAL guard: fresh positive executableBBO +persisted firstdecision120sdeadline/episode+positionbinding/tombstone.
-Freshsamequoteallowed;deadline neverreset child/restart;expiry usesexistingrefresh/recoveryhold;emergency/globalDP/C1/normal13x60cadence preserved.
-63focusedPASS15.58s/independentPASS0P1. Broader200PASS3FAIL;exact3reproducedunchanged5cbase,notfixed/notALLPASS.
-HealthyA83forcedSOLfills/22decisiongroups:maxquoteage0/maxparentdecision-submit0;timestampgateNONBINDING,WS/depthnotcertified.
-InstalledINACTIVE /srv/coinmaster/hl-live/releases/4ca0d87993f28c20fb039840551c04e051378582-sol-staging-a-live-inactive-native1.231.0-api-v2.
-Manifest36809b9e0f7ac1cb876e0fde446c3e71418738680f82de1f27fd84b320e37323;profilead8f9950b6a9a837c32eb98c1abcb182f741a1f74475ceea27c3d4860f9583a9.
-92files/importorigins/packagedCandidate/nativepinsPASS;installer90dd0a69...bdaa7;livecurrent6c208unchanged/unitinactive-disabled/PID0.
-KeychainownerOSgrantDONE;securecanonicalcredentialbindingVERIFIED07:16UTC/sameid/master/otherfields/selection/mode0600. No secret output.
-Freshexact4ca read-only08:51UTC PASS signer/master/Unified/USDCfree/11DEXflat/orders0/DP55/STARTguard;immutablepackageverifyPASS.
-PilotBTC/SOLl2book snapshot07:55UTC PASS; snapshotonly,notfuturecapacity. Start usesfreshnormalprestartqualification.
-LiveDP remaining45%/DD55;actualavailableUSDCfreshflatINIT/fixedseedpersisted;existingmanualUNKNOWNreconciliation, no silentHWMreset.
-RealSTART separateexplicitownerconfirmationABSENT;orders/transfers/signatures0. No repeatkey/password/amountrequest.
-Project2readback09:06:45UTC:10items=7Done/1InProgress/2Todo;137CLOSED-Done/101InProgress/105+138TodoAFTERlive;123/130/131archived.
-NewSOLcontract SOL_HEDGE_AFTER_LIVE_RU.md:actualBTCparent/closedH4residual/covariancetarget/heldrisk-vs-trim/protectiveexits;differentfromoldB.
-GUIb96guardactive/health-auth-archivesPASS/legacyresearchBLOCKED;premiumUI/auth/canonicalprofilefactorybacklogpreserved. No tradingunitrestart.
-Native1.231.0/engine89079fe3/pyo397f3dc49;USDC/BTC5SOL2/leverage40x20x/fees.000432-.000144 referralincluded.
-Bybit1m/currentHLtiers/zeroimpact explicit;rawNOT_FAITHFUL/rankingFalse preserved;futurefills/ROI/anycapitalidentity notguaranteed.
-Publicsource4ca remoteexactverified;FINAL_LIVE_READINESS_AUDIT_RU.md +FINAL_LIVE_PROJECT_READBACK.json arecurrentconclusion;priorrawreceiptsimmutable.
-FIXED_PATH_COST_DIAGNOSTIC is NOTbacktest/ROI/DD;public669simulatedSOLrecords retained;actualaccountfinancialsPRIVATE.
-Raw A10K+actualcapital hashes/gates/24m/exit0/0liq independentlyverified. NativeA23/B24 inherited5f10 fullcycle/restartPASS;4ca delta63pure, no fresh4ca engine.
-Currenttwo-sourceA onlyREADY_FOR_GUARDED_PILOT/0identifiedP0P1;HL-onlyNOTimplemented/notqualified. Manualunknownexposureboundary. NEXTsourcechoice;separateSTARTstillrequired.
-ServicecredentialproviderPASS: systemdLoadCredential→CREDENTIALS_DIRECTORY samefilepreflight+Nativekey;directcanonicaldenyEXPECTED. TargetDBabsent/writableparent/noDP50.
-Detailedprivate root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json;noarchivebulkread.
-HL-onlycurrentwarmup feasible:1336post-prefixpairedD1/34shortwaves;currentSHORT/EMA81443.45/beta1.20725/TP3.0293673 vsBybit.0288030;noROIproof.
-HL1.231open-stampedbars needclose+realreceipt normalization;M1API~3.6d/old2024empty;earlyD1v0n0prefixunverified. ReadHL_ONLY_FEASIBILITY_20261030_RU.md;nextsourcechoice+boundedqualification.
+R=/root/.openclaw/workspace/coinmaster/coinmaster;hostroot@46.225.163.123. Preserve dirtyprimary, unrelatedservices, Macuntrackedlocks/source-for-review.
+Ownerlatestexplicit: implementALLstartup/history/livefeeds fromexecutionvenue;HLliveonlyHL;futureothervenueownfeeds. ResearchoptimizationKEEPSoriginalBybitreference.
+Currentprotocol reports/venue-bound-live-20261030/IMPLEMENTATION_AND_VERIFICATION_PROTOCOL_RU.md;notoldstudy-onlyhandoff.
+Soleproductwriter venue_bound_runtime_owner/GPT6.1Solmedium: R/research-worktrees/venue-bound-live-20261030,branchcodex/venue-bound-live-20261030,base4ca0d87993f28c20fb039840551c04e051378582.
+Independentread-onlyreview venue_bound_contract_review. OnebindingfromexecutionIDs;noindependentlyoverridablelivesignalvenue/crossvenuefallback.
+Keep39BTCparams/SOLalpha-staging/C1/USDC/DP55/remaining45%;newtrueSOLhedgeProject138AFTERlive. ResearchmodeexplicitBybit;noBybitliveexecutionqualificationclaim.
+HLstock1.231D1M1OPENtimestampsnormalizeCLOSE+actualreceipt;preservePriceQuantity,closedness/UTC/pairing/duplicate/gapguards. Newsourceidentity;noBybitcheckpointrelabel/HWMreset.
+HLcurrentpostactivitypaired1336D1/min730/34shortwavesPASS;leadingunverifiedzeroprefixexcludedonly;interiornotradedaysretained. M1~3.6d;noBybitfallback/unavailableoldarchiveblockingcurrentlive.
+Implementationandtargetedengine-freechecksfirst;freeze+independentreview+rootGO beforeanynativeengine/node. NEWengineeringcap6includingfailureschosenbycoordinator;spent0,notownerexplicitnumericreply.
+OldeconomicnativecampaignCLOSED10/10;newprefix/full/training0. Newledgerseparate;nooldslotreuse/noquietrestart.
+Finalruntimebaseline4ca/inactiveinstalled: /srv/coinmaster/hl-live/releases/4ca0d87993f28c20fb039840551c04e051378582-sol-staging-a-live-inactive-native1.231.0-api-v2.
+Livecurrentaliasstill6c208oldrelease;unitcoinmaster-hl-stageg-live inactive/dead/disabled/PID0lastverified. Noalias/services/account/orderchangesauthorizedbyhandoff.
+RealSTARTrequiresseparateexplicitownerconfirmation+freshnormalprestart;doNOTstartoldcurrentalias.
+CredentialbindingDONE/systemdLoadCredentialpreflight+Nativekeysamecopy;canonicaldirectUIDdenyEXPECTED. TargetDBabsent/freshINIT;noamount/key/passwordreapproval.
+InitialcapitalactualavailableUSDC/fixedseed;HWM/latchdurable;Unifiedretained. Allaccountreadbacks/amounts/credentialsPRIVATE.
+Native1.231.0/engine89079fe3/pyo397f3dc49;BTC5SOL2/feesmaker.000144taker.000432;noSDK/OMS/engineupgrade.
+HistoricalABybitsource5b56f7d0:10K24moTOTAL5635720.91989984/DD51.4383711874%/0liq/all11PASS;actualcapitalfullPASSprivate. NOTnewHL-onlyROIproof.
+Oldexact4ca63focusedPASS/independent0P1;inherited5f10A23/B24nativecycle+restartPASS. Newbindingneedsfreshrelevantacceptance;3oldbroadfixturefailurescausallyclassified,notALLPASS.
+Project2#101InProgresscoversmigration+release;#137Done/closed;#105GUI/#138newSOLTodoAFTERlive. Updatecurrent#101body/readbackduringthispackage.
+PublicrepoVF78/coinmastercode/tests/reportsupdatesauthorized;noaccountdata/secrets. Lastmanagerpublishedc6408dc185c5c71c4d6f0bf5d3a471909ed3a6f2.
+Privatehandoff root/runtime/var/private/execution-parity-rebuild-20261029/CURRENT_OPERATIONAL_STATE.json mustupdateatfreeze.
+Next: writerfocusedtests→reviewdiff/sourcefreeze→rootboundednativeGO→fixconcretefaults→inactivepackage+finalaudit+Project/handoff/publication. NoeconomicoptimizationorSTART.
