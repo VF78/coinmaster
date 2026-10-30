@@ -179,7 +179,8 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
     if document["strategy_config"] != f"{strategy_root}/configs/{strategy_file}":
         raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
     state_root = f"/var/lib/coinmaster-{identities[mode]}"
-    if document["signal_warmup_manifest"] != f"{state_root}/data/current/manifest.json":
+    data_dir = "data/hyperliquid"
+    if document["signal_warmup_manifest"] != f"{state_root}/{data_dir}/current/manifest.json":
         raise ConfigurationError("UNSAFE_TESTNET_WARMUP_PATH")
     if document["state_db"] != f"{state_root}/{identities[mode]}.sqlite":
         raise ConfigurationError("UNSAFE_TESTNET_STATE_DB_PATH")

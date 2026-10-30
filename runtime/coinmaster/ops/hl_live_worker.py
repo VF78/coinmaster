@@ -13,12 +13,9 @@ from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 
-from nautilus_trader.adapters.bybit import BybitLiveDataClientFactory
-from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidExecClientConfig
 from nautilus_trader.live.node import TradingNode
-from nautilus_trader.model.enums import TimeInForce, BarAggregation, PriceType, AggregationSource
-from nautilus_trader.model.data import BarType, BarSpecification
+from nautilus_trader.model.enums import TimeInForce
 from nautilus_trader.model.identifiers import ClientId
 
 from coinmaster.ops.hl_live_credential_preflight import check_live_credential, _read_json
@@ -29,7 +26,9 @@ from coinmaster.ops.hyperliquid_testnet import (
 )
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_status_server
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink, durable_management_scope
-from coinmaster.ops.native_paper_node import BYBIT_IDS, FeedBook, FeedObserver, FeedObserverConfig, bybit_daily_bar_type
+from coinmaster.ops.native_paper_node import FeedBook, FeedObserver, FeedObserverConfig
+from coinmaster.ops.venue_data import binding_for_execution
+from coinmaster.ops.hl_closed_bars import ClosedHyperliquidDataClientFactory, ClosedUnifiedHyperliquidDataClientFactory
 from coinmaster.ops.hl_live_epoch import LiveEpochRuntime as PaperRuntime
 from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity,initial_capital_limit,actual_initial_capital,staging_a_epoch_seed
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
@@ -97,7 +96,7 @@ class LiveSubmissionHooks(LifecycleHooks):
 
 
 class ClosedTradeClock:
-    """True Bybit trade1m -> BTC/SOL H4 + SOL1H, actual availability."""
+    """Same-venue closed trade1m -> BTC/SOL H4 + SOL1H, actual availability."""
     MINUTE=60_000_000_000
     H4=14_400_000_000_000
     DAY=86_400_000_000_000
@@ -171,6 +170,7 @@ class HyperliquidLiveNode:
         if instance.mode != "live" or instance.instance_id != "hl-stageg-live":
             raise RuntimeError("LIVE_INSTANCE_REQUIRED")
         self.instance, self.candidate, self.state = instance, candidate, state
+        self.data_binding = binding_for_execution((BTC_PERP, SOL_PERP))
         self.profile_root = Path(__file__).resolve().parents[2]
         source = self.profile_root / "coinmaster/strategy/wave_overlay.py"
         self.profile = load_live_profile(self.profile_root, candidate)
@@ -194,7 +194,7 @@ class HyperliquidLiveNode:
         self.master = record["master_address"]
         self.gate = cross_venue_stage_g_gate(
             candidate=candidate, warmup_manifest=instance.signal_warmup_manifest,
-            strategy_path=source, profile_root=self.profile_root,
+            strategy_path=source, profile_root=self.profile_root, data_binding=self.data_binding,
         )
         self.gate = replace(
             self.gate, approval_state="SEALED_LIVE_TECHNICAL_PROFILE_MATCH",
@@ -202,7 +202,7 @@ class HyperliquidLiveNode:
                         "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"),
         )
         self.candidate_hash = self.gate.candidate_hash
-        self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest)
+        self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest, data_binding=self.data_binding)
         if self.warmup_bundle is None or not self.gate.attachable:
             raise RuntimeError("LIVE_WARMUP_OR_SEAL_NOT_READY")
         self._warmup_verified_day = time.time_ns() // 86_400_000_000_000
@@ -223,14 +223,13 @@ class HyperliquidLiveNode:
         for key in ('research_c1_restore_dd','research_regime_reentry_band','research_btc_split_discount'):
             if key in strategy_flags:strategy_flags[key]=Decimal(str(strategy_flags[key]))
         if self.input_readiness:
-            from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
-            rows,warmup_state=load_stageg_bybit_warmup(instance.signal_warmup_manifest)
+            rows,warmup_state=self.data_binding.load(instance.signal_warmup_manifest)
             if warmup_state!='READY':raise RuntimeError('C1_DAILY_OHLC_WARMUP_UNKNOWN')
             strategy_flags['research_band_daily_seed']=tuple(((int(row['open_time_ms'])+86_400_000)*1_000_000,float(row['high']),float(row['low'])) for row in rows['BTCUSDT'])
         self.strategy = RecoverableWaveOverlayStrategy(WaveOverlayStrategyConfig(
             strategy_id=instance.strategy_id, order_id_tag=instance.order_id_tag,
             btc_id=BTC_PERP, sol_id=SOL_PERP,
-            btc_bar_type=bybit_daily_bar_type(BYBIT_IDS[0]), sol_bar_type=bybit_daily_bar_type(BYBIT_IDS[1]),
+            btc_bar_type=self.data_binding.bar_type(0), sol_bar_type=self.data_binding.bar_type(1),
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
             active_seed=staging_a_epoch_seed(self.profile,state,equity), candidate=candidate, seed_bars=self.warmup_bundle.bars,
@@ -240,7 +239,7 @@ class HyperliquidLiveNode:
             **strategy_flags,
             max_mark_age_ns=120_000_000_000, entries_gate=self._entries_enabled,
             event_sink=self.hooks.record_event, native_fill_sink=state.record_native_fill, submission_sink=self.hooks,
-            btc_signal_id=BYBIT_IDS[0], sol_signal_id=BYBIT_IDS[1],
+            btc_signal_id=self.data_binding.signal_ids[0], sol_signal_id=self.data_binding.signal_ids[1],
             execution_policy_hash="hl-mainnet-native-owned-v1", execution_policy_version="hl-mainnet-native-owned-v1",
             market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
             deposit_drawdown_limit_percent=self.profile["deposit_protection_percent"],
@@ -257,8 +256,7 @@ class HyperliquidLiveNode:
         # never changes/reset the persisted control or high-water anchor.
         self.strategy._input_readiness_preparation=self.input_readiness
         if self.input_readiness:
-            self.strategy._live_minute_bar_types=tuple(BarType(i,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL) for i in BYBIT_IDS)
-            self.config.data_clients['BYBIT-PUBLIC-SIGNAL']=replace(self.config.data_clients['BYBIT-PUBLIC-SIGNAL'],bars_timestamp_on_close=True)
+            self.strategy._live_minute_bar_types=tuple(self.data_binding.bar_type(i, minute=True) for i in range(2))
         self.manage_only_readiness=self.profile.get("manage_only_readiness",False) is True
         if self.input_readiness:
             if self.active_c1:
@@ -283,11 +281,9 @@ class HyperliquidLiveNode:
             scope=NativeLiveRecoveryScope(self.master,"",time.time_ns()//1_000_000,None,(),frozenset({"BTC","SOL"}))
         factory = ScopedHyperliquidExecClientFactory.bind(scope, state, self.strategy, account_lock_root=Path("/run/coinmaster-hl-live"),readiness_budget=self.readiness_budget,account_context=self.account_context)
         self.node = TradingNode(config=self.config, loop=self.loop)
-        self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
         if self.account_mode=='unifiedAccount':
-            from coinmaster.ops.hl_unified_instruments import UnifiedHyperliquidDataClientFactory
-            self.node.add_data_client_factory('HYPERLIQUID',UnifiedHyperliquidDataClientFactory)
-        else:self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
+            self.node.add_data_client_factory('HYPERLIQUID',ClosedUnifiedHyperliquidDataClientFactory)
+        else:self.node.add_data_client_factory("HYPERLIQUID", ClosedHyperliquidDataClientFactory)
         self.node.add_exec_client_factory("HYPERLIQUID", factory)
         self.node.build()
         self.feed_observer = FeedObserver(FeedObserverConfig(
@@ -383,7 +379,8 @@ class HyperliquidLiveNode:
                 "orders_enabled": self._entries_enabled(), "live_order_capability": not self.manage_only_readiness,
                 "recovery_required": not self.strategy.recovery_confirmed,
                 "recovery_capability": "MANAGE_ONLY_PREPARATION_NO_ORDER_AUTHORIZATION" if self.manage_only_readiness else "MANUAL_CLEAN_FLAT_ONLY", "feeds": self.feed.status(time.time_ns()),
-                "warmup": {"state": self.warmup_state, "rows": self.warmup_bundle.rows},
+                "warmup": {"state": self.warmup_state, "rows": self.warmup_bundle.rows,
+                           "source_policy": self.data_binding.policy, "binding_sha256": self.data_binding.identity},
                 "prime_error": self.prime_error,
                 "signal_seal": {"state": self.gate.approval_state, "strategy_sha256": self.gate.strategy_code_hash},
                 "margin_policy": "NATIVE_SELECTED_ACCOUNT_CROSS_MARGIN",
@@ -422,8 +419,7 @@ class LiveWorker:
                 self.runtime.prepare_flat_epoch(release_commit=identity["source_commit"])
             elif self.runtime.strategy_checkpoint() is None and profile.get('initialization_intent')!='INITIALIZE_FRESH_C1_EPOCH':
                 raise RuntimeError("MANAGEMENT_POLICY_LOAD_REQUIRED")
-            from coinmaster.ops.stage_g_refresh import refresh_stageg_warmup
-            refresh_stageg_warmup(self.instance.signal_warmup_manifest.parent.parent)
+            binding_for_execution((BTC_PERP, SOL_PERP)).refresh(self.instance.signal_warmup_manifest.parent.parent)
             self.native = HyperliquidLiveNode(
                 instance=self.instance, candidate=self.candidate.candidate, state=self.runtime,
                 credential_path=Path(environment["CREDENTIALS_DIRECTORY"]) / "connection.json",fingerprint_path=fingerprints,order_approval=self.order_approval,
@@ -437,9 +433,8 @@ class LiveWorker:
             return
         self._warmup_refresh_after = time.monotonic() + 900
         def refresh():
-            from coinmaster.ops.stage_g_refresh import refresh_stageg_warmup
             try:
-                refresh_stageg_warmup(self.instance.signal_warmup_manifest.parent.parent)
+                self.native.data_binding.refresh(self.instance.signal_warmup_manifest.parent.parent)
             except Exception:
                 # The native admission gate keeps stale/invalid history closed.
                 pass

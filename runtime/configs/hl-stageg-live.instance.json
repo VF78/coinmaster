@@ -4,7 +4,7 @@
   "environment": "mainnet",
   "mode": "live",
   "strategy_config": "/srv/coinmaster/hl-live/current/configs/hl-live-v3-dp50.candidate.json",
-  "signal_warmup_manifest": "/var/lib/coinmaster-hl-stageg-live/data/current/manifest.json",
+  "signal_warmup_manifest": "/var/lib/coinmaster-hl-stageg-live/data/hyperliquid/current/manifest.json",
   "state_db": "/var/lib/coinmaster-hl-stageg-live/hl-stageg-live.sqlite",
   "trader_id": "COINMASTER-HL-STAGEG-LIVE",
   "strategy_id": "stage-g-v1-hl-live-mainnet",

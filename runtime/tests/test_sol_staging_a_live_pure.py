@@ -110,7 +110,8 @@ def test_a_profile_exact_flags_source_and_additional_helper_pin(tmp_path):
     base=Candidate();pins={}
     names=('strategy/residual_recovery.py','strategy/wave_overlay.py','strategy/next_band.py','strategy/hedge_band.py',
         'domain/wave_overlay.py','strategy/c1_inputs.py','ops/hl_unified_account.py','ops/hl_unified_instruments.py',
-        'ops/hl_live_execution.py','ops/hl_info_receipt.py','ops/hl_live_money.py','strategy/sol_capital_staging.py')
+        'ops/hl_live_execution.py','ops/hl_info_receipt.py','ops/hl_live_money.py','strategy/sol_capital_staging.py',
+        'ops/venue_data.py','ops/hl_closed_bars.py','strategy/live_recovery.py')
     for name in names:
         path=tmp_path/'coinmaster'/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes((ROOT/name).read_bytes())
         pins['coinmaster/'+name]=hashlib.sha256(path.read_bytes()).hexdigest()

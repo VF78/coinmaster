@@ -16,6 +16,7 @@ PINS = (
     "strategy/hedge_band.py", "domain/wave_overlay.py", "strategy/c1_inputs.py",
     "ops/hl_unified_account.py", "ops/hl_unified_instruments.py", "ops/hl_live_execution.py",
     "ops/hl_info_receipt.py", "ops/hl_live_money.py",
+    "ops/venue_data.py", "ops/hl_closed_bars.py", "strategy/live_recovery.py",
 )
 UNIFIED = "HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1"
 ACTIVE_SCHEMA = "coinmaster-live-selected-c1-v1"

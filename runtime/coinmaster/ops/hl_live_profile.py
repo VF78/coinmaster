@@ -71,7 +71,8 @@ def _validate_input_readiness_profile(root,profile,candidate):
     if not actual:initial_capital_limit(profile['initial_capital_usdc'])
     required={'coinmaster/strategy/residual_recovery.py','coinmaster/strategy/wave_overlay.py','coinmaster/strategy/next_band.py',
         'coinmaster/strategy/hedge_band.py','coinmaster/domain/wave_overlay.py','coinmaster/strategy/c1_inputs.py','coinmaster/ops/hl_unified_account.py','coinmaster/ops/hl_unified_instruments.py',
-        'coinmaster/ops/hl_live_execution.py','coinmaster/ops/hl_info_receipt.py','coinmaster/ops/hl_live_money.py'}
+        'coinmaster/ops/hl_live_execution.py','coinmaster/ops/hl_info_receipt.py','coinmaster/ops/hl_live_money.py',
+        'coinmaster/ops/venue_data.py','coinmaster/ops/hl_closed_bars.py','coinmaster/strategy/live_recovery.py'}
     if staging:required.add('coinmaster/strategy/sol_capital_staging.py')
     if set(profile['source_pins'])!=required or any(hashlib.sha256((root/name).read_bytes()).hexdigest()!=digest for name,digest in profile['source_pins'].items()):
         raise RuntimeError('LIVE_INPUT_PROFILE_SOURCE_MISMATCH')

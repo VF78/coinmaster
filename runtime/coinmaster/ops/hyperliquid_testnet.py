@@ -99,14 +99,20 @@ def _sealed_approval_state(*, candidate_hash: str, strategy_code_hash: str, exec
         return "BLOCKED_SEALED_APPROVAL_MISSING_OR_INVALID"
 
 
-def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, strategy_path: Path, profile_root: Path, now_ns: int | None = None) -> CrossVenueStageGGate:
+def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, strategy_path: Path, profile_root: Path, now_ns: int | None = None, data_binding=None, research_bybit_reference: bool = False) -> CrossVenueStageGGate:
     """Fail closed before attaching Stage-G to real public HL data.
 
-    Bybit daily data remains the sealed winner's signal source. HL BTC/SOL
-    are execution instruments only. Existing strategy code is rejected until
-    it no longer imports research-only margin machinery.
+    The explicit LIVE binding uses its execution venue. The historical
+    Sandbox/research default retains its sealed Bybit source. Neither profile
+    imports research-only margin machinery into the real-order path.
     """
-    _, warmup_state = load_stageg_bybit_warmup(warmup_manifest, now_ms=None if now_ns is None else now_ns // 1_000_000)
+    if data_binding is None and not research_bybit_reference:
+        from coinmaster.ops.venue_data import binding_for_execution
+        data_binding = binding_for_execution(TESTNET_IDS)
+    if research_bybit_reference and data_binding is not None:
+        raise ValueError("RESEARCH_REFERENCE_AND_EXECUTION_BINDING_CONFLICT")
+    loader = load_stageg_bybit_warmup if research_bybit_reference else data_binding.load
+    _, warmup_state = loader(warmup_manifest, now_ms=None if now_ns is None else now_ns // 1_000_000)
     source = strategy_path.read_bytes()
     strategy_code_hash = hashlib.sha256(source).hexdigest()
     profile = HyperliquidVenueProfile.from_snapshot(profile_root, environment=HyperliquidProfileEnvironment.MAINNET)
@@ -125,6 +131,8 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
         # blocker for this credential-free virtual run.
         "funding_cash": "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
     }
+    if data_binding is not None:
+        execution_policy["data_binding_sha256"] = data_binding.identity
     execution_policy_hash = hashlib.sha256(
         json.dumps(execution_policy, sort_keys=True, separators=(",", ":")).encode(),
     ).hexdigest()
@@ -143,7 +151,7 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
         and approval_state == "SEALED_APPROVAL_MATCH"
     )
     return CrossVenueStageGGate(
-        signal_ids=("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT"),
+        signal_ids=("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT") if data_binding is None else tuple(map(str, data_binding.signal_ids)),
         execution_ids=(str(BTC_PERP), str(SOL_PERP)),
         candidate_hash=candidate_hash,
         strategy_code_hash=strategy_code_hash,
@@ -158,9 +166,15 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
     )
 
 
-def load_stageg_warmup_bundle(path: Path, *, now_ns: int | None = None) -> tuple[WarmupBundle | None, str]:
-    """Return feature-only Bybit history while retaining its source identity."""
-    rows, state = load_stageg_bybit_warmup(path, now_ms=None if now_ns is None else now_ns // 1_000_000)
+def load_stageg_warmup_bundle(path: Path, *, now_ns: int | None = None, data_binding=None, research_bybit_reference: bool = False) -> tuple[WarmupBundle | None, str]:
+    """Return feature history from the explicit LIVE binding or sealed Sandbox source."""
+    if data_binding is None and not research_bybit_reference:
+        from coinmaster.ops.venue_data import binding_for_execution
+        data_binding = binding_for_execution(TESTNET_IDS)
+    if research_bybit_reference and data_binding is not None:
+        raise ValueError("RESEARCH_REFERENCE_AND_EXECUTION_BINDING_CONFLICT")
+    loader = load_stageg_bybit_warmup if research_bybit_reference else data_binding.load
+    rows, state = loader(path, now_ms=None if now_ns is None else now_ns // 1_000_000)
     if state != "READY":
         return None, state
     btc, sol = rows["BTCUSDT"], rows["SOLUSDT"]
@@ -314,14 +328,29 @@ def execution_factory_for_mode(mode: str):
     raise ValueError("UNKNOWN_EXECUTION_MODE")
 
 
-def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = Decimal("10000"), execution_mode: str = "sandbox") -> TradingNodeConfig:
+def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = Decimal("10000"), execution_mode: str = "sandbox", research_bybit_reference: bool = False) -> TradingNodeConfig:
     """Build one native execution route; constructing the config never loads secrets."""
     execution_factory_for_mode(execution_mode)
+    if research_bybit_reference and execution_mode != "sandbox":
+        raise ValueError("RESEARCH_BYBIT_PROXY_REFUSES_REAL_EXECUTION")
     if execution_mode == "sandbox" and (not starting_cash.is_finite() or starting_cash <= 0):
         raise ValueError("INVALID_NATIVE_SANDBOX_STARTING_CASH")
     provider = InstrumentProviderConfig(load_ids=frozenset(TESTNET_IDS))
     routing = RoutingConfig(venues=frozenset({"HYPERLIQUID"}))
     bybit_routing = RoutingConfig(venues=frozenset({"BYBIT"}))
+    data_clients = {
+        "HYPERLIQUID-MAINNET-DATA": HyperliquidDataClientConfig(
+            instrument_provider=provider, routing=routing, environment=PUBLIC_MAINNET_ENVIRONMENT,
+        ),
+    }
+    if research_bybit_reference:
+        data_clients["BYBIT-PUBLIC-SIGNAL"] = BybitDataClientConfig(
+            api_key=None, api_secret=None,
+            instrument_provider=InstrumentProviderConfig(load_ids=frozenset(BYBIT_IDS)), routing=bybit_routing,
+        )
+    else:
+        from coinmaster.ops.venue_data import binding_for_execution
+        binding_for_execution(TESTNET_IDS)
     return TradingNodeConfig(
         environment=Environment.LIVE,
         trader_id=trader_id,
@@ -330,16 +359,7 @@ def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = 
         # handled by PaperRuntime and must never be described as exchange
         # reconciliation.
         exec_engine=LiveExecEngineConfig(reconciliation=execution_mode == "live"),
-        data_clients={
-            "BYBIT-PUBLIC-SIGNAL": BybitDataClientConfig(
-                api_key=None, api_secret=None,
-                instrument_provider=InstrumentProviderConfig(load_ids=frozenset(BYBIT_IDS)),
-                routing=bybit_routing,
-            ),
-            "HYPERLIQUID-MAINNET-DATA": HyperliquidDataClientConfig(
-                instrument_provider=provider, routing=routing, environment=PUBLIC_MAINNET_ENVIRONMENT,
-            ),
-        },
+        data_clients=data_clients,
         exec_clients={
             "SANDBOX": SandboxExecutionClientConfig(
                 venue="HYPERLIQUID",
@@ -361,19 +381,21 @@ def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = 
     )
 
 
-def assert_native_testnet_only(config: TradingNodeConfig, execution_mode: str = "sandbox") -> None:
+def assert_native_testnet_only(config: TradingNodeConfig, execution_mode: str = "sandbox", *, research_bybit_reference: bool = False) -> None:
     """Require exactly one mode-specific native execution route."""
-    expected_data = {"BYBIT-PUBLIC-SIGNAL", "HYPERLIQUID-MAINNET-DATA"}
+    if research_bybit_reference and execution_mode != "sandbox":
+        raise RuntimeError("RESEARCH_BYBIT_PROXY_REFUSES_REAL_EXECUTION")
+    expected_data = {"HYPERLIQUID-MAINNET-DATA"} | ({"BYBIT-PUBLIC-SIGNAL"} if research_bybit_reference else set())
     client_key, factory = execution_factory_for_mode(execution_mode)
     if set(config.data_clients) != expected_data or set(config.exec_clients) != {client_key}:
         raise RuntimeError("HL_TESTNET_SINGLE_NATIVE_ROUTE_REQUIRED")
-    bybit = config.data_clients["BYBIT-PUBLIC-SIGNAL"]
+    bybit = config.data_clients.get("BYBIT-PUBLIC-SIGNAL")
     data = config.data_clients["HYPERLIQUID-MAINNET-DATA"]
     execution = config.exec_clients[client_key]
     expected_type = SandboxExecutionClientConfig if execution_mode == "sandbox" else HyperliquidExecClientConfig
-    if not isinstance(bybit, BybitDataClientConfig) or not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, expected_type):
+    if (bybit is not None and not isinstance(bybit, BybitDataClientConfig)) or not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, expected_type):
         raise RuntimeError("HL_TESTNET_NATIVE_CONFIG_REQUIRED")
-    if bybit.api_key is not None or bybit.api_secret is not None:
+    if bybit is not None and (bybit.api_key is not None or bybit.api_secret is not None):
         raise RuntimeError("HL_TESTNET_BYBIT_SIGNAL_CLIENT_MUST_BE_PUBLIC")
     if data.environment is not PUBLIC_MAINNET_ENVIRONMENT:
         raise RuntimeError("HL_TESTNET_MAINNET_OR_UNSET_ENVIRONMENT")
@@ -388,7 +410,12 @@ def assert_native_testnet_only(config: TradingNodeConfig, execution_mode: str = 
 
 class HyperliquidTestnetNode:
     """One OS-process owner of public feeds and a local Sandbox account."""
-    def __init__(self, *, instance: TestnetInstanceConfig, candidate: Candidate, state: PaperRuntime, starting_cash: Decimal = Decimal("10000")) -> None:
+    def __init__(self, *, instance: TestnetInstanceConfig, candidate: Candidate, state: PaperRuntime, starting_cash: Decimal = Decimal("10000"), research_bybit_reference: bool = False) -> None:
+        if instance.mode != "sandbox":
+            raise RuntimeError("HL_LIVE_ROUTE_NOT_APPROVED")
+        from coinmaster.ops.venue_data import binding_for_execution
+        self.research_bybit_reference = research_bybit_reference
+        self.data_binding = None if research_bybit_reference else binding_for_execution(TESTNET_IDS)
         self.instance, self.candidate, self.state = instance, candidate, state
         self.starting_cash = starting_cash
         self._seed_verified = False
@@ -396,25 +423,29 @@ class HyperliquidTestnetNode:
         self.candidate_hash = candidate_content_hash(candidate)
         self.profile_root = Path(__file__).resolve().parents[2]
         self.profile = HyperliquidVenueProfile.from_snapshot(self.profile_root, environment=HyperliquidProfileEnvironment.MAINNET)
-        self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest)
+        self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest, data_binding=self.data_binding, research_bybit_reference=research_bybit_reference)
         self._warmup_verified_day = time.time_ns() // 86_400_000_000_000
         self._warmup_verified_target = instance.signal_warmup_manifest.resolve()
         self._warmup_checked_at_ns = time.time_ns()
         self.gate = cross_venue_stage_g_gate(
             candidate=candidate, warmup_manifest=instance.signal_warmup_manifest,
             strategy_path=self.profile_root / "coinmaster/strategy/wave_overlay.py",
-            profile_root=self.profile_root,
+            profile_root=self.profile_root, data_binding=self.data_binding, research_bybit_reference=research_bybit_reference,
         )
         self.loop = asyncio.new_event_loop()
-        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id, starting_cash=starting_cash, execution_mode=instance.mode)
-        assert_native_testnet_only(self.config, instance.mode)
+        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id, starting_cash=starting_cash, execution_mode=instance.mode, research_bybit_reference=research_bybit_reference)
+        assert_native_testnet_only(self.config, instance.mode, research_bybit_reference=research_bybit_reference)
         if instance.mode != "sandbox":
             # A later approval must supply native account economics, complete
             # recovery, and a guarded order route before building a live node.
             raise RuntimeError("HL_LIVE_ROUTE_NOT_APPROVED")
         self.node = TradingNode(config=self.config, loop=self.loop)
-        self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
-        self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
+        if research_bybit_reference:
+            self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
+            self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
+        else:
+            from coinmaster.ops.hl_closed_bars import ClosedHyperliquidDataClientFactory
+            self.node.add_data_client_factory("HYPERLIQUID", ClosedHyperliquidDataClientFactory)
         self.node.add_exec_client_factory(*execution_factory_for_mode(instance.mode))
         self.node.build()
         # Model-only, constant 1:1 USD/USDC assumption in the same venue's
@@ -443,14 +474,16 @@ class HyperliquidTestnetNode:
         policy = HyperliquidSandboxMarginPolicy(self.profile, SANDBOX_LEVERAGES, SANDBOX_MARK_MAX_AGE_NS)
         return WaveOverlayStrategyConfig(
             btc_id=BTC_PERP, sol_id=SOL_PERP,
-            btc_bar_type=bybit_daily_bar_type(BYBIT_IDS[0]), sol_bar_type=bybit_daily_bar_type(BYBIT_IDS[1]),
+            btc_bar_type=bybit_daily_bar_type(BYBIT_IDS[0]) if self.data_binding is None else self.data_binding.bar_type(0),
+            sol_bar_type=bybit_daily_bar_type(BYBIT_IDS[1]) if self.data_binding is None else self.data_binding.bar_type(1),
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
             active_seed=self.starting_cash, margin_policy=policy,
             candidate=self.candidate, seed_bars=self.warmup_bundle.bars,
             entries_enabled=True, entries_gate=self._entries_enabled,
             event_sink=self.hooks.record_event, native_fill_sink=self.state.record_native_fill, submission_sink=self.hooks,
-            btc_signal_id=BYBIT_IDS[0], sol_signal_id=BYBIT_IDS[1],
+            btc_signal_id=BYBIT_IDS[0] if self.data_binding is None else self.data_binding.signal_ids[0],
+            sol_signal_id=BYBIT_IDS[1] if self.data_binding is None else self.data_binding.signal_ids[1],
             execution_policy_hash=self.gate.execution_policy_hash,
             execution_policy_version="hl-mainnet-public-data-native-sandbox-v1",
             funding_sink=NativeSandboxFundingPoster(exchange=self._sandbox_exchange(), runtime=self.state),
@@ -479,7 +512,7 @@ class HyperliquidTestnetNode:
             or target != self._warmup_verified_target
             or now_ns - self._warmup_checked_at_ns >= 900_000_000_000
         ):
-            bundle, state = load_stageg_warmup_bundle(self.instance.signal_warmup_manifest)
+            bundle, state = load_stageg_warmup_bundle(self.instance.signal_warmup_manifest, data_binding=getattr(self, "data_binding", None), research_bybit_reference=getattr(self, "research_bybit_reference", False))
             self.warmup_bundle, self.warmup_state = bundle, state
             if self.strategy is not None and bundle is not None and state == "READY":
                 self.strategy.queue_verified_backfill(bundle.bars)

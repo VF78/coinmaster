@@ -91,7 +91,21 @@ def recovery_policy_hash(config, candidate):
     if config.research_residual_recovery:
         body['live_deposit_limit_percent']=55
         body['retained_equity_floor_fraction']='0.45'
-        body['live_input_clock_contract']='BYBIT_NATIVE_CONFIRMED_LAST_1M_UTC240_H4_ACTUAL_AVAILABILITY_V1'
+        # The native research harness retains its explicit Bybit signal/HL
+        # rules-proxy model. Only the real-order LIVE composition owns this
+        # execution policy marker; a research flag is not LIVE authorization.
+        if config.execution_policy_version == "hl-mainnet-native-owned-v1":
+            from coinmaster.ops.venue_data import binding_for_execution
+            binding = binding_for_execution((config.btc_id, config.sol_id))
+            if (config.btc_signal_id, config.sol_signal_id) != binding.signal_ids:
+                raise ValueError('LIVE_SIGNAL_EXECUTION_VENUE_MISMATCH')
+            body['live_input_clock_contract']=binding.policy
+            body['live_data_binding_sha256']=binding.identity
+            root=Path(__file__).resolve().parents[1]
+            body['live_data_source_pins']={name:hashlib.sha256((root/name).read_bytes()).hexdigest()
+                for name in ('ops/venue_data.py','ops/hl_closed_bars.py')}
+        else:
+            body['live_input_clock_contract']='BYBIT_NATIVE_CONFIRMED_LAST_1M_UTC240_H4_ACTUAL_AVAILABILITY_V1'
         root=Path(__file__).resolve().parents[1]
         body['economic_source_pins']={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ('strategy/residual_recovery.py','strategy/wave_overlay.py','strategy/next_band.py','strategy/hedge_band.py','domain/wave_overlay.py','strategy/c1_inputs.py','ops/hl_unified_account.py','ops/hl_unified_instruments.py')}
     if getattr(config,"research_sol_capital_staging_a",False):
@@ -332,8 +346,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         values=tuple(getattr(bar,key).as_decimal() for key in ('open','high','low','close'))
         available=self.clock.timestamp_ns()
         if self._recovery_runtime is not None:
-            self._recovery_runtime.append_evidence('Bybit1m:'+str(source)+':'+str(bar.ts_event),'signal',
-                dict(source='BYBIT_TRADE_CLOSED_1M',instrument=str(source),close_ns=bar.ts_event,OHLC=tuple(map(str,values)),received_ns=available))
+            self._recovery_runtime.append_evidence(str(source.venue)+'1m:'+str(source)+':'+str(bar.ts_event),'signal',
+                dict(source=str(source.venue)+'_TRADE_CLOSED_1M',instrument=str(source),close_ns=bar.ts_event,OHLC=tuple(map(str,values)),received_ns=available))
         self._live_clock().minute(str(instrument),bar.ts_event,bar.ts_init,available,values)
         self._persist_transient_checkpoint()
 

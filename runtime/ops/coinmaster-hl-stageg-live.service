@@ -14,7 +14,7 @@ Environment=COINMASTER_HL_STAGEG_STATUS_PORT=18185
 Environment=COINMASTER_LIVE_ORDER_APPROVAL=/etc/coinmaster/live-order-approval.json
 EnvironmentFile=/etc/coinmaster-hl-live-control.env
 LoadCredential=connection.json:/var/lib/coinmaster-connections/cccab09df4d1385ae1f893ecfaf91dcf.json
-ExecStartPre=/srv/coinmaster/hl-live/current/.venv/bin/python -m coinmaster.ops.stage_g_refresh --data-root /var/lib/coinmaster-hl-stageg-live/data
+ExecStartPre=/srv/coinmaster/hl-live/current/.venv/bin/python -m coinmaster.ops.stage_g_refresh --data-root /var/lib/coinmaster-hl-stageg-live/data/hyperliquid
 ExecStartPre=/srv/coinmaster/hl-live/current/.venv/bin/python -m coinmaster.ops.hl_live_credential_preflight --fingerprints /srv/coinmaster/hl-live/current/configs/hl-stageg-live.account-fingerprint.json
 ExecStart=/srv/coinmaster/hl-live/current/.venv/bin/python -m coinmaster.ops.hl_live_worker
 Restart=no

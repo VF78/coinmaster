@@ -95,7 +95,7 @@ def stage_check(commit: str) -> None:
         "from coinmaster.ops.stage_g_config import load_candidate\n"
         "from coinmaster.ops.hyperliquid_testnet import cross_venue_stage_g_gate\n"
         "r=Path.cwd();g=cross_venue_stage_g_gate(candidate=load_candidate(r/\"configs/stage-g-v1.json\").candidate,"
-        "warmup_manifest=Path(\"/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json\"),"
+        "warmup_manifest=Path(\"/var/lib/coinmaster-hl-stageg-testnet/data/hyperliquid/current/manifest.json\"),"
         "strategy_path=r/\"coinmaster/strategy/wave_overlay.py\",profile_root=r)\n"
         "assert g.warmup_state==\"READY\" and g.approval_state==\"SEALED_APPROVAL_MATCH\" and g.attachable\n"
     )

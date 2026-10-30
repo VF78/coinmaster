@@ -1,4 +1,4 @@
-"""Refresh the isolated Stage-G signal warmup from genuine public Bybit pages.
+"""Refresh execution-venue Stage-G warmup; Bybit proxy requires explicit research opt-in.
 
 The current symlink changes only after the complete successor artifact passes
 raw-page hash, daily coverage, and latest-completed-session checks. No worker
@@ -16,7 +16,6 @@ from pathlib import Path
 
 from coinmaster.ops.stage_g_config import load_testnet_instance_config
 from coinmaster.ops.stage_g_warmup import DAY_MS, extend_stageg_bybit_warmup, load_stageg_bybit_warmup
-from coinmaster.research.bybit_data import ingest
 
 
 def _promote(data_root: Path, artifact: Path) -> None:
@@ -55,6 +54,7 @@ def refresh_stageg_warmup(data_root: Path, *, now_ms: int | None = None) -> Path
         tail = data_root / f"bybit-tail-{today:%Y%m%d}-{uuid.uuid4().hex[:8]}"
         start = datetime.fromtimestamp(predecessor_end / 1000, UTC).isoformat()
         end = today.isoformat()
+        from coinmaster.research.bybit_data import ingest
         ingest(start, end, tail)
         tail_manifest = json.loads((tail / "bybit/manifest.json").read_text())
         artifact = data_root / f"{prefix}{tail_manifest['raw_manifest_sha256'][:12]}"
@@ -75,14 +75,23 @@ def refresh_stageg_warmup(data_root: Path, *, now_ms: int | None = None) -> Path
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, required=True)
+    parser.add_argument("--research-bybit-reference", action="store_true",
+        help="Explicit sealed research-only Bybit/HL proxy; never real execution")
     args = parser.parse_args()
     configured = os.environ.get("COINMASTER_HL_TESTNET_INSTANCE_CONFIG")
     if configured:
         instance = load_testnet_instance_config(Path(configured))
-        expected = args.data_root.resolve(strict=True) / "current" / "manifest.json"
+        expected = args.data_root.resolve() / "current" / "manifest.json"
         if instance.signal_warmup_manifest != expected:
             raise ValueError("STAGEG_UNIT_ENV_WARMUP_MISMATCH")
-    manifest = refresh_stageg_warmup(args.data_root)
+    if args.research_bybit_reference:
+        if os.environ.get("COINMASTER_HL_LIVE_INSTANCE_CONFIG"):
+            raise ValueError("RESEARCH_BYBIT_PROXY_REFUSES_REAL_EXECUTION")
+        manifest = refresh_stageg_warmup(args.data_root)
+    else:
+        from coinmaster.ops.hyperliquid_testnet import TESTNET_IDS
+        from coinmaster.ops.venue_data import binding_for_execution
+        manifest = binding_for_execution(TESTNET_IDS).refresh(args.data_root)
     print(json.dumps({"manifest": str(manifest), "state": "READY"}, sort_keys=True))
 
 
