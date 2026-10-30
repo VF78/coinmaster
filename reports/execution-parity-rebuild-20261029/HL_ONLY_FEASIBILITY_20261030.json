@@ -1,0 +1,359 @@
+{
+  "scope": "HL-only feasibility study; no product deployment or native economic runs",
+  "observed_utc": "2026-10-30T10:45:21.511403+00:00",
+  "current_source": "4ca0d87993f28c20fb039840551c04e051378582",
+  "current_runtime_changed": false,
+  "HL_only_implementation_done": false,
+  "HL_only_economic_result_available": false,
+  "API_coverage": [
+    {
+      "name": "BTC-D1-all",
+      "http_url": "https://api.hyperliquid.xyz/info",
+      "HTTP_status": 200,
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "BTC",
+          "interval": "1d",
+          "startTime": 1577836800000,
+          "endTime": 1793357118323
+        }
+      },
+      "rows": 2264,
+      "closed_rows": 2263,
+      "first_UTC": "2020-08-19T00:00:00+00:00",
+      "last_close_UTC": "2026-10-30T00:00:00+00:00",
+      "first_record": {
+        "t": 1597795200000,
+        "T": 1597881599999,
+        "s": "BTC",
+        "i": "1d",
+        "o": "11962.0",
+        "c": "11763.9",
+        "h": "12037.1",
+        "l": "11574.8",
+        "v": "0.0",
+        "n": 0
+      },
+      "last_record": {
+        "t": 1793232000000,
+        "T": 1793318399999,
+        "s": "BTC",
+        "i": "1d",
+        "o": "81319.0",
+        "c": "77947.0",
+        "h": "81955.0",
+        "l": "77856.0",
+        "v": "58388.03914",
+        "n": 483574
+      },
+      "internal_gap_count": 0,
+      "sha256": "012d4fcc4695bb94b7922ba21fa0dfb0f5ffd982afba8021aea09225a2e62b7a"
+    },
+    {
+      "name": "BTC-M1-current",
+      "http_url": "https://api.hyperliquid.xyz/info",
+      "HTTP_status": 200,
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "BTC",
+          "interval": "1m",
+          "startTime": 1792493118323,
+          "endTime": 1793357118323
+        }
+      },
+      "rows": 5187,
+      "closed_rows": 5186,
+      "first_UTC": "2026-10-26T20:19:00+00:00",
+      "last_close_UTC": "2026-10-30T10:45:00+00:00",
+      "first_record": {
+        "t": 1793045940000,
+        "T": 1793045999999,
+        "s": "BTC",
+        "i": "1m",
+        "o": "79903.0",
+        "c": "79876.0",
+        "h": "79903.0",
+        "l": "79876.0",
+        "v": "5.57423",
+        "n": 105
+      },
+      "last_record": {
+        "t": 1793357040000,
+        "T": 1793357099999,
+        "s": "BTC",
+        "i": "1m",
+        "o": "77666.0",
+        "c": "77671.0",
+        "h": "77671.0",
+        "l": "77645.0",
+        "v": "17.97609",
+        "n": 208
+      },
+      "internal_gap_count": 0,
+      "sha256": "a6227dc6ef1c5c52378a79cd459bbf08ae77cca4ce75c1c134ee53f6237218ed"
+    },
+    {
+      "name": "BTC-M1-reference-start",
+      "http_url": "https://api.hyperliquid.xyz/info",
+      "HTTP_status": 200,
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "BTC",
+          "interval": "1m",
+          "startTime": 1725148800000,
+          "endTime": 1725235200000
+        }
+      },
+      "rows": 0,
+      "closed_rows": 0,
+      "first_UTC": null,
+      "last_close_UTC": null,
+      "first_record": null,
+      "last_record": null,
+      "internal_gap_count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "SOL-D1-all",
+      "http_url": "https://api.hyperliquid.xyz/info",
+      "HTTP_status": 200,
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "SOL",
+          "interval": "1d",
+          "startTime": 1577836800000,
+          "endTime": 1793357118323
+        }
+      },
+      "rows": 2238,
+      "closed_rows": 2237,
+      "first_UTC": "2020-09-14T00:00:00+00:00",
+      "last_close_UTC": "2026-10-30T00:00:00+00:00",
+      "first_record": {
+        "t": 1600041600000,
+        "T": 1600127999999,
+        "s": "SOL",
+        "i": "1d",
+        "o": "3.2002",
+        "c": "3.2661",
+        "h": "4.91",
+        "l": "3.2002",
+        "v": "0.0",
+        "n": 0
+      },
+      "last_record": {
+        "t": 1793232000000,
+        "T": 1793318399999,
+        "s": "SOL",
+        "i": "1d",
+        "o": "102.4",
+        "c": "95.611",
+        "h": "103.17",
+        "l": "94.809",
+        "v": "3543526.6800000002",
+        "n": 127896
+      },
+      "internal_gap_count": 0,
+      "sha256": "d775f7c60376875a4c1b4a3affe5591c5a8c43e7f60b8635e90ee37e48511159"
+    },
+    {
+      "name": "SOL-M1-current",
+      "http_url": "https://api.hyperliquid.xyz/info",
+      "HTTP_status": 200,
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "SOL",
+          "interval": "1m",
+          "startTime": 1792493118323,
+          "endTime": 1793357118323
+        }
+      },
+      "rows": 5175,
+      "closed_rows": 5174,
+      "first_UTC": "2026-10-26T20:31:00+00:00",
+      "last_close_UTC": "2026-10-30T10:45:00+00:00",
+      "first_record": {
+        "t": 1793046660000,
+        "T": 1793046719999,
+        "s": "SOL",
+        "i": "1m",
+        "o": "100.21",
+        "c": "100.3",
+        "h": "100.3",
+        "l": "100.21",
+        "v": "1502.63",
+        "n": 61
+      },
+      "last_record": {
+        "t": 1793357040000,
+        "T": 1793357099999,
+        "s": "SOL",
+        "i": "1m",
+        "o": "97.092",
+        "c": "97.059",
+        "h": "97.097",
+        "l": "97.059",
+        "v": "171.0",
+        "n": 16
+      },
+      "internal_gap_count": 0,
+      "sha256": "8848b871352811991d873a4a3737f2e50851e0a78b18f8f3ca76acfd60f560b3"
+    },
+    {
+      "name": "SOL-M1-reference-start",
+      "http_url": "https://api.hyperliquid.xyz/info",
+      "HTTP_status": 200,
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "SOL",
+          "interval": "1m",
+          "startTime": 1725148800000,
+          "endTime": 1725235200000
+        }
+      },
+      "rows": 0,
+      "closed_rows": 0,
+      "first_UTC": null,
+      "last_close_UTC": null,
+      "first_record": null,
+      "last_record": null,
+      "internal_gap_count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ],
+  "daily_provenance_flags": [
+    {
+      "coin": "BTC",
+      "D1_closed": 2263,
+      "leading_zero_activity_rows": 921,
+      "first_positive_volume_and_trade_open_UTC": "2023-02-26T00:00:00+00:00",
+      "first_positive_close_UTC": "2023-02-27T00:00:00+00:00",
+      "activity_segment_days": 1342,
+      "zero_activity_days_after_first": 0,
+      "first_730_available_after_first_activity": "2025-02-25T00:00:00+00:00",
+      "old_reference_warmup_start": "2022-09-01T00:00:00Z",
+      "positive_activity_before_reference_warmup_start": false,
+      "first_positive_record": {
+        "t": 1677369600000,
+        "T": 1677455999999,
+        "s": "BTC",
+        "i": "1d",
+        "o": "23173.0",
+        "c": "23550.0",
+        "h": "23664.0",
+        "l": "23170.0",
+        "v": "10.70395",
+        "n": 2514
+      }
+    },
+    {
+      "coin": "SOL",
+      "D1_closed": 2237,
+      "leading_zero_activity_rows": 901,
+      "first_positive_volume_and_trade_open_UTC": "2023-03-04T00:00:00+00:00",
+      "first_positive_close_UTC": "2023-03-05T00:00:00+00:00",
+      "activity_segment_days": 1336,
+      "zero_activity_days_after_first": 0,
+      "first_730_available_after_first_activity": "2025-03-03T00:00:00+00:00",
+      "old_reference_warmup_start": "2022-09-01T00:00:00Z",
+      "positive_activity_before_reference_warmup_start": false,
+      "first_positive_record": {
+        "t": 1677888000000,
+        "T": 1677974399999,
+        "s": "SOL",
+        "i": "1d",
+        "o": "21.119",
+        "c": "20.976",
+        "h": "21.127",
+        "l": "20.263",
+        "v": "19762.49",
+        "n": 4118
+      }
+    }
+  ],
+  "postactivity_current_pure_diagnostic": {
+    "api_calls": 0,
+    "beta270": 1.2072462919529434,
+    "beta_gate_pass": true,
+    "btc_close": 77947.0,
+    "claim_limits": [
+      "Current pure feature feasibility only; activity fields are not a complete historical provenance audit.",
+      "Removing the leading zero-activity prefix does not establish historical BBO, fees, funding or execution parity.",
+      "Strict730-day warmup before Sep2024 benchmark is unavailable on this postactivity chain.",
+      "New source changes strategy inputs and requires separate verification before migration; no migration or trading authorization implied."
+    ],
+    "completed_same_side_waves_last730d": 34,
+    "ema34": 81443.45101193717,
+    "filter": "Exclude only each asset continuous leading prefix with n==0 AND v==0; retain all subsequent rows including interior zero rows; use closed paired daily rows only.",
+    "first_730day_warmup_complete_utc": "2025-03-03T00:00:00+00:00",
+    "first_paired_open_utc": "2023-03-04T00:00:00+00:00",
+    "input_paths": [
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/private/execution-parity-rebuild-20261029/hl-only-feasibility-20261030/BTC-D1-all.json",
+      "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/private/execution-parity-rebuild-20261029/hl-only-feasibility-20261030/SOL-D1-all.json"
+    ],
+    "last_paired_close_utc": "2026-10-30T00:00:00+00:00",
+    "minimum730days_current_pass": true,
+    "native_engine_runs": 0,
+    "paired_rows": 1336,
+    "per_asset": {
+      "BTC": {
+        "excluded_continuous_leading_n0_v0_rows": 921,
+        "first_retained_open_utc": "2023-02-26T00:00:00+00:00",
+        "interior_zero_rows_retained": 0,
+        "kept_closed_rows": 1342
+      },
+      "SOL": {
+        "excluded_continuous_leading_n0_v0_rows": 901,
+        "first_retained_open_utc": "2023-03-04T00:00:00+00:00",
+        "interior_zero_rows_retained": 0,
+        "kept_closed_rows": 1336
+      }
+    },
+    "pnl_runs": 0,
+    "pure_module_sha256": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+    "relative65": -0.0013514769846804855,
+    "runtime_writes": 0,
+    "schema": "hl-only-post-leading-zero-prefix-features-v1",
+    "side": -1,
+    "sol_close": 95.611,
+    "source_commit": "4ca0d87993f28c20fb039840551c04e051378582",
+    "warmup_ready_by_2024_09_01": false,
+    "wave_distance_fractions": [
+      0.0,
+      0.0,
+      0.029367288878036437
+    ],
+    "wave_min8_gate_pass": true,
+    "z180": -0.24968146209534745
+  },
+  "postactivity_diagnostic_sha256": "19a2f52b998e73e1ab8a41963a9f3186e1f851050030e484be05996b6d6f6637",
+  "migration_contract_sha256": "cdb2e94934336b0d610c42020b62a381bbfcfae28d1eb142b2da5f9e1c242a1f",
+  "fullprefix_diagnostic_sha256": "a764b440edac90fc375eb0ec08cc1b983b8989ee23080225f4fed800ce05ecbb",
+  "stock_adapter": {
+    "version": "1.231.0",
+    "official_source_commit": "27a8e54e7ac3c57d6cbf8891f0283dfbaee97317",
+    "supports_D1_M1": true,
+    "WS_closed_only_at_next_period": true,
+    "stock_bar_event_timestamp": "open_time",
+    "required_existing_strategy_timestamp": "close_time",
+    "normalization_needed": true,
+    "HTTP_actual_availability_must_be_preserved": true,
+    "engine_upgrade_justified_by_this_check": false
+  },
+  "no_new_economic_native_budget": true,
+  "project_update": {
+    "issue": 101,
+    "state": "open",
+    "body_readback_equal": true,
+    "body_sha256": "28f9bcab27c7372e36ccddb4fe2b3f68530ef9a1f13d62f4188f5d2d0aca5b18",
+    "observed_utc": "2026-10-30T11:03:14.436411+00:00",
+    "status_not_changed": true,
+    "new_issue_created": false
+  }
+}
