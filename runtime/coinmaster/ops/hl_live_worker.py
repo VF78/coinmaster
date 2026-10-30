@@ -243,6 +243,7 @@ class HyperliquidLiveNode:
             btc_signal_id=BYBIT_IDS[0], sol_signal_id=BYBIT_IDS[1],
             execution_policy_hash="hl-mainnet-native-owned-v1", execution_policy_version="hl-mainnet-native-owned-v1",
             market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
+            deposit_drawdown_limit_percent=self.profile["deposit_protection_percent"],
             deposit_runtime=state, deposit_instance_id=instance.instance_id, deposit_account_id="HYPERLIQUID-master",
             deposit_equity_reader=lambda strategy: strategy._validated_live_deposit_equity(),
             deposit_high_water_allowed=lambda:self.strategy._capital_high_water_allowed(),
