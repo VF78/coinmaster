@@ -63,7 +63,7 @@ def _validate_input_readiness_profile(root,profile,candidate):
         or profile['initialization_intent'] not in (None,'INITIALIZE_FRESH_C1_EPOCH') or profile['profile_id'] not in ('E4_C1_INPUT_READINESS_ONLY','E4_C1_ACTIVE_SELECTED')
         or profile['manage_only_readiness'] is not (not active) or profile['input_readiness'] is not True or profile['live_order_capability'] is not active
         or profile['research_source']!=(STAGING_A_RESEARCH_SOURCE if staging else 'fccd60c01e8cae5e8258748b046f43f88a16bb79')
-        or profile['economic_config_sha256']!='a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253'
+        or profile['economic_config_sha256']!=('61d8c8ae857b8830a31ae6a6bf679098d3eb27fbe456481b94731a0a6ca64e8d' if staging else 'a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253')
         or type(profile['deposit_protection_percent']) is not int or profile['deposit_protection_percent']!=55
         or profile['retained_equity_floor_fraction']!='0.45'
         or profile['strategy_flags']!=(STAGING_A_INPUT_FLAGS if staging else INPUT_FLAGS) or profile['candidate_sha256']!=candidate_content_hash(candidate)):

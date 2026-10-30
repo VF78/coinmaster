@@ -116,12 +116,13 @@ def test_a_profile_exact_flags_source_and_additional_helper_pin(tmp_path):
         pins['coinmaster/'+name]=hashlib.sha256(path.read_bytes()).hexdigest()
     profile=dict(schema='coinmaster-live-selected-c1-v1',profile_id='E4_C1_ACTIVE_SELECTED',initial_capital_policy=ACTUAL_INITIAL_CAPITAL_POLICY,
         candidate_sha256=candidate_content_hash(base),research_source=STAGING_A_RESEARCH_SOURCE,
-        economic_config_sha256='a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253',strategy_flags=STAGING_A_INPUT_FLAGS,
+        economic_config_sha256='61d8c8ae857b8830a31ae6a6bf679098d3eb27fbe456481b94731a0a6ca64e8d',strategy_flags=STAGING_A_INPUT_FLAGS,
         manage_only_readiness=False,input_readiness=True,live_order_capability=True,source_pins=pins,deposit_protection_percent=55,
         retained_equity_floor_fraction='0.45',initialization_intent=None,account_mode='unifiedAccount',
         equity_basis='HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1',owner_start_required=True)
     assert p._validate_input_readiness_profile(tmp_path,profile,base)['strategy_flags']==STAGING_A_INPUT_FLAGS
-    for change in ({'research_source':'fccd60c01e8cae5e8258748b046f43f88a16bb79'},
+    for change in ({'economic_config_sha256':'a2c7d88b5aff67399c0db849585bc5ad3625ce4e82068b3e29254d355c119253'},
+                   {'research_source':'fccd60c01e8cae5e8258748b046f43f88a16bb79'},
                    {'strategy_flags':{**STAGING_A_INPUT_FLAGS,'research_sol_market_budget_b':True}},
                    {'strategy_flags':{**STAGING_A_INPUT_FLAGS,'research_sol_market_budget_b':0}},
                    {'source_pins':{k:v for k,v in pins.items() if not k.endswith('sol_capital_staging.py')}},
