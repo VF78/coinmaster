@@ -1,0 +1,51 @@
+{
+  "interval": "[2024-09-01,2026-09-01)",
+  "seed_10K": "10000",
+  "cases": [
+    {
+      "case": "ORIGINAL",
+      "TOTAL": "5499360.14984003",
+      "DD_percent": "51.26863558248311161216905115",
+      "model": "legacy synthetic1000SOL depth/stalequotes/oldvenuegridfees",
+      "live_fill_qualified": false
+    },
+    {
+      "case": "CLEAN10K_R3",
+      "TOTAL": "561476.78949795",
+      "coherent_DD_percent": "85.39093016192872766265959973",
+      "settled_DD_percent": "85.39093016192872766265959973",
+      "model_liquidations": 1,
+      "status": "ECONOMIC_NO_GO",
+      "report_sha256": "389c66fc2e7117c60dec688b32ea7a2f0ecc6c52d486e13b37fa6a67131bdaaa"
+    },
+    {
+      "case": "A10K",
+      "TOTAL": "5635720.91989984",
+      "net_profit": "5625720.91989984",
+      "ROI_percent": "56257.2091989984",
+      "coherent_DD_percent": "51.43837118735670368072135682",
+      "settled_DD_percent": "51.43837118735670368072135682",
+      "conditional_OHLC_bound_DD_percent": "52.10530866497819338724660752",
+      "model_liquidations": 0,
+      "SOL_closed_net_profit": "716481.01297376",
+      "status": "PRIMARY_OBJECTIVE_MODEL_PASS_NOT_LIVE_READY",
+      "report_sha256": "c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f"
+    },
+    {
+      "case": "B10K",
+      "status": "RUNNING",
+      "source": "5e1a899b0e112db488ad4a118f74214b0362d2b0"
+    },
+    {
+      "case": "A_ACTUAL_CAPITAL",
+      "status": "RUNNING",
+      "financial_details": "PRIVATE_ACCOUNT_DERIVED"
+    }
+  ],
+  "current_fee_rates": {
+    "maker": "0.000144",
+    "taker": "0.000432",
+    "referral_already_included": true
+  },
+  "qualification": "Exact native accounting inside declared Bybit1m/currentHL/zeroimpactmodel; futuremarketfillsnotguaranteed. Rawreportsnotrewritten."
+}

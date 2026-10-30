@@ -1,7 +1,7 @@
 {
   "task": "EXECUTION_PARITY_REBUILD_20261029",
   "authority": "Direct latest owner request: systemic corrections+deployment; one10K24month diagnostic withoutDDstop, twoSOLvariants and fulltests; no fabricated numeric owner reply",
-  "status": "CLEAN10K_R1_RUNNING",
+  "status": "A10K_PRIMARY_MODEL_PASS_B_AND_ACTUAL_RUNNING",
   "objective": {
     "primary_terminal_total": "5499360.14984003",
     "primary_DD_percent": "52",
@@ -77,11 +77,12 @@
       "case": "A10K",
       "kind": "fullnative",
       "before": [
-        "CLEAN10Kcompletefinancialanalysis",
-        "Acontractfrozen",
-        "pureandreviewPASS"
+        "AallnormalSOLcontractfrozen",
+        "A140purePASS+independentreview",
+        "resolved39fields+actualAPIboundaryPASS",
+        "actualfirstBTCinR3correct"
       ],
-      "variant": "explicitcapital-normalizedlegacySOLstaging;nooldcachedfillsorbookrecycling"
+      "variant": "ALL_NORMAL_SOL_MARKET_IOC capital-normalizedexplicitparent/childstaging; actualC1creditandtimeout/forcedresidualcadence"
     },
     {
       "case": "B10K",
@@ -105,15 +106,17 @@
   ],
   "coordinator_planning_bound": {
     "engineering": 3,
-    "full_10K": 4,
+    "full_10K": 6,
     "conditional_actualcapital_full": 1,
-    "total": 8,
+    "total": 10,
     "engineering_second": "usedprecisionrepair; thirdonekernelconfigurationrepair",
     "oldbudgets_reused": false,
     "allphysicalenginefailures_count": true,
     "enginefree_constructor_checks_count_as_native": false,
     "no_silent_retry": true,
-    "additional_work_requires": "specificcause+updatedrootprotocolbeforeengine;neverfabricateownerbudget"
+    "additional_work_requires": "specificcause+updatedrootprotocolbeforeengine;neverfabricateownerbudget",
+    "max_parallel_independent_engines": 2,
+    "reason": "3engineering +3failed/noncomparablecontrolattempts +correctcontrol/A/B +1conditionalactualcapital"
   },
   "deployment": {
     "authorized": "inactiveimmutablecommonruntimeafterengineeringPASS;finalvariantafterqualification",
@@ -146,9 +149,9 @@
     "coherentandsettledDDseparate",
     "modelassumptionsandUNKNOWNexplicit"
   ],
-  "physical_spent": 5,
-  "physical_active": 1,
-  "source_common_frozen": "0ba61448b324df1c617797eac03a00c030e1a5e8",
+  "physical_spent": 10,
+  "physical_active": 2,
+  "source_common_frozen": "e3cfc392662d5b4a5b55f485f67f3df659138a54",
   "engineering_amendment": {
     "authority": "coordinatorboundupdate underdirectowner systemicfix/verification task, notnumericownerreply",
     "reason": "Native1.231 appliesrecordedL1consumption aftercustombook;False requiredforZeroImpactfullfill, noquoteincrease/kernelpatch",
@@ -195,14 +198,112 @@
     "economic_rules_changed": false,
     "engineering_not_repeated": "journal association only; genuine E0R2 retained"
   },
-  "active_control": {
-    "case": "CLEAN10K_R1",
-    "pid": 225699,
-    "supervisor_pid": 225698,
-    "started_utc": "2026-10-29T21:20:45.779450+00:00",
-    "output": "VPS J/CLEAN10K_R1",
-    "source": "0ba61448b324df1c617797eac03a00c030e1a5e8",
-    "stop_on_DD": null,
-    "valid_economic_result": null
+  "source_A_frozen": "5b56f7d02e09d4495ac018ec1ce701f6f0dfb737",
+  "control_failure_R1": {
+    "status": "NATIVE_ACCOUNTING_QUALIFIED_BUT_NONCOMPARABLE_TO_WINNER",
+    "actual_wrapper_exit": 1,
+    "terminal_total": "17368.19458222",
+    "DD_percent": "93.25950820458832977677671561",
+    "model_liquidations": 1,
+    "cause": "ROOT harness omitted original research_v0_zero_tp_netting=False; APIdefaultTrue re-netted BTC .79073 to .45467; cannot attribute this run to correct winning BTC core",
+    "native_accounting_receipt_sha256": "8aade839c9c9e69bb723ecea57ac50c409cd699a6f25806636fff460fdba4806",
+    "no_report_or_exit_rewritten": true
+  },
+  "control_failure_R2": {
+    "actual_exit": 1,
+    "native_engines": 0,
+    "wall_seconds": 6.909593963995576,
+    "cause": "Caller supplied duplicate ExecutionPolicy while currentHL source factory owns policy",
+    "preserved": true
+  },
+  "new_harness": {
+    "sha256": "18bc79aa29387c61bc1032cce4816804ac1e5f82b124da500a24d1ec4a928d5c",
+    "resolved_original_fields": 39,
+    "explicit_zero_tp_netting": false,
+    "deferred_selective": true,
+    "actual_API_before_native_constructor": "PASS on BOTH installed sources, native0; actualpolicy/fees/candidatefullcomparison",
+    "source_preengine_guard": "e3cfc392 rejects invalid mode pair inAPI/CLI/config/strategy",
+    "pure_common": 103,
+    "pure_A": 140,
+    "known_baseline_test_excluded": 1,
+    "independent_review": "PASS_0_P1"
+  },
+  "active_controls": [
+    {
+      "case": "B10K",
+      "source": "5e1a899b0e112db488ad4a118f74214b0362d2b0",
+      "pid": 262370,
+      "supervisor_pid": 262369,
+      "started_utc": "2026-10-30T00:05:21.901218+00:00",
+      "status": "RUNNING"
+    },
+    {
+      "case": "A_ACTUAL_CAPITAL",
+      "source": "5b56f7d02e09d4495ac018ec1ce701f6f0dfb737",
+      "pid": 262963,
+      "supervisor_pid": 262962,
+      "started_utc": "2026-10-30T00:07:45.523500+00:00",
+      "status": "RUNNING",
+      "amount_and_results": "PRIVATE_ACCOUNT_DERIVED"
+    }
+  ],
+  "parallel_amendment": {
+    "reason": "A contract independently derived from frozen original ALL SOL orders, no dependence on R3 outcomes; shared native cash and fullAPI inputs qualified; saves walltime",
+    "max_engines_per_case": 1,
+    "separate_processes_journals_claims": true,
+    "child_nice": 10,
+    "resource_observation": "2CPUs;2.23GB available; priornativepeak665MB; readonlyvenvhardlinksavoidduplicateGB",
+    "old_budgets_borrowed": false
+  },
+  "B_contract": "B_MARKET_CONTRACT_RU.md frozen before B outcomes; code native0, live B receipts not qualified",
+  "A_live_readiness": {
+    "qualified": false,
+    "remaining": [
+      "profile exact flag and source pins",
+      "persist fixed initial seed across restarts",
+      "recovery wrapper fill journal ordering"
+    ]
+  },
+  "completed_control_R3": {
+    "case": "CLEAN10K_R3",
+    "source": "e3cfc392662d5b4a5b55f485f67f3df659138a54",
+    "pid": 246609,
+    "supervisor_pid": 246608,
+    "started_utc": "2026-10-29T22:57:58.460816+00:00",
+    "actual_first_native_BTC_cumulative": [
+      "0.39536",
+      "0.79073"
+    ],
+    "status": "COMPLETED_ECONOMIC_NO_GO",
+    "actual_exit": 0,
+    "total": "561476.78949795",
+    "DD_percent": "85.39093016192872766265959973",
+    "model_liquidations": 1,
+    "report_sha256": "389c66fc2e7117c60dec688b32ea7a2f0ecc6c52d486e13b37fa6a67131bdaaa"
+  },
+  "completed_A10K": {
+    "source": "5b56f7d02e09d4495ac018ec1ce701f6f0dfb737",
+    "actual_exit": 0,
+    "TOTAL": "5635720.91989984",
+    "net_profit": "5625720.91989984",
+    "ROI_percent": "56257.2091989984",
+    "coherent_DD_percent": "51.43837118735670368072135682",
+    "settled_DD_percent": "51.43837118735670368072135682",
+    "model_liquidations": 0,
+    "all_11_financial_checks": true,
+    "report_sha256": "c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f",
+    "status": "PRIMARY_OBJECTIVE_MODEL_PASS_NOT_LIVE_READY"
+  },
+  "source_B_frozen": "5e1a899b0e112db488ad4a118f74214b0362d2b0",
+  "B_checks": {
+    "engine_free_tests": 94,
+    "independent_review": "PASS_0_P1",
+    "corrections": [
+      "matching E/H/cash/account revision frame",
+      "frozen both source marks",
+      "D1 availability by decision time"
+    ],
+    "inactive_installed": true,
+    "final_actual_API_boundary": "PASS_NATIVE_0"
   }
 }

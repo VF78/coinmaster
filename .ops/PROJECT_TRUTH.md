@@ -26,7 +26,7 @@ VPS development root: `/root/.openclaw/workspace/coinmaster/coinmaster` on `root
 - Historical Bybit1m data are real; synthetic L1 CLOSE execution/depth and current risk tiers are diagnostic assumptions, not historical L2/tick/live guarantees. Settled DD is not an intraminute bound.
 - New candidates require coherent event-level DD with pre-fill/pre-open peaks; the current campaign cap is in ACTIVE_TASK (51.8031515741%, strict50% follows). Missing coherent event data is UNKNOWN and blocks PASS. Keep historical settled comparisons on their original sampling basis.
 - Signed asset funding may be UNKNOWN; unallocated cash bridge is not funding. Never substitute zero, mock results, another venue or favorable OHLC order.
-- BASE fees only: Bybit maker0.020%/taker0.055%; HL maker0.015%/taker0.045%. Native fill classification; market/IOC is not relabeled maker. No0.1% fixture fee in economics.
+- Historical Bybit baseline fees: maker0.020%/taker0.055%. Current HL effective account snapshot: maker0.0144%/taker0.0432% (base0.015%/0.045% with4% referral already included); current campaign freezes these for comparison. Live uses actual fill fees. Never double-discount, relabel IOC as maker, or use0.1% fixture fees in economics.
 
 - #137 four-weekreview/plan/P1 complete. NEW directownerapproval6fixtures+conditional4prefix under protocolfaa39247; actualreceipt6b8625d8 in reports/sol-standing-protection-20261026. CurrentnativeE2HARDSTOP;V2CODE0COMPLETEa50/209pure+review0P1;newnativeCaseMap+budgetPROPOSEDONLY; nativeonlyafterpure/review/freeze/rootGO, economicsafterfullengineering+eachfinancialGO. Old#131-136budgetsclosed;G2/full/pilot/productionexcluded. Currentcounts/source/authorityonlyACTIVE/actualreceipt.
 
