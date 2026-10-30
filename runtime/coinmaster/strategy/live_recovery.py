@@ -63,7 +63,7 @@ _C1_FIELDS = (
 )
 
 
-_A_FIELDS=("_staging_a_initial_seed","_staging_a_forced_children")
+_A_FIELDS=("_staging_a_initial_seed","_staging_a_forced_children","_staging_a_forced_parent")
 
 def recovery_fields(config):
     base=_FIELDS + _C1_FIELDS if config.research_residual_recovery else _FIELDS
@@ -110,6 +110,12 @@ def checkpoint_structure(document):
     # until manual reconciliation/new decision supplies causal provenance.
     state=document.get("state")
     if isinstance(state,dict) and any(name in state for name in _A_FIELDS):expected=expected+_A_FIELDS
+    if isinstance(state,dict) and "_staging_a_initial_seed" in state and "_staging_a_forced_parent" not in state:
+        # Legacy A snapshots cannot invent a new deadline for an active close.
+        reason=state.get("_forced_close_reason")
+        if reason in {"REGIME","TRAIL","TERMINAL_BOUNDARY_SETTLEMENT"}:
+            raise ValueError("STAGING_A_FORCED_PARENT_MISSING")
+        state["_staging_a_forced_parent"]=None
     added={"_forced_close_decision_ns","_forced_close_cancel_ack_ns"}
     if isinstance(state,dict) and set(state)==set(expected)-added:
         state.update({name:None for name in added})
@@ -257,6 +263,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._recovery_runtime = None
         # Process-local evidence: a restored checkpoint never grants feed freshness.
         self._quote_ns = {}
+        self._staging_a_forced_parent = None
         self._prepared_order_dispatch=None
         self._prepared_deposit_dispatch=None
         self._post_drain_verifier = None
@@ -1121,6 +1128,53 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         quantity=order.quantity.as_decimal()
         return capacity is not None and quantity>0 and quantity<=capacity
 
+    def _staging_a_live_forced_allowed(self, order, action, now_ns):
+        if not (getattr(self.config,"research_sol_capital_staging_a",False)
+            and order.instrument_id==self.config.sol_id and order.is_reduce_only
+            and action in {"FORCED_CLOSE","TERMINAL_CLOSE"}
+            and self._forced_close_reason in {"REGIME","TRAIL","TERMINAL_BOUNDARY_SETTLEMENT"}):
+            return True
+        episode=self._domain.episode
+        positions=[p for p in self.cache.positions_open() if p.instrument_id==self.config.sol_id]
+        if episode is None or len(positions)!=1:return False
+        position=positions[0]
+        parent=self._staging_a_forced_parent
+        if parent is None:
+            decision=self._forced_close_decision_ns
+            age=self.config.max_mark_age_ns
+            if (type(decision) is not int or decision<=0 or decision>now_ns
+                or type(age) is not int or age<=0):return False
+            parent=dict(episode_id=str(episode.id),position_id=str(position.id),
+                decision_ns=decision,deadline_ns=decision+age,reason=self._forced_close_reason,expired=False)
+            self._staging_a_forced_parent=parent
+            self._persist_transient_checkpoint()
+        if parent["episode_id"]!=str(episode.id) or parent["position_id"]!=str(position.id):return False
+        if parent["expired"] or now_ns>=parent["deadline_ns"]:
+            parent["expired"]=True
+            self.recovery_confirmed=False
+            self._persist_transient_checkpoint()
+            self._request_live_refresh()
+            return False
+        if not self._feeds_fresh(now_ns):return False
+        quote=self.cache.quote_tick(order.instrument_id)
+        if quote is None or not 0<=now_ns-quote.ts_event<=self.config.max_mark_age_ns:return False
+        try:
+            price=(quote.bid_price if order.side==OrderSide.SELL else quote.ask_price).as_decimal()
+            size=(quote.bid_size if order.side==OrderSide.SELL else quote.ask_size).as_decimal()
+            return price.is_finite() and size.is_finite() and price>0 and size>0
+        except (AttributeError,ValueError,ArithmeticError):return False
+
+    def on_position_event(self,event):
+        super().on_position_event(event)
+        parent=self._staging_a_forced_parent
+        if parent is None or event.instrument_id!=self.config.sol_id:return
+        position=self.cache.position(event.position_id)
+        if (position is not None and str(position.id)==parent["position_id"]
+            and position.is_closed and position.quantity.as_decimal()==0
+            and not any(p.instrument_id==self.config.sol_id for p in self.cache.positions_open())):
+            self._staging_a_forced_parent=None
+            self._persist_transient_checkpoint()
+
     def _record_submission(self, *args, **kwargs) -> bool:
         if not args:return False
         order=args[0]
@@ -1128,6 +1182,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if runtime is None:return False
         # The same journal lock covers the final native quantity check and durable reservation.
         with runtime._lock:
+            action=args[3] if len(args)>3 else kwargs.get('action')
             if self._active_c1_authorized and order.is_reduce_only:
                 if not self._owned_reduce_allowed(order):return False
             else:
@@ -1150,6 +1205,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                             tp_fractions=fractions,cut_divisor=self.config.research_c1_btc_cut_divisor if order.instrument_id==self.config.btc_id else 2):return False
                     if not self._tier_allows_increase(
                         order.instrument_id,order.side,order.quantity.as_decimal(),time.time_ns()):return False
+            if not self._staging_a_live_forced_allowed(order,action,time.time_ns()):return False
             proof=None
             if self._active_c1_authorized and not order.is_reduce_only:
                 self._prepared_order_dispatch=None
@@ -1331,6 +1387,19 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         episode = _decode(domain["episode"])
         if episode is not None and not isinstance(episode, Episode):
             raise ValueError("RECOVERY_EPISODE_INVALID")
+        parent=decoded.get("_staging_a_forced_parent")
+        if parent is not None:
+            valid=(isinstance(parent,dict) and set(parent)=={"episode_id","position_id","decision_ns","deadline_ns","reason","expired"}
+                and episode is not None and parent["episode_id"]==str(episode.id)
+                and isinstance(parent["position_id"],str) and bool(parent["position_id"])
+                and type(parent["decision_ns"]) is int and parent["decision_ns"]>0
+                and type(parent["deadline_ns"]) is int
+                and parent["deadline_ns"]==parent["decision_ns"]+self.config.max_mark_age_ns
+                and type(parent["expired"]) is bool
+                and parent["reason"] in {"REGIME","TRAIL","TERMINAL_BOUNDARY_SETTLEMENT"}
+                and type(decoded["_forced_close_decision_ns"]) is int
+                and parent["decision_ns"]<=decoded["_forced_close_decision_ns"])
+            if not valid:raise ValueError("STAGING_A_FORCED_PARENT_INVALID")
         self._domain.episode = episode
         self._domain.locked_after_liquidation = bool(domain["locked_after_liquidation"])
         self._domain._decision_index = int(domain["decision_index"])
