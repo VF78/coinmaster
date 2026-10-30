@@ -19,7 +19,7 @@ from pathlib import Path
 from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.enums import OrderSide
 from nautilus_trader.model.currencies import USDC
-from nautilus_trader.model.identifiers import InstrumentId
+from nautilus_trader.model.identifiers import InstrumentId,ClientOrderId,PositionId
 
 from coinmaster.domain.wave_overlay import DailyBar, Episode, Intent
 from coinmaster.ops.hl_live_money import LivePerpsMoneyView, prospective_cross_margin_ok
@@ -63,8 +63,11 @@ _C1_FIELDS = (
 )
 
 
+_A_FIELDS=("_staging_a_initial_seed","_staging_a_forced_children")
+
 def recovery_fields(config):
-    return _FIELDS + _C1_FIELDS if config.research_residual_recovery else _FIELDS
+    base=_FIELDS + _C1_FIELDS if config.research_residual_recovery else _FIELDS
+    return base+_A_FIELDS if getattr(config,"research_sol_capital_staging_a",False) else base
 
 
 def recovery_policy_hash(config, candidate):
@@ -91,6 +94,8 @@ def recovery_policy_hash(config, candidate):
         body['live_input_clock_contract']='BYBIT_NATIVE_CONFIRMED_LAST_1M_UTC240_H4_ACTUAL_AVAILABILITY_V1'
         root=Path(__file__).resolve().parents[1]
         body['economic_source_pins']={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ('strategy/residual_recovery.py','strategy/wave_overlay.py','strategy/next_band.py','strategy/hedge_band.py','domain/wave_overlay.py','strategy/c1_inputs.py','ops/hl_unified_account.py','ops/hl_unified_instruments.py')}
+    if getattr(config,"research_sol_capital_staging_a",False):
+        body["staging_a_source_sha256"]=hashlib.sha256((Path(__file__).resolve().parents[1]/"strategy/sol_capital_staging.py").read_bytes()).hexdigest()
     body["candidate_sha256"]=hashlib.sha256(canonical_candidate_json(candidate).encode()).hexdigest()
     return hashlib.sha256(json.dumps(body,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest()
 
@@ -104,6 +109,7 @@ def checkpoint_structure(document):
     # them without manufacturing freshness: an active old close remains blocked
     # until manual reconciliation/new decision supplies causal provenance.
     state=document.get("state")
+    if isinstance(state,dict) and any(name in state for name in _A_FIELDS):expected=expected+_A_FIELDS
     added={"_forced_close_decision_ns","_forced_close_cancel_ack_ns"}
     if isinstance(state,dict) and set(state)==set(expected)-added:
         state.update({name:None for name in added})
@@ -155,6 +161,8 @@ def _encode(value):
         if value.tzinfo is None:
             raise ValueError("NAIVE_RECOVERY_TIME")
         return {"t": "datetime", "v": value.isoformat()}
+    if isinstance(value,ClientOrderId):return {"t":"client_order_id","v":str(value)}
+    if isinstance(value,PositionId):return {"t":"position_id","v":str(value)}
     if isinstance(value, InstrumentId):
         return {"t": "instrument", "v": str(value)}
     if isinstance(value, BarType):
@@ -195,6 +203,8 @@ def _decode(value):
     if not isinstance(value, dict) or set(value) != {"t", "v"}:
         raise ValueError("INVALID_RECOVERY_ENCODING")
     kind, body = value["t"], value["v"]
+    if kind == "client_order_id":return ClientOrderId(body)
+    if kind == "position_id":return PositionId(body)
     if kind == "decimal":
         result = Decimal(body)
         if not result.is_finite():
@@ -436,13 +446,20 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             raise ValueError('C1_INIT_ACCOUNT_UNKNOWN')
         account_total=account.balance_total(USDC).as_decimal()
         old_h,old_next=self._c1_peak,self._next_peak
+        old_a=(self._candidate,self._domain.config,getattr(self,"_staging_a_initial_seed",None)) if getattr(self.config,"research_sol_capital_staging_a",False) else None
         try:
             self._c1_peak=view.equity;self._next_peak=view.equity
+            if getattr(self.config,"research_sol_capital_staging_a",False):
+                from coinmaster.strategy.sol_capital_staging import normalized_parent_ceiling
+                self._staging_a_initial_seed=view.equity
+                self._candidate=replace(self._candidate,max_parent_notional=float(normalized_parent_ceiling(view.equity)))
+                self._domain.config=self._candidate
             body=self.on_save()[_KEY];policy=recovery_policy_hash(self.config,self._candidate)
             runtime.initialize_c1_epoch(intent=intent,checkpoint=body,policy_sha256=policy,equity=view.equity,
                 account_total=account_total,account_event_id=event_id,expected_revision=view.native_revision,now_ns=now_ns,history_anchor_ms=history_anchor_ms,cashflow_page=cashflow_page)
         except BaseException:
             self._c1_peak,self._next_peak=old_h,old_next
+            if old_a is not None:self._candidate,self._domain.config,self._staging_a_initial_seed=old_a
             raise
         self._fresh_c1_init_intent=None;self._checkpoint_policy_valid=True;self._loaded_policy_sha256=policy
         self.recovery_confirmed=False;self._management_certificate=None
@@ -1189,6 +1206,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         finally:
             self._terminal_checkpoint_deferred = None
         self._terminal_submission(client_order_id)
+        if getattr(self.config,"research_sol_capital_staging_a",False) and self._staging_a_force_scope():
+            self._submit_forced_closes_from_cache()  # Actual terminal checkpoint committed first.
 
     def on_order_filled(self, event) -> None:
         # The base callback returns early for native group/DP closes. Those
@@ -1221,6 +1240,22 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
                 raise RuntimeError("RECOVERY_SPECIAL_FILL_JOURNAL_MISMATCH")
             if not self._recovery_runtime.has_applied_fill(trade_id):
                 self._after_domain_fill(event)
+            if getattr(self.config,"research_sol_capital_staging_a",False):
+                self._staging_a_continue_forced_fill(event)  # Applied checkpoint is durable now.
+
+    def _staging_a_forced_child_ready(self,instrument_id,quote_ns):
+        child=self._staging_a_forced_children.get(instrument_id)
+        if child is not None:
+            order=self.cache.order(child["order_id"])
+            runtime=self._recovery_runtime
+            if runtime is None or runtime.db.in_transaction or order is None:return False
+            terminal=runtime.db.execute("SELECT state FROM paper_intents WHERE client_order_id=?",(str(child["order_id"]),)).fetchone()
+            if terminal is None or terminal[0]!="TERMINAL":return False
+            # Native cache/Position may lead the strategy FILLED callback. Only
+            # exact committed applied fills release this existing child owner.
+            rows=runtime.db.execute("SELECT d.quantity FROM paper_native_fill_details d JOIN paper_recovered_fills a ON a.trade_id=d.trade_id WHERE d.client_order_id=?",(str(child["order_id"]),)).fetchall()
+            if sum((Decimal(row[0]) for row in rows),Decimal(0))!=order.filled_qty.as_decimal():return False
+        return super()._staging_a_forced_child_ready(instrument_id,quote_ns)
 
     def _after_domain_fill(self, event) -> None:
         if self._recovery_runtime is None:
@@ -1291,6 +1326,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if not isinstance(domain, dict) or set(domain) != {"episode", "locked_after_liquidation", "decision_index"}:
             raise ValueError("RECOVERY_DOMAIN_FIELDS_MISMATCH")
         decoded = {name: _decode(item) for name, item in document["state"].items()}
+        if getattr(self.config,"research_sol_capital_staging_a",False) and decoded["_staging_a_initial_seed"]!=self.config.active_seed:
+            raise ValueError("STAGING_A_INITIAL_EPOCH_SEED_MISMATCH")
         episode = _decode(domain["episode"])
         if episode is not None and not isinstance(episode, Episode):
             raise ValueError("RECOVERY_EPISODE_INVALID")

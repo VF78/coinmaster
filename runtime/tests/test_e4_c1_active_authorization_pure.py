@@ -44,7 +44,7 @@ def code():
     env = dict(__name__=__name__, Path=Path, json=json, hashlib=hashlib, dataclass=dataclass, asdict=asdict)
     execute(selected_nodes("domain/wave_overlay.py", {"Candidate"}), env)
     execute(selected_nodes("ops/stage_g_config.py", {"canonical_candidate_json", "candidate_content_hash"}), env)
-    execute(selected_nodes("ops/hl_live_profile.py", {"FLAGS", "INPUT_FLAGS", "initial_capital_limit", "ACTUAL_INITIAL_CAPITAL_POLICY", "actual_initial_capital",
+    execute(selected_nodes("ops/hl_live_profile.py", {"FLAGS", "INPUT_FLAGS", "STAGING_A_INPUT_FLAGS", "STAGING_A_RESEARCH_SOURCE", "initial_capital_limit", "ACTUAL_INITIAL_CAPITAL_POLICY", "actual_initial_capital",
         "_validate_input_readiness_profile", "load_live_profile"}), env)
     execute(selected_nodes("ops/hl_live_worker.py", {"require_live_order_approval"}), env)
     return env

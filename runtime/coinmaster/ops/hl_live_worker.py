@@ -31,7 +31,7 @@ from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_stat
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink, durable_management_scope
 from coinmaster.ops.native_paper_node import BYBIT_IDS, FeedBook, FeedObserver, FeedObserverConfig, bybit_daily_bar_type
 from coinmaster.ops.hl_live_epoch import LiveEpochRuntime as PaperRuntime
-from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity,initial_capital_limit,actual_initial_capital
+from coinmaster.ops.hl_live_profile import load_live_profile, require_profile_deposit_parity,initial_capital_limit,actual_initial_capital,staging_a_epoch_seed
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
@@ -233,7 +233,7 @@ class HyperliquidLiveNode:
             btc_bar_type=bybit_daily_bar_type(BYBIT_IDS[0]), sol_bar_type=bybit_daily_bar_type(BYBIT_IDS[1]),
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
-            active_seed=equity, candidate=candidate, seed_bars=self.warmup_bundle.bars,
+            active_seed=staging_a_epoch_seed(self.profile,state,equity), candidate=candidate, seed_bars=self.warmup_bundle.bars,
             live_start_approved=self.active_c1,live_initial_capital_limit_usdc=self.profile.get("initial_capital_usdc","0"),
             live_initial_capital_policy=self.profile.get("initial_capital_policy",""),
             live_account_mode=self.account_mode,live_equity_basis=self.profile.get('equity_basis','HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),

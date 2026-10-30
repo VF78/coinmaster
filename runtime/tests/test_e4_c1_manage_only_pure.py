@@ -55,11 +55,13 @@ def run_ast(body,namespace):
 
 @pytest.fixture
 def code(monkeypatch):
- env=dict(asyncio=asyncio,hashlib=hashlib,json=json,math=math,time=time,Decimal=D,datetime=datetime,Path=Path,__file__=str(ROOT/"strategy/live_recovery.py"),
+ from nautilus_trader.model.identifiers import ClientOrderId,PositionId
+ from dataclasses import replace
+ env=dict(ClientOrderId=ClientOrderId,PositionId=PositionId,replace=replace,asyncio=asyncio,hashlib=hashlib,json=json,math=math,time=time,Decimal=D,datetime=datetime,Path=Path,__file__=str(ROOT/"strategy/live_recovery.py"),
   fields=fields,is_dataclass=is_dataclass,DailyBar=DailyBar,Episode=Episode,Intent=Intent,
   InstrumentId=ID,BarType=Placeholder,Bar=Placeholder,DailySignalBar=Signal,NextClosedBar=Next,
   VenueMark=type('Mark',(),{}),canonical_candidate_json=canonical_candidate_json)
- names={'_SCHEMA','_KEY','_DATACLASSES','_FIELDS','_C1_SCHEMA','_C1_FIELDS','_PUBLIC_INPUT_FIELDS',
+ names={'_SCHEMA','_KEY','_DATACLASSES','_FIELDS','_C1_SCHEMA','_C1_FIELDS','_A_FIELDS','_PUBLIC_INPUT_FIELDS',
   'recovery_fields','recovery_policy_hash','checkpoint_structure','durable_decision_checkpoint','_encode','_decode'}
  run_ast(nodes('strategy/live_recovery.py',names),env)
  class FakeNativeBase:

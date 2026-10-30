@@ -63,6 +63,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     tp_fee_floor_v1: bool = False
     research_v0_execution_repairs: bool = False
     research_sol_capital_staging_a: bool = False
+    research_sol_market_budget_b: bool = False
     research_v0_zero_tp_netting: bool = True
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
@@ -154,6 +155,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     deposit_high_water_allowed: object | None = None
 
     def __post_init__(self) -> None:
+        if self.research_sol_market_budget_b:
+            raise ValueError("SOL_B_NOT_QUALIFIED_IN_A_LIVE_SOURCE")
         from coinmaster.strategy.execution_config import validate_zero_tp_modes
         validate_zero_tp_modes(deferred_selective_zero_tp=self.research_v0_deferred_selective_zero_tp,
             zero_tp_netting=self.research_v0_zero_tp_netting)
@@ -318,6 +321,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         self._research_protect_latch: dict[str, object] | None = None
         self.research_protection_audit: list[dict[str, object]] = []
         self.sol_cap_admission_audit: list[dict[str, str]] = []
+        self._staging_a_initial_seed=config.active_seed
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
         if config.research_sol_capital_staging_a:
             if (not config.research_v0_selective_lifecycle_repairs or config.research_sol_risk_first
@@ -2022,15 +2026,15 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
             # entries and margin gates. Never use child size to rescue a denial.
             from coinmaster.strategy.sol_capital_staging import staged_sol_child,funded_scale,BASE_SOL_CHILD
             full_admitted=rounded
-            rounded=staged_sol_child(full_admitted,self.config.active_seed,step)
+            rounded=staged_sol_child(full_admitted,getattr(self,"_staging_a_initial_seed",self.config.active_seed),step)
             if (rounded<=0 or (not reduce_only and (
                 (instrument.min_quantity is not None and rounded<instrument.min_quantity.as_decimal())
                 or (instrument.min_notional is not None and rounded*executable_price<instrument.min_notional.as_decimal())))):
                 self._deny_local_entry(intent,"STAGING_A_CHILD_BELOW_VENUE_MINIMUM",ts_now)
                 return
-            staging_audit=dict(staging_a_initial_seed=str(self.config.active_seed),
-                staging_a_scale=str(funded_scale(self.config.active_seed)),staging_a_full_admitted_qty=str(full_admitted),
-                staging_a_child_cap_qty=str(BASE_SOL_CHILD*funded_scale(self.config.active_seed)),
+            staging_audit=dict(staging_a_initial_seed=str(getattr(self,"_staging_a_initial_seed",self.config.active_seed)),
+                staging_a_scale=str(funded_scale(getattr(self,"_staging_a_initial_seed",self.config.active_seed))),staging_a_full_admitted_qty=str(full_admitted),
+                staging_a_child_cap_qty=str(BASE_SOL_CHILD*funded_scale(getattr(self,"_staging_a_initial_seed",self.config.active_seed))),
                 staging_a_child_qty=str(rounded),staging_a_unsubmitted_qty=str(full_admitted-rounded),
                 staging_a_timing="POST_ORIGINAL_FULL_ADMISSION")
         if intent.action == "SOL_ADD":
@@ -2373,7 +2377,7 @@ class WaveOverlayStrategy(ResidualRecoveryResearch, NextBandResearch, HedgeBandR
         quantity=full_quantity
         if staged:
             from coinmaster.strategy.sol_capital_staging import staged_sol_child
-            quantity=staged_sol_child(full_quantity,self.config.active_seed,instrument.size_increment.as_decimal())
+            quantity=staged_sol_child(full_quantity,getattr(self,"_staging_a_initial_seed",self.config.active_seed),instrument.size_increment.as_decimal())
             if quantity<=0:
                 return  # Venue grid prevents this explicitly bounded diagnostic child.
         order = self.order_factory.market(
